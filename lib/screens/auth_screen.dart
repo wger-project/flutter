@@ -1,7 +1,7 @@
-import 'dart:math';
 import '../models/http_exception.dart';
-
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/auth.dart';
 
 enum AuthMode { Signup, Login }
 
@@ -47,7 +47,7 @@ class AuthScreen extends StatelessWidget {
                       child: Text(
                         'WGER',
                         style: TextStyle(
-                          color: Theme.of(context).accentTextTheme.title.color,
+                          color: Theme.of(context).accentColor,
                           fontSize: 50,
                           fontFamily: 'Anton',
                           fontWeight: FontWeight.normal,
@@ -118,8 +118,8 @@ class _AuthCardState extends State<AuthCard> {
     });
     try {
       if (_authMode == AuthMode.Login) {
-        // await Provider.of<Auth>(context, listen: false)
-        // .signIn(_authData['email'], _authData['password']);
+        await Provider.of<Auth>(context, listen: false)
+            .signIn(_authData['email'], _authData['password']);
       } else {
         // await Provider.of<Auth>(context, listen: false)
         // .signUp(_authData['email'], _authData['password']);

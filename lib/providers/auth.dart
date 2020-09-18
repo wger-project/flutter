@@ -13,7 +13,8 @@ class Auth with ChangeNotifier {
   Timer _authTimer;
 
   bool get isAuth {
-    return token != null;
+    return true;
+    // return token != null;
   }
 
   String get token {
@@ -31,15 +32,19 @@ class Auth with ChangeNotifier {
 
   Future<void> _authenticate(
       String email, String password, String urlSegment) async {
-    var url =
-        'https://identitytoolkit.googleapis.com/v1/accounts:$urlSegment?key=AIzaSyDAdf6loENoo-BYS0tj0f9-GwIJ_E7eWZc';
+    var url = 'https://wger.de/api/v2/login';
+    print(email);
+    print(password);
+
     try {
       final response = await http.post(
         url,
-        body: json.encode(
-            {'email': email, 'password': password, 'returnSecureToken': true}),
+        body: json.encode({'email': email, 'password': password}),
       );
       final responseData = json.decode(response.body);
+
+      print(responseData);
+
       if (responseData['error'] != null) {
         throw HttpException(responseData['error']['message']);
       }
@@ -66,6 +71,7 @@ class Auth with ChangeNotifier {
       });
       prefs.setString('userData', userData);
     } catch (error) {
+      print(error);
       throw error;
     }
   }
