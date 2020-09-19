@@ -128,19 +128,13 @@ class _AuthCardState extends State<AuthCard> {
     } on HttpException catch (error) {
       var errorMessage = 'Authentication Failed';
 
-      if (error.toString().contains('EMAIL_EXISTS')) {
-        errorMessage = 'This email address is already in use';
-      } else if (error.toString().contains('INVALID_EMAIL')) {
-        errorMessage = 'This is not a valid email address';
-      } else if (error.toString().contains('WEAK_PASSWORD')) {
-        errorMessage = 'This password is too weak';
-      } else if (error.toString().contains('EMAIL_NOT_FOUND')) {
-        errorMessage = 'Could not find a user with that email';
-      } else if (error.toString().contains('INVALID_PASSWORD')) {
-        errorMessage = 'Your password is incorrect';
+      if (error.errors.containsKey('username')) {
+        errorMessage = error.errors['username'];
+      } else if (error.errors.containsKey('password')) {
+        errorMessage = error.errors['password'];
       }
       _showErrorDialog(errorMessage);
-    } catch (error) {
+    } finally {
       var errorMessage = 'Could not authenticate you. Please try again later';
       _showErrorDialog(errorMessage);
     }

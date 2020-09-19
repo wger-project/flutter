@@ -27,6 +27,7 @@ dependencies:
   intl: ^0.16.1
   http: ^0.12.2
   shared_preferences: ^0.5.10
+  flutter_calendar_carousel: ^1.4.12
 
 
   # The following adds the Cupertino Icons font to your application.

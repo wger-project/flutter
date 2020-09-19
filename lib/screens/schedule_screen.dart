@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class WorkoutsScreen extends StatelessWidget {
+class ScheduleScreen extends StatelessWidget {
   Widget getAppBar() {
     return AppBar(
       title: Text('Workouts'),

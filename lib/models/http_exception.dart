@@ -1,10 +1,10 @@
 class HttpException implements Exception {
-  final String message;
+  final Map<String, dynamic> errors;
 
-  HttpException(this.message);
+  HttpException(this.errors);
 
   @override
   String toString() {
-    return message;
+    return '';
   }
 }

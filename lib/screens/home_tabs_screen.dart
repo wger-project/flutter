@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/screens/nutrition_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
-import 'package:wger/screens/workouts_screen.dart';
+import 'package:wger/screens/schedule_screen.dart';
 
 class HomeTabsScreen extends StatefulWidget {
   @override
@@ -15,7 +15,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> {
   @override
   initState() {
     _pages = [
-      {'page': WorkoutsScreen(), 'title': 'Workouts'},
+      {'page': ScheduleScreen(), 'title': 'Schedule'},
       {'page': NutritionScreen(), 'title': 'Nutrition'},
       {'page': WeightScreen(), 'title': 'Weight'},
     ];
@@ -42,8 +42,8 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> {
         items: [
           BottomNavigationBarItem(
             backgroundColor: Theme.of(context).primaryColor,
-            icon: Icon(Icons.directions_run),
-            title: Text('Workouts'),
+            icon: Icon(Icons.calendar_today),
+            title: Text('Schedule'),
           ),
           BottomNavigationBarItem(
             backgroundColor: Theme.of(context).primaryColor,
