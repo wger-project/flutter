@@ -1,3 +1,7 @@
+####
+#### Rename to .yml when issue #1 is solved
+####
+
 ###########################
 ###########################
 ## Linter GitHub Actions ##
