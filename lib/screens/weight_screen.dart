@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wger/widgets/app_drawer.dart';
 
 class WeightScreen extends StatelessWidget {
   Widget getAppBar() {
@@ -17,6 +18,7 @@ class WeightScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: getAppBar(),
+      drawer: AppDrawer(),
     );
   }
 }

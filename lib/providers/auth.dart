@@ -1,10 +1,12 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
-import '../models/http_exception.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
-import 'dart:async';
+
+import '../models/http_exception.dart';
 
 class Auth with ChangeNotifier {
   String _token;
@@ -32,7 +34,8 @@ class Auth with ChangeNotifier {
 
   Future<void> _authenticate(
       String email, String password, String urlSegment) async {
-    var url = 'https://wger.de/api/v2/login/';
+    // The android emulator uses
+    var url = 'http://10.0.2.2:8000/api/v2/login/';
     print(email);
     print(password);
 
@@ -42,7 +45,7 @@ class Auth with ChangeNotifier {
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: json.encode({'email': email, 'password': password}),
+        body: json.encode({'username': email, 'password': password}),
       );
       final responseData = json.decode(response.body);
       print(response.statusCode);

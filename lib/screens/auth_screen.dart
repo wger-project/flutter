@@ -1,6 +1,7 @@
-import '../models/http_exception.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../models/http_exception.dart';
 import '../providers/auth.dart';
 
 enum AuthMode { Signup, Login }
@@ -183,6 +184,7 @@ class _AuthCardState extends State<AuthCard> {
                       if (value.isEmpty) {
                         return 'Invalid Username!';
                       }
+                      return null;
                     },
                     onSaved: (value) {
                       _authData['username'] = value;
@@ -192,9 +194,10 @@ class _AuthCardState extends State<AuthCard> {
                   decoration: InputDecoration(labelText: 'E-Mail'),
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) {
-                    if (value.isEmpty || !value.contains('@')) {
-                      return 'Invalid email!';
-                    }
+                    //if (value.isEmpty || !value.contains('@')) {
+                    //  return 'Invalid email!';
+                    //}
+                    return null;
                   },
                   onSaved: (value) {
                     _authData['email'] = value;

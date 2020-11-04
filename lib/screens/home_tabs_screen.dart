@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/screens/nutrition_screen.dart';
-import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/screens/schedule_screen.dart';
+import 'package:wger/screens/weight_screen.dart';
 
 class HomeTabsScreen extends StatefulWidget {
   @override
@@ -43,17 +42,17 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> {
           BottomNavigationBarItem(
             backgroundColor: Theme.of(context).primaryColor,
             icon: Icon(Icons.calendar_today),
-            title: Text('Schedule'),
+            label: 'Schedule',
           ),
           BottomNavigationBarItem(
             backgroundColor: Theme.of(context).primaryColor,
             icon: Icon(Icons.fastfood),
-            title: Text('Nutrition'),
+            label: 'Nutrition',
           ),
           BottomNavigationBarItem(
             backgroundColor: Theme.of(context).primaryColor,
-            icon: Icon(Icons.calendar_today),
-            title: Text('Weight'),
+            icon: Icon(Icons.bar_chart),
+            label: 'Weight',
           )
         ],
       ),
