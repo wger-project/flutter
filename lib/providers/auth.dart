@@ -33,10 +33,10 @@ class Auth with ChangeNotifier {
   // }
 
   Future<void> _authenticate(
-      String email, String password, String urlSegment) async {
+      String username, String password, String urlSegment) async {
     // The android emulator uses
     var url = 'http://10.0.2.2:8000/api/v2/login/';
-    print(email);
+    print(username);
     print(password);
 
     try {
@@ -45,7 +45,7 @@ class Auth with ChangeNotifier {
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: json.encode({'username': email, 'password': password}),
+        body: json.encode({'username': username, 'password': password}),
       );
       final responseData = json.decode(response.body);
       print(response.statusCode);
@@ -86,8 +86,8 @@ class Auth with ChangeNotifier {
     return _authenticate(email, password, 'signUp');
   }
 
-  Future<void> signIn(String email, String password) async {
-    return _authenticate(email, password, 'signInWithPassword');
+  Future<void> signIn(String username, String password) async {
+    return _authenticate(username, password, 'signInWithPassword');
   }
 
   Future<bool> tryAutoLogin() async {

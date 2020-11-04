@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/theme/theme.dart';
 
 import '../models/http_exception.dart';
 import '../providers/auth.dart';
@@ -50,8 +51,8 @@ class AuthScreen extends StatelessWidget {
                         style: TextStyle(
                           color: Theme.of(context).accentColor,
                           fontSize: 50,
-                          fontFamily: 'Anton',
-                          fontWeight: FontWeight.normal,
+                          fontFamily: 'OpenSansBold',
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
@@ -119,8 +120,10 @@ class _AuthCardState extends State<AuthCard> {
     });
     try {
       if (_authMode == AuthMode.Login) {
-        await Provider.of<Auth>(context, listen: false)
-            .signIn(_authData['email'], _authData['password']);
+        await Provider.of<Auth>(context, listen: false).signIn(
+          _authData['username'],
+          _authData['password'],
+        );
       } else {
         // await Provider.of<Auth>(context, listen: false)
         // .signUp(_authData['email'], _authData['password']);
@@ -135,9 +138,9 @@ class _AuthCardState extends State<AuthCard> {
         errorMessage = error.errors['password'];
       }
       _showErrorDialog(errorMessage);
-    } finally {
-      var errorMessage = 'Could not authenticate you. Please try again later';
-      _showErrorDialog(errorMessage);
+      //} finally {
+      //  var errorMessage = 'Could not authenticate you. Please try again later';
+      //  _showErrorDialog(errorMessage);
     }
 
     setState(() {
@@ -176,41 +179,42 @@ class _AuthCardState extends State<AuthCard> {
           child: SingleChildScrollView(
             child: Column(
               children: <Widget>[
+                TextFormField(
+                  decoration: InputDecoration(labelText: 'Username'),
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Invalid Username!';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    _authData['username'] = value;
+                  },
+                ),
                 if (_authMode == AuthMode.Signup)
                   TextFormField(
-                    decoration: InputDecoration(labelText: 'Username'),
+                    decoration: InputDecoration(labelText: 'E-Mail'),
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
-                      if (value.isEmpty) {
-                        return 'Invalid Username!';
+                      if (value.isEmpty || !value.contains('@')) {
+                        return 'Invalid email!';
                       }
                       return null;
                     },
                     onSaved: (value) {
-                      _authData['username'] = value;
+                      _authData['email'] = value;
                     },
                   ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'E-Mail'),
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (value) {
-                    //if (value.isEmpty || !value.contains('@')) {
-                    //  return 'Invalid email!';
-                    //}
-                    return null;
-                  },
-                  onSaved: (value) {
-                    _authData['email'] = value;
-                  },
-                ),
                 TextFormField(
                   decoration: InputDecoration(labelText: 'Password'),
                   obscureText: true,
                   controller: _passwordController,
                   validator: (value) {
-                    if (value.isEmpty || value.length < 5) {
+                    if (value.isEmpty || value.length < 8) {
                       return 'Password is too short!';
                     }
+                    return null;
                   },
                   onSaved: (value) {
                     _authData['password'] = value;
@@ -226,6 +230,7 @@ class _AuthCardState extends State<AuthCard> {
                             if (value != _passwordController.text) {
                               return 'Passwords do not match!';
                             }
+                            return null;
                           }
                         : null,
                   ),
@@ -244,7 +249,7 @@ class _AuthCardState extends State<AuthCard> {
                     ),
                     padding:
                         EdgeInsets.symmetric(horizontal: 30.0, vertical: 8.0),
-                    color: const Color(0xff204a87),
+                    color: wgerPrimaryColor,
                     textColor: Theme.of(context).primaryTextTheme.button.color,
                   ),
                 FlatButton(
@@ -253,7 +258,7 @@ class _AuthCardState extends State<AuthCard> {
                   onPressed: _switchAuthMode,
                   padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  textColor: const Color(0xff204a87),
+                  textColor: wgerPrimaryColor,
                 ),
               ],
             ),
