@@ -10,6 +10,7 @@ import '../models/http_exception.dart';
 
 class Auth with ChangeNotifier {
   String _token;
+  String _serverUrl;
   // DateTime _expiryDate;
   // String _userId;
   // Timer _authTimer;
@@ -33,11 +34,11 @@ class Auth with ChangeNotifier {
   // }
 
   Future<void> _authenticate(
-      String username, String password, String urlSegment) async {
+      String username, String password, String serverUrl) async {
     // The android emulator uses
-    var url = 'http://10.0.2.2:8000/api/v2/login/';
-    print(username);
-    print(password);
+    var url = '$serverUrl/api/v2/login/';
+    //print(username);
+    //print(password);
 
     try {
       final response = await http.post(
@@ -48,16 +49,17 @@ class Auth with ChangeNotifier {
         body: json.encode({'username': username, 'password': password}),
       );
       final responseData = json.decode(response.body);
-      print(response.statusCode);
-      print(responseData);
+      //print(response.statusCode);
+      //print(responseData);
 
       if (response.statusCode >= 400) {
         throw HttpException(json.decode(responseData) as Map<String, dynamic>);
       }
 
       // Log user in
-
+      _serverUrl = serverUrl;
       _token = responseData['token'];
+
       // _userId = responseData['localId'];
       // _expiryDate = DateTime.now().add(
       //   Duration(
@@ -72,12 +74,11 @@ class Auth with ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       final userData = json.encode({
         'token': _token,
-        // 'userId': _userId,
+        'serverUrl': _serverUrl,
         // 'expiryDate': _expiryDate.toIso8601String(),
       });
       prefs.setString('userData', userData);
     } catch (error) {
-      print(error);
       throw error;
     }
   }
@@ -86,8 +87,9 @@ class Auth with ChangeNotifier {
     return _authenticate(email, password, 'signUp');
   }
 
-  Future<void> signIn(String username, String password) async {
-    return _authenticate(username, password, 'signInWithPassword');
+  Future<void> signIn(
+      String username, String password, String serverUrl) async {
+    return _authenticate(username, password, serverUrl);
   }
 
   Future<bool> tryAutoLogin() async {
@@ -105,16 +107,18 @@ class Auth with ChangeNotifier {
     // }
 
     _token = extractedUserData['token'];
+    _serverUrl = extractedUserData['serverUrl'];
     // _userId = extractedUserData['userId'];
     // _expiryDate = expiryDate;
 
     notifyListeners();
-    // _autoLogout();
+    //_autoLogout();
     return true;
   }
 
   Future<void> logout() async {
     _token = null;
+    _serverUrl = null;
     // _userId = null;
     // _expiryDate = null;
     // if (_authTimer != null) {
@@ -124,7 +128,7 @@ class Auth with ChangeNotifier {
 
     notifyListeners();
     final prefs = await SharedPreferences.getInstance();
-    prefs.clear();
+    prefs.remove('userData');
   }
 
   // void _autoLogout() {
@@ -135,5 +139,7 @@ class Auth with ChangeNotifier {
   //   _authTimer = Timer(Duration(seconds: timeToExpiry), logout);
   // }
 
-  void setLoginServer() {}
+  void setLoginServer(String serverUrl) {
+    _serverUrl = serverUrl;
+  }
 }
