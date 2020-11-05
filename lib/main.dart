@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
             ChangeNotifierProxyProvider<Auth, WorkoutPlans>(
               create: null, // TODO: Create is required but it can be null??
               update: (context, value, previous) => WorkoutPlans(
-                auth.token,
+                auth,
                 previous == null ? [] : previous.items,
               ),
             )

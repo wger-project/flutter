@@ -2,14 +2,21 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/workout_plan.dart';
 
 class WorkoutPlans with ChangeNotifier {
-  static const workoutPlansUrl = 'http://10.0.2.2:8000/api/v2/workout/';
-  List<WorkoutPlan> _entries = [];
-  final String authToken;
+  static const workoutPlansUrl = '/api/v2/workout/';
 
-  WorkoutPlans(this.authToken, this._entries);
+  String _url;
+  List<WorkoutPlan> _entries = [];
+  Auth _auth;
+
+  WorkoutPlans(Auth auth, List<WorkoutPlan> entries) {
+    this._auth = auth;
+    this._entries = entries;
+    this._url = auth.serverUrl + workoutPlansUrl;
+  }
 
   List<WorkoutPlan> get items {
     return [..._entries];
@@ -21,8 +28,8 @@ class WorkoutPlans with ChangeNotifier {
 
   Future<void> fetchAndSetWorkouts() async {
     final response = await http.get(
-      workoutPlansUrl,
-      headers: <String, String>{'Authorization': 'Token $authToken'},
+      _url,
+      headers: <String, String>{'Authorization': 'Token ${_auth.token}'},
     );
     final extractedData = json.decode(response.body) as Map<String, dynamic>;
 
@@ -49,7 +56,7 @@ class WorkoutPlans with ChangeNotifier {
 
   Future<void> addProduct(WorkoutPlan product) async {
     final productsUrl =
-        'https://flutter-shop-a2335.firebaseio.com/products.json?auth=$authToken';
+        'https://flutter-shop-a2335.firebaseio.com/products.json?auth=${_auth.token}';
     try {
       final response = await http.post(
         productsUrl,
@@ -76,7 +83,7 @@ class WorkoutPlans with ChangeNotifier {
     final prodIndex = _entries.indexWhere((element) => element.id == id);
     if (prodIndex >= 0) {
       final url =
-          'https://flutter-shop-a2335.firebaseio.com/products/$id.json?auth=$authToken';
+          'https://flutter-shop-a2335.firebaseio.com/products/$id.json?auth=${_auth.token}';
       await http.patch(url,
           body: json.encode({
             'description': newProduct.description,
@@ -88,7 +95,7 @@ class WorkoutPlans with ChangeNotifier {
 
   Future<void> deleteProduct(String id) async {
     final url =
-        'https://flutter-shop-a2335.firebaseio.com/products/$id.json?auth=$authToken';
+        'https://flutter-shop-a2335.firebaseio.com/products/$id.json?auth=${_auth.token}';
     final existingProductIndex =
         _entries.indexWhere((element) => element.id == id);
     var existingProduct = _entries[existingProductIndex];

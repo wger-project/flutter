@@ -29,6 +29,10 @@ class Auth with ChangeNotifier {
     // return null;
   }
 
+  String get serverUrl {
+    return _serverUrl;
+  }
+
   // String get userId {
   //   return _userId;
   // }
