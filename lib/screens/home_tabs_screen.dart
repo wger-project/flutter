@@ -4,6 +4,8 @@ import 'package:wger/screens/schedule_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
 
 class HomeTabsScreen extends StatefulWidget {
+  static const routeName = '/dashboard';
+
   @override
   _HomeTabsScreenState createState() => _HomeTabsScreenState();
 }

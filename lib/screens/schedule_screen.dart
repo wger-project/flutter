@@ -5,6 +5,8 @@ import 'package:wger/widgets/app_drawer.dart';
 import 'package:wger/widgets/workout_plans_list.dart';
 
 class ScheduleScreen extends StatefulWidget {
+  static const routeName = '/auth';
+
   @override
   _ScheduleScreenState createState() => _ScheduleScreenState();
 }

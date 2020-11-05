@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:wger/widgets/app_drawer.dart';
 
 class NutritionScreen extends StatelessWidget {
+  static const routeName = '/nutrition';
+
   Widget getAppBar() {
     return AppBar(
       title: Text('Nutrition'),
@@ -19,6 +21,10 @@ class NutritionScreen extends StatelessWidget {
     return Scaffold(
       appBar: getAppBar(),
       drawer: AppDrawer(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }

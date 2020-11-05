@@ -3,7 +3,10 @@ import 'package:provider/provider.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/auth_screen.dart';
 import 'package:wger/screens/home_tabs_screen.dart';
+import 'package:wger/screens/nutrition_screen.dart';
+import 'package:wger/screens/schedule_screen.dart';
 import 'package:wger/screens/splash_screen.dart';
+import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/theme/theme.dart';
 
 import 'providers/auth.dart';
@@ -45,6 +48,12 @@ class MyApp extends StatelessWidget {
                             ? SplashScreen()
                             : AuthScreen(),
                   ),
+            routes: {
+              HomeTabsScreen.routeName: (ctx) => HomeTabsScreen(),
+              WeightScreen.routeName: (ctx) => WeightScreen(),
+              ScheduleScreen.routeName: (ctx) => ScheduleScreen(),
+              NutritionScreen.routeName: (ctx) => NutritionScreen(),
+            },
           ),
         ),
       ),

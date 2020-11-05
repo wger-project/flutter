@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:wger/widgets/app_drawer.dart';
 
 class WeightScreen extends StatelessWidget {
+  static const routeName = '/weight';
+
   Widget getAppBar() {
     return AppBar(
       title: Text('Weight'),
@@ -19,6 +21,10 @@ class WeightScreen extends StatelessWidget {
     return Scaffold(
       appBar: getAppBar(),
       drawer: AppDrawer(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }
