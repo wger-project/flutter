@@ -12,27 +12,14 @@ class ScheduleScreen extends StatefulWidget {
 }
 
 class _ScheduleScreenState extends State<ScheduleScreen> {
-  var _isLoading = false;
-  var _isInit = true;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (_isInit) {
-      setState(() {
-        _isLoading = true;
-      });
-
-      Provider.of<WorkoutPlans>(context).fetchAndSetWorkouts().then((value) {
-        _isLoading = false;
-      });
-    }
-    _isInit = false;
+  Future<void> _refreshWorkoutPlans(BuildContext context) async {
+    await Provider.of<WorkoutPlans>(context, listen: false)
+        .fetchAndSetWorkouts();
   }
 
   Widget getAppBar() {
     return AppBar(
-      title: Text('Workouts'),
+      title: Text('Workout plans'),
       actions: [
         IconButton(
           icon: Icon(Icons.add),
@@ -51,11 +38,18 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         onPressed: () {},
         child: const Icon(Icons.add),
       ),
-      body: _isLoading
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : WorkoutPlansList(),
+      body: FutureBuilder(
+        future: _refreshWorkoutPlans(context),
+        builder: (context, snapshot) => snapshot.connectionState ==
+                ConnectionState.waiting
+            ? Center(child: CircularProgressIndicator())
+            : RefreshIndicator(
+                onRefresh: () => _refreshWorkoutPlans(context),
+                child: Consumer<WorkoutPlans>(
+                  builder: (context, productsData, child) => WorkoutPlansList(),
+                ),
+              ),
+      ),
     );
   }
 }
