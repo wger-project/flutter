@@ -4,9 +4,10 @@ import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/auth_screen.dart';
 import 'package:wger/screens/home_tabs_screen.dart';
 import 'package:wger/screens/nutrition_screen.dart';
-import 'package:wger/screens/schedule_screen.dart';
 import 'package:wger/screens/splash_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
+import 'package:wger/screens/workout_plan_screen.dart';
+import 'package:wger/screens/workout_plans_screen.dart';
 import 'package:wger/theme/theme.dart';
 
 import 'providers/auth.dart';
@@ -51,7 +52,8 @@ class MyApp extends StatelessWidget {
             routes: {
               HomeTabsScreen.routeName: (ctx) => HomeTabsScreen(),
               WeightScreen.routeName: (ctx) => WeightScreen(),
-              ScheduleScreen.routeName: (ctx) => ScheduleScreen(),
+              WorkoutPlansScreen.routeName: (ctx) => WorkoutPlansScreen(),
+              WorkoutPlanScreen.routeName: (ctx) => WorkoutPlanScreen(),
               NutritionScreen.routeName: (ctx) => NutritionScreen(),
             },
           ),

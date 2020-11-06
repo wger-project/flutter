@@ -4,14 +4,14 @@ import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/widgets/app_drawer.dart';
 import 'package:wger/widgets/workout_plans_list.dart';
 
-class ScheduleScreen extends StatefulWidget {
-  static const routeName = '/auth';
+class WorkoutPlansScreen extends StatefulWidget {
+  static const routeName = '/workout-plans-list';
 
   @override
-  _ScheduleScreenState createState() => _ScheduleScreenState();
+  _WorkoutPlansScreenState createState() => _WorkoutPlansScreenState();
 }
 
-class _ScheduleScreenState extends State<ScheduleScreen> {
+class _WorkoutPlansScreenState extends State<WorkoutPlansScreen> {
   Future<void> _refreshWorkoutPlans(BuildContext context) async {
     await Provider.of<WorkoutPlans>(context, listen: false)
         .fetchAndSetWorkouts();

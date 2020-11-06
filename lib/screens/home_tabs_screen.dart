@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wger/screens/nutrition_screen.dart';
-import 'package:wger/screens/schedule_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
+import 'package:wger/screens/workout_plans_screen.dart';
 
 class HomeTabsScreen extends StatefulWidget {
   static const routeName = '/dashboard';
@@ -16,7 +16,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> {
   @override
   initState() {
     _pages = [
-      {'page': ScheduleScreen(), 'title': 'Schedule'},
+      {'page': WorkoutPlansScreen(), 'title': 'Schedule'},
       {'page': NutritionScreen(), 'title': 'Nutrition'},
       {'page': WeightScreen(), 'title': 'Weight'},
     ];
