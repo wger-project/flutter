@@ -20,7 +20,7 @@ class WorkoutPlansList extends StatelessWidget {
           leading: FlutterLogo(size: 56.0),
           title: Text(
             DateFormat('dd.MM.yyyy')
-                .format(workoutPlansData.items[index].creation_date)
+                .format(workoutPlansData.items[index].creationDate)
                 .toString(),
           ),
           subtitle: Text(workoutPlansData.items[index].description),

@@ -1,13 +1,13 @@
 import 'package:flutter/foundation.dart';
 
-class WorkoutPlan with ChangeNotifier {
+class Muscle {
   final int id;
-  final DateTime creationDate;
   final String description;
+  final List<int> daysOfWeek;
 
-  WorkoutPlan({
+  Muscle({
     @required this.id,
     @required this.description,
-    @required this.creationDate,
+    @required this.daysOfWeek,
   });
 }

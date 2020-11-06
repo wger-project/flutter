@@ -15,7 +15,7 @@ class WorkoutPlansDetail extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: Text(
-              'Workout ${DateFormat('dd.MM.yyyy').format(_workoutPlan.creation_date)}',
+              'Workout ${DateFormat('dd.MM.yyyy').format(_workoutPlan.creationDate)}',
               style: Theme.of(context).textTheme.headline2,
             ),
           ),

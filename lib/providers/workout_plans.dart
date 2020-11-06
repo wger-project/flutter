@@ -43,7 +43,7 @@ class WorkoutPlans with ChangeNotifier {
         loadedWorkoutPlans.add(WorkoutPlan(
           id: entry['id'],
           description: entry['comment'],
-          creation_date: DateTime.parse(entry['creation_date']),
+          creationDate: DateTime.parse(entry['creation_date']),
         ));
       }
 
@@ -68,7 +68,7 @@ class WorkoutPlans with ChangeNotifier {
       );
       final newProduct = WorkoutPlan(
         id: json.decode(response.body)['name'],
-        creation_date: json.decode(response.body)['creation_date'],
+        creationDate: json.decode(response.body)['creation_date'],
         description: product.description,
       );
       _entries.add(newProduct);
