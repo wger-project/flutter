@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/auth_screen.dart';
 import 'package:wger/screens/home_tabs_screen.dart';
@@ -31,6 +32,13 @@ class MyApp extends StatelessWidget {
             ChangeNotifierProxyProvider<Auth, WorkoutPlans>(
               create: null, // TODO: Create is required but it can be null??
               update: (context, value, previous) => WorkoutPlans(
+                auth,
+                previous == null ? [] : previous.items,
+              ),
+            ),
+            ChangeNotifierProxyProvider<Auth, Exercises>(
+              create: null, // TODO: Create is required but it can be null??
+              update: (context, value, previous) => Exercises(
                 auth,
                 previous == null ? [] : previous.items,
               ),

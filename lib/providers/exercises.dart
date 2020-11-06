@@ -2,9 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/providers/auth.dart';
-
-import 'exercise.dart';
 
 class Exercises with ChangeNotifier {
   static const exercisesUrl = '/api/v2/exercise/?language=1&limit=1000';
@@ -24,7 +23,7 @@ class Exercises with ChangeNotifier {
   }
 
   Exercise findById(int id) {
-    return _entries.firstWhere((workoutPlan) => workoutPlan.id == id);
+    return _entries.firstWhere((exercise) => exercise.id == id);
   }
 
   Future<void> fetchAndSetExercises() async {
@@ -47,9 +46,9 @@ class Exercises with ChangeNotifier {
           name: entry['name'],
           description: entry['description'],
           category: entry['category'],
-          creation_date: DateTime.parse(entry['creation_date']),
+          creationDate: DateTime.parse(entry['creation_date']),
           muscles: entry['muscles'],
-          muscles_secondary: entry['muscles_secondary'],
+          musclesSecondary: entry['muscles_secondary'],
           equipment: entry['equipment'],
         ));
       }
