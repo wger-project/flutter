@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/providers/workout_plan.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/widgets/app_drawer.dart';
-import 'package:wger/widgets/workout_plans_list.dart';
+import 'package:wger/widgets/workouts/workout_plans_list.dart';
 
 class WorkoutPlansScreen extends StatefulWidget {
   static const routeName = '/workout-plans-list';
@@ -12,7 +13,7 @@ class WorkoutPlansScreen extends StatefulWidget {
 }
 
 class _WorkoutPlansScreenState extends State<WorkoutPlansScreen> {
-  Future<void> _refreshWorkoutPlans(BuildContext context) async {
+  Future<WorkoutPlan> _refreshWorkoutPlans(BuildContext context) async {
     await Provider.of<WorkoutPlans>(context, listen: false)
         .fetchAndSetWorkouts();
   }

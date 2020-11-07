@@ -1,13 +1,13 @@
 import 'package:flutter/foundation.dart';
 
-class Muscle {
+class Day {
   final int id;
   final String description;
-  final List<int> daysOfWeek;
+  List<int> daysOfWeek = [];
 
-  Muscle({
+  Day({
     @required this.id,
     @required this.description,
-    @required this.daysOfWeek,
+    this.daysOfWeek,
   });
 }

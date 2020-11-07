@@ -1,13 +1,15 @@
-import 'package:flutter/foundation.dart';
+import 'package:wger/models/workouts/day.dart';
 
-class WorkoutPlan with ChangeNotifier {
+class WorkoutPlan {
   final int id;
-  final DateTime creationDate;
-  final String description;
+  DateTime creationDate;
+  String description;
+  List<Day> days = [];
 
   WorkoutPlan({
-    @required this.id,
-    @required this.description,
-    @required this.creationDate,
+    this.id,
+    this.creationDate,
+    this.description,
+    this.days,
   });
 }

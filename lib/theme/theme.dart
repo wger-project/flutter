@@ -15,6 +15,6 @@ final ThemeData wgerTheme = ThemeData(
   textTheme: TextTheme(
     //headline1: TextStyle(fontSize: 30.0, fontFamily: "OpenSansBold"),
     headline2: TextStyle(fontSize: 30.0, fontFamily: "OpenSansBold"),
-    headline6: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
+    //headline6: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
   ),
 );
