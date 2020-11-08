@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:wger/models/workouts/day.dart';
 import 'package:wger/providers/workout_plan.dart';
+import 'package:wger/widgets/workouts/day.dart';
 
 class WorkoutPlansDetail extends StatelessWidget {
   WorkoutPlan _workoutPlan;
@@ -29,14 +31,12 @@ class WorkoutPlansDetail extends StatelessWidget {
               style: Theme.of(context).textTheme.headline5,
             ),
           _workoutPlan.days != null
-              ? Container(
+              ? Expanded(
                   child: ListView.builder(
                     itemCount: _workoutPlan.days.length,
                     itemBuilder: (context, index) {
-                      print(index);
-                      return Text("Day");
-                      //Day workoutDay = _workoutPlan.days[index];
-                      //return WorkoutDayWidget(workoutDay);
+                      Day workoutDay = _workoutPlan.days[index];
+                      return WorkoutDayWidget(workoutDay);
                     },
                   ),
                 )

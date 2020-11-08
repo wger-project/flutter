@@ -8,17 +8,13 @@ class WorkoutDayWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('xxxxxxxxxxxxxxxxx');
-    print(_day);
-    print(_day.description);
-    print('xxxxxxxxxxxxxxxxx');
-    Widget a = SingleChildScrollView(
+    return SingleChildScrollView(
       child: Column(
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: Text(
-              'Day ${_day.id} - ${_day.description}',
+              'Day #${_day.id} - ${_day.description}',
               style: Theme.of(context).textTheme.headline6,
             ),
           ),
@@ -26,7 +22,5 @@ class WorkoutDayWidget extends StatelessWidget {
         ],
       ),
     );
-
-    return Text(_day.description);
   }
 }
