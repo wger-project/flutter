@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:wger/models/workouts/day.dart';
+import 'package:wger/models/workouts/set.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/workout_plan.dart';
 
@@ -69,9 +70,20 @@ class WorkoutPlans with ChangeNotifier {
 
       List<Day> days = [];
       for (final entry in extractedData['day_list']) {
+        List<Set> sets = [];
+        for (final set in entry['set_list']) {
+          sets.add(Set(
+            id: set['obj']['id'],
+            sets: set['obj']['sets'],
+            order: set['obj']['order'],
+          ));
+        }
+
         days.add(Day(
           id: entry['obj']['id'],
           description: entry['obj']['description'],
+          sets: sets,
+          //daysOfWeek: entry['obj']['day'],
         ));
       }
       workout.days = days;
@@ -108,7 +120,7 @@ class WorkoutPlans with ChangeNotifier {
     }
   }
 
-  Future<void> updateProduct(String id, WorkoutPlan newProduct) async {
+  Future<void> updateProduct(int id, WorkoutPlan newProduct) async {
     final prodIndex = _entries.indexWhere((element) => element.id == id);
     if (prodIndex >= 0) {
       final url = 'https://flutter-shop-a2335.firebaseio.com/products/$id.json?auth=${_auth.token}';
@@ -121,7 +133,7 @@ class WorkoutPlans with ChangeNotifier {
     }
   }
 
-  Future<void> deleteProduct(String id) async {
+  Future<void> deleteProduct(int id) async {
     final url = 'https://flutter-shop-a2335.firebaseio.com/products/$id.json?auth=${_auth.token}';
     final existingProductIndex = _entries.indexWhere((element) => element.id == id);
     var existingProduct = _entries[existingProductIndex];

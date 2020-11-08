@@ -24,7 +24,7 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
       title: Text('Workout plan'),
       actions: [
         IconButton(
-          icon: Icon(Icons.add),
+          icon: Icon(Icons.bar_chart),
           onPressed: () {},
         ),
       ],

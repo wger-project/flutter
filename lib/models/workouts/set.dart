@@ -4,11 +4,13 @@ import 'package:wger/models/exercises/exercise.dart';
 class Set {
   final int id;
   final int sets;
-  final List<Exercise> exercises;
+  final int order;
+  List<Exercise> exercises = [];
 
   Set({
     @required this.id,
     @required this.sets,
-    @required this.exercises,
+    @required this.order,
+    this.exercises,
   });
 }
