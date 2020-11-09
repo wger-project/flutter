@@ -1,5 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:wger/models/workouts/day.dart';
+import 'package:wger/models/workouts/setting.dart';
+
+class SettingWidget extends StatelessWidget {
+  Setting setting;
+
+  SettingWidget({this.setting});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: FlutterLogo(size: 56.0),
+      title: Text(setting.exercise.name),
+      subtitle: Text(setting.repsText),
+    );
+  }
+}
 
 class WorkoutDayWidget extends StatelessWidget {
   Day _day;
@@ -8,28 +24,39 @@ class WorkoutDayWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10),
-        ),
-        Text(
-          'Day #${_day.id} - ${_day.description}',
-          style: Theme.of(context).textTheme.headline6,
-        ),
-        Divider(),
-        Column(
-          children: _day.sets
+    return Card(
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+          ),
+          Text(
+            _day.description,
+            style: Theme.of(context).textTheme.headline6,
+          ),
+          Text(_day.getAllDays),
+          Divider(),
+          ..._day.sets
               .map(
-                (e) => ListTile(
-                  leading: Text('#${e.order}'),
-                  title: Text('Exercise name here'),
-                  subtitle: Text('Set info here'),
+                (set) => Row(
+                  crossAxisAlignment: CrossAxisAlignment.baseline,
+                  children: [
+                    Text('#${set.order}'),
+                    Expanded(
+                      child: Column(
+                        children: set.settings
+                            .map(
+                              (setting) => SettingWidget(setting: setting),
+                            )
+                            .toList(),
+                      ),
+                    )
+                  ],
                 ),
               )
               .toList(),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

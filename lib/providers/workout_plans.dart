@@ -2,8 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/set.dart';
+import 'package:wger/models/workouts/setting.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/workout_plan.dart';
 
@@ -63,7 +65,7 @@ class WorkoutPlans with ChangeNotifier {
       url,
       headers: <String, String>{'Authorization': 'Token ${_auth.token}'},
     );
-    final extractedData = json.decode(response.body) as Map<String, dynamic>;
+    final extractedData = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
 
     try {
       WorkoutPlan workout = _entries.firstWhere((element) => element.id == workoutId);
@@ -71,18 +73,58 @@ class WorkoutPlans with ChangeNotifier {
       List<Day> days = [];
       for (final entry in extractedData['day_list']) {
         List<Set> sets = [];
+
         for (final set in entry['set_list']) {
+          List<Setting> settings = [];
+          for (final setting in set['exercise_list']) {
+            // TODO: why are there exercises without a creation_date????
+            // Update the database
+            Exercise exercise = Exercise(
+              id: setting['obj']['id'],
+              uuid: setting['obj']['uuid'],
+              creationDate: setting['obj']['creation_date'] != null
+                  ? DateTime.parse(setting['obj']['creation_date'])
+                  : null,
+              name: setting['obj']['name'],
+              description: setting['obj']['description'],
+            );
+
+            // Settings
+            settings.add(
+              Setting(
+                id: setting['setting_obj_list'][0]['id'],
+                comment: setting['setting_obj_list'][0]['comment'],
+                reps: setting['setting_obj_list'][0]['reps'],
+                //weight: setting['setting_obj_list'][0]['weight'] == null
+                //    ? ''
+                //  : setting['setting_obj_list'][0]['weight'],
+                repsText: setting['setting_text'],
+                exercise: exercise,
+              ),
+            );
+          }
+
+          // Sets
           sets.add(Set(
             id: set['obj']['id'],
             sets: set['obj']['sets'],
             order: set['obj']['order'],
+            settings: settings,
           ));
         }
 
+        // Days
+        print(entry['obj']['day']);
+        if (entry['obj']['day'] is List) {
+          print("is list!");
+        } else {
+          print("is NOT list!");
+        }
         days.add(Day(
           id: entry['obj']['id'],
           description: entry['obj']['description'],
           sets: sets,
+          daysOfWeek: [1, 3],
           //daysOfWeek: entry['obj']['day'],
         ));
       }

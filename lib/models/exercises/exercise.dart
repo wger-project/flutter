@@ -12,11 +12,11 @@ class Exercise {
   final String name;
   final String description;
   final cat.Category category;
-  final List<Muscle> muscles;
-  final List<Muscle> musclesSecondary;
-  final List<Equipment> equipment;
-  final List<img.Image> images;
-  final List<Comment> tips;
+  List<Muscle> muscles = [];
+  List<Muscle> musclesSecondary = [];
+  List<Equipment> equipment = [];
+  List<img.Image> images = [];
+  List<Comment> tips = [];
 
   Exercise({
     @required this.id,
@@ -24,10 +24,10 @@ class Exercise {
     @required this.creationDate,
     @required this.name,
     @required this.description,
-    @required this.category,
-    @required this.muscles,
+    this.category,
+    this.muscles,
     this.musclesSecondary,
-    @required this.equipment,
+    this.equipment,
     this.images,
     this.tips,
   });

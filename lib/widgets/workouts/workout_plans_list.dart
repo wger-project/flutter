@@ -17,11 +17,9 @@ class WorkoutPlansList extends StatelessWidget {
             WorkoutPlanScreen.routeName,
             arguments: workoutPlansData.items[index],
           ),
-          leading: FlutterLogo(size: 56.0),
+          leading: Icon(Icons.edit),
           title: Text(
-            DateFormat('dd.MM.yyyy')
-                .format(workoutPlansData.items[index].creationDate)
-                .toString(),
+            DateFormat('dd.MM.yyyy').format(workoutPlansData.items[index].creationDate).toString(),
           ),
           subtitle: Text(workoutPlansData.items[index].description),
         ),

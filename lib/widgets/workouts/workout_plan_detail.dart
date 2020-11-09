@@ -10,25 +10,23 @@ class WorkoutPlansDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //print('yyyyyyyyyyyyyyyyyy');
-    //print(_workoutPlan.description);
-    //print(_workoutPlan.days);
-    //print('yyyyyyyyyyyyyyyyyy');
     return Container(
       child: Column(
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: Text(
-              'Workout ${DateFormat('dd.MM.yyyy').format(_workoutPlan.creationDate)}',
+              DateFormat('dd.MM.yyyy').format(_workoutPlan.creationDate).toString(),
               style: Theme.of(context).textTheme.headline6,
             ),
           ),
-          Divider(),
           if (_workoutPlan.description != null)
-            Text(
-              _workoutPlan.description,
-              style: Theme.of(context).textTheme.headline5,
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: Text(
+                _workoutPlan.description,
+                style: Theme.of(context).textTheme.headline5,
+              ),
             ),
           _workoutPlan.days != null
               ? Expanded(
