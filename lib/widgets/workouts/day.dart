@@ -10,7 +10,12 @@ class SettingWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: FlutterLogo(size: 56.0),
+      leading: setting.exercise.images.length > 0
+          ? Image.network(
+              setting.exercise.getMainImage.url,
+              fit: BoxFit.cover,
+            )
+          : FlutterLogo(size: 56.0),
       title: Text(setting.exercise.name),
       subtitle: Text(setting.repsText),
     );

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/exercises/image.dart' as img;
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/set.dart';
 import 'package:wger/models/workouts/setting.dart';
@@ -60,7 +61,8 @@ class WorkoutPlans with ChangeNotifier {
 
   Future<WorkoutPlan> fetchAndSetFullWorkout(int workoutId) async {
     String url = _auth.serverUrl + '/api/v2/workout/$workoutId/canonical_representation/';
-
+    print(url);
+    print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
     final response = await http.get(
       url,
       headers: <String, String>{'Authorization': 'Token ${_auth.token}'},
@@ -76,6 +78,16 @@ class WorkoutPlans with ChangeNotifier {
 
         for (final set in entry['set_list']) {
           List<Setting> settings = [];
+          List<img.Image> images = [];
+          for (final image in set['exercise_image_list']) {
+            images.add(
+              img.Image(
+                url: _auth.serverUrl + image["image"],
+                isMain: image['is_main'],
+              ),
+            );
+            //print(image);
+          }
           for (final setting in set['exercise_list']) {
             // TODO: why are there exercises without a creation_date????
             // Update the database
@@ -87,6 +99,7 @@ class WorkoutPlans with ChangeNotifier {
                   : null,
               name: setting['obj']['name'],
               description: setting['obj']['description'],
+              images: images,
             );
 
             // Settings
@@ -114,12 +127,6 @@ class WorkoutPlans with ChangeNotifier {
         }
 
         // Days
-        print(entry['obj']['day']);
-        if (entry['obj']['day'] is List) {
-          print("is list!");
-        } else {
-          print("is NOT list!");
-        }
         days.add(Day(
           id: entry['obj']['id'],
           description: entry['obj']['description'],

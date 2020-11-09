@@ -8,6 +8,13 @@ class Day {
   List<int> daysOfWeek = [];
   List<Set> sets = [];
 
+  Day({
+    @required this.id,
+    @required this.description,
+    this.daysOfWeek,
+    this.sets,
+  });
+
   String getDayName(int weekDay) {
     Map<int, String> weekdays = {
       1: 'Monday',
@@ -25,11 +32,4 @@ class Day {
   String get getAllDays {
     return daysOfWeek.map((e) => getDayName(e)).join(', ');
   }
-
-  Day({
-    @required this.id,
-    @required this.description,
-    this.daysOfWeek,
-    this.sets,
-  });
 }

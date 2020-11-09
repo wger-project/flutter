@@ -40,7 +40,7 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
       drawer: AppDrawer(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.play_arrow),
       ),
       body: FutureBuilder<WorkoutPlan>(
         future: _loadWorkoutPlanDetail(context, workoutPlan.id),

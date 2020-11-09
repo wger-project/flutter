@@ -31,4 +31,8 @@ class Exercise {
     this.images,
     this.tips,
   });
+
+  img.Image get getMainImage {
+    return images.firstWhere((image) => image.isMain);
+  }
 }
