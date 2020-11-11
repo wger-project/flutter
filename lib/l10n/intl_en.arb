@@ -1,0 +1,15 @@
+{
+  "@@last_modified": "2020-11-11T15:04:05.523531",
+  "labelWorkoutPlans": "Workout plans",
+  "@labelWorkoutPlans": {
+    "description": "Title for screen workout plans",
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelWorkoutPlan": "Workout plan",
+  "@labelWorkoutPlan": {
+    "description": "Title for screen workout plan",
+    "type": "text",
+    "placeholders": {}
+  }
+}

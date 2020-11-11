@@ -23,17 +23,22 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
   provider: ^4.3.2+1
   intl: ^0.16.1
   http: ^0.12.2
-  shared_preferences: ^0.5.10
-  flutter_calendar_carousel: ^1.4.12
+  shared_preferences: ^0.5.12+4
+  flutter_calendar_carousel: ^1.5.1
   cupertino_icons: ^1.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_launcher_icons: ^0.8.1
+  intl_translation: ^0.17.10+1
+
 
 
 flutter_icons:

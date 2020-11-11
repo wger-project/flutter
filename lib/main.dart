@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/locale/locales.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/auth_screen.dart';
@@ -52,8 +54,7 @@ class MyApp extends StatelessWidget {
                 : FutureBuilder(
                     future: auth.tryAutoLogin(),
                     builder: (ctx, authResultSnapshot) =>
-                        authResultSnapshot.connectionState ==
-                                ConnectionState.waiting
+                        authResultSnapshot.connectionState == ConnectionState.waiting
                             ? SplashScreen()
                             : AuthScreen(),
                   ),
@@ -64,6 +65,17 @@ class MyApp extends StatelessWidget {
               WorkoutPlanScreen.routeName: (ctx) => WorkoutPlanScreen(),
               NutritionScreen.routeName: (ctx) => NutritionScreen(),
             },
+            localizationsDelegates: [
+              // ... app-specific localization delegate[s] here
+              AppLocalizationsDelegate(),
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: [
+              const Locale('en', ''), // English
+              const Locale('de', ''), // German
+            ],
           ),
         ),
       ),

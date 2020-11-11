@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/locale/locales.dart';
 import 'package:wger/providers/workout_plan.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/widgets/app_drawer.dart';
@@ -21,7 +22,7 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
 
   Widget getAppBar() {
     return AppBar(
-      title: Text('Workout plan'),
+      title: Text(AppLocalizations.of(context).labelWorkoutPlan),
       actions: [
         IconButton(
           icon: Icon(Icons.bar_chart),

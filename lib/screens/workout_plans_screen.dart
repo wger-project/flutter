@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/locale/locales.dart';
 import 'package:wger/providers/workout_plan.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/widgets/app_drawer.dart';
@@ -14,13 +15,12 @@ class WorkoutPlansScreen extends StatefulWidget {
 
 class _WorkoutPlansScreenState extends State<WorkoutPlansScreen> {
   Future<WorkoutPlan> _refreshWorkoutPlans(BuildContext context) async {
-    await Provider.of<WorkoutPlans>(context, listen: false)
-        .fetchAndSetWorkouts();
+    await Provider.of<WorkoutPlans>(context, listen: false).fetchAndSetWorkouts();
   }
 
   Widget getAppBar() {
     return AppBar(
-      title: Text('Workout plans'),
+      title: Text(AppLocalizations.of(context).labelWorkoutPlans),
       actions: [
         IconButton(
           icon: Icon(Icons.add),
@@ -41,8 +41,7 @@ class _WorkoutPlansScreenState extends State<WorkoutPlansScreen> {
       ),
       body: FutureBuilder(
         future: _refreshWorkoutPlans(context),
-        builder: (context, snapshot) => snapshot.connectionState ==
-                ConnectionState.waiting
+        builder: (context, snapshot) => snapshot.connectionState == ConnectionState.waiting
             ? Center(child: CircularProgressIndicator())
             : RefreshIndicator(
                 onRefresh: () => _refreshWorkoutPlans(context),
