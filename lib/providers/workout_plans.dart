@@ -61,8 +61,6 @@ class WorkoutPlans with ChangeNotifier {
 
   Future<WorkoutPlan> fetchAndSetFullWorkout(int workoutId) async {
     String url = _auth.serverUrl + '/api/v2/workout/$workoutId/canonical_representation/';
-    print(url);
-    print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
     final response = await http.get(
       url,
       headers: <String, String>{'Authorization': 'Token ${_auth.token}'},
@@ -78,40 +76,42 @@ class WorkoutPlans with ChangeNotifier {
 
         for (final set in entry['set_list']) {
           List<Setting> settings = [];
-          List<img.Image> images = [];
-          for (final image in set['exercise_image_list']) {
-            images.add(
-              img.Image(
-                url: _auth.serverUrl + image["image"],
-                isMain: image['is_main'],
-              ),
-            );
-            //print(image);
-          }
-          for (final setting in set['exercise_list']) {
+
+          for (final exerciseData in set['exercise_list']) {
+            List<img.Image> images = [];
+
+            for (final image in exerciseData['image_list']) {
+              images.add(
+                img.Image(
+                  url: _auth.serverUrl + image["image"],
+                  isMain: image['is_main'],
+                ),
+              );
+            }
+
             // TODO: why are there exercises without a creation_date????
             // Update the database
             Exercise exercise = Exercise(
-              id: setting['obj']['id'],
-              uuid: setting['obj']['uuid'],
-              creationDate: setting['obj']['creation_date'] != null
-                  ? DateTime.parse(setting['obj']['creation_date'])
+              id: exerciseData['obj']['id'],
+              uuid: exerciseData['obj']['uuid'],
+              creationDate: exerciseData['obj']['creation_date'] != null
+                  ? DateTime.parse(exerciseData['obj']['creation_date'])
                   : null,
-              name: setting['obj']['name'],
-              description: setting['obj']['description'],
+              name: exerciseData['obj']['name'],
+              description: exerciseData['obj']['description'],
               images: images,
             );
 
             // Settings
             settings.add(
               Setting(
-                id: setting['setting_obj_list'][0]['id'],
-                comment: setting['setting_obj_list'][0]['comment'],
-                reps: setting['setting_obj_list'][0]['reps'],
+                id: exerciseData['setting_obj_list'][0]['id'],
+                comment: exerciseData['setting_obj_list'][0]['comment'],
+                reps: exerciseData['setting_obj_list'][0]['reps'],
                 //weight: setting['setting_obj_list'][0]['weight'] == null
                 //    ? ''
                 //  : setting['setting_obj_list'][0]['weight'],
-                repsText: setting['setting_text'],
+                repsText: exerciseData['setting_text'],
                 exercise: exercise,
               ),
             );
