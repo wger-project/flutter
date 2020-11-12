@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:wger/models/workouts/day.dart';
-import 'package:wger/providers/workout_plan.dart';
+import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/widgets/workouts/day.dart';
 
 class WorkoutPlansDetail extends StatelessWidget {

@@ -7,8 +7,8 @@ import 'package:wger/models/exercises/image.dart' as img;
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/set.dart';
 import 'package:wger/models/workouts/setting.dart';
+import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/auth.dart';
-import 'package:wger/providers/workout_plan.dart';
 
 class WorkoutPlans with ChangeNotifier {
   static const workoutPlansUrl = '/api/v2/workout/';

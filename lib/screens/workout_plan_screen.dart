@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/locale/locales.dart';
-import 'package:wger/providers/workout_plan.dart';
+import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/widgets/app_drawer.dart';
 import 'package:wger/widgets/workouts/workout_plan_detail.dart';
