@@ -5,6 +5,7 @@ import 'package:wger/locale/locales.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/auth_screen.dart';
+import 'package:wger/screens/dashboard.dart';
 import 'package:wger/screens/home_tabs_screen.dart';
 import 'package:wger/screens/nutrition_screen.dart';
 import 'package:wger/screens/splash_screen.dart';
@@ -47,10 +48,10 @@ class MyApp extends StatelessWidget {
             )
           ],
           child: MaterialApp(
-            title: 'Flutter Demo',
+            title: 'wger',
             theme: wgerTheme,
             home: auth.isAuth
-                ? HomeTabsScreen()
+                ? DashboardScreen()
                 : FutureBuilder(
                     future: auth.tryAutoLogin(),
                     builder: (ctx, authResultSnapshot) =>
@@ -59,6 +60,7 @@ class MyApp extends StatelessWidget {
                             : AuthScreen(),
                   ),
             routes: {
+              DashboardScreen.routeName: (ctx) => DashboardScreen(),
               HomeTabsScreen.routeName: (ctx) => HomeTabsScreen(),
               WeightScreen.routeName: (ctx) => WeightScreen(),
               WorkoutPlansScreen.routeName: (ctx) => WorkoutPlansScreen(),

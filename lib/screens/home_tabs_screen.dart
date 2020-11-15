@@ -4,7 +4,7 @@ import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/screens/workout_plans_screen.dart';
 
 class HomeTabsScreen extends StatefulWidget {
-  static const routeName = '/dashboard';
+  static const routeName = '/dashboard2';
 
   @override
   _HomeTabsScreenState createState() => _HomeTabsScreenState();
@@ -48,7 +48,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> {
           ),
           BottomNavigationBarItem(
             backgroundColor: Theme.of(context).primaryColor,
-            icon: Icon(Icons.fastfood),
+            icon: Icon(Icons.restaurant),
             label: 'Nutrition',
           ),
           BottomNavigationBarItem(

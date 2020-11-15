@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:wger/locale/locales.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/workout_plans.dart';
-import 'package:wger/widgets/app_drawer.dart';
 import 'package:wger/widgets/workouts/workout_plan_detail.dart';
 
 class WorkoutPlanScreen extends StatefulWidget {
@@ -38,7 +37,7 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
 
     return Scaffold(
       appBar: getAppBar(),
-      drawer: AppDrawer(),
+      //drawer: AppDrawer(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
         child: const Icon(Icons.play_arrow),
