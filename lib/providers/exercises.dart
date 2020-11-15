@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/models/exercises/category.dart';
+import 'package:wger/models/exercises/comment.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/muscle.dart';
@@ -25,6 +27,7 @@ class Exercises with ChangeNotifier {
   List<Category> _categories = [];
   List<Muscle> _muscles = [];
   List<Equipment> _equipment = [];
+
   Auth _auth;
 
   Exercises(Auth auth, List<Exercise> entries) {
@@ -43,6 +46,22 @@ class Exercises with ChangeNotifier {
 
   Exercise findById(int id) {
     return _entries.firstWhere((exercise) => exercise.id == id);
+  }
+
+  Future<List<Comment>> fetchAndSetComments(int exerciseId) async {
+    List<Comment> _comments = [];
+
+    final response = await http.get(_urlExercisesComment + '?exercise=$exerciseId');
+    final comments = json.decode(response.body) as Map<String, dynamic>;
+    try {
+      for (final comment in comments['results']) {
+        _comments.add(Comment.fromJson(comment));
+      }
+    } catch (error) {
+      throw (error);
+    }
+
+    return _comments;
   }
 
   Future<void> fetchAndSetCategories() async {
@@ -82,29 +101,36 @@ class Exercises with ChangeNotifier {
   }
 
   Future<void> fetchAndSetExercises() async {
-    // TODO: Load exercises from cache
+    final List<Exercise> loadedExercises = [];
+
+    // Load exercises from cache, if available
     final prefs = await SharedPreferences.getInstance();
     if (prefs.containsKey('exerciseData')) {
+      //if (false) {
       final exerciseData = json.decode(prefs.getString('exerciseData'));
+      if (DateTime.parse(exerciseData['expiresIn']).isAfter(DateTime.now())) {
+        for (final exercise in exerciseData['exercises']) {
+          loadedExercises.add(Exercise.fromJson(exercise));
+        }
+        _entries = loadedExercises;
+        print('Read from cache!');
+        return;
+      }
     }
 
+    // Load categories, muscles and equipments...
     await fetchAndSetCategories();
     await fetchAndSetMuscles();
     await fetchAndSetEquipment();
 
-    final response = await http.get(
-      _urlExercises,
-      headers: <String, String>{'Authorization': 'Token ${_auth.token}'},
-    );
+    final response = await http.get(_urlExercises);
     final extractedData = json.decode(response.body) as Map<String, dynamic>;
 
-    final List<Exercise> loadedExercises = [];
-    if (loadedExercises == null) {
-      return;
-    }
-
+    // ... and now put all together
     try {
       for (final entry in extractedData['results']) {
+        final List<Comment> comments = await fetchAndSetComments(entry['id']);
+
         entry['category'] = _categories.firstWhere((cat) => cat.id == entry['category']).toJson();
         entry['muscles'] = entry['muscles']
             .map((e) => _muscles.firstWhere((muscle) => muscle.id == e).toJson())
@@ -115,18 +141,18 @@ class Exercises with ChangeNotifier {
         entry['equipment'] = entry['equipment']
             .map((e) => _equipment.firstWhere((equipment) => equipment.id == e).toJson())
             .toList();
+        entry['comments'] = comments.map((comment) => comment.toJson()).toList();
         loadedExercises.add(Exercise.fromJson(entry));
       }
 
+      // Save the result to the cache
       _entries = loadedExercises;
-
       final exerciseData = {
         'date': DateTime.now().toIso8601String(),
         'expiresIn': DateTime.now().add(Duration(days: 7)).toIso8601String(),
         'exercises': _entries.map((e) => e.toJson()).toList()
       };
       prefs.setString('exerciseData', json.encode(exerciseData));
-
       notifyListeners();
     } catch (error) {
       throw (error);

@@ -24,6 +24,107 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
+  Widget getWorkoutCard() {
+    return Card(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          ListTile(
+            leading: Icon(Icons.fitness_center),
+            title: Text('Something to do with workouts'),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Monday'),
+                Text('Tuesday'),
+                Text('Wednesday'),
+                Text('Thursday'),
+                Text('Friday'),
+                Text('Saturday'),
+                Text('Sunday'),
+              ],
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              TextButton(
+                child: const Text('Action one'),
+                onPressed: () {},
+              ),
+              const SizedBox(width: 8),
+              TextButton(
+                child: const Text('Action two'),
+                onPressed: () {},
+              ),
+              const SizedBox(width: 8),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget getNutritionCard() {
+    return Card(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          ListTile(
+            leading: Icon(Icons.fitness_center),
+            title: Text('Nutrition'),
+            subtitle: Text('Nutrition overview, graphs, etc'),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              TextButton(
+                child: const Text('Action one'),
+                onPressed: () {},
+              ),
+              const SizedBox(width: 8),
+              TextButton(
+                child: const Text('Action two'),
+                onPressed: () {},
+              ),
+              const SizedBox(width: 8),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget getWeightCard() {
+    return Card(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          ListTile(
+            leading: Icon(Icons.restaurant),
+            title: Text('Weight'),
+            subtitle: Text('Weight overview, graphs, etc'),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              TextButton(
+                child: const Text('Action one'),
+                onPressed: () {},
+              ),
+              const SizedBox(width: 8),
+              TextButton(
+                child: const Text('Action two'),
+                onPressed: () {},
+              ),
+              const SizedBox(width: 8),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,21 +132,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
       drawer: AppDrawer(),
       body: Column(
         children: [
-          Center(
-            child: Text("dashboard content here"),
-          ),
-          FlatButton(
-            child: Text('reload'),
-            onPressed: () {
-              Provider.of<Exercises>(context, listen: false).fetchAndSetExercises();
-            },
-          ),
-          FutureBuilder(
-            future: Provider.of<Exercises>(context, listen: false).fetchAndSetExercises(),
-            builder: (ctx, authResultSnapshot) =>
-                authResultSnapshot.connectionState == ConnectionState.waiting
-                    ? Center(child: CircularProgressIndicator())
-                    : Text("all exercises loaded"),
+          getWorkoutCard(),
+          getNutritionCard(),
+          getWeightCard(),
+          Expanded(
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: FutureBuilder(
+                future: Provider.of<Exercises>(context, listen: false).fetchAndSetExercises(),
+                builder: (ctx, authResultSnapshot) =>
+                    authResultSnapshot.connectionState == ConnectionState.waiting
+                        ? Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text('Initialising exercise database...'),
+                              LinearProgressIndicator(),
+                            ],
+                          )
+                        : Text("all exercises loaded"),
+              ),
+            ),
           ),
         ],
       ),
