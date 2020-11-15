@@ -32,12 +32,18 @@ dependencies:
   shared_preferences: ^0.5.12+4
   flutter_calendar_carousel: ^1.5.1
   cupertino_icons: ^1.0.0
+  json_serializable: ^3.5.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_launcher_icons: ^0.8.1
   intl_translation: ^0.17.10+1
+  json_serializable: ^3.5.0
+
+  # Note that there are incompatibilities when using a higher version. Both build
+  # runner and intl_translation depend on different versions of analyzer
+  build_runner: ^1.10.2
 
 
 

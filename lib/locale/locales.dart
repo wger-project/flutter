@@ -32,6 +32,14 @@ class AppLocalizations {
       desc: 'Title for screen workout plan',
     );
   }
+
+  String get labelDashboard {
+    return Intl.message(
+      'Dashboard',
+      name: 'labelDashboard',
+      desc: 'Title for screen dashboard',
+    );
+  }
 }
 
 class AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

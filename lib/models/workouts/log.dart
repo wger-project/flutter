@@ -2,8 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
-
-import 'file:///C:/Users/Roland%20Geider/GitHub/flutter_wger/lib/models/workouts/workout_plan.dart';
+import 'package:wger/models/workouts/workout_plan.dart';
 
 class Log {
   final int id;

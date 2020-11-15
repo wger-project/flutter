@@ -16,7 +16,6 @@ class Auth with ChangeNotifier {
   // Timer _authTimer;
 
   bool get isAuth {
-    // return true;
     return token != null;
   }
 
@@ -37,8 +36,7 @@ class Auth with ChangeNotifier {
   //   return _userId;
   // }
 
-  Future<void> _authenticate(
-      String username, String password, String serverUrl) async {
+  Future<void> _authenticate(String username, String password, String serverUrl) async {
     // The android emulator uses
     var url = '$serverUrl/api/v2/login/';
     //print(username);
@@ -91,8 +89,7 @@ class Auth with ChangeNotifier {
     return _authenticate(email, password, 'signUp');
   }
 
-  Future<void> signIn(
-      String username, String password, String serverUrl) async {
+  Future<void> signIn(String username, String password, String serverUrl) async {
     return _authenticate(username, password, serverUrl);
   }
 
@@ -102,8 +99,7 @@ class Auth with ChangeNotifier {
       return false;
     }
 
-    final extractedUserData =
-        json.decode(prefs.getString('userData')) as Map<String, Object>;
+    final extractedUserData = json.decode(prefs.getString('userData')) as Map<String, Object>;
     // final expiryDate = DateTime.parse(extractedUserData['expiryDate']);
 
     // if (expiryDate.isBefore(DateTime.now())) {
