@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -8,18 +9,21 @@ import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/comment.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/exercises/image.dart' as img;
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/providers/auth.dart';
 
 class Exercises with ChangeNotifier {
   static const exercisesUrl = '/api/v2/exercise/?language=1&limit=1000';
   static const exerciseCommentUrl = '/api/v2/exercisecomment/';
+  static const exerciseImagesUrl = '/api/v2/exerciseimage/';
   static const categoriesUrl = '/api/v2/exercisecategory/';
   static const musclesUrl = '/api/v2/muscle/';
   static const equipmentUrl = '/api/v2/equipment/';
 
   String _urlExercises;
   String _urlExercisesComment;
+  String _urlExercisesImage;
   String _urlCategories;
   String _urlMuscles;
   String _urlEquipment;
@@ -35,6 +39,7 @@ class Exercises with ChangeNotifier {
     this._entries = entries;
     this._urlExercises = auth.serverUrl + exercisesUrl;
     this._urlExercisesComment = auth.serverUrl + exerciseCommentUrl;
+    this._urlExercisesImage = auth.serverUrl + exerciseImagesUrl;
     this._urlCategories = auth.serverUrl + categoriesUrl;
     this._urlMuscles = auth.serverUrl + musclesUrl;
     this._urlEquipment = auth.serverUrl + equipmentUrl;
@@ -56,6 +61,22 @@ class Exercises with ChangeNotifier {
     try {
       for (final comment in comments['results']) {
         _comments.add(Comment.fromJson(comment));
+      }
+    } catch (error) {
+      throw (error);
+    }
+
+    return _comments;
+  }
+
+  Future<List<img.Image>> fetchAndSetImages(int exerciseId) async {
+    List<img.Image> _comments = [];
+
+    final response = await http.get(_urlExercisesImage + '?exercise=$exerciseId');
+    final images = json.decode(response.body) as Map<String, dynamic>;
+    try {
+      for (final image in images['results']) {
+        _comments.add(img.Image.fromJson(image));
       }
     } catch (error) {
       throw (error);
@@ -106,14 +127,13 @@ class Exercises with ChangeNotifier {
     // Load exercises from cache, if available
     final prefs = await SharedPreferences.getInstance();
     if (prefs.containsKey('exerciseData')) {
-      //if (false) {
       final exerciseData = json.decode(prefs.getString('exerciseData'));
       if (DateTime.parse(exerciseData['expiresIn']).isAfter(DateTime.now())) {
         for (final exercise in exerciseData['exercises']) {
           loadedExercises.add(Exercise.fromJson(exercise));
         }
         _entries = loadedExercises;
-        print('Read from cache!');
+        log("Read exercise data from cache. Valid till ${exerciseData['expiresIn']}");
         return;
       }
     }
@@ -129,7 +149,11 @@ class Exercises with ChangeNotifier {
     // ... and now put all together
     try {
       for (final entry in extractedData['results']) {
+        // Load comments for exercise
         final List<Comment> comments = await fetchAndSetComments(entry['id']);
+
+        // Load images for exercise
+        final List<img.Image> images = await fetchAndSetImages(entry['id']);
 
         entry['category'] = _categories.firstWhere((cat) => cat.id == entry['category']).toJson();
         entry['muscles'] = entry['muscles']
@@ -142,6 +166,7 @@ class Exercises with ChangeNotifier {
             .map((e) => _equipment.firstWhere((equipment) => equipment.id == e).toJson())
             .toList();
         entry['comments'] = comments.map((comment) => comment.toJson()).toList();
+        entry['images'] = images.map((image) => image.toJson()).toList();
         loadedExercises.add(Exercise.fromJson(entry));
       }
 
