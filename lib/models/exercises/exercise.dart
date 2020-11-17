@@ -27,19 +27,19 @@ class Exercise {
   @JsonKey(required: true)
   final cat.Category category;
 
-  @JsonKey(required: false)
+  @JsonKey(required: true)
   List<Muscle> muscles = [];
 
-  @JsonKey(required: false)
+  @JsonKey(required: true, name: 'muscles_secondary')
   List<Muscle> musclesSecondary = [];
 
-  @JsonKey(required: false)
+  @JsonKey(required: true)
   List<Equipment> equipment = [];
 
-  @JsonKey(required: false)
+  @JsonKey(required: true)
   List<img.Image> images = [];
 
-  @JsonKey(required: false)
+  @JsonKey(required: true, name: 'comments')
   List<Comment> tips = [];
 
   Exercise({

@@ -4,7 +4,7 @@ part 'image.g.dart';
 
 @JsonSerializable()
 class Image {
-  @JsonKey(required: true)
+  @JsonKey(required: true, name: 'image')
   final String url;
 
   @JsonKey(name: 'is_main', defaultValue: false)

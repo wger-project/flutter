@@ -7,8 +7,19 @@ part of 'exercise.dart';
 // **************************************************************************
 
 Exercise _$ExerciseFromJson(Map<String, dynamic> json) {
-  $checkKeys(json,
-      requiredKeys: const ['id', 'uuid', 'creation_date', 'name', 'description', 'category']);
+  $checkKeys(json, requiredKeys: const [
+    'id',
+    'uuid',
+    'creation_date',
+    'name',
+    'description',
+    'category',
+    'muscles',
+    'muscles_secondary',
+    'equipment',
+    'images',
+    'comments'
+  ]);
   return Exercise(
     id: json['id'] as int,
     uuid: json['uuid'] as String,
@@ -22,7 +33,7 @@ Exercise _$ExerciseFromJson(Map<String, dynamic> json) {
     muscles: (json['muscles'] as List)
         ?.map((e) => e == null ? null : Muscle.fromJson(e as Map<String, dynamic>))
         ?.toList(),
-    musclesSecondary: (json['musclesSecondary'] as List)
+    musclesSecondary: (json['muscles_secondary'] as List)
         ?.map((e) => e == null ? null : Muscle.fromJson(e as Map<String, dynamic>))
         ?.toList(),
     equipment: (json['equipment'] as List)
@@ -31,7 +42,7 @@ Exercise _$ExerciseFromJson(Map<String, dynamic> json) {
     images: (json['images'] as List)
         ?.map((e) => e == null ? null : img.Image.fromJson(e as Map<String, dynamic>))
         ?.toList(),
-    tips: (json['tips'] as List)
+    tips: (json['comments'] as List)
         ?.map((e) => e == null ? null : Comment.fromJson(e as Map<String, dynamic>))
         ?.toList(),
   );
@@ -45,8 +56,8 @@ Map<String, dynamic> _$ExerciseToJson(Exercise instance) => <String, dynamic>{
       'description': instance.description,
       'category': instance.category?.toJson(),
       'muscles': instance.muscles?.map((e) => e?.toJson())?.toList(),
-      'musclesSecondary': instance.musclesSecondary?.map((e) => e?.toJson())?.toList(),
+      'muscles_secondary': instance.musclesSecondary?.map((e) => e?.toJson())?.toList(),
       'equipment': instance.equipment?.map((e) => e?.toJson())?.toList(),
       'images': instance.images?.map((e) => e?.toJson())?.toList(),
-      'tips': instance.tips?.map((e) => e?.toJson())?.toList(),
+      'comments': instance.tips?.map((e) => e?.toJson())?.toList(),
     };
