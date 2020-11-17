@@ -6,15 +6,16 @@ part of 'image.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-Image _$ImageFromJson(Map<String, dynamic> json) {
+ExerciseImage _$ExerciseImageFromJson(Map<String, dynamic> json) {
   $checkKeys(json, requiredKeys: const ['image']);
-  return Image(
+  return ExerciseImage(
     url: json['image'] as String,
     isMain: json['is_main'] as bool ?? false,
   );
 }
 
-Map<String, dynamic> _$ImageToJson(Image instance) => <String, dynamic>{
+Map<String, dynamic> _$ExerciseImageToJson(ExerciseImage instance) =>
+    <String, dynamic>{
       'image': instance.url,
       'is_main': instance.isMain,
     };

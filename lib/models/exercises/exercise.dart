@@ -1,8 +1,8 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:wger/models/exercises/category.dart' as cat;
+import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/comment.dart';
 import 'package:wger/models/exercises/equipment.dart';
-import 'package:wger/models/exercises/image.dart' as img;
+import 'package:wger/models/exercises/image.dart';
 import 'package:wger/models/exercises/muscle.dart';
 
 part 'exercise.g.dart';
@@ -25,7 +25,7 @@ class Exercise {
   final String description;
 
   @JsonKey(required: true)
-  final cat.Category category;
+  final ExerciseCategory category;
 
   @JsonKey(required: true)
   List<Muscle> muscles = [];
@@ -37,7 +37,7 @@ class Exercise {
   List<Equipment> equipment = [];
 
   @JsonKey(required: true)
-  List<img.Image> images = [];
+  List<ExerciseImage> images = [];
 
   @JsonKey(required: true, name: 'comments')
   List<Comment> tips = [];
@@ -56,7 +56,7 @@ class Exercise {
     this.tips,
   });
 
-  img.Image get getMainImage {
+  ExerciseImage get getMainImage {
     return images.firstWhere((image) => image.isMain);
   }
 

@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:wger/models/exercises/exercise.dart';
-import 'package:wger/models/exercises/image.dart' as img;
+import 'package:wger/models/exercises/image.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/set.dart';
 import 'package:wger/models/workouts/setting.dart';
@@ -78,11 +78,11 @@ class WorkoutPlans with ChangeNotifier {
           List<Setting> settings = [];
 
           for (final exerciseData in set['exercise_list']) {
-            List<img.Image> images = [];
+            List<ExerciseImage> images = [];
 
             for (final image in exerciseData['image_list']) {
               images.add(
-                img.Image(
+                ExerciseImage(
                   url: _auth.serverUrl + image["image"],
                   isMain: image['is_main'],
                 ),

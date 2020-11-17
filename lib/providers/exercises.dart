@@ -26,7 +26,7 @@ class Exercises with ChangeNotifier {
   String _urlMuscles;
   String _urlEquipment;
   List<Exercise> _entries = [];
-  List<Category> _categories = [];
+  List<ExerciseCategory> _categories = [];
   List<Muscle> _muscles = [];
   List<Equipment> _equipment = [];
 
@@ -54,7 +54,7 @@ class Exercises with ChangeNotifier {
     final categories = json.decode(response.body) as Map<String, dynamic>;
     try {
       for (final category in categories['results']) {
-        _categories.add(Category.fromJson(category));
+        _categories.add(ExerciseCategory.fromJson(category));
       }
     } catch (error) {
       throw (error);
