@@ -11,19 +11,53 @@ class WorkoutPlansList extends StatelessWidget {
     return ListView.builder(
       padding: const EdgeInsets.all(10.0),
       itemCount: workoutPlansData.items.length,
-      itemBuilder: (context, index) => Card(
-        child: ListTile(
-          onTap: () => Navigator.of(context).pushNamed(
-            WorkoutPlanScreen.routeName,
-            arguments: workoutPlansData.items[index],
+      itemBuilder: (context, index) {
+        final currentWorkout = workoutPlansData.items[index];
+        return Dismissible(
+          key: Key(currentWorkout.id.toString()),
+          onDismissed: (direction) {
+            // Delete workout from DB
+            Provider.of<WorkoutPlans>(context, listen: false).deleteWorkout(currentWorkout.id);
+
+            // and inform the user
+            Scaffold.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  "Workout ${currentWorkout.id} deleted",
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            );
+          },
+          background: Container(
+            color: Theme.of(context).errorColor,
+            alignment: Alignment.centerRight,
+            padding: EdgeInsets.only(right: 20),
+            margin: EdgeInsets.symmetric(
+              horizontal: 15,
+              vertical: 4,
+            ),
+            child: Icon(
+              Icons.delete,
+              color: Colors.white,
+            ),
           ),
-          leading: Icon(Icons.edit),
-          title: Text(
-            DateFormat('dd.MM.yyyy').format(workoutPlansData.items[index].creationDate).toString(),
+          direction: DismissDirection.endToStart,
+          child: Card(
+            child: ListTile(
+              onTap: () => Navigator.of(context).pushNamed(
+                WorkoutPlanScreen.routeName,
+                arguments: currentWorkout,
+              ),
+              leading: Icon(Icons.edit),
+              title: Text(
+                DateFormat('dd.MM.yyyy').format(currentWorkout.creationDate).toString(),
+              ),
+              subtitle: Text(currentWorkout.description),
+            ),
           ),
-          subtitle: Text(workoutPlansData.items[index].description),
-        ),
-      ),
+        );
+      },
     );
   }
 }

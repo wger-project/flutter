@@ -144,24 +144,15 @@ class WorkoutPlans with ChangeNotifier {
     }
   }
 
-  Future<void> addProduct(WorkoutPlan product) async {
-    final productsUrl =
-        'https://flutter-shop-a2335.firebaseio.com/products.json?auth=${_auth.token}';
+  Future<void> addWorkout(WorkoutPlan workout) async {
     try {
       final response = await http.post(
-        productsUrl,
-        body: json.encode(
-          {
-            'description': product.description,
-          },
-        ),
+        _url,
+        body: json.encode(workout.toJson()),
       );
-      final newProduct = WorkoutPlan(
-        id: json.decode(response.body)['name'],
-        creationDate: json.decode(response.body)['creation_date'],
-        description: product.description,
-      );
-      _entries.add(newProduct);
+      print(json.decode(response.body));
+      final newWorkout = WorkoutPlan.fromJson(json.decode(response.body));
+      _entries.add(newWorkout);
       notifyListeners();
     } catch (error) {
       print(error);
@@ -182,19 +173,22 @@ class WorkoutPlans with ChangeNotifier {
     }
   }
 
-  Future<void> deleteProduct(int id) async {
-    final url = 'https://flutter-shop-a2335.firebaseio.com/products/$id.json?auth=${_auth.token}';
-    final existingProductIndex = _entries.indexWhere((element) => element.id == id);
-    var existingProduct = _entries[existingProductIndex];
-    _entries.removeAt(existingProductIndex);
+  Future<void> deleteWorkout(int id) async {
+    final url = '$_url$id/';
+    final existingWorkoutIndex = _entries.indexWhere((element) => element.id == id);
+    var existingWorkout = _entries[existingWorkoutIndex];
+    _entries.removeAt(existingWorkoutIndex);
     notifyListeners();
 
-    final response = await http.delete(url);
+    final response = await http.delete(
+      url,
+      headers: <String, String>{'Authorization': 'Token ${_auth.token}'},
+    );
     if (response.statusCode >= 400) {
-      _entries.insert(existingProductIndex, existingProduct);
+      _entries.insert(existingWorkoutIndex, existingWorkout);
       notifyListeners();
       //throw HttpException();
     }
-    existingProduct = null;
+    existingWorkout = null;
   }
 }
