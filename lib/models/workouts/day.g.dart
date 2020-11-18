@@ -7,8 +7,7 @@ part of 'day.dart';
 // **************************************************************************
 
 Day _$DayFromJson(Map<String, dynamic> json) {
-  $checkKeys(json,
-      requiredKeys: const ['id', 'description', 'days_of_week', 'sets']);
+  $checkKeys(json, requiredKeys: const ['id', 'description', 'days_of_week']);
   return Day(
     id: json['id'] as int,
     description: json['description'] as String,

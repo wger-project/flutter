@@ -18,7 +18,7 @@ class Set {
   @JsonKey(required: true)
   List<Exercise> exercises = [];
 
-  @JsonKey(required: true)
+  @JsonKey(required: false)
   List<Setting> settings = [];
 
   Set({

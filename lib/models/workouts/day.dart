@@ -14,7 +14,7 @@ class Day {
   @JsonKey(required: true, name: 'days_of_week')
   List<int> daysOfWeek = [];
 
-  @JsonKey(required: true)
+  @JsonKey(required: false)
   List<Set> sets = [];
 
   Day({

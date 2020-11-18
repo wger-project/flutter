@@ -11,10 +11,10 @@ class WorkoutPlan {
   @JsonKey(required: true, name: 'creation_date')
   DateTime creationDate;
 
-  @JsonKey(required: true)
+  @JsonKey(required: true, name: 'comment')
   String description;
 
-  @JsonKey(required: true, name: 'days')
+  @JsonKey(required: false, name: 'days')
   List<Day> days = [];
 
   WorkoutPlan({
