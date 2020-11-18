@@ -45,11 +45,7 @@ class WorkoutPlans with ChangeNotifier {
 
     try {
       for (final entry in extractedData['results']) {
-        loadedWorkoutPlans.add(WorkoutPlan(
-          id: entry['id'],
-          description: entry['comment'],
-          creationDate: DateTime.parse(entry['creation_date']),
-        ));
+        loadedWorkoutPlans.add(WorkoutPlan.fromJson(entry));
       }
 
       _entries = loadedWorkoutPlans;

@@ -3,6 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/locale/locales.dart';
 import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/nutritional_plans.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/auth_screen.dart';
 import 'package:wger/screens/dashboard.dart';
@@ -42,6 +43,13 @@ class MyApp extends StatelessWidget {
             ChangeNotifierProxyProvider<Auth, Exercises>(
               create: null, // TODO: Create is required but it can be null??
               update: (context, value, previous) => Exercises(
+                auth,
+                previous == null ? [] : previous.items,
+              ),
+            ),
+            ChangeNotifierProxyProvider<Auth, NutritionalPlans>(
+              create: null, // TODO: Create is required but it can be null??
+              update: (context, value, previous) => NutritionalPlans(
                 auth,
                 previous == null ? [] : previous.items,
               ),
