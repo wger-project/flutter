@@ -148,8 +148,13 @@ class WorkoutPlans with ChangeNotifier {
     try {
       final response = await http.post(
         _url,
+        headers: {
+          'Authorization': 'Token ${_auth.token}',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
         body: json.encode(workout.toJson()),
       );
+      print(workout.toJson());
       print(json.decode(response.body));
       final newWorkout = WorkoutPlan.fromJson(json.decode(response.body));
       _entries.add(newWorkout);
@@ -182,7 +187,7 @@ class WorkoutPlans with ChangeNotifier {
 
     final response = await http.delete(
       url,
-      headers: <String, String>{'Authorization': 'Token ${_auth.token}'},
+      headers: {'Authorization': 'Token ${_auth.token}'},
     );
     if (response.statusCode >= 400) {
       _entries.insert(existingWorkoutIndex, existingWorkout);

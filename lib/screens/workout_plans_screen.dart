@@ -36,7 +36,11 @@ class _WorkoutPlansScreenState extends State<WorkoutPlansScreen> {
       appBar: getAppBar(),
       drawer: AppDrawer(),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Provider.of<WorkoutPlans>(context, listen: false).addWorkout(
+            WorkoutPlan(description: 'button'),
+          );
+        },
         child: const Icon(Icons.add),
       ),
       body: FutureBuilder(
