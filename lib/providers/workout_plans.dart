@@ -150,13 +150,9 @@ class WorkoutPlans with ChangeNotifier {
         },
         body: json.encode(workout.toJson()),
       );
-      print(workout.toJson());
-      print(json.decode(response.body));
-      final newWorkout = WorkoutPlan.fromJson(json.decode(response.body));
-      _entries.add(newWorkout);
+      _entries.insert(0, WorkoutPlan.fromJson(json.decode(response.body)));
       notifyListeners();
     } catch (error) {
-      print(error);
       throw error;
     }
   }
