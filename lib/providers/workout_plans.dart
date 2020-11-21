@@ -140,7 +140,7 @@ class WorkoutPlans with ChangeNotifier {
     }
   }
 
-  Future<void> addWorkout(WorkoutPlan workout) async {
+  Future<WorkoutPlan> addWorkout(WorkoutPlan workout) async {
     try {
       final response = await http.post(
         _url,
@@ -150,8 +150,10 @@ class WorkoutPlans with ChangeNotifier {
         },
         body: json.encode(workout.toJson()),
       );
-      _entries.insert(0, WorkoutPlan.fromJson(json.decode(response.body)));
+      workout = WorkoutPlan.fromJson(json.decode(response.body));
+      _entries.insert(0, workout);
       notifyListeners();
+      return workout;
     } catch (error) {
       throw error;
     }

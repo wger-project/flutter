@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/models/workouts/day.dart';
 
@@ -18,9 +19,9 @@ class WorkoutPlan {
   List<Day> days = [];
 
   WorkoutPlan({
-    this.id,
-    this.creationDate,
-    this.description,
+    @required this.id,
+    @required this.creationDate,
+    @required this.description,
     this.days,
   });
 

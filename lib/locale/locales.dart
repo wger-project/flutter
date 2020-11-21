@@ -25,6 +25,22 @@ class AppLocalizations {
     );
   }
 
+  String get newWorkout {
+    return Intl.message(
+      'new Workout',
+      name: 'newWorkout',
+      desc: 'Header when adding a new workout',
+    );
+  }
+
+  String get description {
+    return Intl.message(
+      'description',
+      name: 'description',
+      desc: 'Description of a workout, nutritional plan, etc.',
+    );
+  }
+
   String get labelWorkoutPlan {
     return Intl.message(
       'Workout plan',

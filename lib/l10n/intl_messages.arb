@@ -1,14 +1,32 @@
 {
-  "@@last_modified": "2020-11-11T15:35:32.537025",
+  "@@last_modified": "2020-11-21T20:55:11.028883",
   "labelWorkoutPlans": "Workout plans",
   "@labelWorkoutPlans": {
     "description": "Title for screen workout plans",
     "type": "text",
     "placeholders": {}
   },
+  "newWorkout": "new Workout",
+  "@newWorkout": {
+    "description": "Header when adding a new workout",
+    "type": "text",
+    "placeholders": {}
+  },
+  "description": "description",
+  "@description": {
+    "description": "Description of a workout, nutritional plan, etc.",
+    "type": "text",
+    "placeholders": {}
+  },
   "labelWorkoutPlan": "Workout plan",
   "@labelWorkoutPlan": {
     "description": "Title for screen workout plan",
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelDashboard": "Dashboard",
+  "@labelDashboard": {
+    "description": "Title for screen dashboard",
     "type": "text",
     "placeholders": {}
   }

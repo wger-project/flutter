@@ -23,7 +23,7 @@ class WorkoutPlansList extends StatelessWidget {
             Scaffold.of(context).showSnackBar(
               SnackBar(
                 content: Text(
-                  "Workout ${currentWorkout.id} deleted",
+                  'Workout "${currentWorkout.description}" deleted',
                   textAlign: TextAlign.center,
                 ),
               ),
