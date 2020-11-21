@@ -15,19 +15,49 @@ class WorkoutPlansList extends StatelessWidget {
         final currentWorkout = workoutPlansData.items[index];
         return Dismissible(
           key: Key(currentWorkout.id.toString()),
-          onDismissed: (direction) {
+          confirmDismiss: (direction) async {
             // Delete workout from DB
-            Provider.of<WorkoutPlans>(context, listen: false).deleteWorkout(currentWorkout.id);
+            final bool res = await showDialog(
+                context: context,
+                builder: (BuildContext contextDialog) {
+                  return AlertDialog(
+                    content: Text("Are you sure you want to delete ${currentWorkout.description}?"),
+                    actions: [
+                      FlatButton(
+                        child: Text(
+                          "Cancel",
+                        ),
+                        onPressed: () => Navigator.of(contextDialog).pop(),
+                      ),
+                      FlatButton(
+                        child: Text(
+                          "Delete",
+                          style: TextStyle(color: Theme.of(context).errorColor),
+                        ),
+                        onPressed: () {
+                          // Confirmed, delete the workout
+                          Provider.of<WorkoutPlans>(context, listen: false)
+                              .deleteWorkout(currentWorkout.id);
 
-            // and inform the user
-            Scaffold.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  'Workout "${currentWorkout.description}" deleted',
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            );
+                          // Close the popup
+                          Navigator.of(contextDialog).pop();
+
+                          // and inform the user
+                          Scaffold.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Workout "${currentWorkout.description}" deleted',
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  );
+                });
+            return res;
+            //Provider.of<WorkoutPlans>(context, listen: false).deleteWorkout(currentWorkout.id);
           },
           background: Container(
             color: Theme.of(context).errorColor,
