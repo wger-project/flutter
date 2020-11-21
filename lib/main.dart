@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/locale/locales.dart';
+import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/nutritional_plans.dart';
 import 'package:wger/providers/workout_plans.dart';
@@ -50,6 +51,13 @@ class MyApp extends StatelessWidget {
             ChangeNotifierProxyProvider<Auth, NutritionalPlans>(
               create: null, // TODO: Create is required but it can be null??
               update: (context, value, previous) => NutritionalPlans(
+                auth,
+                previous == null ? [] : previous.items,
+              ),
+            ),
+            ChangeNotifierProxyProvider<Auth, BodyWeight>(
+              create: null, // TODO: Create is required but it can be null??
+              update: (context, value, previous) => BodyWeight(
                 auth,
                 previous == null ? [] : previous.items,
               ),

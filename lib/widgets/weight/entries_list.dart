@@ -1,29 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/providers/workout_plans.dart';
-import 'package:wger/screens/workout_plan_screen.dart';
+import 'package:wger/providers/body_weight.dart';
 
-class WorkoutPlansList extends StatelessWidget {
+class WeightEntriesList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final workoutPlansData = Provider.of<WorkoutPlans>(context);
+    final weightEntriesData = Provider.of<BodyWeight>(context);
     return ListView.builder(
       padding: const EdgeInsets.all(10.0),
-      itemCount: workoutPlansData.items.length,
+      itemCount: weightEntriesData.items.length,
       itemBuilder: (context, index) {
-        final currentWorkout = workoutPlansData.items[index];
+        final currentEntry = weightEntriesData.items[index];
         return Dismissible(
-          key: Key(currentWorkout.id.toString()),
+          key: Key(currentEntry.id.toString()),
           onDismissed: (direction) {
             // Delete workout from DB
-            Provider.of<WorkoutPlans>(context, listen: false).deleteWorkout(currentWorkout.id);
+            Provider.of<BodyWeight>(context, listen: false).deleteEntry(currentEntry.id);
 
             // and inform the user
             Scaffold.of(context).showSnackBar(
               SnackBar(
                 content: Text(
-                  "Workout ${currentWorkout.id} deleted",
+                  "Weight entry for the ${currentEntry.date}",
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -45,14 +44,15 @@ class WorkoutPlansList extends StatelessWidget {
           direction: DismissDirection.endToStart,
           child: Card(
             child: ListTile(
-              onTap: () => Navigator.of(context).pushNamed(
-                WorkoutPlanScreen.routeName,
-                arguments: currentWorkout,
-              ),
+              //onTap: () => Navigator.of(context).pushNamed(
+              //  WorkoutPlanScreen.routeName,
+              //  arguments: currentPlan,
+              //),
+              onTap: () {},
               title: Text(
-                DateFormat('dd.MM.yyyy').format(currentWorkout.creationDate).toString(),
+                DateFormat('dd.MM.yyyy').format(currentEntry.date).toString(),
               ),
-              subtitle: Text(currentWorkout.description),
+              subtitle: Text('${currentEntry.weight} kg'),
             ),
           ),
         );
