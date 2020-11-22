@@ -35,10 +35,12 @@ class Exercises with ChangeNotifier {
   Exercises(Auth auth, List<Exercise> entries) {
     this._auth = auth;
     this._entries = entries;
-    this._urlExercises = auth.serverUrl + exercisesUrl;
-    this._urlCategories = auth.serverUrl + categoriesUrl;
-    this._urlMuscles = auth.serverUrl + musclesUrl;
-    this._urlEquipment = auth.serverUrl + equipmentUrl;
+    if (auth.serverUrl != null) {
+      this._urlExercises = auth.serverUrl + exercisesUrl;
+      this._urlCategories = auth.serverUrl + categoriesUrl;
+      this._urlMuscles = auth.serverUrl + musclesUrl;
+      this._urlEquipment = auth.serverUrl + equipmentUrl;
+    }
   }
 
   List<Exercise> get items {

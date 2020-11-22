@@ -142,6 +142,8 @@ class _AuthCardState extends State<AuthCard> {
         errorMessage = error.errors['username'];
       } else if (error.errors.containsKey('password')) {
         errorMessage = error.errors['password'];
+      } else if (error.errors.containsKey('detail')) {
+        errorMessage = error.errors['detail'];
       }
       _showErrorDialog(errorMessage);
       //} finally {
