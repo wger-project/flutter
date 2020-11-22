@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../models/http_exception.dart';
+import 'package:wger/models/http_exception.dart';
 
 class Auth with ChangeNotifier {
   String _token;
@@ -51,11 +51,9 @@ class Auth with ChangeNotifier {
         body: json.encode({'username': username, 'password': password}),
       );
       final responseData = json.decode(response.body);
-      //print(response.statusCode);
-      //print(responseData);
 
       if (response.statusCode >= 400) {
-        throw HttpException(json.decode(responseData) as Map<String, dynamic>);
+        throw HttpException(responseData);
       }
 
       // Log user in
@@ -81,7 +79,7 @@ class Auth with ChangeNotifier {
       });
       prefs.setString('userData', userData);
     } catch (error) {
-      throw error;
+      throw HttpException(error.errors);
     }
   }
 
@@ -96,6 +94,7 @@ class Auth with ChangeNotifier {
   Future<bool> tryAutoLogin() async {
     final prefs = await SharedPreferences.getInstance();
     if (!prefs.containsKey('userData')) {
+      log('autologin failed');
       return false;
     }
 
@@ -111,12 +110,14 @@ class Auth with ChangeNotifier {
     // _userId = extractedUserData['userId'];
     // _expiryDate = expiryDate;
 
+    log('autologin successful');
     notifyListeners();
     //_autoLogout();
     return true;
   }
 
   Future<void> logout() async {
+    log('logging out');
     _token = null;
     _serverUrl = null;
     // _userId = null;
