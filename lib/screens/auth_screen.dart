@@ -222,9 +222,11 @@ class _AuthCardState extends State<AuthCard> {
                   controller: _passwordController,
                   textInputAction: TextInputAction.next,
                   validator: (value) {
+                    /*
                     if (value.isEmpty || value.length < 8) {
                       return 'Password is too short!';
                     }
+                     */
                     return null;
                   },
                   onSaved: (value) {
