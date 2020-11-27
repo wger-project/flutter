@@ -19,8 +19,8 @@ class WorkoutPlan {
   List<Day> days = [];
 
   WorkoutPlan({
-    @required this.id,
-    @required this.creationDate,
+    this.id,
+    this.creationDate,
     @required this.description,
     this.days,
   });

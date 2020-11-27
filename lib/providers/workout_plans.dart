@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -12,8 +13,10 @@ import 'package:wger/providers/auth.dart';
 
 class WorkoutPlans with ChangeNotifier {
   static const workoutPlansUrl = '/api/v2/workout/';
+  static const daysUrl = '/api/v2/day/';
 
   String _url;
+  String _urlDays;
   Auth _auth;
   List<WorkoutPlan> _entries = [];
 
@@ -21,6 +24,7 @@ class WorkoutPlans with ChangeNotifier {
     this._auth = auth;
     this._entries = entries;
     this._url = auth.serverUrl + workoutPlansUrl;
+    this._urlDays = auth.serverUrl + daysUrl;
   }
 
   List<WorkoutPlan> get items {
@@ -31,6 +35,9 @@ class WorkoutPlans with ChangeNotifier {
     return _entries.firstWhere((workoutPlan) => workoutPlan.id == id);
   }
 
+  /*
+   * Workouts
+   */
   Future<void> fetchAndSetWorkouts() async {
     final response = await http.get(
       _url,
@@ -124,12 +131,12 @@ class WorkoutPlans with ChangeNotifier {
 
         // Days
         days.add(Day(
-          id: entry['obj']['id'],
-          description: entry['obj']['description'],
-          sets: sets,
-          daysOfWeek: [1, 3],
-          //daysOfWeek: entry['obj']['day'],
-        ));
+            id: entry['obj']['id'],
+            description: entry['obj']['description'],
+            sets: sets,
+            daysOfWeek: [1, 3]
+            //daysOfWeek: entry['obj']['day'],
+            ));
       }
       workout.days = days;
       notifyListeners();
@@ -189,5 +196,35 @@ class WorkoutPlans with ChangeNotifier {
       //throw HttpException();
     }
     existingWorkout = null;
+  }
+
+  /*
+   * Days
+   */
+  Future<Day> addDay(Day day, WorkoutPlan workout) async {
+    /*
+     * Saves a new day instance to the DB and adds it to the given workout
+     */
+    day.workoutId = workout.id;
+    try {
+      final response = await http.post(
+        _urlDays,
+        headers: {
+          'Authorization': 'Token ${_auth.token}',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: json.encode(day.toJson()),
+      );
+
+      // Create the day
+      day = Day.fromJson(json.decode(response.body));
+      day.sets = [];
+      workout.days.insert(0, day);
+      notifyListeners();
+      return day;
+    } catch (error) {
+      log(error.missingKeys.toString());
+      throw error;
+    }
   }
 }

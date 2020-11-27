@@ -36,9 +36,10 @@ class AuthScreen extends StatelessWidget {
               height: deviceSize.height,
               width: deviceSize.width,
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
+                  Padding(padding: EdgeInsets.symmetric(vertical: 20)),
                   Image(
                     image: AssetImage('assets/images/logo.png'),
                     width: 120,

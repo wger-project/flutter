@@ -27,17 +27,49 @@ class AppLocalizations {
 
   String get newWorkout {
     return Intl.message(
-      'new Workout',
+      'New Workout',
       name: 'newWorkout',
       desc: 'Header when adding a new workout',
     );
   }
 
+  String get newDay {
+    return Intl.message(
+      'New Day',
+      name: 'newDay',
+      desc: 'Header when adding a new day to a workout',
+    );
+  }
+
   String get description {
     return Intl.message(
-      'description',
+      'Description',
       name: 'description',
       desc: 'Description of a workout, nutritional plan, etc.',
+    );
+  }
+
+  String get save {
+    return Intl.message(
+      'Save',
+      name: 'save',
+      desc: 'Saving a new entry in the DB',
+    );
+  }
+
+  String get cancel {
+    return Intl.message(
+      'Cancel',
+      name: 'cancel',
+      desc: 'Cancelling an action',
+    );
+  }
+
+  String get add {
+    return Intl.message(
+      'Add',
+      name: 'add',
+      desc: 'Label for a button etc.',
     );
   }
 
