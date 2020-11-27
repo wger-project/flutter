@@ -48,15 +48,15 @@ class _DayCheckboxState extends State<DayCheckbox> {
   }
 }
 
-class WorkoutPlansDetail extends StatefulWidget {
+class WorkoutPlanDetail extends StatefulWidget {
   WorkoutPlan _workoutPlan;
-  WorkoutPlansDetail(this._workoutPlan);
+  WorkoutPlanDetail(this._workoutPlan);
 
   @override
-  _WorkoutPlansDetailState createState() => _WorkoutPlansDetailState();
+  _WorkoutPlanDetailState createState() => _WorkoutPlanDetailState();
 }
 
-class _WorkoutPlansDetailState extends State<WorkoutPlansDetail> {
+class _WorkoutPlanDetailState extends State<WorkoutPlanDetail> {
   final dayController = TextEditingController();
 
   Map<String, dynamic> _dayData = {

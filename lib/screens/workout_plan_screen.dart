@@ -50,7 +50,7 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
                 : RefreshIndicator(
                     onRefresh: () => _loadWorkoutPlanDetail(context, workoutPlan.id),
                     child: Consumer<WorkoutPlans>(
-                      builder: (context, workout, _) => WorkoutPlansDetail(snapshot.data),
+                      builder: (context, workout, _) => WorkoutPlanDetail(snapshot.data),
                     ),
                   ),
       ),
