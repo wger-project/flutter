@@ -22,7 +22,7 @@ class SettingWidget extends StatelessWidget {
                 image: AssetImage('assets/images/placeholder.png'),
                 color: Color.fromRGBO(255, 255, 255, 0.3),
                 colorBlendMode: BlendMode.modulate),
-        width: 65,
+        width: 45,
       ),
       title: Text(setting.exercise.name),
       subtitle: Text(setting.repsText),

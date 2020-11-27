@@ -25,7 +25,22 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
       actions: [
         IconButton(
           icon: Icon(Icons.bar_chart),
-          onPressed: () {},
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                content: Text("Would open weight log form"),
+                actions: [
+                  FlatButton(
+                    child: Text(
+                      "Cancel",
+                    ),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                ],
+              ),
+            );
+          },
         ),
       ],
     );
@@ -39,8 +54,23 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
       appBar: getAppBar(),
       //drawer: AppDrawer(),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
         child: const Icon(Icons.play_arrow),
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              content: Text("Would start gym mode"),
+              actions: [
+                FlatButton(
+                  child: Text(
+                    "Cancel",
+                  ),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ],
+            ),
+          );
+        },
       ),
       body: FutureBuilder<WorkoutPlan>(
         future: _loadWorkoutPlanDetail(context, workoutPlan.id),
