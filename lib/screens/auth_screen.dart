@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/theme/theme.dart';
 
 import '../models/http_exception.dart';
 import '../providers/auth.dart';
@@ -102,7 +101,7 @@ class _AuthCardState extends State<AuthCard> {
         title: Text('An Error Occurred!'),
         content: Text(message),
         actions: [
-          FlatButton(
+          TextButton(
             child: Text('Dismiss'),
             onPressed: () {
               Navigator.of(ctx).pop();
@@ -266,22 +265,13 @@ class _AuthCardState extends State<AuthCard> {
                 if (_isLoading)
                   CircularProgressIndicator()
                 else
-                  RaisedButton(
+                  ElevatedButton(
                     child: Text(_authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP'),
                     onPressed: _submit,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 8.0),
-                    color: wgerPrimaryColor,
-                    textColor: Theme.of(context).primaryTextTheme.button.color,
                   ),
-                FlatButton(
+                TextButton(
                   child: Text('${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD'),
                   onPressed: _switchAuthMode,
-                  padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  textColor: wgerPrimaryColor,
                 ),
               ],
             ),

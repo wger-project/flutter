@@ -31,7 +31,7 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
               builder: (context) => AlertDialog(
                 content: Text("Would open weight log form"),
                 actions: [
-                  FlatButton(
+                  TextButton(
                     child: Text(
                       "Cancel",
                     ),
@@ -61,7 +61,7 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
             builder: (context) => AlertDialog(
               content: Text("Would start gym mode"),
               actions: [
-                FlatButton(
+                TextButton(
                   child: Text(
                     "Cancel",
                   ),

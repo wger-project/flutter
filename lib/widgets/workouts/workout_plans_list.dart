@@ -23,13 +23,13 @@ class WorkoutPlansList extends StatelessWidget {
                   return AlertDialog(
                     content: Text("Are you sure you want to delete ${currentWorkout.description}?"),
                     actions: [
-                      FlatButton(
+                      TextButton(
                         child: Text(
                           "Cancel",
                         ),
                         onPressed: () => Navigator.of(contextDialog).pop(),
                       ),
-                      FlatButton(
+                      TextButton(
                         child: Text(
                           "Delete",
                           style: TextStyle(color: Theme.of(context).errorColor),
