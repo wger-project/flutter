@@ -1,5 +1,7 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:wger/locale/locales.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/screens/dashboard.dart';
@@ -58,8 +60,20 @@ class AppDrawer extends StatelessWidget {
             leading: Icon(Icons.edit),
             title: Text('Options'),
             onTap: () {
-              Navigator.of(context).pop();
-              Navigator.of(context).pushReplacementNamed(WeightScreen.routeName);
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  content: Text("Would show options dialog"),
+                  actions: [
+                    TextButton(
+                      child: Text(
+                        "Close",
+                      ),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                  ],
+                ),
+              );
             },
           ),
           Divider(),
@@ -71,6 +85,40 @@ class AppDrawer extends StatelessWidget {
               Navigator.of(context).pop();
               Navigator.of(context).pushReplacementNamed('/');
             },
+          ),
+          Divider(),
+          AboutListTile(
+            icon: Icon(Icons.info),
+            applicationName: 'wger',
+            applicationVersion: '0.0.1 alpha',
+            applicationLegalese: '\u{a9} 2020 The wger team',
+            applicationIcon: Image.asset(
+              'assets/images/logo.png',
+              width: 60,
+            ),
+            aboutBoxChildren: [
+              RichText(
+                text: TextSpan(
+                  style: TextStyle(fontSize: 16, color: Colors.black),
+                  children: [
+                    TextSpan(
+                      text: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, '
+                          'sed diam nonumy eirmod tempor invidunt ut labore et dolore '
+                          'magna aliquyam erat, sed diam voluptua. At vero eos et accusam '
+                          'et justo duo dolores et ea rebum.\n',
+                    ),
+                    TextSpan(
+                      text: 'https://github.com/wger-project/wger',
+                      style: TextStyle(color: Colors.blue),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          launch('https://github.com/wger-project/wger');
+                        },
+                    )
+                  ],
+                ),
+              ),
+            ],
           ),
         ],
       ),
