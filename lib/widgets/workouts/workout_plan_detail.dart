@@ -194,8 +194,6 @@ class DayFormWidget extends StatelessWidget {
                     ),
                   );
                 }
-                //dayController.text = '';
-                //Navigator.of(context).pop();
               },
             ),
           ],

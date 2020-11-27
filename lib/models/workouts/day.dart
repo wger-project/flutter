@@ -46,7 +46,7 @@ class Day {
     return weekdays[weekDay];
   }
 
-  String get getAllDays {
+  String get getDaysText {
     return daysOfWeek.map((e) => getDayName(e)).join(', ');
   }
 

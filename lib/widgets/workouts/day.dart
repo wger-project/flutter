@@ -58,15 +58,21 @@ class WorkoutDayWidget extends StatelessWidget {
     return Card(
       child: Column(
         children: [
-          Padding(
+          Container(
+            decoration: BoxDecoration(color: Colors.black12),
             padding: const EdgeInsets.symmetric(vertical: 10),
+            width: double.infinity,
+            child: Column(
+              children: [
+                Text(
+                  _day.description,
+                  style: Theme.of(context).textTheme.headline6,
+                ),
+                Text(_day.getDaysText),
+              ],
+            ),
           ),
-          Text(
-            _day.description,
-            style: Theme.of(context).textTheme.headline6,
-          ),
-          Text(_day.getAllDays),
-          Divider(),
+          //Divider(),
           ..._day.sets
               .map(
                 (set) => getSetRow(set),
