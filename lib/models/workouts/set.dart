@@ -12,6 +12,9 @@ class Set {
   @JsonKey(required: true)
   final int sets;
 
+  @JsonKey(required: false, name: 'exerciseday')
+  final int day;
+
   @JsonKey(required: true)
   final int order;
 
@@ -24,6 +27,7 @@ class Set {
   Set({
     this.id,
     this.sets,
+    this.day,
     this.order,
     this.exercises,
     this.settings,

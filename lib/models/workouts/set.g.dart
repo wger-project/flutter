@@ -11,6 +11,7 @@ Set _$SetFromJson(Map<String, dynamic> json) {
   return Set(
     id: json['id'] as int,
     sets: json['sets'] as int,
+    day: json['exerciseday'] as int,
     order: json['order'] as int,
     exercises: (json['exercises'] as List)
         ?.map((e) =>
@@ -26,6 +27,7 @@ Set _$SetFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$SetToJson(Set instance) => <String, dynamic>{
       'id': instance.id,
       'sets': instance.sets,
+      'exerciseday': instance.day,
       'order': instance.order,
       'exercises': instance.exercises,
       'settings': instance.settings,

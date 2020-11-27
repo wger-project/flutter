@@ -35,9 +35,17 @@ class AppLocalizations {
 
   String get newDay {
     return Intl.message(
-      'New Day',
+      'New day',
       name: 'newDay',
       desc: 'Header when adding a new day to a workout',
+    );
+  }
+
+  String get newSet {
+    return Intl.message(
+      'New set',
+      name: 'newSet',
+      desc: 'Header when adding a new set to a workout day',
     );
   }
 
