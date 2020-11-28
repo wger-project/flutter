@@ -24,12 +24,12 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
       title: Text(AppLocalizations.of(context).labelWorkoutPlan),
       actions: [
         IconButton(
-          icon: Icon(Icons.bar_chart),
+          icon: Icon(Icons.menu),
           onPressed: () {
             showDialog(
               context: context,
               builder: (context) => AlertDialog(
-                content: Text("Would open weight log form"),
+                content: Text("Would open options"),
                 actions: [
                   TextButton(
                     child: Text(
@@ -53,25 +53,6 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
     return Scaffold(
       appBar: getAppBar(),
       //drawer: AppDrawer(),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.play_arrow),
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-              content: Text("Would start gym mode"),
-              actions: [
-                TextButton(
-                  child: Text(
-                    "Cancel",
-                  ),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-              ],
-            ),
-          );
-        },
-      ),
       body: FutureBuilder<WorkoutPlan>(
         future: _loadWorkoutPlanDetail(context, workoutPlan.id),
         builder: (context, AsyncSnapshot<WorkoutPlan> snapshot) =>
