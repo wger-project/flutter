@@ -27,8 +27,7 @@ class AuthScreen extends StatelessWidget {
                 color: const Color(0xff222000),
                 image: new DecorationImage(
                   fit: BoxFit.cover,
-                  colorFilter: ColorFilter.mode(
-                      Colors.black.withOpacity(0.2), BlendMode.dstATop),
+                  colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.2), BlendMode.dstATop),
                   image: new AssetImage(
                     'assets/images/main.jpg',
                   ),
@@ -50,8 +49,7 @@ class AuthScreen extends StatelessWidget {
                   ),
                   Container(
                     margin: EdgeInsets.only(bottom: 20.0),
-                    padding:
-                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 94.0),
+                    padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 94.0),
                     // ..translate(-10.0),
                     child: Text(
                       'WGER',
@@ -149,17 +147,13 @@ class _AuthCardState extends State<AuthCard> {
       var errorMessage = 'Authentication Failed';
 
       if (error.errors.containsKey('username')) {
-        errorMessage = "Username: " + error.errors['username'][0];
+        errorMessage = "Username: " + error.errors['username'].join('\n\n');
       } else if (error.errors.containsKey('password')) {
-        errorMessage = "Password: " + error.errors['password'][0];
+        errorMessage = "Password: " + error.errors['password'].join('\n\n');
       } else if (error.errors.containsKey('detail')) {
-        errorMessage = error.errors['detail'][0];
+        errorMessage = error.errors['detail'];
       }
       _showErrorDialog(errorMessage);
-      //} finally {
-      //  var errorMessage = 'Could not authenticate you. Please try again later';
-      //  _showErrorDialog(errorMessage);
-
     } catch (error) {
       String errorMessage = error.toString();
       _showErrorDialog(errorMessage);
@@ -285,13 +279,11 @@ class _AuthCardState extends State<AuthCard> {
                   CircularProgressIndicator()
                 else
                   ElevatedButton(
-                    child:
-                        Text(_authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP'),
+                    child: Text(_authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP'),
                     onPressed: _submit,
                   ),
                 TextButton(
-                  child: Text(
-                      '${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD'),
+                  child: Text('${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD'),
                   onPressed: _switchAuthMode,
                 ),
               ],

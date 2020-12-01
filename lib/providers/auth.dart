@@ -79,7 +79,7 @@ class Auth with ChangeNotifier {
       });
       prefs.setString('userData', userData);
     } catch (error) {
-      throw HttpException(error.errors);
+      throw error;
     }
   }
 
