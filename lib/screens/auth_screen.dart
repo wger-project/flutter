@@ -149,11 +149,11 @@ class _AuthCardState extends State<AuthCard> {
       var errorMessage = 'Authentication Failed';
 
       if (error.errors.containsKey('username')) {
-        errorMessage = error.errors['username'];
+        errorMessage = "Username: " + error.errors['username'][0];
       } else if (error.errors.containsKey('password')) {
-        errorMessage = error.errors['password'];
+        errorMessage = "Password: " + error.errors['password'][0];
       } else if (error.errors.containsKey('detail')) {
-        errorMessage = error.errors['detail'];
+        errorMessage = error.errors['detail'][0];
       }
       _showErrorDialog(errorMessage);
       //} finally {
