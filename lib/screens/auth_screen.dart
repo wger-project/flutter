@@ -250,19 +250,6 @@ class _AuthCardState extends State<AuthCard> {
                     _authData['password'] = value;
                   },
                 ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Server URL'),
-                  controller: _serverUrlController,
-                  validator: (value) {
-                    if (value.isEmpty || !value.contains('http')) {
-                      return 'Invalid URL!';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    _authData['serverUrl'] = value;
-                  },
-                ),
                 if (_authMode == AuthMode.Signup)
                   TextFormField(
                     decoration: InputDecoration(labelText: 'Confirm Password'),
@@ -278,6 +265,19 @@ class _AuthCardState extends State<AuthCard> {
                           }
                         : null,
                   ),
+                TextFormField(
+                  decoration: InputDecoration(labelText: 'Server URL'),
+                  controller: _serverUrlController,
+                  validator: (value) {
+                    if (value.isEmpty || !value.contains('http')) {
+                      return 'Invalid URL!';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    _authData['serverUrl'] = value;
+                  },
+                ),
                 SizedBox(
                   height: 20,
                 ),
