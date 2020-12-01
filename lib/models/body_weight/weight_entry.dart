@@ -16,7 +16,7 @@ class WeightEntry {
   final DateTime date;
 
   WeightEntry({
-    @required this.id,
+    this.id,
     @required this.weight,
     @required this.date,
   });
