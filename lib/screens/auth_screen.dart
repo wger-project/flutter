@@ -98,9 +98,7 @@ class _AuthCardState extends State<AuthCard> {
   final _passwordController = TextEditingController(text: 'admin');
   final _password2Controller = TextEditingController();
   final _emailController = TextEditingController();
-  final _serverUrlController = TextEditingController(
-    text: 'http://10.0.2.2::8000',
-  );
+  final _serverUrlController = TextEditingController(text: 'http://10.0.2.2:8000');
 
   void _showErrorDialog(String message) {
     showDialog(
