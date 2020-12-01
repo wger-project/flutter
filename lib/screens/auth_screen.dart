@@ -4,7 +4,10 @@ import 'package:provider/provider.dart';
 import '../models/http_exception.dart';
 import '../providers/auth.dart';
 
-enum AuthMode { Signup, Login }
+enum AuthMode {
+  Signup,
+  Login,
+}
 
 class AuthScreen extends StatelessWidget {
   static const routeName = '/auth';
@@ -15,21 +18,23 @@ class AuthScreen extends StatelessWidget {
     // final transformConfig = Matrix4.rotationZ(-8 * pi / 180);
     // transformConfig.translate(-10.0);
     return Scaffold(
-      // resizeToAvoidBottomInset: false,
+      backgroundColor: Theme.of(context).primaryColor,
       body: Stack(
         children: <Widget>[
-          Container(
-            decoration: BoxDecoration(
-              color: const Color(0xff222000),
-              image: new DecorationImage(
-                fit: BoxFit.cover,
-                colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.2), BlendMode.dstATop),
-                image: new AssetImage(
-                  'assets/images/main.jpg',
+          if (false)
+            Container(
+              decoration: BoxDecoration(
+                color: const Color(0xff222000),
+                image: new DecorationImage(
+                  fit: BoxFit.cover,
+                  colorFilter: ColorFilter.mode(
+                      Colors.black.withOpacity(0.2), BlendMode.dstATop),
+                  image: new AssetImage(
+                    'assets/images/main.jpg',
+                  ),
                 ),
               ),
             ),
-          ),
           SingleChildScrollView(
             child: Container(
               height: deviceSize.height,
@@ -40,22 +45,21 @@ class AuthScreen extends StatelessWidget {
                 children: <Widget>[
                   Padding(padding: EdgeInsets.symmetric(vertical: 20)),
                   Image(
-                    image: AssetImage('assets/images/logo.png'),
+                    image: AssetImage('assets/images/logo-white.png'),
                     width: 120,
                   ),
-                  Flexible(
-                    child: Container(
-                      margin: EdgeInsets.only(bottom: 20.0),
-                      padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 94.0),
-                      // ..translate(-10.0),
-                      child: Text(
-                        'WGER',
-                        style: TextStyle(
-                          color: Theme.of(context).accentColor,
-                          fontSize: 50,
-                          fontFamily: 'OpenSansBold',
-                          fontWeight: FontWeight.bold,
-                        ),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 20.0),
+                    padding:
+                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 94.0),
+                    // ..translate(-10.0),
+                    child: Text(
+                      'WGER',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 50,
+                        fontFamily: 'OpenSansBold',
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
@@ -149,6 +153,10 @@ class _AuthCardState extends State<AuthCard> {
       //} finally {
       //  var errorMessage = 'Could not authenticate you. Please try again later';
       //  _showErrorDialog(errorMessage);
+
+    } catch (error) {
+      String errorMessage = error.toString();
+      _showErrorDialog(errorMessage);
     }
 
     setState(() {
@@ -177,8 +185,10 @@ class _AuthCardState extends State<AuthCard> {
       ),
       elevation: 8.0,
       child: Container(
-        height: _authMode == AuthMode.Signup ? 520 : 320,
-        constraints: BoxConstraints(minHeight: _authMode == AuthMode.Signup ? 520 : 320),
+        //decoration: BoxDecoration(color: Colors.black12),
+        //height: _authMode == AuthMode.Signup ? 450 : 320,
+        //constraints:
+        //    BoxConstraints(minHeight: _authMode == AuthMode.Signup ? 450 : 320),
         width: deviceSize.width * 0.75,
         padding: EdgeInsets.all(16.0),
         child: Form(
@@ -266,11 +276,13 @@ class _AuthCardState extends State<AuthCard> {
                   CircularProgressIndicator()
                 else
                   ElevatedButton(
-                    child: Text(_authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP'),
+                    child:
+                        Text(_authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP'),
                     onPressed: _submit,
                   ),
                 TextButton(
-                  child: Text('${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD'),
+                  child: Text(
+                      '${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD'),
                   onPressed: _switchAuthMode,
                 ),
               ],
