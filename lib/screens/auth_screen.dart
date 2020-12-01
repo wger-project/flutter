@@ -96,7 +96,13 @@ class _AuthCardState extends State<AuthCard> {
     'serverUrl': '',
   };
   var _isLoading = false;
-  final _passwordController = TextEditingController();
+  final _usernameController = TextEditingController(text: 'admin');
+  final _passwordController = TextEditingController(text: 'admin');
+  final _password2Controller = TextEditingController();
+  final _emailController = TextEditingController();
+  final _serverUrlController = TextEditingController(
+    text: 'http://10.0.2.2::8000',
+  );
 
   void _showErrorDialog(String message) {
     showDialog(
@@ -198,6 +204,7 @@ class _AuthCardState extends State<AuthCard> {
               children: <Widget>[
                 TextFormField(
                   decoration: InputDecoration(labelText: 'Username'),
+                  controller: _usernameController,
                   textInputAction: TextInputAction.next,
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) {
@@ -213,6 +220,7 @@ class _AuthCardState extends State<AuthCard> {
                 if (_authMode == AuthMode.Signup)
                   TextFormField(
                     decoration: InputDecoration(labelText: 'E-Mail'),
+                    controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                     textInputAction: TextInputAction.next,
                     validator: (value) {
@@ -243,8 +251,8 @@ class _AuthCardState extends State<AuthCard> {
                   },
                 ),
                 TextFormField(
-                  decoration: InputDecoration(labelText: 'Server Url'),
-                  initialValue: 'http://10.0.2.2:8000',
+                  decoration: InputDecoration(labelText: 'Server URL'),
+                  controller: _serverUrlController,
                   validator: (value) {
                     if (value.isEmpty || !value.contains('http')) {
                       return 'Invalid URL!';
@@ -258,6 +266,7 @@ class _AuthCardState extends State<AuthCard> {
                 if (_authMode == AuthMode.Signup)
                   TextFormField(
                     decoration: InputDecoration(labelText: 'Confirm Password'),
+                    controller: _password2Controller,
                     enabled: _authMode == AuthMode.Signup,
                     obscureText: true,
                     validator: _authMode == AuthMode.Signup
