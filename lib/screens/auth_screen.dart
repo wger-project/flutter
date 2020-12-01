@@ -95,7 +95,7 @@ class _AuthCardState extends State<AuthCard> {
   };
   var _isLoading = false;
   final _usernameController = TextEditingController(text: 'admin');
-  final _passwordController = TextEditingController(text: 'admin');
+  final _passwordController = TextEditingController(text: 'adminadmin');
   final _password2Controller = TextEditingController();
   final _emailController = TextEditingController();
   final _serverUrlController = TextEditingController(text: 'http://10.0.2.2:8000');
