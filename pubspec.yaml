@@ -39,7 +39,6 @@ dev_dependencies:
     sdk: flutter
   flutter_launcher_icons: ^0.8.1
   intl_translation: ^0.17.10+1
-  json_serializable: ^3.5.0
 
   # Note that there are incompatibilities when using a higher version. Both build
   # runner and intl_translation depend on different versions of analyzer
