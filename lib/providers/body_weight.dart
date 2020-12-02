@@ -27,18 +27,20 @@ class BodyWeight with ChangeNotifier {
     return _entries.firstWhere((plan) => plan.id == id);
   }
 
-  Future<void> fetchAndSetEntries() async {
-    final response = await http.get(
+  Future<void> fetchAndSetEntries({http.Client client}) async {
+    if (client == null) {
+      client = http.Client();
+    }
+
+    // Send the request
+    final response = await client.get(
       _url,
       headers: <String, String>{'Authorization': 'Token ${_auth.token}'},
     );
+
+    // Process the response
     final extractedData = json.decode(response.body) as Map<String, dynamic>;
-
     final List<WeightEntry> loadedEntries = [];
-    if (loadedEntries == null) {
-      return;
-    }
-
     for (final entry in extractedData['results']) {
       loadedEntries.add(WeightEntry.fromJson(entry));
     }
@@ -47,9 +49,13 @@ class BodyWeight with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addEntry(WeightEntry entry) async {
+  Future<WeightEntry> addEntry(WeightEntry entry, {http.Client client}) async {
+    if (client == null) {
+      client = http.Client();
+    }
+
     try {
-      final response = await http.post(
+      final response = await client.post(
         _url,
         headers: {
           'Authorization': 'Token ${_auth.token}',
@@ -57,30 +63,39 @@ class BodyWeight with ChangeNotifier {
         },
         body: json.encode(entry.toJson()),
       );
-      _entries.insert(0, WeightEntry.fromJson(json.decode(response.body)));
+      WeightEntry weightEntry = WeightEntry.fromJson(json.decode(response.body));
+      _entries.insert(0, weightEntry);
       notifyListeners();
+      return weightEntry;
     } catch (error) {
-      log(error);
+      log(error.toString());
       throw error;
     }
   }
 
-  Future<void> deleteEntry(int id) async {
+  Future<void> deleteEntry(int id, {http.Client client}) async {
+    if (client == null) {
+      client = http.Client();
+    }
+
+    // Send the request and remove the entry from the list...
     final url = '$_url$id/';
-    final existingPlanIndex = _entries.indexWhere((element) => element.id == id);
-    var existingPlan = _entries[existingPlanIndex];
-    _entries.removeAt(existingPlanIndex);
+    final existingEntryIndex = _entries.indexWhere((element) => element.id == id);
+    var existingWeightEntry = _entries[existingEntryIndex];
+    _entries.removeAt(existingEntryIndex);
     notifyListeners();
 
-    final response = await http.delete(
+    final response = await client.delete(
       url,
       headers: {'Authorization': 'Token ${_auth.token}'},
     );
+
+    // ...but it that didn't work, put it back again
     if (response.statusCode >= 400) {
-      _entries.insert(existingPlanIndex, existingPlan);
+      _entries.insert(existingEntryIndex, existingWeightEntry);
       notifyListeners();
       //throw HttpException();
     }
-    existingPlan = null;
+    existingWeightEntry = null;
   }
 }

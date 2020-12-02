@@ -9,8 +9,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/models/http_exception.dart';
 
 class Auth with ChangeNotifier {
-  String _token;
-  String _serverUrl;
+  String token;
+  String serverUrl;
   // DateTime _expiryDate;
   // String _userId;
   // Timer _authTimer;
@@ -19,17 +19,17 @@ class Auth with ChangeNotifier {
     return token != null;
   }
 
-  String get token {
+  String get token2 {
     // if (_expiryDate != null &&
     // _expiryDate.isAfter(DateTime.now()) &&
     // _token != null) {
-    return _token;
+    return token;
     // }
     // return null;
   }
 
-  String get serverUrl {
-    return _serverUrl;
+  String get serverUrl2 {
+    return serverUrl;
   }
 
   // String get userId {
@@ -57,8 +57,8 @@ class Auth with ChangeNotifier {
       }
 
       // Log user in
-      _serverUrl = serverUrl;
-      _token = responseData['token'];
+      this.serverUrl = serverUrl;
+      token = responseData['token'];
 
       // _userId = responseData['localId'];
       // _expiryDate = DateTime.now().add(
@@ -73,8 +73,8 @@ class Auth with ChangeNotifier {
       // store login data in shared preferences
       final prefs = await SharedPreferences.getInstance();
       final userData = json.encode({
-        'token': _token,
-        'serverUrl': _serverUrl,
+        'token': token,
+        'serverUrl': this.serverUrl,
         // 'expiryDate': _expiryDate.toIso8601String(),
       });
       prefs.setString('userData', userData);
@@ -105,8 +105,8 @@ class Auth with ChangeNotifier {
     //   return false;
     // }
 
-    _token = extractedUserData['token'];
-    _serverUrl = extractedUserData['serverUrl'];
+    token = extractedUserData['token'];
+    serverUrl = extractedUserData['serverUrl'];
     // _userId = extractedUserData['userId'];
     // _expiryDate = expiryDate;
 
@@ -118,8 +118,8 @@ class Auth with ChangeNotifier {
 
   Future<void> logout() async {
     log('logging out');
-    _token = null;
-    _serverUrl = null;
+    token = null;
+    serverUrl = null;
     // _userId = null;
     // _expiryDate = null;
     // if (_authTimer != null) {
@@ -140,7 +140,4 @@ class Auth with ChangeNotifier {
   //   _authTimer = Timer(Duration(seconds: timeToExpiry), logout);
   // }
 
-  void setLoginServer(String serverUrl) {
-    _serverUrl = serverUrl;
-  }
 }
