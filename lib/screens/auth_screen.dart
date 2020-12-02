@@ -62,7 +62,7 @@ class AuthScreen extends StatelessWidget {
                     ),
                   ),
                   Flexible(
-                    flex: deviceSize.width > 600 ? 2 : 1,
+                    //flex: deviceSize.width > 600 ? 2 : 1,
                     child: AuthCard(),
                   ),
                 ],
@@ -195,6 +195,7 @@ class _AuthCardState extends State<AuthCard> {
             child: Column(
               children: <Widget>[
                 TextFormField(
+                  key: Key('inputUsername'),
                   decoration: InputDecoration(labelText: 'Username'),
                   controller: _usernameController,
                   textInputAction: TextInputAction.next,
@@ -211,6 +212,7 @@ class _AuthCardState extends State<AuthCard> {
                 ),
                 if (_authMode == AuthMode.Signup)
                   TextFormField(
+                    key: Key('inputEmail'),
                     decoration: InputDecoration(labelText: 'E-Mail'),
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
@@ -226,6 +228,7 @@ class _AuthCardState extends State<AuthCard> {
                     },
                   ),
                 TextFormField(
+                  key: Key('inputPassword'),
                   decoration: InputDecoration(labelText: 'Password'),
                   obscureText: true,
                   controller: _passwordController,
@@ -244,6 +247,7 @@ class _AuthCardState extends State<AuthCard> {
                 ),
                 if (_authMode == AuthMode.Signup)
                   TextFormField(
+                    key: Key('inputPassword2'),
                     decoration: InputDecoration(labelText: 'Confirm Password'),
                     controller: _password2Controller,
                     enabled: _authMode == AuthMode.Signup,
@@ -258,6 +262,7 @@ class _AuthCardState extends State<AuthCard> {
                         : null,
                   ),
                 TextFormField(
+                  key: Key('inputServer'),
                   decoration: InputDecoration(labelText: 'Server URL'),
                   controller: _serverUrlController,
                   validator: (value) {
@@ -277,11 +282,13 @@ class _AuthCardState extends State<AuthCard> {
                   CircularProgressIndicator()
                 else
                   ElevatedButton(
-                    child: Text(_authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP'),
+                    key: Key('actionButton'),
+                    child: Text(_authMode == AuthMode.Login ? 'LOGIN' : 'REGISTER'),
                     onPressed: _submit,
                   ),
                 TextButton(
-                  child: Text('${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD'),
+                  key: Key('toggleActionButton'),
+                  child: Text('${_authMode == AuthMode.Login ? 'REGISTER' : 'LOGIN'} INSTEAD'),
                   onPressed: _switchAuthMode,
                 ),
               ],
