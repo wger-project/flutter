@@ -1,20 +1,50 @@
 {
-  "@@last_modified": "2020-11-21T20:55:11.028883",
+  "@@last_modified": "2020-12-05T11:28:38.887425",
   "labelWorkoutPlans": "Workout plans",
   "@labelWorkoutPlans": {
     "description": "Title for screen workout plans",
     "type": "text",
     "placeholders": {}
   },
-  "newWorkout": "new Workout",
+  "newWorkout": "New Workout",
   "@newWorkout": {
     "description": "Header when adding a new workout",
     "type": "text",
     "placeholders": {}
   },
-  "description": "description",
+  "newDay": "New day",
+  "@newDay": {
+    "description": "Header when adding a new day to a workout",
+    "type": "text",
+    "placeholders": {}
+  },
+  "newSet": "New set",
+  "@newSet": {
+    "description": "Header when adding a new set to a workout day",
+    "type": "text",
+    "placeholders": {}
+  },
+  "description": "Description",
   "@description": {
     "description": "Description of a workout, nutritional plan, etc.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "save": "Save",
+  "@save": {
+    "description": "Saving a new entry in the DB",
+    "type": "text",
+    "placeholders": {}
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Cancelling an action",
+    "type": "text",
+    "placeholders": {}
+  },
+  "add": "Add",
+  "@add": {
+    "description": "Label for a button etc.",
     "type": "text",
     "placeholders": {}
   },
@@ -27,6 +57,18 @@
   "labelDashboard": "Dashboard",
   "@labelDashboard": {
     "description": "Title for screen dashboard",
+    "type": "text",
+    "placeholders": {}
+  },
+  "anErrorOccurred": "An Error Occurred!",
+  "@anErrorOccurred": {
+    "description": "Title for error popups",
+    "type": "text",
+    "placeholders": {}
+  },
+  "dismiss": "Dismiss",
+  "@dismiss": {
+    "description": "Button to close a dialog",
     "type": "text",
     "placeholders": {}
   }

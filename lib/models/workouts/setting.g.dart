@@ -28,9 +28,7 @@ Setting _$SettingFromJson(Map<String, dynamic> json) {
             json['repetition_unit'] as Map<String, dynamic>),
     reps: json['reps'] as int,
     weight: (json['weight'] as num)?.toDouble(),
-    weightUnit: json['weight_unit'] == null
-        ? null
-        : WeightUnit.fromJson(json['weight_unit'] as Map<String, dynamic>),
+    weightUnit: json['weight_unit'],
     comment: json['comment'] as String,
     repsText: json['repsText'] as String,
   );

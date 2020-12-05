@@ -1,9 +1,9 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:wger/models/body_weight/weight_entry.dart';
+import 'package:wger/models/http_exception.dart';
 import 'package:wger/providers/auth.dart';
 
 class BodyWeight with ChangeNotifier {
@@ -63,12 +63,18 @@ class BodyWeight with ChangeNotifier {
         },
         body: json.encode(entry.toJson()),
       );
+
+      // Something wrong with our request
+      if (response.statusCode >= 400) {
+        throw HttpException(json.decode(response.body));
+      }
+
+      // Create entry and return
       WeightEntry weightEntry = WeightEntry.fromJson(json.decode(response.body));
       _entries.insert(0, weightEntry);
       notifyListeners();
       return weightEntry;
     } catch (error) {
-      log(error.toString());
       throw error;
     }
   }

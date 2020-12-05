@@ -19,5 +19,5 @@ Map<String, dynamic> _$WeightEntryToJson(WeightEntry instance) =>
     <String, dynamic>{
       'id': instance.id,
       'weight': toString(instance.weight),
-      'date': instance.date?.toIso8601String(),
+      'date': toDate(instance.date),
     };

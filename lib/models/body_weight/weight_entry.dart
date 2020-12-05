@@ -12,7 +12,7 @@ class WeightEntry {
   @JsonKey(required: true, fromJson: toNum, toJson: toString)
   final num weight;
 
-  @JsonKey(required: true)
+  @JsonKey(required: true, toJson: toDate)
   final DateTime date;
 
   WeightEntry({

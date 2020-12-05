@@ -96,6 +96,22 @@ class AppLocalizations {
       desc: 'Title for screen dashboard',
     );
   }
+
+  String get anErrorOccurred {
+    return Intl.message(
+      'An Error Occurred!',
+      name: 'anErrorOccurred',
+      desc: 'Title for error popups',
+    );
+  }
+
+  String get dismiss {
+    return Intl.message(
+      'Dismiss',
+      name: 'dismiss',
+      desc: 'Button to close a dialog',
+    );
+  }
 }
 
 class AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -28,6 +28,7 @@ class WeightEntriesList extends StatelessWidget {
             defaultRenderer: new charts.LineRendererConfig(includePoints: true),
           ),
         ),
+        Divider(),
         Expanded(
           child: ListView.builder(
             padding: const EdgeInsets.all(10.0),
@@ -44,7 +45,7 @@ class WeightEntriesList extends StatelessWidget {
                   Scaffold.of(context).showSnackBar(
                     SnackBar(
                       content: Text(
-                        "Weight entry for the ${currentEntry.date}",
+                        "Deleted weight entry for the ${DateFormat('dd.MM.yyyy').format(currentEntry.date).toString()}",
                         textAlign: TextAlign.center,
                       ),
                     ),

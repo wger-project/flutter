@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/helpers/ui.dart';
 import 'package:wger/models/body_weight/weight_entry.dart';
+import 'package:wger/models/http_exception.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/widgets/app_drawer.dart';
 import 'package:wger/widgets/weight/entries_list.dart';
@@ -30,13 +32,19 @@ class WeightScreen extends StatelessWidget {
       appBar: getAppBar(),
       drawer: AppDrawer(),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Provider.of<BodyWeight>(context, listen: false).addEntry(
-            WeightEntry(
-              date: DateTime.now(),
-              weight: 80,
-            ),
-          );
+        onPressed: () async {
+          try {
+            await Provider.of<BodyWeight>(context, listen: false).addEntry(
+              WeightEntry(
+                date: DateTime.now(),
+                weight: 80,
+              ),
+            );
+          } on HttpException catch (error) {
+            showHttpExceptionErrorDialog(error, context);
+          } catch (error) {
+            showErrorDialog(error, context);
+          }
         },
         child: const Icon(Icons.add),
       ),
