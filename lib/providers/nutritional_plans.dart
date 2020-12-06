@@ -60,8 +60,6 @@ class NutritionalPlans with ChangeNotifier {
         },
         body: json.encode(plan.toJson()),
       );
-      print(plan.toJson());
-      print(json.decode(response.body));
       _entries.insert(0, NutritionalPlan.fromJson(json.decode(response.body)));
       notifyListeners();
     } catch (error) {
