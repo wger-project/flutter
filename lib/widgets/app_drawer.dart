@@ -37,7 +37,6 @@ class AppDrawer extends StatelessWidget {
             title: Text('wger'),
             automaticallyImplyLeading: false,
           ),
-          Divider(),
           ListTile(
             leading: Icon(Icons.home),
             title: Text(AppLocalizations.of(context).labelDashboard),
@@ -74,7 +73,9 @@ class AppDrawer extends StatelessWidget {
             },
           ),
           Divider(),
+          Expanded(child: Container()),
           ListTile(
+            dense: true,
             leading: Icon(Icons.edit),
             title: Text('Options'),
             onTap: () {
@@ -94,8 +95,8 @@ class AppDrawer extends StatelessWidget {
               );
             },
           ),
-          Divider(),
           ListTile(
+            dense: true,
             leading: Icon(Icons.exit_to_app),
             title: Text('Logout'),
             onTap: () {
@@ -104,8 +105,8 @@ class AppDrawer extends StatelessWidget {
               Navigator.of(context).pushReplacementNamed('/');
             },
           ),
-          Divider(),
           AboutListTile(
+            dense: true,
             icon: Icon(Icons.info),
             applicationName: 'wger',
             applicationVersion: '0.0.1 alpha',
