@@ -1,9 +1,27 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (C) 2020 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * wger Workout Manager is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:wger/models/body_weight/weight_entry.dart';
+import 'package:wger/models/http_exception.dart';
 import 'package:wger/providers/auth.dart';
 
 class BodyWeight with ChangeNotifier {
@@ -34,7 +52,7 @@ class BodyWeight with ChangeNotifier {
 
     // Send the request
     final response = await client.get(
-      _url,
+      _url + '?ordering=-date',
       headers: <String, String>{'Authorization': 'Token ${_auth.token}'},
     );
 
@@ -63,12 +81,19 @@ class BodyWeight with ChangeNotifier {
         },
         body: json.encode(entry.toJson()),
       );
+
+      // Something wrong with our request
+      if (response.statusCode >= 400) {
+        throw WgerHttpException(json.decode(response.body));
+      }
+
+      // Create entry and return
       WeightEntry weightEntry = WeightEntry.fromJson(json.decode(response.body));
-      _entries.insert(0, weightEntry);
+      _entries.add(weightEntry);
+      _entries.sort((a, b) => a.date.compareTo(b.date));
       notifyListeners();
       return weightEntry;
     } catch (error) {
-      log(error.toString());
       throw error;
     }
   }

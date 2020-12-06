@@ -1,3 +1,21 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (C) 2020 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * wger Workout Manager is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/mockito.dart';
@@ -13,7 +31,7 @@ void main() {
 
       // Mock the server response
       when(client.get(
-        'https://localhost/api/v2/weightentry/',
+        'https://localhost/api/v2/weightentry/?ordering=-date',
         headers: <String, String>{'Authorization': 'Token ${testAuth.token}'},
       )).thenAnswer((_) async => http.Response(
           '{"results": [{"id": 1, "date": "2021-01-01", "weight": "80.00"}, '
@@ -39,7 +57,7 @@ void main() {
                 'Authorization': 'Token ${testAuth.token}',
                 'Content-Type': 'application/json; charset=UTF-8',
               },
-              body: '{"id":null,"weight":"80","date":"2021-01-01T00:00:00.000"}'))
+              body: '{"id":null,"weight":"80","date":"2021-01-01"}'))
           .thenAnswer(
               (_) async => http.Response('{"id": 25, "date": "2021-01-01", "weight": "80"}', 200));
 

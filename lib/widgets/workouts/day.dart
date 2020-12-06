@@ -1,3 +1,21 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (C) 2020 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * wger Workout Manager is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import 'package:flutter/material.dart';
 import 'package:wger/locale/locales.dart';
 import 'package:wger/models/workouts/day.dart';
@@ -64,20 +82,7 @@ class WorkoutDayWidget extends StatelessWidget {
     return Card(
       child: Column(
         children: [
-          Container(
-            decoration: BoxDecoration(color: Colors.black12),
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            width: double.infinity,
-            child: Column(
-              children: [
-                Text(
-                  _day.description,
-                  style: Theme.of(context).textTheme.headline6,
-                ),
-                Text(_day.getDaysText),
-              ],
-            ),
-          ),
+          DayHeaderDismissible(day: _day),
           ..._day.sets
               .map(
                 (set) => getSetRow(set),
@@ -87,11 +92,11 @@ class WorkoutDayWidget extends StatelessWidget {
             child: Text('Add exercise to day'),
             onPressed: () {
               showModalBottomSheet(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return SetFormWidget(
-                        formKey: _formKey, exercisesController: exercisesController);
-                  });
+                context: context,
+                builder: (BuildContext context) {
+                  return SetFormWidget(formKey: _formKey, exercisesController: exercisesController);
+                },
+              );
             },
           ),
           Padding(
@@ -99,6 +104,109 @@ class WorkoutDayWidget extends StatelessWidget {
           )
         ],
       ),
+    );
+  }
+}
+
+class DayHeaderDismissible extends StatelessWidget {
+  const DayHeaderDismissible({
+    Key key,
+    @required Day day,
+  })  : _day = day,
+        super(key: key);
+
+  final Day _day;
+
+  @override
+  Widget build(BuildContext context) {
+    return Dismissible(
+      key: Key(_day.id.toString()),
+      child: Container(
+        decoration: BoxDecoration(color: Colors.black12),
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        width: double.infinity,
+        child: Column(
+          children: [
+            Text(
+              _day.description,
+              style: Theme.of(context).textTheme.headline6,
+            ),
+            Text(_day.getDaysText),
+          ],
+        ),
+      ),
+      secondaryBackground: Container(
+        color: Theme.of(context).primaryColor,
+        padding: EdgeInsets.only(right: 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Icon(
+              Icons.bar_chart,
+              color: Colors.white,
+            ),
+            Text(
+              'Log weights',
+              style: TextStyle(color: Colors.white),
+            ),
+          ],
+        ),
+      ),
+      background: Container(
+        color: Theme.of(context).accentColor,
+        alignment: Alignment.centerLeft,
+        padding: EdgeInsets.only(left: 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text(
+              'Gym mode',
+              style: TextStyle(color: Colors.white),
+            ),
+            Icon(
+              Icons.play_arrow,
+              color: Colors.white,
+            ),
+          ],
+        ),
+      ),
+      confirmDismiss: (direction) async {
+        // Weight log
+        if (direction == DismissDirection.endToStart) {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              content: Text('Would open weight log form for this day'),
+              actions: [
+                TextButton(
+                  child: Text(
+                    "Close",
+                  ),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ],
+            ),
+          );
+
+          // Gym mode
+        } else {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              content: Text('Would start gym mode for this day'),
+              actions: [
+                TextButton(
+                  child: Text(
+                    "Close",
+                  ),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ],
+            ),
+          );
+        }
+        return false;
+      },
     );
   }
 }

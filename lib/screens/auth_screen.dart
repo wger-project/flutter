@@ -1,5 +1,24 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (C) 2020 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * wger Workout Manager is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/helpers/ui.dart';
 
 import '../models/http_exception.dart';
 import '../providers/auth.dart';
@@ -62,7 +81,7 @@ class AuthScreen extends StatelessWidget {
                     ),
                   ),
                   Flexible(
-                    flex: deviceSize.width > 600 ? 2 : 1,
+                    //flex: deviceSize.width > 600 ? 2 : 1,
                     child: AuthCard(),
                   ),
                 ],
@@ -100,24 +119,6 @@ class _AuthCardState extends State<AuthCard> {
   final _emailController = TextEditingController();
   final _serverUrlController = TextEditingController(text: 'http://10.0.2.2:8000');
 
-  void _showErrorDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text('An Error Occurred!'),
-        content: Text(message),
-        actions: [
-          TextButton(
-            child: Text('Dismiss'),
-            onPressed: () {
-              Navigator.of(ctx).pop();
-            },
-          )
-        ],
-      ),
-    );
-  }
-
   void _submit() async {
     if (!_formKey.currentState.validate()) {
       // Invalid!
@@ -141,20 +142,10 @@ class _AuthCardState extends State<AuthCard> {
         // .register(_authData['email'], _authData['password']);
 
       }
-    } on HttpException catch (error) {
-      var errorMessage = 'Authentication Failed';
-
-      if (error.errors.containsKey('username')) {
-        errorMessage = "Username: " + error.errors['username'].join('\n\n');
-      } else if (error.errors.containsKey('password')) {
-        errorMessage = "Password: " + error.errors['password'].join('\n\n');
-      } else if (error.errors.containsKey('detail')) {
-        errorMessage = error.errors['detail'];
-      }
-      _showErrorDialog(errorMessage);
+    } on WgerHttpException catch (error) {
+      showHttpExceptionErrorDialog(error, context);
     } catch (error) {
-      String errorMessage = error.toString();
-      _showErrorDialog(errorMessage);
+      showErrorDialog(error, context);
     }
 
     setState(() {
@@ -195,6 +186,7 @@ class _AuthCardState extends State<AuthCard> {
             child: Column(
               children: <Widget>[
                 TextFormField(
+                  key: Key('inputUsername'),
                   decoration: InputDecoration(labelText: 'Username'),
                   controller: _usernameController,
                   textInputAction: TextInputAction.next,
@@ -211,6 +203,7 @@ class _AuthCardState extends State<AuthCard> {
                 ),
                 if (_authMode == AuthMode.Signup)
                   TextFormField(
+                    key: Key('inputEmail'),
                     decoration: InputDecoration(labelText: 'E-Mail'),
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
@@ -226,6 +219,7 @@ class _AuthCardState extends State<AuthCard> {
                     },
                   ),
                 TextFormField(
+                  key: Key('inputPassword'),
                   decoration: InputDecoration(labelText: 'Password'),
                   obscureText: true,
                   controller: _passwordController,
@@ -244,6 +238,7 @@ class _AuthCardState extends State<AuthCard> {
                 ),
                 if (_authMode == AuthMode.Signup)
                   TextFormField(
+                    key: Key('inputPassword2'),
                     decoration: InputDecoration(labelText: 'Confirm Password'),
                     controller: _password2Controller,
                     enabled: _authMode == AuthMode.Signup,
@@ -258,6 +253,7 @@ class _AuthCardState extends State<AuthCard> {
                         : null,
                   ),
                 TextFormField(
+                  key: Key('inputServer'),
                   decoration: InputDecoration(labelText: 'Server URL'),
                   controller: _serverUrlController,
                   validator: (value) {
@@ -277,11 +273,13 @@ class _AuthCardState extends State<AuthCard> {
                   CircularProgressIndicator()
                 else
                   ElevatedButton(
-                    child: Text(_authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP'),
+                    key: Key('actionButton'),
+                    child: Text(_authMode == AuthMode.Login ? 'LOGIN' : 'REGISTER'),
                     onPressed: _submit,
                   ),
                 TextButton(
-                  child: Text('${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD'),
+                  key: Key('toggleActionButton'),
+                  child: Text('${_authMode == AuthMode.Login ? 'REGISTER' : 'LOGIN'} INSTEAD'),
                   onPressed: _switchAuthMode,
                 ),
               ],

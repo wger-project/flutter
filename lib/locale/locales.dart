@@ -1,3 +1,21 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (C) 2020 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * wger Workout Manager is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:wger/l10n/messages_all.dart';
@@ -94,6 +112,54 @@ class AppLocalizations {
       'Dashboard',
       name: 'labelDashboard',
       desc: 'Title for screen dashboard',
+    );
+  }
+
+  String get anErrorOccurred {
+    return Intl.message(
+      'An Error Occurred!',
+      name: 'anErrorOccurred',
+      desc: 'Title for error popups',
+    );
+  }
+
+  String get dismiss {
+    return Intl.message(
+      'Dismiss',
+      name: 'dismiss',
+      desc: 'Button to close a dialog',
+    );
+  }
+
+  String get weight {
+    return Intl.message(
+      'Weight',
+      name: 'weight',
+      desc: 'The weight of a workout log or body weight entry',
+    );
+  }
+
+  String get date {
+    return Intl.message(
+      'Date',
+      name: 'date',
+      desc: 'The date of a workout log or body weight entry',
+    );
+  }
+
+  String get newEntry {
+    return Intl.message(
+      'New entry',
+      name: 'newEntry',
+      desc: 'Header when adding a new entry such as a weight or log entry',
+    );
+  }
+
+  String get newNutritionalPlan {
+    return Intl.message(
+      'New nutritional plan',
+      name: 'newNutritionalPlan',
+      desc: 'Header when adding a new nutritional plan',
     );
   }
 }
