@@ -20,6 +20,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:wger/models/http_exception.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/auth.dart';
 
@@ -49,23 +50,20 @@ class NutritionalPlans with ChangeNotifier {
       _url,
       headers: <String, String>{'Authorization': 'Token ${_auth.token}'},
     );
+
+    // Something wrong with our request
+    if (response.statusCode >= 400) {
+      throw WgerHttpException(response.body);
+    }
+
     final extractedData = json.decode(response.body) as Map<String, dynamic>;
-
     final List<NutritionalPlan> loadedPlans = [];
-    if (loadedPlans == null) {
-      return;
+    for (final entry in extractedData['results']) {
+      loadedPlans.add(NutritionalPlan.fromJson(entry));
     }
 
-    try {
-      for (final entry in extractedData['results']) {
-        loadedPlans.add(NutritionalPlan.fromJson(entry));
-      }
-
-      _entries = loadedPlans;
-      notifyListeners();
-    } catch (error) {
-      throw (error);
-    }
+    _entries = loadedPlans;
+    notifyListeners();
   }
 
   Future<void> addPlan(NutritionalPlan plan) async {
@@ -78,6 +76,12 @@ class NutritionalPlans with ChangeNotifier {
         },
         body: json.encode(plan.toJson()),
       );
+
+      // Something wrong with our request
+      if (response.statusCode >= 400) {
+        throw WgerHttpException(response.body);
+      }
+
       _entries.insert(0, NutritionalPlan.fromJson(json.decode(response.body)));
       notifyListeners();
     } catch (error) {
@@ -100,7 +104,7 @@ class NutritionalPlans with ChangeNotifier {
     if (response.statusCode >= 400) {
       _entries.insert(existingPlanIndex, existingPlan);
       notifyListeners();
-      //throw HttpException();
+      throw WgerHttpException(response.body);
     }
     existingPlan = null;
   }

@@ -56,6 +56,11 @@ class BodyWeight with ChangeNotifier {
       headers: <String, String>{'Authorization': 'Token ${_auth.token}'},
     );
 
+    // Something wrong with our request
+    if (response.statusCode >= 400) {
+      throw WgerHttpException(response.body);
+    }
+
     // Process the response
     final extractedData = json.decode(response.body) as Map<String, dynamic>;
     final List<WeightEntry> loadedEntries = [];
@@ -84,7 +89,7 @@ class BodyWeight with ChangeNotifier {
 
       // Something wrong with our request
       if (response.statusCode >= 400) {
-        throw WgerHttpException(json.decode(response.body));
+        throw WgerHttpException(response.body);
       }
 
       // Create entry and return
@@ -119,7 +124,7 @@ class BodyWeight with ChangeNotifier {
     if (response.statusCode >= 400) {
       _entries.insert(existingEntryIndex, existingWeightEntry);
       notifyListeners();
-      //throw HttpException();
+      throw WgerHttpException(response.body);
     }
     existingWeightEntry = null;
   }

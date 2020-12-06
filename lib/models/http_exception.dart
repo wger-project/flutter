@@ -16,10 +16,26 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-class WgerHttpException implements Exception {
-  final Map<String, dynamic> errors;
+import 'dart:convert';
 
-  WgerHttpException(this.errors);
+class WgerHttpException implements Exception {
+  Map<String, dynamic> errors;
+
+  /// Custom http exception.
+  /// Expects the response body of the REST call and will try to parse it to
+  /// JSON. Will use the response as-is if it fails.
+  WgerHttpException(String responseBody) {
+    if (responseBody == null) {
+      errors = {'unknown_error': 'An unknown error occurred, no further information available'};
+    } else {
+      try {
+        errors = json.decode(responseBody);
+      } catch (e) {
+        errors = {'error': responseBody};
+      }
+    }
+    this.errors = errors;
+  }
 
   @override
   String toString() {
