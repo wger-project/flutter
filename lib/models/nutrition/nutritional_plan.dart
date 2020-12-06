@@ -6,16 +6,16 @@ part 'nutritional_plan.g.dart';
 @JsonSerializable(explicitToJson: true)
 class NutritionalPlan {
   @JsonKey(required: true)
-  final int id;
+  int id;
 
   @JsonKey(required: true)
-  final String description;
+  String description;
 
   @JsonKey(required: true, name: 'creation_date')
-  final DateTime creationDate;
+  DateTime creationDate;
 
   @JsonKey(required: false)
-  final List<Meal> meals;
+  List<Meal> meals;
 
   NutritionalPlan({
     this.id,

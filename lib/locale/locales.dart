@@ -136,6 +136,14 @@ class AppLocalizations {
       desc: 'Header when adding a new entry such as a weight or log entry',
     );
   }
+
+  String get newNutritionalPlan {
+    return Intl.message(
+      'New nutritional plan',
+      name: 'newNutritionalPlan',
+      desc: 'Header when adding a new nutritional plan',
+    );
+  }
 }
 
 class AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
