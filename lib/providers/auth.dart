@@ -53,7 +53,7 @@ class Auth with ChangeNotifier {
       final responseData = json.decode(response.body);
 
       if (response.statusCode >= 400) {
-        throw HttpException(responseData);
+        throw WgerHttpException(responseData);
       }
 
       // Log user in

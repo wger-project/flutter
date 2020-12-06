@@ -130,7 +130,7 @@ class _WeightScreenState extends State<WeightScreen> {
                         weightController.clear();
                         dateController.clear();
                         weightEntry = WeightEntry();
-                      } on HttpException catch (error) {
+                      } on WgerHttpException catch (error) {
                         showHttpExceptionErrorDialog(error, ctx);
                       } catch (error) {
                         showErrorDialog(error, context);

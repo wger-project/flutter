@@ -104,7 +104,7 @@ class _NutritionScreenState extends State<NutritionScreen> {
                         // Saving was successful, reset the data
                         descriptionController.clear();
                         nutritionalPlan = NutritionalPlan();
-                      } on HttpException catch (error) {
+                      } on WgerHttpException catch (error) {
                         showHttpExceptionErrorDialog(error, ctx);
                       } catch (error) {
                         showErrorDialog(error, context);

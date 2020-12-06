@@ -124,7 +124,7 @@ class _AuthCardState extends State<AuthCard> {
         // .register(_authData['email'], _authData['password']);
 
       }
-    } on HttpException catch (error) {
+    } on WgerHttpException catch (error) {
       showHttpExceptionErrorDialog(error, context);
     } catch (error) {
       showErrorDialog(error, context);

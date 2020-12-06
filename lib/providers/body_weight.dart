@@ -66,7 +66,7 @@ class BodyWeight with ChangeNotifier {
 
       // Something wrong with our request
       if (response.statusCode >= 400) {
-        throw HttpException(json.decode(response.body));
+        throw WgerHttpException(json.decode(response.body));
       }
 
       // Create entry and return

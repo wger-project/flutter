@@ -1,7 +1,7 @@
-class HttpException implements Exception {
+class WgerHttpException implements Exception {
   final Map<String, dynamic> errors;
 
-  HttpException(this.errors);
+  WgerHttpException(this.errors);
 
   @override
   String toString() {

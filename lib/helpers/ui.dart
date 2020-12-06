@@ -42,7 +42,7 @@ void showErrorDialog(dynamic exception, BuildContext context) {
   );
 }
 
-void showHttpExceptionErrorDialog(HttpException exception, BuildContext context) {
+void showHttpExceptionErrorDialog(WgerHttpException exception, BuildContext context) {
   log('showHttpExceptionErrorDialog: ');
   log(exception.toString());
   log('-------------------');
