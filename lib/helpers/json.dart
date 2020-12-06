@@ -13,5 +13,8 @@ String toString(num e) {
  * Needed e.g. when the wger api only expects a date and no time information.
  */
 String toDate(DateTime dateTime) {
+  if (dateTime == null) {
+    return null;
+  }
   return DateFormat('yyyy-MM-dd').format(dateTime).toString();
 }

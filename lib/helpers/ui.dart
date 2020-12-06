@@ -14,16 +14,22 @@
  *  You should have received a copy of the GNU General Public License
  */
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:wger/locale/locales.dart';
 import 'package:wger/models/http_exception.dart';
 
-void showErrorDialog(String message, BuildContext context) {
+void showErrorDialog(dynamic exception, BuildContext context) {
+  log('showErrorDialog: ');
+  log(exception.toString());
+  log('=====================');
+
   showDialog(
     context: context,
     builder: (ctx) => AlertDialog(
       title: Text('An Error Occurred!'),
-      content: Text(message),
+      content: Text(exception.toString()),
       actions: [
         TextButton(
           child: Text('Dismiss'),
@@ -37,6 +43,11 @@ void showErrorDialog(String message, BuildContext context) {
 }
 
 void showHttpExceptionErrorDialog(HttpException exception, BuildContext context) {
+  log('showHttpExceptionErrorDialog: ');
+  log(exception.toString());
+  log('-------------------');
+
+  //Navigator.of(context).pop();
   List<Widget> errorList = [];
   for (var key in exception.errors.keys) {
     // Error headers
@@ -47,7 +58,7 @@ void showHttpExceptionErrorDialog(HttpException exception, BuildContext context)
       errorList.add(Text(value));
     }
   }
-
+  //GlobalKey(debugLabel: 'wgerApp').currentContext
   showDialog(
     context: context,
     builder: (ctx) => AlertDialog(

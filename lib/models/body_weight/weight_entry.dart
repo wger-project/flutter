@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/json.dart';
 
@@ -10,15 +9,15 @@ class WeightEntry {
   final int id;
 
   @JsonKey(required: true, fromJson: toNum, toJson: toString)
-  final num weight;
+  num weight;
 
   @JsonKey(required: true, toJson: toDate)
-  final DateTime date;
+  DateTime date;
 
   WeightEntry({
-    @required this.id,
-    @required this.weight,
-    @required this.date,
+    this.id,
+    this.weight,
+    this.date,
   });
 
   // Boilerplate

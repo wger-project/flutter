@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/helpers/ui.dart';
 
 import '../models/http_exception.dart';
 import '../providers/auth.dart';
@@ -100,24 +101,6 @@ class _AuthCardState extends State<AuthCard> {
   final _emailController = TextEditingController();
   final _serverUrlController = TextEditingController(text: 'http://10.0.2.2:8000');
 
-  void _showErrorDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text('An Error Occurred!'),
-        content: Text(message),
-        actions: [
-          TextButton(
-            child: Text('Dismiss'),
-            onPressed: () {
-              Navigator.of(ctx).pop();
-            },
-          )
-        ],
-      ),
-    );
-  }
-
   void _submit() async {
     if (!_formKey.currentState.validate()) {
       // Invalid!
@@ -142,19 +125,9 @@ class _AuthCardState extends State<AuthCard> {
 
       }
     } on HttpException catch (error) {
-      var errorMessage = 'Authentication Failed';
-
-      if (error.errors.containsKey('username')) {
-        errorMessage = "Username: " + error.errors['username'].join('\n\n');
-      } else if (error.errors.containsKey('password')) {
-        errorMessage = "Password: " + error.errors['password'].join('\n\n');
-      } else if (error.errors.containsKey('detail')) {
-        errorMessage = error.errors['detail'];
-      }
-      _showErrorDialog(errorMessage);
+      showHttpExceptionErrorDialog(error, context);
     } catch (error) {
-      String errorMessage = error.toString();
-      _showErrorDialog(errorMessage);
+      showErrorDialog(error, context);
     }
 
     setState(() {

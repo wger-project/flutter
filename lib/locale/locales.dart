@@ -112,6 +112,30 @@ class AppLocalizations {
       desc: 'Button to close a dialog',
     );
   }
+
+  String get weight {
+    return Intl.message(
+      'Weight',
+      name: 'weight',
+      desc: 'The weight of a workout log or body weight entry',
+    );
+  }
+
+  String get date {
+    return Intl.message(
+      'Date',
+      name: 'date',
+      desc: 'The date of a workout log or body weight entry',
+    );
+  }
+
+  String get newEntry {
+    return Intl.message(
+      'New entry',
+      name: 'newEntry',
+      desc: 'Header when adding a new entry such as a weight or log entry',
+    );
+  }
 }
 
 class AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

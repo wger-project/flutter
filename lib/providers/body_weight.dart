@@ -34,7 +34,7 @@ class BodyWeight with ChangeNotifier {
 
     // Send the request
     final response = await client.get(
-      _url,
+      _url + '?ordering=-date',
       headers: <String, String>{'Authorization': 'Token ${_auth.token}'},
     );
 
@@ -71,7 +71,8 @@ class BodyWeight with ChangeNotifier {
 
       // Create entry and return
       WeightEntry weightEntry = WeightEntry.fromJson(json.decode(response.body));
-      _entries.insert(0, weightEntry);
+      _entries.add(weightEntry);
+      _entries.sort((a, b) => a.date.compareTo(b.date));
       notifyListeners();
       return weightEntry;
     } catch (error) {
