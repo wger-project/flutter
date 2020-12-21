@@ -78,7 +78,7 @@ class _NutritrionalPlanScreenState extends State<NutritrionalPlanScreen> {
                 : RefreshIndicator(
                     onRefresh: () => _loadNutritionalPlanDetail(context, nutritionalPlan.id),
                     child: Consumer<NutritionalPlans>(
-                      builder: (context, workout, _) => NutritionalPlanDetail(snapshot.data),
+                      builder: (context, workout, _) => NutritionalPlanDetailWidget(snapshot.data),
                     ),
                   ),
       ),

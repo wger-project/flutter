@@ -23,15 +23,15 @@ import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/widgets/core/bottom_sheet.dart';
 import 'package:wger/widgets/nutrition/meal.dart';
 
-class NutritionalPlanDetail extends StatefulWidget {
+class NutritionalPlanDetailWidget extends StatefulWidget {
   NutritionalPlan _nutritionalPlan;
-  NutritionalPlanDetail(this._nutritionalPlan);
+  NutritionalPlanDetailWidget(this._nutritionalPlan);
 
   @override
-  _NutritionalPlanDetailState createState() => _NutritionalPlanDetailState();
+  _NutritionalPlanDetailWidgetState createState() => _NutritionalPlanDetailWidgetState();
 }
 
-class _NutritionalPlanDetailState extends State<NutritionalPlanDetail> {
+class _NutritionalPlanDetailWidgetState extends State<NutritionalPlanDetailWidget> {
   Widget planForm = Form(
     child: Text('forms come here...'),
   );
@@ -58,15 +58,11 @@ class _NutritionalPlanDetailState extends State<NutritionalPlanDetail> {
               ),
             ),
             ...widget._nutritionalPlan.meals.map((meal) => MealWidget(meal)).toList(),
-            Column(
-              children: [
-                ElevatedButton(
-                  child: Text(AppLocalizations.of(context).add),
-                  onPressed: () {
-                    showFormBottomSheet(context, 'Add meal form', planForm);
-                  },
-                ),
-              ],
+            ElevatedButton(
+              child: Text(AppLocalizations.of(context).add),
+              onPressed: () {
+                showFormBottomSheet(context, 'Add meal form', planForm);
+              },
             ),
           ],
         ),

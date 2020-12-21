@@ -19,10 +19,17 @@
 import 'package:intl/intl.dart';
 
 num toNum(String e) {
+  if (e == null) {
+    return null;
+  }
   return num.parse(e);
 }
 
 String toString(num e) {
+  if (e == null) {
+    return null;
+  }
+
   return e.toString();
 }
 

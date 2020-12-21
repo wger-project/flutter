@@ -27,8 +27,25 @@ class MealItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String unit = _item.weightUnit == null ? 'g' : _item.weightUnit.weightUnit.name;
+    String amount = '${_item.amount}$unit';
+
     return Container(
-      child: Text(_item.ingredient.name),
+      padding: EdgeInsets.all(8),
+      width: double.infinity,
+      child: Table(
+        children: [
+          TableRow(
+            children: [
+              Text(
+                _item.ingredient.name,
+                textAlign: TextAlign.left,
+              ),
+              Text(amount),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
@@ -41,15 +58,21 @@ class MealWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Column(
-        children: [
-          Container(
-            decoration: BoxDecoration(color: Colors.black12),
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Text(_meal.time.toString()),
-          ),
-          ..._meal.mealItems.map((item) => MealItemWidget(item)).toList(),
-        ],
+      //color: Colors.amber,
+      //width: double.infinity,
+      child: Card(
+        child: Column(
+          //mainAxisSize: MainAxisSize.max,
+          children: [
+            Container(
+              width: double.infinity,
+              decoration: BoxDecoration(color: Colors.black12),
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: Text(_meal.getTime),
+            ),
+            ..._meal.mealItems.map((item) => MealItemWidget(item)).toList(),
+          ],
+        ),
       ),
     );
   }
