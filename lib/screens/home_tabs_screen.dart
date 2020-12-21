@@ -17,7 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:wger/screens/nutrition_screen.dart';
+import 'package:wger/screens/nutritional_plans_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/screens/workout_plans_screen.dart';
 

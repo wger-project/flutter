@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/nutritional_plans.dart';
+import 'package:wger/screens/nutritrional_plan_screen.dart';
 
 class NutritionalPlansList extends StatelessWidget {
   @override
@@ -66,7 +67,12 @@ class NutritionalPlansList extends StatelessWidget {
               //  WorkoutPlanScreen.routeName,
               //  arguments: currentPlan,
               //),
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).pushNamed(
+                  NutritrionalPlanScreen.routeName,
+                  arguments: currentPlan,
+                );
+              },
               title: Text(
                 DateFormat('dd.MM.yyyy').format(currentPlan.creationDate).toString(),
               ),

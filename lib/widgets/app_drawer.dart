@@ -23,7 +23,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:wger/locale/locales.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/screens/dashboard.dart';
-import 'package:wger/screens/nutrition_screen.dart';
+import 'package:wger/screens/nutritional_plans_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/screens/workout_plans_screen.dart';
 

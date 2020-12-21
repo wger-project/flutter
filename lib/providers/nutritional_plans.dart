@@ -108,4 +108,14 @@ class NutritionalPlans with ChangeNotifier {
     }
     existingPlan = null;
   }
+
+  Future<NutritionalPlan> fetchAndSetPlan(int planId) async {
+    String url = _auth.serverUrl + '/api/v2/nutritionplan/$planId/';
+    final response = await http.get(
+      url,
+      headers: <String, String>{'Authorization': 'Token ${_auth.token}'},
+    );
+    final extractedData = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+    return NutritionalPlan.fromJson(extractedData);
+  }
 }
