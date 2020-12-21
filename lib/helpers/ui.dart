@@ -60,7 +60,6 @@ void showHttpExceptionErrorDialog(WgerHttpException exception, BuildContext cont
       errorList.add(Text(value));
     }
   }
-  //GlobalKey(debugLabel: 'wgerApp').currentContext
   showDialog(
     context: context,
     builder: (ctx) => AlertDialog(

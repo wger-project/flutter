@@ -16,26 +16,20 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:wger/models/body_weight/weight_entry.dart';
 import 'package:wger/models/http_exception.dart';
 import 'package:wger/providers/auth.dart';
+import 'package:wger/providers/base_provider.dart';
 
-class BodyWeight with ChangeNotifier {
-  static const nutritionPlansUrl = '/api/v2/weightentry/';
+class BodyWeight extends WgerBaseProvider with ChangeNotifier {
+  static const bodyWeightUrl = '/api/v2/weightentry/';
 
-  String _url;
-  Auth _auth;
   List<WeightEntry> _entries = [];
-
-  BodyWeight(Auth auth, List<WeightEntry> entries) {
-    this._auth = auth;
-    this._entries = entries;
-    this._url = auth.serverUrl + nutritionPlansUrl;
-  }
+  BodyWeight(Auth auth, List<WeightEntry> entries)
+      : this._entries = entries,
+        super(auth, bodyWeightUrl);
 
   List<WeightEntry> get items {
     return [..._entries];
@@ -50,21 +44,10 @@ class BodyWeight with ChangeNotifier {
       client = http.Client();
     }
 
-    // Send the request
-    final response = await client.get(
-      _url + '?ordering=-date',
-      headers: <String, String>{'Authorization': 'Token ${_auth.token}'},
-    );
-
-    // Something wrong with our request
-    if (response.statusCode >= 400) {
-      throw WgerHttpException(response.body);
-    }
-
     // Process the response
-    final extractedData = json.decode(response.body) as Map<String, dynamic>;
+    final data = await fetchAndSet(client);
     final List<WeightEntry> loadedEntries = [];
-    for (final entry in extractedData['results']) {
+    for (final entry in data['results']) {
       loadedEntries.add(WeightEntry.fromJson(entry));
     }
 
@@ -77,30 +60,13 @@ class BodyWeight with ChangeNotifier {
       client = http.Client();
     }
 
-    try {
-      final response = await client.post(
-        _url,
-        headers: {
-          'Authorization': 'Token ${_auth.token}',
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: json.encode(entry.toJson()),
-      );
-
-      // Something wrong with our request
-      if (response.statusCode >= 400) {
-        throw WgerHttpException(response.body);
-      }
-
-      // Create entry and return
-      WeightEntry weightEntry = WeightEntry.fromJson(json.decode(response.body));
-      _entries.add(weightEntry);
-      _entries.sort((a, b) => a.date.compareTo(b.date));
-      notifyListeners();
-      return weightEntry;
-    } catch (error) {
-      throw error;
-    }
+    // Create entry and return it
+    final data = await add(entry.toJson(), client);
+    WeightEntry weightEntry = WeightEntry.fromJson(data);
+    _entries.add(weightEntry);
+    _entries.sort((a, b) => a.date.compareTo(b.date));
+    notifyListeners();
+    return weightEntry;
   }
 
   Future<void> deleteEntry(int id, {http.Client client}) async {
@@ -109,18 +75,14 @@ class BodyWeight with ChangeNotifier {
     }
 
     // Send the request and remove the entry from the list...
-    final url = '$_url$id/';
     final existingEntryIndex = _entries.indexWhere((element) => element.id == id);
     var existingWeightEntry = _entries[existingEntryIndex];
     _entries.removeAt(existingEntryIndex);
     notifyListeners();
 
-    final response = await client.delete(
-      url,
-      headers: {'Authorization': 'Token ${_auth.token}'},
-    );
+    final response = await deleteRequest(id, client);
 
-    // ...but it that didn't work, put it back again
+    // ...but that didn't work, put it back again
     if (response.statusCode >= 400) {
       _entries.insert(existingEntryIndex, existingWeightEntry);
       notifyListeners();

@@ -27,8 +27,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/models/http_exception.dart';
 
 class Auth with ChangeNotifier {
-  String token;
-  String serverUrl;
+  String token = '';
+  String serverUrl = '';
   // DateTime _expiryDate;
   // String _userId;
   // Timer _authTimer;
@@ -44,10 +44,6 @@ class Auth with ChangeNotifier {
     return token;
     // }
     // return null;
-  }
-
-  String get serverUrl2 {
-    return serverUrl;
   }
 
   // String get userId {
