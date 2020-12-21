@@ -25,11 +25,11 @@ Ingredient _$IngredientFromJson(Map<String, dynamic> json) {
         ? null
         : DateTime.parse(json['creation_date'] as String),
     energy: json['energy'] as int,
-    carbohydrates: (json['carbohydrates'] as num)?.toDouble(),
-    carbohydrates_sugar: (json['carbohydrates_sugar'] as num)?.toDouble(),
-    fat: (json['fat'] as num)?.toDouble(),
-    fat_saturated: (json['fat_saturated'] as num)?.toDouble(),
-    fibres: (json['fibres'] as num)?.toDouble(),
+    carbohydrates: toNum(json['carbohydrates'] as String),
+    carbohydrates_sugar: toNum(json['carbohydrates_sugar'] as String),
+    fat: toNum(json['fat'] as String),
+    fat_saturated: toNum(json['fat_saturated'] as String),
+    fibres: toNum(json['fibres'] as String),
   );
 }
 
@@ -37,11 +37,11 @@ Map<String, dynamic> _$IngredientToJson(Ingredient instance) =>
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
-      'creation_date': instance.creationDate?.toIso8601String(),
+      'creation_date': toDate(instance.creationDate),
       'energy': instance.energy,
-      'carbohydrates': instance.carbohydrates,
-      'carbohydrates_sugar': instance.carbohydrates_sugar,
-      'fat': instance.fat,
-      'fat_saturated': instance.fat_saturated,
-      'fibres': instance.fibres,
+      'carbohydrates': toString(instance.carbohydrates),
+      'carbohydrates_sugar': toString(instance.carbohydrates_sugar),
+      'fat': toString(instance.fat),
+      'fat_saturated': toString(instance.fat_saturated),
+      'fibres': toString(instance.fibres),
     };

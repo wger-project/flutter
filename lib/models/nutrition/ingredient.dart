@@ -18,6 +18,7 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:wger/helpers/json.dart';
 
 part 'ingredient.g.dart';
 
@@ -29,26 +30,26 @@ class Ingredient {
   @JsonKey(required: true)
   final String name;
 
-  @JsonKey(required: true, name: 'creation_date')
+  @JsonKey(required: true, name: 'creation_date', toJson: toDate)
   final DateTime creationDate;
 
   @JsonKey(required: true)
   final int energy;
 
-  @JsonKey(required: true)
-  final double carbohydrates;
+  @JsonKey(required: true, fromJson: toNum, toJson: toString)
+  final num carbohydrates;
 
-  @JsonKey(required: true)
-  final double carbohydrates_sugar;
+  @JsonKey(required: true, fromJson: toNum, toJson: toString)
+  final num carbohydrates_sugar;
 
-  @JsonKey(required: true)
-  final double fat;
+  @JsonKey(required: true, fromJson: toNum, toJson: toString)
+  final num fat;
 
-  @JsonKey(required: true)
-  final double fat_saturated;
+  @JsonKey(required: true, fromJson: toNum, toJson: toString)
+  final num fat_saturated;
 
-  @JsonKey(required: true)
-  final double fibres;
+  @JsonKey(required: true, fromJson: toNum, toJson: toString)
+  final num fibres;
 
   Ingredient({
     @required this.id,

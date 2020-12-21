@@ -36,3 +36,25 @@ String toDate(DateTime dateTime) {
   }
   return DateFormat('yyyy-MM-dd').format(dateTime).toString();
 }
+
+/*
+ * Converts a time to a date object.
+ * Needed e.g. when the wger api only sends a time but no date information.
+ */
+DateTime fromTime(String time) {
+  if (time == null) {
+    return null;
+  }
+  return DateTime.parse(DateFormat('yyyy-MM-dd').format(DateTime.now()).toString() + ' ' + time);
+}
+
+/*
+ * Converts a datetime to time.
+ * Needed e.g. when the wger api only expects a time and no date information.
+ */
+String toTime(DateTime dateTime) {
+  if (dateTime == null) {
+    return null;
+  }
+  return DateFormat.Hms().format(dateTime).toString();
+}

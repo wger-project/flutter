@@ -25,6 +25,6 @@ Map<String, dynamic> _$NutritionalPlanToJson(NutritionalPlan instance) =>
     <String, dynamic>{
       'id': instance.id,
       'description': instance.description,
-      'creation_date': instance.creationDate?.toIso8601String(),
+      'creation_date': toDate(instance.creationDate),
       'meals': instance.meals?.map((e) => e?.toJson())?.toList(),
     };

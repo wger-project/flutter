@@ -18,6 +18,7 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:wger/helpers/json.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/ingredient_weight_unit.dart';
 
@@ -31,11 +32,11 @@ class MealItem {
   @JsonKey(required: true)
   final Ingredient ingredient;
 
-  @JsonKey(required: true)
+  @JsonKey(required: true, name: 'weight_unit')
   final IngredientWeightUnit weightUnit;
 
-  @JsonKey(required: true)
-  final double amount;
+  @JsonKey(required: true, fromJson: toNum, toJson: toString)
+  final num amount;
 
   MealItem({
     @required this.id,

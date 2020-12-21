@@ -17,6 +17,7 @@
  */
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:wger/helpers/json.dart';
 import 'package:wger/models/nutrition/meal.dart';
 
 part 'nutritional_plan.g.dart';
@@ -29,7 +30,7 @@ class NutritionalPlan {
   @JsonKey(required: true)
   String description;
 
-  @JsonKey(required: true, name: 'creation_date')
+  @JsonKey(required: true, name: 'creation_date', toJson: toDate)
   DateTime creationDate;
 
   @JsonKey(required: false)

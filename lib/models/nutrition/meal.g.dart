@@ -10,7 +10,7 @@ Meal _$MealFromJson(Map<String, dynamic> json) {
   $checkKeys(json, requiredKeys: const ['id', 'time', 'meal_items']);
   return Meal(
     id: json['id'] as int,
-    time: json['time'] == null ? null : DateTime.parse(json['time'] as String),
+    time: fromTime(json['time'] as String),
     mealItems: (json['meal_items'] as List)
         ?.map((e) =>
             e == null ? null : MealItem.fromJson(e as Map<String, dynamic>))
@@ -20,6 +20,6 @@ Meal _$MealFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$MealToJson(Meal instance) => <String, dynamic>{
       'id': instance.id,
-      'time': instance.time?.toIso8601String(),
+      'time': toTime(instance.time),
       'meal_items': instance.mealItems,
     };

@@ -110,7 +110,7 @@ class NutritionalPlans with ChangeNotifier {
   }
 
   Future<NutritionalPlan> fetchAndSetPlan(int planId) async {
-    String url = _auth.serverUrl + '/api/v2/nutritionplan/$planId/';
+    String url = '${_auth.serverUrl}/api/v2/nutritionplaninfo/$planId/';
     final response = await http.get(
       url,
       headers: <String, String>{'Authorization': 'Token ${_auth.token}'},

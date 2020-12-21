@@ -17,6 +17,7 @@
  */
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:wger/helpers/json.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 
 part 'meal.g.dart';
@@ -26,7 +27,7 @@ class Meal {
   @JsonKey(required: true)
   final int id;
 
-  @JsonKey(required: true)
+  @JsonKey(required: true, toJson: toTime, fromJson: fromTime)
   final DateTime time;
 
   @JsonKey(required: true, name: 'meal_items')
