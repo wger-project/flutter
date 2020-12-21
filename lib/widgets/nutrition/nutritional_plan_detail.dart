@@ -21,6 +21,7 @@ import 'package:intl/intl.dart';
 import 'package:wger/locale/locales.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/widgets/core/bottom_sheet.dart';
+import 'package:wger/widgets/nutrition/meal.dart';
 
 class NutritionalPlanDetail extends StatefulWidget {
   NutritionalPlan _nutritionalPlan;
@@ -56,6 +57,7 @@ class _NutritionalPlanDetailState extends State<NutritionalPlanDetail> {
                 style: Theme.of(context).textTheme.headline5,
               ),
             ),
+            ...widget._nutritionalPlan.meals.map((meal) => MealWidget(meal)).toList(),
             Column(
               children: [
                 ElevatedButton(
