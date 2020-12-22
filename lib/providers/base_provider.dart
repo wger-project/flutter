@@ -65,7 +65,7 @@ class WgerBaseProvider {
     }
 
     // Process the response
-    return json.decode(response.body) as Map<String, dynamic>;
+    return json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
   }
 
   /// POSTs a new object
