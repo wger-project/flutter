@@ -16,7 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:intl/intl.dart';
+import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
@@ -28,16 +28,11 @@ class Meal {
   @JsonKey(required: true)
   final int id;
 
-  @JsonKey(required: true, toJson: toTime, fromJson: fromTime)
-  final DateTime time;
-
-  /// returns the time component of the DateTime time as a string
-  String get getTime {
-    return DateFormat.jm().format(time).toString();
-  }
+  @JsonKey(required: true, toJson: timeToString, fromJson: stringToTime)
+  TimeOfDay time;
 
   @JsonKey(required: true, name: 'meal_items')
-  final List<MealItem> mealItems;
+  List<MealItem> mealItems;
 
   Meal({
     this.id,

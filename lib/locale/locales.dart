@@ -155,6 +155,14 @@ class AppLocalizations {
     );
   }
 
+  String get time {
+    return Intl.message(
+      'Time',
+      name: 'time',
+      desc: 'The time of a meal or workout',
+    );
+  }
+
   String get newEntry {
     return Intl.message(
       'New entry',

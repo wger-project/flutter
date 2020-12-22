@@ -21,6 +21,7 @@ import 'package:intl/intl.dart';
 import 'package:wger/locale/locales.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/widgets/core/bottom_sheet.dart';
+import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/meal.dart';
 
 class NutritionalPlanDetailWidget extends StatefulWidget {
@@ -32,10 +33,6 @@ class NutritionalPlanDetailWidget extends StatefulWidget {
 }
 
 class _NutritionalPlanDetailWidgetState extends State<NutritionalPlanDetailWidget> {
-  Widget planForm = Form(
-    child: Text('forms come here...'),
-  );
-
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -61,7 +58,7 @@ class _NutritionalPlanDetailWidgetState extends State<NutritionalPlanDetailWidge
             ElevatedButton(
               child: Text(AppLocalizations.of(context).add),
               onPressed: () {
-                showFormBottomSheet(context, 'Add meal form', planForm);
+                showFormBottomSheet(context, 'Add meal form', MealForm(widget._nutritionalPlan));
               },
             ),
           ],

@@ -16,6 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 num toNum(String e) {
@@ -48,20 +49,21 @@ String toDate(DateTime dateTime) {
  * Converts a time to a date object.
  * Needed e.g. when the wger api only sends a time but no date information.
  */
-DateTime fromTime(String time) {
+TimeOfDay stringToTime(String time) {
   if (time == null) {
     return null;
   }
-  return DateTime.parse(DateFormat('yyyy-MM-dd').format(DateTime.now()).toString() + ' ' + time);
+  return TimeOfDay.fromDateTime(
+    DateTime.parse('2020-01-01 $time'),
+  );
 }
 
 /*
  * Converts a datetime to time.
- * Needed e.g. when the wger api only expects a time and no date information.
  */
-String toTime(DateTime dateTime) {
-  if (dateTime == null) {
+String timeToString(TimeOfDay time) {
+  if (time == null) {
     return null;
   }
-  return DateFormat.Hms().format(dateTime).toString();
+  return DefaultMaterialLocalizations().formatTimeOfDay(time, alwaysUse24HourFormat: true);
 }

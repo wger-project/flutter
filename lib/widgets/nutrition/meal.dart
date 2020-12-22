@@ -58,17 +58,14 @@ class MealWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      //color: Colors.amber,
-      //width: double.infinity,
       child: Card(
         child: Column(
-          //mainAxisSize: MainAxisSize.max,
           children: [
             Container(
               width: double.infinity,
               decoration: BoxDecoration(color: Colors.black12),
               padding: const EdgeInsets.symmetric(vertical: 10),
-              child: Text(_meal.getTime),
+              child: Text(_meal.time.format(context)),
             ),
             ..._meal.mealItems.map((item) => MealItemWidget(item)).toList(),
           ],

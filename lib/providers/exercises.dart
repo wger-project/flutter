@@ -114,7 +114,7 @@ class Exercises with ChangeNotifier {
       //if (false) {
       final exerciseData = json.decode(prefs.getString('exerciseData'));
       if (DateTime.parse(exerciseData['expiresIn']).isAfter(DateTime.now())) {
-        exerciseData['results'].forEach((e) => _entries.add(Exercise.fromJson(e)));
+        exerciseData['exercises'].forEach((e) => _entries.add(Exercise.fromJson(e)));
         log("Read exercise data from cache. Valid till ${exerciseData['expiresIn']}");
         return;
       }
