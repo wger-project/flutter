@@ -31,7 +31,7 @@ class WgerBaseProvider {
 
   WgerBaseProvider(auth, baseUrl) {
     this.auth = auth;
-    this.url = auth.serverUrl + baseUrl;
+    this.url = '${auth.serverUrl}/api/v2/$baseUrl/';
   }
 
   /// Fetch and retrieve the overview list of objects, returns the JSON parsed response

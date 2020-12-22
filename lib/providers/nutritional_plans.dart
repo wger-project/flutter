@@ -23,19 +23,25 @@ import 'package:http/http.dart' as http;
 import 'package:wger/models/http_exception.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/auth.dart';
+import 'package:wger/providers/base_provider.dart';
 
-class NutritionalPlans with ChangeNotifier {
-  static const nutritionPlansUrl = '/api/v2/nutritionplan/';
+class NutritionalPlans extends WgerBaseProvider with ChangeNotifier {
+  static const nutritionalPlansUrl = 'nutritionplan';
+  static const mealUrl = 'meal';
 
   String _url;
   Auth _auth;
   List<NutritionalPlan> _entries = [];
 
-  NutritionalPlans(Auth auth, List<NutritionalPlan> entries) {
-    this._auth = auth;
-    this._entries = entries;
-    this._url = auth.serverUrl + nutritionPlansUrl;
-  }
+  NutritionalPlans(Auth auth, List<NutritionalPlan> entries)
+      : this._entries = entries,
+        super(auth, nutritionalPlansUrl);
+
+  //NutritionalPlans(Auth auth, List<NutritionalPlan> entries) {
+  //  this._auth = auth;
+  //  this._entries = entries;
+  //  this._url = auth.serverUrl + nutritionPlansUrl;
+  //}
 
   List<NutritionalPlan> get items {
     return [..._entries];
@@ -45,20 +51,14 @@ class NutritionalPlans with ChangeNotifier {
     return _entries.firstWhere((plan) => plan.id == id);
   }
 
-  Future<void> fetchAndSetPlans() async {
-    final response = await http.get(
-      _url,
-      headers: <String, String>{'Authorization': 'Token ${_auth.token}'},
-    );
-
-    // Something wrong with our request
-    if (response.statusCode >= 400) {
-      throw WgerHttpException(response.body);
+  Future<void> fetchAndSetPlans({http.Client client}) async {
+    if (client == null) {
+      client = http.Client();
     }
 
-    final extractedData = json.decode(response.body) as Map<String, dynamic>;
+    final data = await fetchAndSet(client);
     final List<NutritionalPlan> loadedPlans = [];
-    for (final entry in extractedData['results']) {
+    for (final entry in data['results']) {
       loadedPlans.add(NutritionalPlan.fromJson(entry));
     }
 
@@ -66,41 +66,28 @@ class NutritionalPlans with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addPlan(NutritionalPlan plan) async {
-    try {
-      final response = await http.post(
-        _url,
-        headers: {
-          'Authorization': 'Token ${_auth.token}',
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: json.encode(plan.toJson()),
-      );
-
-      // Something wrong with our request
-      if (response.statusCode >= 400) {
-        throw WgerHttpException(response.body);
-      }
-
-      _entries.insert(0, NutritionalPlan.fromJson(json.decode(response.body)));
-      notifyListeners();
-    } catch (error) {
-      print(error);
-      throw error;
+  Future<void> addPlan(NutritionalPlan plan, {http.Client client}) async {
+    if (client == null) {
+      client = http.Client();
     }
+
+    final data = await add(plan.toJson(), client);
+    _entries.insert(0, NutritionalPlan.fromJson(data));
+    notifyListeners();
   }
 
-  Future<void> deletePlan(int id) async {
-    final url = '$_url$id/';
+  Future<void> deletePlan(int id, {http.Client client}) async {
+    if (client == null) {
+      client = http.Client();
+    }
+
     final existingPlanIndex = _entries.indexWhere((element) => element.id == id);
     var existingPlan = _entries[existingPlanIndex];
     _entries.removeAt(existingPlanIndex);
     notifyListeners();
 
-    final response = await http.delete(
-      url,
-      headers: {'Authorization': 'Token ${_auth.token}'},
-    );
+    final response = await deleteRequest(id, client);
+
     if (response.statusCode >= 400) {
       _entries.insert(existingPlanIndex, existingPlan);
       notifyListeners();

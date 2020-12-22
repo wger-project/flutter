@@ -24,7 +24,7 @@ import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/base_provider.dart';
 
 class BodyWeight extends WgerBaseProvider with ChangeNotifier {
-  static const bodyWeightUrl = '/api/v2/weightentry/';
+  static const bodyWeightUrl = 'weightentry';
 
   List<WeightEntry> _entries = [];
   BodyWeight(Auth auth, List<WeightEntry> entries)
