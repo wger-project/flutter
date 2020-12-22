@@ -25,14 +25,17 @@ import 'package:wger/providers/body_weight.dart';
 import 'utils.dart';
 
 void main() {
-  group('fetchPost', () {
+  group('test body weight provider', () {
     test('Test that the weight entries are correctly loaded', () async {
       final client = MockClient();
 
       // Mock the server response
       when(client.get(
         'https://localhost/api/v2/weightentry/?ordering=-date',
-        headers: <String, String>{'Authorization': 'Token ${testAuth.token}'},
+        headers: <String, String>{
+          'Authorization': 'Token ${testAuth.token}',
+          'User-Agent': 'wger Workout Manager App',
+        },
       )).thenAnswer((_) async => http.Response(
           '{"results": [{"id": 1, "date": "2021-01-01", "weight": "80.00"}, '
           '{"id": 2, "date": "2021-01-10", "weight": "99"},'
@@ -56,6 +59,7 @@ void main() {
               headers: {
                 'Authorization': 'Token ${testAuth.token}',
                 'Content-Type': 'application/json; charset=UTF-8',
+                'User-Agent': 'wger Workout Manager App',
               },
               body: '{"id":null,"weight":"80","date":"2021-01-01"}'))
           .thenAnswer(
@@ -78,7 +82,10 @@ void main() {
       // Mock the server response
       when(client.delete(
         'https://localhost/api/v2/weightentry/4/',
-        headers: {'Authorization': 'Token ${testAuth.token}'},
+        headers: {
+          'Authorization': 'Token ${testAuth.token}',
+          'User-Agent': 'wger Workout Manager App',
+        },
       )).thenAnswer((_) async => http.Response('', 200));
 
       // DELETE the data from the server
