@@ -28,14 +28,18 @@ class Meal {
   @JsonKey(required: true)
   final int id;
 
+  @JsonKey(required: false)
+  int plan;
+
   @JsonKey(required: true, toJson: timeToString, fromJson: stringToTime)
   TimeOfDay time;
 
-  @JsonKey(required: true, name: 'meal_items')
-  List<MealItem> mealItems;
+  @JsonKey(name: 'meal_items', defaultValue: [])
+  List<MealItem> mealItems = [];
 
   Meal({
     this.id,
+    this.plan,
     this.time,
     this.mealItems,
   });

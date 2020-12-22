@@ -16,11 +16,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:wger/models/http_exception.dart';
+import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/base_provider.dart';
@@ -96,13 +95,34 @@ class NutritionalPlans extends WgerBaseProvider with ChangeNotifier {
     existingPlan = null;
   }
 
-  Future<NutritionalPlan> fetchAndSetPlan(int planId) async {
-    String url = '${_auth.serverUrl}/api/v2/nutritionplaninfo/$planId/';
-    final response = await http.get(
-      url,
-      headers: <String, String>{'Authorization': 'Token ${_auth.token}'},
-    );
-    final extractedData = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
-    return NutritionalPlan.fromJson(extractedData);
+  Future<NutritionalPlan> fetchAndSetPlan(int planId, {http.Client client}) async {
+    if (client == null) {
+      client = http.Client();
+    }
+
+    String url = makeUrl('nutritionplaninfo', planId.toString());
+    //fetchAndSet
+    final data = await fetchAndSet(client, 'nutritionplaninfo/$planId');
+
+    //final response = await http.get(
+    //  url,
+    //  headers: <String, String>{'Authorization': 'Token ${_auth.token}'},
+    //);
+    //final extractedData = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+    return NutritionalPlan.fromJson(data);
+  }
+
+  Future<Meal> addMeal(Meal meal, NutritionalPlan plan, {http.Client client}) async {
+    if (client == null) {
+      client = http.Client();
+    }
+
+    final data = await add(meal.toJson(), client, mealUrl);
+
+    meal = Meal.fromJson(data);
+    plan.meals.add(meal);
+    notifyListeners();
+
+    return meal;
   }
 }

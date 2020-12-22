@@ -29,15 +29,25 @@ class WgerBaseProvider {
   String url;
   Auth auth;
 
-  WgerBaseProvider(auth, baseUrl) {
+  WgerBaseProvider(auth, urlPath) {
     this.auth = auth;
-    this.url = '${auth.serverUrl}/api/v2/$baseUrl/';
+    this.url = makeUrl(urlPath);
+  }
+
+  makeUrl(String path, [String id]) {
+    String id_path = id != null ? '$id/' : '';
+
+    return '${auth.serverUrl}/api/v2/$path/$id_path';
   }
 
   /// Fetch and retrieve the overview list of objects, returns the JSON parsed response
-  Future<Map<String, dynamic>> fetchAndSet(http.Client client) async {
+  Future<Map<String, dynamic>> fetchAndSet(http.Client client, [String urlPath]) async {
     if (client == null) {
       client = http.Client();
+    }
+
+    if (urlPath != null) {
+      url = makeUrl(urlPath);
     }
 
     // Send the request
@@ -59,9 +69,14 @@ class WgerBaseProvider {
   }
 
   /// POSTs a new object
-  Future<Map<String, dynamic>> add(Map<String, dynamic> data, http.Client client) async {
+  Future<Map<String, dynamic>> add(Map<String, dynamic> data, http.Client client,
+      [String urlPath]) async {
     if (client == null) {
       client = http.Client();
+    }
+
+    if (urlPath != null) {
+      url = makeUrl(urlPath);
     }
 
     final response = await client.post(

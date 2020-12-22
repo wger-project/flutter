@@ -61,11 +61,82 @@ class MealWidget extends StatelessWidget {
       child: Card(
         child: Column(
           children: [
-            Container(
-              width: double.infinity,
-              decoration: BoxDecoration(color: Colors.black12),
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: Text(_meal.time.format(context)),
+            Dismissible(
+              key: Key(_meal.id.toString()),
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(color: Colors.black12),
+                padding: const EdgeInsets.all(10),
+                child: Text(_meal.time.format(context)),
+              ),
+              secondaryBackground: Container(
+                color: Theme.of(context).accentColor,
+                padding: EdgeInsets.only(right: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Icon(
+                      Icons.delete,
+                      color: Colors.white,
+                    ),
+                    Text(
+                      DefaultMaterialLocalizations().deleteButtonTooltip,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ],
+                ),
+              ),
+              background: Container(
+                color: Theme.of(context).primaryColor,
+                alignment: Alignment.centerLeft,
+                padding: EdgeInsets.only(left: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Log this meal',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    Icon(
+                      Icons.bar_chart,
+                      color: Colors.white,
+                    ),
+                  ],
+                ),
+              ),
+              confirmDismiss: (direction) async {
+                // Delete
+                if (direction == DismissDirection.endToStart) {
+                  // Delete the meal
+                  //Provider.of<NutritionalPlans>(context, listen: false).deleteMeal(_meal.id);
+
+                  // and inform the user
+                  Scaffold.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        'Would delete meal ${_meal.id}',
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  );
+
+                  // Log meal
+                } else {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      content: Text('Would log this meal'),
+                      actions: [
+                        TextButton(
+                          child: Text("Close"),
+                          onPressed: () => Navigator.of(context).pop(),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+                return false;
+              },
             ),
             ..._meal.mealItems.map((item) => MealItemWidget(item)).toList(),
           ],

@@ -179,9 +179,7 @@ class DayHeaderDismissible extends StatelessWidget {
               content: Text('Would open weight log form for this day'),
               actions: [
                 TextButton(
-                  child: Text(
-                    "Close",
-                  ),
+                  child: Text("Close"),
                   onPressed: () => Navigator.of(context).pop(),
                 ),
               ],
@@ -196,9 +194,7 @@ class DayHeaderDismissible extends StatelessWidget {
               content: Text('Would start gym mode for this day'),
               actions: [
                 TextButton(
-                  child: Text(
-                    "Close",
-                  ),
+                  child: Text("Close"),
                   onPressed: () => Navigator.of(context).pop(),
                 ),
               ],

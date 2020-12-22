@@ -17,7 +17,6 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:wger/locale/locales.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/widgets/core/bottom_sheet.dart';
@@ -43,7 +42,9 @@ class _NutritionalPlanDetailWidgetState extends State<NutritionalPlanDetailWidge
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Text(
-                DateFormat('dd.MM.yyyy').format(widget._nutritionalPlan.creationDate).toString(),
+                DefaultMaterialLocalizations()
+                    .formatMediumDate(widget._nutritionalPlan.creationDate)
+                    .toString(),
                 style: Theme.of(context).textTheme.headline6,
               ),
             ),
@@ -58,7 +59,7 @@ class _NutritionalPlanDetailWidgetState extends State<NutritionalPlanDetailWidge
             ElevatedButton(
               child: Text(AppLocalizations.of(context).add),
               onPressed: () {
-                showFormBottomSheet(context, 'Add meal form', MealForm(widget._nutritionalPlan));
+                showFormBottomSheet(context, 'Add meal', MealForm(widget._nutritionalPlan));
               },
             ),
           ],

@@ -17,10 +17,12 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/locale/locales.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
+import 'package:wger/providers/nutritional_plans.dart';
 
 class MealForm extends StatelessWidget {
   Meal meal;
@@ -34,9 +36,7 @@ class MealForm extends StatelessWidget {
   //MealForm(this._plan, {this.meal});
 
   final _form = GlobalKey<FormState>();
-  final _timeController = TextEditingController(
-    text: timeToString(TimeOfDay.fromDateTime(DateTime.now())),
-  );
+  final _timeController = TextEditingController(text: timeToString(TimeOfDay.now()));
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +46,6 @@ class MealForm extends StatelessWidget {
         key: _form,
         child: Column(
           children: [
-            Text('tttttt'),
             TextFormField(
               decoration: InputDecoration(labelText: AppLocalizations.of(context).time),
               controller: _timeController,
@@ -75,10 +74,11 @@ class MealForm extends StatelessWidget {
                 }
                 _form.currentState.save();
 
+                meal.plan = _plan.id;
+
                 try {
-                  //Provider.of<NutritionalPlans>(context, listen: false)
-                  //.addMe(_plan)
-                  //    .addDay(Day(description: dayController.text, daysOfWeek: [1]), workout);
+                  Provider.of<NutritionalPlans>(context, listen: false).addMeal(meal, _plan);
+                  Navigator.of(context).pop();
                 } catch (error) {
                   await showDialog(
                     context: context,
