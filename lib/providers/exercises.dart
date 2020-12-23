@@ -111,7 +111,6 @@ class Exercises with ChangeNotifier {
     // Load exercises from cache, if available
     final prefs = await SharedPreferences.getInstance();
     if (prefs.containsKey('exerciseData')) {
-      //if (false) {
       final exerciseData = json.decode(prefs.getString('exerciseData'));
       if (DateTime.parse(exerciseData['expiresIn']).isAfter(DateTime.now())) {
         exerciseData['exercises'].forEach((e) => _entries.add(Exercise.fromJson(e)));

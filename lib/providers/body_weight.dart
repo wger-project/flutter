@@ -80,7 +80,7 @@ class BodyWeight extends WgerBaseProvider with ChangeNotifier {
     _entries.removeAt(existingEntryIndex);
     notifyListeners();
 
-    final response = await deleteRequest(id, client);
+    final response = await deleteRequest(bodyWeightUrl, id, client);
 
     // ...but that didn't work, put it back again
     if (response.statusCode >= 400) {

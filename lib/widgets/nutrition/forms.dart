@@ -35,8 +35,6 @@ class MealForm extends StatelessWidget {
     this.meal = meal ?? Meal();
   }
 
-  //MealForm(this._plan, {this.meal});
-
   final _form = GlobalKey<FormState>();
   final _timeController = TextEditingController(text: timeToString(TimeOfDay.now()));
 
@@ -79,7 +77,7 @@ class MealForm extends StatelessWidget {
                 meal.plan = _plan.id;
 
                 try {
-                  Provider.of<NutritionalPlans>(context, listen: false).addMeal(meal, _plan);
+                  Provider.of<NutritionalPlans>(context, listen: false).addMeal(meal, _plan.id);
                 } on WgerHttpException catch (error) {
                   showHttpExceptionErrorDialog(error, context);
                 } catch (error) {

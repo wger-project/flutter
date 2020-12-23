@@ -98,9 +98,11 @@ class WgerBaseProvider {
   }
 
   /// DELETEs an existing object
-  Future<Response> deleteRequest(int id, http.Client client) async {
+  Future<Response> deleteRequest(String url, int id, http.Client client) async {
+    final deleteUrl = makeUrl(url, id.toString());
+
     final response = await client.delete(
-      '$url$id/',
+      deleteUrl,
       headers: {
         'Authorization': 'Token ${auth.token}',
         'User-Agent': 'wger Workout Manager App',

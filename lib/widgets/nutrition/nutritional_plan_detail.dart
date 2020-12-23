@@ -23,15 +23,10 @@ import 'package:wger/widgets/core/bottom_sheet.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/meal.dart';
 
-class NutritionalPlanDetailWidget extends StatefulWidget {
+class NutritionalPlanDetailWidget extends StatelessWidget {
   NutritionalPlan _nutritionalPlan;
   NutritionalPlanDetailWidget(this._nutritionalPlan);
 
-  @override
-  _NutritionalPlanDetailWidgetState createState() => _NutritionalPlanDetailWidgetState();
-}
-
-class _NutritionalPlanDetailWidgetState extends State<NutritionalPlanDetailWidget> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -43,7 +38,7 @@ class _NutritionalPlanDetailWidgetState extends State<NutritionalPlanDetailWidge
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Text(
                 DefaultMaterialLocalizations()
-                    .formatMediumDate(widget._nutritionalPlan.creationDate)
+                    .formatMediumDate(_nutritionalPlan.creationDate)
                     .toString(),
                 style: Theme.of(context).textTheme.headline6,
               ),
@@ -51,15 +46,15 @@ class _NutritionalPlanDetailWidgetState extends State<NutritionalPlanDetailWidge
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Text(
-                widget._nutritionalPlan.description,
+                _nutritionalPlan.description,
                 style: Theme.of(context).textTheme.headline5,
               ),
             ),
-            ...widget._nutritionalPlan.meals.map((meal) => MealWidget(meal)).toList(),
+            ..._nutritionalPlan.meals.map((meal) => MealWidget(meal)).toList(),
             ElevatedButton(
               child: Text(AppLocalizations.of(context).add),
               onPressed: () {
-                showFormBottomSheet(context, 'Add meal', MealForm(widget._nutritionalPlan));
+                showFormBottomSheet(context, 'Add meal', MealForm(_nutritionalPlan));
               },
             ),
           ],

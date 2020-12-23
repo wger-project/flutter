@@ -17,13 +17,17 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
+import 'package:wger/providers/nutritional_plans.dart';
 
 class MealWidget extends StatelessWidget {
   final Meal _meal;
 
-  MealWidget(this._meal);
+  MealWidget(
+    this._meal,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +35,7 @@ class MealWidget extends StatelessWidget {
       child: Card(
         child: Column(
           children: [
+            Text('Plan ID: ${_meal.plan}'),
             DismissibleMealHeader(meal: _meal),
             ..._meal.mealItems.map((item) => MealItemWidget(item)).toList(),
           ],
@@ -126,7 +131,7 @@ class DismissibleMealHeader extends StatelessWidget {
         // Delete
         if (direction == DismissDirection.endToStart) {
           // Delete the meal
-          //Provider.of<NutritionalPlans>(context, listen: false).deleteMeal(_meal.id);
+          Provider.of<NutritionalPlans>(context, listen: false).deleteMeal(_meal);
 
           // and inform the user
           Scaffold.of(context).showSnackBar(
