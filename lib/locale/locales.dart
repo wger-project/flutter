@@ -35,6 +35,14 @@ class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
+  String get successfullyDeleted {
+    return Intl.message(
+      'Successfully deleted',
+      name: 'successfullyDeleted',
+      desc: 'Message when an item was successfully deleted',
+    );
+  }
+
   String get labelWorkoutPlans {
     return Intl.message(
       'Workout plans',

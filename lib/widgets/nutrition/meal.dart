@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/locale/locales.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/providers/nutritional_plans.dart';
@@ -137,7 +138,7 @@ class DismissibleMealHeader extends StatelessWidget {
           Scaffold.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                'Would delete meal ${_meal.id}',
+                AppLocalizations.of(context).successfullyDeleted,
                 textAlign: TextAlign.center,
               ),
             ),
