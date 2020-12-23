@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
@@ -47,5 +48,44 @@ class MealItem {
 
   // Boilerplate
   factory MealItem.fromJson(Map<String, dynamic> json) => _$MealItemFromJson(json);
+
   Map<String, dynamic> toJson() => _$MealItemToJson(this);
+
+  /// Calculations
+  get nutritionalValues {
+    // This is already done on the server. It might be better to read it from there.
+    var out = {
+      'energy': 0.0,
+      'energyKj': 0.0,
+      'protein': 0.0,
+      'carbohydrates': 0.0,
+      'carbohydrates_sugar': 0.0,
+      'fat': 0.0,
+      'fat_saturated': 0.0,
+      'fibres': 0.0,
+      'sodium': 0.0
+    };
+
+    final weight = this.weightUnit == null ? amount : amount * weightUnit.amount * weightUnit.grams;
+
+    out['energy'] += ingredient.energy * weight / 100;
+    out['energyKj'] += out['energy'] * 4.184;
+    out['protein'] += ingredient.protein * weight / 100;
+    out['carbohydrates'] += ingredient.carbohydrates * weight / 100;
+    out['fat'] += ingredient.fat * weight / 100;
+
+    if (ingredient.fatSaturated != null) {
+      out['fat_saturated'] += ingredient.fatSaturated * weight / 100;
+    }
+
+    if (ingredient.fibres != null) {
+      out['fibres'] += ingredient.fibres * weight / 100;
+    }
+
+    if (ingredient.sodium != null) {
+      out['sodium'] += ingredient.sodium * weight / 100;
+    }
+
+    return out;
+  }
 }

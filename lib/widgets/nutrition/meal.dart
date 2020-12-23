@@ -48,20 +48,22 @@ class MealItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String unit = _item.weightUnit == null ? 'g' : _item.weightUnit.weightUnit.name;
-    String amount = '${_item.amount}$unit';
+    final values = _item.nutritionalValues;
 
     return Container(
-      padding: EdgeInsets.all(8),
-      width: double.infinity,
+      padding: EdgeInsets.all(5),
       child: Table(
         children: [
           TableRow(
             children: [
               Text(
-                _item.ingredient.name,
-                textAlign: TextAlign.left,
+                '${_item.amount.toStringAsFixed(0)}$unit ${_item.ingredient.name}',
               ),
-              Text(amount),
+              Text(
+                  '${values["energy"].toStringAsFixed(0)} kcal /  \n ${values["energyKj"].toStringAsFixed(0)} kJ'),
+              Text('${values["protein"].toStringAsFixed(0)} g'),
+              Text('${values["carbohydrates"].toStringAsFixed(0)} g'),
+              Text('${values["fat"].toStringAsFixed(0)} g'),
             ],
           ),
         ],

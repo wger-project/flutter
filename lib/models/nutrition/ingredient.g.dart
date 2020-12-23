@@ -14,9 +14,11 @@ Ingredient _$IngredientFromJson(Map<String, dynamic> json) {
     'energy',
     'carbohydrates',
     'carbohydrates_sugar',
+    'protein',
     'fat',
     'fat_saturated',
-    'fibres'
+    'fibres',
+    'sodium'
   ]);
   return Ingredient(
     id: json['id'] as int,
@@ -26,10 +28,12 @@ Ingredient _$IngredientFromJson(Map<String, dynamic> json) {
         : DateTime.parse(json['creation_date'] as String),
     energy: json['energy'] as int,
     carbohydrates: toNum(json['carbohydrates'] as String),
-    carbohydrates_sugar: toNum(json['carbohydrates_sugar'] as String),
+    carbohydratesSugar: toNum(json['carbohydrates_sugar'] as String),
+    protein: toNum(json['protein'] as String),
     fat: toNum(json['fat'] as String),
-    fat_saturated: toNum(json['fat_saturated'] as String),
+    fatSaturated: toNum(json['fat_saturated'] as String),
     fibres: toNum(json['fibres'] as String),
+    sodium: toNum(json['sodium'] as String),
   );
 }
 
@@ -40,8 +44,10 @@ Map<String, dynamic> _$IngredientToJson(Ingredient instance) =>
       'creation_date': toDate(instance.creationDate),
       'energy': instance.energy,
       'carbohydrates': toString(instance.carbohydrates),
-      'carbohydrates_sugar': toString(instance.carbohydrates_sugar),
+      'carbohydrates_sugar': toString(instance.carbohydratesSugar),
+      'protein': toString(instance.protein),
       'fat': toString(instance.fat),
-      'fat_saturated': toString(instance.fat_saturated),
+      'fat_saturated': toString(instance.fatSaturated),
       'fibres': toString(instance.fibres),
+      'sodium': toString(instance.sodium),
     };

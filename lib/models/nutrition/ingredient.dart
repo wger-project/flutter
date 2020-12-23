@@ -39,17 +39,23 @@ class Ingredient {
   @JsonKey(required: true, fromJson: toNum, toJson: toString)
   final num carbohydrates;
 
+  @JsonKey(required: true, fromJson: toNum, toJson: toString, name: 'carbohydrates_sugar')
+  final num carbohydratesSugar;
+
   @JsonKey(required: true, fromJson: toNum, toJson: toString)
-  final num carbohydrates_sugar;
+  final num protein;
 
   @JsonKey(required: true, fromJson: toNum, toJson: toString)
   final num fat;
 
-  @JsonKey(required: true, fromJson: toNum, toJson: toString)
-  final num fat_saturated;
+  @JsonKey(required: true, fromJson: toNum, toJson: toString, name: 'fat_saturated')
+  final num fatSaturated;
 
   @JsonKey(required: true, fromJson: toNum, toJson: toString)
   final num fibres;
+
+  @JsonKey(required: true, fromJson: toNum, toJson: toString)
+  final num sodium;
 
   Ingredient({
     @required this.id,
@@ -57,10 +63,12 @@ class Ingredient {
     @required this.creationDate,
     @required this.energy,
     @required this.carbohydrates,
-    @required this.carbohydrates_sugar,
+    @required this.carbohydratesSugar,
+    @required this.protein,
     @required this.fat,
-    @required this.fat_saturated,
+    @required this.fatSaturated,
     @required this.fibres,
+    @required this.sodium,
   });
 
   // Boilerplate
