@@ -19,7 +19,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/json.dart';
+import 'package:wger/helpers/ui.dart';
 import 'package:wger/locale/locales.dart';
+import 'package:wger/models/http_exception.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/nutritional_plans.dart';
@@ -78,24 +80,12 @@ class MealForm extends StatelessWidget {
 
                 try {
                   Provider.of<NutritionalPlans>(context, listen: false).addMeal(meal, _plan);
-                  Navigator.of(context).pop();
+                } on WgerHttpException catch (error) {
+                  showHttpExceptionErrorDialog(error, context);
                 } catch (error) {
-                  await showDialog(
-                    context: context,
-                    builder: (ctx) => AlertDialog(
-                      title: Text('An error occurred!'),
-                      content: Text('Something went wrong.'),
-                      actions: <Widget>[
-                        TextButton(
-                          child: Text('Okay'),
-                          onPressed: () {
-                            Navigator.of(ctx).pop();
-                          },
-                        )
-                      ],
-                    ),
-                  );
+                  showErrorDialog(error, context);
                 }
+                Navigator.of(context).pop();
               },
             ),
           ],

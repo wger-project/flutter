@@ -20,6 +20,26 @@ import 'package:flutter/material.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 
+class MealWidget extends StatelessWidget {
+  final Meal _meal;
+
+  MealWidget(this._meal);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Card(
+        child: Column(
+          children: [
+            DismissibleMealHeader(meal: _meal),
+            ..._meal.mealItems.map((item) => MealItemWidget(item)).toList(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class MealItemWidget extends StatelessWidget {
   final MealItem _item;
 
@@ -50,98 +70,89 @@ class MealItemWidget extends StatelessWidget {
   }
 }
 
-class MealWidget extends StatelessWidget {
-  final Meal _meal;
+class DismissibleMealHeader extends StatelessWidget {
+  const DismissibleMealHeader({
+    Key key,
+    @required Meal meal,
+  })  : _meal = meal,
+        super(key: key);
 
-  MealWidget(this._meal);
+  final Meal _meal;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Card(
-        child: Column(
+    return Dismissible(
+      key: Key(_meal.id.toString()),
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(color: Colors.black12),
+        padding: const EdgeInsets.all(10),
+        child: Text(_meal.time.format(context)),
+      ),
+      secondaryBackground: Container(
+        color: Theme.of(context).accentColor,
+        padding: EdgeInsets.only(right: 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Dismissible(
-              key: Key(_meal.id.toString()),
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(color: Colors.black12),
-                padding: const EdgeInsets.all(10),
-                child: Text(_meal.time.format(context)),
-              ),
-              secondaryBackground: Container(
-                color: Theme.of(context).accentColor,
-                padding: EdgeInsets.only(right: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Icon(
-                      Icons.delete,
-                      color: Colors.white,
-                    ),
-                    Text(
-                      DefaultMaterialLocalizations().deleteButtonTooltip,
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ],
-                ),
-              ),
-              background: Container(
-                color: Theme.of(context).primaryColor,
-                alignment: Alignment.centerLeft,
-                padding: EdgeInsets.only(left: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Log this meal',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    Icon(
-                      Icons.bar_chart,
-                      color: Colors.white,
-                    ),
-                  ],
-                ),
-              ),
-              confirmDismiss: (direction) async {
-                // Delete
-                if (direction == DismissDirection.endToStart) {
-                  // Delete the meal
-                  //Provider.of<NutritionalPlans>(context, listen: false).deleteMeal(_meal.id);
-
-                  // and inform the user
-                  Scaffold.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        'Would delete meal ${_meal.id}',
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  );
-
-                  // Log meal
-                } else {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      content: Text('Would log this meal'),
-                      actions: [
-                        TextButton(
-                          child: Text("Close"),
-                          onPressed: () => Navigator.of(context).pop(),
-                        ),
-                      ],
-                    ),
-                  );
-                }
-                return false;
-              },
+            Icon(
+              Icons.delete,
+              color: Colors.white,
             ),
-            ..._meal.mealItems.map((item) => MealItemWidget(item)).toList(),
           ],
         ),
       ),
+      background: Container(
+        color: Theme.of(context).primaryColor,
+        alignment: Alignment.centerLeft,
+        padding: EdgeInsets.only(left: 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text(
+              'Log this meal',
+              style: TextStyle(color: Colors.white),
+            ),
+            Icon(
+              Icons.bar_chart,
+              color: Colors.white,
+            ),
+          ],
+        ),
+      ),
+      confirmDismiss: (direction) async {
+        // Delete
+        if (direction == DismissDirection.endToStart) {
+          // Delete the meal
+          //Provider.of<NutritionalPlans>(context, listen: false).deleteMeal(_meal.id);
+
+          // and inform the user
+          Scaffold.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'Would delete meal ${_meal.id}',
+                textAlign: TextAlign.center,
+              ),
+            ),
+          );
+
+          // Log meal
+        } else {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              content: Text('Would log this meal'),
+              actions: [
+                TextButton(
+                  child: Text("Close"),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ],
+            ),
+          );
+        }
+        return false;
+      },
     );
   }
 }
