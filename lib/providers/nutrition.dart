@@ -186,6 +186,29 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
     return mealItem;
   }
 
+  /// Deletes a meal
+  Future<void> deleteMealItem(MealItem mealItem, {http.Client client}) async {
+    if (client == null) {
+      client = http.Client();
+    }
+
+    // Get the meal
+    var meal = findMealById(mealItem.meal);
+    final mealItemIndex = meal.mealItems.indexWhere((e) => e.id == mealItem.id);
+    var existingMealItem = meal.mealItems[mealItemIndex];
+    meal.mealItems.removeAt(mealItemIndex);
+    notifyListeners();
+
+    // Try to delete
+    final response = await deleteRequest(mealItemUrl, mealItem.id, client);
+    if (response.statusCode >= 400) {
+      meal.mealItems.insert(mealItemIndex, existingMealItem);
+      notifyListeners();
+      throw WgerHttpException(response.body);
+    }
+    existingMealItem = null;
+  }
+
   /// Fetch and return an ingredient
   Future<Ingredient> fetchIngredient(int ingredientId, {http.Client client}) async {
     if (client == null) {

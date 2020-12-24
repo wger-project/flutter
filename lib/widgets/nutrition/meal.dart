@@ -77,28 +77,41 @@ class MealItemWidget extends StatelessWidget {
     String unit = _item.weightUnit == null ? 'g' : _item.weightUnit.weightUnit.name;
     final values = _item.nutritionalValues;
 
-    return Container(
-      padding: EdgeInsets.all(5),
-      child: Column(
-        children: [
-          Container(
-            width: double.infinity,
-            padding: EdgeInsets.symmetric(vertical: 5),
-            child: Text(
-              '${_item.amount.toStringAsFixed(0)}$unit ${_item.ingredientObj.name}',
-              textAlign: TextAlign.left,
+    return InkWell(
+      onLongPress: () {
+        // Delete the meal item
+        Provider.of<Nutrition>(context, listen: false).deleteMealItem(_item);
+
+        // and inform the user
+        Scaffold.of(context).showSnackBar(SnackBar(
+            content: Text(
+          AppLocalizations.of(context).successfullyDeleted,
+          textAlign: TextAlign.center,
+        )));
+      },
+      child: Container(
+        padding: EdgeInsets.all(5),
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(vertical: 5),
+              child: Text(
+                '${_item.amount.toStringAsFixed(0)}$unit ${_item.ingredientObj.name}',
+                textAlign: TextAlign.left,
+              ),
             ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              MutedText('${values["energy"].toStringAsFixed(0)} kcal'),
-              MutedText('${values["protein"].toStringAsFixed(0)}g'),
-              MutedText('${values["carbohydrates"].toStringAsFixed(0)}g'),
-              MutedText('${values["fat"].toStringAsFixed(0)}g'),
-            ],
-          ),
-        ],
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                MutedText('${values["energy"].toStringAsFixed(0)} kcal'),
+                MutedText('${values["protein"].toStringAsFixed(0)}g'),
+                MutedText('${values["carbohydrates"].toStringAsFixed(0)}g'),
+                MutedText('${values["fat"].toStringAsFixed(0)}g'),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
