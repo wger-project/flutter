@@ -23,6 +23,7 @@ import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/widgets/core/bottom_sheet.dart';
+import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 
 class MealWidget extends StatelessWidget {
@@ -35,10 +36,23 @@ class MealWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.all(3),
       child: Card(
         child: Column(
           children: [
             DismissibleMealHeader(meal: _meal),
+            Padding(
+              padding: const EdgeInsets.all(5),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  MutedText('Energy'),
+                  MutedText("protein"),
+                  MutedText("carbohydrates"),
+                  MutedText("fat"),
+                ],
+              ),
+            ),
             ..._meal.mealItems.map((item) => MealItemWidget(item)).toList(),
             OutlinedButton(
               child: Text('Add ingredient'),
@@ -65,20 +79,23 @@ class MealItemWidget extends StatelessWidget {
 
     return Container(
       padding: EdgeInsets.all(5),
-      child: Table(
-        columnWidths: {
-          0: FlexColumnWidth(5),
-          1: FlexColumnWidth(2),
-        },
+      child: Column(
         children: [
-          TableRow(
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(vertical: 5),
+            child: Text(
+              '${_item.amount.toStringAsFixed(0)}$unit ${_item.ingredientObj.name}',
+              textAlign: TextAlign.left,
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('${_item.amount.toStringAsFixed(0)}$unit ${_item.ingredientObj.name}'),
-              Text(
-                  '${values["energy"].toStringAsFixed(0)} kcal / ${values["energyKj"].toStringAsFixed(0)} kJ'),
-              Text('${values["protein"].toStringAsFixed(0)}g'),
-              Text('${values["carbohydrates"].toStringAsFixed(0)}g'),
-              Text('${values["fat"].toStringAsFixed(0)}g'),
+              MutedText('${values["energy"].toStringAsFixed(0)} kcal'),
+              MutedText('${values["protein"].toStringAsFixed(0)}g'),
+              MutedText('${values["carbohydrates"].toStringAsFixed(0)}g'),
+              MutedText('${values["fat"].toStringAsFixed(0)}g'),
             ],
           ),
         ],

@@ -22,6 +22,7 @@ import 'package:flutter/material.dart';
 const Color wgerPrimaryColor = Color(0xff2a4c7d);
 const Color wgerPrimaryButtonColor = Color(0xff266dd3);
 const Color wgerSecondaryColor = Color(0xffe63946);
+const Color wgerTextMuted = Colors.black38;
 
 // Chart colors
 const charts.Color wgerChartPrimaryColor = charts.Color(r: 0x2a, g: 0x4c, b: 0x7d);
