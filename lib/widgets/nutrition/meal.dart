@@ -21,7 +21,7 @@ import 'package:provider/provider.dart';
 import 'package:wger/locale/locales.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
-import 'package:wger/providers/nutritional_plans.dart';
+import 'package:wger/providers/nutrition.dart';
 import 'package:wger/widgets/core/bottom_sheet.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 
@@ -66,15 +66,19 @@ class MealItemWidget extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(5),
       child: Table(
+        columnWidths: {
+          0: FlexColumnWidth(5),
+          1: FlexColumnWidth(2),
+        },
         children: [
           TableRow(
             children: [
               Text('${_item.amount.toStringAsFixed(0)}$unit ${_item.ingredientObj.name}'),
               Text(
                   '${values["energy"].toStringAsFixed(0)} kcal / ${values["energyKj"].toStringAsFixed(0)} kJ'),
-              Text('${values["protein"].toStringAsFixed(0)} g'),
-              Text('${values["carbohydrates"].toStringAsFixed(0)} g'),
-              Text('${values["fat"].toStringAsFixed(0)} g'),
+              Text('${values["protein"].toStringAsFixed(0)}g'),
+              Text('${values["carbohydrates"].toStringAsFixed(0)}g'),
+              Text('${values["fat"].toStringAsFixed(0)}g'),
             ],
           ),
         ],
@@ -137,7 +141,7 @@ class DismissibleMealHeader extends StatelessWidget {
         // Delete
         if (direction == DismissDirection.endToStart) {
           // Delete the meal
-          Provider.of<NutritionalPlans>(context, listen: false).deleteMeal(_meal);
+          Provider.of<Nutrition>(context, listen: false).deleteMeal(_meal);
 
           // and inform the user
           Scaffold.of(context).showSnackBar(

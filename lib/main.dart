@@ -22,7 +22,7 @@ import 'package:provider/provider.dart';
 import 'package:wger/locale/locales.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/exercises.dart';
-import 'package:wger/providers/nutritional_plans.dart';
+import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/auth_screen.dart';
 import 'package:wger/screens/dashboard.dart';
@@ -64,9 +64,9 @@ class MyApp extends StatelessWidget {
             previous == null ? [] : previous.items,
           ),
         ),
-        ChangeNotifierProxyProvider<Auth, NutritionalPlans>(
+        ChangeNotifierProxyProvider<Auth, Nutrition>(
           create: null, // TODO: Create is required but it can be null??
-          update: (context, auth, previous) => NutritionalPlans(
+          update: (context, auth, previous) => Nutrition(
             auth,
             previous == null ? [] : previous.items,
           ),

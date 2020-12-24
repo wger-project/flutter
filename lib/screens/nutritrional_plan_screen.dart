@@ -20,7 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/locale/locales.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
-import 'package:wger/providers/nutritional_plans.dart';
+import 'package:wger/providers/nutrition.dart';
 import 'package:wger/widgets/nutrition/nutritional_plan_detail.dart';
 
 class NutritrionalPlanScreen extends StatefulWidget {
@@ -32,7 +32,7 @@ class NutritrionalPlanScreen extends StatefulWidget {
 
 class _NutritrionalPlanScreenState extends State<NutritrionalPlanScreen> {
   Future<NutritionalPlan> _loadNutritionalPlanDetail(BuildContext context, int planId) async {
-    var plan = await Provider.of<NutritionalPlans>(context, listen: false).findById(planId);
+    var plan = await Provider.of<Nutrition>(context, listen: false).findById(planId);
     return plan;
   }
 
@@ -77,7 +77,7 @@ class _NutritrionalPlanScreenState extends State<NutritrionalPlanScreen> {
                 ? Center(child: CircularProgressIndicator())
                 : RefreshIndicator(
                     onRefresh: () => _loadNutritionalPlanDetail(context, nutritionalPlan.id),
-                    child: Consumer<NutritionalPlans>(
+                    child: Consumer<Nutrition>(
                       builder: (context, workout, _) => NutritionalPlanDetailWidget(snapshot.data),
                     ),
                   ),

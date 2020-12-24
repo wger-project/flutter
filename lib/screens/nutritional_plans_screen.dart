@@ -22,7 +22,7 @@ import 'package:wger/helpers/ui.dart';
 import 'package:wger/locale/locales.dart';
 import 'package:wger/models/http_exception.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
-import 'package:wger/providers/nutritional_plans.dart';
+import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/widgets/app_drawer.dart';
 import 'package:wger/widgets/nutrition/nutritional_plans_list.dart';
@@ -36,7 +36,7 @@ class NutritionScreen extends StatefulWidget {
 
 class _NutritionScreenState extends State<NutritionScreen> {
   Future<void> _refreshPlans(BuildContext context) async {
-    await Provider.of<NutritionalPlans>(context, listen: false).fetchAndSetPlans();
+    await Provider.of<Nutrition>(context, listen: false).fetchAndSetPlans();
   }
 
   final descriptionController = TextEditingController();
@@ -116,8 +116,7 @@ class _NutritionScreenState extends State<NutritionScreen> {
 
                       // Save the entry on the server
                       try {
-                        await Provider.of<NutritionalPlans>(ctx, listen: false)
-                            .addPlan(nutritionalPlan);
+                        await Provider.of<Nutrition>(ctx, listen: false).addPlan(nutritionalPlan);
 
                         // Saving was successful, reset the data
                         descriptionController.clear();

@@ -26,7 +26,7 @@ import 'package:wger/models/http_exception.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
-import 'package:wger/providers/nutritional_plans.dart';
+import 'package:wger/providers/nutrition.dart';
 
 class MealForm extends StatelessWidget {
   Meal meal;
@@ -79,7 +79,7 @@ class MealForm extends StatelessWidget {
                 meal.plan = _plan.id;
 
                 try {
-                  Provider.of<NutritionalPlans>(context, listen: false).addMeal(meal, _plan.id);
+                  Provider.of<Nutrition>(context, listen: false).addMeal(meal, _plan.id);
                 } on WgerHttpException catch (error) {
                   showHttpExceptionErrorDialog(error, context);
                 } catch (error) {
@@ -123,7 +123,7 @@ class MealItemForm extends StatelessWidget {
                 decoration: InputDecoration(labelText: AppLocalizations.of(context).ingredient),
               ),
               suggestionsCallback: (pattern) async {
-                return await Provider.of<NutritionalPlans>(context, listen: false)
+                return await Provider.of<Nutrition>(context, listen: false)
                     .searchIngredient(pattern);
               },
               itemBuilder: (context, suggestion) {
@@ -192,8 +192,7 @@ class MealItemForm extends StatelessWidget {
                 try {
                   mealItem.meal = meal.id;
 
-                  Provider.of<NutritionalPlans>(context, listen: false)
-                      .addMealIteam(mealItem, meal.id);
+                  Provider.of<Nutrition>(context, listen: false).addMealIteam(mealItem, meal.id);
                 } on WgerHttpException catch (error) {
                   showHttpExceptionErrorDialog(error, context);
                 } catch (error) {
