@@ -26,12 +26,12 @@ import 'package:wger/providers/auth.dart';
 /// Base provider class.
 /// Provides a couple of comfort functions so we avoid a bit of boilerplate.
 class WgerBaseProvider {
-  String url;
+  String requestUrl;
   Auth auth;
 
   WgerBaseProvider(auth, urlPath) {
     this.auth = auth;
-    this.url = makeUrl(urlPath);
+    this.requestUrl = makeUrl(urlPath);
   }
 
   makeUrl(String path, [String id]) {
@@ -41,18 +41,15 @@ class WgerBaseProvider {
   }
 
   /// Fetch and retrieve the overview list of objects, returns the JSON parsed response
-  Future<Map<String, dynamic>> fetchAndSet(http.Client client, [String urlPath]) async {
+  Future<Map<String, dynamic>> fetch(http.Client client, [String urlPath]) async {
     if (client == null) {
       client = http.Client();
     }
 
-    if (urlPath != null) {
-      url = makeUrl(urlPath);
-    }
-
     // Send the request
+    requestUrl = urlPath == null ? makeUrl(urlPath) : urlPath;
     final response = await client.get(
-      url + '?ordering=-date',
+      requestUrl + '?ordering=-date',
       headers: <String, String>{
         'Authorization': 'Token ${auth.token}',
         'User-Agent': 'wger Workout Manager App',
@@ -76,11 +73,11 @@ class WgerBaseProvider {
     }
 
     if (urlPath != null) {
-      url = makeUrl(urlPath);
+      requestUrl = makeUrl(urlPath);
     }
 
     final response = await client.post(
-      url,
+      requestUrl,
       headers: {
         'Authorization': 'Token ${auth.token}',
         'Content-Type': 'application/json; charset=UTF-8',

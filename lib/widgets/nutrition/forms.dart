@@ -17,12 +17,14 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/ui.dart';
 import 'package:wger/locale/locales.dart';
 import 'package:wger/models/http_exception.dart';
 import 'package:wger/models/nutrition/meal.dart';
+import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/nutritional_plans.dart';
 
@@ -78,6 +80,120 @@ class MealForm extends StatelessWidget {
 
                 try {
                   Provider.of<NutritionalPlans>(context, listen: false).addMeal(meal, _plan.id);
+                } on WgerHttpException catch (error) {
+                  showHttpExceptionErrorDialog(error, context);
+                } catch (error) {
+                  showErrorDialog(error, context);
+                }
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class MealItemForm extends StatelessWidget {
+  Meal meal;
+  MealItem mealItem;
+  NutritionalPlan _plan;
+
+  MealItemForm(meal, [mealItem]) {
+    this.meal = meal;
+    this.mealItem = mealItem ?? MealItem();
+  }
+
+  final _form = GlobalKey<FormState>();
+  final _ingredientController = TextEditingController();
+  final _amountController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.all(20),
+      child: Form(
+        key: _form,
+        child: Column(
+          children: [
+            TypeAheadFormField(
+              textFieldConfiguration: TextFieldConfiguration(
+                controller: this._ingredientController,
+                decoration: InputDecoration(labelText: AppLocalizations.of(context).ingredient),
+              ),
+              suggestionsCallback: (pattern) async {
+                return await Provider.of<NutritionalPlans>(context, listen: false)
+                    .searchIngredient(pattern);
+              },
+              itemBuilder: (context, suggestion) {
+                return ListTile(
+                  title: Text(suggestion['value']),
+                  subtitle: Text(suggestion['data']['id'].toString()),
+                );
+              },
+              transitionBuilder: (context, suggestionsBox, controller) {
+                return suggestionsBox;
+              },
+              onSuggestionSelected: (suggestion) {
+                print(suggestion);
+                mealItem.ingredientId = suggestion['data']['id'];
+                this._ingredientController.text = suggestion['value'];
+              },
+              validator: (value) {
+                if (value.isEmpty) {
+                  return 'Please select an ingredient';
+                }
+                if (mealItem.ingredientId == null) {
+                  return 'Please select an ingredient';
+                }
+                return null;
+              },
+            ),
+            /*
+            TextFormField(
+              decoration: InputDecoration(labelText: AppLocalizations.of(context).ingredient),
+              controller: _ingredientController,
+              onSaved: (newValue) async {
+                mealItem.ingredient = await Provider.of<NutritionalPlans>(context, listen: false)
+                    .fetchIngredient(int.parse(newValue));
+                print(mealItem.ingredient.name);
+                print('ppppppppppppppppppp');
+              },
+              onFieldSubmitted: (_) {},
+            ),
+
+             */
+            TextFormField(
+              decoration: InputDecoration(labelText: AppLocalizations.of(context).amount),
+              controller: _amountController,
+              keyboardType: TextInputType.number,
+              onFieldSubmitted: (_) {},
+              onSaved: (newValue) {
+                mealItem.amount = double.parse(newValue);
+              },
+              validator: (value) {
+                try {
+                  double.parse(value);
+                } catch (error) {
+                  return 'Please enter a valid number';
+                }
+                return null;
+              },
+            ),
+            ElevatedButton(
+              child: Text(AppLocalizations.of(context).save),
+              onPressed: () async {
+                if (!_form.currentState.validate()) {
+                  return;
+                }
+                _form.currentState.save();
+
+                try {
+                  mealItem.meal = meal.id;
+
+                  Provider.of<NutritionalPlans>(context, listen: false)
+                      .addMealIteam(mealItem, meal.id);
                 } on WgerHttpException catch (error) {
                   showHttpExceptionErrorDialog(error, context);
                 } catch (error) {

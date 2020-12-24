@@ -30,18 +30,24 @@ class MealItem {
   @JsonKey(required: true)
   final int id;
 
-  @JsonKey(required: true)
-  final Ingredient ingredient;
+  @JsonKey(required: false, name: 'ingredient')
+  int ingredientId;
 
-  @JsonKey(required: true, name: 'weight_unit')
-  final IngredientWeightUnit weightUnit;
+  @JsonKey(required: false, name: 'ingredient_obj')
+  Ingredient ingredientObj;
+
+  @JsonKey(required: false)
+  int meal;
+
+  @JsonKey(required: false, name: 'weight_unit')
+  IngredientWeightUnit weightUnit;
 
   @JsonKey(required: true, fromJson: toNum, toJson: toString)
-  final num amount;
+  num amount;
 
   MealItem({
     @required this.id,
-    @required this.ingredient,
+    @required this.ingredientObj,
     @required this.weightUnit,
     @required this.amount,
   });
@@ -68,22 +74,22 @@ class MealItem {
 
     final weight = this.weightUnit == null ? amount : amount * weightUnit.amount * weightUnit.grams;
 
-    out['energy'] += ingredient.energy * weight / 100;
+    out['energy'] += ingredientObj.energy * weight / 100;
     out['energyKj'] += out['energy'] * 4.184;
-    out['protein'] += ingredient.protein * weight / 100;
-    out['carbohydrates'] += ingredient.carbohydrates * weight / 100;
-    out['fat'] += ingredient.fat * weight / 100;
+    out['protein'] += ingredientObj.protein * weight / 100;
+    out['carbohydrates'] += ingredientObj.carbohydrates * weight / 100;
+    out['fat'] += ingredientObj.fat * weight / 100;
 
-    if (ingredient.fatSaturated != null) {
-      out['fat_saturated'] += ingredient.fatSaturated * weight / 100;
+    if (ingredientObj.fatSaturated != null) {
+      out['fat_saturated'] += ingredientObj.fatSaturated * weight / 100;
     }
 
-    if (ingredient.fibres != null) {
-      out['fibres'] += ingredient.fibres * weight / 100;
+    if (ingredientObj.fibres != null) {
+      out['fibres'] += ingredientObj.fibres * weight / 100;
     }
 
-    if (ingredient.sodium != null) {
-      out['sodium'] += ingredient.sodium * weight / 100;
+    if (ingredientObj.sodium != null) {
+      out['sodium'] += ingredientObj.sodium * weight / 100;
     }
 
     return out;

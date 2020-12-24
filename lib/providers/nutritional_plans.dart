@@ -16,10 +16,14 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:wger/models/http_exception.dart';
+import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/meal.dart';
+import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/base_provider.dart';
@@ -28,6 +32,9 @@ class NutritionalPlans extends WgerBaseProvider with ChangeNotifier {
   static const nutritionalPlansUrl = 'nutritionplan';
   static const nutritionalPlansInfoUrl = 'nutritionplaninfo';
   static const mealUrl = 'meal';
+  static const mealItemUrl = 'mealitem';
+  static const ingredientUrl = 'ingredient';
+  static const ingredientSearchUrl = 'ingredient/search';
 
   String _url;
   Auth _auth;
@@ -51,12 +58,22 @@ class NutritionalPlans extends WgerBaseProvider with ChangeNotifier {
     return _plans.firstWhere((plan) => plan.id == id);
   }
 
+  Meal findMealById(int id) {
+    for (var plan in _plans) {
+      var meal = plan.meals.firstWhere((plan) => plan.id == id, orElse: () {});
+      if (meal != null) {
+        return meal;
+      }
+    }
+    return null;
+  }
+
   Future<void> fetchAndSetPlans({http.Client client}) async {
     if (client == null) {
       client = http.Client();
     }
 
-    final data = await fetchAndSet(client, nutritionalPlansInfoUrl);
+    final data = await fetch(client, makeUrl(nutritionalPlansInfoUrl));
     final List<NutritionalPlan> loadedPlans = [];
     for (final entry in data['results']) {
       loadedPlans.add(NutritionalPlan.fromJson(entry));
@@ -73,7 +90,7 @@ class NutritionalPlans extends WgerBaseProvider with ChangeNotifier {
 
     String url = makeUrl('nutritionplaninfo', planId.toString());
     //fetchAndSet
-    final data = await fetchAndSet(client, 'nutritionplaninfo/$planId');
+    final data = await fetch(client, 'nutritionplaninfo/$planId');
 
     //final response = await http.get(
     //  url,
@@ -150,5 +167,58 @@ class NutritionalPlans extends WgerBaseProvider with ChangeNotifier {
       throw WgerHttpException(response.body);
     }
     existingMeal = null;
+  }
+
+  /// Adds a meal item to a meal
+  Future<MealItem> addMealIteam(MealItem mealItem, int mealId, {http.Client client}) async {
+    if (client == null) {
+      client = http.Client();
+    }
+
+    var meal = findMealById(mealId);
+    final data = await add(mealItem.toJson(), client, mealItemUrl);
+
+    mealItem = MealItem.fromJson(data);
+    mealItem.ingredientObj = await fetchIngredient(mealItem.ingredientId);
+    meal.mealItems.add(mealItem);
+    notifyListeners();
+
+    return mealItem;
+  }
+
+  /// Fetch and return an ingredient
+  Future<Ingredient> fetchIngredient(int ingredientId, {http.Client client}) async {
+    if (client == null) {
+      client = http.Client();
+    }
+
+    // fetch and return
+    final data = await fetch(client, makeUrl(ingredientUrl, ingredientId.toString()));
+    return Ingredient.fromJson(data);
+  }
+
+  /// Searches for an ingredient
+  Future<List> searchIngredient(String name, {http.Client client}) async {
+    if (client == null) {
+      client = http.Client();
+    }
+
+    // Send the request
+    requestUrl = makeUrl(ingredientSearchUrl);
+    final response = await client.get(
+      requestUrl + '?term=$name',
+      headers: <String, String>{
+        'Authorization': 'Token ${auth.token}',
+        'User-Agent': 'wger Workout Manager App',
+      },
+    );
+
+    // Something wrong with our request
+    if (response.statusCode >= 400) {
+      throw WgerHttpException(response.body);
+    }
+
+    // Process the response
+    return json.decode(utf8.decode(response.bodyBytes))['suggestions'] as List<dynamic>;
   }
 }

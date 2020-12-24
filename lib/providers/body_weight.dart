@@ -45,7 +45,7 @@ class BodyWeight extends WgerBaseProvider with ChangeNotifier {
     }
 
     // Process the response
-    final data = await fetchAndSet(client);
+    final data = await fetch(client);
     final List<WeightEntry> loadedEntries = [];
     for (final entry in data['results']) {
       loadedEntries.add(WeightEntry.fromJson(entry));

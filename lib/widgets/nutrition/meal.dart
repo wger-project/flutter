@@ -22,6 +22,8 @@ import 'package:wger/locale/locales.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/providers/nutritional_plans.dart';
+import 'package:wger/widgets/core/bottom_sheet.dart';
+import 'package:wger/widgets/nutrition/forms.dart';
 
 class MealWidget extends StatelessWidget {
   final Meal _meal;
@@ -36,9 +38,14 @@ class MealWidget extends StatelessWidget {
       child: Card(
         child: Column(
           children: [
-            Text('Plan ID: ${_meal.plan}'),
             DismissibleMealHeader(meal: _meal),
             ..._meal.mealItems.map((item) => MealItemWidget(item)).toList(),
+            OutlinedButton(
+              child: Text('Add ingredient'),
+              onPressed: () {
+                showFormBottomSheet(context, 'Add ingredient', MealItemForm(_meal));
+              },
+            ),
           ],
         ),
       ),
@@ -62,11 +69,9 @@ class MealItemWidget extends StatelessWidget {
         children: [
           TableRow(
             children: [
+              Text('${_item.amount.toStringAsFixed(0)}$unit ${_item.ingredientObj.name}'),
               Text(
-                '${_item.amount.toStringAsFixed(0)}$unit ${_item.ingredient.name}',
-              ),
-              Text(
-                  '${values["energy"].toStringAsFixed(0)} kcal /  \n ${values["energyKj"].toStringAsFixed(0)} kJ'),
+                  '${values["energy"].toStringAsFixed(0)} kcal / ${values["energyKj"].toStringAsFixed(0)} kJ'),
               Text('${values["protein"].toStringAsFixed(0)} g'),
               Text('${values["carbohydrates"].toStringAsFixed(0)} g'),
               Text('${values["fat"].toStringAsFixed(0)} g'),

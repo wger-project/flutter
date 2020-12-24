@@ -236,7 +236,28 @@ packages:
       name: flutter_calendar_carousel
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.5.1"
+    version: "1.5.2"
+  flutter_keyboard_visibility:
+    dependency: transitive
+    description:
+      name: flutter_keyboard_visibility
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.0.2"
+  flutter_keyboard_visibility_platform_interface:
+    dependency: transitive
+    description:
+      name: flutter_keyboard_visibility_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
+  flutter_keyboard_visibility_web:
+    dependency: transitive
+    description:
+      name: flutter_keyboard_visibility_web
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   flutter_launcher_icons:
     dependency: "direct dev"
     description:
@@ -254,6 +275,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_typeahead:
+    dependency: "direct main"
+    description:
+      name: flutter_typeahead
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.9.1"
   flutter_web_plugins:
     dependency: transitive
     description: flutter
@@ -349,7 +377,7 @@ packages:
       name: json_serializable
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.5.0"
+    version: "3.5.1"
   logging:
     dependency: transitive
     description:
@@ -468,7 +496,7 @@ packages:
       name: plugin_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.2"
+    version: "1.0.3"
   pool:
     dependency: transitive
     description:
@@ -489,7 +517,7 @@ packages:
       name: provider
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.3.2+2"
+    version: "4.3.2+3"
   pub_semver:
     dependency: transitive
     description:

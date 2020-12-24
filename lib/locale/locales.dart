@@ -171,6 +171,22 @@ class AppLocalizations {
     );
   }
 
+  String get ingredient {
+    return Intl.message(
+      'Ingredient',
+      name: 'ingredient',
+      desc: 'An ingredient',
+    );
+  }
+
+  String get amount {
+    return Intl.message(
+      'Amount',
+      name: 'amount',
+      desc: 'The amount (e.g. in grams) of an ingredient in a meal',
+    );
+  }
+
   String get newEntry {
     return Intl.message(
       'New entry',
