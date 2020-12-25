@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 import 'package:wger/locale/locales.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
@@ -29,6 +30,8 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final nutritionalValues = _nutritionalPlan.nutritionalValues;
+
     return SingleChildScrollView(
       child: Container(
         width: double.infinity,
@@ -56,6 +59,30 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
               onPressed: () {
                 showFormBottomSheet(context, 'Add meal', MealForm(_nutritionalPlan));
               },
+            ),
+            Container(
+              padding: EdgeInsets.all(15),
+              height: 220,
+              child: charts.PieChart(
+                [
+                  charts.Series<List<dynamic>, String>(
+                    id: 'NutritionalValues',
+                    domainFn: (datum, index) => datum[0],
+                    measureFn: (datum, index) => datum[1],
+                    data: [
+                      ['protein', nutritionalValues.protein],
+                      ['fat', nutritionalValues.fat],
+                      ['carbohydrates', nutritionalValues.carbohydrates],
+                    ],
+                    labelAccessorFn: (List<dynamic> row, _) =>
+                        '${row[0]}, ${row[1].toStringAsFixed(0)}g',
+                  )
+                ],
+                defaultRenderer: new charts.ArcRendererConfig(
+                  arcWidth: 60,
+                  arcRendererDecorators: [new charts.ArcLabelDecorator()],
+                ),
+              ),
             ),
           ],
         ),

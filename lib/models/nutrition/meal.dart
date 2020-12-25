@@ -21,6 +21,8 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 
+import 'nutritrional_values.dart';
+
 part 'meal.g.dart';
 
 @JsonSerializable()
@@ -47,4 +49,16 @@ class Meal {
   // Boilerplate
   factory Meal.fromJson(Map<String, dynamic> json) => _$MealFromJson(json);
   Map<String, dynamic> toJson() => _$MealToJson(this);
+
+  /// Calculations
+  NutritionalValues get nutritionalValues {
+    // This is already done on the server. It might be better to read it from there.
+    var out = NutritionalValues();
+
+    for (var item in mealItems) {
+      out.add(item.nutritionalValues);
+    }
+
+    return out;
+  }
 }

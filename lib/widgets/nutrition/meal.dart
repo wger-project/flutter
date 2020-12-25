@@ -104,10 +104,10 @@ class MealItemWidget extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                MutedText('${values["energy"].toStringAsFixed(0)} kcal'),
-                MutedText('${values["protein"].toStringAsFixed(0)}g'),
-                MutedText('${values["carbohydrates"].toStringAsFixed(0)}g'),
-                MutedText('${values["fat"].toStringAsFixed(0)}g'),
+                MutedText('${values.energy.toStringAsFixed(0)} kcal'),
+                MutedText('${values.protein.toStringAsFixed(0)}g'),
+                MutedText('${values.carbohydrates.toStringAsFixed(0)}g'),
+                MutedText('${values.fat.toStringAsFixed(0)}g'),
               ],
             ),
           ],
