@@ -90,16 +90,12 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
       client = http.Client();
     }
 
-    String url = makeUrl('nutritionplaninfo', planId.toString());
     //fetchAndSet
-    final data = await fetch(client, 'nutritionplaninfo/$planId');
+    final data = await fetch(client, makeUrl(nutritionalPlansInfoUrl, id: planId.toString()));
+    final plan = NutritionalPlan.fromJson(data);
+    await fetchAndSetLogs(plan);
 
-    //final response = await http.get(
-    //  url,
-    //  headers: <String, String>{'Authorization': 'Token ${_auth.token}'},
-    //);
-    //final extractedData = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
-    return NutritionalPlan.fromJson(data);
+    return plan;
   }
 
   Future<void> addPlan(NutritionalPlan plan, {http.Client client}) async {
@@ -218,7 +214,7 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
     }
 
     // fetch and return
-    final data = await fetch(client, makeUrl(ingredientUrl, ingredientId.toString()));
+    final data = await fetch(client, makeUrl(ingredientUrl, id: ingredientId.toString()));
     return Ingredient.fromJson(data);
   }
 
@@ -248,7 +244,7 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
   }
 
   /// Log meal to nutrition diary
-  Future<void> addMealToDiary(Meal meal, {http.Client client}) async {
+  Future<void> logMealToDiary(Meal meal, {http.Client client}) async {
     if (client == null) {
       client = http.Client();
     }
