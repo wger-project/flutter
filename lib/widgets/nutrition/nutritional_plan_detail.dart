@@ -84,6 +84,52 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                 ),
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Table(
+                children: [
+                  TableRow(children: [
+                    Text('Energy'),
+                    Text(
+                        '${nutritionalValues.energy.toStringAsFixed(0)} kcal / ${nutritionalValues.energyKj.toStringAsFixed(0)} kJ'),
+                  ]),
+                  TableRow(children: [
+                    Text('Protein'),
+                    Text('${nutritionalValues.protein.toStringAsFixed(0)}g'),
+                  ]),
+                  TableRow(children: [
+                    Text('Carbohydrates'),
+                    Text('${nutritionalValues.carbohydrates.toStringAsFixed(0)}g')
+                  ]),
+                  TableRow(children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 15),
+                      child: Text('sugar content'),
+                    ),
+                    Text('${nutritionalValues.carbohydratesSugar.toStringAsFixed(0)}g')
+                  ]),
+                  TableRow(children: [
+                    Text('Fat'),
+                    Text('${nutritionalValues.fat.toStringAsFixed(0)}g'),
+                  ]),
+                  TableRow(children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 15),
+                      child: Text('Saturated fat'),
+                    ),
+                    Text('${nutritionalValues.fatSaturated.toStringAsFixed(0)}g')
+                  ]),
+                  TableRow(children: [
+                    Text('Fibres'),
+                    Text('${nutritionalValues.fibres.toStringAsFixed(0)}g'),
+                  ]),
+                  TableRow(children: [
+                    Text('Sodium'),
+                    Text('${nutritionalValues.sodium.toStringAsFixed(0)}g'),
+                  ]),
+                ],
+              ),
+            )
           ],
         ),
       ),
