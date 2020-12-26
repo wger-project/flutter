@@ -22,6 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:wger/models/http_exception.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
+import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
@@ -35,6 +36,7 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
   static const mealItemUrl = 'mealitem';
   static const ingredientUrl = 'ingredient';
   static const ingredientSearchUrl = 'ingredient/search';
+  static const nutritionDiaryUrl = 'nutritiondiary';
 
   String _url;
   Auth _auth;
@@ -243,5 +245,22 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
 
     // Process the response
     return json.decode(utf8.decode(response.bodyBytes))['suggestions'] as List<dynamic>;
+  }
+
+  /// Log meal to nutrition diary
+  Future<void> addMealToDiary(Meal meal, {http.Client client}) async {
+    if (client == null) {
+      client = http.Client();
+    }
+
+    //var meal = findMealById(mealId);
+    for (var item in meal.mealItems) {
+      Log log = Log.fromMealItem(item);
+      log.planId = findById(meal.plan).id;
+      log.datetime = DateTime.now();
+
+      await add(log.toJson(), client, nutritionDiaryUrl);
+    }
+    notifyListeners();
   }
 }

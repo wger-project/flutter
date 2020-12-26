@@ -185,18 +185,7 @@ class DismissibleMealHeader extends StatelessWidget {
 
           // Log meal
         } else {
-          showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-              content: Text('Would log this meal'),
-              actions: [
-                TextButton(
-                  child: Text("Close"),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-              ],
-            ),
-          );
+          Provider.of<Nutrition>(context, listen: false).addMealToDiary(_meal);
         }
         return false;
       },

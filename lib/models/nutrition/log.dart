@@ -16,26 +16,58 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/foundation.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/ingredient_weight_unit.dart';
+import 'package:wger/models/nutrition/meal_item.dart';
 
+part 'log.g.dart';
+
+@JsonSerializable()
 class Log {
-  final int id;
-  final int nutritionalPlanId;
-  final DateTime date;
-  final String comment;
-  final Ingredient ingredient;
-  final IngredientWeightUnit weightUnit;
-  final double amount;
+  @JsonKey(required: true)
+  int id;
+
+  @JsonKey(required: true, name: 'plan')
+  int planId;
+
+  @JsonKey(required: true)
+  DateTime datetime;
+
+  String comment;
+
+  @JsonKey(required: true, name: 'ingredient')
+  int ingredientId;
+
+  Ingredient ingredientObj;
+
+  @JsonKey(required: true)
+  int weightUnit;
+
+  IngredientWeightUnit weightUnitObj;
+
+  @JsonKey(required: true)
+  double amount;
 
   Log({
-    @required this.id,
-    @required this.ingredient,
-    @required this.weightUnit,
-    @required this.amount,
-    @required this.nutritionalPlanId,
-    @required this.date,
-    @required this.comment,
+    this.id,
+    this.ingredientId,
+    this.ingredientObj,
+    this.weightUnit,
+    this.weightUnitObj,
+    this.amount,
+    this.planId,
+    this.datetime,
+    this.comment,
   });
+
+  Log.fromMealItem(MealItem mealItem) {
+    this.ingredientId = mealItem.ingredientId;
+    this.weightUnit = null;
+    this.amount = mealItem.amount;
+  }
+
+  // Boilerplate
+  factory Log.fromJson(Map<String, dynamic> json) => _$LogFromJson(json);
+  Map<String, dynamic> toJson() => _$LogToJson(this);
 }
