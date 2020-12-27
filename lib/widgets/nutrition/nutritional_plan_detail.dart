@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:wger/locale/locales.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/nutrition/nutritrional_values.dart';
+import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/bottom_sheet.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/meal.dart';
@@ -137,6 +138,24 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
               style: Theme.of(context).textTheme.headline6,
             ),
             Container(
+              padding: EdgeInsets.all(15),
+              height: 220,
+              child: charts.TimeSeriesChart(
+                [
+                  charts.Series<List<dynamic>, DateTime>(
+                    id: 'NutritionDiary',
+                    colorFn: (datum, index) => wgerChartSecondaryColor,
+                    domainFn: (datum, index) => datum[1],
+                    measureFn: (datum, index) => datum[0].energy,
+                    data: _nutritionalPlan.logEntriesValues.keys
+                        .map((e) => [_nutritionalPlan.logEntriesValues[e], e])
+                        .toList(),
+                  )
+                ],
+                defaultRenderer: new charts.BarRendererConfig<DateTime>(),
+              ),
+            ),
+            Container(
               height: 200,
               child: SingleChildScrollView(
                 child: Column(
@@ -156,8 +175,8 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
 }
 
 class NutritionDiaryEntry extends StatelessWidget {
-  DateTime date;
-  NutritionalValues values;
+  final DateTime date;
+  final NutritionalValues values;
 
   NutritionDiaryEntry(
     this.date,
