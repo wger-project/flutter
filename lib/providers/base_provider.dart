@@ -60,10 +60,9 @@ class WgerBaseProvider {
     }
 
     // Send the request
-    requestUrl = urlPath == null ? makeUrl(urlPath) : urlPath;
     final response = await client.get(
-      requestUrl + '?ordering=-date',
-      headers: <String, String>{
+      urlPath,
+      headers: {
         'Authorization': 'Token ${auth.token}',
         'User-Agent': 'wger Workout Manager App',
       },
@@ -71,6 +70,7 @@ class WgerBaseProvider {
 
     // Something wrong with our request
     if (response.statusCode >= 400) {
+      print(response);
       throw WgerHttpException(response.body);
     }
 

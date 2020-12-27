@@ -41,6 +41,7 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
   String _url;
   Auth _auth;
   List<NutritionalPlan> _plans = [];
+  List<Ingredient> _ingredients = [];
 
   Nutrition(Auth auth, List<NutritionalPlan> entries)
       : this._plans = entries,
@@ -208,14 +209,23 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
   }
 
   /// Fetch and return an ingredient
+  ///
+  /// If the ingredient is not known locally, it is fetched from the server
   Future<Ingredient> fetchIngredient(int ingredientId, {http.Client client}) async {
     if (client == null) {
       client = http.Client();
     }
 
+    var ingredient = _ingredients.firstWhere((e) => e.id == ingredientId, orElse: () => null);
+    if (ingredient != null) {
+      return ingredient;
+    }
+
     // fetch and return
     final data = await fetch(client, makeUrl(ingredientUrl, id: ingredientId.toString()));
-    return Ingredient.fromJson(data);
+    ingredient = Ingredient.fromJson(data);
+    _ingredients.add(ingredient);
+    return ingredient;
   }
 
   /// Searches for an ingredient
@@ -256,6 +266,24 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
       log.datetime = DateTime.now();
 
       await add(log.toJson(), client, nutritionDiaryUrl);
+    }
+    notifyListeners();
+  }
+
+  /// Log meal to nutrition diary
+  Future<void> fetchAndSetLogs(NutritionalPlan plan, {http.Client client}) async {
+    if (client == null) {
+      client = http.Client();
+    }
+
+    final data =
+        await fetch(client, makeUrl(nutritionDiaryUrl, query: {'plan': plan.id.toString()}));
+
+    for (var logData in data['results']) {
+      var log = Log.fromJson(logData);
+      final ingredient = await fetchIngredient(log.ingredientId);
+      log.ingredientObj = ingredient;
+      plan.logs.add(log);
     }
     notifyListeners();
   }

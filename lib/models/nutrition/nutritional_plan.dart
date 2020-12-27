@@ -18,6 +18,7 @@
 
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/json.dart';
+import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal.dart';
 
 import 'nutritrional_values.dart';
@@ -36,13 +37,17 @@ class NutritionalPlan {
   DateTime creationDate;
 
   @JsonKey(required: false)
-  List<Meal> meals;
+  List<Meal> meals = [];
+
+  @JsonKey(ignore: true)
+  List<Log> logs = [];
 
   NutritionalPlan({
     this.id,
     this.description,
     this.creationDate,
     this.meals,
+    //this.logs,
   });
 
   // Boilerplate
@@ -56,6 +61,20 @@ class NutritionalPlan {
 
     for (var meal in meals) {
       out.add(meal.nutritionalValues);
+    }
+
+    return out;
+  }
+
+  Map<DateTime, NutritionalValues> get logEntriesValues {
+    var out = <DateTime, NutritionalValues>{};
+    for (var log in logs) {
+      final date = DateTime(log.datetime.year, log.datetime.month, log.datetime.day);
+      if (!out.containsKey(date)) {
+        out[date] = NutritionalValues();
+      }
+
+      out[date].add(log.nutritionalValues);
     }
 
     return out;

@@ -20,6 +20,7 @@ import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 import 'package:wger/locale/locales.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
+import 'package:wger/models/nutrition/nutritrional_values.dart';
 import 'package:wger/widgets/core/bottom_sheet.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/meal.dart';
@@ -129,9 +130,52 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                   ]),
                 ],
               ),
-            )
+            ),
+            Padding(padding: const EdgeInsets.all(8.0)),
+            Text(
+              'Nutritional diary',
+              style: Theme.of(context).textTheme.headline6,
+            ),
+            Container(
+              height: 200,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    ..._nutritionalPlan.logEntriesValues.entries
+                        .map((entry) => NutritionDiaryEntry(entry.key, entry.value))
+                        .toList(),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class NutritionDiaryEntry extends StatelessWidget {
+  DateTime date;
+  NutritionalValues values;
+
+  NutritionDiaryEntry(
+    this.date,
+    this.values,
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Column(
+        children: [
+          Text(DefaultMaterialLocalizations().formatMediumDate(date).toString()),
+          Text(values.energy.toStringAsFixed(0)),
+          Text(values.protein.toStringAsFixed(0)),
+          Text(values.carbohydrates.toStringAsFixed(0)),
+          Text(values.fat.toStringAsFixed(0)),
+        ],
       ),
     );
   }

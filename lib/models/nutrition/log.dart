@@ -17,9 +17,12 @@
  */
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:wger/helpers/json.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/ingredient_weight_unit.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
+
+import 'nutritrional_values.dart';
 
 part 'log.g.dart';
 
@@ -41,13 +44,13 @@ class Log {
 
   Ingredient ingredientObj;
 
-  @JsonKey(required: true)
+  @JsonKey(required: true, name: 'weight_unit')
   int weightUnit;
 
   IngredientWeightUnit weightUnitObj;
 
-  @JsonKey(required: true)
-  double amount;
+  @JsonKey(required: true, fromJson: toNum)
+  num amount;
 
   Log({
     this.id,
@@ -70,4 +73,32 @@ class Log {
   // Boilerplate
   factory Log.fromJson(Map<String, dynamic> json) => _$LogFromJson(json);
   Map<String, dynamic> toJson() => _$LogToJson(this);
+
+  /// Calculations
+  NutritionalValues get nutritionalValues {
+    // This is already done on the server. It might be better to read it from there.
+    var out = NutritionalValues();
+
+    final weight =
+        this.weightUnitObj == null ? amount : amount * weightUnitObj.amount * weightUnitObj.grams;
+
+    out.energy = ingredientObj.energy * weight / 100;
+    out.protein = ingredientObj.protein * weight / 100;
+    out.carbohydrates = ingredientObj.carbohydrates * weight / 100;
+    out.fat = ingredientObj.fat * weight / 100;
+
+    if (ingredientObj.fatSaturated != null) {
+      out.fatSaturated = ingredientObj.fatSaturated * weight / 100;
+    }
+
+    if (ingredientObj.fibres != null) {
+      out.fibres = ingredientObj.fibres * weight / 100;
+    }
+
+    if (ingredientObj.sodium != null) {
+      out.sodium + ingredientObj.sodium * weight / 100;
+    }
+
+    return out;
+  }
 }

@@ -63,10 +63,6 @@ class NutritionalPlansList extends StatelessWidget {
           direction: DismissDirection.endToStart,
           child: Card(
             child: ListTile(
-              //onTap: () => Navigator.of(context).pushNamed(
-              //  WorkoutPlanScreen.routeName,
-              //  arguments: currentPlan,
-              //),
               onTap: () {
                 Navigator.of(context).pushNamed(
                   NutritrionalPlanScreen.routeName,

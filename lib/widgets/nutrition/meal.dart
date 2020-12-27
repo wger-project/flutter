@@ -185,7 +185,7 @@ class DismissibleMealHeader extends StatelessWidget {
 
           // Log meal
         } else {
-          Provider.of<Nutrition>(context, listen: false).addMealToDiary(_meal);
+          Provider.of<Nutrition>(context, listen: false).logMealToDiary(_meal);
         }
         return false;
       },

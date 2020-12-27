@@ -12,7 +12,7 @@ Log _$LogFromJson(Map<String, dynamic> json) {
     'plan',
     'datetime',
     'ingredient',
-    'weightUnit',
+    'weight_unit',
     'amount'
   ]);
   return Log(
@@ -21,12 +21,12 @@ Log _$LogFromJson(Map<String, dynamic> json) {
     ingredientObj: json['ingredientObj'] == null
         ? null
         : Ingredient.fromJson(json['ingredientObj'] as Map<String, dynamic>),
-    weightUnit: json['weightUnit'] as int,
+    weightUnit: json['weight_unit'] as int,
     weightUnitObj: json['weightUnitObj'] == null
         ? null
         : IngredientWeightUnit.fromJson(
             json['weightUnitObj'] as Map<String, dynamic>),
-    amount: (json['amount'] as num)?.toDouble(),
+    amount: toNum(json['amount'] as String),
     planId: json['plan'] as int,
     datetime: json['datetime'] == null
         ? null
@@ -42,7 +42,7 @@ Map<String, dynamic> _$LogToJson(Log instance) => <String, dynamic>{
       'comment': instance.comment,
       'ingredient': instance.ingredientId,
       'ingredientObj': instance.ingredientObj,
-      'weightUnit': instance.weightUnit,
+      'weight_unit': instance.weightUnit,
       'weightUnitObj': instance.weightUnitObj,
       'amount': instance.amount,
     };

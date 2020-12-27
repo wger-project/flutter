@@ -33,6 +33,8 @@ class NutritrionalPlanScreen extends StatefulWidget {
 class _NutritrionalPlanScreenState extends State<NutritrionalPlanScreen> {
   Future<NutritionalPlan> _loadNutritionalPlanDetail(BuildContext context, int planId) async {
     var plan = await Provider.of<Nutrition>(context, listen: false).findById(planId);
+    await Provider.of<Nutrition>(context, listen: false).fetchAndSetLogs(plan);
+
     return plan;
   }
 
