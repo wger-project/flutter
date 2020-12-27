@@ -27,7 +27,7 @@ import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/meal.dart';
 
 class NutritionalPlanDetailWidget extends StatelessWidget {
-  NutritionalPlan _nutritionalPlan;
+  final NutritionalPlan _nutritionalPlan;
   NutritionalPlanDetailWidget(this._nutritionalPlan);
 
   @override
@@ -133,10 +133,7 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
               ),
             ),
             Padding(padding: const EdgeInsets.all(8.0)),
-            Text(
-              'Nutritional diary',
-              style: Theme.of(context).textTheme.headline6,
-            ),
+            Text('Diary', style: Theme.of(context).textTheme.headline6),
             Container(
               padding: EdgeInsets.all(15),
               height: 220,

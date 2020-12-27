@@ -30,8 +30,8 @@ import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/auth.dart';
 
 class WorkoutPlans with ChangeNotifier {
-  static const workoutPlansUrl = '/api/v2/workout/';
-  static const daysUrl = '/api/v2/day/';
+  static const workoutPlansUrl = 'workout';
+  static const daysUrl = 'day';
 
   String _url;
   String _urlDays;

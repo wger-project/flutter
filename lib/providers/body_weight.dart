@@ -27,9 +27,9 @@ class BodyWeight extends WgerBaseProvider with ChangeNotifier {
   static const bodyWeightUrl = 'weightentry';
 
   List<WeightEntry> _entries = [];
-  BodyWeight(Auth auth, List<WeightEntry> entries)
+  BodyWeight(Auth auth, List<WeightEntry> entries, [http.Client client])
       : this._entries = entries,
-        super(auth, bodyWeightUrl);
+        super(auth, client);
 
   List<WeightEntry> get items {
     return [..._entries];
@@ -39,13 +39,9 @@ class BodyWeight extends WgerBaseProvider with ChangeNotifier {
     return _entries.firstWhere((plan) => plan.id == id);
   }
 
-  Future<void> fetchAndSetEntries({http.Client client}) async {
-    if (client == null) {
-      client = http.Client();
-    }
-
+  Future<void> fetchAndSetEntries() async {
     // Process the response
-    final data = await fetch(client, makeUrl(bodyWeightUrl));
+    final data = await fetch(makeUrl(bodyWeightUrl));
     final List<WeightEntry> loadedEntries = [];
     for (final entry in data['results']) {
       loadedEntries.add(WeightEntry.fromJson(entry));
@@ -55,13 +51,9 @@ class BodyWeight extends WgerBaseProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<WeightEntry> addEntry(WeightEntry entry, {http.Client client}) async {
-    if (client == null) {
-      client = http.Client();
-    }
-
+  Future<WeightEntry> addEntry(WeightEntry entry) async {
     // Create entry and return it
-    final data = await add(entry.toJson(), client);
+    final data = await add(entry.toJson(), makeUrl(bodyWeightUrl));
     WeightEntry weightEntry = WeightEntry.fromJson(data);
     _entries.add(weightEntry);
     _entries.sort((a, b) => a.date.compareTo(b.date));
@@ -69,18 +61,17 @@ class BodyWeight extends WgerBaseProvider with ChangeNotifier {
     return weightEntry;
   }
 
-  Future<void> deleteEntry(int id, {http.Client client}) async {
-    if (client == null) {
-      client = http.Client();
-    }
-
+  Future<void> deleteEntry(int id) async {
     // Send the request and remove the entry from the list...
     final existingEntryIndex = _entries.indexWhere((element) => element.id == id);
     var existingWeightEntry = _entries[existingEntryIndex];
     _entries.removeAt(existingEntryIndex);
     notifyListeners();
 
-    final response = await deleteRequest(bodyWeightUrl, id, client);
+    final response = await deleteRequest(
+      bodyWeightUrl,
+      id,
+    );
 
     // ...but that didn't work, put it back again
     if (response.statusCode >= 400) {

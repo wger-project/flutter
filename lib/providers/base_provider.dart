@@ -24,14 +24,15 @@ import 'package:wger/models/http_exception.dart';
 import 'package:wger/providers/auth.dart';
 
 /// Base provider class.
+///
 /// Provides a couple of comfort functions so we avoid a bit of boilerplate.
 class WgerBaseProvider {
-  String requestUrl;
   Auth auth;
+  http.Client client;
 
-  WgerBaseProvider(auth, urlPath) {
+  WgerBaseProvider(auth, [client]) {
     this.auth = auth;
-    this.requestUrl = makeUrl(urlPath);
+    this.client = client ?? http.Client();
   }
 
   /// Helper function to make a URL.
@@ -54,11 +55,7 @@ class WgerBaseProvider {
   }
 
   /// Fetch and retrieve the overview list of objects, returns the JSON parsed response
-  Future<Map<String, dynamic>> fetch(http.Client client, [String urlPath]) async {
-    if (client == null) {
-      client = http.Client();
-    }
-
+  Future<Map<String, dynamic>> fetch([String urlPath]) async {
     // Send the request
     final response = await client.get(
       urlPath,
@@ -79,18 +76,9 @@ class WgerBaseProvider {
   }
 
   /// POSTs a new object
-  Future<Map<String, dynamic>> add(Map<String, dynamic> data, http.Client client,
-      [String urlPath]) async {
-    if (client == null) {
-      client = http.Client();
-    }
-
-    if (urlPath != null) {
-      requestUrl = makeUrl(urlPath);
-    }
-
+  Future<Map<String, dynamic>> add(Map<String, dynamic> data, String urlPath) async {
     final response = await client.post(
-      requestUrl,
+      urlPath,
       headers: {
         'Authorization': 'Token ${auth.token}',
         'Content-Type': 'application/json; charset=UTF-8',
@@ -108,7 +96,7 @@ class WgerBaseProvider {
   }
 
   /// DELETEs an existing object
-  Future<Response> deleteRequest(String url, int id, http.Client client) async {
+  Future<Response> deleteRequest(String url, int id) async {
     final deleteUrl = makeUrl(url, id: id.toString());
 
     final response = await client.delete(

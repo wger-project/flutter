@@ -43,15 +43,9 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
   List<NutritionalPlan> _plans = [];
   List<Ingredient> _ingredients = [];
 
-  Nutrition(Auth auth, List<NutritionalPlan> entries)
+  Nutrition(Auth auth, List<NutritionalPlan> entries, [http.Client client])
       : this._plans = entries,
-        super(auth, nutritionalPlansUrl);
-
-  //NutritionalPlans(Auth auth, List<NutritionalPlan> entries) {
-  //  this._auth = auth;
-  //  this._entries = entries;
-  //  this._url = auth.serverUrl + nutritionPlansUrl;
-  //}
+        super(auth, client);
 
   List<NutritionalPlan> get items {
     return [..._plans];
@@ -71,12 +65,8 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
     return null;
   }
 
-  Future<void> fetchAndSetPlans({http.Client client}) async {
-    if (client == null) {
-      client = http.Client();
-    }
-
-    final data = await fetch(client, makeUrl(nutritionalPlansInfoUrl));
+  Future<void> fetchAndSetPlans() async {
+    final data = await fetch(makeUrl(nutritionalPlansInfoUrl));
     final List<NutritionalPlan> loadedPlans = [];
     for (final entry in data['results']) {
       loadedPlans.add(NutritionalPlan.fromJson(entry));
@@ -86,40 +76,28 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<NutritionalPlan> fetchAndSetPlan(int planId, {http.Client client}) async {
-    if (client == null) {
-      client = http.Client();
-    }
-
+  Future<NutritionalPlan> fetchAndSetPlan(int planId) async {
     //fetchAndSet
-    final data = await fetch(client, makeUrl(nutritionalPlansInfoUrl, id: planId.toString()));
+    final data = await fetch(makeUrl(nutritionalPlansInfoUrl, id: planId.toString()));
     final plan = NutritionalPlan.fromJson(data);
     await fetchAndSetLogs(plan);
 
     return plan;
   }
 
-  Future<void> addPlan(NutritionalPlan plan, {http.Client client}) async {
-    if (client == null) {
-      client = http.Client();
-    }
-
-    final data = await add(plan.toJson(), client);
+  Future<void> addPlan(NutritionalPlan plan) async {
+    final data = await add(plan.toJson(), makeUrl(nutritionalPlansInfoUrl));
     _plans.insert(0, NutritionalPlan.fromJson(data));
     notifyListeners();
   }
 
-  Future<void> deletePlan(int id, {http.Client client}) async {
-    if (client == null) {
-      client = http.Client();
-    }
-
+  Future<void> deletePlan(int id) async {
     final existingPlanIndex = _plans.indexWhere((element) => element.id == id);
     var existingPlan = _plans[existingPlanIndex];
     _plans.removeAt(existingPlanIndex);
     notifyListeners();
 
-    final response = await deleteRequest(nutritionalPlansUrl, id, client);
+    final response = await deleteRequest(nutritionalPlansUrl, id);
 
     if (response.statusCode >= 400) {
       _plans.insert(existingPlanIndex, existingPlan);
@@ -130,13 +108,9 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
   }
 
   /// Adds a meal to a plan
-  Future<Meal> addMeal(Meal meal, int planId, {http.Client client}) async {
-    if (client == null) {
-      client = http.Client();
-    }
-
+  Future<Meal> addMeal(Meal meal, int planId) async {
     var plan = findById(planId);
-    final data = await add(meal.toJson(), client, mealUrl);
+    final data = await add(meal.toJson(), mealUrl);
 
     meal = Meal.fromJson(data);
     plan.meals.add(meal);
@@ -146,11 +120,7 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
   }
 
   /// Deletes a meal
-  Future<void> deleteMeal(Meal meal, {http.Client client}) async {
-    if (client == null) {
-      client = http.Client();
-    }
-
+  Future<void> deleteMeal(Meal meal) async {
     // Get the meal
     var plan = findById(meal.plan);
     final mealIndex = plan.meals.indexWhere((e) => e.id == meal.id);
@@ -159,7 +129,7 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
     notifyListeners();
 
     // Try to delete
-    final response = await deleteRequest(mealUrl, meal.id, client);
+    final response = await deleteRequest(mealUrl, meal.id);
     if (response.statusCode >= 400) {
       plan.meals.insert(mealIndex, existingMeal);
       notifyListeners();
@@ -169,13 +139,9 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
   }
 
   /// Adds a meal item to a meal
-  Future<MealItem> addMealIteam(MealItem mealItem, int mealId, {http.Client client}) async {
-    if (client == null) {
-      client = http.Client();
-    }
-
+  Future<MealItem> addMealIteam(MealItem mealItem, int mealId) async {
     var meal = findMealById(mealId);
-    final data = await add(mealItem.toJson(), client, mealItemUrl);
+    final data = await add(mealItem.toJson(), mealItemUrl);
 
     mealItem = MealItem.fromJson(data);
     mealItem.ingredientObj = await fetchIngredient(mealItem.ingredientId);
@@ -186,11 +152,7 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
   }
 
   /// Deletes a meal
-  Future<void> deleteMealItem(MealItem mealItem, {http.Client client}) async {
-    if (client == null) {
-      client = http.Client();
-    }
-
+  Future<void> deleteMealItem(MealItem mealItem) async {
     // Get the meal
     var meal = findMealById(mealItem.meal);
     final mealItemIndex = meal.mealItems.indexWhere((e) => e.id == mealItem.id);
@@ -199,7 +161,7 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
     notifyListeners();
 
     // Try to delete
-    final response = await deleteRequest(mealItemUrl, mealItem.id, client);
+    final response = await deleteRequest(mealItemUrl, mealItem.id);
     if (response.statusCode >= 400) {
       meal.mealItems.insert(mealItemIndex, existingMealItem);
       notifyListeners();
@@ -211,33 +173,24 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
   /// Fetch and return an ingredient
   ///
   /// If the ingredient is not known locally, it is fetched from the server
-  Future<Ingredient> fetchIngredient(int ingredientId, {http.Client client}) async {
-    if (client == null) {
-      client = http.Client();
-    }
-
+  Future<Ingredient> fetchIngredient(int ingredientId) async {
     var ingredient = _ingredients.firstWhere((e) => e.id == ingredientId, orElse: () => null);
     if (ingredient != null) {
       return ingredient;
     }
 
     // fetch and return
-    final data = await fetch(client, makeUrl(ingredientUrl, id: ingredientId.toString()));
+    final data = await fetch(makeUrl(ingredientUrl, id: ingredientId.toString()));
     ingredient = Ingredient.fromJson(data);
     _ingredients.add(ingredient);
     return ingredient;
   }
 
   /// Searches for an ingredient
-  Future<List> searchIngredient(String name, {http.Client client}) async {
-    if (client == null) {
-      client = http.Client();
-    }
-
+  Future<List> searchIngredient(String name) async {
     // Send the request
-    requestUrl = makeUrl(ingredientSearchUrl);
     final response = await client.get(
-      requestUrl + '?term=$name',
+      makeUrl(ingredientSearchUrl, query: {'term': name}),
       headers: <String, String>{
         'Authorization': 'Token ${auth.token}',
         'User-Agent': 'wger Workout Manager App',
@@ -254,30 +207,21 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
   }
 
   /// Log meal to nutrition diary
-  Future<void> logMealToDiary(Meal meal, {http.Client client}) async {
-    if (client == null) {
-      client = http.Client();
-    }
-
+  Future<void> logMealToDiary(Meal meal) async {
     //var meal = findMealById(mealId);
     for (var item in meal.mealItems) {
       Log log = Log.fromMealItem(item);
       log.planId = findById(meal.plan).id;
       log.datetime = DateTime.now();
 
-      await add(log.toJson(), client, nutritionDiaryUrl);
+      await add(log.toJson(), nutritionDiaryUrl);
     }
     notifyListeners();
   }
 
   /// Log meal to nutrition diary
-  Future<void> fetchAndSetLogs(NutritionalPlan plan, {http.Client client}) async {
-    if (client == null) {
-      client = http.Client();
-    }
-
-    final data =
-        await fetch(client, makeUrl(nutritionDiaryUrl, query: {'plan': plan.id.toString()}));
+  Future<void> fetchAndSetLogs(NutritionalPlan plan) async {
+    final data = await fetch(makeUrl(nutritionDiaryUrl, query: {'plan': plan.id.toString()}));
 
     for (var logData in data['results']) {
       var log = Log.fromJson(logData);
