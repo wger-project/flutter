@@ -38,8 +38,6 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
   static const _ingredientSearchPath = 'ingredient/search';
   static const _nutritionDiaryPath = 'nutritiondiary';
 
-  String _url;
-  Auth _auth;
   List<NutritionalPlan> _plans = [];
   List<Ingredient> _ingredients = [];
 
