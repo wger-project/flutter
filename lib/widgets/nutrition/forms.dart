@@ -150,20 +150,6 @@ class MealItemForm extends StatelessWidget {
                 return null;
               },
             ),
-            /*
-            TextFormField(
-              decoration: InputDecoration(labelText: AppLocalizations.of(context).ingredient),
-              controller: _ingredientController,
-              onSaved: (newValue) async {
-                mealItem.ingredient = await Provider.of<NutritionalPlans>(context, listen: false)
-                    .fetchIngredient(int.parse(newValue));
-                print(mealItem.ingredient.name);
-                print('ppppppppppppppppppp');
-              },
-              onFieldSubmitted: (_) {},
-            ),
-
-             */
             TextFormField(
               decoration: InputDecoration(labelText: AppLocalizations.of(context).amount),
               controller: _amountController,
