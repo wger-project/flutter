@@ -16,83 +16,60 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'dart:convert';
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/image.dart';
+import 'package:wger/models/http_exception.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/set.dart';
 import 'package:wger/models/workouts/setting.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/auth.dart';
+import 'package:wger/providers/base_provider.dart';
 
-class WorkoutPlans with ChangeNotifier {
-  static const workoutPlansUrl = 'workout';
-  static const daysUrl = 'day';
+class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
+  static const _workoutPlansUrlPath = 'workout';
+  static const _daysUrlPath = 'day';
 
-  String _url;
-  String _urlDays;
-  Auth _auth;
-  List<WorkoutPlan> _entries = [];
+  List<WorkoutPlan> _workoutPlans = [];
 
-  WorkoutPlans(Auth auth, List<WorkoutPlan> entries) {
-    this._auth = auth;
-    this._entries = entries;
-    this._url = auth.serverUrl + workoutPlansUrl;
-    this._urlDays = auth.serverUrl + daysUrl;
-  }
+  WorkoutPlans(Auth auth, List<WorkoutPlan> entries, [http.Client client])
+      : this._workoutPlans = entries,
+        super(auth, client);
 
   List<WorkoutPlan> get items {
-    return [..._entries];
+    return [..._workoutPlans];
   }
 
   WorkoutPlan findById(int id) {
-    return _entries.firstWhere((workoutPlan) => workoutPlan.id == id);
+    return _workoutPlans.firstWhere((workoutPlan) => workoutPlan.id == id);
   }
 
   /*
    * Workouts
    */
   Future<void> fetchAndSetWorkouts() async {
-    final response = await http.get(
-      _url,
-      headers: <String, String>{'Authorization': 'Token ${_auth.token}'},
-    );
-    final extractedData = json.decode(response.body) as Map<String, dynamic>;
-
+    final data = await fetch(makeUrl(_workoutPlansUrlPath));
     final List<WorkoutPlan> loadedWorkoutPlans = [];
-    if (loadedWorkoutPlans == null) {
-      return;
+
+    for (final entry in data['results']) {
+      loadedWorkoutPlans.add(WorkoutPlan.fromJson(entry));
     }
 
-    try {
-      for (final entry in extractedData['results']) {
-        loadedWorkoutPlans.add(WorkoutPlan.fromJson(entry));
-      }
-
-      _entries = loadedWorkoutPlans;
-      notifyListeners();
-    } catch (error) {
-      throw (error);
-    }
+    _workoutPlans = loadedWorkoutPlans;
+    notifyListeners();
   }
 
   Future<WorkoutPlan> fetchAndSetFullWorkout(int workoutId) async {
-    String url = _auth.serverUrl + '/api/v2/workout/$workoutId/canonical_representation/';
-    final response = await http.get(
-      url,
-      headers: <String, String>{'Authorization': 'Token ${_auth.token}'},
-    );
-    final extractedData = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+    final data =
+        await fetch(makeUrl(_workoutPlansUrlPath, id: '$workoutId/canonical_representation'));
 
     try {
-      WorkoutPlan workout = _entries.firstWhere((element) => element.id == workoutId);
+      WorkoutPlan workout = _workoutPlans.firstWhere((element) => element.id == workoutId);
 
       List<Day> days = [];
-      for (final entry in extractedData['day_list']) {
+      for (final entry in data['day_list']) {
         List<Set> sets = [];
 
         for (final set in entry['set_list']) {
@@ -104,20 +81,16 @@ class WorkoutPlans with ChangeNotifier {
             for (final image in exerciseData['image_list']) {
               images.add(
                 ExerciseImage(
-                  url: _auth.serverUrl + image["image"],
+                  url: auth.serverUrl + image["image"],
                   isMain: image['is_main'],
                 ),
               );
             }
 
-            // TODO: why are there exercises without a creation_date????
-            // Update the database
             Exercise exercise = Exercise(
               id: exerciseData['obj']['id'],
               uuid: exerciseData['obj']['uuid'],
-              creationDate: exerciseData['obj']['creation_date'] != null
-                  ? DateTime.parse(exerciseData['obj']['creation_date'])
-                  : null,
+              creationDate: DateTime.parse(exerciseData['obj']['creation_date']),
               name: exerciseData['obj']['name'],
               description: exerciseData['obj']['description'],
               images: images,
@@ -166,52 +139,23 @@ class WorkoutPlans with ChangeNotifier {
   }
 
   Future<WorkoutPlan> addWorkout(WorkoutPlan workout) async {
-    try {
-      final response = await http.post(
-        _url,
-        headers: {
-          'Authorization': 'Token ${_auth.token}',
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: json.encode(workout.toJson()),
-      );
-      workout = WorkoutPlan.fromJson(json.decode(response.body));
-      _entries.insert(0, workout);
-      notifyListeners();
-      return workout;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  Future<void> updateProduct(int id, WorkoutPlan newProduct) async {
-    final prodIndex = _entries.indexWhere((element) => element.id == id);
-    if (prodIndex >= 0) {
-      final url = 'https://flutter-shop-a2335.firebaseio.com/products/$id.json?auth=${_auth.token}';
-      await http.patch(url,
-          body: json.encode({
-            'description': newProduct.description,
-          }));
-      _entries[prodIndex] = newProduct;
-      notifyListeners();
-    }
+    final data = await add(workout.toJson(), makeUrl(_workoutPlansUrlPath));
+    _workoutPlans.insert(0, WorkoutPlan.fromJson(data));
+    notifyListeners();
   }
 
   Future<void> deleteWorkout(int id) async {
-    final url = '$_url$id/';
-    final existingWorkoutIndex = _entries.indexWhere((element) => element.id == id);
-    var existingWorkout = _entries[existingWorkoutIndex];
-    _entries.removeAt(existingWorkoutIndex);
+    final existingWorkoutIndex = _workoutPlans.indexWhere((element) => element.id == id);
+    var existingWorkout = _workoutPlans[existingWorkoutIndex];
+    _workoutPlans.removeAt(existingWorkoutIndex);
     notifyListeners();
 
-    final response = await http.delete(
-      url,
-      headers: {'Authorization': 'Token ${_auth.token}'},
-    );
+    final response = await deleteRequest(_workoutPlansUrlPath, id);
+
     if (response.statusCode >= 400) {
-      _entries.insert(existingWorkoutIndex, existingWorkout);
+      _workoutPlans.insert(existingWorkoutIndex, existingWorkout);
       notifyListeners();
-      //throw HttpException();
+      throw WgerHttpException(response.body);
     }
     existingWorkout = null;
   }
@@ -224,25 +168,11 @@ class WorkoutPlans with ChangeNotifier {
      * Saves a new day instance to the DB and adds it to the given workout
      */
     day.workoutId = workout.id;
-    try {
-      final response = await http.post(
-        _urlDays,
-        headers: {
-          'Authorization': 'Token ${_auth.token}',
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: json.encode(day.toJson()),
-      );
-
-      // Create the day
-      day = Day.fromJson(json.decode(response.body));
-      day.sets = [];
-      workout.days.insert(0, day);
-      notifyListeners();
-      return day;
-    } catch (error) {
-      log(error.missingKeys.toString());
-      throw error;
-    }
+    final data = await add(day.toJson(), makeUrl(_daysUrlPath));
+    day = Day.fromJson(data);
+    day.sets = [];
+    workout.days.insert(0, day);
+    notifyListeners();
+    return day;
   }
 }
