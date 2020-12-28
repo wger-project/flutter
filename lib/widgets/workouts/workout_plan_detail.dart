@@ -18,12 +18,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/locale/locales.dart';
-import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
-import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/widgets/core/bottom_sheet.dart';
 import 'package:wger/widgets/workouts/day.dart';
+import 'package:wger/widgets/workouts/forms.dart';
 
 class DayCheckbox extends StatefulWidget {
   String name;
@@ -66,21 +65,6 @@ class _WorkoutPlanDetailState extends State<WorkoutPlanDetail> {
     'daysOfWeek': [1],
   };
 
-  Widget showDaySheet(BuildContext outerContext, WorkoutPlan workout) {
-    showModalBottomSheet(
-      context: outerContext,
-      builder: (BuildContext context) {
-        return Container(
-          child: DayFormWidget(
-            dayController: dayController,
-            dayData: _dayData,
-            workout: workout,
-          ),
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -106,97 +90,19 @@ class _WorkoutPlanDetailState extends State<WorkoutPlanDetail> {
             Column(
               children: [
                 ElevatedButton(
-                    child: Text(AppLocalizations.of(context).add),
-                    onPressed: () {
-                      showDaySheet(context, widget._workoutPlan);
-                    }),
+                  child: Text(AppLocalizations.of(context).add),
+                  onPressed: () {
+                    showFormBottomSheet(
+                        context,
+                        AppLocalizations.of(context).newDay,
+                        DayFormWidget(
+                          dayController: dayController,
+                          dayData: _dayData,
+                          workout: widget._workoutPlan,
+                        ));
+                  },
+                ),
               ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class DayFormWidget extends StatelessWidget {
-  final WorkoutPlan workout;
-
-  DayFormWidget({
-    Key key,
-    @required this.dayController,
-    @required Map<String, dynamic> dayData,
-    @required this.workout,
-  })  : _dayData = dayData,
-        super(key: key);
-
-  final TextEditingController dayController;
-  final Map<String, dynamic> _dayData;
-  final _form = GlobalKey<FormState>();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.all(20),
-      child: Form(
-        key: _form,
-        child: Column(
-          children: [
-            Text(
-              AppLocalizations.of(context).newDay,
-              style: Theme.of(context).textTheme.headline6,
-            ),
-            TextFormField(
-              decoration: InputDecoration(labelText: AppLocalizations.of(context).description),
-              controller: dayController,
-              onSaved: (value) {
-                _dayData['description'] = value;
-              },
-              validator: (value) {
-                const minLenght = 5;
-                const maxLenght = 100;
-                if (value.isEmpty || value.length < minLenght || value.length > maxLenght) {
-                  return 'Please enter between $minLenght and $maxLenght characters.';
-                }
-                return null;
-              },
-            ),
-            TextFormField(
-              decoration: InputDecoration(labelText: 'TODO: Checkbox for days'),
-              enabled: false,
-            ),
-            //...Day().weekdays.values.map((dayName) => DayCheckbox(dayName)).toList(),
-            ElevatedButton(
-              child: Text(AppLocalizations.of(context).save),
-              onPressed: () async {
-                if (!_form.currentState.validate()) {
-                  return;
-                }
-                _form.currentState.save();
-
-                try {
-                  Provider.of<WorkoutPlans>(context, listen: false)
-                      .addDay(Day(description: dayController.text, daysOfWeek: [1]), workout);
-                  //dayController.text = '';
-                  //Navigator.of(context).pop();
-                } catch (error) {
-                  await showDialog(
-                    context: context,
-                    builder: (ctx) => AlertDialog(
-                      title: Text('An error occurred!'),
-                      content: Text('Something went wrong.'),
-                      actions: <Widget>[
-                        TextButton(
-                          child: Text('Okay'),
-                          onPressed: () {
-                            Navigator.of(ctx).pop();
-                          },
-                        )
-                      ],
-                    ),
-                  );
-                }
-              },
             ),
           ],
         ),
