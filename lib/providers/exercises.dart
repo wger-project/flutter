@@ -27,6 +27,7 @@ import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/muscle.dart';
+import 'package:wger/models/http_exception.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/base_provider.dart';
 
@@ -34,6 +35,8 @@ class Exercises extends WgerBaseProvider with ChangeNotifier {
   static const daysToCache = 7;
 
   static const _exercisesUrlPath = 'exerciseinfo';
+  static const _exerciseSearchPath = 'exercise/search';
+
   static const _exerciseCommentUrlPath = 'exercisecomment';
   static const _exerciseImagesUrlPath = 'exerciseimage';
   static const _categoriesUrlPath = 'exercisecategory';
@@ -138,5 +141,28 @@ class Exercises extends WgerBaseProvider with ChangeNotifier {
     } catch (error) {
       throw (error);
     }
+  }
+
+  /// Searches for an exercise
+  ///
+  /// We could do this locally, but the server has better text searching capabilities
+  /// with postgresql.
+  Future<List> searchIngredient(String name) async {
+    // Send the request
+    final response = await client.get(
+      makeUrl(_exerciseSearchPath, query: {'term': name}),
+      headers: <String, String>{
+        'Authorization': 'Token ${auth.token}',
+        'User-Agent': 'wger Workout Manager App',
+      },
+    );
+
+    // Something wrong with our request
+    if (response.statusCode >= 400) {
+      throw WgerHttpException(response.body);
+    }
+
+    // Process the response
+    return json.decode(utf8.decode(response.bodyBytes))['suggestions'] as List<dynamic>;
   }
 }

@@ -50,7 +50,7 @@ class _DayCheckboxState extends State<DayCheckbox> {
 }
 
 class WorkoutPlanDetail extends StatefulWidget {
-  WorkoutPlan _workoutPlan;
+  final WorkoutPlan _workoutPlan;
   WorkoutPlanDetail(this._workoutPlan);
 
   @override

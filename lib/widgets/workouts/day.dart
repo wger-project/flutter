@@ -21,6 +21,8 @@ import 'package:wger/locale/locales.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/set.dart';
 import 'package:wger/models/workouts/setting.dart';
+import 'package:wger/widgets/core/bottom_sheet.dart';
+import 'package:wger/widgets/workouts/forms.dart';
 
 class SettingWidget extends StatelessWidget {
   Setting setting;
@@ -50,13 +52,9 @@ class SettingWidget extends StatelessWidget {
 }
 
 class WorkoutDayWidget extends StatelessWidget {
-  Day _day;
+  final Day _day;
 
   WorkoutDayWidget(this._day);
-
-  // Form stuff
-  final GlobalKey<FormState> _formKey = GlobalKey();
-  final exercisesController = TextEditingController();
 
   Widget getSetRow(Set set) {
     return Row(
@@ -91,11 +89,10 @@ class WorkoutDayWidget extends StatelessWidget {
           OutlinedButton(
             child: Text('Add exercise to day'),
             onPressed: () {
-              showModalBottomSheet(
-                context: context,
-                builder: (BuildContext context) {
-                  return SetFormWidget(formKey: _formKey, exercisesController: exercisesController);
-                },
+              showFormBottomSheet(
+                context,
+                AppLocalizations.of(context).newSet,
+                SetFormWidget(),
               );
             },
           ),
@@ -203,65 +200,6 @@ class DayHeaderDismissible extends StatelessWidget {
         }
         return false;
       },
-    );
-  }
-}
-
-class SetFormWidget extends StatefulWidget {
-  const SetFormWidget({
-    Key key,
-    @required GlobalKey<FormState> formKey,
-    @required this.exercisesController,
-  })  : _formKey = formKey,
-        super(key: key);
-
-  final GlobalKey<FormState> _formKey;
-  final TextEditingController exercisesController;
-
-  @override
-  _SetFormWidgetState createState() => _SetFormWidgetState();
-}
-
-class _SetFormWidgetState extends State<SetFormWidget> {
-  double _currentSetSliderValue = 4;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Form(
-        key: widget._formKey,
-        child: Column(
-          children: [
-            Text(
-              AppLocalizations.of(context).newSet,
-              style: Theme.of(context).textTheme.headline6,
-            ),
-            TextFormField(
-              decoration: InputDecoration(
-                labelText: 'Exercise IDs, comma separated (TODO: autocompleter)',
-              ),
-              controller: widget.exercisesController,
-              onSaved: (value) {
-                print(value);
-              },
-            ),
-            Text('Number of sets:'),
-            Slider(
-              value: _currentSetSliderValue,
-              min: 1,
-              max: 10,
-              divisions: 10,
-              label: _currentSetSliderValue.round().toString(),
-              onChanged: (double value) {
-                setState(() {
-                  _currentSetSliderValue = value;
-                });
-              },
-            ),
-            ElevatedButton(child: Text('Save'), onPressed: () {}),
-          ],
-        ),
-      ),
     );
   }
 }

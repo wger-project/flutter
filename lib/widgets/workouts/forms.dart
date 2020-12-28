@@ -17,10 +17,13 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/locale/locales.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
+import 'package:wger/providers/auth.dart';
+import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/workout_plans.dart';
 
 class DayFormWidget extends StatelessWidget {
@@ -102,6 +105,100 @@ class DayFormWidget extends StatelessWidget {
                 }
               },
             ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class SetFormWidget extends StatefulWidget {
+  const SetFormWidget({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  _SetFormWidgetState createState() => _SetFormWidgetState();
+}
+
+class _SetFormWidgetState extends State<SetFormWidget> {
+  double _currentSetSliderValue = 4;
+
+  // Form stuff
+  final GlobalKey<FormState> _formKey = GlobalKey();
+  final _exercisesController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            TypeAheadFormField(
+              textFieldConfiguration: TextFieldConfiguration(
+                controller: this._exercisesController,
+                decoration: InputDecoration(labelText: AppLocalizations.of(context).ingredient),
+              ),
+              suggestionsCallback: (pattern) async {
+                return await Provider.of<Exercises>(context, listen: false)
+                    .searchIngredient(pattern);
+              },
+              itemBuilder: (context, suggestion) {
+                String serverUrl = Provider.of<Auth>(context, listen: false).serverUrl;
+                print(suggestion);
+                print(serverUrl);
+                print('$serverUrl${suggestion["data"]["image"]}');
+                return ListTile(
+                  leading: Container(
+                    width: 45,
+                    child: suggestion['data']['image'] != null
+                        ? FadeInImage(
+                            placeholder: AssetImage('assets/images/placeholder.png'),
+                            image: NetworkImage(serverUrl + suggestion['data']['image']),
+                            fit: BoxFit.cover,
+                          )
+                        : Image(
+                            image: AssetImage('assets/images/placeholder.png'),
+                            color: Color.fromRGBO(255, 255, 255, 0.3),
+                            colorBlendMode: BlendMode.modulate),
+                  ),
+                  title: Text(suggestion['value']),
+                  subtitle: Text(suggestion['data']['id'].toString()),
+                );
+              },
+              transitionBuilder: (context, suggestionsBox, controller) {
+                return suggestionsBox;
+              },
+              onSuggestionSelected: (suggestion) {
+                print(suggestion);
+                //mealItem.ingredientId = suggestion['data']['id'];
+                //this._ingredientController.text = suggestion['value'];
+              },
+              validator: (value) {
+                if (value.isEmpty) {
+                  return 'Please select an ingredient';
+                }
+                //if (mealItem.ingredientId == null) {
+                //  return 'Please select an ingredient';
+                //}
+                return null;
+              },
+            ),
+            Text('Number of sets:'),
+            Slider(
+              value: _currentSetSliderValue,
+              min: 1,
+              max: 10,
+              divisions: 10,
+              label: _currentSetSliderValue.round().toString(),
+              onChanged: (double value) {
+                setState(() {
+                  _currentSetSliderValue = value;
+                });
+              },
+            ),
+            ElevatedButton(child: Text('Save'), onPressed: () {}),
           ],
         ),
       ),
