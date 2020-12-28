@@ -28,49 +28,37 @@ import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/providers/auth.dart';
+import 'package:wger/providers/base_provider.dart';
 
-class Exercises with ChangeNotifier {
+class Exercises extends WgerBaseProvider with ChangeNotifier {
   static const daysToCache = 7;
 
-  static const exercisesUrl = '/api/v2/exerciseinfo/?language=1&limit=1000';
-  static const exerciseCommentUrl = '/api/v2/exercisecomment/';
-  static const exerciseImagesUrl = '/api/v2/exerciseimage/';
-  static const categoriesUrl = '/api/v2/exercisecategory/';
-  static const musclesUrl = '/api/v2/muscle/';
-  static const equipmentUrl = '/api/v2/equipment/';
+  static const _exercisesUrlPath = 'exerciseinfo';
+  static const _exerciseCommentUrlPath = 'exercisecomment';
+  static const _exerciseImagesUrlPath = 'exerciseimage';
+  static const _categoriesUrlPath = 'exercisecategory';
+  static const _musclesUrlPath = 'muscle';
+  static const _equipmentUrlPath = 'equipment';
 
-  String _urlExercises;
-  String _urlCategories;
-  String _urlMuscles;
-  String _urlEquipment;
-  List<Exercise> _entries = [];
+  List<Exercise> _exercises = [];
   List<ExerciseCategory> _categories = [];
   List<Muscle> _muscles = [];
   List<Equipment> _equipment = [];
 
-  Auth _auth;
-
-  Exercises(Auth auth, List<Exercise> entries) {
-    this._auth = auth;
-    this._entries = entries;
-    if (auth.serverUrl != null) {
-      this._urlExercises = auth.serverUrl + exercisesUrl;
-      this._urlCategories = auth.serverUrl + categoriesUrl;
-      this._urlMuscles = auth.serverUrl + musclesUrl;
-      this._urlEquipment = auth.serverUrl + equipmentUrl;
-    }
-  }
+  Exercises(Auth auth, List<Exercise> entries, [http.Client client])
+      : this._exercises = entries,
+        super(auth, client);
 
   List<Exercise> get items {
-    return [..._entries];
+    return [..._exercises];
   }
 
   Exercise findById(int id) {
-    return _entries.firstWhere((exercise) => exercise.id == id);
+    return _exercises.firstWhere((exercise) => exercise.id == id);
   }
 
   Future<void> fetchAndSetCategories() async {
-    final response = await http.get(_urlCategories);
+    final response = await client.get(makeUrl(_categoriesUrlPath));
     final categories = json.decode(response.body) as Map<String, dynamic>;
     try {
       for (final category in categories['results']) {
@@ -82,7 +70,7 @@ class Exercises with ChangeNotifier {
   }
 
   Future<void> fetchAndSetMuscles() async {
-    final response = await http.get(_urlMuscles);
+    final response = await client.get(makeUrl(_musclesUrlPath));
     final muscles = json.decode(response.body) as Map<String, dynamic>;
     try {
       for (final muscle in muscles['results']) {
@@ -94,7 +82,7 @@ class Exercises with ChangeNotifier {
   }
 
   Future<void> fetchAndSetEquipment() async {
-    final response = await http.get(_urlEquipment);
+    final response = await client.get(makeUrl(_equipmentUrlPath));
     final equipments = json.decode(response.body) as Map<String, dynamic>;
     try {
       for (final equipment in equipments['results']) {
@@ -113,7 +101,10 @@ class Exercises with ChangeNotifier {
     if (prefs.containsKey('exerciseData')) {
       final exerciseData = json.decode(prefs.getString('exerciseData'));
       if (DateTime.parse(exerciseData['expiresIn']).isAfter(DateTime.now())) {
-        exerciseData['exercises'].forEach((e) => _entries.add(Exercise.fromJson(e)));
+        exerciseData['exercises'].forEach((e) => _exercises.add(Exercise.fromJson(e)));
+        exerciseData['equipment'].forEach((e) => _equipment.add(Equipment.fromJson(e)));
+        exerciseData['muscles'].forEach((e) => _muscles.add(Muscle.fromJson(e)));
+        exerciseData['categories'].forEach((e) => _categories.add(ExerciseCategory.fromJson(e)));
         log("Read exercise data from cache. Valid till ${exerciseData['expiresIn']}");
         return;
       }
@@ -124,18 +115,21 @@ class Exercises with ChangeNotifier {
     await fetchAndSetMuscles();
     await fetchAndSetEquipment();
 
-    final response = await http.get(_urlExercises);
+    final response = await client.get(makeUrl(
+      _exercisesUrlPath,
+      query: {'language': '1', 'limit': '1000'}, // TODO: read the language ID from the locale
+    ));
     final extractedData = json.decode(response.body) as Map<String, dynamic>;
 
     try {
       // Load exercises
-      extractedData['results'].forEach((e) => _entries.add(Exercise.fromJson(e)));
+      extractedData['results'].forEach((e) => _exercises.add(Exercise.fromJson(e)));
 
       // Save the result to the cache
       final exerciseData = {
         'date': DateTime.now().toIso8601String(),
         'expiresIn': DateTime.now().add(Duration(days: daysToCache)).toIso8601String(),
-        'exercises': _entries.map((e) => e.toJson()).toList(),
+        'exercises': _exercises.map((e) => e.toJson()).toList(),
         'equipment': _equipment.map((e) => e.toJson()).toList(),
         'categories': _categories.map((e) => e.toJson()).toList(),
         'muscles': _muscles.map((e) => e.toJson()).toList(),
