@@ -16,13 +16,11 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/models/body_weight/weight_entry.dart';
 import 'package:wger/providers/body_weight.dart';
-import 'package:wger/theme/theme.dart';
+import 'package:wger/widgets/weight/charts.dart';
 
 class WeightEntriesList extends StatelessWidget {
   @override
@@ -33,18 +31,7 @@ class WeightEntriesList extends StatelessWidget {
         Container(
           padding: EdgeInsets.all(15),
           height: 220,
-          child: charts.TimeSeriesChart(
-            [
-              charts.Series<WeightEntry, DateTime>(
-                id: 'Weight',
-                colorFn: (_, __) => wgerChartSecondaryColor,
-                domainFn: (WeightEntry weightEntry, _) => weightEntry.date,
-                measureFn: (WeightEntry weightEntry, _) => weightEntry.weight,
-                data: weightEntriesData.items,
-              )
-            ],
-            defaultRenderer: new charts.LineRendererConfig(includePoints: true),
-          ),
+          child: WeightChartWidget(weightEntriesData.items),
         ),
         Divider(),
         Expanded(

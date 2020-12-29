@@ -19,8 +19,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/locale/locales.dart';
+import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/widgets/app_drawer.dart';
+import 'package:wger/widgets/weight/charts.dart';
 
 class DashboardScreen extends StatefulWidget {
   static const routeName = '/dashboard';
@@ -89,7 +91,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           ListTile(
-            leading: Icon(Icons.fitness_center),
+            leading: Icon(Icons.restaurant),
             title: Text('Nutrition'),
             subtitle: Text('Nutrition overview, graphs, etc'),
           ),
@@ -114,14 +116,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget getWeightCard() {
+    final weightEntriesData = Provider.of<BodyWeight>(context);
+
     return Card(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           ListTile(
-            leading: Icon(Icons.restaurant),
+            leading: Icon(Icons.bar_chart),
             title: Text('Weight'),
-            subtitle: Text('Weight overview, graphs, etc'),
+            subtitle: Container(
+              padding: EdgeInsets.all(15),
+              height: 180,
+              child: WeightChartWidget(weightEntriesData.items),
+            ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
