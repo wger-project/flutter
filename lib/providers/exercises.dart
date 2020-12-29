@@ -57,7 +57,10 @@ class Exercises extends WgerBaseProvider with ChangeNotifier {
   }
 
   Exercise findById(int id) {
-    return _exercises.firstWhere((exercise) => exercise.id == id);
+    return _exercises.firstWhere((exercise) => exercise.id == id, orElse: () {
+      log('Could not find exercise with ID $id');
+      return null;
+    });
   }
 
   Future<void> fetchAndSetCategories() async {
@@ -118,7 +121,7 @@ class Exercises extends WgerBaseProvider with ChangeNotifier {
 
     final response = await client.get(makeUrl(
       _exercisesUrlPath,
-      query: {'language': '1', 'limit': '1000'}, // TODO: read the language ID from the locale
+      query: {'limit': '1000'},
     ));
     final extractedData = json.decode(response.body) as Map<String, dynamic>;
 
@@ -147,7 +150,7 @@ class Exercises extends WgerBaseProvider with ChangeNotifier {
   ///
   /// We could do this locally, but the server has better text searching capabilities
   /// with postgresql.
-  Future<List> searchIngredient(String name) async {
+  Future<List> searchExercise(String name) async {
     // Send the request
     final response = await client.get(
       makeUrl(_exerciseSearchPath, query: {'term': name}),
@@ -163,6 +166,10 @@ class Exercises extends WgerBaseProvider with ChangeNotifier {
     }
 
     // Process the response
-    return json.decode(utf8.decode(response.bodyBytes))['suggestions'] as List<dynamic>;
+    final result = json.decode(utf8.decode(response.bodyBytes))['suggestions'] as List<dynamic>;
+    for (var entry in result) {
+      entry['exercise_obj'] = findById(entry['data']['id']);
+    }
+    return result;
   }
 }

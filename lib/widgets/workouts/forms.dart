@@ -20,13 +20,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/locale/locales.dart';
+import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/widgets/workouts/exercises.dart';
 
-class DayFormWidget extends StatelessWidget {
+class DayFormWidget extends StatefulWidget {
   final WorkoutPlan workout;
 
   DayFormWidget({
@@ -39,6 +41,12 @@ class DayFormWidget extends StatelessWidget {
 
   final TextEditingController dayController;
   final Map<String, dynamic> _dayData;
+
+  @override
+  _DayFormWidgetState createState() => _DayFormWidgetState();
+}
+
+class _DayFormWidgetState extends State<DayFormWidget> {
   final _form = GlobalKey<FormState>();
 
   @override
@@ -55,9 +63,9 @@ class DayFormWidget extends StatelessWidget {
             ),
             TextFormField(
               decoration: InputDecoration(labelText: AppLocalizations.of(context).description),
-              controller: dayController,
+              controller: widget.dayController,
               onSaved: (value) {
-                _dayData['description'] = value;
+                widget._dayData['description'] = value;
               },
               validator: (value) {
                 const minLenght = 5;
@@ -82,9 +90,9 @@ class DayFormWidget extends StatelessWidget {
                 _form.currentState.save();
 
                 try {
-                  Provider.of<WorkoutPlans>(context, listen: false)
-                      .addDay(Day(description: dayController.text, daysOfWeek: [1]), workout);
-                  dayController.clear();
+                  Provider.of<WorkoutPlans>(context, listen: false).addDay(
+                      Day(description: widget.dayController.text, daysOfWeek: [1]), widget.workout);
+                  widget.dayController.clear();
                   Navigator.of(context).pop();
                 } catch (error) {
                   await showDialog(
@@ -123,6 +131,7 @@ class SetFormWidget extends StatefulWidget {
 
 class _SetFormWidgetState extends State<SetFormWidget> {
   double _currentSetSliderValue = 4;
+  List<Exercise> _exercises = [];
 
   // Form stuff
   final GlobalKey<FormState> _formKey = GlobalKey();
@@ -141,27 +150,16 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                 decoration: InputDecoration(labelText: AppLocalizations.of(context).ingredient),
               ),
               suggestionsCallback: (pattern) async {
-                return await Provider.of<Exercises>(context, listen: false)
-                    .searchIngredient(pattern);
+                return await Provider.of<Exercises>(context, listen: false).searchExercise(pattern);
               },
               itemBuilder: (context, suggestion) {
+                // TODO: this won't work if the server uses e.g. AWS to serve
+                //       the static files
                 String serverUrl = Provider.of<Auth>(context, listen: false).serverUrl;
-                print(suggestion);
-                print(serverUrl);
-                print('$serverUrl${suggestion["data"]["image"]}');
                 return ListTile(
                   leading: Container(
                     width: 45,
-                    child: suggestion['data']['image'] != null
-                        ? FadeInImage(
-                            placeholder: AssetImage('assets/images/placeholder.png'),
-                            image: NetworkImage(serverUrl + suggestion['data']['image']),
-                            fit: BoxFit.cover,
-                          )
-                        : Image(
-                            image: AssetImage('assets/images/placeholder.png'),
-                            color: Color.fromRGBO(255, 255, 255, 0.3),
-                            colorBlendMode: BlendMode.modulate),
+                    child: ExerciseImage(imageUrl: suggestion['data']['image']),
                   ),
                   title: Text(suggestion['value']),
                   subtitle: Text(suggestion['data']['id'].toString()),
@@ -171,20 +169,21 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                 return suggestionsBox;
               },
               onSuggestionSelected: (suggestion) {
-                print(suggestion);
-                //mealItem.ingredientId = suggestion['data']['id'];
-                //this._ingredientController.text = suggestion['value'];
+                final e = Provider.of<Exercises>(context, listen: false)
+                    .findById(suggestion['data']['id']);
+                setState(() {
+                  _exercises.add(e);
+                });
               },
               validator: (value) {
                 if (value.isEmpty) {
                   return 'Please select an ingredient';
                 }
-                //if (mealItem.ingredientId == null) {
-                //  return 'Please select an ingredient';
-                //}
                 return null;
               },
             ),
+            Text('You can search for more than one exercise, they will be grouped '
+                'together for a superset.'),
             Text('Number of sets:'),
             Slider(
               value: _currentSetSliderValue,
@@ -198,10 +197,55 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                 });
               },
             ),
+            Text('If you do the same repetitions for all sets you can just enter '
+                'one value: e.g. for 4 sets just enter one "10" for the repetitions, '
+                'this automatically becomes "4 x 10".'),
+            ..._exercises.map((e) => ExerciseSet(e, _currentSetSliderValue)).toList(),
             ElevatedButton(child: Text('Save'), onPressed: () {}),
           ],
         ),
       ),
+    );
+  }
+}
+
+class ExerciseSet extends StatelessWidget {
+  Exercise _exercise;
+  int _numberOfSets;
+
+  ExerciseSet(Exercise exercise, double sliderValue) {
+    this._exercise = exercise;
+    this._numberOfSets = sliderValue.round();
+  }
+
+  Widget getSets() {
+    List<Widget> out = [];
+    for (var i = 1; i <= _numberOfSets; i++) {
+      out.add(Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text('Reps'),
+          Text('Unit'),
+          Text('Weight'),
+          Text('RiR'),
+        ],
+      ));
+    }
+    return Column(
+      children: out,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(_exercise.name, style: TextStyle(fontWeight: FontWeight.bold)),
+        //ExerciseImage(imageUrl: _exercise.images.first.url),
+        Divider(),
+        getSets(),
+        Padding(padding: EdgeInsets.symmetric(vertical: 5))
+      ],
     );
   }
 }
