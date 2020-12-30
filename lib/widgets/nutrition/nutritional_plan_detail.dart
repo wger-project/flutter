@@ -23,6 +23,7 @@ import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/nutrition/nutritrional_values.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/bottom_sheet.dart';
+import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/meal.dart';
 
@@ -59,32 +60,14 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
             ElevatedButton(
               child: Text(AppLocalizations.of(context).add),
               onPressed: () {
-                showFormBottomSheet(context, 'Add meal', MealForm(_nutritionalPlan));
+                showFormBottomSheet(
+                    context, AppLocalizations.of(context).addMeal, MealForm(_nutritionalPlan));
               },
             ),
             Container(
               padding: EdgeInsets.all(15),
               height: 220,
-              child: charts.PieChart(
-                [
-                  charts.Series<List<dynamic>, String>(
-                    id: 'NutritionalValues',
-                    domainFn: (datum, index) => datum[0],
-                    measureFn: (datum, index) => datum[1],
-                    data: [
-                      ['protein', nutritionalValues.protein],
-                      ['fat', nutritionalValues.fat],
-                      ['carbohydrates', nutritionalValues.carbohydrates],
-                    ],
-                    labelAccessorFn: (List<dynamic> row, _) =>
-                        '${row[0]}, ${row[1].toStringAsFixed(0)}g',
-                  )
-                ],
-                defaultRenderer: new charts.ArcRendererConfig(
-                  arcWidth: 60,
-                  arcRendererDecorators: [new charts.ArcLabelDecorator()],
-                ),
-              ),
+              child: NutritionalPlanPieChartWidget(nutritionalValues),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),

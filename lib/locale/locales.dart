@@ -107,6 +107,14 @@ class AppLocalizations {
     );
   }
 
+  String get addMeal {
+    return Intl.message(
+      'Add meal',
+      name: 'addMeal',
+      desc: 'Header for form or label for button',
+    );
+  }
+
   String get labelWorkoutPlan {
     return Intl.message(
       'Workout plan',
