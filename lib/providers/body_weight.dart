@@ -39,7 +39,7 @@ class BodyWeight extends WgerBaseProvider with ChangeNotifier {
     return _entries.firstWhere((plan) => plan.id == id);
   }
 
-  Future<void> fetchAndSetEntries() async {
+  Future<List<WeightEntry>> fetchAndSetEntries() async {
     // Process the response
     final data = await fetch(makeUrl(bodyWeightUrl));
     final List<WeightEntry> loadedEntries = [];
@@ -48,6 +48,7 @@ class BodyWeight extends WgerBaseProvider with ChangeNotifier {
     }
 
     _entries = loadedEntries;
+    return _entries;
     notifyListeners();
   }
 

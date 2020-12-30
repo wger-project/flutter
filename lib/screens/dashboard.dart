@@ -16,13 +16,13 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/locale/locales.dart';
-import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/widgets/app_drawer.dart';
-import 'package:wger/widgets/weight/charts.dart';
+import 'package:wger/widgets/dashboard/widgets.dart';
 
 class DashboardScreen extends StatefulWidget {
   static const routeName = '/dashboard';
@@ -35,119 +35,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget getAppBar() {
     return AppBar(
       title: Text(AppLocalizations.of(context).labelDashboard),
-      actions: [
-        IconButton(
-          icon: Icon(Icons.bar_chart),
-          onPressed: () {},
-        ),
-      ],
-    );
-  }
-
-  Widget getWorkoutCard() {
-    return Card(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          ListTile(
-            leading: Icon(Icons.fitness_center),
-            title: Text('Something to do with workouts'),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Monday'),
-                Text('Tuesday'),
-                Text('Wednesday'),
-                Text('Thursday'),
-                Text('Friday'),
-                Text('Saturday'),
-                Text('Sunday'),
-              ],
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              TextButton(
-                child: const Text('Action one'),
-                onPressed: () {},
-              ),
-              const SizedBox(width: 8),
-              TextButton(
-                child: const Text('Action two'),
-                onPressed: () {},
-              ),
-              const SizedBox(width: 8),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget getNutritionCard() {
-    return Card(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          ListTile(
-            leading: Icon(Icons.restaurant),
-            title: Text('Nutrition'),
-            subtitle: Text('Nutrition overview, graphs, etc'),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              TextButton(
-                child: const Text('Action one'),
-                onPressed: () {},
-              ),
-              const SizedBox(width: 8),
-              TextButton(
-                child: const Text('Action two'),
-                onPressed: () {},
-              ),
-              const SizedBox(width: 8),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget getWeightCard() {
-    final weightEntriesData = Provider.of<BodyWeight>(context);
-
-    return Card(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          ListTile(
-            leading: Icon(Icons.bar_chart),
-            title: Text('Weight'),
-            subtitle: Container(
-              padding: EdgeInsets.all(15),
-              height: 180,
-              child: WeightChartWidget(weightEntriesData.items),
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              TextButton(
-                child: const Text('Action one'),
-                onPressed: () {},
-              ),
-              const SizedBox(width: 8),
-              TextButton(
-                child: const Text('Action two'),
-                onPressed: () {},
-              ),
-              const SizedBox(width: 8),
-            ],
-          ),
-        ],
-      ),
+      actions: [],
     );
   }
 
@@ -156,30 +44,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Scaffold(
       appBar: getAppBar(),
       drawer: AppDrawer(),
-      body: Column(
-        children: [
-          getWorkoutCard(),
-          getNutritionCard(),
-          getWeightCard(),
-          Expanded(
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: FutureBuilder(
-                future: Provider.of<Exercises>(context, listen: false).fetchAndSetExercises(),
-                builder: (ctx, authResultSnapshot) =>
-                    authResultSnapshot.connectionState == ConnectionState.waiting
-                        ? Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Text('Initialising exercise database...'),
-                              LinearProgressIndicator(),
-                            ],
-                          )
-                        : Text("all exercises loaded"),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            DashboardWorkoutWidget(context: context),
+            DashboardNutritionWidget(context: context),
+            DashboardWeightWidget(context: context),
+            Container(
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: FutureBuilder(
+                  future: Provider.of<Exercises>(context, listen: false).fetchAndSetExercises(),
+                  builder: (ctx, authResultSnapshot) =>
+                      authResultSnapshot.connectionState == ConnectionState.waiting
+                          ? Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Text('Initialising exercise database...'),
+                                LinearProgressIndicator(),
+                              ],
+                            )
+                          : Text("all exercises loaded"),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
