@@ -27,8 +27,8 @@ import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/auth_screen.dart';
 import 'package:wger/screens/dashboard.dart';
 import 'package:wger/screens/home_tabs_screen.dart';
+import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/screens/nutritional_plans_screen.dart';
-import 'package:wger/screens/nutritrional_plan_screen.dart';
 import 'package:wger/screens/splash_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
@@ -99,7 +99,7 @@ class MyApp extends StatelessWidget {
             WorkoutPlansScreen.routeName: (ctx) => WorkoutPlansScreen(),
             WorkoutPlanScreen.routeName: (ctx) => WorkoutPlanScreen(),
             NutritionScreen.routeName: (ctx) => NutritionScreen(),
-            NutritrionalPlanScreen.routeName: (ctx) => NutritrionalPlanScreen(),
+            NutritionalPlanScreen.routeName: (ctx) => NutritionalPlanScreen(),
           },
           localizationsDelegates: [
             // ... app-specific localization delegate[s] here

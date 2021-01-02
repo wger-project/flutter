@@ -20,7 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/nutrition.dart';
-import 'package:wger/screens/nutritrional_plan_screen.dart';
+import 'package:wger/screens/nutritional_plan_screen.dart';
 
 class NutritionalPlansList extends StatelessWidget {
   @override
@@ -65,7 +65,7 @@ class NutritionalPlansList extends StatelessWidget {
             child: ListTile(
               onTap: () {
                 Navigator.of(context).pushNamed(
-                  NutritrionalPlanScreen.routeName,
+                  NutritionalPlanScreen.routeName,
                   arguments: currentPlan,
                 );
               },

@@ -23,14 +23,14 @@ import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/widgets/nutrition/nutritional_plan_detail.dart';
 
-class NutritrionalPlanScreen extends StatefulWidget {
+class NutritionalPlanScreen extends StatefulWidget {
   static const routeName = '/nutritional-plan-detail';
 
   @override
-  _NutritrionalPlanScreenState createState() => _NutritrionalPlanScreenState();
+  _NutritionalPlanScreenState createState() => _NutritionalPlanScreenState();
 }
 
-class _NutritrionalPlanScreenState extends State<NutritrionalPlanScreen> {
+class _NutritionalPlanScreenState extends State<NutritionalPlanScreen> {
   Future<NutritionalPlan> _loadNutritionalPlanDetail(BuildContext context, int planId) async {
     var plan = await Provider.of<Nutrition>(context, listen: false).findById(planId);
     await Provider.of<Nutrition>(context, listen: false).fetchAndSetLogs(plan);
