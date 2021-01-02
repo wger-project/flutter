@@ -18,10 +18,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
+import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/weight/charts.dart';
 
@@ -58,18 +61,18 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
             future: _refreshPlanEntries(context),
             builder: (context, snapshot) => snapshot.connectionState == ConnectionState.waiting
                 ? Center(child: CircularProgressIndicator())
-                : Column(
-                    children: [
-                      Icon(Icons.restaurant),
-                      Text(plan.description),
-                      plan != null
-                          ? Container(
+                : plan != null
+                    ? Column(
+                        children: [
+                          Icon(Icons.restaurant),
+                          Text(plan.description),
+                          Container(
                               padding: EdgeInsets.all(15),
                               height: 180,
                               child: NutritionalPlanPieChartWidget(plan.nutritionalValues))
-                          : Text('You have no nutritional plans')
-                    ],
-                  ),
+                        ],
+                      )
+                    : Text('You have no nutritional plans'),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -171,6 +174,13 @@ class DashboardWorkoutWidget extends StatefulWidget {
 }
 
 class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
+  WorkoutPlan _workoutPlan;
+
+  Future<void> _fetchWorkoutEntries(BuildContext context) async {
+    await Provider.of<WorkoutPlans>(context, listen: false).fetchAndSetWorkouts();
+    _workoutPlan = Provider.of<WorkoutPlans>(context, listen: false).currentPlan;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -178,34 +188,34 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text('Training', style: Theme.of(context).textTheme.headline6),
-          Column(
-            children: [
-              Icon(Icons.fitness_center),
-              Text('Something to do with workouts'),
-              Text('Monday'),
-              Text('Tuesday'),
-              Text('Wednesday'),
-              Text('Thursday'),
-              Text('Friday'),
-              Text('Saturday'),
-              Text('Sunday'),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              TextButton(
-                child: const Text('Action one'),
-                onPressed: () {},
-              ),
-              const SizedBox(width: 8),
-              TextButton(
-                child: const Text('Action two'),
-                onPressed: () {},
-              ),
-              const SizedBox(width: 8),
-            ],
-          ),
+          Icon(Icons.fitness_center),
+          FutureBuilder(
+              future: _fetchWorkoutEntries(context),
+              builder: (context, snapshot) => snapshot.connectionState == ConnectionState.waiting
+                  ? Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : _workoutPlan != null
+                      ? Column(children: [
+                          Text(_workoutPlan.description),
+                          Text(DateFormat.yMd().format(_workoutPlan.creationDate)),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              TextButton(
+                                child: const Text('Action one'),
+                                onPressed: () {},
+                              ),
+                              const SizedBox(width: 8),
+                              TextButton(
+                                child: const Text('Action two'),
+                                onPressed: () {},
+                              ),
+                              const SizedBox(width: 8),
+                            ],
+                          )
+                        ])
+                      : Text('you have no workouts')),
         ],
       ),
     );

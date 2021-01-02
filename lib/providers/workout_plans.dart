@@ -46,6 +46,12 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
     return _workoutPlans.firstWhere((workoutPlan) => workoutPlan.id == id);
   }
 
+  /// Returns the current active workout plan. At the moment this is just
+  /// the latest, but this might change in the future.
+  WorkoutPlan get currentPlan {
+    return _workoutPlans.last;
+  }
+
   /*
    * Workouts
    */
