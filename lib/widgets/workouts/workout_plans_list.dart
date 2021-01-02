@@ -97,9 +97,7 @@ class WorkoutPlansList extends StatelessWidget {
                 WorkoutPlanScreen.routeName,
                 arguments: currentWorkout,
               ),
-              title: Text(
-                DateFormat('dd.MM.yyyy').format(currentWorkout.creationDate).toString(),
-              ),
+              title: Text(DateFormat.yMd().format(currentWorkout.creationDate)),
               subtitle: Text(currentWorkout.description),
             ),
           ),

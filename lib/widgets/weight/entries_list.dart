@@ -50,7 +50,7 @@ class WeightEntriesList extends StatelessWidget {
                   Scaffold.of(context).showSnackBar(
                     SnackBar(
                       content: Text(
-                        "Deleted weight entry for the ${DateFormat('dd.MM.yyyy').format(currentEntry.date).toString()}",
+                        "Deleted weight entry for the ${DateFormat.yMd().format(currentEntry.date).toString()}",
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -77,9 +77,7 @@ class WeightEntriesList extends StatelessWidget {
                     //  arguments: currentPlan,
                     //),
                     onTap: () {},
-                    title: Text(
-                      DateFormat('dd.MM.yyyy').format(currentEntry.date).toString(),
-                    ),
+                    title: Text(DateFormat.yMd().format(currentEntry.date).toString()),
                     subtitle: Text('${currentEntry.weight} kg'),
                   ),
                 ),
