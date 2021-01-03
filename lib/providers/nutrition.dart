@@ -218,7 +218,7 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
       log.planId = findById(meal.plan).id;
       log.datetime = DateTime.now();
 
-      await add(log.toJson(), _nutritionDiaryPath);
+      await add(log.toJson(), makeUrl(_nutritionDiaryPath));
     }
     notifyListeners();
   }
