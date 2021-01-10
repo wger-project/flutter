@@ -101,16 +101,11 @@ class _WorkoutPlansScreenState extends State<WorkoutPlansScreen> {
         },
         child: const Icon(Icons.add),
       ),
-      body: FutureBuilder(
-        future: _refreshWorkoutPlans(context),
-        builder: (context, snapshot) => snapshot.connectionState == ConnectionState.waiting
-            ? Center(child: CircularProgressIndicator())
-            : RefreshIndicator(
-                onRefresh: () => _refreshWorkoutPlans(context),
-                child: Consumer<WorkoutPlans>(
-                  builder: (context, productsData, child) => WorkoutPlansList(),
-                ),
-              ),
+      body: RefreshIndicator(
+        onRefresh: () => _refreshWorkoutPlans(context),
+        child: Consumer<WorkoutPlans>(
+          builder: (context, productsData, child) => WorkoutPlansList(),
+        ),
       ),
     );
   }

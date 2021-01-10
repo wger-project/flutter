@@ -17,55 +17,20 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:wger/locale/locales.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
-import 'package:wger/widgets/core/bottom_sheet.dart';
-import 'package:wger/widgets/workouts/day.dart';
-import 'package:wger/widgets/workouts/forms.dart';
 
-class DayCheckbox extends StatefulWidget {
-  String name;
-
-  DayCheckbox(this.name);
-
-  @override
-  _DayCheckboxState createState() => _DayCheckboxState();
-}
-
-class _DayCheckboxState extends State<DayCheckbox> {
-  bool _isSelected = false;
-  @override
-  Widget build(BuildContext context) {
-    return CheckboxListTile(
-      title: Text(widget.name),
-      value: _isSelected,
-      onChanged: (bool newValue) {
-        setState(() {
-          _isSelected = newValue;
-        });
-      },
-    );
-  }
-}
-
-class WorkoutPlanDetail extends StatefulWidget {
+class GymMode extends StatefulWidget {
   final WorkoutPlan _workoutPlan;
   final _changeMode;
-  WorkoutPlanDetail(this._workoutPlan, this._changeMode);
+  GymMode(this._workoutPlan, this._changeMode);
 
   @override
-  _WorkoutPlanDetailState createState() => _WorkoutPlanDetailState();
+  _GymModeState createState() => _GymModeState();
 }
 
-class _WorkoutPlanDetailState extends State<WorkoutPlanDetail> {
+class _GymModeState extends State<GymMode> {
   final dayController = TextEditingController();
-
-  Map<String, dynamic> _dayData = {
-    'description': '',
-    'daysOfWeek': [1],
-  };
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +42,7 @@ class _WorkoutPlanDetailState extends State<WorkoutPlanDetail> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Text(
-                DateFormat.yMd().format(widget._workoutPlan.creationDate).toString(),
+                'Gym mode',
                 style: Theme.of(context).textTheme.headline6,
               ),
             ),
@@ -88,27 +53,13 @@ class _WorkoutPlanDetailState extends State<WorkoutPlanDetail> {
                 style: Theme.of(context).textTheme.headline5,
               ),
             ),
-            ...widget._workoutPlan.days.map((workoutDay) => WorkoutDayWidget(workoutDay)).toList(),
+            //...widget._workoutPlan.days.map((workoutDay) => WorkoutDayWidget(workoutDay)).toList(),
             Column(
               children: [
                 ElevatedButton(
-                  child: Text(AppLocalizations.of(context).add),
+                  child: Text('Open workout'),
                   onPressed: () {
-                    showFormBottomSheet(
-                      context,
-                      AppLocalizations.of(context).newDay,
-                      DayFormWidget(
-                        dayController: dayController,
-                        dayData: _dayData,
-                        workout: widget._workoutPlan,
-                      ),
-                    );
-                  },
-                ),
-                ElevatedButton(
-                  child: Text('View logs'),
-                  onPressed: () {
-                    widget._changeMode(WorkoutScreenMode.log);
+                    widget._changeMode(WorkoutScreenMode.workout);
                   },
                 ),
               ],

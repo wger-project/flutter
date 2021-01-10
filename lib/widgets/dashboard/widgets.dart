@@ -190,32 +190,33 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
           Text('Training', style: Theme.of(context).textTheme.headline6),
           Icon(Icons.fitness_center),
           FutureBuilder(
-              future: _fetchWorkoutEntries(context),
-              builder: (context, snapshot) => snapshot.connectionState == ConnectionState.waiting
-                  ? Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : _workoutPlan != null
-                      ? Column(children: [
-                          Text(_workoutPlan.description),
-                          Text(DateFormat.yMd().format(_workoutPlan.creationDate)),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: <Widget>[
-                              TextButton(
-                                child: const Text('Action one'),
-                                onPressed: () {},
-                              ),
-                              const SizedBox(width: 8),
-                              TextButton(
-                                child: const Text('Action two'),
-                                onPressed: () {},
-                              ),
-                              const SizedBox(width: 8),
-                            ],
-                          )
-                        ])
-                      : Text('you have no workouts')),
+            future: _fetchWorkoutEntries(context),
+            builder: (context, snapshot) => snapshot.connectionState == ConnectionState.waiting
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : _workoutPlan != null
+                    ? Column(children: [
+                        Text(_workoutPlan.description),
+                        Text(DateFormat.yMd().format(_workoutPlan.creationDate)),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            TextButton(
+                              child: const Text('Action one'),
+                              onPressed: () {},
+                            ),
+                            const SizedBox(width: 8),
+                            TextButton(
+                              child: const Text('Action two'),
+                              onPressed: () {},
+                            ),
+                            const SizedBox(width: 8),
+                          ],
+                        )
+                      ])
+                    : Text('you have no workouts'),
+          ),
         ],
       ),
     );

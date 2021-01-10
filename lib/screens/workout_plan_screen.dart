@@ -18,10 +18,16 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/locale/locales.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/widgets/workouts/workout_logs.dart';
 import 'package:wger/widgets/workouts/workout_plan_detail.dart';
+
+enum WorkoutScreenMode {
+  workout,
+  log,
+  gym,
+}
 
 class WorkoutPlanScreen extends StatefulWidget {
   static const routeName = '/workout-plan-detail';
@@ -31,15 +37,23 @@ class WorkoutPlanScreen extends StatefulWidget {
 }
 
 class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
+  WorkoutScreenMode _mode = WorkoutScreenMode.workout;
+
+  _changeMode(WorkoutScreenMode newMode) {
+    setState(() {
+      _mode = newMode;
+    });
+  }
+
   Future<WorkoutPlan> _loadWorkoutPlanDetail(BuildContext context, int workoutId) async {
     var workout =
         await Provider.of<WorkoutPlans>(context, listen: false).fetchAndSetFullWorkout(workoutId);
     return workout;
   }
 
-  Widget getAppBar() {
+  Widget getAppBar(WorkoutPlan plan) {
     return AppBar(
-      title: Text(AppLocalizations.of(context).labelWorkoutPlan),
+      title: Text(plan.description),
       actions: [
         IconButton(
           icon: Icon(Icons.menu),
@@ -64,24 +78,32 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
     );
   }
 
+  Widget getBody(WorkoutPlan plan) {
+    switch (_mode) {
+      case WorkoutScreenMode.workout:
+        return WorkoutPlanDetail(plan, _changeMode);
+        break;
+      case WorkoutScreenMode.log:
+        return WorkoutLogs(plan, _changeMode);
+        break;
+      case WorkoutScreenMode.gym:
+        return Text('Gym Mode');
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final workoutPlan = ModalRoute.of(context).settings.arguments as WorkoutPlan;
 
     return Scaffold(
-      appBar: getAppBar(),
-      //drawer: AppDrawer(),
+      appBar: getAppBar(workoutPlan),
       body: FutureBuilder<WorkoutPlan>(
         future: _loadWorkoutPlanDetail(context, workoutPlan.id),
         builder: (context, AsyncSnapshot<WorkoutPlan> snapshot) =>
             snapshot.connectionState == ConnectionState.waiting
                 ? Center(child: CircularProgressIndicator())
-                : RefreshIndicator(
-                    onRefresh: () => _loadWorkoutPlanDetail(context, workoutPlan.id),
-                    child: Consumer<WorkoutPlans>(
-                      builder: (context, workout, _) => WorkoutPlanDetail(snapshot.data),
-                    ),
-                  ),
+                : getBody(snapshot.data),
       ),
     );
   }

@@ -22,6 +22,7 @@ import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/image.dart';
 import 'package:wger/models/http_exception.dart';
 import 'package:wger/models/workouts/day.dart';
+import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/set.dart';
 import 'package:wger/models/workouts/setting.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
@@ -31,6 +32,7 @@ import 'package:wger/providers/base_provider.dart';
 class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
   static const _workoutPlansUrlPath = 'workout';
   static const _daysUrlPath = 'day';
+  static const _logsUrlPath = 'workoutlog';
 
   List<WorkoutPlan> _workoutPlans = [];
 
@@ -80,6 +82,7 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
 
         for (final set in entry['set_list']) {
           List<Setting> settings = [];
+          List<Exercise> exercises = [];
 
           for (final exerciseData in set['exercise_list']) {
             List<ExerciseImage> images = [];
@@ -101,6 +104,7 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
               description: exerciseData['obj']['description'],
               images: images,
             );
+            exercises.add(exercise);
 
             // Settings
             settings.add(
@@ -123,6 +127,7 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
             sets: set['obj']['sets'],
             order: set['obj']['order'],
             settings: settings,
+            exercises: exercises,
           ));
         }
 
@@ -136,6 +141,12 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
             ));
       }
       workout.days = days;
+
+      // Logs
+      final logData = await fetch(makeUrl(_logsUrlPath));
+      for (final entry in logData['results']) {
+        workout.logs.add(Log.fromJson(entry));
+      }
       notifyListeners();
 
       return workout;
@@ -146,8 +157,10 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
 
   Future<WorkoutPlan> addWorkout(WorkoutPlan workout) async {
     final data = await add(workout.toJson(), makeUrl(_workoutPlansUrlPath));
-    _workoutPlans.insert(0, WorkoutPlan.fromJson(data));
+    final plan = WorkoutPlan.fromJson(data);
+    _workoutPlans.insert(0, plan);
     notifyListeners();
+    return plan;
   }
 
   Future<void> deleteWorkout(int id) async {
