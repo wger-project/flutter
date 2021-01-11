@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -46,9 +45,36 @@ class ExerciseLog extends StatelessWidget {
           future: _getChartEntries(context),
           builder: (context, snapshot) => snapshot.connectionState == ConnectionState.waiting
               ? Center(child: CircularProgressIndicator())
-              : Container(
-                  height: 120,
-                  child: LogChartWidget(snapshot.data),
+              : Column(
+                  children: [
+                    Container(
+                      height: 120,
+                      child: LogChartWidget(snapshot.data),
+                    ),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          ...snapshot.data['logs'].entries.map((e) {
+                            //print(e.key);
+                            //print(e.value);
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              child: Column(
+                                children: [
+                                  Text(e.key.toString()),
+                                  ...e.value.map((i) {
+                                    return Text("${i['weight']} - ${i['reps']}");
+                                  })
+                                ],
+                              ),
+                            );
+                          }).toList(),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
         ),
         Row(
