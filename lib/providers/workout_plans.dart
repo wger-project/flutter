@@ -34,6 +34,7 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
   static const _daysUrlPath = 'day';
   static const _logsUrlPath = 'workoutlog';
 
+  WorkoutPlan _currentPlan;
   List<WorkoutPlan> _workoutPlans = [];
 
   WorkoutPlans(Auth auth, List<WorkoutPlan> entries, [http.Client client])
@@ -48,9 +49,24 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
     return _workoutPlans.firstWhere((workoutPlan) => workoutPlan.id == id);
   }
 
+  /// Set the currently "active" workout plan
+  void setCurrentPlan(int id) {
+    _currentPlan = findById(id);
+  }
+
+  /// Returns the currently "active" workout plan
+  WorkoutPlan get currentPlan {
+    return _currentPlan;
+  }
+
+  /// Reset the currently "active" workout plan to null
+  void resetCurrentPlan() {
+    _currentPlan = null;
+  }
+
   /// Returns the current active workout plan. At the moment this is just
   /// the latest, but this might change in the future.
-  WorkoutPlan get currentPlan {
+  WorkoutPlan get activePlan {
     return _workoutPlans.last;
   }
 
@@ -177,6 +193,17 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
       throw WgerHttpException(response.body);
     }
     existingWorkout = null;
+  }
+
+  Future<dynamic> fetchLogData(WorkoutPlan workout, Exercise exercise) async {
+    final data = await fetch(
+      makeUrl(
+        _workoutPlansUrlPath,
+        id: '${workout.id.toString()}/log_data',
+        query: {'id': exercise.id.toString()},
+      ),
+    );
+    return data;
   }
 
   /*

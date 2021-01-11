@@ -62,14 +62,16 @@ class WorkoutDayWidget extends StatelessWidget {
       children: [
         Text('#${set.order}'),
         Expanded(
-          child: Column(children: [
-            ...set.settings
-                .map(
-                  (setting) => SettingWidget(setting: setting),
-                )
-                .toList(),
-            Divider(),
-          ]),
+          child: Column(
+            children: [
+              ...set.settings
+                  .map(
+                    (setting) => SettingWidget(setting: setting),
+                  )
+                  .toList(),
+              Divider(),
+            ],
+          ),
         )
       ],
     );

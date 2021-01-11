@@ -16,11 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/set.dart';
+import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/widgets/workouts/charts.dart';
 
 class ExerciseLog extends StatelessWidget {
   Exercise _exercise;
@@ -28,9 +32,25 @@ class ExerciseLog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _workoutPlansData = Provider.of<WorkoutPlans>(context, listen: false);
+    final _workout = _workoutPlansData.currentPlan;
+
+    Future<dynamic> _getChartEntries(BuildContext context) async {
+      return await _workoutPlansData.fetchLogData(_workout, _exercise);
+    }
+
     return Column(
       children: [
         Text(_exercise.name),
+        FutureBuilder(
+          future: _getChartEntries(context),
+          builder: (context, snapshot) => snapshot.connectionState == ConnectionState.waiting
+              ? Center(child: CircularProgressIndicator())
+              : Container(
+                  height: 120,
+                  child: LogChartWidget(snapshot.data),
+                ),
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [

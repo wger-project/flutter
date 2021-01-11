@@ -178,7 +178,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
 
   Future<void> _fetchWorkoutEntries(BuildContext context) async {
     await Provider.of<WorkoutPlans>(context, listen: false).fetchAndSetWorkouts();
-    _workoutPlan = Provider.of<WorkoutPlans>(context, listen: false).currentPlan;
+    _workoutPlan = Provider.of<WorkoutPlans>(context, listen: false).activePlan;
   }
 
   @override

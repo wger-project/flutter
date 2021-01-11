@@ -26,6 +26,7 @@ class WorkoutPlansList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final workoutPlansData = Provider.of<WorkoutPlans>(context);
+
     return ListView.builder(
       padding: const EdgeInsets.all(10.0),
       itemCount: workoutPlansData.items.length,
@@ -93,10 +94,12 @@ class WorkoutPlansList extends StatelessWidget {
           direction: DismissDirection.endToStart,
           child: Card(
             child: ListTile(
-              onTap: () => Navigator.of(context).pushNamed(
-                WorkoutPlanScreen.routeName,
-                arguments: currentWorkout,
-              ),
+              onTap: () {
+                workoutPlansData.setCurrentPlan(currentWorkout.id);
+
+                return Navigator.of(context)
+                    .pushNamed(WorkoutPlanScreen.routeName, arguments: currentWorkout);
+              },
               title: Text(DateFormat.yMd().format(currentWorkout.creationDate)),
               subtitle: Text(currentWorkout.description),
             ),
