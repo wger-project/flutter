@@ -60,7 +60,10 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
           FutureBuilder(
             future: _refreshPlanEntries(context),
             builder: (context, snapshot) => snapshot.connectionState == ConnectionState.waiting
-                ? Center(child: CircularProgressIndicator())
+                ? Container(
+                    height: 180,
+                    child: Center(child: CircularProgressIndicator()),
+                  )
                 : plan != null
                     ? Column(
                         children: [
@@ -125,7 +128,10 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
           FutureBuilder(
             future: _refreshWeightEntries(context),
             builder: (context, snapshot) => snapshot.connectionState == ConnectionState.waiting
-                ? Center(child: CircularProgressIndicator())
+                ? Container(
+                    height: 180,
+                    child: Center(child: CircularProgressIndicator()),
+                  )
                 : Column(
                     children: [
                       Icon(Icons.bar_chart),

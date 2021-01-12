@@ -44,7 +44,10 @@ class ExerciseLog extends StatelessWidget {
         FutureBuilder(
           future: _getChartEntries(context),
           builder: (context, snapshot) => snapshot.connectionState == ConnectionState.waiting
-              ? Center(child: CircularProgressIndicator())
+              ? Container(
+                  height: 120,
+                  child: Center(child: CircularProgressIndicator()),
+                )
               : Column(
                   children: [
                     Container(
