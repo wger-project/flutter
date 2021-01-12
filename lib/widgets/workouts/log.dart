@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day.dart';
@@ -40,7 +41,10 @@ class ExerciseLog extends StatelessWidget {
 
     return Column(
       children: [
-        Text(_exercise.name),
+        Text(
+          _exercise.name,
+          style: Theme.of(context).textTheme.headline6,
+        ),
         FutureBuilder(
           future: _getChartEntries(context),
           builder: (context, snapshot) => snapshot.connectionState == ConnectionState.waiting
@@ -54,6 +58,7 @@ class ExerciseLog extends StatelessWidget {
                       height: 120,
                       child: LogChartWidget(snapshot.data),
                     ),
+                    const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Row(
@@ -65,8 +70,12 @@ class ExerciseLog extends StatelessWidget {
                             return Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 10),
                               child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(e.key.toString()),
+                                  Text(
+                                    '${DateFormat.yMd().format(DateTime.parse(e.key))}',
+                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                  ),
                                   ...e.value.map((i) {
                                     return Text("${i['weight']} - ${i['reps']}");
                                   })
@@ -109,6 +118,7 @@ class DayLogWidget extends StatelessWidget {
             children: [
               ...set.exercises.map((exercise) => ExerciseLog(exercise)).toList(),
               Divider(),
+              const Padding(padding: EdgeInsets.symmetric(vertical: 10)),
             ],
           ),
         )

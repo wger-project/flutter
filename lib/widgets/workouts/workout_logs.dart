@@ -47,25 +47,39 @@ class _WorkoutLogsState extends State<WorkoutLogs> {
                 style: Theme.of(context).textTheme.headline5,
               ),
             ),
-            Text('This page shows the weight logs belonging to this workout only.'
-                'Click on an exercise to see all the historical data for it.'),
-            Text('If on a single day there is more than one entry with the same'
-                'number of repetitions, but different weights, only the entry with'
-                'the higher weight is shown in the diagram.'),
-            Text('Note that only entries with a weight unit (kg or lb) and repetitions'
-                'are charted, other combinations such as time or until failure'
-                'are ignored here.'),
-            ...widget._workoutPlan.days.map((workoutDay) => DayLogWidget(workoutDay)).toList(),
-            Column(
-              children: [
-                ElevatedButton(
-                  child: Text('Back to workout'),
-                  onPressed: () {
-                    widget._changeMode(WorkoutScreenMode.workout);
-                  },
-                ),
-              ],
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'This page shows the weight logs belonging to this workout only.'
+                'Click on an exercise to see all the historical data for it.',
+                textAlign: TextAlign.justify,
+              ),
             ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'If on a single day there is more than one entry with the same'
+                'number of repetitions, but different weights, only the entry with'
+                'the higher weight is shown in the diagram.',
+                textAlign: TextAlign.justify,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'Note that only entries with a weight unit (kg or lb) and repetitions'
+                'are charted, other combinations such as time or until failure'
+                'are ignored here.',
+                textAlign: TextAlign.justify,
+              ),
+            ),
+            ElevatedButton(
+              child: Text('Back to workout'),
+              onPressed: () {
+                widget._changeMode(WorkoutScreenMode.workout);
+              },
+            ),
+            ...widget._workoutPlan.days.map((workoutDay) => DayLogWidget(workoutDay)).toList(),
           ],
         ),
       ),
