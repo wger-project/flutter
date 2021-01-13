@@ -33,6 +33,7 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
   static const _workoutPlansUrlPath = 'workout';
   static const _daysUrlPath = 'day';
   static const _logsUrlPath = 'workoutlog';
+  static const _sessionUrlPath = 'workoutsession';
 
   WorkoutPlan _currentPlan;
   List<WorkoutPlan> _workoutPlans = [];
@@ -220,5 +221,15 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
     workout.days.insert(0, day);
     notifyListeners();
     return day;
+  }
+
+  /*
+   * Sessions
+   */
+  Future<dynamic> fetchSessionData() async {
+    final data = await fetch(
+      makeUrl(_sessionUrlPath),
+    );
+    return data;
   }
 }
