@@ -22,6 +22,7 @@ import 'package:provider/provider.dart';
 import 'package:wger/locale/locales.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/widgets/app_drawer.dart';
+import 'package:wger/widgets/dashboard/calendar.dart';
 import 'package:wger/widgets/dashboard/widgets.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -50,6 +51,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
             DashboardWorkoutWidget(context: context),
             DashboardNutritionWidget(context: context),
             DashboardWeightWidget(context: context),
+            Container(
+              height: 650,
+              child: DashboardCalendarWidget(title: 'Table Calendar Demo'),
+            ),
             Container(
               child: Align(
                 alignment: Alignment.bottomCenter,
