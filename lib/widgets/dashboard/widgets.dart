@@ -168,7 +168,7 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
 }
 
 class DashboardWorkoutWidget extends StatefulWidget {
-  const DashboardWorkoutWidget({
+  DashboardWorkoutWidget({
     Key key,
     @required this.context,
   }) : super(key: key);
@@ -181,10 +181,13 @@ class DashboardWorkoutWidget extends StatefulWidget {
 
 class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
   WorkoutPlan _workoutPlan;
+  var showDetail = true;
 
   Future<void> _fetchWorkoutEntries(BuildContext context) async {
     await Provider.of<WorkoutPlans>(context, listen: false).fetchAndSetWorkouts();
     _workoutPlan = Provider.of<WorkoutPlans>(context, listen: false).activePlan;
+    _workoutPlan = await Provider.of<WorkoutPlans>(context, listen: false)
+        .fetchAndSetFullWorkout(_workoutPlan.id);
   }
 
   @override
@@ -205,12 +208,26 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                     ? Column(children: [
                         Text(_workoutPlan.description),
                         Text(DateFormat.yMd().format(_workoutPlan.creationDate)),
+                        ..._workoutPlan.days.map((workoutDay) {
+                          return Column(children: [
+                            Text(workoutDay.description,
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                            if (showDetail)
+                              ...workoutDay.sets
+                                  .map((set) => Text(set.exercises.map((e) => e.name).join(',')))
+                                  .toList(),
+                          ]);
+                        }).toList(),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: <Widget>[
                             TextButton(
-                              child: const Text('Action one'),
-                              onPressed: () {},
+                              child: const Text('Toggle details'),
+                              onPressed: () {
+                                setState(() {
+                                  showDetail = !showDetail;
+                                });
+                              },
                             ),
                             const SizedBox(width: 8),
                             TextButton(
