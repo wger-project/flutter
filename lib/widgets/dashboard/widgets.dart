@@ -60,10 +60,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
           FutureBuilder(
             future: _refreshPlanEntries(context),
             builder: (context, snapshot) => snapshot.connectionState == ConnectionState.waiting
-                ? Container(
-                    height: 180,
-                    child: Center(child: CircularProgressIndicator()),
-                  )
+                ? Container(height: 180, child: Center(child: CircularProgressIndicator()))
                 : plan != null
                     ? Column(
                         children: [
@@ -202,7 +199,8 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
             future: _fetchWorkoutEntries(context),
             builder: (context, snapshot) => snapshot.connectionState == ConnectionState.waiting
                 ? Center(
-                    child: CircularProgressIndicator(),
+                    child:
+                        Container(height: 180, child: Center(child: CircularProgressIndicator())),
                   )
                 : _workoutPlan != null
                     ? Column(children: [
@@ -210,6 +208,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                         Text(DateFormat.yMd().format(_workoutPlan.creationDate)),
                         ..._workoutPlan.days.map((workoutDay) {
                           return Column(children: [
+                            const SizedBox(height: 10),
                             Text(workoutDay.description,
                                 style: TextStyle(fontWeight: FontWeight.bold)),
                             if (showDetail)
