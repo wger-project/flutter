@@ -53,7 +53,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             DashboardWeightWidget(context: context),
             Container(
               height: 650,
-              child: DashboardCalendarWidget(title: 'Table Calendar Demo'),
+              child: DashboardCalendarWidget(title: 'Calendar'),
             ),
             Container(
               child: Align(

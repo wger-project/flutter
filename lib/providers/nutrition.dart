@@ -69,7 +69,7 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
     return null;
   }
 
-  Future<void> fetchAndSetPlans() async {
+  Future<List<NutritionalPlan>> fetchAndSetPlans() async {
     final data = await fetch(makeUrl(_nutritionalPlansInfoPath));
     final List<NutritionalPlan> loadedPlans = [];
     for (final entry in data['results']) {
@@ -78,6 +78,7 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
 
     _plans = loadedPlans;
     notifyListeners();
+    return loadedPlans;
   }
 
   Future<NutritionalPlan> fetchAndSetPlan(int planId) async {
@@ -143,9 +144,9 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
   }
 
   /// Adds a meal item to a meal
-  Future<MealItem> addMealIteam(MealItem mealItem, int mealId) async {
+  Future<MealItem> addMealItem(MealItem mealItem, int mealId) async {
     var meal = findMealById(mealId);
-    final data = await add(mealItem.toJson(), _mealItemPath);
+    final data = await add(mealItem.toJson(), makeUrl(_mealItemPath));
 
     mealItem = MealItem.fromJson(data);
     mealItem.ingredientObj = await fetchIngredient(mealItem.ingredientId);

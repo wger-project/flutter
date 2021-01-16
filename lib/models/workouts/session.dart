@@ -5,11 +5,7 @@ import 'package:wger/helpers/json.dart';
 
 part 'session.g.dart';
 
-class Impression {
-  static const bad = 1;
-  static const neutral = 2;
-  static const good = 3;
-}
+const impressionMap = {1: 'bad', 2: 'neutral', 3: 'good'};
 
 @JsonSerializable()
 class WorkoutSession {
@@ -43,4 +39,8 @@ class WorkoutSession {
   // Boilerplate
   factory WorkoutSession.fromJson(Map<String, dynamic> json) => _$WorkoutSessionFromJson(json);
   Map<String, dynamic> toJson() => _$WorkoutSessionToJson(this);
+
+  get impressionAsString {
+    return impressionMap[impression];
+  }
 }

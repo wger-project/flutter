@@ -15,13 +15,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:wger/helpers/json.dart';
 import 'package:wger/models/workouts/session.dart';
 import 'package:wger/providers/body_weight.dart';
+import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/theme/theme.dart';
 
 // Example holidays
 final Map<DateTime, List> _holidays = {
@@ -76,7 +81,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
             _events[date] = [];
           }
 
-          _events[date].add('${entry.weight} kg');
+          _events[date].add('Body weight: ${entry.weight} kg');
         }
       });
 
@@ -90,7 +95,32 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
             _events[date] = [];
           }
 
-          _events[date].add('Workout session ${session.impression}');
+          var time = '';
+          if (session.timeStart != null && session.timeEnd != null) {
+            time = '(${timeToString(session.timeStart)} - ${timeToString(session.timeEnd)})';
+          }
+
+          _events[date].add('Workout session: ${session.impressionAsString} $time');
+        }
+      });
+
+      // Fetch nutritional plans
+      //
+      // TODO: E/flutter ( 1702): [ERROR:flutter/lib/ui/ui_dart_state.cc(177)] Unhandled Exception: A Nutrition was used after being disposed.
+      Nutrition nutrition = Provider.of<Nutrition>(context, listen: false);
+      nutrition.fetchAndSetPlans().then((nutritionalPlans) {
+        for (var plan in nutritionalPlans) {
+          nutrition.fetchAndSetLogs(plan).then((value) {
+            //print(plan.logEntriesValues);
+            for (var entry in plan.logEntriesValues.entries) {
+              final date = DateTime(entry.key.year, entry.key.month, entry.key.day);
+              if (!_events.containsKey(date)) {
+                _events[date] = [];
+              }
+
+              _events[date].add('Nutrition diary: ${entry.value.energy.toStringAsFixed(0)} kcal');
+            }
+          });
         }
       });
     });
@@ -104,39 +134,36 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
   }
 
   void _onDaySelected(DateTime day, List events, List holidays) {
-    print('CALLBACK: _onDaySelected');
+    log('CALLBACK: _onDaySelected');
     setState(() {
       _selectedEvents = events;
     });
   }
 
   void _onVisibleDaysChanged(DateTime first, DateTime last, CalendarFormat format) {
-    print('CALLBACK: _onVisibleDaysChanged');
+    log('CALLBACK: _onVisibleDaysChanged');
   }
 
   void _onCalendarCreated(DateTime first, DateTime last, CalendarFormat format) {
-    print('CALLBACK: _onCalendarCreated');
+    log('CALLBACK: _onCalendarCreated');
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Column(
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          // Switch out 2 lines below to play with TableCalendar's settings
-          //-----------------------
-          _buildTableCalendar(),
-          //_buildTableCalendarWithBuilders(),
-          const SizedBox(height: 8.0),
-          _buildButtons(),
-          const SizedBox(height: 8.0),
-          Expanded(child: _buildEventList()),
-        ],
-      ),
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        const SizedBox(height: 8.0),
+        Text(widget.title, style: Theme.of(context).textTheme.headline6),
+        // Switch out 2 lines below to play with TableCalendar's settings
+        //-----------------------
+        _buildTableCalendar(),
+        //_buildTableCalendarWithBuilders(),
+        const SizedBox(height: 8.0),
+        _buildButtons(),
+        const SizedBox(height: 8.0),
+        Expanded(child: _buildEventList()),
+      ],
     );
   }
 
@@ -150,7 +177,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
       holidays: _holidays,
       startingDayOfWeek: StartingDayOfWeek.monday,
       calendarStyle: CalendarStyle(
-        selectedColor: Colors.deepOrange[400],
+        selectedColor: wgerSecondaryColor,
         todayColor: Colors.deepOrange[200],
         markersColor: Colors.brown[700],
         outsideDaysVisible: false,
@@ -314,18 +341,20 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
   Widget _buildEventList() {
     return ListView(
       children: _selectedEvents
-          .map((event) => Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  border: Border.all(width: 0.8),
-                  borderRadius: BorderRadius.circular(12.0),
-                ),
-                margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                child: ListTile(
-                  title: Text(event.toString()),
-                  onTap: () => print('$event tapped!'),
-                ),
-              ))
+          .map(
+            (event) => Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                border: Border.all(width: 0.5),
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+              margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+              child: ListTile(
+                title: Text(event.toString()),
+                onTap: () => print('$event tapped!'),
+              ),
+            ),
+          )
           .toList(),
     );
     /*

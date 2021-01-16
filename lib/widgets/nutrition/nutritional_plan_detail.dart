@@ -18,6 +18,7 @@
 
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:wger/locale/locales.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/nutrition/nutritrional_values.dart';
@@ -56,7 +57,8 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                 style: Theme.of(context).textTheme.headline5,
               ),
             ),
-            ..._nutritionalPlan.meals.map((meal) => MealWidget(meal)).toList(),
+            if (_nutritionalPlan.meals.length > 0)
+              ..._nutritionalPlan.meals.map((meal) => MealWidget(meal)).toList(),
             ElevatedButton(
               child: Text(AppLocalizations.of(context).add),
               onPressed: () {
@@ -169,7 +171,7 @@ class NutritionDiaryEntry extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Column(
         children: [
-          Text(DefaultMaterialLocalizations().formatMediumDate(date).toString()),
+          Text(DateFormat.yMd().format(date).toString()),
           Text(values.energy.toStringAsFixed(0)),
           Text(values.protein.toStringAsFixed(0)),
           Text(values.carbohydrates.toStringAsFixed(0)),

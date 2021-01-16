@@ -48,8 +48,8 @@ class BodyWeight extends WgerBaseProvider with ChangeNotifier {
     }
 
     _entries = loadedEntries;
-    return _entries;
     notifyListeners();
+    return _entries;
   }
 
   Future<WeightEntry> addEntry(WeightEntry entry) async {

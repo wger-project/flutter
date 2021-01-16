@@ -134,7 +134,7 @@ class DismissibleMealHeader extends StatelessWidget {
         width: double.infinity,
         decoration: BoxDecoration(color: Colors.black12),
         padding: const EdgeInsets.all(10),
-        child: Text(_meal.time.format(context)),
+        child: _meal.time != null ? Text(_meal.time.format(context)) : Text('aaaa'),
       ),
       secondaryBackground: Container(
         color: Theme.of(context).accentColor,
