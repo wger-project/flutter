@@ -226,7 +226,9 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
 
   /// Log meal to nutrition diary
   Future<void> fetchAndSetLogs(NutritionalPlan plan) async {
-    final data = await fetch(makeUrl(_nutritionDiaryPath, query: {'plan': plan.id.toString()}));
+    // TODO: update fetch to that it can use the pagination
+    final data = await fetch(
+        makeUrl(_nutritionDiaryPath, query: {'plan': plan.id.toString(), 'limit': '1000'}));
 
     for (var logData in data['results']) {
       var log = Log.fromJson(logData);
