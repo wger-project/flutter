@@ -20,11 +20,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/locale/locales.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/screens/nutritional_plan_screen.dart';
+import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/weight/charts.dart';
 
@@ -56,7 +59,10 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text('Nutrition', style: Theme.of(context).textTheme.headline6),
+          Text(
+            AppLocalizations.of(context).nutritionalPlan,
+            style: Theme.of(context).textTheme.headline4,
+          ),
           FutureBuilder(
             future: _refreshPlanEntries(context),
             builder: (context, snapshot) => snapshot.connectionState == ConnectionState.waiting
@@ -64,12 +70,25 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                 : plan != null
                     ? Column(
                         children: [
-                          Icon(Icons.restaurant),
-                          Text(plan.description),
+                          Text(
+                            DateFormat.yMd().format(plan.creationDate),
+                            style: Theme.of(context).textTheme.headline6,
+                          ),
+                          TextButton(
+                            child: Text(
+                              plan.description,
+                              style: TextStyle(fontSize: 20),
+                            ),
+                            onPressed: () {
+                              return Navigator.of(context)
+                                  .pushNamed(NutritionalPlanScreen.routeName, arguments: plan);
+                            },
+                          ),
                           Container(
-                              padding: EdgeInsets.all(15),
-                              height: 180,
-                              child: NutritionalPlanPieChartWidget(plan.nutritionalValues))
+                            padding: EdgeInsets.all(15),
+                            height: 180,
+                            child: NutritionalPlanPieChartWidget(plan.nutritionalValues),
+                          )
                         ],
                       )
                     : Text('You have no nutritional plans'),
@@ -121,7 +140,10 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text('Weight', style: Theme.of(context).textTheme.headline6),
+          Text(
+            AppLocalizations.of(context).weight,
+            style: Theme.of(context).textTheme.headline4,
+          ),
           FutureBuilder(
             future: _refreshWeightEntries(context),
             builder: (context, snapshot) => snapshot.connectionState == ConnectionState.waiting
@@ -131,8 +153,6 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                   )
                 : Column(
                     children: [
-                      Icon(Icons.bar_chart),
-                      Text('Weight'),
                       weightEntriesData.items.length > 0
                           ? Container(
                               padding: EdgeInsets.all(15),
@@ -178,7 +198,7 @@ class DashboardWorkoutWidget extends StatefulWidget {
 
 class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
   WorkoutPlan _workoutPlan;
-  var showDetail = true;
+  var showDetail = false;
 
   Future<void> _fetchWorkoutEntries(BuildContext context) async {
     await Provider.of<WorkoutPlans>(context, listen: false).fetchAndSetWorkouts();
@@ -193,8 +213,10 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text('Training', style: Theme.of(context).textTheme.headline6),
-          Icon(Icons.fitness_center),
+          Text(
+            AppLocalizations.of(context).labelWorkoutPlan,
+            style: Theme.of(context).textTheme.headline4,
+          ),
           FutureBuilder(
             future: _fetchWorkoutEntries(context),
             builder: (context, snapshot) => snapshot.connectionState == ConnectionState.waiting
@@ -204,13 +226,29 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                   )
                 : _workoutPlan != null
                     ? Column(children: [
-                        Text(_workoutPlan.description),
-                        Text(DateFormat.yMd().format(_workoutPlan.creationDate)),
+                        Text(
+                          DateFormat.yMd().format(_workoutPlan.creationDate),
+                          style: Theme.of(context).textTheme.headline6,
+                        ),
+                        TextButton(
+                          child: Text(
+                            _workoutPlan.description,
+                            style: TextStyle(fontSize: 20),
+                          ),
+                          onPressed: () {
+                            return Navigator.of(context)
+                                .pushNamed(WorkoutPlanScreen.routeName, arguments: _workoutPlan);
+                          },
+                        ),
                         ..._workoutPlan.days.map((workoutDay) {
                           return Column(children: [
                             const SizedBox(height: 10),
-                            Text(workoutDay.description,
-                                style: TextStyle(fontWeight: FontWeight.bold)),
+                            showDetail == true
+                                ? Text(
+                                    workoutDay.description,
+                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                  )
+                                : Text(workoutDay.description),
                             if (showDetail)
                               ...workoutDay.sets
                                   .map((set) => Text(set.exercises.map((e) => e.name).join(',')))
@@ -221,19 +259,13 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: <Widget>[
                             TextButton(
-                              child: const Text('Toggle details'),
+                              child: Text(AppLocalizations.of(context).toggleDetails),
                               onPressed: () {
                                 setState(() {
                                   showDetail = !showDetail;
                                 });
                               },
                             ),
-                            const SizedBox(width: 8),
-                            TextButton(
-                              child: const Text('Action two'),
-                              onPressed: () {},
-                            ),
-                            const SizedBox(width: 8),
                           ],
                         )
                       ])

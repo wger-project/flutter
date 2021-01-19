@@ -95,7 +95,7 @@ class _NutritionScreenState extends State<NutritionScreen> {
                     style: Theme.of(ctx).textTheme.headline6,
                   ),
 
-                  // Weight
+                  // Description
                   TextFormField(
                     decoration: InputDecoration(labelText: AppLocalizations.of(ctx).description),
                     controller: descriptionController,

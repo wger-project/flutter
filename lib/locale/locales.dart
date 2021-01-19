@@ -210,6 +210,14 @@ class AppLocalizations {
       desc: 'Header when adding a new nutritional plan',
     );
   }
+
+  String get toggleDetails {
+    return Intl.message(
+      'Toggle details',
+      name: 'toggleDetails',
+      desc: 'Switch to toggle detail / overview',
+    );
+  }
 }
 
 class AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -154,7 +154,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
       mainAxisSize: MainAxisSize.max,
       children: [
         const SizedBox(height: 8.0),
-        Text(widget.title, style: Theme.of(context).textTheme.headline6),
+        Text(widget.title, style: Theme.of(context).textTheme.headline4),
         // Switch out 2 lines below to play with TableCalendar's settings
         //-----------------------
         _buildTableCalendar(),

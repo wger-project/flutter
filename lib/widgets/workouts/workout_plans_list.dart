@@ -76,7 +76,6 @@ class WorkoutPlansList extends StatelessWidget {
                   );
                 });
             return res;
-            //Provider.of<WorkoutPlans>(context, listen: false).deleteWorkout(currentWorkout.id);
           },
           background: Container(
             color: Theme.of(context).errorColor,
