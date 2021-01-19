@@ -73,17 +73,15 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       // Fetch weight entries
-      BodyWeight weight = Provider.of<BodyWeight>(context, listen: false);
-      weight.fetchAndSetEntries().then((entries) {
-        for (var entry in entries) {
-          final date = DateTime(entry.date.year, entry.date.month, entry.date.day);
-          if (!_events.containsKey(date)) {
-            _events[date] = [];
-          }
-
-          _events[date].add('Body weight: ${entry.weight} kg');
+      BodyWeight weightProvider = Provider.of<BodyWeight>(context, listen: false);
+      for (var entry in weightProvider.items) {
+        final date = DateTime(entry.date.year, entry.date.month, entry.date.day);
+        if (!_events.containsKey(date)) {
+          _events[date] = [];
         }
-      });
+
+        _events[date].add('Body weight: ${entry.weight} kg');
+      }
 
       // Fetch workout sessions
       WorkoutPlans plans = Provider.of<WorkoutPlans>(context, listen: false);
@@ -105,24 +103,20 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
       });
 
       // Fetch nutritional plans
-      //
-      // TODO: E/flutter ( 1702): [ERROR:flutter/lib/ui/ui_dart_state.cc(177)] Unhandled Exception: A Nutrition was used after being disposed.
-      Nutrition nutrition = Provider.of<Nutrition>(context, listen: false);
-      nutrition.fetchAndSetPlans().then((nutritionalPlans) {
-        for (var plan in nutritionalPlans) {
-          nutrition.fetchAndSetLogs(plan).then((value) {
-            //print(plan.logEntriesValues);
-            for (var entry in plan.logEntriesValues.entries) {
-              final date = DateTime(entry.key.year, entry.key.month, entry.key.day);
-              if (!_events.containsKey(date)) {
-                _events[date] = [];
-              }
-
-              _events[date].add('Nutrition diary: ${entry.value.energy.toStringAsFixed(0)} kcal');
+      Nutrition nutritionProvider = Provider.of<Nutrition>(context, listen: false);
+      for (var plan in nutritionProvider.items) {
+        nutritionProvider.fetchAndSetLogs(plan).then((value) {
+          //print(plan.logEntriesValues);
+          for (var entry in plan.logEntriesValues.entries) {
+            final date = DateTime(entry.key.year, entry.key.month, entry.key.day);
+            if (!_events.containsKey(date)) {
+              _events[date] = [];
             }
-          });
-        }
-      });
+
+            _events[date].add('Nutrition diary: ${entry.value.energy.toStringAsFixed(0)} kcal');
+          }
+        });
+      }
     });
   }
 

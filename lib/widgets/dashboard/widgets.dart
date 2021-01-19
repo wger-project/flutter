@@ -48,9 +48,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
   NutritionalPlan plan;
 
   Future<void> _refreshPlanEntries(BuildContext context) async {
-    await Provider.of<Nutrition>(context, listen: false).fetchAndSetPlans();
-    nutrition = Provider.of<Nutrition>(context, listen: false);
-    plan = nutrition.currentPlan;
+    plan = Provider.of<Nutrition>(context, listen: false).currentPlan;
   }
 
   @override
@@ -130,7 +128,6 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
   BodyWeight weightEntriesData;
 
   Future<void> _refreshWeightEntries(BuildContext context) async {
-    await Provider.of<BodyWeight>(context, listen: false).fetchAndSetEntries();
     weightEntriesData = Provider.of<BodyWeight>(context, listen: false);
   }
 
@@ -201,7 +198,6 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
   var showDetail = false;
 
   Future<void> _fetchWorkoutEntries(BuildContext context) async {
-    await Provider.of<WorkoutPlans>(context, listen: false).fetchAndSetWorkouts();
     _workoutPlan = Provider.of<WorkoutPlans>(context, listen: false).activePlan;
     _workoutPlan = await Provider.of<WorkoutPlans>(context, listen: false)
         .fetchAndSetFullWorkout(_workoutPlan.id);

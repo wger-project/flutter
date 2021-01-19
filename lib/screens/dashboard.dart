@@ -20,8 +20,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/locale/locales.dart';
+import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/widgets/app_drawer.dart';
 import 'package:wger/widgets/dashboard/calendar.dart';
 import 'package:wger/widgets/dashboard/widgets.dart';
@@ -41,10 +43,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  /// Loads the exercises and igredients from the local cache
+  /// Load inital data from the server
   Future _loadCachedEntries(BuildContext context) async {
-    Provider.of<Exercises>(context, listen: false).fetchAndSetExercises();
-    Provider.of<Nutrition>(context, listen: false).fetchIngredientsFromCache();
+    await Provider.of<Exercises>(context, listen: false).fetchAndSetExercises();
+    await Provider.of<Nutrition>(context, listen: false).fetchIngredientsFromCache();
+    await Provider.of<WorkoutPlans>(context, listen: false).fetchAndSetWorkouts();
+    await Provider.of<Nutrition>(context, listen: false).fetchAndSetPlans();
+    await Provider.of<BodyWeight>(context, listen: false).fetchAndSetEntries();
   }
 
   @override
@@ -52,36 +57,34 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Scaffold(
       appBar: getAppBar(),
       drawer: AppDrawer(),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            DashboardWorkoutWidget(context: context),
-            DashboardNutritionWidget(context: context),
-            DashboardWeightWidget(context: context),
-            Container(
-              height: 650,
-              child: DashboardCalendarWidget(title: 'Calendar'),
-            ),
-            Container(
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: FutureBuilder(
-                  future: _loadCachedEntries(context),
-                  builder: (ctx, authResultSnapshot) =>
-                      authResultSnapshot.connectionState == ConnectionState.waiting
-                          ? Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Text('Initialising exercise database...'),
-                                LinearProgressIndicator(),
-                              ],
-                            )
-                          : Text("all exercises loaded"),
-                ),
-              ),
-            ),
-          ],
-        ),
+      body: FutureBuilder(
+        future: _loadCachedEntries(context),
+        builder: (ctx, authResultSnapshot) =>
+            authResultSnapshot.connectionState == ConnectionState.waiting
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Loading...',
+                        style: Theme.of(context).textTheme.headline5,
+                      ),
+                      Padding(padding: EdgeInsets.symmetric(horizontal: 15)),
+                      LinearProgressIndicator(),
+                    ],
+                  )
+                : SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        DashboardWorkoutWidget(context: context),
+                        DashboardNutritionWidget(context: context),
+                        DashboardWeightWidget(context: context),
+                        Container(
+                          height: 650, // TODO: refactor calendar so we can get rid of size
+                          child: DashboardCalendarWidget(title: 'Calendar'),
+                        ),
+                      ],
+                    ),
+                  ),
       ),
     );
   }
