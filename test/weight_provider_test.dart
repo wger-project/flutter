@@ -16,6 +16,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/mockito.dart';
@@ -33,8 +35,8 @@ void main() {
       when(client.get(
         'https://localhost/api/v2/weightentry/',
         headers: <String, String>{
-          'Authorization': 'Token ${testAuth.token}',
-          'User-Agent': 'wger Workout Manager App',
+          HttpHeaders.authorizationHeader: 'Token ${testAuth.token}',
+          HttpHeaders.userAgentHeader: 'wger Workout Manager App',
         },
       )).thenAnswer((_) async => http.Response(
           '{"results": [{"id": 1, "date": "2021-01-01", "weight": "80.00"}, '
@@ -57,9 +59,9 @@ void main() {
       // Mock the server response
       when(client.post('https://localhost/api/v2/weightentry/',
               headers: {
-                'Authorization': 'Token ${testAuth.token}',
-                'Content-Type': 'application/json; charset=UTF-8',
-                'User-Agent': 'wger Workout Manager App',
+                HttpHeaders.authorizationHeader: 'Token ${testAuth.token}',
+                HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
+                HttpHeaders.userAgentHeader: 'wger Workout Manager App',
               },
               body: '{"id":null,"weight":"80","date":"2021-01-01"}'))
           .thenAnswer(
@@ -83,8 +85,8 @@ void main() {
       when(client.delete(
         'https://localhost/api/v2/weightentry/4/',
         headers: {
-          'Authorization': 'Token ${testAuth.token}',
-          'User-Agent': 'wger Workout Manager App',
+          HttpHeaders.authorizationHeader: 'Token ${testAuth.token}',
+          HttpHeaders.userAgentHeader: 'wger Workout Manager App',
         },
       )).thenAnswer((_) async => http.Response('', 200));
 

@@ -17,6 +17,7 @@
  */
 
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
@@ -60,8 +61,8 @@ class WgerBaseProvider {
     final response = await client.get(
       urlPath,
       headers: {
-        'Authorization': 'Token ${auth.token}',
-        'User-Agent': 'wger Workout Manager App',
+        HttpHeaders.authorizationHeader: 'Token ${auth.token}',
+        HttpHeaders.userAgentHeader: 'wger Workout Manager App',
       },
     );
 
@@ -80,9 +81,9 @@ class WgerBaseProvider {
     final response = await client.post(
       urlPath,
       headers: {
-        'Authorization': 'Token ${auth.token}',
-        'Content-Type': 'application/json; charset=UTF-8',
-        'User-Agent': 'wger Workout Manager App',
+        HttpHeaders.authorizationHeader: 'Token ${auth.token}',
+        HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
+        HttpHeaders.userAgentHeader: 'wger Workout Manager App',
       },
       body: json.encode(data),
     );
@@ -102,8 +103,8 @@ class WgerBaseProvider {
     final response = await client.delete(
       deleteUrl,
       headers: {
-        'Authorization': 'Token ${auth.token}',
-        'User-Agent': 'wger Workout Manager App',
+        HttpHeaders.authorizationHeader: 'Token ${auth.token}',
+        HttpHeaders.userAgentHeader: 'wger Workout Manager App',
       },
     );
 
