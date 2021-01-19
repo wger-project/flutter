@@ -66,16 +66,11 @@ class _NutritionScreenState extends State<NutritionScreen> {
         },
         child: const Icon(Icons.add),
       ),
-      body: FutureBuilder(
-        future: _refreshPlans(context),
-        builder: (context, snapshot) => snapshot.connectionState == ConnectionState.waiting
-            ? Center(child: CircularProgressIndicator())
-            : RefreshIndicator(
-                onRefresh: () => _refreshPlans(context),
-                child: Consumer<WorkoutPlans>(
-                  builder: (context, productsData, child) => NutritionalPlansList(),
-                ),
-              ),
+      body: RefreshIndicator(
+        onRefresh: () => _refreshPlans(context),
+        child: Consumer<WorkoutPlans>(
+          builder: (context, productsData, child) => NutritionalPlansList(),
+        ),
       ),
     );
   }

@@ -68,7 +68,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         'Loading...',
                         style: Theme.of(context).textTheme.headline5,
                       ),
-                      Padding(padding: EdgeInsets.symmetric(horizontal: 15)),
+                      Padding(padding: EdgeInsets.symmetric(vertical: 8)),
                       LinearProgressIndicator(),
                     ],
                   )
