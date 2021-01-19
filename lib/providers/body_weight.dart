@@ -41,7 +41,7 @@ class BodyWeight extends WgerBaseProvider with ChangeNotifier {
 
   Future<List<WeightEntry>> fetchAndSetEntries() async {
     // Process the response
-    final data = await fetch(makeUrl(bodyWeightUrl));
+    final data = await fetch(makeUrl(bodyWeightUrl, query: {'ordering': '-date'}));
     final List<WeightEntry> loadedEntries = [];
     for (final entry in data['results']) {
       loadedEntries.add(WeightEntry.fromJson(entry));
@@ -57,7 +57,7 @@ class BodyWeight extends WgerBaseProvider with ChangeNotifier {
     final data = await add(entry.toJson(), makeUrl(bodyWeightUrl));
     WeightEntry weightEntry = WeightEntry.fromJson(data);
     _entries.add(weightEntry);
-    _entries.sort((a, b) => a.date.compareTo(b.date));
+    _entries.sort((a, b) => b.date.compareTo(a.date));
     notifyListeners();
     return weightEntry;
   }

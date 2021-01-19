@@ -33,7 +33,7 @@ void main() {
 
       // Mock the server response
       when(client.get(
-        'https://localhost/api/v2/weightentry/',
+        'https://localhost/api/v2/weightentry/?ordering=-date',
         headers: <String, String>{
           HttpHeaders.authorizationHeader: 'Token ${testAuth.token}',
           HttpHeaders.userAgentHeader: 'wger Workout Manager App',
