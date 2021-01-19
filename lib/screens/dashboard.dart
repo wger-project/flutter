@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/locale/locales.dart';
 import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/nutrition.dart';
 import 'package:wger/widgets/app_drawer.dart';
 import 'package:wger/widgets/dashboard/calendar.dart';
 import 'package:wger/widgets/dashboard/widgets.dart';
@@ -38,6 +39,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
       title: Text(AppLocalizations.of(context).labelDashboard),
       actions: [],
     );
+  }
+
+  /// Loads the exercises and igredients from the local cache
+  Future _loadCachedEntries(BuildContext context) async {
+    Provider.of<Exercises>(context, listen: false).fetchAndSetExercises();
+    Provider.of<Nutrition>(context, listen: false).fetchIngredientsFromCache();
   }
 
   @override
@@ -59,7 +66,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: FutureBuilder(
-                  future: Provider.of<Exercises>(context, listen: false).fetchAndSetExercises(),
+                  future: _loadCachedEntries(context),
                   builder: (ctx, authResultSnapshot) =>
                       authResultSnapshot.connectionState == ConnectionState.waiting
                           ? Column(

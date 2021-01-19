@@ -17,10 +17,12 @@
  */
 
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/models/http_exception.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/log.dart';
@@ -31,6 +33,8 @@ import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/base_provider.dart';
 
 class Nutrition extends WgerBaseProvider with ChangeNotifier {
+  static const DAYS_TO_CACHE = 20;
+
   static const _nutritionalPlansPath = 'nutritionplan';
   static const _nutritionalPlansInfoPath = 'nutritionplaninfo';
   static const _mealPath = 'meal';
@@ -186,11 +190,41 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
       return ingredient;
     }
 
-    // fetch and return
+    // Get ingredient from the server and save to cache
     final data = await fetch(makeUrl(_ingredientPath, id: ingredientId.toString()));
     ingredient = Ingredient.fromJson(data);
     _ingredients.add(ingredient);
+
+    final prefs = await SharedPreferences.getInstance();
+    final ingredientData = json.decode(prefs.getString('ingredientData'));
+    ingredientData['ingredients'].add(ingredient.toJson());
+    prefs.setString('ingredientData', json.encode(ingredientData));
+    log("Saved ingredient '${ingredient.name}' to cache.");
+
     return ingredient;
+  }
+
+  /// Loads the available ingredients from the local storage
+  Future<void> fetchIngredientsFromCache() async {
+    // Load exercises from cache, if available
+    final prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey('ingredientData')) {
+      final ingredientData = json.decode(prefs.getString('ingredientData'));
+      if (DateTime.parse(ingredientData['expiresIn']).isAfter(DateTime.now())) {
+        ingredientData['ingredients'].forEach((e) => _ingredients.add(Ingredient.fromJson(e)));
+        log("Read ${ingredientData['ingredients'].length} ingredients from cache. Valid till ${ingredientData['expiresIn']}");
+        return;
+      }
+    }
+
+    // Initialise an empty cache
+    final ingredientData = {
+      'date': DateTime.now().toIso8601String(),
+      'expiresIn': DateTime.now().add(Duration(days: DAYS_TO_CACHE)).toIso8601String(),
+      'ingredients': []
+    };
+    prefs.setString('ingredientData', json.encode(ingredientData));
+    return;
   }
 
   /// Searches for an ingredient
