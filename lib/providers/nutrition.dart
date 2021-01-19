@@ -17,6 +17,7 @@
  */
 
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -52,7 +53,7 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
   /// Returns the current active nutritional plan. At the moment this is just
   /// the latest, but this might change in the future.
   NutritionalPlan get currentPlan {
-    return _plans.last;
+    return _plans.first;
   }
 
   NutritionalPlan findById(int id) {
@@ -70,7 +71,8 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
   }
 
   Future<List<NutritionalPlan>> fetchAndSetPlans() async {
-    final data = await fetch(makeUrl(_nutritionalPlansInfoPath));
+    final data =
+        await fetch(makeUrl(_nutritionalPlansInfoPath, query: {'ordering': '-creation_date'}));
     final List<NutritionalPlan> loadedPlans = [];
     for (final entry in data['results']) {
       loadedPlans.add(NutritionalPlan.fromJson(entry));
@@ -197,8 +199,8 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
     final response = await client.get(
       makeUrl(_ingredientSearchPath, query: {'term': name}),
       headers: <String, String>{
-        'Authorization': 'Token ${auth.token}',
-        'User-Agent': 'wger Workout Manager App',
+        HttpHeaders.authorizationHeader: 'Token ${auth.token}',
+        HttpHeaders.userAgentHeader: 'wger Workout Manager App',
       },
     );
 

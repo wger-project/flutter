@@ -68,14 +68,14 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
   /// Returns the current active workout plan. At the moment this is just
   /// the latest, but this might change in the future.
   WorkoutPlan get activePlan {
-    return _workoutPlans.last;
+    return _workoutPlans.first;
   }
 
   /*
    * Workouts
    */
   Future<void> fetchAndSetWorkouts() async {
-    final data = await fetch(makeUrl(_workoutPlansUrlPath));
+    final data = await fetch(makeUrl(_workoutPlansUrlPath, query: {'ordering': '-creation_date'}));
     final List<WorkoutPlan> loadedWorkoutPlans = [];
 
     for (final entry in data['results']) {
