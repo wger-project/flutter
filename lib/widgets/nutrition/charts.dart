@@ -18,7 +18,9 @@
 
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/widgets.dart';
+import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/nutrition/nutritrional_values.dart';
+import 'package:wger/theme/theme.dart';
 
 /// Nutritional plan pie chart widget
 class NutritionalPlanPieChartWidget extends StatelessWidget {
@@ -48,6 +50,34 @@ class NutritionalPlanPieChartWidget extends StatelessWidget {
         arcWidth: 60,
         arcRendererDecorators: [new charts.ArcLabelDecorator()],
       ),
+    );
+  }
+}
+
+class NutritionalDiaryChartWidget extends StatelessWidget {
+  const NutritionalDiaryChartWidget({
+    Key key,
+    @required NutritionalPlan nutritionalPlan,
+  })  : _nutritionalPlan = nutritionalPlan,
+        super(key: key);
+
+  final NutritionalPlan _nutritionalPlan;
+
+  @override
+  Widget build(BuildContext context) {
+    return charts.TimeSeriesChart(
+      [
+        charts.Series<List<dynamic>, DateTime>(
+          id: 'NutritionDiary',
+          colorFn: (datum, index) => wgerChartSecondaryColor,
+          domainFn: (datum, index) => datum[1],
+          measureFn: (datum, index) => datum[0].energy,
+          data: _nutritionalPlan.logEntriesValues.keys
+              .map((e) => [_nutritionalPlan.logEntriesValues[e], e])
+              .toList(),
+        )
+      ],
+      defaultRenderer: new charts.BarRendererConfig<DateTime>(),
     );
   }
 }

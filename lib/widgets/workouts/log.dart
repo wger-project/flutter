@@ -70,7 +70,7 @@ class ExerciseLog extends StatelessWidget {
                             return Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 10),
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
                                   Text(
                                     '${DateFormat.yMd().format(DateTime.parse(e.key))}',

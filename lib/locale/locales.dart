@@ -187,6 +187,54 @@ class AppLocalizations {
     );
   }
 
+  String get energy {
+    return Intl.message(
+      'Energy',
+      name: 'energy',
+      desc: 'Energy in a meal, e.g. in kJ',
+    );
+  }
+
+  String get protein {
+    return Intl.message(
+      'Protein',
+      name: 'protein',
+      desc: 'Protein content',
+    );
+  }
+
+  String get carbohydrates {
+    return Intl.message(
+      'Carbohydrates',
+      name: 'carbohydrates',
+      desc: 'Carbohydrates content',
+    );
+  }
+
+  String get sugars {
+    return Intl.message(
+      'Sugars',
+      name: 'sugars',
+      desc: 'sugar content (out of the carbohydrates)',
+    );
+  }
+
+  String get fat {
+    return Intl.message(
+      'Fat',
+      name: 'fat',
+      desc: 'Fat content',
+    );
+  }
+
+  String get saturatedFat {
+    return Intl.message(
+      'Saturated fat',
+      name: 'saturatedFat',
+      desc: 'Saturated fat content (out of the fat)',
+    );
+  }
+
   String get amount {
     return Intl.message(
       'Amount',

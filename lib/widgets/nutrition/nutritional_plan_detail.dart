@@ -16,13 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:wger/locale/locales.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/nutrition/nutritrional_values.dart';
-import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/bottom_sheet.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
@@ -122,26 +120,29 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
             Container(
               padding: EdgeInsets.all(15),
               height: 220,
-              child: charts.TimeSeriesChart(
-                [
-                  charts.Series<List<dynamic>, DateTime>(
-                    id: 'NutritionDiary',
-                    colorFn: (datum, index) => wgerChartSecondaryColor,
-                    domainFn: (datum, index) => datum[1],
-                    measureFn: (datum, index) => datum[0].energy,
-                    data: _nutritionalPlan.logEntriesValues.keys
-                        .map((e) => [_nutritionalPlan.logEntriesValues[e], e])
-                        .toList(),
-                  )
-                ],
-                defaultRenderer: new charts.BarRendererConfig<DateTime>(),
-              ),
+              child: NutritionalDiaryChartWidget(nutritionalPlan: _nutritionalPlan),
             ),
             Container(
               height: 200,
               child: SingleChildScrollView(
-                child: Column(
+                scrollDirection: Axis.horizontal,
+                child: Row(
                   children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(''),
+                          Text(AppLocalizations.of(context).energy),
+                          Text(AppLocalizations.of(context).protein),
+                          Text(AppLocalizations.of(context).carbohydrates),
+                          Text(AppLocalizations.of(context).sugars),
+                          Text(AppLocalizations.of(context).fat),
+                          Text(AppLocalizations.of(context).saturatedFat),
+                        ],
+                      ),
+                    ),
                     ..._nutritionalPlan.logEntriesValues.entries
                         .map((entry) => NutritionDiaryEntry(entry.key, entry.value))
                         .toList(),
@@ -168,14 +169,18 @@ class NutritionDiaryEntry extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.all(8),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Text(DateFormat.yMd().format(date).toString()),
-          Text(values.energy.toStringAsFixed(0)),
-          Text(values.protein.toStringAsFixed(0)),
-          Text(values.carbohydrates.toStringAsFixed(0)),
-          Text(values.fat.toStringAsFixed(0)),
+          Text(DateFormat.yMd().format(date).toString(),
+              style: TextStyle(fontWeight: FontWeight.bold)),
+          Text('${values.energy.toStringAsFixed(0)} kJ'),
+          Text('${values.protein.toStringAsFixed(0)} g'),
+          Text('${values.carbohydrates.toStringAsFixed(0)} g'),
+          Text('${values.carbohydratesSugar.toStringAsFixed(0)} g'),
+          Text('${values.fat.toStringAsFixed(0)} g'),
+          Text('${values.fatSaturated.toStringAsFixed(0)} g'),
         ],
       ),
     );
