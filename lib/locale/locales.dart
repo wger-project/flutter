@@ -235,6 +235,22 @@ class AppLocalizations {
     );
   }
 
+  String get fibres {
+    return Intl.message(
+      'Fibres',
+      name: 'fibres',
+      desc: 'Fibres content',
+    );
+  }
+
+  String get sodium {
+    return Intl.message(
+      'Sodium',
+      name: 'sodium',
+      desc: 'Sodium content',
+    );
+  }
+
   String get amount {
     return Intl.message(
       'Amount',

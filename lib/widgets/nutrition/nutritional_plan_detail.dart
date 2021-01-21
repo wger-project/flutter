@@ -69,49 +69,56 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
               height: 220,
               child: NutritionalPlanPieChartWidget(nutritionalValues),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Table(
+            Container(
+              width: double.infinity,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  TableRow(children: [
-                    Text('Energy'),
-                    Text(
-                        '${nutritionalValues.energy.toStringAsFixed(0)} kcal / ${nutritionalValues.energyKj.toStringAsFixed(0)} kJ'),
-                  ]),
-                  TableRow(children: [
-                    Text('Protein'),
-                    Text('${nutritionalValues.protein.toStringAsFixed(0)}g'),
-                  ]),
-                  TableRow(children: [
-                    Text('Carbohydrates'),
-                    Text('${nutritionalValues.carbohydrates.toStringAsFixed(0)}g')
-                  ]),
-                  TableRow(children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 15),
-                      child: Text('sugar content'),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(AppLocalizations.of(context).energy),
+                        Text(AppLocalizations.of(context).protein),
+                        Text(AppLocalizations.of(context).carbohydrates),
+                        Text(AppLocalizations.of(context).sugars),
+                        Text(AppLocalizations.of(context).fat),
+                        Text(AppLocalizations.of(context).saturatedFat),
+                        Text(AppLocalizations.of(context).fibres),
+                        Text(AppLocalizations.of(context).sodium),
+                      ],
                     ),
-                    Text('${nutritionalValues.carbohydratesSugar.toStringAsFixed(0)}g')
-                  ]),
-                  TableRow(children: [
-                    Text('Fat'),
-                    Text('${nutritionalValues.fat.toStringAsFixed(0)}g'),
-                  ]),
-                  TableRow(children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 15),
-                      child: Text('Saturated fat'),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 3),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(nutritionalValues.energy.toStringAsFixed(0)),
+                        Text(nutritionalValues.protein.toStringAsFixed(0)),
+                        Text(nutritionalValues.carbohydrates.toStringAsFixed(0)),
+                        Text(nutritionalValues.carbohydratesSugar.toStringAsFixed(0)),
+                        Text(nutritionalValues.fat.toStringAsFixed(0)),
+                        Text(nutritionalValues.fatSaturated.toStringAsFixed(0)),
+                        Text(nutritionalValues.fibres.toStringAsFixed(0)),
+                        Text(nutritionalValues.sodium.toStringAsFixed(0)),
+                      ],
                     ),
-                    Text('${nutritionalValues.fatSaturated.toStringAsFixed(0)}g')
-                  ]),
-                  TableRow(children: [
-                    Text('Fibres'),
-                    Text('${nutritionalValues.fibres.toStringAsFixed(0)}g'),
-                  ]),
-                  TableRow(children: [
-                    Text('Sodium'),
-                    Text('${nutritionalValues.sodium.toStringAsFixed(0)}g'),
-                  ]),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('kcal'),
+                      Text('g'),
+                      Text('g'),
+                      Text('g'),
+                      Text('g'),
+                      Text('g'),
+                      Text('g'),
+                      Text('g'),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -134,12 +141,12 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(''),
-                          Text(AppLocalizations.of(context).energy),
-                          Text(AppLocalizations.of(context).protein),
-                          Text(AppLocalizations.of(context).carbohydrates),
-                          Text(AppLocalizations.of(context).sugars),
-                          Text(AppLocalizations.of(context).fat),
-                          Text(AppLocalizations.of(context).saturatedFat),
+                          Text('${AppLocalizations.of(context).energy} (kcal)'),
+                          Text('${AppLocalizations.of(context).protein} (g)'),
+                          Text('${AppLocalizations.of(context).carbohydrates} (g)'),
+                          Text('${AppLocalizations.of(context).sugars} (g)'),
+                          Text('${AppLocalizations.of(context).fat} (g)'),
+                          Text('${AppLocalizations.of(context).saturatedFat} (g)'),
                         ],
                       ),
                     ),
@@ -175,12 +182,12 @@ class NutritionDiaryEntry extends StatelessWidget {
         children: [
           Text(DateFormat.yMd().format(date).toString(),
               style: TextStyle(fontWeight: FontWeight.bold)),
-          Text('${values.energy.toStringAsFixed(0)} kJ'),
-          Text('${values.protein.toStringAsFixed(0)} g'),
-          Text('${values.carbohydrates.toStringAsFixed(0)} g'),
-          Text('${values.carbohydratesSugar.toStringAsFixed(0)} g'),
-          Text('${values.fat.toStringAsFixed(0)} g'),
-          Text('${values.fatSaturated.toStringAsFixed(0)} g'),
+          Text(values.energy.toStringAsFixed(0)),
+          Text(values.protein.toStringAsFixed(0)),
+          Text(values.carbohydrates.toStringAsFixed(0)),
+          Text(values.carbohydratesSugar.toStringAsFixed(0)),
+          Text(values.fat.toStringAsFixed(0)),
+          Text(values.fatSaturated.toStringAsFixed(0)),
         ],
       ),
     );
