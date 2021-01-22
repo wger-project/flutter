@@ -31,16 +31,28 @@ void main() {
         provider.makeUrl('endpoint'),
       );
       expect(
-        'https://localhost/api/v2/endpoint/id/',
-        provider.makeUrl('endpoint', id: 'id'),
+        'https://localhost/api/v2/endpoint/5/',
+        provider.makeUrl('endpoint', id: 5),
+      );
+      expect(
+        'https://localhost/api/v2/endpoint/5/log_data/',
+        provider.makeUrl('endpoint', id: 5, objectMethod: 'log_data'),
       );
       expect(
         'https://localhost/api/v2/endpoint/?a=2&b=c',
         provider.makeUrl('endpoint', query: {'a': '2', 'b': 'c'}),
       );
       expect(
+        'https://localhost/api/v2/endpoint/log_data/?a=2&b=c',
+        provider.makeUrl('endpoint', objectMethod: 'log_data', query: {'a': '2', 'b': 'c'}),
+      );
+      expect(
         'https://localhost/api/v2/endpoint/42/?a=2&b=c',
-        provider.makeUrl('endpoint', id: '42', query: {'a': '2', 'b': 'c'}),
+        provider.makeUrl('endpoint', id: 42, query: {'a': '2', 'b': 'c'}),
+      );
+      expect(
+        'https://localhost/api/v2/endpoint/42/log_data/  ?a=2&b=c',
+        provider.makeUrl('endpoint', id: 42, objectMethod: 'log_data', query: {'a': '2', 'b': 'c'}),
       );
     });
   });

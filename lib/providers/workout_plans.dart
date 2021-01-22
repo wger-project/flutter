@@ -87,8 +87,11 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
   }
 
   Future<WorkoutPlan> fetchAndSetFullWorkout(int workoutId) async {
-    final data =
-        await fetch(makeUrl(_workoutPlansUrlPath, id: '$workoutId/canonical_representation'));
+    final data = await fetch(makeUrl(
+      _workoutPlansUrlPath,
+      id: workoutId,
+      objectMethod: 'canonical_representation',
+    ));
 
     try {
       WorkoutPlan workout = _workoutPlans.firstWhere((element) => element.id == workoutId);
@@ -200,7 +203,8 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
     final data = await fetch(
       makeUrl(
         _workoutPlansUrlPath,
-        id: '${workout.id.toString()}/log_data',
+        id: workout.id,
+        objectMethod: 'log_data',
         query: {'id': exercise.id.toString()},
       ),
     );

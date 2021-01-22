@@ -37,13 +37,17 @@ class WgerBaseProvider {
   }
 
   /// Helper function to make a URL.
-  makeUrl(String path, {String id, Map<String, dynamic> query}) {
+  makeUrl(String path, {int id, String objectMethod, Map<String, dynamic> query}) {
     Uri uriServer = Uri.parse(auth.serverUrl);
 
     var pathList = ['api', 'v2', path];
     if (id != null) {
-      pathList.add(id);
+      pathList.add(id.toString());
     }
+    if (objectMethod != null) {
+      pathList.add(objectMethod);
+    }
+
     final uri = Uri(
       scheme: uriServer.scheme,
       host: uriServer.host,
@@ -118,7 +122,7 @@ class WgerBaseProvider {
 
   /// DELETEs an existing object
   Future<Response> deleteRequest(String url, int id) async {
-    final deleteUrl = makeUrl(url, id: id.toString());
+    final deleteUrl = makeUrl(url, id: id);
 
     final response = await client.delete(
       deleteUrl,

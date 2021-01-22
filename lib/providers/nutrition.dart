@@ -89,7 +89,7 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
 
   Future<NutritionalPlan> fetchAndSetPlan(int planId) async {
     //fetchAndSet
-    final data = await fetch(makeUrl(_nutritionalPlansInfoPath, id: planId.toString()));
+    final data = await fetch(makeUrl(_nutritionalPlansInfoPath, id: planId));
     final plan = NutritionalPlan.fromJson(data);
     await fetchAndSetLogs(plan);
 
@@ -103,7 +103,7 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
   }
 
   Future<void> patchPlan(NutritionalPlan plan) async {
-    final data = await patch(plan.toJson(), makeUrl(_nutritionalPlansPath, id: plan.id.toString()));
+    final data = await patch(plan.toJson(), makeUrl(_nutritionalPlansPath, id: plan.id));
     notifyListeners();
   }
 
@@ -196,7 +196,7 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
     }
 
     // Get ingredient from the server and save to cache
-    final data = await fetch(makeUrl(_ingredientPath, id: ingredientId.toString()));
+    final data = await fetch(makeUrl(_ingredientPath, id: ingredientId));
     ingredient = Ingredient.fromJson(data);
     _ingredients.add(ingredient);
 
