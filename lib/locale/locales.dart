@@ -195,6 +195,30 @@ class AppLocalizations {
     );
   }
 
+  String get kcal {
+    return Intl.message(
+      'kcal',
+      name: 'kcal',
+      desc: 'Energy in a meal in kilocalories, kcal',
+    );
+  }
+
+  String get kj {
+    return Intl.message(
+      'kJ',
+      name: 'kj',
+      desc: 'Energy in a meal in kilo joules, kJ',
+    );
+  }
+
+  String get g {
+    return Intl.message(
+      'g',
+      name: 'g',
+      desc: 'Abbreviation for gram',
+    );
+  }
+
   String get protein {
     return Intl.message(
       'Protein',

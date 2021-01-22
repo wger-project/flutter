@@ -42,17 +42,15 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Text(
-                DefaultMaterialLocalizations()
-                    .formatMediumDate(_nutritionalPlan.creationDate)
-                    .toString(),
-                style: Theme.of(context).textTheme.headline6,
+                _nutritionalPlan.description,
+                style: Theme.of(context).textTheme.headline5,
               ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Text(
-                _nutritionalPlan.description,
-                style: Theme.of(context).textTheme.headline5,
+                DateFormat.yMd().format(_nutritionalPlan.creationDate),
+                style: Theme.of(context).textTheme.headline6,
               ),
             ),
             if (_nutritionalPlan.meals.length > 0)
@@ -109,14 +107,14 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('kcal'),
-                      Text('g'),
-                      Text('g'),
-                      Text('g'),
-                      Text('g'),
-                      Text('g'),
-                      Text('g'),
-                      Text('g'),
+                      Text(AppLocalizations.of(context).kcal),
+                      Text(AppLocalizations.of(context).g),
+                      Text(AppLocalizations.of(context).g),
+                      Text(AppLocalizations.of(context).g),
+                      Text(AppLocalizations.of(context).g),
+                      Text(AppLocalizations.of(context).g),
+                      Text(AppLocalizations.of(context).g),
+                      Text(AppLocalizations.of(context).g),
                     ],
                   ),
                 ],
@@ -141,12 +139,18 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(''),
-                          Text('${AppLocalizations.of(context).energy} (kcal)'),
-                          Text('${AppLocalizations.of(context).protein} (g)'),
-                          Text('${AppLocalizations.of(context).carbohydrates} (g)'),
-                          Text('${AppLocalizations.of(context).sugars} (g)'),
-                          Text('${AppLocalizations.of(context).fat} (g)'),
-                          Text('${AppLocalizations.of(context).saturatedFat} (g)'),
+                          Text(
+                              '${AppLocalizations.of(context).energy} (${AppLocalizations.of(context).kcal}'),
+                          Text(
+                              '${AppLocalizations.of(context).protein} (${AppLocalizations.of(context).g})'),
+                          Text(
+                              '${AppLocalizations.of(context).carbohydrates} (${AppLocalizations.of(context).g})'),
+                          Text(
+                              '${AppLocalizations.of(context).sugars} (${AppLocalizations.of(context).g})'),
+                          Text(
+                              '${AppLocalizations.of(context).fat} (${AppLocalizations.of(context).g})'),
+                          Text(
+                              '${AppLocalizations.of(context).saturatedFat} (${AppLocalizations.of(context).g})'),
                         ],
                       ),
                     ),

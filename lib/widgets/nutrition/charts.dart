@@ -18,6 +18,7 @@
 
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/widgets.dart';
+import 'package:wger/locale/locales.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/nutrition/nutritrional_values.dart';
 import 'package:wger/theme/theme.dart';
@@ -39,11 +40,12 @@ class NutritionalPlanPieChartWidget extends StatelessWidget {
           domainFn: (datum, index) => datum[0],
           measureFn: (datum, index) => datum[1],
           data: [
-            ['protein', _nutritionalValues.protein],
-            ['fat', _nutritionalValues.fat],
-            ['carbohydrates', _nutritionalValues.carbohydrates],
+            [AppLocalizations.of(context).protein, _nutritionalValues.protein],
+            [AppLocalizations.of(context).fat, _nutritionalValues.fat],
+            [AppLocalizations.of(context).carbohydrates, _nutritionalValues.carbohydrates],
           ],
-          labelAccessorFn: (List<dynamic> row, _) => '${row[0]}, ${row[1].toStringAsFixed(0)}g',
+          labelAccessorFn: (List<dynamic> row, _) =>
+              '${row[0]}, ${row[1].toStringAsFixed(0)}${AppLocalizations.of(context).g}',
         )
       ],
       defaultRenderer: new charts.ArcRendererConfig(

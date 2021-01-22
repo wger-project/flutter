@@ -46,10 +46,10 @@ class MealWidget extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  MutedText('Energy'),
-                  MutedText("protein"),
-                  MutedText("carbohydrates"),
-                  MutedText("fat"),
+                  MutedText(AppLocalizations.of(context).energy),
+                  MutedText(AppLocalizations.of(context).protein),
+                  MutedText(AppLocalizations.of(context).carbohydrates),
+                  MutedText(AppLocalizations.of(context).fat),
                 ],
               ),
             ),
@@ -74,7 +74,9 @@ class MealItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String unit = _item.weightUnit == null ? 'g' : _item.weightUnit.weightUnit.name;
+    String unit = _item.weightUnit == null
+        ? AppLocalizations.of(context).g
+        : _item.weightUnit.weightUnit.name;
     final values = _item.nutritionalValues;
 
     return InkWell(
@@ -104,10 +106,12 @@ class MealItemWidget extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                MutedText('${values.energy.toStringAsFixed(0)} kcal'),
-                MutedText('${values.protein.toStringAsFixed(0)}g'),
-                MutedText('${values.carbohydrates.toStringAsFixed(0)}g'),
-                MutedText('${values.fat.toStringAsFixed(0)}g'),
+                MutedText(
+                    '${values.energy.toStringAsFixed(0)} ${AppLocalizations.of(context).kcal}'),
+                MutedText('${values.protein.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
+                MutedText(
+                    '${values.carbohydrates.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
+                MutedText('${values.fat.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
               ],
             ),
           ],
