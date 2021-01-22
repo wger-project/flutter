@@ -291,6 +291,14 @@ class AppLocalizations {
     );
   }
 
+  String get edit {
+    return Intl.message(
+      'Edit',
+      name: 'edit',
+      desc: 'Header when adding an existing entry',
+    );
+  }
+
   String get newNutritionalPlan {
     return Intl.message(
       'New nutritional plan',

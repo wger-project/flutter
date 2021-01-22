@@ -36,7 +36,7 @@ class WorkoutPlansScreen extends StatefulWidget {
 class _WorkoutPlansScreenState extends State<WorkoutPlansScreen> {
   final workoutController = TextEditingController();
 
-  Future<WorkoutPlan> _refreshWorkoutPlans(BuildContext context) async {
+  Future<void> _refreshWorkoutPlans(BuildContext context) async {
     await Provider.of<WorkoutPlans>(context, listen: false).fetchAndSetWorkouts();
   }
 

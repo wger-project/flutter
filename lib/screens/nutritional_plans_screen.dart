@@ -18,11 +18,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/locale/locales.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/widgets/app_drawer.dart';
-import 'package:wger/widgets/nutrition/helpers.dart';
+import 'package:wger/widgets/core/bottom_sheet.dart';
+import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/nutritional_plans_list.dart';
 
 class NutritionScreen extends StatefulWidget {
@@ -52,7 +54,12 @@ class _NutritionScreenState extends State<NutritionScreen> {
       drawer: AppDrawer(),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          await showNutritionalPlanSheet(context, nutritionalPlan);
+          showFormBottomSheet(
+            context,
+            AppLocalizations.of(context).newNutritionalPlan,
+            PlanForm(nutritionalPlan),
+          );
+          //await showNutritionalPlanSheet(context, nutritionalPlan);
         },
         child: const Icon(Icons.add),
       ),

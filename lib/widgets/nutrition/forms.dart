@@ -193,3 +193,62 @@ class MealItemForm extends StatelessWidget {
     );
   }
 }
+
+class PlanForm extends StatelessWidget {
+  NutritionalPlan _plan;
+  PlanForm(this._plan);
+
+  final _form = GlobalKey<FormState>();
+  final descriptionController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    descriptionController.text = _plan.description ?? '';
+
+    return Form(
+      key: _form,
+      child: Column(
+        children: [
+          // Description
+          TextFormField(
+            decoration: InputDecoration(labelText: AppLocalizations.of(context).description),
+            controller: descriptionController,
+            onFieldSubmitted: (_) {},
+            onSaved: (newValue) {
+              _plan.description = newValue;
+            },
+          ),
+          ElevatedButton(
+            child: Text(AppLocalizations.of(context).save),
+            onPressed: () async {
+              // Validate and save the current values to the weightEntry
+              final isValid = _form.currentState.validate();
+              if (!isValid) {
+                return;
+              }
+              _form.currentState.save();
+
+              // Save the entry on the server
+              try {
+                if (_plan.id != null) {
+                  await Provider.of<Nutrition>(context, listen: false).patchPlan(_plan);
+                } else {
+                  await Provider.of<Nutrition>(context, listen: false).postPlan(_plan);
+                }
+
+                // Saving was successful, reset the data
+                //descriptionController.clear();
+                //nutritionalPlan = NutritionalPlan();
+              } on WgerHttpException catch (error) {
+                showHttpExceptionErrorDialog(error, context);
+              } catch (error) {
+                showErrorDialog(error, context);
+              }
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
