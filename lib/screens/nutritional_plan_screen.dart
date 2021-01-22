@@ -68,7 +68,6 @@ class _NutritionalPlanScreenState extends State<NutritionalPlanScreen> {
   @override
   Widget build(BuildContext context) {
     final nutritionalPlan = ModalRoute.of(context).settings.arguments as NutritionalPlan;
-    print(nutritionalPlan.nutritionalValues);
 
     return Scaffold(
       appBar: getAppBar(),

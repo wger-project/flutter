@@ -24,6 +24,7 @@ import 'package:wger/models/nutrition/nutritrional_values.dart';
 import 'package:wger/widgets/core/bottom_sheet.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
+import 'package:wger/widgets/nutrition/helpers.dart';
 import 'package:wger/widgets/nutrition/meal.dart';
 
 class NutritionalPlanDetailWidget extends StatelessWidget {
@@ -52,6 +53,12 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                 DateFormat.yMd().format(_nutritionalPlan.creationDate),
                 style: Theme.of(context).textTheme.headline6,
               ),
+            ),
+            IconButton(
+              icon: Icon(Icons.edit),
+              onPressed: () async {
+                await showNutritionalPlanSheet(context, _nutritionalPlan);
+              },
             ),
             if (_nutritionalPlan.meals.length > 0)
               ..._nutritionalPlan.meals.map((meal) => MealWidget(meal)).toList(),

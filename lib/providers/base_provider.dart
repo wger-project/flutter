@@ -77,8 +77,28 @@ class WgerBaseProvider {
   }
 
   /// POSTs a new object
-  Future<Map<String, dynamic>> add(Map<String, dynamic> data, String urlPath) async {
+  Future<Map<String, dynamic>> post(Map<String, dynamic> data, String urlPath) async {
     final response = await client.post(
+      urlPath,
+      headers: {
+        HttpHeaders.authorizationHeader: 'Token ${auth.token}',
+        HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
+        HttpHeaders.userAgentHeader: 'wger Workout Manager App',
+      },
+      body: json.encode(data),
+    );
+
+    // Something wrong with our request
+    if (response.statusCode >= 400) {
+      throw WgerHttpException(response.body);
+    }
+
+    return json.decode(response.body);
+  }
+
+  /// PATCHEs an existing object
+  Future<Map<String, dynamic>> patch(Map<String, dynamic> data, String urlPath) async {
+    final response = await client.patch(
       urlPath,
       headers: {
         HttpHeaders.authorizationHeader: 'Token ${auth.token}',

@@ -173,7 +173,7 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
   }
 
   Future<WorkoutPlan> addWorkout(WorkoutPlan workout) async {
-    final data = await add(workout.toJson(), makeUrl(_workoutPlansUrlPath));
+    final data = await post(workout.toJson(), makeUrl(_workoutPlansUrlPath));
     final plan = WorkoutPlan.fromJson(data);
     _workoutPlans.insert(0, plan);
     notifyListeners();
@@ -215,7 +215,7 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
      * Saves a new day instance to the DB and adds it to the given workout
      */
     day.workoutId = workout.id;
-    final data = await add(day.toJson(), makeUrl(_daysUrlPath));
+    final data = await post(day.toJson(), makeUrl(_daysUrlPath));
     day = Day.fromJson(data);
     day.sets = [];
     workout.days.insert(0, day);

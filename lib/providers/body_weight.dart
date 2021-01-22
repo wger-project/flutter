@@ -54,7 +54,7 @@ class BodyWeight extends WgerBaseProvider with ChangeNotifier {
 
   Future<WeightEntry> addEntry(WeightEntry entry) async {
     // Create entry and return it
-    final data = await add(entry.toJson(), makeUrl(bodyWeightUrl));
+    final data = await post(entry.toJson(), makeUrl(bodyWeightUrl));
     WeightEntry weightEntry = WeightEntry.fromJson(data);
     _entries.add(weightEntry);
     _entries.sort((a, b) => b.date.compareTo(a.date));

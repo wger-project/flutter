@@ -18,13 +18,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/helpers/ui.dart';
-import 'package:wger/locale/locales.dart';
-import 'package:wger/models/http_exception.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/widgets/app_drawer.dart';
+import 'package:wger/widgets/nutrition/helpers.dart';
 import 'package:wger/widgets/nutrition/nutritional_plans_list.dart';
 
 class NutritionScreen extends StatefulWidget {
@@ -39,19 +37,11 @@ class _NutritionScreenState extends State<NutritionScreen> {
     await Provider.of<Nutrition>(context, listen: false).fetchAndSetPlans();
   }
 
-  final descriptionController = TextEditingController();
   NutritionalPlan nutritionalPlan = NutritionalPlan();
-  final _form = GlobalKey<FormState>();
 
   Widget getAppBar() {
     return AppBar(
       title: Text('Nutrition'),
-      actions: [
-        IconButton(
-          icon: Icon(Icons.add),
-          onPressed: () {},
-        ),
-      ],
     );
   }
 
@@ -62,7 +52,7 @@ class _NutritionScreenState extends State<NutritionScreen> {
       drawer: AppDrawer(),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          await showNutritionalPlanSheet(context);
+          await showNutritionalPlanSheet(context, nutritionalPlan);
         },
         child: const Icon(Icons.add),
       ),
@@ -73,61 +63,5 @@ class _NutritionScreenState extends State<NutritionScreen> {
         ),
       ),
     );
-  }
-
-  showNutritionalPlanSheet(BuildContext context) async {
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext ctx) {
-          return Container(
-            margin: EdgeInsets.all(20),
-            child: Form(
-              key: _form,
-              child: Column(
-                children: [
-                  Text(
-                    AppLocalizations.of(ctx).newNutritionalPlan,
-                    style: Theme.of(ctx).textTheme.headline6,
-                  ),
-
-                  // Description
-                  TextFormField(
-                    decoration: InputDecoration(labelText: AppLocalizations.of(ctx).description),
-                    controller: descriptionController,
-                    onFieldSubmitted: (_) {},
-                    onSaved: (newValue) {
-                      nutritionalPlan.description = newValue;
-                    },
-                  ),
-                  ElevatedButton(
-                    child: Text(AppLocalizations.of(ctx).save),
-                    onPressed: () async {
-                      // Validate and save the current values to the weightEntry
-                      final isValid = _form.currentState.validate();
-                      if (!isValid) {
-                        return;
-                      }
-                      _form.currentState.save();
-
-                      // Save the entry on the server
-                      try {
-                        await Provider.of<Nutrition>(ctx, listen: false).addPlan(nutritionalPlan);
-
-                        // Saving was successful, reset the data
-                        descriptionController.clear();
-                        nutritionalPlan = NutritionalPlan();
-                      } on WgerHttpException catch (error) {
-                        showHttpExceptionErrorDialog(error, ctx);
-                      } catch (error) {
-                        showErrorDialog(error, context);
-                      }
-                      Navigator.of(ctx).pop();
-                    },
-                  ),
-                ],
-              ),
-            ),
-          );
-        });
   }
 }
