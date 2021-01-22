@@ -152,7 +152,8 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                     ),
                     ..._nutritionalPlan.logEntriesValues.entries
                         .map((entry) => NutritionDiaryEntry(entry.key, entry.value))
-                        .toList(),
+                        .toList()
+                        .reversed,
                   ],
                 ),
               ),
