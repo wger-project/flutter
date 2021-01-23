@@ -22,8 +22,9 @@ import 'package:provider/provider.dart';
 import 'package:wger/locale/locales.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/workout_plans.dart';
-import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/widgets/app_drawer.dart';
+import 'package:wger/widgets/core/bottom_sheet.dart';
+import 'package:wger/widgets/workouts/forms.dart';
 import 'package:wger/widgets/workouts/workout_plans_list.dart';
 
 class WorkoutPlansScreen extends StatefulWidget {
@@ -34,8 +35,6 @@ class WorkoutPlansScreen extends StatefulWidget {
 }
 
 class _WorkoutPlansScreenState extends State<WorkoutPlansScreen> {
-  final workoutController = TextEditingController();
-
   Future<void> _refreshWorkoutPlans(BuildContext context) async {
     await Provider.of<WorkoutPlans>(context, listen: false).fetchAndSetWorkouts();
   }
@@ -59,44 +58,10 @@ class _WorkoutPlansScreenState extends State<WorkoutPlansScreen> {
       drawer: AppDrawer(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          showModalBottomSheet(
-            context: context,
-            builder: (BuildContext context) {
-              return Container(
-                margin: EdgeInsets.all(20),
-                child: Form(
-                  child: Column(
-                    children: [
-                      Text(
-                        AppLocalizations.of(context).newWorkout,
-                        style: Theme.of(context).textTheme.headline6,
-                      ),
-                      TextFormField(
-                        decoration:
-                            InputDecoration(labelText: AppLocalizations.of(context).description),
-                        controller: workoutController,
-                        onFieldSubmitted: (_) {},
-                      ),
-                      ElevatedButton(
-                        child: Text('Save'),
-                        onPressed: () {
-                          final workoutFuture = Provider.of<WorkoutPlans>(context, listen: false)
-                              .addWorkout(WorkoutPlan(description: workoutController.text));
-                          workoutController.text = '';
-                          Navigator.of(context).pop();
-                          workoutFuture.then(
-                            (workout) => Navigator.of(context).pushNamed(
-                              WorkoutPlanScreen.routeName,
-                              arguments: workout,
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
+          showFormBottomSheet(
+            context,
+            AppLocalizations.of(context).newWorkout,
+            WorkoutForm(WorkoutPlan()),
           );
         },
         child: const Icon(Icons.add),

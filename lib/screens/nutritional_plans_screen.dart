@@ -39,8 +39,6 @@ class _NutritionScreenState extends State<NutritionScreen> {
     await Provider.of<Nutrition>(context, listen: false).fetchAndSetPlans();
   }
 
-  NutritionalPlan nutritionalPlan = NutritionalPlan();
-
   Widget getAppBar() {
     return AppBar(
       title: Text('Nutrition'),
@@ -57,7 +55,7 @@ class _NutritionScreenState extends State<NutritionScreen> {
           showFormBottomSheet(
             context,
             AppLocalizations.of(context).newNutritionalPlan,
-            PlanForm(nutritionalPlan),
+            PlanForm(NutritionalPlan()),
           );
           //await showNutritionalPlanSheet(context, nutritionalPlan);
         },

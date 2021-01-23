@@ -60,13 +60,6 @@ class WorkoutPlanDetail extends StatefulWidget {
 }
 
 class _WorkoutPlanDetailState extends State<WorkoutPlanDetail> {
-  final dayController = TextEditingController();
-
-  Map<String, dynamic> _dayData = {
-    'description': '',
-    'daysOfWeek': [1],
-  };
-
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -81,12 +74,15 @@ class _WorkoutPlanDetailState extends State<WorkoutPlanDetail> {
                 style: Theme.of(context).textTheme.headline6,
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: Text(
-                widget._workoutPlan.description,
-                style: Theme.of(context).textTheme.headline5,
-              ),
+            IconButton(
+              icon: Icon(Icons.edit),
+              onPressed: () {
+                showFormBottomSheet(
+                  context,
+                  AppLocalizations.of(context).edit,
+                  WorkoutForm(widget._workoutPlan),
+                );
+              },
             ),
             ...widget._workoutPlan.days.map((workoutDay) => WorkoutDayWidget(workoutDay)).toList(),
             Column(
@@ -98,8 +94,6 @@ class _WorkoutPlanDetailState extends State<WorkoutPlanDetail> {
                       context,
                       AppLocalizations.of(context).newDay,
                       DayFormWidget(
-                        dayController: dayController,
-                        dayData: _dayData,
                         workout: widget._workoutPlan,
                       ),
                     );

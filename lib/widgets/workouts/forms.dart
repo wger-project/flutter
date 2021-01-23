@@ -26,21 +26,84 @@ import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/widgets/workouts/exercises.dart';
+
+class WorkoutForm extends StatelessWidget {
+  WorkoutPlan _plan;
+  final _form = GlobalKey<FormState>();
+
+  WorkoutForm(
+    this._plan, {
+    Key key,
+  }) : super(key: key);
+
+  final TextEditingController workoutController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    workoutController.text = _plan.description ?? '';
+
+    return Form(
+      key: _form,
+      child: Column(
+        children: [
+          TextFormField(
+            decoration: InputDecoration(labelText: AppLocalizations.of(context).description),
+            controller: workoutController,
+            validator: (value) {
+              const minLength = 5;
+              const maxLength = 100;
+              if (value.isEmpty || value.length < minLength || value.length > maxLength) {
+                return 'Please enter between $minLength and $maxLength characters.';
+              }
+              return null;
+            },
+            onFieldSubmitted: (_) {},
+            onSaved: (newValue) {
+              _plan.description = newValue;
+            },
+          ),
+          ElevatedButton(
+            child: Text(AppLocalizations.of(context).save),
+            onPressed: () async {
+              // Validate and save
+              final isValid = _form.currentState.validate();
+              if (!isValid) {
+                return;
+              }
+              _form.currentState.save();
+
+              // Save to DB
+              final workout = _plan.id != null
+                  ? await Provider.of<WorkoutPlans>(context, listen: false).patchWorkout(_plan)
+                  : await Provider.of<WorkoutPlans>(context, listen: false).postWorkout(_plan);
+
+              Navigator.of(context).pop();
+              if (_plan.id == null) {
+                Navigator.of(context).pushNamed(WorkoutPlanScreen.routeName, arguments: workout);
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 class DayFormWidget extends StatefulWidget {
   final WorkoutPlan workout;
+  final dayController = TextEditingController();
+
+  Map<String, dynamic> _dayData = {
+    'description': '',
+    'daysOfWeek': [1],
+  };
 
   DayFormWidget({
     Key key,
-    @required this.dayController,
-    @required Map<String, dynamic> dayData,
     @required this.workout,
-  })  : _dayData = dayData,
-        super(key: key);
-
-  final TextEditingController dayController;
-  final Map<String, dynamic> _dayData;
+  }) : super(key: key);
 
   @override
   _DayFormWidgetState createState() => _DayFormWidgetState();
