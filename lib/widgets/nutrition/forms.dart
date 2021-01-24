@@ -30,15 +30,18 @@ import 'package:wger/providers/nutrition.dart';
 
 class MealForm extends StatelessWidget {
   Meal meal;
-  NutritionalPlan _plan;
-
-  MealForm(plan, [meal]) {
-    this._plan = plan;
-    this.meal = meal ?? Meal();
-  }
+  int _planId;
 
   final _form = GlobalKey<FormState>();
-  final _timeController = TextEditingController(text: timeToString(TimeOfDay.now()));
+  final _timeController = TextEditingController();
+
+  MealForm(planId, [meal]) {
+    this._planId = planId;
+    this.meal = meal ?? Meal();
+
+    _timeController.text =
+        meal.time != null ? timeToString(meal.time) : timeToString(TimeOfDay.now());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +61,7 @@ class MealForm extends StatelessWidget {
                 // Open time picker
                 var pickedTime = await showTimePicker(
                   context: context,
-                  initialTime: TimeOfDay.now(),
+                  initialTime: meal.time ?? TimeOfDay.now(),
                 );
 
                 _timeController.text = timeToString(pickedTime);
@@ -76,10 +79,12 @@ class MealForm extends StatelessWidget {
                 }
                 _form.currentState.save();
 
-                meal.plan = _plan.id;
+                meal.plan = _planId;
 
                 try {
-                  Provider.of<Nutrition>(context, listen: false).addMeal(meal, _plan.id);
+                  meal.id == null
+                      ? Provider.of<Nutrition>(context, listen: false).addMeal(meal, _planId)
+                      : Provider.of<Nutrition>(context, listen: false).editMeal(meal);
                 } on WgerHttpException catch (error) {
                   showHttpExceptionErrorDialog(error, context);
                 } catch (error) {
@@ -98,7 +103,6 @@ class MealForm extends StatelessWidget {
 class MealItemForm extends StatelessWidget {
   Meal meal;
   MealItem mealItem;
-  NutritionalPlan _plan;
 
   MealItemForm(meal, [mealItem]) {
     this.meal = meal;

@@ -55,9 +55,13 @@ class MealWidget extends StatelessWidget {
             ),
             ..._meal.mealItems.map((item) => MealItemWidget(item)).toList(),
             OutlinedButton(
-              child: Text('Add ingredient'),
+              child: Text(AppLocalizations.of(context).addIngredient),
               onPressed: () {
-                showFormBottomSheet(context, 'Add ingredient', MealItemForm(_meal));
+                showFormBottomSheet(
+                  context,
+                  'Add ingredient',
+                  MealItemForm(_meal),
+                );
               },
             ),
           ],
@@ -132,67 +136,76 @@ class DismissibleMealHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Dismissible(
-      key: Key(_meal.id.toString()),
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(color: Colors.black12),
-        padding: const EdgeInsets.all(10),
-        child: _meal.time != null ? Text(_meal.time.format(context)) : Text('aaaa'),
-      ),
-      secondaryBackground: Container(
-        color: Theme.of(context).accentColor,
-        padding: EdgeInsets.only(right: 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Icon(
-              Icons.delete,
-              color: Colors.white,
-            ),
-          ],
-        ),
-      ),
-      background: Container(
-        color: Theme.of(context).primaryColor,
-        alignment: Alignment.centerLeft,
-        padding: EdgeInsets.only(left: 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Text(
-              'Log this meal',
-              style: TextStyle(color: Colors.white),
-            ),
-            Icon(
-              Icons.bar_chart,
-              color: Colors.white,
-            ),
-          ],
-        ),
-      ),
-      confirmDismiss: (direction) async {
-        // Delete
-        if (direction == DismissDirection.endToStart) {
-          // Delete the meal
-          Provider.of<Nutrition>(context, listen: false).deleteMeal(_meal);
-
-          // and inform the user
-          Scaffold.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                AppLocalizations.of(context).successfullyDeleted,
-                textAlign: TextAlign.center,
-              ),
-            ),
-          );
-
-          // Log meal
-        } else {
-          Provider.of<Nutrition>(context, listen: false).logMealToDiary(_meal);
-        }
-        return false;
+    return InkWell(
+      onLongPress: () {
+        showFormBottomSheet(
+          context,
+          AppLocalizations.of(context).addMeal,
+          MealForm(_meal.plan, _meal),
+        );
       },
+      child: Dismissible(
+        key: Key(_meal.id.toString()),
+        child: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(color: Colors.black12),
+          padding: const EdgeInsets.all(10),
+          child: _meal.time != null ? Text(_meal.time.format(context)) : Text('aaaa'),
+        ),
+        secondaryBackground: Container(
+          color: Theme.of(context).accentColor,
+          padding: EdgeInsets.only(right: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Icon(
+                Icons.delete,
+                color: Colors.white,
+              ),
+            ],
+          ),
+        ),
+        background: Container(
+          color: Theme.of(context).primaryColor,
+          alignment: Alignment.centerLeft,
+          padding: EdgeInsets.only(left: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(
+                'Log this meal',
+                style: TextStyle(color: Colors.white),
+              ),
+              Icon(
+                Icons.bar_chart,
+                color: Colors.white,
+              ),
+            ],
+          ),
+        ),
+        confirmDismiss: (direction) async {
+          // Delete
+          if (direction == DismissDirection.endToStart) {
+            // Delete the meal
+            Provider.of<Nutrition>(context, listen: false).deleteMeal(_meal);
+
+            // and inform the user
+            Scaffold.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  AppLocalizations.of(context).successfullyDeleted,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            );
+
+            // Log meal
+          } else {
+            Provider.of<Nutrition>(context, listen: false).logMealToDiary(_meal);
+          }
+          return false;
+        },
+      ),
     );
   }
 }

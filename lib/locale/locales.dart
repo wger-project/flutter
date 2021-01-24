@@ -115,6 +115,14 @@ class AppLocalizations {
     );
   }
 
+  String get addIngredient {
+    return Intl.message(
+      'Add ingredient',
+      name: 'addIngredient',
+      desc: 'Label for button to add a new ingredient to a meal',
+    );
+  }
+
   String get labelWorkoutPlan {
     return Intl.message(
       'Workout plan',

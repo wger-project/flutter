@@ -137,6 +137,15 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
     return meal;
   }
 
+  /// Edits an existing meal
+  Future<Meal> editMeal(Meal meal) async {
+    final data = await patch(meal.toJson(), makeUrl(_mealPath, id: meal.id));
+    meal = Meal.fromJson(data);
+
+    notifyListeners();
+    return meal;
+  }
+
   /// Deletes a meal
   Future<void> deleteMeal(Meal meal) async {
     // Get the meal

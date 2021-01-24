@@ -59,7 +59,7 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                 showFormBottomSheet(
                   context,
                   AppLocalizations.of(context).addMeal,
-                  MealForm(_nutritionalPlan),
+                  MealForm(_nutritionalPlan.id),
                 );
               },
             ),

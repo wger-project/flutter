@@ -16,8 +16,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
@@ -48,10 +46,10 @@ class MealItem {
   num amount;
 
   MealItem({
-    @required this.id,
-    @required this.ingredientObj,
-    @required this.weightUnit,
-    @required this.amount,
+    this.id,
+    this.ingredientObj,
+    this.weightUnit,
+    this.amount,
   });
 
   // Boilerplate
