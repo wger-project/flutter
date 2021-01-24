@@ -59,7 +59,7 @@ class MealWidget extends StatelessWidget {
               onPressed: () {
                 showFormBottomSheet(
                   context,
-                  'Add ingredient',
+                  AppLocalizations.of(context).addIngredient,
                   MealItemForm(_meal),
                 );
               },
@@ -140,7 +140,7 @@ class DismissibleMealHeader extends StatelessWidget {
       onLongPress: () {
         showFormBottomSheet(
           context,
-          AppLocalizations.of(context).addMeal,
+          AppLocalizations.of(context).edit,
           MealForm(_meal.plan, _meal),
         );
       },
