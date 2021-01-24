@@ -74,16 +74,6 @@ class _WorkoutPlanDetailState extends State<WorkoutPlanDetail> {
                 style: Theme.of(context).textTheme.headline6,
               ),
             ),
-            IconButton(
-              icon: Icon(Icons.edit),
-              onPressed: () {
-                showFormBottomSheet(
-                  context,
-                  AppLocalizations.of(context).edit,
-                  WorkoutForm(widget._workoutPlan),
-                );
-              },
-            ),
             ...widget._workoutPlan.days.map((workoutDay) => WorkoutDayWidget(workoutDay)).toList(),
             Column(
               children: [

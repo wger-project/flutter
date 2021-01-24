@@ -299,6 +299,14 @@ class AppLocalizations {
     );
   }
 
+  String get delete {
+    return Intl.message(
+      'Delete',
+      name: 'delete',
+      desc: 'Header when deleting an existing entry',
+    );
+  }
+
   String get newNutritionalPlan {
     return Intl.message(
       'New nutritional plan',

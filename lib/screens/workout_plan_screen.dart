@@ -18,8 +18,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/locale/locales.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/screens/workout_plans_screen.dart';
+import 'package:wger/widgets/core/bottom_sheet.dart';
+import 'package:wger/widgets/workouts/forms.dart';
 import 'package:wger/widgets/workouts/workout_logs.dart';
 import 'package:wger/widgets/workouts/workout_plan_detail.dart';
 
@@ -27,6 +31,12 @@ enum WorkoutScreenMode {
   workout,
   log,
   gym,
+}
+
+enum WorkoutOptions {
+  edit,
+  delete,
+  toggleMode,
 }
 
 class WorkoutPlanScreen extends StatefulWidget {
@@ -55,23 +65,47 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
     return AppBar(
       title: Text(plan.description),
       actions: [
-        IconButton(
-          icon: Icon(Icons.menu),
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                content: Text("Would open options"),
-                actions: [
-                  TextButton(
-                    child: Text(
-                      "Cancel",
-                    ),
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                ],
+        PopupMenuButton<WorkoutOptions>(
+          icon: Icon(Icons.more_vert),
+          onSelected: (value) {
+            // Edit
+            if (value == WorkoutOptions.edit) {
+              showFormBottomSheet(
+                context,
+                AppLocalizations.of(context).edit,
+                WorkoutForm(plan),
+              );
+
+              // Delete
+            } else if (value == WorkoutOptions.delete) {
+              Provider.of<WorkoutPlans>(context, listen: false).deleteWorkout(plan.id);
+              Navigator.of(context).pushNamed(WorkoutPlansScreen.routeName);
+
+              // Toggle Mode
+            } else if (value == WorkoutOptions.toggleMode) {
+              if (_mode == WorkoutScreenMode.workout) {
+                _changeMode(WorkoutScreenMode.log);
+              } else {
+                _changeMode(WorkoutScreenMode.workout);
+              }
+            }
+          },
+          itemBuilder: (BuildContext context) {
+            return [
+              PopupMenuItem<WorkoutOptions>(
+                value: WorkoutOptions.edit,
+                child: Text(AppLocalizations.of(context).edit),
               ),
-            );
+              PopupMenuItem<WorkoutOptions>(
+                child: _mode == WorkoutScreenMode.log ? Text('Open workout') : Text('Open logs'),
+                value: WorkoutOptions.toggleMode,
+              ),
+              const PopupMenuDivider(),
+              PopupMenuItem<WorkoutOptions>(
+                value: WorkoutOptions.delete,
+                child: Text(AppLocalizations.of(context).delete),
+              ),
+            ];
           },
         ),
       ],

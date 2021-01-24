@@ -42,12 +42,6 @@ class _WorkoutPlansScreenState extends State<WorkoutPlansScreen> {
   Widget getAppBar() {
     return AppBar(
       title: Text(AppLocalizations.of(context).labelWorkoutPlans),
-      actions: [
-        IconButton(
-          icon: Icon(Icons.add),
-          onPressed: () {},
-        ),
-      ],
     );
   }
 

@@ -16,7 +16,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day.dart';
@@ -44,7 +43,7 @@ class WorkoutPlan {
   WorkoutPlan({
     this.id,
     this.creationDate,
-    @required this.description,
+    this.description,
     this.days,
   });
 
