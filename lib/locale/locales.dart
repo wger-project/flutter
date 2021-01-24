@@ -131,6 +131,14 @@ class AppLocalizations {
     );
   }
 
+  String get nutritionalPlans {
+    return Intl.message(
+      'Nutritional plans',
+      name: 'nutritionalPlans',
+      desc: 'Title for screen nutritional plans overview',
+    );
+  }
+
   String get labelDashboard {
     return Intl.message(
       'Dashboard',

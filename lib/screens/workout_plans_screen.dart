@@ -51,6 +51,7 @@ class _WorkoutPlansScreenState extends State<WorkoutPlansScreen> {
       appBar: getAppBar(),
       drawer: AppDrawer(),
       floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
         onPressed: () {
           showFormBottomSheet(
             context,
@@ -58,7 +59,6 @@ class _WorkoutPlansScreenState extends State<WorkoutPlansScreen> {
             WorkoutForm(WorkoutPlan()),
           );
         },
-        child: const Icon(Icons.add),
       ),
       body: RefreshIndicator(
         onRefresh: () => _refreshWorkoutPlans(context),

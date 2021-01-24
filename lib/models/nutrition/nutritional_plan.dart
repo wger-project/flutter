@@ -59,8 +59,10 @@ class NutritionalPlan {
     // This is already done on the server. It might be better to read it from there.
     var out = NutritionalValues();
 
-    for (var meal in meals) {
-      out.add(meal.nutritionalValues);
+    if (meals != null) {
+      for (var meal in meals) {
+        out.add(meal.nutritionalValues);
+      }
     }
 
     return out;

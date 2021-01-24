@@ -33,6 +33,10 @@ class NutritionalPlanPieChartWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (_nutritionalValues.energy == 0) {
+      return Container();
+    }
+
     return charts.PieChart(
       [
         charts.Series<List<dynamic>, String>(

@@ -41,7 +41,7 @@ class _NutritionScreenState extends State<NutritionScreen> {
 
   Widget getAppBar() {
     return AppBar(
-      title: Text('Nutrition'),
+      title: Text(AppLocalizations.of(context).nutritionalPlans),
     );
   }
 
@@ -51,6 +51,7 @@ class _NutritionScreenState extends State<NutritionScreen> {
       appBar: getAppBar(),
       drawer: AppDrawer(),
       floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
         onPressed: () async {
           showFormBottomSheet(
             context,
@@ -59,7 +60,6 @@ class _NutritionScreenState extends State<NutritionScreen> {
           );
           //await showNutritionalPlanSheet(context, nutritionalPlan);
         },
-        child: const Icon(Icons.add),
       ),
       body: RefreshIndicator(
         onRefresh: () => _refreshPlans(context),

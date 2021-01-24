@@ -53,8 +53,6 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                 style: Theme.of(context).textTheme.headline6,
               ),
             ),
-            if (_nutritionalPlan.meals.length > 0)
-              ..._nutritionalPlan.meals.map((meal) => MealWidget(meal)).toList(),
             ElevatedButton(
               child: Text(AppLocalizations.of(context).add),
               onPressed: () {
@@ -65,6 +63,8 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                 );
               },
             ),
+            if (_nutritionalPlan.meals != null && _nutritionalPlan.meals.length > 0)
+              ..._nutritionalPlan.meals.map((meal) => MealWidget(meal)).toList(),
             Container(
               padding: EdgeInsets.all(15),
               height: 220,
