@@ -96,7 +96,7 @@ class Log {
     }
 
     if (ingredientObj.sodium != null) {
-      out.sodium + ingredientObj.sodium * weight / 100;
+      out.sodium = ingredientObj.sodium * weight / 100;
     }
 
     return out;
