@@ -53,16 +53,6 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                 style: Theme.of(context).textTheme.headline6,
               ),
             ),
-            IconButton(
-              icon: Icon(Icons.edit),
-              onPressed: () {
-                showFormBottomSheet(
-                  context,
-                  AppLocalizations.of(context).edit,
-                  PlanForm(_nutritionalPlan),
-                );
-              },
-            ),
             if (_nutritionalPlan.meals.length > 0)
               ..._nutritionalPlan.meals.map((meal) => MealWidget(meal)).toList(),
             ElevatedButton(

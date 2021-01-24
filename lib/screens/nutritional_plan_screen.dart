@@ -21,7 +21,15 @@ import 'package:provider/provider.dart';
 import 'package:wger/locale/locales.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/nutrition.dart';
+import 'package:wger/widgets/core/bottom_sheet.dart';
+import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/nutritional_plan_detail.dart';
+
+enum NutritionalPlanOptions {
+  edit,
+  delete,
+  toggleMode,
+}
 
 class NutritionalPlanScreen extends StatefulWidget {
   static const routeName = '/nutritional-plan-detail';
@@ -38,27 +46,39 @@ class _NutritionalPlanScreenState extends State<NutritionalPlanScreen> {
     return plan;
   }
 
-  Widget getAppBar() {
+  Widget getAppBar(NutritionalPlan plan) {
     return AppBar(
       title: Text(AppLocalizations.of(context).nutritionalPlan),
       actions: [
-        IconButton(
-          icon: Icon(Icons.menu),
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                content: Text("Would open options"),
-                actions: [
-                  TextButton(
-                    child: Text(
-                      "Cancel",
-                    ),
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                ],
+        PopupMenuButton<NutritionalPlanOptions>(
+          icon: Icon(Icons.more_vert),
+          onSelected: (value) {
+            // Edit
+            if (value == NutritionalPlanOptions.edit) {
+              showFormBottomSheet(
+                context,
+                AppLocalizations.of(context).edit,
+                PlanForm(plan),
+              );
+
+              // Delete
+            } else if (value == NutritionalPlanOptions.delete) {
+              Provider.of<Nutrition>(context, listen: false).deletePlan(plan.id);
+              Navigator.of(context).pushNamed(NutritionalPlanScreen.routeName);
+            }
+          },
+          itemBuilder: (BuildContext context) {
+            return [
+              PopupMenuItem<NutritionalPlanOptions>(
+                value: NutritionalPlanOptions.edit,
+                child: Text(AppLocalizations.of(context).edit),
               ),
-            );
+              const PopupMenuDivider(),
+              PopupMenuItem<NutritionalPlanOptions>(
+                value: NutritionalPlanOptions.delete,
+                child: Text(AppLocalizations.of(context).delete),
+              ),
+            ];
           },
         ),
       ],
@@ -70,7 +90,7 @@ class _NutritionalPlanScreenState extends State<NutritionalPlanScreen> {
     final nutritionalPlan = ModalRoute.of(context).settings.arguments as NutritionalPlan;
 
     return Scaffold(
-      appBar: getAppBar(),
+      appBar: getAppBar(nutritionalPlan),
       //drawer: AppDrawer(),
       body: FutureBuilder<NutritionalPlan>(
         future: _loadNutritionalPlanDetail(context, nutritionalPlan.id),
