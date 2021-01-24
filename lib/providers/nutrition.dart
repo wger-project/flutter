@@ -128,7 +128,7 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
   /// Adds a meal to a plan
   Future<Meal> addMeal(Meal meal, int planId) async {
     var plan = findById(planId);
-    final data = await post(meal.toJson(), _mealPath);
+    final data = await post(meal.toJson(), makeUrl(_mealPath));
 
     meal = Meal.fromJson(data);
     plan.meals.add(meal);

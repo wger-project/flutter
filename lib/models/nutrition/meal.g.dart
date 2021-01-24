@@ -7,7 +7,7 @@ part of 'meal.dart';
 // **************************************************************************
 
 Meal _$MealFromJson(Map<String, dynamic> json) {
-  $checkKeys(json, requiredKeys: const ['id', 'time']);
+  $checkKeys(json, requiredKeys: const ['time']);
   return Meal(
     id: json['id'] as int,
     plan: json['plan'] as int,

@@ -27,7 +27,7 @@ part 'meal.g.dart';
 
 @JsonSerializable()
 class Meal {
-  @JsonKey(required: true)
+  @JsonKey(required: false)
   final int id;
 
   @JsonKey(required: false)
@@ -36,7 +36,7 @@ class Meal {
   @JsonKey(required: true, toJson: timeToString, fromJson: stringToTime)
   TimeOfDay time;
 
-  @JsonKey(name: 'meal_items', defaultValue: [])
+  @JsonKey(required: false, name: 'meal_items', defaultValue: [])
   List<MealItem> mealItems = [];
 
   Meal({
