@@ -50,6 +50,9 @@ class LogChartWidget extends StatelessWidget {
           );
         }),
       ],
+      primaryMeasureAxis: new charts.NumericAxisSpec(
+        tickProviderSpec: new charts.BasicNumericTickProviderSpec(zeroBound: false),
+      ),
       //behaviors: [new charts.SeriesLegend()],
     );
   }
