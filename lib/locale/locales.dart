@@ -51,6 +51,14 @@ class AppLocalizations {
     );
   }
 
+  String get exercise {
+    return Intl.message(
+      'Exercise',
+      name: 'exercise',
+      desc: 'An exercise for a workout',
+    );
+  }
+
   String get newWorkout {
     return Intl.message(
       'New Workout',

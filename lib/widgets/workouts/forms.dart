@@ -210,7 +210,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
             TypeAheadFormField(
               textFieldConfiguration: TextFieldConfiguration(
                 controller: this._exercisesController,
-                decoration: InputDecoration(labelText: AppLocalizations.of(context).ingredient),
+                decoration: InputDecoration(labelText: AppLocalizations.of(context).exercise),
               ),
               suggestionsCallback: (pattern) async {
                 return await Provider.of<Exercises>(context, listen: false).searchExercise(pattern);
@@ -219,13 +219,20 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                 // TODO: this won't work if the server uses e.g. AWS to serve
                 //       the static files
                 String serverUrl = Provider.of<Auth>(context, listen: false).serverUrl;
+                final exercise = Provider.of<Exercises>(context, listen: false)
+                    .findById(suggestion['data']['id']);
                 return ListTile(
                   leading: Container(
                     width: 45,
-                    child: ExerciseImage(imageUrl: suggestion['data']['image']),
+                    child: suggestion['data']['image'] != null
+                        ? ExerciseImage(
+                            imageUrl: suggestion['data']['image'],
+                            serverUrl: serverUrl,
+                          )
+                        : Container(),
                   ),
-                  title: Text(suggestion['value']),
-                  subtitle: Text(suggestion['data']['id'].toString()),
+                  title: Text(exercise.name),
+                  subtitle: Text(exercise.category.name),
                 );
               },
               transitionBuilder: (context, suggestionsBox, controller) {
@@ -240,7 +247,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
               },
               validator: (value) {
                 if (value.isEmpty) {
-                  return 'Please select an ingredient';
+                  return 'Please select an exercise';
                 }
                 return null;
               },

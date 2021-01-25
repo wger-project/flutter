@@ -22,16 +22,18 @@ class ExerciseImage extends StatelessWidget {
   const ExerciseImage({
     Key key,
     @required this.imageUrl,
+    @required this.serverUrl,
   }) : super(key: key);
 
   final String imageUrl;
+  final String serverUrl;
 
   @override
   Widget build(BuildContext context) {
     return imageUrl != null
         ? FadeInImage(
             placeholder: AssetImage('assets/images/placeholder.png'),
-            image: NetworkImage(imageUrl),
+            image: NetworkImage(serverUrl + imageUrl),
             fit: BoxFit.cover,
           )
         : Image(
