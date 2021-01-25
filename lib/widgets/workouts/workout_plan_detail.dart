@@ -70,6 +70,13 @@ class _WorkoutPlanDetailState extends State<WorkoutPlanDetail> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Text(
+                widget._workoutPlan.description,
+                style: Theme.of(context).textTheme.headline6,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: Text(
                 DateFormat.yMd().format(widget._workoutPlan.creationDate).toString(),
                 style: Theme.of(context).textTheme.headline6,
               ),

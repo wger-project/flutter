@@ -62,6 +62,12 @@ class BodyWeight extends WgerBaseProvider with ChangeNotifier {
     return weightEntry;
   }
 
+  /// Update an existing weight entry
+  Future<void> editEntry(WeightEntry entry) async {
+    await patch(entry.toJson(), makeUrl(bodyWeightUrl, id: entry.id));
+    notifyListeners();
+  }
+
   Future<void> deleteEntry(int id) async {
     // Send the request and remove the entry from the list...
     final existingEntryIndex = _entries.indexWhere((element) => element.id == id);

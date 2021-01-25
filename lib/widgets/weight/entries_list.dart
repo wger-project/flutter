@@ -19,8 +19,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/locale/locales.dart';
 import 'package:wger/providers/body_weight.dart';
+import 'package:wger/widgets/core/bottom_sheet.dart';
 import 'package:wger/widgets/weight/charts.dart';
+import 'package:wger/widgets/weight/forms.dart';
 
 class WeightEntriesList extends StatelessWidget {
   @override
@@ -43,20 +46,30 @@ class WeightEntriesList extends StatelessWidget {
               return Dismissible(
                 key: Key(currentEntry.id.toString()),
                 onDismissed: (direction) {
-                  // Delete workout from DB
-                  Provider.of<BodyWeight>(context, listen: false).deleteEntry(currentEntry.id);
+                  if (direction == DismissDirection.endToStart) {
+                    // Delete entry from DB
+                    Provider.of<BodyWeight>(context, listen: false).deleteEntry(currentEntry.id);
 
-                  // and inform the user
-                  Scaffold.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        "Deleted weight entry for the ${DateFormat.yMd().format(currentEntry.date).toString()}",
-                        textAlign: TextAlign.center,
+                    // and inform the user
+                    Scaffold.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          "Deleted weight entry for the ${DateFormat.yMd().format(currentEntry.date).toString()}",
+                          textAlign: TextAlign.center,
+                        ),
                       ),
-                    ),
-                  );
+                    );
+                  }
                 },
-                background: Container(
+                confirmDismiss: (direction) async {
+                  showFormBottomSheet(
+                    context,
+                    AppLocalizations.of(context).edit,
+                    WeightForm(currentEntry),
+                  );
+                  return false;
+                },
+                secondaryBackground: Container(
                   color: Theme.of(context).errorColor,
                   alignment: Alignment.centerRight,
                   padding: EdgeInsets.only(right: 20),
@@ -69,7 +82,20 @@ class WeightEntriesList extends StatelessWidget {
                     color: Colors.white,
                   ),
                 ),
-                direction: DismissDirection.endToStart,
+                background: Container(
+                  //color: Theme.of(context).accentColor,
+                  alignment: Alignment.centerLeft,
+                  padding: EdgeInsets.only(right: 20),
+                  margin: EdgeInsets.symmetric(
+                    horizontal: 4,
+                    vertical: 4,
+                  ),
+                  child: Icon(
+                    Icons.edit,
+                    //color: Colors.white,
+                  ),
+                ),
+                //direction: DismissDirection.endToStart,
                 child: Card(
                   child: ListTile(
                     //onTap: () => Navigator.of(context).pushNamed(
