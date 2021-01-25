@@ -29,7 +29,7 @@ import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/nutrition.dart';
 
 class MealForm extends StatelessWidget {
-  Meal meal;
+  Meal _meal;
   int _planId;
 
   final _form = GlobalKey<FormState>();
@@ -37,10 +37,10 @@ class MealForm extends StatelessWidget {
 
   MealForm(planId, [meal]) {
     this._planId = planId;
-    this.meal = meal ?? Meal();
+    this._meal = meal ?? Meal();
 
     _timeController.text =
-        meal.time != null ? timeToString(meal.time) : timeToString(TimeOfDay.now());
+        _meal.time != null ? timeToString(_meal.time) : timeToString(TimeOfDay.now());
   }
 
   @override
@@ -61,13 +61,13 @@ class MealForm extends StatelessWidget {
                 // Open time picker
                 var pickedTime = await showTimePicker(
                   context: context,
-                  initialTime: meal.time ?? TimeOfDay.now(),
+                  initialTime: _meal.time ?? TimeOfDay.now(),
                 );
 
                 _timeController.text = timeToString(pickedTime);
               },
               onSaved: (newValue) {
-                meal.time = stringToTime(newValue);
+                _meal.time = stringToTime(newValue);
               },
               onFieldSubmitted: (_) {},
             ),
@@ -79,12 +79,12 @@ class MealForm extends StatelessWidget {
                 }
                 _form.currentState.save();
 
-                meal.plan = _planId;
+                _meal.plan = _planId;
 
                 try {
-                  meal.id == null
-                      ? Provider.of<Nutrition>(context, listen: false).addMeal(meal, _planId)
-                      : Provider.of<Nutrition>(context, listen: false).editMeal(meal);
+                  _meal.id == null
+                      ? Provider.of<Nutrition>(context, listen: false).addMeal(_meal, _planId)
+                      : Provider.of<Nutrition>(context, listen: false).editMeal(_meal);
                 } on WgerHttpException catch (error) {
                   showHttpExceptionErrorDialog(error, context);
                 } catch (error) {
