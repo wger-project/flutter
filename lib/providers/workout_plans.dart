@@ -167,7 +167,7 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
       workout.days = days;
 
       // Logs
-      final logData = await fetch(makeUrl(_logsUrlPath));
+      final logData = await fetch(makeUrl(_logsUrlPath, query: {'workout': workoutId.toString()}));
       for (final entry in logData['results']) {
         workout.logs.add(Log.fromJson(entry));
       }
