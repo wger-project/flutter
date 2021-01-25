@@ -151,6 +151,10 @@ class Exercises extends WgerBaseProvider with ChangeNotifier {
   /// We could do this locally, but the server has better text searching capabilities
   /// with postgresql.
   Future<List> searchExercise(String name) async {
+    if (name.length <= 1) {
+      return [];
+    }
+
     // Send the request
     final response = await client.get(
       makeUrl(_exerciseSearchPath, query: {'term': name}),
