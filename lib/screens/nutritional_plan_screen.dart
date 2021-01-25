@@ -48,7 +48,7 @@ class _NutritionalPlanScreenState extends State<NutritionalPlanScreen> {
 
   Widget getAppBar(NutritionalPlan plan) {
     return AppBar(
-      title: Text(AppLocalizations.of(context).nutritionalPlan),
+      title: Text(plan.description),
       actions: [
         PopupMenuButton<NutritionalPlanOptions>(
           icon: Icon(Icons.more_vert),

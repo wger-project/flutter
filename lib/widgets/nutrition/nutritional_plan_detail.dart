@@ -42,13 +42,6 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Text(
-                _nutritionalPlan.description,
-                style: Theme.of(context).textTheme.headline5,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: Text(
                 DateFormat.yMd().format(_nutritionalPlan.creationDate),
                 style: Theme.of(context).textTheme.headline6,
               ),
