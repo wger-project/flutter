@@ -34,15 +34,11 @@ class WeightScreen extends StatefulWidget {
 }
 
 class _WeightScreenState extends State<WeightScreen> {
-  Future<void> _refreshWeightEntries(BuildContext context) async {
-    await Provider.of<BodyWeight>(context, listen: false).fetchAndSetEntries();
-  }
-
   WeightEntry weightEntry = WeightEntry();
 
   Widget getAppBar() {
     return AppBar(
-      title: Text('Weight'),
+      title: Text(AppLocalizations.of(context).weight),
     );
   }
 
@@ -62,14 +58,11 @@ class _WeightScreenState extends State<WeightScreen> {
         },
       ),
       body: FutureBuilder(
-        future: _refreshWeightEntries(context),
+        future: Provider.of<BodyWeight>(context, listen: false).fetchAndSetEntries(),
         builder: (context, snapshot) => snapshot.connectionState == ConnectionState.waiting
             ? Center(child: CircularProgressIndicator())
-            : RefreshIndicator(
-                onRefresh: () => _refreshWeightEntries(context),
-                child: Consumer<BodyWeight>(
-                  builder: (context, productsData, child) => WeightEntriesList(),
-                ),
+            : Consumer<BodyWeight>(
+                builder: (context, weightProvider, child) => WeightEntriesList(weightProvider),
               ),
       ),
     );

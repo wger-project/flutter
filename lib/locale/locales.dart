@@ -323,6 +323,14 @@ class AppLocalizations {
     );
   }
 
+  String get loadingText {
+    return Intl.message(
+      'Loading...',
+      name: 'loadingText',
+      desc: 'Text to show when entries are being loaded in the background',
+    );
+  }
+
   String get delete {
     return Intl.message(
       'Delete',

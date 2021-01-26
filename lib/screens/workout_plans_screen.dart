@@ -35,10 +35,6 @@ class WorkoutPlansScreen extends StatefulWidget {
 }
 
 class _WorkoutPlansScreenState extends State<WorkoutPlansScreen> {
-  Future<void> _refreshWorkoutPlans(BuildContext context) async {
-    await Provider.of<WorkoutPlans>(context, listen: false).fetchAndSetWorkouts();
-  }
-
   Widget getAppBar() {
     return AppBar(
       title: Text(AppLocalizations.of(context).labelWorkoutPlans),
@@ -60,11 +56,8 @@ class _WorkoutPlansScreenState extends State<WorkoutPlansScreen> {
           );
         },
       ),
-      body: RefreshIndicator(
-        onRefresh: () => _refreshWorkoutPlans(context),
-        child: Consumer<WorkoutPlans>(
-          builder: (context, productsData, child) => WorkoutPlansList(),
-        ),
+      body: Consumer<WorkoutPlans>(
+        builder: (context, workoutProvider, child) => WorkoutPlansList(workoutProvider),
       ),
     );
   }

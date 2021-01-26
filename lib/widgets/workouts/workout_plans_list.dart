@@ -23,15 +23,17 @@ import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
 
 class WorkoutPlansList extends StatelessWidget {
+  final WorkoutPlans _workoutProvider;
+
+  WorkoutPlansList(this._workoutProvider);
+
   @override
   Widget build(BuildContext context) {
-    final workoutPlansData = Provider.of<WorkoutPlans>(context);
-
     return ListView.builder(
       padding: const EdgeInsets.all(10.0),
-      itemCount: workoutPlansData.items.length,
+      itemCount: _workoutProvider.items.length,
       itemBuilder: (context, index) {
-        final currentWorkout = workoutPlansData.items[index];
+        final currentWorkout = _workoutProvider.items[index];
         return Dismissible(
           key: Key(currentWorkout.id.toString()),
           confirmDismiss: (direction) async {
@@ -94,7 +96,7 @@ class WorkoutPlansList extends StatelessWidget {
           child: Card(
             child: ListTile(
               onTap: () {
-                workoutPlansData.setCurrentPlan(currentWorkout.id);
+                _workoutProvider.setCurrentPlan(currentWorkout.id);
 
                 return Navigator.of(context)
                     .pushNamed(WorkoutPlanScreen.routeName, arguments: currentWorkout);

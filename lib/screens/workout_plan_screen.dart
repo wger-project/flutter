@@ -55,12 +55,6 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
     });
   }
 
-  Future<WorkoutPlan> _loadWorkoutPlanDetail(BuildContext context, int workoutId) async {
-    var workout =
-        await Provider.of<WorkoutPlans>(context, listen: false).fetchAndSetFullWorkout(workoutId);
-    return workout;
-  }
-
   Widget getAppBar(WorkoutPlan plan) {
     return AppBar(
       title: Text(plan.description),
@@ -115,10 +109,14 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
   Widget getBody(WorkoutPlan plan) {
     switch (_mode) {
       case WorkoutScreenMode.workout:
-        return WorkoutPlanDetail(plan, _changeMode);
+        return Consumer<WorkoutPlans>(
+          builder: (context, value, child) => WorkoutPlanDetail(plan, _changeMode),
+        );
         break;
       case WorkoutScreenMode.log:
-        return WorkoutLogs(plan, _changeMode);
+        return Consumer<WorkoutPlans>(
+          builder: (context, value, child) => WorkoutLogs(plan, _changeMode),
+        );
         break;
       case WorkoutScreenMode.gym:
         return Text('Gym Mode');
@@ -133,7 +131,8 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
     return Scaffold(
       appBar: getAppBar(workoutPlan),
       body: FutureBuilder<WorkoutPlan>(
-        future: _loadWorkoutPlanDetail(context, workoutPlan.id),
+        future: Provider.of<WorkoutPlans>(context, listen: false)
+            .fetchAndSetFullWorkout(workoutPlan.id),
         builder: (context, AsyncSnapshot<WorkoutPlan> snapshot) =>
             snapshot.connectionState == ConnectionState.waiting
                 ? Center(child: CircularProgressIndicator())

@@ -48,7 +48,7 @@ class _NutritionalPlanScreenState extends State<NutritionalPlanScreen> {
 
   Widget getAppBar(NutritionalPlan plan) {
     return AppBar(
-      title: Text(plan.description),
+      title: Text(AppLocalizations.of(context).nutritionalPlan),
       actions: [
         PopupMenuButton<NutritionalPlanOptions>(
           icon: Icon(Icons.more_vert),
@@ -97,11 +97,8 @@ class _NutritionalPlanScreenState extends State<NutritionalPlanScreen> {
         builder: (context, AsyncSnapshot<NutritionalPlan> snapshot) =>
             snapshot.connectionState == ConnectionState.waiting
                 ? Center(child: CircularProgressIndicator())
-                : RefreshIndicator(
-                    onRefresh: () => _loadNutritionalPlanDetail(context, nutritionalPlan.id),
-                    child: Consumer<Nutrition>(
-                      builder: (context, workout, _) => NutritionalPlanDetailWidget(snapshot.data),
-                    ),
+                : Consumer<Nutrition>(
+                    builder: (context, nutrition, _) => NutritionalPlanDetailWidget(snapshot.data),
                   ),
       ),
     );

@@ -26,23 +26,26 @@ import 'package:wger/widgets/weight/charts.dart';
 import 'package:wger/widgets/weight/forms.dart';
 
 class WeightEntriesList extends StatelessWidget {
+  final BodyWeight _weightProvider;
+
+  WeightEntriesList(this._weightProvider);
+
   @override
   Widget build(BuildContext context) {
-    final weightEntriesData = Provider.of<BodyWeight>(context);
     return Column(
       children: [
         Container(
           padding: EdgeInsets.all(15),
           height: 220,
-          child: WeightChartWidget(weightEntriesData.items),
+          child: WeightChartWidget(_weightProvider.items),
         ),
         Divider(),
         Expanded(
           child: ListView.builder(
             padding: const EdgeInsets.all(10.0),
-            itemCount: weightEntriesData.items.length,
+            itemCount: _weightProvider.items.length,
             itemBuilder: (context, index) {
-              final currentEntry = weightEntriesData.items[index];
+              final currentEntry = _weightProvider.items[index];
               return Dismissible(
                 key: Key(currentEntry.id.toString()),
                 onDismissed: (direction) {

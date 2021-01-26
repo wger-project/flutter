@@ -20,7 +20,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/locale/locales.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
-import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/widgets/app_drawer.dart';
 import 'package:wger/widgets/core/bottom_sheet.dart';
@@ -35,10 +34,6 @@ class NutritionScreen extends StatefulWidget {
 }
 
 class _NutritionScreenState extends State<NutritionScreen> {
-  Future<void> _refreshPlans(BuildContext context) async {
-    await Provider.of<Nutrition>(context, listen: false).fetchAndSetPlans();
-  }
-
   Widget getAppBar() {
     return AppBar(
       title: Text(AppLocalizations.of(context).nutritionalPlans),
@@ -61,11 +56,8 @@ class _NutritionScreenState extends State<NutritionScreen> {
           //await showNutritionalPlanSheet(context, nutritionalPlan);
         },
       ),
-      body: RefreshIndicator(
-        onRefresh: () => _refreshPlans(context),
-        child: Consumer<WorkoutPlans>(
-          builder: (context, productsData, child) => NutritionalPlansList(),
-        ),
+      body: Consumer<WorkoutPlans>(
+        builder: (context, productsData, child) => NutritionalPlansList(),
       ),
     );
   }

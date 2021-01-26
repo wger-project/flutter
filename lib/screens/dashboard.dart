@@ -65,7 +65,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Loading...',
+                        AppLocalizations.of(context).loadingText,
                         style: Theme.of(context).textTheme.headline5,
                       ),
                       Padding(padding: EdgeInsets.symmetric(vertical: 8)),
