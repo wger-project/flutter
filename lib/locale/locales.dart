@@ -354,6 +354,16 @@ class AppLocalizations {
       desc: 'Switch to toggle detail / overview',
     );
   }
+
+  String get aboutText {
+    return Intl.message(
+      'wger Workout Manager is free, open source (FLOSS) software released '
+      'under the GNU General Public version 3 or later. '
+      'The code is freely available on github: ',
+      name: 'aboutText',
+      desc: 'Text in the about dialog',
+    );
+  }
 }
 
 class AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

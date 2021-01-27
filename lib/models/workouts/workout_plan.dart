@@ -34,10 +34,10 @@ class WorkoutPlan {
   @JsonKey(required: true, name: 'comment')
   String description;
 
-  @JsonKey(required: false, name: 'days')
+  @JsonKey(required: false, defaultValue: [], name: 'days')
   List<Day> days = [];
 
-  @JsonKey(ignore: true)
+  @JsonKey(ignore: true, defaultValue: [])
   List<Log> logs = [];
 
   WorkoutPlan({

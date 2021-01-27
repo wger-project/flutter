@@ -15,8 +15,10 @@ WorkoutPlan _$WorkoutPlanFromJson(Map<String, dynamic> json) {
         : DateTime.parse(json['creation_date'] as String),
     description: json['comment'] as String,
     days: (json['days'] as List)
-        ?.map((e) => e == null ? null : Day.fromJson(e as Map<String, dynamic>))
-        ?.toList(),
+            ?.map((e) =>
+                e == null ? null : Day.fromJson(e as Map<String, dynamic>))
+            ?.toList() ??
+        [],
   );
 }
 

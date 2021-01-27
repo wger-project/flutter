@@ -30,6 +30,8 @@ import 'package:wger/screens/workout_plans_screen.dart';
 class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<Auth>(context, listen: false);
+
     return Drawer(
       child: Column(
         children: [
@@ -109,29 +111,33 @@ class AppDrawer extends StatelessWidget {
             dense: true,
             icon: Icon(Icons.info),
             applicationName: 'wger',
-            applicationVersion: '0.0.1 alpha',
-            applicationLegalese: '\u{a9} 2020 The wger team',
-            applicationIcon: Image.asset(
-              'assets/images/logo.png',
-              width: 60,
+            applicationVersion: '${authProvider.applicationVersion.version} '
+                '(server: ${authProvider.serverVersion})',
+            applicationLegalese: '\u{a9} 2020 - 2021 contributors',
+            applicationIcon: Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: Image.asset(
+                'assets/images/logo.png',
+                width: 60,
+              ),
             ),
             aboutBoxChildren: [
+              SizedBox(
+                height: 10,
+              ),
               RichText(
                 text: TextSpan(
                   style: TextStyle(fontSize: 16, color: Colors.black),
                   children: [
                     TextSpan(
-                      text: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, '
-                          'sed diam nonumy eirmod tempor invidunt ut labore et dolore '
-                          'magna aliquyam erat, sed diam voluptua. At vero eos et accusam '
-                          'et justo duo dolores et ea rebum.\n',
+                      text: AppLocalizations.of(context).aboutText,
                     ),
                     TextSpan(
-                      text: 'https://github.com/wger-project/wger',
+                      text: 'https://github.com/wger-project',
                       style: TextStyle(color: Colors.blue),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
-                          launch('https://github.com/wger-project/wger');
+                          launch('https://github.com/wger-project');
                         },
                     )
                   ],

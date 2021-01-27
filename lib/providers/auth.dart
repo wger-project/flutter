@@ -23,12 +23,15 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
+import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/models/http_exception.dart';
 
 class Auth with ChangeNotifier {
   String token;
   String serverUrl;
+  String serverVersion;
+  PackageInfo applicationVersion;
 
   /// flag to indicate that the application has successfully loaded all initial data
   bool dataInit = false;
@@ -54,13 +57,29 @@ class Auth with ChangeNotifier {
   //   return _userId;
   // }
 
+  /// Server application version
+  Future<void> setServerVersion() async {
+    var url = '$serverUrl/api/v2/version/';
+    final response = await http.get(url);
+    final responseData = json.decode(response.body);
+    serverVersion = responseData;
+  }
+
+  /// (flutter) Application version
+  Future<void> setApplicationVersion() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    applicationVersion = packageInfo;
+  }
+
   Future<void> _authenticate(String username, String password, String serverUrl) async {
-    // The android emulator uses
     var url = '$serverUrl/api/v2/login/';
     //print(username);
     //print(password);
 
     try {
+      // Get the server version
+      await setServerVersion();
+
       final response = await http.post(
         url,
         headers: <String, String>{
@@ -129,6 +148,8 @@ class Auth with ChangeNotifier {
     // _expiryDate = expiryDate;
 
     log('autologin successful');
+    setApplicationVersion();
+    setServerVersion();
     notifyListeners();
     //_autoLogout();
     return true;

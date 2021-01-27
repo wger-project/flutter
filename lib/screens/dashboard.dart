@@ -47,6 +47,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   /// Load initial data from the server
   Future<void> _loadEntries(BuildContext context) async {
     if (!Provider.of<Auth>(context, listen: false).dataInit) {
+      Provider.of<Auth>(context, listen: false).setServerVersion();
+
       // Exercises
       await Provider.of<Exercises>(context, listen: false).fetchAndSetExercises();
 
