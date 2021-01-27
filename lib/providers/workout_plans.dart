@@ -90,7 +90,13 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<WorkoutPlan> fetchAndSetFullWorkout(int workoutId) async {
+  Future<void> setAllFullWorkouts() async {
+    for (var plan in _workoutPlans) {
+      setFullWorkout(plan.id);
+    }
+  }
+
+  Future<WorkoutPlan> setFullWorkout(int workoutId) async {
     final data = await fetch(makeUrl(
       _workoutPlansUrlPath,
       id: workoutId,

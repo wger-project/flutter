@@ -131,8 +131,7 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
     return Scaffold(
       appBar: getAppBar(workoutPlan),
       body: FutureBuilder<WorkoutPlan>(
-        future: Provider.of<WorkoutPlans>(context, listen: false)
-            .fetchAndSetFullWorkout(workoutPlan.id),
+        future: Provider.of<WorkoutPlans>(context, listen: false).setFullWorkout(workoutPlan.id),
         builder: (context, AsyncSnapshot<WorkoutPlan> snapshot) =>
             snapshot.connectionState == ConnectionState.waiting
                 ? Center(child: CircularProgressIndicator())

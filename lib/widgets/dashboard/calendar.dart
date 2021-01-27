@@ -72,7 +72,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
     _animationController.forward();
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      // Fetch weight entries
+      // Process weight entries
       BodyWeight weightProvider = Provider.of<BodyWeight>(context, listen: false);
       for (var entry in weightProvider.items) {
         final date = DateTime(entry.date.year, entry.date.month, entry.date.day);
@@ -83,7 +83,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
         _events[date].add('Body weight: ${entry.weight} kg');
       }
 
-      // Fetch workout sessions
+      // Process workout sessions
       WorkoutPlans plans = Provider.of<WorkoutPlans>(context, listen: false);
       plans.fetchSessionData().then((entries) {
         for (var entry in entries['results']) {
@@ -102,20 +102,17 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
         }
       });
 
-      // Fetch nutritional plans
+      // Process nutritional plans
       Nutrition nutritionProvider = Provider.of<Nutrition>(context, listen: false);
       for (var plan in nutritionProvider.items) {
-        nutritionProvider.fetchAndSetLogs(plan).then((value) {
-          //print(plan.logEntriesValues);
-          for (var entry in plan.logEntriesValues.entries) {
-            final date = DateTime(entry.key.year, entry.key.month, entry.key.day);
-            if (!_events.containsKey(date)) {
-              _events[date] = [];
-            }
-
-            _events[date].add('Nutrition diary: ${entry.value.energy.toStringAsFixed(0)} kcal');
+        for (var entry in plan.logEntriesValues.entries) {
+          final date = DateTime(entry.key.year, entry.key.month, entry.key.day);
+          if (!_events.containsKey(date)) {
+            _events[date] = [];
           }
-        });
+
+          _events[date].add('Nutrition diary: ${entry.value.energy.toStringAsFixed(0)} kcal');
+        }
       }
     });
   }
@@ -340,7 +337,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
               width: double.infinity,
               decoration: BoxDecoration(
                 border: Border.all(width: 0.5),
-                borderRadius: BorderRadius.circular(12.0),
+                borderRadius: BorderRadius.circular(5),
               ),
               margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
               child: ListTile(

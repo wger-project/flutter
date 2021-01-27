@@ -29,6 +29,10 @@ import 'package:wger/models/http_exception.dart';
 class Auth with ChangeNotifier {
   String token;
   String serverUrl;
+
+  /// flag to indicate that the application has successfully loaded all initial data
+  bool dataInit = false;
+
   // DateTime _expiryDate;
   // String _userId;
   // Timer _authTimer;

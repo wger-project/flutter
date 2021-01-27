@@ -20,6 +20,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/locale/locales.dart';
+import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/nutrition.dart';
@@ -43,13 +44,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  /// Load inital data from the server
-  Future _loadCachedEntries(BuildContext context) async {
-    await Provider.of<Exercises>(context, listen: false).fetchAndSetExercises();
-    await Provider.of<Nutrition>(context, listen: false).fetchIngredientsFromCache();
-    await Provider.of<WorkoutPlans>(context, listen: false).fetchAndSetWorkouts();
-    await Provider.of<Nutrition>(context, listen: false).fetchAndSetPlans();
-    await Provider.of<BodyWeight>(context, listen: false).fetchAndSetEntries();
+  /// Load initial data from the server
+  Future<void> _loadEntries(BuildContext context) async {
+    if (!Provider.of<Auth>(context, listen: false).dataInit) {
+      // Exercises
+      await Provider.of<Exercises>(context, listen: false).fetchAndSetExercises();
+
+      // Nutrition
+      Nutrition nutritionProvider = Provider.of<Nutrition>(context, listen: false);
+      await nutritionProvider.fetchIngredientsFromCache();
+      await nutritionProvider.fetchAndSetPlans();
+      await nutritionProvider.fetchAndSetAllLogs();
+
+      // Workouts
+      WorkoutPlans workoutProvider = Provider.of<WorkoutPlans>(context, listen: false);
+      await workoutProvider.fetchAndSetWorkouts();
+      await workoutProvider.setAllFullWorkouts();
+
+      // Weight
+      await Provider.of<BodyWeight>(context, listen: false).fetchAndSetEntries();
+    }
+    Provider.of<Auth>(context, listen: false).dataInit = true;
   }
 
   @override
@@ -58,7 +73,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       appBar: getAppBar(),
       drawer: AppDrawer(),
       body: FutureBuilder(
-        future: _loadCachedEntries(context),
+        future: _loadEntries(context),
         builder: (ctx, authResultSnapshot) =>
             authResultSnapshot.connectionState == ConnectionState.waiting
                 ? Column(

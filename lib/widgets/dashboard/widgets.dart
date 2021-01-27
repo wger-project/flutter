@@ -47,12 +47,10 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
   Nutrition nutrition;
   NutritionalPlan plan;
 
-  Future<void> _refreshPlanEntries(BuildContext context) async {
-    plan = Provider.of<Nutrition>(context, listen: false).currentPlan;
-  }
-
   @override
   Widget build(BuildContext context) {
+    plan = Provider.of<Nutrition>(context, listen: false).currentPlan;
+
     return Card(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -61,36 +59,31 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
             AppLocalizations.of(context).nutritionalPlan,
             style: Theme.of(context).textTheme.headline4,
           ),
-          FutureBuilder(
-            future: _refreshPlanEntries(context),
-            builder: (context, snapshot) => snapshot.connectionState == ConnectionState.waiting
-                ? Container(height: 180, child: Center(child: CircularProgressIndicator()))
-                : plan != null
-                    ? Column(
-                        children: [
-                          Text(
-                            DateFormat.yMd().format(plan.creationDate),
-                            style: Theme.of(context).textTheme.headline6,
-                          ),
-                          TextButton(
-                            child: Text(
-                              plan.description,
-                              style: TextStyle(fontSize: 20),
-                            ),
-                            onPressed: () {
-                              return Navigator.of(context)
-                                  .pushNamed(NutritionalPlanScreen.routeName, arguments: plan);
-                            },
-                          ),
-                          Container(
-                            padding: EdgeInsets.all(15),
-                            height: 180,
-                            child: NutritionalPlanPieChartWidget(plan.nutritionalValues),
-                          )
-                        ],
-                      )
-                    : Text('You have no nutritional plans'),
-          ),
+          plan != null
+              ? Column(
+                  children: [
+                    Text(
+                      DateFormat.yMd().format(plan.creationDate),
+                      style: Theme.of(context).textTheme.headline6,
+                    ),
+                    TextButton(
+                      child: Text(
+                        plan.description,
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      onPressed: () {
+                        return Navigator.of(context)
+                            .pushNamed(NutritionalPlanScreen.routeName, arguments: plan);
+                      },
+                    ),
+                    Container(
+                      padding: EdgeInsets.all(15),
+                      height: 180,
+                      child: NutritionalPlanPieChartWidget(plan.nutritionalValues),
+                    )
+                  ],
+                )
+              : Text('You have no nutritional plans'),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
@@ -127,12 +120,10 @@ class DashboardWeightWidget extends StatefulWidget {
 class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
   BodyWeight weightEntriesData;
 
-  Future<void> _refreshWeightEntries(BuildContext context) async {
-    weightEntriesData = Provider.of<BodyWeight>(context, listen: false);
-  }
-
   @override
   Widget build(BuildContext context) {
+    weightEntriesData = Provider.of<BodyWeight>(context, listen: false);
+
     return Card(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -141,39 +132,31 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
             AppLocalizations.of(context).weight,
             style: Theme.of(context).textTheme.headline4,
           ),
-          FutureBuilder(
-            future: _refreshWeightEntries(context),
-            builder: (context, snapshot) => snapshot.connectionState == ConnectionState.waiting
-                ? Container(
-                    height: 180,
-                    child: Center(child: CircularProgressIndicator()),
-                  )
-                : Column(
-                    children: [
-                      weightEntriesData.items.length > 0
-                          ? Container(
-                              padding: EdgeInsets.all(15),
-                              height: 180,
-                              child: WeightChartWidget(weightEntriesData.items),
-                            )
-                          : Text('You have no weight entries'),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          TextButton(
-                            child: const Text('Action one'),
-                            onPressed: () {},
-                          ),
-                          const SizedBox(width: 8),
-                          TextButton(
-                            child: const Text('Action two'),
-                            onPressed: () {},
-                          ),
-                          const SizedBox(width: 8),
-                        ],
-                      ),
-                    ],
+          Column(
+            children: [
+              weightEntriesData.items.length > 0
+                  ? Container(
+                      padding: EdgeInsets.all(15),
+                      height: 180,
+                      child: WeightChartWidget(weightEntriesData.items),
+                    )
+                  : Text('You have no weight entries'),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  TextButton(
+                    child: const Text('Action one'),
+                    onPressed: () {},
                   ),
+                  const SizedBox(width: 8),
+                  TextButton(
+                    child: const Text('Action two'),
+                    onPressed: () {},
+                  ),
+                  const SizedBox(width: 8),
+                ],
+              ),
+            ],
           ),
         ],
       ),
@@ -197,14 +180,16 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
   WorkoutPlan _workoutPlan;
   var showDetail = false;
 
-  Future<void> _fetchWorkoutEntries(BuildContext context) async {
-    _workoutPlan = Provider.of<WorkoutPlans>(context, listen: false).activePlan;
-    _workoutPlan = await Provider.of<WorkoutPlans>(context, listen: false)
-        .fetchAndSetFullWorkout(_workoutPlan.id);
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    _workoutPlan = Provider.of<WorkoutPlans>(context, listen: false).activePlan;
+
     return Card(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -213,60 +198,52 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
             AppLocalizations.of(context).labelWorkoutPlan,
             style: Theme.of(context).textTheme.headline4,
           ),
-          FutureBuilder(
-            future: _fetchWorkoutEntries(context),
-            builder: (context, snapshot) => snapshot.connectionState == ConnectionState.waiting
-                ? Center(
-                    child:
-                        Container(height: 180, child: Center(child: CircularProgressIndicator())),
+          _workoutPlan != null
+              ? Column(children: [
+                  Text(
+                    DateFormat.yMd().format(_workoutPlan.creationDate),
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                  TextButton(
+                    child: Text(
+                      _workoutPlan.description,
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    onPressed: () {
+                      return Navigator.of(context)
+                          .pushNamed(WorkoutPlanScreen.routeName, arguments: _workoutPlan);
+                    },
+                  ),
+                  ..._workoutPlan.days.map((workoutDay) {
+                    return Column(children: [
+                      const SizedBox(height: 10),
+                      showDetail == true
+                          ? Text(
+                              workoutDay.description,
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            )
+                          : Text(workoutDay.description),
+                      if (showDetail)
+                        ...workoutDay.sets
+                            .map((set) => Text(set.exercises.map((e) => e.name).join(',')))
+                            .toList(),
+                    ]);
+                  }).toList(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      TextButton(
+                        child: Text(AppLocalizations.of(context).toggleDetails),
+                        onPressed: () {
+                          setState(() {
+                            showDetail = !showDetail;
+                          });
+                        },
+                      ),
+                    ],
                   )
-                : _workoutPlan != null
-                    ? Column(children: [
-                        Text(
-                          DateFormat.yMd().format(_workoutPlan.creationDate),
-                          style: Theme.of(context).textTheme.headline6,
-                        ),
-                        TextButton(
-                          child: Text(
-                            _workoutPlan.description,
-                            style: TextStyle(fontSize: 20),
-                          ),
-                          onPressed: () {
-                            return Navigator.of(context)
-                                .pushNamed(WorkoutPlanScreen.routeName, arguments: _workoutPlan);
-                          },
-                        ),
-                        ..._workoutPlan.days.map((workoutDay) {
-                          return Column(children: [
-                            const SizedBox(height: 10),
-                            showDetail == true
-                                ? Text(
-                                    workoutDay.description,
-                                    style: TextStyle(fontWeight: FontWeight.bold),
-                                  )
-                                : Text(workoutDay.description),
-                            if (showDetail)
-                              ...workoutDay.sets
-                                  .map((set) => Text(set.exercises.map((e) => e.name).join(',')))
-                                  .toList(),
-                          ]);
-                        }).toList(),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: <Widget>[
-                            TextButton(
-                              child: Text(AppLocalizations.of(context).toggleDetails),
-                              onPressed: () {
-                                setState(() {
-                                  showDetail = !showDetail;
-                                });
-                              },
-                            ),
-                          ],
-                        )
-                      ])
-                    : Text('you have no workouts'),
-          ),
+                ])
+              : Text('you have no workouts'),
         ],
       ),
     );

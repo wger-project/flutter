@@ -86,7 +86,6 @@ class WeightEntriesList extends StatelessWidget {
                   ),
                 ),
                 background: Container(
-                  //color: Theme.of(context).accentColor,
                   alignment: Alignment.centerLeft,
                   padding: EdgeInsets.only(right: 20),
                   margin: EdgeInsets.symmetric(
@@ -98,13 +97,8 @@ class WeightEntriesList extends StatelessWidget {
                     //color: Colors.white,
                   ),
                 ),
-                //direction: DismissDirection.endToStart,
                 child: Card(
                   child: ListTile(
-                    //onTap: () => Navigator.of(context).pushNamed(
-                    //  WorkoutPlanScreen.routeName,
-                    //  arguments: currentPlan,
-                    //),
                     onTap: () {},
                     title: Text(DateFormat.yMd().format(currentEntry.date).toString()),
                     subtitle: Text('${currentEntry.weight} kg'),
