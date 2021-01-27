@@ -188,6 +188,7 @@ class _AuthCardState extends State<AuthCard> {
                 TextFormField(
                   key: Key('inputUsername'),
                   decoration: InputDecoration(labelText: 'Username'),
+                  autofillHints: [AutofillHints.username],
                   controller: _usernameController,
                   textInputAction: TextInputAction.next,
                   keyboardType: TextInputType.emailAddress,
@@ -205,6 +206,7 @@ class _AuthCardState extends State<AuthCard> {
                   TextFormField(
                     key: Key('inputEmail'),
                     decoration: InputDecoration(labelText: 'E-Mail'),
+                    autofillHints: [AutofillHints.email],
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                     textInputAction: TextInputAction.next,
@@ -221,6 +223,7 @@ class _AuthCardState extends State<AuthCard> {
                 TextFormField(
                   key: Key('inputPassword'),
                   decoration: InputDecoration(labelText: 'Password'),
+                  autofillHints: [AutofillHints.password],
                   obscureText: true,
                   controller: _passwordController,
                   textInputAction: TextInputAction.next,
