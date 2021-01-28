@@ -1,4 +1,4 @@
-package com.example.wger
+package de.wger.flutter
 
 import io.flutter.embedding.android.FlutterActivity
 
