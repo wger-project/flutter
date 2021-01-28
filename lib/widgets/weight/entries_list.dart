@@ -65,12 +65,16 @@ class WeightEntriesList extends StatelessWidget {
                   }
                 },
                 confirmDismiss: (direction) async {
-                  showFormBottomSheet(
-                    context,
-                    AppLocalizations.of(context).edit,
-                    WeightForm(currentEntry),
-                  );
-                  return false;
+                  // Edit entry
+                  if (direction == DismissDirection.startToEnd) {
+                    showFormBottomSheet(
+                      context,
+                      AppLocalizations.of(context).edit,
+                      WeightForm(currentEntry),
+                    );
+                    return false;
+                  }
+                  return true;
                 },
                 secondaryBackground: Container(
                   color: Theme.of(context).errorColor,
