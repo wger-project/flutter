@@ -84,7 +84,7 @@ class MyApp extends StatelessWidget {
           title: 'wger',
           theme: wgerTheme,
           home: auth.isAuth
-              ? DashboardScreen()
+              ? HomeTabsScreen()
               : FutureBuilder(
                   future: auth.tryAutoLogin(),
                   builder: (ctx, authResultSnapshot) =>

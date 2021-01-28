@@ -17,9 +17,11 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:wger/screens/dashboard.dart';
 import 'package:wger/screens/nutritional_plans_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/screens/workout_plans_screen.dart';
+import 'package:wger/theme/theme.dart';
 
 class HomeTabsScreen extends StatefulWidget {
   static const routeName = '/dashboard2';
@@ -28,52 +30,44 @@ class HomeTabsScreen extends StatefulWidget {
   _HomeTabsScreenState createState() => _HomeTabsScreenState();
 }
 
-class _HomeTabsScreenState extends State<HomeTabsScreen> {
-  List<Map<String, Object>> _pages;
+class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProviderStateMixin {
+  TabController controller;
 
   @override
   initState() {
-    _pages = [
-      {'page': WorkoutPlansScreen(), 'title': 'Schedule'},
-      {'page': NutritionScreen(), 'title': 'Nutrition'},
-      {'page': WeightScreen(), 'title': 'Weight'},
-    ];
     super.initState();
-  }
-
-  int _selectedPageIndex = 0;
-  void _selectPage(int index) {
-    setState(() {
-      _selectedPageIndex = index;
-    });
+    controller = TabController(length: 4, vsync: this);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages[_selectedPageIndex]['page'],
-      bottomNavigationBar: BottomNavigationBar(
-        onTap: _selectPage,
-        backgroundColor: Theme.of(context).primaryColor,
-        unselectedItemColor: Colors.white,
-        selectedItemColor: Colors.black87,
-        currentIndex: _selectedPageIndex,
-        items: [
-          BottomNavigationBarItem(
-            backgroundColor: Theme.of(context).primaryColor,
-            icon: Icon(Icons.calendar_today),
-            label: 'Schedule',
+      body: TabBarView(
+        controller: controller,
+        children: <Widget>[
+          DashboardScreen(),
+          WorkoutPlansScreen(),
+          NutritionScreen(),
+          WeightScreen(),
+        ],
+      ),
+      bottomNavigationBar: TabBar(
+        controller: controller,
+        indicatorColor: wgerSecondaryColor,
+        labelColor: Colors.black,
+        tabs: <Widget>[
+          Tab(
+            icon: Icon(Icons.dashboard),
           ),
-          BottomNavigationBarItem(
-            backgroundColor: Theme.of(context).primaryColor,
+          Tab(
+            icon: Icon(Icons.fitness_center),
+          ),
+          Tab(
             icon: Icon(Icons.restaurant),
-            label: 'Nutrition',
           ),
-          BottomNavigationBarItem(
-            backgroundColor: Theme.of(context).primaryColor,
+          Tab(
             icon: Icon(Icons.bar_chart),
-            label: 'Weight',
-          )
+          ),
         ],
       ),
     );
