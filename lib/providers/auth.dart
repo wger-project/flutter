@@ -73,12 +73,9 @@ class Auth with ChangeNotifier {
 
   Future<void> _authenticate(String username, String password, String serverUrl) async {
     var url = '$serverUrl/api/v2/login/';
-    //print(username);
-    //print(password);
 
     try {
       // Get the server version
-      await setServerVersion();
 
       final response = await http.post(
         url,
@@ -114,6 +111,9 @@ class Auth with ChangeNotifier {
         'serverUrl': this.serverUrl,
         // 'expiryDate': _expiryDate.toIso8601String(),
       });
+
+      await setServerVersion();
+      await setApplicationVersion();
       prefs.setString('userData', userData);
     } catch (error) {
       throw error;
