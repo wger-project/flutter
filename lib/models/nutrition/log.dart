@@ -66,6 +66,7 @@ class Log {
 
   Log.fromMealItem(MealItem mealItem) {
     this.ingredientId = mealItem.ingredientId;
+    this.ingredientObj = mealItem.ingredientObj;
     this.weightUnit = null;
     this.amount = mealItem.amount;
   }
