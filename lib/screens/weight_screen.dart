@@ -57,13 +57,8 @@ class _WeightScreenState extends State<WeightScreen> {
           );
         },
       ),
-      body: FutureBuilder(
-        future: Provider.of<BodyWeight>(context, listen: false).fetchAndSetEntries(),
-        builder: (context, snapshot) => snapshot.connectionState == ConnectionState.waiting
-            ? Center(child: CircularProgressIndicator())
-            : Consumer<BodyWeight>(
-                builder: (context, weightProvider, child) => WeightEntriesList(weightProvider),
-              ),
+      body: Consumer<BodyWeight>(
+        builder: (context, weightProvider, child) => WeightEntriesList(weightProvider),
       ),
     );
   }

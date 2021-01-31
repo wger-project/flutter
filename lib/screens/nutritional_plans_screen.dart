@@ -20,7 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/locale/locales.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
-import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/providers/nutrition.dart';
 import 'package:wger/widgets/app_drawer.dart';
 import 'package:wger/widgets/core/bottom_sheet.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
@@ -56,8 +56,8 @@ class _NutritionScreenState extends State<NutritionScreen> {
           //await showNutritionalPlanSheet(context, nutritionalPlan);
         },
       ),
-      body: Consumer<WorkoutPlans>(
-        builder: (context, productsData, child) => NutritionalPlansList(),
+      body: Consumer<Nutrition>(
+        builder: (context, nutritionProvider, child) => NutritionalPlansList(nutritionProvider),
       ),
     );
   }

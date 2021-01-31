@@ -18,24 +18,25 @@
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 
 class NutritionalPlansList extends StatelessWidget {
+  Nutrition _nutritrionProvider;
+  NutritionalPlansList(this._nutritrionProvider);
+
   @override
   Widget build(BuildContext context) {
-    final nutritrionalPlansData = Provider.of<Nutrition>(context);
     return ListView.builder(
       padding: const EdgeInsets.all(10.0),
-      itemCount: nutritrionalPlansData.items.length,
+      itemCount: _nutritrionProvider.items.length,
       itemBuilder: (context, index) {
-        final currentPlan = nutritrionalPlansData.items[index];
+        final currentPlan = _nutritrionProvider.items[index];
         return Dismissible(
           key: Key(currentPlan.id.toString()),
           onDismissed: (direction) {
             // Delete workout from DB
-            Provider.of<Nutrition>(context, listen: false).deletePlan(currentPlan.id);
+            _nutritrionProvider.deletePlan(currentPlan.id);
 
             // and inform the user
             Scaffold.of(context).showSnackBar(

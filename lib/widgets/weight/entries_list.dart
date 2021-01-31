@@ -18,7 +18,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/locale/locales.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/widgets/core/bottom_sheet.dart';
@@ -51,7 +50,7 @@ class WeightEntriesList extends StatelessWidget {
                 onDismissed: (direction) {
                   if (direction == DismissDirection.endToStart) {
                     // Delete entry from DB
-                    Provider.of<BodyWeight>(context, listen: false).deleteEntry(currentEntry.id);
+                    _weightProvider.deleteEntry(currentEntry.id);
 
                     // and inform the user
                     Scaffold.of(context).showSnackBar(

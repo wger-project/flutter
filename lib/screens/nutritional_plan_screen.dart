@@ -39,13 +39,6 @@ class NutritionalPlanScreen extends StatefulWidget {
 }
 
 class _NutritionalPlanScreenState extends State<NutritionalPlanScreen> {
-  Future<NutritionalPlan> _loadNutritionalPlanDetail(BuildContext context, int planId) async {
-    var plan = Provider.of<Nutrition>(context, listen: false).findById(planId);
-    await Provider.of<Nutrition>(context, listen: false).fetchAndSetLogs(plan);
-
-    return plan;
-  }
-
   Widget getAppBar(NutritionalPlan plan) {
     return AppBar(
       title: Text(AppLocalizations.of(context).nutritionalPlan),
@@ -90,16 +83,10 @@ class _NutritionalPlanScreenState extends State<NutritionalPlanScreen> {
     final nutritionalPlan = ModalRoute.of(context).settings.arguments as NutritionalPlan;
 
     return Scaffold(
-      appBar: getAppBar(nutritionalPlan),
+      //appBar: getAppBar(nutritionalPlan),
       //drawer: AppDrawer(),
-      body: FutureBuilder<NutritionalPlan>(
-        future: _loadNutritionalPlanDetail(context, nutritionalPlan.id),
-        builder: (context, AsyncSnapshot<NutritionalPlan> snapshot) =>
-            snapshot.connectionState == ConnectionState.waiting
-                ? Center(child: CircularProgressIndicator())
-                : Consumer<Nutrition>(
-                    builder: (context, nutrition, _) => NutritionalPlanDetailWidget(snapshot.data),
-                  ),
+      body: Consumer<Nutrition>(
+        builder: (context, nutrition, _) => NutritionalPlanDetailWidget(nutritionalPlan),
       ),
     );
   }
