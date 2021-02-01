@@ -234,6 +234,14 @@ class DismissibleMealHeader extends StatelessWidget {
             // Log meal
           } else {
             Provider.of<Nutrition>(context, listen: false).logMealToDiary(_meal);
+            Scaffold.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  AppLocalizations.of(context).mealLogged,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            );
           }
           return false;
         },

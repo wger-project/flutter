@@ -123,6 +123,14 @@ class AppLocalizations {
     );
   }
 
+  String get mealLogged {
+    return Intl.message(
+      'Meal was successfully logged to diary',
+      name: 'mealLogged',
+      desc: 'Info message after logging a meal',
+    );
+  }
+
   String get addIngredient {
     return Intl.message(
       'Add ingredient',
