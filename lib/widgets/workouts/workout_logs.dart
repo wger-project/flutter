@@ -35,53 +35,54 @@ class _WorkoutLogsState extends State<WorkoutLogs> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        width: double.infinity,
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: Text(
-                'Weight Log',
-                style: Theme.of(context).textTheme.headline5,
+    return SliverList(
+      delegate: SliverChildListDelegate(
+        [
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Text(
+                  'Weight Log',
+                  style: Theme.of(context).textTheme.headline5,
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                'This page shows the weight logs belonging to this workout only.'
-                'Click on an exercise to see all the historical data for it.',
-                textAlign: TextAlign.justify,
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  'This page shows the weight logs belonging to this workout only.'
+                  'Click on an exercise to see all the historical data for it.',
+                  textAlign: TextAlign.justify,
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                'If on a single day there is more than one entry with the same'
-                'number of repetitions, but different weights, only the entry with'
-                'the higher weight is shown in the diagram.',
-                textAlign: TextAlign.justify,
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  'If on a single day there is more than one entry with the same'
+                  'number of repetitions, but different weights, only the entry with'
+                  'the higher weight is shown in the diagram.',
+                  textAlign: TextAlign.justify,
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                'Note that only entries with a weight unit (kg or lb) and repetitions'
-                'are charted, other combinations such as time or until failure'
-                'are ignored here.',
-                textAlign: TextAlign.justify,
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  'Note that only entries with a weight unit (kg or lb) and repetitions'
+                  'are charted, other combinations such as time or until failure'
+                  'are ignored here.',
+                  textAlign: TextAlign.justify,
+                ),
               ),
-            ),
-            ElevatedButton(
-              child: Text('Back to workout'),
-              onPressed: () {
-                widget._changeMode(WorkoutScreenMode.workout);
-              },
-            ),
-            ...widget._workoutPlan.days.map((workoutDay) => DayLogWidget(workoutDay)).toList(),
-          ],
-        ),
+              ElevatedButton(
+                child: Text('Back to workout'),
+                onPressed: () {
+                  widget._changeMode(WorkoutScreenMode.workout);
+                },
+              ),
+              ...widget._workoutPlan.days.map((workoutDay) => DayLogWidget(workoutDay)).toList(),
+            ],
+          ),
+        ],
       ),
     );
   }

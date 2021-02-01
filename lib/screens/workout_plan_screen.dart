@@ -55,68 +55,13 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
     });
   }
 
-  Widget getAppBar(WorkoutPlan plan) {
-    return AppBar(
-      title: Text(plan.description),
-      actions: [
-        PopupMenuButton<WorkoutOptions>(
-          icon: Icon(Icons.more_vert),
-          onSelected: (value) {
-            // Edit
-            if (value == WorkoutOptions.edit) {
-              showFormBottomSheet(
-                context,
-                AppLocalizations.of(context).edit,
-                WorkoutForm(plan),
-              );
-
-              // Delete
-            } else if (value == WorkoutOptions.delete) {
-              Provider.of<WorkoutPlans>(context, listen: false).deleteWorkout(plan.id);
-              Navigator.of(context).pushNamed(WorkoutPlansScreen.routeName);
-
-              // Toggle Mode
-            } else if (value == WorkoutOptions.toggleMode) {
-              if (_mode == WorkoutScreenMode.workout) {
-                _changeMode(WorkoutScreenMode.log);
-              } else {
-                _changeMode(WorkoutScreenMode.workout);
-              }
-            }
-          },
-          itemBuilder: (BuildContext context) {
-            return [
-              PopupMenuItem<WorkoutOptions>(
-                value: WorkoutOptions.edit,
-                child: Text(AppLocalizations.of(context).edit),
-              ),
-              PopupMenuItem<WorkoutOptions>(
-                child: _mode == WorkoutScreenMode.log ? Text('Open workout') : Text('Open logs'),
-                value: WorkoutOptions.toggleMode,
-              ),
-              const PopupMenuDivider(),
-              PopupMenuItem<WorkoutOptions>(
-                value: WorkoutOptions.delete,
-                child: Text(AppLocalizations.of(context).delete),
-              ),
-            ];
-          },
-        ),
-      ],
-    );
-  }
-
   Widget getBody(WorkoutPlan plan) {
     switch (_mode) {
       case WorkoutScreenMode.workout:
-        return Consumer<WorkoutPlans>(
-          builder: (context, value, child) => WorkoutPlanDetail(plan, _changeMode),
-        );
+        return WorkoutPlanDetail(plan, _changeMode);
         break;
       case WorkoutScreenMode.log:
-        return Consumer<WorkoutPlans>(
-          builder: (context, value, child) => WorkoutLogs(plan, _changeMode),
-        );
+        return WorkoutLogs(plan, _changeMode);
         break;
       case WorkoutScreenMode.gym:
         return Text('Gym Mode');
@@ -129,13 +74,74 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
     final workoutPlan = ModalRoute.of(context).settings.arguments as WorkoutPlan;
 
     return Scaffold(
-      appBar: getAppBar(workoutPlan),
-      body: FutureBuilder<WorkoutPlan>(
-        future: Provider.of<WorkoutPlans>(context, listen: false).setFullWorkout(workoutPlan.id),
-        builder: (context, AsyncSnapshot<WorkoutPlan> snapshot) =>
-            snapshot.connectionState == ConnectionState.waiting
-                ? Center(child: CircularProgressIndicator())
-                : getBody(snapshot.data),
+      //appBar: getAppBar(workoutPlan),
+      body: Consumer<WorkoutPlans>(
+        builder: (context, value, child) => CustomScrollView(
+          slivers: <Widget>[
+            SliverAppBar(
+              expandedHeight: 250,
+              pinned: true,
+              actions: [
+                PopupMenuButton<WorkoutOptions>(
+                  icon: Icon(Icons.more_vert),
+                  onSelected: (value) {
+                    // Edit
+                    if (value == WorkoutOptions.edit) {
+                      showFormBottomSheet(
+                        context,
+                        AppLocalizations.of(context).edit,
+                        WorkoutForm(workoutPlan),
+                      );
+
+                      // Delete
+                    } else if (value == WorkoutOptions.delete) {
+                      Provider.of<WorkoutPlans>(context, listen: false)
+                          .deleteWorkout(workoutPlan.id);
+                      Navigator.of(context).pushNamed(WorkoutPlansScreen.routeName);
+
+                      // Toggle Mode
+                    } else if (value == WorkoutOptions.toggleMode) {
+                      if (_mode == WorkoutScreenMode.workout) {
+                        _changeMode(WorkoutScreenMode.log);
+                      } else {
+                        _changeMode(WorkoutScreenMode.workout);
+                      }
+                    }
+                  },
+                  itemBuilder: (BuildContext context) {
+                    return [
+                      PopupMenuItem<WorkoutOptions>(
+                        value: WorkoutOptions.edit,
+                        child: Text(AppLocalizations.of(context).edit),
+                      ),
+                      PopupMenuItem<WorkoutOptions>(
+                        child: _mode == WorkoutScreenMode.log
+                            ? Text('Open workout')
+                            : Text('Open logs'),
+                        value: WorkoutOptions.toggleMode,
+                      ),
+                      const PopupMenuDivider(),
+                      PopupMenuItem<WorkoutOptions>(
+                        value: WorkoutOptions.delete,
+                        child: Text(AppLocalizations.of(context).delete),
+                      ),
+                    ];
+                  },
+                ),
+              ],
+              flexibleSpace: FlexibleSpaceBar(
+                title: Text(workoutPlan.description),
+                background: Image.network(
+                  'https://thumbnails.production.thenounproject.com/GS2Ct-A74O23cwQ-FYCpzlN9Bdc=/fit-in/1000x1000/photos.production.thenounproject.com/photos/1F45191D-AE0E-425D-90E3-95A23B762B95.jpg',
+                  // --> https://thenounproject.com/photo/athlete-working-out-with-battle-ropes-outdoors-on-grass-field-0LrJR4/
+
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            getBody(workoutPlan),
+          ],
+        ),
       ),
     );
   }

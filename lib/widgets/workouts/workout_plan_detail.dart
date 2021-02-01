@@ -62,50 +62,46 @@ class WorkoutPlanDetail extends StatefulWidget {
 class _WorkoutPlanDetailState extends State<WorkoutPlanDetail> {
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        width: double.infinity,
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: Text(
-                widget._workoutPlan.description,
-                style: Theme.of(context).textTheme.headline6,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: Text(
-                DateFormat.yMd().format(widget._workoutPlan.creationDate).toString(),
-                style: Theme.of(context).textTheme.headline6,
-              ),
-            ),
-            ...widget._workoutPlan.days.map((workoutDay) => WorkoutDayWidget(workoutDay)).toList(),
-            Column(
-              children: [
-                ElevatedButton(
-                  child: Text(AppLocalizations.of(context).add),
-                  onPressed: () {
-                    showFormBottomSheet(
-                      context,
-                      AppLocalizations.of(context).newDay,
-                      DayFormWidget(
-                        workout: widget._workoutPlan,
-                      ),
-                    );
-                  },
+    return SliverList(
+      delegate: SliverChildListDelegate(
+        [
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Text(
+                  DateFormat.yMd().format(widget._workoutPlan.creationDate).toString(),
+                  style: Theme.of(context).textTheme.headline6,
                 ),
-                ElevatedButton(
-                  child: Text('View logs'),
-                  onPressed: () {
-                    widget._changeMode(WorkoutScreenMode.log);
-                  },
-                ),
-              ],
-            ),
-          ],
-        ),
+              ),
+              ...widget._workoutPlan.days
+                  .map((workoutDay) => WorkoutDayWidget(workoutDay))
+                  .toList(),
+              Column(
+                children: [
+                  ElevatedButton(
+                    child: Text(AppLocalizations.of(context).add),
+                    onPressed: () {
+                      showFormBottomSheet(
+                        context,
+                        AppLocalizations.of(context).newDay,
+                        DayFormWidget(
+                          workout: widget._workoutPlan,
+                        ),
+                      );
+                    },
+                  ),
+                  ElevatedButton(
+                    child: Text('View logs'),
+                    onPressed: () {
+                      widget._changeMode(WorkoutScreenMode.log);
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
