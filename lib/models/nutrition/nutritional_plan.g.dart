@@ -15,9 +15,10 @@ NutritionalPlan _$NutritionalPlanFromJson(Map<String, dynamic> json) {
         ? null
         : DateTime.parse(json['creation_date'] as String),
     meals: (json['meals'] as List)
-        ?.map(
-            (e) => e == null ? null : Meal.fromJson(e as Map<String, dynamic>))
-        ?.toList(),
+            ?.map((e) =>
+                e == null ? null : Meal.fromJson(e as Map<String, dynamic>))
+            ?.toList() ??
+        [],
   );
 }
 

@@ -26,12 +26,24 @@ import 'package:wger/widgets/core/bottom_sheet.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 
-class MealWidget extends StatelessWidget {
+class MealWidget extends StatefulWidget {
   final Meal _meal;
 
   MealWidget(
     this._meal,
   );
+
+  @override
+  _MealWidgetState createState() => _MealWidgetState();
+}
+
+class _MealWidgetState extends State<MealWidget> {
+  bool _expanded = false;
+  void _toggleExpanded() {
+    setState(() {
+      _expanded = !_expanded;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,27 +52,28 @@ class MealWidget extends StatelessWidget {
       child: Card(
         child: Column(
           children: [
-            DismissibleMealHeader(meal: _meal),
-            Padding(
-              padding: const EdgeInsets.all(5),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  MutedText(AppLocalizations.of(context).energy),
-                  MutedText(AppLocalizations.of(context).protein),
-                  MutedText(AppLocalizations.of(context).carbohydrates),
-                  MutedText(AppLocalizations.of(context).fat),
-                ],
+            DismissibleMealHeader(_expanded, _toggleExpanded, meal: widget._meal),
+            if (_expanded)
+              Padding(
+                padding: const EdgeInsets.all(5),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    MutedText(AppLocalizations.of(context).energy),
+                    MutedText(AppLocalizations.of(context).protein),
+                    MutedText(AppLocalizations.of(context).carbohydrates),
+                    MutedText(AppLocalizations.of(context).fat),
+                  ],
+                ),
               ),
-            ),
-            ..._meal.mealItems.map((item) => MealItemWidget(item)).toList(),
+            ...widget._meal.mealItems.map((item) => MealItemWidget(item, _expanded)).toList(),
             OutlinedButton(
               child: Text(AppLocalizations.of(context).addIngredient),
               onPressed: () {
                 showFormBottomSheet(
                   context,
                   AppLocalizations.of(context).addIngredient,
-                  MealItemForm(_meal),
+                  MealItemForm(widget._meal),
                 );
               },
             ),
@@ -72,9 +85,10 @@ class MealWidget extends StatelessWidget {
 }
 
 class MealItemWidget extends StatelessWidget {
+  final bool _expanded;
   final MealItem _item;
 
-  MealItemWidget(this._item);
+  MealItemWidget(this._item, this._expanded);
 
   @override
   Widget build(BuildContext context) {
@@ -107,17 +121,19 @@ class MealItemWidget extends StatelessWidget {
                 textAlign: TextAlign.left,
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                MutedText(
-                    '${values.energy.toStringAsFixed(0)} ${AppLocalizations.of(context).kcal}'),
-                MutedText('${values.protein.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
-                MutedText(
-                    '${values.carbohydrates.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
-                MutedText('${values.fat.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
-              ],
-            ),
+            if (_expanded)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  MutedText(
+                      '${values.energy.toStringAsFixed(0)} ${AppLocalizations.of(context).kcal}'),
+                  MutedText(
+                      '${values.protein.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
+                  MutedText(
+                      '${values.carbohydrates.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
+                  MutedText('${values.fat.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
+                ],
+              ),
           ],
         ),
       ),
@@ -126,7 +142,12 @@ class MealItemWidget extends StatelessWidget {
 }
 
 class DismissibleMealHeader extends StatelessWidget {
-  const DismissibleMealHeader({
+  final bool _expanded;
+  final _toggle;
+
+  const DismissibleMealHeader(
+    this._expanded,
+    this._toggle, {
     Key key,
     @required Meal meal,
   })  : _meal = meal,
@@ -147,11 +168,22 @@ class DismissibleMealHeader extends StatelessWidget {
       child: Dismissible(
         key: Key(_meal.id.toString()),
         child: Container(
-          width: double.infinity,
-          decoration: BoxDecoration(color: Colors.black12),
-          padding: const EdgeInsets.all(10),
-          child: _meal.time != null ? Text(_meal.time.format(context)) : Text('aaaa'),
-        ),
+            width: double.infinity,
+            decoration: BoxDecoration(color: Colors.black12),
+            padding: const EdgeInsets.all(10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _meal.time != null ? Text(_meal.time.format(context)) : Text('aaaa'),
+                IconButton(
+                  visualDensity: VisualDensity.compact,
+                  icon: _expanded ? Icon(Icons.expand_less) : Icon(Icons.expand_more),
+                  onPressed: () {
+                    _toggle();
+                  },
+                ),
+              ],
+            )),
         secondaryBackground: Container(
           color: Theme.of(context).accentColor,
           padding: EdgeInsets.only(right: 10),

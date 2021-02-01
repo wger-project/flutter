@@ -36,10 +36,10 @@ class NutritionalPlan {
   @JsonKey(required: true, name: 'creation_date', toJson: toDate)
   DateTime creationDate;
 
-  @JsonKey(required: false)
+  @JsonKey(required: false, defaultValue: [])
   List<Meal> meals = [];
 
-  @JsonKey(ignore: true)
+  @JsonKey(ignore: true, defaultValue: [])
   List<Log> logs = [];
 
   NutritionalPlan({
