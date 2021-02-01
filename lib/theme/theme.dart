@@ -64,6 +64,8 @@ final ThemeData wgerTheme = ThemeData(
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
         primary: wgerPrimaryButtonColor,
+        visualDensity: VisualDensity.compact,
+        side: BorderSide(color: wgerPrimaryButtonColor),
       ),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
