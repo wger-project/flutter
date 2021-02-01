@@ -70,8 +70,8 @@ class NutritionalPlansList extends StatelessWidget {
                   arguments: currentPlan,
                 );
               },
-              title: Text(DateFormat.yMd().format(currentPlan.creationDate)),
-              subtitle: Text(currentPlan.description),
+              title: Text(currentPlan.description),
+              subtitle: Text(DateFormat.yMd().format(currentPlan.creationDate)),
             ),
           ),
         );

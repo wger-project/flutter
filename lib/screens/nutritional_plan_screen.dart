@@ -31,62 +31,69 @@ enum NutritionalPlanOptions {
   toggleMode,
 }
 
-class NutritionalPlanScreen extends StatefulWidget {
+class NutritionalPlanScreen extends StatelessWidget {
   static const routeName = '/nutritional-plan-detail';
 
   @override
-  _NutritionalPlanScreenState createState() => _NutritionalPlanScreenState();
-}
-
-class _NutritionalPlanScreenState extends State<NutritionalPlanScreen> {
-  Widget getAppBar(NutritionalPlan plan) {
-    return AppBar(
-      title: Text(AppLocalizations.of(context).nutritionalPlan),
-      actions: [
-        PopupMenuButton<NutritionalPlanOptions>(
-          icon: Icon(Icons.more_vert),
-          onSelected: (value) {
-            // Edit
-            if (value == NutritionalPlanOptions.edit) {
-              showFormBottomSheet(
-                context,
-                AppLocalizations.of(context).edit,
-                PlanForm(plan),
-              );
-
-              // Delete
-            } else if (value == NutritionalPlanOptions.delete) {
-              Provider.of<Nutrition>(context, listen: false).deletePlan(plan.id);
-              Navigator.of(context).pushNamed(NutritionalPlanScreen.routeName);
-            }
-          },
-          itemBuilder: (BuildContext context) {
-            return [
-              PopupMenuItem<NutritionalPlanOptions>(
-                value: NutritionalPlanOptions.edit,
-                child: Text(AppLocalizations.of(context).edit),
-              ),
-              const PopupMenuDivider(),
-              PopupMenuItem<NutritionalPlanOptions>(
-                value: NutritionalPlanOptions.delete,
-                child: Text(AppLocalizations.of(context).delete),
-              ),
-            ];
-          },
-        ),
-      ],
-    );
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final nutritionalPlan = ModalRoute.of(context).settings.arguments as NutritionalPlan;
+    final _nutritionalPlan = ModalRoute.of(context).settings.arguments as NutritionalPlan;
 
     return Scaffold(
       //appBar: getAppBar(nutritionalPlan),
       //drawer: AppDrawer(),
       body: Consumer<Nutrition>(
-        builder: (context, nutrition, _) => NutritionalPlanDetailWidget(nutritionalPlan),
+        builder: (context, nutrition, _) => CustomScrollView(
+          slivers: <Widget>[
+            SliverAppBar(
+              expandedHeight: 250,
+              pinned: true,
+              actions: [
+                PopupMenuButton<NutritionalPlanOptions>(
+                  icon: Icon(Icons.more_vert),
+                  onSelected: (value) {
+                    // Edit
+                    if (value == NutritionalPlanOptions.edit) {
+                      showFormBottomSheet(
+                        context,
+                        AppLocalizations.of(context).edit,
+                        PlanForm(_nutritionalPlan),
+                      );
+
+                      // Delete
+                    } else if (value == NutritionalPlanOptions.delete) {
+                      Provider.of<Nutrition>(context, listen: false)
+                          .deletePlan(_nutritionalPlan.id);
+                      Navigator.of(context).pushNamed(NutritionalPlanScreen.routeName);
+                    }
+                  },
+                  itemBuilder: (BuildContext context) {
+                    return [
+                      PopupMenuItem<NutritionalPlanOptions>(
+                        value: NutritionalPlanOptions.edit,
+                        child: Text(AppLocalizations.of(context).edit),
+                      ),
+                      const PopupMenuDivider(),
+                      PopupMenuItem<NutritionalPlanOptions>(
+                        value: NutritionalPlanOptions.delete,
+                        child: Text(AppLocalizations.of(context).delete),
+                      ),
+                    ];
+                  },
+                ),
+              ],
+              flexibleSpace: FlexibleSpaceBar(
+                title: Text(_nutritionalPlan.description),
+                background: Image.network(
+                  'https://thumbnails.production.thenounproject.com/NsyUiJkHgkfnnNt3bKw3DCtewXE=/fit-in/1000x1000/photos.production.thenounproject.com/photos/6905F43B-2816-4286-8696-5B7AEA8FE908.jpg',
+                  // --> https://thenounproject.com/photo/tomatoes-chilies-and-dill-leaves-on-table-0JoGn5/
+
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            NutritionalPlanDetailWidget(_nutritionalPlan),
+          ],
+        ),
       ),
     );
   }

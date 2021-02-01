@@ -51,24 +51,28 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
           WeightScreen(),
         ],
       ),
-      bottomNavigationBar: TabBar(
-        controller: controller,
-        indicatorColor: wgerSecondaryColor,
-        labelColor: Colors.black,
-        tabs: <Widget>[
-          Tab(
-            icon: Icon(Icons.dashboard),
-          ),
-          Tab(
-            icon: Icon(Icons.fitness_center),
-          ),
-          Tab(
-            icon: Icon(Icons.restaurant),
-          ),
-          Tab(
-            icon: Icon(Icons.bar_chart),
-          ),
-        ],
+      bottomNavigationBar: Container(
+        color: wgerPrimaryColor,
+        child: TabBar(
+          controller: controller,
+          indicatorColor: wgerSecondaryColor,
+          labelColor: Colors.white,
+          unselectedLabelColor: wgerPrimaryColorLight,
+          tabs: <Widget>[
+            Tab(
+              icon: Icon(Icons.dashboard),
+            ),
+            Tab(
+              icon: Icon(Icons.fitness_center),
+            ),
+            Tab(
+              icon: Icon(Icons.restaurant),
+            ),
+            Tab(
+              icon: Icon(Icons.bar_chart),
+            ),
+          ],
+        ),
       ),
     );
   }
