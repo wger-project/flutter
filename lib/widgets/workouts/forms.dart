@@ -240,7 +240,10 @@ class _SetFormWidgetState extends State<SetFormWidget> {
             TypeAheadFormField(
               textFieldConfiguration: TextFieldConfiguration(
                 controller: this._exercisesController,
-                decoration: InputDecoration(labelText: AppLocalizations.of(context).exercise),
+                decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context).exercise,
+                    helperText: 'You can search for more than one exercise, they will be grouped '
+                        'together for a superset.'),
               ),
               suggestionsCallback: (pattern) async {
                 return await Provider.of<Exercises>(context, listen: false).searchExercise(pattern);
@@ -282,8 +285,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                 return null;
               },
             ),
-            Text('You can search for more than one exercise, they will be grouped '
-                'together for a superset.'),
+            SizedBox(height: 10),
             Text('Number of sets:'),
             Slider(
               value: _currentSetSliderValue,
@@ -321,15 +323,17 @@ class ExerciseSet extends StatelessWidget {
   Widget getSets() {
     List<Widget> out = [];
     for (var i = 1; i <= _numberOfSets; i++) {
-      out.add(Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text('Reps'),
-          Text('Unit'),
-          Text('Weight'),
-          Text('RiR'),
-        ],
-      ));
+      out.add(
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            RepsInputWidget(),
+            WeightUnitInputWidget(key: Key(i.toString())),
+            WeightInputWidget(),
+            RiRInputWidget(),
+          ],
+        ),
+      );
     }
     return Column(
       children: out,
@@ -340,12 +344,127 @@ class ExerciseSet extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        SizedBox(height: 15),
         Text(_exercise.name, style: TextStyle(fontWeight: FontWeight.bold)),
         //ExerciseImage(imageUrl: _exercise.images.first.url),
         Divider(),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('Reps'),
+            Text('Unit'),
+            Text('Weight'),
+            Text('RiR'),
+          ],
+        ),
         getSets(),
-        Padding(padding: EdgeInsets.symmetric(vertical: 5))
       ],
+    );
+  }
+}
+
+class RepsInputWidget extends StatelessWidget {
+  final _repsController = TextEditingController();
+
+  RepsInputWidget({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Flexible(
+      child: TextFormField(
+        //decoration: InputDecoration(labelText: 'aa'),
+        controller: _repsController,
+        onTap: () async {},
+      ),
+    );
+  }
+}
+
+class WeightInputWidget extends StatelessWidget {
+  final _weightController = TextEditingController();
+
+  WeightInputWidget({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Flexible(
+      child: TextFormField(
+        //decoration: InputDecoration(labelText: ''),
+        controller: _weightController,
+        onTap: () async {},
+      ),
+    );
+  }
+}
+
+class RiRInputWidget extends StatefulWidget {
+  RiRInputWidget({Key key}) : super(key: key);
+
+  @override
+  _RiRInputWidgetState createState() => _RiRInputWidgetState();
+}
+
+class _RiRInputWidgetState extends State<RiRInputWidget> {
+  String dropdownValue = '1';
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButton<String>(
+      value: dropdownValue,
+      underline: Container(
+        height: 0,
+        //color: Colors.deepPurpleAccent,
+      ),
+      onChanged: (String newValue) {
+        setState(() {
+          dropdownValue = newValue;
+        });
+      },
+      items: <String>['1', '1.5', '2', '2.5', '3', '3.5']
+          .map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
+    );
+  }
+}
+
+class WeightUnitInputWidget extends StatefulWidget {
+  WeightUnitInputWidget({Key key}) : super(key: key);
+
+  @override
+  _WeightUnitInputWidgetState createState() => _WeightUnitInputWidgetState();
+}
+
+class _WeightUnitInputWidgetState extends State<WeightUnitInputWidget> {
+  String dropdownValue = '1';
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButton<String>(
+      value: dropdownValue,
+      underline: Container(
+        height: 0,
+        //  color: Colors.deepPurpleAccent,
+      ),
+      onChanged: (String newValue) {
+        setState(() {
+          dropdownValue = newValue;
+        });
+      },
+      items: <String>['1', '1.5', '2', '2.5', '3', '3.5']
+          .map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
     );
   }
 }
