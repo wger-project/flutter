@@ -25,31 +25,6 @@ import 'package:wger/widgets/core/bottom_sheet.dart';
 import 'package:wger/widgets/workouts/day.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 
-class DayCheckbox extends StatefulWidget {
-  String name;
-
-  DayCheckbox(this.name);
-
-  @override
-  _DayCheckboxState createState() => _DayCheckboxState();
-}
-
-class _DayCheckboxState extends State<DayCheckbox> {
-  bool _isSelected = false;
-  @override
-  Widget build(BuildContext context) {
-    return CheckboxListTile(
-      title: Text(widget.name),
-      value: _isSelected,
-      onChanged: (bool newValue) {
-        setState(() {
-          _isSelected = newValue;
-        });
-      },
-    );
-  }
-}
-
 class WorkoutPlanDetail extends StatefulWidget {
   final WorkoutPlan _workoutPlan;
   final _changeMode;

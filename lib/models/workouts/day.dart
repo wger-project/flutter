@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/models/workouts/set.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
@@ -11,9 +10,9 @@ class Day {
   final int id;
 
   @JsonKey(required: true)
-  final String description;
+  String description;
 
-  @JsonKey(required: false, name: 'day')
+  @JsonKey(required: false, name: 'day', defaultValue: [])
   List<int> daysOfWeek = [];
 
   //@JsonKey(required: false)
@@ -27,10 +26,12 @@ class Day {
 
   Day({
     this.id,
-    @required this.description,
+    this.description,
     this.daysOfWeek,
     this.sets,
-  });
+  }) {
+    this.daysOfWeek = daysOfWeek ?? [];
+  }
 
   static const Map<int, String> weekdays = {
     1: 'Monday',

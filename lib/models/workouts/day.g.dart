@@ -11,7 +11,7 @@ Day _$DayFromJson(Map<String, dynamic> json) {
   return Day(
     id: json['id'] as int,
     description: json['description'] as String,
-    daysOfWeek: (json['day'] as List)?.map((e) => e as int)?.toList(),
+    daysOfWeek: (json['day'] as List)?.map((e) => e as int)?.toList() ?? [],
     sets: (json['sets'] as List)
         ?.map((e) => e == null ? null : Set.fromJson(e as Map<String, dynamic>))
         ?.toList(),

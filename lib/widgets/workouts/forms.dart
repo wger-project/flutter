@@ -91,19 +91,50 @@ class WorkoutForm extends StatelessWidget {
   }
 }
 
+class DayCheckbox extends StatefulWidget {
+  Day _day;
+  final int _dayNr;
+
+  DayCheckbox(this._dayNr, this._day);
+
+  @override
+  _DayCheckboxState createState() => _DayCheckboxState();
+}
+
+class _DayCheckboxState extends State<DayCheckbox> {
+  bool _isSelected = false;
+  @override
+  Widget build(BuildContext context) {
+    return CheckboxListTile(
+      title: Text(widget._day.getDayName(widget._dayNr)),
+      value: _isSelected,
+      onChanged: (bool newValue) {
+        setState(() {
+          _isSelected = newValue;
+          if (!newValue) {
+            widget._day.daysOfWeek.remove(widget._dayNr);
+          } else {
+            widget._day.daysOfWeek.add(widget._dayNr);
+          }
+        });
+      },
+    );
+  }
+}
+
 class DayFormWidget extends StatefulWidget {
   final WorkoutPlan workout;
   final dayController = TextEditingController();
-
-  Map<String, dynamic> _dayData = {
-    'description': '',
-    'daysOfWeek': [1],
-  };
+  Day _day;
 
   DayFormWidget({
-    Key key,
     @required this.workout,
-  }) : super(key: key);
+    day,
+  }) {
+    this._day = day ?? Day();
+    _day.workout = this.workout;
+    _day.workoutId = this.workout.id;
+  }
 
   @override
   _DayFormWidgetState createState() => _DayFormWidgetState();
@@ -120,30 +151,24 @@ class _DayFormWidgetState extends State<DayFormWidget> {
         key: _form,
         child: Column(
           children: [
-            Text(
-              AppLocalizations.of(context).newDay,
-              style: Theme.of(context).textTheme.headline6,
-            ),
             TextFormField(
               decoration: InputDecoration(labelText: AppLocalizations.of(context).description),
               controller: widget.dayController,
               onSaved: (value) {
-                widget._dayData['description'] = value;
+                widget._day.description = value;
               },
               validator: (value) {
-                const minLenght = 5;
-                const maxLenght = 100;
-                if (value.isEmpty || value.length < minLenght || value.length > maxLenght) {
-                  return 'Please enter between $minLenght and $maxLenght characters.';
+                const minLength = 5;
+                const maxLength = 100;
+                if (value.isEmpty || value.length < minLength || value.length > maxLength) {
+                  return 'Please enter between $minLength and $maxLength characters.';
                 }
                 return null;
               },
             ),
-            TextFormField(
-              decoration: InputDecoration(labelText: 'TODO: Checkbox for days'),
-              enabled: false,
-            ),
-            //...Day().weekdays.values.map((dayName) => DayCheckbox(dayName)).toList(),
+            SizedBox(height: 10),
+            Text('Week days'),
+            ...Day.weekdays.keys.map((dayNr) => DayCheckbox(dayNr, widget._day)).toList(),
             ElevatedButton(
               child: Text(AppLocalizations.of(context).save),
               onPressed: () async {
@@ -153,8 +178,13 @@ class _DayFormWidgetState extends State<DayFormWidget> {
                 _form.currentState.save();
 
                 try {
+                  print(widget._day.daysOfWeek);
+                  print(widget._day.description);
                   Provider.of<WorkoutPlans>(context, listen: false).addDay(
-                      Day(description: widget.dayController.text, daysOfWeek: [1]), widget.workout);
+                    widget._day,
+                    widget.workout,
+                  );
+
                   widget.dayController.clear();
                   Navigator.of(context).pop();
                 } catch (error) {

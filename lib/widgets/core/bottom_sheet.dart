@@ -24,7 +24,7 @@ Future<Widget> showFormBottomSheet(BuildContext context, String header, Widget f
       context: context,
       builder: (BuildContext ctx) {
         return Container(
-          margin: EdgeInsets.all(20),
+          margin: EdgeInsets.symmetric(vertical: 50, horizontal: 15),
           child: Column(
             children: [
               Text(
