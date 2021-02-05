@@ -16,27 +16,41 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/image.dart';
 import 'package:wger/models/http_exception.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/log.dart';
+import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/set.dart';
 import 'package:wger/models/workouts/setting.dart';
+import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/base_provider.dart';
 
 class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
+  static const DAYS_TO_CACHE = 10;
+
   static const _workoutPlansUrlPath = 'workout';
   static const _daysUrlPath = 'day';
+  static const _setsUrlPath = 'set';
+  static const _settingsUrlPath = 'setting';
   static const _logsUrlPath = 'workoutlog';
   static const _sessionUrlPath = 'workoutsession';
+  static const _weightUnitUrlPath = 'setting-weightunit';
+  static const _repetitionUnitUrlPath = 'setting-repetitionunit';
 
   WorkoutPlan _currentPlan;
   List<WorkoutPlan> _workoutPlans = [];
+  List<WeightUnit> _weightUnits = [];
+  List<RepetitionUnit> _repetitionUnit = [];
 
   WorkoutPlans(Auth auth, List<WorkoutPlan> entries, [http.Client client])
       : this._workoutPlans = entries,
@@ -44,6 +58,24 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
 
   List<WorkoutPlan> get items {
     return [..._workoutPlans];
+  }
+
+  List<WeightUnit> get weightUnits {
+    return [..._weightUnits];
+  }
+
+  /// Return the default weight unit (kg)
+  WeightUnit get defaultWeightUnit {
+    return _weightUnits.firstWhere((element) => element.id == 1);
+  }
+
+  List<RepetitionUnit> get repetitionUnits {
+    return [..._repetitionUnit];
+  }
+
+  /// Return the default weight unit (reps)
+  RepetitionUnit get defaultRepetitionUnit {
+    return _repetitionUnit.firstWhere((element) => element.id == 1);
   }
 
   WorkoutPlan findById(int id) {
@@ -229,6 +261,61 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
     return data;
   }
 
+  /// Fetch and set weight units for workout (kg, lb, plate, etc.)
+  Future<void> fetchAndSetRepetitionUnits() async {
+    final response = await client.get(makeUrl(_repetitionUnitUrlPath));
+    final units = json.decode(response.body) as Map<String, dynamic>;
+    try {
+      for (final unit in units['results']) {
+        _repetitionUnit.add(RepetitionUnit.fromJson(unit));
+      }
+    } catch (error) {
+      throw (error);
+    }
+  }
+
+  /// Fetch and set weight units for workout (kg, lb, plate, etc.)
+  Future<void> fetchAndSetWeightUnits() async {
+    final response = await client.get(makeUrl(_weightUnitUrlPath));
+    final units = json.decode(response.body) as Map<String, dynamic>;
+    try {
+      for (final unit in units['results']) {
+        _weightUnits.add(WeightUnit.fromJson(unit));
+      }
+    } catch (error) {
+      throw (error);
+    }
+  }
+
+  Future<void> fetchAndSetUnits() async {
+    // Load units from cache, if available
+    final prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey('workoutUnits')) {
+      final workoutData = json.decode(prefs.getString('workoutUnits'));
+      if (DateTime.parse(workoutData['expiresIn']).isAfter(DateTime.now())) {
+        workoutData['repetitionUnits']
+            .forEach((e) => _repetitionUnit.add(RepetitionUnit.fromJson(e)));
+        workoutData['weightUnit'].forEach((e) => _weightUnits.add(WeightUnit.fromJson(e)));
+        log("Read workout units data from cache. Valid till ${workoutData['expiresIn']}");
+        return;
+      }
+    }
+
+    // Load units
+    await fetchAndSetWeightUnits();
+    await fetchAndSetRepetitionUnits();
+
+    // Save the result to the cache
+    final exerciseData = {
+      'date': DateTime.now().toIso8601String(),
+      'expiresIn': DateTime.now().add(Duration(days: DAYS_TO_CACHE)).toIso8601String(),
+      'repetitionUnits': _repetitionUnit.map((e) => e.toJson()).toList(),
+      'weightUnit': _weightUnits.map((e) => e.toJson()).toList(),
+    };
+    prefs.setString('workoutUnits', json.encode(exerciseData));
+    notifyListeners();
+  }
+
   /*
    * Days
    */
@@ -243,6 +330,28 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
     workout.days.insert(0, day);
     notifyListeners();
     return day;
+  }
+
+  /*
+   * Sets
+   */
+  Future<Set> addSet(Set workoutSet) async {
+    final data = await post(workoutSet.toJson(), makeUrl(_setsUrlPath));
+    final set = Set.fromJson(data);
+    //_workoutPlans.insert(0, plan);
+    notifyListeners();
+    return set;
+  }
+
+  /*
+   * Setting
+   */
+  Future<Setting> addSetting(Setting workoutSetting) async {
+    final data = await post(workoutSetting.toJson(), makeUrl(_settingsUrlPath));
+    final setting = Setting.fromJson(data);
+    //_workoutPlans.insert(0, plan);
+    notifyListeners();
+    return setting;
   }
 
   /*

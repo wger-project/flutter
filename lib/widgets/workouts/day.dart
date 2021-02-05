@@ -94,7 +94,7 @@ class WorkoutDayWidget extends StatelessWidget {
               showFormBottomSheet(
                 context,
                 AppLocalizations.of(context).newSet,
-                SetFormWidget(),
+                SetFormWidget(_day),
               );
             },
           ),

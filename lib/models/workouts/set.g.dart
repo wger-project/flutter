@@ -13,14 +13,8 @@ Set _$SetFromJson(Map<String, dynamic> json) {
     sets: json['sets'] as int,
     day: json['exerciseday'] as int,
     order: json['order'] as int,
-    exercises: (json['exercises'] as List)
-        ?.map((e) =>
-            e == null ? null : Exercise.fromJson(e as Map<String, dynamic>))
-        ?.toList(),
-    settings: (json['settings'] as List)
-        ?.map((e) =>
-            e == null ? null : Setting.fromJson(e as Map<String, dynamic>))
-        ?.toList(),
+    exercises: json['exercises'],
+    settings: json['settings'],
   );
 }
 

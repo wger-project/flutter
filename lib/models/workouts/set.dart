@@ -6,17 +6,19 @@ part 'set.g.dart';
 
 @JsonSerializable()
 class Set {
+  static const DEFAULT_NR_SETS = 4;
+
   @JsonKey(required: true)
   final int id;
 
   @JsonKey(required: true)
-  final int sets;
+  int sets;
 
   @JsonKey(required: false, name: 'exerciseday')
-  final int day;
+  int day;
 
   @JsonKey(required: true)
-  final int order;
+  int order;
 
   @JsonKey(required: true)
   List<Exercise> exercises = [];
@@ -26,12 +28,16 @@ class Set {
 
   Set({
     this.id,
-    this.sets,
+    sets,
     this.day,
     this.order,
-    this.exercises,
-    this.settings,
-  });
+    exercises,
+    settings,
+  }) {
+    this.sets = sets ?? DEFAULT_NR_SETS;
+    this.exercises = exercises ?? [];
+    this.settings = settings ?? [];
+  }
 
   // Boilerplate
   factory Set.fromJson(Map<String, dynamic> json) => _$SetFromJson(json);

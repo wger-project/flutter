@@ -22,6 +22,10 @@ import 'package:provider/provider.dart';
 import 'package:wger/locale/locales.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day.dart';
+import 'package:wger/models/workouts/repetition_unit.dart';
+import 'package:wger/models/workouts/set.dart';
+import 'package:wger/models/workouts/setting.dart';
+import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/exercises.dart';
@@ -214,21 +218,39 @@ class _DayFormWidgetState extends State<DayFormWidget> {
 }
 
 class SetFormWidget extends StatefulWidget {
-  const SetFormWidget({
-    Key key,
-  }) : super(key: key);
+  Day _day;
+  Set _set;
+
+  SetFormWidget(Day day, [Set set]) {
+    this._day = day;
+    this._set = set ?? Set(day: day.id, sets: 4);
+  }
 
   @override
   _SetFormWidgetState createState() => _SetFormWidgetState();
 }
 
 class _SetFormWidgetState extends State<SetFormWidget> {
-  double _currentSetSliderValue = 4;
-  List<Exercise> _exercises = [];
+  double _currentSetSliderValue = Set.DEFAULT_NR_SETS.toDouble();
+  bool _detailed = false;
 
   // Form stuff
   final GlobalKey<FormState> _formKey = GlobalKey();
   final _exercisesController = TextEditingController();
+
+  /// Removes an exercise from the current set
+  void removeExercise(int id) {
+    setState(() {
+      widget._set.exercises.removeWhere((element) => element.id == id);
+    });
+  }
+
+  /// Adds an exercise to the current set
+  void addExercise(Exercise exercise) {
+    setState(() {
+      widget._set.exercises.add(exercise);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -242,6 +264,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                 controller: this._exercisesController,
                 decoration: InputDecoration(
                     labelText: AppLocalizations.of(context).exercise,
+                    helperMaxLines: 3,
                     helperText: 'You can search for more than one exercise, they will be grouped '
                         'together for a superset.'),
               ),
@@ -272,11 +295,9 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                 return suggestionsBox;
               },
               onSuggestionSelected: (suggestion) {
-                final e = Provider.of<Exercises>(context, listen: false)
+                final exercise = Provider.of<Exercises>(context, listen: false)
                     .findById(suggestion['data']['id']);
-                setState(() {
-                  _exercises.add(e);
-                });
+                addExercise(exercise);
               },
               validator: (value) {
                 if (value.isEmpty) {
@@ -286,7 +307,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
               },
             ),
             SizedBox(height: 10),
-            Text('Number of sets:'),
+            Text('Number of sets: ${_currentSetSliderValue.round()}'),
             Slider(
               value: _currentSetSliderValue,
               min: 1,
@@ -295,15 +316,75 @@ class _SetFormWidgetState extends State<SetFormWidget> {
               label: _currentSetSliderValue.round().toString(),
               onChanged: (double value) {
                 setState(() {
+                  widget._set.sets = value.round();
+
+                  // Add all settings to list
+                  widget._set.settings = [];
+                  for (var exercise in widget._set.exercises) {
+                    for (int loop = 0; loop < widget._set.sets; loop++) {
+                      widget._set.settings.add(Setting(exercise: exercise));
+                    }
+                  }
+
                   _currentSetSliderValue = value;
+                });
+              },
+            ),
+            SwitchListTile(
+              title: Text('More details'),
+              value: _detailed,
+              onChanged: (value) {
+                setState(() {
+                  _detailed = !_detailed;
                 });
               },
             ),
             Text('If you do the same repetitions for all sets you can just enter '
                 'one value: e.g. for 4 sets just enter one "10" for the repetitions, '
                 'this automatically becomes "4 x 10".'),
-            ..._exercises.map((e) => ExerciseSet(e, _currentSetSliderValue)).toList(),
-            ElevatedButton(child: Text('Save'), onPressed: () {}),
+            ...widget._set.exercises.map((exercise) {
+              final settings =
+                  widget._set.settings.where((e) => e.exercise.id == exercise.id).toList();
+
+              return ExerciseSetting(
+                exercise,
+                settings,
+                _detailed,
+                _currentSetSliderValue,
+                removeExercise,
+              );
+            }).toList(),
+            ElevatedButton(
+                child: Text(AppLocalizations.of(context).save),
+                onPressed: () async {
+                  final isValid = _formKey.currentState.validate();
+                  if (!isValid) {
+                    return;
+                  }
+                  _formKey.currentState.save();
+
+                  print(widget._set.toJson());
+                  //await Provider.of<WorkoutPlans>(context, listen: false).addSet(widget._set);
+                  for (var setting in widget._set.settings) {
+                    if (setting.weight != null && setting.reps != null) {
+                      //await Provider.of<WorkoutPlans>(context, listen: false).addSetting(setting);
+                      print(setting.toJson());
+                    }
+                  }
+
+                  print('Set debug');
+                  print('--------------------------');
+                  print('Day-ID: ${widget._set.day}');
+                  print('Nr of sets: ${widget._set.sets}');
+                  print('Exercises: ');
+                  for (var e in widget._set.exercises) {
+                    print('  * ${e.name}');
+                  }
+                  print('Settings: ');
+                  for (var s in widget._set.settings) {
+                    print('  * Exercise: ${s.exercise.name}, Weight: ${s.weight}, Reps: ${s.reps}');
+                  }
+                }),
           ],
         ),
       ),
@@ -311,26 +392,37 @@ class _SetFormWidgetState extends State<SetFormWidget> {
   }
 }
 
-class ExerciseSet extends StatelessWidget {
+class ExerciseSetting extends StatelessWidget {
   Exercise _exercise;
   int _numberOfSets;
+  bool _detailed;
+  Function removeExercise;
+  List<Setting> _settings = [];
 
-  ExerciseSet(Exercise exercise, double sliderValue) {
+  ExerciseSetting(Exercise exercise, List<Setting> settings, bool expanded, double sliderValue,
+      removeExercise) {
     this._exercise = exercise;
+    this._settings = settings;
+    this._detailed = expanded;
     this._numberOfSets = sliderValue.round();
+    this.removeExercise = removeExercise;
   }
 
-  Widget getSets() {
+  Widget getRow() {
     List<Widget> out = [];
-    for (var i = 1; i <= _numberOfSets; i++) {
+    for (var i = 0; i < _numberOfSets; i++) {
+      var setting = _settings[i];
       out.add(
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            RepsInputWidget(),
-            WeightUnitInputWidget(key: Key(i.toString())),
-            WeightInputWidget(),
-            RiRInputWidget(),
+            RepsInputWidget(setting),
+            SizedBox(width: 4),
+            if (_detailed) WeightUnitInputWidget(key: Key(i.toString())),
+            WeightInputWidget(setting),
+            SizedBox(width: 4),
+            if (_detailed) RepetitionUnitInputWidget(),
+            if (_detailed) RiRInputWidget(),
           ],
         ),
       );
@@ -346,18 +438,25 @@ class ExerciseSet extends StatelessWidget {
       children: [
         SizedBox(height: 15),
         Text(_exercise.name, style: TextStyle(fontWeight: FontWeight.bold)),
+        IconButton(
+          icon: Icon(Icons.close),
+          onPressed: () {
+            removeExercise(_exercise.id);
+          },
+        ),
         //ExerciseImage(imageUrl: _exercise.images.first.url),
         Divider(),
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Text('Reps'),
-            Text('Unit'),
+            if (_detailed) Text('Unit'),
             Text('Weight'),
-            Text('RiR'),
+            if (_detailed) Text('Weight unit'),
+            if (_detailed) Text('RiR'),
           ],
         ),
-        getSets(),
+        getRow(),
       ],
     );
   }
@@ -365,18 +464,24 @@ class ExerciseSet extends StatelessWidget {
 
 class RepsInputWidget extends StatelessWidget {
   final _repsController = TextEditingController();
+  Setting _setting;
 
-  RepsInputWidget({
-    Key key,
-  }) : super(key: key);
+  RepsInputWidget(Setting setting) {
+    this._setting = setting;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Flexible(
       child: TextFormField(
-        //decoration: InputDecoration(labelText: 'aa'),
+        //decoration: InputDecoration(labelText: 'Reps'),
         controller: _repsController,
-        onTap: () async {},
+        keyboardType: TextInputType.number,
+        onSaved: (newValue) {
+          if (newValue != null && newValue != '') {
+            _setting.reps = int.parse(newValue);
+          }
+        },
       ),
     );
   }
@@ -384,18 +489,24 @@ class RepsInputWidget extends StatelessWidget {
 
 class WeightInputWidget extends StatelessWidget {
   final _weightController = TextEditingController();
+  Setting _setting;
 
-  WeightInputWidget({
-    Key key,
-  }) : super(key: key);
+  WeightInputWidget(Setting setting) {
+    this._setting = setting;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Flexible(
       child: TextFormField(
-        //decoration: InputDecoration(labelText: ''),
+        //decoration: InputDecoration(labelText: 'Weight'),
         controller: _weightController,
-        onTap: () async {},
+        keyboardType: TextInputType.number,
+        onSaved: (newValue) {
+          if (newValue != null && newValue != '') {
+            _setting.weight = double.parse(newValue);
+          }
+        },
       ),
     );
   }
@@ -443,26 +554,68 @@ class WeightUnitInputWidget extends StatefulWidget {
 }
 
 class _WeightUnitInputWidgetState extends State<WeightUnitInputWidget> {
-  String dropdownValue = '1';
+  WeightUnit dropdownValue;
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButton<String>(
+    return DropdownButton<WeightUnit>(
       value: dropdownValue,
       underline: Container(
         height: 0,
         //  color: Colors.deepPurpleAccent,
       ),
-      onChanged: (String newValue) {
+      onChanged: (WeightUnit newValue) {
         setState(() {
           dropdownValue = newValue;
         });
       },
-      items: <String>['1', '1.5', '2', '2.5', '3', '3.5']
-          .map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
+      items: Provider.of<WorkoutPlans>(context, listen: false)
+          .weightUnits
+          .map<DropdownMenuItem<WeightUnit>>((WeightUnit value) {
+        return DropdownMenuItem<WeightUnit>(
           value: value,
-          child: Text(value),
+          child: Text(
+            value.name,
+            style: TextStyle(fontSize: 12),
+          ),
+        );
+      }).toList(),
+    );
+  }
+}
+
+class RepetitionUnitInputWidget extends StatefulWidget {
+  RepetitionUnitInputWidget({Key key}) : super(key: key);
+
+  @override
+  _RepetitionUnitInputWidgetState createState() => _RepetitionUnitInputWidgetState();
+}
+
+class _RepetitionUnitInputWidgetState extends State<RepetitionUnitInputWidget> {
+  RepetitionUnit dropdownValue;
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButton<RepetitionUnit>(
+      value: dropdownValue,
+      underline: Container(
+        height: 0,
+        //  color: Colors.deepPurpleAccent,
+      ),
+      onChanged: (RepetitionUnit newValue) {
+        setState(() {
+          dropdownValue = newValue;
+        });
+      },
+      items: Provider.of<WorkoutPlans>(context, listen: false)
+          .repetitionUnits
+          .map<DropdownMenuItem<RepetitionUnit>>((RepetitionUnit value) {
+        return DropdownMenuItem<RepetitionUnit>(
+          value: value,
+          child: Text(
+            value.name,
+            style: TextStyle(fontSize: 12),
+          ),
         );
       }).toList(),
     );

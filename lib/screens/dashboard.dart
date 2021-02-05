@@ -60,6 +60,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
       // Workouts
       WorkoutPlans workoutProvider = Provider.of<WorkoutPlans>(context, listen: false);
+      await workoutProvider.fetchAndSetUnits();
       await workoutProvider.fetchAndSetWorkouts();
       await workoutProvider.setAllFullWorkouts();
 
