@@ -10,12 +10,17 @@ Set _$SetFromJson(Map<String, dynamic> json) {
   $checkKeys(json, requiredKeys: const ['id', 'sets', 'order', 'exercises']);
   return Set(
     id: json['id'] as int,
-    sets: json['sets'] as int,
+    sets: json['sets'],
     day: json['exerciseday'] as int,
     order: json['order'] as int,
-    exercises: json['exercises'],
     settings: json['settings'],
-  );
+  )
+    ..exercisesObj = (json['exercisesObj'] as List)
+        ?.map((e) =>
+            e == null ? null : Exercise.fromJson(e as Map<String, dynamic>))
+        ?.toList()
+    ..exercisesIds =
+        (json['exercises'] as List)?.map((e) => e as int)?.toList();
 }
 
 Map<String, dynamic> _$SetToJson(Set instance) => <String, dynamic>{
@@ -23,6 +28,7 @@ Map<String, dynamic> _$SetToJson(Set instance) => <String, dynamic>{
       'sets': instance.sets,
       'exerciseday': instance.day,
       'order': instance.order,
-      'exercises': instance.exercises,
+      'exercisesObj': instance.exercisesObj,
+      'exercises': instance.exercisesIds,
       'settings': instance.settings,
     };

@@ -239,16 +239,16 @@ class _SetFormWidgetState extends State<SetFormWidget> {
   final _exercisesController = TextEditingController();
 
   /// Removes an exercise from the current set
-  void removeExercise(int id) {
+  void removeExercise(Exercise exercise) {
     setState(() {
-      widget._set.exercises.removeWhere((element) => element.id == id);
+      widget._set.removeExercise(exercise);
     });
   }
 
   /// Adds an exercise to the current set
   void addExercise(Exercise exercise) {
     setState(() {
-      widget._set.exercises.add(exercise);
+      widget._set.addExercise(exercise);
     });
   }
 
@@ -320,9 +320,9 @@ class _SetFormWidgetState extends State<SetFormWidget> {
 
                   // Add all settings to list
                   widget._set.settings = [];
-                  for (var exercise in widget._set.exercises) {
+                  for (var exercise in widget._set.exercisesObj) {
                     for (int loop = 0; loop < widget._set.sets; loop++) {
-                      widget._set.settings.add(Setting(exercise: exercise));
+                      widget._set.settings.add(Setting(exerciseObj: exercise));
                     }
                   }
 
@@ -342,9 +342,9 @@ class _SetFormWidgetState extends State<SetFormWidget> {
             Text('If you do the same repetitions for all sets you can just enter '
                 'one value: e.g. for 4 sets just enter one "10" for the repetitions, '
                 'this automatically becomes "4 x 10".'),
-            ...widget._set.exercises.map((exercise) {
+            ...widget._set.exercisesObj.map((exercise) {
               final settings =
-                  widget._set.settings.where((e) => e.exercise.id == exercise.id).toList();
+                  widget._set.settings.where((e) => e.exerciseObj.id == exercise.id).toList();
 
               return ExerciseSetting(
                 exercise,
@@ -363,27 +363,32 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                   }
                   _formKey.currentState.save();
 
-                  print(widget._set.toJson());
-                  //await Provider.of<WorkoutPlans>(context, listen: false).addSet(widget._set);
+                  final workoutProvider = Provider.of<WorkoutPlans>(context, listen: false);
+
+                  // Save set
+                  Set setDb = await workoutProvider.addSet(widget._set);
+                  widget._set.id = setDb.id;
+
+                  // Remove unused settings
+                  widget._set.settings.removeWhere((s) => s.weight == null && s.reps == null);
+
+                  // Save remaining settings
                   for (var setting in widget._set.settings) {
-                    if (setting.weight != null && setting.reps != null) {
-                      //await Provider.of<WorkoutPlans>(context, listen: false).addSetting(setting);
-                      print(setting.toJson());
-                    }
+                    setting.setId = setDb.id;
+                    setting.weightUnit = workoutProvider.defaultWeightUnit.id;
+                    setting.repetitionUnit = workoutProvider.defaultRepetitionUnit.id;
+                    setting.comment = '';
+                    setting.repsText = 'temp text';
+
+                    Setting settingDb = await workoutProvider.addSetting(setting);
+                    setting.id = settingDb.id;
                   }
 
-                  print('Set debug');
-                  print('--------------------------');
-                  print('Day-ID: ${widget._set.day}');
-                  print('Nr of sets: ${widget._set.sets}');
-                  print('Exercises: ');
-                  for (var e in widget._set.exercises) {
-                    print('  * ${e.name}');
-                  }
-                  print('Settings: ');
-                  for (var s in widget._set.settings) {
-                    print('  * Exercise: ${s.exercise.name}, Weight: ${s.weight}, Reps: ${s.reps}');
-                  }
+                  // Add to workout day
+                  widget._day.sets.add(widget._set);
+
+                  // Close the bottom sheet
+                  Navigator.of(context).pop();
                 }),
           ],
         ),
@@ -441,7 +446,7 @@ class ExerciseSetting extends StatelessWidget {
         IconButton(
           icon: Icon(Icons.close),
           onPressed: () {
-            removeExercise(_exercise.id);
+            removeExercise(_exercise);
           },
         ),
         //ExerciseImage(imageUrl: _exercise.images.first.url),

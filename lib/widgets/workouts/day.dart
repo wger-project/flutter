@@ -33,10 +33,10 @@ class SettingWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       leading: Container(
-        child: setting.exercise.images.length > 0
+        child: setting.exerciseObj.images.length > 0
             ? FadeInImage(
                 placeholder: AssetImage('assets/images/placeholder.png'),
-                image: NetworkImage(setting.exercise.getMainImage.url),
+                image: NetworkImage(setting.exerciseObj.getMainImage.url),
                 fit: BoxFit.cover,
               )
             : Image(
@@ -45,7 +45,7 @@ class SettingWidget extends StatelessWidget {
                 colorBlendMode: BlendMode.modulate),
         width: 45,
       ),
-      title: Text(setting.exercise.name),
+      title: Text(setting.exerciseObj.name),
       subtitle: Text(setting.repsText),
     );
   }

@@ -9,7 +9,7 @@ class Set {
   static const DEFAULT_NR_SETS = 4;
 
   @JsonKey(required: true)
-  final int id;
+  int id;
 
   @JsonKey(required: true)
   int sets;
@@ -20,8 +20,11 @@ class Set {
   @JsonKey(required: true)
   int order;
 
-  @JsonKey(required: true)
-  List<Exercise> exercises = [];
+  //@JsonKey(required: true)
+  List<Exercise> exercisesObj = [];
+
+  @JsonKey(required: true, name: 'exercises')
+  List<int> exercisesIds = [];
 
   @JsonKey(required: false)
   List<Setting> settings = [];
@@ -35,8 +38,19 @@ class Set {
     settings,
   }) {
     this.sets = sets ?? DEFAULT_NR_SETS;
-    this.exercises = exercises ?? [];
+    this.exercisesObj = exercises ?? [];
+    this.exercisesIds = exercisesObj.map((e) => e.id).toList();
     this.settings = settings ?? [];
+  }
+
+  void addExercise(Exercise exercise) {
+    exercisesObj.add(exercise);
+    exercisesIds.add(exercise.id);
+  }
+
+  void removeExercise(Exercise exercise) {
+    exercisesObj.removeWhere((e) => e.id == exercise.id);
+    exercisesIds.removeWhere((e) => e == exercise.id);
   }
 
   // Boilerplate

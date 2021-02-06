@@ -116,7 +116,7 @@ class DayLogWidget extends StatelessWidget {
         Expanded(
           child: Column(
             children: [
-              ...set.exercises.map((exercise) => ExerciseLog(exercise)).toList(),
+              ...set.exercisesObj.map((exercise) => ExerciseLog(exercise)).toList(),
               Divider(),
               const Padding(padding: EdgeInsets.symmetric(vertical: 10)),
             ],

@@ -9,37 +9,38 @@ part of 'setting.dart';
 Setting _$SettingFromJson(Map<String, dynamic> json) {
   $checkKeys(json, requiredKeys: const [
     'id',
+    'set',
     'exercise',
     'repetition_unit',
     'reps',
     'weight',
     'weight_unit',
-    'comment',
-    'repsText'
+    'comment'
   ]);
   return Setting(
     id: json['id'] as int,
-    exercise: json['exercise'] == null
+    exerciseObj: json['exerciseObj'] == null
         ? null
-        : Exercise.fromJson(json['exercise'] as Map<String, dynamic>),
-    repetitionUnit: json['repetition_unit'] == null
-        ? null
-        : RepetitionUnit.fromJson(
-            json['repetition_unit'] as Map<String, dynamic>),
+        : Exercise.fromJson(json['exerciseObj'] as Map<String, dynamic>),
+    repetitionUnit: json['repetition_unit'] as int,
     reps: json['reps'] as int,
-    weight: (json['weight'] as num)?.toDouble(),
-    weightUnit: json['weight_unit'],
-    comment: json['comment'] as String,
+    weight: toNum(json['weight'] as String),
+    weightUnit: json['weight_unit'] as int,
+    comment: json['comment'] as String ?? '',
     repsText: json['repsText'] as String,
-  );
+  )
+    ..setId = json['set'] as int
+    ..exerciseId = json['exercise'] as int;
 }
 
 Map<String, dynamic> _$SettingToJson(Setting instance) => <String, dynamic>{
       'id': instance.id,
-      'exercise': instance.exercise,
+      'set': instance.setId,
+      'exerciseObj': instance.exerciseObj,
+      'exercise': instance.exerciseId,
       'repetition_unit': instance.repetitionUnit,
       'reps': instance.reps,
-      'weight': instance.weight,
+      'weight': toString(instance.weight),
       'weight_unit': instance.weightUnit,
       'comment': instance.comment,
       'repsText': instance.repsText,

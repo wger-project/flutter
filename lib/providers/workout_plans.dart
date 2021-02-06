@@ -169,6 +169,7 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
             exercises.add(exercise);
 
             // Settings
+            //if (exerciseData['setting_obj_list'].length > 0) {
             settings.add(
               Setting(
                 id: exerciseData['setting_obj_list'][0]['id'],
@@ -178,9 +179,10 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
                 //    ? ''
                 //  : setting['setting_obj_list'][0]['weight'],
                 repsText: exerciseData['setting_text'],
-                exercise: exercise,
+                exerciseObj: exercise,
               ),
             );
+            //}
           }
 
           // Sets
@@ -338,7 +340,6 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
   Future<Set> addSet(Set workoutSet) async {
     final data = await post(workoutSet.toJson(), makeUrl(_setsUrlPath));
     final set = Set.fromJson(data);
-    //_workoutPlans.insert(0, plan);
     notifyListeners();
     return set;
   }
@@ -349,7 +350,6 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
   Future<Setting> addSetting(Setting workoutSetting) async {
     final data = await post(workoutSetting.toJson(), makeUrl(_settingsUrlPath));
     final setting = Setting.fromJson(data);
-    //_workoutPlans.insert(0, plan);
     notifyListeners();
     return setting;
   }
