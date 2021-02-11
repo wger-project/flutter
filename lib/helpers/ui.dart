@@ -49,7 +49,6 @@ void showHttpExceptionErrorDialog(WgerHttpException exception, BuildContext cont
   log(exception.toString());
   log('-------------------');
 
-  //Navigator.of(context).pop();
   List<Widget> errorList = [];
   for (var key in exception.errors.keys) {
     // Error headers
@@ -59,6 +58,7 @@ void showHttpExceptionErrorDialog(WgerHttpException exception, BuildContext cont
     for (var value in exception.errors[key]) {
       errorList.add(Text(value));
     }
+    errorList.add(SizedBox(height: 8));
   }
   showDialog(
     context: context,

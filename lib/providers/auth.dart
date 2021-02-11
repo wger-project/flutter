@@ -19,8 +19,11 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
+import 'package:android_metadata/android_metadata.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:package_info/package_info.dart';
@@ -71,7 +74,46 @@ class Auth with ChangeNotifier {
     applicationVersion = packageInfo;
   }
 
-  Future<void> _authenticate(String username, String password, String serverUrl) async {
+  /// Registers a new user
+  Future<void> register({String username, String password, String email, String serverUrl}) async {
+    var url = '$serverUrl/api/v2/register/';
+    Map<String, String> metadata = Map();
+
+    // Read the api key from the manifest file
+    try {
+      metadata = await AndroidMetadata.metaDataAsMap;
+    } on PlatformException {
+      throw Exception('An error occurred reading the API key');
+    }
+
+    // Register
+    try {
+      Map<String, String> data = {'username': username, 'password': password};
+      if (email != '') {
+        data['email'] = email;
+      }
+      final response = await http.post(
+        url,
+        headers: {
+          HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
+          HttpHeaders.authorizationHeader: "Token ${metadata['wger.api_key']}"
+        },
+        body: json.encode(data),
+      );
+      final responseData = json.decode(response.body);
+
+      if (response.statusCode >= 400) {
+        throw WgerHttpException(responseData);
+      }
+
+      login(username, password, serverUrl);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /// Authenticates a user
+  Future<void> login(String username, String password, String serverUrl) async {
     var url = '$serverUrl/api/v2/login/';
 
     try {
@@ -80,7 +122,7 @@ class Auth with ChangeNotifier {
       final response = await http.post(
         url,
         headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
+          HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
         },
         body: json.encode({'username': username, 'password': password}),
       );
@@ -118,14 +160,6 @@ class Auth with ChangeNotifier {
     } catch (error) {
       throw error;
     }
-  }
-
-  Future<void> signUp(String email, String password) async {
-    return _authenticate(email, password, 'signUp');
-  }
-
-  Future<void> signIn(String username, String password, String serverUrl) async {
-    return _authenticate(username, password, serverUrl);
   }
 
   Future<bool> tryAutoLogin() async {

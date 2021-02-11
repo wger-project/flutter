@@ -11,6 +11,9 @@
         android:name="io.flutter.app.FlutterApplication"
         android:label="wger"
         android:icon="@mipmap/ic_launcher">
+
+        <meta-data android:name="wger.api_key" android:value="${WGER_API_KEY}" />
+
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

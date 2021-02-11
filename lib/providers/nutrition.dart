@@ -57,7 +57,9 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
   /// Returns the current active nutritional plan. At the moment this is just
   /// the latest, but this might change in the future.
   NutritionalPlan get currentPlan {
-    return _plans.first;
+    if (_plans.length > 0) {
+      return _plans.first;
+    }
   }
 
   NutritionalPlan findById(int id) {

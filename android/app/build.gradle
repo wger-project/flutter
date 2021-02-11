@@ -25,10 +25,33 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
+// Keys for the android play store
 def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file('app/key.properties')
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
+// Key for wger.de REST API
+def wgerProperties = new Properties()
+def localMapsPropertiesFile = rootProject.file('app/wger.properties')
+if (localMapsPropertiesFile.exists()) {
+    project.logger.info('Load maps properties from local file')
+    localMapsPropertiesFile.withReader('UTF-8') { reader ->
+        wgerProperties.load(reader)
+    }
+} else {
+    project.logger.info('Load maps properties from environment')
+    try {
+        wgerProperties['WGER_API_KEY'] = System.getenv('WGER_API_KEY')
+    } catch(NullPointerException e) {
+        project.logger.warn('Failed to load WGER_API_KEY from environment.', e)
+    }
+}
+def wgerApiKey = wgerProperties.getProperty('WGER_API_KEY')
+if(wgerApiKey == null){
+    wgerApiKey = ""
+    project.logger.error('Wger Api Key not configured. Set it in `app/wger.properties` or in the environment variable `WGER_API_KEY`')
 }
 
 android {
@@ -49,6 +72,7 @@ android {
         targetSdkVersion 29
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        manifestPlaceholders = [WGER_API_KEY: wgerApiKey]
     }
 
     signingConfigs {

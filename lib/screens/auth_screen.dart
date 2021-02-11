@@ -19,8 +19,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/ui.dart';
+import 'package:wger/models/http_exception.dart';
 
-import '../models/http_exception.dart';
 import '../providers/auth.dart';
 
 enum AuthMode {
@@ -116,18 +116,22 @@ class _AuthCardState extends State<AuthCard> {
       _isLoading = true;
     });
     try {
+      // Login existing user
       if (_authMode == AuthMode.Login) {
-        // Login existing user
-        await Provider.of<Auth>(context, listen: false).signIn(
+        await Provider.of<Auth>(context, listen: false).login(
           _authData['username'],
           _authData['password'],
           _authData['serverUrl'],
         );
-      } else {
-        // Register new user
-        // await Provider.of<Auth>(context, listen: false)
-        // .register(_authData['email'], _authData['password']);
 
+        // Register new user
+      } else {
+        await Provider.of<Auth>(context, listen: false).register(
+          username: _authData['username'],
+          password: _authData['password'],
+          email: _authData['email'],
+          serverUrl: _authData['serverUrl'],
+        );
       }
     } on WgerHttpException catch (error) {
       showHttpExceptionErrorDialog(error, context);
@@ -197,8 +201,10 @@ class _AuthCardState extends State<AuthCard> {
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                     textInputAction: TextInputAction.next,
+
+                    // Email is not required
                     validator: (value) {
-                      if (value.isEmpty || !value.contains('@')) {
+                      if (value.isNotEmpty && !value.contains('@')) {
                         return 'Invalid email!';
                       }
                       return null;

@@ -83,7 +83,11 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                     )
                   ],
                 )
-              : Text('You have no nutritional plans'),
+              : Container(
+                  alignment: Alignment.center,
+                  height: 150,
+                  child: Text('You have no nutritional plans'),
+                ),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
@@ -140,7 +144,11 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                       height: 180,
                       child: WeightChartWidget(weightEntriesData.items),
                     )
-                  : Text('You have no weight entries'),
+                  : Container(
+                      alignment: Alignment.center,
+                      height: 150,
+                      child: Text('You have no weight entries'),
+                    ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
@@ -199,51 +207,57 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
             style: Theme.of(context).textTheme.headline4,
           ),
           _workoutPlan != null
-              ? Column(children: [
-                  Text(
-                    DateFormat.yMd().format(_workoutPlan.creationDate),
-                    style: Theme.of(context).textTheme.headline6,
-                  ),
-                  TextButton(
-                    child: Text(
-                      _workoutPlan.description,
-                      style: TextStyle(fontSize: 20),
+              ? Column(
+                  children: [
+                    Text(
+                      DateFormat.yMd().format(_workoutPlan.creationDate),
+                      style: Theme.of(context).textTheme.headline6,
                     ),
-                    onPressed: () {
-                      return Navigator.of(context)
-                          .pushNamed(WorkoutPlanScreen.routeName, arguments: _workoutPlan);
-                    },
-                  ),
-                  ..._workoutPlan.days.map((workoutDay) {
-                    return Column(children: [
-                      const SizedBox(height: 10),
-                      showDetail == true
-                          ? Text(
-                              workoutDay.description,
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            )
-                          : Text(workoutDay.description),
-                      if (showDetail)
-                        ...workoutDay.sets
-                            .map((set) => Text(set.exercisesObj.map((e) => e.name).join(',')))
-                            .toList(),
-                    ]);
-                  }).toList(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      TextButton(
-                        child: Text(AppLocalizations.of(context).toggleDetails),
-                        onPressed: () {
-                          setState(() {
-                            showDetail = !showDetail;
-                          });
-                        },
+                    TextButton(
+                      child: Text(
+                        _workoutPlan.description,
+                        style: TextStyle(fontSize: 20),
                       ),
-                    ],
-                  )
-                ])
-              : Text('you have no workouts'),
+                      onPressed: () {
+                        return Navigator.of(context)
+                            .pushNamed(WorkoutPlanScreen.routeName, arguments: _workoutPlan);
+                      },
+                    ),
+                    ..._workoutPlan.days.map((workoutDay) {
+                      return Column(children: [
+                        const SizedBox(height: 10),
+                        showDetail == true
+                            ? Text(
+                                workoutDay.description,
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              )
+                            : Text(workoutDay.description),
+                        if (showDetail)
+                          ...workoutDay.sets
+                              .map((set) => Text(set.exercisesObj.map((e) => e.name).join(',')))
+                              .toList(),
+                      ]);
+                    }).toList(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        TextButton(
+                          child: Text(AppLocalizations.of(context).toggleDetails),
+                          onPressed: () {
+                            setState(() {
+                              showDetail = !showDetail;
+                            });
+                          },
+                        ),
+                      ],
+                    )
+                  ],
+                )
+              : Container(
+                  alignment: Alignment.center,
+                  height: 150,
+                  child: Text('you have no workouts'),
+                ),
         ],
       ),
     );
