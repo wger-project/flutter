@@ -22,6 +22,7 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:wger/helpers/json.dart';
+import 'package:wger/locale/locales.dart';
 import 'package:wger/models/workouts/session.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/nutrition.dart';
@@ -36,6 +37,29 @@ final Map<DateTime, List> _holidays = {
   DateTime(2021, 4, 21): ['Easter Sunday'],
   DateTime(2021, 4, 22): ['Easter Monday'],
 };
+
+/// Types of events
+enum EventType {
+  weight,
+  session,
+  caloriesDiary,
+}
+
+/// An event in the dashboard calendar
+class Event {
+  final EventType _type;
+  final String _description;
+
+  Event(this._type, this._description);
+
+  get description {
+    return _description;
+  }
+
+  get type {
+    return _type;
+  }
+}
 
 class DashboardCalendarWidget extends StatefulWidget {
   DashboardCalendarWidget({Key key, this.title}) : super(key: key);
@@ -80,7 +104,8 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
           _events[date] = [];
         }
 
-        _events[date].add('Body weight: ${entry.weight} kg');
+        // Add events to lists
+        _events[date].add(Event(EventType.weight, '${entry.weight} kg'));
       }
 
       // Process workout sessions
@@ -98,7 +123,11 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
             time = '(${timeToString(session.timeStart)} - ${timeToString(session.timeEnd)})';
           }
 
-          _events[date].add('Workout session: ${session.impressionAsString} $time');
+          // Add events to lists
+          _events[date].add(Event(
+            EventType.session,
+            'Impression: ${session.impressionAsString} $time',
+          ));
         }
       });
 
@@ -111,7 +140,11 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
             _events[date] = [];
           }
 
-          _events[date].add('Nutrition diary: ${entry.value.energy.toStringAsFixed(0)} kcal');
+          // Add events to lists
+          _events[date].add(Event(
+            EventType.caloriesDiary,
+            '${entry.value.energy.toStringAsFixed(0)} kcal',
+          ));
         }
       }
     });
@@ -141,20 +174,23 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        const SizedBox(height: 8.0),
-        Text(widget.title, style: Theme.of(context).textTheme.headline4),
-        // Switch out 2 lines below to play with TableCalendar's settings
-        //-----------------------
-        _buildTableCalendar(),
-        //_buildTableCalendarWithBuilders(),
-        const SizedBox(height: 8.0),
-        _buildButtons(),
-        const SizedBox(height: 8.0),
-        Expanded(child: _buildEventList()),
-      ],
+    return Card(
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          const SizedBox(height: 8.0),
+          Text(widget.title, style: Theme.of(context).textTheme.headline4),
+          // Switch out 2 lines below to play with TableCalendar's settings
+          //-----------------------
+          _buildTableCalendar(),
+          //_buildTableCalendarWithBuilders(),
+          const SizedBox(height: 8.0),
+          _buildButtons(),
+          const SizedBox(height: 8.0),
+          //_buildEventList(),
+          Expanded(child: _buildEventList()),
+        ],
+      ),
     );
   }
 
@@ -314,8 +350,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
   Widget _buildButtons() {
     return Column(
       children: <Widget>[
-        const SizedBox(height: 8.0),
-        ElevatedButton(
+        TextButton(
           child: Text('Go to today'),
           onPressed: () {
             final today = DateTime.now();
@@ -335,36 +370,26 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
           .map(
             (event) => Container(
               width: double.infinity,
-              decoration: BoxDecoration(
-                border: Border.all(width: 0.5),
-                borderRadius: BorderRadius.circular(5),
-              ),
-              margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
               child: ListTile(
-                title: Text(event.toString()),
+                title: Text((() {
+                  switch (event.type) {
+                    case EventType.caloriesDiary:
+                      return AppLocalizations.of(context).nutritionalDiary;
+
+                    case EventType.session:
+                      return AppLocalizations.of(context).workoutSession;
+
+                    case EventType.weight:
+                      return AppLocalizations.of(context).weight;
+                  }
+                  return event.description.toString();
+                })()),
+                subtitle: Text(event.description.toString()),
                 onTap: () => print('$event tapped!'),
               ),
             ),
           )
           .toList(),
     );
-    /*
-    return ListView(
-      children: _selectedEvents
-          .map((event) => Container(
-                decoration: BoxDecoration(
-                  border: Border.all(width: 0.8),
-                  borderRadius: BorderRadius.circular(12.0),
-                ),
-                margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                child: ListTile(
-                  title: Text(event.toString()),
-                  onTap: () => print('$event tapped!'),
-                ),
-              ))
-          .toList(),
-    );
-
-     */
   }
 }
