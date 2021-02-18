@@ -23,17 +23,23 @@ Future<Widget> showFormBottomSheet(BuildContext context, String header, Widget f
       isScrollControlled: true,
       context: context,
       builder: (BuildContext ctx) {
-        return Container(
-          margin: EdgeInsets.symmetric(vertical: 50, horizontal: 15),
-          child: Column(
-            children: [
-              Text(
-                header,
-                style: Theme.of(ctx).textTheme.headline6,
-              ),
-              form
-            ],
-          ),
+        return Column(
+          children: [
+            Icon(
+              Icons.remove,
+              color: Colors.grey,
+            ),
+            Text(
+              header,
+              style: Theme.of(ctx).textTheme.headline6,
+            ),
+            SizedBox(height: 10),
+            Divider(),
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 20),
+              child: form,
+            )
+          ],
         );
       });
 }

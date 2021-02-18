@@ -17,10 +17,12 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:wger/locale/locales.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/set.dart';
 import 'package:wger/models/workouts/setting.dart';
+import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/widgets/core/bottom_sheet.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 
@@ -47,6 +49,14 @@ class SettingWidget extends StatelessWidget {
       ),
       title: Text(setting.exerciseObj.name),
       subtitle: Text(setting.repsText),
+      trailing: IconButton(
+        visualDensity: VisualDensity.compact,
+        icon: Icon(Icons.delete),
+        //iconSize: 16,
+        onPressed: () {
+          Provider.of<WorkoutPlans>(context, listen: false).deleteSetting(setting);
+        },
+      ),
     );
   }
 }
@@ -60,7 +70,6 @@ class WorkoutDayWidget extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.baseline,
       children: [
-        Text('#${set.order}'),
         Expanded(
           child: Column(
             children: [

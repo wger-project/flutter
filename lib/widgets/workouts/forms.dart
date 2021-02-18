@@ -375,8 +375,10 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                   // Save remaining settings
                   for (var setting in widget._set.settings) {
                     setting.setId = setDb.id;
-                    setting.weightUnit = workoutProvider.defaultWeightUnit.id;
-                    setting.repetitionUnit = workoutProvider.defaultRepetitionUnit.id;
+
+                    setting.weightUnit = setting.weightUnit ?? workoutProvider.defaultWeightUnit.id;
+                    setting.repetitionUnit =
+                        setting.repetitionUnit ?? workoutProvider.defaultRepetitionUnit.id;
                     setting.comment = '';
                     setting.repsText = 'temp text';
 
