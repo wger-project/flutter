@@ -315,7 +315,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
     return Column(
       children: <Widget>[
         const SizedBox(height: 8.0),
-        RaisedButton(
+        ElevatedButton(
           child: Text('Go to today'),
           onPressed: () {
             final today = DateTime.now();
