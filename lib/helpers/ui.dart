@@ -55,8 +55,12 @@ void showHttpExceptionErrorDialog(WgerHttpException exception, BuildContext cont
     errorList.add(Text(key, style: TextStyle(fontWeight: FontWeight.bold)));
 
     // Error messages
-    for (var value in exception.errors[key]) {
-      errorList.add(Text(value));
+    if (exception.errors[key] is String) {
+      errorList.add(Text(exception.errors[key]));
+    } else {
+      for (var value in exception.errors[key]) {
+        errorList.add(Text(value));
+      }
     }
     errorList.add(SizedBox(height: 8));
   }
