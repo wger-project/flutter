@@ -95,59 +95,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
 
     _animationController.forward();
 
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      // Process weight entries
-      BodyWeight weightProvider = Provider.of<BodyWeight>(context, listen: false);
-      for (var entry in weightProvider.items) {
-        final date = DateTime(entry.date.year, entry.date.month, entry.date.day);
-        if (!_events.containsKey(date)) {
-          _events[date] = [];
-        }
-
-        // Add events to lists
-        _events[date].add(Event(EventType.weight, '${entry.weight} kg'));
-      }
-
-      // Process workout sessions
-      WorkoutPlans plans = Provider.of<WorkoutPlans>(context, listen: false);
-      plans.fetchSessionData().then((entries) {
-        for (var entry in entries['results']) {
-          final session = WorkoutSession.fromJson(entry);
-          final date = DateTime(session.date.year, session.date.month, session.date.day);
-          if (!_events.containsKey(date)) {
-            _events[date] = [];
-          }
-
-          var time = '';
-          if (session.timeStart != null && session.timeEnd != null) {
-            time = '(${timeToString(session.timeStart)} - ${timeToString(session.timeEnd)})';
-          }
-
-          // Add events to lists
-          _events[date].add(Event(
-            EventType.session,
-            'Impression: ${session.impressionAsString} $time',
-          ));
-        }
-      });
-
-      // Process nutritional plans
-      Nutrition nutritionProvider = Provider.of<Nutrition>(context, listen: false);
-      for (var plan in nutritionProvider.items) {
-        for (var entry in plan.logEntriesValues.entries) {
-          final date = DateTime(entry.key.year, entry.key.month, entry.key.day);
-          if (!_events.containsKey(date)) {
-            _events[date] = [];
-          }
-
-          // Add events to lists
-          _events[date].add(Event(
-            EventType.caloriesDiary,
-            '${entry.value.energy.toStringAsFixed(0)} kcal',
-          ));
-        }
-      }
-    });
+    loadEvents();
   }
 
   @override
@@ -155,6 +103,64 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
     _animationController.dispose();
     _calendarController.dispose();
     super.dispose();
+  }
+
+  void loadEvents() async {
+    // Process weight entries
+    BodyWeight weightProvider = Provider.of<BodyWeight>(context, listen: false);
+    for (var entry in weightProvider.items) {
+      final date = DateTime(entry.date.year, entry.date.month, entry.date.day);
+      if (!_events.containsKey(date)) {
+        _events[date] = [];
+      }
+
+      // Add events to lists
+      _events[date].add(Event(EventType.weight, '${entry.weight} kg'));
+    }
+
+    // Process workout sessions
+    WorkoutPlans plans = Provider.of<WorkoutPlans>(context, listen: false);
+    plans.fetchSessionData().then((entries) {
+      for (var entry in entries['results']) {
+        final session = WorkoutSession.fromJson(entry);
+        final date = DateTime(session.date.year, session.date.month, session.date.day);
+        if (!_events.containsKey(date)) {
+          _events[date] = [];
+        }
+
+        var time = '';
+        if (session.timeStart != null && session.timeEnd != null) {
+          time = '(${timeToString(session.timeStart)} - ${timeToString(session.timeEnd)})';
+        }
+
+        // Add events to lists
+        _events[date].add(Event(
+          EventType.session,
+          'Impression: ${session.impressionAsString} $time',
+        ));
+      }
+    });
+
+    // Process nutritional plans
+    Nutrition nutritionProvider = Provider.of<Nutrition>(context, listen: false);
+    for (var plan in nutritionProvider.items) {
+      for (var entry in plan.logEntriesValues.entries) {
+        final date = DateTime(entry.key.year, entry.key.month, entry.key.day);
+        if (!_events.containsKey(date)) {
+          _events[date] = [];
+        }
+
+        // Add events to lists
+        _events[date].add(Event(
+          EventType.caloriesDiary,
+          '${entry.value.energy.toStringAsFixed(0)} kcal',
+        ));
+      }
+    }
+
+    setState(() {
+      _events;
+    });
   }
 
   void _onDaySelected(DateTime day, List events, List holidays) {
