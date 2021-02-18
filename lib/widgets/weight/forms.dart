@@ -17,7 +17,7 @@ class WeightForm extends StatelessWidget {
 
   WeightForm([weightEntry]) {
     this._weightEntry = weightEntry ?? WeightEntry();
-    weightController.text = _weightEntry.weight.toString();
+    weightController.text = _weightEntry.weight == null ? '' : _weightEntry.weight.toString();
   }
 
   @override
@@ -58,6 +58,17 @@ class WeightForm extends StatelessWidget {
             onFieldSubmitted: (_) {},
             onSaved: (newValue) {
               _weightEntry.weight = double.parse(newValue);
+            },
+            validator: (value) {
+              if (value.isEmpty) {
+                return 'Please enter a weight';
+              }
+              try {
+                double.parse(value);
+              } catch (error) {
+                return 'Please enter a valid number';
+              }
+              return null;
             },
           ),
           ElevatedButton(

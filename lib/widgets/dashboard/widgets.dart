@@ -28,8 +28,10 @@ import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
+import 'package:wger/widgets/core/bottom_sheet.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/weight/charts.dart';
+import 'package:wger/widgets/weight/forms.dart';
 
 class DashboardNutritionWidget extends StatefulWidget {
   const DashboardNutritionWidget({
@@ -153,15 +155,15 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
                   TextButton(
-                    child: const Text('Action one'),
-                    onPressed: () {},
+                    child: Text(AppLocalizations.of(context).newEntry),
+                    onPressed: () async {
+                      showFormBottomSheet(
+                        context,
+                        AppLocalizations.of(context).newEntry,
+                        WeightForm(),
+                      );
+                    },
                   ),
-                  const SizedBox(width: 8),
-                  TextButton(
-                    child: const Text('Action two'),
-                    onPressed: () {},
-                  ),
-                  const SizedBox(width: 8),
                 ],
               ),
             ],
