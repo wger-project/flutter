@@ -67,6 +67,14 @@ class AppLocalizations {
     );
   }
 
+  String get workoutSession {
+    return Intl.message(
+      'Workout session',
+      name: 'workoutSession',
+      desc: 'A logged workout session',
+    );
+  }
+
   String get newDay {
     return Intl.message(
       'New day',
@@ -152,6 +160,14 @@ class AppLocalizations {
       'Nutritional plan',
       name: 'nutritionalPlan',
       desc: 'Title for screen nutritional plan',
+    );
+  }
+
+  String get nutritionalDiary {
+    return Intl.message(
+      'Nutritional diary',
+      name: 'nutritionalDiary',
+      desc: 'The nutritional diary for a plan',
     );
   }
 

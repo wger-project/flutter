@@ -354,6 +354,22 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
   }
 
   Widget _buildButtons() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: <Widget>[
+        TextButton(
+          child: Text('Go to today'),
+          onPressed: () async {
+            final today = DateTime.now();
+            _calendarController.setSelectedDay(
+              DateTime(today.year, today.month, today.day),
+              runCallback: true,
+            );
+          },
+        ),
+      ],
+    );
+
     return Column(
       children: <Widget>[
         TextButton(
