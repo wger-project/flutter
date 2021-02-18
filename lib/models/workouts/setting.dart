@@ -39,6 +39,7 @@ class Setting {
 
   Setting({
     this.id,
+    this.setId,
     this.exerciseObj,
     this.repetitionUnit,
     this.reps,

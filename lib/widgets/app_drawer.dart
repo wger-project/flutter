@@ -22,10 +22,6 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wger/locale/locales.dart';
 import 'package:wger/providers/auth.dart';
-import 'package:wger/screens/dashboard.dart';
-import 'package:wger/screens/nutritional_plans_screen.dart';
-import 'package:wger/screens/weight_screen.dart';
-import 'package:wger/screens/workout_plans_screen.dart';
 
 class AppDrawer extends StatelessWidget {
   @override
@@ -39,6 +35,7 @@ class AppDrawer extends StatelessWidget {
             title: Text('wger'),
             automaticallyImplyLeading: false,
           ),
+          /*
           ListTile(
             leading: Icon(Icons.home),
             title: Text(AppLocalizations.of(context).labelDashboard),
@@ -74,11 +71,15 @@ class AppDrawer extends StatelessWidget {
               Navigator.of(context).pushReplacementNamed(WeightScreen.routeName);
             },
           ),
+
+
           Divider(),
           Expanded(child: Container()),
+
+           */
           ListTile(
-            dense: true,
-            leading: Icon(Icons.edit),
+            //dense: true,
+            leading: Icon(Icons.build),
             title: Text('Options'),
             onTap: () {
               showDialog(
@@ -98,7 +99,7 @@ class AppDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            dense: true,
+            //dense: true,
             leading: Icon(Icons.exit_to_app),
             title: Text('Logout'),
             onTap: () {
@@ -108,7 +109,7 @@ class AppDrawer extends StatelessWidget {
             },
           ),
           AboutListTile(
-            dense: true,
+            //dense: true,
             icon: Icon(Icons.info),
             applicationName: 'wger',
             applicationVersion: '${authProvider.applicationVersion.version} '

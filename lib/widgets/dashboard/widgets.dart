@@ -234,7 +234,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                             : Text(workoutDay.description),
                         if (showDetail)
                           ...workoutDay.sets
-                              .map((set) => Text(set.exercisesObj.map((e) => e.name).join(',')))
+                              .map((set) => Text(set.exercisesObj.map((e) => e.name).join(', ')))
                               .toList(),
                       ]);
                     }).toList(),
