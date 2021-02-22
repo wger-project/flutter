@@ -63,6 +63,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
       await workoutProvider.fetchAndSetUnits();
       await workoutProvider.fetchAndSetWorkouts();
       await workoutProvider.setAllFullWorkouts();
+      if (workoutProvider.activePlan != null) {
+        workoutProvider.setCurrentPlan(workoutProvider.activePlan.id);
+      }
 
       // Weight
       await Provider.of<BodyWeight>(context, listen: false).fetchAndSetEntries();
