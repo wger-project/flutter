@@ -45,9 +45,7 @@ class WorkoutPlansList extends StatelessWidget {
                     content: Text("Are you sure you want to delete ${currentWorkout.description}?"),
                     actions: [
                       TextButton(
-                        child: Text(
-                          "Cancel",
-                        ),
+                        child: Text("Cancel"),
                         onPressed: () => Navigator.of(contextDialog).pop(),
                       ),
                       TextButton(

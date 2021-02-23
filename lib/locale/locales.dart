@@ -67,6 +67,30 @@ class AppLocalizations {
     );
   }
 
+  String get repetitions {
+    return Intl.message(
+      'Repetitions',
+      name: 'repetitions',
+      desc: 'Repetitions for an exercise set',
+    );
+  }
+
+  String get impression {
+    return Intl.message(
+      'Impression',
+      name: 'impression',
+      desc: 'General Impression for a workout session (good, bad, etc.)',
+    );
+  }
+
+  String get notes {
+    return Intl.message(
+      'Notes',
+      name: 'notes',
+      desc: 'Personal notes for a workout session',
+    );
+  }
+
   String get workoutSession {
     return Intl.message(
       'Workout session',
@@ -224,6 +248,22 @@ class AppLocalizations {
       'Time',
       name: 'time',
       desc: 'The time of a meal or workout',
+    );
+  }
+
+  String get timeStart {
+    return Intl.message(
+      'Start time',
+      name: 'timeStart',
+      desc: 'The starting time of a workout',
+    );
+  }
+
+  String get timeEnd {
+    return Intl.message(
+      'End time',
+      name: 'timeEnd',
+      desc: 'The end time of a workout',
     );
   }
 

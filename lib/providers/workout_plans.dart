@@ -171,20 +171,21 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
             exercises.add(exercise);
 
             // Settings
-            //if (exerciseData['setting_obj_list'].length > 0) {
-            settings.add(
-              Setting(
-                id: exerciseData['setting_obj_list'][0]['id'],
-                comment: exerciseData['setting_obj_list'][0]['comment'],
-                reps: exerciseData['setting_obj_list'][0]['reps'],
-                //weight: setting['setting_obj_list'][0]['weight'] == null
-                //    ? ''
-                //  : setting['setting_obj_list'][0]['weight'],
-                repsText: exerciseData['setting_text'],
-                exerciseObj: exercise,
-              ),
-            );
-            //}
+            if (exerciseData['setting_obj_list'].length > 0) {
+              settings.add(
+                Setting(
+                  id: exerciseData['setting_obj_list'][0]['id'],
+                  setId: exerciseData['setting_obj_list'][0]['set'],
+                  comment: exerciseData['setting_obj_list'][0]['comment'],
+                  reps: exerciseData['setting_obj_list'][0]['reps'],
+                  //weight: setting['setting_obj_list'][0]['weight'] == null
+                  //    ? ''
+                  //  : setting['setting_obj_list'][0]['weight'],
+                  repsText: exerciseData['setting_text'],
+                  exerciseObj: exercise,
+                ),
+              );
+            }
           }
 
           // Sets
@@ -354,6 +355,17 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
     final setting = Setting.fromJson(data);
     notifyListeners();
     return setting;
+  }
+
+  Future<void> deleteSetting(Setting workoutSetting) async {
+    await deleteRequest(_settingsUrlPath, workoutSetting.id);
+
+    for (var workout in _workoutPlans) {
+      for (var day in workout.days) {
+        day.sets.removeWhere((element) => element.id == workoutSetting.setId);
+      }
+    }
+    notifyListeners();
   }
 
   /*
