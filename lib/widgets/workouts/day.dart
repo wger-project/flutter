@@ -23,6 +23,7 @@ import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/set.dart';
 import 'package:wger/models/workouts/setting.dart';
 import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/widgets/core/bottom_sheet.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 
@@ -196,18 +197,7 @@ class DayHeaderDismissible extends StatelessWidget {
 
           // Gym mode
         } else {
-          showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-              content: Text('Would start gym mode for this day'),
-              actions: [
-                TextButton(
-                  child: Text("Close"),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-              ],
-            ),
-          );
+          Navigator.of(context).pushNamed(GymModeScreen.routeName, arguments: _day);
         }
         return false;
       },

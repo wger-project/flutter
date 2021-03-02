@@ -23,7 +23,7 @@ class Set {
   //@JsonKey(required: true)
   List<Exercise> exercisesObj = [];
 
-  @JsonKey(required: true, name: 'exercises')
+  @JsonKey(required: false, name: 'exercises')
   List<int> exercisesIds = [];
 
   @JsonKey(required: false)

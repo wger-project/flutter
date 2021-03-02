@@ -20,7 +20,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:wger/locale/locales.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
-import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/widgets/core/bottom_sheet.dart';
 import 'package:wger/widgets/workouts/day.dart';
@@ -71,13 +70,6 @@ class _WorkoutPlanDetailState extends State<WorkoutPlanDetail> {
                     child: Text('View logs'),
                     onPressed: () {
                       widget._changeMode(WorkoutScreenMode.log);
-                    },
-                  ),
-                  ElevatedButton(
-                    child: Text('Start gym mode'),
-                    onPressed: () {
-                      return Navigator.of(context)
-                          .pushNamed(GymModeScreen.routeName, arguments: widget._workoutPlan);
                     },
                   ),
                 ],

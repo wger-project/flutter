@@ -19,13 +19,18 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:wger/locale/locales.dart';
+import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/session.dart';
-import 'package:wger/models/workouts/workout_plan.dart';
+import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/workout_plans.dart';
 
 class GymMode extends StatefulWidget {
-  final WorkoutPlan _workoutPlan;
-  GymMode(this._workoutPlan);
+  final Day _workoutDay;
+  GymMode(this._workoutDay);
 
   @override
   _GymModeState createState() => _GymModeState();
@@ -44,14 +49,21 @@ class _GymModeState extends State<GymMode> {
 
   @override
   Widget build(BuildContext context) {
+    final exerciseProvider = Provider.of<Exercises>(context, listen: false);
+    final workoutProvider = Provider.of<WorkoutPlans>(context, listen: false);
+
     return PageView(
       controller: _controller,
       children: [
-        StartPage(widget._workoutPlan),
-        TimerWidget(_controller),
+        StartPage(_controller, widget._workoutDay),
+        ExerciseOverview(_controller, exerciseProvider.findById(20)),
         LogPage(_controller),
         TimerWidget(_controller),
         LogPage(_controller),
+        TimerWidget(_controller),
+        ExerciseOverview(_controller, exerciseProvider.findById(30)),
+        LogPage(_controller),
+        TimerWidget(_controller),
         SessionPage(),
 
         //MyPage2Widget(),
@@ -62,14 +74,16 @@ class _GymModeState extends State<GymMode> {
 }
 
 class StartPage extends StatelessWidget {
-  final WorkoutPlan _workoutPlan;
+  PageController _controller;
+  final Day _day;
 
-  StartPage(this._workoutPlan);
+  StartPage(this._controller, this._day);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: Column(
         children: [
           Padding(
@@ -82,16 +96,34 @@ class StartPage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: Text(
-              _workoutPlan.description,
+              _day.description,
               style: Theme.of(context).textTheme.headline6,
             ),
           ),
-          ElevatedButton(
-            child: Text('Back to workout'),
-            onPressed: () {
-              Navigator.of(context).pop();
+          Text('Your workout today'),
+          ..._day.sets.map(
+            (set) {
+              return Column(
+                children: [
+                  ...set.settings.map((s) {
+                    return Column(
+                      children: [
+                        Text(s.exerciseObj.name, style: TextStyle(fontWeight: FontWeight.bold)),
+                        Text(s.repsText),
+                        SizedBox(height: 10),
+                      ],
+                    );
+                  }).toList(),
+                  Divider(),
+                ],
+              );
             },
+          ).toList(),
+          Text('Here some text on what to do, etc. etc.'),
+          Expanded(
+            child: Container(),
           ),
+          NavigationFooter(_controller),
         ],
       ),
     );
@@ -101,7 +133,8 @@ class StartPage extends StatelessWidget {
 class LogPage extends StatelessWidget {
   PageController _controller;
   final _form = GlobalKey<FormState>();
-  final repsController = TextEditingController();
+  final _repsController = TextEditingController();
+  final _weightController = TextEditingController();
 
   LogPage(this._controller);
 
@@ -128,13 +161,15 @@ class LogPage extends StatelessWidget {
                   TextFormField(
                     decoration:
                         InputDecoration(labelText: AppLocalizations.of(context).repetitions),
-                    controller: repsController,
+                    controller: _repsController,
+                    keyboardType: TextInputType.number,
                     onFieldSubmitted: (_) {},
                     onSaved: (newValue) {},
                   ),
                   TextFormField(
                     decoration: InputDecoration(labelText: AppLocalizations.of(context).weight),
-                    controller: repsController,
+                    controller: _weightController,
+                    keyboardType: TextInputType.number,
                     onFieldSubmitted: (_) {},
                     onSaved: (newValue) {},
                   ),
@@ -146,15 +181,37 @@ class LogPage extends StatelessWidget {
               ),
             ),
           ),
-          IconButton(
-            icon: Icon(Icons.chevron_right),
-            onPressed: () {
-              _controller.nextPage(
-                duration: Duration(milliseconds: 200),
-                curve: Curves.bounceIn,
-              );
-            },
-          )
+          NavigationFooter(_controller),
+        ],
+      ),
+    );
+  }
+}
+
+class ExerciseOverview extends StatelessWidget {
+  PageController _controller;
+  Exercise _exercise;
+
+  ExerciseOverview(this._controller, this._exercise);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Text(
+              _exercise.name,
+              style: Theme.of(context).textTheme.headline5,
+            ),
+          ),
+          Expanded(
+            child: Text('aa'),
+          ),
+          NavigationFooter(_controller),
         ],
       ),
     );
@@ -195,22 +252,34 @@ class _SessionPageState extends State<SessionPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  DropdownButton<int>(
-                    value: impressionValue,
-                    underline: Container(height: 0),
-                    onChanged: (int newValue) {
-                      setState(() {
-                        impressionValue = newValue;
-                      });
-                    },
-                    items: ImpressionMap.keys.map<DropdownMenuItem<int>>((int key) {
-                      return DropdownMenuItem<int>(
-                        value: key,
-                        child: Text(
-                          ImpressionMap[key],
+                  FormField<int>(
+                    builder: (FormFieldState<int> state) {
+                      return InputDecorator(
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context).impression,
+                        ),
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton<int>(
+                            value: impressionValue,
+                            isDense: true,
+                            onChanged: (int newValue) {
+                              setState(() {
+                                impressionValue = newValue;
+                                state.didChange(newValue);
+                              });
+                            },
+                            items: ImpressionMap.keys.map<DropdownMenuItem<int>>((int key) {
+                              return DropdownMenuItem<int>(
+                                value: key,
+                                child: Text(
+                                  ImpressionMap[key],
+                                ),
+                              );
+                            }).toList(),
+                          ),
                         ),
                       );
-                    }).toList(),
+                    },
                   ),
                   TextFormField(
                     decoration: InputDecoration(
@@ -275,11 +344,13 @@ class _TimerWidgetState extends State<TimerWidget> {
   // See https://stackoverflow.com/questions/54610121/flutter-countdown-timer
 
   Timer _timer;
-  int _currentTime = 1;
+  int _seconds = 1;
+  final _maxSeconds = 600;
+  DateTime today = new DateTime(2000, 1, 1, 0, 0, 0);
 
   void startTimer() {
     setState(() {
-      _currentTime = 0;
+      _seconds = 0;
     });
 
     _timer?.cancel();
@@ -288,13 +359,13 @@ class _TimerWidgetState extends State<TimerWidget> {
     _timer = new Timer.periodic(
       oneSecond,
       (Timer timer) {
-        if (_currentTime == 10) {
+        if (_seconds == _maxSeconds) {
           setState(() {
             timer.cancel();
           });
         } else {
           setState(() {
-            _currentTime++;
+            _seconds++;
           });
         }
       },
@@ -318,6 +389,7 @@ class _TimerWidgetState extends State<TimerWidget> {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: Column(
         children: [
           Padding(
@@ -327,29 +399,60 @@ class _TimerWidgetState extends State<TimerWidget> {
               style: Theme.of(context).textTheme.headline5,
             ),
           ),
+          /*
           ElevatedButton(
             child: Text("start"),
             onPressed: () {
               startTimer();
             },
           ),
+
+           */
           Expanded(
             child: Center(
               child: Text(
-                _currentTime.toString(),
+                //'${_seconds} sec',
+                DateFormat('m:ss').format(today.add(Duration(seconds: _seconds))),
                 style: Theme.of(context).textTheme.headline1,
               ),
             ),
           ),
-          IconButton(
-            icon: Icon(Icons.chevron_right),
-            onPressed: () {
-              widget._controller
-                  .nextPage(duration: Duration(milliseconds: 200), curve: Curves.bounceIn);
-            },
-          ),
+          NavigationFooter(widget._controller),
         ],
       ),
+    );
+  }
+}
+
+class NavigationFooter extends StatelessWidget {
+  final PageController _controller;
+
+  NavigationFooter(this._controller);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        IconButton(
+          icon: Icon(Icons.chevron_left),
+          onPressed: () {
+            _controller.nextPage(duration: Duration(milliseconds: 200), curve: Curves.bounceIn);
+          },
+        ),
+        IconButton(
+          icon: Icon(Icons.exit_to_app),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        IconButton(
+          icon: Icon(Icons.chevron_right),
+          onPressed: () {
+            _controller.nextPage(duration: Duration(milliseconds: 200), curve: Curves.bounceIn);
+          },
+        ),
+      ],
     );
   }
 }

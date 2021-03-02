@@ -18,7 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/models/workouts/workout_plan.dart';
+import 'package:wger/models/workouts/day.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/widgets/workouts/gym_mode.dart';
 
@@ -32,12 +32,11 @@ class GymModeScreen extends StatefulWidget {
 class _GymModeScreenState extends State<GymModeScreen> {
   @override
   Widget build(BuildContext context) {
-    final workoutPlan = ModalRoute.of(context).settings.arguments as WorkoutPlan;
+    final _day = ModalRoute.of(context).settings.arguments as Day;
 
     return Scaffold(
-      //appBar: getAppBar(workoutPlan),
       body: Consumer<WorkoutPlans>(
-        builder: (context, value, child) => GymMode(workoutPlan),
+        builder: (context, value, child) => GymMode(_day),
       ),
     );
   }

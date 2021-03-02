@@ -115,10 +115,9 @@ class Auth with ChangeNotifier {
   /// Authenticates a user
   Future<void> login(String username, String password, String serverUrl) async {
     var url = '$serverUrl/api/v2/login/';
+    await logout();
 
     try {
-      // Get the server version
-
       final response = await http.post(
         url,
         headers: <String, String>{
@@ -143,7 +142,6 @@ class Auth with ChangeNotifier {
       //   ),
       // );
 
-      // _autoLogout();
       notifyListeners();
 
       // store login data in shared preferences

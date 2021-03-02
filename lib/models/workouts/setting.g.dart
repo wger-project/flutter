@@ -19,6 +19,7 @@ Setting _$SettingFromJson(Map<String, dynamic> json) {
   ]);
   return Setting(
     id: json['id'] as int,
+    setId: json['set'] as int,
     exerciseObj: json['exerciseObj'] == null
         ? null
         : Exercise.fromJson(json['exerciseObj'] as Map<String, dynamic>),
@@ -28,9 +29,7 @@ Setting _$SettingFromJson(Map<String, dynamic> json) {
     weightUnit: json['weight_unit'] as int,
     comment: json['comment'] as String ?? '',
     repsText: json['repsText'] as String,
-  )
-    ..setId = json['set'] as int
-    ..exerciseId = json['exercise'] as int;
+  )..exerciseId = json['exercise'] as int;
 }
 
 Map<String, dynamic> _$SettingToJson(Setting instance) => <String, dynamic>{

@@ -106,7 +106,7 @@ class _AuthCardState extends State<AuthCard> {
   final _emailController = TextEditingController();
   final _serverUrlController = TextEditingController(text: 'http://10.0.2.2:8000');
 
-  void _submit() async {
+  void _submit(BuildContext context) async {
     if (!_formKey.currentState.validate()) {
       // Invalid!
       return;
@@ -133,15 +133,15 @@ class _AuthCardState extends State<AuthCard> {
           serverUrl: _authData['serverUrl'],
         );
       }
+
+      setState(() {
+        _isLoading = false;
+      });
     } on WgerHttpException catch (error) {
       showHttpExceptionErrorDialog(error, context);
     } catch (error) {
       showErrorDialog(error, context);
     }
-
-    setState(() {
-      _isLoading = false;
-    });
   }
 
   void _switchAuthMode() {
@@ -271,7 +271,9 @@ class _AuthCardState extends State<AuthCard> {
                   ElevatedButton(
                     key: Key('actionButton'),
                     child: Text(_authMode == AuthMode.Login ? 'LOGIN' : 'REGISTER'),
-                    onPressed: _submit,
+                    onPressed: () {
+                      return _submit(context);
+                    },
                   ),
                 TextButton(
                   key: Key('toggleActionButton'),
