@@ -27,7 +27,7 @@ dependencies:
     sdk: flutter
 
   provider: ^4.3.2+3
-  intl: ^0.16.1
+  intl: ^0.17.0
   http: ^0.12.2
   shared_preferences: ^0.5.12+4
   flutter_calendar_carousel: ^1.5.3
@@ -51,7 +51,8 @@ dev_dependencies:
   # runner and intl_translation depend on different versions of analyzer
   build_runner: ^1.10.2
 
-
+dependency_overrides:
+  intl: ^0.17.0
 
 flutter_icons:
   android: true
