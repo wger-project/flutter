@@ -21,10 +21,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/helpers/ui.dart';
 import 'package:wger/locale/locales.dart';
 import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/http_exception.dart';
 import 'package:wger/models/workouts/day.dart';
+import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/session.dart';
+import 'package:wger/models/workouts/setting.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/workout_plans.dart';
 
@@ -52,22 +56,27 @@ class _GymModeState extends State<GymMode> {
     final exerciseProvider = Provider.of<Exercises>(context, listen: false);
     final workoutProvider = Provider.of<WorkoutPlans>(context, listen: false);
 
+    List<Widget> out = [];
+
+    for (var set in widget._workoutDay.sets) {
+      var firstPage = true;
+      for (var setting in set.settingsComputed) {
+        if (firstPage) {
+          out.add(ExerciseOverview(_controller, exerciseProvider.findById(setting.exerciseId)));
+        }
+        out.add(LogPage(_controller, setting, exerciseProvider.findById(setting.exerciseId)));
+        out.add(TimerWidget(_controller));
+
+        firstPage = false;
+      }
+    }
+
     return PageView(
       controller: _controller,
       children: [
         StartPage(_controller, widget._workoutDay),
-        ExerciseOverview(_controller, exerciseProvider.findById(20)),
-        LogPage(_controller),
-        TimerWidget(_controller),
-        LogPage(_controller),
-        TimerWidget(_controller),
-        ExerciseOverview(_controller, exerciseProvider.findById(30)),
-        LogPage(_controller),
-        TimerWidget(_controller),
+        ...out,
         SessionPage(),
-
-        //MyPage2Widget(),
-        //MyPage3Widget(),
       ],
     );
   }
@@ -132,11 +141,32 @@ class StartPage extends StatelessWidget {
 
 class LogPage extends StatelessWidget {
   PageController _controller;
+  Setting _setting;
+  Exercise _exercise;
+  Log _log = Log();
+
   final _form = GlobalKey<FormState>();
   final _repsController = TextEditingController();
   final _weightController = TextEditingController();
+  final _rirController = TextEditingController();
+  final _commentController = TextEditingController();
 
-  LogPage(this._controller);
+  LogPage(this._controller, this._setting, this._exercise) {
+    if (_setting.reps != null) {
+      _weightController.text = _setting.reps.toString();
+    }
+
+    if (_setting.weight != null) {
+      _weightController.text = _setting.weight.toString();
+    }
+
+    if (_setting.rir != null) {
+      _rirController.text = _setting.rir;
+    }
+
+    _log.date = DateTime.now();
+    _log.exercise = _exercise.id;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -148,7 +178,7 @@ class LogPage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: Text(
-              'Log',
+              _exercise.name,
               style: Theme.of(context).textTheme.headline5,
             ),
           ),
@@ -164,18 +194,68 @@ class LogPage extends StatelessWidget {
                     controller: _repsController,
                     keyboardType: TextInputType.number,
                     onFieldSubmitted: (_) {},
-                    onSaved: (newValue) {},
+                    onSaved: (newValue) {
+                      _log.reps = int.parse(newValue);
+                    },
+                    validator: (value) {
+                      try {
+                        double.parse(value);
+                      } catch (error) {
+                        return 'Please enter a valid number';
+                      }
+                      return null;
+                    },
                   ),
                   TextFormField(
                     decoration: InputDecoration(labelText: AppLocalizations.of(context).weight),
                     controller: _weightController,
                     keyboardType: TextInputType.number,
                     onFieldSubmitted: (_) {},
+                    onSaved: (newValue) {
+                      _log.weight = double.parse(newValue);
+                    },
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context).rir),
+                    controller: _rirController,
+                    keyboardType: TextInputType.number,
+                    onFieldSubmitted: (_) {},
                     onSaved: (newValue) {},
                   ),
+                  /*
+                  TextFormField(
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context).comment),
+                    controller: _commentController,
+                    keyboardType: TextInputType.multiline,
+                    maxLines: 3,
+                    onFieldSubmitted: (_) {},
+                    onSaved: (newValue) {
+                      _log.
+                    },
+                  ),
+
+                   */
                   ElevatedButton(
                     child: Text(AppLocalizations.of(context).save),
-                    onPressed: () async {},
+                    onPressed: () async {
+                      // Validate and save the current values to the weightEntry
+                      final isValid = _form.currentState.validate();
+                      if (!isValid) {
+                        return;
+                      }
+                      _form.currentState.save();
+
+                      // Save the entry on the server
+                      try {
+                        await Provider.of<WorkoutPlans>(context, listen: false).addLog(_log);
+                        _controller.nextPage(
+                            duration: Duration(milliseconds: 200), curve: Curves.bounceIn);
+                      } on WgerHttpException catch (error) {
+                        showHttpExceptionErrorDialog(error, context);
+                      } catch (error) {
+                        showErrorDialog(error, context);
+                      }
+                    },
                   ),
                 ],
               ),
@@ -209,7 +289,7 @@ class ExerciseOverview extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: Text('aa'),
+            child: Text(_exercise.description),
           ),
           NavigationFooter(_controller),
         ],
@@ -231,6 +311,7 @@ class _SessionPageState extends State<SessionPage> {
   final timeEndController = TextEditingController();
 
   int impressionValue = 2;
+  var _session = WorkoutSession();
 
   @override
   Widget build(BuildContext context) {
@@ -289,7 +370,9 @@ class _SessionPageState extends State<SessionPage> {
                     controller: notesController,
                     keyboardType: TextInputType.multiline,
                     onFieldSubmitted: (_) {},
-                    onSaved: (newValue) {},
+                    onSaved: (newValue) {
+                      _session.notes = newValue;
+                    },
                   ),
                   Row(
                     children: [
@@ -315,16 +398,37 @@ class _SessionPageState extends State<SessionPage> {
                   ),
                   ElevatedButton(
                     child: Text(AppLocalizations.of(context).save),
-                    onPressed: () async {},
+                    onPressed: () async {
+                      // Validate and save the current values to the weightEntry
+                      final isValid = _form.currentState.validate();
+                      if (!isValid) {
+                        return;
+                      }
+                      _form.currentState.save();
+                      _session.date = DateTime.now();
+
+                      // Save the entry on the server
+                      try {
+                        await Provider.of<WorkoutPlans>(context, listen: false)
+                            .addSession(_session);
+                        Navigator.of(context).pop();
+                      } on WgerHttpException catch (error) {
+                        showHttpExceptionErrorDialog(error, context);
+                      } catch (error) {
+                        showErrorDialog(error, context);
+                      }
+                    },
                   ),
                 ],
               ),
             ),
           ),
           IconButton(
-            icon: Icon(Icons.stop),
-            onPressed: () {},
-          )
+            icon: Icon(Icons.exit_to_app),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
         ],
       ),
     );

@@ -1,5 +1,3 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/json.dart';
 
@@ -11,39 +9,42 @@ class Log {
   final int id;
 
   @JsonKey(required: true)
-  final int exercise;
+  int exercise;
 
   @JsonKey(required: true, name: 'workout')
-  final int workoutPlan;
+  int workoutPlan;
 
   @JsonKey(required: true)
-  final int reps;
+  int reps;
 
   @JsonKey(required: false)
-  final double rir;
+  double rir;
 
   @JsonKey(required: true, name: 'repetition_unit')
-  final int repetitionUnit;
+  int repetitionUnit;
 
   @JsonKey(required: true, fromJson: toNum, toJson: toString)
-  final num weight;
+  num weight;
 
   @JsonKey(required: true, name: 'weight_unit')
-  final int weightUnit;
+  int weightUnit;
 
-  @JsonKey(required: true)
-  final DateTime date;
+  @JsonKey(required: true, toJson: toDate)
+  DateTime date;
+
+  //@JsonKey(required: true)
+  //String comment;
 
   Log({
-    @required this.id,
-    @required this.exercise,
-    @required this.workoutPlan,
-    @required this.repetitionUnit,
-    @required this.reps,
-    @required this.rir,
-    @required this.weight,
-    @required this.weightUnit,
-    @required this.date,
+    this.id,
+    this.exercise,
+    this.workoutPlan,
+    this.repetitionUnit,
+    this.reps,
+    this.rir,
+    this.weight,
+    this.weightUnit,
+    this.date,
   });
 
   // Boilerplate

@@ -70,6 +70,7 @@ class WorkoutDayWidget extends StatelessWidget {
   Widget getSetRow(Set set) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.baseline,
+      textBaseline: TextBaseline.alphabetic,
       children: [
         Expanded(
           child: Column(

@@ -29,6 +29,10 @@ class Set {
   @JsonKey(required: false)
   List<Setting> settings = [];
 
+  /// Computed settings
+  @JsonKey(required: false)
+  List<Setting> settingsComputed = [];
+
   Set({
     this.id,
     sets,
@@ -36,11 +40,13 @@ class Set {
     this.order,
     exercises,
     settings,
+    settingsComputed,
   }) {
     this.sets = sets ?? DEFAULT_NR_SETS;
     this.exercisesObj = exercises ?? [];
     this.exercisesIds = exercisesObj.map((e) => e.id).toList();
     this.settings = settings ?? [];
+    this.settingsComputed = settingsComputed ?? [];
   }
 
   void addExercise(Exercise exercise) {

@@ -28,6 +28,7 @@ import 'package:wger/models/http_exception.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
+import 'package:wger/models/workouts/session.dart';
 import 'package:wger/models/workouts/set.dart';
 import 'package:wger/models/workouts/setting.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
@@ -146,6 +147,7 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
 
         for (final set in entry['set_list']) {
           List<Setting> settings = [];
+          List<Setting> settingsComputed = [];
           List<Exercise> exercises = [];
 
           for (final exerciseData in set['exercise_list']) {
@@ -186,6 +188,11 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
                 ),
               );
             }
+
+            // Computed settings
+            for (var setting in exerciseData['settings_computed']) {
+              settingsComputed.add(Setting.fromJson(setting));
+            }
           }
 
           // Sets
@@ -194,6 +201,7 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
             sets: set['obj']['sets'],
             order: set['obj']['order'],
             settings: settings,
+            settingsComputed: settingsComputed,
             exercises: exercises,
           ));
         }
@@ -376,5 +384,24 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
       makeUrl(_sessionUrlPath),
     );
     return data;
+  }
+
+  Future<WorkoutSession> addSession(WorkoutSession session) async {
+    print(session.toJson());
+    final data = await post(session.toJson(), makeUrl(_sessionUrlPath));
+    final newSession = WorkoutSession.fromJson(data);
+    notifyListeners();
+    return newSession;
+  }
+
+  /*
+   * Logs
+   */
+  Future<Log> addLog(Log log) async {
+    print(log.toJson());
+    final data = await post(log.toJson(), makeUrl(_logsUrlPath));
+    final newLog = Log.fromJson(data);
+    notifyListeners();
+    return newLog;
   }
 }

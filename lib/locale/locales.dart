@@ -75,6 +75,22 @@ class AppLocalizations {
     );
   }
 
+  String get rir {
+    return Intl.message(
+      'rir',
+      name: 'RiR',
+      desc: 'Shorthand for Repetitions In Reserve',
+    );
+  }
+
+  String get comment {
+    return Intl.message(
+      'Comment',
+      name: 'comment',
+      desc: 'Comment, additional information',
+    );
+  }
+
   String get impression {
     return Intl.message(
       'Impression',
