@@ -9,6 +9,7 @@ part of 'session.dart';
 WorkoutSession _$WorkoutSessionFromJson(Map<String, dynamic> json) {
   $checkKeys(json, requiredKeys: const [
     'id',
+    'workoutId',
     'date',
     'impression',
     'time_start',
@@ -16,6 +17,7 @@ WorkoutSession _$WorkoutSessionFromJson(Map<String, dynamic> json) {
   ]);
   return WorkoutSession(
     id: json['id'] as int,
+    workoutId: json['workoutId'] as int,
     date: json['date'] == null ? null : DateTime.parse(json['date'] as String),
     impression: toNum(json['impression'] as String),
     notes: json['notes'] as String ?? '',
@@ -27,7 +29,8 @@ WorkoutSession _$WorkoutSessionFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$WorkoutSessionToJson(WorkoutSession instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'date': instance.date?.toIso8601String(),
+      'workoutId': instance.workoutId,
+      'date': toDate(instance.date),
       'impression': toString(instance.impression),
       'notes': instance.notes,
       'time_start': timeToString(instance.timeStart),

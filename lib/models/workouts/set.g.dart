@@ -14,6 +14,7 @@ Set _$SetFromJson(Map<String, dynamic> json) {
     day: json['exerciseday'] as int,
     order: json['order'] as int,
     settings: json['settings'],
+    settingsComputed: json['settingsComputed'],
   )
     ..exercisesObj = (json['exercisesObj'] as List)
         ?.map((e) =>
@@ -31,4 +32,5 @@ Map<String, dynamic> _$SetToJson(Set instance) => <String, dynamic>{
       'exercisesObj': instance.exercisesObj,
       'exercises': instance.exercisesIds,
       'settings': instance.settings,
+      'settingsComputed': instance.settingsComputed,
     };
