@@ -33,7 +33,7 @@ void main() {
 
       // Mock the server response
       when(client.get(
-        'https://localhost/api/v2/weightentry/?ordering=-date',
+        Uri.https('localhost', 'api/v2/weightentry/', {'ordering': '-date'}),
         headers: <String, String>{
           HttpHeaders.authorizationHeader: 'Token ${testAuth.token}',
           HttpHeaders.userAgentHeader: 'wger Workout Manager App',
@@ -57,7 +57,7 @@ void main() {
       final client = MockClient();
 
       // Mock the server response
-      when(client.post('https://localhost/api/v2/weightentry/',
+      when(client.post(Uri.https('localhost', 'api/v2/weightentry/'),
               headers: {
                 HttpHeaders.authorizationHeader: 'Token ${testAuth.token}',
                 HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
@@ -83,7 +83,7 @@ void main() {
 
       // Mock the server response
       when(client.delete(
-        'https://localhost/api/v2/weightentry/4/',
+        Uri.https('localhost', 'api/v2/weightentry/4/'),
         headers: {
           HttpHeaders.authorizationHeader: 'Token ${testAuth.token}',
           HttpHeaders.userAgentHeader: 'wger Workout Manager App',

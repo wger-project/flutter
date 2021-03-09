@@ -23,6 +23,7 @@ import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:wger/models/http_exception.dart';
 import 'package:wger/providers/auth.dart';
+import 'package:wger/providers/helpers.dart';
 
 /// Base provider class.
 ///
@@ -38,32 +39,14 @@ class WgerBaseProvider {
 
   /// Helper function to make a URL.
   makeUrl(String path, {int id, String objectMethod, Map<String, dynamic> query}) {
-    Uri uriServer = Uri.parse(auth.serverUrl);
-
-    var pathList = ['api', 'v2', path];
-    if (id != null) {
-      pathList.add(id.toString());
-    }
-    if (objectMethod != null) {
-      pathList.add(objectMethod);
-    }
-
-    final uri = Uri(
-      scheme: uriServer.scheme,
-      host: uriServer.host,
-      port: uriServer.port,
-      path: pathList.join('/') + '/',
-      queryParameters: query,
-    );
-
-    return uri.toString();
+    return makeUri(auth.serverUrl, path, id, objectMethod, query);
   }
 
   /// Fetch and retrieve the overview list of objects, returns the JSON parsed response
-  Future<Map<String, dynamic>> fetch([String urlPath]) async {
+  Future<Map<String, dynamic>> fetch([Uri uri]) async {
     // Send the request
     final response = await client.get(
-      urlPath,
+      uri,
       headers: {
         HttpHeaders.authorizationHeader: 'Token ${auth.token}',
         HttpHeaders.userAgentHeader: 'wger Workout Manager App',
@@ -81,9 +64,9 @@ class WgerBaseProvider {
   }
 
   /// POSTs a new object
-  Future<Map<String, dynamic>> post(Map<String, dynamic> data, String urlPath) async {
+  Future<Map<String, dynamic>> post(Map<String, dynamic> data, Uri uri) async {
     final response = await client.post(
-      urlPath,
+      uri,
       headers: {
         HttpHeaders.authorizationHeader: 'Token ${auth.token}',
         HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
@@ -101,9 +84,9 @@ class WgerBaseProvider {
   }
 
   /// PATCHEs an existing object
-  Future<Map<String, dynamic>> patch(Map<String, dynamic> data, String urlPath) async {
+  Future<Map<String, dynamic>> patch(Map<String, dynamic> data, Uri uri) async {
     final response = await client.patch(
-      urlPath,
+      uri,
       headers: {
         HttpHeaders.authorizationHeader: 'Token ${auth.token}',
         HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',

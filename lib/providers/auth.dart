@@ -30,6 +30,8 @@ import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/models/http_exception.dart';
 
+import 'helpers.dart';
+
 class Auth with ChangeNotifier {
   String token;
   String serverUrl;
@@ -62,8 +64,7 @@ class Auth with ChangeNotifier {
 
   /// Server application version
   Future<void> setServerVersion() async {
-    var url = '$serverUrl/api/v2/version/';
-    final response = await http.get(url);
+    final response = await http.get(makeUri(serverUrl, 'version'));
     final responseData = json.decode(response.body);
     serverVersion = responseData;
   }
@@ -76,7 +77,7 @@ class Auth with ChangeNotifier {
 
   /// Registers a new user
   Future<void> register({String username, String password, String email, String serverUrl}) async {
-    var url = '$serverUrl/api/v2/register/';
+    final uri = Uri.http(serverUrl, '/api/v2/register/');
     Map<String, String> metadata = Map();
 
     // Read the api key from the manifest file
@@ -93,7 +94,7 @@ class Auth with ChangeNotifier {
         data['email'] = email;
       }
       final response = await http.post(
-        url,
+        uri,
         headers: {
           HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
           HttpHeaders.authorizationHeader: "Token ${metadata['wger.api_key']}"
@@ -114,12 +115,12 @@ class Auth with ChangeNotifier {
 
   /// Authenticates a user
   Future<void> login(String username, String password, String serverUrl) async {
-    var url = '$serverUrl/api/v2/login/';
+    final uri = Uri.http(serverUrl, '/api/v2/login/');
     await logout();
 
     try {
       final response = await http.post(
-        url,
+        uri,
         headers: <String, String>{
           HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
         },
