@@ -13,7 +13,10 @@ jobs:
     - name: Install Flutter
       uses: subosito/flutter-action@v1
       with:
-        flutter-version: '1.22.2'
+        flutter-version: '1.22.6'
+
+    - run: dart --version
+    - run: flutter --version
 
     - name: Install app dependencies
       run: flutter pub get
