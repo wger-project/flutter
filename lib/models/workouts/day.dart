@@ -26,6 +26,7 @@ class Day {
 
   Day({
     this.id,
+    this.workoutId,
     this.description,
     this.daysOfWeek,
     this.sets,

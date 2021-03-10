@@ -140,7 +140,6 @@ class MealItemForm extends StatelessWidget {
                 return suggestionsBox;
               },
               onSuggestionSelected: (suggestion) {
-                print(suggestion);
                 mealItem.ingredientId = suggestion['data']['id'];
                 this._ingredientController.text = suggestion['value'];
               },

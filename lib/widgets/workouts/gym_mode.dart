@@ -29,6 +29,7 @@ import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/session.dart';
 import 'package:wger/models/workouts/setting.dart';
+import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/workout_plans.dart';
 
@@ -64,7 +65,12 @@ class _GymModeState extends State<GymMode> {
         if (firstPage) {
           out.add(ExerciseOverview(_controller, exerciseProvider.findById(setting.exerciseId)));
         }
-        out.add(LogPage(_controller, setting, exerciseProvider.findById(setting.exerciseId)));
+        out.add(LogPage(
+          _controller,
+          setting,
+          exerciseProvider.findById(setting.exerciseId),
+          workoutProvider.findById(widget._workoutDay.workoutId),
+        ));
         out.add(TimerWidget(_controller));
 
         firstPage = false;
@@ -76,7 +82,7 @@ class _GymModeState extends State<GymMode> {
       children: [
         StartPage(_controller, widget._workoutDay),
         ...out,
-        SessionPage(),
+        SessionPage(workoutProvider.findById(widget._workoutDay.workoutId)),
       ],
     );
   }
@@ -143,6 +149,7 @@ class LogPage extends StatelessWidget {
   PageController _controller;
   Setting _setting;
   Exercise _exercise;
+  WorkoutPlan _workoutPlan;
   Log _log = Log();
 
   final _form = GlobalKey<FormState>();
@@ -151,7 +158,7 @@ class LogPage extends StatelessWidget {
   final _rirController = TextEditingController();
   final _commentController = TextEditingController();
 
-  LogPage(this._controller, this._setting, this._exercise) {
+  LogPage(this._controller, this._setting, this._exercise, this._workoutPlan) {
     if (_setting.reps != null) {
       _weightController.text = _setting.reps.toString();
     }
@@ -166,6 +173,9 @@ class LogPage extends StatelessWidget {
 
     _log.date = DateTime.now();
     _log.exercise = _exercise.id;
+    _log.workoutPlan = _workoutPlan.id;
+    _log.repetitionUnit = 1;
+    _log.weightUnit = 1;
   }
 
   @override
@@ -248,8 +258,12 @@ class LogPage extends StatelessWidget {
                       // Save the entry on the server
                       try {
                         await Provider.of<WorkoutPlans>(context, listen: false).addLog(_log);
+                        //final snackBar = SnackBar(content: Text('Yay! A SnackBar!'));
+                        //ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         _controller.nextPage(
-                            duration: Duration(milliseconds: 200), curve: Curves.bounceIn);
+                          duration: Duration(milliseconds: 200),
+                          curve: Curves.bounceIn,
+                        );
                       } on WgerHttpException catch (error) {
                         showHttpExceptionErrorDialog(error, context);
                       } catch (error) {
@@ -299,6 +313,10 @@ class ExerciseOverview extends StatelessWidget {
 }
 
 class SessionPage extends StatefulWidget {
+  WorkoutPlan _workoutPlan;
+
+  SessionPage(this._workoutPlan);
+
   @override
   _SessionPageState createState() => _SessionPageState();
 }
@@ -406,9 +424,12 @@ class _SessionPageState extends State<SessionPage> {
                       }
                       _form.currentState.save();
                       _session.date = DateTime.now();
+                      _session.workoutId = widget._workoutPlan.id;
+                      _session.impression = impressionValue;
 
                       // Save the entry on the server
                       try {
+                        print(_session.toJson());
                         await Provider.of<WorkoutPlans>(context, listen: false)
                             .addSession(_session);
                         Navigator.of(context).pop();

@@ -65,8 +65,6 @@ class ExerciseLog extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           ...snapshot.data['logs'].entries.map((e) {
-                            //print(e.key);
-                            //print(e.value);
                             return Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 10),
                               child: Column(

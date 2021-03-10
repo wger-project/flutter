@@ -182,8 +182,6 @@ class _DayFormWidgetState extends State<DayFormWidget> {
                 _form.currentState.save();
 
                 try {
-                  print(widget._day.daysOfWeek);
-                  print(widget._day.description);
                   Provider.of<WorkoutPlans>(context, listen: false).addDay(
                     widget._day,
                     widget.workout,

@@ -209,6 +209,7 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
         // Days
         days.add(Day(
             id: entry['obj']['id'],
+            workoutId: workoutId,
             description: entry['obj']['description'],
             sets: sets,
             daysOfWeek: [1, 3]
@@ -306,9 +307,12 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
     if (prefs.containsKey('workoutUnits')) {
       final workoutData = json.decode(prefs.getString('workoutUnits'));
       if (DateTime.parse(workoutData['expiresIn']).isAfter(DateTime.now())) {
-        workoutData['repetitionUnits']
-            .forEach((e) => _repetitionUnit.add(RepetitionUnit.fromJson(e)));
-        workoutData['weightUnit'].forEach((e) => _weightUnits.add(WeightUnit.fromJson(e)));
+        workoutData['repetitionUnits'].forEach(
+          (e) => _repetitionUnit.add(RepetitionUnit.fromJson(e)),
+        );
+        workoutData['weightUnit'].forEach(
+          (e) => _weightUnits.add(WeightUnit.fromJson(e)),
+        );
         log("Read workout units data from cache. Valid till ${workoutData['expiresIn']}");
         return;
       }
@@ -387,7 +391,6 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
   }
 
   Future<WorkoutSession> addSession(WorkoutSession session) async {
-    print(session.toJson());
     final data = await post(session.toJson(), makeUrl(_sessionUrlPath));
     final newSession = WorkoutSession.fromJson(data);
     notifyListeners();
@@ -398,7 +401,6 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
    * Logs
    */
   Future<Log> addLog(Log log) async {
-    print(log.toJson());
     final data = await post(log.toJson(), makeUrl(_logsUrlPath));
     final newLog = Log.fromJson(data);
     notifyListeners();
