@@ -21,6 +21,9 @@ jobs:
     - name: Install app dependencies
       run: flutter pub get
 
+    - name: Generated translation files
+      run: flutter gen-l10n
+
     - name: Test app
       run: flutter test --coverage
     
