@@ -11,7 +11,7 @@ class WorkoutSession {
   @JsonKey(required: true)
   int id;
 
-  @JsonKey(required: true)
+  @JsonKey(required: true, name: 'workout')
   int workoutId;
 
   @JsonKey(required: true, toJson: toDate)
