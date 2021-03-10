@@ -1,0 +1,135 @@
+{
+  "@@last_modified": "2020-11-11T15:04:05.523531",
+  "labelWorkoutPlans": "Workout plans",
+  "@labelWorkoutPlans": {
+    "description": "Title for screen workout plans"
+  },
+  "labelWorkoutPlan": "Workout plan",
+  "@labelWorkoutPlan": {
+    "description": "Title for screen workout plan"
+  },
+  "labelDashboard": "Dashboard",
+  "@labelDashboard": {
+    "description": "Title for screen dashboard"
+  },
+  "successfullyDeleted": "Successfully deleted",
+  "@successfullyDeleted": {
+    "description": "Message when an item was successfully deleted"
+  },
+  "exercise": "Exercise",
+  "@exercise": {
+    "description": "An exercise for a workout"
+  },
+  "newWorkout": "New Workout",
+  "@newWorkout": {
+    "description": "Header when adding a new workout"
+  },
+  "repetitions": "Repetitions",
+  "@repetitions": {
+    "description": "Repetitions for an exercise set"
+  },
+  "rir": "RiR",
+  "@rir": {
+    "description": "Shorthand for Repetitions In Reserve"
+  },
+  "comment": "Comment",
+  "@comment": {
+    "description": "Comment, additional information"
+  },
+  "impression": "Impression",
+  "@impression": {
+    "description": "General impression (e.g. for a workout session) such as good, bad, etc."
+  },
+  "notes": "Notes",
+  "@notes": {
+    "description": "Personal notes, e.g. for a workout session"
+  },
+  "workoutSession": "Workout session",
+  "@workoutSession": {
+    "description": "A (logged) workout session"
+  },
+  "newDay": "New day",
+  "newSet": "New set",
+  "@newSet": {
+    "description": "Header when adding a new set to a workout day"
+  },
+  "description": "Description",
+  "save": "Description",
+  "cancel": "Cancel",
+  "add": "Add",
+  "addMeal": "Add meal",
+  "mealLogged": "Meal was successfully logged to diary",
+  "addIngredient": "Add ingredient",
+  "nutritionalPlan": "Nutritional plan",
+  "nutritionalDiary": "Nutritional diary",
+  "nutritionalPlans": "Nutritional plans",
+  "anErrorOccurred": "An Error Occurred!",
+  "dismiss": "Dismiss",
+  "weight": "Weight",
+  "@weight": {
+    "description": "The weight of a workout log or body weight entry"
+  },
+  "date": "Date",
+  "@date": {
+    "description": "The date of a workout log or body weight entry"
+  },
+  "time": "Time",
+  "@time": {
+    "description": "The time of a meal or workout"
+  },
+  "timeStart": "Start time",
+  "@timeStart": {
+    "description": "The starting time of a workout"
+  },
+  "timeEnd": "End time",
+  "@timeEnd": {
+    "description": "The end time of a workout"
+  },
+  "ingredient": "Ingredient",
+  "energy": "Energy",
+  "@energy": {
+    "description": "Energy in a meal, ingredient etc. e.g. in kJ"
+  },
+  "kcal": "kcal",
+  "@kcal": {
+    "description": "Energy in a meal in kilocalories, kcal"
+  },
+  "kJ": "kJ",
+  "@kJ": {
+    "description": "Energy in a meal in kilo joules, kJ"
+  },
+  "g": "g",
+  "@g": {
+    "description": "Abbreviation for gram"
+  },
+  "protein": "Protein",
+  "carbohydrates": "Carbohydrates",
+  "sugars": "Sugars",
+  "fat": "Fat",
+  "saturatedFat": "Saturated fat",
+  "fibres": "Fibres",
+  "sodium": "Sodium",
+  "amount": "Amount",
+  "@amount": {
+    "description": "The amount (e.g. in grams) of an ingredient in a meal"
+  },
+  "newEntry": "New entry",
+  "@newEntry": {
+    "description": "Title when adding a new entry such as a weight or log entry"
+  },
+  "edit": "Edit",
+  "loadingText": "Loading...",
+  "@loadingText": {
+    "description": "Text to show when entries are being loaded in the background: Loading..."
+  },
+  "delete": "Delete",
+  "newNutritionalPlan": "New nutritional plan",
+  "toggleDetails": "Toggle details",
+  "@toggleDetails": {
+    "description": "Switch to toggle detail / overview"
+  },
+  "aboutText": "wger Workout Manager is free, open source (FLOSS) software released under the GNU General Public version 3 or later. The code is freely available on github:",
+  "@aboutText": {
+    "description": "Text in the about dialog"
+  }
+}
