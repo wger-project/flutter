@@ -36,7 +36,7 @@
   "@toggleDetails": {
     "description": "Switch to toggle detail / overview"
   },
-  "aboutText": "wger ist copylefted-Software, lizenziert unter der GPLv3+ und verfügbar auf GitHub:",
+  "aboutText": "wger ist copylefted-Software, lizenziert unter der AGPLv3+ und verfügbar auf GitHub:",
   "@aboutText": {
     "description": "Text in the about dialog"
   },
