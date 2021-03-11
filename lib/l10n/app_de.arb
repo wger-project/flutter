@@ -31,5 +31,137 @@
   "successfullyDeleted": "Erfolgreich gelöscht",
   "@successfullyDeleted": {
     "description": "Message when an item was successfully deleted"
+  },
+  "toggleDetails": "Details ein/ausblenden",
+  "@toggleDetails": {
+    "description": "Switch to toggle detail / overview"
+  },
+  "aboutText": "wger ist copylefted-Software, lizenziert unter der GPLv3+ und verfügbar auf GitHub:",
+  "@aboutText": {
+    "description": "Text in the about dialog"
+  },
+  "newNutritionalPlan": "Neuer Ernährungsplan",
+  "@newNutritionalPlan": {},
+  "delete": "Löschen",
+  "@delete": {},
+  "loadingText": "Wird geladen…",
+  "@loadingText": {
+    "description": "Text to show when entries are being loaded in the background: Loading..."
+  },
+  "edit": "Bearbeiten",
+  "@edit": {},
+  "newEntry": "Neuer Eintrag",
+  "@newEntry": {
+    "description": "Title when adding a new entry such as a weight or log entry"
+  },
+  "amount": "Betrag",
+  "@amount": {
+    "description": "The amount (e.g. in grams) of an ingredient in a meal"
+  },
+  "sodium": "Natrium",
+  "@sodium": {},
+  "fibres": "Ballaststoff",
+  "@fibres": {},
+  "saturatedFat": "Gesättigte Fettsäuren",
+  "@saturatedFat": {},
+  "fat": "Fett",
+  "@fat": {},
+  "sugars": "Zucker",
+  "@sugars": {},
+  "carbohydrates": "Kohlenhydrate",
+  "@carbohydrates": {},
+  "protein": "Eiweiß",
+  "@protein": {},
+  "g": "g",
+  "@g": {
+    "description": "Abbreviation for gram"
+  },
+  "mealLogged": "Mahlzeit wurde erfolgreich im Tagebuch gespeichert",
+  "@mealLogged": {},
+  "kJ": "kJ",
+  "@kJ": {
+    "description": "Energy in a meal in kilo joules, kJ"
+  },
+  "kcal": "kcal",
+  "@kcal": {
+    "description": "Energy in a meal in kilocalories, kcal"
+  },
+  "energy": "Energie",
+  "@energy": {
+    "description": "Energy in a meal, ingredient etc. e.g. in kJ"
+  },
+  "ingredient": "Zutat",
+  "@ingredient": {},
+  "timeEnd": "Endzeit",
+  "@timeEnd": {
+    "description": "The end time of a workout"
+  },
+  "timeStart": "Startzeit",
+  "@timeStart": {
+    "description": "The starting time of a workout"
+  },
+  "time": "Zeit",
+  "@time": {
+    "description": "The time of a meal or workout"
+  },
+  "date": "Datum",
+  "@date": {
+    "description": "The date of a workout log or body weight entry"
+  },
+  "weight": "Gewicht",
+  "@weight": {
+    "description": "The weight of a workout log or body weight entry"
+  },
+  "dismiss": "Verwerfen",
+  "@dismiss": {},
+  "anErrorOccurred": "Es ist ein Fehler aufgetreten!",
+  "@anErrorOccurred": {},
+  "nutritionalPlans": "Ernährungspläne",
+  "@nutritionalPlans": {},
+  "nutritionalDiary": "Ernährungstagebuch",
+  "@nutritionalDiary": {},
+  "nutritionalPlan": "Ernährungsplan",
+  "@nutritionalPlan": {},
+  "addIngredient": "Zutat hinzufügen",
+  "@addIngredient": {},
+  "newWorkout": "Neuer Trainingsplan",
+  "@newWorkout": {
+    "description": "Header when adding a new workout"
+  },
+  "gymMode": "Studiomodus",
+  "@gymMode": {
+    "description": "Label when starting the gym mode"
+  },
+  "addMeal": "Mahlzeit hinzufügen",
+  "@addMeal": {},
+  "add": "Hinzufügen",
+  "@add": {},
+  "cancel": "Abbrechen",
+  "@cancel": {},
+  "save": "Speichern",
+  "@save": {},
+  "description": "Beschreibung",
+  "@description": {},
+  "newSet": "Neuer Satz",
+  "@newSet": {
+    "description": "Header when adding a new set to a workout day"
+  },
+  "newDay": "Neuer Tag",
+  "@newDay": {},
+  "workoutSession": "Trainingseinheit",
+  "@workoutSession": {
+    "description": "A (logged) workout session"
+  },
+  "notes": "Notizen",
+  "@notes": {
+    "description": "Personal notes, e.g. for a workout session"
+  },
+  "impression": "Eindruck",
+  "@impression": {
+    "description": "General impression (e.g. for a workout session) such as good, bad, etc."
+  },
+  "comment": "Kommentar",
+  "@comment": {
+    "description": "Comment, additional information"
   }
 }
