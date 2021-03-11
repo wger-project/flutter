@@ -12,7 +12,7 @@
   "@labelDashboard": {
     "description": "Title for screen dashboard"
   },
-  "successfullyDeleted": "Successfully deleted",
+  "successfullyDeleted": "Deleted",
   "@successfullyDeleted": {
     "description": "Message when an item was successfully deleted"
   },
@@ -49,6 +49,7 @@
     "description": "A (logged) workout session"
   },
   "newDay": "New day",
+  "@newDay": {},
   "newSet": "New set",
   "@newSet": {
     "description": "Header when adding a new set to a workout day"
@@ -58,17 +59,29 @@
     "description": "Label when starting the gym mode"
   },
   "description": "Description",
+  "@description": {},
   "save": "Description",
+  "@save": {},
   "cancel": "Cancel",
+  "@cancel": {},
   "add": "Add",
+  "@add": {},
   "addMeal": "Add meal",
-  "mealLogged": "Meal was successfully logged to diary",
+  "@addMeal": {},
+  "mealLogged": "Meal logged to diary",
+  "@mealLogged": {},
   "addIngredient": "Add ingredient",
+  "@addIngredient": {},
   "nutritionalPlan": "Nutritional plan",
+  "@nutritionalPlan": {},
   "nutritionalDiary": "Nutritional diary",
+  "@nutritionalDiary": {},
   "nutritionalPlans": "Nutritional plans",
+  "@nutritionalPlans": {},
   "anErrorOccurred": "An Error Occurred!",
+  "@anErrorOccurred": {},
   "dismiss": "Dismiss",
+  "@dismiss": {},
   "weight": "Weight",
   "@weight": {
     "description": "The weight of a workout log or body weight entry"
@@ -90,6 +103,7 @@
     "description": "The end time of a workout"
   },
   "ingredient": "Ingredient",
+  "@ingredient": {},
   "energy": "Energy",
   "@energy": {
     "description": "Energy in a meal, ingredient etc. e.g. in kJ"
@@ -107,12 +121,19 @@
     "description": "Abbreviation for gram"
   },
   "protein": "Protein",
+  "@protein": {},
   "carbohydrates": "Carbohydrates",
+  "@carbohydrates": {},
   "sugars": "Sugars",
+  "@sugars": {},
   "fat": "Fat",
+  "@fat": {},
   "saturatedFat": "Saturated fat",
-  "fibres": "Fibres",
+  "@saturatedFat": {},
+  "fibres": "Fibre",
+  "@fibres": {},
   "sodium": "Sodium",
+  "@sodium": {},
   "amount": "Amount",
   "@amount": {
     "description": "The amount (e.g. in grams) of an ingredient in a meal"
@@ -122,17 +143,20 @@
     "description": "Title when adding a new entry such as a weight or log entry"
   },
   "edit": "Edit",
+  "@edit": {},
   "loadingText": "Loading...",
   "@loadingText": {
     "description": "Text to show when entries are being loaded in the background: Loading..."
   },
   "delete": "Delete",
+  "@delete": {},
   "newNutritionalPlan": "New nutritional plan",
+  "@newNutritionalPlan": {},
   "toggleDetails": "Toggle details",
   "@toggleDetails": {
     "description": "Switch to toggle detail / overview"
   },
-  "aboutText": "wger Workout Manager is free, open source (FLOSS) software released under the GNU General Public version 3 or later. The code is freely available on github:",
+  "aboutText": "wger is copylefted libre software, licensed GPLv3+ and available on GitHub:",
   "@aboutText": {
     "description": "Text in the about dialog"
   }
