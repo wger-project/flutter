@@ -1,1 +1,162 @@
-{}
+{
+  "aboutText": "wger arbeidsøkthåndterer er gemenhetslig fri programvare, lisensiert GPLv3+ og tilgjengelig på GitHub:",
+  "@aboutText": {
+    "description": "Text in the about dialog"
+  },
+  "fibres": "Fiber",
+  "@fibres": {},
+  "mealLogged": "Måltid lagt til i dagbok",
+  "@mealLogged": {},
+  "successfullyDeleted": "Slettet",
+  "@successfullyDeleted": {
+    "description": "Message when an item was successfully deleted"
+  },
+  "impression": "Inntrykk",
+  "@impression": {
+    "description": "General impression (e.g. for a workout session) such as good, bad, etc."
+  },
+  "rir": "RiR",
+  "@rir": {
+    "description": "Shorthand for Repetitions In Reserve"
+  },
+  "kJ": "KJ",
+  "@kJ": {
+    "description": "Energy in a meal in kilo joules, kJ"
+  },
+  "kcal": "kcal",
+  "@kcal": {
+    "description": "Energy in a meal in kilocalories, kcal"
+  },
+  "toggleDetails": "Veksle detaljer",
+  "@toggleDetails": {
+    "description": "Switch to toggle detail / overview"
+  },
+  "newNutritionalPlan": "Ny ernæringsplan",
+  "@newNutritionalPlan": {},
+  "delete": "Slett",
+  "@delete": {},
+  "loadingText": "Laster …",
+  "@loadingText": {
+    "description": "Text to show when entries are being loaded in the background: Loading..."
+  },
+  "edit": "Rediger",
+  "@edit": {},
+  "newEntry": "Ny oppføring",
+  "@newEntry": {
+    "description": "Title when adding a new entry such as a weight or log entry"
+  },
+  "amount": "Mengde",
+  "@amount": {
+    "description": "The amount (e.g. in grams) of an ingredient in a meal"
+  },
+  "sodium": "Salt",
+  "@sodium": {},
+  "saturatedFat": "Mettet fett",
+  "@saturatedFat": {},
+  "fat": "Fett",
+  "@fat": {},
+  "sugars": "Sukkerarter",
+  "@sugars": {},
+  "carbohydrates": "Karbohydrater",
+  "@carbohydrates": {},
+  "protein": "Protein",
+  "@protein": {},
+  "g": "g",
+  "@g": {
+    "description": "Abbreviation for gram"
+  },
+  "energy": "Energi",
+  "@energy": {
+    "description": "Energy in a meal, ingredient etc. e.g. in kJ"
+  },
+  "ingredient": "Ingrediens",
+  "@ingredient": {},
+  "timeEnd": "Slutt-tid",
+  "@timeEnd": {
+    "description": "The end time of a workout"
+  },
+  "timeStart": "Starttid",
+  "@timeStart": {
+    "description": "The starting time of a workout"
+  },
+  "time": "Tid",
+  "@time": {
+    "description": "The time of a meal or workout"
+  },
+  "date": "Dato",
+  "@date": {
+    "description": "The date of a workout log or body weight entry"
+  },
+  "weight": "Vekt",
+  "@weight": {
+    "description": "The weight of a workout log or body weight entry"
+  },
+  "dismiss": "Forkast",
+  "@dismiss": {},
+  "anErrorOccurred": "En feil inntraff.",
+  "@anErrorOccurred": {},
+  "nutritionalPlans": "Ernæringsplaner",
+  "@nutritionalPlans": {},
+  "nutritionalDiary": "Ernæringsdagbok",
+  "@nutritionalDiary": {},
+  "nutritionalPlan": "Ernæringsplan",
+  "@nutritionalPlan": {},
+  "addIngredient": "Legg til ingrediens",
+  "@addIngredient": {},
+  "addMeal": "Legg til måltid",
+  "@addMeal": {},
+  "add": "Legg til",
+  "@add": {},
+  "cancel": "Avbryt",
+  "@cancel": {},
+  "save": "Beskrivelse",
+  "@save": {},
+  "gymMode": "Helsestudio-modus",
+  "@gymMode": {
+    "description": "Label when starting the gym mode"
+  },
+  "description": "Beskrivelse",
+  "@description": {},
+  "newSet": "Nytt sett",
+  "@newSet": {
+    "description": "Header when adding a new set to a workout day"
+  },
+  "newDay": "Ny dag",
+  "@newDay": {},
+  "workoutSession": "Treningsøkt",
+  "@workoutSession": {
+    "description": "A (logged) workout session"
+  },
+  "notes": "Notiser",
+  "@notes": {
+    "description": "Personal notes, e.g. for a workout session"
+  },
+  "comment": "Kommentar",
+  "@comment": {
+    "description": "Comment, additional information"
+  },
+  "repetitions": "Gjentagelser",
+  "@repetitions": {
+    "description": "Repetitions for an exercise set"
+  },
+  "newWorkout": "Ny treningsøkt",
+  "@newWorkout": {
+    "description": "Header when adding a new workout"
+  },
+  "exercise": "Øvelse",
+  "@exercise": {
+    "description": "An exercise for a workout"
+  },
+  "labelDashboard": "Oversikt",
+  "@labelDashboard": {
+    "description": "Title for screen dashboard"
+  },
+  "labelWorkoutPlan": "Trenkingsøktplan",
+  "@labelWorkoutPlan": {
+    "description": "Title for screen workout plan"
+  },
+  "labelWorkoutPlans": "Treningsøktplaner",
+  "@labelWorkoutPlans": {
+    "description": "Title for screen workout plans"
+  }
+}
