@@ -200,6 +200,32 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
   Widget build(BuildContext context) {
     _workoutPlan = Provider.of<WorkoutPlans>(context, listen: false).activePlan;
 
+    List<Widget> out = [];
+    for (var day in _workoutPlan.days) {
+      out.add(Text(
+        day.description,
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ));
+      if (showDetail) {
+        day.sets.forEach((set) {
+          out.add(Column(
+            children: [
+              ...set.settings.map((s) {
+                return Column(
+                  children: [
+                    Text(s.exerciseObj.name, style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text(s.repsText),
+                    SizedBox(height: 10),
+                  ],
+                );
+              }).toList(),
+              Divider(),
+            ],
+          ));
+        });
+      }
+    }
+
     return Card(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -225,21 +251,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                             .pushNamed(WorkoutPlanScreen.routeName, arguments: _workoutPlan);
                       },
                     ),
-                    ..._workoutPlan.days.map((workoutDay) {
-                      return Column(children: [
-                        const SizedBox(height: 10),
-                        showDetail == true
-                            ? Text(
-                                workoutDay.description,
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              )
-                            : Text(workoutDay.description),
-                        if (showDetail)
-                          ...workoutDay.sets
-                              .map((set) => Text(set.exercisesObj.map((e) => e.name).join(', ')))
-                              .toList(),
-                      ]);
-                    }).toList(),
+                    ...out,
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: <Widget>[
