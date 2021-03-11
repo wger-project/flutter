@@ -1,5 +1,5 @@
 {
-  "aboutText": "wger arbeidsøkthåndterer er gemenhetslig fri programvare, lisensiert GPLv3+ og tilgjengelig på GitHub:",
+  "aboutText": "wger arbeidsøkthåndterer er gemenhetslig fri programvare, lisensiert AGPLv3+ og tilgjengelig på GitHub:",
   "@aboutText": {
     "description": "Text in the about dialog"
   },
