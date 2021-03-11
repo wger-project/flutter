@@ -83,10 +83,8 @@ class NutritionalPlanScreen extends StatelessWidget {
               ],
               flexibleSpace: FlexibleSpaceBar(
                 title: Text(_nutritionalPlan.description),
-                background: Image.network(
-                  'https://thumbnails.production.thenounproject.com/NsyUiJkHgkfnnNt3bKw3DCtewXE=/fit-in/1000x1000/photos.production.thenounproject.com/photos/6905F43B-2816-4286-8696-5B7AEA8FE908.jpg',
-                  // --> https://thenounproject.com/photo/tomatoes-chilies-and-dill-leaves-on-table-0JoGn5/
-
+                background: Image(
+                  image: AssetImage('assets/images/backgrounds/nutritional_plans.jpg'),
                   fit: BoxFit.cover,
                 ),
               ),

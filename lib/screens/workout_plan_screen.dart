@@ -131,10 +131,8 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
               ],
               flexibleSpace: FlexibleSpaceBar(
                 title: Text(workoutPlan.description),
-                background: Image.network(
-                  'https://thumbnails.production.thenounproject.com/GS2Ct-A74O23cwQ-FYCpzlN9Bdc=/fit-in/1000x1000/photos.production.thenounproject.com/photos/1F45191D-AE0E-425D-90E3-95A23B762B95.jpg',
-                  // --> https://thenounproject.com/photo/athlete-working-out-with-battle-ropes-outdoors-on-grass-field-0LrJR4/
-
+                background: Image(
+                  image: AssetImage('assets/images/backgrounds/workout_plans.jpg'),
                   fit: BoxFit.cover,
                 ),
               ),
