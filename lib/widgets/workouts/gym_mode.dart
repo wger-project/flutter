@@ -160,7 +160,7 @@ class LogPage extends StatelessWidget {
 
   LogPage(this._controller, this._setting, this._exercise, this._workoutPlan) {
     if (_setting.reps != null) {
-      _weightController.text = _setting.reps.toString();
+      _repsController.text = _setting.reps.toString();
     }
 
     if (_setting.weight != null) {
