@@ -20,7 +20,7 @@
   "@exercise": {
     "description": "An exercise for a workout"
   },
-  "newWorkout": "New Workout",
+  "newWorkout": "New workout plan",
   "@newWorkout": {
     "description": "Header when adding a new workout"
   },
@@ -54,13 +54,13 @@
   "@newSet": {
     "description": "Header when adding a new set to a workout day"
   },
-  "gymMode": "GymMode",
+  "gymMode": "Gym mode",
   "@gymMode": {
     "description": "Label when starting the gym mode"
   },
   "description": "Description",
   "@description": {},
-  "save": "Description",
+  "save": "Save",
   "@save": {},
   "cancel": "Cancel",
   "@cancel": {},
