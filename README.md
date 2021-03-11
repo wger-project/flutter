@@ -7,15 +7,22 @@ If you want to contribute, hop on the discord server and say hi!
 
 ## Getting Started
 
-Install wger, the easiest way is starting the development docker-compose:
+### 1
+Install the wger server, the easiest way is starting the development docker-compose:
 <https://github.com/wger-project/wger>
 
+### 2
 Install flutter, all its dependencies and create a new virtual device: 
 <https://flutter.dev/docs/get-started/install>
 
+### 3
+Generate translation files with ``flutter gen-l10n``
 
-Then run ``flutter run`` or use your IDE (please note that depending on how
-you run your emulator you will need to change the IP address)
+
+### 4
+Start the application with ``flutter run`` or use your IDE (please note that
+depending on how you run your emulator you will need to change the IP address
+of the server)
 
 
 ## Contact
