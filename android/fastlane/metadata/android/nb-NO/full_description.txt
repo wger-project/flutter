@@ -1,0 +1,6 @@
+wger (ˈvɛɡɐ) er gemenhetslig fri programvare som hjelper din helse.
+
+- Planlegg treningsøkter og ernæring
+- Lagre øvelser og kommenter dem
+- Helsestudio-modus
+- Dagbok og utviklingssporing
