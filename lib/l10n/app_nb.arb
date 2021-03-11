@@ -109,7 +109,7 @@
   "@add": {},
   "cancel": "Avbryt",
   "@cancel": {},
-  "save": "Beskrivelse",
+  "save": "Lagre",
   "@save": {},
   "gymMode": "Helsestudio-modus",
   "@gymMode": {
@@ -139,7 +139,7 @@
   "@repetitions": {
     "description": "Repetitions for an exercise set"
   },
-  "newWorkout": "Ny treningsøkt",
+  "newWorkout": "Ny treningsøktplan",
   "@newWorkout": {
     "description": "Header when adding a new workout"
   },
