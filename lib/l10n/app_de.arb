@@ -11,5 +11,25 @@
     "description": "Title for screen workout plan",
     "type": "text",
     "placeholders": {}
+  },
+  "labelDashboard": "Dashboard",
+  "@labelDashboard": {
+    "description": "Title for screen dashboard"
+  },
+  "rir": "RiR",
+  "@rir": {
+    "description": "Shorthand for Repetitions In Reserve"
+  },
+  "repetitions": "Wiederholungen",
+  "@repetitions": {
+    "description": "Repetitions for an exercise set"
+  },
+  "exercise": "Übung",
+  "@exercise": {
+    "description": "An exercise for a workout"
+  },
+  "successfullyDeleted": "Erfolgreich gelöscht",
+  "@successfullyDeleted": {
+    "description": "Message when an item was successfully deleted"
   }
 }
