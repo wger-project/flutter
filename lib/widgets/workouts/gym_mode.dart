@@ -562,7 +562,7 @@ class NavigationFooter extends StatelessWidget {
         IconButton(
           icon: Icon(Icons.chevron_left),
           onPressed: () {
-            _controller.nextPage(duration: Duration(milliseconds: 200), curve: Curves.bounceIn);
+            _controller.previousPage(duration: Duration(milliseconds: 200), curve: Curves.bounceIn);
           },
         ),
         IconButton(
