@@ -53,6 +53,10 @@
   "@newSet": {
     "description": "Header when adding a new set to a workout day"
   },
+  "gymMode": "GymMode",
+  "@gymMode": {
+    "description": "Label when starting the gym mode"
+  },
   "description": "Description",
   "save": "Description",
   "cancel": "Cancel",

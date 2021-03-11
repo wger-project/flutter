@@ -170,7 +170,7 @@ class DayHeaderDismissible extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Text(
-              'Gym mode',
+              AppLocalizations.of(context).gymMode,
               style: TextStyle(color: Colors.white),
             ),
             Icon(

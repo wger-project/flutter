@@ -64,7 +64,7 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
         return WorkoutLogs(plan, _changeMode);
         break;
       case WorkoutScreenMode.gym:
-        return Text('Gym Mode');
+        return Text(AppLocalizations.of(context).gymMode);
         break;
     }
   }

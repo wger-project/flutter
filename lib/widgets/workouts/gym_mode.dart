@@ -104,7 +104,7 @@ class StartPage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: Text(
-              'Gym mode',
+              AppLocalizations.of(context).gymMode,
               style: Theme.of(context).textTheme.headline5,
             ),
           ),

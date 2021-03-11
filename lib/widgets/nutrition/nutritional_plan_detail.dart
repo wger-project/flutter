@@ -38,18 +38,21 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
       delegate: SliverChildListDelegate(
         [
           SizedBox(height: 10),
-          ElevatedButton(
-            child: Text(AppLocalizations.of(context).add),
-            onPressed: () {
-              showFormBottomSheet(
-                context,
-                AppLocalizations.of(context).addMeal,
-                MealForm(_nutritionalPlan.id),
-              );
-            },
-          ),
           if (_nutritionalPlan.meals != null && _nutritionalPlan.meals.length > 0)
             ..._nutritionalPlan.meals.map((meal) => MealWidget(meal)).toList(),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton(
+              child: Text(AppLocalizations.of(context).add),
+              onPressed: () {
+                showFormBottomSheet(
+                  context,
+                  AppLocalizations.of(context).addMeal,
+                  MealForm(_nutritionalPlan.id),
+                );
+              },
+            ),
+          ),
           Container(
             padding: EdgeInsets.all(15),
             height: 220,
