@@ -131,6 +131,7 @@ class DayHeaderDismissible extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dismissible(
       key: Key(_day.id.toString()),
+      direction: DismissDirection.startToEnd,
       child: Container(
         decoration: BoxDecoration(color: Colors.black12),
         padding: const EdgeInsets.symmetric(vertical: 10),
@@ -145,6 +146,7 @@ class DayHeaderDismissible extends StatelessWidget {
           ],
         ),
       ),
+      /*
       secondaryBackground: Container(
         color: Theme.of(context).primaryColor,
         padding: EdgeInsets.only(right: 10),
@@ -162,6 +164,7 @@ class DayHeaderDismissible extends StatelessWidget {
           ],
         ),
       ),
+      */
       background: Container(
         color: Theme.of(context).accentColor,
         alignment: Alignment.centerLeft,

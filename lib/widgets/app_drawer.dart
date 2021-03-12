@@ -77,6 +77,7 @@ class AppDrawer extends StatelessWidget {
           Expanded(child: Container()),
 
            */
+          /*
           ListTile(
             //dense: true,
             leading: Icon(Icons.build),
@@ -98,6 +99,7 @@ class AppDrawer extends StatelessWidget {
               );
             },
           ),
+          */
           ListTile(
             //dense: true,
             leading: Icon(Icons.exit_to_app),
