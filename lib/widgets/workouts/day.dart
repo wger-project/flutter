@@ -106,6 +106,7 @@ class WorkoutDayWidget extends StatelessWidget {
                 context,
                 AppLocalizations.of(context).newSet,
                 SetFormWidget(_day),
+                scrollControlled: true,
               );
             },
           ),

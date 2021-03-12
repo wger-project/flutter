@@ -74,6 +74,7 @@ class _MealWidgetState extends State<MealWidget> {
                   context,
                   AppLocalizations.of(context).addIngredient,
                   MealItemForm(widget._meal),
+                  scrollControlled: true,
                 );
               },
             ),

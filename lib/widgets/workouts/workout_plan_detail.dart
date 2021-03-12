@@ -60,9 +60,8 @@ class _WorkoutPlanDetailState extends State<WorkoutPlanDetail> {
                       showFormBottomSheet(
                         context,
                         AppLocalizations.of(context).newDay,
-                        DayFormWidget(
-                          workout: widget._workoutPlan,
-                        ),
+                        DayFormWidget(workout: widget._workoutPlan),
+                        scrollControlled: true,
                       );
                     },
                   ),

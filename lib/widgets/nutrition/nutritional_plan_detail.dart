@@ -43,7 +43,7 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: ElevatedButton(
-              child: Text(AppLocalizations.of(context).add),
+              child: Text(AppLocalizations.of(context).addMeal),
               onPressed: () {
                 showFormBottomSheet(
                   context,
@@ -131,7 +131,7 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                       children: [
                         Text(''),
                         Text(
-                            '${AppLocalizations.of(context).energy} (${AppLocalizations.of(context).kcal}'),
+                            '${AppLocalizations.of(context).energy} (${AppLocalizations.of(context).kcal})'),
                         Text(
                             '${AppLocalizations.of(context).protein} (${AppLocalizations.of(context).g})'),
                         Text(

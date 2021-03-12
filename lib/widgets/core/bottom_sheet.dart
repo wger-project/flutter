@@ -18,9 +18,10 @@
 
 import 'package:flutter/material.dart';
 
-Future<Widget> showFormBottomSheet(BuildContext context, String header, Widget form) async {
+Future<Widget> showFormBottomSheet(BuildContext context, String header, Widget form,
+    {bool scrollControlled: false}) async {
   return showModalBottomSheet(
-      isScrollControlled: true,
+      isScrollControlled: scrollControlled,
       context: context,
       builder: (BuildContext ctx) {
         return Column(
