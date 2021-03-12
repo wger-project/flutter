@@ -340,18 +340,25 @@ class _SetFormWidgetState extends State<SetFormWidget> {
             Text('If you do the same repetitions for all sets you can just enter '
                 'one value: e.g. for 4 sets just enter one "10" for the repetitions, '
                 'this automatically becomes "4 x 10".'),
-            ...widget._set.exercisesObj.map((exercise) {
-              final settings =
-                  widget._set.settings.where((e) => e.exerciseObj.id == exercise.id).toList();
+            SizedBox(
+              height: 350,
+              child: ListView(
+                children: [
+                  ...widget._set.exercisesObj.map((exercise) {
+                    final settings =
+                        widget._set.settings.where((e) => e.exerciseObj.id == exercise.id).toList();
 
-              return ExerciseSetting(
-                exercise,
-                settings,
-                _detailed,
-                _currentSetSliderValue,
-                removeExercise,
-              );
-            }).toList(),
+                    return ExerciseSetting(
+                      exercise,
+                      settings,
+                      _detailed,
+                      _currentSetSliderValue,
+                      removeExercise,
+                    );
+                  }).toList(),
+                ],
+              ),
+            ),
             ElevatedButton(
                 child: Text(AppLocalizations.of(context).save),
                 onPressed: () async {
