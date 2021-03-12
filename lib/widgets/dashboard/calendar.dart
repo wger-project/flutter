@@ -30,6 +30,8 @@ import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/theme/theme.dart';
 
 // Example holidays
+//
+// (perhaps we can do something with this, such as marking future training days?)
 final Map<DateTime, List> _holidays = {
   DateTime(2021, 1, 1): ['New Year\'s Day'],
   DateTime(2021, 1, 6): ['Epiphany'],
@@ -62,9 +64,7 @@ class Event {
 }
 
 class DashboardCalendarWidget extends StatefulWidget {
-  DashboardCalendarWidget({Key key, this.title}) : super(key: key);
-
-  final String title;
+  DashboardCalendarWidget({Key key}) : super(key: key);
 
   @override
   _DashboardCalendarWidgetState createState() => _DashboardCalendarWidgetState();
@@ -136,7 +136,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
         // Add events to lists
         _events[date].add(Event(
           EventType.session,
-          'Impression: ${session.impressionAsString} $time',
+          '${AppLocalizations.of(context).impression}: ${session.impressionAsString} $time',
         ));
       }
     });
@@ -185,7 +185,11 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
         mainAxisSize: MainAxisSize.max,
         children: [
           const SizedBox(height: 8.0),
-          Text(widget.title, style: Theme.of(context).textTheme.headline4),
+          Text(
+            AppLocalizations.of(context).calendar,
+            style: Theme.of(context).textTheme.headline4,
+          ),
+
           // Switch out 2 lines below to play with TableCalendar's settings
           //-----------------------
           _buildTableCalendar(),
@@ -193,7 +197,6 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
           const SizedBox(height: 8.0),
           _buildButtons(),
           const SizedBox(height: 8.0),
-          //_buildEventList(),
           Expanded(child: _buildEventList()),
         ],
       ),
@@ -358,7 +361,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
       mainAxisAlignment: MainAxisAlignment.end,
       children: <Widget>[
         TextButton(
-          child: Text('Go to today'),
+          child: Text(AppLocalizations.of(context).goToToday),
           onPressed: () async {
             final today = DateTime.now();
             _calendarController.setSelectedDay(

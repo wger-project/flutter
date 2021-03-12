@@ -149,7 +149,7 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                   : Container(
                       alignment: Alignment.center,
                       height: 150,
-                      child: Text('You have no weight entries'),
+                      child: Text(AppLocalizations.of(context).noWeightEntries),
                     ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -213,7 +213,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
               ...set.settings.map((s) {
                 return Column(
                   children: [
-                    Text(s.exerciseObj.name, style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text(s.exerciseObj.name),
                     Text(s.repsText),
                     SizedBox(height: 10),
                   ],

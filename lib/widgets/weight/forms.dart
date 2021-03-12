@@ -61,12 +61,12 @@ class WeightForm extends StatelessWidget {
             },
             validator: (value) {
               if (value.isEmpty) {
-                return 'Please enter a weight';
+                return AppLocalizations.of(context).enterValue;
               }
               try {
                 double.parse(value);
               } catch (error) {
-                return 'Please enter a valid number';
+                return AppLocalizations.of(context).enterValidNumber;
               }
               return null;
             },

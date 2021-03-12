@@ -145,10 +145,10 @@ class MealItemForm extends StatelessWidget {
               },
               validator: (value) {
                 if (value.isEmpty) {
-                  return 'Please select an ingredient';
+                  return AppLocalizations.of(context).selectIngredient;
                 }
                 if (mealItem.ingredientId == null) {
-                  return 'Please select an ingredient';
+                  return AppLocalizations.of(context).selectIngredient;
                 }
                 return null;
               },
@@ -165,7 +165,7 @@ class MealItemForm extends StatelessWidget {
                 try {
                   double.parse(value);
                 } catch (error) {
-                  return 'Please enter a valid number';
+                  return AppLocalizations.of(context).enterValidNumber;
                 }
                 return null;
               },

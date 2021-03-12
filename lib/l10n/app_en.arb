@@ -58,6 +58,8 @@
   "@gymMode": {
     "description": "Label when starting the gym mode"
   },
+  "logHelpEntries": "If on a single day there is more than one entry with the same number of repetitions, but different weights, only the entry with the higher weight is shown in the diagram.",
+  "logHelpEntriesUnits": "Note that only entries with a weight unit (kg or lb) and repetitions are charted, other combinations such as time or until failure are ignored here.",
   "description": "Description",
   "@description": {},
   "save": "Save",
@@ -138,9 +140,17 @@
   "@amount": {
     "description": "The amount (e.g. in grams) of an ingredient in a meal"
   },
+  "unit": "Unit",
+  "@unit": {
+    "description": "The unit used for a repetition (kg, time, etc.)"
+  },
   "newEntry": "New entry",
   "@newEntry": {
     "description": "Title when adding a new entry such as a weight or log entry"
+  },
+  "noWeightEntries": "You have no weight entries",
+  "@noWeightEntries": {
+    "description": "Message shown when the user has no logged weight entries"
   },
   "edit": "Edit",
   "@edit": {},
@@ -159,5 +169,22 @@
   "aboutText": "wger is copylefted libre software, licensed GPLv3+ and available on GitHub:",
   "@aboutText": {
     "description": "Text in the about dialog"
+  },
+  "calendar": "Calendar",
+  "goToToday": "Go to today",
+  "@goToToday": {
+    "description": "Label on button to jump back to 'today' in the calendar widget"
+  },
+  "enterValue": "Please enter a value",
+  "@enterValue": {
+    "description": "Error message when the user hasn't entered a value on a required field"
+  },
+  "enterValidNumber": "Please enter a valid number",
+  "@enterValidNumber": {
+    "description": "Error message when the user has submitted an invalid number (e.g. '3,.,.,.')"
+  },
+  "selectIngredient": "Please select an ingredient",
+  "@selectIngredient": {
+    "description": "Error message when the user hasn't selected an ingredient from the autocompleter"
   }
 }

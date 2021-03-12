@@ -101,7 +101,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         DashboardWeightWidget(context: context),
                         Container(
                           height: 650, // TODO: refactor calendar so we can get rid of size
-                          child: DashboardCalendarWidget(title: 'Calendar'),
+                          child: DashboardCalendarWidget(),
                         ),
                       ],
                     ),

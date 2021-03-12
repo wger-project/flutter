@@ -211,7 +211,7 @@ class LogPage extends StatelessWidget {
                       try {
                         double.parse(value);
                       } catch (error) {
-                        return 'Please enter a valid number';
+                        return AppLocalizations.of(context).enterValidNumber;
                       }
                       return null;
                     },

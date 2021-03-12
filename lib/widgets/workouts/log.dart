@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/exercises/exercise.dart';
@@ -90,11 +91,11 @@ class ExerciseLog extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Text('Amount'),
-            Text('Unit'),
-            Text('Weight'),
-            Text('Unit'),
-            Text('RiR'),
+            Text(AppLocalizations.of(context).amount),
+            Text(AppLocalizations.of(context).unit),
+            Text(AppLocalizations.of(context).weight),
+            Text(AppLocalizations.of(context).unit),
+            Text(AppLocalizations.of(context).rir),
           ],
         ),
       ],
