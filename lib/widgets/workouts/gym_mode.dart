@@ -192,47 +192,46 @@ class LogPage extends StatelessWidget {
               style: Theme.of(context).textTheme.headline5,
             ),
           ),
-          Expanded(
-            child: Form(
-              key: _form,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TextFormField(
-                    decoration:
-                        InputDecoration(labelText: AppLocalizations.of(context).repetitions),
-                    controller: _repsController,
-                    keyboardType: TextInputType.number,
-                    onFieldSubmitted: (_) {},
-                    onSaved: (newValue) {
-                      _log.reps = int.parse(newValue);
-                    },
-                    validator: (value) {
-                      try {
-                        double.parse(value);
-                      } catch (error) {
-                        return AppLocalizations.of(context).enterValidNumber;
-                      }
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(labelText: AppLocalizations.of(context).weight),
-                    controller: _weightController,
-                    keyboardType: TextInputType.number,
-                    onFieldSubmitted: (_) {},
-                    onSaved: (newValue) {
-                      _log.weight = double.parse(newValue);
-                    },
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(labelText: AppLocalizations.of(context).rir),
-                    controller: _rirController,
-                    keyboardType: TextInputType.number,
-                    onFieldSubmitted: (_) {},
-                    onSaved: (newValue) {},
-                  ),
-                  /*
+          Expanded(child: Container()),
+          Form(
+            key: _form,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextFormField(
+                  decoration: InputDecoration(labelText: AppLocalizations.of(context).repetitions),
+                  controller: _repsController,
+                  keyboardType: TextInputType.number,
+                  onFieldSubmitted: (_) {},
+                  onSaved: (newValue) {
+                    _log.reps = int.parse(newValue);
+                  },
+                  validator: (value) {
+                    try {
+                      double.parse(value);
+                    } catch (error) {
+                      return AppLocalizations.of(context).enterValidNumber;
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  decoration: InputDecoration(labelText: AppLocalizations.of(context).weight),
+                  controller: _weightController,
+                  keyboardType: TextInputType.number,
+                  onFieldSubmitted: (_) {},
+                  onSaved: (newValue) {
+                    _log.weight = double.parse(newValue);
+                  },
+                ),
+                TextFormField(
+                  decoration: InputDecoration(labelText: AppLocalizations.of(context).rir),
+                  controller: _rirController,
+                  keyboardType: TextInputType.number,
+                  onFieldSubmitted: (_) {},
+                  onSaved: (newValue) {},
+                ),
+                /*
                   TextFormField(
                     decoration: InputDecoration(labelText: AppLocalizations.of(context).comment),
                     controller: _commentController,
@@ -245,34 +244,33 @@ class LogPage extends StatelessWidget {
                   ),
 
                    */
-                  ElevatedButton(
-                    child: Text(AppLocalizations.of(context).save),
-                    onPressed: () async {
-                      // Validate and save the current values to the weightEntry
-                      final isValid = _form.currentState.validate();
-                      if (!isValid) {
-                        return;
-                      }
-                      _form.currentState.save();
+                ElevatedButton(
+                  child: Text(AppLocalizations.of(context).save),
+                  onPressed: () async {
+                    // Validate and save the current values to the weightEntry
+                    final isValid = _form.currentState.validate();
+                    if (!isValid) {
+                      return;
+                    }
+                    _form.currentState.save();
 
-                      // Save the entry on the server
-                      try {
-                        await Provider.of<WorkoutPlans>(context, listen: false).addLog(_log);
-                        //final snackBar = SnackBar(content: Text('Yay! A SnackBar!'));
-                        //ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                        _controller.nextPage(
-                          duration: Duration(milliseconds: 200),
-                          curve: Curves.bounceIn,
-                        );
-                      } on WgerHttpException catch (error) {
-                        showHttpExceptionErrorDialog(error, context);
-                      } catch (error) {
-                        showErrorDialog(error, context);
-                      }
-                    },
-                  ),
-                ],
-              ),
+                    // Save the entry on the server
+                    try {
+                      await Provider.of<WorkoutPlans>(context, listen: false).addLog(_log);
+                      //final snackBar = SnackBar(content: Text('Yay! A SnackBar!'));
+                      //ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      _controller.nextPage(
+                        duration: Duration(milliseconds: 200),
+                        curve: Curves.bounceIn,
+                      );
+                    } on WgerHttpException catch (error) {
+                      showHttpExceptionErrorDialog(error, context);
+                    } catch (error) {
+                      showErrorDialog(error, context);
+                    }
+                  },
+                ),
+              ],
             ),
           ),
           NavigationFooter(_controller),
@@ -345,103 +343,101 @@ class _SessionPageState extends State<SessionPage> {
               style: Theme.of(context).textTheme.headline5,
             ),
           ),
-          Expanded(
-            child: Form(
-              key: _form,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  FormField<int>(
-                    builder: (FormFieldState<int> state) {
-                      return InputDecorator(
-                        decoration: InputDecoration(
-                          labelText: AppLocalizations.of(context).impression,
+          Expanded(child: Container()),
+          Form(
+            key: _form,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                FormField<int>(
+                  builder: (FormFieldState<int> state) {
+                    return InputDecorator(
+                      decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context).impression,
+                      ),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<int>(
+                          value: impressionValue,
+                          isDense: true,
+                          onChanged: (int newValue) {
+                            setState(() {
+                              impressionValue = newValue;
+                              state.didChange(newValue);
+                            });
+                          },
+                          items: ImpressionMap.keys.map<DropdownMenuItem<int>>((int key) {
+                            return DropdownMenuItem<int>(
+                              value: key,
+                              child: Text(
+                                ImpressionMap[key],
+                              ),
+                            );
+                          }).toList(),
                         ),
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton<int>(
-                            value: impressionValue,
-                            isDense: true,
-                            onChanged: (int newValue) {
-                              setState(() {
-                                impressionValue = newValue;
-                                state.didChange(newValue);
-                              });
-                            },
-                            items: ImpressionMap.keys.map<DropdownMenuItem<int>>((int key) {
-                              return DropdownMenuItem<int>(
-                                value: key,
-                                child: Text(
-                                  ImpressionMap[key],
-                                ),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      );
-                    },
+                      ),
+                    );
+                  },
+                ),
+                TextFormField(
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context).notes,
                   ),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: AppLocalizations.of(context).notes,
+                  maxLines: 3,
+                  controller: notesController,
+                  keyboardType: TextInputType.multiline,
+                  onFieldSubmitted: (_) {},
+                  onSaved: (newValue) {
+                    _session.notes = newValue;
+                  },
+                ),
+                Row(
+                  children: [
+                    Flexible(
+                      child: TextFormField(
+                        decoration:
+                            InputDecoration(labelText: AppLocalizations.of(context).timeStart),
+                        controller: timeStartController,
+                        onFieldSubmitted: (_) {},
+                        onSaved: (newValue) {},
+                      ),
                     ),
-                    maxLines: 3,
-                    controller: notesController,
-                    keyboardType: TextInputType.multiline,
-                    onFieldSubmitted: (_) {},
-                    onSaved: (newValue) {
-                      _session.notes = newValue;
-                    },
-                  ),
-                  Row(
-                    children: [
-                      Flexible(
-                        child: TextFormField(
-                          decoration:
-                              InputDecoration(labelText: AppLocalizations.of(context).timeStart),
-                          controller: timeStartController,
-                          onFieldSubmitted: (_) {},
-                          onSaved: (newValue) {},
-                        ),
+                    Flexible(
+                      child: TextFormField(
+                        decoration:
+                            InputDecoration(labelText: AppLocalizations.of(context).timeEnd),
+                        controller: timeEndController,
+                        onFieldSubmitted: (_) {},
+                        onSaved: (newValue) {},
                       ),
-                      Flexible(
-                        child: TextFormField(
-                          decoration:
-                              InputDecoration(labelText: AppLocalizations.of(context).timeEnd),
-                          controller: timeEndController,
-                          onFieldSubmitted: (_) {},
-                          onSaved: (newValue) {},
-                        ),
-                      ),
-                    ],
-                  ),
-                  ElevatedButton(
-                    child: Text(AppLocalizations.of(context).save),
-                    onPressed: () async {
-                      // Validate and save the current values to the weightEntry
-                      final isValid = _form.currentState.validate();
-                      if (!isValid) {
-                        return;
-                      }
-                      _form.currentState.save();
-                      _session.date = DateTime.now();
-                      _session.workoutId = widget._workoutPlan.id;
-                      _session.impression = impressionValue;
+                    ),
+                  ],
+                ),
+                ElevatedButton(
+                  child: Text(AppLocalizations.of(context).save),
+                  onPressed: () async {
+                    // Validate and save the current values to the weightEntry
+                    final isValid = _form.currentState.validate();
+                    if (!isValid) {
+                      return;
+                    }
+                    _form.currentState.save();
+                    _session.date = DateTime.now();
+                    _session.workoutId = widget._workoutPlan.id;
+                    _session.impression = impressionValue;
 
-                      // Save the entry on the server
-                      try {
-                        print(_session.toJson());
-                        await Provider.of<WorkoutPlans>(context, listen: false)
-                            .addSession(_session);
-                        Navigator.of(context).pop();
-                      } on WgerHttpException catch (error) {
-                        showHttpExceptionErrorDialog(error, context);
-                      } catch (error) {
-                        showErrorDialog(error, context);
-                      }
-                    },
-                  ),
-                ],
-              ),
+                    // Save the entry on the server
+                    try {
+                      print(_session.toJson());
+                      await Provider.of<WorkoutPlans>(context, listen: false).addSession(_session);
+                      Navigator.of(context).pop();
+                    } on WgerHttpException catch (error) {
+                      showHttpExceptionErrorDialog(error, context);
+                    } catch (error) {
+                      showErrorDialog(error, context);
+                    }
+                  },
+                ),
+              ],
             ),
           ),
           IconButton(
