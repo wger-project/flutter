@@ -1,5 +1,59 @@
 {
   "@@last_modified": "2020-11-11T15:04:05.523531",
+  "login": "Login",
+  "@login": {
+    "description": "Text for login button"
+  },
+  "register": "Register",
+  "@register": {
+    "description": "Text for registration button"
+  },
+  "useDefaultServer": "Use default server",
+  "@useDefaultServer": {
+    "description": "Toggle button allowing users to switch between the default and a custom wger server"
+  },
+  "useCustomServer": "Use custom server",
+  "@useCustomServer": {
+    "description": "Toggle button allowing users to switch between the default and a custom wger server"
+  },
+  "invalidUrl": "Please enter a valid URL",
+  "@invalidUrl": {
+    "description": "Error message when the user enters an invalid URL, e.g. in the login form"
+  },
+  "passwordsDontMatch": "The passwords don't match",
+  "@passwordsDontMatch": {
+    "description": "Error message when the user enters two different passwords during registration"
+  },
+  "passwordTooShort": "The password is too short",
+  "@passwordTooShort": {
+    "description": "Error message when the user a password that is too short"
+  },
+  "password": "Password",
+  "confirmPassword": "Confirm password",
+  "invalidEmail": "Please enter a valid email address",
+  "@invalidEmail": {
+    "description": "Error message when the user enters an invalid email"
+  },
+  "email": "Email",
+  "username": "Username",
+  "invalidUsername": "Please enter a valid username",
+  "@invalidUsername": {
+    "description": "Error message when the user enters an invalid username"
+  },
+  "customServerUrl": "URL of the wger instance",
+  "@customServerUrl": {
+    "description": "Label in the form where the users can enter their own wger instance"
+  },
+  "customServerHint": "Enter the the address of your own server, otherwise the default one will be used",
+  "@customServerHint": {
+    "description": "Hint text for the form where the users can enter their own wger instance"
+  },
+  "reset": "Reset",
+  "@reset": {
+    "description": "Button text allowing the user to reset the entered values to the default"
+  },
+  "registerInstead": "Register instead",
+  "loginInstead": "Login instead",
   "labelWorkoutPlans": "Workout plans",
   "@labelWorkoutPlans": {
     "description": "Title for screen workout plans"

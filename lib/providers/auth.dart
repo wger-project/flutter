@@ -32,6 +32,8 @@ import 'package:wger/models/http_exception.dart';
 
 import 'helpers.dart';
 
+final DEFAULT_SERVER = 'https://wger.rge.uber.space';
+
 class Auth with ChangeNotifier {
   String token;
   String serverUrl;
@@ -115,7 +117,7 @@ class Auth with ChangeNotifier {
 
   /// Authenticates a user
   Future<void> login(String username, String password, String serverUrl) async {
-    final uri = Uri.http(serverUrl, '/api/v2/login/');
+    final uri = Uri.parse(serverUrl + '/api/v2/login/');
     await logout();
 
     try {
@@ -152,13 +154,28 @@ class Auth with ChangeNotifier {
         'serverUrl': this.serverUrl,
         // 'expiryDate': _expiryDate.toIso8601String(),
       });
+      final serverData = json.encode({
+        'serverUrl': this.serverUrl,
+      });
 
       await setServerVersion();
       await setApplicationVersion();
       prefs.setString('userData', userData);
+      prefs.setString('lastServer', serverData);
     } catch (error) {
       throw error;
     }
+  }
+
+  /// Loads the last server URL from which the user successfully logged in
+  Future<String> getServerUrlFromPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (!prefs.containsKey('lastServer')) {
+      return DEFAULT_SERVER;
+    }
+
+    final userData = json.decode(prefs.getString('lastServer')) as Map<String, Object>;
+    return userData['serverUrl'];
   }
 
   Future<bool> tryAutoLogin() async {
