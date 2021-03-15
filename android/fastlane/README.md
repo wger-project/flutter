@@ -24,6 +24,11 @@ fastlane playstore
 ----
 
 ## Android
+### android updateclosed_beta
+```
+fastlane android updateclosed_beta
+```
+Update store entry
 ### android test
 ```
 fastlane android test

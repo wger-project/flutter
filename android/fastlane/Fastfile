@@ -24,6 +24,22 @@ lane :playstore do
 end
 
 platform :android do
+
+desc "Upload closed alpha app and update store entry"
+  lane :updateclosed_alpha do
+    begin
+      upload_to_play_store(
+        track: 'alpha',
+        aab: '../build/app/outputs/bundle/release/app-release.aab',
+        skip_upload_metadata: false,
+        skip_upload_images: true,
+        skip_upload_screenshots: true,
+        release_status: "completed", #"draft",
+      )
+    end
+  end
+
+
   desc "Runs all the tests"
   lane :test do
     gradle(task: "test")
