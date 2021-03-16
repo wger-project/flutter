@@ -158,5 +158,95 @@
   "labelWorkoutPlans": "Treningsøktplaner",
   "@labelWorkoutPlans": {
     "description": "Title for screen workout plans"
+  },
+  "logHelpEntriesUnits": "Kun oppføringer med vekt vises, ingen andre kombinasjoner.",
+  "@logHelpEntriesUnits": {},
+  "logHelpEntries": "Kun tyngre vekt vises hvis én dag har forskjellige vekter med samme antall repetisjoner.",
+  "@logHelpEntries": {},
+  "login": "Logg inn",
+  "@login": {
+    "description": "Text for login button"
+  },
+  "loginInstead": "Logg inn istedenfor",
+  "@loginInstead": {},
+  "email": "E-postadresse",
+  "@email": {},
+  "invalidEmail": "Skriv inn en gyldig e-postadresse",
+  "@invalidEmail": {
+    "description": "Error message when the user enters an invalid email"
+  },
+  "register": "Registrer",
+  "@register": {
+    "description": "Text for registration button"
+  },
+  "selectIngredient": "Velg en ingrediens",
+  "@selectIngredient": {
+    "description": "Error message when the user hasn't selected an ingredient from the autocompleter"
+  },
+  "enterValidNumber": "Skriv inn et gyldig nummer",
+  "@enterValidNumber": {
+    "description": "Error message when the user has submitted an invalid number (e.g. '3,.,.,.')"
+  },
+  "enterValue": "Skriv inn en verdi",
+  "@enterValue": {
+    "description": "Error message when the user hasn't entered a value on a required field"
+  },
+  "goToToday": "Gå til dagens dato",
+  "@goToToday": {
+    "description": "Label on button to jump back to 'today' in the calendar widget"
+  },
+  "calendar": "Kalender",
+  "@calendar": {},
+  "noWeightEntries": "Du har ingen vektoppføringer",
+  "@noWeightEntries": {
+    "description": "Message shown when the user has no logged weight entries"
+  },
+  "unit": "Enhet",
+  "@unit": {
+    "description": "The unit used for a repetition (kg, time, etc.)"
+  },
+  "registerInstead": "Registrer istedenfor",
+  "@registerInstead": {},
+  "reset": "Tilbakestill",
+  "@reset": {
+    "description": "Button text allowing the user to reset the entered values to the default"
+  },
+  "customServerHint": "Skriv inn adressen til din egen tjener, ellers vil den forvalgte brukes",
+  "@customServerHint": {
+    "description": "Hint text for the form where the users can enter their own wger instance"
+  },
+  "customServerUrl": "Nettadresse til wger-instansen",
+  "@customServerUrl": {
+    "description": "Label in the form where the users can enter their own wger instance"
+  },
+  "invalidUsername": "Skriv inn et gyldig brukernavn",
+  "@invalidUsername": {
+    "description": "Error message when the user enters an invalid username"
+  },
+  "username": "Brukernavn",
+  "@username": {},
+  "confirmPassword": "Bekreft passord",
+  "@confirmPassword": {},
+  "password": "Passord",
+  "@password": {},
+  "passwordTooShort": "Passordet er for kort",
+  "@passwordTooShort": {
+    "description": "Error message when the user a password that is too short"
+  },
+  "passwordsDontMatch": "Passordene samsvarer ikke",
+  "@passwordsDontMatch": {
+    "description": "Error message when the user enters two different passwords during registration"
+  },
+  "invalidUrl": "Skriv inn en gyldig nettadresse",
+  "@invalidUrl": {
+    "description": "Error message when the user enters an invalid URL, e.g. in the login form"
+  },
+  "useCustomServer": "Bruk egendefinert tjener",
+  "@useCustomServer": {
+    "description": "Toggle button allowing users to switch between the default and a custom wger server"
+  },
+  "useDefaultServer": "Bruk forvalgt tjener",
+  "@useDefaultServer": {
+    "description": "Toggle button allowing users to switch between the default and a custom wger server"
   }
 }
