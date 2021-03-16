@@ -48,10 +48,52 @@ class DashboardNutritionWidget extends StatefulWidget {
 class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
   Nutrition nutrition;
   NutritionalPlan plan;
+  var showDetail = false;
 
   @override
   Widget build(BuildContext context) {
     plan = Provider.of<Nutrition>(context, listen: false).currentPlan;
+
+    List<Widget> out = [];
+    for (var meal in plan.meals) {
+      out.add(Text(
+        meal.time.format(context),
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ));
+      out.add(Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text('${meal.nutritionalValues.energy}${AppLocalizations.of(context).kcal}'),
+          Text(' / '),
+          Text('${meal.nutritionalValues.protein}${AppLocalizations.of(context).g}'),
+          Text(' / '),
+          Text('${meal.nutritionalValues.carbohydrates}${AppLocalizations.of(context).g}'),
+          Text(' / '),
+          Text('${meal.nutritionalValues.fat}${AppLocalizations.of(context).g} '),
+        ],
+      ));
+      out.add(SizedBox(height: 5));
+
+      if (showDetail) {
+        meal.mealItems.forEach((item) {
+          out.add(
+            Column(children: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(item.ingredientObj.name),
+                  SizedBox(width: 5),
+                  Text('${item.amount.toString()} ${AppLocalizations.of(context).g}'),
+                ],
+              ),
+            ]),
+          );
+        });
+        out.add(SizedBox(height: 10));
+        out.add(Divider());
+      }
+    }
 
     return Card(
       child: Column(
@@ -78,6 +120,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                             .pushNamed(NutritionalPlanScreen.routeName, arguments: plan);
                       },
                     ),
+                    ...out,
                     Container(
                       padding: EdgeInsets.all(15),
                       height: 180,
@@ -94,15 +137,13 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               TextButton(
-                child: const Text('Action one'),
-                onPressed: () {},
+                child: Text(AppLocalizations.of(context).toggleDetails),
+                onPressed: () {
+                  setState(() {
+                    showDetail = !showDetail;
+                  });
+                },
               ),
-              const SizedBox(width: 8),
-              TextButton(
-                child: const Text('Action two'),
-                onPressed: () {},
-              ),
-              const SizedBox(width: 8),
             ],
           ),
         ],
