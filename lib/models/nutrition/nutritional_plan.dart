@@ -48,7 +48,9 @@ class NutritionalPlan {
     this.creationDate,
     this.meals,
     //this.logs,
-  });
+  }) {
+    this.meals = meals ?? [];
+  }
 
   // Boilerplate
   factory NutritionalPlan.fromJson(Map<String, dynamic> json) => _$NutritionalPlanFromJson(json);

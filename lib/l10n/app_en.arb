@@ -78,6 +78,11 @@
   "@newWorkout": {
     "description": "Header when adding a new workout"
   },
+  "noWorkoutPlans": "You have no workout plans",
+  "@noWorkoutPlans": {
+    "description": "Message shown when the user has no workout plans"
+  },
+  "addExercise": "Add exercise to this day",
   "repetitions": "Repetitions",
   "@repetitions": {
     "description": "Repetitions for an exercise set"
@@ -134,6 +139,10 @@
   "@nutritionalDiary": {},
   "nutritionalPlans": "Nutritional plans",
   "@nutritionalPlans": {},
+  "noNutritionalPlans": "You have no nutritional plans",
+  "@noNutritionalPlans": {
+    "description": "Message shown when the user has no nutritional plans"
+  },
   "anErrorOccurred": "An Error Occurred!",
   "@anErrorOccurred": {},
   "dismiss": "Dismiss",

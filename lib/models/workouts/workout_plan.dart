@@ -45,7 +45,9 @@ class WorkoutPlan {
     this.creationDate,
     this.description,
     this.days,
-  });
+  }) {
+    this.days = days ?? [];
+  }
 
   // Boilerplate
   factory WorkoutPlan.fromJson(Map<String, dynamic> json) => _$WorkoutPlanFromJson(json);

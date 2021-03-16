@@ -28,10 +28,13 @@ import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
+import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/bottom_sheet.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
+import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/weight/charts.dart';
 import 'package:wger/widgets/weight/forms.dart';
+import 'package:wger/widgets/workouts/forms.dart';
 
 class DashboardNutritionWidget extends StatefulWidget {
   const DashboardNutritionWidget({
@@ -53,45 +56,48 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
   @override
   Widget build(BuildContext context) {
     plan = Provider.of<Nutrition>(context, listen: false).currentPlan;
+    final bool hasContent = plan != null;
 
     List<Widget> out = [];
-    for (var meal in plan.meals) {
-      out.add(Text(
-        meal.time.format(context),
-        style: TextStyle(fontWeight: FontWeight.bold),
-      ));
-      out.add(Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text('${meal.nutritionalValues.energy}${AppLocalizations.of(context).kcal}'),
-          Text(' / '),
-          Text('${meal.nutritionalValues.protein}${AppLocalizations.of(context).g}'),
-          Text(' / '),
-          Text('${meal.nutritionalValues.carbohydrates}${AppLocalizations.of(context).g}'),
-          Text(' / '),
-          Text('${meal.nutritionalValues.fat}${AppLocalizations.of(context).g} '),
-        ],
-      ));
-      out.add(SizedBox(height: 5));
+    if (hasContent) {
+      for (var meal in plan.meals) {
+        out.add(Text(
+          meal.time.format(context),
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ));
+        out.add(Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('${meal.nutritionalValues.energy}${AppLocalizations.of(context).kcal}'),
+            Text(' / '),
+            Text('${meal.nutritionalValues.protein}${AppLocalizations.of(context).g}'),
+            Text(' / '),
+            Text('${meal.nutritionalValues.carbohydrates}${AppLocalizations.of(context).g}'),
+            Text(' / '),
+            Text('${meal.nutritionalValues.fat}${AppLocalizations.of(context).g} '),
+          ],
+        ));
+        out.add(SizedBox(height: 5));
 
-      if (showDetail) {
-        meal.mealItems.forEach((item) {
-          out.add(
-            Column(children: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(item.ingredientObj.name),
-                  SizedBox(width: 5),
-                  Text('${item.amount.toString()} ${AppLocalizations.of(context).g}'),
-                ],
-              ),
-            ]),
-          );
-        });
-        out.add(SizedBox(height: 10));
-        out.add(Divider());
+        if (showDetail) {
+          meal.mealItems.forEach((item) {
+            out.add(
+              Column(children: [
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(item.ingredientObj.name),
+                    SizedBox(width: 5),
+                    Text('${item.amount.toString()} ${AppLocalizations.of(context).g}'),
+                  ],
+                ),
+              ]),
+            );
+          });
+          out.add(SizedBox(height: 10));
+          out.add(Divider());
+        }
       }
     }
 
@@ -103,7 +109,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
             AppLocalizations.of(context).nutritionalPlan,
             style: Theme.of(context).textTheme.headline4,
           ),
-          plan != null
+          hasContent
               ? Column(
                   children: [
                     Text(
@@ -128,10 +134,10 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                     )
                   ],
                 )
-              : Container(
-                  alignment: Alignment.center,
-                  height: 150,
-                  child: Text('You have no nutritional plans'),
+              : NothingFound(
+                  AppLocalizations.of(context).noNutritionalPlans,
+                  AppLocalizations.of(context).newNutritionalPlan,
+                  PlanForm(NutritionalPlan()),
                 ),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -187,10 +193,10 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                       height: 180,
                       child: WeightChartWidget(weightEntriesData.items),
                     )
-                  : Container(
-                      alignment: Alignment.center,
-                      height: 150,
-                      child: Text(AppLocalizations.of(context).noWeightEntries),
+                  : NothingFound(
+                      AppLocalizations.of(context).noWeightEntries,
+                      AppLocalizations.of(context).newEntry,
+                      WeightForm(),
                     ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -240,30 +246,33 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
   @override
   Widget build(BuildContext context) {
     _workoutPlan = Provider.of<WorkoutPlans>(context, listen: false).activePlan;
+    final bool hasContent = _workoutPlan != null;
 
     List<Widget> out = [];
-    for (var day in _workoutPlan.days) {
-      out.add(Text(
-        day.description,
-        style: TextStyle(fontWeight: FontWeight.bold),
-      ));
-      if (showDetail) {
-        day.sets.forEach((set) {
-          out.add(Column(
-            children: [
-              ...set.settings.map((s) {
-                return Column(
-                  children: [
-                    Text(s.exerciseObj.name),
-                    Text(s.repsText),
-                    SizedBox(height: 10),
-                  ],
-                );
-              }).toList(),
-              Divider(),
-            ],
-          ));
-        });
+    if (hasContent) {
+      for (var day in _workoutPlan.days) {
+        out.add(Text(
+          day.description,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ));
+        if (showDetail) {
+          day.sets.forEach((set) {
+            out.add(Column(
+              children: [
+                ...set.settings.map((s) {
+                  return Column(
+                    children: [
+                      Text(s.exerciseObj.name),
+                      Text(s.repsText),
+                      SizedBox(height: 10),
+                    ],
+                  );
+                }).toList(),
+                Divider(),
+              ],
+            ));
+          });
+        }
       }
     }
 
@@ -275,7 +284,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
             AppLocalizations.of(context).labelWorkoutPlan,
             style: Theme.of(context).textTheme.headline4,
           ),
-          _workoutPlan != null
+          hasContent
               ? Column(
                   children: [
                     Text(
@@ -293,26 +302,61 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                       },
                     ),
                     ...out,
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        TextButton(
-                          child: Text(AppLocalizations.of(context).toggleDetails),
-                          onPressed: () {
-                            setState(() {
-                              showDetail = !showDetail;
-                            });
-                          },
-                        ),
-                      ],
-                    )
                   ],
                 )
-              : Container(
-                  alignment: Alignment.center,
-                  height: 150,
-                  child: Text('you have no workouts'),
+              : NothingFound(
+                  AppLocalizations.of(context).noWorkoutPlans,
+                  AppLocalizations.of(context).newWorkout,
+                  WorkoutForm(WorkoutPlan()),
                 ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              TextButton(
+                child: Text(AppLocalizations.of(context).toggleDetails),
+                onPressed: () {
+                  setState(() {
+                    showDetail = !showDetail;
+                  });
+                },
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class NothingFound extends StatelessWidget {
+  final String _title;
+  final String _titleForm;
+  final Widget _form;
+
+  NothingFound(this._title, this._titleForm, this._form);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 150,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(_title),
+          IconButton(
+            iconSize: 30,
+            icon: const Icon(
+              Icons.add_box,
+              color: wgerPrimaryButtonColor,
+            ),
+            onPressed: () async {
+              showFormBottomSheet(
+                context,
+                _titleForm,
+                _form,
+              );
+            },
+          ),
         ],
       ),
     );

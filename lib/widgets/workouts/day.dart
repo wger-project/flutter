@@ -100,7 +100,7 @@ class WorkoutDayWidget extends StatelessWidget {
               )
               .toList(),
           OutlinedButton(
-            child: Text('Add exercise to day'),
+            child: Text(AppLocalizations.of(context).addExercise),
             onPressed: () {
               showFormBottomSheet(
                 context,
@@ -134,7 +134,7 @@ class DayHeaderDismissible extends StatelessWidget {
       key: Key(_day.id.toString()),
       direction: DismissDirection.startToEnd,
       child: Container(
-        decoration: BoxDecoration(color: Colors.black12),
+        decoration: BoxDecoration(color: Colors.white),
         padding: const EdgeInsets.symmetric(vertical: 10),
         width: double.infinity,
         child: Column(
@@ -193,7 +193,7 @@ class DayHeaderDismissible extends StatelessWidget {
               content: Text('Would open weight log form for this day'),
               actions: [
                 TextButton(
-                  child: Text("Close"),
+                  child: Text(AppLocalizations.of(context).dismiss),
                   onPressed: () => Navigator.of(context).pop(),
                 ),
               ],

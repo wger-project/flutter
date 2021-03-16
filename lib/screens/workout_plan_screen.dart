@@ -81,6 +81,13 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
             SliverAppBar(
               expandedHeight: 250,
               pinned: true,
+              flexibleSpace: FlexibleSpaceBar(
+                title: Text(workoutPlan.description),
+                background: Image(
+                  image: AssetImage('assets/images/backgrounds/workout_plans.jpg'),
+                  fit: BoxFit.cover,
+                ),
+              ),
               actions: [
                 PopupMenuButton<WorkoutOptions>(
                   icon: Icon(Icons.more_vert),
@@ -129,13 +136,6 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
                   },
                 ),
               ],
-              flexibleSpace: FlexibleSpaceBar(
-                title: Text(workoutPlan.description),
-                background: Image(
-                  image: AssetImage('assets/images/backgrounds/workout_plans.jpg'),
-                  fit: BoxFit.cover,
-                ),
-              ),
             ),
             getBody(workoutPlan),
           ],
