@@ -1,6 +1,6 @@
 {
   "@@last_modified": "2020-11-11T15:04:05.523531",
-  "login": "Login",
+  "login": "Log in",
   "@login": {
     "description": "Text for login button"
   },
@@ -29,13 +29,17 @@
     "description": "Error message when the user a password that is too short"
   },
   "password": "Password",
+  "@password": {},
   "confirmPassword": "Confirm password",
-  "invalidEmail": "Please enter a valid email address",
+  "@confirmPassword": {},
+  "invalidEmail": "Please enter a valid e-mail address",
   "@invalidEmail": {
     "description": "Error message when the user enters an invalid email"
   },
-  "email": "Email",
+  "email": "E-mail address",
+  "@email": {},
   "username": "Username",
+  "@username": {},
   "invalidUsername": "Please enter a valid username",
   "@invalidUsername": {
     "description": "Error message when the user enters an invalid username"
@@ -53,7 +57,9 @@
     "description": "Button text allowing the user to reset the entered values to the default"
   },
   "registerInstead": "Register instead",
-  "loginInstead": "Login instead",
+  "@registerInstead": {},
+  "loginInstead": "Log in instead",
+  "@loginInstead": {},
   "labelWorkoutPlans": "Workout plans",
   "@labelWorkoutPlans": {
     "description": "Title for screen workout plans"
@@ -118,7 +124,9 @@
     "description": "Label when starting the gym mode"
   },
   "logHelpEntries": "If on a single day there is more than one entry with the same number of repetitions, but different weights, only the entry with the higher weight is shown in the diagram.",
+  "@logHelpEntries": {},
   "logHelpEntriesUnits": "Note that only entries with a weight unit (kg or lb) and repetitions are charted, other combinations such as time or until failure are ignored here.",
+  "@logHelpEntriesUnits": {},
   "description": "Description",
   "@description": {},
   "save": "Save",
@@ -234,6 +242,7 @@
     "description": "Text in the about dialog"
   },
   "calendar": "Calendar",
+  "@calendar": {},
   "goToToday": "Go to today",
   "@goToToday": {
     "description": "Label on button to jump back to 'today' in the calendar widget"
