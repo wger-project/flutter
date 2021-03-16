@@ -169,22 +169,27 @@ class DismissibleMealHeader extends StatelessWidget {
       child: Dismissible(
         key: Key(_meal.id.toString()),
         child: Container(
-            width: double.infinity,
-            decoration: BoxDecoration(color: Colors.black12),
-            padding: const EdgeInsets.all(10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _meal.time != null ? Text(_meal.time.format(context)) : Text('aaaa'),
-                IconButton(
-                  visualDensity: VisualDensity.compact,
-                  icon: _expanded ? Icon(Icons.expand_less) : Icon(Icons.expand_more),
-                  onPressed: () {
-                    _toggle();
-                  },
-                ),
-              ],
-            )),
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(color: Colors.white),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _meal.time != null
+                  ? Text(
+                      _meal.time.format(context),
+                      style: Theme.of(context).textTheme.headline5,
+                    )
+                  : Text(''),
+              IconButton(
+                visualDensity: VisualDensity.compact,
+                icon: _expanded ? Icon(Icons.expand_less) : Icon(Icons.expand_more),
+                onPressed: () {
+                  _toggle();
+                },
+              ),
+            ],
+          ),
+        ),
         secondaryBackground: Container(
           color: Theme.of(context).accentColor,
           padding: EdgeInsets.only(right: 10),

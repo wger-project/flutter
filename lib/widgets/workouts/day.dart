@@ -90,30 +90,30 @@ class WorkoutDayWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Column(
-        children: [
-          DayHeaderDismissible(day: _day),
-          ..._day.sets
-              .map(
-                (set) => getSetRow(set),
-              )
-              .toList(),
-          OutlinedButton(
-            child: Text(AppLocalizations.of(context).addExercise),
-            onPressed: () {
-              showFormBottomSheet(
-                context,
-                AppLocalizations.of(context).newSet,
-                SetFormWidget(_day),
-                scrollControlled: true,
-              );
-            },
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10.0),
-          )
-        ],
+    return Container(
+      padding: EdgeInsets.all(3),
+      child: Card(
+        child: Column(
+          children: [
+            DayHeaderDismissible(day: _day),
+            ..._day.sets
+                .map(
+                  (set) => getSetRow(set),
+                )
+                .toList(),
+            OutlinedButton(
+              child: Text(AppLocalizations.of(context).addExercise),
+              onPressed: () {
+                showFormBottomSheet(
+                  context,
+                  AppLocalizations.of(context).newSet,
+                  SetFormWidget(_day),
+                  scrollControlled: true,
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -134,22 +134,34 @@ class DayHeaderDismissible extends StatelessWidget {
       key: Key(_day.id.toString()),
       direction: DismissDirection.startToEnd,
       child: Container(
+        padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(color: Colors.white),
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        width: double.infinity,
-        child: Column(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              _day.description,
-              style: Theme.of(context).textTheme.headline6,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  _day.description,
+                  style: Theme.of(context).textTheme.headline5,
+                ),
+                Text(_day.getDaysText),
+              ],
             ),
-            Text(_day.getDaysText),
+            /*
+            IconButton(
+              visualDensity: VisualDensity.compact,
+              icon: Icon(Icons.expand_less),
+              onPressed: () {},
+            ),
+            */
           ],
         ),
       ),
       /*
       secondaryBackground: Container(
-        color: Theme.of(context).primaryColor,
+        color: Theme.of(context).accentColor,
         padding: EdgeInsets.only(right: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -167,7 +179,7 @@ class DayHeaderDismissible extends StatelessWidget {
       ),
       */
       background: Container(
-        color: Theme.of(context).accentColor,
+        color: Theme.of(context).primaryColor,
         alignment: Alignment.centerLeft,
         padding: EdgeInsets.only(left: 10),
         child: Row(
