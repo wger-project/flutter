@@ -79,7 +79,7 @@ class Auth with ChangeNotifier {
 
   /// Registers a new user
   Future<void> register({String username, String password, String email, String serverUrl}) async {
-    final uri = Uri.http(serverUrl, '/api/v2/register/');
+    final uri = Uri.parse(serverUrl + '/api/v2/register/');
     Map<String, String> metadata = Map();
 
     // Read the api key from the manifest file
