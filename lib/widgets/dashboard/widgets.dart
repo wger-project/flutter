@@ -69,13 +69,17 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('${meal.nutritionalValues.energy}${AppLocalizations.of(context).kcal}'),
+            Text(
+                '${meal.nutritionalValues.energy.toStringAsFixed(0)}${AppLocalizations.of(context).kcal}'),
             Text(' / '),
-            Text('${meal.nutritionalValues.protein}${AppLocalizations.of(context).g}'),
+            Text(
+                '${meal.nutritionalValues.protein.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
             Text(' / '),
-            Text('${meal.nutritionalValues.carbohydrates}${AppLocalizations.of(context).g}'),
+            Text(
+                '${meal.nutritionalValues.carbohydrates.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
             Text(' / '),
-            Text('${meal.nutritionalValues.fat}${AppLocalizations.of(context).g} '),
+            Text(
+                '${meal.nutritionalValues.fat.toStringAsFixed(0)}${AppLocalizations.of(context).g} '),
           ],
         ));
         out.add(SizedBox(height: 5));
