@@ -22,6 +22,7 @@ import 'package:provider/provider.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/providers/nutrition.dart';
+import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/bottom_sheet.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
@@ -98,45 +99,55 @@ class MealItemWidget extends StatelessWidget {
         : _item.weightUnit.weightUnit.name;
     final values = _item.nutritionalValues;
 
-    return InkWell(
-      onLongPress: () {
-        // Delete the meal item
-        Provider.of<Nutrition>(context, listen: false).deleteMealItem(_item);
+    return Container(
+      padding: EdgeInsets.all(5),
+      child: Column(
+        children: [
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(vertical: 5),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                    child: Text(
+                  '${_item.amount.toStringAsFixed(0)}$unit ${_item.ingredientObj.name}',
+                  overflow: TextOverflow.ellipsis,
+                )),
+                if (_expanded)
+                  IconButton(
+                    icon: Icon(Icons.delete),
+                    iconSize: 20,
+                    onPressed: () {
+                      // Delete the meal item
+                      Provider.of<Nutrition>(context, listen: false).deleteMealItem(_item);
 
-        // and inform the user
-        Scaffold.of(context).showSnackBar(SnackBar(
-            content: Text(
-          AppLocalizations.of(context).successfullyDeleted,
-          textAlign: TextAlign.center,
-        )));
-      },
-      child: Container(
-        padding: EdgeInsets.all(5),
-        child: Column(
-          children: [
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(vertical: 5),
-              child: Text(
-                '${_item.amount.toStringAsFixed(0)}$unit ${_item.ingredientObj.name}',
-                textAlign: TextAlign.left,
-              ),
+                      // and inform the user
+                      Scaffold.of(context).showSnackBar(
+                        SnackBar(
+                            content: Text(
+                          AppLocalizations.of(context).successfullyDeleted,
+                          textAlign: TextAlign.center,
+                        )),
+                      );
+                    },
+                  ),
+              ],
             ),
-            if (_expanded)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  MutedText(
-                      '${values.energy.toStringAsFixed(0)} ${AppLocalizations.of(context).kcal}'),
-                  MutedText(
-                      '${values.protein.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
-                  MutedText(
-                      '${values.carbohydrates.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
-                  MutedText('${values.fat.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
-                ],
-              ),
-          ],
-        ),
+          ),
+          if (_expanded)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                MutedText(
+                    '${values.energy.toStringAsFixed(0)} ${AppLocalizations.of(context).kcal}'),
+                MutedText('${values.protein.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
+                MutedText(
+                    '${values.carbohydrates.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
+                MutedText('${values.fat.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
+              ],
+            ),
+        ],
       ),
     );
   }
@@ -204,11 +215,11 @@ class DismissibleMealHeader extends StatelessWidget {
           ),
         ),
         background: Container(
-          color: Theme.of(context).primaryColor,
+          color: wgerPrimaryButtonColor, //Theme.of(context).primaryColor,
           alignment: Alignment.centerLeft,
           padding: EdgeInsets.only(left: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
                 'Log this meal',

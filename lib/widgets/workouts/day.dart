@@ -24,13 +24,16 @@ import 'package:wger/models/workouts/set.dart';
 import 'package:wger/models/workouts/setting.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/gym_mode.dart';
+import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/bottom_sheet.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 
 class SettingWidget extends StatelessWidget {
   Setting setting;
+  final bool expanded;
+  final toggle;
 
-  SettingWidget({this.setting});
+  SettingWidget({this.setting, this.expanded, this.toggle});
 
   @override
   Widget build(BuildContext context) {
@@ -50,22 +53,35 @@ class SettingWidget extends StatelessWidget {
       ),
       title: Text(setting.exerciseObj.name),
       subtitle: Text(setting.repsText),
-      trailing: IconButton(
-        visualDensity: VisualDensity.compact,
-        icon: Icon(Icons.delete),
-        //iconSize: 16,
-        onPressed: () {
-          Provider.of<WorkoutPlans>(context, listen: false).deleteSetting(setting);
-        },
-      ),
+      trailing: expanded
+          ? IconButton(
+              visualDensity: VisualDensity.compact,
+              icon: Icon(Icons.delete),
+              onPressed: () {
+                Provider.of<WorkoutPlans>(context, listen: false).deleteSetting(setting);
+              },
+            )
+          : SizedBox(width: 1),
     );
   }
 }
 
-class WorkoutDayWidget extends StatelessWidget {
+class WorkoutDayWidget extends StatefulWidget {
   final Day _day;
 
   WorkoutDayWidget(this._day);
+
+  @override
+  _WorkoutDayWidgetState createState() => _WorkoutDayWidgetState();
+}
+
+class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
+  bool _expanded = false;
+  void _toggleExpanded() {
+    setState(() {
+      _expanded = !_expanded;
+    });
+  }
 
   Widget getSetRow(Set set) {
     return Row(
@@ -77,7 +93,11 @@ class WorkoutDayWidget extends StatelessWidget {
             children: [
               ...set.settings
                   .map(
-                    (setting) => SettingWidget(setting: setting),
+                    (setting) => SettingWidget(
+                      setting: setting,
+                      expanded: _expanded,
+                      toggle: _toggleExpanded,
+                    ),
                   )
                   .toList(),
               Divider(),
@@ -95,8 +115,36 @@ class WorkoutDayWidget extends StatelessWidget {
       child: Card(
         child: Column(
           children: [
-            DayHeaderDismissible(day: _day),
-            ..._day.sets
+            DayHeaderDismissible(
+              day: widget._day,
+              expanded: _expanded,
+              toggle: _toggleExpanded,
+            ),
+            if (_expanded)
+              InkWell(
+                onTap: () {
+                  Navigator.of(context).pushNamed(GymModeScreen.routeName, arguments: widget._day);
+                },
+                child: Container(
+                  width: double.infinity,
+                  height: 50,
+                  color: wgerPrimaryButtonColor,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context).gymMode,
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      Icon(
+                        Icons.play_arrow,
+                        color: Colors.white,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ...widget._day.sets
                 .map(
                   (set) => getSetRow(set),
                 )
@@ -107,7 +155,7 @@ class WorkoutDayWidget extends StatelessWidget {
                 showFormBottomSheet(
                   context,
                   AppLocalizations.of(context).newSet,
-                  SetFormWidget(_day),
+                  SetFormWidget(widget._day),
                   scrollControlled: true,
                 );
               },
@@ -120,13 +168,19 @@ class WorkoutDayWidget extends StatelessWidget {
 }
 
 class DayHeaderDismissible extends StatelessWidget {
+  final Day _day;
+  final bool _expanded;
+  final _toggle;
+
   const DayHeaderDismissible({
     Key key,
     @required Day day,
+    @required bool expanded,
+    @required Function toggle,
   })  : _day = day,
+        _expanded = expanded,
+        _toggle = toggle,
         super(key: key);
-
-  final Day _day;
 
   @override
   Widget build(BuildContext context) {
@@ -137,7 +191,7 @@ class DayHeaderDismissible extends StatelessWidget {
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(color: Colors.white),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -149,13 +203,25 @@ class DayHeaderDismissible extends StatelessWidget {
                 Text(_day.getDaysText),
               ],
             ),
+            Expanded(child: Container()),
             /*
-            IconButton(
-              visualDensity: VisualDensity.compact,
-              icon: Icon(Icons.expand_less),
-              onPressed: () {},
-            ),
+            if (_expanded)
+              IconButton(
+                icon: Icon(Icons.edit),
+                onPressed: () {},
+              ),
+            if (_expanded)
+              IconButton(
+                icon: Icon(Icons.delete),
+                onPressed: () {},
+              ),
             */
+            IconButton(
+              icon: _expanded ? Icon(Icons.expand_less) : Icon(Icons.expand_more),
+              onPressed: () {
+                _toggle();
+              },
+            ),
           ],
         ),
       ),
@@ -179,11 +245,11 @@ class DayHeaderDismissible extends StatelessWidget {
       ),
       */
       background: Container(
-        color: Theme.of(context).primaryColor,
+        color: wgerPrimaryButtonColor, //Theme.of(context).primaryColor,
         alignment: Alignment.centerLeft,
         padding: EdgeInsets.only(left: 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
               AppLocalizations.of(context).gymMode,
