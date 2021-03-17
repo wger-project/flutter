@@ -30,11 +30,11 @@ void showErrorDialog(dynamic exception, BuildContext context) {
   showDialog(
     context: context,
     builder: (ctx) => AlertDialog(
-      title: Text('An Error Occurred!'),
+      title: Text(AppLocalizations.of(context).anErrorOccurred),
       content: Text(exception.toString()),
       actions: [
         TextButton(
-          child: Text('Dismiss'),
+          child: Text(AppLocalizations.of(context).dismiss),
           onPressed: () {
             Navigator.of(ctx).pop();
           },

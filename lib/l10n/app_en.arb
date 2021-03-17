@@ -223,6 +223,14 @@
   },
   "delete": "Delete",
   "@delete": {},
+  "confirmDelete": "Are you sure you want to delete '{toDelete}'?",
+  "@confirmDelete": {
+    "description": "Confirmation text before the user deletes an object",
+    "type": "text",
+    "placeholders": {
+      "toDelete": {}
+    }
+  },
   "newNutritionalPlan": "New nutritional plan",
   "@newNutritionalPlan": {},
   "toggleDetails": "Toggle details",

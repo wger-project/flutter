@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/workout_plans.dart';
@@ -42,15 +43,17 @@ class WorkoutPlansList extends StatelessWidget {
                 context: context,
                 builder: (BuildContext contextDialog) {
                   return AlertDialog(
-                    content: Text("Are you sure you want to delete ${currentWorkout.description}?"),
+                    content: Text(
+                      AppLocalizations.of(context).confirmDelete(currentWorkout.description),
+                    ),
                     actions: [
                       TextButton(
-                        child: Text("Cancel"),
+                        child: Text(AppLocalizations.of(context).cancel),
                         onPressed: () => Navigator.of(contextDialog).pop(),
                       ),
                       TextButton(
                         child: Text(
-                          "Delete",
+                          AppLocalizations.of(context).delete,
                           style: TextStyle(color: Theme.of(context).errorColor),
                         ),
                         onPressed: () {
@@ -65,7 +68,7 @@ class WorkoutPlansList extends StatelessWidget {
                           Scaffold.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                'Workout "${currentWorkout.description}" deleted',
+                                AppLocalizations.of(context).successfullyDeleted,
                                 textAlign: TextAlign.center,
                               ),
                             ),
