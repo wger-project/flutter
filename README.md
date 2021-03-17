@@ -1,4 +1,4 @@
-# Mobile app for wger
+# Mobile app for wger Workout Manager
 
 Mobile app for wger written with flutter, still in early stages of development.
 As soon as it is finished, it will be published in the different play stores.
@@ -39,6 +39,9 @@ Generate translation files with ``flutter gen-l10n``
 Start the application with ``flutter run`` or use your IDE (please note that
 depending on how you run your emulator you will need to change the IP address
 of the server)
+
+## Translation
+The application can be easily translated online with [Weblate](https://hosted.weblate.org/engage/wger/).
 
 
 ## Contact
