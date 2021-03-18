@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 0.1.0+6
+version: 0.1.0+7
 
 environment:
   sdk: ">=2.10.0 <3.0.0"
@@ -29,7 +29,7 @@ dependencies:
   provider: ^5.0.0
   intl: ^0.17.0
   http: ^0.13.0
-  shared_preferences: ^2.0.3
+  shared_preferences: ^2.0.5
   flutter_calendar_carousel: ^1.5.3
   cupertino_icons: ^1.0.0
   json_annotation: ^4.0.0
@@ -44,8 +44,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_launcher_icons: ^0.9.0
-  mockito: ^5.0.0
-  json_serializable: ^4.0.2
+  mockito: ^5.0.2
+  json_serializable: ^4.0.3
 
   # Note that there are incompatibilities when using a higher version. Both build
   # runner and intl_translation depend on different versions of analyzer
