@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/set.dart';
 import 'package:wger/models/workouts/setting.dart';
@@ -99,6 +100,7 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
           IconButton(
             visualDensity: VisualDensity.compact,
             icon: Icon(Icons.delete),
+            iconSize: ICON_SIZE_SMALL,
             onPressed: () {
               Provider.of<WorkoutPlans>(context, listen: false).deleteSet(set);
             },
@@ -209,12 +211,14 @@ class DayHeaderDismissible extends StatelessWidget {
                 icon: Icon(Icons.edit),
                 onPressed: () {},
               ),
+             */
             if (_expanded)
               IconButton(
                 icon: Icon(Icons.delete),
-                onPressed: () {},
+                onPressed: () {
+                  Provider.of<WorkoutPlans>(context, listen: false).deleteDay(_day);
+                },
               ),
-            */
             IconButton(
               icon: _expanded ? Icon(Icons.expand_less) : Icon(Icons.expand_more),
               onPressed: () {

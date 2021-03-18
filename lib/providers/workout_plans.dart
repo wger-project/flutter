@@ -349,6 +349,14 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
     return day;
   }
 
+  Future<void> deleteDay(Day day) async {
+    await deleteRequest(_daysUrlPath, day.id);
+    for (var workout in _workoutPlans) {
+      workout.days.removeWhere((element) => element.id == day.id);
+    }
+    notifyListeners();
+  }
+
   /*
    * Sets
    */

@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/providers/nutrition.dart';
@@ -117,7 +118,7 @@ class MealItemWidget extends StatelessWidget {
                 if (_expanded)
                   IconButton(
                     icon: Icon(Icons.delete),
-                    iconSize: 20,
+                    iconSize: ICON_SIZE_SMALL,
                     onPressed: () {
                       // Delete the meal item
                       Provider.of<Nutrition>(context, listen: false).deleteMealItem(_item);
