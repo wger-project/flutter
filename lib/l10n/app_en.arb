@@ -123,6 +123,7 @@
   "@gymMode": {
     "description": "Label when starting the gym mode"
   },
+  "todaysWorkout": "Your workout today",
   "logHelpEntries": "If on a single day there is more than one entry with the same number of repetitions, but different weights, only the entry with the higher weight is shown in the diagram.",
   "@logHelpEntries": {},
   "logHelpEntriesUnits": "Note that only entries with a weight unit (kg or lb) and repetitions are charted, other combinations such as time or until failure are ignored here.",

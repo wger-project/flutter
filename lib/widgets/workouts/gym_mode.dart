@@ -104,18 +104,10 @@ class StartPage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: Text(
-              AppLocalizations.of(context).gymMode,
+              AppLocalizations.of(context).todaysWorkout,
               style: Theme.of(context).textTheme.headline5,
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Text(
-              _day.description,
-              style: Theme.of(context).textTheme.headline6,
-            ),
-          ),
-          Text('Your workout today'),
           ..._day.sets.map(
             (set) {
               return Column(
