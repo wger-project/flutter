@@ -19,18 +19,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/widgets/core/bottom_sheet.dart';
 import 'package:wger/widgets/weight/charts.dart';
 import 'package:wger/widgets/weight/forms.dart';
 
 class WeightEntriesList extends StatelessWidget {
-  final BodyWeight _weightProvider;
-
-  WeightEntriesList(this._weightProvider);
-
   @override
   Widget build(BuildContext context) {
+    final _weightProvider = Provider.of<BodyWeight>(context, listen: false);
+
     return Column(
       children: [
         Container(

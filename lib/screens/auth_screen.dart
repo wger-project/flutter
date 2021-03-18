@@ -113,7 +113,7 @@ class _AuthCardState extends State<AuthCard> {
   void initState() {
     //_serverUrlController.text
     super.initState();
-    Provider.of<Auth>(context, listen: false).getServerUrlFromPrefs().then((value) {
+    context.read<Auth>().getServerUrlFromPrefs().then((value) {
       _serverUrlController.text = value;
     });
   }
