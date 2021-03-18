@@ -28,11 +28,10 @@ import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/http_exception.dart';
 
 import 'helpers.dart';
-
-final DEFAULT_SERVER = 'https://wger.rge.uber.space';
 
 class Auth with ChangeNotifier {
   String token;
@@ -209,6 +208,7 @@ class Auth with ChangeNotifier {
     log('logging out');
     token = null;
     serverUrl = null;
+    dataInit = false;
     // _userId = null;
     // _expiryDate = null;
     // if (_authTimer != null) {

@@ -16,4 +16,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/// Size for the "smaller" icons, e.g. when they belong to less important items
+/// and we don't want to fill the whole screen
 const double ICON_SIZE_SMALL = 20;
+
+/// Default wger server during login
+final DEFAULT_SERVER = 'https://wger.rge.uber.space';
+//final DEFAULT_SERVER = 'http://localhost:8000';
