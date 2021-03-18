@@ -53,15 +53,6 @@ class SettingWidget extends StatelessWidget {
       ),
       title: Text(setting.exerciseObj.name),
       subtitle: Text(setting.repsText),
-      trailing: expanded
-          ? IconButton(
-              visualDensity: VisualDensity.compact,
-              icon: Icon(Icons.delete),
-              onPressed: () {
-                Provider.of<WorkoutPlans>(context, listen: false).deleteSetting(setting);
-              },
-            )
-          : SizedBox(width: 1),
     );
   }
 }
@@ -103,7 +94,15 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
               Divider(),
             ],
           ),
-        )
+        ),
+        if (_expanded)
+          IconButton(
+            visualDensity: VisualDensity.compact,
+            icon: Icon(Icons.delete),
+            onPressed: () {
+              Provider.of<WorkoutPlans>(context, listen: false).deleteSet(set);
+            },
+          )
       ],
     );
   }

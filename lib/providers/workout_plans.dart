@@ -359,6 +359,17 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
     return set;
   }
 
+  Future<void> deleteSet(Set workoutSet) async {
+    await deleteRequest(_setsUrlPath, workoutSet.id);
+
+    for (var workout in _workoutPlans) {
+      for (var day in workout.days) {
+        day.sets.removeWhere((element) => element.id == workoutSet.id);
+      }
+    }
+    notifyListeners();
+  }
+
   /*
    * Setting
    */
@@ -367,17 +378,6 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
     final setting = Setting.fromJson(data);
     notifyListeners();
     return setting;
-  }
-
-  Future<void> deleteSetting(Setting workoutSetting) async {
-    await deleteRequest(_settingsUrlPath, workoutSetting.id);
-
-    for (var workout in _workoutPlans) {
-      for (var day in workout.days) {
-        day.sets.removeWhere((element) => element.id == workoutSetting.setId);
-      }
-    }
-    notifyListeners();
   }
 
   /*
