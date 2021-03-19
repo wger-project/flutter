@@ -102,11 +102,11 @@ class WeightEntriesList extends StatelessWidget {
                 child: Card(
                   child: ListTile(
                     onTap: () {},
-                    title: Text(
+                    title: Text('${currentEntry.weight} kg'),
+                    subtitle: Text(
                       DateFormat.yMd(Localizations.localeOf(context).languageCode)
                           .format(currentEntry.date),
                     ),
-                    subtitle: Text('${currentEntry.weight} kg'),
                   ),
                 ),
               );
