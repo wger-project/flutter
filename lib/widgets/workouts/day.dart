@@ -192,38 +192,37 @@ class DayHeaderDismissible extends StatelessWidget {
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(color: Colors.white),
         child: Row(
-          //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  _day.description,
-                  style: Theme.of(context).textTheme.headline5,
-                ),
-                Text(_day.getDaysText),
-              ],
+            Flexible(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    _day.description,
+                    style: Theme.of(context).textTheme.headline5,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(_day.getDaysText),
+                ],
+              ),
             ),
-            Expanded(child: Container()),
-            /*
-            if (_expanded)
-              IconButton(
-                icon: Icon(Icons.edit),
-                onPressed: () {},
-              ),
-             */
-            if (_expanded)
-              IconButton(
-                icon: Icon(Icons.delete),
-                onPressed: () {
-                  Provider.of<WorkoutPlans>(context, listen: false).deleteDay(_day);
-                },
-              ),
-            IconButton(
-              icon: _expanded ? Icon(Icons.expand_less) : Icon(Icons.expand_more),
-              onPressed: () {
-                _toggle();
-              },
+            Row(
+              children: [
+                if (_expanded)
+                  IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () {
+                      Provider.of<WorkoutPlans>(context, listen: false).deleteDay(_day);
+                    },
+                  ),
+                IconButton(
+                  icon: _expanded ? Icon(Icons.expand_less) : Icon(Icons.expand_more),
+                  onPressed: () {
+                    _toggle();
+                  },
+                ),
+              ],
             ),
           ],
         ),
