@@ -144,10 +144,10 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
       List<Day> days = [];
       for (final entry in data['day_list']) {
         List<Set> sets = [];
+        List<Setting> settingsComputed = [];
 
         for (final set in entry['set_list']) {
           List<Setting> settings = [];
-          List<Setting> settingsComputed = [];
           List<Exercise> exercises = [];
 
           for (final exerciseData in set['exercise_list']) {
@@ -188,11 +188,11 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
                 ),
               );
             }
+          }
 
-            // Computed settings
-            for (var setting in exerciseData['settings_computed']) {
-              settingsComputed.add(Setting.fromJson(setting));
-            }
+          // Computed settings
+          for (var setting in set['settings_computed']) {
+            settingsComputed.add(Setting.fromJson(setting));
           }
 
           // Sets
