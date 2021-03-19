@@ -103,7 +103,10 @@ class WorkoutPlansList extends StatelessWidget {
                     .pushNamed(WorkoutPlanScreen.routeName, arguments: currentWorkout);
               },
               title: Text(currentWorkout.description),
-              subtitle: Text(DateFormat.yMd().format(currentWorkout.creationDate)),
+              subtitle: Text(
+                DateFormat.yMd(Localizations.localeOf(context).languageCode)
+                    .format(currentWorkout.creationDate),
+              ),
             ),
           ),
         );

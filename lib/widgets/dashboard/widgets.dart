@@ -117,7 +117,8 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
               ? Column(
                   children: [
                     Text(
-                      DateFormat.yMd().format(plan.creationDate),
+                      DateFormat.yMd(Localizations.localeOf(context).languageCode)
+                          .format(plan.creationDate),
                       style: Theme.of(context).textTheme.headline6,
                     ),
                     TextButton(
@@ -292,7 +293,8 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
               ? Column(
                   children: [
                     Text(
-                      DateFormat.yMd().format(_workoutPlan.creationDate),
+                      DateFormat.yMd(Localizations.localeOf(context).languageCode)
+                          .format(_workoutPlan.creationDate),
                       style: Theme.of(context).textTheme.headline6,
                     ),
                     TextButton(
