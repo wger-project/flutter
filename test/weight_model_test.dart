@@ -45,7 +45,7 @@ void main() {
   group('model', () {
     test('Test the individual values from the model', () {
       WeightEntry _weightModel;
-      _weightModel = WeightEntry();
+      //_weightModel = WeightEntry();
       _weightModel = WeightEntry(id: 1, weight: 80, date: DateTime(2020, 10, 01));
 
       expect(_weightModel.id, 1);

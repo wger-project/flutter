@@ -16,7 +16,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'weight_unit.g.dart';
@@ -30,8 +29,8 @@ class WeightUnit {
   final String name;
 
   WeightUnit({
-    @required this.id,
-    @required this.name,
+    required this.id,
+    required this.name,
   });
 
   // Boilerplate

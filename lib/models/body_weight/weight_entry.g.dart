@@ -9,9 +9,9 @@ part of 'weight_entry.dart';
 WeightEntry _$WeightEntryFromJson(Map<String, dynamic> json) {
   $checkKeys(json, requiredKeys: const ['id', 'weight', 'date']);
   return WeightEntry(
-    id: json['id'] as int,
-    weight: toNum(json['weight'] as String),
-    date: json['date'] == null ? null : DateTime.parse(json['date'] as String),
+    id: json['id'] as int?,
+    weight: toNum(json['weight'] as String?),
+    date: DateTime.parse(json['date'] as String),
   );
 }
 

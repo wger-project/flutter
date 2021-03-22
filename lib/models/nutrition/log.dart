@@ -29,45 +29,48 @@ part 'log.g.dart';
 @JsonSerializable()
 class Log {
   @JsonKey(required: true)
-  int id;
+  int? id;
 
   @JsonKey(required: true, name: 'plan')
-  int planId;
+  late int planId;
 
   @JsonKey(required: true)
-  DateTime datetime;
+  late DateTime datetime;
 
-  String comment;
+  String? comment;
 
   @JsonKey(required: true, name: 'ingredient')
-  int ingredientId;
+  late int ingredientId;
 
-  Ingredient ingredientObj;
+  @JsonKey(ignore: true)
+  late Ingredient ingredientObj;
 
   @JsonKey(required: true, name: 'weight_unit')
-  int weightUnit;
+  late int weightUnit;
 
-  IngredientWeightUnit weightUnitObj;
+  IngredientWeightUnit? weightUnitObj;
 
   @JsonKey(required: true, fromJson: toNum)
-  num amount;
+  late num amount;
 
   Log({
     this.id,
-    this.ingredientId,
-    this.ingredientObj,
-    this.weightUnit,
+    required this.ingredientId,
+    //this.ingredientObj,
+    required this.weightUnit,
     this.weightUnitObj,
-    this.amount,
-    this.planId,
-    this.datetime,
+    required this.amount,
+    required this.planId,
+    required this.datetime,
     this.comment,
   });
 
-  Log.fromMealItem(MealItem mealItem) {
-    this.ingredientId = mealItem.ingredientId;
+  Log.fromMealItem(MealItem mealItem, int planId, [DateTime? dateTime]) {
+    this.ingredientId = mealItem.ingredientId!;
     this.ingredientObj = mealItem.ingredientObj;
-    this.weightUnit = null;
+    this.weightUnit = mealItem.weightUnit!.id;
+    this.planId = planId;
+    this.datetime = dateTime ?? DateTime.now();
     this.amount = mealItem.amount;
   }
 
@@ -80,8 +83,9 @@ class Log {
     // This is already done on the server. It might be better to read it from there.
     var out = NutritionalValues();
 
-    final weight =
-        this.weightUnitObj == null ? amount : amount * weightUnitObj.amount * weightUnitObj.grams;
+    final weight = amount;
+    // final weight =
+    // this.weightUnitObj == null ? amount : amount * weightUnitObj.amount * weightUnitObj.grams;
 
     out.energy = ingredientObj.energy * weight / 100;
     out.protein = ingredientObj.protein * weight / 100;

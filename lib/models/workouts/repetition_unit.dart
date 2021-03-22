@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'repetition_unit.g.dart';
@@ -12,8 +11,8 @@ class RepetitionUnit {
   final String name;
 
   RepetitionUnit({
-    @required this.id,
-    @required this.name,
+    required this.id,
+    required this.name,
   });
 
   // Boilerplate

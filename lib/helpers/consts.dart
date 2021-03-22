@@ -21,5 +21,11 @@
 const double ICON_SIZE_SMALL = 20;
 
 /// Default wger server during login
-final DEFAULT_SERVER = 'https://wger.rge.uber.space';
+const DEFAULT_SERVER = 'https://wger.rge.uber.space';
 //final DEFAULT_SERVER = 'http://localhost:8000';
+
+/// Default weight unit is "kg"
+const DEFAULT_WEIGHT_UNIT = 1;
+
+/// Default weight unit is "repetition"
+const DEFAULT_REPETITION_UNIT = 1;

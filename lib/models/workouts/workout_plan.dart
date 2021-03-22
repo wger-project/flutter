@@ -26,27 +26,31 @@ part 'workout_plan.g.dart';
 @JsonSerializable()
 class WorkoutPlan {
   @JsonKey(required: true)
-  final int id;
+  int? id;
 
   @JsonKey(required: true, name: 'creation_date')
-  DateTime creationDate;
+  late DateTime creationDate;
 
   @JsonKey(required: true, name: 'comment')
-  String description;
+  late String description;
 
   @JsonKey(required: false, defaultValue: [], name: 'days')
-  List<Day> days = [];
+  late List<Day> days = [];
 
   @JsonKey(ignore: true, defaultValue: [])
-  List<Log> logs = [];
+  late List<Log> logs = [];
 
-  WorkoutPlan({
+  WorkoutPlan();
+
+  WorkoutPlan.withData({
     this.id,
-    this.creationDate,
-    this.description,
-    this.days,
+    required this.creationDate,
+    required this.description,
+    days,
+    logs,
   }) {
     this.days = days ?? [];
+    this.logs = logs ?? [];
   }
 
   // Boilerplate

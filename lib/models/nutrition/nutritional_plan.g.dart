@@ -9,17 +9,13 @@ part of 'nutritional_plan.dart';
 NutritionalPlan _$NutritionalPlanFromJson(Map<String, dynamic> json) {
   $checkKeys(json, requiredKeys: const ['id', 'description', 'creation_date']);
   return NutritionalPlan(
-    id: json['id'] as int,
+    id: json['id'] as int?,
     description: json['description'] as String,
-    creationDate: json['creation_date'] == null
-        ? null
-        : DateTime.parse(json['creation_date'] as String),
-    meals: (json['meals'] as List)
-            ?.map((e) =>
-                e == null ? null : Meal.fromJson(e as Map<String, dynamic>))
-            ?.toList() ??
-        [],
-  );
+    creationDate: DateTime.parse(json['creation_date'] as String),
+  )..meals = (json['meals'] as List<dynamic>?)
+          ?.map((e) => Meal.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      [];
 }
 
 Map<String, dynamic> _$NutritionalPlanToJson(NutritionalPlan instance) =>
@@ -27,5 +23,5 @@ Map<String, dynamic> _$NutritionalPlanToJson(NutritionalPlan instance) =>
       'id': instance.id,
       'description': instance.description,
       'creation_date': toDate(instance.creationDate),
-      'meals': instance.meals?.map((e) => e?.toJson())?.toList(),
+      'meals': instance.meals.map((e) => e.toJson()).toList(),
     };

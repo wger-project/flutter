@@ -24,6 +24,7 @@ import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/widgets/app_drawer.dart';
 import 'package:wger/widgets/core/bottom_sheet.dart';
+import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 import 'package:wger/widgets/workouts/workout_plans_list.dart';
 
@@ -35,23 +36,17 @@ class WorkoutPlansScreen extends StatefulWidget {
 }
 
 class _WorkoutPlansScreenState extends State<WorkoutPlansScreen> {
-  Widget getAppBar() {
-    return AppBar(
-      title: Text(AppLocalizations.of(context).labelWorkoutPlans),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: getAppBar(),
+      appBar: WgerAppBar(AppLocalizations.of(context)!.labelWorkoutPlans),
       drawer: AppDrawer(),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () {
           showFormBottomSheet(
             context,
-            AppLocalizations.of(context).newWorkout,
+            AppLocalizations.of(context)!.newWorkout,
             WorkoutForm(WorkoutPlan()),
           );
         },

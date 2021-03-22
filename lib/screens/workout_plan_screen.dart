@@ -64,14 +64,14 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
         return WorkoutLogs(plan, _changeMode);
         break;
       case WorkoutScreenMode.gym:
-        return Text(AppLocalizations.of(context).gymMode);
+        return Text(AppLocalizations.of(context)!.gymMode);
         break;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final workoutPlan = ModalRoute.of(context).settings.arguments as WorkoutPlan;
+    final workoutPlan = ModalRoute.of(context)!.settings.arguments as WorkoutPlan;
 
     return Scaffold(
       //appBar: getAppBar(workoutPlan),
@@ -96,14 +96,14 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
                     if (value == WorkoutOptions.edit) {
                       showFormBottomSheet(
                         context,
-                        AppLocalizations.of(context).edit,
+                        AppLocalizations.of(context)!.edit,
                         WorkoutForm(workoutPlan),
                       );
 
                       // Delete
                     } else if (value == WorkoutOptions.delete) {
                       Provider.of<WorkoutPlans>(context, listen: false)
-                          .deleteWorkout(workoutPlan.id);
+                          .deleteWorkout(workoutPlan.id!);
                       Navigator.of(context).pushNamed(WorkoutPlansScreen.routeName);
 
                       // Toggle Mode
@@ -119,7 +119,7 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
                     return [
                       PopupMenuItem<WorkoutOptions>(
                         value: WorkoutOptions.edit,
-                        child: Text(AppLocalizations.of(context).edit),
+                        child: Text(AppLocalizations.of(context)!.edit),
                       ),
                       PopupMenuItem<WorkoutOptions>(
                         child: _mode == WorkoutScreenMode.log
@@ -130,7 +130,7 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
                       const PopupMenuDivider(),
                       PopupMenuItem<WorkoutOptions>(
                         value: WorkoutOptions.delete,
-                        child: Text(AppLocalizations.of(context).delete),
+                        child: Text(AppLocalizations.of(context)!.delete),
                       ),
                     ];
                   },

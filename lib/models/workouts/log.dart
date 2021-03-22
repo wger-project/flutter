@@ -6,45 +6,47 @@ part 'log.g.dart';
 @JsonSerializable()
 class Log {
   @JsonKey(required: true)
-  final int id;
+  int? id;
 
   @JsonKey(required: true)
-  int exercise;
+  late int exercise;
 
   @JsonKey(required: true, name: 'workout')
-  int workoutPlan;
+  late int workoutPlan;
 
   @JsonKey(required: true)
-  int reps;
+  late int reps;
 
   @JsonKey(required: false)
-  double rir;
+  late String rir;
 
   @JsonKey(required: true, name: 'repetition_unit')
-  int repetitionUnit;
+  late int repetitionUnit;
 
   @JsonKey(required: true, fromJson: toNum, toJson: toString)
-  num weight;
+  late num weight;
 
   @JsonKey(required: true, name: 'weight_unit')
-  int weightUnit;
+  late int weightUnit;
 
   @JsonKey(required: true, toJson: toDate)
-  DateTime date;
+  late DateTime date;
 
   //@JsonKey(required: true)
   //String comment;
 
-  Log({
+  Log();
+
+  Log.withData({
     this.id,
-    this.exercise,
-    this.workoutPlan,
-    this.repetitionUnit,
-    this.reps,
-    this.rir,
-    this.weight,
-    this.weightUnit,
-    this.date,
+    required this.exercise,
+    required this.workoutPlan,
+    required this.repetitionUnit,
+    required this.reps,
+    required this.rir,
+    required this.weight,
+    required this.weightUnit,
+    required this.date,
   });
 
   // Boilerplate

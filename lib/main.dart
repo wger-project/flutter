@@ -51,28 +51,28 @@ class MyApp extends StatelessWidget {
           create: (ctx) => Auth(),
         ),
         ChangeNotifierProxyProvider<Auth, WorkoutPlans>(
-          create: null, // TODO: Create is required but it can be null??
+          create: (context) => WorkoutPlans(Auth(), []),
           update: (context, auth, previous) => WorkoutPlans(
             auth,
             previous == null ? [] : previous.items,
           ),
         ),
         ChangeNotifierProxyProvider<Auth, Exercises>(
-          create: null, // TODO: Create is required but it can be null??
+          create: (context) => Exercises(Auth(), []),
           update: (context, auth, previous) => Exercises(
             auth,
             previous == null ? [] : previous.items,
           ),
         ),
         ChangeNotifierProxyProvider<Auth, Nutrition>(
-          create: null, // TODO: Create is required but it can be null??
+          create: (context) => Nutrition(Auth(), []),
           update: (context, auth, previous) => Nutrition(
             auth,
             previous == null ? [] : previous.items,
           ),
         ),
         ChangeNotifierProxyProvider<Auth, BodyWeight>(
-          create: null, // TODO: Create is required but it can be null??
+          create: (context) => BodyWeight(Auth(), []),
           update: (context, auth, previous) => BodyWeight(
             auth,
             previous == null ? [] : previous.items,

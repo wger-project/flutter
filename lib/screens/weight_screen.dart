@@ -33,21 +33,21 @@ class WeightScreen extends StatefulWidget {
 class _WeightScreenState extends State<WeightScreen> {
   Widget getAppBar() {
     return AppBar(
-      title: Text(AppLocalizations.of(context).weight),
+      title: Text(AppLocalizations.of(context)!.weight),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: getAppBar(),
+      appBar: getAppBar() as PreferredSizeWidget?,
       drawer: AppDrawer(),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () async {
           showFormBottomSheet(
             context,
-            AppLocalizations.of(context).newEntry,
+            AppLocalizations.of(context)!.newEntry,
             WeightForm(),
           );
         },

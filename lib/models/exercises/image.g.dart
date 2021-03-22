@@ -10,7 +10,7 @@ ExerciseImage _$ExerciseImageFromJson(Map<String, dynamic> json) {
   $checkKeys(json, requiredKeys: const ['image']);
   return ExerciseImage(
     url: json['image'] as String,
-    isMain: json['is_main'] as bool ?? false,
+    isMain: json['is_main'] as bool? ?? false,
   );
 }
 

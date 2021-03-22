@@ -29,8 +29,8 @@ class ExerciseImage {
   final bool isMain;
 
   ExerciseImage({
-    this.url,
-    this.isMain,
+    required this.url,
+    required this.isMain,
   });
 
   // Boilerplate

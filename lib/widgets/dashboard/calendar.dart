@@ -64,7 +64,7 @@ class Event {
 }
 
 class DashboardCalendarWidget extends StatefulWidget {
-  DashboardCalendarWidget({Key key}) : super(key: key);
+  DashboardCalendarWidget();
 
   @override
   _DashboardCalendarWidgetState createState() => _DashboardCalendarWidgetState();
@@ -72,10 +72,10 @@ class DashboardCalendarWidget extends StatefulWidget {
 
 class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
     with TickerProviderStateMixin {
-  Map<DateTime, List> _events;
-  List _selectedEvents;
-  AnimationController _animationController;
-  CalendarController _calendarController;
+  late Map<DateTime, List> _events;
+  late List _selectedEvents;
+  late AnimationController _animationController;
+  late CalendarController _calendarController;
 
   @override
   void initState() {
@@ -115,7 +115,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
       }
 
       // Add events to lists
-      _events[date].add(Event(EventType.weight, '${entry.weight} kg'));
+      _events[date]!.add(Event(EventType.weight, '${entry.weight} kg'));
     }
 
     // Process workout sessions
@@ -134,9 +134,9 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
         }
 
         // Add events to lists
-        _events[date].add(Event(
+        _events[date]!.add(Event(
           EventType.session,
-          '${AppLocalizations.of(context).impression}: ${session.impressionAsString} $time',
+          '${AppLocalizations.of(context)!.impression}: ${session.impressionAsString} $time',
         ));
       }
     });
@@ -151,7 +151,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
         }
 
         // Add events to lists
-        _events[date].add(Event(
+        _events[date]!.add(Event(
           EventType.caloriesDiary,
           '${entry.value.energy.toStringAsFixed(0)} kcal',
         ));
@@ -186,7 +186,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
         children: [
           const SizedBox(height: 8.0),
           Text(
-            AppLocalizations.of(context).calendar,
+            AppLocalizations.of(context)!.calendar,
             style: Theme.of(context).textTheme.headline4,
           ),
 
@@ -361,7 +361,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
       mainAxisAlignment: MainAxisAlignment.end,
       children: <Widget>[
         TextButton(
-          child: Text(AppLocalizations.of(context).goToToday),
+          child: Text(AppLocalizations.of(context)!.goToToday),
           onPressed: () async {
             final today = DateTime.now();
             _calendarController.setSelectedDay(
@@ -399,13 +399,13 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
                 title: Text((() {
                   switch (event.type) {
                     case EventType.caloriesDiary:
-                      return AppLocalizations.of(context).nutritionalDiary;
+                      return AppLocalizations.of(context)!.nutritionalDiary;
 
                     case EventType.session:
-                      return AppLocalizations.of(context).workoutSession;
+                      return AppLocalizations.of(context)!.workoutSession;
 
                     case EventType.weight:
-                      return AppLocalizations.of(context).weight;
+                      return AppLocalizations.of(context)!.weight;
                   }
                   return event.description.toString();
                 })()),

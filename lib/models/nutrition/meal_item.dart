@@ -28,29 +28,42 @@ part 'meal_item.g.dart';
 @JsonSerializable()
 class MealItem {
   @JsonKey(required: true)
-  final int id;
+  int? id;
 
   @JsonKey(required: false, name: 'ingredient')
-  int ingredientId;
+  int? ingredientId;
 
   @JsonKey(required: false, name: 'ingredient_obj')
-  Ingredient ingredientObj;
+  late Ingredient ingredientObj;
 
   @JsonKey(required: false)
-  int meal;
+  late int meal;
 
   @JsonKey(required: false, name: 'weight_unit')
-  IngredientWeightUnit weightUnit;
+  IngredientWeightUnit? weightUnit;
 
   @JsonKey(required: true, fromJson: toNum, toJson: toString)
-  num amount;
+  late num amount;
 
   MealItem({
     this.id,
-    this.ingredientObj,
+    int? meal,
+    //this.ingredientObj,
+    ingredientId,
     this.weightUnit,
-    this.amount,
-  });
+    num? amount,
+  }) {
+    if (meal != null) {
+      this.meal = meal;
+    }
+
+    if (ingredientId != null) {
+      this.ingredientId = ingredientId;
+    }
+    if (amount != null) {
+      this.amount = amount;
+    }
+  }
 
   // Boilerplate
   factory MealItem.fromJson(Map<String, dynamic> json) => _$MealItemFromJson(json);
@@ -62,24 +75,16 @@ class MealItem {
     // This is already done on the server. It might be better to read it from there.
     var out = NutritionalValues();
 
-    final weight = this.weightUnit == null ? amount : amount * weightUnit.amount * weightUnit.grams;
+    //final weight = this.weightUnit == null ? amount : amount * weightUnit.amount * weightUnit.grams;
+    final weight = amount;
 
     out.energy = ingredientObj.energy * weight / 100;
     out.protein = ingredientObj.protein * weight / 100;
     out.carbohydrates = ingredientObj.carbohydrates * weight / 100;
     out.fat = ingredientObj.fat * weight / 100;
-
-    if (ingredientObj.fatSaturated != null) {
-      out.fatSaturated = ingredientObj.fatSaturated * weight / 100;
-    }
-
-    if (ingredientObj.fibres != null) {
-      out.fibres = ingredientObj.fibres * weight / 100;
-    }
-
-    if (ingredientObj.sodium != null) {
-      out.sodium = ingredientObj.sodium * weight / 100;
-    }
+    out.fatSaturated = ingredientObj.fatSaturated * weight / 100;
+    out.fibres = ingredientObj.fibres * weight / 100;
+    out.sodium = ingredientObj.sodium * weight / 100;
 
     return out;
   }

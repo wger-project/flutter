@@ -37,26 +37,26 @@ class NutritionalPlansList extends StatelessWidget {
           key: Key(currentPlan.id.toString()),
           confirmDismiss: (direction) async {
             // Delete workout from DB
-            final bool res = await showDialog(
+            final bool? res = await showDialog(
                 context: context,
                 builder: (BuildContext contextDialog) {
                   return AlertDialog(
                     content: Text(
-                      AppLocalizations.of(context).confirmDelete(currentPlan.description),
+                      AppLocalizations.of(context)!.confirmDelete(currentPlan.description),
                     ),
                     actions: [
                       TextButton(
-                        child: Text(AppLocalizations.of(context).cancel),
+                        child: Text(AppLocalizations.of(context)!.cancel),
                         onPressed: () => Navigator.of(contextDialog).pop(),
                       ),
                       TextButton(
                         child: Text(
-                          AppLocalizations.of(context).delete,
+                          AppLocalizations.of(context)!.delete,
                           style: TextStyle(color: Theme.of(context).errorColor),
                         ),
                         onPressed: () {
                           // Confirmed, delete the workout
-                          _nutritrionProvider.deletePlan(currentPlan.id);
+                          _nutritrionProvider.deletePlan(currentPlan.id!);
 
                           // Close the popup
                           Navigator.of(contextDialog).pop();
@@ -65,7 +65,7 @@ class NutritionalPlansList extends StatelessWidget {
                           Scaffold.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                AppLocalizations.of(context).successfullyDeleted,
+                                AppLocalizations.of(context)!.successfullyDeleted,
                                 textAlign: TextAlign.center,
                               ),
                             ),

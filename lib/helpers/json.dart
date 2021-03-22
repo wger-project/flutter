@@ -19,14 +19,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-num toNum(String e) {
-  if (e == null) {
-    return null;
-  }
-  return num.parse(e);
+num toNum(String? e) {
+  return e == null ? 0 : num.parse(e);
 }
 
-String toString(num e) {
+String? toString(num? e) {
   if (e == null) {
     return null;
   }
@@ -38,7 +35,7 @@ String toString(num e) {
  * Converts a datetime to ISO8601 date format, but only the date.
  * Needed e.g. when the wger api only expects a date and no time information.
  */
-String toDate(DateTime dateTime) {
+String? toDate(DateTime? dateTime) {
   if (dateTime == null) {
     return null;
   }
@@ -49,19 +46,17 @@ String toDate(DateTime dateTime) {
  * Converts a time to a date object.
  * Needed e.g. when the wger api only sends a time but no date information.
  */
-TimeOfDay stringToTime(String time) {
-  if (time == null) {
-    return null;
-  }
+TimeOfDay stringToTime(String? time) {
+  String out = time ?? '00:00';
   return TimeOfDay.fromDateTime(
-    DateTime.parse('2020-01-01 $time'),
+    DateTime.parse('2020-01-01 $out'),
   );
 }
 
 /*
  * Converts a datetime to time.
  */
-String timeToString(TimeOfDay time) {
+String? timeToString(TimeOfDay? time) {
   if (time == null) {
     return null;
   }

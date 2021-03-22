@@ -61,14 +61,14 @@ class _WorkoutLogsState extends State<WorkoutLogs> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  AppLocalizations.of(context).logHelpEntries,
+                  AppLocalizations.of(context)!.logHelpEntries,
                   textAlign: TextAlign.justify,
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  AppLocalizations.of(context).logHelpEntriesUnits,
+                  AppLocalizations.of(context)!.logHelpEntriesUnits,
                   textAlign: TextAlign.justify,
                 ),
               ),

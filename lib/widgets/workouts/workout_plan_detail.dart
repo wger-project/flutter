@@ -57,12 +57,12 @@ class _WorkoutPlanDetailState extends State<WorkoutPlanDetail> {
               Column(
                 children: [
                   ElevatedButton(
-                    child: Text(AppLocalizations.of(context).add),
+                    child: Text(AppLocalizations.of(context)!.add),
                     onPressed: () {
                       showFormBottomSheet(
                         context,
-                        AppLocalizations.of(context).newDay,
-                        DayFormWidget(workout: widget._workoutPlan),
+                        AppLocalizations.of(context)!.newDay,
+                        DayFormWidget(widget._workoutPlan),
                         scrollControlled: true,
                       );
                     },

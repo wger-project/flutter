@@ -36,7 +36,7 @@ class NutritionalPlanScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _nutritionalPlan = ModalRoute.of(context).settings.arguments as NutritionalPlan;
+    final _nutritionalPlan = ModalRoute.of(context)!.settings.arguments as NutritionalPlan /*!*/;
 
     return Scaffold(
       //appBar: getAppBar(nutritionalPlan),
@@ -55,14 +55,14 @@ class NutritionalPlanScreen extends StatelessWidget {
                     if (value == NutritionalPlanOptions.edit) {
                       showFormBottomSheet(
                         context,
-                        AppLocalizations.of(context).edit,
+                        AppLocalizations.of(context)!.edit,
                         PlanForm(_nutritionalPlan),
                       );
 
                       // Delete
                     } else if (value == NutritionalPlanOptions.delete) {
                       Provider.of<Nutrition>(context, listen: false)
-                          .deletePlan(_nutritionalPlan.id);
+                          .deletePlan(_nutritionalPlan.id!);
                       Navigator.of(context).pushNamed(NutritionalPlanScreen.routeName);
                     }
                   },
@@ -70,12 +70,12 @@ class NutritionalPlanScreen extends StatelessWidget {
                     return [
                       PopupMenuItem<NutritionalPlanOptions>(
                         value: NutritionalPlanOptions.edit,
-                        child: Text(AppLocalizations.of(context).edit),
+                        child: Text(AppLocalizations.of(context)!.edit),
                       ),
                       const PopupMenuDivider(),
                       PopupMenuItem<NutritionalPlanOptions>(
                         value: NutritionalPlanOptions.delete,
-                        child: Text(AppLocalizations.of(context).delete),
+                        child: Text(AppLocalizations.of(context)!.delete),
                       ),
                     ];
                   },

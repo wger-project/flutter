@@ -31,7 +31,7 @@ class HomeTabsScreen extends StatefulWidget {
 }
 
 class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProviderStateMixin {
-  TabController controller;
+  TabController? controller;
 
   @override
   initState() {

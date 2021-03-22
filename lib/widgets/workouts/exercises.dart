@@ -20,10 +20,9 @@ import 'package:flutter/material.dart';
 
 class ExerciseImage extends StatelessWidget {
   const ExerciseImage({
-    Key key,
-    @required this.imageUrl,
-    @required this.serverUrl,
-  }) : super(key: key);
+    required this.imageUrl,
+    required this.serverUrl,
+  });
 
   final String imageUrl;
   final String serverUrl;

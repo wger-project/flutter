@@ -44,22 +44,22 @@ class WorkoutPlansList extends StatelessWidget {
                 builder: (BuildContext contextDialog) {
                   return AlertDialog(
                     content: Text(
-                      AppLocalizations.of(context).confirmDelete(currentWorkout.description),
+                      AppLocalizations.of(context)!.confirmDelete(currentWorkout.description),
                     ),
                     actions: [
                       TextButton(
-                        child: Text(AppLocalizations.of(context).cancel),
+                        child: Text(AppLocalizations.of(context)!.cancel),
                         onPressed: () => Navigator.of(contextDialog).pop(),
                       ),
                       TextButton(
                         child: Text(
-                          AppLocalizations.of(context).delete,
+                          AppLocalizations.of(context)!.delete,
                           style: TextStyle(color: Theme.of(context).errorColor),
                         ),
                         onPressed: () {
                           // Confirmed, delete the workout
                           Provider.of<WorkoutPlans>(context, listen: false)
-                              .deleteWorkout(currentWorkout.id);
+                              .deleteWorkout(currentWorkout.id!);
 
                           // Close the popup
                           Navigator.of(contextDialog).pop();
@@ -68,7 +68,7 @@ class WorkoutPlansList extends StatelessWidget {
                           Scaffold.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                AppLocalizations.of(context).successfullyDeleted,
+                                AppLocalizations.of(context)!.successfullyDeleted,
                                 textAlign: TextAlign.center,
                               ),
                             ),
@@ -97,9 +97,9 @@ class WorkoutPlansList extends StatelessWidget {
           child: Card(
             child: ListTile(
               onTap: () {
-                _workoutProvider.setCurrentPlan(currentWorkout.id);
+                _workoutProvider.setCurrentPlan(currentWorkout.id!);
 
-                return Navigator.of(context)
+                Navigator.of(context)
                     .pushNamed(WorkoutPlanScreen.routeName, arguments: currentWorkout);
               },
               title: Text(currentWorkout.description),

@@ -39,7 +39,7 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   Widget getAppBar() {
     return AppBar(
-      title: Text(AppLocalizations.of(context).labelDashboard),
+      title: Text(AppLocalizations.of(context)!.labelDashboard),
       actions: [],
     );
   }
@@ -64,7 +64,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       await workoutProvider.fetchAndSetWorkouts();
       await workoutProvider.setAllFullWorkouts();
       if (workoutProvider.activePlan != null) {
-        workoutProvider.setCurrentPlan(workoutProvider.activePlan.id);
+        workoutProvider.setCurrentPlan(workoutProvider.activePlan!.id!);
       }
 
       // Weight
@@ -76,7 +76,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: getAppBar(),
+      appBar: getAppBar() as PreferredSizeWidget?,
       drawer: AppDrawer(),
       body: FutureBuilder(
         future: _loadEntries(context),
@@ -86,7 +86,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        AppLocalizations.of(context).loadingText,
+                        AppLocalizations.of(context)!.loadingText,
                         style: Theme.of(context).textTheme.headline5,
                       ),
                       Padding(padding: EdgeInsets.symmetric(vertical: 8)),

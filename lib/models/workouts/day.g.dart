@@ -8,18 +8,16 @@ part of 'day.dart';
 
 Day _$DayFromJson(Map<String, dynamic> json) {
   $checkKeys(json, requiredKeys: const ['id', 'description', 'training']);
-  return Day(
-    id: json['id'] as int,
-    description: json['description'] as String,
-    daysOfWeek: (json['day'] as List)?.map((e) => e as int)?.toList() ?? [],
-    sets: (json['sets'] as List)
-        ?.map((e) => e == null ? null : Set.fromJson(e as Map<String, dynamic>))
-        ?.toList(),
-  )
+  return Day()
+    ..id = json['id'] as int?
+    ..description = json['description'] as String
+    ..daysOfWeek =
+        (json['day'] as List<dynamic>?)?.map((e) => e as int).toList() ?? []
+    ..sets = (json['sets'] as List<dynamic>)
+        .map((e) => Set.fromJson(e as Map<String, dynamic>))
+        .toList()
     ..workoutId = json['training'] as int
-    ..workout = json['workout'] == null
-        ? null
-        : WorkoutPlan.fromJson(json['workout'] as Map<String, dynamic>);
+    ..workout = WorkoutPlan.fromJson(json['workout'] as Map<String, dynamic>);
 }
 
 Map<String, dynamic> _$DayToJson(Day instance) => <String, dynamic>{

@@ -38,9 +38,8 @@ import 'package:wger/widgets/workouts/forms.dart';
 
 class DashboardNutritionWidget extends StatefulWidget {
   const DashboardNutritionWidget({
-    Key key,
-    @required this.context,
-  }) : super(key: key);
+    required this.context,
+  });
 
   final BuildContext context;
 
@@ -49,13 +48,13 @@ class DashboardNutritionWidget extends StatefulWidget {
 }
 
 class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
-  Nutrition nutrition;
-  NutritionalPlan plan;
+  //Nutrition nutrition;
+  late NutritionalPlan plan;
   var showDetail = false;
 
   @override
   Widget build(BuildContext context) {
-    plan = Provider.of<Nutrition>(context, listen: false).currentPlan;
+    NutritionalPlan? plan = Provider.of<Nutrition>(context, listen: false).currentPlan;
     final bool hasContent = plan != null;
 
     List<Widget> out = [];
@@ -70,16 +69,16 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-                '${meal.nutritionalValues.energy.toStringAsFixed(0)}${AppLocalizations.of(context).kcal}'),
+                '${meal.nutritionalValues.energy.toStringAsFixed(0)}${AppLocalizations.of(context)!.kcal}'),
             Text(' / '),
             Text(
-                '${meal.nutritionalValues.protein.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
+                '${meal.nutritionalValues.protein.toStringAsFixed(0)}${AppLocalizations.of(context)!.g}'),
             Text(' / '),
             Text(
-                '${meal.nutritionalValues.carbohydrates.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
+                '${meal.nutritionalValues.carbohydrates.toStringAsFixed(0)}${AppLocalizations.of(context)!.g}'),
             Text(' / '),
             Text(
-                '${meal.nutritionalValues.fat.toStringAsFixed(0)}${AppLocalizations.of(context).g} '),
+                '${meal.nutritionalValues.fat.toStringAsFixed(0)}${AppLocalizations.of(context)!.g} '),
           ],
         ));
         out.add(SizedBox(height: 5));
@@ -93,7 +92,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                   children: [
                     Text(item.ingredientObj.name),
                     SizedBox(width: 5),
-                    Text('${item.amount.toString()} ${AppLocalizations.of(context).g}'),
+                    Text('${item.amount.toString()} ${AppLocalizations.of(context)!.g}'),
                   ],
                 ),
               ]),
@@ -110,7 +109,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            AppLocalizations.of(context).nutritionalPlan,
+            AppLocalizations.of(context)!.nutritionalPlan,
             style: Theme.of(context).textTheme.headline4,
           ),
           hasContent
@@ -127,7 +126,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                         style: TextStyle(fontSize: 20),
                       ),
                       onPressed: () {
-                        return Navigator.of(context)
+                        Navigator.of(context)
                             .pushNamed(NutritionalPlanScreen.routeName, arguments: plan);
                       },
                     ),
@@ -140,15 +139,15 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                   ],
                 )
               : NothingFound(
-                  AppLocalizations.of(context).noNutritionalPlans,
-                  AppLocalizations.of(context).newNutritionalPlan,
-                  PlanForm(NutritionalPlan()),
+                  AppLocalizations.of(context)!.noNutritionalPlans,
+                  AppLocalizations.of(context)!.newNutritionalPlan,
+                  PlanForm(),
                 ),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               TextButton(
-                child: Text(AppLocalizations.of(context).toggleDetails),
+                child: Text(AppLocalizations.of(context)!.toggleDetails),
                 onPressed: () {
                   setState(() {
                     showDetail = !showDetail;
@@ -165,9 +164,8 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
 
 class DashboardWeightWidget extends StatefulWidget {
   const DashboardWeightWidget({
-    Key key,
-    @required this.context,
-  }) : super(key: key);
+    required this.context,
+  });
 
   final BuildContext context;
 
@@ -176,7 +174,7 @@ class DashboardWeightWidget extends StatefulWidget {
 }
 
 class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
-  BodyWeight weightEntriesData;
+  late BodyWeight weightEntriesData;
 
   @override
   Widget build(BuildContext context) {
@@ -187,7 +185,7 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            AppLocalizations.of(context).weight,
+            AppLocalizations.of(context)!.weight,
             style: Theme.of(context).textTheme.headline4,
           ),
           Column(
@@ -199,19 +197,19 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                       child: WeightChartWidget(weightEntriesData.items),
                     )
                   : NothingFound(
-                      AppLocalizations.of(context).noWeightEntries,
-                      AppLocalizations.of(context).newEntry,
+                      AppLocalizations.of(context)!.noWeightEntries,
+                      AppLocalizations.of(context)!.newEntry,
                       WeightForm(),
                     ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
                   TextButton(
-                    child: Text(AppLocalizations.of(context).newEntry),
+                    child: Text(AppLocalizations.of(context)!.newEntry),
                     onPressed: () async {
                       showFormBottomSheet(
                         context,
-                        AppLocalizations.of(context).newEntry,
+                        AppLocalizations.of(context)!.newEntry,
                         WeightForm(),
                       );
                     },
@@ -228,9 +226,8 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
 
 class DashboardWorkoutWidget extends StatefulWidget {
   DashboardWorkoutWidget({
-    Key key,
-    @required this.context,
-  }) : super(key: key);
+    required this.context,
+  });
 
   final BuildContext context;
 
@@ -239,7 +236,7 @@ class DashboardWorkoutWidget extends StatefulWidget {
 }
 
 class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
-  WorkoutPlan _workoutPlan;
+  late WorkoutPlan _workoutPlan;
   var showDetail = false;
 
   @override
@@ -250,7 +247,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
 
   @override
   Widget build(BuildContext context) {
-    _workoutPlan = Provider.of<WorkoutPlans>(context, listen: false).activePlan;
+    WorkoutPlan? _workoutPlan = Provider.of<WorkoutPlans>(context, listen: false).activePlan;
     final bool hasContent = _workoutPlan != null;
 
     List<Widget> out = [];
@@ -286,7 +283,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            AppLocalizations.of(context).labelWorkoutPlan,
+            AppLocalizations.of(context)!.labelWorkoutPlan,
             style: Theme.of(context).textTheme.headline4,
           ),
           hasContent
@@ -303,7 +300,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                         style: TextStyle(fontSize: 20),
                       ),
                       onPressed: () {
-                        return Navigator.of(context)
+                        Navigator.of(context)
                             .pushNamed(WorkoutPlanScreen.routeName, arguments: _workoutPlan);
                       },
                     ),
@@ -311,15 +308,15 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                   ],
                 )
               : NothingFound(
-                  AppLocalizations.of(context).noWorkoutPlans,
-                  AppLocalizations.of(context).newWorkout,
+                  AppLocalizations.of(context)!.noWorkoutPlans,
+                  AppLocalizations.of(context)!.newWorkout,
                   WorkoutForm(WorkoutPlan()),
                 ),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               TextButton(
-                child: Text(AppLocalizations.of(context).toggleDetails),
+                child: Text(AppLocalizations.of(context)!.toggleDetails),
                 onPressed: () {
                   setState(() {
                     showDetail = !showDetail;

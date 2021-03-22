@@ -28,7 +28,7 @@ part 'nutritional_plan.g.dart';
 @JsonSerializable(explicitToJson: true)
 class NutritionalPlan {
   @JsonKey(required: true)
-  int id;
+  int? id;
 
   @JsonKey(required: true)
   String description;
@@ -44,12 +44,15 @@ class NutritionalPlan {
 
   NutritionalPlan({
     this.id,
-    this.description,
-    this.creationDate,
-    this.meals,
-    //this.logs,
+    required this.description,
+    required this.creationDate,
+    //List<Meal>? meals,
+    //logs,
   }) {
-    this.meals = meals ?? [];
+    //this.meals = meals as List<Meal> ?? [];
+    this.meals = [];
+    //this.logs = logs ?? [];
+    this.logs = [];
   }
 
   // Boilerplate
@@ -78,7 +81,7 @@ class NutritionalPlan {
         out[date] = NutritionalValues();
       }
 
-      out[date].add(log.nutritionalValues);
+      out[date]!.add(log.nutritionalValues);
     }
 
     return out;

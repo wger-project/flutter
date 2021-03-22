@@ -17,7 +17,13 @@
  */
 
 /// Helper function to make a URL.
-makeUri(String serverUrl, String path, [int id, String objectMethod, Map<String, dynamic> query]) {
+makeUri(
+  String serverUrl,
+  String path, [
+  int? id,
+  String? objectMethod,
+  Map<String, dynamic>? query,
+]) {
   Uri uriServer = Uri.parse(serverUrl);
 
   var pathList = ['api', 'v2', path];

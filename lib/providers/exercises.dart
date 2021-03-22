@@ -48,7 +48,7 @@ class Exercises extends WgerBaseProvider with ChangeNotifier {
   List<Muscle> _muscles = [];
   List<Equipment> _equipment = [];
 
-  Exercises(Auth auth, List<Exercise> entries, [http.Client client])
+  Exercises(Auth auth, List<Exercise> entries, [http.Client? client])
       : this._exercises = entries,
         super(auth, client);
 
@@ -57,10 +57,7 @@ class Exercises extends WgerBaseProvider with ChangeNotifier {
   }
 
   Exercise findById(int id) {
-    return _exercises.firstWhere((exercise) => exercise.id == id, orElse: () {
-      log('Could not find exercise with ID $id');
-      return null;
-    });
+    return _exercises.firstWhere((exercise) => exercise.id == id);
   }
 
   Future<void> fetchAndSetCategories() async {
@@ -103,7 +100,7 @@ class Exercises extends WgerBaseProvider with ChangeNotifier {
     // Load exercises from cache, if available
     final prefs = await SharedPreferences.getInstance();
     if (prefs.containsKey('exerciseData')) {
-      final exerciseData = json.decode(prefs.getString('exerciseData'));
+      final exerciseData = json.decode(prefs.getString('exerciseData')!);
       if (DateTime.parse(exerciseData['expiresIn']).isAfter(DateTime.now())) {
         exerciseData['exercises'].forEach((e) => _exercises.add(Exercise.fromJson(e)));
         exerciseData['equipment'].forEach((e) => _equipment.add(Equipment.fromJson(e)));

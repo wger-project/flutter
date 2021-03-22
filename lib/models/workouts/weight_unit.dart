@@ -11,8 +11,8 @@ class WeightUnit {
   final String name;
 
   WeightUnit({
-    this.id,
-    this.name,
+    required this.id,
+    required this.name,
   });
 
   // Boilerplate

@@ -32,7 +32,7 @@ class GymModeScreen extends StatefulWidget {
 class _GymModeScreenState extends State<GymModeScreen> {
   @override
   Widget build(BuildContext context) {
-    final _day = ModalRoute.of(context).settings.arguments as Day;
+    final _day = ModalRoute.of(context)!.settings.arguments as Day;
 
     return Scaffold(
       body: Consumer<WorkoutPlans>(

@@ -8,20 +8,22 @@ part of 'set.dart';
 
 Set _$SetFromJson(Map<String, dynamic> json) {
   $checkKeys(json, requiredKeys: const ['id', 'sets', 'order']);
-  return Set(
-    id: json['id'] as int,
-    sets: json['sets'],
-    day: json['exerciseday'] as int,
-    order: json['order'] as int,
-    settings: json['settings'],
-    settingsComputed: json['settingsComputed'],
-  )
-    ..exercisesObj = (json['exercisesObj'] as List)
-        ?.map((e) =>
-            e == null ? null : Exercise.fromJson(e as Map<String, dynamic>))
-        ?.toList()
+  return Set()
+    ..id = json['id'] as int?
+    ..sets = json['sets'] as int
+    ..day = json['exerciseday'] as int
+    ..order = json['order'] as int
+    ..exercisesObj = (json['exercisesObj'] as List<dynamic>)
+        .map((e) => Exercise.fromJson(e as Map<String, dynamic>))
+        .toList()
     ..exercisesIds =
-        (json['exercises'] as List)?.map((e) => e as int)?.toList();
+        (json['exercises'] as List<dynamic>).map((e) => e as int).toList()
+    ..settings = (json['settings'] as List<dynamic>)
+        .map((e) => Setting.fromJson(e as Map<String, dynamic>))
+        .toList()
+    ..settingsComputed = (json['settingsComputed'] as List<dynamic>)
+        .map((e) => Setting.fromJson(e as Map<String, dynamic>))
+        .toList();
 }
 
 Map<String, dynamic> _$SetToJson(Set instance) => <String, dynamic>{

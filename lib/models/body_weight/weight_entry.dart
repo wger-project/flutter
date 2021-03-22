@@ -24,19 +24,25 @@ part 'weight_entry.g.dart';
 @JsonSerializable()
 class WeightEntry {
   @JsonKey(required: true)
-  final int id;
+  int? id;
 
   @JsonKey(required: true, fromJson: toNum, toJson: toString)
-  num weight;
+  late num weight;
 
   @JsonKey(required: true, toJson: toDate)
-  DateTime date;
+  late DateTime date;
 
   WeightEntry({
     this.id,
-    this.weight,
-    this.date,
-  });
+    weight,
+    DateTime? date,
+  }) {
+    this.date = date ?? DateTime.now();
+
+    if (weight != null) {
+      this.weight = weight;
+    }
+  }
 
   // Boilerplate
   factory WeightEntry.fromJson(Map<String, dynamic> json) => _$WeightEntryFromJson(json);

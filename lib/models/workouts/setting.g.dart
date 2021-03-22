@@ -17,31 +17,27 @@ Setting _$SettingFromJson(Map<String, dynamic> json) {
     'weight_unit',
     'comment'
   ]);
-  return Setting(
-    id: json['id'] as int,
-    setId: json['set'] as int,
-    exerciseObj: json['exerciseObj'] == null
-        ? null
-        : Exercise.fromJson(json['exerciseObj'] as Map<String, dynamic>),
-    repetitionUnit: json['repetition_unit'] as int,
-    reps: json['reps'] as int,
-    weight: toNum(json['weight'] as String),
-    weightUnit: json['weight_unit'] as int,
-    comment: json['comment'] as String ?? '',
-    rir: json['rir'] as String ?? '',
-    repsText: json['repsText'] as String,
-  )..exerciseId = json['exercise'] as int;
+  return Setting()
+    ..id = json['id'] as int?
+    ..setId = json['set'] as int
+    ..exerciseId = json['exercise'] as int
+    ..repetitionUnitId = json['repetition_unit'] as int
+    ..reps = json['reps'] as int
+    ..weight = toNum(json['weight'] as String?)
+    ..weightUnitId = json['weight_unit'] as int
+    ..comment = json['comment'] as String? ?? ''
+    ..rir = json['rir'] as String? ?? ''
+    ..repsText = json['repsText'] as String;
 }
 
 Map<String, dynamic> _$SettingToJson(Setting instance) => <String, dynamic>{
       'id': instance.id,
       'set': instance.setId,
-      'exerciseObj': instance.exerciseObj,
       'exercise': instance.exerciseId,
-      'repetition_unit': instance.repetitionUnit,
+      'repetition_unit': instance.repetitionUnitId,
       'reps': instance.reps,
       'weight': toString(instance.weight),
-      'weight_unit': instance.weightUnit,
+      'weight_unit': instance.weightUnitId,
       'comment': instance.comment,
       'rir': instance.rir,
       'repsText': instance.repsText,

@@ -9,18 +9,16 @@ part of 'meal_item.dart';
 MealItem _$MealItemFromJson(Map<String, dynamic> json) {
   $checkKeys(json, requiredKeys: const ['id', 'amount']);
   return MealItem(
-    id: json['id'] as int,
-    ingredientObj: json['ingredient_obj'] == null
-        ? null
-        : Ingredient.fromJson(json['ingredient_obj'] as Map<String, dynamic>),
+    id: json['id'] as int?,
+    meal: json['meal'] as int,
+    ingredientId: json['ingredient'] as int,
     weightUnit: json['weight_unit'] == null
         ? null
         : IngredientWeightUnit.fromJson(
             json['weight_unit'] as Map<String, dynamic>),
-    amount: toNum(json['amount'] as String),
-  )
-    ..ingredientId = json['ingredient'] as int
-    ..meal = json['meal'] as int;
+    amount: toNum(json['amount'] as String?),
+  )..ingredientObj =
+      Ingredient.fromJson(json['ingredient_obj'] as Map<String, dynamic>);
 }
 
 Map<String, dynamic> _$MealItemToJson(MealItem instance) => <String, dynamic>{

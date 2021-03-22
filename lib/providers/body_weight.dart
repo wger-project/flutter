@@ -27,7 +27,7 @@ class BodyWeight extends WgerBaseProvider with ChangeNotifier {
   static const bodyWeightUrl = 'weightentry';
 
   List<WeightEntry> _entries = [];
-  BodyWeight(Auth auth, List<WeightEntry> entries, [http.Client client])
+  BodyWeight(Auth auth, List<WeightEntry> entries, [http.Client? client])
       : this._entries = entries,
         super(auth, client);
 
@@ -86,6 +86,5 @@ class BodyWeight extends WgerBaseProvider with ChangeNotifier {
       notifyListeners();
       throw WgerHttpException(response.body);
     }
-    existingWeightEntry = null;
   }
 }

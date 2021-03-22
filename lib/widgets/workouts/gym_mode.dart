@@ -104,7 +104,7 @@ class StartPage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: Text(
-              AppLocalizations.of(context).todaysWorkout,
+              AppLocalizations.of(context)!.todaysWorkout,
               style: Theme.of(context).textTheme.headline5,
             ),
           ),
@@ -165,7 +165,7 @@ class LogPage extends StatelessWidget {
 
     _log.date = DateTime.now();
     _log.exercise = _exercise.id;
-    _log.workoutPlan = _workoutPlan.id;
+    _log.workoutPlan = _workoutPlan.id!;
     _log.repetitionUnit = 1;
     _log.weightUnit = 1;
   }
@@ -191,33 +191,33 @@ class LogPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 TextFormField(
-                  decoration: InputDecoration(labelText: AppLocalizations.of(context).repetitions),
+                  decoration: InputDecoration(labelText: AppLocalizations.of(context)!.repetitions),
                   controller: _repsController,
                   keyboardType: TextInputType.number,
                   onFieldSubmitted: (_) {},
                   onSaved: (newValue) {
-                    _log.reps = int.parse(newValue);
+                    _log.reps = int.parse(newValue!);
                   },
                   validator: (value) {
                     try {
-                      double.parse(value);
+                      double.parse(value!);
                     } catch (error) {
-                      return AppLocalizations.of(context).enterValidNumber;
+                      return AppLocalizations.of(context)!.enterValidNumber;
                     }
                     return null;
                   },
                 ),
                 TextFormField(
-                  decoration: InputDecoration(labelText: AppLocalizations.of(context).weight),
+                  decoration: InputDecoration(labelText: AppLocalizations.of(context)!.weight),
                   controller: _weightController,
                   keyboardType: TextInputType.number,
                   onFieldSubmitted: (_) {},
                   onSaved: (newValue) {
-                    _log.weight = double.parse(newValue);
+                    _log.weight = double.parse(newValue!);
                   },
                 ),
                 TextFormField(
-                  decoration: InputDecoration(labelText: AppLocalizations.of(context).rir),
+                  decoration: InputDecoration(labelText: AppLocalizations.of(context)!.rir),
                   controller: _rirController,
                   keyboardType: TextInputType.number,
                   onFieldSubmitted: (_) {},
@@ -225,7 +225,7 @@ class LogPage extends StatelessWidget {
                 ),
                 /*
                   TextFormField(
-                    decoration: InputDecoration(labelText: AppLocalizations.of(context).comment),
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.comment),
                     controller: _commentController,
                     keyboardType: TextInputType.multiline,
                     maxLines: 3,
@@ -237,14 +237,14 @@ class LogPage extends StatelessWidget {
 
                    */
                 ElevatedButton(
-                  child: Text(AppLocalizations.of(context).save),
+                  child: Text(AppLocalizations.of(context)!.save),
                   onPressed: () async {
                     // Validate and save the current values to the weightEntry
-                    final isValid = _form.currentState.validate();
+                    final isValid = _form.currentState!.validate();
                     if (!isValid) {
                       return;
                     }
-                    _form.currentState.save();
+                    _form.currentState!.save();
 
                     // Save the entry on the server
                     try {
@@ -345,15 +345,15 @@ class _SessionPageState extends State<SessionPage> {
                   builder: (FormFieldState<int> state) {
                     return InputDecorator(
                       decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context).impression,
+                        labelText: AppLocalizations.of(context)!.impression,
                       ),
                       child: DropdownButtonHideUnderline(
                         child: DropdownButton<int>(
                           value: impressionValue,
                           isDense: true,
-                          onChanged: (int newValue) {
+                          onChanged: (int? newValue) {
                             setState(() {
-                              impressionValue = newValue;
+                              impressionValue = newValue!;
                               state.didChange(newValue);
                             });
                           },
@@ -361,7 +361,7 @@ class _SessionPageState extends State<SessionPage> {
                             return DropdownMenuItem<int>(
                               value: key,
                               child: Text(
-                                ImpressionMap[key],
+                                ImpressionMap[key]!,
                               ),
                             );
                           }).toList(),
@@ -372,14 +372,14 @@ class _SessionPageState extends State<SessionPage> {
                 ),
                 TextFormField(
                   decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context).notes,
+                    labelText: AppLocalizations.of(context)!.notes,
                   ),
                   maxLines: 3,
                   controller: notesController,
                   keyboardType: TextInputType.multiline,
                   onFieldSubmitted: (_) {},
                   onSaved: (newValue) {
-                    _session.notes = newValue;
+                    _session.notes = newValue!;
                   },
                 ),
                 Row(
@@ -387,7 +387,7 @@ class _SessionPageState extends State<SessionPage> {
                     Flexible(
                       child: TextFormField(
                         decoration:
-                            InputDecoration(labelText: AppLocalizations.of(context).timeStart),
+                            InputDecoration(labelText: AppLocalizations.of(context)!.timeStart),
                         controller: timeStartController,
                         onFieldSubmitted: (_) {},
                         onSaved: (newValue) {},
@@ -396,7 +396,7 @@ class _SessionPageState extends State<SessionPage> {
                     Flexible(
                       child: TextFormField(
                         decoration:
-                            InputDecoration(labelText: AppLocalizations.of(context).timeEnd),
+                            InputDecoration(labelText: AppLocalizations.of(context)!.timeEnd),
                         controller: timeEndController,
                         onFieldSubmitted: (_) {},
                         onSaved: (newValue) {},
@@ -405,21 +405,20 @@ class _SessionPageState extends State<SessionPage> {
                   ],
                 ),
                 ElevatedButton(
-                  child: Text(AppLocalizations.of(context).save),
+                  child: Text(AppLocalizations.of(context)!.save),
                   onPressed: () async {
                     // Validate and save the current values to the weightEntry
-                    final isValid = _form.currentState.validate();
+                    final isValid = _form.currentState!.validate();
                     if (!isValid) {
                       return;
                     }
-                    _form.currentState.save();
+                    _form.currentState!.save();
                     _session.date = DateTime.now();
-                    _session.workoutId = widget._workoutPlan.id;
+                    _session.workoutId = widget._workoutPlan.id!;
                     _session.impression = impressionValue;
 
                     // Save the entry on the server
                     try {
-                      print(_session.toJson());
                       await Provider.of<WorkoutPlans>(context, listen: false).addSession(_session);
                       Navigator.of(context).pop();
                     } on WgerHttpException catch (error) {
@@ -456,7 +455,7 @@ class TimerWidget extends StatefulWidget {
 class _TimerWidgetState extends State<TimerWidget> {
   // See https://stackoverflow.com/questions/54610121/flutter-countdown-timer
 
-  Timer _timer;
+  Timer? _timer;
   int _seconds = 1;
   final _maxSeconds = 600;
   DateTime today = new DateTime(2000, 1, 1, 0, 0, 0);

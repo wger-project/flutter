@@ -49,7 +49,7 @@ class WeightEntriesList extends StatelessWidget {
                 onDismissed: (direction) {
                   if (direction == DismissDirection.endToStart) {
                     // Delete entry from DB
-                    _weightProvider.deleteEntry(currentEntry.id);
+                    _weightProvider.deleteEntry(currentEntry.id!);
 
                     // and inform the user
                     Scaffold.of(context).showSnackBar(
@@ -67,7 +67,7 @@ class WeightEntriesList extends StatelessWidget {
                   if (direction == DismissDirection.startToEnd) {
                     showFormBottomSheet(
                       context,
-                      AppLocalizations.of(context).edit,
+                      AppLocalizations.of(context)!.edit,
                       WeightForm(currentEntry),
                     );
                     return false;

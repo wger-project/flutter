@@ -61,20 +61,20 @@ class _MealWidgetState extends State<MealWidget> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    MutedText(AppLocalizations.of(context).energy),
-                    MutedText(AppLocalizations.of(context).protein),
-                    MutedText(AppLocalizations.of(context).carbohydrates),
-                    MutedText(AppLocalizations.of(context).fat),
+                    MutedText(AppLocalizations.of(context)!.energy),
+                    MutedText(AppLocalizations.of(context)!.protein),
+                    MutedText(AppLocalizations.of(context)!.carbohydrates),
+                    MutedText(AppLocalizations.of(context)!.fat),
                   ],
                 ),
               ),
             ...widget._meal.mealItems.map((item) => MealItemWidget(item, _expanded)).toList(),
             OutlinedButton(
-              child: Text(AppLocalizations.of(context).addIngredient),
+              child: Text(AppLocalizations.of(context)!.addIngredient),
               onPressed: () {
                 showFormBottomSheet(
                   context,
-                  AppLocalizations.of(context).addIngredient,
+                  AppLocalizations.of(context)!.addIngredient,
                   MealItemForm(widget._meal),
                   scrollControlled: true,
                 );
@@ -96,8 +96,8 @@ class MealItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String unit = _item.weightUnit == null
-        ? AppLocalizations.of(context).g
-        : _item.weightUnit.weightUnit.name;
+        ? AppLocalizations.of(context)!.g
+        : _item.weightUnit!.weightUnit.name;
     final values = _item.nutritionalValues;
 
     return Container(
@@ -127,7 +127,7 @@ class MealItemWidget extends StatelessWidget {
                       Scaffold.of(context).showSnackBar(
                         SnackBar(
                             content: Text(
-                          AppLocalizations.of(context).successfullyDeleted,
+                          AppLocalizations.of(context)!.successfullyDeleted,
                           textAlign: TextAlign.center,
                         )),
                       );
@@ -141,11 +141,11 @@ class MealItemWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 MutedText(
-                    '${values.energy.toStringAsFixed(0)} ${AppLocalizations.of(context).kcal}'),
-                MutedText('${values.protein.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
+                    '${values.energy.toStringAsFixed(0)} ${AppLocalizations.of(context)!.kcal}'),
+                MutedText('${values.protein.toStringAsFixed(0)}${AppLocalizations.of(context)!.g}'),
                 MutedText(
-                    '${values.carbohydrates.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
-                MutedText('${values.fat.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
+                    '${values.carbohydrates.toStringAsFixed(0)}${AppLocalizations.of(context)!.g}'),
+                MutedText('${values.fat.toStringAsFixed(0)}${AppLocalizations.of(context)!.g}'),
               ],
             ),
         ],
@@ -161,10 +161,8 @@ class DismissibleMealHeader extends StatelessWidget {
   const DismissibleMealHeader(
     this._expanded,
     this._toggle, {
-    Key key,
-    @required Meal meal,
-  })  : _meal = meal,
-        super(key: key);
+    required Meal meal,
+  }) : _meal = meal;
 
   final Meal _meal;
 
@@ -174,7 +172,7 @@ class DismissibleMealHeader extends StatelessWidget {
       onLongPress: () {
         showFormBottomSheet(
           context,
-          AppLocalizations.of(context).edit,
+          AppLocalizations.of(context)!.edit,
           MealForm(_meal.plan, _meal),
         );
       },
@@ -243,7 +241,7 @@ class DismissibleMealHeader extends StatelessWidget {
             Scaffold.of(context).showSnackBar(
               SnackBar(
                 content: Text(
-                  AppLocalizations.of(context).successfullyDeleted,
+                  AppLocalizations.of(context)!.successfullyDeleted,
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -255,7 +253,7 @@ class DismissibleMealHeader extends StatelessWidget {
             Scaffold.of(context).showSnackBar(
               SnackBar(
                 content: Text(
-                  AppLocalizations.of(context).mealLogged,
+                  AppLocalizations.of(context)!.mealLogged,
                   textAlign: TextAlign.center,
                 ),
               ),

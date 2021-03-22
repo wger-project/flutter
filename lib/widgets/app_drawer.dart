@@ -38,7 +38,7 @@ class AppDrawer extends StatelessWidget {
           /*
           ListTile(
             leading: Icon(Icons.home),
-            title: Text(AppLocalizations.of(context).labelDashboard),
+            title: Text(AppLocalizations.of(context)!.labelDashboard),
             onTap: () {
               Navigator.of(context).pop();
               Navigator.of(context).pushReplacementNamed(DashboardScreen.routeName);
@@ -114,7 +114,7 @@ class AppDrawer extends StatelessWidget {
             //dense: true,
             icon: Icon(Icons.info),
             applicationName: 'wger',
-            applicationVersion: '${authProvider.applicationVersion.version} '
+            applicationVersion: '${authProvider.applicationVersion!.version} '
                 '(server: ${authProvider.serverVersion})',
             applicationLegalese: '\u{a9} 2020 - 2021 contributors',
             applicationIcon: Padding(
@@ -133,7 +133,7 @@ class AppDrawer extends StatelessWidget {
                   style: TextStyle(fontSize: 16, color: Colors.black),
                   children: [
                     TextSpan(
-                      text: AppLocalizations.of(context).aboutText,
+                      text: AppLocalizations.of(context)!.aboutText,
                     ),
                     TextSpan(
                       text: 'https://github.com/wger-project',

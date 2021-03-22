@@ -9,16 +9,16 @@ class Set {
   static const DEFAULT_NR_SETS = 4;
 
   @JsonKey(required: true)
-  int id;
+  int? id;
 
   @JsonKey(required: true)
-  int sets;
+  late int sets;
 
   @JsonKey(required: false, name: 'exerciseday')
-  int day;
+  late int day;
 
   @JsonKey(required: true)
-  int order;
+  late int order;
 
   //@JsonKey(required: true)
   List<Exercise> exercisesObj = [];
@@ -33,20 +33,32 @@ class Set {
   @JsonKey(required: false)
   List<Setting> settingsComputed = [];
 
-  Set({
+  Set() {
+    this.sets = sets;
+    this.exercisesObj = [];
+    this.exercisesIds = exercisesObj.map((e) => e.id).toList();
+    this.settings;
+    this.settingsComputed;
+  }
+
+  Set.withData({
     this.id,
     sets,
-    this.day,
-    this.order,
+    day,
+    order,
     exercises,
     settings,
     settingsComputed,
   }) {
     this.sets = sets ?? DEFAULT_NR_SETS;
+    this.order = order ?? 1;
     this.exercisesObj = exercises ?? [];
     this.exercisesIds = exercisesObj.map((e) => e.id).toList();
     this.settings = settings ?? [];
     this.settingsComputed = settingsComputed ?? [];
+    if (day != null) {
+      this.day = day;
+    }
   }
 
   void addExercise(Exercise exercise) {

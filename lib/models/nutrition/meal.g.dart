@@ -9,15 +9,13 @@ part of 'meal.dart';
 Meal _$MealFromJson(Map<String, dynamic> json) {
   $checkKeys(json, requiredKeys: const ['time']);
   return Meal(
-    id: json['id'] as int,
-    plan: json['plan'] as int,
-    time: stringToTime(json['time'] as String),
-    mealItems: (json['meal_items'] as List)
-            ?.map((e) =>
-                e == null ? null : MealItem.fromJson(e as Map<String, dynamic>))
-            ?.toList() ??
-        [],
-  );
+    id: json['id'] as int?,
+    plan: json['plan'] as int?,
+    time: stringToTime(json['time'] as String?),
+  )..mealItems = (json['meal_items'] as List<dynamic>?)
+          ?.map((e) => MealItem.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      [];
 }
 
 Map<String, dynamic> _$MealToJson(Meal instance) => <String, dynamic>{

@@ -34,11 +34,11 @@ void main() {
   Widget createHomeScreen({locale = 'en'}) {
     final client = MockClient();
     when(client.delete(
-      any,
+      any!,
       headers: anyNamed('headers'),
     )).thenAnswer((_) async => http.Response('', 200));
     when(client.post(
-      any,
+      any!,
       headers: anyNamed('headers'),
       body: anyNamed('body'),
     )).thenAnswer(

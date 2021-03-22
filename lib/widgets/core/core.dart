@@ -23,11 +23,28 @@ class MutedText extends StatelessWidget {
   String _text;
   MutedText(
     this._text, {
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Text(_text, style: TextStyle(color: wgerTextMuted));
   }
+}
+
+/// Appbar that extends [PreferredSizeWidget]
+class WgerAppBar extends StatelessWidget with PreferredSizeWidget {
+  String _title;
+
+  WgerAppBar(this._title);
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      title: Text(_title),
+    );
+  }
+
+  @override
+  Size get preferredSize => Size.fromHeight(kToolbarHeight);
 }

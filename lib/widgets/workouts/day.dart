@@ -34,7 +34,7 @@ class SettingWidget extends StatelessWidget {
   final bool expanded;
   final toggle;
 
-  SettingWidget({this.setting, this.expanded, this.toggle});
+  SettingWidget({required this.setting, required this.expanded, required this.toggle});
 
   @override
   Widget build(BuildContext context) {
@@ -134,7 +134,7 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        AppLocalizations.of(context).gymMode,
+                        AppLocalizations.of(context)!.gymMode,
                         style: TextStyle(color: Colors.white),
                       ),
                       Icon(
@@ -151,11 +151,11 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
                 )
                 .toList(),
             OutlinedButton(
-              child: Text(AppLocalizations.of(context).addExercise),
+              child: Text(AppLocalizations.of(context)!.addExercise),
               onPressed: () {
                 showFormBottomSheet(
                   context,
-                  AppLocalizations.of(context).newSet,
+                  AppLocalizations.of(context)!.newSet,
                   SetFormWidget(widget._day),
                   scrollControlled: true,
                 );
@@ -174,14 +174,12 @@ class DayHeaderDismissible extends StatelessWidget {
   final _toggle;
 
   const DayHeaderDismissible({
-    Key key,
-    @required Day day,
-    @required bool expanded,
-    @required Function toggle,
-  })  : _day = day,
+    required Day day,
+    required bool expanded,
+    required Function toggle,
+  })   : _day = day,
         _expanded = expanded,
-        _toggle = toggle,
-        super(key: key);
+        _toggle = toggle;
 
   @override
   Widget build(BuildContext context) {
@@ -254,7 +252,7 @@ class DayHeaderDismissible extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              AppLocalizations.of(context).gymMode,
+              AppLocalizations.of(context)!.gymMode,
               style: TextStyle(color: Colors.white),
             ),
             Icon(
@@ -273,7 +271,7 @@ class DayHeaderDismissible extends StatelessWidget {
               content: Text('Would open weight log form for this day'),
               actions: [
                 TextButton(
-                  child: Text(AppLocalizations.of(context).dismiss),
+                  child: Text(AppLocalizations.of(context)!.dismiss),
                   onPressed: () => Navigator.of(context).pop(),
                 ),
               ],
