@@ -22,11 +22,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/models/body_weight/weight_entry.dart';
-import 'package:wger/providers/body_weight.dart';
-import 'package:wger/screens/weight_screen.dart';
-import 'package:wger/widgets/weight/charts.dart';
-import 'package:wger/widgets/weight/forms.dart';
+import 'package:wger/models/workouts/workout_plan.dart';
+import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/screens/workout_plans_screen.dart';
+import 'package:wger/widgets/nutrition/forms.dart';
+import 'package:wger/widgets/workouts/forms.dart';
 
 import 'base_provider_test.mocks.dart';
 import 'utils.dart';
@@ -38,19 +38,13 @@ void main() {
       any,
       headers: anyNamed('headers'),
     )).thenAnswer((_) async => http.Response('', 200));
-    when(client.post(
-      any,
-      headers: anyNamed('headers'),
-      body: anyNamed('body'),
-    )).thenAnswer(
-        (_) async => http.Response('{"id": 3, "date": "2021-01-01", "weight": "80"}', 200));
 
-    return ChangeNotifierProvider<BodyWeight>(
-      create: (context) => BodyWeight(
+    return ChangeNotifierProvider<WorkoutPlans>(
+      create: (context) => WorkoutPlans(
         testAuth,
         [
-          WeightEntry(id: 1, weight: 80, date: DateTime(2021, 01, 01)),
-          WeightEntry(id: 2, weight: 81, date: DateTime(2021, 01, 10)),
+          WorkoutPlan.withData(id: 1, creationDate: DateTime(2021, 01, 01), description: 'test 1'),
+          WorkoutPlan.withData(id: 2, creationDate: DateTime(2021, 02, 12), description: 'test 2'),
         ],
         client,
       ),
@@ -58,17 +52,16 @@ void main() {
         locale: Locale(locale),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: WeightScreen(),
+        home: WorkoutPlansScreen(),
       ),
     );
   }
 
-  testWidgets('Test the widgets on the body weight screen', (WidgetTester tester) async {
+  testWidgets('Test the widgets on the nutritional plans screen', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen());
 
     //debugDumpApp();
-    expect(find.text('Weight'), findsOneWidget);
-    expect(find.byType(WeightChartWidget), findsOneWidget);
+    expect(find.text('Workout plans'), findsOneWidget);
     expect(find.byType(Dismissible), findsNWidgets(2));
     expect(find.byType(ListTile), findsNWidgets(2));
   });
@@ -78,29 +71,36 @@ void main() {
 
     await tester.drag(find.byKey(Key('1')), Offset(-500.0, 0.0));
     await tester.pumpAndSettle();
+
+    // Confirmation dialog
+    expect(find.byType(AlertDialog), findsOneWidget);
+
+    // Confirm
+    await tester.tap(find.text('Delete'));
+    await tester.pumpAndSettle();
     expect(find.byType(ListTile), findsOneWidget);
   });
 
-  testWidgets('Test the form on the body weight screen', (WidgetTester tester) async {
+  testWidgets('Test the form on the nutritional plan screen', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen());
 
-    expect(find.byType(WeightForm), findsNothing);
+    expect(find.byType(PlanForm), findsNothing);
     await tester.tap(find.byType(FloatingActionButton));
     await tester.pumpAndSettle();
-    expect(find.byType(WeightForm), findsOneWidget);
+    expect(find.byType(WorkoutForm), findsOneWidget);
   });
 
   testWidgets('Tests the localization of dates - EN', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen());
 
     expect(find.text('1/1/2021'), findsOneWidget);
-    expect(find.text('1/10/2021'), findsOneWidget);
+    expect(find.text('2/12/2021'), findsOneWidget);
   });
 
   testWidgets('Tests the localization of dates - DE', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen(locale: 'de'));
 
     expect(find.text('1.1.2021'), findsOneWidget);
-    expect(find.text('10.1.2021'), findsOneWidget);
+    expect(find.text('12.2.2021'), findsOneWidget);
   });
 }

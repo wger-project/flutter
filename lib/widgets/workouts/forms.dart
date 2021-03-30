@@ -43,7 +43,9 @@ class WorkoutForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    workoutController.text = _plan.description;
+    if (_plan.id != null) {
+      workoutController.text = _plan.description;
+    }
 
     return Form(
       key: _form,
