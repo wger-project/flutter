@@ -20,12 +20,15 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/models/body_weight/weight_entry.dart';
 import 'package:wger/providers/body_weight.dart';
 
 import 'utils.dart';
+import 'weight_provider_test.mocks.dart';
 
+@GenerateMocks([http.Client])
 void main() {
   group('test body weight provider', () {
     test('Test that the weight entries are correctly loaded', () async {

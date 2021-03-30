@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/body_weight/weight_entry.dart';
@@ -29,16 +30,18 @@ import 'package:wger/widgets/weight/charts.dart';
 import 'package:wger/widgets/weight/forms.dart';
 
 import 'utils.dart';
+import 'weight_screen_test.mocks.dart';
 
+@GenerateMocks([http.Client])
 void main() {
   Widget createHomeScreen({locale = 'en'}) {
     final client = MockClient();
     when(client.delete(
-      any!,
+      any,
       headers: anyNamed('headers'),
     )).thenAnswer((_) async => http.Response('', 200));
     when(client.post(
-      any!,
+      any,
       headers: anyNamed('headers'),
       body: anyNamed('body'),
     )).thenAnswer(

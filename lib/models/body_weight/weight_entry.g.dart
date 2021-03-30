@@ -11,7 +11,7 @@ WeightEntry _$WeightEntryFromJson(Map<String, dynamic> json) {
   return WeightEntry(
     id: json['id'] as int?,
     weight: toNum(json['weight'] as String?),
-    date: DateTime.parse(json['date'] as String),
+    date: json['date'] == null ? null : DateTime.parse(json['date'] as String),
   );
 }
 

@@ -25,8 +25,9 @@ jobs:
       run: flutter gen-l10n
 
     - name: Test app
-      run: flutter test --coverage
-    
+      run: flutter test --no-sound-null-safety --coverage
+      #run: flutter test --coverage
+
     #- name: Upload coverage to Codecov
     #  uses: codecov/codecov-action@v1
     #  with:

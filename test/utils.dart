@@ -16,11 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:http/http.dart' as http;
-import 'package:mockito/mockito.dart';
 import 'package:wger/providers/auth.dart';
-
-class MockClient extends Mock implements http.Client {}
 
 // Test Auth provider
 final Auth testAuth = Auth()
