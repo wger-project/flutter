@@ -160,7 +160,7 @@ class LogPage extends StatelessWidget {
     }
 
     if (_setting.rir != null) {
-      _rirController.text = _setting.rir;
+      _rirController.text = _setting.rir!;
     }
 
     _log.date = DateTime.now();

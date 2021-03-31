@@ -41,10 +41,11 @@ void main() {
 
     return ChangeNotifierProvider<WorkoutPlans>(
       create: (context) => WorkoutPlans(
-        testAuth,
+        testAuthProvider,
+        testExercisesProvider,
         [
-          WorkoutPlan.withData(id: 1, creationDate: DateTime(2021, 01, 01), description: 'test 1'),
-          WorkoutPlan.withData(id: 2, creationDate: DateTime(2021, 02, 12), description: 'test 2'),
+          WorkoutPlan(id: 1, creationDate: DateTime(2021, 01, 01), description: 'test 1'),
+          WorkoutPlan(id: 2, creationDate: DateTime(2021, 02, 12), description: 'test 2'),
         ],
         client,
       ),

@@ -1,6 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/models/workouts/set.dart';
-import 'package:wger/models/workouts/workout_plan.dart';
 
 part 'day.g.dart';
 
@@ -9,20 +8,20 @@ class Day {
   @JsonKey(required: true)
   int? id;
 
-  @JsonKey(required: true)
-  late String description;
-
-  @JsonKey(required: false, name: 'day', defaultValue: [])
-  List<int> daysOfWeek = [];
-
-  //@JsonKey(required: false)
-  List<Set> sets = [];
-
   @JsonKey(required: true, name: 'training')
   late int workoutId;
 
-  //@JsonKey(required: true, name: 'training')
-  late WorkoutPlan workout;
+  @JsonKey(required: true)
+  late String description;
+
+  @JsonKey(required: true, name: 'day')
+  List<int> daysOfWeek = [];
+
+  @JsonKey(ignore: true)
+  List<Set> sets = [];
+
+  //@JsonKey(ignore: true)
+  //late WorkoutPlan workout;
 
   Day() {
     this.daysOfWeek = [];

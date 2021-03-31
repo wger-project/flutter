@@ -23,6 +23,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/http_exception.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/log.dart';
@@ -33,10 +34,7 @@ import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/base_provider.dart';
 
 class Nutrition extends WgerBaseProvider with ChangeNotifier {
-  static const DAYS_TO_CACHE = 20;
-
   static const _nutritionalPlansPath = 'nutritionplan';
-  static const _nutritionalPlansInfoPath = 'nutritionplaninfo';
   static const _mealPath = 'meal';
   static const _mealItemPath = 'mealitem';
   static const _ingredientPath = 'ingredient';
@@ -69,45 +67,62 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
   Meal? findMealById(int id) {
     for (var plan in _plans) {
       var meal = plan.meals.firstWhere((plan) => plan.id == id);
-      if (meal != null) {
-        return meal;
-      }
+      return meal;
     }
     return null;
   }
 
-  Future<List<NutritionalPlan>> fetchAndSetPlans() async {
-    final data =
-        await fetch(makeUrl(_nutritionalPlansInfoPath, query: {'ordering': '-creation_date'}));
-    final List<NutritionalPlan> loadedPlans = [];
+  /// Fetches and sets all nutritional plans
+  Future<void> fetchAndSetAllPlans() async {
+    final data = await fetch(makeUrl(_nutritionalPlansPath));
     for (final entry in data['results']) {
-      try {
-        //log(entry.toString());
-        loadedPlans.add(NutritionalPlan.fromJson(entry));
-      } catch (e) {
-        log(e.toString());
-        //log();
-      }
+      await fetchAndSetPlan(entry['id']);
     }
-
-    _plans = loadedPlans;
-    notifyListeners();
-    return loadedPlans;
   }
 
+  /// Fetches and sets the given nutritional plan
   Future<NutritionalPlan> fetchAndSetPlan(int planId) async {
-    //fetchAndSet
-    final data = await fetch(makeUrl(_nutritionalPlansInfoPath, id: planId));
-    final plan = NutritionalPlan.fromJson(data);
+    // Plan
+    final planData = await fetch(makeUrl(_nutritionalPlansPath, id: planId));
+    final plan = NutritionalPlan.fromJson(planData);
+
+    // Meals
+    List<Meal> meals = [];
+    final mealsData = await fetch(makeUrl(_mealPath, query: {'plan': planId.toString()}));
+    for (final mealEntry in mealsData['results']) {
+      List<MealItem> mealItems = [];
+      final meal = Meal.fromJson(mealEntry);
+
+      // Meal items
+      final mealItemsData = await fetch(
+        makeUrl(_mealItemPath, query: {'meal': meal.id.toString()}),
+      );
+      for (final mealItemEntry in mealItemsData['results']) {
+        final mealItem = MealItem.fromJson(mealItemEntry);
+        mealItem.ingredientObj = await fetchIngredient(mealItem.ingredientId);
+        mealItems.add(mealItem);
+      }
+
+      meal.mealItems = mealItems;
+      meals.add(meal);
+    }
+    plan.meals = meals;
+
+    // Logs
     await fetchAndSetLogs(plan);
 
+    // ... and done
+    _plans.add(plan);
+    _plans.sort((a, b) => b.creationDate.compareTo(a.creationDate));
+    notifyListeners();
     return plan;
   }
 
   Future<NutritionalPlan> postPlan(NutritionalPlan planData) async {
     final data = await post(planData.toJson(), makeUrl(_nutritionalPlansPath));
     final plan = NutritionalPlan.fromJson(data);
-    _plans.insert(0, plan);
+    _plans.add(plan);
+    _plans.sort((a, b) => b.creationDate.compareTo(a.creationDate));
     notifyListeners();
     return plan;
   }
@@ -157,7 +172,7 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
   /// Deletes a meal
   Future<void> deleteMeal(Meal meal) async {
     // Get the meal
-    var plan = findById(meal.plan);
+    var plan = findById(meal.planId);
     final mealIndex = plan.meals.indexWhere((e) => e.id == meal.id);
     var existingMeal = plan.meals[mealIndex];
     plan.meals.removeAt(mealIndex);
@@ -178,7 +193,7 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
     final data = await post(mealItem.toJson(), makeUrl(_mealItemPath));
 
     mealItem = MealItem.fromJson(data);
-    mealItem.ingredientObj = await fetchIngredient(mealItem.ingredientId!);
+    mealItem.ingredientObj = await fetchIngredient(mealItem.ingredientId);
     meal.mealItems.add(mealItem);
     notifyListeners();
 
@@ -188,7 +203,7 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
   /// Deletes a meal
   Future<void> deleteMealItem(MealItem mealItem) async {
     // Get the meal
-    var meal = findMealById(mealItem.meal)!;
+    var meal = findMealById(mealItem.mealId)!;
     final mealItemIndex = meal.mealItems.indexWhere((e) => e.id == mealItem.id);
     var existingMealItem = meal.mealItems[mealItemIndex];
     meal.mealItems.removeAt(mealItemIndex);
@@ -207,23 +222,26 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
   ///
   /// If the ingredient is not known locally, it is fetched from the server
   Future<Ingredient> fetchIngredient(int ingredientId) async {
-    var ingredient = _ingredients.firstWhere((e) => e.id == ingredientId);
-    if (ingredient != null) {
+    Ingredient ingredient;
+
+    try {
+      ingredient = _ingredients.firstWhere((e) => e.id == ingredientId);
+      return ingredient;
+
+      // Get ingredient from the server and save to cache
+    } on StateError catch (e) {
+      final data = await fetch(makeUrl(_ingredientPath, id: ingredientId));
+      ingredient = Ingredient.fromJson(data);
+      _ingredients.add(ingredient);
+
+      final prefs = await SharedPreferences.getInstance();
+      final ingredientData = json.decode(prefs.getString('ingredientData')!);
+      ingredientData['ingredients'].add(ingredient.toJson());
+      prefs.setString('ingredientData', json.encode(ingredientData));
+      log("Saved ingredient '${ingredient.name}' to cache.");
+
       return ingredient;
     }
-
-    // Get ingredient from the server and save to cache
-    final data = await fetch(makeUrl(_ingredientPath, id: ingredientId));
-    ingredient = Ingredient.fromJson(data);
-    _ingredients.add(ingredient);
-
-    final prefs = await SharedPreferences.getInstance();
-    final ingredientData = json.decode(prefs.getString('ingredientData')!);
-    ingredientData['ingredients'].add(ingredient.toJson());
-    prefs.setString('ingredientData', json.encode(ingredientData));
-    log("Saved ingredient '${ingredient.name}' to cache.");
-
-    return ingredient;
   }
 
   /// Loads the available ingredients from the local storage
@@ -277,7 +295,7 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
   Future<void> logMealToDiary(Meal meal) async {
     //var meal = findMealById(mealId);
     for (var item in meal.mealItems) {
-      final plan = findById(meal.plan);
+      final plan = findById(meal.planId);
       Log log = Log.fromMealItem(item, plan.id!);
       //log.planId = plan.id;
       //log.datetime = DateTime.now();

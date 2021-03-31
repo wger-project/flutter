@@ -32,7 +32,7 @@ class Log {
   int? id;
 
   @JsonKey(required: true, name: 'plan')
-  late int planId;
+  int planId;
 
   @JsonKey(required: true)
   late DateTime datetime;
@@ -46,8 +46,9 @@ class Log {
   late Ingredient ingredientObj;
 
   @JsonKey(required: true, name: 'weight_unit')
-  late int weightUnit;
+  late int weightUnitId;
 
+  @JsonKey(ignore: true)
   IngredientWeightUnit? weightUnitObj;
 
   @JsonKey(required: true, fromJson: toNum)
@@ -56,20 +57,17 @@ class Log {
   Log({
     this.id,
     required this.ingredientId,
-    //this.ingredientObj,
-    required this.weightUnit,
-    this.weightUnitObj,
+    required this.weightUnitId,
     required this.amount,
     required this.planId,
     required this.datetime,
     this.comment,
   });
 
-  Log.fromMealItem(MealItem mealItem, int planId, [DateTime? dateTime]) {
-    this.ingredientId = mealItem.ingredientId!;
+  Log.fromMealItem(MealItem mealItem, this.planId, [DateTime? dateTime]) {
+    this.ingredientId = mealItem.ingredientId;
     this.ingredientObj = mealItem.ingredientObj;
-    this.weightUnit = mealItem.weightUnit!.id;
-    this.planId = planId;
+    this.weightUnitId = mealItem.weightUnitId;
     this.datetime = dateTime ?? DateTime.now();
     this.amount = mealItem.amount;
   }

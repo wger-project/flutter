@@ -240,12 +240,6 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
   var showDetail = false;
 
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     WorkoutPlan? _workoutPlan = Provider.of<WorkoutPlans>(context, listen: false).activePlan;
     final bool hasContent = _workoutPlan != null;
@@ -266,11 +260,11 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                     children: [
                       Text(s.exerciseObj.name),
                       Text(s.repsText),
-                      SizedBox(height: 10),
+                      SizedBox(height: 5),
                     ],
                   );
                 }).toList(),
-                Divider(),
+                SizedBox(height: 7),
               ],
             ));
           });
@@ -310,7 +304,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
               : NothingFound(
                   AppLocalizations.of(context)!.noWorkoutPlans,
                   AppLocalizations.of(context)!.newWorkout,
-                  WorkoutForm(WorkoutPlan()),
+                  WorkoutForm(WorkoutPlan(creationDate: DateTime.now(), description: '')),
                 ),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,

@@ -38,7 +38,7 @@ void main() {
       when(client.get(
         Uri.https('localhost', 'api/v2/weightentry/', {'ordering': '-date'}),
         headers: <String, String>{
-          HttpHeaders.authorizationHeader: 'Token ${testAuth.token}',
+          HttpHeaders.authorizationHeader: 'Token ${testAuthProvider.token}',
           HttpHeaders.userAgentHeader: 'wger Workout Manager App',
         },
       )).thenAnswer((_) async => http.Response(
@@ -48,7 +48,7 @@ void main() {
           200));
 
       // Load the entries
-      BodyWeight provider = BodyWeight(testAuth, [], client);
+      BodyWeight provider = BodyWeight(testAuthProvider, [], client);
       await provider.fetchAndSetEntries();
 
       // Check that everything is ok
@@ -62,7 +62,7 @@ void main() {
       // Mock the server response
       when(client.post(Uri.https('localhost', 'api/v2/weightentry/'),
               headers: {
-                HttpHeaders.authorizationHeader: 'Token ${testAuth.token}',
+                HttpHeaders.authorizationHeader: 'Token ${testAuthProvider.token}',
                 HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
                 HttpHeaders.userAgentHeader: 'wger Workout Manager App',
               },
@@ -72,7 +72,7 @@ void main() {
 
       // POST the data to the server
       final WeightEntry weightEntry = WeightEntry(date: DateTime(2021, 1, 1), weight: 80);
-      final BodyWeight provider = BodyWeight(testAuth, [], client);
+      final BodyWeight provider = BodyWeight(testAuthProvider, [], client);
       final WeightEntry weightEntryNew = await provider.addEntry(weightEntry);
 
       // Check that the server response is what we expect
@@ -88,14 +88,14 @@ void main() {
       when(client.delete(
         Uri.https('localhost', 'api/v2/weightentry/4/'),
         headers: {
-          HttpHeaders.authorizationHeader: 'Token ${testAuth.token}',
+          HttpHeaders.authorizationHeader: 'Token ${testAuthProvider.token}',
           HttpHeaders.userAgentHeader: 'wger Workout Manager App',
         },
       )).thenAnswer((_) async => http.Response('', 200));
 
       // DELETE the data from the server
       final BodyWeight provider = BodyWeight(
-        testAuth,
+        testAuthProvider,
         [
           WeightEntry(id: 4, weight: 80, date: DateTime(2021, 1, 1)),
           WeightEntry(id: 2, weight: 100, date: DateTime(2021, 2, 2)),

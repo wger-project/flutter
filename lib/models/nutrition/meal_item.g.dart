@@ -10,22 +10,17 @@ MealItem _$MealItemFromJson(Map<String, dynamic> json) {
   $checkKeys(json, requiredKeys: const ['id', 'amount']);
   return MealItem(
     id: json['id'] as int?,
-    meal: json['meal'] as int?,
-    ingredientId: json['ingredient'],
-    weightUnit: json['weight_unit'] == null
-        ? null
-        : IngredientWeightUnit.fromJson(
-            json['weight_unit'] as Map<String, dynamic>),
+    mealId: json['mealId'] as int?,
+    ingredientId: json['ingredient'] as int,
+    weightUnitId: json['weight_unit'] as int,
     amount: toNum(json['amount'] as String?),
-  )..ingredientObj =
-      Ingredient.fromJson(json['ingredient_obj'] as Map<String, dynamic>);
+  );
 }
 
 Map<String, dynamic> _$MealItemToJson(MealItem instance) => <String, dynamic>{
       'id': instance.id,
+      'mealId': instance.mealId,
       'ingredient': instance.ingredientId,
-      'ingredient_obj': instance.ingredientObj,
-      'meal': instance.meal,
-      'weight_unit': instance.weightUnit,
+      'weight_unit': instance.weightUnitId,
       'amount': toString(instance.amount),
     };

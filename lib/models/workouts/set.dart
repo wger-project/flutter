@@ -18,28 +18,27 @@ class Set {
   late int day;
 
   @JsonKey(required: true)
-  late int order;
+  int? order;
 
-  //@JsonKey(required: true)
+  @JsonKey(ignore: true)
   List<Exercise> exercisesObj = [];
 
-  @JsonKey(required: false, name: 'exercises')
+  @JsonKey(ignore: true)
   List<int> exercisesIds = [];
 
-  @JsonKey(required: false)
+  @JsonKey(ignore: true)
   List<Setting> settings = [];
 
-  /// Computed settings
-  @JsonKey(required: false)
+  /// Computed settings (instead of 4x10 this has [10, 10, 10, 10]), used for
+  /// the gym mode where the individual values are used
+  @JsonKey(ignore: true)
   List<Setting> settingsComputed = [];
 
-  Set() {
-    this.sets = sets;
-    this.exercisesObj = [];
-    this.exercisesIds = exercisesObj.map((e) => e.id).toList();
-    this.settings;
-    this.settingsComputed;
-  }
+  Set({
+    required this.day,
+    required this.sets,
+    this.order,
+  });
 
   Set.withData({
     this.id,

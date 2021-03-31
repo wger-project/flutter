@@ -95,9 +95,9 @@ class MealItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String unit = _item.weightUnit == null
+    String unit = _item.weightUnitId == null
         ? AppLocalizations.of(context)!.g
-        : _item.weightUnit!.weightUnit.name;
+        : _item.weightUnitObj.weightUnit.name;
     final values = _item.nutritionalValues;
 
     return Container(
@@ -173,7 +173,7 @@ class DismissibleMealHeader extends StatelessWidget {
         showFormBottomSheet(
           context,
           AppLocalizations.of(context)!.edit,
-          MealForm(_meal.plan, _meal),
+          MealForm(_meal.planId, _meal),
         );
       },
       child: Dismissible(

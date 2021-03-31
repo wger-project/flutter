@@ -113,23 +113,10 @@ class MealItemForm extends StatelessWidget {
   Meal _meal;
   late MealItem _mealItem;
 
-  //var mealItemData = {};
-
   MealItemForm(this._meal, [mealItem]) {
-    this._mealItem = mealItem ?? MealItem(meal: _meal.id);
+    this._mealItem = mealItem;
+    //this._mealItem = mealItem ?? MealItem(mealId: _meal.id);
   }
-
-  /*
-  MealItemForm(this._meal, [MealItem? mealItem]) {
-    //this.meal = meal;
-    mealItemData['meal'] = _meal.id;
-    if (mealItem != null) {
-      mealItemData['ingredientId'] = mealItem.ingredientId;
-      mealItemData['amount'] = mealItem.amount;
-    }
-    //this.mealItem = mealItem ?? MealItem();
-  }
-  */
 
   final _form = GlobalKey<FormState>();
   final _ingredientController = TextEditingController();

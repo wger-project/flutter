@@ -36,7 +36,7 @@ class NutritionalPlan {
   @JsonKey(required: true, name: 'creation_date', toJson: toDate)
   DateTime creationDate;
 
-  @JsonKey(required: false, defaultValue: [])
+  @JsonKey(ignore: true, defaultValue: [])
   List<Meal> meals = [];
 
   @JsonKey(ignore: true, defaultValue: [])
@@ -46,13 +46,11 @@ class NutritionalPlan {
     this.id,
     required this.description,
     required this.creationDate,
-    //List<Meal>? meals,
-    //logs,
+    List<Meal>? meals,
+    List<Log>? logs,
   }) {
-    //this.meals = meals as List<Meal> ?? [];
-    this.meals = [];
-    //this.logs = logs ?? [];
-    this.logs = [];
+    this.meals = meals ?? [];
+    this.logs = logs ?? [];
   }
 
   // Boilerplate
@@ -64,10 +62,8 @@ class NutritionalPlan {
     // This is already done on the server. It might be better to read it from there.
     var out = NutritionalValues();
 
-    if (meals != null) {
-      for (var meal in meals) {
-        out.add(meal.nutritionalValues);
-      }
+    for (var meal in meals) {
+      out.add(meal.nutritionalValues);
     }
 
     return out;
@@ -77,6 +73,7 @@ class NutritionalPlan {
     var out = <DateTime, NutritionalValues>{};
     for (var log in logs) {
       final date = DateTime(log.datetime.year, log.datetime.month, log.datetime.day);
+
       if (!out.containsKey(date)) {
         out[date] = NutritionalValues();
       }

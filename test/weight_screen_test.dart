@@ -47,7 +47,7 @@ void main() {
 
     return ChangeNotifierProvider<BodyWeight>(
       create: (context) => BodyWeight(
-        testAuth,
+        testAuthProvider,
         [
           WeightEntry(id: 1, weight: 80, date: DateTime(2021, 01, 01)),
           WeightEntry(id: 2, weight: 81, date: DateTime(2021, 01, 10)),

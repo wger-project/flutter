@@ -12,10 +12,7 @@ NutritionalPlan _$NutritionalPlanFromJson(Map<String, dynamic> json) {
     id: json['id'] as int?,
     description: json['description'] as String,
     creationDate: DateTime.parse(json['creation_date'] as String),
-  )..meals = (json['meals'] as List<dynamic>?)
-          ?.map((e) => Meal.fromJson(e as Map<String, dynamic>))
-          .toList() ??
-      [];
+  );
 }
 
 Map<String, dynamic> _$NutritionalPlanToJson(NutritionalPlan instance) =>
@@ -23,5 +20,4 @@ Map<String, dynamic> _$NutritionalPlanToJson(NutritionalPlan instance) =>
       'id': instance.id,
       'description': instance.description,
       'creation_date': toDate(instance.creationDate),
-      'meals': instance.meals.map((e) => e.toJson()).toList(),
     };

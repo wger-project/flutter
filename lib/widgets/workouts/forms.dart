@@ -212,7 +212,7 @@ class _DayFormWidgetState extends State<DayFormWidget> {
 
 class SetFormWidget extends StatefulWidget {
   Day _day;
-  Set _set = Set();
+  late Set _set;
 
   SetFormWidget(Day this._day, [Set? set]) {
     //this._day = day;
@@ -316,9 +316,12 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                   widget._set.settings = [];
                   for (var exercise in widget._set.exercisesObj) {
                     for (int loop = 0; loop < widget._set.sets; loop++) {
+                      /*
                       Setting setting = Setting();
                       setting.exerciseObj = exercise;
                       widget._set.settings.add(setting);
+
+                       */
                     }
                   }
 

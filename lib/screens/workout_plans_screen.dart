@@ -47,7 +47,7 @@ class _WorkoutPlansScreenState extends State<WorkoutPlansScreen> {
           showFormBottomSheet(
             context,
             AppLocalizations.of(context)!.newWorkout,
-            WorkoutForm(WorkoutPlan()),
+            WorkoutForm(WorkoutPlan(creationDate: DateTime.now(), description: '')),
           );
         },
       ),

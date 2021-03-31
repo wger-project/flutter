@@ -27,7 +27,7 @@ import 'utils.dart';
 void main() {
   group('test base provider', () {
     test('Test the makeUrl helper', () async {
-      final WgerBaseProvider provider = WgerBaseProvider(testAuth);
+      final WgerBaseProvider provider = WgerBaseProvider(testAuthProvider);
 
       expect(
         Uri.https('localhost', '/api/v2/endpoint/'),

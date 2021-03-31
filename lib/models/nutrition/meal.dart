@@ -30,28 +30,28 @@ class Meal {
   @JsonKey(required: false)
   late int? id;
 
-  @JsonKey(required: false)
-  late int plan;
+  @JsonKey(name: 'plan')
+  late int planId;
 
-  @JsonKey(required: true, toJson: timeToString, fromJson: stringToTime)
+  @JsonKey(toJson: timeToString, fromJson: stringToTime)
   late TimeOfDay time;
 
-  @JsonKey(required: false, name: 'meal_items', defaultValue: [])
+  @JsonKey(ignore: true, name: 'meal_items', defaultValue: [])
   List<MealItem> mealItems = [];
 
   Meal({
     this.id,
     int? plan,
     TimeOfDay? time,
-    //List<MealItem>? mealItems,
+    List<MealItem>? mealItems,
   }) {
     if (plan != null) {
-      this.plan = plan;
+      this.planId = plan;
     }
 
-    this.time = time ?? TimeOfDay.now();
+    this.mealItems = mealItems ?? [];
 
-    this.mealItems = [];
+    this.time = time ?? TimeOfDay.now();
   }
 
   // Boilerplate

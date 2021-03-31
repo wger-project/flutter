@@ -40,7 +40,7 @@ void main() {
 
     return ChangeNotifierProvider<Nutrition>(
       create: (context) => Nutrition(
-        testAuth,
+        testAuthProvider,
         [
           NutritionalPlan(id: 1, description: 'test plan 1', creationDate: DateTime(2021, 01, 01)),
           NutritionalPlan(id: 2, description: 'test plan 2', creationDate: DateTime(2021, 01, 10)),

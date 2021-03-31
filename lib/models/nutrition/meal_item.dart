@@ -30,38 +30,33 @@ class MealItem {
   @JsonKey(required: true)
   int? id;
 
-  @JsonKey(required: false, name: 'ingredient')
-  int? ingredientId;
+  @JsonKey(required: false)
+  late int mealId;
 
-  @JsonKey(required: false, name: 'ingredient_obj')
+  @JsonKey(required: false, name: 'ingredient')
+  int ingredientId;
+
+  @JsonKey(ignore: true)
   late Ingredient ingredientObj;
 
-  @JsonKey(required: false)
-  late int meal;
-
   @JsonKey(required: false, name: 'weight_unit')
-  IngredientWeightUnit? weightUnit;
+  int weightUnitId;
+
+  @JsonKey(ignore: true)
+  late IngredientWeightUnit weightUnitObj;
 
   @JsonKey(required: true, fromJson: toNum, toJson: toString)
-  late num amount;
+  num amount;
 
   MealItem({
     this.id,
-    int? meal,
-    //this.ingredientObj,
-    ingredientId,
-    this.weightUnit,
-    num? amount,
+    int? mealId,
+    required this.ingredientId,
+    required this.weightUnitId,
+    required this.amount,
   }) {
-    if (meal != null) {
-      this.meal = meal;
-    }
-
-    if (ingredientId != null) {
-      this.ingredientId = ingredientId;
-    }
-    if (amount != null) {
-      this.amount = amount;
+    if (mealId != null) {
+      this.mealId = mealId;
     }
   }
 

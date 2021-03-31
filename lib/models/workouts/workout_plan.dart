@@ -29,25 +29,23 @@ class WorkoutPlan {
   int? id;
 
   @JsonKey(required: true, name: 'creation_date')
-  late DateTime creationDate;
+  DateTime creationDate;
 
   @JsonKey(required: true, name: 'comment')
-  late String description;
+  String description;
 
-  @JsonKey(required: false, defaultValue: [], name: 'days')
-  late List<Day> days = [];
+  @JsonKey(ignore: true)
+  List<Day> days = [];
 
-  @JsonKey(ignore: true, defaultValue: [])
-  late List<Log> logs = [];
+  @JsonKey(ignore: true)
+  List<Log> logs = [];
 
-  WorkoutPlan();
-
-  WorkoutPlan.withData({
+  WorkoutPlan({
     this.id,
     required this.creationDate,
     required this.description,
-    days,
-    logs,
+    List<Day>? days,
+    List<Log>? logs,
   }) {
     this.days = days ?? [];
     this.logs = logs ?? [];

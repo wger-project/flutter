@@ -15,19 +15,20 @@ Setting _$SettingFromJson(Map<String, dynamic> json) {
     'reps',
     'weight',
     'weight_unit',
-    'comment'
+    'comment',
+    'rir'
   ]);
-  return Setting()
-    ..id = json['id'] as int?
-    ..setId = json['set'] as int
-    ..exerciseId = json['exercise'] as int
-    ..repetitionUnitId = json['repetition_unit'] as int
-    ..reps = json['reps'] as int
-    ..weight = toNum(json['weight'] as String?)
-    ..weightUnitId = json['weight_unit'] as int
-    ..comment = json['comment'] as String? ?? ''
-    ..rir = json['rir'] as String? ?? ''
-    ..repsText = json['repsText'] as String;
+  return Setting(
+    id: json['id'] as int?,
+    setId: json['set'] as int,
+    exerciseId: json['exercise'] as int,
+    repetitionUnitId: json['repetition_unit'] as int,
+    reps: json['reps'] as int,
+    weightUnitId: json['weight_unit'] as int,
+    comment: json['comment'] as String,
+    rir: json['rir'] as String?,
+    repsText: json['repsText'] as String,
+  )..weight = toNum(json['weight'] as String?);
 }
 
 Map<String, dynamic> _$SettingToJson(Setting instance) => <String, dynamic>{
