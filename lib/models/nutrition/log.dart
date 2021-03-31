@@ -90,19 +90,11 @@ class Log {
     out.energy = ingredientObj.energy * weight / 100;
     out.protein = ingredientObj.protein * weight / 100;
     out.carbohydrates = ingredientObj.carbohydrates * weight / 100;
+    out.carbohydratesSugar = ingredientObj.carbohydratesSugar * weight / 100;
     out.fat = ingredientObj.fat * weight / 100;
-
-    if (ingredientObj.fatSaturated != null) {
-      out.fatSaturated = ingredientObj.fatSaturated * weight / 100;
-    }
-
-    if (ingredientObj.fibres != null) {
-      out.fibres = ingredientObj.fibres * weight / 100;
-    }
-
-    if (ingredientObj.sodium != null) {
-      out.sodium = ingredientObj.sodium * weight / 100;
-    }
+    out.fatSaturated = ingredientObj.fatSaturated * weight / 100;
+    out.fibres = ingredientObj.fibres * weight / 100;
+    out.sodium = ingredientObj.sodium * weight / 100;
 
     return out;
   }
