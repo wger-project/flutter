@@ -253,5 +253,25 @@
   "login": "Anmelden",
   "@login": {
     "description": "Text for login button"
+  },
+  "addExercise": "Diesem Tag eine Übung hinzufügen",
+  "@addExercise": {},
+  "confirmDelete": "Sind Sie sicher, dass Sie \"{toDelete}\" löschen möchten?",
+  "@confirmDelete": {
+    "description": "Confirmation text before the user deletes an object",
+    "type": "text",
+    "placeholders": {
+      "toDelete": {}
+    }
+  },
+  "noNutritionalPlans": "Sie haben keine Ernährungspläne",
+  "@noNutritionalPlans": {
+    "description": "Message shown when the user has no nutritional plans"
+  },
+  "todaysWorkout": "Ihr Training heute",
+  "@todaysWorkout": {},
+  "noWorkoutPlans": "Sie haben keine Trainingspläne",
+  "@noWorkoutPlans": {
+    "description": "Message shown when the user has no workout plans"
   }
 }
