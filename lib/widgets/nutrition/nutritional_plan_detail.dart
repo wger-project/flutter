@@ -21,7 +21,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/nutrition/nutritrional_values.dart';
-import 'package:wger/widgets/core/bottom_sheet.dart';
+import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/meal.dart';
@@ -44,10 +44,13 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
             child: ElevatedButton(
               child: Text(AppLocalizations.of(context)!.addMeal),
               onPressed: () {
-                showFormBottomSheet(
+                Navigator.pushNamed(
                   context,
-                  AppLocalizations.of(context)!.addMeal,
-                  MealForm(_nutritionalPlan.id!),
+                  FormScreen.routeName,
+                  arguments: FormScreenArguments(
+                    AppLocalizations.of(context)!.addMeal,
+                    MealForm(_nutritionalPlan.id!),
+                  ),
                 );
               },
             ),

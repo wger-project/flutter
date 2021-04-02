@@ -18,8 +18,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/app_drawer.dart';
-import 'package:wger/widgets/core/bottom_sheet.dart';
 import 'package:wger/widgets/weight/entries_list.dart';
 import 'package:wger/widgets/weight/forms.dart';
 
@@ -45,23 +45,17 @@ class _WeightScreenState extends State<WeightScreen> {
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () async {
-          showFormBottomSheet(
+          Navigator.pushNamed(
             context,
-            AppLocalizations.of(context)!.newEntry,
-            WeightForm(),
+            FormScreen.routeName,
+            arguments: FormScreenArguments(
+              AppLocalizations.of(context)!.newEntry,
+              WeightForm(),
+            ),
           );
         },
       ),
       body: WeightEntriesList(),
-    );
-  }
-
-  showWeightEntrySheet(BuildContext context) async {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext ctx) {
-        return WeightForm();
-      },
     );
   }
 }

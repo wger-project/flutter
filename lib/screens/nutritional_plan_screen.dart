@@ -21,7 +21,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/nutrition.dart';
-import 'package:wger/widgets/core/bottom_sheet.dart';
+import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/nutritional_plan_detail.dart';
 
@@ -53,10 +53,13 @@ class NutritionalPlanScreen extends StatelessWidget {
                   onSelected: (value) {
                     // Edit
                     if (value == NutritionalPlanOptions.edit) {
-                      showFormBottomSheet(
+                      Navigator.pushNamed(
                         context,
-                        AppLocalizations.of(context)!.edit,
-                        PlanForm(_nutritionalPlan),
+                        FormScreen.routeName,
+                        arguments: FormScreenArguments(
+                          AppLocalizations.of(context)!.edit,
+                          PlanForm(_nutritionalPlan),
+                        ),
                       );
 
                       // Delete

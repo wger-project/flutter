@@ -24,6 +24,7 @@ import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/nutrition.dart';
+import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/nutritional_plans_screen.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 
@@ -52,6 +53,9 @@ void main() {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: NutritionScreen(),
+        routes: {
+          FormScreen.routeName: (ctx) => FormScreen(),
+        },
       ),
     );
   }

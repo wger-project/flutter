@@ -58,7 +58,7 @@ class WorkoutForm extends StatelessWidget {
               const minLength = 5;
               const maxLength = 100;
               if (value!.isEmpty || value.length < minLength || value.length > maxLength) {
-                return 'Please enter between $minLength and $maxLength characters.';
+                return AppLocalizations.of(context)!.enterCharacters(minLength, maxLength);
               }
               return null;
             },
@@ -247,170 +247,157 @@ class _SetFormWidgetState extends State<SetFormWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Form(
-        key: _formKey,
-        child: Column(
-          children: [
-            TypeAheadFormField(
-              textFieldConfiguration: TextFieldConfiguration(
-                controller: this._exercisesController,
-                decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context)!.exercise,
-                    helperMaxLines: 3,
-                    helperText: 'You can search for more than one exercise, they will be grouped '
-                        'together for a superset.'),
-              ),
-              suggestionsCallback: (pattern) async {
-                return await Provider.of<Exercises>(context, listen: false).searchExercise(pattern);
-              },
-              itemBuilder: (context, suggestion) {
-                final result = suggestion! as Map;
+    return Form(
+      key: _formKey,
+      child: ListView(
+        children: [
+          TypeAheadFormField(
+            textFieldConfiguration: TextFieldConfiguration(
+              controller: this._exercisesController,
+              decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.exercise,
+                  helperMaxLines: 3,
+                  helperText: 'You can search for more than one exercise, they will be grouped '
+                      'together for a superset.'),
+            ),
+            suggestionsCallback: (pattern) async {
+              return await Provider.of<Exercises>(context, listen: false).searchExercise(pattern);
+            },
+            itemBuilder: (context, suggestion) {
+              final result = suggestion! as Map;
 
-                String serverUrl = Provider.of<Auth>(context, listen: false).serverUrl!;
-                final exercise =
-                    Provider.of<Exercises>(context, listen: false).findById(result['data']['id']);
-                return ListTile(
-                  leading: Container(
-                    width: 45,
-                    child: result['data']['image'] != null
-                        ? ExerciseImage(
-                            imageUrl: result['data']['image'],
-                            serverUrl: serverUrl,
-                          )
-                        : Container(),
-                  ),
-                  title: Text(exercise.name),
-                  subtitle: Text(exercise.categoryObj.name),
-                );
-              },
-              transitionBuilder: (context, suggestionsBox, controller) {
-                return suggestionsBox;
-              },
-              onSuggestionSelected: (suggestion) {
-                final result = suggestion! as Map;
-                final exercise =
-                    Provider.of<Exercises>(context, listen: false).findById(result['data']['id']);
-                addExercise(exercise);
-              },
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return 'Please select an exercise';
+              String serverUrl = Provider.of<Auth>(context, listen: false).serverUrl!;
+              final exercise =
+                  Provider.of<Exercises>(context, listen: false).findById(result['data']['id']);
+              return ListTile(
+                leading: Container(
+                  width: 45,
+                  child: result['data']['image'] != null
+                      ? ExerciseImage(
+                          imageUrl: result['data']['image'],
+                          serverUrl: serverUrl,
+                        )
+                      : Container(),
+                ),
+                title: Text(exercise.name),
+                subtitle: Text(exercise.categoryObj.name),
+              );
+            },
+            transitionBuilder: (context, suggestionsBox, controller) {
+              return suggestionsBox;
+            },
+            onSuggestionSelected: (suggestion) {
+              final result = suggestion! as Map;
+              final exercise =
+                  Provider.of<Exercises>(context, listen: false).findById(result['data']['id']);
+              addExercise(exercise);
+              this._exercisesController.text = '';
+            },
+            validator: (value) {
+              if (value!.isEmpty) {
+                return 'Please select an exercise';
+              }
+              return null;
+            },
+          ),
+          SizedBox(height: 10),
+          Text('Number of sets: ${_currentSetSliderValue.round()}'),
+          Slider(
+            value: _currentSetSliderValue,
+            min: 1,
+            max: 10,
+            divisions: 10,
+            label: _currentSetSliderValue.round().toString(),
+            onChanged: (double value) {
+              setState(() {
+                widget._set.sets = value.round();
+
+                // Add all settings to list
+                widget._set.settings = [];
+                for (var exercise in widget._set.exercisesObj) {
+                  for (int loop = 0; loop < widget._set.sets; loop++) {
+                    Setting setting = Setting.empty();
+                    setting.exerciseObj = exercise;
+                    widget._set.settings.add(setting);
+                  }
                 }
-                return null;
-              },
-            ),
-            SizedBox(height: 10),
-            Text('Number of sets: ${_currentSetSliderValue.round()}'),
-            Slider(
-              value: _currentSetSliderValue,
-              min: 1,
-              max: 10,
-              divisions: 10,
-              label: _currentSetSliderValue.round().toString(),
-              onChanged: (double value) {
-                setState(() {
-                  widget._set.sets = value.round();
+                _currentSetSliderValue = value;
+              });
+            },
+          ),
+          SwitchListTile(
+            title: Text('More details'),
+            value: _detailed,
+            onChanged: (value) {
+              setState(() {
+                _detailed = !_detailed;
+              });
+            },
+          ),
+          Text('If you do the same repetitions for all sets you can just enter '
+              'one value: e.g. for 4 sets just enter one "10" for the repetitions, '
+              'this automatically becomes "4 x 10".'),
+          ...widget._set.exercisesObj.map((exercise) {
+            final settings =
+                widget._set.settings.where((e) => e.exerciseObj.id == exercise.id).toList();
 
-                  // Add all settings to list
-                  widget._set.settings = [];
-                  for (var exercise in widget._set.exercisesObj) {
-                    for (int loop = 0; loop < widget._set.sets; loop++) {
-                      /*
-                      Setting setting = Setting();
-                      setting.exerciseObj = exercise;
-                      widget._set.settings.add(setting);
+            return ExerciseSetting(
+              exercise,
+              settings,
+              _detailed,
+              _currentSetSliderValue,
+              removeExercise,
+            );
+          }).toList(),
+          ElevatedButton(
+            child: Text(AppLocalizations.of(context)!.save),
+            onPressed: () async {
+              final isValid = _formKey.currentState!.validate();
+              if (!isValid) {
+                return;
+              }
+              _formKey.currentState!.save();
 
-                       */
-                    }
-                  }
+              final workoutProvider = Provider.of<WorkoutPlans>(context, listen: false);
 
-                  _currentSetSliderValue = value;
-                });
-              },
-            ),
-            SwitchListTile(
-              title: Text('More details'),
-              value: _detailed,
-              onChanged: (value) {
-                setState(() {
-                  _detailed = !_detailed;
-                });
-              },
-            ),
-            Text('If you do the same repetitions for all sets you can just enter '
-                'one value: e.g. for 4 sets just enter one "10" for the repetitions, '
-                'this automatically becomes "4 x 10".'),
-            SizedBox(
-              height: 350,
-              child: ListView(
-                children: [
-                  ...widget._set.exercisesObj.map((exercise) {
-                    final settings =
-                        widget._set.settings.where((e) => e.exerciseObj.id == exercise.id).toList();
+              // Save set
+              Set setDb = await workoutProvider.addSet(widget._set);
+              widget._set.id = setDb.id;
 
-                    return ExerciseSetting(
-                      exercise,
-                      settings,
-                      _detailed,
-                      _currentSetSliderValue,
-                      removeExercise,
-                    );
-                  }).toList(),
-                ],
-              ),
-            ),
-            ElevatedButton(
-                child: Text(AppLocalizations.of(context)!.save),
-                onPressed: () async {
-                  final isValid = _formKey.currentState!.validate();
-                  if (!isValid) {
-                    return;
-                  }
-                  _formKey.currentState!.save();
+              // Remove unused settings
+              widget._set.settings.removeWhere((s) => s.weight == null && s.reps == null);
 
-                  final workoutProvider = Provider.of<WorkoutPlans>(context, listen: false);
+              // Save remaining settings
+              for (var setting in widget._set.settings) {
+                setting.setId = setDb.id!;
 
-                  // Save set
-                  Set setDb = await workoutProvider.addSet(widget._set);
-                  widget._set.id = setDb.id;
+                setting.weightUnitId = workoutProvider.defaultWeightUnit.id;
+                setting.repetitionUnitId = workoutProvider.defaultRepetitionUnit.id;
+                setting.comment = '';
+                setting.repsText = 'temp text';
 
-                  // Remove unused settings
-                  widget._set.settings.removeWhere((s) => s.weight == null && s.reps == null);
+                Setting settingDb = await workoutProvider.addSetting(setting);
+                setting.id = settingDb.id;
+              }
 
-                  // Save remaining settings
-                  for (var setting in widget._set.settings) {
-                    setting.setId = setDb.id!;
+              // Add to workout day
+              widget._day.sets.add(widget._set);
 
-                    setting.weightUnitId = workoutProvider.defaultWeightUnit.id;
-                    //setting.weightUnitId ?? workoutProvider.defaultWeightUnit.id;
-                    setting.repetitionUnitId = workoutProvider.defaultRepetitionUnit.id;
-                    //setting.repetitionUnitId ?? workoutProvider.defaultRepetitionUnit.id;
-                    setting.comment = '';
-                    setting.repsText = 'temp text';
-
-                    Setting settingDb = await workoutProvider.addSetting(setting);
-                    setting.id = settingDb.id;
-                  }
-
-                  // Add to workout day
-                  widget._day.sets.add(widget._set);
-
-                  // Close the bottom sheet
-                  Navigator.of(context).pop();
-                }),
-          ],
-        ),
+              // Close the bottom sheet
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
       ),
     );
   }
 }
 
 class ExerciseSetting extends StatelessWidget {
-  Exercise _exercise;
+  final Exercise _exercise;
   int _numberOfSets = 4;
   bool _detailed;
-  Function removeExercise;
+  final Function removeExercise;
   List<Setting> _settings = [];
 
   ExerciseSetting(
@@ -451,7 +438,7 @@ class ExerciseSetting extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(height: 15),
+        SizedBox(height: 20),
         Text(_exercise.name, style: TextStyle(fontWeight: FontWeight.bold)),
         IconButton(
           icon: Icon(Icons.close),
@@ -460,7 +447,6 @@ class ExerciseSetting extends StatelessWidget {
           },
         ),
         //ExerciseImage(imageUrl: _exercise.images.first.url),
-        Divider(),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [

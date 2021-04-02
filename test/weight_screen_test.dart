@@ -24,6 +24,7 @@ import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/body_weight/weight_entry.dart';
 import 'package:wger/providers/body_weight.dart';
+import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/widgets/weight/charts.dart';
 import 'package:wger/widgets/weight/forms.dart';
@@ -59,6 +60,9 @@ void main() {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: WeightScreen(),
+        routes: {
+          FormScreen.routeName: (ctx) => FormScreen(),
+        },
       ),
     );
   }

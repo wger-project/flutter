@@ -260,6 +260,15 @@
   "@enterValue": {
     "description": "Error message when the user hasn't entered a value on a required field"
   },
+  "enterCharacters": "Please enter between {min} and {max} characters",
+  "@enterCharacters": {
+    "description": "Error message when the user hasn't entered the correct number of characters in a form",
+    "type": "text",
+    "placeholders": {
+      "min": {},
+      "max": {}
+    }
+  },
   "enterValidNumber": "Please enter a valid number",
   "@enterValidNumber": {
     "description": "Error message when the user has submitted an invalid number (e.g. '3,.,.,.')"

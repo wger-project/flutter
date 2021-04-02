@@ -21,8 +21,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/workout_plans_screen.dart';
-import 'package:wger/widgets/core/bottom_sheet.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 import 'package:wger/widgets/workouts/workout_logs.dart';
 import 'package:wger/widgets/workouts/workout_plan_detail.dart';
@@ -94,10 +94,13 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
                   onSelected: (value) {
                     // Edit
                     if (value == WorkoutOptions.edit) {
-                      showFormBottomSheet(
+                      Navigator.pushNamed(
                         context,
-                        AppLocalizations.of(context)!.edit,
-                        WorkoutForm(workoutPlan),
+                        FormScreen.routeName,
+                        arguments: FormScreenArguments(
+                          AppLocalizations.of(context)!.edit,
+                          WorkoutForm(workoutPlan),
+                        ),
                       );
 
                       // Delete

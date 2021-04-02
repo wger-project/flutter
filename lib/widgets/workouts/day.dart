@@ -24,9 +24,9 @@ import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/set.dart';
 import 'package:wger/models/workouts/setting.dart';
 import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/theme/theme.dart';
-import 'package:wger/widgets/core/bottom_sheet.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 
 class SettingWidget extends StatelessWidget {
@@ -153,11 +153,14 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
             OutlinedButton(
               child: Text(AppLocalizations.of(context)!.addExercise),
               onPressed: () {
-                showFormBottomSheet(
+                Navigator.pushNamed(
                   context,
-                  AppLocalizations.of(context)!.newSet,
-                  SetFormWidget(widget._day),
-                  scrollControlled: true,
+                  FormScreen.routeName,
+                  arguments: FormScreenArguments(
+                    AppLocalizations.of(context)!.newSet,
+                    SetFormWidget(widget._day),
+                    true,
+                  ),
                 );
               },
             ),

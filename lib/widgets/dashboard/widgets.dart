@@ -26,10 +26,10 @@ import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/theme/theme.dart';
-import 'package:wger/widgets/core/bottom_sheet.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/weight/charts.dart';
@@ -207,10 +207,13 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                   TextButton(
                     child: Text(AppLocalizations.of(context)!.newEntry),
                     onPressed: () async {
-                      showFormBottomSheet(
+                      Navigator.pushNamed(
                         context,
-                        AppLocalizations.of(context)!.newEntry,
-                        WeightForm(),
+                        FormScreen.routeName,
+                        arguments: FormScreenArguments(
+                          AppLocalizations.of(context)!.newEntry,
+                          WeightForm(),
+                        ),
                       );
                     },
                   ),
@@ -347,10 +350,13 @@ class NothingFound extends StatelessWidget {
               color: wgerPrimaryButtonColor,
             ),
             onPressed: () async {
-              showFormBottomSheet(
+              Navigator.pushNamed(
                 context,
-                _titleForm,
-                _form,
+                FormScreen.routeName,
+                arguments: FormScreenArguments(
+                  _titleForm,
+                  _form,
+                ),
               );
             },
           ),

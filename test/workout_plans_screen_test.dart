@@ -24,6 +24,7 @@ import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/workout_plans_screen.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/workouts/forms.dart';
@@ -54,6 +55,9 @@ void main() {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: WorkoutPlansScreen(),
+        routes: {
+          FormScreen.routeName: (ctx) => FormScreen(),
+        },
       ),
     );
   }

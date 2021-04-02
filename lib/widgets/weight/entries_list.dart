@@ -21,7 +21,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/body_weight.dart';
-import 'package:wger/widgets/core/bottom_sheet.dart';
+import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/weight/charts.dart';
 import 'package:wger/widgets/weight/forms.dart';
 
@@ -65,10 +65,13 @@ class WeightEntriesList extends StatelessWidget {
                 confirmDismiss: (direction) async {
                   // Edit entry
                   if (direction == DismissDirection.startToEnd) {
-                    showFormBottomSheet(
+                    Navigator.pushNamed(
                       context,
-                      AppLocalizations.of(context)!.edit,
-                      WeightForm(currentEntry),
+                      FormScreen.routeName,
+                      arguments: FormScreenArguments(
+                        AppLocalizations.of(context)!.edit,
+                        WeightForm(currentEntry),
+                      ),
                     );
                     return false;
                   }

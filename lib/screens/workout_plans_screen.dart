@@ -22,8 +22,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/app_drawer.dart';
-import 'package:wger/widgets/core/bottom_sheet.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 import 'package:wger/widgets/workouts/workout_plans_list.dart';
@@ -44,10 +44,13 @@ class _WorkoutPlansScreenState extends State<WorkoutPlansScreen> {
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () {
-          showFormBottomSheet(
+          Navigator.pushNamed(
             context,
-            AppLocalizations.of(context)!.newWorkout,
-            WorkoutForm(WorkoutPlan(creationDate: DateTime.now(), description: '')),
+            FormScreen.routeName,
+            arguments: FormScreenArguments(
+              AppLocalizations.of(context)!.newWorkout,
+              WorkoutForm(WorkoutPlan(creationDate: DateTime.now(), description: '')),
+            ),
           );
         },
       ),

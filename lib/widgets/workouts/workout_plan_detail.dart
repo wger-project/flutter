@@ -19,8 +19,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
+import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
-import 'package:wger/widgets/core/bottom_sheet.dart';
 import 'package:wger/widgets/workouts/day.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 
@@ -59,11 +59,13 @@ class _WorkoutPlanDetailState extends State<WorkoutPlanDetail> {
                   ElevatedButton(
                     child: Text(AppLocalizations.of(context)!.add),
                     onPressed: () {
-                      showFormBottomSheet(
+                      Navigator.pushNamed(
                         context,
-                        AppLocalizations.of(context)!.newDay,
-                        DayFormWidget(widget._workoutPlan),
-                        scrollControlled: true,
+                        FormScreen.routeName,
+                        arguments: FormScreenArguments(
+                          AppLocalizations.of(context)!.newDay,
+                          DayFormWidget(widget._workoutPlan),
+                        ),
                       );
                     },
                   ),

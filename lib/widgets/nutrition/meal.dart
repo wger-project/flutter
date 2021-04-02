@@ -23,8 +23,8 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/providers/nutrition.dart';
+import 'package:wger/screens/form_screen.dart';
 import 'package:wger/theme/theme.dart';
-import 'package:wger/widgets/core/bottom_sheet.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 
@@ -72,11 +72,14 @@ class _MealWidgetState extends State<MealWidget> {
             OutlinedButton(
               child: Text(AppLocalizations.of(context)!.addIngredient),
               onPressed: () {
-                showFormBottomSheet(
+                Navigator.pushNamed(
                   context,
-                  AppLocalizations.of(context)!.addIngredient,
-                  MealItemForm(widget._meal),
-                  scrollControlled: true,
+                  FormScreen.routeName,
+                  arguments: FormScreenArguments(
+                    AppLocalizations.of(context)!.addIngredient,
+                    MealItemForm(widget._meal),
+                    true,
+                  ),
                 );
               },
             ),
@@ -170,10 +173,13 @@ class DismissibleMealHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onLongPress: () {
-        showFormBottomSheet(
+        Navigator.pushNamed(
           context,
-          AppLocalizations.of(context)!.edit,
-          MealForm(_meal.planId, _meal),
+          FormScreen.routeName,
+          arguments: FormScreenArguments(
+            AppLocalizations.of(context)!.edit,
+            MealForm(_meal.planId, _meal),
+          ),
         );
       },
       child: Dismissible(
