@@ -242,7 +242,20 @@ class _SetFormWidgetState extends State<SetFormWidget> {
   void addExercise(Exercise exercise) {
     setState(() {
       widget._set.addExercise(exercise);
+      addSettings();
     });
+  }
+
+  /// Adds settings to the set
+  void addSettings() {
+    widget._set.settings = [];
+    for (var exercise in widget._set.exercisesObj) {
+      for (int loop = 0; loop < widget._set.sets; loop++) {
+        Setting setting = Setting.empty();
+        setting.exerciseObj = exercise;
+        widget._set.settings.add(setting);
+      }
+    }
   }
 
   @override
@@ -271,15 +284,11 @@ class _SetFormWidgetState extends State<SetFormWidget> {
               return ListTile(
                 leading: Container(
                   width: 45,
-                  child: result['data']['image'] != null
-                      ? ExerciseImage(
-                          imageUrl: result['data']['image'],
-                          serverUrl: serverUrl,
-                        )
-                      : Container(),
+                  child: ExerciseImageWidget(image: exercise.getMainImage),
                 ),
                 title: Text(exercise.name),
-                subtitle: Text(exercise.categoryObj.name),
+                subtitle: Text(
+                    '${exercise.categoryObj.name} / ${exercise.equipment.map((e) => e.name).join(', ')}'),
               );
             },
             transitionBuilder: (context, suggestionsBox, controller) {
@@ -310,17 +319,8 @@ class _SetFormWidgetState extends State<SetFormWidget> {
             onChanged: (double value) {
               setState(() {
                 widget._set.sets = value.round();
-
-                // Add all settings to list
-                widget._set.settings = [];
-                for (var exercise in widget._set.exercisesObj) {
-                  for (int loop = 0; loop < widget._set.sets; loop++) {
-                    Setting setting = Setting.empty();
-                    setting.exerciseObj = exercise;
-                    widget._set.settings.add(setting);
-                  }
-                }
                 _currentSetSliderValue = value;
+                addSettings();
               });
             },
           ),

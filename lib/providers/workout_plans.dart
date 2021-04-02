@@ -24,7 +24,6 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/exercises/exercise.dart';
-import 'package:wger/models/exercises/image.dart';
 import 'package:wger/models/http_exception.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/log.dart';
@@ -193,119 +192,6 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
 
     _workoutPlans = loadedWorkoutPlans;
     notifyListeners();
-  }
-
-  // TODO: delete
-  Future<void> setAllFullWorkouts() async {
-    for (var plan in _workoutPlans) {
-      setFullWorkout(plan.id!);
-    }
-  }
-
-  // TODO: delete
-  Future<WorkoutPlan> setFullWorkout(int workoutId) async {
-    final data = await fetch(makeUrl(
-      _workoutPlansUrlPath,
-      id: workoutId,
-      objectMethod: 'canonical_representation',
-    ));
-
-    //try {
-    WorkoutPlan workout = _workoutPlans.firstWhere((element) => element.id == workoutId);
-
-    List<Day> days = [];
-    for (final entry in data['day_list']) {
-      List<Set> sets = [];
-      List<Setting> settingsComputed = [];
-
-      for (final set in entry['set_list']) {
-        List<Setting> settings = [];
-        List<Exercise> exercises = [];
-
-        for (final exerciseData in set['exercise_list']) {
-          List<ExerciseImage> images = [];
-
-          for (final image in exerciseData['image_list']) {
-            images.add(
-              ExerciseImage(
-                url: auth.serverUrl! + image["image"],
-                isMain: image['is_main'],
-              ),
-            );
-          }
-
-          //TODO: read exercise data from cache from Exercises provider
-          Exercise exercise = Exercise(
-            id: exerciseData['obj']['id'],
-            uuid: exerciseData['obj']['uuid'],
-            creationDate: DateTime.parse(exerciseData['obj']['creation_date']),
-            name: exerciseData['obj']['name'],
-            description: exerciseData['obj']['description'],
-            categoryId: exerciseData['obj']['category'],
-            images: images,
-          );
-          exercises.add(exercise);
-
-          // Settings
-          if (exerciseData['setting_obj_list'].length > 0) {
-            settings.add(
-              Setting.withData(
-                id: exerciseData['setting_obj_list'][0]['id'],
-                setId: exerciseData['setting_obj_list'][0]['set'],
-                comment: exerciseData['setting_obj_list'][0]['comment'],
-                reps: exerciseData['setting_obj_list'][0]['reps'],
-                weight: 10,
-                repetitionUnitId: DEFAULT_REPETITION_UNIT,
-                weightUnitId: DEFAULT_WEIGHT_UNIT,
-                //weight: setting['setting_obj_list'][0]['weight'] == null
-                //    ? ''
-                //  : setting['setting_obj_list'][0]['weight'],
-                repsText: exerciseData['setting_text'],
-                exerciseObj: exercise,
-              ),
-            );
-          }
-        }
-
-        // Computed settings
-        for (var setting in set['settings_computed']) {
-          settingsComputed.add(Setting.fromJson(setting));
-        }
-
-        // Sets
-        sets.add(Set.withData(
-          id: set['obj']['id'],
-          sets: set['obj']['sets'],
-          order: set['obj']['order'],
-          settings: settings,
-          settingsComputed: settingsComputed,
-          exercises: exercises,
-        ));
-      }
-
-      // Days
-      days.add(Day.withData(
-          id: entry['obj']['id'],
-          workoutId: workoutId,
-          description: entry['obj']['description'],
-          sets: sets,
-          daysOfWeek: [1, 3]
-          //daysOfWeek: entry['obj']['day'],
-          ));
-    }
-    workout.days = days;
-
-    // Logs
-    final logData = await fetch(makeUrl(_logsUrlPath, query: {'workout': workoutId.toString()}));
-    for (final entry in logData['results']) {
-      workout.logs.add(Log.fromJson(entry));
-    }
-    notifyListeners();
-
-    return workout;
-    //} catch (error) {
-    //  throw (error);
-    //}
   }
 
   Future<WorkoutPlan> postWorkout(WorkoutPlan workout) async {

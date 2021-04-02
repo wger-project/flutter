@@ -22,6 +22,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:json_annotation/json_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
@@ -120,11 +121,11 @@ class Exercises extends WgerBaseProvider with ChangeNotifier {
       _exercisesUrlPath,
       query: {'limit': '1000'},
     ));
-    final extractedData = json.decode(response.body) as Map<String, dynamic>;
+    final exercisesData = json.decode(response.body) as Map<String, dynamic>;
 
     try {
       // Load exercises
-      extractedData['results'].forEach((e) => _exercises.add(Exercise.fromJson(e)));
+      exercisesData['results'].forEach((e) => _exercises.add(Exercise.fromJson(e)));
 
       // Save the result to the cache
       final exerciseData = {
@@ -138,7 +139,8 @@ class Exercises extends WgerBaseProvider with ChangeNotifier {
 
       prefs.setString('exerciseData', json.encode(exerciseData));
       notifyListeners();
-    } catch (error) {
+    } on MissingRequiredKeysException catch (error) {
+      log(error.missingKeys.toString());
       throw (error);
     }
   }

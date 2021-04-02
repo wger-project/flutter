@@ -83,8 +83,12 @@ class Exercise {
     this.muscles = muscles ?? [];
   }
 
-  ExerciseImage get getMainImage {
-    return images.firstWhere((image) => image.isMain);
+  ExerciseImage? get getMainImage {
+    try {
+      return images.firstWhere((image) => image.isMain);
+    } on StateError catch (e) {
+      return null;
+    }
   }
 
   // Boilerplate

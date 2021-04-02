@@ -27,6 +27,7 @@ import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/theme/theme.dart';
+import 'package:wger/widgets/workouts/exercises.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 
 class SettingWidget extends StatelessWidget {
@@ -40,16 +41,7 @@ class SettingWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       leading: Container(
-        child: setting.exerciseObj.images.length > 0
-            ? FadeInImage(
-                placeholder: AssetImage('assets/images/placeholder.png'),
-                image: NetworkImage(setting.exerciseObj.getMainImage.url),
-                fit: BoxFit.cover,
-              )
-            : Image(
-                image: AssetImage('assets/images/placeholder.png'),
-                color: Color.fromRGBO(255, 255, 255, 0.3),
-                colorBlendMode: BlendMode.modulate),
+        child: ExerciseImageWidget(image: setting.exerciseObj.getMainImage),
         width: 45,
       ),
       title: Text(setting.exerciseObj.name),
