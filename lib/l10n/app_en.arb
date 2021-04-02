@@ -97,6 +97,7 @@
   "@rir": {
     "description": "Shorthand for Repetitions In Reserve"
   },
+  "sameRepetitions": "If you do the same repetitions for all sets you can just fill in one value: e.g. for 4 sets just enter one \"10\" for the repetitions, this automatically becomes \"4 x 10\".",
   "comment": "Comment",
   "@comment": {
     "description": "Comment, additional information"
@@ -119,6 +120,7 @@
   "@newSet": {
     "description": "Header when adding a new set to a workout day"
   },
+  "selectExercises": "You can search for more than one exercise, they will be grouped together for a superset.",
   "gymMode": "Gym mode",
   "@gymMode": {
     "description": "Label when starting the gym mode"
@@ -260,6 +262,10 @@
   "@enterValue": {
     "description": "Error message when the user hasn't entered a value on a required field"
   },
+  "selectExercise": "Please select an exercise",
+  "@selectExercise": {
+    "description": "Error message when the user hasn't selected an exercise in the form"
+  },
   "enterCharacters": "Please enter between {min} and {max} characters",
   "@enterCharacters": {
     "description": "Error message when the user hasn't entered the correct number of characters in a form",
@@ -267,6 +273,14 @@
     "placeholders": {
       "min": {},
       "max": {}
+    }
+  },
+  "nrOfSets": "Number of sets: {nrOfSets}",
+  "@nrOfSets": {
+    "description": "Label shown on the slider where the user selects the nr of sets",
+    "type": "text",
+    "placeholders": {
+      "nrOfSets": {}
     }
   },
   "enterValidNumber": "Please enter a valid number",

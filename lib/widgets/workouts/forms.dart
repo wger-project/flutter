@@ -160,7 +160,7 @@ class _DayFormWidgetState extends State<DayFormWidget> {
                 const minLength = 5;
                 const maxLength = 100;
                 if (value!.isEmpty || value.length < minLength || value.length > maxLength) {
-                  return 'Please enter between $minLength and $maxLength characters.';
+                  return AppLocalizations.of(context)!.enterCharacters(minLength, maxLength);
                 }
                 return null;
               },
@@ -257,8 +257,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
               decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.exercise,
                   helperMaxLines: 3,
-                  helperText: 'You can search for more than one exercise, they will be grouped '
-                      'together for a superset.'),
+                  helperText: AppLocalizations.of(context)!.selectExercises),
             ),
             suggestionsCallback: (pattern) async {
               return await Provider.of<Exercises>(context, listen: false).searchExercise(pattern);
@@ -295,13 +294,13 @@ class _SetFormWidgetState extends State<SetFormWidget> {
             },
             validator: (value) {
               if (value!.isEmpty) {
-                return 'Please select an exercise';
+                return AppLocalizations.of(context)!.selectExercise;
               }
               return null;
             },
           ),
           SizedBox(height: 10),
-          Text('Number of sets: ${_currentSetSliderValue.round()}'),
+          Text(AppLocalizations.of(context)!.nrOfSets(_currentSetSliderValue.round())),
           Slider(
             value: _currentSetSliderValue,
             min: 1,
@@ -326,7 +325,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
             },
           ),
           SwitchListTile(
-            title: Text('More details'),
+            title: Text(AppLocalizations.of(context)!.toggleDetails),
             value: _detailed,
             onChanged: (value) {
               setState(() {
@@ -334,9 +333,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
               });
             },
           ),
-          Text('If you do the same repetitions for all sets you can just enter '
-              'one value: e.g. for 4 sets just enter one "10" for the repetitions, '
-              'this automatically becomes "4 x 10".'),
+          Text(AppLocalizations.of(context)!.sameRepetitions),
           ...widget._set.exercisesObj.map((exercise) {
             final settings =
                 widget._set.settings.where((e) => e.exerciseObj.id == exercise.id).toList();
@@ -450,11 +447,11 @@ class ExerciseSetting extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Text('Reps'),
-            if (_detailed) Text('Unit'),
-            Text('Weight'),
-            if (_detailed) Text('Weight unit'),
-            if (_detailed) Text('RiR'),
+            Text(AppLocalizations.of(context)!.repetitions),
+            if (_detailed) Text(AppLocalizations.of(context)!.unit),
+            Text(AppLocalizations.of(context)!.weight),
+            if (_detailed) Text(AppLocalizations.of(context)!.unit),
+            if (_detailed) Text(AppLocalizations.of(context)!.rir),
           ],
         ),
         getRow(),
