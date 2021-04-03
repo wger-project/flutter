@@ -10,6 +10,7 @@ Setting _$SettingFromJson(Map<String, dynamic> json) {
   $checkKeys(json, requiredKeys: const [
     'id',
     'set',
+    'order',
     'exercise',
     'repetition_unit',
     'reps',
@@ -21,9 +22,10 @@ Setting _$SettingFromJson(Map<String, dynamic> json) {
   return Setting(
     id: json['id'] as int?,
     setId: json['set'] as int,
+    order: json['order'] as int,
     exerciseId: json['exercise'] as int,
     repetitionUnitId: json['repetition_unit'] as int,
-    reps: json['reps'] as int,
+    reps: json['reps'] as int?,
     weightUnitId: json['weight_unit'] as int,
     comment: json['comment'] as String,
     rir: json['rir'] as String?,
@@ -33,6 +35,7 @@ Setting _$SettingFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$SettingToJson(Setting instance) => <String, dynamic>{
       'id': instance.id,
       'set': instance.setId,
+      'order': instance.order,
       'exercise': instance.exerciseId,
       'repetition_unit': instance.repetitionUnitId,
       'reps': instance.reps,

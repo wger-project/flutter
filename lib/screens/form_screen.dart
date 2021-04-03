@@ -41,6 +41,7 @@ class FormScreen extends StatelessWidget {
         ModalRoute.of(context)!.settings.arguments as FormScreenArguments;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(title: Text(args.title)),
       body: args.hasListView
           ? Padding(

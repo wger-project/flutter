@@ -215,7 +215,6 @@ class SetFormWidget extends StatefulWidget {
   late Set _set;
 
   SetFormWidget(Day this._day, [Set? set]) {
-    //this._day = day;
     this._set = set ?? Set.withData(day: _day.id, sets: 4);
   }
 
@@ -249,10 +248,20 @@ class _SetFormWidgetState extends State<SetFormWidget> {
   /// Adds settings to the set
   void addSettings() {
     widget._set.settings = [];
+    int order = 0;
     for (var exercise in widget._set.exercisesObj) {
+      order++;
       for (int loop = 0; loop < widget._set.sets; loop++) {
         Setting setting = Setting.empty();
-        setting.exerciseObj = exercise;
+        setting.order = order;
+        setting.setExercise(exercise);
+        setting.setRepetitionUnit(
+          Provider.of<WorkoutPlans>(context, listen: false).defaultRepetitionUnit,
+        );
+        setting.setWeightUnit(
+          Provider.of<WorkoutPlans>(context, listen: false).defaultWeightUnit,
+        );
+
         widget._set.settings.add(setting);
       }
     }
@@ -302,14 +311,16 @@ class _SetFormWidgetState extends State<SetFormWidget> {
               this._exercisesController.text = '';
             },
             validator: (value) {
-              if (value!.isEmpty) {
+              if (widget._set.exercisesIds.length == 0) {
                 return AppLocalizations.of(context)!.selectExercise;
               }
               return null;
             },
           ),
           SizedBox(height: 10),
-          Text(AppLocalizations.of(context)!.nrOfSets(_currentSetSliderValue.round())),
+          Center(
+            child: Text(AppLocalizations.of(context)!.nrOfSets(_currentSetSliderValue.round())),
+          ),
           Slider(
             value: _currentSetSliderValue,
             min: 1,
@@ -333,7 +344,10 @@ class _SetFormWidgetState extends State<SetFormWidget> {
               });
             },
           ),
-          Text(AppLocalizations.of(context)!.sameRepetitions),
+          Text(
+            AppLocalizations.of(context)!.sameRepetitions,
+            style: TextStyle(fontSize: 12, color: Colors.black54),
+          ),
           ...widget._set.exercisesObj.map((exercise) {
             final settings =
                 widget._set.settings.where((e) => e.exerciseObj.id == exercise.id).toList();
@@ -367,9 +381,6 @@ class _SetFormWidgetState extends State<SetFormWidget> {
               // Save remaining settings
               for (var setting in widget._set.settings) {
                 setting.setId = setDb.id!;
-
-                setting.weightUnitId = workoutProvider.defaultWeightUnit.id;
-                setting.repetitionUnitId = workoutProvider.defaultRepetitionUnit.id;
                 setting.comment = '';
                 setting.repsText = 'temp text';
 
@@ -407,23 +418,71 @@ class ExerciseSetting extends StatelessWidget {
     this._numberOfSets = sliderValue.round();
   }
 
-  Widget getRow() {
+  Widget getRows(BuildContext context) {
     List<Widget> out = [];
     for (var i = 0; i < _numberOfSets; i++) {
       var setting = _settings[i];
       out.add(
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            RepsInputWidget(setting),
-            SizedBox(width: 4),
-            if (_detailed) WeightUnitInputWidget(key: Key(i.toString())),
-            WeightInputWidget(setting),
-            SizedBox(width: 4),
-            if (_detailed) RepetitionUnitInputWidget(),
-            if (_detailed) RiRInputWidget(),
-          ],
-        ),
+        _detailed
+            ? Column(
+                //crossAxisAlignment: CrossAxisAlignment.baseline,
+                //1textBaseline: TextBaseline.alphabetic,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    AppLocalizations.of(context)!.setNr(i + 1),
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Flexible(
+                        flex: 2,
+                        child: RepsInputWidget(setting, _detailed),
+                      ),
+                      SizedBox(width: 4),
+                      Flexible(
+                        flex: 3,
+                        child: WeightUnitInputWidget(setting, key: Key(i.toString())),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Flexible(
+                        flex: 2,
+                        child: WeightInputWidget(setting, _detailed),
+                      ),
+                      SizedBox(width: 4),
+                      Flexible(
+                        flex: 3,
+                        child: RepetitionUnitInputWidget(setting),
+                      ),
+                    ],
+                  ),
+                  Flexible(
+                    flex: 2,
+                    child: RiRInputWidget(setting),
+                  ),
+                  SizedBox(height: 15),
+                ],
+              )
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.alphabetic,
+                children: [
+                  Text(
+                    AppLocalizations.of(context)!.setNr(i + 1),
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(width: 10),
+                  Flexible(child: RepsInputWidget(setting, _detailed)),
+                  SizedBox(width: 4),
+                  Flexible(child: WeightInputWidget(setting, _detailed)),
+                ],
+              ),
       );
     }
     return Column(
@@ -435,26 +494,27 @@ class ExerciseSetting extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(height: 20),
-        Text(_exercise.name, style: TextStyle(fontWeight: FontWeight.bold)),
+        SizedBox(height: 30),
+        Text(
+          _exercise.name,
+          style: Theme.of(context).textTheme.headline6,
+        ),
         IconButton(
-          icon: Icon(Icons.close),
+          icon: Icon(Icons.delete_outline),
           onPressed: () {
             removeExercise(_exercise);
           },
         ),
         //ExerciseImage(imageUrl: _exercise.images.first.url),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Text(AppLocalizations.of(context)!.repetitions),
-            if (_detailed) Text(AppLocalizations.of(context)!.unit),
-            Text(AppLocalizations.of(context)!.weight),
-            if (_detailed) Text(AppLocalizations.of(context)!.unit),
-            if (_detailed) Text(AppLocalizations.of(context)!.rir),
-          ],
-        ),
-        getRow(),
+        if (!_detailed)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Text(AppLocalizations.of(context)!.repetitions),
+              Text(AppLocalizations.of(context)!.weight),
+            ],
+          ),
+        getRows(context),
       ],
     );
   }
@@ -462,52 +522,77 @@ class ExerciseSetting extends StatelessWidget {
 
 class RepsInputWidget extends StatelessWidget {
   final _repsController = TextEditingController();
-  Setting _setting;
+  final Setting _setting;
+  final bool _detailed;
 
-  RepsInputWidget(this._setting);
+  RepsInputWidget(this._setting, this._detailed);
 
   @override
   Widget build(BuildContext context) {
-    return Flexible(
-      child: TextFormField(
-        //decoration: InputDecoration(labelText: 'Reps'),
-        controller: _repsController,
-        keyboardType: TextInputType.number,
-        onSaved: (newValue) {
-          if (newValue != null && newValue != '') {
-            _setting.reps = int.parse(newValue);
-          }
-        },
+    return TextFormField(
+      decoration: InputDecoration(
+        labelText: _detailed ? AppLocalizations.of(context)!.repetitions : '',
+        errorMaxLines: 2,
       ),
+      controller: _repsController,
+      keyboardType: TextInputType.number,
+      validator: (value) {
+        try {
+          if (value != "") {
+            double.parse(value!);
+          }
+        } catch (error) {
+          return AppLocalizations.of(context)!.enterValidNumber;
+        }
+        return null;
+      },
+      onSaved: (newValue) {
+        if (newValue != null && newValue != '') {
+          _setting.reps = int.parse(newValue);
+        }
+      },
     );
   }
 }
 
 class WeightInputWidget extends StatelessWidget {
   final _weightController = TextEditingController();
-  Setting _setting;
+  final Setting _setting;
+  final bool _detailed;
 
-  WeightInputWidget(this._setting);
+  WeightInputWidget(this._setting, this._detailed);
 
   @override
   Widget build(BuildContext context) {
-    return Flexible(
-      child: TextFormField(
-        //decoration: InputDecoration(labelText: 'Weight'),
-        controller: _weightController,
-        keyboardType: TextInputType.number,
-        onSaved: (newValue) {
-          if (newValue != null && newValue != '') {
-            _setting.weight = double.parse(newValue);
-          }
-        },
+    return TextFormField(
+      decoration: InputDecoration(
+        labelText: _detailed ? AppLocalizations.of(context)!.weight : '',
+        errorMaxLines: 2,
       ),
+      controller: _weightController,
+      keyboardType: TextInputType.number,
+      validator: (value) {
+        try {
+          if (value != "") {
+            double.parse(value!);
+          }
+        } catch (error) {
+          return AppLocalizations.of(context)!.enterValidNumber;
+        }
+        return null;
+      },
+      onSaved: (newValue) {
+        if (newValue != null && newValue != '') {
+          _setting.weight = double.parse(newValue);
+        }
+      },
     );
   }
 }
 
 class RiRInputWidget extends StatefulWidget {
-  RiRInputWidget();
+  final Setting _setting;
+  RiRInputWidget(this._setting);
 
   @override
   _RiRInputWidgetState createState() => _RiRInputWidgetState();
@@ -518,19 +603,16 @@ class _RiRInputWidgetState extends State<RiRInputWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButton<String>(
+    return DropdownButtonFormField(
+      decoration: InputDecoration(labelText: AppLocalizations.of(context)!.rir),
       value: dropdownValue,
-      underline: Container(
-        height: 0,
-        //color: Colors.deepPurpleAccent,
-      ),
       onChanged: (String? newValue) {
         setState(() {
           dropdownValue = newValue!;
+          widget._setting.setRir(newValue);
         });
       },
-      items: <String>['1', '1.5', '2', '2.5', '3', '3.5']
-          .map<DropdownMenuItem<String>>((String value) {
+      items: Setting.possibleValues.map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
           value: value,
           child: Text(value),
@@ -541,26 +623,26 @@ class _RiRInputWidgetState extends State<RiRInputWidget> {
 }
 
 class WeightUnitInputWidget extends StatefulWidget {
-  WeightUnitInputWidget({Key? key}) : super(key: key);
+  final Setting _setting;
+
+  WeightUnitInputWidget(this._setting, {Key? key}) : super(key: key);
 
   @override
   _WeightUnitInputWidgetState createState() => _WeightUnitInputWidgetState();
 }
 
 class _WeightUnitInputWidgetState extends State<WeightUnitInputWidget> {
-  late WeightUnit dropdownValue;
-
   @override
   Widget build(BuildContext context) {
-    return DropdownButton<WeightUnit>(
-      value: dropdownValue,
-      underline: Container(
-        height: 0,
-        //  color: Colors.deepPurpleAccent,
-      ),
+    WeightUnit selectedWeightUnit = widget._setting.weightUnitObj;
+
+    return DropdownButtonFormField(
+      value: selectedWeightUnit,
+      decoration: InputDecoration(labelText: AppLocalizations.of(context)!.weightUnit),
       onChanged: (WeightUnit? newValue) {
         setState(() {
-          dropdownValue = newValue!;
+          selectedWeightUnit = newValue!;
+          widget._setting.setWeightUnit(newValue);
         });
       },
       items: Provider.of<WorkoutPlans>(context, listen: false)
@@ -568,10 +650,7 @@ class _WeightUnitInputWidgetState extends State<WeightUnitInputWidget> {
           .map<DropdownMenuItem<WeightUnit>>((WeightUnit value) {
         return DropdownMenuItem<WeightUnit>(
           value: value,
-          child: Text(
-            value.name,
-            style: TextStyle(fontSize: 12),
-          ),
+          child: Text(value.name),
         );
       }).toList(),
     );
@@ -579,26 +658,26 @@ class _WeightUnitInputWidgetState extends State<WeightUnitInputWidget> {
 }
 
 class RepetitionUnitInputWidget extends StatefulWidget {
-  RepetitionUnitInputWidget();
+  final Setting _setting;
+  RepetitionUnitInputWidget(this._setting);
 
   @override
   _RepetitionUnitInputWidgetState createState() => _RepetitionUnitInputWidgetState();
 }
 
 class _RepetitionUnitInputWidgetState extends State<RepetitionUnitInputWidget> {
-  late RepetitionUnit dropdownValue;
-
   @override
   Widget build(BuildContext context) {
-    return DropdownButton<RepetitionUnit>(
-      value: dropdownValue,
-      underline: Container(
-        height: 0,
-        //  color: Colors.deepPurpleAccent,
-      ),
+    RepetitionUnit selectedWeightUnit = widget._setting.repetitionUnitObj;
+
+    return DropdownButtonFormField(
+      value: selectedWeightUnit,
+      decoration: InputDecoration(labelText: AppLocalizations.of(context)!.repetitionUnit),
+      isDense: true,
       onChanged: (RepetitionUnit? newValue) {
         setState(() {
-          dropdownValue = newValue!;
+          selectedWeightUnit = newValue!;
+          widget._setting.setRepetitionUnit(newValue);
         });
       },
       items: Provider.of<WorkoutPlans>(context, listen: false)
@@ -606,10 +685,7 @@ class _RepetitionUnitInputWidgetState extends State<RepetitionUnitInputWidget> {
           .map<DropdownMenuItem<RepetitionUnit>>((RepetitionUnit value) {
         return DropdownMenuItem<RepetitionUnit>(
           value: value,
-          child: Text(
-            value.name,
-            style: TextStyle(fontSize: 12),
-          ),
+          child: Text(value.name),
         );
       }).toList(),
     );

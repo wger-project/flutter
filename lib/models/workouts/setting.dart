@@ -8,11 +8,16 @@ part 'setting.g.dart';
 
 @JsonSerializable()
 class Setting {
+  static final possibleValues = ['1', '1.5', '2', '2.5', '3', '3.5'];
+
   @JsonKey(required: true)
   int? id;
 
   @JsonKey(required: true, name: 'set')
   late int setId;
+
+  @JsonKey(required: true)
+  late int order;
 
   @JsonKey(ignore: true)
   late Exercise exerciseObj;
@@ -27,10 +32,10 @@ class Setting {
   late RepetitionUnit repetitionUnitObj;
 
   @JsonKey(required: true)
-  late int reps;
+  int? reps;
 
   @JsonKey(required: true, fromJson: toNum, toJson: toString)
-  late num weight;
+  num? weight;
 
   @JsonKey(required: true, name: 'weight_unit')
   late int weightUnitId;
@@ -51,6 +56,7 @@ class Setting {
   Setting({
     this.id,
     required this.setId,
+    required this.order,
     required this.exerciseId,
     required this.repetitionUnitId,
     required this.reps,
@@ -59,27 +65,32 @@ class Setting {
     required this.rir,
   });
 
-  Setting.withData({
-    this.id,
-    required this.setId,
-    Exercise? exerciseObj,
-    required this.repetitionUnitId,
-    required this.reps,
-    required this.weight,
-    required this.weightUnitId,
-    required this.comment,
-    this.rir = '',
-    required this.repsText,
-  }) {
-    if (exerciseObj != null) {
-      this.exerciseId = exerciseObj.id;
-      this.exerciseObj = exerciseObj;
-    }
-  }
-
   Setting.empty();
 
   // Boilerplate
   factory Setting.fromJson(Map<String, dynamic> json) => _$SettingFromJson(json);
   Map<String, dynamic> toJson() => _$SettingToJson(this);
+
+  void setExercise(Exercise exercise) {
+    exerciseObj = exercise;
+    exerciseId = exercise.id;
+  }
+
+  void setWeightUnit(WeightUnit weightUnit) {
+    weightUnitObj = weightUnit;
+    weightUnitId = weightUnit.id;
+  }
+
+  void setRepetitionUnit(RepetitionUnit repetitionUnit) {
+    repetitionUnitObj = repetitionUnit;
+    repetitionUnitId = repetitionUnit.id;
+  }
+
+  void setRir(String rir) {
+    if (possibleValues.contains(rir)) {
+      this.rir = rir;
+    } else {
+      throw Exception('RiR value not allowed');
+    }
+  }
 }
