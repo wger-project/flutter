@@ -118,7 +118,7 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
     return plan;
   }
 
-  Future<NutritionalPlan> postPlan(NutritionalPlan planData) async {
+  Future<NutritionalPlan> addPlan(NutritionalPlan planData) async {
     final data = await post(planData.toJson(), makeUrl(_nutritionalPlansPath));
     final plan = NutritionalPlan.fromJson(data);
     _plans.add(plan);
@@ -127,7 +127,7 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
     return plan;
   }
 
-  Future<void> patchPlan(NutritionalPlan plan) async {
+  Future<void> editPlan(NutritionalPlan plan) async {
     await patch(plan.toJson(), makeUrl(_nutritionalPlansPath, id: plan.id));
     notifyListeners();
   }

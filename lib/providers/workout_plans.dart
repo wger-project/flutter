@@ -194,7 +194,7 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<WorkoutPlan> postWorkout(WorkoutPlan workout) async {
+  Future<WorkoutPlan> addWorkout(WorkoutPlan workout) async {
     final data = await post(workout.toJson(), makeUrl(_workoutPlansUrlPath));
     final plan = WorkoutPlan.fromJson(data);
     _workoutPlans.insert(0, plan);
@@ -202,7 +202,7 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
     return plan;
   }
 
-  Future<WorkoutPlan> patchWorkout(WorkoutPlan workout) async {
+  Future<WorkoutPlan> editWorkout(WorkoutPlan workout) async {
     final data = await patch(workout.toJson(), makeUrl(_workoutPlansUrlPath, id: workout.id));
     final plan = WorkoutPlan.fromJson(data);
     _workoutPlans[findIndexById(plan.id!)] = plan;
