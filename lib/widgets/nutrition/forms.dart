@@ -31,7 +31,6 @@ import 'package:wger/providers/nutrition.dart';
 class MealForm extends StatelessWidget {
   late Meal _meal;
   int _planId;
-  //var _mealData = {'id': null, 'planId': -1, 'time': TimeOfDay.now()};
 
   final _form = GlobalKey<FormState>();
   final _timeController = TextEditingController();
@@ -40,19 +39,6 @@ class MealForm extends StatelessWidget {
     this._meal = meal ?? Meal(plan: _planId);
     _timeController.text = timeToString(_meal.time)!;
   }
-
-  /*
-  MealForm(int planId, [Meal? meal]) {
-    _mealData['planId'] = planId;
-    _timeController.text = timeToString(_mealData['time'] as TimeOfDay)!;
-
-    if (meal != null) {
-      _mealData['id'] = meal.id;
-      _mealData['time'] = meal.time;
-      _timeController.text = timeToString(meal.time)!;
-    }
-  }
-  */
 
   @override
   Widget build(BuildContext context) {
@@ -205,24 +191,13 @@ class MealItemForm extends StatelessWidget {
 }
 
 class PlanForm extends StatelessWidget {
-  //NutritionalPlan? _plan;
-  var _planData = {
-    'description': '',
-    'creationDate': DateTime.now(),
-    'id': null,
-  };
-
   final _form = GlobalKey<FormState>();
   final _descriptionController = TextEditingController();
+  late NutritionalPlan _plan;
 
   PlanForm([NutritionalPlan? plan]) {
-    if (plan != null) {
-      _planData['id'] = plan.id;
-      _planData['description'] = plan.description;
-      _planData['creationDate'] = plan.creationDate;
-    }
-
-    _descriptionController.text = _planData['description'] as String;
+    _plan = plan != null ? plan : NutritionalPlan.empty();
+    _descriptionController.text = _plan.description;
   }
 
   @override
@@ -237,7 +212,7 @@ class PlanForm extends StatelessWidget {
             controller: _descriptionController,
             onFieldSubmitted: (_) {},
             onSaved: (newValue) {
-              _planData['description'] = newValue!;
+              _plan.description = newValue!;
             },
           ),
           ElevatedButton(
@@ -252,21 +227,13 @@ class PlanForm extends StatelessWidget {
 
               // Save the entry on the server
               try {
-                NutritionalPlan plan = NutritionalPlan(
-                  description: _planData['description'] as String,
-                  creationDate: _planData['creationDate'] as DateTime,
-                );
-
-                if (_planData['id'] != null) {
-                  plan.id = _planData['id'] as int;
-                  await Provider.of<Nutrition>(context, listen: false).patchPlan(plan);
-                } else {
-                  await Provider.of<Nutrition>(context, listen: false).postPlan(plan);
-                }
+                _plan.id != null
+                    ? await Provider.of<Nutrition>(context, listen: false).patchPlan(_plan)
+                    : await Provider.of<Nutrition>(context, listen: false).postPlan(_plan);
 
                 // Saving was successful, reset the data
-                //descriptionController.clear();
-                //nutritionalPlan = NutritionalPlan();
+                _descriptionController.clear();
+                _plan = NutritionalPlan.empty();
               } on WgerHttpException catch (error) {
                 showHttpExceptionErrorDialog(error, context);
               } catch (error) {

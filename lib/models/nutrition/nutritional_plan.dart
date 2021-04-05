@@ -31,10 +31,10 @@ class NutritionalPlan {
   int? id;
 
   @JsonKey(required: true)
-  String description;
+  late String description;
 
   @JsonKey(required: true, name: 'creation_date', toJson: toDate)
-  DateTime creationDate;
+  late DateTime creationDate;
 
   @JsonKey(ignore: true, defaultValue: [])
   List<Meal> meals = [];
@@ -51,6 +51,11 @@ class NutritionalPlan {
   }) {
     this.meals = meals ?? [];
     this.logs = logs ?? [];
+  }
+
+  NutritionalPlan.empty() {
+    creationDate = DateTime.now();
+    description = '';
   }
 
   // Boilerplate
