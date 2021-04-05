@@ -107,6 +107,7 @@
   "@set": {
     "description": "A set in a workout plan"
   },
+  "dayDescriptionHelp": "A description of what is done on this day (e.g. 'pull day') or what body parts are trained (e.g. 'chest and shoulders')",
   "setNr": "Set {nr}",
   "@setNr": {
     "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
@@ -115,7 +116,7 @@
       "nr": {}
     }
   },
-  "sameRepetitions": "If you do the same repetitions and weight for all sets you can just fill in one row. For example for 4 sets just enter one \"10\" for the repetitions, this automatically becomes \"4 x 10\".",
+  "sameRepetitions": "If you do the same repetitions and weight for all sets you can just fill in one row. For example for 4 sets just enter 10 for the repetitions, this automatically becomes \"4 x 10\".",
   "comment": "Comment",
   "@comment": {
     "description": "Comment, additional information"

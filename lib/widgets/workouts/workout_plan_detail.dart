@@ -65,6 +65,7 @@ class _WorkoutPlanDetailState extends State<WorkoutPlanDetail> {
                         arguments: FormScreenArguments(
                           AppLocalizations.of(context)!.newDay,
                           DayFormWidget(widget._workoutPlan),
+                          true,
                         ),
                       );
                     },

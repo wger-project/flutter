@@ -144,67 +144,67 @@ class _DayFormWidgetState extends State<DayFormWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.all(20),
-      child: Form(
-        key: _form,
-        child: Column(
-          children: [
-            TextFormField(
-              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.description),
-              controller: widget.dayController,
-              onSaved: (value) {
-                widget._day.description = value!;
-              },
-              validator: (value) {
-                const minLength = 5;
-                const maxLength = 100;
-                if (value!.isEmpty || value.length < minLength || value.length > maxLength) {
-                  return AppLocalizations.of(context)!.enterCharacters(minLength, maxLength);
-                }
-                return null;
-              },
+    return Form(
+      key: _form,
+      child: ListView(
+        children: [
+          TextFormField(
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context)!.description,
+              helperText: AppLocalizations.of(context)!.dayDescriptionHelp,
+              helperMaxLines: 2,
             ),
-            SizedBox(height: 10),
-            Text('Week days'),
-            ...Day.weekdays.keys.map((dayNr) => DayCheckbox(dayNr, widget._day)).toList(),
-            ElevatedButton(
-              child: Text(AppLocalizations.of(context)!.save),
-              onPressed: () async {
-                if (!_form.currentState!.validate()) {
-                  return;
-                }
-                _form.currentState!.save();
+            controller: widget.dayController,
+            onSaved: (value) {
+              widget._day.description = value!;
+            },
+            validator: (value) {
+              const minLength = 5;
+              const maxLength = 100;
+              if (value!.isEmpty || value.length < minLength || value.length > maxLength) {
+                return AppLocalizations.of(context)!.enterCharacters(minLength, maxLength);
+              }
+              return null;
+            },
+          ),
+          SizedBox(height: 10),
+          ...Day.weekdays.keys.map((dayNr) => DayCheckbox(dayNr, widget._day)).toList(),
+          ElevatedButton(
+            child: Text(AppLocalizations.of(context)!.save),
+            onPressed: () async {
+              if (!_form.currentState!.validate()) {
+                return;
+              }
+              _form.currentState!.save();
 
-                try {
-                  Provider.of<WorkoutPlans>(context, listen: false).addDay(
-                    widget._day,
-                    widget.workout,
-                  );
+              try {
+                Provider.of<WorkoutPlans>(context, listen: false).addDay(
+                  widget._day,
+                  widget.workout,
+                );
 
-                  widget.dayController.clear();
-                  Navigator.of(context).pop();
-                } catch (error) {
-                  await showDialog(
-                    context: context,
-                    builder: (ctx) => AlertDialog(
-                      title: Text('An error occurred!'),
-                      content: Text('Something went wrong.'),
-                      actions: [
-                        TextButton(
-                          child: Text('Okay'),
-                          onPressed: () {
-                            Navigator.of(ctx).pop();
-                          },
-                        )
-                      ],
-                    ),
-                  );
-                }
-              },
-            ),
-          ],
-        ),
+                widget.dayController.clear();
+                Navigator.of(context).pop();
+              } catch (error) {
+                await showDialog(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                    title: Text('An error occurred!'),
+                    content: Text('Something went wrong.'),
+                    actions: [
+                      TextButton(
+                        child: Text('Okay'),
+                        onPressed: () {
+                          Navigator.of(ctx).pop();
+                        },
+                      )
+                    ],
+                  ),
+                );
+              }
+            },
+          ),
+        ],
       ),
     );
   }
