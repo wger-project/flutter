@@ -5,6 +5,16 @@ part 'day.g.dart';
 
 @JsonSerializable()
 class Day {
+  static const Map<int, String> weekdays = {
+    1: 'Monday',
+    2: 'Tuesday',
+    3: 'Wednesday',
+    4: 'Thursday',
+    5: 'Friday',
+    6: 'Saturday',
+    7: 'Sunday',
+  };
+
   @JsonKey(required: true)
   int? id;
 
@@ -27,27 +37,6 @@ class Day {
     this.daysOfWeek = [];
     this.sets = [];
   }
-
-  Day.withData({
-    required this.id,
-    required this.workoutId,
-    required this.description,
-    List<int>? daysOfWeek,
-    List<Set>? sets,
-  }) {
-    this.daysOfWeek = daysOfWeek ?? [];
-    this.sets = sets ?? [];
-  }
-
-  static const Map<int, String> weekdays = {
-    1: 'Monday',
-    2: 'Tuesday',
-    3: 'Wednesday',
-    4: 'Thursday',
-    5: 'Friday',
-    6: 'Saturday',
-    7: 'Sunday',
-  };
 
   String getDayName(int weekDay) {
     return weekdays[weekDay]!;

@@ -75,7 +75,7 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
         Expanded(
           child: Column(
             children: [
-              ...set.settings
+              ...set.settingsFiltered
                   .map(
                     (setting) => SettingWidget(
                       setting: setting,

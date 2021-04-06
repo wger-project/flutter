@@ -140,6 +140,7 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
       final setData = await fetch(makeUrl(_setsUrlPath, query: {'exerciseday': day.id.toString()}));
       for (final setEntry in setData['results']) {
         final workoutSet = Set.fromJson(setEntry);
+        fetchComputedSettings(workoutSet);
 
         // Settings
         List<Setting> settings = [];
@@ -179,18 +180,6 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
     // ... and done
     _workoutPlans.add(plan);
     _workoutPlans.sort((a, b) => b.creationDate.compareTo(a.creationDate));
-    notifyListeners();
-  }
-
-  Future<void> fetchAndSetWorkouts() async {
-    final data = await fetch(makeUrl(_workoutPlansUrlPath, query: {'ordering': '-creation_date'}));
-    final List<WorkoutPlan> loadedWorkoutPlans = [];
-
-    for (final entry in data['results']) {
-      loadedWorkoutPlans.add(WorkoutPlan.fromJson(entry));
-    }
-
-    _workoutPlans = loadedWorkoutPlans;
     notifyListeners();
   }
 
@@ -325,8 +314,36 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
   Future<Set> addSet(Set workoutSet) async {
     final data = await post(workoutSet.toJson(), makeUrl(_setsUrlPath));
     final set = Set.fromJson(data);
+    fetchComputedSettings(set);
     notifyListeners();
     return set;
+  }
+
+  Future<void> fetchComputedSettings(Set workoutSet) async {
+    final data = await fetch(makeUrl(
+      _setsUrlPath,
+      id: workoutSet.id!,
+      objectMethod: 'computed_settings',
+    ));
+
+    List<Setting> settings = [];
+    data['results'].forEach((e) => settings.add(Setting.fromJson(e)));
+
+    workoutSet.settingsComputed = settings;
+    notifyListeners();
+  }
+
+  Future<String> fetchSmartText(Set workoutSet, Exercise exercise) async {
+    final data = await fetch(
+      makeUrl(
+        _setsUrlPath,
+        id: workoutSet.id!,
+        objectMethod: 'smart_text',
+        query: {'exercise': exercise.id.toString()},
+      ),
+    );
+
+    return data['results'];
   }
 
   Future<void> deleteSet(Set workoutSet) async {

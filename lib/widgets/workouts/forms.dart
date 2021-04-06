@@ -606,13 +606,15 @@ class _RiRInputWidgetState extends State<RiRInputWidget> {
     return DropdownButtonFormField(
       decoration: InputDecoration(labelText: AppLocalizations.of(context)!.rir),
       value: dropdownValue,
+      onSaved: (String? newValue) {
+        widget._setting.setRir(newValue!);
+      },
       onChanged: (String? newValue) {
         setState(() {
           dropdownValue = newValue!;
-          widget._setting.setRir(newValue);
         });
       },
-      items: Setting.possibleValues.map<DropdownMenuItem<String>>((String value) {
+      items: Setting.possibleRiRValues.map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
           value: value,
           child: Text(value),

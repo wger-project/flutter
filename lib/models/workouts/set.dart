@@ -60,6 +60,23 @@ class Set {
     }
   }
 
+  /// Return only one setting object per exercise, this makes rendering workout
+  /// plans easier and the gym mode uses the synthetic settings anyway.
+  List<Setting> get settingsFiltered {
+    List<Setting> out = [];
+
+    settings.forEach((setting) {
+      final foundSettings = out.where(
+        (element) => element.exerciseId == setting.exerciseId,
+      );
+
+      if (foundSettings.length == 0) {
+        out.add(setting);
+      }
+    });
+    return out;
+  }
+
   void addExercise(Exercise exercise) {
     exercisesObj.add(exercise);
     exercisesIds.add(exercise.id);

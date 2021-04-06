@@ -117,7 +117,7 @@ class StartPage extends StatelessWidget {
             (set) {
               return Column(
                 children: [
-                  ...set.settings.map((s) {
+                  ...set.settingsFiltered.map((s) {
                     return Column(
                       children: [
                         Text(s.exerciseObj.name, style: TextStyle(fontWeight: FontWeight.bold)),
@@ -142,14 +142,13 @@ class StartPage extends StatelessWidget {
   }
 }
 
-class LogPage extends StatelessWidget {
+class LogPage extends StatefulWidget {
   PageController _controller;
   Setting _setting;
   Exercise _exercise;
   WorkoutPlan _workoutPlan;
   Log _log = Log.empty();
 
-  final _form = GlobalKey<FormState>();
   final _repsController = TextEditingController();
   final _weightController = TextEditingController();
   final _rirController = TextEditingController();
@@ -175,6 +174,14 @@ class LogPage extends StatelessWidget {
   }
 
   @override
+  _LogPageState createState() => _LogPageState();
+}
+
+class _LogPageState extends State<LogPage> {
+  final _form = GlobalKey<FormState>();
+  String rirValue = Setting.defaultRiR;
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
@@ -184,7 +191,7 @@ class LogPage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: Text(
-              _exercise.name,
+              widget._exercise.name,
               style: Theme.of(context).textTheme.headline5,
             ),
           ),
@@ -196,11 +203,28 @@ class LogPage extends StatelessWidget {
               children: [
                 TextFormField(
                   decoration: InputDecoration(labelText: AppLocalizations.of(context)!.repetitions),
-                  controller: _repsController,
+                  controller: widget._repsController,
                   keyboardType: TextInputType.number,
                   onFieldSubmitted: (_) {},
                   onSaved: (newValue) {
-                    _log.reps = int.parse(newValue!);
+                    widget._log.reps = int.parse(newValue!);
+                  },
+                  validator: (value) {
+                    try {
+                      int.parse(value!);
+                    } catch (error) {
+                      return AppLocalizations.of(context)!.enterValidNumber;
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  decoration: InputDecoration(labelText: AppLocalizations.of(context)!.weight),
+                  controller: widget._weightController,
+                  keyboardType: TextInputType.number,
+                  onFieldSubmitted: (_) {},
+                  onSaved: (newValue) {
+                    widget._log.weight = double.parse(newValue!);
                   },
                   validator: (value) {
                     try {
@@ -211,21 +235,23 @@ class LogPage extends StatelessWidget {
                     return null;
                   },
                 ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: AppLocalizations.of(context)!.weight),
-                  controller: _weightController,
-                  keyboardType: TextInputType.number,
-                  onFieldSubmitted: (_) {},
-                  onSaved: (newValue) {
-                    _log.weight = double.parse(newValue!);
-                  },
-                ),
-                TextFormField(
+                DropdownButtonFormField(
                   decoration: InputDecoration(labelText: AppLocalizations.of(context)!.rir),
-                  controller: _rirController,
-                  keyboardType: TextInputType.number,
-                  onFieldSubmitted: (_) {},
-                  onSaved: (newValue) {},
+                  value: rirValue,
+                  onSaved: (String? newValue) {
+                    widget._log.rir = newValue!;
+                  },
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      rirValue = newValue!;
+                    });
+                  },
+                  items: Setting.possibleRiRValues.map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
                 ),
                 /*
                   TextFormField(
@@ -252,10 +278,10 @@ class LogPage extends StatelessWidget {
 
                     // Save the entry on the server
                     try {
-                      await Provider.of<WorkoutPlans>(context, listen: false).addLog(_log);
+                      await Provider.of<WorkoutPlans>(context, listen: false).addLog(widget._log);
                       //final snackBar = SnackBar(content: Text('Yay! A SnackBar!'));
                       //ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                      _controller.nextPage(
+                      widget._controller.nextPage(
                         duration: Duration(milliseconds: 200),
                         curve: Curves.bounceIn,
                       );
@@ -269,7 +295,7 @@ class LogPage extends StatelessWidget {
               ],
             ),
           ),
-          NavigationFooter(_controller),
+          NavigationFooter(widget._controller),
         ],
       ),
     );

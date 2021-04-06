@@ -258,7 +258,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
           day.sets.forEach((set) {
             out.add(Column(
               children: [
-                ...set.settings.map((s) {
+                ...set.settingsFiltered.map((s) {
                   return Column(
                     children: [
                       Text(s.exerciseObj.name),

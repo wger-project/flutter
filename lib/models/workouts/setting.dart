@@ -8,7 +8,8 @@ part 'setting.g.dart';
 
 @JsonSerializable()
 class Setting {
-  static final possibleValues = ['1', '1.5', '2', '2.5', '3', '3.5'];
+  static final possibleRiRValues = ['1', '1.5', '2', '2.5', '3', '3.5'];
+  static final defaultRiR = '2';
 
   @JsonKey(required: true)
   int? id;
@@ -87,7 +88,7 @@ class Setting {
   }
 
   void setRir(String rir) {
-    if (possibleValues.contains(rir)) {
+    if (possibleRiRValues.contains(rir)) {
       this.rir = rir;
     } else {
       throw Exception('RiR value not allowed');
