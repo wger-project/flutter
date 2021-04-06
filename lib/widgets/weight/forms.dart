@@ -13,11 +13,11 @@ class WeightForm extends StatelessWidget {
   final dateController = TextEditingController(text: toDate(DateTime.now()).toString());
   final weightController = TextEditingController();
 
-  WeightEntry _weightEntry;
+  late WeightEntry _weightEntry;
 
-  WeightForm([weightEntry]) {
+  WeightForm([WeightEntry? weightEntry]) {
     this._weightEntry = weightEntry ?? WeightEntry();
-    weightController.text = _weightEntry.weight == null ? '' : _weightEntry.weight.toString();
+    weightController.text = _weightEntry.id == null ? '' : _weightEntry.weight.toString();
   }
 
   @override
@@ -28,7 +28,7 @@ class WeightForm extends StatelessWidget {
         children: [
           // Weight date
           TextFormField(
-            decoration: InputDecoration(labelText: AppLocalizations.of(context).date),
+            decoration: InputDecoration(labelText: AppLocalizations.of(context)!.date),
             controller: dateController,
             onTap: () async {
               // Stop keyboard from appearing
@@ -42,44 +42,44 @@ class WeightForm extends StatelessWidget {
                 lastDate: DateTime.now(),
               );
 
-              dateController.text = toDate(pickedDate);
+              dateController.text = toDate(pickedDate)!;
             },
             onSaved: (newValue) {
-              _weightEntry.date = DateTime.parse(newValue);
+              _weightEntry.date = DateTime.parse(newValue!);
             },
             onFieldSubmitted: (_) {},
           ),
 
           // Weight
           TextFormField(
-            decoration: InputDecoration(labelText: AppLocalizations.of(context).weight),
+            decoration: InputDecoration(labelText: AppLocalizations.of(context)!.weight),
             controller: weightController,
             keyboardType: TextInputType.number,
             onFieldSubmitted: (_) {},
             onSaved: (newValue) {
-              _weightEntry.weight = double.parse(newValue);
+              _weightEntry.weight = double.parse(newValue!);
             },
             validator: (value) {
-              if (value.isEmpty) {
-                return 'Please enter a weight';
+              if (value!.isEmpty) {
+                return AppLocalizations.of(context)!.enterValue;
               }
               try {
                 double.parse(value);
               } catch (error) {
-                return 'Please enter a valid number';
+                return AppLocalizations.of(context)!.enterValidNumber;
               }
               return null;
             },
           ),
           ElevatedButton(
-            child: Text(AppLocalizations.of(context).save),
+            child: Text(AppLocalizations.of(context)!.save),
             onPressed: () async {
               // Validate and save the current values to the weightEntry
-              final isValid = _form.currentState.validate();
+              final isValid = _form.currentState!.validate();
               if (!isValid) {
                 return;
               }
-              _form.currentState.save();
+              _form.currentState!.save();
 
               // Save the entry on the server
               try {

@@ -21,7 +21,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/nutrition.dart';
-import 'package:wger/widgets/core/bottom_sheet.dart';
+import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/nutritional_plan_detail.dart';
 
@@ -36,7 +36,7 @@ class NutritionalPlanScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _nutritionalPlan = ModalRoute.of(context).settings.arguments as NutritionalPlan;
+    final _nutritionalPlan = ModalRoute.of(context)!.settings.arguments as NutritionalPlan /*!*/;
 
     return Scaffold(
       //appBar: getAppBar(nutritionalPlan),
@@ -53,16 +53,19 @@ class NutritionalPlanScreen extends StatelessWidget {
                   onSelected: (value) {
                     // Edit
                     if (value == NutritionalPlanOptions.edit) {
-                      showFormBottomSheet(
+                      Navigator.pushNamed(
                         context,
-                        AppLocalizations.of(context).edit,
-                        PlanForm(_nutritionalPlan),
+                        FormScreen.routeName,
+                        arguments: FormScreenArguments(
+                          AppLocalizations.of(context)!.edit,
+                          PlanForm(_nutritionalPlan),
+                        ),
                       );
 
                       // Delete
                     } else if (value == NutritionalPlanOptions.delete) {
                       Provider.of<Nutrition>(context, listen: false)
-                          .deletePlan(_nutritionalPlan.id);
+                          .deletePlan(_nutritionalPlan.id!);
                       Navigator.of(context).pushNamed(NutritionalPlanScreen.routeName);
                     }
                   },
@@ -70,12 +73,12 @@ class NutritionalPlanScreen extends StatelessWidget {
                     return [
                       PopupMenuItem<NutritionalPlanOptions>(
                         value: NutritionalPlanOptions.edit,
-                        child: Text(AppLocalizations.of(context).edit),
+                        child: Text(AppLocalizations.of(context)!.edit),
                       ),
                       const PopupMenuDivider(),
                       PopupMenuItem<NutritionalPlanOptions>(
                         value: NutritionalPlanOptions.delete,
-                        child: Text(AppLocalizations.of(context).delete),
+                        child: Text(AppLocalizations.of(context)!.delete),
                       ),
                     ];
                   },

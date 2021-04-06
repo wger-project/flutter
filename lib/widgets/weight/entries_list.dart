@@ -19,18 +19,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:wger/providers/body_weight.dart';
-import 'package:wger/widgets/core/bottom_sheet.dart';
+import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/weight/charts.dart';
 import 'package:wger/widgets/weight/forms.dart';
 
 class WeightEntriesList extends StatelessWidget {
-  final BodyWeight _weightProvider;
-
-  WeightEntriesList(this._weightProvider);
-
   @override
   Widget build(BuildContext context) {
+    final _weightProvider = Provider.of<BodyWeight>(context, listen: false);
+
     return Column(
       children: [
         Container(
@@ -50,7 +49,7 @@ class WeightEntriesList extends StatelessWidget {
                 onDismissed: (direction) {
                   if (direction == DismissDirection.endToStart) {
                     // Delete entry from DB
-                    _weightProvider.deleteEntry(currentEntry.id);
+                    _weightProvider.deleteEntry(currentEntry.id!);
 
                     // and inform the user
                     Scaffold.of(context).showSnackBar(
@@ -66,10 +65,13 @@ class WeightEntriesList extends StatelessWidget {
                 confirmDismiss: (direction) async {
                   // Edit entry
                   if (direction == DismissDirection.startToEnd) {
-                    showFormBottomSheet(
+                    Navigator.pushNamed(
                       context,
-                      AppLocalizations.of(context).edit,
-                      WeightForm(currentEntry),
+                      FormScreen.routeName,
+                      arguments: FormScreenArguments(
+                        AppLocalizations.of(context)!.edit,
+                        WeightForm(currentEntry),
+                      ),
                     );
                     return false;
                   }
@@ -103,8 +105,11 @@ class WeightEntriesList extends StatelessWidget {
                 child: Card(
                   child: ListTile(
                     onTap: () {},
-                    title: Text(DateFormat.yMd().format(currentEntry.date).toString()),
-                    subtitle: Text('${currentEntry.weight} kg'),
+                    title: Text('${currentEntry.weight} kg'),
+                    subtitle: Text(
+                      DateFormat.yMd(Localizations.localeOf(context).languageCode)
+                          .format(currentEntry.date),
+                    ),
                   ),
                 ),
               );

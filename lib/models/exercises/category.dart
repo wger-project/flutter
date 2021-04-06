@@ -29,8 +29,8 @@ class ExerciseCategory {
   final String name;
 
   ExerciseCategory({
-    this.id,
-    this.name,
+    required this.id,
+    required this.name,
   });
 
   @override

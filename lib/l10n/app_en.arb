@@ -1,5 +1,65 @@
 {
   "@@last_modified": "2020-11-11T15:04:05.523531",
+  "login": "Log in",
+  "@login": {
+    "description": "Text for login button"
+  },
+  "register": "Register",
+  "@register": {
+    "description": "Text for registration button"
+  },
+  "useDefaultServer": "Use default server",
+  "@useDefaultServer": {
+    "description": "Toggle button allowing users to switch between the default and a custom wger server"
+  },
+  "useCustomServer": "Use custom server",
+  "@useCustomServer": {
+    "description": "Toggle button allowing users to switch between the default and a custom wger server"
+  },
+  "invalidUrl": "Please enter a valid URL",
+  "@invalidUrl": {
+    "description": "Error message when the user enters an invalid URL, e.g. in the login form"
+  },
+  "passwordsDontMatch": "The passwords don't match",
+  "@passwordsDontMatch": {
+    "description": "Error message when the user enters two different passwords during registration"
+  },
+  "passwordTooShort": "The password is too short",
+  "@passwordTooShort": {
+    "description": "Error message when the user a password that is too short"
+  },
+  "password": "Password",
+  "@password": {},
+  "confirmPassword": "Confirm password",
+  "@confirmPassword": {},
+  "invalidEmail": "Please enter a valid e-mail address",
+  "@invalidEmail": {
+    "description": "Error message when the user enters an invalid email"
+  },
+  "email": "E-mail address",
+  "@email": {},
+  "username": "Username",
+  "@username": {},
+  "invalidUsername": "Please enter a valid username",
+  "@invalidUsername": {
+    "description": "Error message when the user enters an invalid username"
+  },
+  "customServerUrl": "URL of the wger instance",
+  "@customServerUrl": {
+    "description": "Label in the form where the users can enter their own wger instance"
+  },
+  "customServerHint": "Enter the the address of your own server, otherwise the default one will be used",
+  "@customServerHint": {
+    "description": "Hint text for the form where the users can enter their own wger instance"
+  },
+  "reset": "Reset",
+  "@reset": {
+    "description": "Button text allowing the user to reset the entered values to the default"
+  },
+  "registerInstead": "Register instead",
+  "@registerInstead": {},
+  "loginInstead": "Log in instead",
+  "@loginInstead": {},
   "labelWorkoutPlans": "Workout plans",
   "@labelWorkoutPlans": {
     "description": "Title for screen workout plans"
@@ -24,14 +84,38 @@
   "@newWorkout": {
     "description": "Header when adding a new workout"
   },
+  "noWorkoutPlans": "You have no workout plans",
+  "@noWorkoutPlans": {
+    "description": "Message shown when the user has no workout plans"
+  },
+  "addExercise": "Add exercise to this day",
   "repetitions": "Repetitions",
   "@repetitions": {
     "description": "Repetitions for an exercise set"
+  },
+  "reps": "Reps",
+  "@reps": {
+    "description": "Shorthand for repetitions, used when space constraints are tighter"
   },
   "rir": "RiR",
   "@rir": {
     "description": "Shorthand for Repetitions In Reserve"
   },
+  "weightUnit": "Weight unit",
+  "repetitionUnit": "Repetition unit",
+  "set": "Set",
+  "@set": {
+    "description": "A set in a workout plan"
+  },
+  "setNr": "Set {nr}",
+  "@setNr": {
+    "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {}
+    }
+  },
+  "sameRepetitions": "If you do the same repetitions and weight for all sets you can just fill in one row. For example for 4 sets just enter one \"10\" for the repetitions, this automatically becomes \"4 x 10\".",
   "comment": "Comment",
   "@comment": {
     "description": "Comment, additional information"
@@ -54,10 +138,16 @@
   "@newSet": {
     "description": "Header when adding a new set to a workout day"
   },
+  "selectExercises": "If you want to do a superset you can search for several exercises, they will be grouped together",
   "gymMode": "Gym mode",
   "@gymMode": {
     "description": "Label when starting the gym mode"
   },
+  "todaysWorkout": "Your workout today",
+  "logHelpEntries": "If on a single day there is more than one entry with the same number of repetitions, but different weights, only the entry with the higher weight is shown in the diagram.",
+  "@logHelpEntries": {},
+  "logHelpEntriesUnits": "Note that only entries with a weight unit (kg or lb) and repetitions are charted, other combinations such as time or until failure are ignored here.",
+  "@logHelpEntriesUnits": {},
   "description": "Description",
   "@description": {},
   "save": "Save",
@@ -78,6 +168,10 @@
   "@nutritionalDiary": {},
   "nutritionalPlans": "Nutritional plans",
   "@nutritionalPlans": {},
+  "noNutritionalPlans": "You have no nutritional plans",
+  "@noNutritionalPlans": {
+    "description": "Message shown when the user has no nutritional plans"
+  },
   "anErrorOccurred": "An Error Occurred!",
   "@anErrorOccurred": {},
   "dismiss": "Dismiss",
@@ -138,9 +232,17 @@
   "@amount": {
     "description": "The amount (e.g. in grams) of an ingredient in a meal"
   },
+  "unit": "Unit",
+  "@unit": {
+    "description": "The unit used for a repetition (kg, time, etc.)"
+  },
   "newEntry": "New entry",
   "@newEntry": {
     "description": "Title when adding a new entry such as a weight or log entry"
+  },
+  "noWeightEntries": "You have no weight entries",
+  "@noWeightEntries": {
+    "description": "Message shown when the user has no logged weight entries"
   },
   "edit": "Edit",
   "@edit": {},
@@ -150,14 +252,61 @@
   },
   "delete": "Delete",
   "@delete": {},
+  "confirmDelete": "Are you sure you want to delete '{toDelete}'?",
+  "@confirmDelete": {
+    "description": "Confirmation text before the user deletes an object",
+    "type": "text",
+    "placeholders": {
+      "toDelete": {}
+    }
+  },
   "newNutritionalPlan": "New nutritional plan",
   "@newNutritionalPlan": {},
   "toggleDetails": "Toggle details",
   "@toggleDetails": {
     "description": "Switch to toggle detail / overview"
   },
-  "aboutText": "wger is copylefted libre software, licensed GPLv3+ and available on GitHub:",
+  "aboutText": "wger is copylefted libre software, licensed AGPLv3+ and available on GitHub:",
   "@aboutText": {
     "description": "Text in the about dialog"
+  },
+  "calendar": "Calendar",
+  "@calendar": {},
+  "goToToday": "Go to today",
+  "@goToToday": {
+    "description": "Label on button to jump back to 'today' in the calendar widget"
+  },
+  "enterValue": "Please enter a value",
+  "@enterValue": {
+    "description": "Error message when the user hasn't entered a value on a required field"
+  },
+  "selectExercise": "Please select an exercise",
+  "@selectExercise": {
+    "description": "Error message when the user hasn't selected an exercise in the form"
+  },
+  "enterCharacters": "Please enter between {min} and {max} characters",
+  "@enterCharacters": {
+    "description": "Error message when the user hasn't entered the correct number of characters in a form",
+    "type": "text",
+    "placeholders": {
+      "min": {},
+      "max": {}
+    }
+  },
+  "nrOfSets": "Number of sets: {nrOfSets}",
+  "@nrOfSets": {
+    "description": "Label shown on the slider where the user selects the nr of sets",
+    "type": "text",
+    "placeholders": {
+      "nrOfSets": {}
+    }
+  },
+  "enterValidNumber": "Please enter a valid number",
+  "@enterValidNumber": {
+    "description": "Error message when the user has submitted an invalid number (e.g. '3,.,.,.')"
+  },
+  "selectIngredient": "Please select an ingredient",
+  "@selectIngredient": {
+    "description": "Error message when the user hasn't selected an ingredient from the autocompleter"
   }
 }

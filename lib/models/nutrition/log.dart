@@ -29,45 +29,46 @@ part 'log.g.dart';
 @JsonSerializable()
 class Log {
   @JsonKey(required: true)
-  int id;
+  int? id;
 
   @JsonKey(required: true, name: 'plan')
   int planId;
 
   @JsonKey(required: true)
-  DateTime datetime;
+  late DateTime datetime;
 
-  String comment;
+  String? comment;
 
   @JsonKey(required: true, name: 'ingredient')
-  int ingredientId;
+  late int ingredientId;
 
-  Ingredient ingredientObj;
+  @JsonKey(ignore: true)
+  late Ingredient ingredientObj;
 
   @JsonKey(required: true, name: 'weight_unit')
-  int weightUnit;
+  late int weightUnitId;
 
-  IngredientWeightUnit weightUnitObj;
+  @JsonKey(ignore: true)
+  IngredientWeightUnit? weightUnitObj;
 
   @JsonKey(required: true, fromJson: toNum)
-  num amount;
+  late num amount;
 
   Log({
     this.id,
-    this.ingredientId,
-    this.ingredientObj,
-    this.weightUnit,
-    this.weightUnitObj,
-    this.amount,
-    this.planId,
-    this.datetime,
+    required this.ingredientId,
+    required this.weightUnitId,
+    required this.amount,
+    required this.planId,
+    required this.datetime,
     this.comment,
   });
 
-  Log.fromMealItem(MealItem mealItem) {
+  Log.fromMealItem(MealItem mealItem, this.planId, [DateTime? dateTime]) {
     this.ingredientId = mealItem.ingredientId;
     this.ingredientObj = mealItem.ingredientObj;
-    this.weightUnit = null;
+    this.weightUnitId = mealItem.weightUnitId;
+    this.datetime = dateTime ?? DateTime.now();
     this.amount = mealItem.amount;
   }
 
@@ -80,25 +81,18 @@ class Log {
     // This is already done on the server. It might be better to read it from there.
     var out = NutritionalValues();
 
-    final weight =
-        this.weightUnitObj == null ? amount : amount * weightUnitObj.amount * weightUnitObj.grams;
+    final weight = amount;
+    // final weight =
+    // this.weightUnitObj == null ? amount : amount * weightUnitObj.amount * weightUnitObj.grams;
 
     out.energy = ingredientObj.energy * weight / 100;
     out.protein = ingredientObj.protein * weight / 100;
     out.carbohydrates = ingredientObj.carbohydrates * weight / 100;
+    out.carbohydratesSugar = ingredientObj.carbohydratesSugar * weight / 100;
     out.fat = ingredientObj.fat * weight / 100;
-
-    if (ingredientObj.fatSaturated != null) {
-      out.fatSaturated = ingredientObj.fatSaturated * weight / 100;
-    }
-
-    if (ingredientObj.fibres != null) {
-      out.fibres = ingredientObj.fibres * weight / 100;
-    }
-
-    if (ingredientObj.sodium != null) {
-      out.sodium = ingredientObj.sodium * weight / 100;
-    }
+    out.fatSaturated = ingredientObj.fatSaturated * weight / 100;
+    out.fibres = ingredientObj.fibres * weight / 100;
+    out.sodium = ingredientObj.sodium * weight / 100;
 
     return out;
   }

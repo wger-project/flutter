@@ -19,10 +19,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/providers/nutrition.dart';
-import 'package:wger/widgets/core/bottom_sheet.dart';
+import 'package:wger/screens/form_screen.dart';
+import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 
@@ -59,21 +61,25 @@ class _MealWidgetState extends State<MealWidget> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    MutedText(AppLocalizations.of(context).energy),
-                    MutedText(AppLocalizations.of(context).protein),
-                    MutedText(AppLocalizations.of(context).carbohydrates),
-                    MutedText(AppLocalizations.of(context).fat),
+                    MutedText(AppLocalizations.of(context)!.energy),
+                    MutedText(AppLocalizations.of(context)!.protein),
+                    MutedText(AppLocalizations.of(context)!.carbohydrates),
+                    MutedText(AppLocalizations.of(context)!.fat),
                   ],
                 ),
               ),
             ...widget._meal.mealItems.map((item) => MealItemWidget(item, _expanded)).toList(),
             OutlinedButton(
-              child: Text(AppLocalizations.of(context).addIngredient),
+              child: Text(AppLocalizations.of(context)!.addIngredient),
               onPressed: () {
-                showFormBottomSheet(
+                Navigator.pushNamed(
                   context,
-                  AppLocalizations.of(context).addIngredient,
-                  MealItemForm(widget._meal),
+                  FormScreen.routeName,
+                  arguments: FormScreenArguments(
+                    AppLocalizations.of(context)!.addIngredient,
+                    MealItemForm(widget._meal),
+                    true,
+                  ),
                 );
               },
             ),
@@ -92,50 +98,60 @@ class MealItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String unit = _item.weightUnit == null
-        ? AppLocalizations.of(context).g
-        : _item.weightUnit.weightUnit.name;
+    String unit = _item.weightUnitId == null
+        ? AppLocalizations.of(context)!.g
+        : _item.weightUnitObj.weightUnit.name;
     final values = _item.nutritionalValues;
 
-    return InkWell(
-      onLongPress: () {
-        // Delete the meal item
-        Provider.of<Nutrition>(context, listen: false).deleteMealItem(_item);
+    return Container(
+      padding: EdgeInsets.all(5),
+      child: Column(
+        children: [
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(vertical: 5),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                    child: Text(
+                  '${_item.amount.toStringAsFixed(0)}$unit ${_item.ingredientObj.name}',
+                  overflow: TextOverflow.ellipsis,
+                )),
+                if (_expanded)
+                  IconButton(
+                    icon: Icon(Icons.delete),
+                    iconSize: ICON_SIZE_SMALL,
+                    onPressed: () {
+                      // Delete the meal item
+                      Provider.of<Nutrition>(context, listen: false).deleteMealItem(_item);
 
-        // and inform the user
-        Scaffold.of(context).showSnackBar(SnackBar(
-            content: Text(
-          AppLocalizations.of(context).successfullyDeleted,
-          textAlign: TextAlign.center,
-        )));
-      },
-      child: Container(
-        padding: EdgeInsets.all(5),
-        child: Column(
-          children: [
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(vertical: 5),
-              child: Text(
-                '${_item.amount.toStringAsFixed(0)}$unit ${_item.ingredientObj.name}',
-                textAlign: TextAlign.left,
-              ),
+                      // and inform the user
+                      Scaffold.of(context).showSnackBar(
+                        SnackBar(
+                            content: Text(
+                          AppLocalizations.of(context)!.successfullyDeleted,
+                          textAlign: TextAlign.center,
+                        )),
+                      );
+                    },
+                  ),
+              ],
             ),
-            if (_expanded)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  MutedText(
-                      '${values.energy.toStringAsFixed(0)} ${AppLocalizations.of(context).kcal}'),
-                  MutedText(
-                      '${values.protein.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
-                  MutedText(
-                      '${values.carbohydrates.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
-                  MutedText('${values.fat.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
-                ],
-              ),
-          ],
-        ),
+          ),
+          if (_expanded)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                MutedText(
+                    '${values.energy.toStringAsFixed(0)} ${AppLocalizations.of(context)!.kcal}'),
+                MutedText('${values.protein.toStringAsFixed(0)}${AppLocalizations.of(context)!.g}'),
+                MutedText(
+                    '${values.carbohydrates.toStringAsFixed(0)}${AppLocalizations.of(context)!.g}'),
+                MutedText('${values.fat.toStringAsFixed(0)}${AppLocalizations.of(context)!.g}'),
+              ],
+            ),
+        ],
       ),
     );
   }
@@ -148,10 +164,8 @@ class DismissibleMealHeader extends StatelessWidget {
   const DismissibleMealHeader(
     this._expanded,
     this._toggle, {
-    Key key,
-    @required Meal meal,
-  })  : _meal = meal,
-        super(key: key);
+    required Meal meal,
+  }) : _meal = meal;
 
   final Meal _meal;
 
@@ -159,31 +173,39 @@ class DismissibleMealHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onLongPress: () {
-        showFormBottomSheet(
+        Navigator.pushNamed(
           context,
-          AppLocalizations.of(context).edit,
-          MealForm(_meal.plan, _meal),
+          FormScreen.routeName,
+          arguments: FormScreenArguments(
+            AppLocalizations.of(context)!.edit,
+            MealForm(_meal.planId, _meal),
+          ),
         );
       },
       child: Dismissible(
         key: Key(_meal.id.toString()),
         child: Container(
-            width: double.infinity,
-            decoration: BoxDecoration(color: Colors.black12),
-            padding: const EdgeInsets.all(10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _meal.time != null ? Text(_meal.time.format(context)) : Text('aaaa'),
-                IconButton(
-                  visualDensity: VisualDensity.compact,
-                  icon: _expanded ? Icon(Icons.expand_less) : Icon(Icons.expand_more),
-                  onPressed: () {
-                    _toggle();
-                  },
-                ),
-              ],
-            )),
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(color: Colors.white),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _meal.time != null
+                  ? Text(
+                      _meal.time.format(context),
+                      style: Theme.of(context).textTheme.headline5,
+                    )
+                  : Text(''),
+              IconButton(
+                visualDensity: VisualDensity.compact,
+                icon: _expanded ? Icon(Icons.expand_less) : Icon(Icons.expand_more),
+                onPressed: () {
+                  _toggle();
+                },
+              ),
+            ],
+          ),
+        ),
         secondaryBackground: Container(
           color: Theme.of(context).accentColor,
           padding: EdgeInsets.only(right: 10),
@@ -198,11 +220,11 @@ class DismissibleMealHeader extends StatelessWidget {
           ),
         ),
         background: Container(
-          color: Theme.of(context).primaryColor,
+          color: wgerPrimaryButtonColor, //Theme.of(context).primaryColor,
           alignment: Alignment.centerLeft,
           padding: EdgeInsets.only(left: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
                 'Log this meal',
@@ -225,7 +247,7 @@ class DismissibleMealHeader extends StatelessWidget {
             Scaffold.of(context).showSnackBar(
               SnackBar(
                 content: Text(
-                  AppLocalizations.of(context).successfullyDeleted,
+                  AppLocalizations.of(context)!.successfullyDeleted,
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -237,7 +259,7 @@ class DismissibleMealHeader extends StatelessWidget {
             Scaffold.of(context).showSnackBar(
               SnackBar(
                 content: Text(
-                  AppLocalizations.of(context).mealLogged,
+                  AppLocalizations.of(context)!.mealLogged,
                   textAlign: TextAlign.center,
                 ),
               ),

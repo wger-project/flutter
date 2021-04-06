@@ -26,7 +26,7 @@ part 'workout_plan.g.dart';
 @JsonSerializable()
 class WorkoutPlan {
   @JsonKey(required: true)
-  final int id;
+  int? id;
 
   @JsonKey(required: true, name: 'creation_date')
   DateTime creationDate;
@@ -34,18 +34,22 @@ class WorkoutPlan {
   @JsonKey(required: true, name: 'comment')
   String description;
 
-  @JsonKey(required: false, defaultValue: [], name: 'days')
+  @JsonKey(ignore: true)
   List<Day> days = [];
 
-  @JsonKey(ignore: true, defaultValue: [])
+  @JsonKey(ignore: true)
   List<Log> logs = [];
 
   WorkoutPlan({
     this.id,
-    this.creationDate,
-    this.description,
-    this.days,
-  });
+    required this.creationDate,
+    required this.description,
+    List<Day>? days,
+    List<Log>? logs,
+  }) {
+    this.days = days ?? [];
+    this.logs = logs ?? [];
+  }
 
   // Boilerplate
   factory WorkoutPlan.fromJson(Map<String, dynamic> json) => _$WorkoutPlanFromJson(json);

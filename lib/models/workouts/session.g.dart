@@ -15,15 +15,14 @@ WorkoutSession _$WorkoutSessionFromJson(Map<String, dynamic> json) {
     'time_start',
     'time_end'
   ]);
-  return WorkoutSession(
-    id: json['id'] as int,
-    workoutId: json['workout'] as int,
-    date: json['date'] == null ? null : DateTime.parse(json['date'] as String),
-    impression: toNum(json['impression'] as String),
-    notes: json['notes'] as String ?? '',
-    timeStart: stringToTime(json['time_start'] as String),
-    timeEnd: stringToTime(json['time_end'] as String),
-  );
+  return WorkoutSession()
+    ..id = json['id'] as int?
+    ..workoutId = json['workout'] as int
+    ..date = DateTime.parse(json['date'] as String)
+    ..impression = toNum(json['impression'] as String?)
+    ..notes = json['notes'] as String? ?? ''
+    ..timeStart = stringToTime(json['time_start'] as String?)
+    ..timeEnd = stringToTime(json['time_end'] as String?);
 }
 
 Map<String, dynamic> _$WorkoutSessionToJson(WorkoutSession instance) =>

@@ -42,8 +42,11 @@ class Exercise {
   @JsonKey(required: true)
   final String description;
 
-  @JsonKey(required: true)
-  final ExerciseCategory category;
+  @JsonKey(required: false)
+  final int categoryId;
+
+  @JsonKey(required: true, name: 'category')
+  late final ExerciseCategory categoryObj;
 
   @JsonKey(required: true)
   List<Muscle> muscles = [];
@@ -61,21 +64,31 @@ class Exercise {
   List<Comment> tips = [];
 
   Exercise({
-    this.id,
-    this.uuid,
-    this.creationDate,
-    this.name,
-    this.description,
-    this.category,
-    this.muscles,
-    this.musclesSecondary,
-    this.equipment,
-    this.images,
-    this.tips,
-  });
+    required this.id,
+    required this.uuid,
+    required this.creationDate,
+    required this.name,
+    required this.description,
+    required this.categoryId,
+    List<Muscle>? muscles,
+    List<Muscle>? musclesSecondary,
+    List<Equipment>? equipment,
+    List<ExerciseImage>? images,
+    List<Comment>? tips,
+  }) {
+    this.tips = tips ?? [];
+    this.images = images ?? [];
+    this.equipment = equipment ?? [];
+    this.musclesSecondary = musclesSecondary ?? [];
+    this.muscles = muscles ?? [];
+  }
 
-  ExerciseImage get getMainImage {
-    return images.firstWhere((image) => image.isMain);
+  ExerciseImage? get getMainImage {
+    try {
+      return images.firstWhere((image) => image.isMain);
+    } on StateError catch (e) {
+      return null;
+    }
   }
 
   // Boilerplate

@@ -23,6 +23,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/http_exception.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/log.dart';
@@ -33,10 +34,7 @@ import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/base_provider.dart';
 
 class Nutrition extends WgerBaseProvider with ChangeNotifier {
-  static const DAYS_TO_CACHE = 20;
-
   static const _nutritionalPlansPath = 'nutritionplan';
-  static const _nutritionalPlansInfoPath = 'nutritionplaninfo';
   static const _mealPath = 'meal';
   static const _mealItemPath = 'mealitem';
   static const _ingredientPath = 'ingredient';
@@ -46,7 +44,7 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
   List<NutritionalPlan> _plans = [];
   List<Ingredient> _ingredients = [];
 
-  Nutrition(Auth auth, List<NutritionalPlan> entries, [http.Client client])
+  Nutrition(Auth auth, List<NutritionalPlan> entries, [http.Client? client])
       : this._plans = entries,
         super(auth, client);
 
@@ -56,7 +54,7 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
 
   /// Returns the current active nutritional plan. At the moment this is just
   /// the latest, but this might change in the future.
-  NutritionalPlan get currentPlan {
+  NutritionalPlan? get currentPlan {
     if (_plans.length > 0) {
       return _plans.first;
     }
@@ -66,42 +64,65 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
     return _plans.firstWhere((plan) => plan.id == id);
   }
 
-  Meal findMealById(int id) {
+  Meal? findMealById(int id) {
     for (var plan in _plans) {
-      var meal = plan.meals.firstWhere((plan) => plan.id == id, orElse: () {});
-      if (meal != null) {
-        return meal;
-      }
+      var meal = plan.meals.firstWhere((plan) => plan.id == id);
+      return meal;
     }
     return null;
   }
 
-  Future<List<NutritionalPlan>> fetchAndSetPlans() async {
-    final data =
-        await fetch(makeUrl(_nutritionalPlansInfoPath, query: {'ordering': '-creation_date'}));
-    final List<NutritionalPlan> loadedPlans = [];
+  /// Fetches and sets all nutritional plans
+  Future<void> fetchAndSetAllPlans() async {
+    final data = await fetch(makeUrl(_nutritionalPlansPath));
     for (final entry in data['results']) {
-      loadedPlans.add(NutritionalPlan.fromJson(entry));
+      await fetchAndSetPlan(entry['id']);
     }
-
-    _plans = loadedPlans;
-    notifyListeners();
-    return loadedPlans;
   }
 
+  /// Fetches and sets the given nutritional plan
   Future<NutritionalPlan> fetchAndSetPlan(int planId) async {
-    //fetchAndSet
-    final data = await fetch(makeUrl(_nutritionalPlansInfoPath, id: planId));
-    final plan = NutritionalPlan.fromJson(data);
+    // Plan
+    final planData = await fetch(makeUrl(_nutritionalPlansPath, id: planId));
+    final plan = NutritionalPlan.fromJson(planData);
+
+    // Meals
+    List<Meal> meals = [];
+    final mealsData = await fetch(makeUrl(_mealPath, query: {'plan': planId.toString()}));
+    for (final mealEntry in mealsData['results']) {
+      List<MealItem> mealItems = [];
+      final meal = Meal.fromJson(mealEntry);
+
+      // Meal items
+      final mealItemsData = await fetch(
+        makeUrl(_mealItemPath, query: {'meal': meal.id.toString()}),
+      );
+      for (final mealItemEntry in mealItemsData['results']) {
+        final mealItem = MealItem.fromJson(mealItemEntry);
+        mealItem.ingredientObj = await fetchIngredient(mealItem.ingredientId);
+        mealItems.add(mealItem);
+      }
+
+      meal.mealItems = mealItems;
+      meals.add(meal);
+    }
+    plan.meals = meals;
+
+    // Logs
     await fetchAndSetLogs(plan);
 
+    // ... and done
+    _plans.add(plan);
+    _plans.sort((a, b) => b.creationDate.compareTo(a.creationDate));
+    notifyListeners();
     return plan;
   }
 
   Future<NutritionalPlan> postPlan(NutritionalPlan planData) async {
     final data = await post(planData.toJson(), makeUrl(_nutritionalPlansPath));
     final plan = NutritionalPlan.fromJson(data);
-    _plans.insert(0, plan);
+    _plans.add(plan);
+    _plans.sort((a, b) => b.creationDate.compareTo(a.creationDate));
     notifyListeners();
     return plan;
   }
@@ -124,7 +145,7 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
       notifyListeners();
       throw WgerHttpException(response.body);
     }
-    existingPlan = null;
+    //existingPlan = null;
   }
 
   /// Adds a meal to a plan
@@ -151,25 +172,24 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
   /// Deletes a meal
   Future<void> deleteMeal(Meal meal) async {
     // Get the meal
-    var plan = findById(meal.plan);
+    var plan = findById(meal.planId);
     final mealIndex = plan.meals.indexWhere((e) => e.id == meal.id);
     var existingMeal = plan.meals[mealIndex];
     plan.meals.removeAt(mealIndex);
     notifyListeners();
 
     // Try to delete
-    final response = await deleteRequest(_mealPath, meal.id);
+    final response = await deleteRequest(_mealPath, meal.id!);
     if (response.statusCode >= 400) {
       plan.meals.insert(mealIndex, existingMeal);
       notifyListeners();
       throw WgerHttpException(response.body);
     }
-    existingMeal = null;
   }
 
   /// Adds a meal item to a meal
   Future<MealItem> addMealItem(MealItem mealItem, int mealId) async {
-    var meal = findMealById(mealId);
+    var meal = findMealById(mealId)!;
     final data = await post(mealItem.toJson(), makeUrl(_mealItemPath));
 
     mealItem = MealItem.fromJson(data);
@@ -183,43 +203,45 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
   /// Deletes a meal
   Future<void> deleteMealItem(MealItem mealItem) async {
     // Get the meal
-    var meal = findMealById(mealItem.meal);
+    var meal = findMealById(mealItem.mealId)!;
     final mealItemIndex = meal.mealItems.indexWhere((e) => e.id == mealItem.id);
     var existingMealItem = meal.mealItems[mealItemIndex];
     meal.mealItems.removeAt(mealItemIndex);
     notifyListeners();
 
     // Try to delete
-    final response = await deleteRequest(_mealItemPath, mealItem.id);
+    final response = await deleteRequest(_mealItemPath, mealItem.id!);
     if (response.statusCode >= 400) {
       meal.mealItems.insert(mealItemIndex, existingMealItem);
       notifyListeners();
       throw WgerHttpException(response.body);
     }
-    existingMealItem = null;
   }
 
   /// Fetch and return an ingredient
   ///
   /// If the ingredient is not known locally, it is fetched from the server
   Future<Ingredient> fetchIngredient(int ingredientId) async {
-    var ingredient = _ingredients.firstWhere((e) => e.id == ingredientId, orElse: () => null);
-    if (ingredient != null) {
+    Ingredient ingredient;
+
+    try {
+      ingredient = _ingredients.firstWhere((e) => e.id == ingredientId);
+      return ingredient;
+
+      // Get ingredient from the server and save to cache
+    } on StateError catch (e) {
+      final data = await fetch(makeUrl(_ingredientPath, id: ingredientId));
+      ingredient = Ingredient.fromJson(data);
+      _ingredients.add(ingredient);
+
+      final prefs = await SharedPreferences.getInstance();
+      final ingredientData = json.decode(prefs.getString('ingredientData')!);
+      ingredientData['ingredients'].add(ingredient.toJson());
+      prefs.setString('ingredientData', json.encode(ingredientData));
+      log("Saved ingredient '${ingredient.name}' to cache.");
+
       return ingredient;
     }
-
-    // Get ingredient from the server and save to cache
-    final data = await fetch(makeUrl(_ingredientPath, id: ingredientId));
-    ingredient = Ingredient.fromJson(data);
-    _ingredients.add(ingredient);
-
-    final prefs = await SharedPreferences.getInstance();
-    final ingredientData = json.decode(prefs.getString('ingredientData'));
-    ingredientData['ingredients'].add(ingredient.toJson());
-    prefs.setString('ingredientData', json.encode(ingredientData));
-    log("Saved ingredient '${ingredient.name}' to cache.");
-
-    return ingredient;
   }
 
   /// Loads the available ingredients from the local storage
@@ -227,7 +249,7 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
     // Load exercises from cache, if available
     final prefs = await SharedPreferences.getInstance();
     if (prefs.containsKey('ingredientData')) {
-      final ingredientData = json.decode(prefs.getString('ingredientData'));
+      final ingredientData = json.decode(prefs.getString('ingredientData')!);
       if (DateTime.parse(ingredientData['expiresIn']).isAfter(DateTime.now())) {
         ingredientData['ingredients'].forEach((e) => _ingredients.add(Ingredient.fromJson(e)));
         log("Read ${ingredientData['ingredients'].length} ingredients from cache. Valid till ${ingredientData['expiresIn']}");
@@ -247,6 +269,10 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
 
   /// Searches for an ingredient
   Future<List> searchIngredient(String name) async {
+    if (name.length <= 1) {
+      return [];
+    }
+
     // Send the request
     final response = await client.get(
       makeUrl(_ingredientSearchPath, query: {'term': name}),
@@ -269,10 +295,10 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
   Future<void> logMealToDiary(Meal meal) async {
     //var meal = findMealById(mealId);
     for (var item in meal.mealItems) {
-      Log log = Log.fromMealItem(item);
-      final plan = findById(meal.plan);
-      log.planId = plan.id;
-      log.datetime = DateTime.now();
+      final plan = findById(meal.planId);
+      Log log = Log.fromMealItem(item, plan.id!);
+      //log.planId = plan.id;
+      //log.datetime = DateTime.now();
 
       final data = await post(log.toJson(), makeUrl(_nutritionDiaryPath));
       log.id = data['id'];

@@ -28,23 +28,31 @@ part 'meal.g.dart';
 @JsonSerializable()
 class Meal {
   @JsonKey(required: false)
-  final int id;
+  late int? id;
 
-  @JsonKey(required: false)
-  int plan;
+  @JsonKey(name: 'plan')
+  late int planId;
 
-  @JsonKey(required: true, toJson: timeToString, fromJson: stringToTime)
-  TimeOfDay time;
+  @JsonKey(toJson: timeToString, fromJson: stringToTime)
+  late TimeOfDay time;
 
-  @JsonKey(required: false, name: 'meal_items', defaultValue: [])
+  @JsonKey(ignore: true, name: 'meal_items', defaultValue: [])
   List<MealItem> mealItems = [];
 
   Meal({
     this.id,
-    this.plan,
-    this.time,
-    this.mealItems,
-  });
+    int? plan,
+    TimeOfDay? time,
+    List<MealItem>? mealItems,
+  }) {
+    if (plan != null) {
+      this.planId = plan;
+    }
+
+    this.mealItems = mealItems ?? [];
+
+    this.time = time ?? TimeOfDay.now();
+  }
 
   // Boilerplate
   factory Meal.fromJson(Map<String, dynamic> json) => _$MealFromJson(json);

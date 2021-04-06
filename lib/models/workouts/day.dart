@@ -1,37 +1,42 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/models/workouts/set.dart';
-import 'package:wger/models/workouts/workout_plan.dart';
 
 part 'day.g.dart';
 
 @JsonSerializable()
 class Day {
   @JsonKey(required: true)
-  final int id;
-
-  @JsonKey(required: true)
-  String description;
-
-  @JsonKey(required: false, name: 'day', defaultValue: [])
-  List<int> daysOfWeek = [];
-
-  //@JsonKey(required: false)
-  List<Set> sets = [];
+  int? id;
 
   @JsonKey(required: true, name: 'training')
-  int workoutId;
+  late int workoutId;
 
-  //@JsonKey(required: true, name: 'training')
-  WorkoutPlan workout;
+  @JsonKey(required: true)
+  late String description;
 
-  Day({
-    this.id,
-    this.workoutId,
-    this.description,
-    this.daysOfWeek,
-    this.sets,
+  @JsonKey(required: true, name: 'day')
+  List<int> daysOfWeek = [];
+
+  @JsonKey(ignore: true)
+  List<Set> sets = [];
+
+  //@JsonKey(ignore: true)
+  //late WorkoutPlan workout;
+
+  Day() {
+    this.daysOfWeek = [];
+    this.sets = [];
+  }
+
+  Day.withData({
+    required this.id,
+    required this.workoutId,
+    required this.description,
+    List<int>? daysOfWeek,
+    List<Set>? sets,
   }) {
     this.daysOfWeek = daysOfWeek ?? [];
+    this.sets = sets ?? [];
   }
 
   static const Map<int, String> weekdays = {
@@ -45,7 +50,7 @@ class Day {
   };
 
   String getDayName(int weekDay) {
-    return weekdays[weekDay];
+    return weekdays[weekDay]!;
   }
 
   String get getDaysText {

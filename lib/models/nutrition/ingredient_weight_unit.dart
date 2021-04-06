@@ -16,7 +16,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/weight_unit.dart';
@@ -41,11 +40,11 @@ class IngredientWeightUnit {
   final double amount;
 
   IngredientWeightUnit({
-    @required this.id,
-    @required this.weightUnit,
-    @required this.ingredient,
-    @required this.grams,
-    @required this.amount,
+    required this.id,
+    required this.weightUnit,
+    required this.ingredient,
+    required this.grams,
+    required this.amount,
   });
 
   // Boilerplate

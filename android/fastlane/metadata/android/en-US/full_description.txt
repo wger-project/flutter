@@ -1,3 +1,6 @@
-wger (ˈvɛɡɐ) Workout Manager is a free, open source application that helps you manage your personal workouts, weight and diet plans
+wger (ˈvɛɡɐ) is copylefted libre software helping your health.
 
-TODO...
+- Plan workouts and nutrition
+- Save exercises and comment them
+- Gym mode
+- Diary and tracking of development

@@ -22,8 +22,8 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/exercises/exercise.dart';
-import 'package:wger/models/exercises/image.dart';
 import 'package:wger/models/http_exception.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/log.dart';
@@ -35,10 +35,9 @@ import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/base_provider.dart';
+import 'package:wger/providers/exercises.dart';
 
 class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
-  static const DAYS_TO_CACHE = 10;
-
   static const _workoutPlansUrlPath = 'workout';
   static const _daysUrlPath = 'day';
   static const _setsUrlPath = 'set';
@@ -48,13 +47,15 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
   static const _weightUnitUrlPath = 'setting-weightunit';
   static const _repetitionUnitUrlPath = 'setting-repetitionunit';
 
-  WorkoutPlan _currentPlan;
+  WorkoutPlan? _currentPlan;
+  Exercises _exercises;
   List<WorkoutPlan> _workoutPlans = [];
   List<WeightUnit> _weightUnits = [];
   List<RepetitionUnit> _repetitionUnit = [];
 
-  WorkoutPlans(Auth auth, List<WorkoutPlan> entries, [http.Client client])
-      : this._workoutPlans = entries,
+  WorkoutPlans(Auth auth, Exercises exercises, List<WorkoutPlan> entries, [http.Client? client])
+      : this._exercises = exercises,
+        this._workoutPlans = entries,
         super(auth, client);
 
   List<WorkoutPlan> get items {
@@ -67,7 +68,7 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
 
   /// Return the default weight unit (kg)
   WeightUnit get defaultWeightUnit {
-    return _weightUnits.firstWhere((element) => element.id == 1);
+    return _weightUnits.firstWhere((element) => element.id == DEFAULT_WEIGHT_UNIT);
   }
 
   List<RepetitionUnit> get repetitionUnits {
@@ -76,7 +77,7 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
 
   /// Return the default weight unit (reps)
   RepetitionUnit get defaultRepetitionUnit {
-    return _repetitionUnit.firstWhere((element) => element.id == 1);
+    return _repetitionUnit.firstWhere((element) => element.id == DEFAULT_REPETITION_UNIT);
   }
 
   WorkoutPlan findById(int id) {
@@ -93,7 +94,7 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
   }
 
   /// Returns the currently "active" workout plan
-  WorkoutPlan get currentPlan {
+  WorkoutPlan? get currentPlan {
     return _currentPlan;
   }
 
@@ -104,7 +105,7 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
 
   /// Returns the current active workout plan. At the moment this is just
   /// the latest, but this might change in the future.
-  WorkoutPlan get activePlan {
+  WorkoutPlan? get activePlan {
     if (_workoutPlans.length > 0) {
       return _workoutPlans.first;
     }
@@ -113,6 +114,74 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
   /*
    * Workouts
    */
+
+  Future<void> fetchAndSetAllPlans() async {
+    final data = await fetch(makeUrl(_workoutPlansUrlPath, query: {'ordering': '-creation_date'}));
+    for (final entry in data['results']) {
+      await fetchAndSetWorkoutPlan(entry['id']);
+    }
+
+    notifyListeners();
+  }
+
+  Future<void> fetchAndSetWorkoutPlan(int workoutId) async {
+    // Plan
+    final planData = await fetch(makeUrl(_workoutPlansUrlPath, id: workoutId));
+    final plan = WorkoutPlan.fromJson(planData);
+
+    // Days
+    List<Day> days = [];
+    final daysData = await fetch(makeUrl(_daysUrlPath, query: {'training': workoutId.toString()}));
+    for (final dayEntry in daysData['results']) {
+      final day = Day.fromJson(dayEntry);
+
+      // Sets
+      List<Set> sets = [];
+      final setData = await fetch(makeUrl(_setsUrlPath, query: {'exerciseday': day.id.toString()}));
+      for (final setEntry in setData['results']) {
+        final workoutSet = Set.fromJson(setEntry);
+
+        // Settings
+        List<Setting> settings = [];
+        final settingData = await fetch(
+          makeUrl(_settingsUrlPath, query: {'set': workoutSet.id.toString()}),
+        );
+        for (final settingEntry in settingData['results']) {
+          final workoutSetting = Setting.fromJson(settingEntry);
+
+          workoutSetting.exerciseObj = _exercises.findById(workoutSetting.exerciseId);
+          workoutSetting.weightUnitObj = _weightUnits.firstWhere(
+            (e) => e.id == workoutSetting.weightUnitId,
+          );
+          workoutSetting.repetitionUnitObj = _repetitionUnit.firstWhere(
+            (e) => e.id == workoutSetting.repetitionUnitId,
+          );
+          if (!workoutSet.exercisesIds.contains(workoutSetting.exerciseId)) {
+            workoutSet.addExercise(workoutSetting.exerciseObj);
+          }
+          workoutSetting.repsText = 'FIXME!';
+          settings.add(workoutSetting);
+        }
+        workoutSet.settings = settings;
+        sets.add(workoutSet);
+      }
+      day.sets = sets;
+      days.add(day);
+    }
+    plan.days = days;
+
+    // Logs
+    final logData = await fetch(makeUrl(_logsUrlPath, query: {'workout': workoutId.toString()}));
+    for (final entry in logData['results']) {
+      plan.logs.add(Log.fromJson(entry));
+    }
+
+    // ... and done
+    _workoutPlans.add(plan);
+    _workoutPlans.sort((a, b) => b.creationDate.compareTo(a.creationDate));
+    notifyListeners();
+  }
+
   Future<void> fetchAndSetWorkouts() async {
     final data = await fetch(makeUrl(_workoutPlansUrlPath, query: {'ordering': '-creation_date'}));
     final List<WorkoutPlan> loadedWorkoutPlans = [];
@@ -123,112 +192,6 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
 
     _workoutPlans = loadedWorkoutPlans;
     notifyListeners();
-  }
-
-  Future<void> setAllFullWorkouts() async {
-    for (var plan in _workoutPlans) {
-      setFullWorkout(plan.id);
-    }
-  }
-
-  Future<WorkoutPlan> setFullWorkout(int workoutId) async {
-    final data = await fetch(makeUrl(
-      _workoutPlansUrlPath,
-      id: workoutId,
-      objectMethod: 'canonical_representation',
-    ));
-
-    try {
-      WorkoutPlan workout = _workoutPlans.firstWhere((element) => element.id == workoutId);
-
-      List<Day> days = [];
-      for (final entry in data['day_list']) {
-        List<Set> sets = [];
-
-        for (final set in entry['set_list']) {
-          List<Setting> settings = [];
-          List<Setting> settingsComputed = [];
-          List<Exercise> exercises = [];
-
-          for (final exerciseData in set['exercise_list']) {
-            List<ExerciseImage> images = [];
-
-            for (final image in exerciseData['image_list']) {
-              images.add(
-                ExerciseImage(
-                  url: auth.serverUrl + image["image"],
-                  isMain: image['is_main'],
-                ),
-              );
-            }
-
-            Exercise exercise = Exercise(
-              id: exerciseData['obj']['id'],
-              uuid: exerciseData['obj']['uuid'],
-              creationDate: DateTime.parse(exerciseData['obj']['creation_date']),
-              name: exerciseData['obj']['name'],
-              description: exerciseData['obj']['description'],
-              images: images,
-            );
-            exercises.add(exercise);
-
-            // Settings
-            if (exerciseData['setting_obj_list'].length > 0) {
-              settings.add(
-                Setting(
-                  id: exerciseData['setting_obj_list'][0]['id'],
-                  setId: exerciseData['setting_obj_list'][0]['set'],
-                  comment: exerciseData['setting_obj_list'][0]['comment'],
-                  reps: exerciseData['setting_obj_list'][0]['reps'],
-                  //weight: setting['setting_obj_list'][0]['weight'] == null
-                  //    ? ''
-                  //  : setting['setting_obj_list'][0]['weight'],
-                  repsText: exerciseData['setting_text'],
-                  exerciseObj: exercise,
-                ),
-              );
-            }
-
-            // Computed settings
-            for (var setting in exerciseData['settings_computed']) {
-              settingsComputed.add(Setting.fromJson(setting));
-            }
-          }
-
-          // Sets
-          sets.add(Set(
-            id: set['obj']['id'],
-            sets: set['obj']['sets'],
-            order: set['obj']['order'],
-            settings: settings,
-            settingsComputed: settingsComputed,
-            exercises: exercises,
-          ));
-        }
-
-        // Days
-        days.add(Day(
-            id: entry['obj']['id'],
-            workoutId: workoutId,
-            description: entry['obj']['description'],
-            sets: sets,
-            daysOfWeek: [1, 3]
-            //daysOfWeek: entry['obj']['day'],
-            ));
-      }
-      workout.days = days;
-
-      // Logs
-      final logData = await fetch(makeUrl(_logsUrlPath, query: {'workout': workoutId.toString()}));
-      for (final entry in logData['results']) {
-        workout.logs.add(Log.fromJson(entry));
-      }
-      notifyListeners();
-
-      return workout;
-    } catch (error) {
-      throw (error);
-    }
   }
 
   Future<WorkoutPlan> postWorkout(WorkoutPlan workout) async {
@@ -242,7 +205,7 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
   Future<WorkoutPlan> patchWorkout(WorkoutPlan workout) async {
     final data = await patch(workout.toJson(), makeUrl(_workoutPlansUrlPath, id: workout.id));
     final plan = WorkoutPlan.fromJson(data);
-    _workoutPlans[findIndexById(plan.id)] = plan;
+    _workoutPlans[findIndexById(plan.id!)] = plan;
     notifyListeners();
     return plan;
   }
@@ -260,10 +223,9 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
       notifyListeners();
       throw WgerHttpException(response.body);
     }
-    existingWorkout = null;
   }
 
-  Future<dynamic> fetchLogData(WorkoutPlan workout, Exercise exercise) async {
+  Future<Map<String, dynamic>> fetchLogData(WorkoutPlan workout, Exercise exercise) async {
     final data = await fetch(
       makeUrl(
         _workoutPlansUrlPath,
@@ -305,15 +267,15 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
     // Load units from cache, if available
     final prefs = await SharedPreferences.getInstance();
     if (prefs.containsKey('workoutUnits')) {
-      final workoutData = json.decode(prefs.getString('workoutUnits'));
-      if (DateTime.parse(workoutData['expiresIn']).isAfter(DateTime.now())) {
-        workoutData['repetitionUnits'].forEach(
+      final unitData = json.decode(prefs.getString('workoutUnits')!);
+      if (DateTime.parse(unitData['expiresIn']).isAfter(DateTime.now())) {
+        unitData['repetitionUnits'].forEach(
           (e) => _repetitionUnit.add(RepetitionUnit.fromJson(e)),
         );
-        workoutData['weightUnit'].forEach(
+        unitData['weightUnit'].forEach(
           (e) => _weightUnits.add(WeightUnit.fromJson(e)),
         );
-        log("Read workout units data from cache. Valid till ${workoutData['expiresIn']}");
+        log("Read workout units data from cache. Valid till ${unitData['expiresIn']}");
         return;
       }
     }
@@ -340,13 +302,21 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
     /*
      * Saves a new day instance to the DB and adds it to the given workout
      */
-    day.workoutId = workout.id;
+    day.workoutId = workout.id!;
     final data = await post(day.toJson(), makeUrl(_daysUrlPath));
     day = Day.fromJson(data);
     day.sets = [];
     workout.days.insert(0, day);
     notifyListeners();
     return day;
+  }
+
+  Future<void> deleteDay(Day day) async {
+    await deleteRequest(_daysUrlPath, day.id!);
+    for (var workout in _workoutPlans) {
+      workout.days.removeWhere((element) => element.id == day.id);
+    }
+    notifyListeners();
   }
 
   /*
@@ -359,6 +329,17 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
     return set;
   }
 
+  Future<void> deleteSet(Set workoutSet) async {
+    await deleteRequest(_setsUrlPath, workoutSet.id!);
+
+    for (var workout in _workoutPlans) {
+      for (var day in workout.days) {
+        day.sets.removeWhere((element) => element.id == workoutSet.id);
+      }
+    }
+    notifyListeners();
+  }
+
   /*
    * Setting
    */
@@ -367,17 +348,6 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
     final setting = Setting.fromJson(data);
     notifyListeners();
     return setting;
-  }
-
-  Future<void> deleteSetting(Setting workoutSetting) async {
-    await deleteRequest(_settingsUrlPath, workoutSetting.id);
-
-    for (var workout in _workoutPlans) {
-      for (var day in workout.days) {
-        day.sets.removeWhere((element) => element.id == workoutSetting.setId);
-      }
-    }
-    notifyListeners();
   }
 
   /*

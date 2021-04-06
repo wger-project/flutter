@@ -36,7 +36,7 @@
   "@toggleDetails": {
     "description": "Switch to toggle detail / overview"
   },
-  "aboutText": "wger ist copylefted-Software, lizenziert unter der GPLv3+ und verfügbar auf GitHub:",
+  "aboutText": "wger ist copylefted-Software, lizenziert unter der AGPLv3+ und verfügbar auf GitHub:",
   "@aboutText": {
     "description": "Text in the about dialog"
   },
@@ -163,5 +163,115 @@
   "comment": "Kommentar",
   "@comment": {
     "description": "Comment, additional information"
+  },
+  "goToToday": "Zu heute gehen",
+  "@goToToday": {
+    "description": "Label on button to jump back to 'today' in the calendar widget"
+  },
+  "selectIngredient": "Bitte wählen Sie eine Zutat",
+  "@selectIngredient": {
+    "description": "Error message when the user hasn't selected an ingredient from the autocompleter"
+  },
+  "enterValidNumber": "Bitte geben Sie eine gültige Zahl ein",
+  "@enterValidNumber": {
+    "description": "Error message when the user has submitted an invalid number (e.g. '3,.,.,.')"
+  },
+  "enterValue": "Bitte geben Sie einen Wert ein",
+  "@enterValue": {
+    "description": "Error message when the user hasn't entered a value on a required field"
+  },
+  "calendar": "Kalender",
+  "@calendar": {},
+  "noWeightEntries": "Sie haben keine Gewichtseinträge",
+  "@noWeightEntries": {
+    "description": "Message shown when the user has no logged weight entries"
+  },
+  "unit": "Einheit",
+  "@unit": {
+    "description": "The unit used for a repetition (kg, time, etc.)"
+  },
+  "logHelpEntriesUnits": "Beachten Sie, dass nur Einträge mit einer Gewichtseinheit (kg oder lb) und Wiederholungen aufgezeichnet werden, andere Kombinationen wie Zeit oder \"bis zum Versagen\" werden hier ignoriert.",
+  "@logHelpEntriesUnits": {},
+  "logHelpEntries": "Gibt es an einem Tag mehrere Einträge mit der gleichen Anzahl von Wiederholungen, aber unterschiedlichen Gewichten, wird nur der Eintrag mit dem höheren Gewicht im Diagramm angezeigt.",
+  "@logHelpEntries": {},
+  "loginInstead": "Stattdessen einloggen",
+  "@loginInstead": {},
+  "registerInstead": "Stattdessen registrieren",
+  "@registerInstead": {},
+  "reset": "Zurücksetzen",
+  "@reset": {
+    "description": "Button text allowing the user to reset the entered values to the default"
+  },
+  "customServerHint": "Geben Sie die Adresse Ihres eigenen Servers ein, ansonsten wird die Standardadresse verwendet",
+  "@customServerHint": {
+    "description": "Hint text for the form where the users can enter their own wger instance"
+  },
+  "customServerUrl": "URL der wger-Instanz",
+  "@customServerUrl": {
+    "description": "Label in the form where the users can enter their own wger instance"
+  },
+  "invalidUsername": "Bitte geben Sie einen gültigen Benutzernamen ein",
+  "@invalidUsername": {
+    "description": "Error message when the user enters an invalid username"
+  },
+  "username": "Benutzername",
+  "@username": {},
+  "email": "E-Mail",
+  "@email": {},
+  "invalidEmail": "Bitte geben Sie eine gültigen E-Mail-Adresse ein",
+  "@invalidEmail": {
+    "description": "Error message when the user enters an invalid email"
+  },
+  "confirmPassword": "Passwort bestätigen",
+  "@confirmPassword": {},
+  "password": "Passwort",
+  "@password": {},
+  "passwordTooShort": "Das Passwort ist zu kurz",
+  "@passwordTooShort": {
+    "description": "Error message when the user a password that is too short"
+  },
+  "passwordsDontMatch": "Die Passwörter stimmen nicht überein",
+  "@passwordsDontMatch": {
+    "description": "Error message when the user enters two different passwords during registration"
+  },
+  "invalidUrl": "Bitte geben Sie eine gültige URL ein",
+  "@invalidUrl": {
+    "description": "Error message when the user enters an invalid URL, e.g. in the login form"
+  },
+  "useCustomServer": "Benutzerdefinierten Server verwenden",
+  "@useCustomServer": {
+    "description": "Toggle button allowing users to switch between the default and a custom wger server"
+  },
+  "useDefaultServer": "Standard-Server verwenden",
+  "@useDefaultServer": {
+    "description": "Toggle button allowing users to switch between the default and a custom wger server"
+  },
+  "register": "Registrieren",
+  "@register": {
+    "description": "Text for registration button"
+  },
+  "login": "Anmelden",
+  "@login": {
+    "description": "Text for login button"
+  },
+  "addExercise": "Diesem Tag eine Übung hinzufügen",
+  "@addExercise": {},
+  "confirmDelete": "Sind Sie sicher, dass Sie \"{toDelete}\" löschen möchten?",
+  "@confirmDelete": {
+    "description": "Confirmation text before the user deletes an object",
+    "type": "text",
+    "placeholders": {
+      "toDelete": {}
+    }
+  },
+  "noNutritionalPlans": "Sie haben keine Ernährungspläne",
+  "@noNutritionalPlans": {
+    "description": "Message shown when the user has no nutritional plans"
+  },
+  "todaysWorkout": "Ihr Training heute",
+  "@todaysWorkout": {},
+  "noWorkoutPlans": "Sie haben keine Trainingspläne",
+  "@noWorkoutPlans": {
+    "description": "Message shown when the user has no workout plans"
   }
 }

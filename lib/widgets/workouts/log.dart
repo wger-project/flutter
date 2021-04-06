@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/exercises/exercise.dart';
@@ -35,8 +36,8 @@ class ExerciseLog extends StatelessWidget {
     final _workoutPlansData = Provider.of<WorkoutPlans>(context, listen: false);
     final _workout = _workoutPlansData.currentPlan;
 
-    Future<dynamic> _getChartEntries(BuildContext context) async {
-      return await _workoutPlansData.fetchLogData(_workout, _exercise);
+    Future<Map<String, dynamic>> _getChartEntries(BuildContext context) async {
+      return await _workoutPlansData.fetchLogData(_workout!, _exercise);
     }
 
     return Column(
@@ -47,54 +48,55 @@ class ExerciseLog extends StatelessWidget {
         ),
         FutureBuilder(
           future: _getChartEntries(context),
-          builder: (context, snapshot) => snapshot.connectionState == ConnectionState.waiting
-              ? Container(
-                  height: 120,
-                  child: Center(child: CircularProgressIndicator()),
-                )
-              : Column(
-                  children: [
-                    Container(
+          builder: (context, AsyncSnapshot<Map<String, dynamic>> snapshot) =>
+              snapshot.connectionState == ConnectionState.waiting
+                  ? Container(
                       height: 120,
-                      child: LogChartWidget(snapshot.data),
-                    ),
-                    const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          ...snapshot.data['logs'].entries.map((e) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 10),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Text(
-                                    '${DateFormat.yMd().format(DateTime.parse(e.key))}',
-                                    style: TextStyle(fontWeight: FontWeight.bold),
+                      child: Center(child: CircularProgressIndicator()),
+                    )
+                  : Column(
+                      children: [
+                        Container(
+                          height: 120,
+                          child: LogChartWidget(snapshot.data),
+                        ),
+                        const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              ...snapshot.data!['logs']!.entries.map((e) {
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        '${DateFormat.yMd().format(DateTime.parse(e.key))}',
+                                        style: TextStyle(fontWeight: FontWeight.bold),
+                                      ),
+                                      ...e.value.map((i) {
+                                        return Text("${i['weight']} - ${i['reps']}");
+                                      })
+                                    ],
                                   ),
-                                  ...e.value.map((i) {
-                                    return Text("${i['weight']} - ${i['reps']}");
-                                  })
-                                ],
-                              ),
-                            );
-                          }).toList(),
-                        ],
-                      ),
+                                );
+                              }).toList(),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Text('Amount'),
-            Text('Unit'),
-            Text('Weight'),
-            Text('Unit'),
-            Text('RiR'),
+            Text(AppLocalizations.of(context)!.amount),
+            Text(AppLocalizations.of(context)!.unit),
+            Text(AppLocalizations.of(context)!.weight),
+            Text(AppLocalizations.of(context)!.unit),
+            Text(AppLocalizations.of(context)!.rir),
           ],
         ),
       ],

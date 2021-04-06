@@ -16,30 +16,19 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
+/// Size for the "smaller" icons, e.g. when they belong to less important items
+/// and we don't want to fill the whole screen
+const double ICON_SIZE_SMALL = 20;
 
-Future<Widget> showFormBottomSheet(BuildContext context, String header, Widget form) async {
-  return showModalBottomSheet(
-      isScrollControlled: true,
-      context: context,
-      builder: (BuildContext ctx) {
-        return Column(
-          children: [
-            Icon(
-              Icons.remove,
-              color: Colors.grey,
-            ),
-            Text(
-              header,
-              style: Theme.of(ctx).textTheme.headline6,
-            ),
-            SizedBox(height: 10),
-            Divider(),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 20),
-              child: form,
-            )
-          ],
-        );
-      });
-}
+/// Default wger server during login
+const DEFAULT_SERVER = 'https://wger.rge.uber.space';
+//final DEFAULT_SERVER = 'http://localhost:8000';
+
+/// Default weight unit is "kg"
+const DEFAULT_WEIGHT_UNIT = 1;
+
+/// Default weight unit is "repetition"
+const DEFAULT_REPETITION_UNIT = 1;
+
+/// Time to locally cache values such as ingredients, etc
+const DAYS_TO_CACHE = 20;

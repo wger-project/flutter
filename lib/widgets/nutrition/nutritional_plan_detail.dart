@@ -21,7 +21,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/nutrition/nutritrional_values.dart';
-import 'package:wger/widgets/core/bottom_sheet.dart';
+import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/meal.dart';
@@ -38,17 +38,19 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
       delegate: SliverChildListDelegate(
         [
           SizedBox(height: 10),
-          if (_nutritionalPlan.meals != null && _nutritionalPlan.meals.length > 0)
-            ..._nutritionalPlan.meals.map((meal) => MealWidget(meal)).toList(),
+          ..._nutritionalPlan.meals.map((meal) => MealWidget(meal)).toList(),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: ElevatedButton(
-              child: Text(AppLocalizations.of(context).add),
+              child: Text(AppLocalizations.of(context)!.addMeal),
               onPressed: () {
-                showFormBottomSheet(
+                Navigator.pushNamed(
                   context,
-                  AppLocalizations.of(context).addMeal,
-                  MealForm(_nutritionalPlan.id),
+                  FormScreen.routeName,
+                  arguments: FormScreenArguments(
+                    AppLocalizations.of(context)!.addMeal,
+                    MealForm(_nutritionalPlan.id!),
+                  ),
                 );
               },
             ),
@@ -68,14 +70,14 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Text(AppLocalizations.of(context).energy),
-                      Text(AppLocalizations.of(context).protein),
-                      Text(AppLocalizations.of(context).carbohydrates),
-                      Text(AppLocalizations.of(context).sugars),
-                      Text(AppLocalizations.of(context).fat),
-                      Text(AppLocalizations.of(context).saturatedFat),
-                      Text(AppLocalizations.of(context).fibres),
-                      Text(AppLocalizations.of(context).sodium),
+                      Text(AppLocalizations.of(context)!.energy),
+                      Text(AppLocalizations.of(context)!.protein),
+                      Text(AppLocalizations.of(context)!.carbohydrates),
+                      Text(AppLocalizations.of(context)!.sugars),
+                      Text(AppLocalizations.of(context)!.fat),
+                      Text(AppLocalizations.of(context)!.saturatedFat),
+                      Text(AppLocalizations.of(context)!.fibres),
+                      Text(AppLocalizations.of(context)!.sodium),
                     ],
                   ),
                 ),
@@ -98,14 +100,14 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(AppLocalizations.of(context).kcal),
-                    Text(AppLocalizations.of(context).g),
-                    Text(AppLocalizations.of(context).g),
-                    Text(AppLocalizations.of(context).g),
-                    Text(AppLocalizations.of(context).g),
-                    Text(AppLocalizations.of(context).g),
-                    Text(AppLocalizations.of(context).g),
-                    Text(AppLocalizations.of(context).g),
+                    Text(AppLocalizations.of(context)!.kcal),
+                    Text(AppLocalizations.of(context)!.g),
+                    Text(AppLocalizations.of(context)!.g),
+                    Text(AppLocalizations.of(context)!.g),
+                    Text(AppLocalizations.of(context)!.g),
+                    Text(AppLocalizations.of(context)!.g),
+                    Text(AppLocalizations.of(context)!.g),
+                    Text(AppLocalizations.of(context)!.g),
                   ],
                 ),
               ],
@@ -131,17 +133,17 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                       children: [
                         Text(''),
                         Text(
-                            '${AppLocalizations.of(context).energy} (${AppLocalizations.of(context).kcal}'),
+                            '${AppLocalizations.of(context)!.energy} (${AppLocalizations.of(context)!.kcal})'),
                         Text(
-                            '${AppLocalizations.of(context).protein} (${AppLocalizations.of(context).g})'),
+                            '${AppLocalizations.of(context)!.protein} (${AppLocalizations.of(context)!.g})'),
                         Text(
-                            '${AppLocalizations.of(context).carbohydrates} (${AppLocalizations.of(context).g})'),
+                            '${AppLocalizations.of(context)!.carbohydrates} (${AppLocalizations.of(context)!.g})'),
                         Text(
-                            '${AppLocalizations.of(context).sugars} (${AppLocalizations.of(context).g})'),
+                            '${AppLocalizations.of(context)!.sugars} (${AppLocalizations.of(context)!.g})'),
                         Text(
-                            '${AppLocalizations.of(context).fat} (${AppLocalizations.of(context).g})'),
+                            '${AppLocalizations.of(context)!.fat} (${AppLocalizations.of(context)!.g})'),
                         Text(
-                            '${AppLocalizations.of(context).saturatedFat} (${AppLocalizations.of(context).g})'),
+                            '${AppLocalizations.of(context)!.saturatedFat} (${AppLocalizations.of(context)!.g})'),
                       ],
                     ),
                   ),

@@ -21,8 +21,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/workout_plans_screen.dart';
-import 'package:wger/widgets/core/bottom_sheet.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 import 'package:wger/widgets/workouts/workout_logs.dart';
 import 'package:wger/widgets/workouts/workout_plan_detail.dart';
@@ -64,14 +64,14 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
         return WorkoutLogs(plan, _changeMode);
         break;
       case WorkoutScreenMode.gym:
-        return Text(AppLocalizations.of(context).gymMode);
+        return Text(AppLocalizations.of(context)!.gymMode);
         break;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final workoutPlan = ModalRoute.of(context).settings.arguments as WorkoutPlan;
+    final workoutPlan = ModalRoute.of(context)!.settings.arguments as WorkoutPlan;
 
     return Scaffold(
       //appBar: getAppBar(workoutPlan),
@@ -81,22 +81,32 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
             SliverAppBar(
               expandedHeight: 250,
               pinned: true,
+              flexibleSpace: FlexibleSpaceBar(
+                title: Text(workoutPlan.description),
+                background: Image(
+                  image: AssetImage('assets/images/backgrounds/workout_plans.jpg'),
+                  fit: BoxFit.cover,
+                ),
+              ),
               actions: [
                 PopupMenuButton<WorkoutOptions>(
                   icon: Icon(Icons.more_vert),
                   onSelected: (value) {
                     // Edit
                     if (value == WorkoutOptions.edit) {
-                      showFormBottomSheet(
+                      Navigator.pushNamed(
                         context,
-                        AppLocalizations.of(context).edit,
-                        WorkoutForm(workoutPlan),
+                        FormScreen.routeName,
+                        arguments: FormScreenArguments(
+                          AppLocalizations.of(context)!.edit,
+                          WorkoutForm(workoutPlan),
+                        ),
                       );
 
                       // Delete
                     } else if (value == WorkoutOptions.delete) {
                       Provider.of<WorkoutPlans>(context, listen: false)
-                          .deleteWorkout(workoutPlan.id);
+                          .deleteWorkout(workoutPlan.id!);
                       Navigator.of(context).pushNamed(WorkoutPlansScreen.routeName);
 
                       // Toggle Mode
@@ -112,7 +122,7 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
                     return [
                       PopupMenuItem<WorkoutOptions>(
                         value: WorkoutOptions.edit,
-                        child: Text(AppLocalizations.of(context).edit),
+                        child: Text(AppLocalizations.of(context)!.edit),
                       ),
                       PopupMenuItem<WorkoutOptions>(
                         child: _mode == WorkoutScreenMode.log
@@ -123,19 +133,12 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
                       const PopupMenuDivider(),
                       PopupMenuItem<WorkoutOptions>(
                         value: WorkoutOptions.delete,
-                        child: Text(AppLocalizations.of(context).delete),
+                        child: Text(AppLocalizations.of(context)!.delete),
                       ),
                     ];
                   },
                 ),
               ],
-              flexibleSpace: FlexibleSpaceBar(
-                title: Text(workoutPlan.description),
-                background: Image(
-                  image: AssetImage('assets/images/backgrounds/workout_plans.jpg'),
-                  fit: BoxFit.cover,
-                ),
-              ),
             ),
             getBody(workoutPlan),
           ],

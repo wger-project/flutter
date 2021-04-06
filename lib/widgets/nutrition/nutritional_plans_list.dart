@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
@@ -34,19 +35,47 @@ class NutritionalPlansList extends StatelessWidget {
         final currentPlan = _nutritrionProvider.items[index];
         return Dismissible(
           key: Key(currentPlan.id.toString()),
-          onDismissed: (direction) {
+          confirmDismiss: (direction) async {
             // Delete workout from DB
-            _nutritrionProvider.deletePlan(currentPlan.id);
+            final bool? res = await showDialog(
+                context: context,
+                builder: (BuildContext contextDialog) {
+                  return AlertDialog(
+                    content: Text(
+                      AppLocalizations.of(context)!.confirmDelete(currentPlan.description),
+                    ),
+                    actions: [
+                      TextButton(
+                        child: Text(AppLocalizations.of(context)!.cancel),
+                        onPressed: () => Navigator.of(contextDialog).pop(),
+                      ),
+                      TextButton(
+                        child: Text(
+                          AppLocalizations.of(context)!.delete,
+                          style: TextStyle(color: Theme.of(context).errorColor),
+                        ),
+                        onPressed: () {
+                          // Confirmed, delete the workout
+                          _nutritrionProvider.deletePlan(currentPlan.id!);
 
-            // and inform the user
-            Scaffold.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  "Nutritional plan ${currentPlan.id} deleted",
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            );
+                          // Close the popup
+                          Navigator.of(contextDialog).pop();
+
+                          // and inform the user
+                          Scaffold.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                AppLocalizations.of(context)!.successfullyDeleted,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  );
+                });
+            return res;
           },
           background: Container(
             color: Theme.of(context).errorColor,
@@ -71,7 +100,10 @@ class NutritionalPlansList extends StatelessWidget {
                 );
               },
               title: Text(currentPlan.description),
-              subtitle: Text(DateFormat.yMd().format(currentPlan.creationDate)),
+              subtitle: Text(
+                DateFormat.yMd(Localizations.localeOf(context).languageCode)
+                    .format(currentPlan.creationDate),
+              ),
             ),
           ),
         );

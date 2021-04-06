@@ -29,19 +29,30 @@ import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/nutrition.dart';
 
 class MealForm extends StatelessWidget {
-  Meal _meal;
+  late Meal _meal;
   int _planId;
+  //var _mealData = {'id': null, 'planId': -1, 'time': TimeOfDay.now()};
 
   final _form = GlobalKey<FormState>();
   final _timeController = TextEditingController();
 
-  MealForm(planId, [meal]) {
-    this._planId = planId;
-    this._meal = meal ?? Meal();
-
-    _timeController.text =
-        _meal.time != null ? timeToString(_meal.time) : timeToString(TimeOfDay.now());
+  MealForm(this._planId, [meal]) {
+    this._meal = meal ?? Meal(plan: _planId);
+    _timeController.text = timeToString(_meal.time)!;
   }
+
+  /*
+  MealForm(int planId, [Meal? meal]) {
+    _mealData['planId'] = planId;
+    _timeController.text = timeToString(_mealData['time'] as TimeOfDay)!;
+
+    if (meal != null) {
+      _mealData['id'] = meal.id;
+      _mealData['time'] = meal.time;
+      _timeController.text = timeToString(meal.time)!;
+    }
+  }
+  */
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +63,7 @@ class MealForm extends StatelessWidget {
         child: Column(
           children: [
             TextFormField(
-              decoration: InputDecoration(labelText: AppLocalizations.of(context).time),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.time),
               controller: _timeController,
               onTap: () async {
                 // Stop keyboard from appearing
@@ -61,10 +72,10 @@ class MealForm extends StatelessWidget {
                 // Open time picker
                 var pickedTime = await showTimePicker(
                   context: context,
-                  initialTime: _meal.time ?? TimeOfDay.now(),
+                  initialTime: _meal.time,
                 );
 
-                _timeController.text = timeToString(pickedTime);
+                _timeController.text = timeToString(pickedTime)!;
               },
               onSaved: (newValue) {
                 _meal.time = stringToTime(newValue);
@@ -72,14 +83,12 @@ class MealForm extends StatelessWidget {
               onFieldSubmitted: (_) {},
             ),
             ElevatedButton(
-              child: Text(AppLocalizations.of(context).save),
+              child: Text(AppLocalizations.of(context)!.save),
               onPressed: () async {
-                if (!_form.currentState.validate()) {
+                if (!_form.currentState!.validate()) {
                   return;
                 }
-                _form.currentState.save();
-
-                _meal.plan = _planId;
+                _form.currentState!.save();
 
                 try {
                   _meal.id == null
@@ -101,12 +110,12 @@ class MealForm extends StatelessWidget {
 }
 
 class MealItemForm extends StatelessWidget {
-  Meal meal;
-  MealItem mealItem;
+  Meal _meal;
+  late MealItem _mealItem;
 
-  MealItemForm(meal, [mealItem]) {
-    this.meal = meal;
-    this.mealItem = mealItem ?? MealItem();
+  MealItemForm(this._meal, [mealItem]) {
+    this._mealItem = mealItem;
+    //this._mealItem = mealItem ?? MealItem(mealId: _meal.id);
   }
 
   final _form = GlobalKey<FormState>();
@@ -124,13 +133,13 @@ class MealItemForm extends StatelessWidget {
             TypeAheadFormField(
               textFieldConfiguration: TextFieldConfiguration(
                 controller: this._ingredientController,
-                decoration: InputDecoration(labelText: AppLocalizations.of(context).ingredient),
+                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.ingredient),
               ),
               suggestionsCallback: (pattern) async {
                 return await Provider.of<Nutrition>(context, listen: false)
                     .searchIngredient(pattern);
               },
-              itemBuilder: (context, suggestion) {
+              itemBuilder: (context, dynamic suggestion) {
                 return ListTile(
                   title: Text(suggestion['value']),
                   subtitle: Text(suggestion['data']['id'].toString()),
@@ -139,49 +148,47 @@ class MealItemForm extends StatelessWidget {
               transitionBuilder: (context, suggestionsBox, controller) {
                 return suggestionsBox;
               },
-              onSuggestionSelected: (suggestion) {
-                mealItem.ingredientId = suggestion['data']['id'];
+              onSuggestionSelected: (dynamic suggestion) {
+                _mealItem.ingredientId = suggestion['data']['id'];
                 this._ingredientController.text = suggestion['value'];
               },
               validator: (value) {
-                if (value.isEmpty) {
-                  return 'Please select an ingredient';
+                if (value!.isEmpty) {
+                  return AppLocalizations.of(context)!.selectIngredient;
                 }
-                if (mealItem.ingredientId == null) {
-                  return 'Please select an ingredient';
+                if (_mealItem.ingredientId == null) {
+                  return AppLocalizations.of(context)!.selectIngredient;
                 }
                 return null;
               },
             ),
             TextFormField(
-              decoration: InputDecoration(labelText: AppLocalizations.of(context).amount),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.amount),
               controller: _amountController,
               keyboardType: TextInputType.number,
               onFieldSubmitted: (_) {},
               onSaved: (newValue) {
-                mealItem.amount = double.parse(newValue);
+                _mealItem.amount = double.parse(newValue!);
               },
               validator: (value) {
                 try {
-                  double.parse(value);
+                  double.parse(value!);
                 } catch (error) {
-                  return 'Please enter a valid number';
+                  return AppLocalizations.of(context)!.enterValidNumber;
                 }
                 return null;
               },
             ),
             ElevatedButton(
-              child: Text(AppLocalizations.of(context).save),
+              child: Text(AppLocalizations.of(context)!.save),
               onPressed: () async {
-                if (!_form.currentState.validate()) {
+                if (!_form.currentState!.validate()) {
                   return;
                 }
-                _form.currentState.save();
+                _form.currentState!.save();
 
                 try {
-                  mealItem.meal = meal.id;
-
-                  Provider.of<Nutrition>(context, listen: false).addMealItem(mealItem, meal.id);
+                  Provider.of<Nutrition>(context, listen: false).addMealItem(_mealItem, _meal.id!);
                 } on WgerHttpException catch (error) {
                   showHttpExceptionErrorDialog(error, context);
                 } catch (error) {
@@ -198,45 +205,63 @@ class MealItemForm extends StatelessWidget {
 }
 
 class PlanForm extends StatelessWidget {
-  NutritionalPlan _plan;
-  PlanForm(this._plan);
+  //NutritionalPlan? _plan;
+  var _planData = {
+    'description': '',
+    'creationDate': DateTime.now(),
+    'id': null,
+  };
 
   final _form = GlobalKey<FormState>();
-  final descriptionController = TextEditingController();
+  final _descriptionController = TextEditingController();
+
+  PlanForm([NutritionalPlan? plan]) {
+    if (plan != null) {
+      _planData['id'] = plan.id;
+      _planData['description'] = plan.description;
+      _planData['creationDate'] = plan.creationDate;
+    }
+
+    _descriptionController.text = _planData['description'] as String;
+  }
 
   @override
   Widget build(BuildContext context) {
-    descriptionController.text = _plan.description ?? '';
-
     return Form(
       key: _form,
       child: Column(
         children: [
           // Description
           TextFormField(
-            decoration: InputDecoration(labelText: AppLocalizations.of(context).description),
-            controller: descriptionController,
+            decoration: InputDecoration(labelText: AppLocalizations.of(context)!.description),
+            controller: _descriptionController,
             onFieldSubmitted: (_) {},
             onSaved: (newValue) {
-              _plan.description = newValue;
+              _planData['description'] = newValue!;
             },
           ),
           ElevatedButton(
-            child: Text(AppLocalizations.of(context).save),
+            child: Text(AppLocalizations.of(context)!.save),
             onPressed: () async {
               // Validate and save the current values to the weightEntry
-              final isValid = _form.currentState.validate();
+              final isValid = _form.currentState!.validate();
               if (!isValid) {
                 return;
               }
-              _form.currentState.save();
+              _form.currentState!.save();
 
               // Save the entry on the server
               try {
-                if (_plan.id != null) {
-                  await Provider.of<Nutrition>(context, listen: false).patchPlan(_plan);
+                NutritionalPlan plan = NutritionalPlan(
+                  description: _planData['description'] as String,
+                  creationDate: _planData['creationDate'] as DateTime,
+                );
+
+                if (_planData['id'] != null) {
+                  plan.id = _planData['id'] as int;
+                  await Provider.of<Nutrition>(context, listen: false).patchPlan(plan);
                 } else {
-                  await Provider.of<Nutrition>(context, listen: false).postPlan(_plan);
+                  await Provider.of<Nutrition>(context, listen: false).postPlan(plan);
                 }
 
                 // Saving was successful, reset the data

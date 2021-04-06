@@ -16,7 +16,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/json.dart';
 
@@ -58,17 +57,17 @@ class Ingredient {
   final num sodium;
 
   Ingredient({
-    @required this.id,
-    @required this.name,
-    @required this.creationDate,
-    @required this.energy,
-    @required this.carbohydrates,
-    @required this.carbohydratesSugar,
-    @required this.protein,
-    @required this.fat,
-    @required this.fatSaturated,
-    @required this.fibres,
-    @required this.sodium,
+    required this.id,
+    required this.name,
+    required this.creationDate,
+    required this.energy,
+    required this.carbohydrates,
+    required this.carbohydratesSugar,
+    required this.protein,
+    required this.fat,
+    required this.fatSaturated,
+    required this.fibres,
+    required this.sodium,
   });
 
   // Boilerplate

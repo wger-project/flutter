@@ -23,17 +23,15 @@ Ingredient _$IngredientFromJson(Map<String, dynamic> json) {
   return Ingredient(
     id: json['id'] as int,
     name: json['name'] as String,
-    creationDate: json['creation_date'] == null
-        ? null
-        : DateTime.parse(json['creation_date'] as String),
+    creationDate: DateTime.parse(json['creation_date'] as String),
     energy: json['energy'] as int,
-    carbohydrates: toNum(json['carbohydrates'] as String),
-    carbohydratesSugar: toNum(json['carbohydrates_sugar'] as String),
-    protein: toNum(json['protein'] as String),
-    fat: toNum(json['fat'] as String),
-    fatSaturated: toNum(json['fat_saturated'] as String),
-    fibres: toNum(json['fibres'] as String),
-    sodium: toNum(json['sodium'] as String),
+    carbohydrates: toNum(json['carbohydrates'] as String?),
+    carbohydratesSugar: toNum(json['carbohydrates_sugar'] as String?),
+    protein: toNum(json['protein'] as String?),
+    fat: toNum(json['fat'] as String?),
+    fatSaturated: toNum(json['fat_saturated'] as String?),
+    fibres: toNum(json['fibres'] as String?),
+    sodium: toNum(json['sodium'] as String?),
   );
 }
 

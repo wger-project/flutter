@@ -17,23 +17,21 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:wger/models/exercises/image.dart';
 
-class ExerciseImage extends StatelessWidget {
-  const ExerciseImage({
-    Key key,
-    @required this.imageUrl,
-    @required this.serverUrl,
-  }) : super(key: key);
+class ExerciseImageWidget extends StatelessWidget {
+  const ExerciseImageWidget({
+    this.image,
+  });
 
-  final String imageUrl;
-  final String serverUrl;
+  final ExerciseImage? image;
 
   @override
   Widget build(BuildContext context) {
-    return imageUrl != null
+    return image != null
         ? FadeInImage(
             placeholder: AssetImage('assets/images/placeholder.png'),
-            image: NetworkImage(serverUrl + imageUrl),
+            image: NetworkImage(image!.url),
             fit: BoxFit.cover,
           )
         : Image(

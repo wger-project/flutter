@@ -24,6 +24,7 @@ const Color wgerPrimaryButtonColor = Color(0xff266dd3);
 const Color wgerPrimaryColorLight = Color(0xff94B2DB);
 const Color wgerSecondaryColor = Color(0xffe63946);
 const Color wgerTextMuted = Colors.black38;
+const Color wgerBackground = Color(0xfff4f4f6);
 
 // Chart colors
 const charts.Color wgerChartPrimaryColor = charts.Color(r: 0x2a, g: 0x4c, b: 0x7d);
@@ -35,6 +36,7 @@ final ThemeData wgerTheme = ThemeData(
    */
     primaryColor: wgerPrimaryColor,
     accentColor: wgerSecondaryColor,
+    scaffoldBackgroundColor: wgerBackground,
 
     // This makes the visual density adapt to the platform that you run
     // the app on. For desktop platforms, the controls will be smaller and

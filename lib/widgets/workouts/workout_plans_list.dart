@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/workout_plans.dart';
@@ -42,21 +43,23 @@ class WorkoutPlansList extends StatelessWidget {
                 context: context,
                 builder: (BuildContext contextDialog) {
                   return AlertDialog(
-                    content: Text("Are you sure you want to delete ${currentWorkout.description}?"),
+                    content: Text(
+                      AppLocalizations.of(context)!.confirmDelete(currentWorkout.description),
+                    ),
                     actions: [
                       TextButton(
-                        child: Text("Cancel"),
+                        child: Text(AppLocalizations.of(context)!.cancel),
                         onPressed: () => Navigator.of(contextDialog).pop(),
                       ),
                       TextButton(
                         child: Text(
-                          "Delete",
+                          AppLocalizations.of(context)!.delete,
                           style: TextStyle(color: Theme.of(context).errorColor),
                         ),
                         onPressed: () {
                           // Confirmed, delete the workout
                           Provider.of<WorkoutPlans>(context, listen: false)
-                              .deleteWorkout(currentWorkout.id);
+                              .deleteWorkout(currentWorkout.id!);
 
                           // Close the popup
                           Navigator.of(contextDialog).pop();
@@ -65,7 +68,7 @@ class WorkoutPlansList extends StatelessWidget {
                           Scaffold.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                'Workout "${currentWorkout.description}" deleted',
+                                AppLocalizations.of(context)!.successfullyDeleted,
                                 textAlign: TextAlign.center,
                               ),
                             ),
@@ -94,13 +97,16 @@ class WorkoutPlansList extends StatelessWidget {
           child: Card(
             child: ListTile(
               onTap: () {
-                _workoutProvider.setCurrentPlan(currentWorkout.id);
+                _workoutProvider.setCurrentPlan(currentWorkout.id!);
 
-                return Navigator.of(context)
+                Navigator.of(context)
                     .pushNamed(WorkoutPlanScreen.routeName, arguments: currentWorkout);
               },
-              title: Text(DateFormat.yMd().format(currentWorkout.creationDate)),
-              subtitle: Text(currentWorkout.description),
+              title: Text(currentWorkout.description),
+              subtitle: Text(
+                DateFormat.yMd(Localizations.localeOf(context).languageCode)
+                    .format(currentWorkout.creationDate),
+              ),
             ),
           ),
         );

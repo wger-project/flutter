@@ -28,15 +28,16 @@ import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/http_exception.dart';
 
 import 'helpers.dart';
 
 class Auth with ChangeNotifier {
-  String token;
-  String serverUrl;
-  String serverVersion;
-  PackageInfo applicationVersion;
+  String? token;
+  String? serverUrl;
+  String? serverVersion;
+  PackageInfo? applicationVersion;
 
   /// flag to indicate that the application has successfully loaded all initial data
   bool dataInit = false;
@@ -49,7 +50,7 @@ class Auth with ChangeNotifier {
     return token != null;
   }
 
-  String get token2 {
+  String? get token2 {
     // if (_expiryDate != null &&
     // _expiryDate.isAfter(DateTime.now()) &&
     // _token != null) {
@@ -64,7 +65,7 @@ class Auth with ChangeNotifier {
 
   /// Server application version
   Future<void> setServerVersion() async {
-    final response = await http.get(makeUri(serverUrl, 'version'));
+    final response = await http.get(makeUri(serverUrl!, 'version'));
     final responseData = json.decode(response.body);
     serverVersion = responseData;
   }
@@ -76,8 +77,13 @@ class Auth with ChangeNotifier {
   }
 
   /// Registers a new user
-  Future<void> register({String username, String password, String email, String serverUrl}) async {
-    final uri = Uri.http(serverUrl, '/api/v2/register/');
+  Future<void> register({
+    required String username,
+    required String password,
+    required String email,
+    required String serverUrl,
+  }) async {
+    final uri = Uri.parse(serverUrl + '/api/v2/register/');
     Map<String, String> metadata = Map();
 
     // Read the api key from the manifest file
@@ -115,7 +121,7 @@ class Auth with ChangeNotifier {
 
   /// Authenticates a user
   Future<void> login(String username, String password, String serverUrl) async {
-    final uri = Uri.http(serverUrl, '/api/v2/login/');
+    final uri = Uri.parse(serverUrl + '/api/v2/login/');
     await logout();
 
     try {
@@ -133,7 +139,7 @@ class Auth with ChangeNotifier {
       }
 
       // Log user in
-      this.serverUrl = serverUrl ?? '';
+      this.serverUrl = serverUrl;
       token = responseData['token'];
 
       // _userId = responseData['localId'];
@@ -152,13 +158,28 @@ class Auth with ChangeNotifier {
         'serverUrl': this.serverUrl,
         // 'expiryDate': _expiryDate.toIso8601String(),
       });
+      final serverData = json.encode({
+        'serverUrl': this.serverUrl,
+      });
 
       await setServerVersion();
       await setApplicationVersion();
       prefs.setString('userData', userData);
+      prefs.setString('lastServer', serverData);
     } catch (error) {
       throw error;
     }
+  }
+
+  /// Loads the last server URL from which the user successfully logged in
+  Future<String> getServerUrlFromPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (!prefs.containsKey('lastServer')) {
+      return DEFAULT_SERVER;
+    }
+
+    final userData = json.decode(prefs.getString('lastServer')!);
+    return userData['serverUrl'] as String;
   }
 
   Future<bool> tryAutoLogin() async {
@@ -167,16 +188,15 @@ class Auth with ChangeNotifier {
       log('autologin failed');
       return false;
     }
-
-    final extractedUserData = json.decode(prefs.getString('userData')) as Map<String, Object>;
+    final extractedUserData = json.decode(prefs.getString('userData')!);
     // final expiryDate = DateTime.parse(extractedUserData['expiryDate']);
 
     // if (expiryDate.isBefore(DateTime.now())) {
     //   return false;
     // }
 
-    token = extractedUserData['token'];
-    serverUrl = extractedUserData['serverUrl'];
+    token = extractedUserData['token']!;
+    serverUrl = extractedUserData['serverUrl']!;
     // _userId = extractedUserData['userId'];
     // _expiryDate = expiryDate;
 
@@ -192,6 +212,7 @@ class Auth with ChangeNotifier {
     log('logging out');
     token = null;
     serverUrl = null;
+    dataInit = false;
     // _userId = null;
     // _expiryDate = null;
     // if (_authTimer != null) {

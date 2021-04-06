@@ -37,15 +37,25 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  Future<void>? _initialData;
+
   Widget getAppBar() {
     return AppBar(
-      title: Text(AppLocalizations.of(context).labelDashboard),
+      title: Text(AppLocalizations.of(context)!.labelDashboard),
       actions: [],
     );
   }
 
+  @override
+  void initState() {
+    super.initState();
+
+    // Loading data here, since the build method can be called more than once
+    _initialData = _loadEntries();
+  }
+
   /// Load initial data from the server
-  Future<void> _loadEntries(BuildContext context) async {
+  Future<void> _loadEntries() async {
     if (!Provider.of<Auth>(context, listen: false).dataInit) {
       Provider.of<Auth>(context, listen: false).setServerVersion();
 
@@ -53,40 +63,42 @@ class _DashboardScreenState extends State<DashboardScreen> {
       await Provider.of<Exercises>(context, listen: false).fetchAndSetExercises();
 
       // Nutrition
-      Nutrition nutritionProvider = Provider.of<Nutrition>(context, listen: false);
-      await nutritionProvider.fetchIngredientsFromCache();
-      await nutritionProvider.fetchAndSetPlans();
-      await nutritionProvider.fetchAndSetAllLogs();
+      await Provider.of<Nutrition>(context, listen: false).fetchIngredientsFromCache();
+      await Provider.of<Nutrition>(context, listen: false).fetchAndSetAllPlans();
+      await Provider.of<Nutrition>(context, listen: false).fetchAndSetAllLogs();
 
       // Workouts
-      WorkoutPlans workoutProvider = Provider.of<WorkoutPlans>(context, listen: false);
-      await workoutProvider.fetchAndSetUnits();
-      await workoutProvider.fetchAndSetWorkouts();
-      await workoutProvider.setAllFullWorkouts();
-      if (workoutProvider.activePlan != null) {
-        workoutProvider.setCurrentPlan(workoutProvider.activePlan.id);
+      await Provider.of<WorkoutPlans>(context, listen: false).fetchAndSetUnits();
+      await Provider.of<WorkoutPlans>(context, listen: false).fetchAndSetAllPlans();
+      //await Provider.of<WorkoutPlans>(context, listen: false).fetchAndSetWorkouts();
+      //await Provider.of<WorkoutPlans>(context, listen: false).setAllFullWorkouts();
+      if (Provider.of<WorkoutPlans>(context, listen: false).activePlan != null) {
+        Provider.of<WorkoutPlans>(context, listen: false).setCurrentPlan(
+          Provider.of<WorkoutPlans>(context, listen: false).activePlan!.id!,
+        );
       }
 
       // Weight
       await Provider.of<BodyWeight>(context, listen: false).fetchAndSetEntries();
     }
+
     Provider.of<Auth>(context, listen: false).dataInit = true;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: getAppBar(),
+      appBar: getAppBar() as PreferredSizeWidget?,
       drawer: AppDrawer(),
       body: FutureBuilder(
-        future: _loadEntries(context),
+        future: _initialData,
         builder: (ctx, authResultSnapshot) =>
             authResultSnapshot.connectionState == ConnectionState.waiting
                 ? Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        AppLocalizations.of(context).loadingText,
+                        AppLocalizations.of(context)!.loadingText,
                         style: Theme.of(context).textTheme.headline5,
                       ),
                       Padding(padding: EdgeInsets.symmetric(vertical: 8)),
@@ -101,7 +113,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         DashboardWeightWidget(context: context),
                         Container(
                           height: 650, // TODO: refactor calendar so we can get rid of size
-                          child: DashboardCalendarWidget(title: 'Calendar'),
+                          child: DashboardCalendarWidget(),
                         ),
                       ],
                     ),

@@ -25,6 +25,7 @@ import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/auth_screen.dart';
 import 'package:wger/screens/dashboard.dart';
+import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/screens/home_tabs_screen.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
@@ -50,34 +51,27 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (ctx) => Auth(),
         ),
-        ChangeNotifierProxyProvider<Auth, WorkoutPlans>(
-          create: null, // TODO: Create is required but it can be null??
-          update: (context, auth, previous) => WorkoutPlans(
-            auth,
-            previous == null ? [] : previous.items,
-          ),
-        ),
         ChangeNotifierProxyProvider<Auth, Exercises>(
-          create: null, // TODO: Create is required but it can be null??
-          update: (context, auth, previous) => Exercises(
-            auth,
-            previous == null ? [] : previous.items,
+          create: (context) => Exercises(Provider.of<Auth>(context, listen: false), []),
+          update: (context, auth, previous) => previous != null ? previous : Exercises(auth, []),
+        ),
+        ChangeNotifierProxyProvider2<Auth, Exercises, WorkoutPlans>(
+          create: (context) => WorkoutPlans(
+            Provider.of<Auth>(context, listen: false),
+            Provider.of<Exercises>(context, listen: false),
+            [],
           ),
+          update: (context, auth, exercises, previous) =>
+              previous != null ? previous : WorkoutPlans(auth, exercises, []),
         ),
         ChangeNotifierProxyProvider<Auth, Nutrition>(
-          create: null, // TODO: Create is required but it can be null??
-          update: (context, auth, previous) => Nutrition(
-            auth,
-            previous == null ? [] : previous.items,
-          ),
+          create: (context) => Nutrition(Provider.of<Auth>(context, listen: false), []),
+          update: (context, auth, previous) => previous != null ? previous : Nutrition(auth, []),
         ),
         ChangeNotifierProxyProvider<Auth, BodyWeight>(
-          create: null, // TODO: Create is required but it can be null??
-          update: (context, auth, previous) => BodyWeight(
-            auth,
-            previous == null ? [] : previous.items,
-          ),
-        )
+          create: (context) => BodyWeight(Provider.of<Auth>(context, listen: false), []),
+          update: (context, auth, previous) => previous != null ? previous : BodyWeight(auth, []),
+        ),
       ],
       child: Consumer<Auth>(
         builder: (ctx, auth, _) => MaterialApp(
@@ -101,6 +95,7 @@ class MyApp extends StatelessWidget {
             GymModeScreen.routeName: (ctx) => GymModeScreen(),
             NutritionScreen.routeName: (ctx) => NutritionScreen(),
             NutritionalPlanScreen.routeName: (ctx) => NutritionalPlanScreen(),
+            FormScreen.routeName: (ctx) => FormScreen(),
           },
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,

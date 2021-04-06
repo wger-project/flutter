@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/widgets/workouts/log.dart';
@@ -47,6 +48,7 @@ class _WorkoutLogsState extends State<WorkoutLogs> {
                   style: Theme.of(context).textTheme.headline5,
                 ),
               ),
+              /*
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
@@ -55,21 +57,18 @@ class _WorkoutLogsState extends State<WorkoutLogs> {
                   textAlign: TextAlign.justify,
                 ),
               ),
+              */
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  'If on a single day there is more than one entry with the same'
-                  'number of repetitions, but different weights, only the entry with'
-                  'the higher weight is shown in the diagram.',
+                  AppLocalizations.of(context)!.logHelpEntries,
                   textAlign: TextAlign.justify,
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  'Note that only entries with a weight unit (kg or lb) and repetitions'
-                  'are charted, other combinations such as time or until failure'
-                  'are ignored here.',
+                  AppLocalizations.of(context)!.logHelpEntriesUnits,
                   textAlign: TextAlign.justify,
                 ),
               ),

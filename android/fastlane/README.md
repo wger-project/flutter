@@ -24,6 +24,11 @@ fastlane playstore
 ----
 
 ## Android
+### android updateclosed_alpha
+```
+fastlane android updateclosed_alpha
+```
+Upload closed alpha app and update store entry
 ### android test
 ```
 fastlane android test

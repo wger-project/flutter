@@ -19,7 +19,7 @@
 import 'dart:convert';
 
 class WgerHttpException implements Exception {
-  Map<String, dynamic> errors;
+  Map<String, dynamic>? errors;
 
   /// Custom http exception.
   /// Expects the response body of the REST call and will try to parse it to
@@ -39,6 +39,6 @@ class WgerHttpException implements Exception {
 
   @override
   String toString() {
-    return errors.values.toList().join(', ');
+    return errors!.values.toList().join(', ');
   }
 }

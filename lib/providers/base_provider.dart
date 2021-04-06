@@ -30,20 +30,20 @@ import 'package:wger/providers/helpers.dart';
 /// Provides a couple of comfort functions so we avoid a bit of boilerplate.
 class WgerBaseProvider {
   Auth auth;
-  http.Client client;
+  late http.Client client;
 
-  WgerBaseProvider(auth, [client]) {
+  WgerBaseProvider(this.auth, [http.Client? client]) {
     this.auth = auth;
     this.client = client ?? http.Client();
   }
 
   /// Helper function to make a URL.
-  makeUrl(String path, {int id, String objectMethod, Map<String, dynamic> query}) {
-    return makeUri(auth.serverUrl, path, id, objectMethod, query);
+  makeUrl(String path, {int? id, String? objectMethod, Map<String, dynamic>? query}) {
+    return makeUri(auth.serverUrl!, path, id, objectMethod, query);
   }
 
   /// Fetch and retrieve the overview list of objects, returns the JSON parsed response
-  Future<Map<String, dynamic>> fetch([Uri uri]) async {
+  Future<Map<String, dynamic>> fetch(Uri uri) async {
     // Send the request
     final response = await client.get(
       uri,

@@ -22,6 +22,15 @@ part 'image.g.dart';
 
 @JsonSerializable()
 class ExerciseImage {
+  @JsonKey(required: true)
+  final int id;
+
+  @JsonKey(required: true)
+  final String uuid;
+
+  @JsonKey(required: true, name: 'exercise')
+  final int exerciseId;
+
   @JsonKey(required: true, name: 'image')
   final String url;
 
@@ -29,8 +38,11 @@ class ExerciseImage {
   final bool isMain;
 
   ExerciseImage({
-    this.url,
-    this.isMain,
+    required this.id,
+    required this.uuid,
+    required this.exerciseId,
+    required this.url,
+    required this.isMain,
   });
 
   // Boilerplate

@@ -7,22 +7,14 @@ part of 'meal.dart';
 // **************************************************************************
 
 Meal _$MealFromJson(Map<String, dynamic> json) {
-  $checkKeys(json, requiredKeys: const ['time']);
   return Meal(
-    id: json['id'] as int,
-    plan: json['plan'] as int,
-    time: stringToTime(json['time'] as String),
-    mealItems: (json['meal_items'] as List)
-            ?.map((e) =>
-                e == null ? null : MealItem.fromJson(e as Map<String, dynamic>))
-            ?.toList() ??
-        [],
-  );
+    id: json['id'] as int?,
+    time: stringToTime(json['time'] as String?),
+  )..planId = json['plan'] as int;
 }
 
 Map<String, dynamic> _$MealToJson(Meal instance) => <String, dynamic>{
       'id': instance.id,
-      'plan': instance.plan,
+      'plan': instance.planId,
       'time': timeToString(instance.time),
-      'meal_items': instance.mealItems,
     };

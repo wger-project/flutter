@@ -1,0 +1,6 @@
+Wger (Vɡɐɡɐ) est "copylified" logiciel libre qui aide votre santé.
+
+- Planifier les entraînements et le régime alimentaire
+- Enregistrez des exercices et notes
+- Mode entraînement
+- Journal et suivi du développement

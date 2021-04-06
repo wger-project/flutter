@@ -32,9 +32,9 @@ class Muscle {
   final bool isFront;
 
   Muscle({
-    this.id,
-    this.name,
-    this.isFront,
+    required this.id,
+    required this.name,
+    required this.isFront,
   });
 
   // Boilerplate

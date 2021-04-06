@@ -1,0 +1,270 @@
+{
+  "anErrorOccurred": "È avvenuto un errore!",
+  "@anErrorOccurred": {},
+  "selectIngredient": "Seleziona un ingrediente",
+  "@selectIngredient": {
+    "description": "Error message when the user hasn't selected an ingredient from the autocompleter"
+  },
+  "enterValidNumber": "Inserisci un numero valido",
+  "@enterValidNumber": {
+    "description": "Error message when the user has submitted an invalid number (e.g. '3,.,.,.')"
+  },
+  "enterValue": "Inserisci un valore",
+  "@enterValue": {
+    "description": "Error message when the user hasn't entered a value on a required field"
+  },
+  "goToToday": "Seleziona giorno",
+  "@goToToday": {
+    "description": "Label on button to jump back to 'today' in the calendar widget"
+  },
+  "calendar": "Calendario",
+  "@calendar": {},
+  "aboutText": "wger è rilasciato con \"permesso d'autore\", licenza AGPLv3+ e disponibile su GitHub:",
+  "@aboutText": {
+    "description": "Text in the about dialog"
+  },
+  "toggleDetails": "Scegli dettagli",
+  "@toggleDetails": {
+    "description": "Switch to toggle detail / overview"
+  },
+  "newNutritionalPlan": "Nuovo piano nutrizionale",
+  "@newNutritionalPlan": {},
+  "confirmDelete": "Sei sicuro di voler cancellare '{toDelete}'?",
+  "@confirmDelete": {
+    "description": "Confirmation text before the user deletes an object",
+    "type": "text",
+    "placeholders": {
+      "toDelete": {}
+    }
+  },
+  "delete": "Cancella",
+  "@delete": {},
+  "loadingText": "Caricamento...",
+  "@loadingText": {
+    "description": "Text to show when entries are being loaded in the background: Loading..."
+  },
+  "edit": "Modifica",
+  "@edit": {},
+  "noWeightEntries": "Non hai nessun dato sul peso",
+  "@noWeightEntries": {
+    "description": "Message shown when the user has no logged weight entries"
+  },
+  "newEntry": "Nuovo dato",
+  "@newEntry": {
+    "description": "Title when adding a new entry such as a weight or log entry"
+  },
+  "unit": "Unità",
+  "@unit": {
+    "description": "The unit used for a repetition (kg, time, etc.)"
+  },
+  "amount": "Quatità",
+  "@amount": {
+    "description": "The amount (e.g. in grams) of an ingredient in a meal"
+  },
+  "sodium": "Sodio",
+  "@sodium": {},
+  "fibres": "Fibre",
+  "@fibres": {},
+  "saturatedFat": "Grassi saturi",
+  "@saturatedFat": {},
+  "fat": "Grassi",
+  "@fat": {},
+  "sugars": "Zuccheri",
+  "@sugars": {},
+  "carbohydrates": "Carboidrati",
+  "@carbohydrates": {},
+  "protein": "Proteine",
+  "@protein": {},
+  "g": "g",
+  "@g": {
+    "description": "Abbreviation for gram"
+  },
+  "kJ": "kJ",
+  "@kJ": {
+    "description": "Energy in a meal in kilo joules, kJ"
+  },
+  "kcal": "kcal",
+  "@kcal": {
+    "description": "Energy in a meal in kilocalories, kcal"
+  },
+  "energy": "Energia",
+  "@energy": {
+    "description": "Energy in a meal, ingredient etc. e.g. in kJ"
+  },
+  "ingredient": "Ingrediente",
+  "@ingredient": {},
+  "timeEnd": "Fine del tempo",
+  "@timeEnd": {
+    "description": "The end time of a workout"
+  },
+  "timeStart": "Inizia cronometro",
+  "@timeStart": {
+    "description": "The starting time of a workout"
+  },
+  "time": "Orario",
+  "@time": {
+    "description": "The time of a meal or workout"
+  },
+  "date": "Data",
+  "@date": {
+    "description": "The date of a workout log or body weight entry"
+  },
+  "weight": "Peso",
+  "@weight": {
+    "description": "The weight of a workout log or body weight entry"
+  },
+  "dismiss": "Annulla",
+  "@dismiss": {},
+  "noNutritionalPlans": "Non hai nessun piano nutrizionale",
+  "@noNutritionalPlans": {
+    "description": "Message shown when the user has no nutritional plans"
+  },
+  "nutritionalPlans": "Piani nutrizionali",
+  "@nutritionalPlans": {},
+  "nutritionalDiary": "Diario nutrizionale",
+  "@nutritionalDiary": {},
+  "nutritionalPlan": "Piano nutrizionale",
+  "@nutritionalPlan": {},
+  "addIngredient": "Aggiungi ingrediente",
+  "@addIngredient": {},
+  "mealLogged": "Pasto registrato nel diario",
+  "@mealLogged": {},
+  "addMeal": "Aggiungi pasto",
+  "@addMeal": {},
+  "add": "Aggiungi",
+  "@add": {},
+  "cancel": "Cancella",
+  "@cancel": {},
+  "save": "Salva",
+  "@save": {},
+  "description": "Descrizione",
+  "@description": {},
+  "logHelpEntriesUnits": "Da notare che solo i dati con l'unità del peso (kg o lb) e le ripetizioni sono mostrate. Altre combinazioni come tempo o 'a cedimento' sono ignorate.",
+  "@logHelpEntriesUnits": {},
+  "logHelpEntries": "Se in una giornata c'è più di esercizio con lo stesso numero di ripetizioni, ma con pesi differenti, solo l'esercizio con il peso più alto viene mostrato nel diagramma.",
+  "@logHelpEntries": {},
+  "gymMode": "Modalità allenamento",
+  "@gymMode": {
+    "description": "Label when starting the gym mode"
+  },
+  "newSet": "Nuova serie",
+  "@newSet": {
+    "description": "Header when adding a new set to a workout day"
+  },
+  "newDay": "Nuovo giorno",
+  "@newDay": {},
+  "workoutSession": "Sessione di allenamento",
+  "@workoutSession": {
+    "description": "A (logged) workout session"
+  },
+  "notes": "Note",
+  "@notes": {
+    "description": "Personal notes, e.g. for a workout session"
+  },
+  "impression": "Sensazione",
+  "@impression": {
+    "description": "General impression (e.g. for a workout session) such as good, bad, etc."
+  },
+  "comment": "Commento",
+  "@comment": {
+    "description": "Comment, additional information"
+  },
+  "rir": "RiR",
+  "@rir": {
+    "description": "Shorthand for Repetitions In Reserve"
+  },
+  "repetitions": "Ripetizioni",
+  "@repetitions": {
+    "description": "Repetitions for an exercise set"
+  },
+  "addExercise": "Aggiungi esercizi per questo giorno",
+  "@addExercise": {},
+  "noWorkoutPlans": "Non hai nessun piano di allenamento",
+  "@noWorkoutPlans": {
+    "description": "Message shown when the user has no workout plans"
+  },
+  "newWorkout": "Nuovo piano di allenamento",
+  "@newWorkout": {
+    "description": "Header when adding a new workout"
+  },
+  "exercise": "Esercizio",
+  "@exercise": {
+    "description": "An exercise for a workout"
+  },
+  "successfullyDeleted": "Cancellato",
+  "@successfullyDeleted": {
+    "description": "Message when an item was successfully deleted"
+  },
+  "labelDashboard": "Pannello di controllo",
+  "@labelDashboard": {
+    "description": "Title for screen dashboard"
+  },
+  "labelWorkoutPlan": "Piano di allenamento",
+  "@labelWorkoutPlan": {
+    "description": "Title for screen workout plan"
+  },
+  "labelWorkoutPlans": "Piani di allenamento",
+  "@labelWorkoutPlans": {
+    "description": "Title for screen workout plans"
+  },
+  "loginInstead": "Al log in",
+  "@loginInstead": {},
+  "registerInstead": "Alla registrazione",
+  "@registerInstead": {},
+  "reset": "Rerimposta",
+  "@reset": {
+    "description": "Button text allowing the user to reset the entered values to the default"
+  },
+  "customServerHint": "Inserisci l'indirizzo del tuo server personale o quello predefinito verrà utilizzato",
+  "@customServerHint": {
+    "description": "Hint text for the form where the users can enter their own wger instance"
+  },
+  "customServerUrl": "URL istanza wger",
+  "@customServerUrl": {
+    "description": "Label in the form where the users can enter their own wger instance"
+  },
+  "invalidUsername": "Inserisci un nome utente valido",
+  "@invalidUsername": {
+    "description": "Error message when the user enters an invalid username"
+  },
+  "username": "Nome utente",
+  "@username": {},
+  "email": "Indirizzo e-mail",
+  "@email": {},
+  "invalidEmail": "Inserisci un indirizzo e-mail valido",
+  "@invalidEmail": {
+    "description": "Error message when the user enters an invalid email"
+  },
+  "confirmPassword": "Conferma password",
+  "@confirmPassword": {},
+  "password": "Password",
+  "@password": {},
+  "passwordTooShort": "La password è troppo corta",
+  "@passwordTooShort": {
+    "description": "Error message when the user a password that is too short"
+  },
+  "passwordsDontMatch": "Le passwords non coincidono",
+  "@passwordsDontMatch": {
+    "description": "Error message when the user enters two different passwords during registration"
+  },
+  "invalidUrl": "Inserisci un URL valido",
+  "@invalidUrl": {
+    "description": "Error message when the user enters an invalid URL, e.g. in the login form"
+  },
+  "useCustomServer": "Usa un server personale",
+  "@useCustomServer": {
+    "description": "Toggle button allowing users to switch between the default and a custom wger server"
+  },
+  "useDefaultServer": "Usa il server predefinito",
+  "@useDefaultServer": {
+    "description": "Toggle button allowing users to switch between the default and a custom wger server"
+  },
+  "register": "Registrati",
+  "@register": {
+    "description": "Text for registration button"
+  },
+  "login": "Entra",
+  "@login": {
+    "description": "Text for login button"
+  }
+}

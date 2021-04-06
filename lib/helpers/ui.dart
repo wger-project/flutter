@@ -30,11 +30,11 @@ void showErrorDialog(dynamic exception, BuildContext context) {
   showDialog(
     context: context,
     builder: (ctx) => AlertDialog(
-      title: Text('An Error Occurred!'),
+      title: Text(AppLocalizations.of(context)!.anErrorOccurred),
       content: Text(exception.toString()),
       actions: [
         TextButton(
-          child: Text('Dismiss'),
+          child: Text(AppLocalizations.of(context)!.dismiss),
           onPressed: () {
             Navigator.of(ctx).pop();
           },
@@ -50,15 +50,15 @@ void showHttpExceptionErrorDialog(WgerHttpException exception, BuildContext cont
   log('-------------------');
 
   List<Widget> errorList = [];
-  for (var key in exception.errors.keys) {
+  for (var key in exception.errors!.keys) {
     // Error headers
     errorList.add(Text(key, style: TextStyle(fontWeight: FontWeight.bold)));
 
     // Error messages
-    if (exception.errors[key] is String) {
-      errorList.add(Text(exception.errors[key]));
+    if (exception.errors![key] is String) {
+      errorList.add(Text(exception.errors![key]));
     } else {
-      for (var value in exception.errors[key]) {
+      for (var value in exception.errors![key]) {
         errorList.add(Text(value));
       }
     }
@@ -67,7 +67,7 @@ void showHttpExceptionErrorDialog(WgerHttpException exception, BuildContext cont
   showDialog(
     context: context,
     builder: (ctx) => AlertDialog(
-      title: Text(AppLocalizations.of(context).anErrorOccurred),
+      title: Text(AppLocalizations.of(context)!.anErrorOccurred),
       content: Container(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -76,7 +76,7 @@ void showHttpExceptionErrorDialog(WgerHttpException exception, BuildContext cont
       ),
       actions: [
         TextButton(
-          child: Text(AppLocalizations.of(context).dismiss),
+          child: Text(AppLocalizations.of(context)!.dismiss),
           onPressed: () {
             Navigator.of(ctx).pop();
           },

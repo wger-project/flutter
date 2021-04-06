@@ -29,8 +29,8 @@ class Comment {
   final String comment;
 
   Comment({
-    this.id,
-    this.comment,
+    required this.id,
+    required this.comment,
   });
 
   // Boilerplate

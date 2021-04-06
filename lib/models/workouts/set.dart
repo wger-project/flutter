@@ -9,44 +9,55 @@ class Set {
   static const DEFAULT_NR_SETS = 4;
 
   @JsonKey(required: true)
-  int id;
+  int? id;
 
   @JsonKey(required: true)
-  int sets;
+  late int sets;
 
   @JsonKey(required: false, name: 'exerciseday')
-  int day;
+  late int day;
 
   @JsonKey(required: true)
-  int order;
+  int? order;
 
-  //@JsonKey(required: true)
+  @JsonKey(ignore: true)
   List<Exercise> exercisesObj = [];
 
-  @JsonKey(required: false, name: 'exercises')
+  @JsonKey(ignore: true)
   List<int> exercisesIds = [];
 
-  @JsonKey(required: false)
+  @JsonKey(ignore: true)
   List<Setting> settings = [];
 
-  /// Computed settings
-  @JsonKey(required: false)
+  /// Computed settings (instead of 4x10 this has [10, 10, 10, 10]), used for
+  /// the gym mode where the individual values are used
+  @JsonKey(ignore: true)
   List<Setting> settingsComputed = [];
 
   Set({
+    required this.day,
+    required this.sets,
+    this.order,
+  });
+
+  Set.withData({
     this.id,
     sets,
-    this.day,
-    this.order,
+    day,
+    order,
     exercises,
     settings,
     settingsComputed,
   }) {
     this.sets = sets ?? DEFAULT_NR_SETS;
+    this.order = order ?? 1;
     this.exercisesObj = exercises ?? [];
     this.exercisesIds = exercisesObj.map((e) => e.id).toList();
     this.settings = settings ?? [];
     this.settingsComputed = settingsComputed ?? [];
+    if (day != null) {
+      this.day = day;
+    }
   }
 
   void addExercise(Exercise exercise) {

@@ -26,18 +26,20 @@ import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
-import 'package:wger/widgets/core/bottom_sheet.dart';
+import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
+import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/weight/charts.dart';
 import 'package:wger/widgets/weight/forms.dart';
+import 'package:wger/widgets/workouts/forms.dart';
 
 class DashboardNutritionWidget extends StatefulWidget {
   const DashboardNutritionWidget({
-    Key key,
-    @required this.context,
-  }) : super(key: key);
+    required this.context,
+  });
 
   final BuildContext context;
 
@@ -46,26 +48,76 @@ class DashboardNutritionWidget extends StatefulWidget {
 }
 
 class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
-  Nutrition nutrition;
-  NutritionalPlan plan;
+  //Nutrition nutrition;
+  late NutritionalPlan plan;
+  var showDetail = false;
 
   @override
   Widget build(BuildContext context) {
-    plan = Provider.of<Nutrition>(context, listen: false).currentPlan;
+    NutritionalPlan? plan = Provider.of<Nutrition>(context, listen: false).currentPlan;
+    final bool hasContent = plan != null;
+
+    List<Widget> out = [];
+    if (hasContent) {
+      for (var meal in plan.meals) {
+        out.add(Text(
+          meal.time.format(context),
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ));
+        out.add(Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+                '${meal.nutritionalValues.energy.toStringAsFixed(0)}${AppLocalizations.of(context)!.kcal}'),
+            Text(' / '),
+            Text(
+                '${meal.nutritionalValues.protein.toStringAsFixed(0)}${AppLocalizations.of(context)!.g}'),
+            Text(' / '),
+            Text(
+                '${meal.nutritionalValues.carbohydrates.toStringAsFixed(0)}${AppLocalizations.of(context)!.g}'),
+            Text(' / '),
+            Text(
+                '${meal.nutritionalValues.fat.toStringAsFixed(0)}${AppLocalizations.of(context)!.g} '),
+          ],
+        ));
+        out.add(SizedBox(height: 5));
+
+        if (showDetail) {
+          meal.mealItems.forEach((item) {
+            out.add(
+              Column(children: [
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(item.ingredientObj.name),
+                    SizedBox(width: 5),
+                    Text('${item.amount.toString()} ${AppLocalizations.of(context)!.g}'),
+                  ],
+                ),
+              ]),
+            );
+          });
+          out.add(SizedBox(height: 10));
+          out.add(Divider());
+        }
+      }
+    }
 
     return Card(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            AppLocalizations.of(context).nutritionalPlan,
+            AppLocalizations.of(context)!.nutritionalPlan,
             style: Theme.of(context).textTheme.headline4,
           ),
-          plan != null
+          hasContent
               ? Column(
                   children: [
                     Text(
-                      DateFormat.yMd().format(plan.creationDate),
+                      DateFormat.yMd(Localizations.localeOf(context).languageCode)
+                          .format(plan.creationDate),
                       style: Theme.of(context).textTheme.headline6,
                     ),
                     TextButton(
@@ -74,10 +126,11 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                         style: TextStyle(fontSize: 20),
                       ),
                       onPressed: () {
-                        return Navigator.of(context)
+                        Navigator.of(context)
                             .pushNamed(NutritionalPlanScreen.routeName, arguments: plan);
                       },
                     ),
+                    ...out,
                     Container(
                       padding: EdgeInsets.all(15),
                       height: 180,
@@ -85,24 +138,22 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                     )
                   ],
                 )
-              : Container(
-                  alignment: Alignment.center,
-                  height: 150,
-                  child: Text('You have no nutritional plans'),
+              : NothingFound(
+                  AppLocalizations.of(context)!.noNutritionalPlans,
+                  AppLocalizations.of(context)!.newNutritionalPlan,
+                  PlanForm(),
                 ),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               TextButton(
-                child: const Text('Action one'),
-                onPressed: () {},
+                child: Text(AppLocalizations.of(context)!.toggleDetails),
+                onPressed: () {
+                  setState(() {
+                    showDetail = !showDetail;
+                  });
+                },
               ),
-              const SizedBox(width: 8),
-              TextButton(
-                child: const Text('Action two'),
-                onPressed: () {},
-              ),
-              const SizedBox(width: 8),
             ],
           ),
         ],
@@ -113,9 +164,8 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
 
 class DashboardWeightWidget extends StatefulWidget {
   const DashboardWeightWidget({
-    Key key,
-    @required this.context,
-  }) : super(key: key);
+    required this.context,
+  });
 
   final BuildContext context;
 
@@ -124,7 +174,7 @@ class DashboardWeightWidget extends StatefulWidget {
 }
 
 class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
-  BodyWeight weightEntriesData;
+  late BodyWeight weightEntriesData;
 
   @override
   Widget build(BuildContext context) {
@@ -135,7 +185,7 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            AppLocalizations.of(context).weight,
+            AppLocalizations.of(context)!.weight,
             style: Theme.of(context).textTheme.headline4,
           ),
           Column(
@@ -146,21 +196,24 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                       height: 180,
                       child: WeightChartWidget(weightEntriesData.items),
                     )
-                  : Container(
-                      alignment: Alignment.center,
-                      height: 150,
-                      child: Text('You have no weight entries'),
+                  : NothingFound(
+                      AppLocalizations.of(context)!.noWeightEntries,
+                      AppLocalizations.of(context)!.newEntry,
+                      WeightForm(),
                     ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
                   TextButton(
-                    child: Text(AppLocalizations.of(context).newEntry),
+                    child: Text(AppLocalizations.of(context)!.newEntry),
                     onPressed: () async {
-                      showFormBottomSheet(
+                      Navigator.pushNamed(
                         context,
-                        AppLocalizations.of(context).newEntry,
-                        WeightForm(),
+                        FormScreen.routeName,
+                        arguments: FormScreenArguments(
+                          AppLocalizations.of(context)!.newEntry,
+                          WeightForm(),
+                        ),
                       );
                     },
                   ),
@@ -176,9 +229,8 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
 
 class DashboardWorkoutWidget extends StatefulWidget {
   DashboardWorkoutWidget({
-    Key key,
-    @required this.context,
-  }) : super(key: key);
+    required this.context,
+  });
 
   final BuildContext context;
 
@@ -187,42 +239,39 @@ class DashboardWorkoutWidget extends StatefulWidget {
 }
 
 class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
-  WorkoutPlan _workoutPlan;
+  late WorkoutPlan _workoutPlan;
   var showDetail = false;
 
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    _workoutPlan = Provider.of<WorkoutPlans>(context, listen: false).activePlan;
+    WorkoutPlan? _workoutPlan = Provider.of<WorkoutPlans>(context, listen: false).activePlan;
+    final bool hasContent = _workoutPlan != null;
 
     List<Widget> out = [];
-    for (var day in _workoutPlan.days) {
-      out.add(Text(
-        day.description,
-        style: TextStyle(fontWeight: FontWeight.bold),
-      ));
-      if (showDetail) {
-        day.sets.forEach((set) {
-          out.add(Column(
-            children: [
-              ...set.settings.map((s) {
-                return Column(
-                  children: [
-                    Text(s.exerciseObj.name, style: TextStyle(fontWeight: FontWeight.bold)),
-                    Text(s.repsText),
-                    SizedBox(height: 10),
-                  ],
-                );
-              }).toList(),
-              Divider(),
-            ],
-          ));
-        });
+    if (hasContent) {
+      for (var day in _workoutPlan.days) {
+        out.add(Text(
+          day.description,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ));
+        if (showDetail) {
+          day.sets.forEach((set) {
+            out.add(Column(
+              children: [
+                ...set.settings.map((s) {
+                  return Column(
+                    children: [
+                      Text(s.exerciseObj.name),
+                      Text(s.repsText),
+                      SizedBox(height: 5),
+                    ],
+                  );
+                }).toList(),
+                SizedBox(height: 7),
+              ],
+            ));
+          });
+        }
       }
     }
 
@@ -231,14 +280,15 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            AppLocalizations.of(context).labelWorkoutPlan,
+            AppLocalizations.of(context)!.labelWorkoutPlan,
             style: Theme.of(context).textTheme.headline4,
           ),
-          _workoutPlan != null
+          hasContent
               ? Column(
                   children: [
                     Text(
-                      DateFormat.yMd().format(_workoutPlan.creationDate),
+                      DateFormat.yMd(Localizations.localeOf(context).languageCode)
+                          .format(_workoutPlan.creationDate),
                       style: Theme.of(context).textTheme.headline6,
                     ),
                     TextButton(
@@ -247,31 +297,69 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                         style: TextStyle(fontSize: 20),
                       ),
                       onPressed: () {
-                        return Navigator.of(context)
+                        Navigator.of(context)
                             .pushNamed(WorkoutPlanScreen.routeName, arguments: _workoutPlan);
                       },
                     ),
                     ...out,
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        TextButton(
-                          child: Text(AppLocalizations.of(context).toggleDetails),
-                          onPressed: () {
-                            setState(() {
-                              showDetail = !showDetail;
-                            });
-                          },
-                        ),
-                      ],
-                    )
                   ],
                 )
-              : Container(
-                  alignment: Alignment.center,
-                  height: 150,
-                  child: Text('you have no workouts'),
+              : NothingFound(
+                  AppLocalizations.of(context)!.noWorkoutPlans,
+                  AppLocalizations.of(context)!.newWorkout,
+                  WorkoutForm(WorkoutPlan(creationDate: DateTime.now(), description: '')),
                 ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              TextButton(
+                child: Text(AppLocalizations.of(context)!.toggleDetails),
+                onPressed: () {
+                  setState(() {
+                    showDetail = !showDetail;
+                  });
+                },
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class NothingFound extends StatelessWidget {
+  final String _title;
+  final String _titleForm;
+  final Widget _form;
+
+  NothingFound(this._title, this._titleForm, this._form);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 150,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(_title),
+          IconButton(
+            iconSize: 30,
+            icon: const Icon(
+              Icons.add_box,
+              color: wgerPrimaryButtonColor,
+            ),
+            onPressed: () async {
+              Navigator.pushNamed(
+                context,
+                FormScreen.routeName,
+                arguments: FormScreenArguments(
+                  _titleForm,
+                  _form,
+                ),
+              );
+            },
+          ),
         ],
       ),
     );

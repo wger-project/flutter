@@ -19,53 +19,53 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/set.dart';
 import 'package:wger/models/workouts/setting.dart';
 import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/gym_mode.dart';
-import 'package:wger/widgets/core/bottom_sheet.dart';
+import 'package:wger/theme/theme.dart';
+import 'package:wger/widgets/workouts/exercises.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 
 class SettingWidget extends StatelessWidget {
   Setting setting;
+  final bool expanded;
+  final toggle;
 
-  SettingWidget({this.setting});
+  SettingWidget({required this.setting, required this.expanded, required this.toggle});
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       leading: Container(
-        child: setting.exerciseObj.images.length > 0
-            ? FadeInImage(
-                placeholder: AssetImage('assets/images/placeholder.png'),
-                image: NetworkImage(setting.exerciseObj.getMainImage.url),
-                fit: BoxFit.cover,
-              )
-            : Image(
-                image: AssetImage('assets/images/placeholder.png'),
-                color: Color.fromRGBO(255, 255, 255, 0.3),
-                colorBlendMode: BlendMode.modulate),
+        child: ExerciseImageWidget(image: setting.exerciseObj.getMainImage),
         width: 45,
       ),
       title: Text(setting.exerciseObj.name),
       subtitle: Text(setting.repsText),
-      trailing: IconButton(
-        visualDensity: VisualDensity.compact,
-        icon: Icon(Icons.delete),
-        //iconSize: 16,
-        onPressed: () {
-          Provider.of<WorkoutPlans>(context, listen: false).deleteSetting(setting);
-        },
-      ),
     );
   }
 }
 
-class WorkoutDayWidget extends StatelessWidget {
+class WorkoutDayWidget extends StatefulWidget {
   final Day _day;
 
   WorkoutDayWidget(this._day);
+
+  @override
+  _WorkoutDayWidgetState createState() => _WorkoutDayWidgetState();
+}
+
+class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
+  bool _expanded = false;
+  void _toggleExpanded() {
+    setState(() {
+      _expanded = !_expanded;
+    });
+  }
 
   Widget getSetRow(Set set) {
     return Row(
@@ -77,76 +77,152 @@ class WorkoutDayWidget extends StatelessWidget {
             children: [
               ...set.settings
                   .map(
-                    (setting) => SettingWidget(setting: setting),
+                    (setting) => SettingWidget(
+                      setting: setting,
+                      expanded: _expanded,
+                      toggle: _toggleExpanded,
+                    ),
                   )
                   .toList(),
               Divider(),
             ],
           ),
-        )
+        ),
+        if (_expanded)
+          IconButton(
+            visualDensity: VisualDensity.compact,
+            icon: Icon(Icons.delete),
+            iconSize: ICON_SIZE_SMALL,
+            onPressed: () {
+              Provider.of<WorkoutPlans>(context, listen: false).deleteSet(set);
+            },
+          )
       ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Column(
-        children: [
-          DayHeaderDismissible(day: _day),
-          ..._day.sets
-              .map(
-                (set) => getSetRow(set),
-              )
-              .toList(),
-          OutlinedButton(
-            child: Text('Add exercise to day'),
-            onPressed: () {
-              showFormBottomSheet(
-                context,
-                AppLocalizations.of(context).newSet,
-                SetFormWidget(_day),
-              );
-            },
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10.0),
-          )
-        ],
+    return Container(
+      padding: EdgeInsets.all(3),
+      child: Card(
+        child: Column(
+          children: [
+            DayHeaderDismissible(
+              day: widget._day,
+              expanded: _expanded,
+              toggle: _toggleExpanded,
+            ),
+            if (_expanded)
+              InkWell(
+                onTap: () {
+                  Navigator.of(context).pushNamed(GymModeScreen.routeName, arguments: widget._day);
+                },
+                child: Container(
+                  width: double.infinity,
+                  height: 50,
+                  color: wgerPrimaryButtonColor,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.gymMode,
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      Icon(
+                        Icons.play_arrow,
+                        color: Colors.white,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ...widget._day.sets
+                .map(
+                  (set) => getSetRow(set),
+                )
+                .toList(),
+            OutlinedButton(
+              child: Text(AppLocalizations.of(context)!.addExercise),
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  FormScreen.routeName,
+                  arguments: FormScreenArguments(
+                    AppLocalizations.of(context)!.newSet,
+                    SetFormWidget(widget._day),
+                    true,
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
 class DayHeaderDismissible extends StatelessWidget {
-  const DayHeaderDismissible({
-    Key key,
-    @required Day day,
-  })  : _day = day,
-        super(key: key);
-
   final Day _day;
+  final bool _expanded;
+  final _toggle;
+
+  const DayHeaderDismissible({
+    required Day day,
+    required bool expanded,
+    required Function toggle,
+  })   : _day = day,
+        _expanded = expanded,
+        _toggle = toggle;
 
   @override
   Widget build(BuildContext context) {
     return Dismissible(
       key: Key(_day.id.toString()),
+      direction: DismissDirection.startToEnd,
       child: Container(
-        decoration: BoxDecoration(color: Colors.black12),
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        width: double.infinity,
-        child: Column(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(color: Colors.white),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              _day.description,
-              style: Theme.of(context).textTheme.headline6,
+            Flexible(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    _day.description,
+                    style: Theme.of(context).textTheme.headline5,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(_day.getDaysText),
+                ],
+              ),
             ),
-            Text(_day.getDaysText),
+            Row(
+              children: [
+                if (_expanded)
+                  IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () {
+                      Provider.of<WorkoutPlans>(context, listen: false).deleteDay(_day);
+                    },
+                  ),
+                IconButton(
+                  icon: _expanded ? Icon(Icons.expand_less) : Icon(Icons.expand_more),
+                  onPressed: () {
+                    _toggle();
+                  },
+                ),
+              ],
+            ),
           ],
         ),
       ),
+      /*
       secondaryBackground: Container(
-        color: Theme.of(context).primaryColor,
+        color: Theme.of(context).accentColor,
         padding: EdgeInsets.only(right: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -162,15 +238,16 @@ class DayHeaderDismissible extends StatelessWidget {
           ],
         ),
       ),
+      */
       background: Container(
-        color: Theme.of(context).accentColor,
+        color: wgerPrimaryButtonColor, //Theme.of(context).primaryColor,
         alignment: Alignment.centerLeft,
         padding: EdgeInsets.only(left: 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              AppLocalizations.of(context).gymMode,
+              AppLocalizations.of(context)!.gymMode,
               style: TextStyle(color: Colors.white),
             ),
             Icon(
@@ -189,7 +266,7 @@ class DayHeaderDismissible extends StatelessWidget {
               content: Text('Would open weight log form for this day'),
               actions: [
                 TextButton(
-                  child: Text("Close"),
+                  child: Text(AppLocalizations.of(context)!.dismiss),
                   onPressed: () => Navigator.of(context).pop(),
                 ),
               ],

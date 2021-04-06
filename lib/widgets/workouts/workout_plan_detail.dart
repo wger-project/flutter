@@ -18,10 +18,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:intl/intl.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
+import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
-import 'package:wger/widgets/core/bottom_sheet.dart';
 import 'package:wger/widgets/workouts/day.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 
@@ -42,6 +41,7 @@ class _WorkoutPlanDetailState extends State<WorkoutPlanDetail> {
         [
           Column(
             children: [
+              /*
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: Text(
@@ -49,19 +49,22 @@ class _WorkoutPlanDetailState extends State<WorkoutPlanDetail> {
                   style: Theme.of(context).textTheme.headline6,
                 ),
               ),
+
+               */
               ...widget._workoutPlan.days
                   .map((workoutDay) => WorkoutDayWidget(workoutDay))
                   .toList(),
               Column(
                 children: [
                   ElevatedButton(
-                    child: Text(AppLocalizations.of(context).add),
+                    child: Text(AppLocalizations.of(context)!.add),
                     onPressed: () {
-                      showFormBottomSheet(
+                      Navigator.pushNamed(
                         context,
-                        AppLocalizations.of(context).newDay,
-                        DayFormWidget(
-                          workout: widget._workoutPlan,
+                        FormScreen.routeName,
+                        arguments: FormScreenArguments(
+                          AppLocalizations.of(context)!.newDay,
+                          DayFormWidget(widget._workoutPlan),
                         ),
                       );
                     },

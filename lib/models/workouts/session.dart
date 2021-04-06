@@ -9,34 +9,36 @@ const ImpressionMap = {1: 'bad', 2: 'neutral', 3: 'good'};
 @JsonSerializable()
 class WorkoutSession {
   @JsonKey(required: true)
-  int id;
+  int? id;
 
   @JsonKey(required: true, name: 'workout')
-  int workoutId;
+  late int workoutId;
 
   @JsonKey(required: true, toJson: toDate)
-  DateTime date;
+  late DateTime date;
 
   @JsonKey(required: true, fromJson: toNum, toJson: toString)
-  num impression;
+  late num impression;
 
   @JsonKey(required: false, defaultValue: '')
-  String notes;
+  late String notes;
 
   @JsonKey(required: true, name: 'time_start', toJson: timeToString, fromJson: stringToTime)
-  TimeOfDay timeStart;
+  late TimeOfDay timeStart;
 
   @JsonKey(required: true, name: 'time_end', toJson: timeToString, fromJson: stringToTime)
-  TimeOfDay timeEnd;
+  late TimeOfDay timeEnd;
 
-  WorkoutSession({
-    this.id,
-    this.workoutId,
-    this.date,
-    this.impression,
-    this.notes,
-    this.timeStart,
-    this.timeEnd,
+  WorkoutSession();
+
+  WorkoutSession.withData({
+    required this.id,
+    required this.workoutId,
+    required this.date,
+    required this.impression,
+    required this.notes,
+    required this.timeStart,
+    required this.timeEnd,
   });
 
   // Boilerplate
