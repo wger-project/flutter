@@ -22,6 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/ui.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/http_exception.dart';
@@ -35,7 +36,11 @@ import 'package:wger/providers/workout_plans.dart';
 
 class GymMode extends StatefulWidget {
   final Day _workoutDay;
-  GymMode(this._workoutDay);
+  late TimeOfDay _start;
+
+  GymMode(this._workoutDay) {
+    _start = TimeOfDay.now();
+  }
 
   @override
   _GymModeState createState() => _GymModeState();
@@ -82,7 +87,7 @@ class _GymModeState extends State<GymMode> {
       children: [
         StartPage(_controller, widget._workoutDay),
         ...out,
-        SessionPage(workoutProvider.findById(widget._workoutDay.workoutId)),
+        SessionPage(workoutProvider.findById(widget._workoutDay.workoutId), widget._start),
       ],
     );
   }
@@ -142,13 +147,12 @@ class LogPage extends StatelessWidget {
   Setting _setting;
   Exercise _exercise;
   WorkoutPlan _workoutPlan;
-  Log _log = Log();
+  Log _log = Log.empty();
 
   final _form = GlobalKey<FormState>();
   final _repsController = TextEditingController();
   final _weightController = TextEditingController();
   final _rirController = TextEditingController();
-  final _commentController = TextEditingController();
 
   LogPage(this._controller, this._setting, this._exercise, this._workoutPlan) {
     if (_setting.reps != null) {
@@ -164,7 +168,7 @@ class LogPage extends StatelessWidget {
     }
 
     _log.date = DateTime.now();
-    _log.exercise = _exercise.id;
+    _log.setExercise(_exercise);
     _log.workoutPlan = _workoutPlan.id!;
     _log.repetitionUnit = 1;
     _log.weightUnit = 1;
@@ -304,8 +308,9 @@ class ExerciseOverview extends StatelessWidget {
 
 class SessionPage extends StatefulWidget {
   WorkoutPlan _workoutPlan;
+  TimeOfDay _start;
 
-  SessionPage(this._workoutPlan);
+  SessionPage(this._workoutPlan, this._start);
 
   @override
   _SessionPageState createState() => _SessionPageState();
@@ -322,6 +327,16 @@ class _SessionPageState extends State<SessionPage> {
   var _session = WorkoutSession();
 
   @override
+  void initState() {
+    super.initState();
+
+    timeStartController.text = timeToString(widget._start)!;
+    timeEndController.text = timeToString(TimeOfDay.now())!;
+    _session.workoutId = widget._workoutPlan.id!;
+    _session.date = DateTime.now();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
@@ -331,7 +346,7 @@ class _SessionPageState extends State<SessionPage> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: Text(
-              'Session',
+              AppLocalizations.of(context)!.workoutSession,
               style: Theme.of(context).textTheme.headline5,
             ),
           ),
@@ -341,33 +356,24 @@ class _SessionPageState extends State<SessionPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                FormField<int>(
-                  builder: (FormFieldState<int> state) {
-                    return InputDecorator(
-                      decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.impression,
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton<int>(
-                          value: impressionValue,
-                          isDense: true,
-                          onChanged: (int? newValue) {
-                            setState(() {
-                              impressionValue = newValue!;
-                              state.didChange(newValue);
-                            });
-                          },
-                          items: ImpressionMap.keys.map<DropdownMenuItem<int>>((int key) {
-                            return DropdownMenuItem<int>(
-                              value: key,
-                              child: Text(
-                                ImpressionMap[key]!,
-                              ),
-                            );
-                          }).toList(),
-                        ),
-                      ),
+                DropdownButtonFormField(
+                  value: impressionValue,
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.impression,
+                  ),
+                  items: ImpressionMap.keys.map<DropdownMenuItem<int>>((int key) {
+                    return DropdownMenuItem<int>(
+                      value: key,
+                      child: Text(ImpressionMap[key]!),
                     );
+                  }).toList(),
+                  onSaved: (int? newValue) {
+                    _session.impression = newValue!;
+                  },
+                  onChanged: (int? newValue) {
+                    setState(() {
+                      impressionValue = newValue!;
+                    });
                   },
                 ),
                 TextFormField(
@@ -390,7 +396,21 @@ class _SessionPageState extends State<SessionPage> {
                             InputDecoration(labelText: AppLocalizations.of(context)!.timeStart),
                         controller: timeStartController,
                         onFieldSubmitted: (_) {},
-                        onSaved: (newValue) {},
+                        onTap: () async {
+                          // Stop keyboard from appearing
+                          FocusScope.of(context).requestFocus(new FocusNode());
+
+                          // Open time picker
+                          var pickedTime = await showTimePicker(
+                            context: context,
+                            initialTime: widget._start,
+                          );
+
+                          timeStartController.text = timeToString(pickedTime)!;
+                        },
+                        onSaved: (newValue) {
+                          _session.timeStart = stringToTime(newValue);
+                        },
                       ),
                     ),
                     Flexible(
@@ -399,7 +419,21 @@ class _SessionPageState extends State<SessionPage> {
                             InputDecoration(labelText: AppLocalizations.of(context)!.timeEnd),
                         controller: timeEndController,
                         onFieldSubmitted: (_) {},
-                        onSaved: (newValue) {},
+                        onTap: () async {
+                          // Stop keyboard from appearing
+                          FocusScope.of(context).requestFocus(new FocusNode());
+
+                          // Open time picker
+                          var pickedTime = await showTimePicker(
+                            context: context,
+                            initialTime: TimeOfDay.now(),
+                          );
+
+                          timeStartController.text = timeToString(pickedTime)!;
+                        },
+                        onSaved: (newValue) {
+                          _session.timeEnd = stringToTime(newValue);
+                        },
                       ),
                     ),
                   ],
@@ -413,9 +447,6 @@ class _SessionPageState extends State<SessionPage> {
                       return;
                     }
                     _form.currentState!.save();
-                    _session.date = DateTime.now();
-                    _session.workoutId = widget._workoutPlan.id!;
-                    _session.impression = impressionValue;
 
                     // Save the entry on the server
                     try {
@@ -511,19 +542,9 @@ class _TimerWidgetState extends State<TimerWidget> {
               style: Theme.of(context).textTheme.headline5,
             ),
           ),
-          /*
-          ElevatedButton(
-            child: Text("start"),
-            onPressed: () {
-              startTimer();
-            },
-          ),
-
-           */
           Expanded(
             child: Center(
               child: Text(
-                //'${_seconds} sec',
                 DateFormat('m:ss').format(today.add(Duration(seconds: _seconds))),
                 style: Theme.of(context).textTheme.headline1,
               ),

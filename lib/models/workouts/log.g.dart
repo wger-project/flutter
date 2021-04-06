@@ -17,16 +17,17 @@ Log _$LogFromJson(Map<String, dynamic> json) {
     'weight_unit',
     'date'
   ]);
-  return Log()
-    ..id = json['id'] as int?
-    ..exercise = json['exercise'] as int
-    ..workoutPlan = json['workout'] as int
-    ..reps = json['reps'] as int
-    ..rir = json['rir'] as String
-    ..repetitionUnit = json['repetition_unit'] as int
-    ..weight = toNum(json['weight'] as String?)
-    ..weightUnit = json['weight_unit'] as int
-    ..date = DateTime.parse(json['date'] as String);
+  return Log(
+    id: json['id'] as int?,
+    exercise: json['exercise'] as int,
+    workoutPlan: json['workout'] as int,
+    reps: json['reps'] as int,
+    rir: json['rir'] as String,
+    repetitionUnit: json['repetition_unit'] as int,
+    weight: toNum(json['weight'] as String?),
+    weightUnit: json['weight_unit'] as int,
+    date: DateTime.parse(json['date'] as String),
+  );
 }
 
 Map<String, dynamic> _$LogToJson(Log instance) => <String, dynamic>{
