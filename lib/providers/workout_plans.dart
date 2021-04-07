@@ -160,7 +160,7 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
           if (!workoutSet.exercisesIds.contains(workoutSetting.exerciseId)) {
             workoutSet.addExercise(workoutSetting.exerciseObj);
           }
-          workoutSetting.repsText = 'FIXME!';
+          workoutSetting.repsText = await fetchSmartText(workoutSet, workoutSetting.exerciseObj);
           settings.add(workoutSetting);
         }
         workoutSet.settings = settings;
@@ -327,7 +327,17 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
     ));
 
     List<Setting> settings = [];
-    data['results'].forEach((e) => settings.add(Setting.fromJson(e)));
+    data['results'].forEach((e) {
+      Setting workoutSetting = Setting.fromJson(e);
+
+      workoutSetting.weightUnitObj = _weightUnits.firstWhere(
+        (unit) => unit.id == workoutSetting.weightUnitId,
+      );
+      workoutSetting.repetitionUnitObj = _repetitionUnit.firstWhere(
+        (unit) => unit.id == workoutSetting.repetitionUnitId,
+      );
+      settings.add(workoutSetting);
+    });
 
     workoutSet.settingsComputed = settings;
     notifyListeners();
