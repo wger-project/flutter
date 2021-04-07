@@ -36,7 +36,7 @@ class NutritionalPlanScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _nutritionalPlan = ModalRoute.of(context)!.settings.arguments as NutritionalPlan /*!*/;
+    final _nutritionalPlan = ModalRoute.of(context)!.settings.arguments as NutritionalPlan;
 
     return Scaffold(
       //appBar: getAppBar(nutritionalPlan),
