@@ -65,7 +65,7 @@ class WorkoutPlansList extends StatelessWidget {
                           Navigator.of(contextDialog).pop();
 
                           // and inform the user
-                          Scaffold.of(context).showSnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
                                 AppLocalizations.of(context)!.successfullyDeleted,

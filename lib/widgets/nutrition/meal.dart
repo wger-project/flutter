@@ -127,7 +127,7 @@ class MealItemWidget extends StatelessWidget {
                       Provider.of<Nutrition>(context, listen: false).deleteMealItem(_item);
 
                       // and inform the user
-                      Scaffold.of(context).showSnackBar(
+                      ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                             content: Text(
                           AppLocalizations.of(context)!.successfullyDeleted,
@@ -244,7 +244,7 @@ class DismissibleMealHeader extends StatelessWidget {
             Provider.of<Nutrition>(context, listen: false).deleteMeal(_meal);
 
             // and inform the user
-            Scaffold.of(context).showSnackBar(
+            ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(
                   AppLocalizations.of(context)!.successfullyDeleted,
@@ -256,7 +256,7 @@ class DismissibleMealHeader extends StatelessWidget {
             // Log meal
           } else {
             Provider.of<Nutrition>(context, listen: false).logMealToDiary(_meal);
-            Scaffold.of(context).showSnackBar(
+            ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(
                   AppLocalizations.of(context)!.mealLogged,

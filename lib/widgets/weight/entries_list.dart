@@ -52,7 +52,7 @@ class WeightEntriesList extends StatelessWidget {
                     _weightProvider.deleteEntry(currentEntry.id!);
 
                     // and inform the user
-                    Scaffold.of(context).showSnackBar(
+                    ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
                           "Deleted weight entry for the ${DateFormat.yMd().format(currentEntry.date).toString()}",
