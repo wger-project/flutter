@@ -25,8 +25,27 @@ end
 
 platform :android do
 
-desc "Upload closed alpha app and update store entry"
-  lane :updateclosed_alpha do
+  desc "Upload app to production"
+  lane :production do
+    begin
+      # gradle(
+      #  task: 'assemble',
+      #  build_type: 'Release'
+      #)
+      upload_to_play_store(
+        track: 'production',
+        aab: '../build/app/outputs/bundle/release/app-release.aab',
+        skip_upload_metadata: false,
+        skip_upload_images: false,
+        skip_upload_screenshots: true,
+        release_status: "completed", #"draft",
+      )
+    end
+  end
+
+
+  desc "Upload closed alpha app and update store entry"
+  lane :update_alpha do
     begin
       upload_to_play_store(
         track: 'alpha',
@@ -37,21 +56,6 @@ desc "Upload closed alpha app and update store entry"
         release_status: "completed", #"draft",
       )
     end
-  end
-
-
-  desc "Runs all the tests"
-  lane :test do
-    gradle(task: "test")
-  end
-
-  desc "Submit a new Beta Build to Crashlytics Beta"
-  lane :beta do
-    gradle(task: "clean assembleRelease")
-    crashlytics
-  
-    # sh "your_script.sh"
-    # You can also use other beta testing services here
   end
 
   desc "Deploy a new version to the Google Play"
