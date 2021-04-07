@@ -39,6 +39,14 @@ class BodyWeight extends WgerBaseProvider with ChangeNotifier {
     return _entries.firstWhere((plan) => plan.id == id);
   }
 
+  WeightEntry? findByDate(DateTime date) {
+    try {
+      return _entries.firstWhere((plan) => plan.date == date);
+    } on StateError catch (e) {
+      return null;
+    }
+  }
+
   Future<List<WeightEntry>> fetchAndSetEntries() async {
     // Process the response
     final data = await fetch(makeUrl(bodyWeightUrl, query: {'ordering': '-date'}));

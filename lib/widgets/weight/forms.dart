@@ -41,6 +41,17 @@ class WeightForm extends StatelessWidget {
                 initialDate: _weightEntry.date,
                 firstDate: DateTime(DateTime.now().year - 10),
                 lastDate: DateTime.now(),
+                selectableDayPredicate: (day) {
+                  // Always allow the current initial date
+                  if (day == _weightEntry.date) {
+                    return true;
+                  }
+
+                  // if the date is known, don't allow it
+                  return Provider.of<BodyWeight>(context, listen: false).findByDate(day) == null
+                      ? true
+                      : false;
+                },
               );
 
               dateController.text = toDate(pickedDate)!;
@@ -48,7 +59,6 @@ class WeightForm extends StatelessWidget {
             onSaved: (newValue) {
               _weightEntry.date = DateTime.parse(newValue!);
             },
-            onFieldSubmitted: (_) {},
           ),
 
           // Weight
@@ -56,7 +66,6 @@ class WeightForm extends StatelessWidget {
             decoration: InputDecoration(labelText: AppLocalizations.of(context)!.weight),
             controller: weightController,
             keyboardType: TextInputType.number,
-            onFieldSubmitted: (_) {},
             onSaved: (newValue) {
               _weightEntry.weight = double.parse(newValue!);
             },
