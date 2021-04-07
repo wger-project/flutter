@@ -35,7 +35,7 @@ class _GymModeScreenState extends State<GymModeScreen> {
     final _day = ModalRoute.of(context)!.settings.arguments as Day;
 
     return Scaffold(
-      backgroundColor: Colors.green,
+      backgroundColor: Colors.white,
       body: Consumer<WorkoutPlans>(
         builder: (context, value, child) => GymMode(_day),
       ),

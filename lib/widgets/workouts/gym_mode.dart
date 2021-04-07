@@ -61,9 +61,9 @@ class _GymModeState extends State<GymMode> {
   Widget build(BuildContext context) {
     final exerciseProvider = Provider.of<Exercises>(context, listen: false);
     final workoutProvider = Provider.of<WorkoutPlans>(context, listen: false);
-
     List<Widget> out = [];
 
+    // Build the list of exercise overview, sets and pause pages
     for (var set in widget._workoutDay.sets) {
       var firstPage = true;
       for (var setting in set.settingsComputed) {
@@ -77,7 +77,6 @@ class _GymModeState extends State<GymMode> {
           workoutProvider.findById(widget._workoutDay.workoutId),
         ));
         out.add(TimerWidget(_controller));
-
         firstPage = false;
       }
     }
@@ -85,9 +84,16 @@ class _GymModeState extends State<GymMode> {
     return PageView(
       controller: _controller,
       children: [
-        StartPage(_controller, widget._workoutDay),
+        StartPage(
+          _controller,
+          widget._workoutDay,
+        ),
         ...out,
-        SessionPage(workoutProvider.findById(widget._workoutDay.workoutId), widget._start),
+        SessionPage(
+          workoutProvider.findById(widget._workoutDay.workoutId),
+          _controller,
+          widget._start,
+        ),
       ],
     );
   }
@@ -110,7 +116,7 @@ class StartPage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: Text(
               AppLocalizations.of(context)!.todaysWorkout,
-              style: Theme.of(context).textTheme.headline5,
+              style: Theme.of(context).textTheme.headline4,
             ),
           ),
           ..._day.sets.map(
@@ -120,7 +126,10 @@ class StartPage extends StatelessWidget {
                   ...set.settingsFiltered.map((s) {
                     return Column(
                       children: [
-                        Text(s.exerciseObj.name, style: TextStyle(fontWeight: FontWeight.bold)),
+                        Text(
+                          s.exerciseObj.name,
+                          style: Theme.of(context).textTheme.headline6,
+                        ),
                         Text(s.repsText),
                         SizedBox(height: 10),
                       ],
@@ -132,10 +141,19 @@ class StartPage extends StatelessWidget {
             },
           ).toList(),
           Text('Here some text on what to do, etc. etc.'),
+          ElevatedButton(
+            child: Text('Start'),
+            onPressed: () {
+              _controller.nextPage(duration: Duration(milliseconds: 200), curve: Curves.bounceIn);
+            },
+          ),
           Expanded(
             child: Container(),
           ),
-          NavigationFooter(_controller),
+          NavigationFooter(
+            _controller,
+            showPrevious: false,
+          ),
         ],
       ),
     );
@@ -169,8 +187,8 @@ class LogPage extends StatefulWidget {
     _log.date = DateTime.now();
     _log.setExercise(_exercise);
     _log.workoutPlan = _workoutPlan.id!;
-    _log.repetitionUnit = 1;
-    _log.weightUnit = 1;
+    _log.repetitionUnit = _setting.repetitionUnitId;
+    _log.weightUnit = _setting.weightUnitId;
   }
 
   @override
@@ -193,6 +211,13 @@ class _LogPageState extends State<LogPage> {
             child: Text(
               widget._exercise.name,
               style: Theme.of(context).textTheme.headline5,
+            ),
+          ),
+          Center(
+            child: Text(
+              '${widget._setting.singleSettingRepText}',
+              style: Theme.of(context).textTheme.headline3,
+              textAlign: TextAlign.center,
             ),
           ),
           Expanded(child: Container()),
@@ -334,9 +359,10 @@ class ExerciseOverview extends StatelessWidget {
 
 class SessionPage extends StatefulWidget {
   WorkoutPlan _workoutPlan;
+  PageController _controller;
   TimeOfDay _start;
 
-  SessionPage(this._workoutPlan, this._start);
+  SessionPage(this._workoutPlan, this._controller, this._start);
 
   @override
   _SessionPageState createState() => _SessionPageState();
@@ -488,11 +514,9 @@ class _SessionPageState extends State<SessionPage> {
               ],
             ),
           ),
-          IconButton(
-            icon: Icon(Icons.exit_to_app),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
+          NavigationFooter(
+            widget._controller,
+            showNext: false,
           ),
         ],
       ),
@@ -585,31 +609,49 @@ class _TimerWidgetState extends State<TimerWidget> {
 
 class NavigationFooter extends StatelessWidget {
   final PageController _controller;
+  bool showPrevious;
+  bool showNext;
 
-  NavigationFooter(this._controller);
+  NavigationFooter(this._controller, {this.showPrevious = true, this.showNext = true});
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      mainAxisSize: MainAxisSize.max,
       children: [
-        IconButton(
-          icon: Icon(Icons.chevron_left),
-          onPressed: () {
-            _controller.previousPage(duration: Duration(milliseconds: 200), curve: Curves.bounceIn);
-          },
+        // Nest all widgets in an expanded so that they all take the same size
+        // independently of how wide they are so that the buttons are positioned
+        // always on the same spot
+
+        Expanded(
+          child: showPrevious
+              ? IconButton(
+                  icon: Icon(Icons.chevron_left),
+                  onPressed: () {
+                    _controller.previousPage(
+                        duration: Duration(milliseconds: 200), curve: Curves.bounceIn);
+                  },
+                )
+              : Container(),
         ),
-        IconButton(
-          icon: Icon(Icons.exit_to_app),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
+        Expanded(
+          child: IconButton(
+            icon: Icon(Icons.exit_to_app),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
         ),
-        IconButton(
-          icon: Icon(Icons.chevron_right),
-          onPressed: () {
-            _controller.nextPage(duration: Duration(milliseconds: 200), curve: Curves.bounceIn);
-          },
+        Expanded(
+          child: showNext
+              ? IconButton(
+                  icon: Icon(Icons.chevron_right),
+                  onPressed: () {
+                    _controller.nextPage(
+                        duration: Duration(milliseconds: 200), curve: Curves.bounceIn);
+                  },
+                )
+              : Container(),
         ),
       ],
     );
