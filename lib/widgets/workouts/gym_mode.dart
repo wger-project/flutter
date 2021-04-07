@@ -20,6 +20,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/json.dart';
@@ -348,7 +349,9 @@ class ExerciseOverview extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: Text(_exercise.description),
+            child: Html(
+              data: _exercise.description,
+            ),
           ),
           NavigationFooter(_controller),
         ],
