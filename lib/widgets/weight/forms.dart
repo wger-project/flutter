@@ -10,14 +10,15 @@ import 'package:wger/providers/body_weight.dart';
 
 class WeightForm extends StatelessWidget {
   final _form = GlobalKey<FormState>();
-  final dateController = TextEditingController(text: toDate(DateTime.now()).toString());
+  final dateController = TextEditingController();
   final weightController = TextEditingController();
 
   late WeightEntry _weightEntry;
 
   WeightForm([WeightEntry? weightEntry]) {
-    this._weightEntry = weightEntry ?? WeightEntry();
+    this._weightEntry = weightEntry ?? WeightEntry(date: DateTime.now());
     weightController.text = _weightEntry.id == null ? '' : _weightEntry.weight.toString();
+    dateController.text = toDate(_weightEntry.date)!;
   }
 
   @override
@@ -37,7 +38,7 @@ class WeightForm extends StatelessWidget {
               // Show Date Picker Here
               var pickedDate = await showDatePicker(
                 context: context,
-                initialDate: DateTime.now(),
+                initialDate: _weightEntry.date,
                 firstDate: DateTime(DateTime.now().year - 10),
                 lastDate: DateTime.now(),
               );
