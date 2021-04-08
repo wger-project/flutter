@@ -27,6 +27,7 @@ import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/nutrition.dart';
+import 'package:wger/screens/nutritional_plan_screen.dart';
 
 class MealForm extends StatelessWidget {
   late Meal _meal;
@@ -122,8 +123,10 @@ class MealItemForm extends StatelessWidget {
                 decoration: InputDecoration(labelText: AppLocalizations.of(context)!.ingredient),
               ),
               suggestionsCallback: (pattern) async {
-                return await Provider.of<Nutrition>(context, listen: false)
-                    .searchIngredient(pattern);
+                return await Provider.of<Nutrition>(context, listen: false).searchIngredient(
+                  pattern,
+                  Localizations.localeOf(context).languageCode,
+                );
               },
               itemBuilder: (context, dynamic suggestion) {
                 return ListTile(
@@ -230,7 +233,6 @@ class PlanForm extends StatelessWidget {
 
                 // Saving was successful, reset the data
                 _descriptionController.clear();
-                _plan = NutritionalPlan.empty();
               } on WgerHttpException catch (error) {
                 showHttpExceptionErrorDialog(error, context);
               } catch (error) {

@@ -268,14 +268,17 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
   }
 
   /// Searches for an ingredient
-  Future<List> searchIngredient(String name) async {
+  Future<List> searchIngredient(String name, [String languageCode = 'en']) async {
     if (name.length <= 1) {
       return [];
     }
 
     // Send the request
     final response = await client.get(
-      makeUrl(_ingredientSearchPath, query: {'term': name}),
+      makeUrl(
+        _ingredientSearchPath,
+        query: {'term': name, 'language': languageCode},
+      ),
       headers: <String, String>{
         HttpHeaders.authorizationHeader: 'Token ${auth.token}',
         HttpHeaders.userAgentHeader: 'wger Workout Manager App',

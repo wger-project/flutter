@@ -282,7 +282,10 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                   helperText: AppLocalizations.of(context)!.selectExercises),
             ),
             suggestionsCallback: (pattern) async {
-              return await Provider.of<Exercises>(context, listen: false).searchExercise(pattern);
+              return await Provider.of<Exercises>(context, listen: false).searchExercise(
+                pattern,
+                Localizations.localeOf(context).languageCode,
+              );
             },
             itemBuilder: (context, suggestion) {
               final result = suggestion! as Map;

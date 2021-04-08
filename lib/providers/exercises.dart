@@ -149,14 +149,17 @@ class Exercises extends WgerBaseProvider with ChangeNotifier {
   ///
   /// We could do this locally, but the server has better text searching capabilities
   /// with postgresql.
-  Future<List> searchExercise(String name) async {
+  Future<List> searchExercise(String name, [String languageCode = 'en']) async {
     if (name.length <= 1) {
       return [];
     }
 
     // Send the request
     final response = await client.get(
-      makeUrl(_exerciseSearchPath, query: {'term': name}),
+      makeUrl(
+        _exerciseSearchPath,
+        query: {'term': name, 'language': languageCode},
+      ),
       headers: <String, String>{
         'Authorization': 'Token ${auth.token}',
         'User-Agent': 'wger Workout Manager App',
