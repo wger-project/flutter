@@ -50,7 +50,7 @@ class NutritionalPlanPieChartWidget extends StatelessWidget {
             [AppLocalizations.of(context)!.carbohydrates, _nutritionalValues.carbohydrates],
           ],
           labelAccessorFn: (List<dynamic> row, _) =>
-              '${row[0]}, ${row[1].toStringAsFixed(0)}${AppLocalizations.of(context)!.g}',
+              '${row[0]}\n${row[1].toStringAsFixed(0)}${AppLocalizations.of(context)!.g}',
         )
       ],
       defaultRenderer: new charts.ArcRendererConfig(
