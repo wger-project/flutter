@@ -177,8 +177,10 @@ class NutritionDiaryEntry extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Text(DateFormat.yMd().format(date).toString(),
-              style: TextStyle(fontWeight: FontWeight.bold)),
+          Text(
+            DateFormat.yMd(Localizations.localeOf(context).languageCode).format(date),
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
           Text(values.energy.toStringAsFixed(0)),
           Text(values.protein.toStringAsFixed(0)),
           Text(values.carbohydrates.toStringAsFixed(0)),
