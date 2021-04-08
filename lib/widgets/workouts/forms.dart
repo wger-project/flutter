@@ -27,7 +27,6 @@ import 'package:wger/models/workouts/set.dart';
 import 'package:wger/models/workouts/setting.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
-import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
@@ -214,7 +213,7 @@ class SetFormWidget extends StatefulWidget {
   Day _day;
   late Set _set;
 
-  SetFormWidget(Day this._day, [Set? set]) {
+  SetFormWidget(this._day, [Set? set]) {
     this._set = set ?? Set.withData(day: _day.id, sets: 4);
   }
 
@@ -290,7 +289,6 @@ class _SetFormWidgetState extends State<SetFormWidget> {
             itemBuilder: (context, suggestion) {
               final result = suggestion! as Map;
 
-              String serverUrl = Provider.of<Auth>(context, listen: false).serverUrl!;
               final exercise =
                   Provider.of<Exercises>(context, listen: false).findById(result['data']['id']);
               return ListTile(
