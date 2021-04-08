@@ -82,10 +82,10 @@ class WorkoutForm extends StatelessWidget {
                   ? await Provider.of<WorkoutPlans>(context, listen: false).editWorkout(_plan)
                   : await Provider.of<WorkoutPlans>(context, listen: false).addWorkout(_plan);
 
-              Navigator.of(context).pop();
-              if (_plan.id == null) {
-                Navigator.of(context).pushNamed(WorkoutPlanScreen.routeName, arguments: _plan);
-              }
+              Navigator.of(context).pushReplacementNamed(
+                WorkoutPlanScreen.routeName,
+                arguments: _plan,
+              );
             },
           ),
         ],
