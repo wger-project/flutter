@@ -191,12 +191,9 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
     return plan;
   }
 
-  Future<WorkoutPlan> editWorkout(WorkoutPlan workout) async {
-    final data = await patch(workout.toJson(), makeUrl(_workoutPlansUrlPath, id: workout.id));
-    final plan = WorkoutPlan.fromJson(data);
-    _workoutPlans[findIndexById(plan.id!)] = plan;
+  Future<void> editWorkout(WorkoutPlan workout) async {
+    await patch(workout.toJson(), makeUrl(_workoutPlansUrlPath, id: workout.id));
     notifyListeners();
-    return plan;
   }
 
   Future<void> deleteWorkout(int id) async {

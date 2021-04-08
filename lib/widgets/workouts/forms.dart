@@ -78,13 +78,13 @@ class WorkoutForm extends StatelessWidget {
               _form.currentState!.save();
 
               // Save to DB
-              final workout = _plan.id != null
+              _plan.id != null
                   ? await Provider.of<WorkoutPlans>(context, listen: false).editWorkout(_plan)
                   : await Provider.of<WorkoutPlans>(context, listen: false).addWorkout(_plan);
 
               Navigator.of(context).pop();
               if (_plan.id == null) {
-                Navigator.of(context).pushNamed(WorkoutPlanScreen.routeName, arguments: workout);
+                Navigator.of(context).pushNamed(WorkoutPlanScreen.routeName, arguments: _plan);
               }
             },
           ),
