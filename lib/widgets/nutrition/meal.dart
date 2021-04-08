@@ -100,7 +100,7 @@ class MealItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     String unit = _item.weightUnitId == null
         ? AppLocalizations.of(context)!.g
-        : _item.weightUnitObj.weightUnit.name;
+        : _item.weightUnitObj!.weightUnit.name;
     final values = _item.nutritionalValues;
 
     return Container(

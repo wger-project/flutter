@@ -46,7 +46,7 @@ class Log {
   late Ingredient ingredientObj;
 
   @JsonKey(required: true, name: 'weight_unit')
-  late int weightUnitId;
+  int? weightUnitId;
 
   @JsonKey(ignore: true)
   IngredientWeightUnit? weightUnitObj;
@@ -81,9 +81,9 @@ class Log {
     // This is already done on the server. It might be better to read it from there.
     var out = NutritionalValues();
 
-    final weight = amount;
-    // final weight =
-    // this.weightUnitObj == null ? amount : amount * weightUnitObj.amount * weightUnitObj.grams;
+    //final weight = amount;
+    final weight =
+        this.weightUnitObj == null ? amount : amount * weightUnitObj!.amount * weightUnitObj!.grams;
 
     out.energy = ingredientObj.energy * weight / 100;
     out.protein = ingredientObj.protein * weight / 100;

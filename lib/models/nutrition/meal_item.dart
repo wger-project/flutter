@@ -30,35 +30,37 @@ class MealItem {
   @JsonKey(required: true)
   int? id;
 
-  @JsonKey(required: false)
+  @JsonKey(required: false, name: 'meal')
   late int mealId;
 
   @JsonKey(required: false, name: 'ingredient')
-  int ingredientId;
+  late int ingredientId;
 
   @JsonKey(ignore: true)
   late Ingredient ingredientObj;
 
   @JsonKey(required: false, name: 'weight_unit')
-  int weightUnitId;
+  int? weightUnitId;
 
   @JsonKey(ignore: true)
-  late IngredientWeightUnit weightUnitObj;
+  IngredientWeightUnit? weightUnitObj;
 
   @JsonKey(required: true, fromJson: toNum, toJson: toString)
-  num amount;
+  late num amount;
 
   MealItem({
     this.id,
     int? mealId,
     required this.ingredientId,
-    required this.weightUnitId,
+    this.weightUnitId,
     required this.amount,
   }) {
     if (mealId != null) {
       this.mealId = mealId;
     }
   }
+
+  MealItem.empty();
 
   // Boilerplate
   factory MealItem.fromJson(Map<String, dynamic> json) => _$MealItemFromJson(json);

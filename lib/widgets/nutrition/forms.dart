@@ -100,8 +100,8 @@ class MealItemForm extends StatelessWidget {
   late MealItem _mealItem;
 
   MealItemForm(this._meal, [mealItem]) {
-    this._mealItem = mealItem;
-    //this._mealItem = mealItem ?? MealItem(mealId: _meal.id);
+    this._mealItem = mealItem ?? MealItem.empty();
+    _mealItem.mealId = _meal.id!;
   }
 
   final _form = GlobalKey<FormState>();
@@ -142,14 +142,11 @@ class MealItemForm extends StatelessWidget {
                 if (value!.isEmpty) {
                   return AppLocalizations.of(context)!.selectIngredient;
                 }
-                if (_mealItem.ingredientId == null) {
-                  return AppLocalizations.of(context)!.selectIngredient;
-                }
                 return null;
               },
             ),
             TextFormField(
-              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.amount),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.weight),
               controller: _amountController,
               keyboardType: TextInputType.number,
               onFieldSubmitted: (_) {},

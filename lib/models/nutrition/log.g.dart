@@ -18,7 +18,7 @@ Log _$LogFromJson(Map<String, dynamic> json) {
   return Log(
     id: json['id'] as int?,
     ingredientId: json['ingredient'] as int,
-    weightUnitId: json['weight_unit'] as int,
+    weightUnitId: json['weight_unit'] as int?,
     amount: toNum(json['amount'] as String?),
     planId: json['plan'] as int,
     datetime: DateTime.parse(json['datetime'] as String),
