@@ -236,7 +236,10 @@ class PlanForm extends StatelessWidget {
               } catch (error) {
                 showErrorDialog(error, context);
               }
-              Navigator.of(context).pop();
+              Navigator.of(context).pushReplacementNamed(
+                NutritionalPlanScreen.routeName,
+                arguments: _plan,
+              );
             },
           ),
         ],
