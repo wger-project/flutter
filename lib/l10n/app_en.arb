@@ -155,8 +155,10 @@
   "@save": {},
   "cancel": "Cancel",
   "@cancel": {},
-  "add": "Add",
-  "@add": {},
+  "addSet": "Add set",
+  "@addSet": {
+    "description": "Label for the button that adds a set (to a workout day)"
+  },
   "addMeal": "Add meal",
   "@addMeal": {},
   "mealLogged": "Meal logged to diary",
