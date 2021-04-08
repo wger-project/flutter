@@ -123,10 +123,7 @@ class Setting {
 
     if (rir != null) {
       out.add('\n');
-      out.add('(');
-      out.add(rir!);
-      out.add('RiR');
-      out.add(')');
+      out.add('($rir RiR)');
     }
 
     return out.join(' ');

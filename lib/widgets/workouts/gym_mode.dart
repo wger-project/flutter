@@ -34,6 +34,7 @@ import 'package:wger/models/workouts/setting.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/theme/theme.dart';
 
 class GymMode extends StatefulWidget {
   final Day _workoutDay;
@@ -48,6 +49,8 @@ class GymMode extends StatefulWidget {
 }
 
 class _GymModeState extends State<GymMode> {
+  var _totalElements = 1;
+
   PageController _controller = PageController(
     initialPage: 0,
   );
@@ -59,25 +62,40 @@ class _GymModeState extends State<GymMode> {
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    // Calculate amount of elements for progress indicator
+    for (var set in widget._workoutDay.sets) {
+      _totalElements = _totalElements + set.settingsComputed.length;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final exerciseProvider = Provider.of<Exercises>(context, listen: false);
     final workoutProvider = Provider.of<WorkoutPlans>(context, listen: false);
+    var currentElement = 1;
     List<Widget> out = [];
 
     // Build the list of exercise overview, sets and pause pages
     for (var set in widget._workoutDay.sets) {
       var firstPage = true;
       for (var setting in set.settingsComputed) {
+        var ratioCompleted = currentElement / _totalElements;
+        currentElement++;
         if (firstPage) {
-          out.add(ExerciseOverview(_controller, exerciseProvider.findById(setting.exerciseId)));
+          out.add(ExerciseOverview(
+            _controller,
+            exerciseProvider.findById(
+              setting.exerciseId,
+            ),
+            ratioCompleted,
+          ));
         }
-        out.add(LogPage(
-          _controller,
-          setting,
-          exerciseProvider.findById(setting.exerciseId),
-          workoutProvider.findById(widget._workoutDay.workoutId),
-        ));
-        out.add(TimerWidget(_controller));
+        out.add(LogPage(_controller, setting, exerciseProvider.findById(setting.exerciseId),
+            workoutProvider.findById(widget._workoutDay.workoutId), ratioCompleted));
+        out.add(TimerWidget(_controller, ratioCompleted));
         firstPage = false;
       }
     }
@@ -153,6 +171,7 @@ class StartPage extends StatelessWidget {
           ),
           NavigationFooter(
             _controller,
+            0,
             showPrevious: false,
           ),
         ],
@@ -166,13 +185,15 @@ class LogPage extends StatefulWidget {
   Setting _setting;
   Exercise _exercise;
   WorkoutPlan _workoutPlan;
+  final double _ratioCompleted;
   Log _log = Log.empty();
 
   final _repsController = TextEditingController();
   final _weightController = TextEditingController();
   final _rirController = TextEditingController();
 
-  LogPage(this._controller, this._setting, this._exercise, this._workoutPlan) {
+  LogPage(
+      this._controller, this._setting, this._exercise, this._workoutPlan, this._ratioCompleted) {
     if (_setting.reps != null) {
       _repsController.text = _setting.reps.toString();
     }
@@ -321,7 +342,7 @@ class _LogPageState extends State<LogPage> {
               ],
             ),
           ),
-          NavigationFooter(widget._controller),
+          NavigationFooter(widget._controller, widget._ratioCompleted),
         ],
       ),
     );
@@ -329,10 +350,11 @@ class _LogPageState extends State<LogPage> {
 }
 
 class ExerciseOverview extends StatelessWidget {
-  PageController _controller;
-  Exercise _exercise;
+  final PageController _controller;
+  final Exercise _exercise;
+  final double _ratioCompleted;
 
-  ExerciseOverview(this._controller, this._exercise);
+  ExerciseOverview(this._controller, this._exercise, this._ratioCompleted);
 
   @override
   Widget build(BuildContext context) {
@@ -353,7 +375,7 @@ class ExerciseOverview extends StatelessWidget {
               data: _exercise.description,
             ),
           ),
-          NavigationFooter(_controller),
+          NavigationFooter(_controller, _ratioCompleted),
         ],
       ),
     );
@@ -519,6 +541,7 @@ class _SessionPageState extends State<SessionPage> {
           ),
           NavigationFooter(
             widget._controller,
+            1,
             showNext: false,
           ),
         ],
@@ -528,9 +551,10 @@ class _SessionPageState extends State<SessionPage> {
 }
 
 class TimerWidget extends StatefulWidget {
-  PageController _controller;
+  final PageController _controller;
+  final double _ratioCompleted;
 
-  TimerWidget(this._controller);
+  TimerWidget(this._controller, this._ratioCompleted);
 
   @override
   _TimerWidgetState createState() => _TimerWidgetState();
@@ -588,13 +612,6 @@ class _TimerWidgetState extends State<TimerWidget> {
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Text(
-              'Timer',
-              style: Theme.of(context).textTheme.headline5,
-            ),
-          ),
           Expanded(
             child: Center(
               child: Text(
@@ -603,7 +620,7 @@ class _TimerWidgetState extends State<TimerWidget> {
               ),
             ),
           ),
-          NavigationFooter(widget._controller),
+          NavigationFooter(widget._controller, widget._ratioCompleted),
         ],
       ),
     );
@@ -612,49 +629,62 @@ class _TimerWidgetState extends State<TimerWidget> {
 
 class NavigationFooter extends StatelessWidget {
   final PageController _controller;
+  final double _ratioCompleted;
   bool showPrevious;
   bool showNext;
 
-  NavigationFooter(this._controller, {this.showPrevious = true, this.showNext = true});
+  NavigationFooter(this._controller, this._ratioCompleted,
+      {this.showPrevious = true, this.showNext = true});
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.max,
+    return Column(
       children: [
-        // Nest all widgets in an expanded so that they all take the same size
-        // independently of how wide they are so that the buttons are positioned
-        // always on the same spot
+        SizedBox(height: 30),
+        LinearProgressIndicator(
+          minHeight: 1.5,
+          value: _ratioCompleted,
+          valueColor: AlwaysStoppedAnimation<Color>(wgerPrimaryColor),
+          backgroundColor: Colors.white,
+        ),
+        Row(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            // Nest all widgets in an expanded so that they all take the same size
+            // independently of how wide they are so that the buttons are positioned
+            // always on the same spot
 
-        Expanded(
-          child: showPrevious
-              ? IconButton(
-                  icon: Icon(Icons.chevron_left),
-                  onPressed: () {
-                    _controller.previousPage(
-                        duration: Duration(milliseconds: 200), curve: Curves.bounceIn);
-                  },
-                )
-              : Container(),
-        ),
-        Expanded(
-          child: IconButton(
-            icon: Icon(Icons.exit_to_app),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ),
-        Expanded(
-          child: showNext
-              ? IconButton(
-                  icon: Icon(Icons.chevron_right),
-                  onPressed: () {
-                    _controller.nextPage(
-                        duration: Duration(milliseconds: 200), curve: Curves.bounceIn);
-                  },
-                )
-              : Container(),
+            Expanded(
+              child: showPrevious
+                  ? IconButton(
+                      icon: Icon(Icons.chevron_left),
+                      onPressed: () {
+                        _controller.previousPage(
+                            duration: Duration(milliseconds: 200), curve: Curves.bounceIn);
+                      },
+                    )
+                  : Container(),
+            ),
+            Expanded(
+              child: IconButton(
+                icon: Icon(Icons.exit_to_app),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+            Expanded(
+              child: showNext
+                  ? IconButton(
+                      icon: Icon(Icons.chevron_right),
+                      onPressed: () {
+                        _controller.nextPage(
+                            duration: Duration(milliseconds: 200), curve: Curves.bounceIn);
+                      },
+                    )
+                  : Container(),
+            ),
+          ],
         ),
       ],
     );
