@@ -9,8 +9,8 @@ part 'setting.g.dart';
 
 @JsonSerializable()
 class Setting {
-  static final possibleRiRValues = ['1', '1.5', '2', '2.5', '3', '3.5'];
-  static final defaultRiR = '2';
+  static const POSSIBLE_RIR_VALUES = ['', '1', '1.5', '2', '2.5', '3', '3.5'];
+  static const DEFAULT_RIR = '';
 
   @JsonKey(required: true)
   int? id;
@@ -89,7 +89,7 @@ class Setting {
   }
 
   void setRir(String rir) {
-    if (possibleRiRValues.contains(rir)) {
+    if (POSSIBLE_RIR_VALUES.contains(rir)) {
       this.rir = rir;
     } else {
       throw Exception('RiR value not allowed');
@@ -121,7 +121,7 @@ class Setting {
       out.add(weightUnitObj.name);
     }
 
-    if (rir != null) {
+    if (rir != null && rir != '') {
       out.add('\n');
       out.add('($rir RiR)');
     }

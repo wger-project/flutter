@@ -22,7 +22,7 @@ Log _$LogFromJson(Map<String, dynamic> json) {
     exercise: json['exercise'] as int,
     workoutPlan: json['workout'] as int,
     reps: json['reps'] as int,
-    rir: json['rir'] as String,
+    rir: json['rir'] as String?,
     repetitionUnit: json['repetition_unit'] as int,
     weight: toNum(json['weight'] as String?),
     weightUnit: json['weight_unit'] as int,

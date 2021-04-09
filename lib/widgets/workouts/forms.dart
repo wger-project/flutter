@@ -591,31 +591,35 @@ class WeightInputWidget extends StatelessWidget {
   }
 }
 
+/// Input widget for Rests In Reserve
+///
+/// Can be used with a Setting or a Log object
 class RiRInputWidget extends StatefulWidget {
-  final Setting _setting;
-  RiRInputWidget(this._setting);
+  final dynamic _setting;
+  late String dropdownValue;
+  RiRInputWidget(this._setting) {
+    dropdownValue = _setting.rir != null ? _setting.rir : Setting.DEFAULT_RIR;
+  }
 
   @override
   _RiRInputWidgetState createState() => _RiRInputWidgetState();
 }
 
 class _RiRInputWidgetState extends State<RiRInputWidget> {
-  String dropdownValue = '1';
-
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField(
       decoration: InputDecoration(labelText: AppLocalizations.of(context)!.rir),
-      value: dropdownValue,
+      value: widget.dropdownValue,
       onSaved: (String? newValue) {
         widget._setting.setRir(newValue!);
       },
       onChanged: (String? newValue) {
         setState(() {
-          dropdownValue = newValue!;
+          widget.dropdownValue = newValue!;
         });
       },
-      items: Setting.possibleRiRValues.map<DropdownMenuItem<String>>((String value) {
+      items: Setting.POSSIBLE_RIR_VALUES.map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
           value: value,
           child: Text(value),
@@ -625,8 +629,11 @@ class _RiRInputWidgetState extends State<RiRInputWidget> {
   }
 }
 
+/// Input widget for workout weight units
+///
+/// Can be used with a Setting or a Log object
 class WeightUnitInputWidget extends StatefulWidget {
-  final Setting _setting;
+  final dynamic _setting;
 
   WeightUnitInputWidget(this._setting, {Key? key}) : super(key: key);
 
@@ -660,8 +667,11 @@ class _WeightUnitInputWidgetState extends State<WeightUnitInputWidget> {
   }
 }
 
+/// Input widget for repetition units
+///
+/// Can be used with a Setting or a Log object
 class RepetitionUnitInputWidget extends StatefulWidget {
-  final Setting _setting;
+  final dynamic _setting;
   RepetitionUnitInputWidget(this._setting);
 
   @override

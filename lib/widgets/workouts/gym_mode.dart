@@ -35,6 +35,7 @@ import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/theme/theme.dart';
+import 'package:wger/widgets/workouts/forms.dart';
 
 class GymMode extends StatefulWidget {
   final Day _workoutDay;
@@ -87,14 +88,17 @@ class _GymModeState extends State<GymMode> {
         if (firstPage) {
           out.add(ExerciseOverview(
             _controller,
-            exerciseProvider.findById(
-              setting.exerciseId,
-            ),
+            exerciseProvider.findById(setting.exerciseId),
             ratioCompleted,
           ));
         }
-        out.add(LogPage(_controller, setting, exerciseProvider.findById(setting.exerciseId),
-            workoutProvider.findById(widget._workoutDay.workoutId), ratioCompleted));
+        out.add(LogPage(
+          _controller,
+          setting,
+          exerciseProvider.findById(setting.exerciseId),
+          workoutProvider.findById(widget._workoutDay.workoutId),
+          ratioCompleted,
+        ));
         out.add(TimerWidget(_controller, ratioCompleted));
         firstPage = false;
       }
@@ -206,10 +210,10 @@ class LogPage extends StatefulWidget {
     }
 
     _log.date = DateTime.now();
-    _log.setExercise(_exercise);
     _log.workoutPlan = _workoutPlan.id!;
-    _log.repetitionUnit = _setting.repetitionUnitId;
-    _log.weightUnit = _setting.weightUnitId;
+    _log.setExercise(_exercise);
+    _log.setWeightUnit(_setting.weightUnitObj);
+    _log.setRepetitionUnit(_setting.repetitionUnitObj);
   }
 
   @override
@@ -218,7 +222,7 @@ class LogPage extends StatefulWidget {
 
 class _LogPageState extends State<LogPage> {
   final _form = GlobalKey<FormState>();
-  String rirValue = Setting.defaultRiR;
+  String rirValue = Setting.DEFAULT_RIR;
 
   @override
   Widget build(BuildContext context) {
@@ -249,87 +253,93 @@ class _LogPageState extends State<LogPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context)!.repetitions,
-                    prefixIcon: IconButton(
-                      icon: Icon(
-                        Icons.add,
-                        color: Colors.black,
-                      ),
-                      onPressed: () {
-                        try {
-                          int newValue = int.parse(widget._repsController.text) + 1;
-                          widget._repsController.text = newValue.toString();
-                        } on FormatException catch (e) {}
-                      },
-                    ),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        Icons.remove,
-                        color: Colors.black,
-                      ),
-                      onPressed: () {
-                        try {
-                          int newValue = int.parse(widget._repsController.text) - 1;
-                          if (newValue > 0) {
-                            widget._repsController.text = newValue.toString();
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Flexible(
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context)!.repetitions,
+                          prefixIcon: IconButton(
+                            icon: Icon(
+                              Icons.add,
+                              color: Colors.black,
+                            ),
+                            onPressed: () {
+                              try {
+                                int newValue = int.parse(widget._repsController.text) + 1;
+                                widget._repsController.text = newValue.toString();
+                              } on FormatException catch (e) {}
+                            },
+                          ),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              Icons.remove,
+                              color: Colors.black,
+                            ),
+                            onPressed: () {
+                              try {
+                                int newValue = int.parse(widget._repsController.text) - 1;
+                                if (newValue > 0) {
+                                  widget._repsController.text = newValue.toString();
+                                }
+                              } on FormatException catch (e) {}
+                            },
+                          ),
+                        ),
+                        enabled: true,
+                        controller: widget._repsController,
+                        keyboardType: TextInputType.number,
+                        onFieldSubmitted: (_) {},
+                        onSaved: (newValue) {
+                          widget._log.reps = int.parse(newValue!);
+                        },
+                        validator: (value) {
+                          try {
+                            int.parse(value!);
+                          } catch (error) {
+                            return AppLocalizations.of(context)!.enterValidNumber;
                           }
-                        } on FormatException catch (e) {}
-                      },
+                          return null;
+                        },
+                      ),
                     ),
-                  ),
-                  enabled: true,
-                  controller: widget._repsController,
-                  keyboardType: TextInputType.number,
-                  onFieldSubmitted: (_) {},
-                  onSaved: (newValue) {
-                    widget._log.reps = int.parse(newValue!);
-                  },
-                  validator: (value) {
-                    try {
-                      int.parse(value!);
-                    } catch (error) {
-                      return AppLocalizations.of(context)!.enterValidNumber;
-                    }
-                    return null;
-                  },
+                    SizedBox(width: 8),
+                    Flexible(
+                      child: RepetitionUnitInputWidget(widget._log),
+                    ),
+                  ],
                 ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: AppLocalizations.of(context)!.weight),
-                  controller: widget._weightController,
-                  keyboardType: TextInputType.number,
-                  onFieldSubmitted: (_) {},
-                  onSaved: (newValue) {
-                    widget._log.weight = double.parse(newValue!);
-                  },
-                  validator: (value) {
-                    try {
-                      double.parse(value!);
-                    } catch (error) {
-                      return AppLocalizations.of(context)!.enterValidNumber;
-                    }
-                    return null;
-                  },
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Flexible(
+                      child: TextFormField(
+                        decoration:
+                            InputDecoration(labelText: AppLocalizations.of(context)!.weight),
+                        controller: widget._weightController,
+                        keyboardType: TextInputType.number,
+                        onFieldSubmitted: (_) {},
+                        onSaved: (newValue) {
+                          widget._log.weight = double.parse(newValue!);
+                        },
+                        validator: (value) {
+                          try {
+                            double.parse(value!);
+                          } catch (error) {
+                            return AppLocalizations.of(context)!.enterValidNumber;
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                    Flexible(
+                      child: WeightUnitInputWidget(widget._log),
+                    )
+                  ],
                 ),
-                DropdownButtonFormField(
-                  decoration: InputDecoration(labelText: AppLocalizations.of(context)!.rir),
-                  value: rirValue,
-                  onSaved: (String? newValue) {
-                    widget._log.rir = newValue!;
-                  },
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      rirValue = newValue!;
-                    });
-                  },
-                  items: Setting.possibleRiRValues.map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                ),
+                RiRInputWidget(widget._log),
                 /*
                   TextFormField(
                     decoration: InputDecoration(labelText: AppLocalizations.of(context)!.comment),
@@ -356,8 +366,17 @@ class _LogPageState extends State<LogPage> {
                     // Save the entry on the server
                     try {
                       await Provider.of<WorkoutPlans>(context, listen: false).addLog(widget._log);
-                      //final snackBar = SnackBar(content: Text('Yay! A SnackBar!'));
-                      //ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      /*
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          duration: Duration(seconds: 2), // default is 4
+                          content: Text(
+                            AppLocalizations.of(context)!.successfullySaved,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      );
+                      */
                       widget._controller.nextPage(
                         duration: Duration(milliseconds: 200),
                         curve: Curves.bounceIn,

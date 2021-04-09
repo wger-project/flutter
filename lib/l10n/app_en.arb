@@ -76,6 +76,10 @@
   "@successfullyDeleted": {
     "description": "Message when an item was successfully deleted"
   },
+  "successfullySaved": "Saved successfully",
+  "@successfullySaved": {
+    "description": "Message when an item was successfully saved"
+  },
   "exercise": "Exercise",
   "@exercise": {
     "description": "An exercise for a workout"

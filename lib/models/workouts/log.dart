@@ -24,7 +24,7 @@ class Log {
   late int reps;
 
   @JsonKey(required: false)
-  late String rir;
+  String? rir;
 
   @JsonKey(required: true, name: 'repetition_unit')
   late int repetitionUnit;
@@ -60,6 +60,10 @@ class Log {
 
   Log.empty();
 
+  // Boilerplate
+  factory Log.fromJson(Map<String, dynamic> json) => _$LogFromJson(json);
+  Map<String, dynamic> toJson() => _$LogToJson(this);
+
   void setExercise(Exercise exercise) {
     this.exerciseObj = exercise;
     this.exercise = exercise.id;
@@ -75,7 +79,7 @@ class Log {
     this.repetitionUnit = repetitionUnit.id;
   }
 
-  // Boilerplate
-  factory Log.fromJson(Map<String, dynamic> json) => _$LogFromJson(json);
-  Map<String, dynamic> toJson() => _$LogToJson(this);
+  void setRir(String rir) {
+    this.rir = rir;
+  }
 }
