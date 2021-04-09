@@ -290,7 +290,7 @@
   },
   "todaysWorkout": "Allenamento di oggi",
   "@todaysWorkout": {},
-  "selectExercises": "Se vuoi fare un superset, puoi cercare e aggiungere diversi esercizi. Questi verranno collegati come superset.",
+  "selectExercises": "Se vuoi fare un circuito (super set), puoi cercare e aggiungere diversi esercizi. Questi verranno collegati come circuito.",
   "@selectExercises": {},
   "sameRepetitions": "Se fai le stesse ripetizioni e peso per tutte le serie puoi compilare una sola riga. Per esempio per 4 serie inserisci semplicemente 10 per le ripetizioni, automaticamente diventerà una 4x10.",
   "@sameRepetitions": {},
@@ -315,5 +315,9 @@
   "reps": "Ripetizioni",
   "@reps": {
     "description": "Shorthand for repetitions, used when space constraints are tighter"
+  },
+  "addSet": "Aggiungi serie",
+  "@addSet": {
+    "description": "Label for the button that adds a set (to a workout day)"
   }
 }
