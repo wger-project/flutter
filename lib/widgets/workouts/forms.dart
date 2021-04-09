@@ -383,13 +383,17 @@ class _SetFormWidgetState extends State<SetFormWidget> {
               for (var setting in widget._set.settings) {
                 setting.setId = setDb.id!;
                 setting.comment = '';
-                setting.repsText = 'temp text';
 
                 Setting settingDb = await workoutProvider.addSetting(setting);
+                setting.repsText = await workoutProvider.fetchSmartText(
+                  widget._set,
+                  setting.exerciseObj,
+                );
                 setting.id = settingDb.id;
               }
 
               // Add to workout day
+              workoutProvider.fetchComputedSettings(widget._set);
               widget._day.sets.add(widget._set);
 
               // Close the bottom sheet

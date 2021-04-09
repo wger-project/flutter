@@ -311,7 +311,6 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
   Future<Set> addSet(Set workoutSet) async {
     final data = await post(workoutSet.toJson(), makeUrl(_setsUrlPath));
     final set = Set.fromJson(data);
-    fetchComputedSettings(set);
     notifyListeners();
     return set;
   }
