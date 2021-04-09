@@ -177,7 +177,7 @@
   "@repetitions": {
     "description": "Repetitions for an exercise set"
   },
-  "addExercise": "Ajoute un exercice à cet journée",
+  "addExercise": "Ajoute un exercice",
   "@addExercise": {},
   "noWorkoutPlans": "Aucune plan d'entraînement",
   "@noWorkoutPlans": {
@@ -266,5 +266,17 @@
   "login": "Se connecter",
   "@login": {
     "description": "Text for login button"
+  },
+  "set": "Série",
+  "@set": {
+    "description": "A set in a workout plan"
+  },
+  "repetitionUnit": "Unité des répétitions",
+  "@repetitionUnit": {},
+  "weightUnit": "Unité de poids",
+  "@weightUnit": {},
+  "reps": "Répétitions",
+  "@reps": {
+    "description": "Shorthand for repetitions, used when space constraints are tighter"
   }
 }
