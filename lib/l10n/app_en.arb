@@ -187,6 +187,10 @@
   "@date": {
     "description": "The date of a workout log or body weight entry"
   },
+  "start": "Start",
+  "@start": {
+    "description": "Label on button to start the gym mode (i.e., an imperative)"
+  },
   "time": "Time",
   "@time": {
     "description": "The time of a meal or workout"

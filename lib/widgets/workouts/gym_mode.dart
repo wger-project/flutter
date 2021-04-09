@@ -138,6 +138,7 @@ class StartPage extends StatelessWidget {
               style: Theme.of(context).textTheme.headline4,
             ),
           ),
+          Divider(),
           ..._day.sets.map(
             (set) {
               return Column(
@@ -154,20 +155,18 @@ class StartPage extends StatelessWidget {
                       ],
                     );
                   }).toList(),
-                  Divider(),
                 ],
               );
             },
           ).toList(),
-          Text('Here some text on what to do, etc. etc.'),
+          Expanded(
+            child: Container(),
+          ),
           ElevatedButton(
-            child: Text('Start'),
+            child: Text(AppLocalizations.of(context)!.start),
             onPressed: () {
               _controller.nextPage(duration: Duration(milliseconds: 200), curve: Curves.bounceIn);
             },
-          ),
-          Expanded(
-            child: Container(),
           ),
           NavigationFooter(
             _controller,
@@ -233,8 +232,10 @@ class _LogPageState extends State<LogPage> {
             child: Text(
               widget._exercise.name,
               style: Theme.of(context).textTheme.headline5,
+              textAlign: TextAlign.center,
             ),
           ),
+          Divider(),
           Center(
             child: Text(
               '${widget._setting.singleSettingRepText}',
@@ -249,7 +250,36 @@ class _LogPageState extends State<LogPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 TextFormField(
-                  decoration: InputDecoration(labelText: AppLocalizations.of(context)!.repetitions),
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.repetitions,
+                    prefixIcon: IconButton(
+                      icon: Icon(
+                        Icons.add,
+                        color: Colors.black,
+                      ),
+                      onPressed: () {
+                        try {
+                          int newValue = int.parse(widget._repsController.text) + 1;
+                          widget._repsController.text = newValue.toString();
+                        } on FormatException catch (e) {}
+                      },
+                    ),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        Icons.remove,
+                        color: Colors.black,
+                      ),
+                      onPressed: () {
+                        try {
+                          int newValue = int.parse(widget._repsController.text) - 1;
+                          if (newValue > 0) {
+                            widget._repsController.text = newValue.toString();
+                          }
+                        } on FormatException catch (e) {}
+                      },
+                    ),
+                  ),
+                  enabled: true,
                   controller: widget._repsController,
                   keyboardType: TextInputType.number,
                   onFieldSubmitted: (_) {},
@@ -368,8 +398,10 @@ class ExerciseOverview extends StatelessWidget {
             child: Text(
               _exercise.name,
               style: Theme.of(context).textTheme.headline5,
+              textAlign: TextAlign.center,
             ),
           ),
+          Divider(),
           Expanded(
             child: Html(
               data: _exercise.description,
@@ -427,6 +459,7 @@ class _SessionPageState extends State<SessionPage> {
               style: Theme.of(context).textTheme.headline5,
             ),
           ),
+          Divider(),
           Expanded(child: Container()),
           Form(
             key: _form,
@@ -616,7 +649,7 @@ class _TimerWidgetState extends State<TimerWidget> {
             child: Center(
               child: Text(
                 DateFormat('m:ss').format(today.add(Duration(seconds: _seconds))),
-                style: Theme.of(context).textTheme.headline1,
+                style: Theme.of(context).textTheme.headline1!.copyWith(color: wgerPrimaryColor),
               ),
             ),
           ),
@@ -630,8 +663,8 @@ class _TimerWidgetState extends State<TimerWidget> {
 class NavigationFooter extends StatelessWidget {
   final PageController _controller;
   final double _ratioCompleted;
-  bool showPrevious;
-  bool showNext;
+  final bool showPrevious;
+  final bool showNext;
 
   NavigationFooter(this._controller, this._ratioCompleted,
       {this.showPrevious = true, this.showNext = true});
