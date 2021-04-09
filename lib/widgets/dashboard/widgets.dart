@@ -27,6 +27,7 @@ import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/form_screen.dart';
+import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/theme/theme.dart';
@@ -254,6 +255,12 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
           day.description,
           style: TextStyle(fontWeight: FontWeight.bold),
         ));
+        out.add(IconButton(
+          icon: Icon(Icons.play_arrow),
+          onPressed: () {
+            Navigator.of(context).pushNamed(GymModeScreen.routeName, arguments: day);
+          },
+        ));
         if (showDetail) {
           day.sets.forEach((set) {
             out.add(Column(
@@ -267,7 +274,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                     ],
                   );
                 }).toList(),
-                SizedBox(height: 7),
+                SizedBox(height: 15),
               ],
             ));
           });
