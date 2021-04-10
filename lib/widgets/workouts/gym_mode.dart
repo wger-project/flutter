@@ -143,28 +143,31 @@ class StartPage extends StatelessWidget {
             ),
           ),
           Divider(),
-          ..._day.sets.map(
-            (set) {
-              return Column(
-                children: [
-                  ...set.settingsFiltered.map((s) {
+          Expanded(
+            child: ListView(
+              children: [
+                ..._day.sets.map(
+                  (set) {
                     return Column(
                       children: [
-                        Text(
-                          s.exerciseObj.name,
-                          style: Theme.of(context).textTheme.headline6,
-                        ),
-                        Text(s.repsText),
-                        SizedBox(height: 10),
+                        ...set.settingsFiltered.map((s) {
+                          return Column(
+                            children: [
+                              Text(
+                                s.exerciseObj.name,
+                                style: Theme.of(context).textTheme.headline6,
+                              ),
+                              Text(s.repsText),
+                              SizedBox(height: 15),
+                            ],
+                          );
+                        }).toList(),
                       ],
                     );
-                  }).toList(),
-                ],
-              );
-            },
-          ).toList(),
-          Expanded(
-            child: Container(),
+                  },
+                ).toList(),
+              ],
+            ),
           ),
           ElevatedButton(
             child: Text(AppLocalizations.of(context)!.start),
