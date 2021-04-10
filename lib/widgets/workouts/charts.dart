@@ -32,28 +32,30 @@ class LogChartWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return charts.TimeSeriesChart(
-      [
-        ..._data['chart_data'].map((e) {
-          return charts.Series<TimeSeriesLog, DateTime>(
-            id: '${e.first['reps']} reps',
-            domainFn: (datum, index) => datum.time,
-            measureFn: (datum, index) => datum.weight,
-            data: [
-              ...e.map(
-                (entry) => TimeSeriesLog(
-                  DateTime.parse(entry['date']),
-                  double.parse(entry['weight']),
-                ),
-              ),
+    return _data.containsKey('chart_data') && _data['chart_data'].length > 0
+        ? charts.TimeSeriesChart(
+            [
+              ..._data['chart_data'].map((e) {
+                return charts.Series<TimeSeriesLog, DateTime>(
+                  id: '${e.first['reps']} reps',
+                  domainFn: (datum, index) => datum.time,
+                  measureFn: (datum, index) => datum.weight,
+                  data: [
+                    ...e.map(
+                      (entry) => TimeSeriesLog(
+                        DateTime.parse(entry['date']),
+                        double.parse(entry['weight']),
+                      ),
+                    ),
+                  ],
+                );
+              }),
             ],
-          );
-        }),
-      ],
-      primaryMeasureAxis: new charts.NumericAxisSpec(
-        tickProviderSpec: new charts.BasicNumericTickProviderSpec(zeroBound: false),
-      ),
-      //behaviors: [new charts.SeriesLegend()],
-    );
+            primaryMeasureAxis: new charts.NumericAxisSpec(
+              tickProviderSpec: new charts.BasicNumericTickProviderSpec(zeroBound: false),
+            ),
+            //behaviors: [new charts.SeriesLegend()],
+          )
+        : Container();
   }
 }
