@@ -137,11 +137,14 @@ class DayLogWidget extends StatelessWidget {
             style: Theme.of(context).textTheme.headline5,
           ),
           ..._day.sets.map((set) => getSetRow(set)).toList(),
+          /*
           OutlinedButton(
             child: Text('Add logs to this day'),
             onPressed: () {},
           ),
           Padding(padding: const EdgeInsets.symmetric(vertical: 10.0))
+
+           */
         ],
       ),
     );

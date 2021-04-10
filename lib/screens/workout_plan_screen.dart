@@ -121,14 +121,14 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
                   itemBuilder: (BuildContext context) {
                     return [
                       PopupMenuItem<WorkoutOptions>(
-                        value: WorkoutOptions.edit,
-                        child: Text(AppLocalizations.of(context)!.edit),
+                        child: _mode == WorkoutScreenMode.log
+                            ? Text(AppLocalizations.of(context)!.labelWorkoutPlan)
+                            : Text(AppLocalizations.of(context)!.labelWorkoutLogs),
+                        value: WorkoutOptions.toggleMode,
                       ),
                       PopupMenuItem<WorkoutOptions>(
-                        child: _mode == WorkoutScreenMode.log
-                            ? Text('Open workout')
-                            : Text('Open logs'),
-                        value: WorkoutOptions.toggleMode,
+                        value: WorkoutOptions.edit,
+                        child: Text(AppLocalizations.of(context)!.edit),
                       ),
                       const PopupMenuDivider(),
                       PopupMenuItem<WorkoutOptions>(

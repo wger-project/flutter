@@ -20,7 +20,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/screens/form_screen.dart';
-import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/widgets/workouts/day.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 
@@ -70,12 +69,14 @@ class _WorkoutPlanDetailState extends State<WorkoutPlanDetail> {
                       );
                     },
                   ),
+                  /*
                   ElevatedButton(
                     child: Text('View logs'),
                     onPressed: () {
                       widget._changeMode(WorkoutScreenMode.log);
                     },
                   ),
+                  */
                 ],
               ),
             ],

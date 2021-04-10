@@ -44,7 +44,7 @@ class _WorkoutLogsState extends State<WorkoutLogs> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: Text(
-                  'Weight Log',
+                  AppLocalizations.of(context)!.labelWorkoutLogs,
                   style: Theme.of(context).textTheme.headline5,
                 ),
               ),
@@ -73,7 +73,7 @@ class _WorkoutLogsState extends State<WorkoutLogs> {
                 ),
               ),
               ElevatedButton(
-                child: Text('Back to workout'),
+                child: Text(AppLocalizations.of(context)!.labelWorkoutPlan),
                 onPressed: () {
                   widget._changeMode(WorkoutScreenMode.workout);
                 },

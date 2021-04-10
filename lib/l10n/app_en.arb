@@ -4,6 +4,10 @@
   "@login": {
     "description": "Text for login button"
   },
+  "logout": "Log out",
+  "@logout": {
+    "description": "Text for logout button"
+  },
   "register": "Register",
   "@register": {
     "description": "Text for registration button"
@@ -63,6 +67,10 @@
   "labelWorkoutPlans": "Workout plans",
   "@labelWorkoutPlans": {
     "description": "Title for screen workout plans"
+  },
+  "labelWorkoutLogs": "Training logs",
+  "@labelWorkoutLogs": {
+    "description": "(Workout) logs"
   },
   "labelWorkoutPlan": "Workout plan",
   "@labelWorkoutPlan": {

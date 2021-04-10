@@ -114,7 +114,10 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
             ),
           ),
           Padding(padding: const EdgeInsets.all(8.0)),
-          Text('Diary', style: Theme.of(context).textTheme.headline6),
+          Text(
+            AppLocalizations.of(context)!.nutritionalDiary,
+            style: Theme.of(context).textTheme.headline6,
+          ),
           Container(
             padding: EdgeInsets.all(15),
             height: 220,

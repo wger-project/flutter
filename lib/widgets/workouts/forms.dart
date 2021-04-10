@@ -151,7 +151,7 @@ class _DayFormWidgetState extends State<DayFormWidget> {
             decoration: InputDecoration(
               labelText: AppLocalizations.of(context)!.description,
               helperText: AppLocalizations.of(context)!.dayDescriptionHelp,
-              helperMaxLines: 2,
+              helperMaxLines: 3,
             ),
             controller: widget.dayController,
             onSaved: (value) {

@@ -372,21 +372,6 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
         ),
       ],
     );
-
-    return Column(
-      children: <Widget>[
-        TextButton(
-          child: Text('Go to today'),
-          onPressed: () {
-            final today = DateTime.now();
-            _calendarController.setSelectedDay(
-              DateTime(today.year, today.month, today.day),
-              runCallback: true,
-            );
-          },
-        ),
-      ],
-    );
   }
 
   Widget _buildEventList() {
