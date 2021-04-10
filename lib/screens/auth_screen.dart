@@ -36,8 +36,6 @@ class AuthScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
-    // final transformConfig = Matrix4.rotationZ(-8 * pi / 180);
-    // transformConfig.translate(-10.0);
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       body: Stack(
@@ -58,7 +56,6 @@ class AuthScreen extends StatelessWidget {
                   Container(
                     margin: EdgeInsets.only(bottom: 20.0),
                     padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 94.0),
-                    // ..translate(-10.0),
                     child: Text(
                       'WGER',
                       style: TextStyle(
@@ -101,8 +98,8 @@ class _AuthCardState extends State<AuthCard> {
     'serverUrl': '',
   };
   var _isLoading = false;
-  final _usernameController = TextEditingController(text: 'admin');
-  final _passwordController = TextEditingController(text: 'adminadmin');
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
   final _password2Controller = TextEditingController();
   final _emailController = TextEditingController();
   final _serverUrlController = TextEditingController(text: DEFAULT_SERVER);
