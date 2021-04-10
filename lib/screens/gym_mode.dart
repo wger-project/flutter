@@ -22,22 +22,22 @@ import 'package:wger/models/workouts/day.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/widgets/workouts/gym_mode.dart';
 
-class GymModeScreen extends StatefulWidget {
+class GymModeScreen extends StatelessWidget {
   static const routeName = '/gym-mode';
 
-  @override
-  _GymModeScreenState createState() => _GymModeScreenState();
-}
-
-class _GymModeScreenState extends State<GymModeScreen> {
   @override
   Widget build(BuildContext context) {
     final _day = ModalRoute.of(context)!.settings.arguments as Day;
 
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Consumer<WorkoutPlans>(
-        builder: (context, value, child) => GymMode(_day),
+      body: SafeArea(
+        child: Consumer<WorkoutPlans>(
+          builder: (context, value, child) => Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+            child: GymMode(_day),
+          ),
+        ),
       ),
     );
   }

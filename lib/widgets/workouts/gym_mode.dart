@@ -132,7 +132,6 @@ class StartPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: Column(
         children: [
           Padding(
@@ -231,7 +230,6 @@ class _LogPageState extends State<LogPage> {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: Column(
         children: [
           Padding(
@@ -412,7 +410,6 @@ class ExerciseOverview extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: Column(
         children: [
           Padding(
@@ -471,7 +468,6 @@ class _SessionPageState extends State<SessionPage> {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: Column(
         children: [
           Padding(
@@ -664,7 +660,6 @@ class _TimerWidgetState extends State<TimerWidget> {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: Column(
         children: [
           Expanded(
