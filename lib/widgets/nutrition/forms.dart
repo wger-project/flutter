@@ -229,7 +229,7 @@ class PlanForm extends StatelessWidget {
               try {
                 _plan.id != null
                     ? await Provider.of<Nutrition>(context, listen: false).editPlan(_plan)
-                    : await Provider.of<Nutrition>(context, listen: false).addPlan(_plan);
+                    : _plan = await Provider.of<Nutrition>(context, listen: false).addPlan(_plan);
 
                 // Saving was successful, reset the data
                 _descriptionController.clear();
