@@ -367,7 +367,6 @@ class _LogPageState extends State<LogPage> {
                     // Save the entry on the server
                     try {
                       await Provider.of<WorkoutPlans>(context, listen: false).addLog(widget._log);
-                      /*
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           duration: Duration(seconds: 2), // default is 4
@@ -377,7 +376,6 @@ class _LogPageState extends State<LogPage> {
                           ),
                         ),
                       );
-                      */
                       widget._controller.nextPage(
                         duration: Duration(milliseconds: 200),
                         curve: Curves.bounceIn,
