@@ -45,6 +45,8 @@ You can run the tests with ``flutter test --no-sound-null-safety``
 ## Translation
 The application can be easily translated online with [Weblate](https://hosted.weblate.org/engage/wger/).
 
+![translation widget](https://hosted.weblate.org/widgets/wger/-/web/multi-blue.svg)
+
 
 ## Contact
 
