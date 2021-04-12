@@ -319,5 +319,21 @@
   "addSet": "Aggiungi serie",
   "@addSet": {
     "description": "Label for the button that adds a set (to a workout day)"
+  },
+  "start": "Inizia",
+  "@start": {
+    "description": "Label on button to start the gym mode (i.e., an imperative)"
+  },
+  "successfullySaved": "Salvato con successo",
+  "@successfullySaved": {
+    "description": "Message when an item was successfully saved"
+  },
+  "labelWorkoutLogs": "Registri allenamenti",
+  "@labelWorkoutLogs": {
+    "description": "(Workout) logs"
+  },
+  "logout": "Disconnetti",
+  "@logout": {
+    "description": "Text for logout button"
   }
 }
