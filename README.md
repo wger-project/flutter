@@ -59,7 +59,15 @@ file a bug anyway.
 
 ## License
 
-The application is licensed under the GNU General Public License 3 or later (GPL 3+).
+The application is licensed under the GNU General Public License 3 or later (GPL 3+)
+with an app store exception.
+
+As an additional permission under section 7, you are allowed to distribute the
+software through an app store, even if that store has restrictive terms and
+conditions that are incompatible with the AGPL, provided that the source is also
+available under the AGPL with or without this permission through a channel without
+those restrictive terms and conditions.
+
 
 The initial exercise and ingredient data is licensed additionally under one of
 the Creative Commons licenses, see the individual exercises for more details.
