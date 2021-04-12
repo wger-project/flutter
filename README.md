@@ -61,8 +61,8 @@ file a bug anyway.
 
 ## License
 
-The application is licensed under the GNU General Public License 3 or later (GPL 3+)
-with an app store exception.
+The application is licensed under the GNU Affero General Public License 3 or later
+(AGPL 3+) with an app store exception.
 
 As an additional permission under section 7, you are allowed to distribute the
 software through an app store, even if that store has restrictive terms and
