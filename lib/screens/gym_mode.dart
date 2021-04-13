@@ -34,7 +34,7 @@ class GymModeScreen extends StatelessWidget {
       body: SafeArea(
         child: Consumer<WorkoutPlans>(
           builder: (context, value, child) => Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: GymMode(_day),
           ),
         ),
