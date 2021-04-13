@@ -172,10 +172,6 @@ class _AuthCardState extends State<AuthCard> {
       ),
       elevation: 8.0,
       child: Container(
-        //decoration: BoxDecoration(color: Colors.black12),
-        //height: _authMode == AuthMode.Signup ? 450 : 320,
-        //constraints:
-        //    BoxConstraints(minHeight: _authMode == AuthMode.Signup ? 450 : 320),
         width: deviceSize.width * 0.75,
         padding: EdgeInsets.all(16.0),
         child: Form(
