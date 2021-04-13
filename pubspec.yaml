@@ -30,7 +30,7 @@ dependencies:
   intl: ^0.17.0
   http: ^0.13.0
   shared_preferences: ^2.0.5
-  flutter_calendar_carousel: ^2.0.0
+  flutter_calendar_carousel: ^2.0.1
   cupertino_icons: ^1.0.0
   json_annotation: ^4.0.0
   url_launcher: ^6.0.2
