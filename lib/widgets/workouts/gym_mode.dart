@@ -35,6 +35,7 @@ import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/theme/theme.dart';
+import 'package:wger/widgets/workouts/exercises.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 
 class GymMode extends StatefulWidget {
@@ -420,8 +421,33 @@ class ExerciseOverview extends StatelessWidget {
           ),
           Divider(),
           Expanded(
-            child: Html(
-              data: _exercise.description,
+            child: ListView(
+              children: [
+                Text(
+                  _exercise.categoryObj.name,
+                  style: Theme.of(context).textTheme.headline6,
+                  textAlign: TextAlign.center,
+                ),
+                ..._exercise.equipment
+                    .map((e) => Text(
+                          e.name,
+                          style: Theme.of(context).textTheme.headline6,
+                          textAlign: TextAlign.center,
+                        ))
+                    .toList(),
+                if (_exercise.images.length > 0)
+                  Container(
+                    width: double.infinity,
+                    height: 200,
+                    child: ListView(
+                      scrollDirection: Axis.horizontal,
+                      children: [
+                        ..._exercise.images.map((e) => ExerciseImageWidget(image: e)).toList(),
+                      ],
+                    ),
+                  ),
+                Html(data: _exercise.description),
+              ],
             ),
           ),
           NavigationFooter(_controller, _ratioCompleted),
