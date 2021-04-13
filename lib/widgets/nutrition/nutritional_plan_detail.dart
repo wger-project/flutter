@@ -24,6 +24,7 @@ import 'package:wger/models/nutrition/nutritrional_values.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
+import 'package:wger/widgets/nutrition/meal.dart';
 
 class NutritionalPlanDetailWidget extends StatelessWidget {
   final NutritionalPlan _nutritionalPlan;
