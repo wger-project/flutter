@@ -279,6 +279,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
               decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.exercise,
                   helperMaxLines: 3,
+                  errorMaxLines: 2,
                   helperText: AppLocalizations.of(context)!.selectExercises),
             ),
             suggestionsCallback: (pattern) async {
@@ -313,8 +314,15 @@ class _SetFormWidgetState extends State<SetFormWidget> {
               this._exercisesController.text = '';
             },
             validator: (value) {
+              // At least one exercise must be selected
               if (widget._set.exercisesIds.length == 0) {
                 return AppLocalizations.of(context)!.selectExercise;
+              }
+
+              // At least one setting has to be filled in
+              if (widget._set.settings.where((s) => s.weight == null && s.reps == null).length ==
+                  widget._set.settings.length) {
+                return AppLocalizations.of(context)!.enterRepetitionsOrWeight;
               }
               return null;
             },
@@ -552,9 +560,11 @@ class RepsInputWidget extends StatelessWidget {
         }
         return null;
       },
-      onSaved: (newValue) {
-        if (newValue != null && newValue != '') {
-          _setting.reps = int.parse(newValue);
+      onChanged: (newValue) {
+        if (newValue != '') {
+          try {
+            _setting.reps = int.parse(newValue);
+          } catch (e) {}
         }
       },
     );
@@ -587,9 +597,11 @@ class WeightInputWidget extends StatelessWidget {
         }
         return null;
       },
-      onSaved: (newValue) {
-        if (newValue != null && newValue != '') {
-          _setting.weight = double.parse(newValue);
+      onChanged: (newValue) {
+        if (newValue != '') {
+          try {
+            _setting.weight = double.parse(newValue);
+          } catch (e) {}
         }
       },
     );

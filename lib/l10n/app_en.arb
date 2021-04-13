@@ -295,6 +295,10 @@
   "@goToToday": {
     "description": "Label on button to jump back to 'today' in the calendar widget"
   },
+  "enterRepetitionsOrWeight": "Please fill in either the repetitions or the weight for at least one of the sets",
+  "@enterRepetitionsOrWeight": {
+    "description": "Error message when the user hasn't filled in the forms for exercise sets"
+  },
   "enterValue": "Please enter a value",
   "@enterValue": {
     "description": "Error message when the user hasn't entered a value on a required field"
