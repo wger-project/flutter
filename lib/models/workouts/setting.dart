@@ -110,7 +110,7 @@ class Setting {
       // rather "8 repetitions". If there is weight we want to output "8 x 50kg",
       // since the repetitions are implied. If other units are used, we always
       // print them
-      if (repetitionUnitId != DEFAULT_REPETITION_UNIT || weight == 0) {
+      if (repetitionUnitId != DEFAULT_REPETITION_UNIT || weight == 0 || weight == null) {
         out.add(repetitionUnitObj.name);
       }
     }
