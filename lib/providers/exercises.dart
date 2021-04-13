@@ -19,6 +19,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -117,11 +118,15 @@ class Exercises extends WgerBaseProvider with ChangeNotifier {
     await fetchAndSetMuscles();
     await fetchAndSetEquipment();
 
-    final response = await client.get(makeUrl(
-      _exercisesUrlPath,
-      query: {'limit': '1000'},
-    ));
-    final exercisesData = json.decode(response.body) as Map<String, dynamic>;
+    final response = await client.get(
+        makeUrl(
+          _exercisesUrlPath,
+          query: {'limit': '1000'},
+        ),
+        headers: {
+          HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
+        });
+    final exercisesData = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
 
     try {
       // Load exercises
