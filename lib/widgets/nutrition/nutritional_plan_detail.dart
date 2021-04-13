@@ -125,37 +125,35 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
           ),
           Container(
             height: 200,
-            child: SingleChildScrollView(
+            child: ListView(
               scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(''),
-                        Text(
-                            '${AppLocalizations.of(context)!.energy} (${AppLocalizations.of(context)!.kcal})'),
-                        Text(
-                            '${AppLocalizations.of(context)!.protein} (${AppLocalizations.of(context)!.g})'),
-                        Text(
-                            '${AppLocalizations.of(context)!.carbohydrates} (${AppLocalizations.of(context)!.g})'),
-                        Text(
-                            '${AppLocalizations.of(context)!.sugars} (${AppLocalizations.of(context)!.g})'),
-                        Text(
-                            '${AppLocalizations.of(context)!.fat} (${AppLocalizations.of(context)!.g})'),
-                        Text(
-                            '${AppLocalizations.of(context)!.saturatedFat} (${AppLocalizations.of(context)!.g})'),
-                      ],
-                    ),
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(''),
+                      Text(
+                          '${AppLocalizations.of(context)!.energy} (${AppLocalizations.of(context)!.kcal})'),
+                      Text(
+                          '${AppLocalizations.of(context)!.protein} (${AppLocalizations.of(context)!.g})'),
+                      Text(
+                          '${AppLocalizations.of(context)!.carbohydrates} (${AppLocalizations.of(context)!.g})'),
+                      Text(
+                          '${AppLocalizations.of(context)!.sugars} (${AppLocalizations.of(context)!.g})'),
+                      Text(
+                          '${AppLocalizations.of(context)!.fat} (${AppLocalizations.of(context)!.g})'),
+                      Text(
+                          '${AppLocalizations.of(context)!.saturatedFat} (${AppLocalizations.of(context)!.g})'),
+                    ],
                   ),
-                  ..._nutritionalPlan.logEntriesValues.entries
-                      .map((entry) => NutritionDiaryEntry(entry.key, entry.value))
-                      .toList()
-                      .reversed,
-                ],
-              ),
+                ),
+                ..._nutritionalPlan.logEntriesValues.entries
+                    .map((entry) => NutritionDiaryEntry(entry.key, entry.value))
+                    .toList()
+                    .reversed,
+              ],
             ),
           ),
         ],
