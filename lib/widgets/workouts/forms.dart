@@ -254,13 +254,10 @@ class _SetFormWidgetState extends State<SetFormWidget> {
       for (int loop = 0; loop < widget._set.sets; loop++) {
         Setting setting = Setting.empty();
         setting.order = order;
-        setting.setExercise(exercise);
-        setting.setRepetitionUnit(
-          Provider.of<WorkoutPlans>(context, listen: false).defaultRepetitionUnit,
-        );
-        setting.setWeightUnit(
-          Provider.of<WorkoutPlans>(context, listen: false).defaultWeightUnit,
-        );
+        setting.exercise = exercise;
+        setting.weightUnit = Provider.of<WorkoutPlans>(context, listen: false).defaultWeightUnit;
+        setting.repetitionUnit =
+            Provider.of<WorkoutPlans>(context, listen: false).defaultRepetitionUnit;
 
         widget._set.settings.add(setting);
       }
@@ -669,7 +666,7 @@ class _WeightUnitInputWidgetState extends State<WeightUnitInputWidget> {
       onChanged: (WeightUnit? newValue) {
         setState(() {
           selectedWeightUnit = newValue!;
-          widget._setting.setWeightUnit(newValue);
+          widget._setting.weightUnit = newValue;
         });
       },
       items: Provider.of<WorkoutPlans>(context, listen: false)
@@ -707,7 +704,7 @@ class _RepetitionUnitInputWidgetState extends State<RepetitionUnitInputWidget> {
       onChanged: (RepetitionUnit? newValue) {
         setState(() {
           selectedWeightUnit = newValue!;
-          widget._setting.setRepetitionUnit(newValue);
+          widget._setting.repetitionUnit = newValue;
         });
       },
       items: Provider.of<WorkoutPlans>(context, listen: false)

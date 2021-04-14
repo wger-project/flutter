@@ -31,8 +31,8 @@ void main() {
       setting.reps = 2;
       setting.weight = 30;
       setting.rir = '';
-      setting.setRepetitionUnit(repUnit);
-      setting.setWeightUnit(weightUnit);
+      setting.repetitionUnit = repUnit;
+      setting.weightUnit = weightUnit;
       expect(setting.singleSettingRepText, '2 × 30 mg');
     });
 
@@ -44,8 +44,8 @@ void main() {
       setting.reps = 2;
       setting.weight = 30;
       setting.rir = '1.5';
-      setting.setRepetitionUnit(repUnit);
-      setting.setWeightUnit(weightUnit);
+      setting.repetitionUnit = repUnit;
+      setting.weightUnit = weightUnit;
       expect(setting.singleSettingRepText, '2 × 30 mg \n (1.5 RiR)');
     });
 
@@ -57,8 +57,8 @@ void main() {
       setting.reps = 2;
       setting.weight = null;
       setting.rir = '1.5';
-      setting.setRepetitionUnit(repUnit);
-      setting.setWeightUnit(weightUnit);
+      setting.repetitionUnit = repUnit;
+      setting.weightUnit = weightUnit;
       expect(setting.singleSettingRepText, '2 mol \n (1.5 RiR)');
     });
 
@@ -70,8 +70,8 @@ void main() {
       setting.reps = 2;
       setting.weight = 30;
       setting.rir = '';
-      setting.setRepetitionUnit(repUnit);
-      setting.setWeightUnit(weightUnit);
+      setting.repetitionUnit = repUnit;
+      setting.weightUnit = weightUnit;
       expect(setting.singleSettingRepText, '2 mol × 30 mg');
     });
 
@@ -83,8 +83,8 @@ void main() {
       setting.reps = 2;
       setting.weight = 30;
       setting.rir = '3';
-      setting.setRepetitionUnit(repUnit);
-      setting.setWeightUnit(weightUnit);
+      setting.repetitionUnit = repUnit;
+      setting.weightUnit = weightUnit;
       expect(setting.singleSettingRepText, '2 mol × 30 mg \n (3 RiR)');
     });
   });

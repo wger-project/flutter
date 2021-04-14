@@ -31,7 +31,7 @@ class Muscle {
   @JsonKey(name: 'is_front', required: true)
   final bool isFront;
 
-  Muscle({
+  const Muscle({
     required this.id,
     required this.name,
     required this.isFront,

@@ -19,25 +19,25 @@ Log _$LogFromJson(Map<String, dynamic> json) {
   ]);
   return Log(
     id: json['id'] as int?,
-    exercise: json['exercise'] as int,
+    exerciseId: json['exercise'] as int,
     workoutPlan: json['workout'] as int,
     reps: json['reps'] as int,
     rir: json['rir'] as String?,
-    repetitionUnit: json['repetition_unit'] as int,
+    repetitionUnitId: json['repetition_unit'] as int,
     weight: toNum(json['weight'] as String?),
-    weightUnit: json['weight_unit'] as int,
+    weightUnitId: json['weight_unit'] as int,
     date: DateTime.parse(json['date'] as String),
   );
 }
 
 Map<String, dynamic> _$LogToJson(Log instance) => <String, dynamic>{
       'id': instance.id,
-      'exercise': instance.exercise,
+      'exercise': instance.exerciseId,
       'workout': instance.workoutPlan,
       'reps': instance.reps,
       'rir': instance.rir,
-      'repetition_unit': instance.repetitionUnit,
+      'repetition_unit': instance.repetitionUnitId,
       'weight': toString(instance.weight),
-      'weight_unit': instance.weightUnit,
+      'weight_unit': instance.weightUnitId,
       'date': toDate(instance.date),
     };

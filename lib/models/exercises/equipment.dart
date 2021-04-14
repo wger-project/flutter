@@ -28,7 +28,7 @@ class Equipment {
   @JsonKey(required: true)
   final String name;
 
-  Equipment({
+  const Equipment({
     required this.id,
     required this.name,
   });

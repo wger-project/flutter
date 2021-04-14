@@ -28,7 +28,7 @@ class ExerciseCategory {
   @JsonKey(required: true)
   final String name;
 
-  ExerciseCategory({
+  const ExerciseCategory({
     required this.id,
     required this.name,
   });

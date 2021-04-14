@@ -29,8 +29,8 @@ class Log {
   @JsonKey(required: true)
   int? id;
 
-  @JsonKey(required: true)
-  late int exercise;
+  @JsonKey(required: true, name: 'exercise')
+  late int exerciseId;
 
   @JsonKey(ignore: true)
   late Exercise exerciseObj;
@@ -45,7 +45,7 @@ class Log {
   String? rir;
 
   @JsonKey(required: true, name: 'repetition_unit')
-  late int repetitionUnit;
+  late int repetitionUnitId;
 
   @JsonKey(ignore: true)
   late RepetitionUnit repetitionUnitObj;
@@ -54,7 +54,7 @@ class Log {
   late num weight;
 
   @JsonKey(required: true, name: 'weight_unit')
-  late int weightUnit;
+  late int weightUnitId;
 
   @JsonKey(ignore: true)
   late WeightUnit weightUnitObj;
@@ -67,13 +67,13 @@ class Log {
 
   Log(
       {this.id,
-      required this.exercise,
+      required this.exerciseId,
       required this.workoutPlan,
       required this.reps,
       required this.rir,
-      required this.repetitionUnit,
+      required this.repetitionUnitId,
       required this.weight,
-      required this.weightUnit,
+      required this.weightUnitId,
       required this.date});
 
   Log.empty();
@@ -82,19 +82,19 @@ class Log {
   factory Log.fromJson(Map<String, dynamic> json) => _$LogFromJson(json);
   Map<String, dynamic> toJson() => _$LogToJson(this);
 
-  void setExercise(Exercise exercise) {
+  set exercise(Exercise exercise) {
     this.exerciseObj = exercise;
-    this.exercise = exercise.id;
+    this.exerciseId = exercise.id;
   }
 
-  void setWeightUnit(WeightUnit weightUnit) {
+  set weightUnit(WeightUnit weightUnit) {
     this.weightUnitObj = weightUnit;
-    this.weightUnit = weightUnit.id;
+    this.weightUnitId = weightUnit.id;
   }
 
-  void setRepetitionUnit(RepetitionUnit repetitionUnit) {
+  set repetitionUnit(RepetitionUnit repetitionUnit) {
     this.repetitionUnitObj = repetitionUnit;
-    this.repetitionUnit = repetitionUnit.id;
+    this.repetitionUnitId = repetitionUnit.id;
   }
 
   void setRir(String rir) {

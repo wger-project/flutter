@@ -214,9 +214,9 @@ class LogPage extends StatefulWidget {
 
     _log.date = DateTime.now();
     _log.workoutPlan = _workoutPlan.id!;
-    _log.setExercise(_exercise);
-    _log.setWeightUnit(_setting.weightUnitObj);
-    _log.setRepetitionUnit(_setting.repetitionUnitObj);
+    _log.exercise = _exercise;
+    _log.weightUnit = _setting.weightUnitObj;
+    _log.repetitionUnit = _setting.repetitionUnitObj;
   }
 
   @override

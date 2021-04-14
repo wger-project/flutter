@@ -91,17 +91,17 @@ class Setting {
   factory Setting.fromJson(Map<String, dynamic> json) => _$SettingFromJson(json);
   Map<String, dynamic> toJson() => _$SettingToJson(this);
 
-  void setExercise(Exercise exercise) {
+  set exercise(Exercise exercise) {
     exerciseObj = exercise;
     exerciseId = exercise.id;
   }
 
-  void setWeightUnit(WeightUnit weightUnit) {
+  set weightUnit(WeightUnit weightUnit) {
     weightUnitObj = weightUnit;
     weightUnitId = weightUnit.id;
   }
 
-  void setRepetitionUnit(RepetitionUnit repetitionUnit) {
+  set repetitionUnit(RepetitionUnit repetitionUnit) {
     repetitionUnitObj = repetitionUnit;
     repetitionUnitId = repetitionUnit.id;
   }
