@@ -28,7 +28,7 @@ class RepetitionUnit {
   @JsonKey(required: true)
   final String name;
 
-  RepetitionUnit({
+  const RepetitionUnit({
     required this.id,
     required this.name,
   });

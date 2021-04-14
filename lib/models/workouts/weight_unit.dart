@@ -28,7 +28,7 @@ class WeightUnit {
   @JsonKey(required: true)
   final String name;
 
-  WeightUnit({
+  const WeightUnit({
     required this.id,
     required this.name,
   });
