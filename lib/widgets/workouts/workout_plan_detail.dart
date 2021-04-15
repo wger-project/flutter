@@ -56,7 +56,7 @@ class _WorkoutPlanDetailState extends State<WorkoutPlanDetail> {
               Column(
                 children: [
                   ElevatedButton(
-                    child: Text(AppLocalizations.of(context)!.addSet),
+                    child: Text(AppLocalizations.of(context)!.newDay),
                     onPressed: () {
                       Navigator.pushNamed(
                         context,
