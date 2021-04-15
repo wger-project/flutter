@@ -263,34 +263,25 @@ class _LogPageState extends State<LogPage> {
                           textAlign: TextAlign.center,
                         ),
                         ...widget._workoutPlan.filterLogsByExercise(widget._exercise).map((log) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 40),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(DateFormat.yMd(Localizations.localeOf(context).languageCode)
+                          return ListTile(
+                            title: Text(log.singleLogRepText.replaceAll('\n', '')),
+                            subtitle: Text(
+                                DateFormat.yMd(Localizations.localeOf(context).languageCode)
                                     .format(log.date)),
-                                Text(
-                                  log.singleLogRepText,
-                                  textAlign: TextAlign.center,
-                                ),
-                                IconButton(
-                                    icon: Icon(Icons.arrow_forward),
-                                    onPressed: () {
-                                      setState(() {
-                                        // Text field
-                                        _repsController.text = log.reps.toString();
-                                        _weightController.text = log.weight.toString();
+                            trailing: Icon(Icons.arrow_forward),
+                            onTap: () {
+                              setState(() {
+                                // Text field
+                                _repsController.text = log.reps.toString();
+                                _weightController.text = log.weight.toString();
 
-                                        // Drop downs
-                                        widget._log.rir = log.rir;
-                                        widget._log.repetitionUnit = log.repetitionUnitObj;
-                                        widget._log.weightUnit = log.weightUnitObj;
-                                      });
-                                    }),
-                              ],
-                            ),
+                                // Drop downs
+                                widget._log.rir = log.rir;
+                                widget._log.repetitionUnit = log.repetitionUnitObj;
+                                widget._log.weightUnit = log.weightUnitObj;
+                              });
+                            },
+                            contentPadding: EdgeInsets.symmetric(horizontal: 40),
                           );
                         }).toList(),
                       ],
