@@ -168,21 +168,21 @@
   "@goToToday": {
     "description": "Label on button to jump back to 'today' in the calendar widget"
   },
-  "selectIngredient": "Bitte wählen Sie eine Zutat",
+  "selectIngredient": "Bitte wähle eine Zutat",
   "@selectIngredient": {
     "description": "Error message when the user hasn't selected an ingredient from the autocompleter"
   },
-  "enterValidNumber": "Bitte geben Sie eine gültige Zahl ein",
+  "enterValidNumber": "Bitte gebe eine gültige Zahl ein",
   "@enterValidNumber": {
     "description": "Error message when the user has submitted an invalid number (e.g. '3,.,.,.')"
   },
-  "enterValue": "Bitte geben Sie einen Wert ein",
+  "enterValue": "Bitte gebe einen Wert ein",
   "@enterValue": {
     "description": "Error message when the user hasn't entered a value on a required field"
   },
   "calendar": "Kalender",
   "@calendar": {},
-  "noWeightEntries": "Sie haben keine Gewichtseinträge",
+  "noWeightEntries": "Du hast keine Gewichtseinträge",
   "@noWeightEntries": {
     "description": "Message shown when the user has no logged weight entries"
   },
@@ -190,7 +190,7 @@
   "@unit": {
     "description": "The unit used for a repetition (kg, time, etc.)"
   },
-  "logHelpEntriesUnits": "Beachten Sie, dass nur Einträge mit einer Gewichtseinheit (kg oder lb) und Wiederholungen aufgezeichnet werden, andere Kombinationen wie Zeit oder \"bis zum Versagen\" werden hier ignoriert.",
+  "logHelpEntriesUnits": "Beachte, dass nur Einträge mit einer Gewichtseinheit (kg oder lb) und Wiederholungen aufgezeichnet werden, andere Kombinationen wie Zeit oder \"bis zum Versagen\" werden hier ignoriert.",
   "@logHelpEntriesUnits": {},
   "logHelpEntries": "Gibt es an einem Tag mehrere Einträge mit der gleichen Anzahl von Wiederholungen, aber unterschiedlichen Gewichten, wird nur der Eintrag mit dem höheren Gewicht im Diagramm angezeigt.",
   "@logHelpEntries": {},
@@ -202,7 +202,7 @@
   "@reset": {
     "description": "Button text allowing the user to reset the entered values to the default"
   },
-  "customServerHint": "Geben Sie die Adresse Ihres eigenen Servers ein, ansonsten wird die Standardadresse verwendet",
+  "customServerHint": "Gebe die Adresse deines eigenen Servers ein, ansonsten wird die Standardadresse verwendet",
   "@customServerHint": {
     "description": "Hint text for the form where the users can enter their own wger instance"
   },
@@ -210,7 +210,7 @@
   "@customServerUrl": {
     "description": "Label in the form where the users can enter their own wger instance"
   },
-  "invalidUsername": "Bitte geben Sie einen gültigen Benutzernamen ein",
+  "invalidUsername": "Bitte gebe einen gültigen Benutzernamen ein",
   "@invalidUsername": {
     "description": "Error message when the user enters an invalid username"
   },
@@ -218,7 +218,7 @@
   "@username": {},
   "email": "E-Mail",
   "@email": {},
-  "invalidEmail": "Bitte geben Sie eine gültigen E-Mail-Adresse ein",
+  "invalidEmail": "Bitte gebe eine gültigen E-Mail-Adresse ein",
   "@invalidEmail": {
     "description": "Error message when the user enters an invalid email"
   },
@@ -234,7 +234,7 @@
   "@passwordsDontMatch": {
     "description": "Error message when the user enters two different passwords during registration"
   },
-  "invalidUrl": "Bitte geben Sie eine gültige URL ein",
+  "invalidUrl": "Bitte gebe eine gültige URL ein",
   "@invalidUrl": {
     "description": "Error message when the user enters an invalid URL, e.g. in the login form"
   },
@@ -256,7 +256,7 @@
   },
   "addExercise": "Eine Übung hinzufügen",
   "@addExercise": {},
-  "confirmDelete": "Sind Sie sicher, dass Sie \"{toDelete}\" löschen möchten?",
+  "confirmDelete": "Bist du sicher, dass du \"{toDelete}\" löschen möchtest?",
   "@confirmDelete": {
     "description": "Confirmation text before the user deletes an object",
     "type": "text",
@@ -264,13 +264,13 @@
       "toDelete": {}
     }
   },
-  "noNutritionalPlans": "Sie haben keine Ernährungspläne",
+  "noNutritionalPlans": "Du hast keine Ernährungspläne",
   "@noNutritionalPlans": {
     "description": "Message shown when the user has no nutritional plans"
   },
   "todaysWorkout": "Ihr Training heute",
   "@todaysWorkout": {},
-  "noWorkoutPlans": "Sie haben keine Trainingspläne",
+  "noWorkoutPlans": "Du hast keine Trainingspläne",
   "@noWorkoutPlans": {
     "description": "Message shown when the user has no workout plans"
   },
@@ -317,8 +317,32 @@
   "@repetitionUnit": {},
   "weightUnit": "Gewichtseinheit",
   "@weightUnit": {},
-  "reps": "Whd",
+  "reps": "Wdh.",
   "@reps": {
     "description": "Shorthand for repetitions, used when space constraints are tighter"
+  },
+  "enterRepetitionsOrWeight": "Bitte gebe entweder die Wiederholungen oder das Gewicht für mindestens einen der Sätze an",
+  "@enterRepetitionsOrWeight": {
+    "description": "Error message when the user hasn't filled in the forms for exercise sets"
+  },
+  "start": "Starten",
+  "@start": {
+    "description": "Label on button to start the gym mode (i.e., an imperative)"
+  },
+  "addSet": "Satz hinzufügen",
+  "@addSet": {
+    "description": "Label for the button that adds a set (to a workout day)"
+  },
+  "successfullySaved": "Erfolgreich gespeichert",
+  "@successfullySaved": {
+    "description": "Message when an item was successfully saved"
+  },
+  "labelWorkoutLogs": "Trainingslogs",
+  "@labelWorkoutLogs": {
+    "description": "(Workout) logs"
+  },
+  "logout": "Abmelden",
+  "@logout": {
+    "description": "Text for logout button"
   }
 }
