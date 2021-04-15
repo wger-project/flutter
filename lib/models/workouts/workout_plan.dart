@@ -57,7 +57,7 @@ class WorkoutPlan {
 
   /// Filters the workout logs by exercise and sorts them by date
   List<Log> filterLogsByExercise(Exercise exercise) {
-    var out = logs.where((element) => element.exercise == exercise.id).toList();
+    var out = logs.where((element) => element.exerciseId == exercise.id).toList();
     out.sort((a, b) => a.date.compareTo(b.date));
     return out;
   }

@@ -43,7 +43,9 @@ IP address of the server)
 You can run the tests with ``flutter test --no-sound-null-safety``
 
 ## Translation
-Translate the app to your language on [Hosted Weblate](https://hosted.weblate.org/engage/wger/).
+Translate the app to your language on  [Weblate](https://hosted.weblate.org/engage/wger/).
+
+[![translation status](https://hosted.weblate.org/widgets/wger/-/mobile/multi-blue.svg)](https://hosted.weblate.org/engage/wger/)
 
 ## Contact
 
@@ -57,7 +59,15 @@ If you're not sure if something is a bug or not, feel free to file a bug anyway.
 
 ## License
 
-The application is licensed under the GNU Affero General Public License 3 or later (AGPL 3+).
+The application is licensed under the GNU Affero General Public License 3 or later
+(AGPL 3+) with an app store exception.
+
+As an additional permission under section 7, you are allowed to distribute the
+software through an app store, even if that store has restrictive terms and
+conditions that are incompatible with the AGPL, provided that the source is also
+available under the AGPL with or without this permission through a channel without
+those restrictive terms and conditions.
+
 
 The initial exercise and ingredient data is licensed additionally under one of
 the Creative Commons licenses, see the individual exercises for more details.

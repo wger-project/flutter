@@ -1,19 +1,19 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020 wger Team
+ * Copyright (C) 2020, 2021 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * wger Workout Manager is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 import 'package:charts_flutter/flutter.dart' as charts;
@@ -29,6 +29,17 @@ const Color wgerBackground = Color(0xfff4f4f6);
 // Chart colors
 const charts.Color wgerChartPrimaryColor = charts.Color(r: 0x2a, g: 0x4c, b: 0x7d);
 const charts.Color wgerChartSecondaryColor = charts.Color(r: 0xe6, g: 0x39, b: 0x46);
+
+/// Original sizes for the material text theme
+/// https://api.flutter.dev/flutter/material/TextTheme-class.html
+const materialSizes = {
+  'h1': 96.0,
+  'h2': 60.0,
+  'h3': 48.0,
+  'h4': 34.0,
+  'h5': 24.0,
+  'h6': 20.0,
+};
 
 final ThemeData wgerTheme = ThemeData(
     /*
@@ -47,12 +58,28 @@ final ThemeData wgerTheme = ThemeData(
      * Text theme
      */
     textTheme: TextTheme(
-      //headline1: TextStyle(fontSize: 30.0, fontFamily: "OpenSansBold"),
-      //headline2: TextStyle(fontSize: 30.0, fontFamily: "OpenSansBold"),
-      headline4: TextStyle(fontSize: 27.0, fontFamily: "OpenSansBold", color: Colors.black),
-      headline5: TextStyle(fontSize: 25.0, fontFamily: "OpenSansBold", color: Colors.black),
-      headline6: TextStyle(fontSize: 20.0, fontFamily: "OpenSansBold", color: Colors.black),
-      //headline6: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
+      headline1: TextStyle(fontFamily: "OpenSansLight", color: Colors.black),
+      headline2: TextStyle(fontFamily: "OpenSansLight", color: Colors.black),
+      headline3: TextStyle(
+        fontSize: materialSizes['h3']! * 0.8,
+        fontFamily: "OpenSansBold",
+        color: Colors.black,
+      ),
+      headline4: TextStyle(
+        fontSize: materialSizes['h4']! * 0.8,
+        fontFamily: "OpenSansBold",
+        color: Colors.black,
+      ),
+      headline5: TextStyle(
+        fontSize: materialSizes['h5']!,
+        fontFamily: "OpenSansBold",
+        color: Colors.black,
+      ),
+      headline6: TextStyle(
+        fontSize: materialSizes['h6']! * 0.8,
+        fontFamily: "OpenSansBold",
+        color: Colors.black,
+      ),
     ),
 
     /*

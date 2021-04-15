@@ -24,21 +24,16 @@ fastlane playstore
 ----
 
 ## Android
-### android updateclosed_alpha
+### android production
 ```
-fastlane android updateclosed_alpha
+fastlane android production
+```
+Upload app to production
+### android update_alpha
+```
+fastlane android update_alpha
 ```
 Upload closed alpha app and update store entry
-### android test
-```
-fastlane android test
-```
-Runs all the tests
-### android beta
-```
-fastlane android beta
-```
-Submit a new Beta Build to Crashlytics Beta
 ### android deploy
 ```
 fastlane android deploy

@@ -1,3 +1,21 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (C) 2020, 2021 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * wger Workout Manager is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -10,14 +28,15 @@ import 'package:wger/providers/body_weight.dart';
 
 class WeightForm extends StatelessWidget {
   final _form = GlobalKey<FormState>();
-  final dateController = TextEditingController(text: toDate(DateTime.now()).toString());
+  final dateController = TextEditingController();
   final weightController = TextEditingController();
 
   late WeightEntry _weightEntry;
 
   WeightForm([WeightEntry? weightEntry]) {
-    this._weightEntry = weightEntry ?? WeightEntry();
+    this._weightEntry = weightEntry ?? WeightEntry(date: DateTime.now());
     weightController.text = _weightEntry.id == null ? '' : _weightEntry.weight.toString();
+    dateController.text = toDate(_weightEntry.date)!;
   }
 
   @override
@@ -37,9 +56,20 @@ class WeightForm extends StatelessWidget {
               // Show Date Picker Here
               var pickedDate = await showDatePicker(
                 context: context,
-                initialDate: DateTime.now(),
+                initialDate: _weightEntry.date,
                 firstDate: DateTime(DateTime.now().year - 10),
                 lastDate: DateTime.now(),
+                selectableDayPredicate: (day) {
+                  // Always allow the current initial date
+                  if (day == _weightEntry.date) {
+                    return true;
+                  }
+
+                  // if the date is known, don't allow it
+                  return Provider.of<BodyWeight>(context, listen: false).findByDate(day) == null
+                      ? true
+                      : false;
+                },
               );
 
               dateController.text = toDate(pickedDate)!;
@@ -47,7 +77,6 @@ class WeightForm extends StatelessWidget {
             onSaved: (newValue) {
               _weightEntry.date = DateTime.parse(newValue!);
             },
-            onFieldSubmitted: (_) {},
           ),
 
           // Weight
@@ -55,7 +84,6 @@ class WeightForm extends StatelessWidget {
             decoration: InputDecoration(labelText: AppLocalizations.of(context)!.weight),
             controller: weightController,
             keyboardType: TextInputType.number,
-            onFieldSubmitted: (_) {},
             onSaved: (newValue) {
               _weightEntry.weight = double.parse(newValue!);
             },

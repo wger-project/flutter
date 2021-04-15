@@ -1,19 +1,19 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020 wger Team
+ * Copyright (C) 2020, 2021 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * wger Workout Manager is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 import 'package:flutter/material.dart';
@@ -22,13 +22,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/models/body_weight/weight_entry.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/widgets/weight/charts.dart';
 import 'package:wger/widgets/weight/forms.dart';
 
+import '../test_data/body_weight.dart';
 import 'base_provider_test.mocks.dart';
 import 'utils.dart';
 
@@ -50,8 +50,8 @@ void main() {
       create: (context) => BodyWeight(
         testAuthProvider,
         [
-          WeightEntry(id: 1, weight: 80, date: DateTime(2021, 01, 01)),
-          WeightEntry(id: 2, weight: 81, date: DateTime(2021, 01, 10)),
+          weightEntry1,
+          weightEntry2,
         ],
         client,
       ),

@@ -1,19 +1,19 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020 wger Team
+ * Copyright (C) 2020, 2021 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 import 'package:json_annotation/json_annotation.dart';
@@ -30,35 +30,37 @@ class MealItem {
   @JsonKey(required: true)
   int? id;
 
-  @JsonKey(required: false)
+  @JsonKey(required: false, name: 'meal')
   late int mealId;
 
   @JsonKey(required: false, name: 'ingredient')
-  int ingredientId;
+  late int ingredientId;
 
   @JsonKey(ignore: true)
   late Ingredient ingredientObj;
 
   @JsonKey(required: false, name: 'weight_unit')
-  int weightUnitId;
+  int? weightUnitId;
 
   @JsonKey(ignore: true)
-  late IngredientWeightUnit weightUnitObj;
+  IngredientWeightUnit? weightUnitObj;
 
   @JsonKey(required: true, fromJson: toNum, toJson: toString)
-  num amount;
+  late num amount;
 
   MealItem({
     this.id,
     int? mealId,
     required this.ingredientId,
-    required this.weightUnitId,
+    this.weightUnitId,
     required this.amount,
   }) {
     if (mealId != null) {
       this.mealId = mealId;
     }
   }
+
+  MealItem.empty();
 
   // Boilerplate
   factory MealItem.fromJson(Map<String, dynamic> json) => _$MealItemFromJson(json);

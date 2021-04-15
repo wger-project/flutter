@@ -1,18 +1,18 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020 wger Team
+ * Copyright (C) 2020, 2021 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * wger Workout Manager is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
@@ -114,7 +114,10 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
             ),
           ),
           Padding(padding: const EdgeInsets.all(8.0)),
-          Text('Diary', style: Theme.of(context).textTheme.headline6),
+          Text(
+            AppLocalizations.of(context)!.nutritionalDiary,
+            style: Theme.of(context).textTheme.headline6,
+          ),
           Container(
             padding: EdgeInsets.all(15),
             height: 220,
@@ -122,37 +125,35 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
           ),
           Container(
             height: 200,
-            child: SingleChildScrollView(
+            child: ListView(
               scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(''),
-                        Text(
-                            '${AppLocalizations.of(context)!.energy} (${AppLocalizations.of(context)!.kcal})'),
-                        Text(
-                            '${AppLocalizations.of(context)!.protein} (${AppLocalizations.of(context)!.g})'),
-                        Text(
-                            '${AppLocalizations.of(context)!.carbohydrates} (${AppLocalizations.of(context)!.g})'),
-                        Text(
-                            '${AppLocalizations.of(context)!.sugars} (${AppLocalizations.of(context)!.g})'),
-                        Text(
-                            '${AppLocalizations.of(context)!.fat} (${AppLocalizations.of(context)!.g})'),
-                        Text(
-                            '${AppLocalizations.of(context)!.saturatedFat} (${AppLocalizations.of(context)!.g})'),
-                      ],
-                    ),
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(''),
+                      Text(
+                          '${AppLocalizations.of(context)!.energy} (${AppLocalizations.of(context)!.kcal})'),
+                      Text(
+                          '${AppLocalizations.of(context)!.protein} (${AppLocalizations.of(context)!.g})'),
+                      Text(
+                          '${AppLocalizations.of(context)!.carbohydrates} (${AppLocalizations.of(context)!.g})'),
+                      Text(
+                          '${AppLocalizations.of(context)!.sugars} (${AppLocalizations.of(context)!.g})'),
+                      Text(
+                          '${AppLocalizations.of(context)!.fat} (${AppLocalizations.of(context)!.g})'),
+                      Text(
+                          '${AppLocalizations.of(context)!.saturatedFat} (${AppLocalizations.of(context)!.g})'),
+                    ],
                   ),
-                  ..._nutritionalPlan.logEntriesValues.entries
-                      .map((entry) => NutritionDiaryEntry(entry.key, entry.value))
-                      .toList()
-                      .reversed,
-                ],
-              ),
+                ),
+                ..._nutritionalPlan.logEntriesValues.entries
+                    .map((entry) => NutritionDiaryEntry(entry.key, entry.value))
+                    .toList()
+                    .reversed,
+              ],
             ),
           ),
         ],
@@ -177,8 +178,10 @@ class NutritionDiaryEntry extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Text(DateFormat.yMd().format(date).toString(),
-              style: TextStyle(fontWeight: FontWeight.bold)),
+          Text(
+            DateFormat.yMd(Localizations.localeOf(context).languageCode).format(date),
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
           Text(values.energy.toStringAsFixed(0)),
           Text(values.protein.toStringAsFixed(0)),
           Text(values.carbohydrates.toStringAsFixed(0)),

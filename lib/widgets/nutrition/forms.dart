@@ -1,18 +1,18 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020 wger Team
+ * Copyright (C) 2020, 2021 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * wger Workout Manager is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
@@ -27,11 +27,11 @@ import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/nutrition.dart';
+import 'package:wger/screens/nutritional_plan_screen.dart';
 
 class MealForm extends StatelessWidget {
   late Meal _meal;
   int _planId;
-  //var _mealData = {'id': null, 'planId': -1, 'time': TimeOfDay.now()};
 
   final _form = GlobalKey<FormState>();
   final _timeController = TextEditingController();
@@ -40,19 +40,6 @@ class MealForm extends StatelessWidget {
     this._meal = meal ?? Meal(plan: _planId);
     _timeController.text = timeToString(_meal.time)!;
   }
-
-  /*
-  MealForm(int planId, [Meal? meal]) {
-    _mealData['planId'] = planId;
-    _timeController.text = timeToString(_mealData['time'] as TimeOfDay)!;
-
-    if (meal != null) {
-      _mealData['id'] = meal.id;
-      _mealData['time'] = meal.time;
-      _timeController.text = timeToString(meal.time)!;
-    }
-  }
-  */
 
   @override
   Widget build(BuildContext context) {
@@ -114,8 +101,8 @@ class MealItemForm extends StatelessWidget {
   late MealItem _mealItem;
 
   MealItemForm(this._meal, [mealItem]) {
-    this._mealItem = mealItem;
-    //this._mealItem = mealItem ?? MealItem(mealId: _meal.id);
+    this._mealItem = mealItem ?? MealItem.empty();
+    _mealItem.mealId = _meal.id!;
   }
 
   final _form = GlobalKey<FormState>();
@@ -136,8 +123,10 @@ class MealItemForm extends StatelessWidget {
                 decoration: InputDecoration(labelText: AppLocalizations.of(context)!.ingredient),
               ),
               suggestionsCallback: (pattern) async {
-                return await Provider.of<Nutrition>(context, listen: false)
-                    .searchIngredient(pattern);
+                return await Provider.of<Nutrition>(context, listen: false).searchIngredient(
+                  pattern,
+                  Localizations.localeOf(context).languageCode,
+                );
               },
               itemBuilder: (context, dynamic suggestion) {
                 return ListTile(
@@ -156,14 +145,11 @@ class MealItemForm extends StatelessWidget {
                 if (value!.isEmpty) {
                   return AppLocalizations.of(context)!.selectIngredient;
                 }
-                if (_mealItem.ingredientId == null) {
-                  return AppLocalizations.of(context)!.selectIngredient;
-                }
                 return null;
               },
             ),
             TextFormField(
-              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.amount),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.weight),
               controller: _amountController,
               keyboardType: TextInputType.number,
               onFieldSubmitted: (_) {},
@@ -205,24 +191,13 @@ class MealItemForm extends StatelessWidget {
 }
 
 class PlanForm extends StatelessWidget {
-  //NutritionalPlan? _plan;
-  var _planData = {
-    'description': '',
-    'creationDate': DateTime.now(),
-    'id': null,
-  };
-
   final _form = GlobalKey<FormState>();
   final _descriptionController = TextEditingController();
+  late NutritionalPlan _plan;
 
   PlanForm([NutritionalPlan? plan]) {
-    if (plan != null) {
-      _planData['id'] = plan.id;
-      _planData['description'] = plan.description;
-      _planData['creationDate'] = plan.creationDate;
-    }
-
-    _descriptionController.text = _planData['description'] as String;
+    _plan = plan != null ? plan : NutritionalPlan.empty();
+    _descriptionController.text = _plan.description;
   }
 
   @override
@@ -237,7 +212,7 @@ class PlanForm extends StatelessWidget {
             controller: _descriptionController,
             onFieldSubmitted: (_) {},
             onSaved: (newValue) {
-              _planData['description'] = newValue!;
+              _plan.description = newValue!;
             },
           ),
           ElevatedButton(
@@ -252,27 +227,21 @@ class PlanForm extends StatelessWidget {
 
               // Save the entry on the server
               try {
-                NutritionalPlan plan = NutritionalPlan(
-                  description: _planData['description'] as String,
-                  creationDate: _planData['creationDate'] as DateTime,
-                );
-
-                if (_planData['id'] != null) {
-                  plan.id = _planData['id'] as int;
-                  await Provider.of<Nutrition>(context, listen: false).patchPlan(plan);
-                } else {
-                  await Provider.of<Nutrition>(context, listen: false).postPlan(plan);
-                }
+                _plan.id != null
+                    ? await Provider.of<Nutrition>(context, listen: false).editPlan(_plan)
+                    : _plan = await Provider.of<Nutrition>(context, listen: false).addPlan(_plan);
 
                 // Saving was successful, reset the data
-                //descriptionController.clear();
-                //nutritionalPlan = NutritionalPlan();
+                _descriptionController.clear();
               } on WgerHttpException catch (error) {
                 showHttpExceptionErrorDialog(error, context);
               } catch (error) {
                 showErrorDialog(error, context);
               }
-              Navigator.of(context).pop();
+              Navigator.of(context).pushReplacementNamed(
+                NutritionalPlanScreen.routeName,
+                arguments: _plan,
+              );
             },
           ),
         ],

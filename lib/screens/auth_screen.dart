@@ -1,19 +1,19 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020 wger Team
+ * Copyright (C) 2020, 2021 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 import 'package:flutter/material.dart';
@@ -36,8 +36,6 @@ class AuthScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
-    // final transformConfig = Matrix4.rotationZ(-8 * pi / 180);
-    // transformConfig.translate(-10.0);
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       body: Stack(
@@ -58,7 +56,6 @@ class AuthScreen extends StatelessWidget {
                   Container(
                     margin: EdgeInsets.only(bottom: 20.0),
                     padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 94.0),
-                    // ..translate(-10.0),
                     child: Text(
                       'WGER',
                       style: TextStyle(
@@ -101,8 +98,8 @@ class _AuthCardState extends State<AuthCard> {
     'serverUrl': '',
   };
   var _isLoading = false;
-  final _usernameController = TextEditingController(text: 'admin');
-  final _passwordController = TextEditingController(text: 'adminadmin');
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
   final _password2Controller = TextEditingController();
   final _emailController = TextEditingController();
   final _serverUrlController = TextEditingController(text: DEFAULT_SERVER);
@@ -175,10 +172,6 @@ class _AuthCardState extends State<AuthCard> {
       ),
       elevation: 8.0,
       child: Container(
-        //decoration: BoxDecoration(color: Colors.black12),
-        //height: _authMode == AuthMode.Signup ? 450 : 320,
-        //constraints:
-        //    BoxConstraints(minHeight: _authMode == AuthMode.Signup ? 450 : 320),
         width: deviceSize.width * 0.75,
         padding: EdgeInsets.all(16.0),
         child: Form(

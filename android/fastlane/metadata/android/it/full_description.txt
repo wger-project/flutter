@@ -1,6 +1,0 @@
-wger (ˈvɛɡɐ) è un software libero che aiuta la tua saluta
-
-- Pianifica allenamento e dieta
-- Salva gli esercizi e aggiungi note
-- modalità allenamento
-- Diario e monitoraggio dello sviluppo

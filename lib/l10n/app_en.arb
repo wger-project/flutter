@@ -4,6 +4,10 @@
   "@login": {
     "description": "Text for login button"
   },
+  "logout": "Log out",
+  "@logout": {
+    "description": "Text for logout button"
+  },
   "register": "Register",
   "@register": {
     "description": "Text for registration button"
@@ -64,6 +68,10 @@
   "@labelWorkoutPlans": {
     "description": "Title for screen workout plans"
   },
+  "labelWorkoutLogs": "Training logs",
+  "@labelWorkoutLogs": {
+    "description": "(Workout) logs"
+  },
   "labelWorkoutPlan": "Workout plan",
   "@labelWorkoutPlan": {
     "description": "Title for screen workout plan"
@@ -75,6 +83,10 @@
   "successfullyDeleted": "Deleted",
   "@successfullyDeleted": {
     "description": "Message when an item was successfully deleted"
+  },
+  "successfullySaved": "Saved successfully",
+  "@successfullySaved": {
+    "description": "Message when an item was successfully saved"
   },
   "exercise": "Exercise",
   "@exercise": {
@@ -88,7 +100,7 @@
   "@noWorkoutPlans": {
     "description": "Message shown when the user has no workout plans"
   },
-  "addExercise": "Add exercise to this day",
+  "addExercise": "Add exercise",
   "repetitions": "Repetitions",
   "@repetitions": {
     "description": "Repetitions for an exercise set"
@@ -107,6 +119,7 @@
   "@set": {
     "description": "A set in a workout plan"
   },
+  "dayDescriptionHelp": "A description of what is done on this day (e.g. 'pull day') or what body parts are trained (e.g. 'chest and shoulders')",
   "setNr": "Set {nr}",
   "@setNr": {
     "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
@@ -115,7 +128,7 @@
       "nr": {}
     }
   },
-  "sameRepetitions": "If you do the same repetitions and weight for all sets you can just fill in one row. For example for 4 sets just enter one \"10\" for the repetitions, this automatically becomes \"4 x 10\".",
+  "sameRepetitions": "If you do the same repetitions and weight for all sets you can just fill in one row. For example for 4 sets just enter 10 for the repetitions, this automatically becomes \"4 x 10\".",
   "comment": "Comment",
   "@comment": {
     "description": "Comment, additional information"
@@ -154,8 +167,10 @@
   "@save": {},
   "cancel": "Cancel",
   "@cancel": {},
-  "add": "Add",
-  "@add": {},
+  "addSet": "Add set",
+  "@addSet": {
+    "description": "Label for the button that adds a set (to a workout day)"
+  },
   "addMeal": "Add meal",
   "@addMeal": {},
   "mealLogged": "Meal logged to diary",
@@ -183,6 +198,10 @@
   "date": "Date",
   "@date": {
     "description": "The date of a workout log or body weight entry"
+  },
+  "start": "Start",
+  "@start": {
+    "description": "Label on button to start the gym mode (i.e., an imperative)"
   },
   "time": "Time",
   "@time": {
@@ -275,6 +294,10 @@
   "goToToday": "Go to today",
   "@goToToday": {
     "description": "Label on button to jump back to 'today' in the calendar widget"
+  },
+  "enterRepetitionsOrWeight": "Please fill in either the repetitions or the weight for at least one of the sets",
+  "@enterRepetitionsOrWeight": {
+    "description": "Error message when the user hasn't filled in the forms for exercise sets"
   },
   "enterValue": "Please enter a value",
   "@enterValue": {

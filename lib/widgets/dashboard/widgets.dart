@@ -1,18 +1,18 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020 wger Team
+ * Copyright (C) 2020, 2021 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * wger Workout Manager is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
@@ -27,6 +27,7 @@ import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/form_screen.dart';
+import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/theme/theme.dart';
@@ -254,11 +255,17 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
           day.description,
           style: TextStyle(fontWeight: FontWeight.bold),
         ));
+        out.add(IconButton(
+          icon: Icon(Icons.play_arrow),
+          onPressed: () {
+            Navigator.of(context).pushNamed(GymModeScreen.routeName, arguments: day);
+          },
+        ));
         if (showDetail) {
           day.sets.forEach((set) {
             out.add(Column(
               children: [
-                ...set.settings.map((s) {
+                ...set.settingsFiltered.map((s) {
                   return Column(
                     children: [
                       Text(s.exerciseObj.name),
@@ -267,7 +274,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                     ],
                   );
                 }).toList(),
-                SizedBox(height: 7),
+                SizedBox(height: 15),
               ],
             ));
           });

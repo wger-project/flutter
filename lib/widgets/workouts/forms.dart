@@ -1,18 +1,18 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020 wger Team
+ * Copyright (C) 2020, 2021 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * wger Workout Manager is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
@@ -27,7 +27,6 @@ import 'package:wger/models/workouts/set.dart';
 import 'package:wger/models/workouts/setting.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
-import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
@@ -78,14 +77,15 @@ class WorkoutForm extends StatelessWidget {
               _form.currentState!.save();
 
               // Save to DB
-              final workout = _plan.id != null
-                  ? await Provider.of<WorkoutPlans>(context, listen: false).patchWorkout(_plan)
-                  : await Provider.of<WorkoutPlans>(context, listen: false).postWorkout(_plan);
+              _plan.id != null
+                  ? await Provider.of<WorkoutPlans>(context, listen: false).editWorkout(_plan)
+                  : _plan =
+                      await Provider.of<WorkoutPlans>(context, listen: false).addWorkout(_plan);
 
-              Navigator.of(context).pop();
-              if (_plan.id == null) {
-                Navigator.of(context).pushNamed(WorkoutPlanScreen.routeName, arguments: workout);
-              }
+              Navigator.of(context).pushReplacementNamed(
+                WorkoutPlanScreen.routeName,
+                arguments: _plan,
+              );
             },
           ),
         ],
@@ -144,67 +144,67 @@ class _DayFormWidgetState extends State<DayFormWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.all(20),
-      child: Form(
-        key: _form,
-        child: Column(
-          children: [
-            TextFormField(
-              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.description),
-              controller: widget.dayController,
-              onSaved: (value) {
-                widget._day.description = value!;
-              },
-              validator: (value) {
-                const minLength = 5;
-                const maxLength = 100;
-                if (value!.isEmpty || value.length < minLength || value.length > maxLength) {
-                  return AppLocalizations.of(context)!.enterCharacters(minLength, maxLength);
-                }
-                return null;
-              },
+    return Form(
+      key: _form,
+      child: ListView(
+        children: [
+          TextFormField(
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context)!.description,
+              helperText: AppLocalizations.of(context)!.dayDescriptionHelp,
+              helperMaxLines: 3,
             ),
-            SizedBox(height: 10),
-            Text('Week days'),
-            ...Day.weekdays.keys.map((dayNr) => DayCheckbox(dayNr, widget._day)).toList(),
-            ElevatedButton(
-              child: Text(AppLocalizations.of(context)!.save),
-              onPressed: () async {
-                if (!_form.currentState!.validate()) {
-                  return;
-                }
-                _form.currentState!.save();
+            controller: widget.dayController,
+            onSaved: (value) {
+              widget._day.description = value!;
+            },
+            validator: (value) {
+              const minLength = 5;
+              const maxLength = 100;
+              if (value!.isEmpty || value.length < minLength || value.length > maxLength) {
+                return AppLocalizations.of(context)!.enterCharacters(minLength, maxLength);
+              }
+              return null;
+            },
+          ),
+          SizedBox(height: 10),
+          ...Day.weekdays.keys.map((dayNr) => DayCheckbox(dayNr, widget._day)).toList(),
+          ElevatedButton(
+            child: Text(AppLocalizations.of(context)!.save),
+            onPressed: () async {
+              if (!_form.currentState!.validate()) {
+                return;
+              }
+              _form.currentState!.save();
 
-                try {
-                  Provider.of<WorkoutPlans>(context, listen: false).addDay(
-                    widget._day,
-                    widget.workout,
-                  );
+              try {
+                Provider.of<WorkoutPlans>(context, listen: false).addDay(
+                  widget._day,
+                  widget.workout,
+                );
 
-                  widget.dayController.clear();
-                  Navigator.of(context).pop();
-                } catch (error) {
-                  await showDialog(
-                    context: context,
-                    builder: (ctx) => AlertDialog(
-                      title: Text('An error occurred!'),
-                      content: Text('Something went wrong.'),
-                      actions: [
-                        TextButton(
-                          child: Text('Okay'),
-                          onPressed: () {
-                            Navigator.of(ctx).pop();
-                          },
-                        )
-                      ],
-                    ),
-                  );
-                }
-              },
-            ),
-          ],
-        ),
+                widget.dayController.clear();
+                Navigator.of(context).pop();
+              } catch (error) {
+                await showDialog(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                    title: Text('An error occurred!'),
+                    content: Text('Something went wrong.'),
+                    actions: [
+                      TextButton(
+                        child: Text('Okay'),
+                        onPressed: () {
+                          Navigator.of(ctx).pop();
+                        },
+                      )
+                    ],
+                  ),
+                );
+              }
+            },
+          ),
+        ],
       ),
     );
   }
@@ -214,7 +214,7 @@ class SetFormWidget extends StatefulWidget {
   Day _day;
   late Set _set;
 
-  SetFormWidget(Day this._day, [Set? set]) {
+  SetFormWidget(this._day, [Set? set]) {
     this._set = set ?? Set.withData(day: _day.id, sets: 4);
   }
 
@@ -254,13 +254,10 @@ class _SetFormWidgetState extends State<SetFormWidget> {
       for (int loop = 0; loop < widget._set.sets; loop++) {
         Setting setting = Setting.empty();
         setting.order = order;
-        setting.setExercise(exercise);
-        setting.setRepetitionUnit(
-          Provider.of<WorkoutPlans>(context, listen: false).defaultRepetitionUnit,
-        );
-        setting.setWeightUnit(
-          Provider.of<WorkoutPlans>(context, listen: false).defaultWeightUnit,
-        );
+        setting.exercise = exercise;
+        setting.weightUnit = Provider.of<WorkoutPlans>(context, listen: false).defaultWeightUnit;
+        setting.repetitionUnit =
+            Provider.of<WorkoutPlans>(context, listen: false).defaultRepetitionUnit;
 
         widget._set.settings.add(setting);
       }
@@ -279,15 +276,18 @@ class _SetFormWidgetState extends State<SetFormWidget> {
               decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.exercise,
                   helperMaxLines: 3,
+                  errorMaxLines: 2,
                   helperText: AppLocalizations.of(context)!.selectExercises),
             ),
             suggestionsCallback: (pattern) async {
-              return await Provider.of<Exercises>(context, listen: false).searchExercise(pattern);
+              return await Provider.of<Exercises>(context, listen: false).searchExercise(
+                pattern,
+                Localizations.localeOf(context).languageCode,
+              );
             },
             itemBuilder: (context, suggestion) {
               final result = suggestion! as Map;
 
-              String serverUrl = Provider.of<Auth>(context, listen: false).serverUrl!;
               final exercise =
                   Provider.of<Exercises>(context, listen: false).findById(result['data']['id']);
               return ListTile(
@@ -311,8 +311,15 @@ class _SetFormWidgetState extends State<SetFormWidget> {
               this._exercisesController.text = '';
             },
             validator: (value) {
+              // At least one exercise must be selected
               if (widget._set.exercisesIds.length == 0) {
                 return AppLocalizations.of(context)!.selectExercise;
+              }
+
+              // At least one setting has to be filled in
+              if (widget._set.settings.where((s) => s.weight == null && s.reps == null).length ==
+                  widget._set.settings.length) {
+                return AppLocalizations.of(context)!.enterRepetitionsOrWeight;
               }
               return null;
             },
@@ -382,13 +389,17 @@ class _SetFormWidgetState extends State<SetFormWidget> {
               for (var setting in widget._set.settings) {
                 setting.setId = setDb.id!;
                 setting.comment = '';
-                setting.repsText = 'temp text';
 
                 Setting settingDb = await workoutProvider.addSetting(setting);
+                setting.repsText = await workoutProvider.fetchSmartText(
+                  widget._set,
+                  setting.exerciseObj,
+                );
                 setting.id = settingDb.id;
               }
 
               // Add to workout day
+              workoutProvider.fetchComputedSettings(widget._set);
               widget._day.sets.add(widget._set);
 
               // Close the bottom sheet
@@ -546,9 +557,11 @@ class RepsInputWidget extends StatelessWidget {
         }
         return null;
       },
-      onSaved: (newValue) {
-        if (newValue != null && newValue != '') {
-          _setting.reps = int.parse(newValue);
+      onChanged: (newValue) {
+        if (newValue != '') {
+          try {
+            _setting.reps = int.parse(newValue);
+          } catch (e) {}
         }
       },
     );
@@ -581,38 +594,46 @@ class WeightInputWidget extends StatelessWidget {
         }
         return null;
       },
-      onSaved: (newValue) {
-        if (newValue != null && newValue != '') {
-          _setting.weight = double.parse(newValue);
+      onChanged: (newValue) {
+        if (newValue != '') {
+          try {
+            _setting.weight = double.parse(newValue);
+          } catch (e) {}
         }
       },
     );
   }
 }
 
+/// Input widget for Rests In Reserve
+///
+/// Can be used with a Setting or a Log object
 class RiRInputWidget extends StatefulWidget {
-  final Setting _setting;
-  RiRInputWidget(this._setting);
+  final dynamic _setting;
+  late String dropdownValue;
+  RiRInputWidget(this._setting) {
+    dropdownValue = _setting.rir != null ? _setting.rir : Setting.DEFAULT_RIR;
+  }
 
   @override
   _RiRInputWidgetState createState() => _RiRInputWidgetState();
 }
 
 class _RiRInputWidgetState extends State<RiRInputWidget> {
-  String dropdownValue = '1';
-
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField(
       decoration: InputDecoration(labelText: AppLocalizations.of(context)!.rir),
-      value: dropdownValue,
+      value: widget.dropdownValue,
+      onSaved: (String? newValue) {
+        widget._setting.setRir(newValue!);
+      },
       onChanged: (String? newValue) {
         setState(() {
-          dropdownValue = newValue!;
-          widget._setting.setRir(newValue);
+          widget.dropdownValue = newValue!;
         });
       },
-      items: Setting.possibleValues.map<DropdownMenuItem<String>>((String value) {
+      items: Setting.POSSIBLE_RIR_VALUES.map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
           value: value,
           child: Text(value),
@@ -622,8 +643,11 @@ class _RiRInputWidgetState extends State<RiRInputWidget> {
   }
 }
 
+/// Input widget for workout weight units
+///
+/// Can be used with a Setting or a Log object
 class WeightUnitInputWidget extends StatefulWidget {
-  final Setting _setting;
+  final dynamic _setting;
 
   WeightUnitInputWidget(this._setting, {Key? key}) : super(key: key);
 
@@ -642,7 +666,7 @@ class _WeightUnitInputWidgetState extends State<WeightUnitInputWidget> {
       onChanged: (WeightUnit? newValue) {
         setState(() {
           selectedWeightUnit = newValue!;
-          widget._setting.setWeightUnit(newValue);
+          widget._setting.weightUnit = newValue;
         });
       },
       items: Provider.of<WorkoutPlans>(context, listen: false)
@@ -657,8 +681,11 @@ class _WeightUnitInputWidgetState extends State<WeightUnitInputWidget> {
   }
 }
 
+/// Input widget for repetition units
+///
+/// Can be used with a Setting or a Log object
 class RepetitionUnitInputWidget extends StatefulWidget {
-  final Setting _setting;
+  final dynamic _setting;
   RepetitionUnitInputWidget(this._setting);
 
   @override
@@ -677,7 +704,7 @@ class _RepetitionUnitInputWidgetState extends State<RepetitionUnitInputWidget> {
       onChanged: (RepetitionUnit? newValue) {
         setState(() {
           selectedWeightUnit = newValue!;
-          widget._setting.setRepetitionUnit(newValue);
+          widget._setting.repetitionUnit = newValue;
         });
       },
       items: Provider.of<WorkoutPlans>(context, listen: false)

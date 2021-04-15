@@ -1,19 +1,19 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020 wger Team
+ * Copyright (C) 2020, 2021 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 import 'dart:convert';
@@ -118,7 +118,7 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
     return plan;
   }
 
-  Future<NutritionalPlan> postPlan(NutritionalPlan planData) async {
+  Future<NutritionalPlan> addPlan(NutritionalPlan planData) async {
     final data = await post(planData.toJson(), makeUrl(_nutritionalPlansPath));
     final plan = NutritionalPlan.fromJson(data);
     _plans.add(plan);
@@ -127,7 +127,7 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
     return plan;
   }
 
-  Future<void> patchPlan(NutritionalPlan plan) async {
+  Future<void> editPlan(NutritionalPlan plan) async {
     await patch(plan.toJson(), makeUrl(_nutritionalPlansPath, id: plan.id));
     notifyListeners();
   }
@@ -268,14 +268,17 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
   }
 
   /// Searches for an ingredient
-  Future<List> searchIngredient(String name) async {
+  Future<List> searchIngredient(String name, [String languageCode = 'en']) async {
     if (name.length <= 1) {
       return [];
     }
 
     // Send the request
     final response = await client.get(
-      makeUrl(_ingredientSearchPath, query: {'term': name}),
+      makeUrl(
+        _ingredientSearchPath,
+        query: {'term': name, 'language': languageCode},
+      ),
       headers: <String, String>{
         HttpHeaders.authorizationHeader: 'Token ${auth.token}',
         HttpHeaders.userAgentHeader: 'wger Workout Manager App',

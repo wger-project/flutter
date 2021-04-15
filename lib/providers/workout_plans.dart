@@ -1,19 +1,19 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020 wger Team
+ * Copyright (C) 2020, 2021 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 import 'dart:convert';
@@ -140,6 +140,7 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
       final setData = await fetch(makeUrl(_setsUrlPath, query: {'exerciseday': day.id.toString()}));
       for (final setEntry in setData['results']) {
         final workoutSet = Set.fromJson(setEntry);
+        fetchComputedSettings(workoutSet);
 
         // Settings
         List<Setting> settings = [];
@@ -159,7 +160,7 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
           if (!workoutSet.exercisesIds.contains(workoutSetting.exerciseId)) {
             workoutSet.addExercise(workoutSetting.exerciseObj);
           }
-          workoutSetting.repsText = 'FIXME!';
+          workoutSetting.repsText = await fetchSmartText(workoutSet, workoutSetting.exerciseObj);
           settings.add(workoutSetting);
         }
         workoutSet.settings = settings;
@@ -173,7 +174,12 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
     // Logs
     final logData = await fetch(makeUrl(_logsUrlPath, query: {'workout': workoutId.toString()}));
     for (final entry in logData['results']) {
-      plan.logs.add(Log.fromJson(entry));
+      var log = Log.fromJson(entry);
+      log.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
+      log.repetitionUnit = _repetitionUnit.firstWhere((e) => e.id == log.weightUnitId);
+      log.exercise = _exercises.findById(log.exerciseId);
+
+      plan.logs.add(log);
     }
 
     // ... and done
@@ -182,19 +188,7 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> fetchAndSetWorkouts() async {
-    final data = await fetch(makeUrl(_workoutPlansUrlPath, query: {'ordering': '-creation_date'}));
-    final List<WorkoutPlan> loadedWorkoutPlans = [];
-
-    for (final entry in data['results']) {
-      loadedWorkoutPlans.add(WorkoutPlan.fromJson(entry));
-    }
-
-    _workoutPlans = loadedWorkoutPlans;
-    notifyListeners();
-  }
-
-  Future<WorkoutPlan> postWorkout(WorkoutPlan workout) async {
+  Future<WorkoutPlan> addWorkout(WorkoutPlan workout) async {
     final data = await post(workout.toJson(), makeUrl(_workoutPlansUrlPath));
     final plan = WorkoutPlan.fromJson(data);
     _workoutPlans.insert(0, plan);
@@ -202,12 +196,9 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
     return plan;
   }
 
-  Future<WorkoutPlan> patchWorkout(WorkoutPlan workout) async {
-    final data = await patch(workout.toJson(), makeUrl(_workoutPlansUrlPath, id: workout.id));
-    final plan = WorkoutPlan.fromJson(data);
-    _workoutPlans[findIndexById(plan.id!)] = plan;
+  Future<void> editWorkout(WorkoutPlan workout) async {
+    await patch(workout.toJson(), makeUrl(_workoutPlansUrlPath, id: workout.id));
     notifyListeners();
-    return plan;
   }
 
   Future<void> deleteWorkout(int id) async {
@@ -329,6 +320,43 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
     return set;
   }
 
+  Future<void> fetchComputedSettings(Set workoutSet) async {
+    final data = await fetch(makeUrl(
+      _setsUrlPath,
+      id: workoutSet.id!,
+      objectMethod: 'computed_settings',
+    ));
+
+    List<Setting> settings = [];
+    data['results'].forEach((e) {
+      Setting workoutSetting = Setting.fromJson(e);
+
+      workoutSetting.weightUnitObj = _weightUnits.firstWhere(
+        (unit) => unit.id == workoutSetting.weightUnitId,
+      );
+      workoutSetting.repetitionUnitObj = _repetitionUnit.firstWhere(
+        (unit) => unit.id == workoutSetting.repetitionUnitId,
+      );
+      settings.add(workoutSetting);
+    });
+
+    workoutSet.settingsComputed = settings;
+    notifyListeners();
+  }
+
+  Future<String> fetchSmartText(Set workoutSet, Exercise exercise) async {
+    final data = await fetch(
+      makeUrl(
+        _setsUrlPath,
+        id: workoutSet.id!,
+        objectMethod: 'smart_text',
+        query: {'exercise': exercise.id.toString()},
+      ),
+    );
+
+    return data['results'];
+  }
+
   Future<void> deleteSet(Set workoutSet) async {
     await deleteRequest(_setsUrlPath, workoutSet.id!);
 
@@ -373,6 +401,14 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
   Future<Log> addLog(Log log) async {
     final data = await post(log.toJson(), makeUrl(_logsUrlPath));
     final newLog = Log.fromJson(data);
+
+    log.id = newLog.id;
+    log.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
+    log.repetitionUnit = _repetitionUnit.firstWhere((e) => e.id == log.weightUnitId);
+    log.exercise = _exercises.findById(log.exerciseId);
+
+    final plan = findById(log.workoutPlan);
+    plan.logs.add(log);
     notifyListeners();
     return newLog;
   }
