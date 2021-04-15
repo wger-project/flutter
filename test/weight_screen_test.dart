@@ -22,13 +22,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/models/body_weight/weight_entry.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/widgets/weight/charts.dart';
 import 'package:wger/widgets/weight/forms.dart';
 
+import '../test_data/body_weight.dart';
 import 'base_provider_test.mocks.dart';
 import 'utils.dart';
 
@@ -50,8 +50,8 @@ void main() {
       create: (context) => BodyWeight(
         testAuthProvider,
         [
-          WeightEntry(id: 1, weight: 80, date: DateTime(2021, 01, 01)),
-          WeightEntry(id: 2, weight: 81, date: DateTime(2021, 01, 10)),
+          weightEntry1,
+          weightEntry2,
         ],
         client,
       ),

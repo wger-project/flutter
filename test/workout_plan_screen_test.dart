@@ -20,11 +20,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/models/workouts/day.dart';
-import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
 
+import '../test_data/workouts.dart';
 import 'base_provider_test.mocks.dart';
 import 'utils.dart';
 
@@ -32,25 +31,6 @@ void main() {
   Widget createHomeScreen({locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
     final client = MockClient();
-
-    var day = Day()
-      ..id = 1
-      ..workoutId = 1
-      ..description = 'test day 1'
-      ..daysOfWeek = [1, 2];
-
-    var day2 = Day()
-      ..id = 2
-      ..workoutId = 1
-      ..description = 'test day 2'
-      ..daysOfWeek = [4];
-
-    WorkoutPlan workout = WorkoutPlan(
-      id: 1,
-      creationDate: DateTime(2021, 01, 01),
-      description: 'test workout 1',
-      days: [day, day2],
-    );
 
     return ChangeNotifierProvider<WorkoutPlans>(
       create: (context) => WorkoutPlans(testAuthProvider, testExercisesProvider, [], client),
@@ -62,7 +42,7 @@ void main() {
         home: TextButton(
           onPressed: () => key.currentState!.push(
             MaterialPageRoute<void>(
-              settings: RouteSettings(arguments: workout),
+              settings: RouteSettings(arguments: getWorkout()),
               builder: (_) => WorkoutPlanScreen(),
             ),
           ),
