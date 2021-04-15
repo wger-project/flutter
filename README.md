@@ -1,9 +1,9 @@
 # Mobile app for wger Workout Manager
 
-Mobile app for wger written with flutter, still in early stages of development.
-As soon as it is finished, it will be published in the different play stores.
+Mobile app for wger written with Flutter, still in early stages of development.
+As soon as it is finished, it will be published in the different app stores.
 
-If you want to contribute, hop on the discord server and say hi!
+If you want to contribute, hop on the Discord server and say hi!
 
 ## Getting Started
 
@@ -12,7 +12,7 @@ Install the wger server, the easiest way is starting the development docker-comp
 <https://github.com/wger-project/wger>
 
 ### 2
-Install flutter, all its dependencies and create a new virtual device: 
+Install Flutter, all its dependencies and create a new virtual device: 
 <https://flutter.dev/docs/get-started/install>
 
 ### 3
@@ -43,21 +43,19 @@ IP address of the server)
 You can run the tests with ``flutter test --no-sound-null-safety``
 
 ## Translation
-The application can be easily translated online with [Weblate](https://hosted.weblate.org/engage/wger/).
+Translate the app to your language on  [Weblate](https://hosted.weblate.org/engage/wger/).
 
 [![translation status](https://hosted.weblate.org/widgets/wger/-/mobile/multi-blue.svg)](https://hosted.weblate.org/engage/wger/)
 
-
 ## Contact
 
-Feel free to contact us if you found this useful or if there was something that
-didn't behave as you expected. We can't fix what we don't know about, so please
-report liberally. If you're not sure if something is a bug or not, feel free to
-file a bug anyway.
+Feel free to get in touch if you found this useful or something  didn't behave
+as expected. We can't fix what we don't know about, so please report liberally.
+If you're not sure if something is a bug or not, feel free to file a bug anyway.
 
-* **discord:** <https://discord.gg/rPWFv6W>
-* **issue tracker:** <https://github.com/wger-project/flutter/issues>
-* **twitter:** <https://twitter.com/wger_project>
+* **Discord:** <https://discord.gg/rPWFv6W>
+* **Issue tracker:** <https://github.com/wger-project/flutter/issues>
+* **Twitter:** <https://twitter.com/wger_project>
 
 ## License
 
