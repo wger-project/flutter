@@ -194,24 +194,8 @@ class LogPage extends StatefulWidget {
   final double _ratioCompleted;
   Log _log = Log.empty();
 
-  final _repsController = TextEditingController();
-  final _weightController = TextEditingController();
-  final _rirController = TextEditingController();
-
   LogPage(
       this._controller, this._setting, this._exercise, this._workoutPlan, this._ratioCompleted) {
-    if (_setting.reps != null) {
-      _repsController.text = _setting.reps.toString();
-    }
-
-    if (_setting.weight != null) {
-      _weightController.text = _setting.weight.toString();
-    }
-
-    if (_setting.rir != null) {
-      _rirController.text = _setting.rir!;
-    }
-
     _log.date = DateTime.now();
     _log.workoutPlan = _workoutPlan.id!;
     _log.exercise = _exercise;
@@ -226,6 +210,26 @@ class LogPage extends StatefulWidget {
 class _LogPageState extends State<LogPage> {
   final _form = GlobalKey<FormState>();
   String rirValue = Setting.DEFAULT_RIR;
+  final _repsController = TextEditingController();
+  final _weightController = TextEditingController();
+  final _rirController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget._setting.reps != null) {
+      _repsController.text = widget._setting.reps.toString();
+    }
+
+    if (widget._setting.weight != null) {
+      _weightController.text = widget._setting.weight.toString();
+    }
+
+    if (widget._setting.rir != null) {
+      _rirController.text = widget._setting.rir!;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -271,6 +275,20 @@ class _LogPageState extends State<LogPage> {
                                   log.singleLogRepText,
                                   textAlign: TextAlign.center,
                                 ),
+                                IconButton(
+                                    icon: Icon(Icons.arrow_forward),
+                                    onPressed: () {
+                                      setState(() {
+                                        // Text field
+                                        _repsController.text = log.reps.toString();
+                                        _weightController.text = log.weight.toString();
+
+                                        // Drop downs
+                                        widget._log.rir = log.rir;
+                                        widget._log.repetitionUnit = log.repetitionUnitObj;
+                                        widget._log.weightUnit = log.weightUnitObj;
+                                      });
+                                    }),
                               ],
                             ),
                           );
@@ -298,8 +316,8 @@ class _LogPageState extends State<LogPage> {
                             ),
                             onPressed: () {
                               try {
-                                int newValue = int.parse(widget._repsController.text) + 1;
-                                widget._repsController.text = newValue.toString();
+                                int newValue = int.parse(_repsController.text) + 1;
+                                _repsController.text = newValue.toString();
                               } on FormatException catch (e) {}
                             },
                           ),
@@ -310,16 +328,16 @@ class _LogPageState extends State<LogPage> {
                             ),
                             onPressed: () {
                               try {
-                                int newValue = int.parse(widget._repsController.text) - 1;
+                                int newValue = int.parse(_repsController.text) - 1;
                                 if (newValue > 0) {
-                                  widget._repsController.text = newValue.toString();
+                                  _repsController.text = newValue.toString();
                                 }
                               } on FormatException catch (e) {}
                             },
                           ),
                         ),
                         enabled: true,
-                        controller: widget._repsController,
+                        controller: _repsController,
                         keyboardType: TextInputType.number,
                         onFieldSubmitted: (_) {},
                         onSaved: (newValue) {
@@ -348,7 +366,7 @@ class _LogPageState extends State<LogPage> {
                       child: TextFormField(
                         decoration:
                             InputDecoration(labelText: AppLocalizations.of(context)!.weight),
-                        controller: widget._weightController,
+                        controller: _weightController,
                         keyboardType: TextInputType.number,
                         onFieldSubmitted: (_) {},
                         onSaved: (newValue) {
