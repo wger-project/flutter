@@ -17,6 +17,7 @@
  */
 
 import 'package:wger/models/workouts/day.dart';
+import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/set.dart';
 import 'package:wger/models/workouts/setting.dart';
@@ -46,6 +47,39 @@ WorkoutPlan getWorkout() {
   setting1.weightUnit = weightUnit1;
   setting1.exercise = exercise1;
 
+  var log1 = Log.empty()
+    ..id = 1
+    ..weight = 10
+    ..rir = '1.5'
+    ..date = DateTime(2021, 5, 1)
+    ..reps = 10
+    ..workoutPlan = 1;
+  log1.exercise = exercise1;
+  log1.weightUnit = weightUnit1;
+  log1.repetitionUnit = repetitionUnit1;
+
+  var log2 = Log.empty()
+    ..id = 2
+    ..weight = 10
+    ..rir = '1.5'
+    ..date = DateTime(2021, 5, 1)
+    ..reps = 12
+    ..workoutPlan = 1;
+  log2.exercise = exercise1;
+  log2.weightUnit = weightUnit1;
+  log2.repetitionUnit = repetitionUnit1;
+
+  var log3 = Log.empty()
+    ..id = 3
+    ..weight = 50
+    ..rir = ''
+    ..date = DateTime(2021, 5, 2)
+    ..reps = 8
+    ..workoutPlan = 1;
+  log3.exercise = exercise2;
+  log3.weightUnit = weightUnit1;
+  log3.repetitionUnit = repetitionUnit1;
+
   var set1 = Set.withData(
     id: 1,
     day: 1,
@@ -69,11 +103,11 @@ WorkoutPlan getWorkout() {
     ..daysOfWeek = [4];
 
   var workout = WorkoutPlan(
-    id: 1,
-    creationDate: DateTime(2021, 01, 01),
-    description: 'test workout 1',
-    days: [day1, day2],
-  );
+      id: 1,
+      creationDate: DateTime(2021, 01, 01),
+      description: 'test workout 1',
+      days: [day1, day2],
+      logs: [log1, log2, log3]);
 
   return workout;
 }

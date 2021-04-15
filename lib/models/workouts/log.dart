@@ -18,6 +18,7 @@
 
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/json.dart';
+import 'package:wger/helpers/misc.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
@@ -99,5 +100,10 @@ class Log {
 
   void setRir(String rir) {
     this.rir = rir;
+  }
+
+  /// Returns the text representation for a single setting, used in the gym mode
+  String get singleLogRepText {
+    return repText(reps, repetitionUnitObj, weight, weightUnitObj, rir);
   }
 }

@@ -70,8 +70,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       // Workouts
       await Provider.of<WorkoutPlans>(context, listen: false).fetchAndSetUnits();
       await Provider.of<WorkoutPlans>(context, listen: false).fetchAndSetAllPlans();
-      //await Provider.of<WorkoutPlans>(context, listen: false).fetchAndSetWorkouts();
-      //await Provider.of<WorkoutPlans>(context, listen: false).setAllFullWorkouts();
       if (Provider.of<WorkoutPlans>(context, listen: false).activePlan != null) {
         Provider.of<WorkoutPlans>(context, listen: false).setCurrentPlan(
           Provider.of<WorkoutPlans>(context, listen: false).activePlan!.id!,

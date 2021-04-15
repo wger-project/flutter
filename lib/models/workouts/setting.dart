@@ -17,8 +17,8 @@
  */
 
 import 'package:json_annotation/json_annotation.dart';
-import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
+import 'package:wger/helpers/misc.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
@@ -116,34 +116,6 @@ class Setting {
 
   /// Returns the text representation for a single setting, used in the gym mode
   String get singleSettingRepText {
-    // TODO: how to (easily?) translate strings like the units or 'RiR'?
-
-    List<String> out = [];
-
-    if (reps != null) {
-      out.add(reps.toString());
-
-      // The default repetition unit is 'reps', which we don't show unless there
-      // is no weight defined so that we don't just output something like "8" but
-      // rather "8 repetitions". If there is weight we want to output "8 x 50kg",
-      // since the repetitions are implied. If other units are used, we always
-      // print them
-      if (repetitionUnitId != DEFAULT_REPETITION_UNIT || weight == 0 || weight == null) {
-        out.add(repetitionUnitObj.name);
-      }
-    }
-
-    if (weight != null && weight != 0) {
-      out.add('×');
-      out.add(weight.toString());
-      out.add(weightUnitObj.name);
-    }
-
-    if (rir != null && rir != '') {
-      out.add('\n');
-      out.add('($rir RiR)');
-    }
-
-    return out.join(' ');
+    return repText(reps, repetitionUnitObj, weight, weightUnitObj, rir);
   }
 }

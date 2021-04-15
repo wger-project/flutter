@@ -174,7 +174,12 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
     // Logs
     final logData = await fetch(makeUrl(_logsUrlPath, query: {'workout': workoutId.toString()}));
     for (final entry in logData['results']) {
-      plan.logs.add(Log.fromJson(entry));
+      var log = Log.fromJson(entry);
+      log.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
+      log.repetitionUnit = _repetitionUnit.firstWhere((e) => e.id == log.weightUnitId);
+      log.exercise = _exercises.findById(log.exerciseId);
+
+      plan.logs.add(log);
     }
 
     // ... and done
@@ -396,6 +401,14 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
   Future<Log> addLog(Log log) async {
     final data = await post(log.toJson(), makeUrl(_logsUrlPath));
     final newLog = Log.fromJson(data);
+
+    log.id = newLog.id;
+    log.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
+    log.repetitionUnit = _repetitionUnit.firstWhere((e) => e.id == log.weightUnitId);
+    log.exercise = _exercises.findById(log.exerciseId);
+
+    final plan = findById(log.workoutPlan);
+    plan.logs.add(log);
     notifyListeners();
     return newLog;
   }

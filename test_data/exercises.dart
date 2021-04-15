@@ -37,10 +37,10 @@ final exercise1 = Exercise(
   creationDate: DateTime(2021, 1, 15),
   name: 'test exercise 1',
   description: 'add clever text',
+  category: category1,
   categoryId: 1,
   muscles: [muscle1, muscle2],
   equipment: [equipment1, equipment2],
-  category: category1,
 );
 
 final exercise2 = Exercise(
@@ -49,9 +49,22 @@ final exercise2 = Exercise(
   creationDate: DateTime(2021, 1, 15),
   name: 'test exercise 2',
   description: 'Lorem ipsum etc',
+  category: category2,
   categoryId: 2,
   muscles: [muscle1],
   musclesSecondary: [muscle2],
   equipment: [equipment2],
-  category: category2,
+);
+
+final exercise3 = Exercise(
+  id: 3,
+  uuid: 'a3b6c7bb-9d22-4119-a5fc-818584d5e9bc',
+  creationDate: DateTime(2021, 4, 1),
+  name: 'test exercise 3',
+  description: 'The man in black fled across the desert, and the gunslinger followed',
+  category: category3,
+  categoryId: 3,
+  muscles: [muscle1],
+  musclesSecondary: [muscle2],
+  equipment: [equipment2],
 );

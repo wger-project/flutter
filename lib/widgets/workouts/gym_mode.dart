@@ -249,7 +249,36 @@ class _LogPageState extends State<LogPage> {
               textAlign: TextAlign.center,
             ),
           ),
-          Expanded(child: Container()),
+          Expanded(
+              child: (widget._workoutPlan.filterLogsByExercise(widget._exercise).length > 0)
+                  ? ListView(
+                      children: [
+                        Text(
+                          'Logs',
+                          style: Theme.of(context).textTheme.headline6,
+                          textAlign: TextAlign.center,
+                        ),
+                        ...widget._workoutPlan.filterLogsByExercise(widget._exercise).map((log) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 40),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(DateFormat.yMd(Localizations.localeOf(context).languageCode)
+                                    .format(log.date)),
+                                Text(
+                                  log.singleLogRepText,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                      ],
+                    )
+                  : Container()),
+          SizedBox(height: 15),
           Form(
             key: _form,
             child: Column(
