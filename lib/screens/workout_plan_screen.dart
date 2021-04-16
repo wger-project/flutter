@@ -30,7 +30,6 @@ import 'package:wger/widgets/workouts/workout_plan_detail.dart';
 enum WorkoutScreenMode {
   workout,
   log,
-  gym,
 }
 
 enum WorkoutOptions {
@@ -62,9 +61,6 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
         break;
       case WorkoutScreenMode.log:
         return WorkoutLogs(plan, _changeMode);
-        break;
-      case WorkoutScreenMode.gym:
-        return Text(AppLocalizations.of(context)!.gymMode);
         break;
     }
   }

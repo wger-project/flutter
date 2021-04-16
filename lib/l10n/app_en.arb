@@ -92,6 +92,14 @@
   "@exercise": {
     "description": "An exercise for a workout"
   },
+  "equipment": "Equipment",
+  "@equipment": {
+    "description": "Equipment needed to perform an exercise"
+  },
+  "category": "Category",
+  "@category": {
+    "description": "Category for an exercise, ingredient, etc."
+  },
   "newWorkout": "New workout plan",
   "@newWorkout": {
     "description": "Header when adding a new workout"
