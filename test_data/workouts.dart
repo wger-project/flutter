@@ -61,7 +61,7 @@ WorkoutPlan getWorkout() {
   var log2 = Log.empty()
     ..id = 2
     ..weight = 10
-    ..rir = '1.5'
+    ..rir = '2'
     ..date = DateTime(2021, 5, 1)
     ..reps = 12
     ..workoutPlan = 1;
