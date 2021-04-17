@@ -551,10 +551,10 @@ class _SessionPageState extends State<SessionPage> {
                   decoration: InputDecoration(
                     labelText: AppLocalizations.of(context)!.impression,
                   ),
-                  items: ImpressionMap.keys.map<DropdownMenuItem<int>>((int key) {
+                  items: IMPRESSION_MAP.keys.map<DropdownMenuItem<int>>((int key) {
                     return DropdownMenuItem<int>(
                       value: key,
-                      child: Text(ImpressionMap[key]!),
+                      child: Text(IMPRESSION_MAP[key]!),
                     );
                   }).toList(),
                   onSaved: (int? newValue) {

@@ -18,11 +18,13 @@
 
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 const Color wgerPrimaryColor = Color(0xff2a4c7d);
 const Color wgerPrimaryButtonColor = Color(0xff266dd3);
 const Color wgerPrimaryColorLight = Color(0xff94B2DB);
 const Color wgerSecondaryColor = Color(0xffe63946);
+const Color wgerSecondaryColorLight = Color(0xffF6B4BA);
 const Color wgerTextMuted = Colors.black38;
 const Color wgerBackground = Color(0xfff4f4f6);
 
@@ -110,3 +112,31 @@ final ThemeData wgerTheme = ThemeData(
       activeTrackColor: wgerPrimaryButtonColor,
       thumbColor: wgerPrimaryColor,
     ));
+
+const wgerCalendarStyle = CalendarStyle(
+// Use `CalendarStyle` to customize the UI
+  outsideDaysVisible: false,
+  todayDecoration: const BoxDecoration(
+    color: Colors.amber,
+    shape: BoxShape.circle,
+  ),
+
+  markerDecoration: const BoxDecoration(
+    color: Colors.black,
+    shape: BoxShape.circle,
+  ),
+  selectedDecoration: const BoxDecoration(
+    color: wgerSecondaryColor,
+    shape: BoxShape.circle,
+  ),
+  rangeStartDecoration: const BoxDecoration(
+    color: wgerSecondaryColor,
+    shape: BoxShape.circle,
+  ),
+  rangeEndDecoration: const BoxDecoration(
+    color: wgerSecondaryColor,
+    shape: BoxShape.circle,
+  ),
+  rangeHighlightColor: wgerSecondaryColorLight,
+  weekendTextStyle: const TextStyle(color: wgerSecondaryColor),
+);

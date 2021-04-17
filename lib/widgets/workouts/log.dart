@@ -18,7 +18,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/exercises/exercise.dart';
@@ -28,7 +27,7 @@ import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/widgets/workouts/charts.dart';
 
 class ExerciseLog extends StatelessWidget {
-  Exercise _exercise;
+  final Exercise _exercise;
   ExerciseLog(this._exercise);
 
   @override
@@ -89,6 +88,7 @@ class ExerciseLog extends StatelessWidget {
                       ],
                     ),
         ),
+        /*
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
@@ -99,6 +99,8 @@ class ExerciseLog extends StatelessWidget {
             Text(AppLocalizations.of(context)!.rir),
           ],
         ),
+
+         */
       ],
     );
   }

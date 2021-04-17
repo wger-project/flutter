@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -23,22 +22,12 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:wger/helpers/json.dart';
+import 'package:wger/helpers/misc.dart';
 import 'package:wger/models/workouts/session.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/theme/theme.dart';
-
-// Example holidays
-//
-// (perhaps we can do something with this, such as marking future training days?)
-final Map<DateTime, List> _holidays = {
-  DateTime(2021, 1, 1): ['New Year\'s Day'],
-  DateTime(2021, 1, 6): ['Epiphany'],
-  DateTime(2021, 2, 14): ['Valentine\'s Day'],
-  DateTime(2021, 4, 21): ['Easter Sunday'],
-  DateTime(2021, 4, 22): ['Easter Monday'],
-};
 
 /// Types of events
 enum EventType {
@@ -72,37 +61,24 @@ class DashboardCalendarWidget extends StatefulWidget {
 
 class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
     with TickerProviderStateMixin {
-  late Map<DateTime, List> _events;
-  late List _selectedEvents;
-  late AnimationController _animationController;
-  late CalendarController _calendarController;
+  late Map<DateTime, List<Event>> _events;
+  late final ValueNotifier<List<Event>> _selectedEvents;
+  CalendarFormat _calendarFormat = CalendarFormat.month;
+  RangeSelectionMode _rangeSelectionMode =
+      RangeSelectionMode.toggledOff; // Can be toggled on/off by longpressing a date
+  DateTime _focusedDay = DateTime.now();
+  DateTime? _selectedDay;
+  DateTime? _rangeStart;
+  DateTime? _rangeEnd;
 
   @override
   void initState() {
     super.initState();
-    final _selectedDay = DateTime.now();
 
     _events = {};
-
-    _selectedEvents = _events[_selectedDay] ?? [];
-    _calendarController = CalendarController();
-    //_calendarController.setCalendarFormat(CalendarFormat.month);
-
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 400),
-    );
-
-    _animationController.forward();
-
+    _selectedDay = _focusedDay;
+    _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
     loadEvents();
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    _calendarController.dispose();
-    super.dispose();
   }
 
   void loadEvents() async {
@@ -127,7 +103,6 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
         if (!_events.containsKey(date)) {
           _events[date] = [];
         }
-
         var time = '';
         if (session.timeStart != null && session.timeEnd != null) {
           time = '(${timeToString(session.timeStart)} - ${timeToString(session.timeEnd)})';
@@ -157,249 +132,126 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
         ));
       }
     }
+  }
 
+  @override
+  void dispose() {
+    _selectedEvents.dispose();
+    super.dispose();
+  }
+
+  List<Event> _getEventsForDay(DateTime day) {
+    return _events[day.toLocal()] ?? [];
+  }
+
+  List<Event> _getEventsForRange(DateTime start, DateTime end) {
+    final days = daysInRange(start, end);
+
+    return [
+      for (final d in days) ..._getEventsForDay(d),
+    ];
+  }
+
+  void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
+    if (!isSameDay(_selectedDay, selectedDay)) {
+      setState(() {
+        _selectedDay = selectedDay;
+        _focusedDay = focusedDay;
+        _rangeStart = null; // Important to clean those
+        _rangeEnd = null;
+        _rangeSelectionMode = RangeSelectionMode.toggledOff;
+      });
+
+      _selectedEvents.value = _getEventsForDay(selectedDay);
+    }
+  }
+
+  void _onRangeSelected(DateTime? start, DateTime? end, DateTime focusedDay) {
     setState(() {
-      _events;
+      _selectedDay = null;
+      _focusedDay = focusedDay;
+      _rangeStart = start;
+      _rangeEnd = end;
+      _rangeSelectionMode = RangeSelectionMode.toggledOn;
     });
-  }
 
-  void _onDaySelected(DateTime day, List events, List holidays) {
-    log('CALLBACK: _onDaySelected');
-    setState(() {
-      _selectedEvents = events;
-    });
-  }
-
-  void _onVisibleDaysChanged(DateTime first, DateTime last, CalendarFormat format) {
-    log('CALLBACK: _onVisibleDaysChanged');
-  }
-
-  void _onCalendarCreated(DateTime first, DateTime last, CalendarFormat format) {
-    log('CALLBACK: _onCalendarCreated');
+    // `start` or `end` could be null
+    if (start != null && end != null) {
+      _selectedEvents.value = _getEventsForRange(start, end);
+    } else if (start != null) {
+      _selectedEvents.value = _getEventsForDay(start);
+    } else if (end != null) {
+      _selectedEvents.value = _getEventsForDay(end);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Card(
       child: Column(
-        mainAxisSize: MainAxisSize.max,
         children: [
-          const SizedBox(height: 8.0),
           Text(
             AppLocalizations.of(context)!.calendar,
             style: Theme.of(context).textTheme.headline4,
           ),
+          TableCalendar<Event>(
+            locale: Localizations.localeOf(context).languageCode,
+            firstDay: DateTime.now().subtract(Duration(days: 1000)),
+            lastDay: DateTime.now(),
+            focusedDay: _focusedDay,
+            selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+            rangeStartDay: _rangeStart,
+            rangeEndDay: _rangeEnd,
+            calendarFormat: CalendarFormat.month,
+            availableCalendarFormats: const {
+              CalendarFormat.month: '',
+            },
+            rangeSelectionMode: _rangeSelectionMode,
+            eventLoader: _getEventsForDay,
+            startingDayOfWeek: StartingDayOfWeek.monday,
+            calendarStyle: wgerCalendarStyle,
+            onDaySelected: _onDaySelected,
+            onRangeSelected: _onRangeSelected,
+            onFormatChanged: (format) {},
+            onPageChanged: (focusedDay) {
+              _focusedDay = focusedDay;
+            },
+          ),
+          const SizedBox(height: 8.0),
+          Expanded(
+            child: ValueListenableBuilder<List<Event>>(
+              valueListenable: _selectedEvents,
+              builder: (context, value, _) {
+                return ListView.builder(
+                  itemCount: value.length,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      width: double.infinity,
+                      child: ListTile(
+                        title: Text((() {
+                          switch (value[index].type) {
+                            case EventType.caloriesDiary:
+                              return AppLocalizations.of(context)!.nutritionalDiary;
 
-          // Switch out 2 lines below to play with TableCalendar's settings
-          //-----------------------
-          _buildTableCalendar(),
-          //_buildTableCalendarWithBuilders(),
-          const SizedBox(height: 8.0),
-          _buildButtons(),
-          const SizedBox(height: 8.0),
-          Expanded(child: _buildEventList()),
+                            case EventType.session:
+                              return AppLocalizations.of(context)!.workoutSession;
+
+                            case EventType.weight:
+                              return AppLocalizations.of(context)!.weight;
+                          }
+                          return value[index].description.toString();
+                        })()),
+                        subtitle: Text(value[index].description.toString()),
+                        onTap: () => print('${value[index]} tapped!'),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
         ],
       ),
-    );
-  }
-
-  // Simple TableCalendar configuration (using Styles)
-  Widget _buildTableCalendar() {
-    return TableCalendar(
-      availableGestures: AvailableGestures.horizontalSwipe,
-      availableCalendarFormats: {CalendarFormat.month: 'Month'},
-      calendarController: _calendarController,
-      events: _events,
-      holidays: _holidays,
-      startingDayOfWeek: StartingDayOfWeek.monday,
-      calendarStyle: CalendarStyle(
-        selectedColor: wgerSecondaryColor,
-        todayColor: Colors.deepOrange[200],
-        markersColor: Colors.brown[700],
-        outsideDaysVisible: false,
-      ),
-      headerStyle: HeaderStyle(
-        formatButtonTextStyle: TextStyle().copyWith(color: Colors.white, fontSize: 15.0),
-        formatButtonDecoration: BoxDecoration(
-          color: Colors.deepOrange[400],
-          borderRadius: BorderRadius.circular(16.0),
-        ),
-      ),
-      onDaySelected: _onDaySelected,
-      onVisibleDaysChanged: _onVisibleDaysChanged,
-      onCalendarCreated: _onCalendarCreated,
-    );
-  }
-
-  // More advanced TableCalendar configuration (using Builders & Styles)
-  Widget _buildTableCalendarWithBuilders() {
-    return TableCalendar(
-      locale: 'pl_PL',
-      calendarController: _calendarController,
-      events: _events,
-      holidays: _holidays,
-      initialCalendarFormat: CalendarFormat.month,
-      formatAnimation: FormatAnimation.slide,
-      startingDayOfWeek: StartingDayOfWeek.sunday,
-      availableGestures: AvailableGestures.all,
-      availableCalendarFormats: const {
-        CalendarFormat.month: '',
-        CalendarFormat.week: '',
-      },
-      calendarStyle: CalendarStyle(
-        outsideDaysVisible: false,
-        weekendStyle: TextStyle().copyWith(color: Colors.blue[800]),
-        holidayStyle: TextStyle().copyWith(color: Colors.blue[800]),
-      ),
-      daysOfWeekStyle: DaysOfWeekStyle(
-        weekendStyle: TextStyle().copyWith(color: Colors.blue[600]),
-      ),
-      headerStyle: HeaderStyle(
-        centerHeaderTitle: true,
-        formatButtonVisible: false,
-      ),
-      builders: CalendarBuilders(
-        selectedDayBuilder: (context, date, _) {
-          return FadeTransition(
-            opacity: Tween(begin: 0.0, end: 1.0).animate(_animationController),
-            child: Container(
-              margin: const EdgeInsets.all(4.0),
-              padding: const EdgeInsets.only(top: 5.0, left: 6.0),
-              color: Colors.deepOrange[300],
-              width: 100,
-              height: 100,
-              child: Text(
-                '${date.day}',
-                style: TextStyle().copyWith(fontSize: 16.0),
-              ),
-            ),
-          );
-        },
-        todayDayBuilder: (context, date, _) {
-          return Container(
-            margin: const EdgeInsets.all(4.0),
-            padding: const EdgeInsets.only(top: 5.0, left: 6.0),
-            color: Colors.amber[400],
-            width: 100,
-            height: 100,
-            child: Text(
-              '${date.day}',
-              style: TextStyle().copyWith(fontSize: 16.0),
-            ),
-          );
-        },
-        markersBuilder: (context, date, events, holidays) {
-          final children = <Widget>[];
-
-          if (events.isNotEmpty) {
-            children.add(
-              Positioned(
-                right: 1,
-                bottom: 1,
-                child: _buildEventsMarker(date, events),
-              ),
-            );
-          }
-
-          if (holidays.isNotEmpty) {
-            children.add(
-              Positioned(
-                right: -2,
-                top: -2,
-                child: _buildHolidaysMarker(),
-              ),
-            );
-          }
-
-          return children;
-        },
-      ),
-      onDaySelected: (date, events, holidays) {
-        _onDaySelected(date, events, holidays);
-        _animationController.forward(from: 0.0);
-      },
-      onVisibleDaysChanged: _onVisibleDaysChanged,
-      onCalendarCreated: _onCalendarCreated,
-    );
-  }
-
-  Widget _buildEventsMarker(DateTime date, List events) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
-      decoration: BoxDecoration(
-        shape: BoxShape.rectangle,
-        color: _calendarController.isSelected(date)
-            ? Colors.brown[500]
-            : _calendarController.isToday(date)
-                ? Colors.brown[300]
-                : Colors.blue[400],
-      ),
-      width: 16.0,
-      height: 16.0,
-      child: Center(
-        child: Text(
-          '${events.length}',
-          style: TextStyle().copyWith(
-            color: Colors.white,
-            fontSize: 12.0,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHolidaysMarker() {
-    return Icon(
-      Icons.add_box,
-      size: 20.0,
-      color: Colors.blueGrey[800],
-    );
-  }
-
-  Widget _buildButtons() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: <Widget>[
-        TextButton(
-          child: Text(AppLocalizations.of(context)!.goToToday),
-          onPressed: () async {
-            final today = DateTime.now();
-            _calendarController.setSelectedDay(
-              DateTime(today.year, today.month, today.day),
-              runCallback: true,
-            );
-          },
-        ),
-      ],
-    );
-  }
-
-  Widget _buildEventList() {
-    return ListView(
-      children: _selectedEvents
-          .map(
-            (event) => Container(
-              width: double.infinity,
-              child: ListTile(
-                title: Text((() {
-                  switch (event.type) {
-                    case EventType.caloriesDiary:
-                      return AppLocalizations.of(context)!.nutritionalDiary;
-
-                    case EventType.session:
-                      return AppLocalizations.of(context)!.workoutSession;
-
-                    case EventType.weight:
-                      return AppLocalizations.of(context)!.weight;
-                  }
-                  return event.description.toString();
-                })()),
-                subtitle: Text(event.description.toString()),
-                onTap: () => print('$event tapped!'),
-              ),
-            ),
-          )
-          .toList(),
     );
   }
 }
