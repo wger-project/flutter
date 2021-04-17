@@ -268,7 +268,7 @@
   "@noNutritionalPlans": {
     "description": "Message shown when the user has no nutritional plans"
   },
-  "todaysWorkout": "Ihr Training heute",
+  "todaysWorkout": "Dein Training heute",
   "@todaysWorkout": {},
   "noWorkoutPlans": "Du hast keine Trainingspläne",
   "@noWorkoutPlans": {
