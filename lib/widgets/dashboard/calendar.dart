@@ -63,7 +63,6 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
     with TickerProviderStateMixin {
   late Map<DateTime, List<Event>> _events;
   late final ValueNotifier<List<Event>> _selectedEvents;
-  CalendarFormat _calendarFormat = CalendarFormat.month;
   RangeSelectionMode _rangeSelectionMode =
       RangeSelectionMode.toggledOff; // Can be toggled on/off by longpressing a date
   DateTime _focusedDay = DateTime.now();
@@ -203,6 +202,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
             rangeStartDay: _rangeStart,
             rangeEndDay: _rangeEnd,
             calendarFormat: CalendarFormat.month,
+            availableGestures: AvailableGestures.horizontalSwipe,
             availableCalendarFormats: const {
               CalendarFormat.month: '',
             },
