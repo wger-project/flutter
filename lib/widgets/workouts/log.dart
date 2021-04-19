@@ -21,14 +21,16 @@ import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/exercises/exercise.dart';
-import 'package:wger/models/workouts/day.dart';
-import 'package:wger/models/workouts/set.dart';
+import 'package:wger/models/workouts/log.dart';
+import 'package:wger/models/workouts/session.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/widgets/workouts/charts.dart';
 
-class ExerciseLog extends StatelessWidget {
+class ExerciseLogChart extends StatelessWidget {
   final Exercise _exercise;
-  ExerciseLog(this._exercise);
+  final DateTime _currentDate;
+
+  ExerciseLogChart(this._exercise, this._currentDate);
 
   @override
   Widget build(BuildContext context) {
@@ -39,95 +41,24 @@ class ExerciseLog extends StatelessWidget {
       return await _workoutPlansData.fetchLogData(_workout!, _exercise);
     }
 
-    return Column(
-      children: [
-        Text(
-          _exercise.name,
-          style: Theme.of(context).textTheme.headline6,
-        ),
-        FutureBuilder(
-          future: _getChartEntries(context),
-          builder: (context, AsyncSnapshot<Map<String, dynamic>> snapshot) =>
-              snapshot.connectionState == ConnectionState.waiting
-                  ? Container(
-                      height: 120,
-                      child: Center(child: CircularProgressIndicator()),
-                    )
-                  : Column(
-                      children: [
-                        Container(
-                          height: 120,
-                          child: LogChartWidget(snapshot.data),
-                        ),
-                        const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              ...snapshot.data!['logs']!.entries.map((e) {
-                                return Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Text(
-                                        '${DateFormat.yMd().format(DateTime.parse(e.key))}',
-                                        style: TextStyle(fontWeight: FontWeight.bold),
-                                      ),
-                                      ...e.value.map((i) {
-                                        return Text("${i['weight']} - ${i['reps']}");
-                                      })
-                                    ],
-                                  ),
-                                );
-                              }).toList(),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-        ),
-        /*
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Text(AppLocalizations.of(context)!.amount),
-            Text(AppLocalizations.of(context)!.unit),
-            Text(AppLocalizations.of(context)!.weight),
-            Text(AppLocalizations.of(context)!.unit),
-            Text(AppLocalizations.of(context)!.rir),
-          ],
-        ),
-
-         */
-      ],
+    return FutureBuilder(
+      future: _getChartEntries(context),
+      builder: (context, AsyncSnapshot<Map<String, dynamic>> snapshot) => Container(
+        height: 150,
+        child: snapshot.connectionState == ConnectionState.waiting
+            ? Center(child: CircularProgressIndicator())
+            : LogChartWidget(snapshot.data, _currentDate),
+      ),
     );
   }
 }
 
 class DayLogWidget extends StatelessWidget {
-  final Day _day;
+  final DateTime _date;
+  final WorkoutSession? _session;
+  final Map<Exercise, List<Log>> _exerciseData;
 
-  DayLogWidget(this._day);
-
-  Widget getSetRow(Set set) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.baseline,
-      textBaseline: TextBaseline.alphabetic,
-      children: [
-        Expanded(
-          child: Column(
-            children: [
-              ...set.exercisesObj.map((exercise) => ExerciseLog(exercise)).toList(),
-              Divider(),
-              const Padding(padding: EdgeInsets.symmetric(vertical: 10)),
-            ],
-          ),
-        )
-      ],
-    );
-  }
+  DayLogWidget(this._date, this._exerciseData, this._session);
 
   @override
   Widget build(BuildContext context) {
@@ -135,18 +66,23 @@ class DayLogWidget extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            _day.description,
+            DateFormat.yMd(Localizations.localeOf(context).languageCode).format(_date),
             style: Theme.of(context).textTheme.headline5,
           ),
-          ..._day.sets.map((set) => getSetRow(set)).toList(),
-          /*
-          OutlinedButton(
-            child: Text('Add logs to this day'),
-            onPressed: () {},
-          ),
-          Padding(padding: const EdgeInsets.symmetric(vertical: 10.0))
-
-           */
+          if (_session != null) Text('Session data here'),
+          ..._exerciseData.keys.map((exercise) {
+            return Column(
+              children: [
+                Text(
+                  exercise.name,
+                  style: Theme.of(context).textTheme.headline6,
+                ),
+                ..._exerciseData[exercise]!.map((log) => Text(log.singleLogRepText)).toList(),
+                ExerciseLogChart(exercise, _date),
+                SizedBox(height: 30),
+              ],
+            );
+          }).toList()
         ],
       ),
     );

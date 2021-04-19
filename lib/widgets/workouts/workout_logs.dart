@@ -18,8 +18,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:table_calendar/table_calendar.dart';
+import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/workouts/log.dart';
+import 'package:wger/models/workouts/session.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
+import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/workouts/log.dart';
 
 class WorkoutLogs extends StatefulWidget {
@@ -48,16 +53,6 @@ class _WorkoutLogsState extends State<WorkoutLogs> {
                   style: Theme.of(context).textTheme.headline5,
                 ),
               ),
-              /*
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  'This page shows the weight logs belonging to this workout only.'
-                  'Click on an exercise to see all the historical data for it.',
-                  textAlign: TextAlign.justify,
-                ),
-              ),
-              */
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
@@ -78,11 +73,120 @@ class _WorkoutLogsState extends State<WorkoutLogs> {
                   widget._changeMode(WorkoutScreenMode.workout);
                 },
               ),
-              ...widget._workoutPlan.days.map((workoutDay) => DayLogWidget(workoutDay)).toList(),
+              Container(
+                width: double.infinity,
+                child: WorkoutLogCalendar(widget._workoutPlan),
+              ),
             ],
           ),
         ],
       ),
+    );
+  }
+}
+
+/// An event in the workout log calendar
+class WorkoutLogEvent {
+  final DateTime dateTime;
+  final WorkoutSession? session;
+  final Map<Exercise, List<Log>> exercises;
+
+  WorkoutLogEvent(this.dateTime, this.session, this.exercises);
+}
+
+class WorkoutLogCalendar extends StatefulWidget {
+  final WorkoutPlan _workoutPlan;
+
+  WorkoutLogCalendar(this._workoutPlan);
+
+  @override
+  _WorkoutLogCalendarState createState() => _WorkoutLogCalendarState();
+}
+
+class _WorkoutLogCalendarState extends State<WorkoutLogCalendar> {
+  DateTime _focusedDay = DateTime.now();
+  DateTime? _selectedDay;
+  late final ValueNotifier<List<WorkoutLogEvent>> _selectedEvents;
+  late Map<DateTime, List<WorkoutLogEvent>> _events;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _events = {};
+    _selectedDay = _focusedDay;
+    _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
+    loadEvents();
+  }
+
+  @override
+  void dispose() {
+    _selectedEvents.dispose();
+    super.dispose();
+  }
+
+  void loadEvents() {
+    for (var date in widget._workoutPlan.logData.keys) {
+      var entry = widget._workoutPlan.logData[date]!;
+      _events[date] = [WorkoutLogEvent(date, entry['session'], entry['exercises'])];
+    }
+  }
+
+  List<WorkoutLogEvent> _getEventsForDay(DateTime day) {
+    return _events[day.toLocal()] ?? [];
+  }
+
+  void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
+    if (!isSameDay(_selectedDay, selectedDay)) {
+      setState(() {
+        _selectedDay = selectedDay;
+        _focusedDay = focusedDay;
+      });
+
+      _selectedEvents.value = _getEventsForDay(selectedDay);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        TableCalendar(
+          locale: Localizations.localeOf(context).languageCode,
+          firstDay: DateTime.now().subtract(Duration(days: 1000)),
+          lastDay: DateTime.now(),
+          focusedDay: _focusedDay,
+          selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+          calendarFormat: CalendarFormat.month,
+          startingDayOfWeek: StartingDayOfWeek.monday,
+          calendarStyle: wgerCalendarStyle,
+          eventLoader: _getEventsForDay,
+          availableGestures: AvailableGestures.horizontalSwipe,
+          availableCalendarFormats: const {
+            CalendarFormat.month: '',
+          },
+          onDaySelected: _onDaySelected,
+          onPageChanged: (focusedDay) {
+            // No need to call `setState()` here
+            _focusedDay = focusedDay;
+          },
+        ),
+        const SizedBox(height: 8.0),
+        SizedBox(
+          child: ValueListenableBuilder<List<WorkoutLogEvent>>(
+              valueListenable: _selectedEvents,
+              builder: (context, logEvents, _) {
+                // At the moment there is only one "event" per day
+                return logEvents.length > 0
+                    ? DayLogWidget(
+                        logEvents.first.dateTime,
+                        logEvents.first.exercises,
+                        logEvents.first.session,
+                      )
+                    : Container();
+              }),
+        ),
+      ],
     );
   }
 }

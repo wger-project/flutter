@@ -38,5 +38,25 @@ void main() {
 
       expect(workout.filterLogsByExercise(exercise3).length, 0);
     });
+
+    test('Test the logData method', () {
+      final workout = getWorkout();
+
+      final logData = {
+        DateTime(2021, 5, 1): {
+          'session': null,
+          'exercises': {
+            exercise1: [workout.logs[0], workout.logs[1]]
+          }
+        },
+        DateTime(2021, 5, 2): {
+          'session': null,
+          'exercises': {
+            exercise2: [workout.logs[2]]
+          }
+        }
+      };
+      expect(workout.logData, logData);
+    });
   });
 }

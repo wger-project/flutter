@@ -17,7 +17,9 @@
  */
 
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// Sample time series data type.
 class TimeSeriesLog {
@@ -29,7 +31,8 @@ class TimeSeriesLog {
 
 class LogChartWidget extends StatelessWidget {
   final _data;
-  const LogChartWidget(this._data);
+  final DateTime _currentDate;
+  const LogChartWidget(this._data, this._currentDate);
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +41,7 @@ class LogChartWidget extends StatelessWidget {
             [
               ..._data['chart_data'].map((e) {
                 return charts.Series<TimeSeriesLog, DateTime>(
-                  id: '${e.first['reps']} reps',
+                  id: '${e.first['reps']} ${AppLocalizations.of(context)!.reps}',
                   domainFn: (datum, index) => datum.time,
                   measureFn: (datum, index) => datum.weight,
                   data: [
@@ -55,7 +58,22 @@ class LogChartWidget extends StatelessWidget {
             primaryMeasureAxis: new charts.NumericAxisSpec(
               tickProviderSpec: new charts.BasicNumericTickProviderSpec(zeroBound: false),
             ),
-            //behaviors: [new charts.SeriesLegend()],
+            behaviors: [
+              new charts.SeriesLegend(
+                position: charts.BehaviorPosition.bottom,
+              ),
+              new charts.RangeAnnotation([
+                charts.LineAnnotationSegment(
+                  _currentDate, charts.RangeAnnotationAxisType.domain,
+                  strokeWidthPx: 2,
+                  labelPosition: charts.AnnotationLabelPosition.margin,
+                  color: charts.Color.black,
+                  dashPattern: [0, 1, 1, 1],
+                  //startLabel: DateFormat.yMd(Localizations.localeOf(context).languageCode)
+                  //      .format(_currentDate),
+                )
+              ]),
+            ],
           )
         : Container();
   }
