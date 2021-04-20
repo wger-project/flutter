@@ -1,2 +1,2 @@
-json_key_file("fastlane/playstore.json")
+json_key_file("fastlane/envfiles/playstore.json")
 package_name("de.wger.flutter")

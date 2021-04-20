@@ -42,5 +42,6 @@ app.*.map.json
 
 # Exceptions to above rules.
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
-/android/fastlane/playstore.json
-/android/app/wger.properties
+/android/fastlane/envfiles/playstore.json
+/android/fastlane/envfiles/wger.properties
+/android/fastlane/envfiles/keys.jks

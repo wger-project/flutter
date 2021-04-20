@@ -7,6 +7,12 @@
          FlutterApplication and put your custom class here. -->
 
     <uses-permission android:name="android.permission.INTERNET"/>
+
+    <supports-screens android:smallScreens="true"
+                      android:normalScreens="true"
+                      android:largeScreens="false"
+                      android:xlargeScreens="false"/>
+
     <application
         android:name="io.flutter.app.FlutterApplication"
         android:label="wger"
