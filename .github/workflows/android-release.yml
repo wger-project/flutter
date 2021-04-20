@@ -1,0 +1,50 @@
+name: Google Play release
+on:
+  push:
+    branches:
+      - 'master/*'
+      - 'release/*'
+
+jobs:
+  deploy_android:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 12.x
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '2.7.2'
+          bundler-cache: true
+      - name: Decrypt config files
+        run: cd ./android/fastlane/envfiles && chmod +x ./decrypt_secrets.sh && ./decrypt_secrets.sh
+        env:
+          DECRYPTKEY_PLAYSTORE: ${{ secrets.DECRYPTKEY_PLAYSTORE }}
+          DECRYPTKEY_PLAYSTORE_SIGNING_KEY: ${{ secrets.DECRYPTKEY_PLAYSTORE_SIGNING_KEY }}
+          DECRYPTKEY_PROPERTIES: ${{ secrets.DECRYPTKEY_PROPERTIES }}
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v1
+        with:
+          channel: 'stable'
+      - name: Install Flutter dependencies
+        run: flutter pub get
+
+
+      - name: Build AAB
+        run: flutter build appbundle --release
+
+      #- name: Run Fastlane
+      #  uses: maierj/fastlane-action@v2.0.0
+      #  with:
+      #    lane: closed_beta
+      #    subdirectory: packages/smooth_app/android
+      #  env:
+      #    SIGN_STORE_PATH: ./../fastlane/envfiles/keystore.jks
+      #    SIGN_STORE_PASSWORD: ${{ secrets.SIGN_STORE_PASSWORD }}
+      #    SIGN_KEY_ALIAS: ${{ secrets.SIGN_KEY_ALIAS }}
+      #    SIGN_KEY_PASSWORD: ${{ secrets.SIGN_KEY_PASSWORD }}
+
