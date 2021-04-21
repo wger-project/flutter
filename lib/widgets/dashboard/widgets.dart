@@ -49,7 +49,6 @@ class DashboardNutritionWidget extends StatefulWidget {
 }
 
 class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
-  //Nutrition nutrition;
   late NutritionalPlan plan;
   var showDetail = false;
 
@@ -93,7 +92,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                   children: [
                     Text(item.ingredientObj.name),
                     SizedBox(width: 5),
-                    Text('${item.amount.toString()} ${AppLocalizations.of(context)!.g}'),
+                    Text('${item.amount.toStringAsFixed(0)} ${AppLocalizations.of(context)!.g}'),
                   ],
                 ),
               ]),
