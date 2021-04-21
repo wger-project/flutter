@@ -84,7 +84,7 @@
   "@successfullyDeleted": {
     "description": "Message when an item was successfully deleted"
   },
-  "successfullySaved": "Saved successfully",
+  "successfullySaved": "Saved",
   "@successfullySaved": {
     "description": "Message when an item was successfully saved"
   },
@@ -109,6 +109,7 @@
     "description": "Message shown when the user has no workout plans"
   },
   "addExercise": "Add exercise",
+  "@addExercise": {},
   "repetitions": "Repetitions",
   "@repetitions": {
     "description": "Repetitions for an exercise set"
@@ -122,12 +123,15 @@
     "description": "Shorthand for Repetitions In Reserve"
   },
   "weightUnit": "Weight unit",
+  "@weightUnit": {},
   "repetitionUnit": "Repetition unit",
+  "@repetitionUnit": {},
   "set": "Set",
   "@set": {
     "description": "A set in a workout plan"
   },
   "dayDescriptionHelp": "A description of what is done on this day (e.g. 'pull day') or what body parts are trained (e.g. 'chest and shoulders')",
+  "@dayDescriptionHelp": {},
   "setNr": "Set {nr}",
   "@setNr": {
     "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
@@ -137,6 +141,7 @@
     }
   },
   "sameRepetitions": "If you do the same repetitions and weight for all sets you can just fill in one row. For example for 4 sets just enter 10 for the repetitions, this automatically becomes \"4 x 10\".",
+  "@sameRepetitions": {},
   "comment": "Comment",
   "@comment": {
     "description": "Comment, additional information"
@@ -160,11 +165,13 @@
     "description": "Header when adding a new set to a workout day"
   },
   "selectExercises": "If you want to do a superset you can search for several exercises, they will be grouped together",
+  "@selectExercises": {},
   "gymMode": "Gym mode",
   "@gymMode": {
     "description": "Label when starting the gym mode"
   },
   "todaysWorkout": "Your workout today",
+  "@todaysWorkout": {},
   "logHelpEntries": "If on a single day there is more than one entry with the same number of repetitions, but different weights, only the entry with the higher weight is shown in the diagram.",
   "@logHelpEntries": {},
   "logHelpEntriesUnits": "Note that only entries with a weight unit (kg or lb) and repetitions are charted, other combinations such as time or until failure are ignored here.",
