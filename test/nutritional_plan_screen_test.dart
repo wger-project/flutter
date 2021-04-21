@@ -20,13 +20,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/helpers/json.dart';
-import 'package:wger/models/nutrition/meal.dart';
-import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 
+import '../test_data/nutritional_plans.dart';
 import 'base_provider_test.mocks.dart';
 import 'utils.dart';
 
@@ -35,24 +33,7 @@ void main() {
     final key = GlobalKey<NavigatorState>();
     final client = MockClient();
 
-    final meal = Meal(
-      id: 1,
-      plan: 1,
-      mealItems: [],
-      time: stringToTime('17:00'),
-    );
-    final meal2 = Meal(
-      id: 2,
-      plan: 1,
-      mealItems: [],
-      time: stringToTime('20:00'),
-    );
-    var plan = NutritionalPlan(
-      id: 1,
-      description: 'test plan 1',
-      creationDate: DateTime(2021, 01, 01),
-      meals: [meal, meal2],
-    );
+    final plan = getNutritionalPlan();
 
     return ChangeNotifierProvider<Nutrition>(
       create: (context) => Nutrition(testAuthProvider, [], client),
@@ -79,7 +60,14 @@ void main() {
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();
 
-    expect(find.text('test plan 1'), findsOneWidget);
+    // PLan description
+    expect(find.text('lots and lots of mass'), findsOneWidget);
+
+    // Ingredients
+    expect(find.text('100g Water'), findsOneWidget);
+    expect(find.text('75g Burger soup'), findsOneWidget);
+    expect(find.text('300g Broccoli cake'), findsOneWidget);
+
     expect(find.byType(Dismissible), findsNWidgets(2));
     expect(find.byType(NutritionalDiaryChartWidget), findsNothing);
   });

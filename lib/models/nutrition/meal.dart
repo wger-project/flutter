@@ -64,7 +64,7 @@ class Meal {
     var out = NutritionalValues();
 
     for (var item in mealItems) {
-      out.add(item.nutritionalValues);
+      out += item.nutritionalValues;
     }
 
     return out;

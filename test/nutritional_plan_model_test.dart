@@ -17,26 +17,23 @@
  */
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:wger/models/nutrition/nutritrional_values.dart';
 
-import '../test_data/exercises.dart';
-import '../test_data/workouts.dart';
+import '../test_data/nutritional_plans.dart';
 
 void main() {
   group('model tests', () {
-    test('Test the filterLogsByExercise method', () {
-      final workout = getWorkout();
+    test('Test the nutritionalValues method for nutritional plans', () {
+      final plan = getNutritionalPlan();
+      final values = NutritionalValues.values(4118.75, 28.75, 347.5, 9.5, 41.0, 31.75, 41.5, 30.0);
+      expect(plan.nutritionalValues, values);
+    });
 
-      expect(workout.logs.length, 3);
-      final logExercise1 = workout.filterLogsByExercise(exercise1);
-      expect(logExercise1.length, 2);
-      expect(logExercise1[0].id, 1);
-      expect(logExercise1[1].id, 2);
-
-      final logExercise2 = workout.filterLogsByExercise(exercise2);
-      expect(logExercise2.length, 1);
-      expect(logExercise2[0].id, 3);
-
-      expect(workout.filterLogsByExercise(exercise3).length, 0);
+    test('Test the nutritionalValues method for meals', () {
+      final plan = getNutritionalPlan();
+      final meal = plan.meals.first;
+      final values = NutritionalValues.values(518.75, 1.75, 17.5, 3.5, 11.0, 7.75, 38.5, 0.0);
+      expect(meal.nutritionalValues, values);
     });
   });
 }

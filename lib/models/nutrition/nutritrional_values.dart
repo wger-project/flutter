@@ -54,4 +54,46 @@ class NutritionalValues {
     fibres += data.fibres;
     sodium += data.sodium;
   }
+
+  NutritionalValues operator +(NutritionalValues o) {
+    energy += o.energy;
+    protein += o.protein;
+    carbohydrates += o.carbohydrates;
+    carbohydratesSugar += o.carbohydratesSugar;
+    fat += o.fat;
+    fatSaturated += o.fatSaturated;
+    fibres += o.fibres;
+    sodium += o.sodium;
+
+    return NutritionalValues.values(
+      this.energy,
+      this.protein,
+      this.carbohydrates,
+      this.carbohydratesSugar,
+      this.fat,
+      this.fatSaturated,
+      this.fibres,
+      this.sodium,
+    );
+  }
+
+  bool operator ==(o) {
+    return o is NutritionalValues &&
+        energy == o.energy &&
+        protein == o.protein &&
+        carbohydrates == o.carbohydrates &&
+        carbohydratesSugar == o.carbohydratesSugar &&
+        fat == o.fat &&
+        fatSaturated == o.fatSaturated &&
+        fibres == o.fibres &&
+        sodium == o.sodium;
+  }
+
+  @override
+  int get hashCode => super.hashCode;
+
+  @override
+  String toString() {
+    return 'e: $energy, p: $protein, c: $carbohydrates, cS: $carbohydratesSugar, f: $fat, fS: $fatSaturated, fi: $fibres, s: $sodium';
+  }
 }

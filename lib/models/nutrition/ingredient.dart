@@ -25,37 +25,46 @@ class Ingredient {
   @JsonKey(required: true)
   final int id;
 
+  /// Name of the product
   @JsonKey(required: true)
   final String name;
 
   @JsonKey(required: true, name: 'creation_date', toJson: toDate)
   final DateTime creationDate;
 
+  /// Energy in kJ per 100g of product
   @JsonKey(required: true)
   final int energy;
 
+  /// g per 100g of product
   @JsonKey(required: true, fromJson: toNum, toJson: toString)
   final num carbohydrates;
 
+  /// g per 100g of product
   @JsonKey(required: true, fromJson: toNum, toJson: toString, name: 'carbohydrates_sugar')
   final num carbohydratesSugar;
 
+  /// g per 100g of product
   @JsonKey(required: true, fromJson: toNum, toJson: toString)
   final num protein;
 
+  /// g per 100g of product
   @JsonKey(required: true, fromJson: toNum, toJson: toString)
   final num fat;
 
+  /// g per 100g of product
   @JsonKey(required: true, fromJson: toNum, toJson: toString, name: 'fat_saturated')
   final num fatSaturated;
 
+  /// g per 100g of product
   @JsonKey(required: true, fromJson: toNum, toJson: toString)
   final num fibres;
 
+  /// g per 100g of product
   @JsonKey(required: true, fromJson: toNum, toJson: toString)
   final num sodium;
 
-  Ingredient({
+  const Ingredient({
     required this.id,
     required this.name,
     required this.creationDate,
