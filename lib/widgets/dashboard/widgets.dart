@@ -78,6 +78,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
               Flexible(
                 child: IconButton(
                   icon: Icon(Icons.bar_chart),
+                  color: wgerPrimaryButtonColor,
                   onPressed: () {
                     Provider.of<Nutrition>(context, listen: false).logMealToDiary(meal);
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -298,6 +299,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
               Flexible(
                 child: IconButton(
                   icon: Icon(Icons.play_arrow),
+                  color: wgerPrimaryButtonColor,
                   onPressed: () {
                     Navigator.of(context).pushNamed(GymModeScreen.routeName, arguments: day);
                   },
