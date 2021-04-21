@@ -15,6 +15,11 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
+
+# Note: these versions are set automatically during build by the android-release.yml
+# github action, the current versions are ignored.
+#   - the version number is taken from the git branch release/x.y.z
+#   - the build number is computed by reading the last one from the play store and increased by one
 version: 0.2.0+11
 
 environment:
