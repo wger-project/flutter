@@ -183,6 +183,8 @@
   "@addMeal": {},
   "mealLogged": "Meal logged to diary",
   "@mealLogged": {},
+  "logMeal": "Log this meal",
+  "@logMeal": {},
   "addIngredient": "Add ingredient",
   "@addIngredient": {},
   "nutritionalPlan": "Nutritional plan",

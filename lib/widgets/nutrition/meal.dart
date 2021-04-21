@@ -227,7 +227,7 @@ class DismissibleMealHeader extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'Log this meal',
+                AppLocalizations.of(context)!.logMeal,
                 style: TextStyle(color: Colors.white),
               ),
               Icon(

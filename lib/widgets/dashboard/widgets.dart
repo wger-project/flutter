@@ -60,9 +60,39 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
     List<Widget> out = [];
     if (hasContent) {
       for (var meal in plan.meals) {
-        out.add(Text(
-          meal.time.format(context),
-          style: TextStyle(fontWeight: FontWeight.bold),
+        out.add(Container(
+          width: double.infinity,
+          child: Row(
+            children: [
+              Spacer(
+                flex: 1,
+              ),
+              Expanded(
+                flex: 8,
+                child: Text(
+                  meal.time.format(context),
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              Flexible(
+                child: IconButton(
+                  icon: Icon(Icons.bar_chart),
+                  onPressed: () {
+                    Provider.of<Nutrition>(context, listen: false).logMealToDiary(meal);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          AppLocalizations.of(context)!.mealLogged,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              )
+            ],
+          ),
         ));
         out.add(Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -250,16 +280,33 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
     List<Widget> out = [];
     if (hasContent) {
       for (var day in _workoutPlan.days) {
-        out.add(Text(
-          day.description,
-          style: TextStyle(fontWeight: FontWeight.bold),
+        out.add(Container(
+          width: double.infinity,
+          child: Row(
+            children: [
+              Spacer(
+                flex: 1,
+              ),
+              Expanded(
+                flex: 8,
+                child: Text(
+                  day.description,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              Flexible(
+                child: IconButton(
+                  icon: Icon(Icons.play_arrow),
+                  onPressed: () {
+                    Navigator.of(context).pushNamed(GymModeScreen.routeName, arguments: day);
+                  },
+                ),
+              )
+            ],
+          ),
         ));
-        out.add(IconButton(
-          icon: Icon(Icons.play_arrow),
-          onPressed: () {
-            Navigator.of(context).pushNamed(GymModeScreen.routeName, arguments: day);
-          },
-        ));
+
         if (showDetail) {
           day.sets.forEach((set) {
             out.add(Column(
@@ -269,14 +316,14 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                     children: [
                       Text(s.exerciseObj.name),
                       Text(s.repsText),
-                      SizedBox(height: 5),
                     ],
                   );
                 }).toList(),
-                SizedBox(height: 15),
               ],
             ));
           });
+          out.add(SizedBox(height: 10));
+          out.add(Divider());
         }
       }
     }
