@@ -1,5 +1,5 @@
 name: wger
-description: A new Flutter project.
+description: Self hosted workout, nutrition and weight manager.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -51,9 +51,9 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_launcher_icons: ^0.9.0
-  mockito: ^5.0.2
-  json_serializable: ^4.0.3
-  build_runner: ^1.11.5
+  mockito: ^5.0.4
+  json_serializable: ^4.0.4
+  build_runner: ^2.0.0
 
 flutter_icons:
   android: true
