@@ -1,7 +1,8 @@
 name: Google Play release
 on:
   push:
-    branches: [ master ]
+    branches:
+      - 'release/*'
 
 jobs:
   deploy_android:
@@ -37,6 +38,12 @@ jobs:
 
       - name: Generated translation files
         run: flutter gen-l10n
+
+      - name: Bump version
+        uses: maierj/fastlane-action@v2.0.0
+        with:
+          lane: setVersion
+          subdirectory: android
 
       - name: Build AAB
         run: flutter build appbundle --release --no-sound-null-safety
