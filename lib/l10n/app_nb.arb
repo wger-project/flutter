@@ -248,5 +248,25 @@
   "useDefaultServer": "Bruk forvalgt tjener",
   "@useDefaultServer": {
     "description": "Toggle button allowing users to switch between the default and a custom wger server"
+  },
+  "successfullySaved": "Lagret",
+  "@successfullySaved": {
+    "description": "Message when an item was successfully saved"
+  },
+  "category": "Kategori",
+  "@category": {
+    "description": "Category for an exercise, ingredient, etc."
+  },
+  "equipment": "Utstyr",
+  "@equipment": {
+    "description": "Equipment needed to perform an exercise"
+  },
+  "labelWorkoutLogs": "Treningslogger",
+  "@labelWorkoutLogs": {
+    "description": "(Workout) logs"
+  },
+  "logout": "Logg ut",
+  "@logout": {
+    "description": "Text for logout button"
   }
 }
