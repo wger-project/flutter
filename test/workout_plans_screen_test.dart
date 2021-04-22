@@ -62,7 +62,7 @@ void main() {
     );
   }
 
-  testWidgets('Test the widgets on the nutritional plans screen', (WidgetTester tester) async {
+  testWidgets('Test the widgets on the workout plans screen', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen());
 
     //debugDumpApp();
@@ -86,7 +86,7 @@ void main() {
     expect(find.byType(ListTile), findsOneWidget);
   });
 
-  testWidgets('Test the form on the nutritional plan screen', (WidgetTester tester) async {
+  testWidgets('Test the form on the workout plan screen', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen());
 
     expect(find.byType(PlanForm), findsNothing);

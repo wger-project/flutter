@@ -51,6 +51,7 @@ class WorkoutForm extends StatelessWidget {
       child: Column(
         children: [
           TextFormField(
+            key: Key('field-description'),
             decoration: InputDecoration(labelText: AppLocalizations.of(context)!.description),
             controller: workoutController,
             validator: (value) {
@@ -67,6 +68,7 @@ class WorkoutForm extends StatelessWidget {
             },
           ),
           ElevatedButton(
+            key: Key('submit-button'),
             child: Text(AppLocalizations.of(context)!.save),
             onPressed: () async {
               // Validate and save
