@@ -42,8 +42,6 @@ void main() {
       final values5 = values1 + values4;
       final result = NutritionalValues.values(5000, 40.5, 440.5, 12.7, 51.0, 41.75, 31.3, 43.3);
       expect(values5, result);
-      expect(values1, result);
-
     });
 
     test('Test the add method', () {

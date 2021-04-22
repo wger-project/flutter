@@ -56,24 +56,15 @@ class NutritionalValues {
   }
 
   NutritionalValues operator +(NutritionalValues o) {
-    energy += o.energy;
-    protein += o.protein;
-    carbohydrates += o.carbohydrates;
-    carbohydratesSugar += o.carbohydratesSugar;
-    fat += o.fat;
-    fatSaturated += o.fatSaturated;
-    fibres += o.fibres;
-    sodium += o.sodium;
-
     return NutritionalValues.values(
-      this.energy,
-      this.protein,
-      this.carbohydrates,
-      this.carbohydratesSugar,
-      this.fat,
-      this.fatSaturated,
-      this.fibres,
-      this.sodium,
+      this.energy + o.energy,
+      this.protein + o.protein,
+      this.carbohydrates + o.carbohydrates,
+      this.carbohydratesSugar + o.carbohydratesSugar,
+      this.fat + o.fat,
+      this.fatSaturated + o.fatSaturated,
+      this.fibres + o.fibres,
+      this.sodium + o.sodium,
     );
   }
 
