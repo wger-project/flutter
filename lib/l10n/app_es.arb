@@ -2,5 +2,382 @@
   "exercise": "Ejercicio",
   "@exercise": {
     "description": "An exercise for a workout"
+  },
+  "kcal": "kcal",
+  "@kcal": {
+    "description": "Energy in a meal in kilocalories, kcal"
+  },
+  "reps": "Rep",
+  "@reps": {
+    "description": "Shorthand for repetitions, used when space constraints are tighter"
+  },
+  "selectIngredient": "Por favor selecciona un ingrediente",
+  "@selectIngredient": {
+    "description": "Error message when the user hasn't selected an ingredient from the autocompleter"
+  },
+  "enterValidNumber": "Por favor ingresa un número válido",
+  "@enterValidNumber": {
+    "description": "Error message when the user has submitted an invalid number (e.g. '3,.,.,.')"
+  },
+  "nrOfSets": "Número de series: {nrOfSets}",
+  "@nrOfSets": {
+    "description": "Label shown on the slider where the user selects the nr of sets",
+    "type": "text",
+    "placeholders": {
+      "nrOfSets": {}
+    }
+  },
+  "enterCharacters": "Por favor ingresa entre {min} y {max} caracteres",
+  "@enterCharacters": {
+    "description": "Error message when the user hasn't entered the correct number of characters in a form",
+    "type": "text",
+    "placeholders": {
+      "min": {},
+      "max": {}
+    }
+  },
+  "selectExercise": "Por favor selecciona un ejercicio",
+  "@selectExercise": {
+    "description": "Error message when the user hasn't selected an exercise in the form"
+  },
+  "enterValue": "Por favor ingresa un valor",
+  "@enterValue": {
+    "description": "Error message when the user hasn't entered a value on a required field"
+  },
+  "enterRepetitionsOrWeight": "Por favor completa las repeticiones o pesos para al menos una de las series",
+  "@enterRepetitionsOrWeight": {
+    "description": "Error message when the user hasn't filled in the forms for exercise sets"
+  },
+  "goToToday": "Ir a \"hoy\"",
+  "@goToToday": {
+    "description": "Label on button to jump back to 'today' in the calendar widget"
+  },
+  "calendar": "Calendario",
+  "@calendar": {},
+  "aboutTranslationText": "Esta aplicación fue traducida en weblste. Si tú también quieres ayudar, haz click en el link y comienza a traducir",
+  "@aboutTranslationText": {
+    "description": "Text for translation section in the about dialog"
+  },
+  "aboutTranslationTitle": "Traducción",
+  "@aboutTranslationTitle": {
+    "description": "Title for translation section in the about dialog"
+  },
+  "aboutContactUsText": "Si quieres chatear con nosotros, ingresa a nuestro servidor de Discord y ponte en contacto",
+  "@aboutContactUsText": {
+    "description": "Text for contact us section in the about dialog"
+  },
+  "aboutContactUsTitle": "¡Saluda!",
+  "@aboutContactUsTitle": {
+    "description": "Title for contact us section in the about dialog"
+  },
+  "aboutBugsText": "Ponte en contacto si algo no funciona como se esperaba o si hay alguna función que sientes que está faltando.",
+  "@aboutBugsText": {
+    "description": "Text for bugs section in the about dialog"
+  },
+  "aboutBugsTitle": "¿Tienes algún problema o idea?",
+  "@aboutBugsTitle": {
+    "description": "Title for bugs section in the about dialog"
+  },
+  "aboutSourceText": "Obtener el código fuente de esta aplicación y su servidor en GitHub",
+  "@aboutSourceText": {
+    "description": "Text for source code section in the about dialog"
+  },
+  "aboutSourceTitle": "Código fuente",
+  "@aboutSourceTitle": {
+    "description": "Title for source code section in the about dialog"
+  },
+  "aboutDescription": "¡Gracias por usar wger! wger es un proyecto colaborativo de código abierto, realizado por entusiastas del fitness de todo el planeta.",
+  "@aboutDescription": {
+    "description": "Text in the about dialog"
+  },
+  "toggleDetails": "Alternar detalles",
+  "@toggleDetails": {
+    "description": "Switch to toggle detail / overview"
+  },
+  "newNutritionalPlan": "Nuevo plan nutricional",
+  "@newNutritionalPlan": {},
+  "confirmDelete": "¿Estás seguro de que deseas borrar '{toDelete}'?",
+  "@confirmDelete": {
+    "description": "Confirmation text before the user deletes an object",
+    "type": "text",
+    "placeholders": {
+      "toDelete": {}
+    }
+  },
+  "delete": "Borrar",
+  "@delete": {},
+  "loadingText": "Cargando...",
+  "@loadingText": {
+    "description": "Text to show when entries are being loaded in the background: Loading..."
+  },
+  "edit": "Editar",
+  "@edit": {},
+  "noWeightEntries": "No tienes entradas de peso registradas",
+  "@noWeightEntries": {
+    "description": "Message shown when the user has no logged weight entries"
+  },
+  "newEntry": "Nueva entrada",
+  "@newEntry": {
+    "description": "Title when adding a new entry such as a weight or log entry"
+  },
+  "unit": "Unidad",
+  "@unit": {
+    "description": "The unit used for a repetition (kg, time, etc.)"
+  },
+  "amount": "Cantidad",
+  "@amount": {
+    "description": "The amount (e.g. in grams) of an ingredient in a meal"
+  },
+  "sodium": "Sodio",
+  "@sodium": {},
+  "fibres": "Fibra",
+  "@fibres": {},
+  "saturatedFat": "Grasas saturadas",
+  "@saturatedFat": {},
+  "fat": "Grasas",
+  "@fat": {},
+  "sugars": "Azúcares",
+  "@sugars": {},
+  "carbohydrates": "Carbohidratos",
+  "@carbohydrates": {},
+  "protein": "Proteina",
+  "@protein": {},
+  "g": "g",
+  "@g": {
+    "description": "Abbreviation for gram"
+  },
+  "kJ": "kJ",
+  "@kJ": {
+    "description": "Energy in a meal in kilo joules, kJ"
+  },
+  "energy": "Energía",
+  "@energy": {
+    "description": "Energy in a meal, ingredient etc. e.g. in kJ"
+  },
+  "ingredient": "Ingrediente",
+  "@ingredient": {},
+  "timeEnd": "Tiempo de fin",
+  "@timeEnd": {
+    "description": "The end time of a workout"
+  },
+  "timeStart": "Tiempo de inicio",
+  "@timeStart": {
+    "description": "The starting time of a workout"
+  },
+  "time": "Tiempo",
+  "@time": {
+    "description": "The time of a meal or workout"
+  },
+  "start": "Iniciar",
+  "@start": {
+    "description": "Label on button to start the gym mode (i.e., an imperative)"
+  },
+  "date": "Fecha",
+  "@date": {
+    "description": "The date of a workout log or body weight entry"
+  },
+  "weight": "Peso",
+  "@weight": {
+    "description": "The weight of a workout log or body weight entry"
+  },
+  "dismiss": "Cerrar",
+  "@dismiss": {},
+  "anErrorOccurred": "¡Un error ha ocurrido!",
+  "@anErrorOccurred": {},
+  "noNutritionalPlans": "No tienes planes nutricionales",
+  "@noNutritionalPlans": {
+    "description": "Message shown when the user has no nutritional plans"
+  },
+  "nutritionalPlans": "Planes nutricionales",
+  "@nutritionalPlans": {},
+  "nutritionalDiary": "Diario nutricional",
+  "@nutritionalDiary": {},
+  "nutritionalPlan": "Plan nutricional",
+  "@nutritionalPlan": {},
+  "addIngredient": "Agregar ingrediente",
+  "@addIngredient": {},
+  "logMeal": "Registar esta comida",
+  "@logMeal": {},
+  "mealLogged": "Comida registrada en el diario",
+  "@mealLogged": {},
+  "addMeal": "Agregar comida",
+  "@addMeal": {},
+  "addSet": "Agregar serie",
+  "@addSet": {
+    "description": "Label for the button that adds a set (to a workout day)"
+  },
+  "cancel": "Cancelar",
+  "@cancel": {},
+  "save": "Guardar",
+  "@save": {},
+  "description": "Descripción",
+  "@description": {},
+  "logHelpEntriesUnits": "Nota que solo las entradas con una unidad de peso (Kg o lb) y sus repeticiones están tabuladas, las demás combinaciones como por tiempo o hasta el fallo son ignoradas aquí.",
+  "@logHelpEntriesUnits": {},
+  "logHelpEntries": "Si en un solo día hay más de una entrada con el mismo número de repeticiones pero diferentes pesos, solo la entrada con mayor peso se mostrará en el diagrama.",
+  "@logHelpEntries": {},
+  "todaysWorkout": "Tu rutina de hoy",
+  "@todaysWorkout": {},
+  "gymMode": "Modo gimansio",
+  "@gymMode": {
+    "description": "Label when starting the gym mode"
+  },
+  "selectExercises": "Si buscas realizar una súper serie, puedes buscar algunos ejercicios, estos estarán agrupados juntos",
+  "@selectExercises": {},
+  "newSet": "Nueva serie",
+  "@newSet": {
+    "description": "Header when adding a new set to a workout day"
+  },
+  "newDay": "Nuevo día",
+  "@newDay": {},
+  "workoutSession": "Sesión de ejercicios",
+  "@workoutSession": {
+    "description": "A (logged) workout session"
+  },
+  "notes": "Notas personales",
+  "@notes": {
+    "description": "Personal notes, e.g. for a workout session"
+  },
+  "impression": "Impresión general",
+  "@impression": {
+    "description": "General impression (e.g. for a workout session) such as good, bad, etc."
+  },
+  "sameRepetitions": "Si realizas las mismas repeticiones y pesos en todas las series, puedes rellenarlas solo en una fila. Por ejemplo, para 4 series solo ingresa 10 para las repeticiones, entonces automáticamente se convertirá en \"4 x 10\".",
+  "@sameRepetitions": {},
+  "comment": "Comentario",
+  "@comment": {
+    "description": "Comment, additional information"
+  },
+  "setNr": "Serie {nr}",
+  "@setNr": {
+    "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {}
+    }
+  },
+  "dayDescriptionHelp": "Una descripción de que se hace este día (ej. 'día de levantamientos') o qué partes del cuerpo se entrenan (ej. 'pecho y espalda')",
+  "@dayDescriptionHelp": {},
+  "set": "Serie",
+  "@set": {
+    "description": "A set in a workout plan"
+  },
+  "repetitionUnit": "Unidad de repetición",
+  "@repetitionUnit": {},
+  "weightUnit": "Unidad de peso",
+  "@weightUnit": {},
+  "rir": "ReR",
+  "@rir": {
+    "description": "Shorthand for Repetitions In Reserve"
+  },
+  "repetitions": "Repeticiones",
+  "@repetitions": {
+    "description": "Repetitions for an exercise set"
+  },
+  "addExercise": "Añadir ejercicio",
+  "@addExercise": {},
+  "noWorkoutPlans": "No posees ningún plan de entrenamiento",
+  "@noWorkoutPlans": {
+    "description": "Message shown when the user has no workout plans"
+  },
+  "newWorkout": "Nuevo plan de entrenamiento",
+  "@newWorkout": {
+    "description": "Header when adding a new workout"
+  },
+  "category": "Categoría",
+  "@category": {
+    "description": "Category for an exercise, ingredient, etc."
+  },
+  "equipment": "Equipamiento",
+  "@equipment": {
+    "description": "Equipment needed to perform an exercise"
+  },
+  "successfullySaved": "Guardado correctamente",
+  "@successfullySaved": {
+    "description": "Message when an item was successfully saved"
+  },
+  "successfullyDeleted": "Borrado correctamente",
+  "@successfullyDeleted": {
+    "description": "Message when an item was successfully deleted"
+  },
+  "labelDashboard": "Tablero",
+  "@labelDashboard": {
+    "description": "Title for screen dashboard"
+  },
+  "labelWorkoutPlan": "Plan de ejercicios",
+  "@labelWorkoutPlan": {
+    "description": "Title for screen workout plan"
+  },
+  "labelWorkoutLogs": "Registros de entrenamientos",
+  "@labelWorkoutLogs": {
+    "description": "(Workout) logs"
+  },
+  "labelWorkoutPlans": "Planes de ejercicios",
+  "@labelWorkoutPlans": {
+    "description": "Title for screen workout plans"
+  },
+  "loginInstead": "Iniciar sesión en su lugar",
+  "@loginInstead": {},
+  "registerInstead": "Registrarse en su lugar",
+  "@registerInstead": {},
+  "reset": "Reiniciar",
+  "@reset": {
+    "description": "Button text allowing the user to reset the entered values to the default"
+  },
+  "customServerHint": "Ingresa la dirección de tu propio servidor (para usar la dirección por defecto dejar este campo en blanco)",
+  "@customServerHint": {
+    "description": "Hint text for the form where the users can enter their own wger instance"
+  },
+  "customServerUrl": "URL de la instancia de wger",
+  "@customServerUrl": {
+    "description": "Label in the form where the users can enter their own wger instance"
+  },
+  "invalidUsername": "Por favor ingrese un nombre de usuario válido",
+  "@invalidUsername": {
+    "description": "Error message when the user enters an invalid username"
+  },
+  "username": "Nombre de usuario",
+  "@username": {},
+  "email": "Dirección de correo electrónico",
+  "@email": {},
+  "invalidEmail": "Por favor ingrese una dirección de correo electrónica válida",
+  "@invalidEmail": {
+    "description": "Error message when the user enters an invalid email"
+  },
+  "confirmPassword": "Confirmar contraseña",
+  "@confirmPassword": {},
+  "password": "Contraseña",
+  "@password": {},
+  "passwordTooShort": "La contraseña es demasiado corta",
+  "@passwordTooShort": {
+    "description": "Error message when the user a password that is too short"
+  },
+  "passwordsDontMatch": "Las contraseñas no coinciden",
+  "@passwordsDontMatch": {
+    "description": "Error message when the user enters two different passwords during registration"
+  },
+  "invalidUrl": "Por favor ingrese una URL válida",
+  "@invalidUrl": {
+    "description": "Error message when the user enters an invalid URL, e.g. in the login form"
+  },
+  "useCustomServer": "Usar servidor personalizado",
+  "@useCustomServer": {
+    "description": "Toggle button allowing users to switch between the default and a custom wger server"
+  },
+  "useDefaultServer": "Usar servidor por defecto",
+  "@useDefaultServer": {
+    "description": "Toggle button allowing users to switch between the default and a custom wger server"
+  },
+  "register": "Registrarse",
+  "@register": {
+    "description": "Text for registration button"
+  },
+  "logout": "Cerrar sesión",
+  "@logout": {
+    "description": "Text for logout button"
+  },
+  "login": "Acceder",
+  "@login": {
+    "description": "Text for login button"
   }
 }
