@@ -344,5 +344,51 @@
   "logout": "Abmelden",
   "@logout": {
     "description": "Text for logout button"
+  },
+  "aboutTranslationText": "Diese Anwendung wird auf weblate übersetzt. Wenn du auch helfen möchtest, klicke auf den Link und beginne zu übersetzen",
+  "@aboutTranslationText": {
+    "description": "Text for translation section in the about dialog"
+  },
+  "aboutTranslationTitle": "Übersetzung",
+  "@aboutTranslationTitle": {
+    "description": "Title for translation section in the about dialog"
+  },
+  "aboutContactUsText": "Wenn du mit uns chatten möchtest, komm auf den Discord-Server und sag hallo",
+  "@aboutContactUsText": {
+    "description": "Text for contact us section in the about dialog"
+  },
+  "aboutContactUsTitle": "Sag Hallo!",
+  "@aboutContactUsTitle": {
+    "description": "Title for contact us section in the about dialog"
+  },
+  "aboutBugsText": "Setze dich mit uns in Verbindung, wenn sich etwas nicht wie erwartet verhalten hat oder wenn es eine Funktion gibt, die du vermisst.",
+  "@aboutBugsText": {
+    "description": "Text for bugs section in the about dialog"
+  },
+  "aboutBugsTitle": "Hast du ein Problem oder eine Idee?",
+  "@aboutBugsTitle": {
+    "description": "Title for bugs section in the about dialog"
+  },
+  "aboutSourceText": "Hole dir den Quellcode dieser Anwendung und des dazugehörigen Servers auf github",
+  "@aboutSourceText": {
+    "description": "Text for source code section in the about dialog"
+  },
+  "aboutSourceTitle": "Quelltext",
+  "@aboutSourceTitle": {
+    "description": "Title for source code section in the about dialog"
+  },
+  "aboutDescription": "Danke, dass du wger verwendest! wger ist ein gemeinschaftliches Open-Source-Projekt, das von Fitness-Enthusiasten aus der ganzen Welt entwickelt wurde.",
+  "@aboutDescription": {
+    "description": "Text in the about dialog"
+  },
+  "logMeal": "Diese Mahlzeit protokollieren",
+  "@logMeal": {},
+  "category": "Kategorie",
+  "@category": {
+    "description": "Category for an exercise, ingredient, etc."
+  },
+  "equipment": "Gerät",
+  "@equipment": {
+    "description": "Equipment needed to perform an exercise"
   }
 }
