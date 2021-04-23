@@ -125,42 +125,53 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
   }
 
   Future<void> fetchAndSetWorkoutPlan(int workoutId) async {
+    // Load a list of all settings so that we can search through it late
+    //
+    // This is a bit ugly, but makes saves sending lots of requests later on
+    final allSsettingsData = await fetch(
+      makeUrl(_settingsUrlPath, query: {'limit': '1000'}),
+    );
+
     // Plan
-    final planData = await fetch(makeUrl(_workoutPlansUrlPath, id: workoutId));
-    final plan = WorkoutPlan.fromJson(planData);
+    final fullPlanData = await fetch(
+      makeUrl(_workoutPlansUrlPath, id: workoutId, objectMethod: 'canonical_representation'),
+    );
+    final plan = WorkoutPlan.fromJson(fullPlanData['obj']);
 
     // Days
     List<Day> days = [];
-    final daysData = await fetch(makeUrl(_daysUrlPath, query: {'training': workoutId.toString()}));
-    for (final dayEntry in daysData['results']) {
-      final day = Day.fromJson(dayEntry);
+    for (var dayData in fullPlanData['day_list']) {
+      final day = Day.fromJson(dayData['obj']);
 
       // Sets
       List<Set> sets = [];
-      final setData = await fetch(makeUrl(_setsUrlPath, query: {'exerciseday': day.id.toString()}));
-      for (final setEntry in setData['results']) {
-        final workoutSet = Set.fromJson(setEntry);
-        fetchComputedSettings(workoutSet);
+      for (var setData in dayData['set_list']) {
+        final workoutSet = Set.fromJson(setData['obj']);
+
+        fetchComputedSettings(workoutSet); // request!
 
         // Settings
         List<Setting> settings = [];
-        final settingData = await fetch(
-          makeUrl(_settingsUrlPath, query: {'set': workoutSet.id.toString()}),
-        );
-        for (final settingEntry in settingData['results']) {
+        final settingData = allSsettingsData['results'].where((s) => s['set'] == workoutSet.id);
+
+        for (final settingEntry in settingData) {
           final workoutSetting = Setting.fromJson(settingEntry);
 
-          workoutSetting.exerciseObj = _exercises.findById(workoutSetting.exerciseId);
-          workoutSetting.weightUnitObj = _weightUnits.firstWhere(
+          workoutSetting.exercise = _exercises.findById(workoutSetting.exerciseId);
+          workoutSetting.weightUnit = _weightUnits.firstWhere(
             (e) => e.id == workoutSetting.weightUnitId,
           );
-          workoutSetting.repetitionUnitObj = _repetitionUnit.firstWhere(
+          workoutSetting.repetitionUnit = _repetitionUnit.firstWhere(
             (e) => e.id == workoutSetting.repetitionUnitId,
           );
           if (!workoutSet.exercisesIds.contains(workoutSetting.exerciseId)) {
             workoutSet.addExercise(workoutSetting.exerciseObj);
           }
-          workoutSetting.repsText = await fetchSmartText(workoutSet, workoutSetting.exerciseObj);
+
+          workoutSetting.repsText = await fetchSmartText(
+            workoutSet,
+            workoutSetting.exerciseObj,
+          ); // request!
           settings.add(workoutSetting);
         }
         workoutSet.settings = settings;

@@ -35,6 +35,7 @@ import 'package:wger/providers/base_provider.dart';
 
 class Nutrition extends WgerBaseProvider with ChangeNotifier {
   static const _nutritionalPlansPath = 'nutritionplan';
+  static const _nutritionalPlansInfoPath = 'nutritionplaninfo';
   static const _mealPath = 'meal';
   static const _mealItemPath = 'mealitem';
   static const _ingredientPath = 'ingredient';
@@ -81,28 +82,42 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
   }
 
   /// Fetches and sets the given nutritional plan
-  Future<NutritionalPlan> fetchAndSetPlan(int planId) async {
-    // Plan
+  ///
+  /// This method only loads the data on the nutritional plan object itself,
+  /// no meals, etc.
+  Future<NutritionalPlan> fetchAndSetPlanSparse(int planId) async {
     final planData = await fetch(makeUrl(_nutritionalPlansPath, id: planId));
     final plan = NutritionalPlan.fromJson(planData);
+    _plans.add(plan);
+    _plans.sort((a, b) => b.creationDate.compareTo(a.creationDate));
+
+    notifyListeners();
+    return plan;
+  }
+
+  /// Fetches and sets the given nutritional plan
+  Future<NutritionalPlan> fetchAndSetPlan(int planId) async {
+    NutritionalPlan plan;
+    try {
+      plan = findById(planId);
+    } on StateError catch (e) {
+      plan = await fetchAndSetPlanSparse(planId);
+    }
+
+    // Plan
+    final fullPlanData = await fetch(makeUrl(_nutritionalPlansInfoPath, id: planId));
 
     // Meals
     List<Meal> meals = [];
-    final mealsData = await fetch(makeUrl(_mealPath, query: {'plan': planId.toString()}));
-    for (final mealEntry in mealsData['results']) {
+    for (var mealData in fullPlanData['meals']) {
       List<MealItem> mealItems = [];
-      final meal = Meal.fromJson(mealEntry);
+      final meal = Meal.fromJson(mealData);
 
-      // Meal items
-      final mealItemsData = await fetch(
-        makeUrl(_mealItemPath, query: {'meal': meal.id.toString()}),
-      );
-      for (final mealItemEntry in mealItemsData['results']) {
-        final mealItem = MealItem.fromJson(mealItemEntry);
+      for (var mealItemData in mealData['meal_items']) {
+        final mealItem = MealItem.fromJson(mealItemData);
         mealItem.ingredientObj = await fetchIngredient(mealItem.ingredientId);
         mealItems.add(mealItem);
       }
-
       meal.mealItems = mealItems;
       meals.add(meal);
     }
@@ -112,8 +127,6 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
     await fetchAndSetLogs(plan);
 
     // ... and done
-    _plans.add(plan);
-    _plans.sort((a, b) => b.creationDate.compareTo(a.creationDate));
     notifyListeners();
     return plan;
   }
@@ -296,12 +309,9 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
 
   /// Log meal to nutrition diary
   Future<void> logMealToDiary(Meal meal) async {
-    //var meal = findMealById(mealId);
     for (var item in meal.mealItems) {
       final plan = findById(meal.planId);
       Log log = Log.fromMealItem(item, plan.id!);
-      //log.planId = plan.id;
-      //log.datetime = DateTime.now();
 
       final data = await post(log.toJson(), makeUrl(_nutritionDiaryPath));
       log.id = data['id'];
