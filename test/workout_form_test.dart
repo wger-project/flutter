@@ -27,14 +27,13 @@ import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 
-import 'base_provider_test.mocks.dart';
 import 'workout_form_test.mocks.dart';
 
 @GenerateMocks([WorkoutPlans])
 void main() {
   var mockWorkoutPlans = MockWorkoutPlans();
   final plan1 = WorkoutPlan(id: 1, creationDate: DateTime(2021, 1, 1), description: 'test 1');
-  final plan2 = WorkoutPlan(creationDate: DateTime(2021, 1, 2), description: 'test 2');
+  final plan2 = WorkoutPlan(creationDate: DateTime(2021, 1, 2), description: '');
 
   setUp(() {
     mockWorkoutPlans = MockWorkoutPlans();
@@ -42,7 +41,6 @@ void main() {
 
   Widget createHomeScreen(WorkoutPlan workoutPlan, {locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
-    final client = MockClient();
 
     return ChangeNotifierProvider<WorkoutPlans>(
       create: (context) => mockWorkoutPlans,
@@ -76,6 +74,7 @@ void main() {
     await tester.pumpWidget(createHomeScreen(plan1));
     await tester.pumpAndSettle();
 
+    expect(find.text(('test 1')), findsOneWidget, reason: 'Description of existing workout plan');
     await tester.enterText(find.byKey(Key('field-description')), 'New description');
     await tester.tap(find.byKey(Key('submit-button')));
 
@@ -85,7 +84,7 @@ void main() {
 
     // Detail page
     await tester.pumpAndSettle();
-    expect(find.text(('New description')), findsOneWidget);
+    expect(find.text(('New description')), findsOneWidget, reason: 'Workout plan detail page');
   });
 
   testWidgets('Test creating a new workout', (WidgetTester tester) async {
@@ -95,6 +94,7 @@ void main() {
     await tester.pumpWidget(createHomeScreen(plan2));
     await tester.pumpAndSettle();
 
+    expect(find.text(('')), findsOneWidget, reason: 'New workout has no description');
     await tester.enterText(find.byKey(Key('field-description')), 'New cool workout');
     await tester.tap(find.byKey(Key('submit-button')));
 
@@ -103,6 +103,6 @@ void main() {
 
     // Detail page
     await tester.pumpAndSettle();
-    expect(find.text(('New cool workout')), findsOneWidget);
+    expect(find.text(('New cool workout')), findsOneWidget, reason: 'Workout plan detail page');
   });
 }
