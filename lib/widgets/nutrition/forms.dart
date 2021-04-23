@@ -51,6 +51,7 @@ class MealForm extends StatelessWidget {
         child: Column(
           children: [
             TextFormField(
+              key: Key('field-time'),
               decoration: InputDecoration(labelText: AppLocalizations.of(context)!.time),
               controller: _timeController,
               onTap: () async {
@@ -71,6 +72,7 @@ class MealForm extends StatelessWidget {
               onFieldSubmitted: (_) {},
             ),
             ElevatedButton(
+              key: Key(SUBMIT_BUTTON_KEY_NAME),
               child: Text(AppLocalizations.of(context)!.save),
               onPressed: () async {
                 if (!_form.currentState!.validate()) {
