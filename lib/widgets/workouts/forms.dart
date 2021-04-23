@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
@@ -68,7 +69,7 @@ class WorkoutForm extends StatelessWidget {
             },
           ),
           ElevatedButton(
-            key: Key('submit-button'),
+            key: Key(SUBMIT_BUTTON_KEY_NAME),
             child: Text(AppLocalizations.of(context)!.save),
             onPressed: () async {
               // Validate and save
@@ -111,6 +112,7 @@ class _DayCheckboxState extends State<DayCheckbox> {
   @override
   Widget build(BuildContext context) {
     return CheckboxListTile(
+      key: Key('field-checkbox-${widget._dayNr}'),
       title: Text(widget._day.getDayName(widget._dayNr)),
       value: _isSelected,
       onChanged: (bool? newValue) {
@@ -151,6 +153,7 @@ class _DayFormWidgetState extends State<DayFormWidget> {
       child: ListView(
         children: [
           TextFormField(
+            key: Key('field-description'),
             decoration: InputDecoration(
               labelText: AppLocalizations.of(context)!.description,
               helperText: AppLocalizations.of(context)!.dayDescriptionHelp,
@@ -166,12 +169,17 @@ class _DayFormWidgetState extends State<DayFormWidget> {
               if (value!.isEmpty || value.length < minLength || value.length > maxLength) {
                 return AppLocalizations.of(context)!.enterCharacters(minLength, maxLength);
               }
+
+              if (widget._day.daysOfWeek.length == 0) {
+                return 'You need to select at least one day';
+              }
               return null;
             },
           ),
           SizedBox(height: 10),
           ...Day.weekdays.keys.map((dayNr) => DayCheckbox(dayNr, widget._day)).toList(),
           ElevatedButton(
+            key: Key(SUBMIT_BUTTON_KEY_NAME),
             child: Text(AppLocalizations.of(context)!.save),
             onPressed: () async {
               if (!_form.currentState!.validate()) {

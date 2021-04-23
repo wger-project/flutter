@@ -31,3 +31,6 @@ const DEFAULT_REPETITION_UNIT = 1;
 
 /// Time to locally cache values such as ingredients, etc
 const DAYS_TO_CACHE = 20;
+
+/// Name of the submit button in forms
+const SUBMIT_BUTTON_KEY_NAME = 'submit-button';

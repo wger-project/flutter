@@ -22,6 +22,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
@@ -76,7 +77,7 @@ void main() {
 
     expect(find.text(('test 1')), findsOneWidget, reason: 'Description of existing workout plan');
     await tester.enterText(find.byKey(Key('field-description')), 'New description');
-    await tester.tap(find.byKey(Key('submit-button')));
+    await tester.tap(find.byKey(Key(SUBMIT_BUTTON_KEY_NAME)));
 
     // Correct ed
     verify(mockWorkoutPlans.editWorkout(any));
@@ -96,7 +97,7 @@ void main() {
 
     expect(find.text(('')), findsOneWidget, reason: 'New workout has no description');
     await tester.enterText(find.byKey(Key('field-description')), 'New cool workout');
-    await tester.tap(find.byKey(Key('submit-button')));
+    await tester.tap(find.byKey(Key(SUBMIT_BUTTON_KEY_NAME)));
 
     verifyNever(mockWorkoutPlans.editWorkout(any));
     verify(mockWorkoutPlans.addWorkout(any));

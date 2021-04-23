@@ -31,10 +31,10 @@ class WorkoutPlan {
   int? id;
 
   @JsonKey(required: true, name: 'creation_date')
-  DateTime creationDate;
+  late DateTime creationDate;
 
   @JsonKey(required: true, name: 'comment')
-  String description;
+  late String description;
 
   @JsonKey(ignore: true)
   List<Day> days = [];
@@ -52,6 +52,8 @@ class WorkoutPlan {
     this.days = days ?? [];
     this.logs = logs ?? [];
   }
+
+  WorkoutPlan.empty();
 
   // Boilerplate
   factory WorkoutPlan.fromJson(Map<String, dynamic> json) => _$WorkoutPlanFromJson(json);
