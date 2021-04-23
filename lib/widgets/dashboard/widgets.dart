@@ -362,7 +362,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
               : NothingFound(
                   AppLocalizations.of(context)!.noWorkoutPlans,
                   AppLocalizations.of(context)!.newWorkout,
-                  WorkoutForm(WorkoutPlan(creationDate: DateTime.now(), description: '')),
+                  WorkoutForm(WorkoutPlan.empty()),
                 ),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,

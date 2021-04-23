@@ -58,6 +58,8 @@ class Set {
     this.order,
   });
 
+  Set.empty();
+
   Set.withData({
     this.id,
     sets,

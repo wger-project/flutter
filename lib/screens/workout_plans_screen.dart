@@ -49,7 +49,7 @@ class _WorkoutPlansScreenState extends State<WorkoutPlansScreen> {
             FormScreen.routeName,
             arguments: FormScreenArguments(
               AppLocalizations.of(context)!.newWorkout,
-              WorkoutForm(WorkoutPlan(creationDate: DateTime.now(), description: '')),
+              WorkoutForm(WorkoutPlan.empty()),
             ),
           );
         },

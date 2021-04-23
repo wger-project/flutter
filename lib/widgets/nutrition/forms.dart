@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/ui.dart';
 import 'package:wger/models/http_exception.dart';
@@ -208,6 +209,7 @@ class PlanForm extends StatelessWidget {
         children: [
           // Description
           TextFormField(
+            key: Key('field-description'),
             decoration: InputDecoration(labelText: AppLocalizations.of(context)!.description),
             controller: _descriptionController,
             onFieldSubmitted: (_) {},
@@ -216,6 +218,7 @@ class PlanForm extends StatelessWidget {
             },
           ),
           ElevatedButton(
+            key: Key(SUBMIT_BUTTON_KEY_NAME),
             child: Text(AppLocalizations.of(context)!.save),
             onPressed: () async {
               // Validate and save the current values to the weightEntry

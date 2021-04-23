@@ -39,7 +39,7 @@ void main() {
     mockWorkoutPlans = MockWorkoutPlans();
   });
 
-  Widget createHomeScreen(WorkoutPlan workoutPlan, {locale = 'en'}) {
+  Widget createHomeScreen({locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
 
     return ChangeNotifierProvider<WorkoutPlans>(
@@ -57,7 +57,7 @@ void main() {
   }
 
   testWidgets('Test the widgets on the DayFormWidget', (WidgetTester tester) async {
-    await tester.pumpWidget(createHomeScreen(workoutPlan));
+    await tester.pumpWidget(createHomeScreen());
     await tester.pumpAndSettle();
 
     expect(find.byType(TextFormField), findsOneWidget);
@@ -68,7 +68,7 @@ void main() {
   testWidgets('Test creating a new day', (WidgetTester tester) async {
     when(mockWorkoutPlans.addDay(any, any)).thenAnswer((_) => Future.value(Day()));
 
-    await tester.pumpWidget(createHomeScreen(workoutPlan));
+    await tester.pumpWidget(createHomeScreen());
     await tester.pumpAndSettle();
 
     expect(find.text(('')), findsOneWidget, reason: 'New day has no description');

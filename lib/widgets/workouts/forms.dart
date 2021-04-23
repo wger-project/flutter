@@ -281,6 +281,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
       child: ListView(
         children: [
           TypeAheadFormField(
+            key: Key('field-typeahead'),
             textFieldConfiguration: TextFieldConfiguration(
               controller: this._exercisesController,
               decoration: InputDecoration(
@@ -378,6 +379,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
             );
           }).toList(),
           ElevatedButton(
+            key: Key(SUBMIT_BUTTON_KEY_NAME),
             child: Text(AppLocalizations.of(context)!.save),
             onPressed: () async {
               final isValid = _formKey.currentState!.validate();

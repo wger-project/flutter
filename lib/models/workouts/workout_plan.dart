@@ -53,7 +53,10 @@ class WorkoutPlan {
     this.logs = logs ?? [];
   }
 
-  WorkoutPlan.empty();
+  WorkoutPlan.empty() {
+    creationDate = DateTime.now();
+    description = '';
+  }
 
   // Boilerplate
   factory WorkoutPlan.fromJson(Map<String, dynamic> json) => _$WorkoutPlanFromJson(json);
