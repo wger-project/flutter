@@ -106,4 +106,10 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text(('New cool workout')), findsOneWidget, reason: 'Workout plan detail page');
   });
+
+  testWidgets('Golden test', (WidgetTester tester) async {
+    await tester.pumpWidget(createHomeScreen(plan2));
+    await tester.pumpAndSettle();
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('workout_form.png'));
+  });
 }

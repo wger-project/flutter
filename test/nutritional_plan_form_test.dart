@@ -118,4 +118,9 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text(('New cool plan')), findsOneWidget, reason: 'Nutritional plan detail page');
   });
+
+  testWidgets('Golden test', (WidgetTester tester) async {
+    await tester.pumpWidget(createHomeScreen(plan1));
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('nutritional_plan_form.png'));
+  });
 }

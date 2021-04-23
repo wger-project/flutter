@@ -114,4 +114,9 @@ void main() {
     // Detail page
     // ...
   });
+
+  testWidgets('Golden test', (WidgetTester tester) async {
+    await tester.pumpWidget(createHomeScreen(meal1));
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('nutritional_meal_form.png'));
+  });
 }

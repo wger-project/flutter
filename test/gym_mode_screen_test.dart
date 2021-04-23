@@ -80,6 +80,8 @@ void main() {
     expect(find.byIcon(Icons.chevron_left), findsNothing);
     expect(find.byIcon(Icons.exit_to_app), findsOneWidget);
     expect(find.byIcon(Icons.chevron_right), findsOneWidget);
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('gym_mode_1.png'));
+
     await tester.tap(find.byIcon(Icons.chevron_right));
     await tester.pumpAndSettle();
 
@@ -89,6 +91,7 @@ void main() {
     expect(find.byIcon(Icons.chevron_left), findsOneWidget);
     expect(find.byIcon(Icons.exit_to_app), findsOneWidget);
     expect(find.byIcon(Icons.chevron_right), findsOneWidget);
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('gym_mode_2.png'));
     await tester.drag(find.byType(ExerciseOverview), Offset(-500.0, 0.0));
     await tester.pumpAndSettle();
 
@@ -102,6 +105,7 @@ void main() {
     expect(find.byIcon(Icons.chevron_left), findsOneWidget);
     expect(find.byIcon(Icons.exit_to_app), findsOneWidget);
     expect(find.byIcon(Icons.chevron_right), findsOneWidget);
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('gym_mode_3.png'));
     await tester.drag(find.byType(LogPage), Offset(-500.0, 0.0));
     await tester.pumpAndSettle();
 
@@ -111,6 +115,7 @@ void main() {
     expect(find.byIcon(Icons.chevron_left), findsOneWidget);
     expect(find.byIcon(Icons.exit_to_app), findsOneWidget);
     expect(find.byIcon(Icons.chevron_right), findsOneWidget);
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('gym_mode_4.png'));
     await tester.tap(find.byIcon(Icons.chevron_right));
     await tester.pumpAndSettle();
 
@@ -118,6 +123,7 @@ void main() {
     expect(find.text('test exercise 1'), findsOneWidget);
     expect(find.byType(LogPage), findsOneWidget);
     expect(find.byType(Form), findsOneWidget);
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('gym_mode_5.png'));
     await tester.drag(find.byType(LogPage), Offset(-500.0, 0.0));
     await tester.pumpAndSettle();
 
@@ -127,6 +133,7 @@ void main() {
     expect(find.byIcon(Icons.chevron_left), findsOneWidget);
     expect(find.byIcon(Icons.exit_to_app), findsOneWidget);
     expect(find.byIcon(Icons.chevron_right), findsOneWidget);
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('gym_mode_6.png'));
     await tester.tap(find.byIcon(Icons.chevron_right));
     await tester.pumpAndSettle();
 
@@ -137,6 +144,7 @@ void main() {
     expect(find.byIcon(Icons.chevron_left), findsOneWidget);
     expect(find.byIcon(Icons.exit_to_app), findsOneWidget);
     expect(find.byIcon(Icons.chevron_right), findsNothing);
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('gym_mode_7.png'));
 
     //
   });

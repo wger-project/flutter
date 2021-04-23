@@ -107,4 +107,9 @@ void main() {
     expect(find.text('1.1.2021'), findsOneWidget);
     expect(find.text('10.1.2021'), findsOneWidget);
   });
+
+  testWidgets('Golden test', (WidgetTester tester) async {
+    await tester.pumpWidget(createHomeScreen());
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('weight_screen.png'));
+  });
 }
