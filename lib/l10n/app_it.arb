@@ -324,7 +324,7 @@
   "@start": {
     "description": "Label on button to start the gym mode (i.e., an imperative)"
   },
-  "successfullySaved": "Salvato con successo",
+  "successfullySaved": "Salvato",
   "@successfullySaved": {
     "description": "Message when an item was successfully saved"
   },
@@ -335,5 +335,55 @@
   "logout": "Disconnetti",
   "@logout": {
     "description": "Text for logout button"
+  },
+  "enterRepetitionsOrWeight": "Inserisci sia le ripetizioni che il peso per almeno una delle serie",
+  "@enterRepetitionsOrWeight": {
+    "description": "Error message when the user hasn't filled in the forms for exercise sets"
+  },
+  "aboutTranslationText": "Questa applicazione è tradotta su weblate. Se anche tu vuoi contribuire, clicca sul link e inizia a tradurre",
+  "@aboutTranslationText": {
+    "description": "Text for translation section in the about dialog"
+  },
+  "aboutTranslationTitle": "Traduzione",
+  "@aboutTranslationTitle": {
+    "description": "Title for translation section in the about dialog"
+  },
+  "aboutContactUsText": "Se vuoi parlare con noi, vieni nel nostro server su Discord",
+  "@aboutContactUsText": {
+    "description": "Text for contact us section in the about dialog"
+  },
+  "aboutContactUsTitle": "Fatti conoscere!",
+  "@aboutContactUsTitle": {
+    "description": "Title for contact us section in the about dialog"
+  },
+  "aboutBugsText": "Entra in contatto con noi se hai trovato qualche errore o se vuoi proporre qualche funzionalità.",
+  "@aboutBugsText": {
+    "description": "Text for bugs section in the about dialog"
+  },
+  "aboutBugsTitle": "Problemi o idee?",
+  "@aboutBugsTitle": {
+    "description": "Title for bugs section in the about dialog"
+  },
+  "aboutSourceText": "Codice sorgente dell'applicazione e repository su github",
+  "@aboutSourceText": {
+    "description": "Text for source code section in the about dialog"
+  },
+  "aboutSourceTitle": "Codice sorgente",
+  "@aboutSourceTitle": {
+    "description": "Title for source code section in the about dialog"
+  },
+  "aboutDescription": "Grazie per esserti registrato su wger! wger è un progetto open source collaborativo, creato da entusiasti del fitness in tutto il mondo.",
+  "@aboutDescription": {
+    "description": "Text in the about dialog"
+  },
+  "logMeal": "Registra questo pasto",
+  "@logMeal": {},
+  "category": "Categoria",
+  "@category": {
+    "description": "Category for an exercise, ingredient, etc."
+  },
+  "equipment": "Equipaggiamento",
+  "@equipment": {
+    "description": "Equipment needed to perform an exercise"
   }
 }
