@@ -113,7 +113,10 @@ class _DayCheckboxState extends State<DayCheckbox> {
   Widget build(BuildContext context) {
     return CheckboxListTile(
       key: Key('field-checkbox-${widget._dayNr}'),
-      title: Text(widget._day.getDayName(widget._dayNr)),
+      title: Text(widget._day.getDayTranslated(
+        widget._dayNr,
+        Localizations.localeOf(context).languageCode,
+      )),
       value: _isSelected,
       onChanged: (bool? newValue) {
         setState(() {

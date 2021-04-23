@@ -82,4 +82,20 @@ void main() {
     //await tester.pumpAndSettle();
     //verify(mockObserver.didPop(any, any));
   });
+
+  testWidgets('Tests the localization of days - EN', (WidgetTester tester) async {
+    await tester.pumpWidget(createHomeScreen());
+
+    expect(find.text('Monday'), findsOneWidget);
+    expect(find.text('Tuesday'), findsOneWidget);
+    expect(find.text('Thursday'), findsOneWidget);
+  });
+
+  testWidgets('Tests the localization of days - DE', (WidgetTester tester) async {
+    await tester.pumpWidget(createHomeScreen(locale: 'de'));
+
+    expect(find.text('Montag'), findsOneWidget);
+    expect(find.text('Dienstag'), findsOneWidget);
+    expect(find.text('Donnerstag'), findsOneWidget);
+  });
 }

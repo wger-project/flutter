@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/models/workouts/set.dart';
 
@@ -62,6 +63,19 @@ class Day {
 
   String get getDaysText {
     return daysOfWeek.map((e) => getDayName(e)).join(', ');
+  }
+
+  String getDaysTextTranslated(locale) {
+    return daysOfWeek.map((e) => getDayTranslated(e, locale)).join(', ');
+  }
+
+  /// Returns the translated name of the given day
+  String getDayTranslated(int day, locale) {
+    // Isn't there another way?... 🙄
+    final now = DateTime.now();
+    final firstDayOfWeek = now.subtract(Duration(days: now.weekday));
+
+    return DateFormat(DateFormat.WEEKDAY, locale).format(firstDayOfWeek.add(Duration(days: day)));
   }
 
   // Boilerplate

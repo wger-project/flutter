@@ -80,7 +80,7 @@ void main() {
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();
 
-    expect(find.text('Monday, Tuesday'), findsOneWidget);
-    expect(find.text('Thursday'), findsOneWidget);
+    expect(find.text('Montag, Dienstag'), findsOneWidget);
+    expect(find.text('Donnerstag'), findsOneWidget);
   });
 }
