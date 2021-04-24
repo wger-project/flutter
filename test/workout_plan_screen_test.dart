@@ -83,12 +83,4 @@ void main() {
     expect(find.text('Montag, Dienstag'), findsOneWidget);
     expect(find.text('Donnerstag'), findsOneWidget);
   });
-
-  // flutter test --update-goldens
-  testWidgets('Golden test', (WidgetTester tester) async {
-    await tester.pumpWidget(createHomeScreen());
-    await tester.tap(find.byType(TextButton));
-    await tester.pumpAndSettle();
-    await expectLater(find.byType(MaterialApp), matchesGoldenFile('workout_plan_screen.png'));
-  });
 }

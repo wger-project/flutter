@@ -87,9 +87,4 @@ void main() {
 
     expect(find.text('17:00'), findsOneWidget);
   });
-
-  testWidgets('Golden test', (WidgetTester tester) async {
-    await tester.pumpWidget(createNutritionalPlan());
-    await expectLater(find.byType(MaterialApp), matchesGoldenFile('nutritional_plan_screen.png'));
-  });
 }

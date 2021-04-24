@@ -108,9 +108,4 @@ void main() {
     expect(find.text('1.1.2021'), findsOneWidget);
     expect(find.text('12.2.2021'), findsOneWidget);
   });
-
-  testWidgets('Golden test', (WidgetTester tester) async {
-    await tester.pumpWidget(createHomeScreen());
-    await expectLater(find.byType(MaterialApp), matchesGoldenFile('workout_plan_screens.png'));
-  });
 }

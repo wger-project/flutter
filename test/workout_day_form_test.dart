@@ -98,9 +98,4 @@ void main() {
     expect(find.text('Dienstag'), findsOneWidget);
     expect(find.text('Donnerstag'), findsOneWidget);
   });
-
-  testWidgets('Golden test', (WidgetTester tester) async {
-    await tester.pumpWidget(createHomeScreen());
-    await expectLater(find.byType(MaterialApp), matchesGoldenFile('workout_day_form.png'));
-  });
 }
