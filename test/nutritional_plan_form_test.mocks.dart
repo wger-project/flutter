@@ -76,6 +76,12 @@ class MockNutrition extends _i1.Mock implements _i9.Nutrition {
           returnValue: Future<void>.value(null),
           returnValueForMissingStub: Future.value()) as _i10.Future<void>);
   @override
+  _i10.Future<_i4.NutritionalPlan> fetchAndSetPlanSparse(int? planId) =>
+      (super.noSuchMethod(Invocation.method(#fetchAndSetPlanSparse, [planId]),
+              returnValue:
+                  Future<_i4.NutritionalPlan>.value(_FakeNutritionalPlan()))
+          as _i10.Future<_i4.NutritionalPlan>);
+  @override
   _i10.Future<_i4.NutritionalPlan> fetchAndSetPlan(int? planId) =>
       (super.noSuchMethod(Invocation.method(#fetchAndSetPlan, [planId]),
               returnValue:

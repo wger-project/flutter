@@ -168,10 +168,6 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
             workoutSet.addExercise(workoutSetting.exerciseObj);
           }
 
-          workoutSetting.repsText = await fetchSmartText(
-            workoutSet,
-            workoutSetting.exerciseObj,
-          ); // request!
           settings.add(workoutSetting);
         }
         workoutSet.settings = settings;

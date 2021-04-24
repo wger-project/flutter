@@ -31,11 +31,17 @@ import 'package:wger/widgets/workouts/exercises.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 
 class SettingWidget extends StatelessWidget {
+  Set set;
   Setting setting;
   final bool expanded;
   final toggle;
 
-  SettingWidget({required this.setting, required this.expanded, required this.toggle});
+  SettingWidget({
+    required this.set,
+    required this.setting,
+    required this.expanded,
+    required this.toggle,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +51,12 @@ class SettingWidget extends StatelessWidget {
         width: 45,
       ),
       title: Text(setting.exerciseObj.name),
-      subtitle: Text(setting.repsText),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ...set.getSmartRepr(setting.exerciseObj).map((e) => Text(e)).toList(),
+        ],
+      ),
     );
   }
 }
@@ -78,6 +89,7 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
               ...set.settingsFiltered
                   .map(
                     (setting) => SettingWidget(
+                      set: set,
                       setting: setting,
                       expanded: _expanded,
                       toggle: _toggleExpanded,

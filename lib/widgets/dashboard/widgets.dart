@@ -317,7 +317,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                   return Column(
                     children: [
                       Text(s.exerciseObj.name),
-                      Text(s.repsText),
+                      Text(set.getSmartTextRepr(s.exerciseObj)),
                     ],
                   );
                 }).toList(),

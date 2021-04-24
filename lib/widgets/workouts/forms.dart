@@ -406,10 +406,6 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                 setting.comment = '';
 
                 Setting settingDb = await workoutProvider.addSetting(setting);
-                setting.repsText = await workoutProvider.fetchSmartText(
-                  widget._set,
-                  setting.exerciseObj,
-                );
                 setting.id = settingDb.id;
               }
 

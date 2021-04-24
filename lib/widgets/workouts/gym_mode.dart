@@ -157,7 +157,7 @@ class StartPage extends StatelessWidget {
                                 s.exerciseObj.name,
                                 style: Theme.of(context).textTheme.headline6,
                               ),
-                              Text(s.repsText),
+                              ...set.getSmartRepr(s.exerciseObj).map((e) => Text(e)).toList(),
                               SizedBox(height: 15),
                             ],
                           );

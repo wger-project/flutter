@@ -107,6 +107,39 @@ class Set {
     exercisesIds.removeWhere((e) => e == exercise.id);
   }
 
+  /// Returns all settings for the given exercise
+  List<Setting> filterSettingsByExercise(Exercise exercise) {
+    return settings.where((element) => element.exerciseId == exercise.id).toList();
+  }
+
+  /// Returns a list with all repetitions for the given exercise
+  List<String> getSmartRepr(Exercise exercise) {
+    List<String> out = [];
+
+    final settingList = filterSettingsByExercise(exercise);
+
+    if (settingList.length == 0) {
+      out.add('');
+    }
+
+    if (settingList.length == 1) {
+      out.add(settingList.first.singleSettingRepText.replaceAll('\n', ''));
+    }
+
+    if (settingList.length > 1) {
+      for (var setting in settingList) {
+        out.add(setting.singleSettingRepText.replaceAll('\n', ''));
+      }
+    }
+
+    return out;
+  }
+
+  /// Returns a string with all repetitions for the given exercise
+  String getSmartTextRepr(Exercise exercise) {
+    return getSmartRepr(exercise).join(' – ');
+  }
+
   // Boilerplate
   factory Set.fromJson(Map<String, dynamic> json) => _$SetFromJson(json);
   Map<String, dynamic> toJson() => _$SetToJson(this);

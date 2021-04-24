@@ -86,6 +86,7 @@ WorkoutPlan getWorkout() {
     sets: 3,
     order: 1,
   );
+  set1.addExercise(exercise1);
   set1.settings.add(setting1);
   set1.settingsComputed = [setting1, setting1];
 
