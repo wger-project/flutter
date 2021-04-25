@@ -63,9 +63,11 @@ class Setting {
   @JsonKey(ignore: true)
   late WeightUnit weightUnitObj;
 
+  /// Personal notes about this setting. Currently not used
   @JsonKey(required: true)
   late String comment = '';
 
+  /// Reps in Reserve
   @JsonKey(required: true)
   String? rir = '';
 

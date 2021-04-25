@@ -128,7 +128,7 @@ class _WorkoutLogCalendarState extends State<WorkoutLogCalendar> {
   void loadEvents() {
     for (var date in widget._workoutPlan.logData.keys) {
       var entry = widget._workoutPlan.logData[date]!;
-      _events[date] = [WorkoutLogEvent(date, entry['session'], entry['exercises'])];
+      _events[date.toLocal()] = [WorkoutLogEvent(date, entry['session'], entry['exercises'])];
     }
   }
 
