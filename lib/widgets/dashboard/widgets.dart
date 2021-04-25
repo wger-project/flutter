@@ -31,6 +31,7 @@ import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/theme/theme.dart';
+import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/weight/charts.dart';
@@ -130,7 +131,6 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
             );
           });
           out.add(SizedBox(height: 10));
-          out.add(Divider());
         }
       }
     }
@@ -270,7 +270,6 @@ class DashboardWorkoutWidget extends StatefulWidget {
 }
 
 class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
-  late WorkoutPlan _workoutPlan;
   var showDetail = false;
 
   @override
@@ -317,7 +316,8 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                   return Column(
                     children: [
                       Text(s.exerciseObj.name),
-                      Text(set.getSmartTextRepr(s.exerciseObj)),
+                      MutedText(set.getSmartTextRepr(s.exerciseObj)),
+                      SizedBox(height: 5),
                     ],
                   );
                 }).toList(),
@@ -325,7 +325,6 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
             ));
           });
           out.add(SizedBox(height: 10));
-          out.add(Divider());
         }
       }
     }
