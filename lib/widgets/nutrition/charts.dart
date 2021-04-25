@@ -62,13 +62,13 @@ class NutritionalPlanPieChartWidget extends StatelessWidget {
 }
 
 class NutritionalDiaryChartWidget extends StatelessWidget {
-  const NutritionalDiaryChartWidget({
+  late NutritionalPlan _nutritionalPlan;
+
+  NutritionalDiaryChartWidget({
     Key? key,
-    required NutritionalPlan? nutritionalPlan,
+    required NutritionalPlan nutritionalPlan,
   })   : _nutritionalPlan = nutritionalPlan,
         super(key: key);
-
-  final NutritionalPlan? _nutritionalPlan;
 
   @override
   Widget build(BuildContext context) {
@@ -79,12 +79,22 @@ class NutritionalDiaryChartWidget extends StatelessWidget {
           colorFn: (datum, index) => wgerChartSecondaryColor,
           domainFn: (datum, index) => datum[1],
           measureFn: (datum, index) => datum[0].energy,
-          data: _nutritionalPlan!.logEntriesValues.keys
-              .map((e) => [_nutritionalPlan!.logEntriesValues[e], e])
+          data: _nutritionalPlan.logEntriesValues.keys
+              .map((e) => [_nutritionalPlan.logEntriesValues[e], e])
               .toList(),
         ) as Series<dynamic, DateTime>
       ],
       defaultRenderer: new charts.BarRendererConfig<DateTime>(),
+      behaviors: [
+        new charts.RangeAnnotation([
+          charts.LineAnnotationSegment(
+            _nutritionalPlan.nutritionalValues.energy,
+            charts.RangeAnnotationAxisType.measure,
+            strokeWidthPx: 2,
+            color: charts.MaterialPalette.gray.shade600,
+          ),
+        ]),
+      ],
     );
   }
 }
