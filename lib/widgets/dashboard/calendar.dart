@@ -84,7 +84,8 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
     // Process weight entries
     BodyWeight weightProvider = Provider.of<BodyWeight>(context, listen: false);
     for (var entry in weightProvider.items) {
-      final date = DateTime(entry.date.year, entry.date.month, entry.date.day);
+      final date = entry.date.toLocal();
+
       if (!_events.containsKey(date)) {
         _events[date] = [];
       }
