@@ -122,7 +122,12 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(item.ingredientObj.name),
+                    Flexible(
+                      child: Text(
+                        item.ingredientObj.name,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
                     SizedBox(width: 5),
                     Text('${item.amount.toStringAsFixed(0)} ${AppLocalizations.of(context)!.g}'),
                   ],
