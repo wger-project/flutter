@@ -188,14 +188,18 @@ class DismissibleMealHeader extends StatelessWidget {
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(color: Colors.white),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _meal.time != null
-                  ? Text(
-                      _meal.time.format(context),
-                      style: Theme.of(context).textTheme.headline5,
-                    )
-                  : Text(''),
+              Icon(
+                Icons.drag_indicator,
+                color: Colors.grey,
+                size: ICON_SIZE_SMALL,
+              ),
+              Expanded(
+                child: Text(
+                  _meal.time.format(context),
+                  style: Theme.of(context).textTheme.headline5,
+                ),
+              ),
               IconButton(
                 visualDensity: VisualDensity.compact,
                 icon: _expanded ? Icon(Icons.expand_less) : Icon(Icons.expand_more),

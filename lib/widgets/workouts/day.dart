@@ -125,30 +125,6 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
               expanded: _expanded,
               toggle: _toggleExpanded,
             ),
-            if (_expanded)
-              InkWell(
-                onTap: () {
-                  Navigator.of(context).pushNamed(GymModeScreen.routeName, arguments: widget._day);
-                },
-                child: Container(
-                  width: double.infinity,
-                  height: 50,
-                  color: wgerPrimaryButtonColor,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        AppLocalizations.of(context)!.gymMode,
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      Icon(
-                        Icons.play_arrow,
-                        color: Colors.white,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
             ...widget._day.sets
                 .map(
                   (set) => getSetRow(set),
@@ -192,14 +168,19 @@ class DayHeaderDismissible extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dismissible(
       key: Key(_day.id.toString()),
-      direction: DismissDirection.startToEnd,
+      direction: DismissDirection.horizontal,
       child: Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(color: Colors.white),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Flexible(
+            Icon(
+              Icons.drag_indicator,
+              color: Colors.grey,
+              size: ICON_SIZE_SMALL,
+            ),
+            Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -212,27 +193,15 @@ class DayHeaderDismissible extends StatelessWidget {
                 ],
               ),
             ),
-            Row(
-              children: [
-                if (_expanded)
-                  IconButton(
-                    icon: Icon(Icons.delete),
-                    onPressed: () {
-                      Provider.of<WorkoutPlans>(context, listen: false).deleteDay(_day);
-                    },
-                  ),
-                IconButton(
-                  icon: _expanded ? Icon(Icons.expand_less) : Icon(Icons.expand_more),
-                  onPressed: () {
-                    _toggle();
-                  },
-                ),
-              ],
+            IconButton(
+              icon: _expanded ? Icon(Icons.expand_less) : Icon(Icons.expand_more),
+              onPressed: () {
+                _toggle();
+              },
             ),
           ],
         ),
       ),
-      /*
       secondaryBackground: Container(
         color: Theme.of(context).accentColor,
         padding: EdgeInsets.only(right: 10),
@@ -240,17 +209,12 @@ class DayHeaderDismissible extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Icon(
-              Icons.bar_chart,
+              Icons.delete_outline,
               color: Colors.white,
-            ),
-            Text(
-              'Log weights',
-              style: TextStyle(color: Colors.white),
             ),
           ],
         ),
       ),
-      */
       background: Container(
         color: wgerPrimaryButtonColor, //Theme.of(context).primaryColor,
         alignment: Alignment.centerLeft,
@@ -270,20 +234,9 @@ class DayHeaderDismissible extends StatelessWidget {
         ),
       ),
       confirmDismiss: (direction) async {
-        // Weight log
+        // Delete day
         if (direction == DismissDirection.endToStart) {
-          showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-              content: Text('Would open weight log form for this day'),
-              actions: [
-                TextButton(
-                  child: Text(AppLocalizations.of(context)!.dismiss),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-              ],
-            ),
-          );
+          Provider.of<WorkoutPlans>(context, listen: false).deleteDay(_day);
 
           // Gym mode
         } else {
