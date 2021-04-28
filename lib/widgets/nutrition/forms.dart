@@ -230,11 +230,18 @@ class PlanForm extends StatelessWidget {
               }
               _form.currentState!.save();
 
-              // Save the entry on the server
+              // Save to DB
               try {
-                _plan.id != null
-                    ? await Provider.of<Nutrition>(context, listen: false).editPlan(_plan)
-                    : _plan = await Provider.of<Nutrition>(context, listen: false).addPlan(_plan);
+                if (_plan.id != null) {
+                  await Provider.of<Nutrition>(context, listen: false).editPlan(_plan);
+                  Navigator.of(context).pop();
+                } else {
+                  _plan = await Provider.of<Nutrition>(context, listen: false).addPlan(_plan);
+                  Navigator.of(context).pushReplacementNamed(
+                    NutritionalPlanScreen.routeName,
+                    arguments: _plan,
+                  );
+                }
 
                 // Saving was successful, reset the data
                 _descriptionController.clear();
@@ -243,10 +250,6 @@ class PlanForm extends StatelessWidget {
               } catch (error) {
                 showErrorDialog(error, context);
               }
-              Navigator.of(context).pushReplacementNamed(
-                NutritionalPlanScreen.routeName,
-                arguments: _plan,
-              );
             },
           ),
         ],
