@@ -67,8 +67,10 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
 
   Meal? findMealById(int id) {
     for (var plan in _plans) {
-      var meal = plan.meals.firstWhere((plan) => plan.id == id);
-      return meal;
+      try {
+        var meal = plan.meals.firstWhere((plan) => plan.id == id);
+        return meal;
+      } on StateError catch (e) {}
     }
     return null;
   }
@@ -201,8 +203,7 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
   }
 
   /// Adds a meal item to a meal
-  Future<MealItem> addMealItem(MealItem mealItem, int mealId) async {
-    var meal = findMealById(mealId)!;
+  Future<MealItem> addMealItem(MealItem mealItem, Meal meal) async {
     final data = await post(mealItem.toJson(), makeUrl(_mealItemPath));
 
     mealItem = MealItem.fromJson(data);

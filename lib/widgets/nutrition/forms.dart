@@ -177,7 +177,7 @@ class MealItemForm extends StatelessWidget {
                 _form.currentState!.save();
 
                 try {
-                  Provider.of<Nutrition>(context, listen: false).addMealItem(_mealItem, _meal.id!);
+                  Provider.of<Nutrition>(context, listen: false).addMealItem(_mealItem, _meal);
                 } on WgerHttpException catch (error) {
                   showHttpExceptionErrorDialog(error, context);
                 } catch (error) {
