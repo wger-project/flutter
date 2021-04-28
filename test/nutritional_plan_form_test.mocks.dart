@@ -119,8 +119,9 @@ class MockNutrition extends _i1.Mock implements _i9.Nutrition {
           returnValue: Future<void>.value(null),
           returnValueForMissingStub: Future.value()) as _i10.Future<void>);
   @override
-  _i10.Future<_i6.MealItem> addMealItem(_i6.MealItem? mealItem, int? mealId) =>
-      (super.noSuchMethod(Invocation.method(#addMealItem, [mealItem, mealId]),
+  _i10.Future<_i6.MealItem> addMealItem(
+          _i6.MealItem? mealItem, _i5.Meal? meal) =>
+      (super.noSuchMethod(Invocation.method(#addMealItem, [mealItem, meal]),
               returnValue: Future<_i6.MealItem>.value(_FakeMealItem()))
           as _i10.Future<_i6.MealItem>);
   @override
