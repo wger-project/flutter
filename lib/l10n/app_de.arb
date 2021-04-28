@@ -390,5 +390,13 @@
   "equipment": "Gerät",
   "@equipment": {
     "description": "Equipment needed to perform an exercise"
+  },
+  "musclesSecondary": "Sekundäre Muskeln",
+  "@musclesSecondary": {
+    "description": "secondary muscles trained by an exercise"
+  },
+  "muscles": "Muskeln",
+  "@muscles": {
+    "description": "(main) muscles trained by an exercise"
   }
 }
