@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:wger/models/exercises/image.dart';
 
 class ExerciseImageWidget extends StatelessWidget {

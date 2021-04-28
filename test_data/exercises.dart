@@ -23,6 +23,7 @@ import 'package:wger/models/exercises/muscle.dart';
 
 const muscle1 = Muscle(id: 1, name: 'Flutterus maximus', isFront: true);
 const muscle2 = Muscle(id: 2, name: 'Biceps', isFront: true);
+const muscle3 = Muscle(id: 3, name: 'Booty', isFront: false);
 
 const category1 = ExerciseCategory(id: 1, name: 'Arms');
 const category2 = ExerciseCategory(id: 2, name: 'Legs');
@@ -40,6 +41,7 @@ final exercise1 = Exercise(
   category: category1,
   categoryId: 1,
   muscles: [muscle1, muscle2],
+  musclesSecondary: [muscle3],
   equipment: [equipment1, equipment2],
 );
 
