@@ -59,12 +59,31 @@ class _MealWidgetState extends State<MealWidget> {
               Padding(
                 padding: const EdgeInsets.all(5),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    MutedText(AppLocalizations.of(context)!.energy),
-                    MutedText(AppLocalizations.of(context)!.protein),
-                    MutedText(AppLocalizations.of(context)!.carbohydrates),
-                    MutedText(AppLocalizations.of(context)!.fat),
+                    Expanded(
+                      child: MutedText(
+                        AppLocalizations.of(context)!.energy,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    Expanded(
+                      child: MutedText(
+                        AppLocalizations.of(context)!.protein,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    Expanded(
+                      child: MutedText(
+                        AppLocalizations.of(context)!.carbohydrates,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    Expanded(
+                      child: MutedText(
+                        AppLocalizations.of(context)!.fat,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -141,14 +160,31 @@ class MealItemWidget extends StatelessWidget {
           ),
           if (_expanded)
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                MutedText(
-                    '${values.energy.toStringAsFixed(0)} ${AppLocalizations.of(context)!.kcal}'),
-                MutedText('${values.protein.toStringAsFixed(0)}${AppLocalizations.of(context)!.g}'),
-                MutedText(
-                    '${values.carbohydrates.toStringAsFixed(0)}${AppLocalizations.of(context)!.g}'),
-                MutedText('${values.fat.toStringAsFixed(0)}${AppLocalizations.of(context)!.g}'),
+                Expanded(
+                  child: MutedText(
+                    '${values.energy.toStringAsFixed(0)} ${AppLocalizations.of(context)!.kcal}',
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Expanded(
+                  child: MutedText(
+                    '${values.protein.toStringAsFixed(0)}${AppLocalizations.of(context)!.g}',
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Expanded(
+                  child: MutedText(
+                    '${values.carbohydrates.toStringAsFixed(0)}${AppLocalizations.of(context)!.g}',
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Expanded(
+                  child: MutedText(
+                    '${values.fat.toStringAsFixed(0)}${AppLocalizations.of(context)!.g}',
+                    textAlign: TextAlign.center,
+                  ),
+                ),
               ],
             ),
         ],
