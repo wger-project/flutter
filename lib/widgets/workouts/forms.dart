@@ -31,7 +31,7 @@ import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
-import 'package:wger/widgets/workouts/exercises.dart';
+import 'package:wger/widgets/exercises/images.dart';
 
 class WorkoutForm extends StatelessWidget {
   WorkoutPlan _plan;

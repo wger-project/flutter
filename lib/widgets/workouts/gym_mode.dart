@@ -35,7 +35,7 @@ import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/theme/theme.dart';
-import 'package:wger/widgets/workouts/exercises.dart';
+import 'package:wger/widgets/exercises/images.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 
 class GymMode extends StatefulWidget {

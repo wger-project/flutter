@@ -27,7 +27,8 @@ import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/theme/theme.dart';
-import 'package:wger/widgets/workouts/exercises.dart';
+import 'package:wger/widgets/exercises/exercises.dart';
+import 'package:wger/widgets/exercises/images.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 
 class SettingWidget extends StatelessWidget {
@@ -46,9 +47,30 @@ class SettingWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Container(
-        child: ExerciseImageWidget(image: setting.exerciseObj.getMainImage),
-        width: 45,
+      leading: InkWell(
+        child: Container(
+          child: ExerciseImageWidget(image: setting.exerciseObj.getMainImage),
+          width: 45,
+        ),
+        onTap: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text(setting.exerciseObj.name),
+                content: ExerciseDetail(setting.exerciseObj),
+                actions: [
+                  TextButton(
+                    child: Text(AppLocalizations.of(context)!.dismiss),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        },
       ),
       title: Text(setting.exerciseObj.name),
       subtitle: Column(
@@ -108,7 +130,7 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
             onPressed: () {
               Provider.of<WorkoutPlans>(context, listen: false).deleteSet(set);
             },
-          )
+          ),
       ],
     );
   }

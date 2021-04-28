@@ -96,6 +96,14 @@
   "@equipment": {
     "description": "Equipment needed to perform an exercise"
   },
+  "muscles": "Muscles",
+  "@muscles": {
+    "description": "(main) muscles trained by an exercise"
+  },
+  "musclesSecondary": "Secondary muscles",
+  "@musclesSecondary": {
+    "description": "secondary muscles trained by an exercise"
+  },
   "category": "Category",
   "@category": {
     "description": "Category for an exercise, ingredient, etc."
