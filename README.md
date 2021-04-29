@@ -6,10 +6,12 @@ app written with Flutter, it talks via REST with the main server.
 
 If you want to contribute, hop on the Discord server and say hi!
 
-<img src="https://github.com/wger-project/flutter/blob/master/android/fastlane/metadata/android/en-US/images/phoneScreenshots/01%20-%20workout%20plan.png?raw=true"  width="200" />
 
-<img src="https://github.com/wger-project/flutter/blob/master/android/fastlane/metadata/android/en-US/images/phoneScreenshots/02%20-%20workout%20log.png?raw=true"  width="200" />
+<p float="left">
+<img src="https://github.com/wger-project/flutter/blob/master/android/fastlane/metadata/android/en-US/images/phoneScreenshots/01%20-%20workout%20plan.png?raw=true" width="200" />
 
+<img src="https://github.com/wger-project/flutter/blob/master/android/fastlane/metadata/android/en-US/images/phoneScreenshots/02%20-%20workout%20log.png?raw=true" width="200" />
+</p>
 
 
 ## Getting Started
