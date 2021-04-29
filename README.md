@@ -29,7 +29,7 @@ Install Flutter, all its dependencies and create a new virtual device:
 <https://flutter.dev/docs/get-started/install>
 
 ### 3
-Create a new file ``wger.properties`` in ``android/app`` (next to build.gradle):
+Create a new file ``wger.properties`` in ``android/fastlane/envfiles``:
 
 ```properties
 WGER_API_KEY=123456
