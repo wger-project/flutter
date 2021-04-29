@@ -1,15 +1,24 @@
 # Mobile app for wger Workout Manager
 
-Mobile app for wger written with Flutter, still in early stages of development.
-As soon as it is finished, it will be published in the different app stores.
+wger is a free, open source flutter application that manages and tracks/logs
+your exercises and personal workouts, weight and diet plans. This is the mobile
+app written with Flutter, it talks via REST with the main server.
 
 If you want to contribute, hop on the Discord server and say hi!
+
+<img src="https://github.com/wger-project/flutter/blob/master/android/fastlane/metadata/android/en-US/images/phoneScreenshots/01%20-%20workout%20plan.png?raw=true"  width="200" />
+
+<img src="https://github.com/wger-project/flutter/blob/master/android/fastlane/metadata/android/en-US/images/phoneScreenshots/02%20-%20workout%20log.png?raw=true"  width="200" />
+
+
 
 ## Getting Started
 
 ### 1
 Install the wger server, the easiest way is starting the development docker-compose:
 <https://github.com/wger-project/wger>
+
+Alternatively, you can use one of our test servers, just ask us for access.
 
 ### 2
 Install Flutter, all its dependencies and create a new virtual device: 
