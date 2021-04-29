@@ -321,7 +321,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                   return Column(
                     children: [
                       Text(s.exerciseObj.name),
-                      MutedText(set.getSmartTextRepr(s.exerciseObj)),
+                      ...set.getSmartRepr(s.exerciseObj).map((e) => MutedText(e)).toList(),
                       SizedBox(height: 5),
                     ],
                   );
