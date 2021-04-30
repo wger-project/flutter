@@ -188,8 +188,6 @@
   "@description": {},
   "save": "Save",
   "@save": {},
-  "cancel": "Cancel",
-  "@cancel": {},
   "addSet": "Add set",
   "@addSet": {
     "description": "Label for the button that adds a set (to a workout day)"
@@ -214,8 +212,6 @@
   },
   "anErrorOccurred": "An Error Occurred!",
   "@anErrorOccurred": {},
-  "dismiss": "Dismiss",
-  "@dismiss": {},
   "weight": "Weight",
   "@weight": {
     "description": "The weight of a workout log or body weight entry"

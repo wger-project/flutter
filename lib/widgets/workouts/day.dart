@@ -61,7 +61,7 @@ class SettingWidget extends StatelessWidget {
                 content: ExerciseDetail(setting.exerciseObj),
                 actions: [
                   TextButton(
-                    child: Text(AppLocalizations.of(context)!.dismiss),
+                    child: Text(MaterialLocalizations.of(context).closeButtonLabel),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },

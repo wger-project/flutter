@@ -46,7 +46,7 @@ class NutritionalPlansList extends StatelessWidget {
                     ),
                     actions: [
                       TextButton(
-                        child: Text(AppLocalizations.of(context)!.cancel),
+                        child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
                         onPressed: () => Navigator.of(contextDialog).pop(),
                       ),
                       TextButton(

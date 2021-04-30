@@ -34,7 +34,7 @@ void showErrorDialog(dynamic exception, BuildContext context) {
       content: Text(exception.toString()),
       actions: [
         TextButton(
-          child: Text(AppLocalizations.of(context)!.dismiss),
+          child: Text(MaterialLocalizations.of(context).closeButtonLabel),
           onPressed: () {
             Navigator.of(ctx).pop();
           },
@@ -76,7 +76,7 @@ void showHttpExceptionErrorDialog(WgerHttpException exception, BuildContext cont
       ),
       actions: [
         TextButton(
-          child: Text(AppLocalizations.of(context)!.dismiss),
+          child: Text(MaterialLocalizations.of(context).closeButtonLabel),
           onPressed: () {
             Navigator.of(ctx).pop();
           },
