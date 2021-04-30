@@ -59,25 +59,29 @@ class _DashboardScreenState extends State<DashboardScreen> {
     if (!Provider.of<Auth>(context, listen: false).dataInit) {
       Provider.of<Auth>(context, listen: false).setServerVersion();
 
-      // Exercises
-      await Provider.of<Exercises>(context, listen: false).fetchAndSetExercises();
+      // Base data
+      await Future.wait([
+        Provider.of<WorkoutPlans>(context, listen: false).fetchAndSetUnits(),
+        Provider.of<Nutrition>(context, listen: false).fetchIngredientsFromCache(),
+        Provider.of<Exercises>(context, listen: false).fetchAndSetExercises(),
+      ]);
 
-      // Nutrition
-      await Provider.of<Nutrition>(context, listen: false).fetchIngredientsFromCache();
-      await Provider.of<Nutrition>(context, listen: false).fetchAndSetAllPlans();
+      // Plans and weight
+      await Future.wait([
+        Provider.of<Nutrition>(context, listen: false).fetchAndSetAllPlans(),
+        Provider.of<WorkoutPlans>(context, listen: false).fetchAndSetAllPlans(),
+        Provider.of<BodyWeight>(context, listen: false).fetchAndSetEntries(),
+      ]);
+
+      // Nutrition logs
       await Provider.of<Nutrition>(context, listen: false).fetchAndSetAllLogs();
 
-      // Workouts
-      await Provider.of<WorkoutPlans>(context, listen: false).fetchAndSetUnits();
-      await Provider.of<WorkoutPlans>(context, listen: false).fetchAndSetAllPlans();
+      // Current workout plan
       if (Provider.of<WorkoutPlans>(context, listen: false).activePlan != null) {
         Provider.of<WorkoutPlans>(context, listen: false).setCurrentPlan(
           Provider.of<WorkoutPlans>(context, listen: false).activePlan!.id!,
         );
       }
-
-      // Weight
-      await Provider.of<BodyWeight>(context, listen: false).fetchAndSetEntries();
     }
 
     Provider.of<Auth>(context, listen: false).dataInit = true;
