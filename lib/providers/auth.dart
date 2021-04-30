@@ -84,7 +84,7 @@ class Auth with ChangeNotifier {
     required String serverUrl,
   }) async {
     final uri = Uri.parse(serverUrl + '/api/v2/register/');
-    Map<String, String> metadata = Map();
+    Map<String, String>? metadata = Map();
 
     // Read the api key from the manifest file
     try {
@@ -103,7 +103,7 @@ class Auth with ChangeNotifier {
         uri,
         headers: {
           HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
-          HttpHeaders.authorizationHeader: "Token ${metadata['wger.api_key']}"
+          HttpHeaders.authorizationHeader: "Token ${metadata!['wger.api_key']}"
         },
         body: json.encode(data),
       );
