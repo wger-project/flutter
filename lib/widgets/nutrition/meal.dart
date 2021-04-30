@@ -238,7 +238,7 @@ class DismissibleMealHeader extends StatelessWidget {
               ),
               IconButton(
                 visualDensity: VisualDensity.compact,
-                icon: _expanded ? Icon(Icons.expand_less) : Icon(Icons.expand_more),
+                icon: _expanded ? Icon(Icons.unfold_less) : Icon(Icons.unfold_more),
                 onPressed: () {
                   _toggle();
                 },
