@@ -24,6 +24,7 @@ import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
+import 'package:wger/widgets/workouts/forms.dart';
 import 'package:wger/widgets/workouts/gym_mode.dart';
 
 import '../test_data/workouts.dart';
@@ -73,7 +74,9 @@ void main() {
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();
 
+    //
     // Start page
+    //
     expect(find.byType(StartPage), findsOneWidget);
     expect(find.text('Your workout today'), findsOneWidget);
     expect(find.text('test exercise 1'), findsOneWidget);
@@ -83,7 +86,9 @@ void main() {
     await tester.tap(find.byIcon(Icons.chevron_right));
     await tester.pumpAndSettle();
 
+    //
     // Exercise overview page
+    //
     expect(find.text('test exercise 1'), findsOneWidget);
     expect(find.byType(ExerciseOverview), findsOneWidget);
     expect(find.byIcon(Icons.chevron_left), findsOneWidget);
@@ -92,7 +97,9 @@ void main() {
     await tester.drag(find.byType(ExerciseOverview), Offset(-500.0, 0.0));
     await tester.pumpAndSettle();
 
+    //
     // Log
+    //
     expect(find.text('test exercise 1'), findsOneWidget);
     expect(find.byType(LogPage), findsOneWidget);
     expect(find.byType(Form), findsOneWidget);
@@ -102,10 +109,28 @@ void main() {
     expect(find.byIcon(Icons.chevron_left), findsOneWidget);
     expect(find.byIcon(Icons.exit_to_app), findsOneWidget);
     expect(find.byIcon(Icons.chevron_right), findsOneWidget);
+
+    // Form shows only weight and reps
+    expect(find.byIcon(Icons.unfold_more), findsOneWidget);
+    expect(find.byType(TextFormField), findsNWidgets(2));
+    expect(find.byType(RepetitionUnitInputWidget), findsNothing);
+    expect(find.byType(WeightUnitInputWidget), findsNothing);
+    expect(find.byType(RiRInputWidget), findsNothing);
+
+    // Form shows unit and rir after tapping the toggle button
+    await tester.tap(find.byIcon(Icons.unfold_more));
+    await tester.pump();
+    expect(find.byType(RepetitionUnitInputWidget), findsOneWidget);
+    expect(find.byType(WeightUnitInputWidget), findsOneWidget);
+    expect(find.byType(RiRInputWidget), findsOneWidget);
+    expect(find.byIcon(Icons.unfold_less), findsOneWidget);
+
     await tester.drag(find.byType(LogPage), Offset(-500.0, 0.0));
     await tester.pumpAndSettle();
 
+    //
     // Pause
+    //
     expect(find.text('0:00'), findsOneWidget);
     expect(find.byType(TimerWidget), findsOneWidget);
     expect(find.byIcon(Icons.chevron_left), findsOneWidget);
@@ -114,14 +139,18 @@ void main() {
     await tester.tap(find.byIcon(Icons.chevron_right));
     await tester.pumpAndSettle();
 
+    //
     // Log
+    //
     expect(find.text('test exercise 1'), findsOneWidget);
     expect(find.byType(LogPage), findsOneWidget);
     expect(find.byType(Form), findsOneWidget);
     await tester.drag(find.byType(LogPage), Offset(-500.0, 0.0));
     await tester.pumpAndSettle();
 
+    //
     // Pause
+    //
     expect(find.text('0:00'), findsOneWidget);
     expect(find.byType(TimerWidget), findsOneWidget);
     expect(find.byIcon(Icons.chevron_left), findsOneWidget);
@@ -130,7 +159,9 @@ void main() {
     await tester.tap(find.byIcon(Icons.chevron_right));
     await tester.pumpAndSettle();
 
+    //
     // Session
+    //
     expect(find.text('Workout session'), findsOneWidget);
     expect(find.byType(SessionPage), findsOneWidget);
     expect(find.byType(Form), findsOneWidget);
