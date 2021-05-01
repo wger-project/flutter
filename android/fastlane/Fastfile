@@ -30,7 +30,7 @@ platform :android do
     begin
       old_version_code = google_play_track_version_codes(
         package_name: "de.wger.flutter",
-        track: "alpha",
+        track: "production",
         json_key: "./fastlane/envfiles/playstore.json",
       )
       puts "old_version_code: " + old_version_code.to_s
