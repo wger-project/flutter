@@ -53,5 +53,5 @@ jobs:
       - name: Run Fastlane
         uses: maierj/fastlane-action@v2.0.0
         with:
-          lane: update_alpha
+          lane: production
           subdirectory: android

@@ -21,7 +21,7 @@
 const double ICON_SIZE_SMALL = 20;
 
 /// Default wger server during login
-const DEFAULT_SERVER = 'https://wger.rge.uber.space';
+const DEFAULT_SERVER = 'https://wger.de';
 
 /// Default weight unit is "kg"
 const DEFAULT_WEIGHT_UNIT = 1;
