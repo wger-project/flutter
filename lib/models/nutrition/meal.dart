@@ -34,7 +34,7 @@ class Meal {
   late int planId;
 
   @JsonKey(toJson: timeToString, fromJson: stringToTime)
-  late TimeOfDay time;
+  TimeOfDay? time;
 
   @JsonKey(ignore: true, name: 'meal_items', defaultValue: [])
   List<MealItem> mealItems = [];

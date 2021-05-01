@@ -61,7 +61,7 @@ class MealForm extends StatelessWidget {
                 // Open time picker
                 var pickedTime = await showTimePicker(
                   context: context,
-                  initialTime: _meal.time,
+                  initialTime: _meal.time!,
                 );
 
                 _timeController.text = timeToString(pickedTime)!;

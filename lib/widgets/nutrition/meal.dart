@@ -117,9 +117,14 @@ class MealItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // TODO: add real support for weight units
+    /*
     String unit = _item.weightUnitId == null
         ? AppLocalizations.of(context)!.g
         : _item.weightUnitObj!.weightUnit.name;
+
+     */
+    String unit = AppLocalizations.of(context)!.g;
     final values = _item.nutritionalValues;
 
     return Container(
@@ -232,7 +237,7 @@ class DismissibleMealHeader extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  _meal.time.format(context),
+                  _meal.time!.format(context),
                   style: Theme.of(context).textTheme.headline5,
                 ),
               ),
