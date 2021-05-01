@@ -22,7 +22,6 @@ import 'package:provider/provider.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/form_screen.dart';
-import 'package:wger/screens/workout_plans_screen.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 import 'package:wger/widgets/workouts/workout_logs.dart';
 import 'package:wger/widgets/workouts/workout_plan_detail.dart';
@@ -103,7 +102,7 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
                     } else if (value == WorkoutOptions.delete) {
                       Provider.of<WorkoutPlans>(context, listen: false)
                           .deleteWorkout(workoutPlan.id!);
-                      Navigator.of(context).pushNamed(WorkoutPlansScreen.routeName);
+                      Navigator.of(context).pop();
 
                       // Toggle Mode
                     } else if (value == WorkoutOptions.toggleMode) {

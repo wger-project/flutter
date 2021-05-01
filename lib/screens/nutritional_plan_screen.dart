@@ -25,8 +25,6 @@ import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/nutritional_plan_detail.dart';
 
-import 'nutritional_plans_screen.dart';
-
 enum NutritionalPlanOptions {
   edit,
   delete,
@@ -68,7 +66,7 @@ class NutritionalPlanScreen extends StatelessWidget {
                     } else if (value == NutritionalPlanOptions.delete) {
                       Provider.of<Nutrition>(context, listen: false)
                           .deletePlan(_nutritionalPlan.id!);
-                      Navigator.of(context).pushReplacementNamed(NutritionScreen.routeName);
+                      Navigator.of(context).pop();
                     }
                   },
                   itemBuilder: (BuildContext context) {
