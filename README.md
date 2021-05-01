@@ -15,8 +15,13 @@ If you want to contribute, hop on the Discord server and say hi!
 <img src="https://github.com/wger-project/flutter/blob/master/android/fastlane/metadata/android/en-US/images/phoneScreenshots/04%20-%20nutritional%20plan.png?raw=true" width="200" />
 </p>
 
+## Installation
+[<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png"
+      alt="Get it on Google Play"
+      height="80">](https://play.google.com/store/apps/details?id=de.wger.flutter)
 
-## Getting Started
+
+## Development
 
 ### 1
 Install the wger server, the easiest way is starting the development docker-compose:
