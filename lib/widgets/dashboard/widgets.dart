@@ -71,7 +71,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
               Expanded(
                 flex: 8,
                 child: Text(
-                  meal.time.format(context),
+                  meal.time!.format(context),
                   style: TextStyle(fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
@@ -313,24 +313,23 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
           ),
         ));
 
-        if (showDetail) {
-          day.sets.forEach((set) {
-            out.add(Column(
-              children: [
-                ...set.settingsFiltered.map((s) {
-                  return Column(
-                    children: [
-                      Text(s.exerciseObj.name),
+        day.sets.forEach((set) {
+          out.add(Column(
+            children: [
+              ...set.settingsFiltered.map((s) {
+                return Column(
+                  children: [
+                    Text(s.exerciseObj.name),
+                    if (showDetail)
                       ...set.getSmartRepr(s.exerciseObj).map((e) => MutedText(e)).toList(),
-                      SizedBox(height: 5),
-                    ],
-                  );
-                }).toList(),
-              ],
-            ));
-          });
-          out.add(SizedBox(height: 10));
-        }
+                    if (showDetail) SizedBox(height: 8),
+                  ],
+                );
+              }).toList(),
+            ],
+          ));
+        });
+        out.add(SizedBox(height: 10));
       }
     }
 
