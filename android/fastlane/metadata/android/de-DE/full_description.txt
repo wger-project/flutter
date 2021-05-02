@@ -1,10 +1,10 @@
-Von Fitnessliebhabern für Fitnessliebhaber - organisiere deine Gesundheit mit WGER, deinem Workout Manager!
+Von Fitnessliebhabern für Fitnessliebhaber - organisiere deine Gesundheit mit wger, deinem Workout Manager!
 
 Hast du schon deine #1 Fitness-App gefunden und liebst es, deine eigene Trainingspläne zu erstellen? Egal was für ein sportliches Biest du bist sind - wir haben alle etwas gemeinsam: wir lieben es, den Überblick über unsere Gesundheitsdaten zu behalten <3
 
 Wir verurteilen dich also nicht dafür, dass du deine Fitness-Reise immer noch mit deinem kleinen Logbuch verwaltest, aber willkommen im Jahr 2021!
 
-Wir haben eine 100% kostenlose digitale Gesundheits- und Fitnesstracker-App für dich entwickelt, die auf die wichtigsten Funktionen reduziert ist, um dein Leben einfacher zu machen. Lege jetzt lost, trainiere weiter und feiere deine Ihre Fortschritte!
+Wir haben eine 100% kostenlose digitale Gesundheits- und Fitnesstracker-App für dich entwickelt, die auf die wichtigsten Funktionen reduziert ist, um dein Leben einfacher zu machen. Lege jetzt lost, trainiere weiter und feiere deine Fortschritte!
 
 wger ist ein Open-Source-Projekt und dreht sich um:
 * Deinen Körper
@@ -13,22 +13,22 @@ wger ist ein Open-Source-Projekt und dreht sich um:
 * Deine Daten
 
 Dein Körper:
-Du musst nicht mehr nach den Zutaten deiner Lieblingsspeise googeln - stelle deine täglichen Mahlzeiten aus mehr als 78000 Produkten und deren Nährwerte her. Füge Mahlzeiten zum Ernährungsplan hinzu und behalte den Überblick über deine Ernährung im Kalender.
+Du musst nicht mehr nach den Zutaten deiner Lieblingsspeise googeln - stelle deine täglichen Mahlzeiten aus mehr als 78000 Produkten und deren Nährwerte zusammen. Füge diese deinem Ernährungsplan hinzu und behalte den Überblick über deine Ernährung im Kalender.
 
 Deine Workouts:
-Du weißt, was das Beste für Ihren Körper ist. Erstelle deine eigenen Workouts aus einer wachsenden Vielfalt von 200 verschiedenen Übungen. Verwende dann den Gym-Modus, um dich durch das Training zu führen, während du deine Gewichte und Wiederholungen mit einem Tippen protokollieren kannst.
+Du weißt, was das Beste für deinen Körper ist. Erstelle deine eigenen Workouts aus einer wachsenden Vielfalt von 200 verschiedenen Übungen. Verwende den Gym-Modus, um dich durch das Training führen zu lassen, während du deine Gewichte und Wiederholungen mit einem Tippen protokollieren kannst.
 
 Dein Fortschritt:
 Verlieren nie deine Ziele aus den Augen, tracke dein Gewicht und behalte deine Statistiken.
 
 Deine Daten:
-wger ist dein persönliches Fitness-Tagebuch - aber deine Daten gehören Dir. Nutze die REST-API, um darauf zuzugreifen und erstaunliche Dinge damit zu tun.
+wger ist dein persönliches Fitness-Tagebuch - aber deine Daten gehören dir. Nutze die REST-API, um darauf zuzugreifen und erstaunliche Dinge damit zu tun.
 
 Bitte beachte: Diese kostenlose App basiert nicht auf zusätzlichen Finanzierungen und wir bitten dich nicht um Geldspenden. Vielmehr handelt es sich um ein Community-Projekt, das ständig wächst. Sei also jederzeit auf neue Funktionen vorbereitet!
 
 #OpenSource - was bedeutet das?
 
-Open Source bedeutet, dass der gesamte Quellcode für diese App und den Server, mit dem sie spricht, frei und für jeden verfügbar ist:
+Open Source bedeutet, dass der gesamte Quellcode für diese App und den damit verbundenen Server, frei und für jeden verfügbar ist:
 * Willst du wger auf deinem eigenen Server für dich oder dein lokales Fitnessstudio laufen lassen? Nur zu!
 * Vermisst du ein Feature und willst es implementieren? Fang jetzt an!
 * Willst du überprüfen, dass etwas an Dritte gesendet wird? Das kannst du!
