@@ -33,7 +33,10 @@ class WorkoutPlan {
   @JsonKey(required: true, name: 'creation_date')
   late DateTime creationDate;
 
-  @JsonKey(required: true, name: 'comment')
+  @JsonKey(required: true, name: 'name')
+  late String name;
+
+  @JsonKey(required: true, name: 'description')
   late String description;
 
   @JsonKey(ignore: true)
@@ -45,17 +48,19 @@ class WorkoutPlan {
   WorkoutPlan({
     this.id,
     required this.creationDate,
-    required this.description,
+    required this.name,
+    String? description,
     List<Day>? days,
     List<Log>? logs,
   }) {
     this.days = days ?? [];
     this.logs = logs ?? [];
+    this.description = description ?? '';
   }
 
   WorkoutPlan.empty() {
     creationDate = DateTime.now();
-    description = '';
+    name = '';
   }
 
   // Boilerplate

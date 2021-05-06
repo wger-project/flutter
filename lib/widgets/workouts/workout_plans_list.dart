@@ -44,7 +44,7 @@ class WorkoutPlansList extends StatelessWidget {
                 builder: (BuildContext contextDialog) {
                   return AlertDialog(
                     content: Text(
-                      AppLocalizations.of(context)!.confirmDelete(currentWorkout.description),
+                      AppLocalizations.of(context)!.confirmDelete(currentWorkout.name),
                     ),
                     actions: [
                       TextButton(
@@ -102,7 +102,7 @@ class WorkoutPlansList extends StatelessWidget {
                 Navigator.of(context)
                     .pushNamed(WorkoutPlanScreen.routeName, arguments: currentWorkout);
               },
-              title: Text(currentWorkout.description),
+              title: Text(currentWorkout.name),
               subtitle: Text(
                 DateFormat.yMd(Localizations.localeOf(context).languageCode)
                     .format(currentWorkout.creationDate),

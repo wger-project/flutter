@@ -41,16 +41,11 @@ class _WorkoutPlanDetailState extends State<WorkoutPlanDetail> {
         [
           Column(
             children: [
-              /*
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: Text(
-                  DateFormat.yMd().format(widget._workoutPlan.creationDate).toString(),
-                  style: Theme.of(context).textTheme.headline6,
+              if (widget._workoutPlan.description != '')
+                Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: Text(widget._workoutPlan.description),
                 ),
-              ),
-
-               */
               ...widget._workoutPlan.days
                   .map((workoutDay) => WorkoutDayWidget(workoutDay))
                   .toList(),
