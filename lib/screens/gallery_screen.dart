@@ -23,52 +23,20 @@ import 'package:provider/provider.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/form_screen.dart';
-import 'package:wger/screens/gallery_screen.dart';
 import 'package:wger/widgets/app_drawer.dart';
 import 'package:wger/widgets/core/core.dart';
+import 'package:wger/widgets/gallery/overview.dart';
 import 'package:wger/widgets/workouts/forms.dart';
-import 'package:wger/widgets/workouts/workout_plans_list.dart';
 
-class WorkoutPlansScreen extends StatefulWidget {
-  static const routeName = '/workout-plans-list';
+class GalleryScreen extends StatelessWidget {
+  static const routeName = '/gallery';
+  const GalleryScreen();
 
-  @override
-  _WorkoutPlansScreenState createState() => _WorkoutPlansScreenState();
-}
-
-enum WorkoutListOptions {
-  gallery,
-}
-
-class _WorkoutPlansScreenState extends State<WorkoutPlansScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: WgerAppBar(
         AppLocalizations.of(context)!.labelWorkoutPlans,
-        [
-          PopupMenuButton<WorkoutListOptions>(
-            icon: Icon(Icons.more_vert),
-            onSelected: (value) {
-              // Gallery
-              if (value == WorkoutListOptions.gallery) {
-                Navigator.pushNamed(
-                  context,
-                  GalleryScreen.routeName,
-                );
-              }
-            },
-            itemBuilder: (BuildContext context) {
-              return [
-                PopupMenuItem<WorkoutListOptions>(
-                  value: WorkoutListOptions.gallery,
-                  child: Text('Gallery'),
-                ),
-                const PopupMenuDivider(),
-              ];
-            },
-          ),
-        ],
       ),
       drawer: AppDrawer(),
       floatingActionButton: FloatingActionButton(
@@ -85,7 +53,7 @@ class _WorkoutPlansScreenState extends State<WorkoutPlansScreen> {
         },
       ),
       body: Consumer<WorkoutPlans>(
-        builder: (context, workoutProvider, child) => WorkoutPlansList(workoutProvider),
+        builder: (context, workoutProvider, child) => Gallery(),
       ),
     );
   }

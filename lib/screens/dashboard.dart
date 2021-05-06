@@ -59,6 +59,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     if (!Provider.of<Auth>(context, listen: false).dataInit) {
       Provider.of<Auth>(context, listen: false).setServerVersion();
 
+      await Provider.of<WorkoutPlans>(context, listen: false).fetchAndSetGallery();
+
       // Base data
       await Future.wait([
         Provider.of<WorkoutPlans>(context, listen: false).fetchAndSetUnits(),

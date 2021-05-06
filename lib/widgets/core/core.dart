@@ -46,13 +46,19 @@ class MutedText extends StatelessWidget {
 /// Appbar that extends [PreferredSizeWidget]
 class WgerAppBar extends StatelessWidget with PreferredSizeWidget {
   String _title;
+  late List<Widget> _actions = [];
 
-  WgerAppBar(this._title);
+  WgerAppBar(this._title, [List<Widget>? actions]) {
+    if (actions != null) {
+      _actions = actions;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
       title: Text(_title),
+      actions: _actions,
     );
   }
 
