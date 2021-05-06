@@ -351,7 +351,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                     ),
                     TextButton(
                       child: Text(
-                        _workoutPlan.description,
+                        _workoutPlan.name,
                         style: TextStyle(fontSize: 20),
                       ),
                       onPressed: () {

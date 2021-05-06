@@ -186,6 +186,10 @@
   "@logHelpEntriesUnits": {},
   "description": "Description",
   "@description": {},
+  "name": "Name",
+  "@name": {
+    "description": "Name for a workout or nutritional plan"
+  },
   "save": "Save",
   "@save": {},
   "addSet": "Add set",

@@ -106,7 +106,7 @@ WorkoutPlan getWorkout() {
   var workout = WorkoutPlan(
       id: 1,
       creationDate: DateTime(2021, 01, 01),
-      description: 'test workout 1',
+      name: 'test workout 1',
       days: [day1, day2],
       logs: [log1, log2, log3]);
 

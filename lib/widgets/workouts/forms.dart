@@ -39,12 +39,14 @@ class WorkoutForm extends StatelessWidget {
 
   WorkoutForm(this._plan);
 
-  final TextEditingController workoutController = TextEditingController();
+  final TextEditingController workoutNameController = TextEditingController();
+  final TextEditingController workoutDescriptionController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     if (_plan.id != null) {
-      workoutController.text = _plan.description;
+      workoutNameController.text = _plan.name;
+      workoutDescriptionController.text = _plan.description;
     }
 
     return Form(
@@ -52,12 +54,31 @@ class WorkoutForm extends StatelessWidget {
       child: Column(
         children: [
           TextFormField(
-            key: Key('field-description'),
-            decoration: InputDecoration(labelText: AppLocalizations.of(context)!.description),
-            controller: workoutController,
+            key: Key('field-name'),
+            decoration: InputDecoration(labelText: AppLocalizations.of(context)!.name),
+            controller: workoutNameController,
             validator: (value) {
               const minLength = 5;
               const maxLength = 100;
+              if (value!.isEmpty || value.length < minLength || value.length > maxLength) {
+                return AppLocalizations.of(context)!.enterCharacters(minLength, maxLength);
+              }
+              return null;
+            },
+            onFieldSubmitted: (_) {},
+            onSaved: (newValue) {
+              _plan.name = newValue!;
+            },
+          ),
+          TextFormField(
+            key: Key('field-description'),
+            decoration: InputDecoration(labelText: AppLocalizations.of(context)!.description),
+            minLines: 3,
+            maxLines: 10,
+            controller: workoutDescriptionController,
+            validator: (value) {
+              const minLength = 0;
+              const maxLength = 1000;
               if (value!.isEmpty || value.length < minLength || value.length > maxLength) {
                 return AppLocalizations.of(context)!.enterCharacters(minLength, maxLength);
               }

@@ -45,8 +45,8 @@ void main() {
         testAuthProvider,
         testExercisesProvider,
         [
-          WorkoutPlan(id: 1, creationDate: DateTime(2021, 01, 01), description: 'test 1'),
-          WorkoutPlan(id: 2, creationDate: DateTime(2021, 02, 12), description: 'test 2'),
+          WorkoutPlan(id: 1, creationDate: DateTime(2021, 01, 01), name: 'test 1'),
+          WorkoutPlan(id: 2, creationDate: DateTime(2021, 02, 12), name: 'test 2'),
         ],
         client,
       ),

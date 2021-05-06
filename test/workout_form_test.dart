@@ -33,8 +33,8 @@ import 'workout_form_test.mocks.dart';
 @GenerateMocks([WorkoutPlans])
 void main() {
   var mockWorkoutPlans = MockWorkoutPlans();
-  final plan1 = WorkoutPlan(id: 1, creationDate: DateTime(2021, 1, 1), description: 'test 1');
-  final plan2 = WorkoutPlan(creationDate: DateTime(2021, 1, 2), description: '');
+  final plan1 = WorkoutPlan(id: 1, creationDate: DateTime(2021, 1, 1), name: 'test 1');
+  final plan2 = WorkoutPlan(creationDate: DateTime(2021, 1, 2), name: '');
 
   setUp(() {
     mockWorkoutPlans = MockWorkoutPlans();
