@@ -19,18 +19,44 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/workout_plans.dart';
-import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/app_drawer.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/gallery/overview.dart';
-import 'package:wger/widgets/workouts/forms.dart';
 
-class GalleryScreen extends StatelessWidget {
+class GalleryScreen extends StatefulWidget {
   static const routeName = '/gallery';
+
   const GalleryScreen();
+
+  @override
+  _GalleryScreenState createState() => _GalleryScreenState();
+}
+
+class _GalleryScreenState extends State<GalleryScreen> {
+  PickedFile? _file;
+
+  void _showPhotoLibrary() async {
+    final picker = ImagePicker();
+    final file = await picker.getImage(source: ImageSource.gallery);
+
+    print(file);
+    setState(() {
+      _file = file!;
+    });
+  }
+
+  void _showCamera(BuildContext context) async {
+    final picker = ImagePicker();
+    final file = await picker.getImage(source: ImageSource.camera);
+
+    print(_file);
+    setState(() {
+      _file = file;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,15 +66,35 @@ class GalleryScreen extends StatelessWidget {
       ),
       drawer: AppDrawer(),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
-        onPressed: () {
-          Navigator.pushNamed(
-            context,
-            FormScreen.routeName,
-            arguments: FormScreenArguments(
-              AppLocalizations.of(context)!.newWorkout,
-              WorkoutForm(WorkoutPlan.empty()),
-            ),
+        child: Icon(Icons.camera_alt),
+        // Provide an onPressed callback.
+        onPressed: () async {
+          showModalBottomSheet(
+            context: context,
+            builder: (context) {
+              return Container(
+                height: 150,
+                child: Column(
+                  children: <Widget>[
+                    ListTile(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        _showCamera(context);
+                      },
+                      leading: Icon(Icons.photo_camera),
+                      title: Text("Take a picture"),
+                    ),
+                    ListTile(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          _showPhotoLibrary();
+                        },
+                        leading: Icon(Icons.photo_library),
+                        title: Text("Choose from photo library"))
+                  ],
+                ),
+              );
+            },
           );
         },
       ),

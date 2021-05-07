@@ -40,6 +40,10 @@ import 'package:wger/theme/theme.dart';
 import 'providers/auth.dart';
 
 void main() {
+  // Needs to be called before runApp
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Application
   runApp(MyApp());
 }
 
