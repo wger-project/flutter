@@ -3,13 +3,15 @@
 // Do not manually edit this file.
 
 import 'dart:async' as _i15;
-import 'dart:ui' as _i17;
+import 'dart:ui' as _i18;
 
 import 'package:http/src/client.dart' as _i5;
-import 'package:http/src/response.dart' as _i13;
+import 'package:http/src/response.dart' as _i12;
+import 'package:image_picker_platform_interface/src/types/picked_file/unsupported.dart'
+    as _i17;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:wger/models/exercises/exercise.dart' as _i16;
-import 'package:wger/models/gallery/image.dart' as _i12;
+import 'package:wger/models/gallery/image.dart' as _i14;
 import 'package:wger/models/workouts/day.dart' as _i7;
 import 'package:wger/models/workouts/log.dart' as _i11;
 import 'package:wger/models/workouts/repetition_unit.dart' as _i3;
@@ -19,7 +21,7 @@ import 'package:wger/models/workouts/setting.dart' as _i9;
 import 'package:wger/models/workouts/weight_unit.dart' as _i2;
 import 'package:wger/models/workouts/workout_plan.dart' as _i6;
 import 'package:wger/providers/auth.dart' as _i4;
-import 'package:wger/providers/workout_plans.dart' as _i14;
+import 'package:wger/providers/workout_plans.dart' as _i13;
 
 // ignore_for_file: comment_references
 // ignore_for_file: unnecessary_parenthesis
@@ -48,18 +50,23 @@ class _FakeWorkoutSession extends _i1.Fake implements _i10.WorkoutSession {}
 
 class _FakeLog extends _i1.Fake implements _i11.Log {}
 
-class _FakeImage extends _i1.Fake implements _i12.Image {}
-
-class _FakeResponse extends _i1.Fake implements _i13.Response {}
+class _FakeResponse extends _i1.Fake implements _i12.Response {}
 
 /// A class which mocks [WorkoutPlans].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockWorkoutPlans extends _i1.Mock implements _i14.WorkoutPlans {
+class MockWorkoutPlans extends _i1.Mock implements _i13.WorkoutPlans {
   MockWorkoutPlans() {
     _i1.throwOnMissingStub(this);
   }
 
+  @override
+  List<_i14.Image> get images => (super.noSuchMethod(Invocation.getter(#images),
+      returnValue: <_i14.Image>[]) as List<_i14.Image>);
+  @override
+  set images(List<_i14.Image>? _images) =>
+      super.noSuchMethod(Invocation.setter(#images, _images),
+          returnValueForMissingStub: null);
   @override
   List<_i6.WorkoutPlan> get items =>
       (super.noSuchMethod(Invocation.getter(#items),
@@ -218,16 +225,16 @@ class MockWorkoutPlans extends _i1.Mock implements _i14.WorkoutPlans {
           returnValue: Future<void>.value(null),
           returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i15.Future<_i12.Image> addImage(_i12.Image? image) =>
-      (super.noSuchMethod(Invocation.method(#addImage, [image]),
-              returnValue: Future<_i12.Image>.value(_FakeImage()))
-          as _i15.Future<_i12.Image>);
+  _i15.Future<void> addImage(_i14.Image? image, _i17.PickedFile? imageFile) =>
+      (super.noSuchMethod(Invocation.method(#addImage, [image, imageFile]),
+          returnValue: Future<void>.value(null),
+          returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  void addListener(_i17.VoidCallback? listener) =>
+  void addListener(_i18.VoidCallback? listener) =>
       super.noSuchMethod(Invocation.method(#addListener, [listener]),
           returnValueForMissingStub: null);
   @override
-  void removeListener(_i17.VoidCallback? listener) =>
+  void removeListener(_i18.VoidCallback? listener) =>
       super.noSuchMethod(Invocation.method(#removeListener, [listener]),
           returnValueForMissingStub: null);
   @override
@@ -262,8 +269,8 @@ class MockWorkoutPlans extends _i1.Mock implements _i14.WorkoutPlans {
                   Future<Map<String, dynamic>>.value(<String, dynamic>{}))
           as _i15.Future<Map<String, dynamic>>);
   @override
-  _i15.Future<_i13.Response> deleteRequest(String? url, int? id) =>
+  _i15.Future<_i12.Response> deleteRequest(String? url, int? id) =>
       (super.noSuchMethod(Invocation.method(#deleteRequest, [url, id]),
-              returnValue: Future<_i13.Response>.value(_FakeResponse()))
-          as _i15.Future<_i13.Response>);
+              returnValue: Future<_i12.Response>.value(_FakeResponse()))
+          as _i15.Future<_i12.Response>);
 }

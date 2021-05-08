@@ -9,9 +9,9 @@ part of 'image.dart';
 Image _$ImageFromJson(Map<String, dynamic> json) {
   $checkKeys(json, requiredKeys: const ['id', 'date', 'image']);
   return Image(
-    id: json['id'] as int,
+    id: json['id'] as int?,
     date: DateTime.parse(json['date'] as String),
-    url: json['image'] as String,
+    url: json['image'] as String?,
     description: json['description'] as String? ?? '',
   );
 }
