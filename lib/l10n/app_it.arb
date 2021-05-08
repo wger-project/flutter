@@ -29,7 +29,7 @@
   },
   "newNutritionalPlan": "Nuovo piano nutrizionale",
   "@newNutritionalPlan": {},
-  "confirmDelete": "Sei sicuro di voler cancellare '{toDelete}'?",
+  "confirmDelete": "Sei sicuro/a di voler cancellare «{toDelete}»?",
   "@confirmDelete": {
     "description": "Confirmation text before the user deletes an object",
     "type": "text",
@@ -37,9 +37,9 @@
       "toDelete": {}
     }
   },
-  "delete": "Cancella",
+  "delete": "Elimina",
   "@delete": {},
-  "loadingText": "Caricamento...",
+  "loadingText": "Caricamento…",
   "@loadingText": {
     "description": "Text to show when entries are being loaded in the background: Loading..."
   },
@@ -139,7 +139,7 @@
   "@save": {},
   "description": "Descrizione",
   "@description": {},
-  "logHelpEntriesUnits": "Da notare che solo i dati con l'unità del peso (kg o lb) e le ripetizioni sono mostrate. Altre combinazioni come tempo o 'a cedimento' sono ignorate.",
+  "logHelpEntriesUnits": "Da notare che solo i dati con l'unità del peso (kg o lb) e le ripetizioni sono mostrate. Altre combinazioni come tempo o «a cedimento» sono ignorate.",
   "@logHelpEntriesUnits": {},
   "logHelpEntries": "Se in una giornata c'è più di esercizio con lo stesso numero di ripetizioni, ma con pesi differenti, solo l'esercizio con il peso più alto viene mostrato nel diagramma.",
   "@logHelpEntries": {},
@@ -207,7 +207,7 @@
   "@labelWorkoutPlans": {
     "description": "Title for screen workout plans"
   },
-  "loginInstead": "Al log in",
+  "loginInstead": "All'accesso",
   "@loginInstead": {},
   "registerInstead": "Alla registrazione",
   "@registerInstead": {},
@@ -372,7 +372,7 @@
   "@aboutSourceTitle": {
     "description": "Title for source code section in the about dialog"
   },
-  "aboutDescription": "Grazie per esserti registrato su wger! wger è un progetto open source collaborativo, creato da entusiasti del fitness in tutto il mondo.",
+  "aboutDescription": "Grazie per esserti registrato/a su wger! wger è un progetto collaborativo con codice aperto, creato da entusiasti del fitness in tutto il mondo.",
   "@aboutDescription": {
     "description": "Text in the about dialog"
   },
