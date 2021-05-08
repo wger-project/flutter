@@ -20,7 +20,6 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/workout_plans.dart';
@@ -64,7 +63,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: WgerAppBar(
-        AppLocalizations.of(context)!.labelWorkoutPlans,
+        'Gallery',
       ),
       drawer: AppDrawer(),
       floatingActionButton: FloatingActionButton(
