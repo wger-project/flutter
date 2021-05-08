@@ -24,16 +24,16 @@ part 'image.g.dart';
 @JsonSerializable()
 class Image {
   @JsonKey(required: true)
-  final int id;
+  int? id;
 
   @JsonKey(required: true, toJson: toDate)
   late DateTime date;
 
   @JsonKey(required: true, name: 'image')
-  final String url;
+  String? url;
 
   @JsonKey(defaultValue: '')
-  final String description;
+  late String description;
 
   Image({
     required this.id,
@@ -41,6 +41,11 @@ class Image {
     required this.url,
     required this.description,
   });
+
+  Image.emtpy() {
+    this.date = DateTime.now();
+    this.description = '';
+  }
 
   // Boilerplate
   factory Image.fromJson(Map<String, dynamic> json) => _$ImageFromJson(json);

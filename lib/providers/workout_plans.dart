@@ -18,11 +18,14 @@
 
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/json.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/gallery/image.dart' as gallery;
 import 'package:wger/models/http_exception.dart';
@@ -441,13 +444,23 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<gallery.Image> addImage(gallery.Image image) async {
-    final data = await post(image.toJson(), makeUrl(_galleryUrlPath));
-    final newImage = gallery.Image.fromJson(data);
+  Future<void> addImage(gallery.Image image, PickedFile imageFile) async {
+    // create multipart request
+    var request = http.MultipartRequest('POST', makeUrl(_galleryUrlPath));
+    request.headers.addAll({
+      HttpHeaders.authorizationHeader: 'Token ${auth.token}',
+      HttpHeaders.userAgentHeader: 'wger Workout Manager App',
+    });
+    request.files.add(await http.MultipartFile.fromPath('image', imageFile.path));
+    request.fields['date'] = toDate(image.date)!;
+    request.fields['description'] = image.description;
 
-    images.add(newImage);
+    var res = await request.send();
+    final respStr = await res.stream.bytesToString();
+
+    images.add(gallery.Image.fromJson(json.decode(respStr)));
+    images.sort((a, b) => b.date.compareTo(a.date));
 
     notifyListeners();
-    return newImage;
   }
 }

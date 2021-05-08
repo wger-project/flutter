@@ -36,7 +36,7 @@ class Gallery extends StatelessWidget {
         children: List.generate(provider.images.length, (index) {
           return FadeInImage(
             placeholder: AssetImage('assets/images/placeholder.png'),
-            image: NetworkImage(provider.images[index].url),
+            image: NetworkImage(provider.images[index].url!),
             fit: BoxFit.cover,
           );
         }),

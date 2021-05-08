@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -24,7 +26,27 @@ import 'package:provider/provider.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/widgets/app_drawer.dart';
 import 'package:wger/widgets/core/core.dart';
+import 'package:wger/widgets/gallery/forms.dart';
 import 'package:wger/widgets/gallery/overview.dart';
+
+import 'form_screen.dart';
+
+// A widget that displays the picture taken by the user.
+class DisplayPictureScreen extends StatelessWidget {
+  final String imagePath;
+
+  const DisplayPictureScreen(this.imagePath);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Display the Picture')),
+      // The image is stored as a file on the device. Use the `Image.file`
+      // constructor with the given path to display the image.
+      body: Image.file(File(imagePath)),
+    );
+  }
+}
 
 class GalleryScreen extends StatefulWidget {
   static const routeName = '/gallery';
@@ -38,26 +60,6 @@ class GalleryScreen extends StatefulWidget {
 class _GalleryScreenState extends State<GalleryScreen> {
   PickedFile? _file;
 
-  void _showPhotoLibrary() async {
-    final picker = ImagePicker();
-    final file = await picker.getImage(source: ImageSource.gallery);
-
-    print(file);
-    setState(() {
-      _file = file!;
-    });
-  }
-
-  void _showCamera(BuildContext context) async {
-    final picker = ImagePicker();
-    final file = await picker.getImage(source: ImageSource.camera);
-
-    print(_file);
-    setState(() {
-      _file = file;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,34 +69,14 @@ class _GalleryScreenState extends State<GalleryScreen> {
       drawer: AppDrawer(),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.camera_alt),
-        // Provide an onPressed callback.
-        onPressed: () async {
-          showModalBottomSheet(
-            context: context,
-            builder: (context) {
-              return Container(
-                height: 150,
-                child: Column(
-                  children: <Widget>[
-                    ListTile(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        _showCamera(context);
-                      },
-                      leading: Icon(Icons.photo_camera),
-                      title: Text("Take a picture"),
-                    ),
-                    ListTile(
-                        onTap: () {
-                          Navigator.of(context).pop();
-                          _showPhotoLibrary();
-                        },
-                        leading: Icon(Icons.photo_library),
-                        title: Text("Choose from photo library"))
-                  ],
-                ),
-              );
-            },
+        onPressed: () {
+          Navigator.pushNamed(
+            context,
+            FormScreen.routeName,
+            arguments: FormScreenArguments(
+              'Add image',
+              ImageForm(),
+            ),
           );
         },
       ),
