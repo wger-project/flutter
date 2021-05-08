@@ -1,6 +1,6 @@
 Da amanti del fitness per amanti del fitness – Organizza la tua salute con wger il tuo gestore dell'allenamento!
 
-Hai già trovato la tua applicazione per il fitness #1 E ti piace creare le tue routines sportive? Non importa che tipo di sportivo sei – Abbiamo tutti qualcosa in comune: Amiamo tenere sotto controllo i dati sulla nostra salute <3
+Hai già trovato la tua applicazione per il fitness nº 1 e ti piace creare le tue routines sportive? Non importa che tipo di sportivo sei – Abbiamo tutti qualcosa in comune: Amiamo tenere sotto controllo i dati sulla nostra salute <3
 
 Quindi non ti giudichiamo se stai ancora tenendo traccia dei tuoi allenamenti con un vecchio quaderno, ma ora ti diamo il benvenuto nel 2021!
 
@@ -13,7 +13,7 @@ wger è un progetto open source ed fatto per:
 * I tuoi dati
 
 Il tuo corpo:
-Nessuna necessità di chiedere a Google gli ingredienti dei tuoi pasti preferiti – Scegli i tuoi pasti quotidiani tra più di 78000 prodotti e verifica i valori nutrizionali. Aggiungi pasti al piano nutrizionale e ottieni una panoramica della tua dieta nel calendario.
+Nessuna necessità di cercare sul web gli ingredienti dei tuoi pasti preferiti – scegli i tuoi pasti quotidiani tra più di 78.000 prodotti e verifica i valori nutrizionali. Aggiungi pasti al piano nutrizionale e ottieni una panoramica della tua dieta nel calendario.
 
 I tuoi allenamenti:
 Conosci cosa è meglio per il tuo corpo. Crea i tuoi allenamenti con un crescente numero di esercizi. Oltre 200. Poi, usa la modalità palestra per guidarti attraverso l'allenamento. Mentre registri i tuoi pesi con un tap.
@@ -22,18 +22,18 @@ I tuoi progressi:
 Non perdere traccia dei tuoi progressi. Monitora il tuo peso e le tue statistiche.
 
 I tuoi dati:
-wger è un diario del fitness personalizzato – Dove possiedi i tuoi dati. Accedici con le API messe a disposizione.
+wger è un diario del fitness personalizzato – dove possiedi i tuoi dati. Accedici con le API messe a disposizione.
 
 Per favore nota una cosa: Questa applicazione è gratuita e non è finanziata da terzi e non ti chiediamo di donare. Questo progetto è sviluppato dalla comunità in costante crescita. Quindi resta preparato a nuove funzionalità in ogni momento.
 
 #OpenSource – cosa vuole dire?
 
-Open Source significa che tutto il codice sorgente della applicazione, e del server alla quale comunica, è libero e disponibile a chiunque.
+Un codice sorgente aperto significa che tutto il codice sorgente della applicazione, e del server alla quale comunica, è libero e disponibile a chiunque.
 * Vuoi installare il tuo server wger? Così da averlo nella tua palestra? Fai pure.
 * Ti mancano funzionalità e le vuoi implementare? Inizia ora.
 * Vuoi controllare che nessun dato è inviato a terzi? Puoi farlo!
 
-Entra a far parte della nostra community e diventa e unisciti agli entusiasti dello sport e nerd IT in tutto il mondo. Continuiamo a migliorare e ottimizzare la app personalizzata alle tue necessità. Amiamo ricevere consigli e idee quindi sentiti libero di unirti a noi in ogni momento e contribuire con i tuoi desideri e le tue idee!
+Entra a far parte della nostra comunità e diventa e unisciti agli entusiasti dello sport e nerd IT in tutto il mondo. Continuiamo a migliorare e ottimizzare l'app personalizzata alle tue necessità. Amiamo ricevere consigli e idee quindi sentiti libero di unirti a noi in ogni momento e contribuire con i tuoi desideri e le tue idee!
 
 -> trovi il codice sorgente qui: https://github.com/wger-project
 -> fai le tue domante o semplicemente di ciao nel server Discord: https://discord.gg/rPWFv6W
