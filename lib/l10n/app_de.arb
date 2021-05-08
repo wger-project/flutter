@@ -12,7 +12,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "labelDashboard": "Dashboard",
+  "labelDashboard": "Startseite",
   "@labelDashboard": {
     "description": "Title for screen dashboard"
   },
@@ -28,7 +28,7 @@
   "@exercise": {
     "description": "An exercise for a workout"
   },
-  "successfullyDeleted": "Erfolgreich gelöscht",
+  "successfullyDeleted": "Gelöscht",
   "@successfullyDeleted": {
     "description": "Message when an item was successfully deleted"
   },
@@ -44,7 +44,7 @@
   "@newNutritionalPlan": {},
   "delete": "Löschen",
   "@delete": {},
-  "loadingText": "Wird geladen…",
+  "loadingText": "Wird geladen …",
   "@loadingText": {
     "description": "Text to show when entries are being loaded in the background: Loading..."
   },
@@ -76,7 +76,7 @@
   "@g": {
     "description": "Abbreviation for gram"
   },
-  "mealLogged": "Mahlzeit wurde erfolgreich im Tagebuch gespeichert",
+  "mealLogged": "Mahlzeit im Tagebuch protokolliert",
   "@mealLogged": {},
   "kJ": "kJ",
   "@kJ": {
@@ -190,11 +190,11 @@
   "@unit": {
     "description": "The unit used for a repetition (kg, time, etc.)"
   },
-  "logHelpEntriesUnits": "Beachte, dass nur Einträge mit einer Gewichtseinheit (kg oder lb) und Wiederholungen aufgezeichnet werden, andere Kombinationen wie Zeit oder \"bis zum Versagen\" werden hier ignoriert.",
+  "logHelpEntriesUnits": "Beachte, dass nur Einträge mit einer Gewichtseinheit (kg oder lb) und Wiederholungen aufgezeichnet werden, andere Kombinationen wie Zeit oder „bis zum Versagen“ werden hier ignoriert.",
   "@logHelpEntriesUnits": {},
   "logHelpEntries": "Gibt es an einem Tag mehrere Einträge mit der gleichen Anzahl von Wiederholungen, aber unterschiedlichen Gewichten, wird nur der Eintrag mit dem höheren Gewicht im Diagramm angezeigt.",
   "@logHelpEntries": {},
-  "loginInstead": "Stattdessen einloggen",
+  "loginInstead": "Stattdessen anmelden",
   "@loginInstead": {},
   "registerInstead": "Stattdessen registrieren",
   "@registerInstead": {},
@@ -216,7 +216,7 @@
   },
   "username": "Benutzername",
   "@username": {},
-  "email": "E-Mail",
+  "email": "E-Mail-Adresse",
   "@email": {},
   "invalidEmail": "Bitte gebe eine gültigen E-Mail-Adresse ein",
   "@invalidEmail": {
@@ -256,7 +256,7 @@
   },
   "addExercise": "Eine Übung hinzufügen",
   "@addExercise": {},
-  "confirmDelete": "Bist du sicher, dass du \"{toDelete}\" löschen möchtest?",
+  "confirmDelete": "Bist du sicher, dass du „{toDelete}“ löschen möchtest?",
   "@confirmDelete": {
     "description": "Confirmation text before the user deletes an object",
     "type": "text",
@@ -337,7 +337,7 @@
   "@successfullySaved": {
     "description": "Message when an item was successfully saved"
   },
-  "labelWorkoutLogs": "Trainingslogs",
+  "labelWorkoutLogs": "Trainingsprotokolle",
   "@labelWorkoutLogs": {
     "description": "(Workout) logs"
   },
@@ -369,7 +369,7 @@
   "@aboutBugsTitle": {
     "description": "Title for bugs section in the about dialog"
   },
-  "aboutSourceText": "Hole dir den Quellcode dieser Anwendung und des dazugehörigen Servers auf github",
+  "aboutSourceText": "Hole dir den Quellcode dieser Anwendung und des dazugehörigen Servers auf Github",
   "@aboutSourceText": {
     "description": "Text for source code section in the about dialog"
   },
@@ -377,7 +377,7 @@
   "@aboutSourceTitle": {
     "description": "Title for source code section in the about dialog"
   },
-  "aboutDescription": "Danke, dass du wger verwendest! wger ist ein gemeinschaftliches Open-Source-Projekt, das von Fitness-Enthusiasten aus der ganzen Welt entwickelt wurde.",
+  "aboutDescription": "Danke, dass du wger verwendest! wger ist ein gemeinschaftliches quelloffenes Projekt, das von Fitness-Enthusiasten aus der ganzen Welt entwickelt wurde.",
   "@aboutDescription": {
     "description": "Text in the about dialog"
   },
