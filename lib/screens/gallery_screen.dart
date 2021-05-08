@@ -76,6 +76,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
             arguments: FormScreenArguments(
               'Add image',
               ImageForm(),
+              true,
             ),
           );
         },
