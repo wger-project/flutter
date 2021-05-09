@@ -16,7 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/workout_plans.dart';
 
@@ -34,10 +36,54 @@ class Gallery extends StatelessWidget {
         mainAxisSpacing: 5,
         crossAxisSpacing: 5,
         children: List.generate(provider.images.length, (index) {
-          return FadeInImage(
-            placeholder: AssetImage('assets/images/placeholder.png'),
-            image: NetworkImage(provider.images[index].url!),
-            fit: BoxFit.cover,
+          final currentImage = provider.images[index];
+
+          return GestureDetector(
+            onTap: () {
+              showModalBottomSheet(
+                builder: (context) => Material(
+                  child: Container(
+                    padding: EdgeInsets.all(10),
+                    color: Colors.white,
+                    child: Column(
+                      children: [
+                        Text(
+                          DateFormat.yMd(Localizations.localeOf(context).languageCode)
+                              .format(currentImage.date),
+                          style: Theme.of(context).textTheme.headline5,
+                        ),
+                        Expanded(
+                          child: Image.network(currentImage.url!),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          child: Text(currentImage.description),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            IconButton(
+                                icon: Icon(Icons.delete),
+                                onPressed: () {
+                                  Provider.of<WorkoutPlans>(context, listen: false)
+                                      .deleteImage(currentImage);
+                                  Navigator.of(context).pop();
+                                }),
+                            IconButton(icon: Icon(Icons.edit), onPressed: () {}),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                context: context,
+              );
+            },
+            child: FadeInImage(
+              placeholder: AssetImage('assets/images/placeholder.png'),
+              image: NetworkImage(provider.images[index].url!),
+              fit: BoxFit.cover,
+            ),
           );
         }),
       ),

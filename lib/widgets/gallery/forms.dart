@@ -69,7 +69,7 @@ class _ImageFormState extends State<ImageForm> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Expanded(
-            child: InkWell(
+            child: GestureDetector(
               onTap: () async {
                 showModalBottomSheet(
                   context: context,

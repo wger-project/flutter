@@ -67,7 +67,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
       ),
       drawer: AppDrawer(),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.camera_alt),
+        child: Icon(Icons.add),
         onPressed: () {
           Navigator.pushNamed(
             context,

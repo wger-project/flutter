@@ -47,10 +47,10 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
         controller: controller,
         children: <Widget>[
           DashboardScreen(),
-          GalleryScreen(),
           WorkoutPlansScreen(),
           NutritionScreen(),
           WeightScreen(),
+          GalleryScreen(),
         ],
       ),
       bottomNavigationBar: Container(
@@ -65,9 +65,6 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
               icon: Icon(Icons.dashboard),
             ),
             Tab(
-              icon: Icon(Icons.photo_library),
-            ),
-            Tab(
               icon: Icon(Icons.fitness_center),
             ),
             Tab(
@@ -75,6 +72,9 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
             ),
             Tab(
               icon: Icon(Icons.bar_chart),
+            ),
+            Tab(
+              icon: Icon(Icons.photo_library),
             ),
           ],
         ),

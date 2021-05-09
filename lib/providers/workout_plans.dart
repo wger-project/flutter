@@ -463,4 +463,11 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
 
     notifyListeners();
   }
+
+  Future<void> deleteImage(gallery.Image image) async {
+    await deleteRequest(_galleryUrlPath, image.id!);
+    images.removeWhere((element) => element.id == image.id);
+
+    notifyListeners();
+  }
 }
