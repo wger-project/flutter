@@ -464,6 +464,32 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> editImage(gallery.Image image, PickedFile? imageFile) async {
+    var request = http.MultipartRequest('PATCH', makeUrl(_galleryUrlPath, id: image.id));
+    request.headers.addAll({
+      HttpHeaders.authorizationHeader: 'Token ${auth.token}',
+      HttpHeaders.userAgentHeader: 'wger Workout Manager App',
+    });
+
+    // Only send the image if a new one was selected
+    if (imageFile != null) {
+      request.files.add(await http.MultipartFile.fromPath('image', imageFile.path));
+    }
+
+    // Update image info
+    final data = image.toJson();
+    request.fields['id'] = data['id'];
+    request.fields['date'] = data['date'];
+    request.fields['description'] = data['description'];
+
+    final res = await request.send();
+    final respStr = await res.stream.bytesToString();
+    final responseData = json.decode(respStr);
+    image.url = responseData['image'];
+
+    notifyListeners();
+  }
+
   Future<void> deleteImage(gallery.Image image) async {
     await deleteRequest(_galleryUrlPath, image.id!);
     images.removeWhere((element) => element.id == image.id);

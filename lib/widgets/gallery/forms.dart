@@ -48,6 +48,8 @@ class _ImageFormState extends State<ImageForm> {
 
   @override
   void initState() {
+    super.initState();
+
     dateController.text = toDate(widget._image.date)!;
     descriptionController.text = widget._image.description;
   }
@@ -59,6 +61,33 @@ class _ImageFormState extends State<ImageForm> {
     setState(() {
       _file = file!;
     });
+  }
+
+  /// Returns widget with current picture, depending on whether the user is
+  /// editing an existing entry or adding a new one. A text message is shown if
+  /// neither is available
+  Widget getPicture() {
+    // An image file was selected, use it
+    if (_file != null) {
+      return Image(
+        image: FileImage(File(_file!.path)),
+      );
+    }
+
+    // We are editing an existing entry
+    if (widget._image.url != null) {
+      return Image.network(widget._image.url!);
+    }
+
+    // No picture available, show a message to the user
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(AppLocalizations.of(context)!.selectImage),
+        SizedBox(height: 8),
+        Icon(Icons.photo_camera),
+      ],
+    );
   }
 
   @override
@@ -84,7 +113,7 @@ class _ImageFormState extends State<ImageForm> {
                               _showPicker(ImageSource.camera);
                             },
                             leading: Icon(Icons.photo_camera),
-                            title: Text("Take a picture"),
+                            title: Text(AppLocalizations.of(context)!.takePicture),
                           ),
                           ListTile(
                               onTap: () {
@@ -92,27 +121,14 @@ class _ImageFormState extends State<ImageForm> {
                                 _showPicker(ImageSource.gallery);
                               },
                               leading: Icon(Icons.photo_library),
-                              title: Text("Choose from photo library"))
+                              title: Text(AppLocalizations.of(context)!.chooseFromLibrary))
                         ],
                       ),
                     );
                   },
                 );
               },
-              child: _file != null
-                  ? Image(
-                      image: FileImage(File(_file!.path)),
-                      //fit: BoxFit.none,
-                    )
-                  : Column(
-                      //mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text('please select an image'),
-                        SizedBox(height: 8),
-                        Icon(Icons.photo_camera),
-                      ],
-                    ),
+              child: getPicture(),
             ),
           ),
           TextFormField(
@@ -136,8 +152,8 @@ class _ImageFormState extends State<ImageForm> {
               widget._image.date = DateTime.parse(newValue!);
             },
             validator: (value) {
-              if (_file == null) {
-                return 'Please select an image';
+              if (widget._image.id == null && _file == null) {
+                return AppLocalizations.of(context)!.selectImage;
               }
 
               return null;
@@ -164,8 +180,11 @@ class _ImageFormState extends State<ImageForm> {
               }
               _form.currentState!.save();
 
-              if (_file != null) {
+              if (widget._image.id == null) {
                 Provider.of<WorkoutPlans>(context, listen: false).addImage(widget._image, _file!);
+                Navigator.of(context).pop();
+              } else {
+                Provider.of<WorkoutPlans>(context, listen: false).editImage(widget._image, _file);
                 Navigator.of(context).pop();
               }
             },

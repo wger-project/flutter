@@ -18,9 +18,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/screens/form_screen.dart';
+
+import 'forms.dart';
 
 class Gallery extends StatelessWidget {
   const Gallery();
@@ -69,7 +73,19 @@ class Gallery extends StatelessWidget {
                                       .deleteImage(currentImage);
                                   Navigator.of(context).pop();
                                 }),
-                            IconButton(icon: Icon(Icons.edit), onPressed: () {}),
+                            IconButton(
+                                icon: Icon(Icons.edit),
+                                onPressed: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    FormScreen.routeName,
+                                    arguments: FormScreenArguments(
+                                      AppLocalizations.of(context)!.edit,
+                                      ImageForm(currentImage),
+                                      true,
+                                    ),
+                                  );
+                                }),
                           ],
                         )
                       ],
