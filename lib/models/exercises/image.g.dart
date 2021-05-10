@@ -7,11 +7,12 @@ part of 'image.dart';
 // **************************************************************************
 
 ExerciseImage _$ExerciseImageFromJson(Map<String, dynamic> json) {
-  $checkKeys(json, requiredKeys: const ['id', 'uuid', 'exercise', 'image']);
+  $checkKeys(json,
+      requiredKeys: const ['id', 'uuid', 'exercise_base', 'image']);
   return ExerciseImage(
     id: json['id'] as int,
     uuid: json['uuid'] as String,
-    exerciseId: json['exercise'] as int,
+    exerciseBaseId: json['exercise_base'] as int,
     url: json['image'] as String,
     isMain: json['is_main'] as bool? ?? false,
   );
@@ -21,7 +22,7 @@ Map<String, dynamic> _$ExerciseImageToJson(ExerciseImage instance) =>
     <String, dynamic>{
       'id': instance.id,
       'uuid': instance.uuid,
-      'exercise': instance.exerciseId,
+      'exercise_base': instance.exerciseBaseId,
       'image': instance.url,
       'is_main': instance.isMain,
     };

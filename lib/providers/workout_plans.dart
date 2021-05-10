@@ -432,7 +432,6 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
   /*
    * Gallery
    */
-
   Future<void> fetchAndSetGallery() async {
     final data = await fetch(makeUrl(_galleryUrlPath));
 

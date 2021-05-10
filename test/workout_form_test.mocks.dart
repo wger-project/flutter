@@ -230,6 +230,16 @@ class MockWorkoutPlans extends _i1.Mock implements _i13.WorkoutPlans {
           returnValue: Future<void>.value(null),
           returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
+  _i15.Future<void> editImage(_i14.Image? image, _i17.PickedFile? imageFile) =>
+      (super.noSuchMethod(Invocation.method(#editImage, [image, imageFile]),
+          returnValue: Future<void>.value(null),
+          returnValueForMissingStub: Future.value()) as _i15.Future<void>);
+  @override
+  _i15.Future<void> deleteImage(_i14.Image? image) =>
+      (super.noSuchMethod(Invocation.method(#deleteImage, [image]),
+          returnValue: Future<void>.value(null),
+          returnValueForMissingStub: Future.value()) as _i15.Future<void>);
+  @override
   void addListener(_i18.VoidCallback? listener) =>
       super.noSuchMethod(Invocation.method(#addListener, [listener]),
           returnValueForMissingStub: null);

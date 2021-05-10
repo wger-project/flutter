@@ -59,8 +59,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     if (!Provider.of<Auth>(context, listen: false).dataInit) {
       Provider.of<Auth>(context, listen: false).setServerVersion();
 
-      await Provider.of<WorkoutPlans>(context, listen: false).fetchAndSetGallery();
-
       // Base data
       await Future.wait([
         Provider.of<WorkoutPlans>(context, listen: false).fetchAndSetUnits(),
@@ -68,8 +66,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
         Provider.of<Exercises>(context, listen: false).fetchAndSetExercises(),
       ]);
 
-      // Plans and weight
+      // Plans, weight and gallery
       await Future.wait([
+        Provider.of<WorkoutPlans>(context, listen: false).fetchAndSetGallery(),
         Provider.of<Nutrition>(context, listen: false).fetchAndSetAllPlans(),
         Provider.of<WorkoutPlans>(context, listen: false).fetchAndSetAllPlans(),
         Provider.of<BodyWeight>(context, listen: false).fetchAndSetEntries(),

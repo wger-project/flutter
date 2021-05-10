@@ -28,8 +28,8 @@ class ExerciseImage {
   @JsonKey(required: true)
   final String uuid;
 
-  @JsonKey(required: true, name: 'exercise')
-  final int exerciseId;
+  @JsonKey(required: true, name: 'exercise_base')
+  final int exerciseBaseId;
 
   @JsonKey(required: true, name: 'image')
   final String url;
@@ -40,7 +40,7 @@ class ExerciseImage {
   ExerciseImage({
     required this.id,
     required this.uuid,
-    required this.exerciseId,
+    required this.exerciseBaseId,
     required this.url,
     required this.isMain,
   });
