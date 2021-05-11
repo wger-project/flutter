@@ -47,6 +47,7 @@ class Gallery extends StatelessWidget {
               showModalBottomSheet(
                 builder: (context) => Material(
                   child: Container(
+                    key: Key('image-${currentImage.id}-detail'),
                     padding: EdgeInsets.all(10),
                     color: Colors.white,
                     child: Column(
@@ -96,8 +97,9 @@ class Gallery extends StatelessWidget {
               );
             },
             child: FadeInImage(
+              key: Key('image-${currentImage.id}'),
               placeholder: AssetImage('assets/images/placeholder.png'),
-              image: NetworkImage(provider.images[index].url!),
+              image: NetworkImage(currentImage.url!),
               fit: BoxFit.cover,
             ),
           );

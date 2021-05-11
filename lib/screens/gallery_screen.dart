@@ -20,6 +20,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/gallery.dart';
@@ -63,7 +64,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: WgerAppBar(
-        'Gallery',
+        AppLocalizations.of(context)!.gallery,
       ),
       drawer: AppDrawer(),
       floatingActionButton: FloatingActionButton(
@@ -73,7 +74,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
             context,
             FormScreen.routeName,
             arguments: FormScreenArguments(
-              'Add image',
+              AppLocalizations.of(context)!.addImage,
               ImageForm(),
               true,
             ),

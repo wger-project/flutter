@@ -58,6 +58,7 @@ dev_dependencies:
   flutter_launcher_icons: ^0.9.0
   json_serializable: ^4.0.4
   mockito: ^5.0.4
+  network_image_mock: ^2.0.0
 
 flutter_icons:
   android: true
