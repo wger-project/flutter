@@ -21,11 +21,13 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/gallery.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/auth_screen.dart';
 import 'package:wger/screens/dashboard.dart';
 import 'package:wger/screens/form_screen.dart';
+import 'package:wger/screens/gallery_screen.dart';
 import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/screens/home_tabs_screen.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
@@ -39,6 +41,10 @@ import 'package:wger/theme/theme.dart';
 import 'providers/auth.dart';
 
 void main() {
+  // Needs to be called before runApp
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Application
   runApp(MyApp());
 }
 
@@ -49,31 +55,43 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (ctx) => Auth(),
+          create: (ctx) => AuthProvider(),
         ),
-        ChangeNotifierProxyProvider<Auth, Exercises>(
-          create: (context) => Exercises(Provider.of<Auth>(context, listen: false), []),
-          update: (context, auth, previous) => previous != null ? previous : Exercises(auth, []),
+        ChangeNotifierProxyProvider<AuthProvider, ExercisesProvider>(
+          create: (context) =>
+              ExercisesProvider(Provider.of<AuthProvider>(context, listen: false), []),
+          update: (context, auth, previous) =>
+              previous != null ? previous : ExercisesProvider(auth, []),
         ),
-        ChangeNotifierProxyProvider2<Auth, Exercises, WorkoutPlans>(
-          create: (context) => WorkoutPlans(
-            Provider.of<Auth>(context, listen: false),
-            Provider.of<Exercises>(context, listen: false),
+        ChangeNotifierProxyProvider2<AuthProvider, ExercisesProvider, WorkoutPlansProvider>(
+          create: (context) => WorkoutPlansProvider(
+            Provider.of<AuthProvider>(context, listen: false),
+            Provider.of<ExercisesProvider>(context, listen: false),
             [],
           ),
           update: (context, auth, exercises, previous) =>
-              previous != null ? previous : WorkoutPlans(auth, exercises, []),
+              previous != null ? previous : WorkoutPlansProvider(auth, exercises, []),
         ),
-        ChangeNotifierProxyProvider<Auth, Nutrition>(
-          create: (context) => Nutrition(Provider.of<Auth>(context, listen: false), []),
-          update: (context, auth, previous) => previous != null ? previous : Nutrition(auth, []),
+        ChangeNotifierProxyProvider<AuthProvider, NutritionPlansProvider>(
+          create: (context) =>
+              NutritionPlansProvider(Provider.of<AuthProvider>(context, listen: false), []),
+          update: (context, auth, previous) =>
+              previous != null ? previous : NutritionPlansProvider(auth, []),
         ),
-        ChangeNotifierProxyProvider<Auth, BodyWeight>(
-          create: (context) => BodyWeight(Provider.of<Auth>(context, listen: false), []),
-          update: (context, auth, previous) => previous != null ? previous : BodyWeight(auth, []),
+        ChangeNotifierProxyProvider<AuthProvider, BodyWeightProvider>(
+          create: (context) =>
+              BodyWeightProvider(Provider.of<AuthProvider>(context, listen: false), []),
+          update: (context, auth, previous) =>
+              previous != null ? previous : BodyWeightProvider(auth, []),
+        ),
+        ChangeNotifierProxyProvider<AuthProvider, GalleryProvider>(
+          create: (context) =>
+              GalleryProvider(Provider.of<AuthProvider>(context, listen: false), []),
+          update: (context, auth, previous) =>
+              previous != null ? previous : GalleryProvider(auth, []),
         ),
       ],
-      child: Consumer<Auth>(
+      child: Consumer<AuthProvider>(
         builder: (ctx, auth, _) => MaterialApp(
           title: 'wger',
           theme: wgerTheme,
@@ -89,6 +107,7 @@ class MyApp extends StatelessWidget {
           routes: {
             DashboardScreen.routeName: (ctx) => DashboardScreen(),
             FormScreen.routeName: (ctx) => FormScreen(),
+            GalleryScreen.routeName: (ctx) => GalleryScreen(),
             GymModeScreen.routeName: (ctx) => GymModeScreen(),
             HomeTabsScreen.routeName: (ctx) => HomeTabsScreen(),
             NutritionScreen.routeName: (ctx) => NutritionScreen(),

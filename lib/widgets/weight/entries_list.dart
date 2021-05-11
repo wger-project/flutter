@@ -28,7 +28,7 @@ import 'package:wger/widgets/weight/forms.dart';
 class WeightEntriesList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final _weightProvider = Provider.of<BodyWeight>(context, listen: false);
+    final _weightProvider = Provider.of<BodyWeightProvider>(context, listen: false);
 
     return Column(
       children: [

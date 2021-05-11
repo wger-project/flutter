@@ -35,8 +35,8 @@ void main() {
 
     final plan = getNutritionalPlan();
 
-    return ChangeNotifierProvider<Nutrition>(
-      create: (context) => Nutrition(testAuthProvider, [], client),
+    return ChangeNotifierProvider<NutritionPlansProvider>(
+      create: (context) => NutritionPlansProvider(testAuthProvider, [], client),
       child: MaterialApp(
         locale: Locale(locale),
         localizationsDelegates: AppLocalizations.localizationsDelegates,

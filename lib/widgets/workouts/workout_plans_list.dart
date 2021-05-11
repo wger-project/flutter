@@ -24,7 +24,7 @@ import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
 
 class WorkoutPlansList extends StatelessWidget {
-  final WorkoutPlans _workoutProvider;
+  final WorkoutPlansProvider _workoutProvider;
 
   WorkoutPlansList(this._workoutProvider);
 
@@ -58,7 +58,7 @@ class WorkoutPlansList extends StatelessWidget {
                         ),
                         onPressed: () {
                           // Confirmed, delete the workout
-                          Provider.of<WorkoutPlans>(context, listen: false)
+                          Provider.of<WorkoutPlansProvider>(context, listen: false)
                               .deleteWorkout(currentWorkout.id!);
 
                           // Close the popup

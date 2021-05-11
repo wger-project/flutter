@@ -82,8 +82,9 @@ class MealForm extends StatelessWidget {
 
                 try {
                   _meal.id == null
-                      ? Provider.of<Nutrition>(context, listen: false).addMeal(_meal, _planId)
-                      : Provider.of<Nutrition>(context, listen: false).editMeal(_meal);
+                      ? Provider.of<NutritionPlansProvider>(context, listen: false)
+                          .addMeal(_meal, _planId)
+                      : Provider.of<NutritionPlansProvider>(context, listen: false).editMeal(_meal);
                 } on WgerHttpException catch (error) {
                   showHttpExceptionErrorDialog(error, context);
                 } catch (error) {
@@ -126,7 +127,8 @@ class MealItemForm extends StatelessWidget {
                 decoration: InputDecoration(labelText: AppLocalizations.of(context)!.ingredient),
               ),
               suggestionsCallback: (pattern) async {
-                return await Provider.of<Nutrition>(context, listen: false).searchIngredient(
+                return await Provider.of<NutritionPlansProvider>(context, listen: false)
+                    .searchIngredient(
                   pattern,
                   Localizations.localeOf(context).languageCode,
                 );
@@ -177,7 +179,8 @@ class MealItemForm extends StatelessWidget {
                 _form.currentState!.save();
 
                 try {
-                  Provider.of<Nutrition>(context, listen: false).addMealItem(_mealItem, _meal);
+                  Provider.of<NutritionPlansProvider>(context, listen: false)
+                      .addMealItem(_mealItem, _meal);
                 } on WgerHttpException catch (error) {
                   showHttpExceptionErrorDialog(error, context);
                 } catch (error) {
@@ -233,10 +236,11 @@ class PlanForm extends StatelessWidget {
               // Save to DB
               try {
                 if (_plan.id != null) {
-                  await Provider.of<Nutrition>(context, listen: false).editPlan(_plan);
+                  await Provider.of<NutritionPlansProvider>(context, listen: false).editPlan(_plan);
                   Navigator.of(context).pop();
                 } else {
-                  _plan = await Provider.of<Nutrition>(context, listen: false).addPlan(_plan);
+                  _plan = await Provider.of<NutritionPlansProvider>(context, listen: false)
+                      .addPlan(_plan);
                   Navigator.of(context).pushReplacementNamed(
                     NutritionalPlanScreen.routeName,
                     arguments: _plan,

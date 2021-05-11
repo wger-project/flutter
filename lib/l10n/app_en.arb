@@ -388,5 +388,14 @@
   "selectIngredient": "Please select an ingredient",
   "@selectIngredient": {
     "description": "Error message when the user hasn't selected an ingredient from the autocompleter"
-  }
+  },
+  "selectImage": "Please select an image",
+  "@selectImage": {
+    "description": "Label and error message when the user hasn't selected an image to save"
+  },
+  "takePicture": "Take a picture",
+  "chooseFromLibrary": "Choose from photo library",
+  "gallery": "Gallery",
+  "addImage": "Add image"
+
 }

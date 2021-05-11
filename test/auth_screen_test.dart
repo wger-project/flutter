@@ -30,10 +30,10 @@ void main() {
       MultiProvider(
         providers: [
           ChangeNotifierProvider(
-            create: (ctx) => Auth(),
+            create: (ctx) => AuthProvider(),
           ),
         ],
-        child: Consumer<Auth>(
+        child: Consumer<AuthProvider>(
           builder: (ctx, auth, _) => MaterialApp(
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
@@ -55,7 +55,7 @@ void main() {
 
  */
 
-    Consumer<Auth>(
+    Consumer<AuthProvider>(
       builder: (ctx, auth, _) => MaterialApp(
         builder: (ctx, authResultSnapshot) => AuthScreen(),
       ),

@@ -23,6 +23,7 @@ import 'package:provider/provider.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/gallery.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/widgets/app_drawer.dart';
@@ -56,35 +57,36 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   /// Load initial data from the server
   Future<void> _loadEntries() async {
-    if (!Provider.of<Auth>(context, listen: false).dataInit) {
-      Provider.of<Auth>(context, listen: false).setServerVersion();
+    if (!Provider.of<AuthProvider>(context, listen: false).dataInit) {
+      Provider.of<AuthProvider>(context, listen: false).setServerVersion();
 
       // Base data
       await Future.wait([
-        Provider.of<WorkoutPlans>(context, listen: false).fetchAndSetUnits(),
-        Provider.of<Nutrition>(context, listen: false).fetchIngredientsFromCache(),
-        Provider.of<Exercises>(context, listen: false).fetchAndSetExercises(),
+        Provider.of<WorkoutPlansProvider>(context, listen: false).fetchAndSetUnits(),
+        Provider.of<NutritionPlansProvider>(context, listen: false).fetchIngredientsFromCache(),
+        Provider.of<ExercisesProvider>(context, listen: false).fetchAndSetExercises(),
       ]);
 
-      // Plans and weight
+      // Plans, weight and gallery
       await Future.wait([
-        Provider.of<Nutrition>(context, listen: false).fetchAndSetAllPlans(),
-        Provider.of<WorkoutPlans>(context, listen: false).fetchAndSetAllPlans(),
-        Provider.of<BodyWeight>(context, listen: false).fetchAndSetEntries(),
+        Provider.of<GalleryProvider>(context, listen: false).fetchAndSetGallery(),
+        Provider.of<NutritionPlansProvider>(context, listen: false).fetchAndSetAllPlans(),
+        Provider.of<WorkoutPlansProvider>(context, listen: false).fetchAndSetAllPlans(),
+        Provider.of<BodyWeightProvider>(context, listen: false).fetchAndSetEntries(),
       ]);
 
       // Nutrition logs
-      await Provider.of<Nutrition>(context, listen: false).fetchAndSetAllLogs();
+      await Provider.of<NutritionPlansProvider>(context, listen: false).fetchAndSetAllLogs();
 
       // Current workout plan
-      if (Provider.of<WorkoutPlans>(context, listen: false).activePlan != null) {
-        Provider.of<WorkoutPlans>(context, listen: false).setCurrentPlan(
-          Provider.of<WorkoutPlans>(context, listen: false).activePlan!.id!,
+      if (Provider.of<WorkoutPlansProvider>(context, listen: false).activePlan != null) {
+        Provider.of<WorkoutPlansProvider>(context, listen: false).setCurrentPlan(
+          Provider.of<WorkoutPlansProvider>(context, listen: false).activePlan!.id!,
         );
       }
     }
 
-    Provider.of<Auth>(context, listen: false).dataInit = true;
+    Provider.of<AuthProvider>(context, listen: false).dataInit = true;
   }
 
   @override

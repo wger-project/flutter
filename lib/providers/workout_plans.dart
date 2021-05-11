@@ -37,7 +37,7 @@ import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
 
-class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
+class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
   static const _workoutPlansUrlPath = 'workout';
   static const _daysUrlPath = 'day';
   static const _setsUrlPath = 'set';
@@ -48,12 +48,13 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
   static const _repetitionUnitUrlPath = 'setting-repetitionunit';
 
   WorkoutPlan? _currentPlan;
-  Exercises _exercises;
+  ExercisesProvider _exercises;
   List<WorkoutPlan> _workoutPlans = [];
   List<WeightUnit> _weightUnits = [];
   List<RepetitionUnit> _repetitionUnit = [];
 
-  WorkoutPlans(Auth auth, Exercises exercises, List<WorkoutPlan> entries, [http.Client? client])
+  WorkoutPlansProvider(AuthProvider auth, ExercisesProvider exercises, List<WorkoutPlan> entries,
+      [http.Client? client])
       : this._exercises = exercises,
         this._workoutPlans = entries,
         super(auth, client);

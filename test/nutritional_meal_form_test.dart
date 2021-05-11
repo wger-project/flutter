@@ -33,7 +33,7 @@ import '../test_data/nutritional_plans.dart';
 import 'nutritional_plan_form_test.mocks.dart';
 
 void main() {
-  var mockNutrition = MockNutrition();
+  var mockNutrition = MockNutritionPlansProvider();
 
   var plan1 = NutritionalPlan.empty();
   var meal1 = Meal();
@@ -45,13 +45,13 @@ void main() {
   setUp(() {
     plan1 = getNutritionalPlan();
     meal1 = plan1.meals.first;
-    mockNutrition = MockNutrition();
+    mockNutrition = MockNutritionPlansProvider();
   });
 
   Widget createHomeScreen(Meal meal, {locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
 
-    return ChangeNotifierProvider<Nutrition>(
+    return ChangeNotifierProvider<NutritionPlansProvider>(
       create: (context) => mockNutrition,
       child: MaterialApp(
         locale: Locale(locale),

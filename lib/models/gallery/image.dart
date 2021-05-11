@@ -7,7 +7,7 @@
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * wger Workout Manager is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -17,35 +17,37 @@
  */
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:wger/helpers/json.dart';
 
 part 'image.g.dart';
 
 @JsonSerializable()
-class ExerciseImage {
+class Image {
   @JsonKey(required: true)
-  final int id;
+  int? id;
 
-  @JsonKey(required: true)
-  final String uuid;
-
-  @JsonKey(required: true, name: 'exercise_base')
-  final int exerciseBaseId;
+  @JsonKey(required: true, toJson: toDate)
+  late DateTime date;
 
   @JsonKey(required: true, name: 'image')
-  final String url;
+  String? url;
 
-  @JsonKey(name: 'is_main', defaultValue: false)
-  final bool isMain;
+  @JsonKey(defaultValue: '')
+  late String description;
 
-  ExerciseImage({
+  Image({
     required this.id,
-    required this.uuid,
-    required this.exerciseBaseId,
+    required this.date,
     required this.url,
-    required this.isMain,
+    required this.description,
   });
 
+  Image.emtpy() {
+    this.date = DateTime.now();
+    this.description = '';
+  }
+
   // Boilerplate
-  factory ExerciseImage.fromJson(Map<String, dynamic> json) => _$ExerciseImageFromJson(json);
-  Map<String, dynamic> toJson() => _$ExerciseImageToJson(this);
+  factory Image.fromJson(Map<String, dynamic> json) => _$ImageFromJson(json);
+  Map<String, dynamic> toJson() => _$ImageToJson(this);
 }

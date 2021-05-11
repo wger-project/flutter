@@ -57,7 +57,7 @@ class _NutritionScreenState extends State<NutritionScreen> {
           );
         },
       ),
-      body: Consumer<Nutrition>(
+      body: Consumer<NutritionPlansProvider>(
         builder: (context, nutritionProvider, child) => NutritionalPlansList(nutritionProvider),
       ),
     );

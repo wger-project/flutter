@@ -22,9 +22,10 @@ import 'package:wger/providers/exercises.dart';
 import '../test_data/exercises.dart';
 
 // Test Auth provider
-final Auth testAuthProvider = Auth()
+final AuthProvider testAuthProvider = AuthProvider()
   ..token = 'FooBar'
   ..serverUrl = 'https://localhost';
 
 // Test Exercises provider
-final Exercises testExercisesProvider = Exercises(testAuthProvider, [exercise1, exercise2]);
+final ExercisesProvider testExercisesProvider =
+    ExercisesProvider(testAuthProvider, [exercise1, exercise2]);

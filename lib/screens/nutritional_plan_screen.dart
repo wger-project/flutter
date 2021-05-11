@@ -41,7 +41,7 @@ class NutritionalPlanScreen extends StatelessWidget {
     return Scaffold(
       //appBar: getAppBar(nutritionalPlan),
       //drawer: AppDrawer(),
-      body: Consumer<Nutrition>(
+      body: Consumer<NutritionPlansProvider>(
         builder: (context, nutrition, _) => CustomScrollView(
           slivers: <Widget>[
             SliverAppBar(
@@ -64,7 +64,7 @@ class NutritionalPlanScreen extends StatelessWidget {
 
                       // Delete
                     } else if (value == NutritionalPlanOptions.delete) {
-                      Provider.of<Nutrition>(context, listen: false)
+                      Provider.of<NutritionPlansProvider>(context, listen: false)
                           .deletePlan(_nutritionalPlan.id!);
                       Navigator.of(context).pop();
                     }

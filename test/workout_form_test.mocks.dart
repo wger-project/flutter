@@ -31,7 +31,7 @@ class _FakeWeightUnit extends _i1.Fake implements _i2.WeightUnit {}
 
 class _FakeRepetitionUnit extends _i1.Fake implements _i3.RepetitionUnit {}
 
-class _FakeAuth extends _i1.Fake implements _i4.Auth {}
+class _FakeAuthProvider extends _i1.Fake implements _i4.AuthProvider {}
 
 class _FakeClient extends _i1.Fake implements _i5.Client {}
 
@@ -49,11 +49,12 @@ class _FakeLog extends _i1.Fake implements _i11.Log {}
 
 class _FakeResponse extends _i1.Fake implements _i12.Response {}
 
-/// A class which mocks [WorkoutPlans].
+/// A class which mocks [WorkoutPlansProvider].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockWorkoutPlans extends _i1.Mock implements _i13.WorkoutPlans {
-  MockWorkoutPlans() {
+class MockWorkoutPlansProvider extends _i1.Mock
+    implements _i13.WorkoutPlansProvider {
+  MockWorkoutPlansProvider() {
     _i1.throwOnMissingStub(this);
   }
 
@@ -82,11 +83,10 @@ class MockWorkoutPlans extends _i1.Mock implements _i13.WorkoutPlans {
       (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false)
           as bool);
   @override
-  _i4.Auth get auth =>
-      (super.noSuchMethod(Invocation.getter(#auth), returnValue: _FakeAuth())
-          as _i4.Auth);
+  _i4.AuthProvider get auth => (super.noSuchMethod(Invocation.getter(#auth),
+      returnValue: _FakeAuthProvider()) as _i4.AuthProvider);
   @override
-  set auth(_i4.Auth? _auth) =>
+  set auth(_i4.AuthProvider? _auth) =>
       super.noSuchMethod(Invocation.setter(#auth, _auth),
           returnValueForMissingStub: null);
   @override

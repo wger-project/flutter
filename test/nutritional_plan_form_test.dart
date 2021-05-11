@@ -30,9 +30,9 @@ import 'package:wger/widgets/nutrition/forms.dart';
 
 import 'nutritional_plan_form_test.mocks.dart';
 
-@GenerateMocks([Nutrition])
+@GenerateMocks([NutritionPlansProvider])
 void main() {
-  var mockNutrition = MockNutrition();
+  var mockNutrition = MockNutritionPlansProvider();
 
   final plan1 = NutritionalPlan(
     id: 1,
@@ -45,13 +45,13 @@ void main() {
   when(mockNutrition.addPlan(any)).thenAnswer((_) => Future.value(plan2));
 
   setUp(() {
-    mockNutrition = MockNutrition();
+    mockNutrition = MockNutritionPlansProvider();
   });
 
   Widget createHomeScreen(NutritionalPlan plan, {locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
 
-    return ChangeNotifierProvider<Nutrition>(
+    return ChangeNotifierProvider<NutritionPlansProvider>(
       create: (context) => mockNutrition,
       child: MaterialApp(
         locale: Locale(locale),

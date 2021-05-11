@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:wger/screens/dashboard.dart';
+import 'package:wger/screens/gallery_screen.dart';
 import 'package:wger/screens/nutritional_plans_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/screens/workout_plans_screen.dart';
@@ -36,7 +37,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
   @override
   initState() {
     super.initState();
-    controller = TabController(length: 4, vsync: this);
+    controller = TabController(length: 5, vsync: this);
   }
 
   @override
@@ -49,6 +50,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
           WorkoutPlansScreen(),
           NutritionScreen(),
           WeightScreen(),
+          GalleryScreen(),
         ],
       ),
       bottomNavigationBar: Container(
@@ -70,6 +72,9 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
             ),
             Tab(
               icon: Icon(Icons.bar_chart),
+            ),
+            Tab(
+              icon: Icon(Icons.photo_library),
             ),
           ],
         ),

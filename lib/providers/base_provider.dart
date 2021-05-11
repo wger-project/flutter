@@ -29,7 +29,7 @@ import 'package:wger/providers/helpers.dart';
 ///
 /// Provides a couple of comfort functions so we avoid a bit of boilerplate.
 class WgerBaseProvider {
-  Auth auth;
+  AuthProvider auth;
   late http.Client client;
 
   WgerBaseProvider(this.auth, [http.Client? client]) {

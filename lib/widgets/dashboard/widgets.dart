@@ -55,7 +55,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
 
   @override
   Widget build(BuildContext context) {
-    NutritionalPlan? plan = Provider.of<Nutrition>(context, listen: false).currentPlan;
+    NutritionalPlan? plan = Provider.of<NutritionPlansProvider>(context, listen: false).currentPlan;
     final bool hasContent = plan != null;
 
     List<Widget> out = [];
@@ -81,7 +81,8 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                   icon: Icon(Icons.bar_chart),
                   color: wgerPrimaryButtonColor,
                   onPressed: () {
-                    Provider.of<Nutrition>(context, listen: false).logMealToDiary(meal);
+                    Provider.of<NutritionPlansProvider>(context, listen: false)
+                        .logMealToDiary(meal);
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
@@ -210,11 +211,11 @@ class DashboardWeightWidget extends StatefulWidget {
 }
 
 class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
-  late BodyWeight weightEntriesData;
+  late BodyWeightProvider weightEntriesData;
 
   @override
   Widget build(BuildContext context) {
-    weightEntriesData = Provider.of<BodyWeight>(context, listen: false);
+    weightEntriesData = Provider.of<BodyWeightProvider>(context, listen: false);
 
     return Card(
       child: Column(
@@ -279,7 +280,8 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
 
   @override
   Widget build(BuildContext context) {
-    WorkoutPlan? _workoutPlan = Provider.of<WorkoutPlans>(context, listen: false).activePlan;
+    WorkoutPlan? _workoutPlan =
+        Provider.of<WorkoutPlansProvider>(context, listen: false).activePlan;
     final bool hasContent = _workoutPlan != null;
 
     List<Widget> out = [];
