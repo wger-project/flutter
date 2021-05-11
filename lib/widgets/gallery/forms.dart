@@ -132,6 +132,7 @@ class _ImageFormState extends State<ImageForm> {
             ),
           ),
           TextFormField(
+            key: Key('field-date'),
             decoration: InputDecoration(labelText: AppLocalizations.of(context)!.date),
             controller: dateController,
             onTap: () async {

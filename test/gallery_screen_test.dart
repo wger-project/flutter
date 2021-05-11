@@ -24,6 +24,7 @@ import 'package:mockito/mockito.dart';
 import 'package:network_image_mock/network_image_mock.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/gallery.dart';
+import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/gallery/overview.dart';
 
 import '../test_data/gallery.dart';
@@ -46,6 +47,9 @@ void main() {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Gallery(),
+        routes: {
+          FormScreen.routeName: (ctx) => FormScreen(),
+        },
       ),
     );
   }
@@ -62,13 +66,20 @@ void main() {
     await tester.tap(find.byKey(Key('image-1')));
     await tester.pumpAndSettle();
 
-    // Edit dialog opens
+    // Detail dialog opens
     expect(find.byKey(Key('image-1-detail')), findsOneWidget);
     expect(find.byType(Image), findsNWidgets(5)); // four in the overview, one in the popup
     expect(find.text('A very cool image from the gym'), findsOneWidget);
     expect(find.byIcon(Icons.edit), findsOneWidget);
     expect(find.byIcon(Icons.delete), findsOneWidget);
-    //expect(find.byType(ListTile), findsOneWidget);
+
+    // Edit form opens
+    await tester.tap(find.byIcon(Icons.edit));
+    await tester.pumpAndSettle();
+
+    expect(find.text('A very cool image from the gym'), findsOneWidget);
+    expect(find.byType(TextFormField), findsNWidgets(2));
+    expect(find.byType(ElevatedButton), findsOneWidget);
   });
 
   testWidgets('Tests the localization of dates - EN', (WidgetTester tester) async {
