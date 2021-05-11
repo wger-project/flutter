@@ -21,7 +21,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/providers/gallery.dart';
 import 'package:wger/screens/form_screen.dart';
 
 import 'forms.dart';
@@ -31,7 +31,7 @@ class Gallery extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<WorkoutPlans>(context, listen: false);
+    final provider = Provider.of<GalleryProvider>(context, listen: false);
 
     return Padding(
       padding: const EdgeInsets.all(5),
@@ -69,7 +69,7 @@ class Gallery extends StatelessWidget {
                             IconButton(
                                 icon: Icon(Icons.delete),
                                 onPressed: () {
-                                  Provider.of<WorkoutPlans>(context, listen: false)
+                                  Provider.of<GalleryProvider>(context, listen: false)
                                       .deleteImage(currentImage);
                                   Navigator.of(context).pop();
                                 }),

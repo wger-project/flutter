@@ -21,6 +21,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/gallery.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/auth_screen.dart';
@@ -76,6 +77,11 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProxyProvider<Auth, BodyWeight>(
           create: (context) => BodyWeight(Provider.of<Auth>(context, listen: false), []),
           update: (context, auth, previous) => previous != null ? previous : BodyWeight(auth, []),
+        ),
+        ChangeNotifierProxyProvider<Auth, GalleryProvider>(
+          create: (context) => GalleryProvider(Provider.of<Auth>(context, listen: false), []),
+          update: (context, auth, previous) =>
+              previous != null ? previous : GalleryProvider(auth, []),
         ),
       ],
       child: Consumer<Auth>(

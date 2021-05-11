@@ -23,6 +23,7 @@ import 'package:provider/provider.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/gallery.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/widgets/app_drawer.dart';
@@ -68,7 +69,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
       // Plans, weight and gallery
       await Future.wait([
-        Provider.of<WorkoutPlans>(context, listen: false).fetchAndSetGallery(),
+        Provider.of<GalleryProvider>(context, listen: false).fetchAndSetGallery(),
         Provider.of<Nutrition>(context, listen: false).fetchAndSetAllPlans(),
         Provider.of<WorkoutPlans>(context, listen: false).fetchAndSetAllPlans(),
         Provider.of<BodyWeight>(context, listen: false).fetchAndSetEntries(),

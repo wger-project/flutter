@@ -22,7 +22,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/providers/gallery.dart';
 import 'package:wger/widgets/app_drawer.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/gallery/forms.dart';
@@ -80,7 +80,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
           );
         },
       ),
-      body: Consumer<WorkoutPlans>(
+      body: Consumer<GalleryProvider>(
         builder: (context, workoutProvider, child) => Gallery(),
       ),
     );

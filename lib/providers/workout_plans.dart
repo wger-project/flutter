@@ -18,16 +18,12 @@
 
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/json.dart';
 import 'package:wger/models/exercises/exercise.dart';
-import 'package:wger/models/gallery/image.dart' as gallery;
 import 'package:wger/models/http_exception.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/log.dart';
@@ -48,7 +44,6 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
   static const _settingsUrlPath = 'setting';
   static const _logsUrlPath = 'workoutlog';
   static const _sessionUrlPath = 'workoutsession';
-  static const _galleryUrlPath = 'gallery';
   static const _weightUnitUrlPath = 'setting-weightunit';
   static const _repetitionUnitUrlPath = 'setting-repetitionunit';
 
@@ -57,7 +52,6 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
   List<WorkoutPlan> _workoutPlans = [];
   List<WeightUnit> _weightUnits = [];
   List<RepetitionUnit> _repetitionUnit = [];
-  List<gallery.Image> images = [];
 
   WorkoutPlans(Auth auth, Exercises exercises, List<WorkoutPlan> entries, [http.Client? client])
       : this._exercises = exercises,
@@ -427,72 +421,5 @@ class WorkoutPlans extends WgerBaseProvider with ChangeNotifier {
     plan.logs.add(log);
     notifyListeners();
     return newLog;
-  }
-
-  /*
-   * Gallery
-   */
-  Future<void> fetchAndSetGallery() async {
-    final data = await fetch(makeUrl(_galleryUrlPath));
-
-    data['results'].forEach((e) {
-      gallery.Image image = gallery.Image.fromJson(e);
-      images.add(image);
-    });
-
-    notifyListeners();
-  }
-
-  Future<void> addImage(gallery.Image image, PickedFile imageFile) async {
-    // create multipart request
-    var request = http.MultipartRequest('POST', makeUrl(_galleryUrlPath));
-    request.headers.addAll({
-      HttpHeaders.authorizationHeader: 'Token ${auth.token}',
-      HttpHeaders.userAgentHeader: 'wger Workout Manager App',
-    });
-    request.files.add(await http.MultipartFile.fromPath('image', imageFile.path));
-    request.fields['date'] = toDate(image.date)!;
-    request.fields['description'] = image.description;
-
-    var res = await request.send();
-    final respStr = await res.stream.bytesToString();
-
-    images.add(gallery.Image.fromJson(json.decode(respStr)));
-    images.sort((a, b) => b.date.compareTo(a.date));
-
-    notifyListeners();
-  }
-
-  Future<void> editImage(gallery.Image image, PickedFile? imageFile) async {
-    var request = http.MultipartRequest('PATCH', makeUrl(_galleryUrlPath, id: image.id));
-    request.headers.addAll({
-      HttpHeaders.authorizationHeader: 'Token ${auth.token}',
-      HttpHeaders.userAgentHeader: 'wger Workout Manager App',
-    });
-
-    // Only send the image if a new one was selected
-    if (imageFile != null) {
-      request.files.add(await http.MultipartFile.fromPath('image', imageFile.path));
-    }
-
-    // Update image info
-    final data = image.toJson();
-    request.fields['id'] = data['id'];
-    request.fields['date'] = data['date'];
-    request.fields['description'] = data['description'];
-
-    final res = await request.send();
-    final respStr = await res.stream.bytesToString();
-    final responseData = json.decode(respStr);
-    image.url = responseData['image'];
-
-    notifyListeners();
-  }
-
-  Future<void> deleteImage(gallery.Image image) async {
-    await deleteRequest(_galleryUrlPath, image.id!);
-    images.removeWhere((element) => element.id == image.id);
-
-    notifyListeners();
   }
 }

@@ -25,7 +25,7 @@ import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/models/gallery/image.dart' as gallery;
-import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/providers/gallery.dart';
 
 class ImageForm extends StatefulWidget {
   late gallery.Image _image;
@@ -181,10 +181,12 @@ class _ImageFormState extends State<ImageForm> {
               _form.currentState!.save();
 
               if (widget._image.id == null) {
-                Provider.of<WorkoutPlans>(context, listen: false).addImage(widget._image, _file!);
+                Provider.of<GalleryProvider>(context, listen: false)
+                    .addImage(widget._image, _file!);
                 Navigator.of(context).pop();
               } else {
-                Provider.of<WorkoutPlans>(context, listen: false).editImage(widget._image, _file);
+                Provider.of<GalleryProvider>(context, listen: false)
+                    .editImage(widget._image, _file);
                 Navigator.of(context).pop();
               }
             },
