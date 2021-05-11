@@ -33,7 +33,7 @@ import 'package:wger/models/http_exception.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/base_provider.dart';
 
-class Exercises extends WgerBaseProvider with ChangeNotifier {
+class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
   static const daysToCache = 7;
 
   static const _exercisesUrlPath = 'exerciseinfo';
@@ -50,7 +50,7 @@ class Exercises extends WgerBaseProvider with ChangeNotifier {
   List<Muscle> _muscles = [];
   List<Equipment> _equipment = [];
 
-  Exercises(Auth auth, List<Exercise> entries, [http.Client? client])
+  ExercisesProvider(AuthProvider auth, List<Exercise> entries, [http.Client? client])
       : this._exercises = entries,
         super(auth, client);
 

@@ -79,7 +79,7 @@ class WorkoutForm extends StatelessWidget {
             validator: (value) {
               const minLength = 0;
               const maxLength = 1000;
-              if (value!.isEmpty || value.length < minLength || value.length > maxLength) {
+              if (value!.length > maxLength) {
                 return AppLocalizations.of(context)!.enterCharacters(minLength, maxLength);
               }
               return null;
@@ -102,10 +102,11 @@ class WorkoutForm extends StatelessWidget {
 
               // Save to DB
               if (_plan.id != null) {
-                await Provider.of<WorkoutPlans>(context, listen: false).editWorkout(_plan);
+                await Provider.of<WorkoutPlansProvider>(context, listen: false).editWorkout(_plan);
                 Navigator.of(context).pop();
               } else {
-                _plan = await Provider.of<WorkoutPlans>(context, listen: false).addWorkout(_plan);
+                _plan = await Provider.of<WorkoutPlansProvider>(context, listen: false)
+                    .addWorkout(_plan);
                 Navigator.of(context).pushReplacementNamed(
                   WorkoutPlanScreen.routeName,
                   arguments: _plan,
@@ -213,7 +214,7 @@ class _DayFormWidgetState extends State<DayFormWidget> {
               _form.currentState!.save();
 
               try {
-                Provider.of<WorkoutPlans>(context, listen: false).addDay(
+                Provider.of<WorkoutPlansProvider>(context, listen: false).addDay(
                   widget._day,
                   widget.workout,
                 );
@@ -290,9 +291,10 @@ class _SetFormWidgetState extends State<SetFormWidget> {
         Setting setting = Setting.empty();
         setting.order = order;
         setting.exercise = exercise;
-        setting.weightUnit = Provider.of<WorkoutPlans>(context, listen: false).defaultWeightUnit;
+        setting.weightUnit =
+            Provider.of<WorkoutPlansProvider>(context, listen: false).defaultWeightUnit;
         setting.repetitionUnit =
-            Provider.of<WorkoutPlans>(context, listen: false).defaultRepetitionUnit;
+            Provider.of<WorkoutPlansProvider>(context, listen: false).defaultRepetitionUnit;
 
         widget._set.settings.add(setting);
       }
@@ -316,7 +318,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                   helperText: AppLocalizations.of(context)!.selectExercises),
             ),
             suggestionsCallback: (pattern) async {
-              return await Provider.of<Exercises>(context, listen: false).searchExercise(
+              return await Provider.of<ExercisesProvider>(context, listen: false).searchExercise(
                 pattern,
                 Localizations.localeOf(context).languageCode,
               );
@@ -324,8 +326,8 @@ class _SetFormWidgetState extends State<SetFormWidget> {
             itemBuilder: (context, suggestion) {
               final result = suggestion! as Map;
 
-              final exercise =
-                  Provider.of<Exercises>(context, listen: false).findById(result['data']['id']);
+              final exercise = Provider.of<ExercisesProvider>(context, listen: false)
+                  .findById(result['data']['id']);
               return ListTile(
                 leading: Container(
                   width: 45,
@@ -341,8 +343,8 @@ class _SetFormWidgetState extends State<SetFormWidget> {
             },
             onSuggestionSelected: (suggestion) {
               final result = suggestion! as Map;
-              final exercise =
-                  Provider.of<Exercises>(context, listen: false).findById(result['data']['id']);
+              final exercise = Provider.of<ExercisesProvider>(context, listen: false)
+                  .findById(result['data']['id']);
               addExercise(exercise);
               this._exercisesController.text = '';
             },
@@ -413,7 +415,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
               }
               _formKey.currentState!.save();
 
-              final workoutProvider = Provider.of<WorkoutPlans>(context, listen: false);
+              final workoutProvider = Provider.of<WorkoutPlansProvider>(context, listen: false);
 
               // Save set
               Set setDb = await workoutProvider.addSet(widget._set);
@@ -702,7 +704,7 @@ class _WeightUnitInputWidgetState extends State<WeightUnitInputWidget> {
           widget._setting.weightUnit = newValue;
         });
       },
-      items: Provider.of<WorkoutPlans>(context, listen: false)
+      items: Provider.of<WorkoutPlansProvider>(context, listen: false)
           .weightUnits
           .map<DropdownMenuItem<WeightUnit>>((WeightUnit value) {
         return DropdownMenuItem<WeightUnit>(
@@ -740,7 +742,7 @@ class _RepetitionUnitInputWidgetState extends State<RepetitionUnitInputWidget> {
           widget._setting.repetitionUnit = newValue;
         });
       },
-      items: Provider.of<WorkoutPlans>(context, listen: false)
+      items: Provider.of<WorkoutPlansProvider>(context, listen: false)
           .repetitionUnits
           .map<DropdownMenuItem<RepetitionUnit>>((RepetitionUnit value) {
         return DropdownMenuItem<RepetitionUnit>(

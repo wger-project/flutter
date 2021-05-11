@@ -39,8 +39,8 @@ void main() {
       headers: anyNamed('headers'),
     )).thenAnswer((_) async => http.Response('', 200));
 
-    return ChangeNotifierProvider<Nutrition>(
-      create: (context) => Nutrition(
+    return ChangeNotifierProvider<NutritionPlansProvider>(
+      create: (context) => NutritionPlansProvider(
         testAuthProvider,
         [
           NutritionalPlan(id: 1, description: 'test plan 1', creationDate: DateTime(2021, 01, 01)),

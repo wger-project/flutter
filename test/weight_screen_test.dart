@@ -46,8 +46,8 @@ void main() {
     )).thenAnswer(
         (_) async => http.Response('{"id": 3, "date": "2021-01-01", "weight": "80"}', 200));
 
-    return ChangeNotifierProvider<BodyWeight>(
-      create: (context) => BodyWeight(
+    return ChangeNotifierProvider<BodyWeightProvider>(
+      create: (context) => BodyWeightProvider(
         testAuthProvider,
         [
           weightEntry1,

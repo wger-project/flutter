@@ -33,7 +33,7 @@ import 'package:wger/models/http_exception.dart';
 
 import 'helpers.dart';
 
-class Auth with ChangeNotifier {
+class AuthProvider with ChangeNotifier {
   String? token;
   String? serverUrl;
   String? serverVersion;

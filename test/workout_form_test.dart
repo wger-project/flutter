@@ -30,20 +30,25 @@ import 'package:wger/widgets/workouts/forms.dart';
 
 import 'workout_form_test.mocks.dart';
 
-@GenerateMocks([WorkoutPlans])
+@GenerateMocks([WorkoutPlansProvider])
 void main() {
-  var mockWorkoutPlans = MockWorkoutPlans();
-  final plan1 = WorkoutPlan(id: 1, creationDate: DateTime(2021, 1, 1), name: 'test 1');
+  var mockWorkoutPlans = MockWorkoutPlansProvider();
+  final plan1 = WorkoutPlan(
+    id: 1,
+    creationDate: DateTime(2021, 1, 1),
+    name: 'test 1',
+    description: 'description 1',
+  );
   final plan2 = WorkoutPlan(creationDate: DateTime(2021, 1, 2), name: '');
 
   setUp(() {
-    mockWorkoutPlans = MockWorkoutPlans();
+    mockWorkoutPlans = MockWorkoutPlansProvider();
   });
 
   Widget createHomeScreen(WorkoutPlan workoutPlan, {locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
 
-    return ChangeNotifierProvider<WorkoutPlans>(
+    return ChangeNotifierProvider<WorkoutPlansProvider>(
       create: (context) => mockWorkoutPlans,
       child: MaterialApp(
         locale: Locale(locale),
@@ -64,7 +69,7 @@ void main() {
     await tester.pumpWidget(createHomeScreen(plan1));
     await tester.pumpAndSettle();
 
-    expect(find.byType(TextFormField), findsOneWidget);
+    expect(find.byType(TextFormField), findsNWidgets(2));
     expect(find.byType(ElevatedButton), findsOneWidget);
   });
 
@@ -75,8 +80,17 @@ void main() {
     await tester.pumpWidget(createHomeScreen(plan1));
     await tester.pumpAndSettle();
 
-    expect(find.text(('test 1')), findsOneWidget, reason: 'Description of existing workout plan');
-    await tester.enterText(find.byKey(Key('field-description')), 'New description');
+    expect(
+      find.text(('test 1')),
+      findsOneWidget,
+      reason: 'Name of existing workout plan',
+    );
+    expect(
+      find.text(('description 1')),
+      findsOneWidget,
+      reason: 'Description of existing workout plan',
+    );
+    await tester.enterText(find.byKey(Key('field-name')), 'New description');
     await tester.tap(find.byKey(Key(SUBMIT_BUTTON_KEY_NAME)));
 
     // Correct method was called
@@ -92,15 +106,15 @@ void main() {
     //expect(find.text(('New description')), findsOneWidget, reason: 'Workout plan detail page');
   });
 
-  testWidgets('Test creating a new workout', (WidgetTester tester) async {
+  testWidgets('Test creating a new workout - only name', (WidgetTester tester) async {
     when(mockWorkoutPlans.editWorkout(any)).thenAnswer((_) => Future.value(plan1));
     when(mockWorkoutPlans.addWorkout(any)).thenAnswer((_) => Future.value(plan2));
 
     await tester.pumpWidget(createHomeScreen(plan2));
     await tester.pumpAndSettle();
 
-    expect(find.text(('')), findsOneWidget, reason: 'New workout has no description');
-    await tester.enterText(find.byKey(Key('field-description')), 'New cool workout');
+    expect(find.text(('')), findsNWidgets(2), reason: 'New workout has no name or description');
+    await tester.enterText(find.byKey(Key('field-name')), 'New cool workout');
     await tester.tap(find.byKey(Key(SUBMIT_BUTTON_KEY_NAME)));
 
     verifyNever(mockWorkoutPlans.editWorkout(any));
@@ -109,5 +123,25 @@ void main() {
     // Detail page
     await tester.pumpAndSettle();
     expect(find.text(('New cool workout')), findsOneWidget, reason: 'Workout plan detail page');
+  });
+
+  testWidgets('Test creating a new workout - description', (WidgetTester tester) async {
+    when(mockWorkoutPlans.editWorkout(any)).thenAnswer((_) => Future.value(plan1));
+    when(mockWorkoutPlans.addWorkout(any)).thenAnswer((_) => Future.value(plan2));
+
+    await tester.pumpWidget(createHomeScreen(plan2));
+    await tester.pumpAndSettle();
+
+    expect(find.text(('')), findsNWidgets(2), reason: 'New workout has no name or description');
+    await tester.enterText(find.byKey(Key('field-name')), 'My workout');
+    await tester.enterText(find.byKey(Key('field-description')), 'Get yuuuge');
+    await tester.tap(find.byKey(Key(SUBMIT_BUTTON_KEY_NAME)));
+
+    verifyNever(mockWorkoutPlans.editWorkout(any));
+    verify(mockWorkoutPlans.addWorkout(any));
+
+    // Detail page
+    await tester.pumpAndSettle();
+    expect(find.text(('My workout')), findsOneWidget, reason: 'Workout plan detail page');
   });
 }

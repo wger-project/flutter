@@ -38,8 +38,8 @@ void main() {
 
     WorkoutPlan workoutPlan = getWorkout();
 
-    return ChangeNotifierProvider<WorkoutPlans>(
-      create: (context) => WorkoutPlans(
+    return ChangeNotifierProvider<WorkoutPlansProvider>(
+      create: (context) => WorkoutPlansProvider(
         testAuthProvider,
         testExercisesProvider,
         [workoutPlan],

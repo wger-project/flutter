@@ -82,7 +82,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
 
   void loadEvents() async {
     // Process weight entries
-    BodyWeight weightProvider = Provider.of<BodyWeight>(context, listen: false);
+    BodyWeightProvider weightProvider = Provider.of<BodyWeightProvider>(context, listen: false);
     for (var entry in weightProvider.items) {
       final date = entry.date.toLocal();
 
@@ -95,7 +95,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
     }
 
     // Process workout sessions
-    WorkoutPlans plans = Provider.of<WorkoutPlans>(context, listen: false);
+    WorkoutPlansProvider plans = Provider.of<WorkoutPlansProvider>(context, listen: false);
     plans.fetchSessionData().then((entries) {
       for (var entry in entries['results']) {
         final session = WorkoutSession.fromJson(entry);
@@ -117,7 +117,8 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
     });
 
     // Process nutritional plans
-    Nutrition nutritionProvider = Provider.of<Nutrition>(context, listen: false);
+    NutritionPlansProvider nutritionProvider =
+        Provider.of<NutritionPlansProvider>(context, listen: false);
     for (var plan in nutritionProvider.items) {
       for (var entry in plan.logEntriesValues.entries) {
         final date = DateTime(entry.key.year, entry.key.month, entry.key.day);

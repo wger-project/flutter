@@ -108,7 +108,7 @@ class _AuthCardState extends State<AuthCard> {
   void initState() {
     //_serverUrlController.text
     super.initState();
-    context.read<Auth>().getServerUrlFromPrefs().then((value) {
+    context.read<AuthProvider>().getServerUrlFromPrefs().then((value) {
       _serverUrlController.text = value;
     });
   }
@@ -125,7 +125,7 @@ class _AuthCardState extends State<AuthCard> {
     try {
       // Login existing user
       if (_authMode == AuthMode.Login) {
-        await Provider.of<Auth>(context, listen: false).login(
+        await Provider.of<AuthProvider>(context, listen: false).login(
           _authData['username']!,
           _authData['password']!,
           _authData['serverUrl']!,
@@ -133,7 +133,7 @@ class _AuthCardState extends State<AuthCard> {
 
         // Register new user
       } else {
-        await Provider.of<Auth>(context, listen: false).register(
+        await Provider.of<AuthProvider>(context, listen: false).register(
           username: _authData['username']!,
           password: _authData['password']!,
           email: _authData['email']!,

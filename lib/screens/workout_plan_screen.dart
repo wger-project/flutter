@@ -70,7 +70,7 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
 
     return Scaffold(
       //appBar: getAppBar(workoutPlan),
-      body: Consumer<WorkoutPlans>(
+      body: Consumer<WorkoutPlansProvider>(
         builder: (context, value, child) => CustomScrollView(
           slivers: <Widget>[
             SliverAppBar(
@@ -100,7 +100,7 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
 
                       // Delete
                     } else if (value == WorkoutOptions.delete) {
-                      Provider.of<WorkoutPlans>(context, listen: false)
+                      Provider.of<WorkoutPlansProvider>(context, listen: false)
                           .deleteWorkout(workoutPlan.id!);
                       Navigator.of(context).pop();
 

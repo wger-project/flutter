@@ -84,7 +84,7 @@ class _WorkoutPlansScreenState extends State<WorkoutPlansScreen> {
           );
         },
       ),
-      body: Consumer<WorkoutPlans>(
+      body: Consumer<WorkoutPlansProvider>(
         builder: (context, workoutProvider, child) => WorkoutPlansList(workoutProvider),
       ),
     );

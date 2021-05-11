@@ -33,7 +33,7 @@ import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/base_provider.dart';
 
-class Nutrition extends WgerBaseProvider with ChangeNotifier {
+class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
   static const _nutritionalPlansPath = 'nutritionplan';
   static const _nutritionalPlansInfoPath = 'nutritionplaninfo';
   static const _mealPath = 'meal';
@@ -45,7 +45,7 @@ class Nutrition extends WgerBaseProvider with ChangeNotifier {
   List<NutritionalPlan> _plans = [];
   List<Ingredient> _ingredients = [];
 
-  Nutrition(Auth auth, List<NutritionalPlan> entries, [http.Client? client])
+  NutritionPlansProvider(AuthProvider auth, List<NutritionalPlan> entries, [http.Client? client])
       : this._plans = entries,
         super(auth, client);
 

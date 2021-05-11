@@ -32,7 +32,7 @@ class GalleryProvider extends WgerBaseProvider with ChangeNotifier {
 
   List<gallery.Image> images = [];
 
-  GalleryProvider(Auth auth, List<gallery.Image> entries, [http.Client? client])
+  GalleryProvider(AuthProvider auth, List<gallery.Image> entries, [http.Client? client])
       : this.images = entries,
         super(auth, client);
 

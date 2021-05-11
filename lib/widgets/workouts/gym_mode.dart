@@ -75,8 +75,8 @@ class _GymModeState extends State<GymMode> {
 
   @override
   Widget build(BuildContext context) {
-    final exerciseProvider = Provider.of<Exercises>(context, listen: false);
-    final workoutProvider = Provider.of<WorkoutPlans>(context, listen: false);
+    final exerciseProvider = Provider.of<ExercisesProvider>(context, listen: false);
+    final workoutProvider = Provider.of<WorkoutPlansProvider>(context, listen: false);
     var currentElement = 1;
     List<Widget> out = [];
 
@@ -451,7 +451,8 @@ class _LogPageState extends State<LogPage> {
 
                     // Save the entry on the server
                     try {
-                      await Provider.of<WorkoutPlans>(context, listen: false).addLog(widget._log);
+                      await Provider.of<WorkoutPlansProvider>(context, listen: false)
+                          .addLog(widget._log);
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           duration: Duration(seconds: 2), // default is 4
@@ -686,7 +687,8 @@ class _SessionPageState extends State<SessionPage> {
 
                     // Save the entry on the server
                     try {
-                      await Provider.of<WorkoutPlans>(context, listen: false).addSession(_session);
+                      await Provider.of<WorkoutPlansProvider>(context, listen: false)
+                          .addSession(_session);
                       Navigator.of(context).pop();
                     } on WgerHttpException catch (error) {
                       showHttpExceptionErrorDialog(error, context);

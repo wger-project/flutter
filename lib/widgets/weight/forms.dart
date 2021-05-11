@@ -66,7 +66,8 @@ class WeightForm extends StatelessWidget {
                   }
 
                   // if the date is known, don't allow it
-                  return Provider.of<BodyWeight>(context, listen: false).findByDate(day) == null
+                  return Provider.of<BodyWeightProvider>(context, listen: false).findByDate(day) ==
+                          null
                       ? true
                       : false;
                 },
@@ -112,8 +113,10 @@ class WeightForm extends StatelessWidget {
               // Save the entry on the server
               try {
                 _weightEntry.id == null
-                    ? await Provider.of<BodyWeight>(context, listen: false).addEntry(_weightEntry)
-                    : await Provider.of<BodyWeight>(context, listen: false).editEntry(_weightEntry);
+                    ? await Provider.of<BodyWeightProvider>(context, listen: false)
+                        .addEntry(_weightEntry)
+                    : await Provider.of<BodyWeightProvider>(context, listen: false)
+                        .editEntry(_weightEntry);
               } on WgerHttpException catch (error) {
                 showHttpExceptionErrorDialog(error, context);
               } catch (error) {

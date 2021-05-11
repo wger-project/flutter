@@ -128,7 +128,7 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
             icon: Icon(Icons.delete),
             iconSize: ICON_SIZE_SMALL,
             onPressed: () {
-              Provider.of<WorkoutPlans>(context, listen: false).deleteSet(set);
+              Provider.of<WorkoutPlansProvider>(context, listen: false).deleteSet(set);
             },
           ),
       ],
@@ -258,7 +258,7 @@ class DayHeaderDismissible extends StatelessWidget {
       confirmDismiss: (direction) async {
         // Delete day
         if (direction == DismissDirection.endToStart) {
-          Provider.of<WorkoutPlans>(context, listen: false).deleteDay(_day);
+          Provider.of<WorkoutPlansProvider>(context, listen: false).deleteDay(_day);
 
           // Gym mode
         } else {

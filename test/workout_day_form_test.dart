@@ -31,18 +31,18 @@ import '../test_data/workouts.dart';
 import 'workout_form_test.mocks.dart';
 
 void main() {
-  var mockWorkoutPlans = MockWorkoutPlans();
+  var mockWorkoutPlans = MockWorkoutPlansProvider();
   WorkoutPlan workoutPlan = WorkoutPlan.empty();
 
   setUp(() {
     workoutPlan = getWorkout();
-    mockWorkoutPlans = MockWorkoutPlans();
+    mockWorkoutPlans = MockWorkoutPlansProvider();
   });
 
   Widget createHomeScreen({locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
 
-    return ChangeNotifierProvider<WorkoutPlans>(
+    return ChangeNotifierProvider<WorkoutPlansProvider>(
       create: (context) => mockWorkoutPlans,
       child: MaterialApp(
         locale: Locale(locale),

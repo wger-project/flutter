@@ -40,8 +40,8 @@ void main() {
       headers: anyNamed('headers'),
     )).thenAnswer((_) async => http.Response('', 200));
 
-    return ChangeNotifierProvider<WorkoutPlans>(
-      create: (context) => WorkoutPlans(
+    return ChangeNotifierProvider<WorkoutPlansProvider>(
+      create: (context) => WorkoutPlansProvider(
         testAuthProvider,
         testExercisesProvider,
         [

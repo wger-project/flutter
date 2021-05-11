@@ -34,7 +34,7 @@ class ExerciseLogChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _workoutPlansData = Provider.of<WorkoutPlans>(context, listen: false);
+    final _workoutPlansData = Provider.of<WorkoutPlansProvider>(context, listen: false);
     final _workout = _workoutPlansData.currentPlan;
 
     Future<Map<String, dynamic>> _getChartEntries(BuildContext context) async {

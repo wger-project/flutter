@@ -22,7 +22,7 @@ import 'package:wger/providers/nutrition.dart' as _i9;
 
 // ignore_for_file: avoid_redundant_argument_values
 
-class _FakeAuth extends _i1.Fake implements _i2.Auth {}
+class _FakeAuthProvider extends _i1.Fake implements _i2.AuthProvider {}
 
 class _FakeClient extends _i1.Fake implements _i3.Client {}
 
@@ -36,11 +36,12 @@ class _FakeIngredient extends _i1.Fake implements _i7.Ingredient {}
 
 class _FakeResponse extends _i1.Fake implements _i8.Response {}
 
-/// A class which mocks [Nutrition].
+/// A class which mocks [NutritionPlansProvider].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockNutrition extends _i1.Mock implements _i9.Nutrition {
-  MockNutrition() {
+class MockNutritionPlansProvider extends _i1.Mock
+    implements _i9.NutritionPlansProvider {
+  MockNutritionPlansProvider() {
     _i1.throwOnMissingStub(this);
   }
 
@@ -53,11 +54,10 @@ class MockNutrition extends _i1.Mock implements _i9.Nutrition {
       (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false)
           as bool);
   @override
-  _i2.Auth get auth =>
-      (super.noSuchMethod(Invocation.getter(#auth), returnValue: _FakeAuth())
-          as _i2.Auth);
+  _i2.AuthProvider get auth => (super.noSuchMethod(Invocation.getter(#auth),
+      returnValue: _FakeAuthProvider()) as _i2.AuthProvider);
   @override
-  set auth(_i2.Auth? _auth) =>
+  set auth(_i2.AuthProvider? _auth) =>
       super.noSuchMethod(Invocation.setter(#auth, _auth),
           returnValueForMissingStub: null);
   @override

@@ -32,8 +32,9 @@ void main() {
     final key = GlobalKey<NavigatorState>();
     final client = MockClient();
 
-    return ChangeNotifierProvider<WorkoutPlans>(
-      create: (context) => WorkoutPlans(testAuthProvider, testExercisesProvider, [], client),
+    return ChangeNotifierProvider<WorkoutPlansProvider>(
+      create: (context) =>
+          WorkoutPlansProvider(testAuthProvider, testExercisesProvider, [], client),
       child: MaterialApp(
         locale: Locale(locale),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
