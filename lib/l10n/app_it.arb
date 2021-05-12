@@ -290,7 +290,7 @@
   },
   "todaysWorkout": "Allenamento di oggi",
   "@todaysWorkout": {},
-  "selectExercises": "Se vuoi fare un circuito (super set), puoi cercare e aggiungere diversi esercizi. Questi verranno collegati come circuito.",
+  "selectExercises": "Se vuoi fare un circuito (super set), puoi cercare e aggiungere diversi esercizi. Questi verranno collegati come circuito",
   "@selectExercises": {},
   "sameRepetitions": "Se fai le stesse ripetizioni e peso per tutte le serie puoi compilare una sola riga. Per esempio per 4 serie inserisci semplicemente 10 per le ripetizioni, automaticamente diventerà una 4x10.",
   "@sameRepetitions": {},
@@ -302,7 +302,7 @@
       "nr": {}
     }
   },
-  "dayDescriptionHelp": "Una descrizione di ciò che è stato fatto. (p.e. 'allenamento gambe') o quale parte del corpo sono state allenate (p.e. 'petto e spalle')",
+  "dayDescriptionHelp": "Una descrizione di ciò che è stato fatto. (p.e. «allenamento gambe») o quale parte del corpo sono state allenate (p.e. «petto e spalle»)",
   "@dayDescriptionHelp": {},
   "set": "Serie",
   "@set": {
@@ -312,7 +312,7 @@
   "@repetitionUnit": {},
   "weightUnit": "Unità peso",
   "@weightUnit": {},
-  "reps": "Ripetizioni",
+  "reps": "Rip.",
   "@reps": {
     "description": "Shorthand for repetitions, used when space constraints are tighter"
   },
@@ -393,5 +393,21 @@
   "muscles": "Muscoli",
   "@muscles": {
     "description": "(main) muscles trained by an exercise"
+  },
+  "addImage": "Aggiungi un'immagine",
+  "@addImage": {},
+  "gallery": "Galleria",
+  "@gallery": {},
+  "chooseFromLibrary": "Scegli dalla raccolta",
+  "@chooseFromLibrary": {},
+  "takePicture": "Scatta una foto",
+  "@takePicture": {},
+  "selectImage": "Si prega di selezionare un'immagine",
+  "@selectImage": {
+    "description": "Label and error message when the user hasn't selected an image to save"
+  },
+  "name": "Nome",
+  "@name": {
+    "description": "Name for a workout or nutritional plan"
   }
 }
