@@ -398,5 +398,21 @@
   "muscles": "Muskeln",
   "@muscles": {
     "description": "(main) muscles trained by an exercise"
+  },
+  "addImage": "Bild hinzufügen",
+  "@addImage": {},
+  "gallery": "Galerie",
+  "@gallery": {},
+  "chooseFromLibrary": "Wähle aus der Bibliothek",
+  "@chooseFromLibrary": {},
+  "takePicture": "Bild aufnehmen",
+  "@takePicture": {},
+  "selectImage": "Bitte wähle ein Bild aus",
+  "@selectImage": {
+    "description": "Label and error message when the user hasn't selected an image to save"
+  },
+  "name": "Name",
+  "@name": {
+    "description": "Name for a workout or nutritional plan"
   }
 }
