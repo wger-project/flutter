@@ -36,6 +36,11 @@ class GalleryProvider extends WgerBaseProvider with ChangeNotifier {
       : this.images = entries,
         super(auth, client);
 
+  /// Clears all lists
+  clear() {
+    images = [];
+  }
+
   /*
    * Gallery
    */

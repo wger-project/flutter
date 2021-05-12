@@ -35,6 +35,11 @@ class BodyWeightProvider extends WgerBaseProvider with ChangeNotifier {
     return [..._entries];
   }
 
+  /// Clears all lists
+  clear() {
+    _entries = [];
+  }
+
   WeightEntry findById(int id) {
     return _entries.firstWhere((plan) => plan.id == id);
   }

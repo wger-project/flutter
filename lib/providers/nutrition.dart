@@ -53,6 +53,12 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
     return [..._plans];
   }
 
+  /// Clears all lists
+  clear() {
+    _plans = [];
+    _ingredients = [];
+  }
+
   /// Returns the current active nutritional plan. At the moment this is just
   /// the latest, but this might change in the future.
   NutritionalPlan? get currentPlan {

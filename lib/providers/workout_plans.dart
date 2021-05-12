@@ -67,6 +67,14 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
     return [..._weightUnits];
   }
 
+  /// Clears all lists
+  clear() {
+    _currentPlan = null;
+    _workoutPlans = [];
+    _weightUnits = [];
+    _repetitionUnit = [];
+  }
+
   /// Return the default weight unit (kg)
   WeightUnit get defaultWeightUnit {
     return _weightUnits.firstWhere((element) => element.id == DEFAULT_WEIGHT_UNIT);

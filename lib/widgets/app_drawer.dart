@@ -21,6 +21,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wger/providers/auth.dart';
+import 'package:wger/providers/body_weight.dart';
+import 'package:wger/providers/gallery.dart';
+import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/workout_plans.dart';
 
 class AppDrawer extends StatelessWidget {
   void _launchURL(String url, BuildContext context) async {
@@ -113,6 +117,10 @@ class AppDrawer extends StatelessWidget {
             title: Text(AppLocalizations.of(context)!.logout),
             onTap: () {
               Provider.of<AuthProvider>(context, listen: false).logout();
+              Provider.of<WorkoutPlansProvider>(context, listen: false).clear();
+              Provider.of<NutritionPlansProvider>(context, listen: false).clear();
+              Provider.of<BodyWeightProvider>(context, listen: false).clear();
+              Provider.of<GalleryProvider>(context, listen: false).clear();
               Navigator.of(context).pop();
               Navigator.of(context).pushReplacementNamed('/');
             },
