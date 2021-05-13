@@ -34,6 +34,11 @@ enum NutritionalPlanOptions {
 class NutritionalPlanScreen extends StatelessWidget {
   static const routeName = '/nutritional-plan-detail';
 
+  Future<NutritionalPlan> _loadFullPlan(BuildContext context, int planId) async {
+    return await Provider.of<NutritionPlansProvider>(context, listen: false)
+        .fetchAndSetPlanFull(planId);
+  }
+
   @override
   Widget build(BuildContext context) {
     final _nutritionalPlan = ModalRoute.of(context)!.settings.arguments as NutritionalPlan;
@@ -41,60 +46,78 @@ class NutritionalPlanScreen extends StatelessWidget {
     return Scaffold(
       //appBar: getAppBar(nutritionalPlan),
       //drawer: AppDrawer(),
-      body: Consumer<NutritionPlansProvider>(
-        builder: (context, nutrition, _) => CustomScrollView(
-          slivers: <Widget>[
-            SliverAppBar(
-              expandedHeight: 250,
-              pinned: true,
-              actions: [
-                PopupMenuButton<NutritionalPlanOptions>(
-                  icon: Icon(Icons.more_vert),
-                  onSelected: (value) {
-                    // Edit
-                    if (value == NutritionalPlanOptions.edit) {
-                      Navigator.pushNamed(
-                        context,
-                        FormScreen.routeName,
-                        arguments: FormScreenArguments(
-                          AppLocalizations.of(context)!.edit,
-                          PlanForm(_nutritionalPlan),
-                        ),
-                      );
+      body: CustomScrollView(
+        slivers: <Widget>[
+          SliverAppBar(
+            expandedHeight: 250,
+            pinned: true,
+            actions: [
+              PopupMenuButton<NutritionalPlanOptions>(
+                icon: Icon(Icons.more_vert),
+                onSelected: (value) {
+                  // Edit
+                  if (value == NutritionalPlanOptions.edit) {
+                    Navigator.pushNamed(
+                      context,
+                      FormScreen.routeName,
+                      arguments: FormScreenArguments(
+                        AppLocalizations.of(context)!.edit,
+                        PlanForm(_nutritionalPlan),
+                      ),
+                    );
 
-                      // Delete
-                    } else if (value == NutritionalPlanOptions.delete) {
-                      Provider.of<NutritionPlansProvider>(context, listen: false)
-                          .deletePlan(_nutritionalPlan.id!);
-                      Navigator.of(context).pop();
-                    }
-                  },
-                  itemBuilder: (BuildContext context) {
-                    return [
-                      PopupMenuItem<NutritionalPlanOptions>(
-                        value: NutritionalPlanOptions.edit,
-                        child: Text(AppLocalizations.of(context)!.edit),
-                      ),
-                      const PopupMenuDivider(),
-                      PopupMenuItem<NutritionalPlanOptions>(
-                        value: NutritionalPlanOptions.delete,
-                        child: Text(AppLocalizations.of(context)!.delete),
-                      ),
-                    ];
-                  },
-                ),
-              ],
-              flexibleSpace: FlexibleSpaceBar(
-                title: Text(_nutritionalPlan.description),
-                background: Image(
-                  image: AssetImage('assets/images/backgrounds/nutritional_plans.jpg'),
-                  fit: BoxFit.cover,
-                ),
+                    // Delete
+                  } else if (value == NutritionalPlanOptions.delete) {
+                    Provider.of<NutritionPlansProvider>(context, listen: false)
+                        .deletePlan(_nutritionalPlan.id!);
+                    Navigator.of(context).pop();
+                  }
+                },
+                itemBuilder: (BuildContext context) {
+                  return [
+                    PopupMenuItem<NutritionalPlanOptions>(
+                      value: NutritionalPlanOptions.edit,
+                      child: Text(AppLocalizations.of(context)!.edit),
+                    ),
+                    const PopupMenuDivider(),
+                    PopupMenuItem<NutritionalPlanOptions>(
+                      value: NutritionalPlanOptions.delete,
+                      child: Text(AppLocalizations.of(context)!.delete),
+                    ),
+                  ];
+                },
+              ),
+            ],
+            flexibleSpace: FlexibleSpaceBar(
+              title: Text(_nutritionalPlan.description),
+              background: Image(
+                image: AssetImage('assets/images/backgrounds/nutritional_plans.jpg'),
+                fit: BoxFit.cover,
               ),
             ),
-            NutritionalPlanDetailWidget(_nutritionalPlan),
-          ],
-        ),
+          ),
+          FutureBuilder(
+            future: _loadFullPlan(context, _nutritionalPlan.id!),
+            builder: (context, AsyncSnapshot<NutritionalPlan> snapshot) =>
+                snapshot.connectionState == ConnectionState.waiting
+                    ? SliverList(
+                        delegate: SliverChildListDelegate(
+                          [
+                            Container(
+                              height: 200,
+                              child: Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            )
+                          ],
+                        ),
+                      )
+                    : Consumer<NutritionPlansProvider>(
+                        builder: (context, value, child) =>
+                            NutritionalPlanDetailWidget(_nutritionalPlan),
+                      ),
+          )
+        ],
       ),
     );
   }

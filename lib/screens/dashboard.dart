@@ -76,13 +76,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
       // Plans, weight and gallery
       await Future.wait([
         galleryProvider.fetchAndSetGallery(),
-        nutritionPlansProvider.fetchAndSetAllPlans(),
+        nutritionPlansProvider.fetchAndSetAllPlansSparse(),
         workoutPlansProvider.fetchAndSetAllPlansSparse(),
         weightProvider.fetchAndSetEntries(),
       ]);
 
       // Nutrition logs
       await nutritionPlansProvider.fetchAndSetAllLogs();
+
+      // Current nutritional plan
+      if (nutritionPlansProvider.currentPlan != null) {
+        final planId = nutritionPlansProvider.currentPlan!.id!;
+
+        await nutritionPlansProvider.fetchAndSetPlanFull(planId);
+      }
 
       // Current workout plan
       if (workoutPlansProvider.activePlan != null) {

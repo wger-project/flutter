@@ -81,11 +81,20 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
     return null;
   }
 
-  /// Fetches and sets all nutritional plans
-  Future<void> fetchAndSetAllPlans() async {
+  /// Fetches and sets all plans sparsely, i.e. only with the data on the plan
+  /// object itself and no child attributes
+  Future<void> fetchAndSetAllPlansSparse() async {
     final data = await fetch(makeUrl(_nutritionalPlansPath));
     for (final entry in data['results']) {
-      await fetchAndSetPlan(entry['id']);
+      await fetchAndSetPlanSparse(entry['id']);
+    }
+  }
+
+  /// Fetches and sets all plans fully, i.e. with all corresponding child objects
+  Future<void> fetchAndSetAllPlansFull() async {
+    final data = await fetch(makeUrl(_nutritionalPlansPath));
+    for (final entry in data['results']) {
+      await fetchAndSetPlanFull(entry['id']);
     }
   }
 
@@ -103,8 +112,8 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
     return plan;
   }
 
-  /// Fetches and sets the given nutritional plan
-  Future<NutritionalPlan> fetchAndSetPlan(int planId) async {
+  /// Fetches a plan fully, i.e. with all corresponding child objects
+  Future<NutritionalPlan> fetchAndSetPlanFull(int planId) async {
     NutritionalPlan plan;
     try {
       plan = findById(planId);
