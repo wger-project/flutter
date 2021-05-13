@@ -81,20 +81,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
         weightProvider.fetchAndSetEntries(),
       ]);
 
-      // Nutrition logs
-      await nutritionPlansProvider.fetchAndSetAllLogs();
-
       // Current nutritional plan
       if (nutritionPlansProvider.currentPlan != null) {
-        final planId = nutritionPlansProvider.currentPlan!.id!;
-
-        await nutritionPlansProvider.fetchAndSetPlanFull(planId);
+        final plan = nutritionPlansProvider.currentPlan!;
+        await nutritionPlansProvider.fetchAndSetPlanFull(plan.id!);
       }
 
       // Current workout plan
       if (workoutPlansProvider.activePlan != null) {
         final planId = workoutPlansProvider.activePlan!.id!;
-
         await workoutPlansProvider.fetchAndSetWorkoutPlanFull(planId);
         workoutPlansProvider.setCurrentPlan(planId);
       }

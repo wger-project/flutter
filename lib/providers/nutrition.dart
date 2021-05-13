@@ -339,14 +339,7 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  /// Log meal to nutrition diary
-  Future<void> fetchAndSetAllLogs() async {
-    for (var plan in _plans) {
-      fetchAndSetLogs(plan);
-    }
-  }
-
-  /// Log meal to nutrition diary
+  /// Load nutrition diary entries for plan
   Future<void> fetchAndSetLogs(NutritionalPlan plan) async {
     // TODO: update fetch to that it can use the pagination
     final data = await fetch(
