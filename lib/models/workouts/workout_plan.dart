@@ -61,6 +61,7 @@ class WorkoutPlan {
   WorkoutPlan.empty() {
     creationDate = DateTime.now();
     name = '';
+    description = '';
   }
 
   // Boilerplate

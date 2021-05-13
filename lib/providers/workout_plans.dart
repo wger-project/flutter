@@ -124,28 +124,62 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
    * Workouts
    */
 
-  Future<void> fetchAndSetAllPlans() async {
+  /// Fetches and sets all workout plans fully, i.e. with all corresponding child
+  /// attributes
+  Future<void> fetchAndSetAllPlansFull() async {
     final data = await fetch(makeUrl(_workoutPlansUrlPath, query: {'ordering': '-creation_date'}));
     for (final entry in data['results']) {
-      await fetchAndSetWorkoutPlan(entry['id']);
+      await fetchAndSetWorkoutPlanFull(entry['id']);
     }
 
     notifyListeners();
   }
 
-  Future<void> fetchAndSetWorkoutPlan(int workoutId) async {
+  /// Fetches all workout plan sparsely, i.e. only with the data on the plan
+  /// object itself and no child attributes
+  Future<void> fetchAndSetAllPlansSparse() async {
+    final data = await fetch(makeUrl(_workoutPlansUrlPath, query: {'ordering': '-creation_date'}));
+    for (final entry in data['results']) {
+      await fetchAndSetPlanSparse(entry['id']);
+    }
+
+    notifyListeners();
+  }
+
+  /// Fetches a workout plan sparsely, i.e. only with the data on the plan
+  /// object itself and no child attributes
+  Future<WorkoutPlan> fetchAndSetPlanSparse(int planId) async {
+    final fullPlanData = await fetch(
+      makeUrl(_workoutPlansUrlPath, id: planId),
+    );
+    final plan = WorkoutPlan.fromJson(fullPlanData);
+    _workoutPlans.add(plan);
+    _workoutPlans.sort((a, b) => b.creationDate.compareTo(a.creationDate));
+
+    notifyListeners();
+    return plan;
+  }
+
+  /// Fetches a workout plan fully, i.e. with all corresponding child attributes
+  Future<WorkoutPlan> fetchAndSetWorkoutPlanFull(int workoutId) async {
     // Load a list of all settings so that we can search through it late
     //
     // This is a bit ugly, but makes saves sending lots of requests later on
-    final allSsettingsData = await fetch(
+    final allSettingsData = await fetch(
       makeUrl(_settingsUrlPath, query: {'limit': '1000'}),
     );
+
+    WorkoutPlan plan;
+    try {
+      plan = findById(workoutId);
+    } on StateError catch (e) {
+      plan = await fetchAndSetPlanSparse(workoutId);
+    }
 
     // Plan
     final fullPlanData = await fetch(
       makeUrl(_workoutPlansUrlPath, id: workoutId, objectMethod: 'canonical_representation'),
     );
-    final plan = WorkoutPlan.fromJson(fullPlanData['obj']);
 
     // Days
     List<Day> days = [];
@@ -161,7 +195,7 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
 
         // Settings
         List<Setting> settings = [];
-        final settingData = allSsettingsData['results'].where((s) => s['set'] == workoutSet.id);
+        final settingData = allSettingsData['results'].where((s) => s['set'] == workoutSet.id);
 
         for (final settingEntry in settingData) {
           final workoutSetting = Setting.fromJson(settingEntry);
@@ -202,9 +236,8 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
     }
 
     // ... and done
-    _workoutPlans.add(plan);
-    _workoutPlans.sort((a, b) => b.creationDate.compareTo(a.creationDate));
     notifyListeners();
+    return plan;
   }
 
   Future<WorkoutPlan> addWorkout(WorkoutPlan workout) async {

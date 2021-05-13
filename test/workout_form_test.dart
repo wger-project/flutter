@@ -33,16 +33,20 @@ import 'workout_form_test.mocks.dart';
 @GenerateMocks([WorkoutPlansProvider])
 void main() {
   var mockWorkoutPlans = MockWorkoutPlansProvider();
-  final plan1 = WorkoutPlan(
+
+  final existingPlan = WorkoutPlan(
     id: 1,
     creationDate: DateTime(2021, 1, 1),
     name: 'test 1',
     description: 'description 1',
   );
-  final plan2 = WorkoutPlan(creationDate: DateTime(2021, 1, 2), name: '');
+  final newPlan = WorkoutPlan.empty();
 
   setUp(() {
     mockWorkoutPlans = MockWorkoutPlansProvider();
+    when(mockWorkoutPlans.editWorkout(any)).thenAnswer((_) => Future.value(existingPlan));
+    when(mockWorkoutPlans.fetchAndSetWorkoutPlanFull(any))
+        .thenAnswer((_) => Future.value(existingPlan));
   });
 
   Widget createHomeScreen(WorkoutPlan workoutPlan, {locale = 'en'}) {
@@ -66,7 +70,7 @@ void main() {
   }
 
   testWidgets('Test the widgets on the workout form', (WidgetTester tester) async {
-    await tester.pumpWidget(createHomeScreen(plan1));
+    await tester.pumpWidget(createHomeScreen(existingPlan));
     await tester.pumpAndSettle();
 
     expect(find.byType(TextFormField), findsNWidgets(2));
@@ -74,10 +78,7 @@ void main() {
   });
 
   testWidgets('Test editing an existing workout', (WidgetTester tester) async {
-    when(mockWorkoutPlans.editWorkout(any)).thenAnswer((_) => Future.value(plan1));
-    when(mockWorkoutPlans.addWorkout(any)).thenAnswer((_) => Future.value(plan2));
-
-    await tester.pumpWidget(createHomeScreen(plan1));
+    await tester.pumpWidget(createHomeScreen(existingPlan));
     await tester.pumpAndSettle();
 
     expect(
@@ -107,14 +108,19 @@ void main() {
   });
 
   testWidgets('Test creating a new workout - only name', (WidgetTester tester) async {
-    when(mockWorkoutPlans.editWorkout(any)).thenAnswer((_) => Future.value(plan1));
-    when(mockWorkoutPlans.addWorkout(any)).thenAnswer((_) => Future.value(plan2));
+    final editWorkout = WorkoutPlan(
+      id: 2,
+      creationDate: newPlan.creationDate,
+      name: 'New cool workout',
+    );
 
-    await tester.pumpWidget(createHomeScreen(plan2));
+    when(mockWorkoutPlans.addWorkout(any)).thenAnswer((_) => Future.value(editWorkout));
+
+    await tester.pumpWidget(createHomeScreen(newPlan));
     await tester.pumpAndSettle();
 
     expect(find.text(('')), findsNWidgets(2), reason: 'New workout has no name or description');
-    await tester.enterText(find.byKey(Key('field-name')), 'New cool workout');
+    await tester.enterText(find.byKey(Key('field-name')), editWorkout.name);
     await tester.tap(find.byKey(Key(SUBMIT_BUTTON_KEY_NAME)));
 
     verifyNever(mockWorkoutPlans.editWorkout(any));
@@ -125,16 +131,17 @@ void main() {
     expect(find.text(('New cool workout')), findsOneWidget, reason: 'Workout plan detail page');
   });
 
-  testWidgets('Test creating a new workout - description', (WidgetTester tester) async {
-    when(mockWorkoutPlans.editWorkout(any)).thenAnswer((_) => Future.value(plan1));
-    when(mockWorkoutPlans.addWorkout(any)).thenAnswer((_) => Future.value(plan2));
+  testWidgets('Test creating a new workout - name and description', (WidgetTester tester) async {
+    final editWorkout = WorkoutPlan(
+        id: 2, creationDate: newPlan.creationDate, name: 'My workout', description: 'Get yuuuge');
+    when(mockWorkoutPlans.addWorkout(any)).thenAnswer((_) => Future.value(editWorkout));
 
-    await tester.pumpWidget(createHomeScreen(plan2));
+    await tester.pumpWidget(createHomeScreen(newPlan));
     await tester.pumpAndSettle();
 
     expect(find.text(('')), findsNWidgets(2), reason: 'New workout has no name or description');
-    await tester.enterText(find.byKey(Key('field-name')), 'My workout');
-    await tester.enterText(find.byKey(Key('field-description')), 'Get yuuuge');
+    await tester.enterText(find.byKey(Key('field-name')), editWorkout.name);
+    await tester.enterText(find.byKey(Key('field-description')), editWorkout.description);
     await tester.tap(find.byKey(Key(SUBMIT_BUTTON_KEY_NAME)));
 
     verifyNever(mockWorkoutPlans.editWorkout(any));

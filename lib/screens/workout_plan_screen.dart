@@ -53,6 +53,11 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
     });
   }
 
+  Future<WorkoutPlan> _loadFullWorkout(BuildContext context, int planId) async {
+    return await Provider.of<WorkoutPlansProvider>(context, listen: false)
+        .fetchAndSetWorkoutPlanFull(planId);
+  }
+
   Widget getBody(WorkoutPlan plan) {
     switch (_mode) {
       case WorkoutScreenMode.workout:
@@ -69,75 +74,91 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
     final workoutPlan = ModalRoute.of(context)!.settings.arguments as WorkoutPlan;
 
     return Scaffold(
-      //appBar: getAppBar(workoutPlan),
-      body: Consumer<WorkoutPlansProvider>(
-        builder: (context, value, child) => CustomScrollView(
-          slivers: <Widget>[
-            SliverAppBar(
-              expandedHeight: 250,
-              pinned: true,
-              flexibleSpace: FlexibleSpaceBar(
-                title: Text(workoutPlan.name),
-                background: Image(
-                  image: AssetImage('assets/images/backgrounds/workout_plans.jpg'),
-                  fit: BoxFit.cover,
-                ),
+      body: CustomScrollView(
+        slivers: <Widget>[
+          SliverAppBar(
+            expandedHeight: 250,
+            pinned: true,
+            flexibleSpace: FlexibleSpaceBar(
+              title: Text(workoutPlan.name),
+              background: Image(
+                image: AssetImage('assets/images/backgrounds/workout_plans.jpg'),
+                fit: BoxFit.cover,
               ),
-              actions: [
-                PopupMenuButton<WorkoutOptions>(
-                  icon: Icon(Icons.more_vert),
-                  onSelected: (value) {
-                    // Edit
-                    if (value == WorkoutOptions.edit) {
-                      Navigator.pushNamed(
-                        context,
-                        FormScreen.routeName,
-                        arguments: FormScreenArguments(
-                          AppLocalizations.of(context)!.edit,
-                          WorkoutForm(workoutPlan),
-                        ),
-                      );
-
-                      // Delete
-                    } else if (value == WorkoutOptions.delete) {
-                      Provider.of<WorkoutPlansProvider>(context, listen: false)
-                          .deleteWorkout(workoutPlan.id!);
-                      Navigator.of(context).pop();
-
-                      // Toggle Mode
-                    } else if (value == WorkoutOptions.toggleMode) {
-                      if (_mode == WorkoutScreenMode.workout) {
-                        _changeMode(WorkoutScreenMode.log);
-                      } else {
-                        _changeMode(WorkoutScreenMode.workout);
-                      }
-                    }
-                  },
-                  itemBuilder: (BuildContext context) {
-                    return [
-                      PopupMenuItem<WorkoutOptions>(
-                        child: _mode == WorkoutScreenMode.log
-                            ? Text(AppLocalizations.of(context)!.labelWorkoutPlan)
-                            : Text(AppLocalizations.of(context)!.labelWorkoutLogs),
-                        value: WorkoutOptions.toggleMode,
-                      ),
-                      PopupMenuItem<WorkoutOptions>(
-                        value: WorkoutOptions.edit,
-                        child: Text(AppLocalizations.of(context)!.edit),
-                      ),
-                      const PopupMenuDivider(),
-                      PopupMenuItem<WorkoutOptions>(
-                        value: WorkoutOptions.delete,
-                        child: Text(AppLocalizations.of(context)!.delete),
-                      ),
-                    ];
-                  },
-                ),
-              ],
             ),
-            getBody(workoutPlan),
-          ],
-        ),
+            actions: [
+              PopupMenuButton<WorkoutOptions>(
+                icon: Icon(Icons.more_vert),
+                onSelected: (value) {
+                  // Edit
+                  if (value == WorkoutOptions.edit) {
+                    Navigator.pushNamed(
+                      context,
+                      FormScreen.routeName,
+                      arguments: FormScreenArguments(
+                        AppLocalizations.of(context)!.edit,
+                        WorkoutForm(workoutPlan),
+                      ),
+                    );
+
+                    // Delete
+                  } else if (value == WorkoutOptions.delete) {
+                    Provider.of<WorkoutPlansProvider>(context, listen: false)
+                        .deleteWorkout(workoutPlan.id!);
+                    Navigator.of(context).pop();
+
+                    // Toggle Mode
+                  } else if (value == WorkoutOptions.toggleMode) {
+                    if (_mode == WorkoutScreenMode.workout) {
+                      _changeMode(WorkoutScreenMode.log);
+                    } else {
+                      _changeMode(WorkoutScreenMode.workout);
+                    }
+                  }
+                },
+                itemBuilder: (BuildContext context) {
+                  return [
+                    PopupMenuItem<WorkoutOptions>(
+                      child: _mode == WorkoutScreenMode.log
+                          ? Text(AppLocalizations.of(context)!.labelWorkoutPlan)
+                          : Text(AppLocalizations.of(context)!.labelWorkoutLogs),
+                      value: WorkoutOptions.toggleMode,
+                    ),
+                    PopupMenuItem<WorkoutOptions>(
+                      value: WorkoutOptions.edit,
+                      child: Text(AppLocalizations.of(context)!.edit),
+                    ),
+                    const PopupMenuDivider(),
+                    PopupMenuItem<WorkoutOptions>(
+                      value: WorkoutOptions.delete,
+                      child: Text(AppLocalizations.of(context)!.delete),
+                    ),
+                  ];
+                },
+              ),
+            ],
+          ),
+          FutureBuilder(
+            future: _loadFullWorkout(context, workoutPlan.id!),
+            builder: (context, AsyncSnapshot<WorkoutPlan> snapshot) =>
+                snapshot.connectionState == ConnectionState.waiting
+                    ? SliverList(
+                        delegate: SliverChildListDelegate(
+                          [
+                            Container(
+                              height: 200,
+                              child: Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            )
+                          ],
+                        ),
+                      )
+                    : Consumer<WorkoutPlansProvider>(
+                        builder: (context, value, child) => getBody(workoutPlan),
+                      ),
+          )
+        ],
       ),
     );
   }

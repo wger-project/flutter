@@ -60,29 +60,36 @@ class _DashboardScreenState extends State<DashboardScreen> {
     if (!Provider.of<AuthProvider>(context, listen: false).dataInit) {
       Provider.of<AuthProvider>(context, listen: false).setServerVersion();
 
+      final workoutPlansProvider = Provider.of<WorkoutPlansProvider>(context, listen: false);
+      final nutritionPlansProvider = Provider.of<NutritionPlansProvider>(context, listen: false);
+      final exercisesProvider = Provider.of<ExercisesProvider>(context, listen: false);
+      final galleryProvider = Provider.of<GalleryProvider>(context, listen: false);
+      final weightProvider = Provider.of<BodyWeightProvider>(context, listen: false);
+
       // Base data
       await Future.wait([
-        Provider.of<WorkoutPlansProvider>(context, listen: false).fetchAndSetUnits(),
-        Provider.of<NutritionPlansProvider>(context, listen: false).fetchIngredientsFromCache(),
-        Provider.of<ExercisesProvider>(context, listen: false).fetchAndSetExercises(),
+        workoutPlansProvider.fetchAndSetUnits(),
+        nutritionPlansProvider.fetchIngredientsFromCache(),
+        exercisesProvider.fetchAndSetExercises(),
       ]);
 
       // Plans, weight and gallery
       await Future.wait([
-        Provider.of<GalleryProvider>(context, listen: false).fetchAndSetGallery(),
-        Provider.of<NutritionPlansProvider>(context, listen: false).fetchAndSetAllPlans(),
-        Provider.of<WorkoutPlansProvider>(context, listen: false).fetchAndSetAllPlans(),
-        Provider.of<BodyWeightProvider>(context, listen: false).fetchAndSetEntries(),
+        galleryProvider.fetchAndSetGallery(),
+        nutritionPlansProvider.fetchAndSetAllPlans(),
+        workoutPlansProvider.fetchAndSetAllPlansSparse(),
+        weightProvider.fetchAndSetEntries(),
       ]);
 
       // Nutrition logs
-      await Provider.of<NutritionPlansProvider>(context, listen: false).fetchAndSetAllLogs();
+      await nutritionPlansProvider.fetchAndSetAllLogs();
 
       // Current workout plan
-      if (Provider.of<WorkoutPlansProvider>(context, listen: false).activePlan != null) {
-        Provider.of<WorkoutPlansProvider>(context, listen: false).setCurrentPlan(
-          Provider.of<WorkoutPlansProvider>(context, listen: false).activePlan!.id!,
-        );
+      if (workoutPlansProvider.activePlan != null) {
+        final planId = workoutPlansProvider.activePlan!.id!;
+
+        await workoutPlansProvider.fetchAndSetWorkoutPlanFull(planId);
+        workoutPlansProvider.setCurrentPlan(planId);
       }
     }
 

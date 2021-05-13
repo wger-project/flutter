@@ -113,15 +113,26 @@ class MockWorkoutPlansProvider extends _i1.Mock
       super.noSuchMethod(Invocation.method(#resetCurrentPlan, []),
           returnValueForMissingStub: null);
   @override
-  _i14.Future<void> fetchAndSetAllPlans() =>
-      (super.noSuchMethod(Invocation.method(#fetchAndSetAllPlans, []),
+  _i14.Future<void> fetchAndSetAllPlansFull() =>
+      (super.noSuchMethod(Invocation.method(#fetchAndSetAllPlansFull, []),
           returnValue: Future<void>.value(null),
           returnValueForMissingStub: Future.value()) as _i14.Future<void>);
   @override
-  _i14.Future<void> fetchAndSetWorkoutPlan(int? workoutId) => (super
-      .noSuchMethod(Invocation.method(#fetchAndSetWorkoutPlan, [workoutId]),
+  _i14.Future<void> fetchAndSetAllPlansSparse() =>
+      (super.noSuchMethod(Invocation.method(#fetchAndSetAllPlansSparse, []),
           returnValue: Future<void>.value(null),
           returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+  @override
+  _i14.Future<_i6.WorkoutPlan> fetchAndSetPlanSparse(int? planId) =>
+      (super.noSuchMethod(Invocation.method(#fetchAndSetPlanSparse, [planId]),
+              returnValue: Future<_i6.WorkoutPlan>.value(_FakeWorkoutPlan()))
+          as _i14.Future<_i6.WorkoutPlan>);
+  @override
+  _i14.Future<_i6.WorkoutPlan> fetchAndSetWorkoutPlanFull(int? workoutId) =>
+      (super.noSuchMethod(
+              Invocation.method(#fetchAndSetWorkoutPlanFull, [workoutId]),
+              returnValue: Future<_i6.WorkoutPlan>.value(_FakeWorkoutPlan()))
+          as _i14.Future<_i6.WorkoutPlan>);
   @override
   _i14.Future<_i6.WorkoutPlan> addWorkout(_i6.WorkoutPlan? workout) =>
       (super.noSuchMethod(Invocation.method(#addWorkout, [workout]),
