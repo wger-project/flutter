@@ -33,6 +33,9 @@ jobs:
         with:
           channel: 'stable'
 
+      - run: dart --version
+      - run: flutter --version
+
       - name: Install Flutter dependencies
         run: flutter pub get
 
