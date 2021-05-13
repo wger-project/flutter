@@ -127,7 +127,10 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
   /// Fetches and sets all workout plans fully, i.e. with all corresponding child
   /// attributes
   Future<void> fetchAndSetAllPlansFull() async {
-    final data = await fetch(makeUrl(_workoutPlansUrlPath, query: {'ordering': '-creation_date'}));
+    final data = await fetch(makeUrl(
+      _workoutPlansUrlPath,
+      query: {'ordering': '-creation_date', 'limit': '1000'},
+    ));
     for (final entry in data['results']) {
       await fetchAndSetWorkoutPlanFull(entry['id']);
     }
@@ -138,9 +141,11 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
   /// Fetches all workout plan sparsely, i.e. only with the data on the plan
   /// object itself and no child attributes
   Future<void> fetchAndSetAllPlansSparse() async {
-    final data = await fetch(makeUrl(_workoutPlansUrlPath, query: {'ordering': '-creation_date'}));
-    for (final entry in data['results']) {
-      await fetchAndSetPlanSparse(entry['id']);
+    final data = await fetch(makeUrl(_workoutPlansUrlPath, query: {'limit': '1000'}));
+    for (final workoutPlanData in data['results']) {
+      final plan = WorkoutPlan.fromJson(workoutPlanData);
+      _workoutPlans.add(plan);
+      _workoutPlans.sort((a, b) => b.creationDate.compareTo(a.creationDate));
     }
 
     notifyListeners();

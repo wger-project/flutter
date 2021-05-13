@@ -84,10 +84,13 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
   /// Fetches and sets all plans sparsely, i.e. only with the data on the plan
   /// object itself and no child attributes
   Future<void> fetchAndSetAllPlansSparse() async {
-    final data = await fetch(makeUrl(_nutritionalPlansPath));
-    for (final entry in data['results']) {
-      await fetchAndSetPlanSparse(entry['id']);
+    final data = await fetch(makeUrl(_nutritionalPlansPath, query: {'limit': '1000'}));
+    for (final planData in data['results']) {
+      final plan = NutritionalPlan.fromJson(planData);
+      _plans.add(plan);
+      _plans.sort((a, b) => b.creationDate.compareTo(a.creationDate));
     }
+    notifyListeners();
   }
 
   /// Fetches and sets all plans fully, i.e. with all corresponding child objects
