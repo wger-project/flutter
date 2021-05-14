@@ -18,6 +18,7 @@
 
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 const Color wgerPrimaryColor = Color(0xff2a4c7d);
@@ -45,8 +46,8 @@ const materialSizes = {
 
 final ThemeData wgerTheme = ThemeData(
     /*
-   * General stuff
-   */
+    * General stuff
+    */
     primaryColor: wgerPrimaryColor,
     accentColor: wgerSecondaryColor,
     scaffoldBackgroundColor: wgerBackground,
@@ -55,6 +56,12 @@ final ThemeData wgerTheme = ThemeData(
     // the app on. For desktop platforms, the controls will be smaller and
     // closer together (more dense) than on mobile platforms.
     visualDensity: VisualDensity.adaptivePlatformDensity,
+
+    // Show icons in the system's bar in light colors
+    appBarTheme: AppBarTheme(
+      brightness: Brightness.dark,
+      systemOverlayStyle: SystemUiOverlayStyle.dark,
+    ),
 
     /*
      * Text theme
