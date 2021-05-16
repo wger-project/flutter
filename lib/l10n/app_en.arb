@@ -68,6 +68,14 @@
   "@labelWorkoutPlans": {
     "description": "Title for screen workout plans"
   },
+  "labelBottomNavWorkout": "Workout",
+  "@labelBottomNavWorkout": {
+    "description": "Label used in bottom navigation, use a short word"
+  },
+  "labelBottomNavNutrition": "Nutrition",
+  "@labelBottomNavNutrition": {
+    "description": "Label used in bottom navigation, use a short word"
+  },
   "labelWorkoutLogs": "Training logs",
   "@labelWorkoutLogs": {
     "description": "(Workout) logs"
@@ -397,5 +405,4 @@
   "chooseFromLibrary": "Choose from photo library",
   "gallery": "Gallery",
   "addImage": "Add image"
-
 }

@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wger/screens/dashboard.dart';
 import 'package:wger/screens/gallery_screen.dart';
 import 'package:wger/screens/nutritional_plans_screen.dart';
@@ -32,52 +33,56 @@ class HomeTabsScreen extends StatefulWidget {
 }
 
 class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProviderStateMixin {
-  TabController? controller;
+  int _selectedIndex = 0;
 
-  @override
-  initState() {
-    super.initState();
-    controller = TabController(length: 5, vsync: this);
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
   }
+
+  final _screenList = <Widget>[
+    DashboardScreen(),
+    WorkoutPlansScreen(),
+    NutritionScreen(),
+    WeightScreen(),
+    GalleryScreen(),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: TabBarView(
-        controller: controller,
-        children: <Widget>[
-          DashboardScreen(),
-          WorkoutPlansScreen(),
-          NutritionScreen(),
-          WeightScreen(),
-          GalleryScreen(),
+      body: _screenList.elementAt(_selectedIndex),
+      bottomNavigationBar: BottomNavigationBar(
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.dashboard),
+            label: AppLocalizations.of(context)!.labelDashboard,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.fitness_center),
+            label: AppLocalizations.of(context)!.labelBottomNavWorkout,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.restaurant),
+            label: AppLocalizations.of(context)!.labelBottomNavNutrition,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.bar_chart),
+            label: AppLocalizations.of(context)!.weight,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.photo_library),
+            label: AppLocalizations.of(context)!.gallery,
+          ),
         ],
-      ),
-      bottomNavigationBar: Container(
-        color: wgerPrimaryColor,
-        child: TabBar(
-          controller: controller,
-          indicatorColor: wgerSecondaryColor,
-          labelColor: Colors.white,
-          unselectedLabelColor: wgerPrimaryColorLight,
-          tabs: <Widget>[
-            Tab(
-              icon: Icon(Icons.dashboard),
-            ),
-            Tab(
-              icon: Icon(Icons.fitness_center),
-            ),
-            Tab(
-              icon: Icon(Icons.restaurant),
-            ),
-            Tab(
-              icon: Icon(Icons.bar_chart),
-            ),
-            Tab(
-              icon: Icon(Icons.photo_library),
-            ),
-          ],
-        ),
+        type: BottomNavigationBarType.fixed,
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.white,
+        unselectedItemColor: wgerPrimaryColorLight,
+        backgroundColor: wgerPrimaryColor,
+        onTap: _onItemTapped,
+        showUnselectedLabels: false,
       ),
     );
   }
