@@ -19,26 +19,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/gallery.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/widgets/core/about.dart';
 
 class AppDrawer extends StatelessWidget {
-  void _launchURL(String url, BuildContext context) async {
-    await canLaunch(url)
-        ? await launch(url)
-        : ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Could not open $url.")),
-          );
-  }
-
   @override
   Widget build(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-
     return Drawer(
       child: Column(
         children: [
@@ -46,71 +36,6 @@ class AppDrawer extends StatelessWidget {
             title: Text('wger'),
             automaticallyImplyLeading: false,
           ),
-          /*
-          ListTile(
-            leading: Icon(Icons.home),
-            title: Text(AppLocalizations.of(context)!.labelDashboard),
-            onTap: () {
-              Navigator.of(context).pop();
-              Navigator.of(context).pushReplacementNamed(DashboardScreen.routeName);
-            },
-          ),
-          Divider(),
-          ListTile(
-            leading: Icon(Icons.shop),
-            title: Text('Training'),
-            onTap: () {
-              Navigator.of(context).pop();
-              Navigator.of(context).pushReplacementNamed(WorkoutPlansScreen.routeName);
-            },
-          ),
-          Divider(),
-          ListTile(
-            leading: Icon(Icons.fastfood),
-            title: Text('Nutrition'),
-            onTap: () {
-              Navigator.of(context).pop();
-              Navigator.of(context).pushReplacementNamed(NutritionScreen.routeName);
-            },
-          ),
-          Divider(),
-          ListTile(
-            leading: Icon(Icons.bar_chart),
-            title: Text('Weight'),
-            onTap: () {
-              Navigator.of(context).pop();
-              Navigator.of(context).pushReplacementNamed(WeightScreen.routeName);
-            },
-          ),
-
-
-          Divider(),
-          Expanded(child: Container()),
-
-           */
-          /*
-          ListTile(
-            //dense: true,
-            leading: Icon(Icons.build),
-            title: Text('Options'),
-            onTap: () {
-              showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  content: Text("Would show options dialog"),
-                  actions: [
-                    TextButton(
-                      child: Text(
-                        "Close",
-                      ),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-          */
           ListTile(
             //dense: true,
             leading: Icon(Icons.exit_to_app),
@@ -125,95 +50,7 @@ class AppDrawer extends StatelessWidget {
               Navigator.of(context).pushReplacementNamed('/');
             },
           ),
-          AboutListTile(
-            //dense: true,
-            icon: Icon(Icons.info),
-            applicationName: 'wger',
-            applicationVersion: 'App: ${authProvider.applicationVersion!.version}\n'
-                'Server: ${authProvider.serverVersion}',
-            applicationLegalese: '\u{a9} 2020 - 2021 contributors',
-            applicationIcon: Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: Image.asset(
-                'assets/images/logo.png',
-                width: 60,
-              ),
-            ),
-
-            aboutBoxChildren: [
-              SizedBox(height: 10),
-              Text(AppLocalizations.of(context)!.aboutDescription),
-              SizedBox(height: 20),
-              ListTile(
-                leading: Icon(Icons.code),
-                title: Text(AppLocalizations.of(context)!.aboutSourceTitle),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(AppLocalizations.of(context)!.aboutSourceText),
-                    Text(
-                      'https://github.com/wger-project',
-                      style: TextStyle(color: Colors.blue),
-                    ),
-                  ],
-                ),
-                contentPadding: EdgeInsets.zero,
-                onTap: () async => _launchURL("https://github.com/wger-project", context),
-              ),
-              SizedBox(height: 10),
-              ListTile(
-                leading: Icon(Icons.bug_report),
-                title: Text(AppLocalizations.of(context)!.aboutBugsTitle),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(AppLocalizations.of(context)!.aboutBugsText),
-                    Text(
-                      'https://github.com/wger-project/flutter/issues/new/choose',
-                      style: TextStyle(color: Colors.blue),
-                    )
-                  ],
-                ),
-                contentPadding: EdgeInsets.zero,
-                onTap: () async => _launchURL(
-                    'https://github.com/wger-project/flutter/issues/new/choose', context),
-              ),
-              SizedBox(height: 10),
-              ListTile(
-                leading: Icon(Icons.chat),
-                title: Text(AppLocalizations.of(context)!.aboutContactUsTitle),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(AppLocalizations.of(context)!.aboutContactUsText),
-                    Text(
-                      'https://discord.gg/rPWFv6W',
-                      style: TextStyle(color: Colors.blue),
-                    ),
-                  ],
-                ),
-                contentPadding: EdgeInsets.zero,
-                onTap: () async => _launchURL('https://discord.gg/rPWFv6W', context),
-              ),
-              SizedBox(height: 10),
-              ListTile(
-                leading: Icon(Icons.translate),
-                title: Text(AppLocalizations.of(context)!.aboutTranslationTitle),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(AppLocalizations.of(context)!.aboutTranslationText),
-                    Text(
-                      'https://hosted.weblate.org/engage/wger/',
-                      style: TextStyle(color: Colors.blue),
-                    ),
-                  ],
-                ),
-                contentPadding: EdgeInsets.zero,
-                onTap: () async => _launchURL('https://hosted.weblate.org/engage/wger/', context),
-              ),
-            ],
-          ),
+          WgerAboutListTile()
         ],
       ),
     );

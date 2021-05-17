@@ -23,26 +23,19 @@ import 'package:provider/provider.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/form_screen.dart';
-import 'package:wger/widgets/app_drawer.dart';
-import 'package:wger/widgets/core/core.dart';
+import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 import 'package:wger/widgets/workouts/workout_plans_list.dart';
 
-class WorkoutPlansScreen extends StatefulWidget {
+class WorkoutPlansScreen extends StatelessWidget {
   static const routeName = '/workout-plans-list';
 
-  @override
-  _WorkoutPlansScreenState createState() => _WorkoutPlansScreenState();
-}
-
-class _WorkoutPlansScreenState extends State<WorkoutPlansScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: WgerAppBar(
         AppLocalizations.of(context)!.labelWorkoutPlans,
       ),
-      drawer: AppDrawer(),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () {

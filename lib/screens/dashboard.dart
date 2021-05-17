@@ -26,7 +26,7 @@ import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/gallery.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/workout_plans.dart';
-import 'package:wger/widgets/app_drawer.dart';
+import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/dashboard/calendar.dart';
 import 'package:wger/widgets/dashboard/widgets.dart';
 
@@ -39,13 +39,6 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   Future<void>? _initialData;
-
-  Widget getAppBar() {
-    return AppBar(
-      title: Text(AppLocalizations.of(context)!.labelDashboard),
-      actions: [],
-    );
-  }
 
   @override
   void initState() {
@@ -101,8 +94,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: getAppBar() as PreferredSizeWidget?,
-      drawer: AppDrawer(),
+      appBar: WgerAppBar(AppLocalizations.of(context)!.labelDashboard),
       body: FutureBuilder(
         future: _initialData,
         builder: (ctx, authResultSnapshot) =>

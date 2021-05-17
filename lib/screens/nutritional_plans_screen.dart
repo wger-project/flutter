@@ -21,29 +21,17 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/form_screen.dart';
-import 'package:wger/widgets/app_drawer.dart';
+import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/nutritional_plans_list.dart';
 
-class NutritionScreen extends StatefulWidget {
+class NutritionScreen extends StatelessWidget {
   static const routeName = '/nutrition';
-
-  @override
-  _NutritionScreenState createState() => _NutritionScreenState();
-}
-
-class _NutritionScreenState extends State<NutritionScreen> {
-  Widget getAppBar() {
-    return AppBar(
-      title: Text(AppLocalizations.of(context)!.nutritionalPlans),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: getAppBar() as PreferredSizeWidget?,
-      drawer: AppDrawer(),
+      appBar: WgerAppBar(AppLocalizations.of(context)!.nutritionalPlans),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () async {

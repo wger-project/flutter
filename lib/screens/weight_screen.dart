@@ -19,29 +19,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wger/screens/form_screen.dart';
-import 'package:wger/widgets/app_drawer.dart';
+import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/weight/entries_list.dart';
 import 'package:wger/widgets/weight/forms.dart';
 
-class WeightScreen extends StatefulWidget {
+class WeightScreen extends StatelessWidget {
   static const routeName = '/weight';
-
-  @override
-  _WeightScreenState createState() => _WeightScreenState();
-}
-
-class _WeightScreenState extends State<WeightScreen> {
-  Widget getAppBar() {
-    return AppBar(
-      title: Text(AppLocalizations.of(context)!.weight),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: getAppBar() as PreferredSizeWidget?,
-      drawer: AppDrawer(),
+      appBar: WgerAppBar(AppLocalizations.of(context)!.weight),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () async {
