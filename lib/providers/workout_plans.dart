@@ -177,7 +177,7 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
     WorkoutPlan plan;
     try {
       plan = findById(workoutId);
-    } on StateError catch (e) {
+    } on StateError {
       plan = await fetchAndSetPlanSparse(workoutId);
     }
 
@@ -205,7 +205,7 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
         for (final settingEntry in settingData) {
           final workoutSetting = Setting.fromJson(settingEntry);
 
-          workoutSetting.exercise = _exercises.findById(workoutSetting.exerciseId);
+          workoutSetting.exercise = await _exercises.fetchAndSetExercise(workoutSetting.exerciseId);
           workoutSetting.weightUnit = _weightUnits.firstWhere(
             (e) => e.id == workoutSetting.weightUnitId,
           );
@@ -235,7 +235,7 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
       var log = Log.fromJson(entry);
       log.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
       log.repetitionUnit = _repetitionUnit.firstWhere((e) => e.id == log.weightUnitId);
-      log.exercise = _exercises.findById(log.exerciseId);
+      log.exercise = await _exercises.fetchAndSetExercise(log.exerciseId);
 
       plan.logs.add(log);
     }
@@ -462,7 +462,7 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
     log.id = newLog.id;
     log.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
     log.repetitionUnit = _repetitionUnit.firstWhere((e) => e.id == log.weightUnitId);
-    log.exercise = _exercises.findById(log.exerciseId);
+    log.exercise = await _exercises.fetchAndSetExercise(log.exerciseId);
 
     final plan = findById(log.workoutPlan);
     plan.logs.add(log);

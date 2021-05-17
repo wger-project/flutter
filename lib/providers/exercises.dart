@@ -25,6 +25,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:json_annotation/json_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
@@ -36,7 +37,7 @@ import 'package:wger/providers/base_provider.dart';
 class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
   static const daysToCache = 7;
 
-  static const _exercisesUrlPath = 'exerciseinfo';
+  static const _exerciseInfoUrlPath = 'exerciseinfo';
   static const _exerciseSearchPath = 'exercise/search';
 
   static const _exerciseCommentUrlPath = 'exercisecomment';
@@ -58,8 +59,9 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
     return [..._exercises];
   }
 
-  Exercise findById(int id) {
-    return _exercises.firstWhere((exercise) => exercise.id == id);
+  /// Returns an exercise
+  Exercise findById(int exerciseId) {
+    return _exercises.firstWhere((exercise) => exercise.id == exerciseId);
   }
 
   Future<void> fetchAndSetCategories() async {
@@ -98,17 +100,40 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
     }
   }
 
+  /// Returns the exercise with the given ID
+  ///
+  /// If the exercise is not known locally, it is fetched from the server.
+  /// This method is called when a workout is first loaded, after that the
+  /// regular not-async getById method can be used
+  Future<Exercise> fetchAndSetExercise(int exerciseId) async {
+    try {
+      return findById(exerciseId);
+
+      // Get exercise from the server and save to cache
+    } on StateError catch (e) {
+      final data = await fetch(makeUrl(_exerciseInfoUrlPath, id: exerciseId));
+      final exercise = Exercise.fromJson(data);
+      _exercises.add(exercise);
+      final prefs = await SharedPreferences.getInstance();
+      final exerciseData = json.decode(prefs.getString(PREFS_EXERCISES)!);
+      exerciseData['exercises'].add(exercise.toJson());
+      prefs.setString(PREFS_EXERCISES, json.encode(exerciseData));
+      log("Saved exercise '${exercise.name}' to cache.");
+      return exercise;
+    }
+  }
+
   Future<void> fetchAndSetExercises() async {
     // Load exercises from cache, if available
     final prefs = await SharedPreferences.getInstance();
-    if (prefs.containsKey('exerciseData')) {
-      final exerciseData = json.decode(prefs.getString('exerciseData')!);
+    if (prefs.containsKey(PREFS_EXERCISES)) {
+      final exerciseData = json.decode(prefs.getString(PREFS_EXERCISES)!);
       if (DateTime.parse(exerciseData['expiresIn']).isAfter(DateTime.now())) {
         exerciseData['exercises'].forEach((e) => _exercises.add(Exercise.fromJson(e)));
         exerciseData['equipment'].forEach((e) => _equipment.add(Equipment.fromJson(e)));
         exerciseData['muscles'].forEach((e) => _muscles.add(Muscle.fromJson(e)));
         exerciseData['categories'].forEach((e) => _categories.add(ExerciseCategory.fromJson(e)));
-        log("Read exercise data from cache. Valid till ${exerciseData['expiresIn']}");
+        log("Read ${exerciseData['exercises'].length} exercises from cache. Valid till ${exerciseData['expiresIn']}");
         return;
       }
     }
@@ -120,7 +145,7 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
 
     final response = await client.get(
         makeUrl(
-          _exercisesUrlPath,
+          _exerciseInfoUrlPath,
           query: {'limit': '1000'},
         ),
         headers: {
@@ -142,7 +167,7 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
         'muscles': _muscles.map((e) => e.toJson()).toList(),
       };
 
-      prefs.setString('exerciseData', json.encode(exerciseData));
+      prefs.setString(PREFS_EXERCISES, json.encode(exerciseData));
       notifyListeners();
     } on MissingRequiredKeysException catch (error) {
       log(error.missingKeys.toString());
@@ -179,7 +204,7 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
     // Process the response
     final result = json.decode(utf8.decode(response.bodyBytes))['suggestions'] as List<dynamic>;
     for (var entry in result) {
-      entry['exercise_obj'] = findById(entry['data']['id']);
+      entry['exercise_obj'] = await fetchAndSetExercise(entry['data']['id']);
     }
     return result;
   }

@@ -34,3 +34,6 @@ const DAYS_TO_CACHE = 20;
 
 /// Name of the submit button in forms
 const SUBMIT_BUTTON_KEY_NAME = 'submit-button';
+
+/// Local Preferences key for exercises
+const PREFS_EXERCISES = 'exerciseData';
