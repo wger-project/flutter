@@ -49,7 +49,7 @@ class WgerBaseProvider {
       uri,
       headers: {
         HttpHeaders.authorizationHeader: 'Token ${auth.token}',
-        HttpHeaders.userAgentHeader: 'wger Workout Manager App',
+        HttpHeaders.userAgentHeader: auth.getAppNameHeader(),
       },
     );
 
@@ -70,7 +70,7 @@ class WgerBaseProvider {
       headers: {
         HttpHeaders.authorizationHeader: 'Token ${auth.token}',
         HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
-        HttpHeaders.userAgentHeader: 'wger Workout Manager App',
+        HttpHeaders.userAgentHeader: auth.getAppNameHeader(),
       },
       body: json.encode(data),
     );
@@ -90,7 +90,7 @@ class WgerBaseProvider {
       headers: {
         HttpHeaders.authorizationHeader: 'Token ${auth.token}',
         HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
-        HttpHeaders.userAgentHeader: 'wger Workout Manager App',
+        HttpHeaders.userAgentHeader: auth.getAppNameHeader(),
       },
       body: json.encode(data),
     );
@@ -111,7 +111,7 @@ class WgerBaseProvider {
       deleteUrl,
       headers: {
         HttpHeaders.authorizationHeader: 'Token ${auth.token}',
-        HttpHeaders.userAgentHeader: 'wger Workout Manager App',
+        HttpHeaders.userAgentHeader: auth.getAppNameHeader(),
       },
     );
 

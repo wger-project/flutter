@@ -192,7 +192,7 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
       ),
       headers: <String, String>{
         'Authorization': 'Token ${auth.token}',
-        'User-Agent': 'wger Workout Manager App',
+        'User-Agent': auth.getAppNameHeader(),
       },
     );
 

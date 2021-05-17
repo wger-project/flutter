@@ -233,4 +233,16 @@ class AuthProvider with ChangeNotifier {
   //   _authTimer = Timer(Duration(seconds: timeToExpiry), logout);
   // }
 
+  /// Returns the application name and version
+  ///
+  /// This is used in the headers when talking to the API
+  String getAppNameHeader() {
+    String out = '';
+    if (applicationVersion != null) {
+      out = '${applicationVersion!.version} '
+          '(${applicationVersion!.packageName}; '
+          'build: ${applicationVersion!.buildNumber})';
+    }
+    return 'wger App/$out';
+  }
 }

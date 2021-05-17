@@ -313,7 +313,7 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
       ),
       headers: <String, String>{
         HttpHeaders.authorizationHeader: 'Token ${auth.token}',
-        HttpHeaders.userAgentHeader: 'wger Workout Manager App',
+        HttpHeaders.userAgentHeader: auth.getAppNameHeader(),
       },
     );
 

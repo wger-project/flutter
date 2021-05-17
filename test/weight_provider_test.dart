@@ -16,8 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'dart:io';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/mockito.dart';
@@ -35,10 +33,7 @@ void main() {
       // Mock the server response
       when(client.get(
         Uri.https('localhost', 'api/v2/weightentry/', {'ordering': '-date'}),
-        headers: <String, String>{
-          HttpHeaders.authorizationHeader: 'Token ${testAuthProvider.token}',
-          HttpHeaders.userAgentHeader: 'wger Workout Manager App',
-        },
+        headers: anyNamed('headers'),
       )).thenAnswer((_) async => http.Response(
           '{"results": [{"id": 1, "date": "2021-01-01", "weight": "80.00"}, '
           '{"id": 2, "date": "2021-01-10", "weight": "99"},'
@@ -58,15 +53,14 @@ void main() {
       final client = MockClient();
 
       // Mock the server response
-      when(client.post(Uri.https('localhost', 'api/v2/weightentry/'),
-              headers: {
-                HttpHeaders.authorizationHeader: 'Token ${testAuthProvider.token}',
-                HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
-                HttpHeaders.userAgentHeader: 'wger Workout Manager App',
-              },
-              body: '{"id":null,"weight":"80","date":"2021-01-01"}'))
-          .thenAnswer(
-              (_) async => http.Response('{"id": 25, "date": "2021-01-01", "weight": "80"}', 200));
+      when(
+        client.post(
+          Uri.https('localhost', 'api/v2/weightentry/'),
+          headers: anyNamed('headers'),
+          body: '{"id":null,"weight":"80","date":"2021-01-01"}',
+        ),
+      ).thenAnswer(
+          (_) async => http.Response('{"id": 25, "date": "2021-01-01", "weight": "80"}', 200));
 
       // POST the data to the server
       final WeightEntry weightEntry = WeightEntry(date: DateTime(2021, 1, 1), weight: 80);
@@ -85,10 +79,7 @@ void main() {
       // Mock the server response
       when(client.delete(
         Uri.https('localhost', 'api/v2/weightentry/4/'),
-        headers: {
-          HttpHeaders.authorizationHeader: 'Token ${testAuthProvider.token}',
-          HttpHeaders.userAgentHeader: 'wger Workout Manager App',
-        },
+        headers: anyNamed('headers'),
       )).thenAnswer((_) async => http.Response('', 200));
 
       // DELETE the data from the server

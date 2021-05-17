@@ -60,7 +60,7 @@ class GalleryProvider extends WgerBaseProvider with ChangeNotifier {
     var request = http.MultipartRequest('POST', makeUrl(_galleryUrlPath));
     request.headers.addAll({
       HttpHeaders.authorizationHeader: 'Token ${auth.token}',
-      HttpHeaders.userAgentHeader: 'wger Workout Manager App',
+      HttpHeaders.userAgentHeader: auth.getAppNameHeader(),
     });
     request.files.add(await http.MultipartFile.fromPath('image', imageFile.path));
     request.fields['date'] = toDate(image.date)!;
@@ -79,7 +79,7 @@ class GalleryProvider extends WgerBaseProvider with ChangeNotifier {
     var request = http.MultipartRequest('PATCH', makeUrl(_galleryUrlPath, id: image.id));
     request.headers.addAll({
       HttpHeaders.authorizationHeader: 'Token ${auth.token}',
-      HttpHeaders.userAgentHeader: 'wger Workout Manager App',
+      HttpHeaders.userAgentHeader: auth.getAppNameHeader(),
     });
 
     // Only send the image if a new one was selected
