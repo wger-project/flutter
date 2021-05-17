@@ -414,5 +414,15 @@
   "name": "Name",
   "@name": {
     "description": "Name for a workout or nutritional plan"
+  },
+  "goToDetailPage": "Weiter zur Detailseite",
+  "@goToDetailPage": {},
+  "labelBottomNavNutrition": "Ernährung",
+  "@labelBottomNavNutrition": {
+    "description": "Label used in bottom navigation, use a short word"
+  },
+  "labelBottomNavWorkout": "Training",
+  "@labelBottomNavWorkout": {
+    "description": "Label used in bottom navigation, use a short word"
   }
 }
