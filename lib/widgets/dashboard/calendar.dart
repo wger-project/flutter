@@ -226,36 +226,30 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
             },
           ),
           const SizedBox(height: 8.0),
-          Expanded(
-            child: ValueListenableBuilder<List<Event>>(
-              valueListenable: _selectedEvents,
-              builder: (context, value, _) {
-                return ListView.builder(
-                  itemCount: value.length,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      width: double.infinity,
-                      child: ListTile(
-                        title: Text((() {
-                          switch (value[index].type) {
-                            case EventType.caloriesDiary:
-                              return AppLocalizations.of(context)!.nutritionalDiary;
+          ValueListenableBuilder<List<Event>>(
+            valueListenable: _selectedEvents,
+            builder: (context, value, _) => Column(
+              children: [
+                ...value
+                    .map((event) => ListTile(
+                          title: Text((() {
+                            switch (event.type) {
+                              case EventType.caloriesDiary:
+                                return AppLocalizations.of(context)!.nutritionalDiary;
 
-                            case EventType.session:
-                              return AppLocalizations.of(context)!.workoutSession;
+                              case EventType.session:
+                                return AppLocalizations.of(context)!.workoutSession;
 
-                            case EventType.weight:
-                              return AppLocalizations.of(context)!.weight;
-                          }
-                          return value[index].description.toString();
-                        })()),
-                        subtitle: Text(value[index].description.toString()),
-                        onTap: () => print('${value[index]} tapped!'),
-                      ),
-                    );
-                  },
-                );
-              },
+                              case EventType.weight:
+                                return AppLocalizations.of(context)!.weight;
+                            }
+                            return event.description.toString();
+                          })()),
+                          subtitle: Text(event.description.toString()),
+                          //onTap: () => print('$event tapped!'),
+                        ))
+                    .toList()
+              ],
             ),
           ),
         ],
