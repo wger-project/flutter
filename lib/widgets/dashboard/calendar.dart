@@ -191,9 +191,15 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
     return Card(
       child: Column(
         children: [
-          Text(
-            AppLocalizations.of(context)!.calendar,
-            style: Theme.of(context).textTheme.headline4,
+          ListTile(
+            title: Text(
+              AppLocalizations.of(context)!.calendar,
+              style: Theme.of(context).textTheme.headline4,
+            ),
+            leading: Icon(
+              Icons.calendar_today_outlined,
+              color: Colors.black,
+            ),
           ),
           TableCalendar<Event>(
             locale: Localizations.localeOf(context).languageCode,

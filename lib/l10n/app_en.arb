@@ -318,6 +318,7 @@
   "@toggleDetails": {
     "description": "Switch to toggle detail / overview"
   },
+  "goToDetailPage": "Go to detail page",
   "aboutDescription": "Thank you for using wger! wger is a collaborative open source project, made by fitness enthusiasts from around the world.",
   "@aboutDescription": {
     "description": "Text in the about dialog"

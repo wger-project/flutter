@@ -121,9 +121,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 : SingleChildScrollView(
                     child: Column(
                       children: [
-                        DashboardWorkoutWidget(context: context),
-                        DashboardNutritionWidget(context: context),
-                        DashboardWeightWidget(context: context),
+                        DashboardWorkoutWidget(),
+                        DashboardNutritionWidget(),
+                        DashboardWeightWidget(),
                         Container(
                           height: 650, // TODO: refactor calendar so we can get rid of size
                           child: DashboardCalendarWidget(),

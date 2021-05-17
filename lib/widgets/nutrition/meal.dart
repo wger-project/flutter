@@ -277,7 +277,7 @@ class DismissibleMealHeader extends StatelessWidget {
                 style: TextStyle(color: Colors.white),
               ),
               Icon(
-                Icons.bar_chart,
+                Icons.history_edu,
                 color: Colors.white,
               ),
             ],
