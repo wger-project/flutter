@@ -153,7 +153,7 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
                 )
                 .toList(),
             OutlinedButton(
-              child: Text(AppLocalizations.of(context)!.addExercise),
+              child: Text(AppLocalizations.of(context)!.addSet),
               onPressed: () {
                 Navigator.pushNamed(
                   context,
@@ -161,7 +161,9 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
                   arguments: FormScreenArguments(
                     AppLocalizations.of(context)!.newSet,
                     SetFormWidget(widget._day),
-                    true,
+                    hasListView: true,
+                    backgroundColor: wgerBackground,
+                    padding: EdgeInsets.zero,
                   ),
                 );
               },

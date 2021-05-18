@@ -100,6 +100,10 @@
   "@exercise": {
     "description": "An exercise for a workout"
   },
+  "searchExercise": "Search exercise to add",
+  "@searchExercise": {
+    "description": "Label on set form. Selected exercises are added to the set"
+  },
   "equipment": "Equipment",
   "@equipment": {
     "description": "Equipment needed to perform an exercise"
@@ -124,8 +128,6 @@
   "@noWorkoutPlans": {
     "description": "Message shown when the user has no workout plans"
   },
-  "addExercise": "Add exercise",
-  "@addExercise": {},
   "repetitions": "Repetitions",
   "@repetitions": {
     "description": "Repetitions for an exercise set"
@@ -382,13 +384,18 @@
       "max": {}
     }
   },
-  "nrOfSets": "Number of sets: {nrOfSets}",
+  "nrOfSets": "Sets per exercise: {nrOfSets}",
   "@nrOfSets": {
     "description": "Label shown on the slider where the user selects the nr of sets",
     "type": "text",
     "placeholders": {
       "nrOfSets": {}
     }
+  },
+  "setUnitsAndRir": "Set units and RiR",
+  "@setUnitsAndRir": {
+    "description": "Label shown on the slider where the user can toggle showing units and RiR",
+    "type": "text"
   },
   "enterValidNumber": "Please enter a valid number",
   "@enterValidNumber": {

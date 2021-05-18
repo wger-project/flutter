@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:wger/theme/theme.dart';
 
 /// Arguments passed to the form screen
 class FormScreenArguments {
@@ -30,7 +31,20 @@ class FormScreenArguments {
   /// forms that use an autocompleter, etc) or not (smnall forms, content will
   /// get pushed down)
   final bool hasListView;
-  FormScreenArguments(this.title, this.widget, [this.hasListView = false]);
+
+  /// Padding for the whole content, default 15px on all sides
+  final EdgeInsets padding;
+
+  /// Background color, default white
+  final Color backgroundColor;
+
+  FormScreenArguments(
+    this.title,
+    this.widget, {
+    this.hasListView = false,
+    this.padding = const EdgeInsets.all(15),
+    this.backgroundColor = wgerBackground,
+  });
 }
 
 class FormScreen extends StatelessWidget {
@@ -42,11 +56,11 @@ class FormScreen extends StatelessWidget {
         ModalRoute.of(context)!.settings.arguments as FormScreenArguments;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: args.backgroundColor,
       appBar: AppBar(title: Text(args.title)),
       body: args.hasListView
           ? Padding(
-              padding: const EdgeInsets.all(15.0),
+              padding: args.padding,
               child: args.widget,
             )
           : Column(
@@ -54,7 +68,7 @@ class FormScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(15.0),
+                  padding: args.padding,
                   child: args.widget,
                 ),
               ],

@@ -45,7 +45,7 @@ class GalleryScreen extends StatelessWidget {
             arguments: FormScreenArguments(
               AppLocalizations.of(context)!.addImage,
               ImageForm(),
-              true,
+              hasListView: true,
             ),
           );
         },

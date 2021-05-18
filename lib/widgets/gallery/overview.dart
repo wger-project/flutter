@@ -83,7 +83,7 @@ class Gallery extends StatelessWidget {
                                     arguments: FormScreenArguments(
                                       AppLocalizations.of(context)!.edit,
                                       ImageForm(currentImage),
-                                      true,
+                                      hasListView: true,
                                     ),
                                   );
                                 }),

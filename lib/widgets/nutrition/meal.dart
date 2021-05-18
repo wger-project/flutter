@@ -97,7 +97,7 @@ class _MealWidgetState extends State<MealWidget> {
                   arguments: FormScreenArguments(
                     AppLocalizations.of(context)!.addIngredient,
                     MealItemForm(widget._meal),
-                    true,
+                    hasListView: true,
                   ),
                 );
               },

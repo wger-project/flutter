@@ -44,7 +44,7 @@ class WgerAppBar extends StatelessWidget with PreferredSizeWidget {
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: Text(AppLocalizations.of(context)!.options),
+                    title: Text(AppLocalizations.of(context)!.optionsLabel),
                     actions: [
                       TextButton(
                         child: Text(MaterialLocalizations.of(context).closeButtonLabel),
