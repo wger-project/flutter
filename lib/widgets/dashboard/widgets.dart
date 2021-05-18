@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
@@ -233,8 +234,8 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
               AppLocalizations.of(context)!.weight,
               style: Theme.of(context).textTheme.headline4,
             ),
-            leading: Icon(
-              Icons.bar_chart,
+            leading: FaIcon(
+              FontAwesomeIcons.weight,
               color: Colors.black,
             ),
             trailing: IconButton(

@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:wger/screens/dashboard.dart';
 import 'package:wger/screens/gallery_screen.dart';
 import 'package:wger/screens/nutritional_plans_screen.dart';
@@ -68,7 +69,10 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
             label: AppLocalizations.of(context)!.labelBottomNavNutrition,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.bar_chart),
+            icon: FaIcon(
+              FontAwesomeIcons.weight,
+              size: 20,
+            ),
             label: AppLocalizations.of(context)!.weight,
           ),
           BottomNavigationBarItem(
