@@ -165,6 +165,9 @@ void main() {
     expect(find.text('Workout session'), findsOneWidget);
     expect(find.byType(SessionPage), findsOneWidget);
     expect(find.byType(Form), findsOneWidget);
+    expect(find.byIcon(Icons.sentiment_dissatisfied), findsOneWidget);
+    expect(find.byIcon(Icons.sentiment_neutral), findsOneWidget);
+    expect(find.byIcon(Icons.sentiment_satisfied), findsOneWidget);
     expect(find.byIcon(Icons.chevron_left), findsOneWidget);
     expect(find.byIcon(Icons.close), findsOneWidget);
     expect(find.byIcon(Icons.chevron_right), findsNothing);

@@ -560,8 +560,10 @@ class _SessionPageState extends State<SessionPage> {
   final timeStartController = TextEditingController();
   final timeEndController = TextEditingController();
 
-  int impressionValue = 2;
   var _session = WorkoutSession();
+
+  /// Selected impression: bad, neutral, good
+  var selectedImpression = [false, true, false];
 
   @override
   void initState() {
@@ -593,25 +595,35 @@ class _SessionPageState extends State<SessionPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                DropdownButtonFormField(
-                  value: impressionValue,
-                  decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context)!.impression,
-                  ),
-                  items: IMPRESSION_MAP.keys.map<DropdownMenuItem<int>>((int key) {
-                    return DropdownMenuItem<int>(
-                      value: key,
-                      child: Text(IMPRESSION_MAP[key]!),
-                    );
-                  }).toList(),
-                  onSaved: (int? newValue) {
-                    _session.impression = newValue!;
-                  },
-                  onChanged: (int? newValue) {
+                ToggleButtons(
+                  children: <Widget>[
+                    Icon(
+                      Icons.sentiment_very_dissatisfied,
+                    ),
+                    Icon(
+                      Icons.sentiment_neutral,
+                    ),
+                    Icon(
+                      Icons.sentiment_very_satisfied,
+                    ),
+                  ],
+                  renderBorder: false,
+                  onPressed: (int index) {
                     setState(() {
-                      impressionValue = newValue!;
+                      for (int buttonIndex = 0;
+                          buttonIndex < selectedImpression.length;
+                          buttonIndex++) {
+                        _session.impression = index + 1;
+
+                        if (buttonIndex == index) {
+                          selectedImpression[buttonIndex] = true;
+                        } else {
+                          selectedImpression[buttonIndex] = false;
+                        }
+                      }
                     });
                   },
+                  isSelected: selectedImpression,
                 ),
                 TextFormField(
                   decoration: InputDecoration(
@@ -650,6 +662,7 @@ class _SessionPageState extends State<SessionPage> {
                         },
                       ),
                     ),
+                    SizedBox(width: 10),
                     Flexible(
                       child: TextFormField(
                         decoration:
