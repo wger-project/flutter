@@ -808,7 +808,6 @@ class NavigationFooter extends StatelessWidget {
           backgroundColor: Colors.white,
         ),
         Row(
-          mainAxisSize: MainAxisSize.max,
           children: [
             // Nest all widgets in an expanded so that they all take the same size
             // independently of how wide they are so that the buttons are positioned
@@ -827,7 +826,7 @@ class NavigationFooter extends StatelessWidget {
             ),
             Expanded(
               child: IconButton(
-                icon: Icon(Icons.exit_to_app),
+                icon: Icon(Icons.close),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },

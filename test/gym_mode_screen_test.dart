@@ -81,7 +81,7 @@ void main() {
     expect(find.text('Your workout today'), findsOneWidget);
     expect(find.text('test exercise 1'), findsOneWidget);
     expect(find.byIcon(Icons.chevron_left), findsNothing);
-    expect(find.byIcon(Icons.exit_to_app), findsOneWidget);
+    expect(find.byIcon(Icons.close), findsOneWidget);
     expect(find.byIcon(Icons.chevron_right), findsOneWidget);
     await tester.tap(find.byIcon(Icons.chevron_right));
     await tester.pumpAndSettle();
@@ -92,7 +92,7 @@ void main() {
     expect(find.text('test exercise 1'), findsOneWidget);
     expect(find.byType(ExerciseOverview), findsOneWidget);
     expect(find.byIcon(Icons.chevron_left), findsOneWidget);
-    expect(find.byIcon(Icons.exit_to_app), findsOneWidget);
+    expect(find.byIcon(Icons.close), findsOneWidget);
     expect(find.byIcon(Icons.chevron_right), findsOneWidget);
     await tester.drag(find.byType(ExerciseOverview), Offset(-500.0, 0.0));
     await tester.pumpAndSettle();
@@ -107,7 +107,7 @@ void main() {
     expect(find.text('10 × 10 kg  (1.5 RiR)'), findsOneWidget);
     expect(find.text('12 × 10 kg  (2 RiR)'), findsOneWidget);
     expect(find.byIcon(Icons.chevron_left), findsOneWidget);
-    expect(find.byIcon(Icons.exit_to_app), findsOneWidget);
+    expect(find.byIcon(Icons.close), findsOneWidget);
     expect(find.byIcon(Icons.chevron_right), findsOneWidget);
 
     // Form shows only weight and reps
@@ -134,7 +134,7 @@ void main() {
     expect(find.text('0:00'), findsOneWidget);
     expect(find.byType(TimerWidget), findsOneWidget);
     expect(find.byIcon(Icons.chevron_left), findsOneWidget);
-    expect(find.byIcon(Icons.exit_to_app), findsOneWidget);
+    expect(find.byIcon(Icons.close), findsOneWidget);
     expect(find.byIcon(Icons.chevron_right), findsOneWidget);
     await tester.tap(find.byIcon(Icons.chevron_right));
     await tester.pumpAndSettle();
@@ -154,7 +154,7 @@ void main() {
     expect(find.text('0:00'), findsOneWidget);
     expect(find.byType(TimerWidget), findsOneWidget);
     expect(find.byIcon(Icons.chevron_left), findsOneWidget);
-    expect(find.byIcon(Icons.exit_to_app), findsOneWidget);
+    expect(find.byIcon(Icons.close), findsOneWidget);
     expect(find.byIcon(Icons.chevron_right), findsOneWidget);
     await tester.tap(find.byIcon(Icons.chevron_right));
     await tester.pumpAndSettle();
@@ -166,7 +166,7 @@ void main() {
     expect(find.byType(SessionPage), findsOneWidget);
     expect(find.byType(Form), findsOneWidget);
     expect(find.byIcon(Icons.chevron_left), findsOneWidget);
-    expect(find.byIcon(Icons.exit_to_app), findsOneWidget);
+    expect(find.byIcon(Icons.close), findsOneWidget);
     expect(find.byIcon(Icons.chevron_right), findsNothing);
 
     //
