@@ -29,7 +29,7 @@ Setting _$SettingFromJson(Map<String, dynamic> json) {
     weightUnitId: json['weight_unit'] as int,
     comment: json['comment'] as String,
     rir: json['rir'] as String?,
-  )..weight = toNum(json['weight'] as String?);
+  )..weight = stringToNum(json['weight'] as String?);
 }
 
 Map<String, dynamic> _$SettingToJson(Setting instance) => <String, dynamic>{
@@ -39,7 +39,7 @@ Map<String, dynamic> _$SettingToJson(Setting instance) => <String, dynamic>{
       'exercise': instance.exerciseId,
       'repetition_unit': instance.repetitionUnitId,
       'reps': instance.reps,
-      'weight': toString(instance.weight),
+      'weight': numToString(instance.weight),
       'weight_unit': instance.weightUnitId,
       'comment': instance.comment,
       'rir': instance.rir,

@@ -51,7 +51,7 @@ class Log {
   @JsonKey(ignore: true)
   IngredientWeightUnit? weightUnitObj;
 
-  @JsonKey(required: true, fromJson: toNum)
+  @JsonKey(required: true, fromJson: stringToNum)
   late num amount;
 
   Log({

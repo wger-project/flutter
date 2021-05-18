@@ -45,7 +45,7 @@ class MealItem {
   @JsonKey(ignore: true)
   IngredientWeightUnit? weightUnitObj;
 
-  @JsonKey(required: true, fromJson: toNum, toJson: toString)
+  @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
   late num amount;
 
   MealItem({

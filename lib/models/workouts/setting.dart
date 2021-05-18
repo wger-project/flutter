@@ -54,7 +54,7 @@ class Setting {
   @JsonKey(required: true)
   int? reps;
 
-  @JsonKey(required: true, fromJson: toNum, toJson: toString)
+  @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
   num? weight;
 
   @JsonKey(required: true, name: 'weight_unit')

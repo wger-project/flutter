@@ -19,11 +19,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-num toNum(String? e) {
+num stringToNum(String? e) {
   return e == null ? 0 : num.parse(e);
 }
 
-String? toString(num? e) {
+String? numToString(num? e) {
   if (e == null) {
     return null;
   }

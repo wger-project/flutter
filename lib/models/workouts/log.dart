@@ -51,7 +51,7 @@ class Log {
   @JsonKey(ignore: true)
   late RepetitionUnit repetitionUnitObj;
 
-  @JsonKey(required: true, fromJson: toNum, toJson: toString)
+  @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
   late num weight;
 
   @JsonKey(required: true, name: 'weight_unit')
@@ -66,16 +66,17 @@ class Log {
   //@JsonKey(required: true)
   //String comment;
 
-  Log(
-      {this.id,
-      required this.exerciseId,
-      required this.workoutPlan,
-      required this.reps,
-      required this.rir,
-      required this.repetitionUnitId,
-      required this.weight,
-      required this.weightUnitId,
-      required this.date});
+  Log({
+    this.id,
+    required this.exerciseId,
+    required this.workoutPlan,
+    required this.reps,
+    required this.rir,
+    required this.repetitionUnitId,
+    required this.weight,
+    required this.weightUnitId,
+    required this.date,
+  });
 
   Log.empty();
 

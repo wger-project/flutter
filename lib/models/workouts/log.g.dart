@@ -24,7 +24,7 @@ Log _$LogFromJson(Map<String, dynamic> json) {
     reps: json['reps'] as int,
     rir: json['rir'] as String?,
     repetitionUnitId: json['repetition_unit'] as int,
-    weight: toNum(json['weight'] as String?),
+    weight: stringToNum(json['weight'] as String?),
     weightUnitId: json['weight_unit'] as int,
     date: DateTime.parse(json['date'] as String),
   );
@@ -37,7 +37,7 @@ Map<String, dynamic> _$LogToJson(Log instance) => <String, dynamic>{
       'reps': instance.reps,
       'rir': instance.rir,
       'repetition_unit': instance.repetitionUnitId,
-      'weight': toString(instance.weight),
+      'weight': numToString(instance.weight),
       'weight_unit': instance.weightUnitId,
       'date': toDate(instance.date),
     };

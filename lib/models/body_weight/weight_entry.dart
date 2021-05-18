@@ -26,7 +26,7 @@ class WeightEntry {
   @JsonKey(required: true)
   int? id;
 
-  @JsonKey(required: true, fromJson: toNum, toJson: toString)
+  @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
   late num weight;
 
   @JsonKey(required: true, toJson: toDate)

@@ -37,31 +37,31 @@ class Ingredient {
   final int energy;
 
   /// g per 100g of product
-  @JsonKey(required: true, fromJson: toNum, toJson: toString)
+  @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
   final num carbohydrates;
 
   /// g per 100g of product
-  @JsonKey(required: true, fromJson: toNum, toJson: toString, name: 'carbohydrates_sugar')
+  @JsonKey(required: true, fromJson: stringToNum, toJson: numToString, name: 'carbohydrates_sugar')
   final num carbohydratesSugar;
 
   /// g per 100g of product
-  @JsonKey(required: true, fromJson: toNum, toJson: toString)
+  @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
   final num protein;
 
   /// g per 100g of product
-  @JsonKey(required: true, fromJson: toNum, toJson: toString)
+  @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
   final num fat;
 
   /// g per 100g of product
-  @JsonKey(required: true, fromJson: toNum, toJson: toString, name: 'fat_saturated')
+  @JsonKey(required: true, fromJson: stringToNum, toJson: numToString, name: 'fat_saturated')
   final num fatSaturated;
 
   /// g per 100g of product
-  @JsonKey(required: true, fromJson: toNum, toJson: toString)
+  @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
   final num fibres;
 
   /// g per 100g of product
-  @JsonKey(required: true, fromJson: toNum, toJson: toString)
+  @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
   final num sodium;
 
   const Ingredient({

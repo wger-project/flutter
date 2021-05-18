@@ -25,27 +25,26 @@ Ingredient _$IngredientFromJson(Map<String, dynamic> json) {
     name: json['name'] as String,
     creationDate: DateTime.parse(json['creation_date'] as String),
     energy: json['energy'] as int,
-    carbohydrates: toNum(json['carbohydrates'] as String?),
-    carbohydratesSugar: toNum(json['carbohydrates_sugar'] as String?),
-    protein: toNum(json['protein'] as String?),
-    fat: toNum(json['fat'] as String?),
-    fatSaturated: toNum(json['fat_saturated'] as String?),
-    fibres: toNum(json['fibres'] as String?),
-    sodium: toNum(json['sodium'] as String?),
+    carbohydrates: stringToNum(json['carbohydrates'] as String?),
+    carbohydratesSugar: stringToNum(json['carbohydrates_sugar'] as String?),
+    protein: stringToNum(json['protein'] as String?),
+    fat: stringToNum(json['fat'] as String?),
+    fatSaturated: stringToNum(json['fat_saturated'] as String?),
+    fibres: stringToNum(json['fibres'] as String?),
+    sodium: stringToNum(json['sodium'] as String?),
   );
 }
 
-Map<String, dynamic> _$IngredientToJson(Ingredient instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$IngredientToJson(Ingredient instance) => <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
       'creation_date': toDate(instance.creationDate),
       'energy': instance.energy,
-      'carbohydrates': toString(instance.carbohydrates),
-      'carbohydrates_sugar': toString(instance.carbohydratesSugar),
-      'protein': toString(instance.protein),
-      'fat': toString(instance.fat),
-      'fat_saturated': toString(instance.fatSaturated),
-      'fibres': toString(instance.fibres),
-      'sodium': toString(instance.sodium),
+      'carbohydrates': numToString(instance.carbohydrates),
+      'carbohydrates_sugar': numToString(instance.carbohydratesSugar),
+      'protein': numToString(instance.protein),
+      'fat': numToString(instance.fat),
+      'fat_saturated': numToString(instance.fatSaturated),
+      'fibres': numToString(instance.fibres),
+      'sodium': numToString(instance.sodium),
     };
