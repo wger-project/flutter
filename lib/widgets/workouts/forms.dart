@@ -489,7 +489,7 @@ class ExerciseSetting extends StatelessWidget {
                       SizedBox(width: 4),
                       Flexible(
                         flex: 3,
-                        child: WeightUnitInputWidget(setting, key: Key(i.toString())),
+                        child: RepetitionUnitInputWidget(setting),
                       ),
                     ],
                   ),
@@ -503,7 +503,7 @@ class ExerciseSetting extends StatelessWidget {
                       SizedBox(width: 4),
                       Flexible(
                         flex: 3,
-                        child: RepetitionUnitInputWidget(setting),
+                        child: WeightUnitInputWidget(setting, key: Key(i.toString())),
                       ),
                     ],
                   ),
