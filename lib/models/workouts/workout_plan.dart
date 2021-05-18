@@ -69,8 +69,18 @@ class WorkoutPlan {
   Map<String, dynamic> toJson() => _$WorkoutPlanToJson(this);
 
   /// Filters the workout logs by exercise and sorts them by date
-  List<Log> filterLogsByExercise(Exercise exercise) {
+  ///
+  /// Optionally, filters list so that only unique logs are returned. "Unique"
+  /// means here that the values are the same, i.e. logs with the same weight,
+  /// reps, etc. are considered equal. Workout ID, Log ID and date are not
+  /// considered.
+  List<Log> filterLogsByExercise(Exercise exercise, {bool unique = false}) {
     var out = logs.where((element) => element.exerciseId == exercise.id).toList();
+
+    if (unique) {
+      out = out.toSet().toList();
+    }
+
     out.sort((a, b) => b.date.compareTo(a.date));
     return out;
   }

@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:ui';
+
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/misc.dart';
@@ -106,5 +108,30 @@ class Log {
   /// Returns the text representation for a single setting, used in the gym mode
   String get singleLogRepText {
     return repText(reps, repetitionUnitObj, weight, weightUnitObj, rir);
+  }
+
+  /// Override the equals operator
+  ///
+  /// Two logs are considered equal if their content is equal. This is used e.g.
+  /// in lists where we want to have unique values
+  bool operator ==(o) {
+    return o is Log &&
+        exerciseId == o.exerciseId &&
+        weight == o.weight &&
+        weightUnitId == o.weightUnitId &&
+        reps == o.reps &&
+        repetitionUnitId == o.repetitionUnitId &&
+        rir == o.rir;
+  }
+
+  @override
+  int get hashCode => hashValues(exerciseId, weight, weightUnitId, reps, repetitionUnitId, rir);
+
+  //@override
+  //int get hashCode => super.hashCode;
+
+  @override
+  String toString() {
+    return 'Log(id: $id, ex: $exerciseId, weightU: $weightUnitId, w: $weight, repU: $repetitionUnitId, rep: $reps, rir: $rir)';
   }
 }

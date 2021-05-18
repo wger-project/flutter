@@ -361,17 +361,21 @@ class _LogPageState extends State<LogPage> {
                   ? ListView(
                       children: [
                         Text(
-                          'Logs',
+                          AppLocalizations.of(context)!.labelWorkoutLogs,
                           style: Theme.of(context).textTheme.headline6,
                           textAlign: TextAlign.center,
                         ),
-                        ...widget._workoutPlan.filterLogsByExercise(widget._exercise).map((log) {
+                        ...widget._workoutPlan
+                            .filterLogsByExercise(widget._exercise, unique: true)
+                            .map((log) {
                           return ListTile(
+                            //title: Text(log.id.toString()),
                             title: Text(log.singleLogRepText.replaceAll('\n', '')),
                             subtitle: Text(
                                 DateFormat.yMd(Localizations.localeOf(context).languageCode)
                                     .format(log.date)),
-                            trailing: Icon(Icons.arrow_forward),
+
+                            trailing: Icon(Icons.copy),
                             onTap: () {
                               setState(() {
                                 // Text field
