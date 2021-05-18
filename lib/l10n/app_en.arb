@@ -402,6 +402,10 @@
   "@selectImage": {
     "description": "Label and error message when the user hasn't selected an image to save"
   },
+  "optionsLabel": "Options",
+  "@optionsLabel": {
+    "description": "Label for the popup with general app options"
+  },
   "takePicture": "Take a picture",
   "chooseFromLibrary": "Choose from photo library",
   "gallery": "Gallery",

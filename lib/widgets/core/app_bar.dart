@@ -39,13 +39,12 @@ class WgerAppBar extends StatelessWidget with PreferredSizeWidget {
       actions: [
         IconButton(
           icon: const Icon(Icons.settings),
-          //color: wgerPrimaryColor,
           onPressed: () async {
             return showDialog(
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: Text('Options'),
+                    title: Text(AppLocalizations.of(context)!.options),
                     actions: [
                       TextButton(
                         child: Text(MaterialLocalizations.of(context).closeButtonLabel),
