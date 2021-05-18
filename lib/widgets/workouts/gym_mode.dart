@@ -195,7 +195,12 @@ class LogPage extends StatefulWidget {
   Log _log = Log.empty();
 
   LogPage(
-      this._controller, this._setting, this._exercise, this._workoutPlan, this._ratioCompleted) {
+    this._controller,
+    this._setting,
+    this._exercise,
+    this._workoutPlan,
+    this._ratioCompleted,
+  ) {
     _log.date = DateTime.now();
     _log.workoutPlan = _workoutPlan.id!;
     _log.exercise = _exercise;
@@ -236,7 +241,7 @@ class _LogPageState extends State<LogPage> {
     return TextFormField(
       decoration: InputDecoration(
         labelText: AppLocalizations.of(context)!.repetitions,
-        prefixIcon: IconButton(
+        suffixIcon: IconButton(
           icon: Icon(
             Icons.add,
             color: Colors.black,
@@ -248,7 +253,7 @@ class _LogPageState extends State<LogPage> {
             } on FormatException catch (e) {}
           },
         ),
-        suffixIcon: IconButton(
+        prefixIcon: IconButton(
           icon: Icon(
             Icons.remove,
             color: Colors.black,
@@ -285,7 +290,7 @@ class _LogPageState extends State<LogPage> {
     return TextFormField(
       decoration: InputDecoration(
         labelText: AppLocalizations.of(context)!.weight,
-        prefixIcon: IconButton(
+        suffixIcon: IconButton(
           icon: Icon(
             Icons.add,
             color: Colors.black,
@@ -297,7 +302,7 @@ class _LogPageState extends State<LogPage> {
             } on FormatException catch (e) {}
           },
         ),
-        suffixIcon: IconButton(
+        prefixIcon: IconButton(
           icon: Icon(
             Icons.remove,
             color: Colors.black,
