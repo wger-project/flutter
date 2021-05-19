@@ -23,6 +23,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/ui.dart';
 import 'package:wger/models/exercises/exercise.dart';
@@ -53,6 +54,9 @@ class GymMode extends StatefulWidget {
 class _GymModeState extends State<GymMode> {
   var _totalElements = 1;
 
+  /// Map with the first (navigation) page for each exercise
+  Map<String, int> _exercisePages = new Map();
+
   PageController _controller = PageController(
     initialPage: 0,
   );
@@ -71,52 +75,89 @@ class _GymModeState extends State<GymMode> {
     for (var set in widget._workoutDay.sets) {
       _totalElements = _totalElements + set.settingsComputed.length;
     }
+
+    // Calculate the pages for the navigation
+    //
+    // This duplicates the code below in the getContent method, but it seems to
+    // be the easiest way
+    var currentPage = 1;
+    for (var set in widget._workoutDay.sets) {
+      var firstPage = true;
+      for (var setting in set.settingsComputed) {
+        final exercise =
+            Provider.of<ExercisesProvider>(context, listen: false).findById(setting.exerciseId);
+
+        if (firstPage) {
+          _exercisePages[exercise.name] = currentPage;
+          currentPage++;
+        }
+
+        // Log Page
+        currentPage++;
+
+        // Timer
+        currentPage++;
+        firstPage = false;
+      }
+    }
   }
 
-  @override
-  Widget build(BuildContext context) {
+  // Returns the list of exercise overview, sets and pause pages
+  List<Widget> getContent() {
     final exerciseProvider = Provider.of<ExercisesProvider>(context, listen: false);
     final workoutProvider = Provider.of<WorkoutPlansProvider>(context, listen: false);
     var currentElement = 1;
     List<Widget> out = [];
 
-    // Build the list of exercise overview, sets and pause pages
     for (var set in widget._workoutDay.sets) {
       var firstPage = true;
       for (var setting in set.settingsComputed) {
         var ratioCompleted = currentElement / _totalElements;
+        final exercise = exerciseProvider.findById(setting.exerciseId);
         currentElement++;
+
         if (firstPage) {
           out.add(ExerciseOverview(
             _controller,
-            exerciseProvider.findById(setting.exerciseId),
+            exercise,
             ratioCompleted,
+            _exercisePages,
           ));
         }
+
         out.add(LogPage(
           _controller,
           setting,
-          exerciseProvider.findById(setting.exerciseId),
+          exercise,
           workoutProvider.findById(widget._workoutDay.workoutId),
           ratioCompleted,
+          _exercisePages,
         ));
-        out.add(TimerWidget(_controller, ratioCompleted));
+        out.add(TimerWidget(_controller, ratioCompleted, _exercisePages));
         firstPage = false;
       }
     }
 
+    return out;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return PageView(
       controller: _controller,
       children: [
         StartPage(
           _controller,
           widget._workoutDay,
+          _exercisePages,
         ),
-        ...out,
+        ...getContent(),
         SessionPage(
-          workoutProvider.findById(widget._workoutDay.workoutId),
+          Provider.of<WorkoutPlansProvider>(context, listen: false)
+              .findById(widget._workoutDay.workoutId),
           _controller,
           widget._start,
+          _exercisePages,
         ),
       ],
     );
@@ -126,8 +167,9 @@ class _GymModeState extends State<GymMode> {
 class StartPage extends StatelessWidget {
   PageController _controller;
   final Day _day;
+  Map<String, int> _exercisePages;
 
-  StartPage(this._controller, this._day);
+  StartPage(this._controller, this._day, this._exercisePages);
 
   @override
   Widget build(BuildContext context) {
@@ -135,7 +177,11 @@ class StartPage extends StatelessWidget {
       width: double.infinity,
       child: Column(
         children: [
-          NavigationHeader(AppLocalizations.of(context).todaysWorkout),
+          NavigationHeader(
+            AppLocalizations.of(context).todaysWorkout,
+            _controller,
+            exercisePages: _exercisePages,
+          ),
           Divider(),
           Expanded(
             child: ListView(
@@ -186,6 +232,7 @@ class LogPage extends StatefulWidget {
   Exercise _exercise;
   WorkoutPlan _workoutPlan;
   final double _ratioCompleted;
+  Map<String, int> _exercisePages;
   Log _log = Log.empty();
 
   LogPage(
@@ -194,6 +241,7 @@ class LogPage extends StatefulWidget {
     this._exercise,
     this._workoutPlan,
     this._ratioCompleted,
+    this._exercisePages,
   ) {
     _log.date = DateTime.now();
     _log.workoutPlan = _workoutPlan.id!;
@@ -334,7 +382,11 @@ class _LogPageState extends State<LogPage> {
       width: double.infinity,
       child: Column(
         children: [
-          NavigationHeader(widget._exercise.name),
+          NavigationHeader(
+            widget._exercise.name,
+            widget._controller,
+            exercisePages: widget._exercisePages,
+          ),
           Divider(),
           Center(
             child: Text(
@@ -481,8 +533,14 @@ class ExerciseOverview extends StatelessWidget {
   final PageController _controller;
   final Exercise _exercise;
   final double _ratioCompleted;
+  Map<String, int> _exercisePages;
 
-  ExerciseOverview(this._controller, this._exercise, this._ratioCompleted);
+  ExerciseOverview(
+    this._controller,
+    this._exercise,
+    this._ratioCompleted,
+    this._exercisePages,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -490,7 +548,11 @@ class ExerciseOverview extends StatelessWidget {
       width: double.infinity,
       child: Column(
         children: [
-          NavigationHeader(_exercise.name),
+          NavigationHeader(
+            _exercise.name,
+            _controller,
+            exercisePages: _exercisePages,
+          ),
           Divider(),
           Expanded(
             child: ListView(
@@ -533,8 +595,14 @@ class SessionPage extends StatefulWidget {
   WorkoutPlan _workoutPlan;
   PageController _controller;
   TimeOfDay _start;
+  Map<String, int> _exercisePages;
 
-  SessionPage(this._workoutPlan, this._controller, this._start);
+  SessionPage(
+    this._workoutPlan,
+    this._controller,
+    this._start,
+    this._exercisePages,
+  );
 
   @override
   _SessionPageState createState() => _SessionPageState();
@@ -568,7 +636,11 @@ class _SessionPageState extends State<SessionPage> {
       width: double.infinity,
       child: Column(
         children: [
-          NavigationHeader(AppLocalizations.of(context).workoutSession),
+          NavigationHeader(
+            AppLocalizations.of(context).workoutSession,
+            widget._controller,
+            exercisePages: widget._exercisePages,
+          ),
           Divider(),
           Expanded(child: Container()),
           Form(
@@ -710,8 +782,9 @@ class _SessionPageState extends State<SessionPage> {
 class TimerWidget extends StatefulWidget {
   final PageController _controller;
   final double _ratioCompleted;
+  Map<String, int> _exercisePages;
 
-  TimerWidget(this._controller, this._ratioCompleted);
+  TimerWidget(this._controller, this._ratioCompleted, this._exercisePages);
 
   @override
   _TimerWidgetState createState() => _TimerWidgetState();
@@ -768,7 +841,11 @@ class _TimerWidgetState extends State<TimerWidget> {
       width: double.infinity,
       child: Column(
         children: [
-          NavigationHeader(''),
+          NavigationHeader(
+            '',
+            widget._controller,
+            exercisePages: widget._exercisePages,
+          ),
           Expanded(
             child: Center(
               child: Text(
@@ -811,7 +888,9 @@ class NavigationFooter extends StatelessWidget {
                     icon: Icon(Icons.chevron_left),
                     onPressed: () {
                       _controller.previousPage(
-                          duration: Duration(milliseconds: 200), curve: Curves.bounceIn);
+                        duration: DEFAULT_ANIMATION_DURATION,
+                        curve: DEFAULT_ANIMATION_CURVE,
+                      );
                     },
                   )
                 : Container(),
@@ -821,7 +900,9 @@ class NavigationFooter extends StatelessWidget {
                     icon: Icon(Icons.chevron_right),
                     onPressed: () {
                       _controller.nextPage(
-                          duration: Duration(milliseconds: 200), curve: Curves.bounceIn);
+                        duration: DEFAULT_ANIMATION_DURATION,
+                        curve: DEFAULT_ANIMATION_CURVE,
+                      );
                     },
                   )
                 : Container(),
@@ -833,11 +914,15 @@ class NavigationFooter extends StatelessWidget {
 }
 
 class NavigationHeader extends StatelessWidget {
+  final PageController _controller;
   final String _title;
-  final bool showPrevious;
-  final bool showNext;
+  Map<String, int> exercisePages;
 
-  NavigationHeader(this._title, {this.showPrevious = true, this.showNext = true});
+  NavigationHeader(
+    this._title,
+    this._controller, {
+    required this.exercisePages,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -845,18 +930,12 @@ class NavigationHeader extends StatelessWidget {
       children: [
         Row(
           children: [
-            // Nest all widgets in an expanded so that they all take the same size
-            // independently of how wide they are so that the buttons are positioned
-            // always on the same spot
-
-            showPrevious
-                ? IconButton(
-                    icon: Icon(Icons.close),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  )
-                : Container(),
+            IconButton(
+              icon: Icon(Icons.close),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
@@ -867,17 +946,45 @@ class NavigationHeader extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(width: 48),
-
-            /*
-            showNext
-                ? IconButton(
-                    icon: Icon(Icons.menu),
-                    onPressed: () {},
-                  )
-                : Container(),
-
-             */
+            IconButton(
+              icon: Icon(Icons.menu),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                    title: Text('Jump to', textAlign: TextAlign.center),
+                    contentPadding: EdgeInsets.zero,
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ...exercisePages.keys.map((e) {
+                          return ListTile(
+                            title: Text(e),
+                            trailing: Icon(Icons.chevron_right),
+                            onTap: () {
+                              _controller.animateToPage(
+                                exercisePages[e]!,
+                                duration: DEFAULT_ANIMATION_DURATION,
+                                curve: DEFAULT_ANIMATION_CURVE,
+                              );
+                              Navigator.of(ctx).pop();
+                            },
+                          );
+                        }).toList(),
+                      ],
+                    ),
+                    actions: [
+                      TextButton(
+                        child: Text(MaterialLocalizations.of(context).closeButtonLabel),
+                        onPressed: () {
+                          Navigator.of(ctx).pop();
+                        },
+                      )
+                    ],
+                  ),
+                );
+              },
+            ),
           ],
         ),
       ],

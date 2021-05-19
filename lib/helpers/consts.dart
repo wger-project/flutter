@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter/animation.dart';
+
 /// Size for the "smaller" icons, e.g. when they belong to less important items
 /// and we don't want to fill the whole screen
 const double ICON_SIZE_SMALL = 20;
@@ -37,3 +39,6 @@ const SUBMIT_BUTTON_KEY_NAME = 'submit-button';
 
 /// Local Preferences key for exercises
 const PREFS_EXERCISES = 'exerciseData';
+
+const DEFAULT_ANIMATION_DURATION = Duration(milliseconds: 200);
+const DEFAULT_ANIMATION_CURVE = Curves.bounceIn;
