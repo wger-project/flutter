@@ -274,7 +274,7 @@
   "@noWorkoutPlans": {
     "description": "Message shown when the user has no workout plans"
   },
-  "nrOfSets": "Anzahl der Sätze: {nrOfSets}",
+  "nrOfSets": "Sätze pro Übung: {nrOfSets}",
   "@nrOfSets": {
     "description": "Label shown on the slider where the user selects the nr of sets",
     "type": "text",
@@ -424,5 +424,18 @@
   "labelBottomNavWorkout": "Training",
   "@labelBottomNavWorkout": {
     "description": "Label used in bottom navigation, use a short word"
+  },
+  "optionsLabel": "Optionen",
+  "@optionsLabel": {
+    "description": "Label for the popup with general app options"
+  },
+  "setUnitsAndRir": "Einheiten und RiR einstellen",
+  "@setUnitsAndRir": {
+    "description": "Label shown on the slider where the user can toggle showing units and RiR",
+    "type": "text"
+  },
+  "searchExercise": "Suche Übung zum Hinzufügen",
+  "@searchExercise": {
+    "description": "Label on set form. Selected exercises are added to the set"
   }
 }
