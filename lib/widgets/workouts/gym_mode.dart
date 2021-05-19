@@ -636,7 +636,9 @@ class _SessionPageState extends State<SessionPage> {
                             initialTime: widget._start,
                           );
 
-                          timeStartController.text = timeToString(pickedTime)!;
+                          if (pickedTime != null) {
+                            timeStartController.text = timeToString(pickedTime)!;
+                          }
                         },
                         onSaved: (newValue) {
                           _session.timeStart = stringToTime(newValue);
