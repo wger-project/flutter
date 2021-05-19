@@ -106,11 +106,11 @@ class Setting {
     repetitionUnitId = repetitionUnit.id;
   }
 
-  void setRir(String rir) {
-    if (POSSIBLE_RIR_VALUES.contains(rir)) {
-      this.rir = rir;
+  void setRir(String newRir) {
+    if (POSSIBLE_RIR_VALUES.contains(newRir)) {
+      this.rir = newRir;
     } else {
-      throw Exception('RiR value not allowed');
+      throw Exception('RiR value not allowed: $newRir');
     }
   }
 

@@ -703,8 +703,23 @@ class WeightInputWidget extends StatelessWidget {
 class RiRInputWidget extends StatefulWidget {
   final dynamic _setting;
   late String dropdownValue;
+  late double _currentSetSliderValue;
+
+  final SLIDER_START = -0.5;
+
   RiRInputWidget(this._setting) {
     dropdownValue = _setting.rir != null ? _setting.rir : Setting.DEFAULT_RIR;
+
+    // Read string RiR into a double
+    if (_setting.rir != null) {
+      if (_setting.rir == '') {
+        _currentSetSliderValue = SLIDER_START;
+      } else {
+        _currentSetSliderValue = double.parse(_setting.rir);
+      }
+    } else {
+      _currentSetSliderValue = SLIDER_START;
+    }
   }
 
   @override
@@ -712,25 +727,49 @@ class RiRInputWidget extends StatefulWidget {
 }
 
 class _RiRInputWidgetState extends State<RiRInputWidget> {
+  /// Returns the string used in the slider
+  String getSliderLabel(double value) {
+    if (value < 0) {
+      return AppLocalizations.of(context).rirNotUsed;
+    }
+    return '${value.toString()} ${AppLocalizations.of(context).rir}';
+  }
+
+  String mapDoubleToAllowedRir(double value) {
+    if (value < 0) {
+      return '';
+    } else {
+      // The representation is different (3.0 -> 3) we are on an int, round
+      if (value.toInt() < value) {
+        return value.toString();
+      } else {
+        return value.toInt().toString();
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return DropdownButtonFormField(
-      decoration: InputDecoration(labelText: AppLocalizations.of(context).rir),
-      value: widget.dropdownValue,
-      onSaved: (String? newValue) {
-        widget._setting.setRir(newValue!);
-      },
-      onChanged: (String? newValue) {
-        setState(() {
-          widget.dropdownValue = newValue!;
-        });
-      },
-      items: Setting.POSSIBLE_RIR_VALUES.map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Text(AppLocalizations.of(context).rir),
+        Expanded(
+          child: Slider(
+            value: widget._currentSetSliderValue,
+            min: widget.SLIDER_START,
+            max: (Setting.POSSIBLE_RIR_VALUES.length - 2) / 2,
+            divisions: Setting.POSSIBLE_RIR_VALUES.length - 1,
+            label: getSliderLabel(widget._currentSetSliderValue),
+            onChanged: (double value) {
+              widget._setting.setRir(mapDoubleToAllowedRir(value));
+              setState(() {
+                widget._currentSetSliderValue = value;
+              });
+            },
+          ),
+        ),
+      ],
     );
   }
 }

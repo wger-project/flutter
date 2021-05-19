@@ -245,6 +245,7 @@ class LogPage extends StatefulWidget {
     _log.exercise = _exercise;
     _log.weightUnit = _setting.weightUnitObj;
     _log.repetitionUnit = _setting.repetitionUnitObj;
+    _log.rir = _setting.rir;
   }
 
   @override
@@ -256,7 +257,6 @@ class _LogPageState extends State<LogPage> {
   String rirValue = Setting.DEFAULT_RIR;
   final _repsController = TextEditingController();
   final _weightController = TextEditingController();
-  final _rirController = TextEditingController();
   var _detailed = false;
 
   @override
@@ -269,10 +269,6 @@ class _LogPageState extends State<LogPage> {
 
     if (widget._setting.weight != null) {
       _weightController.text = widget._setting.weight.toString();
-    }
-
-    if (widget._setting.rir != null) {
-      _rirController.text = widget._setting.rir!;
     }
   }
 
@@ -373,6 +369,124 @@ class _LogPageState extends State<LogPage> {
     );
   }
 
+  Widget getForm() {
+    return Form(
+      key: _form,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            AppLocalizations.of(context).newEntry,
+            style: Theme.of(context).textTheme.headline6,
+            textAlign: TextAlign.center,
+          ),
+          if (!_detailed)
+            Row(
+              children: [
+                Flexible(child: getRepsWidget()),
+                SizedBox(width: 8),
+                Flexible(child: getWeightWidget()),
+              ],
+            ),
+          if (_detailed)
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Flexible(child: getRepsWidget()),
+                SizedBox(width: 8),
+                Flexible(child: RepetitionUnitInputWidget(widget._log)),
+              ],
+            ),
+          if (_detailed)
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Flexible(child: getWeightWidget()),
+                SizedBox(width: 8),
+                Flexible(child: WeightUnitInputWidget(widget._log))
+              ],
+            ),
+          if (_detailed) RiRInputWidget(widget._log),
+          SwitchListTile(
+            title: Text(AppLocalizations.of(context).setUnitsAndRir),
+            value: _detailed,
+            onChanged: (value) {
+              setState(() {
+                _detailed = !_detailed;
+              });
+            },
+          ),
+          ElevatedButton(
+            child: Text(AppLocalizations.of(context).save),
+            onPressed: () async {
+              // Validate and save the current values to the weightEntry
+              final isValid = _form.currentState!.validate();
+              if (!isValid) {
+                return;
+              }
+              _form.currentState!.save();
+
+              // Save the entry on the server
+              try {
+                await Provider.of<WorkoutPlansProvider>(context, listen: false).addLog(widget._log);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    duration: Duration(seconds: 2), // default is 4
+                    content: Text(
+                      AppLocalizations.of(context).successfullySaved,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                );
+                widget._controller.nextPage(
+                  duration: DEFAULT_ANIMATION_DURATION,
+                  curve: DEFAULT_ANIMATION_CURVE,
+                );
+              } on WgerHttpException catch (error) {
+                showHttpExceptionErrorDialog(error, context);
+              } catch (error) {
+                showErrorDialog(error, context);
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget getPastLogs() {
+    return ListView(
+      children: [
+        Text(
+          AppLocalizations.of(context).labelWorkoutLogs,
+          style: Theme.of(context).textTheme.headline6,
+          textAlign: TextAlign.center,
+        ),
+        ...widget._workoutPlan.filterLogsByExercise(widget._exercise, unique: true).map((log) {
+          return ListTile(
+            title: Text(log.singleLogRepText.replaceAll('\n', '')),
+            subtitle:
+                Text(DateFormat.yMd(Localizations.localeOf(context).languageCode).format(log.date)),
+            trailing: Icon(Icons.copy),
+            onTap: () {
+              setState(() {
+                // Text field
+                _repsController.text = log.reps.toString();
+                _weightController.text = log.weight.toString();
+
+                // Drop downs
+                widget._log.rir = log.rir;
+                widget._log.repetitionUnit = log.repetitionUnitObj;
+                widget._log.weightUnit = log.weightUnitObj;
+              });
+            },
+            contentPadding: EdgeInsets.symmetric(horizontal: 40),
+          );
+        }).toList(),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -392,119 +506,14 @@ class _LogPageState extends State<LogPage> {
         SizedBox(height: 10),
         Expanded(
             child: (widget._workoutPlan.filterLogsByExercise(widget._exercise).length > 0)
-                ? ListView(
-                    children: [
-                      Text(
-                        AppLocalizations.of(context).labelWorkoutLogs,
-                        style: Theme.of(context).textTheme.headline6,
-                        textAlign: TextAlign.center,
-                      ),
-                      ...widget._workoutPlan
-                          .filterLogsByExercise(widget._exercise, unique: true)
-                          .map((log) {
-                        return ListTile(
-                          title: Text(log.singleLogRepText.replaceAll('\n', '')),
-                          subtitle: Text(
-                              DateFormat.yMd(Localizations.localeOf(context).languageCode)
-                                  .format(log.date)),
-                          trailing: Icon(Icons.copy),
-                          onTap: () {
-                            setState(() {
-                              // Text field
-                              _repsController.text = log.reps.toString();
-                              _weightController.text = log.weight.toString();
-
-                              // Drop downs
-                              widget._log.rir = log.rir;
-                              widget._log.repetitionUnit = log.repetitionUnitObj;
-                              widget._log.weightUnit = log.weightUnitObj;
-                            });
-                          },
-                          contentPadding: EdgeInsets.symmetric(horizontal: 40),
-                        );
-                      }).toList(),
-                    ],
-                  )
+                ? getPastLogs()
                 : Container()),
         SizedBox(height: 15),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: Form(
-            key: _form,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (!_detailed)
-                  Row(
-                    children: [
-                      Flexible(child: getRepsWidget()),
-                      SizedBox(width: 8),
-                      Flexible(child: getWeightWidget()),
-                    ],
-                  ),
-                if (_detailed)
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Flexible(child: getRepsWidget()),
-                      SizedBox(width: 8),
-                      Flexible(child: RepetitionUnitInputWidget(widget._log)),
-                    ],
-                  ),
-                if (_detailed)
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Flexible(child: getWeightWidget()),
-                      SizedBox(width: 8),
-                      Flexible(child: WeightUnitInputWidget(widget._log))
-                    ],
-                  ),
-                if (_detailed) RiRInputWidget(widget._log),
-                IconButton(
-                  icon: Icon(_detailed ? Icons.unfold_less : Icons.unfold_more),
-                  onPressed: () {
-                    setState(() {
-                      _detailed = !_detailed;
-                    });
-                  },
-                ),
-                ElevatedButton(
-                  child: Text(AppLocalizations.of(context).save),
-                  onPressed: () async {
-                    // Validate and save the current values to the weightEntry
-                    final isValid = _form.currentState!.validate();
-                    if (!isValid) {
-                      return;
-                    }
-                    _form.currentState!.save();
-
-                    // Save the entry on the server
-                    try {
-                      await Provider.of<WorkoutPlansProvider>(context, listen: false)
-                          .addLog(widget._log);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          duration: Duration(seconds: 2), // default is 4
-                          content: Text(
-                            AppLocalizations.of(context).successfullySaved,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      );
-                      widget._controller.nextPage(
-                        duration: Duration(milliseconds: 200),
-                        curve: Curves.bounceIn,
-                      );
-                    } on WgerHttpException catch (error) {
-                      showHttpExceptionErrorDialog(error, context);
-                    } catch (error) {
-                      showErrorDialog(error, context);
-                    }
-                  },
-                ),
-              ],
-            ),
+          child: Card(
+            color: wgerBackground,
+            child: getForm(),
           ),
         ),
         NavigationFooter(widget._controller, widget._ratioCompleted),
@@ -822,7 +831,7 @@ class _TimerWidgetState extends State<TimerWidget> {
     return Column(
       children: [
         NavigationHeader(
-          '',
+          AppLocalizations.of(context).pause,
           widget._controller,
           exercisePages: widget._exercisePages,
         ),
@@ -900,7 +909,10 @@ class NavigationHeader extends StatelessWidget {
 
   Widget getDialog(BuildContext context) {
     return AlertDialog(
-      title: Text('Jump to', textAlign: TextAlign.center),
+      title: Text(
+        AppLocalizations.of(context).jumpTo,
+        textAlign: TextAlign.center,
+      ),
       contentPadding: EdgeInsets.zero,
       content: SingleChildScrollView(
         child: Column(

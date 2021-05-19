@@ -140,6 +140,10 @@
   "@rir": {
     "description": "Shorthand for Repetitions In Reserve"
   },
+  "rirNotUsed": "RiR not used",
+  "@rirNotUsed": {
+    "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
+  },
   "weightUnit": "Weight unit",
   "@weightUnit": {},
   "repetitionUnit": "Repetition unit",
@@ -187,6 +191,14 @@
   "gymMode": "Gym mode",
   "@gymMode": {
     "description": "Label when starting the gym mode"
+  },
+  "pause": "Pause",
+  "@pause": {
+    "description": "Noun, not an imperative! Label used for the pause when using the gym mode"
+  },
+  "jumpTo": "Jump to",
+  "@jumpTo": {
+    "description": "Imperative. Label used in popup allowing the user to jump to a specific exercise while in the gym mode"
   },
   "todaysWorkout": "Your workout today",
   "@todaysWorkout": {},

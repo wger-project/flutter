@@ -105,7 +105,7 @@ void main() {
     expect(find.text('test exercise 1'), findsOneWidget);
     expect(find.byType(LogPage), findsOneWidget);
     expect(find.byType(Form), findsOneWidget);
-    expect(find.byType(ListTile), findsNWidgets(2));
+    expect(find.byType(ListTile), findsNWidgets(3), reason: 'Two logs and the switch tile');
     expect(find.text('10 × 10 kg  (1.5 RiR)'), findsOneWidget);
     expect(find.text('12 × 10 kg  (2 RiR)'), findsOneWidget);
     expect(find.byIcon(Icons.close), findsOneWidget);
@@ -114,20 +114,18 @@ void main() {
     expect(find.byIcon(Icons.chevron_right), findsOneWidget);
 
     // Form shows only weight and reps
-    expect(find.byIcon(Icons.unfold_more), findsOneWidget);
+    expect(find.byType(SwitchListTile), findsOneWidget);
     expect(find.byType(TextFormField), findsNWidgets(2));
     expect(find.byType(RepetitionUnitInputWidget), findsNothing);
     expect(find.byType(WeightUnitInputWidget), findsNothing);
     expect(find.byType(RiRInputWidget), findsNothing);
 
     // Form shows unit and rir after tapping the toggle button
-    await tester.tap(find.byIcon(Icons.unfold_more));
+    await tester.tap(find.byType(SwitchListTile));
     await tester.pump();
     expect(find.byType(RepetitionUnitInputWidget), findsOneWidget);
     expect(find.byType(WeightUnitInputWidget), findsOneWidget);
     expect(find.byType(RiRInputWidget), findsOneWidget);
-    expect(find.byIcon(Icons.unfold_less), findsOneWidget);
-
     await tester.drag(find.byType(LogPage), Offset(-500.0, 0.0));
     await tester.pumpAndSettle();
 
