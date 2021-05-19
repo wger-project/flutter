@@ -173,55 +173,52 @@ class StartPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      child: Column(
-        children: [
-          NavigationHeader(
-            AppLocalizations.of(context).todaysWorkout,
-            _controller,
-            exercisePages: _exercisePages,
+    return Column(
+      children: [
+        NavigationHeader(
+          AppLocalizations.of(context).todaysWorkout,
+          _controller,
+          exercisePages: _exercisePages,
+        ),
+        Divider(),
+        Expanded(
+          child: ListView(
+            children: [
+              ..._day.sets.map(
+                (set) {
+                  return Column(
+                    children: [
+                      ...set.settingsFiltered.map((s) {
+                        return Column(
+                          children: [
+                            Text(
+                              s.exerciseObj.name,
+                              style: Theme.of(context).textTheme.headline6,
+                            ),
+                            ...set.getSmartRepr(s.exerciseObj).map((e) => Text(e)).toList(),
+                            SizedBox(height: 15),
+                          ],
+                        );
+                      }).toList(),
+                    ],
+                  );
+                },
+              ).toList(),
+            ],
           ),
-          Divider(),
-          Expanded(
-            child: ListView(
-              children: [
-                ..._day.sets.map(
-                  (set) {
-                    return Column(
-                      children: [
-                        ...set.settingsFiltered.map((s) {
-                          return Column(
-                            children: [
-                              Text(
-                                s.exerciseObj.name,
-                                style: Theme.of(context).textTheme.headline6,
-                              ),
-                              ...set.getSmartRepr(s.exerciseObj).map((e) => Text(e)).toList(),
-                              SizedBox(height: 15),
-                            ],
-                          );
-                        }).toList(),
-                      ],
-                    );
-                  },
-                ).toList(),
-              ],
-            ),
-          ),
-          ElevatedButton(
-            child: Text(AppLocalizations.of(context).start),
-            onPressed: () {
-              _controller.nextPage(duration: Duration(milliseconds: 200), curve: Curves.bounceIn);
-            },
-          ),
-          NavigationFooter(
-            _controller,
-            0,
-            showPrevious: false,
-          ),
-        ],
-      ),
+        ),
+        ElevatedButton(
+          child: Text(AppLocalizations.of(context).start),
+          onPressed: () {
+            _controller.nextPage(duration: Duration(milliseconds: 200), curve: Curves.bounceIn);
+          },
+        ),
+        NavigationFooter(
+          _controller,
+          0,
+          showPrevious: false,
+        ),
+      ],
     );
   }
 }
@@ -378,61 +375,61 @@ class _LogPageState extends State<LogPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      child: Column(
-        children: [
-          NavigationHeader(
-            widget._exercise.name,
-            widget._controller,
-            exercisePages: widget._exercisePages,
+    return Column(
+      children: [
+        NavigationHeader(
+          widget._exercise.name,
+          widget._controller,
+          exercisePages: widget._exercisePages,
+        ),
+        Center(
+          child: Text(
+            '${widget._setting.singleSettingRepText}',
+            style: Theme.of(context).textTheme.headline3,
+            textAlign: TextAlign.center,
           ),
-          Divider(),
-          Center(
-            child: Text(
-              '${widget._setting.singleSettingRepText}',
-              style: Theme.of(context).textTheme.headline3,
-              textAlign: TextAlign.center,
-            ),
-          ),
-          Expanded(
-              child: (widget._workoutPlan.filterLogsByExercise(widget._exercise).length > 0)
-                  ? ListView(
-                      children: [
-                        Text(
-                          AppLocalizations.of(context).labelWorkoutLogs,
-                          style: Theme.of(context).textTheme.headline6,
-                          textAlign: TextAlign.center,
-                        ),
-                        ...widget._workoutPlan
-                            .filterLogsByExercise(widget._exercise, unique: true)
-                            .map((log) {
-                          return ListTile(
-                            title: Text(log.singleLogRepText.replaceAll('\n', '')),
-                            subtitle: Text(
-                                DateFormat.yMd(Localizations.localeOf(context).languageCode)
-                                    .format(log.date)),
-                            trailing: Icon(Icons.copy),
-                            onTap: () {
-                              setState(() {
-                                // Text field
-                                _repsController.text = log.reps.toString();
-                                _weightController.text = log.weight.toString();
+        ),
+        SizedBox(height: 10),
+        Expanded(
+            child: (widget._workoutPlan.filterLogsByExercise(widget._exercise).length > 0)
+                ? ListView(
+                    children: [
+                      Text(
+                        AppLocalizations.of(context).labelWorkoutLogs,
+                        style: Theme.of(context).textTheme.headline6,
+                        textAlign: TextAlign.center,
+                      ),
+                      ...widget._workoutPlan
+                          .filterLogsByExercise(widget._exercise, unique: true)
+                          .map((log) {
+                        return ListTile(
+                          title: Text(log.singleLogRepText.replaceAll('\n', '')),
+                          subtitle: Text(
+                              DateFormat.yMd(Localizations.localeOf(context).languageCode)
+                                  .format(log.date)),
+                          trailing: Icon(Icons.copy),
+                          onTap: () {
+                            setState(() {
+                              // Text field
+                              _repsController.text = log.reps.toString();
+                              _weightController.text = log.weight.toString();
 
-                                // Drop downs
-                                widget._log.rir = log.rir;
-                                widget._log.repetitionUnit = log.repetitionUnitObj;
-                                widget._log.weightUnit = log.weightUnitObj;
-                              });
-                            },
-                            contentPadding: EdgeInsets.symmetric(horizontal: 40),
-                          );
-                        }).toList(),
-                      ],
-                    )
-                  : Container()),
-          SizedBox(height: 15),
-          Form(
+                              // Drop downs
+                              widget._log.rir = log.rir;
+                              widget._log.repetitionUnit = log.repetitionUnitObj;
+                              widget._log.weightUnit = log.weightUnitObj;
+                            });
+                          },
+                          contentPadding: EdgeInsets.symmetric(horizontal: 40),
+                        );
+                      }).toList(),
+                    ],
+                  )
+                : Container()),
+        SizedBox(height: 15),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: Form(
             key: _form,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -464,19 +461,6 @@ class _LogPageState extends State<LogPage> {
                     ],
                   ),
                 if (_detailed) RiRInputWidget(widget._log),
-                /*
-                  TextFormField(
-                    decoration: InputDecoration(labelText: AppLocalizations.of(context).comment),
-                    controller: _commentController,
-                    keyboardType: TextInputType.multiline,
-                    maxLines: 3,
-                    onFieldSubmitted: (_) {},
-                    onSaved: (newValue) {
-                      _log.
-                    },
-                  ),
-
-                   */
                 IconButton(
                   icon: Icon(_detailed ? Icons.unfold_less : Icons.unfold_more),
                   onPressed: () {
@@ -522,9 +506,9 @@ class _LogPageState extends State<LogPage> {
               ],
             ),
           ),
-          NavigationFooter(widget._controller, widget._ratioCompleted),
-        ],
-      ),
+        ),
+        NavigationFooter(widget._controller, widget._ratioCompleted),
+      ],
     );
   }
 }
@@ -544,49 +528,47 @@ class ExerciseOverview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      child: Column(
-        children: [
-          NavigationHeader(
-            _exercise.name,
-            _controller,
-            exercisePages: _exercisePages,
-          ),
-          Divider(),
-          Expanded(
-            child: ListView(
-              children: [
-                Text(
-                  _exercise.categoryObj.name,
-                  style: Theme.of(context).textTheme.headline6,
-                  textAlign: TextAlign.center,
-                ),
-                ..._exercise.equipment
-                    .map((e) => Text(
-                          e.name,
-                          style: Theme.of(context).textTheme.headline6,
-                          textAlign: TextAlign.center,
-                        ))
-                    .toList(),
-                if (_exercise.images.length > 0)
-                  Container(
-                    width: double.infinity,
-                    height: 200,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: [
-                        ..._exercise.images.map((e) => ExerciseImageWidget(image: e)).toList(),
-                      ],
-                    ),
+    return Column(
+      children: [
+        NavigationHeader(
+          _exercise.name,
+          _controller,
+          exercisePages: _exercisePages,
+        ),
+        Divider(),
+        Expanded(
+          child: ListView(
+            padding: EdgeInsets.symmetric(horizontal: 15),
+            children: [
+              Text(
+                _exercise.categoryObj.name,
+                style: Theme.of(context).textTheme.headline6,
+                textAlign: TextAlign.center,
+              ),
+              ..._exercise.equipment
+                  .map((e) => Text(
+                        e.name,
+                        style: Theme.of(context).textTheme.headline6,
+                        textAlign: TextAlign.center,
+                      ))
+                  .toList(),
+              if (_exercise.images.length > 0)
+                Container(
+                  width: double.infinity,
+                  height: 200,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: [
+                      ..._exercise.images.map((e) => ExerciseImageWidget(image: e)).toList(),
+                    ],
                   ),
-                Html(data: _exercise.description),
-              ],
-            ),
+                ),
+              Html(data: _exercise.description),
+            ],
           ),
-          NavigationFooter(_controller, _ratioCompleted),
-        ],
-      ),
+        ),
+        NavigationFooter(_controller, _ratioCompleted),
+      ],
     );
   }
 }
@@ -632,18 +614,18 @@ class _SessionPageState extends State<SessionPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      child: Column(
-        children: [
-          NavigationHeader(
-            AppLocalizations.of(context).workoutSession,
-            widget._controller,
-            exercisePages: widget._exercisePages,
-          ),
-          Divider(),
-          Expanded(child: Container()),
-          Form(
+    return Column(
+      children: [
+        NavigationHeader(
+          AppLocalizations.of(context).workoutSession,
+          widget._controller,
+          exercisePages: widget._exercisePages,
+        ),
+        Divider(),
+        Expanded(child: Container()),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: Form(
             key: _form,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -768,13 +750,13 @@ class _SessionPageState extends State<SessionPage> {
               ],
             ),
           ),
-          NavigationFooter(
-            widget._controller,
-            1,
-            showNext: false,
-          ),
-        ],
-      ),
+        ),
+        NavigationFooter(
+          widget._controller,
+          1,
+          showNext: false,
+        ),
+      ],
     );
   }
 }
@@ -837,26 +819,23 @@ class _TimerWidgetState extends State<TimerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      child: Column(
-        children: [
-          NavigationHeader(
-            '',
-            widget._controller,
-            exercisePages: widget._exercisePages,
-          ),
-          Expanded(
-            child: Center(
-              child: Text(
-                DateFormat('m:ss').format(today.add(Duration(seconds: _seconds))),
-                style: Theme.of(context).textTheme.headline1!.copyWith(color: wgerPrimaryColor),
-              ),
+    return Column(
+      children: [
+        NavigationHeader(
+          '',
+          widget._controller,
+          exercisePages: widget._exercisePages,
+        ),
+        Expanded(
+          child: Center(
+            child: Text(
+              DateFormat('m:ss').format(today.add(Duration(seconds: _seconds))),
+              style: Theme.of(context).textTheme.headline1!.copyWith(color: wgerPrimaryColor),
             ),
           ),
-          NavigationFooter(widget._controller, widget._ratioCompleted),
-        ],
-      ),
+        ),
+        NavigationFooter(widget._controller, widget._ratioCompleted),
+      ],
     );
   }
 }
@@ -872,42 +851,37 @@ class NavigationFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Row(
       children: [
-        SizedBox(height: 15),
-        LinearProgressIndicator(
-          minHeight: 1.5,
-          value: _ratioCompleted,
-          valueColor: AlwaysStoppedAnimation<Color>(wgerPrimaryColor),
-          backgroundColor: Colors.white,
+        showPrevious
+            ? IconButton(
+                icon: Icon(Icons.chevron_left),
+                onPressed: () {
+                  _controller.previousPage(
+                    duration: DEFAULT_ANIMATION_DURATION,
+                    curve: DEFAULT_ANIMATION_CURVE,
+                  );
+                },
+              )
+            : SizedBox(width: 48),
+        Expanded(
+          child: LinearProgressIndicator(
+            minHeight: 1.5,
+            value: _ratioCompleted,
+            valueColor: AlwaysStoppedAnimation<Color>(wgerPrimaryColor),
+          ),
         ),
-        Row(
-          children: [
-            showPrevious
-                ? IconButton(
-                    icon: Icon(Icons.chevron_left),
-                    onPressed: () {
-                      _controller.previousPage(
-                        duration: DEFAULT_ANIMATION_DURATION,
-                        curve: DEFAULT_ANIMATION_CURVE,
-                      );
-                    },
-                  )
-                : Container(),
-            Expanded(child: Container()),
-            showNext
-                ? IconButton(
-                    icon: Icon(Icons.chevron_right),
-                    onPressed: () {
-                      _controller.nextPage(
-                        duration: DEFAULT_ANIMATION_DURATION,
-                        curve: DEFAULT_ANIMATION_CURVE,
-                      );
-                    },
-                  )
-                : Container(),
-          ],
-        ),
+        showNext
+            ? IconButton(
+                icon: Icon(Icons.chevron_right),
+                onPressed: () {
+                  _controller.nextPage(
+                    duration: DEFAULT_ANIMATION_DURATION,
+                    curve: DEFAULT_ANIMATION_CURVE,
+                  );
+                },
+              )
+            : SizedBox(width: 48),
       ],
     );
   }
@@ -924,68 +898,68 @@ class NavigationHeader extends StatelessWidget {
     required this.exercisePages,
   });
 
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          children: [
-            IconButton(
-              icon: Icon(Icons.close),
-              onPressed: () {
+  Widget getDialog(BuildContext context) {
+    return AlertDialog(
+      title: Text('Jump to', textAlign: TextAlign.center),
+      contentPadding: EdgeInsets.zero,
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ...exercisePages.keys.map((e) {
+            return ListTile(
+              title: Text(e),
+              trailing: Icon(Icons.chevron_right),
+              onTap: () {
+                _controller.animateToPage(
+                  exercisePages[e]!,
+                  duration: DEFAULT_ANIMATION_DURATION,
+                  curve: DEFAULT_ANIMATION_CURVE,
+                );
                 Navigator.of(context).pop();
               },
+            );
+          }).toList(),
+        ],
+      ),
+      actions: [
+        TextButton(
+          child: Text(MaterialLocalizations.of(context).closeButtonLabel),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        )
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        IconButton(
+          icon: Icon(Icons.close),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Text(
+              _title,
+              style: Theme.of(context).textTheme.headline5,
+              textAlign: TextAlign.center,
             ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: Text(
-                  _title,
-                  style: Theme.of(context).textTheme.headline5,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
-            IconButton(
-              icon: Icon(Icons.menu),
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (ctx) => AlertDialog(
-                    title: Text('Jump to', textAlign: TextAlign.center),
-                    contentPadding: EdgeInsets.zero,
-                    content: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ...exercisePages.keys.map((e) {
-                          return ListTile(
-                            title: Text(e),
-                            trailing: Icon(Icons.chevron_right),
-                            onTap: () {
-                              _controller.animateToPage(
-                                exercisePages[e]!,
-                                duration: DEFAULT_ANIMATION_DURATION,
-                                curve: DEFAULT_ANIMATION_CURVE,
-                              );
-                              Navigator.of(ctx).pop();
-                            },
-                          );
-                        }).toList(),
-                      ],
-                    ),
-                    actions: [
-                      TextButton(
-                        child: Text(MaterialLocalizations.of(context).closeButtonLabel),
-                        onPressed: () {
-                          Navigator.of(ctx).pop();
-                        },
-                      )
-                    ],
-                  ),
-                );
-              },
-            ),
-          ],
+          ),
+        ),
+        IconButton(
+          icon: Icon(Icons.menu),
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (ctx) => getDialog(context),
+            );
+          },
         ),
       ],
     );

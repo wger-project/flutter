@@ -33,10 +33,7 @@ class GymModeScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Consumer<WorkoutPlansProvider>(
-          builder: (context, value, child) => Padding(
-            padding: const EdgeInsets.all(10),
-            child: GymMode(_day),
-          ),
+          builder: (context, value, child) => GymMode(_day),
         ),
       ),
     );
