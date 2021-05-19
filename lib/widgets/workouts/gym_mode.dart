@@ -135,13 +135,7 @@ class StartPage extends StatelessWidget {
       width: double.infinity,
       child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Text(
-              AppLocalizations.of(context).todaysWorkout,
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ),
+          NavigationHeader(AppLocalizations.of(context).todaysWorkout),
           Divider(),
           Expanded(
             child: ListView(
@@ -340,14 +334,7 @@ class _LogPageState extends State<LogPage> {
       width: double.infinity,
       child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Text(
-              widget._exercise.name,
-              style: Theme.of(context).textTheme.headline5,
-              textAlign: TextAlign.center,
-            ),
-          ),
+          NavigationHeader(widget._exercise.name),
           Divider(),
           Center(
             child: Text(
@@ -503,14 +490,7 @@ class ExerciseOverview extends StatelessWidget {
       width: double.infinity,
       child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Text(
-              _exercise.name,
-              style: Theme.of(context).textTheme.headline5,
-              textAlign: TextAlign.center,
-            ),
-          ),
+          NavigationHeader(_exercise.name),
           Divider(),
           Expanded(
             child: ListView(
@@ -588,13 +568,7 @@ class _SessionPageState extends State<SessionPage> {
       width: double.infinity,
       child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Text(
-              AppLocalizations.of(context).workoutSession,
-              style: Theme.of(context).textTheme.headline5,
-            ),
-          ),
+          NavigationHeader(AppLocalizations.of(context).workoutSession),
           Divider(),
           Expanded(child: Container()),
           Form(
@@ -792,6 +766,7 @@ class _TimerWidgetState extends State<TimerWidget> {
       width: double.infinity,
       child: Column(
         children: [
+          NavigationHeader(''),
           Expanded(
             child: Center(
               child: Text(
@@ -820,7 +795,7 @@ class NavigationFooter extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(height: 30),
+        SizedBox(height: 15),
         LinearProgressIndicator(
           minHeight: 1.5,
           value: _ratioCompleted,
@@ -829,40 +804,78 @@ class NavigationFooter extends StatelessWidget {
         ),
         Row(
           children: [
+            showPrevious
+                ? IconButton(
+                    icon: Icon(Icons.chevron_left),
+                    onPressed: () {
+                      _controller.previousPage(
+                          duration: Duration(milliseconds: 200), curve: Curves.bounceIn);
+                    },
+                  )
+                : Container(),
+            Expanded(child: Container()),
+            showNext
+                ? IconButton(
+                    icon: Icon(Icons.chevron_right),
+                    onPressed: () {
+                      _controller.nextPage(
+                          duration: Duration(milliseconds: 200), curve: Curves.bounceIn);
+                    },
+                  )
+                : Container(),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class NavigationHeader extends StatelessWidget {
+  final String _title;
+  final bool showPrevious;
+  final bool showNext;
+
+  NavigationHeader(this._title, {this.showPrevious = true, this.showNext = true});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          children: [
             // Nest all widgets in an expanded so that they all take the same size
             // independently of how wide they are so that the buttons are positioned
             // always on the same spot
 
+            showPrevious
+                ? IconButton(
+                    icon: Icon(Icons.close),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  )
+                : Container(),
             Expanded(
-              child: showPrevious
-                  ? IconButton(
-                      icon: Icon(Icons.chevron_left),
-                      onPressed: () {
-                        _controller.previousPage(
-                            duration: Duration(milliseconds: 200), curve: Curves.bounceIn);
-                      },
-                    )
-                  : Container(),
-            ),
-            Expanded(
-              child: IconButton(
-                icon: Icon(Icons.close),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Text(
+                  _title,
+                  style: Theme.of(context).textTheme.headline5,
+                  textAlign: TextAlign.center,
+                ),
               ),
             ),
-            Expanded(
-              child: showNext
-                  ? IconButton(
-                      icon: Icon(Icons.chevron_right),
-                      onPressed: () {
-                        _controller.nextPage(
-                            duration: Duration(milliseconds: 200), curve: Curves.bounceIn);
-                      },
-                    )
-                  : Container(),
-            ),
+            SizedBox(width: 48),
+
+            /*
+            showNext
+                ? IconButton(
+                    icon: Icon(Icons.menu),
+                    onPressed: () {},
+                  )
+                : Container(),
+
+             */
           ],
         ),
       ],
