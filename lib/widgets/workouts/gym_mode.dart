@@ -902,24 +902,25 @@ class NavigationHeader extends StatelessWidget {
     return AlertDialog(
       title: Text('Jump to', textAlign: TextAlign.center),
       contentPadding: EdgeInsets.zero,
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ...exercisePages.keys.map((e) {
-            return ListTile(
-              title: Text(e),
-              trailing: Icon(Icons.chevron_right),
-              onTap: () {
-                _controller.animateToPage(
-                  exercisePages[e]!,
-                  duration: DEFAULT_ANIMATION_DURATION,
-                  curve: DEFAULT_ANIMATION_CURVE,
-                );
-                Navigator.of(context).pop();
-              },
-            );
-          }).toList(),
-        ],
+      content: SingleChildScrollView(
+        child: Column(
+          children: [
+            ...exercisePages.keys.map((e) {
+              return ListTile(
+                title: Text(e),
+                trailing: Icon(Icons.chevron_right),
+                onTap: () {
+                  _controller.animateToPage(
+                    exercisePages[e]!,
+                    duration: DEFAULT_ANIMATION_DURATION,
+                    curve: DEFAULT_ANIMATION_CURVE,
+                  );
+                  Navigator.of(context).pop();
+                },
+              );
+            }).toList(),
+          ],
+        ),
       ),
       actions: [
         TextButton(
