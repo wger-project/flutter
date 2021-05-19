@@ -42,7 +42,7 @@ class NutritionalPlansList extends StatelessWidget {
                 builder: (BuildContext contextDialog) {
                   return AlertDialog(
                     content: Text(
-                      AppLocalizations.of(context)!.confirmDelete(currentPlan.description),
+                      AppLocalizations.of(context).confirmDelete(currentPlan.description),
                     ),
                     actions: [
                       TextButton(
@@ -51,7 +51,7 @@ class NutritionalPlansList extends StatelessWidget {
                       ),
                       TextButton(
                         child: Text(
-                          AppLocalizations.of(context)!.delete,
+                          AppLocalizations.of(context).delete,
                           style: TextStyle(color: Theme.of(context).errorColor),
                         ),
                         onPressed: () {
@@ -65,7 +65,7 @@ class NutritionalPlansList extends StatelessWidget {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                AppLocalizations.of(context)!.successfullyDeleted,
+                                AppLocalizations.of(context).successfullyDeleted,
                                 textAlign: TextAlign.center,
                               ),
                             ),

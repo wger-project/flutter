@@ -31,7 +31,7 @@ class NutritionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: WgerAppBar(AppLocalizations.of(context)!.nutritionalPlans),
+      appBar: WgerAppBar(AppLocalizations.of(context).nutritionalPlans),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () async {
@@ -39,7 +39,7 @@ class NutritionScreen extends StatelessWidget {
             context,
             FormScreen.routeName,
             arguments: FormScreenArguments(
-              AppLocalizations.of(context)!.newNutritionalPlan,
+              AppLocalizations.of(context).newNutritionalPlan,
               PlanForm(),
             ),
           );

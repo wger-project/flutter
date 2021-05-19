@@ -96,7 +96,7 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
                       context,
                       FormScreen.routeName,
                       arguments: FormScreenArguments(
-                        AppLocalizations.of(context)!.edit,
+                        AppLocalizations.of(context).edit,
                         WorkoutForm(workoutPlan),
                       ),
                     );
@@ -120,18 +120,18 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
                   return [
                     PopupMenuItem<WorkoutOptions>(
                       child: _mode == WorkoutScreenMode.log
-                          ? Text(AppLocalizations.of(context)!.labelWorkoutPlan)
-                          : Text(AppLocalizations.of(context)!.labelWorkoutLogs),
+                          ? Text(AppLocalizations.of(context).labelWorkoutPlan)
+                          : Text(AppLocalizations.of(context).labelWorkoutLogs),
                       value: WorkoutOptions.toggleMode,
                     ),
                     PopupMenuItem<WorkoutOptions>(
                       value: WorkoutOptions.edit,
-                      child: Text(AppLocalizations.of(context)!.edit),
+                      child: Text(AppLocalizations.of(context).edit),
                     ),
                     const PopupMenuDivider(),
                     PopupMenuItem<WorkoutOptions>(
                       value: WorkoutOptions.delete,
-                      child: Text(AppLocalizations.of(context)!.delete),
+                      child: Text(AppLocalizations.of(context).delete),
                     ),
                   ];
                 },

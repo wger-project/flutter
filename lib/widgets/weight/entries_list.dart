@@ -55,7 +55,7 @@ class WeightEntriesList extends StatelessWidget {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
-                          AppLocalizations.of(context)!.successfullyDeleted,
+                          AppLocalizations.of(context).successfullyDeleted,
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -69,7 +69,7 @@ class WeightEntriesList extends StatelessWidget {
                       context,
                       FormScreen.routeName,
                       arguments: FormScreenArguments(
-                        AppLocalizations.of(context)!.edit,
+                        AppLocalizations.of(context).edit,
                         WeightForm(currentEntry),
                       ),
                     );

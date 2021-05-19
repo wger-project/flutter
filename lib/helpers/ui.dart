@@ -30,7 +30,7 @@ void showErrorDialog(dynamic exception, BuildContext context) {
   showDialog(
     context: context,
     builder: (ctx) => AlertDialog(
-      title: Text(AppLocalizations.of(context)!.anErrorOccurred),
+      title: Text(AppLocalizations.of(context).anErrorOccurred),
       content: Text(exception.toString()),
       actions: [
         TextButton(
@@ -67,7 +67,7 @@ void showHttpExceptionErrorDialog(WgerHttpException exception, BuildContext cont
   showDialog(
     context: context,
     builder: (ctx) => AlertDialog(
-      title: Text(AppLocalizations.of(context)!.anErrorOccurred),
+      title: Text(AppLocalizations.of(context).anErrorOccurred),
       content: Container(
         child: Column(
           mainAxisSize: MainAxisSize.min,

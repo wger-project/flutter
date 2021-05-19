@@ -58,26 +58,26 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.dashboard),
-            label: AppLocalizations.of(context)!.labelDashboard,
+            label: AppLocalizations.of(context).labelDashboard,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.fitness_center),
-            label: AppLocalizations.of(context)!.labelBottomNavWorkout,
+            label: AppLocalizations.of(context).labelBottomNavWorkout,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.restaurant),
-            label: AppLocalizations.of(context)!.labelBottomNavNutrition,
+            label: AppLocalizations.of(context).labelBottomNavNutrition,
           ),
           BottomNavigationBarItem(
             icon: FaIcon(
               FontAwesomeIcons.weight,
               size: 20,
             ),
-            label: AppLocalizations.of(context)!.weight,
+            label: AppLocalizations.of(context).weight,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.photo_library),
-            label: AppLocalizations.of(context)!.gallery,
+            label: AppLocalizations.of(context).gallery,
           ),
         ],
         type: BottomNavigationBarType.fixed,

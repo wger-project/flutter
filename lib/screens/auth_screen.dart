@@ -182,14 +182,14 @@ class _AuthCardState extends State<AuthCard> {
                 children: <Widget>[
                   TextFormField(
                     key: Key('inputUsername'),
-                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.username),
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context).username),
                     autofillHints: [AutofillHints.username],
                     controller: _usernameController,
                     textInputAction: TextInputAction.next,
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return AppLocalizations.of(context)!.invalidUsername;
+                        return AppLocalizations.of(context).invalidUsername;
                       }
                       return null;
                     },
@@ -200,7 +200,7 @@ class _AuthCardState extends State<AuthCard> {
                   if (_authMode == AuthMode.Signup)
                     TextFormField(
                       key: Key('inputEmail'),
-                      decoration: InputDecoration(labelText: AppLocalizations.of(context)!.email),
+                      decoration: InputDecoration(labelText: AppLocalizations.of(context).email),
                       autofillHints: [AutofillHints.email],
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
@@ -209,7 +209,7 @@ class _AuthCardState extends State<AuthCard> {
                       // Email is not required
                       validator: (value) {
                         if (value!.isNotEmpty && !value.contains('@')) {
-                          return AppLocalizations.of(context)!.invalidEmail;
+                          return AppLocalizations.of(context).invalidEmail;
                         }
                         return null;
                       },
@@ -219,14 +219,14 @@ class _AuthCardState extends State<AuthCard> {
                     ),
                   TextFormField(
                     key: Key('inputPassword'),
-                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.password),
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context).password),
                     autofillHints: [AutofillHints.password],
                     obscureText: true,
                     controller: _passwordController,
                     textInputAction: TextInputAction.next,
                     validator: (value) {
                       if (value!.isEmpty || value.length < 8) {
-                        return AppLocalizations.of(context)!.passwordTooShort;
+                        return AppLocalizations.of(context).passwordTooShort;
                       }
                       return null;
                     },
@@ -238,14 +238,14 @@ class _AuthCardState extends State<AuthCard> {
                     TextFormField(
                       key: Key('inputPassword2'),
                       decoration:
-                          InputDecoration(labelText: AppLocalizations.of(context)!.confirmPassword),
+                          InputDecoration(labelText: AppLocalizations.of(context).confirmPassword),
                       controller: _password2Controller,
                       enabled: _authMode == AuthMode.Signup,
                       obscureText: true,
                       validator: _authMode == AuthMode.Signup
                           ? (value) {
                               if (value != _passwordController.text) {
-                                return AppLocalizations.of(context)!.passwordsDontMatch;
+                                return AppLocalizations.of(context).passwordsDontMatch;
                               }
                               return null;
                             }
@@ -262,17 +262,17 @@ class _AuthCardState extends State<AuthCard> {
                           child: TextFormField(
                             key: Key('inputServer'),
                             decoration: InputDecoration(
-                                labelText: AppLocalizations.of(context)!.customServerUrl,
-                                helperText: AppLocalizations.of(context)!.customServerHint,
+                                labelText: AppLocalizations.of(context).customServerUrl,
+                                helperText: AppLocalizations.of(context).customServerHint,
                                 helperMaxLines: 4),
                             controller: _serverUrlController,
                             validator: (value) {
                               if (Uri.tryParse(value!) == null) {
-                                return AppLocalizations.of(context)!.invalidUrl;
+                                return AppLocalizations.of(context).invalidUrl;
                               }
 
                               if (value.isEmpty || !value.contains('http')) {
-                                return AppLocalizations.of(context)!.invalidUrl;
+                                return AppLocalizations.of(context).invalidUrl;
                               }
                               return null;
                             },
@@ -293,7 +293,7 @@ class _AuthCardState extends State<AuthCard> {
                                 _serverUrlController.text = DEFAULT_SERVER;
                               },
                             ),
-                            Text(AppLocalizations.of(context)!.reset)
+                            Text(AppLocalizations.of(context).reset)
                           ],
                         ),
                       ],
@@ -308,8 +308,8 @@ class _AuthCardState extends State<AuthCard> {
                     ElevatedButton(
                       key: Key('actionButton'),
                       child: Text(_authMode == AuthMode.Login
-                          ? AppLocalizations.of(context)!.login
-                          : AppLocalizations.of(context)!.register),
+                          ? AppLocalizations.of(context).login
+                          : AppLocalizations.of(context).register),
                       onPressed: () {
                         return _submit(context);
                       },
@@ -318,15 +318,15 @@ class _AuthCardState extends State<AuthCard> {
                     key: Key('toggleActionButton'),
                     child: Text(
                       _authMode == AuthMode.Login
-                          ? AppLocalizations.of(context)!.registerInstead.toUpperCase()
-                          : AppLocalizations.of(context)!.loginInstead.toUpperCase(),
+                          ? AppLocalizations.of(context).registerInstead.toUpperCase()
+                          : AppLocalizations.of(context).loginInstead.toUpperCase(),
                     ),
                     onPressed: _switchAuthMode,
                   ),
                   TextButton(
                     child: Text(_hideCustomServer
-                        ? AppLocalizations.of(context)!.useCustomServer
-                        : AppLocalizations.of(context)!.useDefaultServer),
+                        ? AppLocalizations.of(context).useCustomServer
+                        : AppLocalizations.of(context).useDefaultServer),
                     key: Key('toggleCustomServerButton'),
                     onPressed: () {
                       setState(() {

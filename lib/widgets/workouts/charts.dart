@@ -41,7 +41,7 @@ class LogChartWidget extends StatelessWidget {
             [
               ..._data['chart_data'].map((e) {
                 return charts.Series<TimeSeriesLog, DateTime>(
-                  id: '${e.first['reps']} ${AppLocalizations.of(context)!.reps}',
+                  id: '${e.first['reps']} ${AppLocalizations.of(context).reps}',
                   domainFn: (datum, index) => datum.time,
                   measureFn: (datum, index) => datum.weight,
                   data: [

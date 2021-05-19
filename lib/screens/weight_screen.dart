@@ -29,7 +29,7 @@ class WeightScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: WgerAppBar(AppLocalizations.of(context)!.weight),
+      appBar: WgerAppBar(AppLocalizations.of(context).weight),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () async {
@@ -37,7 +37,7 @@ class WeightScreen extends StatelessWidget {
             context,
             FormScreen.routeName,
             arguments: FormScreenArguments(
-              AppLocalizations.of(context)!.newEntry,
+              AppLocalizations.of(context).newEntry,
               WeightForm(),
             ),
           );

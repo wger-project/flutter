@@ -61,7 +61,7 @@ class NutritionalPlanScreen extends StatelessWidget {
                       context,
                       FormScreen.routeName,
                       arguments: FormScreenArguments(
-                        AppLocalizations.of(context)!.edit,
+                        AppLocalizations.of(context).edit,
                         PlanForm(_nutritionalPlan),
                       ),
                     );
@@ -77,12 +77,12 @@ class NutritionalPlanScreen extends StatelessWidget {
                   return [
                     PopupMenuItem<NutritionalPlanOptions>(
                       value: NutritionalPlanOptions.edit,
-                      child: Text(AppLocalizations.of(context)!.edit),
+                      child: Text(AppLocalizations.of(context).edit),
                     ),
                     const PopupMenuDivider(),
                     PopupMenuItem<NutritionalPlanOptions>(
                       value: NutritionalPlanOptions.delete,
-                      child: Text(AppLocalizations.of(context)!.delete),
+                      child: Text(AppLocalizations.of(context).delete),
                     ),
                   ];
                 },

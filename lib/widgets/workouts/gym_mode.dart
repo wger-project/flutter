@@ -138,7 +138,7 @@ class StartPage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: Text(
-              AppLocalizations.of(context)!.todaysWorkout,
+              AppLocalizations.of(context).todaysWorkout,
               style: Theme.of(context).textTheme.headline4,
             ),
           ),
@@ -170,7 +170,7 @@ class StartPage extends StatelessWidget {
             ),
           ),
           ElevatedButton(
-            child: Text(AppLocalizations.of(context)!.start),
+            child: Text(AppLocalizations.of(context).start),
             onPressed: () {
               _controller.nextPage(duration: Duration(milliseconds: 200), curve: Curves.bounceIn);
             },
@@ -240,7 +240,7 @@ class _LogPageState extends State<LogPage> {
   Widget getRepsWidget() {
     return TextFormField(
       decoration: InputDecoration(
-        labelText: AppLocalizations.of(context)!.repetitions,
+        labelText: AppLocalizations.of(context).repetitions,
         suffixIcon: IconButton(
           icon: Icon(
             Icons.add,
@@ -279,7 +279,7 @@ class _LogPageState extends State<LogPage> {
         try {
           int.parse(value!);
         } catch (error) {
-          return AppLocalizations.of(context)!.enterValidNumber;
+          return AppLocalizations.of(context).enterValidNumber;
         }
         return null;
       },
@@ -289,7 +289,7 @@ class _LogPageState extends State<LogPage> {
   Widget getWeightWidget() {
     return TextFormField(
       decoration: InputDecoration(
-        labelText: AppLocalizations.of(context)!.weight,
+        labelText: AppLocalizations.of(context).weight,
         suffixIcon: IconButton(
           icon: Icon(
             Icons.add,
@@ -327,7 +327,7 @@ class _LogPageState extends State<LogPage> {
         try {
           double.parse(value!);
         } catch (error) {
-          return AppLocalizations.of(context)!.enterValidNumber;
+          return AppLocalizations.of(context).enterValidNumber;
         }
         return null;
       },
@@ -361,7 +361,7 @@ class _LogPageState extends State<LogPage> {
                   ? ListView(
                       children: [
                         Text(
-                          AppLocalizations.of(context)!.labelWorkoutLogs,
+                          AppLocalizations.of(context).labelWorkoutLogs,
                           style: Theme.of(context).textTheme.headline6,
                           textAlign: TextAlign.center,
                         ),
@@ -369,12 +369,10 @@ class _LogPageState extends State<LogPage> {
                             .filterLogsByExercise(widget._exercise, unique: true)
                             .map((log) {
                           return ListTile(
-                            //title: Text(log.id.toString()),
                             title: Text(log.singleLogRepText.replaceAll('\n', '')),
                             subtitle: Text(
                                 DateFormat.yMd(Localizations.localeOf(context).languageCode)
                                     .format(log.date)),
-
                             trailing: Icon(Icons.copy),
                             onTap: () {
                               setState(() {
@@ -429,7 +427,7 @@ class _LogPageState extends State<LogPage> {
                 if (_detailed) RiRInputWidget(widget._log),
                 /*
                   TextFormField(
-                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.comment),
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context).comment),
                     controller: _commentController,
                     keyboardType: TextInputType.multiline,
                     maxLines: 3,
@@ -449,7 +447,7 @@ class _LogPageState extends State<LogPage> {
                   },
                 ),
                 ElevatedButton(
-                  child: Text(AppLocalizations.of(context)!.save),
+                  child: Text(AppLocalizations.of(context).save),
                   onPressed: () async {
                     // Validate and save the current values to the weightEntry
                     final isValid = _form.currentState!.validate();
@@ -466,7 +464,7 @@ class _LogPageState extends State<LogPage> {
                         SnackBar(
                           duration: Duration(seconds: 2), // default is 4
                           content: Text(
-                            AppLocalizations.of(context)!.successfullySaved,
+                            AppLocalizations.of(context).successfullySaved,
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -593,7 +591,7 @@ class _SessionPageState extends State<SessionPage> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: Text(
-              AppLocalizations.of(context)!.workoutSession,
+              AppLocalizations.of(context).workoutSession,
               style: Theme.of(context).textTheme.headline5,
             ),
           ),
@@ -636,7 +634,7 @@ class _SessionPageState extends State<SessionPage> {
                 ),
                 TextFormField(
                   decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context)!.notes,
+                    labelText: AppLocalizations.of(context).notes,
                   ),
                   maxLines: 3,
                   controller: notesController,
@@ -651,7 +649,7 @@ class _SessionPageState extends State<SessionPage> {
                     Flexible(
                       child: TextFormField(
                         decoration:
-                            InputDecoration(labelText: AppLocalizations.of(context)!.timeStart),
+                            InputDecoration(labelText: AppLocalizations.of(context).timeStart),
                         controller: timeStartController,
                         onFieldSubmitted: (_) {},
                         onTap: () async {
@@ -675,7 +673,7 @@ class _SessionPageState extends State<SessionPage> {
                     Flexible(
                       child: TextFormField(
                         decoration:
-                            InputDecoration(labelText: AppLocalizations.of(context)!.timeEnd),
+                            InputDecoration(labelText: AppLocalizations.of(context).timeEnd),
                         controller: timeEndController,
                         onFieldSubmitted: (_) {},
                         onTap: () async {
@@ -698,7 +696,7 @@ class _SessionPageState extends State<SessionPage> {
                   ],
                 ),
                 ElevatedButton(
-                  child: Text(AppLocalizations.of(context)!.save),
+                  child: Text(AppLocalizations.of(context).save),
                   onPressed: () async {
                     // Validate and save the current values to the weightEntry
                     final isValid = _form.currentState!.validate();

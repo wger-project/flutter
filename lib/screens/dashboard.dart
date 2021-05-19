@@ -94,7 +94,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: WgerAppBar(AppLocalizations.of(context)!.labelDashboard),
+      appBar: WgerAppBar(AppLocalizations.of(context).labelDashboard),
       body: FutureBuilder(
         future: _initialData,
         builder: (ctx, authResultSnapshot) =>
@@ -103,7 +103,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        AppLocalizations.of(context)!.loadingText,
+                        AppLocalizations.of(context).loadingText,
                         style: Theme.of(context).textTheme.headline5,
                       ),
                       Padding(padding: EdgeInsets.symmetric(vertical: 8)),

@@ -153,13 +153,13 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
                 )
                 .toList(),
             OutlinedButton(
-              child: Text(AppLocalizations.of(context)!.addSet),
+              child: Text(AppLocalizations.of(context).addSet),
               onPressed: () {
                 Navigator.pushNamed(
                   context,
                   FormScreen.routeName,
                   arguments: FormScreenArguments(
-                    AppLocalizations.of(context)!.newSet,
+                    AppLocalizations.of(context).newSet,
                     SetFormWidget(widget._day),
                     hasListView: true,
                     backgroundColor: wgerBackground,
@@ -184,7 +184,7 @@ class DayHeaderDismissible extends StatelessWidget {
     required Day day,
     required bool expanded,
     required Function toggle,
-  })   : _day = day,
+  })  : _day = day,
         _expanded = expanded,
         _toggle = toggle;
 
@@ -247,7 +247,7 @@ class DayHeaderDismissible extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              AppLocalizations.of(context)!.gymMode,
+              AppLocalizations.of(context).gymMode,
               style: TextStyle(color: Colors.white),
             ),
             Icon(

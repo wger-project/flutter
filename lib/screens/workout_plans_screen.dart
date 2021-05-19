@@ -34,7 +34,7 @@ class WorkoutPlansScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: WgerAppBar(
-        AppLocalizations.of(context)!.labelWorkoutPlans,
+        AppLocalizations.of(context).labelWorkoutPlans,
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
@@ -43,7 +43,7 @@ class WorkoutPlansScreen extends StatelessWidget {
             context,
             FormScreen.routeName,
             arguments: FormScreenArguments(
-              AppLocalizations.of(context)!.newWorkout,
+              AppLocalizations.of(context).newWorkout,
               WorkoutForm(WorkoutPlan.empty()),
             ),
           );

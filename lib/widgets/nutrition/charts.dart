@@ -45,12 +45,12 @@ class NutritionalPlanPieChartWidget extends StatelessWidget {
           domainFn: (datum, index) => datum[0],
           measureFn: (datum, index) => datum[1],
           data: [
-            [AppLocalizations.of(context)!.protein, _nutritionalValues.protein],
-            [AppLocalizations.of(context)!.fat, _nutritionalValues.fat],
-            [AppLocalizations.of(context)!.carbohydrates, _nutritionalValues.carbohydrates],
+            [AppLocalizations.of(context).protein, _nutritionalValues.protein],
+            [AppLocalizations.of(context).fat, _nutritionalValues.fat],
+            [AppLocalizations.of(context).carbohydrates, _nutritionalValues.carbohydrates],
           ],
           labelAccessorFn: (List<dynamic> row, _) =>
-              '${row[0]}\n${row[1].toStringAsFixed(0)}${AppLocalizations.of(context)!.g}',
+              '${row[0]}\n${row[1].toStringAsFixed(0)}${AppLocalizations.of(context).g}',
         )
       ],
       defaultRenderer: new charts.ArcRendererConfig(
@@ -67,7 +67,7 @@ class NutritionalDiaryChartWidget extends StatelessWidget {
   NutritionalDiaryChartWidget({
     Key? key,
     required NutritionalPlan nutritionalPlan,
-  })   : _nutritionalPlan = nutritionalPlan,
+  })  : _nutritionalPlan = nutritionalPlan,
         super(key: key);
 
   @override

@@ -52,7 +52,7 @@ class MealForm extends StatelessWidget {
           children: [
             TextFormField(
               key: Key('field-time'),
-              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.time),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context).time),
               controller: _timeController,
               onTap: () async {
                 // Stop keyboard from appearing
@@ -73,7 +73,7 @@ class MealForm extends StatelessWidget {
             ),
             ElevatedButton(
               key: Key(SUBMIT_BUTTON_KEY_NAME),
-              child: Text(AppLocalizations.of(context)!.save),
+              child: Text(AppLocalizations.of(context).save),
               onPressed: () async {
                 if (!_form.currentState!.validate()) {
                   return;
@@ -124,7 +124,7 @@ class MealItemForm extends StatelessWidget {
             TypeAheadFormField(
               textFieldConfiguration: TextFieldConfiguration(
                 controller: this._ingredientController,
-                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.ingredient),
+                decoration: InputDecoration(labelText: AppLocalizations.of(context).ingredient),
               ),
               suggestionsCallback: (pattern) async {
                 return await Provider.of<NutritionPlansProvider>(context, listen: false)
@@ -148,13 +148,13 @@ class MealItemForm extends StatelessWidget {
               },
               validator: (value) {
                 if (value!.isEmpty) {
-                  return AppLocalizations.of(context)!.selectIngredient;
+                  return AppLocalizations.of(context).selectIngredient;
                 }
                 return null;
               },
             ),
             TextFormField(
-              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.weight),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context).weight),
               controller: _amountController,
               keyboardType: TextInputType.number,
               onFieldSubmitted: (_) {},
@@ -165,13 +165,13 @@ class MealItemForm extends StatelessWidget {
                 try {
                   double.parse(value!);
                 } catch (error) {
-                  return AppLocalizations.of(context)!.enterValidNumber;
+                  return AppLocalizations.of(context).enterValidNumber;
                 }
                 return null;
               },
             ),
             ElevatedButton(
-              child: Text(AppLocalizations.of(context)!.save),
+              child: Text(AppLocalizations.of(context).save),
               onPressed: () async {
                 if (!_form.currentState!.validate()) {
                   return;
@@ -215,7 +215,7 @@ class PlanForm extends StatelessWidget {
           // Description
           TextFormField(
             key: Key('field-description'),
-            decoration: InputDecoration(labelText: AppLocalizations.of(context)!.description),
+            decoration: InputDecoration(labelText: AppLocalizations.of(context).description),
             controller: _descriptionController,
             onFieldSubmitted: (_) {},
             onSaved: (newValue) {
@@ -224,7 +224,7 @@ class PlanForm extends StatelessWidget {
           ),
           ElevatedButton(
             key: Key(SUBMIT_BUTTON_KEY_NAME),
-            child: Text(AppLocalizations.of(context)!.save),
+            child: Text(AppLocalizations.of(context).save),
             onPressed: () async {
               // Validate and save the current values to the weightEntry
               final isValid = _form.currentState!.validate();

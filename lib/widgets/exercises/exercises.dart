@@ -35,7 +35,7 @@ class ExerciseDetail extends StatelessWidget {
       children: [
         // Category
         Text(
-          AppLocalizations.of(context)!.category,
+          AppLocalizations.of(context).category,
           style: Theme.of(context).textTheme.headline6,
         ),
         Text(_exercise.categoryObj.name),
@@ -43,7 +43,7 @@ class ExerciseDetail extends StatelessWidget {
 
         // Equipment
         Text(
-          AppLocalizations.of(context)!.equipment,
+          AppLocalizations.of(context).equipment,
           style: Theme.of(context).textTheme.headline6,
         ),
         if (_exercise.equipment.length > 0)
@@ -53,7 +53,7 @@ class ExerciseDetail extends StatelessWidget {
 
         // Muscles
         Text(
-          AppLocalizations.of(context)!.muscles,
+          AppLocalizations.of(context).muscles,
           style: Theme.of(context).textTheme.headline6,
         ),
         if (_exercise.muscles.length > 0)
@@ -63,7 +63,7 @@ class ExerciseDetail extends StatelessWidget {
 
         // Muscles secondary
         Text(
-          AppLocalizations.of(context)!.musclesSecondary,
+          AppLocalizations.of(context).musclesSecondary,
           style: Theme.of(context).textTheme.headline6,
         ),
         if (_exercise.musclesSecondary.length > 0)
@@ -73,7 +73,7 @@ class ExerciseDetail extends StatelessWidget {
 
         // Description
         Text(
-          AppLocalizations.of(context)!.description,
+          AppLocalizations.of(context).description,
           style: Theme.of(context).textTheme.headline6,
         ),
         Html(data: _exercise.description),

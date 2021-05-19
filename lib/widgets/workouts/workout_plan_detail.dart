@@ -52,13 +52,13 @@ class _WorkoutPlanDetailState extends State<WorkoutPlanDetail> {
               Column(
                 children: [
                   ElevatedButton(
-                    child: Text(AppLocalizations.of(context)!.newDay),
+                    child: Text(AppLocalizations.of(context).newDay),
                     onPressed: () {
                       Navigator.pushNamed(
                         context,
                         FormScreen.routeName,
                         arguments: FormScreenArguments(
-                          AppLocalizations.of(context)!.newDay,
+                          AppLocalizations.of(context).newDay,
                           DayFormWidget(widget._workoutPlan),
                           hasListView: true,
                         ),
@@ -67,7 +67,7 @@ class _WorkoutPlanDetailState extends State<WorkoutPlanDetail> {
                   ),
                   if (widget._workoutPlan.days.length > 0)
                     ElevatedButton(
-                      child: Text(AppLocalizations.of(context)!.labelWorkoutLogs),
+                      child: Text(AppLocalizations.of(context).labelWorkoutLogs),
                       onPressed: () {
                         widget._changeMode(WorkoutScreenMode.log);
                       },

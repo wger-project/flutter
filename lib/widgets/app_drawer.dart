@@ -39,7 +39,7 @@ class AppDrawer extends StatelessWidget {
           ListTile(
             //dense: true,
             leading: Icon(Icons.exit_to_app),
-            title: Text(AppLocalizations.of(context)!.logout),
+            title: Text(AppLocalizations.of(context).logout),
             onTap: () {
               Provider.of<AuthProvider>(context, listen: false).logout();
               Provider.of<WorkoutPlansProvider>(context, listen: false).clear();

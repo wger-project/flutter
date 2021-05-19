@@ -17,9 +17,9 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wger/providers/auth.dart';
 
 class WgerAboutListTile extends StatelessWidget {
@@ -52,15 +52,15 @@ class WgerAboutListTile extends StatelessWidget {
 
       aboutBoxChildren: [
         SizedBox(height: 10),
-        Text(AppLocalizations.of(context)!.aboutDescription),
+        Text(AppLocalizations.of(context).aboutDescription),
         SizedBox(height: 20),
         ListTile(
           leading: Icon(Icons.code),
-          title: Text(AppLocalizations.of(context)!.aboutSourceTitle),
+          title: Text(AppLocalizations.of(context).aboutSourceTitle),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(AppLocalizations.of(context)!.aboutSourceText),
+              Text(AppLocalizations.of(context).aboutSourceText),
               Text(
                 'https://github.com/wger-project',
                 style: TextStyle(color: Colors.blue),
@@ -73,11 +73,11 @@ class WgerAboutListTile extends StatelessWidget {
         SizedBox(height: 10),
         ListTile(
           leading: Icon(Icons.bug_report),
-          title: Text(AppLocalizations.of(context)!.aboutBugsTitle),
+          title: Text(AppLocalizations.of(context).aboutBugsTitle),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(AppLocalizations.of(context)!.aboutBugsText),
+              Text(AppLocalizations.of(context).aboutBugsText),
               Text(
                 'https://github.com/wger-project/flutter/issues/new/choose',
                 style: TextStyle(color: Colors.blue),
@@ -91,11 +91,11 @@ class WgerAboutListTile extends StatelessWidget {
         SizedBox(height: 10),
         ListTile(
           leading: Icon(Icons.chat),
-          title: Text(AppLocalizations.of(context)!.aboutContactUsTitle),
+          title: Text(AppLocalizations.of(context).aboutContactUsTitle),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(AppLocalizations.of(context)!.aboutContactUsText),
+              Text(AppLocalizations.of(context).aboutContactUsText),
               Text(
                 'https://discord.gg/rPWFv6W',
                 style: TextStyle(color: Colors.blue),
@@ -108,11 +108,11 @@ class WgerAboutListTile extends StatelessWidget {
         SizedBox(height: 10),
         ListTile(
           leading: Icon(Icons.translate),
-          title: Text(AppLocalizations.of(context)!.aboutTranslationTitle),
+          title: Text(AppLocalizations.of(context).aboutTranslationTitle),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(AppLocalizations.of(context)!.aboutTranslationText),
+              Text(AppLocalizations.of(context).aboutTranslationText),
               Text(
                 'https://hosted.weblate.org/engage/wger/',
                 style: TextStyle(color: Colors.blue),

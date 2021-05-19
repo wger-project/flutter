@@ -35,7 +35,7 @@ class GalleryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: WgerAppBar(AppLocalizations.of(context)!.gallery),
+      appBar: WgerAppBar(AppLocalizations.of(context).gallery),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
@@ -43,7 +43,7 @@ class GalleryScreen extends StatelessWidget {
             context,
             FormScreen.routeName,
             arguments: FormScreenArguments(
-              AppLocalizations.of(context)!.addImage,
+              AppLocalizations.of(context).addImage,
               ImageForm(),
               hasListView: true,
             ),

@@ -47,7 +47,7 @@ class WeightForm extends StatelessWidget {
         children: [
           // Weight date
           TextFormField(
-            decoration: InputDecoration(labelText: AppLocalizations.of(context)!.date),
+            decoration: InputDecoration(labelText: AppLocalizations.of(context).date),
             controller: dateController,
             onTap: () async {
               // Stop keyboard from appearing
@@ -82,7 +82,7 @@ class WeightForm extends StatelessWidget {
 
           // Weight
           TextFormField(
-            decoration: InputDecoration(labelText: AppLocalizations.of(context)!.weight),
+            decoration: InputDecoration(labelText: AppLocalizations.of(context).weight),
             controller: weightController,
             keyboardType: TextInputType.number,
             onSaved: (newValue) {
@@ -90,18 +90,18 @@ class WeightForm extends StatelessWidget {
             },
             validator: (value) {
               if (value!.isEmpty) {
-                return AppLocalizations.of(context)!.enterValue;
+                return AppLocalizations.of(context).enterValue;
               }
               try {
                 double.parse(value);
               } catch (error) {
-                return AppLocalizations.of(context)!.enterValidNumber;
+                return AppLocalizations.of(context).enterValidNumber;
               }
               return null;
             },
           ),
           ElevatedButton(
-            child: Text(AppLocalizations.of(context)!.save),
+            child: Text(AppLocalizations.of(context).save),
             onPressed: () async {
               // Validate and save the current values to the weightEntry
               final isValid = _form.currentState!.validate();

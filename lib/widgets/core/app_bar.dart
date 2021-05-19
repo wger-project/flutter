@@ -44,7 +44,7 @@ class WgerAppBar extends StatelessWidget with PreferredSizeWidget {
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: Text(AppLocalizations.of(context)!.optionsLabel),
+                    title: Text(AppLocalizations.of(context).optionsLabel),
                     actions: [
                       TextButton(
                         child: Text(MaterialLocalizations.of(context).closeButtonLabel),
@@ -61,7 +61,7 @@ class WgerAppBar extends StatelessWidget with PreferredSizeWidget {
                         ListTile(
                           //dense: true,
                           leading: Icon(Icons.exit_to_app),
-                          title: Text(AppLocalizations.of(context)!.logout),
+                          title: Text(AppLocalizations.of(context).logout),
                           onTap: () {
                             Provider.of<AuthProvider>(context, listen: false).logout();
                             Provider.of<WorkoutPlansProvider>(context, listen: false).clear();

@@ -79,16 +79,16 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 MutedText(
-                    '${meal.nutritionalValues.energy.toStringAsFixed(0)}${AppLocalizations.of(context)!.kcal}'),
+                    '${meal.nutritionalValues.energy.toStringAsFixed(0)}${AppLocalizations.of(context).kcal}'),
                 MutedText(' / '),
                 MutedText(
-                    '${meal.nutritionalValues.protein.toStringAsFixed(0)}${AppLocalizations.of(context)!.g}'),
+                    '${meal.nutritionalValues.protein.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
                 MutedText(' / '),
                 MutedText(
-                    '${meal.nutritionalValues.carbohydrates.toStringAsFixed(0)}${AppLocalizations.of(context)!.g}'),
+                    '${meal.nutritionalValues.carbohydrates.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
                 MutedText(' / '),
                 MutedText(
-                    '${meal.nutritionalValues.fat.toStringAsFixed(0)}${AppLocalizations.of(context)!.g} '),
+                    '${meal.nutritionalValues.fat.toStringAsFixed(0)}${AppLocalizations.of(context).g} '),
               ],
             ),
             IconButton(
@@ -99,7 +99,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
-                      AppLocalizations.of(context)!.mealLogged,
+                      AppLocalizations.of(context).mealLogged,
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -126,7 +126,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                       ),
                     ),
                     SizedBox(width: 5),
-                    Text('${item.amount.toStringAsFixed(0)} ${AppLocalizations.of(context)!.g}'),
+                    Text('${item.amount.toStringAsFixed(0)} ${AppLocalizations.of(context).g}'),
                   ],
                 ),
               ],
@@ -156,7 +156,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
         children: [
           ListTile(
             title: Text(
-              _hasContent ? _plan!.description : AppLocalizations.of(context)!.labelWorkoutPlan,
+              _hasContent ? _plan!.description : AppLocalizations.of(context).labelWorkoutPlan,
               style: Theme.of(context).textTheme.headline4,
             ),
             subtitle: Text(
@@ -191,8 +191,8 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                   ),
                 )
               : NothingFound(
-                  AppLocalizations.of(context)!.noNutritionalPlans,
-                  AppLocalizations.of(context)!.newNutritionalPlan,
+                  AppLocalizations.of(context).noNutritionalPlans,
+                  AppLocalizations.of(context).newNutritionalPlan,
                   PlanForm(),
                 ),
           if (_hasContent)
@@ -200,7 +200,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 TextButton(
-                    child: Text(AppLocalizations.of(context)!.goToDetailPage),
+                    child: Text(AppLocalizations.of(context).goToDetailPage),
                     onPressed: () {
                       Navigator.of(context)
                           .pushNamed(NutritionalPlanScreen.routeName, arguments: _plan);
@@ -231,7 +231,7 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
         children: [
           ListTile(
             title: Text(
-              AppLocalizations.of(context)!.weight,
+              AppLocalizations.of(context).weight,
               style: Theme.of(context).textTheme.headline4,
             ),
             leading: FaIcon(
@@ -245,7 +245,7 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                   context,
                   FormScreen.routeName,
                   arguments: FormScreenArguments(
-                    AppLocalizations.of(context)!.newEntry,
+                    AppLocalizations.of(context).newEntry,
                     WeightForm(),
                   ),
                 );
@@ -261,8 +261,8 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                       child: WeightChartWidget(weightEntriesData.items),
                     )
                   : NothingFound(
-                      AppLocalizations.of(context)!.noWeightEntries,
-                      AppLocalizations.of(context)!.newEntry,
+                      AppLocalizations.of(context).noWeightEntries,
+                      AppLocalizations.of(context).newEntry,
                       WeightForm(),
                     ),
             ],
@@ -373,7 +373,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
         children: [
           ListTile(
             title: Text(
-              _hasContent ? _workoutPlan!.name : AppLocalizations.of(context)!.labelWorkoutPlan,
+              _hasContent ? _workoutPlan!.name : AppLocalizations.of(context).labelWorkoutPlan,
               style: Theme.of(context).textTheme.headline4,
             ),
             subtitle: Text(
@@ -403,8 +403,8 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                   ),
                 )
               : NothingFound(
-                  AppLocalizations.of(context)!.noWorkoutPlans,
-                  AppLocalizations.of(context)!.newWorkout,
+                  AppLocalizations.of(context).noWorkoutPlans,
+                  AppLocalizations.of(context).newWorkout,
                   WorkoutForm(WorkoutPlan.empty()),
                 ),
           if (_hasContent)
@@ -412,7 +412,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 TextButton(
-                  child: Text(AppLocalizations.of(context)!.goToDetailPage),
+                  child: Text(AppLocalizations.of(context).goToDetailPage),
                   onPressed: () {
                     Navigator.of(context)
                         .pushNamed(WorkoutPlanScreen.routeName, arguments: _workoutPlan);

@@ -83,7 +83,7 @@ class _ImageFormState extends State<ImageForm> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(AppLocalizations.of(context)!.selectImage),
+        Text(AppLocalizations.of(context).selectImage),
         SizedBox(height: 8),
         Icon(Icons.photo_camera),
       ],
@@ -113,7 +113,7 @@ class _ImageFormState extends State<ImageForm> {
                               _showPicker(ImageSource.camera);
                             },
                             leading: Icon(Icons.photo_camera),
-                            title: Text(AppLocalizations.of(context)!.takePicture),
+                            title: Text(AppLocalizations.of(context).takePicture),
                           ),
                           ListTile(
                               onTap: () {
@@ -121,7 +121,7 @@ class _ImageFormState extends State<ImageForm> {
                                 _showPicker(ImageSource.gallery);
                               },
                               leading: Icon(Icons.photo_library),
-                              title: Text(AppLocalizations.of(context)!.chooseFromLibrary))
+                              title: Text(AppLocalizations.of(context).chooseFromLibrary))
                         ],
                       ),
                     );
@@ -133,7 +133,7 @@ class _ImageFormState extends State<ImageForm> {
           ),
           TextFormField(
             key: Key('field-date'),
-            decoration: InputDecoration(labelText: AppLocalizations.of(context)!.date),
+            decoration: InputDecoration(labelText: AppLocalizations.of(context).date),
             controller: dateController,
             onTap: () async {
               // Stop keyboard from appearing
@@ -154,7 +154,7 @@ class _ImageFormState extends State<ImageForm> {
             },
             validator: (value) {
               if (widget._image.id == null && _file == null) {
-                return AppLocalizations.of(context)!.selectImage;
+                return AppLocalizations.of(context).selectImage;
               }
 
               return null;
@@ -162,7 +162,7 @@ class _ImageFormState extends State<ImageForm> {
           ),
           TextFormField(
             key: Key('field-description'),
-            decoration: InputDecoration(labelText: AppLocalizations.of(context)!.description),
+            decoration: InputDecoration(labelText: AppLocalizations.of(context).description),
             minLines: 3,
             maxLines: 10,
             controller: descriptionController,
@@ -172,7 +172,7 @@ class _ImageFormState extends State<ImageForm> {
           ),
           ElevatedButton(
             key: Key(SUBMIT_BUTTON_KEY_NAME),
-            child: Text(AppLocalizations.of(context)!.save),
+            child: Text(AppLocalizations.of(context).save),
             onPressed: () async {
               // Validate and save
               final isValid = _form.currentState!.validate();

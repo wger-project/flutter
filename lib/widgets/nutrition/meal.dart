@@ -62,25 +62,25 @@ class _MealWidgetState extends State<MealWidget> {
                   children: [
                     Expanded(
                       child: MutedText(
-                        AppLocalizations.of(context)!.energy,
+                        AppLocalizations.of(context).energy,
                         textAlign: TextAlign.center,
                       ),
                     ),
                     Expanded(
                       child: MutedText(
-                        AppLocalizations.of(context)!.protein,
+                        AppLocalizations.of(context).protein,
                         textAlign: TextAlign.center,
                       ),
                     ),
                     Expanded(
                       child: MutedText(
-                        AppLocalizations.of(context)!.carbohydrates,
+                        AppLocalizations.of(context).carbohydrates,
                         textAlign: TextAlign.center,
                       ),
                     ),
                     Expanded(
                       child: MutedText(
-                        AppLocalizations.of(context)!.fat,
+                        AppLocalizations.of(context).fat,
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -89,13 +89,13 @@ class _MealWidgetState extends State<MealWidget> {
               ),
             ...widget._meal.mealItems.map((item) => MealItemWidget(item, _expanded)).toList(),
             OutlinedButton(
-              child: Text(AppLocalizations.of(context)!.addIngredient),
+              child: Text(AppLocalizations.of(context).addIngredient),
               onPressed: () {
                 Navigator.pushNamed(
                   context,
                   FormScreen.routeName,
                   arguments: FormScreenArguments(
-                    AppLocalizations.of(context)!.addIngredient,
+                    AppLocalizations.of(context).addIngredient,
                     MealItemForm(widget._meal),
                     hasListView: true,
                   ),
@@ -120,11 +120,11 @@ class MealItemWidget extends StatelessWidget {
     // TODO: add real support for weight units
     /*
     String unit = _item.weightUnitId == null
-        ? AppLocalizations.of(context)!.g
+        ? AppLocalizations.of(context).g
         : _item.weightUnitObj!.weightUnit.name;
 
      */
-    String unit = AppLocalizations.of(context)!.g;
+    String unit = AppLocalizations.of(context).g;
     final values = _item.nutritionalValues;
 
     return Container(
@@ -155,7 +155,7 @@ class MealItemWidget extends StatelessWidget {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                             content: Text(
-                          AppLocalizations.of(context)!.successfullyDeleted,
+                          AppLocalizations.of(context).successfullyDeleted,
                           textAlign: TextAlign.center,
                         )),
                       );
@@ -169,25 +169,25 @@ class MealItemWidget extends StatelessWidget {
               children: [
                 Expanded(
                   child: MutedText(
-                    '${values.energy.toStringAsFixed(0)} ${AppLocalizations.of(context)!.kcal}',
+                    '${values.energy.toStringAsFixed(0)} ${AppLocalizations.of(context).kcal}',
                     textAlign: TextAlign.center,
                   ),
                 ),
                 Expanded(
                   child: MutedText(
-                    '${values.protein.toStringAsFixed(0)}${AppLocalizations.of(context)!.g}',
+                    '${values.protein.toStringAsFixed(0)}${AppLocalizations.of(context).g}',
                     textAlign: TextAlign.center,
                   ),
                 ),
                 Expanded(
                   child: MutedText(
-                    '${values.carbohydrates.toStringAsFixed(0)}${AppLocalizations.of(context)!.g}',
+                    '${values.carbohydrates.toStringAsFixed(0)}${AppLocalizations.of(context).g}',
                     textAlign: TextAlign.center,
                   ),
                 ),
                 Expanded(
                   child: MutedText(
-                    '${values.fat.toStringAsFixed(0)}${AppLocalizations.of(context)!.g}',
+                    '${values.fat.toStringAsFixed(0)}${AppLocalizations.of(context).g}',
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -219,7 +219,7 @@ class DismissibleMealHeader extends StatelessWidget {
           context,
           FormScreen.routeName,
           arguments: FormScreenArguments(
-            AppLocalizations.of(context)!.edit,
+            AppLocalizations.of(context).edit,
             MealForm(_meal.planId, _meal),
           ),
         );
@@ -273,7 +273,7 @@ class DismissibleMealHeader extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                AppLocalizations.of(context)!.logMeal,
+                AppLocalizations.of(context).logMeal,
                 style: TextStyle(color: Colors.white),
               ),
               Icon(
@@ -293,7 +293,7 @@ class DismissibleMealHeader extends StatelessWidget {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(
-                  AppLocalizations.of(context)!.successfullyDeleted,
+                  AppLocalizations.of(context).successfullyDeleted,
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -305,7 +305,7 @@ class DismissibleMealHeader extends StatelessWidget {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(
-                  AppLocalizations.of(context)!.mealLogged,
+                  AppLocalizations.of(context).mealLogged,
                   textAlign: TextAlign.center,
                 ),
               ),

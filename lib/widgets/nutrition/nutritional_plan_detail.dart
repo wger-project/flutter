@@ -42,13 +42,13 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: ElevatedButton(
-              child: Text(AppLocalizations.of(context)!.addMeal),
+              child: Text(AppLocalizations.of(context).addMeal),
               onPressed: () {
                 Navigator.pushNamed(
                   context,
                   FormScreen.routeName,
                   arguments: FormScreenArguments(
-                    AppLocalizations.of(context)!.addMeal,
+                    AppLocalizations.of(context).addMeal,
                     MealForm(_nutritionalPlan.id!),
                   ),
                 );
@@ -70,14 +70,14 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Text(AppLocalizations.of(context)!.energy),
-                      Text(AppLocalizations.of(context)!.protein),
-                      Text(AppLocalizations.of(context)!.carbohydrates),
-                      Text(AppLocalizations.of(context)!.sugars),
-                      Text(AppLocalizations.of(context)!.fat),
-                      Text(AppLocalizations.of(context)!.saturatedFat),
-                      Text(AppLocalizations.of(context)!.fibres),
-                      Text(AppLocalizations.of(context)!.sodium),
+                      Text(AppLocalizations.of(context).energy),
+                      Text(AppLocalizations.of(context).protein),
+                      Text(AppLocalizations.of(context).carbohydrates),
+                      Text(AppLocalizations.of(context).sugars),
+                      Text(AppLocalizations.of(context).fat),
+                      Text(AppLocalizations.of(context).saturatedFat),
+                      Text(AppLocalizations.of(context).fibres),
+                      Text(AppLocalizations.of(context).sodium),
                     ],
                   ),
                 ),
@@ -100,14 +100,14 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(AppLocalizations.of(context)!.kcal),
-                    Text(AppLocalizations.of(context)!.g),
-                    Text(AppLocalizations.of(context)!.g),
-                    Text(AppLocalizations.of(context)!.g),
-                    Text(AppLocalizations.of(context)!.g),
-                    Text(AppLocalizations.of(context)!.g),
-                    Text(AppLocalizations.of(context)!.g),
-                    Text(AppLocalizations.of(context)!.g),
+                    Text(AppLocalizations.of(context).kcal),
+                    Text(AppLocalizations.of(context).g),
+                    Text(AppLocalizations.of(context).g),
+                    Text(AppLocalizations.of(context).g),
+                    Text(AppLocalizations.of(context).g),
+                    Text(AppLocalizations.of(context).g),
+                    Text(AppLocalizations.of(context).g),
+                    Text(AppLocalizations.of(context).g),
                   ],
                 ),
               ],
@@ -115,7 +115,7 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
           ),
           Padding(padding: const EdgeInsets.all(8.0)),
           Text(
-            AppLocalizations.of(context)!.nutritionalDiary,
+            AppLocalizations.of(context).nutritionalDiary,
             style: Theme.of(context).textTheme.headline6,
           ),
           Container(
@@ -135,17 +135,17 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                     children: [
                       Text(''),
                       Text(
-                          '${AppLocalizations.of(context)!.energy} (${AppLocalizations.of(context)!.kcal})'),
+                          '${AppLocalizations.of(context).energy} (${AppLocalizations.of(context).kcal})'),
                       Text(
-                          '${AppLocalizations.of(context)!.protein} (${AppLocalizations.of(context)!.g})'),
+                          '${AppLocalizations.of(context).protein} (${AppLocalizations.of(context).g})'),
                       Text(
-                          '${AppLocalizations.of(context)!.carbohydrates} (${AppLocalizations.of(context)!.g})'),
+                          '${AppLocalizations.of(context).carbohydrates} (${AppLocalizations.of(context).g})'),
                       Text(
-                          '${AppLocalizations.of(context)!.sugars} (${AppLocalizations.of(context)!.g})'),
+                          '${AppLocalizations.of(context).sugars} (${AppLocalizations.of(context).g})'),
                       Text(
-                          '${AppLocalizations.of(context)!.fat} (${AppLocalizations.of(context)!.g})'),
+                          '${AppLocalizations.of(context).fat} (${AppLocalizations.of(context).g})'),
                       Text(
-                          '${AppLocalizations.of(context)!.saturatedFat} (${AppLocalizations.of(context)!.g})'),
+                          '${AppLocalizations.of(context).saturatedFat} (${AppLocalizations.of(context).g})'),
                     ],
                   ),
                 ),

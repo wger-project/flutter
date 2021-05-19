@@ -111,7 +111,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
         // Add events to lists
         _events[date]!.add(Event(
           EventType.session,
-          '${AppLocalizations.of(context)!.impression}: ${session.impressionAsString} $time',
+          '${AppLocalizations.of(context).impression}: ${session.impressionAsString} $time',
         ));
       }
     });
@@ -193,7 +193,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
         children: [
           ListTile(
             title: Text(
-              AppLocalizations.of(context)!.calendar,
+              AppLocalizations.of(context).calendar,
               style: Theme.of(context).textTheme.headline4,
             ),
             leading: Icon(
@@ -235,13 +235,13 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
                           title: Text((() {
                             switch (event.type) {
                               case EventType.caloriesDiary:
-                                return AppLocalizations.of(context)!.nutritionalDiary;
+                                return AppLocalizations.of(context).nutritionalDiary;
 
                               case EventType.session:
-                                return AppLocalizations.of(context)!.workoutSession;
+                                return AppLocalizations.of(context).workoutSession;
 
                               case EventType.weight:
-                                return AppLocalizations.of(context)!.weight;
+                                return AppLocalizations.of(context).weight;
                             }
                             return event.description.toString();
                           })()),
