@@ -110,6 +110,11 @@ class Log {
     return repText(reps, repetitionUnitObj, weight, weightUnitObj, rir);
   }
 
+  /// Returns the text representation for a single setting, used in the gym mode
+  String get singleLogRepTextNoNl {
+    return repText(reps, repetitionUnitObj, weight, weightUnitObj, rir).replaceAll('\n', '');
+  }
+
   /// Override the equals operator
   ///
   /// Two logs are considered equal if their content is equal. This is used e.g.

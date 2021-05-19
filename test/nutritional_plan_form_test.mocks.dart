@@ -34,6 +34,8 @@ class _FakeMealItem extends _i1.Fake implements _i6.MealItem {}
 
 class _FakeIngredient extends _i1.Fake implements _i7.Ingredient {}
 
+class _FakeUri extends _i1.Fake implements Uri {}
+
 class _FakeResponse extends _i1.Fake implements _i8.Response {}
 
 /// A class which mocks [NutritionPlansProvider].
@@ -181,10 +183,12 @@ class MockNutritionPlansProvider extends _i1.Mock
       super.noSuchMethod(Invocation.method(#notifyListeners, []),
           returnValueForMissingStub: null);
   @override
-  dynamic makeUrl(String? path,
+  Uri makeUrl(String? path,
           {int? id, String? objectMethod, Map<String, dynamic>? query}) =>
-      super.noSuchMethod(Invocation.method(#makeUrl, [path],
-          {#id: id, #objectMethod: objectMethod, #query: query}));
+      (super.noSuchMethod(
+          Invocation.method(#makeUrl, [path],
+              {#id: id, #objectMethod: objectMethod, #query: query}),
+          returnValue: _FakeUri()) as Uri);
   @override
   _i10.Future<Map<String, dynamic>> fetch(Uri? uri) => (super.noSuchMethod(
           Invocation.method(#fetch, [uri]),

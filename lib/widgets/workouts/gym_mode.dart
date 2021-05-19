@@ -464,7 +464,7 @@ class _LogPageState extends State<LogPage> {
         ),
         ...widget._workoutPlan.filterLogsByExercise(widget._exercise, unique: true).map((log) {
           return ListTile(
-            title: Text(log.singleLogRepText.replaceAll('\n', '')),
+            title: Text(log.singleLogRepTextNoNl),
             subtitle:
                 Text(DateFormat.yMd(Localizations.localeOf(context).languageCode).format(log.date)),
             trailing: Icon(Icons.copy),

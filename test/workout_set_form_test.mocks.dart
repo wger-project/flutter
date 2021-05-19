@@ -25,6 +25,8 @@ class _FakeClient extends _i1.Fake implements _i3.Client {}
 
 class _FakeExercise extends _i1.Fake implements _i4.Exercise {}
 
+class _FakeUri extends _i1.Fake implements Uri {}
+
 class _FakeResponse extends _i1.Fake implements _i5.Response {}
 
 /// A class which mocks [ExercisesProvider].
@@ -108,10 +110,12 @@ class MockExercisesProvider extends _i1.Mock implements _i6.ExercisesProvider {
       super.noSuchMethod(Invocation.method(#notifyListeners, []),
           returnValueForMissingStub: null);
   @override
-  dynamic makeUrl(String? path,
+  Uri makeUrl(String? path,
           {int? id, String? objectMethod, Map<String, dynamic>? query}) =>
-      super.noSuchMethod(Invocation.method(#makeUrl, [path],
-          {#id: id, #objectMethod: objectMethod, #query: query}));
+      (super.noSuchMethod(
+          Invocation.method(#makeUrl, [path],
+              {#id: id, #objectMethod: objectMethod, #query: query}),
+          returnValue: _FakeUri()) as Uri);
   @override
   _i7.Future<Map<String, dynamic>> fetch(Uri? uri) => (super.noSuchMethod(
           Invocation.method(#fetch, [uri]),

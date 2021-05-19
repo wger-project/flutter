@@ -17,7 +17,7 @@
  */
 
 import 'dart:convert';
-import 'dart:developer';
+import 'dart:developer' as dev;
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -227,18 +227,38 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
     plan.days = days;
 
     // Logs
+    //
+    // TODO: looping through all results in the pagination is something we will
+    // probably need in the future. We should put this in some function or something
+    // so that we can reuse it.
     plan.logs = [];
-    final logData = await fetch(makeUrl(_logsUrlPath, query: {
+    var allItemsProcessed = false;
+    var logsURL = makeUrl(_logsUrlPath, query: {
       'workout': workoutId.toString(),
       'limit': '1000',
-    }));
-    for (final entry in logData['results']) {
-      var log = Log.fromJson(entry);
-      log.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
-      log.repetitionUnit = _repetitionUnit.firstWhere((e) => e.id == log.weightUnitId);
-      log.exercise = await _exercises.fetchAndSetExercise(log.exerciseId);
+    });
 
-      plan.logs.add(log);
+    while (!allItemsProcessed) {
+      final logData = await fetch(logsURL);
+
+      for (final entry in logData['results']) {
+        try {
+          var log = Log.fromJson(entry);
+          log.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
+          log.repetitionUnit = _repetitionUnit.firstWhere((e) => e.id == log.weightUnitId);
+          log.exercise = await _exercises.fetchAndSetExercise(log.exerciseId);
+          plan.logs.add(log);
+        } catch (e) {
+          dev.log('fire! fire!');
+          dev.log(e.toString());
+        }
+      }
+
+      if (logData['next'] == null) {
+        allItemsProcessed = true;
+      } else {
+        logsURL = Uri.parse(logData['next']);
+      }
     }
 
     // ... and done
@@ -324,7 +344,7 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
         unitData['weightUnit'].forEach(
           (e) => _weightUnits.add(WeightUnit.fromJson(e)),
         );
-        log("Read workout units data from cache. Valid till ${unitData['expiresIn']}");
+        dev.log("Read workout units data from cache. Valid till ${unitData['expiresIn']}");
         return;
       }
     }

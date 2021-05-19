@@ -77,7 +77,7 @@ class DayLogWidget extends StatelessWidget {
                   exercise.name,
                   style: Theme.of(context).textTheme.headline6,
                 ),
-                ..._exerciseData[exercise]!.map((log) => Text(log.singleLogRepText)).toList(),
+                ..._exerciseData[exercise]!.map((log) => Text(log.singleLogRepTextNoNl)).toList(),
                 ExerciseLogChart(exercise, _date),
                 SizedBox(height: 30),
               ],

@@ -17,7 +17,7 @@
  */
 
 /// Helper function to make a URL.
-makeUri(
+Uri makeUri(
   String serverUrl,
   String path, [
   int? id,
