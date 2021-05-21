@@ -41,46 +41,40 @@ class _WorkoutLogsState extends State<WorkoutLogs> {
 
   @override
   Widget build(BuildContext context) {
-    return SliverList(
-      delegate: SliverChildListDelegate(
-        [
-          Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: Text(
-                  AppLocalizations.of(context).labelWorkoutLogs,
-                  style: Theme.of(context).textTheme.headline5,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  AppLocalizations.of(context).logHelpEntries,
-                  textAlign: TextAlign.justify,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  AppLocalizations.of(context).logHelpEntriesUnits,
-                  textAlign: TextAlign.justify,
-                ),
-              ),
-              ElevatedButton(
-                child: Text(AppLocalizations.of(context).labelWorkoutPlan),
-                onPressed: () {
-                  widget._changeMode(WorkoutScreenMode.workout);
-                },
-              ),
-              Container(
-                width: double.infinity,
-                child: WorkoutLogCalendar(widget._workoutPlan),
-              ),
-            ],
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Text(
+            AppLocalizations.of(context).labelWorkoutLogs,
+            style: Theme.of(context).textTheme.headline5,
           ),
-        ],
-      ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            AppLocalizations.of(context).logHelpEntries,
+            textAlign: TextAlign.justify,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            AppLocalizations.of(context).logHelpEntriesUnits,
+            textAlign: TextAlign.justify,
+          ),
+        ),
+        ElevatedButton(
+          child: Text(AppLocalizations.of(context).labelWorkoutPlan),
+          onPressed: () {
+            widget._changeMode(WorkoutScreenMode.workout);
+          },
+        ),
+        Container(
+          width: double.infinity,
+          child: WorkoutLogCalendar(widget._workoutPlan),
+        ),
+      ],
     );
   }
 }

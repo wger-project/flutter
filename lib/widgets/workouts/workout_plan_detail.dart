@@ -36,48 +36,40 @@ class WorkoutPlanDetail extends StatefulWidget {
 class _WorkoutPlanDetailState extends State<WorkoutPlanDetail> {
   @override
   Widget build(BuildContext context) {
-    return SliverList(
-      delegate: SliverChildListDelegate(
-        [
-          Column(
-            children: [
-              if (widget._workoutPlan.description != '')
-                Padding(
-                  padding: const EdgeInsets.all(15),
-                  child: Text(widget._workoutPlan.description),
-                ),
-              ...widget._workoutPlan.days
-                  .map((workoutDay) => WorkoutDayWidget(workoutDay))
-                  .toList(),
-              Column(
-                children: [
-                  ElevatedButton(
-                    child: Text(AppLocalizations.of(context).newDay),
-                    onPressed: () {
-                      Navigator.pushNamed(
-                        context,
-                        FormScreen.routeName,
-                        arguments: FormScreenArguments(
-                          AppLocalizations.of(context).newDay,
-                          DayFormWidget(widget._workoutPlan),
-                          hasListView: true,
-                        ),
-                      );
-                    },
-                  ),
-                  if (widget._workoutPlan.days.length > 0)
-                    ElevatedButton(
-                      child: Text(AppLocalizations.of(context).labelWorkoutLogs),
-                      onPressed: () {
-                        widget._changeMode(WorkoutScreenMode.log);
-                      },
-                    ),
-                ],
-              ),
-            ],
+    return Column(
+      children: [
+        if (widget._workoutPlan.description != '')
+          Padding(
+            padding: const EdgeInsets.all(15),
+            child: Text(widget._workoutPlan.description),
           ),
-        ],
-      ),
+        ...widget._workoutPlan.days.map((workoutDay) => WorkoutDayWidget(workoutDay)).toList(),
+        Column(
+          children: [
+            ElevatedButton(
+              child: Text(AppLocalizations.of(context).newDay),
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  FormScreen.routeName,
+                  arguments: FormScreenArguments(
+                    AppLocalizations.of(context).newDay,
+                    DayFormWidget(widget._workoutPlan),
+                    hasListView: true,
+                  ),
+                );
+              },
+            ),
+            if (widget._workoutPlan.days.length > 0)
+              ElevatedButton(
+                child: Text(AppLocalizations.of(context).labelWorkoutLogs),
+                onPressed: () {
+                  widget._changeMode(WorkoutScreenMode.log);
+                },
+              ),
+          ],
+        ),
+      ],
     );
   }
 }

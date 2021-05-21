@@ -140,23 +140,22 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
           ),
           FutureBuilder(
             future: _loadFullWorkout(context, workoutPlan.id!),
-            builder: (context, AsyncSnapshot<WorkoutPlan> snapshot) =>
-                snapshot.connectionState == ConnectionState.waiting
-                    ? SliverList(
-                        delegate: SliverChildListDelegate(
-                          [
-                            Container(
-                              height: 200,
-                              child: Center(
-                                child: CircularProgressIndicator(),
-                              ),
-                            )
-                          ],
+            builder: (context, AsyncSnapshot<WorkoutPlan> snapshot) => SliverList(
+              delegate: SliverChildListDelegate(
+                [
+                  snapshot.connectionState == ConnectionState.waiting
+                      ? Container(
+                          height: 200,
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        )
+                      : Consumer<WorkoutPlansProvider>(
+                          builder: (context, value, child) => getBody(workoutPlan),
                         ),
-                      )
-                    : Consumer<WorkoutPlansProvider>(
-                        builder: (context, value, child) => getBody(workoutPlan),
-                      ),
+                ],
+              ),
+            ),
           )
         ],
       ),
