@@ -34,7 +34,6 @@ enum WorkoutScreenMode {
 enum WorkoutOptions {
   edit,
   delete,
-  toggleMode,
 }
 
 class WorkoutPlanScreen extends StatefulWidget {
@@ -108,22 +107,10 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
                     Navigator.of(context).pop();
 
                     // Toggle Mode
-                  } else if (value == WorkoutOptions.toggleMode) {
-                    if (_mode == WorkoutScreenMode.workout) {
-                      _changeMode(WorkoutScreenMode.log);
-                    } else {
-                      _changeMode(WorkoutScreenMode.workout);
-                    }
                   }
                 },
                 itemBuilder: (BuildContext context) {
                   return [
-                    PopupMenuItem<WorkoutOptions>(
-                      child: _mode == WorkoutScreenMode.log
-                          ? Text(AppLocalizations.of(context).labelWorkoutPlan)
-                          : Text(AppLocalizations.of(context).labelWorkoutLogs),
-                      value: WorkoutOptions.toggleMode,
-                    ),
                     PopupMenuItem<WorkoutOptions>(
                       value: WorkoutOptions.edit,
                       child: Text(AppLocalizations.of(context).edit),

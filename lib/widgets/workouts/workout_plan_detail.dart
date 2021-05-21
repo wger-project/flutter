@@ -38,6 +38,20 @@ class _WorkoutPlanDetailState extends State<WorkoutPlanDetail> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        if (widget._workoutPlan.days.length > 0)
+          ToggleButtons(
+            children: <Widget>[
+              Icon(Icons.table_chart_outlined),
+              Icon(Icons.show_chart),
+            ],
+            renderBorder: false,
+            onPressed: (int index) {
+              if (index == 1) {
+                widget._changeMode(WorkoutScreenMode.log);
+              }
+            },
+            isSelected: [true, false],
+          ),
         if (widget._workoutPlan.description != '')
           Padding(
             padding: const EdgeInsets.all(15),
@@ -60,13 +74,6 @@ class _WorkoutPlanDetailState extends State<WorkoutPlanDetail> {
                 );
               },
             ),
-            if (widget._workoutPlan.days.length > 0)
-              ElevatedButton(
-                child: Text(AppLocalizations.of(context).labelWorkoutLogs),
-                onPressed: () {
-                  widget._changeMode(WorkoutScreenMode.log);
-                },
-              ),
           ],
         ),
       ],

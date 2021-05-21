@@ -43,6 +43,23 @@ class _WorkoutLogsState extends State<WorkoutLogs> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        ToggleButtons(
+          children: <Widget>[
+            Icon(
+              Icons.table_chart_outlined,
+            ),
+            Icon(
+              Icons.show_chart,
+            ),
+          ],
+          renderBorder: false,
+          onPressed: (int index) {
+            if (index == 0) {
+              widget._changeMode(WorkoutScreenMode.workout);
+            }
+          },
+          isSelected: [false, true],
+        ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 10),
           child: Text(
@@ -63,12 +80,6 @@ class _WorkoutLogsState extends State<WorkoutLogs> {
             AppLocalizations.of(context).logHelpEntriesUnits,
             textAlign: TextAlign.justify,
           ),
-        ),
-        ElevatedButton(
-          child: Text(AppLocalizations.of(context).labelWorkoutPlan),
-          onPressed: () {
-            widget._changeMode(WorkoutScreenMode.workout);
-          },
         ),
         Container(
           width: double.infinity,

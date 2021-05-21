@@ -137,9 +137,10 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(3),
+    return Padding(
+      padding: const EdgeInsets.only(left: 8, right: 8, bottom: 12),
       child: Card(
+        margin: EdgeInsets.zero,
         child: Column(
           children: [
             DayHeaderDismissible(
