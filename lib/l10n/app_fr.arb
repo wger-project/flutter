@@ -279,7 +279,7 @@
   "@reps": {
     "description": "Shorthand for repetitions, used when space constraints are tighter"
   },
-  "nrOfSets": "Nombre de séries : {nrOfSets}",
+  "nrOfSets": "Séries par exercice : {nrOfSets}",
   "@nrOfSets": {
     "description": "Label shown on the slider where the user selects the nr of sets",
     "type": "text",
@@ -409,5 +409,40 @@
   "name": "Nom",
   "@name": {
     "description": "Name for a workout or nutritional plan"
+  },
+  "optionsLabel": "Options",
+  "@optionsLabel": {
+    "description": "Label for the popup with general app options"
+  },
+  "setUnitsAndRir": "Définir les unités et RiR",
+  "@setUnitsAndRir": {
+    "description": "Label shown on the slider where the user can toggle showing units and RiR",
+    "type": "text"
+  },
+  "goToDetailPage": "Aller à la page de détails",
+  "@goToDetailPage": {},
+  "jumpTo": "Aller à",
+  "@jumpTo": {
+    "description": "Imperative. Label used in popup allowing the user to jump to a specific exercise while in the gym mode"
+  },
+  "pause": "Pause",
+  "@pause": {
+    "description": "Noun, not an imperative! Label used for the pause when using the gym mode"
+  },
+  "rirNotUsed": "RiR non utilisé",
+  "@rirNotUsed": {
+    "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
+  },
+  "searchExercise": "Chercher des exos à ajouter",
+  "@searchExercise": {
+    "description": "Label on set form. Selected exercises are added to the set"
+  },
+  "labelBottomNavNutrition": "Nutrition",
+  "@labelBottomNavNutrition": {
+    "description": "Label used in bottom navigation, use a short word"
+  },
+  "labelBottomNavWorkout": "Entraînement",
+  "@labelBottomNavWorkout": {
+    "description": "Label used in bottom navigation, use a short word"
   }
 }
