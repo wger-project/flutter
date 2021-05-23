@@ -267,7 +267,7 @@
   "@login": {
     "description": "Text for login button"
   },
-  "nrOfSets": "Numero di set: {nrOfSets}",
+  "nrOfSets": "Serie per esercizio: {nrOfSets}",
   "@nrOfSets": {
     "description": "Label shown on the slider where the user selects the nr of sets",
     "type": "text",
@@ -409,5 +409,27 @@
   "name": "Nome",
   "@name": {
     "description": "Name for a workout or nutritional plan"
+  },
+  "optionsLabel": "Opzioni",
+  "@optionsLabel": {
+    "description": "Label for the popup with general app options"
+  },
+  "goToDetailPage": "Vai alla pagina dettagli",
+  "@goToDetailPage": {},
+  "jumpTo": "Vai a",
+  "@jumpTo": {
+    "description": "Imperative. Label used in popup allowing the user to jump to a specific exercise while in the gym mode"
+  },
+  "pause": "Pausa",
+  "@pause": {
+    "description": "Noun, not an imperative! Label used for the pause when using the gym mode"
+  },
+  "searchExercise": "Cerca esercizio da aggiungere",
+  "@searchExercise": {
+    "description": "Label on set form. Selected exercises are added to the set"
+  },
+  "labelBottomNavWorkout": "Allenamento",
+  "@labelBottomNavWorkout": {
+    "description": "Label used in bottom navigation, use a short word"
   }
 }
