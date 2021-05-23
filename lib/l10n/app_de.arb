@@ -441,5 +441,13 @@
   "rirNotUsed": "RiR nicht verwendet",
   "@rirNotUsed": {
     "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
+  },
+  "jumpTo": "Springen zu",
+  "@jumpTo": {
+    "description": "Imperative. Label used in popup allowing the user to jump to a specific exercise while in the gym mode"
+  },
+  "pause": "Pause",
+  "@pause": {
+    "description": "Noun, not an imperative! Label used for the pause when using the gym mode"
   }
 }
