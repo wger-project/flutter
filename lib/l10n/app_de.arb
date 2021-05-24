@@ -437,5 +437,9 @@
   "searchExercise": "Suche Übung zum Hinzufügen",
   "@searchExercise": {
     "description": "Label on set form. Selected exercises are added to the set"
+  },
+  "rirNotUsed": "RiR nicht verwendet",
+  "@rirNotUsed": {
+    "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
   }
 }
