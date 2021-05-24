@@ -29,56 +29,58 @@ class ExerciseDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Category
-        Text(
-          AppLocalizations.of(context).category,
-          style: Theme.of(context).textTheme.headline6,
-        ),
-        Text(_exercise.categoryObj.name),
-        SizedBox(height: 8),
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Category
+          Text(
+            AppLocalizations.of(context).category,
+            style: Theme.of(context).textTheme.headline6,
+          ),
+          Text(_exercise.categoryObj.name),
+          SizedBox(height: 8),
 
-        // Equipment
-        Text(
-          AppLocalizations.of(context).equipment,
-          style: Theme.of(context).textTheme.headline6,
-        ),
-        if (_exercise.equipment.length > 0)
-          Text(_exercise.equipment.map((e) => e.name).toList().join('\n')),
-        if (_exercise.equipment.length == 0) Text('-/-'),
-        SizedBox(height: 8),
+          // Equipment
+          Text(
+            AppLocalizations.of(context).equipment,
+            style: Theme.of(context).textTheme.headline6,
+          ),
+          if (_exercise.equipment.length > 0)
+            Text(_exercise.equipment.map((e) => e.name).toList().join('\n')),
+          if (_exercise.equipment.length == 0) Text('-/-'),
+          SizedBox(height: 8),
 
-        // Muscles
-        Text(
-          AppLocalizations.of(context).muscles,
-          style: Theme.of(context).textTheme.headline6,
-        ),
-        if (_exercise.muscles.length > 0)
-          Text(_exercise.muscles.map((e) => e.name).toList().join('\n')),
-        if (_exercise.muscles.length == 0) Text('-/-'),
-        SizedBox(height: 8),
+          // Muscles
+          Text(
+            AppLocalizations.of(context).muscles,
+            style: Theme.of(context).textTheme.headline6,
+          ),
+          if (_exercise.muscles.length > 0)
+            Text(_exercise.muscles.map((e) => e.name).toList().join('\n')),
+          if (_exercise.muscles.length == 0) Text('-/-'),
+          SizedBox(height: 8),
 
-        // Muscles secondary
-        Text(
-          AppLocalizations.of(context).musclesSecondary,
-          style: Theme.of(context).textTheme.headline6,
-        ),
-        if (_exercise.musclesSecondary.length > 0)
-          Text(_exercise.musclesSecondary.map((e) => e.name).toList().join('\n')),
-        if (_exercise.musclesSecondary.length == 0) Text('-/-'),
-        SizedBox(height: 8),
+          // Muscles secondary
+          Text(
+            AppLocalizations.of(context).musclesSecondary,
+            style: Theme.of(context).textTheme.headline6,
+          ),
+          if (_exercise.musclesSecondary.length > 0)
+            Text(_exercise.musclesSecondary.map((e) => e.name).toList().join('\n')),
+          if (_exercise.musclesSecondary.length == 0) Text('-/-'),
+          SizedBox(height: 8),
 
-        // Description
-        Text(
-          AppLocalizations.of(context).description,
-          style: Theme.of(context).textTheme.headline6,
-        ),
-        Html(data: _exercise.description),
-        SizedBox(height: 8),
-      ],
+          // Description
+          Text(
+            AppLocalizations.of(context).description,
+            style: Theme.of(context).textTheme.headline6,
+          ),
+          Html(data: _exercise.description),
+          SizedBox(height: 8),
+        ],
+      ),
     );
   }
 }
