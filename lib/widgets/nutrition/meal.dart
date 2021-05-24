@@ -78,28 +78,29 @@ class _MealWidgetState extends State<MealWidget> {
                     },
                     icon: Icon(Icons.delete),
                   ),
-                  Ink(
-                    decoration: const ShapeDecoration(
-                      color: wgerPrimaryButtonColor,
-                      shape: CircleBorder(),
-                    ),
-                    child: IconButton(
-                      icon: const Icon(Icons.history_edu),
-                      color: Colors.white,
-                      onPressed: () {
-                        Provider.of<NutritionPlansProvider>(context, listen: false)
-                            .logMealToDiary(widget._meal);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              AppLocalizations.of(context).mealLogged,
-                              textAlign: TextAlign.center,
+                  if (widget._meal.mealItems.length > 0)
+                    Ink(
+                      decoration: const ShapeDecoration(
+                        color: wgerPrimaryButtonColor,
+                        shape: CircleBorder(),
+                      ),
+                      child: IconButton(
+                        icon: const Icon(Icons.history_edu),
+                        color: Colors.white,
+                        onPressed: () {
+                          Provider.of<NutritionPlansProvider>(context, listen: false)
+                              .logMealToDiary(widget._meal);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                AppLocalizations.of(context).mealLogged,
+                                textAlign: TextAlign.center,
+                              ),
                             ),
-                          ),
-                        );
-                      },
+                          );
+                        },
+                      ),
                     ),
-                  ),
                   IconButton(
                     onPressed: () {
                       Navigator.pushNamed(

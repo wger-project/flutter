@@ -161,22 +161,23 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
                     },
                     icon: Icon(Icons.delete),
                   ),
-                  Ink(
-                    decoration: const ShapeDecoration(
-                      color: wgerPrimaryButtonColor,
-                      shape: CircleBorder(),
+                  if (widget._day.sets.length > 0)
+                    Ink(
+                      decoration: const ShapeDecoration(
+                        color: wgerPrimaryButtonColor,
+                        shape: CircleBorder(),
+                      ),
+                      child: IconButton(
+                        icon: const Icon(Icons.play_arrow),
+                        color: Colors.white,
+                        onPressed: () {
+                          Navigator.of(context).pushNamed(
+                            GymModeScreen.routeName,
+                            arguments: widget._day,
+                          );
+                        },
+                      ),
                     ),
-                    child: IconButton(
-                      icon: const Icon(Icons.play_arrow),
-                      color: Colors.white,
-                      onPressed: () {
-                        Navigator.of(context).pushNamed(
-                          GymModeScreen.routeName,
-                          arguments: widget._day,
-                        );
-                      },
-                    ),
-                  ),
                   IconButton(
                     onPressed: () {
                       Navigator.pushNamed(
