@@ -148,6 +148,55 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
               expanded: _expanded,
               toggle: _toggleExpanded,
             ),
+            if (_expanded)
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      Provider.of<WorkoutPlansProvider>(context, listen: false).deleteDay(
+                        widget._day,
+                      );
+                    },
+                    icon: Icon(Icons.delete),
+                  ),
+                  Ink(
+                    decoration: const ShapeDecoration(
+                      color: wgerPrimaryButtonColor,
+                      shape: CircleBorder(),
+                    ),
+                    child: IconButton(
+                      icon: const Icon(Icons.play_arrow),
+                      color: Colors.white,
+                      onPressed: () {
+                        Navigator.of(context).pushNamed(
+                          GymModeScreen.routeName,
+                          arguments: widget._day,
+                        );
+                      },
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      Navigator.pushNamed(
+                        context,
+                        FormScreen.routeName,
+                        arguments: FormScreenArguments(
+                          AppLocalizations.of(context).edit,
+                          DayFormWidget(
+                              Provider.of<WorkoutPlansProvider>(context, listen: false)
+                                  .findById(widget._day.workoutId),
+                              widget._day),
+                          hasListView: true,
+                        ),
+                      );
+                    },
+                    icon: Icon(Icons.edit),
+                  ),
+                ],
+              ),
+            Divider(),
             ...widget._day.sets
                 .map(
                   (set) => getSetRow(set),
@@ -193,18 +242,13 @@ class DayHeaderDismissible extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dismissible(
       key: Key(_day.id.toString()),
-      direction: DismissDirection.horizontal,
+      direction: DismissDirection.startToEnd,
       child: Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(color: Colors.white),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Icon(
-              Icons.drag_indicator,
-              color: Colors.grey,
-              size: ICON_SIZE_SMALL,
-            ),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -223,19 +267,6 @@ class DayHeaderDismissible extends StatelessWidget {
               onPressed: () {
                 _toggle();
               },
-            ),
-          ],
-        ),
-      ),
-      secondaryBackground: Container(
-        color: Theme.of(context).accentColor,
-        padding: EdgeInsets.only(right: 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Icon(
-              Icons.delete_outline,
-              color: Colors.white,
             ),
           ],
         ),
@@ -260,11 +291,7 @@ class DayHeaderDismissible extends StatelessWidget {
       ),
       confirmDismiss: (direction) async {
         // Delete day
-        if (direction == DismissDirection.endToStart) {
-          Provider.of<WorkoutPlansProvider>(context, listen: false).deleteDay(_day);
-
-          // Gym mode
-        } else {
+        if (direction == DismissDirection.startToEnd) {
           Navigator.of(context).pushNamed(GymModeScreen.routeName, arguments: _day);
         }
         return false;

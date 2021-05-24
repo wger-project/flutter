@@ -56,6 +56,67 @@ class _MealWidgetState extends State<MealWidget> {
           children: [
             DismissibleMealHeader(_expanded, _toggleExpanded, meal: widget._meal),
             if (_expanded)
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      // Delete the meal
+                      Provider.of<NutritionPlansProvider>(context, listen: false)
+                          .deleteMeal(widget._meal);
+
+                      // and inform the user
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            AppLocalizations.of(context).successfullyDeleted,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      );
+                    },
+                    icon: Icon(Icons.delete),
+                  ),
+                  Ink(
+                    decoration: const ShapeDecoration(
+                      color: wgerPrimaryButtonColor,
+                      shape: CircleBorder(),
+                    ),
+                    child: IconButton(
+                      icon: const Icon(Icons.history_edu),
+                      color: Colors.white,
+                      onPressed: () {
+                        Provider.of<NutritionPlansProvider>(context, listen: false)
+                            .logMealToDiary(widget._meal);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              AppLocalizations.of(context).mealLogged,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      Navigator.pushNamed(
+                        context,
+                        FormScreen.routeName,
+                        arguments: FormScreenArguments(
+                          AppLocalizations.of(context).edit,
+                          MealForm(widget._meal.planId, widget._meal),
+                        ),
+                      );
+                    },
+                    icon: Icon(Icons.edit),
+                  ),
+                ],
+              ),
+            Divider(),
+            if (_expanded)
               Padding(
                 padding: const EdgeInsets.all(5),
                 child: Row(
@@ -213,107 +274,63 @@ class DismissibleMealHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onLongPress: () {
-        Navigator.pushNamed(
-          context,
-          FormScreen.routeName,
-          arguments: FormScreenArguments(
-            AppLocalizations.of(context).edit,
-            MealForm(_meal.planId, _meal),
-          ),
-        );
-      },
-      child: Dismissible(
-        key: Key(_meal.id.toString()),
-        child: Container(
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(color: Colors.white),
-          child: Row(
-            children: [
-              Icon(
-                Icons.drag_indicator,
-                color: Colors.grey,
-                size: ICON_SIZE_SMALL,
+    return Dismissible(
+      key: Key(_meal.id.toString()),
+      direction: DismissDirection.startToEnd,
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(color: Colors.white),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                _meal.time!.format(context),
+                style: Theme.of(context).textTheme.headline5,
               ),
-              Expanded(
-                child: Text(
-                  _meal.time!.format(context),
-                  style: Theme.of(context).textTheme.headline5,
-                ),
-              ),
-              IconButton(
-                visualDensity: VisualDensity.compact,
-                icon: _expanded ? Icon(Icons.unfold_less) : Icon(Icons.unfold_more),
-                onPressed: () {
-                  _toggle();
-                },
-              ),
-            ],
-          ),
+            ),
+            IconButton(
+              visualDensity: VisualDensity.compact,
+              icon: _expanded ? Icon(Icons.unfold_less) : Icon(Icons.unfold_more),
+              onPressed: () {
+                _toggle();
+              },
+            ),
+          ],
         ),
-        secondaryBackground: Container(
-          color: Theme.of(context).accentColor,
-          padding: EdgeInsets.only(right: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Icon(
-                Icons.delete,
-                color: Colors.white,
-              ),
-            ],
-          ),
-        ),
-        background: Container(
-          color: wgerPrimaryButtonColor, //Theme.of(context).primaryColor,
-          alignment: Alignment.centerLeft,
-          padding: EdgeInsets.only(left: 10),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                AppLocalizations.of(context).logMeal,
-                style: TextStyle(color: Colors.white),
-              ),
-              Icon(
-                Icons.history_edu,
-                color: Colors.white,
-              ),
-            ],
-          ),
-        ),
-        confirmDismiss: (direction) async {
-          // Delete
-          if (direction == DismissDirection.endToStart) {
-            // Delete the meal
-            Provider.of<NutritionPlansProvider>(context, listen: false).deleteMeal(_meal);
-
-            // and inform the user
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  AppLocalizations.of(context).successfullyDeleted,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            );
-
-            // Log meal
-          } else {
-            Provider.of<NutritionPlansProvider>(context, listen: false).logMealToDiary(_meal);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  AppLocalizations.of(context).mealLogged,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            );
-          }
-          return false;
-        },
       ),
+      background: Container(
+        color: wgerPrimaryButtonColor, //Theme.of(context).primaryColor,
+        alignment: Alignment.centerLeft,
+        padding: EdgeInsets.only(left: 10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              AppLocalizations.of(context).logMeal,
+              style: TextStyle(color: Colors.white),
+            ),
+            Icon(
+              Icons.history_edu,
+              color: Colors.white,
+            ),
+          ],
+        ),
+      ),
+      confirmDismiss: (direction) async {
+        // Delete
+        if (direction == DismissDirection.startToEnd) {
+          Provider.of<NutritionPlansProvider>(context, listen: false).logMealToDiary(_meal);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                AppLocalizations.of(context).mealLogged,
+                textAlign: TextAlign.center,
+              ),
+            ),
+          );
+        }
+        return false;
+      },
     );
   }
 }
