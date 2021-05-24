@@ -132,7 +132,6 @@ class DayCheckbox extends StatefulWidget {
 }
 
 class _DayCheckboxState extends State<DayCheckbox> {
-  bool _isSelected = false;
   @override
   Widget build(BuildContext context) {
     return CheckboxListTile(
@@ -141,11 +140,10 @@ class _DayCheckboxState extends State<DayCheckbox> {
         widget._dayNr,
         Localizations.localeOf(context).languageCode,
       )),
-      value: _isSelected,
+      value: widget._day.daysOfWeek.contains(widget._dayNr),
       onChanged: (bool? newValue) {
         setState(() {
-          _isSelected = newValue!;
-          if (!newValue) {
+          if (!newValue!) {
             widget._day.daysOfWeek.remove(widget._dayNr);
           } else {
             widget._day.daysOfWeek.add(widget._dayNr);
@@ -164,6 +162,9 @@ class DayFormWidget extends StatefulWidget {
   DayFormWidget(this.workout, [Day? day]) {
     this._day = day ?? Day();
     _day.workoutId = this.workout.id!;
+    if (_day.id != null) {
+      dayController.text = day!.description;
+    }
   }
 
   @override
@@ -215,10 +216,16 @@ class _DayFormWidgetState extends State<DayFormWidget> {
               _form.currentState!.save();
 
               try {
-                Provider.of<WorkoutPlansProvider>(context, listen: false).addDay(
-                  widget._day,
-                  widget.workout,
-                );
+                if (widget._day.id == null) {
+                  Provider.of<WorkoutPlansProvider>(context, listen: false).addDay(
+                    widget._day,
+                    widget.workout,
+                  );
+                } else {
+                  Provider.of<WorkoutPlansProvider>(context, listen: false).editDay(
+                    widget._day,
+                  );
+                }
 
                 widget.dayController.clear();
                 Navigator.of(context).pop();

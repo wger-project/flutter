@@ -380,6 +380,11 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
     return day;
   }
 
+  Future<void> editDay(Day day) async {
+    await patch(day.toJson(), makeUrl(_daysUrlPath, id: day.id));
+    notifyListeners();
+  }
+
   Future<void> deleteDay(Day day) async {
     await deleteRequest(_daysUrlPath, day.id!);
     for (var workout in _workoutPlans) {
