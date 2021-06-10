@@ -312,7 +312,7 @@
   "@repetitionUnit": {},
   "weightUnit": "Unità peso",
   "@weightUnit": {},
-  "reps": "Rip.",
+  "reps": "Ripetizioni",
   "@reps": {
     "description": "Shorthand for repetitions, used when space constraints are tighter"
   },
@@ -430,6 +430,19 @@
   },
   "labelBottomNavWorkout": "Allenamento",
   "@labelBottomNavWorkout": {
+    "description": "Label used in bottom navigation, use a short word"
+  },
+  "setUnitsAndRir": "Scegli le unità e le RiR",
+  "@setUnitsAndRir": {
+    "description": "Label shown on the slider where the user can toggle showing units and RiR",
+    "type": "text"
+  },
+  "rirNotUsed": "RiR (Repetitions in Reseverve) non utilizzato",
+  "@rirNotUsed": {
+    "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
+  },
+  "labelBottomNavNutrition": "Nutrizione",
+  "@labelBottomNavNutrition": {
     "description": "Label used in bottom navigation, use a short word"
   }
 }
