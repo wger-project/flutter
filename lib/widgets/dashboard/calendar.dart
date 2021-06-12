@@ -21,6 +21,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/misc.dart';
 import 'package:wger/models/workouts/session.dart';
@@ -61,7 +62,7 @@ class DashboardCalendarWidget extends StatefulWidget {
 
 class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
     with TickerProviderStateMixin {
-  late Map<DateTime, List<Event>> _events;
+  late Map<String, List<Event>> _events;
   late final ValueNotifier<List<Event>> _selectedEvents;
   RangeSelectionMode _rangeSelectionMode =
       RangeSelectionMode.toggledOff; // Can be toggled on/off by longpressing a date
@@ -74,7 +75,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
   void initState() {
     super.initState();
 
-    _events = {};
+    _events = <String, List<Event>>{};
     _selectedDay = _focusedDay;
     _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
     loadEvents();
@@ -84,7 +85,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
     // Process weight entries
     BodyWeightProvider weightProvider = Provider.of<BodyWeightProvider>(context, listen: false);
     for (var entry in weightProvider.items) {
-      final date = entry.date.toLocal();
+      final date = DateFormatLists.format(entry.date);
 
       if (!_events.containsKey(date)) {
         _events[date] = [];
@@ -99,7 +100,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
     plans.fetchSessionData().then((entries) {
       for (var entry in entries['results']) {
         final session = WorkoutSession.fromJson(entry);
-        final date = DateTime(session.date.year, session.date.month, session.date.day);
+        final date = DateFormatLists.format(session.date);
         if (!_events.containsKey(date)) {
           _events[date] = [];
         }
@@ -121,7 +122,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
         Provider.of<NutritionPlansProvider>(context, listen: false);
     for (var plan in nutritionProvider.items) {
       for (var entry in plan.logEntriesValues.entries) {
-        final date = DateTime(entry.key.year, entry.key.month, entry.key.day);
+        final date = DateFormatLists.format(entry.key);
         if (!_events.containsKey(date)) {
           _events[date] = [];
         }
@@ -142,7 +143,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
   }
 
   List<Event> _getEventsForDay(DateTime day) {
-    return _events[day.toLocal()] ?? [];
+    return _events[DateFormatLists.format(day)] ?? [];
   }
 
   List<Event> _getEventsForRange(DateTime start, DateTime end) {

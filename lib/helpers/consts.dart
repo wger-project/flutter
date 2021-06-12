@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/animation.dart';
+import 'package:intl/intl.dart';
 
 /// Size for the "smaller" icons, e.g. when they belong to less important items
 /// and we don't want to fill the whole screen
@@ -42,3 +43,8 @@ const PREFS_EXERCISES = 'exerciseData';
 
 const DEFAULT_ANIMATION_DURATION = Duration(milliseconds: 200);
 const DEFAULT_ANIMATION_CURVE = Curves.bounceIn;
+
+/// Dateformat used when using a date as a key in a dictionary. Using either the
+/// regular date object or date.toLocal() can cause problems, depending on the
+/// system's settings. Using a string is safer.
+final DateFormatLists = DateFormat('yyyy-MM-dd');

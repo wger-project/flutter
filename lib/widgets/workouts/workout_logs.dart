@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/session.dart';
@@ -112,7 +113,7 @@ class _WorkoutLogCalendarState extends State<WorkoutLogCalendar> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
   late final ValueNotifier<List<WorkoutLogEvent>> _selectedEvents;
-  late Map<DateTime, List<WorkoutLogEvent>> _events;
+  late Map<String, List<WorkoutLogEvent>> _events;
 
   @override
   void initState() {
@@ -133,12 +134,18 @@ class _WorkoutLogCalendarState extends State<WorkoutLogCalendar> {
   void loadEvents() {
     for (var date in widget._workoutPlan.logData.keys) {
       var entry = widget._workoutPlan.logData[date]!;
-      _events[date.toLocal()] = [WorkoutLogEvent(date, entry['session'], entry['exercises'])];
+      _events[DateFormatLists.format(date)] = [
+        WorkoutLogEvent(
+          date,
+          entry['session'],
+          entry['exercises'],
+        )
+      ];
     }
   }
 
   List<WorkoutLogEvent> _getEventsForDay(DateTime day) {
-    return _events[day.toLocal()] ?? [];
+    return _events[DateFormatLists.format(day)] ?? [];
   }
 
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
