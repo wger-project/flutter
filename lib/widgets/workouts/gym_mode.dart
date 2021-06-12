@@ -151,7 +151,7 @@ class _GymModeState extends State<GymMode> {
           widget._workoutDay,
           _exercisePages,
         ),
-        //...getContent(),
+        ...getContent(),
         SessionPage(
           Provider.of<WorkoutPlansProvider>(context, listen: false)
               .findById(widget._workoutDay.workoutId),
