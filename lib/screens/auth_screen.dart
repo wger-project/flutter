@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
@@ -182,13 +183,19 @@ class _AuthCardState extends State<AuthCard> {
                 children: <Widget>[
                   TextFormField(
                     key: Key('inputUsername'),
-                    decoration: InputDecoration(labelText: AppLocalizations.of(context).username),
+                    decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context).username,
+                      errorMaxLines: 2,
+                    ),
                     autofillHints: [AutofillHints.username],
                     controller: _usernameController,
                     textInputAction: TextInputAction.next,
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
-                      if (value!.isEmpty) {
+                      if (!RegExp(r'^[\w.@+-]+$').hasMatch(value!)) {
+                        return AppLocalizations.of(context).usernameValidChars;
+                      }
+                      if (value.isEmpty) {
                         return AppLocalizations.of(context).invalidUsername;
                       }
                       return null;
