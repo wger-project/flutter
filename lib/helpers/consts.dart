@@ -29,6 +29,9 @@ const DEFAULT_SERVER = 'https://wger.de';
 /// Default weight unit is "kg"
 const DEFAULT_WEIGHT_UNIT = 1;
 
+/// Default impression for a workout session (neutral)
+const DEFAULT_IMPRESSION = 2;
+
 /// Default weight unit is "repetition"
 const DEFAULT_REPETITION_UNIT = 1;
 

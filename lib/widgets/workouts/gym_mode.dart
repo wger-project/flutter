@@ -151,7 +151,7 @@ class _GymModeState extends State<GymMode> {
           widget._workoutDay,
           _exercisePages,
         ),
-        ...getContent(),
+        //...getContent(),
         SessionPage(
           Provider.of<WorkoutPlansProvider>(context, listen: false)
               .findById(widget._workoutDay.workoutId),
@@ -618,6 +618,7 @@ class _SessionPageState extends State<SessionPage> {
     timeStartController.text = timeToString(widget._start)!;
     timeEndController.text = timeToString(TimeOfDay.now())!;
     _session.workoutId = widget._workoutPlan.id!;
+    _session.impression = DEFAULT_IMPRESSION;
     _session.date = DateTime.now();
   }
 
