@@ -24,6 +24,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/gym_mode.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/ui.dart';
 import 'package:wger/models/exercises/exercise.dart';
@@ -333,7 +334,10 @@ class _LogPageState extends State<LogPage> {
           onPressed: () {
             try {
               double newValue = double.parse(_weightController.text) + 1.25;
-              _weightController.text = newValue.toString();
+              setState(() {
+                widget._log.weight = newValue;
+                _weightController.text = newValue.toString();
+              });
             } on FormatException catch (e) {}
           },
         ),
@@ -346,7 +350,10 @@ class _LogPageState extends State<LogPage> {
             try {
               double newValue = double.parse(_weightController.text) - 1.25;
               if (newValue > 0) {
-                _weightController.text = newValue.toString();
+                setState(() {
+                  widget._log.weight = newValue;
+                  _weightController.text = newValue.toString();
+                });
               }
             } on FormatException catch (e) {}
           },
@@ -355,8 +362,18 @@ class _LogPageState extends State<LogPage> {
       controller: _weightController,
       keyboardType: TextInputType.number,
       onFieldSubmitted: (_) {},
+      onChanged: (value) {
+        try {
+          double.parse(value);
+          setState(() {
+            widget._log.weight = double.parse(value);
+          });
+        } on FormatException catch (e) {}
+      },
       onSaved: (newValue) {
-        widget._log.weight = double.parse(newValue!);
+        setState(() {
+          widget._log.weight = double.parse(newValue!);
+        });
       },
       validator: (value) {
         try {
@@ -487,6 +504,36 @@ class _LogPageState extends State<LogPage> {
     );
   }
 
+  Widget getPlates() {
+    //final plates = [];
+    final plates = plateCalculator(
+      double.parse(_weightController.text),
+      BAR_WEIGHT,
+      AVAILABLE_PLATES,
+    );
+
+    return Column(
+      children: [
+        Text(
+          'Plate calculator',
+          style: Theme.of(context).textTheme.headline6,
+        ),
+        Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            ...plates
+                .map((e) => Text(
+                      e.toString(),
+                      style: Theme.of(context).textTheme.headline6,
+                    ))
+                .toList()
+          ],
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -509,6 +556,7 @@ class _LogPageState extends State<LogPage> {
                 ? getPastLogs()
                 : Container()),
         SizedBox(height: 15),
+        getPlates(),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Card(
@@ -534,29 +582,6 @@ class ExerciseOverview extends StatelessWidget {
     this._ratioCompleted,
     this._exercisePages,
   );
-
-  List<num> calcPlates(num totalWeight, num barWeight, List<num> plates){
-    List<num> ans = [];
-    var platesCount = plates.length;
-
-    if (totalWeight % 0.5 > 0){
-      return [];
-    }
-
-    // Remove the bar and divide by two to get weight on each side
-    totalWeight = (totalWeight - barWeight) / 2;
-
-    for(int i = (platesCount - 1); i > 0; i--){
-      var plate = plates[i];
-
-      if(plate <= totalWeight){
-        totalWeight -= plate;
-        ans.add(plate);
-      }
-    }
-
-    return ans;
-  }
 
   @override
   Widget build(BuildContext context) {
