@@ -517,17 +517,37 @@ class _LogPageState extends State<LogPage> {
           'Plate calculator',
           style: Theme.of(context).textTheme.headline6,
         ),
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            ...plates
-                .map((e) => Text(
-                      e.toString(),
-                      style: Theme.of(context).textTheme.headline6,
-                    ))
-                .toList()
-          ],
+        Container(
+          height: 40,
+          child: plates.length > 0
+              ? Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ...plates
+                        .map(
+                          (e) => Container(
+                            decoration: BoxDecoration(
+                              color: Colors.orange,
+                              shape: BoxShape.circle,
+                            ),
+                            child: SizedBox(
+                              height: 35,
+                              width: 35,
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: Text(
+                                  e.toString(),
+                                  style: Theme.of(context).textTheme.headline6,
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                        .toList()
+                  ],
+                )
+              : Text('invalid weight'),
         ),
       ],
     );
