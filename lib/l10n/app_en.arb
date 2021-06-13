@@ -196,6 +196,10 @@
   "@gymMode": {
     "description": "Label when starting the gym mode"
   },
+  "plateCalculator": "Plate calculator",
+  "@plateCalculator": {
+    "description": "Label used for the plate calculator in the gym mode"
+  },
   "pause": "Pause",
   "@pause": {
     "description": "Noun, not an imperative! Label used for the pause when using the gym mode"

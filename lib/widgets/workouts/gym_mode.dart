@@ -514,10 +514,10 @@ class _LogPageState extends State<LogPage> {
     return Column(
       children: [
         Text(
-          'Plate calculator',
+          AppLocalizations.of(context).plateCalculator,
           style: Theme.of(context).textTheme.headline6,
         ),
-        Container(
+        SizedBox(
           height: 40,
           child: plates.length > 0
               ? Row(
@@ -547,7 +547,7 @@ class _LogPageState extends State<LogPage> {
                         .toList()
                   ],
                 )
-              : Text('invalid weight'),
+              : Container(),
         ),
       ],
     );
