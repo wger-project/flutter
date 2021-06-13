@@ -535,6 +535,29 @@ class ExerciseOverview extends StatelessWidget {
     this._exercisePages,
   );
 
+  List<num> calcPlates(num totalWeight, num barWeight, List<num> plates){
+    List<num> ans = [];
+    var platesCount = plates.length;
+
+    if (totalWeight % 0.5 > 0){
+      return [];
+    }
+
+    // Remove the bar and divide by two to get weight on each side
+    totalWeight = (totalWeight - barWeight) / 2;
+
+    for(int i = (platesCount - 1); i > 0; i--){
+      var plate = plates[i];
+
+      if(plate <= totalWeight){
+        totalWeight -= plate;
+        ans.add(plate);
+      }
+    }
+
+    return ans;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
