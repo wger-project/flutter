@@ -505,7 +505,6 @@ class _LogPageState extends State<LogPage> {
   }
 
   Widget getPlates() {
-    //final plates = [];
     final plates = plateCalculator(
       double.parse(_weightController.text),
       BAR_WEIGHT,
@@ -556,7 +555,9 @@ class _LogPageState extends State<LogPage> {
                 ? getPastLogs()
                 : Container()),
         SizedBox(height: 15),
-        getPlates(),
+        // Only show calculator for barbell
+        if (widget._log.exerciseObj.equipment.map((e) => e.id).contains(ID_EQUIPMENT_BARBELL))
+          getPlates(),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Card(

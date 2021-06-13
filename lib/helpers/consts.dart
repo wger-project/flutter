@@ -57,3 +57,6 @@ const AVAILABLE_PLATES = [1.25, 2.5, 5, 10, 15];
 
 /// Weight of the bar, used in the plate calculator
 const BAR_WEIGHT = 20;
+
+/// ID of the equipment entry for barbell
+const ID_EQUIPMENT_BARBELL = 1;
