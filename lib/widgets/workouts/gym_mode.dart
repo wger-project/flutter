@@ -534,8 +534,7 @@ class _LogPageState extends State<LogPage> {
           height: 40,
           child: plates.length > 0
               ? Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ...plates
                         .map(
@@ -544,14 +543,17 @@ class _LogPageState extends State<LogPage> {
                               color: wgerPrimaryColorLight,
                               shape: BoxShape.circle,
                             ),
-                            child: SizedBox(
-                              height: 35,
-                              width: 35,
-                              child: Align(
-                                alignment: Alignment.center,
-                                child: Text(
-                                  e.toString(),
-                                  style: Theme.of(context).textTheme.headline6,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 5),
+                              child: SizedBox(
+                                height: 35,
+                                width: 35,
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    e.toString(),
+                                    style: Theme.of(context).textTheme.headline6,
+                                  ),
                                 ),
                               ),
                             ),
