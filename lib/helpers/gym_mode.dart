@@ -34,10 +34,8 @@ List<num> plateCalculator(num totalWeight, num barWeight, List<num> plates) {
     return [];
   }
 
-  // Find the plates
-  for (int i = (platesCount - 1); i >= 0; i--) {
-    var plate = plates[i];
-
+  // Iterate through the plates, beginning with the biggest ones
+  for (var plate in plates.reversed) {
     while (totalWeight >= plate) {
       totalWeight -= plate;
       ans.add(plate);
