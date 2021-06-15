@@ -26,16 +26,16 @@ List<num> plateCalculator(num totalWeight, num barWeight, List<num> plates) {
     return [];
   }
 
+  // Remove the bar and divide by two to get weight on each side
+  totalWeight = (totalWeight - barWeight) / 2;
+
   // Weight can't be divided with the smallest plate
   if (totalWeight % plates.first > 0) {
     return [];
   }
 
-  // Remove the bar and divide by two to get weight on each side
-  totalWeight = (totalWeight - barWeight) / 2;
-
   // Find the plates
-  for (int i = (platesCount - 1); i > 0; i--) {
+  for (int i = (platesCount - 1); i >= 0; i--) {
     var plate = plates[i];
 
     while (totalWeight >= plate) {
