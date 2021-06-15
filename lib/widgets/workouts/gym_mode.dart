@@ -274,22 +274,9 @@ class _LogPageState extends State<LogPage> {
   }
 
   Widget getRepsWidget() {
-    return TextFormField(
-      decoration: InputDecoration(
-        labelText: AppLocalizations.of(context).repetitions,
-        suffixIcon: IconButton(
-          icon: Icon(
-            Icons.add,
-            color: Colors.black,
-          ),
-          onPressed: () {
-            try {
-              int newValue = int.parse(_repsController.text) + 1;
-              _repsController.text = newValue.toString();
-            } on FormatException catch (e) {}
-          },
-        ),
-        prefixIcon: IconButton(
+    return Row(
+      children: [
+        IconButton(
           icon: Icon(
             Icons.remove,
             color: Colors.black,
@@ -303,45 +290,48 @@ class _LogPageState extends State<LogPage> {
             } on FormatException catch (e) {}
           },
         ),
-      ),
-      enabled: true,
-      controller: _repsController,
-      keyboardType: TextInputType.number,
-      onFieldSubmitted: (_) {},
-      onSaved: (newValue) {
-        widget._log.reps = int.parse(newValue!);
-      },
-      validator: (value) {
-        try {
-          int.parse(value!);
-        } catch (error) {
-          return AppLocalizations.of(context).enterValidNumber;
-        }
-        return null;
-      },
-    );
-  }
-
-  Widget getWeightWidget() {
-    return TextFormField(
-      decoration: InputDecoration(
-        labelText: AppLocalizations.of(context).weight,
-        suffixIcon: IconButton(
+        Expanded(
+          child: TextFormField(
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context).repetitions,
+            ),
+            enabled: true,
+            controller: _repsController,
+            keyboardType: TextInputType.number,
+            onFieldSubmitted: (_) {},
+            onSaved: (newValue) {
+              widget._log.reps = int.parse(newValue!);
+            },
+            validator: (value) {
+              try {
+                int.parse(value!);
+              } catch (error) {
+                return AppLocalizations.of(context).enterValidNumber;
+              }
+              return null;
+            },
+          ),
+        ),
+        IconButton(
           icon: Icon(
             Icons.add,
             color: Colors.black,
           ),
           onPressed: () {
             try {
-              double newValue = double.parse(_weightController.text) + 1.25;
-              setState(() {
-                widget._log.weight = newValue;
-                _weightController.text = newValue.toString();
-              });
+              int newValue = int.parse(_repsController.text) + 1;
+              _repsController.text = newValue.toString();
             } on FormatException catch (e) {}
           },
         ),
-        prefixIcon: IconButton(
+      ],
+    );
+  }
+
+  Widget getWeightWidget() {
+    return Row(
+      children: [
+        IconButton(
           icon: Icon(
             Icons.remove,
             color: Colors.black,
@@ -358,31 +348,53 @@ class _LogPageState extends State<LogPage> {
             } on FormatException catch (e) {}
           },
         ),
-      ),
-      controller: _weightController,
-      keyboardType: TextInputType.number,
-      onFieldSubmitted: (_) {},
-      onChanged: (value) {
-        try {
-          double.parse(value);
-          setState(() {
-            widget._log.weight = double.parse(value);
-          });
-        } on FormatException catch (e) {}
-      },
-      onSaved: (newValue) {
-        setState(() {
-          widget._log.weight = double.parse(newValue!);
-        });
-      },
-      validator: (value) {
-        try {
-          double.parse(value!);
-        } catch (error) {
-          return AppLocalizations.of(context).enterValidNumber;
-        }
-        return null;
-      },
+        Expanded(
+          child: TextFormField(
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context).weight,
+            ),
+            controller: _weightController,
+            keyboardType: TextInputType.number,
+            onFieldSubmitted: (_) {},
+            onChanged: (value) {
+              try {
+                double.parse(value);
+                setState(() {
+                  widget._log.weight = double.parse(value);
+                });
+              } on FormatException catch (e) {}
+            },
+            onSaved: (newValue) {
+              setState(() {
+                widget._log.weight = double.parse(newValue!);
+              });
+            },
+            validator: (value) {
+              try {
+                double.parse(value!);
+              } catch (error) {
+                return AppLocalizations.of(context).enterValidNumber;
+              }
+              return null;
+            },
+          ),
+        ),
+        IconButton(
+          icon: Icon(
+            Icons.add,
+            color: Colors.black,
+          ),
+          onPressed: () {
+            try {
+              double newValue = double.parse(_weightController.text) + 1.25;
+              setState(() {
+                widget._log.weight = newValue;
+                _weightController.text = newValue.toString();
+              });
+            } on FormatException catch (e) {}
+          },
+        ),
+      ],
     );
   }
 
@@ -518,7 +530,7 @@ class _LogPageState extends State<LogPage> {
           style: Theme.of(context).textTheme.headline6,
         ),
         SizedBox(
-          height: 40,
+          height: 35,
           child: plates.length > 0
               ? Row(
                   mainAxisSize: MainAxisSize.max,

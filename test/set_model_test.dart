@@ -27,7 +27,7 @@ void main() {
       final set = workout.days.first.sets.first;
       final exercise1 = set.exercisesObj[0];
 
-      expect(set.getSmartTextRepr(exercise1), '2 Repetitions  (2 RiR)');
+      expect(set.getSmartTextRepr(exercise1), '2 × 10 kg  (2 RiR)');
     });
   });
 }

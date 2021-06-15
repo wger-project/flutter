@@ -46,6 +46,7 @@ WorkoutPlan getWorkout() {
   setting1.repetitionUnit = repetitionUnit1;
   setting1.weightUnit = weightUnit1;
   setting1.exercise = exercise1;
+  setting1.weight = 10;
 
   var log1 = Log.empty()
     ..id = 1
