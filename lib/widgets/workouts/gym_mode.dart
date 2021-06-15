@@ -523,6 +523,7 @@ class _LogPageState extends State<LogPage> {
       BAR_WEIGHT,
       AVAILABLE_PLATES,
     );
+    final groupedPlates = groupPlates(plates);
 
     return Column(
       children: [
@@ -531,32 +532,39 @@ class _LogPageState extends State<LogPage> {
           style: Theme.of(context).textTheme.headline6,
         ),
         SizedBox(
-          height: 40,
+          height: 35,
           child: plates.length > 0
               ? Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    ...plates
+                    ...groupedPlates.keys
                         .map(
-                          (e) => Container(
-                            decoration: BoxDecoration(
-                              color: wgerPrimaryColorLight,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 5),
-                              child: SizedBox(
-                                height: 35,
-                                width: 35,
-                                child: Align(
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    e.toString(),
-                                    style: Theme.of(context).textTheme.headline6,
+                          (key) => Row(
+                            children: [
+                              Text(groupedPlates[key].toString()),
+                              Text('×'),
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: wgerPrimaryColorLight,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 3),
+                                  child: SizedBox(
+                                    height: 35,
+                                    width: 35,
+                                    child: Align(
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        key.toString(),
+                                        style: TextStyle(fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
+                              SizedBox(width: 10),
+                            ],
                           ),
                         )
                         .toList()
@@ -564,6 +572,7 @@ class _LogPageState extends State<LogPage> {
                 )
               : MutedText(AppLocalizations.of(context).plateCalculatorNotDivisible),
         ),
+        SizedBox(height: 3),
       ],
     );
   }

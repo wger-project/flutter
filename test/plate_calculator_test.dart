@@ -45,4 +45,12 @@ void main() {
       );
     });
   });
+
+  group('Test the plate calculator group', () {
+    test('Test groups', () async {
+      expect(groupPlates([15, 15, 15, 10, 10, 5]), {15: 3, 10: 2, 5: 1});
+      expect(groupPlates([15, 10, 5, 1.25]), {15: 1, 10: 1, 5: 1, 1.25: 1});
+      expect(groupPlates([10, 10, 10, 10, 10, 10, 10]), {10: 7});
+    });
+  });
 }

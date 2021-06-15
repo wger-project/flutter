@@ -44,3 +44,19 @@ List<num> plateCalculator(num totalWeight, num barWeight, List<num> plates) {
 
   return ans;
 }
+
+/// Groups a list of plates as calculated by [plateCalculator]
+///
+/// e.g. [15, 15, 15, 10, 10, 5] returns {15: 3, 10: 2, 5: 1}
+Map<num, int> groupPlates(List<num> plates) {
+  Map<num, int> out = {};
+  for (var plate in plates) {
+    if (!out.containsKey(plate)) {
+      out[plate] = 1;
+    } else {
+      out[plate] = out[plate]! + 1;
+    }
+  }
+
+  return out;
+}
