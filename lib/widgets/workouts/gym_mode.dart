@@ -37,6 +37,7 @@ import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/theme/theme.dart';
+import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/exercises/images.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 
@@ -530,7 +531,7 @@ class _LogPageState extends State<LogPage> {
           style: Theme.of(context).textTheme.headline6,
         ),
         SizedBox(
-          height: 35,
+          height: 40,
           child: plates.length > 0
               ? Row(
                   mainAxisSize: MainAxisSize.max,
@@ -540,7 +541,7 @@ class _LogPageState extends State<LogPage> {
                         .map(
                           (e) => Container(
                             decoration: BoxDecoration(
-                              color: Colors.orange,
+                              color: wgerPrimaryColorLight,
                               shape: BoxShape.circle,
                             ),
                             child: SizedBox(
@@ -559,7 +560,7 @@ class _LogPageState extends State<LogPage> {
                         .toList()
                   ],
                 )
-              : Container(),
+              : MutedText(AppLocalizations.of(context).plateCalculatorNotDivisible),
         ),
       ],
     );

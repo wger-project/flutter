@@ -200,6 +200,10 @@
   "@plateCalculator": {
     "description": "Label used for the plate calculator in the gym mode"
   },
+  "plateCalculatorNotDivisible": "Not possible to reach weight with available plates",
+  "@plateCalculatorNotDivisible": {
+    "description": "Error message when the current weight is not reachable with plates (e.g. 33.1 kg)"
+  },
   "pause": "Pause",
   "@pause": {
     "description": "Noun, not an imperative! Label used for the pause when using the gym mode"
