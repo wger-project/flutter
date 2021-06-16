@@ -22,6 +22,7 @@ import 'package:intl/intl.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/nutrition/nutritrional_values.dart';
 import 'package:wger/screens/form_screen.dart';
+import 'package:wger/screens/nutritional_diary_screen.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/meal.dart';
@@ -150,7 +151,7 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                   ),
                 ),
                 ..._nutritionalPlan.logEntriesValues.entries
-                    .map((entry) => NutritionDiaryEntry(entry.key, entry.value))
+                    .map((entry) => NutritionDiaryEntry(entry.key, entry.value, _nutritionalPlan))
                     .toList()
                     .reversed,
               ],
@@ -165,10 +166,12 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
 class NutritionDiaryEntry extends StatelessWidget {
   final DateTime date;
   final NutritionalValues values;
+  final NutritionalPlan plan;
 
   NutritionDiaryEntry(
     this.date,
     this.values,
+    this.plan,
   );
 
   @override
@@ -178,10 +181,14 @@ class NutritionDiaryEntry extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Text(
-            DateFormat.yMd(Localizations.localeOf(context).languageCode).format(date),
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
+          TextButton(
+              onPressed: () => Navigator.of(context).pushNamed(
+                    NutritionalDiaryScreen.routeName,
+                    arguments: NutritionalDiaryArguments(plan, date),
+                  ),
+              child: Text(
+                DateFormat.yMd(Localizations.localeOf(context).languageCode).format(date),
+              )),
           Text(values.energy.toStringAsFixed(0)),
           Text(values.protein.toStringAsFixed(0)),
           Text(values.carbohydrates.toStringAsFixed(0)),
