@@ -24,6 +24,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/gym_mode.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/ui.dart';
 import 'package:wger/models/exercises/exercise.dart';
@@ -36,6 +37,7 @@ import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/theme/theme.dart';
+import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/exercises/images.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 
@@ -273,22 +275,9 @@ class _LogPageState extends State<LogPage> {
   }
 
   Widget getRepsWidget() {
-    return TextFormField(
-      decoration: InputDecoration(
-        labelText: AppLocalizations.of(context).repetitions,
-        suffixIcon: IconButton(
-          icon: Icon(
-            Icons.add,
-            color: Colors.black,
-          ),
-          onPressed: () {
-            try {
-              int newValue = int.parse(_repsController.text) + 1;
-              _repsController.text = newValue.toString();
-            } on FormatException catch (e) {}
-          },
-        ),
-        prefixIcon: IconButton(
+    return Row(
+      children: [
+        IconButton(
           icon: Icon(
             Icons.remove,
             color: Colors.black,
@@ -302,42 +291,48 @@ class _LogPageState extends State<LogPage> {
             } on FormatException catch (e) {}
           },
         ),
-      ),
-      enabled: true,
-      controller: _repsController,
-      keyboardType: TextInputType.number,
-      onFieldSubmitted: (_) {},
-      onSaved: (newValue) {
-        widget._log.reps = int.parse(newValue!);
-      },
-      validator: (value) {
-        try {
-          int.parse(value!);
-        } catch (error) {
-          return AppLocalizations.of(context).enterValidNumber;
-        }
-        return null;
-      },
-    );
-  }
-
-  Widget getWeightWidget() {
-    return TextFormField(
-      decoration: InputDecoration(
-        labelText: AppLocalizations.of(context).weight,
-        suffixIcon: IconButton(
+        Expanded(
+          child: TextFormField(
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context).repetitions,
+            ),
+            enabled: true,
+            controller: _repsController,
+            keyboardType: TextInputType.number,
+            onFieldSubmitted: (_) {},
+            onSaved: (newValue) {
+              widget._log.reps = int.parse(newValue!);
+            },
+            validator: (value) {
+              try {
+                int.parse(value!);
+              } catch (error) {
+                return AppLocalizations.of(context).enterValidNumber;
+              }
+              return null;
+            },
+          ),
+        ),
+        IconButton(
           icon: Icon(
             Icons.add,
             color: Colors.black,
           ),
           onPressed: () {
             try {
-              double newValue = double.parse(_weightController.text) + 1.25;
-              _weightController.text = newValue.toString();
+              int newValue = int.parse(_repsController.text) + 1;
+              _repsController.text = newValue.toString();
             } on FormatException catch (e) {}
           },
         ),
-        prefixIcon: IconButton(
+      ],
+    );
+  }
+
+  Widget getWeightWidget() {
+    return Row(
+      children: [
+        IconButton(
           icon: Icon(
             Icons.remove,
             color: Colors.black,
@@ -346,26 +341,61 @@ class _LogPageState extends State<LogPage> {
             try {
               double newValue = double.parse(_weightController.text) - 1.25;
               if (newValue > 0) {
-                _weightController.text = newValue.toString();
+                setState(() {
+                  widget._log.weight = newValue;
+                  _weightController.text = newValue.toString();
+                });
               }
             } on FormatException catch (e) {}
           },
         ),
-      ),
-      controller: _weightController,
-      keyboardType: TextInputType.number,
-      onFieldSubmitted: (_) {},
-      onSaved: (newValue) {
-        widget._log.weight = double.parse(newValue!);
-      },
-      validator: (value) {
-        try {
-          double.parse(value!);
-        } catch (error) {
-          return AppLocalizations.of(context).enterValidNumber;
-        }
-        return null;
-      },
+        Expanded(
+          child: TextFormField(
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context).weight,
+            ),
+            controller: _weightController,
+            keyboardType: TextInputType.number,
+            onFieldSubmitted: (_) {},
+            onChanged: (value) {
+              try {
+                double.parse(value);
+                setState(() {
+                  widget._log.weight = double.parse(value);
+                });
+              } on FormatException catch (e) {}
+            },
+            onSaved: (newValue) {
+              setState(() {
+                widget._log.weight = double.parse(newValue!);
+              });
+            },
+            validator: (value) {
+              try {
+                double.parse(value!);
+              } catch (error) {
+                return AppLocalizations.of(context).enterValidNumber;
+              }
+              return null;
+            },
+          ),
+        ),
+        IconButton(
+          icon: Icon(
+            Icons.add,
+            color: Colors.black,
+          ),
+          onPressed: () {
+            try {
+              double newValue = double.parse(_weightController.text) + 1.25;
+              setState(() {
+                widget._log.weight = newValue;
+                _weightController.text = newValue.toString();
+              });
+            } on FormatException catch (e) {}
+          },
+        ),
+      ],
     );
   }
 
@@ -487,6 +517,66 @@ class _LogPageState extends State<LogPage> {
     );
   }
 
+  Widget getPlates() {
+    final plates = plateCalculator(
+      double.parse(_weightController.text),
+      BAR_WEIGHT,
+      AVAILABLE_PLATES,
+    );
+    final groupedPlates = groupPlates(plates);
+
+    return Column(
+      children: [
+        Text(
+          AppLocalizations.of(context).plateCalculator,
+          style: Theme.of(context).textTheme.headline6,
+        ),
+        SizedBox(
+          height: 35,
+          child: plates.length > 0
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ...groupedPlates.keys
+                        .map(
+                          (key) => Row(
+                            children: [
+                              Text(groupedPlates[key].toString()),
+                              Text('×'),
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: wgerPrimaryColorLight,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 3),
+                                  child: SizedBox(
+                                    height: 35,
+                                    width: 35,
+                                    child: Align(
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        key.toString(),
+                                        style: TextStyle(fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 10),
+                            ],
+                          ),
+                        )
+                        .toList()
+                  ],
+                )
+              : MutedText(AppLocalizations.of(context).plateCalculatorNotDivisible),
+        ),
+        SizedBox(height: 3),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -508,7 +598,9 @@ class _LogPageState extends State<LogPage> {
             child: (widget._workoutPlan.filterLogsByExercise(widget._exercise).length > 0)
                 ? getPastLogs()
                 : Container()),
-        SizedBox(height: 15),
+        // Only show calculator for barbell
+        if (widget._log.exerciseObj.equipment.map((e) => e.id).contains(ID_EQUIPMENT_BARBELL))
+          getPlates(),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Card(

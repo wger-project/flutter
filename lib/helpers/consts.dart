@@ -51,3 +51,12 @@ const DEFAULT_ANIMATION_CURVE = Curves.bounceIn;
 /// regular date object or date.toLocal() can cause problems, depending on the
 /// system's settings. Using a string is safer.
 final DateFormatLists = DateFormat('yyyy-MM-dd');
+
+/// Available plate weights, used for the plate calculator
+const AVAILABLE_PLATES = [1.25, 2.5, 5, 10, 15];
+
+/// Weight of the bar, used in the plate calculator
+const BAR_WEIGHT = 20;
+
+/// ID of the equipment entry for barbell
+const ID_EQUIPMENT_BARBELL = 1;
