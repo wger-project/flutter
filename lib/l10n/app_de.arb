@@ -449,5 +449,9 @@
   "pause": "Pause",
   "@pause": {
     "description": "Noun, not an imperative! Label used for the pause when using the gym mode"
+  },
+  "usernameValidChars": "Ein Benutzername darf nur Buchstaben, Ziffern und die Zeichen @, +, ., - und _ enthalten",
+  "@usernameValidChars": {
+    "description": "Error message when the user tries to register a username with forbidden characters"
   }
 }
