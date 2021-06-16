@@ -444,5 +444,9 @@
   "labelBottomNavWorkout": "Entraînement",
   "@labelBottomNavWorkout": {
     "description": "Label used in bottom navigation, use a short word"
+  },
+  "usernameValidChars": "Un nom d'utilisateur ne peut contenir que des lettres, des chiffres et les caractères @, +, ., - et _",
+  "@usernameValidChars": {
+    "description": "Error message when the user tries to register a username with forbidden characters"
   }
 }
