@@ -598,7 +598,6 @@ class _LogPageState extends State<LogPage> {
             child: (widget._workoutPlan.filterLogsByExercise(widget._exercise).length > 0)
                 ? getPastLogs()
                 : Container()),
-        SizedBox(height: 15),
         // Only show calculator for barbell
         if (widget._log.exerciseObj.equipment.map((e) => e.id).contains(ID_EQUIPMENT_BARBELL))
           getPlates(),
