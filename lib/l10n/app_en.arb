@@ -196,7 +196,7 @@
   "@gymMode": {
     "description": "Label when starting the gym mode"
   },
-  "plateCalculator": "Plate calculator",
+  "plateCalculator": "Plates",
   "@plateCalculator": {
     "description": "Label used for the plate calculator in the gym mode"
   },
