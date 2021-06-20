@@ -45,7 +45,8 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
   List<NutritionalPlan> _plans = [];
   List<Ingredient> _ingredients = [];
 
-  NutritionPlansProvider(AuthProvider auth, List<NutritionalPlan> entries, [http.Client? client])
+  NutritionPlansProvider(AuthProvider auth, List<NutritionalPlan> entries,
+      [http.Client? client])
       : this._plans = entries,
         super(auth, client);
 
@@ -84,7 +85,8 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
   /// Fetches and sets all plans sparsely, i.e. only with the data on the plan
   /// object itself and no child attributes
   Future<void> fetchAndSetAllPlansSparse() async {
-    final data = await fetch(makeUrl(_nutritionalPlansPath, query: {'limit': '1000'}));
+    final data =
+        await fetch(makeUrl(_nutritionalPlansPath, query: {'limit': '1000'}));
     for (final planData in data['results']) {
       final plan = NutritionalPlan.fromJson(planData);
       _plans.add(plan);
@@ -125,7 +127,8 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
     }
 
     // Plan
-    final fullPlanData = await fetch(makeUrl(_nutritionalPlansInfoPath, id: planId));
+    final fullPlanData =
+        await fetch(makeUrl(_nutritionalPlansInfoPath, id: planId));
 
     // Meals
     List<Meal> meals = [];
@@ -283,7 +286,8 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
     if (prefs.containsKey('ingredientData')) {
       final ingredientData = json.decode(prefs.getString('ingredientData')!);
       if (DateTime.parse(ingredientData['expiresIn']).isAfter(DateTime.now())) {
-        ingredientData['ingredients'].forEach((e) => _ingredients.add(Ingredient.fromJson(e)));
+        ingredientData['ingredients']
+            .forEach((e) => _ingredients.add(Ingredient.fromJson(e)));
         log("Read ${ingredientData['ingredients'].length} ingredients from cache. Valid till ${ingredientData['expiresIn']}");
         return;
       }
@@ -292,7 +296,8 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
     // Initialise an empty cache
     final ingredientData = {
       'date': DateTime.now().toIso8601String(),
-      'expiresIn': DateTime.now().add(Duration(days: DAYS_TO_CACHE)).toIso8601String(),
+      'expiresIn':
+          DateTime.now().add(Duration(days: DAYS_TO_CACHE)).toIso8601String(),
       'ingredients': []
     };
     prefs.setString('ingredientData', json.encode(ingredientData));
@@ -300,7 +305,8 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
   }
 
   /// Searches for an ingredient
-  Future<List> searchIngredient(String name, [String languageCode = 'en']) async {
+  Future<List> searchIngredient(String name,
+      [String languageCode = 'en']) async {
     if (name.length <= 1) {
       return [];
     }
@@ -323,7 +329,8 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
     }
 
     // Process the response
-    return json.decode(utf8.decode(response.bodyBytes))['suggestions'] as List<dynamic>;
+    return json.decode(utf8.decode(response.bodyBytes))['suggestions']
+        as List<dynamic>;
   }
 
   /// Log meal to nutrition diary
@@ -343,7 +350,8 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
   Future<void> fetchAndSetLogs(NutritionalPlan plan) async {
     // TODO: update fetch to that it can use the pagination
     final data = await fetch(
-      makeUrl(_nutritionDiaryPath, query: {'plan': plan.id.toString(), 'limit': '1000'}),
+      makeUrl(_nutritionDiaryPath,
+          query: {'plan': plan.id.toString(), 'limit': '1000'}),
     );
 
     for (var logData in data['results']) {

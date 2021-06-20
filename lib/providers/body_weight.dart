@@ -27,7 +27,8 @@ class BodyWeightProvider extends WgerBaseProvider with ChangeNotifier {
   static const bodyWeightUrl = 'weightentry';
 
   List<WeightEntry> _entries = [];
-  BodyWeightProvider(AuthProvider auth, List<WeightEntry> entries, [http.Client? client])
+  BodyWeightProvider(AuthProvider auth, List<WeightEntry> entries,
+      [http.Client? client])
       : this._entries = entries,
         super(auth, client);
 
@@ -54,7 +55,8 @@ class BodyWeightProvider extends WgerBaseProvider with ChangeNotifier {
 
   Future<List<WeightEntry>> fetchAndSetEntries() async {
     // Process the response
-    final data = await fetch(makeUrl(bodyWeightUrl, query: {'ordering': '-date'}));
+    final data =
+        await fetch(makeUrl(bodyWeightUrl, query: {'ordering': '-date'}));
     final List<WeightEntry> loadedEntries = [];
     for (final entry in data['results']) {
       loadedEntries.add(WeightEntry.fromJson(entry));
@@ -83,7 +85,8 @@ class BodyWeightProvider extends WgerBaseProvider with ChangeNotifier {
 
   Future<void> deleteEntry(int id) async {
     // Send the request and remove the entry from the list...
-    final existingEntryIndex = _entries.indexWhere((element) => element.id == id);
+    final existingEntryIndex =
+        _entries.indexWhere((element) => element.id == id);
     var existingWeightEntry = _entries[existingEntryIndex];
     _entries.removeAt(existingEntryIndex);
     notifyListeners();

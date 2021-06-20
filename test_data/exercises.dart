@@ -63,7 +63,8 @@ final exercise3 = Exercise(
   uuid: 'a3b6c7bb-9d22-4119-a5fc-818584d5e9bc',
   creationDate: DateTime(2021, 4, 1),
   name: 'test exercise 3',
-  description: 'The man in black fled across the desert, and the gunslinger followed',
+  description:
+      'The man in black fled across the desert, and the gunslinger followed',
   category: category3,
   categoryId: 3,
   muscles: [muscle1],

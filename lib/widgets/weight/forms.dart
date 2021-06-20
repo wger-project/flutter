@@ -35,7 +35,8 @@ class WeightForm extends StatelessWidget {
 
   WeightForm([WeightEntry? weightEntry]) {
     this._weightEntry = weightEntry ?? WeightEntry(date: DateTime.now());
-    weightController.text = _weightEntry.id == null ? '' : _weightEntry.weight.toString();
+    weightController.text =
+        _weightEntry.id == null ? '' : _weightEntry.weight.toString();
     dateController.text = toDate(_weightEntry.date)!;
   }
 
@@ -47,7 +48,8 @@ class WeightForm extends StatelessWidget {
         children: [
           // Weight date
           TextFormField(
-            decoration: InputDecoration(labelText: AppLocalizations.of(context).date),
+            decoration:
+                InputDecoration(labelText: AppLocalizations.of(context).date),
             controller: dateController,
             onTap: () async {
               // Stop keyboard from appearing
@@ -66,7 +68,8 @@ class WeightForm extends StatelessWidget {
                   }
 
                   // if the date is known, don't allow it
-                  return Provider.of<BodyWeightProvider>(context, listen: false).findByDate(day) ==
+                  return Provider.of<BodyWeightProvider>(context, listen: false)
+                              .findByDate(day) ==
                           null
                       ? true
                       : false;
@@ -82,7 +85,8 @@ class WeightForm extends StatelessWidget {
 
           // Weight
           TextFormField(
-            decoration: InputDecoration(labelText: AppLocalizations.of(context).weight),
+            decoration:
+                InputDecoration(labelText: AppLocalizations.of(context).weight),
             controller: weightController,
             keyboardType: TextInputType.number,
             onSaved: (newValue) {
@@ -113,9 +117,11 @@ class WeightForm extends StatelessWidget {
               // Save the entry on the server
               try {
                 _weightEntry.id == null
-                    ? await Provider.of<BodyWeightProvider>(context, listen: false)
+                    ? await Provider.of<BodyWeightProvider>(context,
+                            listen: false)
                         .addEntry(_weightEntry)
-                    : await Provider.of<BodyWeightProvider>(context, listen: false)
+                    : await Provider.of<BodyWeightProvider>(context,
+                            listen: false)
                         .editEntry(_weightEntry);
               } on WgerHttpException catch (error) {
                 showHttpExceptionErrorDialog(error, context);

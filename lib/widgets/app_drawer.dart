@@ -43,7 +43,8 @@ class AppDrawer extends StatelessWidget {
             onTap: () {
               Provider.of<AuthProvider>(context, listen: false).logout();
               Provider.of<WorkoutPlansProvider>(context, listen: false).clear();
-              Provider.of<NutritionPlansProvider>(context, listen: false).clear();
+              Provider.of<NutritionPlansProvider>(context, listen: false)
+                  .clear();
               Provider.of<BodyWeightProvider>(context, listen: false).clear();
               Provider.of<GalleryProvider>(context, listen: false).clear();
               Navigator.of(context).pop();

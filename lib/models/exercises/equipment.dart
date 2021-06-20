@@ -34,6 +34,7 @@ class Equipment {
   });
 
   // Boilerplate
-  factory Equipment.fromJson(Map<String, dynamic> json) => _$EquipmentFromJson(json);
+  factory Equipment.fromJson(Map<String, dynamic> json) =>
+      _$EquipmentFromJson(json);
   Map<String, dynamic> toJson() => _$EquipmentToJson(this);
 }

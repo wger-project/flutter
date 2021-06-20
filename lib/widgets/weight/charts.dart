@@ -43,7 +43,8 @@ class WeightChartWidget extends StatelessWidget {
       ],
       defaultRenderer: new charts.LineRendererConfig(includePoints: true),
       primaryMeasureAxis: new charts.NumericAxisSpec(
-        tickProviderSpec: new charts.BasicNumericTickProviderSpec(zeroBound: false),
+        tickProviderSpec:
+            new charts.BasicNumericTickProviderSpec(zeroBound: false),
       ),
     );
   }

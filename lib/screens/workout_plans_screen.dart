@@ -50,7 +50,8 @@ class WorkoutPlansScreen extends StatelessWidget {
         },
       ),
       body: Consumer<WorkoutPlansProvider>(
-        builder: (context, workoutProvider, child) => WorkoutPlansList(workoutProvider),
+        builder: (context, workoutProvider, child) =>
+            WorkoutPlansList(workoutProvider),
       ),
     );
   }

@@ -25,14 +25,16 @@ void main() {
   group('model tests', () {
     test('Test the nutritionalValues method for nutritional plans', () {
       final plan = getNutritionalPlan();
-      final values = NutritionalValues.values(4118.75, 28.75, 347.5, 9.5, 41.0, 31.75, 41.5, 30.0);
+      final values = NutritionalValues.values(
+          4118.75, 28.75, 347.5, 9.5, 41.0, 31.75, 41.5, 30.0);
       expect(plan.nutritionalValues, values);
     });
 
     test('Test the nutritionalValues method for meals', () {
       final plan = getNutritionalPlan();
       final meal = plan.meals.first;
-      final values = NutritionalValues.values(518.75, 1.75, 17.5, 3.5, 11.0, 7.75, 38.5, 0.0);
+      final values = NutritionalValues.values(
+          518.75, 1.75, 17.5, 3.5, 11.0, 7.75, 38.5, 0.0);
       expect(meal.nutritionalValues, values);
     });
   });

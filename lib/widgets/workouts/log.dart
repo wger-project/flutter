@@ -34,7 +34,8 @@ class ExerciseLogChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _workoutPlansData = Provider.of<WorkoutPlansProvider>(context, listen: false);
+    final _workoutPlansData =
+        Provider.of<WorkoutPlansProvider>(context, listen: false);
     final _workout = _workoutPlansData.currentPlan;
 
     Future<Map<String, dynamic>> _getChartEntries(BuildContext context) async {
@@ -43,7 +44,8 @@ class ExerciseLogChart extends StatelessWidget {
 
     return FutureBuilder(
       future: _getChartEntries(context),
-      builder: (context, AsyncSnapshot<Map<String, dynamic>> snapshot) => Container(
+      builder: (context, AsyncSnapshot<Map<String, dynamic>> snapshot) =>
+          Container(
         height: 150,
         child: snapshot.connectionState == ConnectionState.waiting
             ? Center(child: CircularProgressIndicator())
@@ -66,7 +68,8 @@ class DayLogWidget extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            DateFormat.yMd(Localizations.localeOf(context).languageCode).format(_date),
+            DateFormat.yMd(Localizations.localeOf(context).languageCode)
+                .format(_date),
             style: Theme.of(context).textTheme.headline5,
           ),
           if (_session != null) Text('Session data here'),
@@ -77,7 +80,9 @@ class DayLogWidget extends StatelessWidget {
                   exercise.name,
                   style: Theme.of(context).textTheme.headline6,
                 ),
-                ..._exerciseData[exercise]!.map((log) => Text(log.singleLogRepTextNoNl)).toList(),
+                ..._exerciseData[exercise]!
+                    .map((log) => Text(log.singleLogRepTextNoNl))
+                    .toList(),
                 ExerciseLogChart(exercise, _date),
                 SizedBox(height: 30),
               ],

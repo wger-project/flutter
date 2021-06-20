@@ -28,7 +28,8 @@ import 'package:wger/widgets/weight/forms.dart';
 class WeightEntriesList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final _weightProvider = Provider.of<BodyWeightProvider>(context, listen: false);
+    final _weightProvider =
+        Provider.of<BodyWeightProvider>(context, listen: false);
 
     return Column(
       children: [
@@ -106,7 +107,8 @@ class WeightEntriesList extends StatelessWidget {
                   child: ListTile(
                     title: Text('${currentEntry.weight} kg'),
                     subtitle: Text(
-                      DateFormat.yMd(Localizations.localeOf(context).languageCode)
+                      DateFormat.yMd(
+                              Localizations.localeOf(context).languageCode)
                           .format(currentEntry.date),
                     ),
                   ),

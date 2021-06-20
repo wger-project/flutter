@@ -59,7 +59,8 @@ class NutritionalPlan {
   }
 
   // Boilerplate
-  factory NutritionalPlan.fromJson(Map<String, dynamic> json) => _$NutritionalPlanFromJson(json);
+  factory NutritionalPlan.fromJson(Map<String, dynamic> json) =>
+      _$NutritionalPlanFromJson(json);
   Map<String, dynamic> toJson() => _$NutritionalPlanToJson(this);
 
   /// Calculations
@@ -77,7 +78,8 @@ class NutritionalPlan {
   Map<DateTime, NutritionalValues> get logEntriesValues {
     var out = <DateTime, NutritionalValues>{};
     for (var log in logs) {
-      final date = DateTime(log.datetime.year, log.datetime.month, log.datetime.day);
+      final date =
+          DateTime(log.datetime.year, log.datetime.month, log.datetime.day);
 
       if (!out.containsKey(date)) {
         out[date] = NutritionalValues();

@@ -46,6 +46,7 @@ class ExerciseImage {
   });
 
   // Boilerplate
-  factory ExerciseImage.fromJson(Map<String, dynamic> json) => _$ExerciseImageFromJson(json);
+  factory ExerciseImage.fromJson(Map<String, dynamic> json) =>
+      _$ExerciseImageFromJson(json);
   Map<String, dynamic> toJson() => _$ExerciseImageToJson(this);
 }

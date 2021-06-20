@@ -68,7 +68,8 @@ class WgerAboutListTile extends StatelessWidget {
             ],
           ),
           contentPadding: EdgeInsets.zero,
-          onTap: () async => _launchURL("https://github.com/wger-project", context),
+          onTap: () async =>
+              _launchURL("https://github.com/wger-project", context),
         ),
         SizedBox(height: 10),
         ListTile(
@@ -85,8 +86,9 @@ class WgerAboutListTile extends StatelessWidget {
             ],
           ),
           contentPadding: EdgeInsets.zero,
-          onTap: () async =>
-              _launchURL('https://github.com/wger-project/flutter/issues/new/choose', context),
+          onTap: () async => _launchURL(
+              'https://github.com/wger-project/flutter/issues/new/choose',
+              context),
         ),
         SizedBox(height: 10),
         ListTile(
@@ -120,7 +122,8 @@ class WgerAboutListTile extends StatelessWidget {
             ],
           ),
           contentPadding: EdgeInsets.zero,
-          onTap: () async => _launchURL('https://hosted.weblate.org/engage/wger/', context),
+          onTap: () async =>
+              _launchURL('https://hosted.weblate.org/engage/wger/', context),
         ),
       ],
     );

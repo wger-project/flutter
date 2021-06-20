@@ -52,7 +52,8 @@ class MealForm extends StatelessWidget {
           children: [
             TextFormField(
               key: Key('field-time'),
-              decoration: InputDecoration(labelText: AppLocalizations.of(context).time),
+              decoration:
+                  InputDecoration(labelText: AppLocalizations.of(context).time),
               controller: _timeController,
               onTap: () async {
                 // Stop keyboard from appearing
@@ -82,9 +83,12 @@ class MealForm extends StatelessWidget {
 
                 try {
                   _meal.id == null
-                      ? Provider.of<NutritionPlansProvider>(context, listen: false)
+                      ? Provider.of<NutritionPlansProvider>(context,
+                              listen: false)
                           .addMeal(_meal, _planId)
-                      : Provider.of<NutritionPlansProvider>(context, listen: false).editMeal(_meal);
+                      : Provider.of<NutritionPlansProvider>(context,
+                              listen: false)
+                          .editMeal(_meal);
                 } on WgerHttpException catch (error) {
                   showHttpExceptionErrorDialog(error, context);
                 } catch (error) {
@@ -124,10 +128,12 @@ class MealItemForm extends StatelessWidget {
             TypeAheadFormField(
               textFieldConfiguration: TextFieldConfiguration(
                 controller: this._ingredientController,
-                decoration: InputDecoration(labelText: AppLocalizations.of(context).ingredient),
+                decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context).ingredient),
               ),
               suggestionsCallback: (pattern) async {
-                return await Provider.of<NutritionPlansProvider>(context, listen: false)
+                return await Provider.of<NutritionPlansProvider>(context,
+                        listen: false)
                     .searchIngredient(
                   pattern,
                   Localizations.localeOf(context).languageCode,
@@ -154,7 +160,8 @@ class MealItemForm extends StatelessWidget {
               },
             ),
             TextFormField(
-              decoration: InputDecoration(labelText: AppLocalizations.of(context).weight),
+              decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context).weight),
               controller: _amountController,
               keyboardType: TextInputType.number,
               onFieldSubmitted: (_) {},
@@ -215,7 +222,8 @@ class PlanForm extends StatelessWidget {
           // Description
           TextFormField(
             key: Key('field-description'),
-            decoration: InputDecoration(labelText: AppLocalizations.of(context).description),
+            decoration: InputDecoration(
+                labelText: AppLocalizations.of(context).description),
             controller: _descriptionController,
             onFieldSubmitted: (_) {},
             onSaved: (newValue) {
@@ -236,10 +244,13 @@ class PlanForm extends StatelessWidget {
               // Save to DB
               try {
                 if (_plan.id != null) {
-                  await Provider.of<NutritionPlansProvider>(context, listen: false).editPlan(_plan);
+                  await Provider.of<NutritionPlansProvider>(context,
+                          listen: false)
+                      .editPlan(_plan);
                   Navigator.of(context).pop();
                 } else {
-                  _plan = await Provider.of<NutritionPlansProvider>(context, listen: false)
+                  _plan = await Provider.of<NutritionPlansProvider>(context,
+                          listen: false)
                       .addPlan(_plan);
                   Navigator.of(context).pushReplacementNamed(
                     NutritionalPlanScreen.routeName,

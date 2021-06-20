@@ -56,7 +56,8 @@ class AuthScreen extends StatelessWidget {
                   ),
                   Container(
                     margin: EdgeInsets.only(bottom: 20.0),
-                    padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 94.0),
+                    padding:
+                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 94.0),
                     child: Text(
                       'WGER',
                       style: TextStyle(
@@ -207,7 +208,8 @@ class _AuthCardState extends State<AuthCard> {
                   if (_authMode == AuthMode.Signup)
                     TextFormField(
                       key: Key('inputEmail'),
-                      decoration: InputDecoration(labelText: AppLocalizations.of(context).email),
+                      decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context).email),
                       autofillHints: [AutofillHints.email],
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
@@ -226,7 +228,8 @@ class _AuthCardState extends State<AuthCard> {
                     ),
                   TextFormField(
                     key: Key('inputPassword'),
-                    decoration: InputDecoration(labelText: AppLocalizations.of(context).password),
+                    decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context).password),
                     autofillHints: [AutofillHints.password],
                     obscureText: true,
                     controller: _passwordController,
@@ -244,15 +247,17 @@ class _AuthCardState extends State<AuthCard> {
                   if (_authMode == AuthMode.Signup)
                     TextFormField(
                       key: Key('inputPassword2'),
-                      decoration:
-                          InputDecoration(labelText: AppLocalizations.of(context).confirmPassword),
+                      decoration: InputDecoration(
+                          labelText:
+                              AppLocalizations.of(context).confirmPassword),
                       controller: _password2Controller,
                       enabled: _authMode == AuthMode.Signup,
                       obscureText: true,
                       validator: _authMode == AuthMode.Signup
                           ? (value) {
                               if (value != _passwordController.text) {
-                                return AppLocalizations.of(context).passwordsDontMatch;
+                                return AppLocalizations.of(context)
+                                    .passwordsDontMatch;
                               }
                               return null;
                             }
@@ -269,8 +274,10 @@ class _AuthCardState extends State<AuthCard> {
                           child: TextFormField(
                             key: Key('inputServer'),
                             decoration: InputDecoration(
-                                labelText: AppLocalizations.of(context).customServerUrl,
-                                helperText: AppLocalizations.of(context).customServerHint,
+                                labelText: AppLocalizations.of(context)
+                                    .customServerUrl,
+                                helperText: AppLocalizations.of(context)
+                                    .customServerHint,
                                 helperMaxLines: 4),
                             controller: _serverUrlController,
                             validator: (value) {
@@ -325,8 +332,12 @@ class _AuthCardState extends State<AuthCard> {
                     key: Key('toggleActionButton'),
                     child: Text(
                       _authMode == AuthMode.Login
-                          ? AppLocalizations.of(context).registerInstead.toUpperCase()
-                          : AppLocalizations.of(context).loginInstead.toUpperCase(),
+                          ? AppLocalizations.of(context)
+                              .registerInstead
+                              .toUpperCase()
+                          : AppLocalizations.of(context)
+                              .loginInstead
+                              .toUpperCase(),
                     ),
                     onPressed: _switchAuthMode,
                   ),

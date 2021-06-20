@@ -44,7 +44,8 @@ void main() {
 
   setUp(() {
     mockWorkoutPlans = MockWorkoutPlansProvider();
-    when(mockWorkoutPlans.editWorkout(any)).thenAnswer((_) => Future.value(existingPlan));
+    when(mockWorkoutPlans.editWorkout(any))
+        .thenAnswer((_) => Future.value(existingPlan));
     when(mockWorkoutPlans.fetchAndSetWorkoutPlanFull(any))
         .thenAnswer((_) => Future.value(existingPlan));
   });
@@ -69,7 +70,8 @@ void main() {
     );
   }
 
-  testWidgets('Test the widgets on the workout form', (WidgetTester tester) async {
+  testWidgets('Test the widgets on the workout form',
+      (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen(existingPlan));
     await tester.pumpAndSettle();
 
@@ -107,19 +109,22 @@ void main() {
     //expect(find.text(('New description')), findsOneWidget, reason: 'Workout plan detail page');
   });
 
-  testWidgets('Test creating a new workout - only name', (WidgetTester tester) async {
+  testWidgets('Test creating a new workout - only name',
+      (WidgetTester tester) async {
     final editWorkout = WorkoutPlan(
       id: 2,
       creationDate: newPlan.creationDate,
       name: 'New cool workout',
     );
 
-    when(mockWorkoutPlans.addWorkout(any)).thenAnswer((_) => Future.value(editWorkout));
+    when(mockWorkoutPlans.addWorkout(any))
+        .thenAnswer((_) => Future.value(editWorkout));
 
     await tester.pumpWidget(createHomeScreen(newPlan));
     await tester.pumpAndSettle();
 
-    expect(find.text(('')), findsNWidgets(2), reason: 'New workout has no name or description');
+    expect(find.text(('')), findsNWidgets(2),
+        reason: 'New workout has no name or description');
     await tester.enterText(find.byKey(Key('field-name')), editWorkout.name);
     await tester.tap(find.byKey(Key(SUBMIT_BUTTON_KEY_NAME)));
 
@@ -128,20 +133,28 @@ void main() {
 
     // Detail page
     await tester.pumpAndSettle();
-    expect(find.text(('New cool workout')), findsOneWidget, reason: 'Workout plan detail page');
+    expect(find.text(('New cool workout')), findsOneWidget,
+        reason: 'Workout plan detail page');
   });
 
-  testWidgets('Test creating a new workout - name and description', (WidgetTester tester) async {
+  testWidgets('Test creating a new workout - name and description',
+      (WidgetTester tester) async {
     final editWorkout = WorkoutPlan(
-        id: 2, creationDate: newPlan.creationDate, name: 'My workout', description: 'Get yuuuge');
-    when(mockWorkoutPlans.addWorkout(any)).thenAnswer((_) => Future.value(editWorkout));
+        id: 2,
+        creationDate: newPlan.creationDate,
+        name: 'My workout',
+        description: 'Get yuuuge');
+    when(mockWorkoutPlans.addWorkout(any))
+        .thenAnswer((_) => Future.value(editWorkout));
 
     await tester.pumpWidget(createHomeScreen(newPlan));
     await tester.pumpAndSettle();
 
-    expect(find.text(('')), findsNWidgets(2), reason: 'New workout has no name or description');
+    expect(find.text(('')), findsNWidgets(2),
+        reason: 'New workout has no name or description');
     await tester.enterText(find.byKey(Key('field-name')), editWorkout.name);
-    await tester.enterText(find.byKey(Key('field-description')), editWorkout.description);
+    await tester.enterText(
+        find.byKey(Key('field-description')), editWorkout.description);
     await tester.tap(find.byKey(Key(SUBMIT_BUTTON_KEY_NAME)));
 
     verifyNever(mockWorkoutPlans.editWorkout(any));
@@ -149,6 +162,7 @@ void main() {
 
     // Detail page
     await tester.pumpAndSettle();
-    expect(find.text(('My workout')), findsOneWidget, reason: 'Workout plan detail page');
+    expect(find.text(('My workout')), findsOneWidget,
+        reason: 'Workout plan detail page');
   });
 }

@@ -24,7 +24,8 @@ import 'package:wger/providers/auth.dart';
 import 'package:wger/screens/auth_screen.dart';
 
 void main() {
-  testWidgets('Test the widgets on the auth screen, login mode', (WidgetTester tester) async {
+  testWidgets('Test the widgets on the auth screen, login mode',
+      (WidgetTester tester) async {
     // Wrap screen in material app so that the media query gets a context
     await tester.pumpWidget(
       MultiProvider(
@@ -80,7 +81,8 @@ void main() {
   // either the provider wasn't found or, if the call was removed, the
   // localization data could not be loaded...
 
-  testWidgets('Test the widgets on the auth screen, registration', (WidgetTester tester) async {
+  testWidgets('Test the widgets on the auth screen, registration',
+      (WidgetTester tester) async {
     // Wrap screen in material app so that the media query gets a context
     await tester.pumpWidget(MaterialApp(home: AuthScreen()));
     await tester.tap(find.byKey(Key('toggleActionButton')));

@@ -74,7 +74,8 @@ void main() {
     );
   }
 
-  testWidgets('Test the widgets on the SetFormWidget', (WidgetTester tester) async {
+  testWidgets('Test the widgets on the SetFormWidget',
+      (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen());
     await tester.pumpAndSettle();
 
@@ -86,9 +87,12 @@ void main() {
   });
 
   testWidgets('Test creating a new set', (WidgetTester tester) async {
-    when(mockWorkoutPlans.addSet(any)).thenAnswer((_) => Future.value(Set.empty()));
-    when(mockWorkoutPlans.addSetting(any)).thenAnswer((_) => Future.value(Setting.empty()));
-    when(mockWorkoutPlans.fetchSmartText(any, any)).thenAnswer((_) => Future.value('2 x 10'));
+    when(mockWorkoutPlans.addSet(any))
+        .thenAnswer((_) => Future.value(Set.empty()));
+    when(mockWorkoutPlans.addSetting(any))
+        .thenAnswer((_) => Future.value(Setting.empty()));
+    when(mockWorkoutPlans.fetchSmartText(any, any))
+        .thenAnswer((_) => Future.value('2 x 10'));
 
     await tester.pumpWidget(createHomeScreen());
     await tester.pumpAndSettle();
