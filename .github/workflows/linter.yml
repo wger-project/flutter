@@ -7,10 +7,10 @@ on:
 
     
 jobs:
-  build:
+  linting:
     runs-on: ubuntu-latest
     steps:
-    
+
       - name: Checkout code
         uses: actions/checkout@v2
       
@@ -26,6 +26,7 @@ jobs:
         run: flutter format .
       
       - name: Push a commit with the changed files
+        continue-on-error: true
         run: |
           git config user.name Github-actions
           git config user.email github-actions@github.com
@@ -33,6 +34,6 @@ jobs:
           git commit -m "Automatic linting"
           git push
 
-      
-      
+
+
 
