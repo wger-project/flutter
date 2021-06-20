@@ -1,1 +1,172 @@
-{}
+{
+  "customServerUrl": "wger服务器地址",
+  "@customServerUrl": {
+    "description": "Label in the form where the users can enter their own wger instance"
+  },
+  "invalidUsername": "请输入一个合法的用户名",
+  "@invalidUsername": {
+    "description": "Error message when the user enters an invalid username"
+  },
+  "username": "用户名",
+  "@username": {},
+  "email": "邮箱",
+  "@email": {},
+  "invalidEmail": "请输入一个有效的邮箱地址",
+  "@invalidEmail": {
+    "description": "Error message when the user enters an invalid email"
+  },
+  "confirmPassword": "重新输入密码",
+  "@confirmPassword": {},
+  "password": "密码",
+  "@password": {},
+  "passwordTooShort": "密码太短",
+  "@passwordTooShort": {
+    "description": "Error message when the user a password that is too short"
+  },
+  "passwordsDontMatch": "密码和用户名不匹配",
+  "@passwordsDontMatch": {
+    "description": "Error message when the user enters two different passwords during registration"
+  },
+  "usernameValidChars": "用户名应至少包含字符，数字和特殊字符@+.-_",
+  "@usernameValidChars": {
+    "description": "Error message when the user tries to register a username with forbidden characters"
+  },
+  "invalidUrl": "请输入服务器地址",
+  "@invalidUrl": {
+    "description": "Error message when the user enters an invalid URL, e.g. in the login form"
+  },
+  "useCustomServer": "自定义服务器",
+  "@useCustomServer": {
+    "description": "Toggle button allowing users to switch between the default and a custom wger server"
+  },
+  "useDefaultServer": "默认服务器",
+  "@useDefaultServer": {
+    "description": "Toggle button allowing users to switch between the default and a custom wger server"
+  },
+  "register": "注册",
+  "@register": {
+    "description": "Text for registration button"
+  },
+  "logout": "退出",
+  "@logout": {
+    "description": "Text for logout button"
+  },
+  "login": "登录",
+  "@login": {
+    "description": "Text for login button"
+  },
+  "newDay": "全新的一天",
+  "@newDay": {},
+  "workoutSession": "健身记录",
+  "@workoutSession": {
+    "description": "A (logged) workout session"
+  },
+  "sameRepetitions": "填写次数和量级,则自动计算出相乘的结果作为数量",
+  "@sameRepetitions": {},
+  "exercise": "锻炼项目",
+  "@exercise": {
+    "description": "An exercise for a workout"
+  },
+  "todaysWorkout": "今日一览",
+  "@todaysWorkout": {},
+  "jumpTo": "转到",
+  "@jumpTo": {
+    "description": "Imperative. Label used in popup allowing the user to jump to a specific exercise while in the gym mode"
+  },
+  "pause": "暂停",
+  "@pause": {
+    "description": "Noun, not an imperative! Label used for the pause when using the gym mode"
+  },
+  "gymMode": "健身房模式",
+  "@gymMode": {
+    "description": "Label when starting the gym mode"
+  },
+  "selectExercises": "如果你想做分组，可以找几个练习项目，他们将被放在一起",
+  "@selectExercises": {},
+  "impression": "自我感觉",
+  "@impression": {
+    "description": "General impression (e.g. for a workout session) such as good, bad, etc."
+  },
+  "notes": "备注",
+  "@notes": {
+    "description": "Personal notes, e.g. for a workout session"
+  },
+  "comment": "备注",
+  "@comment": {
+    "description": "Comment, additional information"
+  },
+  "dayDescriptionHelp": "今天做了哪些锻炼项目",
+  "@dayDescriptionHelp": {},
+  "set": "设置",
+  "@set": {
+    "description": "A set in a workout plan"
+  },
+  "repetitionUnit": "计数单位",
+  "@repetitionUnit": {},
+  "weightUnit": "重量单位",
+  "@weightUnit": {},
+  "noWorkoutPlans": "你还没有设定健身计划",
+  "@noWorkoutPlans": {
+    "description": "Message shown when the user has no workout plans"
+  },
+  "newWorkout": "新计划",
+  "@newWorkout": {
+    "description": "Header when adding a new workout"
+  },
+  "category": "目录",
+  "@category": {
+    "description": "Category for an exercise, ingredient, etc."
+  },
+  "equipment": "器材",
+  "@equipment": {
+    "description": "Equipment needed to perform an exercise"
+  },
+  "searchExercise": "搜索",
+  "@searchExercise": {
+    "description": "Label on set form. Selected exercises are added to the set"
+  },
+  "successfullySaved": "已保存",
+  "@successfullySaved": {
+    "description": "Message when an item was successfully saved"
+  },
+  "successfullyDeleted": "已删除",
+  "@successfullyDeleted": {
+    "description": "Message when an item was successfully deleted"
+  },
+  "labelDashboard": "统计",
+  "@labelDashboard": {
+    "description": "Title for screen dashboard"
+  },
+  "labelWorkoutPlan": "计划",
+  "@labelWorkoutPlan": {
+    "description": "Title for screen workout plan"
+  },
+  "labelWorkoutLogs": "锻炼记录",
+  "@labelWorkoutLogs": {
+    "description": "(Workout) logs"
+  },
+  "labelBottomNavNutrition": "饮食",
+  "@labelBottomNavNutrition": {
+    "description": "Label used in bottom navigation, use a short word"
+  },
+  "labelBottomNavWorkout": "锻炼",
+  "@labelBottomNavWorkout": {
+    "description": "Label used in bottom navigation, use a short word"
+  },
+  "labelWorkoutPlans": "计划",
+  "@labelWorkoutPlans": {
+    "description": "Title for screen workout plans"
+  },
+  "loginInstead": "去登录",
+  "@loginInstead": {},
+  "registerInstead": "去注册",
+  "@registerInstead": {},
+  "reset": "重置",
+  "@reset": {
+    "description": "Button text allowing the user to reset the entered values to the default"
+  },
+  "customServerHint": "请输入要连接的wger服务器地址",
+  "@customServerHint": {
+    "description": "Hint text for the form where the users can enter their own wger instance"
+  }
+}
