@@ -346,7 +346,8 @@ class _LogPageState extends State<LogPage> {
           ),
           onPressed: () {
             try {
-              double newValue = double.parse(_weightController.text) - (2 * minPlateWeight);
+              double newValue =
+                  double.parse(_weightController.text) - (2 * minPlateWeight);
               if (newValue > 0) {
                 setState(() {
                   widget._log.weight = newValue;
@@ -394,7 +395,8 @@ class _LogPageState extends State<LogPage> {
           ),
           onPressed: () {
             try {
-              double newValue = double.parse(_weightController.text) + (2 * minPlateWeight);
+              double newValue =
+                  double.parse(_weightController.text) + (2 * minPlateWeight);
               setState(() {
                 widget._log.weight = newValue;
                 _weightController.text = newValue.toString();
