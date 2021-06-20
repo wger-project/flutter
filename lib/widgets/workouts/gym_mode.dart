@@ -336,6 +336,7 @@ class _LogPageState extends State<LogPage> {
   }
 
   Widget getWeightWidget() {
+    var minPlateWeight = 1.25;
     return Row(
       children: [
         IconButton(
@@ -345,7 +346,7 @@ class _LogPageState extends State<LogPage> {
           ),
           onPressed: () {
             try {
-              double newValue = double.parse(_weightController.text) - 1.25;
+              double newValue = double.parse(_weightController.text) - (2 * minPlateWeight);
               if (newValue > 0) {
                 setState(() {
                   widget._log.weight = newValue;
@@ -393,7 +394,7 @@ class _LogPageState extends State<LogPage> {
           ),
           onPressed: () {
             try {
-              double newValue = double.parse(_weightController.text) + 1.25;
+              double newValue = double.parse(_weightController.text) + (2 * minPlateWeight);
               setState(() {
                 widget._log.weight = newValue;
                 _weightController.text = newValue.toString();
