@@ -112,8 +112,7 @@ class Log {
 
   /// Returns the text representation for a single setting, used in the gym mode
   String get singleLogRepTextNoNl {
-    return repText(reps, repetitionUnitObj, weight, weightUnitObj, rir)
-        .replaceAll('\n', '');
+    return repText(reps, repetitionUnitObj, weight, weightUnitObj, rir).replaceAll('\n', '');
   }
 
   /// Override the equals operator
@@ -131,8 +130,7 @@ class Log {
   }
 
   @override
-  int get hashCode =>
-      hashValues(exerciseId, weight, weightUnitId, reps, repetitionUnitId, rir);
+  int get hashCode => hashValues(exerciseId, weight, weightUnitId, reps, repetitionUnitId, rir);
 
   //@override
   //int get hashCode => super.hashCode;

@@ -34,16 +34,14 @@ enum NutritionalPlanOptions {
 class NutritionalPlanScreen extends StatelessWidget {
   static const routeName = '/nutritional-plan-detail';
 
-  Future<NutritionalPlan> _loadFullPlan(
-      BuildContext context, int planId) async {
+  Future<NutritionalPlan> _loadFullPlan(BuildContext context, int planId) async {
     return await Provider.of<NutritionPlansProvider>(context, listen: false)
         .fetchAndSetPlanFull(planId);
   }
 
   @override
   Widget build(BuildContext context) {
-    final _nutritionalPlan =
-        ModalRoute.of(context)!.settings.arguments as NutritionalPlan;
+    final _nutritionalPlan = ModalRoute.of(context)!.settings.arguments as NutritionalPlan;
 
     return Scaffold(
       //appBar: getAppBar(nutritionalPlan),
@@ -93,8 +91,7 @@ class NutritionalPlanScreen extends StatelessWidget {
             flexibleSpace: FlexibleSpaceBar(
               title: Text(_nutritionalPlan.description),
               background: Image(
-                image: AssetImage(
-                    'assets/images/backgrounds/nutritional_plans.jpg'),
+                image: AssetImage('assets/images/backgrounds/nutritional_plans.jpg'),
                 fit: BoxFit.cover,
               ),
             ),

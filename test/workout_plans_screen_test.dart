@@ -45,10 +45,8 @@ void main() {
         testAuthProvider,
         testExercisesProvider,
         [
-          WorkoutPlan(
-              id: 1, creationDate: DateTime(2021, 01, 01), name: 'test 1'),
-          WorkoutPlan(
-              id: 2, creationDate: DateTime(2021, 02, 12), name: 'test 2'),
+          WorkoutPlan(id: 1, creationDate: DateTime(2021, 01, 01), name: 'test 1'),
+          WorkoutPlan(id: 2, creationDate: DateTime(2021, 02, 12), name: 'test 2'),
         ],
         client,
       ),
@@ -64,8 +62,7 @@ void main() {
     );
   }
 
-  testWidgets('Test the widgets on the workout plans screen',
-      (WidgetTester tester) async {
+  testWidgets('Test the widgets on the workout plans screen', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen());
 
     //debugDumpApp();
@@ -74,8 +71,7 @@ void main() {
     expect(find.byType(ListTile), findsNWidgets(2));
   });
 
-  testWidgets('Test deleting an item by dragging the dismissible',
-      (WidgetTester tester) async {
+  testWidgets('Test deleting an item by dragging the dismissible', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen());
 
     await tester.drag(find.byKey(Key('1')), Offset(-500.0, 0.0));
@@ -90,8 +86,7 @@ void main() {
     expect(find.byType(ListTile), findsOneWidget);
   });
 
-  testWidgets('Test the form on the workout plan screen',
-      (WidgetTester tester) async {
+  testWidgets('Test the form on the workout plan screen', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen());
 
     expect(find.byType(PlanForm), findsNothing);
@@ -100,16 +95,14 @@ void main() {
     expect(find.byType(WorkoutForm), findsOneWidget);
   });
 
-  testWidgets('Tests the localization of dates - EN',
-      (WidgetTester tester) async {
+  testWidgets('Tests the localization of dates - EN', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen());
 
     expect(find.text('1/1/2021'), findsOneWidget);
     expect(find.text('2/12/2021'), findsOneWidget);
   });
 
-  testWidgets('Tests the localization of dates - DE',
-      (WidgetTester tester) async {
+  testWidgets('Tests the localization of dates - DE', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen(locale: 'de'));
 
     expect(find.text('1.1.2021'), findsOneWidget);

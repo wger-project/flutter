@@ -57,16 +57,15 @@ class DashboardCalendarWidget extends StatefulWidget {
   DashboardCalendarWidget();
 
   @override
-  _DashboardCalendarWidgetState createState() =>
-      _DashboardCalendarWidgetState();
+  _DashboardCalendarWidgetState createState() => _DashboardCalendarWidgetState();
 }
 
 class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
     with TickerProviderStateMixin {
   late Map<String, List<Event>> _events;
   late final ValueNotifier<List<Event>> _selectedEvents;
-  RangeSelectionMode _rangeSelectionMode = RangeSelectionMode
-      .toggledOff; // Can be toggled on/off by longpressing a date
+  RangeSelectionMode _rangeSelectionMode =
+      RangeSelectionMode.toggledOff; // Can be toggled on/off by longpressing a date
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
   DateTime? _rangeStart;
@@ -84,8 +83,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
 
   void loadEvents() async {
     // Process weight entries
-    BodyWeightProvider weightProvider =
-        Provider.of<BodyWeightProvider>(context, listen: false);
+    BodyWeightProvider weightProvider = Provider.of<BodyWeightProvider>(context, listen: false);
     for (var entry in weightProvider.items) {
       final date = DateFormatLists.format(entry.date);
 
@@ -98,8 +96,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
     }
 
     // Process workout sessions
-    WorkoutPlansProvider plans =
-        Provider.of<WorkoutPlansProvider>(context, listen: false);
+    WorkoutPlansProvider plans = Provider.of<WorkoutPlansProvider>(context, listen: false);
     plans.fetchSessionData().then((entries) {
       for (var entry in entries['results']) {
         final session = WorkoutSession.fromJson(entry);
@@ -109,8 +106,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
         }
         var time = '';
         if (session.timeStart != null && session.timeEnd != null) {
-          time =
-              '(${timeToString(session.timeStart)} - ${timeToString(session.timeEnd)})';
+          time = '(${timeToString(session.timeStart)} - ${timeToString(session.timeEnd)})';
         }
 
         // Add events to lists
@@ -240,12 +236,10 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
                           title: Text((() {
                             switch (event.type) {
                               case EventType.caloriesDiary:
-                                return AppLocalizations.of(context)
-                                    .nutritionalDiary;
+                                return AppLocalizations.of(context).nutritionalDiary;
 
                               case EventType.session:
-                                return AppLocalizations.of(context)
-                                    .workoutSession;
+                                return AppLocalizations.of(context).workoutSession;
 
                               case EventType.weight:
                                 return AppLocalizations.of(context).weight;

@@ -53,8 +53,7 @@ class Gallery extends StatelessWidget {
                     child: Column(
                       children: [
                         Text(
-                          DateFormat.yMd(
-                                  Localizations.localeOf(context).languageCode)
+                          DateFormat.yMd(Localizations.localeOf(context).languageCode)
                               .format(currentImage.date),
                           style: Theme.of(context).textTheme.headline5,
                         ),
@@ -71,8 +70,7 @@ class Gallery extends StatelessWidget {
                             IconButton(
                                 icon: Icon(Icons.delete),
                                 onPressed: () {
-                                  Provider.of<GalleryProvider>(context,
-                                          listen: false)
+                                  Provider.of<GalleryProvider>(context, listen: false)
                                       .deleteImage(currentImage);
                                   Navigator.of(context).pop();
                                 }),

@@ -53,16 +53,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     if (!Provider.of<AuthProvider>(context, listen: false).dataInit) {
       Provider.of<AuthProvider>(context, listen: false).setServerVersion();
 
-      final workoutPlansProvider =
-          Provider.of<WorkoutPlansProvider>(context, listen: false);
-      final nutritionPlansProvider =
-          Provider.of<NutritionPlansProvider>(context, listen: false);
-      final exercisesProvider =
-          Provider.of<ExercisesProvider>(context, listen: false);
-      final galleryProvider =
-          Provider.of<GalleryProvider>(context, listen: false);
-      final weightProvider =
-          Provider.of<BodyWeightProvider>(context, listen: false);
+      final workoutPlansProvider = Provider.of<WorkoutPlansProvider>(context, listen: false);
+      final nutritionPlansProvider = Provider.of<NutritionPlansProvider>(context, listen: false);
+      final exercisesProvider = Provider.of<ExercisesProvider>(context, listen: false);
+      final galleryProvider = Provider.of<GalleryProvider>(context, listen: false);
+      final weightProvider = Provider.of<BodyWeightProvider>(context, listen: false);
 
       // Base data
       await Future.wait([

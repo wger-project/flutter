@@ -39,7 +39,6 @@ class ExerciseCategory {
   }
 
   // Boilerplate
-  factory ExerciseCategory.fromJson(Map<String, dynamic> json) =>
-      _$ExerciseCategoryFromJson(json);
+  factory ExerciseCategory.fromJson(Map<String, dynamic> json) => _$ExerciseCategoryFromJson(json);
   Map<String, dynamic> toJson() => _$ExerciseCategoryToJson(this);
 }

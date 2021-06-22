@@ -58,37 +58,35 @@ class MyApp extends StatelessWidget {
           create: (ctx) => AuthProvider(),
         ),
         ChangeNotifierProxyProvider<AuthProvider, ExercisesProvider>(
-          create: (context) => ExercisesProvider(
-              Provider.of<AuthProvider>(context, listen: false), []),
+          create: (context) =>
+              ExercisesProvider(Provider.of<AuthProvider>(context, listen: false), []),
           update: (context, auth, previous) =>
               previous != null ? previous : ExercisesProvider(auth, []),
         ),
-        ChangeNotifierProxyProvider2<AuthProvider, ExercisesProvider,
-            WorkoutPlansProvider>(
+        ChangeNotifierProxyProvider2<AuthProvider, ExercisesProvider, WorkoutPlansProvider>(
           create: (context) => WorkoutPlansProvider(
             Provider.of<AuthProvider>(context, listen: false),
             Provider.of<ExercisesProvider>(context, listen: false),
             [],
           ),
-          update: (context, auth, exercises, previous) => previous != null
-              ? previous
-              : WorkoutPlansProvider(auth, exercises, []),
+          update: (context, auth, exercises, previous) =>
+              previous != null ? previous : WorkoutPlansProvider(auth, exercises, []),
         ),
         ChangeNotifierProxyProvider<AuthProvider, NutritionPlansProvider>(
-          create: (context) => NutritionPlansProvider(
-              Provider.of<AuthProvider>(context, listen: false), []),
+          create: (context) =>
+              NutritionPlansProvider(Provider.of<AuthProvider>(context, listen: false), []),
           update: (context, auth, previous) =>
               previous != null ? previous : NutritionPlansProvider(auth, []),
         ),
         ChangeNotifierProxyProvider<AuthProvider, BodyWeightProvider>(
-          create: (context) => BodyWeightProvider(
-              Provider.of<AuthProvider>(context, listen: false), []),
+          create: (context) =>
+              BodyWeightProvider(Provider.of<AuthProvider>(context, listen: false), []),
           update: (context, auth, previous) =>
               previous != null ? previous : BodyWeightProvider(auth, []),
         ),
         ChangeNotifierProxyProvider<AuthProvider, GalleryProvider>(
-          create: (context) => GalleryProvider(
-              Provider.of<AuthProvider>(context, listen: false), []),
+          create: (context) =>
+              GalleryProvider(Provider.of<AuthProvider>(context, listen: false), []),
           update: (context, auth, previous) =>
               previous != null ? previous : GalleryProvider(auth, []),
         ),
@@ -102,8 +100,7 @@ class MyApp extends StatelessWidget {
               : FutureBuilder(
                   future: auth.tryAutoLogin(),
                   builder: (ctx, authResultSnapshot) =>
-                      authResultSnapshot.connectionState ==
-                              ConnectionState.waiting
+                      authResultSnapshot.connectionState == ConnectionState.waiting
                           ? SplashScreen()
                           : AuthScreen(),
                 ),

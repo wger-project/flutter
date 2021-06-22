@@ -54,8 +54,7 @@ main() {
     );
   }
 
-  testWidgets('Test the widgets on the SetFormWidget',
-      (WidgetTester tester) async {
+  testWidgets('Test the widgets on the SetFormWidget', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen());
     await tester.pumpAndSettle();
 
@@ -66,8 +65,7 @@ main() {
     expect(find.text('Bench\nDumbbell'), findsOneWidget, reason: 'Equipment');
 
     expect(find.text('Muscles'), findsOneWidget);
-    expect(find.text('Flutterus maximus\nBiceps'), findsOneWidget,
-        reason: 'Muscles');
+    expect(find.text('Flutterus maximus\nBiceps'), findsOneWidget, reason: 'Muscles');
 
     expect(find.text('Secondary muscles'), findsOneWidget);
     expect(find.text('Booty'), findsOneWidget, reason: 'Secondary muscles');

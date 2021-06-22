@@ -56,8 +56,7 @@ void main() {
     );
   }
 
-  testWidgets('Test the widgets on the DayFormWidget',
-      (WidgetTester tester) async {
+  testWidgets('Test the widgets on the DayFormWidget', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen());
     await tester.pumpAndSettle();
 
@@ -67,14 +66,12 @@ void main() {
   });
 
   testWidgets('Test creating a new day', (WidgetTester tester) async {
-    when(mockWorkoutPlans.addDay(any, any))
-        .thenAnswer((_) => Future.value(Day()));
+    when(mockWorkoutPlans.addDay(any, any)).thenAnswer((_) => Future.value(Day()));
 
     await tester.pumpWidget(createHomeScreen());
     await tester.pumpAndSettle();
 
-    expect(find.text(('')), findsOneWidget,
-        reason: 'New day has no description');
+    expect(find.text(('')), findsOneWidget, reason: 'New day has no description');
     await tester.enterText(find.byKey(Key('field-description')), 'Leg day!');
     await tester.tap(find.byKey(Key('field-checkbox-1')));
     await tester.tap(find.byKey(Key(SUBMIT_BUTTON_KEY_NAME)));
@@ -86,8 +83,7 @@ void main() {
     //verify(mockObserver.didPop(any, any));
   });
 
-  testWidgets('Tests the localization of days - EN',
-      (WidgetTester tester) async {
+  testWidgets('Tests the localization of days - EN', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen());
 
     expect(find.text('Monday'), findsOneWidget);
@@ -95,8 +91,7 @@ void main() {
     expect(find.text('Thursday'), findsOneWidget);
   });
 
-  testWidgets('Tests the localization of days - DE',
-      (WidgetTester tester) async {
+  testWidgets('Tests the localization of days - DE', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen(locale: 'de'));
 
     expect(find.text('Montag'), findsOneWidget);

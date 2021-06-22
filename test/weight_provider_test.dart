@@ -41,8 +41,7 @@ void main() {
           200));
 
       // Load the entries
-      BodyWeightProvider provider =
-          BodyWeightProvider(testAuthProvider, [], client);
+      BodyWeightProvider provider = BodyWeightProvider(testAuthProvider, [], client);
       await provider.fetchAndSetEntries();
 
       // Check that everything is ok
@@ -60,14 +59,12 @@ void main() {
           headers: anyNamed('headers'),
           body: '{"id":null,"weight":"80","date":"2021-01-01"}',
         ),
-      ).thenAnswer((_) async => http.Response(
-          '{"id": 25, "date": "2021-01-01", "weight": "80"}', 200));
+      ).thenAnswer(
+          (_) async => http.Response('{"id": 25, "date": "2021-01-01", "weight": "80"}', 200));
 
       // POST the data to the server
-      final WeightEntry weightEntry =
-          WeightEntry(date: DateTime(2021, 1, 1), weight: 80);
-      final BodyWeightProvider provider =
-          BodyWeightProvider(testAuthProvider, [], client);
+      final WeightEntry weightEntry = WeightEntry(date: DateTime(2021, 1, 1), weight: 80);
+      final BodyWeightProvider provider = BodyWeightProvider(testAuthProvider, [], client);
       final WeightEntry weightEntryNew = await provider.addEntry(weightEntry);
 
       // Check that the server response is what we expect

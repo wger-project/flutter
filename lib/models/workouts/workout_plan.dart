@@ -65,8 +65,7 @@ class WorkoutPlan {
   }
 
   // Boilerplate
-  factory WorkoutPlan.fromJson(Map<String, dynamic> json) =>
-      _$WorkoutPlanFromJson(json);
+  factory WorkoutPlan.fromJson(Map<String, dynamic> json) => _$WorkoutPlanFromJson(json);
   Map<String, dynamic> toJson() => _$WorkoutPlanToJson(this);
 
   /// Filters the workout logs by exercise and sorts them by date
@@ -76,8 +75,7 @@ class WorkoutPlan {
   /// reps, etc. are considered equal. Workout ID, Log ID and date are not
   /// considered.
   List<Log> filterLogsByExercise(Exercise exercise, {bool unique = false}) {
-    var out =
-        logs.where((element) => element.exerciseId == exercise.id).toList();
+    var out = logs.where((element) => element.exerciseId == exercise.id).toList();
 
     if (unique) {
       out = out.toSet().toList();

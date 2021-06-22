@@ -30,10 +30,8 @@ const Color wgerTextMuted = Colors.black38;
 const Color wgerBackground = Color(0xfff4f4f6);
 
 // Chart colors
-const charts.Color wgerChartPrimaryColor =
-    charts.Color(r: 0x2a, g: 0x4c, b: 0x7d);
-const charts.Color wgerChartSecondaryColor =
-    charts.Color(r: 0xe6, g: 0x39, b: 0x46);
+const charts.Color wgerChartPrimaryColor = charts.Color(r: 0x2a, g: 0x4c, b: 0x7d);
+const charts.Color wgerChartSecondaryColor = charts.Color(r: 0xe6, g: 0x39, b: 0x46);
 
 /// Original sizes for the material text theme
 /// https://api.flutter.dev/flutter/material/TextTheme-class.html

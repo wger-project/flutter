@@ -51,8 +51,7 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
   List<Muscle> _muscles = [];
   List<Equipment> _equipment = [];
 
-  ExercisesProvider(AuthProvider auth, List<Exercise> entries,
-      [http.Client? client])
+  ExercisesProvider(AuthProvider auth, List<Exercise> entries, [http.Client? client])
       : this._exercises = entries,
         super(auth, client);
 
@@ -130,14 +129,10 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
     if (prefs.containsKey(PREFS_EXERCISES)) {
       final exerciseData = json.decode(prefs.getString(PREFS_EXERCISES)!);
       if (DateTime.parse(exerciseData['expiresIn']).isAfter(DateTime.now())) {
-        exerciseData['exercises']
-            .forEach((e) => _exercises.add(Exercise.fromJson(e)));
-        exerciseData['equipment']
-            .forEach((e) => _equipment.add(Equipment.fromJson(e)));
-        exerciseData['muscles']
-            .forEach((e) => _muscles.add(Muscle.fromJson(e)));
-        exerciseData['categories']
-            .forEach((e) => _categories.add(ExerciseCategory.fromJson(e)));
+        exerciseData['exercises'].forEach((e) => _exercises.add(Exercise.fromJson(e)));
+        exerciseData['equipment'].forEach((e) => _equipment.add(Equipment.fromJson(e)));
+        exerciseData['muscles'].forEach((e) => _muscles.add(Muscle.fromJson(e)));
+        exerciseData['categories'].forEach((e) => _categories.add(ExerciseCategory.fromJson(e)));
         log("Read ${exerciseData['exercises'].length} exercises from cache. Valid till ${exerciseData['expiresIn']}");
         return;
       }
@@ -156,19 +151,16 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
         headers: {
           HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
         });
-    final exercisesData =
-        json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+    final exercisesData = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
 
     try {
       // Load exercises
-      exercisesData['results']
-          .forEach((e) => _exercises.add(Exercise.fromJson(e)));
+      exercisesData['results'].forEach((e) => _exercises.add(Exercise.fromJson(e)));
 
       // Save the result to the cache
       final exerciseData = {
         'date': DateTime.now().toIso8601String(),
-        'expiresIn':
-            DateTime.now().add(Duration(days: daysToCache)).toIso8601String(),
+        'expiresIn': DateTime.now().add(Duration(days: daysToCache)).toIso8601String(),
         'exercises': _exercises.map((e) => e.toJson()).toList(),
         'equipment': _equipment.map((e) => e.toJson()).toList(),
         'categories': _categories.map((e) => e.toJson()).toList(),
@@ -210,8 +202,7 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
     }
 
     // Process the response
-    final result = json.decode(utf8.decode(response.bodyBytes))['suggestions']
-        as List<dynamic>;
+    final result = json.decode(utf8.decode(response.bodyBytes))['suggestions'] as List<dynamic>;
     for (var entry in result) {
       entry['exercise_obj'] = await fetchAndSetExercise(entry['data']['id']);
     }

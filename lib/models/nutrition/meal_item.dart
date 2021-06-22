@@ -63,8 +63,7 @@ class MealItem {
   MealItem.empty();
 
   // Boilerplate
-  factory MealItem.fromJson(Map<String, dynamic> json) =>
-      _$MealItemFromJson(json);
+  factory MealItem.fromJson(Map<String, dynamic> json) => _$MealItemFromJson(json);
 
   Map<String, dynamic> toJson() => _$MealItemToJson(this);
 

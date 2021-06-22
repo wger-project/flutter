@@ -89,8 +89,7 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                       Text(nutritionalValues.energy.toStringAsFixed(0)),
                       Text(nutritionalValues.protein.toStringAsFixed(0)),
                       Text(nutritionalValues.carbohydrates.toStringAsFixed(0)),
-                      Text(nutritionalValues.carbohydratesSugar
-                          .toStringAsFixed(0)),
+                      Text(nutritionalValues.carbohydratesSugar.toStringAsFixed(0)),
                       Text(nutritionalValues.fat.toStringAsFixed(0)),
                       Text(nutritionalValues.fatSaturated.toStringAsFixed(0)),
                       Text(nutritionalValues.fibres.toStringAsFixed(0)),
@@ -122,8 +121,7 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(15),
             height: 220,
-            child:
-                NutritionalDiaryChartWidget(nutritionalPlan: _nutritionalPlan),
+            child: NutritionalDiaryChartWidget(nutritionalPlan: _nutritionalPlan),
           ),
           Container(
             height: 200,
@@ -181,8 +179,7 @@ class NutritionDiaryEntry extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Text(
-            DateFormat.yMd(Localizations.localeOf(context).languageCode)
-                .format(date),
+            DateFormat.yMd(Localizations.localeOf(context).languageCode).format(date),
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           Text(values.energy.toStringAsFixed(0)),

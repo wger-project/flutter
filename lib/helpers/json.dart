@@ -60,6 +60,5 @@ String? timeToString(TimeOfDay? time) {
   if (time == null) {
     return null;
   }
-  return DefaultMaterialLocalizations()
-      .formatTimeOfDay(time, alwaysUse24HourFormat: true);
+  return DefaultMaterialLocalizations().formatTimeOfDay(time, alwaysUse24HourFormat: true);
 }

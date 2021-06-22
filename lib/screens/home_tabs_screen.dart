@@ -33,8 +33,7 @@ class HomeTabsScreen extends StatefulWidget {
   _HomeTabsScreenState createState() => _HomeTabsScreenState();
 }
 
-class _HomeTabsScreenState extends State<HomeTabsScreen>
-    with SingleTickerProviderStateMixin {
+class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProviderStateMixin {
   int _selectedIndex = 0;
 
   void _onItemTapped(int index) {

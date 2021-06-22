@@ -55,8 +55,7 @@ void main() {
     );
   }
 
-  testWidgets('Test the widgets on the nutritional plan screen',
-      (WidgetTester tester) async {
+  testWidgets('Test the widgets on the nutritional plan screen', (WidgetTester tester) async {
     await tester.pumpWidget(createNutritionalPlan());
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();
@@ -73,8 +72,7 @@ void main() {
     expect(find.byType(NutritionalDiaryChartWidget), findsNothing);
   });
 
-  testWidgets('Tests the localization of times - EN',
-      (WidgetTester tester) async {
+  testWidgets('Tests the localization of times - EN', (WidgetTester tester) async {
     await tester.pumpWidget(createNutritionalPlan());
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();
@@ -82,8 +80,7 @@ void main() {
     expect(find.text('5:00 PM'), findsOneWidget);
   });
 
-  testWidgets('Tests the localization of times - DE',
-      (WidgetTester tester) async {
+  testWidgets('Tests the localization of times - DE', (WidgetTester tester) async {
     await tester.pumpWidget(createNutritionalPlan(locale: 'de'));
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();

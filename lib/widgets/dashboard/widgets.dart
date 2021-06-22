@@ -41,8 +41,7 @@ import 'package:wger/widgets/workouts/forms.dart';
 
 class DashboardNutritionWidget extends StatefulWidget {
   @override
-  _DashboardNutritionWidgetState createState() =>
-      _DashboardNutritionWidgetState();
+  _DashboardNutritionWidgetState createState() => _DashboardNutritionWidgetState();
 }
 
 class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
@@ -53,8 +52,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
   @override
   void initState() {
     super.initState();
-    _plan =
-        Provider.of<NutritionPlansProvider>(context, listen: false).currentPlan;
+    _plan = Provider.of<NutritionPlansProvider>(context, listen: false).currentPlan;
     _hasContent = _plan != null;
   }
 
@@ -97,8 +95,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
               icon: Icon(Icons.history_edu),
               color: wgerPrimaryButtonColor,
               onPressed: () {
-                Provider.of<NutritionPlansProvider>(context, listen: false)
-                    .logMealToDiary(meal);
+                Provider.of<NutritionPlansProvider>(context, listen: false).logMealToDiary(meal);
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
@@ -129,8 +126,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                       ),
                     ),
                     SizedBox(width: 5),
-                    Text(
-                        '${item.amount.toStringAsFixed(0)} ${AppLocalizations.of(context).g}'),
+                    Text('${item.amount.toStringAsFixed(0)} ${AppLocalizations.of(context).g}'),
                   ],
                 ),
               ],
@@ -160,9 +156,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
         children: [
           ListTile(
             title: Text(
-              _hasContent
-                  ? _plan!.description
-                  : AppLocalizations.of(context).labelWorkoutPlan,
+              _hasContent ? _plan!.description : AppLocalizations.of(context).labelWorkoutPlan,
               style: Theme.of(context).textTheme.headline4,
             ),
             subtitle: Text(
@@ -191,8 +185,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                       Container(
                         padding: EdgeInsets.all(15),
                         height: 180,
-                        child: NutritionalPlanPieChartWidget(
-                            _plan!.nutritionalValues),
+                        child: NutritionalPlanPieChartWidget(_plan!.nutritionalValues),
                       )
                     ],
                   ),
@@ -209,9 +202,8 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                 TextButton(
                     child: Text(AppLocalizations.of(context).goToDetailPage),
                     onPressed: () {
-                      Navigator.of(context).pushNamed(
-                          NutritionalPlanScreen.routeName,
-                          arguments: _plan);
+                      Navigator.of(context)
+                          .pushNamed(NutritionalPlanScreen.routeName, arguments: _plan);
                     }),
               ],
             ),
@@ -334,8 +326,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
               icon: Icon(Icons.play_arrow),
               color: wgerPrimaryButtonColor,
               onPressed: () {
-                Navigator.of(context)
-                    .pushNamed(GymModeScreen.routeName, arguments: day);
+                Navigator.of(context).pushNamed(GymModeScreen.routeName, arguments: day);
               },
             ),
           ],
@@ -357,8 +348,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                             children: [
                               Text(s.exerciseObj.name),
                               SizedBox(width: 10),
-                              MutedText(
-                                  set.getSmartRepr(s.exerciseObj).join('\n')),
+                              MutedText(set.getSmartRepr(s.exerciseObj).join('\n')),
                             ],
                           ),
                           SizedBox(height: 10),
@@ -383,9 +373,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
         children: [
           ListTile(
             title: Text(
-              _hasContent
-                  ? _workoutPlan!.name
-                  : AppLocalizations.of(context).labelWorkoutPlan,
+              _hasContent ? _workoutPlan!.name : AppLocalizations.of(context).labelWorkoutPlan,
               style: Theme.of(context).textTheme.headline4,
             ),
             subtitle: Text(
@@ -426,8 +414,8 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                 TextButton(
                   child: Text(AppLocalizations.of(context).goToDetailPage),
                   onPressed: () {
-                    Navigator.of(context).pushNamed(WorkoutPlanScreen.routeName,
-                        arguments: _workoutPlan);
+                    Navigator.of(context)
+                        .pushNamed(WorkoutPlanScreen.routeName, arguments: _workoutPlan);
                   },
                 ),
               ],

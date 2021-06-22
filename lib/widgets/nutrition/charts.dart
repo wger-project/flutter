@@ -47,10 +47,7 @@ class NutritionalPlanPieChartWidget extends StatelessWidget {
           data: [
             [AppLocalizations.of(context).protein, _nutritionalValues.protein],
             [AppLocalizations.of(context).fat, _nutritionalValues.fat],
-            [
-              AppLocalizations.of(context).carbohydrates,
-              _nutritionalValues.carbohydrates
-            ],
+            [AppLocalizations.of(context).carbohydrates, _nutritionalValues.carbohydrates],
           ],
           labelAccessorFn: (List<dynamic> row, _) =>
               '${row[0]}\n${row[1].toStringAsFixed(0)}${AppLocalizations.of(context).g}',

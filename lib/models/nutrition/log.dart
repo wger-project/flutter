@@ -82,9 +82,8 @@ class Log {
     var out = NutritionalValues();
 
     //final weight = amount;
-    final weight = this.weightUnitObj == null
-        ? amount
-        : amount * weightUnitObj!.amount * weightUnitObj!.grams;
+    final weight =
+        this.weightUnitObj == null ? amount : amount * weightUnitObj!.amount * weightUnitObj!.grams;
 
     out.energy = ingredientObj.energy * weight / 100;
     out.protein = ingredientObj.protein * weight / 100;

@@ -113,8 +113,7 @@ class _ImageFormState extends State<ImageForm> {
                               _showPicker(ImageSource.camera);
                             },
                             leading: Icon(Icons.photo_camera),
-                            title:
-                                Text(AppLocalizations.of(context).takePicture),
+                            title: Text(AppLocalizations.of(context).takePicture),
                           ),
                           ListTile(
                               onTap: () {
@@ -122,8 +121,7 @@ class _ImageFormState extends State<ImageForm> {
                                 _showPicker(ImageSource.gallery);
                               },
                               leading: Icon(Icons.photo_library),
-                              title: Text(AppLocalizations.of(context)
-                                  .chooseFromLibrary))
+                              title: Text(AppLocalizations.of(context).chooseFromLibrary))
                         ],
                       ),
                     );
@@ -135,8 +133,7 @@ class _ImageFormState extends State<ImageForm> {
           ),
           TextFormField(
             key: Key('field-date'),
-            decoration:
-                InputDecoration(labelText: AppLocalizations.of(context).date),
+            decoration: InputDecoration(labelText: AppLocalizations.of(context).date),
             controller: dateController,
             onTap: () async {
               // Stop keyboard from appearing
@@ -165,8 +162,7 @@ class _ImageFormState extends State<ImageForm> {
           ),
           TextFormField(
             key: Key('field-description'),
-            decoration: InputDecoration(
-                labelText: AppLocalizations.of(context).description),
+            decoration: InputDecoration(labelText: AppLocalizations.of(context).description),
             minLines: 3,
             maxLines: 10,
             controller: descriptionController,

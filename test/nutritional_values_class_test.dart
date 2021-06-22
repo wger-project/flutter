@@ -27,12 +27,9 @@ void main() {
 
   group('Test the NutritionalValues class', () {
     setUp(() {
-      values1 = NutritionalValues.values(
-          4000, 30.5, 340.5, 11.7, 41.0, 31.75, 21.3, 33.3);
-      values2 = NutritionalValues.values(
-          4000, 30.5, 340.5, 11.7, 41.0, 31.75, 21.3, 33.3);
-      values3 = NutritionalValues.values(
-          5000, 30.5, 340.5, 11.7, 41.0, 31.75, 21.3, 33.3);
+      values1 = NutritionalValues.values(4000, 30.5, 340.5, 11.7, 41.0, 31.75, 21.3, 33.3);
+      values2 = NutritionalValues.values(4000, 30.5, 340.5, 11.7, 41.0, 31.75, 21.3, 33.3);
+      values3 = NutritionalValues.values(5000, 30.5, 340.5, 11.7, 41.0, 31.75, 21.3, 33.3);
       values4 = NutritionalValues.values(1000, 10, 100, 1, 10.0, 10, 10, 10);
     });
 
@@ -43,15 +40,13 @@ void main() {
 
     test('Test the plus operator', () {
       final values5 = values1 + values4;
-      final result = NutritionalValues.values(
-          5000, 40.5, 440.5, 12.7, 51.0, 41.75, 31.3, 43.3);
+      final result = NutritionalValues.values(5000, 40.5, 440.5, 12.7, 51.0, 41.75, 31.3, 43.3);
       expect(values5, result);
     });
 
     test('Test the add method', () {
       values1.add(values4);
-      final result = NutritionalValues.values(
-          5000, 40.5, 440.5, 12.7, 51.0, 41.75, 31.3, 43.3);
+      final result = NutritionalValues.values(5000, 40.5, 440.5, 12.7, 51.0, 41.75, 31.3, 43.3);
       expect(values1, result);
     });
   });

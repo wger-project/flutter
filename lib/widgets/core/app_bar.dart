@@ -47,8 +47,7 @@ class WgerAppBar extends StatelessWidget with PreferredSizeWidget {
                     title: Text(AppLocalizations.of(context).optionsLabel),
                     actions: [
                       TextButton(
-                        child: Text(
-                            MaterialLocalizations.of(context).closeButtonLabel),
+                        child: Text(MaterialLocalizations.of(context).closeButtonLabel),
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
@@ -64,19 +63,11 @@ class WgerAppBar extends StatelessWidget with PreferredSizeWidget {
                           leading: Icon(Icons.exit_to_app),
                           title: Text(AppLocalizations.of(context).logout),
                           onTap: () {
-                            Provider.of<AuthProvider>(context, listen: false)
-                                .logout();
-                            Provider.of<WorkoutPlansProvider>(context,
-                                    listen: false)
-                                .clear();
-                            Provider.of<NutritionPlansProvider>(context,
-                                    listen: false)
-                                .clear();
-                            Provider.of<BodyWeightProvider>(context,
-                                    listen: false)
-                                .clear();
-                            Provider.of<GalleryProvider>(context, listen: false)
-                                .clear();
+                            Provider.of<AuthProvider>(context, listen: false).logout();
+                            Provider.of<WorkoutPlansProvider>(context, listen: false).clear();
+                            Provider.of<NutritionPlansProvider>(context, listen: false).clear();
+                            Provider.of<BodyWeightProvider>(context, listen: false).clear();
+                            Provider.of<GalleryProvider>(context, listen: false).clear();
                             Navigator.of(context).pop();
                             Navigator.of(context).pushReplacementNamed('/');
                           },

@@ -68,10 +68,7 @@ class ExerciseDetail extends StatelessWidget {
             style: Theme.of(context).textTheme.headline6,
           ),
           if (_exercise.musclesSecondary.length > 0)
-            Text(_exercise.musclesSecondary
-                .map((e) => e.name)
-                .toList()
-                .join('\n')),
+            Text(_exercise.musclesSecondary.map((e) => e.name).toList().join('\n')),
           if (_exercise.musclesSecondary.length == 0) Text('-/-'),
           SizedBox(height: 8),
 
