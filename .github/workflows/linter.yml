@@ -23,7 +23,7 @@ jobs:
         run: flutter pub get
 
       - name: Check for formatting issues (run "flutter format . ")
-        run: flutter format .
+        run: flutter format --line-length=100 .
       
       - name: Push a commit with the changed files
         continue-on-error: true
