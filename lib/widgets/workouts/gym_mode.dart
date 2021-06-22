@@ -802,39 +802,42 @@ class _SessionPageState extends State<SessionPage> {
                   children: [
                     Flexible(
                       child: TextFormField(
-                        decoration: InputDecoration(
-                          labelText: AppLocalizations.of(context).timeStart,
-                          errorMaxLines: 2,
-                        ),
-                        controller: timeStartController,
-                        onFieldSubmitted: (_) {},
-                        onTap: () async {
-                          // Stop keyboard from appearing
-                          FocusScope.of(context).requestFocus(new FocusNode());
+                          decoration: InputDecoration(
+                            labelText: AppLocalizations.of(context).timeStart,
+                            errorMaxLines: 2,
+                          ),
+                          controller: timeStartController,
+                          onFieldSubmitted: (_) {},
+                          onTap: () async {
+                            // Stop keyboard from appearing
+                            FocusScope.of(context)
+                                .requestFocus(new FocusNode());
 
-                          // Open time picker
-                          var pickedTime = await showTimePicker(
-                            context: context,
-                            initialTime: widget._start,
-                          );
+                            // Open time picker
+                            var pickedTime = await showTimePicker(
+                              context: context,
+                              initialTime: widget._start,
+                            );
 
-                          if (pickedTime != null) {
-                            timeStartController.text =
-                                timeToString(pickedTime)!;
-                          }
-                        },
-                        onSaved: (newValue) {
-                          _session.timeStart = stringToTime(newValue);
-                        },
-                        validator: (_) {
-                          TimeOfDay startTime = stringToTime(timeStartController.text);
-                          TimeOfDay endTime = stringToTime(timeEndController.text);
-                          if(startTime.isAfter(endTime)) {
-                            return AppLocalizations.of(context).timeStartAhead;
-                          }
-                          return null;
-                        }
-                      ),
+                            if (pickedTime != null) {
+                              timeStartController.text =
+                                  timeToString(pickedTime)!;
+                            }
+                          },
+                          onSaved: (newValue) {
+                            _session.timeStart = stringToTime(newValue);
+                          },
+                          validator: (_) {
+                            TimeOfDay startTime =
+                                stringToTime(timeStartController.text);
+                            TimeOfDay endTime =
+                                stringToTime(timeEndController.text);
+                            if (startTime.isAfter(endTime)) {
+                              return AppLocalizations.of(context)
+                                  .timeStartAhead;
+                            }
+                            return null;
+                          }),
                     ),
                     SizedBox(width: 10),
                     Flexible(
