@@ -803,7 +803,9 @@ class _SessionPageState extends State<SessionPage> {
                     Flexible(
                       child: TextFormField(
                         decoration: InputDecoration(
-                            labelText: AppLocalizations.of(context).timeStart),
+                          labelText: AppLocalizations.of(context).timeStart,
+                          errorMaxLines: 2,
+                        ),
                         controller: timeStartController,
                         onFieldSubmitted: (_) {},
                         onTap: () async {
