@@ -6,6 +6,7 @@
 * Roland Geider – https://github.com/rolandgeider
 * Dylan Aird - https://github.com/Dolaned
 * Jannik Norden - https://github.com/Jannik-dev
+* Arun Muralidharan - https://github.com/arun-muralidharan
 
 ## Translators
 
