@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter/material.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
@@ -68,4 +69,20 @@ List<DateTime> daysInRange(DateTime first, DateTime last) {
     dayCount,
     (index) => DateTime.utc(first.year, first.month, first.day + index),
   );
+}
+
+extension TimeOfDayExtension on TimeOfDay {
+  bool isAfter(TimeOfDay other) {
+    if(toMinutes() > other.toMinutes()) return true;
+    else return false;
+  }
+
+  bool isBefore(TimeOfDay other) {
+    if(toMinutes() < other.toMinutes()) return true;
+    else return false;
+  }
+
+  int toMinutes() {
+    return ((hour*60) + minute);
+  }
 }
