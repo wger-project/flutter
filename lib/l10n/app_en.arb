@@ -274,6 +274,7 @@
   "@timeEnd": {
     "description": "The end time of a workout"
   },
+  "timeStartAhead": "Start time cannot be ahead of end time",
   "ingredient": "Ingredient",
   "@ingredient": {},
   "energy": "Energy",

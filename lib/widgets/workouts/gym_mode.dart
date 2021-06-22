@@ -27,6 +27,7 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/gym_mode.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/ui.dart';
+import 'package:wger/helpers/misc.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/http_exception.dart';
 import 'package:wger/models/workouts/day.dart';
@@ -802,7 +803,9 @@ class _SessionPageState extends State<SessionPage> {
                     Flexible(
                       child: TextFormField(
                         decoration: InputDecoration(
-                            labelText: AppLocalizations.of(context).timeStart),
+                          labelText: AppLocalizations.of(context).timeStart,
+                          errorMaxLines: 2,
+                        ),
                         controller: timeStartController,
                         onFieldSubmitted: (_) {},
                         onTap: () async {
@@ -823,6 +826,14 @@ class _SessionPageState extends State<SessionPage> {
                         onSaved: (newValue) {
                           _session.timeStart = stringToTime(newValue);
                         },
+                        validator: (_) {
+                          TimeOfDay startTime = stringToTime(timeStartController.text);
+                          TimeOfDay endTime = stringToTime(timeEndController.text);
+                          if(startTime.isAfter(endTime)) {
+                            return AppLocalizations.of(context).timeStartAhead;
+                          }
+                          return null;
+                        }
                       ),
                     ),
                     SizedBox(width: 10),
@@ -842,7 +853,7 @@ class _SessionPageState extends State<SessionPage> {
                             initialTime: TimeOfDay.now(),
                           );
 
-                          timeStartController.text = timeToString(pickedTime)!;
+                          timeEndController.text = timeToString(pickedTime)!;
                         },
                         onSaved: (newValue) {
                           _session.timeEnd = stringToTime(newValue);
