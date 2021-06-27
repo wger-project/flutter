@@ -94,6 +94,13 @@ class WorkoutDayWidget extends StatefulWidget {
 
 class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
   bool _expanded = false;
+  late List<Set> _sets;
+
+  void initState() {
+    super.initState();
+    _sets = widget._day.sets;
+  }
+
   void _toggleExpanded() {
     setState(() {
       _expanded = !_expanded;
@@ -102,6 +109,7 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
 
   Widget getSetRow(Set set) {
     return Row(
+      key: ValueKey(set.id),
       crossAxisAlignment: CrossAxisAlignment.baseline,
       textBaseline: TextBaseline.alphabetic,
       children: [
@@ -198,11 +206,23 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
                 ],
               ),
             Divider(),
-            ...widget._day.sets
-                .map(
-                  (set) => getSetRow(set),
-                )
-                .toList(),
+            ReorderableListView(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              onReorder: (oldIndex, newIndex) {
+                setState(() {
+                  if (oldIndex < newIndex) {
+                    newIndex -= 1;
+                  }
+                  final Set _set = _sets.removeAt(oldIndex);
+                  _sets.insert(newIndex, _set);
+                });
+              },
+              children: [
+                for (final _set in _sets)
+                  getSetRow(_set),
+              ],
+            ),
             OutlinedButton(
               child: Text(AppLocalizations.of(context).addSet),
               onPressed: () {
