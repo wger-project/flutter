@@ -145,6 +145,7 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
 
   @override
   Widget build(BuildContext context) {
+    _sets.sort((a, b) => a.order!.compareTo(b.order!));
     return Padding(
       padding: const EdgeInsets.only(left: 8, right: 8, bottom: 12),
       child: Card(
@@ -209,17 +210,22 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
             ReorderableListView(
               physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,
-              onReorder: (oldIndex, newIndex) {
+              onReorder: (_oldIndex, _newIndex) async {
+                int _startIndex = 0;
+                if (_oldIndex < _newIndex) {
+                  _newIndex -= 1;
+                  _startIndex = _oldIndex;
+                } else {
+                  _startIndex = _newIndex;
+                }
                 setState(() {
-                  if (oldIndex < newIndex) {
-                    newIndex -= 1;
-                  }
-                  final Set _set = _sets.removeAt(oldIndex);
-                  _sets.insert(newIndex, _set);
+                  final Set _set = _sets.removeAt(_oldIndex);
+                  _sets.insert(_newIndex, _set);
                 });
+                Provider.of<WorkoutPlansProvider>(context, listen: false).reorderSets(_sets, _startIndex);
               },
               children: [
-                for (final _set in _sets)
+                for (final _set in widget._day.sets)
                   getSetRow(_set),
               ],
             ),
