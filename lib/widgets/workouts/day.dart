@@ -99,6 +99,7 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
   void initState() {
     super.initState();
     _sets = widget._day.sets;
+    _sets.sort((a, b) => a.order!.compareTo(b.order!));
   }
 
   void _toggleExpanded() {
@@ -135,7 +136,12 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
             visualDensity: VisualDensity.compact,
             icon: Icon(Icons.delete),
             iconSize: ICON_SIZE_SMALL,
-            onPressed: () {
+            onPressed: () async {
+              int _startIndex = _sets.indexOf(set);
+              setState(() {
+                _sets.remove(set);
+              });
+              _sets = await Provider.of<WorkoutPlansProvider>(context, listen: false).reorderSets(_sets, _startIndex);
               Provider.of<WorkoutPlansProvider>(context, listen: false).deleteSet(set);
             },
           ),
@@ -145,7 +151,6 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
 
   @override
   Widget build(BuildContext context) {
-    _sets.sort((a, b) => a.order!.compareTo(b.order!));
     return Padding(
       padding: const EdgeInsets.only(left: 8, right: 8, bottom: 12),
       child: Card(
@@ -219,13 +224,12 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
                   _startIndex = _newIndex;
                 }
                 setState(() {
-                  final Set _set = _sets.removeAt(_oldIndex);
-                  _sets.insert(_newIndex, _set);
+                  _sets.insert(_newIndex, _sets.removeAt(_oldIndex));
                 });
-                Provider.of<WorkoutPlansProvider>(context, listen: false).reorderSets(_sets, _startIndex);
+                _sets = await Provider.of<WorkoutPlansProvider>(context, listen: false).reorderSets(_sets, _startIndex);
               },
               children: [
-                for (final _set in widget._day.sets)
+                for (final _set in _sets)
                   getSetRow(_set),
               ],
             ),

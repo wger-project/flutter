@@ -408,15 +408,13 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // Sets the order field for the given list of sets, starting from startIndex.
-  // Better than calling editSet for each set after reordering as it will notify
-  //  for every element, rebuilding for each notification.
-  Future<void> reorderSets(List<Set> sets, int startIndex) async {
+  Future<List<Set>> reorderSets(List<Set> sets, int startIndex) async {
     for (int i = startIndex; i < sets.length; i++) {
       sets[i].order = i;
       await patch(sets[i].toJson(), makeUrl(_setsUrlPath, id: sets[i].id));
     }
     notifyListeners();
+    return sets;
   }
 
   Future<void> fetchComputedSettings(Set workoutSet) async {
