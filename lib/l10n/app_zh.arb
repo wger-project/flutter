@@ -1,5 +1,5 @@
 {
-  "customServerUrl": "wger服务器地址",
+  "customServerUrl": "服务器地址",
   "@customServerUrl": {
     "description": "Label in the form where the users can enter their own wger instance"
   },
