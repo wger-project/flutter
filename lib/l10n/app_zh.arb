@@ -157,15 +157,15 @@
   "@labelWorkoutPlans": {
     "description": "Title for screen workout plans"
   },
-  "loginInstead": "去登录",
+  "loginInstead": "登录",
   "@loginInstead": {},
-  "registerInstead": "去注册",
+  "registerInstead": "注册",
   "@registerInstead": {},
   "reset": "重置",
   "@reset": {
     "description": "Button text allowing the user to reset the entered values to the default"
   },
-  "customServerHint": "请输入要连接的wger服务器地址",
+  "customServerHint": "请输入要连接的服务器地址",
   "@customServerHint": {
     "description": "Hint text for the form where the users can enter their own wger instance"
   },
