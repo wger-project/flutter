@@ -461,5 +461,7 @@
   "plateCalculator": "Platten",
   "@plateCalculator": {
     "description": "Label used for the plate calculator in the gym mode"
-  }
+  },
+  "timeStartAhead": "Die Startzeit kann nicht vor der Endzeit liegen",
+  "@timeStartAhead": {}
 }
