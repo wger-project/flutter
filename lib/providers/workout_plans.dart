@@ -403,6 +403,20 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
     return set;
   }
 
+  Future<void> editSet(Set workoutSet) async {
+    await patch(workoutSet.toJson(), makeUrl(_setsUrlPath, id: workoutSet.id));
+    notifyListeners();
+  }
+
+  Future<List<Set>> reorderSets(List<Set> sets, int startIndex) async {
+    for (int i = startIndex; i < sets.length; i++) {
+      sets[i].order = i;
+      await patch(sets[i].toJson(), makeUrl(_setsUrlPath, id: sets[i].id));
+    }
+    notifyListeners();
+    return sets;
+  }
+
   Future<void> fetchComputedSettings(Set workoutSet) async {
     final data = await fetch(makeUrl(
       _setsUrlPath,

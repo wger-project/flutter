@@ -259,7 +259,7 @@ class SetFormWidget extends StatefulWidget {
   late Set _set;
 
   SetFormWidget(this._day, [Set? set]) {
-    this._set = set ?? Set.withData(day: _day.id, sets: 4);
+    this._set = set ?? Set.withData(day: _day.id, order: _day.sets.length, sets: 4);
   }
 
   @override

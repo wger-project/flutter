@@ -94,6 +94,14 @@ class WorkoutDayWidget extends StatefulWidget {
 
 class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
   bool _expanded = false;
+  late List<Set> _sets;
+
+  void initState() {
+    super.initState();
+    _sets = widget._day.sets;
+    _sets.sort((a, b) => a.order!.compareTo(b.order!));
+  }
+
   void _toggleExpanded() {
     setState(() {
       _expanded = !_expanded;
@@ -102,6 +110,7 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
 
   Widget getSetRow(Set set) {
     return Row(
+      key: ValueKey(set.id),
       crossAxisAlignment: CrossAxisAlignment.baseline,
       textBaseline: TextBaseline.alphabetic,
       children: [
@@ -127,7 +136,12 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
             visualDensity: VisualDensity.compact,
             icon: Icon(Icons.delete),
             iconSize: ICON_SIZE_SMALL,
-            onPressed: () {
+            onPressed: () async {
+              int _startIndex = _sets.indexOf(set);
+              setState(() {
+                _sets.remove(set);
+              });
+              _sets = await Provider.of<WorkoutPlansProvider>(context, listen: false).reorderSets(_sets, _startIndex);
               Provider.of<WorkoutPlansProvider>(context, listen: false).deleteSet(set);
             },
           ),
@@ -198,11 +212,27 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
                 ],
               ),
             Divider(),
-            ...widget._day.sets
-                .map(
-                  (set) => getSetRow(set),
-                )
-                .toList(),
+            ReorderableListView(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              onReorder: (_oldIndex, _newIndex) async {
+                int _startIndex = 0;
+                if (_oldIndex < _newIndex) {
+                  _newIndex -= 1;
+                  _startIndex = _oldIndex;
+                } else {
+                  _startIndex = _newIndex;
+                }
+                setState(() {
+                  _sets.insert(_newIndex, _sets.removeAt(_oldIndex));
+                });
+                _sets = await Provider.of<WorkoutPlansProvider>(context, listen: false).reorderSets(_sets, _startIndex);
+              },
+              children: [
+                for (final _set in _sets)
+                  getSetRow(_set),
+              ],
+            ),
             OutlinedButton(
               child: Text(AppLocalizations.of(context).addSet),
               onPressed: () {
