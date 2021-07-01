@@ -108,12 +108,20 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
     });
   }
 
-  Widget getSetRow(Set set) {
+  Widget getSetRow(Set set, int index) {
     return Row(
       key: ValueKey(set.id),
-      crossAxisAlignment: CrossAxisAlignment.baseline,
-      textBaseline: TextBaseline.alphabetic,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        if (_expanded)
+          IconButton(
+            visualDensity: VisualDensity.compact,
+            icon: Icon(Icons.delete),
+            iconSize: ICON_SIZE_SMALL,
+            onPressed: () {
+              Provider.of<WorkoutPlansProvider>(context, listen: false).deleteSet(set);
+            },
+          ),
         Expanded(
           child: Column(
             children: [
@@ -132,19 +140,12 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
           ),
         ),
         if (_expanded)
-          IconButton(
-            visualDensity: VisualDensity.compact,
-            icon: Icon(Icons.delete),
-            iconSize: ICON_SIZE_SMALL,
-            onPressed: () async {
-              int _startIndex = _sets.indexOf(set);
-              setState(() {
-                _sets.remove(set);
-              });
-              _sets = await Provider.of<WorkoutPlansProvider>(context, listen: false)
-                  .reorderSets(_sets, _startIndex);
-              Provider.of<WorkoutPlansProvider>(context, listen: false).deleteSet(set);
-            },
+          ReorderableDragStartListener(
+            index: index,
+            child: IconButton(
+              icon: Icon(Icons.drag_handle),
+              onPressed: null,
+            ),
           ),
       ],
     );
@@ -216,6 +217,7 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
             ReorderableListView(
               physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,
+              buildDefaultDragHandles: false,
               onReorder: (_oldIndex, _newIndex) async {
                 int _startIndex = 0;
                 if (_oldIndex < _newIndex) {
@@ -231,7 +233,7 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
                     .reorderSets(_sets, _startIndex);
               },
               children: [
-                for (final _set in _sets) getSetRow(_set),
+                for (var i = 0; i < widget._day.sets.length; i++) getSetRow(widget._day.sets[i], i),
               ],
             ),
             OutlinedButton(
