@@ -141,7 +141,8 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
               setState(() {
                 _sets.remove(set);
               });
-              _sets = await Provider.of<WorkoutPlansProvider>(context, listen: false).reorderSets(_sets, _startIndex);
+              _sets = await Provider.of<WorkoutPlansProvider>(context, listen: false)
+                  .reorderSets(_sets, _startIndex);
               Provider.of<WorkoutPlansProvider>(context, listen: false).deleteSet(set);
             },
           ),
@@ -226,11 +227,11 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
                 setState(() {
                   _sets.insert(_newIndex, _sets.removeAt(_oldIndex));
                 });
-                _sets = await Provider.of<WorkoutPlansProvider>(context, listen: false).reorderSets(_sets, _startIndex);
+                _sets = await Provider.of<WorkoutPlansProvider>(context, listen: false)
+                    .reorderSets(_sets, _startIndex);
               },
               children: [
-                for (final _set in _sets)
-                  getSetRow(_set),
+                for (final _set in _sets) getSetRow(_set),
               ],
             ),
             OutlinedButton(
