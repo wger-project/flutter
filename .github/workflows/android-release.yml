@@ -49,7 +49,7 @@ jobs:
           subdirectory: android
 
       - name: Build AAB
-        run: flutter build appbundle --release --no-sound-null-safety
+        run: flutter build appbundle --release
         env:
           WGER_API_KEY: ${{ secrets.WGER_API_KEY }}
 
