@@ -41,8 +41,7 @@ class WorkoutForm extends StatelessWidget {
   WorkoutForm(this._plan);
 
   final TextEditingController workoutNameController = TextEditingController();
-  final TextEditingController workoutDescriptionController =
-      TextEditingController();
+  final TextEditingController workoutDescriptionController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -57,17 +56,13 @@ class WorkoutForm extends StatelessWidget {
         children: [
           TextFormField(
             key: Key('field-name'),
-            decoration:
-                InputDecoration(labelText: AppLocalizations.of(context).name),
+            decoration: InputDecoration(labelText: AppLocalizations.of(context).name),
             controller: workoutNameController,
             validator: (value) {
               const minLength = 1;
               const maxLength = 100;
-              if (value!.isEmpty ||
-                  value.length < minLength ||
-                  value.length > maxLength) {
-                return AppLocalizations.of(context)
-                    .enterCharacters(minLength, maxLength);
+              if (value!.isEmpty || value.length < minLength || value.length > maxLength) {
+                return AppLocalizations.of(context).enterCharacters(minLength, maxLength);
               }
               return null;
             },
@@ -78,8 +73,7 @@ class WorkoutForm extends StatelessWidget {
           ),
           TextFormField(
             key: Key('field-description'),
-            decoration: InputDecoration(
-                labelText: AppLocalizations.of(context).description),
+            decoration: InputDecoration(labelText: AppLocalizations.of(context).description),
             minLines: 3,
             maxLines: 10,
             controller: workoutDescriptionController,
@@ -87,8 +81,7 @@ class WorkoutForm extends StatelessWidget {
               const minLength = 0;
               const maxLength = 1000;
               if (value!.length > maxLength) {
-                return AppLocalizations.of(context)
-                    .enterCharacters(minLength, maxLength);
+                return AppLocalizations.of(context).enterCharacters(minLength, maxLength);
               }
               return null;
             },
@@ -110,12 +103,10 @@ class WorkoutForm extends StatelessWidget {
 
               // Save to DB
               if (_plan.id != null) {
-                await Provider.of<WorkoutPlansProvider>(context, listen: false)
-                    .editWorkout(_plan);
+                await Provider.of<WorkoutPlansProvider>(context, listen: false).editWorkout(_plan);
                 Navigator.of(context).pop();
               } else {
-                _plan = await Provider.of<WorkoutPlansProvider>(context,
-                        listen: false)
+                _plan = await Provider.of<WorkoutPlansProvider>(context, listen: false)
                     .addWorkout(_plan);
                 Navigator.of(context).pushReplacementNamed(
                   WorkoutPlanScreen.routeName,
@@ -203,11 +194,8 @@ class _DayFormWidgetState extends State<DayFormWidget> {
             validator: (value) {
               const minLength = 1;
               const maxLength = 100;
-              if (value!.isEmpty ||
-                  value.length < minLength ||
-                  value.length > maxLength) {
-                return AppLocalizations.of(context)
-                    .enterCharacters(minLength, maxLength);
+              if (value!.isEmpty || value.length < minLength || value.length > maxLength) {
+                return AppLocalizations.of(context).enterCharacters(minLength, maxLength);
               }
 
               if (widget._day.daysOfWeek.length == 0) {
@@ -217,9 +205,7 @@ class _DayFormWidgetState extends State<DayFormWidget> {
             },
           ),
           SizedBox(height: 10),
-          ...Day.weekdays.keys
-              .map((dayNr) => DayCheckbox(dayNr, widget._day))
-              .toList(),
+          ...Day.weekdays.keys.map((dayNr) => DayCheckbox(dayNr, widget._day)).toList(),
           ElevatedButton(
             key: Key(SUBMIT_BUTTON_KEY_NAME),
             child: Text(AppLocalizations.of(context).save),
@@ -231,14 +217,12 @@ class _DayFormWidgetState extends State<DayFormWidget> {
 
               try {
                 if (widget._day.id == null) {
-                  Provider.of<WorkoutPlansProvider>(context, listen: false)
-                      .addDay(
+                  Provider.of<WorkoutPlansProvider>(context, listen: false).addDay(
                     widget._day,
                     widget.workout,
                   );
                 } else {
-                  Provider.of<WorkoutPlansProvider>(context, listen: false)
-                      .editDay(
+                  Provider.of<WorkoutPlansProvider>(context, listen: false).editDay(
                     widget._day,
                   );
                 }
@@ -275,8 +259,7 @@ class SetFormWidget extends StatefulWidget {
   late Set _set;
 
   SetFormWidget(this._day, [Set? set]) {
-    this._set =
-        set ?? Set.withData(day: _day.id, order: _day.sets.length, sets: 4);
+    this._set = set ?? Set.withData(day: _day.id, order: _day.sets.length, sets: 4);
   }
 
   @override
@@ -317,11 +300,9 @@ class _SetFormWidgetState extends State<SetFormWidget> {
         setting.order = order;
         setting.exercise = exercise;
         setting.weightUnit =
-            Provider.of<WorkoutPlansProvider>(context, listen: false)
-                .defaultWeightUnit;
+            Provider.of<WorkoutPlansProvider>(context, listen: false).defaultWeightUnit;
         setting.repetitionUnit =
-            Provider.of<WorkoutPlansProvider>(context, listen: false)
-                .defaultRepetitionUnit;
+            Provider.of<WorkoutPlansProvider>(context, listen: false).defaultRepetitionUnit;
 
         widget._set.settings.add(setting);
       }
@@ -340,8 +321,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
             child: Column(
               //crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(AppLocalizations.of(context)
-                    .nrOfSets(_currentSetSliderValue.round())),
+                Text(AppLocalizations.of(context).nrOfSets(_currentSetSliderValue.round())),
                 Slider(
                   value: _currentSetSliderValue,
                   min: 1,
@@ -390,18 +370,14 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                                 content: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Text(AppLocalizations.of(context)
-                                        .selectExercises),
+                                    Text(AppLocalizations.of(context).selectExercises),
                                     SizedBox(height: 10),
-                                    Text(AppLocalizations.of(context)
-                                        .sameRepetitions)
+                                    Text(AppLocalizations.of(context).sameRepetitions)
                                   ],
                                 ),
                                 actions: [
                                   TextButton(
-                                    child: Text(
-                                        MaterialLocalizations.of(context)
-                                            .closeButtonLabel),
+                                    child: Text(MaterialLocalizations.of(context).closeButtonLabel),
                                     onPressed: () {
                                       Navigator.of(context).pop();
                                     },
@@ -415,8 +391,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                       ),
                     ),
                     suggestionsCallback: (pattern) async {
-                      return await Provider.of<ExercisesProvider>(context,
-                              listen: false)
+                      return await Provider.of<ExercisesProvider>(context, listen: false)
                           .searchExercise(
                         pattern,
                         Localizations.localeOf(context).languageCode,
@@ -425,14 +400,12 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                     itemBuilder: (context, suggestion) {
                       final result = suggestion! as Map;
 
-                      final exercise =
-                          Provider.of<ExercisesProvider>(context, listen: false)
-                              .findById(result['data']['id']);
+                      final exercise = Provider.of<ExercisesProvider>(context, listen: false)
+                          .findById(result['data']['id']);
                       return ListTile(
                         leading: Container(
                           width: 45,
-                          child:
-                              ExerciseImageWidget(image: exercise.getMainImage),
+                          child: ExerciseImageWidget(image: exercise.getMainImage),
                         ),
                         title: Text(exercise.name),
                         subtitle: Text(
@@ -444,9 +417,8 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                     },
                     onSuggestionSelected: (suggestion) {
                       final result = suggestion! as Map;
-                      final exercise =
-                          Provider.of<ExercisesProvider>(context, listen: false)
-                              .findById(result['data']['id']);
+                      final exercise = Provider.of<ExercisesProvider>(context, listen: false)
+                          .findById(result['data']['id']);
                       addExercise(exercise);
                       this._exercisesController.text = '';
                     },
@@ -461,8 +433,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                               .where((s) => s.weight == null && s.reps == null)
                               .length ==
                           widget._set.settings.length) {
-                        return AppLocalizations.of(context)
-                            .enterRepetitionsOrWeight;
+                        return AppLocalizations.of(context).enterRepetitionsOrWeight;
                       }
                       return null;
                     },
@@ -470,9 +441,8 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                 ),
                 SizedBox(height: 10),
                 ...widget._set.exercisesObj.map((exercise) {
-                  final settings = widget._set.settings
-                      .where((e) => e.exerciseObj.id == exercise.id)
-                      .toList();
+                  final settings =
+                      widget._set.settings.where((e) => e.exerciseObj.id == exercise.id).toList();
 
                   return ExerciseSetting(
                     exercise,
@@ -492,25 +462,22 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                     }
                     _formKey.currentState!.save();
 
-                    final workoutProvider = Provider.of<WorkoutPlansProvider>(
-                        context,
-                        listen: false);
+                    final workoutProvider =
+                        Provider.of<WorkoutPlansProvider>(context, listen: false);
 
                     // Save set
                     Set setDb = await workoutProvider.addSet(widget._set);
                     widget._set.id = setDb.id;
 
                     // Remove unused settings
-                    widget._set.settings
-                        .removeWhere((s) => s.weight == null && s.reps == null);
+                    widget._set.settings.removeWhere((s) => s.weight == null && s.reps == null);
 
                     // Save remaining settings
                     for (var setting in widget._set.settings) {
                       setting.setId = setDb.id!;
                       setting.comment = '';
 
-                      Setting settingDb =
-                          await workoutProvider.addSetting(setting);
+                      Setting settingDb = await workoutProvider.addSetting(setting);
                       setting.id = settingDb.id;
                     }
 
@@ -586,8 +553,7 @@ class ExerciseSetting extends StatelessWidget {
                   SizedBox(width: 4),
                   Flexible(
                     flex: 3,
-                    child:
-                        WeightUnitInputWidget(setting, key: Key(i.toString())),
+                    child: WeightUnitInputWidget(setting, key: Key(i.toString())),
                   ),
                 ],
               ),
@@ -834,8 +800,7 @@ class _WeightUnitInputWidgetState extends State<WeightUnitInputWidget> {
 
     return DropdownButtonFormField(
       value: selectedWeightUnit,
-      decoration:
-          InputDecoration(labelText: AppLocalizations.of(context).weightUnit),
+      decoration: InputDecoration(labelText: AppLocalizations.of(context).weightUnit),
       onChanged: (WeightUnit? newValue) {
         setState(() {
           selectedWeightUnit = newValue!;
@@ -862,8 +827,7 @@ class RepetitionUnitInputWidget extends StatefulWidget {
   RepetitionUnitInputWidget(this._setting);
 
   @override
-  _RepetitionUnitInputWidgetState createState() =>
-      _RepetitionUnitInputWidgetState();
+  _RepetitionUnitInputWidgetState createState() => _RepetitionUnitInputWidgetState();
 }
 
 class _RepetitionUnitInputWidgetState extends State<RepetitionUnitInputWidget> {
@@ -873,8 +837,7 @@ class _RepetitionUnitInputWidgetState extends State<RepetitionUnitInputWidget> {
 
     return DropdownButtonFormField(
       value: selectedWeightUnit,
-      decoration: InputDecoration(
-          labelText: AppLocalizations.of(context).repetitionUnit),
+      decoration: InputDecoration(labelText: AppLocalizations.of(context).repetitionUnit),
       isDense: true,
       onChanged: (RepetitionUnit? newValue) {
         setState(() {
