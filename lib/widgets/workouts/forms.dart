@@ -709,10 +709,10 @@ class WeightInputWidget extends StatelessWidget {
 /// Can be used with a Setting or a Log object
 class RiRInputWidget extends StatefulWidget {
   final dynamic _setting;
-  late String dropdownValue;
-  late double _currentSetSliderValue;
+  late final String dropdownValue;
+  late final double _currentSetSliderValue;
 
-  final SLIDER_START = -0.5;
+  static const SLIDER_START = -0.5;
 
   RiRInputWidget(this._setting) {
     dropdownValue = _setting.rir != null ? _setting.rir : Setting.DEFAULT_RIR;
@@ -764,7 +764,7 @@ class _RiRInputWidgetState extends State<RiRInputWidget> {
         Expanded(
           child: Slider(
             value: widget._currentSetSliderValue,
-            min: widget.SLIDER_START,
+            min: RiRInputWidget.SLIDER_START,
             max: (Setting.POSSIBLE_RIR_VALUES.length - 2) / 2,
             divisions: Setting.POSSIBLE_RIR_VALUES.length - 1,
             label: getSliderLabel(widget._currentSetSliderValue),
