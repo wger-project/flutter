@@ -82,6 +82,7 @@ class Exercise {
     this.muscles = muscles ?? [];
     if (category != null) {
       this.categoryObj = category;
+      this.categoryId = category.id;
     }
   }
 
