@@ -14,7 +14,8 @@ WeightUnit _$WeightUnitFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$WeightUnitToJson(WeightUnit instance) => <String, dynamic>{
+Map<String, dynamic> _$WeightUnitToJson(WeightUnit instance) =>
+    <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
     };

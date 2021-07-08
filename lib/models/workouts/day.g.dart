@@ -7,7 +7,8 @@ part of 'day.dart';
 // **************************************************************************
 
 Day _$DayFromJson(Map<String, dynamic> json) {
-  $checkKeys(json, requiredKeys: const ['id', 'training', 'description', 'day']);
+  $checkKeys(json,
+      requiredKeys: const ['id', 'training', 'description', 'day']);
   return Day()
     ..id = json['id'] as int?
     ..workoutId = json['training'] as int
