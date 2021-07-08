@@ -23,7 +23,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 0.2.0+11
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: '>=2.13.3 <3.0.0'
 
 dependencies:
   flutter:
@@ -34,16 +34,14 @@ dependencies:
   android_metadata: ^0.2.1
   camera: ^0.8.1+3
   charts_flutter: ^0.11.0
-  collection: ^1.15.0-nullsafety.4
-  cupertino_icons: ^1.0.0
-  flutter_calendar_carousel: ^2.0.1
+  cupertino_icons: ^1.0.3
   flutter_html: ^2.1.0
-  flutter_typeahead: ^3.1.1
+  flutter_typeahead: ^3.1.3
   font_awesome_flutter: ^9.1.0
-  http: ^0.13.2
+  http: ^0.13.3
   image_picker: ^0.8.1+3
   intl: ^0.17.0
-  json_annotation: ^4.0.0
+  json_annotation: ^4.0.1
   package_info: ^2.0.2
   provider: ^5.0.0
   shared_preferences: ^2.0.6
