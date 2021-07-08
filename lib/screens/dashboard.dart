@@ -38,88 +38,19 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  Future<void>? _initialData;
-
-  @override
-  void initState() {
-    super.initState();
-
-    // Loading data here, since the build method can be called more than once
-    _initialData = _loadEntries();
-  }
-
-  /// Load initial data from the server
-  Future<void> _loadEntries() async {
-    if (!Provider.of<AuthProvider>(context, listen: false).dataInit) {
-      Provider.of<AuthProvider>(context, listen: false).setServerVersion();
-
-      final workoutPlansProvider = Provider.of<WorkoutPlansProvider>(context, listen: false);
-      final nutritionPlansProvider = Provider.of<NutritionPlansProvider>(context, listen: false);
-      final exercisesProvider = Provider.of<ExercisesProvider>(context, listen: false);
-      final galleryProvider = Provider.of<GalleryProvider>(context, listen: false);
-      final weightProvider = Provider.of<BodyWeightProvider>(context, listen: false);
-
-      // Base data
-      await Future.wait([
-        workoutPlansProvider.fetchAndSetUnits(),
-        nutritionPlansProvider.fetchIngredientsFromCache(),
-        exercisesProvider.fetchAndSetExercises(),
-      ]);
-
-      // Plans, weight and gallery
-      await Future.wait([
-        galleryProvider.fetchAndSetGallery(),
-        nutritionPlansProvider.fetchAndSetAllPlansSparse(),
-        workoutPlansProvider.fetchAndSetAllPlansSparse(),
-        weightProvider.fetchAndSetEntries(),
-      ]);
-
-      // Current nutritional plan
-      if (nutritionPlansProvider.currentPlan != null) {
-        final plan = nutritionPlansProvider.currentPlan!;
-        await nutritionPlansProvider.fetchAndSetPlanFull(plan.id!);
-      }
-
-      // Current workout plan
-      if (workoutPlansProvider.activePlan != null) {
-        final planId = workoutPlansProvider.activePlan!.id!;
-        await workoutPlansProvider.fetchAndSetWorkoutPlanFull(planId);
-        workoutPlansProvider.setCurrentPlan(planId);
-      }
-    }
-
-    Provider.of<AuthProvider>(context, listen: false).dataInit = true;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: WgerAppBar(AppLocalizations.of(context).labelDashboard),
-      body: FutureBuilder(
-        future: _initialData,
-        builder: (ctx, authResultSnapshot) =>
-            authResultSnapshot.connectionState == ConnectionState.waiting
-                ? Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        AppLocalizations.of(context).loadingText,
-                        style: Theme.of(context).textTheme.headline5,
-                      ),
-                      Padding(padding: EdgeInsets.symmetric(vertical: 8)),
-                      LinearProgressIndicator(),
-                    ],
-                  )
-                : SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        DashboardWorkoutWidget(),
-                        DashboardNutritionWidget(),
-                        DashboardWeightWidget(),
-                        DashboardCalendarWidget(),
-                      ],
-                    ),
-                  ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            DashboardWorkoutWidget(),
+            DashboardNutritionWidget(),
+            DashboardWeightWidget(),
+            DashboardCalendarWidget(),
+          ],
+        ),
       ),
     );
   }
