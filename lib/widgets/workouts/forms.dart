@@ -440,16 +440,34 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                   ),
                 ),
                 SizedBox(height: 10),
-                ...widget._set.exercisesObj.map((exercise) {
+                ...widget._set.exercisesObj.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final exercise = entry.value;
+                  final showSupersetInfo = (index + 1) < widget._set.exercisesObj.length;
                   final settings =
                       widget._set.settings.where((e) => e.exerciseObj.id == exercise.id).toList();
 
-                  return ExerciseSetting(
-                    exercise,
-                    settings,
-                    _detailed,
-                    _currentSetSliderValue,
-                    removeExercise,
+                  return Column(
+                    children: [
+                      ExerciseSetting(
+                        exercise,
+                        settings,
+                        _detailed,
+                        _currentSetSliderValue,
+                        removeExercise,
+                      ),
+                      if (showSupersetInfo)
+                        Padding(
+                          padding: const EdgeInsets.all(3.0),
+                          child: Text('+'),
+                        ),
+                      if (showSupersetInfo) Text(AppLocalizations.of(context).supersetWith),
+                      if (showSupersetInfo)
+                        Padding(
+                          padding: const EdgeInsets.all(3.0),
+                          child: Text('+'),
+                        ),
+                    ],
                   );
                 }).toList(),
                 ElevatedButton(

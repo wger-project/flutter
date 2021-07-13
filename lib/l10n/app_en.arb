@@ -108,6 +108,10 @@
   "@searchExercise": {
     "description": "Label on set form. Selected exercises are added to the set"
   },
+  "supersetWith": "superset with",
+  "@supersetWith": {
+    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
+  },
   "equipment": "Equipment",
   "@equipment": {
     "description": "Equipment needed to perform an exercise"
