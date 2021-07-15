@@ -59,7 +59,7 @@ class WorkoutForm extends StatelessWidget {
             decoration: InputDecoration(labelText: AppLocalizations.of(context).name),
             controller: workoutNameController,
             validator: (value) {
-              const minLength = 5;
+              const minLength = 1;
               const maxLength = 100;
               if (value!.isEmpty || value.length < minLength || value.length > maxLength) {
                 return AppLocalizations.of(context).enterCharacters(minLength, maxLength);
@@ -192,7 +192,7 @@ class _DayFormWidgetState extends State<DayFormWidget> {
               widget._day.description = value!;
             },
             validator: (value) {
-              const minLength = 5;
+              const minLength = 1;
               const maxLength = 100;
               if (value!.isEmpty || value.length < minLength || value.length > maxLength) {
                 return AppLocalizations.of(context).enterCharacters(minLength, maxLength);
@@ -440,16 +440,34 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                   ),
                 ),
                 SizedBox(height: 10),
-                ...widget._set.exercisesObj.map((exercise) {
+                ...widget._set.exercisesObj.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final exercise = entry.value;
+                  final showSupersetInfo = (index + 1) < widget._set.exercisesObj.length;
                   final settings =
                       widget._set.settings.where((e) => e.exerciseObj.id == exercise.id).toList();
 
-                  return ExerciseSetting(
-                    exercise,
-                    settings,
-                    _detailed,
-                    _currentSetSliderValue,
-                    removeExercise,
+                  return Column(
+                    children: [
+                      ExerciseSetting(
+                        exercise,
+                        settings,
+                        _detailed,
+                        _currentSetSliderValue,
+                        removeExercise,
+                      ),
+                      if (showSupersetInfo)
+                        Padding(
+                          padding: const EdgeInsets.all(3.0),
+                          child: Text('+'),
+                        ),
+                      if (showSupersetInfo) Text(AppLocalizations.of(context).supersetWith),
+                      if (showSupersetInfo)
+                        Padding(
+                          padding: const EdgeInsets.all(3.0),
+                          child: Text('+'),
+                        ),
+                    ],
                   );
                 }).toList(),
                 ElevatedButton(

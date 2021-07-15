@@ -3,7 +3,7 @@
   "@customServerUrl": {
     "description": "Label in the form where the users can enter their own wger instance"
   },
-  "invalidUsername": "请输入一个合法的用户名",
+  "invalidUsername": "请输入正确的用户名",
   "@invalidUsername": {
     "description": "Error message when the user enters an invalid username"
   },
@@ -11,7 +11,7 @@
   "@username": {},
   "email": "邮箱",
   "@email": {},
-  "invalidEmail": "请输入一个有效的邮箱地址",
+  "invalidEmail": "请输入正确的邮箱地址",
   "@invalidEmail": {
     "description": "Error message when the user enters an invalid email"
   },
@@ -19,7 +19,7 @@
   "@confirmPassword": {},
   "password": "密码",
   "@password": {},
-  "passwordTooShort": "密码太短",
+  "passwordTooShort": "密码长度不够",
   "@passwordTooShort": {
     "description": "Error message when the user a password that is too short"
   },
@@ -55,7 +55,7 @@
   "@login": {
     "description": "Text for login button"
   },
-  "newDay": "全新的一天",
+  "newDay": "训练日",
   "@newDay": {},
   "workoutSession": "健身记录",
   "@workoutSession": {
@@ -95,7 +95,7 @@
   "@comment": {
     "description": "Comment, additional information"
   },
-  "dayDescriptionHelp": "今天做了哪些锻炼项目",
+  "dayDescriptionHelp": "写一写完成了哪些锻炼，或者锻炼了身体的哪些部位",
   "@dayDescriptionHelp": {},
   "set": "设置",
   "@set": {
@@ -105,11 +105,11 @@
   "@repetitionUnit": {},
   "weightUnit": "重量单位",
   "@weightUnit": {},
-  "noWorkoutPlans": "你还没有设定健身计划",
+  "noWorkoutPlans": "你还没有设定锻炼计划",
   "@noWorkoutPlans": {
     "description": "Message shown when the user has no workout plans"
   },
-  "newWorkout": "新计划",
+  "newWorkout": "新增锻炼计划",
   "@newWorkout": {
     "description": "Header when adding a new workout"
   },
@@ -133,11 +133,11 @@
   "@successfullyDeleted": {
     "description": "Message when an item was successfully deleted"
   },
-  "labelDashboard": "统计",
+  "labelDashboard": "主页",
   "@labelDashboard": {
     "description": "Title for screen dashboard"
   },
-  "labelWorkoutPlan": "计划",
+  "labelWorkoutPlan": "锻炼计划",
   "@labelWorkoutPlan": {
     "description": "Title for screen workout plan"
   },
@@ -153,7 +153,7 @@
   "@labelBottomNavWorkout": {
     "description": "Label used in bottom navigation, use a short word"
   },
-  "labelWorkoutPlans": "计划",
+  "labelWorkoutPlans": "锻炼计划",
   "@labelWorkoutPlans": {
     "description": "Title for screen workout plans"
   },
@@ -181,15 +181,15 @@
   "@optionsLabel": {
     "description": "Label for the popup with general app options"
   },
-  "selectImage": "选择一张图片",
+  "selectImage": "请选择一张图片",
   "@selectImage": {
     "description": "Label and error message when the user hasn't selected an image to save"
   },
-  "enterValidNumber": "请输入一个有效的阿拉伯数字",
+  "enterValidNumber": "请输入有效数值",
   "@enterValidNumber": {
     "description": "Error message when the user has submitted an invalid number (e.g. '3,.,.,.')"
   },
-  "enterCharacters": "最小值： {min} ，最大值： {max}",
+  "enterCharacters": "最短长度是{min} 位，最长 {max}位",
   "@enterCharacters": {
     "description": "Error message when the user hasn't entered the correct number of characters in a form",
     "type": "text",
@@ -228,7 +228,7 @@
   "@aboutSourceTitle": {
     "description": "Title for source code section in the about dialog"
   },
-  "aboutDescription": "谢谢使用wger!",
+  "aboutDescription": "谢谢使用!",
   "@aboutDescription": {
     "description": "Text in the about dialog"
   },
@@ -286,7 +286,7 @@
   "@carbohydrates": {},
   "protein": "蛋白质",
   "@protein": {},
-  "kcal": "千卡路里",
+  "kcal": "千卡",
   "@kcal": {
     "description": "Energy in a meal in kilocalories, kcal"
   },
@@ -298,11 +298,11 @@
   "@g": {
     "description": "Abbreviation for gram"
   },
-  "kJ": "千焦耳",
+  "kJ": "千焦",
   "@kJ": {
     "description": "Energy in a meal in kilo joules, kJ"
   },
-  "ingredient": "杂项",
+  "ingredient": "营养成分",
   "@ingredient": {},
   "timeEnd": "结束时间",
   "@timeEnd": {
@@ -338,13 +338,13 @@
   "@nutritionalPlans": {},
   "nutritionalDiary": "摄食日记",
   "@nutritionalDiary": {},
-  "nutritionalPlan": "营养规划",
+  "nutritionalPlan": "饮食规划",
   "@nutritionalPlan": {},
   "logMeal": "记下这次用餐",
   "@logMeal": {},
   "mealLogged": "用餐情况保存到日记中",
   "@mealLogged": {},
-  "addMeal": "用餐",
+  "addMeal": "增加用餐",
   "@addMeal": {},
   "save": "保存",
   "@save": {},
@@ -354,6 +354,81 @@
   },
   "description": "详细信息",
   "@description": {},
-  "logHelpEntriesUnits": "有计量单位和数量的会以图形化的方式展现，其他例如时间、未完成的项目将不会出现在这里",
-  "@logHelpEntriesUnits": {}
+  "logHelpEntriesUnits": "有计量单位和数量的会以图形化的方式展现，类似时间、未完成的项目将不会出现在这里",
+  "@logHelpEntriesUnits": {},
+  "selectIngredient": "请选择一个营养成分",
+  "@selectIngredient": {
+    "description": "Error message when the user hasn't selected an ingredient from the autocompleter"
+  },
+  "setUnitsAndRir": "设置计量单位和组内重复次数",
+  "@setUnitsAndRir": {
+    "description": "Label shown on the slider where the user can toggle showing units and RiR",
+    "type": "text"
+  },
+  "nrOfSets": "锻炼次数: {nrOfSets}",
+  "@nrOfSets": {
+    "description": "Label shown on the slider where the user selects the nr of sets",
+    "type": "text",
+    "placeholders": {
+      "nrOfSets": {}
+    }
+  },
+  "enterRepetitionsOrWeight": "请至少填写其中一项的重复次数或重量",
+  "@enterRepetitionsOrWeight": {
+    "description": "Error message when the user hasn't filled in the forms for exercise sets"
+  },
+  "timeStartAhead": "开始时间不能早于结束时间",
+  "@timeStartAhead": {},
+  "addIngredient": "添加营养成分",
+  "@addIngredient": {},
+  "addSet": "增加训练项目",
+  "@addSet": {
+    "description": "Label for the button that adds a set (to a workout day)"
+  },
+  "logHelpEntries": "同一项目在当天有多次记录的情况下，图中显示训练量较大的项目",
+  "@logHelpEntries": {},
+  "plateCalculator": "圈",
+  "@plateCalculator": {
+    "description": "Label used for the plate calculator in the gym mode"
+  },
+  "rirNotUsed": "未设置组内重复次数",
+  "@rirNotUsed": {
+    "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
+  },
+  "rir": "组内重复次数",
+  "@rir": {
+    "description": "Shorthand for Repetitions In Reserve"
+  },
+  "reps": "重复次数",
+  "@reps": {
+    "description": "Shorthand for repetitions, used when space constraints are tighter"
+  },
+  "repetitions": "重复次数",
+  "@repetitions": {
+    "description": "Repetitions for an exercise set"
+  },
+  "setNr": "设置 {nr}",
+  "@setNr": {
+    "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {}
+    }
+  },
+  "muscles": "主要部位",
+  "@muscles": {
+    "description": "(main) muscles trained by an exercise"
+  },
+  "aboutTranslationText": "可以在weblate网站上参与翻译工作",
+  "@aboutTranslationText": {
+    "description": "Text for translation section in the about dialog"
+  },
+  "aboutTranslationTitle": "翻译",
+  "@aboutTranslationTitle": {
+    "description": "Title for translation section in the about dialog"
+  },
+  "musclesSecondary": "次要部位",
+  "@musclesSecondary": {
+    "description": "secondary muscles trained by an exercise"
+  }
 }
