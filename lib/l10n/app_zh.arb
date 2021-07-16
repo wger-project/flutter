@@ -430,5 +430,13 @@
   "musclesSecondary": "次要部位",
   "@musclesSecondary": {
     "description": "secondary muscles trained by an exercise"
+  },
+  "newSet": "新增训练日",
+  "@newSet": {
+    "description": "Header when adding a new set to a workout day"
+  },
+  "supersetWith": "组合",
+  "@supersetWith": {
+    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
   }
 }
