@@ -27,6 +27,7 @@ import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/theme/theme.dart';
+import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/exercises/exercises.dart';
 import 'package:wger/widgets/exercises/images.dart';
 import 'package:wger/widgets/workouts/forms.dart';
@@ -125,6 +126,7 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
         Expanded(
           child: Column(
             children: [
+              if (set.comment != '') MutedText(set.comment),
               ...set.settingsFiltered
                   .map(
                     (setting) => SettingWidget(

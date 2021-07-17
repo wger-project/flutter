@@ -440,6 +440,25 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                   ),
                 ),
                 SizedBox(height: 10),
+                TextFormField(
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context).comment,
+                    errorMaxLines: 2,
+                  ),
+                  keyboardType: TextInputType.text,
+                  validator: (value) {
+                    const minLength = 0;
+                    const maxLength = 200;
+                    if (value!.length > maxLength) {
+                      return AppLocalizations.of(context).enterCharacters(minLength, maxLength);
+                    }
+                    return null;
+                  },
+                  onSaved: (newValue) {
+                    widget._set.comment = newValue!;
+                  },
+                ),
+                SizedBox(height: 10),
                 ...widget._set.exercisesObj.asMap().entries.map((entry) {
                   final index = entry.key;
                   final exercise = entry.value;

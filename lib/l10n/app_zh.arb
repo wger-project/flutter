@@ -67,7 +67,7 @@
   "@exercise": {
     "description": "An exercise for a workout"
   },
-  "todaysWorkout": "今日一览",
+  "todaysWorkout": "锻炼项目",
   "@todaysWorkout": {},
   "jumpTo": "转到",
   "@jumpTo": {
@@ -81,7 +81,7 @@
   "@gymMode": {
     "description": "Label when starting the gym mode"
   },
-  "selectExercises": "如果你想做分组，可以找几个练习项目，他们将被放在一起",
+  "selectExercises": "可以搜索多个练习项目，组成混合训练",
   "@selectExercises": {},
   "impression": "自我感觉",
   "@impression": {
@@ -95,7 +95,7 @@
   "@comment": {
     "description": "Comment, additional information"
   },
-  "dayDescriptionHelp": "写一写完成了哪些锻炼，或者锻炼了身体的哪些部位",
+  "dayDescriptionHelp": "起个名称，可以填写锻炼项目或者锻炼的身体部位",
   "@dayDescriptionHelp": {},
   "set": "设置",
   "@set": {
@@ -105,7 +105,7 @@
   "@repetitionUnit": {},
   "weightUnit": "重量单位",
   "@weightUnit": {},
-  "noWorkoutPlans": "你还没有设定锻炼计划",
+  "noWorkoutPlans": "您还没有设定锻炼计划",
   "@noWorkoutPlans": {
     "description": "Message shown when the user has no workout plans"
   },
@@ -198,7 +198,7 @@
       "max": {}
     }
   },
-  "selectExercise": "请选择一项锻炼",
+  "selectExercise": "请选择一个锻炼项目",
   "@selectExercise": {
     "description": "Error message when the user hasn't selected an exercise in the form"
   },
@@ -232,7 +232,7 @@
   "@aboutDescription": {
     "description": "Text in the about dialog"
   },
-  "goToDetailPage": "转到详情",
+  "goToDetailPage": "查看详细信息",
   "@goToDetailPage": {},
   "toggleDetails": "查看更多",
   "@toggleDetails": {
@@ -256,7 +256,7 @@
   },
   "edit": "修改",
   "@edit": {},
-  "noWeightEntries": "还没有记录过体重",
+  "noWeightEntries": "您还没有记录过体重",
   "@noWeightEntries": {
     "description": "Message shown when the user has no logged weight entries"
   },
@@ -324,13 +324,13 @@
   "@date": {
     "description": "The date of a workout log or body weight entry"
   },
-  "weight": "重量",
+  "weight": "体重",
   "@weight": {
     "description": "The weight of a workout log or body weight entry"
   },
   "anErrorOccurred": "出错了!",
   "@anErrorOccurred": {},
-  "noNutritionalPlans": "没有设定营养规划",
+  "noNutritionalPlans": "您还没有设定营养规划",
   "@noNutritionalPlans": {
     "description": "Message shown when the user has no nutritional plans"
   },
@@ -338,9 +338,9 @@
   "@nutritionalPlans": {},
   "nutritionalDiary": "摄食日记",
   "@nutritionalDiary": {},
-  "nutritionalPlan": "饮食规划",
+  "nutritionalPlan": "营养规划",
   "@nutritionalPlan": {},
-  "logMeal": "记下这次用餐",
+  "logMeal": "记录用餐",
   "@logMeal": {},
   "mealLogged": "用餐情况保存到日记中",
   "@mealLogged": {},
@@ -385,7 +385,7 @@
   "@addSet": {
     "description": "Label for the button that adds a set (to a workout day)"
   },
-  "logHelpEntries": "同一项目在当天有多次记录的情况下，图中显示训练量较大的项目",
+  "logHelpEntries": "同一项目在当天有多次记录的情况下, 图中只显示训练量较大的项目",
   "@logHelpEntries": {},
   "plateCalculator": "圈",
   "@plateCalculator": {
@@ -407,7 +407,7 @@
   "@repetitions": {
     "description": "Repetitions for an exercise set"
   },
-  "setNr": "设置 {nr}",
+  "setNr": "训练 {nr}",
   "@setNr": {
     "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
     "type": "text",
@@ -430,5 +430,25 @@
   "musclesSecondary": "次要部位",
   "@musclesSecondary": {
     "description": "secondary muscles trained by an exercise"
+  },
+  "newSet": "新增训练日",
+  "@newSet": {
+    "description": "Header when adding a new set to a workout day"
+  },
+  "supersetWith": "组合",
+  "@supersetWith": {
+    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
+  },
+  "aboutContactUsText": "聊一聊",
+  "@aboutContactUsText": {
+    "description": "Text for contact us section in the about dialog"
+  },
+  "aboutBugsText": "反馈一下你的使用体验吧",
+  "@aboutBugsText": {
+    "description": "Text for bugs section in the about dialog"
+  },
+  "plateCalculatorNotDivisible": "达不到预定重量",
+  "@plateCalculatorNotDivisible": {
+    "description": "Error message when the current weight is not reachable with plates (e.g. 33.1 kg)"
   }
 }
