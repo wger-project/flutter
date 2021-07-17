@@ -86,6 +86,7 @@ WorkoutPlan getWorkout() {
     day: 1,
     sets: 3,
     order: 1,
+    comment: 'Important to do exercises correctly',
   );
   set1.addExercise(exercise1);
   set1.settings.add(setting1);

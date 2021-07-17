@@ -38,6 +38,9 @@ class Set {
   @JsonKey(required: true)
   int? order;
 
+  @JsonKey(required: true, defaultValue: '')
+  late String comment;
+
   @JsonKey(ignore: true)
   List<Exercise> exercisesObj = [];
 
@@ -64,6 +67,7 @@ class Set {
     this.id,
     sets,
     day,
+    comment,
     order,
     exercises,
     settings,
@@ -71,6 +75,7 @@ class Set {
   }) {
     this.sets = sets ?? DEFAULT_NR_SETS;
     this.order = order ?? 1;
+    this.comment = comment ?? '';
     this.exercisesObj = exercises ?? [];
     this.exercisesIds = exercisesObj.map((e) => e.id).toList();
     this.settings = settings ?? [];
