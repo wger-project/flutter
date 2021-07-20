@@ -463,5 +463,9 @@
     "description": "Label used for the plate calculator in the gym mode"
   },
   "timeStartAhead": "Die Startzeit kann nicht vor der Endzeit liegen",
-  "@timeStartAhead": {}
+  "@timeStartAhead": {},
+  "supersetWith": "Supersatz mit",
+  "@supersetWith": {
+    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
+  }
 }
