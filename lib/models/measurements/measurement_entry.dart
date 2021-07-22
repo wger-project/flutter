@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:wger/helpers/json.dart';
 
 part 'measurement_entry.g.dart';
 
@@ -10,8 +11,8 @@ class MeasurementEntry {
   @JsonKey(required: true)
   final int category;
 
-  @JsonKey(required: true)
-  final String date;
+  @JsonKey(required: true, toJson: toDate)
+  final DateTime date;
 
   @JsonKey(required: true)
   final num value;

@@ -1,10 +1,10 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
 
-part 'measurement.g.dart';
+part 'measurement_category.g.dart';
 
 @JsonSerializable()
-class Measurement {
+class MeasurementCategory {
   @JsonKey(required: true)
   final int id;
 
@@ -17,7 +17,7 @@ class Measurement {
   @JsonKey(required: true)
   final List<MeasurementEntry> measurementEntries;
 
-  Measurement({
+  MeasurementCategory({
     required this.id,
     required this.name,
     required this.unit,
@@ -25,7 +25,8 @@ class Measurement {
   });
 
   // Boilerplate
-  factory Measurement.fromJson(Map<String, dynamic> json) => _$MeasurementFromJson(json);
+  factory MeasurementCategory.fromJson(Map<String, dynamic> json) =>
+      _$MeasurementCategoryFromJson(json);
 
   Map<String, dynamic> toJson() => _$MeasurementToJson(this);
 }

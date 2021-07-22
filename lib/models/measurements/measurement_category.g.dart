@@ -1,14 +1,14 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'measurement.dart';
+part of 'measurement_category.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-Measurement _$MeasurementFromJson(Map<String, dynamic> json) {
+MeasurementCategory _$MeasurementCategoryFromJson(Map<String, dynamic> json) {
   $checkKeys(json, requiredKeys: const ['id', 'name', 'unit', 'measurementEntries']);
-  return Measurement(
+  return MeasurementCategory(
     id: json['id'] as int,
     name: json['name'] as String,
     unit: json['unit'] as String,
@@ -19,9 +19,9 @@ Measurement _$MeasurementFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$MeasurementToJson(Measurement instance) => <String, dynamic>{
+Map<String, dynamic> _$MeasurementToJson(MeasurementCategory instance) => <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
       'unit': instance.unit,
-      'measurementEntries': instance.measurementEntries,
+      'measurementEntries': instance.measurementEntries.map((e) => e.toJson()).toList(),
     };
