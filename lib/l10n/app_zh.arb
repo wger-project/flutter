@@ -312,7 +312,7 @@
   "@timeStart": {
     "description": "The starting time of a workout"
   },
-  "time": "时长",
+  "time": "时间",
   "@time": {
     "description": "The time of a meal or workout"
   },
