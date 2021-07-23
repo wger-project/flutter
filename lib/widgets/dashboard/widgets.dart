@@ -156,7 +156,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
         children: [
           ListTile(
             title: Text(
-              _hasContent ? _plan!.description : AppLocalizations.of(context).labelWorkoutPlan,
+              _hasContent ? _plan!.description : AppLocalizations.of(context).nutritionalPlan,
               style: Theme.of(context).textTheme.headline4,
             ),
             subtitle: Text(
