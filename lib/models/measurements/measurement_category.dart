@@ -14,7 +14,7 @@ class MeasurementCategory {
   @JsonKey(required: true)
   final String unit;
 
-  @JsonKey(required: true)
+  @JsonKey(required: true, name: 'measurement_entries')
   final List<MeasurementEntry> measurementEntries;
 
   MeasurementCategory({
@@ -28,5 +28,5 @@ class MeasurementCategory {
   factory MeasurementCategory.fromJson(Map<String, dynamic> json) =>
       _$MeasurementCategoryFromJson(json);
 
-  Map<String, dynamic> toJson() => _$MeasurementToJson(this);
+  Map<String, dynamic> toJson() => _$MeasurementCategoryToJson(this);
 }

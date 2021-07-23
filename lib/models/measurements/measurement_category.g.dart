@@ -7,21 +7,20 @@ part of 'measurement_category.dart';
 // **************************************************************************
 
 MeasurementCategory _$MeasurementCategoryFromJson(Map<String, dynamic> json) {
-  $checkKeys(json, requiredKeys: const ['id', 'name', 'unit', 'measurementEntries']);
+  $checkKeys(json, requiredKeys: const ['id', 'name', 'unit', 'measurement_entries']);
   return MeasurementCategory(
     id: json['id'] as int,
     name: json['name'] as String,
     unit: json['unit'] as String,
-    measurementEntries: (json['measurementEntries'] as List<dynamic>)
+    measurementEntries: (json['measurement_entries'] as List<dynamic>)
         .map((e) => MeasurementEntry.fromJson(e as Map<String, dynamic>))
-        .toList()
-        .cast<MeasurementEntry>(),
+        .toList(),
   );
 }
 
-Map<String, dynamic> _$MeasurementToJson(MeasurementCategory instance) => <String, dynamic>{
+Map<String, dynamic> _$MeasurementCategoryToJson(MeasurementCategory instance) => <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
       'unit': instance.unit,
-      'measurementEntries': instance.measurementEntries.map((e) => e.toJson()).toList(),
+      'measurement_entries': instance.measurementEntries.map((e) => e.toJson()).toList(),
     };
