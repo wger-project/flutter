@@ -43,11 +43,11 @@ void main() {
     expect(category.id, tMeasurementCategory.id);
     expect(category.name, tMeasurementCategory.name);
     expect(category.unit, tMeasurementCategory.unit);
-    expect(entry.id, tMeasurementCategory.measurementEntries[0].id);
-    expect(entry.category, tMeasurementCategory.measurementEntries[0].category);
-    expect(entry.date, tMeasurementCategory.measurementEntries[0].date);
-    expect(entry.value, tMeasurementCategory.measurementEntries[0].value);
-    expect(entry.notes, tMeasurementCategory.measurementEntries[0].notes);
+    expect(entry.id, tMeasurementCategory.entries[0].id);
+    expect(entry.category, tMeasurementCategory.entries[0].category);
+    expect(entry.date, tMeasurementCategory.entries[0].date);
+    expect(entry.value, tMeasurementCategory.entries[0].value);
+    expect(entry.notes, tMeasurementCategory.entries[0].notes);
   });
 
   test('should convert a MeasurementCategory object to a JSON map', () {

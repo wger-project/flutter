@@ -15,7 +15,7 @@ class MeasurementCategory {
   final String unit;
 
   @JsonKey(ignore: true)
-  List<MeasurementEntry> measurementEntries = [];
+  List<MeasurementEntry> entries = [];
 
   MeasurementCategory({
     required this.id,
@@ -23,7 +23,7 @@ class MeasurementCategory {
     required this.unit,
     List<MeasurementEntry>? measurementEntries,
   }) {
-    this.measurementEntries = measurementEntries ?? [];
+    this.entries = measurementEntries ?? [];
   }
 
   // Boilerplate

@@ -22,6 +22,7 @@ import 'package:provider/provider.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/gallery.dart';
+import 'package:wger/providers/measurements.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/auth_screen.dart';
@@ -77,6 +78,12 @@ class MyApp extends StatelessWidget {
               NutritionPlansProvider(Provider.of<AuthProvider>(context, listen: false), []),
           update: (context, auth, previous) =>
               previous != null ? previous : NutritionPlansProvider(auth, []),
+        ),
+        ChangeNotifierProxyProvider<AuthProvider, MeasurementProvider>(
+          create: (context) =>
+              MeasurementProvider(Provider.of<AuthProvider>(context, listen: false)),
+          update: (context, auth, previous) =>
+              previous != null ? previous : MeasurementProvider(auth),
         ),
         ChangeNotifierProxyProvider<AuthProvider, BodyWeightProvider>(
           create: (context) =>
