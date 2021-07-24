@@ -99,6 +99,7 @@ void main() {
     var mockMeasurement = MeasurementProvider(testAuthProvider, mockHttp);
 
     test('Test fetching categories', () async {
+      expect(mockMeasurement.categories.length, 0);
       await mockMeasurement.fetchAndSetCategories();
       expect(mockMeasurement.categories.length, 2);
 
