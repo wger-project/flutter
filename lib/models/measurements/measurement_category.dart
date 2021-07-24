@@ -14,15 +14,17 @@ class MeasurementCategory {
   @JsonKey(required: true)
   final String unit;
 
-  @JsonKey(required: true, name: 'measurement_entries')
-  final List<MeasurementEntry> measurementEntries;
+  @JsonKey(ignore: true)
+  List<MeasurementEntry> measurementEntries = [];
 
   MeasurementCategory({
     required this.id,
     required this.name,
     required this.unit,
-    required this.measurementEntries,
-  });
+    List<MeasurementEntry>? measurementEntries,
+  }) {
+    this.measurementEntries = measurementEntries ?? [];
+  }
 
   // Boilerplate
   factory MeasurementCategory.fromJson(Map<String, dynamic> json) =>

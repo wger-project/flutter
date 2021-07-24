@@ -17,16 +17,18 @@ class MeasurementEntry {
   @JsonKey(required: true)
   final num value;
 
-  @JsonKey(required: true)
-  final String notes;
+  @JsonKey(required: true, defaultValue: '')
+  late String notes;
 
   MeasurementEntry({
     required this.id,
     required this.category,
     required this.date,
     required this.value,
-    required this.notes,
-  });
+    notes,
+  }) {
+    this.notes = notes ?? '';
+  }
 
   // Boilerplate
   factory MeasurementEntry.fromJson(Map<String, dynamic> json) => _$MeasurementEntryFromJson(json);

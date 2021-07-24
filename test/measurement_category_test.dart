@@ -24,32 +24,30 @@ void main() {
     'id': 123,
     'name': 'Bizeps',
     'unit': 'cm',
-    'measurementEntries': [
-      {
-        'id': 1234,
-        'category': 123,
-        'date': '2021-07-22',
-        'value': 83,
-        'notes': 'notes',
-      }
-    ]
+  };
+
+  Map<String, dynamic> tMeasurementEntryMap = {
+    'id': 1234,
+    'category': 123,
+    'date': '2021-07-22',
+    'value': 83,
+    'notes': 'notes'
   };
 
   test('should convert a JSON map to a MeasurementCategory object', () {
     // act
-    final result = MeasurementCategory.fromJson(tMeasurementCategoryMap);
+    final category = MeasurementCategory.fromJson(tMeasurementCategoryMap);
+    final entry = MeasurementEntry.fromJson(tMeasurementEntryMap);
 
     // assert
-    expect(result.id, tMeasurementCategory.id);
-    expect(result.name, tMeasurementCategory.name);
-    expect(result.unit, tMeasurementCategory.unit);
-    expect(result.measurementEntries.length, tMeasurementCategory.measurementEntries.length);
-    expect(result.measurementEntries[0].id, tMeasurementCategory.measurementEntries[0].id);
-    expect(
-        result.measurementEntries[0].category, tMeasurementCategory.measurementEntries[0].category);
-    expect(result.measurementEntries[0].date, tMeasurementCategory.measurementEntries[0].date);
-    expect(result.measurementEntries[0].value, tMeasurementCategory.measurementEntries[0].value);
-    expect(result.measurementEntries[0].notes, tMeasurementCategory.measurementEntries[0].notes);
+    expect(category.id, tMeasurementCategory.id);
+    expect(category.name, tMeasurementCategory.name);
+    expect(category.unit, tMeasurementCategory.unit);
+    expect(entry.id, tMeasurementCategory.measurementEntries[0].id);
+    expect(entry.category, tMeasurementCategory.measurementEntries[0].category);
+    expect(entry.date, tMeasurementCategory.measurementEntries[0].date);
+    expect(entry.value, tMeasurementCategory.measurementEntries[0].value);
+    expect(entry.notes, tMeasurementCategory.measurementEntries[0].notes);
   });
 
   test('should convert a MeasurementCategory object to a JSON map', () {
