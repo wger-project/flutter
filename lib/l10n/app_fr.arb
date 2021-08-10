@@ -450,5 +450,9 @@
     "description": "Error message when the user tries to register a username with forbidden characters"
   },
   "timeStartAhead": "L'heure de début doit être antérieure à l'heure de fin.",
-  "@timeStartAhead": {}
+  "@timeStartAhead": {},
+  "supersetWith": "supersérie avec",
+  "@supersetWith": {
+    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
+  }
 }
