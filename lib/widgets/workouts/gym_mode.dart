@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -46,11 +45,9 @@ import 'package:wger/widgets/workouts/forms.dart';
 class GymMode extends StatefulWidget {
   final Day _workoutDay;
   late TimeOfDay _start;
-
   GymMode(this._workoutDay) {
     _start = TimeOfDay.now();
   }
-
   @override
   _GymModeState createState() => _GymModeState();
 }
@@ -60,11 +57,9 @@ class _GymModeState extends State<GymMode> {
 
   /// Map with the first (navigation) page for each exercise
   Map<String, int> _exercisePages = new Map();
-
   PageController _controller = PageController(
     initialPage: 0,
   );
-
   @override
   void dispose() {
     _controller.dispose();
@@ -74,12 +69,10 @@ class _GymModeState extends State<GymMode> {
   @override
   void initState() {
     super.initState();
-
     // Calculate amount of elements for progress indicator
     for (var set in widget._workoutDay.sets) {
       _totalElements = _totalElements + set.settingsComputed.length;
     }
-
     // Calculate the pages for the navigation
     //
     // This duplicates the code below in the getContent method, but it seems to
@@ -266,6 +259,8 @@ class _LogPageState extends State<LogPage> {
   final _weightController = TextEditingController();
   var _detailed = false;
 
+  FocusNode focusNode = new FocusNode();
+
   @override
   void initState() {
     super.initState();
@@ -304,9 +299,11 @@ class _LogPageState extends State<LogPage> {
             enabled: true,
             controller: _repsController,
             keyboardType: TextInputType.number,
+            focusNode: focusNode,
             onFieldSubmitted: (_) {},
             onSaved: (newValue) {
               widget._log.reps = int.parse(newValue!);
+              focusNode.unfocus();
             },
             validator: (value) {
               try {
