@@ -259,11 +259,13 @@ class _LogPageState extends State<LogPage> {
   final _weightController = TextEditingController();
   var _detailed = false;
 
-  FocusNode focusNode = new FocusNode();
+  late FocusNode focusNode;
 
   @override
   void initState() {
     super.initState();
+
+    focusNode = FocusNode();
 
     if (widget._setting.reps != null) {
       _repsController.text = widget._setting.reps.toString();
@@ -272,6 +274,12 @@ class _LogPageState extends State<LogPage> {
     if (widget._setting.weight != null) {
       _weightController.text = widget._setting.weight.toString();
     }
+  }
+
+  @override
+  void dispose() {
+    focusNode.dispose();
+    super.dispose();
   }
 
   Widget getRepsWidget() {
