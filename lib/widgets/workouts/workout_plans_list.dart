@@ -39,7 +39,7 @@ class WorkoutPlansList extends StatelessWidget {
           key: Key(currentWorkout.id.toString()),
           confirmDismiss: (direction) async {
             // Delete workout from DB
-            final bool res = await showDialog(
+            final res = await showDialog(
                 context: context,
                 builder: (BuildContext contextDialog) {
                   return AlertDialog(

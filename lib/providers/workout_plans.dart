@@ -167,9 +167,9 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
 
   /// Fetches a workout plan fully, i.e. with all corresponding child attributes
   Future<WorkoutPlan> fetchAndSetWorkoutPlanFull(int workoutId) async {
-    // Load a list of all settings so that we can search through it late
+    // Load a list of all settings so that we can search through it
     //
-    // This is a bit ugly, but makes saves sending lots of requests later on
+    // This is a bit ugly, but saves us sending lots of requests later on
     final allSettingsData = await fetch(
       makeUrl(_settingsUrlPath, query: {'limit': '1000'}),
     );
@@ -181,20 +181,17 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
       plan = await fetchAndSetPlanSparse(workoutId);
     }
 
-    // Plan
-    final fullPlanData = await fetch(
-      makeUrl(_workoutPlansUrlPath, id: workoutId, objectMethod: 'canonical_representation'),
-    );
-
     // Days
     List<Day> days = [];
-    for (var dayData in fullPlanData['day_list']) {
-      final day = Day.fromJson(dayData['obj']);
+    final daysData = await fetch(makeUrl(_daysUrlPath, query: {'training': plan.id.toString()}));
+    for (final dayEntry in daysData['results']) {
+      final day = Day.fromJson(dayEntry);
 
       // Sets
       List<Set> sets = [];
-      for (var setData in dayData['set_list']) {
-        final workoutSet = Set.fromJson(setData['obj']);
+      final setData = await fetch(makeUrl(_setsUrlPath, query: {'exerciseday': day.id.toString()}));
+      for (final setEntry in setData['results']) {
+        final workoutSet = Set.fromJson(setEntry);
 
         fetchComputedSettings(workoutSet); // request!
 
@@ -401,6 +398,20 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
     final set = Set.fromJson(data);
     notifyListeners();
     return set;
+  }
+
+  Future<void> editSet(Set workoutSet) async {
+    await patch(workoutSet.toJson(), makeUrl(_setsUrlPath, id: workoutSet.id));
+    notifyListeners();
+  }
+
+  Future<List<Set>> reorderSets(List<Set> sets, int startIndex) async {
+    for (int i = startIndex; i < sets.length; i++) {
+      sets[i].order = i;
+      await patch(sets[i].toJson(), makeUrl(_setsUrlPath, id: sets[i].id));
+    }
+    notifyListeners();
+    return sets;
   }
 
   Future<void> fetchComputedSettings(Set workoutSet) async {

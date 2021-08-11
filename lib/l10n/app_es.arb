@@ -379,5 +379,55 @@
   "login": "Acceder",
   "@login": {
     "description": "Text for login button"
+  },
+  "addImage": "Añadir imagen",
+  "@addImage": {},
+  "gallery": "galería",
+  "@gallery": {},
+  "chooseFromLibrary": "Elije de la biblioteca de fotos",
+  "@chooseFromLibrary": {},
+  "takePicture": "Toma una foto",
+  "@takePicture": {},
+  "optionsLabel": "Opciones",
+  "@optionsLabel": {
+    "description": "Label for the popup with general app options"
+  },
+  "selectImage": "Por favor selecciona una imagen",
+  "@selectImage": {
+    "description": "Label and error message when the user hasn't selected an image to save"
+  },
+  "goToDetailPage": "Ir a la página de detalles",
+  "@goToDetailPage": {},
+  "name": "Nombre",
+  "@name": {
+    "description": "Name for a workout or nutritional plan"
+  },
+  "jumpTo": "Saltar a",
+  "@jumpTo": {
+    "description": "Imperative. Label used in popup allowing the user to jump to a specific exercise while in the gym mode"
+  },
+  "pause": "Pausa",
+  "@pause": {
+    "description": "Noun, not an imperative! Label used for the pause when using the gym mode"
+  },
+  "musclesSecondary": "Músculos secundarios",
+  "@musclesSecondary": {
+    "description": "secondary muscles trained by an exercise"
+  },
+  "muscles": "Músculos",
+  "@muscles": {
+    "description": "(main) muscles trained by an exercise"
+  },
+  "labelBottomNavNutrition": "Nutrición",
+  "@labelBottomNavNutrition": {
+    "description": "Label used in bottom navigation, use a short word"
+  },
+  "labelBottomNavWorkout": "Rutina",
+  "@labelBottomNavWorkout": {
+    "description": "Label used in bottom navigation, use a short word"
+  },
+  "usernameValidChars": "El nombre de usuario sólo puede contener letras, dígitos y los caracteres @, +, ., - y _",
+  "@usernameValidChars": {
+    "description": "Error message when the user tries to register a username with forbidden characters"
   }
 }

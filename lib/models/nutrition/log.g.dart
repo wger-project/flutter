@@ -7,14 +7,8 @@ part of 'log.dart';
 // **************************************************************************
 
 Log _$LogFromJson(Map<String, dynamic> json) {
-  $checkKeys(json, requiredKeys: const [
-    'id',
-    'plan',
-    'datetime',
-    'ingredient',
-    'weight_unit',
-    'amount'
-  ]);
+  $checkKeys(json,
+      requiredKeys: const ['id', 'plan', 'datetime', 'ingredient', 'weight_unit', 'amount']);
   return Log(
     id: json['id'] as int?,
     ingredientId: json['ingredient'] as int,

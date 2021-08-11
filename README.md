@@ -56,11 +56,11 @@ Generate translation files with ``flutter gen-l10n``
 
 
 ### 5
-Start the application with ``flutter run --no-sound-null-safety`` or use your IDE
+Start the application with ``flutter run`` or use your IDE
 (please note that depending on how you run your emulator you will need to change the
 IP address of the server)
 
-You can run the tests with ``flutter test --no-sound-null-safety``
+You can run the tests with ``flutter test``
 
 ## Translation
 Translate the app to your language on  [Weblate](https://hosted.weblate.org/engage/wger/).

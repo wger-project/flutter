@@ -449,5 +449,23 @@
   "pause": "Pause",
   "@pause": {
     "description": "Noun, not an imperative! Label used for the pause when using the gym mode"
+  },
+  "usernameValidChars": "Ein Benutzername darf nur Buchstaben, Ziffern und die Zeichen @, +, ., - und _ enthalten",
+  "@usernameValidChars": {
+    "description": "Error message when the user tries to register a username with forbidden characters"
+  },
+  "plateCalculatorNotDivisible": "Mit den vorhandenen Platten kann das Gewicht nicht erreicht werden",
+  "@plateCalculatorNotDivisible": {
+    "description": "Error message when the current weight is not reachable with plates (e.g. 33.1 kg)"
+  },
+  "plateCalculator": "Platten",
+  "@plateCalculator": {
+    "description": "Label used for the plate calculator in the gym mode"
+  },
+  "timeStartAhead": "Die Startzeit kann nicht vor der Endzeit liegen",
+  "@timeStartAhead": {},
+  "supersetWith": "Supersatz mit",
+  "@supersetWith": {
+    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
   }
 }
