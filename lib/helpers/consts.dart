@@ -60,3 +60,12 @@ const BAR_WEIGHT = 20;
 
 /// ID of the equipment entry for barbell
 const ID_EQUIPMENT_BARBELL = 1;
+
+/// kcal per gram of protein (approx)
+const ENERGY_PROTEIN = 4;
+
+/// kcal per gram of carbohydrates (approx)
+const ENERGY_CARBOHYDRATES = 4;
+
+/// kcal per gram of fat (approx)
+const ENERGY_FAT = 9;
