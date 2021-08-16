@@ -339,6 +339,13 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  /// Deletes a log entry
+  Future<void> deleteLog(int logId, int planId) async {
+    final plan = findById(planId);
+    plan.logs.removeWhere((element) => element.id == logId);
+    notifyListeners();
+  }
+
   /// Load nutrition diary entries for plan
   Future<void> fetchAndSetLogs(NutritionalPlan plan) async {
     // TODO: update fetch to that it can use the pagination

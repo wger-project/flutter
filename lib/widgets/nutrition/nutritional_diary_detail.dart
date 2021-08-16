@@ -19,9 +19,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/nutrition/nutritrional_values.dart';
+import 'package:wger/providers/nutrition.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
@@ -216,7 +218,12 @@ class NutritionalDiaryDetailWidget extends StatelessWidget {
               ],
             ),
           ),
-          IconButton(onPressed: null, icon: Icon(Icons.edit)),
+          IconButton(
+              onPressed: () {
+                Provider.of<NutritionPlansProvider>(context, listen: false)
+                    .deleteLog(log.id!, _nutritionalPlan.id!);
+              },
+              icon: Icon(Icons.delete_outline)),
         ],
       );
     }).toList();
