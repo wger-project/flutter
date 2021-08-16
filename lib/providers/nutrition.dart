@@ -341,6 +341,8 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
 
   /// Deletes a log entry
   Future<void> deleteLog(int logId, int planId) async {
+    await deleteRequest(_nutritionDiaryPath, logId);
+
     final plan = findById(planId);
     plan.logs.removeWhere((element) => element.id == logId);
     notifyListeners();
