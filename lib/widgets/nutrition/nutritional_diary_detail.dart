@@ -234,8 +234,6 @@ class NutritionalDiaryDetailWidget extends StatelessWidget {
 
     return Column(
       children: [
-        Text('Detail view for nutritional plan'),
-        Text('Content here'),
         Container(
           padding: EdgeInsets.all(15),
           height: 220,
