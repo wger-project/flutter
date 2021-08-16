@@ -223,7 +223,7 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Text(''),
+                      TextButton(onPressed: () => null, child: Text('')),
                       Text(
                           '${AppLocalizations.of(context).energy} (${AppLocalizations.of(context).kcal})'),
                       Text(
