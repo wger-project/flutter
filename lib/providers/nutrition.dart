@@ -346,6 +346,7 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
       makeUrl(_nutritionDiaryPath, query: {'plan': plan.id.toString(), 'limit': '1000'}),
     );
 
+    plan.logs = [];
     for (var logData in data['results']) {
       var log = Log.fromJson(logData);
       final ingredient = await fetchIngredient(log.ingredientId);
