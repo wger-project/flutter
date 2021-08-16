@@ -111,4 +111,27 @@ class NutritionalPlan {
 
     return out;
   }
+
+  /// Returns the nutritional values for the given date
+  NutritionalValues? getValuesForDate(DateTime date) {
+    final values = this.logEntriesValues;
+    final dateKey = DateTime(date.year, date.month, date.day);
+
+    return values.containsKey(dateKey) ? values[dateKey] : null;
+  }
+
+  /// Returns the nutritional logs for the given date
+  List<Log> getLogsForDate(DateTime date) {
+    List<Log> out = [];
+    for (var log in logs) {
+      final dateKey = DateTime(date.year, date.month, date.day);
+      final logKey = DateTime(log.datetime.year, log.datetime.month, log.datetime.day);
+
+      if (dateKey == logKey) {
+        out.add(log);
+      }
+    }
+
+    return out;
+  }
 }

@@ -47,8 +47,12 @@ class NutritionalDiaryScreen extends StatelessWidget {
         DateFormat.yMd(Localizations.localeOf(context).languageCode).format(args.date),
       ),
       body: Consumer<NutritionPlansProvider>(
-        builder: (context, nutritionProvider, child) =>
-            NutritionalDiaryDetailWidget(args.plan, args.date),
+        builder: (context, nutritionProvider, child) => SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: NutritionalDiaryDetailWidget(args.plan, args.date),
+          ),
+        ),
       ),
     );
   }

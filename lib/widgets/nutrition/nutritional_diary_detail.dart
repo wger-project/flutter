@@ -17,17 +17,220 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
+import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
+import 'package:wger/models/nutrition/nutritrional_values.dart';
+import 'package:wger/theme/theme.dart';
+import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 
 class NutritionalDiaryDetailWidget extends StatelessWidget {
   final NutritionalPlan _nutritionalPlan;
   final DateTime _date;
+  static const double tablePadding = 7;
   NutritionalDiaryDetailWidget(this._nutritionalPlan, this._date);
+
+  Widget getTable(
+    NutritionalValues valuesTotal,
+    NutritionalValues valuesDate,
+    BuildContext context,
+  ) {
+    return Table(
+      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+      border: TableBorder(
+        horizontalInside: BorderSide(width: 1, color: wgerTextMuted),
+      ),
+      columnWidths: {0: FractionColumnWidth(0.4)},
+      children: [
+        TableRow(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: tablePadding),
+              child: Text(
+                AppLocalizations.of(context).macronutrients,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+            Text(
+              AppLocalizations.of(context).planned,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            Text(
+              AppLocalizations.of(context).logged,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            Text(
+              AppLocalizations.of(context).difference,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+        TableRow(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: tablePadding),
+              child: Text(AppLocalizations.of(context).energy),
+            ),
+            Text(
+              valuesTotal.energy.toStringAsFixed(0) + AppLocalizations.of(context).kcal,
+            ),
+            Text(
+              valuesDate.energy.toStringAsFixed(0) + AppLocalizations.of(context).kcal,
+            ),
+            Text((valuesDate.energy - valuesTotal.energy).toStringAsFixed(0)),
+          ],
+        ),
+        TableRow(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: tablePadding),
+              child: Text(AppLocalizations.of(context).protein),
+            ),
+            Text(valuesTotal.protein.toStringAsFixed(0) + AppLocalizations.of(context).g),
+            Text(valuesDate.protein.toStringAsFixed(0) + AppLocalizations.of(context).g),
+            Text((valuesDate.protein - valuesTotal.protein).toStringAsFixed(0)),
+          ],
+        ),
+        TableRow(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: tablePadding),
+              child: Text(AppLocalizations.of(context).carbohydrates),
+            ),
+            Text(valuesTotal.carbohydrates.toStringAsFixed(0) + AppLocalizations.of(context).g),
+            Text(valuesDate.carbohydrates.toStringAsFixed(0) + AppLocalizations.of(context).g),
+            Text((valuesDate.carbohydrates - valuesTotal.carbohydrates).toStringAsFixed(0)),
+          ],
+        ),
+        TableRow(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: tablePadding, horizontal: 12),
+              child: Text(AppLocalizations.of(context).sugars),
+            ),
+            Text(
+                valuesTotal.carbohydratesSugar.toStringAsFixed(0) + AppLocalizations.of(context).g),
+            Text(valuesDate.carbohydratesSugar.toStringAsFixed(0) + AppLocalizations.of(context).g),
+            Text((valuesDate.carbohydratesSugar - valuesTotal.carbohydratesSugar)
+                .toStringAsFixed(0)),
+          ],
+        ),
+        TableRow(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: tablePadding),
+              child: Text(AppLocalizations.of(context).fat),
+            ),
+            Text(valuesTotal.fat.toStringAsFixed(0) + AppLocalizations.of(context).g),
+            Text(valuesDate.fat.toStringAsFixed(0) + AppLocalizations.of(context).g),
+            Text((valuesDate.fat - valuesTotal.fat).toStringAsFixed(0)),
+          ],
+        ),
+        TableRow(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: tablePadding, horizontal: 12),
+              child: Text(AppLocalizations.of(context).saturatedFat),
+            ),
+            Text(valuesTotal.fatSaturated.toStringAsFixed(0) + AppLocalizations.of(context).g),
+            Text(valuesDate.fatSaturated.toStringAsFixed(0) + AppLocalizations.of(context).g),
+            Text((valuesDate.fatSaturated - valuesTotal.fatSaturated).toStringAsFixed(0)),
+          ],
+        ),
+        TableRow(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: tablePadding),
+              child: Text(AppLocalizations.of(context).fibres),
+            ),
+            Text(valuesTotal.fibres.toStringAsFixed(0) + AppLocalizations.of(context).g),
+            Text(valuesDate.fibres.toStringAsFixed(0) + AppLocalizations.of(context).g),
+            Text((valuesDate.fibres - valuesTotal.fibres).toStringAsFixed(0)),
+          ],
+        ),
+        TableRow(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: tablePadding),
+              child: Text(AppLocalizations.of(context).sodium),
+            ),
+            Text(valuesTotal.sodium.toStringAsFixed(0) + AppLocalizations.of(context).g),
+            Text(valuesDate.sodium.toStringAsFixed(0) + AppLocalizations.of(context).g),
+            Text((valuesDate.sodium - valuesTotal.sodium).toStringAsFixed(0)),
+          ],
+        ),
+      ],
+    );
+  }
+
+  List<Widget> getEntriesTable(List<Log> logs, BuildContext context) {
+    return logs.map((log) {
+      final values = log.nutritionalValues;
+
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Text(
+            DateFormat.Hm(Localizations.localeOf(context).languageCode).format(log.datetime),
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  log.amount.toStringAsFixed(0) +
+                      AppLocalizations.of(context).g +
+                      ' ' +
+                      log.ingredientObj.name,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                SizedBox(height: 4),
+                MutedText(
+                  '${AppLocalizations.of(context).energy}: '
+                  '${values.energy.toStringAsFixed(0)}'
+                  '${AppLocalizations.of(context).kcal}',
+                ),
+                MutedText(
+                  '${AppLocalizations.of(context).protein}: '
+                  '${values.protein.toStringAsFixed(0)}'
+                  '${AppLocalizations.of(context).g}',
+                ),
+                MutedText(
+                  '${AppLocalizations.of(context).carbohydrates}: '
+                  '${values.carbohydrates.toStringAsFixed(0)} '
+                  '${AppLocalizations.of(context).g} '
+                  '(${values.carbohydratesSugar.toStringAsFixed(0)} ${AppLocalizations.of(context).sugars})',
+                ),
+                MutedText(
+                  '${AppLocalizations.of(context).fat}: '
+                  '${values.fat.toStringAsFixed(0)}'
+                  '${AppLocalizations.of(context).g} '
+                  '(${values.fatSaturated.toStringAsFixed(0)} ${AppLocalizations.of(context).saturatedFat})',
+                ),
+                SizedBox(height: 12),
+              ],
+            ),
+          ),
+          IconButton(onPressed: null, icon: Icon(Icons.edit)),
+        ],
+      );
+    }).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final nutritionalValues = _nutritionalPlan.nutritionalValues;
+    final valuesTotal = _nutritionalPlan.nutritionalValues;
+    final valuesDate = _nutritionalPlan.getValuesForDate(this._date);
+    final logs = _nutritionalPlan.getLogsForDate(this._date);
+
+    if (valuesDate == null) {
+      return Text('');
+    }
 
     return Column(
       children: [
@@ -36,8 +239,16 @@ class NutritionalDiaryDetailWidget extends StatelessWidget {
         Container(
           padding: EdgeInsets.all(15),
           height: 220,
-          child: NutritionalPlanPieChartWidget(nutritionalValues),
+          child: NutritionalPlanPieChartWidget(valuesDate),
         ),
+        getTable(valuesTotal, valuesDate, context),
+        SizedBox(height: 10),
+        Text(
+          AppLocalizations.of(context).labelWorkoutLogs,
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.headline6,
+        ),
+        ...getEntriesTable(logs, context),
       ],
     );
   }

@@ -290,6 +290,15 @@
     "description": "Energy in a meal in kilocalories, kcal"
   },
   "macronutrients": "Macronutrients",
+  "planned": "Planned",
+  "@planned": {
+    "description": "Header for the column of 'planned' nutritional values, i.e. what should be eaten"
+  },
+  "logged": "Logged",
+  "@logged": {
+    "description": "Header for the column of 'logged' nutritional values, i.e. what was eaten"
+  },
+  "difference": "Difference",
   "percentEnergy": "Percent of energy",
   "gPerBodyKg": "g per body kg",
   "@gPerBodyKg": {
