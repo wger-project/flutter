@@ -247,12 +247,7 @@ class NutritionalDiaryDetailWidget extends StatelessWidget {
           child: NutritionalPlanPieChartWidget(valuesDate),
         ),
         getTable(valuesTotal, valuesDate, context),
-        SizedBox(height: 10),
-        Text(
-          AppLocalizations.of(context).labelWorkoutLogs,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.headline6,
-        ),
+        SizedBox(height: 15),
         ...getEntriesTable(logs, context),
       ],
     );
