@@ -124,7 +124,7 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                     Text(nutritionalValues.protein.toStringAsFixed(0) +
                         AppLocalizations.of(context).g),
                     Text(valuesPercentage.protein.toStringAsFixed(1)),
-                    valuesGperKg != null ? Text(valuesGperKg.protein.toStringAsFixed(1)) : Text(''),
+                    Text(valuesGperKg != null ? valuesGperKg.protein.toStringAsFixed(1) : ''),
                   ],
                 ),
                 TableRow(
@@ -136,9 +136,7 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                     Text(nutritionalValues.carbohydrates.toStringAsFixed(0) +
                         AppLocalizations.of(context).g),
                     Text(valuesPercentage.carbohydrates.toStringAsFixed(1)),
-                    valuesGperKg != null
-                        ? Text(valuesGperKg.carbohydrates.toStringAsFixed(1))
-                        : Text(''),
+                    Text(valuesGperKg != null ? valuesGperKg.carbohydrates.toStringAsFixed(1) : ''),
                   ],
                 ),
                 TableRow(
@@ -161,7 +159,7 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                     ),
                     Text(nutritionalValues.fat.toStringAsFixed(0) + AppLocalizations.of(context).g),
                     Text(valuesPercentage.fat.toStringAsFixed(1)),
-                    valuesGperKg != null ? Text(valuesGperKg.fat.toStringAsFixed(1)) : Text(''),
+                    Text(valuesGperKg != null ? valuesGperKg.fat.toStringAsFixed(1) : ''),
                   ],
                 ),
                 TableRow(
