@@ -40,6 +40,11 @@ class BodyWeightProvider extends WgerBaseProvider with ChangeNotifier {
     _entries = [];
   }
 
+  /// Returns the latest (newest) weight entry or null if there are no entries
+  WeightEntry? getLastEntry() {
+    return this._entries.length > 0 ? this._entries.last : null;
+  }
+
   WeightEntry findById(int id) {
     return _entries.firstWhere((plan) => plan.id == id);
   }
@@ -47,7 +52,7 @@ class BodyWeightProvider extends WgerBaseProvider with ChangeNotifier {
   WeightEntry? findByDate(DateTime date) {
     try {
       return _entries.firstWhere((plan) => plan.date == date);
-    } on StateError catch (e) {
+    } on StateError {
       return null;
     }
   }

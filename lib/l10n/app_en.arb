@@ -289,6 +289,16 @@
   "@kcal": {
     "description": "Energy in a meal in kilocalories, kcal"
   },
+  "macronutrients": "Macronutrients",
+  "percentEnergy": "Percent of energy",
+  "gPerBodyKg": "g per body kg",
+  "@gPerBodyKg": {
+    "description": "Label used for total sums of e.g. calories or similar in grams per Kg of body weight"
+  },
+  "total": "Total",
+  "@total": {
+    "description": "Label used for total sums of e.g. calories or similar"
+  },
   "kJ": "kJ",
   "@kJ": {
     "description": "Energy in a meal in kilo joules, kJ"
