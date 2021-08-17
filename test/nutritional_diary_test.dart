@@ -26,13 +26,13 @@ import '../test_data/nutritional_plans.dart';
 
 void main() {
   Widget getWidget({locale = 'en'}) {
-    final plan = getNutritionalPlan();
-
     return MaterialApp(
       locale: Locale(locale),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      home: NutritionalDiaryDetailWidget(plan, DateTime(2021, 6, 1)),
+      home: Card(
+        child: NutritionalDiaryDetailWidget(getNutritionalPlan(), DateTime(2021, 6, 1)),
+      ),
     );
   }
 

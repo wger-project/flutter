@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
+import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
@@ -101,6 +102,11 @@ NutritionalPlan getNutritionalPlan() {
     creationDate: DateTime(2021, 5, 23),
   );
   plan.meals = [meal1, meal2];
+
+  // Add logs
+  plan.logs.add(Log.fromMealItem(mealItem1, 1, DateTime(2021, 6, 1)));
+  plan.logs.add(Log.fromMealItem(mealItem2, 1, DateTime(2021, 6, 2)));
+  plan.logs.add(Log.fromMealItem(mealItem3, 1, DateTime(2021, 6, 3)));
 
   return plan;
 }
