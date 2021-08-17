@@ -241,12 +241,21 @@ class NutritionalDiaryDetailWidget extends StatelessWidget {
 
     return Column(
       children: [
-        Container(
-          padding: EdgeInsets.all(15),
-          height: 220,
-          child: NutritionalPlanPieChartWidget(valuesDate),
+        Card(
+          child: Column(
+            children: [
+              Container(
+                padding: EdgeInsets.all(15),
+                height: 220,
+                child: NutritionalPlanPieChartWidget(valuesDate),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: getTable(valuesTotal, valuesDate, context),
+              ),
+            ],
+          ),
         ),
-        getTable(valuesTotal, valuesDate, context),
         SizedBox(height: 15),
         ...getEntriesTable(logs, context),
       ],
