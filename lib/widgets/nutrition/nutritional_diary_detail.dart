@@ -25,8 +25,8 @@ import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/nutrition/nutritrional_values.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/theme/theme.dart';
-import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
+import 'package:wger/widgets/nutrition/helpers.dart';
 
 class NutritionalDiaryDetailWidget extends StatelessWidget {
   final NutritionalPlan _nutritionalPlan;
@@ -192,28 +192,7 @@ class NutritionalDiaryDetailWidget extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
                 SizedBox(height: 4),
-                MutedText(
-                  '${AppLocalizations.of(context).energy}: '
-                  '${values.energy.toStringAsFixed(0)}'
-                  '${AppLocalizations.of(context).kcal}',
-                ),
-                MutedText(
-                  '${AppLocalizations.of(context).protein}: '
-                  '${values.protein.toStringAsFixed(0)}'
-                  '${AppLocalizations.of(context).g}',
-                ),
-                MutedText(
-                  '${AppLocalizations.of(context).carbohydrates}: '
-                  '${values.carbohydrates.toStringAsFixed(0)} '
-                  '${AppLocalizations.of(context).g} '
-                  '(${values.carbohydratesSugar.toStringAsFixed(0)} ${AppLocalizations.of(context).sugars})',
-                ),
-                MutedText(
-                  '${AppLocalizations.of(context).fat}: '
-                  '${values.fat.toStringAsFixed(0)}'
-                  '${AppLocalizations.of(context).g} '
-                  '(${values.fatSaturated.toStringAsFixed(0)} ${AppLocalizations.of(context).saturatedFat})',
-                ),
+                ...getMutedNutritionalValues(values, context),
                 SizedBox(height: 12),
               ],
             ),

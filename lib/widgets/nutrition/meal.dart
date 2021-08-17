@@ -25,8 +25,8 @@ import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/theme/theme.dart';
-import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
+import 'package:wger/widgets/nutrition/helpers.dart';
 
 class MealWidget extends StatefulWidget {
   final Meal _meal;
@@ -117,38 +117,6 @@ class _MealWidgetState extends State<MealWidget> {
                 ],
               ),
             Divider(),
-            if (_expanded)
-              Padding(
-                padding: const EdgeInsets.all(5),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: MutedText(
-                        AppLocalizations.of(context).energy,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    Expanded(
-                      child: MutedText(
-                        AppLocalizations.of(context).protein,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    Expanded(
-                      child: MutedText(
-                        AppLocalizations.of(context).carbohydrates,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    Expanded(
-                      child: MutedText(
-                        AppLocalizations.of(context).fat,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
             ...widget._meal.mealItems.map((item) => MealItemWidget(item, _expanded)).toList(),
             OutlinedButton(
               child: Text(AppLocalizations.of(context).addIngredient),
@@ -192,10 +160,10 @@ class MealItemWidget extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(5),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             width: double.infinity,
-            padding: EdgeInsets.symmetric(vertical: 5),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -226,35 +194,7 @@ class MealItemWidget extends StatelessWidget {
               ],
             ),
           ),
-          if (_expanded)
-            Row(
-              children: [
-                Expanded(
-                  child: MutedText(
-                    '${values.energy.toStringAsFixed(0)} ${AppLocalizations.of(context).kcal}',
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                Expanded(
-                  child: MutedText(
-                    '${values.protein.toStringAsFixed(0)}${AppLocalizations.of(context).g}',
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                Expanded(
-                  child: MutedText(
-                    '${values.carbohydrates.toStringAsFixed(0)}${AppLocalizations.of(context).g}',
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                Expanded(
-                  child: MutedText(
-                    '${values.fat.toStringAsFixed(0)}${AppLocalizations.of(context).g}',
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ],
-            ),
+          if (_expanded) ...getMutedNutritionalValues(values, context),
         ],
       ),
     );
