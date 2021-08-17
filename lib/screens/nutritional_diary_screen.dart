@@ -21,7 +21,6 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/nutrition.dart';
-import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/nutrition/nutritional_diary_detail.dart';
 
 /// Arguments passed to the form screen
@@ -43,8 +42,8 @@ class NutritionalDiaryScreen extends StatelessWidget {
     final args = ModalRoute.of(context)!.settings.arguments as NutritionalDiaryArguments;
 
     return Scaffold(
-      appBar: WgerAppBar(
-        DateFormat.yMd(Localizations.localeOf(context).languageCode).format(args.date),
+      appBar: AppBar(
+        title: Text(DateFormat.yMd(Localizations.localeOf(context).languageCode).format(args.date)),
       ),
       body: Consumer<NutritionPlansProvider>(
         builder: (context, nutritionProvider, child) => SingleChildScrollView(
