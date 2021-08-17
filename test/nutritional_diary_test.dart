@@ -30,8 +30,10 @@ void main() {
       locale: Locale(locale),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      home: Card(
-        child: NutritionalDiaryDetailWidget(getNutritionalPlan(), DateTime(2021, 6, 1)),
+      home: SingleChildScrollView(
+        child: Card(
+          child: NutritionalDiaryDetailWidget(getNutritionalPlan(), DateTime(2021, 6, 1)),
+        ),
       ),
     );
   }
@@ -40,5 +42,18 @@ void main() {
     await tester.pumpWidget(getWidget());
 
     expect(find.byType(NutritionalPlanPieChartWidget), findsOneWidget);
+    expect(find.byType(Table), findsOneWidget);
+
+    expect(find.text('519kcal'), findsOneWidget, reason: 'find total energy');
+    expect(find.text('6g'), findsOneWidget, reason: 'find grams of protein');
+    expect(find.text('18g'), findsOneWidget, reason: 'find grams of carbs');
+    expect(find.text('4g'), findsOneWidget, reason: 'find grams of sugar');
+    expect(find.text('29g'), findsOneWidget, reason: 'find grams of fat');
+    expect(find.text('14g'), findsOneWidget, reason: 'find grams of saturated fat');
+    expect(find.text('50g'), findsOneWidget, reason: 'find grams of fibre');
+
+    expect(find.text('100g Water'), findsOneWidget, reason: 'Name of ingredient');
+    expect(find.text('75g Burger soup'), findsOneWidget, reason: 'Name of ingredient');
+    expect(find.byIcon(Icons.delete_outline), findsNWidgets(2));
   });
 }

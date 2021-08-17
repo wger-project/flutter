@@ -30,11 +30,11 @@ final ingredient1 = Ingredient(
   energy: 500,
   carbohydrates: 10,
   carbohydratesSugar: 2,
-  protein: 1,
-  fat: 2,
-  fatSaturated: 1,
-  fibres: 1,
-  sodium: 0,
+  protein: 5,
+  fat: 20,
+  fatSaturated: 7,
+  fibres: 12,
+  sodium: 0.5,
 );
 final ingredient2 = Ingredient(
   id: 2,
@@ -105,8 +105,8 @@ NutritionalPlan getNutritionalPlan() {
 
   // Add logs
   plan.logs.add(Log.fromMealItem(mealItem1, 1, DateTime(2021, 6, 1)));
-  plan.logs.add(Log.fromMealItem(mealItem2, 1, DateTime(2021, 6, 2)));
-  plan.logs.add(Log.fromMealItem(mealItem3, 1, DateTime(2021, 6, 3)));
+  plan.logs.add(Log.fromMealItem(mealItem2, 1, DateTime(2021, 6, 1)));
+  plan.logs.add(Log.fromMealItem(mealItem3, 1, DateTime(2021, 6, 10)));
 
   return plan;
 }
