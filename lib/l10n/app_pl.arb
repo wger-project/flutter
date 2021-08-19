@@ -1,1 +1,54 @@
-{}
+{
+  "invalidUsername": "Podaj poprawną nazwę użytkownika",
+  "@invalidUsername": {
+    "description": "Error message when the user enters an invalid username"
+  },
+  "username": "Nazwa użytkownika",
+  "@username": {},
+  "email": "Adres email",
+  "@email": {},
+  "invalidEmail": "Podaj poprawny adres email",
+  "@invalidEmail": {
+    "description": "Error message when the user enters an invalid email"
+  },
+  "confirmPassword": "Potwierdź hasło",
+  "@confirmPassword": {},
+  "password": "Hasło",
+  "@password": {},
+  "passwordTooShort": "Hasło jest zbyt krótkie",
+  "@passwordTooShort": {
+    "description": "Error message when the user a password that is too short"
+  },
+  "passwordsDontMatch": "Hasła nie są identyczne",
+  "@passwordsDontMatch": {
+    "description": "Error message when the user enters two different passwords during registration"
+  },
+  "usernameValidChars": "Nazwa użytkownika może zawierać tylko litery, cyfry i znaki specjalne: @,+,.,-, _",
+  "@usernameValidChars": {
+    "description": "Error message when the user tries to register a username with forbidden characters"
+  },
+  "invalidUrl": "Wpisz poprawny adres URL",
+  "@invalidUrl": {
+    "description": "Error message when the user enters an invalid URL, e.g. in the login form"
+  },
+  "useCustomServer": "Używaj niestandardowe o serwera",
+  "@useCustomServer": {
+    "description": "Toggle button allowing users to switch between the default and a custom wger server"
+  },
+  "useDefaultServer": "Używaj domyślnego serwera",
+  "@useDefaultServer": {
+    "description": "Toggle button allowing users to switch between the default and a custom wger server"
+  },
+  "register": "Zarejestruj się",
+  "@register": {
+    "description": "Text for registration button"
+  },
+  "logout": "Wyloguj się",
+  "@logout": {
+    "description": "Text for logout button"
+  },
+  "login": "Zaloguj się",
+  "@login": {
+    "description": "Text for login button"
+  }
+}
