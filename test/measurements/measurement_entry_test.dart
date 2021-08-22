@@ -23,11 +23,7 @@ void main() {
     final result = MeasurementEntry.fromJson(tMeasurementEntryMap);
 
     // assert
-    expect(result.id, tMeasurementEntry.id);
-    expect(result.category, tMeasurementEntry.category);
-    expect(result.date, tMeasurementEntry.date);
-    expect(result.value, tMeasurementEntry.value);
-    expect(result.notes, tMeasurementEntry.notes);
+    expect(result, tMeasurementEntry);
   });
 
   test('should convert a MeasurementEntry object to a JSON map', () {

@@ -12,6 +12,10 @@ MeasurementCategory _$MeasurementCategoryFromJson(Map<String, dynamic> json) {
     id: json['id'] as int,
     name: json['name'] as String,
     unit: json['unit'] as String,
+    entries: (json['entries'] as List<dynamic>?)
+            ?.map((e) => MeasurementEntry.fromJson(e as Map<String, dynamic>))
+            .toList() ??
+        [],
   );
 }
 
@@ -21,4 +25,5 @@ Map<String, dynamic> _$MeasurementCategoryToJson(
       'id': instance.id,
       'name': instance.name,
       'unit': instance.unit,
+      'entries': instance.entries.map((e) => e.toJson()).toList(),
     };

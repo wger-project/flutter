@@ -14,7 +14,7 @@ MeasurementEntry _$MeasurementEntryFromJson(Map<String, dynamic> json) {
     category: json['category'] as int,
     date: DateTime.parse(json['date'] as String),
     value: json['value'] as num,
-    notes: json['notes'] ?? '',
+    notes: json['notes'] as String? ?? '',
   );
 }
 

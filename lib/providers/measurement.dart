@@ -18,37 +18,43 @@
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:wger/exceptions/no_result_exception.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/base_provider.dart';
 
-class MeasurementProvider extends WgerBaseProvider with ChangeNotifier {
+class MeasurementProvider with ChangeNotifier {
   static const _categoryUrl = 'measurement-category';
   static const _entryUrl = 'measurement';
 
+  final WgerBaseProvider baseProvider;
+
   List<MeasurementCategory> _categories = [];
 
-  MeasurementProvider(AuthProvider auth, [http.Client? client]) : super(auth, client);
+  MeasurementProvider(this.baseProvider);
+  //: super(auth, client);
 
-  List<MeasurementCategory> get categories {
-    return [..._categories];
-  }
+  List<MeasurementCategory> get categories => _categories;
 
   /// Clears all lists
-  clear() {
+  void clear() {
     _categories = [];
   }
 
   /// Finds the category by ID
   MeasurementCategory findCategoryById(int id) {
-    return _categories.firstWhere((category) => category.id == id);
+    return _categories.firstWhere(
+      (category) => category.id == id,
+      orElse: () => throw NoResultException(),
+    );
   }
 
   /// Fetches and sets the categories from the server (no entries)
-  Future<List<MeasurementCategory>> fetchAndSetCategories() async {
+  Future<void> fetchAndSetCategories() async {
     // Process the response
-    final data = await fetch(makeUrl(_categoryUrl));
+    final requestUrl = baseProvider.makeUrl(_categoryUrl);
+    final data = await baseProvider.fetch(requestUrl);
     final List<MeasurementCategory> loadedEntries = [];
     for (final entry in data['results']) {
       loadedEntries.add(MeasurementCategory.fromJson(entry));
@@ -56,22 +62,20 @@ class MeasurementProvider extends WgerBaseProvider with ChangeNotifier {
 
     _categories = loadedEntries;
     notifyListeners();
-    return _categories;
   }
 
   /// Fetches and sets the measurement entries for the given category
-  Future<MeasurementCategory> fetchAndSetCategoryEntries(int id) async {
+  Future<void> fetchAndSetCategoryEntries(int id) async {
     final category = findCategoryById(id);
 
     // Process the response
-    final data = await fetch(makeUrl(_entryUrl, query: {'category': category.id.toString()}));
+    final requestUrl = baseProvider.makeUrl(_entryUrl, query: {'category': category.id.toString()});
+    final data = await baseProvider.fetch(requestUrl);
     final List<MeasurementEntry> loadedEntries = [];
     for (final entry in data['results']) {
       loadedEntries.add(MeasurementEntry.fromJson(entry));
     }
     category.entries = loadedEntries;
     notifyListeners();
-
-    return category;
   }
 }

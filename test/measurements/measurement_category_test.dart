@@ -17,14 +17,8 @@ void main() {
     id: 123,
     name: 'Bizeps',
     unit: 'cm',
-    measurementEntries: tMeasurementEntries,
+    entries: tMeasurementEntries,
   );
-
-  Map<String, dynamic> tMeasurementCategoryMap = {
-    'id': 123,
-    'name': 'Bizeps',
-    'unit': 'cm',
-  };
 
   Map<String, dynamic> tMeasurementEntryMap = {
     'id': 1234,
@@ -34,20 +28,19 @@ void main() {
     'notes': 'notes'
   };
 
+  Map<String, dynamic> tMeasurementCategoryMap = {
+    'id': 123,
+    'name': 'Bizeps',
+    'unit': 'cm',
+    'entries': [tMeasurementEntryMap],
+  };
+
   test('should convert a JSON map to a MeasurementCategory object', () {
     // act
-    final category = MeasurementCategory.fromJson(tMeasurementCategoryMap);
-    final entry = MeasurementEntry.fromJson(tMeasurementEntryMap);
+    final result = MeasurementCategory.fromJson(tMeasurementCategoryMap);
 
     // assert
-    expect(category.id, tMeasurementCategory.id);
-    expect(category.name, tMeasurementCategory.name);
-    expect(category.unit, tMeasurementCategory.unit);
-    expect(entry.id, tMeasurementCategory.entries[0].id);
-    expect(entry.category, tMeasurementCategory.entries[0].category);
-    expect(entry.date, tMeasurementCategory.entries[0].date);
-    expect(entry.value, tMeasurementCategory.entries[0].value);
-    expect(entry.notes, tMeasurementCategory.entries[0].notes);
+    expect(result, tMeasurementCategory);
   });
 
   test('should convert a MeasurementCategory object to a JSON map', () {

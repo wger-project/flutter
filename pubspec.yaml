@@ -49,6 +49,7 @@ dependencies:
   shared_preferences: ^2.0.6
   table_calendar: ^3.0.1
   url_launcher: ^6.0.9
+  equatable: ^2.0.3
 
 dev_dependencies:
   flutter_test:

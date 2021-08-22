@@ -19,7 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:wger/models/body_weight/weight_entry.dart';
-import 'package:wger/models/http_exception.dart';
+import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/base_provider.dart';
 

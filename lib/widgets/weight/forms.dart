@@ -23,7 +23,7 @@ import 'package:provider/provider.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/ui.dart';
 import 'package:wger/models/body_weight/weight_entry.dart';
-import 'package:wger/models/http_exception.dart';
+import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/providers/body_weight.dart';
 
 class WeightForm extends StatelessWidget {

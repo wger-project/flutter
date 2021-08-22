@@ -1,0 +1,21 @@
+{
+  "count": 6,
+  "next": null,
+  "previous": null,
+  "results": [
+      {
+          "id": 1,
+          "category": 1,
+          "date": "2021-07-21",
+          "value": 10,
+          "notes": "Some important notes"
+      },
+      {
+          "id": 2,
+          "category": 1,
+          "date": "2021-07-10",
+          "value": 15.00,
+          "notes": ""
+      }
+  ]
+}

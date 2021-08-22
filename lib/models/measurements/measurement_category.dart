@@ -1,10 +1,11 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
+import 'package:equatable/equatable.dart';
 
 part 'measurement_category.g.dart';
 
-@JsonSerializable()
-class MeasurementCategory {
+@JsonSerializable(explicitToJson: true)
+class MeasurementCategory extends Equatable {
   @JsonKey(required: true)
   final int id;
 
@@ -14,21 +15,24 @@ class MeasurementCategory {
   @JsonKey(required: true)
   final String unit;
 
-  @JsonKey(ignore: true)
-  List<MeasurementEntry> entries = [];
+  @JsonKey(
+    defaultValue: [],
+  )
+  List<MeasurementEntry> entries;
 
   MeasurementCategory({
     required this.id,
     required this.name,
     required this.unit,
-    List<MeasurementEntry>? measurementEntries,
-  }) {
-    this.entries = measurementEntries ?? [];
-  }
+    this.entries = const [],
+  });
 
   // Boilerplate
   factory MeasurementCategory.fromJson(Map<String, dynamic> json) =>
       _$MeasurementCategoryFromJson(json);
 
   Map<String, dynamic> toJson() => _$MeasurementCategoryToJson(this);
+
+  @override
+  List<Object> get props => [id, name, unit, entries];
 }

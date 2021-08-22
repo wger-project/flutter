@@ -20,7 +20,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:wger/models/http_exception.dart';
+import 'package:wger/exceptions/http_exception.dart';
 
 void showErrorDialog(dynamic exception, BuildContext context) {
   log('showErrorDialog: ');
