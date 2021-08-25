@@ -18,7 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/providers/measurements.dart';
+import 'package:wger/providers/measurement.dart';
 import 'package:wger/screens/measurement_entries_screen.dart';
 
 class CategoriesList extends StatelessWidget {

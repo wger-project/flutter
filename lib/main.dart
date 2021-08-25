@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/gallery.dart';
@@ -82,12 +83,12 @@ class MyApp extends StatelessWidget {
           update: (context, auth, previous) =>
               previous != null ? previous : NutritionPlansProvider(auth, []),
         ),
-        // ChangeNotifierProxyProvider<AuthProvider, MeasurementProvider>(
-        //   create: (context) =>
-        //       MeasurementProvider(Provider.of<AuthProvider>(context, listen: false)),
-        //   update: (context, auth, previous) =>
-        //       previous != null ? previous : MeasurementProvider(auth),
-        // ),
+        ChangeNotifierProxyProvider<AuthProvider, MeasurementProvider>(
+          create: (context) => MeasurementProvider(
+              WgerBaseProvider(Provider.of<AuthProvider>(context, listen: false))),
+          update: (context, base, previous) =>
+              previous != null ? previous : MeasurementProvider(WgerBaseProvider(base)),
+        ),
         ChangeNotifierProxyProvider<AuthProvider, BodyWeightProvider>(
           create: (context) =>
               BodyWeightProvider(Provider.of<AuthProvider>(context, listen: false), []),

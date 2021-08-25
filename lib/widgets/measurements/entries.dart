@@ -20,7 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
-import 'package:wger/providers/measurements.dart';
+import 'package:wger/providers/measurement.dart';
 
 class EntriesList extends StatelessWidget {
   late MeasurementCategory _category;
@@ -28,7 +28,8 @@ class EntriesList extends StatelessWidget {
   Future<void> _loadEntries(BuildContext context) async {
     final provider = Provider.of<MeasurementProvider>(context, listen: false);
     final int categoryId = ModalRoute.of(context)!.settings.arguments as int;
-    _category = await provider.fetchAndSetCategoryEntries(categoryId);
+    await provider.fetchAndSetCategoryEntries(categoryId);
+    _category = provider.findCategoryById(categoryId);
   }
 
   @override
