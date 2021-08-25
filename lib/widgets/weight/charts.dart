@@ -18,14 +18,20 @@
 
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/widgets.dart';
-import 'package:wger/models/body_weight/weight_entry.dart';
 import 'package:wger/theme/theme.dart';
+
+class MeasurementChartEntry {
+  num value;
+  DateTime date;
+
+  MeasurementChartEntry(this.value, this.date);
+}
 
 /// Weight chart widget
 class WeightChartWidget extends StatelessWidget {
-  final List<WeightEntry> _entries;
+  final List<MeasurementChartEntry> _entries;
 
-  /// [_entries] is a list of [WeightEntry] as returned e.g. by the
+  /// [_entries] is a list of [MeasurementChartEntry] as returned e.g. by the
   /// [BodyWeight] provider.
   WeightChartWidget(this._entries);
 
@@ -33,11 +39,11 @@ class WeightChartWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return charts.TimeSeriesChart(
       [
-        charts.Series<WeightEntry, DateTime>(
+        charts.Series<MeasurementChartEntry, DateTime>(
           id: 'Weight',
           colorFn: (_, __) => wgerChartSecondaryColor,
-          domainFn: (WeightEntry weightEntry, _) => weightEntry.date,
-          measureFn: (WeightEntry weightEntry, _) => weightEntry.weight,
+          domainFn: (MeasurementChartEntry entry, _) => entry.date,
+          measureFn: (MeasurementChartEntry entry, _) => entry.value,
           data: _entries,
         )
       ],

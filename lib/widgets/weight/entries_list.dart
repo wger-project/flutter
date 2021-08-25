@@ -35,7 +35,8 @@ class WeightEntriesList extends StatelessWidget {
         Container(
           padding: EdgeInsets.all(15),
           height: 220,
-          child: WeightChartWidget(_weightProvider.items),
+          child: WeightChartWidget(
+              _weightProvider.items.map((e) => MeasurementChartEntry(e.weight, e.date)).toList()),
         ),
         Divider(),
         Expanded(

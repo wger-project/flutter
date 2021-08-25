@@ -258,7 +258,9 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                   ? Container(
                       padding: EdgeInsets.all(15),
                       height: 180,
-                      child: WeightChartWidget(weightEntriesData.items),
+                      child: WeightChartWidget(weightEntriesData.items
+                          .map((e) => MeasurementChartEntry(e.weight, e.date))
+                          .toList()),
                     )
                   : NothingFound(
                       AppLocalizations.of(context).noWeightEntries,
