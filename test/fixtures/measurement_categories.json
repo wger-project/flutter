@@ -1,0 +1,17 @@
+{
+  "count": 2,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "name": "Strength",
+      "unit": "kN"
+    },
+    {
+      "id": 2,
+      "name": "Biceps",
+      "unit": "cm"
+    }
+  ]
+}

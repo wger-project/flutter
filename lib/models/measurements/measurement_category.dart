@@ -1,12 +1,13 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
+import 'package:equatable/equatable.dart';
 
 part 'measurement_category.g.dart';
 
-@JsonSerializable()
-class MeasurementCategory {
+@JsonSerializable(explicitToJson: true)
+class MeasurementCategory extends Equatable {
   @JsonKey(required: true)
-  final int id;
+  final int? id;
 
   @JsonKey(required: true)
   final String name;
@@ -14,16 +15,28 @@ class MeasurementCategory {
   @JsonKey(required: true)
   final String unit;
 
-  @JsonKey(ignore: true)
-  List<MeasurementEntry> entries = [];
+  @JsonKey(defaultValue: [], toJson: _nullValue)
+  final List<MeasurementEntry> entries;
 
   MeasurementCategory({
     required this.id,
     required this.name,
     required this.unit,
-    List<MeasurementEntry>? measurementEntries,
+    this.entries = const [],
+  });
+
+  MeasurementCategory copyWith({
+    int? id,
+    String? name,
+    String? unit,
+    List<MeasurementEntry>? entries,
   }) {
-    this.entries = measurementEntries ?? [];
+    return MeasurementCategory(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      unit: unit ?? this.unit,
+      entries: entries ?? this.entries,
+    );
   }
 
   // Boilerplate
@@ -31,4 +44,10 @@ class MeasurementCategory {
       _$MeasurementCategoryFromJson(json);
 
   Map<String, dynamic> toJson() => _$MeasurementCategoryToJson(this);
+
+  @override
+  List<Object?> get props => [id, name, unit, entries];
+
+  // Helper function which makes the entries list of the toJson output null, as it isn't needed
+  static _nullValue(_) => null;
 }

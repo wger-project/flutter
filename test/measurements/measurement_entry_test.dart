@@ -23,11 +23,7 @@ void main() {
     final result = MeasurementEntry.fromJson(tMeasurementEntryMap);
 
     // assert
-    expect(result.id, tMeasurementEntry.id);
-    expect(result.category, tMeasurementEntry.category);
-    expect(result.date, tMeasurementEntry.date);
-    expect(result.value, tMeasurementEntry.value);
-    expect(result.notes, tMeasurementEntry.notes);
+    expect(result, tMeasurementEntry);
   });
 
   test('should convert a MeasurementEntry object to a JSON map', () {
@@ -36,5 +32,24 @@ void main() {
 
     // assert
     expect(result, tMeasurementEntryMap);
+  });
+
+  test('should copyWith objects of this class', () {
+    // arrange
+
+    MeasurementEntry tMeasurementEntryCopied = MeasurementEntry(
+      id: 83,
+      category: 17,
+      date: DateTime(1960),
+      value: 93,
+      notes: 'Interesting',
+    );
+
+    // act
+    final result = tMeasurementEntry.copyWith(
+        id: 83, category: 17, date: DateTime(1960), value: 93, notes: 'Interesting');
+
+    // assert
+    expect(result, tMeasurementEntryCopied);
   });
 }

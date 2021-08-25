@@ -10,7 +10,7 @@ MeasurementEntry _$MeasurementEntryFromJson(Map<String, dynamic> json) {
   $checkKeys(json,
       requiredKeys: const ['id', 'category', 'date', 'value', 'notes']);
   return MeasurementEntry(
-    id: json['id'] as int,
+    id: json['id'] as int?,
     category: json['category'] as int,
     date: DateTime.parse(json['date'] as String),
     value: stringToNum(json['value'] as String?),
