@@ -14,7 +14,7 @@ class MeasurementEntry {
   @JsonKey(required: true, toJson: toDate)
   final DateTime date;
 
-  @JsonKey(required: true)
+  @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
   final num value;
 
   @JsonKey(required: true, defaultValue: '')

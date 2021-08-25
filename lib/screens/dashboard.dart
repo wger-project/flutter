@@ -24,6 +24,7 @@ import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/gallery.dart';
+import 'package:wger/providers/measurements.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/widgets/core/app_bar.dart';
@@ -58,6 +59,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       final exercisesProvider = Provider.of<ExercisesProvider>(context, listen: false);
       final galleryProvider = Provider.of<GalleryProvider>(context, listen: false);
       final weightProvider = Provider.of<BodyWeightProvider>(context, listen: false);
+      final measurementProvider = Provider.of<MeasurementProvider>(context, listen: false);
 
       // Base data
       await Future.wait([
@@ -72,6 +74,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         nutritionPlansProvider.fetchAndSetAllPlansSparse(),
         workoutPlansProvider.fetchAndSetAllPlansSparse(),
         weightProvider.fetchAndSetEntries(),
+        measurementProvider.fetchAndSetCategories(),
       ]);
 
       // Current nutritional plan

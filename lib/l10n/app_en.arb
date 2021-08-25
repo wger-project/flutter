@@ -258,6 +258,14 @@
   "@weight": {
     "description": "The weight of a workout log or body weight entry"
   },
+  "measurementCategories": "Measurement categories",
+  "@measurementCategories": {
+    "description": "Categories for the measurements such as biceps size, body fat, etc."
+  },
+  "measurementEntries": "Measurement entries",
+  "@measurementEntries": {
+    "description": "Specific entries for the measurements"
+  },
   "date": "Date",
   "@date": {
     "description": "The date of a workout log or body weight entry"

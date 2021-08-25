@@ -22,6 +22,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/screens/form_screen.dart';
+import 'package:wger/screens/measurement_categories_screen.dart';
 import 'package:wger/widgets/weight/charts.dart';
 import 'package:wger/widgets/weight/forms.dart';
 
@@ -39,6 +40,12 @@ class WeightEntriesList extends StatelessWidget {
               _weightProvider.items.map((e) => MeasurementChartEntry(e.weight, e.date)).toList()),
         ),
         Divider(),
+        TextButton(
+            onPressed: () => Navigator.pushNamed(
+                  context,
+                  MeasurementCategoriesScreen.routeName,
+                ),
+            child: Text('Go to measurements')),
         Expanded(
           child: ListView.builder(
             padding: const EdgeInsets.all(10.0),
