@@ -33,4 +33,23 @@ void main() {
     // assert
     expect(result, tMeasurementEntryMap);
   });
+
+  test('should copyWith objects of this class', () {
+    // arrange
+
+    MeasurementEntry tMeasurementEntryCopied = MeasurementEntry(
+      id: 83,
+      category: 17,
+      date: DateTime(1960),
+      value: 93,
+      notes: 'Interesting',
+    );
+
+    // act
+    final result = tMeasurementEntry.copyWith(
+        id: 83, category: 17, date: DateTime(1960), value: 93, notes: 'Interesting');
+
+    // assert
+    expect(result, tMeasurementEntryCopied);
+  });
 }
