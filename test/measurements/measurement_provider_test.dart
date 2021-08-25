@@ -1,9 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/exceptions/no_result_exception.dart';
+import 'package:wger/exceptions/no_such_entry_exception.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
 import 'package:wger/providers/auth.dart';
@@ -21,8 +24,24 @@ main() {
   late MeasurementProvider measurementProvider;
   late MockWgerBaseProvider mockWgerBaseProvider;
 
-  Uri tCategoriesUri = Uri();
+  String categoryUrl = 'measurement-category';
+  String entryUrl = 'measurement';
+  Uri tCategoryUri = Uri();
+  Map<String, dynamic> tMeasurementCategoryMap =
+      jsonDecode(fixture('measurement_category_entries.json'));
+  Uri tCategoryEntriesUri = Uri(
+      scheme: 'http',
+      host: 'tedmosbyisajerk.com',
+      path: 'api/v2/' + entryUrl + '/',
+      query: 'category=1');
+
   int tCategoryId = 1;
+  MeasurementCategory tMeasurementCategory =
+      MeasurementCategory(id: 1, name: 'Strength', unit: 'kN');
+  List<MeasurementCategory> tMeasurementCategories = [
+    MeasurementCategory(id: 1, name: 'Strength', unit: 'kN'),
+    MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm')
+  ];
   Map<String, dynamic> tMeasurementCategoriesMap =
       jsonDecode(fixture('measurement_categories.json'));
 
@@ -30,9 +49,14 @@ main() {
     mockWgerBaseProvider = MockWgerBaseProvider();
     measurementProvider = MeasurementProvider(mockWgerBaseProvider);
 
-    when(mockWgerBaseProvider.makeUrl(any)).thenReturn(tCategoriesUri);
+    when(mockWgerBaseProvider.makeUrl(any)).thenReturn(tCategoryUri);
     when(mockWgerBaseProvider.fetch(any))
         .thenAnswer((realInvocation) => Future.value(tMeasurementCategoriesMap));
+
+    when(mockWgerBaseProvider.makeUrl(entryUrl, query: anyNamed('query')))
+        .thenReturn(tCategoryEntriesUri);
+    when(mockWgerBaseProvider.fetch(tCategoryEntriesUri))
+        .thenAnswer((realInvocation) => Future.value(tMeasurementCategoryMap));
   });
 
   group('clear()', () {
@@ -54,8 +78,7 @@ main() {
   group('findCategoryById()', () {
     test('should return a category for an id', () async {
       // arrange
-      MeasurementCategory tMeasurementCategory =
-          MeasurementCategory(id: 1, name: 'Strength', unit: 'kN');
+
       await measurementProvider.fetchAndSetCategories();
 
       // act
@@ -72,13 +95,6 @@ main() {
   });
 
   group('fetchAndSetCategories()', () {
-    String categoryUrl = 'measurement-category';
-
-    List<MeasurementCategory> tMeasurementCategories = [
-      MeasurementCategory(id: 1, name: 'Strength', unit: 'kN'),
-      MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm')
-    ];
-
     test('should make a request url', () async {
       // act
       await measurementProvider.fetchAndSetCategories();
@@ -92,7 +108,7 @@ main() {
       await measurementProvider.fetchAndSetCategories();
 
       // assert
-      verify(mockWgerBaseProvider.fetch(tCategoriesUri));
+      verify(mockWgerBaseProvider.fetch(tCategoryUri));
     });
 
     test('should set categories', () async {
@@ -105,21 +121,8 @@ main() {
   });
 
   group('fetchAndSetCategoryEntries()', () {
-    String entryUrl = 'measurement';
-    Uri tCategoryEntriesUri = Uri(
-        scheme: 'http',
-        host: 'tedmosbyisajerk.com',
-        path: 'api/v2/' + entryUrl + '/',
-        query: 'category=1');
-    Map<String, dynamic> tMeasurementCategoryMap = jsonDecode(fixture('measurement_category.json'));
-
     setUp(() async {
       await measurementProvider.fetchAndSetCategories();
-
-      when(mockWgerBaseProvider.makeUrl(any, query: anyNamed('query')))
-          .thenReturn(tCategoryEntriesUri);
-      when(mockWgerBaseProvider.fetch(any))
-          .thenAnswer((realInvocation) => Future.value(tMeasurementCategoryMap));
     });
 
     test('should make a uri from a category id', () async {
@@ -164,6 +167,276 @@ main() {
       await measurementProvider.fetchAndSetCategoryEntries(tCategoryId);
 
       // assert
+      expect(measurementProvider.categories, tMeasurementCategories);
+    });
+  });
+
+  group('addCategory()', () {
+    MeasurementCategory tMeasurementCategoryWithoutId =
+        MeasurementCategory(id: null, name: 'Strength', unit: 'kN');
+    Map<String, dynamic> tMeasurementCategoryMap = jsonDecode(fixture('measurement_category.json'));
+    Map<String, dynamic> tMeasurementCategoryMapWithoutId =
+        jsonDecode(fixture('measurement_category_toJson_without_id.json'));
+    List<MeasurementCategory> tMeasurementCategoriesAdded = [
+      MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm'),
+      MeasurementCategory(id: 1, name: 'Strength', unit: 'kN'),
+      MeasurementCategory(id: 1, name: 'Strength', unit: 'kN'),
+    ];
+    setUp(() {
+      when(mockWgerBaseProvider.post(any, any))
+          .thenAnswer((realInvocation) => Future.value(tMeasurementCategoryMap));
+    });
+
+    test('should post the MeasurementCategorie\'s Map', () async {
+      // act
+      await measurementProvider.addCategory(tMeasurementCategoryWithoutId);
+
+      // assert
+      verify(mockWgerBaseProvider.post(tMeasurementCategoryMapWithoutId, tCategoryUri));
+    });
+
+    test(
+        'should add the result from the post call to the categories List and sort the list by alphabetical order',
+        () async {
+      // arrange
+      await measurementProvider.fetchAndSetCategories();
+
+      // act
+      await measurementProvider.addCategory(tMeasurementCategoryWithoutId);
+
+      // assert
+      expect(measurementProvider.categories, tMeasurementCategoriesAdded);
+    });
+  });
+
+  group('deleteCategory()', () {
+    setUp(() async {
+      await measurementProvider.fetchAndSetCategories();
+    });
+    test(
+        'should remove a MeasurementCategory from the categories list for an id and call the api to remove the MeasurementCategory',
+        () async {
+      // arrange
+      when(mockWgerBaseProvider.deleteRequest(any, any))
+          .thenAnswer((realInvocation) => Future.value(Response('', 200)));
+
+      List<MeasurementCategory> tMeasurementCategoriesOneDeleted = [
+        MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm')
+      ];
+
+      // act
+      await measurementProvider.deleteCategory(tCategoryId);
+
+      // assert
+      verify(mockWgerBaseProvider.deleteRequest('measurement-category', tCategoryId));
+      expect(measurementProvider.categories, tMeasurementCategoriesOneDeleted);
+    });
+
+    test('should throw a NoSuchEntryException if no category is found', () {
+      // act & assert
+      expect(() async => await measurementProvider.deleteCategory(83),
+          throwsA(isA<NoSuchEntryException>()));
+    });
+
+    test('should re-add the "removed" MeasurementCategory if call to api fails', () async {
+      // arrange
+      when(mockWgerBaseProvider.deleteRequest(any, any))
+          .thenAnswer((realInvocation) => Future.value(Response('{}', 400)));
+
+      // act & assert
+      expect(() async => await measurementProvider.deleteCategory(tCategoryId),
+          throwsA(isA<WgerHttpException>()));
+      // can't await the expect call above
+      await Future.delayed(Duration(milliseconds: 1));
+
+      expect(measurementProvider.categories, tMeasurementCategories);
+    });
+  });
+
+  group('addEntry()', () {
+    MeasurementEntry tMeasurementEntry = MeasurementEntry(
+      id: 3,
+      category: 1,
+      date: DateTime(2021, 7, 9),
+      value: 15.00,
+      notes: '',
+    );
+
+    MeasurementEntry tMeasurementEntryWithoutId = MeasurementEntry(
+      id: null,
+      category: 1,
+      date: DateTime(2021, 7, 9),
+      value: 15.0,
+      notes: '',
+    );
+
+    List<MeasurementCategory> tMeasurementCategories = [
+      MeasurementCategory(id: 1, name: 'Strength', unit: 'kN', entries: [
+        MeasurementEntry(
+          id: 1,
+          category: 1,
+          date: DateTime(2021, 7, 21),
+          value: 10,
+          notes: 'Some important notes',
+        ),
+        MeasurementEntry(
+          id: 2,
+          category: 1,
+          date: DateTime(2021, 7, 10),
+          value: 15.00,
+          notes: '',
+        ),
+        tMeasurementEntry
+      ]),
+      MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm')
+    ];
+
+    setUp(() async {
+      await measurementProvider.fetchAndSetCategories();
+
+      Map<String, dynamic> measurementEntryMap = jsonDecode(fixture('measurement_entry.json'));
+      when(mockWgerBaseProvider.post(any, any))
+          .thenAnswer((realInvocation) => Future.value(measurementEntryMap));
+    });
+
+    test('should make the post url', () async {
+      // act
+      await measurementProvider.addEntry(tMeasurementEntryWithoutId);
+
+      // assert
+      verify(mockWgerBaseProvider.makeUrl(entryUrl));
+    });
+
+    test('should post the MeasurementEntryMap', () async {
+      // arrange
+      Map<String, dynamic> measurementEntryMapWithoutId =
+          jsonDecode(fixture('measurement_entry_without_id.json'));
+
+      // act
+      await measurementProvider.addEntry(tMeasurementEntryWithoutId);
+
+      // assert
+      verify(mockWgerBaseProvider.post(measurementEntryMapWithoutId, tCategoryEntriesUri));
+    });
+
+    test(
+        'should add MeasurementEntry to its MeasurementCategory in the categories List and sort the category\'s list by date',
+        () async {
+      // arrange
+      await measurementProvider.fetchAndSetCategoryEntries(tCategoryId);
+
+      // act
+      await measurementProvider.addEntry(tMeasurementEntryWithoutId);
+
+      // assert
+      expect(measurementProvider.categories, tMeasurementCategories);
+    });
+
+    test('should throw a NoSuchEntryException if no category is found', () {
+      // arrange
+      MeasurementEntry tMeasurementEntryWrongCategory = MeasurementEntry(
+        id: 3,
+        category: 83,
+        date: DateTime(2021, 7, 9),
+        value: 15.00,
+        notes: '',
+      );
+      Map<String, dynamic> measurementEntryMapWrongCategory =
+          jsonDecode(fixture('measurement_entry_wrong_category.json'));
+      when(mockWgerBaseProvider.post(any, any))
+          .thenAnswer((realInvocation) => Future.value(measurementEntryMapWrongCategory));
+
+      // act & assert
+      expect(() async => await measurementProvider.addEntry(tMeasurementEntryWrongCategory),
+          throwsA(isA<NoSuchEntryException>()));
+    });
+  });
+
+  group('deleteEntry()', () {
+    int tEntryId = 2;
+    List<MeasurementCategory> tMeasurementCategories = [
+      MeasurementCategory(id: 1, name: 'Strength', unit: 'kN', entries: [
+        MeasurementEntry(
+          id: 1,
+          category: 1,
+          date: DateTime(2021, 7, 21),
+          value: 10,
+          notes: 'Some important notes',
+        ),
+      ]),
+      MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm')
+    ];
+
+    setUp(() async {
+      await measurementProvider.fetchAndSetCategories();
+      await measurementProvider.fetchAndSetCategoryEntries(tCategoryId);
+
+      when(mockWgerBaseProvider.deleteRequest(any, any))
+          .thenAnswer((realInvocation) => Future.value(Response('', 200)));
+    });
+
+    test('should remove a MeasurementEntry from the category\'s entries List for an id', () async {
+      // act
+      await measurementProvider.deleteEntry(tEntryId, tCategoryId);
+
+      // assert
+      expect(measurementProvider.categories, tMeasurementCategories);
+    });
+
+    test('should throw a NoSuchEntryException if the category isn\'t found', () {
+      // act & assert
+      expect(() async => await measurementProvider.deleteEntry(tEntryId, 83),
+          throwsA(isA<NoSuchEntryException>()));
+    });
+
+    test(
+        'should throw a NoSuchEntryException if the entry in the categories entries List isn\'t found',
+        () {
+      // act & assert
+      expect(() async => await measurementProvider.deleteEntry(83, tCategoryId),
+          throwsA(isA<NoSuchEntryException>()));
+    });
+
+    test('should call the api to remove the MeasurementEntry', () async {
+      // act
+      await measurementProvider.deleteEntry(tEntryId, tCategoryId);
+
+      // assert
+      verify(mockWgerBaseProvider.deleteRequest(entryUrl, tEntryId));
+    });
+
+    test(
+        'should re-add the "removed" MeasurementEntry and throw a WgerHttpException if the api call fails',
+        () async {
+      // arrange
+      List<MeasurementCategory> tMeasurementCategories = [
+        MeasurementCategory(id: 1, name: 'Strength', unit: 'kN', entries: [
+          MeasurementEntry(
+            id: 1,
+            category: 1,
+            date: DateTime(2021, 7, 21),
+            value: 10,
+            notes: 'Some important notes',
+          ),
+          MeasurementEntry(
+            id: 2,
+            category: 1,
+            date: DateTime(2021, 7, 10),
+            value: 15.00,
+            notes: '',
+          ),
+        ]),
+        MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm')
+      ];
+      when(mockWgerBaseProvider.deleteRequest(any, any))
+          .thenAnswer((realInvocation) => Future.value(Response('{}', 404)));
+
+      // act & assert
+      expect(() async => await measurementProvider.deleteEntry(tEntryId, tCategoryId),
+          throwsA(isA<WgerHttpException>()));
+      // can't await the expect call above
+      await Future.delayed(Duration(milliseconds: 1));
+
       expect(measurementProvider.categories, tMeasurementCategories);
     });
   });

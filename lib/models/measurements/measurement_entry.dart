@@ -7,7 +7,7 @@ part 'measurement_entry.g.dart';
 @JsonSerializable()
 class MeasurementEntry extends Equatable {
   @JsonKey(required: true)
-  final int id;
+  final int? id;
 
   @JsonKey(required: true)
   final int category;
@@ -35,5 +35,5 @@ class MeasurementEntry extends Equatable {
   Map<String, dynamic> toJson() => _$MeasurementEntryToJson(this);
 
   @override
-  List<Object> get props => [id, category, date, value, notes];
+  List<Object?> get props => [id, category, date, value, notes];
 }

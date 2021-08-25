@@ -35,6 +35,13 @@ void main() {
     'entries': [tMeasurementEntryMap],
   };
 
+  Map<String, dynamic> tMeasurementCategoryMaptoJson = {
+    'id': 123,
+    'name': 'Bizeps',
+    'unit': 'cm',
+    'entries': null,
+  };
+
   test('should convert a JSON map to a MeasurementCategory object', () {
     // act
     final result = MeasurementCategory.fromJson(tMeasurementCategoryMap);
@@ -48,6 +55,28 @@ void main() {
     final result = tMeasurementCategory.toJson();
 
     // assert
-    expect(result, tMeasurementCategoryMap);
+    expect(result, tMeasurementCategoryMaptoJson);
+  });
+
+  test('should copyWith objects of this class', () {
+    // arrange
+
+    MeasurementCategory tMeasurementCategoryCopied = MeasurementCategory(
+      id: 1234,
+      name: 'Coolness',
+      unit: 'lp',
+      entries: tMeasurementEntries,
+    );
+
+    // act
+    final result = tMeasurementCategory.copyWith(
+      id: 1234,
+      name: 'Coolness',
+      unit: 'lp',
+      entries: tMeasurementEntries,
+    );
+
+    // assert
+    expect(result, tMeasurementCategoryCopied);
   });
 }
