@@ -142,6 +142,9 @@ class _WorkoutLogCalendarState extends State<WorkoutLogCalendar> {
         )
       ];
     }
+
+    // Add initial selected day to events list
+    _selectedEvents.value = _getEventsForDay(_selectedDay!);
   }
 
   List<WorkoutLogEvent> _getEventsForDay(DateTime day) {

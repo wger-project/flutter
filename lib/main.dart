@@ -31,6 +31,7 @@ import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/gallery_screen.dart';
 import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/screens/home_tabs_screen.dart';
+import 'package:wger/screens/nutritional_diary_screen.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/screens/nutritional_plans_screen.dart';
 import 'package:wger/screens/splash_screen.dart';
@@ -118,6 +119,7 @@ class MyApp extends StatelessWidget {
             GymModeScreen.routeName: (ctx) => GymModeScreen(),
             HomeTabsScreen.routeName: (ctx) => HomeTabsScreen(),
             NutritionScreen.routeName: (ctx) => NutritionScreen(),
+            NutritionalDiaryScreen.routeName: (ctx) => NutritionalDiaryScreen(),
             NutritionalPlanScreen.routeName: (ctx) => NutritionalPlanScreen(),
             WeightScreen.routeName: (ctx) => WeightScreen(),
             WorkoutPlanScreen.routeName: (ctx) => WorkoutPlanScreen(),

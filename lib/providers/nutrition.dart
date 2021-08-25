@@ -339,6 +339,15 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  /// Deletes a log entry
+  Future<void> deleteLog(int logId, int planId) async {
+    await deleteRequest(_nutritionDiaryPath, logId);
+
+    final plan = findById(planId);
+    plan.logs.removeWhere((element) => element.id == logId);
+    notifyListeners();
+  }
+
   /// Load nutrition diary entries for plan
   Future<void> fetchAndSetLogs(NutritionalPlan plan) async {
     // TODO: update fetch to that it can use the pagination
@@ -346,6 +355,7 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
       makeUrl(_nutritionDiaryPath, query: {'plan': plan.id.toString(), 'limit': '1000'}),
     );
 
+    plan.logs = [];
     for (var logData in data['results']) {
       var log = Log.fromJson(logData);
       final ingredient = await fetchIngredient(log.ingredientId);

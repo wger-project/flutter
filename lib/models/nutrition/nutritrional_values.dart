@@ -88,3 +88,11 @@ class NutritionalValues {
     return 'e: $energy, p: $protein, c: $carbohydrates, cS: $carbohydratesSugar, f: $fat, fS: $fatSaturated, fi: $fibres, s: $sodium';
   }
 }
+
+class BaseNutritionalValues {
+  double protein = 0;
+  double carbohydrates = 0;
+  double fat = 0;
+
+  BaseNutritionalValues(this.protein, this.carbohydrates, this.fat);
+}

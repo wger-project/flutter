@@ -52,10 +52,6 @@ You can later list all the registered users with: ``python3 manage.py list-users
 
 
 ### 4
-Generate translation files with ``flutter gen-l10n``
-
-
-### 5
 Start the application with ``flutter run`` or use your IDE
 (please note that depending on how you run your emulator you will need to change the
 IP address of the server)
