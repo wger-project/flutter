@@ -243,12 +243,10 @@ main() {
       when(mockWgerBaseProvider.deleteRequest(any, any))
           .thenAnswer((realInvocation) => Future.value(Response('{}', 400)));
 
-      // act & assert
-      expect(() async => await measurementProvider.deleteCategory(tCategoryId),
-          throwsA(isA<WgerHttpException>()));
-      // can't await the expect call above
-      await Future.delayed(Duration(milliseconds: 1));
+      // act
+      await measurementProvider.deleteCategory(tCategoryId);
 
+      // assert
       expect(measurementProvider.categories, tMeasurementCategories);
     });
   });
@@ -474,12 +472,10 @@ main() {
       when(mockWgerBaseProvider.deleteRequest(any, any))
           .thenAnswer((realInvocation) => Future.value(Response('{}', 404)));
 
-      // act & assert
-      expect(() async => await measurementProvider.deleteEntry(tEntryId, tCategoryId),
-          throwsA(isA<WgerHttpException>()));
-      // can't await the expect call above
-      await Future.delayed(Duration(milliseconds: 1));
+      //act
+      await measurementProvider.deleteEntry(tEntryId, tCategoryId);
 
+      // assert
       expect(measurementProvider.categories, tMeasurementCategories);
     });
   });
