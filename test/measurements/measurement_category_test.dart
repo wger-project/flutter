@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:wger/exceptions/no_such_entry_exception.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
 
@@ -12,6 +13,15 @@ void main() {
       notes: 'notes',
     )
   ];
+
+  MeasurementEntry tMeasurementEntry = MeasurementEntry(
+    id: 1234,
+    category: 123,
+    date: DateTime(2021, 7, 22),
+    value: 83,
+    notes: 'notes',
+  );
+  int tMeasurementEntryId = 1234;
 
   MeasurementCategory tMeasurementCategory = MeasurementCategory(
     id: 123,
@@ -42,41 +52,64 @@ void main() {
     'entries': null,
   };
 
-  test('should convert a JSON map to a MeasurementCategory object', () {
-    // act
-    final result = MeasurementCategory.fromJson(tMeasurementCategoryMap);
+  group('fromJson()', () {
+    test('should convert a JSON map to a MeasurementCategory object', () {
+      // act
+      final result = MeasurementCategory.fromJson(tMeasurementCategoryMap);
 
-    // assert
-    expect(result, tMeasurementCategory);
+      // assert
+      expect(result, tMeasurementCategory);
+    });
   });
 
-  test('should convert a MeasurementCategory object to a JSON map', () {
-    // act
-    final result = tMeasurementCategory.toJson();
+  group('toJson()', () {
+    test('should convert a MeasurementCategory object to a JSON map', () {
+      // act
+      final result = tMeasurementCategory.toJson();
 
-    // assert
-    expect(result, tMeasurementCategoryMaptoJson);
+      // assert
+      expect(result, tMeasurementCategoryMaptoJson);
+    });
   });
 
-  test('should copyWith objects of this class', () {
-    // arrange
+  group('copyWith()', () {
+    test('should copyWith objects of this class', () {
+      // arrange
 
-    MeasurementCategory tMeasurementCategoryCopied = MeasurementCategory(
-      id: 1234,
-      name: 'Coolness',
-      unit: 'lp',
-      entries: tMeasurementEntries,
-    );
+      MeasurementCategory tMeasurementCategoryCopied = MeasurementCategory(
+        id: 1234,
+        name: 'Coolness',
+        unit: 'lp',
+        entries: tMeasurementEntries,
+      );
 
-    // act
-    final result = tMeasurementCategory.copyWith(
-      id: 1234,
-      name: 'Coolness',
-      unit: 'lp',
-      entries: tMeasurementEntries,
-    );
+      // act
+      final result = tMeasurementCategory.copyWith(
+        id: 1234,
+        name: 'Coolness',
+        unit: 'lp',
+        entries: tMeasurementEntries,
+      );
 
-    // assert
-    expect(result, tMeasurementCategoryCopied);
+      // assert
+      expect(result, tMeasurementCategoryCopied);
+    });
+  });
+
+  group('findEntryById()', () {
+    test('should find an entry in the entries list', () {
+      // arrange
+
+      // act
+      final result = tMeasurementCategory.findEntryById(tMeasurementEntryId);
+
+      // assert
+      expect(result, tMeasurementEntry);
+    });
+
+    test('should throw a NoSuchEntryException if no MeasurementEntry was found', () {
+      // act & assert
+      expect(() => tMeasurementCategory.findEntryById(83), throwsA(isA<NoSuchEntryException>()));
+    });
   });
 }

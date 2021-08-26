@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:wger/exceptions/no_such_entry_exception.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
 import 'package:equatable/equatable.dart';
 
@@ -37,6 +38,11 @@ class MeasurementCategory extends Equatable {
       unit: unit ?? this.unit,
       entries: entries ?? this.entries,
     );
+  }
+
+  MeasurementEntry findEntryById(entryId) {
+    return entries.firstWhere((entry) => entry.id == entryId,
+        orElse: () => throw NoSuchEntryException());
   }
 
   // Boilerplate

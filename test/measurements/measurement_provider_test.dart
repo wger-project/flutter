@@ -90,7 +90,7 @@ main() {
 
     test('should throw a NoResultException if no category is found', () {
       // act & assert
-      expect(() => measurementProvider.findCategoryById(3), throwsA(isA<NoResultException>()));
+      expect(() => measurementProvider.findCategoryById(3), throwsA(isA<NoSuchEntryException>()));
     });
   });
 
@@ -238,15 +238,15 @@ main() {
           throwsA(isA<NoSuchEntryException>()));
     });
 
-    test('should re-add the "removed" MeasurementCategory if call to api fails', () async {
+    test(
+        'should re-add the "removed" MeasurementCategory and relay the exception on WgerHttpException',
+        () async {
       // arrange
-      when(mockWgerBaseProvider.deleteRequest(any, any))
-          .thenAnswer((realInvocation) => Future.value(Response('{}', 400)));
+      when(mockWgerBaseProvider.deleteRequest(any, any)).thenThrow(WgerHttpException('{}'));
 
-      // act
-      await measurementProvider.deleteCategory(tCategoryId);
-
-      // assert
+      // act & assert
+      expect(() async => await measurementProvider.deleteCategory(tCategoryId),
+          throwsA(isA<WgerHttpException>()));
       expect(measurementProvider.categories, tMeasurementCategories);
     });
   });
@@ -291,6 +291,18 @@ main() {
 
       // assert
       verify(mockWgerBaseProvider.patch(tCategoryMapEditedToJson, tCategoryUri));
+    });
+
+    test('should keep categories list as is on WgerHttpException', () {
+      // arrange
+      when(mockWgerBaseProvider.patch(any, any)).thenThrow(WgerHttpException('{}'));
+
+      // act & assert
+      expect(
+          () async => await measurementProvider.editCategory(
+              tCategoryId, tCategoryEditedName, tCategoryEditedUnit),
+          throwsA(isA<WgerHttpException>()));
+      expect(measurementProvider.categories, tMeasurementCategories);
     });
   });
 
@@ -469,13 +481,11 @@ main() {
         ]),
         MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm')
       ];
-      when(mockWgerBaseProvider.deleteRequest(any, any))
-          .thenAnswer((realInvocation) => Future.value(Response('{}', 404)));
+      when(mockWgerBaseProvider.deleteRequest(any, any)).thenThrow(WgerHttpException('{}'));
 
-      //act
-      await measurementProvider.deleteEntry(tEntryId, tCategoryId);
-
-      // assert
+      // act & assert
+      expect(() async => await measurementProvider.deleteEntry(tEntryId, tCategoryId),
+          throwsA(isA<WgerHttpException>()));
       expect(measurementProvider.categories, tMeasurementCategories);
     });
   });

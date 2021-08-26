@@ -51,7 +51,7 @@ class MeasurementProvider with ChangeNotifier {
   MeasurementCategory findCategoryById(int id) {
     return _categories.firstWhere(
       (category) => category.id == id,
-      orElse: () => throw NoResultException(),
+      orElse: () => throw NoSuchEntryException(),
     );
   }
 
@@ -90,6 +90,7 @@ class MeasurementProvider with ChangeNotifier {
   /// Adds a measurement category
   Future<void> addCategory(MeasurementCategory category) async {
     Uri postUri = baseProvider.makeUrl(_categoryUrl);
+
     final Map<String, dynamic> newCategoryMap = await baseProvider.post(category.toJson(), postUri);
     final MeasurementCategory newCategory = MeasurementCategory.fromJson(newCategoryMap);
     _categories.add(newCategory);
@@ -99,33 +100,32 @@ class MeasurementProvider with ChangeNotifier {
 
   /// Deletes a measurement category
   Future<void> deleteCategory(int id) async {
-    MeasurementCategory category = _categories.firstWhere((element) => element.id == id,
-        orElse: () => throw NoSuchEntryException());
+    MeasurementCategory category = findCategoryById(id);
     int categoryIndex = _categories.indexOf(category);
     _categories.remove(category);
     notifyListeners();
 
-    final http.Response response = await baseProvider.deleteRequest(_categoryUrl, id);
-
-    if (response.statusCode >= 400) {
+    try {
+      await baseProvider.deleteRequest(_categoryUrl, id);
+    } on WgerHttpException catch (e) {
       _categories.insert(categoryIndex, category);
       notifyListeners();
+      throw e;
     }
   }
 
   /// Edits a measurement category
   /// Currently there isn't any fallback if the call to the api is unsuccessful, as WgerBaseProvider.patch only returns the response body and not the whole response
   Future<void> editCategory(int id, String? newName, String? newUnit) async {
-    final MeasurementCategory oldCategory = _categories.firstWhere((category) => category.id == id,
-        orElse: () => throw NoSuchEntryException());
+    final MeasurementCategory oldCategory = findCategoryById(id);
     int categoryIndex = _categories.indexOf(oldCategory);
-    _categories.removeAt(categoryIndex);
     final MeasurementCategory tempNewCategory = oldCategory.copyWith(name: newName, unit: newUnit);
 
     final Map<String, dynamic> response =
         await baseProvider.patch(tempNewCategory.toJson(), baseProvider.makeUrl(_categoryUrl));
     final MeasurementCategory newCategory =
         (MeasurementCategory.fromJson(response)).copyWith(entries: oldCategory.entries);
+    _categories.removeAt(categoryIndex);
     _categories.insert(categoryIndex, newCategory);
     notifyListeners();
   }
@@ -137,54 +137,45 @@ class MeasurementProvider with ChangeNotifier {
     final Map<String, dynamic> newEntryMap = await baseProvider.post(entry.toJson(), postUri);
     final MeasurementEntry newEntry = MeasurementEntry.fromJson(newEntryMap);
 
-    _categories.firstWhere((categories) {
-      if (categories.id == newEntry.category) {
-        categories.entries.add(newEntry);
-        categories.entries.sort((a, b) => b.date.compareTo(a.date));
-        notifyListeners();
-        return true;
-      }
-      return false;
-    }, orElse: () => throw NoSuchEntryException());
+    MeasurementCategory category = findCategoryById(newEntry.category);
+
+    category.entries.add(newEntry);
+    category.entries.sort((a, b) => b.date.compareTo(a.date));
+    notifyListeners();
   }
 
   /// Deletes a measurement entry
   Future<void> deleteEntry(int id, int categoryId) async {
-    final int categoryIndex = _categories.indexWhere((category) => category.id == categoryId);
-    if (categoryIndex == -1) throw NoSuchEntryException();
+    final MeasurementCategory category = findCategoryById(categoryId);
 
-    final MeasurementEntry entry = _categories[categoryIndex]
-        .entries
-        .firstWhere((entry) => entry.id == id, orElse: () => throw NoSuchEntryException());
-    final int entryIndex = _categories[categoryIndex].entries.indexOf(entry);
+    final MeasurementEntry entry = category.findEntryById(id);
+    final int entryIndex = category.entries.indexOf(entry);
 
-    _categories[categoryIndex].entries.removeAt(entryIndex);
+    category.entries.removeAt(entryIndex);
     notifyListeners();
 
-    final http.Response response = await baseProvider.deleteRequest(_entryUrl, id);
-
-    if (response.statusCode >= 400) {
-      _categories[categoryIndex].entries.insert(entryIndex, entry);
+    try {
+      await baseProvider.deleteRequest(_entryUrl, id);
+    } on WgerHttpException catch (e) {
+      category.entries.insert(entryIndex, entry);
       notifyListeners();
+      throw e;
     }
   }
 
   /// Edits a measurement entry
   /// Currently there isn't any fallback if the call to the api is unsuccessful, as WgerBaseProvider.patch only returns the response body and not the whole response
   Future<void> editEntry(int id, int categroyId, num? newValue, String? newNotes) async {
-    final MeasurementCategory category = _categories.firstWhere(
-        (category) => category.id == categroyId,
-        orElse: () => throw NoSuchEntryException());
-    final MeasurementEntry oldEntry = category.entries
-        .firstWhere((entry) => entry.id == id, orElse: () => throw NoSuchEntryException());
+    final MeasurementCategory category = findCategoryById(categroyId);
+    final MeasurementEntry oldEntry = category.findEntryById(id);
     final int entryIndex = category.entries.indexOf(oldEntry);
-    category.entries.removeAt(entryIndex);
     final MeasurementEntry tempNewEntry = oldEntry.copyWith(value: newValue, notes: newNotes);
 
     final Map<String, dynamic> response =
         await baseProvider.patch(tempNewEntry.toJson(), baseProvider.makeUrl(_entryUrl));
 
     final MeasurementEntry newEntry = MeasurementEntry.fromJson(response);
+    category.entries.removeAt(entryIndex);
     category.entries.insert(entryIndex, newEntry);
     notifyListeners();
   }
