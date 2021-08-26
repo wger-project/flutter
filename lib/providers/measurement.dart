@@ -85,6 +85,7 @@ class MeasurementProvider with ChangeNotifier {
     _categories.removeAt(categoryIndex);
     _categories.insert(categoryIndex, editedCategory);
     notifyListeners();
+    print(_categories);
   }
 
   /// Adds a measurement category

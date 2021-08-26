@@ -15,7 +15,7 @@ class MeasurementEntry extends Equatable {
   @JsonKey(required: true, toJson: toDate)
   final DateTime date;
 
-  @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
+  @JsonKey(required: true)
   final num value;
 
   @JsonKey(required: true, defaultValue: '')

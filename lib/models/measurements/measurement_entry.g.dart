@@ -13,7 +13,7 @@ MeasurementEntry _$MeasurementEntryFromJson(Map<String, dynamic> json) {
     id: json['id'] as int?,
     category: json['category'] as int,
     date: DateTime.parse(json['date'] as String),
-    value: stringToNum(json['value'] as String?),
+    value: json['value'] as num,
     notes: json['notes'] as String? ?? '',
   );
 }
@@ -23,6 +23,6 @@ Map<String, dynamic> _$MeasurementEntryToJson(MeasurementEntry instance) =>
       'id': instance.id,
       'category': instance.category,
       'date': toDate(instance.date),
-      'value': numToString(instance.value),
+      'value': instance.value,
       'notes': instance.notes,
     };
