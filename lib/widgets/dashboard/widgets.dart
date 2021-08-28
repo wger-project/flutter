@@ -32,10 +32,10 @@ import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/theme/theme.dart';
+import 'package:wger/widgets/core/charts.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
-import 'package:wger/widgets/weight/charts.dart';
 import 'package:wger/widgets/weight/forms.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 
@@ -258,7 +258,7 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                   ? Container(
                       padding: EdgeInsets.all(15),
                       height: 180,
-                      child: WeightChartWidget(weightEntriesData.items
+                      child: MeasurementChartWidget(weightEntriesData.items
                           .map((e) => MeasurementChartEntry(e.weight, e.date))
                           .toList()),
                     )

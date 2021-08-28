@@ -25,7 +25,7 @@ import 'package:provider/provider.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
-import 'package:wger/widgets/weight/charts.dart';
+import 'package:wger/widgets/core/charts.dart';
 import 'package:wger/widgets/weight/forms.dart';
 
 import '../test_data/body_weight.dart';
@@ -72,7 +72,7 @@ void main() {
 
     //debugDumpApp();
     expect(find.text('Weight'), findsOneWidget);
-    expect(find.byType(WeightChartWidget), findsOneWidget);
+    expect(find.byType(MeasurementChartWidget), findsOneWidget);
     expect(find.byType(Dismissible), findsNWidgets(2));
     expect(find.byType(ListTile), findsNWidgets(2));
   });

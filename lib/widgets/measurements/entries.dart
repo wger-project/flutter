@@ -21,6 +21,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/providers/measurement.dart';
+import 'package:wger/widgets/core/charts.dart';
 
 class EntriesList extends StatelessWidget {
   late MeasurementCategory _category;
@@ -44,21 +45,34 @@ class EntriesList extends StatelessWidget {
                     child: CircularProgressIndicator(),
                   ),
                 )
-              : ListView.builder(
-                  padding: const EdgeInsets.all(10.0),
-                  itemCount: _category.entries.length,
-                  itemBuilder: (context, index) {
-                    final currentEntry = _category.entries[index];
-                    return Card(
-                      child: ListTile(
-                        title: Text(currentEntry.value.toString()),
-                        subtitle: Text(
-                          DateFormat.yMd(Localizations.localeOf(context).languageCode)
-                              .format(currentEntry.date),
-                        ),
+              : Column(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(15),
+                      height: 220,
+                      child: MeasurementChartWidget(_category.entries
+                          .map((e) => MeasurementChartEntry(e.value, e.date))
+                          .toList()),
+                    ),
+                    Expanded(
+                      child: ListView.builder(
+                        padding: const EdgeInsets.all(10.0),
+                        itemCount: _category.entries.length,
+                        itemBuilder: (context, index) {
+                          final currentEntry = _category.entries[index];
+                          return Card(
+                            child: ListTile(
+                              title: Text(currentEntry.value.toString()),
+                              subtitle: Text(
+                                DateFormat.yMd(Localizations.localeOf(context).languageCode)
+                                    .format(currentEntry.date),
+                              ),
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
+                    ),
+                  ],
                 ),
     );
   }

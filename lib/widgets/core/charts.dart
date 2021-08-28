@@ -28,19 +28,18 @@ class MeasurementChartEntry {
 }
 
 /// Weight chart widget
-class WeightChartWidget extends StatelessWidget {
+class MeasurementChartWidget extends StatelessWidget {
   final List<MeasurementChartEntry> _entries;
 
-  /// [_entries] is a list of [MeasurementChartEntry] as returned e.g. by the
-  /// [BodyWeight] provider.
-  WeightChartWidget(this._entries);
+  /// [_entries] is a list of [MeasurementChartEntry]
+  MeasurementChartWidget(this._entries);
 
   @override
   Widget build(BuildContext context) {
     return charts.TimeSeriesChart(
       [
         charts.Series<MeasurementChartEntry, DateTime>(
-          id: 'Weight',
+          id: 'Measurement',
           colorFn: (_, __) => wgerChartSecondaryColor,
           domainFn: (MeasurementChartEntry entry, _) => entry.date,
           measureFn: (MeasurementChartEntry entry, _) => entry.value,
