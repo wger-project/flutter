@@ -5,13 +5,10 @@ import 'package:http/http.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/exceptions/http_exception.dart';
-import 'package:wger/exceptions/no_result_exception.dart';
 import 'package:wger/exceptions/no_such_entry_exception.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
-import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/base_provider.dart';
-import 'package:wger/providers/helpers.dart';
 import 'package:wger/providers/measurement.dart';
 
 import '../fixtures/fixture_reader.dart';
@@ -499,6 +496,7 @@ main() {
     // notifyListeners()
     int tEntryId = 1;
     num tEntryEditedValue = 23;
+    DateTime tEntryEditedDate = DateTime(2021, 07, 21);
     String tEntryEditedNote = 'I just wanted to edit this to see what happens';
     Map<String, dynamic> tEntryMapEdited = jsonDecode(fixture('measurement_entry_edited.json'));
     setUp(() async {
@@ -531,7 +529,12 @@ main() {
 
       // act
       await measurementProvider.editEntry(
-          tEntryId, tCategoryId, tEntryEditedValue, tEntryEditedNote);
+        tEntryId,
+        tCategoryId,
+        tEntryEditedValue,
+        tEntryEditedNote,
+        tEntryEditedDate,
+      );
 
       // assert
       expect(measurementProvider.categories, tMeasurementCategoriesEdited);
@@ -541,7 +544,12 @@ main() {
       // act & assert
       expect(
           () async => await measurementProvider.editEntry(
-              tEntryId, 83, tEntryEditedValue, tEntryEditedNote),
+                tEntryId,
+                83,
+                tEntryEditedValue,
+                tEntryEditedNote,
+                tEntryEditedDate,
+              ),
           throwsA(isA<NoSuchEntryException>()));
     });
 
@@ -549,14 +557,24 @@ main() {
       // act & assert
       expect(
           () async => await measurementProvider.editEntry(
-              83, tCategoryId, tEntryEditedValue, tEntryEditedNote),
+                83,
+                tCategoryId,
+                tEntryEditedValue,
+                tEntryEditedNote,
+                tEntryEditedDate,
+              ),
           throwsA(isA<NoSuchEntryException>()));
     });
 
     test('should call api to patch the category', () async {
       // act
       await measurementProvider.editEntry(
-          tEntryId, tCategoryId, tEntryEditedValue, tEntryEditedNote);
+        tEntryId,
+        tCategoryId,
+        tEntryEditedValue,
+        tEntryEditedNote,
+        tEntryEditedDate,
+      );
 
       // assert
       verify(mockWgerBaseProvider.patch(tEntryMapEdited, tCategoryEntriesUri));
