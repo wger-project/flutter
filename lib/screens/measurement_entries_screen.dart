@@ -21,13 +21,15 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/measurements/entries.dart';
-import 'package:wger/widgets/weight/forms.dart';
+import 'package:wger/widgets/measurements/forms.dart';
 
 class MeasurementEntriesScreen extends StatelessWidget {
   static const routeName = '/measurement-entries';
 
   @override
   Widget build(BuildContext context) {
+    final category = ModalRoute.of(context)!.settings.arguments as int;
+
     return Scaffold(
       appBar: WgerAppBar(AppLocalizations.of(context).measurementEntries),
       floatingActionButton: FloatingActionButton(
@@ -38,7 +40,7 @@ class MeasurementEntriesScreen extends StatelessWidget {
             FormScreen.routeName,
             arguments: FormScreenArguments(
               AppLocalizations.of(context).newEntry,
-              WeightForm(),
+              MeasurementEntryForm(category),
             ),
           );
         },

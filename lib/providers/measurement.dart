@@ -16,18 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:wger/exceptions/http_exception.dart';
-import 'package:wger/exceptions/no_result_exception.dart';
 import 'package:wger/exceptions/no_such_entry_exception.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
-import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/base_provider.dart';
-import 'package:wger/providers/helpers.dart';
 
 class MeasurementProvider with ChangeNotifier {
   static const _categoryUrl = 'measurement-category';
@@ -85,7 +79,6 @@ class MeasurementProvider with ChangeNotifier {
     _categories.removeAt(categoryIndex);
     _categories.insert(categoryIndex, editedCategory);
     notifyListeners();
-    print(_categories);
   }
 
   /// Adds a measurement category
@@ -165,12 +158,23 @@ class MeasurementProvider with ChangeNotifier {
   }
 
   /// Edits a measurement entry
-  /// Currently there isn't any fallback if the call to the api is unsuccessful, as WgerBaseProvider.patch only returns the response body and not the whole response
-  Future<void> editEntry(int id, int categroyId, num? newValue, String? newNotes) async {
-    final MeasurementCategory category = findCategoryById(categroyId);
+  /// Currently there isn't any fallback if the call to the api is unsuccessful, as
+  /// WgerBaseProvider.patch only returns the response body and not the whole response
+  Future<void> editEntry(
+    int id,
+    int categoryId,
+    num? newValue,
+    String? newNotes,
+    DateTime? newDate,
+  ) async {
+    final MeasurementCategory category = findCategoryById(categoryId);
     final MeasurementEntry oldEntry = category.findEntryById(id);
     final int entryIndex = category.entries.indexOf(oldEntry);
-    final MeasurementEntry tempNewEntry = oldEntry.copyWith(value: newValue, notes: newNotes);
+    final MeasurementEntry tempNewEntry = oldEntry.copyWith(
+      value: newValue,
+      notes: newNotes,
+      date: newDate,
+    );
 
     final Map<String, dynamic> response =
         await baseProvider.patch(tempNewEntry.toJson(), baseProvider.makeUrl(_entryUrl));
