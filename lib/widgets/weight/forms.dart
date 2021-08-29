@@ -48,13 +48,14 @@ class WeightForm extends StatelessWidget {
         children: [
           // Weight date
           TextFormField(
-            decoration:
-                InputDecoration(labelText: AppLocalizations.of(context).date),
+            readOnly: true, // Stop keyboard from appearing
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context).date,
+              suffixIcon: Icon(Icons.calendar_today_outlined),
+            ),
+            enableInteractiveSelection: false,
             controller: dateController,
             onTap: () async {
-              // Stop keyboard from appearing
-              FocusScope.of(context).requestFocus(new FocusNode());
-              print("date picker");
               // Show Date Picker Here
               var pickedDate = await showDatePicker(
                 context: context,
@@ -124,18 +125,7 @@ class WeightForm extends StatelessWidget {
                             listen: false)
                         .editEntry(_weightEntry);
               } on WgerHttpException catch (error) {
-                await showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                          content: Text("please wait"),
-                          actions: [
-                            TextButton(
-                                onPressed: () => Navigator.pop(context),
-                                child: Text("Ok"))
-                          ],
-                        ));
                 showHttpExceptionErrorDialog(error, context);
-                Navigator.pop(context);
               } catch (error) {
                 showErrorDialog(error, context);
               }
