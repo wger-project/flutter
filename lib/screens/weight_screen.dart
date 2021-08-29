@@ -18,6 +18,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
+import 'package:wger/providers/body_weight.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/weight/entries_list.dart';
@@ -43,7 +45,9 @@ class WeightScreen extends StatelessWidget {
           );
         },
       ),
-      body: WeightEntriesList(),
+      body: Consumer<BodyWeightProvider>(
+        builder: (context, workoutProvider, child) => WeightEntriesList(),
+      ),
     );
   }
 }
