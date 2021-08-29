@@ -73,7 +73,9 @@ class WeightForm extends StatelessWidget {
                 },
               );
 
-              dateController.text = toDate(pickedDate)!;
+              if (pickedDate != null) {
+                dateController.text = toDate(pickedDate)!;
+              }
             },
             onSaved: (newValue) {
               _weightEntry.date = DateTime.parse(newValue!);
