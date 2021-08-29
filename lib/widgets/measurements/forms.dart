@@ -132,7 +132,6 @@ class MeasurementEntryForm extends StatelessWidget {
       'category': _categoryId,
       'date': DateTime.now(),
       'value': '',
-      'unit': '',
       'notes': '',
     };
 
@@ -145,7 +144,7 @@ class MeasurementEntryForm extends StatelessWidget {
     }
 
     _dateController.text = toDate(_entryData['date'])!;
-    _valueController.text = _entryData['value']!;
+    _valueController.text = _entryData['value']!.toString();
     _notesController.text = _entryData['notes']!;
   }
 

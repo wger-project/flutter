@@ -27,10 +27,11 @@ main() {
   Map<String, dynamic> tMeasurementCategoryMap =
       jsonDecode(fixture('measurement_category_entries.json'));
   Uri tCategoryEntriesUri = Uri(
-      scheme: 'http',
-      host: 'tedmosbyisajerk.com',
-      path: 'api/v2/' + entryUrl + '/',
-      query: 'category=1');
+    scheme: 'http',
+    host: 'tedmosbyisajerk.com',
+    path: 'api/v2/' + entryUrl + '/',
+    query: 'category=1',
+  );
 
   int tCategoryId = 1;
   MeasurementCategory tMeasurementCategory =
@@ -47,10 +48,13 @@ main() {
     measurementProvider = MeasurementProvider(mockWgerBaseProvider);
 
     when(mockWgerBaseProvider.makeUrl(any)).thenReturn(tCategoryUri);
+    when(mockWgerBaseProvider.makeUrl(any, id: anyNamed('id'))).thenReturn(tCategoryUri);
     when(mockWgerBaseProvider.fetch(any))
         .thenAnswer((realInvocation) => Future.value(tMeasurementCategoriesMap));
 
     when(mockWgerBaseProvider.makeUrl(entryUrl, query: anyNamed('query')))
+        .thenReturn(tCategoryEntriesUri);
+    when(mockWgerBaseProvider.makeUrl(entryUrl, id: anyNamed('id'), query: anyNamed('query')))
         .thenReturn(tCategoryEntriesUri);
     when(mockWgerBaseProvider.fetch(tCategoryEntriesUri))
         .thenAnswer((realInvocation) => Future.value(tMeasurementCategoryMap));
@@ -75,7 +79,6 @@ main() {
   group('findCategoryById()', () {
     test('should return a category for an id', () async {
       // arrange
-
       await measurementProvider.fetchAndSetCategories();
 
       // act
@@ -488,11 +491,11 @@ main() {
   });
 
   group('editEntry()', () {
-    // remove the old MeasurementCategory
-    // should call api to patch the category
-    // should add the new MeasurementCategory from the api call
+    // remove the old MeasurementEntry
+    // should call api to patch the entry
+    // should add the new MeasurementEntry from the api call
     // notifyListeners()
-    // should re-add the old MeasurementCategory and remove the new one if call to api fails
+    // should re-add the old MeasurementEntry and remove the new one if call to api fails
     // notifyListeners()
     int tEntryId = 1;
     num tEntryEditedValue = 23;
@@ -505,7 +508,7 @@ main() {
       await measurementProvider.fetchAndSetCategories();
       await measurementProvider.fetchAndSetCategoryEntries(1);
     });
-    test('should add the new MeasurementCategory and remove the old one', () async {
+    test('should add the new MeasurementEntry and remove the old one', () async {
       // arrange
       List<MeasurementCategory> tMeasurementCategoriesEdited = [
         MeasurementCategory(id: 1, name: 'Strength', unit: 'kN', entries: [
@@ -540,7 +543,7 @@ main() {
       expect(measurementProvider.categories, tMeasurementCategoriesEdited);
     });
 
-    test('should throw a NoSuchEntryException if category doesn\'t exist', () {
+    test("should throw a NoSuchEntryException if category doesn't exist", () {
       // act & assert
       expect(
           () async => await measurementProvider.editEntry(
@@ -553,7 +556,7 @@ main() {
           throwsA(isA<NoSuchEntryException>()));
     });
 
-    test('should throw a NoSuchEntryException if entry doesn\'t exist', () {
+    test("should throw a NoSuchEntryException if entry doesn't exist", () {
       // act & assert
       expect(
           () async => await measurementProvider.editEntry(
@@ -566,7 +569,7 @@ main() {
           throwsA(isA<NoSuchEntryException>()));
     });
 
-    test('should call api to patch the category', () async {
+    test('should call api to patch the entry', () async {
       // act
       await measurementProvider.editEntry(
         tEntryId,

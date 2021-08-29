@@ -78,7 +78,7 @@ class MeasurementProvider with ChangeNotifier {
     MeasurementCategory editedCategory = category.copyWith(entries: loadedEntries);
     _categories.removeAt(categoryIndex);
     _categories.insert(categoryIndex, editedCategory);
-    notifyListeners();
+    //notifyListeners();
   }
 
   /// Adds a measurement category
@@ -115,8 +115,10 @@ class MeasurementProvider with ChangeNotifier {
     int categoryIndex = _categories.indexOf(oldCategory);
     final MeasurementCategory tempNewCategory = oldCategory.copyWith(name: newName, unit: newUnit);
 
-    final Map<String, dynamic> response =
-        await baseProvider.patch(tempNewCategory.toJson(), baseProvider.makeUrl(_categoryUrl));
+    final Map<String, dynamic> response = await baseProvider.patch(
+      tempNewCategory.toJson(),
+      baseProvider.makeUrl(_categoryUrl, id: id),
+    );
     final MeasurementCategory newCategory =
         (MeasurementCategory.fromJson(response)).copyWith(entries: oldCategory.entries);
     _categories.removeAt(categoryIndex);
@@ -177,7 +179,7 @@ class MeasurementProvider with ChangeNotifier {
     );
 
     final Map<String, dynamic> response =
-        await baseProvider.patch(tempNewEntry.toJson(), baseProvider.makeUrl(_entryUrl));
+        await baseProvider.patch(tempNewEntry.toJson(), baseProvider.makeUrl(_entryUrl, id: id));
 
     final MeasurementEntry newEntry = MeasurementEntry.fromJson(response);
     category.entries.removeAt(entryIndex);

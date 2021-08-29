@@ -18,6 +18,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
+import 'package:wger/providers/measurement.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/measurements/entries.dart';
@@ -45,7 +47,9 @@ class MeasurementEntriesScreen extends StatelessWidget {
           );
         },
       ),
-      body: EntriesList(),
+      body: Consumer<MeasurementProvider>(
+        builder: (context, provider, child) => EntriesList(),
+      ),
     );
   }
 }

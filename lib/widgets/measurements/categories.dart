@@ -17,9 +17,13 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/measurement.dart';
+import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/measurement_entries_screen.dart';
+
+import 'forms.dart';
 
 class CategoriesList extends StatelessWidget {
   @override
@@ -42,6 +46,19 @@ class CategoriesList extends StatelessWidget {
             },
             title: Text(currentCategory.name),
             subtitle: Text(currentCategory.unit),
+            trailing: IconButton(
+              icon: Icon(Icons.edit),
+              onPressed: () async {
+                Navigator.pushNamed(
+                  context,
+                  FormScreen.routeName,
+                  arguments: FormScreenArguments(
+                    AppLocalizations.of(context).edit,
+                    MeasurementCategoryForm(currentCategory),
+                  ),
+                );
+              },
+            ),
           ),
         );
       },

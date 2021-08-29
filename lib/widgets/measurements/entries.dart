@@ -17,28 +17,33 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/providers/measurement.dart';
+import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/core/charts.dart';
+
+import 'forms.dart';
 
 class EntriesList extends StatelessWidget {
   late MeasurementCategory _category;
 
-  Future<void> _loadEntries(BuildContext context) async {
+  Future<MeasurementCategory> _loadEntries(BuildContext context) async {
     final provider = Provider.of<MeasurementProvider>(context, listen: false);
     final int categoryId = ModalRoute.of(context)!.settings.arguments as int;
     await provider.fetchAndSetCategoryEntries(categoryId);
     _category = provider.findCategoryById(categoryId);
+    return _category;
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
       future: _loadEntries(context),
-      builder: (ctx, authResultSnapshot) =>
-          authResultSnapshot.connectionState == ConnectionState.waiting
+      builder: (ctx, AsyncSnapshot<MeasurementCategory> resultSnapshot) =>
+          resultSnapshot.connectionState == ConnectionState.waiting
               ? Container(
                   height: 200,
                   child: Center(
@@ -60,12 +65,73 @@ class EntriesList extends StatelessWidget {
                         itemCount: _category.entries.length,
                         itemBuilder: (context, index) {
                           final currentEntry = _category.entries[index];
-                          return Card(
-                            child: ListTile(
-                              title: Text(currentEntry.value.toString()),
-                              subtitle: Text(
-                                DateFormat.yMd(Localizations.localeOf(context).languageCode)
-                                    .format(currentEntry.date),
+                          final provider = Provider.of<MeasurementProvider>(context, listen: false);
+
+                          return Dismissible(
+                            key: Key(currentEntry.id.toString()),
+                            onDismissed: (direction) {
+                              if (direction == DismissDirection.endToStart) {
+                                // Delete entry from DB
+                                provider.deleteEntry(currentEntry.id!, currentEntry.category);
+
+                                // and inform the user
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      AppLocalizations.of(context).successfullyDeleted,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                            confirmDismiss: (direction) async {
+                              // Edit entry
+                              if (direction == DismissDirection.startToEnd) {
+                                Navigator.pushNamed(
+                                  context,
+                                  FormScreen.routeName,
+                                  arguments: FormScreenArguments(
+                                    AppLocalizations.of(context).edit,
+                                    MeasurementEntryForm(currentEntry.category, currentEntry),
+                                  ),
+                                );
+                                return false;
+                              }
+                              return true;
+                            },
+                            secondaryBackground: Container(
+                              color: Theme.of(context).errorColor,
+                              alignment: Alignment.centerRight,
+                              padding: EdgeInsets.only(right: 20),
+                              margin: EdgeInsets.symmetric(
+                                horizontal: 4,
+                                vertical: 4,
+                              ),
+                              child: Icon(
+                                Icons.delete,
+                                color: Colors.white,
+                              ),
+                            ),
+                            background: Container(
+                              alignment: Alignment.centerLeft,
+                              padding: EdgeInsets.only(right: 20),
+                              margin: EdgeInsets.symmetric(
+                                horizontal: 4,
+                                vertical: 4,
+                              ),
+                              child: Icon(
+                                Icons.edit,
+                                //color: Colors.white,
+                              ),
+                            ),
+                            child: Card(
+                              child: ListTile(
+                                title: Text('${currentEntry.value.toString()} ${_category.unit}'),
+                                subtitle: Text(
+                                  DateFormat.yMd(Localizations.localeOf(context).languageCode)
+                                      .format(currentEntry.date),
+                                ),
                               ),
                             ),
                           );
