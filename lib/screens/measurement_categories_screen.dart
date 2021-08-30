@@ -21,7 +21,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/screens/form_screen.dart';
-import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/measurements/categories.dart';
 import 'package:wger/widgets/measurements/forms.dart';
 
@@ -31,7 +30,9 @@ class MeasurementCategoriesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: WgerAppBar(AppLocalizations.of(context).measurementCategories),
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context).measurementCategories),
+      ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () async {
