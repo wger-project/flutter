@@ -23,6 +23,7 @@ import 'package:provider/provider.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/screens/form_screen.dart';
+import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/charts.dart';
 
 import 'forms.dart';
@@ -114,15 +115,16 @@ class EntriesList extends StatelessWidget {
                               ),
                             ),
                             background: Container(
+                              color: wgerPrimaryButtonColor,
                               alignment: Alignment.centerLeft,
-                              padding: EdgeInsets.only(right: 20),
+                              padding: EdgeInsets.only(left: 20),
                               margin: EdgeInsets.symmetric(
                                 horizontal: 4,
                                 vertical: 4,
                               ),
                               child: Icon(
                                 Icons.edit,
-                                //color: Colors.white,
+                                color: Colors.white,
                               ),
                             ),
                             child: Card(
