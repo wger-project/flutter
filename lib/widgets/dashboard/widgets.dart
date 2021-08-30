@@ -30,6 +30,7 @@ import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
+import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/charts.dart';
@@ -255,12 +256,26 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
           Column(
             children: [
               weightEntriesData.items.length > 0
-                  ? Container(
-                      padding: EdgeInsets.all(15),
-                      height: 180,
-                      child: MeasurementChartWidget(weightEntriesData.items
-                          .map((e) => MeasurementChartEntry(e.weight, e.date))
-                          .toList()),
+                  ? Column(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(15),
+                          height: 180,
+                          child: MeasurementChartWidget(weightEntriesData.items
+                              .map((e) => MeasurementChartEntry(e.weight, e.date))
+                              .toList()),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            TextButton(
+                                child: Text(AppLocalizations.of(context).goToDetailPage),
+                                onPressed: () {
+                                  Navigator.of(context).pushNamed(WeightScreen.routeName);
+                                }),
+                          ],
+                        ),
+                      ],
                     )
                   : NothingFound(
                       AppLocalizations.of(context).noWeightEntries,
