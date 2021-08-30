@@ -224,6 +224,14 @@ class MeasurementEntryForm extends StatelessWidget {
             onSaved: (newValue) {
               _entryData['notes'] = newValue!;
             },
+            validator: (value) {
+              const minLength = 1;
+              const maxLength = 100;
+              if (value!.isEmpty || value.length < minLength || value.length > maxLength) {
+                return AppLocalizations.of(context).enterCharacters(minLength, maxLength);
+              }
+              return null;
+            },
           ),
 
           ElevatedButton(
