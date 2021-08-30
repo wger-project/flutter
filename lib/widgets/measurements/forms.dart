@@ -162,6 +162,7 @@ class MeasurementEntryForm extends StatelessWidget {
         children: [
           TextFormField(
             decoration: InputDecoration(labelText: AppLocalizations.of(context).date),
+            readOnly: true, // Hide text cursor
             controller: _dateController,
             onTap: () async {
               // Stop keyboard from appearing
