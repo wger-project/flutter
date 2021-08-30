@@ -44,8 +44,7 @@ void showErrorDialog(dynamic exception, BuildContext context) {
   );
 }
 
-void showHttpExceptionErrorDialog(
-    WgerHttpException exception, BuildContext context) async {
+void showHttpExceptionErrorDialog(WgerHttpException exception, BuildContext context) async {
   log('showHttpExceptionErrorDialog: ');
   log(exception.toString());
   log('-------------------');
