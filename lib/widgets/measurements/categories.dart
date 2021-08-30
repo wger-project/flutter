@@ -46,6 +46,49 @@ class CategoriesList extends StatelessWidget {
             },
             title: Text(currentCategory.name),
             subtitle: Text(currentCategory.unit),
+            leading: IconButton(
+              icon: Icon(Icons.delete),
+              onPressed: () async {
+                await showDialog(
+                    context: context,
+                    builder: (BuildContext contextDialog) {
+                      return AlertDialog(
+                        content: Text(
+                          AppLocalizations.of(context).confirmDelete(currentCategory.name),
+                        ),
+                        actions: [
+                          TextButton(
+                            child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+                            onPressed: () => Navigator.of(contextDialog).pop(),
+                          ),
+                          TextButton(
+                            child: Text(
+                              AppLocalizations.of(context).delete,
+                              style: TextStyle(color: Theme.of(context).errorColor),
+                            ),
+                            onPressed: () {
+                              // Confirmed, delete the workout
+                              _provider.deleteCategory(currentCategory.id!);
+
+                              // Close the popup
+                              Navigator.of(contextDialog).pop();
+
+                              // and inform the user
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    AppLocalizations.of(context).successfullyDeleted,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      );
+                    });
+              },
+            ),
             trailing: IconButton(
               icon: Icon(Icons.edit),
               onPressed: () async {

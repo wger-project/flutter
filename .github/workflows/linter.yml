@@ -33,7 +33,3 @@ jobs:
           git add .
           git commit -m "Automatic linting"
           git push
-
-
-
-
