@@ -263,10 +263,6 @@
     "description": "Categories for the measurements such as biceps size, body fat, etc."
   },
   "measurementCategoriesHelpText": "Measurement category, such as 'biceps' or 'body fat'",
-  "measurementEntries": "Measurement entries",
-  "@measurementEntries": {
-    "description": "Specific entries for the measurements"
-  },
   "measurementEntriesHelpText": "The unit used to measure the category such as 'cm' or '%'",
   "date": "Date",
   "@date": {

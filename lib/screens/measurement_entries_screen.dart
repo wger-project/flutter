@@ -29,11 +29,13 @@ class MeasurementEntriesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final category = ModalRoute.of(context)!.settings.arguments as int;
+    final categoryId = ModalRoute.of(context)!.settings.arguments as int;
+    final category =
+        Provider.of<MeasurementProvider>(context, listen: false).findCategoryById(categoryId);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).measurementEntries),
+        title: Text(category.name),
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
@@ -43,13 +45,13 @@ class MeasurementEntriesScreen extends StatelessWidget {
             FormScreen.routeName,
             arguments: FormScreenArguments(
               AppLocalizations.of(context).newEntry,
-              MeasurementEntryForm(category),
+              MeasurementEntryForm(categoryId),
             ),
           );
         },
       ),
       body: Consumer<MeasurementProvider>(
-        builder: (context, provider, child) => EntriesList(),
+        builder: (context, provider, child) => EntriesList(category),
       ),
     );
   }

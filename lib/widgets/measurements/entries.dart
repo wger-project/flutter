@@ -29,13 +29,13 @@ import 'package:wger/widgets/core/charts.dart';
 import 'forms.dart';
 
 class EntriesList extends StatelessWidget {
-  late MeasurementCategory _category;
+  MeasurementCategory _category;
+
+  EntriesList(MeasurementCategory this._category);
 
   Future<MeasurementCategory> _loadEntries(BuildContext context) async {
     final provider = Provider.of<MeasurementProvider>(context, listen: false);
-    final int categoryId = ModalRoute.of(context)!.settings.arguments as int;
-    await provider.fetchAndSetCategoryEntries(categoryId);
-    _category = provider.findCategoryById(categoryId);
+    await provider.fetchAndSetCategoryEntries(_category.id!);
     return _category;
   }
 
@@ -54,7 +54,8 @@ class EntriesList extends StatelessWidget {
               : Column(
                   children: [
                     Container(
-                      padding: EdgeInsets.all(15),
+                      color: Colors.white,
+                      padding: EdgeInsets.all(10),
                       height: 220,
                       child: MeasurementChartWidget(_category.entries
                           .map((e) => MeasurementChartEntry(e.value, e.date))
