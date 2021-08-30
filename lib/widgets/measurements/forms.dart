@@ -54,7 +54,10 @@ class MeasurementCategoryForm extends StatelessWidget {
         children: [
           // Name
           TextFormField(
-            decoration: InputDecoration(labelText: AppLocalizations.of(context).name),
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context).name,
+              helperText: AppLocalizations.of(context).measurementCategoriesHelpText,
+            ),
             controller: nameController,
             onSaved: (newValue) {
               categoryData['name'] = newValue!;
@@ -69,7 +72,10 @@ class MeasurementCategoryForm extends StatelessWidget {
 
           // Unit
           TextFormField(
-            decoration: InputDecoration(labelText: AppLocalizations.of(context).unit),
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context).unit,
+              helperText: AppLocalizations.of(context).measurementEntriesHelpText,
+            ),
             controller: unitController,
             onSaved: (newValue) {
               categoryData['unit'] = newValue!;
