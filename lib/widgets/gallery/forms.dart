@@ -133,7 +133,11 @@ class _ImageFormState extends State<ImageForm> {
           ),
           TextFormField(
             key: Key('field-date'),
-            decoration: InputDecoration(labelText: AppLocalizations.of(context).date),
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context).date,
+              suffixIcon: Icon(Icons.calendar_today_outlined),
+            ),
+            readOnly: true, // Stop keyboard from appearing
             controller: dateController,
             onTap: () async {
               // Stop keyboard from appearing
