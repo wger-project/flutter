@@ -54,13 +54,19 @@ void main() {
 
   testWidgets('Test opening the form for an existing image', (WidgetTester tester) async {
     await mockNetworkImagesFor(() => tester.pumpWidget(createScreen(useImage: true)));
-    await tester.pumpAndSettle();
+    await tester.pump();
 
-    expect(find.byType(TextFormField), findsNWidgets(2)); // four in the overview, one in the popup
+    expect(find.byType(TextFormField), findsNWidgets(2));
     expect(find.text('A very cool image from the gym'), findsOneWidget);
     expect(find.byKey(Key(SUBMIT_BUTTON_KEY_NAME)), findsOneWidget);
 
-    await tester.enterText(find.byKey(Key('field-date')), '2021-06-01');
+    // Date can only be edited via the datepicker
+    await tester.tap(find.byKey(Key('field-date')));
+    await tester.pump();
+    await tester.tap(find.text('OK'));
+    await tester.tap(find.text('15'), warnIfMissed: false);
+
+    await tester.pump();
     await tester.tap(find.byKey(Key(SUBMIT_BUTTON_KEY_NAME)));
 
     verifyNever(mockGalleryProvider.addImage(any, any));
