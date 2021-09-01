@@ -89,7 +89,7 @@ class GalleryProvider extends WgerBaseProvider with ChangeNotifier {
 
     // Update image info
     final data = image.toJson();
-    request.fields['id'] = data['id'];
+    request.fields['id'] = data['id'].toString();
     request.fields['date'] = data['date'];
     request.fields['description'] = data['description'];
 
