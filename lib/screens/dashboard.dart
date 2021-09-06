@@ -74,7 +74,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         nutritionPlansProvider.fetchAndSetAllPlansSparse(),
         workoutPlansProvider.fetchAndSetAllPlansSparse(),
         weightProvider.fetchAndSetEntries(),
-        measurementProvider.fetchAndSetCategories(),
+        measurementProvider.fetchAndSetAllCategoriesAndEntries(),
       ]);
 
       // Current nutritional plan

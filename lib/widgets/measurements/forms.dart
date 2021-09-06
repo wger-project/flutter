@@ -225,9 +225,9 @@ class MeasurementEntryForm extends StatelessWidget {
               _entryData['notes'] = newValue!;
             },
             validator: (value) {
-              const minLength = 1;
+              const minLength = 0;
               const maxLength = 100;
-              if (value!.isEmpty || value.length < minLength || value.length > maxLength) {
+              if (value!.isNotEmpty && (value.length < minLength || value.length > maxLength)) {
                 return AppLocalizations.of(context).enterCharacters(minLength, maxLength);
               }
               return null;

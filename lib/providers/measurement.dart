@@ -81,6 +81,12 @@ class MeasurementProvider with ChangeNotifier {
     //notifyListeners();
   }
 
+  /// Fetches and sets the measurement categories and their entries
+  Future<void> fetchAndSetAllCategoriesAndEntries() async {
+    await fetchAndSetCategories();
+    await Future.wait(_categories.map((e) => this.fetchAndSetCategoryEntries(e.id!)).toList());
+  }
+
   /// Adds a measurement category
   Future<void> addCategory(MeasurementCategory category) async {
     Uri postUri = baseProvider.makeUrl(_categoryUrl);

@@ -31,118 +31,98 @@ import 'forms.dart';
 class EntriesList extends StatelessWidget {
   MeasurementCategory _category;
 
-  EntriesList(MeasurementCategory this._category);
-
-  Future<MeasurementCategory> _loadEntries(BuildContext context) async {
-    final provider = Provider.of<MeasurementProvider>(context, listen: false);
-    await provider.fetchAndSetCategoryEntries(_category.id!);
-    return _category;
-  }
+  EntriesList(this._category);
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _loadEntries(context),
-      builder: (ctx, AsyncSnapshot<MeasurementCategory> resultSnapshot) =>
-          resultSnapshot.connectionState == ConnectionState.waiting
-              ? Container(
-                  height: 200,
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                )
-              : Column(
-                  children: [
-                    Container(
-                      color: Colors.white,
-                      padding: EdgeInsets.all(10),
-                      height: 220,
-                      child: MeasurementChartWidget(_category.entries
-                          .map((e) => MeasurementChartEntry(e.value, e.date))
-                          .toList()),
-                    ),
-                    Expanded(
-                      child: ListView.builder(
-                        padding: const EdgeInsets.all(10.0),
-                        itemCount: _category.entries.length,
-                        itemBuilder: (context, index) {
-                          final currentEntry = _category.entries[index];
-                          final provider = Provider.of<MeasurementProvider>(context, listen: false);
+    return Column(children: [
+      Container(
+        color: Colors.white,
+        padding: EdgeInsets.all(10),
+        height: 220,
+        child: MeasurementChartWidget(
+            _category.entries.map((e) => MeasurementChartEntry(e.value, e.date)).toList()),
+      ),
+      Expanded(
+        child: ListView.builder(
+          padding: const EdgeInsets.all(10.0),
+          itemCount: _category.entries.length,
+          itemBuilder: (context, index) {
+            final currentEntry = _category.entries[index];
+            final provider = Provider.of<MeasurementProvider>(context, listen: false);
 
-                          return Dismissible(
-                            key: Key(currentEntry.id.toString()),
-                            onDismissed: (direction) {
-                              if (direction == DismissDirection.endToStart) {
-                                // Delete entry from DB
-                                provider.deleteEntry(currentEntry.id!, currentEntry.category);
+            return Dismissible(
+              key: Key(currentEntry.id.toString()),
+              onDismissed: (direction) {
+                if (direction == DismissDirection.endToStart) {
+                  // Delete entry from DB
+                  provider.deleteEntry(currentEntry.id!, currentEntry.category);
 
-                                // and inform the user
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      AppLocalizations.of(context).successfullyDeleted,
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                );
-                              }
-                            },
-                            confirmDismiss: (direction) async {
-                              // Edit entry
-                              if (direction == DismissDirection.startToEnd) {
-                                Navigator.pushNamed(
-                                  context,
-                                  FormScreen.routeName,
-                                  arguments: FormScreenArguments(
-                                    AppLocalizations.of(context).edit,
-                                    MeasurementEntryForm(currentEntry.category, currentEntry),
-                                  ),
-                                );
-                                return false;
-                              }
-                              return true;
-                            },
-                            secondaryBackground: Container(
-                              color: Theme.of(context).errorColor,
-                              alignment: Alignment.centerRight,
-                              padding: EdgeInsets.only(right: 20),
-                              margin: EdgeInsets.symmetric(
-                                horizontal: 4,
-                                vertical: 4,
-                              ),
-                              child: Icon(
-                                Icons.delete,
-                                color: Colors.white,
-                              ),
-                            ),
-                            background: Container(
-                              color: wgerPrimaryButtonColor,
-                              alignment: Alignment.centerLeft,
-                              padding: EdgeInsets.only(left: 20),
-                              margin: EdgeInsets.symmetric(
-                                horizontal: 4,
-                                vertical: 4,
-                              ),
-                              child: Icon(
-                                Icons.edit,
-                                color: Colors.white,
-                              ),
-                            ),
-                            child: Card(
-                              child: ListTile(
-                                title: Text('${currentEntry.value.toString()} ${_category.unit}'),
-                                subtitle: Text(
-                                  DateFormat.yMd(Localizations.localeOf(context).languageCode)
-                                      .format(currentEntry.date),
-                                ),
-                              ),
-                            ),
-                          );
-                        },
+                  // and inform the user
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        AppLocalizations.of(context).successfullyDeleted,
+                        textAlign: TextAlign.center,
                       ),
                     ),
-                  ],
+                  );
+                }
+              },
+              confirmDismiss: (direction) async {
+                // Edit entry
+                if (direction == DismissDirection.startToEnd) {
+                  Navigator.pushNamed(
+                    context,
+                    FormScreen.routeName,
+                    arguments: FormScreenArguments(
+                      AppLocalizations.of(context).edit,
+                      MeasurementEntryForm(currentEntry.category, currentEntry),
+                    ),
+                  );
+                  return false;
+                }
+                return true;
+              },
+              secondaryBackground: Container(
+                color: Theme.of(context).errorColor,
+                alignment: Alignment.centerRight,
+                padding: EdgeInsets.only(right: 20),
+                margin: EdgeInsets.symmetric(
+                  horizontal: 4,
+                  vertical: 4,
                 ),
-    );
+                child: Icon(
+                  Icons.delete,
+                  color: Colors.white,
+                ),
+              ),
+              background: Container(
+                color: wgerPrimaryButtonColor,
+                alignment: Alignment.centerLeft,
+                padding: EdgeInsets.only(left: 20),
+                margin: EdgeInsets.symmetric(
+                  horizontal: 4,
+                  vertical: 4,
+                ),
+                child: Icon(
+                  Icons.edit,
+                  color: Colors.white,
+                ),
+              ),
+              child: Card(
+                child: ListTile(
+                  title: Text('${currentEntry.value.toString()} ${_category.unit}'),
+                  subtitle: Text(
+                    DateFormat.yMd(Localizations.localeOf(context).languageCode)
+                        .format(currentEntry.date),
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    ]);
   }
 }
