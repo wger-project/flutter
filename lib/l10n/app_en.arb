@@ -258,8 +258,9 @@
   "@weight": {
     "description": "The weight of a workout log or body weight entry"
   },
-  "measurementCategories": "Measurement categories",
-  "@measurementCategories": {
+  "measurement": "Measurement",
+  "measurements": "Measurements",
+  "@measurements": {
     "description": "Categories for the measurements such as biceps size, body fat, etc."
   },
   "measurementCategoriesHelpText": "Measurement category, such as 'biceps' or 'body fat'",

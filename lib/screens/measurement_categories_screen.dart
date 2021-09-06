@@ -31,7 +31,7 @@ class MeasurementCategoriesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).measurementCategories),
+        title: Text(AppLocalizations.of(context).measurements),
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),

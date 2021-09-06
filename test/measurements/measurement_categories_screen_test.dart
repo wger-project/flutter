@@ -64,7 +64,7 @@ void main() {
     await tester.pumpWidget(createHomeScreen());
     await tester.pumpAndSettle();
 
-    expect(find.text('Measurement categories'), findsOneWidget);
+    expect(find.text('Measurements'), findsOneWidget);
     expect(find.text('body fat'), findsOneWidget);
     expect(find.text('biceps'), findsOneWidget);
     expect(find.byType(Card), findsNWidgets(2));
