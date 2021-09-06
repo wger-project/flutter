@@ -17,6 +17,7 @@
  */
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal.dart';
@@ -74,6 +75,28 @@ class NutritionalPlan {
     return out;
   }
 
+  /// Calculates the percentage each macro nutrient adds to the total energy
+  BaseNutritionalValues energyPercentage(NutritionalValues values) {
+    return BaseNutritionalValues(
+      values.protein > 0 ? ((values.protein * ENERGY_PROTEIN * 100) / values.energy) : 0,
+      values.carbohydrates > 0
+          ? ((values.carbohydrates * ENERGY_CARBOHYDRATES * 100) / values.energy)
+          : 0,
+      values.fat > 0 ? ((values.fat * ENERGY_FAT * 100) / values.energy) : 0,
+    );
+  }
+
+  /// Calculates the grams per body-kg for each macro nutrient
+  BaseNutritionalValues gPerBodyKg(num weight, NutritionalValues values) {
+    assert(weight > 0);
+
+    return BaseNutritionalValues(
+      values.protein / weight,
+      values.carbohydrates / weight,
+      values.fat / weight,
+    );
+  }
+
   Map<DateTime, NutritionalValues> get logEntriesValues {
     var out = <DateTime, NutritionalValues>{};
     for (var log in logs) {
@@ -84,6 +107,29 @@ class NutritionalPlan {
       }
 
       out[date]!.add(log.nutritionalValues);
+    }
+
+    return out;
+  }
+
+  /// Returns the nutritional values for the given date
+  NutritionalValues? getValuesForDate(DateTime date) {
+    final values = this.logEntriesValues;
+    final dateKey = DateTime(date.year, date.month, date.day);
+
+    return values.containsKey(dateKey) ? values[dateKey] : null;
+  }
+
+  /// Returns the nutritional logs for the given date
+  List<Log> getLogsForDate(DateTime date) {
+    List<Log> out = [];
+    for (var log in logs) {
+      final dateKey = DateTime(date.year, date.month, date.day);
+      final logKey = DateTime(log.datetime.year, log.datetime.month, log.datetime.day);
+
+      if (dateKey == logKey) {
+        out.add(log);
+      }
     }
 
     return out;

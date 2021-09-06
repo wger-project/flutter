@@ -42,7 +42,7 @@ class Exercise {
   @JsonKey(required: true)
   final String description;
 
-  @JsonKey(required: false)
+  @JsonKey(required: false, ignore: true)
   late int categoryId;
 
   @JsonKey(required: true, name: 'category')
@@ -69,7 +69,6 @@ class Exercise {
       required this.creationDate,
       required this.name,
       required this.description,
-      required this.categoryId,
       List<Muscle>? muscles,
       List<Muscle>? musclesSecondary,
       List<Equipment>? equipment,
@@ -83,6 +82,7 @@ class Exercise {
     this.muscles = muscles ?? [];
     if (category != null) {
       this.categoryObj = category;
+      this.categoryId = category.id;
     }
   }
 

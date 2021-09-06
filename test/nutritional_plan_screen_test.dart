@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
@@ -35,8 +36,15 @@ void main() {
 
     final plan = getNutritionalPlan();
 
-    return ChangeNotifierProvider<NutritionPlansProvider>(
-      create: (context) => NutritionPlansProvider(testAuthProvider, [], client),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<NutritionPlansProvider>(
+          create: (context) => NutritionPlansProvider(testAuthProvider, [], client),
+        ),
+        ChangeNotifierProvider<BodyWeightProvider>(
+          create: (context) => BodyWeightProvider(testAuthProvider, [], client),
+        ),
+      ],
       child: MaterialApp(
         locale: Locale(locale),
         localizationsDelegates: AppLocalizations.localizationsDelegates,

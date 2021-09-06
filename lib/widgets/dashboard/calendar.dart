@@ -97,7 +97,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
 
     // Process workout sessions
     WorkoutPlansProvider plans = Provider.of<WorkoutPlansProvider>(context, listen: false);
-    plans.fetchSessionData().then((entries) {
+    await plans.fetchSessionData().then((entries) {
       for (var entry in entries['results']) {
         final session = WorkoutSession.fromJson(entry);
         final date = DateFormatLists.format(session.date);
@@ -134,6 +134,9 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
         ));
       }
     }
+
+    // Add initial selected day to events list
+    _selectedEvents.value = _getEventsForDay(_selectedDay!);
   }
 
   @override

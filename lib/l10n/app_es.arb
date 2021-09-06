@@ -429,5 +429,15 @@
   "usernameValidChars": "El nombre de usuario sólo puede contener letras, dígitos y los caracteres @, +, ., - y _",
   "@usernameValidChars": {
     "description": "Error message when the user tries to register a username with forbidden characters"
-  }
+  },
+  "total": "Total",
+  "@total": {
+    "description": "Label used for total sums of e.g. calories or similar"
+  },
+  "percentEnergy": "Porcentaje de energía",
+  "@percentEnergy": {},
+  "difference": "Diferencia",
+  "@difference": {},
+  "macronutrients": "Macronutrientes",
+  "@macronutrients": {}
 }

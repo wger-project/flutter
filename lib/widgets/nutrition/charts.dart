@@ -17,12 +17,18 @@
  */
 
 import 'package:charts_flutter/flutter.dart' as charts;
-import 'package:charts_flutter/flutter.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/nutrition/nutritrional_values.dart';
 import 'package:wger/theme/theme.dart';
+
+class NutritionData {
+  final String name;
+  final double value;
+
+  NutritionData(this.name, this.value);
+}
 
 /// Nutritional plan pie chart widget
 class NutritionalPlanPieChartWidget extends StatelessWidget {
@@ -38,26 +44,42 @@ class NutritionalPlanPieChartWidget extends StatelessWidget {
       return Container();
     }
 
-    return charts.PieChart(
-      [
-        charts.Series<List<dynamic>, String>(
-          id: 'NutritionalValues',
-          domainFn: (datum, index) => datum[0],
-          measureFn: (datum, index) => datum[1],
-          data: [
-            [AppLocalizations.of(context).protein, _nutritionalValues.protein],
-            [AppLocalizations.of(context).fat, _nutritionalValues.fat],
-            [AppLocalizations.of(context).carbohydrates, _nutritionalValues.carbohydrates],
-          ],
-          labelAccessorFn: (List<dynamic> row, _) =>
-              '${row[0]}\n${row[1].toStringAsFixed(0)}${AppLocalizations.of(context).g}',
-        )
-      ],
+    return charts.PieChart<String>([
+      charts.Series<NutritionData, String>(
+        id: 'NutritionalValues',
+        domainFn: (nutritionEntry, index) => nutritionEntry.name,
+        measureFn: (nutritionEntry, index) => nutritionEntry.value,
+        data: [
+          NutritionData(
+            AppLocalizations.of(context).protein,
+            _nutritionalValues.protein,
+          ),
+          NutritionData(
+            AppLocalizations.of(context).fat,
+            _nutritionalValues.fat,
+          ),
+          NutritionData(
+            AppLocalizations.of(context).carbohydrates,
+            _nutritionalValues.carbohydrates,
+          ),
+        ],
+        labelAccessorFn: (NutritionData row, _) =>
+            '${row.name}\n${row.value.toStringAsFixed(0)}${AppLocalizations.of(context).g}',
+      )
+    ],
+        defaultRenderer: new charts.ArcRendererConfig(arcWidth: 60, arcRendererDecorators: [
+          new charts.ArcLabelDecorator(
+            labelPosition: charts.ArcLabelPosition.outside,
+          )
+        ])
+        /*
       defaultRenderer: new charts.ArcRendererConfig(
         arcWidth: 60,
         arcRendererDecorators: [new charts.ArcLabelDecorator()],
       ),
-    );
+
+       */
+        );
   }
 }
 
@@ -74,7 +96,7 @@ class NutritionalDiaryChartWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return charts.TimeSeriesChart(
       [
-        charts.Series<List<dynamic>, DateTime?>(
+        charts.Series<List<dynamic>, DateTime>(
           id: 'NutritionDiary',
           colorFn: (datum, index) => wgerChartSecondaryColor,
           domainFn: (datum, index) => datum[1],
@@ -82,7 +104,7 @@ class NutritionalDiaryChartWidget extends StatelessWidget {
           data: _nutritionalPlan.logEntriesValues.keys
               .map((e) => [_nutritionalPlan.logEntriesValues[e], e])
               .toList(),
-        ) as Series<dynamic, DateTime>
+        )
       ],
       defaultRenderer: new charts.BarRendererConfig<DateTime>(),
       behaviors: [

@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -26,13 +25,14 @@ import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/gym_mode.dart';
 import 'package:wger/helpers/json.dart';
-import 'package:wger/helpers/ui.dart';
 import 'package:wger/helpers/misc.dart';
+import 'package:wger/helpers/ui.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/http_exception.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/session.dart';
+import 'package:wger/models/workouts/set.dart';
 import 'package:wger/models/workouts/setting.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/exercises.dart';
@@ -45,11 +45,9 @@ import 'package:wger/widgets/workouts/forms.dart';
 class GymMode extends StatefulWidget {
   final Day _workoutDay;
   late TimeOfDay _start;
-
   GymMode(this._workoutDay) {
     _start = TimeOfDay.now();
   }
-
   @override
   _GymModeState createState() => _GymModeState();
 }
@@ -59,11 +57,9 @@ class _GymModeState extends State<GymMode> {
 
   /// Map with the first (navigation) page for each exercise
   Map<String, int> _exercisePages = new Map();
-
   PageController _controller = PageController(
     initialPage: 0,
   );
-
   @override
   void dispose() {
     _controller.dispose();
@@ -73,12 +69,10 @@ class _GymModeState extends State<GymMode> {
   @override
   void initState() {
     super.initState();
-
     // Calculate amount of elements for progress indicator
     for (var set in widget._workoutDay.sets) {
       _totalElements = _totalElements + set.settingsComputed.length;
     }
-
     // Calculate the pages for the navigation
     //
     // This duplicates the code below in the getContent method, but it seems to
@@ -131,6 +125,7 @@ class _GymModeState extends State<GymMode> {
         out.add(LogPage(
           _controller,
           setting,
+          set,
           exercise,
           workoutProvider.findById(widget._workoutDay.workoutId),
           ratioCompleted,
@@ -229,6 +224,7 @@ class StartPage extends StatelessWidget {
 class LogPage extends StatefulWidget {
   PageController _controller;
   Setting _setting;
+  Set _set;
   Exercise _exercise;
   WorkoutPlan _workoutPlan;
   final double _ratioCompleted;
@@ -238,6 +234,7 @@ class LogPage extends StatefulWidget {
   LogPage(
     this._controller,
     this._setting,
+    this._set,
     this._exercise,
     this._workoutPlan,
     this._ratioCompleted,
@@ -262,9 +259,13 @@ class _LogPageState extends State<LogPage> {
   final _weightController = TextEditingController();
   var _detailed = false;
 
+  late FocusNode focusNode;
+
   @override
   void initState() {
     super.initState();
+
+    focusNode = FocusNode();
 
     if (widget._setting.reps != null) {
       _repsController.text = widget._setting.reps.toString();
@@ -273,6 +274,12 @@ class _LogPageState extends State<LogPage> {
     if (widget._setting.weight != null) {
       _weightController.text = widget._setting.weight.toString();
     }
+  }
+
+  @override
+  void dispose() {
+    focusNode.dispose();
+    super.dispose();
   }
 
   Widget getRepsWidget() {
@@ -300,9 +307,11 @@ class _LogPageState extends State<LogPage> {
             enabled: true,
             controller: _repsController,
             keyboardType: TextInputType.number,
+            focusNode: focusNode,
             onFieldSubmitted: (_) {},
             onSaved: (newValue) {
               widget._log.reps = int.parse(newValue!);
+              focusNode.unfocus();
             },
             validator: (value) {
               try {
@@ -590,11 +599,16 @@ class _LogPageState extends State<LogPage> {
         ),
         Center(
           child: Text(
-            '${widget._setting.singleSettingRepText}',
+            widget._setting.singleSettingRepText,
             style: Theme.of(context).textTheme.headline3,
             textAlign: TextAlign.center,
           ),
         ),
+        if (widget._set.comment != '')
+          Text(
+            widget._set.comment,
+            textAlign: TextAlign.center,
+          ),
         SizedBox(height: 10),
         Expanded(
             child: (widget._workoutPlan.filterLogsByExercise(widget._exercise).length > 0)

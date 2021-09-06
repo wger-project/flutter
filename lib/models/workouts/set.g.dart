@@ -7,12 +7,14 @@ part of 'set.dart';
 // **************************************************************************
 
 Set _$SetFromJson(Map<String, dynamic> json) {
-  $checkKeys(json, requiredKeys: const ['id', 'sets', 'order']);
+  $checkKeys(json, requiredKeys: const ['id', 'sets', 'order', 'comment']);
   return Set(
     day: json['exerciseday'] as int,
     sets: json['sets'] as int,
     order: json['order'] as int?,
-  )..id = json['id'] as int?;
+  )
+    ..id = json['id'] as int?
+    ..comment = json['comment'] as String? ?? '';
 }
 
 Map<String, dynamic> _$SetToJson(Set instance) => <String, dynamic>{
@@ -20,4 +22,5 @@ Map<String, dynamic> _$SetToJson(Set instance) => <String, dynamic>{
       'sets': instance.sets,
       'exerciseday': instance.day,
       'order': instance.order,
+      'comment': instance.comment,
     };

@@ -19,9 +19,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/nutrition/nutritrional_values.dart';
+import 'package:wger/providers/body_weight.dart';
 import 'package:wger/screens/form_screen.dart';
+import 'package:wger/screens/nutritional_diary_screen.dart';
+import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/meal.dart';
@@ -29,10 +33,16 @@ import 'package:wger/widgets/nutrition/meal.dart';
 class NutritionalPlanDetailWidget extends StatelessWidget {
   final NutritionalPlan _nutritionalPlan;
   NutritionalPlanDetailWidget(this._nutritionalPlan);
+  static const double tablePadding = 7;
 
   @override
   Widget build(BuildContext context) {
     final nutritionalValues = _nutritionalPlan.nutritionalValues;
+    final valuesPercentage = _nutritionalPlan.energyPercentage(nutritionalValues);
+    final lastWeightEntry = Provider.of<BodyWeightProvider>(context, listen: false).getLastEntry();
+    final valuesGperKg = lastWeightEntry != null
+        ? _nutritionalPlan.gPerBodyKg(lastWeightEntry.weight, nutritionalValues)
+        : null;
 
     return SliverList(
       delegate: SliverChildListDelegate(
@@ -60,54 +70,133 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
             height: 220,
             child: NutritionalPlanPieChartWidget(nutritionalValues),
           ),
-          Container(
-            width: double.infinity,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Table(
+              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+              border: TableBorder(
+                horizontalInside: BorderSide(width: 1, color: wgerTextMuted),
+              ),
+              columnWidths: {0: FractionColumnWidth(0.4)},
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(AppLocalizations.of(context).energy),
-                      Text(AppLocalizations.of(context).protein),
-                      Text(AppLocalizations.of(context).carbohydrates),
-                      Text(AppLocalizations.of(context).sugars),
-                      Text(AppLocalizations.of(context).fat),
-                      Text(AppLocalizations.of(context).saturatedFat),
-                      Text(AppLocalizations.of(context).fibres),
-                      Text(AppLocalizations.of(context).sodium),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 3),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(nutritionalValues.energy.toStringAsFixed(0)),
-                      Text(nutritionalValues.protein.toStringAsFixed(0)),
-                      Text(nutritionalValues.carbohydrates.toStringAsFixed(0)),
-                      Text(nutritionalValues.carbohydratesSugar.toStringAsFixed(0)),
-                      Text(nutritionalValues.fat.toStringAsFixed(0)),
-                      Text(nutritionalValues.fatSaturated.toStringAsFixed(0)),
-                      Text(nutritionalValues.fibres.toStringAsFixed(0)),
-                      Text(nutritionalValues.sodium.toStringAsFixed(0)),
-                    ],
-                  ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                TableRow(
                   children: [
-                    Text(AppLocalizations.of(context).kcal),
-                    Text(AppLocalizations.of(context).g),
-                    Text(AppLocalizations.of(context).g),
-                    Text(AppLocalizations.of(context).g),
-                    Text(AppLocalizations.of(context).g),
-                    Text(AppLocalizations.of(context).g),
-                    Text(AppLocalizations.of(context).g),
-                    Text(AppLocalizations.of(context).g),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: tablePadding),
+                      child: Text(
+                        AppLocalizations.of(context).macronutrients,
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Text(
+                      AppLocalizations.of(context).total,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      AppLocalizations.of(context).percentEnergy,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      AppLocalizations.of(context).gPerBodyKg,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+                TableRow(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: tablePadding),
+                      child: Text(AppLocalizations.of(context).energy),
+                    ),
+                    Text(
+                      nutritionalValues.energy.toStringAsFixed(0) +
+                          AppLocalizations.of(context).kcal,
+                    ),
+                    Text(''),
+                    Text(''),
+                  ],
+                ),
+                TableRow(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: tablePadding),
+                      child: Text(AppLocalizations.of(context).protein),
+                    ),
+                    Text(nutritionalValues.protein.toStringAsFixed(0) +
+                        AppLocalizations.of(context).g),
+                    Text(valuesPercentage.protein.toStringAsFixed(1)),
+                    Text(valuesGperKg != null ? valuesGperKg.protein.toStringAsFixed(1) : ''),
+                  ],
+                ),
+                TableRow(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: tablePadding),
+                      child: Text(AppLocalizations.of(context).carbohydrates),
+                    ),
+                    Text(nutritionalValues.carbohydrates.toStringAsFixed(0) +
+                        AppLocalizations.of(context).g),
+                    Text(valuesPercentage.carbohydrates.toStringAsFixed(1)),
+                    Text(valuesGperKg != null ? valuesGperKg.carbohydrates.toStringAsFixed(1) : ''),
+                  ],
+                ),
+                TableRow(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: tablePadding, horizontal: 12),
+                      child: Text(AppLocalizations.of(context).sugars),
+                    ),
+                    Text(nutritionalValues.carbohydratesSugar.toStringAsFixed(0) +
+                        AppLocalizations.of(context).g),
+                    Text(''),
+                    Text(''),
+                  ],
+                ),
+                TableRow(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: tablePadding),
+                      child: Text(AppLocalizations.of(context).fat),
+                    ),
+                    Text(nutritionalValues.fat.toStringAsFixed(0) + AppLocalizations.of(context).g),
+                    Text(valuesPercentage.fat.toStringAsFixed(1)),
+                    Text(valuesGperKg != null ? valuesGperKg.fat.toStringAsFixed(1) : ''),
+                  ],
+                ),
+                TableRow(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: tablePadding, horizontal: 12),
+                      child: Text(AppLocalizations.of(context).saturatedFat),
+                    ),
+                    Text(nutritionalValues.fatSaturated.toStringAsFixed(0) +
+                        AppLocalizations.of(context).g),
+                    Text(''),
+                    Text(''),
+                  ],
+                ),
+                TableRow(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: tablePadding),
+                      child: Text(AppLocalizations.of(context).fibres),
+                    ),
+                    Text(nutritionalValues.fibres.toStringAsFixed(0) +
+                        AppLocalizations.of(context).g),
+                    Text(''),
+                    Text(''),
+                  ],
+                ),
+                TableRow(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: tablePadding),
+                      child: Text(AppLocalizations.of(context).sodium),
+                    ),
+                    Text(nutritionalValues.sodium.toStringAsFixed(0) +
+                        AppLocalizations.of(context).g),
+                    Text(''),
+                    Text(''),
                   ],
                 ),
               ],
@@ -116,6 +205,7 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
           Padding(padding: const EdgeInsets.all(8.0)),
           Text(
             AppLocalizations.of(context).nutritionalDiary,
+            textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.headline6,
           ),
           Container(
@@ -133,7 +223,7 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Text(''),
+                      TextButton(onPressed: () => null, child: Text('')),
                       Text(
                           '${AppLocalizations.of(context).energy} (${AppLocalizations.of(context).kcal})'),
                       Text(
@@ -150,7 +240,7 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                   ),
                 ),
                 ..._nutritionalPlan.logEntriesValues.entries
-                    .map((entry) => NutritionDiaryEntry(entry.key, entry.value))
+                    .map((entry) => NutritionDiaryEntry(entry.key, entry.value, _nutritionalPlan))
                     .toList()
                     .reversed,
               ],
@@ -165,10 +255,12 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
 class NutritionDiaryEntry extends StatelessWidget {
   final DateTime date;
   final NutritionalValues values;
+  final NutritionalPlan plan;
 
   NutritionDiaryEntry(
     this.date,
     this.values,
+    this.plan,
   );
 
   @override
@@ -178,10 +270,14 @@ class NutritionDiaryEntry extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Text(
-            DateFormat.yMd(Localizations.localeOf(context).languageCode).format(date),
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
+          TextButton(
+              onPressed: () => Navigator.of(context).pushNamed(
+                    NutritionalDiaryScreen.routeName,
+                    arguments: NutritionalDiaryArguments(plan, date),
+                  ),
+              child: Text(
+                DateFormat.yMd(Localizations.localeOf(context).languageCode).format(date),
+              )),
           Text(values.energy.toStringAsFixed(0)),
           Text(values.protein.toStringAsFixed(0)),
           Text(values.carbohydrates.toStringAsFixed(0)),

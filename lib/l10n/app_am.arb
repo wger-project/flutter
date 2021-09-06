@@ -1,0 +1,82 @@
+{
+  "labelWorkoutPlan": "የአካል ብቃት እንቅስቃሴ ዕቅድ",
+  "@labelWorkoutPlan": {
+    "description": "Title for screen workout plan"
+  },
+  "labelWorkoutLogs": "የሥልጠና ምዝግብ ማስታወሻዎች",
+  "@labelWorkoutLogs": {
+    "description": "(Workout) logs"
+  },
+  "labelBottomNavNutrition": "ኣመጋገብ",
+  "@labelBottomNavNutrition": {
+    "description": "Label used in bottom navigation, use a short word"
+  },
+  "labelBottomNavWorkout": "የአካል ብቃት እንቅስቃሴ",
+  "@labelBottomNavWorkout": {
+    "description": "Label used in bottom navigation, use a short word"
+  },
+  "labelWorkoutPlans": "የአካል ብቃት እንቅስቃሴ እቅዶች",
+  "@labelWorkoutPlans": {
+    "description": "Title for screen workout plans"
+  },
+  "loginInstead": "በምትኩ ይግቡ",
+  "@loginInstead": {},
+  "registerInstead": "በምትኩ ይመዝገቡ",
+  "@registerInstead": {},
+  "reset": "ዳግም አስጀምር",
+  "@reset": {
+    "description": "Button text allowing the user to reset the entered values to the default"
+  },
+  "customServerHint": "የራስዎን Server አድራሻ ያስገቡ ፣ አለበለዚያ default ጥቅም ላይ ይውላል",
+  "@customServerHint": {
+    "description": "Hint text for the form where the users can enter their own wger instance"
+  },
+  "invalidUsername": "እባክዎ የሚሰራ የተጠቃሚ ስም ያስገቡ",
+  "@invalidUsername": {
+    "description": "Error message when the user enters an invalid username"
+  },
+  "username": "የተጠቃሚ ስም",
+  "@username": {},
+  "email": "የ ኢሜል አድራሻ",
+  "@email": {},
+  "invalidEmail": "እባክህን ትክክለኛ ኢሜል አስገባ",
+  "@invalidEmail": {
+    "description": "Error message when the user enters an invalid email"
+  },
+  "confirmPassword": "የይለፍ ቃል አረጋግጥ",
+  "@confirmPassword": {},
+  "password": "የይለፍ ቃል",
+  "@password": {},
+  "passwordTooShort": "የይለፍ ቃሉ በጣም አጭር ነው",
+  "@passwordTooShort": {
+    "description": "Error message when the user a password that is too short"
+  },
+  "passwordsDontMatch": "የይለፍ ቃሎቹ አይዛመዱም",
+  "@passwordsDontMatch": {
+    "description": "Error message when the user enters two different passwords during registration"
+  },
+  "usernameValidChars": "የተጠቃሚ ስም ፊደሎችን ፣ አሃዞችን እና @, +, ., -, and _ ምልክቶችን ብቻ ሊይዝ ይችላል",
+  "@usernameValidChars": {
+    "description": "Error message when the user tries to register a username with forbidden characters"
+  },
+  "invalidUrl": "እባክዎ የሚሰራ URL ያስገቡ",
+  "@invalidUrl": {
+    "description": "Error message when the user enters an invalid URL, e.g. in the login form"
+  },
+  "useCustomServer": "የራሶትን Server ይጠቀሙ",
+  "@useCustomServer": {
+    "description": "Toggle button allowing users to switch between the default and a custom wger server"
+  },
+  "register": "ይመዝገቡ",
+  "@register": {
+    "description": "Text for registration button"
+  },
+  "logout": "ውጣ",
+  "@logout": {
+    "description": "Text for logout button"
+  },
+  "login": "ግባ",
+  "@login": {
+    "description": "Text for login button"
+  }
+}

@@ -44,7 +44,7 @@ void showErrorDialog(dynamic exception, BuildContext context) {
   );
 }
 
-void showHttpExceptionErrorDialog(WgerHttpException exception, BuildContext context) {
+void showHttpExceptionErrorDialog(WgerHttpException exception, BuildContext context) async {
   log('showHttpExceptionErrorDialog: ');
   log(exception.toString());
   log('-------------------');
@@ -64,10 +64,11 @@ void showHttpExceptionErrorDialog(WgerHttpException exception, BuildContext cont
     }
     errorList.add(SizedBox(height: 8));
   }
+
   showDialog(
     context: context,
     builder: (ctx) => AlertDialog(
-      title: Text(AppLocalizations.of(context).anErrorOccurred),
+      title: Text(AppLocalizations.of(ctx).anErrorOccurred),
       content: Container(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -76,7 +77,7 @@ void showHttpExceptionErrorDialog(WgerHttpException exception, BuildContext cont
       ),
       actions: [
         TextButton(
-          child: Text(MaterialLocalizations.of(context).closeButtonLabel),
+          child: Text(MaterialLocalizations.of(ctx).closeButtonLabel),
           onPressed: () {
             Navigator.of(ctx).pop();
           },
@@ -84,4 +85,8 @@ void showHttpExceptionErrorDialog(WgerHttpException exception, BuildContext cont
       ],
     ),
   );
+
+  // This call serves no purpose The dialog above doesn't seem to show
+  // unless this dummy call is present
+  showDialog(context: context, builder: (context) => Container());
 }
