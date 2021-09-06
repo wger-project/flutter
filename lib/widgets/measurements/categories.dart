@@ -20,10 +20,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/measurement.dart';
-import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/measurement_entries_screen.dart';
-
-import 'forms.dart';
+import 'package:wger/widgets/core/charts.dart';
 
 class CategoriesList extends StatelessWidget {
   @override
@@ -35,73 +33,39 @@ class CategoriesList extends StatelessWidget {
       itemCount: _provider.categories.length,
       itemBuilder: (context, index) {
         final currentCategory = _provider.categories[index];
+
         return Card(
-          child: ListTile(
-            onTap: () {
-              Navigator.pushNamed(
-                context,
-                MeasurementEntriesScreen.routeName,
-                arguments: currentCategory.id,
-              );
-            },
-            title: Text(currentCategory.name),
-            subtitle: Text(currentCategory.unit),
-            leading: IconButton(
-              icon: Icon(Icons.delete),
-              onPressed: () async {
-                await showDialog(
-                    context: context,
-                    builder: (BuildContext contextDialog) {
-                      return AlertDialog(
-                        content: Text(
-                          AppLocalizations.of(context).confirmDelete(currentCategory.name),
-                        ),
-                        actions: [
-                          TextButton(
-                            child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-                            onPressed: () => Navigator.of(contextDialog).pop(),
-                          ),
-                          TextButton(
-                            child: Text(
-                              AppLocalizations.of(context).delete,
-                              style: TextStyle(color: Theme.of(context).errorColor),
-                            ),
-                            onPressed: () {
-                              // Confirmed, delete the workout
-                              _provider.deleteCategory(currentCategory.id!);
-
-                              // Close the popup
-                              Navigator.of(contextDialog).pop();
-
-                              // and inform the user
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    AppLocalizations.of(context).successfullyDeleted,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ],
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 5),
+                child: Text(
+                  currentCategory.name,
+                  style: Theme.of(context).textTheme.headline6,
+                ),
+              ),
+              Container(
+                color: Colors.white,
+                padding: EdgeInsets.all(10),
+                height: 220,
+                child: MeasurementChartWidget(currentCategory.entries
+                    .map((e) => MeasurementChartEntry(e.value, e.date))
+                    .toList()),
+              ),
+              Divider(),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: TextButton(
+                    child: Text(AppLocalizations.of(context).goToDetailPage),
+                    onPressed: () {
+                      Navigator.pushNamed(
+                        context,
+                        MeasurementEntriesScreen.routeName,
+                        arguments: currentCategory.id,
                       );
-                    });
-              },
-            ),
-            trailing: IconButton(
-              icon: Icon(Icons.edit),
-              onPressed: () async {
-                Navigator.pushNamed(
-                  context,
-                  FormScreen.routeName,
-                  arguments: FormScreenArguments(
-                    AppLocalizations.of(context).edit,
-                    MeasurementCategoryForm(currentCategory),
-                  ),
-                );
-              },
-            ),
+                    }),
+              ),
+            ],
           ),
         );
       },

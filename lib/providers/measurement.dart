@@ -78,7 +78,7 @@ class MeasurementProvider with ChangeNotifier {
     MeasurementCategory editedCategory = category.copyWith(entries: loadedEntries);
     _categories.removeAt(categoryIndex);
     _categories.insert(categoryIndex, editedCategory);
-    //notifyListeners();
+    notifyListeners();
   }
 
   /// Fetches and sets the measurement categories and their entries
