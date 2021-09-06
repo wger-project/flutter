@@ -114,12 +114,12 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: FutureBuilder<void>(
-        future: _initialData,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState != ConnectionState.done) {
-            return Center(
+    return FutureBuilder<void>(
+      future: _initialData,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState != ConnectionState.done) {
+          return Scaffold(
+            body: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -131,46 +131,48 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
                   LinearProgressIndicator(),
                 ],
               ),
-            );
-          } else {
-            return _screenList.elementAt(_selectedIndex);
-          }
-        },
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard),
-            label: AppLocalizations.of(context).labelDashboard,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.fitness_center),
-            label: AppLocalizations.of(context).labelBottomNavWorkout,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.restaurant),
-            label: AppLocalizations.of(context).labelBottomNavNutrition,
-          ),
-          BottomNavigationBarItem(
-            icon: FaIcon(
-              FontAwesomeIcons.weight,
-              size: 20,
             ),
-            label: AppLocalizations.of(context).weight,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.photo_library),
-            label: AppLocalizations.of(context).gallery,
-          ),
-        ],
-        type: BottomNavigationBarType.fixed,
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.white,
-        unselectedItemColor: wgerPrimaryColorLight,
-        backgroundColor: wgerPrimaryColor,
-        onTap: _onItemTapped,
-        showUnselectedLabels: false,
-      ),
+          );
+        } else {
+          return Scaffold(
+            body: _screenList.elementAt(_selectedIndex),
+            bottomNavigationBar: BottomNavigationBar(
+              items: [
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.dashboard),
+                  label: AppLocalizations.of(context).labelDashboard,
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.fitness_center),
+                  label: AppLocalizations.of(context).labelBottomNavWorkout,
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.restaurant),
+                  label: AppLocalizations.of(context).labelBottomNavNutrition,
+                ),
+                BottomNavigationBarItem(
+                  icon: FaIcon(
+                    FontAwesomeIcons.weight,
+                    size: 20,
+                  ),
+                  label: AppLocalizations.of(context).weight,
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.photo_library),
+                  label: AppLocalizations.of(context).gallery,
+                ),
+              ],
+              type: BottomNavigationBarType.fixed,
+              currentIndex: _selectedIndex,
+              selectedItemColor: Colors.white,
+              unselectedItemColor: wgerPrimaryColorLight,
+              backgroundColor: wgerPrimaryColor,
+              onTap: _onItemTapped,
+              showUnselectedLabels: false,
+            ),
+          );
+        }
+      },
     );
   }
 }
