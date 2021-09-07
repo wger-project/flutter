@@ -30,12 +30,16 @@ class MeasurementChartEntry {
 /// Weight chart widget
 class MeasurementChartWidget extends StatelessWidget {
   final List<MeasurementChartEntry> _entries;
+  late String unit;
 
   /// [_entries] is a list of [MeasurementChartEntry]
-  MeasurementChartWidget(this._entries);
+  MeasurementChartWidget(this._entries, {this.unit = 'kg'});
 
   @override
   Widget build(BuildContext context) {
+    final unitTickFormatter =
+        charts.BasicNumericTickFormatterSpec((num? value) => '$value ${this.unit}');
+
     return charts.TimeSeriesChart(
       [
         charts.Series<MeasurementChartEntry, DateTime>(
@@ -49,6 +53,7 @@ class MeasurementChartWidget extends StatelessWidget {
       defaultRenderer: new charts.LineRendererConfig(includePoints: true),
       primaryMeasureAxis: new charts.NumericAxisSpec(
         tickProviderSpec: new charts.BasicNumericTickProviderSpec(zeroBound: false),
+        tickFormatterSpec: unitTickFormatter,
       ),
     );
   }

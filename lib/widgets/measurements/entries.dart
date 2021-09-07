@@ -41,7 +41,9 @@ class EntriesList extends StatelessWidget {
         padding: EdgeInsets.all(10),
         height: 220,
         child: MeasurementChartWidget(
-            _category.entries.map((e) => MeasurementChartEntry(e.value, e.date)).toList()),
+          _category.entries.map((e) => MeasurementChartEntry(e.value, e.date)).toList(),
+          unit: this._category.unit,
+        ),
       ),
       Expanded(
         child: ListView.builder(

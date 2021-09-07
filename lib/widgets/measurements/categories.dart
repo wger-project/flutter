@@ -51,9 +51,12 @@ class CategoriesList extends StatelessWidget {
                 color: Colors.white,
                 padding: EdgeInsets.all(10),
                 height: 220,
-                child: MeasurementChartWidget(currentCategory.entries
-                    .map((e) => MeasurementChartEntry(e.value, e.date))
-                    .toList()),
+                child: MeasurementChartWidget(
+                  currentCategory.entries
+                      .map((e) => MeasurementChartEntry(e.value, e.date))
+                      .toList(),
+                  unit: currentCategory.unit,
+                ),
               ),
               Divider(),
               Row(
