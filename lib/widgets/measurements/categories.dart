@@ -20,8 +20,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/measurement.dart';
+import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/measurement_entries_screen.dart';
 import 'package:wger/widgets/core/charts.dart';
+
+import 'forms.dart';
 
 class CategoriesList extends StatelessWidget {
   @override
@@ -53,17 +56,32 @@ class CategoriesList extends StatelessWidget {
                     .toList()),
               ),
               Divider(),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: TextButton(
-                    child: Text(AppLocalizations.of(context).goToDetailPage),
-                    onPressed: () {
-                      Navigator.pushNamed(
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  TextButton(
+                      child: Text(AppLocalizations.of(context).goToDetailPage),
+                      onPressed: () {
+                        Navigator.pushNamed(
+                          context,
+                          MeasurementEntriesScreen.routeName,
+                          arguments: currentCategory.id,
+                        );
+                      }),
+                  IconButton(
+                    onPressed: () async {
+                      await Navigator.pushNamed(
                         context,
-                        MeasurementEntriesScreen.routeName,
-                        arguments: currentCategory.id,
+                        FormScreen.routeName,
+                        arguments: FormScreenArguments(
+                          AppLocalizations.of(context).newEntry,
+                          MeasurementEntryForm(currentCategory.id!),
+                        ),
                       );
-                    }),
+                    },
+                    icon: Icon(Icons.add),
+                  ),
+                ],
               ),
             ],
           ),
