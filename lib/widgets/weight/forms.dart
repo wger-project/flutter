@@ -47,12 +47,14 @@ class WeightForm extends StatelessWidget {
         children: [
           // Weight date
           TextFormField(
-            decoration: InputDecoration(labelText: AppLocalizations.of(context).date),
+            readOnly: true, // Stop keyboard from appearing
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context).date,
+              suffixIcon: Icon(Icons.calendar_today_outlined),
+            ),
+            enableInteractiveSelection: false,
             controller: dateController,
             onTap: () async {
-              // Stop keyboard from appearing
-              FocusScope.of(context).requestFocus(new FocusNode());
-
               // Show Date Picker Here
               var pickedDate = await showDatePicker(
                 context: context,

@@ -19,6 +19,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:wger/providers/auth.dart';
+import 'package:wger/providers/body_weight.dart';
+import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/gallery.dart';
+import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/dashboard.dart';
 import 'package:wger/screens/gallery_screen.dart';
 import 'package:wger/screens/nutritional_plans_screen.dart';
@@ -34,7 +41,15 @@ class HomeTabsScreen extends StatefulWidget {
 }
 
 class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProviderStateMixin {
+  late Future<void> _initialData;
   int _selectedIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    // Loading data here, since the build method can be called more than once
+    _initialData = _loadEntries();
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -50,44 +65,114 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
     GalleryScreen(),
   ];
 
+  /// Load initial data from the server
+  Future<void> _loadEntries() async {
+    if (!Provider.of<AuthProvider>(context, listen: false).dataInit) {
+      Provider.of<AuthProvider>(context, listen: false).setServerVersion();
+
+      final workoutPlansProvider = Provider.of<WorkoutPlansProvider>(context, listen: false);
+      final nutritionPlansProvider = Provider.of<NutritionPlansProvider>(context, listen: false);
+      final exercisesProvider = Provider.of<ExercisesProvider>(context, listen: false);
+      final galleryProvider = Provider.of<GalleryProvider>(context, listen: false);
+      final weightProvider = Provider.of<BodyWeightProvider>(context, listen: false);
+
+      // Base data
+      print('base data');
+      await Future.wait([
+        workoutPlansProvider.fetchAndSetUnits(),
+        nutritionPlansProvider.fetchIngredientsFromCache(),
+        exercisesProvider.fetchAndSetExercises(),
+      ]);
+
+      // Plans, weight and gallery
+      print('Plans, weight and gallery');
+      await Future.wait([
+        galleryProvider.fetchAndSetGallery(),
+        nutritionPlansProvider.fetchAndSetAllPlansSparse(),
+        workoutPlansProvider.fetchAndSetAllPlansSparse(),
+        weightProvider.fetchAndSetEntries(),
+      ]);
+
+      // Current nutritional plan
+      print('Current nutritional plan');
+      if (nutritionPlansProvider.currentPlan != null) {
+        final plan = nutritionPlansProvider.currentPlan!;
+        await nutritionPlansProvider.fetchAndSetPlanFull(plan.id!);
+      }
+
+      // Current workout plan
+      print('Current workout plan');
+      if (workoutPlansProvider.activePlan != null) {
+        final planId = workoutPlansProvider.activePlan!.id!;
+        await workoutPlansProvider.fetchAndSetWorkoutPlanFull(planId);
+        workoutPlansProvider.setCurrentPlan(planId);
+      }
+    }
+
+    Provider.of<AuthProvider>(context, listen: false).dataInit = true;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _screenList.elementAt(_selectedIndex),
-      bottomNavigationBar: BottomNavigationBar(
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard),
-            label: AppLocalizations.of(context).labelDashboard,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.fitness_center),
-            label: AppLocalizations.of(context).labelBottomNavWorkout,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.restaurant),
-            label: AppLocalizations.of(context).labelBottomNavNutrition,
-          ),
-          BottomNavigationBarItem(
-            icon: FaIcon(
-              FontAwesomeIcons.weight,
-              size: 20,
+    return FutureBuilder<void>(
+      future: _initialData,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState != ConnectionState.done) {
+          return Scaffold(
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    AppLocalizations.of(context).loadingText,
+                    style: Theme.of(context).textTheme.headline5,
+                  ),
+                  Padding(padding: EdgeInsets.symmetric(vertical: 8)),
+                  LinearProgressIndicator(),
+                ],
+              ),
             ),
-            label: AppLocalizations.of(context).weight,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.photo_library),
-            label: AppLocalizations.of(context).gallery,
-          ),
-        ],
-        type: BottomNavigationBarType.fixed,
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.white,
-        unselectedItemColor: wgerPrimaryColorLight,
-        backgroundColor: wgerPrimaryColor,
-        onTap: _onItemTapped,
-        showUnselectedLabels: false,
-      ),
+          );
+        } else {
+          return Scaffold(
+            body: _screenList.elementAt(_selectedIndex),
+            bottomNavigationBar: BottomNavigationBar(
+              items: [
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.dashboard),
+                  label: AppLocalizations.of(context).labelDashboard,
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.fitness_center),
+                  label: AppLocalizations.of(context).labelBottomNavWorkout,
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.restaurant),
+                  label: AppLocalizations.of(context).labelBottomNavNutrition,
+                ),
+                BottomNavigationBarItem(
+                  icon: FaIcon(
+                    FontAwesomeIcons.weight,
+                    size: 20,
+                  ),
+                  label: AppLocalizations.of(context).weight,
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.photo_library),
+                  label: AppLocalizations.of(context).gallery,
+                ),
+              ],
+              type: BottomNavigationBarType.fixed,
+              currentIndex: _selectedIndex,
+              selectedItemColor: Colors.white,
+              unselectedItemColor: wgerPrimaryColorLight,
+              backgroundColor: wgerPrimaryColor,
+              onTap: _onItemTapped,
+              showUnselectedLabels: false,
+            ),
+          );
+        }
+      },
     );
   }
 }

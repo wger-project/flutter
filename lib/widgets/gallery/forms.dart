@@ -41,7 +41,7 @@ class ImageForm extends StatefulWidget {
 class _ImageFormState extends State<ImageForm> {
   final _form = GlobalKey<FormState>();
 
-  PickedFile? _file;
+  XFile? _file;
 
   final dateController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
@@ -56,7 +56,7 @@ class _ImageFormState extends State<ImageForm> {
 
   void _showPicker(ImageSource source) async {
     final picker = ImagePicker();
-    final file = await picker.getImage(source: source);
+    final file = await picker.pickImage(source: source);
 
     setState(() {
       _file = file!;
@@ -133,7 +133,11 @@ class _ImageFormState extends State<ImageForm> {
           ),
           TextFormField(
             key: Key('field-date'),
-            decoration: InputDecoration(labelText: AppLocalizations.of(context).date),
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context).date,
+              suffixIcon: Icon(Icons.calendar_today_outlined),
+            ),
+            readOnly: true, // Stop keyboard from appearing
             controller: dateController,
             onTap: () async {
               // Stop keyboard from appearing
