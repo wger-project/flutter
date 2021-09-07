@@ -67,12 +67,12 @@ class MockGalleryProvider extends _i1.Mock implements _i4.GalleryProvider {
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future<void>.value()) as _i6.Future<void>);
   @override
-  _i6.Future<void> addImage(_i5.Image? image, _i7.PickedFile? imageFile) =>
+  _i6.Future<void> addImage(_i5.Image? image, _i7.XFile? imageFile) =>
       (super.noSuchMethod(Invocation.method(#addImage, [image, imageFile]),
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future<void>.value()) as _i6.Future<void>);
   @override
-  _i6.Future<void> editImage(_i5.Image? image, _i7.PickedFile? imageFile) =>
+  _i6.Future<void> editImage(_i5.Image? image, _i7.XFile? imageFile) =>
       (super.noSuchMethod(Invocation.method(#editImage, [image, imageFile]),
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future<void>.value()) as _i6.Future<void>);

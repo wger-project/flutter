@@ -65,6 +65,11 @@ class MockMeasurementProvider extends _i1.Mock
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future<void>.value()) as _i5.Future<void>);
   @override
+  _i5.Future<void> fetchAndSetAllCategoriesAndEntries() => (super.noSuchMethod(
+      Invocation.method(#fetchAndSetAllCategoriesAndEntries, []),
+      returnValue: Future<void>.value(),
+      returnValueForMissingStub: Future<void>.value()) as _i5.Future<void>);
+  @override
   _i5.Future<void> addCategory(_i3.MeasurementCategory? category) =>
       (super.noSuchMethod(Invocation.method(#addCategory, [category]),
           returnValue: Future<void>.value(),
