@@ -35,18 +35,24 @@ class WeightEntriesList extends StatelessWidget {
     return Column(
       children: [
         Container(
+          color: Theme.of(context).cardColor,
           padding: EdgeInsets.all(15),
           height: 220,
           child: MeasurementChartWidget(
               _weightProvider.items.map((e) => MeasurementChartEntry(e.weight, e.date)).toList()),
         ),
-        Divider(),
         TextButton(
             onPressed: () => Navigator.pushNamed(
                   context,
                   MeasurementCategoriesScreen.routeName,
                 ),
-            child: Text('Go to measurements')),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(AppLocalizations.of(context).measurements),
+                Icon(Icons.chevron_right)
+              ],
+            )),
         Expanded(
           child: ListView.builder(
             padding: const EdgeInsets.all(10.0),

@@ -37,7 +37,7 @@ class EntriesList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(children: [
       Container(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         padding: EdgeInsets.all(10),
         height: 220,
         child: MeasurementChartWidget(
