@@ -284,7 +284,11 @@ class _AuthCardState extends State<AuthCard> {
                               return null;
                             },
                             onSaved: (value) {
-                              _authData['serverUrl'] = value!;
+                              // Remove any trailing slash
+                              if (value!.lastIndexOf('/') == (value.length - 1)) {
+                                value = value.substring(0, value.lastIndexOf('/'));
+                              }
+                              _authData['serverUrl'] = value;
                             },
                           ),
                         ),
