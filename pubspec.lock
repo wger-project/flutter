@@ -210,7 +210,7 @@ packages:
       name: cross_file
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.1+4"
+    version: "0.3.1+5"
   crypto:
     dependency: transitive
     description:
@@ -236,6 +236,13 @@ packages:
     dependency: transitive
     description:
       name: dart_style
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.0"
+  equatable:
+    dependency: "direct main"
+    description:
+      name: equatable
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.3"
