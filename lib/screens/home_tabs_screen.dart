@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -24,6 +26,7 @@ import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/gallery.dart';
+import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/dashboard.dart';
@@ -75,9 +78,10 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
       final exercisesProvider = Provider.of<ExercisesProvider>(context, listen: false);
       final galleryProvider = Provider.of<GalleryProvider>(context, listen: false);
       final weightProvider = Provider.of<BodyWeightProvider>(context, listen: false);
+      final measurementProvider = Provider.of<MeasurementProvider>(context, listen: false);
 
       // Base data
-      print('base data');
+      log('base data');
       await Future.wait([
         workoutPlansProvider.fetchAndSetUnits(),
         nutritionPlansProvider.fetchIngredientsFromCache(),
@@ -85,23 +89,24 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
       ]);
 
       // Plans, weight and gallery
-      print('Plans, weight and gallery');
+      log('Plans, weight and gallery');
       await Future.wait([
         galleryProvider.fetchAndSetGallery(),
         nutritionPlansProvider.fetchAndSetAllPlansSparse(),
         workoutPlansProvider.fetchAndSetAllPlansSparse(),
         weightProvider.fetchAndSetEntries(),
+        measurementProvider.fetchAndSetAllCategoriesAndEntries(),
       ]);
 
       // Current nutritional plan
-      print('Current nutritional plan');
+      log('Current nutritional plan');
       if (nutritionPlansProvider.currentPlan != null) {
         final plan = nutritionPlansProvider.currentPlan!;
         await nutritionPlansProvider.fetchAndSetPlanFull(plan.id!);
       }
 
       // Current workout plan
-      print('Current workout plan');
+      log('Current workout plan');
       if (workoutPlansProvider.activePlan != null) {
         final planId = workoutPlansProvider.activePlan!.id!;
         await workoutPlansProvider.fetchAndSetWorkoutPlanFull(planId);
@@ -128,7 +133,9 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
                     style: Theme.of(context).textTheme.headline5,
                   ),
                   Padding(padding: EdgeInsets.symmetric(vertical: 8)),
-                  LinearProgressIndicator(),
+                  LinearProgressIndicator(
+                    backgroundColor: Theme.of(context).accentColor,
+                  ),
                 ],
               ),
             ),

@@ -22,7 +22,9 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/screens/form_screen.dart';
-import 'package:wger/widgets/weight/charts.dart';
+import 'package:wger/screens/measurement_categories_screen.dart';
+import 'package:wger/theme/theme.dart';
+import 'package:wger/widgets/core/charts.dart';
 import 'package:wger/widgets/weight/forms.dart';
 
 class WeightEntriesList extends StatelessWidget {
@@ -33,11 +35,24 @@ class WeightEntriesList extends StatelessWidget {
     return Column(
       children: [
         Container(
+          color: Theme.of(context).cardColor,
           padding: EdgeInsets.all(15),
           height: 220,
-          child: WeightChartWidget(_weightProvider.items),
+          child: MeasurementChartWidget(
+              _weightProvider.items.map((e) => MeasurementChartEntry(e.weight, e.date)).toList()),
         ),
-        Divider(),
+        TextButton(
+            onPressed: () => Navigator.pushNamed(
+                  context,
+                  MeasurementCategoriesScreen.routeName,
+                ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(AppLocalizations.of(context).measurements),
+                Icon(Icons.chevron_right)
+              ],
+            )),
         Expanded(
           child: ListView.builder(
             padding: const EdgeInsets.all(10.0),
@@ -91,15 +106,16 @@ class WeightEntriesList extends StatelessWidget {
                   ),
                 ),
                 background: Container(
+                  color: wgerPrimaryButtonColor,
                   alignment: Alignment.centerLeft,
-                  padding: EdgeInsets.only(right: 20),
+                  padding: EdgeInsets.only(left: 20),
                   margin: EdgeInsets.symmetric(
                     horizontal: 4,
                     vertical: 4,
                   ),
                   child: Icon(
                     Icons.edit,
-                    //color: Colors.white,
+                    color: Colors.white,
                   ),
                 ),
                 child: Card(

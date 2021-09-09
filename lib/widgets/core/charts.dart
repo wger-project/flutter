@@ -18,32 +18,42 @@
 
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/widgets.dart';
-import 'package:wger/models/body_weight/weight_entry.dart';
 import 'package:wger/theme/theme.dart';
 
-/// Weight chart widget
-class WeightChartWidget extends StatelessWidget {
-  final List<WeightEntry> _entries;
+class MeasurementChartEntry {
+  num value;
+  DateTime date;
 
-  /// [_entries] is a list of [WeightEntry] as returned e.g. by the
-  /// [BodyWeight] provider.
-  WeightChartWidget(this._entries);
+  MeasurementChartEntry(this.value, this.date);
+}
+
+/// Weight chart widget
+class MeasurementChartWidget extends StatelessWidget {
+  final List<MeasurementChartEntry> _entries;
+  late String unit;
+
+  /// [_entries] is a list of [MeasurementChartEntry]
+  MeasurementChartWidget(this._entries, {this.unit = 'kg'});
 
   @override
   Widget build(BuildContext context) {
+    final unitTickFormatter =
+        charts.BasicNumericTickFormatterSpec((num? value) => '$value ${this.unit}');
+
     return charts.TimeSeriesChart(
       [
-        charts.Series<WeightEntry, DateTime>(
-          id: 'Weight',
+        charts.Series<MeasurementChartEntry, DateTime>(
+          id: 'Measurement',
           colorFn: (_, __) => wgerChartSecondaryColor,
-          domainFn: (WeightEntry weightEntry, _) => weightEntry.date,
-          measureFn: (WeightEntry weightEntry, _) => weightEntry.weight,
+          domainFn: (MeasurementChartEntry entry, _) => entry.date,
+          measureFn: (MeasurementChartEntry entry, _) => entry.value,
           data: _entries,
         )
       ],
       defaultRenderer: new charts.LineRendererConfig(includePoints: true),
       primaryMeasureAxis: new charts.NumericAxisSpec(
         tickProviderSpec: new charts.BasicNumericTickProviderSpec(zeroBound: false),
+        tickFormatterSpec: unitTickFormatter,
       ),
     );
   }

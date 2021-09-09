@@ -258,9 +258,20 @@
   "@weight": {
     "description": "The weight of a workout log or body weight entry"
   },
+  "measurement": "Measurement",
+  "measurements": "Measurements",
+  "@measurements": {
+    "description": "Categories for the measurements such as biceps size, body fat, etc."
+  },
+  "measurementCategoriesHelpText": "Measurement category, such as 'biceps' or 'body fat'",
+  "measurementEntriesHelpText": "The unit used to measure the category such as 'cm' or '%'",
   "date": "Date",
   "@date": {
     "description": "The date of a workout log or body weight entry"
+  },
+  "value": "Value",
+  "@value": {
+    "description": "The value of a measurement entry"
   },
   "start": "Start",
   "@start": {

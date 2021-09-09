@@ -24,7 +24,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/exercises/exercise.dart';
-import 'package:wger/models/http_exception.dart';
+import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';

@@ -26,6 +26,7 @@ import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/misc.dart';
 import 'package:wger/models/workouts/session.dart';
 import 'package:wger/providers/body_weight.dart';
+import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/theme/theme.dart';
@@ -33,6 +34,7 @@ import 'package:wger/theme/theme.dart';
 /// Types of events
 enum EventType {
   weight,
+  measurement,
   session,
   caloriesDiary,
 }
@@ -93,6 +95,22 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
 
       // Add events to lists
       _events[date]!.add(Event(EventType.weight, '${entry.weight} kg'));
+    }
+
+    // Process measurements
+    MeasurementProvider measurementProvider =
+        Provider.of<MeasurementProvider>(context, listen: false);
+    for (var category in measurementProvider.categories) {
+      for (var entry in category.entries) {
+        final date = DateFormatLists.format(entry.date);
+
+        if (!_events.containsKey(date)) {
+          _events[date] = [];
+        }
+
+        _events[date]!
+            .add(Event(EventType.measurement, '${category.name}: ${entry.value} ${category.unit}'));
+      }
     }
 
     // Process workout sessions
@@ -246,6 +264,9 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
 
                               case EventType.weight:
                                 return AppLocalizations.of(context).weight;
+
+                              case EventType.measurement:
+                                return AppLocalizations.of(context).measurement;
                             }
                             return event.description.toString();
                           })()),

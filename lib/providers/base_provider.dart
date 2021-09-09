@@ -21,7 +21,7 @@ import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
-import 'package:wger/models/http_exception.dart';
+import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/helpers.dart';
 

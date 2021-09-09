@@ -22,7 +22,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/ui.dart';
-import 'package:wger/models/http_exception.dart';
+import 'package:wger/exceptions/http_exception.dart';
 
 import '../providers/auth.dart';
 

@@ -19,9 +19,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/gallery.dart';
+import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/auth_screen.dart';
@@ -30,6 +32,8 @@ import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/gallery_screen.dart';
 import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/screens/home_tabs_screen.dart';
+import 'package:wger/screens/measurement_categories_screen.dart';
+import 'package:wger/screens/measurement_entries_screen.dart';
 import 'package:wger/screens/nutritional_diary_screen.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/screens/nutritional_plans_screen.dart';
@@ -79,6 +83,12 @@ class MyApp extends StatelessWidget {
           update: (context, auth, previous) =>
               previous != null ? previous : NutritionPlansProvider(auth, []),
         ),
+        ChangeNotifierProxyProvider<AuthProvider, MeasurementProvider>(
+          create: (context) => MeasurementProvider(
+              WgerBaseProvider(Provider.of<AuthProvider>(context, listen: false))),
+          update: (context, base, previous) =>
+              previous != null ? previous : MeasurementProvider(WgerBaseProvider(base)),
+        ),
         ChangeNotifierProxyProvider<AuthProvider, BodyWeightProvider>(
           create: (context) =>
               BodyWeightProvider(Provider.of<AuthProvider>(context, listen: false), []),
@@ -111,6 +121,8 @@ class MyApp extends StatelessWidget {
             GalleryScreen.routeName: (ctx) => GalleryScreen(),
             GymModeScreen.routeName: (ctx) => GymModeScreen(),
             HomeTabsScreen.routeName: (ctx) => HomeTabsScreen(),
+            MeasurementCategoriesScreen.routeName: (ctx) => MeasurementCategoriesScreen(),
+            MeasurementEntriesScreen.routeName: (ctx) => MeasurementEntriesScreen(),
             NutritionScreen.routeName: (ctx) => NutritionScreen(),
             NutritionalDiaryScreen.routeName: (ctx) => NutritionalDiaryScreen(),
             NutritionalPlanScreen.routeName: (ctx) => NutritionalPlanScreen(),
