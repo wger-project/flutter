@@ -89,7 +89,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
       ]);
 
       // Plans, weight and gallery
-      log('Plans, weight and gallery');
+      log('Plans, weight, measurements and gallery');
       await Future.wait([
         galleryProvider.fetchAndSetGallery(),
         nutritionPlansProvider.fetchAndSetAllPlansSparse(),

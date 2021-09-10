@@ -24,18 +24,95 @@ import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/measurements/entries.dart';
 import 'package:wger/widgets/measurements/forms.dart';
 
+enum MeasurementOptions {
+  edit,
+  delete,
+}
+
 class MeasurementEntriesScreen extends StatelessWidget {
   static const routeName = '/measurement-entries';
 
   @override
   Widget build(BuildContext context) {
     final categoryId = ModalRoute.of(context)!.settings.arguments as int;
-    final category =
-        Provider.of<MeasurementProvider>(context, listen: false).findCategoryById(categoryId);
+    final category = Provider.of<MeasurementProvider>(context).findCategoryById(categoryId);
 
     return Scaffold(
       appBar: AppBar(
         title: Text(category.name),
+        actions: [
+          PopupMenuButton<MeasurementOptions>(
+            icon: Icon(Icons.more_vert),
+            onSelected: (value) {
+              switch (value) {
+                case MeasurementOptions.edit:
+                  Navigator.pushNamed(
+                    context,
+                    FormScreen.routeName,
+                    arguments: FormScreenArguments(
+                      AppLocalizations.of(context).edit,
+                      MeasurementCategoryForm(category),
+                    ),
+                  );
+                  break;
+
+                case MeasurementOptions.delete:
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext contextDialog) {
+                        return AlertDialog(
+                          content: Text(
+                            AppLocalizations.of(context).confirmDelete(category.name),
+                          ),
+                          actions: [
+                            TextButton(
+                              child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+                              onPressed: () => Navigator.of(contextDialog).pop(),
+                            ),
+                            TextButton(
+                              child: Text(
+                                AppLocalizations.of(context).delete,
+                                style: TextStyle(color: Theme.of(context).errorColor),
+                              ),
+                              onPressed: () {
+                                // Confirmed, delete the workout
+                                Provider.of<MeasurementProvider>(context, listen: false)
+                                    .deleteCategory(category.id!);
+
+                                // Close the popup
+                                Navigator.of(contextDialog).pop();
+
+                                // and inform the user
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      AppLocalizations.of(context).successfullyDeleted,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        );
+                      });
+                  break;
+              }
+            },
+            itemBuilder: (context) {
+              return [
+                PopupMenuItem<MeasurementOptions>(
+                  value: MeasurementOptions.edit,
+                  child: Text(AppLocalizations.of(context).edit),
+                ),
+                PopupMenuItem<MeasurementOptions>(
+                  value: MeasurementOptions.delete,
+                  child: Text(AppLocalizations.of(context).delete),
+                ),
+              ];
+            },
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
