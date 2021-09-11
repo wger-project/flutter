@@ -30,6 +30,7 @@ import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/dashboard.dart';
+import 'package:wger/screens/exercises_screen.dart';
 import 'package:wger/screens/gallery_screen.dart';
 import 'package:wger/screens/nutritional_plans_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
@@ -63,7 +64,8 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
   final _screenList = <Widget>[
     DashboardScreen(),
     WorkoutPlansScreen(),
-    NutritionScreen(),
+    // Replaced [NutritionScreen] for debugging purposes
+    ExercisesScreen(),
     WeightScreen(),
     GalleryScreen(),
   ];

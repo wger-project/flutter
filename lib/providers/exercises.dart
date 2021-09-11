@@ -59,6 +59,13 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
     return [..._exercises];
   }
 
+  List<Exercise> findByCategory(ExerciseCategory? category) {
+    if (category == null) return this.items;
+    return this.items.where((exercise) => exercise.categoryObj == category).toList();
+  }
+
+  List<ExerciseCategory> get categories => _categories;
+
   /// Returns an exercise
   Exercise findById(int exerciseId) {
     return _exercises.firstWhere((exercise) => exercise.id == exerciseId);
