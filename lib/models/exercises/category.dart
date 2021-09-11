@@ -41,4 +41,14 @@ class ExerciseCategory {
   // Boilerplate
   factory ExerciseCategory.fromJson(Map<String, dynamic> json) => _$ExerciseCategoryFromJson(json);
   Map<String, dynamic> toJson() => _$ExerciseCategoryToJson(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is ExerciseCategory && other.id == id && other.name == name;
+  }
+
+  @override
+  int get hashCode => id.hashCode ^ name.hashCode;
 }

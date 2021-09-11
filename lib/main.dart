@@ -28,6 +28,7 @@ import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/auth_screen.dart';
 import 'package:wger/screens/dashboard.dart';
+import 'package:wger/screens/exercises_screen.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/gallery_screen.dart';
 import 'package:wger/screens/gym_mode.dart';
@@ -129,6 +130,7 @@ class MyApp extends StatelessWidget {
             WeightScreen.routeName: (ctx) => WeightScreen(),
             WorkoutPlanScreen.routeName: (ctx) => WorkoutPlanScreen(),
             WorkoutPlansScreen.routeName: (ctx) => WorkoutPlansScreen(),
+            ExercisesScreen.routeName: (ctx) => ExercisesScreen(),
           },
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
