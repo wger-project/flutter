@@ -50,21 +50,57 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
   List<ExerciseCategory> _categories = [];
   List<Muscle> _muscles = [];
   List<Equipment> _equipment = [];
+  Filters? _filters;
 
   ExercisesProvider(AuthProvider auth, List<Exercise> entries, [http.Client? client])
       : this._exercises = entries,
         super(auth, client);
 
-  List<Exercise> get items {
-    return [..._exercises];
+  List<Exercise> get items => [..._exercises];
+  List<ExerciseCategory> get categories => [..._categories];
+  Filters? get filters => _filters;
+
+  // Initialze filters for exersices search in exersices list
+  void initFilters() {
+    if (_muscles.isEmpty || _equipment.isEmpty || _filters != null) return;
+
+    _filters = Filters(
+      exerciseCategories: FilterCategory<ExerciseCategory>(
+        title: 'Muscle Groups',
+        items: Map.fromEntries(
+          _categories.map(
+            (category) => MapEntry<ExerciseCategory, bool>(category, false),
+          ),
+        ),
+      ),
+      equipment: FilterCategory<Equipment>(
+        title: 'Equipment',
+        items: Map.fromEntries(
+          _equipment.map(
+            (singleEquipment) => MapEntry<Equipment, bool>(singleEquipment, false),
+          ),
+        ),
+      ),
+    );
+  }
+
+  List<Exercise> findByFilters() {
+    // Filters not initalized
+    if (filters == null) return [];
+
+    // Filters are initialized but nothing is marked
+    if (filters!.isNothingMarked) return items;
+
+    // Filter by exercise category and equipment (REPLACE WITH HTTP REQUEST)
+    return items
+        .where((exercise) => filters!.exerciseCategories.selected.contains(exercise.categoryObj))
+        .toList();
   }
 
   List<Exercise> findByCategory(ExerciseCategory? category) {
     if (category == null) return this.items;
     return this.items.where((exercise) => exercise.categoryObj == category).toList();
   }
-
-  List<ExerciseCategory> get categories => _categories;
 
   /// Returns an exercise
   Exercise findById(int exerciseId) {
@@ -216,4 +252,46 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
     }
     return result;
   }
+}
+
+class FilterCategory<T> {
+  bool isExpanded;
+  final Map<T, bool> items;
+  final String title;
+
+  List<T> get selected => [...items.keys].where((key) => items[key]!).toList();
+
+  FilterCategory({
+    required this.title,
+    required this.items,
+    this.isExpanded = false,
+  });
+}
+
+class Filters {
+  final FilterCategory<ExerciseCategory> exerciseCategories;
+  final FilterCategory<Equipment> equipment;
+  List<FilterCategory> get filterCategories => [exerciseCategories, equipment];
+
+  bool get isNothingMarked {
+    final isExersiceCategoryMarked = exerciseCategories.items.values.any((isMarked) => isMarked);
+    final isEquipmentMarked = equipment.items.values.any((isMarked) => isMarked);
+    return !isExersiceCategoryMarked && !isEquipmentMarked;
+  }
+
+  bool _doesNeedUpdate = false;
+  bool get doesNeedUpdate => _doesNeedUpdate;
+
+  void markNeedsUpdate() {
+    _doesNeedUpdate = true;
+  }
+
+  void markUpdated() {
+    _doesNeedUpdate = false;
+  }
+
+  Filters({
+    required this.exerciseCategories,
+    required this.equipment,
+  });
 }

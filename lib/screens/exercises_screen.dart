@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/models/exercises/category.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/widgets/core/app_bar.dart';
+import 'package:wger/widgets/exercises/filter_modal.dart';
 import 'package:wger/widgets/exercises/list_tile.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ExercisesScreen extends StatefulWidget {
   const ExercisesScreen({Key? key}) : super(key: key);
@@ -14,29 +15,22 @@ class ExercisesScreen extends StatefulWidget {
 }
 
 class _ExercisesScreenState extends State<ExercisesScreen> {
-  ExerciseCategory? _category;
+  late final TextEditingController _exerciseNameController;
 
-  List<DropdownMenuItem<ExerciseCategory>> _categoryOptions() {
-    return Provider.of<ExercisesProvider>(context, listen: false)
-        .categories
-        .map<DropdownMenuItem<ExerciseCategory>>(
-      (category) {
-        return DropdownMenuItem<ExerciseCategory>(
-          child: Text(category.name),
-          value: category,
-        );
-      },
-    ).toList();
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<ExercisesProvider>(context, listen: false).initFilters();
+    _exerciseNameController = TextEditingController();
   }
 
   @override
   Widget build(BuildContext context) {
-    final exercisesList =
-        Provider.of<ExercisesProvider>(context, listen: false).findByCategory(_category);
+    final exercisesList = Provider.of<ExercisesProvider>(context, listen: false).findByFilters();
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
-      appBar: WgerAppBar('Exercises'),
+      appBar: WgerAppBar(AppLocalizations.of(context).exercises),
       body: Column(
         children: [
           Padding(
@@ -44,29 +38,49 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
             child: Row(
               children: [
                 Expanded(
-                  child: DropdownButtonFormField<ExerciseCategory>(
-                    hint: Text('All Exercises'),
-                    value: _category,
-                    items: _categoryOptions(),
+                  child: TextFormField(
+                    controller: _exerciseNameController,
                     decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                      ),
+                      hintText: '${AppLocalizations.of(context).exerciseName}...',
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 10),
                       border: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.black),
                       ),
                     ),
-                    onChanged: (ExerciseCategory? newCategory) {
-                      setState(() {
-                        _category = newCategory;
-                      });
-                    },
                   ),
                 ),
                 Row(
                   children: [
-                    IconButton(onPressed: () {}, icon: Icon(Icons.search)),
-                    IconButton(onPressed: () {}, icon: Icon(Icons.filter_alt)),
+                    IconButton(
+                      onPressed: () {},
+                      icon: Icon(Icons.search),
+                    ),
+                    IconButton(
+                      onPressed: () async {
+                        await showModalBottomSheet(
+                          context: context,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(20),
+                              topRight: Radius.circular(20),
+                            ),
+                          ),
+                          builder: (context) => ExerciseFilterModalBody(),
+                        );
+
+                        final filters = Provider.of<ExercisesProvider>(
+                          context,
+                          listen: false,
+                        ).filters!;
+
+                        if (filters.doesNeedUpdate) {
+                          setState(() {
+                            filters.markUpdated();
+                          });
+                        }
+                      },
+                      icon: Icon(Icons.filter_alt),
+                    ),
                   ],
                 )
               ],
@@ -92,5 +106,11 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _exerciseNameController.dispose();
+    super.dispose();
   }
 }

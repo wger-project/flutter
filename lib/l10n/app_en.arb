@@ -104,6 +104,14 @@
   "@exercise": {
     "description": "An exercise for a workout"
   },
+  "exercises": "Exercises",
+  "@exercises": {
+    "description": "Multiple exercises for a workout"
+  },
+  "exerciseName": "Exercise Name",
+  "@exerciseName": {
+    "description": "Label for the name of a workout exercise"
+  },
   "searchExercise": "Search exercise to add",
   "@searchExercise": {
     "description": "Label on set form. Selected exercises are added to the set"
