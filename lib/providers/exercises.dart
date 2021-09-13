@@ -103,8 +103,6 @@ class ExercisesProvider with ChangeNotifier {
     return this.items.where((exercise) => exercise.categoryObj == category).toList();
   }
 
-  List<ExerciseCategory> get categories => _categories;
-
   /// Find exercise by ID
   Exercise findExerciseById(int id) {
     return _exercises.firstWhere(
