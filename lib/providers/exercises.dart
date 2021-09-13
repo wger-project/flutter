@@ -19,25 +19,28 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:json_annotation/json_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wger/exceptions/no_such_entry_exception.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/models/exercises/base.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/exercises/exercise2.dart';
 import 'package:wger/models/exercises/muscle.dart';
-import 'package:wger/exceptions/http_exception.dart';
-import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/base_provider.dart';
 
-class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
+class ExercisesProvider with ChangeNotifier {
+  final WgerBaseProvider baseProvider;
+
   static const daysToCache = 7;
 
   static const _exerciseInfoUrlPath = 'exerciseinfo';
+  static const _exerciseBaseUrlPath = 'exercise-base';
+  static const _exerciseTranslationUrlPath = 'exercise-translation';
   static const _exerciseSearchPath = 'exercise/search';
 
   static const _exerciseCommentUrlPath = 'exercisecomment';
@@ -52,9 +55,7 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
   List<Equipment> _equipment = [];
   Filters? _filters;
 
-  ExercisesProvider(AuthProvider auth, List<Exercise> entries, [http.Client? client])
-      : this._exercises = entries,
-        super(auth, client);
+  ExercisesProvider(this.baseProvider);
 
   List<Exercise> get items => [..._exercises];
   List<ExerciseCategory> get categories => [..._categories];
@@ -102,14 +103,42 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
     return this.items.where((exercise) => exercise.categoryObj == category).toList();
   }
 
-  /// Returns an exercise
-  Exercise findById(int exerciseId) {
-    return _exercises.firstWhere((exercise) => exercise.id == exerciseId);
+  List<ExerciseCategory> get categories => _categories;
+
+  /// Find exercise by ID
+  Exercise findExerciseById(int id) {
+    return _exercises.firstWhere(
+      (exercise) => exercise.id == id,
+      orElse: () => throw NoSuchEntryException(),
+    );
+  }
+
+  /// Find category by ID
+  ExerciseCategory findCategoryById(int id) {
+    return _categories.firstWhere(
+      (cat) => cat.id == id,
+      orElse: () => throw NoSuchEntryException(),
+    );
+  }
+
+  /// Find category by ID
+  Equipment findEquipmentById(int id) {
+    return _equipment.firstWhere(
+      (equipment) => equipment.id == id,
+      orElse: () => throw NoSuchEntryException(),
+    );
+  }
+
+  /// Find muscle by ID
+  Muscle findMuscleById(int id) {
+    return _muscles.firstWhere(
+      (muscle) => muscle.id == id,
+      orElse: () => throw NoSuchEntryException(),
+    );
   }
 
   Future<void> fetchAndSetCategories() async {
-    final response = await client.get(makeUrl(_categoriesUrlPath));
-    final categories = json.decode(response.body) as Map<String, dynamic>;
+    final categories = await baseProvider.fetch(baseProvider.makeUrl(_categoriesUrlPath));
     try {
       for (final category in categories['results']) {
         _categories.add(ExerciseCategory.fromJson(category));
@@ -120,8 +149,7 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
   }
 
   Future<void> fetchAndSetMuscles() async {
-    final response = await client.get(makeUrl(_musclesUrlPath));
-    final muscles = json.decode(response.body) as Map<String, dynamic>;
+    final muscles = await baseProvider.fetch(baseProvider.makeUrl(_musclesUrlPath));
     try {
       for (final muscle in muscles['results']) {
         _muscles.add(Muscle.fromJson(muscle));
@@ -132,8 +160,7 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
   }
 
   Future<void> fetchAndSetEquipment() async {
-    final response = await client.get(makeUrl(_equipmentUrlPath));
-    final equipments = json.decode(response.body) as Map<String, dynamic>;
+    final equipments = await baseProvider.fetch(baseProvider.makeUrl(_equipmentUrlPath));
     try {
       for (final equipment in equipments['results']) {
         _equipment.add(Equipment.fromJson(equipment));
@@ -150,11 +177,12 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
   /// regular not-async getById method can be used
   Future<Exercise> fetchAndSetExercise(int exerciseId) async {
     try {
-      return findById(exerciseId);
-    } on StateError catch (e) {
+      return findExerciseById(exerciseId);
+    } on StateError {
       // Get exercise from the server and save to cache
 
-      final data = await fetch(makeUrl(_exerciseInfoUrlPath, id: exerciseId));
+      final data =
+          await baseProvider.fetch(baseProvider.makeUrl(_exerciseInfoUrlPath, id: exerciseId));
       final exercise = Exercise.fromJson(data);
       _exercises.add(exercise);
       final prefs = await SharedPreferences.getInstance();
@@ -164,6 +192,37 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
       log("Saved exercise '${exercise.name}' to cache.");
       return exercise;
     }
+  }
+
+  Future<void> fetchAndSetExercisesTEST() async {
+    // Load categories, muscles and equipments
+    await fetchAndSetCategories();
+    await fetchAndSetMuscles();
+    await fetchAndSetEquipment();
+
+    final exercisesData = await baseProvider.fetch(
+      baseProvider.makeUrl(_exerciseBaseUrlPath, query: {'limit': '10'}),
+    );
+
+    exercisesData['results'].forEach((e) async {
+      var base = ExerciseBase.fromJson(e);
+
+      base.category = findCategoryById(base.categoryId);
+      base.muscles = base.musclesIds.map((e) => findMuscleById(e)).toList();
+      base.musclesSecondary = base.musclesSecondaryIds.map((e) => findMuscleById(e)).toList();
+      base.equipment = base.equipmentIds.map((e) => findEquipmentById(e)).toList();
+
+      final exerciseTranslationData = await baseProvider.fetch(
+        baseProvider.makeUrl(
+          _exerciseTranslationUrlPath,
+          query: {'limit': '10', 'exercise_base': base.id.toString()},
+        ),
+      );
+
+      exerciseTranslationData['results'].forEach((e) async {
+        base.exercises.add(Exercise2.fromJson(e));
+      });
+    });
   }
 
   Future<void> fetchAndSetExercises() async {
@@ -186,15 +245,9 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
     await fetchAndSetMuscles();
     await fetchAndSetEquipment();
 
-    final response = await client.get(
-        makeUrl(
-          _exerciseInfoUrlPath,
-          query: {'limit': '1000'},
-        ),
-        headers: {
-          HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
-        });
-    final exercisesData = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+    final exercisesData = await baseProvider.fetch(
+      baseProvider.makeUrl(_exerciseInfoUrlPath, query: {'limit': '1000'}),
+    );
 
     try {
       // Load exercises
@@ -229,28 +282,18 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
     }
 
     // Send the request
-    final response = await client.get(
-      makeUrl(
+    final result = await baseProvider.fetch(
+      baseProvider.makeUrl(
         _exerciseSearchPath,
         query: {'term': name, 'language': languageCode},
       ),
-      headers: <String, String>{
-        'Authorization': 'Token ${auth.token}',
-        'User-Agent': auth.getAppNameHeader(),
-      },
     );
 
-    // Something wrong with our request
-    if (response.statusCode >= 400) {
-      throw WgerHttpException(response.body);
-    }
-
     // Process the response
-    final result = json.decode(utf8.decode(response.bodyBytes))['suggestions'] as List<dynamic>;
-    for (var entry in result) {
+    for (var entry in result['suggestions']) {
       entry['exercise_obj'] = await fetchAndSetExercise(entry['data']['id']);
     }
-    return result;
+    return result['suggestions'];
   }
 }
 

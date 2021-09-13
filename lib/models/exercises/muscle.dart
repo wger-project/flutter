@@ -16,12 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'muscle.g.dart';
 
 @JsonSerializable()
-class Muscle {
+class Muscle extends Equatable {
   @JsonKey(required: true)
   final int id;
 
@@ -40,4 +41,7 @@ class Muscle {
   // Boilerplate
   factory Muscle.fromJson(Map<String, dynamic> json) => _$MuscleFromJson(json);
   Map<String, dynamic> toJson() => _$MuscleToJson(this);
+
+  @override
+  List<Object?> get props => [id, name, isFront];
 }

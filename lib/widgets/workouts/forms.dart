@@ -401,7 +401,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                       final result = suggestion! as Map;
 
                       final exercise = Provider.of<ExercisesProvider>(context, listen: false)
-                          .findById(result['data']['id']);
+                          .findExerciseById(result['data']['id']);
                       return ListTile(
                         leading: Container(
                           width: 45,
@@ -418,7 +418,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                     onSuggestionSelected: (suggestion) {
                       final result = suggestion! as Map;
                       final exercise = Provider.of<ExercisesProvider>(context, listen: false)
-                          .findById(result['data']['id']);
+                          .findExerciseById(result['data']['id']);
                       addExercise(exercise);
                       this._exercisesController.text = '';
                     },

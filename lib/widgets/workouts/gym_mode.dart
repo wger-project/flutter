@@ -22,13 +22,13 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/gym_mode.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/misc.dart';
 import 'package:wger/helpers/ui.dart';
 import 'package:wger/models/exercises/exercise.dart';
-import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/session.dart';
@@ -81,8 +81,8 @@ class _GymModeState extends State<GymMode> {
     for (var set in widget._workoutDay.sets) {
       var firstPage = true;
       for (var setting in set.settingsComputed) {
-        final exercise =
-            Provider.of<ExercisesProvider>(context, listen: false).findById(setting.exerciseId);
+        final exercise = Provider.of<ExercisesProvider>(context, listen: false)
+            .findExerciseById(setting.exerciseId);
 
         if (firstPage) {
           _exercisePages[exercise.name] = currentPage;
@@ -110,7 +110,7 @@ class _GymModeState extends State<GymMode> {
       var firstPage = true;
       for (var setting in set.settingsComputed) {
         var ratioCompleted = currentElement / _totalElements;
-        final exercise = exerciseProvider.findById(setting.exerciseId);
+        final exercise = exerciseProvider.findExerciseById(setting.exerciseId);
         currentElement++;
 
         if (firstPage) {
@@ -296,7 +296,7 @@ class _LogPageState extends State<LogPage> {
               if (newValue > 0) {
                 _repsController.text = newValue.toString();
               }
-            } on FormatException catch (e) {}
+            } on FormatException {}
           },
         ),
         Expanded(
@@ -332,7 +332,7 @@ class _LogPageState extends State<LogPage> {
             try {
               int newValue = int.parse(_repsController.text) + 1;
               _repsController.text = newValue.toString();
-            } on FormatException catch (e) {}
+            } on FormatException {}
           },
         ),
       ],
@@ -357,7 +357,7 @@ class _LogPageState extends State<LogPage> {
                   _weightController.text = newValue.toString();
                 });
               }
-            } on FormatException catch (e) {}
+            } on FormatException {}
           },
         ),
         Expanded(
@@ -374,7 +374,7 @@ class _LogPageState extends State<LogPage> {
                 setState(() {
                   widget._log.weight = double.parse(value);
                 });
-              } on FormatException catch (e) {}
+              } on FormatException {}
             },
             onSaved: (newValue) {
               setState(() {
@@ -403,7 +403,7 @@ class _LogPageState extends State<LogPage> {
                 widget._log.weight = newValue;
                 _weightController.text = newValue.toString();
               });
-            } on FormatException catch (e) {}
+            } on FormatException {}
           },
         ),
       ],

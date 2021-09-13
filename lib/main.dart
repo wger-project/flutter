@@ -64,10 +64,10 @@ class MyApp extends StatelessWidget {
           create: (ctx) => AuthProvider(),
         ),
         ChangeNotifierProxyProvider<AuthProvider, ExercisesProvider>(
-          create: (context) =>
-              ExercisesProvider(Provider.of<AuthProvider>(context, listen: false), []),
-          update: (context, auth, previous) =>
-              previous != null ? previous : ExercisesProvider(auth, []),
+          create: (context) => ExercisesProvider(
+              WgerBaseProvider(Provider.of<AuthProvider>(context, listen: false))),
+          update: (context, base, previous) =>
+              previous != null ? previous : ExercisesProvider(WgerBaseProvider(base)),
         ),
         ChangeNotifierProxyProvider2<AuthProvider, ExercisesProvider, WorkoutPlansProvider>(
           create: (context) => WorkoutPlansProvider(

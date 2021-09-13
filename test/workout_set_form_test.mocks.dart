@@ -2,14 +2,17 @@
 // in wger/test/workout_set_form_test.dart.
 // Do not manually edit this file.
 
-import 'dart:async' as _i6;
-import 'dart:ui' as _i7;
+import 'dart:async' as _i9;
+import 'dart:ui' as _i10;
 
 import 'package:http/http.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:wger/models/exercises/category.dart' as _i5;
+import 'package:wger/models/exercises/equipment.dart' as _i6;
 import 'package:wger/models/exercises/exercise.dart' as _i4;
+import 'package:wger/models/exercises/muscle.dart' as _i7;
 import 'package:wger/providers/auth.dart' as _i2;
-import 'package:wger/providers/exercises.dart' as _i5;
+import 'package:wger/providers/exercises.dart' as _i8;
 
 // ignore_for_file: avoid_redundant_argument_values
 // ignore_for_file: avoid_setters_without_getters
@@ -25,108 +28,152 @@ class _FakeClient_1 extends _i1.Fake implements _i3.Client {}
 
 class _FakeExercise_2 extends _i1.Fake implements _i4.Exercise {}
 
-class _FakeUri_3 extends _i1.Fake implements Uri {}
+class _FakeExerciseCategory_3 extends _i1.Fake implements _i5.ExerciseCategory {
+}
 
-class _FakeResponse_4 extends _i1.Fake implements _i3.Response {}
+class _FakeEquipment_4 extends _i1.Fake implements _i6.Equipment {}
+
+class _FakeMuscle_5 extends _i1.Fake implements _i7.Muscle {}
+
+class _FakeUri_6 extends _i1.Fake implements Uri {}
+
+class _FakeResponse_7 extends _i1.Fake implements _i3.Response {}
 
 /// A class which mocks [ExercisesProvider].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockExercisesProvider extends _i1.Mock implements _i5.ExercisesProvider {
+class MockExercisesProvider extends _i1.Mock implements _i8.ExercisesProvider {
   MockExercisesProvider() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  List<_i4.Exercise> get items =>
-      (super.noSuchMethod(Invocation.getter(#items), returnValue: <_i4.Exercise>[])
-          as List<_i4.Exercise>);
+  List<_i4.Exercise> get items => (super.noSuchMethod(Invocation.getter(#items),
+      returnValue: <_i4.Exercise>[]) as List<_i4.Exercise>);
   @override
-  _i2.AuthProvider get auth =>
-      (super.noSuchMethod(Invocation.getter(#auth), returnValue: _FakeAuthProvider_0())
-          as _i2.AuthProvider);
+  List<_i5.ExerciseCategory> get categories =>
+      (super.noSuchMethod(Invocation.getter(#categories),
+          returnValue: <_i5.ExerciseCategory>[]) as List<_i5.ExerciseCategory>);
+  @override
+  _i2.AuthProvider get auth => (super.noSuchMethod(Invocation.getter(#auth),
+      returnValue: _FakeAuthProvider_0()) as _i2.AuthProvider);
   @override
   set auth(_i2.AuthProvider? _auth) =>
-      super.noSuchMethod(Invocation.setter(#auth, _auth), returnValueForMissingStub: null);
+      super.noSuchMethod(Invocation.setter(#auth, _auth),
+          returnValueForMissingStub: null);
   @override
-  _i3.Client get client =>
-      (super.noSuchMethod(Invocation.getter(#client), returnValue: _FakeClient_1()) as _i3.Client);
+  _i3.Client get client => (super.noSuchMethod(Invocation.getter(#client),
+      returnValue: _FakeClient_1()) as _i3.Client);
   @override
   set client(_i3.Client? _client) =>
-      super.noSuchMethod(Invocation.setter(#client, _client), returnValueForMissingStub: null);
+      super.noSuchMethod(Invocation.setter(#client, _client),
+          returnValueForMissingStub: null);
   @override
   bool get hasListeners =>
-      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
+      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false)
+          as bool);
   @override
-  _i4.Exercise findById(int? exerciseId) => (super
-          .noSuchMethod(Invocation.method(#findById, [exerciseId]), returnValue: _FakeExercise_2())
-      as _i4.Exercise);
+  List<_i4.Exercise> findByCategory(_i5.ExerciseCategory? category) =>
+      (super.noSuchMethod(Invocation.method(#findByCategory, [category]),
+          returnValue: <_i4.Exercise>[]) as List<_i4.Exercise>);
   @override
-  _i6.Future<void> fetchAndSetCategories() =>
+  _i4.Exercise findExerciseById(int? id) =>
+      (super.noSuchMethod(Invocation.method(#findExerciseById, [id]),
+          returnValue: _FakeExercise_2()) as _i4.Exercise);
+  @override
+  _i5.ExerciseCategory findCategoryById(int? id) =>
+      (super.noSuchMethod(Invocation.method(#findCategoryById, [id]),
+          returnValue: _FakeExerciseCategory_3()) as _i5.ExerciseCategory);
+  @override
+  _i6.Equipment findEquipmentById(int? id) =>
+      (super.noSuchMethod(Invocation.method(#findEquipmentById, [id]),
+          returnValue: _FakeEquipment_4()) as _i6.Equipment);
+  @override
+  _i7.Muscle findMuscleById(int? id) =>
+      (super.noSuchMethod(Invocation.method(#findMuscleById, [id]),
+          returnValue: _FakeMuscle_5()) as _i7.Muscle);
+  @override
+  _i9.Future<void> fetchAndSetCategories() =>
       (super.noSuchMethod(Invocation.method(#fetchAndSetCategories, []),
           returnValue: Future<void>.value(),
-          returnValueForMissingStub: Future<void>.value()) as _i6.Future<void>);
+          returnValueForMissingStub: Future<void>.value()) as _i9.Future<void>);
   @override
-  _i6.Future<void> fetchAndSetMuscles() =>
+  _i9.Future<void> fetchAndSetMuscles() =>
       (super.noSuchMethod(Invocation.method(#fetchAndSetMuscles, []),
           returnValue: Future<void>.value(),
-          returnValueForMissingStub: Future<void>.value()) as _i6.Future<void>);
+          returnValueForMissingStub: Future<void>.value()) as _i9.Future<void>);
   @override
-  _i6.Future<void> fetchAndSetEquipment() =>
+  _i9.Future<void> fetchAndSetEquipment() =>
       (super.noSuchMethod(Invocation.method(#fetchAndSetEquipment, []),
           returnValue: Future<void>.value(),
-          returnValueForMissingStub: Future<void>.value()) as _i6.Future<void>);
+          returnValueForMissingStub: Future<void>.value()) as _i9.Future<void>);
   @override
-  _i6.Future<_i4.Exercise> fetchAndSetExercise(int? exerciseId) =>
+  _i9.Future<_i4.Exercise> fetchAndSetExercise(int? exerciseId) =>
       (super.noSuchMethod(Invocation.method(#fetchAndSetExercise, [exerciseId]),
-          returnValue: Future<_i4.Exercise>.value(_FakeExercise_2())) as _i6.Future<_i4.Exercise>);
+              returnValue: Future<_i4.Exercise>.value(_FakeExercise_2()))
+          as _i9.Future<_i4.Exercise>);
   @override
-  _i6.Future<void> fetchAndSetExercises() =>
+  _i9.Future<void> fetchAndSetExercisesTEST() =>
+      (super.noSuchMethod(Invocation.method(#fetchAndSetExercisesTEST, []),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i9.Future<void>);
+  @override
+  _i9.Future<void> fetchAndSetExercises() =>
       (super.noSuchMethod(Invocation.method(#fetchAndSetExercises, []),
           returnValue: Future<void>.value(),
-          returnValueForMissingStub: Future<void>.value()) as _i6.Future<void>);
+          returnValueForMissingStub: Future<void>.value()) as _i9.Future<void>);
   @override
-  _i6.Future<List<dynamic>> searchExercise(String? name, [String? languageCode = r'en']) =>
-      (super.noSuchMethod(Invocation.method(#searchExercise, [name, languageCode]),
-          returnValue: Future<List<dynamic>>.value(<dynamic>[])) as _i6.Future<List<dynamic>>);
-  @override
-  Uri makeUrl(String? path, {int? id, String? objectMethod, Map<String, dynamic>? query}) =>
+  _i9.Future<List<dynamic>> searchExercise(String? name,
+          [String? languageCode = r'en']) =>
       (super.noSuchMethod(
-          Invocation.method(
-              #makeUrl, [path], {#id: id, #objectMethod: objectMethod, #query: query}),
-          returnValue: _FakeUri_3()) as Uri);
+              Invocation.method(#searchExercise, [name, languageCode]),
+              returnValue: Future<List<dynamic>>.value(<dynamic>[]))
+          as _i9.Future<List<dynamic>>);
   @override
-  _i6.Future<Map<String, dynamic>> fetch(Uri? uri) =>
-      (super.noSuchMethod(Invocation.method(#fetch, [uri]),
-              returnValue: Future<Map<String, dynamic>>.value(<String, dynamic>{}))
-          as _i6.Future<Map<String, dynamic>>);
+  Uri makeUrl(String? path,
+          {int? id, String? objectMethod, Map<String, dynamic>? query}) =>
+      (super.noSuchMethod(
+          Invocation.method(#makeUrl, [path],
+              {#id: id, #objectMethod: objectMethod, #query: query}),
+          returnValue: _FakeUri_6()) as Uri);
   @override
-  _i6.Future<Map<String, dynamic>> post(Map<String, dynamic>? data, Uri? uri) =>
+  _i9.Future<Map<String, dynamic>> fetch(Uri? uri) => (super.noSuchMethod(
+          Invocation.method(#fetch, [uri]),
+          returnValue: Future<Map<String, dynamic>>.value(<String, dynamic>{}))
+      as _i9.Future<Map<String, dynamic>>);
+  @override
+  _i9.Future<Map<String, dynamic>> post(Map<String, dynamic>? data, Uri? uri) =>
       (super.noSuchMethod(Invocation.method(#post, [data, uri]),
-              returnValue: Future<Map<String, dynamic>>.value(<String, dynamic>{}))
-          as _i6.Future<Map<String, dynamic>>);
+              returnValue:
+                  Future<Map<String, dynamic>>.value(<String, dynamic>{}))
+          as _i9.Future<Map<String, dynamic>>);
   @override
-  _i6.Future<Map<String, dynamic>> patch(Map<String, dynamic>? data, Uri? uri) =>
+  _i9.Future<Map<String, dynamic>> patch(
+          Map<String, dynamic>? data, Uri? uri) =>
       (super.noSuchMethod(Invocation.method(#patch, [data, uri]),
-              returnValue: Future<Map<String, dynamic>>.value(<String, dynamic>{}))
-          as _i6.Future<Map<String, dynamic>>);
+              returnValue:
+                  Future<Map<String, dynamic>>.value(<String, dynamic>{}))
+          as _i9.Future<Map<String, dynamic>>);
   @override
-  _i6.Future<_i3.Response> deleteRequest(String? url, int? id) =>
+  _i9.Future<_i3.Response> deleteRequest(String? url, int? id) =>
       (super.noSuchMethod(Invocation.method(#deleteRequest, [url, id]),
-          returnValue: Future<_i3.Response>.value(_FakeResponse_4())) as _i6.Future<_i3.Response>);
+              returnValue: Future<_i3.Response>.value(_FakeResponse_7()))
+          as _i9.Future<_i3.Response>);
   @override
   String toString() => super.toString();
   @override
-  void addListener(_i7.VoidCallback? listener) => super
-      .noSuchMethod(Invocation.method(#addListener, [listener]), returnValueForMissingStub: null);
+  void addListener(_i10.VoidCallback? listener) =>
+      super.noSuchMethod(Invocation.method(#addListener, [listener]),
+          returnValueForMissingStub: null);
   @override
-  void removeListener(_i7.VoidCallback? listener) =>
+  void removeListener(_i10.VoidCallback? listener) =>
       super.noSuchMethod(Invocation.method(#removeListener, [listener]),
           returnValueForMissingStub: null);
   @override
-  void dispose() =>
-      super.noSuchMethod(Invocation.method(#dispose, []), returnValueForMissingStub: null);
+  void dispose() => super.noSuchMethod(Invocation.method(#dispose, []),
+      returnValueForMissingStub: null);
   @override
   void notifyListeners() =>
-      super.noSuchMethod(Invocation.method(#notifyListeners, []), returnValueForMissingStub: null);
+      super.noSuchMethod(Invocation.method(#notifyListeners, []),
+          returnValueForMissingStub: null);
 }

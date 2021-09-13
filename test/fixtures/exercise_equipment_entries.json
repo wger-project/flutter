@@ -1,0 +1,23 @@
+{
+  "count": 4,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "name": "Barbell"
+    },
+    {
+      "id": 8,
+      "name": "Bench"
+    },
+    {
+      "id": 3,
+      "name": "Dumbbell"
+    },
+    {
+      "id": 4,
+      "name": "Gym mat"
+    }
+  ]
+}

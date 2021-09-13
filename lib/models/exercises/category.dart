@@ -16,12 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'category.g.dart';
 
 @JsonSerializable()
-class ExerciseCategory {
+class ExerciseCategory extends Equatable {
   @JsonKey(required: true)
   final int id;
 
@@ -43,12 +44,5 @@ class ExerciseCategory {
   Map<String, dynamic> toJson() => _$ExerciseCategoryToJson(this);
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is ExerciseCategory && other.id == id && other.name == name;
-  }
-
-  @override
-  int get hashCode => id.hashCode ^ name.hashCode;
+  List<Object?> get props => [id, name];
 }
