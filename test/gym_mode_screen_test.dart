@@ -19,34 +19,45 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
+import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 import 'package:wger/widgets/workouts/gym_mode.dart';
 
+import '../test_data/exercises.dart';
 import '../test_data/workouts.dart';
 import 'base_provider_test.mocks.dart';
+import 'gym_mode_screen_test.mocks.dart';
 import 'utils.dart';
 
+@GenerateMocks([ExercisesProvider])
 void main() {
   Widget createHomeScreen({locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
     final client = MockClient();
 
+    final mockExerciseProvider = MockExercisesProvider();
     WorkoutPlan workoutPlan = getWorkout();
+
+    when(mockExerciseProvider.findExerciseById(1)).thenReturn(getExercise()[0]);
+    when(mockExerciseProvider.findExerciseById(2)).thenReturn(getExercise()[1]);
+    when(mockExerciseProvider.findExerciseById(3)).thenReturn(getExercise()[2]);
 
     return ChangeNotifierProvider<WorkoutPlansProvider>(
       create: (context) => WorkoutPlansProvider(
         testAuthProvider,
-        testExercisesProvider,
+        mockExerciseProvider,
         [workoutPlan],
         client,
       ),
-      child: ChangeNotifierProvider(
-        create: (context) => testExercisesProvider,
+      child: ChangeNotifierProvider<ExercisesProvider>(
+        create: (context) => mockExerciseProvider,
         child: MaterialApp(
           locale: Locale(locale),
           localizationsDelegates: AppLocalizations.localizationsDelegates,

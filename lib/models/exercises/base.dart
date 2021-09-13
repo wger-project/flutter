@@ -20,10 +20,9 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/comment.dart';
 import 'package:wger/models/exercises/equipment.dart';
+import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/image.dart';
 import 'package:wger/models/exercises/muscle.dart';
-
-import 'exercise2.dart';
 
 part 'base.g.dart';
 
@@ -69,7 +68,7 @@ class ExerciseBase {
   List<ExerciseImage> images = [];
 
   @JsonKey(ignore: true)
-  List<Exercise2> exercises = [];
+  List<Exercise> exercises = [];
 
   ExerciseBase(
       {required this.id,

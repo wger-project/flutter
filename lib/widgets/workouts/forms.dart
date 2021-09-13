@@ -409,7 +409,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                         ),
                         title: Text(exercise.name),
                         subtitle: Text(
-                            '${exercise.categoryObj.name} / ${exercise.equipment.map((e) => e.name).join(', ')}'),
+                            '${exercise.category.name} / ${exercise.equipment.map((e) => e.name).join(', ')}'),
                       );
                     },
                     transitionBuilder: (context, suggestionsBox, controller) {
@@ -639,7 +639,7 @@ class ExerciseSetting extends StatelessWidget {
                 _exercise.name,
                 style: Theme.of(context).textTheme.headline6,
               ),
-              subtitle: Text(_exercise.categoryObj.name),
+              subtitle: Text(_exercise.category.name),
               contentPadding: EdgeInsets.zero,
               leading: ExerciseImageWidget(image: _exercise.getMainImage),
               trailing: IconButton(

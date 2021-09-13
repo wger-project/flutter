@@ -38,7 +38,7 @@ class ExerciseListTile extends StatelessWidget {
                   borderRadius: BorderRadius.circular(5),
                 ),
                 child: Text(
-                  exercise.categoryObj.name,
+                  exercise.category.name,
                 ),
               ),
               Text(

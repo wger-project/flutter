@@ -32,7 +32,6 @@ import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/dashboard.dart';
 import 'package:wger/screens/exercises_screen.dart';
 import 'package:wger/screens/gallery_screen.dart';
-import 'package:wger/screens/nutritional_plans_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/screens/workout_plans_screen.dart';
 import 'package:wger/theme/theme.dart';

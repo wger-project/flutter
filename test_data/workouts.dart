@@ -45,7 +45,7 @@ WorkoutPlan getWorkout() {
   );
   setting1.repetitionUnit = repetitionUnit1;
   setting1.weightUnit = weightUnit1;
-  setting1.exercise = exercise1;
+  setting1.exercise = getExercise()[0];
   setting1.weight = 10;
 
   var log1 = Log.empty()
@@ -55,7 +55,7 @@ WorkoutPlan getWorkout() {
     ..date = DateTime(2021, 5, 1)
     ..reps = 10
     ..workoutPlan = 1;
-  log1.exercise = exercise1;
+  log1.exercise = getExercise()[0];
   log1.weightUnit = weightUnit1;
   log1.repetitionUnit = repetitionUnit1;
 
@@ -66,7 +66,7 @@ WorkoutPlan getWorkout() {
     ..date = DateTime(2021, 5, 1)
     ..reps = 12
     ..workoutPlan = 1;
-  log2.exercise = exercise1;
+  log2.exercise = getExercise()[0];
   log2.weightUnit = weightUnit1;
   log2.repetitionUnit = repetitionUnit1;
 
@@ -77,7 +77,7 @@ WorkoutPlan getWorkout() {
     ..date = DateTime(2021, 5, 2)
     ..reps = 8
     ..workoutPlan = 1;
-  log3.exercise = exercise2;
+  log3.exercise = getExercise()[1];
   log3.weightUnit = weightUnit1;
   log3.repetitionUnit = repetitionUnit1;
 
@@ -88,7 +88,7 @@ WorkoutPlan getWorkout() {
     order: 1,
     comment: 'Important to do exercises correctly',
   );
-  set1.addExercise(exercise1);
+  set1.addExercise(getExercise()[0]);
   set1.settings.add(setting1);
   set1.settingsComputed = [setting1, setting1];
 

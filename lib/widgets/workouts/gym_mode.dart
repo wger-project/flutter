@@ -658,7 +658,7 @@ class ExerciseOverview extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 15),
             children: [
               Text(
-                _exercise.categoryObj.name,
+                _exercise.category.name,
                 style: Theme.of(context).textTheme.headline6,
                 textAlign: TextAlign.center,
               ),
