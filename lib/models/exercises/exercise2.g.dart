@@ -11,6 +11,7 @@ Exercise2 _$Exercise2FromJson(Map<String, dynamic> json) {
     'id',
     'exercise_base',
     'uuid',
+    'language',
     'creation_date',
     'name',
     'description'
@@ -20,6 +21,7 @@ Exercise2 _$Exercise2FromJson(Map<String, dynamic> json) {
     baseId: json['exercise_base'] as int,
     uuid: json['uuid'] as String,
     creationDate: DateTime.parse(json['creation_date'] as String),
+    languageId: json['language'] as int,
     name: json['name'] as String,
     description: json['description'] as String,
   );
@@ -29,6 +31,7 @@ Map<String, dynamic> _$Exercise2ToJson(Exercise2 instance) => <String, dynamic>{
       'id': instance.id,
       'exercise_base': instance.baseId,
       'uuid': instance.uuid,
+      'language': instance.languageId,
       'creation_date': instance.creationDate.toIso8601String(),
       'name': instance.name,
       'description': instance.description,

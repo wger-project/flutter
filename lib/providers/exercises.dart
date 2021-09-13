@@ -30,6 +30,7 @@ import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/exercise2.dart';
+import 'package:wger/models/exercises/language.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/providers/base_provider.dart';
 
@@ -40,7 +41,7 @@ class ExercisesProvider with ChangeNotifier {
 
   static const _exerciseInfoUrlPath = 'exerciseinfo';
   static const _exerciseBaseUrlPath = 'exercise-base';
-  static const _exerciseTranslationUrlPath = 'exercise-translation';
+  static const _exerciseUrlPath = 'exercise';
   static const _exerciseSearchPath = 'exercise/search';
 
   static const _exerciseCommentUrlPath = 'exercisecomment';
@@ -48,11 +49,13 @@ class ExercisesProvider with ChangeNotifier {
   static const _categoriesUrlPath = 'exercisecategory';
   static const _musclesUrlPath = 'muscle';
   static const _equipmentUrlPath = 'equipment';
+  static const _languageUrlPath = 'language';
 
   List<Exercise> _exercises = [];
   List<ExerciseCategory> _categories = [];
   List<Muscle> _muscles = [];
   List<Equipment> _equipment = [];
+  List<Language> _languages = [];
   Filters? _filters;
 
   ExercisesProvider(this.baseProvider);
@@ -119,7 +122,7 @@ class ExercisesProvider with ChangeNotifier {
     );
   }
 
-  /// Find category by ID
+  /// Find equipment by ID
   Equipment findEquipmentById(int id) {
     return _equipment.firstWhere(
       (equipment) => equipment.id == id,
@@ -131,6 +134,14 @@ class ExercisesProvider with ChangeNotifier {
   Muscle findMuscleById(int id) {
     return _muscles.firstWhere(
       (muscle) => muscle.id == id,
+      orElse: () => throw NoSuchEntryException(),
+    );
+  }
+
+  /// Find language by ID
+  Language findLanguageById(int id) {
+    return _languages.firstWhere(
+      (language) => language.id == id,
       orElse: () => throw NoSuchEntryException(),
     );
   }
@@ -168,6 +179,17 @@ class ExercisesProvider with ChangeNotifier {
     }
   }
 
+  Future<void> fetchAndSetLanguages() async {
+    final languageData = await baseProvider.fetch(baseProvider.makeUrl(_languageUrlPath));
+    try {
+      for (final language in languageData['results']) {
+        _languages.add(Language.fromJson(language));
+      }
+    } catch (error) {
+      throw (error);
+    }
+  }
+
   /// Returns the exercise with the given ID
   ///
   /// If the exercise is not known locally, it is fetched from the server.
@@ -193,10 +215,13 @@ class ExercisesProvider with ChangeNotifier {
   }
 
   Future<void> fetchAndSetExercisesTEST() async {
-    // Load categories, muscles and equipments
-    await fetchAndSetCategories();
-    await fetchAndSetMuscles();
-    await fetchAndSetEquipment();
+    // Load categories, muscles, equipment and languages
+    await Future.wait([
+      fetchAndSetCategories(),
+      fetchAndSetMuscles(),
+      fetchAndSetEquipment(),
+      fetchAndSetLanguages(),
+    ]);
 
     final exercisesData = await baseProvider.fetch(
       baseProvider.makeUrl(_exerciseBaseUrlPath, query: {'limit': '10'}),
@@ -212,13 +237,16 @@ class ExercisesProvider with ChangeNotifier {
 
       final exerciseTranslationData = await baseProvider.fetch(
         baseProvider.makeUrl(
-          _exerciseTranslationUrlPath,
+          _exerciseUrlPath,
           query: {'limit': '10', 'exercise_base': base.id.toString()},
         ),
       );
 
       exerciseTranslationData['results'].forEach((e) async {
-        base.exercises.add(Exercise2.fromJson(e));
+        var exercise = Exercise2.fromJson(e);
+        exercise.base = base;
+        exercise.language = findLanguageById(exercise.languageId);
+        base.exercises.add(exercise);
       });
     });
   }
@@ -238,10 +266,13 @@ class ExercisesProvider with ChangeNotifier {
       }
     }
 
-    // Load categories, muscles and equipments
-    await fetchAndSetCategories();
-    await fetchAndSetMuscles();
-    await fetchAndSetEquipment();
+    // Load categories, muscles, equipment and languages
+    await Future.wait([
+      fetchAndSetCategories(),
+      fetchAndSetMuscles(),
+      fetchAndSetEquipment(),
+      fetchAndSetLanguages(),
+    ]);
 
     final exercisesData = await baseProvider.fetch(
       baseProvider.makeUrl(_exerciseInfoUrlPath, query: {'limit': '1000'}),

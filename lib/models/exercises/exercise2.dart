@@ -17,15 +17,17 @@
  */
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:wger/models/exercises/base.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/comment.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/image.dart';
+import 'package:wger/models/exercises/language.dart';
 import 'package:wger/models/exercises/muscle.dart';
 
 part 'exercise2.g.dart';
 
-@JsonSerializable(explicitToJson: true)
+@JsonSerializable()
 class Exercise2 {
   @JsonKey(required: true)
   final int id;
@@ -35,6 +37,12 @@ class Exercise2 {
 
   @JsonKey(required: true)
   final String uuid;
+
+  @JsonKey(required: true, name: 'language')
+  final int languageId;
+
+  @JsonKey(ignore: true)
+  late Language language;
 
   @JsonKey(required: true, name: 'creation_date')
   final DateTime creationDate;
@@ -46,19 +54,7 @@ class Exercise2 {
   final String description;
 
   @JsonKey(ignore: true)
-  late final ExerciseCategory categoryObj;
-
-  @JsonKey(ignore: true)
-  List<Muscle> muscles = [];
-
-  @JsonKey(ignore: true)
-  List<Muscle> musclesSecondary = [];
-
-  @JsonKey(ignore: true)
-  List<Equipment> equipment = [];
-
-  @JsonKey(ignore: true)
-  List<ExerciseImage> images = [];
+  late ExerciseBase base;
 
   @JsonKey(ignore: true)
   List<Comment> tips = [];
@@ -68,35 +64,25 @@ class Exercise2 {
       required this.baseId,
       required this.uuid,
       required this.creationDate,
+      required this.languageId,
       required this.name,
       required this.description,
-      List<Muscle>? muscles,
-      List<Muscle>? musclesSecondary,
-      List<Equipment>? equipment,
-      List<ExerciseImage>? images,
-      List<Comment>? tips,
-      ExerciseCategory? category}) {
-    this.tips = tips ?? [];
-    this.images = images ?? [];
-    this.equipment = equipment ?? [];
-    this.musclesSecondary = musclesSecondary ?? [];
-    this.muscles = muscles ?? [];
-    if (category != null) {
-      this.categoryObj = category;
+      base,
+      language}) {
+    if (base != null) {
+      this.base = base;
+    }
+
+    if (language != null) {
+      this.language = language;
     }
   }
 
-  ExerciseImage? get getMainImage {
-    try {
-      return images.firstWhere((image) => image.isMain);
-    } on StateError {
-      return null;
-    }
-  }
-
-  set category(ExerciseCategory category) {
-    this.categoryObj = category;
-  }
+  ExerciseImage? get getMainImage => base.getMainImage;
+  ExerciseCategory get category => base.category;
+  List<Equipment> get equipment => base.equipment;
+  List<Muscle> get muscles => base.muscles;
+  List<Muscle> get musclesSecondary => base.musclesSecondary;
 
   // Boilerplate
   factory Exercise2.fromJson(Map<String, dynamic> json) => _$Exercise2FromJson(json);

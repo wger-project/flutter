@@ -5,6 +5,7 @@ import 'package:mockito/mockito.dart';
 import 'package:wger/exceptions/no_such_entry_exception.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
+import 'package:wger/models/exercises/language.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/providers/exercises.dart';
 
@@ -18,6 +19,7 @@ main() {
   String categoryUrl = 'exercisecategory';
   String muscleUrl = 'muscle';
   String equipmentUrl = 'equipment';
+  String languageUrl = 'language';
 
   Uri tCategoryEntriesUri = Uri(
     scheme: 'http',
@@ -37,13 +39,21 @@ main() {
     path: 'api/v2/' + equipmentUrl + '/',
   );
 
+  Uri tLanguageEntriesUri = Uri(
+    scheme: 'http',
+    host: 'localhost',
+    path: 'api/v2/' + languageUrl + '/',
+  );
+
   final category1 = ExerciseCategory(id: 1, name: 'Arms');
   final muscle1 = Muscle(id: 1, name: 'Biceps brachii', isFront: true);
   final equipment1 = Equipment(id: 1, name: 'Barbell');
+  final language1 = Language(id: 1, shortName: 'de', fullName: 'Deutsch');
 
   Map<String, dynamic> tCategoryMap = jsonDecode(fixture('exercise_category_entries.json'));
-  Map<String, dynamic> tMucleMap = jsonDecode(fixture('exercise_muscles_entries.json'));
+  Map<String, dynamic> tMuscleMap = jsonDecode(fixture('exercise_muscles_entries.json'));
   Map<String, dynamic> tEquipmentMap = jsonDecode(fixture('exercise_equipment_entries.json'));
+  Map<String, dynamic> tLanguageMap = jsonDecode(fixture('exercise_language_entries.json'));
 
   setUp(() {
     mockBaseProvider = MockWgerBaseProvider();
@@ -55,12 +65,16 @@ main() {
 
     // Mock muscles
     when(mockBaseProvider.makeUrl(muscleUrl)).thenReturn(tMuscleEntriesUri);
-    when(mockBaseProvider.fetch(tMuscleEntriesUri)).thenAnswer((_) => Future.value(tMucleMap));
+    when(mockBaseProvider.fetch(tMuscleEntriesUri)).thenAnswer((_) => Future.value(tMuscleMap));
 
     // Mock equipment
     when(mockBaseProvider.makeUrl(equipmentUrl)).thenReturn(tEquipmentEntriesUri);
     when(mockBaseProvider.fetch(tEquipmentEntriesUri))
         .thenAnswer((_) => Future.value(tEquipmentMap));
+
+    // Mock languages
+    when(mockBaseProvider.makeUrl(languageUrl)).thenReturn(tLanguageEntriesUri);
+    when(mockBaseProvider.fetch(tLanguageEntriesUri)).thenAnswer((_) => Future.value(tLanguageMap));
   });
 
   group('findCategoryById()', () {
@@ -114,6 +128,24 @@ main() {
     test('should throw a NoResultException if no equipment is found', () {
       // act & assert
       expect(() => provider.findEquipmentById(10), throwsA(isA<NoSuchEntryException>()));
+    });
+  });
+
+  group('findLanguageById()', () {
+    test('should return a language for an id', () async {
+      // arrange
+      await provider.fetchAndSetLanguages();
+
+      // act
+      final result = provider.findLanguageById(1);
+
+      // assert
+      expect(result, language1);
+    });
+
+    test('should throw a NoResultException if no equipment is found', () {
+      // act & assert
+      expect(() => provider.findLanguageById(10), throwsA(isA<NoSuchEntryException>()));
     });
   });
 }
