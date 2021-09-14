@@ -39,7 +39,7 @@ class ExerciseDetail extends StatelessWidget {
             AppLocalizations.of(context).category,
             style: Theme.of(context).textTheme.headline6,
           ),
-          Text(_exercise.categoryObj.name),
+          Text(_exercise.category.name),
           SizedBox(height: 8),
 
           // Equipment

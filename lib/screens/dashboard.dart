@@ -42,7 +42,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           children: [
             IconButton(
               onPressed: () {
-                Provider.of<ExercisesProvider>(context, listen: false).fetchAndSetExercisesTEST();
+                Provider.of<ExercisesProvider>(context, listen: false).fetchAndSetExercises();
               },
               icon: Icon(Icons.update),
             ),
