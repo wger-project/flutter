@@ -354,7 +354,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
             child: Column(
               children: [
                 Card(
-                  child: TypeAheadFormField(
+                  child: TypeAheadFormField<Exercise>(
                     key: Key('field-typeahead'),
                     textFieldConfiguration: TextFieldConfiguration(
                       controller: this._exercisesController,
@@ -397,29 +397,23 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                         Localizations.localeOf(context).languageCode,
                       );
                     },
-                    itemBuilder: (context, suggestion) {
-                      final result = suggestion! as Map;
-
-                      final exercise = Provider.of<ExercisesProvider>(context, listen: false)
-                          .findExerciseById(result['data']['id']);
+                    itemBuilder: (BuildContext context, Exercise exerciseSuggestion) {
                       return ListTile(
                         leading: Container(
                           width: 45,
-                          child: ExerciseImageWidget(image: exercise.getMainImage),
+                          child: ExerciseImageWidget(image: exerciseSuggestion.getMainImage),
                         ),
-                        title: Text(exercise.name),
+                        title: Text(exerciseSuggestion.name),
                         subtitle: Text(
-                            '${exercise.categoryObj.name} / ${exercise.equipment.map((e) => e.name).join(', ')}'),
+                          '${exerciseSuggestion.categoryObj.name} / ${exerciseSuggestion.equipment.map((e) => e.name).join(', ')}',
+                        ),
                       );
                     },
                     transitionBuilder: (context, suggestionsBox, controller) {
                       return suggestionsBox;
                     },
-                    onSuggestionSelected: (suggestion) {
-                      final result = suggestion! as Map;
-                      final exercise = Provider.of<ExercisesProvider>(context, listen: false)
-                          .findExerciseById(result['data']['id']);
-                      addExercise(exercise);
+                    onSuggestionSelected: (Exercise exerciseSuggestion) {
+                      addExercise(exerciseSuggestion);
                       this._exercisesController.text = '';
                     },
                     validator: (value) {
