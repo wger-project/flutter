@@ -53,19 +53,31 @@ class ExercisesProvider with ChangeNotifier {
   List<ExerciseCategory> _categories = [];
   List<Muscle> _muscles = [];
   List<Equipment> _equipment = [];
+
   Filters? _filters;
+  Filters? get filters => _filters;
+  set filters(Filters? newFilters) {
+    _filters = newFilters;
+    this._findByFilters();
+  }
+
+  List<Exercise>? _filteredExercises = [];
+  List<Exercise>? get filteredExercises => _filteredExercises;
+  set filteredExercises(List<Exercise>? newfilteredExercises) {
+    _filteredExercises = newfilteredExercises;
+    notifyListeners();
+  }
 
   ExercisesProvider(this.baseProvider);
 
   List<Exercise> get items => [..._exercises];
   List<ExerciseCategory> get categories => [..._categories];
-  Filters? get filters => _filters;
 
   // Initialze filters for exersices search in exersices list
-  void initFilters() {
+  void _initFilters() {
     if (_muscles.isEmpty || _equipment.isEmpty || _filters != null) return;
 
-    _filters = Filters(
+    filters = Filters(
       exerciseCategories: FilterCategory<ExerciseCategory>(
         title: 'Muscle Groups',
         items: Map.fromEntries(
@@ -85,17 +97,30 @@ class ExercisesProvider with ChangeNotifier {
     );
   }
 
-  List<Exercise> findByFilters() {
+  Future<void> _findByFilters() async {
     // Filters not initalized
-    if (filters == null) return [];
+    if (filters == null) filteredExercises = [];
 
-    // Filters are initialized but nothing is marked
-    if (filters!.isNothingMarked) return items;
+    // Filters are initialized and nothing is marked
+    if (filters!.isNothingMarked && filters!.searchTerm.length <= 1) filteredExercises = items;
+
+    filteredExercises = null;
+
+    final filteredItems =
+        filters!.searchTerm.length <= 1 ? items : await searchExercise(filters!.searchTerm);
 
     // Filter by exercise category and equipment (REPLACE WITH HTTP REQUEST)
-    return items
-        .where((exercise) => filters!.exerciseCategories.selected.contains(exercise.categoryObj))
-        .toList();
+    filteredExercises = filteredItems.where((exercise) {
+      final bool isInAnyCategory =
+          filters!.exerciseCategories.selected.contains(exercise.categoryObj);
+
+      final bool doesContainAnyEquipment = filters!.equipment.selected.any(
+        (selectedEquipment) => exercise.equipment.contains(selectedEquipment),
+      );
+
+      return (isInAnyCategory || filters!.exerciseCategories.selected.length == 0) &&
+          (doesContainAnyEquipment || filters!.equipment.selected.length == 0);
+    }).toList();
   }
 
   List<Exercise> findByCategory(ExerciseCategory? category) {
@@ -233,6 +258,7 @@ class ExercisesProvider with ChangeNotifier {
         exerciseData['equipment'].forEach((e) => _equipment.add(Equipment.fromJson(e)));
         exerciseData['muscles'].forEach((e) => _muscles.add(Muscle.fromJson(e)));
         exerciseData['categories'].forEach((e) => _categories.add(ExerciseCategory.fromJson(e)));
+        _initFilters();
         log("Read ${exerciseData['exercises'].length} exercises from cache. Valid till ${exerciseData['expiresIn']}");
         return;
       }
@@ -263,6 +289,7 @@ class ExercisesProvider with ChangeNotifier {
       log("Saved ${_exercises.length} exercises from cache. Valid till ${exerciseData['expiresIn']}");
 
       prefs.setString(PREFS_EXERCISES, json.encode(exerciseData));
+      _initFilters();
       notifyListeners();
     } on MissingRequiredKeysException catch (error) {
       log(error.missingKeys.toString());
@@ -274,7 +301,7 @@ class ExercisesProvider with ChangeNotifier {
   ///
   /// We could do this locally, but the server has better text searching capabilities
   /// with postgresql.
-  Future<List> searchExercise(String name, [String languageCode = 'en']) async {
+  Future<List<Exercise>> searchExercise(String name, [String languageCode = 'en']) async {
     if (name.length <= 1) {
       return [];
     }
@@ -288,10 +315,11 @@ class ExercisesProvider with ChangeNotifier {
     );
 
     // Process the response
-    for (var entry in result['suggestions']) {
-      entry['exercise_obj'] = await fetchAndSetExercise(entry['data']['id']);
-    }
-    return result['suggestions'];
+    return await Future.wait(
+      (result['suggestions'] as List).map<Future<Exercise>>(
+        (entry) => fetchAndSetExercise(entry['data']['id']),
+      ),
+    );
   }
 }
 
@@ -307,11 +335,32 @@ class FilterCategory<T> {
     required this.items,
     this.isExpanded = false,
   });
+
+  FilterCategory<T> copyWith({
+    bool? isExpanded,
+    Map<T, bool>? items,
+    String? title,
+  }) {
+    return FilterCategory<T>(
+      isExpanded: isExpanded ?? this.isExpanded,
+      items: items ?? this.items,
+      title: title ?? this.title,
+    );
+  }
 }
 
 class Filters {
   final FilterCategory<ExerciseCategory> exerciseCategories;
   final FilterCategory<Equipment> equipment;
+  String searchTerm;
+
+  Filters({
+    required this.exerciseCategories,
+    required this.equipment,
+    this.searchTerm = '',
+    bool doesNeedUpdate = false,
+  }) : _doesNeedUpdate = doesNeedUpdate;
+
   List<FilterCategory> get filterCategories => [exerciseCategories, equipment];
 
   bool get isNothingMarked {
@@ -331,8 +380,17 @@ class Filters {
     _doesNeedUpdate = false;
   }
 
-  Filters({
-    required this.exerciseCategories,
-    required this.equipment,
-  });
+  Filters copyWith({
+    FilterCategory<ExerciseCategory>? exerciseCategories,
+    FilterCategory<Equipment>? equipment,
+    String? searchTerm,
+    bool? doesNeedUpdate,
+  }) {
+    return Filters(
+      exerciseCategories: exerciseCategories ?? this.exerciseCategories,
+      equipment: equipment ?? this.equipment,
+      searchTerm: searchTerm ?? this.searchTerm,
+      doesNeedUpdate: doesNeedUpdate ?? this._doesNeedUpdate,
+    );
+  }
 }

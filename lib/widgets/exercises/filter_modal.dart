@@ -12,15 +12,17 @@ class ExerciseFilterModalBody extends StatefulWidget {
 }
 
 class _ExerciseFilterModalBodyState extends State<ExerciseFilterModalBody> {
+  late Filters filters;
+
   @override
   void initState() {
     super.initState();
+    filters = Provider.of<ExercisesProvider>(context, listen: false).filters!;
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final Filters filters = Provider.of<ExercisesProvider>(context, listen: false).filters!;
 
     return Padding(
       padding: const EdgeInsets.all(20.0),
@@ -52,9 +54,9 @@ class _ExerciseFilterModalBodyState extends State<ExerciseFilterModalBody> {
                       title: Text(currentEntry.key.name),
                       value: currentEntry.value,
                       onChanged: (_) {
-                        filters.markNeedsUpdate();
                         setState(() {
                           filterCategory.items.update(currentEntry.key, (value) => !value);
+                          Provider.of<ExercisesProvider>(context, listen: false).filters = filters;
                         });
                       },
                     );
