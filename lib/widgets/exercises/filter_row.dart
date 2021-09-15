@@ -24,7 +24,8 @@ class _FilterRowState extends State<FilterRow> {
         () {
           final provider = Provider.of<ExercisesProvider>(context, listen: false);
           if (provider.filters!.searchTerm != _exerciseNameController.text) {
-            provider.filters = provider.filters!.copyWith(searchTerm: _exerciseNameController.text);
+            provider
+                .setFilters(provider.filters!.copyWith(searchTerm: _exerciseNameController.text));
           }
         },
       );

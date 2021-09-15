@@ -52,16 +52,21 @@ class ExercisesProvider with ChangeNotifier {
   static const _languageUrlPath = 'language';
 
   List<ExerciseBase> _exerciseBases = [];
-  List<Exercise> _exercises = [];
   List<ExerciseCategory> _categories = [];
   List<Muscle> _muscles = [];
   List<Equipment> _equipment = [];
   List<Language> _languages = [];
+
+  List<Exercise> _exercises = [];
+  set exercises(List<Exercise> exercises) {
+    _exercises = exercises;
+  }
+
   Filters? _filters;
   Filters? get filters => _filters;
-  set filters(Filters? newFilters) {
+  Future<void> setFilters(Filters? newFilters) async {
     _filters = newFilters;
-    this._findByFilters();
+    await this.findByFilters();
   }
 
   List<Exercise>? _filteredExercises = [];
@@ -80,32 +85,40 @@ class ExercisesProvider with ChangeNotifier {
   void _initFilters() {
     if (_muscles.isEmpty || _equipment.isEmpty || _filters != null) return;
 
-    filters = Filters(
-      exerciseCategories: FilterCategory<ExerciseCategory>(
-        title: 'Muscle Groups',
-        items: Map.fromEntries(
-          _categories.map(
-            (category) => MapEntry<ExerciseCategory, bool>(category, false),
+    this.setFilters(
+      Filters(
+        exerciseCategories: FilterCategory<ExerciseCategory>(
+          title: 'Muscle Groups',
+          items: Map.fromEntries(
+            _categories.map(
+              (category) => MapEntry<ExerciseCategory, bool>(category, false),
+            ),
           ),
         ),
-      ),
-      equipment: FilterCategory<Equipment>(
-        title: 'Equipment',
-        items: Map.fromEntries(
-          _equipment.map(
-            (singleEquipment) => MapEntry<Equipment, bool>(singleEquipment, false),
+        equipment: FilterCategory<Equipment>(
+          title: 'Equipment',
+          items: Map.fromEntries(
+            _equipment.map(
+              (singleEquipment) => MapEntry<Equipment, bool>(singleEquipment, false),
+            ),
           ),
         ),
       ),
     );
   }
 
-  Future<void> _findByFilters() async {
+  Future<void> findByFilters() async {
     // Filters not initalized
-    if (filters == null) filteredExercises = [];
+    if (filters == null) {
+      filteredExercises = [];
+      return;
+    }
 
     // Filters are initialized and nothing is marked
-    if (filters!.isNothingMarked && filters!.searchTerm.length <= 1) filteredExercises = items;
+    if (filters!.isNothingMarked && filters!.searchTerm.length <= 1) {
+      filteredExercises = items;
+      return;
+    }
 
     filteredExercises = null;
 
@@ -331,6 +344,7 @@ class ExercisesProvider with ChangeNotifier {
     final exerciseBaseData = await baseProvider.fetch(
       baseProvider.makeUrl(_exerciseBaseUrlPath, query: {'limit': '1000'}),
     );
+
     final exerciseTranslationData = await baseProvider.fetch(
       baseProvider.makeUrl(
         _exerciseUrlPath,

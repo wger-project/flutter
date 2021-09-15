@@ -29,9 +29,11 @@ const muscle3 = Muscle(id: 3, name: 'Booty', isFront: false);
 const category1 = ExerciseCategory(id: 1, name: 'Arms');
 const category2 = ExerciseCategory(id: 2, name: 'Legs');
 const category3 = ExerciseCategory(id: 3, name: 'Abs');
+const category4 = ExerciseCategory(id: 4, name: 'Shoulders');
 
 const equipment1 = Equipment(id: 1, name: 'Bench');
 const equipment2 = Equipment(id: 1, name: 'Dumbbell');
+const equipment3 = Equipment(id: 2, name: 'Matress');
 
 List<Exercise> getExercise() {
   final base1 = ExerciseBase(

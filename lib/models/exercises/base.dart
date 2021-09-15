@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/comment.dart';
@@ -27,7 +28,7 @@ import 'package:wger/models/exercises/muscle.dart';
 part 'base.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class ExerciseBase {
+class ExerciseBase extends Equatable {
   @JsonKey(required: true)
   final int id;
 
@@ -107,4 +108,16 @@ class ExerciseBase {
   // Boilerplate
   factory ExerciseBase.fromJson(Map<String, dynamic> json) => _$ExerciseBaseFromJson(json);
   Map<String, dynamic> toJson() => _$ExerciseBaseToJson(this);
+
+  @override
+  List<Object?> get props => [
+        id,
+        uuid,
+        creationDate,
+        updateDate,
+        category,
+        equipment,
+        muscles,
+        musclesSecondary,
+      ];
 }
