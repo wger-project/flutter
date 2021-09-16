@@ -2,18 +2,18 @@
 // in wger/test/workout_set_form_test.dart.
 // Do not manually edit this file.
 
-import 'dart:async' as _i10;
+import 'dart:async' as _i9;
 import 'dart:ui' as _i11;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:wger/models/exercises/base.dart' as _i8;
+import 'package:wger/models/exercises/base.dart' as _i10;
 import 'package:wger/models/exercises/category.dart' as _i4;
 import 'package:wger/models/exercises/equipment.dart' as _i5;
 import 'package:wger/models/exercises/exercise.dart' as _i3;
 import 'package:wger/models/exercises/language.dart' as _i7;
 import 'package:wger/models/exercises/muscle.dart' as _i6;
 import 'package:wger/providers/base_provider.dart' as _i2;
-import 'package:wger/providers/exercises.dart' as _i9;
+import 'package:wger/providers/exercises.dart' as _i8;
 
 // ignore_for_file: avoid_redundant_argument_values
 // ignore_for_file: avoid_setters_without_getters
@@ -37,12 +37,10 @@ class _FakeMuscle_4 extends _i1.Fake implements _i6.Muscle {}
 
 class _FakeLanguage_5 extends _i1.Fake implements _i7.Language {}
 
-class _FakeExerciseBase_6 extends _i1.Fake implements _i8.ExerciseBase {}
-
 /// A class which mocks [ExercisesProvider].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockExercisesProvider extends _i1.Mock implements _i9.ExercisesProvider {
+class MockExercisesProvider extends _i1.Mock implements _i8.ExercisesProvider {
   MockExercisesProvider() {
     _i1.throwOnMissingStub(this);
   }
@@ -71,15 +69,15 @@ class MockExercisesProvider extends _i1.Mock implements _i9.ExercisesProvider {
       (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false)
           as bool);
   @override
-  _i10.Future<void> setFilters(_i9.Filters? newFilters) => (super.noSuchMethod(
-      Invocation.method(#setFilters, [newFilters]),
-      returnValue: Future<void>.value(),
-      returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
+  _i9.Future<void> setFilters(_i8.Filters? newFilters) =>
+      (super.noSuchMethod(Invocation.method(#setFilters, [newFilters]),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i9.Future<void>);
   @override
-  _i10.Future<void> findByFilters() => (super.noSuchMethod(
-      Invocation.method(#findByFilters, []),
-      returnValue: Future<void>.value(),
-      returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
+  _i9.Future<void> findByFilters() =>
+      (super.noSuchMethod(Invocation.method(#findByFilters, []),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i9.Future<void>);
   @override
   List<_i3.Exercise> findByCategory(_i4.ExerciseCategory? category) =>
       (super.noSuchMethod(Invocation.method(#findByCategory, [category]),
@@ -105,48 +103,69 @@ class MockExercisesProvider extends _i1.Mock implements _i9.ExercisesProvider {
       (super.noSuchMethod(Invocation.method(#findLanguageById, [id]),
           returnValue: _FakeLanguage_5()) as _i7.Language);
   @override
-  _i10.Future<void> fetchAndSetCategories() => (super.noSuchMethod(
-      Invocation.method(#fetchAndSetCategories, []),
-      returnValue: Future<void>.value(),
-      returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
+  _i9.Future<void> fetchAndSetCategories() =>
+      (super.noSuchMethod(Invocation.method(#fetchAndSetCategories, []),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i9.Future<void>);
   @override
-  _i10.Future<void> fetchAndSetMuscles() => (super.noSuchMethod(
-      Invocation.method(#fetchAndSetMuscles, []),
-      returnValue: Future<void>.value(),
-      returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
+  _i9.Future<void> fetchAndSetMuscles() =>
+      (super.noSuchMethod(Invocation.method(#fetchAndSetMuscles, []),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i9.Future<void>);
   @override
-  _i10.Future<void> fetchAndSetEquipment() => (super.noSuchMethod(
-      Invocation.method(#fetchAndSetEquipment, []),
-      returnValue: Future<void>.value(),
-      returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
+  _i9.Future<void> fetchAndSetEquipment() =>
+      (super.noSuchMethod(Invocation.method(#fetchAndSetEquipment, []),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i9.Future<void>);
   @override
-  _i10.Future<void> fetchAndSetLanguages() => (super.noSuchMethod(
-      Invocation.method(#fetchAndSetLanguages, []),
-      returnValue: Future<void>.value(),
-      returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
+  _i9.Future<void> fetchAndSetLanguages() =>
+      (super.noSuchMethod(Invocation.method(#fetchAndSetLanguages, []),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i9.Future<void>);
   @override
-  _i10.Future<_i3.Exercise> fetchAndSetExercise(int? exerciseId) =>
+  _i9.Future<_i3.Exercise> fetchAndSetExercise(int? exerciseId) =>
       (super.noSuchMethod(Invocation.method(#fetchAndSetExercise, [exerciseId]),
               returnValue: Future<_i3.Exercise>.value(_FakeExercise_1()))
-          as _i10.Future<_i3.Exercise>);
+          as _i9.Future<_i3.Exercise>);
   @override
-  _i8.ExerciseBase setExerciseBaseData(
-          _i8.ExerciseBase? base, List<_i3.Exercise>? exercises) =>
-      (super.noSuchMethod(
-          Invocation.method(#setExerciseBaseData, [base, exercises]),
-          returnValue: _FakeExerciseBase_6()) as _i8.ExerciseBase);
+  List<_i10.ExerciseBase> mapImages(
+          dynamic data, List<_i10.ExerciseBase>? bases) =>
+      (super.noSuchMethod(Invocation.method(#mapImages, [data, bases]),
+          returnValue: <_i10.ExerciseBase>[]) as List<_i10.ExerciseBase>);
   @override
-  _i10.Future<void> fetchAndSetExercises() => (super.noSuchMethod(
-      Invocation.method(#fetchAndSetExercises, []),
-      returnValue: Future<void>.value(),
-      returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
+  List<_i10.ExerciseBase> setBaseData(
+          dynamic data, List<_i3.Exercise>? exercises) =>
+      (super.noSuchMethod(Invocation.method(#setBaseData, [data, exercises]),
+          returnValue: <_i10.ExerciseBase>[]) as List<_i10.ExerciseBase>);
   @override
-  _i10.Future<List<_i3.Exercise>> searchExercise(String? name,
+  List<dynamic> mapBases(
+          List<_i10.ExerciseBase>? bases, List<_i3.Exercise>? exercises) =>
+      (super.noSuchMethod(Invocation.method(#mapBases, [bases, exercises]),
+          returnValue: <dynamic>[]) as List<dynamic>);
+  @override
+  List<_i3.Exercise> mapLanguages(List<_i3.Exercise>? exercises) =>
+      (super.noSuchMethod(Invocation.method(#mapLanguages, [exercises]),
+          returnValue: <_i3.Exercise>[]) as List<_i3.Exercise>);
+  @override
+  List<_i3.Exercise> mapAliases(dynamic data, List<_i3.Exercise>? exercises) =>
+      (super.noSuchMethod(Invocation.method(#mapAliases, [data, exercises]),
+          returnValue: <_i3.Exercise>[]) as List<_i3.Exercise>);
+  @override
+  List<_i3.Exercise> mapComments(dynamic data, List<_i3.Exercise>? exercises) =>
+      (super.noSuchMethod(Invocation.method(#mapComments, [data, exercises]),
+          returnValue: <_i3.Exercise>[]) as List<_i3.Exercise>);
+  @override
+  _i9.Future<void> fetchAndSetExercises() =>
+      (super.noSuchMethod(Invocation.method(#fetchAndSetExercises, []),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i9.Future<void>);
+  @override
+  _i9.Future<List<_i3.Exercise>> searchExercise(String? name,
           [String? languageCode = r'en']) =>
       (super.noSuchMethod(
               Invocation.method(#searchExercise, [name, languageCode]),
               returnValue: Future<List<_i3.Exercise>>.value(<_i3.Exercise>[]))
-          as _i10.Future<List<_i3.Exercise>>);
+          as _i9.Future<List<_i3.Exercise>>);
   @override
   String toString() => super.toString();
   @override

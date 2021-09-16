@@ -10,6 +10,7 @@ ExerciseBase _$ExerciseBaseFromJson(Map<String, dynamic> json) {
   $checkKeys(json, requiredKeys: const [
     'id',
     'uuid',
+    'variations',
     'creation_date',
     'update_date',
     'category',
@@ -22,6 +23,7 @@ ExerciseBase _$ExerciseBaseFromJson(Map<String, dynamic> json) {
     uuid: json['uuid'] as String,
     creationDate: DateTime.parse(json['creation_date'] as String),
     updateDate: DateTime.parse(json['update_date'] as String),
+    variationId: json['variations'] as int?,
   )
     ..categoryId = json['category'] as int
     ..musclesIds =
@@ -37,6 +39,7 @@ Map<String, dynamic> _$ExerciseBaseToJson(ExerciseBase instance) =>
     <String, dynamic>{
       'id': instance.id,
       'uuid': instance.uuid,
+      'variations': instance.variationId,
       'creation_date': instance.creationDate.toIso8601String(),
       'update_date': instance.updateDate.toIso8601String(),
       'category': instance.categoryId,

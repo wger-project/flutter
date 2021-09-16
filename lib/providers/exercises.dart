@@ -35,6 +35,7 @@ import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/image.dart';
 import 'package:wger/models/exercises/language.dart';
 import 'package:wger/models/exercises/muscle.dart';
+import 'package:wger/models/exercises/variation.dart';
 import 'package:wger/providers/base_provider.dart';
 
 class ExercisesProvider with ChangeNotifier {
@@ -62,6 +63,7 @@ class ExercisesProvider with ChangeNotifier {
   List<Muscle> _muscles = [];
   List<Equipment> _equipment = [];
   List<Language> _languages = [];
+  List<Variation> _variations = [];
 
   List<Exercise> _exercises = [];
   set exercises(List<Exercise> exercises) {
@@ -209,6 +211,17 @@ class ExercisesProvider with ChangeNotifier {
     }
   }
 
+  Future<void> fetchAndSetVariations() async {
+    final variations = await baseProvider.fetch(baseProvider.makeUrl(_exerciseVariationsUrlPath));
+    try {
+      for (final variation in variations['results']) {
+        _variations.add(Variation.fromJson(variation));
+      }
+    } catch (error) {
+      throw (error);
+    }
+  }
+
   Future<void> fetchAndSetMuscles() async {
     final muscles = await baseProvider.fetch(baseProvider.makeUrl(_musclesUrlPath));
     try {
@@ -296,7 +309,6 @@ class ExercisesProvider with ChangeNotifier {
 
   List<ExerciseBase> mapImages(dynamic data, List<ExerciseBase> bases) {
     List<ExerciseImage> images = data.map<ExerciseImage>((e) => ExerciseImage.fromJson(e)).toList();
-
     bases.forEach((b) {
       b.images = images.where((image) => image.exerciseBaseId == b.id).toList();
     });
@@ -311,7 +323,6 @@ class ExercisesProvider with ChangeNotifier {
         base.muscles = base.musclesIds.map((e) => findMuscleById(e)).toList();
         base.musclesSecondary = base.musclesSecondaryIds.map((e) => findMuscleById(e)).toList();
         base.equipment = base.equipmentIds.map((e) => findEquipmentById(e)).toList();
-
         return base;
       });
       return bases.toList();
@@ -341,7 +352,6 @@ class ExercisesProvider with ChangeNotifier {
     exercises.forEach((exercise) {
       exercise.language = findLanguageById(exercise.languageId);
     });
-
     return exercises;
   }
 
@@ -394,6 +404,7 @@ class ExercisesProvider with ChangeNotifier {
         cacheData['muscles'].forEach((e) => _muscles.add(Muscle.fromJson(e)));
         cacheData['categories'].forEach((e) => _categories.add(ExerciseCategory.fromJson(e)));
         cacheData['languages'].forEach((e) => _languages.add(Language.fromJson(e)));
+        cacheData['variations'].forEach((e) => _variations.add(Variation.fromJson(e)));
 
         _exercises =
             cacheData['exercise-translations'].map<Exercise>((e) => Exercise.fromJson(e)).toList();
@@ -424,6 +435,7 @@ class ExercisesProvider with ChangeNotifier {
       fetchAndSetMuscles(),
       fetchAndSetEquipment(),
       fetchAndSetLanguages(),
+      fetchAndSetVariations(),
     ]);
     final exerciseBaseData = data[0]['results'];
     final exerciseData = data[1]['results'];
@@ -453,13 +465,14 @@ class ExercisesProvider with ChangeNotifier {
         'categories': _categories.map((e) => e.toJson()).toList(),
         'muscles': _muscles.map((e) => e.toJson()).toList(),
         'languages': _languages.map((e) => e.toJson()).toList(),
+        'variations': _variations.map((e) => e.toJson()).toList(),
         'bases': exerciseBaseData,
         'exercise-translations': exerciseData,
         'exercise-comments': commentsData,
         'exercise-alias': aliasData,
         'exercise-images': imageData,
       };
-      log("Saved ${_exercises.length} exercises from cache. Valid till ${cacheData['expiresIn']}");
+      log("Saved ${_exercises.length} exercises to cache. Valid till ${cacheData['expiresIn']}");
 
       prefs.setString(PREFS_EXERCISES, json.encode(cacheData));
       _initFilters();
