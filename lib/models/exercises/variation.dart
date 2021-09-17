@@ -18,26 +18,18 @@
 
 import 'package:json_annotation/json_annotation.dart';
 
-part 'comment.g.dart';
+part 'variation.g.dart';
 
 @JsonSerializable()
-class Comment {
+class Variation {
   @JsonKey(required: true)
   final int id;
 
-  @JsonKey(required: true, name: 'exercise')
-  final int exerciseId;
-
-  @JsonKey(required: true)
-  final String comment;
-
-  Comment({
+  Variation({
     required this.id,
-    required this.exerciseId,
-    required this.comment,
   });
 
   // Boilerplate
-  factory Comment.fromJson(Map<String, dynamic> json) => _$CommentFromJson(json);
-  Map<String, dynamic> toJson() => _$CommentToJson(this);
+  factory Variation.fromJson(Map<String, dynamic> json) => _$VariationFromJson(json);
+  Map<String, dynamic> toJson() => _$VariationToJson(this);
 }

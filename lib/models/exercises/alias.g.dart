@@ -1,22 +1,22 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'comment.dart';
+part of 'alias.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-Comment _$CommentFromJson(Map<String, dynamic> json) {
-  $checkKeys(json, requiredKeys: const ['id', 'exercise', 'comment']);
-  return Comment(
+Alias _$AliasFromJson(Map<String, dynamic> json) {
+  $checkKeys(json, requiredKeys: const ['id', 'exercise', 'alias']);
+  return Alias(
     id: json['id'] as int,
     exerciseId: json['exercise'] as int,
-    comment: json['comment'] as String,
+    alias: json['alias'] as String,
   );
 }
 
-Map<String, dynamic> _$CommentToJson(Comment instance) => <String, dynamic>{
+Map<String, dynamic> _$AliasToJson(Alias instance) => <String, dynamic>{
       'id': instance.id,
       'exercise': instance.exerciseId,
-      'comment': instance.comment,
+      'alias': instance.alias,
     };

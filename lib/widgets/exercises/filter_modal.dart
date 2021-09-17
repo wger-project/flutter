@@ -50,7 +50,7 @@ class _ExerciseFilterModalBodyState extends State<ExerciseFilterModalBody> {
               body: Column(
                 children: filterCategory.items.entries.map(
                   (currentEntry) {
-                    return CheckboxListTile(
+                    return SwitchListTile(
                       title: Text(currentEntry.key.name),
                       value: currentEntry.value,
                       onChanged: (_) {

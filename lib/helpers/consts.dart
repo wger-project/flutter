@@ -41,8 +41,10 @@ const DAYS_TO_CACHE = 20;
 /// Name of the submit button in forms
 const SUBMIT_BUTTON_KEY_NAME = 'submit-button';
 
-/// Local Preferences key for exercises
+/// Local Preferences keys
 const PREFS_EXERCISES = 'exerciseData';
+const PREFS_EXERCISE_CACHE_VERSION = 'cacheVersion';
+const PREFS_INGREDIENTS = 'ingredientData';
 
 const DEFAULT_ANIMATION_DURATION = Duration(milliseconds: 200);
 const DEFAULT_ANIMATION_CURVE = Curves.bounceIn;

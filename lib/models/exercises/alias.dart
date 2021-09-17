@@ -18,10 +18,10 @@
 
 import 'package:json_annotation/json_annotation.dart';
 
-part 'comment.g.dart';
+part 'alias.g.dart';
 
 @JsonSerializable()
-class Comment {
+class Alias {
   @JsonKey(required: true)
   final int id;
 
@@ -29,15 +29,15 @@ class Comment {
   final int exerciseId;
 
   @JsonKey(required: true)
-  final String comment;
+  final String alias;
 
-  Comment({
+  Alias({
     required this.id,
     required this.exerciseId,
-    required this.comment,
+    required this.alias,
   });
 
   // Boilerplate
-  factory Comment.fromJson(Map<String, dynamic> json) => _$CommentFromJson(json);
-  Map<String, dynamic> toJson() => _$CommentToJson(this);
+  factory Alias.fromJson(Map<String, dynamic> json) => _$AliasFromJson(json);
+  Map<String, dynamic> toJson() => _$AliasToJson(this);
 }

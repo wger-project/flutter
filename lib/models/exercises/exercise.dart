@@ -18,6 +18,7 @@
 
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:wger/models/exercises/alias.dart';
 import 'package:wger/models/exercises/base.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/comment.dart';
@@ -59,6 +60,9 @@ class Exercise extends Equatable {
 
   @JsonKey(ignore: true)
   List<Comment> tips = [];
+
+  @JsonKey(ignore: true)
+  List<Alias> alias = [];
 
   Exercise(
       {required this.id,

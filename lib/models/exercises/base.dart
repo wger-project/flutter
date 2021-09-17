@@ -35,6 +35,9 @@ class ExerciseBase extends Equatable {
   @JsonKey(required: true)
   final String uuid;
 
+  @JsonKey(required: true, name: 'variations')
+  final int? variationId;
+
   @JsonKey(required: true, name: 'creation_date')
   final DateTime creationDate;
 
@@ -76,6 +79,7 @@ class ExerciseBase extends Equatable {
       required this.uuid,
       required this.creationDate,
       required this.updateDate,
+      this.variationId,
       List<Muscle>? muscles,
       List<Muscle>? musclesSecondary,
       List<Equipment>? equipment,

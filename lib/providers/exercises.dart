@@ -26,26 +26,33 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/exceptions/no_such_entry_exception.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/models/exercises/alias.dart';
 import 'package:wger/models/exercises/base.dart';
 import 'package:wger/models/exercises/category.dart';
+import 'package:wger/models/exercises/comment.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/exercises/image.dart';
 import 'package:wger/models/exercises/language.dart';
 import 'package:wger/models/exercises/muscle.dart';
+import 'package:wger/models/exercises/variation.dart';
 import 'package:wger/providers/base_provider.dart';
 
 class ExercisesProvider with ChangeNotifier {
   final WgerBaseProvider baseProvider;
 
   static const EXERCISE_CACHE_DAYS = 7;
+  static const CACHE_VERSION = 2;
 
   static const _exerciseInfoUrlPath = 'exerciseinfo';
   static const _exerciseBaseUrlPath = 'exercise-base';
   static const _exerciseUrlPath = 'exercise';
   static const _exerciseSearchPath = 'exercise/search';
 
+  static const _exerciseVariationsUrlPath = 'variation';
   static const _exerciseCommentUrlPath = 'exercisecomment';
   static const _exerciseImagesUrlPath = 'exerciseimage';
+  static const _exerciseAliasUrlPath = 'exercisealias';
   static const _categoriesUrlPath = 'exercisecategory';
   static const _musclesUrlPath = 'muscle';
   static const _equipmentUrlPath = 'equipment';
@@ -56,6 +63,7 @@ class ExercisesProvider with ChangeNotifier {
   List<Muscle> _muscles = [];
   List<Equipment> _equipment = [];
   List<Language> _languages = [];
+  List<Variation> _variations = [];
 
   List<Exercise> _exercises = [];
   set exercises(List<Exercise> exercises) {
@@ -203,6 +211,17 @@ class ExercisesProvider with ChangeNotifier {
     }
   }
 
+  Future<void> fetchAndSetVariations() async {
+    final variations = await baseProvider.fetch(baseProvider.makeUrl(_exerciseVariationsUrlPath));
+    try {
+      for (final variation in variations['results']) {
+        _variations.add(Variation.fromJson(variation));
+      }
+    } catch (error) {
+      throw (error);
+    }
+  }
+
   Future<void> fetchAndSetMuscles() async {
     final muscles = await baseProvider.fetch(baseProvider.makeUrl(_musclesUrlPath));
     try {
@@ -260,7 +279,7 @@ class ExercisesProvider with ChangeNotifier {
         baseProvider.makeUrl(_exerciseBaseUrlPath, id: exercise.baseId),
       );
       final base = ExerciseBase.fromJson(exerciseBaseData);
-      setExerciseBaseData(base, [exercise]);
+      //setExerciseBaseData(base, [exercise]);
 
       /*
       final prefs = await SharedPreferences.getInstance();
@@ -288,21 +307,86 @@ class ExercisesProvider with ChangeNotifier {
     }
   }
 
-  /// Helper function that sets different objects such as category, etc.
-  ExerciseBase setExerciseBaseData(ExerciseBase base, List<Exercise> exercises) {
-    base.category = findCategoryById(base.categoryId);
-    base.muscles = base.musclesIds.map((e) => findMuscleById(e)).toList();
-    base.musclesSecondary = base.musclesSecondaryIds.map((e) => findMuscleById(e)).toList();
-    base.equipment = base.equipmentIds.map((e) => findEquipmentById(e)).toList();
-
-    exercises.forEach((e) {
-      e.base = base;
-      e.language = findLanguageById(e.languageId);
+  List<ExerciseBase> mapImages(dynamic data, List<ExerciseBase> bases) {
+    List<ExerciseImage> images = data.map<ExerciseImage>((e) => ExerciseImage.fromJson(e)).toList();
+    bases.forEach((b) {
+      b.images = images.where((image) => image.exerciseBaseId == b.id).toList();
     });
-    base.exercises = [];
-    base.exercises = exercises;
+    return bases;
+  }
 
-    return base;
+  List<ExerciseBase> setBaseData(dynamic data, List<Exercise> exercises) {
+    try {
+      final bases = data.map<ExerciseBase>((e) {
+        final base = ExerciseBase.fromJson(e);
+        base.category = findCategoryById(base.categoryId);
+        base.muscles = base.musclesIds.map((e) => findMuscleById(e)).toList();
+        base.musclesSecondary = base.musclesSecondaryIds.map((e) => findMuscleById(e)).toList();
+        base.equipment = base.equipmentIds.map((e) => findEquipmentById(e)).toList();
+        return base;
+      });
+      return bases.toList();
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  List<dynamic> mapBases(List<ExerciseBase> bases, List<Exercise> exercises) {
+    try {
+      List<Exercise> out = [];
+      for (var base in bases) {
+        final filteredExercises = exercises.where((e) => e.baseId == base.id);
+        for (var exercise in filteredExercises) {
+          exercise.base = base;
+          base.exercises.add(exercise);
+          out.add(exercise);
+        }
+      }
+      return [bases, out];
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  List<Exercise> mapLanguages(List<Exercise> exercises) {
+    exercises.forEach((exercise) {
+      exercise.language = findLanguageById(exercise.languageId);
+    });
+    return exercises;
+  }
+
+  List<Exercise> mapAliases(dynamic data, List<Exercise> exercises) {
+    List<Alias> alias = data.map<Alias>((e) => Alias.fromJson(e)).toList();
+    alias.forEach((e) {
+      exercises.firstWhere((exercise) => exercise.id == e.exerciseId).alias.add(e);
+    });
+    return exercises;
+  }
+
+  List<Exercise> mapComments(dynamic data, List<Exercise> exercises) {
+    List<Comment> comments = data.map<Comment>((e) => Comment.fromJson(e)).toList();
+    comments.forEach((e) {
+      exercises.firstWhere((exercise) => exercise.id == e.exerciseId).tips.add(e);
+    });
+    return exercises;
+  }
+
+  /// Checks the required cache version
+  ///
+  /// This is needed since the content of the exercise cache can change and we need
+  /// to invalidate it as a result
+  checkExerciseCacheVersion() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey(PREFS_EXERCISE_CACHE_VERSION)) {
+      final cacheVersion = prefs.getInt(PREFS_EXERCISE_CACHE_VERSION);
+      if (cacheVersion! != CACHE_VERSION) {
+        prefs.remove(PREFS_EXERCISES);
+      }
+      prefs.setInt(PREFS_EXERCISE_CACHE_VERSION, CACHE_VERSION);
+    } else {
+      prefs.remove(PREFS_EXERCISES);
+      prefs.setInt(PREFS_EXERCISE_CACHE_VERSION, CACHE_VERSION);
+    }
   }
 
   Future<void> fetchAndSetExercises() async {
@@ -311,6 +395,7 @@ class ExercisesProvider with ChangeNotifier {
     print(Intl.shortLocale(Intl.getCurrentLocale()));
     print('---------');
     final prefs = await SharedPreferences.getInstance();
+    await checkExerciseCacheVersion();
 
     if (prefs.containsKey(PREFS_EXERCISES)) {
       final cacheData = json.decode(prefs.getString(PREFS_EXERCISES)!);
@@ -319,14 +404,20 @@ class ExercisesProvider with ChangeNotifier {
         cacheData['muscles'].forEach((e) => _muscles.add(Muscle.fromJson(e)));
         cacheData['categories'].forEach((e) => _categories.add(ExerciseCategory.fromJson(e)));
         cacheData['languages'].forEach((e) => _languages.add(Language.fromJson(e)));
-        cacheData['exercise-translations'].forEach((e) => _exercises.add(Exercise.fromJson(e)));
-        cacheData['bases'].forEach((e) {
-          var base = setExerciseBaseData(
-            ExerciseBase.fromJson(e),
-            _exercises.where((element) => element.baseId == e['id']).toList(),
-          );
-          _exerciseBases.add(base);
-        });
+        cacheData['variations'].forEach((e) => _variations.add(Variation.fromJson(e)));
+
+        _exercises =
+            cacheData['exercise-translations'].map<Exercise>((e) => Exercise.fromJson(e)).toList();
+        _exercises = mapComments(cacheData['exercise-comments'], _exercises);
+        _exercises = mapAliases(cacheData['exercise-alias'], _exercises);
+        _exercises = mapLanguages(_exercises);
+
+        _exerciseBases = setBaseData(cacheData['bases'], _exercises);
+        _exerciseBases = mapImages(cacheData['exercise-images'], _exerciseBases);
+        final out = mapBases(_exerciseBases, _exercises);
+        _exerciseBases = out[0];
+        _exercises = out[1];
+
         _initFilters();
         log("Read ${_exerciseBases.length} exercises from cache. Valid till ${cacheData['expiresIn']}");
         return;
@@ -334,44 +425,38 @@ class ExercisesProvider with ChangeNotifier {
     }
 
     // Load categories, muscles, equipment and languages
-    await Future.wait([
+    final data = await Future.wait<dynamic>([
+      baseProvider.fetch(baseProvider.makeUrl(_exerciseBaseUrlPath, query: {'limit': '1000'})),
+      baseProvider.fetch(baseProvider.makeUrl(_exerciseUrlPath, query: {'limit': '1000'})),
+      baseProvider.fetch(baseProvider.makeUrl(_exerciseCommentUrlPath, query: {'limit': '1000'})),
+      baseProvider.fetch(baseProvider.makeUrl(_exerciseAliasUrlPath, query: {'limit': '1000'})),
+      baseProvider.fetch(baseProvider.makeUrl(_exerciseImagesUrlPath, query: {'limit': '1000'})),
       fetchAndSetCategories(),
       fetchAndSetMuscles(),
       fetchAndSetEquipment(),
       fetchAndSetLanguages(),
+      fetchAndSetVariations(),
     ]);
+    final exerciseBaseData = data[0]['results'];
+    final exerciseData = data[1]['results'];
+    final commentsData = data[2]['results'];
+    final aliasData = data[3]['results'];
+    final imageData = data[4]['results'];
 
-    final exerciseBaseData = await baseProvider.fetch(
-      baseProvider.makeUrl(_exerciseBaseUrlPath, query: {'limit': '1000'}),
-    );
+    // Load exercise
+    _exercises = exerciseData.map<Exercise>((e) => Exercise.fromJson(e)).toList();
+    _exercises = mapComments(commentsData, _exercises);
+    _exercises = mapAliases(aliasData, _exercises);
+    _exercises = mapLanguages(_exercises);
 
-    final exerciseTranslationData = await baseProvider.fetch(
-      baseProvider.makeUrl(
-        _exerciseUrlPath,
-        query: {'limit': '1000'},
-      ),
-    );
+    _exerciseBases = setBaseData(exerciseBaseData, _exercises);
+    _exerciseBases = mapImages(imageData, _exerciseBases);
 
-    List<Exercise> exerciseTranslation = exerciseTranslationData['results'].map<Exercise>((e) {
-      return Exercise.fromJson(e);
-    }).toList();
-
-    for (var e in exerciseBaseData['results']) {
-      var base = setExerciseBaseData(
-        ExerciseBase.fromJson(e),
-        exerciseTranslation.where((element) => element.baseId == e['id']).toList(),
-      );
-      _exerciseBases.add(base);
-    }
+    final out = mapBases(_exerciseBases, _exercises);
+    _exerciseBases = out[0];
+    _exercises = out[1];
 
     try {
-      List<Exercise> exerciseTranslations = [];
-      _exerciseBases.forEach((base) {
-        base.exercises.forEach((exercise) {
-          exerciseTranslations.add(exercise);
-        });
-      });
-
       // Save the result to the cache
       final cacheData = {
         'date': DateTime.now().toIso8601String(),
@@ -380,10 +465,14 @@ class ExercisesProvider with ChangeNotifier {
         'categories': _categories.map((e) => e.toJson()).toList(),
         'muscles': _muscles.map((e) => e.toJson()).toList(),
         'languages': _languages.map((e) => e.toJson()).toList(),
-        'exercise-translations': exerciseTranslations.map((e) => e.toJson()).toList(),
-        'bases': _exerciseBases.map((e) => e.toJson()).toList(),
+        'variations': _variations.map((e) => e.toJson()).toList(),
+        'bases': exerciseBaseData,
+        'exercise-translations': exerciseData,
+        'exercise-comments': commentsData,
+        'exercise-alias': aliasData,
+        'exercise-images': imageData,
       };
-      log("Saved ${_exercises.length} exercises from cache. Valid till ${cacheData['expiresIn']}");
+      log("Saved ${_exercises.length} exercises to cache. Valid till ${cacheData['expiresIn']}");
 
       prefs.setString(PREFS_EXERCISES, json.encode(cacheData));
       _initFilters();
@@ -391,6 +480,8 @@ class ExercisesProvider with ChangeNotifier {
     } on MissingRequiredKeysException catch (error) {
       log(error.missingKeys.toString());
       throw (error);
+    } catch (e) {
+      throw (e);
     }
   }
 
