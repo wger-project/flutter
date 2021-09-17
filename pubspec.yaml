@@ -50,6 +50,7 @@ dependencies:
   table_calendar: ^3.0.2
   url_launcher: ^6.0.10
   equatable: ^2.0.3
+  multi_select_flutter: ^4.0.0
 
 dev_dependencies:
   flutter_test:

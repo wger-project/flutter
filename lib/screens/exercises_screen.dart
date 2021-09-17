@@ -27,10 +27,7 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
       appBar: WgerAppBar(AppLocalizations.of(context).exercises),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 15),
-            child: FilterRow(),
-          ),
+          FilterRow(),
           Expanded(
             child: exercisesList == null
                 ? Center(
@@ -40,21 +37,7 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
                       child: CircularProgressIndicator(),
                     ),
                   )
-                : ListView.separated(
-                    separatorBuilder: (context, index) {
-                      return Divider(
-                        thickness: 1,
-                      );
-                    },
-                    itemCount: exercisesList.length,
-                    itemBuilder: (context, index) {
-                      final exercise = exercisesList[index];
-                      return Container(
-                        height: size.height * 0.175,
-                        child: ExerciseListTile(exercise: exercise),
-                      );
-                    },
-                  ),
+                : _ExercisesList(exercisesList: exercisesList),
           ),
         ],
       ),
@@ -65,5 +48,34 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
   void dispose() {
     _exerciseNameController.dispose();
     super.dispose();
+  }
+}
+
+class _ExercisesList extends StatelessWidget {
+  const _ExercisesList({
+    Key? key,
+    required this.exercisesList,
+  }) : super(key: key);
+
+  final List<Exercise> exercisesList;
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    return ListView.separated(
+      separatorBuilder: (context, index) {
+        return Divider(
+          thickness: 1,
+        );
+      },
+      itemCount: exercisesList.length,
+      itemBuilder: (context, index) {
+        final exercise = exercisesList[index];
+        return Container(
+          height: size.height * 0.175,
+          child: ExerciseListTile(exercise: exercise),
+        );
+      },
+    );
   }
 }

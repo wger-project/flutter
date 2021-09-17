@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wger/providers/exercises.dart';
+import 'package:wger/screens/add_exercise_screen.dart';
 
 import 'filter_modal.dart';
 
@@ -33,44 +34,70 @@ class _FilterRowState extends State<FilterRow> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: TextFormField(
-            controller: _exerciseNameController,
-            decoration: InputDecoration(
-              hintText: '${AppLocalizations.of(context).exerciseName}...',
-              contentPadding: const EdgeInsets.symmetric(horizontal: 10),
-              border: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 15),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextFormField(
+              controller: _exerciseNameController,
+              decoration: InputDecoration(
+                hintText: '${AppLocalizations.of(context).exerciseName}...',
+                contentPadding: const EdgeInsets.symmetric(horizontal: 10),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.black),
+                ),
               ),
             ),
           ),
-        ),
-        Row(
-          children: [
-            IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.search),
-            ),
-            IconButton(
-              onPressed: () async {
-                showModalBottomSheet<Filters>(
-                  context: context,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20),
+          Row(
+            children: [
+              IconButton(
+                onPressed: () async {
+                  showModalBottomSheet(
+                    context: context,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20),
+                      ),
                     ),
-                  ),
-                  builder: (context) => ExerciseFilterModalBody(),
-                );
-              },
-              icon: Icon(Icons.filter_alt),
-            ),
-          ],
-        )
-      ],
+                    builder: (context) => ExerciseFilterModalBody(),
+                  );
+                },
+                icon: Icon(Icons.filter_alt),
+              ),
+              PopupMenuButton<ExerciseMoreOption>(
+                itemBuilder: (context) {
+                  return [
+                    PopupMenuItem<ExerciseMoreOption>(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Add Exercise'),
+                          Icon(Icons.add),
+                        ],
+                      ),
+                      value: ExerciseMoreOption.ADD_EXERCISE,
+                    )
+                  ];
+                },
+                shape: RoundedRectangleBorder(
+                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+                ),
+                onSelected: (ExerciseMoreOption selectedOption) {
+                  switch (selectedOption) {
+                    case ExerciseMoreOption.ADD_EXERCISE:
+                      Navigator.of(context).pushNamed(AddExerciseScreen.routeName);
+                      break;
+                  }
+                },
+                icon: Icon(Icons.more_vert),
+              )
+            ],
+          )
+        ],
+      ),
     );
   }
 
@@ -80,3 +107,5 @@ class _FilterRowState extends State<FilterRow> {
     super.dispose();
   }
 }
+
+enum ExerciseMoreOption { ADD_EXERCISE }
