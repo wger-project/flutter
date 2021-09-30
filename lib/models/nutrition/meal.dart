@@ -36,6 +36,9 @@ class Meal {
   @JsonKey(toJson: timeToString, fromJson: stringToTime)
   TimeOfDay? time;
 
+  @JsonKey(name: 'name')
+  late String name;
+
   @JsonKey(ignore: true, name: 'meal_items', defaultValue: [])
   List<MealItem> mealItems = [];
 
@@ -43,6 +46,7 @@ class Meal {
     this.id,
     int? plan,
     TimeOfDay? time,
+    String? name,
     List<MealItem>? mealItems,
   }) {
     if (plan != null) {
@@ -52,10 +56,12 @@ class Meal {
     this.mealItems = mealItems ?? [];
 
     this.time = time ?? TimeOfDay.now();
+    this.name = name ?? '';
   }
 
   // Boilerplate
   factory Meal.fromJson(Map<String, dynamic> json) => _$MealFromJson(json);
+
   Map<String, dynamic> toJson() => _$MealToJson(this);
 
   /// Calculations

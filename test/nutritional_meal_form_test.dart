@@ -72,7 +72,7 @@ void main() {
     await tester.pumpWidget(createHomeScreen(meal1));
     await tester.pumpAndSettle();
 
-    expect(find.byType(TextFormField), findsOneWidget);
+    expect(find.byType(TextFormField), findsNWidgets(2));
     expect(find.byType(ElevatedButton), findsOneWidget);
     expect(find.byKey(Key(SUBMIT_BUTTON_KEY_NAME)), findsOneWidget);
   });

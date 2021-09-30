@@ -20,10 +20,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/ui.dart';
-import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
@@ -36,10 +36,12 @@ class MealForm extends StatelessWidget {
 
   final _form = GlobalKey<FormState>();
   final _timeController = TextEditingController();
+  final _nameController = TextEditingController();
 
   MealForm(this._planId, [meal]) {
     this._meal = meal ?? Meal(plan: _planId);
     _timeController.text = timeToString(_meal.time)!;
+    _nameController.text = _meal.name;
   }
 
   @override
@@ -71,6 +73,16 @@ class MealForm extends StatelessWidget {
               },
               onFieldSubmitted: (_) {},
             ),
+            TextFormField(
+              maxLength: 25,
+              key: Key('field-name'),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context).name),
+              controller: _nameController,
+              onSaved: (newValue) {
+                _meal.name = newValue as String;
+              },
+              onFieldSubmitted: (_) {},
+            ),
             ElevatedButton(
               key: Key(SUBMIT_BUTTON_KEY_NAME),
               child: Text(AppLocalizations.of(context).save),
@@ -82,8 +94,7 @@ class MealForm extends StatelessWidget {
 
                 try {
                   _meal.id == null
-                      ? Provider.of<NutritionPlansProvider>(context, listen: false)
-                          .addMeal(_meal, _planId)
+                      ? Provider.of<NutritionPlansProvider>(context, listen: false).addMeal(_meal, _planId)
                       : Provider.of<NutritionPlansProvider>(context, listen: false).editMeal(_meal);
                 } on WgerHttpException catch (error) {
                   showHttpExceptionErrorDialog(error, context);
@@ -127,8 +138,7 @@ class MealItemForm extends StatelessWidget {
                 decoration: InputDecoration(labelText: AppLocalizations.of(context).ingredient),
               ),
               suggestionsCallback: (pattern) async {
-                return await Provider.of<NutritionPlansProvider>(context, listen: false)
-                    .searchIngredient(
+                return await Provider.of<NutritionPlansProvider>(context, listen: false).searchIngredient(
                   pattern,
                   Localizations.localeOf(context).languageCode,
                 );
@@ -179,8 +189,7 @@ class MealItemForm extends StatelessWidget {
                 _form.currentState!.save();
 
                 try {
-                  Provider.of<NutritionPlansProvider>(context, listen: false)
-                      .addMealItem(_mealItem, _meal);
+                  Provider.of<NutritionPlansProvider>(context, listen: false).addMealItem(_mealItem, _meal);
                 } on WgerHttpException catch (error) {
                   showHttpExceptionErrorDialog(error, context);
                 } catch (error) {
@@ -239,8 +248,7 @@ class PlanForm extends StatelessWidget {
                   await Provider.of<NutritionPlansProvider>(context, listen: false).editPlan(_plan);
                   Navigator.of(context).pop();
                 } else {
-                  _plan = await Provider.of<NutritionPlansProvider>(context, listen: false)
-                      .addPlan(_plan);
+                  _plan = await Provider.of<NutritionPlansProvider>(context, listen: false).addPlan(_plan);
                   Navigator.of(context).pushReplacementNamed(
                     NutritionalPlanScreen.routeName,
                     arguments: _plan,
