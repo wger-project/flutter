@@ -27,7 +27,7 @@ class WgerAboutListTile extends StatelessWidget {
     await canLaunch(url)
         ? await launch(url)
         : ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Could not open $url.")),
+            SnackBar(content: Text('Could not open $url.')),
           );
   }
 
@@ -68,7 +68,7 @@ class WgerAboutListTile extends StatelessWidget {
             ],
           ),
           contentPadding: EdgeInsets.zero,
-          onTap: () async => _launchURL("https://github.com/wger-project", context),
+          onTap: () async => _launchURL('https://github.com/wger-project', context),
         ),
         SizedBox(height: 10),
         ListTile(

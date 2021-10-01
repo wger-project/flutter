@@ -37,7 +37,7 @@ void main() {
 
   var plan1 = NutritionalPlan.empty();
   var meal1 = Meal();
-  var meal2 = Meal();
+  final meal2 = Meal();
 
   when(mockNutrition.editMeal(any)).thenAnswer((_) => Future.value(Meal()));
   when(mockNutrition.addMeal(any, any)).thenAnswer((_) => Future.value(Meal()));
@@ -82,7 +82,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(
-      find.text(('17:00')),
+      find.text('17:00'),
       findsOneWidget,
       reason: 'Time of existing meal is filled in',
     );

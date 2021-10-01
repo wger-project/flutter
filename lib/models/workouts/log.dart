@@ -87,18 +87,18 @@ class Log {
   Map<String, dynamic> toJson() => _$LogToJson(this);
 
   set exercise(Exercise exercise) {
-    this.exerciseObj = exercise;
-    this.exerciseId = exercise.id;
+    exerciseObj = exercise;
+    exerciseId = exercise.id;
   }
 
   set weightUnit(WeightUnit weightUnit) {
-    this.weightUnitObj = weightUnit;
-    this.weightUnitId = weightUnit.id;
+    weightUnitObj = weightUnit;
+    weightUnitId = weightUnit.id;
   }
 
   set repetitionUnit(RepetitionUnit repetitionUnit) {
-    this.repetitionUnitObj = repetitionUnit;
-    this.repetitionUnitId = repetitionUnit.id;
+    repetitionUnitObj = repetitionUnit;
+    repetitionUnitId = repetitionUnit.id;
   }
 
   void setRir(String rir) {
@@ -119,6 +119,7 @@ class Log {
   ///
   /// Two logs are considered equal if their content is equal. This is used e.g.
   /// in lists where we want to have unique values
+  @override
   bool operator ==(o) {
     return o is Log &&
         exerciseId == o.exerciseId &&

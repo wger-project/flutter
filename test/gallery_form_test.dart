@@ -32,7 +32,7 @@ import 'gallery_screen_test.mocks.dart';
 
 void main() {
   late gallery.Image image;
-  var mockGalleryProvider = MockGalleryProvider();
+  final mockGalleryProvider = MockGalleryProvider();
 
   setUp(() {
     image = getTestImages()[0];

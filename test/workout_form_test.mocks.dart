@@ -247,8 +247,6 @@ class MockWorkoutPlansProvider extends _i1.Mock implements _i12.WorkoutPlansProv
       Invocation.method(#deleteRequest, [url, id]),
       returnValue: Future<_i5.Response>.value(_FakeResponse_11())) as _i13.Future<_i5.Response>);
   @override
-  String toString() => super.toString();
-  @override
   void addListener(_i15.VoidCallback? listener) => super
       .noSuchMethod(Invocation.method(#addListener, [listener]), returnValueForMissingStub: null);
   @override

@@ -31,7 +31,7 @@ import 'package:wger/widgets/nutrition/helpers.dart';
 class MealWidget extends StatefulWidget {
   final Meal _meal;
 
-  MealWidget(
+  const MealWidget(
     this._meal,
   );
 
@@ -78,7 +78,7 @@ class _MealWidgetState extends State<MealWidget> {
                     },
                     icon: Icon(Icons.delete),
                   ),
-                  if (widget._meal.mealItems.length > 0)
+                  if (widget._meal.mealItems.isNotEmpty)
                     Ink(
                       decoration: const ShapeDecoration(
                         color: wgerPrimaryButtonColor,
@@ -143,18 +143,18 @@ class MealItemWidget extends StatelessWidget {
   final bool _expanded;
   final MealItem _item;
 
-  MealItemWidget(this._item, this._expanded);
+  const MealItemWidget(this._item, this._expanded);
 
   @override
   Widget build(BuildContext context) {
-    // TODO: add real support for weight units
+    // TODO(x): add real support for weight units
     /*
     String unit = _item.weightUnitId == null
         ? AppLocalizations.of(context).g
         : _item.weightUnitObj!.weightUnit.name;
 
      */
-    String unit = AppLocalizations.of(context).g;
+    final String unit = AppLocalizations.of(context).g;
     final values = _item.nutritionalValues;
 
     return Container(
@@ -162,7 +162,7 @@ class MealItemWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
+          SizedBox(
             width: double.infinity,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

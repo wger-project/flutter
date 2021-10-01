@@ -49,7 +49,6 @@ final ThemeData wgerTheme = ThemeData(
     * General stuff
     */
     primaryColor: wgerPrimaryColor,
-    accentColor: wgerSecondaryColor,
     scaffoldBackgroundColor: wgerBackground,
 
     // This makes the visual density adapt to the platform that you run
@@ -58,7 +57,7 @@ final ThemeData wgerTheme = ThemeData(
     visualDensity: VisualDensity.adaptivePlatformDensity,
 
     // Show icons in the system's bar in light colors
-    appBarTheme: AppBarTheme(
+    appBarTheme: const AppBarTheme(
       brightness: Brightness.dark,
       systemOverlayStyle: SystemUiOverlayStyle.dark,
     ),
@@ -67,26 +66,26 @@ final ThemeData wgerTheme = ThemeData(
      * Text theme
      */
     textTheme: TextTheme(
-      headline1: TextStyle(fontFamily: "OpenSansLight", color: Colors.black),
-      headline2: TextStyle(fontFamily: "OpenSansLight", color: Colors.black),
+      headline1: TextStyle(fontFamily: 'OpenSansLight', color: Colors.black),
+      headline2: TextStyle(fontFamily: 'OpenSansLight', color: Colors.black),
       headline3: TextStyle(
         fontSize: materialSizes['h3']! * 0.8,
-        fontFamily: "OpenSansBold",
+        fontFamily: 'OpenSansBold',
         color: Colors.black,
       ),
       headline4: TextStyle(
         fontSize: materialSizes['h4']! * 0.8,
-        fontFamily: "OpenSansBold",
+        fontFamily: 'OpenSansBold',
         color: Colors.black,
       ),
       headline5: TextStyle(
-        fontSize: materialSizes['h5']!,
-        fontFamily: "OpenSansBold",
+        fontSize: materialSizes['h5'],
+        fontFamily: 'OpenSansBold',
         color: Colors.black,
       ),
       headline6: TextStyle(
         fontSize: materialSizes['h6']! * 0.8,
-        fontFamily: "OpenSansBold",
+        fontFamily: 'OpenSansBold',
         color: Colors.black,
       ),
     ),
@@ -118,32 +117,33 @@ final ThemeData wgerTheme = ThemeData(
     sliderTheme: SliderThemeData(
       activeTrackColor: wgerPrimaryButtonColor,
       thumbColor: wgerPrimaryColor,
-    ));
+    ),
+    colorScheme: ColorScheme.fromSwatch().copyWith(secondary: wgerSecondaryColor));
 
 const wgerCalendarStyle = CalendarStyle(
 // Use `CalendarStyle` to customize the UI
   outsideDaysVisible: false,
-  todayDecoration: const BoxDecoration(
+  todayDecoration: BoxDecoration(
     color: Colors.amber,
     shape: BoxShape.circle,
   ),
 
-  markerDecoration: const BoxDecoration(
+  markerDecoration: BoxDecoration(
     color: Colors.black,
     shape: BoxShape.circle,
   ),
-  selectedDecoration: const BoxDecoration(
+  selectedDecoration: BoxDecoration(
     color: wgerSecondaryColor,
     shape: BoxShape.circle,
   ),
-  rangeStartDecoration: const BoxDecoration(
+  rangeStartDecoration: BoxDecoration(
     color: wgerSecondaryColor,
     shape: BoxShape.circle,
   ),
-  rangeEndDecoration: const BoxDecoration(
+  rangeEndDecoration: BoxDecoration(
     color: wgerSecondaryColor,
     shape: BoxShape.circle,
   ),
   rangeHighlightColor: wgerSecondaryColorLight,
-  weekendTextStyle: const TextStyle(color: wgerSecondaryColor),
+  weekendTextStyle: TextStyle(color: wgerSecondaryColor),
 );

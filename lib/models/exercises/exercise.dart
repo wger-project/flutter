@@ -81,8 +81,8 @@ class Exercise {
     this.musclesSecondary = musclesSecondary ?? [];
     this.muscles = muscles ?? [];
     if (category != null) {
-      this.categoryObj = category;
-      this.categoryId = category.id;
+      categoryObj = category;
+      categoryId = category.id;
     }
   }
 
@@ -95,8 +95,8 @@ class Exercise {
   }
 
   set category(ExerciseCategory category) {
-    this.categoryId = category.id;
-    this.categoryObj = category;
+    categoryId = category.id;
+    categoryObj = category;
   }
 
   // Boilerplate

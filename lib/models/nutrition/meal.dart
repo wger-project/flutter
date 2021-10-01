@@ -46,7 +46,7 @@ class Meal {
     List<MealItem>? mealItems,
   }) {
     if (plan != null) {
-      this.planId = plan;
+      planId = plan;
     }
 
     this.mealItems = mealItems ?? [];
@@ -63,7 +63,7 @@ class Meal {
     // This is already done on the server. It might be better to read it from there.
     var out = NutritionalValues();
 
-    for (var item in mealItems) {
+    for (final item in mealItems) {
       out += item.nutritionalValues;
     }
 

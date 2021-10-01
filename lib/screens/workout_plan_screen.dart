@@ -46,7 +46,7 @@ class WorkoutPlanScreen extends StatefulWidget {
 class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
   WorkoutScreenMode _mode = WorkoutScreenMode.workout;
 
-  _changeMode(WorkoutScreenMode newMode) {
+  void _changeMode(WorkoutScreenMode newMode) {
     setState(() {
       _mode = newMode;
     });
@@ -61,10 +61,9 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
     switch (_mode) {
       case WorkoutScreenMode.workout:
         return WorkoutPlanDetail(plan, _changeMode);
-        break;
+
       case WorkoutScreenMode.log:
         return WorkoutLogs(plan, _changeMode);
-        break;
     }
   }
 
@@ -130,16 +129,17 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
             builder: (context, AsyncSnapshot<WorkoutPlan> snapshot) => SliverList(
               delegate: SliverChildListDelegate(
                 [
-                  snapshot.connectionState == ConnectionState.waiting
-                      ? Container(
-                          height: 200,
-                          child: Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        )
-                      : Consumer<WorkoutPlansProvider>(
-                          builder: (context, value, child) => getBody(workoutPlan),
-                        ),
+                  if (snapshot.connectionState == ConnectionState.waiting)
+                    SizedBox(
+                      height: 200,
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    )
+                  else
+                    Consumer<WorkoutPlansProvider>(
+                      builder: (context, value, child) => getBody(workoutPlan),
+                    ),
                 ],
               ),
             ),

@@ -75,7 +75,7 @@ class MeasurementProvider with ChangeNotifier {
     for (final entry in data['results']) {
       loadedEntries.add(MeasurementEntry.fromJson(entry));
     }
-    MeasurementCategory editedCategory = category.copyWith(entries: loadedEntries);
+    final MeasurementCategory editedCategory = category.copyWith(entries: loadedEntries);
     _categories.removeAt(categoryIndex);
     _categories.insert(categoryIndex, editedCategory);
     notifyListeners();
@@ -84,12 +84,12 @@ class MeasurementProvider with ChangeNotifier {
   /// Fetches and sets the measurement categories and their entries
   Future<void> fetchAndSetAllCategoriesAndEntries() async {
     await fetchAndSetCategories();
-    await Future.wait(_categories.map((e) => this.fetchAndSetCategoryEntries(e.id!)).toList());
+    await Future.wait(_categories.map((e) => fetchAndSetCategoryEntries(e.id!)).toList());
   }
 
   /// Adds a measurement category
   Future<void> addCategory(MeasurementCategory category) async {
-    Uri postUri = baseProvider.makeUrl(_categoryUrl);
+    final Uri postUri = baseProvider.makeUrl(_categoryUrl);
 
     final Map<String, dynamic> newCategoryMap = await baseProvider.post(category.toJson(), postUri);
     final MeasurementCategory newCategory = MeasurementCategory.fromJson(newCategoryMap);
@@ -100,8 +100,8 @@ class MeasurementProvider with ChangeNotifier {
 
   /// Deletes a measurement category
   Future<void> deleteCategory(int id) async {
-    MeasurementCategory category = findCategoryById(id);
-    int categoryIndex = _categories.indexOf(category);
+    final MeasurementCategory category = findCategoryById(id);
+    final int categoryIndex = _categories.indexOf(category);
     _categories.remove(category);
     notifyListeners();
 
@@ -110,7 +110,7 @@ class MeasurementProvider with ChangeNotifier {
     } on WgerHttpException catch (e) {
       _categories.insert(categoryIndex, category);
       notifyListeners();
-      throw e;
+      rethrow;
     }
   }
 
@@ -118,7 +118,7 @@ class MeasurementProvider with ChangeNotifier {
   /// Currently there isn't any fallback if the call to the api is unsuccessful, as WgerBaseProvider.patch only returns the response body and not the whole response
   Future<void> editCategory(int id, String? newName, String? newUnit) async {
     final MeasurementCategory oldCategory = findCategoryById(id);
-    int categoryIndex = _categories.indexOf(oldCategory);
+    final int categoryIndex = _categories.indexOf(oldCategory);
     final MeasurementCategory tempNewCategory = oldCategory.copyWith(name: newName, unit: newUnit);
 
     final Map<String, dynamic> response = await baseProvider.patch(
@@ -126,7 +126,7 @@ class MeasurementProvider with ChangeNotifier {
       baseProvider.makeUrl(_categoryUrl, id: id),
     );
     final MeasurementCategory newCategory =
-        (MeasurementCategory.fromJson(response)).copyWith(entries: oldCategory.entries);
+        MeasurementCategory.fromJson(response).copyWith(entries: oldCategory.entries);
     _categories.removeAt(categoryIndex);
     _categories.insert(categoryIndex, newCategory);
     notifyListeners();
@@ -134,12 +134,12 @@ class MeasurementProvider with ChangeNotifier {
 
   /// Adds a measurement entry
   Future<void> addEntry(MeasurementEntry entry) async {
-    Uri postUri = baseProvider.makeUrl(_entryUrl);
+    final Uri postUri = baseProvider.makeUrl(_entryUrl);
 
     final Map<String, dynamic> newEntryMap = await baseProvider.post(entry.toJson(), postUri);
     final MeasurementEntry newEntry = MeasurementEntry.fromJson(newEntryMap);
 
-    MeasurementCategory category = findCategoryById(newEntry.category);
+    final MeasurementCategory category = findCategoryById(newEntry.category);
 
     category.entries.add(newEntry);
     category.entries.sort((a, b) => b.date.compareTo(a.date));
@@ -158,10 +158,10 @@ class MeasurementProvider with ChangeNotifier {
 
     try {
       await baseProvider.deleteRequest(_entryUrl, id);
-    } on WgerHttpException catch (e) {
+    } on WgerHttpException {
       category.entries.insert(entryIndex, entry);
       notifyListeners();
-      throw e;
+      rethrow;
     }
   }
 

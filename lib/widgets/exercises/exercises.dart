@@ -25,7 +25,7 @@ import 'package:wger/models/exercises/exercise.dart';
 class ExerciseDetail extends StatelessWidget {
   final Exercise _exercise;
 
-  ExerciseDetail(this._exercise);
+  const ExerciseDetail(this._exercise);
 
   @override
   Widget build(BuildContext context) {
@@ -47,9 +47,9 @@ class ExerciseDetail extends StatelessWidget {
             AppLocalizations.of(context).equipment,
             style: Theme.of(context).textTheme.headline6,
           ),
-          if (_exercise.equipment.length > 0)
+          if (_exercise.equipment.isNotEmpty)
             Text(_exercise.equipment.map((e) => e.name).toList().join('\n')),
-          if (_exercise.equipment.length == 0) Text('-/-'),
+          if (_exercise.equipment.isEmpty) Text('-/-'),
           SizedBox(height: 8),
 
           // Muscles
@@ -57,9 +57,9 @@ class ExerciseDetail extends StatelessWidget {
             AppLocalizations.of(context).muscles,
             style: Theme.of(context).textTheme.headline6,
           ),
-          if (_exercise.muscles.length > 0)
+          if (_exercise.muscles.isNotEmpty)
             Text(_exercise.muscles.map((e) => e.name).toList().join('\n')),
-          if (_exercise.muscles.length == 0) Text('-/-'),
+          if (_exercise.muscles.isEmpty) Text('-/-'),
           SizedBox(height: 8),
 
           // Muscles secondary
@@ -67,9 +67,9 @@ class ExerciseDetail extends StatelessWidget {
             AppLocalizations.of(context).musclesSecondary,
             style: Theme.of(context).textTheme.headline6,
           ),
-          if (_exercise.musclesSecondary.length > 0)
+          if (_exercise.musclesSecondary.isNotEmpty)
             Text(_exercise.musclesSecondary.map((e) => e.name).toList().join('\n')),
-          if (_exercise.musclesSecondary.length == 0) Text('-/-'),
+          if (_exercise.musclesSecondary.isEmpty) Text('-/-'),
           SizedBox(height: 8),
 
           // Description

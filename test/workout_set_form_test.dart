@@ -41,13 +41,13 @@ import 'workout_set_form_test.mocks.dart';
 @GenerateMocks([ExercisesProvider])
 void main() {
   var mockWorkoutPlans = MockWorkoutPlansProvider();
-  MockExercisesProvider mockExercises = MockExercisesProvider();
-  WorkoutPlan workoutPlan = getWorkout();
+  final MockExercisesProvider mockExercises = MockExercisesProvider();
+  final WorkoutPlan workoutPlan = getWorkout();
   final client = MockClient();
   Day day = Day();
 
   setUp(() {
-    WorkoutPlan workoutPlan = getWorkout();
+    final WorkoutPlan workoutPlan = getWorkout();
     day = workoutPlan.days.first;
     mockWorkoutPlans = MockWorkoutPlansProvider();
   });

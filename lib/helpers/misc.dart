@@ -29,9 +29,9 @@ String repText(
   WeightUnit weightUnitObj,
   String? rir,
 ) {
-  // TODO: how to (easily?) translate strings like the units or 'RiR'?
+  // TODO(x): how to (easily?) translate strings like the units or 'RiR'
 
-  List<String> out = [];
+  final List<String> out = [];
 
   if (reps != null) {
     out.add(reps.toString());
@@ -71,20 +71,22 @@ List<DateTime> daysInRange(DateTime first, DateTime last) {
 
 extension TimeOfDayExtension on TimeOfDay {
   bool isAfter(TimeOfDay other) {
-    if (toMinutes() > other.toMinutes())
+    if (toMinutes() > other.toMinutes()) {
       return true;
-    else
+    } else {
       return false;
+    }
   }
 
   bool isBefore(TimeOfDay other) {
-    if (toMinutes() < other.toMinutes())
+    if (toMinutes() < other.toMinutes()) {
       return true;
-    else
+    } else {
       return false;
+    }
   }
 
   int toMinutes() {
-    return ((hour * 60) + minute);
+    return (hour * 60) + minute;
   }
 }

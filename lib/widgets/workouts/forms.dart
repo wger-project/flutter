@@ -122,10 +122,10 @@ class WorkoutForm extends StatelessWidget {
 }
 
 class DayCheckbox extends StatefulWidget {
-  Day _day;
+  final Day _day;
   final int _dayNr;
 
-  DayCheckbox(this._dayNr, this._day);
+  const DayCheckbox(this._dayNr, this._day);
 
   @override
   _DayCheckboxState createState() => _DayCheckboxState();
@@ -160,8 +160,8 @@ class DayFormWidget extends StatefulWidget {
   Day _day = Day();
 
   DayFormWidget(this.workout, [Day? day]) {
-    this._day = day ?? Day();
-    _day.workoutId = this.workout.id!;
+    _day = day ?? Day();
+    _day.workoutId = workout.id!;
     if (_day.id != null) {
       dayController.text = day!.description;
     }
@@ -198,7 +198,7 @@ class _DayFormWidgetState extends State<DayFormWidget> {
                 return AppLocalizations.of(context).enterCharacters(minLength, maxLength);
               }
 
-              if (widget._day.daysOfWeek.length == 0) {
+              if (widget._day.daysOfWeek.isEmpty) {
                 return 'You need to select at least one day';
               }
               return null;
@@ -255,11 +255,11 @@ class _DayFormWidgetState extends State<DayFormWidget> {
 }
 
 class SetFormWidget extends StatefulWidget {
-  Day _day;
+  final Day _day;
   late Set _set;
 
   SetFormWidget(this._day, [Set? set]) {
-    this._set = set ?? Set.withData(day: _day.id, order: _day.sets.length, sets: 4);
+    _set = set ?? Set.withData(day: _day.id, order: _day.sets.length, sets: 4);
   }
 
   @override
@@ -293,10 +293,10 @@ class _SetFormWidgetState extends State<SetFormWidget> {
   void addSettings() {
     widget._set.settings = [];
     int order = 0;
-    for (var exercise in widget._set.exercisesObj) {
+    for (final exercise in widget._set.exercisesObj) {
       order++;
       for (int loop = 0; loop < widget._set.sets; loop++) {
-        Setting setting = Setting.empty();
+        final Setting setting = Setting.empty();
         setting.order = order;
         setting.exercise = exercise;
         setting.weightUnit =
@@ -336,7 +336,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                     });
                   },
                 ),
-                if (widget._set.settings.length > 0)
+                if (widget._set.settings.isNotEmpty)
                   SwitchListTile(
                     title: Text(AppLocalizations.of(context).setUnitsAndRir),
                     value: _detailed,
@@ -357,7 +357,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                   child: TypeAheadFormField(
                     key: Key('field-typeahead'),
                     textFieldConfiguration: TextFieldConfiguration(
-                      controller: this._exercisesController,
+                      controller: _exercisesController,
                       decoration: InputDecoration(
                         labelText: AppLocalizations.of(context).searchExercise,
                         prefixIcon: Icon(Icons.search),
@@ -403,7 +403,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                       final exercise = Provider.of<ExercisesProvider>(context, listen: false)
                           .findById(result['data']['id']);
                       return ListTile(
-                        leading: Container(
+                        leading: SizedBox(
                           width: 45,
                           child: ExerciseImageWidget(image: exercise.getMainImage),
                         ),
@@ -420,11 +420,11 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                       final exercise = Provider.of<ExercisesProvider>(context, listen: false)
                           .findById(result['data']['id']);
                       addExercise(exercise);
-                      this._exercisesController.text = '';
+                      _exercisesController.text = '';
                     },
                     validator: (value) {
                       // At least one exercise must be selected
-                      if (widget._set.exercisesIds.length == 0) {
+                      if (widget._set.exercisesIds.isEmpty) {
                         return AppLocalizations.of(context).selectExercise;
                       }
 
@@ -503,18 +503,18 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                         Provider.of<WorkoutPlansProvider>(context, listen: false);
 
                     // Save set
-                    Set setDb = await workoutProvider.addSet(widget._set);
+                    final Set setDb = await workoutProvider.addSet(widget._set);
                     widget._set.id = setDb.id;
 
                     // Remove unused settings
                     widget._set.settings.removeWhere((s) => s.weight == null && s.reps == null);
 
                     // Save remaining settings
-                    for (var setting in widget._set.settings) {
+                    for (final setting in widget._set.settings) {
                       setting.setId = setDb.id!;
                       setting.comment = '';
 
-                      Setting settingDb = await workoutProvider.addSetting(setting);
+                      final Setting settingDb = await workoutProvider.addSetting(setting);
                       setting.id = settingDb.id;
                     }
 
@@ -538,9 +538,9 @@ class _SetFormWidgetState extends State<SetFormWidget> {
 class ExerciseSetting extends StatelessWidget {
   final Exercise _exercise;
   int _numberOfSets = 4;
-  bool _detailed;
+  final bool _detailed;
   final Function removeExercise;
-  List<Setting> _settings = [];
+  final List<Setting> _settings;
 
   ExerciseSetting(
     this._exercise,
@@ -549,13 +549,13 @@ class ExerciseSetting extends StatelessWidget {
     double sliderValue,
     this.removeExercise,
   ) {
-    this._numberOfSets = sliderValue.round();
+    _numberOfSets = sliderValue.round();
   }
 
   Widget getRows(BuildContext context) {
-    List<Widget> out = [];
+    final List<Widget> out = [];
     for (var i = 0; i < _numberOfSets; i++) {
-      var setting = _settings[i];
+      final setting = _settings[i];
 
       if (_detailed) {
         out.add(
@@ -685,7 +685,7 @@ class RepsInputWidget extends StatelessWidget {
       keyboardType: TextInputType.number,
       validator: (value) {
         try {
-          if (value != "") {
+          if (value != '') {
             double.parse(value!);
           }
         } catch (error) {
@@ -722,7 +722,7 @@ class WeightInputWidget extends StatelessWidget {
       keyboardType: TextInputType.number,
       validator: (value) {
         try {
-          if (value != "") {
+          if (value != '') {
             double.parse(value!);
           }
         } catch (error) {
@@ -752,7 +752,7 @@ class RiRInputWidget extends StatefulWidget {
   static const SLIDER_START = -0.5;
 
   RiRInputWidget(this._setting) {
-    dropdownValue = _setting.rir != null ? _setting.rir : Setting.DEFAULT_RIR;
+    dropdownValue = _setting.rir ?? Setting.DEFAULT_RIR;
 
     // Read string RiR into a double
     if (_setting.rir != null) {
@@ -824,7 +824,7 @@ class _RiRInputWidgetState extends State<RiRInputWidget> {
 class WeightUnitInputWidget extends StatefulWidget {
   final dynamic _setting;
 
-  WeightUnitInputWidget(this._setting, {Key? key}) : super(key: key);
+  const WeightUnitInputWidget(this._setting, {Key? key}) : super(key: key);
 
   @override
   _WeightUnitInputWidgetState createState() => _WeightUnitInputWidgetState();
@@ -861,7 +861,7 @@ class _WeightUnitInputWidgetState extends State<WeightUnitInputWidget> {
 /// Can be used with a Setting or a Log object
 class RepetitionUnitInputWidget extends StatefulWidget {
   final dynamic _setting;
-  RepetitionUnitInputWidget(this._setting);
+  const RepetitionUnitInputWidget(this._setting);
 
   @override
   _RepetitionUnitInputWidgetState createState() => _RepetitionUnitInputWidgetState();

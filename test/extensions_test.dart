@@ -25,7 +25,7 @@ void main() {
     final time1 = TimeOfDay(hour: 00, minute: 00);
     final time2 = TimeOfDay(hour: 23, minute: 59);
 
-    expect(time2.toMinutes(), (23 * 60 + 59));
+    expect(time2.toMinutes(), 23 * 60 + 59);
     expect(time1.isAfter(time2), false);
     expect(time1.isBefore(time2), true);
     expect(time2.isAfter(time1), true);

@@ -76,7 +76,7 @@ void main() {
     expect(find.byKey(Key('actionButton')), findsOneWidget);
     expect(find.byKey(Key('toggleActionButton')), findsOneWidget);
     expect(find.byKey(Key('toggleCustomServerButton')), findsOneWidget);
-  }, skip: true); // TODO: skipped because of technical problems:
+  }, skip: true); // TODO(x): skipped because of technical problems:
   // either the provider wasn't found or, if the call was removed, the
   // localization data could not be loaded...
 

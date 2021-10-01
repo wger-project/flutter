@@ -36,7 +36,7 @@ void main() {
     final key = GlobalKey<NavigatorState>();
     final client = MockClient();
 
-    WorkoutPlan workoutPlan = getWorkout();
+    final WorkoutPlan workoutPlan = getWorkout();
 
     return ChangeNotifierProvider<WorkoutPlansProvider>(
       create: (context) => WorkoutPlansProvider(

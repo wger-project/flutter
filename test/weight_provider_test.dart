@@ -41,7 +41,7 @@ void main() {
           200));
 
       // Load the entries
-      BodyWeightProvider provider = BodyWeightProvider(testAuthProvider, [], client);
+      final BodyWeightProvider provider = BodyWeightProvider(testAuthProvider, [], client);
       await provider.fetchAndSetEntries();
 
       // Check that everything is ok

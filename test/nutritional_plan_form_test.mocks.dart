@@ -184,8 +184,6 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i8.NutritionPlansP
       (super.noSuchMethod(Invocation.method(#deleteRequest, [url, id]),
           returnValue: Future<_i3.Response>.value(_FakeResponse_7())) as _i9.Future<_i3.Response>);
   @override
-  String toString() => super.toString();
-  @override
   void addListener(_i10.VoidCallback? listener) => super
       .noSuchMethod(Invocation.method(#addListener, [listener]), returnValueForMissingStub: null);
   @override

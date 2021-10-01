@@ -1,6 +1,6 @@
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/json.dart';
-import 'package:equatable/equatable.dart';
 
 part 'measurement_entry.g.dart';
 
@@ -21,7 +21,7 @@ class MeasurementEntry extends Equatable {
   @JsonKey(required: true, defaultValue: '')
   final String notes;
 
-  MeasurementEntry({
+  const MeasurementEntry({
     required this.id,
     required this.category,
     required this.date,

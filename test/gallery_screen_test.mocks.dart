@@ -105,8 +105,6 @@ class MockGalleryProvider extends _i1.Mock implements _i4.GalleryProvider {
       (super.noSuchMethod(Invocation.method(#deleteRequest, [url, id]),
           returnValue: Future<_i3.Response>.value(_FakeResponse_3())) as _i6.Future<_i3.Response>);
   @override
-  String toString() => super.toString();
-  @override
   void addListener(_i8.VoidCallback? listener) => super
       .noSuchMethod(Invocation.method(#addListener, [listener]), returnValueForMissingStub: null);
   @override

@@ -40,7 +40,7 @@ class NutritionalValues {
   );
 
   /// Convert to kilo joules
-  get energyKj {
+  double get energyKj {
     return energy * 4.184;
   }
 
@@ -57,17 +57,18 @@ class NutritionalValues {
 
   NutritionalValues operator +(NutritionalValues o) {
     return NutritionalValues.values(
-      this.energy + o.energy,
-      this.protein + o.protein,
-      this.carbohydrates + o.carbohydrates,
-      this.carbohydratesSugar + o.carbohydratesSugar,
-      this.fat + o.fat,
-      this.fatSaturated + o.fatSaturated,
-      this.fibres + o.fibres,
-      this.sodium + o.sodium,
+      energy + o.energy,
+      protein + o.protein,
+      carbohydrates + o.carbohydrates,
+      carbohydratesSugar + o.carbohydratesSugar,
+      fat + o.fat,
+      fatSaturated + o.fatSaturated,
+      fibres + o.fibres,
+      sodium + o.sodium,
     );
   }
 
+  @override
   bool operator ==(o) {
     return o is NutritionalValues &&
         energy == o.energy &&
@@ -81,12 +82,13 @@ class NutritionalValues {
   }
 
   @override
-  int get hashCode => super.hashCode;
-
-  @override
   String toString() {
     return 'e: $energy, p: $protein, c: $carbohydrates, cS: $carbohydratesSugar, f: $fat, fS: $fatSaturated, fi: $fibres, s: $sodium';
   }
+
+  //@override
+  // TODO(x): implement hashCode
+  //int get hashCode => super.hashCode;
 }
 
 class BaseNutritionalValues {

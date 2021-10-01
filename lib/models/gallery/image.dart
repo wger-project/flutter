@@ -43,8 +43,8 @@ class Image {
   });
 
   Image.emtpy() {
-    this.date = DateTime.now();
-    this.description = '';
+    date = DateTime.now();
+    description = '';
   }
 
   // Boilerplate

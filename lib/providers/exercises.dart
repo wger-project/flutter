@@ -25,16 +25,20 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:json_annotation/json_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/muscle.dart';
-import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/base_provider.dart';
 
 class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
+  ExercisesProvider(AuthProvider auth, List<Exercise> entries, [http.Client? client])
+      : _exercises = entries,
+        super(auth, client);
+
   static const daysToCache = 7;
 
   static const _exerciseInfoUrlPath = 'exerciseinfo';
@@ -46,14 +50,10 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
   static const _musclesUrlPath = 'muscle';
   static const _equipmentUrlPath = 'equipment';
 
-  List<Exercise> _exercises = [];
-  List<ExerciseCategory> _categories = [];
-  List<Muscle> _muscles = [];
-  List<Equipment> _equipment = [];
-
-  ExercisesProvider(AuthProvider auth, List<Exercise> entries, [http.Client? client])
-      : this._exercises = entries,
-        super(auth, client);
+  final List<Exercise> _exercises;
+  final List<ExerciseCategory> _categories = [];
+  final List<Muscle> _muscles = [];
+  final List<Equipment> _equipment = [];
 
   List<Exercise> get items {
     return [..._exercises];
@@ -72,7 +72,7 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
         _categories.add(ExerciseCategory.fromJson(category));
       }
     } catch (error) {
-      throw (error);
+      rethrow;
     }
   }
 
@@ -84,7 +84,7 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
         _muscles.add(Muscle.fromJson(muscle));
       }
     } catch (error) {
-      throw (error);
+      rethrow;
     }
   }
 
@@ -96,7 +96,7 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
         _equipment.add(Equipment.fromJson(equipment));
       }
     } catch (error) {
-      throw (error);
+      rethrow;
     }
   }
 
@@ -172,7 +172,7 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
       notifyListeners();
     } on MissingRequiredKeysException catch (error) {
       log(error.missingKeys.toString());
-      throw (error);
+      rethrow;
     }
   }
 
@@ -204,7 +204,7 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
 
     // Process the response
     final result = json.decode(utf8.decode(response.bodyBytes))['suggestions'] as List<dynamic>;
-    for (var entry in result) {
+    for (final entry in result) {
       entry['exercise_obj'] = await fetchAndSetExercise(entry['data']['id']);
     }
     return result;

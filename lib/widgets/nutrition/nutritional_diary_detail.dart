@@ -32,7 +32,7 @@ class NutritionalDiaryDetailWidget extends StatelessWidget {
   final NutritionalPlan _nutritionalPlan;
   final DateTime _date;
   static const double tablePadding = 7;
-  NutritionalDiaryDetailWidget(this._nutritionalPlan, this._date);
+  const NutritionalDiaryDetailWidget(this._nutritionalPlan, this._date);
 
   Widget getTable(
     NutritionalValues valuesTotal,
@@ -44,7 +44,7 @@ class NutritionalDiaryDetailWidget extends StatelessWidget {
       border: TableBorder(
         horizontalInside: BorderSide(width: 1, color: wgerTextMuted),
       ),
-      columnWidths: {0: FractionColumnWidth(0.4)},
+      columnWidths: const {0: FractionColumnWidth(0.4)},
       children: [
         TableRow(
           children: [
@@ -185,10 +185,7 @@ class NutritionalDiaryDetailWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  log.amount.toStringAsFixed(0) +
-                      AppLocalizations.of(context).g +
-                      ' ' +
-                      log.ingredientObj.name,
+                  '${log.amount.toStringAsFixed(0)}${AppLocalizations.of(context).g} ${log.ingredientObj.name}',
                   overflow: TextOverflow.ellipsis,
                 ),
                 SizedBox(height: 4),
@@ -211,8 +208,8 @@ class NutritionalDiaryDetailWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final valuesTotal = _nutritionalPlan.nutritionalValues;
-    final valuesDate = _nutritionalPlan.getValuesForDate(this._date);
-    final logs = _nutritionalPlan.getLogsForDate(this._date);
+    final valuesDate = _nutritionalPlan.getValuesForDate(_date);
+    final logs = _nutritionalPlan.getLogsForDate(_date);
 
     if (valuesDate == null) {
       return Text('');

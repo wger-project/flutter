@@ -66,7 +66,7 @@ class MyApp extends StatelessWidget {
           create: (context) =>
               ExercisesProvider(Provider.of<AuthProvider>(context, listen: false), []),
           update: (context, auth, previous) =>
-              previous != null ? previous : ExercisesProvider(auth, []),
+              previous ?? ExercisesProvider(auth, []),
         ),
         ChangeNotifierProxyProvider2<AuthProvider, ExercisesProvider, WorkoutPlansProvider>(
           create: (context) => WorkoutPlansProvider(
@@ -75,31 +75,31 @@ class MyApp extends StatelessWidget {
             [],
           ),
           update: (context, auth, exercises, previous) =>
-              previous != null ? previous : WorkoutPlansProvider(auth, exercises, []),
+              previous ?? WorkoutPlansProvider(auth, exercises, []),
         ),
         ChangeNotifierProxyProvider<AuthProvider, NutritionPlansProvider>(
           create: (context) =>
               NutritionPlansProvider(Provider.of<AuthProvider>(context, listen: false), []),
           update: (context, auth, previous) =>
-              previous != null ? previous : NutritionPlansProvider(auth, []),
+              previous ?? NutritionPlansProvider(auth, []),
         ),
         ChangeNotifierProxyProvider<AuthProvider, MeasurementProvider>(
           create: (context) => MeasurementProvider(
               WgerBaseProvider(Provider.of<AuthProvider>(context, listen: false))),
           update: (context, base, previous) =>
-              previous != null ? previous : MeasurementProvider(WgerBaseProvider(base)),
+              previous ?? MeasurementProvider(WgerBaseProvider(base)),
         ),
         ChangeNotifierProxyProvider<AuthProvider, BodyWeightProvider>(
           create: (context) =>
               BodyWeightProvider(Provider.of<AuthProvider>(context, listen: false), []),
           update: (context, auth, previous) =>
-              previous != null ? previous : BodyWeightProvider(auth, []),
+              previous ?? BodyWeightProvider(auth, []),
         ),
         ChangeNotifierProxyProvider<AuthProvider, GalleryProvider>(
           create: (context) =>
               GalleryProvider(Provider.of<AuthProvider>(context, listen: false), []),
           update: (context, auth, previous) =>
-              previous != null ? previous : GalleryProvider(auth, []),
+              previous ?? GalleryProvider(auth, []),
         ),
       ],
       child: Consumer<AuthProvider>(
@@ -118,7 +118,7 @@ class MyApp extends StatelessWidget {
           routes: {
             DashboardScreen.routeName: (ctx) => DashboardScreen(),
             FormScreen.routeName: (ctx) => FormScreen(),
-            GalleryScreen.routeName: (ctx) => GalleryScreen(),
+            GalleryScreen.routeName: (ctx) => const GalleryScreen(),
             GymModeScreen.routeName: (ctx) => GymModeScreen(),
             HomeTabsScreen.routeName: (ctx) => HomeTabsScreen(),
             MeasurementCategoriesScreen.routeName: (ctx) => MeasurementCategoriesScreen(),

@@ -22,7 +22,7 @@ import 'package:wger/models/nutrition/nutritrional_values.dart';
 import 'package:wger/widgets/core/core.dart';
 
 List<Widget> getMutedNutritionalValues(NutritionalValues values, BuildContext context) {
-  List<Widget> out = [
+  final List<Widget> out = [
     MutedText(
       '${AppLocalizations.of(context).energy}: '
       '${values.energy.toStringAsFixed(0)}'

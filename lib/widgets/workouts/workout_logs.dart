@@ -31,7 +31,7 @@ import 'package:wger/widgets/workouts/log.dart';
 class WorkoutLogs extends StatefulWidget {
   final WorkoutPlan _workoutPlan;
   final _changeMode;
-  WorkoutLogs(this._workoutPlan, this._changeMode);
+  const WorkoutLogs(this._workoutPlan, this._changeMode);
 
   @override
   _WorkoutLogsState createState() => _WorkoutLogsState();
@@ -45,7 +45,7 @@ class _WorkoutLogsState extends State<WorkoutLogs> {
     return Column(
       children: [
         ToggleButtons(
-          children: <Widget>[
+          children: const <Widget>[
             Icon(
               Icons.table_chart_outlined,
             ),
@@ -59,7 +59,7 @@ class _WorkoutLogsState extends State<WorkoutLogs> {
               widget._changeMode(WorkoutScreenMode.workout);
             }
           },
-          isSelected: [false, true],
+          isSelected: const [false, true],
         ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 10),
@@ -82,7 +82,7 @@ class _WorkoutLogsState extends State<WorkoutLogs> {
             textAlign: TextAlign.justify,
           ),
         ),
-        Container(
+        SizedBox(
           width: double.infinity,
           child: WorkoutLogCalendar(widget._workoutPlan),
         ),
@@ -103,7 +103,7 @@ class WorkoutLogEvent {
 class WorkoutLogCalendar extends StatefulWidget {
   final WorkoutPlan _workoutPlan;
 
-  WorkoutLogCalendar(this._workoutPlan);
+  const WorkoutLogCalendar(this._workoutPlan);
 
   @override
   _WorkoutLogCalendarState createState() => _WorkoutLogCalendarState();
@@ -132,8 +132,8 @@ class _WorkoutLogCalendarState extends State<WorkoutLogCalendar> {
   }
 
   void loadEvents() {
-    for (var date in widget._workoutPlan.logData.keys) {
-      var entry = widget._workoutPlan.logData[date]!;
+    for (final date in widget._workoutPlan.logData.keys) {
+      final entry = widget._workoutPlan.logData[date]!;
       _events[DateFormatLists.format(date)] = [
         WorkoutLogEvent(
           date,
@@ -192,7 +192,7 @@ class _WorkoutLogCalendarState extends State<WorkoutLogCalendar> {
               valueListenable: _selectedEvents,
               builder: (context, logEvents, _) {
                 // At the moment there is only one "event" per day
-                return logEvents.length > 0
+                return logEvents.isNotEmpty
                     ? DayLogWidget(
                         logEvents.first.dateTime,
                         logEvents.first.exercises,

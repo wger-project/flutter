@@ -42,7 +42,7 @@ class MeasurementEntriesScreen extends StatelessWidget {
         title: Text(category.name),
         actions: [
           PopupMenuButton<MeasurementOptions>(
-            icon: Icon(Icons.more_vert),
+            icon: const Icon(Icons.more_vert),
             onSelected: (value) {
               switch (value) {
                 case MeasurementOptions.edit:

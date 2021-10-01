@@ -20,7 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:wger/theme/theme.dart';
 
 class MutedText extends StatelessWidget {
-  String _text;
+  final String _text;
   TextAlign _textAlign = TextAlign.left;
 
   MutedText(
@@ -29,7 +29,7 @@ class MutedText extends StatelessWidget {
     TextAlign? textAlign,
   }) : super(key: key) {
     if (textAlign != null) {
-      this._textAlign = textAlign;
+      _textAlign = textAlign;
     }
   }
 

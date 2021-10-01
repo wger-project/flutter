@@ -20,10 +20,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/ui.dart';
-import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
@@ -32,13 +32,13 @@ import 'package:wger/screens/nutritional_plan_screen.dart';
 
 class MealForm extends StatelessWidget {
   late Meal _meal;
-  int _planId;
+  final int _planId;
 
   final _form = GlobalKey<FormState>();
   final _timeController = TextEditingController();
 
   MealForm(this._planId, [meal]) {
-    this._meal = meal ?? Meal(plan: _planId);
+    _meal = meal ?? Meal(plan: _planId);
     _timeController.text = timeToString(_meal.time)!;
   }
 
@@ -56,10 +56,10 @@ class MealForm extends StatelessWidget {
               controller: _timeController,
               onTap: () async {
                 // Stop keyboard from appearing
-                FocusScope.of(context).requestFocus(new FocusNode());
+                FocusScope.of(context).requestFocus(FocusNode());
 
                 // Open time picker
-                var pickedTime = await showTimePicker(
+                final pickedTime = await showTimePicker(
                   context: context,
                   initialTime: _meal.time!,
                 );
@@ -101,11 +101,11 @@ class MealForm extends StatelessWidget {
 }
 
 class MealItemForm extends StatelessWidget {
-  Meal _meal;
+  final Meal _meal;
   late MealItem _mealItem;
 
   MealItemForm(this._meal, [mealItem]) {
-    this._mealItem = mealItem ?? MealItem.empty();
+    _mealItem = mealItem ?? MealItem.empty();
     _mealItem.mealId = _meal.id!;
   }
 
@@ -123,12 +123,11 @@ class MealItemForm extends StatelessWidget {
           children: [
             TypeAheadFormField(
               textFieldConfiguration: TextFieldConfiguration(
-                controller: this._ingredientController,
+                controller: _ingredientController,
                 decoration: InputDecoration(labelText: AppLocalizations.of(context).ingredient),
               ),
               suggestionsCallback: (pattern) async {
-                return await Provider.of<NutritionPlansProvider>(context, listen: false)
-                    .searchIngredient(
+                return Provider.of<NutritionPlansProvider>(context, listen: false).searchIngredient(
                   pattern,
                   Localizations.localeOf(context).languageCode,
                 );
@@ -144,7 +143,7 @@ class MealItemForm extends StatelessWidget {
               },
               onSuggestionSelected: (dynamic suggestion) {
                 _mealItem.ingredientId = suggestion['data']['id'];
-                this._ingredientController.text = suggestion['value'];
+                _ingredientController.text = suggestion['value'];
               },
               validator: (value) {
                 if (value!.isEmpty) {
@@ -202,7 +201,7 @@ class PlanForm extends StatelessWidget {
   late NutritionalPlan _plan;
 
   PlanForm([NutritionalPlan? plan]) {
-    _plan = plan != null ? plan : NutritionalPlan.empty();
+    _plan = plan ?? NutritionalPlan.empty();
     _descriptionController.text = _plan.description;
   }
 
