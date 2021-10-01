@@ -296,7 +296,7 @@ class _LogPageState extends State<LogPage> {
               if (newValue > 0) {
                 _repsController.text = newValue.toString();
               }
-            } on FormatException catch (e) {}
+            } on FormatException {}
           },
         ),
         Expanded(
@@ -332,7 +332,7 @@ class _LogPageState extends State<LogPage> {
             try {
               final int newValue = int.parse(_repsController.text) + 1;
               _repsController.text = newValue.toString();
-            } on FormatException catch (e) {}
+            } on FormatException {}
           },
         ),
       ],
@@ -357,7 +357,7 @@ class _LogPageState extends State<LogPage> {
                   _weightController.text = newValue.toString();
                 });
               }
-            } on FormatException catch (e) {}
+            } on FormatException {}
           },
         ),
         Expanded(
@@ -374,7 +374,7 @@ class _LogPageState extends State<LogPage> {
                 setState(() {
                   widget._log.weight = double.parse(value);
                 });
-              } on FormatException catch (e) {}
+              } on FormatException {}
             },
             onSaved: (newValue) {
               setState(() {
@@ -403,7 +403,7 @@ class _LogPageState extends State<LogPage> {
                 widget._log.weight = newValue;
                 _weightController.text = newValue.toString();
               });
-            } on FormatException catch (e) {}
+            } on FormatException {}
           },
         ),
       ],

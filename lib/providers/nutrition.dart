@@ -76,7 +76,7 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
       try {
         final meal = plan.meals.firstWhere((plan) => plan.id == id);
         return meal;
-      } on StateError catch (e) {}
+      } on StateError {}
     }
     return null;
   }

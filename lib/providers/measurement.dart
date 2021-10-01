@@ -107,7 +107,7 @@ class MeasurementProvider with ChangeNotifier {
 
     try {
       await baseProvider.deleteRequest(_categoryUrl, id);
-    } on WgerHttpException catch (e) {
+    } on WgerHttpException {
       _categories.insert(categoryIndex, category);
       notifyListeners();
       rethrow;

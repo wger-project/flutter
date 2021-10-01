@@ -85,7 +85,8 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
 
   void loadEvents() async {
     // Process weight entries
-    final BodyWeightProvider weightProvider = Provider.of<BodyWeightProvider>(context, listen: false);
+    final BodyWeightProvider weightProvider =
+        Provider.of<BodyWeightProvider>(context, listen: false);
     for (final entry in weightProvider.items) {
       final date = DateFormatLists.format(entry.date);
 
@@ -123,9 +124,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
           _events[date] = [];
         }
         var time = '';
-        if (session.timeStart != null && session.timeEnd != null) {
-          time = '(${timeToString(session.timeStart)} - ${timeToString(session.timeEnd)})';
-        }
+        time = '(${timeToString(session.timeStart)} - ${timeToString(session.timeEnd)})';
 
         // Add events to lists
         _events[date]!.add(Event(

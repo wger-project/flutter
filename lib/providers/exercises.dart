@@ -108,7 +108,7 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
   Future<Exercise> fetchAndSetExercise(int exerciseId) async {
     try {
       return findById(exerciseId);
-    } on StateError catch (e) {
+    } on StateError {
       // Get exercise from the server and save to cache
 
       final data = await fetch(makeUrl(_exerciseInfoUrlPath, id: exerciseId));

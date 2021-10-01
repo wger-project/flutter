@@ -89,7 +89,7 @@ class Exercise {
   ExerciseImage? get getMainImage {
     try {
       return images.firstWhere((image) => image.isMain);
-    } on StateError catch (e) {
+    } on StateError {
       return null;
     }
   }

@@ -69,26 +69,23 @@ class NutritionalValues {
   }
 
   @override
-  bool operator ==(o) {
-    return o is NutritionalValues &&
-        energy == o.energy &&
-        protein == o.protein &&
-        carbohydrates == o.carbohydrates &&
-        carbohydratesSugar == o.carbohydratesSugar &&
-        fat == o.fat &&
-        fatSaturated == o.fatSaturated &&
-        fibres == o.fibres &&
-        sodium == o.sodium;
+  //ignore: hash_and_equals
+  bool operator ==(other) {
+    return other is NutritionalValues &&
+        energy == other.energy &&
+        protein == other.protein &&
+        carbohydrates == other.carbohydrates &&
+        carbohydratesSugar == other.carbohydratesSugar &&
+        fat == other.fat &&
+        fatSaturated == other.fatSaturated &&
+        fibres == other.fibres &&
+        sodium == other.sodium;
   }
 
   @override
   String toString() {
     return 'e: $energy, p: $protein, c: $carbohydrates, cS: $carbohydratesSugar, f: $fat, fS: $fatSaturated, fi: $fibres, s: $sodium';
   }
-
-  //@override
-  // TODO(x): implement hashCode
-  //int get hashCode => super.hashCode;
 }
 
 class BaseNutritionalValues {
