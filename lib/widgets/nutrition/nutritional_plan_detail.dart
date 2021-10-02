@@ -32,7 +32,7 @@ import 'package:wger/widgets/nutrition/meal.dart';
 
 class NutritionalPlanDetailWidget extends StatelessWidget {
   final NutritionalPlan _nutritionalPlan;
-  NutritionalPlanDetailWidget(this._nutritionalPlan);
+  const NutritionalPlanDetailWidget(this._nutritionalPlan);
   static const double tablePadding = 7;
 
   @override
@@ -77,7 +77,7 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
               border: TableBorder(
                 horizontalInside: BorderSide(width: 1, color: wgerTextMuted),
               ),
-              columnWidths: {0: FractionColumnWidth(0.4)},
+              columnWidths: const {0: FractionColumnWidth(0.4)},
               children: [
                 TableRow(
                   children: [
@@ -213,7 +213,7 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
             height: 220,
             child: NutritionalDiaryChartWidget(nutritionalPlan: _nutritionalPlan),
           ),
-          Container(
+          SizedBox(
             height: 200,
             child: ListView(
               scrollDirection: Axis.horizontal,
@@ -223,7 +223,7 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      TextButton(onPressed: () => null, child: Text('')),
+                      TextButton(onPressed: () {}, child: const Text('')),
                       Text(
                           '${AppLocalizations.of(context).energy} (${AppLocalizations.of(context).kcal})'),
                       Text(
@@ -257,7 +257,7 @@ class NutritionDiaryEntry extends StatelessWidget {
   final NutritionalValues values;
   final NutritionalPlan plan;
 
-  NutritionDiaryEntry(
+  const NutritionDiaryEntry(
     this.date,
     this.values,
     this.plan,

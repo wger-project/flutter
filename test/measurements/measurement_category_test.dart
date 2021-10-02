@@ -4,7 +4,7 @@ import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
 
 void main() {
-  List<MeasurementEntry> tMeasurementEntries = [
+  final List<MeasurementEntry> tMeasurementEntries = [
     MeasurementEntry(
       id: 1234,
       category: 123,
@@ -14,23 +14,23 @@ void main() {
     )
   ];
 
-  MeasurementEntry tMeasurementEntry = MeasurementEntry(
+  final MeasurementEntry tMeasurementEntry = MeasurementEntry(
     id: 1234,
     category: 123,
     date: DateTime(2021, 7, 22),
     value: 83,
     notes: 'notes',
   );
-  int tMeasurementEntryId = 1234;
+  const int tMeasurementEntryId = 1234;
 
-  MeasurementCategory tMeasurementCategory = MeasurementCategory(
+  final MeasurementCategory tMeasurementCategory = MeasurementCategory(
     id: 123,
     name: 'Bizeps',
     unit: 'cm',
     entries: tMeasurementEntries,
   );
 
-  Map<String, dynamic> tMeasurementEntryMap = {
+  final Map<String, dynamic> tMeasurementEntryMap = {
     'id': 1234,
     'category': 123,
     'date': '2021-07-22',
@@ -38,14 +38,14 @@ void main() {
     'notes': 'notes'
   };
 
-  Map<String, dynamic> tMeasurementCategoryMap = {
+  final Map<String, dynamic> tMeasurementCategoryMap = {
     'id': 123,
     'name': 'Bizeps',
     'unit': 'cm',
     'entries': [tMeasurementEntryMap],
   };
 
-  Map<String, dynamic> tMeasurementCategoryMaptoJson = {
+  final Map<String, dynamic> tMeasurementCategoryMaptoJson = {
     'id': 123,
     'name': 'Bizeps',
     'unit': 'cm',
@@ -76,7 +76,7 @@ void main() {
     test('should copyWith objects of this class', () {
       // arrange
 
-      MeasurementCategory tMeasurementCategoryCopied = MeasurementCategory(
+      final MeasurementCategory tMeasurementCategoryCopied = MeasurementCategory(
         id: 1234,
         name: 'Coolness',
         unit: 'lp',

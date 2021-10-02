@@ -26,7 +26,7 @@ import 'package:wger/screens/workout_plan_screen.dart';
 class WorkoutPlansList extends StatelessWidget {
   final WorkoutPlansProvider _workoutProvider;
 
-  WorkoutPlansList(this._workoutProvider);
+  const WorkoutPlansList(this._workoutProvider);
 
   @override
   Widget build(BuildContext context) {

@@ -76,8 +76,8 @@ class Set {
     this.sets = sets ?? DEFAULT_NR_SETS;
     this.order = order ?? 1;
     this.comment = comment ?? '';
-    this.exercisesObj = exercises ?? [];
-    this.exercisesIds = exercisesObj.map((e) => e.id).toList();
+    exercisesObj = exercises ?? [];
+    exercisesIds = exercisesObj.map((e) => e.id).toList();
     this.settings = settings ?? [];
     this.settingsComputed = settingsComputed ?? [];
     if (day != null) {
@@ -88,17 +88,17 @@ class Set {
   /// Return only one setting object per exercise, this makes rendering workout
   /// plans easier and the gym mode uses the synthetic settings anyway.
   List<Setting> get settingsFiltered {
-    List<Setting> out = [];
+    final List<Setting> out = [];
 
-    settings.forEach((setting) {
+    for (final setting in settings) {
       final foundSettings = out.where(
         (element) => element.exerciseId == setting.exerciseId,
       );
 
-      if (foundSettings.length == 0) {
+      if (foundSettings.isEmpty) {
         out.add(setting);
       }
-    });
+    }
     return out;
   }
 
@@ -119,11 +119,11 @@ class Set {
 
   /// Returns a list with all repetitions for the given exercise
   List<String> getSmartRepr(Exercise exercise) {
-    List<String> out = [];
+    final List<String> out = [];
 
     final settingList = filterSettingsByExercise(exercise);
 
-    if (settingList.length == 0) {
+    if (settingList.isEmpty) {
       out.add('');
     }
 
@@ -132,7 +132,7 @@ class Set {
     }
 
     if (settingList.length > 1) {
-      for (var setting in settingList) {
+      for (final setting in settingList) {
         out.add(setting.singleSettingRepText.replaceAll('\n', ''));
       }
     }

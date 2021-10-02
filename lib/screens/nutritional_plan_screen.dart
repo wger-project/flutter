@@ -103,7 +103,7 @@ class NutritionalPlanScreen extends StatelessWidget {
                     ? SliverList(
                         delegate: SliverChildListDelegate(
                           [
-                            Container(
+                            SizedBox(
                               height: 200,
                               child: Center(
                                 child: CircularProgressIndicator(),

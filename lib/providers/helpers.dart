@@ -24,9 +24,9 @@ Uri makeUri(
   String? objectMethod,
   Map<String, dynamic>? query,
 ]) {
-  Uri uriServer = Uri.parse(serverUrl);
+  final Uri uriServer = Uri.parse(serverUrl);
 
-  var pathList = ['api', 'v2', path];
+  final pathList = ['api', 'v2', path];
   if (id != null) {
     pathList.add(id.toString());
   }
@@ -38,7 +38,7 @@ Uri makeUri(
     scheme: uriServer.scheme,
     host: uriServer.host,
     port: uriServer.port,
-    path: pathList.join('/') + '/',
+    path: '${pathList.join('/')}/',
     queryParameters: query,
   );
 

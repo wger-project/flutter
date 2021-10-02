@@ -33,7 +33,7 @@ class WgerBaseProvider {
   late http.Client client;
 
   WgerBaseProvider(this.auth, [http.Client? client]) {
-    this.auth = auth;
+    auth = auth;
     this.client = client ?? http.Client();
   }
 
@@ -55,7 +55,6 @@ class WgerBaseProvider {
 
     // Something wrong with our request
     if (response.statusCode >= 400) {
-      print(response);
       throw WgerHttpException(response.body);
     }
 

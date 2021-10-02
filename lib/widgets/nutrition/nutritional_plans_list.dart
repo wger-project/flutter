@@ -23,8 +23,8 @@ import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 
 class NutritionalPlansList extends StatelessWidget {
-  NutritionPlansProvider _nutritrionProvider;
-  NutritionalPlansList(this._nutritrionProvider);
+  final NutritionPlansProvider _nutritrionProvider;
+  const NutritionalPlansList(this._nutritrionProvider);
 
   @override
   Widget build(BuildContext context) {

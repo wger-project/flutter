@@ -30,7 +30,7 @@ class ExerciseLogChart extends StatelessWidget {
   final Exercise _exercise;
   final DateTime _currentDate;
 
-  ExerciseLogChart(this._exercise, this._currentDate);
+  const ExerciseLogChart(this._exercise, this._currentDate);
 
   @override
   Widget build(BuildContext context) {
@@ -38,12 +38,12 @@ class ExerciseLogChart extends StatelessWidget {
     final _workout = _workoutPlansData.currentPlan;
 
     Future<Map<String, dynamic>> _getChartEntries(BuildContext context) async {
-      return await _workoutPlansData.fetchLogData(_workout!, _exercise);
+      return _workoutPlansData.fetchLogData(_workout!, _exercise);
     }
 
     return FutureBuilder(
       future: _getChartEntries(context),
-      builder: (context, AsyncSnapshot<Map<String, dynamic>> snapshot) => Container(
+      builder: (context, AsyncSnapshot<Map<String, dynamic>> snapshot) => SizedBox(
         height: 150,
         child: snapshot.connectionState == ConnectionState.waiting
             ? Center(child: CircularProgressIndicator())
@@ -58,7 +58,7 @@ class DayLogWidget extends StatelessWidget {
   final WorkoutSession? _session;
   final Map<Exercise, List<Log>> _exerciseData;
 
-  DayLogWidget(this._date, this._exerciseData, this._session);
+  const DayLogWidget(this._date, this._exerciseData, this._session);
 
   @override
   Widget build(BuildContext context) {

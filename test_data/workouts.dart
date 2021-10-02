@@ -33,7 +33,7 @@ const RepetitionUnit repetitionUnit1 = RepetitionUnit(id: 1, name: 'Repetitions'
 const RepetitionUnit repetitionUnit2 = RepetitionUnit(id: 2, name: 'Hours');
 
 WorkoutPlan getWorkout() {
-  var setting1 = Setting(
+  final setting1 = Setting(
     setId: 1,
     order: 1,
     exerciseId: 1,
@@ -48,7 +48,7 @@ WorkoutPlan getWorkout() {
   setting1.exercise = exercise1;
   setting1.weight = 10;
 
-  var log1 = Log.empty()
+  final log1 = Log.empty()
     ..id = 1
     ..weight = 10
     ..rir = '1.5'
@@ -59,7 +59,7 @@ WorkoutPlan getWorkout() {
   log1.weightUnit = weightUnit1;
   log1.repetitionUnit = repetitionUnit1;
 
-  var log2 = Log.empty()
+  final log2 = Log.empty()
     ..id = 2
     ..weight = 10
     ..rir = '2'
@@ -70,7 +70,7 @@ WorkoutPlan getWorkout() {
   log2.weightUnit = weightUnit1;
   log2.repetitionUnit = repetitionUnit1;
 
-  var log3 = Log.empty()
+  final log3 = Log.empty()
     ..id = 3
     ..weight = 50
     ..rir = ''
@@ -81,7 +81,7 @@ WorkoutPlan getWorkout() {
   log3.weightUnit = weightUnit1;
   log3.repetitionUnit = repetitionUnit1;
 
-  var set1 = Set.withData(
+  final set1 = Set.withData(
     id: 1,
     day: 1,
     sets: 3,
@@ -92,20 +92,20 @@ WorkoutPlan getWorkout() {
   set1.settings.add(setting1);
   set1.settingsComputed = [setting1, setting1];
 
-  var day1 = Day()
+  final day1 = Day()
     ..id = 1
     ..workoutId = 1
     ..description = 'test day 1'
     ..daysOfWeek = [1, 2];
   day1.sets.add(set1);
 
-  var day2 = Day()
+  final day2 = Day()
     ..id = 2
     ..workoutId = 1
     ..description = 'test day 2'
     ..daysOfWeek = [4];
 
-  var workout = WorkoutPlan(
+  final workout = WorkoutPlan(
       id: 1,
       creationDate: DateTime(2021, 01, 01),
       name: 'test workout 1',

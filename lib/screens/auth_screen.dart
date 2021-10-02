@@ -20,9 +20,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/ui.dart';
-import 'package:wger/exceptions/http_exception.dart';
 
 import '../providers/auth.dart';
 
@@ -42,7 +42,7 @@ class AuthScreen extends StatelessWidget {
       body: Stack(
         children: <Widget>[
           SingleChildScrollView(
-            child: Container(
+            child: SizedBox(
               height: deviceSize.height,
               width: deviceSize.width,
               child: Column(
@@ -92,7 +92,7 @@ class _AuthCardState extends State<AuthCard> {
   final GlobalKey<FormState> _formKey = GlobalKey();
   AuthMode _authMode = AuthMode.Login;
   bool _hideCustomServer = true;
-  Map<String, String> _authData = {
+  final Map<String, String> _authData = {
     'username': '',
     'email': '',
     'password': '',
@@ -187,7 +187,7 @@ class _AuthCardState extends State<AuthCard> {
                       labelText: AppLocalizations.of(context).username,
                       errorMaxLines: 2,
                     ),
-                    autofillHints: [AutofillHints.username],
+                    autofillHints: const [AutofillHints.username],
                     controller: _usernameController,
                     textInputAction: TextInputAction.next,
                     keyboardType: TextInputType.emailAddress,
@@ -208,7 +208,7 @@ class _AuthCardState extends State<AuthCard> {
                     TextFormField(
                       key: Key('inputEmail'),
                       decoration: InputDecoration(labelText: AppLocalizations.of(context).email),
-                      autofillHints: [AutofillHints.email],
+                      autofillHints: const [AutofillHints.email],
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
                       textInputAction: TextInputAction.next,
@@ -225,9 +225,9 @@ class _AuthCardState extends State<AuthCard> {
                       },
                     ),
                   TextFormField(
-                    key: Key('inputPassword'),
+                    key: const Key('inputPassword'),
                     decoration: InputDecoration(labelText: AppLocalizations.of(context).password),
-                    autofillHints: [AutofillHints.password],
+                    autofillHints: const [AutofillHints.password],
                     obscureText: true,
                     controller: _passwordController,
                     textInputAction: TextInputAction.next,

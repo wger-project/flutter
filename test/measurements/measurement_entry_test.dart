@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
 
 void main() {
-  MeasurementEntry tMeasurementEntry = MeasurementEntry(
+  final MeasurementEntry tMeasurementEntry = MeasurementEntry(
     id: 1234,
     category: 123,
     date: DateTime(2021, 7, 22),
@@ -10,7 +10,7 @@ void main() {
     notes: 'notes',
   );
 
-  Map<String, dynamic> tMeasurementEntryMap = {
+  final Map<String, dynamic> tMeasurementEntryMap = {
     'id': 1234,
     'category': 123,
     'date': '2021-07-22',
@@ -37,7 +37,7 @@ void main() {
   test('should copyWith objects of this class', () {
     // arrange
 
-    MeasurementEntry tMeasurementEntryCopied = MeasurementEntry(
+    final MeasurementEntry tMeasurementEntryCopied = MeasurementEntry(
       id: 83,
       category: 17,
       date: DateTime(1960),

@@ -49,7 +49,7 @@ class SettingWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       leading: InkWell(
-        child: Container(
+        child: SizedBox(
           child: ExerciseImageWidget(image: setting.exerciseObj.getMainImage),
           width: 45,
         ),
@@ -87,7 +87,7 @@ class SettingWidget extends StatelessWidget {
 class WorkoutDayWidget extends StatefulWidget {
   final Day _day;
 
-  WorkoutDayWidget(this._day);
+  const WorkoutDayWidget(this._day);
 
   @override
   _WorkoutDayWidgetState createState() => _WorkoutDayWidgetState();
@@ -97,6 +97,7 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
   bool _expanded = false;
   late List<Set> _sets;
 
+  @override
   void initState() {
     super.initState();
     _sets = widget._day.sets;
@@ -179,7 +180,7 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
                     },
                     icon: Icon(Icons.delete),
                   ),
-                  if (widget._day.sets.length > 0)
+                  if (widget._day.sets.isNotEmpty)
                     Ink(
                       decoration: const ShapeDecoration(
                         color: wgerPrimaryButtonColor,

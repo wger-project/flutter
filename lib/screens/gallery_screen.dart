@@ -37,7 +37,7 @@ class GalleryScreen extends StatelessWidget {
     return Scaffold(
       appBar: WgerAppBar(AppLocalizations.of(context).gallery),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
         onPressed: () {
           Navigator.pushNamed(
             context,

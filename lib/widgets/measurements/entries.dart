@@ -29,9 +29,9 @@ import 'package:wger/widgets/core/charts.dart';
 import 'forms.dart';
 
 class EntriesList extends StatelessWidget {
-  MeasurementCategory _category;
+  final MeasurementCategory _category;
 
-  EntriesList(this._category);
+  const EntriesList(this._category);
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +42,7 @@ class EntriesList extends StatelessWidget {
         height: 220,
         child: MeasurementChartWidget(
           _category.entries.map((e) => MeasurementChartEntry(e.value, e.date)).toList(),
-          unit: this._category.unit,
+          unit: _category.unit,
         ),
       ),
       Expanded(

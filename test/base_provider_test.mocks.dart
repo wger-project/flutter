@@ -80,6 +80,4 @@ class MockClient extends _i1.Mock implements _i4.Client {
   @override
   void close() =>
       super.noSuchMethod(Invocation.method(#close, []), returnValueForMissingStub: null);
-  @override
-  String toString() => super.toString();
 }

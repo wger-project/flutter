@@ -82,12 +82,12 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(
-      find.text(('test 1')),
+      find.text('test 1'),
       findsOneWidget,
       reason: 'Name of existing workout plan',
     );
     expect(
-      find.text(('description 1')),
+      find.text('description 1'),
       findsOneWidget,
       reason: 'Description of existing workout plan',
     );
@@ -98,7 +98,7 @@ void main() {
     verify(mockWorkoutPlans.editWorkout(any));
     verifyNever(mockWorkoutPlans.addWorkout(any));
 
-    // TODO: edit calls Navigator.pop(), since the form can only be reached from the
+    // TODO(x): edit calls Navigator.pop(), since the form can only be reached from the
     //       detail page. The test needs to add the detail page to the stack so that
     //       this can be checked.
     // https://stackoverflow.com/questions/50704647/how-to-test-navigation-via-navigator-in-flutter
@@ -119,7 +119,7 @@ void main() {
     await tester.pumpWidget(createHomeScreen(newPlan));
     await tester.pumpAndSettle();
 
-    expect(find.text(('')), findsNWidgets(2), reason: 'New workout has no name or description');
+    expect(find.text(''), findsNWidgets(2), reason: 'New workout has no name or description');
     await tester.enterText(find.byKey(Key('field-name')), editWorkout.name);
     await tester.tap(find.byKey(Key(SUBMIT_BUTTON_KEY_NAME)));
 
@@ -128,7 +128,7 @@ void main() {
 
     // Detail page
     await tester.pumpAndSettle();
-    expect(find.text(('New cool workout')), findsOneWidget, reason: 'Workout plan detail page');
+    expect(find.text('New cool workout'), findsOneWidget, reason: 'Workout plan detail page');
   });
 
   testWidgets('Test creating a new workout - name and description', (WidgetTester tester) async {
@@ -139,7 +139,7 @@ void main() {
     await tester.pumpWidget(createHomeScreen(newPlan));
     await tester.pumpAndSettle();
 
-    expect(find.text(('')), findsNWidgets(2), reason: 'New workout has no name or description');
+    expect(find.text(''), findsNWidgets(2), reason: 'New workout has no name or description');
     await tester.enterText(find.byKey(Key('field-name')), editWorkout.name);
     await tester.enterText(find.byKey(Key('field-description')), editWorkout.description);
     await tester.tap(find.byKey(Key(SUBMIT_BUTTON_KEY_NAME)));
@@ -149,6 +149,6 @@ void main() {
 
     // Detail page
     await tester.pumpAndSettle();
-    expect(find.text(('My workout')), findsOneWidget, reason: 'Workout plan detail page');
+    expect(find.text('My workout'), findsOneWidget, reason: 'Workout plan detail page');
   });
 }

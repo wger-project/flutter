@@ -81,22 +81,22 @@ class Exercise {
     this.musclesSecondary = musclesSecondary ?? [];
     this.muscles = muscles ?? [];
     if (category != null) {
-      this.categoryObj = category;
-      this.categoryId = category.id;
+      categoryObj = category;
+      categoryId = category.id;
     }
   }
 
   ExerciseImage? get getMainImage {
     try {
       return images.firstWhere((image) => image.isMain);
-    } on StateError catch (e) {
+    } on StateError {
       return null;
     }
   }
 
   set category(ExerciseCategory category) {
-    this.categoryId = category.id;
-    this.categoryObj = category;
+    categoryId = category.id;
+    categoryObj = category;
   }
 
   // Boilerplate

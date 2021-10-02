@@ -68,7 +68,7 @@ class NutritionalPlan {
     // This is already done on the server. It might be better to read it from there.
     var out = NutritionalValues();
 
-    for (var meal in meals) {
+    for (final meal in meals) {
       out += meal.nutritionalValues;
     }
 
@@ -98,8 +98,8 @@ class NutritionalPlan {
   }
 
   Map<DateTime, NutritionalValues> get logEntriesValues {
-    var out = <DateTime, NutritionalValues>{};
-    for (var log in logs) {
+    final out = <DateTime, NutritionalValues>{};
+    for (final log in logs) {
       final date = DateTime(log.datetime.year, log.datetime.month, log.datetime.day);
 
       if (!out.containsKey(date)) {
@@ -114,7 +114,7 @@ class NutritionalPlan {
 
   /// Returns the nutritional values for the given date
   NutritionalValues? getValuesForDate(DateTime date) {
-    final values = this.logEntriesValues;
+    final values = logEntriesValues;
     final dateKey = DateTime(date.year, date.month, date.day);
 
     return values.containsKey(dateKey) ? values[dateKey] : null;
@@ -122,8 +122,8 @@ class NutritionalPlan {
 
   /// Returns the nutritional logs for the given date
   List<Log> getLogsForDate(DateTime date) {
-    List<Log> out = [];
-    for (var log in logs) {
+    final List<Log> out = [];
+    for (final log in logs) {
       final dateKey = DateTime(date.year, date.month, date.day);
       final logKey = DateTime(log.datetime.year, log.datetime.month, log.datetime.day);
 

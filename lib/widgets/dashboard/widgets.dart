@@ -58,13 +58,13 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
   }
 
   List<Widget> getContent() {
-    List<Widget> out = [];
+    final List<Widget> out = [];
 
     if (!_hasContent) {
       return out;
     }
 
-    for (var meal in _plan!.meals) {
+    for (final meal in _plan!.meals) {
       out.add(
         Row(
           children: [
@@ -113,7 +113,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
       out.add(SizedBox(height: 5));
 
       if (_showDetail) {
-        meal.mealItems.forEach((item) {
+        for (final item in meal.mealItems) {
           out.add(
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -133,7 +133,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
               ],
             ),
           );
-        });
+        }
         out.add(SizedBox(height: 10));
       }
       out.add(Divider());
@@ -177,8 +177,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
               });
             },
           ),
-          _hasContent
-              ? Container(
+          if (_hasContent) Container(
                   padding: EdgeInsets.only(left: 10),
                   child: Column(
                     children: [
@@ -190,8 +189,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                       )
                     ],
                   ),
-                )
-              : NothingFound(
+                ) else NothingFound(
                   AppLocalizations.of(context).noNutritionalPlans,
                   AppLocalizations.of(context).newNutritionalPlan,
                   PlanForm(),
@@ -255,8 +253,7 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
           ),
           Column(
             children: [
-              weightEntriesData.items.length > 0
-                  ? Column(
+              if (weightEntriesData.items.isNotEmpty) Column(
                       children: [
                         Container(
                           padding: EdgeInsets.all(15),
@@ -276,8 +273,7 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                           ],
                         ),
                       ],
-                    )
-                  : NothingFound(
+                    ) else NothingFound(
                       AppLocalizations.of(context).noWeightEntries,
                       AppLocalizations.of(context).newEntry,
                       WeightForm(),
@@ -317,14 +313,14 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
   }
 
   List<Widget> getContent() {
-    List<Widget> out = [];
+    final List<Widget> out = [];
 
     if (!_hasContent) {
       return out;
     }
 
-    for (var day in _workoutPlan!.days) {
-      out.add(Container(
+    for (final day in _workoutPlan!.days) {
+      out.add(SizedBox(
         width: double.infinity,
         child: Row(
           children: [
@@ -350,8 +346,8 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
         ),
       ));
 
-      day.sets.forEach((set) {
-        out.add(Container(
+      for (final set in day.sets) {
+        out.add(SizedBox(
           width: double.infinity,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -376,7 +372,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
             ],
           ),
         ));
-      });
+      }
       out.add(Divider());
     }
 
@@ -410,16 +406,14 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
               });
             },
           ),
-          _hasContent
-              ? Container(
+          if (_hasContent) Container(
                   padding: EdgeInsets.only(left: 10),
                   child: Column(
                     children: [
                       ...getContent(),
                     ],
                   ),
-                )
-              : NothingFound(
+                ) else NothingFound(
                   AppLocalizations.of(context).noWorkoutPlans,
                   AppLocalizations.of(context).newWorkout,
                   WorkoutForm(WorkoutPlan.empty()),
@@ -448,11 +442,11 @@ class NothingFound extends StatelessWidget {
   final String _titleForm;
   final Widget _form;
 
-  NothingFound(this._title, this._titleForm, this._form);
+  const NothingFound(this._title, this._titleForm, this._form);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 150,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

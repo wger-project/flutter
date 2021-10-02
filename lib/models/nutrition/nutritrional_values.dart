@@ -40,7 +40,7 @@ class NutritionalValues {
   );
 
   /// Convert to kilo joules
-  get energyKj {
+  double get energyKj {
     return energy * 4.184;
   }
 
@@ -57,31 +57,30 @@ class NutritionalValues {
 
   NutritionalValues operator +(NutritionalValues o) {
     return NutritionalValues.values(
-      this.energy + o.energy,
-      this.protein + o.protein,
-      this.carbohydrates + o.carbohydrates,
-      this.carbohydratesSugar + o.carbohydratesSugar,
-      this.fat + o.fat,
-      this.fatSaturated + o.fatSaturated,
-      this.fibres + o.fibres,
-      this.sodium + o.sodium,
+      energy + o.energy,
+      protein + o.protein,
+      carbohydrates + o.carbohydrates,
+      carbohydratesSugar + o.carbohydratesSugar,
+      fat + o.fat,
+      fatSaturated + o.fatSaturated,
+      fibres + o.fibres,
+      sodium + o.sodium,
     );
   }
 
-  bool operator ==(o) {
-    return o is NutritionalValues &&
-        energy == o.energy &&
-        protein == o.protein &&
-        carbohydrates == o.carbohydrates &&
-        carbohydratesSugar == o.carbohydratesSugar &&
-        fat == o.fat &&
-        fatSaturated == o.fatSaturated &&
-        fibres == o.fibres &&
-        sodium == o.sodium;
-  }
-
   @override
-  int get hashCode => super.hashCode;
+  //ignore: hash_and_equals
+  bool operator ==(other) {
+    return other is NutritionalValues &&
+        energy == other.energy &&
+        protein == other.protein &&
+        carbohydrates == other.carbohydrates &&
+        carbohydratesSugar == other.carbohydratesSugar &&
+        fat == other.fat &&
+        fatSaturated == other.fatSaturated &&
+        fibres == other.fibres &&
+        sodium == other.sodium;
+  }
 
   @override
   String toString() {

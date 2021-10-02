@@ -22,9 +22,9 @@ import 'dart:developer' as dev;
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/exercises/exercise.dart';
-import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
@@ -48,15 +48,15 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
   static const _repetitionUnitUrlPath = 'setting-repetitionunit';
 
   WorkoutPlan? _currentPlan;
-  ExercisesProvider _exercises;
+  final ExercisesProvider _exercises;
   List<WorkoutPlan> _workoutPlans = [];
   List<WeightUnit> _weightUnits = [];
   List<RepetitionUnit> _repetitionUnit = [];
 
   WorkoutPlansProvider(AuthProvider auth, ExercisesProvider exercises, List<WorkoutPlan> entries,
       [http.Client? client])
-      : this._exercises = exercises,
-        this._workoutPlans = entries,
+      : _exercises = exercises,
+        _workoutPlans = entries,
         super(auth, client);
 
   List<WorkoutPlan> get items {
@@ -115,7 +115,7 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
   /// Returns the current active workout plan. At the moment this is just
   /// the latest, but this might change in the future.
   WorkoutPlan? get activePlan {
-    if (_workoutPlans.length > 0) {
+    if (_workoutPlans.isNotEmpty) {
       return _workoutPlans.first;
     }
   }
@@ -182,13 +182,13 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
     }
 
     // Days
-    List<Day> days = [];
+    final List<Day> days = [];
     final daysData = await fetch(makeUrl(_daysUrlPath, query: {'training': plan.id.toString()}));
     for (final dayEntry in daysData['results']) {
       final day = Day.fromJson(dayEntry);
 
       // Sets
-      List<Set> sets = [];
+      final List<Set> sets = [];
       final setData = await fetch(makeUrl(_setsUrlPath, query: {'exerciseday': day.id.toString()}));
       for (final setEntry in setData['results']) {
         final workoutSet = Set.fromJson(setEntry);
@@ -196,7 +196,7 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
         fetchComputedSettings(workoutSet); // request!
 
         // Settings
-        List<Setting> settings = [];
+        final List<Setting> settings = [];
         final settingData = allSettingsData['results'].where((s) => s['set'] == workoutSet.id);
 
         for (final settingEntry in settingData) {
@@ -225,7 +225,7 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
 
     // Logs
     //
-    // TODO: looping through all results in the pagination is something we will
+    // TODO(x): looping through all results in the pagination is something we will
     // probably need in the future. We should put this in some function or something
     // so that we can reuse it.
     plan.logs = [];
@@ -240,7 +240,7 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
 
       for (final entry in logData['results']) {
         try {
-          var log = Log.fromJson(entry);
+          final log = Log.fromJson(entry);
           log.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
           log.repetitionUnit = _repetitionUnit.firstWhere((e) => e.id == log.weightUnitId);
           log.exercise = await _exercises.fetchAndSetExercise(log.exerciseId);
@@ -278,7 +278,7 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
 
   Future<void> deleteWorkout(int id) async {
     final existingWorkoutIndex = _workoutPlans.indexWhere((element) => element.id == id);
-    var existingWorkout = _workoutPlans[existingWorkoutIndex];
+    final existingWorkout = _workoutPlans[existingWorkoutIndex];
     _workoutPlans.removeAt(existingWorkoutIndex);
     notifyListeners();
 
@@ -312,7 +312,7 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
         _repetitionUnit.add(RepetitionUnit.fromJson(unit));
       }
     } catch (error) {
-      throw (error);
+      rethrow;
     }
   }
 
@@ -325,7 +325,7 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
         _weightUnits.add(WeightUnit.fromJson(unit));
       }
     } catch (error) {
-      throw (error);
+      rethrow;
     }
   }
 
@@ -384,7 +384,7 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
 
   Future<void> deleteDay(Day day) async {
     await deleteRequest(_daysUrlPath, day.id!);
-    for (var workout in _workoutPlans) {
+    for (final workout in _workoutPlans) {
       workout.days.removeWhere((element) => element.id == day.id);
     }
     notifyListeners();
@@ -417,13 +417,13 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
   Future<void> fetchComputedSettings(Set workoutSet) async {
     final data = await fetch(makeUrl(
       _setsUrlPath,
-      id: workoutSet.id!,
+      id: workoutSet.id,
       objectMethod: 'computed_settings',
     ));
 
-    List<Setting> settings = [];
+    final List<Setting> settings = [];
     data['results'].forEach((e) {
-      Setting workoutSetting = Setting.fromJson(e);
+      final Setting workoutSetting = Setting.fromJson(e);
 
       workoutSetting.weightUnitObj = _weightUnits.firstWhere(
         (unit) => unit.id == workoutSetting.weightUnitId,
@@ -442,7 +442,7 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
     final data = await fetch(
       makeUrl(
         _setsUrlPath,
-        id: workoutSet.id!,
+        id: workoutSet.id,
         objectMethod: 'smart_text',
         query: {'exercise': exercise.id.toString()},
       ),
@@ -454,8 +454,8 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
   Future<void> deleteSet(Set workoutSet) async {
     await deleteRequest(_setsUrlPath, workoutSet.id!);
 
-    for (var workout in _workoutPlans) {
-      for (var day in workout.days) {
+    for (final workout in _workoutPlans) {
+      for (final day in workout.days) {
         day.sets.removeWhere((element) => element.id == workoutSet.id);
       }
     }

@@ -38,7 +38,7 @@ class MeasurementChartWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final unitTickFormatter =
-        charts.BasicNumericTickFormatterSpec((num? value) => '$value ${this.unit}');
+        charts.BasicNumericTickFormatterSpec((num? value) => '$value $unit');
 
     return charts.TimeSeriesChart(
       [
@@ -50,9 +50,9 @@ class MeasurementChartWidget extends StatelessWidget {
           data: _entries,
         )
       ],
-      defaultRenderer: new charts.LineRendererConfig(includePoints: true),
-      primaryMeasureAxis: new charts.NumericAxisSpec(
-        tickProviderSpec: new charts.BasicNumericTickProviderSpec(zeroBound: false),
+      defaultRenderer: charts.LineRendererConfig(includePoints: true),
+      primaryMeasureAxis: charts.NumericAxisSpec(
+        tickProviderSpec: charts.BasicNumericTickProviderSpec(zeroBound: false),
         tickFormatterSpec: unitTickFormatter,
       ),
     );

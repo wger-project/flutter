@@ -27,7 +27,7 @@ void main() {
       final repUnit = RepetitionUnit(id: 1, name: 'mol');
       final weightUnit = WeightUnit(id: 1, name: 'mg');
 
-      var setting = Setting.empty();
+      final setting = Setting.empty();
       setting.reps = 2;
       setting.weight = 30;
       setting.rir = '';
@@ -40,7 +40,7 @@ void main() {
       final repUnit = RepetitionUnit(id: 1, name: 'mol');
       final weightUnit = WeightUnit(id: 1, name: 'mg');
 
-      var setting = Setting.empty();
+      final setting = Setting.empty();
       setting.reps = 2;
       setting.weight = 30;
       setting.rir = '1.5';
@@ -53,7 +53,7 @@ void main() {
       final repUnit = RepetitionUnit(id: 1, name: 'mol');
       final weightUnit = WeightUnit(id: 1, name: 'mg');
 
-      var setting = Setting.empty();
+      final setting = Setting.empty();
       setting.reps = 2;
       setting.weight = null;
       setting.rir = '1.5';
@@ -66,7 +66,7 @@ void main() {
       final repUnit = RepetitionUnit(id: 2, name: 'mol');
       final weightUnit = WeightUnit(id: 2, name: 'mg');
 
-      var setting = Setting.empty();
+      final setting = Setting.empty();
       setting.reps = 2;
       setting.weight = 30;
       setting.rir = '';
@@ -79,7 +79,7 @@ void main() {
       final repUnit = RepetitionUnit(id: 2, name: 'mol');
       final weightUnit = WeightUnit(id: 2, name: 'mg');
 
-      var setting = Setting.empty();
+      final setting = Setting.empty();
       setting.reps = 2;
       setting.weight = 30;
       setting.rir = '3';

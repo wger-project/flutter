@@ -33,7 +33,7 @@ class GalleryProvider extends WgerBaseProvider with ChangeNotifier {
   List<gallery.Image> images = [];
 
   GalleryProvider(AuthProvider auth, List<gallery.Image> entries, [http.Client? client])
-      : this.images = entries,
+      : images = entries,
         super(auth, client);
 
   /// Clears all lists
@@ -48,7 +48,7 @@ class GalleryProvider extends WgerBaseProvider with ChangeNotifier {
     final data = await fetch(makeUrl(_galleryUrlPath));
 
     data['results'].forEach((e) {
-      gallery.Image image = gallery.Image.fromJson(e);
+      final gallery.Image image = gallery.Image.fromJson(e);
       images.add(image);
     });
 
@@ -57,7 +57,7 @@ class GalleryProvider extends WgerBaseProvider with ChangeNotifier {
 
   Future<void> addImage(gallery.Image image, XFile imageFile) async {
     // create multipart request
-    var request = http.MultipartRequest('POST', makeUrl(_galleryUrlPath));
+    final request = http.MultipartRequest('POST', makeUrl(_galleryUrlPath));
     request.headers.addAll({
       HttpHeaders.authorizationHeader: 'Token ${auth.token}',
       HttpHeaders.userAgentHeader: auth.getAppNameHeader(),
@@ -66,7 +66,7 @@ class GalleryProvider extends WgerBaseProvider with ChangeNotifier {
     request.fields['date'] = toDate(image.date)!;
     request.fields['description'] = image.description;
 
-    var res = await request.send();
+    final res = await request.send();
     final respStr = await res.stream.bytesToString();
 
     images.add(gallery.Image.fromJson(json.decode(respStr)));
@@ -76,7 +76,7 @@ class GalleryProvider extends WgerBaseProvider with ChangeNotifier {
   }
 
   Future<void> editImage(gallery.Image image, XFile? imageFile) async {
-    var request = http.MultipartRequest('PATCH', makeUrl(_galleryUrlPath, id: image.id));
+    final request = http.MultipartRequest('PATCH', makeUrl(_galleryUrlPath, id: image.id));
     request.headers.addAll({
       HttpHeaders.authorizationHeader: 'Token ${auth.token}',
       HttpHeaders.userAgentHeader: auth.getAppNameHeader(),

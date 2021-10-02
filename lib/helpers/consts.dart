@@ -50,6 +50,7 @@ const DEFAULT_ANIMATION_CURVE = Curves.bounceIn;
 /// Dateformat used when using a date as a key in a dictionary. Using either the
 /// regular date object or date.toLocal() can cause problems, depending on the
 /// system's settings. Using a string is safer.
+//ignore: non_constant_identifier_names
 final DateFormatLists = DateFormat('yyyy-MM-dd');
 
 /// Available plate weights, used for the plate calculator

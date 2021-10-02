@@ -31,7 +31,7 @@ class ImageForm extends StatefulWidget {
   late gallery.Image _image;
 
   ImageForm([gallery.Image? image]) {
-    this._image = image ?? gallery.Image.emtpy();
+    _image = image ?? gallery.Image.emtpy();
   }
 
   @override
@@ -59,7 +59,7 @@ class _ImageFormState extends State<ImageForm> {
     final file = await picker.pickImage(source: source);
 
     setState(() {
-      _file = file!;
+      _file = file;
     });
   }
 
@@ -103,7 +103,7 @@ class _ImageFormState extends State<ImageForm> {
                 showModalBottomSheet(
                   context: context,
                   builder: (context) {
-                    return Container(
+                    return SizedBox(
                       height: 150,
                       child: Column(
                         children: <Widget>[
@@ -141,10 +141,10 @@ class _ImageFormState extends State<ImageForm> {
             controller: dateController,
             onTap: () async {
               // Stop keyboard from appearing
-              FocusScope.of(context).requestFocus(new FocusNode());
+              FocusScope.of(context).requestFocus(FocusNode());
 
               // Show Date Picker Here
-              var pickedDate = await showDatePicker(
+              final pickedDate = await showDatePicker(
                 context: context,
                 initialDate: widget._image.date,
                 firstDate: DateTime(DateTime.now().year - 10),

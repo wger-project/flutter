@@ -132,7 +132,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
                     AppLocalizations.of(context).loadingText,
                     style: Theme.of(context).textTheme.headline5,
                   ),
-                  Padding(padding: EdgeInsets.symmetric(vertical: 8)),
+                  const Padding(padding: EdgeInsets.symmetric(vertical: 8)),
                   LinearProgressIndicator(
                     backgroundColor: Theme.of(context).accentColor,
                   ),

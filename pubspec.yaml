@@ -61,6 +61,7 @@ dev_dependencies:
   json_serializable: ^4.1.4
   mockito: ^5.0.14
   network_image_mock: ^2.0.1
+  flutter_lints: ^1.0.4
 
 flutter_icons:
   android: true

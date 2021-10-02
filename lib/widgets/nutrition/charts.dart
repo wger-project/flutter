@@ -36,7 +36,7 @@ class NutritionalPlanPieChartWidget extends StatelessWidget {
 
   /// [_nutritionalValues] are the calculated [NutritionalValues] for the wanted
   /// plan.
-  NutritionalPlanPieChartWidget(this._nutritionalValues);
+  const NutritionalPlanPieChartWidget(this._nutritionalValues);
 
   @override
   Widget build(BuildContext context) {
@@ -67,8 +67,8 @@ class NutritionalPlanPieChartWidget extends StatelessWidget {
             '${row.name}\n${row.value.toStringAsFixed(0)}${AppLocalizations.of(context).g}',
       )
     ],
-        defaultRenderer: new charts.ArcRendererConfig(arcWidth: 60, arcRendererDecorators: [
-          new charts.ArcLabelDecorator(
+        defaultRenderer: charts.ArcRendererConfig(arcWidth: 60, arcRendererDecorators: [
+          charts.ArcLabelDecorator(
             labelPosition: charts.ArcLabelPosition.outside,
           )
         ])
@@ -84,13 +84,13 @@ class NutritionalPlanPieChartWidget extends StatelessWidget {
 }
 
 class NutritionalDiaryChartWidget extends StatelessWidget {
-  late NutritionalPlan _nutritionalPlan;
-
-  NutritionalDiaryChartWidget({
+  const NutritionalDiaryChartWidget({
     Key? key,
     required NutritionalPlan nutritionalPlan,
   })  : _nutritionalPlan = nutritionalPlan,
         super(key: key);
+
+  final NutritionalPlan _nutritionalPlan;
 
   @override
   Widget build(BuildContext context) {
@@ -106,9 +106,9 @@ class NutritionalDiaryChartWidget extends StatelessWidget {
               .toList(),
         )
       ],
-      defaultRenderer: new charts.BarRendererConfig<DateTime>(),
+      defaultRenderer: charts.BarRendererConfig<DateTime>(),
       behaviors: [
-        new charts.RangeAnnotation([
+        charts.RangeAnnotation([
           charts.LineAnnotationSegment(
             _nutritionalPlan.nutritionalValues.energy,
             charts.RangeAnnotationAxisType.measure,

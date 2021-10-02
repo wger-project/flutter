@@ -49,8 +49,8 @@ void showHttpExceptionErrorDialog(WgerHttpException exception, BuildContext cont
   log(exception.toString());
   log('-------------------');
 
-  List<Widget> errorList = [];
-  for (var key in exception.errors!.keys) {
+  final List<Widget> errorList = [];
+  for (final key in exception.errors!.keys) {
     // Error headers
     errorList.add(Text(key, style: TextStyle(fontWeight: FontWeight.bold)));
 
@@ -58,7 +58,7 @@ void showHttpExceptionErrorDialog(WgerHttpException exception, BuildContext cont
     if (exception.errors![key] is String) {
       errorList.add(Text(exception.errors![key]));
     } else {
-      for (var value in exception.errors![key]) {
+      for (final value in exception.errors![key]) {
         errorList.add(Text(value));
       }
     }
@@ -69,11 +69,9 @@ void showHttpExceptionErrorDialog(WgerHttpException exception, BuildContext cont
     context: context,
     builder: (ctx) => AlertDialog(
       title: Text(AppLocalizations.of(ctx).anErrorOccurred),
-      content: Container(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [...errorList],
-        ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [...errorList],
       ),
       actions: [
         TextButton(
