@@ -122,5 +122,37 @@
   "login": "Giriş yap",
   "@login": {
     "description": "Text for login button"
-  }
+  },
+  "noWorkoutPlans": "Antrenman planınız yok",
+  "@noWorkoutPlans": {
+    "description": "Message shown when the user has no workout plans"
+  },
+  "repetitions": "Tekrarlar",
+  "@repetitions": {
+    "description": "Repetitions for an exercise set"
+  },
+  "reps": "Temsilciler",
+  "@reps": {
+    "description": "Shorthand for repetitions, used when space constraints are tighter"
+  },
+  "repetitionUnit": "Tekrarlama birimi",
+  "@repetitionUnit": {},
+  "set": "Ayarla",
+  "@set": {
+    "description": "A set in a workout plan"
+  },
+  "supersetWith": "süper set ile",
+  "@supersetWith": {
+    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
+  },
+  "newWorkout": "Yeni antrenman planı",
+  "@newWorkout": {
+    "description": "Header when adding a new workout"
+  },
+  "rirNotUsed": "RiR kullanılmadı",
+  "@rirNotUsed": {
+    "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
+  },
+  "weightUnit": "Ağırlık birimi",
+  "@weightUnit": {}
 }
