@@ -65,8 +65,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProxyProvider<AuthProvider, ExercisesProvider>(
           create: (context) =>
               ExercisesProvider(Provider.of<AuthProvider>(context, listen: false), []),
-          update: (context, auth, previous) =>
-              previous ?? ExercisesProvider(auth, []),
+          update: (context, auth, previous) => previous ?? ExercisesProvider(auth, []),
         ),
         ChangeNotifierProxyProvider2<AuthProvider, ExercisesProvider, WorkoutPlansProvider>(
           create: (context) => WorkoutPlansProvider(
@@ -80,8 +79,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProxyProvider<AuthProvider, NutritionPlansProvider>(
           create: (context) =>
               NutritionPlansProvider(Provider.of<AuthProvider>(context, listen: false), []),
-          update: (context, auth, previous) =>
-              previous ?? NutritionPlansProvider(auth, []),
+          update: (context, auth, previous) => previous ?? NutritionPlansProvider(auth, []),
         ),
         ChangeNotifierProxyProvider<AuthProvider, MeasurementProvider>(
           create: (context) => MeasurementProvider(
@@ -92,14 +90,12 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProxyProvider<AuthProvider, BodyWeightProvider>(
           create: (context) =>
               BodyWeightProvider(Provider.of<AuthProvider>(context, listen: false), []),
-          update: (context, auth, previous) =>
-              previous ?? BodyWeightProvider(auth, []),
+          update: (context, auth, previous) => previous ?? BodyWeightProvider(auth, []),
         ),
         ChangeNotifierProxyProvider<AuthProvider, GalleryProvider>(
           create: (context) =>
               GalleryProvider(Provider.of<AuthProvider>(context, listen: false), []),
-          update: (context, auth, previous) =>
-              previous ?? GalleryProvider(auth, []),
+          update: (context, auth, previous) => previous ?? GalleryProvider(auth, []),
         ),
       ],
       child: Consumer<AuthProvider>(

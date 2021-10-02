@@ -37,8 +37,7 @@ class MeasurementChartWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final unitTickFormatter =
-        charts.BasicNumericTickFormatterSpec((num? value) => '$value $unit');
+    final unitTickFormatter = charts.BasicNumericTickFormatterSpec((num? value) => '$value $unit');
 
     return charts.TimeSeriesChart(
       [

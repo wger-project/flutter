@@ -177,23 +177,26 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
               });
             },
           ),
-          if (_hasContent) Container(
-                  padding: EdgeInsets.only(left: 10),
-                  child: Column(
-                    children: [
-                      ...getContent(),
-                      Container(
-                        padding: EdgeInsets.all(15),
-                        height: 180,
-                        child: NutritionalPlanPieChartWidget(_plan!.nutritionalValues),
-                      )
-                    ],
-                  ),
-                ) else NothingFound(
-                  AppLocalizations.of(context).noNutritionalPlans,
-                  AppLocalizations.of(context).newNutritionalPlan,
-                  PlanForm(),
-                ),
+          if (_hasContent)
+            Container(
+              padding: EdgeInsets.only(left: 10),
+              child: Column(
+                children: [
+                  ...getContent(),
+                  Container(
+                    padding: EdgeInsets.all(15),
+                    height: 180,
+                    child: NutritionalPlanPieChartWidget(_plan!.nutritionalValues),
+                  )
+                ],
+              ),
+            )
+          else
+            NothingFound(
+              AppLocalizations.of(context).noNutritionalPlans,
+              AppLocalizations.of(context).newNutritionalPlan,
+              PlanForm(),
+            ),
           if (_hasContent)
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -253,31 +256,34 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
           ),
           Column(
             children: [
-              if (weightEntriesData.items.isNotEmpty) Column(
-                      children: [
-                        Container(
-                          padding: EdgeInsets.all(15),
-                          height: 180,
-                          child: MeasurementChartWidget(weightEntriesData.items
-                              .map((e) => MeasurementChartEntry(e.weight, e.date))
-                              .toList()),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: <Widget>[
-                            TextButton(
-                                child: Text(AppLocalizations.of(context).goToDetailPage),
-                                onPressed: () {
-                                  Navigator.of(context).pushNamed(WeightScreen.routeName);
-                                }),
-                          ],
-                        ),
-                      ],
-                    ) else NothingFound(
-                      AppLocalizations.of(context).noWeightEntries,
-                      AppLocalizations.of(context).newEntry,
-                      WeightForm(),
+              if (weightEntriesData.items.isNotEmpty)
+                Column(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(15),
+                      height: 180,
+                      child: MeasurementChartWidget(weightEntriesData.items
+                          .map((e) => MeasurementChartEntry(e.weight, e.date))
+                          .toList()),
                     ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        TextButton(
+                            child: Text(AppLocalizations.of(context).goToDetailPage),
+                            onPressed: () {
+                              Navigator.of(context).pushNamed(WeightScreen.routeName);
+                            }),
+                      ],
+                    ),
+                  ],
+                )
+              else
+                NothingFound(
+                  AppLocalizations.of(context).noWeightEntries,
+                  AppLocalizations.of(context).newEntry,
+                  WeightForm(),
+                ),
             ],
           ),
         ],
@@ -406,18 +412,21 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
               });
             },
           ),
-          if (_hasContent) Container(
-                  padding: EdgeInsets.only(left: 10),
-                  child: Column(
-                    children: [
-                      ...getContent(),
-                    ],
-                  ),
-                ) else NothingFound(
-                  AppLocalizations.of(context).noWorkoutPlans,
-                  AppLocalizations.of(context).newWorkout,
-                  WorkoutForm(WorkoutPlan.empty()),
-                ),
+          if (_hasContent)
+            Container(
+              padding: EdgeInsets.only(left: 10),
+              child: Column(
+                children: [
+                  ...getContent(),
+                ],
+              ),
+            )
+          else
+            NothingFound(
+              AppLocalizations.of(context).noWorkoutPlans,
+              AppLocalizations.of(context).newWorkout,
+              WorkoutForm(WorkoutPlan.empty()),
+            ),
           if (_hasContent)
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
