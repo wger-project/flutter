@@ -86,7 +86,15 @@ void main() {
       findsOneWidget,
       reason: 'Time of existing meal is filled in',
     );
+
+    expect(
+      find.text(('Initial Name 1')),
+      findsOneWidget,
+      reason: 'Time of existing meal is filled in',
+    );
+
     await tester.enterText(find.byKey(Key('field-time')), '12:34');
+    await tester.enterText(find.byKey(Key('field-name')), 'test meal');
     await tester.tap(find.byKey(Key(SUBMIT_BUTTON_KEY_NAME)));
 
     // Correct method was called
@@ -105,6 +113,7 @@ void main() {
     );
 
     await tester.enterText(find.byKey(Key('field-time')), '08:00');
+    await tester.enterText(find.byKey(Key('field-name')), 'test meal');
     await tester.tap(find.byKey(Key(SUBMIT_BUTTON_KEY_NAME)));
 
     // Correct method was called
