@@ -94,7 +94,8 @@ class MealForm extends StatelessWidget {
 
                 try {
                   _meal.id == null
-                      ? Provider.of<NutritionPlansProvider>(context, listen: false).addMeal(_meal, _planId)
+                      ? Provider.of<NutritionPlansProvider>(context, listen: false)
+                          .addMeal(_meal, _planId)
                       : Provider.of<NutritionPlansProvider>(context, listen: false).editMeal(_meal);
                 } on WgerHttpException catch (error) {
                   showHttpExceptionErrorDialog(error, context);
@@ -189,7 +190,8 @@ class MealItemForm extends StatelessWidget {
                 _form.currentState!.save();
 
                 try {
-                  Provider.of<NutritionPlansProvider>(context, listen: false).addMealItem(_mealItem, _meal);
+                  Provider.of<NutritionPlansProvider>(context, listen: false)
+                      .addMealItem(_mealItem, _meal);
                 } on WgerHttpException catch (error) {
                   showHttpExceptionErrorDialog(error, context);
                 } catch (error) {
@@ -248,7 +250,8 @@ class PlanForm extends StatelessWidget {
                   await Provider.of<NutritionPlansProvider>(context, listen: false).editPlan(_plan);
                   Navigator.of(context).pop();
                 } else {
-                  _plan = await Provider.of<NutritionPlansProvider>(context, listen: false).addPlan(_plan);
+                  _plan = await Provider.of<NutritionPlansProvider>(context, listen: false)
+                      .addPlan(_plan);
                   Navigator.of(context).pushReplacementNamed(
                     NutritionalPlanScreen.routeName,
                     arguments: _plan,

@@ -64,7 +64,8 @@ class _MealWidgetState extends State<MealWidget> {
                   IconButton(
                     onPressed: () {
                       // Delete the meal
-                      Provider.of<NutritionPlansProvider>(context, listen: false).deleteMeal(widget._meal);
+                      Provider.of<NutritionPlansProvider>(context, listen: false)
+                          .deleteMeal(widget._meal);
 
                       // and inform the user
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -88,7 +89,8 @@ class _MealWidgetState extends State<MealWidget> {
                         icon: const Icon(Icons.history_edu),
                         color: Colors.white,
                         onPressed: () {
-                          Provider.of<NutritionPlansProvider>(context, listen: false).logMealToDiary(widget._meal);
+                          Provider.of<NutritionPlansProvider>(context, listen: false)
+                              .logMealToDiary(widget._meal);
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
@@ -177,7 +179,8 @@ class MealItemWidget extends StatelessWidget {
                     iconSize: ICON_SIZE_SMALL,
                     onPressed: () {
                       // Delete the meal item
-                      Provider.of<NutritionPlansProvider>(context, listen: false).deleteMealItem(_item);
+                      Provider.of<NutritionPlansProvider>(context, listen: false)
+                          .deleteMealItem(_item);
 
                       // and inform the user
                       ScaffoldMessenger.of(context).showSnackBar(
