@@ -138,7 +138,7 @@ class MealItemForm extends StatelessWidget {
                 decoration: InputDecoration(labelText: AppLocalizations.of(context).ingredient),
               ),
               suggestionsCallback: (pattern) async {
-                return await Provider.of<NutritionPlansProvider>(context, listen: false).searchIngredient(
+                return Provider.of<NutritionPlansProvider>(context, listen: false).searchIngredient(
                   pattern,
                   Localizations.localeOf(context).languageCode,
                 );
