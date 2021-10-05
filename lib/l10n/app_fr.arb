@@ -498,5 +498,9 @@
     "description": "Categories for the measurements such as biceps size, body fat, etc."
   },
   "measurement": "Mesure",
-  "@measurement": {}
+  "@measurement": {},
+  "dataCopied": "Données copiées dans la nouvelle entrée",
+  "@dataCopied": {
+    "description": "Snackbar message to show on copying data to a new log entry"
+  }
 }
