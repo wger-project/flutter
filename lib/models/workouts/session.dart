@@ -42,10 +42,10 @@ class WorkoutSession {
   late String notes;
 
   @JsonKey(required: true, name: 'time_start', toJson: timeToString, fromJson: stringToTime)
-  late TimeOfDay timeStart;
+  late TimeOfDay timeStart = TimeOfDay.now();
 
   @JsonKey(required: true, name: 'time_end', toJson: timeToString, fromJson: stringToTime)
-  late TimeOfDay timeEnd;
+  late TimeOfDay timeEnd = TimeOfDay.now();
 
   WorkoutSession();
 
