@@ -259,7 +259,7 @@ class _LogPageState extends State<LogPage> {
   final _repsController = TextEditingController();
   final _weightController = TextEditingController();
   var _detailed = false;
-  int _state = 0;
+  bool _isSaving = false;
 
   late FocusNode focusNode;
 
@@ -460,7 +460,7 @@ class _LogPageState extends State<LogPage> {
             },
           ),
           ElevatedButton(
-            child: (_state == 0)
+            child: (!_isSaving)
                 ? Text(AppLocalizations.of(context).save)
                 : Container(
                     height: 20,
@@ -469,7 +469,7 @@ class _LogPageState extends State<LogPage> {
                       valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                     ),
                   ),
-            onPressed: _state == 1
+            onPressed: _isSaving
                 ? null
                 : () async {
                     // Validate and save the current values to the weightEntry
@@ -477,7 +477,7 @@ class _LogPageState extends State<LogPage> {
                     if (!isValid) {
                       return;
                     }
-                    _state = 1;
+                    _isSaving = true;
                     _form.currentState!.save();
 
                     // Save the entry on the server
@@ -496,13 +496,13 @@ class _LogPageState extends State<LogPage> {
                         duration: DEFAULT_ANIMATION_DURATION,
                         curve: DEFAULT_ANIMATION_CURVE,
                       );
-                      _state = 0;
+                      _isSaving = false;
                     } on WgerHttpException catch (error) {
                       showHttpExceptionErrorDialog(error, context);
-                      _state = 0;
+                      _isSaving = false;
                     } catch (error) {
                       showErrorDialog(error, context);
-                      _state = 0;
+                      _isSaving = false;
                     }
                   },
           ),
