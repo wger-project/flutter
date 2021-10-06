@@ -9,6 +9,7 @@
 * Arun Muralidharan - <https://github.com/arun-muralidharan>
 * Khushbu Bora - <https://github.com/KhushbuBora>
 * Patrick Witter - <https://github.com/patrickwitter>
+* Tomer Ben-Rachel - <https://github.com/tomerpacific>
 
 ## Translators
 
