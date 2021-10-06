@@ -36,10 +36,12 @@ class MealForm extends StatelessWidget {
 
   final _form = GlobalKey<FormState>();
   final _timeController = TextEditingController();
+  final _nameController = TextEditingController();
 
   MealForm(this._planId, [meal]) {
     _meal = meal ?? Meal(plan: _planId);
     _timeController.text = timeToString(_meal.time)!;
+    _nameController.text = _meal.name;
   }
 
   @override
@@ -68,6 +70,16 @@ class MealForm extends StatelessWidget {
               },
               onSaved: (newValue) {
                 _meal.time = stringToTime(newValue);
+              },
+              onFieldSubmitted: (_) {},
+            ),
+            TextFormField(
+              maxLength: 25,
+              key: Key('field-name'),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context).name),
+              controller: _nameController,
+              onSaved: (newValue) {
+                _meal.name = newValue as String;
               },
               onFieldSubmitted: (_) {},
             ),

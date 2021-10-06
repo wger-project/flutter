@@ -10,6 +10,7 @@
 * Khushbu Bora - <https://github.com/KhushbuBora>
 * Patrick Witter - <https://github.com/patrickwitter>
 * Tomer Ben-Rachel - <https://github.com/tomerpacific>
+* Thilina Herath - <https://github.com/ThilinaTCH>
 
 ## Translators
 
