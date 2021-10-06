@@ -45,9 +45,11 @@ import 'package:wger/widgets/workouts/forms.dart';
 class GymMode extends StatefulWidget {
   final Day _workoutDay;
   late TimeOfDay _start;
+
   GymMode(this._workoutDay) {
     _start = TimeOfDay.now();
   }
+
   @override
   _GymModeState createState() => _GymModeState();
 }
@@ -60,6 +62,7 @@ class _GymModeState extends State<GymMode> {
   final PageController _controller = PageController(
     initialPage: 0,
   );
+
   @override
   void dispose() {
     _controller.dispose();
@@ -256,6 +259,7 @@ class _LogPageState extends State<LogPage> {
   final _repsController = TextEditingController();
   final _weightController = TextEditingController();
   var _detailed = false;
+  int _state = 0;
 
   late FocusNode focusNode;
 
@@ -456,37 +460,51 @@ class _LogPageState extends State<LogPage> {
             },
           ),
           ElevatedButton(
-            child: Text(AppLocalizations.of(context).save),
-            onPressed: () async {
-              // Validate and save the current values to the weightEntry
-              final isValid = _form.currentState!.validate();
-              if (!isValid) {
-                return;
-              }
-              _form.currentState!.save();
-
-              // Save the entry on the server
-              try {
-                await Provider.of<WorkoutPlansProvider>(context, listen: false).addLog(widget._log);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    duration: Duration(seconds: 2), // default is 4
-                    content: Text(
-                      AppLocalizations.of(context).successfullySaved,
-                      textAlign: TextAlign.center,
+            child: (_state == 0)
+                ? Text(AppLocalizations.of(context).save)
+                : Container(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                     ),
                   ),
-                );
-                widget._controller.nextPage(
-                  duration: DEFAULT_ANIMATION_DURATION,
-                  curve: DEFAULT_ANIMATION_CURVE,
-                );
-              } on WgerHttpException catch (error) {
-                showHttpExceptionErrorDialog(error, context);
-              } catch (error) {
-                showErrorDialog(error, context);
-              }
-            },
+            onPressed: _state == 1
+                ? null
+                : () async {
+                    // Validate and save the current values to the weightEntry
+                    final isValid = _form.currentState!.validate();
+                    if (!isValid) {
+                      return;
+                    }
+                    _state = 1;
+                    _form.currentState!.save();
+
+                    // Save the entry on the server
+                    try {
+                      await Provider.of<WorkoutPlansProvider>(context, listen: false).addLog(widget._log);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          duration: Duration(seconds: 2), // default is 4
+                          content: Text(
+                            AppLocalizations.of(context).successfullySaved,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      );
+                      widget._controller.nextPage(
+                        duration: DEFAULT_ANIMATION_DURATION,
+                        curve: DEFAULT_ANIMATION_CURVE,
+                      );
+                      _state = 0;
+                    } on WgerHttpException catch (error) {
+                      showHttpExceptionErrorDialog(error, context);
+                      _state = 0;
+                    } catch (error) {
+                      showErrorDialog(error, context);
+                      _state = 0;
+                    }
+                  },
           ),
         ],
       ),
