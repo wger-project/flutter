@@ -81,8 +81,7 @@ class _GymModeState extends State<GymMode> {
     for (final set in widget._workoutDay.sets) {
       var firstPage = true;
       for (final setting in set.settingsComputed) {
-        final exercise =
-            Provider.of<ExercisesProvider>(context, listen: false).findById(setting.exerciseId);
+        final exercise = Provider.of<ExercisesProvider>(context, listen: false).findById(setting.exerciseId);
 
         if (firstPage) {
           _exercisePages[exercise.name] = currentPage;
@@ -151,8 +150,7 @@ class _GymModeState extends State<GymMode> {
         ),
         ...getContent(),
         SessionPage(
-          Provider.of<WorkoutPlansProvider>(context, listen: false)
-              .findById(widget._workoutDay.workoutId),
+          Provider.of<WorkoutPlansProvider>(context, listen: false).findById(widget._workoutDay.workoutId),
           _controller,
           widget._start,
           _exercisePages,
@@ -506,8 +504,7 @@ class _LogPageState extends State<LogPage> {
         ...widget._workoutPlan.filterLogsByExercise(widget._exercise, unique: true).map((log) {
           return ListTile(
             title: Text(log.singleLogRepTextNoNl),
-            subtitle:
-                Text(DateFormat.yMd(Localizations.localeOf(context).languageCode).format(log.date)),
+            subtitle: Text(DateFormat.yMd(Localizations.localeOf(context).languageCode).format(log.date)),
             trailing: Icon(Icons.copy),
             onTap: () {
               setState(() {
@@ -519,6 +516,10 @@ class _LogPageState extends State<LogPage> {
                 widget._log.rir = log.rir;
                 widget._log.repetitionUnit = log.repetitionUnitObj;
                 widget._log.weightUnit = log.weightUnitObj;
+
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).dataCopied)));
               });
             },
             contentPadding: EdgeInsets.symmetric(horizontal: 40),
@@ -611,12 +612,10 @@ class _LogPageState extends State<LogPage> {
           ),
         SizedBox(height: 10),
         Expanded(
-            child: (widget._workoutPlan.filterLogsByExercise(widget._exercise).isNotEmpty)
-                ? getPastLogs()
-                : Container()),
+            child:
+                (widget._workoutPlan.filterLogsByExercise(widget._exercise).isNotEmpty) ? getPastLogs() : Container()),
         // Only show calculator for barbell
-        if (widget._log.exerciseObj.equipment.map((e) => e.id).contains(ID_EQUIPMENT_BARBELL))
-          getPlates(),
+        if (widget._log.exerciseObj.equipment.map((e) => e.id).contains(ID_EQUIPMENT_BARBELL)) getPlates(),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Card(
@@ -763,9 +762,7 @@ class _SessionPageState extends State<SessionPage> {
                   renderBorder: false,
                   onPressed: (int index) {
                     setState(() {
-                      for (int buttonIndex = 0;
-                          buttonIndex < selectedImpression.length;
-                          buttonIndex++) {
+                      for (int buttonIndex = 0; buttonIndex < selectedImpression.length; buttonIndex++) {
                         _session.impression = index + 1;
 
                         if (buttonIndex == index) {
@@ -830,8 +827,7 @@ class _SessionPageState extends State<SessionPage> {
                     SizedBox(width: 10),
                     Flexible(
                       child: TextFormField(
-                        decoration:
-                            InputDecoration(labelText: AppLocalizations.of(context).timeEnd),
+                        decoration: InputDecoration(labelText: AppLocalizations.of(context).timeEnd),
                         controller: timeEndController,
                         onFieldSubmitted: (_) {},
                         onTap: () async {
@@ -869,8 +865,7 @@ class _SessionPageState extends State<SessionPage> {
 
                     // Save the entry on the server
                     try {
-                      await Provider.of<WorkoutPlansProvider>(context, listen: false)
-                          .addSession(_session);
+                      await Provider.of<WorkoutPlansProvider>(context, listen: false).addSession(_session);
                       Navigator.of(context).pop();
                     } on WgerHttpException catch (error) {
                       showHttpExceptionErrorDialog(error, context);
@@ -977,8 +972,7 @@ class NavigationFooter extends StatelessWidget {
   final bool showPrevious;
   final bool showNext;
 
-  const NavigationFooter(this._controller, this._ratioCompleted,
-      {this.showPrevious = true, this.showNext = true});
+  const NavigationFooter(this._controller, this._ratioCompleted, {this.showPrevious = true, this.showNext = true});
 
   @override
   Widget build(BuildContext context) {
