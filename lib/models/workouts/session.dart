@@ -42,10 +42,10 @@ class WorkoutSession {
   late String notes;
 
   @JsonKey(required: true, name: 'time_start', toJson: timeToString, fromJson: stringToTime)
-  late TimeOfDay timeStart = TimeOfDay.now();
+  late TimeOfDay timeStart;
 
   @JsonKey(required: true, name: 'time_end', toJson: timeToString, fromJson: stringToTime)
-  late TimeOfDay timeEnd = TimeOfDay.now();
+  late TimeOfDay timeEnd;
 
   WorkoutSession();
 
@@ -58,6 +58,11 @@ class WorkoutSession {
     required this.timeStart,
     required this.timeEnd,
   });
+
+  WorkoutSession.now(){
+    timeStart = TimeOfDay.now();
+    timeEnd = TimeOfDay.now();
+  }
 
   // Boilerplate
   factory WorkoutSession.fromJson(Map<String, dynamic> json) => _$WorkoutSessionFromJson(json);

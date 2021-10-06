@@ -714,7 +714,7 @@ class _SessionPageState extends State<SessionPage> {
   final timeStartController = TextEditingController();
   final timeEndController = TextEditingController();
 
-  final _session = WorkoutSession();
+  final _session = WorkoutSession.now();
 
   /// Selected impression: bad, neutral, good
   var selectedImpression = [false, true, false];
