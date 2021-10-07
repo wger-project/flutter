@@ -153,5 +153,5 @@ linter:
     use_rethrow_when_possible: true
     use_test_throws_matchers: true
     valid_regexps: true
-    void_checks: true
+    void_checks: false
 
