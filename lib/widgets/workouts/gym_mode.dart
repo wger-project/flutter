@@ -737,7 +737,7 @@ class _SessionPageState extends State<SessionPage> {
   final timeStartController = TextEditingController();
   final timeEndController = TextEditingController();
 
-  final _session = WorkoutSession();
+  final _session = WorkoutSession.now();
 
   /// Selected impression: bad, neutral, good
   var selectedImpression = [false, true, false];
@@ -830,11 +830,12 @@ class _SessionPageState extends State<SessionPage> {
                             // Open time picker
                             final pickedTime = await showTimePicker(
                               context: context,
-                              initialTime: widget._start,
+                              initialTime: _session.timeStart,
                             );
 
                             if (pickedTime != null) {
                               timeStartController.text = timeToString(pickedTime)!;
+                              _session.timeStart = pickedTime;
                             }
                           },
                           onSaved: (newValue) {
@@ -863,10 +864,14 @@ class _SessionPageState extends State<SessionPage> {
                           // Open time picker
                           final pickedTime = await showTimePicker(
                             context: context,
-                            initialTime: TimeOfDay.now(),
+                            initialTime: _session.timeEnd,
                           );
 
-                          timeEndController.text = timeToString(pickedTime)!;
+                          if (pickedTime != null) {
+                            timeEndController.text = timeToString(pickedTime)!;
+                            _session.timeEnd = pickedTime;
+                          }
+
                         },
                         onSaved: (newValue) {
                           _session.timeEnd = stringToTime(newValue);
