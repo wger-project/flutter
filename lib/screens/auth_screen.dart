@@ -148,12 +148,10 @@ class _AuthCardState extends State<AuthCard> {
     } on WgerHttpException catch (error) {
       showHttpExceptionErrorDialog(error, context);
     } catch (error) {
-      final statusCode = await showErrorDialog(error, context);
-      if(statusCode == false) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
+      showErrorDialog(error, context);
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
