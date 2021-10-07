@@ -55,7 +55,7 @@ class LogChartWidget extends StatelessWidget {
                 );
               }),
             ],
-            primaryMeasureAxis: charts.NumericAxisSpec(
+            primaryMeasureAxis: const charts.NumericAxisSpec(
               tickProviderSpec: charts.BasicNumericTickProviderSpec(zeroBound: false),
             ),
             behaviors: [

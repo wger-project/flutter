@@ -81,7 +81,7 @@ void main() {
     expect(find.byType(TypeAheadFormField), findsOneWidget);
     expect(find.byType(Slider), findsOneWidget);
     //expect(find.byType(SwitchListTile), findsOneWidget);
-    expect(find.byKey(Key(SUBMIT_BUTTON_KEY_NAME)), findsOneWidget);
+    expect(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)), findsOneWidget);
     expect(find.byType(ElevatedButton), findsOneWidget);
   });
 
@@ -93,10 +93,10 @@ void main() {
     await tester.pumpWidget(createHomeScreen());
     await tester.pumpAndSettle();
 
-    await tester.enterText(find.byKey(Key('field-typeahead')), 'exercise');
+    await tester.enterText(find.byKey(const Key('field-typeahead')), 'exercise');
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byKey(Key(SUBMIT_BUTTON_KEY_NAME)));
+    await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
     //verify(mockWorkoutPlans.addSet(any));
     //verify(mockWorkoutPlans.addSettinbg(any));

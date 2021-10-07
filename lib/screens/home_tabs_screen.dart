@@ -65,7 +65,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
     WorkoutPlansScreen(),
     NutritionScreen(),
     WeightScreen(),
-    GalleryScreen(),
+    const GalleryScreen(),
   ];
 
   /// Load initial data from the server
@@ -146,26 +146,26 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
             bottomNavigationBar: BottomNavigationBar(
               items: [
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.dashboard),
+                  icon: const Icon(Icons.dashboard),
                   label: AppLocalizations.of(context).labelDashboard,
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.fitness_center),
+                  icon: const Icon(Icons.fitness_center),
                   label: AppLocalizations.of(context).labelBottomNavWorkout,
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.restaurant),
+                  icon: const Icon(Icons.restaurant),
                   label: AppLocalizations.of(context).labelBottomNavNutrition,
                 ),
                 BottomNavigationBarItem(
-                  icon: FaIcon(
+                  icon: const FaIcon(
                     FontAwesomeIcons.weight,
                     size: 20,
                   ),
                   label: AppLocalizations.of(context).weight,
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.photo_library),
+                  icon: const Icon(Icons.photo_library),
                   label: AppLocalizations.of(context).gallery,
                 ),
               ],

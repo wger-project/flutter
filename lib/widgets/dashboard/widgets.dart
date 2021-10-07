@@ -71,7 +71,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
             Expanded(
               child: Text(
                 meal.time!.format(context),
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold),
                 //textAlign: TextAlign.left,
               ),
             ),
@@ -81,19 +81,19 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
               children: [
                 MutedText(
                     '${meal.nutritionalValues.energy.toStringAsFixed(0)}${AppLocalizations.of(context).kcal}'),
-                MutedText(' / '),
+                const MutedText(' / '),
                 MutedText(
                     '${meal.nutritionalValues.protein.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
-                MutedText(' / '),
+                const MutedText(' / '),
                 MutedText(
                     '${meal.nutritionalValues.carbohydrates.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
-                MutedText(' / '),
+                const MutedText(' / '),
                 MutedText(
                     '${meal.nutritionalValues.fat.toStringAsFixed(0)}${AppLocalizations.of(context).g} '),
               ],
             ),
             IconButton(
-              icon: Icon(Icons.history_edu),
+              icon: const Icon(Icons.history_edu),
               color: wgerPrimaryButtonColor,
               onPressed: () {
                 Provider.of<NutritionPlansProvider>(context, listen: false).logMealToDiary(meal);
@@ -110,7 +110,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
           ],
         ),
       );
-      out.add(SizedBox(height: 5));
+      out.add(const SizedBox(height: 5));
 
       if (_showDetail) {
         for (final item in meal.mealItems) {
@@ -126,7 +126,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    SizedBox(width: 5),
+                    const SizedBox(width: 5),
                     Text('${item.amount.toStringAsFixed(0)} ${AppLocalizations.of(context).g}'),
                   ],
                 ),
@@ -134,9 +134,9 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
             ),
           );
         }
-        out.add(SizedBox(height: 10));
+        out.add(const SizedBox(height: 10));
       }
-      out.add(Divider());
+      out.add(const Divider());
     }
 
     return out;
@@ -144,10 +144,10 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
 
   Widget getTrailing() {
     if (!_hasContent) {
-      return Text('');
+      return const Text('');
     }
 
-    return _showDetail ? Icon(Icons.expand_less) : Icon(Icons.expand_more);
+    return _showDetail ? const Icon(Icons.expand_less) : const Icon(Icons.expand_more);
   }
 
   @override
@@ -166,7 +166,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                       .format(_plan!.creationDate)
                   : '',
             ),
-            leading: Icon(
+            leading: const Icon(
               Icons.restaurant,
               color: Colors.black,
             ),
@@ -179,12 +179,12 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
           ),
           if (_hasContent)
             Container(
-              padding: EdgeInsets.only(left: 10),
+              padding: const EdgeInsets.only(left: 10),
               child: Column(
                 children: [
                   ...getContent(),
                   Container(
-                    padding: EdgeInsets.all(15),
+                    padding: const EdgeInsets.all(15),
                     height: 180,
                     child: NutritionalPlanPieChartWidget(_plan!.nutritionalValues),
                   )
@@ -236,12 +236,12 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
               AppLocalizations.of(context).weight,
               style: Theme.of(context).textTheme.headline4,
             ),
-            leading: FaIcon(
+            leading: const FaIcon(
               FontAwesomeIcons.weight,
               color: Colors.black,
             ),
             trailing: IconButton(
-              icon: Icon(Icons.add),
+              icon: const Icon(Icons.add),
               onPressed: () async {
                 Navigator.pushNamed(
                   context,
@@ -260,7 +260,7 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                 Column(
                   children: [
                     Container(
-                      padding: EdgeInsets.all(15),
+                      padding: const EdgeInsets.all(15),
                       height: 180,
                       child: MeasurementChartWidget(weightEntriesData.items
                           .map((e) => MeasurementChartEntry(e.weight, e.date))
@@ -312,10 +312,10 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
 
   Widget getTrailing() {
     if (!_hasContent) {
-      return Text('');
+      return const Text('');
     }
 
-    return _showDetail ? Icon(Icons.expand_less) : Icon(Icons.expand_more);
+    return _showDetail ? const Icon(Icons.expand_less) : const Icon(Icons.expand_more);
   }
 
   List<Widget> getContent() {
@@ -333,7 +333,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
             Expanded(
               child: Text(
                 day.description,
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
@@ -342,7 +342,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
               textAlign: TextAlign.right,
             ),
             IconButton(
-              icon: Icon(Icons.play_arrow),
+              icon: const Icon(Icons.play_arrow),
               color: wgerPrimaryButtonColor,
               onPressed: () {
                 Navigator.of(context).pushNamed(GymModeScreen.routeName, arguments: day);
@@ -366,11 +366,11 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(s.exerciseObj.name),
-                              SizedBox(width: 10),
+                              const SizedBox(width: 10),
                               MutedText(set.getSmartRepr(s.exerciseObj).join('\n')),
                             ],
                           ),
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
                         ],
                       )
                     : Container();
@@ -379,7 +379,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
           ),
         ));
       }
-      out.add(Divider());
+      out.add(const Divider());
     }
 
     return out;
@@ -401,7 +401,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                       .format(_workoutPlan!.creationDate)
                   : '',
             ),
-            leading: Icon(
+            leading: const Icon(
               Icons.fitness_center_outlined,
               color: Colors.black,
             ),
@@ -414,7 +414,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
           ),
           if (_hasContent)
             Container(
-              padding: EdgeInsets.only(left: 10),
+              padding: const EdgeInsets.only(left: 10),
               child: Column(
                 children: [
                   ...getContent(),

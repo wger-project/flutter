@@ -91,8 +91,8 @@ void main() {
       findsOneWidget,
       reason: 'Description of existing workout plan',
     );
-    await tester.enterText(find.byKey(Key('field-name')), 'New description');
-    await tester.tap(find.byKey(Key(SUBMIT_BUTTON_KEY_NAME)));
+    await tester.enterText(find.byKey(const Key('field-name')), 'New description');
+    await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
     // Correct method was called
     verify(mockWorkoutPlans.editWorkout(any));
@@ -120,8 +120,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text(''), findsNWidgets(2), reason: 'New workout has no name or description');
-    await tester.enterText(find.byKey(Key('field-name')), editWorkout.name);
-    await tester.tap(find.byKey(Key(SUBMIT_BUTTON_KEY_NAME)));
+    await tester.enterText(find.byKey(const Key('field-name')), editWorkout.name);
+    await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
     verifyNever(mockWorkoutPlans.editWorkout(any));
     verify(mockWorkoutPlans.addWorkout(any));
@@ -140,9 +140,9 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text(''), findsNWidgets(2), reason: 'New workout has no name or description');
-    await tester.enterText(find.byKey(Key('field-name')), editWorkout.name);
-    await tester.enterText(find.byKey(Key('field-description')), editWorkout.description);
-    await tester.tap(find.byKey(Key(SUBMIT_BUTTON_KEY_NAME)));
+    await tester.enterText(find.byKey(const Key('field-name')), editWorkout.name);
+    await tester.enterText(find.byKey(const Key('field-description')), editWorkout.description);
+    await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
     verifyNever(mockWorkoutPlans.editWorkout(any));
     verify(mockWorkoutPlans.addWorkout(any));

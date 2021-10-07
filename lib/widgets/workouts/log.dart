@@ -46,7 +46,7 @@ class ExerciseLogChart extends StatelessWidget {
       builder: (context, AsyncSnapshot<Map<String, dynamic>> snapshot) => SizedBox(
         height: 150,
         child: snapshot.connectionState == ConnectionState.waiting
-            ? Center(child: CircularProgressIndicator())
+            ? const Center(child: CircularProgressIndicator())
             : LogChartWidget(snapshot.data, _currentDate),
       ),
     );
@@ -69,7 +69,7 @@ class DayLogWidget extends StatelessWidget {
             DateFormat.yMd(Localizations.localeOf(context).languageCode).format(_date),
             style: Theme.of(context).textTheme.headline5,
           ),
-          if (_session != null) Text('Session data here'),
+          if (_session != null) const Text('Session data here'),
           ..._exerciseData.keys.map((exercise) {
             return Column(
               children: [
@@ -79,7 +79,7 @@ class DayLogWidget extends StatelessWidget {
                 ),
                 ..._exerciseData[exercise]!.map((log) => Text(log.singleLogRepTextNoNl)).toList(),
                 ExerciseLogChart(exercise, _date),
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
               ],
             );
           }).toList()

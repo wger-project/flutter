@@ -160,7 +160,7 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
       // Save the result to the cache
       final exerciseData = {
         'date': DateTime.now().toIso8601String(),
-        'expiresIn': DateTime.now().add(Duration(days: daysToCache)).toIso8601String(),
+        'expiresIn': DateTime.now().add(const Duration(days: daysToCache)).toIso8601String(),
         'exercises': _exercises.map((e) => e.toJson()).toList(),
         'equipment': _equipment.map((e) => e.toJson()).toList(),
         'categories': _categories.map((e) => e.toJson()).toList(),

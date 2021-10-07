@@ -74,7 +74,7 @@ void main() {
 
     expect(find.byType(TextFormField), findsOneWidget);
     expect(find.byType(ElevatedButton), findsOneWidget);
-    expect(find.byKey(Key(SUBMIT_BUTTON_KEY_NAME)), findsOneWidget);
+    expect(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)), findsOneWidget);
   });
 
   testWidgets('Test editing an existing nutritional plan', (WidgetTester tester) async {
@@ -86,8 +86,8 @@ void main() {
       findsOneWidget,
       reason: 'Description of existing nutritional plan is filled in',
     );
-    await tester.enterText(find.byKey(Key('field-description')), 'New description');
-    await tester.tap(find.byKey(Key(SUBMIT_BUTTON_KEY_NAME)));
+    await tester.enterText(find.byKey(const Key('field-description')), 'New description');
+    await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
     // Correct method was called
     verify(mockNutrition.editPlan(any));
@@ -112,8 +112,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text(''), findsOneWidget, reason: 'New nutritional plan has no description');
-    await tester.enterText(find.byKey(Key('field-description')), 'New cool plan');
-    await tester.tap(find.byKey(Key(SUBMIT_BUTTON_KEY_NAME)));
+    await tester.enterText(find.byKey(const Key('field-description')), 'New cool plan');
+    await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
     // Correct method was called
     verifyNever(mockNutrition.editPlan(any));

@@ -47,13 +47,13 @@ class MealForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(20),
+      margin: const EdgeInsets.all(20),
       child: Form(
         key: _form,
         child: Column(
           children: [
             TextFormField(
-              key: Key('field-time'),
+              key: const Key('field-time'),
               decoration: InputDecoration(labelText: AppLocalizations.of(context).time),
               controller: _timeController,
               onTap: () async {
@@ -75,7 +75,7 @@ class MealForm extends StatelessWidget {
             ),
             TextFormField(
               maxLength: 25,
-              key: Key('field-name'),
+              key: const Key('field-name'),
               decoration: InputDecoration(labelText: AppLocalizations.of(context).name),
               controller: _nameController,
               onSaved: (newValue) {
@@ -84,7 +84,7 @@ class MealForm extends StatelessWidget {
               onFieldSubmitted: (_) {},
             ),
             ElevatedButton(
-              key: Key(SUBMIT_BUTTON_KEY_NAME),
+              key: const Key(SUBMIT_BUTTON_KEY_NAME),
               child: Text(AppLocalizations.of(context).save),
               onPressed: () async {
                 if (!_form.currentState!.validate()) {
@@ -128,7 +128,7 @@ class MealItemForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(20),
+      margin: const EdgeInsets.all(20),
       child: Form(
         key: _form,
         child: Column(
@@ -225,7 +225,7 @@ class PlanForm extends StatelessWidget {
         children: [
           // Description
           TextFormField(
-            key: Key('field-description'),
+            key: const Key('field-description'),
             decoration: InputDecoration(labelText: AppLocalizations.of(context).description),
             controller: _descriptionController,
             onFieldSubmitted: (_) {},
@@ -234,7 +234,7 @@ class PlanForm extends StatelessWidget {
             },
           ),
           ElevatedButton(
-            key: Key(SUBMIT_BUTTON_KEY_NAME),
+            key: const Key(SUBMIT_BUTTON_KEY_NAME),
             child: Text(AppLocalizations.of(context).save),
             onPressed: () async {
               // Validate and save the current values to the weightEntry

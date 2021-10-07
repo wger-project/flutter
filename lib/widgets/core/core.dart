@@ -32,7 +32,7 @@ class MutedText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       _text,
-      style: TextStyle(color: wgerTextMuted),
+      style: const TextStyle(color: wgerTextMuted),
       textAlign: textAlign,
     );
   }

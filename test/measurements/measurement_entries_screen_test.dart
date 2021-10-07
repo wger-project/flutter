@@ -54,7 +54,7 @@ void main() {
         home: TextButton(
           onPressed: () => key.currentState!.push(
             MaterialPageRoute<void>(
-              settings: RouteSettings(arguments: 1),
+              settings: const RouteSettings(arguments: 1),
               builder: (_) => MeasurementEntriesScreen(),
             ),
           ),

@@ -40,7 +40,7 @@ class ExerciseDetail extends StatelessWidget {
             style: Theme.of(context).textTheme.headline6,
           ),
           Text(_exercise.categoryObj.name),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
 
           // Equipment
           Text(
@@ -49,8 +49,8 @@ class ExerciseDetail extends StatelessWidget {
           ),
           if (_exercise.equipment.isNotEmpty)
             Text(_exercise.equipment.map((e) => e.name).toList().join('\n')),
-          if (_exercise.equipment.isEmpty) Text('-/-'),
-          SizedBox(height: 8),
+          if (_exercise.equipment.isEmpty) const Text('-/-'),
+          const SizedBox(height: 8),
 
           // Muscles
           Text(
@@ -59,8 +59,8 @@ class ExerciseDetail extends StatelessWidget {
           ),
           if (_exercise.muscles.isNotEmpty)
             Text(_exercise.muscles.map((e) => e.name).toList().join('\n')),
-          if (_exercise.muscles.isEmpty) Text('-/-'),
-          SizedBox(height: 8),
+          if (_exercise.muscles.isEmpty) const Text('-/-'),
+          const SizedBox(height: 8),
 
           // Muscles secondary
           Text(
@@ -69,8 +69,8 @@ class ExerciseDetail extends StatelessWidget {
           ),
           if (_exercise.musclesSecondary.isNotEmpty)
             Text(_exercise.musclesSecondary.map((e) => e.name).toList().join('\n')),
-          if (_exercise.musclesSecondary.isEmpty) Text('-/-'),
-          SizedBox(height: 8),
+          if (_exercise.musclesSecondary.isEmpty) const Text('-/-'),
+          const SizedBox(height: 8),
 
           // Description
           Text(
@@ -78,7 +78,7 @@ class ExerciseDetail extends StatelessWidget {
             style: Theme.of(context).textTheme.headline6,
           ),
           Html(data: _exercise.description),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
         ],
       ),
     );

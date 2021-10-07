@@ -90,7 +90,7 @@ linter:
     prefer_asserts_in_initializer_lists: true
     prefer_collection_literals: true
     prefer_conditional_assignment: true
-    prefer_const_constructors: false # definitely to be changed
+    prefer_const_constructors: true
     prefer_const_constructors_in_immutables: true
     prefer_const_declarations: true
     prefer_const_literals_to_create_immutables: true

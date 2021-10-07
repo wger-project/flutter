@@ -34,11 +34,11 @@ void main() {
   );
 
   const int tCategoryId = 1;
-  final MeasurementCategory tMeasurementCategory =
+  const MeasurementCategory tMeasurementCategory =
       MeasurementCategory(id: 1, name: 'Strength', unit: 'kN');
   final List<MeasurementCategory> tMeasurementCategories = [
-    MeasurementCategory(id: 1, name: 'Strength', unit: 'kN'),
-    MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm')
+    const MeasurementCategory(id: 1, name: 'Strength', unit: 'kN'),
+    const MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm')
   ];
   final Map<String, dynamic> tMeasurementCategoriesMap =
       jsonDecode(fixture('measurement_categories.json'));
@@ -160,7 +160,7 @@ void main() {
             notes: '',
           )
         ]),
-        MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm')
+        const MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm')
       ];
 
       // act
@@ -172,16 +172,16 @@ void main() {
   });
 
   group('addCategory()', () {
-    final MeasurementCategory tMeasurementCategoryWithoutId =
+    const MeasurementCategory tMeasurementCategoryWithoutId =
         MeasurementCategory(id: null, name: 'Strength', unit: 'kN');
     final Map<String, dynamic> tMeasurementCategoryMap =
         jsonDecode(fixture('measurement_category.json'));
     final Map<String, dynamic> tMeasurementCategoryMapWithoutId =
         jsonDecode(fixture('measurement_category_without_id_to_json.json'));
     final List<MeasurementCategory> tMeasurementCategoriesAdded = [
-      MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm'),
-      MeasurementCategory(id: 1, name: 'Strength', unit: 'kN'),
-      MeasurementCategory(id: 1, name: 'Strength', unit: 'kN'),
+      const MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm'),
+      const MeasurementCategory(id: 1, name: 'Strength', unit: 'kN'),
+      const MeasurementCategory(id: 1, name: 'Strength', unit: 'kN'),
     ];
     setUp(() {
       when(mockWgerBaseProvider.post(any, any))
@@ -222,7 +222,7 @@ void main() {
           .thenAnswer((realInvocation) => Future.value(Response('', 200)));
 
       final List<MeasurementCategory> tMeasurementCategoriesOneDeleted = [
-        MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm')
+        const MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm')
       ];
 
       // act
@@ -267,8 +267,8 @@ void main() {
     test('should add the new MeasurementCategory and remove the old one', () async {
       // arrange
       final List<MeasurementCategory> tMeasurementCategoriesEdited = [
-        MeasurementCategory(id: 1, name: 'Triceps', unit: 'm'),
-        MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm'),
+        const MeasurementCategory(id: 1, name: 'Triceps', unit: 'm'),
+        const MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm'),
       ];
 
       // act
@@ -342,7 +342,7 @@ void main() {
         ),
         tMeasurementEntry
       ]),
-      MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm')
+      const MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm')
     ];
 
     setUp(() async {
@@ -419,7 +419,7 @@ void main() {
           notes: 'Some important notes',
         ),
       ]),
-      MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm')
+      const MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm')
     ];
 
     setUp(() async {
@@ -481,7 +481,7 @@ void main() {
             notes: '',
           ),
         ]),
-        MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm')
+        const MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm')
       ];
       when(mockWgerBaseProvider.deleteRequest(any, any)).thenThrow(WgerHttpException('{}'));
 
@@ -530,7 +530,7 @@ void main() {
             notes: '',
           )
         ]),
-        MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm')
+        const MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm')
       ];
 
       // act

@@ -51,7 +51,7 @@ class MeasurementChartWidget extends StatelessWidget {
       ],
       defaultRenderer: charts.LineRendererConfig(includePoints: true),
       primaryMeasureAxis: charts.NumericAxisSpec(
-        tickProviderSpec: charts.BasicNumericTickProviderSpec(zeroBound: false),
+        tickProviderSpec: const charts.BasicNumericTickProviderSpec(zeroBound: false),
         tickFormatterSpec: unitTickFormatter,
       ),
     );
