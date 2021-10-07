@@ -59,7 +59,7 @@ class WorkoutSession {
     required this.timeEnd,
   });
 
-  WorkoutSession.now(){
+  WorkoutSession.now() {
     timeStart = TimeOfDay.now();
     timeEnd = TimeOfDay.now();
   }

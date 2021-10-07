@@ -871,7 +871,6 @@ class _SessionPageState extends State<SessionPage> {
                             timeEndController.text = timeToString(pickedTime)!;
                             _session.timeEnd = pickedTime;
                           }
-
                         },
                         onSaved: (newValue) {
                           _session.timeEnd = stringToTime(newValue);
