@@ -464,7 +464,7 @@ class _LogPageState extends State<LogPage> {
           ElevatedButton(
             child: (!_isSaving)
                 ? Text(AppLocalizations.of(context).save)
-                : Container(
+                : SizedBox(
                     height: 20,
                     width: 20,
                     child: CircularProgressIndicator(

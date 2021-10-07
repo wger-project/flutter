@@ -88,7 +88,7 @@ void main() {
     );
 
     expect(
-      find.text(('Initial Name 1')),
+      find.text('Initial Name 1'),
       findsOneWidget,
       reason: 'Time of existing meal is filled in',
     );
