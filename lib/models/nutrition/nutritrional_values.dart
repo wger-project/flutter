@@ -46,7 +46,7 @@ class NutritionalValues {
     return energy * 4.184;
   }
 
-  add(NutritionalValues data) {
+  void add(NutritionalValues data) {
     energy += data.energy;
     protein += data.protein;
     carbohydrates += data.carbohydrates;

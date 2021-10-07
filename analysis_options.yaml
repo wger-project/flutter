@@ -24,7 +24,7 @@ linter:
     # These rules are documented on and in the same order as
     # the Dart Lint rules page to make maintenance easier
     # https://github.com/dart-lang/linter/blob/master/example/all.yaml
-    always_declare_return_types: false # definitely to be changed
+    always_declare_return_types: true
     always_put_control_body_on_new_line: true
     always_require_non_null_named_parameters: true
     always_specify_types: false #to be changed

@@ -68,7 +68,7 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
   }
 
   /// Clears all lists
-  clear() {
+  void clear() {
     _currentPlan = null;
     _workoutPlans = [];
     _weightUnits = [];

@@ -54,7 +54,7 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
   }
 
   /// Clears all lists
-  clear() {
+  void clear() {
     _plans = [];
     _ingredients = [];
   }
