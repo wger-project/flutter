@@ -22,12 +22,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wger/exceptions/http_exception.dart';
 
-void showErrorDialog(dynamic exception, BuildContext context) {
+Future<bool> showErrorDialog(dynamic exception, BuildContext context) async{
   log('showErrorDialog: ');
   log(exception.toString());
   log('=====================');
 
-  showDialog(
+  final statusCode = await showDialog(
     context: context,
     builder: (ctx) => AlertDialog(
       title: Text(AppLocalizations.of(context).anErrorOccurred),
@@ -36,12 +36,18 @@ void showErrorDialog(dynamic exception, BuildContext context) {
         TextButton(
           child: Text(MaterialLocalizations.of(context).closeButtonLabel),
           onPressed: () {
-            Navigator.of(ctx).pop();
+            Navigator.of(ctx).pop(-1);
           },
         )
       ],
     ),
   );
+
+  if(statusCode == -1) {
+    return false;
+  } else {
+    return true;
+  }
 }
 
 void showHttpExceptionErrorDialog(WgerHttpException exception, BuildContext context) async {
