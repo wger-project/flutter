@@ -95,10 +95,7 @@ class AuthProvider with ChangeNotifier {
 
     // Register
     try {
-      final Map<String, String> data = {
-        'username': username,
-        'password': password
-      };
+      final Map<String, String> data = {'username': username, 'password': password};
       if (email != '') {
         data['email'] = email;
       }

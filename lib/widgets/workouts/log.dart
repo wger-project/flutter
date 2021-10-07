@@ -35,8 +35,7 @@ class ExerciseLogChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _workoutPlansData =
-        Provider.of<WorkoutPlansProvider>(context, listen: false);
+    final _workoutPlansData = Provider.of<WorkoutPlansProvider>(context, listen: false);
     final _workout = _workoutPlansData.currentPlan;
 
     Future<Map<String, dynamic>> _getChartEntries(BuildContext context) async {
@@ -45,8 +44,7 @@ class ExerciseLogChart extends StatelessWidget {
 
     return FutureBuilder(
       future: _getChartEntries(context),
-      builder: (context, AsyncSnapshot<Map<String, dynamic>> snapshot) =>
-          SizedBox(
+      builder: (context, AsyncSnapshot<Map<String, dynamic>> snapshot) => SizedBox(
         height: 150,
         child: snapshot.connectionState == ConnectionState.waiting
             ? Center(child: CircularProgressIndicator())
@@ -79,8 +77,7 @@ class _DayLogWidgetState extends State<DayLogWidget> {
       child: Column(
         children: [
           Text(
-            DateFormat.yMd(Localizations.localeOf(context).languageCode)
-                .format(widget._date),
+            DateFormat.yMd(Localizations.localeOf(context).languageCode).format(widget._date),
             style: Theme.of(context).textTheme.headline5,
           ),
           if (widget._session != null) Text('Session data here'),
@@ -108,32 +105,25 @@ class _DayLogWidgetState extends State<DayLogWidget> {
                                   builder: (BuildContext contextDialog) {
                                     return AlertDialog(
                                       content: Text(
-                                        AppLocalizations.of(context)
-                                            .confirmDelete(exercise.name),
+                                        AppLocalizations.of(context).confirmDelete(exercise.name),
                                       ),
                                       actions: [
                                         TextButton(
                                           child: Text(
-                                              MaterialLocalizations.of(context)
-                                                  .cancelButtonLabel),
-                                          onPressed: () =>
-                                              Navigator.of(contextDialog).pop(),
+                                              MaterialLocalizations.of(context).cancelButtonLabel),
+                                          onPressed: () => Navigator.of(contextDialog).pop(),
                                         ),
                                         TextButton(
                                           child: Text(
                                             AppLocalizations.of(context).delete,
-                                            style: TextStyle(
-                                                color: Theme.of(context)
-                                                    .errorColor),
+                                            style: TextStyle(color: Theme.of(context).errorColor),
                                           ),
                                           onPressed: () {
                                             setState(() {
                                               widget._exerciseData[exercise]!
-                                                  .removeWhere(
-                                                      (el) => el.id == log.id);
+                                                  .removeWhere((el) => el.id == log.id);
                                             });
-                                            Provider.of<WorkoutPlansProvider>(
-                                                    context,
+                                            Provider.of<WorkoutPlansProvider>(context,
                                                     listen: false)
                                                 .deleteLog(
                                               log,
@@ -141,12 +131,10 @@ class _DayLogWidgetState extends State<DayLogWidget> {
 
                                             Navigator.of(contextDialog).pop();
 
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
+                                            ScaffoldMessenger.of(context).showSnackBar(
                                               SnackBar(
                                                 content: Text(
-                                                  AppLocalizations.of(context)
-                                                      .successfullyDeleted,
+                                                  AppLocalizations.of(context).successfullyDeleted,
                                                   textAlign: TextAlign.center,
                                                 ),
                                               ),
