@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/exercises/exercise.dart';
@@ -34,7 +35,8 @@ class ExerciseLogChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _workoutPlansData = Provider.of<WorkoutPlansProvider>(context, listen: false);
+    final _workoutPlansData =
+        Provider.of<WorkoutPlansProvider>(context, listen: false);
     final _workout = _workoutPlansData.currentPlan;
 
     Future<Map<String, dynamic>> _getChartEntries(BuildContext context) async {
@@ -43,7 +45,8 @@ class ExerciseLogChart extends StatelessWidget {
 
     return FutureBuilder(
       future: _getChartEntries(context),
-      builder: (context, AsyncSnapshot<Map<String, dynamic>> snapshot) => SizedBox(
+      builder: (context, AsyncSnapshot<Map<String, dynamic>> snapshot) =>
+          SizedBox(
         height: 150,
         child: snapshot.connectionState == ConnectionState.waiting
             ? Center(child: CircularProgressIndicator())
@@ -53,7 +56,7 @@ class ExerciseLogChart extends StatelessWidget {
   }
 }
 
-class DayLogWidget extends StatelessWidget {
+class DayLogWidget extends StatefulWidget {
   final DateTime _date;
   final WorkoutSession? _session;
   final Map<Exercise, List<Log>> _exerciseData;
@@ -61,24 +64,106 @@ class DayLogWidget extends StatelessWidget {
   const DayLogWidget(this._date, this._exerciseData, this._session);
 
   @override
+  _DayLogWidgetState createState() => _DayLogWidgetState();
+}
+
+class _DayLogWidgetState extends State<DayLogWidget> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Card(
       child: Column(
         children: [
           Text(
-            DateFormat.yMd(Localizations.localeOf(context).languageCode).format(_date),
+            DateFormat.yMd(Localizations.localeOf(context).languageCode)
+                .format(widget._date),
             style: Theme.of(context).textTheme.headline5,
           ),
-          if (_session != null) Text('Session data here'),
-          ..._exerciseData.keys.map((exercise) {
+          if (widget._session != null) Text('Session data here'),
+          ...widget._exerciseData.keys.map((exercise) {
             return Column(
               children: [
-                Text(
-                  exercise.name,
-                  style: Theme.of(context).textTheme.headline6,
-                ),
-                ..._exerciseData[exercise]!.map((log) => Text(log.singleLogRepTextNoNl)).toList(),
-                ExerciseLogChart(exercise, _date),
+                if (widget._exerciseData[exercise]!.isNotEmpty)
+                  Text(
+                    exercise.name,
+                    style: Theme.of(context).textTheme.headline6,
+                  )
+                else
+                  Container(),
+                ...widget._exerciseData[exercise]!
+                    .map(
+                      (log) => Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(log.singleLogRepTextNoNl),
+                          IconButton(
+                            icon: Icon(Icons.delete),
+                            onPressed: () async {
+                              final res = await showDialog(
+                                  context: context,
+                                  builder: (BuildContext contextDialog) {
+                                    return AlertDialog(
+                                      content: Text(
+                                        AppLocalizations.of(context)
+                                            .confirmDelete(exercise.name),
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          child: Text(
+                                              MaterialLocalizations.of(context)
+                                                  .cancelButtonLabel),
+                                          onPressed: () =>
+                                              Navigator.of(contextDialog).pop(),
+                                        ),
+                                        TextButton(
+                                          child: Text(
+                                            AppLocalizations.of(context).delete,
+                                            style: TextStyle(
+                                                color: Theme.of(context)
+                                                    .errorColor),
+                                          ),
+                                          onPressed: () {
+                                            setState(() {
+                                              widget._exerciseData[exercise]!
+                                                  .removeWhere(
+                                                      (el) => el.id == log.id);
+                                            });
+                                            Provider.of<WorkoutPlansProvider>(
+                                                    context,
+                                                    listen: false)
+                                                .deleteLog(
+                                              log,
+                                            );
+
+                                            Navigator.of(contextDialog).pop();
+
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                  AppLocalizations.of(context)
+                                                      .successfullyDeleted,
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  });
+                              return res;
+                            },
+                          ),
+                        ],
+                      ),
+                    )
+                    .toList(),
+                ExerciseLogChart(exercise, widget._date),
                 SizedBox(height: 30),
               ],
             );
