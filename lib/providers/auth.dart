@@ -186,17 +186,12 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<bool> tryAutoLogin() async {
-    /*final prefs = await SharedPreferences.getInstance();
+    final prefs = await SharedPreferences.getInstance();
     if (!prefs.containsKey('userData')) {
       log('autologin failed');
       return false;
     }
-    final extractedUserData = json.decode(prefs.getString('userData')!);*/
-    final userData = json.encode({
-      'token': '847a37a0efe85a53a51d68ea7d64e4318761636b',
-      'serverUrl': 'https://wger.rge.uber.space/'
-    });
-    final extractedUserData = json.decode(userData);
+    final extractedUserData = json.decode(prefs.getString('userData')!);
     // final expiryDate = DateTime.parse(extractedUserData['expiryDate']);
 
     // if (expiryDate.isBefore(DateTime.now())) {
