@@ -31,7 +31,7 @@ import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 
 class MealForm extends StatelessWidget {
-  late Meal _meal;
+  late final Meal _meal;
   final int _planId;
 
   final _form = GlobalKey<FormState>();
@@ -114,7 +114,7 @@ class MealForm extends StatelessWidget {
 
 class MealItemForm extends StatelessWidget {
   final Meal _meal;
-  late MealItem _mealItem;
+  late final MealItem _mealItem;
 
   MealItemForm(this._meal, [mealItem]) {
     _mealItem = mealItem ?? MealItem.empty();
@@ -210,7 +210,7 @@ class MealItemForm extends StatelessWidget {
 class PlanForm extends StatelessWidget {
   final _form = GlobalKey<FormState>();
   final _descriptionController = TextEditingController();
-  late NutritionalPlan _plan;
+  late final NutritionalPlan _plan;
 
   PlanForm([NutritionalPlan? plan]) {
     _plan = plan ?? NutritionalPlan.empty();

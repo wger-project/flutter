@@ -31,7 +31,7 @@ class WeightForm extends StatelessWidget {
   final dateController = TextEditingController();
   final weightController = TextEditingController();
 
-  late WeightEntry _weightEntry;
+  late final WeightEntry _weightEntry;
 
   WeightForm([WeightEntry? weightEntry]) {
     _weightEntry = weightEntry ?? WeightEntry(date: DateTime.now());

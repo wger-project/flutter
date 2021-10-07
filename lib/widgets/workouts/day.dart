@@ -33,12 +33,12 @@ import 'package:wger/widgets/exercises/images.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 
 class SettingWidget extends StatelessWidget {
-  Set set;
-  Setting setting;
+  final Set set;
+  final Setting setting;
   final bool expanded;
   final toggle;
 
-  SettingWidget({
+  const SettingWidget({
     required this.set,
     required this.setting,
     required this.expanded,

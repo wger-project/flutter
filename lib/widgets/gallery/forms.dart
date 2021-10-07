@@ -28,7 +28,7 @@ import 'package:wger/models/gallery/image.dart' as gallery;
 import 'package:wger/providers/gallery.dart';
 
 class ImageForm extends StatefulWidget {
-  late gallery.Image _image;
+  late final gallery.Image _image;
 
   ImageForm([gallery.Image? image]) {
     _image = image ?? gallery.Image.emtpy();

@@ -44,7 +44,7 @@ import 'package:wger/widgets/workouts/forms.dart';
 
 class GymMode extends StatefulWidget {
   final Day _workoutDay;
-  late TimeOfDay _start;
+  late final TimeOfDay _start;
 
   GymMode(this._workoutDay) {
     _start = TimeOfDay.now();
@@ -1045,9 +1045,9 @@ class NavigationFooter extends StatelessWidget {
 class NavigationHeader extends StatelessWidget {
   final PageController _controller;
   final String _title;
-  Map<String, int> exercisePages;
+  final Map<String, int> exercisePages;
 
-  NavigationHeader(
+  const NavigationHeader(
     this._title,
     this._controller, {
     required this.exercisePages,

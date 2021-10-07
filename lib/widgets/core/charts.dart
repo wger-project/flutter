@@ -30,10 +30,10 @@ class MeasurementChartEntry {
 /// Weight chart widget
 class MeasurementChartWidget extends StatelessWidget {
   final List<MeasurementChartEntry> _entries;
-  late String unit;
+  final String unit;
 
   /// [_entries] is a list of [MeasurementChartEntry]
-  MeasurementChartWidget(this._entries, {this.unit = 'kg'});
+  const MeasurementChartWidget(this._entries, {this.unit = 'kg'});
 
   @override
   Widget build(BuildContext context) {

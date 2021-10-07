@@ -35,7 +35,7 @@ import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/exercises/images.dart';
 
 class WorkoutForm extends StatelessWidget {
-  WorkoutPlan _plan;
+  final WorkoutPlan _plan;
   final _form = GlobalKey<FormState>();
 
   WorkoutForm(this._plan);
@@ -106,11 +106,12 @@ class WorkoutForm extends StatelessWidget {
                 await Provider.of<WorkoutPlansProvider>(context, listen: false).editWorkout(_plan);
                 Navigator.of(context).pop();
               } else {
-                _plan = await Provider.of<WorkoutPlansProvider>(context, listen: false)
-                    .addWorkout(_plan);
+                final WorkoutPlan newPlan =
+                    await Provider.of<WorkoutPlansProvider>(context, listen: false)
+                        .addWorkout(_plan);
                 Navigator.of(context).pushReplacementNamed(
                   WorkoutPlanScreen.routeName,
-                  arguments: _plan,
+                  arguments: newPlan,
                 );
               }
             },
@@ -157,7 +158,7 @@ class _DayCheckboxState extends State<DayCheckbox> {
 class DayFormWidget extends StatefulWidget {
   final WorkoutPlan workout;
   final dayController = TextEditingController();
-  Day _day = Day();
+  late final Day _day;
 
   DayFormWidget(this.workout, [Day? day]) {
     _day = day ?? Day();
@@ -256,7 +257,7 @@ class _DayFormWidgetState extends State<DayFormWidget> {
 
 class SetFormWidget extends StatefulWidget {
   final Day _day;
-  late Set _set;
+  late final Set _set;
 
   SetFormWidget(this._day, [Set? set]) {
     _set = set ?? Set.withData(day: _day.id, order: _day.sets.length, sets: 4);
@@ -537,7 +538,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
 
 class ExerciseSetting extends StatelessWidget {
   final Exercise _exercise;
-  int _numberOfSets = 4;
+  late final int _numberOfSets;
   final bool _detailed;
   final Function removeExercise;
   final List<Setting> _settings;

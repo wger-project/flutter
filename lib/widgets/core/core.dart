@@ -21,24 +21,19 @@ import 'package:wger/theme/theme.dart';
 
 class MutedText extends StatelessWidget {
   final String _text;
-  TextAlign _textAlign = TextAlign.left;
+  final TextAlign textAlign;
 
-  MutedText(
+  const MutedText(
     this._text, {
-    Key? key,
-    TextAlign? textAlign,
-  }) : super(key: key) {
-    if (textAlign != null) {
-      _textAlign = textAlign;
-    }
-  }
+    this.textAlign = TextAlign.left,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Text(
       _text,
       style: TextStyle(color: wgerTextMuted),
-      textAlign: _textAlign,
+      textAlign: textAlign,
     );
   }
 }
