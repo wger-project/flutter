@@ -48,7 +48,3 @@ List<Widget> getMutedNutritionalValues(NutritionalValues values, BuildContext co
   ];
   return out;
 }
-
-String getFirstWord(String macroNutrientName) => macroNutrientName.isNotEmpty
-    ? macroNutrientName.trim().split(' ').map((l) => l[0]).join()
-    : '';

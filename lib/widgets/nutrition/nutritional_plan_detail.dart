@@ -28,7 +28,6 @@ import 'package:wger/screens/nutritional_diary_screen.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
-import 'package:wger/widgets/nutrition/helpers.dart';
 import 'package:wger/widgets/nutrition/meal.dart';
 
 class NutritionalPlanDetailWidget extends StatelessWidget {
@@ -226,13 +225,13 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                     children: [
                       TextButton(onPressed: () {}, child: const Text('')),
                       Text(
-                          '${getFirstWord(AppLocalizations.of(context).energy)} (${AppLocalizations.of(context).kcal})'),
+                          '${AppLocalizations.of(context).energyShort} (${AppLocalizations.of(context).kcal})'),
                       Text(
-                          '${getFirstWord(AppLocalizations.of(context).protein)} (${AppLocalizations.of(context).g})'),
+                          '${AppLocalizations.of(context).proteinShort} (${AppLocalizations.of(context).g})'),
                       Text(
-                          '${getFirstWord(AppLocalizations.of(context).carbohydrates)} (${AppLocalizations.of(context).g})'),
+                          '${AppLocalizations.of(context).carbohydratesShort} (${AppLocalizations.of(context).g})'),
                       Text(
-                          '${getFirstWord(AppLocalizations.of(context).fat)} (${AppLocalizations.of(context).g})'),
+                          '${AppLocalizations.of(context).fatShort} (${AppLocalizations.of(context).g})'),
                     ],
                   ),
                 ),

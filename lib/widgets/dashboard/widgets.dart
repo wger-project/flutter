@@ -37,7 +37,6 @@ import 'package:wger/widgets/core/charts.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
-import 'package:wger/widgets/nutrition/helpers.dart';
 import 'package:wger/widgets/weight/forms.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 
@@ -81,16 +80,16 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 MutedText(
-                    '${getFirstWord(AppLocalizations.of(context).energy)} ${meal.nutritionalValues.energy.toStringAsFixed(0)}${AppLocalizations.of(context).kcal}'),
+                    '${AppLocalizations.of(context).energyShort} ${meal.nutritionalValues.energy.toStringAsFixed(0)}${AppLocalizations.of(context).kcal}'),
                 MutedText(' / '),
                 MutedText(
-                    '${getFirstWord(AppLocalizations.of(context).protein)} ${meal.nutritionalValues.protein.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
+                    '${AppLocalizations.of(context).proteinShort} ${meal.nutritionalValues.protein.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
                 MutedText(' / '),
                 MutedText(
-                    '${getFirstWord(AppLocalizations.of(context).carbohydrates)} ${meal.nutritionalValues.carbohydrates.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
+                    '${AppLocalizations.of(context).carbohydratesShort} ${meal.nutritionalValues.carbohydrates.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
                 MutedText(' / '),
                 MutedText(
-                    '${getFirstWord(AppLocalizations.of(context).fat)} ${meal.nutritionalValues.fat.toStringAsFixed(0)}${AppLocalizations.of(context).g} '),
+                    '${AppLocalizations.of(context).fatShort} ${meal.nutritionalValues.fat.toStringAsFixed(0)}${AppLocalizations.of(context).g} '),
               ],
             ),
             IconButton(
