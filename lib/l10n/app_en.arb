@@ -296,6 +296,10 @@
   "@energy": {
     "description": "Energy in a meal, ingredient etc. e.g. in kJ"
   },
+  "energyShort": "E",
+  "@energyShort": {
+    "description": "The first letter or short name of the word 'Energy', used in overviews"
+  },
   "kcal": "kcal",
   "@kcal": {
     "description": "Energy in a meal in kilocalories, kcal"
@@ -329,12 +333,24 @@
   },
   "protein": "Protein",
   "@protein": {},
+  "proteinShort": "P",
+  "@proteinShort": {
+    "description" : "The first letter or short name of the word 'Protein', used in overviews"
+  },
   "carbohydrates": "Carbohydrates",
   "@carbohydrates": {},
+  "carbohydratesShort": "C",
+  "@carbohydratesShort": {
+    "description" : "The first letter or short name of the word 'Carbohydrates', used in overviews"
+  },
   "sugars": "Sugars",
   "@sugars": {},
   "fat": "Fat",
   "@fat": {},
+  "fatShort": "F",
+  "@fatShort": {
+    "description" : "The first letter or short name of the word 'Fat', used in overviews"
+  },
   "saturatedFat": "Saturated fat",
   "@saturatedFat": {},
   "fibres": "Fibre",

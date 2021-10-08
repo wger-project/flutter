@@ -225,17 +225,13 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                     children: [
                       TextButton(onPressed: () {}, child: const Text('')),
                       Text(
-                          '${AppLocalizations.of(context).energy} (${AppLocalizations.of(context).kcal})'),
+                          '${AppLocalizations.of(context).energyShort} (${AppLocalizations.of(context).kcal})'),
                       Text(
-                          '${AppLocalizations.of(context).protein} (${AppLocalizations.of(context).g})'),
+                          '${AppLocalizations.of(context).proteinShort} (${AppLocalizations.of(context).g})'),
                       Text(
-                          '${AppLocalizations.of(context).carbohydrates} (${AppLocalizations.of(context).g})'),
+                          '${AppLocalizations.of(context).carbohydratesShort} (${AppLocalizations.of(context).g})'),
                       Text(
-                          '${AppLocalizations.of(context).sugars} (${AppLocalizations.of(context).g})'),
-                      Text(
-                          '${AppLocalizations.of(context).fat} (${AppLocalizations.of(context).g})'),
-                      Text(
-                          '${AppLocalizations.of(context).saturatedFat} (${AppLocalizations.of(context).g})'),
+                          '${AppLocalizations.of(context).fatShort} (${AppLocalizations.of(context).g})'),
                     ],
                   ),
                 ),
@@ -281,9 +277,7 @@ class NutritionDiaryEntry extends StatelessWidget {
           Text(values.energy.toStringAsFixed(0)),
           Text(values.protein.toStringAsFixed(0)),
           Text(values.carbohydrates.toStringAsFixed(0)),
-          Text(values.carbohydratesSugar.toStringAsFixed(0)),
           Text(values.fat.toStringAsFixed(0)),
-          Text(values.fatSaturated.toStringAsFixed(0)),
         ],
       ),
     );
