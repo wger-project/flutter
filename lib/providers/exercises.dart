@@ -41,14 +41,14 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
 
   static const daysToCache = 7;
 
-  static const _exerciseInfoUrlPath = 'exerciseinfo';
-  static const _exerciseSearchPath = 'exercise/search';
+  static const exerciseInfoUrlPath = 'exerciseinfo';
+  static const exerciseSearchPath = 'exercise/search';
 
-  static const _exerciseCommentUrlPath = 'exercisecomment';
-  static const _exerciseImagesUrlPath = 'exerciseimage';
-  static const _categoriesUrlPath = 'exercisecategory';
-  static const _musclesUrlPath = 'muscle';
-  static const _equipmentUrlPath = 'equipment';
+  static const exerciseCommentUrlPath = 'exercisecomment';
+  static const exerciseImagesUrlPath = 'exerciseimage';
+  static const categoriesUrlPath = 'exercisecategory';
+  static const musclesUrlPath = 'muscle';
+  static const equipmentUrlPath = 'equipment';
 
   final List<Exercise> _exercises;
   final List<ExerciseCategory> _categories = [];
@@ -65,7 +65,7 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
   }
 
   Future<void> fetchAndSetCategories() async {
-    final response = await client.get(makeUrl(_categoriesUrlPath));
+    final response = await client.get(makeUrl(categoriesUrlPath));
     final categories = json.decode(response.body) as Map<String, dynamic>;
     try {
       for (final category in categories['results']) {
@@ -77,7 +77,7 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
   }
 
   Future<void> fetchAndSetMuscles() async {
-    final response = await client.get(makeUrl(_musclesUrlPath));
+    final response = await client.get(makeUrl(musclesUrlPath));
     final muscles = json.decode(response.body) as Map<String, dynamic>;
     try {
       for (final muscle in muscles['results']) {
@@ -89,7 +89,7 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
   }
 
   Future<void> fetchAndSetEquipment() async {
-    final response = await client.get(makeUrl(_equipmentUrlPath));
+    final response = await client.get(makeUrl(equipmentUrlPath));
     final equipments = json.decode(response.body) as Map<String, dynamic>;
     try {
       for (final equipment in equipments['results']) {
@@ -111,7 +111,7 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
     } on StateError {
       // Get exercise from the server and save to cache
 
-      final data = await fetch(makeUrl(_exerciseInfoUrlPath, id: exerciseId));
+      final data = await fetch(makeUrl(exerciseInfoUrlPath, id: exerciseId));
       final exercise = Exercise.fromJson(data);
       _exercises.add(exercise);
       final prefs = await SharedPreferences.getInstance();
@@ -145,7 +145,7 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
 
     final response = await client.get(
         makeUrl(
-          _exerciseInfoUrlPath,
+          exerciseInfoUrlPath,
           query: {'limit': '1000'},
         ),
         headers: {
@@ -188,7 +188,7 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
     // Send the request
     final response = await client.get(
       makeUrl(
-        _exerciseSearchPath,
+        exerciseSearchPath,
         query: {'term': name, 'language': languageCode},
       ),
       headers: <String, String>{
