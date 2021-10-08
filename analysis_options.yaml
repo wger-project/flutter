@@ -53,7 +53,7 @@ linter:
     avoid_void_async: false
     await_only_futures: true
     camel_case_extensions: true
-    camel_case_types: false # maybe to be changed
+    camel_case_types: false
     cancel_subscriptions: true
     cast_nullable_to_non_nullable: false # to be changed
     constant_identifier_names: false
