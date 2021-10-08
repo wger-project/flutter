@@ -30,7 +30,7 @@ import 'package:wger/widgets/workouts/log.dart';
 
 class WorkoutLogs extends StatefulWidget {
   final WorkoutPlan _workoutPlan;
-  final _changeMode;
+  final Function _changeMode;
   const WorkoutLogs(this._workoutPlan, this._changeMode);
 
   @override

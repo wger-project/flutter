@@ -60,7 +60,7 @@ linter:
     control_flow_in_finally: true
     deprecated_consistency: true
     directives_ordering: true
-    empty_catches: false # to be changed
+    empty_catches: false
     empty_constructor_bodies: true
     empty_statements: true
     exhaustive_cases: true
@@ -72,7 +72,7 @@ linter:
     leading_newlines_in_multiline_strings: true
     library_names: true
     library_prefixes: true
-    library_private_types_in_public_api: false # to be checked
+    library_private_types_in_public_api: false
     list_remove_unrelated_type: true
     missing_whitespace_between_adjacent_strings: false
     no_adjacent_strings_in_list: true
@@ -115,7 +115,7 @@ linter:
     prefer_null_aware_operators: true
     prefer_single_quotes: true
     prefer_spread_collections: true
-    prefer_typing_uninitialized_variables: false # to be changed
+    prefer_typing_uninitialized_variables: true
     prefer_void_to_null: true
     provide_deprecation_message: true
     recursive_getters: true

@@ -36,7 +36,7 @@ class SettingWidget extends StatelessWidget {
   final Set set;
   final Setting setting;
   final bool expanded;
-  final toggle;
+  final Function toggle;
 
   const SettingWidget({
     required this.set,
@@ -265,7 +265,7 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
 class DayHeaderDismissible extends StatelessWidget {
   final Day _day;
   final bool _expanded;
-  final _toggle;
+  final Function _toggle;
 
   const DayHeaderDismissible({
     required Day day,

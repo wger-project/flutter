@@ -204,7 +204,7 @@ class MealItemWidget extends StatelessWidget {
 
 class DismissibleMealHeader extends StatelessWidget {
   final bool _expanded;
-  final _toggle;
+  final Function _toggle;
 
   const DismissibleMealHeader(
     this._expanded,
