@@ -34,9 +34,8 @@ enum NutritionalPlanOptions {
 class NutritionalPlanScreen extends StatelessWidget {
   static const routeName = '/nutritional-plan-detail';
 
-  Future<NutritionalPlan> _loadFullPlan(BuildContext context, int planId) async {
-    return await Provider.of<NutritionPlansProvider>(context, listen: false)
-        .fetchAndSetPlanFull(planId);
+  Future<NutritionalPlan> _loadFullPlan(BuildContext context, int planId) {
+    return Provider.of<NutritionPlansProvider>(context, listen: false).fetchAndSetPlanFull(planId);
   }
 
   @override

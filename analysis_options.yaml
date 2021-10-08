@@ -27,7 +27,7 @@ linter:
     always_declare_return_types: true
     always_put_control_body_on_new_line: true
     always_require_non_null_named_parameters: true
-    always_specify_types: false #to be changed
+    always_specify_types: false #decided against using it for now
     annotate_overrides: true
     avoid_bool_literals_in_conditional_expressions: true
     avoid_classes_with_only_static_members: true
@@ -50,7 +50,7 @@ linter:
     avoid_types_as_parameter_names: true
     avoid_unnecessary_containers: true
     avoid_unused_constructor_parameters: true
-    avoid_void_async: false # to be changed
+    avoid_void_async: false
     await_only_futures: true
     camel_case_extensions: true
     camel_case_types: false # maybe to be changed
@@ -127,7 +127,7 @@ linter:
     throw_in_finally: true
     tighten_type_of_initializing_formals: true
     type_init_formals: true
-    unnecessary_await_in_return: false # to be changed
+    unnecessary_await_in_return: true
     unnecessary_brace_in_string_interps: true
     unnecessary_const: true
     unnecessary_getters_setters: true

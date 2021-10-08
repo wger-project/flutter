@@ -391,9 +391,8 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                         errorMaxLines: 2,
                       ),
                     ),
-                    suggestionsCallback: (pattern) async {
-                      return await Provider.of<ExercisesProvider>(context, listen: false)
-                          .searchExercise(
+                    suggestionsCallback: (pattern) {
+                      return Provider.of<ExercisesProvider>(context, listen: false).searchExercise(
                         pattern,
                         Localizations.localeOf(context).languageCode,
                       );

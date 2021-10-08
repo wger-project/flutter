@@ -52,8 +52,8 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
     });
   }
 
-  Future<WorkoutPlan> _loadFullWorkout(BuildContext context, int planId) async {
-    return await Provider.of<WorkoutPlansProvider>(context, listen: false)
+  Future<WorkoutPlan> _loadFullWorkout(BuildContext context, int planId) {
+    return Provider.of<WorkoutPlansProvider>(context, listen: false)
         .fetchAndSetWorkoutPlanFull(planId);
   }
 

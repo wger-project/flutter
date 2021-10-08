@@ -235,8 +235,7 @@ void main() {
 
     test('should throw a NoSuchEntryException if no category is found', () {
       // act & assert
-      expect(() async => await measurementProvider.deleteCategory(83),
-          throwsA(isA<NoSuchEntryException>()));
+      expect(() => measurementProvider.deleteCategory(83), throwsA(isA<NoSuchEntryException>()));
     });
 
     test(
@@ -246,7 +245,7 @@ void main() {
       when(mockWgerBaseProvider.deleteRequest(any, any)).thenThrow(WgerHttpException('{}'));
 
       // act & assert
-      expect(() async => await measurementProvider.deleteCategory(tCategoryId),
+      expect(() async => measurementProvider.deleteCategory(tCategoryId),
           throwsA(isA<WgerHttpException>()));
       expect(measurementProvider.categories, tMeasurementCategories);
     });
@@ -300,7 +299,7 @@ void main() {
 
       // act & assert
       expect(
-          () async => await measurementProvider.editCategory(
+          () => measurementProvider.editCategory(
               tCategoryId, tCategoryEditedName, tCategoryEditedUnit),
           throwsA(isA<WgerHttpException>()));
       expect(measurementProvider.categories, tMeasurementCategories);
@@ -402,7 +401,7 @@ void main() {
           .thenAnswer((realInvocation) => Future.value(measurementEntryMapWrongCategory));
 
       // act & assert
-      expect(() async => await measurementProvider.addEntry(tMeasurementEntryWrongCategory),
+      expect(() => measurementProvider.addEntry(tMeasurementEntryWrongCategory),
           throwsA(isA<NoSuchEntryException>()));
     });
   });
@@ -440,7 +439,7 @@ void main() {
 
     test("should throw a NoSuchEntryException if the category isn't found", () {
       // act & assert
-      expect(() async => await measurementProvider.deleteEntry(tEntryId, 83),
+      expect(() async => measurementProvider.deleteEntry(tEntryId, 83),
           throwsA(isA<NoSuchEntryException>()));
     });
 
@@ -448,7 +447,7 @@ void main() {
         "should throw a NoSuchEntryException if the entry in the categories entries List isn't found",
         () {
       // act & assert
-      expect(() async => await measurementProvider.deleteEntry(83, tCategoryId),
+      expect(() => measurementProvider.deleteEntry(83, tCategoryId),
           throwsA(isA<NoSuchEntryException>()));
     });
 
@@ -486,7 +485,7 @@ void main() {
       when(mockWgerBaseProvider.deleteRequest(any, any)).thenThrow(WgerHttpException('{}'));
 
       // act & assert
-      expect(() async => await measurementProvider.deleteEntry(tEntryId, tCategoryId),
+      expect(() async => measurementProvider.deleteEntry(tEntryId, tCategoryId),
           throwsA(isA<WgerHttpException>()));
       expect(measurementProvider.categories, tMeasurementCategories);
     });
@@ -549,7 +548,7 @@ void main() {
     test("should throw a NoSuchEntryException if category doesn't exist", () {
       // act & assert
       expect(
-          () async => await measurementProvider.editEntry(
+          () => measurementProvider.editEntry(
                 tEntryId,
                 83,
                 tEntryEditedValue,
@@ -562,7 +561,7 @@ void main() {
     test("should throw a NoSuchEntryException if entry doesn't exist", () {
       // act & assert
       expect(
-          () async => await measurementProvider.editEntry(
+          () => measurementProvider.editEntry(
                 83,
                 tCategoryId,
                 tEntryEditedValue,
