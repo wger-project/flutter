@@ -18,9 +18,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/helpers/ui.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/session.dart';
@@ -100,51 +100,8 @@ class _DayLogWidgetState extends State<DayLogWidget> {
                           IconButton(
                             icon: Icon(Icons.delete),
                             onPressed: () async {
-                              final res = await showDialog(
-                                  context: context,
-                                  builder: (BuildContext contextDialog) {
-                                    return AlertDialog(
-                                      content: Text(
-                                        AppLocalizations.of(context).confirmDelete(exercise.name),
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                          child: Text(
-                                              MaterialLocalizations.of(context).cancelButtonLabel),
-                                          onPressed: () => Navigator.of(contextDialog).pop(),
-                                        ),
-                                        TextButton(
-                                          child: Text(
-                                            AppLocalizations.of(context).delete,
-                                            style: TextStyle(color: Theme.of(context).errorColor),
-                                          ),
-                                          onPressed: () {
-                                            setState(() {
-                                              widget._exerciseData[exercise]!
-                                                  .removeWhere((el) => el.id == log.id);
-                                            });
-                                            Provider.of<WorkoutPlansProvider>(context,
-                                                    listen: false)
-                                                .deleteLog(
-                                              log,
-                                            );
-
-                                            Navigator.of(contextDialog).pop();
-
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                              SnackBar(
-                                                content: Text(
-                                                  AppLocalizations.of(context).successfullyDeleted,
-                                                  textAlign: TextAlign.center,
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ],
-                                    );
-                                  });
-                              return res;
+                              showDeleteDialog(
+                                  context, exercise.name, log, exercise, widget._exerciseData);
                             },
                           ),
                         ],
