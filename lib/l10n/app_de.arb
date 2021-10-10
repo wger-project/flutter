@@ -489,5 +489,25 @@
     "description": "Header for the column of 'planned' nutritional values, i.e. what should be eaten"
   },
   "macronutrients": "Makronährstoffe",
-  "@macronutrients": {}
+  "@macronutrients": {},
+  "value": "Wert",
+  "@value": {
+    "description": "The value of a measurement entry"
+  },
+  "measurementCategoriesHelpText": "Messkategorie, z. B. \"Bizeps\" oder \"Körperfett\"",
+  "@measurementCategoriesHelpText": {},
+  "measurementEntriesHelpText": "Die Einheit, die verwendet wird, um die Kategorie zu messen, wie z.B. 'cm' oder '%'",
+  "@measurementEntriesHelpText": {},
+  "fatShort": "F",
+  "@fatShort": {
+    "description": "The first letter or short name of the word 'Fat', used in overviews"
+  },
+  "energyShort": "E",
+  "@energyShort": {
+    "description": "The first letter or short name of the word 'Energy', used in overviews"
+  },
+  "proteinShort": "P",
+  "@proteinShort": {
+    "description": "The first letter or short name of the word 'Protein', used in overviews"
+  }
 }
