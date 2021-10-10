@@ -22,6 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:rive/rive.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/exercises.dart';
@@ -128,13 +129,18 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  Center(
+                    child: SizedBox(
+                      height: 70,
+                      child: RiveAnimation.asset(
+                        'assets/animations/wger_logo.riv',
+                        animations: const ['idle_loop2'],
+                      ),
+                    ),
+                  ),
                   Text(
                     AppLocalizations.of(context).loadingText,
                     style: Theme.of(context).textTheme.headline5,
-                  ),
-                  const Padding(padding: EdgeInsets.symmetric(vertical: 8)),
-                  LinearProgressIndicator(
-                    backgroundColor: Theme.of(context).accentColor,
                   ),
                 ],
               ),
