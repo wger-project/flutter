@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
@@ -89,4 +90,12 @@ extension TimeOfDayExtension on TimeOfDay {
   int toMinutes() {
     return (hour * 60) + minute;
   }
+}
+
+void launchURL(String url, BuildContext context) async {
+  await canLaunch(url)
+      ? await launch(url)
+      : ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Could not open $url.")),
+        );
 }

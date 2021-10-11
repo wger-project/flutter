@@ -444,5 +444,9 @@
   "labelBottomNavNutrition": "Nutrizione",
   "@labelBottomNavNutrition": {
     "description": "Label used in bottom navigation, use a short word"
+  },
+  "usernameValidChars": "Un nome utente può contenere solo lettere, cifre e i caratteri @, +, ., - e _",
+  "@usernameValidChars": {
+    "description": "Error message when the user tries to register a username with forbidden characters"
   }
 }

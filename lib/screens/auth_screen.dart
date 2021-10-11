@@ -16,12 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:android_metadata/android_metadata.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/misc.dart';
 import 'package:wger/helpers/ui.dart';
 
 import '../providers/auth.dart';
@@ -90,6 +92,7 @@ class AuthCard extends StatefulWidget {
 
 class _AuthCardState extends State<AuthCard> {
   final GlobalKey<FormState> _formKey = GlobalKey();
+  bool _canRegister = true;
   AuthMode _authMode = AuthMode.Login;
   bool _hideCustomServer = true;
   final Map<String, String> _authData = {
@@ -107,11 +110,23 @@ class _AuthCardState extends State<AuthCard> {
 
   @override
   void initState() {
-    //_serverUrlController.text
     super.initState();
     context.read<AuthProvider>().getServerUrlFromPrefs().then((value) {
       _serverUrlController.text = value;
     });
+
+    // Check if the API key is set
+    //
+    // If not, the user will not be able to register via the app
+    try {
+      AndroidMetadata.metaDataAsMap.then((data) {
+        if (!data!.containsKey('wger.api_key') || data['wger.api_key'] == '') {
+          _canRegister = false;
+        }
+      });
+    } on PlatformException {
+      _canRegister = false;
+    }
   }
 
   void _submit(BuildContext context) async {
@@ -123,6 +138,7 @@ class _AuthCardState extends State<AuthCard> {
     setState(() {
       _isLoading = true;
     });
+
     try {
       // Login existing user
       if (_authMode == AuthMode.Login) {
@@ -159,6 +175,11 @@ class _AuthCardState extends State<AuthCard> {
   }
 
   void _switchAuthMode() {
+    if (!_canRegister) {
+      launchURL(DEFAULT_SERVER, context);
+      return;
+    }
+
     if (_authMode == AuthMode.Login) {
       setState(() {
         _authMode = AuthMode.Signup;

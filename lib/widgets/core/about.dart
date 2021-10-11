@@ -19,18 +19,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:wger/helpers/misc.dart';
 import 'package:wger/providers/auth.dart';
 
 class WgerAboutListTile extends StatelessWidget {
-  void _launchURL(String url, BuildContext context) async {
-    await canLaunch(url)
-        ? await launch(url)
-        : ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Could not open $url.')),
-          );
-  }
-
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
@@ -68,7 +60,7 @@ class WgerAboutListTile extends StatelessWidget {
             ],
           ),
           contentPadding: EdgeInsets.zero,
-          onTap: () async => _launchURL('https://github.com/wger-project', context),
+          onTap: () async => launchURL('https://github.com/wger-project', context),
         ),
         const SizedBox(height: 10),
         ListTile(
@@ -86,7 +78,7 @@ class WgerAboutListTile extends StatelessWidget {
           ),
           contentPadding: EdgeInsets.zero,
           onTap: () async =>
-              _launchURL('https://github.com/wger-project/flutter/issues/new/choose', context),
+              launchURL('https://github.com/wger-project/flutter/issues/new/choose', context),
         ),
         const SizedBox(height: 10),
         ListTile(
@@ -103,7 +95,7 @@ class WgerAboutListTile extends StatelessWidget {
             ],
           ),
           contentPadding: EdgeInsets.zero,
-          onTap: () async => _launchURL('https://discord.gg/rPWFv6W', context),
+          onTap: () async => launchURL('https://discord.gg/rPWFv6W', context),
         ),
         const SizedBox(height: 10),
         ListTile(
@@ -120,7 +112,7 @@ class WgerAboutListTile extends StatelessWidget {
             ],
           ),
           contentPadding: EdgeInsets.zero,
-          onTap: () async => _launchURL('https://hosted.weblate.org/engage/wger/', context),
+          onTap: () async => launchURL('https://hosted.weblate.org/engage/wger/', context),
         ),
       ],
     );
