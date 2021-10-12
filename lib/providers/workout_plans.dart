@@ -506,4 +506,17 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
     notifyListeners();
     return newLog;
   }
+
+  /*Future<void> editLog(Log log) async {
+    await patch(log.toJson(), makeUrl(_logsUrlPath, id: log.id));
+    notifyListeners();
+  }*/
+
+  Future<void> deleteLog(Log log) async {
+    await deleteRequest(_logsUrlPath, log.id!);
+    for (final workout in _workoutPlans) {
+      workout.logs.removeWhere((element) => element.id == log.id);
+    }
+    notifyListeners();
+  }
 }
