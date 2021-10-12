@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/helpers/ui.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/session.dart';
@@ -53,7 +54,7 @@ class ExerciseLogChart extends StatelessWidget {
   }
 }
 
-class DayLogWidget extends StatelessWidget {
+class DayLogWidget extends StatefulWidget {
   final DateTime _date;
   final WorkoutSession? _session;
   final Map<Exercise, List<Log>> _exerciseData;
@@ -61,24 +62,53 @@ class DayLogWidget extends StatelessWidget {
   const DayLogWidget(this._date, this._exerciseData, this._session);
 
   @override
+  _DayLogWidgetState createState() => _DayLogWidgetState();
+}
+
+class _DayLogWidgetState extends State<DayLogWidget> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Card(
       child: Column(
         children: [
           Text(
-            DateFormat.yMd(Localizations.localeOf(context).languageCode).format(_date),
+            DateFormat.yMd(Localizations.localeOf(context).languageCode).format(widget._date),
             style: Theme.of(context).textTheme.headline5,
           ),
-          if (_session != null) Text('Session data here'),
-          ..._exerciseData.keys.map((exercise) {
+          if (widget._session != null) Text('Session data here'),
+          ...widget._exerciseData.keys.map((exercise) {
             return Column(
               children: [
-                Text(
-                  exercise.name,
-                  style: Theme.of(context).textTheme.headline6,
-                ),
-                ..._exerciseData[exercise]!.map((log) => Text(log.singleLogRepTextNoNl)).toList(),
-                ExerciseLogChart(exercise, _date),
+                if (widget._exerciseData[exercise]!.isNotEmpty)
+                  Text(
+                    exercise.name,
+                    style: Theme.of(context).textTheme.headline6,
+                  )
+                else
+                  Container(),
+                ...widget._exerciseData[exercise]!
+                    .map(
+                      (log) => Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(log.singleLogRepTextNoNl),
+                          IconButton(
+                            icon: Icon(Icons.delete),
+                            onPressed: () async {
+                              showDeleteDialog(
+                                  context, exercise.name, log, exercise, widget._exerciseData);
+                            },
+                          ),
+                        ],
+                      ),
+                    )
+                    .toList(),
+                ExerciseLogChart(exercise, widget._date),
                 SizedBox(height: 30),
               ],
             );
