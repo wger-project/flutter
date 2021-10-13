@@ -496,6 +496,6 @@
   "@dataCopied": {
     "description": "Snackbar message to show on copying data to a new log entry"
   },
-  "appUpdateTitle" : "App Update Available",
-  "appUpdateContent" : "The newer version of the app is availibale. Please update your application."
+  "appUpdateTitle" : "Update needed",
+  "appUpdateContent" : "This version of the app is not compatible with the server, please update your application."
 }
