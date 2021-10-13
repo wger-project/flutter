@@ -446,5 +446,69 @@
   "muscles": "Mišići",
   "@muscles": {
     "description": "(main) muscles trained by an exercise"
-  }
+  },
+  "dayDescriptionHelp": "Opis onoga što se radi na današnji dan (npr. 'Pull day') ili koji su dijelovi tijela trenirani (npr. 'Prsa i ramena')",
+  "@dayDescriptionHelp": {},
+  "setNr": "Skup {nr}",
+  "@setNr": {
+    "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {}
+    }
+  },
+  "sameRepetitions": "Ako radite ista ponavljanja i težinu za sve setove, možete samo ispuniti jedan red. Na primjer, za 4 seta samo unesite 10 za ponavljanja, to automatski postaje \"4 x 10\".",
+  "@sameRepetitions": {},
+  "comment": "Komentar",
+  "@comment": {
+    "description": "Comment, additional information"
+  },
+  "impression": "Dojam",
+  "@impression": {
+    "description": "General impression (e.g. for a workout session) such as good, bad, etc."
+  },
+  "notes": "Bilješke",
+  "@notes": {
+    "description": "Personal notes, e.g. for a workout session"
+  },
+  "workoutSession": "Sesija vježbanja",
+  "@workoutSession": {
+    "description": "A (logged) workout session"
+  },
+  "newDay": "Novi dan",
+  "@newDay": {},
+  "newSet": "Novi skup",
+  "@newSet": {
+    "description": "Header when adding a new set to a workout day"
+  },
+  "selectExercises": "Ako želite napraviti superset, možete potražiti nekoliko vježbi, one će biti grupirane zajedno",
+  "@selectExercises": {},
+  "gymMode": "Način rada u teretani",
+  "@gymMode": {
+    "description": "Label when starting the gym mode"
+  },
+  "plateCalculator": "Ploče",
+  "@plateCalculator": {
+    "description": "Label used for the plate calculator in the gym mode"
+  },
+  "plateCalculatorNotDivisible": "Nije moguće postići težinu s dostupnim pločama",
+  "@plateCalculatorNotDivisible": {
+    "description": "Error message when the current weight is not reachable with plates (e.g. 33.1 kg)"
+  },
+  "pause": "Pauza",
+  "@pause": {
+    "description": "Noun, not an imperative! Label used for the pause when using the gym mode"
+  },
+  "weightUnit": "Jedinica težine",
+  "@weightUnit": {},
+  "appUpdateTitle": "Potrebno ažuriranje",
+  "@appUpdateTitle": {},
+  "appUpdateContent": "Ova verzija aplikacije nije kompatibilna s poslužiteljem. Molimo ažurirajte svoju aplikaciju.",
+  "@appUpdateContent": {},
+  "set": "Skup",
+  "@set": {
+    "description": "A set in a workout plan"
+  },
+  "repetitionUnit": "Jedinica za ponavljanje",
+  "@repetitionUnit": {}
 }
