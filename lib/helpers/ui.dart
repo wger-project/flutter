@@ -56,7 +56,7 @@ void showHttpExceptionErrorDialog(WgerHttpException exception, BuildContext cont
   final List<Widget> errorList = [];
   for (final key in exception.errors!.keys) {
     // Error headers
-    errorList.add(Text(key, style: TextStyle(fontWeight: FontWeight.bold)));
+    errorList.add(Text(key, style: const TextStyle(fontWeight: FontWeight.bold)));
 
     // Error messages
     if (exception.errors![key] is String) {
@@ -66,7 +66,7 @@ void showHttpExceptionErrorDialog(WgerHttpException exception, BuildContext cont
         errorList.add(Text(value));
       }
     }
-    errorList.add(SizedBox(height: 8));
+    errorList.add(const SizedBox(height: 8));
   }
 
   showDialog(

@@ -31,7 +31,7 @@ import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 
 class MealForm extends StatelessWidget {
-  late Meal _meal;
+  late final Meal _meal;
   final int _planId;
 
   final _form = GlobalKey<FormState>();
@@ -47,13 +47,13 @@ class MealForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(20),
+      margin: const EdgeInsets.all(20),
       child: Form(
         key: _form,
         child: Column(
           children: [
             TextFormField(
-              key: Key('field-time'),
+              key: const Key('field-time'),
               decoration: InputDecoration(labelText: AppLocalizations.of(context).time),
               controller: _timeController,
               onTap: () async {
@@ -75,7 +75,7 @@ class MealForm extends StatelessWidget {
             ),
             TextFormField(
               maxLength: 25,
-              key: Key('field-name'),
+              key: const Key('field-name'),
               decoration: InputDecoration(labelText: AppLocalizations.of(context).name),
               controller: _nameController,
               onSaved: (newValue) {
@@ -84,7 +84,7 @@ class MealForm extends StatelessWidget {
               onFieldSubmitted: (_) {},
             ),
             ElevatedButton(
-              key: Key(SUBMIT_BUTTON_KEY_NAME),
+              key: const Key(SUBMIT_BUTTON_KEY_NAME),
               child: Text(AppLocalizations.of(context).save),
               onPressed: () async {
                 if (!_form.currentState!.validate()) {
@@ -114,7 +114,7 @@ class MealForm extends StatelessWidget {
 
 class MealItemForm extends StatelessWidget {
   final Meal _meal;
-  late MealItem _mealItem;
+  late final MealItem _mealItem;
 
   MealItemForm(this._meal, [mealItem]) {
     _mealItem = mealItem ?? MealItem.empty();
@@ -128,7 +128,7 @@ class MealItemForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(20),
+      margin: const EdgeInsets.all(20),
       child: Form(
         key: _form,
         child: Column(
@@ -210,7 +210,7 @@ class MealItemForm extends StatelessWidget {
 class PlanForm extends StatelessWidget {
   final _form = GlobalKey<FormState>();
   final _descriptionController = TextEditingController();
-  late NutritionalPlan _plan;
+  late final NutritionalPlan _plan;
 
   PlanForm([NutritionalPlan? plan]) {
     _plan = plan ?? NutritionalPlan.empty();
@@ -225,7 +225,7 @@ class PlanForm extends StatelessWidget {
         children: [
           // Description
           TextFormField(
-            key: Key('field-description'),
+            key: const Key('field-description'),
             decoration: InputDecoration(labelText: AppLocalizations.of(context).description),
             controller: _descriptionController,
             onFieldSubmitted: (_) {},
@@ -234,7 +234,7 @@ class PlanForm extends StatelessWidget {
             },
           ),
           ElevatedButton(
-            key: Key(SUBMIT_BUTTON_KEY_NAME),
+            key: const Key(SUBMIT_BUTTON_KEY_NAME),
             child: Text(AppLocalizations.of(context).save),
             onPressed: () async {
               // Validate and save the current values to the weightEntry

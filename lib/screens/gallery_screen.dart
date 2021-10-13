@@ -51,7 +51,7 @@ class GalleryScreen extends StatelessWidget {
         },
       ),
       body: Consumer<GalleryProvider>(
-        builder: (context, workoutProvider, child) => Gallery(),
+        builder: (context, workoutProvider, child) => const Gallery(),
       ),
     );
   }

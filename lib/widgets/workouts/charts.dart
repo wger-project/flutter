@@ -30,7 +30,7 @@ class TimeSeriesLog {
 }
 
 class LogChartWidget extends StatelessWidget {
-  final _data;
+  final Map _data;
   final DateTime _currentDate;
   const LogChartWidget(this._data, this._currentDate);
 
@@ -55,7 +55,7 @@ class LogChartWidget extends StatelessWidget {
                 );
               }),
             ],
-            primaryMeasureAxis: charts.NumericAxisSpec(
+            primaryMeasureAxis: const charts.NumericAxisSpec(
               tickProviderSpec: charts.BasicNumericTickProviderSpec(zeroBound: false),
             ),
             behaviors: [

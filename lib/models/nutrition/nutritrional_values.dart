@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:ui';
+
 class NutritionalValues {
   double energy = 0;
   double protein = 0;
@@ -44,7 +46,7 @@ class NutritionalValues {
     return energy * 4.184;
   }
 
-  add(NutritionalValues data) {
+  void add(NutritionalValues data) {
     energy += data.energy;
     protein += data.protein;
     carbohydrates += data.carbohydrates;
@@ -69,7 +71,7 @@ class NutritionalValues {
   }
 
   @override
-  //ignore: hash_and_equals
+  //ignore: avoid_equals_and_hash_code_on_mutable_classes
   bool operator ==(other) {
     return other is NutritionalValues &&
         energy == other.energy &&
@@ -86,6 +88,11 @@ class NutritionalValues {
   String toString() {
     return 'e: $energy, p: $protein, c: $carbohydrates, cS: $carbohydratesSugar, f: $fat, fS: $fatSaturated, fi: $fibres, s: $sodium';
   }
+
+  @override
+  //ignore: avoid_equals_and_hash_code_on_mutable_classes
+  int get hashCode => hashValues(
+      energy, protein, carbohydrates, carbohydratesSugar, fat, fatSaturated, fibres, sodium);
 }
 
 class BaseNutritionalValues {

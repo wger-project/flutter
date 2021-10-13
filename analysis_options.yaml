@@ -24,10 +24,10 @@ linter:
     # These rules are documented on and in the same order as
     # the Dart Lint rules page to make maintenance easier
     # https://github.com/dart-lang/linter/blob/master/example/all.yaml
-    always_declare_return_types: false # definitely to be changed
+    always_declare_return_types: true
     always_put_control_body_on_new_line: true
     always_require_non_null_named_parameters: true
-    always_specify_types: false #to be changed
+    always_specify_types: false # decided against using it for now
     annotate_overrides: true
     avoid_bool_literals_in_conditional_expressions: true
     avoid_classes_with_only_static_members: true
@@ -50,17 +50,17 @@ linter:
     avoid_types_as_parameter_names: true
     avoid_unnecessary_containers: true
     avoid_unused_constructor_parameters: true
-    avoid_void_async: false # to be changed
+    avoid_void_async: false
     await_only_futures: true
     camel_case_extensions: true
-    camel_case_types: false # maybe to be changed
+    camel_case_types: false
     cancel_subscriptions: true
     cast_nullable_to_non_nullable: false # to be changed
     constant_identifier_names: false
     control_flow_in_finally: true
     deprecated_consistency: true
     directives_ordering: true
-    empty_catches: false # to be changed
+    empty_catches: false
     empty_constructor_bodies: true
     empty_statements: true
     exhaustive_cases: true
@@ -72,7 +72,7 @@ linter:
     leading_newlines_in_multiline_strings: true
     library_names: true
     library_prefixes: true
-    library_private_types_in_public_api: false # to be checked
+    library_private_types_in_public_api: false
     list_remove_unrelated_type: true
     missing_whitespace_between_adjacent_strings: false
     no_adjacent_strings_in_list: true
@@ -90,7 +90,7 @@ linter:
     prefer_asserts_in_initializer_lists: true
     prefer_collection_literals: true
     prefer_conditional_assignment: true
-    prefer_const_constructors: false # definitely to be changed
+    prefer_const_constructors: true
     prefer_const_constructors_in_immutables: true
     prefer_const_declarations: true
     prefer_const_literals_to_create_immutables: true
@@ -115,7 +115,7 @@ linter:
     prefer_null_aware_operators: true
     prefer_single_quotes: true
     prefer_spread_collections: true
-    prefer_typing_uninitialized_variables: false # to be changed
+    prefer_typing_uninitialized_variables: true
     prefer_void_to_null: true
     provide_deprecation_message: true
     recursive_getters: true
@@ -127,7 +127,7 @@ linter:
     throw_in_finally: true
     tighten_type_of_initializing_formals: true
     type_init_formals: true
-    unnecessary_await_in_return: false # to be changed
+    unnecessary_await_in_return: true
     unnecessary_brace_in_string_interps: true
     unnecessary_const: true
     unnecessary_getters_setters: true
@@ -153,5 +153,5 @@ linter:
     use_rethrow_when_possible: true
     use_test_throws_matchers: true
     valid_regexps: true
-    void_checks: true
+    void_checks: false
 

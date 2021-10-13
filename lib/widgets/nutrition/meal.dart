@@ -51,7 +51,7 @@ class _MealWidgetState extends State<MealWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(3),
+      padding: const EdgeInsets.all(3),
       child: Card(
         child: Column(
           children: [
@@ -77,7 +77,7 @@ class _MealWidgetState extends State<MealWidget> {
                         ),
                       );
                     },
-                    icon: Icon(Icons.delete),
+                    icon: const Icon(Icons.delete),
                   ),
                   if (widget._meal.mealItems.isNotEmpty)
                     Ink(
@@ -113,11 +113,11 @@ class _MealWidgetState extends State<MealWidget> {
                         ),
                       );
                     },
-                    icon: Icon(Icons.edit),
+                    icon: const Icon(Icons.edit),
                   ),
                 ],
               ),
-            Divider(),
+            const Divider(),
             ...widget._meal.mealItems.map((item) => MealItemWidget(item, _expanded)).toList(),
             OutlinedButton(
               child: Text(AppLocalizations.of(context).addIngredient),
@@ -159,7 +159,7 @@ class MealItemWidget extends StatelessWidget {
     final values = _item.nutritionalValues;
 
     return Container(
-      padding: EdgeInsets.all(5),
+      padding: const EdgeInsets.all(5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -175,7 +175,7 @@ class MealItemWidget extends StatelessWidget {
                 )),
                 if (_expanded)
                   IconButton(
-                    icon: Icon(Icons.delete),
+                    icon: const Icon(Icons.delete),
                     iconSize: ICON_SIZE_SMALL,
                     onPressed: () {
                       // Delete the meal item
@@ -204,7 +204,7 @@ class MealItemWidget extends StatelessWidget {
 
 class DismissibleMealHeader extends StatelessWidget {
   final bool _expanded;
-  final _toggle;
+  final Function _toggle;
 
   const DismissibleMealHeader(
     this._expanded,
@@ -221,7 +221,7 @@ class DismissibleMealHeader extends StatelessWidget {
       direction: DismissDirection.startToEnd,
       child: Container(
         padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(color: Colors.white),
+        decoration: const BoxDecoration(color: Colors.white),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -240,7 +240,7 @@ class DismissibleMealHeader extends StatelessWidget {
                 ),
                 IconButton(
                   visualDensity: VisualDensity.compact,
-                  icon: _expanded ? Icon(Icons.unfold_less) : Icon(Icons.unfold_more),
+                  icon: _expanded ? const Icon(Icons.unfold_less) : const Icon(Icons.unfold_more),
                   onPressed: () {
                     _toggle();
                   },
@@ -253,15 +253,15 @@ class DismissibleMealHeader extends StatelessWidget {
       background: Container(
         color: wgerPrimaryButtonColor, //Theme.of(context).primaryColor,
         alignment: Alignment.centerLeft,
-        padding: EdgeInsets.only(left: 10),
+        padding: const EdgeInsets.only(left: 10),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
               AppLocalizations.of(context).logMeal,
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
-            Icon(
+            const Icon(
               Icons.history_edu,
               color: Colors.white,
             ),

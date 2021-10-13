@@ -68,7 +68,7 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
   }
 
   /// Clears all lists
-  clear() {
+  void clear() {
     _currentPlan = null;
     _workoutPlans = [];
     _weightUnits = [];
@@ -353,7 +353,7 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
     // Save the result to the cache
     final exerciseData = {
       'date': DateTime.now().toIso8601String(),
-      'expiresIn': DateTime.now().add(Duration(days: DAYS_TO_CACHE)).toIso8601String(),
+      'expiresIn': DateTime.now().add(const Duration(days: DAYS_TO_CACHE)).toIso8601String(),
       'repetitionUnits': _repetitionUnit.map((e) => e.toJson()).toList(),
       'weightUnit': _weightUnits.map((e) => e.toJson()).toList(),
     };

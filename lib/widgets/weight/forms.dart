@@ -31,7 +31,7 @@ class WeightForm extends StatelessWidget {
   final dateController = TextEditingController();
   final weightController = TextEditingController();
 
-  late WeightEntry _weightEntry;
+  late final WeightEntry _weightEntry;
 
   WeightForm([WeightEntry? weightEntry]) {
     _weightEntry = weightEntry ?? WeightEntry(date: DateTime.now());
@@ -50,7 +50,7 @@ class WeightForm extends StatelessWidget {
             readOnly: true, // Stop keyboard from appearing
             decoration: InputDecoration(
               labelText: AppLocalizations.of(context).date,
-              suffixIcon: Icon(Icons.calendar_today_outlined),
+              suffixIcon: const Icon(Icons.calendar_today_outlined),
             ),
             enableInteractiveSelection: false,
             controller: dateController,

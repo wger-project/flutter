@@ -29,7 +29,7 @@ class WgerAboutListTile extends StatelessWidget {
 
     return AboutListTile(
       //dense: true,
-      icon: Icon(Icons.info),
+      icon: const Icon(Icons.info),
       applicationName: 'wger',
       applicationVersion: 'App: ${authProvider.applicationVersion!.version}\n'
           'Server: ${authProvider.serverVersion}',
@@ -43,17 +43,17 @@ class WgerAboutListTile extends StatelessWidget {
       ),
 
       aboutBoxChildren: [
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         Text(AppLocalizations.of(context).aboutDescription),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         ListTile(
-          leading: Icon(Icons.code),
+          leading: const Icon(Icons.code),
           title: Text(AppLocalizations.of(context).aboutSourceTitle),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(AppLocalizations.of(context).aboutSourceText),
-              Text(
+              const Text(
                 'https://github.com/wger-project',
                 style: TextStyle(color: Colors.blue),
               ),
@@ -62,15 +62,15 @@ class WgerAboutListTile extends StatelessWidget {
           contentPadding: EdgeInsets.zero,
           onTap: () async => launchURL('https://github.com/wger-project', context),
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         ListTile(
-          leading: Icon(Icons.bug_report),
+          leading: const Icon(Icons.bug_report),
           title: Text(AppLocalizations.of(context).aboutBugsTitle),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(AppLocalizations.of(context).aboutBugsText),
-              Text(
+              const Text(
                 'https://github.com/wger-project/flutter/issues/new/choose',
                 style: TextStyle(color: Colors.blue),
               )
@@ -80,15 +80,15 @@ class WgerAboutListTile extends StatelessWidget {
           onTap: () async =>
               launchURL('https://github.com/wger-project/flutter/issues/new/choose', context),
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         ListTile(
-          leading: Icon(Icons.chat),
+          leading: const Icon(Icons.chat),
           title: Text(AppLocalizations.of(context).aboutContactUsTitle),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(AppLocalizations.of(context).aboutContactUsText),
-              Text(
+              const Text(
                 'https://discord.gg/rPWFv6W',
                 style: TextStyle(color: Colors.blue),
               ),
@@ -97,15 +97,15 @@ class WgerAboutListTile extends StatelessWidget {
           contentPadding: EdgeInsets.zero,
           onTap: () async => launchURL('https://discord.gg/rPWFv6W', context),
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         ListTile(
-          leading: Icon(Icons.translate),
+          leading: const Icon(Icons.translate),
           title: Text(AppLocalizations.of(context).aboutTranslationTitle),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(AppLocalizations.of(context).aboutTranslationText),
-              Text(
+              const Text(
                 'https://hosted.weblate.org/engage/wger/',
                 style: TextStyle(color: Colors.blue),
               ),

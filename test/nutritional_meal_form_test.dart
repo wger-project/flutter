@@ -74,7 +74,7 @@ void main() {
 
     expect(find.byType(TextFormField), findsNWidgets(2));
     expect(find.byType(ElevatedButton), findsOneWidget);
-    expect(find.byKey(Key(SUBMIT_BUTTON_KEY_NAME)), findsOneWidget);
+    expect(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)), findsOneWidget);
   });
 
   testWidgets('Test editing an existing meal', (WidgetTester tester) async {
@@ -88,14 +88,14 @@ void main() {
     );
 
     expect(
-      find.text(('Initial Name 1')),
+      find.text('Initial Name 1'),
       findsOneWidget,
       reason: 'Time of existing meal is filled in',
     );
 
-    await tester.enterText(find.byKey(Key('field-time')), '12:34');
-    await tester.enterText(find.byKey(Key('field-name')), 'test meal');
-    await tester.tap(find.byKey(Key(SUBMIT_BUTTON_KEY_NAME)));
+    await tester.enterText(find.byKey(const Key('field-time')), '12:34');
+    await tester.enterText(find.byKey(const Key('field-name')), 'test meal');
+    await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
     // Correct method was called
     verify(mockNutrition.editMeal(any));
@@ -112,9 +112,9 @@ void main() {
       reason: 'Current time is filled in',
     );
 
-    await tester.enterText(find.byKey(Key('field-time')), '08:00');
-    await tester.enterText(find.byKey(Key('field-name')), 'test meal');
-    await tester.tap(find.byKey(Key(SUBMIT_BUTTON_KEY_NAME)));
+    await tester.enterText(find.byKey(const Key('field-time')), '08:00');
+    await tester.enterText(find.byKey(const Key('field-name')), 'test meal');
+    await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
     // Correct method was called
     verifyNever(mockNutrition.editMeal(any));
