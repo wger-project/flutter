@@ -48,7 +48,7 @@ class Gallery extends StatelessWidget {
                 builder: (context) => Material(
                   child: Container(
                     key: Key('image-${currentImage.id}-detail'),
-                    padding: EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(10),
                     color: Colors.white,
                     child: Column(
                       children: [
@@ -68,14 +68,14 @@ class Gallery extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             IconButton(
-                                icon: Icon(Icons.delete),
+                                icon: const Icon(Icons.delete),
                                 onPressed: () {
                                   Provider.of<GalleryProvider>(context, listen: false)
                                       .deleteImage(currentImage);
                                   Navigator.of(context).pop();
                                 }),
                             IconButton(
-                                icon: Icon(Icons.edit),
+                                icon: const Icon(Icons.edit),
                                 onPressed: () {
                                   Navigator.pushNamed(
                                     context,
@@ -98,7 +98,7 @@ class Gallery extends StatelessWidget {
             },
             child: FadeInImage(
               key: Key('image-${currentImage.id}'),
-              placeholder: AssetImage('assets/images/placeholder.png'),
+              placeholder: const AssetImage('assets/images/placeholder.png'),
               image: NetworkImage(currentImage.url!),
               fit: BoxFit.cover,
             ),

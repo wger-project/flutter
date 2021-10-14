@@ -70,3 +70,6 @@ const ENERGY_CARBOHYDRATES = 4;
 
 /// kcal per gram of fat (approx)
 const ENERGY_FAT = 9;
+
+/// Flag to check for updates to the new version.
+const ENABLED_UPDATE = false;

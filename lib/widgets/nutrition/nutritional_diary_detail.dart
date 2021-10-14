@@ -41,7 +41,7 @@ class NutritionalDiaryDetailWidget extends StatelessWidget {
   ) {
     return Table(
       defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-      border: TableBorder(
+      border: const TableBorder(
         horizontalInside: BorderSide(width: 1, color: wgerTextMuted),
       ),
       columnWidths: const {0: FractionColumnWidth(0.4)},
@@ -52,20 +52,20 @@ class NutritionalDiaryDetailWidget extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: tablePadding),
               child: Text(
                 AppLocalizations.of(context).macronutrients,
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
             Text(
               AppLocalizations.of(context).planned,
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             Text(
               AppLocalizations.of(context).logged,
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             Text(
               AppLocalizations.of(context).difference,
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -177,9 +177,9 @@ class NutritionalDiaryDetailWidget extends StatelessWidget {
         children: [
           Text(
             DateFormat.Hm(Localizations.localeOf(context).languageCode).format(log.datetime),
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -188,9 +188,9 @@ class NutritionalDiaryDetailWidget extends StatelessWidget {
                   '${log.amount.toStringAsFixed(0)}${AppLocalizations.of(context).g} ${log.ingredientObj.name}',
                   overflow: TextOverflow.ellipsis,
                 ),
-                SizedBox(height: 4),
+                const SizedBox(height: 4),
                 ...getMutedNutritionalValues(values, context),
-                SizedBox(height: 12),
+                const SizedBox(height: 12),
               ],
             ),
           ),
@@ -199,7 +199,7 @@ class NutritionalDiaryDetailWidget extends StatelessWidget {
                 Provider.of<NutritionPlansProvider>(context, listen: false)
                     .deleteLog(log.id!, _nutritionalPlan.id!);
               },
-              icon: Icon(Icons.delete_outline)),
+              icon: const Icon(Icons.delete_outline)),
         ],
       );
     }).toList();
@@ -212,7 +212,7 @@ class NutritionalDiaryDetailWidget extends StatelessWidget {
     final logs = _nutritionalPlan.getLogsForDate(_date);
 
     if (valuesDate == null) {
-      return Text('');
+      return const Text('');
     }
 
     return Column(
@@ -221,7 +221,7 @@ class NutritionalDiaryDetailWidget extends StatelessWidget {
           child: Column(
             children: [
               Container(
-                padding: EdgeInsets.all(15),
+                padding: const EdgeInsets.all(15),
                 height: 220,
                 child: NutritionalPlanPieChartWidget(valuesDate),
               ),
@@ -232,7 +232,7 @@ class NutritionalDiaryDetailWidget extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(height: 15),
+        const SizedBox(height: 15),
         ...getEntriesTable(logs, context),
       ],
     );

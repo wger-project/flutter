@@ -66,8 +66,8 @@ final ThemeData wgerTheme = ThemeData(
      * Text theme
      */
     textTheme: TextTheme(
-      headline1: TextStyle(fontFamily: 'OpenSansLight', color: Colors.black),
-      headline2: TextStyle(fontFamily: 'OpenSansLight', color: Colors.black),
+      headline1: const TextStyle(fontFamily: 'OpenSansLight', color: Colors.black),
+      headline2: const TextStyle(fontFamily: 'OpenSansLight', color: Colors.black),
       headline3: TextStyle(
         fontSize: materialSizes['h3']! * 0.8,
         fontFamily: 'OpenSansBold',
@@ -102,7 +102,7 @@ final ThemeData wgerTheme = ThemeData(
       style: OutlinedButton.styleFrom(
         primary: wgerPrimaryButtonColor,
         visualDensity: VisualDensity.compact,
-        side: BorderSide(color: wgerPrimaryButtonColor),
+        side: const BorderSide(color: wgerPrimaryButtonColor),
       ),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
@@ -114,7 +114,7 @@ final ThemeData wgerTheme = ThemeData(
     /*
     * Forms, etc.
     */
-    sliderTheme: SliderThemeData(
+    sliderTheme: const SliderThemeData(
       activeTrackColor: wgerPrimaryButtonColor,
       thumbColor: wgerPrimaryColor,
     ),

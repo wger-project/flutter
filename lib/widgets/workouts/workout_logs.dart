@@ -30,7 +30,7 @@ import 'package:wger/widgets/workouts/log.dart';
 
 class WorkoutLogs extends StatefulWidget {
   final WorkoutPlan _workoutPlan;
-  final _changeMode;
+  final Function _changeMode;
   const WorkoutLogs(this._workoutPlan, this._changeMode);
 
   @override
@@ -168,7 +168,7 @@ class _WorkoutLogCalendarState extends State<WorkoutLogCalendar> {
       children: [
         TableCalendar(
           locale: Localizations.localeOf(context).languageCode,
-          firstDay: DateTime.now().subtract(Duration(days: 1000)),
+          firstDay: DateTime.now().subtract(const Duration(days: 1000)),
           lastDay: DateTime.now(),
           focusedDay: _focusedDay,
           selectedDayPredicate: (day) => isSameDay(_selectedDay, day),

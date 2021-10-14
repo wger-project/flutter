@@ -33,12 +33,12 @@ class AppDrawer extends StatelessWidget {
       child: Column(
         children: [
           AppBar(
-            title: Text('wger'),
+            title: const Text('wger'),
             automaticallyImplyLeading: false,
           ),
           ListTile(
             //dense: true,
-            leading: Icon(Icons.exit_to_app),
+            leading: const Icon(Icons.exit_to_app),
             title: Text(AppLocalizations.of(context).logout),
             onTap: () {
               Provider.of<AuthProvider>(context, listen: false).logout();

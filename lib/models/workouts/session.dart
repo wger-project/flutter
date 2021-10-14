@@ -68,7 +68,7 @@ class WorkoutSession {
   factory WorkoutSession.fromJson(Map<String, dynamic> json) => _$WorkoutSessionFromJson(json);
   Map<String, dynamic> toJson() => _$WorkoutSessionToJson(this);
 
-  get impressionAsString {
+  String? get impressionAsString {
     return IMPRESSION_MAP[impression];
   }
 }

@@ -51,15 +51,15 @@ class AuthScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Padding(padding: EdgeInsets.symmetric(vertical: 20)),
-                  Image(
+                  const Padding(padding: EdgeInsets.symmetric(vertical: 20)),
+                  const Image(
                     image: AssetImage('assets/images/logo-white.png'),
                     width: 120,
                   ),
                   Container(
-                    margin: EdgeInsets.only(bottom: 20.0),
-                    padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 94.0),
-                    child: Text(
+                    margin: const EdgeInsets.only(bottom: 20.0),
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 94.0),
+                    child: const Text(
                       'WGER',
                       style: TextStyle(
                         color: Colors.white,
@@ -69,7 +69,7 @@ class AuthScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Flexible(
+                  const Flexible(
                     //flex: deviceSize.width > 600 ? 2 : 1,
                     child: AuthCard(),
                   ),
@@ -201,7 +201,7 @@ class _AuthCardState extends State<AuthCard> {
       elevation: 8.0,
       child: Container(
         width: deviceSize.width * 0.75,
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: SingleChildScrollView(
@@ -209,7 +209,7 @@ class _AuthCardState extends State<AuthCard> {
               child: Column(
                 children: <Widget>[
                   TextFormField(
-                    key: Key('inputUsername'),
+                    key: const Key('inputUsername'),
                     decoration: InputDecoration(
                       labelText: AppLocalizations.of(context).username,
                       errorMaxLines: 2,
@@ -233,7 +233,7 @@ class _AuthCardState extends State<AuthCard> {
                   ),
                   if (_authMode == AuthMode.Signup)
                     TextFormField(
-                      key: Key('inputEmail'),
+                      key: const Key('inputEmail'),
                       decoration: InputDecoration(labelText: AppLocalizations.of(context).email),
                       autofillHints: const [AutofillHints.email],
                       controller: _emailController,
@@ -270,7 +270,7 @@ class _AuthCardState extends State<AuthCard> {
                   ),
                   if (_authMode == AuthMode.Signup)
                     TextFormField(
-                      key: Key('inputPassword2'),
+                      key: const Key('inputPassword2'),
                       decoration:
                           InputDecoration(labelText: AppLocalizations.of(context).confirmPassword),
                       controller: _password2Controller,
@@ -294,7 +294,7 @@ class _AuthCardState extends State<AuthCard> {
                         Flexible(
                           flex: 3,
                           child: TextFormField(
-                            key: Key('inputServer'),
+                            key: const Key('inputServer'),
                             decoration: InputDecoration(
                                 labelText: AppLocalizations.of(context).customServerUrl,
                                 helperText: AppLocalizations.of(context).customServerHint,
@@ -319,7 +319,7 @@ class _AuthCardState extends State<AuthCard> {
                             },
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 20,
                         ),
                         Column(
@@ -337,14 +337,14 @@ class _AuthCardState extends State<AuthCard> {
                       ],
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   if (_isLoading)
-                    CircularProgressIndicator()
+                    const CircularProgressIndicator()
                   else
                     ElevatedButton(
-                      key: Key('actionButton'),
+                      key: const Key('actionButton'),
                       child: Text(_authMode == AuthMode.Login
                           ? AppLocalizations.of(context).login
                           : AppLocalizations.of(context).register),
@@ -353,7 +353,7 @@ class _AuthCardState extends State<AuthCard> {
                       },
                     ),
                   TextButton(
-                    key: Key('toggleActionButton'),
+                    key: const Key('toggleActionButton'),
                     child: Text(
                       _authMode == AuthMode.Login
                           ? AppLocalizations.of(context).registerInstead.toUpperCase()
@@ -365,7 +365,7 @@ class _AuthCardState extends State<AuthCard> {
                     child: Text(_hideCustomServer
                         ? AppLocalizations.of(context).useCustomServer
                         : AppLocalizations.of(context).useDefaultServer),
-                    key: Key('toggleCustomServerButton'),
+                    key: const Key('toggleCustomServerButton'),
                     onPressed: () {
                       setState(() {
                         _hideCustomServer = !_hideCustomServer;

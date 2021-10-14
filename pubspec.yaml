@@ -44,6 +44,7 @@ dependencies:
   image_picker: ^0.8.4
   intl: ^0.17.0
   json_annotation: ^4.0.1
+  version: ^2.0.0
   package_info: ^2.0.2
   provider: ^5.0.0
   rive: ^0.7.28

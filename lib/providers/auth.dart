@@ -28,6 +28,7 @@ import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:version/version.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 
@@ -74,6 +75,18 @@ class AuthProvider with ChangeNotifier {
   Future<void> setApplicationVersion() async {
     final PackageInfo packageInfo = await PackageInfo.fromPlatform();
     applicationVersion = packageInfo;
+  }
+
+  /// Checking if there is a new version of the application.
+  Future<bool> neededApplicationUpdate() async {
+    if (!ENABLED_UPDATE) {
+      return false;
+    }
+    final response = await http.get(makeUri(serverUrl!, 'min-app-version'));
+    final applicationLatestVersion = json.decode(response.body);
+    final currentVersion = Version.parse(applicationVersion!.version);
+    final latestAppVersion = Version.parse(applicationLatestVersion);
+    return latestAppVersion > currentVersion;
   }
 
   /// Registers a new user

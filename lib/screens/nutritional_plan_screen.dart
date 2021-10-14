@@ -34,9 +34,8 @@ enum NutritionalPlanOptions {
 class NutritionalPlanScreen extends StatelessWidget {
   static const routeName = '/nutritional-plan-detail';
 
-  Future<NutritionalPlan> _loadFullPlan(BuildContext context, int planId) async {
-    return await Provider.of<NutritionPlansProvider>(context, listen: false)
-        .fetchAndSetPlanFull(planId);
+  Future<NutritionalPlan> _loadFullPlan(BuildContext context, int planId) {
+    return Provider.of<NutritionPlansProvider>(context, listen: false).fetchAndSetPlanFull(planId);
   }
 
   @override
@@ -53,7 +52,7 @@ class NutritionalPlanScreen extends StatelessWidget {
             pinned: true,
             actions: [
               PopupMenuButton<NutritionalPlanOptions>(
-                icon: Icon(Icons.more_vert),
+                icon: const Icon(Icons.more_vert),
                 onSelected: (value) {
                   // Edit
                   if (value == NutritionalPlanOptions.edit) {
@@ -90,7 +89,7 @@ class NutritionalPlanScreen extends StatelessWidget {
             ],
             flexibleSpace: FlexibleSpaceBar(
               title: Text(_nutritionalPlan.description),
-              background: Image(
+              background: const Image(
                 image: AssetImage('assets/images/backgrounds/nutritional_plans.jpg'),
                 fit: BoxFit.cover,
               ),
@@ -103,7 +102,7 @@ class NutritionalPlanScreen extends StatelessWidget {
                     ? SliverList(
                         delegate: SliverChildListDelegate(
                           [
-                            SizedBox(
+                            const SizedBox(
                               height: 200,
                               child: Center(
                                 child: CircularProgressIndicator(),
