@@ -11,6 +11,7 @@
 - Tomer Ben-Rachel - <https://github.com/tomerpacific>
 - Thilina Herath - <https://github.com/ThilinaTCH>
 - Marko Milosevic - <https://github.com/TaarnStar>
+- Karthik Reddy (Axel) - <https://github.com/AxelBlaz3>
 
 ## Translators
 

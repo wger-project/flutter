@@ -90,7 +90,7 @@ void showHttpExceptionErrorDialog(WgerHttpException exception, BuildContext cont
 
   // This call serves no purpose The dialog above doesn't seem to show
   // unless this dummy call is present
-  showDialog(context: context, builder: (context) => Container());
+  // showDialog(context: context, builder: (context) => Container());
 }
 
 dynamic showDeleteDialog(BuildContext context, String confirmDeleteName, Log log, Exercise exercise,
