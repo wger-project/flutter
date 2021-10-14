@@ -145,7 +145,7 @@ class _AuthCardState extends State<AuthCard> {
         await Provider.of<AuthProvider>(context, listen: false).login(
           _authData['username']!,
           _authData['password']!,
-          _authData['serverUrl']!,
+          _authData['serverUrl']!
         );
 
         // Register new user
@@ -154,7 +154,7 @@ class _AuthCardState extends State<AuthCard> {
           username: _authData['username']!,
           password: _authData['password']!,
           email: _authData['email']!,
-          serverUrl: _authData['serverUrl']!,
+          serverUrl: _authData['serverUrl']!
         );
       }
 
