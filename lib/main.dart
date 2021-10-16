@@ -69,7 +69,7 @@ class MyApp extends StatelessWidget {
           create: (context) => ExercisesProvider(
               WgerBaseProvider(Provider.of<AuthProvider>(context, listen: false))),
           update: (context, base, previous) =>
-          previous ?? ExercisesProvider(WgerBaseProvider(base)),
+              previous ?? ExercisesProvider(WgerBaseProvider(base)),
         ),
         ChangeNotifierProxyProvider2<AuthProvider, ExercisesProvider, WorkoutPlansProvider>(
           create: (context) => WorkoutPlansProvider(

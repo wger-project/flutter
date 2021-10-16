@@ -22,7 +22,10 @@ import 'package:wger/models/exercises/alias.dart';
 import 'package:wger/models/exercises/base.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/comment.dart';
+import 'package:wger/models/exercises/equipment.dart';
+import 'package:wger/models/exercises/image.dart';
 import 'package:wger/models/exercises/language.dart';
+import 'package:wger/models/exercises/muscle.dart';
 
 part 'exercise.g.dart';
 
