@@ -36,7 +36,7 @@ class WeightEntriesList extends StatelessWidget {
       children: [
         Container(
           color: Theme.of(context).cardColor,
-          padding: EdgeInsets.all(15),
+          padding: const EdgeInsets.all(15),
           height: 220,
           child: MeasurementChartWidget(
               _weightProvider.items.map((e) => MeasurementChartEntry(e.weight, e.date)).toList()),
@@ -50,7 +50,7 @@ class WeightEntriesList extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Text(AppLocalizations.of(context).measurements),
-                Icon(Icons.chevron_right)
+                const Icon(Icons.chevron_right)
               ],
             )),
         Expanded(
@@ -95,12 +95,12 @@ class WeightEntriesList extends StatelessWidget {
                 secondaryBackground: Container(
                   color: Theme.of(context).errorColor,
                   alignment: Alignment.centerRight,
-                  padding: EdgeInsets.only(right: 20),
-                  margin: EdgeInsets.symmetric(
+                  padding: const EdgeInsets.only(right: 20),
+                  margin: const EdgeInsets.symmetric(
                     horizontal: 4,
                     vertical: 4,
                   ),
-                  child: Icon(
+                  child: const Icon(
                     Icons.delete,
                     color: Colors.white,
                   ),
@@ -108,12 +108,12 @@ class WeightEntriesList extends StatelessWidget {
                 background: Container(
                   color: wgerPrimaryButtonColor,
                   alignment: Alignment.centerLeft,
-                  padding: EdgeInsets.only(left: 20),
-                  margin: EdgeInsets.symmetric(
+                  padding: const EdgeInsets.only(left: 20),
+                  margin: const EdgeInsets.symmetric(
                     horizontal: 4,
                     vertical: 4,
                   ),
-                  child: Icon(
+                  child: const Icon(
                     Icons.edit,
                     color: Colors.white,
                   ),

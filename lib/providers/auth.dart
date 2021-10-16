@@ -28,8 +28,9 @@ import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:wger/helpers/consts.dart';
+import 'package:version/version.dart';
 import 'package:wger/exceptions/http_exception.dart';
+import 'package:wger/helpers/consts.dart';
 
 import 'helpers.dart';
 
@@ -72,19 +73,30 @@ class AuthProvider with ChangeNotifier {
 
   /// (flutter) Application version
   Future<void> setApplicationVersion() async {
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    final PackageInfo packageInfo = await PackageInfo.fromPlatform();
     applicationVersion = packageInfo;
   }
 
+  /// Checking if there is a new version of the application.
+  Future<bool> neededApplicationUpdate() async {
+    if (!ENABLED_UPDATE) {
+      return false;
+    }
+    final response = await http.get(makeUri(serverUrl!, 'min-app-version'));
+    final applicationLatestVersion = json.decode(response.body);
+    final currentVersion = Version.parse(applicationVersion!.version);
+    final latestAppVersion = Version.parse(applicationLatestVersion);
+    return latestAppVersion > currentVersion;
+  }
+
   /// Registers a new user
-  Future<void> register({
-    required String username,
-    required String password,
-    required String email,
-    required String serverUrl,
-  }) async {
-    final uri = Uri.parse(serverUrl + '/api/v2/register/');
-    Map<String, String>? metadata = Map();
+  Future<void> register(
+      {required String username,
+      required String password,
+      required String email,
+      required String serverUrl}) async {
+    final uri = Uri.parse('$serverUrl/api/v2/register/');
+    Map<String, String>? metadata = {};
 
     // Read the api key from the manifest file
     try {
@@ -95,7 +107,7 @@ class AuthProvider with ChangeNotifier {
 
     // Register
     try {
-      Map<String, String> data = {'username': username, 'password': password};
+      final Map<String, String> data = {'username': username, 'password': password};
       if (email != '') {
         data['email'] = email;
       }
@@ -115,14 +127,14 @@ class AuthProvider with ChangeNotifier {
 
       login(username, password, serverUrl);
     } catch (error) {
-      throw error;
+      rethrow;
     }
   }
 
   /// Authenticates a user
   Future<void> login(String username, String password, String serverUrl) async {
-    final uri = Uri.parse(serverUrl + '/api/v2/login/');
-    await logout();
+    final uri = Uri.parse('$serverUrl/api/v2/login/');
+    await logout(shouldNotify: false);
 
     try {
       final response = await http.post(
@@ -167,7 +179,7 @@ class AuthProvider with ChangeNotifier {
       prefs.setString('userData', userData);
       prefs.setString('lastServer', serverData);
     } catch (error) {
-      throw error;
+      rethrow;
     }
   }
 
@@ -195,8 +207,8 @@ class AuthProvider with ChangeNotifier {
     //   return false;
     // }
 
-    token = extractedUserData['token']!;
-    serverUrl = extractedUserData['serverUrl']!;
+    token = extractedUserData['token'];
+    serverUrl = extractedUserData['serverUrl'];
     // _userId = extractedUserData['userId'];
     // _expiryDate = expiryDate;
 
@@ -208,7 +220,7 @@ class AuthProvider with ChangeNotifier {
     return true;
   }
 
-  Future<void> logout() async {
+  Future<void> logout({bool shouldNotify = true}) async {
     log('logging out');
     token = null;
     serverUrl = null;
@@ -220,7 +232,10 @@ class AuthProvider with ChangeNotifier {
     //   _authTimer = null;
     // }
 
-    notifyListeners();
+    if (shouldNotify) {
+      notifyListeners();
+    }
+
     final prefs = await SharedPreferences.getInstance();
     prefs.remove('userData');
   }

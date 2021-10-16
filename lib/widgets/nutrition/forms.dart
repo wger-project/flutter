@@ -20,10 +20,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/ui.dart';
-import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
@@ -31,35 +31,37 @@ import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 
 class MealForm extends StatelessWidget {
-  late Meal _meal;
-  int _planId;
+  late final Meal _meal;
+  final int _planId;
 
   final _form = GlobalKey<FormState>();
   final _timeController = TextEditingController();
+  final _nameController = TextEditingController();
 
   MealForm(this._planId, [meal]) {
-    this._meal = meal ?? Meal(plan: _planId);
+    _meal = meal ?? Meal(plan: _planId);
     _timeController.text = timeToString(_meal.time)!;
+    _nameController.text = _meal.name;
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(20),
+      margin: const EdgeInsets.all(20),
       child: Form(
         key: _form,
         child: Column(
           children: [
             TextFormField(
-              key: Key('field-time'),
+              key: const Key('field-time'),
               decoration: InputDecoration(labelText: AppLocalizations.of(context).time),
               controller: _timeController,
               onTap: () async {
                 // Stop keyboard from appearing
-                FocusScope.of(context).requestFocus(new FocusNode());
+                FocusScope.of(context).requestFocus(FocusNode());
 
                 // Open time picker
-                var pickedTime = await showTimePicker(
+                final pickedTime = await showTimePicker(
                   context: context,
                   initialTime: _meal.time!,
                 );
@@ -71,8 +73,18 @@ class MealForm extends StatelessWidget {
               },
               onFieldSubmitted: (_) {},
             ),
+            TextFormField(
+              maxLength: 25,
+              key: const Key('field-name'),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context).name),
+              controller: _nameController,
+              onSaved: (newValue) {
+                _meal.name = newValue as String;
+              },
+              onFieldSubmitted: (_) {},
+            ),
             ElevatedButton(
-              key: Key(SUBMIT_BUTTON_KEY_NAME),
+              key: const Key(SUBMIT_BUTTON_KEY_NAME),
               child: Text(AppLocalizations.of(context).save),
               onPressed: () async {
                 if (!_form.currentState!.validate()) {
@@ -101,11 +113,11 @@ class MealForm extends StatelessWidget {
 }
 
 class MealItemForm extends StatelessWidget {
-  Meal _meal;
-  late MealItem _mealItem;
+  final Meal _meal;
+  late final MealItem _mealItem;
 
   MealItemForm(this._meal, [mealItem]) {
-    this._mealItem = mealItem ?? MealItem.empty();
+    _mealItem = mealItem ?? MealItem.empty();
     _mealItem.mealId = _meal.id!;
   }
 
@@ -116,19 +128,18 @@ class MealItemForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(20),
+      margin: const EdgeInsets.all(20),
       child: Form(
         key: _form,
         child: Column(
           children: [
             TypeAheadFormField(
               textFieldConfiguration: TextFieldConfiguration(
-                controller: this._ingredientController,
+                controller: _ingredientController,
                 decoration: InputDecoration(labelText: AppLocalizations.of(context).ingredient),
               ),
               suggestionsCallback: (pattern) async {
-                return await Provider.of<NutritionPlansProvider>(context, listen: false)
-                    .searchIngredient(
+                return Provider.of<NutritionPlansProvider>(context, listen: false).searchIngredient(
                   pattern,
                   Localizations.localeOf(context).languageCode,
                 );
@@ -144,7 +155,7 @@ class MealItemForm extends StatelessWidget {
               },
               onSuggestionSelected: (dynamic suggestion) {
                 _mealItem.ingredientId = suggestion['data']['id'];
-                this._ingredientController.text = suggestion['value'];
+                _ingredientController.text = suggestion['value'];
               },
               validator: (value) {
                 if (value!.isEmpty) {
@@ -199,10 +210,10 @@ class MealItemForm extends StatelessWidget {
 class PlanForm extends StatelessWidget {
   final _form = GlobalKey<FormState>();
   final _descriptionController = TextEditingController();
-  late NutritionalPlan _plan;
+  late final NutritionalPlan _plan;
 
   PlanForm([NutritionalPlan? plan]) {
-    _plan = plan != null ? plan : NutritionalPlan.empty();
+    _plan = plan ?? NutritionalPlan.empty();
     _descriptionController.text = _plan.description;
   }
 
@@ -214,7 +225,7 @@ class PlanForm extends StatelessWidget {
         children: [
           // Description
           TextFormField(
-            key: Key('field-description'),
+            key: const Key('field-description'),
             decoration: InputDecoration(labelText: AppLocalizations.of(context).description),
             controller: _descriptionController,
             onFieldSubmitted: (_) {},
@@ -223,7 +234,7 @@ class PlanForm extends StatelessWidget {
             },
           ),
           ElevatedButton(
-            key: Key(SUBMIT_BUTTON_KEY_NAME),
+            key: const Key(SUBMIT_BUTTON_KEY_NAME),
             child: Text(AppLocalizations.of(context).save),
             onPressed: () async {
               // Validate and save the current values to the weightEntry

@@ -108,7 +108,7 @@ class Setting {
 
   void setRir(String newRir) {
     if (POSSIBLE_RIR_VALUES.contains(newRir)) {
-      this.rir = newRir;
+      rir = newRir;
     } else {
       throw Exception('RiR value not allowed: $newRir');
     }

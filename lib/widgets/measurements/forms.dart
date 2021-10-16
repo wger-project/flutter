@@ -32,7 +32,7 @@ class MeasurementCategoryForm extends StatelessWidget {
   final nameController = TextEditingController();
   final unitController = TextEditingController();
 
-  Map<String, dynamic> categoryData = {'id': null, 'name': '', 'unit': ''};
+  final Map<String, dynamic> categoryData = {'id': null, 'name': '', 'unit': ''};
 
   MeasurementCategoryForm([MeasurementCategory? category]) {
     //this._category = category ?? MeasurementCategory();
@@ -60,7 +60,7 @@ class MeasurementCategoryForm extends StatelessWidget {
             ),
             controller: nameController,
             onSaved: (newValue) {
-              categoryData['name'] = newValue!;
+              categoryData['name'] = newValue;
             },
             validator: (value) {
               if (value!.isEmpty) {
@@ -78,7 +78,7 @@ class MeasurementCategoryForm extends StatelessWidget {
             ),
             controller: unitController,
             onSaved: (newValue) {
-              categoryData['unit'] = newValue!;
+              categoryData['unit'] = newValue;
             },
             validator: (value) {
               if (value!.isEmpty) {
@@ -130,7 +130,7 @@ class MeasurementEntryForm extends StatelessWidget {
   final _dateController = TextEditingController();
   final _notesController = TextEditingController();
 
-  late Map<String, dynamic> _entryData;
+  late final Map<String, dynamic> _entryData;
 
   MeasurementEntryForm(this._categoryId, [MeasurementEntry? entry]) {
     _entryData = {
@@ -166,16 +166,16 @@ class MeasurementEntryForm extends StatelessWidget {
             controller: _dateController,
             onTap: () async {
               // Stop keyboard from appearing
-              FocusScope.of(context).requestFocus(new FocusNode());
+              FocusScope.of(context).requestFocus(FocusNode());
 
               // Show Date Picker Here
-              var pickedDate = await showDatePicker(
+              final pickedDate = await showDatePicker(
                 context: context,
                 initialDate: _entryData['date'],
                 firstDate: DateTime(DateTime.now().year - 10),
                 lastDate: DateTime.now(),
 
-                // TODO: we need to filter out dates that already have an entry
+                // TODO(x): we need to filter out dates that already have an entry
                 selectableDayPredicate: (day) {
                   // Always allow the current initial date
                   if (day == _entryData['date']) {
@@ -222,7 +222,7 @@ class MeasurementEntryForm extends StatelessWidget {
             decoration: InputDecoration(labelText: AppLocalizations.of(context).notes),
             controller: _notesController,
             onSaved: (newValue) {
-              _entryData['notes'] = newValue!;
+              _entryData['notes'] = newValue;
             },
             validator: (value) {
               const minLength = 0;

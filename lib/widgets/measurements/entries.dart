@@ -29,20 +29,20 @@ import 'package:wger/widgets/core/charts.dart';
 import 'forms.dart';
 
 class EntriesList extends StatelessWidget {
-  MeasurementCategory _category;
+  final MeasurementCategory _category;
 
-  EntriesList(this._category);
+  const EntriesList(this._category);
 
   @override
   Widget build(BuildContext context) {
     return Column(children: [
       Container(
         color: Theme.of(context).cardColor,
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         height: 220,
         child: MeasurementChartWidget(
           _category.entries.map((e) => MeasurementChartEntry(e.value, e.date)).toList(),
-          unit: this._category.unit,
+          unit: _category.unit,
         ),
       ),
       Expanded(
@@ -89,12 +89,12 @@ class EntriesList extends StatelessWidget {
               secondaryBackground: Container(
                 color: Theme.of(context).errorColor,
                 alignment: Alignment.centerRight,
-                padding: EdgeInsets.only(right: 20),
-                margin: EdgeInsets.symmetric(
+                padding: const EdgeInsets.only(right: 20),
+                margin: const EdgeInsets.symmetric(
                   horizontal: 4,
                   vertical: 4,
                 ),
-                child: Icon(
+                child: const Icon(
                   Icons.delete,
                   color: Colors.white,
                 ),
@@ -102,12 +102,12 @@ class EntriesList extends StatelessWidget {
               background: Container(
                 color: wgerPrimaryButtonColor,
                 alignment: Alignment.centerLeft,
-                padding: EdgeInsets.only(left: 20),
-                margin: EdgeInsets.symmetric(
+                padding: const EdgeInsets.only(left: 20),
+                margin: const EdgeInsets.symmetric(
                   horizontal: 4,
                   vertical: 4,
                 ),
-                child: Icon(
+                child: const Icon(
                   Icons.edit,
                   color: Colors.white,
                 ),

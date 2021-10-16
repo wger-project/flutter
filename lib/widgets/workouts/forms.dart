@@ -35,7 +35,7 @@ import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/exercises/images.dart';
 
 class WorkoutForm extends StatelessWidget {
-  WorkoutPlan _plan;
+  final WorkoutPlan _plan;
   final _form = GlobalKey<FormState>();
 
   WorkoutForm(this._plan);
@@ -55,7 +55,7 @@ class WorkoutForm extends StatelessWidget {
       child: Column(
         children: [
           TextFormField(
-            key: Key('field-name'),
+            key: const Key('field-name'),
             decoration: InputDecoration(labelText: AppLocalizations.of(context).name),
             controller: workoutNameController,
             validator: (value) {
@@ -72,7 +72,7 @@ class WorkoutForm extends StatelessWidget {
             },
           ),
           TextFormField(
-            key: Key('field-description'),
+            key: const Key('field-description'),
             decoration: InputDecoration(labelText: AppLocalizations.of(context).description),
             minLines: 3,
             maxLines: 10,
@@ -91,7 +91,7 @@ class WorkoutForm extends StatelessWidget {
             },
           ),
           ElevatedButton(
-            key: Key(SUBMIT_BUTTON_KEY_NAME),
+            key: const Key(SUBMIT_BUTTON_KEY_NAME),
             child: Text(AppLocalizations.of(context).save),
             onPressed: () async {
               // Validate and save
@@ -106,11 +106,12 @@ class WorkoutForm extends StatelessWidget {
                 await Provider.of<WorkoutPlansProvider>(context, listen: false).editWorkout(_plan);
                 Navigator.of(context).pop();
               } else {
-                _plan = await Provider.of<WorkoutPlansProvider>(context, listen: false)
-                    .addWorkout(_plan);
+                final WorkoutPlan newPlan =
+                    await Provider.of<WorkoutPlansProvider>(context, listen: false)
+                        .addWorkout(_plan);
                 Navigator.of(context).pushReplacementNamed(
                   WorkoutPlanScreen.routeName,
-                  arguments: _plan,
+                  arguments: newPlan,
                 );
               }
             },
@@ -122,10 +123,10 @@ class WorkoutForm extends StatelessWidget {
 }
 
 class DayCheckbox extends StatefulWidget {
-  Day _day;
+  final Day _day;
   final int _dayNr;
 
-  DayCheckbox(this._dayNr, this._day);
+  const DayCheckbox(this._dayNr, this._day);
 
   @override
   _DayCheckboxState createState() => _DayCheckboxState();
@@ -157,11 +158,11 @@ class _DayCheckboxState extends State<DayCheckbox> {
 class DayFormWidget extends StatefulWidget {
   final WorkoutPlan workout;
   final dayController = TextEditingController();
-  Day _day = Day();
+  late final Day _day;
 
   DayFormWidget(this.workout, [Day? day]) {
-    this._day = day ?? Day();
-    _day.workoutId = this.workout.id!;
+    _day = day ?? Day();
+    _day.workoutId = workout.id!;
     if (_day.id != null) {
       dayController.text = day!.description;
     }
@@ -181,7 +182,7 @@ class _DayFormWidgetState extends State<DayFormWidget> {
       child: ListView(
         children: [
           TextFormField(
-            key: Key('field-description'),
+            key: const Key('field-description'),
             decoration: InputDecoration(
               labelText: AppLocalizations.of(context).description,
               helperText: AppLocalizations.of(context).dayDescriptionHelp,
@@ -198,16 +199,16 @@ class _DayFormWidgetState extends State<DayFormWidget> {
                 return AppLocalizations.of(context).enterCharacters(minLength, maxLength);
               }
 
-              if (widget._day.daysOfWeek.length == 0) {
+              if (widget._day.daysOfWeek.isEmpty) {
                 return 'You need to select at least one day';
               }
               return null;
             },
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           ...Day.weekdays.keys.map((dayNr) => DayCheckbox(dayNr, widget._day)).toList(),
           ElevatedButton(
-            key: Key(SUBMIT_BUTTON_KEY_NAME),
+            key: const Key(SUBMIT_BUTTON_KEY_NAME),
             child: Text(AppLocalizations.of(context).save),
             onPressed: () async {
               if (!_form.currentState!.validate()) {
@@ -233,11 +234,11 @@ class _DayFormWidgetState extends State<DayFormWidget> {
                 await showDialog(
                   context: context,
                   builder: (ctx) => AlertDialog(
-                    title: Text('An error occurred!'),
-                    content: Text('Something went wrong.'),
+                    title: const Text('An error occurred!'),
+                    content: const Text('Something went wrong.'),
                     actions: [
                       TextButton(
-                        child: Text('Okay'),
+                        child: const Text('Okay'),
                         onPressed: () {
                           Navigator.of(ctx).pop();
                         },
@@ -255,11 +256,11 @@ class _DayFormWidgetState extends State<DayFormWidget> {
 }
 
 class SetFormWidget extends StatefulWidget {
-  Day _day;
-  late Set _set;
+  final Day _day;
+  late final Set _set;
 
   SetFormWidget(this._day, [Set? set]) {
-    this._set = set ?? Set.withData(day: _day.id, order: _day.sets.length, sets: 4);
+    _set = set ?? Set.withData(day: _day.id, order: _day.sets.length, sets: 4);
   }
 
   @override
@@ -293,10 +294,10 @@ class _SetFormWidgetState extends State<SetFormWidget> {
   void addSettings() {
     widget._set.settings = [];
     int order = 0;
-    for (var exercise in widget._set.exercisesObj) {
+    for (final exercise in widget._set.exercisesObj) {
       order++;
       for (int loop = 0; loop < widget._set.sets; loop++) {
-        Setting setting = Setting.empty();
+        final Setting setting = Setting.empty();
         setting.order = order;
         setting.exercise = exercise;
         setting.weightUnit =
@@ -316,7 +317,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
       child: ListView(
         children: [
           Container(
-            padding: EdgeInsets.only(top: 10),
+            padding: const EdgeInsets.only(top: 10),
             color: wgerPrimaryColorLight,
             child: Column(
               //crossAxisAlignment: CrossAxisAlignment.start,
@@ -336,7 +337,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                     });
                   },
                 ),
-                if (widget._set.settings.length > 0)
+                if (widget._set.settings.isNotEmpty)
                   SwitchListTile(
                     title: Text(AppLocalizations.of(context).setUnitsAndRir),
                     value: _detailed,
@@ -355,14 +356,14 @@ class _SetFormWidgetState extends State<SetFormWidget> {
               children: [
                 Card(
                   child: TypeAheadFormField<Exercise>(
-                    key: Key('field-typeahead'),
+                    key: const Key('field-typeahead'),
                     textFieldConfiguration: TextFieldConfiguration(
-                      controller: this._exercisesController,
+                      controller: _exercisesController,
                       decoration: InputDecoration(
                         labelText: AppLocalizations.of(context).searchExercise,
-                        prefixIcon: Icon(Icons.search),
+                        prefixIcon: const Icon(Icons.search),
                         suffixIcon: IconButton(
-                          icon: Icon(Icons.help),
+                          icon: const Icon(Icons.help),
                           onPressed: () {
                             showDialog(
                               context: context,
@@ -371,7 +372,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Text(AppLocalizations.of(context).selectExercises),
-                                    SizedBox(height: 10),
+                                    const SizedBox(height: 10),
                                     Text(AppLocalizations.of(context).sameRepetitions)
                                   ],
                                 ),
@@ -390,16 +391,15 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                         errorMaxLines: 2,
                       ),
                     ),
-                    suggestionsCallback: (pattern) async {
-                      return await Provider.of<ExercisesProvider>(context, listen: false)
-                          .searchExercise(
+                    suggestionsCallback: (pattern) {
+                      return Provider.of<ExercisesProvider>(context, listen: false).searchExercise(
                         pattern,
                         Localizations.localeOf(context).languageCode,
                       );
                     },
                     itemBuilder: (BuildContext context, Exercise exerciseSuggestion) {
                       return ListTile(
-                        leading: Container(
+                        leading: SizedBox(
                           width: 45,
                           child: ExerciseImageWidget(image: exerciseSuggestion.getMainImage),
                         ),
@@ -418,7 +418,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                     },
                     validator: (value) {
                       // At least one exercise must be selected
-                      if (widget._set.exercisesIds.length == 0) {
+                      if (widget._set.exercisesIds.isEmpty) {
                         return AppLocalizations.of(context).selectExercise;
                       }
 
@@ -433,7 +433,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                     },
                   ),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 TextFormField(
                   decoration: InputDecoration(
                     labelText: AppLocalizations.of(context).comment,
@@ -452,7 +452,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                     widget._set.comment = newValue!;
                   },
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 ...widget._set.exercisesObj.asMap().entries.map((entry) {
                   final index = entry.key;
                   final exercise = entry.value;
@@ -470,21 +470,21 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                         removeExercise,
                       ),
                       if (showSupersetInfo)
-                        Padding(
-                          padding: const EdgeInsets.all(3.0),
+                        const Padding(
+                          padding: EdgeInsets.all(3.0),
                           child: Text('+'),
                         ),
                       if (showSupersetInfo) Text(AppLocalizations.of(context).supersetWith),
                       if (showSupersetInfo)
-                        Padding(
-                          padding: const EdgeInsets.all(3.0),
+                        const Padding(
+                          padding: EdgeInsets.all(3.0),
                           child: Text('+'),
                         ),
                     ],
                   );
                 }).toList(),
                 ElevatedButton(
-                  key: Key(SUBMIT_BUTTON_KEY_NAME),
+                  key: const Key(SUBMIT_BUTTON_KEY_NAME),
                   child: Text(AppLocalizations.of(context).save),
                   onPressed: () async {
                     final isValid = _formKey.currentState!.validate();
@@ -497,18 +497,18 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                         Provider.of<WorkoutPlansProvider>(context, listen: false);
 
                     // Save set
-                    Set setDb = await workoutProvider.addSet(widget._set);
+                    final Set setDb = await workoutProvider.addSet(widget._set);
                     widget._set.id = setDb.id;
 
                     // Remove unused settings
                     widget._set.settings.removeWhere((s) => s.weight == null && s.reps == null);
 
                     // Save remaining settings
-                    for (var setting in widget._set.settings) {
+                    for (final setting in widget._set.settings) {
                       setting.setId = setDb.id!;
                       setting.comment = '';
 
-                      Setting settingDb = await workoutProvider.addSetting(setting);
+                      final Setting settingDb = await workoutProvider.addSetting(setting);
                       setting.id = settingDb.id;
                     }
 
@@ -531,10 +531,10 @@ class _SetFormWidgetState extends State<SetFormWidget> {
 
 class ExerciseSetting extends StatelessWidget {
   final Exercise _exercise;
-  int _numberOfSets = 4;
-  bool _detailed;
+  late final int _numberOfSets;
+  final bool _detailed;
   final Function removeExercise;
-  List<Setting> _settings = [];
+  final List<Setting> _settings;
 
   ExerciseSetting(
     this._exercise,
@@ -543,13 +543,13 @@ class ExerciseSetting extends StatelessWidget {
     double sliderValue,
     this.removeExercise,
   ) {
-    this._numberOfSets = sliderValue.round();
+    _numberOfSets = sliderValue.round();
   }
 
   Widget getRows(BuildContext context) {
-    List<Widget> out = [];
+    final List<Widget> out = [];
     for (var i = 0; i < _numberOfSets; i++) {
-      var setting = _settings[i];
+      final setting = _settings[i];
 
       if (_detailed) {
         out.add(
@@ -567,7 +567,7 @@ class ExerciseSetting extends StatelessWidget {
                     flex: 2,
                     child: RepsInputWidget(setting, _detailed),
                   ),
-                  SizedBox(width: 4),
+                  const SizedBox(width: 4),
                   Flexible(
                     flex: 3,
                     child: RepetitionUnitInputWidget(setting),
@@ -581,7 +581,7 @@ class ExerciseSetting extends StatelessWidget {
                     flex: 2,
                     child: WeightInputWidget(setting, _detailed),
                   ),
-                  SizedBox(width: 4),
+                  const SizedBox(width: 4),
                   Flexible(
                     flex: 3,
                     child: WeightUnitInputWidget(setting, key: Key(i.toString())),
@@ -592,7 +592,7 @@ class ExerciseSetting extends StatelessWidget {
                 flex: 2,
                 child: RiRInputWidget(setting),
               ),
-              SizedBox(height: 15),
+              const SizedBox(height: 15),
             ],
           ),
         );
@@ -605,11 +605,11 @@ class ExerciseSetting extends StatelessWidget {
             children: [
               Text(
                 AppLocalizations.of(context).setNr(i + 1),
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
-              SizedBox(width: 10),
+              const SizedBox(width: 10),
               Flexible(child: RepsInputWidget(setting, _detailed)),
-              SizedBox(width: 4),
+              const SizedBox(width: 4),
               Flexible(child: WeightInputWidget(setting, _detailed)),
             ],
           ),
@@ -637,12 +637,12 @@ class ExerciseSetting extends StatelessWidget {
               contentPadding: EdgeInsets.zero,
               leading: ExerciseImageWidget(image: _exercise.getMainImage),
               trailing: IconButton(
-                  icon: Icon(Icons.delete),
+                  icon: const Icon(Icons.delete),
                   onPressed: () {
                     removeExercise(_exercise);
                   }),
             ),
-            Divider(),
+            const Divider(),
 
             //ExerciseImage(imageUrl: _exercise.images.first.url),
             if (!_detailed)
@@ -679,7 +679,7 @@ class RepsInputWidget extends StatelessWidget {
       keyboardType: TextInputType.number,
       validator: (value) {
         try {
-          if (value != "") {
+          if (value != '') {
             double.parse(value!);
           }
         } catch (error) {
@@ -716,7 +716,7 @@ class WeightInputWidget extends StatelessWidget {
       keyboardType: TextInputType.number,
       validator: (value) {
         try {
-          if (value != "") {
+          if (value != '') {
             double.parse(value!);
           }
         } catch (error) {
@@ -746,7 +746,7 @@ class RiRInputWidget extends StatefulWidget {
   static const SLIDER_START = -0.5;
 
   RiRInputWidget(this._setting) {
-    dropdownValue = _setting.rir != null ? _setting.rir : Setting.DEFAULT_RIR;
+    dropdownValue = _setting.rir ?? Setting.DEFAULT_RIR;
 
     // Read string RiR into a double
     if (_setting.rir != null) {
@@ -818,7 +818,7 @@ class _RiRInputWidgetState extends State<RiRInputWidget> {
 class WeightUnitInputWidget extends StatefulWidget {
   final dynamic _setting;
 
-  WeightUnitInputWidget(this._setting, {Key? key}) : super(key: key);
+  const WeightUnitInputWidget(this._setting, {Key? key}) : super(key: key);
 
   @override
   _WeightUnitInputWidgetState createState() => _WeightUnitInputWidgetState();
@@ -855,7 +855,7 @@ class _WeightUnitInputWidgetState extends State<WeightUnitInputWidget> {
 /// Can be used with a Setting or a Log object
 class RepetitionUnitInputWidget extends StatefulWidget {
   final dynamic _setting;
-  RepetitionUnitInputWidget(this._setting);
+  const RepetitionUnitInputWidget(this._setting);
 
   @override
   _RepetitionUnitInputWidgetState createState() => _RepetitionUnitInputWidgetState();

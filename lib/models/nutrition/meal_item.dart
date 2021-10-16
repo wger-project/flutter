@@ -70,7 +70,7 @@ class MealItem {
   /// Calculations
   NutritionalValues get nutritionalValues {
     // This is already done on the server. It might be better to read it from there.
-    var out = NutritionalValues();
+    final out = NutritionalValues();
 
     //final weight = this.weightUnit == null ? amount : amount * weightUnit.amount * weightUnit.grams;
     final weight = amount;

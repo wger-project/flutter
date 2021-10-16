@@ -40,13 +40,13 @@ import 'workout_set_form_test.mocks.dart';
 @GenerateMocks([ExercisesProvider])
 void main() {
   var mockWorkoutPlans = MockWorkoutPlansProvider();
-  MockExercisesProvider mockExerciseProvider = MockExercisesProvider();
-  WorkoutPlan workoutPlan = getWorkout();
+  final MockExercisesProvider mockExerciseProvider = MockExercisesProvider();
+  final WorkoutPlan workoutPlan = getWorkout();
   final client = MockClient();
   Day day = Day();
 
   setUp(() {
-    WorkoutPlan workoutPlan = getWorkout();
+    final WorkoutPlan workoutPlan = getWorkout();
     day = workoutPlan.days.first;
     mockWorkoutPlans = MockWorkoutPlansProvider();
   });
@@ -80,7 +80,7 @@ void main() {
     //TODO: why doesn't it find the typeahead?
     //expect(find.byType(TypeAheadFormField), findsOneWidget);
     expect(find.byType(Slider), findsOneWidget);
-    expect(find.byKey(Key(SUBMIT_BUTTON_KEY_NAME)), findsOneWidget);
+    expect(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)), findsOneWidget);
     expect(find.byType(ElevatedButton), findsOneWidget);
   });
 
@@ -92,10 +92,10 @@ void main() {
     await tester.pumpWidget(createHomeScreen());
     await tester.pumpAndSettle();
 
-    await tester.enterText(find.byKey(Key('field-typeahead')), 'exercise');
+    await tester.enterText(find.byKey(const Key('field-typeahead')), 'exercise');
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byKey(Key(SUBMIT_BUTTON_KEY_NAME)));
+    await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
     //verify(mockWorkoutPlans.addSet(any));
     //verify(mockWorkoutPlans.addSettinbg(any));

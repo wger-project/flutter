@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:ui';
+
 class NutritionalValues {
   double energy = 0;
   double protein = 0;
@@ -40,11 +42,11 @@ class NutritionalValues {
   );
 
   /// Convert to kilo joules
-  get energyKj {
+  double get energyKj {
     return energy * 4.184;
   }
 
-  add(NutritionalValues data) {
+  void add(NutritionalValues data) {
     energy += data.energy;
     protein += data.protein;
     carbohydrates += data.carbohydrates;
@@ -57,36 +59,40 @@ class NutritionalValues {
 
   NutritionalValues operator +(NutritionalValues o) {
     return NutritionalValues.values(
-      this.energy + o.energy,
-      this.protein + o.protein,
-      this.carbohydrates + o.carbohydrates,
-      this.carbohydratesSugar + o.carbohydratesSugar,
-      this.fat + o.fat,
-      this.fatSaturated + o.fatSaturated,
-      this.fibres + o.fibres,
-      this.sodium + o.sodium,
+      energy + o.energy,
+      protein + o.protein,
+      carbohydrates + o.carbohydrates,
+      carbohydratesSugar + o.carbohydratesSugar,
+      fat + o.fat,
+      fatSaturated + o.fatSaturated,
+      fibres + o.fibres,
+      sodium + o.sodium,
     );
   }
 
-  bool operator ==(o) {
-    return o is NutritionalValues &&
-        energy == o.energy &&
-        protein == o.protein &&
-        carbohydrates == o.carbohydrates &&
-        carbohydratesSugar == o.carbohydratesSugar &&
-        fat == o.fat &&
-        fatSaturated == o.fatSaturated &&
-        fibres == o.fibres &&
-        sodium == o.sodium;
-  }
-
   @override
-  int get hashCode => super.hashCode;
+  //ignore: avoid_equals_and_hash_code_on_mutable_classes
+  bool operator ==(other) {
+    return other is NutritionalValues &&
+        energy == other.energy &&
+        protein == other.protein &&
+        carbohydrates == other.carbohydrates &&
+        carbohydratesSugar == other.carbohydratesSugar &&
+        fat == other.fat &&
+        fatSaturated == other.fatSaturated &&
+        fibres == other.fibres &&
+        sodium == other.sodium;
+  }
 
   @override
   String toString() {
     return 'e: $energy, p: $protein, c: $carbohydrates, cS: $carbohydratesSugar, f: $fat, fS: $fatSaturated, fi: $fibres, s: $sodium';
   }
+
+  @override
+  //ignore: avoid_equals_and_hash_code_on_mutable_classes
+  int get hashCode => hashValues(
+      energy, protein, carbohydrates, carbohydratesSugar, fat, fatSaturated, fibres, sodium);
 }
 
 class BaseNutritionalValues {

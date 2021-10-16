@@ -80,7 +80,7 @@ void main() {
   testWidgets('Test deleting an item by dragging the dismissible', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen());
 
-    await tester.drag(find.byKey(Key('1')), Offset(-500.0, 0.0));
+    await tester.drag(find.byKey(const Key('1')), const Offset(-500.0, 0.0));
     await tester.pumpAndSettle();
     expect(find.byType(ListTile), findsOneWidget);
   });

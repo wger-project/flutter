@@ -85,14 +85,16 @@ NutritionalPlan getNutritionalPlan() {
   final meal1 = Meal(
     id: 1,
     plan: 1,
-    time: TimeOfDay(hour: 17, minute: 0),
+    time: const TimeOfDay(hour: 17, minute: 0),
+    name: 'Initial Name 1',
   );
   meal1.mealItems = [mealItem1, mealItem2];
 
   final meal2 = Meal(
     id: 2,
     plan: 1,
-    time: TimeOfDay(hour: 22, minute: 5),
+    time: const TimeOfDay(hour: 22, minute: 5),
+    name: 'Initial Name 2',
   );
   meal2.mealItems = [mealItem3];
 

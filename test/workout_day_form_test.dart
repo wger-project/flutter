@@ -71,10 +71,10 @@ void main() {
     await tester.pumpWidget(createHomeScreen());
     await tester.pumpAndSettle();
 
-    expect(find.text(('')), findsOneWidget, reason: 'New day has no description');
-    await tester.enterText(find.byKey(Key('field-description')), 'Leg day!');
-    await tester.tap(find.byKey(Key('field-checkbox-1')));
-    await tester.tap(find.byKey(Key(SUBMIT_BUTTON_KEY_NAME)));
+    expect(find.text(''), findsOneWidget, reason: 'New day has no description');
+    await tester.enterText(find.byKey(const Key('field-description')), 'Leg day!');
+    await tester.tap(find.byKey(const Key('field-checkbox-1')));
+    await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
     verify(mockWorkoutPlans.addDay(any, any));
 

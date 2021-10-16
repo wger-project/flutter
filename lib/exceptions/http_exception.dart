@@ -34,7 +34,7 @@ class WgerHttpException implements Exception {
         errors = responseBody;
       }
     }
-    this.errors = errors;
+    errors = errors;
   }
 
   @override

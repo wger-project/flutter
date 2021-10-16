@@ -53,8 +53,8 @@ class Day {
   //late WorkoutPlan workout;
 
   Day() {
-    this.daysOfWeek = [];
-    this.sets = [];
+    daysOfWeek = [];
+    sets = [];
   }
 
   String getDayName(int weekDay) {

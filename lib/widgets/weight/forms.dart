@@ -31,10 +31,10 @@ class WeightForm extends StatelessWidget {
   final dateController = TextEditingController();
   final weightController = TextEditingController();
 
-  late WeightEntry _weightEntry;
+  late final WeightEntry _weightEntry;
 
   WeightForm([WeightEntry? weightEntry]) {
-    this._weightEntry = weightEntry ?? WeightEntry(date: DateTime.now());
+    _weightEntry = weightEntry ?? WeightEntry(date: DateTime.now());
     weightController.text = _weightEntry.id == null ? '' : _weightEntry.weight.toString();
     dateController.text = toDate(_weightEntry.date)!;
   }
@@ -50,13 +50,13 @@ class WeightForm extends StatelessWidget {
             readOnly: true, // Stop keyboard from appearing
             decoration: InputDecoration(
               labelText: AppLocalizations.of(context).date,
-              suffixIcon: Icon(Icons.calendar_today_outlined),
+              suffixIcon: const Icon(Icons.calendar_today_outlined),
             ),
             enableInteractiveSelection: false,
             controller: dateController,
             onTap: () async {
               // Show Date Picker Here
-              var pickedDate = await showDatePicker(
+              final pickedDate = await showDatePicker(
                 context: context,
                 initialDate: _weightEntry.date,
                 firstDate: DateTime(DateTime.now().year - 10),
@@ -69,9 +69,7 @@ class WeightForm extends StatelessWidget {
 
                   // if the date is known, don't allow it
                   return Provider.of<BodyWeightProvider>(context, listen: false).findByDate(day) ==
-                          null
-                      ? true
-                      : false;
+                      null;
                 },
               );
 

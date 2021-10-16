@@ -24,10 +24,10 @@ import 'package:wger/models/workouts/weight_unit.dart';
 void main() {
   group('Test the singleSettingRepText method', () {
     test('Default rep and weight units, no RiR', () async {
-      final repUnit = RepetitionUnit(id: 1, name: 'mol');
-      final weightUnit = WeightUnit(id: 1, name: 'mg');
+      const repUnit = RepetitionUnit(id: 1, name: 'mol');
+      const weightUnit = WeightUnit(id: 1, name: 'mg');
 
-      var setting = Setting.empty();
+      final setting = Setting.empty();
       setting.reps = 2;
       setting.weight = 30;
       setting.rir = '';
@@ -37,10 +37,10 @@ void main() {
     });
 
     test('Default rep and weight units', () async {
-      final repUnit = RepetitionUnit(id: 1, name: 'mol');
-      final weightUnit = WeightUnit(id: 1, name: 'mg');
+      const repUnit = RepetitionUnit(id: 1, name: 'mol');
+      const weightUnit = WeightUnit(id: 1, name: 'mg');
 
-      var setting = Setting.empty();
+      final setting = Setting.empty();
       setting.reps = 2;
       setting.weight = 30;
       setting.rir = '1.5';
@@ -50,10 +50,10 @@ void main() {
     });
 
     test('No weight, default rep and weight units', () async {
-      final repUnit = RepetitionUnit(id: 1, name: 'mol');
-      final weightUnit = WeightUnit(id: 1, name: 'mg');
+      const repUnit = RepetitionUnit(id: 1, name: 'mol');
+      const weightUnit = WeightUnit(id: 1, name: 'mg');
 
-      var setting = Setting.empty();
+      final setting = Setting.empty();
       setting.reps = 2;
       setting.weight = null;
       setting.rir = '1.5';
@@ -63,10 +63,10 @@ void main() {
     });
 
     test('Custom rep and weight units, no RiR', () async {
-      final repUnit = RepetitionUnit(id: 2, name: 'mol');
-      final weightUnit = WeightUnit(id: 2, name: 'mg');
+      const repUnit = RepetitionUnit(id: 2, name: 'mol');
+      const weightUnit = WeightUnit(id: 2, name: 'mg');
 
-      var setting = Setting.empty();
+      final setting = Setting.empty();
       setting.reps = 2;
       setting.weight = 30;
       setting.rir = '';
@@ -76,10 +76,10 @@ void main() {
     });
 
     test('Custom rep and weight units, RiR', () async {
-      final repUnit = RepetitionUnit(id: 2, name: 'mol');
-      final weightUnit = WeightUnit(id: 2, name: 'mg');
+      const repUnit = RepetitionUnit(id: 2, name: 'mol');
+      const weightUnit = WeightUnit(id: 2, name: 'mg');
 
-      var setting = Setting.empty();
+      final setting = Setting.empty();
       setting.reps = 2;
       setting.weight = 30;
       setting.rir = '3';

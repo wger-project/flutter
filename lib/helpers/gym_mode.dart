@@ -18,8 +18,8 @@
 
 /// Calculates the number of plates needed to reach a specific weight
 List<num> plateCalculator(num totalWeight, num barWeight, List<num> plates) {
-  List<num> ans = [];
-  var platesCount = plates.length;
+  final List<num> ans = [];
+  final platesCount = plates.length;
 
   // Weight is less than the bar
   if (totalWeight < barWeight) {
@@ -35,7 +35,7 @@ List<num> plateCalculator(num totalWeight, num barWeight, List<num> plates) {
   }
 
   // Iterate through the plates, beginning with the biggest ones
-  for (var plate in plates.reversed) {
+  for (final plate in plates.reversed) {
     while (totalWeight >= plate) {
       totalWeight -= plate;
       ans.add(plate);
@@ -49,8 +49,8 @@ List<num> plateCalculator(num totalWeight, num barWeight, List<num> plates) {
 ///
 /// e.g. [15, 15, 15, 10, 10, 5] returns {15: 3, 10: 2, 5: 1}
 Map<num, int> groupPlates(List<num> plates) {
-  Map<num, int> out = {};
-  for (var plate in plates) {
+  final Map<num, int> out = {};
+  for (final plate in plates) {
     if (!out.containsKey(plate)) {
       out[plate] = 1;
     } else {

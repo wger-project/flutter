@@ -65,11 +65,11 @@ class Log {
   });
 
   Log.fromMealItem(MealItem mealItem, this.planId, [DateTime? dateTime]) {
-    this.ingredientId = mealItem.ingredientId;
-    this.ingredientObj = mealItem.ingredientObj;
-    this.weightUnitId = mealItem.weightUnitId;
-    this.datetime = dateTime ?? DateTime.now();
-    this.amount = mealItem.amount;
+    ingredientId = mealItem.ingredientId;
+    ingredientObj = mealItem.ingredientObj;
+    weightUnitId = mealItem.weightUnitId;
+    datetime = dateTime ?? DateTime.now();
+    amount = mealItem.amount;
   }
 
   // Boilerplate
@@ -79,11 +79,11 @@ class Log {
   /// Calculations
   NutritionalValues get nutritionalValues {
     // This is already done on the server. It might be better to read it from there.
-    var out = NutritionalValues();
+    final out = NutritionalValues();
 
     //final weight = amount;
     final weight =
-        this.weightUnitObj == null ? amount : amount * weightUnitObj!.amount * weightUnitObj!.grams;
+        weightUnitObj == null ? amount : amount * weightUnitObj!.amount * weightUnitObj!.grams;
 
     out.energy = ingredientObj.energy * weight / 100;
     out.protein = ingredientObj.protein * weight / 100;

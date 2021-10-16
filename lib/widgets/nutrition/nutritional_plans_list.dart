@@ -23,8 +23,8 @@ import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 
 class NutritionalPlansList extends StatelessWidget {
-  NutritionPlansProvider _nutritrionProvider;
-  NutritionalPlansList(this._nutritrionProvider);
+  final NutritionPlansProvider _nutritrionProvider;
+  const NutritionalPlansList(this._nutritrionProvider);
 
   @override
   Widget build(BuildContext context) {
@@ -80,12 +80,12 @@ class NutritionalPlansList extends StatelessWidget {
           background: Container(
             color: Theme.of(context).errorColor,
             alignment: Alignment.centerRight,
-            padding: EdgeInsets.only(right: 20),
-            margin: EdgeInsets.symmetric(
+            padding: const EdgeInsets.only(right: 20),
+            margin: const EdgeInsets.symmetric(
               horizontal: 4,
               vertical: 4,
             ),
-            child: Icon(
+            child: const Icon(
               Icons.delete,
               color: Colors.white,
             ),

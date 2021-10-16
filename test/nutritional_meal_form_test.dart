@@ -37,7 +37,7 @@ void main() {
 
   var plan1 = NutritionalPlan.empty();
   var meal1 = Meal();
-  var meal2 = Meal();
+  final meal2 = Meal();
 
   when(mockNutrition.editMeal(any)).thenAnswer((_) => Future.value(Meal()));
   when(mockNutrition.addMeal(any, any)).thenAnswer((_) => Future.value(Meal()));
@@ -72,9 +72,9 @@ void main() {
     await tester.pumpWidget(createHomeScreen(meal1));
     await tester.pumpAndSettle();
 
-    expect(find.byType(TextFormField), findsOneWidget);
+    expect(find.byType(TextFormField), findsNWidgets(2));
     expect(find.byType(ElevatedButton), findsOneWidget);
-    expect(find.byKey(Key(SUBMIT_BUTTON_KEY_NAME)), findsOneWidget);
+    expect(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)), findsOneWidget);
   });
 
   testWidgets('Test editing an existing meal', (WidgetTester tester) async {
@@ -82,12 +82,20 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(
-      find.text(('17:00')),
+      find.text('17:00'),
       findsOneWidget,
       reason: 'Time of existing meal is filled in',
     );
-    await tester.enterText(find.byKey(Key('field-time')), '12:34');
-    await tester.tap(find.byKey(Key(SUBMIT_BUTTON_KEY_NAME)));
+
+    expect(
+      find.text('Initial Name 1'),
+      findsOneWidget,
+      reason: 'Time of existing meal is filled in',
+    );
+
+    await tester.enterText(find.byKey(const Key('field-time')), '12:34');
+    await tester.enterText(find.byKey(const Key('field-name')), 'test meal');
+    await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
     // Correct method was called
     verify(mockNutrition.editMeal(any));
@@ -104,8 +112,9 @@ void main() {
       reason: 'Current time is filled in',
     );
 
-    await tester.enterText(find.byKey(Key('field-time')), '08:00');
-    await tester.tap(find.byKey(Key(SUBMIT_BUTTON_KEY_NAME)));
+    await tester.enterText(find.byKey(const Key('field-time')), '08:00');
+    await tester.enterText(find.byKey(const Key('field-name')), 'test meal');
+    await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
     // Correct method was called
     verifyNever(mockNutrition.editMeal(any));

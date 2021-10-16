@@ -37,7 +37,7 @@ void main() {
           builder: (ctx, auth, _) => MaterialApp(
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
-            locale: Locale('en'),
+            locale: const Locale('en'),
             home: AuthScreen(),
           ),
         ),
@@ -68,22 +68,22 @@ void main() {
     expect(find.text('LOGIN INSTEAD'), findsNothing);
 
     // Check that the correct widgets are shown
-    expect(find.byKey(Key('inputUsername')), findsOneWidget);
-    expect(find.byKey(Key('inputEmail')), findsNothing);
-    expect(find.byKey(Key('inputPassword')), findsOneWidget);
-    expect(find.byKey(Key('inputServer')), findsNothing);
-    expect(find.byKey(Key('inputPassword2')), findsNothing);
-    expect(find.byKey(Key('actionButton')), findsOneWidget);
-    expect(find.byKey(Key('toggleActionButton')), findsOneWidget);
-    expect(find.byKey(Key('toggleCustomServerButton')), findsOneWidget);
-  }, skip: true); // TODO: skipped because of technical problems:
+    expect(find.byKey(const Key('inputUsername')), findsOneWidget);
+    expect(find.byKey(const Key('inputEmail')), findsNothing);
+    expect(find.byKey(const Key('inputPassword')), findsOneWidget);
+    expect(find.byKey(const Key('inputServer')), findsNothing);
+    expect(find.byKey(const Key('inputPassword2')), findsNothing);
+    expect(find.byKey(const Key('actionButton')), findsOneWidget);
+    expect(find.byKey(const Key('toggleActionButton')), findsOneWidget);
+    expect(find.byKey(const Key('toggleCustomServerButton')), findsOneWidget);
+  }, skip: true); // TODO(x): skipped because of technical problems:
   // either the provider wasn't found or, if the call was removed, the
   // localization data could not be loaded...
 
   testWidgets('Test the widgets on the auth screen, registration', (WidgetTester tester) async {
     // Wrap screen in material app so that the media query gets a context
     await tester.pumpWidget(MaterialApp(home: AuthScreen()));
-    await tester.tap(find.byKey(Key('toggleActionButton')));
+    await tester.tap(find.byKey(const Key('toggleActionButton')));
 
     // Rebuild the widget after the state has changed.
     await tester.pump();
@@ -91,12 +91,12 @@ void main() {
     expect(find.text('LOGIN INSTEAD'), findsOneWidget);
 
     // Check that the correct widgets are shown
-    expect(find.byKey(Key('inputUsername')), findsOneWidget);
-    expect(find.byKey(Key('inputEmail')), findsOneWidget);
-    expect(find.byKey(Key('inputPassword')), findsOneWidget);
-    expect(find.byKey(Key('inputServer')), findsOneWidget);
-    expect(find.byKey(Key('inputPassword2')), findsOneWidget);
-    expect(find.byKey(Key('actionButton')), findsOneWidget);
-    expect(find.byKey(Key('toggleActionButton')), findsOneWidget);
+    expect(find.byKey(const Key('inputUsername')), findsOneWidget);
+    expect(find.byKey(const Key('inputEmail')), findsOneWidget);
+    expect(find.byKey(const Key('inputPassword')), findsOneWidget);
+    expect(find.byKey(const Key('inputServer')), findsOneWidget);
+    expect(find.byKey(const Key('inputPassword2')), findsOneWidget);
+    expect(find.byKey(const Key('actionButton')), findsOneWidget);
+    expect(find.byKey(const Key('toggleActionButton')), findsOneWidget);
   }, skip: true);
 }

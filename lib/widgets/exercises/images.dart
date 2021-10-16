@@ -30,11 +30,11 @@ class ExerciseImageWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return image != null
         ? FadeInImage(
-            placeholder: AssetImage('assets/images/placeholder.png'),
+            placeholder: const AssetImage('assets/images/placeholder.png'),
             image: NetworkImage(image!.url),
             fit: BoxFit.cover,
           )
-        : Image(
+        : const Image(
             image: AssetImage('assets/images/placeholder.png'),
             color: Color.fromRGBO(255, 255, 255, 0.3),
             colorBlendMode: BlendMode.modulate);

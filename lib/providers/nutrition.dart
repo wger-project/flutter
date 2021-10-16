@@ -47,7 +47,7 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
   List<Ingredient> _ingredients = [];
 
   NutritionPlansProvider(AuthProvider auth, List<NutritionalPlan> entries, [http.Client? client])
-      : this._plans = entries,
+      : _plans = entries,
         super(auth, client);
 
   List<NutritionalPlan> get items {
@@ -55,7 +55,7 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
   }
 
   /// Clears all lists
-  clear() {
+  void clear() {
     _plans = [];
     _ingredients = [];
   }
@@ -63,7 +63,7 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
   /// Returns the current active nutritional plan. At the moment this is just
   /// the latest, but this might change in the future.
   NutritionalPlan? get currentPlan {
-    if (_plans.length > 0) {
+    if (_plans.isNotEmpty) {
       return _plans.first;
     }
   }
@@ -76,11 +76,11 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
   }
 
   Meal? findMealById(int id) {
-    for (var plan in _plans) {
+    for (final plan in _plans) {
       try {
-        var meal = plan.meals.firstWhere((plan) => plan.id == id);
+        final meal = plan.meals.firstWhere((plan) => plan.id == id);
         return meal;
-      } on StateError catch (e) {}
+      } on StateError {}
     }
     return null;
   }
@@ -132,12 +132,12 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
     final fullPlanData = await fetch(makeUrl(_nutritionalPlansInfoPath, id: planId));
 
     // Meals
-    List<Meal> meals = [];
-    for (var mealData in fullPlanData['meals']) {
-      List<MealItem> mealItems = [];
+    final List<Meal> meals = [];
+    for (final mealData in fullPlanData['meals']) {
+      final List<MealItem> mealItems = [];
       final meal = Meal.fromJson(mealData);
 
-      for (var mealItemData in mealData['meal_items']) {
+      for (final mealItemData in mealData['meal_items']) {
         final mealItem = MealItem.fromJson(mealItemData);
         mealItem.ingredientObj = await fetchIngredient(mealItem.ingredientId);
         mealItems.add(mealItem);
@@ -171,7 +171,7 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
 
   Future<void> deletePlan(int id) async {
     final existingPlanIndex = _plans.indexWhere((element) => element.id == id);
-    var existingPlan = _plans[existingPlanIndex];
+    final existingPlan = _plans[existingPlanIndex];
     _plans.removeAt(existingPlanIndex);
     notifyListeners();
 
@@ -187,7 +187,7 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
 
   /// Adds a meal to a plan
   Future<Meal> addMeal(Meal meal, int planId) async {
-    var plan = findById(planId);
+    final plan = findById(planId);
     final data = await post(meal.toJson(), makeUrl(_mealPath));
 
     meal = Meal.fromJson(data);
@@ -209,9 +209,9 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
   /// Deletes a meal
   Future<void> deleteMeal(Meal meal) async {
     // Get the meal
-    var plan = findById(meal.planId);
+    final plan = findById(meal.planId);
     final mealIndex = plan.meals.indexWhere((e) => e.id == meal.id);
-    var existingMeal = plan.meals[mealIndex];
+    final existingMeal = plan.meals[mealIndex];
     plan.meals.removeAt(mealIndex);
     notifyListeners();
 
@@ -239,9 +239,9 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
   /// Deletes a meal
   Future<void> deleteMealItem(MealItem mealItem) async {
     // Get the meal
-    var meal = findMealById(mealItem.mealId)!;
+    final meal = findMealById(mealItem.mealId)!;
     final mealItemIndex = meal.mealItems.indexWhere((e) => e.id == mealItem.id);
-    var existingMealItem = meal.mealItems[mealItemIndex];
+    final existingMealItem = meal.mealItems[mealItemIndex];
     meal.mealItems.removeAt(mealItemIndex);
     notifyListeners();
 
@@ -265,7 +265,7 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
       return ingredient;
 
       // Get ingredient from the server and save to cache
-    } on StateError catch (e) {
+    } on StateError {
       final data = await fetch(makeUrl(_ingredientPath, id: ingredientId));
       ingredient = Ingredient.fromJson(data);
       _ingredients.add(ingredient);
@@ -296,7 +296,7 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
     // Initialise an empty cache
     final ingredientData = {
       'date': DateTime.now().toIso8601String(),
-      'expiresIn': DateTime.now().add(Duration(days: DAYS_TO_CACHE)).toIso8601String(),
+      'expiresIn': DateTime.now().add(const Duration(days: DAYS_TO_CACHE)).toIso8601String(),
       'ingredients': []
     };
     prefs.setString(PREFS_INGREDIENTS, json.encode(ingredientData));
@@ -332,9 +332,9 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
 
   /// Log meal to nutrition diary
   Future<void> logMealToDiary(Meal meal) async {
-    for (var item in meal.mealItems) {
+    for (final item in meal.mealItems) {
       final plan = findById(meal.planId);
-      Log log = Log.fromMealItem(item, plan.id!);
+      final Log log = Log.fromMealItem(item, plan.id!);
 
       final data = await post(log.toJson(), makeUrl(_nutritionDiaryPath));
       log.id = data['id'];
@@ -354,14 +354,14 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
 
   /// Load nutrition diary entries for plan
   Future<void> fetchAndSetLogs(NutritionalPlan plan) async {
-    // TODO: update fetch to that it can use the pagination
+    // TODO(x): update fetch to that it can use the pagination
     final data = await fetch(
       makeUrl(_nutritionDiaryPath, query: {'plan': plan.id.toString(), 'limit': '1000'}),
     );
 
     plan.logs = [];
-    for (var logData in data['results']) {
-      var log = Log.fromJson(logData);
+    for (final logData in data['results']) {
+      final log = Log.fromJson(logData);
       final ingredient = await fetchIngredient(log.ingredientId);
       log.ingredientObj = ingredient;
       plan.logs.add(log);

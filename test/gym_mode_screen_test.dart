@@ -43,7 +43,7 @@ void main() {
     final client = MockClient();
 
     final mockExerciseProvider = MockExercisesProvider();
-    WorkoutPlan workoutPlan = getWorkout();
+    final WorkoutPlan workoutPlan = getWorkout();
 
     when(mockExerciseProvider.findExerciseById(1)).thenReturn(getExercise()[0]);
     when(mockExerciseProvider.findExerciseById(2)).thenReturn(getExercise()[1]);
@@ -107,7 +107,7 @@ void main() {
     expect(find.byIcon(Icons.menu), findsOneWidget);
     expect(find.byIcon(Icons.chevron_left), findsOneWidget);
     expect(find.byIcon(Icons.chevron_right), findsOneWidget);
-    await tester.drag(find.byType(ExerciseOverview), Offset(-500.0, 0.0));
+    await tester.drag(find.byType(ExerciseOverview), const Offset(-500.0, 0.0));
     await tester.pumpAndSettle();
 
     //
@@ -138,7 +138,7 @@ void main() {
     expect(find.byType(RepetitionUnitInputWidget), findsOneWidget);
     expect(find.byType(WeightUnitInputWidget), findsOneWidget);
     expect(find.byType(RiRInputWidget), findsOneWidget);
-    await tester.drag(find.byType(LogPage), Offset(-500.0, 0.0));
+    await tester.drag(find.byType(LogPage), const Offset(-500.0, 0.0));
     await tester.pumpAndSettle();
 
     //
@@ -159,7 +159,7 @@ void main() {
     expect(find.text('test exercise 1'), findsOneWidget);
     expect(find.byType(LogPage), findsOneWidget);
     expect(find.byType(Form), findsOneWidget);
-    await tester.drag(find.byType(LogPage), Offset(-500.0, 0.0));
+    await tester.drag(find.byType(LogPage), const Offset(-500.0, 0.0));
     await tester.pumpAndSettle();
 
     //

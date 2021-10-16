@@ -26,7 +26,7 @@ import 'package:wger/screens/workout_plan_screen.dart';
 class WorkoutPlansList extends StatelessWidget {
   final WorkoutPlansProvider _workoutProvider;
 
-  WorkoutPlansList(this._workoutProvider);
+  const WorkoutPlansList(this._workoutProvider);
 
   @override
   Widget build(BuildContext context) {
@@ -83,12 +83,12 @@ class WorkoutPlansList extends StatelessWidget {
           background: Container(
             color: Theme.of(context).errorColor,
             alignment: Alignment.centerRight,
-            padding: EdgeInsets.only(right: 20),
-            margin: EdgeInsets.symmetric(
+            padding: const EdgeInsets.only(right: 20),
+            margin: const EdgeInsets.symmetric(
               horizontal: 4,
               vertical: 4,
             ),
-            child: Icon(
+            child: const Icon(
               Icons.delete,
               color: Colors.white,
             ),

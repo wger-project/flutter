@@ -46,14 +46,14 @@ class WorkoutPlanScreen extends StatefulWidget {
 class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
   WorkoutScreenMode _mode = WorkoutScreenMode.workout;
 
-  _changeMode(WorkoutScreenMode newMode) {
+  void _changeMode(WorkoutScreenMode newMode) {
     setState(() {
       _mode = newMode;
     });
   }
 
-  Future<WorkoutPlan> _loadFullWorkout(BuildContext context, int planId) async {
-    return await Provider.of<WorkoutPlansProvider>(context, listen: false)
+  Future<WorkoutPlan> _loadFullWorkout(BuildContext context, int planId) {
+    return Provider.of<WorkoutPlansProvider>(context, listen: false)
         .fetchAndSetWorkoutPlanFull(planId);
   }
 
@@ -61,10 +61,9 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
     switch (_mode) {
       case WorkoutScreenMode.workout:
         return WorkoutPlanDetail(plan, _changeMode);
-        break;
+
       case WorkoutScreenMode.log:
         return WorkoutLogs(plan, _changeMode);
-        break;
     }
   }
 
@@ -80,14 +79,14 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
               title: Text(workoutPlan.name),
-              background: Image(
+              background: const Image(
                 image: AssetImage('assets/images/backgrounds/workout_plans.jpg'),
                 fit: BoxFit.cover,
               ),
             ),
             actions: [
               PopupMenuButton<WorkoutOptions>(
-                icon: Icon(Icons.more_vert),
+                icon: const Icon(Icons.more_vert),
                 onSelected: (value) {
                   // Edit
                   if (value == WorkoutOptions.edit) {
@@ -130,16 +129,17 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
             builder: (context, AsyncSnapshot<WorkoutPlan> snapshot) => SliverList(
               delegate: SliverChildListDelegate(
                 [
-                  snapshot.connectionState == ConnectionState.waiting
-                      ? Container(
-                          height: 200,
-                          child: Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        )
-                      : Consumer<WorkoutPlansProvider>(
-                          builder: (context, value, child) => getBody(workoutPlan),
-                        ),
+                  if (snapshot.connectionState == ConnectionState.waiting)
+                    const SizedBox(
+                      height: 200,
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    )
+                  else
+                    Consumer<WorkoutPlansProvider>(
+                      builder: (context, value, child) => getBody(workoutPlan),
+                    ),
                 ],
               ),
             ),

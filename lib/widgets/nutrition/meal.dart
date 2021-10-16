@@ -31,7 +31,7 @@ import 'package:wger/widgets/nutrition/helpers.dart';
 class MealWidget extends StatefulWidget {
   final Meal _meal;
 
-  MealWidget(
+  const MealWidget(
     this._meal,
   );
 
@@ -41,6 +41,7 @@ class MealWidget extends StatefulWidget {
 
 class _MealWidgetState extends State<MealWidget> {
   bool _expanded = false;
+
   void _toggleExpanded() {
     setState(() {
       _expanded = !_expanded;
@@ -50,7 +51,7 @@ class _MealWidgetState extends State<MealWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(3),
+      padding: const EdgeInsets.all(3),
       child: Card(
         child: Column(
           children: [
@@ -76,9 +77,9 @@ class _MealWidgetState extends State<MealWidget> {
                         ),
                       );
                     },
-                    icon: Icon(Icons.delete),
+                    icon: const Icon(Icons.delete),
                   ),
-                  if (widget._meal.mealItems.length > 0)
+                  if (widget._meal.mealItems.isNotEmpty)
                     Ink(
                       decoration: const ShapeDecoration(
                         color: wgerPrimaryButtonColor,
@@ -112,11 +113,11 @@ class _MealWidgetState extends State<MealWidget> {
                         ),
                       );
                     },
-                    icon: Icon(Icons.edit),
+                    icon: const Icon(Icons.edit),
                   ),
                 ],
               ),
-            Divider(),
+            const Divider(),
             ...widget._meal.mealItems.map((item) => MealItemWidget(item, _expanded)).toList(),
             OutlinedButton(
               child: Text(AppLocalizations.of(context).addIngredient),
@@ -143,26 +144,26 @@ class MealItemWidget extends StatelessWidget {
   final bool _expanded;
   final MealItem _item;
 
-  MealItemWidget(this._item, this._expanded);
+  const MealItemWidget(this._item, this._expanded);
 
   @override
   Widget build(BuildContext context) {
-    // TODO: add real support for weight units
+    // TODO(x): add real support for weight units
     /*
     String unit = _item.weightUnitId == null
         ? AppLocalizations.of(context).g
         : _item.weightUnitObj!.weightUnit.name;
 
      */
-    String unit = AppLocalizations.of(context).g;
+    final String unit = AppLocalizations.of(context).g;
     final values = _item.nutritionalValues;
 
     return Container(
-      padding: EdgeInsets.all(5),
+      padding: const EdgeInsets.all(5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
+          SizedBox(
             width: double.infinity,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -174,7 +175,7 @@ class MealItemWidget extends StatelessWidget {
                 )),
                 if (_expanded)
                   IconButton(
-                    icon: Icon(Icons.delete),
+                    icon: const Icon(Icons.delete),
                     iconSize: ICON_SIZE_SMALL,
                     onPressed: () {
                       // Delete the meal item
@@ -203,7 +204,7 @@ class MealItemWidget extends StatelessWidget {
 
 class DismissibleMealHeader extends StatelessWidget {
   final bool _expanded;
-  final _toggle;
+  final Function _toggle;
 
   const DismissibleMealHeader(
     this._expanded,
@@ -220,21 +221,31 @@ class DismissibleMealHeader extends StatelessWidget {
       direction: DismissDirection.startToEnd,
       child: Container(
         padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(color: Colors.white),
-        child: Row(
+        decoration: const BoxDecoration(color: Colors.white),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              child: Text(
-                _meal.time!.format(context),
+            if (_meal.name != '')
+              Text(
+                _meal.name,
                 style: Theme.of(context).textTheme.headline5,
               ),
-            ),
-            IconButton(
-              visualDensity: VisualDensity.compact,
-              icon: _expanded ? Icon(Icons.unfold_less) : Icon(Icons.unfold_more),
-              onPressed: () {
-                _toggle();
-              },
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    _meal.time!.format(context),
+                    style: Theme.of(context).textTheme.headline5,
+                  ),
+                ),
+                IconButton(
+                  visualDensity: VisualDensity.compact,
+                  icon: _expanded ? const Icon(Icons.unfold_less) : const Icon(Icons.unfold_more),
+                  onPressed: () {
+                    _toggle();
+                  },
+                ),
+              ],
             ),
           ],
         ),
@@ -242,15 +253,15 @@ class DismissibleMealHeader extends StatelessWidget {
       background: Container(
         color: wgerPrimaryButtonColor, //Theme.of(context).primaryColor,
         alignment: Alignment.centerLeft,
-        padding: EdgeInsets.only(left: 10),
+        padding: const EdgeInsets.only(left: 10),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
               AppLocalizations.of(context).logMeal,
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
-            Icon(
+            const Icon(
               Icons.history_edu,
               color: Colors.white,
             ),

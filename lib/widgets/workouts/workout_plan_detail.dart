@@ -26,8 +26,8 @@ import 'package:wger/widgets/workouts/forms.dart';
 
 class WorkoutPlanDetail extends StatefulWidget {
   final WorkoutPlan _workoutPlan;
-  final _changeMode;
-  WorkoutPlanDetail(this._workoutPlan, this._changeMode);
+  final Function _changeMode;
+  const WorkoutPlanDetail(this._workoutPlan, this._changeMode);
 
   @override
   _WorkoutPlanDetailState createState() => _WorkoutPlanDetailState();
@@ -38,9 +38,9 @@ class _WorkoutPlanDetailState extends State<WorkoutPlanDetail> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        if (widget._workoutPlan.days.length > 0)
+        if (widget._workoutPlan.days.isNotEmpty)
           ToggleButtons(
-            children: <Widget>[
+            children: const <Widget>[
               Icon(Icons.table_chart_outlined),
               Icon(Icons.show_chart),
             ],
@@ -50,7 +50,7 @@ class _WorkoutPlanDetailState extends State<WorkoutPlanDetail> {
                 widget._changeMode(WorkoutScreenMode.log);
               }
             },
-            isSelected: [true, false],
+            isSelected: const [true, false],
           ),
         if (widget._workoutPlan.description != '')
           Padding(

@@ -44,10 +44,12 @@ import 'package:wger/widgets/workouts/forms.dart';
 
 class GymMode extends StatefulWidget {
   final Day _workoutDay;
-  late TimeOfDay _start;
+  late final TimeOfDay _start;
+
   GymMode(this._workoutDay) {
     _start = TimeOfDay.now();
   }
+
   @override
   _GymModeState createState() => _GymModeState();
 }
@@ -56,10 +58,11 @@ class _GymModeState extends State<GymMode> {
   var _totalElements = 1;
 
   /// Map with the first (navigation) page for each exercise
-  Map<String, int> _exercisePages = new Map();
-  PageController _controller = PageController(
+  final Map<String, int> _exercisePages = {};
+  final PageController _controller = PageController(
     initialPage: 0,
   );
+
   @override
   void dispose() {
     _controller.dispose();
@@ -70,7 +73,7 @@ class _GymModeState extends State<GymMode> {
   void initState() {
     super.initState();
     // Calculate amount of elements for progress indicator
-    for (var set in widget._workoutDay.sets) {
+    for (final set in widget._workoutDay.sets) {
       _totalElements = _totalElements + set.settingsComputed.length;
     }
     // Calculate the pages for the navigation
@@ -78,9 +81,9 @@ class _GymModeState extends State<GymMode> {
     // This duplicates the code below in the getContent method, but it seems to
     // be the easiest way
     var currentPage = 1;
-    for (var set in widget._workoutDay.sets) {
+    for (final set in widget._workoutDay.sets) {
       var firstPage = true;
-      for (var setting in set.settingsComputed) {
+      for (final setting in set.settingsComputed) {
         final exercise = Provider.of<ExercisesProvider>(context, listen: false)
             .findExerciseById(setting.exerciseId);
 
@@ -104,12 +107,12 @@ class _GymModeState extends State<GymMode> {
     final exerciseProvider = Provider.of<ExercisesProvider>(context, listen: false);
     final workoutProvider = Provider.of<WorkoutPlansProvider>(context, listen: false);
     var currentElement = 1;
-    List<Widget> out = [];
+    final List<Widget> out = [];
 
-    for (var set in widget._workoutDay.sets) {
+    for (final set in widget._workoutDay.sets) {
       var firstPage = true;
-      for (var setting in set.settingsComputed) {
-        var ratioCompleted = currentElement / _totalElements;
+      for (final setting in set.settingsComputed) {
+        final ratioCompleted = currentElement / _totalElements;
         final exercise = exerciseProvider.findExerciseById(setting.exerciseId);
         currentElement++;
 
@@ -163,11 +166,11 @@ class _GymModeState extends State<GymMode> {
 }
 
 class StartPage extends StatelessWidget {
-  PageController _controller;
+  final PageController _controller;
   final Day _day;
-  Map<String, int> _exercisePages;
+  final Map<String, int> _exercisePages;
 
-  StartPage(this._controller, this._day, this._exercisePages);
+  const StartPage(this._controller, this._day, this._exercisePages);
 
   @override
   Widget build(BuildContext context) {
@@ -178,7 +181,7 @@ class StartPage extends StatelessWidget {
           _controller,
           exercisePages: _exercisePages,
         ),
-        Divider(),
+        const Divider(),
         Expanded(
           child: ListView(
             children: [
@@ -194,7 +197,7 @@ class StartPage extends StatelessWidget {
                               style: Theme.of(context).textTheme.headline6,
                             ),
                             ...set.getSmartRepr(s.exerciseObj).map((e) => Text(e)).toList(),
-                            SizedBox(height: 15),
+                            const SizedBox(height: 15),
                           ],
                         );
                       }).toList(),
@@ -208,7 +211,8 @@ class StartPage extends StatelessWidget {
         ElevatedButton(
           child: Text(AppLocalizations.of(context).start),
           onPressed: () {
-            _controller.nextPage(duration: Duration(milliseconds: 200), curve: Curves.bounceIn);
+            _controller.nextPage(
+                duration: const Duration(milliseconds: 200), curve: Curves.bounceIn);
           },
         ),
         NavigationFooter(
@@ -222,14 +226,14 @@ class StartPage extends StatelessWidget {
 }
 
 class LogPage extends StatefulWidget {
-  PageController _controller;
-  Setting _setting;
-  Set _set;
-  Exercise _exercise;
-  WorkoutPlan _workoutPlan;
+  final PageController _controller;
+  final Setting _setting;
+  final Set _set;
+  final Exercise _exercise;
+  final WorkoutPlan _workoutPlan;
   final double _ratioCompleted;
-  Map<String, int> _exercisePages;
-  Log _log = Log.empty();
+  final Map<String, int> _exercisePages;
+  final Log _log = Log.empty();
 
   LogPage(
     this._controller,
@@ -258,6 +262,7 @@ class _LogPageState extends State<LogPage> {
   final _repsController = TextEditingController();
   final _weightController = TextEditingController();
   var _detailed = false;
+  bool _isSaving = false;
 
   late FocusNode focusNode;
 
@@ -286,13 +291,13 @@ class _LogPageState extends State<LogPage> {
     return Row(
       children: [
         IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.remove,
             color: Colors.black,
           ),
           onPressed: () {
             try {
-              int newValue = int.parse(_repsController.text) - 1;
+              final int newValue = int.parse(_repsController.text) - 1;
               if (newValue > 0) {
                 _repsController.text = newValue.toString();
               }
@@ -324,13 +329,13 @@ class _LogPageState extends State<LogPage> {
           ),
         ),
         IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.add,
             color: Colors.black,
           ),
           onPressed: () {
             try {
-              int newValue = int.parse(_repsController.text) + 1;
+              final int newValue = int.parse(_repsController.text) + 1;
               _repsController.text = newValue.toString();
             } on FormatException {}
           },
@@ -340,17 +345,17 @@ class _LogPageState extends State<LogPage> {
   }
 
   Widget getWeightWidget() {
-    var minPlateWeight = 1.25;
+    const minPlateWeight = 1.25;
     return Row(
       children: [
         IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.remove,
             color: Colors.black,
           ),
           onPressed: () {
             try {
-              double newValue = double.parse(_weightController.text) - (2 * minPlateWeight);
+              final double newValue = double.parse(_weightController.text) - (2 * minPlateWeight);
               if (newValue > 0) {
                 setState(() {
                   widget._log.weight = newValue;
@@ -392,13 +397,13 @@ class _LogPageState extends State<LogPage> {
           ),
         ),
         IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.add,
             color: Colors.black,
           ),
           onPressed: () {
             try {
-              double newValue = double.parse(_weightController.text) + (2 * minPlateWeight);
+              final double newValue = double.parse(_weightController.text) + (2 * minPlateWeight);
               setState(() {
                 widget._log.weight = newValue;
                 _weightController.text = newValue.toString();
@@ -425,7 +430,7 @@ class _LogPageState extends State<LogPage> {
             Row(
               children: [
                 Flexible(child: getRepsWidget()),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Flexible(child: getWeightWidget()),
               ],
             ),
@@ -434,7 +439,7 @@ class _LogPageState extends State<LogPage> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Flexible(child: getRepsWidget()),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Flexible(child: RepetitionUnitInputWidget(widget._log)),
               ],
             ),
@@ -443,7 +448,7 @@ class _LogPageState extends State<LogPage> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Flexible(child: getWeightWidget()),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Flexible(child: WeightUnitInputWidget(widget._log))
               ],
             ),
@@ -458,37 +463,52 @@ class _LogPageState extends State<LogPage> {
             },
           ),
           ElevatedButton(
-            child: Text(AppLocalizations.of(context).save),
-            onPressed: () async {
-              // Validate and save the current values to the weightEntry
-              final isValid = _form.currentState!.validate();
-              if (!isValid) {
-                return;
-              }
-              _form.currentState!.save();
-
-              // Save the entry on the server
-              try {
-                await Provider.of<WorkoutPlansProvider>(context, listen: false).addLog(widget._log);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    duration: Duration(seconds: 2), // default is 4
-                    content: Text(
-                      AppLocalizations.of(context).successfullySaved,
-                      textAlign: TextAlign.center,
+            child: (!_isSaving)
+                ? Text(AppLocalizations.of(context).save)
+                : const SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                     ),
                   ),
-                );
-                widget._controller.nextPage(
-                  duration: DEFAULT_ANIMATION_DURATION,
-                  curve: DEFAULT_ANIMATION_CURVE,
-                );
-              } on WgerHttpException catch (error) {
-                showHttpExceptionErrorDialog(error, context);
-              } catch (error) {
-                showErrorDialog(error, context);
-              }
-            },
+            onPressed: _isSaving
+                ? null
+                : () async {
+                    // Validate and save the current values to the weightEntry
+                    final isValid = _form.currentState!.validate();
+                    if (!isValid) {
+                      return;
+                    }
+                    _isSaving = true;
+                    _form.currentState!.save();
+
+                    // Save the entry on the server
+                    try {
+                      await Provider.of<WorkoutPlansProvider>(context, listen: false)
+                          .addLog(widget._log);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          duration: const Duration(seconds: 2), // default is 4
+                          content: Text(
+                            AppLocalizations.of(context).successfullySaved,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      );
+                      widget._controller.nextPage(
+                        duration: DEFAULT_ANIMATION_DURATION,
+                        curve: DEFAULT_ANIMATION_CURVE,
+                      );
+                      _isSaving = false;
+                    } on WgerHttpException catch (error) {
+                      showHttpExceptionErrorDialog(error, context);
+                      _isSaving = false;
+                    } catch (error) {
+                      showErrorDialog(error, context);
+                      _isSaving = false;
+                    }
+                  },
           ),
         ],
       ),
@@ -508,7 +528,7 @@ class _LogPageState extends State<LogPage> {
             title: Text(log.singleLogRepTextNoNl),
             subtitle:
                 Text(DateFormat.yMd(Localizations.localeOf(context).languageCode).format(log.date)),
-            trailing: Icon(Icons.copy),
+            trailing: const Icon(Icons.copy),
             onTap: () {
               setState(() {
                 // Text field
@@ -519,9 +539,13 @@ class _LogPageState extends State<LogPage> {
                 widget._log.rir = log.rir;
                 widget._log.repetitionUnit = log.repetitionUnitObj;
                 widget._log.weightUnit = log.weightUnitObj;
+
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).dataCopied)));
               });
             },
-            contentPadding: EdgeInsets.symmetric(horizontal: 40),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 40),
           );
         }).toList(),
       ],
@@ -544,7 +568,7 @@ class _LogPageState extends State<LogPage> {
         ),
         SizedBox(
           height: 35,
-          child: plates.length > 0
+          child: plates.isNotEmpty
               ? Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -553,9 +577,9 @@ class _LogPageState extends State<LogPage> {
                           (key) => Row(
                             children: [
                               Text(groupedPlates[key].toString()),
-                              Text('×'),
+                              const Text('×'),
                               Container(
-                                decoration: BoxDecoration(
+                                decoration: const BoxDecoration(
                                   color: wgerPrimaryColorLight,
                                   shape: BoxShape.circle,
                                 ),
@@ -568,13 +592,13 @@ class _LogPageState extends State<LogPage> {
                                       alignment: Alignment.center,
                                       child: Text(
                                         key.toString(),
-                                        style: TextStyle(fontWeight: FontWeight.bold),
+                                        style: const TextStyle(fontWeight: FontWeight.bold),
                                       ),
                                     ),
                                   ),
                                 ),
                               ),
-                              SizedBox(width: 10),
+                              const SizedBox(width: 10),
                             ],
                           ),
                         )
@@ -583,7 +607,7 @@ class _LogPageState extends State<LogPage> {
                 )
               : MutedText(AppLocalizations.of(context).plateCalculatorNotDivisible),
         ),
-        SizedBox(height: 3),
+        const SizedBox(height: 3),
       ],
     );
   }
@@ -609,9 +633,9 @@ class _LogPageState extends State<LogPage> {
             widget._set.comment,
             textAlign: TextAlign.center,
           ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         Expanded(
-            child: (widget._workoutPlan.filterLogsByExercise(widget._exercise).length > 0)
+            child: (widget._workoutPlan.filterLogsByExercise(widget._exercise).isNotEmpty)
                 ? getPastLogs()
                 : Container()),
         // Only show calculator for barbell
@@ -634,9 +658,9 @@ class ExerciseOverview extends StatelessWidget {
   final PageController _controller;
   final Exercise _exercise;
   final double _ratioCompleted;
-  Map<String, int> _exercisePages;
+  final Map<String, int> _exercisePages;
 
-  ExerciseOverview(
+  const ExerciseOverview(
     this._controller,
     this._exercise,
     this._ratioCompleted,
@@ -652,10 +676,10 @@ class ExerciseOverview extends StatelessWidget {
           _controller,
           exercisePages: _exercisePages,
         ),
-        Divider(),
+        const Divider(),
         Expanded(
           child: ListView(
-            padding: EdgeInsets.symmetric(horizontal: 15),
+            padding: const EdgeInsets.symmetric(horizontal: 15),
             children: [
               Text(
                 _exercise.category.name,
@@ -669,8 +693,8 @@ class ExerciseOverview extends StatelessWidget {
                         textAlign: TextAlign.center,
                       ))
                   .toList(),
-              if (_exercise.images.length > 0)
-                Container(
+              if (_exercise.images.isNotEmpty)
+                SizedBox(
                   width: double.infinity,
                   height: 200,
                   child: ListView(
@@ -691,12 +715,12 @@ class ExerciseOverview extends StatelessWidget {
 }
 
 class SessionPage extends StatefulWidget {
-  WorkoutPlan _workoutPlan;
-  PageController _controller;
-  TimeOfDay _start;
-  Map<String, int> _exercisePages;
+  final WorkoutPlan _workoutPlan;
+  final PageController _controller;
+  final TimeOfDay _start;
+  final Map<String, int> _exercisePages;
 
-  SessionPage(
+  const SessionPage(
     this._workoutPlan,
     this._controller,
     this._start,
@@ -714,7 +738,7 @@ class _SessionPageState extends State<SessionPage> {
   final timeStartController = TextEditingController();
   final timeEndController = TextEditingController();
 
-  var _session = WorkoutSession();
+  final _session = WorkoutSession.now();
 
   /// Selected impression: bad, neutral, good
   var selectedImpression = [false, true, false];
@@ -739,7 +763,7 @@ class _SessionPageState extends State<SessionPage> {
           widget._controller,
           exercisePages: widget._exercisePages,
         ),
-        Divider(),
+        const Divider(),
         Expanded(child: Container()),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -749,7 +773,7 @@ class _SessionPageState extends State<SessionPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ToggleButtons(
-                  children: <Widget>[
+                  children: const <Widget>[
                     Icon(
                       Icons.sentiment_very_dissatisfied,
                     ),
@@ -802,31 +826,32 @@ class _SessionPageState extends State<SessionPage> {
                           onFieldSubmitted: (_) {},
                           onTap: () async {
                             // Stop keyboard from appearing
-                            FocusScope.of(context).requestFocus(new FocusNode());
+                            FocusScope.of(context).requestFocus(FocusNode());
 
                             // Open time picker
-                            var pickedTime = await showTimePicker(
+                            final pickedTime = await showTimePicker(
                               context: context,
-                              initialTime: widget._start,
+                              initialTime: _session.timeStart,
                             );
 
                             if (pickedTime != null) {
                               timeStartController.text = timeToString(pickedTime)!;
+                              _session.timeStart = pickedTime;
                             }
                           },
                           onSaved: (newValue) {
                             _session.timeStart = stringToTime(newValue);
                           },
                           validator: (_) {
-                            TimeOfDay startTime = stringToTime(timeStartController.text);
-                            TimeOfDay endTime = stringToTime(timeEndController.text);
+                            final TimeOfDay startTime = stringToTime(timeStartController.text);
+                            final TimeOfDay endTime = stringToTime(timeEndController.text);
                             if (startTime.isAfter(endTime)) {
                               return AppLocalizations.of(context).timeStartAhead;
                             }
                             return null;
                           }),
                     ),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     Flexible(
                       child: TextFormField(
                         decoration:
@@ -835,15 +860,18 @@ class _SessionPageState extends State<SessionPage> {
                         onFieldSubmitted: (_) {},
                         onTap: () async {
                           // Stop keyboard from appearing
-                          FocusScope.of(context).requestFocus(new FocusNode());
+                          FocusScope.of(context).requestFocus(FocusNode());
 
                           // Open time picker
-                          var pickedTime = await showTimePicker(
+                          final pickedTime = await showTimePicker(
                             context: context,
-                            initialTime: TimeOfDay.now(),
+                            initialTime: _session.timeEnd,
                           );
 
-                          timeEndController.text = timeToString(pickedTime)!;
+                          if (pickedTime != null) {
+                            timeEndController.text = timeToString(pickedTime)!;
+                            _session.timeEnd = pickedTime;
+                          }
                         },
                         onSaved: (newValue) {
                           _session.timeEnd = stringToTime(newValue);
@@ -891,9 +919,9 @@ class _SessionPageState extends State<SessionPage> {
 class TimerWidget extends StatefulWidget {
   final PageController _controller;
   final double _ratioCompleted;
-  Map<String, int> _exercisePages;
+  final Map<String, int> _exercisePages;
 
-  TimerWidget(this._controller, this._ratioCompleted, this._exercisePages);
+  const TimerWidget(this._controller, this._ratioCompleted, this._exercisePages);
 
   @override
   _TimerWidgetState createState() => _TimerWidgetState();
@@ -905,7 +933,7 @@ class _TimerWidgetState extends State<TimerWidget> {
   Timer? _timer;
   int _seconds = 1;
   final _maxSeconds = 600;
-  DateTime today = new DateTime(2000, 1, 1, 0, 0, 0);
+  DateTime today = DateTime(2000, 1, 1, 0, 0, 0);
 
   void startTimer() {
     setState(() {
@@ -914,8 +942,8 @@ class _TimerWidgetState extends State<TimerWidget> {
 
     _timer?.cancel();
 
-    const oneSecond = const Duration(seconds: 1);
-    _timer = new Timer.periodic(
+    const oneSecond = Duration(seconds: 1);
+    _timer = Timer.periodic(
       oneSecond,
       (Timer timer) {
         if (_seconds == _maxSeconds) {
@@ -939,7 +967,6 @@ class _TimerWidgetState extends State<TimerWidget> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     startTimer();
   }
@@ -973,42 +1000,44 @@ class NavigationFooter extends StatelessWidget {
   final bool showPrevious;
   final bool showNext;
 
-  NavigationFooter(this._controller, this._ratioCompleted,
+  const NavigationFooter(this._controller, this._ratioCompleted,
       {this.showPrevious = true, this.showNext = true});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        showPrevious
-            ? IconButton(
-                icon: Icon(Icons.chevron_left),
-                onPressed: () {
-                  _controller.previousPage(
-                    duration: DEFAULT_ANIMATION_DURATION,
-                    curve: DEFAULT_ANIMATION_CURVE,
-                  );
-                },
-              )
-            : SizedBox(width: 48),
+        if (showPrevious)
+          IconButton(
+            icon: const Icon(Icons.chevron_left),
+            onPressed: () {
+              _controller.previousPage(
+                duration: DEFAULT_ANIMATION_DURATION,
+                curve: DEFAULT_ANIMATION_CURVE,
+              );
+            },
+          )
+        else
+          const SizedBox(width: 48),
         Expanded(
           child: LinearProgressIndicator(
             minHeight: 1.5,
             value: _ratioCompleted,
-            valueColor: AlwaysStoppedAnimation<Color>(wgerPrimaryColor),
+            valueColor: const AlwaysStoppedAnimation<Color>(wgerPrimaryColor),
           ),
         ),
-        showNext
-            ? IconButton(
-                icon: Icon(Icons.chevron_right),
-                onPressed: () {
-                  _controller.nextPage(
-                    duration: DEFAULT_ANIMATION_DURATION,
-                    curve: DEFAULT_ANIMATION_CURVE,
-                  );
-                },
-              )
-            : SizedBox(width: 48),
+        if (showNext)
+          IconButton(
+            icon: const Icon(Icons.chevron_right),
+            onPressed: () {
+              _controller.nextPage(
+                duration: DEFAULT_ANIMATION_DURATION,
+                curve: DEFAULT_ANIMATION_CURVE,
+              );
+            },
+          )
+        else
+          const SizedBox(width: 48),
       ],
     );
   }
@@ -1017,9 +1046,9 @@ class NavigationFooter extends StatelessWidget {
 class NavigationHeader extends StatelessWidget {
   final PageController _controller;
   final String _title;
-  Map<String, int> exercisePages;
+  final Map<String, int> exercisePages;
 
-  NavigationHeader(
+  const NavigationHeader(
     this._title,
     this._controller, {
     required this.exercisePages,
@@ -1038,7 +1067,7 @@ class NavigationHeader extends StatelessWidget {
             ...exercisePages.keys.map((e) {
               return ListTile(
                 title: Text(e),
-                trailing: Icon(Icons.chevron_right),
+                trailing: const Icon(Icons.chevron_right),
                 onTap: () {
                   _controller.animateToPage(
                     exercisePages[e]!,
@@ -1068,7 +1097,7 @@ class NavigationHeader extends StatelessWidget {
     return Row(
       children: [
         IconButton(
-          icon: Icon(Icons.close),
+          icon: const Icon(Icons.close),
           onPressed: () {
             Navigator.of(context).pop();
           },
@@ -1084,7 +1113,7 @@ class NavigationHeader extends StatelessWidget {
           ),
         ),
         IconButton(
-          icon: Icon(Icons.menu),
+          icon: const Icon(Icons.menu),
           onPressed: () {
             showDialog(
               context: context,

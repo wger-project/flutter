@@ -46,17 +46,17 @@ class Event {
 
   Event(this._type, this._description);
 
-  get description {
+  String get description {
     return _description;
   }
 
-  get type {
+  EventType get type {
     return _type;
   }
 }
 
 class DashboardCalendarWidget extends StatefulWidget {
-  DashboardCalendarWidget();
+  const DashboardCalendarWidget();
 
   @override
   _DashboardCalendarWidgetState createState() => _DashboardCalendarWidgetState();
@@ -85,8 +85,9 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
 
   void loadEvents() async {
     // Process weight entries
-    BodyWeightProvider weightProvider = Provider.of<BodyWeightProvider>(context, listen: false);
-    for (var entry in weightProvider.items) {
+    final BodyWeightProvider weightProvider =
+        Provider.of<BodyWeightProvider>(context, listen: false);
+    for (final entry in weightProvider.items) {
       final date = DateFormatLists.format(entry.date);
 
       if (!_events.containsKey(date)) {
@@ -98,10 +99,10 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
     }
 
     // Process measurements
-    MeasurementProvider measurementProvider =
+    final MeasurementProvider measurementProvider =
         Provider.of<MeasurementProvider>(context, listen: false);
-    for (var category in measurementProvider.categories) {
-      for (var entry in category.entries) {
+    for (final category in measurementProvider.categories) {
+      for (final entry in category.entries) {
         final date = DateFormatLists.format(entry.date);
 
         if (!_events.containsKey(date)) {
@@ -114,18 +115,16 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
     }
 
     // Process workout sessions
-    WorkoutPlansProvider plans = Provider.of<WorkoutPlansProvider>(context, listen: false);
+    final WorkoutPlansProvider plans = Provider.of<WorkoutPlansProvider>(context, listen: false);
     await plans.fetchSessionData().then((entries) {
-      for (var entry in entries['results']) {
+      for (final entry in entries['results']) {
         final session = WorkoutSession.fromJson(entry);
         final date = DateFormatLists.format(session.date);
         if (!_events.containsKey(date)) {
           _events[date] = [];
         }
         var time = '';
-        if (session.timeStart != null && session.timeEnd != null) {
-          time = '(${timeToString(session.timeStart)} - ${timeToString(session.timeEnd)})';
-        }
+        time = '(${timeToString(session.timeStart)} - ${timeToString(session.timeEnd)})';
 
         // Add events to lists
         _events[date]!.add(Event(
@@ -136,10 +135,10 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
     });
 
     // Process nutritional plans
-    NutritionPlansProvider nutritionProvider =
+    final NutritionPlansProvider nutritionProvider =
         Provider.of<NutritionPlansProvider>(context, listen: false);
-    for (var plan in nutritionProvider.items) {
-      for (var entry in plan.logEntriesValues.entries) {
+    for (final plan in nutritionProvider.items) {
+      for (final entry in plan.logEntriesValues.entries) {
         final date = DateFormatLists.format(entry.key);
         if (!_events.containsKey(date)) {
           _events[date] = [];
@@ -218,14 +217,14 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
               AppLocalizations.of(context).calendar,
               style: Theme.of(context).textTheme.headline4,
             ),
-            leading: Icon(
+            leading: const Icon(
               Icons.calendar_today_outlined,
               color: Colors.black,
             ),
           ),
           TableCalendar<Event>(
             locale: Localizations.localeOf(context).languageCode,
-            firstDay: DateTime.now().subtract(Duration(days: 1000)),
+            firstDay: DateTime.now().subtract(const Duration(days: 1000)),
             lastDay: DateTime.now(),
             focusedDay: _focusedDay,
             selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
@@ -268,9 +267,8 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
                               case EventType.measurement:
                                 return AppLocalizations.of(context).measurement;
                             }
-                            return event.description.toString();
                           })()),
-                          subtitle: Text(event.description.toString()),
+                          subtitle: Text(event.description),
                           //onTap: () => print('$event tapped!'),
                         ))
                     .toList()

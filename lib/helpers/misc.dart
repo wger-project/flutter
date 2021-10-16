@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
@@ -29,9 +30,9 @@ String repText(
   WeightUnit weightUnitObj,
   String? rir,
 ) {
-  // TODO: how to (easily?) translate strings like the units or 'RiR'?
+  // TODO(x): how to (easily?) translate strings like the units or 'RiR'
 
-  List<String> out = [];
+  final List<String> out = [];
 
   if (reps != null) {
     out.add(reps.toString());
@@ -71,20 +72,30 @@ List<DateTime> daysInRange(DateTime first, DateTime last) {
 
 extension TimeOfDayExtension on TimeOfDay {
   bool isAfter(TimeOfDay other) {
-    if (toMinutes() > other.toMinutes())
+    if (toMinutes() > other.toMinutes()) {
       return true;
-    else
+    } else {
       return false;
+    }
   }
 
   bool isBefore(TimeOfDay other) {
-    if (toMinutes() < other.toMinutes())
+    if (toMinutes() < other.toMinutes()) {
       return true;
-    else
+    } else {
       return false;
+    }
   }
 
   int toMinutes() {
-    return ((hour * 60) + minute);
+    return (hour * 60) + minute;
   }
+}
+
+void launchURL(String url, BuildContext context) async {
+  await canLaunch(url)
+      ? await launch(url)
+      : ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Could not open $url.")),
+        );
 }

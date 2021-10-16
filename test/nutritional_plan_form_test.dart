@@ -74,7 +74,7 @@ void main() {
 
     expect(find.byType(TextFormField), findsOneWidget);
     expect(find.byType(ElevatedButton), findsOneWidget);
-    expect(find.byKey(Key(SUBMIT_BUTTON_KEY_NAME)), findsOneWidget);
+    expect(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)), findsOneWidget);
   });
 
   testWidgets('Test editing an existing nutritional plan', (WidgetTester tester) async {
@@ -82,18 +82,18 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(
-      find.text(('test plan 1')),
+      find.text('test plan 1'),
       findsOneWidget,
       reason: 'Description of existing nutritional plan is filled in',
     );
-    await tester.enterText(find.byKey(Key('field-description')), 'New description');
-    await tester.tap(find.byKey(Key(SUBMIT_BUTTON_KEY_NAME)));
+    await tester.enterText(find.byKey(const Key('field-description')), 'New description');
+    await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
     // Correct method was called
     verify(mockNutrition.editPlan(any));
     verifyNever(mockNutrition.addPlan(any));
 
-    // TODO: edit calls Navigator.pop(), since the form can only be reached from the
+    // TODO(x): edit calls Navigator.pop(), since the form can only be reached from the
     //       detail page. The test needs to add the detail page to the stack so that
     //       this can be checked.
     // https://stackoverflow.com/questions/50704647/how-to-test-navigation-via-navigator-in-flutter
@@ -111,9 +111,9 @@ void main() {
     await tester.pumpWidget(createHomeScreen(plan2));
     await tester.pumpAndSettle();
 
-    expect(find.text(('')), findsOneWidget, reason: 'New nutritional plan has no description');
-    await tester.enterText(find.byKey(Key('field-description')), 'New cool plan');
-    await tester.tap(find.byKey(Key(SUBMIT_BUTTON_KEY_NAME)));
+    expect(find.text(''), findsOneWidget, reason: 'New nutritional plan has no description');
+    await tester.enterText(find.byKey(const Key('field-description')), 'New cool plan');
+    await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
     // Correct method was called
     verifyNever(mockNutrition.editPlan(any));
@@ -121,6 +121,6 @@ void main() {
 
     // Detail page
     await tester.pumpAndSettle();
-    expect(find.text(('New cool plan')), findsOneWidget, reason: 'Nutritional plan detail page');
+    expect(find.text('New cool plan'), findsOneWidget, reason: 'Nutritional plan detail page');
   });
 }

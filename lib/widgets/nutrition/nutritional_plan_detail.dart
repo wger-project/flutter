@@ -32,7 +32,7 @@ import 'package:wger/widgets/nutrition/meal.dart';
 
 class NutritionalPlanDetailWidget extends StatelessWidget {
   final NutritionalPlan _nutritionalPlan;
-  NutritionalPlanDetailWidget(this._nutritionalPlan);
+  const NutritionalPlanDetailWidget(this._nutritionalPlan);
   static const double tablePadding = 7;
 
   @override
@@ -47,7 +47,7 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
     return SliverList(
       delegate: SliverChildListDelegate(
         [
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           ..._nutritionalPlan.meals.map((meal) => MealWidget(meal)).toList(),
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -66,7 +66,7 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
             ),
           ),
           Container(
-            padding: EdgeInsets.all(15),
+            padding: const EdgeInsets.all(15),
             height: 220,
             child: NutritionalPlanPieChartWidget(nutritionalValues),
           ),
@@ -74,10 +74,10 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Table(
               defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-              border: TableBorder(
+              border: const TableBorder(
                 horizontalInside: BorderSide(width: 1, color: wgerTextMuted),
               ),
-              columnWidths: {0: FractionColumnWidth(0.4)},
+              columnWidths: const {0: FractionColumnWidth(0.4)},
               children: [
                 TableRow(
                   children: [
@@ -85,20 +85,20 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: tablePadding),
                       child: Text(
                         AppLocalizations.of(context).macronutrients,
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
                     Text(
                       AppLocalizations.of(context).total,
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     Text(
                       AppLocalizations.of(context).percentEnergy,
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     Text(
                       AppLocalizations.of(context).gPerBodyKg,
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
@@ -112,8 +112,8 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                       nutritionalValues.energy.toStringAsFixed(0) +
                           AppLocalizations.of(context).kcal,
                     ),
-                    Text(''),
-                    Text(''),
+                    const Text(''),
+                    const Text(''),
                   ],
                 ),
                 TableRow(
@@ -148,8 +148,8 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                     ),
                     Text(nutritionalValues.carbohydratesSugar.toStringAsFixed(0) +
                         AppLocalizations.of(context).g),
-                    Text(''),
-                    Text(''),
+                    const Text(''),
+                    const Text(''),
                   ],
                 ),
                 TableRow(
@@ -171,8 +171,8 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                     ),
                     Text(nutritionalValues.fatSaturated.toStringAsFixed(0) +
                         AppLocalizations.of(context).g),
-                    Text(''),
-                    Text(''),
+                    const Text(''),
+                    const Text(''),
                   ],
                 ),
                 TableRow(
@@ -183,8 +183,8 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                     ),
                     Text(nutritionalValues.fibres.toStringAsFixed(0) +
                         AppLocalizations.of(context).g),
-                    Text(''),
-                    Text(''),
+                    const Text(''),
+                    const Text(''),
                   ],
                 ),
                 TableRow(
@@ -195,25 +195,25 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                     ),
                     Text(nutritionalValues.sodium.toStringAsFixed(0) +
                         AppLocalizations.of(context).g),
-                    Text(''),
-                    Text(''),
+                    const Text(''),
+                    const Text(''),
                   ],
                 ),
               ],
             ),
           ),
-          Padding(padding: const EdgeInsets.all(8.0)),
+          const Padding(padding: EdgeInsets.all(8.0)),
           Text(
             AppLocalizations.of(context).nutritionalDiary,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.headline6,
           ),
           Container(
-            padding: EdgeInsets.all(15),
+            padding: const EdgeInsets.all(15),
             height: 220,
             child: NutritionalDiaryChartWidget(nutritionalPlan: _nutritionalPlan),
           ),
-          Container(
+          SizedBox(
             height: 200,
             child: ListView(
               scrollDirection: Axis.horizontal,
@@ -223,19 +223,15 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      TextButton(onPressed: () => null, child: Text('')),
+                      TextButton(onPressed: () {}, child: const Text('')),
                       Text(
-                          '${AppLocalizations.of(context).energy} (${AppLocalizations.of(context).kcal})'),
+                          '${AppLocalizations.of(context).energyShort} (${AppLocalizations.of(context).kcal})'),
                       Text(
-                          '${AppLocalizations.of(context).protein} (${AppLocalizations.of(context).g})'),
+                          '${AppLocalizations.of(context).proteinShort} (${AppLocalizations.of(context).g})'),
                       Text(
-                          '${AppLocalizations.of(context).carbohydrates} (${AppLocalizations.of(context).g})'),
+                          '${AppLocalizations.of(context).carbohydratesShort} (${AppLocalizations.of(context).g})'),
                       Text(
-                          '${AppLocalizations.of(context).sugars} (${AppLocalizations.of(context).g})'),
-                      Text(
-                          '${AppLocalizations.of(context).fat} (${AppLocalizations.of(context).g})'),
-                      Text(
-                          '${AppLocalizations.of(context).saturatedFat} (${AppLocalizations.of(context).g})'),
+                          '${AppLocalizations.of(context).fatShort} (${AppLocalizations.of(context).g})'),
                     ],
                   ),
                 ),
@@ -257,7 +253,7 @@ class NutritionDiaryEntry extends StatelessWidget {
   final NutritionalValues values;
   final NutritionalPlan plan;
 
-  NutritionDiaryEntry(
+  const NutritionDiaryEntry(
     this.date,
     this.values,
     this.plan,
@@ -281,9 +277,7 @@ class NutritionDiaryEntry extends StatelessWidget {
           Text(values.energy.toStringAsFixed(0)),
           Text(values.protein.toStringAsFixed(0)),
           Text(values.carbohydrates.toStringAsFixed(0)),
-          Text(values.carbohydratesSugar.toStringAsFixed(0)),
           Text(values.fat.toStringAsFixed(0)),
-          Text(values.fatSaturated.toStringAsFixed(0)),
         ],
       ),
     );

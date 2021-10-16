@@ -1,7 +1,7 @@
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/exceptions/no_such_entry_exception.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
-import 'package:equatable/equatable.dart';
 
 part 'measurement_category.g.dart';
 
@@ -19,7 +19,7 @@ class MeasurementCategory extends Equatable {
   @JsonKey(defaultValue: [], toJson: _nullValue)
   final List<MeasurementEntry> entries;
 
-  MeasurementCategory({
+  const MeasurementCategory({
     required this.id,
     required this.name,
     required this.unit,
@@ -55,5 +55,6 @@ class MeasurementCategory extends Equatable {
   List<Object?> get props => [id, name, unit, entries];
 
   // Helper function which makes the entries list of the toJson output null, as it isn't needed
+  //ignore: always_declare_return_types
   static _nullValue(_) => null;
 }

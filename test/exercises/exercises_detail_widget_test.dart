@@ -23,7 +23,7 @@ import 'package:wger/widgets/exercises/exercises.dart';
 
 import '../../test_data/exercises.dart';
 
-main() {
+void main() {
   Widget createHomeScreen({locale = 'en'}) {
     return MaterialApp(
       locale: Locale(locale),

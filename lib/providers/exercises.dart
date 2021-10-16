@@ -207,7 +207,7 @@ class ExercisesProvider with ChangeNotifier {
         _categories.add(ExerciseCategory.fromJson(category));
       }
     } catch (error) {
-      throw (error);
+      rethrow;
     }
   }
 
@@ -229,7 +229,7 @@ class ExercisesProvider with ChangeNotifier {
         _muscles.add(Muscle.fromJson(muscle));
       }
     } catch (error) {
-      throw (error);
+      rethrow;
     }
   }
 
@@ -240,7 +240,7 @@ class ExercisesProvider with ChangeNotifier {
         _equipment.add(Equipment.fromJson(equipment));
       }
     } catch (error) {
-      throw (error);
+      rethrow;
     }
   }
 
@@ -479,9 +479,7 @@ class ExercisesProvider with ChangeNotifier {
       notifyListeners();
     } on MissingRequiredKeysException catch (error) {
       log(error.missingKeys.toString());
-      throw (error);
-    } catch (e) {
-      throw (e);
+      rethrow;
     }
   }
 

@@ -39,7 +39,7 @@ String? toDate(DateTime? dateTime) {
   if (dateTime == null) {
     return null;
   }
-  return DateFormat('yyyy-MM-dd').format(dateTime).toString();
+  return DateFormat('yyyy-MM-dd').format(dateTime);
 }
 
 /*
@@ -47,7 +47,7 @@ String? toDate(DateTime? dateTime) {
  * Needed e.g. when the wger api only sends a time but no date information.
  */
 TimeOfDay stringToTime(String? time) {
-  String out = time ?? '00:00';
+  final String out = time ?? '00:00';
   return TimeOfDay.fromDateTime(
     DateTime.parse('2020-01-01 $out'),
   );
@@ -60,5 +60,5 @@ String? timeToString(TimeOfDay? time) {
   if (time == null) {
     return null;
   }
-  return DefaultMaterialLocalizations().formatTimeOfDay(time, alwaysUse24HourFormat: true);
+  return const DefaultMaterialLocalizations().formatTimeOfDay(time, alwaysUse24HourFormat: true);
 }

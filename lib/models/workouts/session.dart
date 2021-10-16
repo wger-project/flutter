@@ -59,11 +59,16 @@ class WorkoutSession {
     required this.timeEnd,
   });
 
+  WorkoutSession.now() {
+    timeStart = TimeOfDay.now();
+    timeEnd = TimeOfDay.now();
+  }
+
   // Boilerplate
   factory WorkoutSession.fromJson(Map<String, dynamic> json) => _$WorkoutSessionFromJson(json);
   Map<String, dynamic> toJson() => _$WorkoutSessionToJson(this);
 
-  get impressionAsString {
+  String? get impressionAsString {
     return IMPRESSION_MAP[impression];
   }
 }

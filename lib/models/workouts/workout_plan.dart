@@ -16,8 +16,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'dart:collection';
-
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day.dart';
@@ -87,16 +85,16 @@ class WorkoutPlan {
 
   /// Massages the log data to more easily present on the log overview
   ///
-  LinkedHashMap<DateTime, Map<String, dynamic>> get logData {
-    var out = LinkedHashMap<DateTime, Map<String, dynamic>>();
-    for (var log in logs) {
+  Map<DateTime, Map<String, dynamic>> get logData {
+    final out = <DateTime, Map<String, dynamic>>{};
+    for (final log in logs) {
       final exercise = log.exerciseObj;
       final date = log.date;
 
       if (!out.containsKey(date)) {
         out[date] = {
           'session': null,
-          'exercises': LinkedHashMap<Exercise, List<Log>>(),
+          'exercises': <Exercise, List<Log>>{},
         };
       }
 

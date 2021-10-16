@@ -18,8 +18,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:wger/models/body_weight/weight_entry.dart';
 import 'package:wger/exceptions/http_exception.dart';
+import 'package:wger/models/body_weight/weight_entry.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/base_provider.dart';
 
@@ -28,7 +28,7 @@ class BodyWeightProvider extends WgerBaseProvider with ChangeNotifier {
 
   List<WeightEntry> _entries = [];
   BodyWeightProvider(AuthProvider auth, List<WeightEntry> entries, [http.Client? client])
-      : this._entries = entries,
+      : _entries = entries,
         super(auth, client);
 
   List<WeightEntry> get items {
@@ -36,13 +36,13 @@ class BodyWeightProvider extends WgerBaseProvider with ChangeNotifier {
   }
 
   /// Clears all lists
-  clear() {
+  void clear() {
     _entries = [];
   }
 
   /// Returns the latest (newest) weight entry or null if there are no entries
   WeightEntry? getLastEntry() {
-    return this._entries.length > 0 ? this._entries.last : null;
+    return _entries.isNotEmpty ? _entries.last : null;
   }
 
   WeightEntry findById(int id) {
@@ -73,7 +73,7 @@ class BodyWeightProvider extends WgerBaseProvider with ChangeNotifier {
   Future<WeightEntry> addEntry(WeightEntry entry) async {
     // Create entry and return it
     final data = await post(entry.toJson(), makeUrl(bodyWeightUrl));
-    WeightEntry weightEntry = WeightEntry.fromJson(data);
+    final WeightEntry weightEntry = WeightEntry.fromJson(data);
     _entries.add(weightEntry);
     _entries.sort((a, b) => b.date.compareTo(a.date));
     notifyListeners();
@@ -89,7 +89,7 @@ class BodyWeightProvider extends WgerBaseProvider with ChangeNotifier {
   Future<void> deleteEntry(int id) async {
     // Send the request and remove the entry from the list...
     final existingEntryIndex = _entries.indexWhere((element) => element.id == id);
-    var existingWeightEntry = _entries[existingEntryIndex];
+    final existingWeightEntry = _entries[existingEntryIndex];
     _entries.removeAt(existingEntryIndex);
     notifyListeners();
 
