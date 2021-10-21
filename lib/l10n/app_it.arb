@@ -93,11 +93,11 @@
   },
   "ingredient": "Ingrediente",
   "@ingredient": {},
-  "timeEnd": "Fine del tempo",
+  "timeEnd": "Ora di fine",
   "@timeEnd": {
     "description": "The end time of a workout"
   },
-  "timeStart": "Inizia cronometro",
+  "timeStart": "Ora di inizio",
   "@timeStart": {
     "description": "The starting time of a workout"
   },
@@ -484,5 +484,31 @@
   "gPerBodyKg": "g per kg di corpo",
   "@gPerBodyKg": {
     "description": "Label used for total sums of e.g. calories or similar in grams per Kg of body weight"
-  }
+  },
+  "timeStartAhead": "L'ora di inizio non può essere più avanti dell'ora di fine",
+  "@timeStartAhead": {},
+  "value": "Valore",
+  "@value": {
+    "description": "The value of a measurement entry"
+  },
+  "measurements": "Misure",
+  "@measurements": {
+    "description": "Categories for the measurements such as biceps size, body fat, etc."
+  },
+  "measurementCategoriesHelpText": "Categoria di misura, come «bicipiti» o «grasso corporeo»",
+  "@measurementCategoriesHelpText": {},
+  "measurementEntriesHelpText": "L'unità usata per misurare la categoria come «cm» o «%»",
+  "@measurementEntriesHelpText": {},
+  "energyShort": "E",
+  "@energyShort": {
+    "description": "The first letter or short name of the word 'Energy', used in overviews"
+  },
+  "macronutrients": "Macronutrienti",
+  "@macronutrients": {},
+  "planned": "Pianificato",
+  "@planned": {
+    "description": "Header for the column of 'planned' nutritional values, i.e. what should be eaten"
+  },
+  "measurement": "Misura",
+  "@measurement": {}
 }
