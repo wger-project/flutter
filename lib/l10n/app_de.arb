@@ -297,7 +297,7 @@
   },
   "selectExercises": "Wenn du einen Supersatz machen willst, kannst du nach mehreren Übungen suchen, sie werden dann gruppiert",
   "@selectExercises": {},
-  "sameRepetitions": "Wenn du für alle Sätze die gleichen Wiederholungen und das gleiche Gewicht verwendest, kannst du nur eine Zeile ausfüllen. Gebe z. B. für 4 Sätze einfach 10 für die Wiederholungen ein, daraus wird automatisch \"4 x 10\".",
+  "sameRepetitions": "Wenn du für alle Sätze die gleichen Wiederholungen und das gleiche Gewicht verwendest, kannst du nur eine Zeile ausfüllen. Gebe z. B. für 4 Sätze einfach 10 für die Wiederholungen ein, daraus wird automatisch „4 × 10„.",
   "@sameRepetitions": {},
   "setNr": "Satz {nr}",
   "@setNr": {
@@ -307,7 +307,7 @@
       "nr": {}
     }
   },
-  "dayDescriptionHelp": "Eine Beschreibung was an diesem Tag gemacht wird (z. B. \"Zugtag\") oder welche Körperteile trainiert werden (z. B. \"Brust und Schultern\")",
+  "dayDescriptionHelp": "Eine Beschreibung was an diesem Tag gemacht wird (z. B. „Zugtag“) oder welche Körperteile trainiert werden (z. B. „Brust und Schultern“)",
   "@dayDescriptionHelp": {},
   "set": "Satz",
   "@set": {
@@ -494,9 +494,9 @@
   "@value": {
     "description": "The value of a measurement entry"
   },
-  "measurementCategoriesHelpText": "Messkategorie, z. B. \"Bizeps\" oder \"Körperfett\"",
+  "measurementCategoriesHelpText": "Messkategorie, z. B. „Bizeps“ oder „Körperfett“",
   "@measurementCategoriesHelpText": {},
-  "measurementEntriesHelpText": "Die Einheit, die verwendet wird, um die Kategorie zu messen, wie z.B. 'cm' oder '%'",
+  "measurementEntriesHelpText": "Die Einheit, die verwendet wird, um die Kategorie zu messen, wie z.B. „cm“ oder „%“",
   "@measurementEntriesHelpText": {},
   "fatShort": "F",
   "@fatShort": {
