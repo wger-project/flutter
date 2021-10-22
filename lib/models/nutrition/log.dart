@@ -31,6 +31,9 @@ class Log {
   @JsonKey(required: true)
   int? id;
 
+  @JsonKey(required: false, name: 'meal')
+  late int? mealId;
+
   @JsonKey(required: true, name: 'plan')
   int planId;
 
@@ -56,6 +59,7 @@ class Log {
 
   Log({
     this.id,
+    required this.mealId,
     required this.ingredientId,
     required this.weightUnitId,
     required this.amount,
@@ -70,6 +74,7 @@ class Log {
     weightUnitId = mealItem.weightUnitId;
     datetime = dateTime ?? DateTime.now();
     amount = mealItem.amount;
+    mealId = mealItem.id;
   }
 
   // Boilerplate
