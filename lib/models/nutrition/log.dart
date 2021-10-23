@@ -32,7 +32,7 @@ class Log {
   int? id;
 
   @JsonKey(required: false, name: 'meal')
-  late int? mealId;
+  int mealId;
 
   @JsonKey(required: true, name: 'plan')
   int planId;
@@ -68,13 +68,12 @@ class Log {
     this.comment,
   });
 
-  Log.fromMealItem(MealItem mealItem, this.planId, [DateTime? dateTime]) {
+  Log.fromMealItem(MealItem mealItem, this.planId, this.mealId, [DateTime? dateTime]) {
     ingredientId = mealItem.ingredientId;
     ingredientObj = mealItem.ingredientObj;
     weightUnitId = mealItem.weightUnitId;
     datetime = dateTime ?? DateTime.now();
     amount = mealItem.amount;
-    mealId = mealItem.id;
   }
 
   // Boilerplate
