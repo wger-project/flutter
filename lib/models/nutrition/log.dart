@@ -31,6 +31,9 @@ class Log {
   @JsonKey(required: true)
   int? id;
 
+  @JsonKey(required: false, name: 'meal')
+  int mealId;
+
   @JsonKey(required: true, name: 'plan')
   int planId;
 
@@ -56,6 +59,7 @@ class Log {
 
   Log({
     this.id,
+    required this.mealId,
     required this.ingredientId,
     required this.weightUnitId,
     required this.amount,
@@ -64,7 +68,7 @@ class Log {
     this.comment,
   });
 
-  Log.fromMealItem(MealItem mealItem, this.planId, [DateTime? dateTime]) {
+  Log.fromMealItem(MealItem mealItem, this.planId, this.mealId, [DateTime? dateTime]) {
     ingredientId = mealItem.ingredientId;
     ingredientObj = mealItem.ingredientObj;
     weightUnitId = mealItem.weightUnitId;
