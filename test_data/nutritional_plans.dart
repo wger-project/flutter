@@ -106,9 +106,9 @@ NutritionalPlan getNutritionalPlan() {
   plan.meals = [meal1, meal2];
 
   // Add logs
-  plan.logs.add(Log.fromMealItem(mealItem1, 1,1, DateTime(2021, 6, 1)));
-  plan.logs.add(Log.fromMealItem(mealItem2, 1,1, DateTime(2021, 6, 1)));
-  plan.logs.add(Log.fromMealItem(mealItem3, 1,1, DateTime(2021, 6, 10)));
+  plan.logs.add(Log.fromMealItem(mealItem1, 1, 1, DateTime(2021, 6, 1)));
+  plan.logs.add(Log.fromMealItem(mealItem2, 1, 1, DateTime(2021, 6, 1)));
+  plan.logs.add(Log.fromMealItem(mealItem3, 1, 1, DateTime(2021, 6, 10)));
 
   return plan;
 }
