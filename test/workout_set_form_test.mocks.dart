@@ -115,6 +115,8 @@ class MockExercisesProvider extends _i1.Mock implements _i5.ExercisesProvider {
       (super.noSuchMethod(Invocation.method(#deleteRequest, [url, id]),
           returnValue: Future<_i3.Response>.value(_FakeResponse_4())) as _i6.Future<_i3.Response>);
   @override
+  String toString() => super.toString();
+  @override
   void addListener(_i7.VoidCallback? listener) => super
       .noSuchMethod(Invocation.method(#addListener, [listener]), returnValueForMissingStub: null);
   @override
