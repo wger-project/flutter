@@ -480,6 +480,10 @@
   "@selectIngredient": {
     "description": "Error message when the user hasn't selected an ingredient from the autocompleter"
   },
+  "recentlyUsedIngredients": "Recently used ingredients. Please select one of ingredients.",
+  "@recentlyUsedIngredients": {
+    "description": "A message when a user adds a new ingredient to a meal."
+  },
   "selectImage": "Please select an image",
   "@selectImage": {
     "description": "Label and error message when the user hasn't selected an image to save"

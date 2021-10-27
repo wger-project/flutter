@@ -44,11 +44,23 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
         ? _nutritionalPlan.gPerBodyKg(lastWeightEntry.weight, nutritionalValues)
         : null;
 
+    final List<IngredientMeal> listOfIngredientMeal = [];
+    for (final meal in _nutritionalPlan.meals) {
+      for (final mealItems in meal.mealItems) {
+        final ingredientInList = listOfIngredientMeal.where(
+            (element) => element.ingredientCode == mealItems.ingredientId);
+        if (ingredientInList.isEmpty) {
+          listOfIngredientMeal.add(IngredientMeal(mealItems.ingredientId,
+              mealItems.amount, mealItems.ingredientObj.name));
+        }
+      }
+    }
+
     return SliverList(
       delegate: SliverChildListDelegate(
         [
           SizedBox(height: 10),
-          ..._nutritionalPlan.meals.map((meal) => MealWidget(meal)).toList(),
+          ..._nutritionalPlan.meals.map((meal) => MealWidget(meal, listOfIngredientMeal)).toList(),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: ElevatedButton(

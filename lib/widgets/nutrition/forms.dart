@@ -29,6 +29,7 @@ import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
+import 'package:wger/widgets/nutrition/meal.dart';
 
 class MealForm extends StatelessWidget {
   late Meal _meal;
@@ -115,8 +116,9 @@ class MealForm extends StatelessWidget {
 class MealItemForm extends StatelessWidget {
   final Meal _meal;
   late MealItem _mealItem;
+  final List<IngredientMeal> _listOfIngredientMeal;
 
-  MealItemForm(this._meal, [mealItem]) {
+  MealItemForm(this._meal, this._listOfIngredientMeal, [mealItem]) {
     _mealItem = mealItem ?? MealItem.empty();
     _mealItem.mealId = _meal.id!;
   }
@@ -127,6 +129,7 @@ class MealItemForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+  final String unit = AppLocalizations.of(context).g;
     return Container(
       margin: EdgeInsets.all(20),
       child: Form(
@@ -200,6 +203,51 @@ class MealItemForm extends StatelessWidget {
                 Navigator.of(context).pop();
               },
             ),
+            if (_listOfIngredientMeal.isNotEmpty) SizedBox(height: 10.0),
+            Container(
+              child: Text(AppLocalizations.of(context).recentlyUsedIngredients),
+              padding: EdgeInsets.all(10.0)),
+              Expanded(
+                child: Scrollbar(
+                  isAlwaysShown: true,
+                  child: ListView.builder(
+                    itemCount: _listOfIngredientMeal.length,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      return Column(
+                        children: [
+                          SizedBox(
+                            width: double.infinity,
+                            child: Row(
+                              children: [
+                                Flexible(
+                                    child: TextButton(
+                                  child: Text(
+                                    '${_listOfIngredientMeal[index].ingredientQuantity.toStringAsFixed(0)}$unit ${_listOfIngredientMeal[index].ingredientName}',
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  onPressed: () {
+                                    _ingredientController.text = 
+                                        _listOfIngredientMeal[index].ingredientName;
+                                    _amountController.text =
+                                        _listOfIngredientMeal[index]
+                                            .ingredientQuantity
+                                            .toStringAsFixed(0);
+                                    _mealItem.ingredientId =
+                                        _listOfIngredientMeal[index].ingredientCode;
+                                    _mealItem.amount = _listOfIngredientMeal[index]
+                                        .ingredientQuantity;
+                                  },
+                                )),
+                              ],
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              )
           ],
         ),
       ),
