@@ -515,5 +515,17 @@
   "appUpdateContent": "Diese Version der Anwendung ist nicht mit dem Server kompatibel, bitte aktualisieren Sie Ihre Anwendung.",
   "@appUpdateContent": {},
   "appUpdateTitle": "Aktualisierung erforderlich",
-  "@appUpdateTitle": {}
+  "@appUpdateTitle": {},
+  "measurements": "Messungen",
+  "@measurements": {
+    "description": "Categories for the measurements such as biceps size, body fat, etc."
+  },
+  "dataCopied": "Daten in neuen Eintrag kopiert",
+  "@dataCopied": {
+    "description": "Snackbar message to show on copying data to a new log entry"
+  },
+  "carbohydratesShort": "K",
+  "@carbohydratesShort": {
+    "description": "The first letter or short name of the word 'Carbohydrates', used in overviews"
+  }
 }
