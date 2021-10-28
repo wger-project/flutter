@@ -210,7 +210,7 @@ class MealItemForm extends StatelessWidget {
 class PlanForm extends StatelessWidget {
   final _form = GlobalKey<FormState>();
   final _descriptionController = TextEditingController();
-  late final NutritionalPlan _plan;
+  late NutritionalPlan _plan;
 
   PlanForm([NutritionalPlan? plan]) {
     _plan = plan ?? NutritionalPlan.empty();
