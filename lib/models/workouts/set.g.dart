@@ -11,7 +11,7 @@ Set _$SetFromJson(Map<String, dynamic> json) {
   return Set(
     day: json['exerciseday'] as int,
     sets: json['sets'] as int,
-    order: json['order'] as int?,
+    order: json['order'] as int,
   )
     ..id = json['id'] as int?
     ..comment = json['comment'] as String? ?? '';

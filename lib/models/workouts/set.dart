@@ -36,7 +36,7 @@ class Set {
   late int day;
 
   @JsonKey(required: true)
-  int? order;
+  late int order;
 
   @JsonKey(required: true, defaultValue: '')
   late String comment;
@@ -58,7 +58,7 @@ class Set {
   Set({
     required this.day,
     required this.sets,
-    this.order,
+    required this.order,
   });
 
   Set.empty();

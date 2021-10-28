@@ -97,6 +97,8 @@ class MockMeasurementProvider extends _i1.Mock implements _i4.MeasurementProvide
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future<void>.value()) as _i5.Future<void>);
   @override
+  String toString() => super.toString();
+  @override
   void addListener(_i7.VoidCallback? listener) => super
       .noSuchMethod(Invocation.method(#addListener, [listener]), returnValueForMissingStub: null);
   @override

@@ -57,10 +57,10 @@ class WgerAppBar extends StatelessWidget with PreferredSizeWidget {
                     content: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Divider(),
+                        const Divider(),
                         ListTile(
                           //dense: true,
-                          leading: Icon(Icons.exit_to_app),
+                          leading: const Icon(Icons.exit_to_app),
                           title: Text(AppLocalizations.of(context).logout),
                           onTap: () {
                             Provider.of<AuthProvider>(context, listen: false).logout();
@@ -84,5 +84,5 @@ class WgerAppBar extends StatelessWidget with PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }

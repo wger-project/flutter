@@ -20,7 +20,11 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 import 'package:wger/exceptions/http_exception.dart';
+import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/workouts/log.dart';
+import 'package:wger/providers/workout_plans.dart';
 
 void showErrorDialog(dynamic exception, BuildContext context) {
   log('showErrorDialog: ');
@@ -52,7 +56,7 @@ void showHttpExceptionErrorDialog(WgerHttpException exception, BuildContext cont
   final List<Widget> errorList = [];
   for (final key in exception.errors!.keys) {
     // Error headers
-    errorList.add(Text(key, style: TextStyle(fontWeight: FontWeight.bold)));
+    errorList.add(Text(key, style: const TextStyle(fontWeight: FontWeight.bold)));
 
     // Error messages
     if (exception.errors![key] is String) {
@@ -62,7 +66,7 @@ void showHttpExceptionErrorDialog(WgerHttpException exception, BuildContext cont
         errorList.add(Text(value));
       }
     }
-    errorList.add(SizedBox(height: 8));
+    errorList.add(const SizedBox(height: 8));
   }
 
   showDialog(
@@ -86,5 +90,48 @@ void showHttpExceptionErrorDialog(WgerHttpException exception, BuildContext cont
 
   // This call serves no purpose The dialog above doesn't seem to show
   // unless this dummy call is present
-  showDialog(context: context, builder: (context) => Container());
+  // showDialog(context: context, builder: (context) => Container());
+}
+
+dynamic showDeleteDialog(BuildContext context, String confirmDeleteName, Log log, Exercise exercise,
+    Map<Exercise, List<Log>> _exerciseData) async {
+  final res = await showDialog(
+      context: context,
+      builder: (BuildContext contextDialog) {
+        return AlertDialog(
+          content: Text(
+            AppLocalizations.of(context).confirmDelete(confirmDeleteName),
+          ),
+          actions: [
+            TextButton(
+              child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+              onPressed: () => Navigator.of(contextDialog).pop(),
+            ),
+            TextButton(
+              child: Text(
+                AppLocalizations.of(context).delete,
+                style: TextStyle(color: Theme.of(context).errorColor),
+              ),
+              onPressed: () {
+                _exerciseData[exercise]!.removeWhere((el) => el.id == log.id);
+                Provider.of<WorkoutPlansProvider>(context, listen: false).deleteLog(
+                  log,
+                );
+
+                Navigator.of(contextDialog).pop();
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      AppLocalizations.of(context).successfullyDeleted,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
+        );
+      });
+  return res;
 }

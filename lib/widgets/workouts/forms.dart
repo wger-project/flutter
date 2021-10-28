@@ -35,7 +35,7 @@ import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/exercises/images.dart';
 
 class WorkoutForm extends StatelessWidget {
-  WorkoutPlan _plan;
+  final WorkoutPlan _plan;
   final _form = GlobalKey<FormState>();
 
   WorkoutForm(this._plan);
@@ -55,7 +55,7 @@ class WorkoutForm extends StatelessWidget {
       child: Column(
         children: [
           TextFormField(
-            key: Key('field-name'),
+            key: const Key('field-name'),
             decoration: InputDecoration(labelText: AppLocalizations.of(context).name),
             controller: workoutNameController,
             validator: (value) {
@@ -72,7 +72,7 @@ class WorkoutForm extends StatelessWidget {
             },
           ),
           TextFormField(
-            key: Key('field-description'),
+            key: const Key('field-description'),
             decoration: InputDecoration(labelText: AppLocalizations.of(context).description),
             minLines: 3,
             maxLines: 10,
@@ -91,7 +91,7 @@ class WorkoutForm extends StatelessWidget {
             },
           ),
           ElevatedButton(
-            key: Key(SUBMIT_BUTTON_KEY_NAME),
+            key: const Key(SUBMIT_BUTTON_KEY_NAME),
             child: Text(AppLocalizations.of(context).save),
             onPressed: () async {
               // Validate and save
@@ -106,11 +106,12 @@ class WorkoutForm extends StatelessWidget {
                 await Provider.of<WorkoutPlansProvider>(context, listen: false).editWorkout(_plan);
                 Navigator.of(context).pop();
               } else {
-                _plan = await Provider.of<WorkoutPlansProvider>(context, listen: false)
-                    .addWorkout(_plan);
+                final WorkoutPlan newPlan =
+                    await Provider.of<WorkoutPlansProvider>(context, listen: false)
+                        .addWorkout(_plan);
                 Navigator.of(context).pushReplacementNamed(
                   WorkoutPlanScreen.routeName,
-                  arguments: _plan,
+                  arguments: newPlan,
                 );
               }
             },
@@ -157,7 +158,7 @@ class _DayCheckboxState extends State<DayCheckbox> {
 class DayFormWidget extends StatefulWidget {
   final WorkoutPlan workout;
   final dayController = TextEditingController();
-  Day _day = Day();
+  late final Day _day;
 
   DayFormWidget(this.workout, [Day? day]) {
     _day = day ?? Day();
@@ -181,7 +182,7 @@ class _DayFormWidgetState extends State<DayFormWidget> {
       child: ListView(
         children: [
           TextFormField(
-            key: Key('field-description'),
+            key: const Key('field-description'),
             decoration: InputDecoration(
               labelText: AppLocalizations.of(context).description,
               helperText: AppLocalizations.of(context).dayDescriptionHelp,
@@ -204,10 +205,10 @@ class _DayFormWidgetState extends State<DayFormWidget> {
               return null;
             },
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           ...Day.weekdays.keys.map((dayNr) => DayCheckbox(dayNr, widget._day)).toList(),
           ElevatedButton(
-            key: Key(SUBMIT_BUTTON_KEY_NAME),
+            key: const Key(SUBMIT_BUTTON_KEY_NAME),
             child: Text(AppLocalizations.of(context).save),
             onPressed: () async {
               if (!_form.currentState!.validate()) {
@@ -233,11 +234,11 @@ class _DayFormWidgetState extends State<DayFormWidget> {
                 await showDialog(
                   context: context,
                   builder: (ctx) => AlertDialog(
-                    title: Text('An error occurred!'),
-                    content: Text('Something went wrong.'),
+                    title: const Text('An error occurred!'),
+                    content: const Text('Something went wrong.'),
                     actions: [
                       TextButton(
-                        child: Text('Okay'),
+                        child: const Text('Okay'),
                         onPressed: () {
                           Navigator.of(ctx).pop();
                         },
@@ -256,7 +257,7 @@ class _DayFormWidgetState extends State<DayFormWidget> {
 
 class SetFormWidget extends StatefulWidget {
   final Day _day;
-  late Set _set;
+  late final Set _set;
 
   SetFormWidget(this._day, [Set? set]) {
     _set = set ?? Set.withData(day: _day.id, order: _day.sets.length, sets: 4);
@@ -316,7 +317,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
       child: ListView(
         children: [
           Container(
-            padding: EdgeInsets.only(top: 10),
+            padding: const EdgeInsets.only(top: 10),
             color: wgerPrimaryColorLight,
             child: Column(
               //crossAxisAlignment: CrossAxisAlignment.start,
@@ -355,14 +356,14 @@ class _SetFormWidgetState extends State<SetFormWidget> {
               children: [
                 Card(
                   child: TypeAheadFormField(
-                    key: Key('field-typeahead'),
+                    key: const Key('field-typeahead'),
                     textFieldConfiguration: TextFieldConfiguration(
                       controller: _exercisesController,
                       decoration: InputDecoration(
                         labelText: AppLocalizations.of(context).searchExercise,
-                        prefixIcon: Icon(Icons.search),
+                        prefixIcon: const Icon(Icons.search),
                         suffixIcon: IconButton(
-                          icon: Icon(Icons.help),
+                          icon: const Icon(Icons.help),
                           onPressed: () {
                             showDialog(
                               context: context,
@@ -371,7 +372,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Text(AppLocalizations.of(context).selectExercises),
-                                    SizedBox(height: 10),
+                                    const SizedBox(height: 10),
                                     Text(AppLocalizations.of(context).sameRepetitions)
                                   ],
                                 ),
@@ -390,9 +391,8 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                         errorMaxLines: 2,
                       ),
                     ),
-                    suggestionsCallback: (pattern) async {
-                      return await Provider.of<ExercisesProvider>(context, listen: false)
-                          .searchExercise(
+                    suggestionsCallback: (pattern) {
+                      return Provider.of<ExercisesProvider>(context, listen: false).searchExercise(
                         pattern,
                         Localizations.localeOf(context).languageCode,
                       );
@@ -439,7 +439,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                     },
                   ),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 TextFormField(
                   decoration: InputDecoration(
                     labelText: AppLocalizations.of(context).comment,
@@ -458,7 +458,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                     widget._set.comment = newValue!;
                   },
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 ...widget._set.exercisesObj.asMap().entries.map((entry) {
                   final index = entry.key;
                   final exercise = entry.value;
@@ -476,21 +476,21 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                         removeExercise,
                       ),
                       if (showSupersetInfo)
-                        Padding(
-                          padding: const EdgeInsets.all(3.0),
+                        const Padding(
+                          padding: EdgeInsets.all(3.0),
                           child: Text('+'),
                         ),
                       if (showSupersetInfo) Text(AppLocalizations.of(context).supersetWith),
                       if (showSupersetInfo)
-                        Padding(
-                          padding: const EdgeInsets.all(3.0),
+                        const Padding(
+                          padding: EdgeInsets.all(3.0),
                           child: Text('+'),
                         ),
                     ],
                   );
                 }).toList(),
                 ElevatedButton(
-                  key: Key(SUBMIT_BUTTON_KEY_NAME),
+                  key: const Key(SUBMIT_BUTTON_KEY_NAME),
                   child: Text(AppLocalizations.of(context).save),
                   onPressed: () async {
                     final isValid = _formKey.currentState!.validate();
@@ -537,7 +537,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
 
 class ExerciseSetting extends StatelessWidget {
   final Exercise _exercise;
-  int _numberOfSets = 4;
+  late final int _numberOfSets;
   final bool _detailed;
   final Function removeExercise;
   final List<Setting> _settings;
@@ -573,7 +573,7 @@ class ExerciseSetting extends StatelessWidget {
                     flex: 2,
                     child: RepsInputWidget(setting, _detailed),
                   ),
-                  SizedBox(width: 4),
+                  const SizedBox(width: 4),
                   Flexible(
                     flex: 3,
                     child: RepetitionUnitInputWidget(setting),
@@ -587,7 +587,7 @@ class ExerciseSetting extends StatelessWidget {
                     flex: 2,
                     child: WeightInputWidget(setting, _detailed),
                   ),
-                  SizedBox(width: 4),
+                  const SizedBox(width: 4),
                   Flexible(
                     flex: 3,
                     child: WeightUnitInputWidget(setting, key: Key(i.toString())),
@@ -598,7 +598,7 @@ class ExerciseSetting extends StatelessWidget {
                 flex: 2,
                 child: RiRInputWidget(setting),
               ),
-              SizedBox(height: 15),
+              const SizedBox(height: 15),
             ],
           ),
         );
@@ -611,11 +611,11 @@ class ExerciseSetting extends StatelessWidget {
             children: [
               Text(
                 AppLocalizations.of(context).setNr(i + 1),
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
-              SizedBox(width: 10),
+              const SizedBox(width: 10),
               Flexible(child: RepsInputWidget(setting, _detailed)),
-              SizedBox(width: 4),
+              const SizedBox(width: 4),
               Flexible(child: WeightInputWidget(setting, _detailed)),
             ],
           ),
@@ -643,12 +643,12 @@ class ExerciseSetting extends StatelessWidget {
               contentPadding: EdgeInsets.zero,
               leading: ExerciseImageWidget(image: _exercise.getMainImage),
               trailing: IconButton(
-                  icon: Icon(Icons.delete),
+                  icon: const Icon(Icons.delete),
                   onPressed: () {
                     removeExercise(_exercise);
                   }),
             ),
-            Divider(),
+            const Divider(),
 
             //ExerciseImage(imageUrl: _exercise.images.first.url),
             if (!_detailed)

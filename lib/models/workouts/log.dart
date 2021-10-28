@@ -120,6 +120,7 @@ class Log {
   /// Two logs are considered equal if their content is equal. This is used e.g.
   /// in lists where we want to have unique values
   @override
+  //ignore: avoid_equals_and_hash_code_on_mutable_classes
   bool operator ==(o) {
     return o is Log &&
         exerciseId == o.exerciseId &&
@@ -131,6 +132,7 @@ class Log {
   }
 
   @override
+  //ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => hashValues(exerciseId, weight, weightUnitId, reps, repetitionUnitId, rir);
 
   //@override

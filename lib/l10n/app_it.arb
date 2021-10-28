@@ -93,11 +93,11 @@
   },
   "ingredient": "Ingrediente",
   "@ingredient": {},
-  "timeEnd": "Fine del tempo",
+  "timeEnd": "Ora di fine",
   "@timeEnd": {
     "description": "The end time of a workout"
   },
-  "timeStart": "Inizia cronometro",
+  "timeStart": "Ora di inizio",
   "@timeStart": {
     "description": "The starting time of a workout"
   },
@@ -444,5 +444,71 @@
   "labelBottomNavNutrition": "Nutrizione",
   "@labelBottomNavNutrition": {
     "description": "Label used in bottom navigation, use a short word"
-  }
+  },
+  "usernameValidChars": "Un nome utente può contenere solo lettere, cifre e i caratteri @, +, ., - e _",
+  "@usernameValidChars": {
+    "description": "Error message when the user tries to register a username with forbidden characters"
+  },
+  "total": "Totale",
+  "@total": {
+    "description": "Label used for total sums of e.g. calories or similar"
+  },
+  "appUpdateTitle": "Aggiornamento necessario",
+  "@appUpdateTitle": {},
+  "appUpdateContent": "Questa versione dell'applicazione non è compatibile con il server, per favore aggiorna la tua applicazione.",
+  "@appUpdateContent": {},
+  "dataCopied": "Dati copiati nella nuova voce",
+  "@dataCopied": {
+    "description": "Snackbar message to show on copying data to a new log entry"
+  },
+  "proteinShort": "P",
+  "@proteinShort": {
+    "description": "The first letter or short name of the word 'Protein', used in overviews"
+  },
+  "carbohydratesShort": "C",
+  "@carbohydratesShort": {
+    "description": "The first letter or short name of the word 'Carbohydrates', used in overviews"
+  },
+  "percentEnergy": "Percentuale di energia",
+  "@percentEnergy": {},
+  "fatShort": "Gr",
+  "@fatShort": {
+    "description": "The first letter or short name of the word 'Fat', used in overviews"
+  },
+  "logged": "Registrato",
+  "@logged": {
+    "description": "Header for the column of 'logged' nutritional values, i.e. what was eaten"
+  },
+  "difference": "Differenza",
+  "@difference": {},
+  "gPerBodyKg": "g per kg di corpo",
+  "@gPerBodyKg": {
+    "description": "Label used for total sums of e.g. calories or similar in grams per Kg of body weight"
+  },
+  "timeStartAhead": "L'ora di inizio non può essere più avanti dell'ora di fine",
+  "@timeStartAhead": {},
+  "value": "Valore",
+  "@value": {
+    "description": "The value of a measurement entry"
+  },
+  "measurements": "Misure",
+  "@measurements": {
+    "description": "Categories for the measurements such as biceps size, body fat, etc."
+  },
+  "measurementCategoriesHelpText": "Categoria di misura, come «bicipiti» o «grasso corporeo»",
+  "@measurementCategoriesHelpText": {},
+  "measurementEntriesHelpText": "L'unità usata per misurare la categoria come «cm» o «%»",
+  "@measurementEntriesHelpText": {},
+  "energyShort": "E",
+  "@energyShort": {
+    "description": "The first letter or short name of the word 'Energy', used in overviews"
+  },
+  "macronutrients": "Macronutrienti",
+  "@macronutrients": {},
+  "planned": "Pianificato",
+  "@planned": {
+    "description": "Header for the column of 'planned' nutritional values, i.e. what should be eaten"
+  },
+  "measurement": "Misura",
+  "@measurement": {}
 }

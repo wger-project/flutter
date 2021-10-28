@@ -38,7 +38,7 @@ class EntriesList extends StatelessWidget {
     return Column(children: [
       Container(
         color: Theme.of(context).cardColor,
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         height: 220,
         child: MeasurementChartWidget(
           _category.entries.map((e) => MeasurementChartEntry(e.value, e.date)).toList(),
@@ -89,12 +89,12 @@ class EntriesList extends StatelessWidget {
               secondaryBackground: Container(
                 color: Theme.of(context).errorColor,
                 alignment: Alignment.centerRight,
-                padding: EdgeInsets.only(right: 20),
-                margin: EdgeInsets.symmetric(
+                padding: const EdgeInsets.only(right: 20),
+                margin: const EdgeInsets.symmetric(
                   horizontal: 4,
                   vertical: 4,
                 ),
-                child: Icon(
+                child: const Icon(
                   Icons.delete,
                   color: Colors.white,
                 ),
@@ -102,12 +102,12 @@ class EntriesList extends StatelessWidget {
               background: Container(
                 color: wgerPrimaryButtonColor,
                 alignment: Alignment.centerLeft,
-                padding: EdgeInsets.only(left: 20),
-                margin: EdgeInsets.symmetric(
+                padding: const EdgeInsets.only(left: 20),
+                margin: const EdgeInsets.symmetric(
                   horizontal: 4,
                   vertical: 4,
                 ),
-                child: Icon(
+                child: const Icon(
                   Icons.edit,
                   color: Colors.white,
                 ),

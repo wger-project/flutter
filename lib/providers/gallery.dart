@@ -37,7 +37,7 @@ class GalleryProvider extends WgerBaseProvider with ChangeNotifier {
         super(auth, client);
 
   /// Clears all lists
-  clear() {
+  void clear() {
     images = [];
   }
 

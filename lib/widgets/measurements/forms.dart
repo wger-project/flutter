@@ -32,7 +32,7 @@ class MeasurementCategoryForm extends StatelessWidget {
   final nameController = TextEditingController();
   final unitController = TextEditingController();
 
-  Map<String, dynamic> categoryData = {'id': null, 'name': '', 'unit': ''};
+  final Map<String, dynamic> categoryData = {'id': null, 'name': '', 'unit': ''};
 
   MeasurementCategoryForm([MeasurementCategory? category]) {
     //this._category = category ?? MeasurementCategory();
@@ -130,7 +130,7 @@ class MeasurementEntryForm extends StatelessWidget {
   final _dateController = TextEditingController();
   final _notesController = TextEditingController();
 
-  late Map<String, dynamic> _entryData;
+  late final Map<String, dynamic> _entryData;
 
   MeasurementEntryForm(this._categoryId, [MeasurementEntry? entry]) {
     _entryData = {

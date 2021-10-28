@@ -16,12 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:android_metadata/android_metadata.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/misc.dart';
 import 'package:wger/helpers/ui.dart';
 
 import '../providers/auth.dart';
@@ -49,15 +51,15 @@ class AuthScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Padding(padding: EdgeInsets.symmetric(vertical: 20)),
-                  Image(
+                  const Padding(padding: EdgeInsets.symmetric(vertical: 20)),
+                  const Image(
                     image: AssetImage('assets/images/logo-white.png'),
                     width: 120,
                   ),
                   Container(
-                    margin: EdgeInsets.only(bottom: 20.0),
-                    padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 94.0),
-                    child: Text(
+                    margin: const EdgeInsets.only(bottom: 20.0),
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 94.0),
+                    child: const Text(
                       'WGER',
                       style: TextStyle(
                         color: Colors.white,
@@ -67,7 +69,7 @@ class AuthScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Flexible(
+                  const Flexible(
                     //flex: deviceSize.width > 600 ? 2 : 1,
                     child: AuthCard(),
                   ),
@@ -90,6 +92,7 @@ class AuthCard extends StatefulWidget {
 
 class _AuthCardState extends State<AuthCard> {
   final GlobalKey<FormState> _formKey = GlobalKey();
+  bool _canRegister = true;
   AuthMode _authMode = AuthMode.Login;
   bool _hideCustomServer = true;
   final Map<String, String> _authData = {
@@ -107,11 +110,23 @@ class _AuthCardState extends State<AuthCard> {
 
   @override
   void initState() {
-    //_serverUrlController.text
     super.initState();
     context.read<AuthProvider>().getServerUrlFromPrefs().then((value) {
       _serverUrlController.text = value;
     });
+
+    // Check if the API key is set
+    //
+    // If not, the user will not be able to register via the app
+    try {
+      AndroidMetadata.metaDataAsMap.then((data) {
+        if (!data!.containsKey('wger.api_key') || data['wger.api_key'] == '') {
+          _canRegister = false;
+        }
+      });
+    } on PlatformException {
+      _canRegister = false;
+    }
   }
 
   void _submit(BuildContext context) async {
@@ -123,23 +138,20 @@ class _AuthCardState extends State<AuthCard> {
     setState(() {
       _isLoading = true;
     });
+
     try {
       // Login existing user
       if (_authMode == AuthMode.Login) {
-        await Provider.of<AuthProvider>(context, listen: false).login(
-          _authData['username']!,
-          _authData['password']!,
-          _authData['serverUrl']!,
-        );
+        await Provider.of<AuthProvider>(context, listen: false)
+            .login(_authData['username']!, _authData['password']!, _authData['serverUrl']!);
 
         // Register new user
       } else {
         await Provider.of<AuthProvider>(context, listen: false).register(
-          username: _authData['username']!,
-          password: _authData['password']!,
-          email: _authData['email']!,
-          serverUrl: _authData['serverUrl']!,
-        );
+            username: _authData['username']!,
+            password: _authData['password']!,
+            email: _authData['email']!,
+            serverUrl: _authData['serverUrl']!);
       }
 
       setState(() {
@@ -147,12 +159,23 @@ class _AuthCardState extends State<AuthCard> {
       });
     } on WgerHttpException catch (error) {
       showHttpExceptionErrorDialog(error, context);
+      setState(() {
+        _isLoading = false;
+      });
     } catch (error) {
       showErrorDialog(error, context);
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
   void _switchAuthMode() {
+    if (!_canRegister) {
+      launchURL(DEFAULT_SERVER, context);
+      return;
+    }
+
     if (_authMode == AuthMode.Login) {
       setState(() {
         _authMode = AuthMode.Signup;
@@ -174,7 +197,7 @@ class _AuthCardState extends State<AuthCard> {
       elevation: 8.0,
       child: Container(
         width: deviceSize.width * 0.75,
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: SingleChildScrollView(
@@ -182,7 +205,7 @@ class _AuthCardState extends State<AuthCard> {
               child: Column(
                 children: <Widget>[
                   TextFormField(
-                    key: Key('inputUsername'),
+                    key: const Key('inputUsername'),
                     decoration: InputDecoration(
                       labelText: AppLocalizations.of(context).username,
                       errorMaxLines: 2,
@@ -206,7 +229,7 @@ class _AuthCardState extends State<AuthCard> {
                   ),
                   if (_authMode == AuthMode.Signup)
                     TextFormField(
-                      key: Key('inputEmail'),
+                      key: const Key('inputEmail'),
                       decoration: InputDecoration(labelText: AppLocalizations.of(context).email),
                       autofillHints: const [AutofillHints.email],
                       controller: _emailController,
@@ -243,7 +266,7 @@ class _AuthCardState extends State<AuthCard> {
                   ),
                   if (_authMode == AuthMode.Signup)
                     TextFormField(
-                      key: Key('inputPassword2'),
+                      key: const Key('inputPassword2'),
                       decoration:
                           InputDecoration(labelText: AppLocalizations.of(context).confirmPassword),
                       controller: _password2Controller,
@@ -267,7 +290,7 @@ class _AuthCardState extends State<AuthCard> {
                         Flexible(
                           flex: 3,
                           child: TextFormField(
-                            key: Key('inputServer'),
+                            key: const Key('inputServer'),
                             decoration: InputDecoration(
                                 labelText: AppLocalizations.of(context).customServerUrl,
                                 helperText: AppLocalizations.of(context).customServerHint,
@@ -292,7 +315,7 @@ class _AuthCardState extends State<AuthCard> {
                             },
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 20,
                         ),
                         Column(
@@ -310,14 +333,14 @@ class _AuthCardState extends State<AuthCard> {
                       ],
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   if (_isLoading)
-                    CircularProgressIndicator()
+                    const CircularProgressIndicator()
                   else
                     ElevatedButton(
-                      key: Key('actionButton'),
+                      key: const Key('actionButton'),
                       child: Text(_authMode == AuthMode.Login
                           ? AppLocalizations.of(context).login
                           : AppLocalizations.of(context).register),
@@ -326,7 +349,7 @@ class _AuthCardState extends State<AuthCard> {
                       },
                     ),
                   TextButton(
-                    key: Key('toggleActionButton'),
+                    key: const Key('toggleActionButton'),
                     child: Text(
                       _authMode == AuthMode.Login
                           ? AppLocalizations.of(context).registerInstead.toUpperCase()
@@ -338,7 +361,7 @@ class _AuthCardState extends State<AuthCard> {
                     child: Text(_hideCustomServer
                         ? AppLocalizations.of(context).useCustomServer
                         : AppLocalizations.of(context).useDefaultServer),
-                    key: Key('toggleCustomServerButton'),
+                    key: const Key('toggleCustomServerButton'),
                     onPressed: () {
                       setState(() {
                         _hideCustomServer = !_hideCustomServer;

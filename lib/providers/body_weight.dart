@@ -36,7 +36,7 @@ class BodyWeightProvider extends WgerBaseProvider with ChangeNotifier {
   }
 
   /// Clears all lists
-  clear() {
+  void clear() {
     _entries = [];
   }
 

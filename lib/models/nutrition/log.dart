@@ -32,7 +32,7 @@ class Log {
   int? id;
 
   @JsonKey(required: false, name: 'meal')
-  int mealId;
+  int? mealId;
 
   @JsonKey(required: true, name: 'plan')
   int planId;

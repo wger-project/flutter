@@ -28,7 +28,7 @@ import 'package:wger/models/gallery/image.dart' as gallery;
 import 'package:wger/providers/gallery.dart';
 
 class ImageForm extends StatefulWidget {
-  late gallery.Image _image;
+  late final gallery.Image _image;
 
   ImageForm([gallery.Image? image]) {
     _image = image ?? gallery.Image.emtpy();
@@ -84,8 +84,8 @@ class _ImageFormState extends State<ImageForm> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(AppLocalizations.of(context).selectImage),
-        SizedBox(height: 8),
-        Icon(Icons.photo_camera),
+        const SizedBox(height: 8),
+        const Icon(Icons.photo_camera),
       ],
     );
   }
@@ -112,7 +112,7 @@ class _ImageFormState extends State<ImageForm> {
                               Navigator.of(context).pop();
                               _showPicker(ImageSource.camera);
                             },
-                            leading: Icon(Icons.photo_camera),
+                            leading: const Icon(Icons.photo_camera),
                             title: Text(AppLocalizations.of(context).takePicture),
                           ),
                           ListTile(
@@ -120,7 +120,7 @@ class _ImageFormState extends State<ImageForm> {
                                 Navigator.of(context).pop();
                                 _showPicker(ImageSource.gallery);
                               },
-                              leading: Icon(Icons.photo_library),
+                              leading: const Icon(Icons.photo_library),
                               title: Text(AppLocalizations.of(context).chooseFromLibrary))
                         ],
                       ),
@@ -132,10 +132,10 @@ class _ImageFormState extends State<ImageForm> {
             ),
           ),
           TextFormField(
-            key: Key('field-date'),
+            key: const Key('field-date'),
             decoration: InputDecoration(
               labelText: AppLocalizations.of(context).date,
-              suffixIcon: Icon(Icons.calendar_today_outlined),
+              suffixIcon: const Icon(Icons.calendar_today_outlined),
             ),
             readOnly: true, // Stop keyboard from appearing
             controller: dateController,
@@ -165,7 +165,7 @@ class _ImageFormState extends State<ImageForm> {
             },
           ),
           TextFormField(
-            key: Key('field-description'),
+            key: const Key('field-description'),
             decoration: InputDecoration(labelText: AppLocalizations.of(context).description),
             minLines: 3,
             maxLines: 10,
@@ -175,7 +175,7 @@ class _ImageFormState extends State<ImageForm> {
             },
           ),
           ElevatedButton(
-            key: Key(SUBMIT_BUTTON_KEY_NAME),
+            key: const Key(SUBMIT_BUTTON_KEY_NAME),
             child: Text(AppLocalizations.of(context).save),
             onPressed: () async {
               // Validate and save

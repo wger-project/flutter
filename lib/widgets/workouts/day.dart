@@ -33,12 +33,12 @@ import 'package:wger/widgets/exercises/images.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 
 class SettingWidget extends StatelessWidget {
-  Set set;
-  Setting setting;
+  final Set set;
+  final Setting setting;
   final bool expanded;
-  final toggle;
+  final Function toggle;
 
-  SettingWidget({
+  const SettingWidget({
     required this.set,
     required this.setting,
     required this.expanded,
@@ -101,7 +101,7 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
   void initState() {
     super.initState();
     _sets = widget._day.sets;
-    _sets.sort((a, b) => a.order!.compareTo(b.order!));
+    _sets.sort((a, b) => a.order.compareTo(b.order));
   }
 
   void _toggleExpanded() {
@@ -118,7 +118,7 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
         if (_expanded)
           IconButton(
             visualDensity: VisualDensity.compact,
-            icon: Icon(Icons.delete),
+            icon: const Icon(Icons.delete),
             iconSize: ICON_SIZE_SMALL,
             onPressed: () {
               Provider.of<WorkoutPlansProvider>(context, listen: false).deleteSet(set);
@@ -138,14 +138,14 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
                     ),
                   )
                   .toList(),
-              Divider(),
+              const Divider(),
             ],
           ),
         ),
         if (_expanded)
           ReorderableDragStartListener(
             index: index,
-            child: IconButton(
+            child: const IconButton(
               icon: Icon(Icons.drag_handle),
               onPressed: null,
             ),
@@ -178,7 +178,7 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
                         widget._day,
                       );
                     },
-                    icon: Icon(Icons.delete),
+                    icon: const Icon(Icons.delete),
                   ),
                   if (widget._day.sets.isNotEmpty)
                     Ink(
@@ -212,13 +212,13 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
                         ),
                       );
                     },
-                    icon: Icon(Icons.edit),
+                    icon: const Icon(Icons.edit),
                   ),
                 ],
               ),
-            Divider(),
+            const Divider(),
             ReorderableListView(
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               buildDefaultDragHandles: false,
               onReorder: (_oldIndex, _newIndex) async {
@@ -265,7 +265,7 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
 class DayHeaderDismissible extends StatelessWidget {
   final Day _day;
   final bool _expanded;
-  final _toggle;
+  final Function _toggle;
 
   const DayHeaderDismissible({
     required Day day,
@@ -282,7 +282,7 @@ class DayHeaderDismissible extends StatelessWidget {
       direction: DismissDirection.startToEnd,
       child: Container(
         padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(color: Colors.white),
+        decoration: const BoxDecoration(color: Colors.white),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -300,7 +300,7 @@ class DayHeaderDismissible extends StatelessWidget {
               ),
             ),
             IconButton(
-              icon: _expanded ? Icon(Icons.unfold_less) : Icon(Icons.unfold_more),
+              icon: _expanded ? const Icon(Icons.unfold_less) : const Icon(Icons.unfold_more),
               onPressed: () {
                 _toggle();
               },
@@ -311,15 +311,15 @@ class DayHeaderDismissible extends StatelessWidget {
       background: Container(
         color: wgerPrimaryButtonColor, //Theme.of(context).primaryColor,
         alignment: Alignment.centerLeft,
-        padding: EdgeInsets.only(left: 10),
+        padding: const EdgeInsets.only(left: 10),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
               AppLocalizations.of(context).gymMode,
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
-            Icon(
+            const Icon(
               Icons.play_arrow,
               color: Colors.white,
             ),

@@ -52,8 +52,8 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
     });
   }
 
-  Future<WorkoutPlan> _loadFullWorkout(BuildContext context, int planId) async {
-    return await Provider.of<WorkoutPlansProvider>(context, listen: false)
+  Future<WorkoutPlan> _loadFullWorkout(BuildContext context, int planId) {
+    return Provider.of<WorkoutPlansProvider>(context, listen: false)
         .fetchAndSetWorkoutPlanFull(planId);
   }
 
@@ -79,14 +79,14 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
               title: Text(workoutPlan.name),
-              background: Image(
+              background: const Image(
                 image: AssetImage('assets/images/backgrounds/workout_plans.jpg'),
                 fit: BoxFit.cover,
               ),
             ),
             actions: [
               PopupMenuButton<WorkoutOptions>(
-                icon: Icon(Icons.more_vert),
+                icon: const Icon(Icons.more_vert),
                 onSelected: (value) {
                   // Edit
                   if (value == WorkoutOptions.edit) {
@@ -130,7 +130,7 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
               delegate: SliverChildListDelegate(
                 [
                   if (snapshot.connectionState == ConnectionState.waiting)
-                    SizedBox(
+                    const SizedBox(
                       height: 200,
                       child: Center(
                         child: CircularProgressIndicator(),

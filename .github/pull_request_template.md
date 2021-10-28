@@ -12,4 +12,4 @@ Related Issues (if applicable)
 
 - [ ] Set a 100 character limit in your editor/IDE to avoid white space diffs in the PR
 - [ ] Tests for the changes have been added (for bug fixes / features)
-- [ ] Added yourself to AUTHORS.rst
+- [ ] Added yourself to AUTHORS.md

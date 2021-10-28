@@ -90,12 +90,11 @@ class AuthProvider with ChangeNotifier {
   }
 
   /// Registers a new user
-  Future<void> register({
-    required String username,
-    required String password,
-    required String email,
-    required String serverUrl,
-  }) async {
+  Future<void> register(
+      {required String username,
+      required String password,
+      required String email,
+      required String serverUrl}) async {
     final uri = Uri.parse('$serverUrl/api/v2/register/');
     Map<String, String>? metadata = {};
 
@@ -135,7 +134,7 @@ class AuthProvider with ChangeNotifier {
   /// Authenticates a user
   Future<void> login(String username, String password, String serverUrl) async {
     final uri = Uri.parse('$serverUrl/api/v2/login/');
-    await logout();
+    await logout(shouldNotify: false);
 
     try {
       final response = await http.post(
@@ -221,7 +220,7 @@ class AuthProvider with ChangeNotifier {
     return true;
   }
 
-  Future<void> logout() async {
+  Future<void> logout({bool shouldNotify = true}) async {
     log('logging out');
     token = null;
     serverUrl = null;
@@ -233,7 +232,10 @@ class AuthProvider with ChangeNotifier {
     //   _authTimer = null;
     // }
 
-    notifyListeners();
+    if (shouldNotify) {
+      notifyListeners();
+    }
+
     final prefs = await SharedPreferences.getInstance();
     prefs.remove('userData');
   }

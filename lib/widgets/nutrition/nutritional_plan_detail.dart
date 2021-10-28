@@ -52,7 +52,9 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
       delegate: SliverChildListDelegate(
         [
           const SizedBox(height: 10),
+          
           ..._nutritionalPlan.meals.map((meal) => MealWidget(meal, listOfIngredientMeal)).toList(),
+          
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: ElevatedButton(
@@ -70,7 +72,7 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
             ),
           ),
           Container(
-            padding: EdgeInsets.all(15),
+            padding: const EdgeInsets.all(15),
             height: 220,
             child: NutritionalPlanPieChartWidget(nutritionalValues),
           ),
@@ -78,7 +80,7 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Table(
               defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-              border: TableBorder(
+              border: const TableBorder(
                 horizontalInside: BorderSide(width: 1, color: wgerTextMuted),
               ),
               columnWidths: const {0: FractionColumnWidth(0.4)},
@@ -89,20 +91,20 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: tablePadding),
                       child: Text(
                         AppLocalizations.of(context).macronutrients,
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
                     Text(
                       AppLocalizations.of(context).total,
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     Text(
                       AppLocalizations.of(context).percentEnergy,
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     Text(
                       AppLocalizations.of(context).gPerBodyKg,
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
@@ -116,8 +118,8 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                       nutritionalValues.energy.toStringAsFixed(0) +
                           AppLocalizations.of(context).kcal,
                     ),
-                    Text(''),
-                    Text(''),
+                    const Text(''),
+                    const Text(''),
                   ],
                 ),
                 TableRow(
@@ -152,8 +154,8 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                     ),
                     Text(nutritionalValues.carbohydratesSugar.toStringAsFixed(0) +
                         AppLocalizations.of(context).g),
-                    Text(''),
-                    Text(''),
+                    const Text(''),
+                    const Text(''),
                   ],
                 ),
                 TableRow(
@@ -175,8 +177,8 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                     ),
                     Text(nutritionalValues.fatSaturated.toStringAsFixed(0) +
                         AppLocalizations.of(context).g),
-                    Text(''),
-                    Text(''),
+                    const Text(''),
+                    const Text(''),
                   ],
                 ),
                 TableRow(
@@ -187,8 +189,8 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                     ),
                     Text(nutritionalValues.fibres.toStringAsFixed(0) +
                         AppLocalizations.of(context).g),
-                    Text(''),
-                    Text(''),
+                    const Text(''),
+                    const Text(''),
                   ],
                 ),
                 TableRow(
@@ -199,21 +201,21 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                     ),
                     Text(nutritionalValues.sodium.toStringAsFixed(0) +
                         AppLocalizations.of(context).g),
-                    Text(''),
-                    Text(''),
+                    const Text(''),
+                    const Text(''),
                   ],
                 ),
               ],
             ),
           ),
-          Padding(padding: const EdgeInsets.all(8.0)),
+          const Padding(padding: EdgeInsets.all(8.0)),
           Text(
             AppLocalizations.of(context).nutritionalDiary,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.headline6,
           ),
           Container(
-            padding: EdgeInsets.all(15),
+            padding: const EdgeInsets.all(15),
             height: 220,
             child: NutritionalDiaryChartWidget(nutritionalPlan: _nutritionalPlan),
           ),

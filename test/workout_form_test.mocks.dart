@@ -96,6 +96,9 @@ class MockWorkoutPlansProvider extends _i1.Mock implements _i12.WorkoutPlansProv
   bool get hasListeners =>
       (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
   @override
+  void clear() =>
+      super.noSuchMethod(Invocation.method(#clear, []), returnValueForMissingStub: null);
+  @override
   _i6.WorkoutPlan findById(int? id) =>
       (super.noSuchMethod(Invocation.method(#findById, [id]), returnValue: _FakeWorkoutPlan_4())
           as _i6.WorkoutPlan);
@@ -222,6 +225,11 @@ class MockWorkoutPlansProvider extends _i1.Mock implements _i12.WorkoutPlansProv
       (super.noSuchMethod(Invocation.method(#addLog, [log]),
           returnValue: Future<_i11.Log>.value(_FakeLog_9())) as _i13.Future<_i11.Log>);
   @override
+  _i13.Future<void> deleteLog(_i11.Log? log) =>
+      (super.noSuchMethod(Invocation.method(#deleteLog, [log]),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i13.Future<void>);
+  @override
   Uri makeUrl(String? path, {int? id, String? objectMethod, Map<String, dynamic>? query}) =>
       (super.noSuchMethod(
           Invocation.method(
@@ -246,6 +254,8 @@ class MockWorkoutPlansProvider extends _i1.Mock implements _i12.WorkoutPlansProv
   _i13.Future<_i5.Response> deleteRequest(String? url, int? id) => (super.noSuchMethod(
       Invocation.method(#deleteRequest, [url, id]),
       returnValue: Future<_i5.Response>.value(_FakeResponse_11())) as _i13.Future<_i5.Response>);
+  @override
+  String toString() => super.toString();
   @override
   void addListener(_i15.VoidCallback? listener) => super
       .noSuchMethod(Invocation.method(#addListener, [listener]), returnValueForMissingStub: null);

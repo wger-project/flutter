@@ -26,7 +26,7 @@ import 'package:wger/widgets/workouts/forms.dart';
 
 class WorkoutPlanDetail extends StatefulWidget {
   final WorkoutPlan _workoutPlan;
-  final _changeMode;
+  final Function _changeMode;
   const WorkoutPlanDetail(this._workoutPlan, this._changeMode);
 
   @override

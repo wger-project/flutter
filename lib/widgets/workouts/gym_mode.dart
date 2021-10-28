@@ -44,10 +44,12 @@ import 'package:wger/widgets/workouts/forms.dart';
 
 class GymMode extends StatefulWidget {
   final Day _workoutDay;
-  late TimeOfDay _start;
+  late final TimeOfDay _start;
+
   GymMode(this._workoutDay) {
     _start = TimeOfDay.now();
   }
+
   @override
   _GymModeState createState() => _GymModeState();
 }
@@ -60,6 +62,7 @@ class _GymModeState extends State<GymMode> {
   final PageController _controller = PageController(
     initialPage: 0,
   );
+
   @override
   void dispose() {
     _controller.dispose();
@@ -81,7 +84,8 @@ class _GymModeState extends State<GymMode> {
     for (final set in widget._workoutDay.sets) {
       var firstPage = true;
       for (final setting in set.settingsComputed) {
-        final exercise = Provider.of<ExercisesProvider>(context, listen: false).findById(setting.exerciseId);
+        final exercise =
+            Provider.of<ExercisesProvider>(context, listen: false).findById(setting.exerciseId);
 
         if (firstPage) {
           _exercisePages[exercise.name] = currentPage;
@@ -150,7 +154,8 @@ class _GymModeState extends State<GymMode> {
         ),
         ...getContent(),
         SessionPage(
-          Provider.of<WorkoutPlansProvider>(context, listen: false).findById(widget._workoutDay.workoutId),
+          Provider.of<WorkoutPlansProvider>(context, listen: false)
+              .findById(widget._workoutDay.workoutId),
           _controller,
           widget._start,
           _exercisePages,
@@ -176,7 +181,7 @@ class StartPage extends StatelessWidget {
           _controller,
           exercisePages: _exercisePages,
         ),
-        Divider(),
+        const Divider(),
         Expanded(
           child: ListView(
             children: [
@@ -192,7 +197,7 @@ class StartPage extends StatelessWidget {
                               style: Theme.of(context).textTheme.headline6,
                             ),
                             ...set.getSmartRepr(s.exerciseObj).map((e) => Text(e)).toList(),
-                            SizedBox(height: 15),
+                            const SizedBox(height: 15),
                           ],
                         );
                       }).toList(),
@@ -206,7 +211,8 @@ class StartPage extends StatelessWidget {
         ElevatedButton(
           child: Text(AppLocalizations.of(context).start),
           onPressed: () {
-            _controller.nextPage(duration: Duration(milliseconds: 200), curve: Curves.bounceIn);
+            _controller.nextPage(
+                duration: const Duration(milliseconds: 200), curve: Curves.bounceIn);
           },
         ),
         NavigationFooter(
@@ -256,6 +262,7 @@ class _LogPageState extends State<LogPage> {
   final _repsController = TextEditingController();
   final _weightController = TextEditingController();
   var _detailed = false;
+  bool _isSaving = false;
 
   late FocusNode focusNode;
 
@@ -284,7 +291,7 @@ class _LogPageState extends State<LogPage> {
     return Row(
       children: [
         IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.remove,
             color: Colors.black,
           ),
@@ -322,7 +329,7 @@ class _LogPageState extends State<LogPage> {
           ),
         ),
         IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.add,
             color: Colors.black,
           ),
@@ -342,7 +349,7 @@ class _LogPageState extends State<LogPage> {
     return Row(
       children: [
         IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.remove,
             color: Colors.black,
           ),
@@ -390,7 +397,7 @@ class _LogPageState extends State<LogPage> {
           ),
         ),
         IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.add,
             color: Colors.black,
           ),
@@ -423,7 +430,7 @@ class _LogPageState extends State<LogPage> {
             Row(
               children: [
                 Flexible(child: getRepsWidget()),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Flexible(child: getWeightWidget()),
               ],
             ),
@@ -432,7 +439,7 @@ class _LogPageState extends State<LogPage> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Flexible(child: getRepsWidget()),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Flexible(child: RepetitionUnitInputWidget(widget._log)),
               ],
             ),
@@ -441,7 +448,7 @@ class _LogPageState extends State<LogPage> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Flexible(child: getWeightWidget()),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Flexible(child: WeightUnitInputWidget(widget._log))
               ],
             ),
@@ -456,37 +463,52 @@ class _LogPageState extends State<LogPage> {
             },
           ),
           ElevatedButton(
-            child: Text(AppLocalizations.of(context).save),
-            onPressed: () async {
-              // Validate and save the current values to the weightEntry
-              final isValid = _form.currentState!.validate();
-              if (!isValid) {
-                return;
-              }
-              _form.currentState!.save();
-
-              // Save the entry on the server
-              try {
-                await Provider.of<WorkoutPlansProvider>(context, listen: false).addLog(widget._log);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    duration: Duration(seconds: 2), // default is 4
-                    content: Text(
-                      AppLocalizations.of(context).successfullySaved,
-                      textAlign: TextAlign.center,
+            child: (!_isSaving)
+                ? Text(AppLocalizations.of(context).save)
+                : const SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                     ),
                   ),
-                );
-                widget._controller.nextPage(
-                  duration: DEFAULT_ANIMATION_DURATION,
-                  curve: DEFAULT_ANIMATION_CURVE,
-                );
-              } on WgerHttpException catch (error) {
-                showHttpExceptionErrorDialog(error, context);
-              } catch (error) {
-                showErrorDialog(error, context);
-              }
-            },
+            onPressed: _isSaving
+                ? null
+                : () async {
+                    // Validate and save the current values to the weightEntry
+                    final isValid = _form.currentState!.validate();
+                    if (!isValid) {
+                      return;
+                    }
+                    _isSaving = true;
+                    _form.currentState!.save();
+
+                    // Save the entry on the server
+                    try {
+                      await Provider.of<WorkoutPlansProvider>(context, listen: false)
+                          .addLog(widget._log);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          duration: const Duration(seconds: 2), // default is 4
+                          content: Text(
+                            AppLocalizations.of(context).successfullySaved,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      );
+                      widget._controller.nextPage(
+                        duration: DEFAULT_ANIMATION_DURATION,
+                        curve: DEFAULT_ANIMATION_CURVE,
+                      );
+                      _isSaving = false;
+                    } on WgerHttpException catch (error) {
+                      showHttpExceptionErrorDialog(error, context);
+                      _isSaving = false;
+                    } catch (error) {
+                      showErrorDialog(error, context);
+                      _isSaving = false;
+                    }
+                  },
           ),
         ],
       ),
@@ -504,8 +526,9 @@ class _LogPageState extends State<LogPage> {
         ...widget._workoutPlan.filterLogsByExercise(widget._exercise, unique: true).map((log) {
           return ListTile(
             title: Text(log.singleLogRepTextNoNl),
-            subtitle: Text(DateFormat.yMd(Localizations.localeOf(context).languageCode).format(log.date)),
-            trailing: Icon(Icons.copy),
+            subtitle:
+                Text(DateFormat.yMd(Localizations.localeOf(context).languageCode).format(log.date)),
+            trailing: const Icon(Icons.copy),
             onTap: () {
               setState(() {
                 // Text field
@@ -522,7 +545,7 @@ class _LogPageState extends State<LogPage> {
                     .showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).dataCopied)));
               });
             },
-            contentPadding: EdgeInsets.symmetric(horizontal: 40),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 40),
           );
         }).toList(),
       ],
@@ -554,9 +577,9 @@ class _LogPageState extends State<LogPage> {
                           (key) => Row(
                             children: [
                               Text(groupedPlates[key].toString()),
-                              Text('×'),
+                              const Text('×'),
                               Container(
-                                decoration: BoxDecoration(
+                                decoration: const BoxDecoration(
                                   color: wgerPrimaryColorLight,
                                   shape: BoxShape.circle,
                                 ),
@@ -569,13 +592,13 @@ class _LogPageState extends State<LogPage> {
                                       alignment: Alignment.center,
                                       child: Text(
                                         key.toString(),
-                                        style: TextStyle(fontWeight: FontWeight.bold),
+                                        style: const TextStyle(fontWeight: FontWeight.bold),
                                       ),
                                     ),
                                   ),
                                 ),
                               ),
-                              SizedBox(width: 10),
+                              const SizedBox(width: 10),
                             ],
                           ),
                         )
@@ -584,7 +607,7 @@ class _LogPageState extends State<LogPage> {
                 )
               : MutedText(AppLocalizations.of(context).plateCalculatorNotDivisible),
         ),
-        SizedBox(height: 3),
+        const SizedBox(height: 3),
       ],
     );
   }
@@ -610,12 +633,14 @@ class _LogPageState extends State<LogPage> {
             widget._set.comment,
             textAlign: TextAlign.center,
           ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         Expanded(
-            child:
-                (widget._workoutPlan.filterLogsByExercise(widget._exercise).isNotEmpty) ? getPastLogs() : Container()),
+            child: (widget._workoutPlan.filterLogsByExercise(widget._exercise).isNotEmpty)
+                ? getPastLogs()
+                : Container()),
         // Only show calculator for barbell
-        if (widget._log.exerciseObj.equipment.map((e) => e.id).contains(ID_EQUIPMENT_BARBELL)) getPlates(),
+        if (widget._log.exerciseObj.equipment.map((e) => e.id).contains(ID_EQUIPMENT_BARBELL))
+          getPlates(),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Card(
@@ -651,10 +676,10 @@ class ExerciseOverview extends StatelessWidget {
           _controller,
           exercisePages: _exercisePages,
         ),
-        Divider(),
+        const Divider(),
         Expanded(
           child: ListView(
-            padding: EdgeInsets.symmetric(horizontal: 15),
+            padding: const EdgeInsets.symmetric(horizontal: 15),
             children: [
               Text(
                 _exercise.categoryObj.name,
@@ -713,7 +738,7 @@ class _SessionPageState extends State<SessionPage> {
   final timeStartController = TextEditingController();
   final timeEndController = TextEditingController();
 
-  final _session = WorkoutSession();
+  final _session = WorkoutSession.now();
 
   /// Selected impression: bad, neutral, good
   var selectedImpression = [false, true, false];
@@ -738,7 +763,7 @@ class _SessionPageState extends State<SessionPage> {
           widget._controller,
           exercisePages: widget._exercisePages,
         ),
-        Divider(),
+        const Divider(),
         Expanded(child: Container()),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -762,7 +787,9 @@ class _SessionPageState extends State<SessionPage> {
                   renderBorder: false,
                   onPressed: (int index) {
                     setState(() {
-                      for (int buttonIndex = 0; buttonIndex < selectedImpression.length; buttonIndex++) {
+                      for (int buttonIndex = 0;
+                          buttonIndex < selectedImpression.length;
+                          buttonIndex++) {
                         _session.impression = index + 1;
 
                         if (buttonIndex == index) {
@@ -804,11 +831,12 @@ class _SessionPageState extends State<SessionPage> {
                             // Open time picker
                             final pickedTime = await showTimePicker(
                               context: context,
-                              initialTime: widget._start,
+                              initialTime: _session.timeStart,
                             );
 
                             if (pickedTime != null) {
                               timeStartController.text = timeToString(pickedTime)!;
+                              _session.timeStart = pickedTime;
                             }
                           },
                           onSaved: (newValue) {
@@ -823,10 +851,11 @@ class _SessionPageState extends State<SessionPage> {
                             return null;
                           }),
                     ),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     Flexible(
                       child: TextFormField(
-                        decoration: InputDecoration(labelText: AppLocalizations.of(context).timeEnd),
+                        decoration:
+                            InputDecoration(labelText: AppLocalizations.of(context).timeEnd),
                         controller: timeEndController,
                         onFieldSubmitted: (_) {},
                         onTap: () async {
@@ -836,10 +865,13 @@ class _SessionPageState extends State<SessionPage> {
                           // Open time picker
                           final pickedTime = await showTimePicker(
                             context: context,
-                            initialTime: TimeOfDay.now(),
+                            initialTime: _session.timeEnd,
                           );
 
-                          timeEndController.text = timeToString(pickedTime)!;
+                          if (pickedTime != null) {
+                            timeEndController.text = timeToString(pickedTime)!;
+                            _session.timeEnd = pickedTime;
+                          }
                         },
                         onSaved: (newValue) {
                           _session.timeEnd = stringToTime(newValue);
@@ -860,7 +892,8 @@ class _SessionPageState extends State<SessionPage> {
 
                     // Save the entry on the server
                     try {
-                      await Provider.of<WorkoutPlansProvider>(context, listen: false).addSession(_session);
+                      await Provider.of<WorkoutPlansProvider>(context, listen: false)
+                          .addSession(_session);
                       Navigator.of(context).pop();
                     } on WgerHttpException catch (error) {
                       showHttpExceptionErrorDialog(error, context);
@@ -967,7 +1000,8 @@ class NavigationFooter extends StatelessWidget {
   final bool showPrevious;
   final bool showNext;
 
-  const NavigationFooter(this._controller, this._ratioCompleted, {this.showPrevious = true, this.showNext = true});
+  const NavigationFooter(this._controller, this._ratioCompleted,
+      {this.showPrevious = true, this.showNext = true});
 
   @override
   Widget build(BuildContext context) {
@@ -975,7 +1009,7 @@ class NavigationFooter extends StatelessWidget {
       children: [
         if (showPrevious)
           IconButton(
-            icon: Icon(Icons.chevron_left),
+            icon: const Icon(Icons.chevron_left),
             onPressed: () {
               _controller.previousPage(
                 duration: DEFAULT_ANIMATION_DURATION,
@@ -984,17 +1018,17 @@ class NavigationFooter extends StatelessWidget {
             },
           )
         else
-          SizedBox(width: 48),
+          const SizedBox(width: 48),
         Expanded(
           child: LinearProgressIndicator(
             minHeight: 1.5,
             value: _ratioCompleted,
-            valueColor: AlwaysStoppedAnimation<Color>(wgerPrimaryColor),
+            valueColor: const AlwaysStoppedAnimation<Color>(wgerPrimaryColor),
           ),
         ),
         if (showNext)
           IconButton(
-            icon: Icon(Icons.chevron_right),
+            icon: const Icon(Icons.chevron_right),
             onPressed: () {
               _controller.nextPage(
                 duration: DEFAULT_ANIMATION_DURATION,
@@ -1003,7 +1037,7 @@ class NavigationFooter extends StatelessWidget {
             },
           )
         else
-          SizedBox(width: 48),
+          const SizedBox(width: 48),
       ],
     );
   }
@@ -1012,9 +1046,9 @@ class NavigationFooter extends StatelessWidget {
 class NavigationHeader extends StatelessWidget {
   final PageController _controller;
   final String _title;
-  Map<String, int> exercisePages;
+  final Map<String, int> exercisePages;
 
-  NavigationHeader(
+  const NavigationHeader(
     this._title,
     this._controller, {
     required this.exercisePages,
@@ -1033,7 +1067,7 @@ class NavigationHeader extends StatelessWidget {
             ...exercisePages.keys.map((e) {
               return ListTile(
                 title: Text(e),
-                trailing: Icon(Icons.chevron_right),
+                trailing: const Icon(Icons.chevron_right),
                 onTap: () {
                   _controller.animateToPage(
                     exercisePages[e]!,
@@ -1063,7 +1097,7 @@ class NavigationHeader extends StatelessWidget {
     return Row(
       children: [
         IconButton(
-          icon: Icon(Icons.close),
+          icon: const Icon(Icons.close),
           onPressed: () {
             Navigator.of(context).pop();
           },
@@ -1079,7 +1113,7 @@ class NavigationHeader extends StatelessWidget {
           ),
         ),
         IconButton(
-          icon: Icon(Icons.menu),
+          icon: const Icon(Icons.menu),
           onPressed: () {
             showDialog(
               context: context,

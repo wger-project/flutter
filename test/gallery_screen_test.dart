@@ -46,7 +46,7 @@ void main() {
         locale: Locale(locale),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: Gallery(),
+        home: const Gallery(),
         routes: {
           FormScreen.routeName: (ctx) => FormScreen(),
         },
@@ -63,11 +63,11 @@ void main() {
   testWidgets('Test opening the form for an existing image', (WidgetTester tester) async {
     await mockNetworkImagesFor(() => tester.pumpWidget(createScreen()));
 
-    await tester.tap(find.byKey(Key('image-1')));
+    await tester.tap(find.byKey(const Key('image-1')));
     await tester.pumpAndSettle();
 
     // Detail dialog opens
-    expect(find.byKey(Key('image-1-detail')), findsOneWidget);
+    expect(find.byKey(const Key('image-1-detail')), findsOneWidget);
     expect(find.byType(Image), findsNWidgets(5)); // four in the overview, one in the popup
     expect(find.text('A very cool image from the gym'), findsOneWidget);
     expect(find.byIcon(Icons.edit), findsOneWidget);
@@ -84,7 +84,7 @@ void main() {
 
   testWidgets('Tests the localization of dates - EN', (WidgetTester tester) async {
     await mockNetworkImagesFor(() => tester.pumpWidget(createScreen()));
-    await tester.tap(find.byKey(Key('image-1')));
+    await tester.tap(find.byKey(const Key('image-1')));
     await tester.pumpAndSettle();
 
     expect(find.text('5/30/2021'), findsOneWidget);
@@ -92,7 +92,7 @@ void main() {
 
   testWidgets('Tests the localization of dates - DE', (WidgetTester tester) async {
     await mockNetworkImagesFor(() => tester.pumpWidget(createScreen(locale: 'de')));
-    await tester.tap(find.byKey(Key('image-1')));
+    await tester.tap(find.byKey(const Key('image-1')));
     await tester.pumpAndSettle();
 
     expect(find.text('30.5.2021'), findsOneWidget);

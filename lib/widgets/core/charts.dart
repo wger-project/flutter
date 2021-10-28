@@ -30,10 +30,10 @@ class MeasurementChartEntry {
 /// Weight chart widget
 class MeasurementChartWidget extends StatelessWidget {
   final List<MeasurementChartEntry> _entries;
-  late String unit;
+  final String unit;
 
   /// [_entries] is a list of [MeasurementChartEntry]
-  MeasurementChartWidget(this._entries, {this.unit = 'kg'});
+  const MeasurementChartWidget(this._entries, {this.unit = 'kg'});
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +51,7 @@ class MeasurementChartWidget extends StatelessWidget {
       ],
       defaultRenderer: charts.LineRendererConfig(includePoints: true),
       primaryMeasureAxis: charts.NumericAxisSpec(
-        tickProviderSpec: charts.BasicNumericTickProviderSpec(zeroBound: false),
+        tickProviderSpec: const charts.BasicNumericTickProviderSpec(zeroBound: false),
         tickFormatterSpec: unitTickFormatter,
       ),
     );

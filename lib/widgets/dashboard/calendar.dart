@@ -46,11 +46,11 @@ class Event {
 
   Event(this._type, this._description);
 
-  get description {
+  String get description {
     return _description;
   }
 
-  get type {
+  EventType get type {
     return _type;
   }
 }
@@ -217,14 +217,14 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
               AppLocalizations.of(context).calendar,
               style: Theme.of(context).textTheme.headline4,
             ),
-            leading: Icon(
+            leading: const Icon(
               Icons.calendar_today_outlined,
               color: Colors.black,
             ),
           ),
           TableCalendar<Event>(
             locale: Localizations.localeOf(context).languageCode,
-            firstDay: DateTime.now().subtract(Duration(days: 1000)),
+            firstDay: DateTime.now().subtract(const Duration(days: 1000)),
             lastDay: DateTime.now(),
             focusedDay: _focusedDay,
             selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
@@ -267,9 +267,8 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
                               case EventType.measurement:
                                 return AppLocalizations.of(context).measurement;
                             }
-                            return event.description.toString();
                           })()),
-                          subtitle: Text(event.description.toString()),
+                          subtitle: Text(event.description),
                           //onTap: () => print('$event tapped!'),
                         ))
                     .toList()

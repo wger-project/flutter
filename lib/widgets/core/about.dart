@@ -19,25 +19,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:wger/helpers/misc.dart';
 import 'package:wger/providers/auth.dart';
 
 class WgerAboutListTile extends StatelessWidget {
-  void _launchURL(String url, BuildContext context) async {
-    await canLaunch(url)
-        ? await launch(url)
-        : ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Could not open $url.')),
-          );
-  }
-
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
     return AboutListTile(
       //dense: true,
-      icon: Icon(Icons.info),
+      icon: const Icon(Icons.info),
       applicationName: 'wger',
       applicationVersion: 'App: ${authProvider.applicationVersion!.version}\n'
           'Server: ${authProvider.serverVersion}',
@@ -51,34 +43,34 @@ class WgerAboutListTile extends StatelessWidget {
       ),
 
       aboutBoxChildren: [
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         Text(AppLocalizations.of(context).aboutDescription),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         ListTile(
-          leading: Icon(Icons.code),
+          leading: const Icon(Icons.code),
           title: Text(AppLocalizations.of(context).aboutSourceTitle),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(AppLocalizations.of(context).aboutSourceText),
-              Text(
+              const Text(
                 'https://github.com/wger-project',
                 style: TextStyle(color: Colors.blue),
               ),
             ],
           ),
           contentPadding: EdgeInsets.zero,
-          onTap: () async => _launchURL('https://github.com/wger-project', context),
+          onTap: () async => launchURL('https://github.com/wger-project', context),
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         ListTile(
-          leading: Icon(Icons.bug_report),
+          leading: const Icon(Icons.bug_report),
           title: Text(AppLocalizations.of(context).aboutBugsTitle),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(AppLocalizations.of(context).aboutBugsText),
-              Text(
+              const Text(
                 'https://github.com/wger-project/flutter/issues/new/choose',
                 style: TextStyle(color: Colors.blue),
               )
@@ -86,41 +78,41 @@ class WgerAboutListTile extends StatelessWidget {
           ),
           contentPadding: EdgeInsets.zero,
           onTap: () async =>
-              _launchURL('https://github.com/wger-project/flutter/issues/new/choose', context),
+              launchURL('https://github.com/wger-project/flutter/issues/new/choose', context),
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         ListTile(
-          leading: Icon(Icons.chat),
+          leading: const Icon(Icons.chat),
           title: Text(AppLocalizations.of(context).aboutContactUsTitle),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(AppLocalizations.of(context).aboutContactUsText),
-              Text(
+              const Text(
                 'https://discord.gg/rPWFv6W',
                 style: TextStyle(color: Colors.blue),
               ),
             ],
           ),
           contentPadding: EdgeInsets.zero,
-          onTap: () async => _launchURL('https://discord.gg/rPWFv6W', context),
+          onTap: () async => launchURL('https://discord.gg/rPWFv6W', context),
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         ListTile(
-          leading: Icon(Icons.translate),
+          leading: const Icon(Icons.translate),
           title: Text(AppLocalizations.of(context).aboutTranslationTitle),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(AppLocalizations.of(context).aboutTranslationText),
-              Text(
+              const Text(
                 'https://hosted.weblate.org/engage/wger/',
                 style: TextStyle(color: Colors.blue),
               ),
             ],
           ),
           contentPadding: EdgeInsets.zero,
-          onTap: () async => _launchURL('https://hosted.weblate.org/engage/wger/', context),
+          onTap: () async => launchURL('https://hosted.weblate.org/engage/wger/', context),
         ),
       ],
     );

@@ -68,7 +68,7 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
   }
 
   /// Clears all lists
-  clear() {
+  void clear() {
     _currentPlan = null;
     _workoutPlans = [];
     _weightUnits = [];
@@ -353,7 +353,7 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
     // Save the result to the cache
     final exerciseData = {
       'date': DateTime.now().toIso8601String(),
-      'expiresIn': DateTime.now().add(Duration(days: DAYS_TO_CACHE)).toIso8601String(),
+      'expiresIn': DateTime.now().add(const Duration(days: DAYS_TO_CACHE)).toIso8601String(),
       'repetitionUnits': _repetitionUnit.map((e) => e.toJson()).toList(),
       'weightUnit': _weightUnits.map((e) => e.toJson()).toList(),
     };
@@ -505,5 +505,18 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
     plan.logs.add(log);
     notifyListeners();
     return newLog;
+  }
+
+  /*Future<void> editLog(Log log) async {
+    await patch(log.toJson(), makeUrl(_logsUrlPath, id: log.id));
+    notifyListeners();
+  }*/
+
+  Future<void> deleteLog(Log log) async {
+    await deleteRequest(_logsUrlPath, log.id!);
+    for (final workout in _workoutPlans) {
+      workout.logs.removeWhere((element) => element.id == log.id);
+    }
+    notifyListeners();
   }
 }

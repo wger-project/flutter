@@ -67,6 +67,9 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i8.NutritionPlansP
   bool get hasListeners =>
       (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
   @override
+  void clear() =>
+      super.noSuchMethod(Invocation.method(#clear, []), returnValueForMissingStub: null);
+  @override
   _i4.NutritionalPlan findById(int? id) =>
       (super.noSuchMethod(Invocation.method(#findById, [id]), returnValue: _FakeNutritionalPlan_2())
           as _i4.NutritionalPlan);
@@ -183,6 +186,8 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i8.NutritionPlansP
   _i9.Future<_i3.Response> deleteRequest(String? url, int? id) =>
       (super.noSuchMethod(Invocation.method(#deleteRequest, [url, id]),
           returnValue: Future<_i3.Response>.value(_FakeResponse_7())) as _i9.Future<_i3.Response>);
+  @override
+  String toString() => super.toString();
   @override
   void addListener(_i10.VoidCallback? listener) => super
       .noSuchMethod(Invocation.method(#addListener, [listener]), returnValueForMissingStub: null);

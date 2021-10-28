@@ -49,7 +49,7 @@ class CategoriesList extends StatelessWidget {
               ),
               Container(
                 color: Colors.white,
-                padding: EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
                 height: 220,
                 child: MeasurementChartWidget(
                   currentCategory.entries
@@ -58,7 +58,7 @@ class CategoriesList extends StatelessWidget {
                   unit: currentCategory.unit,
                 ),
               ),
-              Divider(),
+              const Divider(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -82,7 +82,7 @@ class CategoriesList extends StatelessWidget {
                         ),
                       );
                     },
-                    icon: Icon(Icons.add),
+                    icon: const Icon(Icons.add),
                   ),
                 ],
               ),

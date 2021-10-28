@@ -54,7 +54,7 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
   }
 
   /// Clears all lists
-  clear() {
+  void clear() {
     _plans = [];
     _ingredients = [];
   }
@@ -292,7 +292,7 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
     // Initialise an empty cache
     final ingredientData = {
       'date': DateTime.now().toIso8601String(),
-      'expiresIn': DateTime.now().add(Duration(days: DAYS_TO_CACHE)).toIso8601String(),
+      'expiresIn': DateTime.now().add(const Duration(days: DAYS_TO_CACHE)).toIso8601String(),
       'ingredients': []
     };
     prefs.setString('ingredientData', json.encode(ingredientData));

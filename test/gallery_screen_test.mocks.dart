@@ -60,6 +60,9 @@ class MockGalleryProvider extends _i1.Mock implements _i4.GalleryProvider {
   bool get hasListeners =>
       (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
   @override
+  void clear() =>
+      super.noSuchMethod(Invocation.method(#clear, []), returnValueForMissingStub: null);
+  @override
   _i6.Future<void> fetchAndSetGallery() =>
       (super.noSuchMethod(Invocation.method(#fetchAndSetGallery, []),
           returnValue: Future<void>.value(),
@@ -104,6 +107,8 @@ class MockGalleryProvider extends _i1.Mock implements _i4.GalleryProvider {
   _i6.Future<_i3.Response> deleteRequest(String? url, int? id) =>
       (super.noSuchMethod(Invocation.method(#deleteRequest, [url, id]),
           returnValue: Future<_i3.Response>.value(_FakeResponse_3())) as _i6.Future<_i3.Response>);
+  @override
+  String toString() => super.toString();
   @override
   void addListener(_i8.VoidCallback? listener) => super
       .noSuchMethod(Invocation.method(#addListener, [listener]), returnValueForMissingStub: null);
