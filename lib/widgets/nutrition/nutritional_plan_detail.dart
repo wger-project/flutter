@@ -48,7 +48,9 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
       delegate: SliverChildListDelegate(
         [
           const SizedBox(height: 10),
-          ..._nutritionalPlan.meals.map((meal) => MealWidget(meal)).toList(),
+          ..._nutritionalPlan.meals
+              .map((meal) => MealWidget(meal, _nutritionalPlan.allMealItems))
+              .toList(),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: ElevatedButton(
