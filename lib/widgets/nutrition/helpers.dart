@@ -18,6 +18,8 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:wger/models/nutrition/log.dart';
+import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/nutrition/nutritrional_values.dart';
 import 'package:wger/widgets/core/core.dart';
 
@@ -47,4 +49,19 @@ List<Widget> getMutedNutritionalValues(NutritionalValues values, BuildContext co
     ),
   ];
   return out;
+}
+List<Log> listOfIngredientsLog(NutritionalPlan nutritionalPlan) {
+  final List<Log> listOfIngredientMeal = [];
+  for (final meal in nutritionalPlan.meals) {
+    for (final mealItem in meal.mealItems) {
+      final ingredientInList =
+          listOfIngredientMeal.where((element) => element.ingredientId == mealItem.ingredientId);
+      if (ingredientInList.isEmpty) {
+        final log = Log.fromMealItem(mealItem, nutritionalPlan.id!, mealItem.id!);
+        log.ingredientObj = mealItem.ingredientObj;
+        listOfIngredientMeal.add(log);
+      }
+    }
+  }
+  return listOfIngredientMeal;
 }

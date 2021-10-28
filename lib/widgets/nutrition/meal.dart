@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/providers/nutrition.dart';
@@ -30,7 +31,7 @@ import 'package:wger/widgets/nutrition/helpers.dart';
 
 class MealWidget extends StatefulWidget {
   final Meal _meal;
-  final List<IngredientMeal> _listOfIngredientMeal;
+  final List<Log> _listOfIngredientMeal;
 
   const MealWidget(
     this._meal,
@@ -140,18 +141,6 @@ class _MealWidgetState extends State<MealWidget> {
       ),
     );
   }
-}
-
-class IngredientMeal {
-  final int ingredientCode;
-  final num ingredientQuantity;
-  final String ingredientName;
-
-  const IngredientMeal(
-    this.ingredientCode,
-    this.ingredientQuantity,
-    this.ingredientName,
-  );
 }
 
 class MealItemWidget extends StatelessWidget {

@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/nutrition/nutritrional_values.dart';
 import 'package:wger/providers/body_weight.dart';
@@ -28,6 +29,7 @@ import 'package:wger/screens/nutritional_diary_screen.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
+import 'package:wger/widgets/nutrition/helpers.dart';
 import 'package:wger/widgets/nutrition/meal.dart';
 
 class NutritionalPlanDetailWidget extends StatelessWidget {
@@ -44,17 +46,7 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
         ? _nutritionalPlan.gPerBodyKg(lastWeightEntry.weight, nutritionalValues)
         : null;
 
-    final List<IngredientMeal> listOfIngredientMeal = [];
-    for (final meal in _nutritionalPlan.meals) {
-      for (final mealItems in meal.mealItems) {
-        final ingredientInList = listOfIngredientMeal.where(
-            (element) => element.ingredientCode == mealItems.ingredientId);
-        if (ingredientInList.isEmpty) {
-          listOfIngredientMeal.add(IngredientMeal(mealItems.ingredientId,
-              mealItems.amount, mealItems.ingredientObj.name));
-        }
-      }
-    }
+    final List<Log> listOfIngredientMeal = listOfIngredientsLog(_nutritionalPlan);
 
     return SliverList(
       delegate: SliverChildListDelegate(

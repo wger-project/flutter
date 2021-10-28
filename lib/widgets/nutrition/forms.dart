@@ -24,12 +24,12 @@ import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/ui.dart';
+import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
-import 'package:wger/widgets/nutrition/meal.dart';
 
 class MealForm extends StatelessWidget {
   late Meal _meal;
@@ -116,7 +116,7 @@ class MealForm extends StatelessWidget {
 class MealItemForm extends StatelessWidget {
   final Meal _meal;
   late MealItem _mealItem;
-  final List<IngredientMeal> _listOfIngredientMeal;
+  final List<Log> _listOfIngredientMeal;
 
   MealItemForm(this._meal, this._listOfIngredientMeal, [mealItem]) {
     _mealItem = mealItem ?? MealItem.empty();
@@ -223,20 +223,17 @@ class MealItemForm extends StatelessWidget {
                                 Flexible(
                                     child: TextButton(
                                   child: Text(
-                                    '${_listOfIngredientMeal[index].ingredientQuantity.toStringAsFixed(0)}$unit ${_listOfIngredientMeal[index].ingredientName}',
+                                    '${_listOfIngredientMeal[index].amount.toStringAsFixed(0)}$unit ${_listOfIngredientMeal[index].ingredientObj.name}',
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                   onPressed: () {
                                     _ingredientController.text = 
-                                        _listOfIngredientMeal[index].ingredientName;
+                                        _listOfIngredientMeal[index].ingredientObj.name;
                                     _amountController.text =
-                                        _listOfIngredientMeal[index]
-                                            .ingredientQuantity
-                                            .toStringAsFixed(0);
+                                        _listOfIngredientMeal[index].amount.toStringAsFixed(0);
                                     _mealItem.ingredientId =
-                                        _listOfIngredientMeal[index].ingredientCode;
-                                    _mealItem.amount = _listOfIngredientMeal[index]
-                                        .ingredientQuantity;
+                                        _listOfIngredientMeal[index].ingredientId;
+                                    _mealItem.amount = _listOfIngredientMeal[index].amount;
                                   },
                                 )),
                               ],
