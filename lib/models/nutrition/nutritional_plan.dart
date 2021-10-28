@@ -22,8 +22,7 @@ import 'package:wger/helpers/json.dart';
 import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
-
-import 'nutritrional_values.dart';
+import 'package:wger/models/nutrition/nutritional_values.dart';
 
 part 'nutritional_plan.g.dart';
 

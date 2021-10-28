@@ -21,8 +21,7 @@ import 'package:wger/helpers/json.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/ingredient_weight_unit.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
-
-import 'nutritrional_values.dart';
+import 'package:wger/models/nutrition/nutritional_values.dart';
 
 part 'log.g.dart';
 

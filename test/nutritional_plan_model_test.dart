@@ -18,7 +18,7 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
-import 'package:wger/models/nutrition/nutritrional_values.dart';
+import 'package:wger/models/nutrition/nutritional_values.dart';
 
 import '../test_data/nutritional_plans.dart';
 
