@@ -24,7 +24,6 @@ import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/ui.dart';
-import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
@@ -116,10 +115,10 @@ class MealForm extends StatelessWidget {
 class MealItemForm extends StatelessWidget {
   final Meal _meal;
   late final MealItem _mealItem;
-  
-  final List<Log> _listOfIngredientMeal;
 
-  MealItemForm(this._meal, this._listOfIngredientMeal, [mealItem]) {
+  final List<MealItem> _listMealItems;
+
+  MealItemForm(this._meal, this._listMealItems, [mealItem]) {
     _mealItem = mealItem ?? MealItem.empty();
     _mealItem.mealId = _meal.id!;
   }
@@ -130,7 +129,7 @@ class MealItemForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  final String unit = AppLocalizations.of(context).g;
+    final String unit = AppLocalizations.of(context).g;
     return Container(
       margin: const EdgeInsets.all(20),
       child: Form(
@@ -204,48 +203,32 @@ class MealItemForm extends StatelessWidget {
                 Navigator.of(context).pop();
               },
             ),
-            if (_listOfIngredientMeal.isNotEmpty) SizedBox(height: 10.0),
+            if (_listMealItems.isNotEmpty) const SizedBox(height: 10.0),
             Container(
               child: Text(AppLocalizations.of(context).recentlyUsedIngredients),
-              padding: EdgeInsets.all(10.0)),
-              Expanded(
-                child: Scrollbar(
-                  isAlwaysShown: true,
-                  child: ListView.builder(
-                    itemCount: _listOfIngredientMeal.length,
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          SizedBox(
-                            width: double.infinity,
-                            child: Row(
-                              children: [
-                                Flexible(
-                                    child: TextButton(
-                                  child: Text(
-                                    '${_listOfIngredientMeal[index].amount.toStringAsFixed(0)}$unit ${_listOfIngredientMeal[index].ingredientObj.name}',
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  onPressed: () {
-                                    _ingredientController.text = 
-                                        _listOfIngredientMeal[index].ingredientObj.name;
-                                    _amountController.text =
-                                        _listOfIngredientMeal[index].amount.toStringAsFixed(0);
-                                    _mealItem.ingredientId =
-                                        _listOfIngredientMeal[index].ingredientId;
-                                    _mealItem.amount = _listOfIngredientMeal[index].amount;
-                                  },
-                                )),
-                              ],
-                            ),
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                ),
-              )
+              padding: const EdgeInsets.all(10.0),
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: _listMealItems.length,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  return Card(
+                    child: ListTile(
+                      onTap: () {
+                        _ingredientController.text = _listMealItems[index].ingredientObj.name;
+                        _amountController.text = _listMealItems[index].amount.toStringAsFixed(0);
+                        _mealItem.ingredientId = _listMealItems[index].ingredientId;
+                        _mealItem.amount = _listMealItems[index].amount;
+                      },
+                      title: Text(_listMealItems[index].ingredientObj.name),
+                      subtitle: Text('${_listMealItems[index].amount.toStringAsFixed(0)}$unit'),
+                      trailing: const Icon(Icons.copy),
+                    ),
+                  );
+                },
+              ),
+            )
           ],
         ),
       ),

@@ -480,7 +480,7 @@
   "@selectIngredient": {
     "description": "Error message when the user hasn't selected an ingredient from the autocompleter"
   },
-  "recentlyUsedIngredients": "Recently used ingredients. Please select one of ingredients.",
+  "recentlyUsedIngredients": "Recently added ingredients",
   "@recentlyUsedIngredients": {
     "description": "A message when a user adds a new ingredient to a meal."
   },

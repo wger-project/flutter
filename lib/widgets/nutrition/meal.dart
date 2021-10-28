@@ -20,7 +20,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/providers/nutrition.dart';
@@ -31,11 +30,11 @@ import 'package:wger/widgets/nutrition/helpers.dart';
 
 class MealWidget extends StatefulWidget {
   final Meal _meal;
-  final List<Log> _listOfIngredientMeal;
+  final List<MealItem> _listMealItems;
 
   const MealWidget(
     this._meal,
-    this._listOfIngredientMeal,
+    this._listMealItems,
   );
 
   @override
@@ -130,7 +129,7 @@ class _MealWidgetState extends State<MealWidget> {
                   FormScreen.routeName,
                   arguments: FormScreenArguments(
                     AppLocalizations.of(context).addIngredient,
-                    MealItemForm(widget._meal, widget._listOfIngredientMeal),
+                    MealItemForm(widget._meal, widget._listMealItems),
                     hasListView: true,
                   ),
                 );

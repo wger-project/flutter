@@ -20,7 +20,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/nutrition/nutritrional_values.dart';
 import 'package:wger/providers/body_weight.dart';
@@ -29,7 +28,6 @@ import 'package:wger/screens/nutritional_diary_screen.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
-import 'package:wger/widgets/nutrition/helpers.dart';
 import 'package:wger/widgets/nutrition/meal.dart';
 
 class NutritionalPlanDetailWidget extends StatelessWidget {
@@ -46,15 +44,13 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
         ? _nutritionalPlan.gPerBodyKg(lastWeightEntry.weight, nutritionalValues)
         : null;
 
-    final List<Log> listOfIngredientMeal = listOfIngredientsLog(_nutritionalPlan);
-
     return SliverList(
       delegate: SliverChildListDelegate(
         [
           const SizedBox(height: 10),
-          
-          ..._nutritionalPlan.meals.map((meal) => MealWidget(meal, listOfIngredientMeal)).toList(),
-          
+          ..._nutritionalPlan.meals
+              .map((meal) => MealWidget(meal, _nutritionalPlan.allMealItems))
+              .toList(),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: ElevatedButton(
