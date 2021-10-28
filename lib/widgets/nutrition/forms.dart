@@ -115,7 +115,7 @@ class MealForm extends StatelessWidget {
 
 class MealItemForm extends StatelessWidget {
   final Meal _meal;
-  late MealItem _mealItem;
+  late final MealItem _mealItem;
   final List<Log> _listOfIngredientMeal;
 
   MealItemForm(this._meal, this._listOfIngredientMeal, [mealItem]) {
