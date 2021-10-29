@@ -1,5 +1,5 @@
 {
-  "todaysWorkout": "Vaš današnji trening",
+  "todaysWorkout": "Tvoj današnji trening",
   "@todaysWorkout": {},
   "mealLogged": "Obrok prijavljen u dnevnik",
   "@mealLogged": {},
@@ -13,7 +13,7 @@
   },
   "username": "Korisničko ime",
   "@username": {},
-  "passwordsDontMatch": "Zaporke se ne podudaraju",
+  "passwordsDontMatch": "Lozinke se ne podudaraju",
   "@passwordsDontMatch": {
     "description": "Error message when the user enters two different passwords during registration"
   },
@@ -25,21 +25,21 @@
   "@password": {},
   "confirmPassword": "Potvrdi lozinku",
   "@confirmPassword": {},
-  "invalidEmail": "Molimo unesite valjanu adresu e-pošte",
+  "invalidEmail": "Upiši valjanu e-mail adresu",
   "@invalidEmail": {
     "description": "Error message when the user enters an invalid email"
   },
   "email": "E-mail adresa",
   "@email": {},
-  "invalidUrl": "Unesite važeći URL",
+  "invalidUrl": "Upiši važeći URL",
   "@invalidUrl": {
     "description": "Error message when the user enters an invalid URL, e.g. in the login form"
   },
-  "useCustomServer": "Koristite prilagođeni poslužitelj",
+  "useCustomServer": "Koristi prilagođeni poslužitelj",
   "@useCustomServer": {
     "description": "Toggle button allowing users to switch between the default and a custom wger server"
   },
-  "invalidUsername": "Molimo unesite važeće korisničko ime",
+  "invalidUsername": "Upiši važeće korisničko ime",
   "@invalidUsername": {
     "description": "Error message when the user enters an invalid username"
   },
@@ -47,19 +47,19 @@
   "@customServerUrl": {
     "description": "Label in the form where the users can enter their own wger instance"
   },
-  "customServerHint": "Unesite adresu vlastitog poslužitelja, inače će se koristiti zadana",
+  "customServerHint": "Upiši adresu vlastitog poslužitelja, inače će se koristiti zadana",
   "@customServerHint": {
     "description": "Hint text for the form where the users can enter their own wger instance"
   },
-  "registerInstead": "Umjesto toga se registrirajte",
+  "registerInstead": "Umjesto toga se registriraj",
   "@registerInstead": {},
-  "loginInstead": "Umjesto toga se prijavite",
+  "loginInstead": "Umjesto toga se prijavi",
   "@loginInstead": {},
-  "labelWorkoutPlans": "Planovi vježbanja",
+  "labelWorkoutPlans": "Planovi treninga",
   "@labelWorkoutPlans": {
     "description": "Title for screen workout plans"
   },
-  "labelBottomNavWorkout": "Vježbanje",
+  "labelBottomNavWorkout": "Trening",
   "@labelBottomNavWorkout": {
     "description": "Label used in bottom navigation, use a short word"
   },
@@ -71,7 +71,7 @@
   "@labelWorkoutLogs": {
     "description": "(Workout) logs"
   },
-  "labelWorkoutPlan": "Plan vježbanja",
+  "labelWorkoutPlan": "Plan treninga",
   "@labelWorkoutPlan": {
     "description": "Title for screen workout plan"
   },
@@ -91,7 +91,7 @@
   "@exercise": {
     "description": "An exercise for a workout"
   },
-  "logHelpEntriesUnits": "Imajte na umu da su ovdje ucrtani samo unosi s jedinicom težine (kg ili lb) i ponavljanjima, druge kombinacije kao što su vrijeme ili do neuspjeha.",
+  "logHelpEntriesUnits": "Imaj na umu da su ovdje ucrtani samo unosi s jedinicom težine (kg ili lb) i ponavljanjima, druge kombinacije kao što su vrijeme ili do neuspjeha se ovdje zanemaruju.",
   "@logHelpEntriesUnits": {},
   "description": "Opis",
   "@description": {},
@@ -101,9 +101,9 @@
   },
   "nutritionalDiary": "Dnevnik prehrane",
   "@nutritionalDiary": {},
-  "nutritionalPlans": "Prehrambeni planovi",
+  "nutritionalPlans": "Planovi prehrane",
   "@nutritionalPlans": {},
-  "noNutritionalPlans": "Nemate planove prehrane",
+  "noNutritionalPlans": "Nemaš planove prehrane",
   "@noNutritionalPlans": {
     "description": "Message shown when the user has no nutritional plans"
   },
@@ -119,9 +119,9 @@
   "@measurements": {
     "description": "Categories for the measurements such as biceps size, body fat, etc."
   },
-  "measurementCategoriesHelpText": "Kategorija mjerenja, kao što su \"bicepsi\" ili \"tjelesna mast\"",
+  "measurementCategoriesHelpText": "Kategorija mjerenja, kao što su „bicepsi” ili „tjelesna mast”",
   "@measurementCategoriesHelpText": {},
-  "measurementEntriesHelpText": "Jedinica koja se koristi za mjerenje kategorije kao što je 'cm' ili '%'",
+  "measurementEntriesHelpText": "Jedinica koja se koristi za mjerenje kategorije kao što su „cm” ili „%”",
   "@measurementEntriesHelpText": {},
   "date": "Datum",
   "@date": {
@@ -135,21 +135,21 @@
   "@reps": {
     "description": "Shorthand for repetitions, used when space constraints are tighter"
   },
-  "rir": "RiR",
+  "rir": "Rezervna ponavljanja",
   "@rir": {
     "description": "Shorthand for Repetitions In Reserve"
   },
-  "rirNotUsed": "RiR se ne koristi",
+  "rirNotUsed": "Rezervna ponavljanja se ne koriste",
   "@rirNotUsed": {
     "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
   },
   "macronutrients": "Makronutrijenti",
   "@macronutrients": {},
-  "planned": "Planirani",
+  "planned": "Planirano",
   "@planned": {
     "description": "Header for the column of 'planned' nutritional values, i.e. what should be eaten"
   },
-  "logged": "Zabilježen",
+  "logged": "Zabilježeno",
   "@logged": {
     "description": "Header for the column of 'logged' nutritional values, i.e. what was eaten"
   },
@@ -201,7 +201,7 @@
   "@toggleDetails": {
     "description": "Switch to toggle detail / overview"
   },
-  "aboutBugsText": "Javite se ako se nešto nije ponašalo kako ste očekivali ili ako postoji značajka za koju smatrate da nedostaje.",
+  "aboutBugsText": "Javi ako se nešto ponaša neočekivano ili ako smatraš da nedostaje neka funkcija.",
   "@aboutBugsText": {
     "description": "Text for bugs section in the about dialog"
   },
@@ -209,19 +209,19 @@
   "@aboutContactUsTitle": {
     "description": "Title for contact us section in the about dialog"
   },
-  "enterRepetitionsOrWeight": "Molimo vas da ispunite ili ponavljanja ili težinu za barem jedan od setova",
+  "enterRepetitionsOrWeight": "Ispuni ponavljanja ili težinu za barem jedan od setova",
   "@enterRepetitionsOrWeight": {
     "description": "Error message when the user hasn't filled in the forms for exercise sets"
   },
-  "enterValue": "Molimo unesite vrijednost",
+  "enterValue": "Upiši vrijednost",
   "@enterValue": {
     "description": "Error message when the user hasn't entered a value on a required field"
   },
-  "selectExercise": "Odaberite vježbu",
+  "selectExercise": "Odaberi vježbu",
   "@selectExercise": {
     "description": "Error message when the user hasn't selected an exercise in the form"
   },
-  "enterCharacters": "Unesite znakove između {min} i {max}",
+  "enterCharacters": "Upiši znakove između {min} i {max}",
   "@enterCharacters": {
     "description": "Error message when the user hasn't entered the correct number of characters in a form",
     "type": "text",
@@ -230,7 +230,7 @@
       "max": {}
     }
   },
-  "nrOfSets": "Setovi po vježbi: {nrOfSets}",
+  "nrOfSets": "Broj setova po vježbi: {nrOfSets}",
   "@nrOfSets": {
     "description": "Label shown on the slider where the user selects the nr of sets",
     "type": "text",
@@ -238,20 +238,20 @@
       "nrOfSets": {}
     }
   },
-  "setUnitsAndRir": "Postavite jedinice i RiR",
+  "setUnitsAndRir": "Postavi jedinice i rezervna ponavljanja",
   "@setUnitsAndRir": {
     "description": "Label shown on the slider where the user can toggle showing units and RiR",
     "type": "text"
   },
-  "enterValidNumber": "Unesite važeći broj",
+  "enterValidNumber": "Upiši važeći broj",
   "@enterValidNumber": {
     "description": "Error message when the user has submitted an invalid number (e.g. '3,.,.,.')"
   },
-  "selectIngredient": "Molimo odaberite sastojak",
+  "selectIngredient": "Odaberi sastojak",
   "@selectIngredient": {
     "description": "Error message when the user hasn't selected an ingredient from the autocompleter"
   },
-  "selectImage": "Molimo odaberite sliku",
+  "selectImage": "Odaberi sliku",
   "@selectImage": {
     "description": "Label and error message when the user hasn't selected an image to save"
   },
@@ -259,13 +259,13 @@
   "@optionsLabel": {
     "description": "Label for the popup with general app options"
   },
-  "takePicture": "Napravi fotografiju",
+  "takePicture": "Snimi sliku",
   "@takePicture": {},
-  "chooseFromLibrary": "Odaberite iz biblioteke fotografija",
+  "chooseFromLibrary": "Odaberi iz biblioteke slika",
   "@chooseFromLibrary": {},
   "gallery": "Galerija",
   "@gallery": {},
-  "addImage": "Dodajte sliku",
+  "addImage": "Dodaj sliku",
   "@addImage": {},
   "dataCopied": "Podaci kopirani u novi unos",
   "@dataCopied": {
@@ -277,11 +277,11 @@
   },
   "logHelpEntries": "Ako u jednom danu postoji više od jednog unosa s istim brojem ponavljanja, ali različitim težinama, na dijagramu je prikazan samo unos s većom težinom.",
   "@logHelpEntries": {},
-  "addSet": "Dodaj skup",
+  "addSet": "Dodaj set",
   "@addSet": {
     "description": "Label for the button that adds a set (to a workout day)"
   },
-  "addMeal": "Dodajte obrok",
+  "addMeal": "Dodaj obrok",
   "@addMeal": {},
   "nutritionalPlan": "Plan prehrane",
   "@nutritionalPlan": {},
@@ -301,7 +301,7 @@
   "@register": {
     "description": "Text for registration button"
   },
-  "reset": "Poništi",
+  "reset": "Resetiraj",
   "@reset": {
     "description": "Button text allowing the user to reset the entered values to the default"
   },
@@ -315,9 +315,9 @@
   "@energyShort": {
     "description": "The first letter or short name of the word 'Energy', used in overviews"
   },
-  "addIngredient": "Dodajte sastojak",
+  "addIngredient": "Dodaj sastojak",
   "@addIngredient": {},
-  "logMeal": "Prijavite ovaj obrok",
+  "logMeal": "Zapiši ovaj obrok",
   "@logMeal": {},
   "value": "Vrijednost",
   "@value": {
@@ -331,7 +331,7 @@
   "@timeStart": {
     "description": "The starting time of a workout"
   },
-  "timeStartAhead": "Vrijeme početka ne može biti ispred vremena završetka",
+  "timeStartAhead": "Vrijeme početka ne može biti prije vremena završetka",
   "@timeStartAhead": {},
   "ingredient": "Sastojak",
   "@ingredient": {},
@@ -341,7 +341,7 @@
   },
   "protein": "Proteini",
   "@protein": {},
-  "goToToday": "Idite na danas",
+  "goToToday": "Idi na danas",
   "@goToToday": {
     "description": "Label on button to jump back to 'today' in the calendar widget"
   },
@@ -355,7 +355,7 @@
   },
   "edit": "Uredi",
   "@edit": {},
-  "confirmDelete": "Jeste li sigurni da želite izbrisati '{toDelete}'?",
+  "confirmDelete": "Stvarno želiš izbrisati „{toDelete}”?",
   "@confirmDelete": {
     "description": "Confirmation text before the user deletes an object",
     "type": "text",
@@ -365,7 +365,7 @@
   },
   "newNutritionalPlan": "Novi plan prehrane",
   "@newNutritionalPlan": {},
-  "noWorkoutPlans": "Nemate planove vježbanja",
+  "noWorkoutPlans": "Nemaš planove treninga",
   "@noWorkoutPlans": {
     "description": "Message shown when the user has no workout plans"
   },
@@ -377,7 +377,7 @@
   "@newEntry": {
     "description": "Title when adding a new entry such as a weight or log entry"
   },
-  "noWeightEntries": "Nemate unosa težine",
+  "noWeightEntries": "Nemaš unose težine",
   "@noWeightEntries": {
     "description": "Message shown when the user has no logged weight entries"
   },
@@ -385,11 +385,11 @@
   "@loadingText": {
     "description": "Text to show when entries are being loaded in the background: Loading..."
   },
-  "delete": "Izbrisati",
+  "delete": "Izbriši",
   "@delete": {},
   "goToDetailPage": "Idi na stranicu s detaljima",
   "@goToDetailPage": {},
-  "aboutDescription": "Hvala vam što koristite wger! wger je suradnički projekt otvorenog koda koji su izradili ljubitelji fitnesa iz cijelog svijeta.",
+  "aboutDescription": "Hvala što koristiš wger! wger je suradnički projekt otvorenog koda koji su izradili ljubitelji fitnesa iz cijelog svijeta.",
   "@aboutDescription": {
     "description": "Text in the about dialog"
   },
@@ -397,15 +397,15 @@
   "@aboutSourceTitle": {
     "description": "Title for source code section in the about dialog"
   },
-  "aboutBugsTitle": "Imate li problem ili ideju?",
+  "aboutBugsTitle": "Imaš problem ili ideju?",
   "@aboutBugsTitle": {
     "description": "Title for bugs section in the about dialog"
   },
-  "aboutContactUsText": "Ako želite razgovarati s nama, skočite na Discord poslužitelja i kontaktirajte nas",
+  "aboutContactUsText": "Ako želi razgovarati s nama, skoči na Discord poslužitelj i kontaktiraj nas",
   "@aboutContactUsText": {
     "description": "Text for contact us section in the about dialog"
   },
-  "aboutSourceText": "Preuzmite izvorni kod ove aplikacije i njezinog poslužitelj na githubu",
+  "aboutSourceText": "Preuzmi izvorni kod ove aplikacije i njezinog poslužitelja na githubu",
   "@aboutSourceText": {
     "description": "Text for source code section in the about dialog"
   },
@@ -413,7 +413,7 @@
   "@aboutTranslationTitle": {
     "description": "Title for translation section in the about dialog"
   },
-  "aboutTranslationText": "Ova je aplikacija prevedena preko weblatea. Ako i vi želite pomoći, kliknite vezu i počnite prevoditi",
+  "aboutTranslationText": "Ova je aplikacija prevedena putem Weblatea. Ako i ti želiš pomoći, klikni poveznicu i počni prevoditi",
   "@aboutTranslationText": {
     "description": "Text for translation section in the about dialog"
   },
@@ -427,7 +427,7 @@
   "@equipment": {
     "description": "Equipment needed to perform an exercise"
   },
-  "supersetWith": "nadskup sa",
+  "supersetWith": "u skupu setova sa",
   "@supersetWith": {
     "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
   },
@@ -435,11 +435,11 @@
   "@category": {
     "description": "Category for an exercise, ingredient, etc."
   },
-  "newWorkout": "Novi plan vježbanja",
+  "newWorkout": "Novi plan treninga",
   "@newWorkout": {
     "description": "Header when adding a new workout"
   },
-  "searchExercise": "Pretražite vježbe za dodavanje",
+  "searchExercise": "Traži vježbe koje želiš dodati",
   "@searchExercise": {
     "description": "Label on set form. Selected exercises are added to the set"
   },
@@ -449,7 +449,7 @@
   },
   "dayDescriptionHelp": "Opis onoga što se radi na današnji dan (npr. 'Pull day') ili koji su dijelovi tijela trenirani (npr. 'Prsa i ramena')",
   "@dayDescriptionHelp": {},
-  "setNr": "Skup {nr}",
+  "setNr": "Set {nr}",
   "@setNr": {
     "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
     "type": "text",
@@ -457,7 +457,7 @@
       "nr": {}
     }
   },
-  "sameRepetitions": "Ako radite ista ponavljanja i težinu za sve setove, možete samo ispuniti jedan red. Na primjer, za 4 seta samo unesite 10 za ponavljanja, to automatski postaje \"4 x 10\".",
+  "sameRepetitions": "Ako radiš ista ponavljanja i težinu za sve setove, ispuni jedan redak. Na primjer, za 4 seta jednostavno upiši 10 za ponavljanja, to automatski postaje „4 × 10”.",
   "@sameRepetitions": {},
   "comment": "Komentar",
   "@comment": {
@@ -471,17 +471,17 @@
   "@notes": {
     "description": "Personal notes, e.g. for a workout session"
   },
-  "workoutSession": "Sesija vježbanja",
+  "workoutSession": "Sesija treninga",
   "@workoutSession": {
     "description": "A (logged) workout session"
   },
   "newDay": "Novi dan",
   "@newDay": {},
-  "newSet": "Novi skup",
+  "newSet": "Novi set",
   "@newSet": {
     "description": "Header when adding a new set to a workout day"
   },
-  "selectExercises": "Ako želite napraviti superset, možete potražiti nekoliko vježbi, one će biti grupirane zajedno",
+  "selectExercises": "Ako želiš izraditi skup setova, potraži nekoliko vježbi i one će se spojiti u jednu grupu",
   "@selectExercises": {},
   "gymMode": "Način rada u teretani",
   "@gymMode": {
@@ -501,14 +501,18 @@
   },
   "weightUnit": "Jedinica težine",
   "@weightUnit": {},
-  "appUpdateTitle": "Potrebno ažuriranje",
+  "appUpdateTitle": "Potrebna je nova verzija",
   "@appUpdateTitle": {},
-  "appUpdateContent": "Ova verzija aplikacije nije kompatibilna s poslužiteljem. Molimo ažurirajte svoju aplikaciju.",
+  "appUpdateContent": "Ova verzija aplikacije nije kompatibilna s poslužiteljem. Aktualiziraj svoju aplikaciju.",
   "@appUpdateContent": {},
-  "set": "Skup",
+  "set": "Set",
   "@set": {
     "description": "A set in a workout plan"
   },
-  "repetitionUnit": "Jedinica za ponavljanje",
-  "@repetitionUnit": {}
+  "repetitionUnit": "Jedinica ponavljanja",
+  "@repetitionUnit": {},
+  "recentlyUsedIngredients": "Nedavno dodani sastojci",
+  "@recentlyUsedIngredients": {
+    "description": "A message when a user adds a new ingredient to a meal."
+  }
 }
