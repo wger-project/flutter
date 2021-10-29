@@ -771,6 +771,8 @@ class RiRInputWidget extends StatefulWidget {
 }
 
 class _RiRInputWidgetState extends State<RiRInputWidget> {
+  late double currentSetSliderValueMutable = widget._currentSetSliderValue;
+
   /// Returns the string used in the slider
   String getSliderLabel(double value) {
     if (value < 0) {
@@ -800,15 +802,15 @@ class _RiRInputWidgetState extends State<RiRInputWidget> {
         Text(AppLocalizations.of(context).rir),
         Expanded(
           child: Slider(
-            value: widget._currentSetSliderValue,
+            value: currentSetSliderValueMutable,
             min: RiRInputWidget.SLIDER_START,
             max: (Setting.POSSIBLE_RIR_VALUES.length - 2) / 2,
             divisions: Setting.POSSIBLE_RIR_VALUES.length - 1,
-            label: getSliderLabel(widget._currentSetSliderValue),
+            label: getSliderLabel(currentSetSliderValueMutable),
             onChanged: (double value) {
               widget._setting.setRir(mapDoubleToAllowedRir(value));
               setState(() {
-                widget._currentSetSliderValue = value;
+                currentSetSliderValueMutable = value;
               });
             },
           ),
