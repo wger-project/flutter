@@ -61,6 +61,7 @@ class LogChartWidget extends StatelessWidget {
             behaviors: [
               charts.SeriesLegend(
                 position: charts.BehaviorPosition.bottom,
+                desiredMaxColumns: 4,
               ),
               charts.RangeAnnotation([
                 charts.LineAnnotationSegment(
