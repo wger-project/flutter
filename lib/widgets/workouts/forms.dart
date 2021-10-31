@@ -746,8 +746,8 @@ class WeightInputWidget extends StatelessWidget {
 /// Can be used with a Setting or a Log object
 class RiRInputWidget extends StatefulWidget {
   final dynamic _setting;
-  late final String dropdownValue;
-  late final double _currentSetSliderValue;
+  late String dropdownValue;
+  late double _currentSetSliderValue;
 
   static const SLIDER_START = -0.5;
 
