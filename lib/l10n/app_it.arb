@@ -510,5 +510,9 @@
     "description": "Header for the column of 'planned' nutritional values, i.e. what should be eaten"
   },
   "measurement": "Misura",
-  "@measurement": {}
+  "@measurement": {},
+  "recentlyUsedIngredients": "Ingredienti aggiunti di recente",
+  "@recentlyUsedIngredients": {
+    "description": "A message when a user adds a new ingredient to a meal."
+  }
 }
