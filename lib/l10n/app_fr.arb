@@ -522,5 +522,9 @@
   "appUpdateTitle": "Mise à jour nécessaire",
   "@appUpdateTitle": {},
   "appUpdateContent": "Cette version de l'application n'est pas compatible avec le serveur, veuillez mettre à jour votre application.",
-  "@appUpdateContent": {}
+  "@appUpdateContent": {},
+  "recentlyUsedIngredients": "Ingrédients récemment ajoutés",
+  "@recentlyUsedIngredients": {
+    "description": "A message when a user adds a new ingredient to a meal."
+  }
 }
