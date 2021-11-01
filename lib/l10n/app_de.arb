@@ -527,5 +527,9 @@
   "carbohydratesShort": "K",
   "@carbohydratesShort": {
     "description": "The first letter or short name of the word 'Carbohydrates', used in overviews"
+  },
+  "recentlyUsedIngredients": "Kürzlich hinzugefügte Zutaten",
+  "@recentlyUsedIngredients": {
+    "description": "A message when a user adds a new ingredient to a meal."
   }
 }
