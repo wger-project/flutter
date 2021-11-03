@@ -44,7 +44,19 @@ class NutritionalPlanScreen extends StatelessWidget {
 
     return Scaffold(
       //appBar: getAppBar(nutritionalPlan),
-      //drawer: AppDrawer(),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.history_edu),
+        onPressed: () {
+          Navigator.pushNamed(
+            context,
+            FormScreen.routeName,
+            arguments: FormScreenArguments(
+              AppLocalizations.of(context).logIngredient,
+              IngredientLogForm(_nutritionalPlan),
+            ),
+          );
+        },
+      ),
       body: CustomScrollView(
         slivers: <Widget>[
           SliverAppBar(
