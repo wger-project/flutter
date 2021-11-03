@@ -108,6 +108,11 @@ class MockExercisesProvider extends _i1.Mock implements _i8.ExercisesProvider {
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future<void>.value()) as _i9.Future<void>);
   @override
+  _i9.Future<void> fetchAndSetVariations() =>
+      (super.noSuchMethod(Invocation.method(#fetchAndSetVariations, []),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i9.Future<void>);
+  @override
   _i9.Future<void> fetchAndSetMuscles() =>
       (super.noSuchMethod(Invocation.method(#fetchAndSetMuscles, []),
           returnValue: Future<void>.value(),
@@ -154,6 +159,11 @@ class MockExercisesProvider extends _i1.Mock implements _i8.ExercisesProvider {
   List<_i3.Exercise> mapComments(dynamic data, List<_i3.Exercise>? exercises) =>
       (super.noSuchMethod(Invocation.method(#mapComments, [data, exercises]),
           returnValue: <_i3.Exercise>[]) as List<_i3.Exercise>);
+  @override
+  _i9.Future<void> checkExerciseCacheVersion() =>
+      (super.noSuchMethod(Invocation.method(#checkExerciseCacheVersion, []),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i9.Future<void>);
   @override
   _i9.Future<void> fetchAndSetExercises() =>
       (super.noSuchMethod(Invocation.method(#fetchAndSetExercises, []),
