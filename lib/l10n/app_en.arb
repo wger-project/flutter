@@ -250,6 +250,12 @@
   "@logMeal": {},
   "addIngredient": "Add ingredient",
   "@addIngredient": {},
+  "logIngredient": "Save to nutrition diary",
+  "@logIngredient": {},
+  "searchIngredient": "Search ingredient",
+  "@searchIngredient": {
+    "description": "Label on ingredient search form"
+  },
   "nutritionalPlan": "Nutritional plan",
   "@nutritionalPlan": {},
   "nutritionalDiary": "Nutritional diary",
@@ -487,6 +493,10 @@
   "selectIngredient": "Please select an ingredient",
   "@selectIngredient": {
     "description": "Error message when the user hasn't selected an ingredient from the autocompleter"
+  },
+  "recentlyUsedIngredients": "Recently added ingredients",
+  "@recentlyUsedIngredients": {
+    "description": "A message when a user adds a new ingredient to a meal."
   },
   "selectImage": "Please select an image",
   "@selectImage": {

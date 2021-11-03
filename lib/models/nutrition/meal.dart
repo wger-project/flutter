@@ -20,8 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
-
-import 'nutritrional_values.dart';
+import 'package:wger/models/nutrition/nutritional_values.dart';
 
 part 'meal.g.dart';
 

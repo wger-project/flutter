@@ -21,8 +21,7 @@ import 'package:wger/helpers/json.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/ingredient_weight_unit.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
-
-import 'nutritrional_values.dart';
+import 'package:wger/models/nutrition/nutritional_values.dart';
 
 part 'log.g.dart';
 
@@ -30,6 +29,9 @@ part 'log.g.dart';
 class Log {
   @JsonKey(required: true)
   int? id;
+
+  @JsonKey(required: false, name: 'meal')
+  int? mealId;
 
   @JsonKey(required: true, name: 'plan')
   int planId;
@@ -56,6 +58,7 @@ class Log {
 
   Log({
     this.id,
+    required this.mealId,
     required this.ingredientId,
     required this.weightUnitId,
     required this.amount,
@@ -64,7 +67,7 @@ class Log {
     this.comment,
   });
 
-  Log.fromMealItem(MealItem mealItem, this.planId, [DateTime? dateTime]) {
+  Log.fromMealItem(MealItem mealItem, this.planId, this.mealId, [DateTime? dateTime]) {
     ingredientId = mealItem.ingredientId;
     ingredientObj = mealItem.ingredientObj;
     weightUnitId = mealItem.weightUnitId;

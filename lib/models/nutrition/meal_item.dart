@@ -20,8 +20,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/ingredient_weight_unit.dart';
-
-import 'nutritrional_values.dart';
+import 'package:wger/models/nutrition/nutritional_values.dart';
 
 part 'meal_item.g.dart';
 

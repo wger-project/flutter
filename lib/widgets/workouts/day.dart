@@ -101,7 +101,7 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
   void initState() {
     super.initState();
     _sets = widget._day.sets;
-    _sets.sort((a, b) => a.order!.compareTo(b.order!));
+    _sets.sort((a, b) => a.order.compareTo(b.order));
   }
 
   void _toggleExpanded() {

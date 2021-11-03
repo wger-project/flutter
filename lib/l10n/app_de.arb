@@ -297,7 +297,7 @@
   },
   "selectExercises": "Wenn du einen Supersatz machen willst, kannst du nach mehreren Übungen suchen, sie werden dann gruppiert",
   "@selectExercises": {},
-  "sameRepetitions": "Wenn du für alle Sätze die gleichen Wiederholungen und das gleiche Gewicht verwendest, kannst du nur eine Zeile ausfüllen. Gebe z. B. für 4 Sätze einfach 10 für die Wiederholungen ein, daraus wird automatisch \"4 x 10\".",
+  "sameRepetitions": "Wenn du für alle Sätze die gleichen Wiederholungen und das gleiche Gewicht verwendest, kannst du nur eine Zeile ausfüllen. Gebe z. B. für 4 Sätze einfach 10 für die Wiederholungen ein, daraus wird automatisch „4 × 10„.",
   "@sameRepetitions": {},
   "setNr": "Satz {nr}",
   "@setNr": {
@@ -307,7 +307,7 @@
       "nr": {}
     }
   },
-  "dayDescriptionHelp": "Eine Beschreibung was an diesem Tag gemacht wird (z. B. \"Zugtag\") oder welche Körperteile trainiert werden (z. B. \"Brust und Schultern\")",
+  "dayDescriptionHelp": "Eine Beschreibung was an diesem Tag gemacht wird (z. B. „Zugtag“) oder welche Körperteile trainiert werden (z. B. „Brust und Schultern“)",
   "@dayDescriptionHelp": {},
   "set": "Satz",
   "@set": {
@@ -494,9 +494,9 @@
   "@value": {
     "description": "The value of a measurement entry"
   },
-  "measurementCategoriesHelpText": "Messkategorie, z. B. \"Bizeps\" oder \"Körperfett\"",
+  "measurementCategoriesHelpText": "Messkategorie, z. B. „Bizeps“ oder „Körperfett“",
   "@measurementCategoriesHelpText": {},
-  "measurementEntriesHelpText": "Die Einheit, die verwendet wird, um die Kategorie zu messen, wie z.B. 'cm' oder '%'",
+  "measurementEntriesHelpText": "Die Einheit, die verwendet wird, um die Kategorie zu messen, wie z.B. „cm“ oder „%“",
   "@measurementEntriesHelpText": {},
   "fatShort": "F",
   "@fatShort": {
@@ -509,5 +509,27 @@
   "proteinShort": "P",
   "@proteinShort": {
     "description": "The first letter or short name of the word 'Protein', used in overviews"
+  },
+  "measurement": "Messung",
+  "@measurement": {},
+  "appUpdateContent": "Diese Version der Anwendung ist nicht mit dem Server kompatibel, bitte aktualisieren Sie Ihre Anwendung.",
+  "@appUpdateContent": {},
+  "appUpdateTitle": "Aktualisierung erforderlich",
+  "@appUpdateTitle": {},
+  "measurements": "Messungen",
+  "@measurements": {
+    "description": "Categories for the measurements such as biceps size, body fat, etc."
+  },
+  "dataCopied": "Daten in neuen Eintrag kopiert",
+  "@dataCopied": {
+    "description": "Snackbar message to show on copying data to a new log entry"
+  },
+  "carbohydratesShort": "K",
+  "@carbohydratesShort": {
+    "description": "The first letter or short name of the word 'Carbohydrates', used in overviews"
+  },
+  "recentlyUsedIngredients": "Kürzlich hinzugefügte Zutaten",
+  "@recentlyUsedIngredients": {
+    "description": "A message when a user adds a new ingredient to a meal."
   }
 }

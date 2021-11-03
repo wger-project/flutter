@@ -30,9 +30,11 @@ import 'package:wger/widgets/nutrition/helpers.dart';
 
 class MealWidget extends StatefulWidget {
   final Meal _meal;
+  final List<MealItem> _listMealItems;
 
   const MealWidget(
     this._meal,
+    this._listMealItems,
   );
 
   @override
@@ -127,7 +129,7 @@ class _MealWidgetState extends State<MealWidget> {
                   FormScreen.routeName,
                   arguments: FormScreenArguments(
                     AppLocalizations.of(context).addIngredient,
-                    MealItemForm(widget._meal),
+                    MealItemForm(widget._meal, widget._listMealItems),
                     hasListView: true,
                   ),
                 );

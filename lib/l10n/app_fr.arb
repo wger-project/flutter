@@ -518,5 +518,13 @@
   "proteinShort": "P",
   "@proteinShort": {
     "description": "The first letter or short name of the word 'Protein', used in overviews"
+  },
+  "appUpdateTitle": "Mise à jour nécessaire",
+  "@appUpdateTitle": {},
+  "appUpdateContent": "Cette version de l'application n'est pas compatible avec le serveur, veuillez mettre à jour votre application.",
+  "@appUpdateContent": {},
+  "recentlyUsedIngredients": "Ingrédients récemment ajoutés",
+  "@recentlyUsedIngredients": {
+    "description": "A message when a user adds a new ingredient to a meal."
   }
 }

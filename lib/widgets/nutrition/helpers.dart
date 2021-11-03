@@ -18,7 +18,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:wger/models/nutrition/nutritrional_values.dart';
+import 'package:wger/models/nutrition/nutritional_values.dart';
 import 'package:wger/widgets/core/core.dart';
 
 List<Widget> getMutedNutritionalValues(NutritionalValues values, BuildContext context) {

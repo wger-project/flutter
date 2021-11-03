@@ -21,8 +21,8 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal.dart';
-
-import 'nutritrional_values.dart';
+import 'package:wger/models/nutrition/meal_item.dart';
+import 'package:wger/models/nutrition/nutritional_values.dart';
 
 part 'nutritional_plan.g.dart';
 
@@ -132,6 +132,23 @@ class NutritionalPlan {
       }
     }
 
+    return out;
+  }
+
+  /// Helper that returns all meal items for the current plan
+  ///
+  /// Duplicated ingredients are removed
+  List<MealItem> get allMealItems {
+    final List<MealItem> out = [];
+    for (final meal in meals) {
+      for (final mealItem in meal.mealItems) {
+        final ingredientInList = out.where((e) => e.ingredientId == mealItem.ingredientId);
+
+        if (ingredientInList.isEmpty) {
+          out.add(mealItem);
+        }
+      }
+    }
     return out;
   }
 }

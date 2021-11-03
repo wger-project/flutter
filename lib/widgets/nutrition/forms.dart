@@ -18,7 +18,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
@@ -29,6 +28,7 @@ import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
+import 'package:wger/widgets/nutrition/widgets.dart';
 
 class MealForm extends StatelessWidget {
   late final Meal _meal;
@@ -115,55 +115,28 @@ class MealForm extends StatelessWidget {
 class MealItemForm extends StatelessWidget {
   final Meal _meal;
   late final MealItem _mealItem;
+  final List<MealItem> _listMealItems;
 
-  MealItemForm(this._meal, [mealItem]) {
+  final _form = GlobalKey<FormState>();
+  final _ingredientIdController = TextEditingController();
+  final _ingredientController = TextEditingController();
+  final _amountController = TextEditingController();
+
+  MealItemForm(this._meal, this._listMealItems, [mealItem]) {
     _mealItem = mealItem ?? MealItem.empty();
     _mealItem.mealId = _meal.id!;
   }
 
-  final _form = GlobalKey<FormState>();
-  final _ingredientController = TextEditingController();
-  final _amountController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
+    final String unit = AppLocalizations.of(context).g;
     return Container(
       margin: const EdgeInsets.all(20),
       child: Form(
         key: _form,
         child: Column(
           children: [
-            TypeAheadFormField(
-              textFieldConfiguration: TextFieldConfiguration(
-                controller: _ingredientController,
-                decoration: InputDecoration(labelText: AppLocalizations.of(context).ingredient),
-              ),
-              suggestionsCallback: (pattern) async {
-                return Provider.of<NutritionPlansProvider>(context, listen: false).searchIngredient(
-                  pattern,
-                  Localizations.localeOf(context).languageCode,
-                );
-              },
-              itemBuilder: (context, dynamic suggestion) {
-                return ListTile(
-                  title: Text(suggestion['value']),
-                  subtitle: Text(suggestion['data']['id'].toString()),
-                );
-              },
-              transitionBuilder: (context, suggestionsBox, controller) {
-                return suggestionsBox;
-              },
-              onSuggestionSelected: (dynamic suggestion) {
-                _mealItem.ingredientId = suggestion['data']['id'];
-                _ingredientController.text = suggestion['value'];
-              },
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return AppLocalizations.of(context).selectIngredient;
-                }
-                return null;
-              },
-            ),
+            IngredientTypeahead(_ingredientIdController, _ingredientController),
             TextFormField(
               decoration: InputDecoration(labelText: AppLocalizations.of(context).weight),
               controller: _amountController,
@@ -188,10 +161,132 @@ class MealItemForm extends StatelessWidget {
                   return;
                 }
                 _form.currentState!.save();
+                _mealItem.ingredientId = int.parse(_ingredientIdController.text);
 
                 try {
                   Provider.of<NutritionPlansProvider>(context, listen: false)
                       .addMealItem(_mealItem, _meal);
+                } on WgerHttpException catch (error) {
+                  showHttpExceptionErrorDialog(error, context);
+                } catch (error) {
+                  showErrorDialog(error, context);
+                }
+                Navigator.of(context).pop();
+              },
+            ),
+            if (_listMealItems.isNotEmpty) const SizedBox(height: 10.0),
+            Container(
+              child: Text(AppLocalizations.of(context).recentlyUsedIngredients),
+              padding: const EdgeInsets.all(10.0),
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: _listMealItems.length,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  return Card(
+                    child: ListTile(
+                      onTap: () {
+                        _ingredientController.text = _listMealItems[index].ingredientObj.name;
+                        _ingredientIdController.text =
+                            _listMealItems[index].ingredientObj.id.toString();
+                        _amountController.text = _listMealItems[index].amount.toStringAsFixed(0);
+                        _mealItem.ingredientId = _listMealItems[index].ingredientId;
+                        _mealItem.amount = _listMealItems[index].amount;
+                      },
+                      title: Text(_listMealItems[index].ingredientObj.name),
+                      subtitle: Text('${_listMealItems[index].amount.toStringAsFixed(0)}$unit'),
+                      trailing: const Icon(Icons.copy),
+                    ),
+                  );
+                },
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class IngredientLogForm extends StatelessWidget {
+  late MealItem _mealItem;
+  final NutritionalPlan _plan;
+
+  final _form = GlobalKey<FormState>();
+  final _ingredientController = TextEditingController();
+  final _ingredientIdController = TextEditingController();
+  final _amountController = TextEditingController();
+  final _dateController = TextEditingController();
+
+  IngredientLogForm(this._plan) {
+    _mealItem = MealItem.empty();
+    _dateController.text = toDate(DateTime.now())!;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.all(20),
+      child: Form(
+        key: _form,
+        child: Column(
+          children: [
+            IngredientTypeahead(_ingredientIdController, _ingredientController),
+            TextFormField(
+              decoration: InputDecoration(labelText: AppLocalizations.of(context).weight),
+              controller: _amountController,
+              keyboardType: TextInputType.number,
+              onFieldSubmitted: (_) {},
+              onSaved: (newValue) {
+                _mealItem.amount = double.parse(newValue!);
+              },
+              validator: (value) {
+                try {
+                  double.parse(value!);
+                } catch (error) {
+                  return AppLocalizations.of(context).enterValidNumber;
+                }
+                return null;
+              },
+            ),
+            TextFormField(
+              readOnly: true, // Stop keyboard from appearing
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context).date,
+                suffixIcon: const Icon(Icons.calendar_today_outlined),
+              ),
+              enableInteractiveSelection: false,
+              controller: _dateController,
+              onTap: () async {
+                // Show Date Picker Here
+                final pickedDate = await showDatePicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime(DateTime.now().year - 10),
+                  lastDate: DateTime.now(),
+                );
+
+                if (pickedDate != null) {
+                  _dateController.text = toDate(pickedDate)!;
+                }
+              },
+              onSaved: (newValue) {
+                _dateController.text = newValue!;
+              },
+            ),
+            ElevatedButton(
+              child: Text(AppLocalizations.of(context).save),
+              onPressed: () async {
+                if (!_form.currentState!.validate()) {
+                  return;
+                }
+                _form.currentState!.save();
+                _mealItem.ingredientId = int.parse(_ingredientIdController.text);
+
+                try {
+                  Provider.of<NutritionPlansProvider>(context, listen: false).logIngredentToDiary(
+                      _mealItem, _plan.id!, DateTime.parse(_dateController.text));
                 } on WgerHttpException catch (error) {
                   showHttpExceptionErrorDialog(error, context);
                 } catch (error) {
@@ -210,7 +305,7 @@ class MealItemForm extends StatelessWidget {
 class PlanForm extends StatelessWidget {
   final _form = GlobalKey<FormState>();
   final _descriptionController = TextEditingController();
-  late final NutritionalPlan _plan;
+  late NutritionalPlan _plan;
 
   PlanForm([NutritionalPlan? plan]) {
     _plan = plan ?? NutritionalPlan.empty();
