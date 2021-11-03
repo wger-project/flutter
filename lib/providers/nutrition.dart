@@ -339,11 +339,11 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
     notifyListeners();
   }
 
-// Log custom ingredient to nutrition diary
-  Future<void> logIngredentToDiary(MealItem mealItem, int planId) async {
+  /// Log custom ingredient to nutrition diary
+  Future<void> logIngredentToDiary(MealItem mealItem, int planId, [DateTime? dateTime]) async {
     final plan = findById(planId);
     mealItem.ingredientObj = await fetchIngredient(mealItem.ingredientId);
-    final Log log = Log.fromMealItem(mealItem, plan.id!, null);
+    final Log log = Log.fromMealItem(mealItem, plan.id!, null, dateTime);
 
     final data = await post(log.toJson(), makeUrl(_nutritionDiaryPath));
     log.id = data['id'];

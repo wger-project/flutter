@@ -242,6 +242,12 @@
   "@logMeal": {},
   "addIngredient": "Add ingredient",
   "@addIngredient": {},
+  "logIngredient": "Save to nutrition diary",
+  "@logIngredient": {},
+  "searchIngredient": "Search ingredient",
+  "@searchIngredient": {
+    "description": "Label on ingredient search form"
+  },
   "nutritionalPlan": "Nutritional plan",
   "@nutritionalPlan": {},
   "nutritionalDiary": "Nutritional diary",
