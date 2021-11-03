@@ -67,6 +67,22 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
               },
             ),
           ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton(
+              child: Text(AppLocalizations.of(context).addIngredient),
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  FormScreen.routeName,
+                  arguments: FormScreenArguments(
+                    AppLocalizations.of(context).addIngredient,
+                    IngredientForm(_nutritionalPlan.id!),
+                  ),
+                );
+              },
+            ),
+          ),
           Container(
             padding: const EdgeInsets.all(15),
             height: 220,

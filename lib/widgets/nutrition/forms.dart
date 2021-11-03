@@ -236,6 +236,104 @@ class MealItemForm extends StatelessWidget {
   }
 }
 
+class IngredientForm extends StatelessWidget {
+  late MealItem _mealItem;
+  final int _planId;
+
+  IngredientForm(this._planId) {
+    _mealItem = MealItem.empty();
+  }
+
+  final _form = GlobalKey<FormState>();
+  final _ingredientController = TextEditingController();
+  final _amountController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.all(20),
+      child: Form(
+        key: _form,
+        child: Column(
+          children: [
+            TypeAheadFormField(
+              textFieldConfiguration: TextFieldConfiguration(
+                controller: _ingredientController,
+                decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context).ingredient),
+              ),
+              suggestionsCallback: (pattern) async {
+                return Provider.of<NutritionPlansProvider>(context,
+                        listen: false)
+                    .searchIngredient(
+                  pattern,
+                  Localizations.localeOf(context).languageCode,
+                );
+              },
+              itemBuilder: (context, dynamic suggestion) {
+                return ListTile(
+                  title: Text(suggestion['value']),
+                  subtitle: Text(suggestion['data']['id'].toString()),
+                );
+              },
+              transitionBuilder: (context, suggestionsBox, controller) {
+                return suggestionsBox;
+              },
+              onSuggestionSelected: (dynamic suggestion) {
+                _mealItem.ingredientId = suggestion['data']['id'];
+                _ingredientController.text = suggestion['value'];
+              },
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return AppLocalizations.of(context).selectIngredient;
+                }
+                return null;
+              },
+            ),
+            TextFormField(
+              decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context).weight),
+              controller: _amountController,
+              keyboardType: TextInputType.number,
+              onFieldSubmitted: (_) {},
+              onSaved: (newValue) {
+                _mealItem.amount = double.parse(newValue!);
+              },
+              validator: (value) {
+                try {
+                  double.parse(value!);
+                } catch (error) {
+                  return AppLocalizations.of(context).enterValidNumber;
+                }
+                return null;
+              },
+            ),
+            ElevatedButton(
+              child: Text(AppLocalizations.of(context).save),
+              onPressed: () async {
+                if (!_form.currentState!.validate()) {
+                  return;
+                }
+                _form.currentState!.save();
+
+                try {
+                  Provider.of<NutritionPlansProvider>(context, listen: false)
+                      .logIngredentToDiary(_mealItem, _planId);
+                } on WgerHttpException catch (error) {
+                  showHttpExceptionErrorDialog(error, context);
+                } catch (error) {
+                  showErrorDialog(error, context);
+                }
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class PlanForm extends StatelessWidget {
   final _form = GlobalKey<FormState>();
   final _descriptionController = TextEditingController();
