@@ -28,8 +28,8 @@ import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/nutritional_plans_screen.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 
-import 'base_provider_test.mocks.dart';
-import 'utils.dart';
+import '../other/base_provider_test.mocks.dart';
+import '../utils.dart';
 
 void main() {
   Widget createHomeScreen({locale = 'en'}) {

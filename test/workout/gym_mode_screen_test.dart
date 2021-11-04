@@ -27,9 +27,9 @@ import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 import 'package:wger/widgets/workouts/gym_mode.dart';
 
-import '../test_data/workouts.dart';
-import 'base_provider_test.mocks.dart';
-import 'utils.dart';
+import '../../test_data/workouts.dart';
+import '../other/base_provider_test.mocks.dart';
+import '../utils.dart';
 
 void main() {
   Widget createHomeScreen({locale = 'en'}) {

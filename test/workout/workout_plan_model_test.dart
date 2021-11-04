@@ -18,16 +18,25 @@
 
 import 'package:flutter_test/flutter_test.dart';
 
-import '../test_data/workouts.dart';
+import '../../test_data/exercises.dart';
+import '../../test_data/workouts.dart';
 
 void main() {
-  group('Test the getSmartTextRepr method for a set', () {
-    test('Repetitions and weigh units', () async {
+  group('model tests', () {
+    test('Test the filterLogsByExercise method', () {
       final workout = getWorkout();
-      final set = workout.days.first.sets.first;
-      final exercise1 = set.exercisesObj[0];
 
-      expect(set.getSmartTextRepr(exercise1), '2 × 10 kg  (2 RiR)');
+      expect(workout.logs.length, 3);
+      final logExercise1 = workout.filterLogsByExercise(exercise1);
+      expect(logExercise1.length, 2);
+      expect(logExercise1[0].id, 1);
+      expect(logExercise1[1].id, 2);
+
+      final logExercise2 = workout.filterLogsByExercise(exercise2);
+      expect(logExercise2.length, 1);
+      expect(logExercise2[0].id, 3);
+
+      expect(workout.filterLogsByExercise(exercise3).length, 0);
     });
   });
 }

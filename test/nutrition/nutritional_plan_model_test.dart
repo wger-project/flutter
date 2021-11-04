@@ -17,26 +17,32 @@
  */
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:wger/models/nutrition/nutritional_plan.dart';
+import 'package:wger/models/nutrition/nutritional_values.dart';
 
-import '../test_data/exercises.dart';
-import '../test_data/workouts.dart';
+import '../../test_data/nutritional_plans.dart';
 
 void main() {
+  late NutritionalPlan plan;
+
+  setUp(() {
+    plan = getNutritionalPlan();
+  });
+
   group('model tests', () {
-    test('Test the filterLogsByExercise method', () {
-      final workout = getWorkout();
+    test('Test the nutritionalValues method for nutritional plans', () {
+      final values = NutritionalValues.values(4118.75, 32.75, 347.5, 9.5, 59.0, 37.75, 52.5, 30.5);
+      expect(plan.nutritionalValues, values);
+    });
 
-      expect(workout.logs.length, 3);
-      final logExercise1 = workout.filterLogsByExercise(exercise1);
-      expect(logExercise1.length, 2);
-      expect(logExercise1[0].id, 1);
-      expect(logExercise1[1].id, 2);
+    test('Test the nutritionalValues method for meals', () {
+      final meal = plan.meals.first;
+      final values = NutritionalValues.values(518.75, 5.75, 17.5, 3.5, 29.0, 13.75, 49.5, 0.5);
+      expect(meal.nutritionalValues, values);
+    });
 
-      final logExercise2 = workout.filterLogsByExercise(exercise2);
-      expect(logExercise2.length, 1);
-      expect(logExercise2[0].id, 3);
-
-      expect(workout.filterLogsByExercise(exercise3).length, 0);
+    test('Test that the getter returns all meal items for a plan', () {
+      expect(plan.allMealItems, plan.meals[0].mealItems + plan.meals[1].mealItems);
     });
   });
 }

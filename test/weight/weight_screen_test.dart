@@ -28,9 +28,9 @@ import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/widgets/core/charts.dart';
 import 'package:wger/widgets/weight/forms.dart';
 
-import '../test_data/body_weight.dart';
-import 'base_provider_test.mocks.dart';
-import 'utils.dart';
+import '../../test_data/body_weight.dart';
+import '../other/base_provider_test.mocks.dart';
+import '../utils.dart';
 
 void main() {
   Widget createHomeScreen({locale = 'en'}) {

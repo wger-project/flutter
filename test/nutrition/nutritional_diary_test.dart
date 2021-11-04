@@ -22,7 +22,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/nutritional_diary_detail.dart';
 
-import '../test_data/nutritional_plans.dart';
+import '../../test_data/nutritional_plans.dart';
 
 void main() {
   Widget getWidget({locale = 'en'}) {

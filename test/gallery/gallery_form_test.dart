@@ -27,8 +27,8 @@ import 'package:wger/models/gallery/image.dart' as gallery;
 import 'package:wger/providers/gallery.dart';
 import 'package:wger/widgets/gallery/forms.dart';
 
-import '../test_data/gallery.dart';
-import 'gallery_screen_test.mocks.dart';
+import './gallery_screen_test.mocks.dart';
+import '../../test_data/gallery.dart';
 
 void main() {
   late gallery.Image image;

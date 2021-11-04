@@ -21,7 +21,7 @@ import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
 import 'package:wger/providers/base_provider.dart';
 
-import 'utils.dart';
+import '../utils.dart';
 
 @GenerateMocks([http.Client])
 void main() {

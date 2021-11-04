@@ -25,9 +25,9 @@ import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 
-import '../test_data/nutritional_plans.dart';
-import 'base_provider_test.mocks.dart';
-import 'utils.dart';
+import '../../test_data/nutritional_plans.dart';
+import '../other/base_provider_test.mocks.dart';
+import '../utils.dart';
 
 void main() {
   Widget createNutritionalPlan({locale = 'en'}) {

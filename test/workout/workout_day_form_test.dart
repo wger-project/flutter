@@ -27,8 +27,8 @@ import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 
-import '../test_data/workouts.dart';
-import 'workout_form_test.mocks.dart';
+import './workout_form_test.mocks.dart';
+import '../../test_data/workouts.dart';
 
 void main() {
   var mockWorkoutPlans = MockWorkoutPlansProvider();

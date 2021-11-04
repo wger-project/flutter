@@ -22,8 +22,8 @@ import 'package:mockito/mockito.dart';
 import 'package:wger/models/body_weight/weight_entry.dart';
 import 'package:wger/providers/body_weight.dart';
 
-import 'base_provider_test.mocks.dart';
-import 'utils.dart';
+import '../other/base_provider_test.mocks.dart';
+import '../utils.dart';
 
 void main() {
   group('test body weight provider', () {
