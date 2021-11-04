@@ -40,6 +40,12 @@ class AuthProvider with ChangeNotifier {
   String? serverVersion;
   PackageInfo? applicationVersion;
 
+  late http.Client client;
+
+  AuthProvider([http.Client? client]) {
+    this.client = client ?? http.Client();
+  }
+
   /// flag to indicate that the application has successfully loaded all initial data
   bool dataInit = false;
 
@@ -66,7 +72,7 @@ class AuthProvider with ChangeNotifier {
 
   /// Server application version
   Future<void> setServerVersion() async {
-    final response = await http.get(makeUri(serverUrl!, 'version'));
+    final response = await client.get(makeUri(serverUrl!, 'version'));
     final responseData = json.decode(response.body);
     serverVersion = responseData;
   }
@@ -78,15 +84,18 @@ class AuthProvider with ChangeNotifier {
   }
 
   /// Checking if there is a new version of the application.
-  Future<bool> neededApplicationUpdate() async {
-    if (!ENABLED_UPDATE) {
+  Future<bool> applicationUpdateRequired([String? version]) async {
+    if (!CHECK_APP_MIN_VERSION) {
       return false;
     }
-    final response = await http.get(makeUri(serverUrl!, 'min-app-version'));
-    final applicationLatestVersion = json.decode(response.body);
-    final currentVersion = Version.parse(applicationVersion!.version);
-    final latestAppVersion = Version.parse(applicationLatestVersion);
-    return latestAppVersion > currentVersion;
+
+    final applicationCurrentVersion = version ?? applicationVersion!.version;
+
+    final response = await client.get(makeUri(serverUrl!, 'min-app-version'));
+    final currentVersion = Version.parse(applicationCurrentVersion);
+
+    final requiredAppVersion = Version.parse(response.body);
+    return requiredAppVersion >= currentVersion;
   }
 
   /// Registers a new user
@@ -111,7 +120,7 @@ class AuthProvider with ChangeNotifier {
       if (email != '') {
         data['email'] = email;
       }
-      final response = await http.post(
+      final response = await client.post(
         uri,
         headers: {
           HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
@@ -137,7 +146,7 @@ class AuthProvider with ChangeNotifier {
     await logout(shouldNotify: false);
 
     try {
-      final response = await http.post(
+      final response = await client.post(
         uri,
         headers: <String, String>{
           HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',

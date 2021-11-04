@@ -72,4 +72,4 @@ const ENERGY_CARBOHYDRATES = 4;
 const ENERGY_FAT = 9;
 
 /// Flag to check for updates to the new version.
-const ENABLED_UPDATE = false;
+const CHECK_APP_MIN_VERSION = false;
