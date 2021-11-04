@@ -96,6 +96,6 @@ void launchURL(String url, BuildContext context) async {
   await canLaunch(url)
       ? await launch(url)
       : ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Could not open $url.")),
+          SnackBar(content: Text('Could not open $url.')),
         );
 }
