@@ -127,6 +127,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.1+1"
+  change:
+    dependency: transitive
+    description:
+      name: change
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.0"
   characters:
     dependency: transitive
     description:
@@ -176,6 +183,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.0"
+  cider:
+    dependency: "direct dev"
+    description:
+      name: cider
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.0"
   cli_util:
     dependency: transitive
     description:
@@ -504,6 +518,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.1.4"
+  klizma:
+    dependency: transitive
+    description:
+      name: klizma
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.0"
   lints:
     dependency: transitive
     description:
@@ -518,6 +539,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.2"
+  markdown:
+    dependency: transitive
+    description:
+      name: markdown
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.0.0"
+  marker:
+    dependency: transitive
+    description:
+      name: marker
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.2"
   matcher:
     dependency: transitive
     description:
@@ -693,6 +728,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.1+1"
+  rfc_6901:
+    dependency: transitive
+    description:
+      name: rfc_6901
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.0"
   rive:
     dependency: "direct main"
     description:
@@ -908,6 +950,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
+  version_manipulation:
+    dependency: transitive
+    description:
+      name: version_manipulation
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.0"
   video_player:
     dependency: transitive
     description:

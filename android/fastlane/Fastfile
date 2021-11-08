@@ -25,30 +25,6 @@ end
 
 platform :android do
 
-  desc "Sets the version name and code in pubspec.yaml"
-  lane :setVersion do
-    begin
-      old_version_code = google_play_track_version_codes(
-        package_name: "de.wger.flutter",
-        track: "production",
-        json_key: "./fastlane/envfiles/playstore.json",
-      )
-      puts "old_version_code: " + old_version_code.to_s
-      new_version_code = old_version_code.last().to_i + 1
-      puts "new_version_code: " + new_version_code.to_s
-
-      new_version_name = get_version_number_from_git_branch(pattern: 'release/#')
-      puts new_version_name.to_s
-
-      flutter_set_version(
-        path_to_yaml: "../pubspec.yaml",
-        version_name: new_version_name.to_s,
-        version_code: new_version_code.to_s,
-      )
-    end
-  end
-
-
   desc "Upload app to production"
   lane :production do
     begin
