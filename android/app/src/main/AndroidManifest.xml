@@ -26,6 +26,7 @@
         android:icon="@mipmap/ic_launcher">
 
         <meta-data android:name="wger.api_key" android:value="${WGER_API_KEY}" />
+        <meta-data android:name="wger.check_min_app_version" android:value="true" />
 
         <activity
             android:name=".MainActivity"

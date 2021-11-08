@@ -39,11 +39,18 @@ class AuthProvider with ChangeNotifier {
   String? serverUrl;
   String? serverVersion;
   PackageInfo? applicationVersion;
+  Map<String, String>? metadata = {};
 
   late http.Client client;
 
   AuthProvider([http.Client? client]) {
     this.client = client ?? http.Client();
+
+    try {
+      AndroidMetadata.metaDataAsMap.then((value) => metadata = value);
+    } on PlatformException {
+      throw Exception('An error occurred reading the metadata from AndroidManifest');
+    }
   }
 
   /// flag to indicate that the application has successfully loaded all initial data
@@ -85,7 +92,8 @@ class AuthProvider with ChangeNotifier {
 
   /// Checking if there is a new version of the application.
   Future<bool> applicationUpdateRequired([String? version]) async {
-    if (!CHECK_APP_MIN_VERSION) {
+    if (metadata!.containsKey('wger.check_min_app_version') ||
+        metadata!['wger.check_min_app_version'] == 'false') {
       return false;
     }
 
@@ -105,14 +113,6 @@ class AuthProvider with ChangeNotifier {
       required String email,
       required String serverUrl}) async {
     final uri = Uri.parse('$serverUrl/api/v2/register/');
-    Map<String, String>? metadata = {};
-
-    // Read the api key from the manifest file
-    try {
-      metadata = await AndroidMetadata.metaDataAsMap;
-    } on PlatformException {
-      throw Exception('An error occurred reading the API key');
-    }
 
     // Register
     try {
@@ -124,7 +124,7 @@ class AuthProvider with ChangeNotifier {
         uri,
         headers: {
           HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
-          HttpHeaders.authorizationHeader: "Token ${metadata!['wger.api_key']}"
+          HttpHeaders.authorizationHeader: 'Token ${metadata![MANIFEST_KEY_API]}'
         },
         body: json.encode(data),
       );

@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:android_metadata/android_metadata.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -119,11 +118,10 @@ class _AuthCardState extends State<AuthCard> {
     //
     // If not, the user will not be able to register via the app
     try {
-      AndroidMetadata.metaDataAsMap.then((data) {
-        if (!data!.containsKey('wger.api_key') || data['wger.api_key'] == '') {
-          _canRegister = false;
-        }
-      });
+      final metadata = Provider.of<AuthProvider>(context, listen: false).metadata;
+      if (metadata!.containsKey(MANIFEST_KEY_API) || metadata[MANIFEST_KEY_API] == '') {
+        _canRegister = false;
+      }
     } on PlatformException {
       _canRegister = false;
     }
