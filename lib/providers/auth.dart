@@ -41,6 +41,11 @@ class AuthProvider with ChangeNotifier {
   PackageInfo? applicationVersion;
   Map<String, String>? metadata = {};
 
+  static const MIN_APP_VERSION_URL = 'min-app-version';
+  static const SERVER_VERSION_URL = 'version';
+  static const REGISTRATION_URL = 'register';
+  static const LOGIN_URL = 'login';
+
   late http.Client client;
 
   AuthProvider([http.Client? client]) {
@@ -62,7 +67,7 @@ class AuthProvider with ChangeNotifier {
 
   /// Server application version
   Future<void> setServerVersion() async {
-    final response = await client.get(makeUri(serverUrl!, 'version'));
+    final response = await client.get(makeUri(serverUrl!, SERVER_VERSION_URL));
     final responseData = json.decode(response.body);
     serverVersion = responseData;
   }
@@ -82,7 +87,7 @@ class AuthProvider with ChangeNotifier {
 
     final applicationCurrentVersion = version ?? applicationVersion!.version;
 
-    final response = await client.get(makeUri(serverUrl!, 'min-app-version'));
+    final response = await client.get(makeUri(serverUrl!, MIN_APP_VERSION_URL));
     final currentVersion = Version.parse(applicationCurrentVersion);
 
     final requiredAppVersion = Version.parse(response.body);
@@ -95,8 +100,6 @@ class AuthProvider with ChangeNotifier {
       required String password,
       required String email,
       required String serverUrl}) async {
-    final uri = Uri.parse('$serverUrl/api/v2/register/');
-
     // Register
     try {
       final Map<String, String> data = {'username': username, 'password': password};
@@ -104,7 +107,7 @@ class AuthProvider with ChangeNotifier {
         data['email'] = email;
       }
       final response = await client.post(
-        uri,
+        makeUri(serverUrl, REGISTRATION_URL),
         headers: {
           HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
           HttpHeaders.authorizationHeader: 'Token ${metadata![MANIFEST_KEY_API]}'
@@ -125,12 +128,11 @@ class AuthProvider with ChangeNotifier {
 
   /// Authenticates a user
   Future<void> login(String username, String password, String serverUrl) async {
-    final uri = Uri.parse('$serverUrl/api/v2/login/');
     await logout(shouldNotify: false);
 
     try {
       final response = await client.post(
-        uri,
+        makeUri(serverUrl, LOGIN_URL),
         headers: <String, String>{
           HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
         },
