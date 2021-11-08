@@ -226,6 +226,9 @@ class IngredientLogForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final diaryEntries = _plan.logs;
+    final String unit = AppLocalizations.of(context).g;
+
     return Container(
       margin: const EdgeInsets.all(20),
       child: Form(
@@ -295,6 +298,34 @@ class IngredientLogForm extends StatelessWidget {
                 Navigator.of(context).pop();
               },
             ),
+            if (diaryEntries.isNotEmpty) const SizedBox(height: 10.0),
+            Container(
+              child: Text(AppLocalizations.of(context).recentlyUsedIngredients),
+              padding: const EdgeInsets.all(10.0),
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: diaryEntries.length,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  return Card(
+                    child: ListTile(
+                      onTap: () {
+                        _ingredientController.text = diaryEntries[index].ingredientObj.name;
+                        _ingredientIdController.text =
+                            diaryEntries[index].ingredientObj.id.toString();
+                        _amountController.text = diaryEntries[index].amount.toStringAsFixed(0);
+                        _mealItem.ingredientId = diaryEntries[index].ingredientId;
+                        _mealItem.amount = diaryEntries[index].amount;
+                      },
+                      title: Text(_plan.logs[index].ingredientObj.name),
+                      subtitle: Text('${diaryEntries[index].amount.toStringAsFixed(0)}$unit'),
+                      trailing: const Icon(Icons.copy),
+                    ),
+                  );
+                },
+              ),
+            )
           ],
         ),
       ),

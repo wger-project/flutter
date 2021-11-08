@@ -210,6 +210,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                       arguments: FormScreenArguments(
                         AppLocalizations.of(context).logIngredient,
                         IngredientLogForm(_plan!),
+                        hasListView: true,
                       ),
                     );
                   },
