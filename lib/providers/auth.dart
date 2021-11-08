@@ -110,7 +110,8 @@ class AuthProvider with ChangeNotifier {
         makeUri(serverUrl, REGISTRATION_URL),
         headers: {
           HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
-          HttpHeaders.authorizationHeader: 'Token ${metadata![MANIFEST_KEY_API]}'
+          HttpHeaders.authorizationHeader: 'Token ${metadata![MANIFEST_KEY_API]}',
+          HttpHeaders.userAgentHeader: getAppNameHeader(),
         },
         body: json.encode(data),
       );
@@ -135,6 +136,7 @@ class AuthProvider with ChangeNotifier {
         makeUri(serverUrl, LOGIN_URL),
         headers: <String, String>{
           HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
+          HttpHeaders.userAgentHeader: getAppNameHeader(),
         },
         body: json.encode({'username': username, 'password': password}),
       );
@@ -219,10 +221,10 @@ class AuthProvider with ChangeNotifier {
   String getAppNameHeader() {
     String out = '';
     if (applicationVersion != null) {
-      out = '${applicationVersion!.version} '
+      out = '/${applicationVersion!.version} '
           '(${applicationVersion!.packageName}; '
           'build: ${applicationVersion!.buildNumber})';
     }
-    return 'wger App/$out';
+    return 'wger App$out';
   }
 }
