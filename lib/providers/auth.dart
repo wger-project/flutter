@@ -56,26 +56,9 @@ class AuthProvider with ChangeNotifier {
   /// flag to indicate that the application has successfully loaded all initial data
   bool dataInit = false;
 
-  // DateTime _expiryDate;
-  // String _userId;
-  // Timer _authTimer;
-
   bool get isAuth {
     return token != null;
   }
-
-  String? get token2 {
-    // if (_expiryDate != null &&
-    // _expiryDate.isAfter(DateTime.now()) &&
-    // _token != null) {
-    return token;
-    // }
-    // return null;
-  }
-
-  // String get userId {
-  //   return _userId;
-  // }
 
   /// Server application version
   Future<void> setServerVersion() async {
@@ -163,13 +146,6 @@ class AuthProvider with ChangeNotifier {
       this.serverUrl = serverUrl;
       token = responseData['token'];
 
-      // _userId = responseData['localId'];
-      // _expiryDate = DateTime.now().add(
-      //   Duration(
-      //     seconds: int.parse(responseData['expiresIn']),
-      //   ),
-      // );
-
       notifyListeners();
 
       // store login data in shared preferences
@@ -177,7 +153,6 @@ class AuthProvider with ChangeNotifier {
       final userData = json.encode({
         'token': token,
         'serverUrl': this.serverUrl,
-        // 'expiryDate': _expiryDate.toIso8601String(),
       });
       final serverData = json.encode({
         'serverUrl': this.serverUrl,
@@ -210,16 +185,9 @@ class AuthProvider with ChangeNotifier {
       return false;
     }
     final extractedUserData = json.decode(prefs.getString('userData')!);
-    // final expiryDate = DateTime.parse(extractedUserData['expiryDate']);
-
-    // if (expiryDate.isBefore(DateTime.now())) {
-    //   return false;
-    // }
 
     token = extractedUserData['token'];
     serverUrl = extractedUserData['serverUrl'];
-    // _userId = extractedUserData['userId'];
-    // _expiryDate = expiryDate;
 
     log('autologin successful');
     setApplicationVersion();
@@ -234,12 +202,6 @@ class AuthProvider with ChangeNotifier {
     token = null;
     serverUrl = null;
     dataInit = false;
-    // _userId = null;
-    // _expiryDate = null;
-    // if (_authTimer != null) {
-    //   _authTimer.cancel();
-    //   _authTimer = null;
-    // }
 
     if (shouldNotify) {
       notifyListeners();
@@ -248,14 +210,6 @@ class AuthProvider with ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     prefs.remove('userData');
   }
-
-  // void _autoLogout() {
-  //   if (_authTimer != null) {
-  //     _authTimer.cancel();
-  //   }
-  //   final timeToExpiry = _expiryDate.difference(DateTime.now()).inSeconds;
-  //   _authTimer = Timer(Duration(seconds: timeToExpiry), logout);
-  // }
 
   /// Returns the application name and version
   ///
