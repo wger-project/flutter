@@ -23,7 +23,7 @@ import '../test_data/exercises.dart';
 import 'other/base_provider_test.mocks.dart';
 
 // Test Auth provider
-final AuthProvider testAuthProvider = AuthProvider(MockClient())
+final AuthProvider testAuthProvider = AuthProvider(MockClient(), false)
   ..token = 'FooBar'
   ..serverUrl = 'https://localhost';
 

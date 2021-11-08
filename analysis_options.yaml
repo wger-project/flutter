@@ -65,7 +65,7 @@ linter:
     empty_statements: true
     exhaustive_cases: true
     file_names: true
-    flutter_style_todos: true
+    flutter_style_todos: false
     hash_and_equals: true
     implementation_imports: true
     iterable_contains_unrelated_type: true

@@ -119,7 +119,7 @@ class _AuthCardState extends State<AuthCard> {
     // If not, the user will not be able to register via the app
     try {
       final metadata = Provider.of<AuthProvider>(context, listen: false).metadata;
-      if (metadata!.containsKey(MANIFEST_KEY_API) || metadata[MANIFEST_KEY_API] == '') {
+      if (metadata.containsKey(MANIFEST_KEY_API) || metadata[MANIFEST_KEY_API] == '') {
         _canRegister = false;
       }
     } on PlatformException {

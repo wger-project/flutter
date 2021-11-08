@@ -17,7 +17,7 @@ void main() {
 
   setUp(() {
     mockClient = MockClient();
-    authProvider = AuthProvider(mockClient);
+    authProvider = AuthProvider(mockClient, false);
     authProvider.serverUrl = 'http://localhost';
   });
 

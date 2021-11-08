@@ -39,7 +39,7 @@ class AuthProvider with ChangeNotifier {
   String? serverUrl;
   String? serverVersion;
   PackageInfo? applicationVersion;
-  Map<String, String>? metadata = {};
+  Map<String, String> metadata = {};
 
   static const MIN_APP_VERSION_URL = 'min-app-version';
   static const SERVER_VERSION_URL = 'version';
@@ -48,13 +48,16 @@ class AuthProvider with ChangeNotifier {
 
   late http.Client client;
 
-  AuthProvider([http.Client? client]) {
+  AuthProvider([http.Client? client, bool? checkMetadata]) {
     this.client = client ?? http.Client();
 
-    try {
-      AndroidMetadata.metaDataAsMap.then((value) => metadata = value);
-    } on PlatformException {
-      throw Exception('An error occurred reading the metadata from AndroidManifest');
+    // TODO: this is a workaround since AndroidMetadata doesn't work while running tests
+    if (checkMetadata ?? true) {
+      try {
+        AndroidMetadata.metaDataAsMap.then((value) => metadata = value!);
+      } on PlatformException {
+        throw Exception('An error occurred reading the metadata from AndroidManifest');
+      } catch (error) {}
     }
   }
 
@@ -80,8 +83,8 @@ class AuthProvider with ChangeNotifier {
 
   /// Checking if there is a new version of the application.
   Future<bool> applicationUpdateRequired([String? version]) async {
-    if (metadata!.containsKey('wger.check_min_app_version') ||
-        metadata!['wger.check_min_app_version'] == 'false') {
+    if (metadata.containsKey('wger.check_min_app_version') ||
+        metadata['wger.check_min_app_version'] == 'false') {
       return false;
     }
 
@@ -110,7 +113,7 @@ class AuthProvider with ChangeNotifier {
         makeUri(serverUrl, REGISTRATION_URL),
         headers: {
           HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
-          HttpHeaders.authorizationHeader: 'Token ${metadata![MANIFEST_KEY_API]}',
+          HttpHeaders.authorizationHeader: 'Token ${metadata[MANIFEST_KEY_API]}',
           HttpHeaders.userAgentHeader: getAppNameHeader(),
         },
         body: json.encode(data),
