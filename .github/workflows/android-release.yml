@@ -46,6 +46,9 @@ jobs:
           lane: setVersion
           subdirectory: android
 
+      - name: debug pubspec.yaml
+        run: cat pubspec.yaml
+
       - name: Build AAB
         run: flutter build appbundle --release
         env:
