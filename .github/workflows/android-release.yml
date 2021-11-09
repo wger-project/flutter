@@ -88,3 +88,4 @@ jobs:
         with:
           files: build/app/outputs/bundle/release/app-release.aab
           tag_name: ${{ steps.get_version.outputs.VERSION }}
+          body_path: CHANGELOG.md
