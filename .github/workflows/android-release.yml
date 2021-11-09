@@ -1,4 +1,4 @@
-name: Google Play release 2
+name: Google Play release
 on:
   push:
     tags:
