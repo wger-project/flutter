@@ -2,8 +2,12 @@ name: Continous Integration
 on:
   push:
     branches: [ master ]
+    paths:
+      - '**.dart'
   pull_request:
     branches: [ master ]
+    paths:
+      - '**.dart'
 jobs:
   test:
     runs-on: ubuntu-20.04
