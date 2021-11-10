@@ -44,10 +44,10 @@ dependencies:
   http: ^0.13.3
   image_picker: ^0.8.4+1
   intl: ^0.17.0
-  json_annotation: ^4.0.1
+  json_annotation: ^4.3.0
   version: ^2.0.0
   package_info: ^2.0.2
-  provider: ^5.0.0
+  provider: ^6.0.1
   rive: ^0.7.33
   shared_preferences: ^2.0.7
   table_calendar: ^3.0.2
@@ -60,7 +60,7 @@ dev_dependencies:
   #  sdk: flutter
   build_runner: ^2.1.2
   flutter_launcher_icons: ^0.9.1
-  json_serializable: ^4.1.4
+  json_serializable: ^6.0.1
   mockito: ^5.0.15
   network_image_mock: ^2.0.1
   flutter_lints: ^1.0.4

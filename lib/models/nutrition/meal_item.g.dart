@@ -7,7 +7,10 @@ part of 'meal_item.dart';
 // **************************************************************************
 
 MealItem _$MealItemFromJson(Map<String, dynamic> json) {
-  $checkKeys(json, requiredKeys: const ['id', 'amount']);
+  $checkKeys(
+    json,
+    requiredKeys: const ['id', 'amount'],
+  );
   return MealItem(
     id: json['id'] as int?,
     mealId: json['meal'] as int?,

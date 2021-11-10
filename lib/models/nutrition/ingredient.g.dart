@@ -7,19 +7,22 @@ part of 'ingredient.dart';
 // **************************************************************************
 
 Ingredient _$IngredientFromJson(Map<String, dynamic> json) {
-  $checkKeys(json, requiredKeys: const [
-    'id',
-    'name',
-    'creation_date',
-    'energy',
-    'carbohydrates',
-    'carbohydrates_sugar',
-    'protein',
-    'fat',
-    'fat_saturated',
-    'fibres',
-    'sodium'
-  ]);
+  $checkKeys(
+    json,
+    requiredKeys: const [
+      'id',
+      'name',
+      'creation_date',
+      'energy',
+      'carbohydrates',
+      'carbohydrates_sugar',
+      'protein',
+      'fat',
+      'fat_saturated',
+      'fibres',
+      'sodium'
+    ],
+  );
   return Ingredient(
     id: json['id'] as int,
     name: json['name'] as String,
@@ -35,7 +38,8 @@ Ingredient _$IngredientFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$IngredientToJson(Ingredient instance) => <String, dynamic>{
+Map<String, dynamic> _$IngredientToJson(Ingredient instance) =>
+    <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
       'creation_date': toDate(instance.creationDate),
