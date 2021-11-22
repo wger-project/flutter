@@ -17,6 +17,8 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/exceptions/http_exception.dart';
@@ -116,15 +118,39 @@ class MealItemForm extends StatelessWidget {
   final Meal _meal;
   late final MealItem _mealItem;
   final List<MealItem> _listMealItems;
+  late String _barcode;
+  late bool _test;
 
   final _form = GlobalKey<FormState>();
   final _ingredientIdController = TextEditingController();
   final _ingredientController = TextEditingController();
   final _amountController = TextEditingController();
 
-  MealItemForm(this._meal, this._listMealItems, [mealItem]) {
+  MealItemForm(this._meal, this._listMealItems, [mealItem, code, test]) {
     _mealItem = mealItem ?? MealItem.empty();
+    _test = test ?? false;
+    _barcode = code ?? '';
     _mealItem.mealId = _meal.id!;
+  }
+
+  TextEditingController get ingredientIdController => _ingredientIdController;
+
+
+  MealItem get mealItem => _mealItem;
+
+  Future<String> scanBarcode() async {
+    String barcode;
+    try {
+      barcode =  await FlutterBarcodeScanner.scanBarcode(
+          '#ff6666', 'Cancel', true, ScanMode.BARCODE);
+      if(barcode.compareTo('-1') == 0){
+        return '';
+      }
+    } on PlatformException {
+      return '';
+    }
+
+    return barcode;
   }
 
   @override
@@ -137,7 +163,77 @@ class MealItemForm extends StatelessWidget {
         child: Column(
           children: [
             IngredientTypeahead(_ingredientIdController, _ingredientController),
+            ElevatedButton(
+                key: const Key('scan-button'),
+                onPressed: () async {
+                  try {
+                    if(!_test) {
+                      _barcode = await scanBarcode();
+                    }
+
+                    if(_barcode.isNotEmpty){
+                      final result = await Provider.of<NutritionPlansProvider>(context, listen: false)
+                          .searchIngredientWithCode(_barcode);
+
+                      if(result != null){
+                        showDialog(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                            key: const Key('found-dialog'),
+                            title: Text(AppLocalizations.of(context).productFound),
+                            content: Text(AppLocalizations.of(context).productFoundDescription(result.name)),
+
+                            actions: [
+                              TextButton(
+                                key: const Key('found-dialog-confirm-button'),
+                                child: Text(MaterialLocalizations.of(context).continueButtonLabel),
+                                onPressed: () {
+                                  _ingredientController.text = result.name;
+                                  _ingredientIdController.text = result.id.toString();
+                                  Navigator.of(ctx).pop();
+                                },
+                              ),
+                              TextButton(
+                                key: const Key('found-dialog-close-button'),
+                                child: Text(MaterialLocalizations.of(context).closeButtonLabel),
+                                onPressed: () {
+                                  Navigator.of(ctx).pop();
+                                },
+                              )
+                            ],
+                          ),
+                        );
+
+                      }else{
+                        //nothing is matching barcode
+                        showDialog(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                            key: const Key('notFound-dialog'),
+                            title: Text(AppLocalizations.of(context).productNotFound),
+                            content:Text(AppLocalizations.of(context).productNotFoundDescription(_barcode),),
+                            actions: [
+                              TextButton(
+                                key: const Key('notFound-dialog-close-button'),
+                                child: Text(MaterialLocalizations.of(context).closeButtonLabel),
+                                onPressed: () {
+                                  Navigator.of(ctx).pop();
+                                },
+                              )
+                            ],
+                          ),
+                        );
+                      }
+                    }
+                  } catch (e) {
+                    showErrorDialog(e, context);
+                  }
+                },
+                child: Text(AppLocalizations.of(context).scanBarcode)
+
+            ),
             TextFormField(
+              key: const Key('field-weight'),
               decoration: InputDecoration(labelText: AppLocalizations.of(context).weight),
               controller: _amountController,
               keyboardType: TextInputType.number,
@@ -155,6 +251,7 @@ class MealItemForm extends StatelessWidget {
               },
             ),
             ElevatedButton(
+              key: const Key(SUBMIT_BUTTON_KEY_NAME),
               child: Text(AppLocalizations.of(context).save),
               onPressed: () async {
                 if (!_form.currentState!.validate()) {
