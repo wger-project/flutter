@@ -19,7 +19,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -65,8 +64,7 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
   }
 
   Future<void> fetchAndSetCategories() async {
-    final response = await client.get(makeUrl(categoriesUrlPath));
-    final categories = json.decode(response.body) as Map<String, dynamic>;
+    final categories = await fetch(makeUrl(categoriesUrlPath));
     try {
       for (final category in categories['results']) {
         _categories.add(ExerciseCategory.fromJson(category));
@@ -77,8 +75,7 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
   }
 
   Future<void> fetchAndSetMuscles() async {
-    final response = await client.get(makeUrl(musclesUrlPath));
-    final muscles = json.decode(response.body) as Map<String, dynamic>;
+    final muscles = await fetch(makeUrl(musclesUrlPath));
     try {
       for (final muscle in muscles['results']) {
         _muscles.add(Muscle.fromJson(muscle));
@@ -89,8 +86,7 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
   }
 
   Future<void> fetchAndSetEquipment() async {
-    final response = await client.get(makeUrl(equipmentUrlPath));
-    final equipments = json.decode(response.body) as Map<String, dynamic>;
+    final equipments = await fetch(makeUrl(equipmentUrlPath));
     try {
       for (final equipment in equipments['results']) {
         _equipment.add(Equipment.fromJson(equipment));
@@ -142,16 +138,7 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
     await fetchAndSetCategories();
     await fetchAndSetMuscles();
     await fetchAndSetEquipment();
-
-    final response = await client.get(
-        makeUrl(
-          exerciseInfoUrlPath,
-          query: {'limit': '1000'},
-        ),
-        headers: {
-          HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
-        });
-    final exercisesData = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+    final exercisesData = await fetch(makeUrl(exerciseInfoUrlPath, query: {'limit': '1000'}));
 
     try {
       // Load exercises
