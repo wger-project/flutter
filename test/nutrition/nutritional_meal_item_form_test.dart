@@ -113,7 +113,7 @@ void main() {
 
 
   group('Test the AlertDialogs for scanning result', () {
-    testWidgets('empty code',(WidgetTester tester) async {
+    testWidgets('with empty code',(WidgetTester tester) async {
       await tester.pumpWidget(createMealItemFormScreen(meal1, '', true));
 
       await tester.tap(find.byKey(const Key('scan-button')));
@@ -123,7 +123,7 @@ void main() {
 
     });
 
-    testWidgets('right code',(WidgetTester tester) async {
+    testWidgets('with correct code',(WidgetTester tester) async {
       await tester.pumpWidget(createMealItemFormScreen(meal1, '123', true));
 
       await tester.tap(find.byKey(const Key('scan-button')));
@@ -133,7 +133,7 @@ void main() {
 
     });
 
-    testWidgets('wrong code',(WidgetTester tester) async {
+    testWidgets('with incorrect code',(WidgetTester tester) async {
       await tester.pumpWidget(createMealItemFormScreen(meal1, '222', true));
 
       await tester.tap(find.byKey(const Key('scan-button')));
@@ -144,25 +144,25 @@ void main() {
 
   });
 
-  group('searchIngredientWithCode()', () {
-    test('Test with correct code', () async {
+  group('Test searchIngredientWithCode() function', () {
+    test('with correct code', () async {
       final Ingredient? ingredient = await mockNutritionWithClient.searchIngredientWithCode('123');
       expect(ingredient!.id, 9436);
     });
 
-    test('Test with incorrect code', () async {
+    test('with incorrect code', () async {
       final Ingredient? ingredient = await mockNutritionWithClient.searchIngredientWithCode('222');
       expect(ingredient, null);
     });
 
-    test('Test with empty code', () async {
+    test('with empty code', () async {
       final Ingredient? ingredient = await mockNutritionWithClient.searchIngredientWithCode('');
       expect(ingredient, null);
     });
   });
 
-  group('Weight formfield tests', (){
-    testWidgets('adding empty weight', (WidgetTester tester) async {
+  group('Test weight formfield', (){
+    testWidgets('add empty weight', (WidgetTester tester) async {
       await tester.pumpWidget(createMealItemFormScreen(meal1, '123', true));
 
       await tester.enterText(find.byKey(const Key('field-weight')), '');
@@ -175,7 +175,7 @@ void main() {
 
     });
 
-    testWidgets('adding correct weight type', (WidgetTester tester) async {
+    testWidgets('add correct weight type', (WidgetTester tester) async {
       await tester.pumpWidget(createMealItemFormScreen(meal1, '123', true));
 
       await tester.enterText(find.byKey(const Key('field-weight')), '2');
@@ -187,7 +187,7 @@ void main() {
       expect(find.text('Please enter a valid number'), findsNothing);
 
     });
-    testWidgets('adding incorrect weight type', (WidgetTester tester) async {
+    testWidgets('add incorrect weight type', (WidgetTester tester) async {
       await tester.pumpWidget(createMealItemFormScreen(meal1, '123', true));
 
       await tester.enterText(find.byKey(const Key('field-weight')), 'test');
@@ -201,7 +201,7 @@ void main() {
     });
   });
 
-  group('Found ingredient dialog', (){
+  group('Test ingredient found dialog', (){
     testWidgets('confirm found ingredient dialog', (WidgetTester tester) async {
       await tester.pumpWidget(createMealItemFormScreen(meal1, '123', true));
 
@@ -238,7 +238,7 @@ void main() {
 
   group('Test the adding a new item to meal', (){
 
-    testWidgets('saving empty ingredient', (WidgetTester tester) async {
+    testWidgets('save empty ingredient', (WidgetTester tester) async {
       await tester.pumpWidget(createMealItemFormScreen(meal1, '123', true));
 
       await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
@@ -250,7 +250,7 @@ void main() {
 
     });
 
-    testWidgets('saving ingredient without weight', (WidgetTester tester) async {
+    testWidgets('save ingredient without weight', (WidgetTester tester) async {
       await tester.pumpWidget(createMealItemFormScreen(meal1, '123', true));
 
       await tester.tap(find.byKey(const Key('scan-button')));
@@ -268,7 +268,7 @@ void main() {
 
     });
 
-    testWidgets('saving ingredient with incorrect weight input type', (WidgetTester tester) async {
+    testWidgets('save ingredient with incorrect weight input type', (WidgetTester tester) async {
       await tester.pumpWidget(createMealItemFormScreen(meal1, '123', true));
 
       await tester.tap(find.byKey(const Key('scan-button')));
@@ -286,7 +286,7 @@ void main() {
 
     });
 
-    testWidgets('saving complete ingredient with correct weight input type', (WidgetTester tester) async {
+    testWidgets('save complete ingredient with correct weight input type', (WidgetTester tester) async {
       await tester.pumpWidget(createMealItemFormScreen(meal1, '123', true));
 
       final MealItemForm formScreen = tester.widget(find.byType(MealItemForm));
