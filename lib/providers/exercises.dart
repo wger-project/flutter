@@ -93,7 +93,7 @@ class ExercisesProvider with ChangeNotifier {
   void _initFilters() {
     if (_muscles.isEmpty || _equipment.isEmpty || _filters != null) return;
 
-    this.setFilters(
+    setFilters(
       Filters(
         exerciseCategories: FilterCategory<ExerciseCategory>(
           title: 'Muscle Groups',
@@ -116,7 +116,7 @@ class ExercisesProvider with ChangeNotifier {
   }
 
   Future<void> findByFilters() async {
-    // Filters not initalized
+    // Filters not initialized
     if (filters == null) {
       filteredExercises = [];
       return;
@@ -147,7 +147,7 @@ class ExercisesProvider with ChangeNotifier {
   }
 
   /// Clears all lists
-  clear() {
+  void clear() {
     _equipment = [];
     _muscles = [];
     _categories = [];
@@ -218,7 +218,7 @@ class ExercisesProvider with ChangeNotifier {
         _variations.add(Variation.fromJson(variation));
       }
     } catch (error) {
-      throw (error);
+      rethrow;
     }
   }
 
@@ -251,7 +251,7 @@ class ExercisesProvider with ChangeNotifier {
         _languages.add(Language.fromJson(language));
       }
     } catch (error) {
-      throw (error);
+      rethrow;
     }
   }
 
@@ -308,10 +308,10 @@ class ExercisesProvider with ChangeNotifier {
   }
 
   List<ExerciseBase> mapImages(dynamic data, List<ExerciseBase> bases) {
-    List<ExerciseImage> images = data.map<ExerciseImage>((e) => ExerciseImage.fromJson(e)).toList();
-    bases.forEach((b) {
+    final List<ExerciseImage> images = data.map<ExerciseImage>((e) => ExerciseImage.fromJson(e)).toList();
+    for (final b in bases) {
       b.images = images.where((image) => image.exerciseBaseId == b.id).toList();
-    });
+    }
     return bases;
   }
 
@@ -327,7 +327,7 @@ class ExercisesProvider with ChangeNotifier {
       });
       return bases.toList();
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -336,7 +336,7 @@ class ExercisesProvider with ChangeNotifier {
       List<Exercise> out = [];
       for (var base in bases) {
         final filteredExercises = exercises.where((e) => e.baseId == base.id);
-        for (var exercise in filteredExercises) {
+        for (final exercise in filteredExercises) {
           exercise.base = base;
           base.exercises.add(exercise);
           out.add(exercise);
@@ -390,10 +390,7 @@ class ExercisesProvider with ChangeNotifier {
   }
 
   Future<void> fetchAndSetExercises() async {
-    this.clear();
-    print(Intl.getCurrentLocale());
-    print(Intl.shortLocale(Intl.getCurrentLocale()));
-    print('---------');
+    clear();
     final prefs = await SharedPreferences.getInstance();
     await checkExerciseCacheVersion();
 

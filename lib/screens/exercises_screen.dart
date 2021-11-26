@@ -20,7 +20,7 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    //final size = MediaQuery.of(context).size;
     final exercisesList = Provider.of<ExercisesProvider>(context).filteredExercises;
 
     return Scaffold(
@@ -61,20 +61,24 @@ class _ExercisesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    //final size = MediaQuery.of(context).size;
     return ListView.separated(
       separatorBuilder: (context, index) {
-        return Divider(
+        return const Divider(
           thickness: 1,
         );
       },
       itemCount: exercisesList.length,
       itemBuilder: (context, index) {
         final exercise = exercisesList[index];
+        return ExerciseListTile(exercise: exercise);
+        /*
         return Container(
           height: size.height * 0.175,
           child: ExerciseListTile(exercise: exercise),
         );
+
+         */
       },
     );
   }
