@@ -21,7 +21,6 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/exceptions/no_such_entry_exception.dart';
@@ -74,7 +73,7 @@ class ExercisesProvider with ChangeNotifier {
   Filters? get filters => _filters;
   Future<void> setFilters(Filters? newFilters) async {
     _filters = newFilters;
-    await this.findByFilters();
+    await findByFilters();
   }
 
   List<Exercise>? _filteredExercises = [];
@@ -89,9 +88,11 @@ class ExercisesProvider with ChangeNotifier {
   List<Exercise> get items => [..._exercises];
   List<ExerciseCategory> get categories => [..._categories];
 
-  // Initialze filters for exersices search in exersices list
+  // Initialize filters for exercises search in exercises list
   void _initFilters() {
-    if (_muscles.isEmpty || _equipment.isEmpty || _filters != null) return;
+    if (_muscles.isEmpty || _equipment.isEmpty || _filters != null) {
+      return;
+    }
 
     setFilters(
       Filters(
@@ -141,8 +142,8 @@ class ExercisesProvider with ChangeNotifier {
         (selectedEquipment) => exercise.equipment.contains(selectedEquipment),
       );
 
-      return (isInAnyCategory || filters!.exerciseCategories.selected.length == 0) &&
-          (doesContainAnyEquipment || filters!.equipment.selected.length == 0);
+      return (isInAnyCategory || filters!.exerciseCategories.selected.isEmpty) &&
+          (doesContainAnyEquipment || filters!.equipment.selected.isEmpty);
     }).toList();
   }
 
@@ -156,8 +157,10 @@ class ExercisesProvider with ChangeNotifier {
   }
 
   List<Exercise> findByCategory(ExerciseCategory? category) {
-    if (category == null) return this.items;
-    return this.items.where((exercise) => exercise.category == category).toList();
+    if (category == null) {
+      return items;
+    }
+    return items.where((exercise) => exercise.category == category).toList();
   }
 
   /// Find exercise by ID
@@ -308,7 +311,8 @@ class ExercisesProvider with ChangeNotifier {
   }
 
   List<ExerciseBase> mapImages(dynamic data, List<ExerciseBase> bases) {
-    final List<ExerciseImage> images = data.map<ExerciseImage>((e) => ExerciseImage.fromJson(e)).toList();
+    final List<ExerciseImage> images =
+        data.map<ExerciseImage>((e) => ExerciseImage.fromJson(e)).toList();
     for (final b in bases) {
       b.images = images.where((image) => image.exerciseBaseId == b.id).toList();
     }
@@ -344,22 +348,22 @@ class ExercisesProvider with ChangeNotifier {
       }
       return [bases, out];
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
   List<Exercise> mapLanguages(List<Exercise> exercises) {
-    exercises.forEach((exercise) {
+    for (final exercise in exercises) {
       exercise.language = findLanguageById(exercise.languageId);
-    });
+    }
     return exercises;
   }
 
   List<Exercise> mapAliases(dynamic data, List<Exercise> exercises) {
-    List<Alias> alias = data.map<Alias>((e) => Alias.fromJson(e)).toList();
-    alias.forEach((e) {
+    final List<Alias> alias = data.map<Alias>((e) => Alias.fromJson(e)).toList();
+    for (final e in alias) {
       exercises.firstWhere((exercise) => exercise.id == e.exerciseId).alias.add(e);
-    });
+    }
     return exercises;
   }
 
@@ -375,7 +379,7 @@ class ExercisesProvider with ChangeNotifier {
   ///
   /// This is needed since the content of the exercise cache can change and we need
   /// to invalidate it as a result
-  checkExerciseCacheVersion() async {
+  Future<void> checkExerciseCacheVersion() async {
     final prefs = await SharedPreferences.getInstance();
     if (prefs.containsKey(PREFS_EXERCISE_CACHE_VERSION)) {
       final cacheVersion = prefs.getInt(PREFS_EXERCISE_CACHE_VERSION);
@@ -457,7 +461,8 @@ class ExercisesProvider with ChangeNotifier {
       // Save the result to the cache
       final cacheData = {
         'date': DateTime.now().toIso8601String(),
-        'expiresIn': DateTime.now().add(Duration(days: EXERCISE_CACHE_DAYS)).toIso8601String(),
+        'expiresIn':
+            DateTime.now().add(const Duration(days: EXERCISE_CACHE_DAYS)).toIso8601String(),
         'equipment': _equipment.map((e) => e.toJson()).toList(),
         'categories': _categories.map((e) => e.toJson()).toList(),
         'muscles': _muscles.map((e) => e.toJson()).toList(),
@@ -547,9 +552,9 @@ class Filters {
   List<FilterCategory> get filterCategories => [exerciseCategories, equipment];
 
   bool get isNothingMarked {
-    final isExersiceCategoryMarked = exerciseCategories.items.values.any((isMarked) => isMarked);
+    final isExerciseCategoryMarked = exerciseCategories.items.values.any((isMarked) => isMarked);
     final isEquipmentMarked = equipment.items.values.any((isMarked) => isMarked);
-    return !isExersiceCategoryMarked && !isEquipmentMarked;
+    return !isExerciseCategoryMarked && !isEquipmentMarked;
   }
 
   bool _doesNeedUpdate = false;
