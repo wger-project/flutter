@@ -21,6 +21,9 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/widgets/core/core.dart';
+import 'package:wger/widgets/exercises/images.dart';
+import 'package:wger/widgets/exercises/list_tile.dart';
 
 class ExerciseDetail extends StatelessWidget {
   final Exercise _exercise;
@@ -36,40 +39,22 @@ class ExerciseDetail extends StatelessWidget {
         children: [
           // Category
           Text(
-            AppLocalizations.of(context).category,
-            style: Theme.of(context).textTheme.headline6,
+            _exercise.name,
+            style: Theme.of(context).textTheme.headline5,
           ),
-          Text(_exercise.category.name),
+
+          Pill(
+            title: _exercise.category.name,
+          ),
           const SizedBox(height: 8),
 
-          // Equipment
-          Text(
-            AppLocalizations.of(context).equipment,
-            style: Theme.of(context).textTheme.headline6,
-          ),
-          if (_exercise.equipment.isNotEmpty)
-            Text(_exercise.equipment.map((e) => e.name).toList().join('\n')),
-          if (_exercise.equipment.isEmpty) const Text('-/-'),
+          const MutedText('Also known as: Burpees, Basic burpees'),
+
           const SizedBox(height: 8),
 
-          // Muscles
-          Text(
-            AppLocalizations.of(context).muscles,
-            style: Theme.of(context).textTheme.headline6,
+          ExerciseImageWidget(
+            image: _exercise.getMainImage,
           ),
-          if (_exercise.muscles.isNotEmpty)
-            Text(_exercise.muscles.map((e) => e.name).toList().join('\n')),
-          if (_exercise.muscles.isEmpty) const Text('-/-'),
-          const SizedBox(height: 8),
-
-          // Muscles secondary
-          Text(
-            AppLocalizations.of(context).musclesSecondary,
-            style: Theme.of(context).textTheme.headline6,
-          ),
-          if (_exercise.musclesSecondary.isNotEmpty)
-            Text(_exercise.musclesSecondary.map((e) => e.name).toList().join('\n')),
-          if (_exercise.musclesSecondary.isEmpty) const Text('-/-'),
           const SizedBox(height: 8),
 
           // Description
@@ -78,6 +63,60 @@ class ExerciseDetail extends StatelessWidget {
             style: Theme.of(context).textTheme.headline6,
           ),
           Html(data: _exercise.description),
+
+          // Notes
+          Text(
+            AppLocalizations.of(context).notes,
+            style: Theme.of(context).textTheme.headline6,
+          ),
+          ..._exercise.tips.map((e) => Text(e.comment)).toList(),
+
+          // Muscles
+          Text(
+            AppLocalizations.of(context).muscles,
+            style: Theme.of(context).textTheme.headline6,
+          ),
+          const Placeholder(
+            color: Colors.grey,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Column(
+                children: [
+                  Text(
+                    AppLocalizations.of(context).muscles,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  ..._exercise.muscles.map((e) => Text(e.name)).toList(),
+                ],
+              ),
+              Column(
+                children: [
+                  Text(
+                    AppLocalizations.of(context).musclesSecondary,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  ..._exercise.musclesSecondary
+                      .map((e) => Text(e.name))
+                      .toList(),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+
+          // Variants
+          Text(
+            'Variants',
+            style: Theme.of(context).textTheme.headline6,
+          ),
+
+          ExerciseListTile(exercise: _exercise),
+          ExerciseListTile(exercise: _exercise),
+          ExerciseListTile(exercise: _exercise),
+
           const SizedBox(height: 8),
         ],
       ),
