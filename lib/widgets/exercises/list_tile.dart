@@ -30,16 +30,21 @@ class ExerciseListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     //final size = MediaQuery.of(context).size;
     //final theme = Theme.of(context);
+    const double IMG_SIZE = 60;
 
     return ListTile(
-      leading: CircleAvatar(
-        backgroundColor: const Color(0x00ffffff),
-        child: ClipOval(
-          child: SizedBox(
-            height: 40,
-            width: 40,
-            child: ExerciseImageWidget(
-              image: exercise.getMainImage,
+      leading: SizedBox(
+        height: IMG_SIZE,
+        width: IMG_SIZE,
+        child: CircleAvatar(
+          backgroundColor: const Color(0x00ffffff),
+          child: ClipOval(
+            child: SizedBox(
+              height: IMG_SIZE,
+              width: IMG_SIZE,
+              child: ExerciseImageWidget(
+                image: exercise.getMainImage,
+              ),
             ),
           ),
         ),
