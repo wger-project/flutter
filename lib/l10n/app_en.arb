@@ -540,5 +540,10 @@
   "scanBarcode": "Scan barcode",
   "@scanBarcode": {
     "description": "Label for scan barcode button"
+  },
+
+  "close": "Close",
+  "@close": {
+    "description": "Translation for close"
   }
 }

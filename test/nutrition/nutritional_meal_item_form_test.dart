@@ -22,20 +22,7 @@ import '../other/base_provider_test.mocks.dart';
 import '../utils.dart';
 import 'nutritional_plan_form_test.mocks.dart';
 
-final ingredient1 = Ingredient(
-  id: 1,
-  name: '100% Apple & Mango',
-  code: '123456787',
-  creationDate: DateTime(2021, 5, 1),
-  energy: 500,
-  carbohydrates: 10,
-  carbohydratesSugar: 2,
-  protein: 5,
-  fat: 20,
-  fatSaturated: 7,
-  fibres: 12,
-  sodium: 0.5,
-);
+
 
 void main() {
   var mockNutrition = MockNutritionPlansProvider();

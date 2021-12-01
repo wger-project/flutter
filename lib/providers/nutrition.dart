@@ -333,8 +333,6 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
       return null;
     }
 
-    Ingredient ingredient;
-
     // Send the request
     final data = await fetch(
       makeUrl(
@@ -343,13 +341,11 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
       ),
     );
 
-    if(data['count'] != 0) {
-      ingredient = Ingredient.fromJson(data['results'][0]);
-      return ingredient;
-    }else{
+    if(data["count"]==0){
       return null;
+    }else{
+      return Ingredient.fromJson(data['results'][0]);
     }
-
   }
 
   /// Log meal to nutrition diary
