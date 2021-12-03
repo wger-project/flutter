@@ -25,6 +25,22 @@ import 'nutritional_plan_form_test.mocks.dart';
 
 
 void main() {
+
+  Ingredient ingr = Ingredient(
+    id: 1,
+    code: '123456787',
+    name: 'Water',
+    creationDate: DateTime(2021, 5, 1),
+    energy: 500,
+    carbohydrates: 10,
+    carbohydratesSugar: 2,
+    protein: 5,
+    fat: 20,
+    fatSaturated: 7,
+    fibres: 12,
+    sodium: 0.5,
+  );
+
   var mockNutrition = MockNutritionPlansProvider();
   final client = MockClient();
   final mockNutritionWithClient = NutritionPlansProvider(testAuthProvider, [], client);
@@ -54,10 +70,10 @@ void main() {
   setUp(() {
     plan1 = getNutritionalPlan();
     meal1 = plan1.meals.first;
-    final MealItem mealItem = MealItem(ingredientId: ingredient1.id, amount: 2);
+    final MealItem mealItem = MealItem(ingredientId: ingr.id, amount: 2);
     mockNutrition = MockNutritionPlansProvider();
 
-    when(mockNutrition.searchIngredientWithCode('123')).thenAnswer((_) => Future.value(ingredient1));
+    when(mockNutrition.searchIngredientWithCode('123')).thenAnswer((_) => Future.value(ingr));
     when(mockNutrition.searchIngredientWithCode('')).thenAnswer((_) => Future.value(null));
     when(mockNutrition.searchIngredientWithCode('222')).thenAnswer((_) => Future.value(null));
     when(mockNutrition.searchIngredient(any)).thenAnswer((_) => Future.value(json.decode(fixture('ingredient_suggestions')) as List<dynamic>));
