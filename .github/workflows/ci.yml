@@ -2,8 +2,12 @@ name: Continous Integration
 on:
   push:
     branches: [ master ]
+    paths:
+      - '**.dart'
   pull_request:
     branches: [ master ]
+    paths:
+      - '**.dart'
 jobs:
   test:
     runs-on: ubuntu-20.04
@@ -14,7 +18,7 @@ jobs:
       uses: subosito/flutter-action@v1
       with:
         channel: 'stable'
-        flutter-version: '2.2.x'
+        flutter-version: '2.5.x'
 
     - run: dart --version
     - run: flutter --version

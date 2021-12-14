@@ -199,14 +199,29 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
             ),
           if (_hasContent)
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 TextButton(
-                    child: Text(AppLocalizations.of(context).goToDetailPage),
-                    onPressed: () {
-                      Navigator.of(context)
-                          .pushNamed(NutritionalPlanScreen.routeName, arguments: _plan);
-                    }),
+                  child: Text(AppLocalizations.of(context).logIngredient),
+                  onPressed: () {
+                    Navigator.pushNamed(
+                      context,
+                      FormScreen.routeName,
+                      arguments: FormScreenArguments(
+                        AppLocalizations.of(context).logIngredient,
+                        IngredientLogForm(_plan!),
+                        hasListView: true,
+                      ),
+                    );
+                  },
+                ),
+                TextButton(
+                  child: Text(AppLocalizations.of(context).goToDetailPage),
+                  onPressed: () {
+                    Navigator.of(context)
+                        .pushNamed(NutritionalPlanScreen.routeName, arguments: _plan);
+                  },
+                ),
               ],
             ),
         ],

@@ -58,8 +58,8 @@ final ThemeData wgerTheme = ThemeData(
 
     // Show icons in the system's bar in light colors
     appBarTheme: const AppBarTheme(
-      brightness: Brightness.dark,
       systemOverlayStyle: SystemUiOverlayStyle.dark,
+      color: wgerPrimaryColor,
     ),
 
     /*

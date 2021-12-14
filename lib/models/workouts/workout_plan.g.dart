@@ -7,7 +7,10 @@ part of 'workout_plan.dart';
 // **************************************************************************
 
 WorkoutPlan _$WorkoutPlanFromJson(Map<String, dynamic> json) {
-  $checkKeys(json, requiredKeys: const ['id', 'creation_date', 'name', 'description']);
+  $checkKeys(
+    json,
+    requiredKeys: const ['id', 'creation_date', 'name', 'description'],
+  );
   return WorkoutPlan(
     id: json['id'] as int?,
     creationDate: DateTime.parse(json['creation_date'] as String),

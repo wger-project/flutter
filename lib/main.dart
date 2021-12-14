@@ -105,7 +105,7 @@ class MyApp extends StatelessWidget {
           theme: wgerTheme,
           home: auth.isAuth
               ? FutureBuilder(
-                  future: auth.neededApplicationUpdate(),
+                  future: auth.applicationUpdateRequired(),
                   builder: (ctx, snapshot) =>
                       snapshot.connectionState == ConnectionState.done && snapshot.data == true
                           ? UpdateAppScreen()

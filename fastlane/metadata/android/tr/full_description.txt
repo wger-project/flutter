@@ -1,0 +1,39 @@
+Fitness tutkunlarından fitness severlere - Egzersiz Yöneticiniz WGER ile sağlığınızı organize edin!
+
+1 numaralı fitness uygulamanızı zaten buldunuz mu ve kendi spor rutinlerinizi oluşturmayı seviyor musunuz? Ne tür bir sportif canavar olursanız olun - hepimizin ortak bir yanı var: Sağlık verilerimizi takip etmeyi seviyoruz <3
+
+Bu nedenle, fitness yolculuğunuzu kullanışlı küçük egzersiz kayıt defterinizle hala yönettiğiniz için sizi yargılamıyoruz, ancak 2021'e hoş geldiniz!
+
+Sizin için hayatınızı kolaylaştırmak için en alakalı özelliklere göre boyutlandırılmış %100 ücretsiz bir dijital sağlık ve fitness takip uygulaması geliştirdik. Başlayın, antrenmana devam edin ve ilerlemenizi kutlayın!
+
+wger bir Açık Kaynak projesidir ve her şey:
+* Vucüdun
+* Antrenmanlarınız
+* Senin ilerlemen
+* Verileriniz
+
+Vucüdun:
+En sevdiğiniz ikramların içeriğini Google'da aramanıza gerek yok - 78000'den fazla ürün arasından günlük öğünlerinizi seçin ve besin değerlerini görün. Beslenme planına yemek ekleyin ve takvimde diyetinizin bir özetini tutun.
+
+Antrenmanlarınız:
+Vücudunuz için en iyisini siz bilirsiniz. 200 farklı egzersizden artan çeşitlilikten kendi egzersiz programlarınızı oluşturun. Ardından, ağırlıklarınızı tek dokunuşla kaydederken egzersiz boyunca size rehberlik etmesi için Spor Salonu Modunu kullanın.
+
+Senin ilerlemen:
+Hedeflerinizi asla gözden kaçırmayın. Kilonuzu takip edin ve istatistiklerinizi saklayın.
+
+Verileriniz:
+wger, kişiselleştirilmiş fitness günlüğünüzdür - ancak verilerinizin sahibi sizsiniz. Erişmek ve onunla harika şeyler yapmak için REST API'yi kullanın.
+
+Lütfen dikkat: Bu ücretsiz uygulama ek fonlara dayalı değildir ve sizden para bağışlamanızı istemiyoruz. Dahası, sürekli büyüyen bir topluluk projesidir. Bu yüzden her zaman yeni özelliklere hazır olun!
+
+#OpenSource – bu ne anlama geliyor?
+
+Açık Kaynak, bu uygulamanın ve konuştuğu sunucunun tüm kaynak kodunun ücretsiz ve herkes tarafından kullanılabilir olduğu anlamına gelir:
+* Kendi sunucunuzda veya yerel spor salonunuz için wger çalıştırmak ister misiniz? Devam etmek!
+* Bir özelliği özlüyor ve uygulamak istiyor musunuz? Şimdi başla!
+* Hiçbir şeyin hiçbir yere gönderilmediğini kontrol etmek ister misiniz? Yapabilirsiniz!
+
+Topluluğumuza katılın ve dünyanın her yerinden spor meraklılarının ve BT meraklılarının bir parçası olun. İhtiyaçlarımıza göre özelleştirilmiş uygulamayı ayarlamak ve optimize etmek için çalışmaya devam ediyoruz. Katkılarınızı seviyoruz, bu yüzden istediğiniz zaman atlamaktan ve dilekleriniz ve fikirlerinizle katkıda bulunmaktan çekinmeyin!
+
+-> https://github.com/wger-project adresinde kaynak kodunu bulun
+-> sorularınızı sorun veya sadece discord sunucumuzda merhaba deyin https://discord.gg/rPWFv6W

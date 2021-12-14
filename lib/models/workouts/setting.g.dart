@@ -7,18 +7,21 @@ part of 'setting.dart';
 // **************************************************************************
 
 Setting _$SettingFromJson(Map<String, dynamic> json) {
-  $checkKeys(json, requiredKeys: const [
-    'id',
-    'set',
-    'order',
-    'exercise',
-    'repetition_unit',
-    'reps',
-    'weight',
-    'weight_unit',
-    'comment',
-    'rir'
-  ]);
+  $checkKeys(
+    json,
+    requiredKeys: const [
+      'id',
+      'set',
+      'order',
+      'exercise',
+      'repetition_unit',
+      'reps',
+      'weight',
+      'weight_unit',
+      'comment',
+      'rir'
+    ],
+  );
   return Setting(
     id: json['id'] as int?,
     setId: json['set'] as int,

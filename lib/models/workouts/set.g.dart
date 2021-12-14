@@ -7,7 +7,10 @@ part of 'set.dart';
 // **************************************************************************
 
 Set _$SetFromJson(Map<String, dynamic> json) {
-  $checkKeys(json, requiredKeys: const ['id', 'sets', 'order', 'comment']);
+  $checkKeys(
+    json,
+    requiredKeys: const ['id', 'sets', 'order', 'comment'],
+  );
   return Set(
     day: json['exerciseday'] as int,
     sets: json['sets'] as int,

@@ -7,7 +7,10 @@ part of 'muscle.dart';
 // **************************************************************************
 
 Muscle _$MuscleFromJson(Map<String, dynamic> json) {
-  $checkKeys(json, requiredKeys: const ['id', 'name', 'is_front']);
+  $checkKeys(
+    json,
+    requiredKeys: const ['id', 'name', 'is_front'],
+  );
   return Muscle(
     id: json['id'] as int,
     name: json['name'] as String,

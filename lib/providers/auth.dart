@@ -39,34 +39,38 @@ class AuthProvider with ChangeNotifier {
   String? serverUrl;
   String? serverVersion;
   PackageInfo? applicationVersion;
+  Map<String, String> metadata = {};
+
+  static const MIN_APP_VERSION_URL = 'min-app-version';
+  static const SERVER_VERSION_URL = 'version';
+  static const REGISTRATION_URL = 'register';
+  static const LOGIN_URL = 'login';
+
+  late http.Client client;
+
+  AuthProvider([http.Client? client, bool? checkMetadata]) {
+    this.client = client ?? http.Client();
+
+    // TODO: this is a workaround since AndroidMetadata doesn't work while running tests
+    if (checkMetadata ?? true) {
+      try {
+        AndroidMetadata.metaDataAsMap.then((value) => metadata = value!);
+      } on PlatformException {
+        throw Exception('An error occurred reading the metadata from AndroidManifest');
+      } catch (error) {}
+    }
+  }
 
   /// flag to indicate that the application has successfully loaded all initial data
   bool dataInit = false;
-
-  // DateTime _expiryDate;
-  // String _userId;
-  // Timer _authTimer;
 
   bool get isAuth {
     return token != null;
   }
 
-  String? get token2 {
-    // if (_expiryDate != null &&
-    // _expiryDate.isAfter(DateTime.now()) &&
-    // _token != null) {
-    return token;
-    // }
-    // return null;
-  }
-
-  // String get userId {
-  //   return _userId;
-  // }
-
   /// Server application version
   Future<void> setServerVersion() async {
-    final response = await http.get(makeUri(serverUrl!, 'version'));
+    final response = await client.get(makeUri(serverUrl!, SERVER_VERSION_URL));
     final responseData = json.decode(response.body);
     serverVersion = responseData;
   }
@@ -78,15 +82,19 @@ class AuthProvider with ChangeNotifier {
   }
 
   /// Checking if there is a new version of the application.
-  Future<bool> neededApplicationUpdate() async {
-    if (!ENABLED_UPDATE) {
+  Future<bool> applicationUpdateRequired([String? version]) async {
+    if (metadata.containsKey('wger.check_min_app_version') ||
+        metadata['wger.check_min_app_version'] == 'false') {
       return false;
     }
-    final response = await http.get(makeUri(serverUrl!, 'min-app-version'));
-    final applicationLatestVersion = json.decode(response.body);
-    final currentVersion = Version.parse(applicationVersion!.version);
-    final latestAppVersion = Version.parse(applicationLatestVersion);
-    return latestAppVersion > currentVersion;
+
+    final applicationCurrentVersion = version ?? applicationVersion!.version;
+
+    final response = await client.get(makeUri(serverUrl!, MIN_APP_VERSION_URL));
+    final currentVersion = Version.parse(applicationCurrentVersion);
+
+    final requiredAppVersion = Version.parse(response.body);
+    return requiredAppVersion >= currentVersion;
   }
 
   /// Registers a new user
@@ -95,27 +103,18 @@ class AuthProvider with ChangeNotifier {
       required String password,
       required String email,
       required String serverUrl}) async {
-    final uri = Uri.parse('$serverUrl/api/v2/register/');
-    Map<String, String>? metadata = {};
-
-    // Read the api key from the manifest file
-    try {
-      metadata = await AndroidMetadata.metaDataAsMap;
-    } on PlatformException {
-      throw Exception('An error occurred reading the API key');
-    }
-
     // Register
     try {
       final Map<String, String> data = {'username': username, 'password': password};
       if (email != '') {
         data['email'] = email;
       }
-      final response = await http.post(
-        uri,
+      final response = await client.post(
+        makeUri(serverUrl, REGISTRATION_URL),
         headers: {
           HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
-          HttpHeaders.authorizationHeader: "Token ${metadata!['wger.api_key']}"
+          HttpHeaders.authorizationHeader: 'Token ${metadata[MANIFEST_KEY_API]}',
+          HttpHeaders.userAgentHeader: getAppNameHeader(),
         },
         body: json.encode(data),
       );
@@ -133,14 +132,14 @@ class AuthProvider with ChangeNotifier {
 
   /// Authenticates a user
   Future<void> login(String username, String password, String serverUrl) async {
-    final uri = Uri.parse('$serverUrl/api/v2/login/');
     await logout(shouldNotify: false);
 
     try {
-      final response = await http.post(
-        uri,
+      final response = await client.post(
+        makeUri(serverUrl, LOGIN_URL),
         headers: <String, String>{
           HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
+          HttpHeaders.userAgentHeader: getAppNameHeader(),
         },
         body: json.encode({'username': username, 'password': password}),
       );
@@ -154,13 +153,6 @@ class AuthProvider with ChangeNotifier {
       this.serverUrl = serverUrl;
       token = responseData['token'];
 
-      // _userId = responseData['localId'];
-      // _expiryDate = DateTime.now().add(
-      //   Duration(
-      //     seconds: int.parse(responseData['expiresIn']),
-      //   ),
-      // );
-
       notifyListeners();
 
       // store login data in shared preferences
@@ -168,7 +160,6 @@ class AuthProvider with ChangeNotifier {
       final userData = json.encode({
         'token': token,
         'serverUrl': this.serverUrl,
-        // 'expiryDate': _expiryDate.toIso8601String(),
       });
       final serverData = json.encode({
         'serverUrl': this.serverUrl,
@@ -201,16 +192,9 @@ class AuthProvider with ChangeNotifier {
       return false;
     }
     final extractedUserData = json.decode(prefs.getString('userData')!);
-    // final expiryDate = DateTime.parse(extractedUserData['expiryDate']);
-
-    // if (expiryDate.isBefore(DateTime.now())) {
-    //   return false;
-    // }
 
     token = extractedUserData['token'];
     serverUrl = extractedUserData['serverUrl'];
-    // _userId = extractedUserData['userId'];
-    // _expiryDate = expiryDate;
 
     log('autologin successful');
     setApplicationVersion();
@@ -225,12 +209,6 @@ class AuthProvider with ChangeNotifier {
     token = null;
     serverUrl = null;
     dataInit = false;
-    // _userId = null;
-    // _expiryDate = null;
-    // if (_authTimer != null) {
-    //   _authTimer.cancel();
-    //   _authTimer = null;
-    // }
 
     if (shouldNotify) {
       notifyListeners();
@@ -240,24 +218,16 @@ class AuthProvider with ChangeNotifier {
     prefs.remove('userData');
   }
 
-  // void _autoLogout() {
-  //   if (_authTimer != null) {
-  //     _authTimer.cancel();
-  //   }
-  //   final timeToExpiry = _expiryDate.difference(DateTime.now()).inSeconds;
-  //   _authTimer = Timer(Duration(seconds: timeToExpiry), logout);
-  // }
-
   /// Returns the application name and version
   ///
   /// This is used in the headers when talking to the API
   String getAppNameHeader() {
     String out = '';
     if (applicationVersion != null) {
-      out = '${applicationVersion!.version} '
+      out = '/${applicationVersion!.version} '
           '(${applicationVersion!.packageName}; '
           'build: ${applicationVersion!.buildNumber})';
     }
-    return 'wger App/$out';
+    return 'wger App$out';
   }
 }
