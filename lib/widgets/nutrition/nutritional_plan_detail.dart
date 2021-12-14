@@ -205,10 +205,15 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
             ),
           ),
           const Padding(padding: EdgeInsets.all(8.0)),
+          Text(
+            'Planned / Logged / 7 Day Average',
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.headline6,
+          ),
           Container(
             padding: const EdgeInsets.all(15),
-            height: 220,
-            child: NutritionalPlanHatchBarChartWidget(nutritionalValues),
+            height: 300,
+            child: NutritionalPlanHatchBarChartWidget(nutritionalValues, _nutritionalPlan.logs),
           ),
           const Padding(padding: EdgeInsets.all(8.0)),
           Text(

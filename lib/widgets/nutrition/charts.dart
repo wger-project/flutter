@@ -20,6 +20,7 @@ import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:charts_flutter/flutter.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
 import 'package:wger/theme/theme.dart';
@@ -126,14 +127,26 @@ class NutritionalDiaryChartWidget extends StatelessWidget {
 class NutritionalPlanHatchBarChartWidget extends StatelessWidget {
 
   final NutritionalValues _nutritionalValues;
+  final List<Log> _nutritionalPlanLogs;
 
   /// [_nutritionalValues] are the calculated [NutritionalValues] for the wanted
   /// plan.
-  const NutritionalPlanHatchBarChartWidget(this._nutritionalValues);
+  const NutritionalPlanHatchBarChartWidget(this._nutritionalValues, this._nutritionalPlanLogs);
 
+  NutritionalValues sumNutritionalValuesFromPlanLogs() {
+    NutritionalValues test = NutritionalValues();
+    for(final nutritionalValues in _nutritionalPlanLogs) {
+      test += nutritionalValues.nutritionalValues;
+    }
+
+    return test;
+  }
 
   @override
   Widget build(BuildContext context) {
+
+    NutritionalValues loggedNutritionalValues = sumNutritionalValuesFromPlanLogs();
+
     if (_nutritionalValues.energy == 0) {
       return Container();
     }
@@ -190,35 +203,35 @@ class NutritionalPlanHatchBarChartWidget extends StatelessWidget {
           data: [
             NutritionData(
               AppLocalizations.of(context).energy,
-              0
+              loggedNutritionalValues.energy
             ),
             NutritionData(
               AppLocalizations.of(context).protein,
-              0
+              loggedNutritionalValues.protein
             ),
             NutritionData(
               AppLocalizations.of(context).carbohydrates,
-              0
+              loggedNutritionalValues.carbohydrates
             ),
             NutritionData(
               AppLocalizations.of(context).sugars,
-              0
+              loggedNutritionalValues.carbohydratesSugar
             ),
             NutritionData(
               AppLocalizations.of(context).fat,
-              0
+              loggedNutritionalValues.fat
             ),
             NutritionData(
               AppLocalizations.of(context).saturatedFat,
-              0,
+              loggedNutritionalValues.fatSaturated
             ),
             NutritionData(
               AppLocalizations.of(context).fibres,
-              0
+              loggedNutritionalValues.fibres
             ),
             NutritionData(
               AppLocalizations.of(context).sodium,
-              0
+              loggedNutritionalValues.sodium
             ),
           ],
         ),
