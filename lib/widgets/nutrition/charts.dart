@@ -123,13 +123,12 @@ class NutritionalDiaryChartWidget extends StatelessWidget {
   }
 }
 
-/// Nutritional plan pie chart widget
+/// Nutritional plan hatch bar chart widget
 class NutritionalPlanHatchBarChartWidget extends StatelessWidget {
 
   final NutritionalPlan _nutritionalPlan;
 
-  /// [_nutritionalValues] are the calculated [NutritionalValues] for the wanted
-  /// plan.
+  /// [_nutritionalPlan] is current opened nutrition plan as plan detail.
   const NutritionalPlanHatchBarChartWidget(this
       ._nutritionalPlan);
 
@@ -310,6 +309,8 @@ class NutritionalPlanHatchBarChartWidget extends StatelessWidget {
       ],
       animate: true,
       domainAxis: const charts.OrdinalAxisSpec(
+        ///labelRotation was added to rotate text of X Axis. Without that,
+        ///titles would overlap each other
         renderSpec: charts.SmallTickRendererSpec(labelRotation: 60),
       ),
       barGroupingType: charts.BarGroupingType.grouped,
