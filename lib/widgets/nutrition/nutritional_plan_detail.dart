@@ -205,6 +205,12 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
             ),
           ),
           const Padding(padding: EdgeInsets.all(8.0)),
+          Container(
+            padding: const EdgeInsets.all(15),
+            height: 220,
+            child: NutritionalPlanHatchBarChartWidget(nutritionalValues),
+          ),
+          const Padding(padding: EdgeInsets.all(8.0)),
           Text(
             AppLocalizations.of(context).nutritionalDiary,
             textAlign: TextAlign.center,
@@ -243,7 +249,7 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                     .reversed,
               ],
             ),
-          ),
+          )
         ],
       ),
     );

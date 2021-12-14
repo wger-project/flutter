@@ -120,3 +120,88 @@ class NutritionalDiaryChartWidget extends StatelessWidget {
     );
   }
 }
+
+/// Nutritional plan pie chart widget
+class NutritionalPlanHatchBarChartWidget extends StatelessWidget {
+
+  final NutritionalValues _nutritionalValues;
+
+  /// [_nutritionalValues] are the calculated [NutritionalValues] for the wanted
+  /// plan.
+  const NutritionalPlanHatchBarChartWidget(this._nutritionalValues);
+
+
+  @override
+  Widget build(BuildContext context) {
+    if (_nutritionalValues.energy == 0) {
+      return Container();
+    }
+
+    return charts.BarChart(
+
+      [
+        charts.Series<OrdinalSales, String>(
+          id: 'Desktop',
+          domainFn: (OrdinalSales sales, _) => sales.year,
+          measureFn: (OrdinalSales sales, _) => sales.sales,
+          data: [
+            OrdinalSales(AppLocalizations.of(context).energy, 10),
+            OrdinalSales(AppLocalizations.of(context).protein, 10),
+            OrdinalSales(AppLocalizations.of(context).carbohydrates, 10),
+            OrdinalSales(AppLocalizations.of(context).sugars, 10),
+            OrdinalSales(AppLocalizations.of(context).fat, 10),
+            OrdinalSales(AppLocalizations.of(context).saturatedFat, 10),
+            OrdinalSales(AppLocalizations.of(context).fibres, 10),
+            OrdinalSales(AppLocalizations.of(context).sodium, 10),
+          ],
+        ),
+        charts.Series<OrdinalSales, String>(
+          id: 'Tablet',
+          domainFn: (OrdinalSales sales, _) => sales.year,
+          measureFn: (OrdinalSales sales, _) => sales.sales,
+          data: [
+            OrdinalSales(AppLocalizations.of(context).energy, 10),
+            OrdinalSales(AppLocalizations.of(context).protein, 10),
+            OrdinalSales(AppLocalizations.of(context).carbohydrates, 10),
+            OrdinalSales(AppLocalizations.of(context).sugars, 10),
+            OrdinalSales(AppLocalizations.of(context).fat, 10),
+            OrdinalSales(AppLocalizations.of(context).saturatedFat, 10),
+            OrdinalSales(AppLocalizations.of(context).fibres, 10),
+            OrdinalSales(AppLocalizations.of(context).sodium, 10),
+          ],
+          fillPatternFn: (OrdinalSales sales, _) =>
+          charts.FillPatternType.forwardHatch,
+        ),
+        charts.Series<OrdinalSales, String>(
+          id: 'Mobile',
+          domainFn: (OrdinalSales sales, _) => sales.year,
+          measureFn: (OrdinalSales sales, _) => sales.sales,
+          data: [
+            OrdinalSales(AppLocalizations.of(context).energy, 10),
+            OrdinalSales(AppLocalizations.of(context).protein, 10),
+            OrdinalSales(AppLocalizations.of(context).carbohydrates, 10),
+            OrdinalSales(AppLocalizations.of(context).sugars, 10),
+            OrdinalSales(AppLocalizations.of(context).fat, 10),
+            OrdinalSales(AppLocalizations.of(context).saturatedFat, 10),
+            OrdinalSales(AppLocalizations.of(context).fibres, 10),
+            OrdinalSales(AppLocalizations.of(context).sodium, 10),
+          ],
+        ),
+
+      ],
+      animate: true,
+      domainAxis: const charts.OrdinalAxisSpec(
+        renderSpec: charts.SmallTickRendererSpec(labelRotation: 60),
+      ),
+      barGroupingType: charts.BarGroupingType.grouped,
+    );
+  }
+
+}
+
+class OrdinalSales {
+  final String year;
+  final int sales;
+
+  OrdinalSales(this.year, this.sales);
+}
