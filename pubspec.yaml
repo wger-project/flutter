@@ -47,7 +47,7 @@ dependencies:
   version: ^2.0.0
   package_info: ^2.0.2
   provider: ^5.0.0
-  rive: ^0.7.33
+  rive: 0.7.28
   shared_preferences: ^2.0.7
   table_calendar: ^3.0.2
   url_launcher: ^6.0.10
