@@ -17,6 +17,7 @@
  */
 
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:charts_flutter/flutter.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
@@ -140,51 +141,124 @@ class NutritionalPlanHatchBarChartWidget extends StatelessWidget {
     return charts.BarChart(
 
       [
-        charts.Series<OrdinalSales, String>(
-          id: 'Desktop',
-          domainFn: (OrdinalSales sales, _) => sales.year,
-          measureFn: (OrdinalSales sales, _) => sales.sales,
+        charts.Series<NutritionData, String>(
+          id: 'Planned',
+          domainFn: (nutritionEntry, index) => nutritionEntry.name,
+          measureFn: (nutritionEntry, index) => nutritionEntry.value,
           data: [
-            OrdinalSales(AppLocalizations.of(context).energy, 10),
-            OrdinalSales(AppLocalizations.of(context).protein, 10),
-            OrdinalSales(AppLocalizations.of(context).carbohydrates, 10),
-            OrdinalSales(AppLocalizations.of(context).sugars, 10),
-            OrdinalSales(AppLocalizations.of(context).fat, 10),
-            OrdinalSales(AppLocalizations.of(context).saturatedFat, 10),
-            OrdinalSales(AppLocalizations.of(context).fibres, 10),
-            OrdinalSales(AppLocalizations.of(context).sodium, 10),
+            NutritionData(
+              AppLocalizations.of(context).energy,
+              _nutritionalValues.energy,
+            ),
+            NutritionData(
+              AppLocalizations.of(context).protein,
+              _nutritionalValues.protein,
+            ),
+            NutritionData(
+              AppLocalizations.of(context).carbohydrates,
+              _nutritionalValues.carbohydrates,
+            ),
+            NutritionData(
+              AppLocalizations.of(context).sugars,
+              _nutritionalValues.carbohydratesSugar,
+            ),
+            NutritionData(
+              AppLocalizations.of(context).fat,
+              _nutritionalValues.fat,
+            ),
+            NutritionData(
+              AppLocalizations.of(context).saturatedFat,
+              _nutritionalValues.fatSaturated,
+            ),
+            NutritionData(
+              AppLocalizations.of(context).fibres,
+              _nutritionalValues.fibres,
+            ),
+            NutritionData(
+              AppLocalizations.of(context).sodium,
+              _nutritionalValues.sodium,
+            ),
+          ],
+
+
+        ),
+        charts.Series<NutritionData, String>(
+          id: 'Logged',
+          domainFn: (nutritionEntry, index) => nutritionEntry.name,
+          measureFn: (nutritionEntry, index) => nutritionEntry.value,
+          fillPatternFn: (nutritionEntry, index) => charts.FillPatternType.forwardHatch,
+          data: [
+            NutritionData(
+              AppLocalizations.of(context).energy,
+              0
+            ),
+            NutritionData(
+              AppLocalizations.of(context).protein,
+              0
+            ),
+            NutritionData(
+              AppLocalizations.of(context).carbohydrates,
+              0
+            ),
+            NutritionData(
+              AppLocalizations.of(context).sugars,
+              0
+            ),
+            NutritionData(
+              AppLocalizations.of(context).fat,
+              0
+            ),
+            NutritionData(
+              AppLocalizations.of(context).saturatedFat,
+              0,
+            ),
+            NutritionData(
+              AppLocalizations.of(context).fibres,
+              0
+            ),
+            NutritionData(
+              AppLocalizations.of(context).sodium,
+              0
+            ),
           ],
         ),
-        charts.Series<OrdinalSales, String>(
-          id: 'Tablet',
-          domainFn: (OrdinalSales sales, _) => sales.year,
-          measureFn: (OrdinalSales sales, _) => sales.sales,
+        charts.Series<NutritionData, String>(
+          id: 'Avg',
+          domainFn: (nutritionEntry, index) => nutritionEntry.name,
+          measureFn: (nutritionEntry, index) => nutritionEntry.value,
           data: [
-            OrdinalSales(AppLocalizations.of(context).energy, 10),
-            OrdinalSales(AppLocalizations.of(context).protein, 10),
-            OrdinalSales(AppLocalizations.of(context).carbohydrates, 10),
-            OrdinalSales(AppLocalizations.of(context).sugars, 10),
-            OrdinalSales(AppLocalizations.of(context).fat, 10),
-            OrdinalSales(AppLocalizations.of(context).saturatedFat, 10),
-            OrdinalSales(AppLocalizations.of(context).fibres, 10),
-            OrdinalSales(AppLocalizations.of(context).sodium, 10),
-          ],
-          fillPatternFn: (OrdinalSales sales, _) =>
-          charts.FillPatternType.forwardHatch,
-        ),
-        charts.Series<OrdinalSales, String>(
-          id: 'Mobile',
-          domainFn: (OrdinalSales sales, _) => sales.year,
-          measureFn: (OrdinalSales sales, _) => sales.sales,
-          data: [
-            OrdinalSales(AppLocalizations.of(context).energy, 10),
-            OrdinalSales(AppLocalizations.of(context).protein, 10),
-            OrdinalSales(AppLocalizations.of(context).carbohydrates, 10),
-            OrdinalSales(AppLocalizations.of(context).sugars, 10),
-            OrdinalSales(AppLocalizations.of(context).fat, 10),
-            OrdinalSales(AppLocalizations.of(context).saturatedFat, 10),
-            OrdinalSales(AppLocalizations.of(context).fibres, 10),
-            OrdinalSales(AppLocalizations.of(context).sodium, 10),
+            NutritionData(
+              AppLocalizations.of(context).energy,
+              0
+            ),
+            NutritionData(
+              AppLocalizations.of(context).protein,
+              0
+            ),
+            NutritionData(
+              AppLocalizations.of(context).carbohydrates,
+              0
+            ),
+            NutritionData(
+              AppLocalizations.of(context).sugars,
+              0
+            ),
+            NutritionData(
+              AppLocalizations.of(context).fat,
+              0
+            ),
+            NutritionData(
+              AppLocalizations.of(context).saturatedFat,
+              0
+            ),
+            NutritionData(
+              AppLocalizations.of(context).fibres,
+              0
+            ),
+            NutritionData(
+              AppLocalizations.of(context).sodium,
+              0
+            ),
           ],
         ),
 
@@ -199,9 +273,4 @@ class NutritionalPlanHatchBarChartWidget extends StatelessWidget {
 
 }
 
-class OrdinalSales {
-  final String year;
-  final int sales;
 
-  OrdinalSales(this.year, this.sales);
-}
