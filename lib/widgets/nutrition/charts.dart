@@ -127,25 +127,52 @@ class NutritionalDiaryChartWidget extends StatelessWidget {
 class NutritionalPlanHatchBarChartWidget extends StatelessWidget {
 
   final NutritionalValues _nutritionalValues;
-  final List<Log> _nutritionalPlanLogs;
+  final NutritionalPlan _nutritionalPlan;
 
   /// [_nutritionalValues] are the calculated [NutritionalValues] for the wanted
   /// plan.
-  const NutritionalPlanHatchBarChartWidget(this._nutritionalValues, this._nutritionalPlanLogs);
+  const NutritionalPlanHatchBarChartWidget(this._nutritionalValues, this._nutritionalPlan);
 
-  NutritionalValues sumNutritionalValuesFromPlanLogs() {
-    NutritionalValues test = NutritionalValues();
-    for(final nutritionalValues in _nutritionalPlanLogs) {
-      test += nutritionalValues.nutritionalValues;
-    }
+  NutritionalValues nutritionalValuesFromPlanLogsSevenDayAvg() {
 
-    return test;
+    NutritionalValues sevenDaysAvg = NutritionalValues();
+    int count = 0;
+
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+
+    _nutritionalPlan.logEntriesValues.forEach((key, value) {
+      if(key.difference(today).inDays >= -7) {
+        sevenDaysAvg += value;
+        count++;
+      }
+    });
+
+    sevenDaysAvg.energy = sevenDaysAvg.energy/count;
+    sevenDaysAvg.protein = sevenDaysAvg.protein/count;
+    sevenDaysAvg.carbohydrates = sevenDaysAvg.carbohydrates/count;
+    sevenDaysAvg.carbohydratesSugar = sevenDaysAvg.carbohydratesSugar/count;
+    sevenDaysAvg.fat = sevenDaysAvg.fat/count;
+    sevenDaysAvg.fatSaturated = sevenDaysAvg.fatSaturated/count;
+    sevenDaysAvg.fibres = sevenDaysAvg.fibres/count;
+    sevenDaysAvg.sodium = sevenDaysAvg.sodium/count;
+
+
+    return sevenDaysAvg;
+  }
+
+  NutritionalValues nutritionalValuesFromPlanLogsToday() {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+
+    return _nutritionalPlan.logEntriesValues[_nutritionalPlan.logEntriesValues.keys.firstWhere((d) => d.difference(today).inDays == 0)]
+        ?? NutritionalValues();
   }
 
   @override
   Widget build(BuildContext context) {
-
-    NutritionalValues loggedNutritionalValues = sumNutritionalValuesFromPlanLogs();
+    final NutritionalValues loggedNutritionalValues = nutritionalValuesFromPlanLogsToday();
+    final NutritionalValues sevenDayAvg = nutritionalValuesFromPlanLogsSevenDayAvg();
 
     if (_nutritionalValues.energy == 0) {
       return Container();
@@ -242,35 +269,35 @@ class NutritionalPlanHatchBarChartWidget extends StatelessWidget {
           data: [
             NutritionData(
               AppLocalizations.of(context).energy,
-              0
+              sevenDayAvg.energy
             ),
             NutritionData(
               AppLocalizations.of(context).protein,
-              0
+              sevenDayAvg.protein
             ),
             NutritionData(
               AppLocalizations.of(context).carbohydrates,
-              0
+              sevenDayAvg.carbohydrates
             ),
             NutritionData(
               AppLocalizations.of(context).sugars,
-              0
+              sevenDayAvg.carbohydratesSugar
             ),
             NutritionData(
               AppLocalizations.of(context).fat,
-              0
+              sevenDayAvg.fat
             ),
             NutritionData(
               AppLocalizations.of(context).saturatedFat,
-              0
+              sevenDayAvg.fatSaturated
             ),
             NutritionData(
               AppLocalizations.of(context).fibres,
-              0
+              sevenDayAvg.fibres
             ),
             NutritionData(
               AppLocalizations.of(context).sodium,
-              0
+              sevenDayAvg.sodium
             ),
           ],
         ),

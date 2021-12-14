@@ -44,6 +44,8 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
         ? _nutritionalPlan.gPerBodyKg(lastWeightEntry.weight, nutritionalValues)
         : null;
 
+
+
     return SliverList(
       delegate: SliverChildListDelegate(
         [
@@ -213,7 +215,7 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(15),
             height: 300,
-            child: NutritionalPlanHatchBarChartWidget(nutritionalValues, _nutritionalPlan.logs),
+            child: NutritionalPlanHatchBarChartWidget(nutritionalValues, _nutritionalPlan),
           ),
           const Padding(padding: EdgeInsets.all(8.0)),
           Text(
