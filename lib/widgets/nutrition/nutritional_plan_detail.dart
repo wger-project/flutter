@@ -162,15 +162,18 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: tablePadding),
                       child: Text(AppLocalizations.of(context).fat),
                     ),
-                    Text(nutritionalValues.fat.toStringAsFixed(0) + AppLocalizations.of(context).g),
+                    Text(nutritionalValues.fat.toStringAsFixed(0) +
+                        AppLocalizations.of(context).g),
                     Text(valuesPercentage.fat.toStringAsFixed(1)),
-                    Text(valuesGperKg != null ? valuesGperKg.fat.toStringAsFixed(1) : ''),
+                    Text(valuesGperKg != null ? valuesGperKg.fat
+                        .toStringAsFixed(1) : ''),
                   ],
                 ),
                 TableRow(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: tablePadding, horizontal: 12),
+                      padding: const EdgeInsets.symmetric(vertical:
+                      tablePadding, horizontal: 12),
                       child: Text(AppLocalizations.of(context).saturatedFat),
                     ),
                     Text(nutritionalValues.fatSaturated.toStringAsFixed(0) +
@@ -215,7 +218,7 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(15),
             height: 300,
-            child: NutritionalPlanHatchBarChartWidget(nutritionalValues, _nutritionalPlan),
+            child: NutritionalPlanHatchBarChartWidget(_nutritionalPlan),
           ),
           const Padding(padding: EdgeInsets.all(8.0)),
           Text(
@@ -226,7 +229,8 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(15),
             height: 220,
-            child: NutritionalDiaryChartWidget(nutritionalPlan: _nutritionalPlan),
+            child: NutritionalDiaryChartWidget(nutritionalPlan:
+            _nutritionalPlan),
           ),
           SizedBox(
             height: 200,
@@ -287,7 +291,8 @@ class NutritionDiaryEntry extends StatelessWidget {
                     arguments: NutritionalDiaryArguments(plan, date),
                   ),
               child: Text(
-                DateFormat.yMd(Localizations.localeOf(context).languageCode).format(date),
+                DateFormat.yMd(Localizations.localeOf(context).languageCode)
+                    .format(date),
               )),
           Text(values.energy.toStringAsFixed(0)),
           Text(values.protein.toStringAsFixed(0)),

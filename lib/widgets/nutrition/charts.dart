@@ -126,12 +126,12 @@ class NutritionalDiaryChartWidget extends StatelessWidget {
 /// Nutritional plan pie chart widget
 class NutritionalPlanHatchBarChartWidget extends StatelessWidget {
 
-  final NutritionalValues _nutritionalValues;
   final NutritionalPlan _nutritionalPlan;
 
   /// [_nutritionalValues] are the calculated [NutritionalValues] for the wanted
   /// plan.
-  const NutritionalPlanHatchBarChartWidget(this._nutritionalValues, this._nutritionalPlan);
+  const NutritionalPlanHatchBarChartWidget(this
+      ._nutritionalPlan);
 
   NutritionalValues nutritionalValuesFromPlanLogsSevenDayAvg() {
 
@@ -165,16 +165,20 @@ class NutritionalPlanHatchBarChartWidget extends StatelessWidget {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
 
-    return _nutritionalPlan.logEntriesValues[_nutritionalPlan.logEntriesValues.keys.firstWhere((d) => d.difference(today).inDays == 0)]
+    return _nutritionalPlan.logEntriesValues[_nutritionalPlan
+        .logEntriesValues.keys.firstWhere((d) => d.difference(today).inDays
+        == 0)]
         ?? NutritionalValues();
   }
 
   @override
   Widget build(BuildContext context) {
-    final NutritionalValues loggedNutritionalValues = nutritionalValuesFromPlanLogsToday();
-    final NutritionalValues sevenDayAvg = nutritionalValuesFromPlanLogsSevenDayAvg();
+    final NutritionalValues loggedNutritionalValues =
+    nutritionalValuesFromPlanLogsToday();
+    final NutritionalValues sevenDayAvg =
+    nutritionalValuesFromPlanLogsSevenDayAvg();
 
-    if (_nutritionalValues.energy == 0) {
+    if (_nutritionalPlan.nutritionalValues.energy == 0) {
       return Container();
     }
 
@@ -188,35 +192,35 @@ class NutritionalPlanHatchBarChartWidget extends StatelessWidget {
           data: [
             NutritionData(
               AppLocalizations.of(context).energy,
-              _nutritionalValues.energy,
+              _nutritionalPlan.nutritionalValues.energy,
             ),
             NutritionData(
               AppLocalizations.of(context).protein,
-              _nutritionalValues.protein,
+              _nutritionalPlan.nutritionalValues.protein,
             ),
             NutritionData(
               AppLocalizations.of(context).carbohydrates,
-              _nutritionalValues.carbohydrates,
+              _nutritionalPlan.nutritionalValues.carbohydrates,
             ),
             NutritionData(
               AppLocalizations.of(context).sugars,
-              _nutritionalValues.carbohydratesSugar,
+              _nutritionalPlan.nutritionalValues.carbohydratesSugar,
             ),
             NutritionData(
               AppLocalizations.of(context).fat,
-              _nutritionalValues.fat,
+              _nutritionalPlan.nutritionalValues.fat,
             ),
             NutritionData(
               AppLocalizations.of(context).saturatedFat,
-              _nutritionalValues.fatSaturated,
+              _nutritionalPlan.nutritionalValues.fatSaturated,
             ),
             NutritionData(
               AppLocalizations.of(context).fibres,
-              _nutritionalValues.fibres,
+              _nutritionalPlan.nutritionalValues.fibres,
             ),
             NutritionData(
               AppLocalizations.of(context).sodium,
-              _nutritionalValues.sodium,
+              _nutritionalPlan.nutritionalValues.sodium,
             ),
           ],
 
@@ -226,7 +230,8 @@ class NutritionalPlanHatchBarChartWidget extends StatelessWidget {
           id: 'Logged',
           domainFn: (nutritionEntry, index) => nutritionEntry.name,
           measureFn: (nutritionEntry, index) => nutritionEntry.value,
-          fillPatternFn: (nutritionEntry, index) => charts.FillPatternType.forwardHatch,
+          fillPatternFn: (nutritionEntry, index) => charts.FillPatternType
+              .forwardHatch,
           data: [
             NutritionData(
               AppLocalizations.of(context).energy,
