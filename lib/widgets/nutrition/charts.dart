@@ -24,6 +24,7 @@ import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
 import 'package:wger/theme/theme.dart';
+import 'package:collection/collection.dart';
 
 class NutritionData {
   final String name;
@@ -147,15 +148,16 @@ class NutritionalPlanHatchBarChartWidget extends StatelessWidget {
       }
     });
 
-    sevenDaysAvg.energy = sevenDaysAvg.energy/count;
-    sevenDaysAvg.protein = sevenDaysAvg.protein/count;
-    sevenDaysAvg.carbohydrates = sevenDaysAvg.carbohydrates/count;
-    sevenDaysAvg.carbohydratesSugar = sevenDaysAvg.carbohydratesSugar/count;
-    sevenDaysAvg.fat = sevenDaysAvg.fat/count;
-    sevenDaysAvg.fatSaturated = sevenDaysAvg.fatSaturated/count;
-    sevenDaysAvg.fibres = sevenDaysAvg.fibres/count;
-    sevenDaysAvg.sodium = sevenDaysAvg.sodium/count;
-
+    if(count != 0) {
+      sevenDaysAvg.energy = sevenDaysAvg.energy/count;
+      sevenDaysAvg.protein = sevenDaysAvg.protein/count;
+      sevenDaysAvg.carbohydrates = sevenDaysAvg.carbohydrates/count;
+      sevenDaysAvg.carbohydratesSugar = sevenDaysAvg.carbohydratesSugar/count;
+      sevenDaysAvg.fat = sevenDaysAvg.fat/count;
+      sevenDaysAvg.fatSaturated = sevenDaysAvg.fatSaturated/count;
+      sevenDaysAvg.fibres = sevenDaysAvg.fibres/count;
+      sevenDaysAvg.sodium = sevenDaysAvg.sodium/count;
+    }
 
     return sevenDaysAvg;
   }
@@ -165,7 +167,8 @@ class NutritionalPlanHatchBarChartWidget extends StatelessWidget {
     final today = DateTime(now.year, now.month, now.day);
 
     return _nutritionalPlan.logEntriesValues[_nutritionalPlan
-        .logEntriesValues.keys.firstWhere((d) => d.difference(today).inDays
+        .logEntriesValues.keys.firstWhereOrNull((d) => d.difference(today)
+        .inDays
         == 0)]
         ?? NutritionalValues();
   }
