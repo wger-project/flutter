@@ -47,3 +47,4 @@ app.*.map.json
 /fastlane/metadata/android/envfiles/wger.properties
 /fastlane/metadata/android/envfiles/keys.jks
 /fastlane/metadata/android/envfiles/key.properties
+/coverage/lcov.info
