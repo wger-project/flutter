@@ -310,7 +310,7 @@ class NutritionalPlanHatchBarChartWidget extends StatelessWidget {
         ),
 
       ],
-      animate: true,
+      animate: false,
       domainAxis: const charts.OrdinalAxisSpec(
         ///labelRotation was added to rotate text of X Axis. Without that,
         ///titles would overlap each other

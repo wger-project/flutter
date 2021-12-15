@@ -7,11 +7,7 @@ import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
-import 'package:wger/widgets/nutrition/helpers.dart';
-
 import '../../test_data/nutritional_plans.dart';
-import '../nutrition/nutritional_plan_form_test.mocks.dart';
-import 'nutritional_plan_service_mock.dart';
 
 void main() {
 
@@ -41,7 +37,7 @@ void main() {
   });
 
 
-  testWidgets('Test the widget on a nutritional plan with and without '
+  testWidgets('Test the widget with and without '
       'nutritional values',
           (WidgetTester tester) async {
 
@@ -52,7 +48,6 @@ void main() {
 
         await tester.pumpWidget(getWidget(plan3));
         expect(find.byType(charts.BarChart), findsOneWidget);
-
 
         await tester.pumpAndSettle();
 
