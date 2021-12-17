@@ -10,7 +10,6 @@ import 'package:wger/widgets/nutrition/charts.dart';
 import '../../test_data/nutritional_plans.dart';
 
 void main() {
-
   final plan1 = NutritionalPlan.empty();
   final plan2 = getNutritionalPlan();
   final plan3 = getNutritionalPlan();
@@ -30,26 +29,23 @@ void main() {
 
     final now = DateTime.now();
 
-    for(var i = 0; i <= 7; i++) {
-      var key = DateTime(now.year, now.month, now.day -(1*i));
+    for (var i = 0; i <= 7; i++) {
+      var key = DateTime(now.year, now.month, now.day - (1 * i));
       plan3.logs.add(Log.fromMealItem(meal1.mealItems.first, 1, 1, key));
     }
   });
 
+  testWidgets(
+      'Test the widget with and without '
+      'nutritional values', (WidgetTester tester) async {
+    await tester.pumpWidget(getWidget(plan2));
+    expect(find.byType(charts.BarChart), findsOneWidget);
+    await tester.pumpWidget(getWidget(plan1));
+    expect(find.byType(Container), findsOneWidget);
 
-  testWidgets('Test the widget with and without '
-      'nutritional values',
-          (WidgetTester tester) async {
+    await tester.pumpWidget(getWidget(plan3));
+    expect(find.byType(charts.BarChart), findsOneWidget);
 
-        await tester.pumpWidget(getWidget(plan2));
-        expect(find.byType(charts.BarChart), findsOneWidget);
-        await tester.pumpWidget(getWidget(plan1));
-        expect(find.byType(Container), findsOneWidget);
-
-        await tester.pumpWidget(getWidget(plan3));
-        expect(find.byType(charts.BarChart), findsOneWidget);
-
-        await tester.pumpAndSettle();
-
-      });
+    await tester.pumpAndSettle();
+  });
 }
