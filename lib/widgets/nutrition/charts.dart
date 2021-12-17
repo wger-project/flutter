@@ -126,15 +126,12 @@ class NutritionalDiaryChartWidget extends StatelessWidget {
 
 /// Nutritional plan hatch bar chart widget
 class NutritionalPlanHatchBarChartWidget extends StatelessWidget {
-
   final NutritionalPlan _nutritionalPlan;
 
   /// [_nutritionalPlan] is current opened nutrition plan as plan detail.
-  const NutritionalPlanHatchBarChartWidget(this
-      ._nutritionalPlan);
+  const NutritionalPlanHatchBarChartWidget(this._nutritionalPlan);
 
   NutritionalValues nutritionalValuesFromPlanLogsSevenDayAvg() {
-
     NutritionalValues sevenDaysAvg = NutritionalValues();
     int count = 0;
 
@@ -142,21 +139,21 @@ class NutritionalPlanHatchBarChartWidget extends StatelessWidget {
     final today = DateTime(now.year, now.month, now.day);
 
     _nutritionalPlan.logEntriesValues.forEach((key, value) {
-      if(key.difference(today).inDays >= -7) {
+      if (key.difference(today).inDays >= -7) {
         sevenDaysAvg += value;
         count++;
       }
     });
 
-    if(count != 0) {
-      sevenDaysAvg.energy = sevenDaysAvg.energy/count;
-      sevenDaysAvg.protein = sevenDaysAvg.protein/count;
-      sevenDaysAvg.carbohydrates = sevenDaysAvg.carbohydrates/count;
-      sevenDaysAvg.carbohydratesSugar = sevenDaysAvg.carbohydratesSugar/count;
-      sevenDaysAvg.fat = sevenDaysAvg.fat/count;
-      sevenDaysAvg.fatSaturated = sevenDaysAvg.fatSaturated/count;
-      sevenDaysAvg.fibres = sevenDaysAvg.fibres/count;
-      sevenDaysAvg.sodium = sevenDaysAvg.sodium/count;
+    if (count != 0) {
+      sevenDaysAvg.energy = sevenDaysAvg.energy / count;
+      sevenDaysAvg.protein = sevenDaysAvg.protein / count;
+      sevenDaysAvg.carbohydrates = sevenDaysAvg.carbohydrates / count;
+      sevenDaysAvg.carbohydratesSugar = sevenDaysAvg.carbohydratesSugar / count;
+      sevenDaysAvg.fat = sevenDaysAvg.fat / count;
+      sevenDaysAvg.fatSaturated = sevenDaysAvg.fatSaturated / count;
+      sevenDaysAvg.fibres = sevenDaysAvg.fibres / count;
+      sevenDaysAvg.sodium = sevenDaysAvg.sodium / count;
     }
 
     return sevenDaysAvg;
@@ -166,26 +163,21 @@ class NutritionalPlanHatchBarChartWidget extends StatelessWidget {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
 
-    return _nutritionalPlan.logEntriesValues[_nutritionalPlan
-        .logEntriesValues.keys.firstWhereOrNull((d) => d.difference(today)
-        .inDays
-        == 0)]
-        ?? NutritionalValues();
+    return _nutritionalPlan.logEntriesValues[_nutritionalPlan.logEntriesValues.keys
+            .firstWhereOrNull((d) => d.difference(today).inDays == 0)] ??
+        NutritionalValues();
   }
 
   @override
   Widget build(BuildContext context) {
-    final NutritionalValues loggedNutritionalValues =
-    nutritionalValuesFromPlanLogsToday();
-    final NutritionalValues sevenDayAvg =
-    nutritionalValuesFromPlanLogsSevenDayAvg();
+    final NutritionalValues loggedNutritionalValues = nutritionalValuesFromPlanLogsToday();
+    final NutritionalValues sevenDayAvg = nutritionalValuesFromPlanLogsSevenDayAvg();
 
     if (_nutritionalPlan.nutritionalValues.energy == 0) {
       return Container();
     }
 
     return charts.BarChart(
-
       [
         charts.Series<NutritionData, String>(
           id: 'Planned',
@@ -225,48 +217,24 @@ class NutritionalPlanHatchBarChartWidget extends StatelessWidget {
               _nutritionalPlan.nutritionalValues.sodium,
             ),
           ],
-
-
         ),
         charts.Series<NutritionData, String>(
           id: 'Logged',
           domainFn: (nutritionEntry, index) => nutritionEntry.name,
           measureFn: (nutritionEntry, index) => nutritionEntry.value,
-          fillPatternFn: (nutritionEntry, index) => charts.FillPatternType
-              .forwardHatch,
+          fillPatternFn: (nutritionEntry, index) => charts.FillPatternType.forwardHatch,
           data: [
+            NutritionData(AppLocalizations.of(context).energy, loggedNutritionalValues.energy),
+            NutritionData(AppLocalizations.of(context).protein, loggedNutritionalValues.protein),
             NutritionData(
-              AppLocalizations.of(context).energy,
-              loggedNutritionalValues.energy
-            ),
+                AppLocalizations.of(context).carbohydrates, loggedNutritionalValues.carbohydrates),
             NutritionData(
-              AppLocalizations.of(context).protein,
-              loggedNutritionalValues.protein
-            ),
+                AppLocalizations.of(context).sugars, loggedNutritionalValues.carbohydratesSugar),
+            NutritionData(AppLocalizations.of(context).fat, loggedNutritionalValues.fat),
             NutritionData(
-              AppLocalizations.of(context).carbohydrates,
-              loggedNutritionalValues.carbohydrates
-            ),
-            NutritionData(
-              AppLocalizations.of(context).sugars,
-              loggedNutritionalValues.carbohydratesSugar
-            ),
-            NutritionData(
-              AppLocalizations.of(context).fat,
-              loggedNutritionalValues.fat
-            ),
-            NutritionData(
-              AppLocalizations.of(context).saturatedFat,
-              loggedNutritionalValues.fatSaturated
-            ),
-            NutritionData(
-              AppLocalizations.of(context).fibres,
-              loggedNutritionalValues.fibres
-            ),
-            NutritionData(
-              AppLocalizations.of(context).sodium,
-              loggedNutritionalValues.sodium
-            ),
+                AppLocalizations.of(context).saturatedFat, loggedNutritionalValues.fatSaturated),
+            NutritionData(AppLocalizations.of(context).fibres, loggedNutritionalValues.fibres),
+            NutritionData(AppLocalizations.of(context).sodium, loggedNutritionalValues.sodium),
           ],
         ),
         charts.Series<NutritionData, String>(
@@ -274,41 +242,16 @@ class NutritionalPlanHatchBarChartWidget extends StatelessWidget {
           domainFn: (nutritionEntry, index) => nutritionEntry.name,
           measureFn: (nutritionEntry, index) => nutritionEntry.value,
           data: [
-            NutritionData(
-              AppLocalizations.of(context).energy,
-              sevenDayAvg.energy
-            ),
-            NutritionData(
-              AppLocalizations.of(context).protein,
-              sevenDayAvg.protein
-            ),
-            NutritionData(
-              AppLocalizations.of(context).carbohydrates,
-              sevenDayAvg.carbohydrates
-            ),
-            NutritionData(
-              AppLocalizations.of(context).sugars,
-              sevenDayAvg.carbohydratesSugar
-            ),
-            NutritionData(
-              AppLocalizations.of(context).fat,
-              sevenDayAvg.fat
-            ),
-            NutritionData(
-              AppLocalizations.of(context).saturatedFat,
-              sevenDayAvg.fatSaturated
-            ),
-            NutritionData(
-              AppLocalizations.of(context).fibres,
-              sevenDayAvg.fibres
-            ),
-            NutritionData(
-              AppLocalizations.of(context).sodium,
-              sevenDayAvg.sodium
-            ),
+            NutritionData(AppLocalizations.of(context).energy, sevenDayAvg.energy),
+            NutritionData(AppLocalizations.of(context).protein, sevenDayAvg.protein),
+            NutritionData(AppLocalizations.of(context).carbohydrates, sevenDayAvg.carbohydrates),
+            NutritionData(AppLocalizations.of(context).sugars, sevenDayAvg.carbohydratesSugar),
+            NutritionData(AppLocalizations.of(context).fat, sevenDayAvg.fat),
+            NutritionData(AppLocalizations.of(context).saturatedFat, sevenDayAvg.fatSaturated),
+            NutritionData(AppLocalizations.of(context).fibres, sevenDayAvg.fibres),
+            NutritionData(AppLocalizations.of(context).sodium, sevenDayAvg.sodium),
           ],
         ),
-
       ],
       animate: false,
       domainAxis: const charts.OrdinalAxisSpec(
@@ -319,7 +262,4 @@ class NutritionalPlanHatchBarChartWidget extends StatelessWidget {
       barGroupingType: charts.BarGroupingType.grouped,
     );
   }
-
 }
-
-
