@@ -268,5 +268,7 @@
   "logout": "Logg ut",
   "@logout": {
     "description": "Text for logout button"
-  }
+  },
+  "difference": "Forskjell",
+  "@difference": {}
 }
