@@ -1,0 +1,69 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:android)
+
+
+lane :playstore do
+  gradle(
+    task: 'assemble',
+    build_type: 'Release'
+  )
+end
+
+platform :android do
+
+  desc "Check playstore configuration"
+  lane :test_configuration do
+    begin
+      upload_to_play_store(
+        track: 'production',
+        validate_only: true,
+        aab: './build/app/outputs/bundle/release/app-release.aab',
+      )
+    end
+  end
+
+
+  desc "Upload app to production"
+  lane :production do
+    begin
+      upload_to_play_store(
+        track: 'production',
+        aab: './build/app/outputs/bundle/release/app-release.aab',
+        skip_upload_metadata: false,
+        skip_upload_images: false,
+        skip_upload_screenshots: false,
+        release_status: "completed", #"draft",
+      )
+    end
+  end
+
+
+  desc "Upload closed alpha app and update store entry"
+  lane :update_alpha do
+    begin
+      upload_to_play_store(
+        track: 'alpha',
+        aab: './build/app/outputs/bundle/release/app-release.aab',
+        skip_upload_metadata: true,
+        skip_upload_images: true,
+        skip_upload_screenshots: true,
+        release_status: "completed", #"draft",
+      )
+    end
+  end
+
+end

@@ -1,0 +1,26 @@
+{
+  "login": "लोग इन",
+  "@login": {
+    "description": "Text for login button"
+  },
+  "logout": "लोग आउट",
+  "@logout": {
+    "description": "Text for logout button"
+  },
+  "useDefaultServer": "डिफ़ॉल्ट सर्वर का प्रयोग करें",
+  "@useDefaultServer": {
+    "description": "Toggle button allowing users to switch between the default and a custom wger server"
+  },
+  "register": "रजिस्टर",
+  "@register": {
+    "description": "Text for registration button"
+  },
+  "useCustomServer": "कस्टम सर्वर का प्रयोग करें",
+  "@useCustomServer": {
+    "description": "Toggle button allowing users to switch between the default and a custom wger server"
+  },
+  "invalidUrl": "कृपया एक वैलिड URL दीजिये",
+  "@invalidUrl": {
+    "description": "Error message when the user enters an invalid URL, e.g. in the login form"
+  }
+}

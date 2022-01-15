@@ -514,5 +514,11 @@
   "recentlyUsedIngredients": "Nedavno dodani sastojci",
   "@recentlyUsedIngredients": {
     "description": "A message when a user adds a new ingredient to a meal."
+  },
+  "logIngredient": "Spremi u dnevnik prehrane",
+  "@logIngredient": {},
+  "searchIngredient": "Traži sastojak",
+  "@searchIngredient": {
+    "description": "Label on ingredient search form"
   }
 }

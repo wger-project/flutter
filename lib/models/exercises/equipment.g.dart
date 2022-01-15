@@ -7,7 +7,10 @@ part of 'equipment.dart';
 // **************************************************************************
 
 Equipment _$EquipmentFromJson(Map<String, dynamic> json) {
-  $checkKeys(json, requiredKeys: const ['id', 'name']);
+  $checkKeys(
+    json,
+    requiredKeys: const ['id', 'name'],
+  );
   return Equipment(
     id: json['id'] as int,
     name: json['name'] as String,

@@ -98,7 +98,7 @@ class _DayLogWidgetState extends State<DayLogWidget> {
                         children: [
                           Text(log.singleLogRepTextNoNl),
                           IconButton(
-                            icon: Icon(Icons.delete),
+                            icon: const Icon(Icons.delete),
                             onPressed: () async {
                               showDeleteDialog(
                                   context, exercise.name, log, exercise, widget._exerciseData);

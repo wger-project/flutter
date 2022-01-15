@@ -7,7 +7,10 @@ part of 'category.dart';
 // **************************************************************************
 
 ExerciseCategory _$ExerciseCategoryFromJson(Map<String, dynamic> json) {
-  $checkKeys(json, requiredKeys: const ['id', 'name']);
+  $checkKeys(
+    json,
+    requiredKeys: const ['id', 'name'],
+  );
   return ExerciseCategory(
     id: json['id'] as int,
     name: json['name'] as String,

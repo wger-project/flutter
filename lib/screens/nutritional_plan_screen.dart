@@ -53,6 +53,7 @@ class NutritionalPlanScreen extends StatelessWidget {
             arguments: FormScreenArguments(
               AppLocalizations.of(context).logIngredient,
               IngredientLogForm(_nutritionalPlan),
+              hasListView: true,
             ),
           );
         },

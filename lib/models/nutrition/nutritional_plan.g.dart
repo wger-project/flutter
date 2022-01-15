@@ -7,7 +7,10 @@ part of 'nutritional_plan.dart';
 // **************************************************************************
 
 NutritionalPlan _$NutritionalPlanFromJson(Map<String, dynamic> json) {
-  $checkKeys(json, requiredKeys: const ['id', 'description', 'creation_date']);
+  $checkKeys(
+    json,
+    requiredKeys: const ['id', 'description', 'creation_date'],
+  );
   return NutritionalPlan(
     id: json['id'] as int?,
     description: json['description'] as String,

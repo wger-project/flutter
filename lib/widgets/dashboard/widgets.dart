@@ -210,6 +210,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                       arguments: FormScreenArguments(
                         AppLocalizations.of(context).logIngredient,
                         IngredientLogForm(_plan!),
+                        hasListView: true,
                       ),
                     );
                   },
@@ -351,9 +352,11 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            MutedText(
-              day.getDaysText,
-              textAlign: TextAlign.right,
+            Expanded(
+              child: MutedText(
+                day.getDaysText,
+                textAlign: TextAlign.right,
+              ),
             ),
             IconButton(
               icon: const Icon(Icons.play_arrow),

@@ -334,7 +334,7 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
   Future<void> logMealToDiary(Meal meal) async {
     for (final item in meal.mealItems) {
       final plan = findById(meal.planId);
-      final Log log = Log.fromMealItem(item, plan.id!, meal.id!);
+      final Log log = Log.fromMealItem(item, plan.id!, meal.id);
 
       final data = await post(log.toJson(), makeUrl(_nutritionDiaryPath));
       log.id = data['id'];

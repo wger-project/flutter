@@ -26,9 +26,11 @@
         android:icon="@mipmap/ic_launcher">
 
         <meta-data android:name="wger.api_key" android:value="${WGER_API_KEY}" />
+        <meta-data android:name="wger.check_min_app_version" android:value="true" />
 
         <activity
             android:name=".MainActivity"
+            android:exported="true"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"

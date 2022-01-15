@@ -237,7 +237,7 @@ class ExercisesProvider with ChangeNotifier {
   }
 
   Future<void> fetchAndSetEquipment() async {
-    final equipments = await baseProvider.fetch(baseProvider.makeUrl(_equipmentUrlPath));
+    final equipments = await fetch(makeUrl(equipmentUrlPath));
     try {
       for (final equipment in equipments['results']) {
         _equipment.add(Equipment.fromJson(equipment));

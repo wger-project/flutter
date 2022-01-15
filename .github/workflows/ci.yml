@@ -1,6 +1,13 @@
 name: Continous Integration
-on: [pull_request, push]
-
+on:
+  push:
+    branches: [ pull_request, master ]
+    paths:
+      - '**.dart'
+  pull_request:
+    branches: [ pull_request, master ]
+    paths:
+      - '**.dart'
 jobs:
   test:
     runs-on: ubuntu-20.04

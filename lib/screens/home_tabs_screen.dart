@@ -130,12 +130,12 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Center(
+                  const Center(
                     child: SizedBox(
                       height: 70,
                       child: RiveAnimation.asset(
                         'assets/animations/wger_logo.riv',
-                        animations: const ['idle_loop2'],
+                        animations: ['idle_loop2'],
                       ),
                     ),
                   ),

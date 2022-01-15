@@ -19,7 +19,6 @@
 /// Calculates the number of plates needed to reach a specific weight
 List<num> plateCalculator(num totalWeight, num barWeight, List<num> plates) {
   final List<num> ans = [];
-  final platesCount = plates.length;
 
   // Weight is less than the bar
   if (totalWeight < barWeight) {

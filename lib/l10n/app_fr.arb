@@ -526,5 +526,11 @@
   "recentlyUsedIngredients": "Ingrédients récemment ajoutés",
   "@recentlyUsedIngredients": {
     "description": "A message when a user adds a new ingredient to a meal."
-  }
+  },
+  "searchIngredient": "Rechercher un ingrédient",
+  "@searchIngredient": {
+    "description": "Label on ingredient search form"
+  },
+  "logIngredient": "Sauvegarder dans le journal nutritionnel",
+  "@logIngredient": {}
 }

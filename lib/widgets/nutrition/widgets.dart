@@ -27,7 +27,7 @@ class IngredientTypeahead extends StatefulWidget {
   final TextEditingController _ingredientController;
   final TextEditingController _ingredientIdController;
 
-  IngredientTypeahead(this._ingredientIdController, this._ingredientController);
+  const IngredientTypeahead(this._ingredientIdController, this._ingredientController);
 
   @override
   _IngredientTypeaheadState createState() => _IngredientTypeaheadState();

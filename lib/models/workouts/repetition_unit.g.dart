@@ -7,7 +7,10 @@ part of 'repetition_unit.dart';
 // **************************************************************************
 
 RepetitionUnit _$RepetitionUnitFromJson(Map<String, dynamic> json) {
-  $checkKeys(json, requiredKeys: const ['id', 'name']);
+  $checkKeys(
+    json,
+    requiredKeys: const ['id', 'name'],
+  );
   return RepetitionUnit(
     id: json['id'] as int,
     name: json['name'] as String,

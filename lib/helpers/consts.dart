@@ -26,6 +26,10 @@ const double ICON_SIZE_SMALL = 20;
 /// Default wger server during login
 const DEFAULT_SERVER = 'https://wger.de';
 
+/// Keys used in the android manifest
+const MANIFEST_KEY_API = 'wger.api_key';
+const MANIFEST_KEY_CHECK_UPDATE = 'wger.check_min_app_version';
+
 /// Default weight unit is "kg"
 const DEFAULT_WEIGHT_UNIT = 1;
 
@@ -72,6 +76,3 @@ const ENERGY_CARBOHYDRATES = 4;
 
 /// kcal per gram of fat (approx)
 const ENERGY_FAT = 9;
-
-/// Flag to check for updates to the new version.
-const ENABLED_UPDATE = false;
