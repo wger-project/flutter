@@ -7,7 +7,10 @@ part of 'variation.dart';
 // **************************************************************************
 
 Variation _$VariationFromJson(Map<String, dynamic> json) {
-  $checkKeys(json, requiredKeys: const ['id']);
+  $checkKeys(
+    json,
+    requiredKeys: const ['id'],
+  );
   return Variation(
     id: json['id'] as int,
   );

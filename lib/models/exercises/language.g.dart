@@ -7,7 +7,10 @@ part of 'language.dart';
 // **************************************************************************
 
 Language _$LanguageFromJson(Map<String, dynamic> json) {
-  $checkKeys(json, requiredKeys: const ['id', 'short_name', 'full_name']);
+  $checkKeys(
+    json,
+    requiredKeys: const ['id', 'short_name', 'full_name'],
+  );
   return Language(
     id: json['id'] as int,
     shortName: json['short_name'] as String,

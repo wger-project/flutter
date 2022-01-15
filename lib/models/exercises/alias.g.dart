@@ -7,7 +7,10 @@ part of 'alias.dart';
 // **************************************************************************
 
 Alias _$AliasFromJson(Map<String, dynamic> json) {
-  $checkKeys(json, requiredKeys: const ['id', 'exercise', 'alias']);
+  $checkKeys(
+    json,
+    requiredKeys: const ['id', 'exercise', 'alias'],
+  );
   return Alias(
     id: json['id'] as int,
     exerciseId: json['exercise'] as int,

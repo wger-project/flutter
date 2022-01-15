@@ -7,14 +7,17 @@ part of 'session.dart';
 // **************************************************************************
 
 WorkoutSession _$WorkoutSessionFromJson(Map<String, dynamic> json) {
-  $checkKeys(json, requiredKeys: const [
-    'id',
-    'workout',
-    'date',
-    'impression',
-    'time_start',
-    'time_end'
-  ]);
+  $checkKeys(
+    json,
+    requiredKeys: const [
+      'id',
+      'workout',
+      'date',
+      'impression',
+      'time_start',
+      'time_end'
+    ],
+  );
   return WorkoutSession()
     ..id = json['id'] as int?
     ..workoutId = json['workout'] as int

@@ -7,8 +7,10 @@ part of 'measurement_entry.dart';
 // **************************************************************************
 
 MeasurementEntry _$MeasurementEntryFromJson(Map<String, dynamic> json) {
-  $checkKeys(json,
-      requiredKeys: const ['id', 'category', 'date', 'value', 'notes']);
+  $checkKeys(
+    json,
+    requiredKeys: const ['id', 'category', 'date', 'value', 'notes'],
+  );
   return MeasurementEntry(
     id: json['id'] as int?,
     category: json['category'] as int,

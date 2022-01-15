@@ -7,15 +7,18 @@ part of 'exercise.dart';
 // **************************************************************************
 
 Exercise _$ExerciseFromJson(Map<String, dynamic> json) {
-  $checkKeys(json, requiredKeys: const [
-    'id',
-    'exercise_base',
-    'uuid',
-    'language',
-    'creation_date',
-    'name',
-    'description'
-  ]);
+  $checkKeys(
+    json,
+    requiredKeys: const [
+      'id',
+      'exercise_base',
+      'uuid',
+      'language',
+      'creation_date',
+      'name',
+      'description'
+    ],
+  );
   return Exercise(
     id: json['id'] as int,
     baseId: json['exercise_base'] as int,

@@ -7,7 +7,10 @@ part of 'comment.dart';
 // **************************************************************************
 
 Comment _$CommentFromJson(Map<String, dynamic> json) {
-  $checkKeys(json, requiredKeys: const ['id', 'exercise', 'comment']);
+  $checkKeys(
+    json,
+    requiredKeys: const ['id', 'exercise', 'comment'],
+  );
   return Comment(
     id: json['id'] as int,
     exerciseId: json['exercise'] as int,
