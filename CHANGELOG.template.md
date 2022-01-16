@@ -1,10 +1,10 @@
 🚀 Features:
-* 
+* ...
 
 
 🐛 Bug Fixes:
-* 
+* ...
 
 
 🧰 Maintenance:
-*
+* ...
