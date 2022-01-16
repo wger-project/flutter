@@ -27,14 +27,14 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 // Keys for the android play store
 def keystoreProperties = new Properties()
-def keystorePropertiesFile = rootProject.file('../fastlane/metadata/android/envfiles/key.properties')
+def keystorePropertiesFile = rootProject.file('../fastlane/metadata/envfiles/key.properties')
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 
 // Key for wger.de REST API
 def wgerProperties = new Properties()
-def localMapsPropertiesFile = rootProject.file('../fastlane/metadata/android/envfiles/wger.properties')
+def localMapsPropertiesFile = rootProject.file('../fastlane/metadata/envfiles/wger.properties')
 if (localMapsPropertiesFile.exists()) {
     project.logger.info('Load maps properties from local file')
     localMapsPropertiesFile.withReader('UTF-8') { reader ->

@@ -43,7 +43,7 @@ app.*.map.json
 # Remember to never publicly share your keystore.
 # See https://flutter.dev/docs/deployment/android#reference-the-keystore-from-the-app
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
-/fastlane/metadata/android/envfiles/playstore.json
-/fastlane/metadata/android/envfiles/wger.properties
-/fastlane/metadata/android/envfiles/keys.jks
-/fastlane/metadata/android/envfiles/key.properties
+/fastlane/metadata/envfiles/playstore.json
+/fastlane/metadata/envfiles/wger.properties
+/fastlane/metadata/envfiles/keys.jks
+/fastlane/metadata/envfiles/key.properties

@@ -29,7 +29,7 @@ jobs:
 
       - name: Decrypt config files
         run: |
-          cd ./fastlane/android/envfiles
+          cd ./fastlane/metadata/envfiles
           chmod +x ./decrypt_secrets.sh
           ./decrypt_secrets.sh
         env:
