@@ -81,7 +81,6 @@ jobs:
         uses: maierj/fastlane-action@v2.1.0
         with:
           lane: production
-          subdirectory: android
 
       - name: Make Github release
         uses: softprops/action-gh-release@v1
