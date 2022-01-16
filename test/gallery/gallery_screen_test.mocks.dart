@@ -38,33 +38,31 @@ class MockGalleryProvider extends _i1.Mock implements _i4.GalleryProvider {
   }
 
   @override
-  List<_i5.Image> get images => (super.noSuchMethod(Invocation.getter(#images),
-      returnValue: <_i5.Image>[]) as List<_i5.Image>);
+  List<_i5.Image> get images =>
+      (super.noSuchMethod(Invocation.getter(#images), returnValue: <_i5.Image>[])
+          as List<_i5.Image>);
   @override
   set images(List<_i5.Image>? _images) =>
-      super.noSuchMethod(Invocation.setter(#images, _images),
-          returnValueForMissingStub: null);
+      super.noSuchMethod(Invocation.setter(#images, _images), returnValueForMissingStub: null);
   @override
-  _i2.AuthProvider get auth => (super.noSuchMethod(Invocation.getter(#auth),
-      returnValue: _FakeAuthProvider_0()) as _i2.AuthProvider);
+  _i2.AuthProvider get auth =>
+      (super.noSuchMethod(Invocation.getter(#auth), returnValue: _FakeAuthProvider_0())
+          as _i2.AuthProvider);
   @override
   set auth(_i2.AuthProvider? _auth) =>
-      super.noSuchMethod(Invocation.setter(#auth, _auth),
-          returnValueForMissingStub: null);
+      super.noSuchMethod(Invocation.setter(#auth, _auth), returnValueForMissingStub: null);
   @override
-  _i3.Client get client => (super.noSuchMethod(Invocation.getter(#client),
-      returnValue: _FakeClient_1()) as _i3.Client);
+  _i3.Client get client =>
+      (super.noSuchMethod(Invocation.getter(#client), returnValue: _FakeClient_1()) as _i3.Client);
   @override
   set client(_i3.Client? _client) =>
-      super.noSuchMethod(Invocation.setter(#client, _client),
-          returnValueForMissingStub: null);
+      super.noSuchMethod(Invocation.setter(#client, _client), returnValueForMissingStub: null);
   @override
   bool get hasListeners =>
-      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false)
-          as bool);
+      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
   @override
-  void clear() => super.noSuchMethod(Invocation.method(#clear, []),
-      returnValueForMissingStub: null);
+  void clear() =>
+      super.noSuchMethod(Invocation.method(#clear, []), returnValueForMissingStub: null);
   @override
   _i6.Future<void> fetchAndSetGallery() =>
       (super.noSuchMethod(Invocation.method(#fetchAndSetGallery, []),
@@ -86,48 +84,41 @@ class MockGalleryProvider extends _i1.Mock implements _i4.GalleryProvider {
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future<void>.value()) as _i6.Future<void>);
   @override
-  Uri makeUrl(String? path,
-          {int? id, String? objectMethod, Map<String, dynamic>? query}) =>
+  Uri makeUrl(String? path, {int? id, String? objectMethod, Map<String, dynamic>? query}) =>
       (super.noSuchMethod(
-          Invocation.method(#makeUrl, [path],
-              {#id: id, #objectMethod: objectMethod, #query: query}),
+          Invocation.method(
+              #makeUrl, [path], {#id: id, #objectMethod: objectMethod, #query: query}),
           returnValue: _FakeUri_2()) as Uri);
   @override
-  _i6.Future<Map<String, dynamic>> fetch(Uri? uri) => (super.noSuchMethod(
-          Invocation.method(#fetch, [uri]),
-          returnValue: Future<Map<String, dynamic>>.value(<String, dynamic>{}))
-      as _i6.Future<Map<String, dynamic>>);
+  _i6.Future<Map<String, dynamic>> fetch(Uri? uri) =>
+      (super.noSuchMethod(Invocation.method(#fetch, [uri]),
+              returnValue: Future<Map<String, dynamic>>.value(<String, dynamic>{}))
+          as _i6.Future<Map<String, dynamic>>);
   @override
   _i6.Future<Map<String, dynamic>> post(Map<String, dynamic>? data, Uri? uri) =>
       (super.noSuchMethod(Invocation.method(#post, [data, uri]),
-              returnValue:
-                  Future<Map<String, dynamic>>.value(<String, dynamic>{}))
+              returnValue: Future<Map<String, dynamic>>.value(<String, dynamic>{}))
           as _i6.Future<Map<String, dynamic>>);
   @override
-  _i6.Future<Map<String, dynamic>> patch(
-          Map<String, dynamic>? data, Uri? uri) =>
+  _i6.Future<Map<String, dynamic>> patch(Map<String, dynamic>? data, Uri? uri) =>
       (super.noSuchMethod(Invocation.method(#patch, [data, uri]),
-              returnValue:
-                  Future<Map<String, dynamic>>.value(<String, dynamic>{}))
+              returnValue: Future<Map<String, dynamic>>.value(<String, dynamic>{}))
           as _i6.Future<Map<String, dynamic>>);
   @override
   _i6.Future<_i3.Response> deleteRequest(String? url, int? id) =>
       (super.noSuchMethod(Invocation.method(#deleteRequest, [url, id]),
-              returnValue: Future<_i3.Response>.value(_FakeResponse_3()))
-          as _i6.Future<_i3.Response>);
+          returnValue: Future<_i3.Response>.value(_FakeResponse_3())) as _i6.Future<_i3.Response>);
   @override
-  void addListener(_i8.VoidCallback? listener) =>
-      super.noSuchMethod(Invocation.method(#addListener, [listener]),
-          returnValueForMissingStub: null);
+  void addListener(_i8.VoidCallback? listener) => super
+      .noSuchMethod(Invocation.method(#addListener, [listener]), returnValueForMissingStub: null);
   @override
   void removeListener(_i8.VoidCallback? listener) =>
       super.noSuchMethod(Invocation.method(#removeListener, [listener]),
           returnValueForMissingStub: null);
   @override
-  void dispose() => super.noSuchMethod(Invocation.method(#dispose, []),
-      returnValueForMissingStub: null);
+  void dispose() =>
+      super.noSuchMethod(Invocation.method(#dispose, []), returnValueForMissingStub: null);
   @override
   void notifyListeners() =>
-      super.noSuchMethod(Invocation.method(#notifyListeners, []),
-          returnValueForMissingStub: null);
+      super.noSuchMethod(Invocation.method(#notifyListeners, []), returnValueForMissingStub: null);
 }
