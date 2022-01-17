@@ -153,6 +153,7 @@ class ExercisesProvider with ChangeNotifier {
     _muscles = [];
     _categories = [];
     _languages = [];
+    _exercises = [];
     _exerciseBases = [];
   }
 
@@ -169,6 +170,32 @@ class ExercisesProvider with ChangeNotifier {
       (exercise) => exercise.id == id,
       orElse: () => throw NoSuchEntryException(),
     );
+  }
+
+  /// Find exercise bases by variation IDs
+  ///
+  /// exerciseIdToExclude: the ID of the exercise to exclude from the list of
+  /// returned exercises. Since this is typically called by one exercise, we are
+  /// not interested in seeing that same exercise returned in the list of variations.
+  /// If this parameter is not passed, all exercises are returned.
+  ///
+  /// languageId: the ID of the language to filter the results by. If this
+  /// parameter is not passed, all exercises are returned.
+  List<Exercise> findExercisesByVariationId(int id, {int? exerciseIdToExclude, int? languageId}) {
+    var out = _exercises
+        .where(
+          (base) => base.base.variationId == id,
+        )
+        .toList();
+
+    if (languageId != null) {
+      out = out.where((e) => e.languageId == languageId).toList();
+    }
+
+    if (exerciseIdToExclude != null) {
+      out = out.where((e) => e.id != exerciseIdToExclude).toList();
+    }
+    return out;
   }
 
   /// Find category by ID

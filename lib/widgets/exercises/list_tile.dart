@@ -49,6 +49,7 @@ class ExerciseListTile extends StatelessWidget {
           ),
         ),
       ),
+      trailing: Text(exercise.language.shortName),
       title: Text(
         exercise.name,
         //style: theme.textTheme.headline6,

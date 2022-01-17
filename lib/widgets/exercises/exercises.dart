@@ -20,7 +20,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:provider/provider.dart';
 import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/providers/exercises.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/exercises/images.dart';
 import 'package:wger/widgets/exercises/list_tile.dart';
@@ -32,6 +34,8 @@ class ExerciseDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final exerciseProvider = Provider.of<ExercisesProvider>(context, listen: false);
+
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -98,9 +102,7 @@ class ExerciseDetail extends StatelessWidget {
                     AppLocalizations.of(context).musclesSecondary,
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  ..._exercise.musclesSecondary
-                      .map((e) => Text(e.name))
-                      .toList(),
+                  ..._exercise.musclesSecondary.map((e) => Text(e.name)).toList(),
                 ],
               ),
             ],
@@ -113,9 +115,17 @@ class ExerciseDetail extends StatelessWidget {
             style: Theme.of(context).textTheme.headline6,
           ),
 
-          ExerciseListTile(exercise: _exercise),
-          ExerciseListTile(exercise: _exercise),
-          ExerciseListTile(exercise: _exercise),
+          if (_exercise.base.variationId != null)
+            ...exerciseProvider
+                .findExercisesByVariationId(
+                  _exercise.base.variationId!,
+                  languageId: _exercise.languageId,
+                  exerciseIdToExclude: _exercise.id,
+                )
+                .map((exercise) => ExerciseListTile(exercise: exercise))
+                .toList()
+          else
+            const Text('no variations!'),
 
           const SizedBox(height: 8),
         ],

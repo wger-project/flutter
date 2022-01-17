@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/exercises/filter_row.dart';
 import 'package:wger/widgets/exercises/list_tile.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ExercisesScreen extends StatefulWidget {
   const ExercisesScreen({Key? key}) : super(key: key);
@@ -30,7 +30,7 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
           FilterRow(),
           Expanded(
             child: exercisesList == null
-                ? Center(
+                ? const Center(
                     child: SizedBox(
                       height: 100,
                       width: 100,
