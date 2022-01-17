@@ -20,8 +20,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/exercises/images.dart';
@@ -80,9 +82,15 @@ class ExerciseDetail extends StatelessWidget {
             AppLocalizations.of(context).muscles,
             style: Theme.of(context).textTheme.headline6,
           ),
-          const Placeholder(
-            color: Colors.grey,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              MuscleWidget(_exercise.muscles),
+              MuscleWidget(_exercise.musclesSecondary),
+            ],
           ),
+
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -130,6 +138,27 @@ class ExerciseDetail extends StatelessWidget {
           const SizedBox(height: 8),
         ],
       ),
+    );
+  }
+}
+
+class MuscleWidget extends StatelessWidget {
+  List<Muscle> muscles = [];
+
+  MuscleWidget(
+    this.muscles, {
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        SvgPicture.asset('assets/images/muscles/front.svg'),
+        ...muscles
+            .map((m) => SvgPicture.asset('assets/images/muscles/main/muscle-${m.id}.svg'))
+            .toList(),
+      ],
     );
   }
 }

@@ -53,6 +53,7 @@ dependencies:
   table_calendar: ^3.0.2
   url_launcher: ^6.0.10
   multi_select_flutter: ^4.0.0
+  flutter_svg: ^0.23.0+1
 
 dev_dependencies:
   flutter_test:
@@ -91,6 +92,9 @@ flutter:
     - assets/animations/
     - assets/images/
     - assets/images/backgrounds/
+    - assets/images/muscles/
+    - assets/images/muscles/main/
+    - assets/images/muscles/secondary/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

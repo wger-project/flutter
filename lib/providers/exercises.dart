@@ -78,9 +78,13 @@ class ExercisesProvider with ChangeNotifier {
 
   List<Exercise>? _filteredExercises = [];
   List<Exercise>? get filteredExercises => _filteredExercises;
-  set filteredExercises(List<Exercise>? newfilteredExercises) {
-    _filteredExercises = newfilteredExercises;
+  set filteredExercises(List<Exercise>? newFilteredExercises) {
+    _filteredExercises = newFilteredExercises;
     notifyListeners();
+  }
+
+  List<Exercise>? getFilteredExercisesByLanguage(int languageId) {
+    return _filteredExercises!.where((e) => e.languageId == languageId).toList();
   }
 
   ExercisesProvider(this.baseProvider);
