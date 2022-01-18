@@ -19,19 +19,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:provider/provider.dart';
+import 'package:wger/providers/exercises.dart';
 import 'package:wger/widgets/exercises/exercises.dart';
 
 import '../../test_data/exercises.dart';
+import '../gym_mode_screen_test.mocks.dart';
 
 void main() {
+  final mockProvider = MockExercisesProvider();
+
   Widget createHomeScreen({locale = 'en'}) {
-    return MaterialApp(
-      locale: Locale(locale),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      navigatorKey: GlobalKey<NavigatorState>(),
-      home: Scaffold(
-        body: ExerciseDetail(getExercise()[0]),
+    return ChangeNotifierProvider<ExercisesProvider>(
+      create: (context) => mockProvider,
+      child: MaterialApp(
+        locale: Locale(locale),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        navigatorKey: GlobalKey<NavigatorState>(),
+        home: Scaffold(
+          body: ExerciseDetail(getExercise()[0]),
+        ),
       ),
     );
   }
@@ -40,18 +48,27 @@ void main() {
     await tester.pumpWidget(createHomeScreen());
     await tester.pumpAndSettle();
 
-    expect(find.text('Category'), findsOneWidget);
     expect(find.text('Arms'), findsOneWidget, reason: 'Category');
 
-    expect(find.text('Equipment'), findsOneWidget);
-    expect(find.text('Bench\nDumbbell'), findsOneWidget, reason: 'Equipment');
+    //expect(find.text('Equipment'), findsOneWidget);
+    //expect(find.text('Bench'), findsOneWidget, reason: 'Equipment');
+    //expect(find.text('Dumbbell'), findsOneWidget, reason: 'Equipment');
 
-    expect(find.text('Muscles'), findsOneWidget);
-    expect(find.text('Flutterus maximus\nBiceps'), findsOneWidget, reason: 'Muscles');
+    expect(find.text('Muscles'), findsNWidgets(2));
+    expect(find.text('Flutterus maximus'), findsOneWidget, reason: 'Main muscles');
+    expect(find.text('Biceps'), findsOneWidget, reason: 'Main muscles');
 
     expect(find.text('Secondary muscles'), findsOneWidget);
+    expect(
+      find.byType(MuscleWidget),
+      findsNWidgets(2),
+      reason: 'Two diagrams, one for front, one for the back',
+    );
     expect(find.text('Booty'), findsOneWidget, reason: 'Secondary muscles');
 
+    expect(find.text('Description'), findsOneWidget, reason: 'Description header');
     expect(find.text('add clever text'), findsOneWidget, reason: 'Description');
+
+    expect(find.text('Variants'), findsOneWidget, reason: 'Variations header');
   });
 }
