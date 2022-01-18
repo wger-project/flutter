@@ -17,9 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
-import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/exercises/exercises.dart';
 
 class ExerciseDetailScreen extends StatelessWidget {
@@ -29,13 +27,16 @@ class ExerciseDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final exerciseBase = ModalRoute.of(context)!.settings.arguments as Exercise;
+    final exercise = ModalRoute.of(context)!.settings.arguments as Exercise;
 
     return Scaffold(
-      appBar: WgerAppBar(AppLocalizations.of(context).exercise),
+      appBar: AppBar(
+        title: Text(exercise.name),
+      ),
       body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: ExerciseDetail(exerciseBase)),
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: ExerciseDetail(exercise),
+      ),
     );
   }
 }

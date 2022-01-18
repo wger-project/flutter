@@ -45,7 +45,7 @@ class ExerciseDetail extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Name and category
-          Text(_exercise.name, style: Theme.of(context).textTheme.headline5),
+          const SizedBox(height: PADDING),
           Pill(title: _exercise.category.name),
           const SizedBox(height: PADDING),
 
