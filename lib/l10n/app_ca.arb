@@ -1,1 +1,524 @@
-{}
+{
+  "login": "Entra",
+  "@login": {
+    "description": "Text for login button"
+  },
+  "logout": "Surt",
+  "@logout": {
+    "description": "Text for logout button"
+  },
+  "usernameValidChars": "Un nom d'usuari només pot contenir lletres, números i els caràcters @, +, ., -, i _",
+  "@usernameValidChars": {
+    "description": "Error message when the user tries to register a username with forbidden characters"
+  },
+  "passwordsDontMatch": "Les contrasenyes no coincideixen",
+  "@passwordsDontMatch": {
+    "description": "Error message when the user enters two different passwords during registration"
+  },
+  "passwordTooShort": "La contrasenya és massa curta",
+  "@passwordTooShort": {
+    "description": "Error message when the user a password that is too short"
+  },
+  "password": "Contrasenya",
+  "@password": {},
+  "confirmPassword": "Confirma la contrasenya",
+  "@confirmPassword": {},
+  "invalidEmail": "Introdueix una adreça electrònica vàlida",
+  "@invalidEmail": {
+    "description": "Error message when the user enters an invalid email"
+  },
+  "email": "Adreça electrònica",
+  "@email": {},
+  "username": "Nom d'usuari",
+  "@username": {},
+  "customServerUrl": "URL de la instància de wger",
+  "@customServerUrl": {
+    "description": "Label in the form where the users can enter their own wger instance"
+  },
+  "reset": "Reinicialitza",
+  "@reset": {
+    "description": "Button text allowing the user to reset the entered values to the default"
+  },
+  "registerInstead": "Registra't",
+  "@registerInstead": {},
+  "labelBottomNavWorkout": "Entrenament",
+  "@labelBottomNavWorkout": {
+    "description": "Label used in bottom navigation, use a short word"
+  },
+  "labelWorkoutLogs": "Registes d'entrenament",
+  "@labelWorkoutLogs": {
+    "description": "(Workout) logs"
+  },
+  "labelWorkoutPlan": "Pla d'entrenament",
+  "@labelWorkoutPlan": {
+    "description": "Title for screen workout plan"
+  },
+  "labelDashboard": "Consola",
+  "@labelDashboard": {
+    "description": "Title for screen dashboard"
+  },
+  "successfullyDeleted": "Esborrat",
+  "@successfullyDeleted": {
+    "description": "Message when an item was successfully deleted"
+  },
+  "successfullySaved": "Desat",
+  "@successfullySaved": {
+    "description": "Message when an item was successfully saved"
+  },
+  "exercise": "Exercici",
+  "@exercise": {
+    "description": "An exercise for a workout"
+  },
+  "searchExercise": "Cerca exercici a afegir",
+  "@searchExercise": {
+    "description": "Label on set form. Selected exercises are added to the set"
+  },
+  "supersetWith": "en conjunt amb",
+  "@supersetWith": {
+    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
+  },
+  "equipment": "Equipament",
+  "@equipment": {
+    "description": "Equipment needed to perform an exercise"
+  },
+  "muscles": "Músculs",
+  "@muscles": {
+    "description": "(main) muscles trained by an exercise"
+  },
+  "musclesSecondary": "Músculs secundaris",
+  "@musclesSecondary": {
+    "description": "secondary muscles trained by an exercise"
+  },
+  "category": "Categoria",
+  "@category": {
+    "description": "Category for an exercise, ingredient, etc."
+  },
+  "newWorkout": "Nou pla d'entrenament",
+  "@newWorkout": {
+    "description": "Header when adding a new workout"
+  },
+  "noWorkoutPlans": "No tens cap pla d'entrenament",
+  "@noWorkoutPlans": {
+    "description": "Message shown when the user has no workout plans"
+  },
+  "repetitions": "Repeticions",
+  "@repetitions": {
+    "description": "Repetitions for an exercise set"
+  },
+  "reps": "Reps",
+  "@reps": {
+    "description": "Shorthand for repetitions, used when space constraints are tighter"
+  },
+  "rir": "RER",
+  "@rir": {
+    "description": "Shorthand for Repetitions In Reserve"
+  },
+  "rirNotUsed": "Valor RER no usat",
+  "@rirNotUsed": {
+    "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
+  },
+  "repetitionUnit": "Unitat de repetició",
+  "@repetitionUnit": {},
+  "set": "Sèrie",
+  "@set": {
+    "description": "A set in a workout plan"
+  },
+  "sameRepetitions": "Si fas les mateixes repeticions i pesos per a totes les sèries, pots omplir només una línia. Per exemple, per a 4 sèries simplement introdueix 10 per a les repeticions; això esdevé automàticament «4 x 10».",
+  "@sameRepetitions": {},
+  "comment": "Comentaris",
+  "@comment": {
+    "description": "Comment, additional information"
+  },
+  "impression": "Impressió",
+  "@impression": {
+    "description": "General impression (e.g. for a workout session) such as good, bad, etc."
+  },
+  "notes": "Notes",
+  "@notes": {
+    "description": "Personal notes, e.g. for a workout session"
+  },
+  "workoutSession": "Sessió d'entrenament",
+  "@workoutSession": {
+    "description": "A (logged) workout session"
+  },
+  "newDay": "Nou dia",
+  "@newDay": {},
+  "newSet": "Nova sèrie",
+  "@newSet": {
+    "description": "Header when adding a new set to a workout day"
+  },
+  "selectExercises": "Si vols fer una supersèrie, pots cercar diversos exercicis: s'agruparan junts",
+  "@selectExercises": {},
+  "plateCalculator": "Plaques",
+  "@plateCalculator": {
+    "description": "Label used for the plate calculator in the gym mode"
+  },
+  "plateCalculatorNotDivisible": "No es pot assolir aquest pes amb les plaques disponibles",
+  "@plateCalculatorNotDivisible": {
+    "description": "Error message when the current weight is not reachable with plates (e.g. 33.1 kg)"
+  },
+  "pause": "Pausa",
+  "@pause": {
+    "description": "Noun, not an imperative! Label used for the pause when using the gym mode"
+  },
+  "jumpTo": "Vés a",
+  "@jumpTo": {
+    "description": "Imperative. Label used in popup allowing the user to jump to a specific exercise while in the gym mode"
+  },
+  "todaysWorkout": "El teu entrenament avui",
+  "@todaysWorkout": {},
+  "logHelpEntriesUnits": "Tingues en compte que només es fa la gràfica de les entrades amb unitats de pes (kg o lb) i repeticions, altres combinacions com ara temps o fins la fallada s'ignoren aquí.",
+  "@logHelpEntriesUnits": {},
+  "description": "Descripció",
+  "@description": {},
+  "name": "Nom",
+  "@name": {
+    "description": "Name for a workout or nutritional plan"
+  },
+  "save": "Desa",
+  "@save": {},
+  "addSet": "Afegeix sèrie",
+  "@addSet": {
+    "description": "Label for the button that adds a set (to a workout day)"
+  },
+  "addMeal": "Afegeix àpat",
+  "@addMeal": {},
+  "mealLogged": "Àpat registrat al diari",
+  "@mealLogged": {},
+  "addIngredient": "Afegeix ingredient",
+  "@addIngredient": {},
+  "logIngredient": "Desa al diari nutricional",
+  "@logIngredient": {},
+  "nutritionalPlan": "Pla nutricional",
+  "@nutritionalPlan": {},
+  "nutritionalDiary": "Diari nutricional",
+  "@nutritionalDiary": {},
+  "anErrorOccurred": "S'ha produït un error!",
+  "@anErrorOccurred": {},
+  "weight": "Pes",
+  "@weight": {
+    "description": "The weight of a workout log or body weight entry"
+  },
+  "measurement": "Mesura",
+  "@measurement": {},
+  "measurementEntriesHelpText": "La unitat usada per a mesurar la categoria, com ara «cm» o «%»",
+  "@measurementEntriesHelpText": {},
+  "start": "Comença",
+  "@start": {
+    "description": "Label on button to start the gym mode (i.e., an imperative)"
+  },
+  "time": "Temps",
+  "@time": {
+    "description": "The time of a meal or workout"
+  },
+  "timeStart": "Hora d'inici",
+  "@timeStart": {
+    "description": "The starting time of a workout"
+  },
+  "timeEnd": "Hora de finalització",
+  "@timeEnd": {
+    "description": "The end time of a workout"
+  },
+  "ingredient": "Ingredient",
+  "@ingredient": {},
+  "energy": "Energia",
+  "@energy": {
+    "description": "Energy in a meal, ingredient etc. e.g. in kJ"
+  },
+  "energyShort": "E",
+  "@energyShort": {
+    "description": "The first letter or short name of the word 'Energy', used in overviews"
+  },
+  "macronutrients": "Macronutrients",
+  "@macronutrients": {},
+  "logged": "Registrat",
+  "@logged": {
+    "description": "Header for the column of 'logged' nutritional values, i.e. what was eaten"
+  },
+  "percentEnergy": "Percentatge d'energia",
+  "@percentEnergy": {},
+  "gPerBodyKg": "g per kg de pes corporal",
+  "@gPerBodyKg": {
+    "description": "Label used for total sums of e.g. calories or similar in grams per Kg of body weight"
+  },
+  "total": "Total",
+  "@total": {
+    "description": "Label used for total sums of e.g. calories or similar"
+  },
+  "kJ": "kJ",
+  "@kJ": {
+    "description": "Energy in a meal in kilo joules, kJ"
+  },
+  "g": "g",
+  "@g": {
+    "description": "Abbreviation for gram"
+  },
+  "protein": "Proteïna",
+  "@protein": {},
+  "carbohydrates": "Carbohidrats",
+  "@carbohydrates": {},
+  "carbohydratesShort": "C",
+  "@carbohydratesShort": {
+    "description": "The first letter or short name of the word 'Carbohydrates', used in overviews"
+  },
+  "sugars": "Sucres",
+  "@sugars": {},
+  "fat": "Greix",
+  "@fat": {},
+  "amount": "Quantitat",
+  "@amount": {
+    "description": "The amount (e.g. in grams) of an ingredient in a meal"
+  },
+  "unit": "Unitat",
+  "@unit": {
+    "description": "The unit used for a repetition (kg, time, etc.)"
+  },
+  "newEntry": "Nova entrada",
+  "@newEntry": {
+    "description": "Title when adding a new entry such as a weight or log entry"
+  },
+  "edit": "Edita",
+  "@edit": {},
+  "loadingText": "Carregant...",
+  "@loadingText": {
+    "description": "Text to show when entries are being loaded in the background: Loading..."
+  },
+  "newNutritionalPlan": "Nou pla nutricional",
+  "@newNutritionalPlan": {},
+  "toggleDetails": "Commuta detalls",
+  "@toggleDetails": {
+    "description": "Switch to toggle detail / overview"
+  },
+  "goToDetailPage": "Vés a la pàgina dels detalls",
+  "@goToDetailPage": {},
+  "aboutSourceTitle": "Codi font",
+  "@aboutSourceTitle": {
+    "description": "Title for source code section in the about dialog"
+  },
+  "aboutBugsTitle": "Teniu cap problema o idea?",
+  "@aboutBugsTitle": {
+    "description": "Title for bugs section in the about dialog"
+  },
+  "aboutBugsText": "Poseu-vos en contacte si alguna cosa no funciona com s'esperava o si hi ha alguna funció que penseu que manca.",
+  "@aboutBugsText": {
+    "description": "Text for bugs section in the about dialog"
+  },
+  "aboutContactUsTitle": "Saludeu!",
+  "@aboutContactUsTitle": {
+    "description": "Title for contact us section in the about dialog"
+  },
+  "aboutContactUsText": "Si voleu xatejar amb nosaltres, entreu al servidor de Discord i poseu-vos en contacte",
+  "@aboutContactUsText": {
+    "description": "Text for contact us section in the about dialog"
+  },
+  "aboutTranslationTitle": "Traducció",
+  "@aboutTranslationTitle": {
+    "description": "Title for translation section in the about dialog"
+  },
+  "aboutTranslationText": "Aquesta aplicació es tradueix a weblate. Si voleu ajudar-hi també, feu clic al vincle i comenceu a traduir",
+  "@aboutTranslationText": {
+    "description": "Text for translation section in the about dialog"
+  },
+  "calendar": "Calendari",
+  "@calendar": {},
+  "enterValue": "Introduïu un valor",
+  "@enterValue": {
+    "description": "Error message when the user hasn't entered a value on a required field"
+  },
+  "nrOfSets": "Sèries per exercici: {nrOfSets}",
+  "@nrOfSets": {
+    "description": "Label shown on the slider where the user selects the nr of sets",
+    "type": "text",
+    "placeholders": {
+      "nrOfSets": {}
+    }
+  },
+  "setUnitsAndRir": "Unitats de la sèrie i RER",
+  "@setUnitsAndRir": {
+    "description": "Label shown on the slider where the user can toggle showing units and RiR",
+    "type": "text"
+  },
+  "enterValidNumber": "Introduïu un número vàlid",
+  "@enterValidNumber": {
+    "description": "Error message when the user has submitted an invalid number (e.g. '3,.,.,.')"
+  },
+  "selectIngredient": "Seleccioneu un ingredient",
+  "@selectIngredient": {
+    "description": "Error message when the user hasn't selected an ingredient from the autocompleter"
+  },
+  "selectImage": "Seleccioneu una imatge",
+  "@selectImage": {
+    "description": "Label and error message when the user hasn't selected an image to save"
+  },
+  "optionsLabel": "Opcions",
+  "@optionsLabel": {
+    "description": "Label for the popup with general app options"
+  },
+  "takePicture": "Fes una foto",
+  "@takePicture": {},
+  "chooseFromLibrary": "Escull del rodet de fotos",
+  "@chooseFromLibrary": {},
+  "appUpdateTitle": "Cal actualitzar",
+  "@appUpdateTitle": {},
+  "invalidUrl": "Entra un URL vàlid",
+  "@invalidUrl": {
+    "description": "Error message when the user enters an invalid URL, e.g. in the login form"
+  },
+  "invalidUsername": "Introdueix un nom d'usuari vàlid",
+  "@invalidUsername": {
+    "description": "Error message when the user enters an invalid username"
+  },
+  "register": "Registra't",
+  "@register": {
+    "description": "Text for registration button"
+  },
+  "useDefaultServer": "Usa el servidor per defecte",
+  "@useDefaultServer": {
+    "description": "Toggle button allowing users to switch between the default and a custom wger server"
+  },
+  "useCustomServer": "Usa un servidor personalitzat",
+  "@useCustomServer": {
+    "description": "Toggle button allowing users to switch between the default and a custom wger server"
+  },
+  "customServerHint": "Introdueix l'adreça del teu servidor propi, altrament s'usarà el servidor per defecte",
+  "@customServerHint": {
+    "description": "Hint text for the form where the users can enter their own wger instance"
+  },
+  "loginInstead": "Entra",
+  "@loginInstead": {},
+  "labelWorkoutPlans": "Plans d'entrenament",
+  "@labelWorkoutPlans": {
+    "description": "Title for screen workout plans"
+  },
+  "labelBottomNavNutrition": "Nutrició",
+  "@labelBottomNavNutrition": {
+    "description": "Label used in bottom navigation, use a short word"
+  },
+  "weightUnit": "Unitat de pes",
+  "@weightUnit": {},
+  "setNr": "Sèrie {nr}",
+  "@setNr": {
+    "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {}
+    }
+  },
+  "dayDescriptionHelp": "Descripció de què es fa aquest dia (p. e. «dia de tracció») o quines parts del cos d'exerciten (p. e. «pit i espatlles»)",
+  "@dayDescriptionHelp": {},
+  "aboutDescription": "Gràcies per usar wger! wger és un projecte col·laboratiu de codi obert, fet per entusiastes del fitness d'arreu del món.",
+  "@aboutDescription": {
+    "description": "Text in the about dialog"
+  },
+  "gymMode": "Mode gimnàs",
+  "@gymMode": {
+    "description": "Label when starting the gym mode"
+  },
+  "logHelpEntries": "Si en un únic dia hi ha més d'una entrada amb el mateix nombre de repeticions però diferents pesos, al diagrama es mostra només l'entrada amb el pes més gran.",
+  "@logHelpEntries": {},
+  "noNutritionalPlans": "No tens plans nutricionals",
+  "@noNutritionalPlans": {
+    "description": "Message shown when the user has no nutritional plans"
+  },
+  "planned": "Previst",
+  "@planned": {
+    "description": "Header for the column of 'planned' nutritional values, i.e. what should be eaten"
+  },
+  "timeStartAhead": "L'hora d'inici no pot ser posterior a la de finalització",
+  "@timeStartAhead": {},
+  "logMeal": "Registra aquest àpat",
+  "@logMeal": {},
+  "searchIngredient": "Cerca ingredient",
+  "@searchIngredient": {
+    "description": "Label on ingredient search form"
+  },
+  "nutritionalPlans": "Plans nutricionals",
+  "@nutritionalPlans": {},
+  "measurements": "Mesures",
+  "@measurements": {
+    "description": "Categories for the measurements such as biceps size, body fat, etc."
+  },
+  "measurementCategoriesHelpText": "Categoria de la mesura, com ara «bíceps» o «greix corporal»",
+  "@measurementCategoriesHelpText": {},
+  "date": "Data",
+  "@date": {
+    "description": "The date of a workout log or body weight entry"
+  },
+  "value": "Valor",
+  "@value": {
+    "description": "The value of a measurement entry"
+  },
+  "difference": "Diferència",
+  "@difference": {},
+  "kcal": "kcal",
+  "@kcal": {
+    "description": "Energy in a meal in kilocalories, kcal"
+  },
+  "proteinShort": "P",
+  "@proteinShort": {
+    "description": "The first letter or short name of the word 'Protein', used in overviews"
+  },
+  "enterRepetitionsOrWeight": "Ompliu les repeticions o bé el pes per a una de les sèries com a mínim",
+  "@enterRepetitionsOrWeight": {
+    "description": "Error message when the user hasn't filled in the forms for exercise sets"
+  },
+  "fatShort": "G",
+  "@fatShort": {
+    "description": "The first letter or short name of the word 'Fat', used in overviews"
+  },
+  "saturatedFat": "Greix saturat",
+  "@saturatedFat": {},
+  "noWeightEntries": "No teniu cap entrada de pes",
+  "@noWeightEntries": {
+    "description": "Message shown when the user has no logged weight entries"
+  },
+  "fibres": "Fibra",
+  "@fibres": {},
+  "sodium": "Sodi",
+  "@sodium": {},
+  "delete": "Esborra",
+  "@delete": {},
+  "aboutSourceText": "Obtingueu el codi font d'aquesta aplicació i el seu servidor a Github",
+  "@aboutSourceText": {
+    "description": "Text for source code section in the about dialog"
+  },
+  "confirmDelete": "Esteu segur de voler esborrar '{toDelete}'?",
+  "@confirmDelete": {
+    "description": "Confirmation text before the user deletes an object",
+    "type": "text",
+    "placeholders": {
+      "toDelete": {}
+    }
+  },
+  "goToToday": "Vés a avui",
+  "@goToToday": {
+    "description": "Label on button to jump back to 'today' in the calendar widget"
+  },
+  "selectExercise": "Seleccioneu un exercici",
+  "@selectExercise": {
+    "description": "Error message when the user hasn't selected an exercise in the form"
+  },
+  "enterCharacters": "Introduïu entre {min} i {max} caràcters",
+  "@enterCharacters": {
+    "description": "Error message when the user hasn't entered the correct number of characters in a form",
+    "type": "text",
+    "placeholders": {
+      "min": {},
+      "max": {}
+    }
+  },
+  "recentlyUsedIngredients": "Ingredients afegits recentment",
+  "@recentlyUsedIngredients": {
+    "description": "A message when a user adds a new ingredient to a meal."
+  },
+  "gallery": "Galeria",
+  "@gallery": {},
+  "addImage": "Afegeix imatge",
+  "@addImage": {},
+  "dataCopied": "Dades copiades a una nova entrada",
+  "@dataCopied": {
+    "description": "Snackbar message to show on copying data to a new log entry"
+  },
+  "appUpdateContent": "Aquesta versió de l'app no és compatible amb el servidor, actualitzeu l'aplicació.",
+  "@appUpdateContent": {}
+}
