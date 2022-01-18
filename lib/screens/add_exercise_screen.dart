@@ -10,6 +10,7 @@ import 'package:wger/widgets/add_exercise/add_exercise_text_area.dart';
 import 'package:wger/widgets/add_exercise/mixins/image_picker_mixin.dart';
 import 'package:wger/widgets/add_exercise/preview_images.dart';
 import 'package:wger/widgets/core/app_bar.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AddExerciseScreen extends StatefulWidget {
   const AddExerciseScreen({Key? key}) : super(key: key);
@@ -166,18 +167,9 @@ class _ImagesStepContentState extends State<_ImagesStepContent> with ExcerciseIm
   Widget build(BuildContext context) {
     return Column(
       children: [
-        RichText(
-          text: TextSpan(
-            style: Theme.of(context).textTheme.caption,
-            children: const <TextSpan>[
-              TextSpan(text: 'Images must be compatible with the '),
-              TextSpan(
-                text: 'CC BY SA_license',
-                style: TextStyle(decoration: TextDecoration.underline),
-              ),
-              TextSpan(text: ". If in doubt, upload only photos you've taken yourself."),
-            ],
-          ),
+        Text(
+          AppLocalizations.of(context).add_excercise_image_license,
+          style: Theme.of(context).textTheme.caption,
         ),
         Consumer<AddExcerciseProvider>(
           builder: (ctx, provider, __) => provider.excerciseImages.isNotEmpty

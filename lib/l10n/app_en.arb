@@ -515,5 +515,6 @@
     "description": "Snackbar message to show on copying data to a new log entry"
   },
   "appUpdateTitle" : "Update needed",
-  "appUpdateContent" : "This version of the app is not compatible with the server, please update your application."
+  "appUpdateContent" : "This version of the app is not compatible with the server, please update your application.",
+  "add_excercise_image_license": "Images must be compatible with the CC BY SA_license. If in doubt, upload only photos you've taken yourself."
 }
