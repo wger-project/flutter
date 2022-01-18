@@ -37,50 +37,48 @@ class ExerciseDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final exerciseProvider = Provider.of<ExercisesProvider>(context, listen: false);
+    const PADDING = 9.0;
 
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Category
-          Text(
-            _exercise.name,
-            style: Theme.of(context).textTheme.headline5,
-          ),
+          // Name and category
+          Text(_exercise.name, style: Theme.of(context).textTheme.headline5),
+          Pill(title: _exercise.category.name),
+          const SizedBox(height: PADDING),
 
-          Pill(
-            title: _exercise.category.name,
-          ),
-          const SizedBox(height: 8),
-
+          // Aliases
           const MutedText('Also known as: Burpees, Basic burpees'),
+          const SizedBox(height: PADDING),
 
-          const SizedBox(height: 8),
-
+          // Image
+          // TODO: add carousel for the other ones
           ExerciseImageWidget(
             image: _exercise.getMainImage,
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: PADDING),
 
           // Description
           Text(
             AppLocalizations.of(context).description,
-            style: Theme.of(context).textTheme.headline6,
+            style: Theme.of(context).textTheme.headline5,
           ),
           Html(data: _exercise.description),
 
           // Notes
           Text(
             AppLocalizations.of(context).notes,
-            style: Theme.of(context).textTheme.headline6,
+            style: Theme.of(context).textTheme.headline5,
           ),
           ..._exercise.tips.map((e) => Text(e.comment)).toList(),
+          const SizedBox(height: PADDING),
 
           // Muscles
           Text(
             AppLocalizations.of(context).muscles,
-            style: Theme.of(context).textTheme.headline6,
+            style: Theme.of(context).textTheme.headline5,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -88,7 +86,7 @@ class ExerciseDetail extends StatelessWidget {
             children: [
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.symmetric(horizontal: PADDING),
                   child: MuscleWidget(
                     muscles: _exercise.muscles,
                     musclesSecondary: _exercise.musclesSecondary,
@@ -98,7 +96,7 @@ class ExerciseDetail extends StatelessWidget {
               ),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.symmetric(horizontal: PADDING),
                   child: MuscleWidget(
                     muscles: _exercise.muscles,
                     musclesSecondary: _exercise.musclesSecondary,
@@ -133,14 +131,10 @@ class ExerciseDetail extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: PADDING),
 
           // Variants
-          Text(
-            'Variants',
-            style: Theme.of(context).textTheme.headline6,
-          ),
-
+          Text('Variants', style: Theme.of(context).textTheme.headline5),
           if (_exercise.base.variationId != null)
             ...exerciseProvider
                 .findExercisesByVariationId(
@@ -152,8 +146,6 @@ class ExerciseDetail extends StatelessWidget {
                 .toList()
           else
             const Text('no variations!'),
-
-          const SizedBox(height: 8),
         ],
       ),
     );
