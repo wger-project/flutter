@@ -86,8 +86,26 @@ class ExerciseDetail extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              MuscleWidget(_exercise.muscles),
-              MuscleWidget(_exercise.musclesSecondary),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: MuscleWidget(
+                    muscles: _exercise.muscles,
+                    musclesSecondary: _exercise.musclesSecondary,
+                    isFront: true,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: MuscleWidget(
+                    muscles: _exercise.muscles,
+                    musclesSecondary: _exercise.musclesSecondary,
+                    isFront: false,
+                  ),
+                ),
+              ),
             ],
           ),
 
@@ -143,20 +161,32 @@ class ExerciseDetail extends StatelessWidget {
 }
 
 class MuscleWidget extends StatelessWidget {
-  List<Muscle> muscles = [];
+  late final List<Muscle> muscles;
+  late final List<Muscle> musclesSecondary;
+  final bool isFront;
 
-  MuscleWidget(
-    this.muscles, {
-    Key? key,
-  }) : super(key: key);
+  MuscleWidget({
+    List<Muscle> muscles = const [],
+    List<Muscle> musclesSecondary = const [],
+    this.isFront = true,
+  }) {
+    this.muscles = muscles.where((m) => m.isFront == isFront).toList();
+    this.musclesSecondary = musclesSecondary.where((m) => m.isFront == isFront).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final background = isFront ? 'front' : 'back';
+    final muscleFolder = isFront ? 'main' : 'secondary';
+
     return Stack(
       children: [
-        SvgPicture.asset('assets/images/muscles/front.svg'),
+        SvgPicture.asset('assets/images/muscles/$background.svg'),
         ...muscles
             .map((m) => SvgPicture.asset('assets/images/muscles/main/muscle-${m.id}.svg'))
+            .toList(),
+        ...musclesSecondary
+            .map((m) => SvgPicture.asset('assets/images/muscles/$muscleFolder/muscle-${m.id}.svg'))
             .toList(),
       ],
     );
