@@ -47,6 +47,7 @@ import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/screens/workout_plans_screen.dart';
 import 'package:wger/theme/theme.dart';
 
+import 'providers/add_excercise_provider.dart';
 import 'providers/auth.dart';
 
 void main() {
@@ -102,6 +103,9 @@ class MyApp extends StatelessWidget {
               GalleryProvider(Provider.of<AuthProvider>(context, listen: false), []),
           update: (context, auth, previous) => previous ?? GalleryProvider(auth, []),
         ),
+        ChangeNotifierProvider(
+          create: (_) => AddExcerciseProvider(),
+        )
       ],
       child: Consumer<AuthProvider>(
         builder: (ctx, auth, _) => MaterialApp(

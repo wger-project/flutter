@@ -1,8 +1,16 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+import 'package:wger/providers/add_excercise_provider.dart';
 import 'package:wger/widgets/add_exercise/add_exercise_dropdown_button.dart';
 import 'package:wger/widgets/add_exercise/add_exercise_multiselect_button.dart';
 import 'package:wger/widgets/add_exercise/add_exercise_text_area.dart';
+import 'package:wger/widgets/add_exercise/mixins/image_picker_mixin.dart';
+import 'package:wger/widgets/add_exercise/preview_images.dart';
 import 'package:wger/widgets/core/app_bar.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AddExerciseScreen extends StatefulWidget {
   const AddExerciseScreen({Key? key}) : super(key: key);
@@ -148,28 +156,42 @@ class _DuplicatesAndVariationsStepContent extends StatelessWidget {
   }
 }
 
-class _ImagesStepContent extends StatelessWidget {
-  final GlobalKey<FormState> _imagesStepFormKey = GlobalKey<FormState>();
+class _ImagesStepContent extends StatefulWidget {
+  @override
+  State<_ImagesStepContent> createState() => _ImagesStepContentState();
+}
 
+class _ImagesStepContentState extends State<_ImagesStepContent> with ExcerciseImagePickerMixin {
+  final GlobalKey<FormState> _imagesStepFormKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _imagesStepFormKey,
-      child: Column(
-        children: [
-          AddExerciseTextArea(
-            onChange: (value) => print(value),
-            title: 'Name',
-            isRequired: true,
+    return Column(
+      children: [
+        Text(
+          AppLocalizations.of(context).add_excercise_image_license,
+          style: Theme.of(context).textTheme.caption,
+        ),
+        Consumer<AddExcerciseProvider>(
+          builder: (ctx, provider, __) => provider.excerciseImages.isNotEmpty
+              ? PreviewExcercizeImages(
+                  selectedimages: provider.excerciseImages,
+                )
+              : ElevatedButton(
+                  onPressed: () => pickImages(context),
+                  child: const Text('BROWSE FOR FILES'),
+                  style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.resolveWith((states) => Colors.black)),
+                ),
+        ),
+        RichText(
+          text: TextSpan(
+            style: Theme.of(context).textTheme.caption,
+            children: const <TextSpan>[
+              TextSpan(text: 'Only JPEG, PNG and WEBP files below 20 MB are supported'),
+            ],
           ),
-          AddExerciseTextArea(
-            onChange: (value) => print(value),
-            title: 'Alternative names',
-            isMultiline: true,
-            helperText: 'One name per line',
-          ),
-        ],
-      ),
+        )
+      ],
     );
   }
 }
