@@ -1,7 +1,5 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/add_excercise_provider.dart';
 import 'package:wger/widgets/add_exercise/add_exercise_dropdown_button.dart';
@@ -10,7 +8,6 @@ import 'package:wger/widgets/add_exercise/add_exercise_text_area.dart';
 import 'package:wger/widgets/add_exercise/mixins/image_picker_mixin.dart';
 import 'package:wger/widgets/add_exercise/preview_images.dart';
 import 'package:wger/widgets/core/app_bar.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AddExerciseScreen extends StatefulWidget {
   const AddExerciseScreen({Key? key}) : super(key: key);
@@ -57,19 +54,19 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
         controlsBuilder: _controlsBuilder,
         steps: [
           Step(
-            title: Text('Basics'),
+            title: const Text('Basics'),
             content: _BasicStepContent(),
           ),
           Step(
-            title: Text('Duplicats and variations'),
+            title: const Text('Duplicates and variations'),
             content: _DuplicatesAndVariationsStepContent(),
           ),
           Step(
-            title: Text('Images'),
+            title: const Text('Images'),
             content: _ImagesStepContent(),
           ),
           Step(
-            title: Text('Description'),
+            title: Text(AppLocalizations.of(context).description),
             content: _DescriptionStepContent(),
           )
         ],
@@ -101,7 +98,7 @@ class _BasicStepContent extends StatelessWidget {
         children: [
           AddExerciseTextArea(
             onChange: (value) => print(value),
-            title: 'Name',
+            title: AppLocalizations.of(context).name,
             isRequired: true,
           ),
           AddExerciseTextArea(
@@ -116,12 +113,12 @@ class _BasicStepContent extends StatelessWidget {
             onChange: (value) => print(value),
           ),
           AddExerciseMultiselectButton(
-            title: 'Primary muscles',
+            title: AppLocalizations.of(context).muscles,
             items: ['Arms', 'Chest', 'Shoulders'],
             onChange: (value) => print(value),
           ),
           AddExerciseMultiselectButton(
-            title: 'Secondary Muscles',
+            title: AppLocalizations.of(context).musclesSecondary,
             items: ['Arms', 'Chest', 'Shoulders'],
             onChange: (value) => print(value),
           ),
@@ -141,7 +138,7 @@ class _DuplicatesAndVariationsStepContent extends StatelessWidget {
         children: [
           AddExerciseTextArea(
             onChange: (value) => print(value),
-            title: 'Name',
+            title: AppLocalizations.of(context).name,
             isRequired: true,
           ),
           AddExerciseTextArea(
@@ -207,7 +204,7 @@ class _DescriptionStepContent extends StatelessWidget {
         children: [
           AddExerciseTextArea(
             onChange: (value) => print(value),
-            title: 'Name',
+            title: AppLocalizations.of(context).name,
             isRequired: true,
           ),
           AddExerciseTextArea(
