@@ -69,6 +69,6 @@ void main() {
     expect(find.text('Description'), findsOneWidget, reason: 'Description header');
     expect(find.text('add clever text'), findsOneWidget, reason: 'Description');
 
-    expect(find.text('Variants'), findsOneWidget, reason: 'Variations header');
+    expect(find.text('Variations'), findsNothing);
   });
 }
