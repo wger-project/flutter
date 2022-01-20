@@ -48,7 +48,7 @@ class ExerciseDetail extends StatelessWidget {
           const SizedBox(height: PADDING),
 
           // Aliases
-          ...getAliases(),
+          ...getAliases(context),
 
           // Images
           ...getImages(),
@@ -71,23 +71,25 @@ class ExerciseDetail extends StatelessWidget {
 
   List<Widget> getVariations(BuildContext context) {
     final List<Widget> out = [];
-
-    out.add(Text('Variants', style: Theme.of(context).textTheme.headline5));
-    if (_exercise.base.variationId != null) {
-      Provider.of<ExercisesProvider>(context, listen: false)
-          .findExercisesByVariationId(
-        _exercise.base.variationId!,
-        languageId: _exercise.languageId,
-        exerciseIdToExclude: _exercise.id,
-      )
-          .forEach((element) {
-        out.add(ExerciseListTile(
-          exercise: element,
-        ));
-      });
-    } else {
-      out.add(const Text('no variations!'));
+    if (_exercise.base.variationId == null) {
+      return out;
     }
+
+    out.add(Text(
+      AppLocalizations.of(context).variations,
+      style: Theme.of(context).textTheme.headline5,
+    ));
+    Provider.of<ExercisesProvider>(context, listen: false)
+        .findExercisesByVariationId(
+      _exercise.base.variationId!,
+      languageId: _exercise.languageId,
+      exerciseIdToExclude: _exercise.id,
+    )
+        .forEach((element) {
+      out.add(ExerciseListTile(
+        exercise: element,
+      ));
+    });
 
     out.add(const SizedBox(height: PADDING));
     return out;
@@ -95,14 +97,16 @@ class ExerciseDetail extends StatelessWidget {
 
   List<Widget> getNotes(BuildContext context) {
     final List<Widget> out = [];
-    out.add(Text(
-      AppLocalizations.of(context).notes,
-      style: Theme.of(context).textTheme.headline5,
-    ));
-    for (final e in _exercise.tips) {
-      out.add(Text(e.comment));
+    if (_exercise.tips.isNotEmpty) {
+      out.add(Text(
+        AppLocalizations.of(context).notes,
+        style: Theme.of(context).textTheme.headline5,
+      ));
+      for (final e in _exercise.tips) {
+        out.add(Text(e.comment));
+      }
+      out.add(const SizedBox(height: PADDING));
     }
-    out.add(const SizedBox(height: PADDING));
 
     return out;
   }
@@ -189,10 +193,15 @@ class ExerciseDetail extends StatelessWidget {
     return out;
   }
 
-  List<Widget> getAliases() {
+  List<Widget> getAliases(BuildContext context) {
     final List<Widget> out = [];
-    out.add(MutedText('Also known as: ${_exercise.alias.map((e) => e.alias).toList().join(', ')}'));
-    out.add(const SizedBox(height: PADDING));
+    if (_exercise.alias.isNotEmpty) {
+      out.add(MutedText(
+        AppLocalizations.of(context)
+            .alsoKnownAs(_exercise.alias.map((e) => e.alias).toList().join(', ')),
+      ));
+      out.add(const SizedBox(height: PADDING));
+    }
 
     return out;
   }

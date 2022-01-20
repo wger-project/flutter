@@ -165,7 +165,7 @@ class _ImagesStepContentState extends State<_ImagesStepContent> with ExcerciseIm
     return Column(
       children: [
         Text(
-          AppLocalizations.of(context).add_excercise_image_license,
+          AppLocalizations.of(context).add_exercise_image_license,
           style: Theme.of(context).textTheme.caption,
         ),
         Consumer<AddExcerciseProvider>(

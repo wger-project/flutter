@@ -516,7 +516,16 @@
   },
   "appUpdateTitle" : "Update needed",
   "appUpdateContent" : "This version of the app is not compatible with the server, please update your application.",
-  "add_excercise_image_license": "Images must be compatible with the CC BY SA_license. If in doubt, upload only photos you've taken yourself.",
-  "previous": "Previous"
-
+  "add_exercise_image_license": "Images must be compatible with the CC BY SA license. If in doubt, upload only photos you've taken yourself.",
+  "variations": "Variations",
+  "@variations": {
+    "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"
+  },
+  "alsoKnownAs": "Also known as: {aliases}",
+  "@alsoKnownAs": {
+    "placeholders": {
+      "aliases": {}
+    },
+    "description": "List of alternative names for an exercise"
+  }
 }
