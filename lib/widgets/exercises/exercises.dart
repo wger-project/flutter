@@ -31,14 +31,12 @@ import 'package:wger/widgets/exercises/list_tile.dart';
 
 class ExerciseDetail extends StatelessWidget {
   final Exercise _exercise;
+  static const PADDING = 9.0;
 
   const ExerciseDetail(this._exercise);
 
   @override
   Widget build(BuildContext context) {
-    final exerciseProvider = Provider.of<ExercisesProvider>(context, listen: false);
-    const PADDING = 9.0;
-
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -50,105 +48,153 @@ class ExerciseDetail extends StatelessWidget {
           const SizedBox(height: PADDING),
 
           // Aliases
-          const MutedText('Also known as: Burpees, Basic burpees'),
-          const SizedBox(height: PADDING),
+          ...getAliases(),
 
-          // Image
-          // TODO: add carousel for the other ones
-          ExerciseImageWidget(
-            image: _exercise.getMainImage,
-          ),
-          const SizedBox(height: PADDING),
+          // Images
+          ...getImages(),
 
           // Description
-          Text(
-            AppLocalizations.of(context).description,
-            style: Theme.of(context).textTheme.headline5,
-          ),
-          Html(data: _exercise.description),
+          ...getDescription(context),
 
           // Notes
-          Text(
-            AppLocalizations.of(context).notes,
-            style: Theme.of(context).textTheme.headline5,
-          ),
-          ..._exercise.tips.map((e) => Text(e.comment)).toList(),
-          const SizedBox(height: PADDING),
+          ...getNotes(context),
 
           // Muscles
-          Text(
-            AppLocalizations.of(context).muscles,
-            style: Theme.of(context).textTheme.headline5,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: PADDING),
-                  child: MuscleWidget(
-                    muscles: _exercise.muscles,
-                    musclesSecondary: _exercise.musclesSecondary,
-                    isFront: true,
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: PADDING),
-                  child: MuscleWidget(
-                    muscles: _exercise.muscles,
-                    musclesSecondary: _exercise.musclesSecondary,
-                    isFront: false,
-                  ),
-                ),
-              ),
-            ],
-          ),
-
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Column(
-                children: [
-                  Text(
-                    AppLocalizations.of(context).muscles,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  ..._exercise.muscles.map((e) => Text(e.name)).toList(),
-                ],
-              ),
-              Column(
-                children: [
-                  Text(
-                    AppLocalizations.of(context).musclesSecondary,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  ..._exercise.musclesSecondary.map((e) => Text(e.name)).toList(),
-                ],
-              ),
-            ],
-          ),
-          const SizedBox(height: PADDING),
+          ...getMuscles(context),
 
           // Variants
-          Text('Variants', style: Theme.of(context).textTheme.headline5),
-          if (_exercise.base.variationId != null)
-            ...exerciseProvider
-                .findExercisesByVariationId(
-                  _exercise.base.variationId!,
-                  languageId: _exercise.languageId,
-                  exerciseIdToExclude: _exercise.id,
-                )
-                .map((exercise) => ExerciseListTile(exercise: exercise))
-                .toList()
-          else
-            const Text('no variations!'),
+          ...getVariations(context)
         ],
       ),
     );
+  }
+
+  List<Widget> getVariations(BuildContext context) {
+    final List<Widget> out = [];
+
+    out.add(Text('Variants', style: Theme.of(context).textTheme.headline5));
+    if (_exercise.base.variationId != null) {
+      Provider.of<ExercisesProvider>(context, listen: false)
+          .findExercisesByVariationId(
+        _exercise.base.variationId!,
+        languageId: _exercise.languageId,
+        exerciseIdToExclude: _exercise.id,
+      )
+          .forEach((element) {
+        out.add(ExerciseListTile(
+          exercise: element,
+        ));
+      });
+    } else {
+      out.add(const Text('no variations!'));
+    }
+
+    out.add(const SizedBox(height: PADDING));
+    return out;
+  }
+
+  List<Widget> getNotes(BuildContext context) {
+    final List<Widget> out = [];
+    out.add(Text(
+      AppLocalizations.of(context).notes,
+      style: Theme.of(context).textTheme.headline5,
+    ));
+    for (final e in _exercise.tips) {
+      out.add(Text(e.comment));
+    }
+    out.add(const SizedBox(height: PADDING));
+
+    return out;
+  }
+
+  List<Widget> getMuscles(BuildContext context) {
+    final List<Widget> out = [];
+    out.add(Text(
+      AppLocalizations.of(context).muscles,
+      style: Theme.of(context).textTheme.headline5,
+    ));
+    out.add(Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: PADDING),
+            child: MuscleWidget(
+              muscles: _exercise.muscles,
+              musclesSecondary: _exercise.musclesSecondary,
+              isFront: true,
+            ),
+          ),
+        ),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: PADDING),
+            child: MuscleWidget(
+              muscles: _exercise.muscles,
+              musclesSecondary: _exercise.musclesSecondary,
+              isFront: false,
+            ),
+          ),
+        ),
+      ],
+    ));
+
+    out.add(Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Column(
+          children: [
+            Text(
+              AppLocalizations.of(context).muscles,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            ..._exercise.muscles.map((e) => Text(e.name)).toList(),
+          ],
+        ),
+        Column(
+          children: [
+            Text(
+              AppLocalizations.of(context).musclesSecondary,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            ..._exercise.musclesSecondary.map((e) => Text(e.name)).toList(),
+          ],
+        ),
+      ],
+    ));
+    out.add(const SizedBox(height: PADDING));
+
+    return out;
+  }
+
+  List<Widget> getDescription(BuildContext context) {
+    final List<Widget> out = [];
+    out.add(Text(
+      AppLocalizations.of(context).description,
+      style: Theme.of(context).textTheme.headline5,
+    ));
+    out.add(Html(data: _exercise.description));
+
+    return out;
+  }
+
+  List<Widget> getImages() {
+    // TODO: add carousel for the other images
+    final List<Widget> out = [];
+    out.add(ExerciseImageWidget(image: _exercise.getMainImage));
+    out.add(const SizedBox(height: PADDING));
+
+    return out;
+  }
+
+  List<Widget> getAliases() {
+    final List<Widget> out = [];
+    out.add(MutedText('Also known as: ${_exercise.alias.map((e) => e.alias).toList().join(', ')}'));
+    out.add(const SizedBox(height: PADDING));
+
+    return out;
   }
 }
 

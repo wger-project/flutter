@@ -516,5 +516,7 @@
   },
   "appUpdateTitle" : "Update needed",
   "appUpdateContent" : "This version of the app is not compatible with the server, please update your application.",
-  "add_excercise_image_license": "Images must be compatible with the CC BY SA_license. If in doubt, upload only photos you've taken yourself."
+  "add_excercise_image_license": "Images must be compatible with the CC BY SA_license. If in doubt, upload only photos you've taken yourself.",
+  "previous": "Previous"
+
 }
