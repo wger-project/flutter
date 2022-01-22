@@ -8,11 +8,13 @@ class AddExerciseMultiselectButton extends StatefulWidget {
     required this.items,
     required this.title,
     required this.onChange,
+    this.onSaved,
   }) : super(key: key);
 
   final List<String> items;
   final String title;
   final ValueChanged<List<String?>> onChange;
+  final FormFieldSetter<List<String?>?>? onSaved;
 
   @override
   _AddExerciseMultiselectButtonState createState() => _AddExerciseMultiselectButtonState();
@@ -25,6 +27,7 @@ class _AddExerciseMultiselectButtonState extends State<AddExerciseMultiselectBut
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: MultiSelectDialogField<String?>(
+        onSaved: widget.onSaved,
         items: widget.items.map((item) => MultiSelectItem<String?>(item, item)).toList(),
         onConfirm: (value) {
           setState(() {
