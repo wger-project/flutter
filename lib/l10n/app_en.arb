@@ -514,7 +514,7 @@
     "description": "Header label for dialog when product is found with barcode"
   },
 
-  "productFoundDescription": "The barcode corresponds to this product: \n {productName} \nDo you want to continue ?",
+  "productFoundDescription": "The barcode corresponds to this product: {productName}. Do you want to continue?",
   "@productFoundDescription": {
     "description": "Dialog info when product is found with barcode",
     "type": "text",
@@ -528,7 +528,7 @@
     "description": "Header label for dialog when product is not found with barcode"
   },
 
-  "productNotFoundDescription": "Product with scanned barcode ({barcode}) was not found.",
+  "productNotFoundDescription": "Product with scanned barcode ({barcode}) was not found in the wger database",
   "@productNotFoundDescription": {
     "description": "Dialog info when product is not found with barcode",
     "type": "text",
