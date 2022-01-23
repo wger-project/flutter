@@ -33,7 +33,8 @@ class IngredientTypeahead extends StatefulWidget {
   late final bool? _test;
   final bool _showScanner;
 
-  IngredientTypeahead(this._ingredientIdController, this._ingredientController, this._showScanner, [this._barcode, this._test]);
+  IngredientTypeahead(this._ingredientIdController, this._ingredientController, this._showScanner,
+      [this._barcode, this._test]);
 
   @override
   _IngredientTypeaheadState createState() => _IngredientTypeaheadState();
@@ -42,9 +43,9 @@ class IngredientTypeahead extends StatefulWidget {
 Future<String> scanBarcode(BuildContext context) async {
   String barcode;
   try {
-    barcode =  await FlutterBarcodeScanner.scanBarcode(
+    barcode = await FlutterBarcodeScanner.scanBarcode(
         '#ff6666', AppLocalizations.of(context).close, true, ScanMode.BARCODE);
-    if(barcode.compareTo('-1') == 0){
+    if (barcode.compareTo('-1') == 0) {
       return '';
     }
   } on PlatformException {
@@ -61,7 +62,7 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
       textFieldConfiguration: TextFieldConfiguration(
         controller: widget._ingredientController,
         decoration: InputDecoration(
-          prefixIcon:  const Icon(Icons.search),
+          prefixIcon: const Icon(Icons.search),
           labelText: AppLocalizations.of(context).searchIngredient,
           suffixIcon: widget._showScanner ? scanButton() : null,
         ),
@@ -94,27 +95,27 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
     );
   }
 
-  Widget scanButton(){
+  Widget scanButton() {
     return IconButton(
         key: const Key('scan-button'),
         onPressed: () async {
           try {
-            if(!widget._test!) {
+            if (!widget._test!) {
               widget._barcode = await scanBarcode(context);
             }
 
-            if(widget._barcode!.isNotEmpty){
+            if (widget._barcode!.isNotEmpty) {
               final result = await Provider.of<NutritionPlansProvider>(context, listen: false)
                   .searchIngredientWithCode(widget._barcode!);
 
-              if(result != null){
+              if (result != null) {
                 showDialog(
                   context: context,
                   builder: (ctx) => AlertDialog(
                     key: const Key('found-dialog'),
                     title: Text(AppLocalizations.of(context).productFound),
-                    content: Text(AppLocalizations.of(context).productFoundDescription(result.name)),
-
+                    content:
+                        Text(AppLocalizations.of(context).productFoundDescription(result.name)),
                     actions: [
                       TextButton(
                         key: const Key('found-dialog-confirm-button'),
@@ -135,15 +136,16 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
                     ],
                   ),
                 );
-
-              }else{
+              } else {
                 //nothing is matching barcode
                 showDialog(
                   context: context,
                   builder: (ctx) => AlertDialog(
                     key: const Key('notFound-dialog'),
                     title: Text(AppLocalizations.of(context).productNotFound),
-                    content:Text(AppLocalizations.of(context).productNotFoundDescription(widget._barcode!),),
+                    content: Text(
+                      AppLocalizations.of(context).productNotFoundDescription(widget._barcode!),
+                    ),
                     actions: [
                       TextButton(
                         key: const Key('notFound-dialog-close-button'),
@@ -160,7 +162,7 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
           } catch (e) {
             showErrorDialog(e, context);
           }
-        }, icon: Image.asset('assets/images/barcode_scanner_icon.png'));
+        },
+        icon: Image.asset('assets/images/barcode_scanner_icon.png'));
   }
-
 }

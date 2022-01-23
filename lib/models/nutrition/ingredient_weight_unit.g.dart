@@ -13,8 +13,7 @@ IngredientWeightUnit _$IngredientWeightUnitFromJson(Map<String, dynamic> json) {
   );
   return IngredientWeightUnit(
     id: json['id'] as int,
-    weightUnit:
-        WeightUnit.fromJson(json['weight_unit'] as Map<String, dynamic>),
+    weightUnit: WeightUnit.fromJson(json['weight_unit'] as Map<String, dynamic>),
     ingredient: Ingredient.fromJson(json['ingredient'] as Map<String, dynamic>),
     grams: json['grams'] as int,
     amount: (json['amount'] as num).toDouble(),

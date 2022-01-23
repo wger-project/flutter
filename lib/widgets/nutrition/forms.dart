@@ -145,7 +145,13 @@ class MealItemForm extends StatelessWidget {
         key: _form,
         child: Column(
           children: [
-            IngredientTypeahead(_ingredientIdController, _ingredientController, true, _barcode, _test, ),
+            IngredientTypeahead(
+              _ingredientIdController,
+              _ingredientController,
+              true,
+              _barcode,
+              _test,
+            ),
             TextFormField(
               key: const Key('field-weight'),
               decoration: InputDecoration(labelText: AppLocalizations.of(context).weight),
@@ -246,7 +252,13 @@ class IngredientLogForm extends StatelessWidget {
         key: _form,
         child: Column(
           children: [
-            IngredientTypeahead(_ingredientIdController, _ingredientController, true, '', false,),
+            IngredientTypeahead(
+              _ingredientIdController,
+              _ingredientController,
+              true,
+              '',
+              false,
+            ),
             TextFormField(
               decoration: InputDecoration(labelText: AppLocalizations.of(context).weight),
               controller: _amountController,

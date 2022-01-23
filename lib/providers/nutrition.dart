@@ -328,8 +328,7 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
 
   /// Searches for an ingredient with code
   Future<Ingredient?> searchIngredientWithCode(String code) async {
-
-    if (code.isEmpty ) {
+    if (code.isEmpty) {
       return null;
     }
 
@@ -341,9 +340,9 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
       ),
     );
 
-    if(data["count"]==0){
+    if (data["count"] == 0) {
       return null;
-    }else{
+    } else {
       return Ingredient.fromJson(data['results'][0]);
     }
   }

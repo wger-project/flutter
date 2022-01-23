@@ -528,7 +528,7 @@
     "description": "Header label for dialog when product is not found with barcode"
   },
 
-  "productNotFoundDescription": "Product with scanned barcode ({barcode}) was not found in the wger database",
+  "productNotFoundDescription": "The product with the scanned barcode {barcode} was not found in the wger database",
   "@productNotFoundDescription": {
     "description": "Dialog info when product is not found with barcode",
     "type": "text",

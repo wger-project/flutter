@@ -22,10 +22,7 @@ import '../other/base_provider_test.mocks.dart';
 import '../utils.dart';
 import 'nutritional_plan_form_test.mocks.dart';
 
-
-
 void main() {
-
   Ingredient ingr = Ingredient(
     id: 1,
     code: '123456787',
@@ -52,20 +49,20 @@ void main() {
   final Uri tUriEmptyCode = Uri.parse('https://localhost/api/v2/ingredient/?code=\"%20\"');
   final Uri tUriBadCode = Uri.parse('https://localhost/api/v2/ingredient/?code=222');
 
-  when(client.get(
-      tUriRightCode,
-      headers: {'authorization':'Token FooBar', 'user-agent':'wger App'}))
-      .thenAnswer((_) => Future.value(http.Response(fixture('search_ingredient_right_code.json'),200)));
+  when(client
+          .get(tUriRightCode, headers: {'authorization': 'Token FooBar', 'user-agent': 'wger App'}))
+      .thenAnswer(
+          (_) => Future.value(http.Response(fixture('search_ingredient_right_code.json'), 200)));
 
-  when(client.get(
-      tUriEmptyCode,
-      headers: {'authorization':'Token FooBar', 'user-agent':'wger App'}))
-      .thenAnswer((_) => Future.value(http.Response(fixture('search_ingredient_wrong_code.json'),200)));
+  when(client
+          .get(tUriEmptyCode, headers: {'authorization': 'Token FooBar', 'user-agent': 'wger App'}))
+      .thenAnswer(
+          (_) => Future.value(http.Response(fixture('search_ingredient_wrong_code.json'), 200)));
 
-  when(client.get(
-      tUriBadCode,
-      headers: {'authorization':'Token FooBar', 'user-agent':'wger App'}))
-      .thenAnswer((_) => Future.value(http.Response(fixture('search_ingredient_wrong_code.json'),200)));
+  when(client
+          .get(tUriBadCode, headers: {'authorization': 'Token FooBar', 'user-agent': 'wger App'}))
+      .thenAnswer(
+          (_) => Future.value(http.Response(fixture('search_ingredient_wrong_code.json'), 200)));
 
   setUp(() {
     plan1 = getNutritionalPlan();
@@ -76,14 +73,14 @@ void main() {
     when(mockNutrition.searchIngredientWithCode('123')).thenAnswer((_) => Future.value(ingr));
     when(mockNutrition.searchIngredientWithCode('')).thenAnswer((_) => Future.value(null));
     when(mockNutrition.searchIngredientWithCode('222')).thenAnswer((_) => Future.value(null));
-    when(mockNutrition.searchIngredient(any)).thenAnswer((_) => Future.value(json.decode(fixture('ingredient_suggestions')) as List<dynamic>));
+    when(mockNutrition.searchIngredient(any)).thenAnswer(
+        (_) => Future.value(json.decode(fixture('ingredient_suggestions')) as List<dynamic>));
 
     when(mockNutrition.addMealItem(any, meal1)).thenAnswer((_) => Future.value(mealItem));
   });
-  
+
   Widget createMealItemFormScreen(Meal meal, String code, bool test, {locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
-
 
     return ChangeNotifierProvider<NutritionPlansProvider>(
       create: (context) => mockNutrition,
@@ -114,29 +111,26 @@ void main() {
     expect(meal1.mealItems.length, 2);
   });
 
-
   group('Test the AlertDialogs for scanning result', () {
-    testWidgets('with empty code',(WidgetTester tester) async {
+    testWidgets('with empty code', (WidgetTester tester) async {
       await tester.pumpWidget(createMealItemFormScreen(meal1, '', true));
 
       await tester.tap(find.byKey(const Key('scan-button')));
       await tester.pumpAndSettle();
 
       expect(find.byType(AlertDialog), findsNothing);
-
     });
 
-    testWidgets('with correct code',(WidgetTester tester) async {
+    testWidgets('with correct code', (WidgetTester tester) async {
       await tester.pumpWidget(createMealItemFormScreen(meal1, '123', true));
 
       await tester.tap(find.byKey(const Key('scan-button')));
       await tester.pumpAndSettle();
 
       expect(find.byKey(const Key('found-dialog')), findsOneWidget);
-
     });
 
-    testWidgets('with incorrect code',(WidgetTester tester) async {
+    testWidgets('with incorrect code', (WidgetTester tester) async {
       await tester.pumpWidget(createMealItemFormScreen(meal1, '222', true));
 
       await tester.tap(find.byKey(const Key('scan-button')));
@@ -144,7 +138,6 @@ void main() {
 
       expect(find.byKey(const Key('notFound-dialog')), findsOneWidget);
     });
-
   });
 
   group('Test searchIngredientWithCode() function', () {
@@ -164,7 +157,7 @@ void main() {
     });
   });
 
-  group('Test weight formfield', (){
+  group('Test weight formfield', () {
     testWidgets('add empty weight', (WidgetTester tester) async {
       await tester.pumpWidget(createMealItemFormScreen(meal1, '123', true));
 
@@ -175,7 +168,6 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Please enter a valid number'), findsOneWidget);
-
     });
 
     testWidgets('add correct weight type', (WidgetTester tester) async {
@@ -188,7 +180,6 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Please enter a valid number'), findsNothing);
-
     });
     testWidgets('add incorrect weight type', (WidgetTester tester) async {
       await tester.pumpWidget(createMealItemFormScreen(meal1, '123', true));
@@ -200,11 +191,10 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Please enter a valid number'), findsOneWidget);
-
     });
   });
 
-  group('Test ingredient found dialog', (){
+  group('Test ingredient found dialog', () {
     testWidgets('confirm found ingredient dialog', (WidgetTester tester) async {
       await tester.pumpWidget(createMealItemFormScreen(meal1, '123', true));
 
@@ -219,7 +209,6 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(formScreen.ingredientIdController.text, '1');
-
     });
 
     testWidgets('close found ingredient dialog', (WidgetTester tester) async {
@@ -234,13 +223,10 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byKey(const Key('found-dialog')), findsNothing);
-
-
     });
   });
 
-  group('Test the adding a new item to meal', (){
-
+  group('Test the adding a new item to meal', () {
     testWidgets('save empty ingredient', (WidgetTester tester) async {
       await tester.pumpWidget(createMealItemFormScreen(meal1, '123', true));
 
@@ -250,7 +236,6 @@ void main() {
       expect(find.text('Please select an ingredient'), findsOneWidget);
 
       expect(find.text('Please enter a valid number'), findsOneWidget);
-
     });
 
     testWidgets('save ingredient without weight', (WidgetTester tester) async {
@@ -268,7 +253,6 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Please enter a valid number'), findsOneWidget);
-
     });
 
     testWidgets('save ingredient with incorrect weight input type', (WidgetTester tester) async {
@@ -286,10 +270,10 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Please enter a valid number'), findsOneWidget);
-
     });
 
-    testWidgets('save complete ingredient with correct weight input type', (WidgetTester tester) async {
+    testWidgets('save complete ingredient with correct weight input type',
+        (WidgetTester tester) async {
       await tester.pumpWidget(createMealItemFormScreen(meal1, '123', true));
 
       final MealItemForm formScreen = tester.widget(find.byType(MealItemForm));
@@ -312,12 +296,9 @@ void main() {
       await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
       await tester.pumpAndSettle();
 
-      expect(formScreen.mealItem.amount,2);
+      expect(formScreen.mealItem.amount, 2);
 
       verify(mockNutrition.addMealItem(any, meal1));
-
     });
-
   });
-
 }
