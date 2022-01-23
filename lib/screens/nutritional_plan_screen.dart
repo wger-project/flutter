@@ -129,7 +129,6 @@ class NutritionalPlanScreen extends StatelessWidget {
                             NutritionalPlanDetailWidget(_nutritionalPlan),
                       ),
           ),
-
         ],
       ),
     );
