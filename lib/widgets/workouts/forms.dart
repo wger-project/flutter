@@ -842,6 +842,7 @@ class _WeightUnitInputWidgetState extends State<WeightUnitInputWidget> {
           .weightUnits
           .map<DropdownMenuItem<WeightUnit>>((WeightUnit value) {
         return DropdownMenuItem<WeightUnit>(
+          key: Key(value.id.toString()),
           value: value,
           child: Text(value.name),
         );
@@ -880,6 +881,7 @@ class _RepetitionUnitInputWidgetState extends State<RepetitionUnitInputWidget> {
           .repetitionUnits
           .map<DropdownMenuItem<RepetitionUnit>>((RepetitionUnit value) {
         return DropdownMenuItem<RepetitionUnit>(
+          key: Key(value.id.toString()),
           value: value,
           child: Text(value.name),
         );
