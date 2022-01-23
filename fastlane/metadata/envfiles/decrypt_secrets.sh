@@ -3,6 +3,9 @@
 # --batch to prevent interactive command
 # --yes to assume "yes" for questions
 
+# To encrypt a new version of the keys:
+# gpg -c filename.json
+
 echo "decrypting playstore API keys"
 gpg --quiet --batch --yes --decrypt --passphrase="$DECRYPTKEY_PLAYSTORE" \
 --output ./playstore.json playstore.json.gpg

@@ -40,8 +40,10 @@ app.*.symbols
 # Obfuscation related
 app.*.map.json
 
-# Exceptions to above rules.
+# Remember to never publicly share your keystore.
+# See https://flutter.dev/docs/deployment/android#reference-the-keystore-from-the-app
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
-/android/fastlane/envfiles/playstore.json
-/android/fastlane/envfiles/wger.properties
-/android/fastlane/envfiles/keys.jks
+/fastlane/metadata/envfiles/playstore.json
+/fastlane/metadata/envfiles/wger.properties
+/fastlane/metadata/envfiles/keys.jks
+/fastlane/metadata/envfiles/key.properties

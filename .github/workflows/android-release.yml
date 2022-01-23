@@ -29,7 +29,7 @@ jobs:
 
       - name: Decrypt config files
         run: |
-          cd ./android/fastlane/envfiles
+          cd ./fastlane/metadata/envfiles
           chmod +x ./decrypt_secrets.sh
           ./decrypt_secrets.sh
         env:
@@ -81,7 +81,6 @@ jobs:
         uses: maierj/fastlane-action@v2.1.0
         with:
           lane: production
-          subdirectory: android
 
       - name: Make Github release
         uses: softprops/action-gh-release@v1

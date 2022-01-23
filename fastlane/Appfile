@@ -1,0 +1,2 @@
+json_key_file("fastlane/metadata/android/envfiles/playstore.json")
+package_name("de.wger.flutter")

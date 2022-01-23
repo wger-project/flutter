@@ -25,12 +25,26 @@ end
 
 platform :android do
 
+  desc "Check playstore configuration"
+  lane :test_configuration do
+    begin
+      upload_to_play_store(
+        json_key: 'fastlane/metadata/envfiles/playstore.json',
+        track: 'production',
+        validate_only: true,
+        aab: './build/app/outputs/bundle/release/app-release.aab',
+      )
+    end
+  end
+
+
   desc "Upload app to production"
   lane :production do
     begin
       upload_to_play_store(
+        json_key: 'fastlane/metadata/envfiles/playstore.json',
         track: 'production',
-        aab: '../build/app/outputs/bundle/release/app-release.aab',
+        aab: './build/app/outputs/bundle/release/app-release.aab',
         skip_upload_metadata: false,
         skip_upload_images: false,
         skip_upload_screenshots: false,
@@ -44,8 +58,9 @@ platform :android do
   lane :update_alpha do
     begin
       upload_to_play_store(
+        json_key: 'fastlane/metadata/envfiles/playstore.json',
         track: 'alpha',
-        aab: '../build/app/outputs/bundle/release/app-release.aab',
+        aab: './build/app/outputs/bundle/release/app-release.aab',
         skip_upload_metadata: true,
         skip_upload_images: true,
         skip_upload_screenshots: true,

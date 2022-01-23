@@ -1,0 +1,39 @@
+Por amantes del fitness para amantes del fitness – ¡Organiza tu salud con WGER, tu gestor de entrenamientos!
+
+¿Has encontrado ya tu app de fitnes nº1 y te encanta crear tus propias rutinas deportivas? No importa qué clase de bestia deportista eres – todos tenemos algo en común: amamos hacer el seguimiento de los datos de nuestra salud <3
+
+Así que no vamos a juzgarte si aún gestionas tu andadura en el fitness con tu pequeño y práctico diario de entrenamientos, ¡pero te damos la bienvenida a 2022!
+
+Hemos desarrollado una app de seguimiento digital de la salud y el fitness 100% libre, reducida a las funcionalidades más relevantes para hacerte la vida más fácil. ¡Empieza ya, no pares tomar datos y celebra tus progresos!
+
+wger es un proyecto de código abierto centrado en:
+* Tu Cuerpo
+* Tus Entrenamientos
+* Tus Progresos
+* Tus Datos
+
+Tu Cuerpo:
+No hace falta buscar en Google los ingredientes de tus caprichos favoritos – elige tus comidas diarias entre más de 78000 productos para ver sus valores nutricionales. Añade comidas a tu plan nutricional y ten una vista general de tu dieta en el calendario.
+
+Tus Entrenamientos:
+Sabes qué es lo mejor para tu cuerpo. Crea tus propios entrenamientos entre una gama creciente de 200 ejercicios diferentes. Después, usa el Modo Gimnasio para que te guíe a través del entrenamiento mientras registras tu peso con un toque de dedo.
+
+Tus Progresos:
+Nunca pierdas de vista tus objetivos. Lleva la cuenta de tu peso y mantén tus estadísticas.
+
+Tus Datos:
+wger es tu diario de fitness personalizado – pero tus datos te pertenecen a ti. Usa la API REST para acceder y hacer cosas increíbles con ella.
+
+Por favor, ten en cuenta: esta app no se basa en financiación adicional y no te pedimos que dones dinero. Más que eso, es un proyecto comunitario que no para de crecer. ¡Así que estate preparado para nuevas funcionalidades en cualquier momento!
+
+#OpenSource – ¿qué significa?
+
+Open Source (o código abierto) significa que la totalidad del código fuente para esta app y el servidor con el que habla es libre y está disponible para cualquiera:
+* ¿Quieres usar wger en tu propio servidor para tu propio ginmasio local? ¡Adelante!
+* ¿Echas de menos una funcionalidad y quieres implementarla? ¡Empieza ya!
+* ¿Quieres asegurarte de que nada se envía a ningún sitio? ¡Puedes!
+
+Entra en nuestra comunidad y únete a entusiastas de los deportes y genios de la informática de todo el mundo. No paramos de trabajar en afinar y optimizar la app adaptada a nuestras necesidades. Nos encantará tu aporte, así que no dudes en meterte en cualquier momento y contribuir con tus deseos e ideas!
+
+-> encuentra el código fuente en https://github.com/wger-project
+-> haz tus preguntas o simplemente di hola en nuestro servidor de Discord https://discord.gg/rPWFv6W

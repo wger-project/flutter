@@ -7,19 +7,21 @@ app written with Flutter, it talks via REST with the main server.
 If you want to contribute, hop on the Discord server and say hi!
 
 
-<p float="left">
-<img src="https://github.com/wger-project/flutter/blob/master/android/fastlane/metadata/android/en-US/images/phoneScreenshots/01%20-%20workout%20plan.png?raw=true" width="200" />
+<p>
+<img src="https://raw.githubusercontent.com/wger-project/flutter/master/fastlane/metadata/android/en-US/images/phoneScreenshots/01%20-%20workout%20plan.png" width="200" />
 
-<img src="https://github.com/wger-project/flutter/blob/master/android/fastlane/metadata/android/en-US/images/phoneScreenshots/02%20-%20workout%20log.png?raw=true" width="200" />
+<img src="https://raw.githubusercontent.com/wger-project/flutter/master/fastlane/metadata/android/en-US/images/phoneScreenshots/02%20-%20workout%20log.png" width="200" />
 
-<img src="https://github.com/wger-project/flutter/blob/master/android/fastlane/metadata/android/en-US/images/phoneScreenshots/04%20-%20nutritional%20plan.png?raw=true" width="200" />
+<img src="https://raw.githubusercontent.com/wger-project/flutter/master/fastlane/metadata/android/en-US/images/phoneScreenshots/04%20-%20nutritional%20plan.png" width="200" />
 </p>
 
 ## Installation
 [<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png"
       alt="Get it on Google Play"
       height="80">](https://play.google.com/store/apps/details?id=de.wger.flutter)
-
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+     alt="Get it on F-Droid"
+     height="80">](https://f-droid.org/packages/de.wger.flutter/)
 
 ## Development
 
@@ -50,6 +52,9 @@ on your local instance and then run ``python3 manage.py add-user-rest theusernam
 
 You can later list all the registered users with: ``python3 manage.py list-users-api``  
 
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+      alt="Get it on F-Droid"
+      height="80">](https://f-droid.org/packages/de.wger.flutter)
 
 ### 4
 Start the application with ``flutter run`` or use your IDE
