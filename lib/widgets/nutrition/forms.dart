@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/exceptions/http_exception.dart';
@@ -116,16 +117,24 @@ class MealItemForm extends StatelessWidget {
   final Meal _meal;
   late final MealItem _mealItem;
   final List<MealItem> _listMealItems;
+  late String _barcode;
+  late bool _test;
 
   final _form = GlobalKey<FormState>();
   final _ingredientIdController = TextEditingController();
   final _ingredientController = TextEditingController();
   final _amountController = TextEditingController();
 
-  MealItemForm(this._meal, this._listMealItems, [mealItem]) {
+  MealItemForm(this._meal, this._listMealItems, [mealItem, code, test]) {
     _mealItem = mealItem ?? MealItem.empty();
+    _test = test ?? false;
+    _barcode = code ?? '';
     _mealItem.mealId = _meal.id!;
   }
+
+  TextEditingController get ingredientIdController => _ingredientIdController;
+
+  MealItem get mealItem => _mealItem;
 
   @override
   Widget build(BuildContext context) {
@@ -136,8 +145,15 @@ class MealItemForm extends StatelessWidget {
         key: _form,
         child: Column(
           children: [
-            IngredientTypeahead(_ingredientIdController, _ingredientController),
+            IngredientTypeahead(
+              _ingredientIdController,
+              _ingredientController,
+              true,
+              _barcode,
+              _test,
+            ),
             TextFormField(
+              key: const Key('field-weight'),
               decoration: InputDecoration(labelText: AppLocalizations.of(context).weight),
               controller: _amountController,
               keyboardType: TextInputType.number,
@@ -155,6 +171,7 @@ class MealItemForm extends StatelessWidget {
               },
             ),
             ElevatedButton(
+              key: const Key(SUBMIT_BUTTON_KEY_NAME),
               child: Text(AppLocalizations.of(context).save),
               onPressed: () async {
                 if (!_form.currentState!.validate()) {
@@ -235,7 +252,13 @@ class IngredientLogForm extends StatelessWidget {
         key: _form,
         child: Column(
           children: [
-            IngredientTypeahead(_ingredientIdController, _ingredientController),
+            IngredientTypeahead(
+              _ingredientIdController,
+              _ingredientController,
+              true,
+              '',
+              false,
+            ),
             TextFormField(
               decoration: InputDecoration(labelText: AppLocalizations.of(context).weight),
               controller: _amountController,

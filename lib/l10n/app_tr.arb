@@ -358,5 +358,9 @@
   "saturatedFat": "Doymuş yağ",
   "@saturatedFat": {},
   "fibres": "Lif",
-  "@fibres": {}
+  "@fibres": {},
+  "delete": "Sil",
+  "@delete": {},
+  "edit": "Düzenle",
+  "@edit": {}
 }

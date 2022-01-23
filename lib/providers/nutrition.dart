@@ -326,6 +326,27 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
     return json.decode(utf8.decode(response.bodyBytes))['suggestions'] as List<dynamic>;
   }
 
+  /// Searches for an ingredient with code
+  Future<Ingredient?> searchIngredientWithCode(String code) async {
+    if (code.isEmpty) {
+      return null;
+    }
+
+    // Send the request
+    final data = await fetch(
+      makeUrl(
+        _ingredientPath,
+        query: {'code': code},
+      ),
+    );
+
+    if (data["count"] == 0) {
+      return null;
+    } else {
+      return Ingredient.fromJson(data['results'][0]);
+    }
+  }
+
   /// Log meal to nutrition diary
   Future<void> logMealToDiary(Meal meal) async {
     for (final item in meal.mealItems) {

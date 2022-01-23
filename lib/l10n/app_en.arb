@@ -507,5 +507,43 @@
     "description": "Snackbar message to show on copying data to a new log entry"
   },
   "appUpdateTitle" : "Update needed",
-  "appUpdateContent" : "This version of the app is not compatible with the server, please update your application."
+  "appUpdateContent" : "This version of the app is not compatible with the server, please update your application.",
+
+  "productFound": "Product found",
+  "@productFound": {
+    "description": "Header label for dialog when product is found with barcode"
+  },
+
+  "productFoundDescription": "The barcode corresponds to this product: {productName}. Do you want to continue?",
+  "@productFoundDescription": {
+    "description": "Dialog info when product is found with barcode",
+    "type": "text",
+    "placeholders": {
+      "productName": {}
+    }
+  },
+
+  "productNotFound": "Product not found",
+  "@productNotFound": {
+    "description": "Header label for dialog when product is not found with barcode"
+  },
+
+  "productNotFoundDescription": "The product with the scanned barcode {barcode} was not found in the wger database",
+  "@productNotFoundDescription": {
+    "description": "Dialog info when product is not found with barcode",
+    "type": "text",
+    "placeholders": {
+      "barcode": {}
+    }
+  },
+
+  "scanBarcode": "Scan barcode",
+  "@scanBarcode": {
+    "description": "Label for scan barcode button"
+  },
+
+  "close": "Close",
+  "@close": {
+    "description": "Translation for close"
+  }
 }

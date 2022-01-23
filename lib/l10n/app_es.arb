@@ -19,7 +19,7 @@
   "@enterValidNumber": {
     "description": "Error message when the user has submitted an invalid number (e.g. '3,.,.,.')"
   },
-  "nrOfSets": "Número de series: {nrOfSets}",
+  "nrOfSets": "Series por ejercicio: {nrOfSets}",
   "@nrOfSets": {
     "description": "Label shown on the slider where the user selects the nr of sets",
     "type": "text",
@@ -222,7 +222,7 @@
   "@gymMode": {
     "description": "Label when starting the gym mode"
   },
-  "selectExercises": "Si buscas realizar una súper serie, puedes buscar algunos ejercicios, estos estarán agrupados juntos",
+  "selectExercises": "Si buscas realizar una superserie, puedes buscar algunos ejercicios, estos estarán agrupados juntos",
   "@selectExercises": {},
   "newSet": "Nueva serie",
   "@newSet": {
@@ -479,5 +479,52 @@
   "fatShort": "G",
   "@fatShort": {
     "description": "The first letter or short name of the word 'Fat', used in overviews"
-  }
+  },
+  "logIngredient": "Guardar en el diario nutricional",
+  "@logIngredient": {},
+  "plateCalculatorNotDivisible": "No se puede obtener el peso con las placas disponbles",
+  "@plateCalculatorNotDivisible": {
+    "description": "Error message when the current weight is not reachable with plates (e.g. 33.1 kg)"
+  },
+  "plateCalculator": "Placas",
+  "@plateCalculator": {
+    "description": "Label used for the plate calculator in the gym mode"
+  },
+  "searchIngredient": "Buscar ingrediente",
+  "@searchIngredient": {
+    "description": "Label on ingredient search form"
+  },
+  "supersetWith": "en conjunto con",
+  "@supersetWith": {
+    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
+  },
+  "rirNotUsed": "Valor RER sin usar",
+  "@rirNotUsed": {
+    "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
+  },
+  "planned": "Previsto",
+  "@planned": {
+    "description": "Header for the column of 'planned' nutritional values, i.e. what should be eaten"
+  },
+  "logged": "Registrado",
+  "@logged": {
+    "description": "Header for the column of 'logged' nutritional values, i.e. what was eaten"
+  },
+  "gPerBodyKg": "g por kg de peso corporal",
+  "@gPerBodyKg": {
+    "description": "Label used for total sums of e.g. calories or similar in grams per Kg of body weight"
+  },
+  "setUnitsAndRir": "Unidades de serie y RER",
+  "@setUnitsAndRir": {
+    "description": "Label shown on the slider where the user can toggle showing units and RiR",
+    "type": "text"
+  },
+  "recentlyUsedIngredients": "Ingredientes añadidos recientemente",
+  "@recentlyUsedIngredients": {
+    "description": "A message when a user adds a new ingredient to a meal."
+  },
+  "appUpdateTitle": "Es necesario actualizar",
+  "@appUpdateTitle": {},
+  "appUpdateContent": "Esta versión de la aplicación no es compatible con el servidor. Por favor, actualízala.",
+  "@appUpdateContent": {}
 }

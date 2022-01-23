@@ -25,6 +25,10 @@ class Ingredient {
   @JsonKey(required: true)
   final int id;
 
+  /// Barcode of the product
+  @JsonKey(required: true)
+  final String code;
+
   /// Name of the product
   @JsonKey(required: true)
   final String name;
@@ -66,6 +70,7 @@ class Ingredient {
 
   const Ingredient({
     required this.id,
+    required this.code,
     required this.name,
     required this.creationDate,
     required this.energy,

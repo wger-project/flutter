@@ -20,7 +20,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # github action, the current versions are ignored.
 #   - the version number is taken from the git branch release/x.y.z
 #   - the build number is computed by reading the last one from the play store and increased by one
-version: 1.4.0+24
+version: 1.4.1+25
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
@@ -48,10 +48,11 @@ dependencies:
   version: ^2.0.0
   package_info: ^2.0.2
   provider: ^6.0.1
-  rive: ^0.7.33
+  rive: ^0.8.1
   shared_preferences: ^2.0.7
   table_calendar: ^3.0.2
   url_launcher: ^6.0.10
+  flutter_barcode_scanner: ^2.0.0
 
 dev_dependencies:
   flutter_test:

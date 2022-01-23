@@ -25,6 +25,7 @@ import 'package:wger/models/nutrition/nutritional_plan.dart';
 
 final ingredient1 = Ingredient(
   id: 1,
+  code: '123456787',
   name: 'Water',
   creationDate: DateTime(2021, 5, 1),
   energy: 500,
@@ -38,6 +39,7 @@ final ingredient1 = Ingredient(
 );
 final ingredient2 = Ingredient(
   id: 2,
+  code: '123456788',
   name: 'Burger soup',
   creationDate: DateTime(2021, 5, 10),
   energy: 25,
@@ -51,6 +53,7 @@ final ingredient2 = Ingredient(
 );
 final ingredient3 = Ingredient(
   id: 3,
+  code: '123456789',
   name: 'Broccoli cake',
   creationDate: DateTime(2021, 5, 2),
   energy: 1200,
