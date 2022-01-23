@@ -65,7 +65,7 @@ dev_dependencies:
   mockito: ^5.0.15
   network_image_mock: ^2.0.1
   flutter_lints: ^1.0.4
-  cider: ^0.1.0
+  cider: ^0.1.1
 
 flutter_icons:
   android: true

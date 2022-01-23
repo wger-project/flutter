@@ -133,7 +133,7 @@ void main() {
     //
     // Pause
     //
-    expect(find.text('0:00'), findsOneWidget);
+    expect(find.text('0:01'), findsOneWidget);
     expect(find.byType(TimerWidget), findsOneWidget);
     expect(find.byIcon(Icons.close), findsOneWidget);
     expect(find.byIcon(Icons.menu), findsOneWidget);
@@ -154,7 +154,7 @@ void main() {
     //
     // Pause
     //
-    expect(find.text('0:00'), findsOneWidget);
+    expect(find.text('0:01'), findsOneWidget);
     expect(find.byType(TimerWidget), findsOneWidget);
     expect(find.byIcon(Icons.chevron_left), findsOneWidget);
     expect(find.byIcon(Icons.close), findsOneWidget);

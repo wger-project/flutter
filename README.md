@@ -35,7 +35,7 @@ Alternatively, you can use one of our test servers, just ask us for access.
 Install Flutter, all its dependencies and create a new virtual device: 
 <https://flutter.dev/docs/get-started/install>.
 
-The app currently uses flutter 2.5
+The app currently uses flutter 2.8
 
 ### 3
 Create a new file ``wger.properties`` in ``android/fastlane/envfiles``:
