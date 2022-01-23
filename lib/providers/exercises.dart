@@ -153,7 +153,7 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
         'categories': _categories.map((e) => e.toJson()).toList(),
         'muscles': _muscles.map((e) => e.toJson()).toList(),
       };
-      log("Saved ${_exercises.length} exercises from cache. Valid till ${exerciseData['expiresIn']}");
+      log("Saved ${_exercises.length} exercises to cache. Valid till ${exerciseData['expiresIn']}");
 
       prefs.setString(PREFS_EXERCISES, json.encode(exerciseData));
       notifyListeners();
