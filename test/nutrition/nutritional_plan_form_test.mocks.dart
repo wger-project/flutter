@@ -148,6 +148,10 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i8.NutritionPlansP
       (super.noSuchMethod(Invocation.method(#searchIngredient, [name, languageCode]),
           returnValue: Future<List<dynamic>>.value(<dynamic>[])) as _i9.Future<List<dynamic>>);
   @override
+  _i9.Future<_i7.Ingredient?> searchIngredientWithCode(String? code) =>
+      (super.noSuchMethod(Invocation.method(#searchIngredientWithCode, [code]),
+          returnValue: Future<_i7.Ingredient?>.value()) as _i9.Future<_i7.Ingredient?>);
+  @override
   _i9.Future<void> logMealToDiary(_i5.Meal? meal) =>
       (super.noSuchMethod(Invocation.method(#logMealToDiary, [meal]),
           returnValue: Future<void>.value(),
