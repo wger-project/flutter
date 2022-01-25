@@ -520,5 +520,41 @@
     "description": "Snackbar message to show on copying data to a new log entry"
   },
   "appUpdateContent": "Aquesta versió de l'app no és compatible amb el servidor, actualitzeu l'aplicació.",
-  "@appUpdateContent": {}
+  "@appUpdateContent": {},
+  "weekAverage": "Mitjana de 7 dies",
+  "@weekAverage": {
+    "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
+  },
+  "scanBarcode": "Escaneja un codi de barres",
+  "@scanBarcode": {
+    "description": "Label for scan barcode button"
+  },
+  "close": "Tanca",
+  "@close": {
+    "description": "Translation for close"
+  },
+  "productFound": "S'ha trobat el producte",
+  "@productFound": {
+    "description": "Header label for dialog when product is found with barcode"
+  },
+  "productFoundDescription": "El codi de barres es correspon amb aquest producte: {productName}. Voleu continuar?",
+  "@productFoundDescription": {
+    "description": "Dialog info when product is found with barcode",
+    "type": "text",
+    "placeholders": {
+      "productName": {}
+    }
+  },
+  "productNotFound": "No s'ha trobat el producte",
+  "@productNotFound": {
+    "description": "Header label for dialog when product is not found with barcode"
+  },
+  "productNotFoundDescription": "El producte amb el codi de barres escanejat {barcode} no s'ha trobat a la base de dades de wger",
+  "@productNotFoundDescription": {
+    "description": "Dialog info when product is not found with barcode",
+    "type": "text",
+    "placeholders": {
+      "barcode": {}
+    }
+  }
 }
