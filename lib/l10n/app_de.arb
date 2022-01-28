@@ -537,5 +537,41 @@
     "description": "Label on ingredient search form"
   },
   "logIngredient": "Im Nährwerttagebuch speichern",
-  "@logIngredient": {}
+  "@logIngredient": {},
+  "close": "Schließen",
+  "@close": {
+    "description": "Translation for close"
+  },
+  "productNotFoundDescription": "Das Produkt mit dem gescannten Strichcode {barcode} wurde nicht in der wger-Datenbank gefunden",
+  "@productNotFoundDescription": {
+    "description": "Dialog info when product is not found with barcode",
+    "type": "text",
+    "placeholders": {
+      "barcode": {}
+    }
+  },
+  "productFound": "Produkt gefunden",
+  "@productFound": {
+    "description": "Header label for dialog when product is found with barcode"
+  },
+  "productFoundDescription": "Der Strichcode gehört zu diesem Produkt: {productName}. Möchten Sie fortfahren?",
+  "@productFoundDescription": {
+    "description": "Dialog info when product is found with barcode",
+    "type": "text",
+    "placeholders": {
+      "productName": {}
+    }
+  },
+  "productNotFound": "Produkt nicht gefunden",
+  "@productNotFound": {
+    "description": "Header label for dialog when product is not found with barcode"
+  },
+  "weekAverage": "7-Tage-Durchschnitt",
+  "@weekAverage": {
+    "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
+  },
+  "scanBarcode": "Strichcode scannen",
+  "@scanBarcode": {
+    "description": "Label for scan barcode button"
+  }
 }
