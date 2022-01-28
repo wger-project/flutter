@@ -526,5 +526,41 @@
   "appUpdateTitle": "Es necesario actualizar",
   "@appUpdateTitle": {},
   "appUpdateContent": "Esta versión de la aplicación no es compatible con el servidor. Por favor, actualízala.",
-  "@appUpdateContent": {}
+  "@appUpdateContent": {},
+  "productFoundDescription": "El código de barras corresponde a este producto: {productName}. Deseas continuar?",
+  "@productFoundDescription": {
+    "description": "Dialog info when product is found with barcode",
+    "type": "text",
+    "placeholders": {
+      "productName": {}
+    }
+  },
+  "weekAverage": "Promedio de 7 días",
+  "@weekAverage": {
+    "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
+  },
+  "productFound": "Producto encontrado",
+  "@productFound": {
+    "description": "Header label for dialog when product is found with barcode"
+  },
+  "productNotFound": "Producto no encontrado",
+  "@productNotFound": {
+    "description": "Header label for dialog when product is not found with barcode"
+  },
+  "productNotFoundDescription": "El producto con el código de barras escaneado {barcode} no se ha encontrado en la base de datos de wger",
+  "@productNotFoundDescription": {
+    "description": "Dialog info when product is not found with barcode",
+    "type": "text",
+    "placeholders": {
+      "barcode": {}
+    }
+  },
+  "scanBarcode": "Escanear código de barras",
+  "@scanBarcode": {
+    "description": "Label for scan barcode button"
+  },
+  "close": "Cerrar",
+  "@close": {
+    "description": "Translation for close"
+  }
 }
