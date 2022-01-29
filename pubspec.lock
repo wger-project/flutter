@@ -112,14 +112,14 @@ packages:
       name: camera
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.9.4+6"
+    version: "0.9.4+9"
   camera_platform_interface:
     dependency: transitive
     description:
       name: camera_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.4"
+    version: "2.1.5"
   camera_web:
     dependency: transitive
     description:
@@ -475,7 +475,7 @@ packages:
       name: image_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.8.4+4"
+    version: "0.8.4+5"
   image_picker_for_web:
     dependency: transitive
     description:
@@ -1000,12 +1000,12 @@ packages:
     source: hosted
     version: "0.1.0"
   video_player:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: video_player
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.14"
+    version: "2.2.16"
   video_player_platform_interface:
     dependency: transitive
     description:

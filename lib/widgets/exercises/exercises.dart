@@ -24,6 +24,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/widgets/exercises/images.dart';
+import 'package:wger/widgets/exercises/videos.dart';
 
 class ExerciseDetail extends StatelessWidget {
   final Exercise _exercise;
@@ -38,6 +39,9 @@ class ExerciseDetail extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Videos
+          ...getVideos(),
+
           // Images
           ...getImages(),
 
@@ -168,8 +172,24 @@ class ExerciseDetail extends StatelessWidget {
   List<Widget> getImages() {
     // TODO: add carousel for the other images
     final List<Widget> out = [];
-    out.add(ExerciseImageWidget(image: _exercise.getMainImage));
-    out.add(const SizedBox(height: PADDING));
+    if (_exercise.getMainImage != null) {
+      out.add(ExerciseImageWidget(image: _exercise.getMainImage));
+      out.add(const SizedBox(height: PADDING));
+    }
+
+    return out;
+  }
+
+  List<Widget> getVideos() {
+    // TODO: add carousel for the other videos
+    final List<Widget> out = [];
+    if (_exercise.videos.isNotEmpty) {
+      _exercise.videos.map((v) => ExerciseVideoWidget(video: v)).forEach((element) {
+        out.add(element);
+      });
+
+      out.add(const SizedBox(height: PADDING));
+    }
 
     return out;
   }

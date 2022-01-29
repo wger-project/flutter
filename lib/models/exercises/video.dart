@@ -17,6 +17,7 @@
  */
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:wger/helpers/json.dart';
 
 part 'video.g.dart';
 
@@ -28,16 +29,16 @@ class Video {
   @JsonKey(required: true)
   final String uuid;
 
+  @JsonKey(name: 'video', required: true)
+  final String url;
+
   @JsonKey(name: 'exercise_base', required: true)
   final int base;
-
-  @JsonKey(name: 'is_front', required: true)
-  final bool isFront;
 
   @JsonKey(required: true)
   final int size;
 
-  @JsonKey(required: true)
+  @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
   final num duration;
 
   @JsonKey(required: true)
@@ -56,14 +57,14 @@ class Video {
   final int license;
 
   @JsonKey(name: 'license_author', required: true)
-  final String licenseAuthor;
+  final String? licenseAuthor;
 
   const Video({
     required this.id,
     required this.uuid,
     required this.base,
-    required this.isFront,
     required this.size,
+    required this.url,
     required this.duration,
     required this.width,
     required this.height,
