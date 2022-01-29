@@ -21,11 +21,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/muscle.dart';
-import 'package:wger/providers/exercises.dart';
-import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/exercises/images.dart';
 
 class ExerciseDetail extends StatelessWidget {
@@ -106,30 +103,52 @@ class ExerciseDetail extends StatelessWidget {
       ],
     ));
 
-    out.add(Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Column(
-          children: [
-            Text(
-              AppLocalizations.of(context).muscles,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            ..._exercise.muscles.map((e) => Text(e.name)).toList(),
-          ],
-        ),
-        Column(
-          children: [
-            Text(
-              AppLocalizations.of(context).musclesSecondary,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            ..._exercise.musclesSecondary.map((e) => Text(e.name)).toList(),
-          ],
-        ),
-      ],
-    ));
+    out.add(
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                height: 16,
+                width: 16,
+                color: Colors.red,
+              ),
+              const SizedBox(width: 2),
+              Text(
+                AppLocalizations.of(context).muscles,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          ..._exercise.muscles.map((e) => Text(e.name)).toList(),
+        ],
+      ),
+    );
+    out.add(const SizedBox(height: PADDING));
+    out.add(
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                height: 16,
+                width: 16,
+                color: Colors.orange,
+              ),
+              const SizedBox(width: 2),
+              Text(
+                AppLocalizations.of(context).musclesSecondary,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          ..._exercise.musclesSecondary.map((e) => Text(e.name)).toList(),
+        ],
+      ),
+    );
+
     out.add(const SizedBox(height: PADDING));
 
     return out;
