@@ -8,6 +8,8 @@ class AddExerciseTextArea extends StatelessWidget {
     this.helperText = '',
     this.isRequired = true,
     this.isMultiline = false,
+    this.validator,
+    this.onSaved,
   }) : super(key: key);
 
   final ValueChanged<String> onChange;
@@ -15,6 +17,8 @@ class AddExerciseTextArea extends StatelessWidget {
   final bool isMultiline;
   final String title;
   final String helperText;
+  final FormFieldValidator<String?>? validator;
+  final FormFieldSetter<String?>? onSaved;
 
   static const MULTILINE_MIN_LINES = 4;
   static const DEFAULT_LINES = 1;
@@ -27,6 +31,8 @@ class AddExerciseTextArea extends StatelessWidget {
         keyboardType: isMultiline ? TextInputType.multiline : TextInputType.text,
         maxLines: isMultiline ? null : DEFAULT_LINES,
         minLines: isMultiline ? MULTILINE_MIN_LINES : DEFAULT_LINES,
+        validator: validator,
+        onSaved: onSaved,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           border: OutlineInputBorder(

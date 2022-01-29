@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/add_excercise_provider.dart';
+import 'package:wger/providers/exercises.dart';
 import 'package:wger/widgets/add_exercise/add_exercise_dropdown_button.dart';
 import 'package:wger/widgets/add_exercise/add_exercise_multiselect_button.dart';
 import 'package:wger/widgets/add_exercise/add_exercise_text_area.dart';
@@ -19,10 +20,19 @@ class AddExerciseScreen extends StatefulWidget {
   _AddExerciseScreenState createState() => _AddExerciseScreenState();
 }
 
+abstract class ValidateStep {
+  abstract VoidCallback _submit;
+}
+
 class _AddExerciseScreenState extends State<AddExerciseScreen> {
   int _currentStep = 0;
   int lastStepIndex = AddExerciseScreen.STEPS_IN_FORM - 1;
-
+  final List<GlobalKey<FormState>> _keys = [
+    GlobalKey<FormState>(),
+    GlobalKey<FormState>(),
+    GlobalKey<FormState>(),
+    GlobalKey<FormState>()
+  ];
   Widget _controlsBuilder(
     BuildContext context, {
     VoidCallback? onStepCancel,
@@ -55,7 +65,9 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
         steps: [
           Step(
             title: const Text('Basics'),
-            content: _BasicStepContent(),
+            content: _BasicStepContent(
+              formkey: _keys[0],
+            ),
           ),
           Step(
             title: const Text('Duplicates and variations'),
@@ -75,9 +87,13 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
           if (_currentStep == lastStepIndex) {
             _addExercise();
           } else {
-            setState(() {
-              _currentStep += 1;
-            });
+            if (_keys[_currentStep].currentState?.validate() ?? false) {
+              _keys[_currentStep].currentState?.save();
+              context.read<AddExcerciseProvider>().printValues();
+              setState(() {
+                _currentStep += 1;
+              });
+            }
           }
         },
         onStepCancel: () => setState(() {
@@ -89,38 +105,51 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
 }
 
 class _BasicStepContent extends StatelessWidget {
-  final GlobalKey<FormState> _basicStepFormKey = GlobalKey<FormState>();
+  // final GlobalKey<FormState> _basicStepFormKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> formkey;
+  _BasicStepContent({required this.formkey});
   @override
   Widget build(BuildContext context) {
+    final addExercideProvider = context.read<AddExcerciseProvider>();
+    final exerciseProvider = context.read<ExercisesProvider>();
+    final categories = exerciseProvider.categories;
+    final muscles = exerciseProvider.muscles;
     return Form(
-      key: _basicStepFormKey,
+      key: formkey,
       child: Column(
         children: [
           AddExerciseTextArea(
             onChange: (value) => print(value),
-            title: AppLocalizations.of(context).name,
+            title: '${AppLocalizations.of(context).name}*',
             isRequired: true,
+            validator: (name) => name?.isEmpty ?? true ? 'Name is required' : null,
+            onSaved: (String? name) => addExercideProvider.exerciseName = name!,
           ),
           AddExerciseTextArea(
             onChange: (value) => print(value),
             title: 'Alternative names',
             isMultiline: true,
             helperText: 'One name per line',
+            onSaved: (String? alternateName) => addExercideProvider.alternateName = alternateName,
           ),
           AddExerciseDropdownButton(
-            title: 'Target area',
-            items: ['Arms'],
+            title: 'Target area*',
+            items: categories.map((e) => e.name).toList(),
             onChange: (value) => print(value),
+            validator: (value) => value?.isEmpty ?? true ? 'Target Area is Required ' : null,
+            onSaved: (String? targetArea) => addExercideProvider.targetArea = targetArea!,
           ),
           AddExerciseMultiselectButton(
             title: AppLocalizations.of(context).muscles,
-            items: ['Arms', 'Chest', 'Shoulders'],
+            items: muscles.map((e) => e.name).toList(),
             onChange: (value) => print(value),
+            onSaved: (List<String?>? muscles) => addExercideProvider.primaryMuclses = muscles,
           ),
           AddExerciseMultiselectButton(
             title: AppLocalizations.of(context).musclesSecondary,
-            items: ['Arms', 'Chest', 'Shoulders'],
+            items: muscles.map((e) => e.name).toList(),
             onChange: (value) => print(value),
+            onSaved: (List<String?>? muscles) => addExercideProvider.secondayMuclses = muscles,
           ),
         ],
       ),

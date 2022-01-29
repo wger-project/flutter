@@ -7,11 +7,15 @@ class AddExerciseDropdownButton extends StatefulWidget {
     required this.items,
     required this.title,
     required this.onChange,
+    this.validator,
+    this.onSaved,
   }) : super(key: key);
 
   final List<String> items;
   final String title;
   final ValueChanged<String?> onChange;
+  final FormFieldValidator<String?>? validator;
+  final FormFieldSetter<String?>? onSaved;
 
   @override
   _AddExerciseDropdownButtonState createState() => _AddExerciseDropdownButtonState();
@@ -25,7 +29,9 @@ class _AddExerciseDropdownButtonState extends State<AddExerciseDropdownButton> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: DropdownButtonFormField<String>(
+        validator: widget.validator,
         isExpanded: true,
+        onSaved: widget.onSaved,
         onChanged: (value) {
           setState(() {
             _selectedItem = value;
