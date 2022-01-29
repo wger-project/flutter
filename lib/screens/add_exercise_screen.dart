@@ -128,7 +128,8 @@ class _BasicStepContent extends StatelessWidget {
             title: 'Alternative names',
             isMultiline: true,
             helperText: 'One name per line',
-            onSaved: (String? alternateName) => addExercideProvider.alternateName = alternateName,
+            onSaved: (String? alternateName) =>
+                addExercideProvider.alternateNames = alternateName!.split('\n'),
           ),
           ExerciseCategoryInputWidget<ExerciseCategory>(
               categories: categories,

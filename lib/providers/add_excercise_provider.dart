@@ -7,13 +7,13 @@ class AddExcerciseProvider with ChangeNotifier {
   List<File> get excerciseImages => [..._excerciseImages];
   final List<File> _excerciseImages = [];
   String? _name;
-  String? _alternativeName;
+  List<String> _alternativeNames = [];
   ExerciseCategory? _targetArea;
   List<String?>? _primaryMuscles = [];
   List<String?>? _secondaryMuscles = [];
 
   set exerciseName(String name) => _name = name;
-  set alternateName(String? name) => _alternativeName = name;
+  set alternateNames(List<String> names) => _alternativeNames = names;
   set targetArea(ExerciseCategory target) => _targetArea = target;
   set primaryMuclses(List<String?>? muscles) {
     if (muscles?.isNotEmpty ?? false) {
@@ -40,9 +40,9 @@ class AddExcerciseProvider with ChangeNotifier {
 
   //Just to Debug Provider
   printValues() {
-    print('Name ${_name}');
-    print('alternate name : ${_alternativeName}');
-    print('target area : ${_targetArea}');
+    print('Name $_name');
+    print('alternate names : $_alternativeNames');
+    print('target area : $_targetArea');
     print('primary mucsles');
     if (_primaryMuscles != null) {
       for (final a in _primaryMuscles!) {
