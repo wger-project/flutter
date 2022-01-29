@@ -91,6 +91,9 @@ flutter:
     - assets/animations/
     - assets/images/
     - assets/images/backgrounds/
+    - assets/images/muscles/
+    - assets/images/muscles/main/
+    - assets/images/muscles/secondary/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
