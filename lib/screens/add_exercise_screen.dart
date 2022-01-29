@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/models/exercises/category.dart';
 import 'package:wger/providers/add_excercise_provider.dart';
 import 'package:wger/providers/exercises.dart';
-import 'package:wger/widgets/add_exercise/add_exercise_dropdown_button.dart';
 import 'package:wger/widgets/add_exercise/add_exercise_multiselect_button.dart';
 import 'package:wger/widgets/add_exercise/add_exercise_text_area.dart';
 import 'package:wger/widgets/add_exercise/mixins/image_picker_mixin.dart';
 import 'package:wger/widgets/add_exercise/preview_images.dart';
 import 'package:wger/widgets/core/app_bar.dart';
+import 'package:wger/widgets/exercises/forms.dart';
 
 class AddExerciseScreen extends StatefulWidget {
   const AddExerciseScreen({Key? key}) : super(key: key);
@@ -33,19 +34,16 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
     GlobalKey<FormState>(),
     GlobalKey<FormState>()
   ];
-  Widget _controlsBuilder(
-    BuildContext context, {
-    VoidCallback? onStepCancel,
-    VoidCallback? onStepContinue,
-  }) {
+
+  Widget _controlsBuilder(BuildContext context, ControlsDetails details) {
     return Row(
       children: [
         TextButton(
-          onPressed: onStepContinue,
+          onPressed: details.onStepContinue,
           child: Text(_currentStep != lastStepIndex ? 'Next' : 'Submit Exercise'),
         ),
         TextButton(
-          onPressed: onStepCancel,
+          onPressed: details.onStepCancel,
           child: const Text('Previous'),
         ),
       ],
@@ -132,13 +130,12 @@ class _BasicStepContent extends StatelessWidget {
             helperText: 'One name per line',
             onSaved: (String? alternateName) => addExercideProvider.alternateName = alternateName,
           ),
-          AddExerciseDropdownButton(
-            title: 'Target area*',
-            items: categories.map((e) => e.name).toList(),
-            onChange: (value) => print(value),
-            validator: (value) => value?.isEmpty ?? true ? 'Target Area is Required ' : null,
-            onSaved: (String? targetArea) => addExercideProvider.targetArea = targetArea!,
-          ),
+          ExerciseCategoryInputWidget<ExerciseCategory>(
+              categories: categories,
+              title: AppLocalizations.of(context).category,
+              callback: (ExerciseCategory newValue) {
+                addExercideProvider.targetArea = newValue;
+              }),
           AddExerciseMultiselectButton(
             title: AppLocalizations.of(context).muscles,
             items: muscles.map((e) => e.name).toList(),

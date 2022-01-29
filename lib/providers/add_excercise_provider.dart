@@ -1,21 +1,20 @@
-import 'package:flutter/foundation.dart';
-
 import 'dart:io';
 
-import 'package:wger/models/exercises/muscle.dart';
+import 'package:flutter/foundation.dart';
+import 'package:wger/models/exercises/category.dart';
 
 class AddExcerciseProvider with ChangeNotifier {
   List<File> get excerciseImages => [..._excerciseImages];
   final List<File> _excerciseImages = [];
   String? _name;
   String? _alternativeName;
-  String? _targetArea;
+  ExerciseCategory? _targetArea;
   List<String?>? _primaryMuscles = [];
   List<String?>? _secondaryMuscles = [];
 
   set exerciseName(String name) => _name = name;
   set alternateName(String? name) => _alternativeName = name;
-  set targetArea(String target) => _targetArea = target;
+  set targetArea(ExerciseCategory target) => _targetArea = target;
   set primaryMuclses(List<String?>? muscles) {
     if (muscles?.isNotEmpty ?? false) {
       _primaryMuscles = muscles;
