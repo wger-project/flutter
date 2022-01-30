@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/exercises/category.dart';
-import 'package:wger/providers/add_excercise_provider.dart';
+import 'package:wger/providers/add_exercise_provider.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/widgets/add_exercise/add_exercise_multiselect_button.dart';
 import 'package:wger/widgets/add_exercise/add_exercise_text_area.dart';
@@ -91,11 +91,11 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
           if (_currentStep == lastStepIndex) {
             _addExercise();
           } else {
-            log('Validation for step ${_currentStep}: ${_keys[_currentStep].currentState?.validate()}');
+            log('Validation for step $_currentStep: ${_keys[_currentStep].currentState?.validate()}');
 
             if (_keys[_currentStep].currentState?.validate() ?? false) {
               _keys[_currentStep].currentState?.save();
-              context.read<AddExcerciseProvider>().printValues();
+              context.read<AddExerciseProvider>().printValues();
               setState(() {
                 _currentStep += 1;
               });
@@ -116,7 +116,7 @@ class _BasicStepContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final addExercideProvider = context.read<AddExcerciseProvider>();
+    final addExercideProvider = context.read<AddExerciseProvider>();
     final exerciseProvider = context.read<ExercisesProvider>();
     final categories = exerciseProvider.categories;
     final muscles = exerciseProvider.muscles;
@@ -201,7 +201,7 @@ class _ImagesStepContentState extends State<_ImagesStepContent> with ExcerciseIm
             AppLocalizations.of(context).add_exercise_image_license,
             style: Theme.of(context).textTheme.caption,
           ),
-          Consumer<AddExcerciseProvider>(
+          Consumer<AddExerciseProvider>(
             builder: (ctx, provider, __) => provider.excerciseImages.isNotEmpty
                 ? PreviewExcercizeImages(
                     selectedimages: provider.excerciseImages,

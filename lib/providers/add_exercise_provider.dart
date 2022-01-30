@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:wger/models/exercises/category.dart';
 
-class AddExcerciseProvider with ChangeNotifier {
+class AddExerciseProvider with ChangeNotifier {
   List<File> get excerciseImages => [..._excerciseImages];
   final List<File> _excerciseImages = [];
   String? _name;

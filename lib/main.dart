@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/providers/add_exercise_provider.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/exercises.dart';
@@ -47,7 +48,6 @@ import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/screens/workout_plans_screen.dart';
 import 'package:wger/theme/theme.dart';
 
-import 'providers/add_excercise_provider.dart';
 import 'providers/auth.dart';
 
 void main() {
@@ -104,7 +104,7 @@ class MyApp extends StatelessWidget {
           update: (context, auth, previous) => previous ?? GalleryProvider(auth, []),
         ),
         ChangeNotifierProvider(
-          create: (_) => AddExcerciseProvider(),
+          create: (_) => AddExerciseProvider(),
         )
       ],
       child: Consumer<AuthProvider>(
