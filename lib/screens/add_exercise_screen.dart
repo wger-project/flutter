@@ -42,14 +42,15 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
   Widget _controlsBuilder(BuildContext context, ControlsDetails details) {
     return Row(
       children: [
-        TextButton(
-          onPressed: details.onStepContinue,
-          child: Text(
-            _currentStep != lastStepIndex
-                ? AppLocalizations.of(context).next
-                : AppLocalizations.of(context).save,
-          ),
-        ),
+        _currentStep == lastStepIndex
+            ? ElevatedButton(
+                onPressed: details.onStepContinue,
+                child: Text(AppLocalizations.of(context).save),
+              )
+            : TextButton(
+                onPressed: details.onStepContinue,
+                child: Text(AppLocalizations.of(context).next),
+              ),
         TextButton(
           onPressed: details.onStepCancel,
           child: Text(AppLocalizations.of(context).previous),

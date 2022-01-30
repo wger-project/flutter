@@ -52,16 +52,7 @@ class AddExerciseProvider with ChangeNotifier {
     log('target area : $_targetArea');
     log('primary muscles');
     log('Equipment: $_equipment');
-    if (_primaryMuscles != null) {
-      for (final a in _primaryMuscles!) {
-        log(a.name);
-      }
-    }
-    log('seconday mucsles');
-    if (_secondaryMuscles != null) {
-      for (final a in _secondaryMuscles!) {
-        log(a.name);
-      }
-    }
+    log('Primary muscles: $_primaryMuscles');
+    log('Secondary muscles: $_secondaryMuscles');
   }
 }
