@@ -154,20 +154,30 @@ class _BasicStepContent extends StatelessWidget {
             title: AppLocalizations.of(context).equipment,
             items: equipment,
             onChange: (dynamic value) => print(value),
-            onSaved: (dynamic entries) => addExercideProvider.equipment = entries,
+            onSaved: (dynamic entries) {
+              if (entries != null && entries.isNotEmpty) {
+                addExercideProvider.equipment = entries.cast<Equipment>();
+              }
+            },
           ),
           AddExerciseMultiselectButton<Muscle>(
-            title: AppLocalizations.of(context).muscles,
-            items: muscles,
-            onChange: (dynamic value) => print(value),
-            onSaved: (dynamic muscles) => addExercideProvider.primaryMuscles = muscles,
-          ),
+              title: AppLocalizations.of(context).muscles,
+              items: muscles,
+              onChange: (dynamic value) => print(value),
+              onSaved: (dynamic muscles) {
+                if (muscles != null && muscles.isNotEmpty) {
+                  addExercideProvider.primaryMuscles = muscles.cast<Muscle>();
+                }
+              }),
           AddExerciseMultiselectButton<Muscle>(
-            title: AppLocalizations.of(context).musclesSecondary,
-            items: muscles,
-            onChange: (dynamic value) => print(value),
-            onSaved: (dynamic muscles) => addExercideProvider.secondayMuscles = muscles,
-          ),
+              title: AppLocalizations.of(context).musclesSecondary,
+              items: muscles,
+              onChange: (dynamic value) => print(value),
+              onSaved: (dynamic muscles) {
+                if (muscles != null && muscles.isNotEmpty) {
+                  addExercideProvider.primaryMuscles = muscles.cast<Muscle>();
+                }
+              }),
         ],
       ),
     );
