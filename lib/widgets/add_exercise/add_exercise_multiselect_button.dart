@@ -37,7 +37,7 @@ class _AddExerciseMultiselectButtonState<T> extends State<AddExerciseMultiselect
           }
         },
         chipDisplay: MultiSelectChipDisplay<T?>(
-          scroll: true,
+          //scroll: true,
           onTap: (value) {
             setState(() {
               _selectedItems.remove(value);
