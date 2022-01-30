@@ -40,11 +40,15 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
       children: [
         TextButton(
           onPressed: details.onStepContinue,
-          child: Text(_currentStep != lastStepIndex ? 'Next' : 'Submit Exercise'),
+          child: Text(
+            _currentStep != lastStepIndex
+                ? AppLocalizations.of(context).next
+                : AppLocalizations.of(context).save,
+          ),
         ),
         TextButton(
           onPressed: details.onStepCancel,
-          child: const Text('Previous'),
+          child: Text(AppLocalizations.of(context).previous),
         ),
       ],
     );
@@ -56,23 +60,23 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: WgerAppBar(
-        'Add Exercise',
+        AppLocalizations.of(context).addExercise,
       ),
       body: Stepper(
         controlsBuilder: _controlsBuilder,
         steps: [
           Step(
-            title: const Text('Basics'),
+            title: Text(AppLocalizations.of(context).baseData),
             content: _BasicStepContent(
               formkey: _keys[0],
             ),
           ),
           Step(
-            title: const Text('Duplicates and variations'),
+            title: Text(AppLocalizations.of(context).variations),
             content: _DuplicatesAndVariationsStepContent(),
           ),
           Step(
-            title: const Text('Images'),
+            title: Text(AppLocalizations.of(context).images),
             content: _ImagesStepContent(),
           ),
           Step(
@@ -125,9 +129,9 @@ class _BasicStepContent extends StatelessWidget {
           ),
           AddExerciseTextArea(
             onChange: (value) => print(value),
-            title: 'Alternative names',
+            title: AppLocalizations.of(context).alternativeNames,
             isMultiline: true,
-            helperText: 'One name per line',
+            helperText: AppLocalizations.of(context).oneNamePerLine,
             onSaved: (String? alternateName) =>
                 addExercideProvider.alternateNames = alternateName!.split('\n'),
           ),
@@ -163,17 +167,8 @@ class _DuplicatesAndVariationsStepContent extends StatelessWidget {
       key: _duplicatesAndVariationsFormKey,
       child: Column(
         children: [
-          AddExerciseTextArea(
-            onChange: (value) => print(value),
-            title: AppLocalizations.of(context).name,
-            isRequired: true,
-          ),
-          AddExerciseTextArea(
-            onChange: (value) => print(value),
-            title: 'Alternative names',
-            isMultiline: true,
-            helperText: 'One name per line',
-          ),
+          Text(AppLocalizations.of(context).whatVariationsExist),
+          const Placeholder(fallbackHeight: 200),
         ],
       ),
     );

@@ -527,5 +527,16 @@
       "aliases": {}
     },
     "description": "List of alternative names for an exercise"
+  },
+  "alternativeNames": "Alternative names",
+  "oneNamePerLine": "One name per line",
+  "whatVariationsExist": "What variations of this exercise exist, if any?",
+  "previous": "Previous",
+  "next": "Next",
+  "images": "Images",
+  "addExercise": "Add exercise",
+  "baseData": "Base data",
+  "@baseData": {
+    "description": "The base data for an exercise such as category, trained muscles, etc."
   }
 }
