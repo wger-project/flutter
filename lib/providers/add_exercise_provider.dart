@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:wger/models/exercises/category.dart';
+import 'package:wger/models/exercises/equipment.dart';
+import 'package:wger/models/exercises/muscle.dart';
 
 class AddExerciseProvider with ChangeNotifier {
   List<File> get excerciseImages => [..._excerciseImages];
@@ -10,19 +12,21 @@ class AddExerciseProvider with ChangeNotifier {
   String? _name;
   List<String> _alternativeNames = [];
   ExerciseCategory? _targetArea;
-  List<String?>? _primaryMuscles = [];
-  List<String?>? _secondaryMuscles = [];
+  List<Equipment> _equipment = [];
+  List<Muscle>? _primaryMuscles = [];
+  List<Muscle>? _secondaryMuscles = [];
 
   set exerciseName(String name) => _name = name;
+  set equipment(List<Equipment> equipment) => _equipment = equipment;
   set alternateNames(List<String> names) => _alternativeNames = names;
   set targetArea(ExerciseCategory target) => _targetArea = target;
-  set primaryMuclses(List<String?>? muscles) {
+  set primaryMuscles(List<Muscle>? muscles) {
     if (muscles?.isNotEmpty ?? false) {
       _primaryMuscles = muscles;
     }
   }
 
-  set secondayMuclses(List<String?>? muscles) {
+  set secondayMuscles(List<Muscle>? muscles) {
     if (muscles?.isNotEmpty ?? false) {
       _secondaryMuscles = muscles;
     }
@@ -47,15 +51,16 @@ class AddExerciseProvider with ChangeNotifier {
     log('alternate names : $_alternativeNames');
     log('target area : $_targetArea');
     log('primary muscles');
+    log('Equipment: $_equipment');
     if (_primaryMuscles != null) {
       for (final a in _primaryMuscles!) {
-        log(a!);
+        log(a.name);
       }
     }
     log('seconday mucsles');
     if (_secondaryMuscles != null) {
       for (final a in _secondaryMuscles!) {
-        log(a!);
+        log(a.name);
       }
     }
   }

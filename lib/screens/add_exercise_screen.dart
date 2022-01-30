@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/exercises/category.dart';
+import 'package:wger/models/exercises/equipment.dart';
+import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/providers/add_exercise_provider.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/widgets/add_exercise/add_exercise_multiselect_button.dart';
@@ -103,7 +105,9 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
           }
         },
         onStepCancel: () => setState(() {
-          _currentStep -= 1;
+          if (_currentStep != 0) {
+            _currentStep -= 1;
+          }
         }),
       ),
     );
@@ -120,6 +124,7 @@ class _BasicStepContent extends StatelessWidget {
     final exerciseProvider = context.read<ExercisesProvider>();
     final categories = exerciseProvider.categories;
     final muscles = exerciseProvider.muscles;
+    final equipment = exerciseProvider.equipment;
     return Form(
       key: formkey,
       child: Column(
@@ -145,17 +150,23 @@ class _BasicStepContent extends StatelessWidget {
               callback: (ExerciseCategory newValue) {
                 addExercideProvider.targetArea = newValue;
               }),
-          AddExerciseMultiselectButton(
-            title: AppLocalizations.of(context).muscles,
-            items: muscles.map((e) => e.name).toList(),
-            onChange: (value) => print(value),
-            onSaved: (List<String?>? muscles) => addExercideProvider.primaryMuclses = muscles,
+          AddExerciseMultiselectButton<Equipment>(
+            title: AppLocalizations.of(context).equipment,
+            items: equipment,
+            onChange: (dynamic value) => print(value),
+            onSaved: (dynamic entries) => addExercideProvider.equipment = entries,
           ),
-          AddExerciseMultiselectButton(
+          AddExerciseMultiselectButton<Muscle>(
+            title: AppLocalizations.of(context).muscles,
+            items: muscles,
+            onChange: (dynamic value) => print(value),
+            onSaved: (dynamic muscles) => addExercideProvider.primaryMuscles = muscles,
+          ),
+          AddExerciseMultiselectButton<Muscle>(
             title: AppLocalizations.of(context).musclesSecondary,
-            items: muscles.map((e) => e.name).toList(),
-            onChange: (value) => print(value),
-            onSaved: (List<String?>? muscles) => addExercideProvider.secondayMuclses = muscles,
+            items: muscles,
+            onChange: (dynamic value) => print(value),
+            onSaved: (dynamic muscles) => addExercideProvider.secondayMuscles = muscles,
           ),
         ],
       ),
