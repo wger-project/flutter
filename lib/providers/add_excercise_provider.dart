@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -39,20 +40,22 @@ class AddExcerciseProvider with ChangeNotifier {
   }
 
   //Just to Debug Provider
-  printValues() {
-    print('Name $_name');
-    print('alternate names : $_alternativeNames');
-    print('target area : $_targetArea');
-    print('primary mucsles');
+  void printValues() {
+    log('Collected exercise data');
+    log('------------------------');
+    log('Name $_name');
+    log('alternate names : $_alternativeNames');
+    log('target area : $_targetArea');
+    log('primary muscles');
     if (_primaryMuscles != null) {
       for (final a in _primaryMuscles!) {
-        print(a);
+        log(a!);
       }
     }
-    print('seconday mucsles');
+    log('seconday mucsles');
     if (_secondaryMuscles != null) {
       for (final a in _secondaryMuscles!) {
-        print(a);
+        log(a!);
       }
     }
   }

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -54,7 +56,9 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
     );
   }
 
-  void _addExercise() {}
+  void _addExercise() {
+    log('Adding exercise...');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,21 +71,19 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
         steps: [
           Step(
             title: Text(AppLocalizations.of(context).baseData),
-            content: _BasicStepContent(
-              formkey: _keys[0],
-            ),
+            content: _BasicStepContent(formkey: _keys[0]),
           ),
           Step(
             title: Text(AppLocalizations.of(context).variations),
-            content: _DuplicatesAndVariationsStepContent(),
+            content: _DuplicatesAndVariationsStepContent(formkey: _keys[1]),
           ),
           Step(
             title: Text(AppLocalizations.of(context).images),
-            content: _ImagesStepContent(),
+            content: _ImagesStepContent(formkey: _keys[2]),
           ),
           Step(
             title: Text(AppLocalizations.of(context).description),
-            content: _DescriptionStepContent(),
+            content: _DescriptionStepContent(formkey: _keys[3]),
           )
         ],
         currentStep: _currentStep,
@@ -89,6 +91,8 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
           if (_currentStep == lastStepIndex) {
             _addExercise();
           } else {
+            log('Validation for step ${_currentStep}: ${_keys[_currentStep].currentState?.validate()}');
+
             if (_keys[_currentStep].currentState?.validate() ?? false) {
               _keys[_currentStep].currentState?.save();
               context.read<AddExcerciseProvider>().printValues();
@@ -107,9 +111,9 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
 }
 
 class _BasicStepContent extends StatelessWidget {
-  // final GlobalKey<FormState> _basicStepFormKey = GlobalKey<FormState>();
   final GlobalKey<FormState> formkey;
-  _BasicStepContent({required this.formkey});
+  const _BasicStepContent({required this.formkey});
+
   @override
   Widget build(BuildContext context) {
     final addExercideProvider = context.read<AddExcerciseProvider>();
@@ -160,11 +164,14 @@ class _BasicStepContent extends StatelessWidget {
 }
 
 class _DuplicatesAndVariationsStepContent extends StatelessWidget {
-  final GlobalKey<FormState> _duplicatesAndVariationsFormKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> formkey;
+
+  const _DuplicatesAndVariationsStepContent({required this.formkey});
+
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: _duplicatesAndVariationsFormKey,
+      key: formkey,
       child: Column(
         children: [
           Text(AppLocalizations.of(context).whatVariationsExist),
@@ -176,52 +183,59 @@ class _DuplicatesAndVariationsStepContent extends StatelessWidget {
 }
 
 class _ImagesStepContent extends StatefulWidget {
+  final GlobalKey<FormState> formkey;
+  const _ImagesStepContent({required this.formkey});
+
   @override
   State<_ImagesStepContent> createState() => _ImagesStepContentState();
 }
 
 class _ImagesStepContentState extends State<_ImagesStepContent> with ExcerciseImagePickerMixin {
-  final GlobalKey<FormState> _imagesStepFormKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          AppLocalizations.of(context).add_exercise_image_license,
-          style: Theme.of(context).textTheme.caption,
-        ),
-        Consumer<AddExcerciseProvider>(
-          builder: (ctx, provider, __) => provider.excerciseImages.isNotEmpty
-              ? PreviewExcercizeImages(
-                  selectedimages: provider.excerciseImages,
-                )
-              : ElevatedButton(
-                  onPressed: () => pickImages(context),
-                  child: const Text('BROWSE FOR FILES'),
-                  style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.resolveWith((states) => Colors.black)),
-                ),
-        ),
-        RichText(
-          text: TextSpan(
+    return Form(
+      key: widget.formkey,
+      child: Column(
+        children: [
+          Text(
+            AppLocalizations.of(context).add_exercise_image_license,
             style: Theme.of(context).textTheme.caption,
-            children: const <TextSpan>[
-              TextSpan(text: 'Only JPEG, PNG and WEBP files below 20 MB are supported'),
-            ],
           ),
-        )
-      ],
+          Consumer<AddExcerciseProvider>(
+            builder: (ctx, provider, __) => provider.excerciseImages.isNotEmpty
+                ? PreviewExcercizeImages(
+                    selectedimages: provider.excerciseImages,
+                  )
+                : ElevatedButton(
+                    onPressed: () => pickImages(context),
+                    child: const Text('BROWSE FOR FILES'),
+                    style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith((states) => Colors.black)),
+                  ),
+          ),
+          RichText(
+            text: TextSpan(
+              style: Theme.of(context).textTheme.caption,
+              children: const <TextSpan>[
+                TextSpan(text: 'Only JPEG, PNG and WEBP files below 20 MB are supported'),
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 }
 
 class _DescriptionStepContent extends StatelessWidget {
-  final GlobalKey<FormState> _descriptionStepFormKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> formkey;
+  const _DescriptionStepContent({required this.formkey});
 
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: _descriptionStepFormKey,
+      key: formkey,
       child: Column(
         children: [
           AddExerciseTextArea(
