@@ -43,6 +43,7 @@ class AddExerciseProvider with ChangeNotifier {
 
   set equipment(List<Equipment> equipment) => _equipment = equipment;
   set targetArea(ExerciseCategory target) => _targetArea = target;
+  set language(Language language) => _language = language;
 
   List<Muscle> get primaryMuscles => [..._primaryMuscles];
   set primaryMuscles(List<Muscle> muscles) {
@@ -75,8 +76,6 @@ class AddExerciseProvider with ChangeNotifier {
     log('Primary muscles: $_primaryMuscles');
     log('Secondary muscles: $_secondaryMuscles');
     log('Equipment: $_equipment');
-    log('Primary muscles: $_primaryMuscles');
-    log('Secondary muscles: $_secondaryMuscles');
     log('Variations: $_variations');
 
     log('');

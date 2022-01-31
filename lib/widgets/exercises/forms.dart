@@ -25,15 +25,18 @@ class ExerciseCategoryInputWidget<T> extends StatefulWidget {
   late final String _title;
   late final Function _callback;
   late final List<T> _categories;
+  late final Function _getDisplayName;
 
   ExerciseCategoryInputWidget({
     required String title,
     required List<T> categories,
     required Function callback,
+    required Function displayName,
   }) {
     _categories = categories;
     _title = title;
     _callback = callback;
+    _getDisplayName = displayName;
   }
 
   @override
@@ -67,7 +70,7 @@ class _ExerciseCategoryInputWidgetState<T> extends State<ExerciseCategoryInputWi
           return DropdownMenuItem<T>(
             key: Key(value.id.toString()),
             value: value,
-            child: Text(value.name),
+            child: Text(widget._getDisplayName(value)),
           );
         }).toList(),
       ),

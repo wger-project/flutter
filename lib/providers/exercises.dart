@@ -93,6 +93,7 @@ class ExercisesProvider with ChangeNotifier {
   List<ExerciseCategory> get categories => [..._categories];
   List<Muscle> get muscles => [..._muscles];
   List<Equipment> get equipment => [..._equipment];
+  List<Language> get languages => [..._languages];
 
   // Initialize filters for exercises search in exercises list
   void _initFilters() {

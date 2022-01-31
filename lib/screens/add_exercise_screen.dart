@@ -5,6 +5,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
+import 'package:wger/models/exercises/language.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/providers/add_exercise_provider.dart';
 import 'package:wger/providers/exercises.dart';
@@ -92,18 +93,21 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
         ],
         currentStep: _currentStep,
         onStepContinue: () {
-          if (_currentStep == lastStepIndex) {
-            _addExercise();
-          } else {
-            log('Validation for step $_currentStep: ${_keys[_currentStep].currentState?.validate()}');
+          log('Validation for step $_currentStep: ${_keys[_currentStep].currentState?.validate()}');
 
-            if (_keys[_currentStep].currentState?.validate() ?? false) {
-              _keys[_currentStep].currentState?.save();
-              context.read<AddExerciseProvider>().printValues();
+          if (_keys[_currentStep].currentState?.validate() ?? false) {
+            _keys[_currentStep].currentState?.save();
+            context.read<AddExerciseProvider>().printValues();
+
+            if (_currentStep != lastStepIndex) {
               setState(() {
                 _currentStep += 1;
               });
             }
+          }
+
+          if (_currentStep == lastStepIndex) {
+            _addExercise();
           }
         },
         onStepCancel: () => setState(() {
@@ -122,43 +126,31 @@ class _BasicStepContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final addExercideProvider = context.read<AddExerciseProvider>();
+    final addExerciseProvider = context.read<AddExerciseProvider>();
     final exerciseProvider = context.read<ExercisesProvider>();
     final categories = exerciseProvider.categories;
     final muscles = exerciseProvider.muscles;
     final equipment = exerciseProvider.equipment;
+
     return Form(
       key: formkey,
       child: Column(
         children: [
-          AddExerciseTextArea(
-            onChange: (value) => print(value),
-            title: '${AppLocalizations.of(context).name}*',
-            isRequired: true,
-            validator: (name) => name?.isEmpty ?? true ? 'Name is required' : null,
-            onSaved: (String? name) => addExercideProvider.exerciseNameEn = name!,
-          ),
-          AddExerciseTextArea(
-            onChange: (value) => print(value),
-            title: AppLocalizations.of(context).alternativeNames,
-            isMultiline: true,
-            helperText: AppLocalizations.of(context).oneNamePerLine,
-            onSaved: (String? alternateName) =>
-                addExercideProvider.alternateNamesEn = alternateName!.split('\n'),
-          ),
           ExerciseCategoryInputWidget<ExerciseCategory>(
-              categories: categories,
-              title: AppLocalizations.of(context).category,
-              callback: (ExerciseCategory newValue) {
-                addExercideProvider.targetArea = newValue;
-              }),
+            categories: categories,
+            title: AppLocalizations.of(context).category,
+            callback: (ExerciseCategory newValue) {
+              addExerciseProvider.targetArea = newValue;
+            },
+            displayName: (ExerciseCategory c) => c.name,
+          ),
           AddExerciseMultiselectButton<Equipment>(
             title: AppLocalizations.of(context).equipment,
             items: equipment,
             onChange: (dynamic value) => print(value),
             onSaved: (dynamic entries) {
               if (entries != null && entries.isNotEmpty) {
-                addExercideProvider.equipment = entries.cast<Equipment>();
+                addExerciseProvider.equipment = entries.cast<Equipment>();
               }
             },
           ),
@@ -168,7 +160,7 @@ class _BasicStepContent extends StatelessWidget {
               onChange: (dynamic value) => print(value),
               onSaved: (dynamic muscles) {
                 if (muscles != null && muscles.isNotEmpty) {
-                  addExercideProvider.primaryMuscles = muscles.cast<Muscle>();
+                  addExerciseProvider.primaryMuscles = muscles.cast<Muscle>();
                 }
               }),
           AddExerciseMultiselectButton<Muscle>(
@@ -177,12 +169,12 @@ class _BasicStepContent extends StatelessWidget {
               onChange: (dynamic value) => print(value),
               onSaved: (dynamic muscles) {
                 if (muscles != null && muscles.isNotEmpty) {
-                  addExercideProvider.secondaryMuscles = muscles.cast<Muscle>();
+                  addExerciseProvider.secondaryMuscles = muscles.cast<Muscle>();
                 }
               }),
           MuscleRowWidget(
-            muscles: addExercideProvider.primaryMuscles,
-            musclesSecondary: addExercideProvider.secondaryMuscles,
+            muscles: addExerciseProvider.primaryMuscles,
+            musclesSecondary: addExerciseProvider.secondaryMuscles,
           ),
         ],
       ),
@@ -261,20 +253,71 @@ class _DescriptionStepContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final addExerciseProvider = context.read<AddExerciseProvider>();
+    final exerciseProvider = context.read<ExercisesProvider>();
+
+    final languages = exerciseProvider.languages;
+
     return Form(
       key: formkey,
       child: Column(
         children: [
+          const Text('All exercises need a base name in English'),
+          const Text('*** Add flag here ***'),
           AddExerciseTextArea(
             onChange: (value) => print(value),
-            title: AppLocalizations.of(context).name,
+            title: '${AppLocalizations.of(context).name}*',
             isRequired: true,
+            validator: (name) => name?.isEmpty ?? true ? 'Name is required' : null,
+            onSaved: (String? name) => addExerciseProvider.exerciseNameEn = name!,
           ),
           AddExerciseTextArea(
             onChange: (value) => print(value),
-            title: 'Alternative names',
+            title: AppLocalizations.of(context).alternativeNames,
             isMultiline: true,
-            helperText: 'One name per line',
+            helperText: AppLocalizations.of(context).oneNamePerLine,
+            onSaved: (String? alternateName) =>
+                addExerciseProvider.alternateNamesEn = alternateName!.split('\n'),
+          ),
+          AddExerciseTextArea(
+            onChange: (value) => print(value),
+            title: '${AppLocalizations.of(context).description}*',
+            isRequired: true,
+            isMultiline: true,
+            validator: (name) => name?.isEmpty ?? true ? 'Name is required' : null,
+            onSaved: (String? description) => addExerciseProvider.descriptionEn = description!,
+          ),
+          const Text('*** Add flag here ***'),
+          ExerciseCategoryInputWidget<Language>(
+            categories: languages,
+            title: AppLocalizations.of(context).category,
+            displayName: (Language l) => l.fullName,
+            callback: (Language newValue) {
+              addExerciseProvider.language = newValue;
+            },
+          ),
+          AddExerciseTextArea(
+            onChange: (value) => print(value),
+            title: '${AppLocalizations.of(context).name}*',
+            isRequired: true,
+            validator: (name) => name?.isEmpty ?? true ? 'Name is required' : null,
+            onSaved: (String? name) => addExerciseProvider.exerciseNameTrans = name!,
+          ),
+          AddExerciseTextArea(
+            onChange: (value) => print(value),
+            title: AppLocalizations.of(context).alternativeNames,
+            isMultiline: true,
+            helperText: AppLocalizations.of(context).oneNamePerLine,
+            onSaved: (String? alternateName) =>
+                addExerciseProvider.alternateNamesTrans = alternateName!.split('\n'),
+          ),
+          AddExerciseTextArea(
+            onChange: (value) => print(value),
+            title: '${AppLocalizations.of(context).description}*',
+            isRequired: true,
+            isMultiline: true,
+            validator: (name) => name?.isEmpty ?? true ? 'Name is required' : null,
+            onSaved: (String? description) => addExerciseProvider.descriptionTrans = description!,
           ),
         ],
       ),
