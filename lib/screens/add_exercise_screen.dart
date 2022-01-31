@@ -136,7 +136,7 @@ class _BasicStepContent extends StatelessWidget {
             title: '${AppLocalizations.of(context).name}*',
             isRequired: true,
             validator: (name) => name?.isEmpty ?? true ? 'Name is required' : null,
-            onSaved: (String? name) => addExercideProvider.exerciseName = name!,
+            onSaved: (String? name) => addExercideProvider.exerciseNameEn = name!,
           ),
           AddExerciseTextArea(
             onChange: (value) => print(value),
@@ -144,7 +144,7 @@ class _BasicStepContent extends StatelessWidget {
             isMultiline: true,
             helperText: AppLocalizations.of(context).oneNamePerLine,
             onSaved: (String? alternateName) =>
-                addExercideProvider.alternateNames = alternateName!.split('\n'),
+                addExercideProvider.alternateNamesEn = alternateName!.split('\n'),
           ),
           ExerciseCategoryInputWidget<ExerciseCategory>(
               categories: categories,
