@@ -13,21 +13,33 @@ class AddExerciseProvider with ChangeNotifier {
   List<String> _alternativeNames = [];
   ExerciseCategory? _targetArea;
   List<Equipment> _equipment = [];
-  List<Muscle>? _primaryMuscles = [];
-  List<Muscle>? _secondaryMuscles = [];
+  List<Muscle> _primaryMuscles = [];
+  List<Muscle> _secondaryMuscles = [];
+
+  void clear() {
+    _exerciseImages = [];
+    _alternativeNames = [];
+    _targetArea = null;
+    _equipment = [];
+    _primaryMuscles = [];
+    _secondaryMuscles = [];
+  }
 
   set exerciseName(String name) => _name = name;
   set equipment(List<Equipment> equipment) => _equipment = equipment;
   set alternateNames(List<String> names) => _alternativeNames = names;
   set targetArea(ExerciseCategory target) => _targetArea = target;
-  set primaryMuscles(List<Muscle>? muscles) {
-    if (muscles?.isNotEmpty ?? false) {
+
+  List<Muscle> get primaryMuscles => [..._primaryMuscles];
+  set primaryMuscles(List<Muscle> muscles) {
+    if (muscles.isNotEmpty) {
       _primaryMuscles = muscles;
     }
   }
 
-  set secondayMuscles(List<Muscle>? muscles) {
-    if (muscles?.isNotEmpty ?? false) {
+  List<Muscle> get secondaryMuscles => [..._secondaryMuscles];
+  set secondaryMuscles(List<Muscle> muscles) {
+    if (muscles.isNotEmpty) {
       _secondaryMuscles = muscles;
     }
   }

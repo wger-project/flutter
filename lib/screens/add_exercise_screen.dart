@@ -13,6 +13,7 @@ import 'package:wger/widgets/add_exercise/add_exercise_text_area.dart';
 import 'package:wger/widgets/add_exercise/mixins/image_picker_mixin.dart';
 import 'package:wger/widgets/add_exercise/preview_images.dart';
 import 'package:wger/widgets/core/app_bar.dart';
+import 'package:wger/widgets/exercises/exercises.dart';
 import 'package:wger/widgets/exercises/forms.dart';
 
 class AddExerciseScreen extends StatefulWidget {
@@ -176,9 +177,13 @@ class _BasicStepContent extends StatelessWidget {
               onChange: (dynamic value) => print(value),
               onSaved: (dynamic muscles) {
                 if (muscles != null && muscles.isNotEmpty) {
-                  addExercideProvider.primaryMuscles = muscles.cast<Muscle>();
+                  addExercideProvider.secondaryMuscles = muscles.cast<Muscle>();
                 }
               }),
+          MuscleRowWidget(
+            muscles: addExercideProvider.primaryMuscles,
+            musclesSecondary: addExercideProvider.secondaryMuscles,
+          ),
         ],
       ),
     );

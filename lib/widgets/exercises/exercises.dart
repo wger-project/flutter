@@ -117,32 +117,12 @@ class ExerciseDetail extends StatelessWidget {
       AppLocalizations.of(context).muscles,
       style: Theme.of(context).textTheme.headline5,
     ));
-    out.add(Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: PADDING),
-            child: MuscleWidget(
-              muscles: _exercise.muscles,
-              musclesSecondary: _exercise.musclesSecondary,
-              isFront: true,
-            ),
-          ),
-        ),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: PADDING),
-            child: MuscleWidget(
-              muscles: _exercise.muscles,
-              musclesSecondary: _exercise.musclesSecondary,
-              isFront: false,
-            ),
-          ),
-        ),
-      ],
-    ));
+    out.add(
+      MuscleRowWidget(
+        muscles: _exercise.musclesSecondary,
+        musclesSecondary: _exercise.musclesSecondary,
+      ),
+    );
 
     out.add(Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -204,6 +184,43 @@ class ExerciseDetail extends StatelessWidget {
     }
 
     return out;
+  }
+}
+
+class MuscleRowWidget extends StatelessWidget {
+  final List<Muscle> muscles;
+  final List<Muscle> musclesSecondary;
+
+  const MuscleRowWidget({required this.muscles, required this.musclesSecondary});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: MuscleWidget(
+              muscles: muscles,
+              musclesSecondary: musclesSecondary,
+              isFront: true,
+            ),
+          ),
+        ),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: MuscleWidget(
+              muscles: muscles,
+              musclesSecondary: musclesSecondary,
+              isFront: false,
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }
 
