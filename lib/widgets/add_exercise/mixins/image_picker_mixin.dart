@@ -8,7 +8,7 @@ import 'package:wger/providers/add_exercise_provider.dart';
 const validFileExtensions = ['jpg', 'jpeg', 'png', 'webp'];
 const maxFileSize = 20;
 
-mixin ExcerciseImagePickerMixin {
+mixin ExerciseImagePickerMixin {
   bool _validateFileType(int fileLength) {
     final kb = fileLength / 1024;
     final mb = kb / 1024;
@@ -45,7 +45,7 @@ mixin ExcerciseImagePickerMixin {
           return;
         }
       }
-      context.read<AddExerciseProvider>().addExcerciseImages(selectedImages);
+      context.read<AddExerciseProvider>().addExerciseImages(selectedImages);
     }
   }
 }

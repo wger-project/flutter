@@ -2,12 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/widgets/add_exercise/mixins/image_picker_mixin.dart';
 
 import '../../providers/add_exercise_provider.dart';
+import 'mixins/image_picker_mixin.dart';
 
-class PreviewExcercizeImages extends StatelessWidget with ExcerciseImagePickerMixin {
-  PreviewExcercizeImages({
+class PreviewExerciseImages extends StatelessWidget with ExerciseImagePickerMixin {
+  PreviewExerciseImages({
     Key? key,
     required this.selectedimages,
   }) : super(key: key);
@@ -39,7 +39,7 @@ class PreviewExcercizeImages extends StatelessWidget with ExcerciseImagePickerMi
                             child: IconButton(
                               iconSize: 20,
                               onPressed: () =>
-                                  context.read<AddExerciseProvider>().removeExcercise(file.path),
+                                  context.read<AddExerciseProvider>().removeExercise(file.path),
                               color: Colors.white,
                               icon: const Icon(Icons.delete),
                             ),

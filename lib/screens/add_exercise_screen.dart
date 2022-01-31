@@ -217,7 +217,7 @@ class _ImagesStepContent extends StatefulWidget {
   State<_ImagesStepContent> createState() => _ImagesStepContentState();
 }
 
-class _ImagesStepContentState extends State<_ImagesStepContent> with ExcerciseImagePickerMixin {
+class _ImagesStepContentState extends State<_ImagesStepContent> with ExerciseImagePickerMixin {
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -229,9 +229,9 @@ class _ImagesStepContentState extends State<_ImagesStepContent> with ExcerciseIm
             style: Theme.of(context).textTheme.caption,
           ),
           Consumer<AddExerciseProvider>(
-            builder: (ctx, provider, __) => provider.excerciseImages.isNotEmpty
-                ? PreviewExcercizeImages(
-                    selectedimages: provider.excerciseImages,
+            builder: (ctx, provider, __) => provider.exerciseImages.isNotEmpty
+                ? PreviewExerciseImages(
+                    selectedimages: provider.exerciseImages,
                   )
                 : ElevatedButton(
                     onPressed: () => pickImages(context),

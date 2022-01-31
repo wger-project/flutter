@@ -7,8 +7,8 @@ import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/muscle.dart';
 
 class AddExerciseProvider with ChangeNotifier {
-  List<File> get excerciseImages => [..._excerciseImages];
-  final List<File> _excerciseImages = [];
+  List<File> get exerciseImages => [..._exerciseImages];
+  List<File> _exerciseImages = [];
   String? _name;
   List<String> _alternativeNames = [];
   ExerciseCategory? _targetArea;
@@ -44,14 +44,14 @@ class AddExerciseProvider with ChangeNotifier {
     }
   }
 
-  void addExcerciseImages(List<File> excercizes) {
-    _excerciseImages.addAll(excercizes);
+  void addExerciseImages(List<File> exercises) {
+    _exerciseImages.addAll(exercises);
     notifyListeners();
   }
 
-  void removeExcercise(String path) {
-    final file = _excerciseImages.where((element) => element.path == path).first;
-    _excerciseImages.remove(file);
+  void removeExercise(String path) {
+    final file = _exerciseImages.where((element) => element.path == path).first;
+    _exerciseImages.remove(file);
     notifyListeners();
   }
 
