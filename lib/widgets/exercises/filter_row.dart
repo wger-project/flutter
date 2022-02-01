@@ -41,11 +41,10 @@ class _FilterRowState extends State<FilterRow> {
     _exerciseNameController = TextEditingController()
       ..addListener(
         () {
-          final provider =
-              Provider.of<ExercisesProvider>(context, listen: false);
+          final provider = Provider.of<ExercisesProvider>(context, listen: false);
           if (provider.filters!.searchTerm != _exerciseNameController.text) {
-            provider.setFilters(provider.filters!
-                .copyWith(searchTerm: _exerciseNameController.text));
+            provider
+                .setFilters(provider.filters!.copyWith(searchTerm: _exerciseNameController.text));
           }
         },
       );
@@ -63,7 +62,7 @@ class _FilterRowState extends State<FilterRow> {
               decoration: InputDecoration(
                 hintText: '${AppLocalizations.of(context).exerciseName}...',
                 contentPadding: const EdgeInsets.symmetric(horizontal: 10),
-                border: OutlineInputBorder(
+                border: const OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.black),
                 ),
               ),
@@ -75,16 +74,16 @@ class _FilterRowState extends State<FilterRow> {
                 onPressed: () async {
                   showModalBottomSheet(
                     context: context,
-                    shape: RoundedRectangleBorder(
+                    shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(20),
                         topRight: Radius.circular(20),
                       ),
                     ),
-                    builder: (context) => ExerciseFilterModalBody(),
+                    builder: (context) => const ExerciseFilterModalBody(),
                   );
                 },
-                icon: Icon(Icons.filter_alt),
+                icon: const Icon(Icons.filter_alt),
               ),
               PopupMenuButton<ExerciseMoreOption>(
                 itemBuilder: (context) {
@@ -92,7 +91,7 @@ class _FilterRowState extends State<FilterRow> {
                     PopupMenuItem<ExerciseMoreOption>(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
+                        children: const [
                           Text('Add Exercise'),
                           Icon(Icons.add),
                         ],
@@ -101,18 +100,17 @@ class _FilterRowState extends State<FilterRow> {
                     )
                   ];
                 },
-                shape: RoundedRectangleBorder(
-                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
                 onSelected: (ExerciseMoreOption selectedOption) {
                   switch (selectedOption) {
                     case ExerciseMoreOption.ADD_EXERCISE:
-                      Navigator.of(context)
-                          .pushNamed(AddExerciseScreen.routeName);
+                      Navigator.of(context).pushNamed(AddExerciseScreen.routeName);
                       break;
                   }
                 },
-                icon: Icon(Icons.more_vert),
+                icon: const Icon(Icons.more_vert),
               )
             ],
           )
