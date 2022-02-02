@@ -19,7 +19,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/models/exercises/category.dart';
-import 'package:wger/models/exercises/comment.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/image.dart';
@@ -84,7 +83,6 @@ class ExerciseBase extends Equatable {
       List<Muscle>? musclesSecondary,
       List<Equipment>? equipment,
       List<ExerciseImage>? images,
-      List<Comment>? tips,
       ExerciseCategory? category}) {
     this.images = images ?? [];
     this.equipment = equipment ?? [];
@@ -92,8 +90,25 @@ class ExerciseBase extends Equatable {
     this.muscles = muscles ?? [];
     if (category != null) {
       this.category = category;
-      this.categoryId = category.id;
+      categoryId = category.id;
     }
+  }
+
+  /// Returns exercises for the given language
+  ///
+  /// If no translation is found, English will be returned
+  ///
+  /// TODO: don't hard code language code
+  /// TODO: don't just return the first exercise (this won't be necessary anymore
+  ///       when we cleanup the database)
+  Exercise getExercises(String language) {
+    return exercises.firstWhere(
+      (e) => e.language.shortName == language,
+      orElse: () => exercises.firstWhere(
+        (e) => e.language.shortName == 'en',
+        orElse: () => exercises.first,
+      ),
+    );
   }
 
   ExerciseImage? get getMainImage {
@@ -105,7 +120,7 @@ class ExerciseBase extends Equatable {
   }
 
   set setCategory(ExerciseCategory category) {
-    this.categoryId = category.id;
+    categoryId = category.id;
     this.category = category;
   }
 

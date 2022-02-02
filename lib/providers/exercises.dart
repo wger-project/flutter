@@ -58,12 +58,15 @@ class ExercisesProvider with ChangeNotifier {
   static const _languageUrlPath = 'language';
 
   List<ExerciseBase> _exerciseBases = [];
+  set exerciseBases(List<ExerciseBase> exercisesBases) {
+    _exerciseBases = exercisesBases;
+  }
+
   List<ExerciseCategory> _categories = [];
   List<Muscle> _muscles = [];
   List<Equipment> _equipment = [];
   List<Language> _languages = [];
   List<Variation> _variations = [];
-
   List<Exercise> _exercises = [];
   set exercises(List<Exercise> exercises) {
     _exercises = exercises;
@@ -76,20 +79,17 @@ class ExercisesProvider with ChangeNotifier {
     await findByFilters();
   }
 
-  List<Exercise>? _filteredExercises = [];
-  List<Exercise>? get filteredExercises => _filteredExercises;
-  set filteredExercises(List<Exercise>? newFilteredExercises) {
-    _filteredExercises = newFilteredExercises;
+  List<ExerciseBase> _filteredExerciseBases = [];
+  List<ExerciseBase> get filteredExerciseBases => _filteredExerciseBases;
+  set filteredExerciseBases(List<ExerciseBase> newFilteredExercises) {
+    _filteredExerciseBases = newFilteredExercises;
     notifyListeners();
-  }
-
-  List<Exercise>? getFilteredExercisesByLanguage(int languageId) {
-    return _filteredExercises!.where((e) => e.languageId == languageId).toList();
   }
 
   ExercisesProvider(this.baseProvider);
 
   List<Exercise> get items => [..._exercises];
+  List<ExerciseBase> get bases => [..._exerciseBases];
   List<ExerciseCategory> get categories => [..._categories];
   List<Muscle> get muscles => [..._muscles];
   List<Equipment> get equipment => [..._equipment];
@@ -126,23 +126,26 @@ class ExercisesProvider with ChangeNotifier {
   Future<void> findByFilters() async {
     // Filters not initialized
     if (filters == null) {
-      filteredExercises = [];
+      filteredExerciseBases = [];
       return;
     }
 
     // Filters are initialized and nothing is marked
     if (filters!.isNothingMarked && filters!.searchTerm.length <= 1) {
-      filteredExercises = items;
+      filteredExerciseBases = _exerciseBases;
       return;
     }
 
-    filteredExercises = null;
+    filteredExerciseBases = [];
 
-    final filteredItems =
-        filters!.searchTerm.length <= 1 ? items : await searchExercise(filters!.searchTerm);
+    List<ExerciseBase> filteredItems = _exerciseBases;
+    if (filters!.searchTerm.length > 1) {
+      final exercises = await searchExercise(filters!.searchTerm);
+      filteredItems = exercises.map((e) => e.base).toList();
+    }
 
     // Filter by exercise category and equipment (REPLACE WITH HTTP REQUEST)
-    filteredExercises = filteredItems.where((exercise) {
+    filteredExerciseBases = filteredItems.where((exercise) {
       final bool isInAnyCategory = filters!.exerciseCategories.selected.contains(exercise.category);
 
       final bool doesContainAnyEquipment = filters!.equipment.selected.any(
@@ -415,7 +418,7 @@ class ExercisesProvider with ChangeNotifier {
   /// to invalidate it as a result
   Future<void> checkExerciseCacheVersion() async {
     final prefs = await SharedPreferences.getInstance();
-    if (prefs.containsKey(PREFS_EXERCISE_CACHE_VERSION)) {
+    if (false && prefs.containsKey(PREFS_EXERCISE_CACHE_VERSION)) {
       final cacheVersion = prefs.getInt(PREFS_EXERCISE_CACHE_VERSION);
       if (cacheVersion! != CACHE_VERSION) {
         prefs.remove(PREFS_EXERCISES);

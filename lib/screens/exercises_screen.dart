@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/exercises/base.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/exercises/filter_row.dart';
@@ -21,7 +21,7 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
   @override
   Widget build(BuildContext context) {
     //final size = MediaQuery.of(context).size;
-    final exercisesList = Provider.of<ExercisesProvider>(context).filteredExercises;
+    final exercisesList = Provider.of<ExercisesProvider>(context).filteredExerciseBases;
 
     return Scaffold(
       appBar: WgerAppBar(AppLocalizations.of(context).exercises),
@@ -37,7 +37,7 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
                       child: CircularProgressIndicator(),
                     ),
                   )
-                : _ExercisesList(exercisesList: exercisesList),
+                : _ExercisesList(exerciseBaseList: exercisesList),
           ),
         ],
       ),
@@ -54,10 +54,10 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
 class _ExercisesList extends StatelessWidget {
   const _ExercisesList({
     Key? key,
-    required this.exercisesList,
+    required this.exerciseBaseList,
   }) : super(key: key);
 
-  final List<Exercise> exercisesList;
+  final List<ExerciseBase> exerciseBaseList;
 
   @override
   Widget build(BuildContext context) {
@@ -68,17 +68,19 @@ class _ExercisesList extends StatelessWidget {
           thickness: 1,
         );
       },
-      itemCount: exercisesList.length,
+      itemCount: exerciseBaseList.length,
       itemBuilder: (context, index) {
-        final exercise = exercisesList[index];
-        return ExerciseListTile(exercise: exercise);
+        final exercise = exerciseBaseList[index];
+        return ExerciseListTile(
+          exercise: exercise.getExercises(Localizations.localeOf(context).languageCode),
+        );
+
         /*
         return Container(
           height: size.height * 0.175,
           child: ExerciseListTile(exercise: exercise),
         );
-
-         */
+        */
       },
     );
   }

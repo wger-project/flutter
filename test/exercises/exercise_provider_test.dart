@@ -1,71 +1,68 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:http/http.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/exceptions/no_such_entry_exception.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
-import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/language.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/providers/exercises.dart';
 
+import '../../test_data/exercises.dart' as data;
 import '../fixtures/fixture_reader.dart';
 import '../measurements/measurement_provider_test.mocks.dart';
-import '../../test_data/exercises.dart' as data;
 
 main() {
   late MockWgerBaseProvider mockBaseProvider;
   late ExercisesProvider provider;
 
-  String categoryUrl = 'exercisecategory';
-  String muscleUrl = 'muscle';
-  String equipmentUrl = 'equipment';
-  String languageUrl = 'language';
-  String exerciseBaseUrl = 'exercise-base';
-  String searchExerciseUrl = 'exercise/search';
+  const String categoryUrl = 'exercisecategory';
+  const String muscleUrl = 'muscle';
+  const String equipmentUrl = 'equipment';
+  const String languageUrl = 'language';
+  const String searchExerciseUrl = 'exercise/search';
 
-  Uri tCategoryEntriesUri = Uri(
+  final Uri tCategoryEntriesUri = Uri(
     scheme: 'http',
     host: 'localhost',
-    path: 'api/v2/' + categoryUrl + '/',
+    path: 'api/v2/$categoryUrl/',
   );
 
-  Uri tMuscleEntriesUri = Uri(
+  final Uri tMuscleEntriesUri = Uri(
     scheme: 'http',
     host: 'localhost',
-    path: 'api/v2/' + muscleUrl + '/',
+    path: 'api/v2/$muscleUrl/',
   );
 
-  Uri tEquipmentEntriesUri = Uri(
+  final Uri tEquipmentEntriesUri = Uri(
     scheme: 'http',
     host: 'localhost',
-    path: 'api/v2/' + equipmentUrl + '/',
+    path: 'api/v2/$equipmentUrl/',
   );
 
-  Uri tLanguageEntriesUri = Uri(
+  final Uri tLanguageEntriesUri = Uri(
     scheme: 'http',
     host: 'localhost',
-    path: 'api/v2/' + languageUrl + '/',
+    path: 'api/v2/$languageUrl/',
   );
 
-  Uri tSearchByNameUri = Uri(
+  final Uri tSearchByNameUri = Uri(
     scheme: 'http',
     host: 'localhost',
     path: 'api/v2/$searchExerciseUrl/',
   );
 
-  final category1 = ExerciseCategory(id: 1, name: 'Arms');
-  final muscle1 = Muscle(id: 1, name: 'Biceps brachii', isFront: true);
-  final equipment1 = Equipment(id: 1, name: 'Barbell');
-  final language1 = Language(id: 1, shortName: 'de', fullName: 'Deutsch');
+  const category1 = ExerciseCategory(id: 1, name: 'Arms');
+  const muscle1 = Muscle(id: 1, name: 'Biceps brachii', isFront: true);
+  const equipment1 = Equipment(id: 1, name: 'Barbell');
+  const language1 = Language(id: 1, shortName: 'de', fullName: 'Deutsch');
 
-  Map<String, dynamic> tCategoryMap = jsonDecode(fixture('exercise_category_entries.json'));
-  Map<String, dynamic> tMuscleMap = jsonDecode(fixture('exercise_muscles_entries.json'));
-  Map<String, dynamic> tEquipmentMap = jsonDecode(fixture('exercise_equipment_entries.json'));
-  Map<String, dynamic> tLanguageMap = jsonDecode(fixture('exercise_language_entries.json'));
+  final Map<String, dynamic> tCategoryMap = jsonDecode(fixture('exercise_category_entries.json'));
+  final Map<String, dynamic> tMuscleMap = jsonDecode(fixture('exercise_muscles_entries.json'));
+  final Map<String, dynamic> tEquipmentMap = jsonDecode(fixture('exercise_equipment_entries.json'));
+  final Map<String, dynamic> tLanguageMap = jsonDecode(fixture('exercise_language_entries.json'));
 
   setUp(() {
     mockBaseProvider = MockWgerBaseProvider();
@@ -171,7 +168,7 @@ main() {
 
       // assert
       verifyNever(provider.baseProvider.fetch(tSearchByNameUri));
-      expect(provider.filteredExercises, isEmpty);
+      expect(provider.filteredExerciseBases, isEmpty);
     });
 
     group('Filters are not null', () {
@@ -184,28 +181,30 @@ main() {
           equipment: FilterCategory<Equipment>(title: 'Equipment', items: {}),
         );
 
-        provider.exercises = data.getExercise();
+        provider.exercises = data.getTestExercises();
+        provider.exerciseBases = data.getTestExerciseBases();
       });
 
       test('Nothing is selected with no search term', () async {
         // arrange
-        Filters currentFilters = filters;
+        final Filters currentFilters = filters;
 
         // act
         await provider.setFilters(currentFilters);
 
         // assert
         verifyNever(provider.baseProvider.fetch(tSearchByNameUri));
+
         expect(
-          provider.filteredExercises,
-          data.getExercise(),
+          provider.filteredExerciseBases,
+          data.getTestExerciseBases(),
         );
       });
 
       test('A muscle is selected with no search term. Should find results', () async {
         // arrange
-        Filters tFilters = filters.copyWith(
-          exerciseCategories: filters.exerciseCategories.copyWith(items: {category1: true}),
+        final Filters tFilters = filters.copyWith(
+          exerciseCategories: filters.exerciseCategories.copyWith(items: {data.tCategory1: true}),
         );
 
         // act
@@ -213,13 +212,13 @@ main() {
 
         // assert
         verifyNever(provider.baseProvider.fetch(tSearchByNameUri));
-        expect(provider.filteredExercises, [data.getExercise()[0]]);
+        expect(provider.filteredExerciseBases, [data.getTestExercises()[0].base]);
       });
 
       test('A muscle is selected with no search term. Should not find results', () async {
-        // arragne
+        // arrange
         Filters tFilters = filters.copyWith(
-          exerciseCategories: filters.exerciseCategories.copyWith(items: {data.category4: true}),
+          exerciseCategories: filters.exerciseCategories.copyWith(items: {data.tCategory4: true}),
         );
 
         // act
@@ -227,13 +226,13 @@ main() {
 
         // assert
         verifyNever(provider.baseProvider.fetch(tSearchByNameUri));
-        expect(provider.filteredExercises, isEmpty);
+        expect(provider.filteredExerciseBases, isEmpty);
       });
 
       test('An equipment is selected with no search term. Should find results', () async {
-        // arragne
-        Filters tFilters = filters.copyWith(
-          equipment: filters.equipment.copyWith(items: {data.equipment1: true}),
+        // arrange
+        final Filters tFilters = filters.copyWith(
+          equipment: filters.equipment.copyWith(items: {data.tEquipment1: true}),
         );
 
         // act
@@ -241,13 +240,13 @@ main() {
 
         // assert
         verifyNever(provider.baseProvider.fetch(tSearchByNameUri));
-        expect(provider.filteredExercises, [data.getExercise()[0]]);
+        expect(provider.filteredExerciseBases, [data.getTestExerciseBases()[0]]);
       });
 
       test('An equipment is selected with no search term. Should not find results', () async {
-        // arragne
-        Filters tFilters = filters.copyWith(
-          equipment: filters.equipment.copyWith(items: {data.equipment3: true}),
+        // arrange
+        final Filters tFilters = filters.copyWith(
+          equipment: filters.equipment.copyWith(items: {data.tEquipment3: true}),
         );
 
         // act
@@ -255,14 +254,14 @@ main() {
 
         // assert
         verifyNever(provider.baseProvider.fetch(tSearchByNameUri));
-        expect(provider.filteredExercises, isEmpty);
+        expect(provider.filteredExerciseBases, isEmpty);
       });
 
       test('A muscle and equipment is selected and there is a match', () async {
         // arrange
-        Filters tFilters = filters.copyWith(
-          exerciseCategories: filters.exerciseCategories.copyWith(items: {data.category2: true}),
-          equipment: filters.equipment.copyWith(items: {data.equipment2: true}),
+        final Filters tFilters = filters.copyWith(
+          exerciseCategories: filters.exerciseCategories.copyWith(items: {data.tCategory2: true}),
+          equipment: filters.equipment.copyWith(items: {data.tEquipment2: true}),
         );
 
         // act
@@ -270,13 +269,13 @@ main() {
 
         // assert
         verifyNever(provider.baseProvider.fetch(tSearchByNameUri));
-        expect(provider.filteredExercises, [data.getExercise()[1]]);
+        expect(provider.filteredExerciseBases, [data.getTestExerciseBases()[1]]);
       });
 
       test('A muscle and equipment is selected but no match', () async {
         // arrange
-        Filters tFilters = filters.copyWith(
-          exerciseCategories: filters.exerciseCategories.copyWith(items: {data.category2: true}),
+        final Filters tFilters = filters.copyWith(
+          exerciseCategories: filters.exerciseCategories.copyWith(items: {data.tCategory2: true}),
           equipment: filters.equipment.copyWith(items: {equipment1: true}),
         );
 
@@ -285,14 +284,14 @@ main() {
 
         // assert
         verifyNever(provider.baseProvider.fetch(tSearchByNameUri));
-        expect(provider.filteredExercises, isEmpty);
+        expect(provider.filteredExerciseBases, isEmpty);
       });
 
       group('Search term', () {
         late Uri tSearchByNameUri;
         setUp(() {
-          String tSearchTerm = 'press';
-          String tSearchLanguage = 'en';
+          final String tSearchTerm = 'press';
+          final String tSearchLanguage = 'en';
           Map<String, dynamic> query = {'term': tSearchTerm, 'language': tSearchLanguage};
           tSearchByNameUri = Uri(
             scheme: 'http',
@@ -300,7 +299,7 @@ main() {
             path: 'api/v2/$searchExerciseUrl/',
             queryParameters: query,
           );
-          Map<String, dynamic> tSearchResponse =
+          final Map<String, dynamic> tSearchResponse =
               jsonDecode(fixture('exercise_search_entries.json'));
 
           // Mock exercise search
@@ -315,20 +314,23 @@ main() {
 
         test('Should find results from search term', () async {
           // arrange
-          Filters tFilters = filters.copyWith(searchTerm: 'press');
+          final Filters tFilters = filters.copyWith(searchTerm: 'press');
 
           // act
           await provider.setFilters(tFilters);
 
           // assert
           verify(provider.baseProvider.fetch(tSearchByNameUri)).called(1);
-          expect(provider.filteredExercises, [data.getExercise()[0], data.getExercise()[1]]);
+          expect(
+            provider.filteredExerciseBases,
+            [data.getTestExerciseBases()[0], data.getTestExerciseBases()[1]],
+          );
         });
         test('Should find items from selection but should filter them by search term', () async {
           // arrange
-          Filters tFilters = filters.copyWith(
+          final Filters tFilters = filters.copyWith(
             searchTerm: 'press',
-            exerciseCategories: filters.exerciseCategories.copyWith(items: {data.category3: true}),
+            exerciseCategories: filters.exerciseCategories.copyWith(items: {data.tCategory3: true}),
           );
 
           // act
@@ -336,7 +338,7 @@ main() {
 
           // assert
           verify(provider.baseProvider.fetch(tSearchByNameUri)).called(1);
-          expect(provider.filteredExercises, isEmpty);
+          expect(provider.filteredExerciseBases, isEmpty);
         });
       });
     });

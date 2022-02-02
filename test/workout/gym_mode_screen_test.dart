@@ -45,9 +45,9 @@ void main() {
     final mockExerciseProvider = MockExercisesProvider();
     final WorkoutPlan workoutPlan = getWorkout();
 
-    when(mockExerciseProvider.findExerciseById(1)).thenReturn(getExercise()[0]);
-    when(mockExerciseProvider.findExerciseById(2)).thenReturn(getExercise()[1]);
-    when(mockExerciseProvider.findExerciseById(3)).thenReturn(getExercise()[2]);
+    when(mockExerciseProvider.findExerciseById(1)).thenReturn(getTestExercises()[0]);
+    when(mockExerciseProvider.findExerciseById(2)).thenReturn(getTestExercises()[1]);
+    when(mockExerciseProvider.findExerciseById(3)).thenReturn(getTestExercises()[2]);
 
     return ChangeNotifierProvider<WorkoutPlansProvider>(
       create: (context) => WorkoutPlansProvider(
@@ -144,7 +144,7 @@ void main() {
     //
     // Pause
     //
-    expect(find.text('0:00'), findsOneWidget);
+    expect(find.text('0:01'), findsOneWidget);
     expect(find.byType(TimerWidget), findsOneWidget);
     expect(find.byIcon(Icons.close), findsOneWidget);
     expect(find.byIcon(Icons.menu), findsOneWidget);
@@ -165,7 +165,7 @@ void main() {
     //
     // Pause
     //
-    expect(find.text('0:00'), findsOneWidget);
+    expect(find.text('0:01'), findsOneWidget);
     expect(find.byType(TimerWidget), findsOneWidget);
     expect(find.byIcon(Icons.chevron_left), findsOneWidget);
     expect(find.byIcon(Icons.close), findsOneWidget);

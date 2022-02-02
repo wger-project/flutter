@@ -49,7 +49,8 @@ class ExerciseListTile extends StatelessWidget {
           ),
         ),
       ),
-      trailing: Text(exercise.language.shortName),
+      trailing:
+          Text('${exercise.language.shortName} base: ${exercise.baseId}, exId: ${exercise.id}'),
       title: Text(
         exercise.name,
         //style: theme.textTheme.headline6,
@@ -57,7 +58,7 @@ class ExerciseListTile extends StatelessWidget {
         maxLines: 2,
       ),
       subtitle: Text(
-        exercise.category.name,
+        '${exercise.category.name} / ${exercise.equipment.map((e) => e.name).toList().join(', ')}',
       ),
       onTap: () {
         Navigator.pushNamed(context, ExerciseDetailScreen.routeName, arguments: exercise);

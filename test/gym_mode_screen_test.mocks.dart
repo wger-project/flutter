@@ -23,13 +23,11 @@ import 'package:wger/providers/exercises.dart' as _i8;
 // ignore_for_file: prefer_const_constructors
 // ignore_for_file: unnecessary_parenthesis
 
-class _FakeWgerBaseProvider_0 extends _i1.Fake implements _i2.WgerBaseProvider {
-}
+class _FakeWgerBaseProvider_0 extends _i1.Fake implements _i2.WgerBaseProvider {}
 
 class _FakeExercise_1 extends _i1.Fake implements _i3.Exercise {}
 
-class _FakeExerciseCategory_2 extends _i1.Fake implements _i4.ExerciseCategory {
-}
+class _FakeExerciseCategory_2 extends _i1.Fake implements _i4.ExerciseCategory {}
 
 class _FakeEquipment_3 extends _i1.Fake implements _i5.Equipment {}
 
@@ -47,45 +45,43 @@ class MockExercisesProvider extends _i1.Mock implements _i8.ExercisesProvider {
 
   @override
   _i2.WgerBaseProvider get baseProvider =>
-      (super.noSuchMethod(Invocation.getter(#baseProvider),
-          returnValue: _FakeWgerBaseProvider_0()) as _i2.WgerBaseProvider);
+      (super.noSuchMethod(Invocation.getter(#baseProvider), returnValue: _FakeWgerBaseProvider_0())
+          as _i2.WgerBaseProvider);
   @override
   set exercises(List<_i3.Exercise>? exercises) =>
-      super.noSuchMethod(Invocation.setter(#exercises, exercises),
+      super.noSuchMethod(Invocation.setter(#exercises, exercises), returnValueForMissingStub: null);
+  @override
+  set filteredExerciseBases(List<_i3.Exercise>? newfilteredExercises) =>
+      super.noSuchMethod(Invocation.setter(#filteredExercises, newfilteredExercises),
           returnValueForMissingStub: null);
   @override
-  set filteredExercises(List<_i3.Exercise>? newfilteredExercises) => super
-      .noSuchMethod(Invocation.setter(#filteredExercises, newfilteredExercises),
-          returnValueForMissingStub: null);
-  @override
-  List<_i3.Exercise> get items => (super.noSuchMethod(Invocation.getter(#items),
-      returnValue: <_i3.Exercise>[]) as List<_i3.Exercise>);
+  List<_i3.Exercise> get items =>
+      (super.noSuchMethod(Invocation.getter(#items), returnValue: <_i3.Exercise>[])
+          as List<_i3.Exercise>);
   @override
   List<_i4.ExerciseCategory> get categories =>
-      (super.noSuchMethod(Invocation.getter(#categories),
-          returnValue: <_i4.ExerciseCategory>[]) as List<_i4.ExerciseCategory>);
+      (super.noSuchMethod(Invocation.getter(#categories), returnValue: <_i4.ExerciseCategory>[])
+          as List<_i4.ExerciseCategory>);
   @override
   bool get hasListeners =>
-      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false)
-          as bool);
+      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
   @override
   _i9.Future<void> setFilters(_i8.Filters? newFilters) =>
       (super.noSuchMethod(Invocation.method(#setFilters, [newFilters]),
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future<void>.value()) as _i9.Future<void>);
   @override
-  _i9.Future<void> findByFilters() =>
-      (super.noSuchMethod(Invocation.method(#findByFilters, []),
-          returnValue: Future<void>.value(),
-          returnValueForMissingStub: Future<void>.value()) as _i9.Future<void>);
+  _i9.Future<void> findByFilters() => (super.noSuchMethod(Invocation.method(#findByFilters, []),
+      returnValue: Future<void>.value(),
+      returnValueForMissingStub: Future<void>.value()) as _i9.Future<void>);
   @override
   List<_i3.Exercise> findByCategory(_i4.ExerciseCategory? category) =>
       (super.noSuchMethod(Invocation.method(#findByCategory, [category]),
           returnValue: <_i3.Exercise>[]) as List<_i3.Exercise>);
   @override
-  _i3.Exercise findExerciseById(int? id) =>
-      (super.noSuchMethod(Invocation.method(#findExerciseById, [id]),
-          returnValue: _FakeExercise_1()) as _i3.Exercise);
+  _i3.Exercise findExerciseById(int? id) => (super
+          .noSuchMethod(Invocation.method(#findExerciseById, [id]), returnValue: _FakeExercise_1())
+      as _i3.Exercise);
   @override
   _i4.ExerciseCategory findCategoryById(int? id) =>
       (super.noSuchMethod(Invocation.method(#findCategoryById, [id]),
@@ -96,12 +92,12 @@ class MockExercisesProvider extends _i1.Mock implements _i8.ExercisesProvider {
           returnValue: _FakeEquipment_3()) as _i5.Equipment);
   @override
   _i6.Muscle findMuscleById(int? id) =>
-      (super.noSuchMethod(Invocation.method(#findMuscleById, [id]),
-          returnValue: _FakeMuscle_4()) as _i6.Muscle);
+      (super.noSuchMethod(Invocation.method(#findMuscleById, [id]), returnValue: _FakeMuscle_4())
+          as _i6.Muscle);
   @override
-  _i7.Language findLanguageById(int? id) =>
-      (super.noSuchMethod(Invocation.method(#findLanguageById, [id]),
-          returnValue: _FakeLanguage_5()) as _i7.Language);
+  _i7.Language findLanguageById(int? id) => (super
+          .noSuchMethod(Invocation.method(#findLanguageById, [id]), returnValue: _FakeLanguage_5())
+      as _i7.Language);
   @override
   _i9.Future<void> fetchAndSetCategories() =>
       (super.noSuchMethod(Invocation.method(#fetchAndSetCategories, []),
@@ -130,23 +126,19 @@ class MockExercisesProvider extends _i1.Mock implements _i8.ExercisesProvider {
   @override
   _i9.Future<_i3.Exercise> fetchAndSetExercise(int? exerciseId) =>
       (super.noSuchMethod(Invocation.method(#fetchAndSetExercise, [exerciseId]),
-              returnValue: Future<_i3.Exercise>.value(_FakeExercise_1()))
-          as _i9.Future<_i3.Exercise>);
+          returnValue: Future<_i3.Exercise>.value(_FakeExercise_1())) as _i9.Future<_i3.Exercise>);
   @override
-  List<_i10.ExerciseBase> mapImages(
-          dynamic data, List<_i10.ExerciseBase>? bases) =>
+  List<_i10.ExerciseBase> mapImages(dynamic data, List<_i10.ExerciseBase>? bases) =>
       (super.noSuchMethod(Invocation.method(#mapImages, [data, bases]),
           returnValue: <_i10.ExerciseBase>[]) as List<_i10.ExerciseBase>);
   @override
-  List<_i10.ExerciseBase> setBaseData(
-          dynamic data, List<_i3.Exercise>? exercises) =>
+  List<_i10.ExerciseBase> setBaseData(dynamic data, List<_i3.Exercise>? exercises) =>
       (super.noSuchMethod(Invocation.method(#setBaseData, [data, exercises]),
           returnValue: <_i10.ExerciseBase>[]) as List<_i10.ExerciseBase>);
   @override
-  List<dynamic> mapBases(
-          List<_i10.ExerciseBase>? bases, List<_i3.Exercise>? exercises) =>
-      (super.noSuchMethod(Invocation.method(#mapBases, [bases, exercises]),
-          returnValue: <dynamic>[]) as List<dynamic>);
+  List<dynamic> mapBases(List<_i10.ExerciseBase>? bases, List<_i3.Exercise>? exercises) => (super
+          .noSuchMethod(Invocation.method(#mapBases, [bases, exercises]), returnValue: <dynamic>[])
+      as List<dynamic>);
   @override
   List<_i3.Exercise> mapLanguages(List<_i3.Exercise>? exercises) =>
       (super.noSuchMethod(Invocation.method(#mapLanguages, [exercises]),
@@ -170,27 +162,23 @@ class MockExercisesProvider extends _i1.Mock implements _i8.ExercisesProvider {
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future<void>.value()) as _i9.Future<void>);
   @override
-  _i9.Future<List<_i3.Exercise>> searchExercise(String? name,
-          [String? languageCode = r'en']) =>
-      (super.noSuchMethod(
-              Invocation.method(#searchExercise, [name, languageCode]),
+  _i9.Future<List<_i3.Exercise>> searchExercise(String? name, [String? languageCode = r'en']) =>
+      (super.noSuchMethod(Invocation.method(#searchExercise, [name, languageCode]),
               returnValue: Future<List<_i3.Exercise>>.value(<_i3.Exercise>[]))
           as _i9.Future<List<_i3.Exercise>>);
   @override
   String toString() => super.toString();
   @override
-  void addListener(_i11.VoidCallback? listener) =>
-      super.noSuchMethod(Invocation.method(#addListener, [listener]),
-          returnValueForMissingStub: null);
+  void addListener(_i11.VoidCallback? listener) => super
+      .noSuchMethod(Invocation.method(#addListener, [listener]), returnValueForMissingStub: null);
   @override
   void removeListener(_i11.VoidCallback? listener) =>
       super.noSuchMethod(Invocation.method(#removeListener, [listener]),
           returnValueForMissingStub: null);
   @override
-  void dispose() => super.noSuchMethod(Invocation.method(#dispose, []),
-      returnValueForMissingStub: null);
+  void dispose() =>
+      super.noSuchMethod(Invocation.method(#dispose, []), returnValueForMissingStub: null);
   @override
   void notifyListeners() =>
-      super.noSuchMethod(Invocation.method(#notifyListeners, []),
-          returnValueForMissingStub: null);
+      super.noSuchMethod(Invocation.method(#notifyListeners, []), returnValueForMissingStub: null);
 }
