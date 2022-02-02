@@ -31,7 +31,7 @@ class Gallery extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<GalleryProvider>(context, listen: false);
+    final provider = Provider.of<GalleryProvider>(context);
 
     return Padding(
       padding: const EdgeInsets.all(5),
