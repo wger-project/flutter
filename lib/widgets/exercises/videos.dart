@@ -38,11 +38,11 @@ class _ExerciseVideoWidgetState extends State<ExerciseVideoWidget> {
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.network(widget.video.url)
-      ..initialize().then((_) {
-        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-        setState(() {});
-      });
+    _controller = VideoPlayerController.network(widget.video.url);
+    _controller.addListener(() {
+      setState(() {});
+    });
+    _controller.initialize().then((_) => setState(() {}));
   }
 
   @override
