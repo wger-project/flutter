@@ -520,5 +520,41 @@
   "carbohydrates": "Углеводы",
   "@carbohydrates": {},
   "fat": "Жиры",
-  "@fat": {}
+  "@fat": {},
+  "productNotFound": "Продукт не найден",
+  "@productNotFound": {
+    "description": "Header label for dialog when product is not found with barcode"
+  },
+  "productNotFoundDescription": "Продукт со отсканированным штрихкодом {barcode} не найден в базе данных wger",
+  "@productNotFoundDescription": {
+    "description": "Dialog info when product is not found with barcode",
+    "type": "text",
+    "placeholders": {
+      "barcode": {}
+    }
+  },
+  "scanBarcode": "Сканировать штрихкод",
+  "@scanBarcode": {
+    "description": "Label for scan barcode button"
+  },
+  "close": "Закрыть",
+  "@close": {
+    "description": "Translation for close"
+  },
+  "weekAverage": "В среднем за 7 дней",
+  "@weekAverage": {
+    "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
+  },
+  "productFound": "Продукт найден",
+  "@productFound": {
+    "description": "Header label for dialog when product is found with barcode"
+  },
+  "productFoundDescription": "Штрихкод соответствует этому продукту: {productName}. Вы хотите продолжить?",
+  "@productFoundDescription": {
+    "description": "Dialog info when product is found with barcode",
+    "type": "text",
+    "placeholders": {
+      "productName": {}
+    }
+  }
 }
