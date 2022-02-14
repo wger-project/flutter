@@ -520,5 +520,41 @@
   "searchIngredient": "Traži sastojak",
   "@searchIngredient": {
     "description": "Label on ingredient search form"
+  },
+  "weekAverage": "Sedmodnevni prosjek",
+  "@weekAverage": {
+    "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
+  },
+  "productFound": "Pronađeni proizvod",
+  "@productFound": {
+    "description": "Header label for dialog when product is found with barcode"
+  },
+  "productFoundDescription": "Barkod odgovara ovom proizvodu: {productName}. Želiš li nastaviti?",
+  "@productFoundDescription": {
+    "description": "Dialog info when product is found with barcode",
+    "type": "text",
+    "placeholders": {
+      "productName": {}
+    }
+  },
+  "productNotFound": "Proizvod nije pronađen",
+  "@productNotFound": {
+    "description": "Header label for dialog when product is not found with barcode"
+  },
+  "productNotFoundDescription": "Proizvod sa skeniranim barkodom {barcode} nije pronađen u wger bazi podataka",
+  "@productNotFoundDescription": {
+    "description": "Dialog info when product is not found with barcode",
+    "type": "text",
+    "placeholders": {
+      "barcode": {}
+    }
+  },
+  "scanBarcode": "Skeniraj barkod",
+  "@scanBarcode": {
+    "description": "Label for scan barcode button"
+  },
+  "close": "Zatvori",
+  "@close": {
+    "description": "Translation for close"
   }
 }
