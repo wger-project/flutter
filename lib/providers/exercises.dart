@@ -122,7 +122,7 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
   Future<void> fetchAndSetExercises() async {
     // Load exercises from cache, if available
     final prefs = await SharedPreferences.getInstance();
-    if (false && prefs.containsKey(PREFS_EXERCISES)) {
+    if (prefs.containsKey(PREFS_EXERCISES)) {
       final exerciseData = json.decode(prefs.getString(PREFS_EXERCISES)!);
       if (DateTime.parse(exerciseData['expiresIn']).isAfter(DateTime.now())) {
         exerciseData['exercises'].forEach((e) => _exercises.add(Exercise.fromJson(e)));
