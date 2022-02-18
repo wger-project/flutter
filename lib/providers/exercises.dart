@@ -39,6 +39,7 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
         super(auth, client);
 
   static const daysToCache = 7;
+  static const CACHE_VERSION = 2;
 
   static const exerciseInfoUrlPath = 'exerciseinfo';
   static const exerciseSearchPath = 'exercise/search';
@@ -119,7 +120,32 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
     }
   }
 
+  /// Checks the required cache version
+  ///
+  /// This is needed since the content of the exercise cache can change and we need
+  /// to invalidate it as a result
+  Future<void> checkExerciseCacheVersion() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey(PREFS_EXERCISE_CACHE_VERSION)) {
+      final cacheVersion = prefs.getInt(PREFS_EXERCISE_CACHE_VERSION);
+
+      // Cache has has a different version, reset
+      if (cacheVersion! != CACHE_VERSION) {
+        await prefs.remove(PREFS_EXERCISES);
+      }
+      await prefs.setInt(PREFS_EXERCISE_CACHE_VERSION, CACHE_VERSION);
+
+      // Cache has no version key, reset
+    } else {
+      await prefs.remove(PREFS_EXERCISES);
+      await prefs.setInt(PREFS_EXERCISE_CACHE_VERSION, CACHE_VERSION);
+    }
+  }
+
   Future<void> fetchAndSetExercises() async {
+    // Check cache version
+    await checkExerciseCacheVersion();
+
     // Load exercises from cache, if available
     final prefs = await SharedPreferences.getInstance();
     if (prefs.containsKey(PREFS_EXERCISES)) {
@@ -155,7 +181,7 @@ class ExercisesProvider extends WgerBaseProvider with ChangeNotifier {
       };
       log("Saved ${_exercises.length} exercises to cache. Valid till ${exerciseData['expiresIn']}");
 
-      prefs.setString(PREFS_EXERCISES, json.encode(exerciseData));
+      await prefs.setString(PREFS_EXERCISES, json.encode(exerciseData));
       notifyListeners();
     } on MissingRequiredKeysException catch (error) {
       log(error.missingKeys.toString());
