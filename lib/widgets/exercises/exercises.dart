@@ -39,6 +39,9 @@ class ExerciseDetail extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Category and equipment
+          getCategoriesAndEquipment(),
+
           // Videos
           ...getVideos(),
 
@@ -180,6 +183,21 @@ class ExerciseDetail extends StatelessWidget {
     return out;
   }
 
+  Widget getCategoriesAndEquipment() {
+    final List<Widget> out = [];
+
+    out.add(Chip(
+      label: Text(_exercise.categoryObj.name),
+    ));
+    if (_exercise.equipment.isNotEmpty) {
+      _exercise.equipment.map((e) => Chip(label: Text(e.name))).forEach((element) {
+        out.add(element);
+      });
+    }
+    out.add(const SizedBox(height: PADDING));
+    return Row(children: [...out]);
+  }
+
   List<Widget> getVideos() {
     // TODO: add carousel for the other videos
     final List<Widget> out = [];
@@ -190,7 +208,6 @@ class ExerciseDetail extends StatelessWidget {
 
       out.add(const SizedBox(height: PADDING));
     }
-
     return out;
   }
 }
