@@ -22,6 +22,7 @@ import 'package:wger/models/exercises/comment.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/image.dart';
 import 'package:wger/models/exercises/muscle.dart';
+import 'package:wger/models/exercises/video.dart';
 
 part 'exercise.g.dart';
 
@@ -60,6 +61,9 @@ class Exercise {
   @JsonKey(required: true)
   List<ExerciseImage> images = [];
 
+  @JsonKey(required: true)
+  List<Video> videos = [];
+
   @JsonKey(required: true, name: 'comments')
   List<Comment> tips = [];
 
@@ -73,10 +77,12 @@ class Exercise {
       List<Muscle>? musclesSecondary,
       List<Equipment>? equipment,
       List<ExerciseImage>? images,
+      List<Video>? videos,
       List<Comment>? tips,
       ExerciseCategory? category}) {
     this.tips = tips ?? [];
     this.images = images ?? [];
+    this.videos = videos ?? [];
     this.equipment = equipment ?? [];
     this.musclesSecondary = musclesSecondary ?? [];
     this.muscles = muscles ?? [];

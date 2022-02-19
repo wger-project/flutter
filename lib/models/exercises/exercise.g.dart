@@ -20,6 +20,7 @@ Exercise _$ExerciseFromJson(Map<String, dynamic> json) {
       'muscles_secondary',
       'equipment',
       'images',
+      'videos',
       'comments'
     ],
   );
@@ -41,10 +42,14 @@ Exercise _$ExerciseFromJson(Map<String, dynamic> json) {
     images: (json['images'] as List<dynamic>?)
         ?.map((e) => ExerciseImage.fromJson(e as Map<String, dynamic>))
         .toList(),
+    videos: (json['videos'] as List<dynamic>?)
+        ?.map((e) => Video.fromJson(e as Map<String, dynamic>))
+        .toList(),
     tips: (json['comments'] as List<dynamic>?)
         ?.map((e) => Comment.fromJson(e as Map<String, dynamic>))
         .toList(),
-  )..categoryObj = ExerciseCategory.fromJson(json['category'] as Map<String, dynamic>);
+  )..categoryObj =
+      ExerciseCategory.fromJson(json['category'] as Map<String, dynamic>);
 }
 
 Map<String, dynamic> _$ExerciseToJson(Exercise instance) => <String, dynamic>{
@@ -55,8 +60,10 @@ Map<String, dynamic> _$ExerciseToJson(Exercise instance) => <String, dynamic>{
       'description': instance.description,
       'category': instance.categoryObj.toJson(),
       'muscles': instance.muscles.map((e) => e.toJson()).toList(),
-      'muscles_secondary': instance.musclesSecondary.map((e) => e.toJson()).toList(),
+      'muscles_secondary':
+          instance.musclesSecondary.map((e) => e.toJson()).toList(),
       'equipment': instance.equipment.map((e) => e.toJson()).toList(),
       'images': instance.images.map((e) => e.toJson()).toList(),
+      'videos': instance.videos.map((e) => e.toJson()).toList(),
       'comments': instance.tips.map((e) => e.toJson()).toList(),
     };
