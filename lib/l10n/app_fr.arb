@@ -532,5 +532,9 @@
     "description": "Label on ingredient search form"
   },
   "logIngredient": "Sauvegarder dans le journal nutritionnel",
-  "@logIngredient": {}
+  "@logIngredient": {},
+  "close": "Fermer",
+  "@close": {
+    "description": "Translation for close"
+  }
 }

@@ -43,6 +43,9 @@ class ExercisesProvider with ChangeNotifier {
   static const EXERCISE_CACHE_DAYS = 7;
   static const CACHE_VERSION = 2;
 
+  static const daysToCache = 7;
+  static const CACHE_VERSION = 2;
+
   static const _exerciseInfoUrlPath = 'exerciseinfo';
   static const _exerciseBaseUrlPath = 'exercise-base';
   static const _exerciseUrlPath = 'exercise';
@@ -347,6 +350,28 @@ class ExercisesProvider with ChangeNotifier {
     }
   }
 
+  /// Checks the required cache version
+  ///
+  /// This is needed since the content of the exercise cache can change and we need
+  /// to invalidate it as a result
+  Future<void> checkExerciseCacheVersion() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey(PREFS_EXERCISE_CACHE_VERSION)) {
+      final cacheVersion = prefs.getInt(PREFS_EXERCISE_CACHE_VERSION);
+
+      // Cache has has a different version, reset
+      if (cacheVersion! != CACHE_VERSION) {
+        await prefs.remove(PREFS_EXERCISES);
+      }
+      await prefs.setInt(PREFS_EXERCISE_CACHE_VERSION, CACHE_VERSION);
+
+      // Cache has no version key, reset
+    } else {
+      await prefs.remove(PREFS_EXERCISES);
+      await prefs.setInt(PREFS_EXERCISE_CACHE_VERSION, CACHE_VERSION);
+    }
+  }
+
   List<ExerciseBase> mapImages(dynamic data, List<ExerciseBase> bases) {
     final List<ExerciseImage> images =
         data.map<ExerciseImage>((e) => ExerciseImage.fromJson(e)).toList();
@@ -432,6 +457,8 @@ class ExercisesProvider with ChangeNotifier {
 
   Future<void> fetchAndSetExercises() async {
     clear();
+
+    // Load exercises from cache, if available
     final prefs = await SharedPreferences.getInstance();
     await checkExerciseCacheVersion();
 
@@ -513,7 +540,7 @@ class ExercisesProvider with ChangeNotifier {
       };
       log("Saved ${_exercises.length} exercises to cache. Valid till ${cacheData['expiresIn']}");
 
-      prefs.setString(PREFS_EXERCISES, json.encode(cacheData));
+      await prefs.setString(PREFS_EXERCISES, json.encode(cacheData));
       _initFilters();
       notifyListeners();
     } on MissingRequiredKeysException catch (error) {

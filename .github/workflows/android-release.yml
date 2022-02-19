@@ -25,11 +25,11 @@ jobs:
         uses: subosito/flutter-action@v1
         with:
           channel: 'stable'
-          flutter-version: '2.5.x'
+          flutter-version: '2.10.x'
 
       - name: Decrypt config files
         run: |
-          cd ./fastlane/android/envfiles
+          cd ./fastlane/metadata/envfiles
           chmod +x ./decrypt_secrets.sh
           ./decrypt_secrets.sh
         env:
@@ -81,7 +81,6 @@ jobs:
         uses: maierj/fastlane-action@v2.1.0
         with:
           lane: production
-          subdirectory: android
 
       - name: Make Github release
         uses: softprops/action-gh-release@v1

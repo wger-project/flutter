@@ -128,7 +128,7 @@ class NutritionalPlanScreen extends StatelessWidget {
                         builder: (context, value, child) =>
                             NutritionalPlanDetailWidget(_nutritionalPlan),
                       ),
-          )
+          ),
         ],
       ),
     );

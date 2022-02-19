@@ -327,6 +327,10 @@
   "@logged": {
     "description": "Header for the column of 'logged' nutritional values, i.e. what was eaten"
   },
+  "weekAverage": "7 day average",
+  "@weekAverage": {
+    "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
+  },
   "difference": "Difference",
   "percentEnergy": "Percent of energy",
   "gPerBodyKg": "g per body kg",
@@ -516,6 +520,40 @@
   },
   "appUpdateTitle" : "Update needed",
   "appUpdateContent" : "This version of the app is not compatible with the server, please update your application.",
+
+  "productFound": "Product found",
+  "@productFound": {
+    "description": "Header label for dialog when product is found with barcode"
+  },
+
+  "productFoundDescription": "The barcode corresponds to this product: {productName}. Do you want to continue?",
+  "@productFoundDescription": {
+    "description": "Dialog info when product is found with barcode",
+    "type": "text",
+    "placeholders": {
+      "productName": {}
+    }
+  },
+  "productNotFound": "Product not found",
+  "@productNotFound": {
+    "description": "Header label for dialog when product is not found with barcode"
+  },
+  "productNotFoundDescription": "The product with the scanned barcode {barcode} was not found in the wger database",
+  "@productNotFoundDescription": {
+    "description": "Dialog info when product is not found with barcode",
+    "type": "text",
+    "placeholders": {
+      "barcode": {}
+    }
+  },
+  "scanBarcode": "Scan barcode",
+  "@scanBarcode": {
+    "description": "Label for scan barcode button"
+  },
+  "close": "Close",
+  "@close": {
+    "description": "Translation for close"
+  },
   "add_exercise_image_license": "Images must be compatible with the CC BY SA license. If in doubt, upload only photos you've taken yourself.",
   "variations": "Variations",
   "@variations": {

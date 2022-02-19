@@ -26,6 +26,7 @@ import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/image.dart';
 import 'package:wger/models/exercises/language.dart';
 import 'package:wger/models/exercises/muscle.dart';
+import 'package:wger/models/exercises/video.dart';
 
 part 'exercise.g.dart';
 

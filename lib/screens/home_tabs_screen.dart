@@ -83,7 +83,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
       final measurementProvider = Provider.of<MeasurementProvider>(context, listen: false);
 
       // Base data
-      log('base data');
+      log('Loading base data');
       await Future.wait([
         workoutPlansProvider.fetchAndSetUnits(),
         nutritionPlansProvider.fetchIngredientsFromCache(),
@@ -91,7 +91,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
       ]);
 
       // Plans, weight and gallery
-      log('Plans, weight, measurements and gallery');
+      log('Loading plans, weight, measurements and gallery');
       await Future.wait([
         galleryProvider.fetchAndSetGallery(),
         nutritionPlansProvider.fetchAndSetAllPlansSparse(),
@@ -101,14 +101,14 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
       ]);
 
       // Current nutritional plan
-      log('Current nutritional plan');
+      log('Loading current nutritional plan');
       if (nutritionPlansProvider.currentPlan != null) {
         final plan = nutritionPlansProvider.currentPlan!;
         await nutritionPlansProvider.fetchAndSetPlanFull(plan.id!);
       }
 
       // Current workout plan
-      log('Current workout plan');
+      log('Loading current workout plan');
       if (workoutPlansProvider.activePlan != null) {
         final planId = workoutPlansProvider.activePlan!.id!;
         await workoutPlansProvider.fetchAndSetWorkoutPlanFull(planId);

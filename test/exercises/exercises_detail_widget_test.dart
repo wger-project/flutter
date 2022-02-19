@@ -50,13 +50,12 @@ void main() {
 
     expect(find.text('Arms'), findsOneWidget, reason: 'Category');
 
-    //expect(find.text('Equipment'), findsOneWidget);
-    //expect(find.text('Bench'), findsOneWidget, reason: 'Equipment');
-    //expect(find.text('Dumbbell'), findsOneWidget, reason: 'Equipment');
+    expect(find.text('Bench'), findsOneWidget, reason: 'Equipment');
+    expect(find.text('Dumbbell'), findsOneWidget, reason: 'Equipment');
 
-    expect(find.text('Muscles'), findsNWidgets(2));
-    expect(find.text('Flutterus maximus'), findsOneWidget, reason: 'Main muscles');
-    expect(find.text('Biceps'), findsOneWidget, reason: 'Main muscles');
+    expect(find.text('Muscles'), findsNWidgets(2), reason: 'One header, one sub header');
+    expect(find.text('Flutterus maximus'), findsOneWidget, reason: 'Muscles');
+    expect(find.text('Biceps'), findsOneWidget, reason: 'Muscles');
 
     expect(find.text('Secondary muscles'), findsOneWidget);
     expect(

@@ -254,7 +254,7 @@
   "@loadingText": {
     "description": "Text to show when entries are being loaded in the background: Loading..."
   },
-  "edit": "修改",
+  "edit": "编辑",
   "@edit": {},
   "noWeightEntries": "您还没有记录过体重",
   "@noWeightEntries": {
@@ -324,7 +324,7 @@
   "@date": {
     "description": "The date of a workout log or body weight entry"
   },
-  "weight": "体重",
+  "weight": "重量",
   "@weight": {
     "description": "The weight of a workout log or body weight entry"
   },
@@ -338,7 +338,7 @@
   "@nutritionalPlans": {},
   "nutritionalDiary": "摄食日记",
   "@nutritionalDiary": {},
-  "nutritionalPlan": "营养规划",
+  "nutritionalPlan": "饮食计划",
   "@nutritionalPlan": {},
   "logMeal": "记录用餐",
   "@logMeal": {},
@@ -450,5 +450,103 @@
   "plateCalculatorNotDivisible": "达不到预定重量",
   "@plateCalculatorNotDivisible": {
     "description": "Error message when the current weight is not reachable with plates (e.g. 33.1 kg)"
+  },
+  "proteinShort": "蛋白质",
+  "@proteinShort": {
+    "description": "The first letter or short name of the word 'Protein', used in overviews"
+  },
+  "productNotFoundDescription": "条形码{barcode}的产品不在wger数据库中",
+  "@productNotFoundDescription": {
+    "description": "Dialog info when product is not found with barcode",
+    "type": "text",
+    "placeholders": {
+      "barcode": {}
+    }
+  },
+  "weekAverage": "7天平均",
+  "@weekAverage": {
+    "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
+  },
+  "productFoundDescription": "对应此产品的条形码为{productName}。是否继续？{productName}",
+  "@productFoundDescription": {
+    "description": "Dialog info when product is found with barcode",
+    "type": "text",
+    "placeholders": {
+      "productName": {}
+    }
+  },
+  "measurement": "测量",
+  "@measurement": {},
+  "macronutrients": "常量营养元素",
+  "@macronutrients": {},
+  "difference": "差异",
+  "@difference": {},
+  "percentEnergy": "每日能量百分比",
+  "@percentEnergy": {},
+  "gPerBodyKg": "克每千克体重",
+  "@gPerBodyKg": {
+    "description": "Label used for total sums of e.g. calories or similar in grams per Kg of body weight"
+  },
+  "total": "总量",
+  "@total": {
+    "description": "Label used for total sums of e.g. calories or similar"
+  },
+  "carbohydratesShort": "碳水化合物",
+  "@carbohydratesShort": {
+    "description": "The first letter or short name of the word 'Carbohydrates', used in overviews"
+  },
+  "fatShort": "脂肪",
+  "@fatShort": {
+    "description": "The first letter or short name of the word 'Fat', used in overviews"
+  },
+  "recentlyUsedIngredients": "最近添加的饮食",
+  "@recentlyUsedIngredients": {
+    "description": "A message when a user adds a new ingredient to a meal."
+  },
+  "dataCopied": "数据已添加",
+  "@dataCopied": {
+    "description": "Snackbar message to show on copying data to a new log entry"
+  },
+  "appUpdateTitle": "需要更新",
+  "@appUpdateTitle": {},
+  "appUpdateContent": "此版本的应用程序与服务器端不符，请更新应用程序。",
+  "@appUpdateContent": {},
+  "productFound": "产品已发现",
+  "@productFound": {
+    "description": "Header label for dialog when product is found with barcode"
+  },
+  "productNotFound": "产品未发现",
+  "@productNotFound": {
+    "description": "Header label for dialog when product is not found with barcode"
+  },
+  "scanBarcode": "扫描条形码",
+  "@scanBarcode": {
+    "description": "Label for scan barcode button"
+  },
+  "close": "关闭",
+  "@close": {
+    "description": "Translation for close"
+  },
+  "logIngredient": "保存至营养日志",
+  "@logIngredient": {},
+  "searchIngredient": "搜索营养成分表",
+  "@searchIngredient": {
+    "description": "Label on ingredient search form"
+  },
+  "measurements": "测量值",
+  "@measurements": {
+    "description": "Categories for the measurements such as biceps size, body fat, etc."
+  },
+  "measurementCategoriesHelpText": "测量类别，如“上臂围”或“体脂”",
+  "@measurementCategoriesHelpText": {},
+  "measurementEntriesHelpText": "用于度量的单位，如\"cm\"或\"%\"。",
+  "@measurementEntriesHelpText": {},
+  "value": "数值",
+  "@value": {
+    "description": "The value of a measurement entry"
+  },
+  "energyShort": "热量",
+  "@energyShort": {
+    "description": "The first letter or short name of the word 'Energy', used in overviews"
   }
 }

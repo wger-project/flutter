@@ -206,6 +206,17 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
           ),
           const Padding(padding: EdgeInsets.all(8.0)),
           Text(
+            '${AppLocalizations.of(context).planned} / ${AppLocalizations.of(context).logged} / ${AppLocalizations.of(context).weekAverage}',
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.headline6,
+          ),
+          Container(
+            padding: const EdgeInsets.all(15),
+            height: 300,
+            child: NutritionalPlanHatchBarChartWidget(_nutritionalPlan),
+          ),
+          const Padding(padding: EdgeInsets.all(8.0)),
+          Text(
             AppLocalizations.of(context).nutritionalDiary,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.headline6,
@@ -243,7 +254,7 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                     .reversed,
               ],
             ),
-          ),
+          )
         ],
       ),
     );
