@@ -23,6 +23,7 @@ import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/image.dart';
 import 'package:wger/models/exercises/muscle.dart';
+import 'package:wger/models/exercises/video.dart';
 
 part 'base.g.dart';
 
@@ -72,6 +73,9 @@ class ExerciseBase extends Equatable {
 
   @JsonKey(ignore: true)
   List<Exercise> exercises = [];
+
+  @JsonKey(ignore: true)
+  List<Video> videos = [];
 
   ExerciseBase(
       {required this.id,

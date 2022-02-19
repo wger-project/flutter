@@ -22,14 +22,13 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/providers/exercises.dart';
-import 'package:wger/widgets/core/core.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/muscle.dart';
-import 'package:wger/widgets/exercises/images.dart';
-import 'package:wger/widgets/exercises/videos.dart';
+import 'package:wger/providers/exercises.dart';
+import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/exercises/images.dart';
 import 'package:wger/widgets/exercises/list_tile.dart';
+import 'package:wger/widgets/exercises/videos.dart';
 
 class ExerciseDetail extends StatelessWidget {
   final Exercise _exercise;
@@ -221,10 +220,10 @@ class ExerciseDetail extends StatelessWidget {
     final List<Widget> out = [];
 
     out.add(Chip(
-      label: Text(_exercise.categoryObj.name),
+      label: Text(_exercise.base.category.name),
     ));
-    if (_exercise.equipment.isNotEmpty) {
-      _exercise.equipment.map((e) => Chip(label: Text(e.name))).forEach((element) {
+    if (_exercise.base.equipment.isNotEmpty) {
+      _exercise.base.equipment.map((e) => Chip(label: Text(e.name))).forEach((element) {
         out.add(element);
       });
     }
@@ -235,8 +234,8 @@ class ExerciseDetail extends StatelessWidget {
   List<Widget> getVideos() {
     // TODO: add carousel for the other videos
     final List<Widget> out = [];
-    if (_exercise.videos.isNotEmpty) {
-      _exercise.videos.map((v) => ExerciseVideoWidget(video: v)).forEach((element) {
+    if (_exercise.base.videos.isNotEmpty) {
+      _exercise.base.videos.map((v) => ExerciseVideoWidget(video: v)).forEach((element) {
         out.add(element);
       });
 

@@ -41,10 +41,8 @@ class ExercisesProvider with ChangeNotifier {
   final WgerBaseProvider baseProvider;
 
   static const EXERCISE_CACHE_DAYS = 7;
-  static const CACHE_VERSION = 2;
-
+  static const CACHE_VERSION = 3;
   static const daysToCache = 7;
-  static const CACHE_VERSION = 2;
 
   static const _exerciseInfoUrlPath = 'exerciseinfo';
   static const _exerciseBaseUrlPath = 'exercise-base';
@@ -435,24 +433,6 @@ class ExercisesProvider with ChangeNotifier {
       exercises.firstWhere((exercise) => exercise.id == e.exerciseId).tips.add(e);
     });
     return exercises;
-  }
-
-  /// Checks the required cache version
-  ///
-  /// This is needed since the content of the exercise cache can change and we need
-  /// to invalidate it as a result
-  Future<void> checkExerciseCacheVersion() async {
-    final prefs = await SharedPreferences.getInstance();
-    if (false && prefs.containsKey(PREFS_EXERCISE_CACHE_VERSION)) {
-      final cacheVersion = prefs.getInt(PREFS_EXERCISE_CACHE_VERSION);
-      if (cacheVersion! != CACHE_VERSION) {
-        prefs.remove(PREFS_EXERCISES);
-      }
-      prefs.setInt(PREFS_EXERCISE_CACHE_VERSION, CACHE_VERSION);
-    } else {
-      prefs.remove(PREFS_EXERCISES);
-      prefs.setInt(PREFS_EXERCISE_CACHE_VERSION, CACHE_VERSION);
-    }
   }
 
   Future<void> fetchAndSetExercises() async {
