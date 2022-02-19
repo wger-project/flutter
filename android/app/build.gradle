@@ -72,7 +72,7 @@ android {
         targetSdkVersion 31
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
-        manifestPlaceholders = [WGER_API_KEY: wgerApiKey]
+        manifestPlaceholders += [WGER_API_KEY: wgerApiKey]
     }
 
     signingConfigs {
