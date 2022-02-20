@@ -142,7 +142,7 @@ class ExercisesProvider with ChangeNotifier {
     List<ExerciseBase> filteredItems = _exerciseBases;
     if (filters!.searchTerm.length > 1) {
       final exercises = await searchExercise(filters!.searchTerm);
-      filteredItems = exercises.map((e) => e.base).toList();
+      filteredItems = exercises.map((e) => e.baseObj).toList();
     }
 
     // Filter by exercise category and equipment (REPLACE WITH HTTP REQUEST)
@@ -195,7 +195,7 @@ class ExercisesProvider with ChangeNotifier {
   List<Exercise> findExercisesByVariationId(int id, {int? exerciseIdToExclude, int? languageId}) {
     var out = _exercises
         .where(
-          (base) => base.base.variationId == id,
+          (base) => base.baseObj.variationId == id,
         )
         .toList();
 
@@ -401,7 +401,7 @@ class ExercisesProvider with ChangeNotifier {
       for (var base in bases) {
         final filteredExercises = exercises.where((e) => e.baseId == base.id);
         for (final exercise in filteredExercises) {
-          exercise.base = base;
+          exercise.baseObj = base;
           base.exercises.add(exercise);
           out.add(exercise);
         }
@@ -414,7 +414,7 @@ class ExercisesProvider with ChangeNotifier {
 
   List<Exercise> mapLanguages(List<Exercise> exercises) {
     for (final exercise in exercises) {
-      exercise.language = findLanguageById(exercise.languageId);
+      exercise.languageObj = findLanguageById(exercise.languageId);
     }
     return exercises;
   }

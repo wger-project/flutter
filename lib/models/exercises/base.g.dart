@@ -22,10 +22,14 @@ ExerciseBase _$ExerciseBaseFromJson(Map<String, dynamic> json) {
     ],
   );
   return ExerciseBase(
-    id: json['id'] as int,
-    uuid: json['uuid'] as String,
-    creationDate: DateTime.parse(json['creation_date'] as String),
-    updateDate: DateTime.parse(json['update_date'] as String),
+    id: json['id'] as int?,
+    uuid: json['uuid'] as String?,
+    creationDate: json['creation_date'] == null
+        ? null
+        : DateTime.parse(json['creation_date'] as String),
+    updateDate: json['update_date'] == null
+        ? null
+        : DateTime.parse(json['update_date'] as String),
     variationId: json['variations'] as int?,
   )
     ..categoryId = json['category'] as int
@@ -43,8 +47,8 @@ Map<String, dynamic> _$ExerciseBaseToJson(ExerciseBase instance) =>
       'id': instance.id,
       'uuid': instance.uuid,
       'variations': instance.variationId,
-      'creation_date': instance.creationDate.toIso8601String(),
-      'update_date': instance.updateDate.toIso8601String(),
+      'creation_date': instance.creationDate?.toIso8601String(),
+      'update_date': instance.updateDate?.toIso8601String(),
       'category': instance.categoryId,
       'muscles': instance.musclesIds,
       'muscles_secondary': instance.musclesSecondaryIds,

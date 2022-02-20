@@ -50,7 +50,7 @@ class ExerciseListTile extends StatelessWidget {
         ),
       ),
       trailing:
-          Text('${exercise.language.shortName} base: ${exercise.baseId}, exId: ${exercise.id}'),
+          Text('${exercise.languageObj.shortName} base: ${exercise.baseId}, exId: ${exercise.id}'),
       title: Text(
         exercise.name,
         //style: theme.textTheme.headline6,

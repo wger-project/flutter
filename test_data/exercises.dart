@@ -106,5 +106,5 @@ List<Exercise> getTestExercises() {
 }
 
 List<ExerciseBase> getTestExerciseBases() {
-  return getTestExercises().map((e) => e.base).toList();
+  return getTestExercises().map((e) => e.baseObj).toList();
 }

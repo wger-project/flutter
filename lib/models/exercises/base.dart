@@ -18,6 +18,7 @@
 
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
@@ -30,19 +31,19 @@ part 'base.g.dart';
 @JsonSerializable(explicitToJson: true)
 class ExerciseBase extends Equatable {
   @JsonKey(required: true)
-  final int id;
+  final int? id;
 
   @JsonKey(required: true)
-  final String uuid;
+  final String? uuid;
 
   @JsonKey(required: true, name: 'variations')
   final int? variationId;
 
   @JsonKey(required: true, name: 'creation_date')
-  final DateTime creationDate;
+  final DateTime? creationDate;
 
   @JsonKey(required: true, name: 'update_date')
-  final DateTime updateDate;
+  final DateTime? updateDate;
 
   @JsonKey(required: true, name: 'category')
   late int categoryId;
@@ -77,24 +78,38 @@ class ExerciseBase extends Equatable {
   @JsonKey(ignore: true)
   List<Video> videos = [];
 
-  ExerciseBase(
-      {required this.id,
-      required this.uuid,
-      required this.creationDate,
-      required this.updateDate,
-      this.variationId,
-      List<Muscle>? muscles,
-      List<Muscle>? musclesSecondary,
-      List<Equipment>? equipment,
-      List<ExerciseImage>? images,
-      ExerciseCategory? category}) {
+  ExerciseBase({
+    this.id,
+    this.uuid,
+    this.creationDate,
+    this.updateDate,
+    this.variationId,
+    List<Muscle>? muscles,
+    List<Muscle>? musclesSecondary,
+    List<Equipment>? equipment,
+    List<ExerciseImage>? images,
+    ExerciseCategory? category,
+  }) {
     this.images = images ?? [];
     this.equipment = equipment ?? [];
-    this.musclesSecondary = musclesSecondary ?? [];
-    this.muscles = muscles ?? [];
     if (category != null) {
       this.category = category;
       categoryId = category.id;
+    }
+
+    if (muscles != null) {
+      this.muscles = muscles;
+      musclesIds = muscles.map((e) => e.id).toList();
+    }
+
+    if (musclesSecondary != null) {
+      this.musclesSecondary = musclesSecondary;
+      musclesSecondaryIds = musclesSecondary.map((e) => e.id).toList();
+    }
+
+    if (equipment != null) {
+      this.equipment = equipment;
+      equipmentIds = equipment.map((e) => e.id).toList();
     }
   }
 
@@ -102,14 +117,15 @@ class ExerciseBase extends Equatable {
   ///
   /// If no translation is found, English will be returned
   ///
-  /// TODO: don't hard code language code
-  /// TODO: don't just return the first exercise (this won't be necessary anymore
-  ///       when we cleanup the database)
+  /// Note: we return the first translation as a fallback if we don't find a
+  ///       translation in English. This is something that should never happen,
+  ///       but we can't make sure that no local installation hasn't deleted
+  ///       the entry in English.
   Exercise getExercises(String language) {
     return exercises.firstWhere(
-      (e) => e.language.shortName == language,
+      (e) => e.languageObj.shortName == language,
       orElse: () => exercises.firstWhere(
-        (e) => e.language.shortName == 'en',
+        (e) => e.languageObj.shortName == LANGUAGE_SHORT_ENGLISH,
         orElse: () => exercises.first,
       ),
     );

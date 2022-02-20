@@ -26,29 +26,31 @@ import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/image.dart';
 import 'package:wger/models/exercises/language.dart';
 import 'package:wger/models/exercises/muscle.dart';
-import 'package:wger/models/exercises/video.dart';
 
 part 'exercise.g.dart';
 
 @JsonSerializable()
 class Exercise extends Equatable {
   @JsonKey(required: true)
-  final int id;
-
-  @JsonKey(required: true, name: 'exercise_base')
-  final int baseId;
+  final int? id;
 
   @JsonKey(required: true)
-  final String uuid;
+  final String? uuid;
 
   @JsonKey(required: true, name: 'language')
-  final int languageId;
+  late int languageId;
 
   @JsonKey(ignore: true)
-  late Language language;
+  late Language languageObj;
 
   @JsonKey(required: true, name: 'creation_date')
-  final DateTime creationDate;
+  final DateTime? creationDate;
+
+  @JsonKey(required: true, name: 'exercise_base')
+  late int? baseId;
+
+  @JsonKey(ignore: true)
+  late ExerciseBase baseObj;
 
   @JsonKey(required: true)
   final String name;
@@ -57,39 +59,47 @@ class Exercise extends Equatable {
   final String description;
 
   @JsonKey(ignore: true)
-  late ExerciseBase base;
-
-  @JsonKey(ignore: true)
   List<Comment> tips = [];
 
   @JsonKey(ignore: true)
   List<Alias> alias = [];
 
-  Exercise(
-      {required this.id,
-      required this.baseId,
-      required this.uuid,
-      required this.creationDate,
-      required this.languageId,
-      required this.name,
-      required this.description,
-      base,
-      language}) {
+  Exercise({
+    this.id,
+    this.uuid,
+    this.creationDate,
+    required this.name,
+    required this.description,
+    base,
+    language,
+  }) {
     if (base != null) {
-      this.base = base;
+      baseObj = base;
+      baseId = base.id;
     }
 
     if (language != null) {
-      this.language = language;
+      languageObj = language;
+      languageId = language.id;
     }
   }
 
-  ExerciseImage? get getMainImage => base.getMainImage;
-  ExerciseCategory get category => base.category;
-  List<ExerciseImage> get images => base.images;
-  List<Equipment> get equipment => base.equipment;
-  List<Muscle> get muscles => base.muscles;
-  List<Muscle> get musclesSecondary => base.musclesSecondary;
+  ExerciseImage? get getMainImage => baseObj.getMainImage;
+  ExerciseCategory get category => baseObj.category;
+  List<ExerciseImage> get images => baseObj.images;
+  List<Equipment> get equipment => baseObj.equipment;
+  List<Muscle> get muscles => baseObj.muscles;
+  List<Muscle> get musclesSecondary => baseObj.musclesSecondary;
+
+  set base(ExerciseBase base) {
+    baseObj = base;
+    baseId = base.id;
+  }
+
+  set language(Language language) {
+    languageObj = language;
+    languageId = language.id;
+  }
 
   // Boilerplate
   factory Exercise.fromJson(Map<String, dynamic> json) => _$ExerciseFromJson(json);
@@ -104,6 +114,6 @@ class Exercise extends Equatable {
         creationDate,
         name,
         description,
-        base,
+        baseObj,
       ];
 }

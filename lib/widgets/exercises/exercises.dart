@@ -70,7 +70,7 @@ class ExerciseDetail extends StatelessWidget {
 
   List<Widget> getVariations(BuildContext context) {
     final List<Widget> out = [];
-    if (_exercise.base.variationId == null) {
+    if (_exercise.baseObj.variationId == null) {
       return out;
     }
 
@@ -80,7 +80,7 @@ class ExerciseDetail extends StatelessWidget {
     ));
     Provider.of<ExercisesProvider>(context, listen: false)
         .findExercisesByVariationId(
-      _exercise.base.variationId!,
+      _exercise.baseObj.variationId!,
       languageId: _exercise.languageId,
       exerciseIdToExclude: _exercise.id,
     )
@@ -220,10 +220,10 @@ class ExerciseDetail extends StatelessWidget {
     final List<Widget> out = [];
 
     out.add(Chip(
-      label: Text(_exercise.base.category.name),
+      label: Text(_exercise.baseObj.category.name),
     ));
-    if (_exercise.base.equipment.isNotEmpty) {
-      _exercise.base.equipment.map((e) => Chip(label: Text(e.name))).forEach((element) {
+    if (_exercise.baseObj.equipment.isNotEmpty) {
+      _exercise.baseObj.equipment.map((e) => Chip(label: Text(e.name))).forEach((element) {
         out.add(element);
       });
     }
@@ -234,8 +234,8 @@ class ExerciseDetail extends StatelessWidget {
   List<Widget> getVideos() {
     // TODO: add carousel for the other videos
     final List<Widget> out = [];
-    if (_exercise.base.videos.isNotEmpty) {
-      _exercise.base.videos.map((v) => ExerciseVideoWidget(video: v)).forEach((element) {
+    if (_exercise.baseObj.videos.isNotEmpty) {
+      _exercise.baseObj.videos.map((v) => ExerciseVideoWidget(video: v)).forEach((element) {
         out.add(element);
       });
 

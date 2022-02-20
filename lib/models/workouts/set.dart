@@ -77,7 +77,7 @@ class Set {
     this.order = order ?? 1;
     this.comment = comment ?? '';
     exercisesObj = exercises ?? [];
-    exercisesIds = exercisesObj.map((e) => e.id).toList();
+    exercisesIds = exercisesObj.map((e) => e.id!).toList();
     this.settings = settings ?? [];
     this.settingsComputed = settingsComputed ?? [];
     if (day != null) {
@@ -104,7 +104,7 @@ class Set {
 
   void addExercise(Exercise exercise) {
     exercisesObj.add(exercise);
-    exercisesIds.add(exercise.id);
+    exercisesIds.add(exercise.id!);
   }
 
   void removeExercise(Exercise exercise) {

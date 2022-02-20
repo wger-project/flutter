@@ -76,3 +76,6 @@ const ENERGY_CARBOHYDRATES = 4;
 
 /// kcal per gram of fat (approx)
 const ENERGY_FAT = 9;
+
+/// Language ID for English (fallback)
+const LANGUAGE_SHORT_ENGLISH = 'en';

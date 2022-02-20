@@ -89,7 +89,8 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProxyProvider<AuthProvider, MeasurementProvider>(
           create: (context) => MeasurementProvider(
-              WgerBaseProvider(Provider.of<AuthProvider>(context, listen: false))),
+            WgerBaseProvider(Provider.of<AuthProvider>(context, listen: false)),
+          ),
           update: (context, base, previous) =>
               previous ?? MeasurementProvider(WgerBaseProvider(base)),
         ),
@@ -103,8 +104,12 @@ class MyApp extends StatelessWidget {
               GalleryProvider(Provider.of<AuthProvider>(context, listen: false), []),
           update: (context, auth, previous) => previous ?? GalleryProvider(auth, []),
         ),
-        ChangeNotifierProvider(
-          create: (_) => AddExerciseProvider(),
+        ChangeNotifierProxyProvider<AuthProvider, AddExerciseProvider>(
+          create: (context) => AddExerciseProvider(
+            WgerBaseProvider(Provider.of<AuthProvider>(context, listen: false)),
+          ),
+          update: (context, base, previous) =>
+              previous ?? AddExerciseProvider(WgerBaseProvider(base)),
         )
       ],
       child: Consumer<AuthProvider>(
@@ -141,7 +146,7 @@ class MyApp extends StatelessWidget {
             WorkoutPlanScreen.routeName: (ctx) => WorkoutPlanScreen(),
             WorkoutPlansScreen.routeName: (ctx) => WorkoutPlansScreen(),
             ExercisesScreen.routeName: (ctx) => const ExercisesScreen(),
-            ExerciseDetailScreen.routeName: (ctx) => ExerciseDetailScreen(),
+            ExerciseDetailScreen.routeName: (ctx) => const ExerciseDetailScreen(),
             AddExerciseScreen.routeName: (ctx) => const AddExerciseScreen(),
           },
           localizationsDelegates: AppLocalizations.localizationsDelegates,

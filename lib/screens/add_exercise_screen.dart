@@ -97,7 +97,7 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
 
           if (_keys[_currentStep].currentState?.validate() ?? false) {
             _keys[_currentStep].currentState?.save();
-            context.read<AddExerciseProvider>().printValues();
+            context.read<AddExerciseProvider>().addExercise();
 
             if (_currentStep != lastStepIndex) {
               setState(() {

@@ -93,7 +93,7 @@ class Setting {
 
   set exercise(Exercise exercise) {
     exerciseObj = exercise;
-    exerciseId = exercise.id;
+    exerciseId = exercise.id!;
   }
 
   set weightUnit(WeightUnit weightUnit) {
