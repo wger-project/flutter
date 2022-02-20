@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 
 class AddExerciseDropdownButton extends StatefulWidget {
-  AddExerciseDropdownButton({
+  const AddExerciseDropdownButton({
     Key? key,
     required this.items,
     required this.title,
@@ -41,8 +40,8 @@ class _AddExerciseDropdownButtonState extends State<AddExerciseDropdownButton> {
         value: _selectedItem,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-          border: OutlineInputBorder(
-            borderRadius: const BorderRadius.all(Radius.circular(10)),
+          border: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10)),
           ),
           labelText: widget.title,
           alignLabelWithHint: true,

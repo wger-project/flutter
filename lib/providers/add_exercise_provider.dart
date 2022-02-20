@@ -14,6 +14,7 @@ import 'base_provider.dart';
 
 class AddExerciseProvider with ChangeNotifier {
   final WgerBaseProvider baseProvider;
+  AddExerciseProvider(this.baseProvider);
 
   List<File> get exerciseImages => [..._exerciseImages];
   List<File> _exerciseImages = [];
@@ -30,17 +31,21 @@ class AddExerciseProvider with ChangeNotifier {
   List<Muscle> _primaryMuscles = [];
   List<Muscle> _secondaryMuscles = [];
 
-  AddExerciseProvider(this.baseProvider);
-
   static const _exerciseBaseUrlPath = 'exercise-base';
   static const _imagesUrlPath = 'exerciseimage';
   static const _exerciseTranslationUrlPath = 'exercise-translation';
 
   void clear() {
     _exerciseImages = [];
+    _nameEn = null;
+    _nameTranslation = null;
+    _descriptionEn = null;
+    _descriptionTranslation = null;
+    _language = null;
     _alternativeNamesEn = [];
     _alternativeNamesTranslation = [];
     _category = null;
+    _variations = [];
     _equipment = [];
     _primaryMuscles = [];
     _secondaryMuscles = [];

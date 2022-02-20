@@ -232,7 +232,7 @@ class _ImagesStepContentState extends State<_ImagesStepContent> with ExerciseIma
           Consumer<AddExerciseProvider>(
             builder: (ctx, provider, __) => provider.exerciseImages.isNotEmpty
                 ? PreviewExerciseImages(
-                    selectedimages: provider.exerciseImages,
+                    selectedImages: provider.exerciseImages,
                   )
                 : ElevatedButton(
                     onPressed: () => pickImages(context),

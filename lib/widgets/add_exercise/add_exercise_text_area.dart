@@ -35,8 +35,8 @@ class AddExerciseTextArea extends StatelessWidget {
         onSaved: onSaved,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-          border: OutlineInputBorder(
-            borderRadius: const BorderRadius.all(Radius.circular(10)),
+          border: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10)),
           ),
           labelText: title,
           alignLabelWithHint: true,
