@@ -3,15 +3,17 @@ import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 class AddExerciseMultiselectButton<T> extends StatefulWidget {
   final List<T> items;
+  List<T> initialItems = [];
   final String title;
   final ValueChanged<List<T?>> onChange;
   final FormFieldSetter<List<T?>?>? onSaved;
 
-  const AddExerciseMultiselectButton({
+  AddExerciseMultiselectButton({
     Key? key,
     required this.items,
     required this.title,
     required this.onChange,
+    this.initialItems = const [],
     this.onSaved,
   }) : super(key: key);
 
@@ -26,6 +28,7 @@ class _AddExerciseMultiselectButtonState<T> extends State<AddExerciseMultiselect
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: MultiSelectDialogField(
+        initialValue: widget.initialItems,
         onSaved: widget.onSaved,
         items: widget.items.map((item) => MultiSelectItem<T?>(item, item.name)).toList(),
         onConfirm: (value) {

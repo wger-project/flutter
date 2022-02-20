@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
 import 'package:wger/models/exercises/base.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
@@ -23,7 +24,7 @@ class AddExerciseProvider with ChangeNotifier {
   Language? _language;
   List<String> _alternativeNamesEn = [];
   List<String> _alternativeNamesTranslation = [];
-  ExerciseCategory? _targetArea;
+  ExerciseCategory? _category;
   List<ExerciseBase> _variations = [];
   List<Equipment> _equipment = [];
   List<Muscle> _primaryMuscles = [];
@@ -32,13 +33,14 @@ class AddExerciseProvider with ChangeNotifier {
   AddExerciseProvider(this.baseProvider);
 
   static const _exerciseBaseUrlPath = 'exercise-base';
+  static const _imagesUrlPath = 'exerciseimage';
   static const _exerciseTranslationUrlPath = 'exercise-translation';
 
   void clear() {
     _exerciseImages = [];
     _alternativeNamesEn = [];
     _alternativeNamesTranslation = [];
-    _targetArea = null;
+    _category = null;
     _equipment = [];
     _primaryMuscles = [];
     _secondaryMuscles = [];
@@ -52,12 +54,15 @@ class AddExerciseProvider with ChangeNotifier {
   set alternateNamesTrans(List<String> names) => _alternativeNamesTranslation = names;
 
   set equipment(List<Equipment> equipment) => _equipment = equipment;
-  set targetArea(ExerciseCategory target) => _targetArea = target;
+  List<Equipment> get equipment => [..._equipment];
+  set category(ExerciseCategory category) => _category = category;
+  ExerciseCategory get category => _category!;
   set language(Language language) => _language = language;
+  Language get language => _language!;
 
   ExerciseBase get base {
     return ExerciseBase(
-      category: _targetArea,
+      category: _category,
       equipment: _equipment,
       muscles: _primaryMuscles,
       musclesSecondary: _secondaryMuscles,
@@ -107,7 +112,7 @@ class AddExerciseProvider with ChangeNotifier {
     log('------------------------');
 
     log('Base data...');
-    log('Target area : $_targetArea');
+    log('Target area : $_category');
     log('Primary muscles: $_primaryMuscles');
     log('Secondary muscles: $_secondaryMuscles');
     log('Equipment: $_equipment');
@@ -133,14 +138,14 @@ class AddExerciseProvider with ChangeNotifier {
     // Create the translations
     final exerciseTranslationEn = exerciseEn;
     exerciseTranslationEn.base = base;
-    addExerciseTranslation(exerciseTranslationEn);
+    await addExerciseTranslation(exerciseTranslationEn);
 
     final exerciseTranslationTranslation = exerciseTranslation;
     exerciseTranslationTranslation.base = base;
-    addExerciseTranslation(exerciseTranslationTranslation);
+    await addExerciseTranslation(exerciseTranslationTranslation);
 
     // Create the images
-    // ...
+    await addImages(base);
   }
 
   Future<ExerciseBase> addExerciseBase() async {
@@ -151,6 +156,22 @@ class AddExerciseProvider with ChangeNotifier {
     notifyListeners();
 
     return newExerciseBase;
+  }
+
+  Future<void> addImages(ExerciseBase base) async {
+    for (final image in _exerciseImages) {
+      final request = http.MultipartRequest('POST', baseProvider.makeUrl(_imagesUrlPath));
+      request.headers.addAll(baseProvider.getDefaultHeaders(includeAuth: true));
+
+      request.files.add(await http.MultipartFile.fromPath('image', image.path));
+      request.fields['exercise_base'] = base.id!.toString();
+      request.fields['style'] = '4';
+
+      final res = await request.send();
+      //final respStr = await res.stream.bytesToString();
+    }
+
+    notifyListeners();
   }
 
   Future<Exercise> addExerciseTranslation(Exercise exercise) async {

@@ -44,15 +44,16 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
   Widget _controlsBuilder(BuildContext context, ControlsDetails details) {
     return Row(
       children: [
-        _currentStep == lastStepIndex
-            ? ElevatedButton(
-                onPressed: details.onStepContinue,
-                child: Text(AppLocalizations.of(context).save),
-              )
-            : TextButton(
-                onPressed: details.onStepContinue,
-                child: Text(AppLocalizations.of(context).next),
-              ),
+        if (_currentStep == lastStepIndex)
+          ElevatedButton(
+            onPressed: details.onStepContinue,
+            child: Text(AppLocalizations.of(context).save),
+          )
+        else
+          TextButton(
+            onPressed: details.onStepContinue,
+            child: Text(AppLocalizations.of(context).next),
+          ),
         TextButton(
           onPressed: details.onStepCancel,
           child: Text(AppLocalizations.of(context).previous),
@@ -140,13 +141,14 @@ class _BasicStepContent extends StatelessWidget {
             categories: categories,
             title: AppLocalizations.of(context).category,
             callback: (ExerciseCategory newValue) {
-              addExerciseProvider.targetArea = newValue;
+              addExerciseProvider.category = newValue;
             },
             displayName: (ExerciseCategory c) => c.name,
           ),
           AddExerciseMultiselectButton<Equipment>(
             title: AppLocalizations.of(context).equipment,
             items: equipment,
+            initialItems: addExerciseProvider.equipment,
             onChange: (dynamic value) => print(value),
             onSaved: (dynamic entries) {
               if (entries != null && entries.isNotEmpty) {
@@ -157,6 +159,7 @@ class _BasicStepContent extends StatelessWidget {
           AddExerciseMultiselectButton<Muscle>(
               title: AppLocalizations.of(context).muscles,
               items: muscles,
+              initialItems: addExerciseProvider.primaryMuscles,
               onChange: (dynamic value) => print(value),
               onSaved: (dynamic muscles) {
                 if (muscles != null && muscles.isNotEmpty) {
@@ -166,6 +169,7 @@ class _BasicStepContent extends StatelessWidget {
           AddExerciseMultiselectButton<Muscle>(
               title: AppLocalizations.of(context).musclesSecondary,
               items: muscles,
+              initialItems: addExerciseProvider.secondaryMuscles,
               onChange: (dynamic value) => print(value),
               onSaved: (dynamic muscles) {
                 if (muscles != null && muscles.isNotEmpty) {
@@ -233,13 +237,9 @@ class _ImagesStepContentState extends State<_ImagesStepContent> with ExerciseIma
                             MaterialStateProperty.resolveWith((states) => Colors.black)),
                   ),
           ),
-          RichText(
-            text: TextSpan(
-              style: Theme.of(context).textTheme.caption,
-              children: const <TextSpan>[
-                TextSpan(text: 'Only JPEG, PNG and WEBP files below 20 MB are supported'),
-              ],
-            ),
+          Text(
+            'Only JPEG, PNG and WEBP files below 20 MB are supported',
+            style: Theme.of(context).textTheme.caption,
           )
         ],
       ),
