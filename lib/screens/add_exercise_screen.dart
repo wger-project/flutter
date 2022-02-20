@@ -116,6 +116,11 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
             _currentStep -= 1;
           }
         }),
+        onStepTapped: (int index) {
+          setState(() {
+            _currentStep = index;
+          });
+        },
       ),
     );
   }
