@@ -87,6 +87,12 @@ class MockGalleryProvider extends _i1.Mock implements _i4.GalleryProvider {
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future<void>.value()) as _i6.Future<void>);
   @override
+  Map<String, String> getDefaultHeaders({dynamic includeAuth = false}) =>
+      (super.noSuchMethod(
+          Invocation.method(
+              #getDefaultHeaders, [], {#includeAuth: includeAuth}),
+          returnValue: <String, String>{}) as Map<String, String>);
+  @override
   Uri makeUrl(String? path,
           {int? id, String? objectMethod, Map<String, dynamic>? query}) =>
       (super.noSuchMethod(

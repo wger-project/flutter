@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:wger/models/exercises/alias.dart';
 import 'package:wger/models/exercises/base.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
@@ -34,6 +35,7 @@ class AddExerciseProvider with ChangeNotifier {
   static const _exerciseBaseUrlPath = 'exercise-base';
   static const _imagesUrlPath = 'exerciseimage';
   static const _exerciseTranslationUrlPath = 'exercise-translation';
+  static const _exerciseAliasPath = 'exercisealias';
 
   void clear() {
     _exerciseImages = [];
@@ -141,13 +143,20 @@ class AddExerciseProvider with ChangeNotifier {
     // ...
 
     // Create the translations
-    final exerciseTranslationEn = exerciseEn;
+    Exercise exerciseTranslationEn = exerciseEn;
     exerciseTranslationEn.base = base;
-    await addExerciseTranslation(exerciseTranslationEn);
+    exerciseTranslationEn = await addExerciseTranslation(exerciseTranslationEn);
+    for (final alias in _alternativeNamesEn) {
+      exerciseTranslationEn.alias.add(await addExerciseAlias(alias, exerciseTranslationEn.id!));
+    }
 
-    final exerciseTranslationTranslation = exerciseTranslation;
-    exerciseTranslationTranslation.base = base;
-    await addExerciseTranslation(exerciseTranslationTranslation);
+    Exercise exerciseTranslationLang = exerciseTranslation;
+    exerciseTranslationLang.base = base;
+    exerciseTranslationLang = await addExerciseTranslation(exerciseTranslationLang);
+    for (final alias in _alternativeNamesTranslation) {
+      exerciseTranslationLang.alias.add(await addExerciseAlias(alias, exerciseTranslationLang.id!));
+    }
+    await addExerciseTranslation(exerciseTranslationLang);
 
     // Create the images
     await addImages(base);
@@ -187,5 +196,15 @@ class AddExerciseProvider with ChangeNotifier {
     notifyListeners();
 
     return newExercise;
+  }
+
+  Future<Alias> addExerciseAlias(String name, int exerciseId) async {
+    final alias = Alias(exerciseId: exerciseId, alias: name);
+    final Uri postUri = baseProvider.makeUrl(_exerciseAliasPath);
+
+    final Alias newAlias = Alias.fromJson(await baseProvider.post(alias.toJson(), postUri));
+    notifyListeners();
+
+    return newAlias;
   }
 }

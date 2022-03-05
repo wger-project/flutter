@@ -138,54 +138,65 @@ class _BasicStepContent extends StatelessWidget {
     final muscles = exerciseProvider.muscles;
     final equipment = exerciseProvider.equipment;
 
-    return Form(
-      key: formkey,
-      child: Column(
-        children: [
-          ExerciseCategoryInputWidget<ExerciseCategory>(
-            categories: categories,
-            title: AppLocalizations.of(context).category,
-            callback: (ExerciseCategory newValue) {
-              addExerciseProvider.category = newValue;
-            },
-            displayName: (ExerciseCategory c) => c.name,
-          ),
-          AddExerciseMultiselectButton<Equipment>(
-            title: AppLocalizations.of(context).equipment,
-            items: equipment,
-            initialItems: addExerciseProvider.equipment,
-            onChange: (dynamic value) => print(value),
-            onSaved: (dynamic entries) {
-              if (entries != null && entries.isNotEmpty) {
-                addExerciseProvider.equipment = entries.cast<Equipment>();
-              }
-            },
-          ),
-          AddExerciseMultiselectButton<Muscle>(
+    return Consumer<AddExerciseProvider>(
+      builder: (context, value, child) => Form(
+        key: formkey,
+        child: Column(
+          children: [
+            ExerciseCategoryInputWidget<ExerciseCategory>(
+              categories: categories,
+              title: AppLocalizations.of(context).category,
+              callback: (ExerciseCategory newValue) {
+                addExerciseProvider.category = newValue;
+              },
+              displayName: (ExerciseCategory c) => c.name,
+            ),
+            AddExerciseMultiselectButton<Equipment>(
+              title: AppLocalizations.of(context).equipment,
+              items: equipment,
+              initialItems: addExerciseProvider.equipment,
+              onChange: (dynamic entries) {
+                if (entries != null && entries.isNotEmpty) {
+                  addExerciseProvider.equipment = entries.cast<Equipment>();
+                }
+              },
+              onSaved: (dynamic entries) {
+                if (entries != null && entries.isNotEmpty) {
+                  addExerciseProvider.equipment = entries.cast<Equipment>();
+                }
+              },
+            ),
+            AddExerciseMultiselectButton<Muscle>(
               title: AppLocalizations.of(context).muscles,
               items: muscles,
               initialItems: addExerciseProvider.primaryMuscles,
-              onChange: (dynamic value) => print(value),
+              onChange: (dynamic muscles) {
+                if (muscles != null && muscles.isNotEmpty) {
+                  addExerciseProvider.primaryMuscles = muscles.cast<Muscle>();
+                }
+              },
               onSaved: (dynamic muscles) {
                 if (muscles != null && muscles.isNotEmpty) {
                   addExerciseProvider.primaryMuscles = muscles.cast<Muscle>();
                 }
-              }),
-          AddExerciseMultiselectButton<Muscle>(
-              title: AppLocalizations.of(context).musclesSecondary,
-              items: muscles,
-              initialItems: addExerciseProvider.secondaryMuscles,
-              onChange: (dynamic value) => print(value),
-              onSaved: (dynamic muscles) {
-                if (muscles != null && muscles.isNotEmpty) {
-                  addExerciseProvider.secondaryMuscles = muscles.cast<Muscle>();
-                }
-              }),
-          MuscleRowWidget(
-            muscles: addExerciseProvider.primaryMuscles,
-            musclesSecondary: addExerciseProvider.secondaryMuscles,
-          ),
-        ],
+              },
+            ),
+            AddExerciseMultiselectButton<Muscle>(
+                title: AppLocalizations.of(context).musclesSecondary,
+                items: muscles,
+                initialItems: addExerciseProvider.secondaryMuscles,
+                onChange: (dynamic value) => {},
+                onSaved: (dynamic muscles) {
+                  if (muscles != null && muscles.isNotEmpty) {
+                    addExerciseProvider.secondaryMuscles = muscles.cast<Muscle>();
+                  }
+                }),
+            MuscleRowWidget(
+              muscles: addExerciseProvider.primaryMuscles,
+              musclesSecondary: addExerciseProvider.secondaryMuscles,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -270,14 +281,14 @@ class _DescriptionStepContent extends StatelessWidget {
           const Text('All exercises need a base name in English'),
           const Text('*** Add flag here ***'),
           AddExerciseTextArea(
-            onChange: (value) => print(value),
+            onChange: (value) => {},
             title: '${AppLocalizations.of(context).name}*',
             isRequired: true,
             validator: (name) => name?.isEmpty ?? true ? 'Name is required' : null,
             onSaved: (String? name) => addExerciseProvider.exerciseNameEn = name!,
           ),
           AddExerciseTextArea(
-            onChange: (value) => print(value),
+            onChange: (value) => {},
             title: AppLocalizations.of(context).alternativeNames,
             isMultiline: true,
             helperText: AppLocalizations.of(context).oneNamePerLine,
@@ -285,7 +296,7 @@ class _DescriptionStepContent extends StatelessWidget {
                 addExerciseProvider.alternateNamesEn = alternateName!.split('\n'),
           ),
           AddExerciseTextArea(
-            onChange: (value) => print(value),
+            onChange: (value) => {},
             title: '${AppLocalizations.of(context).description}*',
             isRequired: true,
             isMultiline: true,
@@ -302,14 +313,14 @@ class _DescriptionStepContent extends StatelessWidget {
             },
           ),
           AddExerciseTextArea(
-            onChange: (value) => print(value),
+            onChange: (value) => {},
             title: '${AppLocalizations.of(context).name}*',
             isRequired: true,
             validator: (name) => name?.isEmpty ?? true ? 'Name is required' : null,
             onSaved: (String? name) => addExerciseProvider.exerciseNameTrans = name!,
           ),
           AddExerciseTextArea(
-            onChange: (value) => print(value),
+            onChange: (value) => {},
             title: AppLocalizations.of(context).alternativeNames,
             isMultiline: true,
             helperText: AppLocalizations.of(context).oneNamePerLine,
@@ -317,7 +328,7 @@ class _DescriptionStepContent extends StatelessWidget {
                 addExerciseProvider.alternateNamesTrans = alternateName!.split('\n'),
           ),
           AddExerciseTextArea(
-            onChange: (value) => print(value),
+            onChange: (value) => {},
             title: '${AppLocalizations.of(context).description}*',
             isRequired: true,
             isMultiline: true,

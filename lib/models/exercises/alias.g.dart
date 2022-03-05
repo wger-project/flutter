@@ -12,7 +12,7 @@ Alias _$AliasFromJson(Map<String, dynamic> json) {
     requiredKeys: const ['id', 'exercise', 'alias'],
   );
   return Alias(
-    id: json['id'] as int,
+    id: json['id'] as int?,
     exerciseId: json['exercise'] as int,
     alias: json['alias'] as String,
   );

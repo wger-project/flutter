@@ -190,6 +190,12 @@ class MockNutritionPlansProvider extends _i1.Mock
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future<void>.value()) as _i9.Future<void>);
   @override
+  Map<String, String> getDefaultHeaders({dynamic includeAuth = false}) =>
+      (super.noSuchMethod(
+          Invocation.method(
+              #getDefaultHeaders, [], {#includeAuth: includeAuth}),
+          returnValue: <String, String>{}) as Map<String, String>);
+  @override
   Uri makeUrl(String? path,
           {int? id, String? objectMethod, Map<String, dynamic>? query}) =>
       (super.noSuchMethod(

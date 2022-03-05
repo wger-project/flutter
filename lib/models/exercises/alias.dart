@@ -23,7 +23,7 @@ part 'alias.g.dart';
 @JsonSerializable()
 class Alias {
   @JsonKey(required: true)
-  final int id;
+  final int? id;
 
   @JsonKey(required: true, name: 'exercise')
   final int exerciseId;
@@ -32,7 +32,7 @@ class Alias {
   final String alias;
 
   Alias({
-    required this.id,
+    this.id,
     required this.exerciseId,
     required this.alias,
   });

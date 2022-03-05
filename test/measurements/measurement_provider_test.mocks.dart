@@ -50,6 +50,12 @@ class MockWgerBaseProvider extends _i1.Mock implements _i4.WgerBaseProvider {
       super.noSuchMethod(Invocation.setter(#client, _client),
           returnValueForMissingStub: null);
   @override
+  Map<String, String> getDefaultHeaders({dynamic includeAuth = false}) =>
+      (super.noSuchMethod(
+          Invocation.method(
+              #getDefaultHeaders, [], {#includeAuth: includeAuth}),
+          returnValue: <String, String>{}) as Map<String, String>);
+  @override
   Uri makeUrl(String? path,
           {int? id, String? objectMethod, Map<String, dynamic>? query}) =>
       (super.noSuchMethod(
