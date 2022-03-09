@@ -29,7 +29,7 @@
   },
   "newNutritionalPlan": "Nuovo piano nutrizionale",
   "@newNutritionalPlan": {},
-  "confirmDelete": "Sei sicuro/a di voler cancellare «{toDelete}»?",
+  "confirmDelete": "Sei sicuro/a di voler cancellare '{toDelete}'?",
   "@confirmDelete": {
     "description": "Confirmation text before the user deletes an object",
     "type": "text",
@@ -514,5 +514,59 @@
   "recentlyUsedIngredients": "Ingredienti aggiunti di recente",
   "@recentlyUsedIngredients": {
     "description": "A message when a user adds a new ingredient to a meal."
+  },
+  "supersetWith": "superset con",
+  "@supersetWith": {
+    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
+  },
+  "plateCalculator": "Piastre",
+  "@plateCalculator": {
+    "description": "Label used for the plate calculator in the gym mode"
+  },
+  "plateCalculatorNotDivisible": "Non è possibile raggiungere il peso con le piastre disponibili",
+  "@plateCalculatorNotDivisible": {
+    "description": "Error message when the current weight is not reachable with plates (e.g. 33.1 kg)"
+  },
+  "productNotFoundDescription": "Il prodotto con il codice a barre scansionato {barcode} non è stato trovato nel database wger",
+  "@productNotFoundDescription": {
+    "description": "Dialog info when product is not found with barcode",
+    "type": "text",
+    "placeholders": {
+      "barcode": {}
+    }
+  },
+  "productNotFound": "Prodotto non trovato",
+  "@productNotFound": {
+    "description": "Header label for dialog when product is not found with barcode"
+  },
+  "scanBarcode": "Scansiona il codice a barre",
+  "@scanBarcode": {
+    "description": "Label for scan barcode button"
+  },
+  "weekAverage": "Media di 7 giorni",
+  "@weekAverage": {
+    "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
+  },
+  "productFound": "Prodotto trovato",
+  "@productFound": {
+    "description": "Header label for dialog when product is found with barcode"
+  },
+  "productFoundDescription": "Il codice a barre corrisponde a questo prodotto: {productName}. Vuoi continuare?",
+  "@productFoundDescription": {
+    "description": "Dialog info when product is found with barcode",
+    "type": "text",
+    "placeholders": {
+      "productName": {}
+    }
+  },
+  "close": "Chiudi",
+  "@close": {
+    "description": "Translation for close"
+  },
+  "logIngredient": "Salva nel diario nutrizionale",
+  "@logIngredient": {},
+  "searchIngredient": "Cerca ingrediente",
+  "@searchIngredient": {
+    "description": "Label on ingredient search form"
   }
 }
