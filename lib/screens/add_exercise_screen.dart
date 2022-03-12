@@ -185,7 +185,11 @@ class _BasicStepContent extends StatelessWidget {
                 title: AppLocalizations.of(context).musclesSecondary,
                 items: muscles,
                 initialItems: addExerciseProvider.secondaryMuscles,
-                onChange: (dynamic value) => {},
+                onChange: (dynamic muscles) {
+                  if (muscles != null && muscles.isNotEmpty) {
+                    addExerciseProvider.secondaryMuscles = muscles.cast<Muscle>();
+                  }
+                },
                 onSaved: (dynamic muscles) {
                   if (muscles != null && muscles.isNotEmpty) {
                     addExerciseProvider.secondaryMuscles = muscles.cast<Muscle>();
