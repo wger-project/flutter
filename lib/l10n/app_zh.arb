@@ -548,5 +548,13 @@
   "energyShort": "热量",
   "@energyShort": {
     "description": "The first letter or short name of the word 'Energy', used in overviews"
+  },
+  "planned": "过去计划",
+  "@planned": {
+    "description": "Header for the column of 'planned' nutritional values, i.e. what should be eaten"
+  },
+  "logged": "已记录",
+  "@logged": {
+    "description": "Header for the column of 'logged' nutritional values, i.e. what was eaten"
   }
 }
