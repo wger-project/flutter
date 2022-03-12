@@ -17,7 +17,6 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
@@ -312,7 +311,6 @@ class MuscleWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final background = isFront ? 'front' : 'back';
-    final muscleFolder = isFront ? 'main' : 'secondary';
 
     return Stack(
       children: [
@@ -321,7 +319,7 @@ class MuscleWidget extends StatelessWidget {
             .map((m) => SvgPicture.asset('assets/images/muscles/main/muscle-${m.id}.svg'))
             .toList(),
         ...musclesSecondary
-            .map((m) => SvgPicture.asset('assets/images/muscles/$muscleFolder/muscle-${m.id}.svg'))
+            .map((m) => SvgPicture.asset('assets/images/muscles/secondary/muscle-${m.id}.svg'))
             .toList(),
       ],
     );
