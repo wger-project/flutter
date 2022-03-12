@@ -32,7 +32,7 @@ dependencies:
     sdk: flutter
 
   android_metadata: ^0.2.1
-  camera: ^0.9.4+14
+  camera: ^0.9.4+16
   charts_flutter: ^0.12.0
   collection: ^1.15.0-nullsafety.4
   cupertino_icons: ^1.0.0
@@ -42,7 +42,7 @@ dependencies:
   flutter_typeahead: ^3.2.0
   font_awesome_flutter: ^9.1.0
   http: ^0.13.3
-  image_picker: ^0.8.4+9
+  image_picker: ^0.8.4+11
   intl: ^0.17.0
   json_annotation: ^4.3.0
   version: ^2.0.0
@@ -50,10 +50,10 @@ dependencies:
   provider: ^6.0.1
   rive: ^0.8.1
   shared_preferences: ^2.0.13
-  table_calendar: ^3.0.2
+  table_calendar: ^3.0.4
   url_launcher: ^6.0.20
   flutter_barcode_scanner: ^2.0.0
-  video_player: ^2.2.16
+  video_player: ^2.3.0
   multi_select_flutter: ^4.0.0
   flutter_svg: ^0.23.0+1
 
@@ -64,7 +64,7 @@ dev_dependencies:
   #  sdk: flutter
   build_runner: ^2.1.2
   flutter_launcher_icons: ^0.9.1
-  json_serializable: ^6.0.1
+  json_serializable: ^6.1.5
   mockito: ^5.1.0
   network_image_mock: ^2.0.1
   flutter_lints: ^1.0.4
