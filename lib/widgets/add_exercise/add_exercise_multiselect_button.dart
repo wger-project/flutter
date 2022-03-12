@@ -22,7 +22,7 @@ class AddExerciseMultiselectButton<T> extends StatefulWidget {
 }
 
 class _AddExerciseMultiselectButtonState<T> extends State<AddExerciseMultiselectButton> {
-  List<T?> _selectedItems = [];
+  List<T> _selectedItems = [];
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -30,16 +30,16 @@ class _AddExerciseMultiselectButtonState<T> extends State<AddExerciseMultiselect
       child: MultiSelectDialogField(
         initialValue: widget.initialItems,
         onSaved: widget.onSaved,
-        items: widget.items.map((item) => MultiSelectItem<T?>(item, item.name)).toList(),
+        items: widget.items.map((item) => MultiSelectItem<T>(item, item.name)).toList(),
         onConfirm: (value) {
           if (value.isNotEmpty) {
             setState(() {
-              _selectedItems = value as List<T?>;
+              _selectedItems = value.cast<T>();
               widget.onChange(_selectedItems);
             });
           }
         },
-        chipDisplay: MultiSelectChipDisplay<T?>(
+        chipDisplay: MultiSelectChipDisplay(
           //scroll: true,
           onTap: (value) {
             setState(() {
