@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/animation.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 /// Size for the "smaller" icons, e.g. when they belong to less important items
@@ -91,3 +91,7 @@ enum EXERCISE_IMAGE_ART_STYLE {
   PHOTO,
   OTHER,
 }
+
+/// Colors used for muscles
+const COLOR_MAIN_MUSCLES = Colors.red;
+const COLOR_SECONDARY_MUSCLES = Colors.orange;
