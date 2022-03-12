@@ -79,3 +79,15 @@ const ENERGY_FAT = 9;
 
 /// Language ID for English (fallback)
 const LANGUAGE_SHORT_ENGLISH = 'en';
+
+/// IDs of the different image art styles
+///
+/// Values taken from exercises/models/image.py
+enum EXERCISE_IMAGE_ART_STYLE {
+  _, // 0 is not used
+  LINE_ART,
+  THREE_D,
+  LOW_POLY,
+  PHOTO,
+  OTHER,
+}

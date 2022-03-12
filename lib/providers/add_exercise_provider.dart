@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/exercises/alias.dart';
 import 'package:wger/models/exercises/base.dart';
 import 'package:wger/models/exercises/category.dart';
@@ -179,7 +180,7 @@ class AddExerciseProvider with ChangeNotifier {
 
       request.files.add(await http.MultipartFile.fromPath('image', image.path));
       request.fields['exercise_base'] = base.id!.toString();
-      request.fields['style'] = '4';
+      request.fields['style'] = EXERCISE_IMAGE_ART_STYLE.PHOTO.index.toString();
 
       final res = await request.send();
       //final respStr = await res.stream.bytesToString();
