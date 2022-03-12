@@ -32,12 +32,10 @@ class _AddExerciseMultiselectButtonState<T> extends State<AddExerciseMultiselect
         onSaved: widget.onSaved,
         items: widget.items.map((item) => MultiSelectItem<T>(item, item.name)).toList(),
         onConfirm: (value) {
-          if (value.isNotEmpty) {
-            setState(() {
-              _selectedItems = value.cast<T>();
-              widget.onChange(_selectedItems);
-            });
-          }
+          setState(() {
+            _selectedItems = value.cast<T>();
+            widget.onChange(_selectedItems);
+          });
         },
         chipDisplay: MultiSelectChipDisplay(
           //scroll: true,

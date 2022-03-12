@@ -156,14 +156,10 @@ class _BasicStepContent extends StatelessWidget {
               items: equipment,
               initialItems: addExerciseProvider.equipment,
               onChange: (dynamic entries) {
-                if (entries != null && entries.isNotEmpty) {
-                  addExerciseProvider.equipment = entries.cast<Equipment>();
-                }
+                addExerciseProvider.equipment = entries.cast<Equipment>();
               },
               onSaved: (dynamic entries) {
-                if (entries != null && entries.isNotEmpty) {
-                  addExerciseProvider.equipment = entries.cast<Equipment>();
-                }
+                addExerciseProvider.equipment = entries.cast<Equipment>();
               },
             ),
             AddExerciseMultiselectButton<Muscle>(
@@ -171,30 +167,23 @@ class _BasicStepContent extends StatelessWidget {
               items: muscles,
               initialItems: addExerciseProvider.primaryMuscles,
               onChange: (dynamic muscles) {
-                if (muscles != null && muscles.isNotEmpty) {
-                  addExerciseProvider.primaryMuscles = muscles.cast<Muscle>();
-                }
+                addExerciseProvider.primaryMuscles = muscles.cast<Muscle>();
               },
               onSaved: (dynamic muscles) {
-                if (muscles != null && muscles.isNotEmpty) {
-                  addExerciseProvider.primaryMuscles = muscles.cast<Muscle>();
-                }
+                addExerciseProvider.primaryMuscles = muscles.cast<Muscle>();
               },
             ),
             AddExerciseMultiselectButton<Muscle>(
-                title: AppLocalizations.of(context).musclesSecondary,
-                items: muscles,
-                initialItems: addExerciseProvider.secondaryMuscles,
-                onChange: (dynamic muscles) {
-                  if (muscles != null && muscles.isNotEmpty) {
-                    addExerciseProvider.secondaryMuscles = muscles.cast<Muscle>();
-                  }
-                },
-                onSaved: (dynamic muscles) {
-                  if (muscles != null && muscles.isNotEmpty) {
-                    addExerciseProvider.secondaryMuscles = muscles.cast<Muscle>();
-                  }
-                }),
+              title: AppLocalizations.of(context).musclesSecondary,
+              items: muscles,
+              initialItems: addExerciseProvider.secondaryMuscles,
+              onChange: (dynamic muscles) {
+                addExerciseProvider.secondaryMuscles = muscles.cast<Muscle>();
+              },
+              onSaved: (dynamic muscles) {
+                addExerciseProvider.secondaryMuscles = muscles.cast<Muscle>();
+              },
+            ),
             MuscleRowWidget(
               muscles: addExerciseProvider.primaryMuscles,
               musclesSecondary: addExerciseProvider.secondaryMuscles,
