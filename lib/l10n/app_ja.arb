@@ -2,5 +2,13 @@
   "login": "ログイン",
   "@login": {
     "description": "Text for login button"
-  }
+  },
+  "logout": "ログアウト",
+  "@logout": {
+    "description": "Text for logout button"
+  },
+  "register": "登録",
+  "@register": {
+    "description": "Text for registration button"
+  },
 }
