@@ -96,11 +96,13 @@ class AddExerciseProvider with ChangeNotifier {
   List<Muscle> get primaryMuscles => [..._primaryMuscles];
   set primaryMuscles(List<Muscle> muscles) {
     _primaryMuscles = muscles;
+    notifyListeners();
   }
 
   List<Muscle> get secondaryMuscles => [..._secondaryMuscles];
   set secondaryMuscles(List<Muscle> muscles) {
     _secondaryMuscles = muscles;
+    notifyListeners();
   }
 
   void addExerciseImages(List<File> exercises) {
