@@ -46,3 +46,7 @@
 - Norwegian Bokmål
 
   - Allan Nordhøy <epost@anotheragency.no> (98)
+  
+- Japanese
+
+  - Kosei TANAKA <wms784.app@gmail.com> (97)
