@@ -137,6 +137,11 @@ class _BasicStepContent extends StatelessWidget {
     final categories = exerciseProvider.categories;
     final muscles = exerciseProvider.muscles;
     final equipment = exerciseProvider.equipment;
+    final languages = exerciseProvider.languages;
+
+    // Initialize some values
+    addExerciseProvider.category = categories.first;
+    addExerciseProvider.language = languages.first;
 
     return Consumer<AddExerciseProvider>(
       builder: (context, value, child) => Form(
