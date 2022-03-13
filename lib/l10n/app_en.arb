@@ -572,6 +572,7 @@
   "previous": "Previous",
   "next": "Next",
   "images": "Images",
+  "language": "Language",
   "addExercise": "Add exercise",
   "baseData": "Base data",
   "@baseData": {

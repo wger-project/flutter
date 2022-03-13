@@ -302,7 +302,7 @@ class _DescriptionStepContent extends StatelessWidget {
           const Text('*** Add flag here ***'),
           ExerciseCategoryInputWidget<Language>(
             categories: languages,
-            title: AppLocalizations.of(context).category,
+            title: AppLocalizations.of(context).language,
             displayName: (Language l) => l.fullName,
             callback: (Language newValue) {
               addExerciseProvider.language = newValue;
