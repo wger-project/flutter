@@ -23,7 +23,7 @@
   "@invalidUrl": {
     "description": "Error message when the user enters an invalid URL, e.g. in the login form"
   },
-  "usernameValidChars": "A username may only contain letters, digits, and the characters @, +, ., -, and _",
+  "usernameValidChars": "ユーザー名に含められるのは文字，数字と@, +, ., -, _の記号のみです",
   "@usernameValidChars": {
     "description": "Error message when the user tries to register a username with forbidden characters"
   },
@@ -51,11 +51,11 @@
   "@invalidUsername": {
     "description": "Error message when the user enters an invalid username"
   },
-  "customServerUrl": "URL of the wger instance",
+  "customServerUrl": "wgerのインスタンスURL",
   "@customServerUrl": {
     "description": "Label in the form where the users can enter their own wger instance"
   },
-  "customServerHint": "Enter the the address of your own server, otherwise the default one will be used",
+  "customServerHint": "あなたのサーバのアドレスを入力するか, そうでなければデフォルトのサーバが使用されます",
   "@customServerHint": {
     "description": "Hint text for the form where the users can enter their own wger instance"
   },
@@ -63,7 +63,7 @@
   "@reset": {
     "description": "Button text allowing the user to reset the entered values to the default"
   },
-  "registerInstead": "Register instead",
+  "registerInstead": "新規登録",
   "@registerInstead": {},
   "loginInstead": "Log in instead",
   "@loginInstead": {},
@@ -71,7 +71,7 @@
   "@labelWorkoutPlans": {
     "description": "Title for screen workout plans"
   },
-  "labelBottomNavWorkout": "Workout",
+  "labelBottomNavWorkout": "運動",
   "@labelBottomNavWorkout": {
     "description": "Label used in bottom navigation, use a short word"
   },
@@ -79,11 +79,11 @@
   "@labelBottomNavNutrition": {
     "description": "Label used in bottom navigation, use a short word"
   },
-  "labelWorkoutLogs": "Training logs",
+  "labelWorkoutLogs": "トレーニング履歴",
   "@labelWorkoutLogs": {
     "description": "(Workout) logs"
   },
-  "labelWorkoutPlan": "Workout plan",
+  "labelWorkoutPlan": "運動メニュー",
   "@labelWorkoutPlan": {
     "description": "Title for screen workout plan"
   },
@@ -107,7 +107,7 @@
   "@searchExercise": {
     "description": "Label on set form. Selected exercises are added to the set"
   },
-  "supersetWith": "superset with",
+  "supersetWith": "セットで",
   "@supersetWith": {
     "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
   },
@@ -171,15 +171,15 @@
   },
   "sameRepetitions": "If you do the same repetitions and weight for all sets you can just fill in one row. For example for 4 sets just enter 10 for the repetitions, this automatically becomes \"4 x 10\".",
   "@sameRepetitions": {},
-  "comment": "Comment",
+  "comment": "コメント",
   "@comment": {
     "description": "Comment, additional information"
   },
-  "impression": "Impression",
+  "impression": "評価",
   "@impression": {
     "description": "General impression (e.g. for a workout session) such as good, bad, etc."
   },
-  "notes": "Notes",
+  "notes": "メモ",
   "@notes": {
     "description": "Personal notes, e.g. for a workout session"
   },
@@ -187,19 +187,19 @@
   "@workoutSession": {
     "description": "A (logged) workout session"
   },
-  "newDay": "New day",
+  "newDay": "新しい日",
   "@newDay": {},
-  "newSet": "New set",
+  "newSet": "新しいセット",
   "@newSet": {
     "description": "Header when adding a new set to a workout day"
   },
   "selectExercises": "If you want to do a superset you can search for several exercises, they will be grouped together",
   "@selectExercises": {},
-  "gymMode": "Gym mode",
+  "gymMode": "ジムモード",
   "@gymMode": {
     "description": "Label when starting the gym mode"
   },
-  "plateCalculator": "Plates",
+  "plateCalculator": "プレート",
   "@plateCalculator": {
     "description": "Label used for the plate calculator in the gym mode"
   },
@@ -207,97 +207,97 @@
   "@plateCalculatorNotDivisible": {
     "description": "Error message when the current weight is not reachable with plates (e.g. 33.1 kg)"
   },
-  "pause": "Pause",
+  "pause": "休止",
   "@pause": {
     "description": "Noun, not an imperative! Label used for the pause when using the gym mode"
   },
-  "jumpTo": "Jump to",
+  "jumpTo": "ジャンプ",
   "@jumpTo": {
     "description": "Imperative. Label used in popup allowing the user to jump to a specific exercise while in the gym mode"
   },
-  "todaysWorkout": "Your workout today",
+  "todaysWorkout": "あなたの今日の運動",
   "@todaysWorkout": {},
   "logHelpEntries": "If on a single day there is more than one entry with the same number of repetitions, but different weights, only the entry with the higher weight is shown in the diagram.",
   "@logHelpEntries": {},
   "logHelpEntriesUnits": "Note that only entries with a weight unit (kg or lb) and repetitions are charted, other combinations such as time or until failure are ignored here.",
   "@logHelpEntriesUnits": {},
-  "description": "Description",
+  "description": "説明",
   "@description": {},
-  "name": "Name",
+  "name": "名称",
   "@name": {
     "description": "Name for a workout or nutritional plan"
   },
-  "save": "Save",
+  "save": "保存",
   "@save": {},
-  "addSet": "Add set",
+  "addSet": "セットを追加",
   "@addSet": {
     "description": "Label for the button that adds a set (to a workout day)"
   },
-  "addMeal": "Add meal",
+  "addMeal": "食事を追加",
   "@addMeal": {},
-  "mealLogged": "Meal logged to diary",
+  "mealLogged": "食事が日記に記録されました",
   "@mealLogged": {},
-  "logMeal": "Log this meal",
+  "logMeal": "この食事を記録する",
   "@logMeal": {},
-  "addIngredient": "Add ingredient",
+  "addIngredient": "食材を追加する",
   "@addIngredient": {},
-  "logIngredient": "Save to nutrition diary",
+  "logIngredient": "栄養日記に記録する",
   "@logIngredient": {},
-  "searchIngredient": "Search ingredient",
+  "searchIngredient": "食材を探す",
   "@searchIngredient": {
     "description": "Label on ingredient search form"
   },
-  "nutritionalPlan": "Nutritional plan",
+  "nutritionalPlan": "栄養メニュー",
   "@nutritionalPlan": {},
-  "nutritionalDiary": "Nutritional diary",
+  "nutritionalDiary": "栄養日記",
   "@nutritionalDiary": {},
-  "nutritionalPlans": "Nutritional plans",
+  "nutritionalPlans": "栄養メニュー一覧",
   "@nutritionalPlans": {},
-  "noNutritionalPlans": "You have no nutritional plans",
+  "noNutritionalPlans": "栄養メニューがありません",
   "@noNutritionalPlans": {
     "description": "Message shown when the user has no nutritional plans"
   },
-  "anErrorOccurred": "An Error Occurred!",
+  "anErrorOccurred": "エラーが発生しました",
   "@anErrorOccurred": {},
-  "weight": "Weight",
+  "weight": "重量",
   "@weight": {
     "description": "The weight of a workout log or body weight entry"
   },
-  "measurement": "Measurement",
-  "measurements": "Measurements",
+  "measurement": "測定",
+  "measurements": "測定結果",
   "@measurements": {
     "description": "Categories for the measurements such as biceps size, body fat, etc."
   },
   "measurementCategoriesHelpText": "Measurement category, such as 'biceps' or 'body fat'",
   "measurementEntriesHelpText": "The unit used to measure the category such as 'cm' or '%'",
-  "date": "Date",
+  "date": "日付",
   "@date": {
     "description": "The date of a workout log or body weight entry"
   },
-  "value": "Value",
+  "value": "値",
   "@value": {
     "description": "The value of a measurement entry"
   },
-  "start": "Start",
+  "start": "開始",
   "@start": {
     "description": "Label on button to start the gym mode (i.e., an imperative)"
   },
-  "time": "Time",
+  "time": "時間",
   "@time": {
     "description": "The time of a meal or workout"
   },
-  "timeStart": "Start time",
+  "timeStart": "開始時刻",
   "@timeStart": {
     "description": "The starting time of a workout"
   },
-  "timeEnd": "End time",
+  "timeEnd": "終了時刻",
   "@timeEnd": {
     "description": "The end time of a workout"
   },
-  "timeStartAhead": "Start time cannot be ahead of end time",
-  "ingredient": "Ingredient",
+  "timeStartAhead": "終了時刻を開始時刻より前にすることはできません",
+  "ingredient": "食材",
   "@ingredient": {},
-  "energy": "Energy",
+  "energy": "エネルギー",
   "@energy": {
     "description": "Energy in a meal, ingredient etc. e.g. in kJ"
   },
@@ -309,26 +309,26 @@
   "@kcal": {
     "description": "Energy in a meal in kilocalories, kcal"
   },
-  "macronutrients": "Macronutrients",
-  "planned": "Planned",
+  "macronutrients": "大栄養素",
+  "planned": "計画された",
   "@planned": {
     "description": "Header for the column of 'planned' nutritional values, i.e. what should be eaten"
   },
-  "logged": "Logged",
+  "logged": "記録された",
   "@logged": {
     "description": "Header for the column of 'logged' nutritional values, i.e. what was eaten"
   },
-  "weekAverage": "7 day average",
+  "weekAverage": "1週間平均",
   "@weekAverage": {
     "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
   },
-  "difference": "Difference",
-  "percentEnergy": "Percent of energy",
-  "gPerBodyKg": "g per body kg",
+  "difference": "違い",
+  "percentEnergy": "エネルギーの割合（%）",
+  "gPerBodyKg": "体重（kg）に対するエネルギー（g）の割合",
   "@gPerBodyKg": {
     "description": "Label used for total sums of e.g. calories or similar in grams per Kg of body weight"
   },
-  "total": "Total",
+  "total": "合計",
   "@total": {
     "description": "Label used for total sums of e.g. calories or similar"
   },
@@ -340,21 +340,21 @@
   "@g": {
     "description": "Abbreviation for gram"
   },
-  "protein": "Protein",
+  "protein": "タンパク質",
   "@protein": {},
   "proteinShort": "P",
   "@proteinShort": {
     "description" : "The first letter or short name of the word 'Protein', used in overviews"
   },
-  "carbohydrates": "Carbohydrates",
+  "carbohydrates": "炭水化物",
   "@carbohydrates": {},
   "carbohydratesShort": "C",
   "@carbohydratesShort": {
     "description" : "The first letter or short name of the word 'Carbohydrates', used in overviews"
   },
-  "sugars": "Sugars",
+  "sugars": "糖分",
   "@sugars": {},
-  "fat": "Fat",
+  "fat": "脂肪",
   "@fat": {},
   "fatShort": "F",
   "@fatShort": {
