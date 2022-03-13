@@ -35,19 +35,19 @@
   "@passwordTooShort": {
     "description": "Error message when the user a password that is too short"
   },
-  "password": "Password",
+  "password": "パスワード",
   "@password": {},
-  "confirmPassword": "Confirm password",
+  "confirmPassword": "パスワードを決定する",
   "@confirmPassword": {},
-  "invalidEmail": "Please enter a valid e-mail address",
+  "invalidEmail": "有効なメールアドレスを入力してください",
   "@invalidEmail": {
     "description": "Error message when the user enters an invalid email"
   },
-  "email": "E-mail address",
+  "email": "Eメールアドレス",
   "@email": {},
-  "username": "Username",
+  "username": "ユーザー名",
   "@username": {},
-  "invalidUsername": "Please enter a valid username",
+  "invalidUsername": "有効なユーザー名を入力してください",
   "@invalidUsername": {
     "description": "Error message when the user enters an invalid username"
   },
@@ -59,7 +59,7 @@
   "@customServerHint": {
     "description": "Hint text for the form where the users can enter their own wger instance"
   },
-  "reset": "Reset",
+  "reset": "リセット",
   "@reset": {
     "description": "Button text allowing the user to reset the entered values to the default"
   },
@@ -75,7 +75,7 @@
   "@labelBottomNavWorkout": {
     "description": "Label used in bottom navigation, use a short word"
   },
-  "labelBottomNavNutrition": "Nutrition",
+  "labelBottomNavNutrition": "栄養",
   "@labelBottomNavNutrition": {
     "description": "Label used in bottom navigation, use a short word"
   },
@@ -87,23 +87,23 @@
   "@labelWorkoutPlan": {
     "description": "Title for screen workout plan"
   },
-  "labelDashboard": "Dashboard",
+  "labelDashboard": "ダッシュボード",
   "@labelDashboard": {
     "description": "Title for screen dashboard"
   },
-  "successfullyDeleted": "Deleted",
+  "successfullyDeleted": "削除されました",
   "@successfullyDeleted": {
     "description": "Message when an item was successfully deleted"
   },
-  "successfullySaved": "Saved",
+  "successfullySaved": "保存されました",
   "@successfullySaved": {
     "description": "Message when an item was successfully saved"
   },
-  "exercise": "Exercise",
+  "exercise": "運動",
   "@exercise": {
     "description": "An exercise for a workout"
   },
-  "searchExercise": "Search exercise to add",
+  "searchExercise": "運動を探す",
   "@searchExercise": {
     "description": "Label on set form. Selected exercises are added to the set"
   },
@@ -111,51 +111,51 @@
   "@supersetWith": {
     "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
   },
-  "equipment": "Equipment",
+  "equipment": "器具",
   "@equipment": {
     "description": "Equipment needed to perform an exercise"
   },
-  "muscles": "Muscles",
+  "muscles": "メインとなる筋肉",
   "@muscles": {
     "description": "(main) muscles trained by an exercise"
   },
-  "musclesSecondary": "Secondary muscles",
+  "musclesSecondary": "補助的な筋肉",
   "@musclesSecondary": {
     "description": "secondary muscles trained by an exercise"
   },
-  "category": "Category",
+  "category": "分類",
   "@category": {
     "description": "Category for an exercise, ingredient, etc."
   },
-  "newWorkout": "New workout plan",
+  "newWorkout": "新しい運動メニュー",
   "@newWorkout": {
     "description": "Header when adding a new workout"
   },
-  "noWorkoutPlans": "You have no workout plans",
+  "noWorkoutPlans": "運動メニューはありません",
   "@noWorkoutPlans": {
     "description": "Message shown when the user has no workout plans"
   },
-  "repetitions": "Repetitions",
+  "repetitions": "繰り返し",
   "@repetitions": {
     "description": "Repetitions for an exercise set"
   },
-  "reps": "Reps",
+  "reps": "反復",
   "@reps": {
     "description": "Shorthand for repetitions, used when space constraints are tighter"
   },
-  "rir": "RiR",
+  "rir": "反復準備",
   "@rir": {
     "description": "Shorthand for Repetitions In Reserve"
   },
-  "rirNotUsed": "RiR not used",
+  "rirNotUsed": "反復準備が使用されていません",
   "@rirNotUsed": {
     "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
   },
-  "weightUnit": "Weight unit",
+  "weightUnit": "重量単位",
   "@weightUnit": {},
-  "repetitionUnit": "Repetition unit",
+  "repetitionUnit": "反復単位",
   "@repetitionUnit": {},
-  "set": "Set",
+  "set": "セット",
   "@set": {
     "description": "A set in a workout plan"
   },
