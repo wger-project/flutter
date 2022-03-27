@@ -4,10 +4,12 @@ on:
     branches: [ pull_request, master ]
     paths:
       - '**.dart'
+      - 'pubspec.yaml'
   pull_request:
     branches: [ pull_request, master ]
     paths:
       - '**.dart'
+      - 'pubspec.yaml'
 jobs:
   test:
     runs-on: ubuntu-20.04
