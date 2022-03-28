@@ -32,10 +32,11 @@ abstract class ValidateStep {
 }
 
 /// The amount of characters an exercise description needs to have
-const MIN_CHARACTERS_DESCRIPTION = 40;
+const MIN_CHARS_DESCRIPTION = 40;
 
 /// The amount of characters an exercise name needs to have
-const MIN_CHARACTERS_NAME = 6;
+const MIN_CHARS_NAME = 5;
+const MAX_CHARS_NAME = 40;
 
 class _AddExerciseScreenState extends State<AddExerciseScreen> {
   int _currentStep = 0;
@@ -168,8 +169,8 @@ class _BasicStepContent extends StatelessWidget {
                 return AppLocalizations.of(context).enterValue;
               }
 
-              if (name.length < MIN_CHARACTERS_NAME) {
-                return AppLocalizations.of(context).enterMinCharacters(MIN_CHARACTERS_NAME);
+              if (name.length < MIN_CHARS_NAME || name.length > MAX_CHARS_NAME) {
+                return AppLocalizations.of(context).enterCharacters(MIN_CHARS_NAME, MAX_CHARS_NAME);
               }
 
               return null;
@@ -323,8 +324,8 @@ class _DescriptionStepContent extends StatelessWidget {
                 return AppLocalizations.of(context).enterValue;
               }
 
-              if (name.length < MIN_CHARACTERS_DESCRIPTION) {
-                return AppLocalizations.of(context).enterMinCharacters(MIN_CHARACTERS_DESCRIPTION);
+              if (name.length < MIN_CHARS_DESCRIPTION) {
+                return AppLocalizations.of(context).enterMinCharacters(MIN_CHARS_DESCRIPTION);
               }
 
               return null;
@@ -369,8 +370,8 @@ class _DescriptionTranslationStepContent extends StatelessWidget {
                 return AppLocalizations.of(context).enterValue;
               }
 
-              if (name.length < MIN_CHARACTERS_NAME) {
-                return AppLocalizations.of(context).enterMinCharacters(MIN_CHARACTERS_NAME);
+              if (name.length < MIN_CHARS_NAME || name.length > MAX_CHARS_NAME) {
+                return AppLocalizations.of(context).enterCharacters(MIN_CHARS_NAME, MAX_CHARS_NAME);
               }
 
               return null;
@@ -382,6 +383,21 @@ class _DescriptionTranslationStepContent extends StatelessWidget {
             title: AppLocalizations.of(context).alternativeNames,
             isMultiline: true,
             helperText: AppLocalizations.of(context).oneNamePerLine,
+            validator: (alternateNames) {
+              // check that each line (name) is at least MIN_CHARACTERS_NAME long
+              if (alternateNames?.isNotEmpty == true) {
+                final names = alternateNames!.split('\n');
+                for (final name in names) {
+                  if (name.length < MIN_CHARS_NAME || name.length > MAX_CHARS_NAME) {
+                    return AppLocalizations.of(context).enterCharacters(
+                      MIN_CHARS_NAME,
+                      MAX_CHARS_NAME,
+                    );
+                  }
+                }
+              }
+              return null;
+            },
             onSaved: (String? alternateName) =>
                 addExerciseProvider.alternateNamesTrans = alternateName!.split('\n'),
           ),
@@ -395,8 +411,8 @@ class _DescriptionTranslationStepContent extends StatelessWidget {
                 return AppLocalizations.of(context).enterValue;
               }
 
-              if (name.length < MIN_CHARACTERS_DESCRIPTION) {
-                return AppLocalizations.of(context).enterMinCharacters(MIN_CHARACTERS_DESCRIPTION);
+              if (name.length < MIN_CHARS_DESCRIPTION) {
+                return AppLocalizations.of(context).enterMinCharacters(MIN_CHARS_DESCRIPTION);
               }
 
               return null;
