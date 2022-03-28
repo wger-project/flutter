@@ -21,7 +21,7 @@ class AddExerciseScreen extends StatefulWidget {
   const AddExerciseScreen({Key? key}) : super(key: key);
 
   static const routeName = '/exercises/add';
-  static const STEPS_IN_FORM = 4;
+  static const STEPS_IN_FORM = 5;
 
   @override
   _AddExerciseScreenState createState() => _AddExerciseScreenState();
@@ -35,6 +35,7 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
   int _currentStep = 0;
   int lastStepIndex = AddExerciseScreen.STEPS_IN_FORM - 1;
   final List<GlobalKey<FormState>> _keys = [
+    GlobalKey<FormState>(),
     GlobalKey<FormState>(),
     GlobalKey<FormState>(),
     GlobalKey<FormState>(),
@@ -84,13 +85,17 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
             content: _DuplicatesAndVariationsStepContent(formkey: _keys[1]),
           ),
           Step(
+            title: Text(AppLocalizations.of(context).description),
+            content: _DescriptionStepContent(formkey: _keys[3]),
+          ),
+          Step(
+            title: Text(AppLocalizations.of(context).translation),
+            content: _DescriptionTranslationStepContent(formkey: _keys[4]),
+          ),
+          Step(
             title: Text(AppLocalizations.of(context).images),
             content: _ImagesStepContent(formkey: _keys[2]),
           ),
-          Step(
-            title: Text(AppLocalizations.of(context).description),
-            content: _DescriptionStepContent(formkey: _keys[3]),
-          )
         ],
         currentStep: _currentStep,
         onStepContinue: () {
@@ -148,6 +153,22 @@ class _BasicStepContent extends StatelessWidget {
         key: formkey,
         child: Column(
           children: [
+            const Text('All exercises need a base name in English'),
+            AddExerciseTextArea(
+              onChange: (value) => {},
+              title: '${AppLocalizations.of(context).name}*',
+              isRequired: true,
+              validator: (name) => name?.isEmpty ?? true ? 'Name is required' : null,
+              onSaved: (String? name) => addExerciseProvider.exerciseNameEn = name!,
+            ),
+            AddExerciseTextArea(
+              onChange: (value) => {},
+              title: AppLocalizations.of(context).alternativeNames,
+              isMultiline: true,
+              helperText: AppLocalizations.of(context).oneNamePerLine,
+              onSaved: (String? alternateName) =>
+                  addExerciseProvider.alternateNamesEn = alternateName!.split('\n'),
+            ),
             ExerciseCategoryInputWidget<ExerciseCategory>(
               categories: categories,
               title: AppLocalizations.of(context).category,
@@ -279,23 +300,6 @@ class _DescriptionStepContent extends StatelessWidget {
       key: formkey,
       child: Column(
         children: [
-          const Text('All exercises need a base name in English'),
-          const Text('*** Add flag here ***'),
-          AddExerciseTextArea(
-            onChange: (value) => {},
-            title: '${AppLocalizations.of(context).name}*',
-            isRequired: true,
-            validator: (name) => name?.isEmpty ?? true ? 'Name is required' : null,
-            onSaved: (String? name) => addExerciseProvider.exerciseNameEn = name!,
-          ),
-          AddExerciseTextArea(
-            onChange: (value) => {},
-            title: AppLocalizations.of(context).alternativeNames,
-            isMultiline: true,
-            helperText: AppLocalizations.of(context).oneNamePerLine,
-            onSaved: (String? alternateName) =>
-                addExerciseProvider.alternateNamesEn = alternateName!.split('\n'),
-          ),
           AddExerciseTextArea(
             onChange: (value) => {},
             title: '${AppLocalizations.of(context).description}*',
@@ -304,7 +308,27 @@ class _DescriptionStepContent extends StatelessWidget {
             validator: (name) => name?.isEmpty ?? true ? 'Name is required' : null,
             onSaved: (String? description) => addExerciseProvider.descriptionEn = description!,
           ),
-          const Text('*** Add flag here ***'),
+        ],
+      ),
+    );
+  }
+}
+
+class _DescriptionTranslationStepContent extends StatelessWidget {
+  final GlobalKey<FormState> formkey;
+  const _DescriptionTranslationStepContent({required this.formkey});
+
+  @override
+  Widget build(BuildContext context) {
+    final addExerciseProvider = context.read<AddExerciseProvider>();
+    final exerciseProvider = context.read<ExercisesProvider>();
+
+    final languages = exerciseProvider.languages;
+
+    return Form(
+      key: formkey,
+      child: Column(
+        children: [
           ExerciseCategoryInputWidget<Language>(
             categories: languages,
             title: AppLocalizations.of(context).language,

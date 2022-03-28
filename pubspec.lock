@@ -112,7 +112,7 @@ packages:
       name: camera
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.9.4+14"
+    version: "0.9.4+17"
   camera_platform_interface:
     dependency: transitive
     description:
@@ -383,7 +383,7 @@ packages:
     source: hosted
     version: "2.0.5"
   flutter_svg:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: flutter_svg
       url: "https://pub.dartlang.org"
@@ -475,7 +475,7 @@ packages:
       name: image_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.8.4+9"
+    version: "0.8.4+11"
   image_picker_for_web:
     dependency: transitive
     description:
@@ -567,6 +567,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.12.11"
+  material_color_utilities:
+    dependency: transitive
+    description:
+      name: material_color_utilities
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.3"
   meta:
     dependency: transitive
     description:
@@ -588,6 +595,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "5.1.0"
+  multi_select_flutter:
+    dependency: "direct main"
+    description:
+      name: multi_select_flutter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.1.2"
   nested:
     dependency: transitive
     description:
@@ -879,7 +893,7 @@ packages:
       name: table_calendar
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.3"
+    version: "3.0.5"
   term_glyph:
     dependency: transitive
     description:
@@ -893,7 +907,7 @@ packages:
       name: test_api
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.3"
+    version: "0.4.8"
   timing:
     dependency: transitive
     description:

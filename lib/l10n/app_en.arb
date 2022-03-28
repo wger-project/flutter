@@ -574,7 +574,8 @@
   "images": "Images",
   "language": "Language",
   "addExercise": "Add exercise",
-  "baseData": "Base data",
+  "translation": "Translation",
+  "baseData": "Basics in English",
   "@baseData": {
     "description": "The base data for an exercise such as category, trained muscles, etc."
   }
