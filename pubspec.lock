@@ -741,7 +741,7 @@ packages:
       name: rive
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.8.1"
+    version: "0.8.4"
   shared_preferences:
     dependency: "direct main"
     description:
