@@ -31,6 +31,12 @@ abstract class ValidateStep {
   abstract VoidCallback _submit;
 }
 
+/// The amount of characters an exercise description needs to have
+const MIN_CHARACTERS_DESCRIPTION = 40;
+
+/// The amount of characters an exercise name needs to have
+const MIN_CHARACTERS_NAME = 6;
+
 class _AddExerciseScreenState extends State<AddExerciseScreen> {
   int _currentStep = 0;
   int lastStepIndex = AddExerciseScreen.STEPS_IN_FORM - 1;
@@ -86,15 +92,15 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
           ),
           Step(
             title: Text(AppLocalizations.of(context).description),
-            content: _DescriptionStepContent(formkey: _keys[3]),
+            content: _DescriptionStepContent(formkey: _keys[2]),
           ),
           Step(
             title: Text(AppLocalizations.of(context).translation),
-            content: _DescriptionTranslationStepContent(formkey: _keys[4]),
+            content: _DescriptionTranslationStepContent(formkey: _keys[3]),
           ),
           Step(
             title: Text(AppLocalizations.of(context).images),
-            content: _ImagesStepContent(formkey: _keys[2]),
+            content: _ImagesStepContent(formkey: _keys[4]),
           ),
         ],
         currentStep: _currentStep,
@@ -157,7 +163,17 @@ class _BasicStepContent extends StatelessWidget {
             onChange: (value) => {},
             title: '${AppLocalizations.of(context).name}*',
             isRequired: true,
-            validator: (name) => name?.isEmpty ?? true ? 'Name is required' : null,
+            validator: (name) {
+              if (name!.isEmpty) {
+                return AppLocalizations.of(context).enterValue;
+              }
+
+              if (name.length < MIN_CHARACTERS_NAME) {
+                return AppLocalizations.of(context).enterMinCharacters(MIN_CHARACTERS_NAME);
+              }
+
+              return null;
+            },
             onSaved: (String? name) => addExerciseProvider.exerciseNameEn = name!,
           ),
           AddExerciseTextArea(
@@ -292,9 +308,6 @@ class _DescriptionStepContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final addExerciseProvider = context.read<AddExerciseProvider>();
-    final exerciseProvider = context.read<ExercisesProvider>();
-
-    final languages = exerciseProvider.languages;
 
     return Form(
       key: formkey,
@@ -305,7 +318,17 @@ class _DescriptionStepContent extends StatelessWidget {
             title: '${AppLocalizations.of(context).description}*',
             isRequired: true,
             isMultiline: true,
-            validator: (name) => name?.isEmpty ?? true ? 'Name is required' : null,
+            validator: (name) {
+              if (name!.isEmpty) {
+                return AppLocalizations.of(context).enterValue;
+              }
+
+              if (name.length < MIN_CHARACTERS_DESCRIPTION) {
+                return AppLocalizations.of(context).enterMinCharacters(MIN_CHARACTERS_DESCRIPTION);
+              }
+
+              return null;
+            },
             onSaved: (String? description) => addExerciseProvider.descriptionEn = description!,
           ),
         ],
@@ -341,7 +364,17 @@ class _DescriptionTranslationStepContent extends StatelessWidget {
             onChange: (value) => {},
             title: '${AppLocalizations.of(context).name}*',
             isRequired: true,
-            validator: (name) => name?.isEmpty ?? true ? 'Name is required' : null,
+            validator: (name) {
+              if (name!.isEmpty) {
+                return AppLocalizations.of(context).enterValue;
+              }
+
+              if (name.length < MIN_CHARACTERS_NAME) {
+                return AppLocalizations.of(context).enterMinCharacters(MIN_CHARACTERS_NAME);
+              }
+
+              return null;
+            },
             onSaved: (String? name) => addExerciseProvider.exerciseNameTrans = name!,
           ),
           AddExerciseTextArea(
@@ -357,7 +390,17 @@ class _DescriptionTranslationStepContent extends StatelessWidget {
             title: '${AppLocalizations.of(context).description}*',
             isRequired: true,
             isMultiline: true,
-            validator: (name) => name?.isEmpty ?? true ? 'Name is required' : null,
+            validator: (name) {
+              if (name!.isEmpty) {
+                return AppLocalizations.of(context).enterValue;
+              }
+
+              if (name.length < MIN_CHARACTERS_DESCRIPTION) {
+                return AppLocalizations.of(context).enterMinCharacters(MIN_CHARACTERS_DESCRIPTION);
+              }
+
+              return null;
+            },
             onSaved: (String? description) => addExerciseProvider.descriptionTrans = description!,
           ),
         ],
