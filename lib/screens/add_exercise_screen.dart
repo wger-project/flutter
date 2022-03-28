@@ -148,77 +148,77 @@ class _BasicStepContent extends StatelessWidget {
     addExerciseProvider.category = categories.first;
     addExerciseProvider.language = languages.first;
 
-    return Consumer<AddExerciseProvider>(
-      builder: (context, value, child) => Form(
-        key: formkey,
-        child: Column(
-          children: [
-            const Text('All exercises need a base name in English'),
-            AddExerciseTextArea(
-              onChange: (value) => {},
-              title: '${AppLocalizations.of(context).name}*',
-              isRequired: true,
-              validator: (name) => name?.isEmpty ?? true ? 'Name is required' : null,
-              onSaved: (String? name) => addExerciseProvider.exerciseNameEn = name!,
+    return Form(
+      key: formkey,
+      child: Column(
+        children: [
+          const Text('All exercises need a base name in English'),
+          AddExerciseTextArea(
+            onChange: (value) => {},
+            title: '${AppLocalizations.of(context).name}*',
+            isRequired: true,
+            validator: (name) => name?.isEmpty ?? true ? 'Name is required' : null,
+            onSaved: (String? name) => addExerciseProvider.exerciseNameEn = name!,
+          ),
+          AddExerciseTextArea(
+            onChange: (value) => {},
+            title: AppLocalizations.of(context).alternativeNames,
+            isMultiline: true,
+            helperText: AppLocalizations.of(context).oneNamePerLine,
+            onSaved: (String? alternateName) =>
+                addExerciseProvider.alternateNamesEn = alternateName!.split('\n'),
+          ),
+          ExerciseCategoryInputWidget<ExerciseCategory>(
+            categories: categories,
+            title: AppLocalizations.of(context).category,
+            callback: (ExerciseCategory newValue) {
+              addExerciseProvider.category = newValue;
+            },
+            displayName: (ExerciseCategory c) => c.name,
+          ),
+          AddExerciseMultiselectButton<Equipment>(
+            title: AppLocalizations.of(context).equipment,
+            items: equipment,
+            initialItems: addExerciseProvider.equipment,
+            onChange: (dynamic entries) {
+              addExerciseProvider.equipment = entries.cast<Equipment>();
+            },
+            onSaved: (dynamic entries) {
+              addExerciseProvider.equipment = entries.cast<Equipment>();
+            },
+          ),
+          AddExerciseMultiselectButton<Muscle>(
+            title: AppLocalizations.of(context).muscles,
+            items: muscles,
+            initialItems: addExerciseProvider.primaryMuscles,
+            onChange: (dynamic muscles) {
+              addExerciseProvider.primaryMuscles = muscles.cast<Muscle>();
+            },
+            onSaved: (dynamic muscles) {
+              addExerciseProvider.primaryMuscles = muscles.cast<Muscle>();
+            },
+          ),
+          AddExerciseMultiselectButton<Muscle>(
+            title: AppLocalizations.of(context).musclesSecondary,
+            items: muscles,
+            initialItems: addExerciseProvider.secondaryMuscles,
+            onChange: (dynamic muscles) {
+              addExerciseProvider.secondaryMuscles = muscles.cast<Muscle>();
+            },
+            onSaved: (dynamic muscles) {
+              addExerciseProvider.secondaryMuscles = muscles.cast<Muscle>();
+            },
+          ),
+          Consumer<AddExerciseProvider>(
+            builder: (context, value, child) => MuscleRowWidget(
+              muscles: value.primaryMuscles,
+              musclesSecondary: value.secondaryMuscles,
             ),
-            AddExerciseTextArea(
-              onChange: (value) => {},
-              title: AppLocalizations.of(context).alternativeNames,
-              isMultiline: true,
-              helperText: AppLocalizations.of(context).oneNamePerLine,
-              onSaved: (String? alternateName) =>
-                  addExerciseProvider.alternateNamesEn = alternateName!.split('\n'),
-            ),
-            ExerciseCategoryInputWidget<ExerciseCategory>(
-              categories: categories,
-              title: AppLocalizations.of(context).category,
-              callback: (ExerciseCategory newValue) {
-                addExerciseProvider.category = newValue;
-              },
-              displayName: (ExerciseCategory c) => c.name,
-            ),
-            AddExerciseMultiselectButton<Equipment>(
-              title: AppLocalizations.of(context).equipment,
-              items: equipment,
-              initialItems: addExerciseProvider.equipment,
-              onChange: (dynamic entries) {
-                addExerciseProvider.equipment = entries.cast<Equipment>();
-              },
-              onSaved: (dynamic entries) {
-                addExerciseProvider.equipment = entries.cast<Equipment>();
-              },
-            ),
-            AddExerciseMultiselectButton<Muscle>(
-              title: AppLocalizations.of(context).muscles,
-              items: muscles,
-              initialItems: addExerciseProvider.primaryMuscles,
-              onChange: (dynamic muscles) {
-                addExerciseProvider.primaryMuscles = muscles.cast<Muscle>();
-              },
-              onSaved: (dynamic muscles) {
-                addExerciseProvider.primaryMuscles = muscles.cast<Muscle>();
-              },
-            ),
-            AddExerciseMultiselectButton<Muscle>(
-              title: AppLocalizations.of(context).musclesSecondary,
-              items: muscles,
-              initialItems: addExerciseProvider.secondaryMuscles,
-              onChange: (dynamic muscles) {
-                addExerciseProvider.secondaryMuscles = muscles.cast<Muscle>();
-              },
-              onSaved: (dynamic muscles) {
-                addExerciseProvider.secondaryMuscles = muscles.cast<Muscle>();
-              },
-            ),
-            MuscleRowWidget(
-              muscles: addExerciseProvider.primaryMuscles,
-              musclesSecondary: addExerciseProvider.secondaryMuscles,
-            ),
-            const MuscleColorHelper(main: true),
-            const SizedBox(height: 5),
-            const MuscleColorHelper(main: false),
-          ],
-        ),
+          ),
+          const MuscleColorHelper(main: true),
+          const SizedBox(height: 5),
+          const MuscleColorHelper(main: false),
+        ],
       ),
     );
   }
