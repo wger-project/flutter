@@ -38,6 +38,30 @@ const MIN_CHARS_DESCRIPTION = 40;
 const MIN_CHARS_NAME = 5;
 const MAX_CHARS_NAME = 40;
 
+String? validateName(String? name, BuildContext context) {
+  if (name!.isEmpty) {
+    return AppLocalizations.of(context).enterValue;
+  }
+
+  if (name.length < MIN_CHARS_NAME || name.length > MAX_CHARS_NAME) {
+    return AppLocalizations.of(context).enterCharacters(MIN_CHARS_NAME, MAX_CHARS_NAME);
+  }
+
+  return null;
+}
+
+String? validateDescription(String? name, BuildContext context) {
+  if (name!.isEmpty) {
+    return AppLocalizations.of(context).enterValue;
+  }
+
+  if (name.length < MIN_CHARS_DESCRIPTION) {
+    return AppLocalizations.of(context).enterMinCharacters(MIN_CHARS_DESCRIPTION);
+  }
+
+  return null;
+}
+
 class _AddExerciseScreenState extends State<AddExerciseScreen> {
   int _currentStep = 0;
   int lastStepIndex = AddExerciseScreen.STEPS_IN_FORM - 1;
@@ -164,17 +188,7 @@ class _BasicStepContent extends StatelessWidget {
             onChange: (value) => {},
             title: '${AppLocalizations.of(context).name}*',
             isRequired: true,
-            validator: (name) {
-              if (name!.isEmpty) {
-                return AppLocalizations.of(context).enterValue;
-              }
-
-              if (name.length < MIN_CHARS_NAME || name.length > MAX_CHARS_NAME) {
-                return AppLocalizations.of(context).enterCharacters(MIN_CHARS_NAME, MAX_CHARS_NAME);
-              }
-
-              return null;
-            },
+            validator: (name) => validateName(name, context),
             onSaved: (String? name) => addExerciseProvider.exerciseNameEn = name!,
           ),
           AddExerciseTextArea(
@@ -319,17 +333,7 @@ class _DescriptionStepContent extends StatelessWidget {
             title: '${AppLocalizations.of(context).description}*',
             isRequired: true,
             isMultiline: true,
-            validator: (name) {
-              if (name!.isEmpty) {
-                return AppLocalizations.of(context).enterValue;
-              }
-
-              if (name.length < MIN_CHARS_DESCRIPTION) {
-                return AppLocalizations.of(context).enterMinCharacters(MIN_CHARS_DESCRIPTION);
-              }
-
-              return null;
-            },
+            validator: (name) => validateDescription(name, context),
             onSaved: (String? description) => addExerciseProvider.descriptionEn = description!,
           ),
         ],
@@ -365,17 +369,7 @@ class _DescriptionTranslationStepContent extends StatelessWidget {
             onChange: (value) => {},
             title: '${AppLocalizations.of(context).name}*',
             isRequired: true,
-            validator: (name) {
-              if (name!.isEmpty) {
-                return AppLocalizations.of(context).enterValue;
-              }
-
-              if (name.length < MIN_CHARS_NAME || name.length > MAX_CHARS_NAME) {
-                return AppLocalizations.of(context).enterCharacters(MIN_CHARS_NAME, MAX_CHARS_NAME);
-              }
-
-              return null;
-            },
+            validator: (name) => validateName(name, context),
             onSaved: (String? name) => addExerciseProvider.exerciseNameTrans = name!,
           ),
           AddExerciseTextArea(
@@ -406,17 +400,7 @@ class _DescriptionTranslationStepContent extends StatelessWidget {
             title: '${AppLocalizations.of(context).description}*',
             isRequired: true,
             isMultiline: true,
-            validator: (name) {
-              if (name!.isEmpty) {
-                return AppLocalizations.of(context).enterValue;
-              }
-
-              if (name.length < MIN_CHARS_DESCRIPTION) {
-                return AppLocalizations.of(context).enterMinCharacters(MIN_CHARS_DESCRIPTION);
-              }
-
-              return null;
-            },
+            validator: (name) => validateDescription(name, context),
             onSaved: (String? description) => addExerciseProvider.descriptionTrans = description!,
           ),
         ],
