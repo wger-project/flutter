@@ -74,22 +74,27 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
   ];
 
   Widget _controlsBuilder(BuildContext context, ControlsDetails details) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
+    return Column(
       children: [
-        if (_currentStep == lastStepIndex)
-          ElevatedButton(
-            onPressed: details.onStepContinue,
-            child: Text(AppLocalizations.of(context).save),
-          )
-        else
-          OutlinedButton(
-            onPressed: details.onStepContinue,
-            child: Text(AppLocalizations.of(context).next),
-          ),
-        OutlinedButton(
-          onPressed: details.onStepCancel,
-          child: Text(AppLocalizations.of(context).previous),
+        const SizedBox(height: 10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            if (_currentStep == lastStepIndex)
+              ElevatedButton(
+                onPressed: details.onStepContinue,
+                child: Text(AppLocalizations.of(context).save),
+              )
+            else
+              OutlinedButton(
+                onPressed: details.onStepContinue,
+                child: Text(AppLocalizations.of(context).next),
+              ),
+            OutlinedButton(
+              onPressed: details.onStepCancel,
+              child: Text(AppLocalizations.of(context).previous),
+            ),
+          ],
         ),
       ],
     );
