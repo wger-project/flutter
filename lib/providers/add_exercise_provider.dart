@@ -24,10 +24,10 @@ class AddExerciseProvider with ChangeNotifier {
   String? _nameTranslation;
   String? _descriptionEn;
   String? _descriptionTranslation;
-  Language? _language;
+  late Language _language;
   List<String> _alternativeNamesEn = [];
   List<String> _alternativeNamesTranslation = [];
-  ExerciseCategory? _category;
+  late ExerciseCategory _category;
   List<ExerciseBase> _variations = [];
   List<Equipment> _equipment = [];
   List<Muscle> _primaryMuscles = [];
@@ -44,10 +44,8 @@ class AddExerciseProvider with ChangeNotifier {
     _nameTranslation = null;
     _descriptionEn = null;
     _descriptionTranslation = null;
-    _language = null;
     _alternativeNamesEn = [];
     _alternativeNamesTranslation = [];
-    _category = null;
     _variations = [];
     _equipment = [];
     _primaryMuscles = [];
@@ -64,9 +62,9 @@ class AddExerciseProvider with ChangeNotifier {
   set equipment(List<Equipment> equipment) => _equipment = equipment;
   List<Equipment> get equipment => [..._equipment];
   set category(ExerciseCategory category) => _category = category;
-  ExerciseCategory get category => _category!;
+  ExerciseCategory get category => _category;
   set language(Language language) => _language = language;
-  Language get language => _language!;
+  Language get language => _language;
 
   ExerciseBase get base {
     return ExerciseBase(
@@ -130,7 +128,7 @@ class AddExerciseProvider with ChangeNotifier {
 
     log('');
     log('Language specific...');
-    log('Language: ${_language?.shortName}');
+    log('Language: ${_language.shortName}');
     log('Name: en/$_nameEn translation/$_nameTranslation');
     log('Description: en/$_descriptionEn translation/$_descriptionTranslation');
     log('Alternate names: en/$_alternativeNamesEn translation/$_alternativeNamesTranslation');
@@ -142,24 +140,31 @@ class AddExerciseProvider with ChangeNotifier {
     // Create the base
     final base = await addExerciseBase();
 
-    // Set the variations
+    // Create the variations
     // ...
 
-    // Create the translations
+    // Create the base description in English
     Exercise exerciseTranslationEn = exerciseEn;
     exerciseTranslationEn.base = base;
     exerciseTranslationEn = await addExerciseTranslation(exerciseTranslationEn);
     for (final alias in _alternativeNamesEn) {
-      exerciseTranslationEn.alias.add(await addExerciseAlias(alias, exerciseTranslationEn.id!));
+      if (alias.isNotEmpty) {
+        exerciseTranslationEn.alias.add(await addExerciseAlias(alias, exerciseTranslationEn.id!));
+      }
     }
 
-    Exercise exerciseTranslationLang = exerciseTranslation;
-    exerciseTranslationLang.base = base;
-    exerciseTranslationLang = await addExerciseTranslation(exerciseTranslationLang);
-    for (final alias in _alternativeNamesTranslation) {
-      exerciseTranslationLang.alias.add(await addExerciseAlias(alias, exerciseTranslationLang.id!));
+    // Create the translations
+    if (_nameTranslation != null && _descriptionTranslation != null) {
+      Exercise exerciseTranslationLang = exerciseTranslation;
+      exerciseTranslationLang.base = base;
+      exerciseTranslationLang = await addExerciseTranslation(exerciseTranslationLang);
+      for (final alias in _alternativeNamesTranslation) {
+        exerciseTranslationLang.alias.add(
+          await addExerciseAlias(alias, exerciseTranslationLang.id!),
+        );
+      }
+      await addExerciseTranslation(exerciseTranslationLang);
     }
-    await addExerciseTranslation(exerciseTranslationLang);
 
     // Create the images
     await addImages(base);

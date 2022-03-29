@@ -32,7 +32,7 @@ abstract class ValidateStep {
 }
 
 /// The amount of characters an exercise description needs to have
-const MIN_CHARS_DESCRIPTION = 4;
+const MIN_CHARS_DESCRIPTION = 40;
 
 /// The amount of characters an exercise name needs to have
 const MIN_CHARS_NAME = 5;
@@ -75,6 +75,7 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
 
   Widget _controlsBuilder(BuildContext context, ControlsDetails details) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         if (_currentStep == lastStepIndex)
           ElevatedButton(
@@ -82,11 +83,11 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
             child: Text(AppLocalizations.of(context).save),
           )
         else
-          TextButton(
+          OutlinedButton(
             onPressed: details.onStepContinue,
             child: Text(AppLocalizations.of(context).next),
           ),
-        TextButton(
+        OutlinedButton(
           onPressed: details.onStepCancel,
           child: Text(AppLocalizations.of(context).previous),
         ),
@@ -134,7 +135,6 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
 
           if (_keys[_currentStep].currentState?.validate() ?? false) {
             _keys[_currentStep].currentState?.save();
-            context.read<AddExerciseProvider>().addExercise();
 
             if (_currentStep != lastStepIndex) {
               setState(() {
@@ -145,6 +145,7 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
 
           if (_currentStep == lastStepIndex) {
             _addExercise();
+            context.read<AddExerciseProvider>().addExercise();
           }
         },
         onStepCancel: () => setState(() {
@@ -183,13 +184,10 @@ class _BasicStepContent extends StatelessWidget {
       key: formkey,
       child: Column(
         children: [
-          Text(
-            AppLocalizations.of(context).baseNameEnglish,
-            style: Theme.of(context).textTheme.caption,
-          ),
           AddExerciseTextArea(
             onChange: (value) => {},
             title: '${AppLocalizations.of(context).name}*',
+            helperText: AppLocalizations.of(context).baseNameEnglish,
             isRequired: true,
             validator: (name) => validateName(name, context),
             onSaved: (String? name) => addExerciseProvider.exerciseNameEn = name!,
@@ -354,67 +352,90 @@ class _DescriptionStepContent extends StatelessWidget {
   }
 }
 
-class _DescriptionTranslationStepContent extends StatelessWidget {
+class _DescriptionTranslationStepContent extends StatefulWidget {
   final GlobalKey<FormState> formkey;
   const _DescriptionTranslationStepContent({required this.formkey});
+
+  @override
+  State<_DescriptionTranslationStepContent> createState() =>
+      _DescriptionTranslationStepContentState();
+}
+
+class _DescriptionTranslationStepContentState extends State<_DescriptionTranslationStepContent> {
+  bool translate = false;
 
   @override
   Widget build(BuildContext context) {
     final addExerciseProvider = context.read<AddExerciseProvider>();
     final exerciseProvider = context.read<ExercisesProvider>();
-
     final languages = exerciseProvider.languages;
 
     return Form(
-      key: formkey,
+      key: widget.formkey,
       child: Column(
         children: [
-          ExerciseCategoryInputWidget<Language>(
-            categories: languages,
-            title: AppLocalizations.of(context).language,
-            displayName: (Language l) => l.fullName,
-            callback: (Language newValue) {
-              addExerciseProvider.language = newValue;
+          SwitchListTile(
+            title: Text(AppLocalizations.of(context).translation),
+            subtitle: Text(AppLocalizations.of(context).translateExercise),
+            value: translate,
+            onChanged: (_) {
+              setState(() {
+                translate = !translate;
+              });
             },
           ),
-          AddExerciseTextArea(
-            onChange: (value) => {},
-            title: '${AppLocalizations.of(context).name}*',
-            isRequired: true,
-            validator: (name) => validateName(name, context),
-            onSaved: (String? name) => addExerciseProvider.exerciseNameTrans = name!,
-          ),
-          AddExerciseTextArea(
-            onChange: (value) => {},
-            title: AppLocalizations.of(context).alternativeNames,
-            isMultiline: true,
-            helperText: AppLocalizations.of(context).oneNamePerLine,
-            validator: (alternateNames) {
-              // check that each line (name) is at least MIN_CHARACTERS_NAME long
-              if (alternateNames?.isNotEmpty == true) {
-                final names = alternateNames!.split('\n');
-                for (final name in names) {
-                  if (name.length < MIN_CHARS_NAME || name.length > MAX_CHARS_NAME) {
-                    return AppLocalizations.of(context).enterCharacters(
-                      MIN_CHARS_NAME,
-                      MAX_CHARS_NAME,
-                    );
-                  }
-                }
-              }
-              return null;
-            },
-            onSaved: (String? alternateName) =>
-                addExerciseProvider.alternateNamesTrans = alternateName!.split('\n'),
-          ),
-          AddExerciseTextArea(
-            onChange: (value) => {},
-            title: '${AppLocalizations.of(context).description}*',
-            isRequired: true,
-            isMultiline: true,
-            validator: (name) => validateDescription(name, context),
-            onSaved: (String? description) => addExerciseProvider.descriptionTrans = description!,
-          ),
+          if (translate)
+            Column(
+              children: [
+                ExerciseCategoryInputWidget<Language>(
+                  categories: languages,
+                  title: AppLocalizations.of(context).language,
+                  displayName: (Language l) => l.fullName,
+                  callback: (Language newValue) {
+                    addExerciseProvider.language = newValue;
+                  },
+                ),
+                AddExerciseTextArea(
+                  onChange: (value) => {},
+                  title: '${AppLocalizations.of(context).name}*',
+                  isRequired: true,
+                  validator: (name) => validateName(name, context),
+                  onSaved: (String? name) => addExerciseProvider.exerciseNameTrans = name!,
+                ),
+                AddExerciseTextArea(
+                  onChange: (value) => {},
+                  title: AppLocalizations.of(context).alternativeNames,
+                  isMultiline: true,
+                  helperText: AppLocalizations.of(context).oneNamePerLine,
+                  validator: (alternateNames) {
+                    // check that each line (name) is at least MIN_CHARACTERS_NAME long
+                    if (alternateNames?.isNotEmpty == true) {
+                      final names = alternateNames!.split('\n');
+                      for (final name in names) {
+                        if (name.length < MIN_CHARS_NAME || name.length > MAX_CHARS_NAME) {
+                          return AppLocalizations.of(context).enterCharacters(
+                            MIN_CHARS_NAME,
+                            MAX_CHARS_NAME,
+                          );
+                        }
+                      }
+                    }
+                    return null;
+                  },
+                  onSaved: (String? alternateName) =>
+                      addExerciseProvider.alternateNamesTrans = alternateName!.split('\n'),
+                ),
+                AddExerciseTextArea(
+                  onChange: (value) => {},
+                  title: '${AppLocalizations.of(context).description}*',
+                  isRequired: true,
+                  isMultiline: true,
+                  validator: (name) => validateDescription(name, context),
+                  onSaved: (String? description) =>
+                      addExerciseProvider.descriptionTrans = description!,
+                ),
+              ],
+            ),
         ],
       ),
     );
