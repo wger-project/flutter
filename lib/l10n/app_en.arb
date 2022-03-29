@@ -485,6 +485,7 @@
       "min": {}
     }
   },
+  "baseNameEnglish": "All exercises need a base name in English",
   "nrOfSets": "Sets per exercise: {nrOfSets}",
   "@nrOfSets": {
     "description": "Label shown on the slider where the user selects the nr of sets",

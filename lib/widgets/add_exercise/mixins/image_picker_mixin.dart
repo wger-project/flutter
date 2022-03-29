@@ -20,9 +20,17 @@ mixin ExerciseImagePickerMixin {
     return validFileExtensions.any((element) => extension == element.toLowerCase());
   }
 
-  void pickImages(BuildContext context) async {
+  void pickImages(BuildContext context, {bool pickFromCamera = false}) async {
     final imagePicker = ImagePicker();
-    final images = await imagePicker.pickMultiImage();
+
+    List<XFile>? images;
+    if (pickFromCamera) {
+      final pictureTaken = await imagePicker.pickImage(source: ImageSource.camera);
+      images = pictureTaken == null ? null : [pictureTaken];
+    } else {
+      images = await imagePicker.pickMultiImage();
+    }
+
     final selectedImages = <File>[];
     if (images != null) {
       selectedImages.addAll(images.map((e) => File(e.path)).toList());

@@ -32,7 +32,7 @@ abstract class ValidateStep {
 }
 
 /// The amount of characters an exercise description needs to have
-const MIN_CHARS_DESCRIPTION = 40;
+const MIN_CHARS_DESCRIPTION = 4;
 
 /// The amount of characters an exercise name needs to have
 const MIN_CHARS_NAME = 5;
@@ -183,7 +183,10 @@ class _BasicStepContent extends StatelessWidget {
       key: formkey,
       child: Column(
         children: [
-          const Text('All exercises need a base name in English'),
+          Text(
+            AppLocalizations.of(context).baseNameEnglish,
+            style: Theme.of(context).textTheme.caption,
+          ),
           AddExerciseTextArea(
             onChange: (value) => {},
             title: '${AppLocalizations.of(context).name}*',
@@ -266,7 +269,10 @@ class _DuplicatesAndVariationsStepContent extends StatelessWidget {
       key: formkey,
       child: Column(
         children: [
-          Text(AppLocalizations.of(context).whatVariationsExist),
+          Text(
+            AppLocalizations.of(context).whatVariationsExist,
+            style: Theme.of(context).textTheme.caption,
+          ),
           const Placeholder(fallbackHeight: 200),
         ],
       ),
@@ -298,12 +304,18 @@ class _ImagesStepContentState extends State<_ImagesStepContent> with ExerciseIma
                 ? PreviewExerciseImages(
                     selectedImages: provider.exerciseImages,
                   )
-                : ElevatedButton(
-                    onPressed: () => pickImages(context),
-                    child: const Text('BROWSE FOR FILES'),
-                    style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.resolveWith((states) => Colors.black)),
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        onPressed: () => pickImages(context, pickFromCamera: true),
+                        icon: const Icon(Icons.camera_alt),
+                      ),
+                      IconButton(
+                        onPressed: () => pickImages(context),
+                        icon: const Icon(Icons.collections),
+                      ),
+                    ],
                   ),
           ),
           Text(
