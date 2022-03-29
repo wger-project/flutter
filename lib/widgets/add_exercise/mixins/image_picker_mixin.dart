@@ -9,13 +9,13 @@ const validFileExtensions = ['jpg', 'jpeg', 'png', 'webp'];
 const maxFileSize = 20;
 
 mixin ExerciseImagePickerMixin {
-  bool _validateFileType(int fileLength) {
+  bool _validateFileSize(int fileLength) {
     final kb = fileLength / 1024;
     final mb = kb / 1024;
     return mb > maxFileSize;
   }
 
-  bool _validateFileSize(File file) {
+  bool _validateFileType(File file) {
     final extension = file.path.split('.').last;
     return validFileExtensions.any((element) => extension == element.toLowerCase());
   }
@@ -31,11 +31,11 @@ mixin ExerciseImagePickerMixin {
         bool isFileValid = true;
         String errorMessage = '';
 
-        if (!_validateFileSize(image)) {
+        if (!_validateFileType(image)) {
           isFileValid = false;
           errorMessage = "Select only 'jpg', 'jpeg', 'png', 'webp' files";
         }
-        if (_validateFileType(image.lengthSync())) {
+        if (_validateFileSize(image.lengthSync())) {
           isFileValid = true;
           errorMessage = 'File Size should not be greater than 20 mb';
         }
