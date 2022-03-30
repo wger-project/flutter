@@ -11,6 +11,7 @@ import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/language.dart';
 import 'package:wger/models/exercises/muscle.dart';
+import 'package:wger/models/exercises/variation.dart';
 
 import 'base_provider.dart';
 
@@ -24,10 +25,12 @@ class AddExerciseProvider with ChangeNotifier {
   String? _nameTranslation;
   String? _descriptionEn;
   String? _descriptionTranslation;
-  late Language _language;
+  int? _variationId;
+  int? _newVariationForExercise;
+  late Language language;
   List<String> _alternativeNamesEn = [];
   List<String> _alternativeNamesTranslation = [];
-  late ExerciseCategory _category;
+  late ExerciseCategory category;
   List<ExerciseBase> _variations = [];
   List<Equipment> _equipment = [];
   List<Muscle> _primaryMuscles = [];
@@ -37,6 +40,7 @@ class AddExerciseProvider with ChangeNotifier {
   static const _imagesUrlPath = 'exerciseimage';
   static const _exerciseTranslationUrlPath = 'exercise-translation';
   static const _exerciseAliasPath = 'exercisealias';
+  static const _exerciseVariationPath = 'variation';
 
   void clear() {
     _exerciseImages = [];
@@ -61,17 +65,30 @@ class AddExerciseProvider with ChangeNotifier {
 
   set equipment(List<Equipment> equipment) => _equipment = equipment;
   List<Equipment> get equipment => [..._equipment];
-  set category(ExerciseCategory category) => _category = category;
-  ExerciseCategory get category => _category;
-  set language(Language language) => _language = language;
-  Language get language => _language;
+
+  bool get newVariation => _newVariationForExercise != null;
+
+  int? get newVariationForExercise => _newVariationForExercise;
+  set newVariationForExercise(int? value) {
+    _newVariationForExercise = value;
+    _variationId = null;
+    notifyListeners();
+  }
+
+  int? get variationId => _variationId;
+  set variationId(int? variation) {
+    _variationId = variation;
+    _newVariationForExercise = null;
+    notifyListeners();
+  }
 
   ExerciseBase get base {
     return ExerciseBase(
-      category: _category,
+      category: category,
       equipment: _equipment,
       muscles: _primaryMuscles,
       musclesSecondary: _secondaryMuscles,
+      variationId: _variationId,
     );
   }
 
@@ -87,8 +104,12 @@ class AddExerciseProvider with ChangeNotifier {
     return Exercise(
       name: _nameTranslation!,
       description: _descriptionTranslation!,
-      language: _language,
+      language: language,
     );
+  }
+
+  Variation get variation {
+    return Variation(id: _variationId!);
   }
 
   List<Muscle> get primaryMuscles => [..._primaryMuscles];
@@ -120,7 +141,7 @@ class AddExerciseProvider with ChangeNotifier {
     log('------------------------');
 
     log('Base data...');
-    log('Target area : $_category');
+    log('Target area : $category');
     log('Primary muscles: $_primaryMuscles');
     log('Secondary muscles: $_secondaryMuscles');
     log('Equipment: $_equipment');
@@ -128,7 +149,7 @@ class AddExerciseProvider with ChangeNotifier {
 
     log('');
     log('Language specific...');
-    log('Language: ${_language.shortName}');
+    log('Language: ${language.shortName}');
     log('Name: en/$_nameEn translation/$_nameTranslation');
     log('Description: en/$_descriptionEn translation/$_descriptionTranslation');
     log('Alternate names: en/$_alternativeNamesEn translation/$_alternativeNamesTranslation');
@@ -137,11 +158,13 @@ class AddExerciseProvider with ChangeNotifier {
   Future<void> addExercise() async {
     printValues();
 
+    // Create the variations if needed
+    if (newVariation) {
+      await addVariation();
+    }
+
     // Create the base
     final base = await addExerciseBase();
-
-    // Create the variations
-    // ...
 
     // Create the base description in English
     Exercise exerciseTranslationEn = exerciseEn;
@@ -178,6 +201,17 @@ class AddExerciseProvider with ChangeNotifier {
     notifyListeners();
 
     return newExerciseBase;
+  }
+
+  Future<Variation> addVariation() async {
+    final Uri postUri = baseProvider.makeUrl(_exerciseVariationPath);
+
+    // We send an empty dictionary since at the moment the variations only have an ID
+    final Map<String, dynamic> variationMap = await baseProvider.post({}, postUri);
+    final Variation newVariation = Variation.fromJson(variationMap);
+    _variationId = newVariation.id;
+    notifyListeners();
+    return newVariation;
   }
 
   Future<void> addImages(ExerciseBase base) async {

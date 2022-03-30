@@ -87,6 +87,20 @@ class ExercisesProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  Map<int, List<ExerciseBase>> get exerciseBasesByVariation {
+    final Map<int, List<ExerciseBase>> variations = {};
+
+    for (final base in _exerciseBases.where((e) => e.variationId != null)) {
+      if (!variations.containsKey(base.variationId)) {
+        variations[base.variationId!] = [];
+      }
+
+      variations[base.variationId]!.add(base);
+    }
+
+    return variations;
+  }
+
   ExercisesProvider(this.baseProvider);
 
   List<Exercise> get items => [..._exercises];
