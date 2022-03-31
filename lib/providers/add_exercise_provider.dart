@@ -27,10 +27,10 @@ class AddExerciseProvider with ChangeNotifier {
   String? _descriptionTranslation;
   int? _variationId;
   int? _newVariationForExercise;
-  late Language language;
+  Language? language;
   List<String> _alternativeNamesEn = [];
   List<String> _alternativeNamesTranslation = [];
-  late ExerciseCategory category;
+  ExerciseCategory? category;
   List<ExerciseBase> _variations = [];
   List<Equipment> _equipment = [];
   List<Muscle> _primaryMuscles = [];
@@ -44,6 +44,8 @@ class AddExerciseProvider with ChangeNotifier {
 
   void clear() {
     _exerciseImages = [];
+    language = null;
+    category = null;
     _nameEn = null;
     _nameTranslation = null;
     _descriptionEn = null;
@@ -149,7 +151,7 @@ class AddExerciseProvider with ChangeNotifier {
 
     log('');
     log('Language specific...');
-    log('Language: ${language.shortName}');
+    log('Language: ${language?.shortName}');
     log('Name: en/$_nameEn translation/$_nameTranslation');
     log('Description: en/$_descriptionEn translation/$_descriptionTranslation');
     log('Alternate names: en/$_alternativeNamesEn translation/$_alternativeNamesTranslation');
@@ -177,7 +179,7 @@ class AddExerciseProvider with ChangeNotifier {
     }
 
     // Create the translations
-    if (_nameTranslation != null && _descriptionTranslation != null) {
+    if (language != null) {
       Exercise exerciseTranslationLang = exerciseTranslation;
       exerciseTranslationLang.base = base;
       exerciseTranslationLang = await addExerciseTranslation(exerciseTranslationLang);

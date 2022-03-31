@@ -3,12 +3,12 @@ import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 class AddExerciseMultiselectButton<T> extends StatefulWidget {
   final List<T> items;
-  List<T> initialItems = [];
+  final List<T> initialItems;
   final String title;
   final ValueChanged<List<T?>> onChange;
   final FormFieldSetter<List<T?>?>? onSaved;
 
-  AddExerciseMultiselectButton({
+  const AddExerciseMultiselectButton({
     Key? key,
     required this.items,
     required this.title,

@@ -464,6 +464,7 @@
   "@enterValue": {
     "description": "Error message when the user hasn't entered a value on a required field"
   },
+  "selectEntry": "Please select an entry",
   "selectExercise": "Please select an exercise",
   "@selectExercise": {
     "description": "Error message when the user hasn't selected an exercise in the form"

@@ -44,11 +44,16 @@ class _DescriptionTranslationStepContentState extends State<DescriptionTranslati
             Column(
               children: [
                 ExerciseCategoryInputWidget<Language>(
-                  categories: languages,
-                  title: AppLocalizations.of(context).language,
+                  entries: languages,
+                  title: '${AppLocalizations.of(context).language}*',
                   displayName: (Language l) => l.fullName,
                   callback: (Language newValue) {
                     addExerciseProvider.language = newValue;
+                  },
+                  validator: (Language? language) {
+                    if (language == null) {
+                      return AppLocalizations.of(context).selectEntry;
+                    }
                   },
                 ),
                 AddExerciseTextArea(

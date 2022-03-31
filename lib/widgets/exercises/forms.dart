@@ -24,19 +24,21 @@ import 'package:flutter/material.dart';
 class ExerciseCategoryInputWidget<T> extends StatefulWidget {
   late final String _title;
   late final Function _callback;
-  late final List<T> _categories;
+  late final List<T> _entries;
   late final Function _getDisplayName;
+  late final Function? _validator;
 
-  ExerciseCategoryInputWidget({
-    required String title,
-    required List<T> categories,
-    required Function callback,
-    required Function displayName,
-  }) {
-    _categories = categories;
+  ExerciseCategoryInputWidget(
+      {required String title,
+      required List<T> entries,
+      required Function callback,
+      required Function displayName,
+      Function? validator}) {
+    _entries = entries;
     _title = title;
     _callback = callback;
     _getDisplayName = displayName;
+    _validator = validator;
   }
 
   @override
@@ -46,27 +48,32 @@ class ExerciseCategoryInputWidget<T> extends StatefulWidget {
 class _ExerciseCategoryInputWidgetState<T> extends State<ExerciseCategoryInputWidget> {
   @override
   Widget build(BuildContext context) {
-    T selectedWeightUnit = widget._categories.first;
+    T? selectedEntry;
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: DropdownButtonFormField(
-        value: selectedWeightUnit,
+        value: selectedEntry,
         decoration: InputDecoration(
           labelText: widget._title,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          contentPadding: const EdgeInsets.all(8.0),
           border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(10)),
           ),
         ),
-        isDense: true,
         onChanged: (T? newValue) {
           setState(() {
-            selectedWeightUnit = newValue!;
+            selectedEntry = newValue!;
             widget._callback(newValue);
           });
         },
-        items: widget._categories.map<DropdownMenuItem<T>>((value) {
+        validator: (T? value) {
+          if (widget._validator != null) {
+            return widget._validator!(value);
+          }
+          return null;
+        },
+        items: widget._entries.map<DropdownMenuItem<T>>((value) {
           return DropdownMenuItem<T>(
             key: Key(value.id.toString()),
             value: value,

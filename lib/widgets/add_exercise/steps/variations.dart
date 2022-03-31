@@ -22,6 +22,7 @@ class DuplicatesAndVariationsStepContent extends StatelessWidget {
             AppLocalizations.of(context).whatVariationsExist,
             style: Theme.of(context).textTheme.caption,
           ),
+          const SizedBox(height: 10),
           SizedBox(
             height: 400,
             child: SingleChildScrollView(
