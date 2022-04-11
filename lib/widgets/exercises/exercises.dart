@@ -270,8 +270,8 @@ class MuscleRowWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      //mainAxisAlignment: MainAxisAlignment.spaceAround,
+      //crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
           child: Padding(

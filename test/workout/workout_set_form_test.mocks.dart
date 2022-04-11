@@ -69,6 +69,11 @@ class MockExercisesProvider extends _i1.Mock implements _i8.ExercisesProvider {
           Invocation.setter(#filteredExerciseBases, newFilteredExercises),
           returnValueForMissingStub: null);
   @override
+  Map<int, List<_i9.ExerciseBase>> get exerciseBasesByVariation =>
+      (super.noSuchMethod(Invocation.getter(#exerciseBasesByVariation),
+              returnValue: <int, List<_i9.ExerciseBase>>{})
+          as Map<int, List<_i9.ExerciseBase>>);
+  @override
   List<_i3.Exercise> get items => (super.noSuchMethod(Invocation.getter(#items),
       returnValue: <_i3.Exercise>[]) as List<_i3.Exercise>);
   @override

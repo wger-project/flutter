@@ -20,7 +20,11 @@ import 'package:wger/models/exercises/base.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/exercises/language.dart';
 import 'package:wger/models/exercises/muscle.dart';
+
+const tLanguage1 = Language(id: 1, shortName: 'de', fullName: 'Deutsch');
+const tLanguage2 = Language(id: 2, shortName: 'en', fullName: 'English');
 
 const tMuscle1 = Muscle(id: 1, name: 'Flutterus maximus', isFront: true);
 const tMuscle2 = Muscle(id: 2, name: 'Biceps', isFront: true);
@@ -70,35 +74,32 @@ final tBase3 = ExerciseBase(
 
 final tExercise1 = Exercise(
   id: 1,
-  baseId: 1,
   uuid: 'uuid',
-  languageId: 1,
   creationDate: DateTime(2021, 1, 15),
   name: 'test exercise 1',
   description: 'add clever text',
   base: tBase1,
+  language: tLanguage1,
 );
 
 final tExercise2 = Exercise(
   id: 2,
-  baseId: 2,
   uuid: '111-2222-44444',
-  languageId: 2,
   creationDate: DateTime(2021, 1, 15),
   name: 'test exercise 2',
   description: 'Lorem ipsum etc',
   base: tBase2,
+  language: tLanguage2,
 );
 
 final tExercise3 = Exercise(
   id: 3,
-  baseId: 2,
   uuid: 'a3b6c7bb-9d22-4119-a5fc-818584d5e9bc',
-  languageId: 2,
   creationDate: DateTime(2021, 4, 1),
   name: 'test exercise 3',
   description: 'The man in black fled across the desert, and the gunslinger followed',
   base: tBase3,
+  language: tLanguage2,
 );
 
 List<Exercise> getTestExercises() {

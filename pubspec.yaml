@@ -60,8 +60,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  #flutter_driver:
-  #  sdk: flutter
+  integration_test:
+    sdk: flutter
   build_runner: ^2.1.2
   flutter_launcher_icons: ^0.9.1
   json_serializable: ^6.1.5
