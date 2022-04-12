@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/exercises/forms.dart';
+import 'package:wger/helpers/i18n.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/muscle.dart';
@@ -55,7 +56,7 @@ class BasicStepContent extends StatelessWidget {
                 return AppLocalizations.of(context).selectEntry;
               }
             },
-            displayName: (ExerciseCategory c) => c.name,
+            displayName: (ExerciseCategory c) => getTranslation(c.name, context),
           ),
           AddExerciseMultiselectButton<Equipment>(
             title: AppLocalizations.of(context).equipment,
@@ -67,6 +68,7 @@ class BasicStepContent extends StatelessWidget {
             onSaved: (dynamic entries) {
               addExerciseProvider.equipment = entries.cast<Equipment>();
             },
+            displayName: (Equipment e) => getTranslation(e.name, context),
           ),
           AddExerciseMultiselectButton<Muscle>(
             title: AppLocalizations.of(context).muscles,
@@ -78,6 +80,7 @@ class BasicStepContent extends StatelessWidget {
             onSaved: (dynamic muscles) {
               addExerciseProvider.primaryMuscles = muscles.cast<Muscle>();
             },
+            displayName: (Muscle e) => e.name,
           ),
           AddExerciseMultiselectButton<Muscle>(
             title: AppLocalizations.of(context).musclesSecondary,
@@ -89,6 +92,7 @@ class BasicStepContent extends StatelessWidget {
             onSaved: (dynamic muscles) {
               addExerciseProvider.secondaryMuscles = muscles.cast<Muscle>();
             },
+            displayName: (Muscle e) => e.name,
           ),
           Consumer<AddExerciseProvider>(
             builder: (context, value, child) => MuscleRowWidget(

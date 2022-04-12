@@ -589,5 +589,27 @@
   "baseData": "Basics in English",
   "@baseData": {
     "description": "The base data for an exercise such as category, trained muscles, etc."
-  }
+  },
+  "abs": "Abs",
+  "arms": "Arms",
+  "back": "Back",
+  "calves": "Calves",
+  "chest": "Chest",
+  "legs": "Legs",
+  "shoulders": "Shoulders",
+  "barbell": "Barbell",
+  "bench": "Bench",
+  "dumbbell": "Dumbbell",
+  "gym_mat": "Gym mat",
+  "incline_bench": "Incline bench",
+  "kettlebell": "Kettlebell",
+  "pull_up_bar": "Pull-up bar",
+  "sz_bar": "SZ-Bar",
+  "swiss_ball": "Swiss Ball",
+  "none__bodyweight_exercise_": "none (bodyweight exercise)",
+  "kilometers": "Kilometers",
+  "miles": "Miles",
+  "minutes": "Minutes",
+  "seconds": "Seconds",
+  "until_failure": "Until Failure"
 }

@@ -7,15 +7,17 @@ class AddExerciseMultiselectButton<T> extends StatefulWidget {
   final String title;
   final ValueChanged<List<T?>> onChange;
   final FormFieldSetter<List<T?>?>? onSaved;
+  final Function displayName;
 
-  const AddExerciseMultiselectButton({
-    Key? key,
-    required this.items,
-    required this.title,
-    required this.onChange,
-    this.initialItems = const [],
-    this.onSaved,
-  }) : super(key: key);
+  const AddExerciseMultiselectButton(
+      {Key? key,
+      required this.items,
+      required this.title,
+      required this.onChange,
+      this.initialItems = const [],
+      this.onSaved,
+      required this.displayName})
+      : super(key: key);
 
   @override
   _AddExerciseMultiselectButtonState createState() => _AddExerciseMultiselectButtonState<T>();
@@ -30,7 +32,8 @@ class _AddExerciseMultiselectButtonState<T> extends State<AddExerciseMultiselect
       child: MultiSelectDialogField(
         initialValue: widget.initialItems,
         onSaved: widget.onSaved,
-        items: widget.items.map((item) => MultiSelectItem<T>(item, item.name)).toList(),
+        items:
+            widget.items.map((item) => MultiSelectItem<T>(item, widget.displayName(item))).toList(),
         onConfirm: (value) {
           setState(() {
             _selectedItems = value.cast<T>();
