@@ -184,9 +184,11 @@ class AddExerciseProvider with ChangeNotifier {
       exerciseTranslationLang.base = base;
       exerciseTranslationLang = await addExerciseTranslation(exerciseTranslationLang);
       for (final alias in _alternativeNamesTranslation) {
-        exerciseTranslationLang.alias.add(
-          await addExerciseAlias(alias, exerciseTranslationLang.id!),
-        );
+        if (alias.isNotEmpty) {
+          exerciseTranslationLang.alias.add(
+            await addExerciseAlias(alias, exerciseTranslationLang.id!),
+          );
+        }
       }
       await addExerciseTranslation(exerciseTranslationLang);
     }
