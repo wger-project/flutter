@@ -89,13 +89,7 @@ class _FilterRowState extends State<FilterRow> {
                 itemBuilder: (context) {
                   return [
                     PopupMenuItem<ExerciseMoreOption>(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: const [
-                          Text('Add Exercise'),
-                          Icon(Icons.add),
-                        ],
-                      ),
+                      child: Text(AppLocalizations.of(context).addExercise),
                       value: ExerciseMoreOption.ADD_EXERCISE,
                     )
                   ];
