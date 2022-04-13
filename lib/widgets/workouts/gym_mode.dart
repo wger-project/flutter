@@ -25,6 +25,7 @@ import 'package:provider/provider.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/gym_mode.dart';
+import 'package:wger/helpers/i18n.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/misc.dart';
 import 'package:wger/helpers/ui.dart';
@@ -682,13 +683,13 @@ class ExerciseOverview extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 15),
             children: [
               Text(
-                _exercise.category.name,
+                getTranslation(_exercise.category.name, context),
                 style: Theme.of(context).textTheme.headline6,
                 textAlign: TextAlign.center,
               ),
               ..._exercise.equipment
                   .map((e) => Text(
-                        e.name,
+                        getTranslation(e.name, context),
                         style: Theme.of(context).textTheme.headline6,
                         textAlign: TextAlign.center,
                       ))

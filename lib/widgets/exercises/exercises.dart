@@ -22,6 +22,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/i18n.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/providers/exercises.dart';
@@ -44,7 +45,7 @@ class ExerciseDetail extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Category and equipment
-          getCategoriesAndEquipment(),
+          getCategoriesAndEquipment(context),
 
           // Videos
           ...getVideos(),
@@ -190,14 +191,16 @@ class ExerciseDetail extends StatelessWidget {
     return out;
   }
 
-  Widget getCategoriesAndEquipment() {
+  Widget getCategoriesAndEquipment(BuildContext context) {
     final List<Widget> out = [];
 
-    out.add(Chip(
-      label: Text(_exercise.baseObj.category.name),
-    ));
+    out.add(
+      Chip(label: Text(getTranslation(_exercise.baseObj.category.name, context))),
+    );
     if (_exercise.baseObj.equipment.isNotEmpty) {
-      _exercise.baseObj.equipment.map((e) => Chip(label: Text(e.name))).forEach((element) {
+      _exercise.baseObj.equipment
+          .map((e) => Chip(label: Text(getTranslation(e.name, context))))
+          .forEach((element) {
         out.add(element);
       });
     }

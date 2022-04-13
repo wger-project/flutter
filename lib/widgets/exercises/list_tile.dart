@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:wger/helpers/i18n.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/screens/exercise_screen.dart';
 import 'package:wger/widgets/exercises/images.dart';
@@ -56,7 +57,7 @@ class ExerciseListTile extends StatelessWidget {
         maxLines: 2,
       ),
       subtitle: Text(
-        '${exercise.category.name} / ${exercise.equipment.map((e) => e.name).toList().join(', ')}',
+        '${getTranslation(exercise.category.name, context)} / ${exercise.equipment.map((e) => getTranslation(e.name, context)).toList().join(', ')}',
       ),
       onTap: () {
         Navigator.pushNamed(context, ExerciseDetailScreen.routeName, arguments: exercise);

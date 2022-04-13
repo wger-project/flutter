@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/helpers/i18n.dart';
 import 'package:wger/providers/exercises.dart';
 
 class ExerciseFilterModalBody extends StatefulWidget {
@@ -26,8 +27,7 @@ class ExerciseFilterModalBody extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ExerciseFilterModalBodyState createState() =>
-      _ExerciseFilterModalBodyState();
+  _ExerciseFilterModalBodyState createState() => _ExerciseFilterModalBodyState();
 }
 
 class _ExerciseFilterModalBodyState extends State<ExerciseFilterModalBody> {
@@ -70,12 +70,11 @@ class _ExerciseFilterModalBodyState extends State<ExerciseFilterModalBody> {
                 children: filterCategory.items.entries.map(
                   (currentEntry) {
                     return SwitchListTile(
-                      title: Text(currentEntry.key.name),
+                      title: Text(getTranslation(currentEntry.key.name, context)),
                       value: currentEntry.value,
                       onChanged: (_) {
                         setState(() {
-                          filterCategory.items
-                              .update(currentEntry.key, (value) => !value);
+                          filterCategory.items.update(currentEntry.key, (value) => !value);
                           Provider.of<ExercisesProvider>(context, listen: false)
                               .setFilters(filters);
                         });
