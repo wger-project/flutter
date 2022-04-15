@@ -47,3 +47,7 @@ app.*.map.json
 /fastlane/metadata/envfiles/wger.properties
 /fastlane/metadata/envfiles/keys.jks
 /fastlane/metadata/envfiles/key.properties
+
+
+# Others
+/vendor/bundle/ruby/
