@@ -45,7 +45,10 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
           children: [
             if (_currentStep == lastStepIndex)
               ElevatedButton(
-                onPressed: details.onStepContinue,
+                onPressed: () {
+                  _addExercise();
+                  context.read<AddExerciseProvider>().addExercise();
+                },
                 child: Text(AppLocalizations.of(context).save),
               )
             else
@@ -107,11 +110,6 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
                 _currentStep += 1;
               });
             }
-          }
-
-          if (_currentStep == lastStepIndex) {
-            _addExercise();
-            context.read<AddExerciseProvider>().addExercise();
           }
         },
         onStepCancel: () => setState(() {
