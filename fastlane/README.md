@@ -32,7 +32,7 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 [bundle exec] fastlane android test_configuration
 ```
 
-Check playstore configuration
+Check playstore configuration, does not upload any files
 
 ### android production
 
