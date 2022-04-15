@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/add_exercise_provider.dart';
+import 'package:wger/providers/exercises.dart';
 import 'package:wger/widgets/add_exercise/steps/basics.dart';
 import 'package:wger/widgets/add_exercise/steps/description.dart';
 import 'package:wger/widgets/add_exercise/steps/images.dart';
@@ -39,8 +40,11 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
           children: [
             if (_currentStep == lastStepIndex)
               ElevatedButton(
-                onPressed: () {
-                  context.read<AddExerciseProvider>().addExercise();
+                onPressed: () async {
+                  final id = await context.read<AddExerciseProvider>().addExercise();
+                  final exercise = await context.read<ExercisesProvider>().fetchAndSetExercise(id);
+
+                  //Navigator.pushNamed(context, ExerciseDetailScreen.routeName, arguments: exercise);
                 },
                 child: Text(AppLocalizations.of(context).save),
               )

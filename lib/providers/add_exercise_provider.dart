@@ -157,7 +157,7 @@ class AddExerciseProvider with ChangeNotifier {
     log('Alternate names: en/$_alternativeNamesEn translation/$_alternativeNamesTranslation');
   }
 
-  Future<void> addExercise() async {
+  Future<int> addExercise() async {
     printValues();
 
     // Create the variations if needed
@@ -193,8 +193,14 @@ class AddExerciseProvider with ChangeNotifier {
       await addExerciseTranslation(exerciseTranslationLang);
     }
 
+    // Clear everything
+    //clear();
+
     // Create the images
     await addImages(base);
+
+    // Return exercise ID
+    return exerciseTranslationEn.id!;
   }
 
   Future<ExerciseBase> addExerciseBase() async {
