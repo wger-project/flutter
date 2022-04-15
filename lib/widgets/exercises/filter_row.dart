@@ -89,7 +89,7 @@ class _FilterRowState extends State<FilterRow> {
                 itemBuilder: (context) {
                   return [
                     PopupMenuItem<ExerciseMoreOption>(
-                      child: Text(AppLocalizations.of(context).addExercise),
+                      child: Text(AppLocalizations.of(context).contributeExercise),
                       value: ExerciseMoreOption.ADD_EXERCISE,
                     )
                   ];

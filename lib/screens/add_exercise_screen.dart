@@ -70,9 +70,7 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: WgerAppBar(
-        AppLocalizations.of(context).addExercise,
-      ),
+      appBar: EmptyAppBar(AppLocalizations.of(context).contributeExercise),
       body: Stepper(
         controlsBuilder: _controlsBuilder,
         steps: [

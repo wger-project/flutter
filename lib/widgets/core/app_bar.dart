@@ -27,10 +27,10 @@ import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/widgets/core/about.dart';
 
-class WgerAppBar extends StatelessWidget with PreferredSizeWidget {
+class MainAppBar extends StatelessWidget with PreferredSizeWidget {
   final String _title;
 
-  WgerAppBar(this._title);
+  MainAppBar(this._title);
 
   @override
   Widget build(BuildContext context) {
@@ -80,6 +80,24 @@ class WgerAppBar extends StatelessWidget with PreferredSizeWidget {
           },
         ),
       ],
+    );
+  }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+}
+
+/// App bar that only displays a title
+class EmptyAppBar extends StatelessWidget with PreferredSizeWidget {
+  final String _title;
+
+  EmptyAppBar(this._title);
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      title: Text(_title),
+      actions: const [],
     );
   }
 

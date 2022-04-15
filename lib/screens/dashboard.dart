@@ -34,7 +34,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: WgerAppBar(AppLocalizations.of(context).labelDashboard),
+      appBar: MainAppBar(AppLocalizations.of(context).labelDashboard),
       body: SingleChildScrollView(
         child: Column(
           children: [

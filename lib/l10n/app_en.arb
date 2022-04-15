@@ -100,6 +100,7 @@
   "@successfullySaved": {
     "description": "Message when an item was successfully saved"
   },
+  "exerciseList": "Exercise list",
   "exercise": "Exercise",
   "@exercise": {
     "description": "An exercise for a workout"
@@ -584,6 +585,7 @@
   "images": "Images",
   "language": "Language",
   "addExercise": "Add exercise",
+  "contributeExercise": "Contribute an exercise",
   "translation": "Translation",
   "translateExercise": "Translate this exercise now",
   "baseData": "Basics in English",

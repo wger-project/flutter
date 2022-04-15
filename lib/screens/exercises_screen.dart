@@ -24,7 +24,7 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
     final exercisesList = Provider.of<ExercisesProvider>(context).filteredExerciseBases;
 
     return Scaffold(
-      appBar: WgerAppBar(AppLocalizations.of(context).exercises),
+      appBar: EmptyAppBar(AppLocalizations.of(context).exercises),
       body: Column(
         children: [
           FilterRow(),
