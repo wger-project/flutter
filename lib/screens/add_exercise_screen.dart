@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -19,10 +17,6 @@ class AddExerciseScreen extends StatefulWidget {
 
   @override
   _AddExerciseScreenState createState() => _AddExerciseScreenState();
-}
-
-abstract class ValidateStep {
-  abstract VoidCallback _submit;
 }
 
 class _AddExerciseScreenState extends State<AddExerciseScreen> {
@@ -46,7 +40,6 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
             if (_currentStep == lastStepIndex)
               ElevatedButton(
                 onPressed: () {
-                  _addExercise();
                   context.read<AddExerciseProvider>().addExercise();
                 },
                 child: Text(AppLocalizations.of(context).save),
@@ -64,10 +57,6 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
         ),
       ],
     );
-  }
-
-  void _addExercise() {
-    log('Adding exercise...');
   }
 
   @override
@@ -100,8 +89,6 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
         ],
         currentStep: _currentStep,
         onStepContinue: () {
-          log('Validation for step $_currentStep: ${_keys[_currentStep].currentState?.validate()}');
-
           if (_keys[_currentStep].currentState?.validate() ?? false) {
             _keys[_currentStep].currentState?.save();
 
