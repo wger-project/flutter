@@ -400,7 +400,7 @@ packages:
       name: flutter_typeahead
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.2.4"
+    version: "3.2.5"
   flutter_web_plugins:
     dependency: transitive
     description: flutter
