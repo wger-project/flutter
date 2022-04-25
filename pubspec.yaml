@@ -53,7 +53,7 @@ dependencies:
   table_calendar: ^3.0.2
   url_launcher: ^6.0.20
   flutter_barcode_scanner: ^2.0.0
-  video_player: ^2.2.16
+  video_player: ^2.4.0
 
 dev_dependencies:
   flutter_test:
