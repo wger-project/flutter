@@ -1,7 +1,6 @@
 name: Continous Integration
 on:
   push:
-    branches: [ pull_request, master ]
     paths:
       - '**.dart'
       - 'pubspec.yaml'
