@@ -55,7 +55,7 @@ dependencies:
   flutter_barcode_scanner: ^2.0.0
   video_player: ^2.4.0
   multi_select_flutter: ^4.0.0
-    flutter_svg: ^0.23.0+1
+  flutter_svg: ^0.23.0+1
 
 dev_dependencies:
   flutter_test:
