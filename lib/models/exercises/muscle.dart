@@ -44,4 +44,9 @@ class Muscle extends Equatable {
 
   @override
   List<Object?> get props => [id, name, isFront];
+
+  @override
+  String toString() {
+    return 'Muscle: $id - $name';
+  }
 }

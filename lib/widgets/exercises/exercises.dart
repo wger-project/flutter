@@ -101,12 +101,12 @@ class ExerciseDetail extends StatelessWidget {
 
   List<Widget> getNotes(BuildContext context) {
     final List<Widget> out = [];
-    if (_exercise.tips.isNotEmpty) {
+    if (_exercise.notes.isNotEmpty) {
       out.add(Text(
         AppLocalizations.of(context).notes,
         style: Theme.of(context).textTheme.headline5,
       ));
-      for (final e in _exercise.tips) {
+      for (final e in _exercise.notes) {
         out.add(Text(e.comment));
       }
       out.add(const SizedBox(height: PADDING));

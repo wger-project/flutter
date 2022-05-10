@@ -36,7 +36,7 @@ class ExerciseCategory extends Equatable {
 
   @override
   String toString() {
-    return 'Category $id';
+    return 'Category $id: $name';
   }
 
   // Boilerplate

@@ -52,7 +52,7 @@ class Exercise extends Equatable {
   final String description;
 
   @JsonKey(ignore: true)
-  List<Comment> tips = [];
+  List<Comment> notes = [];
 
   @JsonKey(ignore: true)
   List<Alias> alias = [];

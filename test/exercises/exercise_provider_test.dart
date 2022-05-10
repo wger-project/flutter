@@ -19,6 +19,7 @@ main() {
   late ExercisesProvider provider;
 
   const String categoryUrl = 'exercisecategory';
+  const String exerciseBaseInfoUrl = 'exercisebaseinfo';
   const String muscleUrl = 'muscle';
   const String equipmentUrl = 'equipment';
   const String languageUrl = 'language';
@@ -28,6 +29,12 @@ main() {
     scheme: 'http',
     host: 'localhost',
     path: 'api/v2/$categoryUrl/',
+  );
+
+  final Uri texerciseBaseInfoUri = Uri(
+    scheme: 'http',
+    host: 'localhost',
+    path: 'api/v2/$exerciseBaseInfoUrl/',
   );
 
   final Uri tMuscleEntriesUri = Uri(
@@ -59,10 +66,21 @@ main() {
   const equipment1 = Equipment(id: 1, name: 'Barbell');
   const language1 = Language(id: 1, shortName: 'de', fullName: 'Deutsch');
 
-  final Map<String, dynamic> tCategoryMap = jsonDecode(fixture('exercise_category_entries.json'));
-  final Map<String, dynamic> tMuscleMap = jsonDecode(fixture('exercise_muscles_entries.json'));
-  final Map<String, dynamic> tEquipmentMap = jsonDecode(fixture('exercise_equipment_entries.json'));
-  final Map<String, dynamic> tLanguageMap = jsonDecode(fixture('exercise_language_entries.json'));
+  final Map<String, dynamic> tCategoryMap = jsonDecode(
+    fixture('exercises/category_entries.json'),
+  );
+  final Map<String, dynamic> tMuscleMap = jsonDecode(
+    fixture('exercises/muscles_entries.json'),
+  );
+  final Map<String, dynamic> tEquipmentMap = jsonDecode(
+    fixture('exercises/equipment_entries.json'),
+  );
+  final Map<String, dynamic> tLanguageMap = jsonDecode(
+    fixture('exercises/language_entries.json'),
+  );
+  final Map<String, dynamic> tExerciseBaseInfoMap = jsonDecode(
+    fixture('exercises/exercisebaseinfo_response.json'),
+  );
 
   setUp(() {
     mockBaseProvider = MockWgerBaseProvider();
@@ -84,6 +102,11 @@ main() {
     // Mock languages
     when(mockBaseProvider.makeUrl(languageUrl)).thenReturn(tLanguageEntriesUri);
     when(mockBaseProvider.fetch(tLanguageEntriesUri)).thenAnswer((_) => Future.value(tLanguageMap));
+
+    // Mock base info response
+    when(mockBaseProvider.makeUrl(exerciseBaseInfoUrl)).thenReturn(texerciseBaseInfoUri);
+    when(mockBaseProvider.fetch(texerciseBaseInfoUri))
+        .thenAnswer((_) => Future.value(tExerciseBaseInfoMap));
   });
 
   group('findCategoryById()', () {
@@ -181,7 +204,6 @@ main() {
           equipment: FilterCategory<Equipment>(title: 'Equipment', items: {}),
         );
 
-        provider.exercises = data.getTestExercises();
         provider.exerciseBases = data.getTestExerciseBases();
       });
 
@@ -290,17 +312,18 @@ main() {
       group('Search term', () {
         late Uri tSearchByNameUri;
         setUp(() {
-          final String tSearchTerm = 'press';
-          final String tSearchLanguage = 'en';
-          Map<String, dynamic> query = {'term': tSearchTerm, 'language': tSearchLanguage};
+          const String tSearchTerm = 'press';
+          const String tSearchLanguage = 'en';
+          final Map<String, dynamic> query = {'term': tSearchTerm, 'language': tSearchLanguage};
           tSearchByNameUri = Uri(
             scheme: 'http',
             host: 'localhost',
             path: 'api/v2/$searchExerciseUrl/',
             queryParameters: query,
           );
-          final Map<String, dynamic> tSearchResponse =
-              jsonDecode(fixture('exercise_search_entries.json'));
+          final Map<String, dynamic> tSearchResponse = jsonDecode(
+            fixture('exercises/exercise_search_entries.json'),
+          );
 
           // Mock exercise search
           when(

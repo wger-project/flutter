@@ -88,6 +88,7 @@ class ExerciseBase extends Equatable {
     List<Muscle>? musclesSecondary,
     List<Equipment>? equipment,
     List<ExerciseImage>? images,
+    List<Exercise>? exercises,
     ExerciseCategory? category,
   }) {
     this.images = images ?? [];
@@ -110,6 +111,10 @@ class ExerciseBase extends Equatable {
     if (equipment != null) {
       this.equipment = equipment;
       equipmentIds = equipment.map((e) => e.id).toList();
+    }
+
+    if (exercises != null) {
+      this.exercises = exercises;
     }
   }
 
