@@ -17,7 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/exercises/base.dart';
 import 'package:wger/widgets/exercises/exercises.dart';
 
 class ExerciseDetailScreen extends StatelessWidget {
@@ -27,15 +27,15 @@ class ExerciseDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final exercise = ModalRoute.of(context)!.settings.arguments as Exercise;
+    final exerciseBase = ModalRoute.of(context)!.settings.arguments as ExerciseBase;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(exercise.name),
+        title: Text(exerciseBase.getExercise(Localizations.localeOf(context).languageCode).name),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: ExerciseDetail(exercise),
+        child: ExerciseDetail(exerciseBase),
       ),
     );
   }

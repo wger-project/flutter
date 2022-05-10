@@ -43,7 +43,7 @@ class DuplicatesAndVariationsStepContent extends StatelessWidget {
                                       .map(
                                         (base) => Text(
                                           base
-                                              .getExercises(
+                                              .getExercise(
                                                   Localizations.localeOf(context).languageCode)
                                               .name,
                                           overflow: TextOverflow.ellipsis,
@@ -77,7 +77,7 @@ class DuplicatesAndVariationsStepContent extends StatelessWidget {
                                 children: [
                                   Text(
                                     base
-                                        .getExercises(Localizations.localeOf(context).languageCode)
+                                        .getExercise(Localizations.localeOf(context).languageCode)
                                         .name,
                                     overflow: TextOverflow.ellipsis,
                                   ),

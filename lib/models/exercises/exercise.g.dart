@@ -27,9 +27,8 @@ Exercise _$ExerciseFromJson(Map<String, dynamic> json) {
         : DateTime.parse(json['creation_date'] as String),
     name: json['name'] as String,
     description: json['description'] as String,
-  )
-    ..languageId = json['language'] as int
-    ..baseId = json['exercise_base'] as int?;
+    baseId: json['exercise_base'] as int?,
+  )..languageId = json['language'] as int;
 }
 
 Map<String, dynamic> _$ExerciseToJson(Exercise instance) => <String, dynamic>{

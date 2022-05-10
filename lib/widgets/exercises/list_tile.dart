@@ -18,14 +18,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:wger/helpers/i18n.dart';
-import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/exercises/base.dart';
 import 'package:wger/screens/exercise_screen.dart';
 import 'package:wger/widgets/exercises/images.dart';
 
 class ExerciseListTile extends StatelessWidget {
-  const ExerciseListTile({Key? key, required this.exercise}) : super(key: key);
+  const ExerciseListTile({Key? key, required this.exerciseBase}) : super(key: key);
 
-  final Exercise exercise;
+  final ExerciseBase exerciseBase;
 
   @override
   Widget build(BuildContext context) {
@@ -44,23 +44,23 @@ class ExerciseListTile extends StatelessWidget {
               height: IMG_SIZE,
               width: IMG_SIZE,
               child: ExerciseImageWidget(
-                image: exercise.getMainImage,
+                image: exerciseBase.getMainImage,
               ),
             ),
           ),
         ),
       ),
       title: Text(
-        exercise.name,
+        exerciseBase.getExercise(Localizations.localeOf(context).languageCode).name,
         //style: theme.textTheme.headline6,
         overflow: TextOverflow.ellipsis,
         maxLines: 2,
       ),
       subtitle: Text(
-        '${getTranslation(exercise.category.name, context)} / ${exercise.equipment.map((e) => getTranslation(e.name, context)).toList().join(', ')}',
+        '${getTranslation(exerciseBase.category.name, context)} / ${exerciseBase.equipment.map((e) => getTranslation(e.name, context)).toList().join(', ')}',
       ),
       onTap: () {
-        Navigator.pushNamed(context, ExerciseDetailScreen.routeName, arguments: exercise);
+        Navigator.pushNamed(context, ExerciseDetailScreen.routeName, arguments: exerciseBase);
       },
       /*
       trailing: Container(

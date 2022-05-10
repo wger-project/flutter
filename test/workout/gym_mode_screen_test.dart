@@ -45,9 +45,11 @@ void main() {
     final mockExerciseProvider = MockExercisesProvider();
     final WorkoutPlan workoutPlan = getWorkout();
 
-    when(mockExerciseProvider.findExerciseById(1)).thenReturn(getTestExercises()[0]);
-    when(mockExerciseProvider.findExerciseById(2)).thenReturn(getTestExercises()[1]);
-    when(mockExerciseProvider.findExerciseById(3)).thenReturn(getTestExercises()[2]);
+    final bases = getTestExerciseBases();
+
+    when(mockExerciseProvider.findExerciseBaseById(1)).thenReturn(bases[0]);
+    when(mockExerciseProvider.findExerciseBaseById(2)).thenReturn(bases[1]);
+    when(mockExerciseProvider.findExerciseBaseById(3)).thenReturn(bases[2]);
 
     return ChangeNotifierProvider<WorkoutPlansProvider>(
       create: (context) => WorkoutPlansProvider(
@@ -90,7 +92,7 @@ void main() {
     //
     expect(find.byType(StartPage), findsOneWidget);
     expect(find.text('Your workout today'), findsOneWidget);
-    expect(find.text('test exercise 1'), findsOneWidget);
+    expect(find.text('test exercise 2'), findsOneWidget);
     expect(find.byIcon(Icons.close), findsOneWidget);
     expect(find.byIcon(Icons.menu), findsOneWidget);
     expect(find.byIcon(Icons.chevron_left), findsNothing);
@@ -101,7 +103,7 @@ void main() {
     //
     // Exercise overview page
     //
-    expect(find.text('test exercise 1'), findsOneWidget);
+    expect(find.text('test exercise 2'), findsOneWidget);
     expect(find.byType(ExerciseOverview), findsOneWidget);
     expect(find.byIcon(Icons.close), findsOneWidget);
     expect(find.byIcon(Icons.menu), findsOneWidget);
@@ -113,7 +115,7 @@ void main() {
     //
     // Log
     //
-    expect(find.text('test exercise 1'), findsOneWidget);
+    expect(find.text('test exercise 2'), findsOneWidget);
     expect(find.byType(LogPage), findsOneWidget);
     expect(find.byType(Form), findsOneWidget);
     expect(find.byType(ListTile), findsNWidgets(3), reason: 'Two logs and the switch tile');
@@ -156,7 +158,7 @@ void main() {
     //
     // Log
     //
-    expect(find.text('test exercise 1'), findsOneWidget);
+    expect(find.text('test exercise 2'), findsOneWidget);
     expect(find.byType(LogPage), findsOneWidget);
     expect(find.byType(Form), findsOneWidget);
     await tester.drag(find.byType(LogPage), const Offset(-500.0, 0.0));

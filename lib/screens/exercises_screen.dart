@@ -70,9 +70,8 @@ class _ExercisesList extends StatelessWidget {
       },
       itemCount: exerciseBaseList.length,
       itemBuilder: (context, index) {
-        final exercise = exerciseBaseList[index];
         return ExerciseListTile(
-          exercise: exercise.getExercises(Localizations.localeOf(context).languageCode),
+          exerciseBase: exerciseBaseList[index],
         );
 
         /*

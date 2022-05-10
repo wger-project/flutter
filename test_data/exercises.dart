@@ -25,6 +25,7 @@ import 'package:wger/models/exercises/muscle.dart';
 
 const tLanguage1 = Language(id: 1, shortName: 'de', fullName: 'Deutsch');
 const tLanguage2 = Language(id: 2, shortName: 'en', fullName: 'English');
+const tLanguage3 = Language(id: 3, shortName: 'fr', fullName: 'Français');
 
 const tMuscle1 = Muscle(id: 1, name: 'Flutterus maximus', isFront: true);
 const tMuscle2 = Muscle(id: 2, name: 'Biceps', isFront: true);
@@ -41,7 +42,7 @@ const tEquipment3 = Equipment(id: 2, name: 'Matress');
 
 final tBase1 = ExerciseBase(
   id: 1,
-  uuid: 'uuid1',
+  uuid: '364f196c-881b-4839-8bfc-9e8f651521b6',
   creationDate: DateTime(2021, 09, 01),
   updateDate: DateTime(2021, 09, 10),
   category: tCategory1,
@@ -52,7 +53,7 @@ final tBase1 = ExerciseBase(
 
 final tBase2 = ExerciseBase(
   id: 2,
-  uuid: 'uuid2',
+  uuid: '82415754-fc4c-49ea-8ca7-1516dd36d5a0',
   creationDate: DateTime(2021, 08, 01),
   updateDate: DateTime(2021, 08, 10),
   category: tCategory2,
@@ -63,7 +64,7 @@ final tBase2 = ExerciseBase(
 
 final tBase3 = ExerciseBase(
   id: 3,
-  uuid: 'uuid3',
+  uuid: 'ca84e2c5-5608-4d6d-ba57-6d4b6b5e7acd',
   creationDate: DateTime(2021, 08, 01),
   updateDate: DateTime(2021, 08, 01),
   category: tCategory3,
@@ -74,31 +75,61 @@ final tBase3 = ExerciseBase(
 
 final tExercise1 = Exercise(
   id: 1,
-  uuid: 'uuid',
+  uuid: 'f4cc326b-e497-4bd7-a71d-0eb1db522743',
   creationDate: DateTime(2021, 1, 15),
   name: 'test exercise 1',
   description: 'add clever text',
-  base: tBase1,
+  baseId: tBase1.id,
   language: tLanguage1,
 );
 
 final tExercise2 = Exercise(
   id: 2,
-  uuid: '111-2222-44444',
+  uuid: 'b7f51a1a-0368-4dfc-a03c-d629a4089b4a',
   creationDate: DateTime(2021, 1, 15),
   name: 'test exercise 2',
   description: 'Lorem ipsum etc',
-  base: tBase2,
+  baseId: tBase2.id,
   language: tLanguage2,
 );
 
 final tExercise3 = Exercise(
   id: 3,
-  uuid: 'a3b6c7bb-9d22-4119-a5fc-818584d5e9bc',
+  uuid: 'd83f572d-add5-48dc-89cf-75f6770284f1',
   creationDate: DateTime(2021, 4, 1),
   name: 'test exercise 3',
   description: 'The man in black fled across the desert, and the gunslinger followed',
-  base: tBase3,
+  baseId: tBase3.id,
+  language: tLanguage3,
+);
+
+final tExercise4 = Exercise(
+  id: 4,
+  uuid: 'a3e96c1d-b35f-4b0e-9cf4-ca37666cf521',
+  creationDate: DateTime(2021, 4, 1),
+  name: 'test exercise 4',
+  description: 'The man in black fled across the desert, and the gunslinger followed',
+  baseId: tBase3.id,
+  language: tLanguage1,
+);
+
+final tExercise5 = Exercise(
+  id: 5,
+  uuid: '8c49a816-2247-4116-94bb-b5c0ce09c609',
+  creationDate: DateTime(2021, 4, 1),
+  name: 'test exercise 5',
+  description: 'The man in black fled across the desert, and the gunslinger followed',
+  baseId: tBase3.id,
+  language: tLanguage2,
+);
+
+final tExercise6 = Exercise(
+  id: 6,
+  uuid: '259a637e-957f-4fe1-b61b-f56e3793ebcd',
+  creationDate: DateTime(2021, 4, 1),
+  name: 'test exercise 5',
+  description: 'The man in black fled across the desert, and the gunslinger followed',
+  baseId: tBase3.id,
   language: tLanguage2,
 );
 
@@ -107,5 +138,9 @@ List<Exercise> getTestExercises() {
 }
 
 List<ExerciseBase> getTestExerciseBases() {
-  return getTestExercises().map((e) => e.baseObj).toList();
+  tBase1.exercises = [tExercise1, tExercise2, tExercise3];
+  tBase2.exercises = [tExercise4, tExercise5];
+  tBase3.exercises = [tExercise6];
+
+  return [tBase1, tBase2, tBase3];
 }

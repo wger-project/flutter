@@ -155,8 +155,7 @@ class ExercisesProvider with ChangeNotifier {
 
     List<ExerciseBase> filteredItems = _exerciseBases;
     if (filters!.searchTerm.length > 1) {
-      final exercises = await searchExercise(filters!.searchTerm);
-      filteredItems = exercises.map((e) => e.baseObj).toList();
+      filteredItems = await searchExercise(filters!.searchTerm);
     }
 
     // Filter by exercise category and equipment (REPLACE WITH HTTP REQUEST)
@@ -182,17 +181,25 @@ class ExercisesProvider with ChangeNotifier {
     _exerciseBases = [];
   }
 
-  List<Exercise> findByCategory(ExerciseCategory? category) {
+  List<ExerciseBase> findByCategory(ExerciseCategory? category) {
     if (category == null) {
-      return items;
+      return bases;
     }
-    return items.where((exercise) => exercise.category == category).toList();
+    return bases.where((base) => base.category.id == category.id).toList();
   }
 
   /// Find exercise by ID
   Exercise findExerciseById(int id) {
     return _exercises.firstWhere(
       (exercise) => exercise.id == id,
+      orElse: () => throw NoSuchEntryException(),
+    );
+  }
+
+  /// Find exercise base by ID
+  ExerciseBase findExerciseBaseById(int id) {
+    return _exerciseBases.firstWhere(
+      (base) => base.id == id,
       orElse: () => throw NoSuchEntryException(),
     );
   }
@@ -206,16 +213,20 @@ class ExercisesProvider with ChangeNotifier {
   ///
   /// languageId: the ID of the language to filter the results by. If this
   /// parameter is not passed, all exercises are returned.
-  List<Exercise> findExercisesByVariationId(int id, {int? exerciseIdToExclude, int? languageId}) {
-    var out = _exercises
+  List<ExerciseBase> findExerciseBasesByVariationId(int id,
+      {int? exerciseIdToExclude, int? languageId}) {
+    var out = _exerciseBases
         .where(
-          (base) => base.baseObj.variationId == id,
+          (base) => base.variationId == id,
         )
         .toList();
 
+    /*
     if (languageId != null) {
       out = out.where((e) => e.languageId == languageId).toList();
     }
+
+     */
 
     if (exerciseIdToExclude != null) {
       out = out.where((e) => e.id != exerciseIdToExclude).toList();
@@ -362,6 +373,15 @@ class ExercisesProvider with ChangeNotifier {
     }
   }
 
+  /// Returns the exercise with the given ID
+  ///
+  /// If the exercise is not known locally, it is fetched from the server.
+  /// This method is called when a workout is first loaded, after that the
+  /// regular not-async getById method can be used
+  Future<ExerciseBase> fetchAndSetExerciseBase(int exerciseBaseId) async {
+    return findExerciseBaseById(exerciseBaseId);
+  }
+
   /// Checks the required cache version
   ///
   /// This is needed since the content of the exercise cache can change and we need
@@ -415,7 +435,7 @@ class ExercisesProvider with ChangeNotifier {
       for (var base in bases) {
         final filteredExercises = exercises.where((e) => e.baseId == base.id);
         for (final exercise in filteredExercises) {
-          exercise.baseObj = base;
+          exercise.base = base;
           base.exercises.add(exercise);
           out.add(exercise);
         }
@@ -547,7 +567,7 @@ class ExercisesProvider with ChangeNotifier {
   ///
   /// We could do this locally, but the server has better text searching capabilities
   /// with postgresql.
-  Future<List<Exercise>> searchExercise(String name, [String languageCode = 'en']) async {
+  Future<List<ExerciseBase>> searchExercise(String name, [String languageCode = 'en']) async {
     if (name.length <= 1) {
       return [];
     }
@@ -562,8 +582,8 @@ class ExercisesProvider with ChangeNotifier {
 
     // Process the response
     return await Future.wait(
-      (result['suggestions'] as List).map<Future<Exercise>>(
-        (entry) => fetchAndSetExercise(entry['data']['id']),
+      (result['suggestions'] as List).map<Future<ExerciseBase>>(
+        (entry) => fetchAndSetExerciseBase(entry['data']['base_id']),
       ),
     );
   }

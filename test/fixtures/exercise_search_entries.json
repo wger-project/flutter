@@ -4,6 +4,7 @@
             "value": "Bench Press Narrow Grip",
             "data": {
                 "id": 1,
+                "base_id": 1,
                 "name": "test exercise 1",
                 "category": "Arms",
                 "image": "/media/exercise-images/76/Narrow-grip-bench-press-2.png",
@@ -14,6 +15,7 @@
             "value": "Close-grip Bench Press",
             "data": {
                 "id": 2,
+                "base_id": 2,
                 "name": "test exercise 2",
                 "category": "Arms",
                 "image": null,

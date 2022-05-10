@@ -212,7 +212,7 @@ main() {
 
         // assert
         verifyNever(provider.baseProvider.fetch(tSearchByNameUri));
-        expect(provider.filteredExerciseBases, [data.getTestExercises()[0].baseObj]);
+        expect(provider.filteredExerciseBases, [data.getTestExerciseBases()[0]]);
       });
 
       test('A muscle is selected with no search term. Should not find results', () async {

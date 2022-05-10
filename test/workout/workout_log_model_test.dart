@@ -28,7 +28,7 @@ void main() {
       log1 = Log(
         id: 123,
         workoutPlan: 100,
-        exerciseId: 1,
+        exerciseBaseId: 1,
         reps: 10,
         rir: '1.5',
         repetitionUnitId: 1,
@@ -39,7 +39,7 @@ void main() {
       log2 = Log(
         id: 9,
         workoutPlan: 42,
-        exerciseId: 1,
+        exerciseBaseId: 1,
         reps: 10,
         rir: '1.5',
         repetitionUnitId: 1,

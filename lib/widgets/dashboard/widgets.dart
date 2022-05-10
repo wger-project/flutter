@@ -382,9 +382,9 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(s.exerciseObj.name),
+                              Text(s.exerciseBaseObj.name),
                               const SizedBox(width: 10),
-                              MutedText(set.getSmartRepr(s.exerciseObj).join('\n')),
+                              MutedText(set.getSmartRepr(s.exerciseBaseObj).join('\n')),
                             ],
                           ),
                           const SizedBox(height: 10),

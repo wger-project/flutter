@@ -201,7 +201,7 @@ void main() {
       creationDate: DateTime(2021, 1, 15),
       name: 'Squats',
       description: 'add clever text',
-      base: tBase1,
+      baseId: tBase1,
       language: tLanguage1,
     );
 
@@ -211,7 +211,7 @@ void main() {
       creationDate: DateTime(2021, 1, 15),
       name: 'Bench press',
       description: 'add clever text',
-      base: tBase1,
+      baseId: tBase1,
       language: tLanguage1,
     );
 
@@ -221,7 +221,7 @@ void main() {
       creationDate: DateTime(2021, 1, 15),
       name: 'deadLift',
       description: 'add clever text',
-      base: tBase1,
+      baseId: tBase1,
       language: tLanguage1,
     );
 
@@ -231,7 +231,7 @@ void main() {
       creationDate: DateTime(2021, 1, 15),
       name: 'Crunches',
       description: 'add clever text',
-      base: tBase1,
+      baseId: tBase1,
       language: tLanguage1,
     );
 
@@ -243,7 +243,7 @@ void main() {
     final setting1 = Setting(
       setId: 1,
       order: 1,
-      exerciseId: 1,
+      exerciseBaseId: 1,
       repetitionUnitId: 1,
       reps: 5,
       weightUnitId: 1,
@@ -252,13 +252,13 @@ void main() {
     );
     setting1.repetitionUnit = repetitionUnit1;
     setting1.weightUnit = weightUnit1;
-    setting1.exercise = squats;
+    setting1.exerciseBase = squats;
     setting1.weight = 100;
 
     final setting2 = Setting(
       setId: 1,
       order: 1,
-      exerciseId: 2,
+      exerciseBaseId: 2,
       repetitionUnitId: 1,
       reps: 6,
       weightUnitId: 1,
@@ -267,13 +267,13 @@ void main() {
     );
     setting2.repetitionUnit = repetitionUnit1;
     setting2.weightUnit = weightUnit1;
-    setting2.exercise = benchPress;
+    setting2.exerciseBase = benchPress;
     setting2.weight = 80;
 
     final setting2b = Setting(
       setId: 1,
       order: 1,
-      exerciseId: 2,
+      exerciseBaseId: 2,
       repetitionUnitId: 1,
       reps: 8,
       weightUnitId: 1,
@@ -282,13 +282,13 @@ void main() {
     );
     setting2b.repetitionUnit = repetitionUnit1;
     setting2b.weightUnit = weightUnit1;
-    setting2b.exercise = benchPress;
+    setting2b.exerciseBase = benchPress;
     setting2b.weight = 60;
 
     final setting3 = Setting(
       setId: 1,
       order: 1,
-      exerciseId: 2,
+      exerciseBaseId: 2,
       repetitionUnitId: 1,
       reps: 20,
       weightUnitId: 1,
@@ -297,12 +297,12 @@ void main() {
     );
     setting3.repetitionUnit = repetitionUnit1;
     setting3.weightUnit = weightUnit1;
-    setting3.exercise = crunches;
+    setting3.exerciseBase = crunches;
 
     final setting4 = Setting(
       setId: 1,
       order: 1,
-      exerciseId: 2,
+      exerciseBaseId: 2,
       repetitionUnitId: 1,
       reps: 8,
       weightUnitId: 1,
@@ -311,7 +311,7 @@ void main() {
     );
     setting4.repetitionUnit = repetitionUnit1;
     setting4.weightUnit = weightUnit1;
-    setting4.exercise = deadLift;
+    setting4.exerciseBase = deadLift;
     setting4.weight = 120;
 
     final set1 = Set.withData(
@@ -320,7 +320,7 @@ void main() {
       sets: 3,
       order: 1,
     );
-    set1.addExercise(squats);
+    set1.addExerciseBase(squats);
     set1.settings.add(setting1);
     set1.settings.add(setting1);
     set1.settings.add(setting1);
@@ -332,7 +332,7 @@ void main() {
       sets: 3,
       order: 1,
     );
-    set2.addExercise(benchPress);
+    set2.addExerciseBase(benchPress);
     set2.settings.add(setting2);
     set2.settings.add(setting2);
     set2.settings.add(setting2b);
@@ -344,7 +344,7 @@ void main() {
       sets: 3,
       order: 1,
     );
-    set3.addExercise(crunches);
+    set3.addExerciseBase(crunches);
     set3.settings.add(setting3);
 
     final set4 = Set.withData(
@@ -353,7 +353,7 @@ void main() {
       sets: 3,
       order: 1,
     );
-    set4.addExercise(deadLift);
+    set4.addExerciseBase(deadLift);
     set4.settings.add(setting4);
     set4.settings.add(setting4);
     set4.settings.add(setting4);

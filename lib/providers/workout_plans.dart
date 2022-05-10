@@ -202,15 +202,16 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
         for (final settingEntry in settingData) {
           final workoutSetting = Setting.fromJson(settingEntry);
 
-          workoutSetting.exercise = await _exercises.fetchAndSetExercise(workoutSetting.exerciseId);
+          workoutSetting.exerciseBase =
+              await _exercises.fetchAndSetExerciseBase(workoutSetting.exerciseBaseId);
           workoutSetting.weightUnit = _weightUnits.firstWhere(
             (e) => e.id == workoutSetting.weightUnitId,
           );
           workoutSetting.repetitionUnit = _repetitionUnit.firstWhere(
             (e) => e.id == workoutSetting.repetitionUnitId,
           );
-          if (!workoutSet.exercisesIds.contains(workoutSetting.exerciseId)) {
-            workoutSet.addExercise(workoutSetting.exerciseObj);
+          if (!workoutSet.exerciseBasesIds.contains(workoutSetting.exerciseBaseId)) {
+            workoutSet.addExerciseBase(workoutSetting.exerciseBaseObj);
           }
 
           settings.add(workoutSetting);
@@ -243,7 +244,7 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
           final log = Log.fromJson(entry);
           log.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
           log.repetitionUnit = _repetitionUnit.firstWhere((e) => e.id == log.weightUnitId);
-          log.exercise = await _exercises.fetchAndSetExercise(log.exerciseId);
+          log.exerciseBase = await _exercises.fetchAndSetExerciseBase(log.exerciseBaseId);
           plan.logs.add(log);
         } catch (e) {
           dev.log('fire! fire!');
@@ -499,7 +500,7 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
     log.id = newLog.id;
     log.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
     log.repetitionUnit = _repetitionUnit.firstWhere((e) => e.id == log.weightUnitId);
-    log.exercise = await _exercises.fetchAndSetExercise(log.exerciseId);
+    log.exerciseBase = await _exercises.fetchAndSetExerciseBase(log.exerciseBaseId);
 
     final plan = findById(log.workoutPlan);
     plan.logs.add(log);

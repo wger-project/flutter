@@ -20,12 +20,8 @@ import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/models/exercises/alias.dart';
 import 'package:wger/models/exercises/base.dart';
-import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/comment.dart';
-import 'package:wger/models/exercises/equipment.dart';
-import 'package:wger/models/exercises/image.dart';
 import 'package:wger/models/exercises/language.dart';
-import 'package:wger/models/exercises/muscle.dart';
 
 part 'exercise.g.dart';
 
@@ -49,9 +45,6 @@ class Exercise extends Equatable {
   @JsonKey(required: true, name: 'exercise_base')
   late int? baseId;
 
-  @JsonKey(ignore: true)
-  late ExerciseBase baseObj;
-
   @JsonKey(required: true)
   final String name;
 
@@ -70,12 +63,11 @@ class Exercise extends Equatable {
     this.creationDate,
     required this.name,
     required this.description,
-    base,
+    int? baseId,
     language,
   }) {
-    if (base != null) {
-      baseObj = base;
-      baseId = base.id;
+    if (baseId != null) {
+      baseId = baseId;
     }
 
     if (language != null) {
@@ -84,15 +76,7 @@ class Exercise extends Equatable {
     }
   }
 
-  ExerciseImage? get getMainImage => baseObj.getMainImage;
-  ExerciseCategory get category => baseObj.category;
-  List<ExerciseImage> get images => baseObj.images;
-  List<Equipment> get equipment => baseObj.equipment;
-  List<Muscle> get muscles => baseObj.muscles;
-  List<Muscle> get musclesSecondary => baseObj.musclesSecondary;
-
   set base(ExerciseBase base) {
-    baseObj = base;
     baseId = base.id;
   }
 
@@ -114,6 +98,5 @@ class Exercise extends Equatable {
         creationDate,
         name,
         description,
-        baseObj,
       ];
 }

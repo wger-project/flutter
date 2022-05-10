@@ -38,7 +38,7 @@ void main() {
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: GlobalKey<NavigatorState>(),
         home: Scaffold(
-          body: ExerciseDetail(getTestExercises()[0]),
+          body: ExerciseDetail(getTestExerciseBases()[0]),
         ),
       ),
     );
@@ -64,10 +64,8 @@ void main() {
       reason: 'Two diagrams, one for front, one for the back',
     );
     expect(find.text('Booty'), findsOneWidget, reason: 'Secondary muscles');
-
     expect(find.text('Description'), findsOneWidget, reason: 'Description header');
-    expect(find.text('add clever text'), findsOneWidget, reason: 'Description');
-
+    expect(find.text('Lorem ipsum etc'), findsOneWidget, reason: 'Description');
     expect(find.text('Variations'), findsNothing);
   });
 }

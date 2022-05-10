@@ -23,6 +23,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/i18n.dart';
+import 'package:wger/models/exercises/base.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/providers/exercises.dart';
@@ -32,13 +33,16 @@ import 'package:wger/widgets/exercises/list_tile.dart';
 import 'package:wger/widgets/exercises/videos.dart';
 
 class ExerciseDetail extends StatelessWidget {
-  final Exercise _exercise;
+  final ExerciseBase _exerciseBase;
+  late Exercise _exercise;
   static const PADDING = 9.0;
 
-  const ExerciseDetail(this._exercise);
+  ExerciseDetail(this._exerciseBase);
 
   @override
   Widget build(BuildContext context) {
+    _exercise = _exerciseBase.getExercise(Localizations.localeOf(context).languageCode);
+
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -71,7 +75,7 @@ class ExerciseDetail extends StatelessWidget {
 
   List<Widget> getVariations(BuildContext context) {
     final List<Widget> out = [];
-    if (_exercise.baseObj.variationId == null) {
+    if (_exerciseBase.variationId == null) {
       return out;
     }
 
@@ -80,14 +84,14 @@ class ExerciseDetail extends StatelessWidget {
       style: Theme.of(context).textTheme.headline5,
     ));
     Provider.of<ExercisesProvider>(context, listen: false)
-        .findExercisesByVariationId(
-      _exercise.baseObj.variationId!,
+        .findExerciseBasesByVariationId(
+      _exerciseBase.variationId!,
       languageId: _exercise.languageId,
-      exerciseIdToExclude: _exercise.id,
+      exerciseIdToExclude: _exerciseBase.id,
     )
         .forEach((element) {
       out.add(ExerciseListTile(
-        exercise: element,
+        exerciseBase: element,
       ));
     });
 
@@ -125,8 +129,8 @@ class ExerciseDetail extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: PADDING),
             child: MuscleWidget(
-              muscles: _exercise.muscles,
-              musclesSecondary: _exercise.musclesSecondary,
+              muscles: _exerciseBase.muscles,
+              musclesSecondary: _exerciseBase.musclesSecondary,
               isFront: true,
             ),
           ),
@@ -135,8 +139,8 @@ class ExerciseDetail extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: PADDING),
             child: MuscleWidget(
-              muscles: _exercise.muscles,
-              musclesSecondary: _exercise.musclesSecondary,
+              muscles: _exerciseBase.muscles,
+              musclesSecondary: _exerciseBase.musclesSecondary,
               isFront: false,
             ),
           ),
@@ -149,7 +153,7 @@ class ExerciseDetail extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const MuscleColorHelper(main: true),
-          ..._exercise.muscles.map((e) => Text(e.name)).toList(),
+          ..._exerciseBase.muscles.map((e) => Text(e.name)).toList(),
         ],
       ),
     );
@@ -159,7 +163,7 @@ class ExerciseDetail extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const MuscleColorHelper(main: false),
-          ..._exercise.musclesSecondary.map((e) => Text(e.name)).toList(),
+          ..._exerciseBase.musclesSecondary.map((e) => Text(e.name)).toList(),
         ],
       ),
     );
@@ -183,8 +187,8 @@ class ExerciseDetail extends StatelessWidget {
   List<Widget> getImages() {
     // TODO: add carousel for the other images
     final List<Widget> out = [];
-    if (_exercise.getMainImage != null) {
-      out.add(ExerciseImageWidget(image: _exercise.getMainImage));
+    if (_exerciseBase.getMainImage != null) {
+      out.add(ExerciseImageWidget(image: _exerciseBase.getMainImage));
       out.add(const SizedBox(height: PADDING));
     }
 
@@ -195,10 +199,10 @@ class ExerciseDetail extends StatelessWidget {
     final List<Widget> out = [];
 
     out.add(
-      Chip(label: Text(getTranslation(_exercise.baseObj.category.name, context))),
+      Chip(label: Text(getTranslation(_exerciseBase.category.name, context))),
     );
-    if (_exercise.baseObj.equipment.isNotEmpty) {
-      _exercise.baseObj.equipment
+    if (_exerciseBase.equipment.isNotEmpty) {
+      _exerciseBase.equipment
           .map((e) => Chip(label: Text(getTranslation(e.name, context))))
           .forEach((element) {
         out.add(element);
@@ -211,8 +215,8 @@ class ExerciseDetail extends StatelessWidget {
   List<Widget> getVideos() {
     // TODO: add carousel for the other videos
     final List<Widget> out = [];
-    if (_exercise.baseObj.videos.isNotEmpty) {
-      _exercise.baseObj.videos.map((v) => ExerciseVideoWidget(video: v)).forEach((element) {
+    if (_exerciseBase.videos.isNotEmpty) {
+      _exerciseBase.videos.map((v) => ExerciseVideoWidget(video: v)).forEach((element) {
         out.add(element);
       });
 

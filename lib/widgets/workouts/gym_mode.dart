@@ -29,7 +29,7 @@ import 'package:wger/helpers/i18n.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/misc.dart';
 import 'package:wger/helpers/ui.dart';
-import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/exercises/base.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/session.dart';
@@ -85,11 +85,11 @@ class _GymModeState extends State<GymMode> {
     for (final set in widget._workoutDay.sets) {
       var firstPage = true;
       for (final setting in set.settingsComputed) {
-        final exercise = Provider.of<ExercisesProvider>(context, listen: false)
-            .findExerciseById(setting.exerciseId);
+        final exerciseBase = Provider.of<ExercisesProvider>(context, listen: false)
+            .findExerciseBaseById(setting.exerciseBaseId);
 
         if (firstPage) {
-          _exercisePages[exercise.name] = currentPage;
+          _exercisePages[exerciseBase.uuid!] = currentPage;
           currentPage++;
         }
 
@@ -114,13 +114,13 @@ class _GymModeState extends State<GymMode> {
       var firstPage = true;
       for (final setting in set.settingsComputed) {
         final ratioCompleted = currentElement / _totalElements;
-        final exercise = exerciseProvider.findExerciseById(setting.exerciseId);
+        final exerciseBase = exerciseProvider.findExerciseBaseById(setting.exerciseBaseId);
         currentElement++;
 
         if (firstPage) {
           out.add(ExerciseOverview(
             _controller,
-            exercise,
+            exerciseBase,
             ratioCompleted,
             _exercisePages,
           ));
@@ -130,7 +130,7 @@ class _GymModeState extends State<GymMode> {
           _controller,
           setting,
           set,
-          exercise,
+          exerciseBase,
           workoutProvider.findById(widget._workoutDay.workoutId),
           ratioCompleted,
           _exercisePages,
@@ -194,10 +194,12 @@ class StartPage extends StatelessWidget {
                         return Column(
                           children: [
                             Text(
-                              s.exerciseObj.name,
+                              s.exerciseBaseObj
+                                  .getExercise(Localizations.localeOf(context).languageCode)
+                                  .name,
                               style: Theme.of(context).textTheme.headline6,
                             ),
-                            ...set.getSmartRepr(s.exerciseObj).map((e) => Text(e)).toList(),
+                            ...set.getSmartRepr(s.exerciseBaseObj).map((e) => Text(e)).toList(),
                             const SizedBox(height: 15),
                           ],
                         );
@@ -230,7 +232,7 @@ class LogPage extends StatefulWidget {
   final PageController _controller;
   final Setting _setting;
   final Set _set;
-  final Exercise _exercise;
+  final ExerciseBase _exerciseBase;
   final WorkoutPlan _workoutPlan;
   final double _ratioCompleted;
   final Map<String, int> _exercisePages;
@@ -240,14 +242,14 @@ class LogPage extends StatefulWidget {
     this._controller,
     this._setting,
     this._set,
-    this._exercise,
+    this._exerciseBase,
     this._workoutPlan,
     this._ratioCompleted,
     this._exercisePages,
   ) {
     _log.date = DateTime.now();
     _log.workoutPlan = _workoutPlan.id!;
-    _log.exercise = _exercise;
+    _log.exerciseBase = _exerciseBase;
     _log.weightUnit = _setting.weightUnitObj;
     _log.repetitionUnit = _setting.repetitionUnitObj;
     _log.rir = _setting.rir;
@@ -524,7 +526,9 @@ class _LogPageState extends State<LogPage> {
           style: Theme.of(context).textTheme.headline6,
           textAlign: TextAlign.center,
         ),
-        ...widget._workoutPlan.filterLogsByExercise(widget._exercise, unique: true).map((log) {
+        ...widget._workoutPlan
+            .filterLogsByExerciseBase(widget._exerciseBase, unique: true)
+            .map((log) {
           return ListTile(
             title: Text(log.singleLogRepTextNoNl),
             subtitle:
@@ -618,7 +622,7 @@ class _LogPageState extends State<LogPage> {
     return Column(
       children: [
         NavigationHeader(
-          widget._exercise.name,
+          widget._exerciseBase.getExercise(Localizations.localeOf(context).languageCode).name,
           widget._controller,
           exercisePages: widget._exercisePages,
         ),
@@ -636,11 +640,11 @@ class _LogPageState extends State<LogPage> {
           ),
         const SizedBox(height: 10),
         Expanded(
-            child: (widget._workoutPlan.filterLogsByExercise(widget._exercise).isNotEmpty)
+            child: (widget._workoutPlan.filterLogsByExerciseBase(widget._exerciseBase).isNotEmpty)
                 ? getPastLogs()
                 : Container()),
         // Only show calculator for barbell
-        if (widget._log.exerciseObj.equipment.map((e) => e.id).contains(ID_EQUIPMENT_BARBELL))
+        if (widget._log.exerciseBaseObj.equipment.map((e) => e.id).contains(ID_EQUIPMENT_BARBELL))
           getPlates(),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -657,13 +661,13 @@ class _LogPageState extends State<LogPage> {
 
 class ExerciseOverview extends StatelessWidget {
   final PageController _controller;
-  final Exercise _exercise;
+  final ExerciseBase _exerciseBase;
   final double _ratioCompleted;
   final Map<String, int> _exercisePages;
 
   const ExerciseOverview(
     this._controller,
-    this._exercise,
+    this._exerciseBase,
     this._ratioCompleted,
     this._exercisePages,
   );
@@ -673,7 +677,7 @@ class ExerciseOverview extends StatelessWidget {
     return Column(
       children: [
         NavigationHeader(
-          _exercise.name,
+          _exerciseBase.getExercise(Localizations.localeOf(context).languageCode).name,
           _controller,
           exercisePages: _exercisePages,
         ),
@@ -683,29 +687,32 @@ class ExerciseOverview extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 15),
             children: [
               Text(
-                getTranslation(_exercise.category.name, context),
+                getTranslation(_exerciseBase.category.name, context),
                 style: Theme.of(context).textTheme.headline6,
                 textAlign: TextAlign.center,
               ),
-              ..._exercise.equipment
+              ..._exerciseBase.equipment
                   .map((e) => Text(
                         getTranslation(e.name, context),
                         style: Theme.of(context).textTheme.headline6,
                         textAlign: TextAlign.center,
                       ))
                   .toList(),
-              if (_exercise.images.isNotEmpty)
+              if (_exerciseBase.images.isNotEmpty)
                 SizedBox(
                   width: double.infinity,
                   height: 200,
                   child: ListView(
                     scrollDirection: Axis.horizontal,
                     children: [
-                      ..._exercise.images.map((e) => ExerciseImageWidget(image: e)).toList(),
+                      ..._exerciseBase.images.map((e) => ExerciseImageWidget(image: e)).toList(),
                     ],
                   ),
                 ),
-              Html(data: _exercise.description),
+              Html(
+                  data: _exerciseBase
+                      .getExercise(Localizations.localeOf(context).languageCode)
+                      .description),
             ],
           ),
         ),

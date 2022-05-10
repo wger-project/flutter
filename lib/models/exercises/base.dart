@@ -121,7 +121,7 @@ class ExerciseBase extends Equatable {
   ///       translation in English. This is something that should never happen,
   ///       but we can't make sure that no local installation hasn't deleted
   ///       the entry in English.
-  Exercise getExercises(String language) {
+  Exercise getExercise(String language) {
     return exercises.firstWhere(
       (e) => e.languageObj.shortName == language,
       orElse: () => exercises.firstWhere(

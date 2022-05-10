@@ -39,7 +39,7 @@ void main() {
   final setting1 = Setting(
     setId: 1,
     order: 1,
-    exerciseId: 1,
+    exerciseBaseId: 1,
     repetitionUnitId: 1,
     reps: 2,
     weightUnitId: 1,
