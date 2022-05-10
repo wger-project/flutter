@@ -73,6 +73,17 @@ final tBase3 = ExerciseBase(
   musclesSecondary: const [tMuscle2],
 );
 
+final tBase4 = ExerciseBase(
+  id: 4,
+  uuid: '361f024c-fdf8-4146-b7d7-0c1b67c58141',
+  creationDate: DateTime(2021, 08, 01),
+  updateDate: DateTime(2021, 08, 01),
+  category: tCategory3,
+  equipment: const [tEquipment2],
+  muscles: const [tMuscle1],
+  musclesSecondary: const [tMuscle2],
+);
+
 final tExercise1 = Exercise(
   id: 1,
   uuid: 'f4cc326b-e497-4bd7-a71d-0eb1db522743',
@@ -142,5 +153,5 @@ List<ExerciseBase> getTestExerciseBases() {
   tBase2.exercises = [tExercise4, tExercise5];
   tBase3.exercises = [tExercise6];
 
-  return [tBase1, tBase2, tBase3];
+  return [tBase1, tBase2, tBase3, tBase4];
 }

@@ -194,51 +194,60 @@ void main() {
   Widget createGymModeScreen({locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
     final client = MockClient();
+    final bases = getTestExerciseBases();
 
-    final squats = Exercise(
+    final squats = bases[0];
+    final squatsEn = Exercise(
       id: 1,
       uuid: 'uuid',
       creationDate: DateTime(2021, 1, 15),
       name: 'Squats',
       description: 'add clever text',
-      baseId: tBase1,
+      baseId: tBase1.id,
       language: tLanguage1,
     );
+    squats.exercises = [squatsEn];
 
-    final benchPress = Exercise(
+    final benchPress = bases[1];
+    final benchPressEn = Exercise(
       id: 1,
       uuid: 'uuid',
       creationDate: DateTime(2021, 1, 15),
       name: 'Bench press',
       description: 'add clever text',
-      baseId: tBase1,
+      baseId: tBase1.id,
       language: tLanguage1,
     );
+    benchPress.exercises = [benchPressEn];
 
-    final deadLift = Exercise(
+    final deadLift = bases[2];
+    final deadLiftEn = Exercise(
       id: 1,
       uuid: 'uuid',
       creationDate: DateTime(2021, 1, 15),
-      name: 'deadLift',
+      name: 'Dead Lift',
       description: 'add clever text',
-      baseId: tBase1,
+      baseId: tBase1.id,
       language: tLanguage1,
     );
+    deadLift.exercises = [deadLiftEn];
 
-    final crunches = Exercise(
+    final crunches = bases[3];
+    final crunchesEn = Exercise(
       id: 1,
       uuid: 'uuid',
       creationDate: DateTime(2021, 1, 15),
       name: 'Crunches',
       description: 'add clever text',
-      baseId: tBase1,
+      baseId: tBase1.id,
       language: tLanguage1,
     );
+    crunches.exercises = [crunchesEn];
 
     final mockExerciseProvider = MockExercisesProvider();
-    when(mockExerciseProvider.findExerciseById(1)).thenReturn(squats);
-    when(mockExerciseProvider.findExerciseById(2)).thenReturn(benchPress);
-    when(mockExerciseProvider.findExerciseById(3)).thenReturn(crunches);
+    when(mockExerciseProvider.findExerciseBaseById(1)).thenReturn(squats);
+    when(mockExerciseProvider.findExerciseBaseById(2)).thenReturn(benchPress);
+    when(mockExerciseProvider.findExerciseBaseById(3)).thenReturn(crunches);
 
     final setting1 = Setting(
       setId: 1,
