@@ -1,0 +1,42 @@
+{
+  "weight": "Вага",
+  "@weight": {
+    "description": "The weight of a workout log or body weight entry"
+  },
+  "login": "Увійти",
+  "@login": {
+    "description": "Text for login button"
+  },
+  "logout": "Вийти",
+  "@logout": {
+    "description": "Text for logout button"
+  },
+  "register": "Реєстрація",
+  "@register": {
+    "description": "Text for registration button"
+  },
+  "useDefaultServer": "Використати сервер за замовчуванням",
+  "@useDefaultServer": {
+    "description": "Toggle button allowing users to switch between the default and a custom wger server"
+  },
+  "useCustomServer": "Використати користувацький сервер",
+  "@useCustomServer": {
+    "description": "Toggle button allowing users to switch between the default and a custom wger server"
+  },
+  "invalidUrl": "Будь ласка, введіть прийнятну URL-адресу",
+  "@invalidUrl": {
+    "description": "Error message when the user enters an invalid URL, e.g. in the login form"
+  },
+  "nutritionalPlan": "План харчування",
+  "@nutritionalPlan": {},
+  "difference": "Різниця",
+  "@difference": {},
+  "edit": "Змінити",
+  "@edit": {},
+  "delete": "Видалити",
+  "@delete": {},
+  "date": "Дата",
+  "@date": {
+    "description": "The date of a workout log or body weight entry"
+  }
+}
