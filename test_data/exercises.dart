@@ -119,7 +119,7 @@ final tExercise4 = Exercise(
   uuid: 'a3e96c1d-b35f-4b0e-9cf4-ca37666cf521',
   creationDate: DateTime(2021, 4, 1),
   name: 'test exercise 4',
-  description: 'The man in black fled across the desert, and the gunslinger followed',
+  description: 'The story so far: in the beginning, the universe was created',
   baseId: tBase3.id,
   language: tLanguage1,
 );
@@ -129,7 +129,7 @@ final tExercise5 = Exercise(
   uuid: '8c49a816-2247-4116-94bb-b5c0ce09c609',
   creationDate: DateTime(2021, 4, 1),
   name: 'test exercise 5',
-  description: 'The man in black fled across the desert, and the gunslinger followed',
+  description: 'I am an invisible man',
   baseId: tBase3.id,
   language: tLanguage2,
 );
@@ -138,8 +138,8 @@ final tExercise6 = Exercise(
   id: 6,
   uuid: '259a637e-957f-4fe1-b61b-f56e3793ebcd',
   creationDate: DateTime(2021, 4, 1),
-  name: 'test exercise 5',
-  description: 'The man in black fled across the desert, and the gunslinger followed',
+  name: 'test exercise 6',
+  description: 'It was a bright cold day in April, and the clocks were striking thirteen',
   baseId: tBase3.id,
   language: tLanguage2,
 );

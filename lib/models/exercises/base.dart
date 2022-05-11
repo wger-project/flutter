@@ -127,8 +127,11 @@ class ExerciseBase extends Equatable {
   ///       but we can't make sure that no local installation hasn't deleted
   ///       the entry in English.
   Exercise getExercise(String language) {
+    // If the language is in the form en-US, take the language code only
+    final languageCode = language.split('-')[0];
+
     return exercises.firstWhere(
-      (e) => e.languageObj.shortName == language,
+      (e) => e.languageObj.shortName == languageCode,
       orElse: () => exercises.firstWhere(
         (e) => e.languageObj.shortName == LANGUAGE_SHORT_ENGLISH,
         orElse: () => exercises.first,

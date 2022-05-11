@@ -14,7 +14,7 @@ import '../../test_data/exercises.dart' as data;
 import '../fixtures/fixture_reader.dart';
 import '../measurements/measurement_provider_test.mocks.dart';
 
-main() {
+void main() {
   late MockWgerBaseProvider mockBaseProvider;
   late ExercisesProvider provider;
 

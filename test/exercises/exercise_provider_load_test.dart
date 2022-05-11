@@ -8,7 +8,7 @@ import '../../test_data/exercises.dart';
 import '../fixtures/fixture_reader.dart';
 import '../measurements/measurement_provider_test.mocks.dart';
 
-main() {
+void main() {
   late MockWgerBaseProvider mockBaseProvider;
   late ExercisesProvider provider;
 
@@ -28,6 +28,7 @@ main() {
     mockBaseProvider = MockWgerBaseProvider();
     provider = ExercisesProvider(mockBaseProvider);
     provider.exerciseBases = getTestExerciseBases();
+    provider.languages = [tLanguage1, tLanguage2, tLanguage3];
 
     // Mock base info response
     when(
@@ -83,7 +84,14 @@ main() {
         '49a159e1-1e00-409a-81c9-b4d4489fbd67'
       ]);
 
-      expect(base.exercises[0].name, '2 Handed Kettlebell Swing');
+      final exercise1 = base.exercises[0];
+      expect(exercise1.name, '2 Handed Kettlebell Swing');
+      expect(exercise1.languageObj.shortName, 'en');
+      expect(exercise1.notes[0].comment, "it's important to do the exercise correctly");
+      expect(exercise1.notes[1].comment, 'put a lot of effort into this exercise');
+      expect(exercise1.notes[2].comment, 'have fun');
+      expect(exercise1.alias[0].alias, 'double handed kettlebell');
+      expect(exercise1.alias[1].alias, 'Kettlebell russian style');
       expect(base.exercises[1].name, 'Kettlebell Con Dos Manos');
       expect(base.exercises[2].name, 'Zweihändiges Kettlebell');
     });

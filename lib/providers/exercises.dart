@@ -98,6 +98,9 @@ class ExercisesProvider with ChangeNotifier {
   List<Muscle> get muscles => [..._muscles];
   List<Equipment> get equipment => [..._equipment];
   List<Language> get languages => [..._languages];
+  set languages(List<Language> languages) {
+    _languages = languages;
+  }
 
   // Initialize filters for exercises search in exercises list
   void _initFilters() {
@@ -323,20 +326,22 @@ class ExercisesProvider with ChangeNotifier {
       exercise.notes =
           exerciseData['notes'].map((e) => Comment.fromJson(e)).toList().cast<Comment>();
       exercise.baseId = baseData['id'];
+      exercise.language = findLanguageById(exerciseData['language']);
       exercises.add(exercise);
     }
 
     final exerciseBase = ExerciseBase(
-        id: baseData['id'],
-        uuid: baseData['uuid'],
-        creationDate: null,
-        //creationDate: toDate(baseData['creation_date']),
-        musclesSecondary: musclesSecondary.cast<Muscle>(),
-        muscles: musclesPrimary.cast<Muscle>(),
-        equipment: equipment.cast<Equipment>(),
-        category: category,
-        images: images.cast<ExerciseImage>(),
-        exercises: exercises);
+      id: baseData['id'],
+      uuid: baseData['uuid'],
+      creationDate: null,
+      //creationDate: toDate(baseData['creation_date']),
+      musclesSecondary: musclesSecondary.cast<Muscle>(),
+      muscles: musclesPrimary.cast<Muscle>(),
+      equipment: equipment.cast<Equipment>(),
+      category: category,
+      images: images.cast<ExerciseImage>(),
+      exercises: exercises,
+    );
 
     return exerciseBase;
   }
