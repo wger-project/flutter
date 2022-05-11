@@ -86,8 +86,7 @@ class ExerciseDetail extends StatelessWidget {
     Provider.of<ExercisesProvider>(context, listen: false)
         .findExerciseBasesByVariationId(
       _exerciseBase.variationId!,
-      languageId: _exercise.languageId,
-      exerciseIdToExclude: _exerciseBase.id,
+      exerciseBaseIdToExclude: _exerciseBase.id,
     )
         .forEach((element) {
       out.add(ExerciseListTile(

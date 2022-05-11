@@ -82,6 +82,10 @@ main() {
         'd8aa5990-bb47-4111-9823-e2fbd98fe07f',
         '49a159e1-1e00-409a-81c9-b4d4489fbd67'
       ]);
+
+      expect(base.exercises[0].name, '2 Handed Kettlebell Swing');
+      expect(base.exercises[1].name, 'Kettlebell Con Dos Manos');
+      expect(base.exercises[2].name, 'Zweihändiges Kettlebell');
     });
   });
 }

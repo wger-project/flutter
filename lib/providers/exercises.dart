@@ -39,6 +39,7 @@ import 'package:wger/providers/base_provider.dart';
 
 class ExercisesProvider with ChangeNotifier {
   final WgerBaseProvider baseProvider;
+  ExercisesProvider(this.baseProvider);
 
   static const EXERCISE_CACHE_DAYS = 7;
   static const CACHE_VERSION = 3;
@@ -91,8 +92,6 @@ class ExercisesProvider with ChangeNotifier {
 
     return variations;
   }
-
-  ExercisesProvider(this.baseProvider);
 
   List<ExerciseBase> get bases => [..._exerciseBases];
   List<ExerciseCategory> get categories => [..._categories];
@@ -184,26 +183,15 @@ class ExercisesProvider with ChangeNotifier {
   /// returned exercises. Since this is typically called by one exercise, we are
   /// not interested in seeing that same exercise returned in the list of variations.
   /// If this parameter is not passed, all exercises are returned.
-  ///
-  /// languageId: the ID of the language to filter the results by. If this
-  /// parameter is not passed, all exercises are returned.
-  List<ExerciseBase> findExerciseBasesByVariationId(int id,
-      {int? exerciseIdToExclude, int? languageId}) {
+  List<ExerciseBase> findExerciseBasesByVariationId(int id, {int? exerciseBaseIdToExclude}) {
     var out = _exerciseBases
         .where(
           (base) => base.variationId == id,
         )
         .toList();
 
-    /*
-    if (languageId != null) {
-      out = out.where((e) => e.languageId == languageId).toList();
-    }
-
-     */
-
-    if (exerciseIdToExclude != null) {
-      out = out.where((e) => e.id != exerciseIdToExclude).toList();
+    if (exerciseBaseIdToExclude != null) {
+      out = out.where((e) => e.id != exerciseBaseIdToExclude).toList();
     }
     return out;
   }
@@ -334,6 +322,7 @@ class ExercisesProvider with ChangeNotifier {
           .cast<Alias>();
       exercise.notes =
           exerciseData['notes'].map((e) => Comment.fromJson(e)).toList().cast<Comment>();
+      exercise.baseId = baseData['id'];
       exercises.add(exercise);
     }
 
