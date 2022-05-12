@@ -23,45 +23,39 @@ import 'package:provider/provider.dart';
 import 'package:wger/models/user/profile.dart';
 import 'package:wger/providers/user.dart';
 
-class UserProfileForm extends StatefulWidget {
-  late Profile _profile;
-  UserProfileForm();
-
-  @override
-  State<UserProfileForm> createState() => _UserProfileFormState();
-}
-
-class _UserProfileFormState extends State<UserProfileForm> {
+class UserProfileForm extends StatelessWidget {
+  late final Profile _profile;
   final _form = GlobalKey<FormState>();
-
   final emailController = TextEditingController();
+
+  UserProfileForm(Profile profile) {
+    _profile = profile;
+    emailController.text = _profile.email;
+  }
 
   @override
   Widget build(BuildContext context) {
-    widget._profile = context.read<UserProvider>().profile!;
-    emailController.text = widget._profile.email;
-
     return Form(
       key: _form,
       child: Column(
         children: [
           ListTile(
             title: Text(AppLocalizations.of(context).username),
-            subtitle: Text(widget._profile.username),
+            subtitle: Text(_profile.username),
           ),
           ListTile(
             title: Text(
-              widget._profile.emailVerified
+              _profile.emailVerified
                   ? AppLocalizations.of(context).verifiedEmail
                   : AppLocalizations.of(context).unVerifiedEmail,
             ),
             subtitle: Text(AppLocalizations.of(context).verifiedEmailReason),
-            trailing: widget._profile.emailVerified
+            trailing: _profile.emailVerified
                 ? const Icon(Icons.mark_email_read, color: Colors.green)
                 : const Icon(Icons.forward_to_inbox),
             onTap: () async {
               // Email is already verified
-              if (widget._profile.emailVerified) {
+              if (_profile.emailVerified) {
                 return;
               }
 
@@ -70,7 +64,7 @@ class _UserProfileFormState extends State<UserProfileForm> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
-                    AppLocalizations.of(context).verifiedEmailInfo(widget._profile.email),
+                    AppLocalizations.of(context).verifiedEmailInfo(_profile.email),
                   ),
                 ),
               );
@@ -80,16 +74,13 @@ class _UserProfileFormState extends State<UserProfileForm> {
             title: TextFormField(
               decoration: InputDecoration(labelText: AppLocalizations.of(context).email),
               controller: emailController,
-              keyboardType: TextInputType.number,
+              keyboardType: TextInputType.emailAddress,
               onSaved: (newValue) {
-                widget._profile.email = newValue!;
+                _profile.email = newValue!;
               },
               validator: (value) {
-                if (!RegExp(r'^[\w.@+-]+$').hasMatch(value!)) {
-                  return AppLocalizations.of(context).usernameValidChars;
-                }
-                if (value.isEmpty) {
-                  return AppLocalizations.of(context).invalidUsername;
+                if (value!.isNotEmpty && !value.contains('@')) {
+                  return AppLocalizations.of(context).invalidEmail;
                 }
                 return null;
               },

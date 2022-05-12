@@ -71,7 +71,7 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
                               FormScreen.routeName,
                               arguments: FormScreenArguments(
                                 AppLocalizations.of(context).userProfile,
-                                UserProfileForm(),
+                                UserProfileForm(context.read<UserProvider>().profile!),
                               ),
                             );
                           },
