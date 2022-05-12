@@ -1,5 +1,6 @@
 {
   "@@last_modified": "2020-11-11T15:04:05.523531",
+  "userProfile": "User profile",
   "login": "Log in",
   "@login": {
     "description": "Text for login button"
@@ -576,6 +577,14 @@
       "aliases": {}
     },
     "description": "List of alternative names for an exercise"
+  },
+  "verifiedEmail": "Verified email",
+  "verifiedEmailReason": "You need to verify your email to contribute exercises",
+  "verifiedEmailInfo": "A verification email was sent to {email}",
+  "@verifiedEmailInfo": {
+    "placeholders": {
+      "email": {}
+    }
   },
   "alternativeNames": "Alternative names",
   "oneNamePerLine": "One name per line",
