@@ -112,8 +112,10 @@ class _UserProfileFormState extends State<UserProfileForm> {
 
               // Update profile
               context.read<UserProvider>().saveProfile();
-
               Navigator.of(context).pop();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(AppLocalizations.of(context).successfullySaved)),
+              );
             },
           ),
         ],
