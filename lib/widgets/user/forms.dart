@@ -25,12 +25,7 @@ import 'package:wger/providers/user.dart';
 
 class UserProfileForm extends StatefulWidget {
   late Profile _profile;
-
-  UserProfileForm() {
-    //_weightEntry = weightEntry ?? WeightEntry(date: DateTime.now());
-    //weightController.text = _weightEntry.id == null ? '' : _weightEntry.weight.toString();
-    //dateController.text = toDate(_weightEntry.date)!;
-  }
+  UserProfileForm();
 
   @override
   State<UserProfileForm> createState() => _UserProfileFormState();
