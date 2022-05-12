@@ -23,7 +23,7 @@ part 'profile.g.dart';
 @JsonSerializable()
 class Profile {
   @JsonKey(required: true)
-  int id;
+  String username;
 
   @JsonKey(required: true, name: 'email_verified')
   bool emailVerified;
@@ -32,7 +32,7 @@ class Profile {
   String email;
 
   Profile({
-    required this.id,
+    required this.username,
     required this.emailVerified,
     required this.email,
   });

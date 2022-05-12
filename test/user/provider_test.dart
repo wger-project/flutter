@@ -48,7 +48,7 @@ void main() {
     userProvider = UserProvider(mockWgerBaseProvider);
 
     when(mockWgerBaseProvider.makeUrl(any)).thenReturn(tProfileUri);
-    when(mockWgerBaseProvider.makeUrl(any, id: 42, objectMethod: 'verify-email'))
+    when(mockWgerBaseProvider.makeUrl(any, objectMethod: 'verify-email'))
         .thenReturn(tEmailVerifyUri);
     when(mockWgerBaseProvider.fetch(any))
         .thenAnswer((realInvocation) => Future.value(tUserProfileMap));
@@ -61,7 +61,7 @@ void main() {
 
       // assert
       expect(userProvider.profile, isNot(null));
-      expect(userProvider.profile!.id, 42);
+      expect(userProvider.profile!.username, 'admin');
 
       // act
       userProvider.clear();
@@ -77,7 +77,7 @@ void main() {
       await userProvider.fetchAndSetProfile();
 
       // assert
-      expect(userProvider.profile!.id, 42);
+      expect(userProvider.profile!.username, 'admin');
       expect(userProvider.profile!.emailVerified, false);
       expect(userProvider.profile!.email, 'me@example.com');
     });

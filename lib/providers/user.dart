@@ -29,36 +29,37 @@ class UserProvider with ChangeNotifier {
   static const _profileUrlPath = 'userprofile';
   static const _verifyEmail = 'verify-email';
 
-  Profile? _profile;
-
-  Profile? get profile => _profile;
-  set profile(Profile? profile) {
-    _profile = profile;
-  }
-
-  int get userId => _profile!.id;
+  Profile? profile;
 
   /// Clear the current profile
   void clear() {
-    _profile = null;
+    profile = null;
   }
 
   /// Fetch the current user's profile
   Future<void> fetchAndSetProfile() async {
     final userData = await baseProvider.fetch(baseProvider.makeUrl(_profileUrlPath));
     try {
-      _profile = Profile.fromJson(userData['results'][0]);
+      profile = Profile.fromJson(userData);
     } catch (error) {
       rethrow;
     }
   }
 
+  /// Save the user's profile to the server
+  Future<void> saveProfile() async {
+    final data = await baseProvider.post(
+      profile!.toJson(),
+      baseProvider.makeUrl(_profileUrlPath),
+    );
+  }
+
   /// Verify the user's email
   Future<void> verifyEmail() async {
-    final userData = await baseProvider.fetch(baseProvider.makeUrl(
+    final verificationData = await baseProvider.fetch(baseProvider.makeUrl(
       _profileUrlPath,
-      id: userId,
       objectMethod: _verifyEmail,
     ));
+    //log(verificationData.toString());
   }
 }

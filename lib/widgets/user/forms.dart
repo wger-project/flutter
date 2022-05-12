@@ -39,24 +39,32 @@ class UserProfileForm extends StatefulWidget {
 class _UserProfileFormState extends State<UserProfileForm> {
   final _form = GlobalKey<FormState>();
 
-  final dateController = TextEditingController();
-
-  final weightController = TextEditingController();
+  final emailController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     widget._profile = context.read<UserProvider>().profile!;
+    emailController.text = widget._profile.email;
 
     return Form(
       key: _form,
       child: Column(
         children: [
-          // Weight date
-          SwitchListTile(
-            title: Text(AppLocalizations.of(context).verifiedEmail),
+          ListTile(
+            title: Text(AppLocalizations.of(context).username),
+            subtitle: Text(widget._profile.username),
+          ),
+          ListTile(
+            title: Text(
+              widget._profile.emailVerified
+                  ? AppLocalizations.of(context).verifiedEmail
+                  : AppLocalizations.of(context).unVerifiedEmail,
+            ),
             subtitle: Text(AppLocalizations.of(context).verifiedEmailReason),
-            value: widget._profile.emailVerified,
-            onChanged: (bool value) async {
+            trailing: widget._profile.emailVerified
+                ? const Icon(Icons.mark_email_read, color: Colors.green)
+                : const Icon(Icons.forward_to_inbox),
+            onTap: () async {
               // Email is already verified
               if (widget._profile.emailVerified) {
                 return;
@@ -73,6 +81,25 @@ class _UserProfileFormState extends State<UserProfileForm> {
               );
             },
           ),
+          ListTile(
+            title: TextFormField(
+              decoration: InputDecoration(labelText: AppLocalizations.of(context).email),
+              controller: emailController,
+              keyboardType: TextInputType.number,
+              onSaved: (newValue) {
+                widget._profile.email = newValue!;
+              },
+              validator: (value) {
+                if (!RegExp(r'^[\w.@+-]+$').hasMatch(value!)) {
+                  return AppLocalizations.of(context).usernameValidChars;
+                }
+                if (value.isEmpty) {
+                  return AppLocalizations.of(context).invalidUsername;
+                }
+                return null;
+              },
+            ),
+          ),
           ElevatedButton(
             child: Text(AppLocalizations.of(context).save),
             onPressed: () async {
@@ -84,7 +111,7 @@ class _UserProfileFormState extends State<UserProfileForm> {
               _form.currentState!.save();
 
               // Update profile
-              //context.read<UserProvider>().updateProfile();
+              context.read<UserProvider>().saveProfile();
 
               Navigator.of(context).pop();
             },
