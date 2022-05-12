@@ -38,5 +38,195 @@
   "date": "Дата",
   "@date": {
     "description": "The date of a workout log or body weight entry"
+  },
+  "usernameValidChars": "Ім'я користувача може містити лише літери, цифри й символи @, +, ., - та _",
+  "@usernameValidChars": {
+    "description": "Error message when the user tries to register a username with forbidden characters"
+  },
+  "passwordsDontMatch": "Паролі не збігаються",
+  "@passwordsDontMatch": {
+    "description": "Error message when the user enters two different passwords during registration"
+  },
+  "confirmPassword": "Підтвердьте пароль",
+  "@confirmPassword": {},
+  "email": "Адреса електронної пошти",
+  "@email": {},
+  "invalidUsername": "Будь ласка, введіть припустиме ім'я користувача",
+  "@invalidUsername": {
+    "description": "Error message when the user enters an invalid username"
+  },
+  "username": "Ім'я користувача",
+  "@username": {},
+  "customServerHint": "Введіть адресу свого власного сервера, інакше буде використовуватися сервер за промовчанням",
+  "@customServerHint": {
+    "description": "Hint text for the form where the users can enter their own wger instance"
+  },
+  "reset": "Скинути",
+  "@reset": {
+    "description": "Button text allowing the user to reset the entered values to the default"
+  },
+  "loginInstead": "Натомість увійти",
+  "@loginInstead": {},
+  "labelWorkoutPlans": "Плани тренувань",
+  "@labelWorkoutPlans": {
+    "description": "Title for screen workout plans"
+  },
+  "labelBottomNavWorkout": "Тренування",
+  "@labelBottomNavWorkout": {
+    "description": "Label used in bottom navigation, use a short word"
+  },
+  "labelWorkoutLogs": "Журнали тренувань",
+  "@labelWorkoutLogs": {
+    "description": "(Workout) logs"
+  },
+  "labelWorkoutPlan": "План тренування",
+  "@labelWorkoutPlan": {
+    "description": "Title for screen workout plan"
+  },
+  "labelDashboard": "Панель керування",
+  "@labelDashboard": {
+    "description": "Title for screen dashboard"
+  },
+  "successfullyDeleted": "Видалено",
+  "@successfullyDeleted": {
+    "description": "Message when an item was successfully deleted"
+  },
+  "exercise": "Вправа",
+  "@exercise": {
+    "description": "An exercise for a workout"
+  },
+  "searchExercise": "Пошук вправ для додавання",
+  "@searchExercise": {
+    "description": "Label on set form. Selected exercises are added to the set"
+  },
+  "supersetWith": "супер-набір з",
+  "@supersetWith": {
+    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
+  },
+  "equipment": "Обладнання",
+  "@equipment": {
+    "description": "Equipment needed to perform an exercise"
+  },
+  "muscles": "М'язи",
+  "@muscles": {
+    "description": "(main) muscles trained by an exercise"
+  },
+  "musclesSecondary": "Вторинні м'язи",
+  "@musclesSecondary": {
+    "description": "secondary muscles trained by an exercise"
+  },
+  "category": "Категорія",
+  "@category": {
+    "description": "Category for an exercise, ingredient, etc."
+  },
+  "newWorkout": "Новий план тренувань",
+  "@newWorkout": {
+    "description": "Header when adding a new workout"
+  },
+  "repetitions": "Повторень",
+  "@repetitions": {
+    "description": "Repetitions for an exercise set"
+  },
+  "reps": "Повтор",
+  "@reps": {
+    "description": "Shorthand for repetitions, used when space constraints are tighter"
+  },
+  "rirNotUsed": "RiR не використовується",
+  "@rirNotUsed": {
+    "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
+  },
+  "repetitionUnit": "Одиниця повторень",
+  "@repetitionUnit": {},
+  "set": "Набір",
+  "@set": {
+    "description": "A set in a workout plan"
+  },
+  "setNr": "Набір {nr}",
+  "@setNr": {
+    "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {}
+    }
+  },
+  "sameRepetitions": "Якщо ви робите однакові повторення та вагу для всіх наборів, то ви можете просто заповнити один рядок. Наприклад, для 4 наборів просто введіть 10 для повторень, це автоматично стане «4 x 10».",
+  "@sameRepetitions": {},
+  "comment": "Коментар",
+  "@comment": {
+    "description": "Comment, additional information"
+  },
+  "impression": "Враження",
+  "@impression": {
+    "description": "General impression (e.g. for a workout session) such as good, bad, etc."
+  },
+  "newDay": "Новий день",
+  "@newDay": {},
+  "selectExercises": "Якщо ви хочете зробити супер-набір, ви можете пошукати декілька вправ, вони будуть згруповані разом",
+  "@selectExercises": {},
+  "gymMode": "Режим тренажерного залу",
+  "@gymMode": {
+    "description": "Label when starting the gym mode"
+  },
+  "plateCalculator": "Пластини",
+  "@plateCalculator": {
+    "description": "Label used for the plate calculator in the gym mode"
+  },
+  "plateCalculatorNotDivisible": "Неможливо досягти ваги з наявними пластинами",
+  "@plateCalculatorNotDivisible": {
+    "description": "Error message when the current weight is not reachable with plates (e.g. 33.1 kg)"
+  },
+  "pause": "Пауза",
+  "@pause": {
+    "description": "Noun, not an imperative! Label used for the pause when using the gym mode"
+  },
+  "jumpTo": "Перейти до",
+  "@jumpTo": {
+    "description": "Imperative. Label used in popup allowing the user to jump to a specific exercise while in the gym mode"
+  },
+  "todaysWorkout": "Ваше сьогоднішнє тренування",
+  "@todaysWorkout": {},
+  "password": "Пароль",
+  "@password": {},
+  "passwordTooShort": "Пароль занадто короткий",
+  "@passwordTooShort": {
+    "description": "Error message when the user a password that is too short"
+  },
+  "invalidEmail": "Будь ласка, введіть прийнятну адресу електронної пошти",
+  "@invalidEmail": {
+    "description": "Error message when the user enters an invalid email"
+  },
+  "customServerUrl": "URL-адреса екземпляра wger",
+  "@customServerUrl": {
+    "description": "Label in the form where the users can enter their own wger instance"
+  },
+  "successfullySaved": "Збережено",
+  "@successfullySaved": {
+    "description": "Message when an item was successfully saved"
+  },
+  "registerInstead": "Натомість зареєструватися",
+  "@registerInstead": {},
+  "labelBottomNavNutrition": "Харчування",
+  "@labelBottomNavNutrition": {
+    "description": "Label used in bottom navigation, use a short word"
+  },
+  "weightUnit": "Одиниця ваги",
+  "@weightUnit": {},
+  "noWorkoutPlans": "У вас немає планів тренувань",
+  "@noWorkoutPlans": {
+    "description": "Message shown when the user has no workout plans"
+  },
+  "dayDescriptionHelp": "Опис того, що робиться в цей день (наприклад, «день підтягування») або які частини тіла тренуються (наприклад, «груди та плечі»)",
+  "@dayDescriptionHelp": {},
+  "workoutSession": "Сеанс тренування",
+  "@workoutSession": {
+    "description": "A (logged) workout session"
+  },
+  "notes": "Нотатки",
+  "@notes": {
+    "description": "Personal notes, e.g. for a workout session"
+  },
+  "newSet": "Новий набір",
+  "@newSet": {
+    "description": "Header when adding a new set to a workout day"
   }
 }
