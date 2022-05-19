@@ -1,6 +1,14 @@
 # Release process
 
-## 1. Dry-run release before uploading
+## 1. Update flutter version
+
+If we use a new version, update the version used by
+
+* Github Actions in `android-release.yaml` in this repository
+* Fdroid build recipe in [their repo](https://gitlab.com/fdroid/fdroiddata/-/blob/master/metadata/de.wger.flutter.yml).
+  Since this can potentially take some time, it should happen well in advance
+
+## 2. Dry-run release before uploading
 
 * Increase build nr in pubspec.yaml
 * `flutter build appbundle --release`
@@ -13,7 +21,7 @@ Also note that if a language was added over the weblate UI, it might be necessar
 to set the correct language code:
 <https://support.google.com/googleplay/android-developer/answer/9844778?hl=en#zippy=%2Cview-list-of-available-languages>
 
-## 2. Push tags to trigger release
+## 3. Push tags to trigger release
 
 Make sure that the commit that will be tagged was already pushed or didn't change
 any dart code, otherwise the automatic linter might push a "correction" commit
@@ -25,6 +33,6 @@ by github actions.
 `TAG=vX.Y.Z && git tag $TAG && git push origin $TAG && git tag -d $TAG`
 
 
-## 3. Edit release
+## 4. Edit release
 
 I necessary, edit the created release on github
