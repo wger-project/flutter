@@ -23,16 +23,16 @@ import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 
 class NutritionalPlansList extends StatelessWidget {
-  final NutritionPlansProvider _nutritrionProvider;
-  const NutritionalPlansList(this._nutritrionProvider);
+  final NutritionPlansProvider _nutritionProvider;
+  const NutritionalPlansList(this._nutritionProvider);
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       padding: const EdgeInsets.all(10.0),
-      itemCount: _nutritrionProvider.items.length,
+      itemCount: _nutritionProvider.items.length,
       itemBuilder: (context, index) {
-        final currentPlan = _nutritrionProvider.items[index];
+        final currentPlan = _nutritionProvider.items[index];
         return Dismissible(
           key: Key(currentPlan.id.toString()),
           confirmDismiss: (direction) async {
@@ -56,7 +56,7 @@ class NutritionalPlansList extends StatelessWidget {
                         ),
                         onPressed: () {
                           // Confirmed, delete the workout
-                          _nutritrionProvider.deletePlan(currentPlan.id!);
+                          _nutritionProvider.deletePlan(currentPlan.id!);
 
                           // Close the popup
                           Navigator.of(contextDialog).pop();
