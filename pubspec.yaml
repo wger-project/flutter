@@ -60,7 +60,7 @@ dev_dependencies:
     sdk: flutter
   #flutter_driver:
   #  sdk: flutter
-  build_runner: ^2.1.2
+  build_runner: ^2.1.11
   flutter_launcher_icons: ^0.9.1
   json_serializable: ^6.2.0
   mockito: ^5.1.0
