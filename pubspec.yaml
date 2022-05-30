@@ -50,7 +50,7 @@ dependencies:
   provider: ^6.0.3
   rive: ^0.8.1
   shared_preferences: ^2.0.15
-  table_calendar: ^3.0.2
+  table_calendar: ^3.0.6
   url_launcher: ^6.1.2
   flutter_barcode_scanner: ^2.0.0
   video_player: ^2.4.2
