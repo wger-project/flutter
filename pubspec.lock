@@ -893,7 +893,7 @@ packages:
       name: table_calendar
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.5"
+    version: "3.0.6"
   term_glyph:
     dependency: transitive
     description:
