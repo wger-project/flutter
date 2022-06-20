@@ -34,7 +34,7 @@ dependencies:
   android_metadata: ^0.2.1
   camera: ^0.9.8
   charts_flutter: ^0.12.0
-  collection: ^1.15.0-nullsafety.4
+  collection: ^1.16.0
   cupertino_icons: ^1.0.5
   equatable: ^2.0.3
   flutter_calendar_carousel: ^2.2.0
