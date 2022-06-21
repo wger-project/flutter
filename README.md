@@ -50,7 +50,7 @@ to allow (a probably dedicated) user on the wger server to register users on its
 behalf. For this, generate an API KEY by visiting <http://localhost:8000/de/user/api-key>
 on your local instance and then run ``python3 manage.py add-user-rest the username``
 
-You can later list all the registered users with: ``python3 manage.py list-users-API``  
+You can later list all the registered users with: ``python3 manage.py list-users-api``  
 
 [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
       alt="Get it on F-Droid"
