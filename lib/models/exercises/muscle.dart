@@ -29,12 +29,16 @@ class Muscle extends Equatable {
   @JsonKey(required: true)
   final String name;
 
+  @JsonKey(required: true, name: 'name_en')
+  final String nameEn;
+
   @JsonKey(name: 'is_front', required: true)
   final bool isFront;
 
   const Muscle({
     required this.id,
     required this.name,
+    required this.nameEn,
     required this.isFront,
   });
 

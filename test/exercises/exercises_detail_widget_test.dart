@@ -55,7 +55,7 @@ void main() {
 
     expect(find.text('Muscles'), findsNWidgets(2), reason: 'One header, one sub header');
     expect(find.text('Flutterus maximus'), findsOneWidget, reason: 'Muscles');
-    expect(find.text('Biceps'), findsOneWidget, reason: 'Muscles');
+    expect(find.text('Biceps brachii'), findsOneWidget, reason: 'Muscles');
 
     expect(find.text('Secondary muscles'), findsOneWidget);
     expect(
@@ -63,7 +63,7 @@ void main() {
       findsNWidgets(2),
       reason: 'Two diagrams, one for front, one for the back',
     );
-    expect(find.text('Booty'), findsOneWidget, reason: 'Secondary muscles');
+    expect(find.text('Gluteus maximus'), findsOneWidget, reason: 'Secondary muscles');
     expect(find.text('Description'), findsOneWidget, reason: 'Description header');
     expect(find.text('Lorem ipsum etc'), findsOneWidget, reason: 'Description');
     expect(find.text('Variations'), findsNothing);

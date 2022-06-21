@@ -62,7 +62,7 @@ void main() {
   );
 
   const category1 = ExerciseCategory(id: 1, name: 'Arms');
-  const muscle1 = Muscle(id: 1, name: 'Biceps brachii', isFront: true);
+  const muscle1 = Muscle(id: 1, name: 'Biceps brachii', nameEn: 'Biceps', isFront: true);
   const equipment1 = Equipment(id: 1, name: 'Barbell');
   const language1 = Language(id: 1, shortName: 'de', fullName: 'Deutsch');
 

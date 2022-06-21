@@ -9,6 +9,7 @@
     {
       "id": 11,
       "name": "Biceps femoris",
+      "name_en": "Biceps",
       "is_front": false,
       "image_url_main": "/static/images/muscles/main/muscle-11.svg",
       "image_url_secondary": "/static/images/muscles/secondary/muscle-11.svg"
@@ -16,6 +17,7 @@
     {
       "id": 13,
       "name": "Brachialis",
+      "name_en": "",
       "is_front": true,
       "image_url_main": "/static/images/muscles/main/muscle-13.svg",
       "image_url_secondary": "/static/images/muscles/secondary/muscle-13.svg"
@@ -23,6 +25,7 @@
     {
       "id": 14,
       "name": "Obliquus externus abdominis",
+      "name_en": "",
       "is_front": true,
       "image_url_main": "/static/images/muscles/main/muscle-14.svg",
       "image_url_secondary": "/static/images/muscles/secondary/muscle-14.svg"
@@ -32,6 +35,7 @@
     {
       "id": 2,
       "name": "Anterior deltoid",
+      "name_en": "Shoulders",
       "is_front": true,
       "image_url_main": "/static/images/muscles/main/muscle-2.svg",
       "image_url_secondary": "/static/images/muscles/secondary/muscle-2.svg"
@@ -39,6 +43,7 @@
     {
       "id": 9,
       "name": "Trapezius",
+      "name_en": "",
       "is_front": false,
       "image_url_main": "/static/images/muscles/main/muscle-9.svg",
       "image_url_secondary": "/static/images/muscles/secondary/muscle-9.svg"

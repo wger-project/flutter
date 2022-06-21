@@ -1,6 +1,6 @@
 {
   "@@last_modified": "2020-11-11T15:04:05.523531",
-  "userProfile": "User profile",
+  "userProfile": "Your profile",
   "login": "Log in",
   "@login": {
     "description": "Text for login button"
