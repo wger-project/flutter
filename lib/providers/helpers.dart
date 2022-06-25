@@ -26,7 +26,7 @@ Uri makeUri(
 ]) {
   final Uri uriServer = Uri.parse(serverUrl);
 
-  final pathList = ['api', 'v2', path];
+  final pathList = [uriServer.path, 'api', 'v2', path];
   if (id != null) {
     pathList.add(id.toString());
   }
