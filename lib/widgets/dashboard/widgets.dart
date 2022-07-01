@@ -242,66 +242,68 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
   Widget build(BuildContext context) {
     weightEntriesData = Provider.of<BodyWeightProvider>(context, listen: false);
 
-    return Card(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ListTile(
-            title: Text(
-              AppLocalizations.of(context).weight,
-              style: Theme.of(context).textTheme.headline4,
+    return Consumer<BodyWeightProvider>(
+      builder: (context, workoutProvider, child) => Card(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              title: Text(
+                AppLocalizations.of(context).weight,
+                style: Theme.of(context).textTheme.headline4,
+              ),
+              leading: const FaIcon(
+                FontAwesomeIcons.weight,
+                color: Colors.black,
+              ),
+              trailing: IconButton(
+                icon: const Icon(Icons.add),
+                onPressed: () async {
+                  Navigator.pushNamed(
+                    context,
+                    FormScreen.routeName,
+                    arguments: FormScreenArguments(
+                      AppLocalizations.of(context).newEntry,
+                      WeightForm(),
+                    ),
+                  );
+                },
+              ),
             ),
-            leading: const FaIcon(
-              FontAwesomeIcons.weight,
-              color: Colors.black,
-            ),
-            trailing: IconButton(
-              icon: const Icon(Icons.add),
-              onPressed: () async {
-                Navigator.pushNamed(
-                  context,
-                  FormScreen.routeName,
-                  arguments: FormScreenArguments(
+            Column(
+              children: [
+                if (weightEntriesData.items.isNotEmpty)
+                  Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(15),
+                        height: 180,
+                        child: MeasurementChartWidget(weightEntriesData.items
+                            .map((e) => MeasurementChartEntry(e.weight, e.date))
+                            .toList()),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          TextButton(
+                              child: Text(AppLocalizations.of(context).goToDetailPage),
+                              onPressed: () {
+                                Navigator.of(context).pushNamed(WeightScreen.routeName);
+                              }),
+                        ],
+                      ),
+                    ],
+                  )
+                else
+                  NothingFound(
+                    AppLocalizations.of(context).noWeightEntries,
                     AppLocalizations.of(context).newEntry,
                     WeightForm(),
                   ),
-                );
-              },
+              ],
             ),
-          ),
-          Column(
-            children: [
-              if (weightEntriesData.items.isNotEmpty)
-                Column(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(15),
-                      height: 180,
-                      child: MeasurementChartWidget(weightEntriesData.items
-                          .map((e) => MeasurementChartEntry(e.weight, e.date))
-                          .toList()),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        TextButton(
-                            child: Text(AppLocalizations.of(context).goToDetailPage),
-                            onPressed: () {
-                              Navigator.of(context).pushNamed(WeightScreen.routeName);
-                            }),
-                      ],
-                    ),
-                  ],
-                )
-              else
-                NothingFound(
-                  AppLocalizations.of(context).noWeightEntries,
-                  AppLocalizations.of(context).newEntry,
-                  WeightForm(),
-                ),
-            ],
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

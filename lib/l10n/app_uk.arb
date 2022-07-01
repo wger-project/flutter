@@ -38,5 +38,519 @@
   "date": "Дата",
   "@date": {
     "description": "The date of a workout log or body weight entry"
+  },
+  "usernameValidChars": "Ім'я користувача може містити лише літери, цифри й символи @, +, ., - та _",
+  "@usernameValidChars": {
+    "description": "Error message when the user tries to register a username with forbidden characters"
+  },
+  "passwordsDontMatch": "Паролі не збігаються",
+  "@passwordsDontMatch": {
+    "description": "Error message when the user enters two different passwords during registration"
+  },
+  "confirmPassword": "Підтвердьте пароль",
+  "@confirmPassword": {},
+  "email": "Адреса електронної пошти",
+  "@email": {},
+  "invalidUsername": "Будь ласка, введіть припустиме ім'я користувача",
+  "@invalidUsername": {
+    "description": "Error message when the user enters an invalid username"
+  },
+  "username": "Ім'я користувача",
+  "@username": {},
+  "customServerHint": "Введіть адресу свого власного сервера, інакше буде використовуватися сервер за промовчанням",
+  "@customServerHint": {
+    "description": "Hint text for the form where the users can enter their own wger instance"
+  },
+  "reset": "Скинути",
+  "@reset": {
+    "description": "Button text allowing the user to reset the entered values to the default"
+  },
+  "loginInstead": "Натомість увійти",
+  "@loginInstead": {},
+  "labelWorkoutPlans": "Плани тренувань",
+  "@labelWorkoutPlans": {
+    "description": "Title for screen workout plans"
+  },
+  "labelBottomNavWorkout": "Тренування",
+  "@labelBottomNavWorkout": {
+    "description": "Label used in bottom navigation, use a short word"
+  },
+  "labelWorkoutLogs": "Журнали тренувань",
+  "@labelWorkoutLogs": {
+    "description": "(Workout) logs"
+  },
+  "labelWorkoutPlan": "План тренування",
+  "@labelWorkoutPlan": {
+    "description": "Title for screen workout plan"
+  },
+  "labelDashboard": "Панель керування",
+  "@labelDashboard": {
+    "description": "Title for screen dashboard"
+  },
+  "successfullyDeleted": "Видалено",
+  "@successfullyDeleted": {
+    "description": "Message when an item was successfully deleted"
+  },
+  "exercise": "Вправа",
+  "@exercise": {
+    "description": "An exercise for a workout"
+  },
+  "searchExercise": "Пошук вправ для додавання",
+  "@searchExercise": {
+    "description": "Label on set form. Selected exercises are added to the set"
+  },
+  "supersetWith": "супер-набір з",
+  "@supersetWith": {
+    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
+  },
+  "equipment": "Обладнання",
+  "@equipment": {
+    "description": "Equipment needed to perform an exercise"
+  },
+  "muscles": "М'язи",
+  "@muscles": {
+    "description": "(main) muscles trained by an exercise"
+  },
+  "musclesSecondary": "Вторинні м'язи",
+  "@musclesSecondary": {
+    "description": "secondary muscles trained by an exercise"
+  },
+  "category": "Категорія",
+  "@category": {
+    "description": "Category for an exercise, ingredient, etc."
+  },
+  "newWorkout": "Новий план тренувань",
+  "@newWorkout": {
+    "description": "Header when adding a new workout"
+  },
+  "repetitions": "Повторень",
+  "@repetitions": {
+    "description": "Repetitions for an exercise set"
+  },
+  "reps": "Повтор",
+  "@reps": {
+    "description": "Shorthand for repetitions, used when space constraints are tighter"
+  },
+  "rirNotUsed": "RiR не використовується",
+  "@rirNotUsed": {
+    "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
+  },
+  "repetitionUnit": "Одиниця повторень",
+  "@repetitionUnit": {},
+  "set": "Набір",
+  "@set": {
+    "description": "A set in a workout plan"
+  },
+  "setNr": "Набір {nr}",
+  "@setNr": {
+    "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {}
+    }
+  },
+  "sameRepetitions": "Якщо ви робите однакові повторення та вагу для всіх наборів, то ви можете просто заповнити один рядок. Наприклад, для 4 наборів просто введіть 10 для повторень, це автоматично стане «4 x 10».",
+  "@sameRepetitions": {},
+  "comment": "Коментар",
+  "@comment": {
+    "description": "Comment, additional information"
+  },
+  "impression": "Враження",
+  "@impression": {
+    "description": "General impression (e.g. for a workout session) such as good, bad, etc."
+  },
+  "newDay": "Новий день",
+  "@newDay": {},
+  "selectExercises": "Якщо ви хочете зробити супер-набір, ви можете пошукати декілька вправ, вони будуть згруповані разом",
+  "@selectExercises": {},
+  "gymMode": "Режим тренажерного залу",
+  "@gymMode": {
+    "description": "Label when starting the gym mode"
+  },
+  "plateCalculator": "Пластини",
+  "@plateCalculator": {
+    "description": "Label used for the plate calculator in the gym mode"
+  },
+  "plateCalculatorNotDivisible": "Неможливо досягти ваги з наявними пластинами",
+  "@plateCalculatorNotDivisible": {
+    "description": "Error message when the current weight is not reachable with plates (e.g. 33.1 kg)"
+  },
+  "pause": "Пауза",
+  "@pause": {
+    "description": "Noun, not an imperative! Label used for the pause when using the gym mode"
+  },
+  "jumpTo": "Перейти до",
+  "@jumpTo": {
+    "description": "Imperative. Label used in popup allowing the user to jump to a specific exercise while in the gym mode"
+  },
+  "todaysWorkout": "Ваше сьогоднішнє тренування",
+  "@todaysWorkout": {},
+  "password": "Пароль",
+  "@password": {},
+  "passwordTooShort": "Пароль занадто короткий",
+  "@passwordTooShort": {
+    "description": "Error message when the user a password that is too short"
+  },
+  "invalidEmail": "Будь ласка, введіть прийнятну адресу електронної пошти",
+  "@invalidEmail": {
+    "description": "Error message when the user enters an invalid email"
+  },
+  "customServerUrl": "URL-адреса екземпляра wger",
+  "@customServerUrl": {
+    "description": "Label in the form where the users can enter their own wger instance"
+  },
+  "successfullySaved": "Збережено",
+  "@successfullySaved": {
+    "description": "Message when an item was successfully saved"
+  },
+  "registerInstead": "Натомість зареєструватися",
+  "@registerInstead": {},
+  "labelBottomNavNutrition": "Харчування",
+  "@labelBottomNavNutrition": {
+    "description": "Label used in bottom navigation, use a short word"
+  },
+  "weightUnit": "Одиниця ваги",
+  "@weightUnit": {},
+  "noWorkoutPlans": "У вас немає планів тренувань",
+  "@noWorkoutPlans": {
+    "description": "Message shown when the user has no workout plans"
+  },
+  "dayDescriptionHelp": "Опис того, що робиться в цей день (наприклад, «день підтягування») або які частини тіла тренуються (наприклад, «груди та плечі»)",
+  "@dayDescriptionHelp": {},
+  "workoutSession": "Сеанс тренування",
+  "@workoutSession": {
+    "description": "A (logged) workout session"
+  },
+  "notes": "Нотатки",
+  "@notes": {
+    "description": "Personal notes, e.g. for a workout session"
+  },
+  "newSet": "Новий набір",
+  "@newSet": {
+    "description": "Header when adding a new set to a workout day"
+  },
+  "measurementCategoriesHelpText": "Категорія вимірювання, така як \"біцепс\" або \"жир тіла\"",
+  "@measurementCategoriesHelpText": {},
+  "time": "Час",
+  "@time": {
+    "description": "The time of a meal or workout"
+  },
+  "value": "Значення",
+  "@value": {
+    "description": "The value of a measurement entry"
+  },
+  "timeStart": "Час початку",
+  "@timeStart": {
+    "description": "The starting time of a workout"
+  },
+  "timeEnd": "Час закінчення",
+  "@timeEnd": {
+    "description": "The end time of a workout"
+  },
+  "kcal": "ккал",
+  "@kcal": {
+    "description": "Energy in a meal in kilocalories, kcal"
+  },
+  "fat": "Жири",
+  "@fat": {},
+  "newNutritionalPlan": "Новий план харчування",
+  "@newNutritionalPlan": {},
+  "sugars": "Цукри",
+  "@sugars": {},
+  "aboutDescription": "Дякуємо за використання wger! wger - це спільний проєкт з відкритим кодом, створений ентузіастами фітнесу з усього світу.",
+  "@aboutDescription": {
+    "description": "Text in the about dialog"
+  },
+  "aboutBugsText": "Зв'яжіться з нами, якщо щось відбувається не так, як очікувалося, або якщо є функція, яка, на вашу думку, відсутня.",
+  "@aboutBugsText": {
+    "description": "Text for bugs section in the about dialog"
+  },
+  "selectExercise": "Будь ласка, виберіть вправу",
+  "@selectExercise": {
+    "description": "Error message when the user hasn't selected an exercise in the form"
+  },
+  "calendar": "Календар",
+  "@calendar": {},
+  "enterValue": "Будь ласка, введіть значення",
+  "@enterValue": {
+    "description": "Error message when the user hasn't entered a value on a required field"
+  },
+  "selectIngredient": "Будь ласка, оберіть інгредієнт",
+  "@selectIngredient": {
+    "description": "Error message when the user hasn't selected an ingredient from the autocompleter"
+  },
+  "productFoundDescription": "Штрих-код відповідає цьому виробу: {productName}. Бажаєте продовжити?",
+  "@productFoundDescription": {
+    "description": "Dialog info when product is found with barcode",
+    "type": "text",
+    "placeholders": {
+      "productName": {}
+    }
+  },
+  "description": "Опис",
+  "@description": {},
+  "name": "Ім'я",
+  "@name": {
+    "description": "Name for a workout or nutritional plan"
+  },
+  "save": "Зберегти",
+  "@save": {},
+  "addSet": "Додати набір",
+  "@addSet": {
+    "description": "Label for the button that adds a set (to a workout day)"
+  },
+  "addMeal": "Додати страву",
+  "@addMeal": {},
+  "mealLogged": "Страву записано в щоденник",
+  "@mealLogged": {},
+  "logMeal": "Записати цю страву",
+  "@logMeal": {},
+  "addIngredient": "Додати інгредієнт",
+  "@addIngredient": {},
+  "logIngredient": "Зберегти в щоденник харчування",
+  "@logIngredient": {},
+  "searchIngredient": "Пошук інгредієнта",
+  "@searchIngredient": {
+    "description": "Label on ingredient search form"
+  },
+  "nutritionalDiary": "Щоденник харчування",
+  "@nutritionalDiary": {},
+  "nutritionalPlans": "Плани харчування",
+  "@nutritionalPlans": {},
+  "noNutritionalPlans": "Ви не маєте планів харчування",
+  "@noNutritionalPlans": {
+    "description": "Message shown when the user has no nutritional plans"
+  },
+  "anErrorOccurred": "Сталася помилка!",
+  "@anErrorOccurred": {},
+  "measurement": "Вимірювання",
+  "@measurement": {},
+  "logHelpEntries": "Якщо на один день припадає більше одного запису з однаковою кількістю повторень, але різними вагами, то на графіку буде показано тільки запис з більшою вагою.",
+  "@logHelpEntries": {},
+  "logHelpEntriesUnits": "Зверніть увагу, що на графіку відображаються тільки записи з одиницями ваги (кг або lb) і повтореннями. Інші комбінації, такі як час або \"до відмови\", тут ігноруються.",
+  "@logHelpEntriesUnits": {},
+  "measurements": "Вимірювання",
+  "@measurements": {
+    "description": "Categories for the measurements such as biceps size, body fat, etc."
+  },
+  "measurementEntriesHelpText": "Одиниця вимірювання, яка використовується для вимірювання категорії, як от \"см\" або \"%\"",
+  "@measurementEntriesHelpText": {},
+  "start": "Почати",
+  "@start": {
+    "description": "Label on button to start the gym mode (i.e., an imperative)"
+  },
+  "timeStartAhead": "Час початку не може передувати часу завершення",
+  "@timeStartAhead": {},
+  "ingredient": "Інгредієнт",
+  "@ingredient": {},
+  "energy": "Енергія",
+  "@energy": {
+    "description": "Energy in a meal, ingredient etc. e.g. in kJ"
+  },
+  "energyShort": "Е",
+  "@energyShort": {
+    "description": "The first letter or short name of the word 'Energy', used in overviews"
+  },
+  "macronutrients": "Макроелементи",
+  "@macronutrients": {},
+  "planned": "Заплановано",
+  "@planned": {
+    "description": "Header for the column of 'planned' nutritional values, i.e. what should be eaten"
+  },
+  "logged": "Записано",
+  "@logged": {
+    "description": "Header for the column of 'logged' nutritional values, i.e. what was eaten"
+  },
+  "weekAverage": "В середньому за 7 днів",
+  "@weekAverage": {
+    "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
+  },
+  "percentEnergy": "Відсоток енергії",
+  "@percentEnergy": {},
+  "gPerBodyKg": "г на кг тіла",
+  "@gPerBodyKg": {
+    "description": "Label used for total sums of e.g. calories or similar in grams per Kg of body weight"
+  },
+  "total": "Усього",
+  "@total": {
+    "description": "Label used for total sums of e.g. calories or similar"
+  },
+  "kJ": "кДж",
+  "@kJ": {
+    "description": "Energy in a meal in kilo joules, kJ"
+  },
+  "g": "г",
+  "@g": {
+    "description": "Abbreviation for gram"
+  },
+  "protein": "Білок",
+  "@protein": {},
+  "proteinShort": "Б",
+  "@proteinShort": {
+    "description": "The first letter or short name of the word 'Protein', used in overviews"
+  },
+  "carbohydrates": "Вуглеводи",
+  "@carbohydrates": {},
+  "carbohydratesShort": "В",
+  "@carbohydratesShort": {
+    "description": "The first letter or short name of the word 'Carbohydrates', used in overviews"
+  },
+  "fatShort": "Ж",
+  "@fatShort": {
+    "description": "The first letter or short name of the word 'Fat', used in overviews"
+  },
+  "saturatedFat": "Насичені жири",
+  "@saturatedFat": {},
+  "fibres": "Волокна",
+  "@fibres": {},
+  "sodium": "Натрій",
+  "@sodium": {},
+  "amount": "Сума",
+  "@amount": {
+    "description": "The amount (e.g. in grams) of an ingredient in a meal"
+  },
+  "unit": "Одиниця",
+  "@unit": {
+    "description": "The unit used for a repetition (kg, time, etc.)"
+  },
+  "newEntry": "Новий запис",
+  "@newEntry": {
+    "description": "Title when adding a new entry such as a weight or log entry"
+  },
+  "noWeightEntries": "У вас немає записів ваги",
+  "@noWeightEntries": {
+    "description": "Message shown when the user has no logged weight entries"
+  },
+  "loadingText": "Завантаження...",
+  "@loadingText": {
+    "description": "Text to show when entries are being loaded in the background: Loading..."
+  },
+  "confirmDelete": "Ви впевнені, що бажаєте видалити '{toDelete}'?",
+  "@confirmDelete": {
+    "description": "Confirmation text before the user deletes an object",
+    "type": "text",
+    "placeholders": {
+      "toDelete": {}
+    }
+  },
+  "toggleDetails": "Перемкнути відомості",
+  "@toggleDetails": {
+    "description": "Switch to toggle detail / overview"
+  },
+  "goToDetailPage": "Перейти до сторінки відомостей",
+  "@goToDetailPage": {},
+  "aboutSourceTitle": "Джерельний код",
+  "@aboutSourceTitle": {
+    "description": "Title for source code section in the about dialog"
+  },
+  "aboutSourceText": "Отримайте джерельний код цього додатка та його сервера на github",
+  "@aboutSourceText": {
+    "description": "Text for source code section in the about dialog"
+  },
+  "aboutBugsTitle": "У вас є проблема чи ідея?",
+  "@aboutBugsTitle": {
+    "description": "Title for bugs section in the about dialog"
+  },
+  "aboutContactUsTitle": "Привітайтеся!",
+  "@aboutContactUsTitle": {
+    "description": "Title for contact us section in the about dialog"
+  },
+  "aboutContactUsText": "Якщо ви хочете поспілкуватися з нами, зайдіть на сервер Discord і зв'яжіться з нами",
+  "@aboutContactUsText": {
+    "description": "Text for contact us section in the about dialog"
+  },
+  "aboutTranslationTitle": "Перекладання",
+  "@aboutTranslationTitle": {
+    "description": "Title for translation section in the about dialog"
+  },
+  "aboutTranslationText": "Цей додаток перекладено на Weblate. Якщо ви також хочете допомогти, клацніть на посилання та почніть переклад",
+  "@aboutTranslationText": {
+    "description": "Text for translation section in the about dialog"
+  },
+  "goToToday": "Перейти до сьогодні",
+  "@goToToday": {
+    "description": "Label on button to jump back to 'today' in the calendar widget"
+  },
+  "enterRepetitionsOrWeight": "Будь ласка, заповніть кількість повторень або вагу принаймні для одного з наборів",
+  "@enterRepetitionsOrWeight": {
+    "description": "Error message when the user hasn't filled in the forms for exercise sets"
+  },
+  "enterCharacters": "Будь ласка, введіть між{min} та {max} символами",
+  "@enterCharacters": {
+    "description": "Error message when the user hasn't entered the correct number of characters in a form",
+    "type": "text",
+    "placeholders": {
+      "min": {},
+      "max": {}
+    }
+  },
+  "nrOfSets": "Наборів на вправу: {nrOfSets}",
+  "@nrOfSets": {
+    "description": "Label shown on the slider where the user selects the nr of sets",
+    "type": "text",
+    "placeholders": {
+      "nrOfSets": {}
+    }
+  },
+  "setUnitsAndRir": "Встановіть одиниці вимірювання та RiR",
+  "@setUnitsAndRir": {
+    "description": "Label shown on the slider where the user can toggle showing units and RiR",
+    "type": "text"
+  },
+  "enterValidNumber": "Будь ласка, введіть прийнятний номер",
+  "@enterValidNumber": {
+    "description": "Error message when the user has submitted an invalid number (e.g. '3,.,.,.')"
+  },
+  "recentlyUsedIngredients": "Останні інгредієнти",
+  "@recentlyUsedIngredients": {
+    "description": "A message when a user adds a new ingredient to a meal."
+  },
+  "selectImage": "Будь ласка, оберіть зображення",
+  "@selectImage": {
+    "description": "Label and error message when the user hasn't selected an image to save"
+  },
+  "optionsLabel": "Параметри",
+  "@optionsLabel": {
+    "description": "Label for the popup with general app options"
+  },
+  "takePicture": "Зробити знімок",
+  "@takePicture": {},
+  "chooseFromLibrary": "Вибрати з бібліотеки фотографій",
+  "@chooseFromLibrary": {},
+  "gallery": "Галерея",
+  "@gallery": {},
+  "addImage": "Додати зображення",
+  "@addImage": {},
+  "dataCopied": "Дані скопійовано до нового запису",
+  "@dataCopied": {
+    "description": "Snackbar message to show on copying data to a new log entry"
+  },
+  "appUpdateTitle": "Потрібне оновлення",
+  "@appUpdateTitle": {},
+  "appUpdateContent": "Ця версія програми несумісна з сервером, будь ласка, оновіть додаток.",
+  "@appUpdateContent": {},
+  "productFound": "Виріб знайдено",
+  "@productFound": {
+    "description": "Header label for dialog when product is found with barcode"
+  },
+  "productNotFound": "Виріб не знайдено",
+  "@productNotFound": {
+    "description": "Header label for dialog when product is not found with barcode"
+  },
+  "productNotFoundDescription": "Виріб із відсканованим штрих-кодом {barcode} не знайдено в базі даних Wger",
+  "@productNotFoundDescription": {
+    "description": "Dialog info when product is not found with barcode",
+    "type": "text",
+    "placeholders": {
+      "barcode": {}
+    }
+  },
+  "scanBarcode": "Сканувати штрих-код",
+  "@scanBarcode": {
+    "description": "Label for scan barcode button"
+  },
+  "close": "Закрити",
+  "@close": {
+    "description": "Translation for close"
   }
 }
