@@ -1,0 +1,39 @@
+Od miłośników fitnessu dla miłośników fitnessu – zorganizuj zdrowy tryb życia dzięki WGER, twojemu menadżerowi treningu!
+
+Znalazłeś już swoją najlepszą aplikację do fitnessu i lubisz tworzyć własne programy sportowe? Bez względu na to, jakim jesteś typem wysportowanej bestii – wszyscy mamy coś wspólnego: uwielbiamy śledzić nasze dane dotyczące zdrowia <3
+
+Więc nie oceniamy Cię za to, że nadal zarządzasz swoją podróżą przez świat fitness za pomocą poręcznego małego zeszytu treningowego, ale witaj w 2021 roku!
+
+Opracowaliśmy dla Ciebie w 100% darmową cyfrową aplikację do monitorowania zdrowia i kondycji, dostosowaną do najistotniejszych funkcji, aby ułatwić Ci życie. Rozpocznij, kontynuuj trening i świętuj swoje postępy!
+
+WGER to projekt Open Source, dostarcza informacji o:
+* Twoim ciele
+* Twoim treningu
+* Twoim postępie
+* Twoich danych
+
+Twoje ciało:
+Nie musisz wyszukiwać w wyszukiwarce składników ulubionych przysmaków – wybieraj codzienne posiłki spośród ponad 78000 produktów i poznaj wartości odżywcze. Dodaj posiłki do planu żywieniowego i prowadź przegląd swojej diety w kalendarzu.
+
+Twoje treningi:
+Wiesz, co jest najlepsze dla Twojego ciała. Twórz własne treningi z rosnącej różnorodności spośród 200 różnych ćwiczeń. Następnie użyj trybu Gym Mode, aby poprowadzić Cię przez trening, jednocześnie rejestrując swoje ciężary za pomocą jednego dotknięcia.
+
+Twój postęp:
+Nigdy nie trać z oczu swoich celów. Śledź swoją wagę i utrzymuj statystyki.
+
+Twoje dane:
+WGER to Twój spersonalizowany dziennik fitness – ale to Ty jesteś właścicielem swoich danych. Użyj interfejsu API REST, aby uzyskać dostęp do danych i robić z nimi niesamowite rzeczy.
+
+Uwaga: ta bezpłatna aplikacja nie jest oparta na dodatkowych funduszach i nie prosimy o przekazywanie pieniędzy. Co więcej, jest to projekt społecznościowy, który stale się rozwija. Przygotuj się więc na nowe funkcje w każdej chwili!
+
+#OpenSource – co to oznacza?
+
+Open Source oznacza, że cały kod źródłowy tej aplikacji i serwer, z którym się łączy, jest bezpłatny i dostępny dla każdego:
+* Czy chcesz uruchomić WGER na własnym serwerze dla siebie lub lokalnej siłowni? Zrób to!
+* Czy brakuje Ci jakiejś funkcji i chcesz ją wdrożyć? Startuj z pomysłem!
+* Czy chcesz sprawdzić, czy nic nie jest nigdzie wysyłane? Możesz!
+
+Dołącz do naszej społeczności i zostań częścią entuzjastów sportu i geeków IT z całego świata. Nieustannie pracujemy nad dostosowaniem i optymalizacją aplikacji dostosowanej do naszych potrzeb. Czekamy na twój wkład, więc możesz dołączyć w dowolnym momencie i podzielić się swoimi życzeniami i pomysłami!
+
+-> znajdź kod źródłowy na https://github.com/wger-project
+-> zadawaj pytania lub po prostu przywitaj się na naszym serwerze Discord https://discord.gg/rPWFv6W
