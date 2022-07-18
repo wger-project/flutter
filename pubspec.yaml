@@ -39,7 +39,7 @@ dependencies:
   equatable: ^2.0.3
   flutter_calendar_carousel: ^2.3.1
   flutter_html: ^2.1.2
-  flutter_typeahead: ^3.2.5
+  flutter_typeahead: ^4.0.0
   font_awesome_flutter: ">=9.1.0 <11.0.0"
   http: ^0.13.3
   image_picker: ^0.8.4+9
@@ -65,7 +65,7 @@ dev_dependencies:
   json_serializable: ^6.3.1
   mockito: ^5.2.0
   network_image_mock: ^2.1.1
-  flutter_lints: ^1.0.4
+  flutter_lints: ^2.0.1
   cider: ^0.1.1
 
 flutter_icons:
