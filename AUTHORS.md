@@ -12,6 +12,7 @@
 - Thilina Herath - <https://github.com/ThilinaTCH>
 - Marko Milosevic - <https://github.com/TaarnStar>
 - Karthik Reddy (Axel) - <https://github.com/AxelBlaz3>
+- Ogundoyin Toluwani - <https://github.com/Tolu007>
 
 ## Translators
 

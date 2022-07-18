@@ -32,14 +32,14 @@ dependencies:
     sdk: flutter
 
   android_metadata: ^0.2.1
-  camera: ^0.9.8
+  camera: ^0.10.0
   charts_flutter: ^0.12.0
   collection: ^1.15.0-nullsafety.4
   cupertino_icons: ^1.0.5
   equatable: ^2.0.3
-  flutter_calendar_carousel: ^2.2.0
+  flutter_calendar_carousel: ^2.4.0
   flutter_html: ^2.1.2
-  flutter_typeahead: ^3.2.5
+  flutter_typeahead: ^4.0.0
   font_awesome_flutter: ">=9.1.0 <11.0.0"
   http: ^0.13.3
   image_picker: ^0.8.4+9
@@ -62,12 +62,12 @@ dev_dependencies:
     sdk: flutter
   integration_test:
     sdk: flutter
-  build_runner: ^2.1.11
+  build_runner: ^2.2.0
   flutter_launcher_icons: ^0.9.3
-  json_serializable: ^6.2.0
+  json_serializable: ^6.3.1
   mockito: ^5.2.0
-  network_image_mock: ^2.0.1
-  flutter_lints: ^1.0.4
+  network_image_mock: ^2.1.1
+  flutter_lints: ^2.0.1
   cider: ^0.1.1
 
 flutter_icons:
