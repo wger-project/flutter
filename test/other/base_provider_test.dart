@@ -58,5 +58,40 @@ void main() {
         provider.makeUrl('endpoint', id: 42, objectMethod: 'log_data', query: {'a': '2', 'b': 'c'}),
       );
     });
+
+    test('Test the makeUrl helper with sub url', () async {
+      // Trailing slash is removed when saving the server URL
+      testAuthProvider.serverUrl = 'https://example.com/wger-url';
+      final WgerBaseProvider provider = WgerBaseProvider(testAuthProvider);
+
+      expect(
+        Uri.https('example.com', '/wger-url/api/v2/endpoint/'),
+        provider.makeUrl('endpoint'),
+      );
+      expect(
+        Uri.https('example.com', '/wger-url/api/v2/endpoint/5/'),
+        provider.makeUrl('endpoint', id: 5),
+      );
+      expect(
+        Uri.https('example.com', '/wger-url/api/v2/endpoint/5/log_data/'),
+        provider.makeUrl('endpoint', id: 5, objectMethod: 'log_data'),
+      );
+      expect(
+        Uri.https('example.com', '/wger-url/api/v2/endpoint/', {'a': '2', 'b': 'c'}),
+        provider.makeUrl('endpoint', query: {'a': '2', 'b': 'c'}),
+      );
+      expect(
+        Uri.https('example.com', '/wger-url/api/v2/endpoint/log_data/', {'a': '2', 'b': 'c'}),
+        provider.makeUrl('endpoint', objectMethod: 'log_data', query: {'a': '2', 'b': 'c'}),
+      );
+      expect(
+        Uri.https('example.com', '/wger-url/api/v2/endpoint/42/', {'a': '2', 'b': 'c'}),
+        provider.makeUrl('endpoint', id: 42, query: {'a': '2', 'b': 'c'}),
+      );
+      expect(
+        Uri.https('example.com', '/wger-url/api/v2/endpoint/42/log_data/', {'a': '2', 'b': 'c'}),
+        provider.makeUrl('endpoint', id: 42, objectMethod: 'log_data', query: {'a': '2', 'b': 'c'}),
+      );
+    });
   });
 }
