@@ -38,7 +38,7 @@ dependencies:
   cupertino_icons: ^1.0.5
   equatable: ^2.0.3
   flutter_calendar_carousel: ^2.4.0
-  flutter_html: ^2.1.2
+  flutter_html: ^2.2.1
   flutter_typeahead: ^4.0.0
   font_awesome_flutter: ">=9.1.0 <11.0.0"
   http: ^0.13.3
@@ -54,7 +54,7 @@ dependencies:
   url_launcher: ^6.1.4
   flutter_barcode_scanner: ^2.0.0
   video_player: ^2.4.5
-  multi_select_flutter: ^4.0.0
+  multi_select_flutter: ^4.1.2
   flutter_svg: ^0.23.0+1
 
 dev_dependencies:
