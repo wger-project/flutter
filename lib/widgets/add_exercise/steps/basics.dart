@@ -71,17 +71,17 @@ class BasicStepContent extends StatelessWidget {
             displayName: (Equipment e) => getTranslation(e.name, context),
           ),
           AddExerciseMultiselectButton<Muscle>(
-            title: AppLocalizations.of(context).muscles,
-            items: muscles,
-            initialItems: addExerciseProvider.primaryMuscles,
-            onChange: (dynamic muscles) {
-              addExerciseProvider.primaryMuscles = muscles.cast<Muscle>();
-            },
-            onSaved: (dynamic muscles) {
-              addExerciseProvider.primaryMuscles = muscles.cast<Muscle>();
-            },
-            displayName: (Muscle e) => e.name,
-          ),
+              title: AppLocalizations.of(context).muscles,
+              items: muscles,
+              initialItems: addExerciseProvider.primaryMuscles,
+              onChange: (dynamic muscles) {
+                addExerciseProvider.primaryMuscles = muscles.cast<Muscle>();
+              },
+              onSaved: (dynamic muscles) {
+                addExerciseProvider.primaryMuscles = muscles.cast<Muscle>();
+              },
+              displayName: (Muscle e) =>
+                  e.name + (e.nameEn.isNotEmpty ? '\n(${getTranslation(e.nameEn, context)})' : '')),
           AddExerciseMultiselectButton<Muscle>(
             title: AppLocalizations.of(context).musclesSecondary,
             items: muscles,

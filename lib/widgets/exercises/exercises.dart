@@ -152,7 +152,7 @@ class ExerciseDetail extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const MuscleColorHelper(main: true),
-          ..._exerciseBase.muscles.map((e) => Text(e.name)).toList(),
+          ..._exerciseBase.muscles.map((e) => Text(e.nameTranslated(context))).toList(),
         ],
       ),
     );
