@@ -111,7 +111,7 @@ class ExercisesProvider with ChangeNotifier {
     setFilters(
       Filters(
         exerciseCategories: FilterCategory<ExerciseCategory>(
-          title: 'Muscle Groups',
+          title: 'Category',
           items: Map.fromEntries(
             _categories.map(
               (category) => MapEntry<ExerciseCategory, bool>(category, false),
