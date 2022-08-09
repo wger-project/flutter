@@ -74,7 +74,7 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
         );
       },
       itemBuilder: (context, dynamic suggestion) {
-        final url = context.read<NutritionPlansProvider>().auth.serverUrl;
+        final url = context.read<NutritionPlansProvider>().baseProvider.auth.serverUrl;
         return ListTile(
           leading: suggestion['data']['image'] != null
               ? CircleAvatar(backgroundImage: NetworkImage(url! + suggestion['data']['image']))

@@ -28,25 +28,23 @@ import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/nutritional_plans_screen.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 
-import '../other/base_provider_test.mocks.dart';
-import '../utils.dart';
+import '../measurements/measurement_provider_test.mocks.dart';
 
 void main() {
   Widget createHomeScreen({locale = 'en'}) {
-    final client = MockClient();
-    when(client.delete(
-      any,
-      headers: anyNamed('headers'),
-    )).thenAnswer((_) async => http.Response('', 200));
+    final mockWgerBaseProvider = MockWgerBaseProvider();
+
+    when(mockWgerBaseProvider.deleteRequest(any, any)).thenAnswer(
+      (_) async => http.Response('', 200),
+    );
 
     return ChangeNotifierProvider<NutritionPlansProvider>(
       create: (context) => NutritionPlansProvider(
-        testAuthProvider,
+        mockWgerBaseProvider,
         [
           NutritionalPlan(id: 1, description: 'test plan 1', creationDate: DateTime(2021, 01, 01)),
           NutritionalPlan(id: 2, description: 'test plan 2', creationDate: DateTime(2021, 01, 10)),
         ],
-        client,
       ),
       child: MaterialApp(
         locale: Locale(locale),
