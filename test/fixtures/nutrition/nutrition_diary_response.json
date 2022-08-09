@@ -1,0 +1,34 @@
+{
+  "count": 3,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "plan": 1,
+      "meal": 1,
+      "ingredient": 59887,
+      "weight_unit": null,
+      "datetime": "2022-08-09T20:27:14.064157+02:00",
+      "amount": "100.00"
+    },
+    {
+      "id": 2,
+      "plan": 1,
+      "meal": 1,
+      "ingredient": 58300,
+      "weight_unit": null,
+      "datetime": "2022-08-09T20:27:14.075674+02:00",
+      "amount": "100.00"
+    },
+    {
+      "id": 3,
+      "plan": 1,
+      "meal": 1,
+      "ingredient": 10065,
+      "weight_unit": null,
+      "datetime": "2022-08-09T20:27:14.086133+02:00",
+      "amount": "200.00"
+    }
+  ]
+}

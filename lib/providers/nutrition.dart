@@ -51,6 +51,10 @@ class NutritionPlansProvider with ChangeNotifier {
     return [..._plans];
   }
 
+  set ingredients(items) {
+    _ingredients = items;
+  }
+
   /// Clears all lists
   void clear() {
     _plans = [];
@@ -143,7 +147,6 @@ class NutritionPlansProvider with ChangeNotifier {
           ingredient.image = image;
         }
         mealItem.ingredientObj = ingredient;
-        //mealItem.ingredientObj = await fetchIngredient(mealItem.ingredientId);
         mealItems.add(mealItem);
       }
       meal.mealItems = mealItems;
