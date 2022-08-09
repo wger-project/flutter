@@ -81,7 +81,6 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
               ? CircleAvatar(backgroundImage: NetworkImage(url! + suggestion['data']['image']))
               : const CircleIconAvatar(Icon(Icons.image, color: Colors.grey)),
           title: Text(suggestion['value']),
-          subtitle: Text(suggestion['data']['id'].toString()),
         );
       },
       transitionBuilder: (context, suggestionsBox, controller) {
