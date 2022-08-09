@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 # Note: these versions are set automatically during build by the android-release.yml
 # github action, the current versions are ignored.
-#   - the version number is taken from the git branch release/x.y.z
+#   - the version number is taken from the git tag vX.Y.Z
 #   - the build number is computed by reading the last one from the play store and increased by one
 version: 1.4.2+26
 
