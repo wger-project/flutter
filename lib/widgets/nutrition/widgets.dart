@@ -25,6 +25,7 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/ui.dart';
 import 'package:wger/providers/nutrition.dart';
+import 'package:wger/widgets/core/core.dart';
 
 class IngredientTypeahead extends StatefulWidget {
   final TextEditingController _ingredientController;
@@ -78,7 +79,7 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
         return ListTile(
           leading: suggestion['data']['image'] != null
               ? CircleAvatar(backgroundImage: NetworkImage(url! + suggestion['data']['image']))
-              : const Icon(Icons.image),
+              : const CircleIconAvatar(Icon(Icons.image, color: Colors.grey)),
           title: Text(suggestion['value']),
           subtitle: Text(suggestion['data']['id'].toString()),
         );
