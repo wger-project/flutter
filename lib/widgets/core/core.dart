@@ -37,3 +37,24 @@ class MutedText extends StatelessWidget {
     );
   }
 }
+
+class CircleIconAvatar extends StatelessWidget {
+  final double radius;
+  final Icon _icon;
+
+  final Color color;
+
+  const CircleIconAvatar(this._icon, {this.radius = 20, this.color = Colors.black12});
+
+  @override
+  Widget build(BuildContext context) {
+    return CircleAvatar(
+      backgroundColor: color,
+      radius: radius,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(50.0),
+        child: _icon,
+      ),
+    );
+  }
+}

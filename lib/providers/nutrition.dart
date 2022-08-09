@@ -25,6 +25,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/models/nutrition/image.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal.dart';
@@ -41,6 +42,7 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
   static const _ingredientPath = 'ingredient';
   static const _ingredientSearchPath = 'ingredient/search';
   static const _nutritionDiaryPath = 'nutritiondiary';
+  static const _ingredientImagePath = 'ingredient-image';
 
   List<NutritionalPlan> _plans = [];
   List<Ingredient> _ingredients = [];
@@ -135,7 +137,14 @@ class NutritionPlansProvider extends WgerBaseProvider with ChangeNotifier {
 
       for (final mealItemData in mealData['meal_items']) {
         final mealItem = MealItem.fromJson(mealItemData);
-        mealItem.ingredientObj = await fetchIngredient(mealItem.ingredientId);
+
+        final ingredient = Ingredient.fromJson(mealItemData['ingredient_obj']);
+        if (mealItemData['image'] != null) {
+          final image = IngredientImage.fromJson(mealItemData['image']);
+          ingredient.image = image;
+        }
+        mealItem.ingredientObj = ingredient;
+        //mealItem.ingredientObj = await fetchIngredient(mealItem.ingredientId);
         mealItems.add(mealItem);
       }
       meal.mealItems = mealItems;
