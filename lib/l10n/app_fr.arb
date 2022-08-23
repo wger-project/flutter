@@ -536,5 +536,13 @@
   "close": "Fermer",
   "@close": {
     "description": "Translation for close"
+  },
+  "productFound": "Produit trouvé",
+  "@productFound": {
+    "description": "Header label for dialog when product is found with barcode"
+  },
+  "weekAverage": "Moyenne sur 7 jours",
+  "@weekAverage": {
+    "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
   }
 }
