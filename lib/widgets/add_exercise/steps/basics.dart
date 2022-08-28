@@ -46,6 +46,7 @@ class BasicStepContent extends StatelessWidget {
                 addExerciseProvider.alternateNamesEn = alternateName!.split('\n'),
           ),
           ExerciseCategoryInputWidget<ExerciseCategory>(
+            key: Key('category-dropdown'),
             entries: categories,
             title: '${AppLocalizations.of(context).category}*',
             callback: (ExerciseCategory newValue) {
@@ -59,6 +60,7 @@ class BasicStepContent extends StatelessWidget {
             displayName: (ExerciseCategory c) => getTranslation(c.name, context),
           ),
           AddExerciseMultiselectButton<Equipment>(
+            key: Key('equipment-multiselect'),
             title: AppLocalizations.of(context).equipment,
             items: equipment,
             initialItems: addExerciseProvider.equipment,
@@ -71,6 +73,7 @@ class BasicStepContent extends StatelessWidget {
             displayName: (Equipment e) => getTranslation(e.name, context),
           ),
           AddExerciseMultiselectButton<Muscle>(
+              key: Key('primary-muscles-multiselect'),
               title: AppLocalizations.of(context).muscles,
               items: muscles,
               initialItems: addExerciseProvider.primaryMuscles,
@@ -83,6 +86,7 @@ class BasicStepContent extends StatelessWidget {
               displayName: (Muscle e) =>
                   e.name + (e.nameEn.isNotEmpty ? '\n(${getTranslation(e.nameEn, context)})' : '')),
           AddExerciseMultiselectButton<Muscle>(
+            key: Key('secondary-muscles-multiselect'),
             title: AppLocalizations.of(context).musclesSecondary,
             items: muscles,
             initialItems: addExerciseProvider.secondaryMuscles,

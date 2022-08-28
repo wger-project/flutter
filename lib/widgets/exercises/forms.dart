@@ -29,6 +29,7 @@ class ExerciseCategoryInputWidget<T> extends StatefulWidget {
   late final Function? _validator;
 
   ExerciseCategoryInputWidget({
+    Key? key,
     required String title,
     required List<T> entries,
     required Function callback,
@@ -54,6 +55,7 @@ class _ExerciseCategoryInputWidgetState<T> extends State<ExerciseCategoryInputWi
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: DropdownButtonFormField(
+        key: widget.key,
         value: selectedEntry,
         decoration: InputDecoration(
           labelText: widget._title,

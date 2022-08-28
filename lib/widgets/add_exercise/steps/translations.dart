@@ -44,6 +44,7 @@ class _DescriptionTranslationStepContentState extends State<DescriptionTranslati
             Column(
               children: [
                 ExerciseCategoryInputWidget<Language>(
+                  key: Key('language-dropdown'),
                   entries: languages,
                   title: '${AppLocalizations.of(context).language}*',
                   displayName: (Language l) => l.fullName,
