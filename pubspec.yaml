@@ -36,24 +36,24 @@ dependencies:
   charts_flutter: ^0.12.0
   collection: ^1.15.0-nullsafety.4
   cupertino_icons: ^1.0.5
-  equatable: ^2.0.3
+  equatable: ^2.0.5
   flutter_calendar_carousel: ^2.4.0
   flutter_html: ^2.2.1
   flutter_typeahead: ^4.0.0
   font_awesome_flutter: ">=9.1.0 <11.0.0"
-  http: ^0.13.3
+  http: ^0.13.5
   image_picker: ^0.8.4+9
   intl: ^0.17.0
   json_annotation: ^4.5.0
   version: ^3.0.2
   package_info: ^2.0.2
   provider: ^6.0.3
-  rive: ^0.9.0
+  rive: ^0.9.1
   shared_preferences: ^2.0.15
   table_calendar: ^3.0.6
   url_launcher: ^6.1.5
   flutter_barcode_scanner: ^2.0.0
-  video_player: ^2.4.5
+  video_player: ^2.4.7,
   multi_select_flutter: ^4.1.2
   flutter_svg: ^0.23.0+1
 
@@ -63,9 +63,9 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   build_runner: ^2.2.0
-  flutter_launcher_icons: ^0.9.3
+  flutter_launcher_icons: ^0.10.0
   json_serializable: ^6.3.1
-  mockito: ^5.2.0
+  mockito: ^5.3.0
   network_image_mock: ^2.1.1
   flutter_lints: ^2.0.1
   cider: ^0.1.1

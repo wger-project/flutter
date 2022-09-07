@@ -552,5 +552,9 @@
   "close": "Закрити",
   "@close": {
     "description": "Translation for close"
+  },
+  "rir": "RiR",
+  "@rir": {
+    "description": "Shorthand for Repetitions In Reserve"
   }
 }
