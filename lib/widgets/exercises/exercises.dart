@@ -51,6 +51,9 @@ class ExerciseDetail extends StatelessWidget {
           // Category and equipment
           getCategoriesAndEquipment(context),
 
+          // Alternative names
+          ...getAliases(context),
+
           // Videos
           ...getVideos(),
 
