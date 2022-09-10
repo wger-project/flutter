@@ -168,7 +168,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
                 ),
                 BottomNavigationBarItem(
                   icon: const FaIcon(
-                    FontAwesomeIcons.weight,
+                    FontAwesomeIcons.weightScale,
                     size: 20,
                   ),
                   label: AppLocalizations.of(context).weight,
