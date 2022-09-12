@@ -39,7 +39,7 @@ dependencies:
   equatable: ^2.0.5
   flutter_calendar_carousel: ^2.4.0
   flutter_html: ^2.1.2
-  flutter_typeahead: ^4.0.0
+  flutter_typeahead: ^4.1.0
   font_awesome_flutter: ">=9.1.0 <11.0.0"
   http: ^0.13.5
   image_picker: ^0.8.4+9
