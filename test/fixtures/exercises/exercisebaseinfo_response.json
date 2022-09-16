@@ -100,6 +100,24 @@
       "style": "4"
     }
   ],
+  "videos": [
+    {
+      "id": 2,
+      "uuid": "63e996e9-a772-4ca5-9d09-8b4be03f6be4",
+      "exercise_base": 258,
+      "exercise_base_uuid": "6260e3aa-e46b-4b4b-8ada-58bfd0922d3a",
+      "video": "http://localhost:8000/media/exercise-video/258/63e996e9-a772-4ca5-9d09-8b4be03f6be4.MOV",
+      "is_main": false,
+      "size": 0,
+      "duration": "0.00",
+      "width": 0,
+      "height": 0,
+      "codec": "",
+      "codec_long": "",
+      "license": 2,
+      "license_author": null
+    }
+  ],
   "exercises": [
     {
       "id": 345,

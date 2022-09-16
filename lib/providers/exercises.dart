@@ -35,6 +35,7 @@ import 'package:wger/models/exercises/image.dart';
 import 'package:wger/models/exercises/language.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/models/exercises/variation.dart';
+import 'package:wger/models/exercises/video.dart';
 import 'package:wger/providers/base_provider.dart';
 
 class ExercisesProvider with ChangeNotifier {
@@ -315,6 +316,7 @@ class ExercisesProvider with ChangeNotifier {
     final musclesSecondary = baseData['muscles_secondary'].map((e) => Muscle.fromJson(e)).toList();
     final equipment = baseData['equipment'].map((e) => Equipment.fromJson(e)).toList();
     final images = baseData['images'].map((e) => ExerciseImage.fromJson(e)).toList();
+    final videos = baseData['videos'].map((e) => Video.fromJson(e)).toList();
 
     final List<Exercise> exercises = [];
     for (final exerciseData in baseData['exercises']) {
@@ -341,6 +343,7 @@ class ExercisesProvider with ChangeNotifier {
       category: category,
       images: images.cast<ExerciseImage>(),
       exercises: exercises,
+      videos: videos.cast<Video>(),
     );
 
     return exerciseBase;

@@ -90,6 +90,7 @@ class ExerciseBase extends Equatable {
     List<ExerciseImage>? images,
     List<Exercise>? exercises,
     ExerciseCategory? category,
+    List<Video>? videos,
   }) {
     this.images = images ?? [];
     this.equipment = equipment ?? [];
@@ -115,6 +116,10 @@ class ExerciseBase extends Equatable {
 
     if (exercises != null) {
       this.exercises = exercises;
+    }
+
+    if (videos != null) {
+      this.videos = videos;
     }
   }
 
