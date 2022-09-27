@@ -13,6 +13,7 @@
 - Marko Milosevic - <https://github.com/TaarnStar>
 - Karthik Reddy (Axel) - <https://github.com/AxelBlaz3>
 - Ogundoyin Toluwani - <https://github.com/Tolu007>
+- Florian Schmitz - <https://github.com/floodoo>
 
 ## Translators
 
