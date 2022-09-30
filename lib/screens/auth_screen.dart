@@ -221,6 +221,7 @@ class _AuthCardState extends State<AuthCard> {
                       }
                       return null;
                     },
+                    inputFormatters: [FilteringTextInputFormatter.deny(new RegExp(r"\s\b|\b\s"))],
                     onSaved: (value) {
                       _authData['username'] = value!;
                     },
