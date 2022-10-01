@@ -15,7 +15,7 @@ If you want to contribute, hop on the Discord server and say hi!
 <img src="https://raw.githubusercontent.com/wger-project/flutter/master/fastlane/metadata/android/en-US/images/phoneScreenshots/04%20-%20nutritional%20plan.png" width="200" />
 </p>
 
-##Promo
+<h2>Promo</h2>
 
 
 https://user-images.githubusercontent.com/83128918/193403621-30edc0f1-b9ca-4d45-91d8-1b8fe3dc8ba6.mp4
