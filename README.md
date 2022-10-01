@@ -6,6 +6,10 @@ app written with Flutter, it talks via REST with the main server.
 
 If you want to contribute, hop on the Discord server and say hi!
 
+<h2>Promo</h2>
+
+
+https://user-images.githubusercontent.com/83128918/193403621-30edc0f1-b9ca-4d45-91d8-1b8fe3dc8ba6.mp4
 
 <p>
 <img src="https://raw.githubusercontent.com/wger-project/flutter/master/fastlane/metadata/android/en-US/images/phoneScreenshots/01%20-%20workout%20plan.png" width="200" />
