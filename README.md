@@ -16,11 +16,11 @@ If you want to contribute, hop on the Discord server and say hi!
 </p>
 
 ##Promo
-[![WGER-Workout Manager](https://img.youtube.com/vi/E_6RJjOzPKM/0.jpg)](https://www.youtube.com/watch?v=E_6RJjOzPKM)
 
-[<img src="https://img.youtube.com/vi/E_6RJjOzPKM/sddefault.jpg"
-      alt="Promo Animation of WGER"
-      height="80">](https://github.com/wger-project/flutter)
+
+https://user-images.githubusercontent.com/83128918/193403621-30edc0f1-b9ca-4d45-91d8-1b8fe3dc8ba6.mp4
+
+
 
 ## Installation
 [<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png"
