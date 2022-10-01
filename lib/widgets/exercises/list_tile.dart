@@ -62,67 +62,6 @@ class ExerciseListTile extends StatelessWidget {
       onTap: () {
         Navigator.pushNamed(context, ExerciseDetailScreen.routeName, arguments: exerciseBase);
       },
-      /*
-      trailing: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
-        decoration: BoxDecoration(
-          color: theme.primaryColorLight.withOpacity(0.15),
-          border: Border.all(color: Colors.grey[300]!),
-          borderRadius: BorderRadius.circular(5),
-        ),
-        child: Text(
-          exercise.category.name,
-        ),
-      ),
-
-       */
     );
-
-    /*
-    return Row(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Container(
-            width: size.width * 0.2,
-            child: Center(
-              child: ExerciseImageWidget(
-                image: exercise.getMainImage,
-              ),
-            ),
-          ),
-        ),
-        Expanded(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
-                decoration: BoxDecoration(
-                  color: theme.primaryColorLight.withOpacity(0.15),
-                  border: Border.all(color: Colors.grey[300]!),
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Text(
-                  exercise.category.name,
-                ),
-              ),
-              Text(
-                exercise.name,
-                style: theme.textTheme.headline6,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 2,
-              ),
-              Text(
-                exercise.equipment.map((equipment) => equipment.name).join(", "),
-              )
-            ],
-          ),
-        )
-      ],
-    );
-
-     */
   }
 }
