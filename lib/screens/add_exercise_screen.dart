@@ -39,6 +39,10 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
+            OutlinedButton(
+              onPressed: details.onStepCancel,
+              child: Text(AppLocalizations.of(context).previous),
+            ),
             if (_currentStep == lastStepIndex)
               ElevatedButton(
                 onPressed: () async {
@@ -50,14 +54,10 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
                 child: Text(AppLocalizations.of(context).save),
               )
             else
-              OutlinedButton(
+              ElevatedButton(
                 onPressed: details.onStepContinue,
                 child: Text(AppLocalizations.of(context).next),
               ),
-            OutlinedButton(
-              onPressed: details.onStepCancel,
-              child: Text(AppLocalizations.of(context).previous),
-            ),
           ],
         ),
       ],
