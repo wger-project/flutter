@@ -15,8 +15,12 @@ If you want to contribute, hop on the Discord server and say hi!
 <img src="https://raw.githubusercontent.com/wger-project/flutter/master/fastlane/metadata/android/en-US/images/phoneScreenshots/04%20-%20nutritional%20plan.png" width="200" />
 </p>
 
-#Promo
+##Promo
 [![WGER-Workout Manager](https://img.youtube.com/vi/E_6RJjOzPKM/0.jpg)](https://www.youtube.com/watch?v=E_6RJjOzPKM)
+
+[<img src="https://img.youtube.com/vi/E_6RJjOzPKM/sddefault.jpg"
+      alt="Promo Animation of WGER"
+      height="80">](https://github.com/wger-project/flutter)
 
 ## Installation
 [<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png"
