@@ -13,9 +13,9 @@ import 'package:wger/widgets/add_exercise/add_exercise_text_area.dart';
 import 'package:wger/widgets/exercises/exercises.dart';
 import 'package:wger/widgets/exercises/forms.dart';
 
-class BasicStepContent extends StatelessWidget {
+class Step1Basics extends StatelessWidget {
   final GlobalKey<FormState> formkey;
-  const BasicStepContent({required this.formkey});
+  const Step1Basics({required this.formkey});
 
   @override
   Widget build(BuildContext context) {

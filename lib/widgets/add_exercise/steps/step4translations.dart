@@ -8,16 +8,15 @@ import 'package:wger/providers/exercises.dart';
 import 'package:wger/widgets/add_exercise/add_exercise_text_area.dart';
 import 'package:wger/widgets/exercises/forms.dart';
 
-class DescriptionTranslationStepContent extends StatefulWidget {
+class Step4Translation extends StatefulWidget {
   final GlobalKey<FormState> formkey;
-  const DescriptionTranslationStepContent({required this.formkey});
+  const Step4Translation({required this.formkey});
 
   @override
-  State<DescriptionTranslationStepContent> createState() =>
-      _DescriptionTranslationStepContentState();
+  State<Step4Translation> createState() => _Step4TranslationState();
 }
 
-class _DescriptionTranslationStepContentState extends State<DescriptionTranslationStepContent> {
+class _Step4TranslationState extends State<Step4Translation> {
   bool translate = false;
 
   @override

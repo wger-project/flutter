@@ -4,11 +4,11 @@ import 'package:provider/provider.dart';
 import 'package:wger/providers/add_exercise_provider.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/screens/exercise_screen.dart';
-import 'package:wger/widgets/add_exercise/steps/basics.dart';
-import 'package:wger/widgets/add_exercise/steps/description.dart';
-import 'package:wger/widgets/add_exercise/steps/images.dart';
-import 'package:wger/widgets/add_exercise/steps/translations.dart';
-import 'package:wger/widgets/add_exercise/steps/variations.dart';
+import 'package:wger/widgets/add_exercise/steps/step1basics.dart';
+import 'package:wger/widgets/add_exercise/steps/step2variations.dart';
+import 'package:wger/widgets/add_exercise/steps/step3description.dart';
+import 'package:wger/widgets/add_exercise/steps/step4translations.dart';
+import 'package:wger/widgets/add_exercise/steps/step5images.dart';
 import 'package:wger/widgets/core/app_bar.dart';
 
 class AddExerciseScreen extends StatefulWidget {
@@ -73,23 +73,23 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
         steps: [
           Step(
             title: Text(AppLocalizations.of(context).baseData),
-            content: BasicStepContent(formkey: _keys[0]),
+            content: Step1Basics(formkey: _keys[0]),
           ),
           Step(
             title: Text(AppLocalizations.of(context).variations),
-            content: DuplicatesAndVariationsStepContent(formkey: _keys[1]),
+            content: Step2Variations(formkey: _keys[1]),
           ),
           Step(
             title: Text(AppLocalizations.of(context).description),
-            content: DescriptionStepContent(formkey: _keys[2]),
+            content: Step3Description(formkey: _keys[2]),
           ),
           Step(
             title: Text(AppLocalizations.of(context).translation),
-            content: DescriptionTranslationStepContent(formkey: _keys[3]),
+            content: Step4Translation(formkey: _keys[3]),
           ),
           Step(
             title: Text(AppLocalizations.of(context).images),
-            content: ImagesStepContent(formkey: _keys[4]),
+            content: Step5Images(formkey: _keys[4]),
           ),
         ],
         currentStep: _currentStep,
