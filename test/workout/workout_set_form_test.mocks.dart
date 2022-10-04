@@ -165,8 +165,7 @@ class MockExercisesProvider extends _i1.Mock implements _i5.ExercisesProvider {
         returnValueForMissingStub: _i6.Future<void>.value(),
       ) as _i6.Future<void>);
   @override
-  _i6.Future<_i4.Exercise> fetchAndSetExercise(int? exerciseId) =>
-      (super.noSuchMethod(
+  _i6.Future<_i4.Exercise> fetchAndSetExercise(int? exerciseId) => (super.noSuchMethod(
         Invocation.method(
           #fetchAndSetExercise,
           [exerciseId],
@@ -248,8 +247,7 @@ class MockExercisesProvider extends _i1.Mock implements _i5.ExercisesProvider {
           #fetch,
           [uri],
         ),
-        returnValue:
-            _i6.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
+        returnValue: _i6.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
       ) as _i6.Future<Map<String, dynamic>>);
   @override
   _i6.Future<Map<String, dynamic>> post(
@@ -264,8 +262,7 @@ class MockExercisesProvider extends _i1.Mock implements _i5.ExercisesProvider {
             uri,
           ],
         ),
-        returnValue:
-            _i6.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
+        returnValue: _i6.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
       ) as _i6.Future<Map<String, dynamic>>);
   @override
   _i6.Future<Map<String, dynamic>> patch(
@@ -280,8 +277,7 @@ class MockExercisesProvider extends _i1.Mock implements _i5.ExercisesProvider {
             uri,
           ],
         ),
-        returnValue:
-            _i6.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
+        returnValue: _i6.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
       ) as _i6.Future<Map<String, dynamic>>);
   @override
   _i6.Future<_i3.Response> deleteRequest(

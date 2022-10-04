@@ -216,8 +216,7 @@ class MockGalleryProvider extends _i1.Mock implements _i4.GalleryProvider {
           #fetch,
           [uri],
         ),
-        returnValue:
-            _i6.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
+        returnValue: _i6.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
       ) as _i6.Future<Map<String, dynamic>>);
   @override
   _i6.Future<Map<String, dynamic>> post(
@@ -232,8 +231,7 @@ class MockGalleryProvider extends _i1.Mock implements _i4.GalleryProvider {
             uri,
           ],
         ),
-        returnValue:
-            _i6.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
+        returnValue: _i6.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
       ) as _i6.Future<Map<String, dynamic>>);
   @override
   _i6.Future<Map<String, dynamic>> patch(
@@ -248,8 +246,7 @@ class MockGalleryProvider extends _i1.Mock implements _i4.GalleryProvider {
             uri,
           ],
         ),
-        returnValue:
-            _i6.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
+        returnValue: _i6.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
       ) as _i6.Future<Map<String, dynamic>>);
   @override
   _i6.Future<_i3.Response> deleteRequest(
