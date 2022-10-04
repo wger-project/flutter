@@ -253,7 +253,7 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                 style: Theme.of(context).textTheme.headline4,
               ),
               leading: const FaIcon(
-                FontAwesomeIcons.weight,
+                FontAwesomeIcons.weightScale,
                 color: Colors.black,
               ),
               trailing: IconButton(
