@@ -565,10 +565,9 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
 class NothingFound extends StatelessWidget {
   final String _title;
   final String _titleForm;
-  final Widget? _form;
-  final VoidCallback? onPressed;
+  final Widget _form;
 
-  const NothingFound(this._title, this._titleForm, this._form, {this.onPressed});
+  const NothingFound(this._title, this._titleForm, this._form);
 
   @override
   Widget build(BuildContext context) {
@@ -584,19 +583,16 @@ class NothingFound extends StatelessWidget {
               Icons.add_box,
               color: wgerPrimaryButtonColor,
             ),
-            onPressed: onPressed ??
-                () async {
-                  if (_form != null) {
-                    Navigator.pushNamed(
-                      context,
-                      FormScreen.routeName,
-                      arguments: FormScreenArguments(
-                        _titleForm,
-                        _form!,
-                      ),
-                    );
-                  }
-                },
+            onPressed: () async {
+              Navigator.pushNamed(
+                context,
+                FormScreen.routeName,
+                arguments: FormScreenArguments(
+                  _titleForm,
+                  _form,
+                ),
+              );
+            },
           ),
         ],
       ),
