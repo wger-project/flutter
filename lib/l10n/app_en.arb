@@ -383,6 +383,10 @@
   "@noWeightEntries": {
     "description": "Message shown when the user has no logged weight entries"
   },
+  "noMeasurementEntries": "You have no measurement entries",
+    "@noMeasurementsntries": {
+      "description": "Message shown when the user has no logged measurement entries"
+    },
   "edit": "Edit",
   "@edit": {},
   "loadingText": "Loading...",

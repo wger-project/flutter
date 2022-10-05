@@ -9,12 +9,14 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CategoriesCard extends StatelessWidget {
   MeasurementCategory currentCategory;
+  double? elevation;
 
-  CategoriesCard(this.currentCategory);
+  CategoriesCard(this.currentCategory,{this.elevation});
 
   @override
   Widget build(BuildContext context) {
     return Card(
+      elevation: elevation,
       child: Column(
         children: [
           Padding(
