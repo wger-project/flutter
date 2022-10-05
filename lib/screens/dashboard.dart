@@ -41,6 +41,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             DashboardWorkoutWidget(),
             DashboardNutritionWidget(),
             DashboardWeightWidget(),
+            DashboardMeasurementsWidget(),
             const DashboardCalendarWidget(),
           ],
         ),
