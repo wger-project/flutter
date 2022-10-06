@@ -384,9 +384,13 @@
     "description": "Message shown when the user has no logged weight entries"
   },
   "noMeasurementEntries": "You have no measurement entries",
-    "@noMeasurementsntries": {
+    "@noMeasurementntries": {
       "description": "Message shown when the user has no logged measurement entries"
     },
+  "moreMeasurementEntries": "Add new measurement",
+     "@moreMeasurementEntries": {
+       "description": "Message shown when the user wants to add new measurement"
+     },
   "edit": "Edit",
   "@edit": {},
   "loadingText": "Loading...",

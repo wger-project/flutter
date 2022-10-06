@@ -31,6 +31,7 @@ import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/gym_mode.dart';
+import 'package:wger/screens/measurement_categories_screen.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
@@ -260,19 +261,6 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                 FontAwesomeIcons.weight,
                 color: Colors.black,
               ),
-              trailing: IconButton(
-                icon: const Icon(Icons.add),
-                onPressed: () async {
-                  Navigator.pushNamed(
-                    context,
-                    FormScreen.routeName,
-                    arguments: FormScreenArguments(
-                      AppLocalizations.of(context).newEntry,
-                      WeightForm(),
-                    ),
-                  );
-                },
-              ),
             ),
             Column(
               children: [
@@ -287,13 +275,26 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                             .toList()),
                       ),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           TextButton(
                               child: Text(AppLocalizations.of(context).goToDetailPage),
                               onPressed: () {
                                 Navigator.of(context).pushNamed(WeightScreen.routeName);
                               }),
+                          IconButton(
+                            icon: const Icon(Icons.add),
+                            onPressed: () async {
+                              Navigator.pushNamed(
+                                context,
+                                FormScreen.routeName,
+                                arguments: FormScreenArguments(
+                                  AppLocalizations.of(context).newEntry,
+                                  WeightForm(),
+                                ),
+                              );
+                            },
+                          ),
                         ],
                       ),
                     ],
@@ -326,14 +327,23 @@ class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget>
   Widget build(BuildContext context) {
     final _provider = Provider.of<MeasurementProvider>(context, listen: false);
 
-    var items = _provider.categories
-        .map(
+    List<Widget> items = _provider.categories
+        .map<Widget>(
           (item) => CategoriesCard(
             item,
             elevation: 0,
           ),
         )
         .toList();
+    if (items.isNotEmpty) {
+      items.add(
+        NothingFound(
+          AppLocalizations.of(context).moreMeasurementEntries,
+          AppLocalizations.of(context).newEntry,
+          MeasurementCategoryForm(),
+        ),
+      );
+    }
     return Consumer<MeasurementProvider>(
       builder: (context, workoutProvider, child) => Card(
         child: Column(
@@ -347,6 +357,13 @@ class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget>
               leading: const FaIcon(
                 FontAwesomeIcons.weight,
                 color: Colors.black,
+              ),
+              trailing: IconButton(
+                icon: const Icon(Icons.arrow_forward),
+                onPressed: () => Navigator.pushNamed(
+                  context,
+                  MeasurementCategoriesScreen.routeName,
+                ),
               ),
             ),
             Column(
