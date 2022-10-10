@@ -53,6 +53,6 @@
 
   - Kosei TANAKA <wms784.app@gmail.com> (97)
 
-- Indonesia
+- Bahasa Indonesia
 
-  - Nenza Nurfirmansyah <nnurfirmansyah@gmail.com> (97)
+  - Nenza Nurfirmansyah <nnurfirmansyah@gmail.com> (73)
