@@ -15,6 +15,7 @@
 - Ogundoyin Toluwani - <https://github.com/Tolu007>
 - Nenza Nurfirmansyah - <https://github.com/nenzan>
 - Florian Schmitz - <https://github.com/floodoo>
+- Aman Negi - <https://github.com/AmanNegi>
 
 ## Translators
 
