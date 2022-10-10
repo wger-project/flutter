@@ -98,7 +98,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   /// Registers a new user
-  Future<void> register(
+  Future<Map<String, String>> register(
       {required String username,
       required String password,
       required String email,
@@ -124,14 +124,21 @@ class AuthProvider with ChangeNotifier {
         throw WgerHttpException(responseData);
       }
 
+      // If update is required don't log in user
+      final bool updateRequired = await applicationUpdateRequired();
+      if (updateRequired) {
+        return {'action': 'update'};
+      }
+
       login(username, password, serverUrl);
+      return {'action': 'proceed'};
     } catch (error) {
       rethrow;
     }
   }
 
   /// Authenticates a user
-  Future<void> login(String username, String password, String serverUrl) async {
+  Future<Map<String, String>> login(String username, String password, String serverUrl) async {
     await logout(shouldNotify: false);
 
     try {
@@ -147,6 +154,12 @@ class AuthProvider with ChangeNotifier {
 
       if (response.statusCode >= 400) {
         throw WgerHttpException(responseData);
+      }
+
+      // If update is required don't log in user
+      final bool updateRequired = await applicationUpdateRequired();
+      if (updateRequired) {
+        return {'action': 'update'};
       }
 
       // Log user in
@@ -169,6 +182,7 @@ class AuthProvider with ChangeNotifier {
       await setApplicationVersion();
       prefs.setString('userData', userData);
       prefs.setString('lastServer', serverData);
+      return {'action': 'proceed'};
     } catch (error) {
       rethrow;
     }
