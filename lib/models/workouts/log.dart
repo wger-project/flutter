@@ -16,8 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'dart:ui';
-
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/misc.dart';
@@ -133,7 +131,8 @@ class Log {
 
   @override
   //ignore: avoid_equals_and_hash_code_on_mutable_classes
-  int get hashCode => Object.hash(exerciseBaseId, weight, weightUnitId, reps, repetitionUnitId, rir);
+  int get hashCode =>
+      Object.hash(exerciseBaseId, weight, weightUnitId, reps, repetitionUnitId, rir);
 
   //@override
   //int get hashCode => super.hashCode;
