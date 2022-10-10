@@ -73,18 +73,19 @@ class Step1Basics extends StatelessWidget {
             displayName: (Equipment e) => getTranslation(e.name, context),
           ),
           AddExerciseMultiselectButton<Muscle>(
-              key: const Key('primary-muscles-multiselect'),
-              title: AppLocalizations.of(context).muscles,
-              items: muscles,
-              initialItems: addExerciseProvider.primaryMuscles,
-              onChange: (dynamic muscles) {
-                addExerciseProvider.primaryMuscles = muscles.cast<Muscle>();
-              },
-              onSaved: (dynamic muscles) {
-                addExerciseProvider.primaryMuscles = muscles.cast<Muscle>();
-              },
-              displayName: (Muscle e) =>
-                  e.name + (e.nameEn.isNotEmpty ? '\n(${getTranslation(e.nameEn, context)})' : '')),
+            key: const Key('primary-muscles-multiselect'),
+            title: AppLocalizations.of(context).muscles,
+            items: muscles,
+            initialItems: addExerciseProvider.primaryMuscles,
+            onChange: (dynamic muscles) {
+              addExerciseProvider.primaryMuscles = muscles.cast<Muscle>();
+            },
+            onSaved: (dynamic muscles) {
+              addExerciseProvider.primaryMuscles = muscles.cast<Muscle>();
+            },
+            displayName: (Muscle e) =>
+                e.name + (e.nameEn.isNotEmpty ? '\n(${getTranslation(e.nameEn, context)})' : ''),
+          ),
           AddExerciseMultiselectButton<Muscle>(
             key: const Key('secondary-muscles-multiselect'),
             title: AppLocalizations.of(context).musclesSecondary,
@@ -96,7 +97,8 @@ class Step1Basics extends StatelessWidget {
             onSaved: (dynamic muscles) {
               addExerciseProvider.secondaryMuscles = muscles.cast<Muscle>();
             },
-            displayName: (Muscle e) => e.name,
+            displayName: (Muscle e) =>
+                e.name + (e.nameEn.isNotEmpty ? '\n(${getTranslation(e.nameEn, context)})' : ''),
           ),
           Consumer<AddExerciseProvider>(
             builder: (context, value, child) => MuscleRowWidget(
