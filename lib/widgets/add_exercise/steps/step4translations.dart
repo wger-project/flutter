@@ -43,7 +43,7 @@ class _Step4TranslationState extends State<Step4Translation> {
             Column(
               children: [
                 ExerciseCategoryInputWidget<Language>(
-                  key: Key('language-dropdown'),
+                  key: const Key('language-dropdown'),
                   entries: languages,
                   title: '${AppLocalizations.of(context).language}*',
                   displayName: (Language l) => l.fullName,
