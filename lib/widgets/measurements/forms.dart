@@ -156,6 +156,11 @@ class MeasurementEntryForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final measurementProvider = Provider.of<MeasurementProvider>(context, listen: false);
+    final measurementCategory = measurementProvider.categories.firstWhere(
+      (category) => category.id == _categoryId,
+    );
+
     return Form(
       key: _form,
       child: Column(
@@ -199,7 +204,11 @@ class MeasurementEntryForm extends StatelessWidget {
           ),
           // Value
           TextFormField(
-            decoration: InputDecoration(labelText: AppLocalizations.of(context).value),
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context).value,
+              suffixIcon: Text(measurementCategory.unit),
+              suffixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
+            ),
             controller: _valueController,
             keyboardType: TextInputType.number,
             validator: (value) {

@@ -133,7 +133,7 @@ class Log {
 
   @override
   //ignore: avoid_equals_and_hash_code_on_mutable_classes
-  int get hashCode => hashValues(exerciseId, weight, weightUnitId, reps, repetitionUnitId, rir);
+  int get hashCode => Object.hash(exerciseId, weight, weightUnitId, reps, repetitionUnitId, rir);
 
   //@override
   //int get hashCode => super.hashCode;

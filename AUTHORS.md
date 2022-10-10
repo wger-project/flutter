@@ -14,6 +14,7 @@
 - Karthik Reddy (Axel) - <https://github.com/AxelBlaz3>
 - Ogundoyin Toluwani - <https://github.com/Tolu007>
 - Nenza Nurfirmansyah - <https://github.com/nenzan>
+- Florian Schmitz - <https://github.com/floodoo>
 
 ## Translators
 

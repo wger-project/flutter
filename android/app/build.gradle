@@ -51,7 +51,7 @@ if (localMapsPropertiesFile.exists()) {
 def wgerApiKey = wgerProperties.getProperty('WGER_API_KEY')
 if(wgerApiKey == null){
     wgerApiKey = ""
-    project.logger.error('Wger Api Key not configured. Set it in `app/wger.properties` or in the environment variable `WGER_API_KEY`')
+    project.logger.error('Wger Api Key not configured. Set it in `/fastlane/metadata/android/envfiles/wger.properties` or in the environment variable `WGER_API_KEY`')
 }
 
 android {
