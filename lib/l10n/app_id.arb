@@ -104,7 +104,7 @@
   "@exercise": {
     "description": "An exercise for a workout"
   },
-  "searchExercise": "Carai latihan untuk ditambahkan",
+  "searchExercise": "Cari latihan untuk ditambahkan",
   "@searchExercise": {
     "description": "Label on set form. Selected exercises are added to the set"
   },
@@ -264,7 +264,7 @@
   "@weight": {
     "description": "The weight of a workout log or body weight entry"
   },
-  "measurement": "Measurement",
+  "measurement": "Ukuran",
   "measurements": "Measurements",
   "@measurements": {
     "description": "Categories for the measurements such as biceps size, body fat, etc."
