@@ -25,6 +25,7 @@ class AddExerciseMultiselectButton<T> extends StatefulWidget {
 
 class _AddExerciseMultiselectButtonState<T> extends State<AddExerciseMultiselectButton> {
   List<T> _selectedItems = [];
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -45,6 +46,7 @@ class _AddExerciseMultiselectButtonState<T> extends State<AddExerciseMultiselect
           onTap: (value) {
             setState(() {
               _selectedItems.remove(value);
+              widget.onChange(_selectedItems);
             });
           },
           icon: const Icon(Icons.close),
