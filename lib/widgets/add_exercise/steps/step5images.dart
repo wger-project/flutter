@@ -5,15 +5,15 @@ import 'package:wger/providers/add_exercise_provider.dart';
 import 'package:wger/widgets/add_exercise/mixins/image_picker_mixin.dart';
 import 'package:wger/widgets/add_exercise/preview_images.dart';
 
-class ImagesStepContent extends StatefulWidget {
+class Step5Images extends StatefulWidget {
   final GlobalKey<FormState> formkey;
-  const ImagesStepContent({required this.formkey});
+  const Step5Images({required this.formkey});
 
   @override
-  State<ImagesStepContent> createState() => _ImagesStepContentState();
+  State<Step5Images> createState() => _Step5ImagesState();
 }
 
-class _ImagesStepContentState extends State<ImagesStepContent> with ExerciseImagePickerMixin {
+class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin {
   @override
   Widget build(BuildContext context) {
     return Form(

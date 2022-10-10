@@ -374,8 +374,6 @@ class ExercisesProvider with ChangeNotifier {
   Future<void> fetchAndSetExercises() async {
     clear();
 
-    //fetchAndSetExerciseBase(9);
-
     // Load exercises from cache, if available
     final prefs = await SharedPreferences.getInstance();
     await checkExerciseCacheVersion();

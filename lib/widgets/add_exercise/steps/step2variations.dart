@@ -4,10 +4,10 @@ import 'package:provider/provider.dart';
 import 'package:wger/providers/add_exercise_provider.dart';
 import 'package:wger/providers/exercises.dart';
 
-class DuplicatesAndVariationsStepContent extends StatelessWidget {
+class Step2Variations extends StatelessWidget {
   final GlobalKey<FormState> formkey;
 
-  const DuplicatesAndVariationsStepContent({required this.formkey});
+  const Step2Variations({required this.formkey});
 
   @override
   Widget build(BuildContext context) {
