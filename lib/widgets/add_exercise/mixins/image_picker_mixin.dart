@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/providers/add_exercise_provider.dart';
+import 'package:wger/providers/add_exercise.dart';
 
 const validFileExtensions = ['jpg', 'jpeg', 'png', 'webp'];
 const maxFileSize = 20;

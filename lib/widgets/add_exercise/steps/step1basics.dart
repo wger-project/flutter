@@ -6,7 +6,7 @@ import 'package:wger/helpers/i18n.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/muscle.dart';
-import 'package:wger/providers/add_exercise_provider.dart';
+import 'package:wger/providers/add_exercise.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/widgets/add_exercise/add_exercise_multiselect_button.dart';
 import 'package:wger/widgets/add_exercise/add_exercise_text_area.dart';

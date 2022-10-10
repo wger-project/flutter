@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../providers/add_exercise_provider.dart';
+import '../../providers/add_exercise.dart';
 import 'mixins/image_picker_mixin.dart';
 
 class PreviewExerciseImages extends StatelessWidget with ExerciseImagePickerMixin {

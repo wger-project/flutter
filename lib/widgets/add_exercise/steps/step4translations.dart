@@ -3,7 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/exercises/forms.dart';
 import 'package:wger/models/exercises/language.dart';
-import 'package:wger/providers/add_exercise_provider.dart';
+import 'package:wger/providers/add_exercise.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/widgets/add_exercise/add_exercise_text_area.dart';
 import 'package:wger/widgets/exercises/forms.dart';

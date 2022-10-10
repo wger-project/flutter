@@ -233,8 +233,7 @@ class AddExerciseProvider with ChangeNotifier {
       request.fields['exercise_base'] = base.id!.toString();
       request.fields['style'] = EXERCISE_IMAGE_ART_STYLE.PHOTO.index.toString();
 
-      final res = await request.send();
-      //final respStr = await res.stream.bytesToString();
+      await request.send();
     }
 
     notifyListeners();
