@@ -13,6 +13,8 @@
 - Marko Milosevic - <https://github.com/TaarnStar>
 - Karthik Reddy (Axel) - <https://github.com/AxelBlaz3>
 - Ogundoyin Toluwani - <https://github.com/Tolu007>
+- Nenza Nurfirmansyah - <https://github.com/nenzan>
+- Florian Schmitz - <https://github.com/floodoo>
 
 ## Translators
 
@@ -51,3 +53,7 @@
 - Japanese
 
   - Kosei TANAKA <wms784.app@gmail.com> (97)
+
+- Bahasa Indonesia
+
+  - Nenza Nurfirmansyah <nnurfirmansyah@gmail.com> (73)
