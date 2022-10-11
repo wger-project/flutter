@@ -27,7 +27,7 @@ const languages = [
   'hi-IN',
   'hr',
   'it-IT',
-  'pt-PT',
+  'pt-BR',
   'nb-NO',
   'pl-PL',
   'ru-RU',
