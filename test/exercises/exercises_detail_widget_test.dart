@@ -19,24 +19,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:provider/provider.dart';
+import 'package:wger/providers/exercises.dart';
 import 'package:wger/widgets/exercises/exercises.dart';
 
-import '../test_data/exercises.dart';
+import '../../test_data/exercises.dart';
+import '../workout/gym_mode_screen_test.mocks.dart';
 
 void main() {
+  final mockProvider = MockExercisesProvider();
+
   Widget createHomeScreen({locale = 'en'}) {
-    return MaterialApp(
-      locale: Locale(locale),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      navigatorKey: GlobalKey<NavigatorState>(),
-      home: Scaffold(
-        body: ExerciseDetail(exercise1),
+    return ChangeNotifierProvider<ExercisesProvider>(
+      create: (context) => mockProvider,
+      child: MaterialApp(
+        locale: Locale(locale),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        navigatorKey: GlobalKey<NavigatorState>(),
+        home: Scaffold(
+          body: ExerciseDetail(getTestExerciseBases()[0]),
+        ),
       ),
     );
   }
 
-  testWidgets('Test the widgets on the SetFormWidget', (WidgetTester tester) async {
+  testWidgets('Test the widgets on the exercise detail widget', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen());
     await tester.pumpAndSettle();
 
@@ -45,13 +53,20 @@ void main() {
     expect(find.text('Bench'), findsOneWidget, reason: 'Equipment');
     expect(find.text('Dumbbell'), findsOneWidget, reason: 'Equipment');
 
+    debugDumpApp();
     expect(find.text('Muscles'), findsNWidgets(2), reason: 'One header, one sub header');
-    expect(find.text('Flutterus maximus'), findsOneWidget, reason: 'Muscles');
-    expect(find.text('Biceps'), findsOneWidget, reason: 'Muscles');
+    expect(find.text('Flutterus maximus (NOT TRANSLATED)'), findsOneWidget, reason: 'Muscles');
+    expect(find.text('Biceps brachii (Biceps)'), findsOneWidget, reason: 'Muscles');
 
     expect(find.text('Secondary muscles'), findsOneWidget);
-    expect(find.text('Booty'), findsOneWidget, reason: 'Secondary muscles');
-
-    expect(find.text('add clever text'), findsOneWidget, reason: 'Description');
+    expect(
+      find.byType(MuscleWidget),
+      findsNWidgets(2),
+      reason: 'Two diagrams, one for front, one for the back',
+    );
+    expect(find.text('Gluteus maximus'), findsOneWidget, reason: 'Secondary muscles');
+    expect(find.text('Description'), findsOneWidget, reason: 'Description header');
+    expect(find.text('Lorem ipsum etc'), findsOneWidget, reason: 'Description');
+    expect(find.text('Variations'), findsNothing);
   });
 }

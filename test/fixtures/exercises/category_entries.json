@@ -1,0 +1,15 @@
+{
+  "count": 2,
+  "next": null,
+  "previous": null,
+  "results": [
+      {
+          "id": 1,
+          "name": "Arms"
+      },
+      {
+          "id": 2,
+          "name": "Abs"
+      }
+  ]
+}

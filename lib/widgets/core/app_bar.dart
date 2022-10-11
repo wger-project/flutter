@@ -24,13 +24,16 @@ import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/gallery.dart';
 import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/user.dart';
 import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/core/about.dart';
+import 'package:wger/widgets/user/forms.dart';
 
-class WgerAppBar extends StatelessWidget with PreferredSizeWidget {
+class MainAppBar extends StatelessWidget with PreferredSizeWidget {
   final String _title;
 
-  WgerAppBar(this._title);
+  MainAppBar(this._title);
 
   @override
   Widget build(BuildContext context) {
@@ -57,22 +60,40 @@ class WgerAppBar extends StatelessWidget with PreferredSizeWidget {
                     content: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
+                        ListTile(
+                          //dense: true,
+                          leading: const Icon(Icons.person),
+                          title: Text(AppLocalizations.of(context).userProfile),
+                          onTap: () async {
+                            await context.read<UserProvider>().fetchAndSetProfile();
+                            Navigator.pushNamed(
+                              context,
+                              FormScreen.routeName,
+                              arguments: FormScreenArguments(
+                                AppLocalizations.of(context).userProfile,
+                                UserProfileForm(context.read<UserProvider>().profile!),
+                              ),
+                            );
+                          },
+                        ),
+                        WgerAboutListTile(),
                         const Divider(),
                         ListTile(
                           //dense: true,
                           leading: const Icon(Icons.exit_to_app),
                           title: Text(AppLocalizations.of(context).logout),
                           onTap: () {
-                            Provider.of<AuthProvider>(context, listen: false).logout();
-                            Provider.of<WorkoutPlansProvider>(context, listen: false).clear();
-                            Provider.of<NutritionPlansProvider>(context, listen: false).clear();
-                            Provider.of<BodyWeightProvider>(context, listen: false).clear();
-                            Provider.of<GalleryProvider>(context, listen: false).clear();
+                            context.read<AuthProvider>().logout();
+                            context.read<WorkoutPlansProvider>().clear();
+                            context.read<NutritionPlansProvider>().clear();
+                            context.read<BodyWeightProvider>().clear();
+                            context.read<GalleryProvider>().clear();
+                            context.read<UserProvider>().clear();
+
                             Navigator.of(context).pop();
                             Navigator.of(context).pushReplacementNamed('/');
                           },
                         ),
-                        WgerAboutListTile()
                       ],
                     ),
                   );
@@ -80,6 +101,24 @@ class WgerAppBar extends StatelessWidget with PreferredSizeWidget {
           },
         ),
       ],
+    );
+  }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+}
+
+/// App bar that only displays a title
+class EmptyAppBar extends StatelessWidget with PreferredSizeWidget {
+  final String _title;
+
+  EmptyAppBar(this._title);
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      title: Text(_title),
+      actions: const [],
     );
   }
 

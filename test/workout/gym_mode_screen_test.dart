@@ -19,34 +19,47 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
+import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 import 'package:wger/widgets/workouts/gym_mode.dart';
 
+import './workout_set_form_test.mocks.dart';
+import '../../test_data/exercises.dart';
 import '../../test_data/workouts.dart';
 import '../other/base_provider_test.mocks.dart';
 import '../utils.dart';
 
+@GenerateMocks([ExercisesProvider])
 void main() {
   Widget createHomeScreen({locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
     final client = MockClient();
 
+    final mockExerciseProvider = MockExercisesProvider();
     final WorkoutPlan workoutPlan = getWorkout();
+
+    final bases = getTestExerciseBases();
+
+    when(mockExerciseProvider.findExerciseBaseById(1)).thenReturn(bases[0]);
+    when(mockExerciseProvider.findExerciseBaseById(2)).thenReturn(bases[1]);
+    when(mockExerciseProvider.findExerciseBaseById(3)).thenReturn(bases[2]);
 
     return ChangeNotifierProvider<WorkoutPlansProvider>(
       create: (context) => WorkoutPlansProvider(
         testAuthProvider,
-        testExercisesProvider,
+        mockExerciseProvider,
         [workoutPlan],
         client,
       ),
-      child: ChangeNotifierProvider(
-        create: (context) => testExercisesProvider,
+      child: ChangeNotifierProvider<ExercisesProvider>(
+        create: (context) => mockExerciseProvider,
         child: MaterialApp(
           locale: Locale(locale),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -79,7 +92,7 @@ void main() {
     //
     expect(find.byType(StartPage), findsOneWidget);
     expect(find.text('Your workout today'), findsOneWidget);
-    expect(find.text('test exercise 1'), findsOneWidget);
+    expect(find.text('test exercise 2'), findsOneWidget);
     expect(find.byIcon(Icons.close), findsOneWidget);
     expect(find.byIcon(Icons.menu), findsOneWidget);
     expect(find.byIcon(Icons.chevron_left), findsNothing);
@@ -90,7 +103,7 @@ void main() {
     //
     // Exercise overview page
     //
-    expect(find.text('test exercise 1'), findsOneWidget);
+    expect(find.text('test exercise 2'), findsOneWidget);
     expect(find.byType(ExerciseOverview), findsOneWidget);
     expect(find.byIcon(Icons.close), findsOneWidget);
     expect(find.byIcon(Icons.menu), findsOneWidget);
@@ -102,7 +115,7 @@ void main() {
     //
     // Log
     //
-    expect(find.text('test exercise 1'), findsOneWidget);
+    expect(find.text('test exercise 2'), findsOneWidget);
     expect(find.byType(LogPage), findsOneWidget);
     expect(find.byType(Form), findsOneWidget);
     expect(find.byType(ListTile), findsNWidgets(3), reason: 'Two logs and the switch tile');
@@ -145,7 +158,7 @@ void main() {
     //
     // Log
     //
-    expect(find.text('test exercise 1'), findsOneWidget);
+    expect(find.text('test exercise 2'), findsOneWidget);
     expect(find.byType(LogPage), findsOneWidget);
     expect(find.byType(Form), findsOneWidget);
     await tester.drag(find.byType(LogPage), const Offset(-500.0, 0.0));

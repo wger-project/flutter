@@ -1,0 +1,32 @@
+{
+  "count": 5,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "short_name": "de",
+      "full_name": "Deutsch"
+    },
+    {
+      "id": 2,
+      "short_name": "en",
+      "full_name": "English"
+    },
+    {
+      "id": 4,
+      "short_name": "es",
+      "full_name": "Español"
+    },
+    {
+      "id": 12,
+      "short_name": "fr",
+      "full_name": "Français"
+    },
+    {
+      "id": 13,
+      "short_name": "it",
+      "full_name": "Italian"
+    }
+  ]
+}
