@@ -11,7 +11,7 @@ Log _$LogFromJson(Map<String, dynamic> json) {
     json,
     requiredKeys: const [
       'id',
-      'exercise',
+      'exercise_base',
       'workout',
       'reps',
       'repetition_unit',
@@ -22,7 +22,7 @@ Log _$LogFromJson(Map<String, dynamic> json) {
   );
   return Log(
     id: json['id'] as int?,
-    exerciseId: json['exercise'] as int,
+    exerciseBaseId: json['exercise_base'] as int,
     workoutPlan: json['workout'] as int,
     reps: json['reps'] as int,
     rir: json['rir'] as String?,
@@ -35,7 +35,7 @@ Log _$LogFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$LogToJson(Log instance) => <String, dynamic>{
       'id': instance.id,
-      'exercise': instance.exerciseId,
+      'exercise_base': instance.exerciseBaseId,
       'workout': instance.workoutPlan,
       'reps': instance.reps,
       'rir': instance.rir,

@@ -31,7 +31,7 @@ class NutritionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: WgerAppBar(AppLocalizations.of(context).nutritionalPlans),
+      appBar: EmptyAppBar(AppLocalizations.of(context).nutritionalPlans),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () async {

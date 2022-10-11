@@ -53,9 +53,14 @@ class MealItem {
     required this.ingredientId,
     this.weightUnitId,
     required this.amount,
+    Ingredient? ingredient,
   }) {
     if (mealId != null) {
       this.mealId = mealId;
+    }
+    if (ingredient != null) {
+      ingredientObj = ingredient;
+      ingredientId = ingredient.id;
     }
   }
 
