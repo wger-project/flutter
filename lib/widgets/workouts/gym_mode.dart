@@ -773,6 +773,8 @@ class _SessionPageState extends State<SessionPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ToggleButtons(
+                  color: wgerSecondaryColor,
+                  selectedColor: darkmode ? wgerSecondaryColorLightDark : wgerSecondaryColorLight,
                   children: const <Widget>[
                     Icon(
                       Icons.sentiment_very_dissatisfied,

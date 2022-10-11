@@ -99,10 +99,15 @@ class NutritionalPlansList extends StatelessWidget {
                   arguments: currentPlan,
                 );
               },
-              title: Text(currentPlan.description),
+              title: Text(
+                currentPlan.description,
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              ),
               subtitle: Text(
-                DateFormat.yMd(Localizations.localeOf(context).languageCode)
-                    .format(currentPlan.creationDate),
+                DateFormat.yMd(
+                  Localizations.localeOf(context).languageCode,
+                ).format(currentPlan.creationDate),
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w200, fontFamily: 'OpenSans'),
               ),
             ),
           ),

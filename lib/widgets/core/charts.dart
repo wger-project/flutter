@@ -17,6 +17,7 @@
  */
 
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:wger/theme/theme.dart';
 
@@ -49,6 +50,7 @@ class MeasurementChartWidget extends StatelessWidget {
           data: _entries,
         )
       ],
+      animate: true,
       defaultRenderer: charts.LineRendererConfig(includePoints: true),
       primaryMeasureAxis: charts.NumericAxisSpec(
         tickProviderSpec: const charts.BasicNumericTickProviderSpec(zeroBound: false),

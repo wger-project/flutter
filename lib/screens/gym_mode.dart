@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/workouts/gym_mode.dart';
 
 class GymModeScreen extends StatelessWidget {
@@ -30,7 +31,6 @@ class GymModeScreen extends StatelessWidget {
     final _day = ModalRoute.of(context)!.settings.arguments as Day;
 
     return Scaffold(
-      backgroundColor: Colors.white,
       body: SafeArea(
         child: Consumer<WorkoutPlansProvider>(
           builder: (context, value, child) => GymMode(_day),

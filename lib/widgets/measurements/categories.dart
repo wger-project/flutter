@@ -37,56 +37,71 @@ class CategoriesList extends StatelessWidget {
       itemBuilder: (context, index) {
         final currentCategory = _provider.categories[index];
 
-        return Card(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 5),
-                child: Text(
-                  currentCategory.name,
-                  style: Theme.of(context).textTheme.headline6,
-                ),
-              ),
-              Container(
-                color: Colors.white,
-                padding: const EdgeInsets.all(10),
-                height: 220,
-                child: MeasurementChartWidget(
-                  currentCategory.entries
-                      .map((e) => MeasurementChartEntry(e.value, e.date))
-                      .toList(),
-                  unit: currentCategory.unit,
-                ),
-              ),
-              const Divider(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  TextButton(
-                      child: Text(AppLocalizations.of(context).goToDetailPage),
-                      onPressed: () {
-                        Navigator.pushNamed(
-                          context,
-                          MeasurementEntriesScreen.routeName,
-                          arguments: currentCategory.id,
-                        );
-                      }),
-                  IconButton(
-                    onPressed: () async {
-                      await Navigator.pushNamed(
-                        context,
-                        FormScreen.routeName,
-                        arguments: FormScreenArguments(
-                          AppLocalizations.of(context).newEntry,
-                          MeasurementEntryForm(currentCategory.id!),
-                        ),
-                      );
-                    },
-                    icon: const Icon(Icons.add),
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+            elevation: 3,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 5),
+                  child: Text(
+                    currentCategory.name,
+                    style: Theme.of(context).textTheme.headline6,
                   ),
-                ],
-              ),
-            ],
+                ),
+                Container(
+                  color: Colors.white,
+                  padding: const EdgeInsets.all(10),
+                  height: 220,
+                  child: MeasurementChartWidget(
+                    currentCategory.entries
+                        .map((e) => MeasurementChartEntry(e.value, e.date))
+                        .toList(),
+                    unit: currentCategory.unit,
+                  ),
+                ),
+                const Divider(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ElevatedButton(
+                          style: ButtonStyle(
+                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0),
+                          ))),
+                          child: Text(AppLocalizations.of(context).goToDetailPage),
+                          onPressed: () {
+                            Navigator.pushNamed(
+                              context,
+                              MeasurementEntriesScreen.routeName,
+                              arguments: currentCategory.id,
+                            );
+                          }),
+                    ),
+                    IconButton(
+                      onPressed: () async {
+                        await Navigator.pushNamed(
+                          context,
+                          FormScreen.routeName,
+                          arguments: FormScreenArguments(
+                            AppLocalizations.of(context).newEntry,
+                            MeasurementEntryForm(currentCategory.id!),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.add),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         );
       },

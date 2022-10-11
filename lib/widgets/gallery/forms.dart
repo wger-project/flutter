@@ -26,6 +26,7 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/models/gallery/image.dart' as gallery;
 import 'package:wger/providers/gallery.dart';
+import 'package:wger/theme/theme.dart';
 
 class ImageForm extends StatefulWidget {
   late final gallery.Image _image;
@@ -166,7 +167,9 @@ class _ImageFormState extends State<ImageForm> {
           ),
           TextFormField(
             key: const Key('field-description'),
-            decoration: InputDecoration(labelText: AppLocalizations.of(context).description),
+            decoration: InputDecoration(
+                labelText: AppLocalizations.of(context).description,
+                labelStyle: TextStyle(color: Colors.black)),
             minLines: 3,
             maxLines: 10,
             controller: descriptionController,

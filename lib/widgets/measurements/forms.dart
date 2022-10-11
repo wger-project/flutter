@@ -87,6 +87,9 @@ class MeasurementCategoryForm extends StatelessWidget {
               return null;
             },
           ),
+          SizedBox(
+            height: 10,
+          ),
           ElevatedButton(
             child: Text(AppLocalizations.of(context).save),
             onPressed: () async {

@@ -26,6 +26,7 @@ import 'package:wger/helpers/misc.dart';
 import 'package:wger/helpers/ui.dart';
 
 import '../providers/auth.dart';
+import '../theme/theme.dart';
 
 enum AuthMode {
   Signup,
@@ -91,6 +92,8 @@ class AuthCard extends StatefulWidget {
 
 class _AuthCardState extends State<AuthCard> {
   final GlobalKey<FormState> _formKey = GlobalKey();
+
+  bool dark = false;
   bool _canRegister = true;
   AuthMode _authMode = AuthMode.Login;
   bool _hideCustomServer = true;
@@ -205,6 +208,10 @@ class _AuthCardState extends State<AuthCard> {
                   TextFormField(
                     key: const Key('inputUsername'),
                     decoration: InputDecoration(
+                      focusedBorder:
+                          UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+                      labelStyle: Theme.of(context).textTheme.headline6,
+                      prefixIcon: Icon(Icons.account_box_rounded),
                       labelText: AppLocalizations.of(context).username,
                       errorMaxLines: 2,
                     ),
@@ -216,19 +223,30 @@ class _AuthCardState extends State<AuthCard> {
                       if (!RegExp(r'^[\w.@+-]+$').hasMatch(value!)) {
                         return AppLocalizations.of(context).usernameValidChars;
                       }
+
                       if (value.isEmpty) {
                         return AppLocalizations.of(context).invalidUsername;
                       }
                       return null;
                     },
                     onSaved: (value) {
-                      _authData['username'] = value!;
+                      String? user = value;
+                      user = user?.trim();
+                      _authData['username'] = user!;
                     },
+                  ),
+                  SizedBox(
+                    height: 10,
                   ),
                   if (_authMode == AuthMode.Signup)
                     TextFormField(
                       key: const Key('inputEmail'),
-                      decoration: InputDecoration(labelText: AppLocalizations.of(context).email),
+                      decoration: InputDecoration(
+                          focusedBorder:
+                              UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+                          labelStyle: Theme.of(context).textTheme.headline6,
+                          prefixIcon: Icon(Icons.email),
+                          labelText: AppLocalizations.of(context).email),
                       autofillHints: const [AutofillHints.email],
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
@@ -245,9 +263,17 @@ class _AuthCardState extends State<AuthCard> {
                         _authData['email'] = value!;
                       },
                     ),
+                  SizedBox(
+                    height: 10,
+                  ),
                   TextFormField(
                     key: const Key('inputPassword'),
-                    decoration: InputDecoration(labelText: AppLocalizations.of(context).password),
+                    decoration: InputDecoration(
+                        focusedBorder:
+                            UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+                        labelStyle: Theme.of(context).textTheme.headline6,
+                        prefixIcon: Icon(Icons.security),
+                        labelText: AppLocalizations.of(context).password),
                     autofillHints: const [AutofillHints.password],
                     obscureText: true,
                     controller: _passwordController,
@@ -262,11 +288,18 @@ class _AuthCardState extends State<AuthCard> {
                       _authData['password'] = value!;
                     },
                   ),
+                  SizedBox(
+                    height: 10,
+                  ),
                   if (_authMode == AuthMode.Signup)
                     TextFormField(
                       key: const Key('inputPassword2'),
-                      decoration:
-                          InputDecoration(labelText: AppLocalizations.of(context).confirmPassword),
+                      decoration: InputDecoration(
+                          focusedBorder:
+                              UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+                          labelStyle: Theme.of(context).textTheme.headline6,
+                          prefixIcon: Icon(Icons.security_sharp),
+                          labelText: AppLocalizations.of(context).confirmPassword),
                       controller: _password2Controller,
                       enabled: _authMode == AuthMode.Signup,
                       obscureText: true,
@@ -290,8 +323,12 @@ class _AuthCardState extends State<AuthCard> {
                           child: TextFormField(
                             key: const Key('inputServer'),
                             decoration: InputDecoration(
+                                focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.white)),
+                                labelStyle: Theme.of(context).textTheme.headline6,
                                 labelText: AppLocalizations.of(context).customServerUrl,
                                 helperText: AppLocalizations.of(context).customServerHint,
+                                helperStyle: Theme.of(context).textTheme.headline1,
                                 helperMaxLines: 4),
                             controller: _serverUrlController,
                             validator: (value) {
@@ -321,11 +358,15 @@ class _AuthCardState extends State<AuthCard> {
                           children: <Widget>[
                             IconButton(
                               icon: const Icon(Icons.undo),
+                              color: wgerSecondaryColor,
                               onPressed: () {
                                 _serverUrlController.text = DEFAULT_SERVER;
                               },
                             ),
-                            Text(AppLocalizations.of(context).reset)
+                            Text(
+                              AppLocalizations.of(context).reset,
+                              style: Theme.of(context).textTheme.headline2,
+                            )
                           ],
                         ),
                       ],
@@ -346,16 +387,30 @@ class _AuthCardState extends State<AuthCard> {
                         return _submit(context);
                       },
                     ),
-                  TextButton(
+                  SizedBox(
+                    height: 10,
+                  ),
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                      foregroundColor: MaterialStateProperty.all<Color>(wgerSecondaryColor),
+                    ),
                     key: const Key('toggleActionButton'),
                     child: Text(
                       _authMode == AuthMode.Login
-                          ? AppLocalizations.of(context).registerInstead.toUpperCase()
-                          : AppLocalizations.of(context).loginInstead.toUpperCase(),
+                          ? AppLocalizations.of(context).register.toUpperCase()
+                          : AppLocalizations.of(context).login.toUpperCase(),
                     ),
                     onPressed: _switchAuthMode,
                   ),
+                  SizedBox(
+                    height: 10,
+                  ),
                   TextButton(
+                    style: ButtonStyle(
+                      foregroundColor: MaterialStateProperty.all<Color>(
+                          darkmode ? wgerSecondaryColorLightDark : wgerSecondaryColorLight),
+                    ),
                     child: Text(_hideCustomServer
                         ? AppLocalizations.of(context).useCustomServer
                         : AppLocalizations.of(context).useDefaultServer),
@@ -366,6 +421,7 @@ class _AuthCardState extends State<AuthCard> {
                       });
                     },
                   ),
+                  darkMode(),
                 ],
               ),
             ),

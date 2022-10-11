@@ -94,7 +94,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
             ),
             IconButton(
               icon: const Icon(Icons.history_edu),
-              color: wgerPrimaryButtonColor,
+              color: wgerSecondaryColor,
               onPressed: () {
                 Provider.of<NutritionPlansProvider>(context, listen: false).logMealToDiary(meal);
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -152,79 +152,103 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Column(
-        children: [
-          ListTile(
-            title: Text(
-              _hasContent ? _plan!.description : AppLocalizations.of(context).nutritionalPlan,
-              style: Theme.of(context).textTheme.headline4,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        elevation: 3,
+        child: Column(
+          children: [
+            ListTile(
+              title: Text(
+                _hasContent ? _plan!.description : AppLocalizations.of(context).nutritionalPlan,
+                style: Theme.of(context).textTheme.headline4,
+              ),
+              subtitle: Text(
+                _hasContent
+                    ? DateFormat.yMd(Localizations.localeOf(context).languageCode)
+                        .format(_plan!.creationDate)
+                    : '',
+                style: Theme.of(context).textTheme.subtitle2,
+              ),
+              leading: const Icon(
+                Icons.restaurant,
+                color: wgerSecondaryColor,
+              ),
+              trailing: getTrailing(),
+              onTap: () {
+                setState(() {
+                  _showDetail = !_showDetail;
+                });
+              },
             ),
-            subtitle: Text(
-              _hasContent
-                  ? DateFormat.yMd(Localizations.localeOf(context).languageCode)
-                      .format(_plan!.creationDate)
-                  : '',
-            ),
-            leading: const Icon(
-              Icons.restaurant,
-              color: Colors.black,
-            ),
-            trailing: getTrailing(),
-            onTap: () {
-              setState(() {
-                _showDetail = !_showDetail;
-              });
-            },
-          ),
-          if (_hasContent)
-            Container(
-              padding: const EdgeInsets.only(left: 10),
-              child: Column(
-                children: [
-                  ...getContent(),
-                  Container(
-                    padding: const EdgeInsets.all(15),
-                    height: 180,
-                    child: NutritionalPlanPieChartWidget(_plan!.nutritionalValues),
-                  )
+            if (_hasContent)
+              Container(
+                padding: const EdgeInsets.only(left: 10),
+                child: Column(
+                  children: [
+                    ...getContent(),
+                    Container(
+                      padding: const EdgeInsets.all(15),
+                      height: 180,
+                      child: NutritionalPlanPieChartWidget(_plan!.nutritionalValues),
+                    )
+                  ],
+                ),
+              )
+            else
+              NothingFound(
+                AppLocalizations.of(context).noNutritionalPlans,
+                AppLocalizations.of(context).newNutritionalPlan,
+                PlanForm(),
+              ),
+            if (_hasContent)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18.0),
+                      ))),
+                      child: Text(AppLocalizations.of(context).logIngredient),
+                      onPressed: () {
+                        Navigator.pushNamed(
+                          context,
+                          FormScreen.routeName,
+                          arguments: FormScreenArguments(
+                            AppLocalizations.of(context).logIngredient,
+                            IngredientLogForm(_plan!),
+                            hasListView: true,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18.0),
+                      ))),
+                      child: Text(AppLocalizations.of(context).goToDetailPage),
+                      onPressed: () {
+                        Navigator.of(context)
+                            .pushNamed(NutritionalPlanScreen.routeName, arguments: _plan);
+                      },
+                    ),
+                  ),
                 ],
               ),
-            )
-          else
-            NothingFound(
-              AppLocalizations.of(context).noNutritionalPlans,
-              AppLocalizations.of(context).newNutritionalPlan,
-              PlanForm(),
-            ),
-          if (_hasContent)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                TextButton(
-                  child: Text(AppLocalizations.of(context).logIngredient),
-                  onPressed: () {
-                    Navigator.pushNamed(
-                      context,
-                      FormScreen.routeName,
-                      arguments: FormScreenArguments(
-                        AppLocalizations.of(context).logIngredient,
-                        IngredientLogForm(_plan!),
-                        hasListView: true,
-                      ),
-                    );
-                  },
-                ),
-                TextButton(
-                  child: Text(AppLocalizations.of(context).goToDetailPage),
-                  onPressed: () {
-                    Navigator.of(context)
-                        .pushNamed(NutritionalPlanScreen.routeName, arguments: _plan);
-                  },
-                ),
-              ],
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -243,69 +267,87 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
     weightEntriesData = Provider.of<BodyWeightProvider>(context, listen: false);
 
     return Consumer<BodyWeightProvider>(
-      builder: (context, workoutProvider, child) => Card(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              title: Text(
-                AppLocalizations.of(context).weight,
-                style: Theme.of(context).textTheme.headline4,
-              ),
-              leading: const FaIcon(
-                FontAwesomeIcons.weight,
-                color: Colors.black,
-              ),
-              trailing: IconButton(
-                icon: const Icon(Icons.add),
-                onPressed: () async {
-                  Navigator.pushNamed(
-                    context,
-                    FormScreen.routeName,
-                    arguments: FormScreenArguments(
-                      AppLocalizations.of(context).newEntry,
-                      WeightForm(),
+        builder: (context, workoutProvider, child) => Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                elevation: 3,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ListTile(
+                      title: Text(
+                        AppLocalizations.of(context).weight,
+                        style: Theme.of(context).textTheme.headline4,
+                      ),
+                      leading: const FaIcon(
+                        FontAwesomeIcons.weight,
+                        color: wgerSecondaryColor,
+                      ),
+                      trailing: IconButton(
+                        icon: const Icon(
+                          Icons.add,
+                        ),
+                        onPressed: () async {
+                          Navigator.pushNamed(
+                            context,
+                            FormScreen.routeName,
+                            arguments: FormScreenArguments(
+                              AppLocalizations.of(context).newEntry,
+                              WeightForm(),
+                            ),
+                          );
+                        },
+                      ),
                     ),
-                  );
-                },
+                    Column(
+                      children: [
+                        if (weightEntriesData.items.isNotEmpty)
+                          Column(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
+                                padding: const EdgeInsets.all(15),
+                                height: 180,
+                                child: MeasurementChartWidget(weightEntriesData.items
+                                    .map((e) => MeasurementChartEntry(e.weight, e.date))
+                                    .toList()),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.all(4.0),
+                                    child: ElevatedButton(
+                                        style: ButtonStyle(
+                                            shape:
+                                                MaterialStateProperty.all<RoundedRectangleBorder>(
+                                                    RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(18.0),
+                                        ))),
+                                        child: Text(AppLocalizations.of(context).goToDetailPage),
+                                        onPressed: () {
+                                          Navigator.of(context).pushNamed(WeightScreen.routeName);
+                                        }),
+                                  )
+                                ],
+                              ),
+                            ],
+                          )
+                        else
+                          NothingFound(
+                            AppLocalizations.of(context).noWeightEntries,
+                            AppLocalizations.of(context).newEntry,
+                            WeightForm(),
+                          ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-            Column(
-              children: [
-                if (weightEntriesData.items.isNotEmpty)
-                  Column(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(15),
-                        height: 180,
-                        child: MeasurementChartWidget(weightEntriesData.items
-                            .map((e) => MeasurementChartEntry(e.weight, e.date))
-                            .toList()),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          TextButton(
-                              child: Text(AppLocalizations.of(context).goToDetailPage),
-                              onPressed: () {
-                                Navigator.of(context).pushNamed(WeightScreen.routeName);
-                              }),
-                        ],
-                      ),
-                    ],
-                  )
-                else
-                  NothingFound(
-                    AppLocalizations.of(context).noWeightEntries,
-                    AppLocalizations.of(context).newEntry,
-                    WeightForm(),
-                  ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
+            ));
   }
 }
 
@@ -350,7 +392,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
             Expanded(
               child: Text(
                 day.description,
-                style: const TextStyle(fontWeight: FontWeight.bold),
+                style: Theme.of(context).textTheme.headline5,
                 overflow: TextOverflow.ellipsis,
               ),
             ),
@@ -362,7 +404,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
             ),
             IconButton(
               icon: const Icon(Icons.play_arrow),
-              color: wgerPrimaryButtonColor,
+              color: darkmode ? wgerSecondaryColorLightDark : wgerSecondaryColor,
               onPressed: () {
                 Navigator.of(context).pushNamed(GymModeScreen.routeName, arguments: day);
               },
@@ -392,7 +434,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                           const SizedBox(height: 10),
                         ],
                       )
-                    : Container();
+                    : Container(decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)));
               }).toList(),
             ],
           ),
@@ -406,62 +448,78 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Column(
-        children: [
-          ListTile(
-            title: Text(
-              _hasContent ? _workoutPlan!.name : AppLocalizations.of(context).labelWorkoutPlan,
-              style: Theme.of(context).textTheme.headline4,
-            ),
-            subtitle: Text(
-              _hasContent
-                  ? DateFormat.yMd(Localizations.localeOf(context).languageCode)
-                      .format(_workoutPlan!.creationDate)
-                  : '',
-            ),
-            leading: const Icon(
-              Icons.fitness_center_outlined,
-              color: Colors.black,
-            ),
-            trailing: getTrailing(),
-            onTap: () {
-              setState(() {
-                _showDetail = !_showDetail;
-              });
-            },
+    return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
           ),
-          if (_hasContent)
-            Container(
-              padding: const EdgeInsets.only(left: 10),
-              child: Column(
-                children: [
-                  ...getContent(),
-                ],
-              ),
-            )
-          else
-            NothingFound(
-              AppLocalizations.of(context).noWorkoutPlans,
-              AppLocalizations.of(context).newWorkout,
-              WorkoutForm(WorkoutPlan.empty()),
-            ),
-          if (_hasContent)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                TextButton(
-                  child: Text(AppLocalizations.of(context).goToDetailPage),
-                  onPressed: () {
-                    Navigator.of(context)
-                        .pushNamed(WorkoutPlanScreen.routeName, arguments: _workoutPlan);
-                  },
+          elevation: 3,
+          child: Column(
+            children: [
+              ListTile(
+                title: Text(
+                  _hasContent ? _workoutPlan!.name : AppLocalizations.of(context).labelWorkoutPlan,
+                  style: Theme.of(context).textTheme.headline4,
                 ),
-              ],
-            )
-        ],
-      ),
-    );
+                subtitle: Text(
+                  _hasContent
+                      ? DateFormat.yMd(Localizations.localeOf(context).languageCode)
+                          .format(_workoutPlan!.creationDate)
+                      : '',
+                  style: Theme.of(context).textTheme.subtitle2,
+                ),
+                leading: const Icon(
+                  Icons.fitness_center_outlined,
+                  color: wgerSecondaryColor,
+                ),
+                trailing: getTrailing(),
+                onTap: () {
+                  setState(() {
+                    _showDetail = !_showDetail;
+                  });
+                },
+              ),
+              if (_hasContent)
+                Container(
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
+                  padding: const EdgeInsets.only(left: 10),
+                  child: Column(
+                    children: [
+                      ...getContent(),
+                    ],
+                  ),
+                )
+              else
+                NothingFound(
+                  AppLocalizations.of(context).noWorkoutPlans,
+                  AppLocalizations.of(context).newWorkout,
+                  WorkoutForm(WorkoutPlan.empty()),
+                ),
+              if (_hasContent)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18.0),
+                        ))),
+                        child: Text(AppLocalizations.of(context).goToDetailPage),
+                        onPressed: () {
+                          Navigator.of(context)
+                              .pushNamed(WorkoutPlanScreen.routeName, arguments: _workoutPlan);
+                        },
+                      ),
+                    )
+                  ],
+                )
+            ],
+          ),
+        ));
   }
 }
 
@@ -479,12 +537,13 @@ class NothingFound extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(_title),
+          Text(
+            _title,
+          ),
           IconButton(
             iconSize: 30,
             icon: const Icon(
               Icons.add_box,
-              color: wgerPrimaryButtonColor,
             ),
             onPressed: () async {
               Navigator.pushNamed(

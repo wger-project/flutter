@@ -41,18 +41,34 @@ class WeightEntriesList extends StatelessWidget {
           child: MeasurementChartWidget(
               _weightProvider.items.map((e) => MeasurementChartEntry(e.weight, e.date)).toList()),
         ),
-        TextButton(
-            onPressed: () => Navigator.pushNamed(
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              SizedBox(),
+              ElevatedButton(
+                style: ButtonStyle(
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18.0),
+                ))),
+                onPressed: () => Navigator.pushNamed(
                   context,
                   MeasurementCategoriesScreen.routeName,
                 ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text(AppLocalizations.of(context).measurements),
-                const Icon(Icons.chevron_right)
-              ],
-            )),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      AppLocalizations.of(context).measurements,
+                    ),
+                    const Icon(Icons.chevron_right)
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
         Expanded(
           child: ListView.builder(
             padding: const EdgeInsets.all(10.0),
@@ -120,10 +136,15 @@ class WeightEntriesList extends StatelessWidget {
                 ),
                 child: Card(
                   child: ListTile(
-                    title: Text('${currentEntry.weight} kg'),
+                    title: Text(
+                      '${currentEntry.weight} kg',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                    ),
                     subtitle: Text(
                       DateFormat.yMd(Localizations.localeOf(context).languageCode)
                           .format(currentEntry.date),
+                      style: TextStyle(
+                          fontSize: 12, fontWeight: FontWeight.w200, fontFamily: 'OpenSans'),
                     ),
                   ),
                 ),

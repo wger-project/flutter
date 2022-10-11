@@ -131,7 +131,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
                 children: [
                   const Center(
                     child: SizedBox(
-                      height: 70,
+                      height: 100,
                       child: RiveAnimation.asset(
                         'assets/animations/wger_logo.riv',
                         animations: ['idle_loop2'],
@@ -140,7 +140,11 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
                   ),
                   Text(
                     AppLocalizations.of(context).loadingText,
-                    style: Theme.of(context).textTheme.headline5,
+                    style: TextStyle(
+                      fontSize: materialSizes['h5'],
+                      fontFamily: 'OpenSansBold',
+                      color: Colors.white,
+                    ),
                   ),
                 ],
               ),
