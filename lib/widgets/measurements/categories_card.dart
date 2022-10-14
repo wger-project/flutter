@@ -11,7 +11,7 @@ class CategoriesCard extends StatelessWidget {
   MeasurementCategory currentCategory;
   double? elevation;
 
-  CategoriesCard(this.currentCategory,{this.elevation});
+  CategoriesCard(this.currentCategory, {this.elevation});
 
   @override
   Widget build(BuildContext context) {
@@ -31,9 +31,7 @@ class CategoriesCard extends StatelessWidget {
             padding: const EdgeInsets.all(10),
             height: 220,
             child: MeasurementChartWidget(
-              currentCategory.entries
-                  .map((e) => MeasurementChartEntry(e.value, e.date))
-                  .toList(),
+              currentCategory.entries.map((e) => MeasurementChartEntry(e.value, e.date)).toList(),
               unit: currentCategory.unit,
             ),
           ),
