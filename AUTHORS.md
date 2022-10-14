@@ -15,6 +15,7 @@
 - Ogundoyin Toluwani - <https://github.com/Tolu007>
 - Nenza Nurfirmansyah - <https://github.com/nenzan>
 - Florian Schmitz - <https://github.com/floodoo>
+- Sandi Milohanic - <https://github.com/sandimilohanic>
 
 ## Translators
 
@@ -57,3 +58,7 @@
 - Bahasa Indonesia
 
   - Nenza Nurfirmansyah <nnurfirmansyah@gmail.com> (73)
+
+- Croatian
+  
+  - Sandi Milohaic <sandi.milohanic@gmail.com>
