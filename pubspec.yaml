@@ -51,9 +51,10 @@ dependencies:
   rive: ^0.9.1
   shared_preferences: ^2.0.15
   table_calendar: ^3.0.7
-  url_launcher: ^6.1.6
+  url_launcher: ^6.1.5
   flutter_barcode_scanner: ^2.0.0
   video_player: ^2.4.7
+  carousel_slider: ^4.1.1
   multi_select_flutter: ^4.1.2
   flutter_svg: ^0.23.0+1
 
