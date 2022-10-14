@@ -16,12 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'category.g.dart';
 
 @JsonSerializable()
-class ExerciseCategory {
+class ExerciseCategory extends Equatable {
   @JsonKey(required: true)
   final int id;
 
@@ -35,10 +36,13 @@ class ExerciseCategory {
 
   @override
   String toString() {
-    return 'Category $id';
+    return 'Category $id: $name';
   }
 
   // Boilerplate
   factory ExerciseCategory.fromJson(Map<String, dynamic> json) => _$ExerciseCategoryFromJson(json);
   Map<String, dynamic> toJson() => _$ExerciseCategoryToJson(this);
+
+  @override
+  List<Object?> get props => [id, name];
 }

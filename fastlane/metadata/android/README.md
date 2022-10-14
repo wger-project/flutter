@@ -10,8 +10,9 @@ If we use a new version, update the version used by
 
 ## 2. Dry-run release before uploading
 
-* Increase build nr in pubspec.yaml
+* Increase build nr in pubspec.yaml (revert after the dry-run was successful)
 * `flutter build appbundle --release`
+* `bundle install`
 * `bundle exec fastlane android test_configuration` (needs the different keys available)
 
 It might be necessary to repeat these steps if upload_to_play_store returns any errors

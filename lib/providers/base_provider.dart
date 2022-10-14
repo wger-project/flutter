@@ -37,6 +37,19 @@ class WgerBaseProvider {
     this.client = client ?? http.Client();
   }
 
+  Map<String, String> getDefaultHeaders({includeAuth = false}) {
+    final out = {
+      HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
+      HttpHeaders.userAgentHeader: auth.getAppNameHeader(),
+    };
+
+    if (includeAuth) {
+      out[HttpHeaders.authorizationHeader] = 'Token ${auth.token}';
+    }
+
+    return out;
+  }
+
   /// Helper function to make a URL.
   Uri makeUrl(String path, {int? id, String? objectMethod, Map<String, dynamic>? query}) {
     return makeUri(auth.serverUrl!, path, id, objectMethod, query);
@@ -47,10 +60,7 @@ class WgerBaseProvider {
     // Send the request
     final response = await client.get(
       uri,
-      headers: {
-        HttpHeaders.authorizationHeader: 'Token ${auth.token}',
-        HttpHeaders.userAgentHeader: auth.getAppNameHeader(),
-      },
+      headers: getDefaultHeaders(includeAuth: true),
     );
 
     // Something wrong with our request
@@ -66,11 +76,7 @@ class WgerBaseProvider {
   Future<Map<String, dynamic>> post(Map<String, dynamic> data, Uri uri) async {
     final response = await client.post(
       uri,
-      headers: {
-        HttpHeaders.authorizationHeader: 'Token ${auth.token}',
-        HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
-        HttpHeaders.userAgentHeader: auth.getAppNameHeader(),
-      },
+      headers: getDefaultHeaders(includeAuth: true),
       body: json.encode(data),
     );
 
@@ -86,11 +92,7 @@ class WgerBaseProvider {
   Future<Map<String, dynamic>> patch(Map<String, dynamic> data, Uri uri) async {
     final response = await client.patch(
       uri,
-      headers: {
-        HttpHeaders.authorizationHeader: 'Token ${auth.token}',
-        HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
-        HttpHeaders.userAgentHeader: auth.getAppNameHeader(),
-      },
+      headers: getDefaultHeaders(includeAuth: true),
       body: json.encode(data),
     );
 
@@ -108,10 +110,7 @@ class WgerBaseProvider {
 
     final response = await client.delete(
       deleteUrl,
-      headers: {
-        HttpHeaders.authorizationHeader: 'Token ${auth.token}',
-        HttpHeaders.userAgentHeader: auth.getAppNameHeader(),
-      },
+      headers: getDefaultHeaders(includeAuth: true),
     );
 
     // Something wrong with our request

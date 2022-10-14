@@ -16,54 +16,142 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:wger/models/exercises/base.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/exercises/language.dart';
 import 'package:wger/models/exercises/muscle.dart';
 
-const muscle1 = Muscle(id: 1, name: 'Flutterus maximus', isFront: true);
-const muscle2 = Muscle(id: 2, name: 'Biceps', isFront: true);
-const muscle3 = Muscle(id: 3, name: 'Booty', isFront: false);
+const tLanguage1 = Language(id: 1, shortName: 'de', fullName: 'Deutsch');
+const tLanguage2 = Language(id: 2, shortName: 'en', fullName: 'English');
+const tLanguage3 = Language(id: 3, shortName: 'fr', fullName: 'Français');
 
-const category1 = ExerciseCategory(id: 1, name: 'Arms');
-const category2 = ExerciseCategory(id: 2, name: 'Legs');
-const category3 = ExerciseCategory(id: 3, name: 'Abs');
+const tMuscle1 = Muscle(id: 1, name: 'Flutterus maximus', nameEn: 'Flutterus', isFront: true);
+const tMuscle2 = Muscle(id: 2, name: 'Biceps brachii', nameEn: 'Biceps', isFront: true);
+const tMuscle3 = Muscle(id: 3, name: 'Gluteus maximus', nameEn: 'Booty', isFront: false);
 
-const equipment1 = Equipment(id: 1, name: 'Bench');
-const equipment2 = Equipment(id: 1, name: 'Dumbbell');
+const tCategory1 = ExerciseCategory(id: 1, name: 'Arms');
+const tCategory2 = ExerciseCategory(id: 2, name: 'Legs');
+const tCategory3 = ExerciseCategory(id: 3, name: 'Abs');
+const tCategory4 = ExerciseCategory(id: 4, name: 'Shoulders');
 
-final exercise1 = Exercise(
+const tEquipment1 = Equipment(id: 1, name: 'Bench');
+const tEquipment2 = Equipment(id: 1, name: 'Dumbbell');
+const tEquipment3 = Equipment(id: 2, name: 'Matress');
+
+final tBase1 = ExerciseBase(
   id: 1,
-  uuid: 'uuid',
+  uuid: '364f196c-881b-4839-8bfc-9e8f651521b6',
+  creationDate: DateTime(2021, 09, 01),
+  updateDate: DateTime(2021, 09, 10),
+  category: tCategory1,
+  equipment: const [tEquipment1, tEquipment2],
+  muscles: const [tMuscle1, tMuscle2],
+  musclesSecondary: const [tMuscle3],
+);
+
+final tBase2 = ExerciseBase(
+  id: 2,
+  uuid: '82415754-fc4c-49ea-8ca7-1516dd36d5a0',
+  creationDate: DateTime(2021, 08, 01),
+  updateDate: DateTime(2021, 08, 10),
+  category: tCategory2,
+  equipment: const [tEquipment2],
+  muscles: const [tMuscle1],
+  musclesSecondary: const [tMuscle2],
+);
+
+final tBase3 = ExerciseBase(
+  id: 3,
+  uuid: 'ca84e2c5-5608-4d6d-ba57-6d4b6b5e7acd',
+  creationDate: DateTime(2021, 08, 01),
+  updateDate: DateTime(2021, 08, 01),
+  category: tCategory3,
+  equipment: const [tEquipment2],
+  muscles: const [tMuscle1],
+  musclesSecondary: const [tMuscle2],
+);
+
+final tBase4 = ExerciseBase(
+  id: 4,
+  uuid: '361f024c-fdf8-4146-b7d7-0c1b67c58141',
+  creationDate: DateTime(2021, 08, 01),
+  updateDate: DateTime(2021, 08, 01),
+  category: tCategory3,
+  equipment: const [tEquipment2],
+  muscles: const [tMuscle1],
+  musclesSecondary: const [tMuscle2],
+);
+
+final tExercise1 = Exercise(
+  id: 1,
+  uuid: 'f4cc326b-e497-4bd7-a71d-0eb1db522743',
   creationDate: DateTime(2021, 1, 15),
   name: 'test exercise 1',
   description: 'add clever text',
-  category: category1,
-  muscles: [muscle1, muscle2],
-  musclesSecondary: [muscle3],
-  equipment: [equipment1, equipment2],
+  baseId: tBase1.id,
+  language: tLanguage1,
 );
 
-final exercise2 = Exercise(
+final tExercise2 = Exercise(
   id: 2,
-  uuid: '111-2222-44444',
+  uuid: 'b7f51a1a-0368-4dfc-a03c-d629a4089b4a',
   creationDate: DateTime(2021, 1, 15),
   name: 'test exercise 2',
   description: 'Lorem ipsum etc',
-  category: category2,
-  muscles: [muscle1],
-  musclesSecondary: [muscle2],
-  equipment: [equipment2],
+  baseId: tBase2.id,
+  language: tLanguage2,
 );
 
-final exercise3 = Exercise(
+final tExercise3 = Exercise(
   id: 3,
-  uuid: 'a3b6c7bb-9d22-4119-a5fc-818584d5e9bc',
+  uuid: 'd83f572d-add5-48dc-89cf-75f6770284f1',
   creationDate: DateTime(2021, 4, 1),
   name: 'test exercise 3',
   description: 'The man in black fled across the desert, and the gunslinger followed',
-  category: category3,
-  muscles: [muscle1],
-  musclesSecondary: [muscle2],
-  equipment: [equipment2],
+  baseId: tBase3.id,
+  language: tLanguage3,
 );
+
+final tExercise4 = Exercise(
+  id: 4,
+  uuid: 'a3e96c1d-b35f-4b0e-9cf4-ca37666cf521',
+  creationDate: DateTime(2021, 4, 1),
+  name: 'test exercise 4',
+  description: 'The story so far: in the beginning, the universe was created',
+  baseId: tBase3.id,
+  language: tLanguage1,
+);
+
+final tExercise5 = Exercise(
+  id: 5,
+  uuid: '8c49a816-2247-4116-94bb-b5c0ce09c609',
+  creationDate: DateTime(2021, 4, 1),
+  name: 'test exercise 5',
+  description: 'I am an invisible man',
+  baseId: tBase3.id,
+  language: tLanguage2,
+);
+
+final tExercise6 = Exercise(
+  id: 6,
+  uuid: '259a637e-957f-4fe1-b61b-f56e3793ebcd',
+  creationDate: DateTime(2021, 4, 1),
+  name: 'test exercise 6',
+  description: 'It was a bright cold day in April, and the clocks were striking thirteen',
+  baseId: tBase3.id,
+  language: tLanguage2,
+);
+
+List<Exercise> getTestExercises() {
+  return [tExercise1, tExercise2, tExercise3];
+}
+
+List<ExerciseBase> getTestExerciseBases() {
+  tBase1.exercises = [tExercise1, tExercise2, tExercise3];
+  tBase2.exercises = [tExercise4, tExercise5];
+  tBase3.exercises = [tExercise6];
+
+  return [tBase1, tBase2, tBase3, tBase4];
+}

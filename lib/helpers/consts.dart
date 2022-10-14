@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/animation.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 /// Size for the "smaller" icons, e.g. when they belong to less important items
@@ -45,9 +45,10 @@ const DAYS_TO_CACHE = 20;
 /// Name of the submit button in forms
 const SUBMIT_BUTTON_KEY_NAME = 'submit-button';
 
-/// Local Preferences key for exercises
+/// Local Preferences keys
 const PREFS_EXERCISES = 'exerciseData';
 const PREFS_EXERCISE_CACHE_VERSION = 'cacheVersion';
+const PREFS_INGREDIENTS = 'ingredientData';
 
 const DEFAULT_ANIMATION_DURATION = Duration(milliseconds: 200);
 const DEFAULT_ANIMATION_CURVE = Curves.bounceIn;
@@ -75,3 +76,22 @@ const ENERGY_CARBOHYDRATES = 4;
 
 /// kcal per gram of fat (approx)
 const ENERGY_FAT = 9;
+
+/// Language ID for English (fallback)
+const LANGUAGE_SHORT_ENGLISH = 'en';
+
+/// IDs of the different image art styles
+///
+/// Values taken from exercises/models/image.py
+enum EXERCISE_IMAGE_ART_STYLE {
+  _, // 0 is not used
+  LINE_ART,
+  THREE_D,
+  LOW_POLY,
+  PHOTO,
+  OTHER,
+}
+
+/// Colors used for muscles
+const COLOR_MAIN_MUSCLES = Colors.red;
+const COLOR_SECONDARY_MUSCLES = Colors.orange;
