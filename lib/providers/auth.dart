@@ -34,6 +34,11 @@ import 'package:wger/helpers/consts.dart';
 
 import 'helpers.dart';
 
+enum LoginActions {
+  update,
+  proceed,
+}
+
 class AuthProvider with ChangeNotifier {
   String? token;
   String? serverUrl;
@@ -98,7 +103,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   /// Registers a new user
-  Future<Map<String, String>> register(
+  Future<Map<String, LoginActions>> register(
       {required String username,
       required String password,
       required String email,
@@ -125,20 +130,22 @@ class AuthProvider with ChangeNotifier {
       }
 
       // If update is required don't log in user
-      final bool updateRequired = await applicationUpdateRequired();
-      if (updateRequired) {
-        return {'action': 'update'};
+      if (await applicationUpdateRequired()) {
+        return {'action': LoginActions.update};
       }
 
-      login(username, password, serverUrl);
-      return {'action': 'proceed'};
+      return login(username, password, serverUrl);
     } catch (error) {
       rethrow;
     }
   }
 
   /// Authenticates a user
-  Future<Map<String, String>> login(String username, String password, String serverUrl) async {
+  Future<Map<String, LoginActions>> login(
+    String username,
+    String password,
+    String serverUrl,
+  ) async {
     await logout(shouldNotify: false);
 
     try {
@@ -157,9 +164,8 @@ class AuthProvider with ChangeNotifier {
       }
 
       // If update is required don't log in user
-      final bool updateRequired = await applicationUpdateRequired();
-      if (updateRequired) {
-        return {'action': 'update'};
+      if (await applicationUpdateRequired()) {
+        return {'action': LoginActions.update};
       }
 
       // Log user in
@@ -182,7 +188,7 @@ class AuthProvider with ChangeNotifier {
       await setApplicationVersion();
       prefs.setString('userData', userData);
       prefs.setString('lastServer', serverData);
-      return {'action': 'proceed'};
+      return {'action': LoginActions.proceed};
     } catch (error) {
       rethrow;
     }

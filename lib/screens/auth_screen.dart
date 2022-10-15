@@ -140,7 +140,7 @@ class _AuthCardState extends State<AuthCard> {
 
     try {
       // Login existing user
-      late Map<String, String> res;
+      late Map<String, LoginActions> res;
       if (_authMode == AuthMode.Login) {
         res = await Provider.of<AuthProvider>(context, listen: false)
             .login(_authData['username']!, _authData['password']!, _authData['serverUrl']!);
@@ -156,7 +156,7 @@ class _AuthCardState extends State<AuthCard> {
 
       // Check if update is required else continue normally
       if (res.containsKey('action')) {
-        if (res['action'] == 'update' && mounted) {
+        if (res['action'] == LoginActions.update && mounted) {
           Navigator.of(context).push(
             MaterialPageRoute(builder: (context) => UpdateAppScreen()),
           );
