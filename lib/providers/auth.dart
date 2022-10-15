@@ -80,25 +80,29 @@ class AuthProvider with ChangeNotifier {
     serverVersion = responseData;
   }
 
+  Future<void> initData(String serverUrl) async {
+    this.serverUrl = serverUrl;
+    await setApplicationVersion();
+    await setServerVersion();
+  }
+
   /// (flutter) Application version
   Future<void> setApplicationVersion() async {
-    final PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    applicationVersion = packageInfo;
+    applicationVersion = await PackageInfo.fromPlatform();
   }
 
   /// Checking if there is a new version of the application.
   Future<bool> applicationUpdateRequired([String? version]) async {
-    if (metadata.containsKey('wger.check_min_app_version') ||
+    if (!metadata.containsKey('wger.check_min_app_version') ||
         metadata['wger.check_min_app_version'] == 'false') {
       return false;
     }
 
     final applicationCurrentVersion = version ?? applicationVersion!.version;
-
     final response = await client.get(makeUri(serverUrl!, MIN_APP_VERSION_URL));
     final currentVersion = Version.parse(applicationCurrentVersion);
+    final requiredAppVersion = Version.parse(jsonDecode(response.body));
 
-    final requiredAppVersion = Version.parse(response.body);
     return requiredAppVersion >= currentVersion;
   }
 
@@ -163,15 +167,15 @@ class AuthProvider with ChangeNotifier {
         throw WgerHttpException(responseData);
       }
 
+      await initData(serverUrl);
+
       // If update is required don't log in user
       if (await applicationUpdateRequired()) {
         return {'action': LoginActions.update};
       }
 
       // Log user in
-      this.serverUrl = serverUrl;
       token = responseData['token'];
-
       notifyListeners();
 
       // store login data in shared preferences
@@ -184,8 +188,6 @@ class AuthProvider with ChangeNotifier {
         'serverUrl': this.serverUrl,
       });
 
-      await setServerVersion();
-      await setApplicationVersion();
       prefs.setString('userData', userData);
       prefs.setString('lastServer', serverData);
       return {'action': LoginActions.proceed};
