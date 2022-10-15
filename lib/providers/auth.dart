@@ -92,7 +92,8 @@ class AuthProvider with ChangeNotifier {
   }
 
   /// Checking if there is a new version of the application.
-  Future<bool> applicationUpdateRequired([String? version]) async {
+  Future<bool> applicationUpdateRequired([String? version, Map<String, String>? metadata]) async {
+    metadata ??= this.metadata;
     if (!metadata.containsKey('wger.check_min_app_version') ||
         metadata['wger.check_min_app_version'] == 'false') {
       return false;
@@ -103,7 +104,7 @@ class AuthProvider with ChangeNotifier {
     final currentVersion = Version.parse(applicationCurrentVersion);
     final requiredAppVersion = Version.parse(jsonDecode(response.body));
 
-    return requiredAppVersion >= currentVersion;
+    return requiredAppVersion > currentVersion;
   }
 
   /// Registers a new user
