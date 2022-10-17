@@ -61,7 +61,7 @@ class _ExerciseFilterModalBodyState extends State<ExerciseFilterModalBody> {
               headerBuilder: (context, isExpanded) {
                 return Container(
                   child: Text(
-                    filterCategory.title,
+                    getTranslation(filterCategory.title, context),
                     style: theme.textTheme.headline5,
                   ),
                 );
