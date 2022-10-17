@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/base_provider.dart';
@@ -102,7 +103,195 @@ class MyApp extends StatelessWidget {
       child: Consumer<AuthProvider>(
         builder: (ctx, auth, _) => MaterialApp(
           title: 'wger',
-          theme: wgerTheme,
+          theme: ThemeData(
+              inputDecorationTheme: InputDecorationTheme(
+                iconColor: wgerSecondaryColor,
+                labelStyle: TextStyle(color: Colors.black),
+              ),
+
+              /*
+    * General stuff
+    */
+              primaryColor: wgerPrimaryColor,
+              scaffoldBackgroundColor: wgerBackground,
+
+              // This makes the visual density adapt to the platform that you run
+              // the app on. For desktop platforms, the controls will be smaller and
+              // closer together (more dense) than on mobile platforms.
+              visualDensity: VisualDensity.adaptivePlatformDensity,
+
+              // Show icons in the system's bar in light colors
+              appBarTheme: const AppBarTheme(
+                systemOverlayStyle: SystemUiOverlayStyle.dark,
+                color: wgerPrimaryColor,
+                titleTextStyle:
+                    TextStyle(fontFamily: 'OpenSansBold', color: Colors.white, fontSize: 15),
+              ),
+              textTheme: TextTheme(
+                headline1: const TextStyle(
+                    fontFamily: 'OpenSansLight', color: wgerPrimaryButtonColor, fontSize: 12),
+                headline2: const TextStyle(
+                    fontFamily: 'OpenSans', color: wgerPrimaryButtonColor, fontSize: 15),
+                headline3: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  fontFamily: 'OpenSans',
+                  color: wgerPrimaryButtonColor,
+                ),
+                headline4: TextStyle(
+                  fontSize: materialSizes['h4']! * 0.8,
+                  fontFamily: 'OpenSansBold',
+                  color: wgerPrimaryButtonColor,
+                ),
+                headline5: TextStyle(
+                  fontSize: 16,
+                  fontFamily: 'OpenSansSemiBold',
+                  color: wgerPrimaryButtonColor,
+                ),
+                headline6: TextStyle(
+                  fontSize: materialSizes['h6']! * 0.8,
+                  fontFamily: 'OpenSans',
+                  color: wgerPrimaryButtonColor,
+                ),
+                subtitle1: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w200,
+                  fontFamily: 'OpenSans',
+                  color: wgerPrimaryColorLight,
+                ),
+                subtitle2: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w200,
+                  fontFamily: 'OpenSansLight',
+                  color: wgerPrimaryColorLight,
+                ),
+              ),
+
+              /*
+     * Button theme
+     */
+              textButtonTheme: TextButtonThemeData(
+                style: TextButton.styleFrom(
+                  primary: wgerSecondaryColor,
+                ),
+              ),
+              outlinedButtonTheme: OutlinedButtonThemeData(
+                style: OutlinedButton.styleFrom(
+                  primary: wgerSecondaryColor,
+                  visualDensity: VisualDensity.compact,
+                  side: const BorderSide(color: wgerSecondaryColor),
+                ),
+              ),
+              elevatedButtonTheme: ElevatedButtonThemeData(
+                style: ElevatedButton.styleFrom(
+                  primary: wgerSecondaryColor,
+                ),
+              ),
+
+              /*
+    * Forms, etc.
+    */
+              sliderTheme: const SliderThemeData(
+                activeTrackColor: wgerSecondaryColor,
+                thumbColor: wgerPrimaryColor,
+              ),
+              colorScheme: ColorScheme.fromSwatch().copyWith(
+                secondary: wgerSecondaryColor,
+                brightness: Brightness.light,
+              )),
+          darkTheme: ThemeData(
+            dividerColor: wgerSecondaryColorLightDark,
+            bottomNavigationBarTheme: BottomNavigationBarThemeData(
+              selectedItemColor: Colors.white,
+              unselectedItemColor: wgerSecondaryColorLightDark,
+              backgroundColor: wgerPrimaryColorDark,
+            ),
+            focusColor: wgerSecondaryColorDark,
+            splashColor: wgerPrimaryColorLightDark,
+            primaryColor: wgerPrimaryColorDark,
+            primaryColorDark: wgerPrimaryButtonColorDark,
+            scaffoldBackgroundColor: wgerBackgroundDark,
+            cardColor: wgerPrimaryColorLightDark,
+            appBarTheme: AppBarTheme(
+                color: wgerPrimaryColorDark,
+                elevation: 10,
+                titleTextStyle: TextStyle(
+                    fontFamily: 'OpenSansBold', color: wgerSecondaryColorLightDark, fontSize: 15)),
+            textTheme: TextTheme(
+              headline1:
+                  const TextStyle(fontFamily: 'OpenSansLight', color: Colors.white, fontSize: 12),
+              headline2: const TextStyle(fontFamily: 'OpenSans', color: Colors.white, fontSize: 15),
+              headline3: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                fontFamily: 'OpenSans',
+                color: wgerSecondaryColorLightDark,
+              ),
+              headline4: TextStyle(
+                  color: wgerSecondaryColorLightDark,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w400,
+                  fontFamily: 'OpenSansBold'),
+              headline5: TextStyle(
+                fontSize: 16,
+                fontFamily: 'OpenSansSemiBold',
+                color: wgerSecondaryColorLightDark,
+              ),
+              headline6: TextStyle(
+                fontSize: materialSizes['h6']! * 0.8,
+                fontFamily: 'OpenSans',
+                color: Colors.white,
+              ),
+              subtitle1: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w200,
+                fontFamily: 'OpenSans',
+                color: Colors.white,
+              ),
+              subtitle2: TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.w200,
+                fontFamily: 'OpenSansLight',
+                color: Colors.white,
+              ),
+              bodyText1: TextStyle(
+                color: darkmode ? wgerSecondaryColorLightDark : wgerSecondaryColorLight,
+                fontSize: 18,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+            inputDecorationTheme: InputDecorationTheme(
+              focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+              iconColor: wgerSecondaryColorDark,
+              labelStyle: TextStyle(color: Colors.white),
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                primary: wgerSecondaryColorDark,
+              ),
+            ),
+            outlinedButtonTheme: OutlinedButtonThemeData(
+              style: OutlinedButton.styleFrom(
+                primary: wgerSecondaryColorDark,
+                visualDensity: VisualDensity.compact,
+                side: const BorderSide(color: wgerSecondaryColor),
+              ),
+            ),
+            elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ElevatedButton.styleFrom(
+                primary: wgerSecondaryColorDark,
+              ),
+            ),
+            sliderTheme: const SliderThemeData(
+              activeTrackColor: wgerSecondaryColor,
+              thumbColor: wgerPrimaryColor,
+            ),
+            colorScheme: ColorScheme.fromSwatch().copyWith(
+              secondary: wgerSecondaryColorDark,
+              brightness: Brightness.dark,
+            ),
+          ),
+          themeMode: ThemeMode.system,
           home: auth.isAuth
               ? FutureBuilder(
                   future: auth.applicationUpdateRequired(),
