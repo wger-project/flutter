@@ -43,7 +43,6 @@ import 'package:wger/screens/nutritional_diary_screen.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/screens/nutritional_plans_screen.dart';
 import 'package:wger/screens/splash_screen.dart';
-import 'package:wger/screens/update_app_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/screens/workout_plans_screen.dart';
@@ -124,13 +123,7 @@ class MyApp extends StatelessWidget {
           title: 'wger',
           theme: wgerTheme,
           home: auth.isAuth
-              ? FutureBuilder(
-                  future: auth.applicationUpdateRequired(),
-                  builder: (ctx, snapshot) =>
-                      snapshot.connectionState == ConnectionState.done && snapshot.data == true
-                          ? UpdateAppScreen()
-                          : HomeTabsScreen(),
-                )
+              ? HomeTabsScreen()
               : FutureBuilder(
                   future: auth.tryAutoLogin(),
                   builder: (ctx, authResultSnapshot) =>

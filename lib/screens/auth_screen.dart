@@ -24,6 +24,7 @@ import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/misc.dart';
 import 'package:wger/helpers/ui.dart';
+import 'package:wger/screens/update_app_screen.dart';
 
 import '../providers/auth.dart';
 
@@ -139,17 +140,28 @@ class _AuthCardState extends State<AuthCard> {
 
     try {
       // Login existing user
+      late Map<String, LoginActions> res;
       if (_authMode == AuthMode.Login) {
-        await Provider.of<AuthProvider>(context, listen: false)
+        res = await Provider.of<AuthProvider>(context, listen: false)
             .login(_authData['username']!, _authData['password']!, _authData['serverUrl']!);
 
         // Register new user
       } else {
-        await Provider.of<AuthProvider>(context, listen: false).register(
+        res = await Provider.of<AuthProvider>(context, listen: false).register(
             username: _authData['username']!,
             password: _authData['password']!,
             email: _authData['email']!,
             serverUrl: _authData['serverUrl']!);
+      }
+
+      // Check if update is required else continue normally
+      if (res.containsKey('action')) {
+        if (res['action'] == LoginActions.update && mounted) {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => UpdateAppScreen()),
+          );
+          return;
+        }
       }
 
       setState(() {
@@ -161,10 +173,12 @@ class _AuthCardState extends State<AuthCard> {
         _isLoading = false;
       });
     } catch (error) {
-      showErrorDialog(error, context);
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        showErrorDialog(error, context);
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -221,7 +235,7 @@ class _AuthCardState extends State<AuthCard> {
                       }
                       return null;
                     },
-                    inputFormatters: [FilteringTextInputFormatter.deny(new RegExp(r"\s\b|\b\s"))],
+                    inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'\s\b|\b\s'))],
                     onSaved: (value) {
                       _authData['username'] = value!;
                     },
@@ -349,23 +363,23 @@ class _AuthCardState extends State<AuthCard> {
                     ),
                   TextButton(
                     key: const Key('toggleActionButton'),
+                    onPressed: _switchAuthMode,
                     child: Text(
                       _authMode == AuthMode.Login
                           ? AppLocalizations.of(context).registerInstead.toUpperCase()
                           : AppLocalizations.of(context).loginInstead.toUpperCase(),
                     ),
-                    onPressed: _switchAuthMode,
                   ),
                   TextButton(
-                    child: Text(_hideCustomServer
-                        ? AppLocalizations.of(context).useCustomServer
-                        : AppLocalizations.of(context).useDefaultServer),
                     key: const Key('toggleCustomServerButton'),
                     onPressed: () {
                       setState(() {
                         _hideCustomServer = !_hideCustomServer;
                       });
                     },
+                    child: Text(_hideCustomServer
+                        ? AppLocalizations.of(context).useCustomServer
+                        : AppLocalizations.of(context).useDefaultServer),
                   ),
                 ],
               ),

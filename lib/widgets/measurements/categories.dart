@@ -24,6 +24,7 @@ import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/measurement_entries_screen.dart';
 import 'package:wger/widgets/core/charts.dart';
 
+import 'categories_card.dart';
 import 'forms.dart';
 
 class CategoriesList extends StatelessWidget {
@@ -37,58 +38,7 @@ class CategoriesList extends StatelessWidget {
       itemBuilder: (context, index) {
         final currentCategory = _provider.categories[index];
 
-        return Card(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 5),
-                child: Text(
-                  currentCategory.name,
-                  style: Theme.of(context).textTheme.headline6,
-                ),
-              ),
-              Container(
-                color: Colors.white,
-                padding: const EdgeInsets.all(10),
-                height: 220,
-                child: MeasurementChartWidget(
-                  currentCategory.entries
-                      .map((e) => MeasurementChartEntry(e.value, e.date))
-                      .toList(),
-                  unit: currentCategory.unit,
-                ),
-              ),
-              const Divider(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  TextButton(
-                      child: Text(AppLocalizations.of(context).goToDetailPage),
-                      onPressed: () {
-                        Navigator.pushNamed(
-                          context,
-                          MeasurementEntriesScreen.routeName,
-                          arguments: currentCategory.id,
-                        );
-                      }),
-                  IconButton(
-                    onPressed: () async {
-                      await Navigator.pushNamed(
-                        context,
-                        FormScreen.routeName,
-                        arguments: FormScreenArguments(
-                          AppLocalizations.of(context).newEntry,
-                          MeasurementEntryForm(currentCategory.id!),
-                        ),
-                      );
-                    },
-                    icon: const Icon(Icons.add),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
+        return CategoriesCard(currentCategory);
       },
     );
   }
