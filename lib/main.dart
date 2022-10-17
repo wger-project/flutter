@@ -7,7 +7,7 @@
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * wger Workout Manager is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -17,413 +17,283 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/exceptions/http_exception.dart';
+import 'package:table_calendar/table_calendar.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/misc.dart';
-import 'package:wger/helpers/ui.dart';
+import 'package:wger/models/workouts/session.dart';
+import 'package:wger/providers/body_weight.dart';
+import 'package:wger/providers/measurement.dart';
+import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/theme/theme.dart';
 
-import '../providers/auth.dart';
-import '../theme/theme.dart';
-
-enum AuthMode {
-  Signup,
-  Login,
+/// Types of events
+enum EventType {
+  weight,
+  measurement,
+  session,
+  caloriesDiary,
 }
 
-class AuthScreen extends StatelessWidget {
-  static const routeName = '/auth';
+/// An event in the dashboard calendar
+class Event {
+  final EventType _type;
+  final String _description;
 
-  @override
-  Widget build(BuildContext context) {
-    final deviceSize = MediaQuery.of(context).size;
-    return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
-      body: Stack(
-        children: <Widget>[
-          SingleChildScrollView(
-            child: SizedBox(
-              height: deviceSize.height,
-              width: deviceSize.width,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  const Padding(padding: EdgeInsets.symmetric(vertical: 20)),
-                  const Image(
-                    image: AssetImage('assets/images/logo-white.png'),
-                    width: 120,
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 20.0),
-                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 94.0),
-                    child: const Text(
-                      'WGER',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 50,
-                        fontFamily: 'OpenSansBold',
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  const Flexible(
-                    //flex: deviceSize.width > 600 ? 2 : 1,
-                    child: AuthCard(),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+  Event(this._type, this._description);
+
+  String get description {
+    return _description;
+  }
+
+  EventType get type {
+    return _type;
   }
 }
 
-class AuthCard extends StatefulWidget {
-  const AuthCard();
+class DashboardCalendarWidget extends StatefulWidget {
+  const DashboardCalendarWidget();
 
   @override
-  _AuthCardState createState() => _AuthCardState();
+  _DashboardCalendarWidgetState createState() => _DashboardCalendarWidgetState();
 }
 
-class _AuthCardState extends State<AuthCard> {
-  final GlobalKey<FormState> _formKey = GlobalKey();
-
-  bool dark = false;
-  bool _canRegister = true;
-  AuthMode _authMode = AuthMode.Login;
-  bool _hideCustomServer = true;
-  final Map<String, String> _authData = {
-    'username': '',
-    'email': '',
-    'password': '',
-    'serverUrl': '',
-  };
-  var _isLoading = false;
-  final _usernameController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _password2Controller = TextEditingController();
-  final _emailController = TextEditingController();
-  final _serverUrlController = TextEditingController(text: DEFAULT_SERVER);
+class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
+    with TickerProviderStateMixin {
+  late Map<String, List<Event>> _events;
+  late final ValueNotifier<List<Event>> _selectedEvents;
+  RangeSelectionMode _rangeSelectionMode =
+      RangeSelectionMode.toggledOff; // Can be toggled on/off by longpressing a date
+  DateTime _focusedDay = DateTime.now();
+  DateTime? _selectedDay;
+  DateTime? _rangeStart;
+  DateTime? _rangeEnd;
 
   @override
   void initState() {
     super.initState();
-    context.read<AuthProvider>().getServerUrlFromPrefs().then((value) {
-      _serverUrlController.text = value;
+
+    _events = <String, List<Event>>{};
+    _selectedDay = _focusedDay;
+    _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
+    loadEvents();
+  }
+
+  void loadEvents() async {
+    // Process weight entries
+    final BodyWeightProvider weightProvider =
+        Provider.of<BodyWeightProvider>(context, listen: false);
+    for (final entry in weightProvider.items) {
+      final date = DateFormatLists.format(entry.date);
+
+      if (!_events.containsKey(date)) {
+        _events[date] = [];
+      }
+
+      // Add events to lists
+      _events[date]!.add(Event(EventType.weight, '${entry.weight} kg'));
+    }
+
+    // Process measurements
+    final MeasurementProvider measurementProvider =
+        Provider.of<MeasurementProvider>(context, listen: false);
+    for (final category in measurementProvider.categories) {
+      for (final entry in category.entries) {
+        final date = DateFormatLists.format(entry.date);
+
+        if (!_events.containsKey(date)) {
+          _events[date] = [];
+        }
+
+        _events[date]!
+            .add(Event(EventType.measurement, '${category.name}: ${entry.value} ${category.unit}'));
+      }
+    }
+
+    // Process workout sessions
+    final WorkoutPlansProvider plans = Provider.of<WorkoutPlansProvider>(context, listen: false);
+    await plans.fetchSessionData().then((entries) {
+      for (final entry in entries['results']) {
+        final session = WorkoutSession.fromJson(entry);
+        final date = DateFormatLists.format(session.date);
+        if (!_events.containsKey(date)) {
+          _events[date] = [];
+        }
+        var time = '';
+        time = '(${timeToString(session.timeStart)} - ${timeToString(session.timeEnd)})';
+
+        // Add events to lists
+        _events[date]!.add(Event(
+          EventType.session,
+          '${AppLocalizations.of(context).impression}: ${session.impressionAsString} $time',
+        ));
+      }
     });
 
-    // Check if the API key is set
-    //
-    // If not, the user will not be able to register via the app
-    try {
-      final metadata = Provider.of<AuthProvider>(context, listen: false).metadata;
-      if (metadata.containsKey(MANIFEST_KEY_API) || metadata[MANIFEST_KEY_API] == '') {
-        _canRegister = false;
+    // Process nutritional plans
+    final NutritionPlansProvider nutritionProvider =
+        Provider.of<NutritionPlansProvider>(context, listen: false);
+    for (final plan in nutritionProvider.items) {
+      for (final entry in plan.logEntriesValues.entries) {
+        final date = DateFormatLists.format(entry.key);
+        if (!_events.containsKey(date)) {
+          _events[date] = [];
+        }
+
+        // Add events to lists
+        _events[date]!.add(Event(
+          EventType.caloriesDiary,
+          '${entry.value.energy.toStringAsFixed(0)} kcal',
+        ));
       }
-    } on PlatformException {
-      _canRegister = false;
+    }
+
+    // Add initial selected day to events list
+    _selectedEvents.value = _getEventsForDay(_selectedDay!);
+  }
+
+  @override
+  void dispose() {
+    _selectedEvents.dispose();
+    super.dispose();
+  }
+
+  List<Event> _getEventsForDay(DateTime day) {
+    return _events[DateFormatLists.format(day)] ?? [];
+  }
+
+  List<Event> _getEventsForRange(DateTime start, DateTime end) {
+    final days = daysInRange(start, end);
+
+    return [
+      for (final d in days) ..._getEventsForDay(d),
+    ];
+  }
+
+  void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
+    if (!isSameDay(_selectedDay, selectedDay)) {
+      setState(() {
+        _selectedDay = selectedDay;
+        _focusedDay = focusedDay;
+        _rangeStart = null; // Important to clean those
+        _rangeEnd = null;
+        _rangeSelectionMode = RangeSelectionMode.toggledOff;
+      });
+
+      _selectedEvents.value = _getEventsForDay(selectedDay);
     }
   }
 
-  void _submit(BuildContext context) async {
-    if (!_formKey.currentState!.validate()) {
-      // Invalid!
-      return;
-    }
-    _formKey.currentState!.save();
+  void _onRangeSelected(DateTime? start, DateTime? end, DateTime focusedDay) {
     setState(() {
-      _isLoading = true;
+      _selectedDay = null;
+      _focusedDay = focusedDay;
+      _rangeStart = start;
+      _rangeEnd = end;
+      _rangeSelectionMode = RangeSelectionMode.toggledOn;
     });
 
-    try {
-      // Login existing user
-      if (_authMode == AuthMode.Login) {
-        await Provider.of<AuthProvider>(context, listen: false)
-            .login(_authData['username']!, _authData['password']!, _authData['serverUrl']!);
-
-        // Register new user
-      } else {
-        await Provider.of<AuthProvider>(context, listen: false).register(
-            username: _authData['username']!,
-            password: _authData['password']!,
-            email: _authData['email']!,
-            serverUrl: _authData['serverUrl']!);
-      }
-
-      setState(() {
-        _isLoading = false;
-      });
-    } on WgerHttpException catch (error) {
-      showHttpExceptionErrorDialog(error, context);
-      setState(() {
-        _isLoading = false;
-      });
-    } catch (error) {
-      showErrorDialog(error, context);
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
-
-  void _switchAuthMode() {
-    if (!_canRegister) {
-      launchURL(DEFAULT_SERVER, context);
-      return;
-    }
-
-    if (_authMode == AuthMode.Login) {
-      setState(() {
-        _authMode = AuthMode.Signup;
-      });
-    } else {
-      setState(() {
-        _authMode = AuthMode.Login;
-      });
+    // `start` or `end` could be null
+    if (start != null && end != null) {
+      _selectedEvents.value = _getEventsForRange(start, end);
+    } else if (start != null) {
+      _selectedEvents.value = _getEventsForDay(start);
+    } else if (end != null) {
+      _selectedEvents.value = _getEventsForDay(end);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final deviceSize = MediaQuery.of(context).size;
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      elevation: 8.0,
-      child: Container(
-        width: deviceSize.width * 0.75,
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            child: AutofillGroup(
-              child: Column(
-                children: <Widget>[
-                  TextFormField(
-                    key: const Key('inputUsername'),
-                    decoration: InputDecoration(
-                      focusedBorder:
-                          UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-                      labelStyle: Theme.of(context).textTheme.headline6,
-                      prefixIcon: Icon(Icons.account_box_rounded),
-                      labelText: AppLocalizations.of(context).username,
-                      errorMaxLines: 2,
-                    ),
-                    autofillHints: const [AutofillHints.username],
-                    controller: _usernameController,
-                    textInputAction: TextInputAction.next,
-                    keyboardType: TextInputType.emailAddress,
-                    validator: (value) {
-                      if (!RegExp(r'^[\w.@+-]+$').hasMatch(value!)) {
-                        return AppLocalizations.of(context).usernameValidChars;
-                      }
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        elevation: 3,
+        child: Column(
+          children: [
+            ListTile(
+              title: Text(
+                AppLocalizations.of(context).calendar,
+                style: Theme.of(context).textTheme.headline4,
+              ),
+              leading: const Icon(
+                Icons.calendar_today_outlined,
+                color: wgerSecondaryColor,
+              ),
+            ),
+            TableCalendar<Event>(
+              locale: Localizations.localeOf(context).languageCode,
+              firstDay: DateTime.now().subtract(const Duration(days: 1000)),
+              lastDay: DateTime.now(),
+              focusedDay: _focusedDay,
+              selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+              rangeStartDay: _rangeStart,
+              rangeEndDay: _rangeEnd,
+              calendarFormat: CalendarFormat.month,
+              availableGestures: AvailableGestures.horizontalSwipe,
+              availableCalendarFormats: const {
+                CalendarFormat.month: '',
+              },
+              daysOfWeekStyle: DaysOfWeekStyle(
+                  weekdayStyle: TextStyle(
+                    color: wgerSecondaryColor,
+                    fontWeight: FontWeight.w200,
+                  ),
+                  weekendStyle: TextStyle(
+                    color: wgerSecondaryColor,
+                    fontWeight: FontWeight.w200,
+                  )),
+              rangeSelectionMode: _rangeSelectionMode,
+              eventLoader: _getEventsForDay,
+              startingDayOfWeek: StartingDayOfWeek.monday,
+              calendarStyle: wgerCalendarStyle,
+              headerStyle: HeaderStyle(
+                titleTextStyle: Theme.of(context).textTheme.bodyText1!,
+              ),
+              onDaySelected: _onDaySelected,
+              onRangeSelected: _onRangeSelected,
+              onFormatChanged: (format) {},
+              onPageChanged: (focusedDay) {
+                _focusedDay = focusedDay;
+              },
+            ),
+            const SizedBox(height: 8.0),
+            ValueListenableBuilder<List<Event>>(
+              valueListenable: _selectedEvents,
+              builder: (context, value, _) => Column(
+                children: [
+                  ...value
+                      .map((event) => ListTile(
+                            title: Text((() {
+                              switch (event.type) {
+                                case EventType.caloriesDiary:
+                                  return AppLocalizations.of(context).nutritionalDiary;
 
-                      if (value.isEmpty) {
-                        return AppLocalizations.of(context).invalidUsername;
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      String? user = value;
-                      user = user?.trim();
-                      _authData['username'] = user!;
-                    },
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  if (_authMode == AuthMode.Signup)
-                    TextFormField(
-                      key: const Key('inputEmail'),
-                      decoration: InputDecoration(
-                          focusedBorder:
-                              UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-                          labelStyle: Theme.of(context).textTheme.headline6,
-                          prefixIcon: Icon(Icons.email),
-                          labelText: AppLocalizations.of(context).email),
-                      autofillHints: const [AutofillHints.email],
-                      controller: _emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      textInputAction: TextInputAction.next,
+                                case EventType.session:
+                                  return AppLocalizations.of(context).workoutSession;
 
-                      // Email is not required
-                      validator: (value) {
-                        if (value!.isNotEmpty && !value.contains('@')) {
-                          return AppLocalizations.of(context).invalidEmail;
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {
-                        _authData['email'] = value!;
-                      },
-                    ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  TextFormField(
-                    key: const Key('inputPassword'),
-                    decoration: InputDecoration(
-                        focusedBorder:
-                            UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-                        labelStyle: Theme.of(context).textTheme.headline6,
-                        prefixIcon: Icon(Icons.security),
-                        labelText: AppLocalizations.of(context).password),
-                    autofillHints: const [AutofillHints.password],
-                    obscureText: true,
-                    controller: _passwordController,
-                    textInputAction: TextInputAction.next,
-                    validator: (value) {
-                      if (value!.isEmpty || value.length < 8) {
-                        return AppLocalizations.of(context).passwordTooShort;
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      _authData['password'] = value!;
-                    },
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  if (_authMode == AuthMode.Signup)
-                    TextFormField(
-                      key: const Key('inputPassword2'),
-                      decoration: InputDecoration(
-                          focusedBorder:
-                              UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-                          labelStyle: Theme.of(context).textTheme.headline6,
-                          prefixIcon: Icon(Icons.security_sharp),
-                          labelText: AppLocalizations.of(context).confirmPassword),
-                      controller: _password2Controller,
-                      enabled: _authMode == AuthMode.Signup,
-                      obscureText: true,
-                      validator: _authMode == AuthMode.Signup
-                          ? (value) {
-                              if (value != _passwordController.text) {
-                                return AppLocalizations.of(context).passwordsDontMatch;
-                              }
-                              return null;
-                            }
-                          : null,
-                    ),
-                  // Off-stage widgets are kept in the tree, otherwise the server URL
-                  // would not be saved to _authData
-                  Offstage(
-                    offstage: _hideCustomServer,
-                    child: Row(
-                      children: [
-                        Flexible(
-                          flex: 3,
-                          child: TextFormField(
-                            key: const Key('inputServer'),
-                            decoration: InputDecoration(
-                                focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white)),
-                                labelStyle: Theme.of(context).textTheme.headline6,
-                                labelText: AppLocalizations.of(context).customServerUrl,
-                                helperText: AppLocalizations.of(context).customServerHint,
-                                helperStyle: Theme.of(context).textTheme.headline1,
-                                helperMaxLines: 4),
-                            controller: _serverUrlController,
-                            validator: (value) {
-                              if (Uri.tryParse(value!) == null) {
-                                return AppLocalizations.of(context).invalidUrl;
-                              }
+                                case EventType.weight:
+                                  return AppLocalizations.of(context).weight;
 
-                              if (value.isEmpty || !value.contains('http')) {
-                                return AppLocalizations.of(context).invalidUrl;
+                                case EventType.measurement:
+                                  return AppLocalizations.of(context).measurement;
                               }
-                              return null;
-                            },
-                            onSaved: (value) {
-                              // Remove any trailing slash
-                              if (value!.lastIndexOf('/') == (value.length - 1)) {
-                                value = value.substring(0, value.lastIndexOf('/'));
-                              }
-                              _authData['serverUrl'] = value;
-                            },
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            IconButton(
-                              icon: const Icon(Icons.undo),
-                              color: wgerSecondaryColor,
-                              onPressed: () {
-                                _serverUrlController.text = DEFAULT_SERVER;
-                              },
-                            ),
-                            Text(
-                              AppLocalizations.of(context).reset,
-                              style: Theme.of(context).textTheme.headline2,
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  if (_isLoading)
-                    const CircularProgressIndicator()
-                  else
-                    ElevatedButton(
-                      key: const Key('actionButton'),
-                      child: Text(_authMode == AuthMode.Login
-                          ? AppLocalizations.of(context).login
-                          : AppLocalizations.of(context).register),
-                      onPressed: () {
-                        return _submit(context);
-                      },
-                    ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                      foregroundColor: MaterialStateProperty.all<Color>(wgerSecondaryColor),
-                    ),
-                    key: const Key('toggleActionButton'),
-                    child: Text(
-                      _authMode == AuthMode.Login
-                          ? AppLocalizations.of(context).register.toUpperCase()
-                          : AppLocalizations.of(context).login.toUpperCase(),
-                    ),
-                    onPressed: _switchAuthMode,
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  TextButton(
-                    style: ButtonStyle(
-                      foregroundColor: MaterialStateProperty.all<Color>(wgerSecondaryColorDark),
-                    ),
-                    child: Text(_hideCustomServer
-                        ? AppLocalizations.of(context).useCustomServer
-                        : AppLocalizations.of(context).useDefaultServer),
-                    key: const Key('toggleCustomServerButton'),
-                    onPressed: () {
-                      setState(() {
-                        _hideCustomServer = !_hideCustomServer;
-                      });
-                    },
-                  ),
+                            })()),
+                            subtitle: Text(event.description),
+                            //onTap: () => print('$event tapped!'),
+                          ))
+                      .toList()
                 ],
               ),
             ),
-          ),
+          ],
         ),
       ),
     );
