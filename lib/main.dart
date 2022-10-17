@@ -7,7 +7,7 @@
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -20,311 +20,410 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/providers/base_provider.dart';
-import 'package:wger/providers/body_weight.dart';
-import 'package:wger/providers/exercises.dart';
-import 'package:wger/providers/gallery.dart';
-import 'package:wger/providers/measurement.dart';
-import 'package:wger/providers/nutrition.dart';
-import 'package:wger/providers/workout_plans.dart';
-import 'package:wger/screens/auth_screen.dart';
-import 'package:wger/screens/dashboard.dart';
-import 'package:wger/screens/form_screen.dart';
-import 'package:wger/screens/gallery_screen.dart';
-import 'package:wger/screens/gym_mode.dart';
-import 'package:wger/screens/home_tabs_screen.dart';
-import 'package:wger/screens/measurement_categories_screen.dart';
-import 'package:wger/screens/measurement_entries_screen.dart';
-import 'package:wger/screens/nutritional_diary_screen.dart';
-import 'package:wger/screens/nutritional_plan_screen.dart';
-import 'package:wger/screens/nutritional_plans_screen.dart';
-import 'package:wger/screens/splash_screen.dart';
-import 'package:wger/screens/update_app_screen.dart';
-import 'package:wger/screens/weight_screen.dart';
-import 'package:wger/screens/workout_plan_screen.dart';
-import 'package:wger/screens/workout_plans_screen.dart';
-import 'package:wger/theme/theme.dart';
+import 'package:wger/exceptions/http_exception.dart';
+import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/misc.dart';
+import 'package:wger/helpers/ui.dart';
 
-import 'providers/auth.dart';
+import '../providers/auth.dart';
+import '../theme/theme.dart';
 
-void main() {
-  // Needs to be called before runApp
-  WidgetsFlutterBinding.ensureInitialized();
-
-  // Application
-  runApp(MyApp());
+enum AuthMode {
+  Signup,
+  Login,
 }
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+class AuthScreen extends StatelessWidget {
+  static const routeName = '/auth';
+
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (ctx) => AuthProvider(),
-        ),
-        ChangeNotifierProxyProvider<AuthProvider, ExercisesProvider>(
-          create: (context) =>
-              ExercisesProvider(Provider.of<AuthProvider>(context, listen: false), []),
-          update: (context, auth, previous) => previous ?? ExercisesProvider(auth, []),
-        ),
-        ChangeNotifierProxyProvider2<AuthProvider, ExercisesProvider, WorkoutPlansProvider>(
-          create: (context) => WorkoutPlansProvider(
-            Provider.of<AuthProvider>(context, listen: false),
-            Provider.of<ExercisesProvider>(context, listen: false),
-            [],
-          ),
-          update: (context, auth, exercises, previous) =>
-              previous ?? WorkoutPlansProvider(auth, exercises, []),
-        ),
-        ChangeNotifierProxyProvider<AuthProvider, NutritionPlansProvider>(
-          create: (context) =>
-              NutritionPlansProvider(Provider.of<AuthProvider>(context, listen: false), []),
-          update: (context, auth, previous) => previous ?? NutritionPlansProvider(auth, []),
-        ),
-        ChangeNotifierProxyProvider<AuthProvider, MeasurementProvider>(
-          create: (context) => MeasurementProvider(
-              WgerBaseProvider(Provider.of<AuthProvider>(context, listen: false))),
-          update: (context, base, previous) =>
-              previous ?? MeasurementProvider(WgerBaseProvider(base)),
-        ),
-        ChangeNotifierProxyProvider<AuthProvider, BodyWeightProvider>(
-          create: (context) =>
-              BodyWeightProvider(Provider.of<AuthProvider>(context, listen: false), []),
-          update: (context, auth, previous) => previous ?? BodyWeightProvider(auth, []),
-        ),
-        ChangeNotifierProxyProvider<AuthProvider, GalleryProvider>(
-          create: (context) =>
-              GalleryProvider(Provider.of<AuthProvider>(context, listen: false), []),
-          update: (context, auth, previous) => previous ?? GalleryProvider(auth, []),
-        ),
-      ],
-      child: Consumer<AuthProvider>(
-        builder: (ctx, auth, _) => MaterialApp(
-          title: 'wger',
-          theme: ThemeData(
-              inputDecorationTheme: InputDecorationTheme(
-                iconColor: wgerSecondaryColor,
-                labelStyle: TextStyle(color: Colors.black),
+    final deviceSize = MediaQuery.of(context).size;
+    return Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
+      body: Stack(
+        children: <Widget>[
+          SingleChildScrollView(
+            child: SizedBox(
+              height: deviceSize.height,
+              width: deviceSize.width,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  const Padding(padding: EdgeInsets.symmetric(vertical: 20)),
+                  const Image(
+                    image: AssetImage('assets/images/logo-white.png'),
+                    width: 120,
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 20.0),
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 94.0),
+                    child: const Text(
+                      'WGER',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 50,
+                        fontFamily: 'OpenSansBold',
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  const Flexible(
+                    //flex: deviceSize.width > 600 ? 2 : 1,
+                    child: AuthCard(),
+                  ),
+                ],
               ),
-
-              /*
-    * General stuff
-    */
-              primaryColor: wgerPrimaryColor,
-              scaffoldBackgroundColor: wgerBackground,
-
-              // This makes the visual density adapt to the platform that you run
-              // the app on. For desktop platforms, the controls will be smaller and
-              // closer together (more dense) than on mobile platforms.
-              visualDensity: VisualDensity.adaptivePlatformDensity,
-
-              // Show icons in the system's bar in light colors
-              appBarTheme: const AppBarTheme(
-                systemOverlayStyle: SystemUiOverlayStyle.dark,
-                color: wgerPrimaryColor,
-                titleTextStyle:
-                    TextStyle(fontFamily: 'OpenSansBold', color: Colors.white, fontSize: 15),
-              ),
-              textTheme: TextTheme(
-                headline1: const TextStyle(
-                    fontFamily: 'OpenSansLight', color: wgerPrimaryButtonColor, fontSize: 12),
-                headline2: const TextStyle(
-                    fontFamily: 'OpenSans', color: wgerPrimaryButtonColor, fontSize: 15),
-                headline3: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  fontFamily: 'OpenSans',
-                  color: wgerPrimaryButtonColor,
-                ),
-                headline4: TextStyle(
-                  fontSize: materialSizes['h4']! * 0.8,
-                  fontFamily: 'OpenSansBold',
-                  color: wgerPrimaryButtonColor,
-                ),
-                headline5: TextStyle(
-                  fontSize: 16,
-                  fontFamily: 'OpenSansSemiBold',
-                  color: wgerPrimaryButtonColor,
-                ),
-                headline6: TextStyle(
-                  fontSize: materialSizes['h6']! * 0.8,
-                  fontFamily: 'OpenSans',
-                  color: wgerPrimaryButtonColor,
-                ),
-                subtitle1: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w200,
-                  fontFamily: 'OpenSans',
-                  color: wgerPrimaryColorLight,
-                ),
-                subtitle2: TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w200,
-                  fontFamily: 'OpenSansLight',
-                  color: wgerPrimaryColorLight,
-                ),
-              ),
-
-              /*
-     * Button theme
-     */
-              textButtonTheme: TextButtonThemeData(
-                style: TextButton.styleFrom(
-                  primary: wgerSecondaryColor,
-                ),
-              ),
-              outlinedButtonTheme: OutlinedButtonThemeData(
-                style: OutlinedButton.styleFrom(
-                  primary: wgerSecondaryColor,
-                  visualDensity: VisualDensity.compact,
-                  side: const BorderSide(color: wgerSecondaryColor),
-                ),
-              ),
-              elevatedButtonTheme: ElevatedButtonThemeData(
-                style: ElevatedButton.styleFrom(
-                  primary: wgerSecondaryColor,
-                ),
-              ),
-
-              /*
-    * Forms, etc.
-    */
-              sliderTheme: const SliderThemeData(
-                activeTrackColor: wgerSecondaryColor,
-                thumbColor: wgerPrimaryColor,
-              ),
-              colorScheme: ColorScheme.fromSwatch().copyWith(
-                secondary: wgerSecondaryColor,
-                brightness: Brightness.light,
-              )),
-          darkTheme: ThemeData(
-            dividerColor: wgerSecondaryColorLightDark,
-            bottomNavigationBarTheme: BottomNavigationBarThemeData(
-              selectedItemColor: Colors.white,
-              unselectedItemColor: wgerSecondaryColorLightDark,
-              backgroundColor: wgerPrimaryColorDark,
-            ),
-            focusColor: wgerSecondaryColorDark,
-            splashColor: wgerPrimaryColorLightDark,
-            primaryColor: wgerPrimaryColorDark,
-            primaryColorDark: wgerPrimaryButtonColorDark,
-            scaffoldBackgroundColor: wgerBackgroundDark,
-            cardColor: wgerPrimaryColorLightDark,
-            appBarTheme: AppBarTheme(
-                color: wgerPrimaryColorDark,
-                elevation: 10,
-                titleTextStyle: TextStyle(
-                    fontFamily: 'OpenSansBold', color: wgerSecondaryColorLightDark, fontSize: 15)),
-            textTheme: TextTheme(
-              headline1:
-                  const TextStyle(fontFamily: 'OpenSansLight', color: Colors.white, fontSize: 12),
-              headline2: const TextStyle(fontFamily: 'OpenSans', color: Colors.white, fontSize: 15),
-              headline3: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                fontFamily: 'OpenSans',
-                color: wgerSecondaryColorLightDark,
-              ),
-              headline4: TextStyle(
-                  color: wgerSecondaryColorLightDark,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w400,
-                  fontFamily: 'OpenSansBold'),
-              headline5: TextStyle(
-                fontSize: 16,
-                fontFamily: 'OpenSansSemiBold',
-                color: wgerSecondaryColorLightDark,
-              ),
-              headline6: TextStyle(
-                fontSize: materialSizes['h6']! * 0.8,
-                fontFamily: 'OpenSans',
-                color: Colors.white,
-              ),
-              subtitle1: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w200,
-                fontFamily: 'OpenSans',
-                color: Colors.white,
-              ),
-              subtitle2: TextStyle(
-                fontSize: 10,
-                fontWeight: FontWeight.w200,
-                fontFamily: 'OpenSansLight',
-                color: Colors.white,
-              ),
-              bodyText1: TextStyle(
-                color: darkmode ? wgerSecondaryColorLightDark : wgerSecondaryColorLight,
-                fontSize: 18,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-            inputDecorationTheme: InputDecorationTheme(
-              focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-              iconColor: wgerSecondaryColorDark,
-              labelStyle: TextStyle(color: Colors.white),
-            ),
-            textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(
-                primary: wgerSecondaryColorDark,
-              ),
-            ),
-            outlinedButtonTheme: OutlinedButtonThemeData(
-              style: OutlinedButton.styleFrom(
-                primary: wgerSecondaryColorDark,
-                visualDensity: VisualDensity.compact,
-                side: const BorderSide(color: wgerSecondaryColor),
-              ),
-            ),
-            elevatedButtonTheme: ElevatedButtonThemeData(
-              style: ElevatedButton.styleFrom(
-                primary: wgerSecondaryColorDark,
-              ),
-            ),
-            sliderTheme: const SliderThemeData(
-              activeTrackColor: wgerSecondaryColor,
-              thumbColor: wgerPrimaryColor,
-            ),
-            colorScheme: ColorScheme.fromSwatch().copyWith(
-              secondary: wgerSecondaryColorDark,
-              brightness: Brightness.dark,
             ),
           ),
-          themeMode: ThemeMode.system,
-          home: auth.isAuth
-              ? FutureBuilder(
-                  future: auth.applicationUpdateRequired(),
-                  builder: (ctx, snapshot) =>
-                      snapshot.connectionState == ConnectionState.done && snapshot.data == true
-                          ? UpdateAppScreen()
-                          : HomeTabsScreen(),
-                )
-              : FutureBuilder(
-                  future: auth.tryAutoLogin(),
-                  builder: (ctx, authResultSnapshot) =>
-                      authResultSnapshot.connectionState == ConnectionState.waiting
-                          ? SplashScreen()
-                          : AuthScreen(),
-                ),
-          routes: {
-            DashboardScreen.routeName: (ctx) => DashboardScreen(),
-            FormScreen.routeName: (ctx) => FormScreen(),
-            GalleryScreen.routeName: (ctx) => const GalleryScreen(),
-            GymModeScreen.routeName: (ctx) => GymModeScreen(),
-            HomeTabsScreen.routeName: (ctx) => HomeTabsScreen(),
-            MeasurementCategoriesScreen.routeName: (ctx) => MeasurementCategoriesScreen(),
-            MeasurementEntriesScreen.routeName: (ctx) => MeasurementEntriesScreen(),
-            NutritionScreen.routeName: (ctx) => NutritionScreen(),
-            NutritionalDiaryScreen.routeName: (ctx) => NutritionalDiaryScreen(),
-            NutritionalPlanScreen.routeName: (ctx) => NutritionalPlanScreen(),
-            WeightScreen.routeName: (ctx) => WeightScreen(),
-            WorkoutPlanScreen.routeName: (ctx) => WorkoutPlanScreen(),
-            WorkoutPlansScreen.routeName: (ctx) => WorkoutPlansScreen(),
-          },
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          debugShowCheckedModeBanner: false,
+        ],
+      ),
+    );
+  }
+}
+
+class AuthCard extends StatefulWidget {
+  const AuthCard();
+
+  @override
+  _AuthCardState createState() => _AuthCardState();
+}
+
+class _AuthCardState extends State<AuthCard> {
+  final GlobalKey<FormState> _formKey = GlobalKey();
+
+  bool dark = false;
+  bool _canRegister = true;
+  AuthMode _authMode = AuthMode.Login;
+  bool _hideCustomServer = true;
+  final Map<String, String> _authData = {
+    'username': '',
+    'email': '',
+    'password': '',
+    'serverUrl': '',
+  };
+  var _isLoading = false;
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _password2Controller = TextEditingController();
+  final _emailController = TextEditingController();
+  final _serverUrlController = TextEditingController(text: DEFAULT_SERVER);
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<AuthProvider>().getServerUrlFromPrefs().then((value) {
+      _serverUrlController.text = value;
+    });
+
+    // Check if the API key is set
+    //
+    // If not, the user will not be able to register via the app
+    try {
+      final metadata = Provider.of<AuthProvider>(context, listen: false).metadata;
+      if (metadata.containsKey(MANIFEST_KEY_API) || metadata[MANIFEST_KEY_API] == '') {
+        _canRegister = false;
+      }
+    } on PlatformException {
+      _canRegister = false;
+    }
+  }
+
+  void _submit(BuildContext context) async {
+    if (!_formKey.currentState!.validate()) {
+      // Invalid!
+      return;
+    }
+    _formKey.currentState!.save();
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      // Login existing user
+      if (_authMode == AuthMode.Login) {
+        await Provider.of<AuthProvider>(context, listen: false)
+            .login(_authData['username']!, _authData['password']!, _authData['serverUrl']!);
+
+        // Register new user
+      } else {
+        await Provider.of<AuthProvider>(context, listen: false).register(
+            username: _authData['username']!,
+            password: _authData['password']!,
+            email: _authData['email']!,
+            serverUrl: _authData['serverUrl']!);
+      }
+
+      setState(() {
+        _isLoading = false;
+      });
+    } on WgerHttpException catch (error) {
+      showHttpExceptionErrorDialog(error, context);
+      setState(() {
+        _isLoading = false;
+      });
+    } catch (error) {
+      showErrorDialog(error, context);
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  void _switchAuthMode() {
+    if (!_canRegister) {
+      launchURL(DEFAULT_SERVER, context);
+      return;
+    }
+
+    if (_authMode == AuthMode.Login) {
+      setState(() {
+        _authMode = AuthMode.Signup;
+      });
+    } else {
+      setState(() {
+        _authMode = AuthMode.Login;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final deviceSize = MediaQuery.of(context).size;
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      elevation: 8.0,
+      child: Container(
+        width: deviceSize.width * 0.75,
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            child: AutofillGroup(
+              child: Column(
+                children: <Widget>[
+                  TextFormField(
+                    key: const Key('inputUsername'),
+                    decoration: InputDecoration(
+                      focusedBorder:
+                          UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+                      labelStyle: Theme.of(context).textTheme.headline6,
+                      prefixIcon: Icon(Icons.account_box_rounded),
+                      labelText: AppLocalizations.of(context).username,
+                      errorMaxLines: 2,
+                    ),
+                    autofillHints: const [AutofillHints.username],
+                    controller: _usernameController,
+                    textInputAction: TextInputAction.next,
+                    keyboardType: TextInputType.emailAddress,
+                    validator: (value) {
+                      if (!RegExp(r'^[\w.@+-]+$').hasMatch(value!)) {
+                        return AppLocalizations.of(context).usernameValidChars;
+                      }
+
+                      if (value.isEmpty) {
+                        return AppLocalizations.of(context).invalidUsername;
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      String? user = value;
+                      user = user?.trim();
+                      _authData['username'] = user!;
+                    },
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  if (_authMode == AuthMode.Signup)
+                    TextFormField(
+                      key: const Key('inputEmail'),
+                      decoration: InputDecoration(
+                          focusedBorder:
+                              UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+                          labelStyle: Theme.of(context).textTheme.headline6,
+                          prefixIcon: Icon(Icons.email),
+                          labelText: AppLocalizations.of(context).email),
+                      autofillHints: const [AutofillHints.email],
+                      controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.next,
+
+                      // Email is not required
+                      validator: (value) {
+                        if (value!.isNotEmpty && !value.contains('@')) {
+                          return AppLocalizations.of(context).invalidEmail;
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        _authData['email'] = value!;
+                      },
+                    ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  TextFormField(
+                    key: const Key('inputPassword'),
+                    decoration: InputDecoration(
+                        focusedBorder:
+                            UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+                        labelStyle: Theme.of(context).textTheme.headline6,
+                        prefixIcon: Icon(Icons.security),
+                        labelText: AppLocalizations.of(context).password),
+                    autofillHints: const [AutofillHints.password],
+                    obscureText: true,
+                    controller: _passwordController,
+                    textInputAction: TextInputAction.next,
+                    validator: (value) {
+                      if (value!.isEmpty || value.length < 8) {
+                        return AppLocalizations.of(context).passwordTooShort;
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      _authData['password'] = value!;
+                    },
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  if (_authMode == AuthMode.Signup)
+                    TextFormField(
+                      key: const Key('inputPassword2'),
+                      decoration: InputDecoration(
+                          focusedBorder:
+                              UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+                          labelStyle: Theme.of(context).textTheme.headline6,
+                          prefixIcon: Icon(Icons.security_sharp),
+                          labelText: AppLocalizations.of(context).confirmPassword),
+                      controller: _password2Controller,
+                      enabled: _authMode == AuthMode.Signup,
+                      obscureText: true,
+                      validator: _authMode == AuthMode.Signup
+                          ? (value) {
+                              if (value != _passwordController.text) {
+                                return AppLocalizations.of(context).passwordsDontMatch;
+                              }
+                              return null;
+                            }
+                          : null,
+                    ),
+                  // Off-stage widgets are kept in the tree, otherwise the server URL
+                  // would not be saved to _authData
+                  Offstage(
+                    offstage: _hideCustomServer,
+                    child: Row(
+                      children: [
+                        Flexible(
+                          flex: 3,
+                          child: TextFormField(
+                            key: const Key('inputServer'),
+                            decoration: InputDecoration(
+                                focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.white)),
+                                labelStyle: Theme.of(context).textTheme.headline6,
+                                labelText: AppLocalizations.of(context).customServerUrl,
+                                helperText: AppLocalizations.of(context).customServerHint,
+                                helperStyle: Theme.of(context).textTheme.headline1,
+                                helperMaxLines: 4),
+                            controller: _serverUrlController,
+                            validator: (value) {
+                              if (Uri.tryParse(value!) == null) {
+                                return AppLocalizations.of(context).invalidUrl;
+                              }
+
+                              if (value.isEmpty || !value.contains('http')) {
+                                return AppLocalizations.of(context).invalidUrl;
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              // Remove any trailing slash
+                              if (value!.lastIndexOf('/') == (value.length - 1)) {
+                                value = value.substring(0, value.lastIndexOf('/'));
+                              }
+                              _authData['serverUrl'] = value;
+                            },
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            IconButton(
+                              icon: const Icon(Icons.undo),
+                              color: wgerSecondaryColor,
+                              onPressed: () {
+                                _serverUrlController.text = DEFAULT_SERVER;
+                              },
+                            ),
+                            Text(
+                              AppLocalizations.of(context).reset,
+                              style: Theme.of(context).textTheme.headline2,
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  if (_isLoading)
+                    const CircularProgressIndicator()
+                  else
+                    ElevatedButton(
+                      key: const Key('actionButton'),
+                      child: Text(_authMode == AuthMode.Login
+                          ? AppLocalizations.of(context).login
+                          : AppLocalizations.of(context).register),
+                      onPressed: () {
+                        return _submit(context);
+                      },
+                    ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                      foregroundColor: MaterialStateProperty.all<Color>(wgerSecondaryColor),
+                    ),
+                    key: const Key('toggleActionButton'),
+                    child: Text(
+                      _authMode == AuthMode.Login
+                          ? AppLocalizations.of(context).register.toUpperCase()
+                          : AppLocalizations.of(context).login.toUpperCase(),
+                    ),
+                    onPressed: _switchAuthMode,
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  TextButton(
+                    style: ButtonStyle(
+                      foregroundColor: MaterialStateProperty.all<Color>(wgerSecondaryColorDark),
+                    ),
+                    child: Text(_hideCustomServer
+                        ? AppLocalizations.of(context).useCustomServer
+                        : AppLocalizations.of(context).useDefaultServer),
+                    key: const Key('toggleCustomServerButton'),
+                    onPressed: () {
+                      setState(() {
+                        _hideCustomServer = !_hideCustomServer;
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );
