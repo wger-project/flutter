@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -57,7 +58,8 @@ void main() {
   testWidgets('Test the widgets on the gallery screen', (WidgetTester tester) async {
     await mockNetworkImagesFor(() => tester.pumpWidget(createScreen()));
 
-    expect(find.byType(GestureDetector), findsNWidgets(4));
+    expect(find.byType(SliverMasonryGrid), findsOneWidget);
+    expect(find.byType(GestureDetector, skipOffstage: false), findsNWidgets(4));
   });
 
   testWidgets('Test opening the form for an existing image', (WidgetTester tester) async {
