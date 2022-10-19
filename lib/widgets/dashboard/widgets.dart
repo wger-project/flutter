@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -25,16 +26,20 @@ import 'package:provider/provider.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/body_weight.dart';
+import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/gym_mode.dart';
+import 'package:wger/screens/measurement_categories_screen.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/charts.dart';
 import 'package:wger/widgets/core/core.dart';
+import 'package:wger/widgets/measurements/categories_card.dart';
+import 'package:wger/widgets/measurements/forms.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/weight/forms.dart';
@@ -256,19 +261,6 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                 FontAwesomeIcons.weight,
                 color: Colors.black,
               ),
-              trailing: IconButton(
-                icon: const Icon(Icons.add),
-                onPressed: () async {
-                  Navigator.pushNamed(
-                    context,
-                    FormScreen.routeName,
-                    arguments: FormScreenArguments(
-                      AppLocalizations.of(context).newEntry,
-                      WeightForm(),
-                    ),
-                  );
-                },
-              ),
             ),
             Column(
               children: [
@@ -283,13 +275,26 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                             .toList()),
                       ),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           TextButton(
                               child: Text(AppLocalizations.of(context).goToDetailPage),
                               onPressed: () {
                                 Navigator.of(context).pushNamed(WeightScreen.routeName);
                               }),
+                          IconButton(
+                            icon: const Icon(Icons.add),
+                            onPressed: () async {
+                              Navigator.pushNamed(
+                                context,
+                                FormScreen.routeName,
+                                arguments: FormScreenArguments(
+                                  AppLocalizations.of(context).newEntry,
+                                  WeightForm(),
+                                ),
+                              );
+                            },
+                          ),
                         ],
                       ),
                     ],
@@ -299,6 +304,115 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                     AppLocalizations.of(context).noWeightEntries,
                     AppLocalizations.of(context).newEntry,
                     WeightForm(),
+                  ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class DashboardMeasurementWidget extends StatefulWidget {
+  @override
+  _DashboardMeasurementWidgetState createState() => _DashboardMeasurementWidgetState();
+}
+
+class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget> {
+  int _current = 0;
+  final CarouselController _controller = CarouselController();
+
+  @override
+  Widget build(BuildContext context) {
+    final _provider = Provider.of<MeasurementProvider>(context, listen: false);
+
+    List<Widget> items = _provider.categories
+        .map<Widget>(
+          (item) => CategoriesCard(
+            item,
+            elevation: 0,
+          ),
+        )
+        .toList();
+    if (items.isNotEmpty) {
+      items.add(
+        NothingFound(
+          AppLocalizations.of(context).moreMeasurementEntries,
+          AppLocalizations.of(context).newEntry,
+          MeasurementCategoryForm(),
+        ),
+      );
+    }
+    return Consumer<MeasurementProvider>(
+      builder: (context, workoutProvider, child) => Card(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              title: Text(
+                AppLocalizations.of(context).measurements,
+                style: Theme.of(context).textTheme.headline4,
+              ),
+              leading: const FaIcon(
+                FontAwesomeIcons.weight,
+                color: Colors.black,
+              ),
+              trailing: IconButton(
+                icon: const Icon(Icons.arrow_forward),
+                onPressed: () => Navigator.pushNamed(
+                  context,
+                  MeasurementCategoriesScreen.routeName,
+                ),
+              ),
+            ),
+            Column(
+              children: [
+                if (items.isNotEmpty)
+                  Column(children: [
+                    CarouselSlider(
+                      items: items,
+                      carouselController: _controller,
+                      options: CarouselOptions(
+                          autoPlay: false,
+                          enlargeCenterPage: false,
+                          viewportFraction: 1,
+                          enableInfiniteScroll: false,
+                          aspectRatio: 1.1,
+                          onPageChanged: (index, reason) {
+                            setState(() {
+                              _current = index;
+                            });
+                          }),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: items.asMap().entries.map((entry) {
+                          return GestureDetector(
+                            onTap: () => _controller.animateToPage(entry.key),
+                            child: Container(
+                              width: 12.0,
+                              height: 12.0,
+                              margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: (Theme.of(context).brightness == Brightness.dark
+                                          ? Colors.white
+                                          : wgerPrimaryColor)
+                                      .withOpacity(_current == entry.key ? 0.9 : 0.4)),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ])
+                else
+                  NothingFound(
+                    AppLocalizations.of(context).noMeasurementEntries,
+                    AppLocalizations.of(context).newEntry,
+                    MeasurementCategoryForm(),
                   ),
               ],
             ),
@@ -384,9 +498,11 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(s.exerciseObj.name),
+                              Text(s.exerciseBaseObj
+                                  .getExercise(Localizations.localeOf(context).languageCode)
+                                  .name),
                               const SizedBox(width: 10),
-                              MutedText(set.getSmartRepr(s.exerciseObj).join('\n')),
+                              MutedText(set.getSmartRepr(s.exerciseBaseObj).join('\n')),
                             ],
                           ),
                           const SizedBox(height: 10),

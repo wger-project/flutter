@@ -21,7 +21,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/exercises/base.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/set.dart';
@@ -276,16 +276,16 @@ class _SetFormWidgetState extends State<SetFormWidget> {
   final _exercisesController = TextEditingController();
 
   /// Removes an exercise from the current set
-  void removeExercise(Exercise exercise) {
+  void removeExerciseBase(ExerciseBase base) {
     setState(() {
-      widget._set.removeExercise(exercise);
+      widget._set.removeExercise(base);
     });
   }
 
   /// Adds an exercise to the current set
-  void addExercise(Exercise exercise) {
+  void addExercise(ExerciseBase base) {
     setState(() {
-      widget._set.addExercise(exercise);
+      widget._set.addExerciseBase(base);
       addSettings();
     });
   }
@@ -294,12 +294,12 @@ class _SetFormWidgetState extends State<SetFormWidget> {
   void addSettings() {
     widget._set.settings = [];
     int order = 0;
-    for (final exercise in widget._set.exercisesObj) {
+    for (final exercise in widget._set.exerciseBasesObj) {
       order++;
       for (int loop = 0; loop < widget._set.sets; loop++) {
         final Setting setting = Setting.empty();
         setting.order = order;
-        setting.exercise = exercise;
+        setting.exerciseBase = exercise;
         setting.weightUnit =
             Provider.of<WorkoutPlansProvider>(context, listen: false).defaultWeightUnit;
         setting.repetitionUnit =
@@ -355,7 +355,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
             child: Column(
               children: [
                 Card(
-                  child: TypeAheadFormField(
+                  child: TypeAheadFormField<ExerciseBase>(
                     key: const Key('field-typeahead'),
                     textFieldConfiguration: TextFieldConfiguration(
                       controller: _exercisesController,
@@ -397,34 +397,30 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                         Localizations.localeOf(context).languageCode,
                       );
                     },
-                    itemBuilder: (context, suggestion) {
-                      final result = suggestion! as Map;
-
-                      final exercise = Provider.of<ExercisesProvider>(context, listen: false)
-                          .findById(result['data']['id']);
+                    itemBuilder: (BuildContext context, ExerciseBase exerciseSuggestion) {
                       return ListTile(
                         leading: SizedBox(
                           width: 45,
-                          child: ExerciseImageWidget(image: exercise.getMainImage),
+                          child: ExerciseImageWidget(image: exerciseSuggestion.getMainImage),
                         ),
-                        title: Text(exercise.name),
+                        title: Text(exerciseSuggestion
+                            .getExercise(Localizations.localeOf(context).languageCode)
+                            .name),
                         subtitle: Text(
-                            '${exercise.categoryObj.name} / ${exercise.equipment.map((e) => e.name).join(', ')}'),
+                          '${exerciseSuggestion.category.name} / ${exerciseSuggestion.equipment.map((e) => e.name).join(', ')}',
+                        ),
                       );
                     },
                     transitionBuilder: (context, suggestionsBox, controller) {
                       return suggestionsBox;
                     },
-                    onSuggestionSelected: (suggestion) {
-                      final result = suggestion! as Map;
-                      final exercise = Provider.of<ExercisesProvider>(context, listen: false)
-                          .findById(result['data']['id']);
-                      addExercise(exercise);
-                      _exercisesController.text = '';
+                    onSuggestionSelected: (ExerciseBase exerciseSuggestion) {
+                      addExercise(exerciseSuggestion);
+                      this._exercisesController.text = '';
                     },
                     validator: (value) {
                       // At least one exercise must be selected
-                      if (widget._set.exercisesIds.isEmpty) {
+                      if (widget._set.exerciseBasesIds.isEmpty) {
                         return AppLocalizations.of(context).selectExercise;
                       }
 
@@ -459,12 +455,13 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                   },
                 ),
                 const SizedBox(height: 10),
-                ...widget._set.exercisesObj.asMap().entries.map((entry) {
+                ...widget._set.exerciseBasesObj.asMap().entries.map((entry) {
                   final index = entry.key;
                   final exercise = entry.value;
-                  final showSupersetInfo = (index + 1) < widget._set.exercisesObj.length;
-                  final settings =
-                      widget._set.settings.where((e) => e.exerciseObj.id == exercise.id).toList();
+                  final showSupersetInfo = (index + 1) < widget._set.exerciseBasesObj.length;
+                  final settings = widget._set.settings
+                      .where((e) => e.exerciseBaseObj.id == exercise.id)
+                      .toList();
 
                   return Column(
                     children: [
@@ -473,7 +470,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                         settings,
                         _detailed,
                         _currentSetSliderValue,
-                        removeExercise,
+                        removeExerciseBase,
                       ),
                       if (showSupersetInfo)
                         const Padding(
@@ -536,14 +533,14 @@ class _SetFormWidgetState extends State<SetFormWidget> {
 }
 
 class ExerciseSetting extends StatelessWidget {
-  final Exercise _exercise;
+  final ExerciseBase _exerciseBase;
   late final int _numberOfSets;
   final bool _detailed;
   final Function removeExercise;
   final List<Setting> _settings;
 
   ExerciseSetting(
-    this._exercise,
+    this._exerciseBase,
     this._settings,
     this._detailed,
     double sliderValue,
@@ -636,16 +633,16 @@ class ExerciseSetting extends StatelessWidget {
           children: [
             ListTile(
               title: Text(
-                _exercise.name,
+                _exerciseBase.getExercise(Localizations.localeOf(context).languageCode).name,
                 style: Theme.of(context).textTheme.headline6,
               ),
-              subtitle: Text(_exercise.categoryObj.name),
+              subtitle: Text(_exerciseBase.category.name),
               contentPadding: EdgeInsets.zero,
-              leading: ExerciseImageWidget(image: _exercise.getMainImage),
+              leading: ExerciseImageWidget(image: _exerciseBase.getMainImage),
               trailing: IconButton(
                   icon: const Icon(Icons.delete),
                   onPressed: () {
-                    removeExercise(_exercise);
+                    removeExercise(_exerciseBase);
                   }),
             ),
             const Divider(),
@@ -848,6 +845,7 @@ class _WeightUnitInputWidgetState extends State<WeightUnitInputWidget> {
           .weightUnits
           .map<DropdownMenuItem<WeightUnit>>((WeightUnit value) {
         return DropdownMenuItem<WeightUnit>(
+          key: Key(value.id.toString()),
           value: value,
           child: Text(value.name),
         );
@@ -886,6 +884,7 @@ class _RepetitionUnitInputWidgetState extends State<RepetitionUnitInputWidget> {
           .repetitionUnits
           .map<DropdownMenuItem<RepetitionUnit>>((RepetitionUnit value) {
         return DropdownMenuItem<RepetitionUnit>(
+          key: Key(value.id.toString()),
           value: value,
           child: Text(value.name),
         );

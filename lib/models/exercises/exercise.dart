@@ -16,26 +16,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:wger/models/exercises/category.dart';
+import 'package:wger/models/exercises/alias.dart';
+import 'package:wger/models/exercises/base.dart';
 import 'package:wger/models/exercises/comment.dart';
-import 'package:wger/models/exercises/equipment.dart';
-import 'package:wger/models/exercises/image.dart';
-import 'package:wger/models/exercises/muscle.dart';
-import 'package:wger/models/exercises/video.dart';
+import 'package:wger/models/exercises/language.dart';
 
 part 'exercise.g.dart';
 
-@JsonSerializable(explicitToJson: true)
-class Exercise {
+@JsonSerializable()
+class Exercise extends Equatable {
   @JsonKey(required: true)
-  final int id;
+  final int? id;
 
   @JsonKey(required: true)
-  final String uuid;
+  final String? uuid;
+
+  @JsonKey(required: true, name: 'language')
+  late int languageId;
+
+  @JsonKey(ignore: true)
+  late Language languageObj;
 
   @JsonKey(required: true, name: 'creation_date')
-  final DateTime creationDate;
+  final DateTime? creationDate;
+
+  @JsonKey(required: true, name: 'exercise_base')
+  late int? baseId;
 
   @JsonKey(required: true)
   final String name;
@@ -43,69 +51,52 @@ class Exercise {
   @JsonKey(required: true)
   final String description;
 
-  @JsonKey(required: false, ignore: true)
-  late int categoryId;
+  @JsonKey(ignore: true)
+  List<Comment> notes = [];
 
-  @JsonKey(required: true, name: 'category')
-  late final ExerciseCategory categoryObj;
+  @JsonKey(ignore: true)
+  List<Alias> alias = [];
 
-  @JsonKey(required: true)
-  List<Muscle> muscles = [];
+  Exercise({
+    this.id,
+    this.uuid,
+    this.creationDate,
+    required this.name,
+    required this.description,
+    int? baseId,
+    language,
+  }) {
+    if (baseId != null) {
+      baseId = baseId;
+    }
 
-  @JsonKey(required: true, name: 'muscles_secondary')
-  List<Muscle> musclesSecondary = [];
-
-  @JsonKey(required: true)
-  List<Equipment> equipment = [];
-
-  @JsonKey(required: true)
-  List<ExerciseImage> images = [];
-
-  @JsonKey(required: true)
-  List<Video> videos = [];
-
-  @JsonKey(required: true, name: 'comments')
-  List<Comment> tips = [];
-
-  Exercise(
-      {required this.id,
-      required this.uuid,
-      required this.creationDate,
-      required this.name,
-      required this.description,
-      List<Muscle>? muscles,
-      List<Muscle>? musclesSecondary,
-      List<Equipment>? equipment,
-      List<ExerciseImage>? images,
-      List<Video>? videos,
-      List<Comment>? tips,
-      ExerciseCategory? category}) {
-    this.tips = tips ?? [];
-    this.images = images ?? [];
-    this.videos = videos ?? [];
-    this.equipment = equipment ?? [];
-    this.musclesSecondary = musclesSecondary ?? [];
-    this.muscles = muscles ?? [];
-    if (category != null) {
-      categoryObj = category;
-      categoryId = category.id;
+    if (language != null) {
+      languageObj = language;
+      languageId = language.id;
     }
   }
 
-  ExerciseImage? get getMainImage {
-    try {
-      return images.firstWhere((image) => image.isMain);
-    } on StateError {
-      return null;
-    }
+  set base(ExerciseBase base) {
+    baseId = base.id;
   }
 
-  set category(ExerciseCategory category) {
-    categoryId = category.id;
-    categoryObj = category;
+  set language(Language language) {
+    languageObj = language;
+    languageId = language.id;
   }
 
   // Boilerplate
   factory Exercise.fromJson(Map<String, dynamic> json) => _$ExerciseFromJson(json);
   Map<String, dynamic> toJson() => _$ExerciseToJson(this);
+
+  @override
+  List<Object?> get props => [
+        id,
+        baseId,
+        uuid,
+        languageId,
+        creationDate,
+        name,
+        description,
+      ];
 }

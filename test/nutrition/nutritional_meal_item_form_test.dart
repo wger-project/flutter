@@ -15,8 +15,8 @@ import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
-import '../../test_data/nutritional_plans.dart';
 
+import '../../test_data/nutritional_plans.dart';
 import '../fixtures/fixture_reader.dart';
 import '../other/base_provider_test.mocks.dart';
 import '../utils.dart';
@@ -49,20 +49,14 @@ void main() {
   final Uri tUriEmptyCode = Uri.parse('https://localhost/api/v2/ingredient/?code=\"%20\"');
   final Uri tUriBadCode = Uri.parse('https://localhost/api/v2/ingredient/?code=222');
 
-  when(client
-          .get(tUriRightCode, headers: {'authorization': 'Token FooBar', 'user-agent': 'wger App'}))
-      .thenAnswer(
-          (_) => Future.value(http.Response(fixture('search_ingredient_right_code.json'), 200)));
+  when(client.get(tUriRightCode, headers: anyNamed('headers'))).thenAnswer(
+      (_) => Future.value(http.Response(fixture('search_ingredient_right_code.json'), 200)));
 
-  when(client
-          .get(tUriEmptyCode, headers: {'authorization': 'Token FooBar', 'user-agent': 'wger App'}))
-      .thenAnswer(
-          (_) => Future.value(http.Response(fixture('search_ingredient_wrong_code.json'), 200)));
+  when(client.get(tUriEmptyCode, headers: anyNamed('headers'))).thenAnswer(
+      (_) => Future.value(http.Response(fixture('search_ingredient_wrong_code.json'), 200)));
 
-  when(client
-          .get(tUriBadCode, headers: {'authorization': 'Token FooBar', 'user-agent': 'wger App'}))
-      .thenAnswer(
-          (_) => Future.value(http.Response(fixture('search_ingredient_wrong_code.json'), 200)));
+  when(client.get(tUriBadCode, headers: anyNamed('headers'))).thenAnswer(
+      (_) => Future.value(http.Response(fixture('search_ingredient_wrong_code.json'), 200)));
 
   setUp(() {
     plan1 = getNutritionalPlan();

@@ -27,7 +27,7 @@ class Ingredient {
 
   /// Barcode of the product
   @JsonKey(required: true)
-  final String code;
+  final String? code;
 
   /// Name of the product
   @JsonKey(required: true)

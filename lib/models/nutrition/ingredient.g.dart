@@ -26,7 +26,7 @@ Ingredient _$IngredientFromJson(Map<String, dynamic> json) {
   );
   return Ingredient(
     id: json['id'] as int,
-    code: json['code'] as String,
+    code: json['code'] as String?,
     name: json['name'] as String,
     creationDate: DateTime.parse(json['creation_date'] as String),
     energy: json['energy'] as int,

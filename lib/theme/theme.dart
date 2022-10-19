@@ -100,14 +100,14 @@ final ThemeData wgerTheme = ThemeData(
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
-        primary: wgerPrimaryButtonColor,
+        foregroundColor: wgerPrimaryButtonColor,
         visualDensity: VisualDensity.compact,
         side: const BorderSide(color: wgerPrimaryButtonColor),
       ),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        primary: wgerPrimaryButtonColor,
+        backgroundColor: wgerPrimaryButtonColor,
       ),
     ),
 
