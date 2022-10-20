@@ -25,6 +25,7 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/misc.dart';
 import 'package:wger/helpers/ui.dart';
 import 'package:wger/screens/update_app_screen.dart';
+import 'package:wger/theme/theme.dart';
 
 import '../providers/auth.dart';
 
@@ -40,9 +41,18 @@ class AuthScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: wgerBackground,
       body: Stack(
         children: <Widget>[
+          Positioned(
+            top: 0,
+            right: 0,
+            left: 0,
+            child: Container(
+              height: 0.55 * deviceSize.height,
+              color: Theme.of(context).primaryColor,
+            ),
+          ),
           SingleChildScrollView(
             child: SizedBox(
               height: deviceSize.height,
@@ -51,10 +61,10 @@ class AuthScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  const Padding(padding: EdgeInsets.symmetric(vertical: 20)),
+                  SizedBox(height: 0.15 * deviceSize.height),
                   const Image(
                     image: AssetImage('assets/images/logo-white.png'),
-                    width: 120,
+                    width: 85,
                   ),
                   Container(
                     margin: const EdgeInsets.only(bottom: 20.0),
@@ -62,21 +72,27 @@ class AuthScreen extends StatelessWidget {
                     child: const Text(
                       'WGER',
                       style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 50,
+                        color: Colors.white70,
+                        fontSize: 30,
                         fontFamily: 'OpenSansBold',
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
+                  SizedBox(height: 0.025 * deviceSize.height),
                   const Flexible(
-                    //flex: deviceSize.width > 600 ? 2 : 1,
                     child: AuthCard(),
                   ),
                 ],
               ),
             ),
           ),
+          // Positioned(
+          //   top: 0.4 * deviceSize.height,
+          //   left: 15,
+          //   right: 15,
+          //   child: const ,
+          // ),
         ],
       ),
     );
@@ -91,6 +107,7 @@ class AuthCard extends StatefulWidget {
 }
 
 class _AuthCardState extends State<AuthCard> {
+  bool isObscure = true;
   final GlobalKey<FormState> _formKey = GlobalKey();
   bool _canRegister = true;
   AuthMode _authMode = AuthMode.Login;
@@ -204,12 +221,12 @@ class _AuthCardState extends State<AuthCard> {
     final deviceSize = MediaQuery.of(context).size;
     return Card(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
+        borderRadius: BorderRadius.circular(15.0),
       ),
       elevation: 8.0,
       child: Container(
-        width: deviceSize.width * 0.75,
-        padding: const EdgeInsets.all(16.0),
+        width: deviceSize.width * 0.9,
+        padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 0.025 * deviceSize.height),
         child: Form(
           key: _formKey,
           child: SingleChildScrollView(
@@ -219,9 +236,9 @@ class _AuthCardState extends State<AuthCard> {
                   TextFormField(
                     key: const Key('inputUsername'),
                     decoration: InputDecoration(
-                      labelText: AppLocalizations.of(context).username,
-                      errorMaxLines: 2,
-                    ),
+                        labelText: AppLocalizations.of(context).username,
+                        errorMaxLines: 2,
+                        prefixIcon: const Icon(Icons.account_circle)),
                     autofillHints: const [AutofillHints.username],
                     controller: _usernameController,
                     textInputAction: TextInputAction.next,
@@ -243,7 +260,9 @@ class _AuthCardState extends State<AuthCard> {
                   if (_authMode == AuthMode.Signup)
                     TextFormField(
                       key: const Key('inputEmail'),
-                      decoration: InputDecoration(labelText: AppLocalizations.of(context).email),
+                      decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context).email,
+                      ),
                       autofillHints: const [AutofillHints.email],
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
@@ -260,23 +279,35 @@ class _AuthCardState extends State<AuthCard> {
                         _authData['email'] = value!;
                       },
                     ),
-                  TextFormField(
-                    key: const Key('inputPassword'),
-                    decoration: InputDecoration(labelText: AppLocalizations.of(context).password),
-                    autofillHints: const [AutofillHints.password],
-                    obscureText: true,
-                    controller: _passwordController,
-                    textInputAction: TextInputAction.next,
-                    validator: (value) {
-                      if (value!.isEmpty || value.length < 8) {
-                        return AppLocalizations.of(context).passwordTooShort;
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      _authData['password'] = value!;
-                    },
-                  ),
+                  StatefulBuilder(builder: (context, updateState) {
+                    return TextFormField(
+                      key: const Key('inputPassword'),
+                      decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context).password,
+                        prefixIcon: const Icon(Icons.key),
+                        suffixIcon: IconButton(
+                          icon: Icon(isObscure ? Icons.visibility_off : Icons.visibility),
+                          onPressed: () {
+                            isObscure = !isObscure;
+                            updateState(() {});
+                          },
+                        ),
+                      ),
+                      autofillHints: const [AutofillHints.password],
+                      obscureText: isObscure,
+                      controller: _passwordController,
+                      textInputAction: TextInputAction.next,
+                      validator: (value) {
+                        if (value!.isEmpty || value.length < 8) {
+                          return AppLocalizations.of(context).passwordTooShort;
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        _authData['password'] = value!;
+                      },
+                    );
+                  }),
                   if (_authMode == AuthMode.Signup)
                     TextFormField(
                       key: const Key('inputPassword2'),
@@ -349,27 +380,69 @@ class _AuthCardState extends State<AuthCard> {
                   const SizedBox(
                     height: 20,
                   ),
-                  if (_isLoading)
-                    const CircularProgressIndicator()
-                  else
-                    ElevatedButton(
-                      key: const Key('actionButton'),
-                      child: Text(_authMode == AuthMode.Login
-                          ? AppLocalizations.of(context).login
-                          : AppLocalizations.of(context).register),
-                      onPressed: () {
+                  GestureDetector(
+                    onTap: () {
+                      if (!_isLoading) {
                         return _submit(context);
-                      },
-                    ),
-                  TextButton(
-                    key: const Key('toggleActionButton'),
-                    onPressed: _switchAuthMode,
-                    child: Text(
-                      _authMode == AuthMode.Login
-                          ? AppLocalizations.of(context).registerInstead.toUpperCase()
-                          : AppLocalizations.of(context).loginInstead.toUpperCase(),
+                      }
+                    },
+                    child: Container(
+                      key: const Key('actionButton'),
+                      width: double.infinity,
+                      height: 0.065 * deviceSize.height,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30.0),
+                        color: wgerPrimaryColor,
+                      ),
+                      child: Center(
+                        child: _isLoading
+                            ? const CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation(Colors.white),
+                              )
+                            : Text(
+                                _authMode == AuthMode.Login
+                                    ? AppLocalizations.of(context).login
+                                    : AppLocalizations.of(context).register,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                      ),
                     ),
                   ),
+                  SizedBox(height: 0.025 * deviceSize.height),
+                  Builder(
+                    key: const Key('toggleActionButton'),
+                    builder: (context) {
+                      final String text = AppLocalizations.of(context).registerInstead;
+
+                      return GestureDetector(
+                        onTap: () {
+                          _switchAuthMode();
+                        },
+                        child: Container(
+                          color: Colors.transparent,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                text.substring(0, text.lastIndexOf('?') + 1),
+                              ),
+                              Text(
+                                text.substring(text.lastIndexOf('?') + 1, text.length),
+                                style: const TextStyle(
+                                  color: wgerPrimaryColor,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+
                   TextButton(
                     key: const Key('toggleCustomServerButton'),
                     onPressed: () {
@@ -377,9 +450,14 @@ class _AuthCardState extends State<AuthCard> {
                         _hideCustomServer = !_hideCustomServer;
                       });
                     },
-                    child: Text(_hideCustomServer
-                        ? AppLocalizations.of(context).useCustomServer
-                        : AppLocalizations.of(context).useDefaultServer),
+                    child: Text(
+                      _hideCustomServer
+                          ? AppLocalizations.of(context).useCustomServer
+                          : AppLocalizations.of(context).useDefaultServer,
+                      style: const TextStyle(
+                        color: wgerPrimaryColor,
+                      ),
+                    ),
                   ),
                 ],
               ),

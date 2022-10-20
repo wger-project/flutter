@@ -64,7 +64,7 @@ void main() {
     expect(find.text('WGER'), findsOneWidget);
 
     // Verify that the correct buttons and input fields are shown: login
-    expect(find.text('REGISTER INSTEAD'), findsOneWidget);
+    expect(find.text('Register now'), findsOneWidget);
     expect(find.text('LOGIN INSTEAD'), findsNothing);
 
     // Check that the correct widgets are shown
@@ -87,7 +87,7 @@ void main() {
 
     // Rebuild the widget after the state has changed.
     await tester.pump();
-    expect(find.text('REGISTER INSTEAD'), findsNothing);
+    expect(find.text('Register now'), findsNothing);
     expect(find.text('LOGIN INSTEAD'), findsOneWidget);
 
     // Check that the correct widgets are shown
