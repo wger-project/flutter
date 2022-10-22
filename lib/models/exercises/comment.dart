@@ -25,11 +25,15 @@ class Comment {
   @JsonKey(required: true)
   final int id;
 
+  @JsonKey(required: true, name: 'exercise')
+  final int exerciseId;
+
   @JsonKey(required: true)
   final String comment;
 
   Comment({
     required this.id,
+    required this.exerciseId,
     required this.comment,
   });
 

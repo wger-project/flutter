@@ -29,6 +29,7 @@ import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/gallery.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/user.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/dashboard.dart';
 import 'package:wger/screens/gallery_screen.dart';
@@ -72,18 +73,20 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
   /// Load initial data from the server
   Future<void> _loadEntries() async {
     if (!Provider.of<AuthProvider>(context, listen: false).dataInit) {
-      Provider.of<AuthProvider>(context, listen: false).setServerVersion();
-
-      final workoutPlansProvider = Provider.of<WorkoutPlansProvider>(context, listen: false);
-      final nutritionPlansProvider = Provider.of<NutritionPlansProvider>(context, listen: false);
-      final exercisesProvider = Provider.of<ExercisesProvider>(context, listen: false);
-      final galleryProvider = Provider.of<GalleryProvider>(context, listen: false);
-      final weightProvider = Provider.of<BodyWeightProvider>(context, listen: false);
-      final measurementProvider = Provider.of<MeasurementProvider>(context, listen: false);
+      final authProvider = context.read<AuthProvider>();
+      final workoutPlansProvider = context.read<WorkoutPlansProvider>();
+      final nutritionPlansProvider = context.read<NutritionPlansProvider>();
+      final exercisesProvider = context.read<ExercisesProvider>();
+      final galleryProvider = context.read<GalleryProvider>();
+      final weightProvider = context.read<BodyWeightProvider>();
+      final measurementProvider = context.read<MeasurementProvider>();
+      final userProvider = context.read<UserProvider>();
 
       // Base data
       log('Loading base data');
       await Future.wait([
+        authProvider.setServerVersion(),
+        userProvider.fetchAndSetProfile(),
         workoutPlansProvider.fetchAndSetUnits(),
         nutritionPlansProvider.fetchIngredientsFromCache(),
         exercisesProvider.fetchAndSetExercises(),
@@ -115,7 +118,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
       }
     }
 
-    Provider.of<AuthProvider>(context, listen: false).dataInit = true;
+    context.read<AuthProvider>().dataInit = true;
   }
 
   @override
@@ -165,7 +168,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
                 ),
                 BottomNavigationBarItem(
                   icon: const FaIcon(
-                    FontAwesomeIcons.weight,
+                    FontAwesomeIcons.weightScale,
                     size: 20,
                   ),
                   label: AppLocalizations.of(context).weight,

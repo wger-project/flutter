@@ -33,10 +33,12 @@ const RepetitionUnit repetitionUnit1 = RepetitionUnit(id: 1, name: 'Repetitions'
 const RepetitionUnit repetitionUnit2 = RepetitionUnit(id: 2, name: 'Hours');
 
 WorkoutPlan getWorkout() {
+  final testBases = getTestExerciseBases();
+
   final setting1 = Setting(
     setId: 1,
     order: 1,
-    exerciseId: 1,
+    exerciseBaseId: 1,
     repetitionUnitId: 1,
     reps: 2,
     weightUnitId: 1,
@@ -45,7 +47,7 @@ WorkoutPlan getWorkout() {
   );
   setting1.repetitionUnit = repetitionUnit1;
   setting1.weightUnit = weightUnit1;
-  setting1.exercise = exercise1;
+  setting1.exerciseBase = testBases[0];
   setting1.weight = 10;
 
   final log1 = Log.empty()
@@ -55,7 +57,7 @@ WorkoutPlan getWorkout() {
     ..date = DateTime(2021, 5, 1)
     ..reps = 10
     ..workoutPlan = 1;
-  log1.exercise = exercise1;
+  log1.exerciseBase = testBases[0];
   log1.weightUnit = weightUnit1;
   log1.repetitionUnit = repetitionUnit1;
 
@@ -66,7 +68,7 @@ WorkoutPlan getWorkout() {
     ..date = DateTime(2021, 5, 1)
     ..reps = 12
     ..workoutPlan = 1;
-  log2.exercise = exercise1;
+  log2.exerciseBase = testBases[0];
   log2.weightUnit = weightUnit1;
   log2.repetitionUnit = repetitionUnit1;
 
@@ -77,7 +79,7 @@ WorkoutPlan getWorkout() {
     ..date = DateTime(2021, 5, 2)
     ..reps = 8
     ..workoutPlan = 1;
-  log3.exercise = exercise2;
+  log3.exerciseBase = testBases[1];
   log3.weightUnit = weightUnit1;
   log3.repetitionUnit = repetitionUnit1;
 
@@ -88,7 +90,7 @@ WorkoutPlan getWorkout() {
     order: 1,
     comment: 'Important to do exercises correctly',
   );
-  set1.addExercise(exercise1);
+  set1.addExerciseBase(testBases[0]);
   set1.settings.add(setting1);
   set1.settingsComputed = [setting1, setting1];
 

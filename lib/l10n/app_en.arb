@@ -1,5 +1,6 @@
 {
   "@@last_modified": "2020-11-11T15:04:05.523531",
+  "userProfile": "Your profile",
   "login": "Log in",
   "@login": {
     "description": "Text for login button"
@@ -56,7 +57,7 @@
   "@customServerUrl": {
     "description": "Label in the form where the users can enter their own wger instance"
   },
-  "customServerHint": "Enter the the address of your own server, otherwise the default one will be used",
+  "customServerHint": "Enter the address of your own server, otherwise the default one will be used",
   "@customServerHint": {
     "description": "Hint text for the form where the users can enter their own wger instance"
   },
@@ -100,9 +101,18 @@
   "@successfullySaved": {
     "description": "Message when an item was successfully saved"
   },
+  "exerciseList": "Exercise list",
   "exercise": "Exercise",
   "@exercise": {
     "description": "An exercise for a workout"
+  },
+  "exercises": "Exercises",
+  "@exercises": {
+    "description": "Multiple exercises for a workout"
+  },
+  "exerciseName": "Exercise Name",
+  "@exerciseName": {
+    "description": "Label for the name of a workout exercise"
   },
   "searchExercise": "Search exercise to add",
   "@searchExercise": {
@@ -135,10 +145,6 @@
   "noWorkoutPlans": "You have no workout plans",
   "@noWorkoutPlans": {
     "description": "Message shown when the user has no workout plans"
-  },
-  "repetitions": "Repetitions",
-  "@repetitions": {
-    "description": "Repetitions for an exercise set"
   },
   "reps": "Reps",
   "@reps": {
@@ -265,12 +271,15 @@
     "description": "The weight of a workout log or body weight entry"
   },
   "measurement": "Measurement",
+  "@measurement": {},
   "measurements": "Measurements",
   "@measurements": {
     "description": "Categories for the measurements such as biceps size, body fat, etc."
   },
   "measurementCategoriesHelpText": "Measurement category, such as 'biceps' or 'body fat'",
+  "@measurementCategoriesHelpText": {},
   "measurementEntriesHelpText": "The unit used to measure the category such as 'cm' or '%'",
+  "@measurementEntriesHelpText": {},
   "date": "Date",
   "@date": {
     "description": "The date of a workout log or body weight entry"
@@ -296,6 +305,7 @@
     "description": "The end time of a workout"
   },
   "timeStartAhead": "Start time cannot be ahead of end time",
+  "@timeStartAhead": {},
   "ingredient": "Ingredient",
   "@ingredient": {},
   "energy": "Energy",
@@ -311,6 +321,7 @@
     "description": "Energy in a meal in kilocalories, kcal"
   },
   "macronutrients": "Macronutrients",
+  "@macronutrients": {},
   "planned": "Planned",
   "@planned": {
     "description": "Header for the column of 'planned' nutritional values, i.e. what should be eaten"
@@ -324,7 +335,9 @@
     "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
   },
   "difference": "Difference",
+  "@difference": {},
   "percentEnergy": "Percent of energy",
+  "@percentEnergy": {},
   "gPerBodyKg": "g per body kg",
   "@gPerBodyKg": {
     "description": "Label used for total sums of e.g. calories or similar in grams per Kg of body weight"
@@ -345,13 +358,13 @@
   "@protein": {},
   "proteinShort": "P",
   "@proteinShort": {
-    "description" : "The first letter or short name of the word 'Protein', used in overviews"
+    "description": "The first letter or short name of the word 'Protein', used in overviews"
   },
   "carbohydrates": "Carbohydrates",
   "@carbohydrates": {},
   "carbohydratesShort": "C",
   "@carbohydratesShort": {
-    "description" : "The first letter or short name of the word 'Carbohydrates', used in overviews"
+    "description": "The first letter or short name of the word 'Carbohydrates', used in overviews"
   },
   "sugars": "Sugars",
   "@sugars": {},
@@ -359,7 +372,7 @@
   "@fat": {},
   "fatShort": "F",
   "@fatShort": {
-    "description" : "The first letter or short name of the word 'Fat', used in overviews"
+    "description": "The first letter or short name of the word 'Fat', used in overviews"
   },
   "saturatedFat": "Saturated fat",
   "@saturatedFat": {},
@@ -383,6 +396,14 @@
   "@noWeightEntries": {
     "description": "Message shown when the user has no logged weight entries"
   },
+  "noMeasurementEntries": "You have no measurement entries",
+    "@noMeasurementntries": {
+      "description": "Message shown when the user has no logged measurement entries"
+    },
+  "moreMeasurementEntries": "Add new measurement",
+     "@moreMeasurementEntries": {
+       "description": "Message shown when the user wants to add new measurement"
+     },
   "edit": "Edit",
   "@edit": {},
   "loadingText": "Loading...",
@@ -406,6 +427,7 @@
     "description": "Switch to toggle detail / overview"
   },
   "goToDetailPage": "Go to detail page",
+  "@goToDetailPage": {},
   "aboutDescription": "Thank you for using wger! wger is a collaborative open source project, made by fitness enthusiasts from around the world.",
   "@aboutDescription": {
     "description": "Text in the about dialog"
@@ -456,6 +478,7 @@
   "@enterValue": {
     "description": "Error message when the user hasn't entered a value on a required field"
   },
+  "selectEntry": "Please select an entry",
   "selectExercise": "Please select an exercise",
   "@selectExercise": {
     "description": "Error message when the user hasn't selected an exercise in the form"
@@ -469,6 +492,15 @@
       "max": {}
     }
   },
+  "enterMinCharacters": "Please enter at least {min} characters",
+  "@enterMinCharacters": {
+    "description": "Error message when the user hasn't entered the minimum amount characters in a form",
+    "type": "text",
+    "placeholders": {
+      "min": {}
+    }
+  },
+  "baseNameEnglish": "All exercises need a base name in English",
   "nrOfSets": "Sets per exercise: {nrOfSets}",
   "@nrOfSets": {
     "description": "Label shown on the slider where the user selects the nr of sets",
@@ -503,21 +535,25 @@
     "description": "Label for the popup with general app options"
   },
   "takePicture": "Take a picture",
+  "@takePicture": {},
   "chooseFromLibrary": "Choose from photo library",
+  "@chooseFromLibrary": {},
   "gallery": "Gallery",
+  "@gallery": {},
   "addImage": "Add image",
+  "@addImage": {},
   "dataCopied": "Data copied to new entry",
   "@dataCopied": {
     "description": "Snackbar message to show on copying data to a new log entry"
   },
-  "appUpdateTitle" : "Update needed",
-  "appUpdateContent" : "This version of the app is not compatible with the server, please update your application.",
-
+  "appUpdateTitle": "Update needed",
+  "@appUpdateTitle": {},
+  "appUpdateContent": "This version of the app is not compatible with the server, please update your application.",
+  "@appUpdateContent": {},
   "productFound": "Product found",
   "@productFound": {
     "description": "Header label for dialog when product is found with barcode"
   },
-
   "productFoundDescription": "The barcode corresponds to this product: {productName}. Do you want to continue?",
   "@productFoundDescription": {
     "description": "Dialog info when product is found with barcode",
@@ -545,5 +581,71 @@
   "close": "Close",
   "@close": {
     "description": "Translation for close"
-  }
+  },
+  "add_exercise_image_license": "Images must be compatible with the CC BY SA license. If in doubt, upload only photos you've taken yourself.",
+  "variations": "Variations",
+  "@variations": {
+    "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"
+  },
+  "alsoKnownAs": "Also known as: {aliases}",
+  "@alsoKnownAs": {
+    "placeholders": {
+      "aliases": {}
+    },
+    "description": "List of alternative names for an exercise"
+  },
+  "verifiedEmail": "Verified email",
+  "unVerifiedEmail": "Unverified email",
+  "verifiedEmailReason": "You need to verify your email to contribute exercises",
+  "verifiedEmailInfo": "A verification email was sent to {email}",
+  "@verifiedEmailInfo": {
+    "placeholders": {
+      "email": {}
+    }
+  },
+  "alternativeNames": "Alternative names",
+  "oneNamePerLine": "One name per line",
+  "whatVariationsExist": "What variations of this exercise exist, if any?",
+  "previous": "Previous",
+  "next": "Next",
+  "images": "Images",
+  "language": "Language",
+  "addExercise": "Add exercise",
+  "contributeExercise": "Contribute an exercise",
+  "translation": "Translation",
+  "translateExercise": "Translate this exercise now",
+  "baseData": "Basics in English",
+  "@baseData": {
+    "description": "The base data for an exercise such as category, trained muscles, etc."
+  },
+  "repetitions": "Repetitions",
+  "minutes": "Minutes",
+  "glutes": "Glutes",
+  "kilometers": "Kilometers",
+  "until_failure": "Until Failure",
+  "seconds": "Seconds",
+  "bench": "Bench",
+  "barbell": "Barbell",
+  "triceps": "Triceps",
+  "swiss_ball": "Swiss Ball",
+  "none__bodyweight_exercise_": "none (bodyweight exercise)",
+  "lower_back": "Lower back",
+  "shoulders": "Shoulders",
+  "pull_up_bar": "Pull-up bar",
+  "hamstrings": "Hamstrings",
+  "calves": "Calves",
+  "chest": "Chest",
+  "kettlebell": "Kettlebell",
+  "biceps": "Biceps",
+  "dumbbell": "Dumbbell",
+  "gym_mat": "Gym mat",
+  "abs": "Abs",
+  "incline_bench": "Incline bench",
+  "miles": "Miles",
+  "lats": "Lats",
+  "legs": "Legs",
+  "back": "Back",
+  "quads": "Quads",
+  "arms": "Arms",
+  "sz_bar": "SZ-Bar"
 }

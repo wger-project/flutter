@@ -573,5 +573,13 @@
   "scanBarcode": "Strichcode scannen",
   "@scanBarcode": {
     "description": "Label for scan barcode button"
-  }
+  },
+  "abs": "Bauch",
+  "arms": "Arme",
+  "back": "Rücken",
+  "calves": "Waden",
+  "chest": "Brust",
+  "legs": "Beine",
+  "shoulders": "Schultern",
+  "barbell": "Langhantel"
 }

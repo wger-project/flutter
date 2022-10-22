@@ -20,7 +20,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # github action, the current versions are ignored.
 #   - the version number is taken from the git branch release/x.y.z
 #   - the build number is computed by reading the last one from the play store and increased by one
-version: 1.4.2+26
+version: 1.5.0+27
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
@@ -42,27 +42,31 @@ dependencies:
   flutter_typeahead: ^4.1.1
   font_awesome_flutter: ^10.2.1
   http: ^0.13.5
-  image_picker: ^0.8.4+9
+  image_picker: ^0.8.6
   intl: ^0.17.0
   json_annotation: ^4.7.0
   version: ^3.0.2
   package_info: ^2.0.2
-  provider: ^6.0.3
+  provider: ^6.0.4
   rive: ^0.9.1
   shared_preferences: ^2.0.15
   table_calendar: ^3.0.7
-  url_launcher: ^6.1.5
+  url_launcher: ^6.1.6
   flutter_barcode_scanner: ^2.0.0
   video_player: ^2.4.7
+  flutter_staggered_grid_view: ^0.6.2
+  carousel_slider: ^4.1.1
+  multi_select_flutter: ^4.1.2
+  flutter_svg: ^0.23.0+1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  #flutter_driver:
-  #  sdk: flutter
-  build_runner: ^2.2.1
+  integration_test:
+    sdk: flutter
+  build_runner: ^2.3.0
   flutter_launcher_icons: ^0.10.0
-  json_serializable: ^6.3.2
+  json_serializable: ^6.5.1
   mockito: ^5.3.2
   network_image_mock: ^2.1.1
   flutter_lints: ^2.0.1
