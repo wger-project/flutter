@@ -80,7 +80,7 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
                           onTap: () {
                             Navigator.of(context).pushNamed(AboutPage.routeName);
                           },
-                          title: const Text('About wger'),
+                          title: Text(AppLocalizations.of(context).aboutPageTitle),
                         ),
                         const Divider(),
                         ListTile(

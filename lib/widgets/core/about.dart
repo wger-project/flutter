@@ -38,7 +38,7 @@ class _AboutPageState extends State<AboutPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('About wger'),
+        title: Text(AppLocalizations.of(context).aboutPageTitle),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
