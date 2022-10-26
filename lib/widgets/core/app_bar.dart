@@ -17,7 +17,6 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/auth.dart';
@@ -76,7 +75,13 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
                             );
                           },
                         ),
-                        WgerAboutListTile(),
+                        ListTile(
+                          leading: const Icon(Icons.info),
+                          onTap: () {
+                            Navigator.of(context).pushNamed(AboutPage.routeName);
+                          },
+                          title: const Text('About wger'),
+                        ),
                         const Divider(),
                         ListTile(
                           //dense: true,
