@@ -22,6 +22,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
+import 'package:wger/widgets/core/no_items.dart';
 
 class WorkoutPlansList extends StatelessWidget {
   final WorkoutPlansProvider _workoutProvider;
@@ -30,6 +31,10 @@ class WorkoutPlansList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (_workoutProvider.items.isEmpty) {
+      return const NoItemsWidget();
+    }
+
     return ListView.builder(
       padding: const EdgeInsets.all(10.0),
       itemCount: _workoutProvider.items.length,

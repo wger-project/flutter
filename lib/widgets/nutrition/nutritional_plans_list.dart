@@ -21,6 +21,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
+import 'package:wger/widgets/core/no_items.dart';
 
 class NutritionalPlansList extends StatelessWidget {
   final NutritionPlansProvider _nutritionProvider;
@@ -28,6 +29,9 @@ class NutritionalPlansList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (_nutritionProvider.items.isEmpty) {
+      return const NoItemsWidget();
+    }
     return ListView.builder(
       padding: const EdgeInsets.all(10.0),
       itemCount: _nutritionProvider.items.length,

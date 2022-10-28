@@ -17,13 +17,13 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/gallery.dart';
 import 'package:wger/screens/form_screen.dart';
+import 'package:wger/widgets/core/no_items.dart';
 
 import 'forms.dart';
 
@@ -33,6 +33,10 @@ class Gallery extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<GalleryProvider>(context);
+
+    if (provider.images.isEmpty) {
+      return const NoItemsWidget();
+    }
 
     return Padding(
       padding: const EdgeInsets.all(5),
