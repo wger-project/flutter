@@ -108,6 +108,8 @@ class AuthCard extends StatefulWidget {
 
 class _AuthCardState extends State<AuthCard> {
   bool isObscure = true;
+  bool confirmIsObscure = true;
+
   final GlobalKey<FormState> _formKey = GlobalKey();
   bool _canRegister = true;
   AuthMode _authMode = AuthMode.Login;
@@ -262,6 +264,7 @@ class _AuthCardState extends State<AuthCard> {
                       key: const Key('inputEmail'),
                       decoration: InputDecoration(
                         labelText: AppLocalizations.of(context).email,
+                        prefixIcon: const Icon(Icons.mail),
                       ),
                       autofillHints: const [AutofillHints.email],
                       controller: _emailController,
@@ -284,7 +287,7 @@ class _AuthCardState extends State<AuthCard> {
                       key: const Key('inputPassword'),
                       decoration: InputDecoration(
                         labelText: AppLocalizations.of(context).password,
-                        prefixIcon: const Icon(Icons.key),
+                        prefixIcon: const Icon(Icons.password),
                         suffixIcon: IconButton(
                           icon: Icon(isObscure ? Icons.visibility_off : Icons.visibility),
                           onPressed: () {
@@ -309,22 +312,33 @@ class _AuthCardState extends State<AuthCard> {
                     );
                   }),
                   if (_authMode == AuthMode.Signup)
-                    TextFormField(
-                      key: const Key('inputPassword2'),
-                      decoration:
-                          InputDecoration(labelText: AppLocalizations.of(context).confirmPassword),
-                      controller: _password2Controller,
-                      enabled: _authMode == AuthMode.Signup,
-                      obscureText: true,
-                      validator: _authMode == AuthMode.Signup
-                          ? (value) {
-                              if (value != _passwordController.text) {
-                                return AppLocalizations.of(context).passwordsDontMatch;
+                    StatefulBuilder(builder: (context, updateState) {
+                      return TextFormField(
+                        key: const Key('inputPassword2'),
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context).confirmPassword,
+                          prefixIcon: const Icon(Icons.password),
+                          suffixIcon: IconButton(
+                            icon: Icon(confirmIsObscure ? Icons.visibility_off : Icons.visibility),
+                            onPressed: () {
+                              confirmIsObscure = !confirmIsObscure;
+                              updateState(() {});
+                            },
+                          ),
+                        ),
+                        controller: _password2Controller,
+                        enabled: _authMode == AuthMode.Signup,
+                        obscureText: confirmIsObscure,
+                        validator: _authMode == AuthMode.Signup
+                            ? (value) {
+                                if (value != _passwordController.text) {
+                                  return AppLocalizations.of(context).passwordsDontMatch;
+                                }
+                                return null;
                               }
-                              return null;
-                            }
-                          : null,
-                    ),
+                            : null,
+                      );
+                    }),
                   // Off-stage widgets are kept in the tree, otherwise the server URL
                   // would not be saved to _authData
                   Offstage(
