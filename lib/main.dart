@@ -47,6 +47,7 @@ import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/screens/workout_plans_screen.dart';
 import 'package:wger/theme/theme.dart';
+import 'package:wger/widgets/core/about.dart';
 
 import 'providers/auth.dart';
 
@@ -148,6 +149,7 @@ class MyApp extends StatelessWidget {
             ExercisesScreen.routeName: (ctx) => const ExercisesScreen(),
             ExerciseDetailScreen.routeName: (ctx) => const ExerciseDetailScreen(),
             AddExerciseScreen.routeName: (ctx) => const AddExerciseScreen(),
+            AboutPage.routeName: (ctx) => const AboutPage(),
           },
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,

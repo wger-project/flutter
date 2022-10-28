@@ -689,5 +689,13 @@
   "baseData": "İngilizce'de temel bilgiler",
   "@baseData": {
     "description": "The base data for an exercise such as category, trained muscles, etc."
-  }
+  },
+  "noMeasurementEntries": "Ölçüm girdiniz yok",
+  "@noMeasurementEntries": {},
+  "moreMeasurementEntries": "Yeni ölçüm ekle",
+  "@moreMeasurementEntries": {
+    "description": "Message shown when the user wants to add new measurement"
+  },
+  "aboutPageTitle": "Wger Hakkında",
+  "@aboutPageTitle": {}
 }
