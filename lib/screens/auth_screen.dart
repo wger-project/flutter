@@ -429,7 +429,9 @@ class _AuthCardState extends State<AuthCard> {
                   Builder(
                     key: const Key('toggleActionButton'),
                     builder: (context) {
-                      final String text = AppLocalizations.of(context).registerInstead;
+                      final String text = _authMode != AuthMode.Signup
+                          ? AppLocalizations.of(context).registerInstead
+                          : AppLocalizations.of(context).loginInstead;
 
                       return GestureDetector(
                         onTap: () {
