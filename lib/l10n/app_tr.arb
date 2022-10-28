@@ -695,5 +695,7 @@
   "moreMeasurementEntries": "Yeni ölçüm ekle",
   "@moreMeasurementEntries": {
     "description": "Message shown when the user wants to add new measurement"
-  }
+  },
+  "aboutPageTitle": "Wger Hakkında",
+  "@aboutPageTitle": {}
 }
