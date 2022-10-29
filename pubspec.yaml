@@ -58,6 +58,7 @@ dependencies:
   carousel_slider: ^4.1.1
   multi_select_flutter: ^4.1.2
   flutter_svg: ^0.23.0+1
+  html_editor_enhanced: ^2.5.0
 
 dev_dependencies:
   flutter_test:
