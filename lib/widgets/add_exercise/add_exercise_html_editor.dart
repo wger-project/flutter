@@ -28,53 +28,49 @@ class _AddExerciseHtmlEditorState extends State<AddExerciseHtmlEditor> {
     );
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Column(
-        children: [
-          HtmlEditor(
-            controller: editorController,
-            htmlToolbarOptions: const HtmlToolbarOptions(
-                toolbarPosition: ToolbarPosition.belowEditor,
-                toolbarType: ToolbarType.nativeScrollable,
-                defaultToolbarButtons: [
-                  FontButtons(bold: true,
-                      underline: true,
-                      italic: true,
-                      strikethrough: false,
-                      superscript: false,
-                      subscript: false,
-                      clearAll: false
-                  ),
-                  ListButtons(
-                      ol: true,
-                      ul: true,
-                      listStyles: false
-                  ),
-                  ParagraphButtons(
-                      textDirection: false,
-                      lineHeight: false,
-                      caseConverter: false,
-                      increaseIndent: false,
-                      decreaseIndent: false,
-                      alignLeft: false,
-                      alignCenter: false,
-                      alignRight: false,
-                      alignJustify: false
-                  ),
-                ]
-            ),
-            htmlEditorOptions: HtmlEditorOptions(
-              hint: widget.helperText,
-              shouldEnsureVisible: true,
-            ),
-            otherOptions: const OtherOptions(
-              height: 200,
-            ),
-            callbacks: Callbacks(onChangeContent: (String? currentHtml) {
-              addExerciseProvider.descriptionEn = currentHtml!;
-            },
-            ),
-          ),
-        ],
+      child: HtmlEditor(
+        controller: editorController,
+        htmlToolbarOptions: const HtmlToolbarOptions(
+            toolbarPosition: ToolbarPosition.belowEditor,
+            toolbarType: ToolbarType.nativeScrollable,
+            defaultToolbarButtons: [
+              FontButtons(bold: true,
+                  underline: true,
+                  italic: true,
+                  strikethrough: false,
+                  superscript: false,
+                  subscript: false,
+                  clearAll: false
+              ),
+              ListButtons(
+                  ol: true,
+                  ul: true,
+                  listStyles: false
+              ),
+              ParagraphButtons(
+                  textDirection: false,
+                  lineHeight: false,
+                  caseConverter: false,
+                  increaseIndent: false,
+                  decreaseIndent: false,
+                  alignLeft: false,
+                  alignCenter: false,
+                  alignRight: false,
+                  alignJustify: false
+              ),
+            ]
+        ),
+        htmlEditorOptions: HtmlEditorOptions(
+          hint: widget.helperText,
+          shouldEnsureVisible: true,
+        ),
+        otherOptions: const OtherOptions(
+          height: 200,
+        ),
+        callbacks: Callbacks(onChangeContent: (String? currentHtml) {
+          addExerciseProvider.descriptionEn = currentHtml!;
+        },
+        ),
       ),
     );
   }
