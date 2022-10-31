@@ -65,9 +65,9 @@
   "@reset": {
     "description": "Button text allowing the user to reset the entered values to the default"
   },
-  "registerInstead": "Register instead",
+  "registerInstead": "Don't have an account? Register now",
   "@registerInstead": {},
-  "loginInstead": "Log in instead",
+  "loginInstead": "Already have an account? Login",
   "@loginInstead": {},
   "labelWorkoutPlans": "Workout plans",
   "@labelWorkoutPlans": {
