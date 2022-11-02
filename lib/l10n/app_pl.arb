@@ -556,5 +556,108 @@
   "enterValidNumber": "Proszę wprowadzić poprawny numer",
   "@enterValidNumber": {
     "description": "Error message when the user has submitted an invalid number (e.g. '3,.,.,.')"
-  }
+  },
+  "noMeasurementEntries": "Nie masz wpisów pomiarowych",
+  "@noMeasurementEntries": {},
+  "moreMeasurementEntries": "Dodaj nowy pomiar",
+  "@moreMeasurementEntries": {
+    "description": "Message shown when the user wants to add new measurement"
+  },
+  "enterMinCharacters": "Proszę wpisać co najmniej {min} znaków",
+  "@enterMinCharacters": {
+    "description": "Error message when the user hasn't entered the minimum amount characters in a form",
+    "type": "text",
+    "placeholders": {
+      "min": {}
+    }
+  },
+  "baseNameEnglish": "Wszystkie ćwiczenia wymagają nazwy podstawowej w języku angielskim",
+  "@baseNameEnglish": {},
+  "images": "Obrazy",
+  "@images": {},
+  "language": "Język",
+  "@language": {},
+  "add_exercise_image_license": "Obrazy muszą być zgodne z licencją CC BY SA. Jeśli masz wątpliwości przesyłaj tylko zdjęcia które sam zrobiłeś.",
+  "@add_exercise_image_license": {},
+  "variations": "Wariacje",
+  "@variations": {
+    "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"
+  },
+  "alsoKnownAs": "Znany również jako: {aliases}",
+  "@alsoKnownAs": {
+    "placeholders": {
+      "aliases": {}
+    },
+    "description": "List of alternative names for an exercise"
+  },
+  "unVerifiedEmail": "Niezweryfikowany adres e-mail",
+  "@unVerifiedEmail": {},
+  "verifiedEmail": "Zweryfikowany adres e-mail",
+  "@verifiedEmail": {},
+  "verifiedEmailReason": "Aby współtworzyć ćwiczenia musisz zweryfikować swój adres e-mail",
+  "@verifiedEmailReason": {},
+  "verifiedEmailInfo": "Wiadomość weryfikacyjna została wysłana na adres {email}",
+  "@verifiedEmailInfo": {
+    "placeholders": {
+      "email": {}
+    }
+  },
+  "alternativeNames": "Alternatywne nazwy",
+  "@alternativeNames": {},
+  "oneNamePerLine": "Jedna nazwa w wierszu",
+  "@oneNamePerLine": {},
+  "whatVariationsExist": "Czy istnieją wariacje tego ćwiczenia?",
+  "@whatVariationsExist": {},
+  "previous": "Wstecz",
+  "@previous": {},
+  "next": "Następny",
+  "@next": {},
+  "addExercise": "Dodaj ćwiczenie",
+  "@addExercise": {},
+  "translation": "Tłumaczenie",
+  "@translation": {},
+  "contributeExercise": "Przekaż ćwiczenie",
+  "@contributeExercise": {},
+  "translateExercise": "Przetłumacz to ćwiczenie teraz",
+  "@translateExercise": {},
+  "minutes": "Minuty",
+  "@minutes": {},
+  "kilometers": "Kilometry",
+  "@kilometers": {},
+  "until_failure": "Aż do awarii",
+  "@until_failure": {},
+  "seconds": "Sekundy",
+  "@seconds": {},
+  "bench": "Ławka",
+  "@bench": {},
+  "triceps": "Triceps",
+  "@triceps": {},
+  "swiss_ball": "Piłka lekarska",
+  "@swiss_ball": {},
+  "none__bodyweight_exercise_": "brak (ćwiczenie z masą ciała)",
+  "@none__bodyweight_exercise_": {},
+  "pull_up_bar": "Drążek do podciągania",
+  "@pull_up_bar": {},
+  "biceps": "Biceps",
+  "@biceps": {},
+  "userProfile": "Twój profil",
+  "@userProfile": {},
+  "exerciseList": "Lista ćwiczeń",
+  "@exerciseList": {},
+  "exercises": "Ćwiczenia",
+  "@exercises": {
+    "description": "Multiple exercises for a workout"
+  },
+  "exerciseName": "Nazwa ćwiczenia",
+  "@exerciseName": {
+    "description": "Label for the name of a workout exercise"
+  },
+  "selectEntry": "Wybierz wpis",
+  "@selectEntry": {},
+  "incline_bench": "Ławka skośna",
+  "@incline_bench": {},
+  "gym_mat": "Mata gimnastyczna",
+  "@gym_mat": {},
+  "aboutPageTitle": "Więcej o Wger",
+  "@aboutPageTitle": {}
 }

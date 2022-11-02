@@ -55,9 +55,9 @@
   "@labelBottomNavWorkout": {
     "description": "Label used in bottom navigation, use a short word"
   },
-  "loginInstead": "Bunun yerine giriş yapın",
+  "loginInstead": "Zaten hesabınız var mı? Oturum açın",
   "@loginInstead": {},
-  "registerInstead": "Bunun yerine kaydolun",
+  "registerInstead": "Hesabınız yok mu? Şimdi kaydolun",
   "@registerInstead": {},
   "reset": "Sıfırla",
   "@reset": {
@@ -695,5 +695,7 @@
   "moreMeasurementEntries": "Yeni ölçüm ekle",
   "@moreMeasurementEntries": {
     "description": "Message shown when the user wants to add new measurement"
-  }
+  },
+  "aboutPageTitle": "Wger Hakkında",
+  "@aboutPageTitle": {}
 }

@@ -45,80 +45,96 @@ const materialSizes = {
 };
 
 final ThemeData wgerTheme = ThemeData(
-    /*
+  /*
     * General stuff
     */
-    primaryColor: wgerPrimaryColor,
-    scaffoldBackgroundColor: wgerBackground,
+  primaryColor: wgerPrimaryColor,
+  scaffoldBackgroundColor: wgerBackground,
 
-    // This makes the visual density adapt to the platform that you run
-    // the app on. For desktop platforms, the controls will be smaller and
-    // closer together (more dense) than on mobile platforms.
-    visualDensity: VisualDensity.adaptivePlatformDensity,
+  // This makes the visual density adapt to the platform that you run
+  // the app on. For desktop platforms, the controls will be smaller and
+  // closer together (more dense) than on mobile platforms.
+  visualDensity: VisualDensity.adaptivePlatformDensity,
 
-    // Show icons in the system's bar in light colors
-    appBarTheme: const AppBarTheme(
-      systemOverlayStyle: SystemUiOverlayStyle.dark,
-      color: wgerPrimaryColor,
-    ),
+  // Show icons in the system's bar in light colors
+  appBarTheme: const AppBarTheme(
+    systemOverlayStyle: SystemUiOverlayStyle.dark,
+    color: wgerPrimaryColor,
+  ),
 
-    /*
+  /*
      * Text theme
      */
-    textTheme: TextTheme(
-      headline1: const TextStyle(fontFamily: 'OpenSansLight', color: Colors.black),
-      headline2: const TextStyle(fontFamily: 'OpenSansLight', color: Colors.black),
-      headline3: TextStyle(
-        fontSize: materialSizes['h3']! * 0.8,
-        fontFamily: 'OpenSansBold',
-        color: Colors.black,
-      ),
-      headline4: TextStyle(
-        fontSize: materialSizes['h4']! * 0.8,
-        fontFamily: 'OpenSansBold',
-        color: Colors.black,
-      ),
-      headline5: TextStyle(
-        fontSize: materialSizes['h5'],
-        fontFamily: 'OpenSansBold',
-        color: Colors.black,
-      ),
-      headline6: TextStyle(
-        fontSize: materialSizes['h6']! * 0.8,
-        fontFamily: 'OpenSansBold',
-        color: Colors.black,
-      ),
+  textTheme: TextTheme(
+    headline1: const TextStyle(fontFamily: 'OpenSansLight', color: Colors.black),
+    headline2: const TextStyle(fontFamily: 'OpenSansLight', color: Colors.black),
+    headline3: TextStyle(
+      fontSize: materialSizes['h3']! * 0.8,
+      fontFamily: 'OpenSansBold',
+      color: Colors.black,
     ),
+    headline4: TextStyle(
+      fontSize: materialSizes['h4']! * 0.8,
+      fontFamily: 'OpenSansBold',
+      color: Colors.black,
+    ),
+    headline5: TextStyle(
+      fontSize: materialSizes['h5'],
+      fontFamily: 'OpenSansBold',
+      color: Colors.black,
+    ),
+    headline6: TextStyle(
+      fontSize: materialSizes['h6']! * 0.8,
+      fontFamily: 'OpenSansBold',
+      color: Colors.black,
+    ),
+  ),
 
-    /*
+  /*
      * Button theme
      */
-    textButtonTheme: TextButtonThemeData(
-      style: TextButton.styleFrom(
-        primary: wgerPrimaryButtonColor,
-      ),
+  textButtonTheme: TextButtonThemeData(
+    style: TextButton.styleFrom(
+      primary: wgerPrimaryButtonColor,
     ),
-    outlinedButtonTheme: OutlinedButtonThemeData(
-      style: OutlinedButton.styleFrom(
-        foregroundColor: wgerPrimaryButtonColor,
-        visualDensity: VisualDensity.compact,
-        side: const BorderSide(color: wgerPrimaryButtonColor),
-      ),
+  ),
+  outlinedButtonTheme: OutlinedButtonThemeData(
+    style: OutlinedButton.styleFrom(
+      foregroundColor: wgerPrimaryButtonColor,
+      visualDensity: VisualDensity.compact,
+      side: const BorderSide(color: wgerPrimaryButtonColor),
     ),
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: wgerPrimaryButtonColor,
-      ),
+  ),
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ElevatedButton.styleFrom(
+      backgroundColor: wgerPrimaryButtonColor,
     ),
+  ),
 
-    /*
+  /*
     * Forms, etc.
     */
-    sliderTheme: const SliderThemeData(
-      activeTrackColor: wgerPrimaryButtonColor,
-      thumbColor: wgerPrimaryColor,
+  sliderTheme: const SliderThemeData(
+    activeTrackColor: wgerPrimaryButtonColor,
+    thumbColor: wgerPrimaryColor,
+  ),
+  colorScheme: ColorScheme.fromSwatch().copyWith(secondary: wgerSecondaryColor),
+  // Text Selection Theme
+  textSelectionTheme: TextSelectionThemeData(
+    cursorColor: wgerPrimaryColor,
+    selectionColor: wgerPrimaryColor.withOpacity(0.2),
+    selectionHandleColor: wgerPrimaryColor,
+  ),
+  // Text Fields Theme
+  inputDecorationTheme: InputDecorationTheme(
+    focusColor: wgerPrimaryColor,
+    iconColor: Colors.grey.shade600,
+    floatingLabelStyle: const TextStyle(color: wgerPrimaryColor),
+    focusedBorder: const UnderlineInputBorder(
+      borderSide: BorderSide(color: wgerPrimaryColor),
     ),
-    colorScheme: ColorScheme.fromSwatch().copyWith(secondary: wgerSecondaryColor));
+  ),
+);
 
 const wgerCalendarStyle = CalendarStyle(
 // Use `CalendarStyle` to customize the UI

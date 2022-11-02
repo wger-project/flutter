@@ -50,7 +50,7 @@ dependencies:
   provider: ^6.0.4
   rive: ^0.9.1
   shared_preferences: ^2.0.15
-  table_calendar: ^3.0.7
+  table_calendar: ^3.0.8
   url_launcher: ^6.1.6
   flutter_barcode_scanner: ^2.0.0
   video_player: ^2.4.7
@@ -64,9 +64,9 @@ dev_dependencies:
     sdk: flutter
   integration_test:
     sdk: flutter
-  build_runner: ^2.3.0
+  build_runner: ^2.3.2
   flutter_launcher_icons: ^0.10.0
-  json_serializable: ^6.5.1
+  json_serializable: ^6.5.4
   mockito: ^5.3.2
   network_image_mock: ^2.1.1
   flutter_lints: ^2.0.1
