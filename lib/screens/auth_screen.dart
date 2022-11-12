@@ -259,6 +259,9 @@ class _AuthCardState extends State<AuthCard> {
                       }
                       return null;
                     },
+                    onFieldSubmitted: (value){
+                      _submit(context);
+                    },
                     onSaved: (value) {
                       _authData['password'] = value!;
                     },
