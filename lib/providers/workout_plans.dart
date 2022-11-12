@@ -18,6 +18,7 @@
 
 import 'dart:convert';
 import 'dart:developer' as dev;
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -87,6 +88,10 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
   /// Return the default weight unit (reps)
   RepetitionUnit get defaultRepetitionUnit {
     return _repetitionUnit.firstWhere((element) => element.id == DEFAULT_REPETITION_UNIT);
+  }
+
+  List<WorkoutPlan> getPlans() {
+    return _workoutPlans;
   }
 
   WorkoutPlan findById(int id) {
@@ -359,6 +364,7 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
       'weightUnit': _weightUnits.map((e) => e.toJson()).toList(),
     };
     prefs.setString('workoutUnits', json.encode(exerciseData));
+    log(json.encode(exerciseData));
     notifyListeners();
   }
 
