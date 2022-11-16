@@ -568,5 +568,21 @@
   "searchIngredient": "Cerca ingrediente",
   "@searchIngredient": {
     "description": "Label on ingredient search form"
-  }
+  },
+  "userProfile": "Il tuo profilo",
+  "@userProfile": {},
+  "exerciseList": "Lista esercizi",
+  "@exerciseList": {},
+  "exercises": "Esercizi",
+  "@exercises": {
+    "description": "Multiple exercises for a workout"
+  },
+  "exerciseName": "Nome Esercizio",
+  "@exerciseName": {
+    "description": "Label for the name of a workout exercise"
+  },
+  "previous": "Precedente",
+  "@previous": {},
+  "next": "Successivo",
+  "@next": {}
 }
