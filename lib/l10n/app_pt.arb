@@ -253,12 +253,6 @@
   "@selectImage": {
     "description": "Label and error message when the user hasn't selected an image to save"
   },
-  "takePicture": "Tirar uma foto",
-  "@takePicture": {},
-  "chooseFromLibrary": "Escolha na biblioteca de fotos",
-  "@chooseFromLibrary": {},
-  "gallery": "Galeria",
-  "@gallery": {},
   "addImage": "Adicionar imagem",
   "@addImage": {},
   "dataCopied": "Dados copiados para nova entrada",
@@ -284,10 +278,6 @@
   "scanBarcode": "Digitalizar código de barras",
   "@scanBarcode": {
     "description": "Label for scan barcode button"
-  },
-  "close": "Fechar",
-  "@close": {
-    "description": "Translation for close"
   },
   "register": "Registrar",
   "@register": {
@@ -499,12 +489,6 @@
   },
   "edit": "Editar",
   "@edit": {},
-  "loadingText": "Carregando...",
-  "@loadingText": {
-    "description": "Text to show when entries are being loaded in the background: Loading..."
-  },
-  "delete": "Deletar",
-  "@delete": {},
   "confirmDelete": "Tem certeza que deseja excluir '{toDelete}'?",
   "@confirmDelete": {
     "description": "Confirmation text before the user deletes an object",
@@ -562,7 +546,7 @@
     "placeholders": {
       "productName": {}
     }
-  }
+  },
   "alsoKnownAs": "Também chamado de: {aliases}",
   "@alsoKnownAs": {
     "placeholders": {
@@ -571,7 +555,7 @@
     "description": "List of alternative names for an exercise"
   },
   "verifiedEmail": "Email verificado",
-  "unVerifiedEmail": "Verificação pendente"
+  "unVerifiedEmail": "Verificação pendente",
   "verifiedEmailReason": "É necessário verificar seu email para contribuir com exercícios",
   "verifiedEmailInfo": "Um email de verificação foi enviado para {email}",
   "@verifiedEmailInfo": {
