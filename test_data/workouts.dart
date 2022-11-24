@@ -35,21 +35,6 @@ const RepetitionUnit repetitionUnit2 = RepetitionUnit(id: 2, name: 'Hours');
 WorkoutPlan getWorkout() {
   final testBases = getTestExerciseBases();
 
-  final setting1 = Setting(
-    setId: 1,
-    order: 1,
-    exerciseBaseId: 1,
-    repetitionUnitId: 1,
-    reps: 2,
-    weightUnitId: 1,
-    comment: 'ddd',
-    rir: '2',
-  );
-  setting1.repetitionUnit = repetitionUnit1;
-  setting1.weightUnit = weightUnit1;
-  setting1.exerciseBase = testBases[0];
-  setting1.weight = 10;
-
   final log1 = Log.empty()
     ..id = 1
     ..weight = 10
@@ -83,36 +68,104 @@ WorkoutPlan getWorkout() {
   log3.weightUnit = weightUnit1;
   log3.repetitionUnit = repetitionUnit1;
 
-  final set1 = Set.withData(
+  final settingBenchPress = Setting(
+    setId: 1,
+    order: 1,
+    exerciseBaseId: 1,
+    repetitionUnitId: 1,
+    reps: 6,
+    weightUnitId: 1,
+    comment: 'ddd',
+    rir: '3',
+  );
+  settingBenchPress.repetitionUnit = repetitionUnit1;
+  settingBenchPress.weightUnit = weightUnit1;
+  settingBenchPress.exerciseBase = testBases[0];
+  settingBenchPress.weight = 80;
+
+  final setBenchPress = Set.withData(
     id: 1,
     day: 1,
     sets: 3,
     order: 1,
-    comment: 'Important to do exercises correctly',
+    comment: 'Make sure to warm up',
   );
-  set1.addExerciseBase(testBases[0]);
-  set1.settings.add(setting1);
-  set1.settingsComputed = [setting1, setting1];
+  setBenchPress.addExerciseBase(testBases[0]);
+  setBenchPress.settings.add(settingBenchPress);
+  setBenchPress.settingsComputed = [settingBenchPress, settingBenchPress];
 
-  final day1 = Day()
+  final settingSquat = Setting(
+    setId: 2,
+    order: 1,
+    exerciseBaseId: 8,
+    repetitionUnitId: 1,
+    reps: 8,
+    weightUnitId: 1,
+    comment: 'ddd',
+    rir: '2',
+  );
+  settingSquat.repetitionUnit = repetitionUnit1;
+  settingSquat.weightUnit = weightUnit1;
+  settingSquat.exerciseBase = testBases[4];
+  settingSquat.weight = 120;
+
+  final setSquat = Set.withData(
+    id: 2,
+    day: 1,
+    sets: 3,
+    order: 1,
+  );
+  setSquat.addExerciseBase(testBases[4]);
+  setSquat.settings.add(settingSquat);
+  setSquat.settingsComputed = [settingSquat, settingSquat];
+
+  final settingSideRaises = Setting(
+    setId: 2,
+    order: 1,
+    exerciseBaseId: 8,
+    repetitionUnitId: 1,
+    reps: 12,
+    weightUnitId: 1,
+    comment: 'ddd',
+    rir: '',
+  );
+  settingSideRaises.repetitionUnit = repetitionUnit1;
+  settingSideRaises.weightUnit = weightUnit1;
+  settingSideRaises.exerciseBase = testBases[5];
+  settingSideRaises.weight = 6;
+
+  final setSideRaises = Set.withData(
+    id: 3,
+    day: 1,
+    sets: 3,
+    order: 1,
+  );
+  setSideRaises.addExerciseBase(testBases[5]);
+  setSideRaises.settings.add(settingSideRaises);
+  setSideRaises.settingsComputed = [settingSideRaises, settingSideRaises];
+
+  final dayChestShoulders = Day()
     ..id = 1
     ..workoutId = 1
-    ..description = 'test day 1'
+    ..description = 'chest, shoulders'
     ..daysOfWeek = [1, 2];
-  day1.sets.add(set1);
+  dayChestShoulders.sets.add(setBenchPress);
+  dayChestShoulders.sets.add(setSideRaises);
 
-  final day2 = Day()
+  final dayLegs = Day()
     ..id = 2
     ..workoutId = 1
-    ..description = 'test day 2'
+    ..description = 'legs'
     ..daysOfWeek = [4];
+  dayLegs.sets.add(setSquat);
 
   final workout = WorkoutPlan(
-      id: 1,
-      creationDate: DateTime(2021, 01, 01),
-      name: 'test workout 1',
-      days: [day1, day2],
-      logs: [log1, log2, log3]);
+    id: 1,
+    creationDate: DateTime(2021, 01, 01),
+    name: '3 day workout',
+    days: [dayChestShoulders, dayLegs],
+    logs: [log1, log2, log3],
+  );
 
   return workout;
 }

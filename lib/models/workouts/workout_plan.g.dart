@@ -19,7 +19,8 @@ WorkoutPlan _$WorkoutPlanFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$WorkoutPlanToJson(WorkoutPlan instance) => <String, dynamic>{
+Map<String, dynamic> _$WorkoutPlanToJson(WorkoutPlan instance) =>
+    <String, dynamic>{
       'id': instance.id,
       'creation_date': instance.creationDate.toIso8601String(),
       'name': instance.name,

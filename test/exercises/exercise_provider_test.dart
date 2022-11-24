@@ -239,8 +239,8 @@ void main() {
 
       test('A muscle is selected with no search term. Should not find results', () async {
         // arrange
-        Filters tFilters = filters.copyWith(
-          exerciseCategories: filters.exerciseCategories.copyWith(items: {data.tCategory4: true}),
+        final Filters tFilters = filters.copyWith(
+          exerciseCategories: filters.exerciseCategories.copyWith(items: {data.tCategory5: true}),
         );
 
         // act

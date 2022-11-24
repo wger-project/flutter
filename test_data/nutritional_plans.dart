@@ -103,7 +103,7 @@ NutritionalPlan getNutritionalPlan() {
 
   final NutritionalPlan plan = NutritionalPlan(
     id: 1,
-    description: 'lots and lots of mass',
+    description: 'Less fat, more protein',
     creationDate: DateTime(2021, 5, 23),
   );
   plan.meals = [meal1, meal2];
