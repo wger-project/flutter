@@ -582,7 +582,7 @@
   },
   "add_exercise_image_license": "Görseller CC BY SA lisansı ile uyumlu olmalıdır. Emin değilseniz, yalnızca kendi çektiğiniz fotoğrafları yükleyin.",
   "@add_exercise_image_license": {},
-  "verifiedEmailReason": "Egzersizlere katkıda bulunmak için e-postanızı doğrulamanız gerekiyor",
+  "verifiedEmailReason": "Egzersizlere katkıda bulunmak için e-posta adresinizi doğrulamanız gerekiyor",
   "@verifiedEmailReason": {},
   "alternativeNames": "Alternatif isimler",
   "@alternativeNames": {},
@@ -630,9 +630,9 @@
   "@variations": {
     "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"
   },
-  "verifiedEmail": "Doğrulanmış e-posta",
+  "verifiedEmail": "Doğrulanmış e-posta adresi",
   "@verifiedEmail": {},
-  "unVerifiedEmail": "Doğrulanmamış e-posta",
+  "unVerifiedEmail": "Doğrulanmamış e-posta adresi",
   "@unVerifiedEmail": {},
   "oneNamePerLine": "Satır başına bir ad",
   "@oneNamePerLine": {},
