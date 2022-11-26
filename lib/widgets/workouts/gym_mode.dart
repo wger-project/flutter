@@ -41,6 +41,7 @@ import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/exercises/images.dart';
+import 'package:wger/widgets/exercises/videos.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 
 class GymMode extends StatefulWidget {
@@ -698,6 +699,17 @@ class ExerciseOverview extends StatelessWidget {
                         textAlign: TextAlign.center,
                       ))
                   .toList(),
+              if (_exerciseBase.videos.isNotEmpty)
+                SizedBox(
+                  width: double.infinity,
+                  height: 200,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: [
+                      ..._exerciseBase.videos.map((e) => ExerciseVideoWidget(video: e)).toList(),
+                    ],
+                  ),
+                ),
               if (_exerciseBase.images.isNotEmpty)
                 SizedBox(
                   width: double.infinity,
