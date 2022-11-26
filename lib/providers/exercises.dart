@@ -181,6 +181,14 @@ class ExercisesProvider with ChangeNotifier {
     );
   }
 
+  /// Find exercise base by UUID
+  ExerciseBase findExerciseBaseByUuid(String uuid) {
+    return _exerciseBases.firstWhere(
+      (base) => base.uuid == uuid,
+      orElse: () => throw NoSuchEntryException(),
+    );
+  }
+
   /// Find exercise bases by variation IDs
   ///
   /// exerciseIdToExclude: the ID of the exercise to exclude from the list of

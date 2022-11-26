@@ -1063,6 +1063,8 @@ class NavigationHeader extends StatelessWidget {
   });
 
   Widget getDialog(BuildContext context) {
+    final exerciseProvider = Provider.of<ExercisesProvider>(context, listen: false);
+
     return AlertDialog(
       title: Text(
         AppLocalizations.of(context).jumpTo,
@@ -1074,7 +1076,11 @@ class NavigationHeader extends StatelessWidget {
           children: [
             ...exercisePages.keys.map((e) {
               return ListTile(
-                title: Text(e),
+                title: Text(
+                  exerciseProvider.findExerciseBaseByUuid(e).getExercise(
+                    Localizations.localeOf(context).languageCode
+                  ).name
+                ),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {
                   _controller.animateToPage(
