@@ -17,6 +17,7 @@
 - Florian Schmitz - <https://github.com/floodoo>
 - Aman Negi - <https://github.com/AmanNegi>
 - Sandi Milohanic - <https://github.com/sandimilohanic>
+- Mohammad Rafigh - <https://github.com/mohammadrafigh>
 
 ## Translators
 
@@ -51,7 +52,7 @@
 - Norwegian Bokmål
 
   - Allan Nordhøy <epost@anotheragency.no> (98)
-  
+
 - Japanese
 
   - Kosei TANAKA <wms784.app@gmail.com> (97)
@@ -61,5 +62,5 @@
   - Nenza Nurfirmansyah <nnurfirmansyah@gmail.com> (73)
 
 - Croatian
-  
+
   - Sandi Milohaic <sandi.milohanic@gmail.com>
