@@ -194,9 +194,9 @@
   "@logHelpEntriesUnits": {},
   "logHelpEntries": "Gibt es an einem Tag mehrere Einträge mit der gleichen Anzahl von Wiederholungen, aber unterschiedlichen Gewichten, wird nur der Eintrag mit dem höheren Gewicht im Diagramm angezeigt.",
   "@logHelpEntries": {},
-  "loginInstead": "Stattdessen anmelden",
+  "loginInstead": "Du hast bereits einen Account? Stattdessen anmelden",
   "@loginInstead": {},
-  "registerInstead": "Stattdessen registrieren",
+  "registerInstead": "Du hast keinen Account? Jetzt registrieren",
   "@registerInstead": {},
   "reset": "Zurücksetzen",
   "@reset": {
@@ -575,11 +575,39 @@
     "description": "Label for scan barcode button"
   },
   "abs": "Bauch",
+  "@abs": {},
   "arms": "Arme",
+  "@arms": {},
   "back": "Rücken",
+  "@back": {},
   "calves": "Waden",
+  "@calves": {},
   "chest": "Brust",
+  "@chest": {},
   "legs": "Beine",
+  "@legs": {},
   "shoulders": "Schultern",
-  "barbell": "Langhantel"
+  "@shoulders": {},
+  "barbell": "Langhantel",
+  "@barbell": {},
+  "noMeasurementEntries": "Du hast keine Messeingaben",
+  "@noMeasurementEntries": {},
+  "moreMeasurementEntries": "Neue Messung hinzufügen",
+  "@moreMeasurementEntries": {
+    "description": "Message shown when the user wants to add new measurement"
+  },
+  "selectEntry": "Bitte einen Eintrag auswählen",
+  "@selectEntry": {},
+  "exercises": "Übung",
+  "@exercises": {
+    "description": "Multiple exercises for a workout"
+  },
+  "userProfile": "Dein Profil",
+  "@userProfile": {},
+  "exerciseList": "Trainingsplan",
+  "@exerciseList": {},
+  "exerciseName": "Name der Übung",
+  "@exerciseName": {
+    "description": "Label for the name of a workout exercise"
+  }
 }
