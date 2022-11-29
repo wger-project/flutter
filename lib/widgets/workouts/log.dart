@@ -21,32 +21,32 @@ import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/ui.dart';
-import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/exercises/base.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/session.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/widgets/workouts/charts.dart';
 
 class ExerciseLogChart extends StatelessWidget {
-  final Exercise _exercise;
+  final ExerciseBase _base;
   final DateTime _currentDate;
 
-  const ExerciseLogChart(this._exercise, this._currentDate);
+  const ExerciseLogChart(this._base, this._currentDate);
 
   @override
   Widget build(BuildContext context) {
-    final _workoutPlansData = Provider.of<WorkoutPlansProvider>(context, listen: false);
-    final _workout = _workoutPlansData.currentPlan;
+    final workoutPlansData = Provider.of<WorkoutPlansProvider>(context, listen: false);
+    final workout = workoutPlansData.currentPlan;
 
-    Future<Map<String, dynamic>> _getChartEntries(BuildContext context) async {
-      return _workoutPlansData.fetchLogData(_workout!, _exercise);
+    Future<Map<String, dynamic>> getChartEntries(BuildContext context) async {
+      return workoutPlansData.fetchLogData(workout!, _base);
     }
 
     return FutureBuilder(
-      future: _getChartEntries(context),
+      future: getChartEntries(context),
       builder: (context, AsyncSnapshot<Map<String, dynamic>> snapshot) => SizedBox(
         height: 150,
-        child: snapshot.connectionState == ConnectionState.waiting && snapshot.hasData
+        child: snapshot.connectionState == ConnectionState.waiting
             ? const Center(child: CircularProgressIndicator())
             : LogChartWidget(snapshot.data!, _currentDate),
       ),
@@ -57,7 +57,7 @@ class ExerciseLogChart extends StatelessWidget {
 class DayLogWidget extends StatefulWidget {
   final DateTime _date;
   final WorkoutSession? _session;
-  final Map<Exercise, List<Log>> _exerciseData;
+  final Map<ExerciseBase, List<Log>> _exerciseData;
 
   const DayLogWidget(this._date, this._exerciseData, this._session);
 
@@ -81,17 +81,18 @@ class _DayLogWidgetState extends State<DayLogWidget> {
             style: Theme.of(context).textTheme.headline5,
           ),
           if (widget._session != null) const Text('Session data here'),
-          ...widget._exerciseData.keys.map((exercise) {
+          ...widget._exerciseData.keys.map((base) {
+            final exercise = base.getExercise(Localizations.localeOf(context).languageCode);
             return Column(
               children: [
-                if (widget._exerciseData[exercise]!.isNotEmpty)
+                if (widget._exerciseData[base]!.isNotEmpty)
                   Text(
                     exercise.name,
                     style: Theme.of(context).textTheme.headline6,
                   )
                 else
                   Container(),
-                ...widget._exerciseData[exercise]!
+                ...widget._exerciseData[base]!
                     .map(
                       (log) => Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -108,7 +109,7 @@ class _DayLogWidgetState extends State<DayLogWidget> {
                       ),
                     )
                     .toList(),
-                ExerciseLogChart(exercise, widget._date),
+                ExerciseLogChart(base, widget._date),
                 const SizedBox(height: 30),
               ],
             );

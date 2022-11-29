@@ -18,7 +18,6 @@
 
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/models/exercises/base.dart';
-import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/log.dart';
 
@@ -95,7 +94,7 @@ class WorkoutPlan {
       if (!out.containsKey(date)) {
         out[date] = {
           'session': null,
-          'exercises': <Exercise, List<Log>>{},
+          'exercises': <ExerciseBase, List<Log>>{},
         };
       }
 

@@ -22,8 +22,9 @@ Exercise _$ExerciseFromJson(Map<String, dynamic> json) {
   return Exercise(
     id: json['id'] as int?,
     uuid: json['uuid'] as String?,
-    creationDate:
-        json['creation_date'] == null ? null : DateTime.parse(json['creation_date'] as String),
+    creationDate: json['creation_date'] == null
+        ? null
+        : DateTime.parse(json['creation_date'] as String),
     name: json['name'] as String,
     description: json['description'] as String,
     baseId: json['exercise_base'] as int?,

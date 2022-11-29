@@ -20,7 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/exercises/base.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/session.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
@@ -95,7 +95,7 @@ class _WorkoutLogsState extends State<WorkoutLogs> {
 class WorkoutLogEvent {
   final DateTime dateTime;
   final WorkoutSession? session;
-  final Map<Exercise, List<Log>> exercises;
+  final Map<ExerciseBase, List<Log>> exercises;
 
   WorkoutLogEvent(this.dateTime, this.session, this.exercises);
 }
