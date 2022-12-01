@@ -61,9 +61,9 @@ void main() {
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();
 
-    expect(find.text('test workout 1'), findsOneWidget);
-    expect(find.text('test day 1'), findsOneWidget);
-    expect(find.text('test day 2'), findsOneWidget);
+    expect(find.text('3 day workout'), findsOneWidget);
+    expect(find.text('chest, shoulders'), findsOneWidget);
+    expect(find.text('legs'), findsOneWidget);
     expect(find.byType(Dismissible), findsNWidgets(2));
   });
 

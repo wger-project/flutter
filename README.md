@@ -38,7 +38,7 @@ Install Flutter, and all its dependencies, and create a new virtual device:
 The app currently uses flutter 3.3
 
 ### 3
-Create a new file ``wger.properties`` in ``android/fastlane/envfiles``:
+Create a new file ``wger.properties`` in ``fastlane/metadata/envfiles/``:
 
 ```properties
 WGER_API_KEY=123456

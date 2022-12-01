@@ -69,7 +69,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // PLan description
-    expect(find.text('lots and lots of mass'), findsOneWidget);
+    expect(find.text('Less fat, more protein'), findsOneWidget);
 
     // Ingredients
     expect(find.text('100g Water'), findsOneWidget);

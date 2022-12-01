@@ -43,11 +43,11 @@ import 'package:wger/screens/nutritional_diary_screen.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/screens/nutritional_plans_screen.dart';
 import 'package:wger/screens/splash_screen.dart';
-import 'package:wger/screens/update_app_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/screens/workout_plans_screen.dart';
 import 'package:wger/theme/theme.dart';
+import 'package:wger/widgets/core/about.dart';
 
 import 'providers/auth.dart';
 
@@ -124,13 +124,7 @@ class MyApp extends StatelessWidget {
           title: 'wger',
           theme: wgerTheme,
           home: auth.isAuth
-              ? FutureBuilder(
-                  future: auth.applicationUpdateRequired(),
-                  builder: (ctx, snapshot) =>
-                      snapshot.connectionState == ConnectionState.done && snapshot.data == true
-                          ? UpdateAppScreen()
-                          : HomeTabsScreen(),
-                )
+              ? HomeTabsScreen()
               : FutureBuilder(
                   future: auth.tryAutoLogin(),
                   builder: (ctx, authResultSnapshot) =>
@@ -155,6 +149,7 @@ class MyApp extends StatelessWidget {
             ExercisesScreen.routeName: (ctx) => const ExercisesScreen(),
             ExerciseDetailScreen.routeName: (ctx) => const ExerciseDetailScreen(),
             AddExerciseScreen.routeName: (ctx) => const AddExerciseScreen(),
+            AboutPage.routeName: (ctx) => const AboutPage(),
           },
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,

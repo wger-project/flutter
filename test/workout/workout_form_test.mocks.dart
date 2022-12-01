@@ -4,11 +4,12 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i13;
-import 'dart:ui' as _i15;
+import 'dart:ui' as _i16;
 
 import 'package:http/http.dart' as _i5;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:wger/models/exercises/exercise.dart' as _i14;
+import 'package:wger/models/exercises/base.dart' as _i14;
+import 'package:wger/models/exercises/exercise.dart' as _i15;
 import 'package:wger/models/workouts/day.dart' as _i7;
 import 'package:wger/models/workouts/log.dart' as _i11;
 import 'package:wger/models/workouts/repetition_unit.dart' as _i3;
@@ -354,14 +355,14 @@ class MockWorkoutPlansProvider extends _i1.Mock implements _i12.WorkoutPlansProv
   @override
   _i13.Future<Map<String, dynamic>> fetchLogData(
     _i6.WorkoutPlan? workout,
-    _i14.Exercise? exercise,
+    _i14.ExerciseBase? base,
   ) =>
       (super.noSuchMethod(
         Invocation.method(
           #fetchLogData,
           [
             workout,
-            exercise,
+            base,
           ],
         ),
         returnValue: _i13.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
@@ -485,7 +486,7 @@ class MockWorkoutPlansProvider extends _i1.Mock implements _i12.WorkoutPlansProv
   @override
   _i13.Future<String> fetchSmartText(
     _i8.Set? workoutSet,
-    _i14.Exercise? exercise,
+    _i15.Exercise? exercise,
   ) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -667,7 +668,7 @@ class MockWorkoutPlansProvider extends _i1.Mock implements _i12.WorkoutPlansProv
         )),
       ) as _i13.Future<_i5.Response>);
   @override
-  void addListener(_i15.VoidCallback? listener) => super.noSuchMethod(
+  void addListener(_i16.VoidCallback? listener) => super.noSuchMethod(
         Invocation.method(
           #addListener,
           [listener],
@@ -675,7 +676,7 @@ class MockWorkoutPlansProvider extends _i1.Mock implements _i12.WorkoutPlansProv
         returnValueForMissingStub: null,
       );
   @override
-  void removeListener(_i15.VoidCallback? listener) => super.noSuchMethod(
+  void removeListener(_i16.VoidCallback? listener) => super.noSuchMethod(
         Invocation.method(
           #removeListener,
           [listener],

@@ -53,7 +53,6 @@ void main() {
     expect(find.text('Bench'), findsOneWidget, reason: 'Equipment');
     expect(find.text('Dumbbell'), findsOneWidget, reason: 'Equipment');
 
-    debugDumpApp();
     expect(find.text('Muscles'), findsNWidgets(2), reason: 'One header, one sub header');
     expect(find.text('Flutterus maximus (NOT TRANSLATED)'), findsOneWidget, reason: 'Muscles');
     expect(find.text('Biceps brachii (Biceps)'), findsOneWidget, reason: 'Muscles');
@@ -66,7 +65,7 @@ void main() {
     );
     expect(find.text('Gluteus maximus'), findsOneWidget, reason: 'Secondary muscles');
     expect(find.text('Description'), findsOneWidget, reason: 'Description header');
-    expect(find.text('Lorem ipsum etc'), findsOneWidget, reason: 'Description');
+    expect(find.text('add clever text'), findsOneWidget, reason: 'Description');
     expect(find.text('Variations'), findsNothing);
   });
 }

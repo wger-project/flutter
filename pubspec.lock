@@ -84,7 +84,7 @@ packages:
       name: build_runner
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.1"
+    version: "2.3.2"
   build_runner_core:
     dependency: transitive
     description:
@@ -334,7 +334,7 @@ packages:
       name: flutter_calendar_carousel
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.4.0"
+    version: "2.4.1"
   flutter_driver:
     dependency: transitive
     description: flutter
@@ -395,7 +395,7 @@ packages:
       name: flutter_launcher_icons
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.10.0"
+    version: "0.11.0"
   flutter_layout_grid:
     dependency: transitive
     description:
@@ -429,6 +429,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.7"
+  flutter_staggered_grid_view:
+    dependency: "direct main"
+    description:
+      name: flutter_staggered_grid_view
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.6.2"
   flutter_svg:
     dependency: "direct main"
     description:
@@ -466,7 +473,7 @@ packages:
       name: frontend_server_client
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.3"
+    version: "3.1.0"
   fuchsia_remote_debug_protocol:
     dependency: transitive
     description: flutter
@@ -595,7 +602,7 @@ packages:
       name: json_serializable
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.5.0"
+    version: "6.5.4"
   klizma:
     dependency: transitive
     description:
@@ -672,7 +679,7 @@ packages:
       name: multi_select_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.1.2"
+    version: "4.1.3"
   nested:
     dependency: transitive
     description:
@@ -791,7 +798,7 @@ packages:
       name: provider
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.0.3"
+    version: "6.0.4"
   pub_semver:
     dependency: transitive
     description:
@@ -971,7 +978,7 @@ packages:
       name: table_calendar
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.7"
+    version: "3.0.8"
   term_glyph:
     dependency: transitive
     description:
@@ -1013,7 +1020,7 @@ packages:
       name: url_launcher
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.1.5"
+    version: "6.1.7"
   url_launcher_android:
     dependency: transitive
     description:
@@ -1090,7 +1097,7 @@ packages:
       name: video_player
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.4.7"
+    version: "2.4.8"
   video_player_android:
     dependency: transitive
     description:
