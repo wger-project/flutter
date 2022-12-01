@@ -102,7 +102,7 @@ class GalleryProvider extends WgerBaseProvider with ChangeNotifier {
   }
 
   Future<void> deleteImage(gallery.Image image) async {
-    await deleteRequest(_galleryUrlPath, image.id!);
+    var response = await deleteRequest(_galleryUrlPath, image.id!);
     images.removeWhere((element) => element.id == image.id);
 
     notifyListeners();
