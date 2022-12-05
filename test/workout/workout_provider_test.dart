@@ -17,6 +17,8 @@
  */
 
 import 'dart:convert';
+
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/mockito.dart';
@@ -26,6 +28,7 @@ import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/workout_plans.dart';
+
 import '../measurements/measurement_provider_test.mocks.dart';
 import '../other/base_provider_test.mocks.dart';
 import '../utils.dart';
@@ -157,6 +160,7 @@ void main() {
 
       final mockBaseProvider = MockWgerBaseProvider();
       final ExercisesProvider testExercisesProvider = ExercisesProvider(mockBaseProvider);
+      WidgetsFlutterBinding.ensureInitialized();
       final prefs = await SharedPreferences.getInstance();
 
       when(client.get(

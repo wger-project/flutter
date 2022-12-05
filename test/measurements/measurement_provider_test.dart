@@ -25,7 +25,7 @@ void main() {
   const String entryUrl = 'measurement';
   final Uri tCategoryUri = Uri();
   final Map<String, dynamic> tMeasurementCategoryMap =
-      jsonDecode(fixture('measurement_category_entries.json'));
+      jsonDecode(fixture('measurement/measurement_category_entries.json'));
   final Uri tCategoryEntriesUri = Uri(
     scheme: 'http',
     host: 'tedmosbyisajerk.com',
@@ -41,7 +41,7 @@ void main() {
     const MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm')
   ];
   final Map<String, dynamic> tMeasurementCategoriesMap =
-      jsonDecode(fixture('measurement_categories.json'));
+      jsonDecode(fixture('measurement/measurement_categories.json'));
 
   setUp(() {
     mockWgerBaseProvider = MockWgerBaseProvider();
@@ -175,9 +175,9 @@ void main() {
     const MeasurementCategory tMeasurementCategoryWithoutId =
         MeasurementCategory(id: null, name: 'Strength', unit: 'kN');
     final Map<String, dynamic> tMeasurementCategoryMap =
-        jsonDecode(fixture('measurement_category.json'));
+        jsonDecode(fixture('measurement/measurement_category.json'));
     final Map<String, dynamic> tMeasurementCategoryMapWithoutId =
-        jsonDecode(fixture('measurement_category_without_id_to_json.json'));
+        jsonDecode(fixture('measurement/measurement_category_without_id_to_json.json'));
     final List<MeasurementCategory> tMeasurementCategoriesAdded = [
       const MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm'),
       const MeasurementCategory(id: 1, name: 'Strength', unit: 'kN'),
@@ -255,9 +255,9 @@ void main() {
     const String tCategoryEditedName = 'Triceps';
     const String tCategoryEditedUnit = 'm';
     final Map<String, dynamic> tCategoryMapEditedToJson =
-        jsonDecode(fixture('measurement_category_edited_to_json.json'));
+        jsonDecode(fixture('measurement/measurement_category_edited_to_json.json'));
     final Map<String, dynamic> tCategoryMapEdited =
-        jsonDecode(fixture('measurement_category_edited.json'));
+        jsonDecode(fixture('measurement/measurement_category_edited.json'));
     setUp(() async {
       when(mockWgerBaseProvider.patch(any, any))
           .thenAnswer((realInvocation) => Future.value(tCategoryMapEdited));
@@ -348,7 +348,7 @@ void main() {
       await measurementProvider.fetchAndSetCategories();
 
       final Map<String, dynamic> measurementEntryMap =
-          jsonDecode(fixture('measurement_entry.json'));
+          jsonDecode(fixture('measurement/measurement_entry.json'));
       when(mockWgerBaseProvider.post(any, any))
           .thenAnswer((realInvocation) => Future.value(measurementEntryMap));
     });
@@ -364,7 +364,7 @@ void main() {
     test('should post the MeasurementEntryMap', () async {
       // arrange
       final Map<String, dynamic> measurementEntryMapWithoutId =
-          jsonDecode(fixture('measurement_entry_without_id.json'));
+          jsonDecode(fixture('measurement/measurement_entry_without_id.json'));
 
       // act
       await measurementProvider.addEntry(tMeasurementEntryWithoutId);
@@ -396,7 +396,7 @@ void main() {
         notes: '',
       );
       final Map<String, dynamic> measurementEntryMapWrongCategory =
-          jsonDecode(fixture('measurement_entry_wrong_category.json'));
+          jsonDecode(fixture('measurement/measurement_entry_wrong_category.json'));
       when(mockWgerBaseProvider.post(any, any))
           .thenAnswer((realInvocation) => Future.value(measurementEntryMapWrongCategory));
 
@@ -503,7 +503,7 @@ void main() {
     final DateTime tEntryEditedDate = DateTime(2021, 07, 21);
     const String tEntryEditedNote = 'I just wanted to edit this to see what happens';
     final Map<String, dynamic> tEntryMapEdited =
-        jsonDecode(fixture('measurement_entry_edited.json'));
+        jsonDecode(fixture('measurement/measurement_entry_edited.json'));
     setUp(() async {
       when(mockWgerBaseProvider.patch(any, any))
           .thenAnswer((realInvocation) => Future.value(tEntryMapEdited));
