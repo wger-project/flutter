@@ -466,7 +466,7 @@ packages:
       name: font_awesome_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "10.2.1"
+    version: "10.3.0"
   frontend_server_client:
     dependency: transitive
     description:
