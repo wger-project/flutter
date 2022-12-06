@@ -48,9 +48,9 @@ jobs:
       - name: Extract version information
         id: get_version
         run: |
-          echo ::set-output name=VERSION_V::$(echo $GITHUB_REF | cut -d / -f 3)
-          echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3 | cut -c 2-)
-          echo ::set-output name=BUILD::$(flutter pub run cider version | cut -d '+' -f 2)
+          echo "VERSION_V=$(echo $GITHUB_REF | cut -d / -f 3) >> $GITHUB_ENV
+          echo "VERSION=$(echo $GITHUB_REF | cut -d / -f 3 | cut -c 2-) >> $GITHUB_ENV
+          echo "BUILD=$(flutter pub run cider version | cut -d '+' -f 2) >> $GITHUB_ENV
 
       # Note: the original tag that triggered the workflow is in the form vX.Y.Z
       #       but the pubspec.yaml is committed in the commit after that one.
@@ -61,16 +61,16 @@ jobs:
       #       one without the v and push it.
       - name: Bump version
         run: |
-          flutter pub run cider version ${{ steps.get_version.outputs.VERSION }}+${{ steps.get_version.outputs.BUILD }}
+          flutter pub run cider version ${{ env.VERSION }}+${{ env.BUILD }}
           flutter pub run cider bump build
 
           git config user.name Github-actions
           git config user.email github-actions@github.com
           git add .
           git commit -m "Bump version to $( flutter pub run cider version )"
-          git tag ${{ steps.get_version.outputs.VERSION }}
+          git tag ${{ env.VERSION }}
           git push origin HEAD:master --tags
-          git push origin --delete ${{ steps.get_version.outputs.VERSION_V }}
+          git push origin --delete ${{ env.VERSION_V }}
 
       - name: Build AAB
         run: flutter build appbundle --release
@@ -86,5 +86,5 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: build/app/outputs/bundle/release/app-release.aab
-          tag_name: ${{ steps.get_version.outputs.VERSION }}
+          tag_name: ${{ env.VERSION }}
           body_path: CHANGELOG.md
