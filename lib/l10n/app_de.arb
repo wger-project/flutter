@@ -609,5 +609,17 @@
   "exerciseName": "Name der Übung",
   "@exerciseName": {
     "description": "Label for the name of a workout exercise"
-  }
+  },
+  "translation": "Übersetzung",
+  "@translation": {},
+  "translateExercise": "Diese Übung jetzt übersetzen",
+  "@translateExercise": {},
+  "baseData": "Grundlagen auf Englisch",
+  "@baseData": {
+    "description": "The base data for an exercise such as category, trained muscles, etc."
+  },
+  "images": "Bilder",
+  "@images": {},
+  "language": "Bilder",
+  "@language": {}
 }
