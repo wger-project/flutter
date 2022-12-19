@@ -203,7 +203,7 @@ packages:
       name: cider
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.2+1"
+    version: "0.1.3"
   cli_util:
     dependency: transitive
     description:
