@@ -443,7 +443,7 @@
   "@aboutSourceTitle": {
     "description": "Title for source code section in the about dialog"
   },
-  "aboutSourceText": "Отримайте джерельний код цього додатка та його сервера на github",
+  "aboutSourceText": "Отримайте джерельний код цього застосунку та його сервера на github",
   "@aboutSourceText": {
     "description": "Text for source code section in the about dialog"
   },
@@ -463,7 +463,7 @@
   "@aboutTranslationTitle": {
     "description": "Title for translation section in the about dialog"
   },
-  "aboutTranslationText": "Цей додаток перекладено на Weblate. Якщо ви також хочете допомогти, клацніть на посилання та почніть переклад",
+  "aboutTranslationText": "Цей заатосунок перекладено на Weblate. Якщо ви також хочете допомогти, клацніть на посилання та почніть переклад",
   "@aboutTranslationText": {
     "description": "Text for translation section in the about dialog"
   },
@@ -527,7 +527,7 @@
   },
   "appUpdateTitle": "Потрібне оновлення",
   "@appUpdateTitle": {},
-  "appUpdateContent": "Ця версія програми несумісна з сервером, будь ласка, оновіть додаток.",
+  "appUpdateContent": "Ця версія застосунку несумісна з сервером, будь ласка, оновіть застосунок.",
   "@appUpdateContent": {},
   "productFound": "Виріб знайдено",
   "@productFound": {
