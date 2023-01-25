@@ -89,7 +89,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
         userProvider.fetchAndSetProfile(),
         workoutPlansProvider.fetchAndSetUnits(),
         nutritionPlansProvider.fetchIngredientsFromCache(),
-        exercisesProvider.fetchAndSetExercises(),
+        exercisesProvider.fetchAndSetExercises(context),
       ]);
 
       // Plans, weight and gallery

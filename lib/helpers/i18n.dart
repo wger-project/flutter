@@ -99,6 +99,7 @@ String getTranslation(String value, BuildContext context) {
 
     case 'Legs':
       return AppLocalizations.of(context).legs;
+      
     default:
       return 'NOT TRANSLATED';
   }

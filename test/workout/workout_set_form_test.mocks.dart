@@ -358,7 +358,7 @@ class MockExercisesProvider extends _i1.Mock implements _i8.ExercisesProvider {
         returnValueForMissingStub: _i9.Future<void>.value(),
       ) as _i9.Future<void>);
   @override
-  _i9.Future<void> fetchAndSetExercises() => (super.noSuchMethod(
+  _i9.Future<void> fetchAndSetExercises(context) => (super.noSuchMethod(
         Invocation.method(
           #fetchAndSetExercises,
           [],
