@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -84,7 +85,10 @@ void main() {
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
         home: Scaffold(
-          body: MealItemForm(meal, const [], null, code, test),
+          body: Scrollable(
+            viewportBuilder: (BuildContext context, ViewportOffset position) =>
+                MealItemForm(meal, const [], null, code, test),
+          ),
         ),
         routes: {
           NutritionalPlanScreen.routeName: (ctx) => NutritionalPlanScreen(),
