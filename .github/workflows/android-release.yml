@@ -25,7 +25,7 @@ jobs:
         uses: subosito/flutter-action@v1
         with:
           channel: 'stable'
-          flutter-version: '3.3.x'
+          flutter-version: '3.7.x'
 
       - name: Decrypt config files
         run: |
