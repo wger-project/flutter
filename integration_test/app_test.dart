@@ -42,13 +42,11 @@ const languages = [
   'pt-BR',
   'nb-NO',
    */
-  /*
   'pl-PL',
   'ru-RU',
   'tr-TR',
   'uk',
   'zh-CN'
-   */
 ];
 
 void main() {

@@ -104,6 +104,7 @@ Widget createNutritionalPlanScreen({locale = 'en'}) {
     ],
     child: MaterialApp(
       locale: Locale(locale),
+      debugShowCheckedModeBanner: false,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       theme: wgerTheme,

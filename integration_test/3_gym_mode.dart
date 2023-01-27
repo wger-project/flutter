@@ -38,6 +38,7 @@ Widget createGymModeScreen({locale = 'en'}) {
       create: (context) => mockExerciseProvider,
       child: MaterialApp(
         locale: Locale(locale),
+        debugShowCheckedModeBanner: false,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
