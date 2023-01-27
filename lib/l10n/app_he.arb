@@ -299,7 +299,7 @@
   "@edit": {},
   "delete": "מחיקה",
   "@delete": {},
-  "confirmDelete": "האם את/ה בטוח/ה שאת/ה רוצה למחוק את '{אלמנט למחיקה}'?",
+  "confirmDelete": "האם את/ה בטוח/ה שאת/ה רוצה למחוק את '{toDelete}'?",
   "@confirmDelete": {
     "description": "Confirmation text before the user deletes an object",
     "type": "text",
@@ -360,7 +360,7 @@
   "@selectExercise": {
     "description": "Error message when the user hasn't selected an exercise in the form"
   },
-  "enterCharacters": "אנא בחר/י ערך בין {מינימום} ו-{מקסימום} תווים",
+  "enterCharacters": "אנא בחר/י ערך בין {min} ו-{max} תווים",
   "@enterCharacters": {
     "description": "Error message when the user hasn't entered the correct number of characters in a form",
     "type": "text",
@@ -369,7 +369,7 @@
       "max": {}
     }
   },
-  "nrOfSets": "כמות סטים לאימון: {כמות}",
+  "nrOfSets": "כמות סטים לאימון: {nrOfSets}",
   "@nrOfSets": {
     "description": "Label shown on the slider where the user selects the nr of sets",
     "type": "text",
