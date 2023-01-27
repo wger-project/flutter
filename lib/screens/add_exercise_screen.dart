@@ -77,113 +77,114 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
   Widget build(BuildContext context) {
     Profile? _user = Provider.of<UserProvider>(context, listen: false).profile;
 
-    return Scaffold(
-      appBar: EmptyAppBar(AppLocalizations.of(context).contributeExercise),
-      body: Stepper(
-        controlsBuilder: _controlsBuilder,
-        steps: [
-          Step(
-            title: Text(AppLocalizations.of(context).baseData),
-            content: Step1Basics(formkey: _keys[0]),
-          ),
-          Step(
-            title: Text(AppLocalizations.of(context).variations),
-            content: Step2Variations(formkey: _keys[1]),
-          ),
-          Step(
-            title: Text(AppLocalizations.of(context).description),
-            content: Step3Description(formkey: _keys[2]),
-          ),
-          Step(
-            title: Text(AppLocalizations.of(context).translation),
-            content: Step4Translation(formkey: _keys[3]),
-          ),
-          Step(
-            title: Text(AppLocalizations.of(context).images),
-            content: Step5Images(formkey: _keys[4]),
-          ),
-        ],
-        currentStep: _currentStep,
-        onStepContinue: () {
-          if (_keys[_currentStep].currentState?.validate() ?? false) {
-            _keys[_currentStep].currentState?.save();
+    return _user!.emailVerified
+        ? EmailNotVerified(context)
+        : Scaffold(
+            appBar:
+                EmptyAppBar(AppLocalizations.of(context).contributeExercise),
+            body: Stepper(
+              controlsBuilder: _controlsBuilder,
+              steps: [
+                Step(
+                  title: Text(AppLocalizations.of(context).baseData),
+                  content: Step1Basics(formkey: _keys[0]),
+                ),
+                Step(
+                  title: Text(AppLocalizations.of(context).variations),
+                  content: Step2Variations(formkey: _keys[1]),
+                ),
+                Step(
+                  title: Text(AppLocalizations.of(context).description),
+                  content: Step3Description(formkey: _keys[2]),
+                ),
+                Step(
+                  title: Text(AppLocalizations.of(context).translation),
+                  content: Step4Translation(formkey: _keys[3]),
+                ),
+                Step(
+                  title: Text(AppLocalizations.of(context).images),
+                  content: Step5Images(formkey: _keys[4]),
+                ),
+              ],
+              currentStep: _currentStep,
+              onStepContinue: () {
+                if (_keys[_currentStep].currentState?.validate() ?? false) {
+                  _keys[_currentStep].currentState?.save();
 
-            if (_currentStep != lastStepIndex) {
-              setState(() {
-                _currentStep += 1;
-              });
-            }
-          }
-        },
-        onStepCancel: () => setState(() {
-          if (_currentStep != 0) {
-            _currentStep -= 1;
-          }
-        }),
-        /*
+                  if (_currentStep != lastStepIndex) {
+                    setState(() {
+                      _currentStep += 1;
+                    });
+                  }
+                }
+              },
+              onStepCancel: () => setState(() {
+                if (_currentStep != 0) {
+                  _currentStep -= 1;
+                }
+              }),
+              /*
         onStepTapped: (int index) {
           setState(() {
             _currentStep = index;
           });
         },
          */
-      ),
-    );
+            ),
+          );
   }
 
   Widget EmailNotVerified(context) {
     Profile? _user = Provider.of<UserProvider>(context, listen: false).profile;
 
-    return _user!.emailVerified
-        ? EmailNotVerified(context)
-        : Scaffold(
-            appBar: EmptyAppBar('Verify Email'),
-            body: Container(
-              padding: EdgeInsets.all(25),
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Your profile needs to be verified in order to add any exercise',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 30,
-                        fontFamily: 'OpenSansBold',
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 16,
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushReplacementNamed(
-                          context,
-                          FormScreen.routeName,
-                          arguments: FormScreenArguments(
-                            AppLocalizations.of(context).userProfile,
-                            UserProfileForm(_user!),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(15),
-                        child: Text(
-                          'Profile Screen',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 15,
-                            fontFamily: 'OpenSansBold',
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+    return Scaffold(
+      appBar: EmptyAppBar('Verify Email'),
+      body: Container(
+        padding: EdgeInsets.all(25),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Your profile needs to be verified in order to add any exercise',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 30,
+                  fontFamily: 'OpenSansBold',
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-            ),
-          );
+              SizedBox(
+                height: 16,
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pushReplacementNamed(
+                    context,
+                    FormScreen.routeName,
+                    arguments: FormScreenArguments(
+                      AppLocalizations.of(context).userProfile,
+                      UserProfileForm(_user!),
+                    ),
+                  );
+                },
+                child: Container(
+                  padding: EdgeInsets.all(15),
+                  child: Text(
+                    'Profile Screen',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
+                      fontFamily: 'OpenSansBold',
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
