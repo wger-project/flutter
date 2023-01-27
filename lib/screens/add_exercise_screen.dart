@@ -11,6 +11,11 @@ import 'package:wger/widgets/add_exercise/steps/step4translations.dart';
 import 'package:wger/widgets/add_exercise/steps/step5images.dart';
 import 'package:wger/widgets/core/app_bar.dart';
 
+import '../models/user/profile.dart';
+import '../providers/user.dart';
+import '../widgets/user/forms.dart';
+import 'form_screen.dart';
+
 class AddExerciseScreen extends StatefulWidget {
   const AddExerciseScreen({Key? key}) : super(key: key);
 
@@ -46,10 +51,14 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
             if (_currentStep == lastStepIndex)
               ElevatedButton(
                 onPressed: () async {
-                  final id = await context.read<AddExerciseProvider>().addExercise();
-                  final base = await context.read<ExercisesProvider>().fetchAndSetExerciseBase(id);
+                  final id =
+                      await context.read<AddExerciseProvider>().addExercise();
+                  final base = await context
+                      .read<ExercisesProvider>()
+                      .fetchAndSetExerciseBase(id);
 
-                  Navigator.pushNamed(context, ExerciseDetailScreen.routeName, arguments: base);
+                  Navigator.pushNamed(context, ExerciseDetailScreen.routeName,
+                      arguments: base);
                 },
                 child: Text(AppLocalizations.of(context).save),
               )
@@ -66,6 +75,8 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Profile? _user = Provider.of<UserProvider>(context, listen: false).profile;
+
     return Scaffold(
       appBar: EmptyAppBar(AppLocalizations.of(context).contributeExercise),
       body: Stepper(
@@ -118,5 +129,61 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
          */
       ),
     );
+  }
+
+  Widget EmailNotVerified(context) {
+    Profile? _user = Provider.of<UserProvider>(context, listen: false).profile;
+
+    return _user!.emailVerified
+        ? EmailNotVerified(context)
+        : Scaffold(
+            appBar: EmptyAppBar('Verify Email'),
+            body: Container(
+              padding: EdgeInsets.all(25),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Your profile needs to be verified in order to add any exercise',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 30,
+                        fontFamily: 'OpenSansBold',
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pushReplacementNamed(
+                          context,
+                          FormScreen.routeName,
+                          arguments: FormScreenArguments(
+                            AppLocalizations.of(context).userProfile,
+                            UserProfileForm(_user!),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(15),
+                        child: Text(
+                          'Profile Screen',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 15,
+                            fontFamily: 'OpenSansBold',
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
   }
 }
