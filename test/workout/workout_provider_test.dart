@@ -161,6 +161,7 @@ void main() {
       final mockBaseProvider = MockWgerBaseProvider();
       final ExercisesProvider testExercisesProvider = ExercisesProvider(mockBaseProvider);
       WidgetsFlutterBinding.ensureInitialized();
+      SharedPreferences.setMockInitialValues({});
       final prefs = await SharedPreferences.getInstance();
 
       when(client.get(

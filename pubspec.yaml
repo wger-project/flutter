@@ -32,14 +32,14 @@ dependencies:
     sdk: flutter
 
   android_metadata: ^0.2.1
-  camera: ^0.10.2+1
+  camera: ^0.10.3
   charts_flutter: ^0.12.0
   collection: ^1.15.0-nullsafety.4
   cupertino_icons: ^1.0.5
   equatable: ^2.0.5
   flutter_calendar_carousel: ^2.4.1
   flutter_html: ^2.1.2
-  flutter_typeahead: ^4.1.1
+  flutter_typeahead: ^4.3.2
   font_awesome_flutter: ^10.3.0
   http: ^0.13.5
   image_picker: ^0.8.6
