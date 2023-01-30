@@ -77,7 +77,7 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
   Widget build(BuildContext context) {
     Profile? _user = Provider.of<UserProvider>(context, listen: false).profile;
 
-    return _user!.emailVerified
+    return !_user!.emailVerified
         ? EmailNotVerified(context)
         : Scaffold(
             appBar:
