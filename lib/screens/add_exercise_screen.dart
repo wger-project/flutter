@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/providers/add_exercise.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/screens/exercise_screen.dart';
@@ -146,18 +147,16 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'Your profile needs to be verified in order to add any exercise',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 30,
-                  fontFamily: 'OpenSansBold',
-                  fontWeight: FontWeight.bold,
-                ),
+                AppLocalizations.of(context).foo2(days.toString()),
+                style: Theme.of(context).textTheme.headline4,
               ),
               SizedBox(
                 height: 16,
               ),
-              ElevatedButton(
+              TextButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.blue),
+                ),
                 onPressed: () {
                   Navigator.pushReplacementNamed(
                     context,
@@ -171,13 +170,8 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
                 child: Container(
                   padding: EdgeInsets.all(15),
                   child: Text(
-                    'Profile Screen',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontFamily: 'OpenSansBold',
-                      fontWeight: FontWeight.bold,
-                    ),
+                    AppLocalizations.of(context).foo,
+                    style: Theme.of(context).textTheme.headlineSmall,
                   ),
                 ),
               ),

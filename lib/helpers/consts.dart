@@ -95,3 +95,5 @@ enum EXERCISE_IMAGE_ART_STYLE {
 /// Colors used for muscles
 const COLOR_MAIN_MUSCLES = Colors.red;
 const COLOR_SECONDARY_MUSCLES = Colors.orange;
+
+const days = 14;

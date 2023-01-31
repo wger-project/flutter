@@ -648,5 +648,17 @@
   "quads": "Quads",
   "arms": "Arms",
   "sz_bar": "SZ-Bar",
-  "aboutPageTitle": "About Wger"
+  "aboutPageTitle": "About Wger",
+  "verify": "Verify Email",
+  "foo" : "Profile Screen",
+  "foo2" : "You can only contribute exercises if your account is older than {days} days and have verified your email",
+  "@foo2": {
+    "description" : "Number of days before which a person can add exercise",
+    "placeholders": {
+      "days": {
+        "type" : "String",
+        "example" : "world"
+      }
+    }
+  }
 }
