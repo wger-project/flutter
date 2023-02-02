@@ -18,6 +18,7 @@
 - Adam Bujdoš - <https://github.com/bujdy>
 - Aman Negi - <https://github.com/AmanNegi>
 - Sandi Milohanic - <https://github.com/sandimilohanic>
+- Jake Reid <https://github.com/JakeAU>
 
 ## Translators
 
