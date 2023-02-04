@@ -397,13 +397,13 @@
     "description": "Message shown when the user has no logged weight entries"
   },
   "noMeasurementEntries": "You have no measurement entries",
-    "@noMeasurementntries": {
-      "description": "Message shown when the user has no logged measurement entries"
-    },
+  "@noMeasurementntries": {
+    "description": "Message shown when the user has no logged measurement entries"
+  },
   "moreMeasurementEntries": "Add new measurement",
-     "@moreMeasurementEntries": {
-       "description": "Message shown when the user wants to add new measurement"
-     },
+  "@moreMeasurementEntries": {
+    "description": "Message shown when the user wants to add new measurement"
+  },
   "edit": "Edit",
   "@edit": {},
   "loadingText": "Loading...",
@@ -618,35 +618,36 @@
   "@baseData": {
     "description": "The base data for an exercise such as category, trained muscles, etc."
   },
-  "repetitions": "Repetitions",
-  "minutes": "Minutes",
-  "glutes": "Glutes",
-  "kilometers": "Kilometers",
+  "aboutPageTitle": "About Wger",
   "until_failure": "Until Failure",
-  "seconds": "Seconds",
-  "bench": "Bench",
+  "calves": "Calves",
+  "dumbbell": "Dumbbell",
   "barbell": "Barbell",
-  "triceps": "Triceps",
   "swiss_ball": "Swiss Ball",
+  "gym_mat": "Gym mat",
+  "miles": "Miles",
+  "minutes": "Minutes",
+  "chest": "Chest",
+  "kilometers": "Kilometers",
+  "shoulders": "Shoulders",
+  "cardio": "Cardio",
+  "biceps": "Biceps",
+  "arms": "Arms",
+  "triceps": "Triceps",
+  "glutes": "Glutes",
+  "legs": "Legs",
+  "repetitions": "Repetitions",
+  "seconds": "Seconds",
+  "quads": "Quads",
+  "sz_bar": "SZ-Bar",
+  "back": "Back",
+  "bench": "Bench",
+  "lats": "Lats",
+  "incline_bench": "Incline bench",
+  "pull_up_bar": "Pull-up bar",
+  "abs": "Abs",
+  "hamstrings": "Hamstrings",
   "none__bodyweight_exercise_": "none (bodyweight exercise)",
   "lower_back": "Lower back",
-  "shoulders": "Shoulders",
-  "pull_up_bar": "Pull-up bar",
-  "hamstrings": "Hamstrings",
-  "calves": "Calves",
-  "chest": "Chest",
-  "kettlebell": "Kettlebell",
-  "biceps": "Biceps",
-  "dumbbell": "Dumbbell",
-  "gym_mat": "Gym mat",
-  "abs": "Abs",
-  "incline_bench": "Incline bench",
-  "miles": "Miles",
-  "lats": "Lats",
-  "legs": "Legs",
-  "back": "Back",
-  "quads": "Quads",
-  "arms": "Arms",
-  "sz_bar": "SZ-Bar",
-  "aboutPageTitle": "About Wger"
+  "kettlebell": "Kettlebell"
 }
