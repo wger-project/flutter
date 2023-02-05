@@ -36,7 +36,7 @@ class Translation extends Equatable {
   @JsonKey(required: true, name: 'language')
   late int languageId;
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   late Language languageObj;
 
   @JsonKey(required: true, name: 'creation_date')
@@ -51,10 +51,10 @@ class Translation extends Equatable {
   @JsonKey(required: true)
   final String description;
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   List<Comment> notes = [];
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   List<Alias> alias = [];
 
   Translation({

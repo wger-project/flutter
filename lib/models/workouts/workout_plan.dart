@@ -37,10 +37,10 @@ class WorkoutPlan {
   @JsonKey(required: true, name: 'description')
   late String description;
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   List<Day> days = [];
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   List<Log> logs = [];
 
   WorkoutPlan({
@@ -64,6 +64,7 @@ class WorkoutPlan {
 
   // Boilerplate
   factory WorkoutPlan.fromJson(Map<String, dynamic> json) => _$WorkoutPlanFromJson(json);
+
   Map<String, dynamic> toJson() => _$WorkoutPlanToJson(this);
 
   /// Filters the workout logs by exercise and sorts them by date

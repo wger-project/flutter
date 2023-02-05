@@ -48,34 +48,34 @@ class ExerciseBase extends Equatable {
   @JsonKey(required: true, name: 'category')
   late int categoryId;
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   late final ExerciseCategory category;
 
   @JsonKey(required: true, name: 'muscles')
   List<int> musclesIds = [];
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   List<Muscle> muscles = [];
 
   @JsonKey(required: true, name: 'muscles_secondary')
   List<int> musclesSecondaryIds = [];
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   List<Muscle> musclesSecondary = [];
 
   @JsonKey(required: true, name: 'equipment')
   List<int> equipmentIds = [];
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   List<Equipment> equipment = [];
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   List<ExerciseImage> images = [];
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   List<Translation> translations = [];
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   List<Video> videos = [];
 
   ExerciseBase({
