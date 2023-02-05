@@ -284,7 +284,9 @@ class ExercisesProvider with ChangeNotifier {
   }
 
   Future<void> fetchAndSetLanguages() async {
-    final languageData = await baseProvider.fetch(baseProvider.makeUrl(_languageUrlPath));
+    final languageData = await baseProvider.fetch(
+      baseProvider.makeUrl(_languageUrlPath, query: {'limit': '100'}),
+    );
     try {
       for (final language in languageData['results']) {
         _languages.add(Language.fromJson(language));
