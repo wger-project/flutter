@@ -27,7 +27,7 @@ const tLanguage1 = Language(id: 1, shortName: 'de', fullName: 'Deutsch');
 const tLanguage2 = Language(id: 2, shortName: 'en', fullName: 'English');
 const tLanguage3 = Language(id: 3, shortName: 'fr', fullName: 'Français');
 
-const tMuscle1 = Muscle(id: 1, name: 'Flutterus maximus', nameEn: 'Flutterus', isFront: true);
+const tMuscle1 = Muscle(id: 1, name: 'Flutterus maximus', nameEn: 'Glutes', isFront: true);
 const tMuscle2 = Muscle(id: 2, name: 'Biceps brachii', nameEn: 'Biceps', isFront: true);
 const tMuscle3 = Muscle(id: 3, name: 'Gluteus maximus', nameEn: 'Booty', isFront: false);
 

@@ -54,7 +54,7 @@ void main() {
     expect(find.text('Dumbbell'), findsOneWidget, reason: 'Equipment');
 
     expect(find.text('Muscles'), findsNWidgets(2), reason: 'One header, one sub header');
-    expect(find.text('Flutterus maximus (NOT TRANSLATED)'), findsOneWidget, reason: 'Muscles');
+    expect(find.text('Flutterus maximus (Glutes)'), findsOneWidget, reason: 'Muscles');
     expect(find.text('Biceps brachii (Biceps)'), findsOneWidget, reason: 'Muscles');
 
     expect(find.text('Secondary muscles'), findsOneWidget);
