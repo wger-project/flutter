@@ -19,9 +19,9 @@
 import 'package:wger/models/exercises/base.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
-import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/language.dart';
 import 'package:wger/models/exercises/muscle.dart';
+import 'package:wger/models/exercises/translation.dart';
 
 const tLanguage1 = Language(id: 1, shortName: 'de', fullName: 'Deutsch');
 const tLanguage2 = Language(id: 2, shortName: 'en', fullName: 'English');
@@ -105,7 +105,7 @@ final sideRaises = ExerciseBase(
   musclesSecondary: const [tMuscle2],
 );
 
-final benchPressDe = Exercise(
+final benchPressDe = Translation(
   id: 1,
   uuid: 'f4cc326b-e497-4bd7-a71d-0eb1db522743',
   creationDate: DateTime(2021, 1, 15),
@@ -114,7 +114,7 @@ final benchPressDe = Exercise(
   baseId: benchPress.id,
   language: tLanguage1,
 );
-final benchPressEn = Exercise(
+final benchPressEn = Translation(
   id: 7,
   uuid: 'f4cc326b-e497-4bd7-a71d-0eb1db522743',
   creationDate: DateTime(2021, 1, 15),
@@ -124,7 +124,7 @@ final benchPressEn = Exercise(
   language: tLanguage1,
 );
 
-final deadLiftEn = Exercise(
+final deadLiftEn = Translation(
   id: 2,
   uuid: 'b7f51a1a-0368-4dfc-a03c-d629a4089b4a',
   creationDate: DateTime(2021, 1, 15),
@@ -134,7 +134,7 @@ final deadLiftEn = Exercise(
   language: tLanguage2,
 );
 
-final crunchesFr = Exercise(
+final crunchesFr = Translation(
   id: 3,
   uuid: 'd83f572d-add5-48dc-89cf-75f6770284f1',
   creationDate: DateTime(2021, 4, 1),
@@ -144,7 +144,7 @@ final crunchesFr = Exercise(
   language: tLanguage3,
 );
 
-final crunchesDe = Exercise(
+final crunchesDe = Translation(
   id: 4,
   uuid: 'a3e96c1d-b35f-4b0e-9cf4-ca37666cf521',
   creationDate: DateTime(2021, 4, 1),
@@ -154,7 +154,7 @@ final crunchesDe = Exercise(
   language: tLanguage1,
 );
 
-final crunchesEn = Exercise(
+final crunchesEn = Translation(
   id: 5,
   uuid: '8c49a816-2247-4116-94bb-b5c0ce09c609',
   creationDate: DateTime(2021, 4, 1),
@@ -164,7 +164,7 @@ final crunchesEn = Exercise(
   language: tLanguage2,
 );
 
-final curlsEn = Exercise(
+final curlsEn = Translation(
   id: 6,
   uuid: '259a637e-957f-4fe1-b61b-f56e3793ebcd',
   creationDate: DateTime(2021, 4, 1),
@@ -174,7 +174,7 @@ final curlsEn = Exercise(
   language: tLanguage2,
 );
 
-final squatsEn = Exercise(
+final squatsEn = Translation(
   id: 8,
   uuid: '259a637e-957f-4fe1-b61b-f56e3793ebcd',
   creationDate: DateTime(2021, 4, 1),
@@ -184,7 +184,7 @@ final squatsEn = Exercise(
   language: tLanguage2,
 );
 
-final sideRaisesEn = Exercise(
+final sideRaisesEn = Translation(
   id: 9,
   uuid: '6bf89ad0-5a43-4e98-91d3-a8c6886c9712',
   creationDate: DateTime(2022, 11, 1),
@@ -194,17 +194,17 @@ final sideRaisesEn = Exercise(
   language: tLanguage2,
 );
 
-List<Exercise> getTestExercises() {
+List<Translation> getTestExercises() {
   return [benchPressDe, deadLiftEn, crunchesFr];
 }
 
 List<ExerciseBase> getTestExerciseBases() {
-  benchPress.exercises = [benchPressEn, benchPressDe];
-  crunches.exercises = [crunchesEn, crunchesDe, crunchesFr];
-  deadLift.exercises = [deadLiftEn];
-  curls.exercises = [curlsEn];
-  squats.exercises = [squatsEn];
-  sideRaises.exercises = [sideRaisesEn];
+  benchPress.translations = [benchPressEn, benchPressDe];
+  crunches.translations = [crunchesEn, crunchesDe, crunchesFr];
+  deadLift.translations = [deadLiftEn];
+  curls.translations = [curlsEn];
+  squats.translations = [squatsEn];
+  sideRaises.translations = [sideRaisesEn];
 
   return [benchPress, crunches, deadLift, curls, squats, sideRaises];
 }

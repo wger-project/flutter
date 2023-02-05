@@ -23,10 +23,10 @@ import 'package:wger/models/exercises/base.dart';
 import 'package:wger/models/exercises/comment.dart';
 import 'package:wger/models/exercises/language.dart';
 
-part 'exercise.g.dart';
+part 'translation.g.dart';
 
 @JsonSerializable()
-class Exercise extends Equatable {
+class Translation extends Equatable {
   @JsonKey(required: true)
   final int? id;
 
@@ -57,7 +57,7 @@ class Exercise extends Equatable {
   @JsonKey(ignore: true)
   List<Alias> alias = [];
 
-  Exercise({
+  Translation({
     this.id,
     this.uuid,
     this.creationDate,
@@ -86,8 +86,9 @@ class Exercise extends Equatable {
   }
 
   // Boilerplate
-  factory Exercise.fromJson(Map<String, dynamic> json) => _$ExerciseFromJson(json);
-  Map<String, dynamic> toJson() => _$ExerciseToJson(this);
+  factory Translation.fromJson(Map<String, dynamic> json) => _$TranslationFromJson(json);
+
+  Map<String, dynamic> toJson() => _$TranslationToJson(this);
 
   @override
   List<Object?> get props => [

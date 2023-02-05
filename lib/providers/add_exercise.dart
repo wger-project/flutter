@@ -8,15 +8,16 @@ import 'package:wger/models/exercises/alias.dart';
 import 'package:wger/models/exercises/base.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
-import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/language.dart';
 import 'package:wger/models/exercises/muscle.dart';
+import 'package:wger/models/exercises/translation.dart';
 import 'package:wger/models/exercises/variation.dart';
 
 import 'base_provider.dart';
 
 class AddExerciseProvider with ChangeNotifier {
   final WgerBaseProvider baseProvider;
+
   AddExerciseProvider(this.baseProvider);
 
   List<File> get exerciseImages => [..._exerciseImages];
@@ -59,18 +60,25 @@ class AddExerciseProvider with ChangeNotifier {
   }
 
   set exerciseNameEn(String name) => _nameEn = name;
+
   set exerciseNameTrans(String name) => _nameTranslation = name;
+
   set descriptionEn(String description) => _descriptionEn = description;
+
   set descriptionTrans(String description) => _descriptionTranslation = description;
+
   set alternateNamesEn(List<String> names) => _alternativeNamesEn = names;
+
   set alternateNamesTrans(List<String> names) => _alternativeNamesTranslation = names;
 
   set equipment(List<Equipment> equipment) => _equipment = equipment;
+
   List<Equipment> get equipment => [..._equipment];
 
   bool get newVariation => _newVariationForExercise != null;
 
   int? get newVariationForExercise => _newVariationForExercise;
+
   set newVariationForExercise(int? value) {
     _newVariationForExercise = value;
     _variationId = null;
@@ -78,6 +86,7 @@ class AddExerciseProvider with ChangeNotifier {
   }
 
   int? get variationId => _variationId;
+
   set variationId(int? variation) {
     _variationId = variation;
     _newVariationForExercise = null;
@@ -94,16 +103,16 @@ class AddExerciseProvider with ChangeNotifier {
     );
   }
 
-  Exercise get exerciseEn {
-    return Exercise(
+  Translation get exerciseEn {
+    return Translation(
       name: _nameEn!,
       description: _descriptionEn!,
       language: const Language(id: 2, fullName: 'English', shortName: 'en'),
     );
   }
 
-  Exercise get exerciseTranslation {
-    return Exercise(
+  Translation get exerciseTranslation {
+    return Translation(
       name: _nameTranslation!,
       description: _descriptionTranslation!,
       language: language,
@@ -115,12 +124,14 @@ class AddExerciseProvider with ChangeNotifier {
   }
 
   List<Muscle> get primaryMuscles => [..._primaryMuscles];
+
   set primaryMuscles(List<Muscle> muscles) {
     _primaryMuscles = muscles;
     notifyListeners();
   }
 
   List<Muscle> get secondaryMuscles => [..._secondaryMuscles];
+
   set secondaryMuscles(List<Muscle> muscles) {
     _secondaryMuscles = muscles;
     notifyListeners();
@@ -169,7 +180,7 @@ class AddExerciseProvider with ChangeNotifier {
     final base = await addExerciseBase();
 
     // Create the base description in English
-    Exercise exerciseTranslationEn = exerciseEn;
+    Translation exerciseTranslationEn = exerciseEn;
     exerciseTranslationEn.base = base;
     exerciseTranslationEn = await addExerciseTranslation(exerciseTranslationEn);
     for (final alias in _alternativeNamesEn) {
@@ -180,7 +191,7 @@ class AddExerciseProvider with ChangeNotifier {
 
     // Create the translations
     if (language != null) {
-      Exercise exerciseTranslationLang = exerciseTranslation;
+      Translation exerciseTranslationLang = exerciseTranslation;
       exerciseTranslationLang.base = base;
       exerciseTranslationLang = await addExerciseTranslation(exerciseTranslationLang);
       for (final alias in _alternativeNamesTranslation) {
@@ -239,11 +250,11 @@ class AddExerciseProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<Exercise> addExerciseTranslation(Exercise exercise) async {
+  Future<Translation> addExerciseTranslation(Translation exercise) async {
     final Uri postUri = baseProvider.makeUrl(_exerciseTranslationUrlPath);
 
     final Map<String, dynamic> newTranslation = await baseProvider.post(exercise.toJson(), postUri);
-    final Exercise newExercise = Exercise.fromJson(newTranslation);
+    final Translation newExercise = Translation.fromJson(newTranslation);
     notifyListeners();
 
     return newExercise;

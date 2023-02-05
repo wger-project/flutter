@@ -21,9 +21,9 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
-import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/image.dart';
 import 'package:wger/models/exercises/muscle.dart';
+import 'package:wger/models/exercises/translation.dart';
 import 'package:wger/models/exercises/video.dart';
 
 part 'base.g.dart';
@@ -73,7 +73,7 @@ class ExerciseBase extends Equatable {
   List<ExerciseImage> images = [];
 
   @JsonKey(ignore: true)
-  List<Exercise> exercises = [];
+  List<Translation> translations = [];
 
   @JsonKey(ignore: true)
   List<Video> videos = [];
@@ -88,7 +88,7 @@ class ExerciseBase extends Equatable {
     List<Muscle>? musclesSecondary,
     List<Equipment>? equipment,
     List<ExerciseImage>? images,
-    List<Exercise>? exercises,
+    List<Translation>? exercises,
     ExerciseCategory? category,
     List<Video>? videos,
   }) {
@@ -115,7 +115,7 @@ class ExerciseBase extends Equatable {
     }
 
     if (exercises != null) {
-      this.exercises = exercises;
+      this.translations = exercises;
     }
 
     if (videos != null) {
@@ -131,15 +131,15 @@ class ExerciseBase extends Equatable {
   ///       translation in English. This is something that should never happen,
   ///       but we can't make sure that no local installation hasn't deleted
   ///       the entry in English.
-  Exercise getExercise(String language) {
+  Translation getExercise(String language) {
     // If the language is in the form en-US, take the language code only
     final languageCode = language.split('-')[0];
 
-    return exercises.firstWhere(
+    return translations.firstWhere(
       (e) => e.languageObj.shortName == languageCode,
-      orElse: () => exercises.firstWhere(
+      orElse: () => translations.firstWhere(
         (e) => e.languageObj.shortName == LANGUAGE_SHORT_ENGLISH,
-        orElse: () => exercises.first,
+        orElse: () => translations.first,
       ),
     );
   }
@@ -159,6 +159,7 @@ class ExerciseBase extends Equatable {
 
   // Boilerplate
   factory ExerciseBase.fromJson(Map<String, dynamic> json) => _$ExerciseBaseFromJson(json);
+
   Map<String, dynamic> toJson() => _$ExerciseBaseToJson(this);
 
   @override

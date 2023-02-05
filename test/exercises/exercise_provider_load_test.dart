@@ -85,7 +85,7 @@ void main() {
       ]);
       expect(base.videos.map((v) => v.uuid), ['63e996e9-a772-4ca5-9d09-8b4be03f6be4']);
 
-      final exercise1 = base.exercises[0];
+      final exercise1 = base.translations[0];
       expect(exercise1.name, '2 Handed Kettlebell Swing');
       expect(exercise1.languageObj.shortName, 'en');
       expect(exercise1.notes[0].comment, "it's important to do the exercise correctly");
@@ -93,8 +93,8 @@ void main() {
       expect(exercise1.notes[2].comment, 'have fun');
       expect(exercise1.alias[0].alias, 'double handed kettlebell');
       expect(exercise1.alias[1].alias, 'Kettlebell russian style');
-      expect(base.exercises[1].name, 'Kettlebell Con Dos Manos');
-      expect(base.exercises[2].name, 'Zweihändiges Kettlebell');
+      expect(base.translations[1].name, 'Kettlebell Con Dos Manos');
+      expect(base.translations[2].name, 'Zweihändiges Kettlebell');
     });
   });
 }

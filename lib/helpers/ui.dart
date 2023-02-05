@@ -23,7 +23,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/models/exercises/base.dart';
-import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/exercises/translation.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/providers/workout_plans.dart';
 
@@ -107,7 +107,7 @@ dynamic showDeleteDialog(
   BuildContext context,
   String confirmDeleteName,
   Log log,
-  Exercise exercise,
+  Translation exercise,
   Map<ExerciseBase, List<Log>> exerciseData,
 ) async {
   final res = await showDialog(
