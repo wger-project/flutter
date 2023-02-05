@@ -100,7 +100,8 @@ void main() {
         .thenAnswer((_) => Future.value(tEquipmentMap));
 
     // Mock languages
-    when(mockBaseProvider.makeUrl(languageUrl)).thenReturn(tLanguageEntriesUri);
+    when(mockBaseProvider.makeUrl(languageUrl, query: anyNamed('query')))
+        .thenReturn(tLanguageEntriesUri);
     when(mockBaseProvider.fetch(tLanguageEntriesUri)).thenAnswer((_) => Future.value(tLanguageMap));
 
     // Mock base info response
