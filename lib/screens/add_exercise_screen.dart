@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/providers/add_exercise.dart';
 import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/user.dart';
 import 'package:wger/screens/exercise_screen.dart';
 import 'package:wger/widgets/add_exercise/steps/step1basics.dart';
 import 'package:wger/widgets/add_exercise/steps/step2variations.dart';
@@ -10,6 +12,9 @@ import 'package:wger/widgets/add_exercise/steps/step3description.dart';
 import 'package:wger/widgets/add_exercise/steps/step4translations.dart';
 import 'package:wger/widgets/add_exercise/steps/step5images.dart';
 import 'package:wger/widgets/core/app_bar.dart';
+import 'package:wger/widgets/user/forms.dart';
+
+import 'form_screen.dart';
 
 class AddExerciseScreen extends StatefulWidget {
   const AddExerciseScreen({Key? key}) : super(key: key);
@@ -40,9 +45,8 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             OutlinedButton(
-              onPressed: details.onStepCancel,
-              child: Text(AppLocalizations.of(context).previous),
-            ),
+                onPressed: details.onStepCancel,
+                child: Text(AppLocalizations.of(context).previous)),
             if (_currentStep == lastStepIndex)
               ElevatedButton(
                 onPressed: () async {
@@ -66,56 +70,112 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: EmptyAppBar(AppLocalizations.of(context).contributeExercise),
-      body: Stepper(
-        controlsBuilder: _controlsBuilder,
-        steps: [
-          Step(
-            title: Text(AppLocalizations.of(context).baseData),
-            content: Step1Basics(formkey: _keys[0]),
-          ),
-          Step(
-            title: Text(AppLocalizations.of(context).variations),
-            content: Step2Variations(formkey: _keys[1]),
-          ),
-          Step(
-            title: Text(AppLocalizations.of(context).description),
-            content: Step3Description(formkey: _keys[2]),
-          ),
-          Step(
-            title: Text(AppLocalizations.of(context).translation),
-            content: Step4Translation(formkey: _keys[3]),
-          ),
-          Step(
-            title: Text(AppLocalizations.of(context).images),
-            content: Step5Images(formkey: _keys[4]),
-          ),
-        ],
-        currentStep: _currentStep,
-        onStepContinue: () {
-          if (_keys[_currentStep].currentState?.validate() ?? false) {
-            _keys[_currentStep].currentState?.save();
+    final user = context.read<UserProvider>().profile;
 
-            if (_currentStep != lastStepIndex) {
-              setState(() {
-                _currentStep += 1;
-              });
-            }
-          }
-        },
-        onStepCancel: () => setState(() {
-          if (_currentStep != 0) {
-            _currentStep -= 1;
-          }
-        }),
-        /*
+    return !user!.emailVerified
+        ? const EmailNotVerified()
+        : Scaffold(
+            appBar: EmptyAppBar(AppLocalizations.of(context).contributeExercise),
+            body: Stepper(
+              controlsBuilder: _controlsBuilder,
+              steps: [
+                Step(
+                  title: Text(AppLocalizations.of(context).baseData),
+                  content: Step1Basics(formkey: _keys[0]),
+                ),
+                Step(
+                  title: Text(AppLocalizations.of(context).variations),
+                  content: Step2Variations(formkey: _keys[1]),
+                ),
+                Step(
+                  title: Text(AppLocalizations.of(context).description),
+                  content: Step3Description(formkey: _keys[2]),
+                ),
+                Step(
+                  title: Text(AppLocalizations.of(context).translation),
+                  content: Step4Translation(formkey: _keys[3]),
+                ),
+                Step(
+                  title: Text(AppLocalizations.of(context).images),
+                  content: Step5Images(formkey: _keys[4]),
+                ),
+              ],
+              currentStep: _currentStep,
+              onStepContinue: () {
+                if (_keys[_currentStep].currentState?.validate() ?? false) {
+                  _keys[_currentStep].currentState?.save();
+
+                  if (_currentStep != lastStepIndex) {
+                    setState(() {
+                      _currentStep += 1;
+                    });
+                  }
+                }
+              },
+              onStepCancel: () => setState(() {
+                if (_currentStep != 0) {
+                  _currentStep -= 1;
+                }
+              }),
+              /*
         onStepTapped: (int index) {
           setState(() {
             _currentStep = index;
           });
         },
          */
+            ),
+          );
+  }
+}
+
+class EmailNotVerified extends StatelessWidget {
+  const EmailNotVerified({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final user = context.read<UserProvider>().profile;
+
+    return Scaffold(
+      appBar: EmptyAppBar(AppLocalizations.of(context).unVerifiedEmail),
+      body: Container(
+        padding: const EdgeInsets.all(25),
+        child: Center(
+          child: Card(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.warning),
+                  title: Text(AppLocalizations.of(context).unVerifiedEmail),
+                  subtitle: Text(AppLocalizations.of(context)
+                      .contributeExerciseWarning(MIN_ACCOUNT_AGE.toString())),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushReplacementNamed(
+                          context,
+                          FormScreen.routeName,
+                          arguments: FormScreenArguments(
+                            AppLocalizations.of(context).userProfile,
+                            UserProfileForm(user!),
+                          ),
+                        );
+                      },
+                      child: Text(AppLocalizations.of(context).userProfile),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

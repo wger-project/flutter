@@ -619,6 +619,16 @@
     "description": "The base data for an exercise such as category, trained muscles, etc."
   },
   "aboutPageTitle": "About Wger",
+  "contributeExerciseWarning": "You can only contribute exercises if your account is older than {days} days and have verified your email",
+  "@contributeExerciseWarning": {
+    "description": "Number of days before which a person can add exercise",
+    "placeholders": {
+      "days": {
+        "type": "String",
+        "example": "14"
+      }
+    }
+  },
   "abs": "Abs",
   "arms": "Arms",
   "back": "Back",

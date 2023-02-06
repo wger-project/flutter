@@ -63,8 +63,7 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
                           //dense: true,
                           leading: const Icon(Icons.person),
                           title: Text(AppLocalizations.of(context).userProfile),
-                          onTap: () async {
-                            await context.read<UserProvider>().fetchAndSetProfile();
+                          onTap: () {
                             Navigator.pushNamed(
                               context,
                               FormScreen.routeName,

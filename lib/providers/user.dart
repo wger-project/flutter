@@ -26,8 +26,8 @@ class UserProvider with ChangeNotifier {
   final WgerBaseProvider baseProvider;
   UserProvider(this.baseProvider);
 
-  static const _profileUrlPath = 'userprofile';
-  static const _verifyEmail = 'verify-email';
+  static const PROFILE_URL = 'userprofile';
+  static const VERIFY_EMAIL = 'verify-email';
 
   Profile? profile;
 
@@ -38,7 +38,7 @@ class UserProvider with ChangeNotifier {
 
   /// Fetch the current user's profile
   Future<void> fetchAndSetProfile() async {
-    final userData = await baseProvider.fetch(baseProvider.makeUrl(_profileUrlPath));
+    final userData = await baseProvider.fetch(baseProvider.makeUrl(PROFILE_URL));
     try {
       profile = Profile.fromJson(userData);
     } catch (error) {
@@ -50,15 +50,15 @@ class UserProvider with ChangeNotifier {
   Future<void> saveProfile() async {
     final data = await baseProvider.post(
       profile!.toJson(),
-      baseProvider.makeUrl(_profileUrlPath),
+      baseProvider.makeUrl(PROFILE_URL),
     );
   }
 
   /// Verify the user's email
   Future<void> verifyEmail() async {
     final verificationData = await baseProvider.fetch(baseProvider.makeUrl(
-      _profileUrlPath,
-      objectMethod: _verifyEmail,
+      PROFILE_URL,
+      objectMethod: VERIFY_EMAIL,
     ));
     //log(verificationData.toString());
   }
