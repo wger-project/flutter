@@ -697,5 +697,7 @@
   "contributeExercise": "Внести вправу",
   "@contributeExercise": {},
   "translation": "Переклад",
-  "@translation": {}
+  "@translation": {},
+  "cardio": "Кардіо",
+  "@cardio": {}
 }
