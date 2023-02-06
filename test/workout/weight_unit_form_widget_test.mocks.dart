@@ -76,8 +76,7 @@ class _FakeResponse_4 extends _i1.SmartFake implements _i3.Response {
 /// A class which mocks [BodyWeightProvider].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockBodyWeightProvider extends _i1.Mock
-    implements _i5.BodyWeightProvider {
+class MockBodyWeightProvider extends _i1.Mock implements _i5.BodyWeightProvider {
   MockBodyWeightProvider() {
     _i1.throwOnMissingStub(this);
   }
@@ -147,8 +146,7 @@ class MockBodyWeightProvider extends _i1.Mock
         ),
       ) as _i4.WeightEntry);
   @override
-  _i4.WeightEntry? findByDate(DateTime? date) =>
-      (super.noSuchMethod(Invocation.method(
+  _i4.WeightEntry? findByDate(DateTime? date) => (super.noSuchMethod(Invocation.method(
         #findByDate,
         [date],
       )) as _i4.WeightEntry?);
@@ -158,12 +156,10 @@ class MockBodyWeightProvider extends _i1.Mock
           #fetchAndSetEntries,
           [],
         ),
-        returnValue:
-            _i6.Future<List<_i4.WeightEntry>>.value(<_i4.WeightEntry>[]),
+        returnValue: _i6.Future<List<_i4.WeightEntry>>.value(<_i4.WeightEntry>[]),
       ) as _i6.Future<List<_i4.WeightEntry>>);
   @override
-  _i6.Future<_i4.WeightEntry> addEntry(_i4.WeightEntry? entry) =>
-      (super.noSuchMethod(
+  _i6.Future<_i4.WeightEntry> addEntry(_i4.WeightEntry? entry) => (super.noSuchMethod(
         Invocation.method(
           #addEntry,
           [entry],
@@ -195,8 +191,7 @@ class MockBodyWeightProvider extends _i1.Mock
         returnValueForMissingStub: _i6.Future<void>.value(),
       ) as _i6.Future<void>);
   @override
-  Map<String, String> getDefaultHeaders({dynamic includeAuth = false}) =>
-      (super.noSuchMethod(
+  Map<String, String> getDefaultHeaders({dynamic includeAuth = false}) => (super.noSuchMethod(
         Invocation.method(
           #getDefaultHeaders,
           [],
@@ -240,8 +235,7 @@ class MockBodyWeightProvider extends _i1.Mock
           #fetch,
           [uri],
         ),
-        returnValue:
-            _i6.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
+        returnValue: _i6.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
       ) as _i6.Future<Map<String, dynamic>>);
   @override
   _i6.Future<List<dynamic>> fetchPaginated(Uri? uri) => (super.noSuchMethod(
@@ -264,8 +258,7 @@ class MockBodyWeightProvider extends _i1.Mock
             uri,
           ],
         ),
-        returnValue:
-            _i6.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
+        returnValue: _i6.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
       ) as _i6.Future<Map<String, dynamic>>);
   @override
   _i6.Future<Map<String, dynamic>> patch(
@@ -280,8 +273,7 @@ class MockBodyWeightProvider extends _i1.Mock
             uri,
           ],
         ),
-        returnValue:
-            _i6.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
+        returnValue: _i6.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
       ) as _i6.Future<Map<String, dynamic>>);
   @override
   _i6.Future<_i3.Response> deleteRequest(

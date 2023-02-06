@@ -22,9 +22,7 @@ MeasurementCategory _$MeasurementCategoryFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$MeasurementCategoryToJson(
-        MeasurementCategory instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$MeasurementCategoryToJson(MeasurementCategory instance) => <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
       'unit': instance.unit,
