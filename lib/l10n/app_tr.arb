@@ -697,5 +697,7 @@
     "description": "Message shown when the user wants to add new measurement"
   },
   "aboutPageTitle": "Wger Hakkında",
-  "@aboutPageTitle": {}
+  "@aboutPageTitle": {},
+  "cardio": "Kardiyo",
+  "@cardio": {}
 }
