@@ -240,59 +240,41 @@ class ExercisesProvider with ChangeNotifier {
   }
 
   Future<void> fetchAndSetCategories() async {
-    final categories = await baseProvider.fetch(baseProvider.makeUrl(_categoriesUrlPath));
-    try {
-      for (final category in categories['results']) {
-        _categories.add(ExerciseCategory.fromJson(category));
-      }
-    } catch (error) {
-      rethrow;
+    final categories = await baseProvider.fetchPaginated(baseProvider.makeUrl(_categoriesUrlPath));
+    for (final category in categories) {
+      _categories.add(ExerciseCategory.fromJson(category));
     }
   }
 
   Future<void> fetchAndSetVariations() async {
-    final variations = await baseProvider.fetch(baseProvider.makeUrl(_exerciseVariationsUrlPath));
-    try {
-      for (final variation in variations['results']) {
-        _variations.add(Variation.fromJson(variation));
-      }
-    } catch (error) {
-      rethrow;
+    final variations =
+        await baseProvider.fetchPaginated(baseProvider.makeUrl(_exerciseVariationsUrlPath));
+    for (final variation in variations) {
+      _variations.add(Variation.fromJson(variation));
     }
   }
 
   Future<void> fetchAndSetMuscles() async {
-    final muscles = await baseProvider.fetch(baseProvider.makeUrl(_musclesUrlPath));
-    try {
-      for (final muscle in muscles['results']) {
-        _muscles.add(Muscle.fromJson(muscle));
-      }
-    } catch (error) {
-      rethrow;
+    final muscles = await baseProvider.fetchPaginated(baseProvider.makeUrl(_musclesUrlPath));
+
+    for (final muscle in muscles) {
+      _muscles.add(Muscle.fromJson(muscle));
     }
   }
 
   Future<void> fetchAndSetEquipment() async {
-    final equipments = await baseProvider.fetch(baseProvider.makeUrl(_equipmentUrlPath));
-    try {
-      for (final equipment in equipments['results']) {
-        _equipment.add(Equipment.fromJson(equipment));
-      }
-    } catch (error) {
-      rethrow;
+    final equipments = await baseProvider.fetchPaginated(baseProvider.makeUrl(_equipmentUrlPath));
+
+    for (final equipment in equipments) {
+      _equipment.add(Equipment.fromJson(equipment));
     }
   }
 
   Future<void> fetchAndSetLanguages() async {
-    final languageData = await baseProvider.fetch(
-      baseProvider.makeUrl(_languageUrlPath, query: {'limit': '100'}),
-    );
-    try {
-      for (final language in languageData['results']) {
-        _languages.add(Language.fromJson(language));
-      }
-    } catch (error) {
-      rethrow;
+    final languageData = await baseProvider.fetchPaginated(baseProvider.makeUrl(_languageUrlPath));
+
+    for (final language in languageData) {
+      _languages.add(Language.fromJson(language));
     }
   }
 

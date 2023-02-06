@@ -102,9 +102,10 @@ class MyApp extends StatelessWidget {
           update: (context, base, previous) => previous ?? UserProvider(WgerBaseProvider(base)),
         ),
         ChangeNotifierProxyProvider<AuthProvider, BodyWeightProvider>(
-          create: (context) =>
-              BodyWeightProvider(Provider.of<AuthProvider>(context, listen: false), []),
-          update: (context, auth, previous) => previous ?? BodyWeightProvider(auth, []),
+          create: (context) => BodyWeightProvider(
+              WgerBaseProvider(Provider.of<AuthProvider>(context, listen: false))),
+          update: (context, base, previous) =>
+              previous ?? BodyWeightProvider(WgerBaseProvider(base)),
         ),
         ChangeNotifierProxyProvider<AuthProvider, GalleryProvider>(
           create: (context) =>

@@ -1,0 +1,15 @@
+{
+  "count": 2,
+  "next": "https://localhost/api/v2/itcrowd/?limit=20&offset=20",
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "value": "You wouldn't steal a handbag."
+    },
+    {
+      "id": 2,
+      "value": "You wouldn't steal a car."
+    }
+  ]
+}

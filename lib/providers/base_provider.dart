@@ -69,7 +69,28 @@ class WgerBaseProvider {
     }
 
     // Process the response
-    return json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+    return json.decode(utf8.decode(response.bodyBytes)) as dynamic;
+  }
+
+  /// Fetch and retrieve the overview list of objects, returns the JSON parsed response
+  Future<List<dynamic>> fetchPaginated(Uri uri) async {
+    final out = [];
+    var url = uri;
+    var allPagesProcessed = false;
+
+    while (!allPagesProcessed) {
+      final data = await fetch(url);
+
+      data['results'].forEach((e) => out.add(e));
+
+      if (data['next'] == null) {
+        allPagesProcessed = true;
+      } else {
+        url = Uri.parse(data['next']);
+      }
+    }
+
+    return out;
   }
 
   /// POSTs a new object

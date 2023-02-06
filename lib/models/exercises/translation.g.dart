@@ -22,15 +22,17 @@ Translation _$TranslationFromJson(Map<String, dynamic> json) {
   return Translation(
     id: json['id'] as int?,
     uuid: json['uuid'] as String?,
-    creationDate:
-        json['creation_date'] == null ? null : DateTime.parse(json['creation_date'] as String),
+    creationDate: json['creation_date'] == null
+        ? null
+        : DateTime.parse(json['creation_date'] as String),
     name: json['name'] as String,
     description: json['description'] as String,
     baseId: json['exercise_base'] as int?,
   )..languageId = json['language'] as int;
 }
 
-Map<String, dynamic> _$TranslationToJson(Translation instance) => <String, dynamic>{
+Map<String, dynamic> _$TranslationToJson(Translation instance) =>
+    <String, dynamic>{
       'id': instance.id,
       'uuid': instance.uuid,
       'language': instance.languageId,

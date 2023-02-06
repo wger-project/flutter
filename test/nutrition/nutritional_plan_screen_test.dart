@@ -42,7 +42,7 @@ void main() {
           create: (context) => NutritionPlansProvider(testAuthProvider, [], client),
         ),
         ChangeNotifierProvider<BodyWeightProvider>(
-          create: (context) => BodyWeightProvider(testAuthProvider, [], client),
+          create: (context) => BodyWeightProvider(mockBaseProvider),
         ),
       ],
       child: MaterialApp(

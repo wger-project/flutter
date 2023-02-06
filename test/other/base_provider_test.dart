@@ -18,10 +18,14 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 import 'package:wger/providers/base_provider.dart';
 
+import '../fixtures/fixture_reader.dart';
 import '../utils.dart';
+import 'base_provider_test.mocks.dart';
 
 @GenerateMocks([http.Client])
 void main() {
@@ -92,6 +96,52 @@ void main() {
         Uri.https('example.com', '/wger-url/api/v2/endpoint/42/log_data/', {'a': '2', 'b': 'c'}),
         provider.makeUrl('endpoint', id: 42, objectMethod: 'log_data', query: {'a': '2', 'b': 'c'}),
       );
+    });
+  });
+
+  group('Retrieving and fetching data', () {
+    test('Test loading paginated data', () async {
+      // Arrange
+      final mockHttpClient = MockClient();
+      final response1 = Response(fixture('pagination/pagination1.json'), 200);
+      final response2 = Response(fixture('pagination/pagination2.json'), 200);
+      final response3 = Response(fixture('pagination/pagination3.json'), 200);
+      final Uri paginationUri1 = Uri(
+        scheme: 'https',
+        host: 'localhost',
+        path: 'api/v2/itcrowd/',
+      );
+      final Uri paginationUri2 = Uri(
+        scheme: 'https',
+        host: 'localhost',
+        path: 'api/v2/itcrowd/',
+        query: 'limit=20&offset=20',
+      );
+      final Uri paginationUri3 = Uri(
+        scheme: 'https',
+        host: 'localhost',
+        path: 'api/v2/itcrowd/',
+        query: 'limit=20&offset=40',
+      );
+
+      when(mockHttpClient.get(paginationUri1, headers: anyNamed('headers')))
+          .thenAnswer((_) => Future.value(response1));
+      when(mockHttpClient.get(paginationUri2, headers: anyNamed('headers')))
+          .thenAnswer((_) => Future.value(response2));
+      when(mockHttpClient.get(paginationUri3, headers: anyNamed('headers')))
+          .thenAnswer((_) => Future.value(response3));
+
+      // Act
+      final WgerBaseProvider provider = WgerBaseProvider(testAuthProvider, mockHttpClient);
+      final data = await provider.fetchPaginated(paginationUri1);
+
+      // Assert
+      expect(data.length, 5);
+      expect(data[0], {'id': 1, 'value': "You wouldn't steal a handbag."});
+      expect(data[1], {'id': 2, 'value': "You wouldn't steal a car."});
+      expect(data[2], {'id': 3, 'value': "You wouldn't steal a baby."});
+      expect(data[3], {'id': 4, 'value': "You wouldn't shoot a policeman."});
+      expect(data[4], {'id': 5, 'value': 'And then steal his helmet.'});
     });
   });
 }

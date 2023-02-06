@@ -88,21 +88,24 @@ void main() {
 
     // Mock categories
     when(mockBaseProvider.makeUrl(categoryUrl)).thenReturn(tCategoryEntriesUri);
-    when(mockBaseProvider.fetch(tCategoryEntriesUri)).thenAnswer((_) => Future.value(tCategoryMap));
+    when(mockBaseProvider.fetchPaginated(tCategoryEntriesUri))
+        .thenAnswer((_) => Future.value(tCategoryMap['results']));
 
     // Mock muscles
     when(mockBaseProvider.makeUrl(muscleUrl)).thenReturn(tMuscleEntriesUri);
-    when(mockBaseProvider.fetch(tMuscleEntriesUri)).thenAnswer((_) => Future.value(tMuscleMap));
+    when(mockBaseProvider.fetchPaginated(tMuscleEntriesUri))
+        .thenAnswer((_) => Future.value(tMuscleMap['results']));
 
     // Mock equipment
     when(mockBaseProvider.makeUrl(equipmentUrl)).thenReturn(tEquipmentEntriesUri);
-    when(mockBaseProvider.fetch(tEquipmentEntriesUri))
-        .thenAnswer((_) => Future.value(tEquipmentMap));
+    when(mockBaseProvider.fetchPaginated(tEquipmentEntriesUri))
+        .thenAnswer((_) => Future.value(tEquipmentMap['results']));
 
     // Mock languages
     when(mockBaseProvider.makeUrl(languageUrl, query: anyNamed('query')))
         .thenReturn(tLanguageEntriesUri);
-    when(mockBaseProvider.fetch(tLanguageEntriesUri)).thenAnswer((_) => Future.value(tLanguageMap));
+    when(mockBaseProvider.fetchPaginated(tLanguageEntriesUri))
+        .thenAnswer((_) => Future.value(tLanguageMap['results']));
 
     // Mock base info response
     when(mockBaseProvider.makeUrl(exerciseBaseInfoUrl)).thenReturn(texerciseBaseInfoUri);

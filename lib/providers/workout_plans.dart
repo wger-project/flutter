@@ -231,37 +231,22 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
     plan.days = days;
 
     // Logs
-    //
-    // TODO(x): looping through all results in the pagination is something we will
-    // probably need in the future. We should put this in some function or something
-    // so that we can reuse it.
     plan.logs = [];
-    var allItemsProcessed = false;
-    var logsURL = makeUrl(_logsUrlPath, query: {
-      'workout': workoutId.toString(),
-      'limit': '1000',
-    });
 
-    while (!allItemsProcessed) {
-      final logData = await fetch(logsURL);
-
-      for (final entry in logData['results']) {
-        try {
-          final log = Log.fromJson(entry);
-          log.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
-          log.repetitionUnit = _repetitionUnit.firstWhere((e) => e.id == log.weightUnitId);
-          log.exerciseBase = await _exercises.fetchAndSetExerciseBase(log.exerciseBaseId);
-          plan.logs.add(log);
-        } catch (e) {
-          dev.log('fire! fire!');
-          dev.log(e.toString());
-        }
-      }
-
-      if (logData['next'] == null) {
-        allItemsProcessed = true;
-      } else {
-        logsURL = Uri.parse(logData['next']);
+    final logData = await fetchPaginated(makeUrl(
+      _logsUrlPath,
+      query: {'workout': workoutId.toString(), 'limit': '100'},
+    ));
+    for (final logEntry in logData) {
+      try {
+        final log = Log.fromJson(logEntry);
+        log.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
+        log.repetitionUnit = _repetitionUnit.firstWhere((e) => e.id == log.weightUnitId);
+        log.exerciseBase = await _exercises.fetchAndSetExerciseBase(log.exerciseBaseId);
+        plan.logs.add(log);
+      } catch (e) {
+        dev.log('fire! fire!');
+        dev.log(e.toString());
       }
     }
 
