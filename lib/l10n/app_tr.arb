@@ -699,5 +699,15 @@
   "aboutPageTitle": "Wger Hakkında",
   "@aboutPageTitle": {},
   "cardio": "Kardiyo",
-  "@cardio": {}
+  "@cardio": {},
+  "contributeExerciseWarning": "Yalnızca hesabınız {days} günden eskiyse ve e-posta adresinizi doğruladıysanız egzersizlere katkıda bulunabilirsiniz",
+  "@contributeExerciseWarning": {
+    "description": "Number of days before which a person can add exercise",
+    "placeholders": {
+      "days": {
+        "type": "String",
+        "example": "14"
+      }
+    }
+  }
 }
