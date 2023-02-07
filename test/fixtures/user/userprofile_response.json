@@ -1,7 +1,9 @@
 {
   "username": "admin",
   "email": "me@example.com",
-  "email_verified": false,
+  "email_verified": true,
+  "is_trustworthy": true,
+  "date_joined": "2021-04-24 09:07:09.364859+00:00",
   "gym": 1,
   "is_temporary": false,
   "show_comments": false,

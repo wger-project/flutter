@@ -78,8 +78,9 @@ void main() {
 
       // assert
       expect(userProvider.profile!.username, 'admin');
-      expect(userProvider.profile!.emailVerified, false);
+      expect(userProvider.profile!.emailVerified, true);
       expect(userProvider.profile!.email, 'me@example.com');
+      expect(userProvider.profile!.isTrustworthy, true);
     });
 
     test('Sending the verify email works', () async {

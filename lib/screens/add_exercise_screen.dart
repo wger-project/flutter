@@ -16,19 +16,31 @@ import 'package:wger/widgets/user/forms.dart';
 
 import 'form_screen.dart';
 
-class AddExerciseScreen extends StatefulWidget {
+class AddExerciseScreen extends StatelessWidget {
   const AddExerciseScreen({Key? key}) : super(key: key);
 
   static const routeName = '/exercises/add';
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.read<UserProvider>().profile;
+
+    return profile!.isTrustworthy ? const AddExerciseStepper() : const EmailNotVerified();
+  }
+}
+
+class AddExerciseStepper extends StatefulWidget {
+  const AddExerciseStepper({Key? key}) : super(key: key);
+
   static const STEPS_IN_FORM = 5;
 
   @override
-  _AddExerciseScreenState createState() => _AddExerciseScreenState();
+  _AddExerciseStepperState createState() => _AddExerciseStepperState();
 }
 
-class _AddExerciseScreenState extends State<AddExerciseScreen> {
+class _AddExerciseStepperState extends State<AddExerciseStepper> {
   int _currentStep = 0;
-  int lastStepIndex = AddExerciseScreen.STEPS_IN_FORM - 1;
+  int lastStepIndex = AddExerciseStepper.STEPS_IN_FORM - 1;
   final List<GlobalKey<FormState>> _keys = [
     GlobalKey<FormState>(),
     GlobalKey<FormState>(),
@@ -70,62 +82,58 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.read<UserProvider>().profile;
+    return Scaffold(
+      appBar: EmptyAppBar(AppLocalizations.of(context).contributeExercise),
+      body: Stepper(
+        controlsBuilder: _controlsBuilder,
+        steps: [
+          Step(
+            title: Text(AppLocalizations.of(context).baseData),
+            content: Step1Basics(formkey: _keys[0]),
+          ),
+          Step(
+            title: Text(AppLocalizations.of(context).variations),
+            content: Step2Variations(formkey: _keys[1]),
+          ),
+          Step(
+            title: Text(AppLocalizations.of(context).description),
+            content: Step3Description(formkey: _keys[2]),
+          ),
+          Step(
+            title: Text(AppLocalizations.of(context).translation),
+            content: Step4Translation(formkey: _keys[3]),
+          ),
+          Step(
+            title: Text(AppLocalizations.of(context).images),
+            content: Step5Images(formkey: _keys[4]),
+          ),
+        ],
+        currentStep: _currentStep,
+        onStepContinue: () {
+          if (_keys[_currentStep].currentState?.validate() ?? false) {
+            _keys[_currentStep].currentState?.save();
 
-    return !user!.emailVerified
-        ? const EmailNotVerified()
-        : Scaffold(
-            appBar: EmptyAppBar(AppLocalizations.of(context).contributeExercise),
-            body: Stepper(
-              controlsBuilder: _controlsBuilder,
-              steps: [
-                Step(
-                  title: Text(AppLocalizations.of(context).baseData),
-                  content: Step1Basics(formkey: _keys[0]),
-                ),
-                Step(
-                  title: Text(AppLocalizations.of(context).variations),
-                  content: Step2Variations(formkey: _keys[1]),
-                ),
-                Step(
-                  title: Text(AppLocalizations.of(context).description),
-                  content: Step3Description(formkey: _keys[2]),
-                ),
-                Step(
-                  title: Text(AppLocalizations.of(context).translation),
-                  content: Step4Translation(formkey: _keys[3]),
-                ),
-                Step(
-                  title: Text(AppLocalizations.of(context).images),
-                  content: Step5Images(formkey: _keys[4]),
-                ),
-              ],
-              currentStep: _currentStep,
-              onStepContinue: () {
-                if (_keys[_currentStep].currentState?.validate() ?? false) {
-                  _keys[_currentStep].currentState?.save();
-
-                  if (_currentStep != lastStepIndex) {
-                    setState(() {
-                      _currentStep += 1;
-                    });
-                  }
-                }
-              },
-              onStepCancel: () => setState(() {
-                if (_currentStep != 0) {
-                  _currentStep -= 1;
-                }
-              }),
-              /*
+            if (_currentStep != lastStepIndex) {
+              setState(() {
+                _currentStep += 1;
+              });
+            }
+          }
+        },
+        onStepCancel: () => setState(() {
+          if (_currentStep != 0) {
+            _currentStep -= 1;
+          }
+        }),
+        /*
         onStepTapped: (int index) {
           setState(() {
             _currentStep = index;
           });
         },
          */
-            ),
-          );
+      ),
+    );
   }
 }
 

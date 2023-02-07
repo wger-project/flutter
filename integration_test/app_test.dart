@@ -28,13 +28,12 @@ const languages = [
   // Note: it seems if too many languages are processed at once, some processes
   // disappear and no images are written. Doing this in smaller steps works fine
 
-  /*
   'ca',
   'de-DE',
   'en-US',
   'es-ES',
   'fr-FR',
-   */
+
   /*
   'hi-IN',
   'hr',

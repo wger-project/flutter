@@ -26,20 +26,24 @@ import 'package:wger/models/exercises/translation.dart';
 const tLanguage1 = Language(id: 1, shortName: 'de', fullName: 'Deutsch');
 const tLanguage2 = Language(id: 2, shortName: 'en', fullName: 'English');
 const tLanguage3 = Language(id: 3, shortName: 'fr', fullName: 'Français');
+const testLanguages = [tLanguage1, tLanguage2, tLanguage3];
 
 const tMuscle1 = Muscle(id: 1, name: 'Flutterus maximus', nameEn: 'Glutes', isFront: true);
 const tMuscle2 = Muscle(id: 2, name: 'Biceps brachii', nameEn: 'Biceps', isFront: true);
-const tMuscle3 = Muscle(id: 3, name: 'Gluteus maximus', nameEn: 'Booty', isFront: false);
+const tMuscle3 = Muscle(id: 3, name: 'Gluteus maximus', nameEn: 'Glutes', isFront: false);
+const testMuscles = [tMuscle1, tMuscle2, tMuscle3];
 
 const tCategory1 = ExerciseCategory(id: 1, name: 'Arms');
 const tCategory2 = ExerciseCategory(id: 2, name: 'Legs');
 const tCategory3 = ExerciseCategory(id: 3, name: 'Abs');
 const tCategory4 = ExerciseCategory(id: 4, name: 'Shoulders');
 const tCategory5 = ExerciseCategory(id: 5, name: 'Calves');
+const testCategories = [tCategory1, tCategory2, tCategory3, tCategory4, tCategory5];
 
 const tEquipment1 = Equipment(id: 1, name: 'Bench');
 const tEquipment2 = Equipment(id: 1, name: 'Dumbbell');
-const tEquipment3 = Equipment(id: 2, name: 'Matress');
+const tEquipment3 = Equipment(id: 2, name: 'Bench');
+const testEquipment = [tEquipment1, tEquipment2, tEquipment3];
 
 final benchPress = ExerciseBase(
   id: 1,
@@ -193,10 +197,6 @@ final sideRaisesEn = Translation(
   baseId: curls.id,
   language: tLanguage2,
 );
-
-List<Translation> getTestExercises() {
-  return [benchPressDe, deadLiftEn, crunchesFr];
-}
 
 List<ExerciseBase> getTestExerciseBases() {
   benchPress.translations = [benchPressEn, benchPressDe];

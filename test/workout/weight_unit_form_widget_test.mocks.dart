@@ -3,14 +3,13 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i6;
-import 'dart:ui' as _i7;
+import 'dart:async' as _i5;
+import 'dart:ui' as _i6;
 
-import 'package:http/http.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:wger/models/body_weight/weight_entry.dart' as _i4;
-import 'package:wger/providers/auth.dart' as _i2;
-import 'package:wger/providers/body_weight.dart' as _i5;
+import 'package:wger/models/body_weight/weight_entry.dart' as _i3;
+import 'package:wger/providers/base_provider.dart' as _i2;
+import 'package:wger/providers/body_weight.dart' as _i4;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -23,8 +22,8 @@ import 'package:wger/providers/body_weight.dart' as _i5;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeAuthProvider_0 extends _i1.SmartFake implements _i2.AuthProvider {
-  _FakeAuthProvider_0(
+class _FakeWgerBaseProvider_0 extends _i1.SmartFake implements _i2.WgerBaseProvider {
+  _FakeWgerBaseProvider_0(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -33,38 +32,8 @@ class _FakeAuthProvider_0 extends _i1.SmartFake implements _i2.AuthProvider {
         );
 }
 
-class _FakeClient_1 extends _i1.SmartFake implements _i3.Client {
-  _FakeClient_1(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
-}
-
-class _FakeWeightEntry_2 extends _i1.SmartFake implements _i4.WeightEntry {
-  _FakeWeightEntry_2(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
-}
-
-class _FakeUri_3 extends _i1.SmartFake implements Uri {
-  _FakeUri_3(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
-}
-
-class _FakeResponse_4 extends _i1.SmartFake implements _i3.Response {
-  _FakeResponse_4(
+class _FakeWeightEntry_1 extends _i1.SmartFake implements _i3.WeightEntry {
+  _FakeWeightEntry_1(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -76,45 +45,29 @@ class _FakeResponse_4 extends _i1.SmartFake implements _i3.Response {
 /// A class which mocks [BodyWeightProvider].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockBodyWeightProvider extends _i1.Mock implements _i5.BodyWeightProvider {
+class MockBodyWeightProvider extends _i1.Mock implements _i4.BodyWeightProvider {
   MockBodyWeightProvider() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  List<_i4.WeightEntry> get items => (super.noSuchMethod(
+  _i2.WgerBaseProvider get baseProvider => (super.noSuchMethod(
+        Invocation.getter(#baseProvider),
+        returnValue: _FakeWgerBaseProvider_0(
+          this,
+          Invocation.getter(#baseProvider),
+        ),
+      ) as _i2.WgerBaseProvider);
+  @override
+  List<_i3.WeightEntry> get items => (super.noSuchMethod(
         Invocation.getter(#items),
-        returnValue: <_i4.WeightEntry>[],
-      ) as List<_i4.WeightEntry>);
+        returnValue: <_i3.WeightEntry>[],
+      ) as List<_i3.WeightEntry>);
   @override
-  _i2.AuthProvider get auth => (super.noSuchMethod(
-        Invocation.getter(#auth),
-        returnValue: _FakeAuthProvider_0(
-          this,
-          Invocation.getter(#auth),
-        ),
-      ) as _i2.AuthProvider);
-  @override
-  set auth(_i2.AuthProvider? _auth) => super.noSuchMethod(
+  set items(List<_i3.WeightEntry>? entries) => super.noSuchMethod(
         Invocation.setter(
-          #auth,
-          _auth,
-        ),
-        returnValueForMissingStub: null,
-      );
-  @override
-  _i3.Client get client => (super.noSuchMethod(
-        Invocation.getter(#client),
-        returnValue: _FakeClient_1(
-          this,
-          Invocation.getter(#client),
-        ),
-      ) as _i3.Client);
-  @override
-  set client(_i3.Client? _client) => super.noSuchMethod(
-        Invocation.setter(
-          #client,
-          _client,
+          #items,
+          entries,
         ),
         returnValueForMissingStub: null,
       );
@@ -132,175 +85,66 @@ class MockBodyWeightProvider extends _i1.Mock implements _i5.BodyWeightProvider 
         returnValueForMissingStub: null,
       );
   @override
-  _i4.WeightEntry findById(int? id) => (super.noSuchMethod(
+  _i3.WeightEntry findById(int? id) => (super.noSuchMethod(
         Invocation.method(
           #findById,
           [id],
         ),
-        returnValue: _FakeWeightEntry_2(
+        returnValue: _FakeWeightEntry_1(
           this,
           Invocation.method(
             #findById,
             [id],
           ),
         ),
-      ) as _i4.WeightEntry);
+      ) as _i3.WeightEntry);
   @override
-  _i4.WeightEntry? findByDate(DateTime? date) => (super.noSuchMethod(Invocation.method(
+  _i3.WeightEntry? findByDate(DateTime? date) => (super.noSuchMethod(Invocation.method(
         #findByDate,
         [date],
-      )) as _i4.WeightEntry?);
+      )) as _i3.WeightEntry?);
   @override
-  _i6.Future<List<_i4.WeightEntry>> fetchAndSetEntries() => (super.noSuchMethod(
+  _i5.Future<List<_i3.WeightEntry>> fetchAndSetEntries() => (super.noSuchMethod(
         Invocation.method(
           #fetchAndSetEntries,
           [],
         ),
-        returnValue: _i6.Future<List<_i4.WeightEntry>>.value(<_i4.WeightEntry>[]),
-      ) as _i6.Future<List<_i4.WeightEntry>>);
+        returnValue: _i5.Future<List<_i3.WeightEntry>>.value(<_i3.WeightEntry>[]),
+      ) as _i5.Future<List<_i3.WeightEntry>>);
   @override
-  _i6.Future<_i4.WeightEntry> addEntry(_i4.WeightEntry? entry) => (super.noSuchMethod(
+  _i5.Future<_i3.WeightEntry> addEntry(_i3.WeightEntry? entry) => (super.noSuchMethod(
         Invocation.method(
           #addEntry,
           [entry],
         ),
-        returnValue: _i6.Future<_i4.WeightEntry>.value(_FakeWeightEntry_2(
+        returnValue: _i5.Future<_i3.WeightEntry>.value(_FakeWeightEntry_1(
           this,
           Invocation.method(
             #addEntry,
             [entry],
           ),
         )),
-      ) as _i6.Future<_i4.WeightEntry>);
+      ) as _i5.Future<_i3.WeightEntry>);
   @override
-  _i6.Future<void> editEntry(_i4.WeightEntry? entry) => (super.noSuchMethod(
+  _i5.Future<void> editEntry(_i3.WeightEntry? entry) => (super.noSuchMethod(
         Invocation.method(
           #editEntry,
           [entry],
         ),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
   @override
-  _i6.Future<void> deleteEntry(int? id) => (super.noSuchMethod(
+  _i5.Future<void> deleteEntry(int? id) => (super.noSuchMethod(
         Invocation.method(
           #deleteEntry,
           [id],
         ),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
   @override
-  Map<String, String> getDefaultHeaders({dynamic includeAuth = false}) => (super.noSuchMethod(
-        Invocation.method(
-          #getDefaultHeaders,
-          [],
-          {#includeAuth: includeAuth},
-        ),
-        returnValue: <String, String>{},
-      ) as Map<String, String>);
-  @override
-  Uri makeUrl(
-    String? path, {
-    int? id,
-    String? objectMethod,
-    Map<String, dynamic>? query,
-  }) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #makeUrl,
-          [path],
-          {
-            #id: id,
-            #objectMethod: objectMethod,
-            #query: query,
-          },
-        ),
-        returnValue: _FakeUri_3(
-          this,
-          Invocation.method(
-            #makeUrl,
-            [path],
-            {
-              #id: id,
-              #objectMethod: objectMethod,
-              #query: query,
-            },
-          ),
-        ),
-      ) as Uri);
-  @override
-  _i6.Future<Map<String, dynamic>> fetch(Uri? uri) => (super.noSuchMethod(
-        Invocation.method(
-          #fetch,
-          [uri],
-        ),
-        returnValue: _i6.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
-      ) as _i6.Future<Map<String, dynamic>>);
-  @override
-  _i6.Future<List<dynamic>> fetchPaginated(Uri? uri) => (super.noSuchMethod(
-        Invocation.method(
-          #fetchPaginated,
-          [uri],
-        ),
-        returnValue: _i6.Future<List<dynamic>>.value(<dynamic>[]),
-      ) as _i6.Future<List<dynamic>>);
-  @override
-  _i6.Future<Map<String, dynamic>> post(
-    Map<String, dynamic>? data,
-    Uri? uri,
-  ) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #post,
-          [
-            data,
-            uri,
-          ],
-        ),
-        returnValue: _i6.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
-      ) as _i6.Future<Map<String, dynamic>>);
-  @override
-  _i6.Future<Map<String, dynamic>> patch(
-    Map<String, dynamic>? data,
-    Uri? uri,
-  ) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #patch,
-          [
-            data,
-            uri,
-          ],
-        ),
-        returnValue: _i6.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
-      ) as _i6.Future<Map<String, dynamic>>);
-  @override
-  _i6.Future<_i3.Response> deleteRequest(
-    String? url,
-    int? id,
-  ) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #deleteRequest,
-          [
-            url,
-            id,
-          ],
-        ),
-        returnValue: _i6.Future<_i3.Response>.value(_FakeResponse_4(
-          this,
-          Invocation.method(
-            #deleteRequest,
-            [
-              url,
-              id,
-            ],
-          ),
-        )),
-      ) as _i6.Future<_i3.Response>);
-  @override
-  void addListener(_i7.VoidCallback? listener) => super.noSuchMethod(
+  void addListener(_i6.VoidCallback? listener) => super.noSuchMethod(
         Invocation.method(
           #addListener,
           [listener],
@@ -308,7 +152,7 @@ class MockBodyWeightProvider extends _i1.Mock implements _i5.BodyWeightProvider 
         returnValueForMissingStub: null,
       );
   @override
-  void removeListener(_i7.VoidCallback? listener) => super.noSuchMethod(
+  void removeListener(_i6.VoidCallback? listener) => super.noSuchMethod(
         Invocation.method(
           #removeListener,
           [listener],
