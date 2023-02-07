@@ -699,5 +699,15 @@
   "translation": "Переклад",
   "@translation": {},
   "cardio": "Кардіо",
-  "@cardio": {}
+  "@cardio": {},
+  "contributeExerciseWarning": "Ви можете брати участь у вправах, лише якщо ваш обліковий запис старший за {days} днів і підтвердив вашу електронну пошту",
+  "@contributeExerciseWarning": {
+    "description": "Number of days before which a person can add exercise",
+    "placeholders": {
+      "days": {
+        "type": "String",
+        "example": "14"
+      }
+    }
+  }
 }
