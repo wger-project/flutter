@@ -154,7 +154,14 @@ class MyApp extends StatelessWidget {
           },
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          debugShowCheckedModeBanner: false,
+
+          // Workaround for https://github.com/flutter/flutter/issues/100857
+          localeResolutionCallback: (deviceLocale, supportedLocales) {
+            if (supportedLocales.contains(deviceLocale)) {
+              return deviceLocale;
+            }
+            return const Locale('en');
+          },
         ),
       ),
     );
