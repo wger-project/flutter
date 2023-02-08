@@ -59,7 +59,6 @@ class Pill extends StatelessWidget {
   }
 }
 
-
 class CircleIconAvatar extends StatelessWidget {
   final double radius;
   final Icon _icon;

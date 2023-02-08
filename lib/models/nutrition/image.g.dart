@@ -20,8 +20,7 @@ IngredientImage _$IngredientImageFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$IngredientImageToJson(IngredientImage instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$IngredientImageToJson(IngredientImage instance) => <String, dynamic>{
       'id': instance.id,
       'uuid': instance.uuid,
       'ingredient_id': instance.ingredientId,
