@@ -345,6 +345,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.4"
+  file_picker:
+    dependency: transitive
+    description:
+      name: file_picker
+      sha256: d090ae03df98b0247b82e5928f44d1b959867049d18d73635e2e0bc3f49542b9
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.2.5"
   fixnum:
     dependency: transitive
     description:
@@ -353,6 +361,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"
+  flex_color_picker:
+    dependency: transitive
+    description:
+      name: flex_color_picker
+      sha256: "607c9fdb26be84d4a5a0931ab42a7eda725372e4f5ebaa2526ab6b22ead752f9"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.0"
+  flex_seed_scheme:
+    dependency: transitive
+    description:
+      name: flex_seed_scheme
+      sha256: e61950ccadfb8d43ce5cdef382e8f689edc053ce6b837e277539410ecfb3b3e5
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.2"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -387,6 +411,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.1"
+  flutter_inappwebview:
+    dependency: transitive
+    description:
+      name: flutter_inappwebview
+      sha256: f73505c792cf083d5566e1a94002311be497d984b5607f25be36d685cf6361cf
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.7.2+3"
   flutter_keyboard_visibility:
     dependency: transitive
     description:
@@ -559,6 +591,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.15.1"
+  html_editor_enhanced:
+    dependency: "direct main"
+    description:
+      name: html_editor_enhanced
+      sha256: c2a0d0a50970fe4aa565e79e57081c8a69c3b2e94162e8f1df3e1b750c7aeb5e
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.5.1"
   http:
     dependency: "direct main"
     description:
@@ -631,6 +671,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.6.2"
+  infinite_listview:
+    dependency: transitive
+    description:
+      name: infinite_listview
+      sha256: f6062c1720eb59be553dfa6b89813d3e8dd2f054538445aaa5edaddfa5195ce6
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
   integration_test:
     dependency: "direct dev"
     description: flutter
@@ -780,6 +828,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
+  numberpicker:
+    dependency: transitive
+    description:
+      name: numberpicker
+      sha256: "73723bd13c940ebcd9e5f0ed56b4874588c1748a9a6a38254f97ad627715142e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.1"
   numerus:
     dependency: transitive
     description:
@@ -852,6 +908,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.3"
+  pedantic:
+    dependency: transitive
+    description:
+      name: pedantic
+      sha256: "67fc27ed9639506c856c840ccce7594d0bdcd91bc8d53d6e52359449a1d50602"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.11.1"
   petitparser:
     dependency: transitive
     description:
@@ -876,6 +940,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.3"
+  pointer_interceptor:
+    dependency: transitive
+    description:
+      name: pointer_interceptor
+      sha256: "6aa680b30d96dccef496933d00208ad25f07e047f644dc98ce03ec6141633a9a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.9.3+4"
   pool:
     dependency: transitive
     description:
@@ -1273,6 +1345,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.13"
+  visibility_detector:
+    dependency: transitive
+    description:
+      name: visibility_detector
+      sha256: "15c54a459ec2c17b4705450483f3d5a2858e733aee893dcee9d75fd04814940d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.3"
   vm_service:
     dependency: transitive
     description:
@@ -1411,4 +1491,4 @@ packages:
     version: "3.1.1"
 sdks:
   dart: ">=2.19.0 <3.0.0"
-  flutter: ">=3.0.0"
+  flutter: ">=3.7.0"

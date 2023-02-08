@@ -37,6 +37,7 @@ import 'package:wger/models/exercises/translation.dart';
 import 'package:wger/models/exercises/variation.dart';
 import 'package:wger/models/exercises/video.dart';
 import 'package:wger/providers/base_provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ExercisesProvider with ChangeNotifier {
   final WgerBaseProvider baseProvider;
@@ -115,7 +116,7 @@ class ExercisesProvider with ChangeNotifier {
   }
 
   // Initialize filters for exercises search in exercises list
-  void _initFilters() {
+  void _initFilters(BuildContext context) {
     if (_muscles.isEmpty || _equipment.isEmpty || _filters != null) {
       return;
     }
@@ -123,7 +124,7 @@ class ExercisesProvider with ChangeNotifier {
     setFilters(
       Filters(
         exerciseCategories: FilterCategory<ExerciseCategory>(
-          title: 'Category',
+          title: AppLocalizations.of(context).category,
           items: Map.fromEntries(
             _categories.map(
               (category) => MapEntry<ExerciseCategory, bool>(category, false),
@@ -131,7 +132,7 @@ class ExercisesProvider with ChangeNotifier {
           ),
         ),
         equipment: FilterCategory<Equipment>(
-          title: 'Equipment',
+          title: AppLocalizations.of(context).equipment,
           items: Map.fromEntries(
             _equipment.map(
               (singleEquipment) => MapEntry<Equipment, bool>(singleEquipment, false),
@@ -362,7 +363,7 @@ class ExercisesProvider with ChangeNotifier {
     }
   }
 
-  Future<void> fetchAndSetExercises() async {
+  Future<void> fetchAndSetExercises(BuildContext context) async {
     clear();
 
     // Load exercises from cache, if available
@@ -379,7 +380,7 @@ class ExercisesProvider with ChangeNotifier {
         cacheData['variations'].forEach((e) => _variations.add(Variation.fromJson(e)));
         cacheData['bases'].forEach((e) => _exerciseBases.add(readExerciseBaseFromBaseInfo(e)));
 
-        _initFilters();
+        _initFilters(context);
         log("Read ${_exerciseBases.length} exercises from cache. Valid till ${cacheData['expiresIn']}");
         return;
       }
@@ -415,7 +416,7 @@ class ExercisesProvider with ChangeNotifier {
       log("Saved ${_exerciseBases.length} exercises to cache. Valid till ${cacheData['expiresIn']}");
 
       await prefs.setString(PREFS_EXERCISES, json.encode(cacheData));
-      _initFilters();
+      _initFilters(context);
       notifyListeners();
     } on MissingRequiredKeysException catch (error) {
       log(error.missingKeys.toString());
