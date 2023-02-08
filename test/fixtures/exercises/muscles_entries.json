@@ -1,0 +1,31 @@
+{
+  "count": 3,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 2,
+      "name": "Anterior deltoid",
+      "name_en": "Shoulders",
+      "is_front": true,
+      "image_url_main": "/static/images/muscles/main/muscle-2.svg",
+      "image_url_secondary": "/static/images/muscles/secondary/muscle-2.svg"
+    },
+    {
+      "id": 1,
+      "name": "Biceps brachii",
+      "name_en": "Biceps",
+      "is_front": true,
+      "image_url_main": "/static/images/muscles/main/muscle-1.svg",
+      "image_url_secondary": "/static/images/muscles/secondary/muscle-1.svg"
+    },
+    {
+      "id": 4,
+      "name": "Biceps femoris",
+      "name_en": "Hamstrings",
+      "is_front": false,
+      "image_url_main": "/static/images/muscles/main/muscle-11.svg",
+      "image_url_secondary": "/static/images/muscles/secondary/muscle-11.svg"
+    }
+  ]
+}

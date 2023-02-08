@@ -1,18 +1,17 @@
 name: Continous Integration
 on:
   push:
-    branches: [ master ]
     paths:
       - '**.dart'
       - 'pubspec.yaml'
   pull_request:
-    branches: [ master ]
+    branches: [ pull_request, master ]
     paths:
       - '**.dart'
       - 'pubspec.yaml'
 jobs:
   test:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:  
     - uses: actions/checkout@v1
 
@@ -20,7 +19,7 @@ jobs:
       uses: subosito/flutter-action@v1
       with:
         channel: 'stable'
-        flutter-version: '3.0.x'
+        flutter-version: '3.7.x'
 
     - run: dart --version
     - run: flutter --version

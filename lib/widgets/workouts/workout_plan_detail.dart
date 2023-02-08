@@ -40,10 +40,6 @@ class _WorkoutPlanDetailState extends State<WorkoutPlanDetail> {
       children: [
         if (widget._workoutPlan.days.isNotEmpty)
           ToggleButtons(
-            children: const <Widget>[
-              Icon(Icons.table_chart_outlined),
-              Icon(Icons.show_chart),
-            ],
             renderBorder: false,
             onPressed: (int index) {
               if (index == 1) {
@@ -51,6 +47,10 @@ class _WorkoutPlanDetailState extends State<WorkoutPlanDetail> {
               }
             },
             isSelected: const [true, false],
+            children: const <Widget>[
+              Icon(Icons.table_chart_outlined),
+              Icon(Icons.show_chart),
+            ],
           ),
         if (widget._workoutPlan.description != '')
           Padding(

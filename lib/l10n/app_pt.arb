@@ -253,12 +253,6 @@
   "@selectImage": {
     "description": "Label and error message when the user hasn't selected an image to save"
   },
-  "takePicture": "Tirar uma foto",
-  "@takePicture": {},
-  "chooseFromLibrary": "Escolha na biblioteca de fotos",
-  "@chooseFromLibrary": {},
-  "gallery": "Galeria",
-  "@gallery": {},
   "addImage": "Adicionar imagem",
   "@addImage": {},
   "dataCopied": "Dados copiados para nova entrada",
@@ -284,10 +278,6 @@
   "scanBarcode": "Digitalizar código de barras",
   "@scanBarcode": {
     "description": "Label for scan barcode button"
-  },
-  "close": "Fechar",
-  "@close": {
-    "description": "Translation for close"
   },
   "register": "Registrar",
   "@register": {
@@ -556,5 +546,72 @@
     "placeholders": {
       "productName": {}
     }
-  }
+  },
+  "alsoKnownAs": "Também chamado de: {aliases}",
+  "@alsoKnownAs": {
+    "placeholders": {
+      "aliases": {}
+    },
+    "description": "List of alternative names for an exercise"
+  },
+  "verifiedEmail": "Email verificado",
+  "unVerifiedEmail": "Verificação pendente",
+  "verifiedEmailReason": "É necessário verificar seu email para contribuir com exercícios",
+  "verifiedEmailInfo": "Um email de verificação foi enviado para {email}",
+  "@verifiedEmailInfo": {
+    "placeholders": {
+      "email": {}
+    }
+  },
+  "close": "Fechar",
+  "@close": {
+    "description": "Translation for close"
+  },
+  "variations": "Variações",
+  "@variations": {
+    "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"
+  },
+  "oneNamePerLine": "Somente um nome por linha",
+  "whatVariationsExist": "Se houver alguma, quais as possíveis variações para esse exercício?",
+  "takePicture": "Tirar uma foto",
+  "@takePicture": {},
+  "chooseFromLibrary": "Escolher da galeria",
+  "@chooseFromLibrary": {},
+  "gallery": "Galeria de fotos",
+  "@gallery": {},
+  "addExercise": "Adicionar exercício",
+  "translation": "Tradução",
+  "translateExercise": "Traduzir este exercício",
+  "alternativeNames": "Outros nomes",
+  "images": "Imagens",
+  "language": "Idioma",
+  "previous": "Anterior",
+  "next": "Próximo",
+  "minutes": "Minutos",
+  "seconds": "Segundos",
+  "until_failure": "Até a falha",
+  "kilometers": "Quilômetros",
+  "glutes": "Glúteos",
+  "bench": "Supino",
+  "barbell": "Barra",
+  "triceps": "Tríceps",
+  "biceps": "Bíceps",
+  "dumbbell": "Haltere",
+  "abs": "Abdominal",
+  "chest": "Peito",
+  "shoulders": "Ombro",
+  "gym_mat": "Colchonete",
+  "incline_bench": "Supino inclinado",
+  "calves": "Panturrilha",
+  "legs": "Pernas",
+  "lats": "Dorsal",
+  "quads": "Quadríceps",
+  "hamstrings": "Posterior de coxa",
+  "arms": "Braços",
+  "pull_up_bar": "Barra fixa",
+  "lower_back": "Lombar",
+  "swiss_ball": "Bola suíça",
+  "kettlebell": "Kettlebell",
+  "none__bodyweight_exercise_": "nenhum (somente peso do corpo)",
+  "aboutPageTitle": "Sobre Wger"
 }

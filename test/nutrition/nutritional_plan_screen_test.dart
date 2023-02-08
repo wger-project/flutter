@@ -44,7 +44,7 @@ void main() {
           create: (context) => NutritionPlansProvider(mockWgerBaseProvider, []),
         ),
         ChangeNotifierProvider<BodyWeightProvider>(
-          create: (context) => BodyWeightProvider(testAuthProvider, [], client),
+          create: (context) => BodyWeightProvider(mockBaseProvider),
         ),
       ],
       child: MaterialApp(
@@ -71,7 +71,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // PLan description
-    expect(find.text('lots and lots of mass'), findsOneWidget);
+    expect(find.text('Less fat, more protein'), findsOneWidget);
 
     // Ingredients
     expect(find.text('100g Water'), findsOneWidget);

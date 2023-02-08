@@ -17,7 +17,7 @@
  */
 
 import 'package:json_annotation/json_annotation.dart';
-import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/exercises/base.dart';
 import 'package:wger/models/workouts/setting.dart';
 
 part 'set.g.dart';
@@ -41,18 +41,18 @@ class Set {
   @JsonKey(required: true, defaultValue: '')
   late String comment;
 
-  @JsonKey(ignore: true)
-  List<Exercise> exercisesObj = [];
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  List<ExerciseBase> exerciseBasesObj = [];
 
-  @JsonKey(ignore: true)
-  List<int> exercisesIds = [];
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  List<int> exerciseBasesIds = [];
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   List<Setting> settings = [];
 
   /// Computed settings (instead of 4x10 this has [10, 10, 10, 10]), used for
   /// the gym mode where the individual values are used
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   List<Setting> settingsComputed = [];
 
   Set({
@@ -76,8 +76,8 @@ class Set {
     this.sets = sets ?? DEFAULT_NR_SETS;
     this.order = order ?? 1;
     this.comment = comment ?? '';
-    exercisesObj = exercises ?? [];
-    exercisesIds = exercisesObj.map((e) => e.id).toList();
+    exerciseBasesObj = exercises ?? [];
+    exerciseBasesIds = exerciseBasesObj.map((e) => e.id!).toList();
     this.settings = settings ?? [];
     this.settingsComputed = settingsComputed ?? [];
     if (day != null) {
@@ -92,7 +92,7 @@ class Set {
 
     for (final setting in settings) {
       final foundSettings = out.where(
-        (element) => element.exerciseId == setting.exerciseId,
+        (element) => element.exerciseBaseId == setting.exerciseBaseId,
       );
 
       if (foundSettings.isEmpty) {
@@ -102,26 +102,26 @@ class Set {
     return out;
   }
 
-  void addExercise(Exercise exercise) {
-    exercisesObj.add(exercise);
-    exercisesIds.add(exercise.id);
+  void addExerciseBase(ExerciseBase base) {
+    exerciseBasesObj.add(base);
+    exerciseBasesIds.add(base.id!);
   }
 
-  void removeExercise(Exercise exercise) {
-    exercisesObj.removeWhere((e) => e.id == exercise.id);
-    exercisesIds.removeWhere((e) => e == exercise.id);
+  void removeExercise(ExerciseBase base) {
+    exerciseBasesObj.removeWhere((e) => e.id == base.id);
+    exerciseBasesIds.removeWhere((e) => e == base.id);
   }
 
   /// Returns all settings for the given exercise
-  List<Setting> filterSettingsByExercise(Exercise exercise) {
-    return settings.where((element) => element.exerciseId == exercise.id).toList();
+  List<Setting> filterSettingsByExercise(ExerciseBase exerciseBase) {
+    return settings.where((element) => element.exerciseBaseId == exerciseBase.id).toList();
   }
 
   /// Returns a list with all repetitions for the given exercise
-  List<String> getSmartRepr(Exercise exercise) {
+  List<String> getSmartRepr(ExerciseBase exerciseBase) {
     final List<String> out = [];
 
-    final settingList = filterSettingsByExercise(exercise);
+    final settingList = filterSettingsByExercise(exerciseBase);
 
     if (settingList.isEmpty) {
       out.add('');
@@ -141,11 +141,12 @@ class Set {
   }
 
   /// Returns a string with all repetitions for the given exercise
-  String getSmartTextRepr(Exercise exercise) {
-    return getSmartRepr(exercise).join(' – ');
+  String getSmartTextRepr(ExerciseBase execiseBase) {
+    return getSmartRepr(execiseBase).join(' – ');
   }
 
   // Boilerplate
   factory Set.fromJson(Map<String, dynamic> json) => _$SetFromJson(json);
+
   Map<String, dynamic> toJson() => _$SetToJson(this);
 }

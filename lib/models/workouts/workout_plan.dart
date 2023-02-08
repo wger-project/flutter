@@ -17,7 +17,7 @@
  */
 
 import 'package:json_annotation/json_annotation.dart';
-import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/exercises/base.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/log.dart';
 
@@ -37,10 +37,10 @@ class WorkoutPlan {
   @JsonKey(required: true, name: 'description')
   late String description;
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   List<Day> days = [];
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   List<Log> logs = [];
 
   WorkoutPlan({
@@ -64,6 +64,7 @@ class WorkoutPlan {
 
   // Boilerplate
   factory WorkoutPlan.fromJson(Map<String, dynamic> json) => _$WorkoutPlanFromJson(json);
+
   Map<String, dynamic> toJson() => _$WorkoutPlanToJson(this);
 
   /// Filters the workout logs by exercise and sorts them by date
@@ -72,8 +73,8 @@ class WorkoutPlan {
   /// means here that the values are the same, i.e. logs with the same weight,
   /// reps, etc. are considered equal. Workout ID, Log ID and date are not
   /// considered.
-  List<Log> filterLogsByExercise(Exercise exercise, {bool unique = false}) {
-    var out = logs.where((element) => element.exerciseId == exercise.id).toList();
+  List<Log> filterLogsByExerciseBase(ExerciseBase exerciseBase, {bool unique = false}) {
+    var out = logs.where((element) => element.exerciseBaseId == exerciseBase.id).toList();
 
     if (unique) {
       out = out.toSet().toList();
@@ -88,13 +89,13 @@ class WorkoutPlan {
   Map<DateTime, Map<String, dynamic>> get logData {
     final out = <DateTime, Map<String, dynamic>>{};
     for (final log in logs) {
-      final exercise = log.exerciseObj;
+      final exercise = log.exerciseBaseObj;
       final date = log.date;
 
       if (!out.containsKey(date)) {
         out[date] = {
           'session': null,
-          'exercises': <Exercise, List<Log>>{},
+          'exercises': <ExerciseBase, List<Log>>{},
         };
       }
 

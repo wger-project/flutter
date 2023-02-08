@@ -44,13 +44,13 @@ class Log {
   @JsonKey(required: true, name: 'ingredient')
   late int ingredientId;
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   late Ingredient ingredientObj;
 
   @JsonKey(required: true, name: 'weight_unit')
   int? weightUnitId;
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   IngredientWeightUnit? weightUnitObj;
 
   @JsonKey(required: true, fromJson: stringToNum)
@@ -77,6 +77,7 @@ class Log {
 
   // Boilerplate
   factory Log.fromJson(Map<String, dynamic> json) => _$LogFromJson(json);
+
   Map<String, dynamic> toJson() => _$LogToJson(this);
 
   /// Calculations

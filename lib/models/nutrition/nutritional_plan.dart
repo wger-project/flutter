@@ -37,10 +37,10 @@ class NutritionalPlan {
   @JsonKey(required: true, name: 'creation_date', toJson: toDate)
   late DateTime creationDate;
 
-  @JsonKey(ignore: true, defaultValue: [])
+  @JsonKey(includeFromJson: false, includeToJson: false, defaultValue: [])
   List<Meal> meals = [];
 
-  @JsonKey(ignore: true, defaultValue: [])
+  @JsonKey(includeFromJson: false, includeToJson: false, defaultValue: [])
   List<Log> logs = [];
 
   NutritionalPlan({
@@ -61,6 +61,7 @@ class NutritionalPlan {
 
   // Boilerplate
   factory NutritionalPlan.fromJson(Map<String, dynamic> json) => _$NutritionalPlanFromJson(json);
+
   Map<String, dynamic> toJson() => _$NutritionalPlanToJson(this);
 
   /// Calculations

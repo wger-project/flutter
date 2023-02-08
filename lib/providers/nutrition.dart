@@ -22,6 +22,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/exceptions/http_exception.dart';
+import 'package:wger/exceptions/no_such_entry_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/nutrition/image.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
@@ -70,7 +71,10 @@ class NutritionPlansProvider with ChangeNotifier {
   }
 
   NutritionalPlan findById(int id) {
-    return _plans.firstWhere((plan) => plan.id == id);
+    return _plans.firstWhere(
+      (plan) => plan.id == id,
+      orElse: () => throw NoSuchEntryException(),
+    );
   }
 
   Meal? findMealById(int id) {
@@ -124,7 +128,7 @@ class NutritionPlansProvider with ChangeNotifier {
     NutritionalPlan plan;
     try {
       plan = findById(planId);
-    } on StateError {
+    } on NoSuchEntryException catch (e) {
       plan = await fetchAndSetPlanSparse(planId);
     }
 
@@ -305,8 +309,8 @@ class NutritionPlansProvider with ChangeNotifier {
   Future<void> fetchIngredientsFromCache() async {
     // Load exercises from cache, if available
     final prefs = await SharedPreferences.getInstance();
-    if (prefs.containsKey('ingredientData')) {
-      final ingredientData = json.decode(prefs.getString('ingredientData')!);
+    if (prefs.containsKey(PREFS_INGREDIENTS)) {
+      final ingredientData = json.decode(prefs.getString(PREFS_INGREDIENTS)!);
       if (DateTime.parse(ingredientData['expiresIn']).isAfter(DateTime.now())) {
         ingredientData['ingredients'].forEach((e) => _ingredients.add(Ingredient.fromJson(e)));
         log("Read ${ingredientData['ingredients'].length} ingredients from cache. Valid till ${ingredientData['expiresIn']}");
@@ -320,7 +324,7 @@ class NutritionPlansProvider with ChangeNotifier {
       'expiresIn': DateTime.now().add(const Duration(days: DAYS_TO_CACHE)).toIso8601String(),
       'ingredients': []
     };
-    prefs.setString('ingredientData', json.encode(ingredientData));
+    prefs.setString(PREFS_INGREDIENTS, json.encode(ingredientData));
     return;
   }
 

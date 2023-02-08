@@ -18,13 +18,15 @@
 
 import 'dart:convert';
 import 'dart:developer' as dev;
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/exercises/base.dart';
+import 'package:wger/models/exercises/translation.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
@@ -87,6 +89,10 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
   /// Return the default weight unit (reps)
   RepetitionUnit get defaultRepetitionUnit {
     return _repetitionUnit.firstWhere((element) => element.id == DEFAULT_REPETITION_UNIT);
+  }
+
+  List<WorkoutPlan> getPlans() {
+    return _workoutPlans;
   }
 
   WorkoutPlan findById(int id) {
@@ -202,15 +208,16 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
         for (final settingEntry in settingData) {
           final workoutSetting = Setting.fromJson(settingEntry);
 
-          workoutSetting.exercise = await _exercises.fetchAndSetExercise(workoutSetting.exerciseId);
+          workoutSetting.exerciseBase =
+              await _exercises.fetchAndSetExerciseBase(workoutSetting.exerciseBaseId);
           workoutSetting.weightUnit = _weightUnits.firstWhere(
             (e) => e.id == workoutSetting.weightUnitId,
           );
           workoutSetting.repetitionUnit = _repetitionUnit.firstWhere(
             (e) => e.id == workoutSetting.repetitionUnitId,
           );
-          if (!workoutSet.exercisesIds.contains(workoutSetting.exerciseId)) {
-            workoutSet.addExercise(workoutSetting.exerciseObj);
+          if (!workoutSet.exerciseBasesIds.contains(workoutSetting.exerciseBaseId)) {
+            workoutSet.addExerciseBase(workoutSetting.exerciseBaseObj);
           }
 
           settings.add(workoutSetting);
@@ -224,37 +231,22 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
     plan.days = days;
 
     // Logs
-    //
-    // TODO(x): looping through all results in the pagination is something we will
-    // probably need in the future. We should put this in some function or something
-    // so that we can reuse it.
     plan.logs = [];
-    var allItemsProcessed = false;
-    var logsURL = makeUrl(_logsUrlPath, query: {
-      'workout': workoutId.toString(),
-      'limit': '1000',
-    });
 
-    while (!allItemsProcessed) {
-      final logData = await fetch(logsURL);
-
-      for (final entry in logData['results']) {
-        try {
-          final log = Log.fromJson(entry);
-          log.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
-          log.repetitionUnit = _repetitionUnit.firstWhere((e) => e.id == log.weightUnitId);
-          log.exercise = await _exercises.fetchAndSetExercise(log.exerciseId);
-          plan.logs.add(log);
-        } catch (e) {
-          dev.log('fire! fire!');
-          dev.log(e.toString());
-        }
-      }
-
-      if (logData['next'] == null) {
-        allItemsProcessed = true;
-      } else {
-        logsURL = Uri.parse(logData['next']);
+    final logData = await fetchPaginated(makeUrl(
+      _logsUrlPath,
+      query: {'workout': workoutId.toString(), 'limit': '100'},
+    ));
+    for (final logEntry in logData) {
+      try {
+        final log = Log.fromJson(logEntry);
+        log.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
+        log.repetitionUnit = _repetitionUnit.firstWhere((e) => e.id == log.weightUnitId);
+        log.exerciseBase = await _exercises.fetchAndSetExerciseBase(log.exerciseBaseId);
+        plan.logs.add(log);
+      } catch (e) {
+        dev.log('fire! fire!');
+        dev.log(e.toString());
       }
     }
 
@@ -291,13 +283,13 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
     }
   }
 
-  Future<Map<String, dynamic>> fetchLogData(WorkoutPlan workout, Exercise exercise) async {
+  Future<Map<String, dynamic>> fetchLogData(WorkoutPlan workout, ExerciseBase base) async {
     final data = await fetch(
       makeUrl(
         _workoutPlansUrlPath,
         id: workout.id,
         objectMethod: 'log_data',
-        query: {'id': exercise.id.toString()},
+        query: {'id': base.id.toString()},
       ),
     );
     return data;
@@ -358,6 +350,7 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
       'weightUnit': _weightUnits.map((e) => e.toJson()).toList(),
     };
     prefs.setString('workoutUnits', json.encode(exerciseData));
+    log(json.encode(exerciseData));
     notifyListeners();
   }
 
@@ -438,7 +431,7 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<String> fetchSmartText(Set workoutSet, Exercise exercise) async {
+  Future<String> fetchSmartText(Set workoutSet, Translation exercise) async {
     final data = await fetch(
       makeUrl(
         _setsUrlPath,
@@ -499,7 +492,7 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
     log.id = newLog.id;
     log.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
     log.repetitionUnit = _repetitionUnit.firstWhere((e) => e.id == log.weightUnitId);
-    log.exercise = await _exercises.fetchAndSetExercise(log.exerciseId);
+    log.exerciseBase = await _exercises.fetchAndSetExerciseBase(log.exerciseBaseId);
 
     final plan = findById(log.workoutPlan);
     plan.logs.add(log);

@@ -46,10 +46,10 @@ class Day {
   @JsonKey(required: true, name: 'day')
   List<int> daysOfWeek = [];
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   List<Set> sets = [];
 
-  //@JsonKey(ignore: true)
+  //@JsonKey(includeFromJson: false, includeToJson: false)
   //late WorkoutPlan workout;
 
   Day() {
@@ -80,5 +80,6 @@ class Day {
 
   // Boilerplate
   factory Day.fromJson(Map<String, dynamic> json) => _$DayFromJson(json);
+
   Map<String, dynamic> toJson() => _$DayToJson(this);
 }

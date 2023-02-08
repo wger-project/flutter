@@ -22,7 +22,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/exceptions/http_exception.dart';
-import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/exercises/base.dart';
+import 'package:wger/models/exercises/translation.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/providers/workout_plans.dart';
 
@@ -56,7 +57,15 @@ void showHttpExceptionErrorDialog(WgerHttpException exception, BuildContext cont
   final List<Widget> errorList = [];
   for (final key in exception.errors!.keys) {
     // Error headers
-    errorList.add(Text(key, style: const TextStyle(fontWeight: FontWeight.bold)));
+    // Ensure that the error heading first letter is capitalized.
+    final String errorHeaderMsg = key[0].toUpperCase() + key.substring(1, key.length);
+
+    errorList.add(
+      Text(
+        errorHeaderMsg,
+        style: const TextStyle(fontWeight: FontWeight.bold),
+      ),
+    );
 
     // Error messages
     if (exception.errors![key] is String) {
@@ -74,6 +83,7 @@ void showHttpExceptionErrorDialog(WgerHttpException exception, BuildContext cont
     builder: (ctx) => AlertDialog(
       title: Text(AppLocalizations.of(ctx).anErrorOccurred),
       content: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [...errorList],
       ),
@@ -93,8 +103,13 @@ void showHttpExceptionErrorDialog(WgerHttpException exception, BuildContext cont
   // showDialog(context: context, builder: (context) => Container());
 }
 
-dynamic showDeleteDialog(BuildContext context, String confirmDeleteName, Log log, Exercise exercise,
-    Map<Exercise, List<Log>> _exerciseData) async {
+dynamic showDeleteDialog(
+  BuildContext context,
+  String confirmDeleteName,
+  Log log,
+  Translation exercise,
+  Map<ExerciseBase, List<Log>> exerciseData,
+) async {
   final res = await showDialog(
       context: context,
       builder: (BuildContext contextDialog) {
@@ -113,7 +128,7 @@ dynamic showDeleteDialog(BuildContext context, String confirmDeleteName, Log log
                 style: TextStyle(color: Theme.of(context).errorColor),
               ),
               onPressed: () {
-                _exerciseData[exercise]!.removeWhere((el) => el.id == log.id);
+                exerciseData[exercise]!.removeWhere((el) => el.id == log.id);
                 Provider.of<WorkoutPlansProvider>(context, listen: false).deleteLog(
                   log,
                 );

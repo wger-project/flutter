@@ -25,9 +25,9 @@ void main() {
     test('Repetitions and weigh units', () async {
       final workout = getWorkout();
       final set = workout.days.first.sets.first;
-      final exercise1 = set.exercisesObj[0];
+      final exercise1 = set.exerciseBasesObj[0];
 
-      expect(set.getSmartTextRepr(exercise1), '2 × 10 kg  (2 RiR)');
+      expect(set.getSmartTextRepr(exercise1), '6 × 80 kg  (3 RiR)');
     });
   });
 }

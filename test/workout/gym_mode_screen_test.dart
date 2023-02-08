@@ -19,34 +19,46 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
+import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 import 'package:wger/widgets/workouts/gym_mode.dart';
 
+import './workout_set_form_test.mocks.dart';
+import '../../test_data/exercises.dart';
 import '../../test_data/workouts.dart';
 import '../other/base_provider_test.mocks.dart';
 import '../utils.dart';
 
+@GenerateMocks([ExercisesProvider])
 void main() {
   Widget createHomeScreen({locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
     final client = MockClient();
 
+    final mockExerciseProvider = MockExercisesProvider();
     final WorkoutPlan workoutPlan = getWorkout();
+
+    final bases = getTestExerciseBases();
+
+    when(mockExerciseProvider.findExerciseBaseById(1)).thenReturn(bases[0]);
+    when(mockExerciseProvider.findExerciseBaseById(6)).thenReturn(bases[5]);
 
     return ChangeNotifierProvider<WorkoutPlansProvider>(
       create: (context) => WorkoutPlansProvider(
         testAuthProvider,
-        testExercisesProvider,
+        mockExerciseProvider,
         [workoutPlan],
         client,
       ),
-      child: ChangeNotifierProvider(
-        create: (context) => testExercisesProvider,
+      child: ChangeNotifierProvider<ExercisesProvider>(
+        create: (context) => mockExerciseProvider,
         child: MaterialApp(
           locale: Locale(locale),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -79,7 +91,8 @@ void main() {
     //
     expect(find.byType(StartPage), findsOneWidget);
     expect(find.text('Your workout today'), findsOneWidget);
-    expect(find.text('test exercise 1'), findsOneWidget);
+    expect(find.text('Bench press'), findsOneWidget);
+    expect(find.text('Side raises'), findsOneWidget);
     expect(find.byIcon(Icons.close), findsOneWidget);
     expect(find.byIcon(Icons.menu), findsOneWidget);
     expect(find.byIcon(Icons.chevron_left), findsNothing);
@@ -88,9 +101,9 @@ void main() {
     await tester.pumpAndSettle();
 
     //
-    // Exercise overview page
+    // Bench press - exercise overview page
     //
-    expect(find.text('test exercise 1'), findsOneWidget);
+    expect(find.text('Bench press'), findsOneWidget);
     expect(find.byType(ExerciseOverview), findsOneWidget);
     expect(find.byIcon(Icons.close), findsOneWidget);
     expect(find.byIcon(Icons.menu), findsOneWidget);
@@ -100,15 +113,15 @@ void main() {
     await tester.pumpAndSettle();
 
     //
-    // Log
+    // Bench press - Log
     //
-    expect(find.text('test exercise 1'), findsOneWidget);
+    expect(find.text('Bench press'), findsOneWidget);
     expect(find.byType(LogPage), findsOneWidget);
     expect(find.byType(Form), findsOneWidget);
     expect(find.byType(ListTile), findsNWidgets(3), reason: 'Two logs and the switch tile');
     expect(find.text('10 × 10 kg  (1.5 RiR)'), findsOneWidget);
     expect(find.text('12 × 10 kg  (2 RiR)'), findsOneWidget);
-    expect(find.text('Important to do exercises correctly'), findsOneWidget, reason: 'Set comment');
+    expect(find.text('Make sure to warm up'), findsOneWidget, reason: 'Set comment');
     expect(find.byIcon(Icons.close), findsOneWidget);
     expect(find.byIcon(Icons.menu), findsOneWidget);
     expect(find.byIcon(Icons.chevron_left), findsOneWidget);
@@ -131,9 +144,9 @@ void main() {
     await tester.pumpAndSettle();
 
     //
-    // Pause
+    // Bench press - pause
     //
-    expect(find.text('0:01'), findsOneWidget);
+    expect(find.text('Pause'), findsOneWidget);
     expect(find.byType(TimerWidget), findsOneWidget);
     expect(find.byIcon(Icons.close), findsOneWidget);
     expect(find.byIcon(Icons.menu), findsOneWidget);
@@ -143,9 +156,9 @@ void main() {
     await tester.pumpAndSettle();
 
     //
-    // Log
+    // Bench press - log
     //
-    expect(find.text('test exercise 1'), findsOneWidget);
+    expect(find.text('Bench press'), findsOneWidget);
     expect(find.byType(LogPage), findsOneWidget);
     expect(find.byType(Form), findsOneWidget);
     await tester.drag(find.byType(LogPage), const Offset(-500.0, 0.0));
@@ -154,11 +167,47 @@ void main() {
     //
     // Pause
     //
-    expect(find.text('0:01'), findsOneWidget);
+    expect(find.text('Pause'), findsOneWidget);
     expect(find.byType(TimerWidget), findsOneWidget);
     expect(find.byIcon(Icons.chevron_left), findsOneWidget);
     expect(find.byIcon(Icons.close), findsOneWidget);
     expect(find.byIcon(Icons.chevron_right), findsOneWidget);
+    await tester.tap(find.byIcon(Icons.chevron_right));
+    await tester.pumpAndSettle();
+
+    //
+    // Side raises - exercise overview page
+    //
+    expect(find.text('Side raises'), findsOneWidget);
+    expect(find.byType(ExerciseOverview), findsOneWidget);
+    await tester.tap(find.byIcon(Icons.chevron_right));
+    await tester.pumpAndSettle();
+
+    //
+    // Side raises - log
+    //
+    expect(find.byType(LogPage), findsOneWidget);
+    await tester.tap(find.byIcon(Icons.chevron_right));
+    await tester.pumpAndSettle();
+
+    //
+    // Side raises - timer
+    //
+    expect(find.byType(TimerWidget), findsOneWidget);
+    await tester.tap(find.byIcon(Icons.chevron_right));
+    await tester.pumpAndSettle();
+
+    //
+    // Side raises - log
+    //
+    expect(find.byType(LogPage), findsOneWidget);
+    await tester.tap(find.byIcon(Icons.chevron_right));
+    await tester.pumpAndSettle();
+
+    //
+    // Side raises - timer
+    //
+    expect(find.byType(TimerWidget), findsOneWidget);
     await tester.tap(find.byIcon(Icons.chevron_right));
     await tester.pumpAndSettle();
 

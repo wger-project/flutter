@@ -44,18 +44,28 @@ if (localMapsPropertiesFile.exists()) {
     project.logger.info('Load maps properties from environment')
     try {
         wgerProperties['WGER_API_KEY'] = System.getenv('WGER_API_KEY')
-    } catch(NullPointerException e) {
+    } catch (NullPointerException e) {
         project.logger.warn('Failed to load WGER_API_KEY from environment.', e)
     }
 }
 def wgerApiKey = wgerProperties.getProperty('WGER_API_KEY')
-if(wgerApiKey == null){
+if (wgerApiKey == null) {
     wgerApiKey = ""
-    project.logger.error('Wger Api Key not configured. Set it in `app/wger.properties` or in the environment variable `WGER_API_KEY`')
+    project.logger.error('Wger Api Key not configured. Set it in `/fastlane/metadata/android/envfiles/wger.properties` or in the environment variable `WGER_API_KEY`')
 }
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 33
+    ndkVersion "25.1.8937393"
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -69,7 +79,7 @@ android {
         // Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "de.wger.flutter"
         minSdkVersion 21
-        targetSdkVersion 31
+        targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         manifestPlaceholders += [WGER_API_KEY: wgerApiKey]

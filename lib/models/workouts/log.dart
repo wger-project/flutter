@@ -16,12 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'dart:ui';
-
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/misc.dart';
-import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/exercises/base.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
 
@@ -32,11 +30,11 @@ class Log {
   @JsonKey(required: true)
   int? id;
 
-  @JsonKey(required: true, name: 'exercise')
-  late int exerciseId;
+  @JsonKey(required: true, name: 'exercise_base')
+  late int exerciseBaseId;
 
-  @JsonKey(ignore: true)
-  late Exercise exerciseObj;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  late ExerciseBase exerciseBaseObj;
 
   @JsonKey(required: true, name: 'workout')
   late int workoutPlan;
@@ -50,7 +48,7 @@ class Log {
   @JsonKey(required: true, name: 'repetition_unit')
   late int repetitionUnitId;
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   late RepetitionUnit repetitionUnitObj;
 
   @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
@@ -59,7 +57,7 @@ class Log {
   @JsonKey(required: true, name: 'weight_unit')
   late int weightUnitId;
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   late WeightUnit weightUnitObj;
 
   @JsonKey(required: true, toJson: toDate)
@@ -70,7 +68,7 @@ class Log {
 
   Log({
     this.id,
-    required this.exerciseId,
+    required this.exerciseBaseId,
     required this.workoutPlan,
     required this.reps,
     required this.rir,
@@ -84,11 +82,12 @@ class Log {
 
   // Boilerplate
   factory Log.fromJson(Map<String, dynamic> json) => _$LogFromJson(json);
+
   Map<String, dynamic> toJson() => _$LogToJson(this);
 
-  set exercise(Exercise exercise) {
-    exerciseObj = exercise;
-    exerciseId = exercise.id;
+  set exerciseBase(ExerciseBase base) {
+    exerciseBaseObj = base;
+    exerciseBaseId = base.id!;
   }
 
   set weightUnit(WeightUnit weightUnit) {
@@ -123,7 +122,7 @@ class Log {
   //ignore: avoid_equals_and_hash_code_on_mutable_classes
   bool operator ==(o) {
     return o is Log &&
-        exerciseId == o.exerciseId &&
+        exerciseBaseId == o.exerciseBaseId &&
         weight == o.weight &&
         weightUnitId == o.weightUnitId &&
         reps == o.reps &&
@@ -133,13 +132,14 @@ class Log {
 
   @override
   //ignore: avoid_equals_and_hash_code_on_mutable_classes
-  int get hashCode => hashValues(exerciseId, weight, weightUnitId, reps, repetitionUnitId, rir);
+  int get hashCode =>
+      Object.hash(exerciseBaseId, weight, weightUnitId, reps, repetitionUnitId, rir);
 
   //@override
   //int get hashCode => super.hashCode;
 
   @override
   String toString() {
-    return 'Log(id: $id, ex: $exerciseId, weightU: $weightUnitId, w: $weight, repU: $repetitionUnitId, rep: $reps, rir: $rir)';
+    return 'Log(id: $id, ex: $exerciseBaseId, weightU: $weightUnitId, w: $weight, repU: $repetitionUnitId, rep: $reps, rir: $rir)';
   }
 }

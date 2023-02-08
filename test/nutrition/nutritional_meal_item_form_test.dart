@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -56,20 +57,14 @@ void main() {
   final Uri tUriEmptyCode = Uri.parse('https://localhost/api/v2/ingredient/?code=\"%20\"');
   final Uri tUriBadCode = Uri.parse('https://localhost/api/v2/ingredient/?code=222');
 
-  when(client
-          .get(tUriRightCode, headers: {'authorization': 'Token FooBar', 'user-agent': 'wger App'}))
-      .thenAnswer(
-          (_) => Future.value(http.Response(fixture('search_ingredient_right_code.json'), 200)));
+  when(client.get(tUriRightCode, headers: anyNamed('headers'))).thenAnswer((_) =>
+      Future.value(http.Response(fixture('nutrition/search_ingredient_right_code.json'), 200)));
 
-  when(client
-          .get(tUriEmptyCode, headers: {'authorization': 'Token FooBar', 'user-agent': 'wger App'}))
-      .thenAnswer(
-          (_) => Future.value(http.Response(fixture('search_ingredient_wrong_code.json'), 200)));
+  when(client.get(tUriEmptyCode, headers: anyNamed('headers'))).thenAnswer((_) =>
+      Future.value(http.Response(fixture('nutrition/search_ingredient_wrong_code.json'), 200)));
 
-  when(client
-          .get(tUriBadCode, headers: {'authorization': 'Token FooBar', 'user-agent': 'wger App'}))
-      .thenAnswer(
-          (_) => Future.value(http.Response(fixture('search_ingredient_wrong_code.json'), 200)));
+  when(client.get(tUriBadCode, headers: anyNamed('headers'))).thenAnswer((_) =>
+      Future.value(http.Response(fixture('nutrition/search_ingredient_wrong_code.json'), 200)));
 
   setUp(() {
     plan1 = getNutritionalPlan();
@@ -80,8 +75,8 @@ void main() {
     when(mockNutrition.searchIngredientWithCode('123')).thenAnswer((_) => Future.value(ingr));
     when(mockNutrition.searchIngredientWithCode('')).thenAnswer((_) => Future.value(null));
     when(mockNutrition.searchIngredientWithCode('222')).thenAnswer((_) => Future.value(null));
-    when(mockNutrition.searchIngredient(any)).thenAnswer(
-        (_) => Future.value(json.decode(fixture('ingredient_suggestions')) as List<dynamic>));
+    when(mockNutrition.searchIngredient(any)).thenAnswer((_) =>
+        Future.value(json.decode(fixture('nutrition/ingredient_suggestions')) as List<dynamic>));
 
     when(mockNutrition.addMealItem(any, meal1)).thenAnswer((_) => Future.value(mealItem));
   });
@@ -97,7 +92,10 @@ void main() {
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
         home: Scaffold(
-          body: MealItemForm(meal, const [], null, code, test),
+          body: Scrollable(
+            viewportBuilder: (BuildContext context, ViewportOffset position) =>
+                MealItemForm(meal, const [], null, code, test),
+          ),
         ),
         routes: {
           NutritionalPlanScreen.routeName: (ctx) => NutritionalPlanScreen(),

@@ -95,7 +95,7 @@
   "@logHelpEntriesUnits": {},
   "description": "Opis",
   "@description": {},
-  "name": "Naziv",
+  "name": "Ime",
   "@name": {
     "description": "Name for a workout or nutritional plan"
   },
@@ -381,7 +381,7 @@
   "@noWeightEntries": {
     "description": "Message shown when the user has no logged weight entries"
   },
-  "loadingText": "Učitavanje...",
+  "loadingText": "Učitavanje …",
   "@loadingText": {
     "description": "Text to show when entries are being loaded in the background: Loading..."
   },

@@ -26,8 +26,8 @@ If you want to contribute, hop on the Discord server and say hi!
 ## Development
 
 ### 1
-Install the wger server, the easiest way is to start the development docker-compose:
-<https://github.com/wger-project/wger>
+Install the [wger server](https://github.com/wger-project/wger), the easiest way
+is to start the development docker-compose: <https://github.com/wger-project/docker>
 
 Alternatively, you can use one of our test servers, just ask us for access.
 
@@ -35,10 +35,10 @@ Alternatively, you can use one of our test servers, just ask us for access.
 Install Flutter, and all its dependencies, and create a new virtual device:
 <https://flutter.dev/docs/get-started/install>.
 
-The app currently uses flutter 3.0
+The app currently uses flutter 3.3
 
 ### 3
-Create a new file ``wger.properties`` in ``android/fastlane/envfiles``:
+Create a new file ``wger.properties`` in ``fastlane/metadata/envfiles/``:
 
 ```properties
 WGER_API_KEY=123456
@@ -52,9 +52,6 @@ on your local instance and then run ``python3 manage.py add-user-rest the userna
 
 You can later list all the registered users with: ``python3 manage.py list-users-api``  
 
-[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
-      alt="Get it on F-Droid"
-      height="80">](https://f-droid.org/packages/de.wger.flutter)
 
 ### 4
 Start the application with ``flutter run`` or use your IDE

@@ -35,13 +35,13 @@ class MealItem {
   @JsonKey(required: false, name: 'ingredient')
   late int ingredientId;
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   late Ingredient ingredientObj;
 
   @JsonKey(required: false, name: 'weight_unit')
   int? weightUnitId;
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   IngredientWeightUnit? weightUnitObj;
 
   @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
@@ -53,9 +53,14 @@ class MealItem {
     required this.ingredientId,
     this.weightUnitId,
     required this.amount,
+    Ingredient? ingredient,
   }) {
     if (mealId != null) {
       this.mealId = mealId;
+    }
+    if (ingredient != null) {
+      ingredientObj = ingredient;
+      ingredientId = ingredient.id;
     }
   }
 
