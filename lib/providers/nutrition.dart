@@ -68,6 +68,7 @@ class NutritionPlansProvider with ChangeNotifier {
     if (_plans.isNotEmpty) {
       return _plans.first;
     }
+    return null;
   }
 
   NutritionalPlan findById(int id) {
