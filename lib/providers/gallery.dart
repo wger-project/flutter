@@ -47,6 +47,7 @@ class GalleryProvider extends WgerBaseProvider with ChangeNotifier {
   Future<void> fetchAndSetGallery() async {
     final data = await fetch(makeUrl(_galleryUrlPath));
 
+    images = [];
     data['results'].forEach((e) {
       final gallery.Image image = gallery.Image.fromJson(e);
       images.add(image);

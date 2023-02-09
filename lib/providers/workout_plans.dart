@@ -148,6 +148,7 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
   /// object itself and no child attributes
   Future<void> fetchAndSetAllPlansSparse() async {
     final data = await fetch(makeUrl(_workoutPlansUrlPath, query: {'limit': '1000'}));
+    _workoutPlans = [];
     for (final workoutPlanData in data['results']) {
       final plan = WorkoutPlan.fromJson(workoutPlanData);
       _workoutPlans.add(plan);
