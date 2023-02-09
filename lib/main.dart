@@ -157,8 +157,15 @@ class MyApp extends StatelessWidget {
 
           // Workaround for https://github.com/flutter/flutter/issues/100857
           localeResolutionCallback: (deviceLocale, supportedLocales) {
-            if (supportedLocales.contains(deviceLocale)) {
-              return deviceLocale;
+            if (deviceLocale != null) {
+              for (final supportedLocale in supportedLocales) {
+                // Since we currently don't support any country specific locales
+                // such as de-DE and de-AT, it's sufficient to just check it like
+                // this. Otherwise we will need more logic with .countryCode
+                if (supportedLocale.languageCode == deviceLocale.languageCode) {
+                  return supportedLocale;
+                }
+              }
             }
             return const Locale('en');
           },
