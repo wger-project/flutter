@@ -211,7 +211,7 @@ class AddExerciseProvider with ChangeNotifier {
     await addImages(base);
 
     // Return exercise ID
-    return exerciseTranslationEn.id!;
+    return base.id!;
   }
 
   Future<ExerciseBase> addExerciseBase() async {
