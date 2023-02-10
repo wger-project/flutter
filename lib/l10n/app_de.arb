@@ -598,13 +598,13 @@
   },
   "selectEntry": "Bitte einen Eintrag auswählen",
   "@selectEntry": {},
-  "exercises": "Übung",
+  "exercises": "Übungen",
   "@exercises": {
     "description": "Multiple exercises for a workout"
   },
   "userProfile": "Dein Profil",
   "@userProfile": {},
-  "exerciseList": "Trainingsplan",
+  "exerciseList": "Liste der Übungen",
   "@exerciseList": {},
   "exerciseName": "Name der Übung",
   "@exerciseName": {
