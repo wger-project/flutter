@@ -62,7 +62,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
     });
   }
 
-  final _screenList = <Widget>[
+  final _screenList = [
     DashboardScreen(),
     WorkoutPlansScreen(),
     NutritionScreen(),
