@@ -19,9 +19,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/mockito.dart';
-import 'package:wger/providers/gallery.dart';
-import '../other/base_provider_test.mocks.dart';
 import 'package:wger/models/gallery/image.dart' as gallery;
+import 'package:wger/providers/gallery.dart';
+
+import '../other/base_provider_test.mocks.dart';
 import '../utils.dart';
 
 void main() {
@@ -41,7 +42,7 @@ void main() {
           '"height":1280,"width":960}]}',
           200));
 
-      GalleryProvider galleryProvider = GalleryProvider(testAuthProvider, [], client);
+      final galleryProvider = GalleryProvider(testAuthProvider, [], client);
 
       await galleryProvider.fetchAndSetGallery();
 
@@ -63,9 +64,9 @@ void main() {
           '"height":1280,"width":960}',
           200));
 
-      GalleryProvider galleryProvider = GalleryProvider(testAuthProvider, [], client);
+      final galleryProvider = GalleryProvider(testAuthProvider, [], client);
 
-      gallery.Image image = gallery.Image(
+      final image = gallery.Image(
           id: 58,
           date: DateTime(2022, 01, 09),
           url: "https://wger.de/media/gallery/170335/d2b9c9e0-d541-41ae-8786-a2ab459e3538.jpg",

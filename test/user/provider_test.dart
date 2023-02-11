@@ -19,12 +19,15 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/user.dart';
 
 import '../fixtures/fixture_reader.dart';
-import '../measurements/measurement_provider_test.mocks.dart';
+import 'provider_test.mocks.dart';
 
+@GenerateMocks([WgerBaseProvider])
 void main() {
   late UserProvider userProvider;
   late MockWgerBaseProvider mockWgerBaseProvider;
