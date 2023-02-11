@@ -152,9 +152,9 @@ class WorkoutPlansProvider extends WgerBaseProvider with ChangeNotifier {
     for (final workoutPlanData in data['results']) {
       final plan = WorkoutPlan.fromJson(workoutPlanData);
       _workoutPlans.add(plan);
-      _workoutPlans.sort((a, b) => b.creationDate.compareTo(a.creationDate));
     }
 
+    _workoutPlans.sort((a, b) => b.creationDate.compareTo(a.creationDate));
     notifyListeners();
   }
 
