@@ -24,17 +24,14 @@ import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
 
 import '../../test_data/workouts.dart';
-import '../other/base_provider_test.mocks.dart';
 import '../utils.dart';
 
 void main() {
   Widget createHomeScreen({locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
-    final client = MockClient();
 
     return ChangeNotifierProvider<WorkoutPlansProvider>(
-      create: (context) =>
-          WorkoutPlansProvider(testAuthProvider, testExercisesProvider, [], client),
+      create: (context) => WorkoutPlansProvider(mockBaseProvider, testExercisesProvider, []),
       child: MaterialApp(
         locale: Locale(locale),
         localizationsDelegates: AppLocalizations.localizationsDelegates,

@@ -20,35 +20,46 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
+import 'package:wger/providers/base_provider.dart';
+import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/workout_plans_screen.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 
-import '../other/base_provider_test.mocks.dart';
-import '../utils.dart';
+import 'workout_plans_screen_test.mocks.dart';
 
+@GenerateMocks([WgerBaseProvider])
 void main() {
+  var mockBaseProvider = MockWgerBaseProvider();
+  final testExercisesProvider = ExercisesProvider(mockBaseProvider);
+
+  setUp(() {
+    mockBaseProvider = MockWgerBaseProvider();
+  });
+
   Widget createHomeScreen({locale = 'en'}) {
-    final client = MockClient();
-    when(client.delete(
-      any,
-      headers: anyNamed('headers'),
-    )).thenAnswer((_) async => http.Response('', 200));
+    final uri = Uri(
+      scheme: 'https',
+      host: 'localhost',
+      path: 'api/v2/workout/',
+    );
+    when(mockBaseProvider.makeUrl('workout', query: anyNamed('query'))).thenReturn(uri);
+    when(mockBaseProvider.deleteRequest(any, any)).thenAnswer((_) async => http.Response('', 204));
 
     return ChangeNotifierProvider<WorkoutPlansProvider>(
       create: (context) => WorkoutPlansProvider(
-        testAuthProvider,
+        mockBaseProvider,
         testExercisesProvider,
         [
           WorkoutPlan(id: 1, creationDate: DateTime(2021, 01, 01), name: 'test 1'),
           WorkoutPlan(id: 2, creationDate: DateTime(2021, 02, 12), name: 'test 2'),
         ],
-        client,
       ),
       child: MaterialApp(
         locale: Locale(locale),
@@ -85,6 +96,17 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(ListTile), findsOneWidget);
   });
+
+  /*
+  testWidgets('Test updating the list by dragging it down', (WidgetTester tester) async {
+    await tester.pumpWidget(createHomeScreen());
+    await tester.fling(find.byKey(const Key('1')), const Offset(0, 300), 1000);
+    await tester.pumpAndSettle();
+
+    //verify(mockWorkoutProvider.fetchAndSetAllPlansSparse());
+  });
+
+   */
 
   testWidgets('Test the form on the workout plan screen', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen());
