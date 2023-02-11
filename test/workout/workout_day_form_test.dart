@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
@@ -27,9 +28,10 @@ import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 
-import './workout_form_test.mocks.dart';
 import '../../test_data/workouts.dart';
+import 'workout_day_form_test.mocks.dart';
 
+@GenerateMocks([WorkoutPlansProvider])
 void main() {
   var mockWorkoutPlans = MockWorkoutPlansProvider();
   WorkoutPlan workoutPlan = WorkoutPlan.empty();

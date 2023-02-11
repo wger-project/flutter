@@ -8,7 +8,6 @@ import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/theme/theme.dart';
 
-import '../test/other/base_provider_test.mocks.dart';
 import '../test/utils.dart';
 import '../test/workout/gym_mode_screen_test.mocks.dart';
 import '../test_data/exercises.dart';
@@ -16,7 +15,6 @@ import '../test_data/workouts.dart';
 
 Widget createGymModeScreen({locale = 'en'}) {
   final key = GlobalKey<NavigatorState>();
-  final client = MockClient();
   final bases = getTestExerciseBases();
   final workout = getWorkout();
 
@@ -29,10 +27,9 @@ Widget createGymModeScreen({locale = 'en'}) {
 
   return ChangeNotifierProvider<WorkoutPlansProvider>(
     create: (context) => WorkoutPlansProvider(
-      testAuthProvider,
+      mockBaseProvider,
       mockExerciseProvider,
       [workout],
-      client,
     ),
     child: ChangeNotifierProvider<ExercisesProvider>(
       create: (context) => mockExerciseProvider,

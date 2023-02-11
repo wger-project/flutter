@@ -20,14 +20,23 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/models/body_weight/weight_entry.dart';
+import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/body_weight.dart';
 
 import '../fixtures/fixture_reader.dart';
-import '../utils.dart';
+import 'weight_provider_test.mocks.dart';
 
+@GenerateMocks([WgerBaseProvider])
 void main() {
+  var mockBaseProvider = MockWgerBaseProvider();
+
+  setUp(() {
+    mockBaseProvider = MockWgerBaseProvider();
+  });
+
   group('test body weight provider', () {
     test('Test that the weight entries are correctly loaded', () async {
       final uri = Uri(
