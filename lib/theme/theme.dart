@@ -48,6 +48,7 @@ final ThemeData wgerTheme = ThemeData(
   /*
     * General stuff
     */
+  useMaterial3: true,
   primaryColor: wgerPrimaryColor,
   scaffoldBackgroundColor: wgerBackground,
 
