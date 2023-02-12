@@ -426,16 +426,22 @@ class ExercisesProvider with ChangeNotifier {
   ///
   /// We could do this locally, but the server has better text searching capabilities
   /// with postgresql.
-  Future<List<ExerciseBase>> searchExercise(String name, [String languageCode = 'en']) async {
+  Future<List<ExerciseBase>> searchExercise(String name,
+      {String languageCode = LANGUAGE_SHORT_ENGLISH, bool searchEnglish = false}) async {
     if (name.length <= 1) {
       return [];
+    }
+
+    final languages = [languageCode];
+    if (searchEnglish && languageCode != LANGUAGE_SHORT_ENGLISH) {
+      languages.add(LANGUAGE_SHORT_ENGLISH);
     }
 
     // Send the request
     final result = await baseProvider.fetch(
       baseProvider.makeUrl(
         _exerciseSearchPath,
-        query: {'term': name, 'language': languageCode},
+        query: {'term': name, 'language': languages.join(',')},
       ),
     );
 

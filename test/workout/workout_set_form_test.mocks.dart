@@ -500,16 +500,18 @@ class MockExercisesProvider extends _i1.Mock implements _i18.ExercisesProvider {
       ) as _i19.Future<void>);
   @override
   _i19.Future<List<_i3.ExerciseBase>> searchExercise(
-    String? name, [
+    String? name, {
     String? languageCode = r'en',
-  ]) =>
+    bool? searchEnglish = false,
+  }) =>
       (super.noSuchMethod(
         Invocation.method(
           #searchExercise,
-          [
-            name,
-            languageCode,
-          ],
+          [name],
+          {
+            #languageCode: languageCode,
+            #searchEnglish: searchEnglish,
+          },
         ),
         returnValue: _i19.Future<List<_i3.ExerciseBase>>.value(<_i3.ExerciseBase>[]),
       ) as _i19.Future<List<_i3.ExerciseBase>>);

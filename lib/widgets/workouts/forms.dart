@@ -270,6 +270,7 @@ class SetFormWidget extends StatefulWidget {
 class _SetFormWidgetState extends State<SetFormWidget> {
   double _currentSetSliderValue = Set.DEFAULT_NR_SETS.toDouble();
   bool _detailed = false;
+  bool _searchEnglish = true;
 
   // Form stuff
   final GlobalKey<FormState> _formKey = GlobalKey();
@@ -292,6 +293,8 @@ class _SetFormWidgetState extends State<SetFormWidget> {
 
   /// Adds settings to the set
   void addSettings() {
+    final workoutProvider = context.read<WorkoutPlansProvider>();
+
     widget._set.settings = [];
     int order = 0;
     for (final exercise in widget._set.exerciseBasesObj) {
@@ -300,10 +303,8 @@ class _SetFormWidgetState extends State<SetFormWidget> {
         final Setting setting = Setting.empty();
         setting.order = order;
         setting.exerciseBase = exercise;
-        setting.weightUnit =
-            Provider.of<WorkoutPlansProvider>(context, listen: false).defaultWeightUnit;
-        setting.repetitionUnit =
-            Provider.of<WorkoutPlansProvider>(context, listen: false).defaultRepetitionUnit;
+        setting.weightUnit = workoutProvider.defaultWeightUnit;
+        setting.repetitionUnit = workoutProvider.defaultRepetitionUnit;
 
         widget._set.settings.add(setting);
       }
@@ -355,84 +356,104 @@ class _SetFormWidgetState extends State<SetFormWidget> {
             child: Column(
               children: [
                 Card(
-                  child: TypeAheadFormField<ExerciseBase>(
-                    key: const Key('field-typeahead'),
-                    textFieldConfiguration: TextFieldConfiguration(
-                      controller: _exercisesController,
-                      decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context).searchExercise,
-                        prefixIcon: const Icon(Icons.search),
-                        suffixIcon: IconButton(
-                          icon: const Icon(Icons.help),
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                content: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(AppLocalizations.of(context).selectExercises),
-                                    const SizedBox(height: 10),
-                                    Text(AppLocalizations.of(context).sameRepetitions)
-                                  ],
-                                ),
-                                actions: [
-                                  TextButton(
-                                    child: Text(MaterialLocalizations.of(context).closeButtonLabel),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
+                  child: Column(
+                    children: [
+                      TypeAheadFormField<ExerciseBase>(
+                        key: const Key('field-typeahead'),
+                        textFieldConfiguration: TextFieldConfiguration(
+                          controller: _exercisesController,
+                          decoration: InputDecoration(
+                            labelText: AppLocalizations.of(context).searchExercise,
+                            prefixIcon: const Icon(Icons.search),
+                            suffixIcon: IconButton(
+                              icon: const Icon(Icons.help),
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    content: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(AppLocalizations.of(context).selectExercises),
+                                        const SizedBox(height: 10),
+                                        Text(AppLocalizations.of(context).sameRepetitions)
+                                      ],
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        child: Text(
+                                            MaterialLocalizations.of(context).closeButtonLabel),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
-                            );
-                          },
+                                );
+                              },
+                            ),
+                            errorMaxLines: 2,
+                            border: InputBorder.none,
+                          ),
                         ),
-                        errorMaxLines: 2,
-                      ),
-                    ),
-                    suggestionsCallback: (pattern) {
-                      return Provider.of<ExercisesProvider>(context, listen: false).searchExercise(
-                        pattern,
-                        Localizations.localeOf(context).languageCode,
-                      );
-                    },
-                    itemBuilder: (BuildContext context, ExerciseBase exerciseSuggestion) {
-                      return ListTile(
-                        leading: SizedBox(
-                          width: 45,
-                          child: ExerciseImageWidget(image: exerciseSuggestion.getMainImage),
-                        ),
-                        title: Text(exerciseSuggestion
-                            .getExercise(Localizations.localeOf(context).languageCode)
-                            .name),
-                        subtitle: Text(
-                          '${exerciseSuggestion.category.name} / ${exerciseSuggestion.equipment.map((e) => e.name).join(', ')}',
-                        ),
-                      );
-                    },
-                    transitionBuilder: (context, suggestionsBox, controller) {
-                      return suggestionsBox;
-                    },
-                    onSuggestionSelected: (ExerciseBase exerciseSuggestion) {
-                      addExercise(exerciseSuggestion);
-                      this._exercisesController.text = '';
-                    },
-                    validator: (value) {
-                      // At least one exercise must be selected
-                      if (widget._set.exerciseBasesIds.isEmpty) {
-                        return AppLocalizations.of(context).selectExercise;
-                      }
+                        suggestionsCallback: (pattern) {
+                          return context.read<ExercisesProvider>().searchExercise(
+                                pattern,
+                                languageCode: Localizations.localeOf(context).languageCode,
+                                searchEnglish: _searchEnglish,
+                              );
+                        },
+                        itemBuilder: (BuildContext context, ExerciseBase exerciseSuggestion) {
+                          return ListTile(
+                            leading: SizedBox(
+                              width: 45,
+                              child: ExerciseImageWidget(image: exerciseSuggestion.getMainImage),
+                            ),
+                            title: Text(
+                              exerciseSuggestion
+                                  .getExercise(Localizations.localeOf(context).languageCode)
+                                  .name,
+                            ),
+                            subtitle: Text(
+                              '${exerciseSuggestion.category.name} / ${exerciseSuggestion.equipment.map((e) => e.name).join(', ')}',
+                            ),
+                          );
+                        },
+                        transitionBuilder: (context, suggestionsBox, controller) {
+                          return suggestionsBox;
+                        },
+                        onSuggestionSelected: (ExerciseBase exerciseSuggestion) {
+                          addExercise(exerciseSuggestion);
+                          this._exercisesController.text = '';
+                        },
+                        validator: (value) {
+                          // At least one exercise must be selected
+                          if (widget._set.exerciseBasesIds.isEmpty) {
+                            return AppLocalizations.of(context).selectExercise;
+                          }
 
-                      // At least one setting has to be filled in
-                      if (widget._set.settings
-                              .where((s) => s.weight == null && s.reps == null)
-                              .length ==
-                          widget._set.settings.length) {
-                        return AppLocalizations.of(context).enterRepetitionsOrWeight;
-                      }
-                      return null;
-                    },
+                          // At least one setting has to be filled in
+                          if (widget._set.settings
+                                  .where((s) => s.weight == null && s.reps == null)
+                                  .length ==
+                              widget._set.settings.length) {
+                            return AppLocalizations.of(context).enterRepetitionsOrWeight;
+                          }
+                          return null;
+                        },
+                      ),
+                      if (Localizations.localeOf(context).languageCode != LANGUAGE_SHORT_ENGLISH)
+                        SwitchListTile(
+                          title: Text(AppLocalizations.of(context).searchNamesInEnglish),
+                          value: _searchEnglish,
+                          onChanged: (_) {
+                            setState(() {
+                              _searchEnglish = !_searchEnglish;
+                            });
+                          },
+                          dense: true,
+                        )
+                    ],
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -859,6 +880,7 @@ class _WeightUnitInputWidgetState extends State<WeightUnitInputWidget> {
 /// Can be used with a Setting or a Log object
 class RepetitionUnitInputWidget extends StatefulWidget {
   final dynamic _setting;
+
   const RepetitionUnitInputWidget(this._setting);
 
   @override
