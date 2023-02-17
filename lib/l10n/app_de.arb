@@ -16,7 +16,7 @@
   "@labelDashboard": {
     "description": "Title for screen dashboard"
   },
-  "rir": "RiR",
+  "rir": "WidR",
   "@rir": {
     "description": "Shorthand for Repetitions In Reserve"
   },
@@ -256,7 +256,7 @@
   },
   "addExercise": "Eine Übung hinzufügen",
   "@addExercise": {},
-  "confirmDelete": "Bist du sicher, dass du „{toDelete}“ löschen möchtest?",
+  "confirmDelete": "Bist du sicher, dass du '{toDelete}' löschen möchtest?",
   "@confirmDelete": {
     "description": "Confirmation text before the user deletes an object",
     "type": "text",
@@ -621,5 +621,114 @@
   "images": "Bilder",
   "@images": {},
   "language": "Bilder",
-  "@language": {}
+  "@language": {},
+  "add_exercise_image_license": "Bilder müssen mit der CC BY SA Lizenz vereinbar sein. Wenn du dir unsicher bist lade nur Bilder hoch, welche du selbst gemacht hast.",
+  "@add_exercise_image_license": {},
+  "variations": "Variationen",
+  "@variations": {
+    "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"
+  },
+  "contributeExercise": "Eine Übung beisteuern",
+  "@contributeExercise": {},
+  "hamstrings": "Oberschenkelmuskeln",
+  "@hamstrings": {},
+  "lower_back": "Unterer Rücken",
+  "@lower_back": {},
+  "aboutPageTitle": "Über Wger",
+  "@aboutPageTitle": {},
+  "alsoKnownAs": "Auch bekannt als:{aliases}",
+  "@alsoKnownAs": {
+    "placeholders": {
+      "aliases": {}
+    },
+    "description": "List of alternative names for an exercise"
+  },
+  "biceps": "Bizeps",
+  "@biceps": {},
+  "dumbbell": "Kurzhantel",
+  "@dumbbell": {},
+  "gym_mat": "Gymnastikmatte",
+  "@gym_mat": {},
+  "incline_bench": "Schrägbank",
+  "@incline_bench": {},
+  "lats": "Latissimus",
+  "@lats": {},
+  "enterMinCharacters": "Bitte gebe mindestens {min} Zeichen ein",
+  "@enterMinCharacters": {
+    "description": "Error message when the user hasn't entered the minimum amount characters in a form",
+    "type": "text",
+    "placeholders": {
+      "min": {}
+    }
+  },
+  "baseNameEnglish": "Alle Übungen brauchen einen Basisnamen in Englisch",
+  "@baseNameEnglish": {},
+  "contributeExerciseWarning": "Sie können nur Übungen beitragen, wenn Ihr Konto älter als {days} Tage ist und Sie Ihre E-Mail verifiziert haben",
+  "@contributeExerciseWarning": {
+    "description": "Number of days before which a person can add exercise",
+    "placeholders": {
+      "days": {
+        "type": "String",
+        "example": "14"
+      }
+    }
+  },
+  "cacheWarning": "Aufgrund von Caching kann es einige Zeit dauern, bis die Änderungen in der gesamten Anwendung sichtbar sind.",
+  "@cacheWarning": {},
+  "bench": "Bank",
+  "@bench": {},
+  "glutes": "Gesäßmuskeln",
+  "@glutes": {},
+  "kilometers": "Kilometer",
+  "@kilometers": {},
+  "miles": "Meilen",
+  "@miles": {},
+  "quads": "Quadrizeps",
+  "@quads": {},
+  "sz_bar": "SZ-Stange",
+  "@sz_bar": {},
+  "seconds": "Sekunden",
+  "@seconds": {},
+  "triceps": "Trizeps",
+  "@triceps": {},
+  "until_failure": "Bis zum Versagen",
+  "@until_failure": {},
+  "cardio": "Kardio",
+  "@cardio": {},
+  "success": "Erfolgreich",
+  "@success": {
+    "description": "Message when an action completed successfully, usually used as a heading"
+  },
+  "pull_up_bar": "Klimmzugstange",
+  "@pull_up_bar": {},
+  "verifiedEmailReason": "Du musst deine E-Mail verifizieren, um Übungen hinzuzufügen",
+  "@verifiedEmailReason": {},
+  "kettlebell": "Kugelhantel",
+  "@kettlebell": {},
+  "verifiedEmail": "Verifizierte E-Mail",
+  "@verifiedEmail": {},
+  "unVerifiedEmail": "Unverifizierte E-Mail",
+  "@unVerifiedEmail": {},
+  "alternativeNames": "Alternative Namen",
+  "@alternativeNames": {},
+  "verifiedEmailInfo": "Eine Bestätigungs-E-Mail wurde an {email} gesendet",
+  "@verifiedEmailInfo": {
+    "placeholders": {
+      "email": {}
+    }
+  },
+  "minutes": "Minuten",
+  "@minutes": {},
+  "oneNamePerLine": "Ein Name pro Zeile",
+  "@oneNamePerLine": {},
+  "whatVariationsExist": "Welche Varianten dieser Übung gibt es eventuell?",
+  "@whatVariationsExist": {},
+  "previous": "Vorherige",
+  "@previous": {},
+  "next": "Weiter",
+  "@next": {},
+  "swiss_ball": "Gymnastikball",
+  "@swiss_ball": {},
+  "none__bodyweight_exercise_": "keine (Körpergewichtsübung)",
+  "@none__bodyweight_exercise_": {}
 }
