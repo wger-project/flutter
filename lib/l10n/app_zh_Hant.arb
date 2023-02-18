@@ -1,1 +1,126 @@
-{}
+{
+  "login": "登入",
+  "@login": {
+    "description": "Text for login button"
+  },
+  "logout": "登出",
+  "@logout": {
+    "description": "Text for logout button"
+  },
+  "reset": "重設",
+  "@reset": {
+    "description": "Button text allowing the user to reset the entered values to the default"
+  },
+  "registerInstead": "還沒有帳號嗎？現在就註冊吧",
+  "@registerInstead": {},
+  "loginInstead": "已經有帳號了嗎？立即登入",
+  "@loginInstead": {},
+  "labelWorkoutPlans": "健身計劃",
+  "@labelWorkoutPlans": {
+    "description": "Title for screen workout plans"
+  },
+  "userProfile": "你的檔案",
+  "@userProfile": {},
+  "register": "註冊",
+  "@register": {
+    "description": "Text for registration button"
+  },
+  "useCustomServer": "使用自訂伺服器",
+  "@useCustomServer": {
+    "description": "Toggle button allowing users to switch between the default and a custom wger server"
+  },
+  "passwordsDontMatch": "密碼不一致",
+  "@passwordsDontMatch": {
+    "description": "Error message when the user enters two different passwords during registration"
+  },
+  "passwordTooShort": "密碼過短",
+  "@passwordTooShort": {
+    "description": "Error message when the user a password that is too short"
+  },
+  "password": "密碼",
+  "@password": {},
+  "confirmPassword": "確認密碼",
+  "@confirmPassword": {},
+  "invalidEmail": "請輸入有效的電子郵件信箱",
+  "@invalidEmail": {
+    "description": "Error message when the user enters an invalid email"
+  },
+  "email": "電子郵件地址",
+  "@email": {},
+  "username": "使用者名稱",
+  "@username": {},
+  "invalidUsername": "請輸入有效的使用者名稱",
+  "@invalidUsername": {
+    "description": "Error message when the user enters an invalid username"
+  },
+  "customServerUrl": "wger 服務的 URL",
+  "@customServerUrl": {
+    "description": "Label in the form where the users can enter their own wger instance"
+  },
+  "labelWorkoutLogs": "訓練記錄",
+  "@labelWorkoutLogs": {
+    "description": "(Workout) logs"
+  },
+  "labelWorkoutPlan": "健身計劃",
+  "@labelWorkoutPlan": {
+    "description": "Title for screen workout plan"
+  },
+  "labelDashboard": "儀表板",
+  "@labelDashboard": {
+    "description": "Title for screen dashboard"
+  },
+  "success": "成功",
+  "@success": {
+    "description": "Message when an action completed successfully, usually used as a heading"
+  },
+  "successfullySaved": "已儲存",
+  "@successfullySaved": {
+    "description": "Message when an item was successfully saved"
+  },
+  "exerciseList": "運動列表",
+  "@exerciseList": {},
+  "exercise": "動作",
+  "@exercise": {
+    "description": "An exercise for a workout"
+  },
+  "exercises": "動作",
+  "@exercises": {
+    "description": "Multiple exercises for a workout"
+  },
+  "exerciseName": "動作名稱",
+  "@exerciseName": {
+    "description": "Label for the name of a workout exercise"
+  },
+  "searchExercise": "搜尋待加入的動作",
+  "@searchExercise": {
+    "description": "Label on set form. Selected exercises are added to the set"
+  },
+  "invalidUrl": "請輸入有效的 URL",
+  "@invalidUrl": {
+    "description": "Error message when the user enters an invalid URL, e.g. in the login form"
+  },
+  "useDefaultServer": "使用預設伺服器",
+  "@useDefaultServer": {
+    "description": "Toggle button allowing users to switch between the default and a custom wger server"
+  },
+  "usernameValidChars": "使用者名稱只能包含字母、數字，以及字元 (@, +, ., -, 和_)",
+  "@usernameValidChars": {
+    "description": "Error message when the user tries to register a username with forbidden characters"
+  },
+  "customServerHint": "輸入你自架伺服器的地址，否則將使用預設地址",
+  "@customServerHint": {
+    "description": "Hint text for the form where the users can enter their own wger instance"
+  },
+  "labelBottomNavWorkout": "健身",
+  "@labelBottomNavWorkout": {
+    "description": "Label used in bottom navigation, use a short word"
+  },
+  "labelBottomNavNutrition": "營養",
+  "@labelBottomNavNutrition": {
+    "description": "Label used in bottom navigation, use a short word"
+  },
+  "successfullyDeleted": "已刪除",
+  "@successfullyDeleted": {
+    "description": "Message when an item was successfully deleted"
+  }
+}
