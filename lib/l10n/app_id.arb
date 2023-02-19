@@ -12,7 +12,7 @@
   "@register": {
     "description": "Text for registration button"
   },
-  "useDefaultServer": "Gunakan server bawaan ",
+  "useDefaultServer": "Gunakan server bawaan",
   "@useDefaultServer": {
     "description": "Toggle button allowing users to switch between the default and a custom wger server"
   },
@@ -265,12 +265,15 @@
     "description": "The weight of a workout log or body weight entry"
   },
   "measurement": "Ukuran",
+  "@measurement": {},
   "measurements": "Measurements",
   "@measurements": {
     "description": "Categories for the measurements such as biceps size, body fat, etc."
   },
   "measurementCategoriesHelpText": "Measurement category, such as 'biceps' or 'body fat'",
+  "@measurementCategoriesHelpText": {},
   "measurementEntriesHelpText": "The unit used to measure the category such as 'cm' or '%'",
+  "@measurementEntriesHelpText": {},
   "date": "Date",
   "@date": {
     "description": "The date of a workout log or body weight entry"
@@ -296,6 +299,7 @@
     "description": "The end time of a workout"
   },
   "timeStartAhead": "Start time cannot be ahead of end time",
+  "@timeStartAhead": {},
   "ingredient": "Ingredient",
   "@ingredient": {},
   "energy": "Energy",
@@ -311,6 +315,7 @@
     "description": "Energy in a meal in kilocalories, kcal"
   },
   "macronutrients": "Macronutrients",
+  "@macronutrients": {},
   "planned": "Planned",
   "@planned": {
     "description": "Header for the column of 'planned' nutritional values, i.e. what should be eaten"
@@ -324,7 +329,9 @@
     "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
   },
   "difference": "Difference",
+  "@difference": {},
   "percentEnergy": "Percent of energy",
+  "@percentEnergy": {},
   "gPerBodyKg": "g per body kg",
   "@gPerBodyKg": {
     "description": "Label used for total sums of e.g. calories or similar in grams per Kg of body weight"
@@ -345,13 +352,13 @@
   "@protein": {},
   "proteinShort": "P",
   "@proteinShort": {
-    "description" : "The first letter or short name of the word 'Protein', used in overviews"
+    "description": "The first letter or short name of the word 'Protein', used in overviews"
   },
   "carbohydrates": "Carbohydrates",
   "@carbohydrates": {},
   "carbohydratesShort": "C",
   "@carbohydratesShort": {
-    "description" : "The first letter or short name of the word 'Carbohydrates', used in overviews"
+    "description": "The first letter or short name of the word 'Carbohydrates', used in overviews"
   },
   "sugars": "Sugars",
   "@sugars": {},
@@ -359,7 +366,7 @@
   "@fat": {},
   "fatShort": "F",
   "@fatShort": {
-    "description" : "The first letter or short name of the word 'Fat', used in overviews"
+    "description": "The first letter or short name of the word 'Fat', used in overviews"
   },
   "saturatedFat": "Saturated fat",
   "@saturatedFat": {},
@@ -406,6 +413,7 @@
     "description": "Switch to toggle detail / overview"
   },
   "goToDetailPage": "Go to detail page",
+  "@goToDetailPage": {},
   "aboutDescription": "Thank you for using wger! wger is a collaborative open source project, made by fitness enthusiasts from around the world.",
   "@aboutDescription": {
     "description": "Text in the about dialog"
@@ -503,21 +511,25 @@
     "description": "Label for the popup with general app options"
   },
   "takePicture": "Take a picture",
+  "@takePicture": {},
   "chooseFromLibrary": "Choose from photo library",
+  "@chooseFromLibrary": {},
   "gallery": "Gallery",
+  "@gallery": {},
   "addImage": "Add image",
+  "@addImage": {},
   "dataCopied": "Data copied to new entry",
   "@dataCopied": {
     "description": "Snackbar message to show on copying data to a new log entry"
   },
-  "appUpdateTitle" : "Update needed",
-  "appUpdateContent" : "This version of the app is not compatible with the server, please update your application.",
-
+  "appUpdateTitle": "Update needed",
+  "@appUpdateTitle": {},
+  "appUpdateContent": "This version of the app is not compatible with the server, please update your application.",
+  "@appUpdateContent": {},
   "productFound": "Product found",
   "@productFound": {
     "description": "Header label for dialog when product is found with barcode"
   },
-
   "productFoundDescription": "The barcode corresponds to this product: {productName}. Do you want to continue?",
   "@productFoundDescription": {
     "description": "Dialog info when product is found with barcode",
