@@ -207,9 +207,9 @@
   "@labelWorkoutPlans": {
     "description": "Title for screen workout plans"
   },
-  "registerInstead": "S’inscrire à la place",
+  "registerInstead": "Vous n'avez pas de compte ? Inscrivez-vous maintenant",
   "@registerInstead": {},
-  "loginInstead": "Se connecter à la place",
+  "loginInstead": "Déjà un compte ? Connectez-vous",
   "@loginInstead": {},
   "reset": "Réinitialiser",
   "@reset": {
@@ -544,5 +544,186 @@
   "weekAverage": "Moyenne sur 7 jours",
   "@weekAverage": {
     "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
-  }
+  },
+  "success": "Succès",
+  "@success": {
+    "description": "Message when an action completed successfully, usually used as a heading"
+  },
+  "alternativeNames": "Noms alternatifs",
+  "@alternativeNames": {},
+  "oneNamePerLine": "Un nom par ligne",
+  "@oneNamePerLine": {},
+  "selectEntry": "Veuillez sélectionner une entrée",
+  "@selectEntry": {},
+  "variations": "Variantes",
+  "@variations": {
+    "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"
+  },
+  "productFoundDescription": "Le code-barres correspond à ce produit : {productName}. Voulez-vous continuer ?",
+  "@productFoundDescription": {
+    "description": "Dialog info when product is found with barcode",
+    "type": "text",
+    "placeholders": {
+      "productName": {}
+    }
+  },
+  "productNotFoundDescription": "Le produit dont le code-barres a été scanné {barcode} n'a pas été trouvé dans la base de données wger",
+  "@productNotFoundDescription": {
+    "description": "Dialog info when product is not found with barcode",
+    "type": "text",
+    "placeholders": {
+      "barcode": {}
+    }
+  },
+  "contributeExerciseWarning": "Vous ne pouvez contribuer aux exercices que si votre compte a plus de {days} jours et si vous avez vérifié votre adresse email",
+  "@contributeExerciseWarning": {
+    "description": "Number of days before which a person can add exercise",
+    "placeholders": {
+      "days": {
+        "type": "String",
+        "example": "14"
+      }
+    }
+  },
+  "back": "Dos",
+  "@back": {},
+  "enterMinCharacters": "Veuillez entrer au moins {min} caractères",
+  "@enterMinCharacters": {
+    "description": "Error message when the user hasn't entered the minimum amount characters in a form",
+    "type": "text",
+    "placeholders": {
+      "min": {}
+    }
+  },
+  "baseNameEnglish": "Tous les exercices doivent avoir un nom de base en anglais",
+  "@baseNameEnglish": {},
+  "productNotFound": "Produit non trouvé",
+  "@productNotFound": {
+    "description": "Header label for dialog when product is not found with barcode"
+  },
+  "scanBarcode": "Scanner le code barre",
+  "@scanBarcode": {
+    "description": "Label for scan barcode button"
+  },
+  "add_exercise_image_license": "Les images doivent être compatibles avec la licence CC BY SA. En cas de doute, ne téléchargez que des photos que vous avez prises vous-même.",
+  "@add_exercise_image_license": {},
+  "alsoKnownAs": "Aussi connu sous le nom de : {aliases}",
+  "@alsoKnownAs": {
+    "placeholders": {
+      "aliases": {}
+    },
+    "description": "List of alternative names for an exercise"
+  },
+  "verifiedEmailReason": "Vous devez vérifier votre adresse e-mail pour contribuer aux exercices",
+  "@verifiedEmailReason": {},
+  "verifiedEmailInfo": "Un email de vérification a été envoyé à {email}",
+  "@verifiedEmailInfo": {
+    "placeholders": {
+      "email": {}
+    }
+  },
+  "whatVariationsExist": "Quelles sont les variantes de cet exercice, s'il en existe ?",
+  "@whatVariationsExist": {},
+  "previous": "Précédent",
+  "@previous": {},
+  "next": "Suivant",
+  "@next": {},
+  "images": "Photos",
+  "@images": {},
+  "language": "Langues",
+  "@language": {},
+  "contributeExercise": "Contribuer à un exercice",
+  "@contributeExercise": {},
+  "translation": "Traduction",
+  "@translation": {},
+  "translateExercise": "Traduire cet exercice maintenant",
+  "@translateExercise": {},
+  "baseData": "Les bases en anglais",
+  "@baseData": {
+    "description": "The base data for an exercise such as category, trained muscles, etc."
+  },
+  "bench": "Banc",
+  "@bench": {},
+  "glutes": "Fessiers",
+  "@glutes": {},
+  "kilometers": "Kilomètres",
+  "@kilometers": {},
+  "barbell": "Haltères",
+  "@barbell": {},
+  "lower_back": "Bas du dos",
+  "@lower_back": {},
+  "swiss_ball": "Ballon de gymnastique",
+  "@swiss_ball": {},
+  "triceps": "Triceps",
+  "@triceps": {},
+  "none__bodyweight_exercise_": "aucun (exercice au poids du corps)",
+  "@none__bodyweight_exercise_": {},
+  "biceps": "Biceps",
+  "@biceps": {},
+  "chest": "Poitrine",
+  "@chest": {},
+  "kettlebell": "Kettlebell",
+  "@kettlebell": {},
+  "abs": "Abdos",
+  "@abs": {},
+  "dumbbell": "Haltères",
+  "@dumbbell": {},
+  "gym_mat": "Tapis de gymnastique",
+  "@gym_mat": {},
+  "incline_bench": "Banc incliné",
+  "@incline_bench": {},
+  "lats": "Grand dorsal",
+  "@lats": {},
+  "miles": "Miles",
+  "@miles": {},
+  "legs": "Jambes",
+  "@legs": {},
+  "quads": "Quadriceps",
+  "@quads": {},
+  "noMeasurementEntries": "Vous n'avez pas d'entrées de mesure",
+  "@noMeasurementEntries": {},
+  "aboutPageTitle": "A propos de Wger",
+  "@aboutPageTitle": {},
+  "userProfile": "Votre profil",
+  "@userProfile": {},
+  "exerciseList": "Liste d'exercices",
+  "@exerciseList": {},
+  "exercises": "Exercices",
+  "@exercises": {
+    "description": "Multiple exercises for a workout"
+  },
+  "exerciseName": "Nom de l'exercice",
+  "@exerciseName": {
+    "description": "Label for the name of a workout exercise"
+  },
+  "arms": "Bras",
+  "@arms": {},
+  "sz_bar": "Barre EZ",
+  "@sz_bar": {},
+  "moreMeasurementEntries": "Ajouter une mesure",
+  "@moreMeasurementEntries": {
+    "description": "Message shown when the user wants to add new measurement"
+  },
+  "hamstrings": "Ischio-jambiers",
+  "@hamstrings": {},
+  "pull_up_bar": "Barre de traction",
+  "@pull_up_bar": {},
+  "shoulders": "Epaules",
+  "@shoulders": {},
+  "calves": "Mollets",
+  "@calves": {},
+  "verifiedEmail": "Email vérifié",
+  "@verifiedEmail": {},
+  "unVerifiedEmail": "Email non vérifié",
+  "@unVerifiedEmail": {},
+  "cacheWarning": "En raison de la mise en cache, il peut s'écouler un certain temps avant que les changements soient visibles dans toute l'application.",
+  "@cacheWarning": {},
+  "cardio": "Cardio",
+  "@cardio": {},
+  "minutes": "Minutes",
+  "@minutes": {},
+  "seconds": "Secondes",
+  "@seconds": {},
+  "until_failure": "Jusqu'à l'échec",
+  "@until_failure": {}
 }
