@@ -33,7 +33,7 @@
   "@customServerHint": {
     "description": "Hint text for the form where the users can enter their own wger instance"
   },
-  "loginInstead": "Faça login em vez disso",
+  "loginInstead": "Já tem uma conta? Faça login",
   "@loginInstead": {},
   "labelWorkoutPlans": "Planos de treino",
   "@labelWorkoutPlans": {
@@ -309,7 +309,7 @@
   "@successfullySaved": {
     "description": "Message when an item was successfully saved"
   },
-  "registerInstead": "Registre-se em vez disso",
+  "registerInstead": "Não tem uma conta? Registre agora",
   "@registerInstead": {},
   "weightUnit": "Unidade de peso",
   "@weightUnit": {},
@@ -555,8 +555,11 @@
     "description": "List of alternative names for an exercise"
   },
   "verifiedEmail": "Email verificado",
+  "@verifiedEmail": {},
   "unVerifiedEmail": "Verificação pendente",
+  "@unVerifiedEmail": {},
   "verifiedEmailReason": "É necessário verificar seu email para contribuir com exercícios",
+  "@verifiedEmailReason": {},
   "verifiedEmailInfo": "Um email de verificação foi enviado para {email}",
   "@verifiedEmailInfo": {
     "placeholders": {
@@ -572,7 +575,9 @@
     "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"
   },
   "oneNamePerLine": "Somente um nome por linha",
+  "@oneNamePerLine": {},
   "whatVariationsExist": "Se houver alguma, quais as possíveis variações para esse exercício?",
+  "@whatVariationsExist": {},
   "takePicture": "Tirar uma foto",
   "@takePicture": {},
   "chooseFromLibrary": "Escolher da galeria",
@@ -580,38 +585,135 @@
   "gallery": "Galeria de fotos",
   "@gallery": {},
   "addExercise": "Adicionar exercício",
+  "@addExercise": {},
   "translation": "Tradução",
+  "@translation": {},
   "translateExercise": "Traduzir este exercício",
+  "@translateExercise": {},
   "alternativeNames": "Outros nomes",
+  "@alternativeNames": {},
   "images": "Imagens",
+  "@images": {},
   "language": "Idioma",
+  "@language": {},
   "previous": "Anterior",
+  "@previous": {},
   "next": "Próximo",
+  "@next": {},
   "minutes": "Minutos",
+  "@minutes": {},
   "seconds": "Segundos",
+  "@seconds": {},
   "until_failure": "Até a falha",
+  "@until_failure": {},
   "kilometers": "Quilômetros",
+  "@kilometers": {},
   "glutes": "Glúteos",
+  "@glutes": {},
   "bench": "Supino",
+  "@bench": {},
   "barbell": "Barra",
+  "@barbell": {},
   "triceps": "Tríceps",
+  "@triceps": {},
   "biceps": "Bíceps",
+  "@biceps": {},
   "dumbbell": "Haltere",
+  "@dumbbell": {},
   "abs": "Abdominal",
+  "@abs": {},
   "chest": "Peito",
+  "@chest": {},
   "shoulders": "Ombro",
+  "@shoulders": {},
   "gym_mat": "Colchonete",
+  "@gym_mat": {},
   "incline_bench": "Supino inclinado",
+  "@incline_bench": {},
   "calves": "Panturrilha",
+  "@calves": {},
   "legs": "Pernas",
+  "@legs": {},
   "lats": "Dorsal",
+  "@lats": {},
   "quads": "Quadríceps",
+  "@quads": {},
   "hamstrings": "Posterior de coxa",
+  "@hamstrings": {},
   "arms": "Braços",
+  "@arms": {},
   "pull_up_bar": "Barra fixa",
+  "@pull_up_bar": {},
   "lower_back": "Lombar",
+  "@lower_back": {},
   "swiss_ball": "Bola suíça",
+  "@swiss_ball": {},
   "kettlebell": "Kettlebell",
+  "@kettlebell": {},
   "none__bodyweight_exercise_": "nenhum (somente peso do corpo)",
-  "aboutPageTitle": "Sobre Wger"
+  "@none__bodyweight_exercise_": {},
+  "aboutPageTitle": "Sobre Wger",
+  "@aboutPageTitle": {},
+  "enterMinCharacters": "Por favor, selecione ao menos [min] de caracteres",
+  "@enterMinCharacters": {
+    "description": "Error message when the user hasn't entered the minimum amount characters in a form",
+    "type": "text",
+    "placeholders": {
+      "min": {}
+    }
+  },
+  "baseNameEnglish": "Todos os exercícios precisam de um nome base em inglês",
+  "@baseNameEnglish": {},
+  "miles": "Milhas",
+  "@miles": {},
+  "noMeasurementEntries": "Você não tem entradas de medição",
+  "@noMeasurementEntries": {},
+  "moreMeasurementEntries": "Adicionar nova medição",
+  "@moreMeasurementEntries": {
+    "description": "Message shown when the user wants to add new measurement"
+  },
+  "contributeExercise": "Contribua um exercício",
+  "@contributeExercise": {},
+  "baseData": "Básico em inglês",
+  "@baseData": {
+    "description": "The base data for an exercise such as category, trained muscles, etc."
+  },
+  "sz_bar": "Barra SZ",
+  "@sz_bar": {},
+  "back": "Costas",
+  "@back": {},
+  "userProfile": "Seu perfil",
+  "@userProfile": {},
+  "exercises": "Exercícios",
+  "@exercises": {
+    "description": "Multiple exercises for a workout"
+  },
+  "exerciseList": "Lista de Exercício",
+  "@exerciseList": {},
+  "exerciseName": "Nome do exercício",
+  "@exerciseName": {
+    "description": "Label for the name of a workout exercise"
+  },
+  "add_exercise_image_license": "As imagens devem ser compatíveis com a licença CC BY SA. Em caso de dúvida, carregue apenas fotos que você mesmo tirou.",
+  "@add_exercise_image_license": {},
+  "selectEntry": "Por favor selecione uma entrada",
+  "@selectEntry": {},
+  "cacheWarning": "Devido ao caching, pode levar algum tempo até que as alterações sejam visíveis em todo o aplicativo.",
+  "@cacheWarning": {},
+  "success": "Sucesso",
+  "@success": {
+    "description": "Message when an action completed successfully, usually used as a heading"
+  },
+  "contributeExerciseWarning": "Você só pode contribuir com exercícios se sua conta tiver mais de {days} dias e tiver verificado seu e-mail",
+  "@contributeExerciseWarning": {
+    "description": "Number of days before which a person can add exercise",
+    "placeholders": {
+      "days": {
+        "type": "String",
+        "example": "14"
+      }
+    }
+  },
+  "cardio": "Cardio",
+  "@cardio": {}
 }
