@@ -50,7 +50,7 @@ dependencies:
   package_info: ^2.0.2
   provider: ^6.0.5
   rive: ^0.10.2
-  shared_preferences: ^2.0.17
+  shared_preferences: ^2.0.18
   table_calendar: ^3.0.8
   url_launcher: ^6.1.10
   flutter_barcode_scanner: ^2.0.0
