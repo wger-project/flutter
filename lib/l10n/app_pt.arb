@@ -654,7 +654,7 @@
   "@none__bodyweight_exercise_": {},
   "aboutPageTitle": "Sobre Wger",
   "@aboutPageTitle": {},
-  "enterMinCharacters": "Por favor, selecione ao menos [min] de caracteres",
+  "enterMinCharacters": "Por favor, selecione ao menos {min} de caracteres",
   "@enterMinCharacters": {
     "description": "Error message when the user hasn't entered the minimum amount characters in a form",
     "type": "text",
