@@ -715,5 +715,7 @@
     "description": "Message when an action completed successfully, usually used as a heading"
   },
   "cacheWarning": "Önbelleğe alma nedeniyle değişikliklerin uygulama genelinde görünür olması biraz zaman alabilir.",
-  "@cacheWarning": {}
+  "@cacheWarning": {},
+  "searchNamesInEnglish": "Ayrıca İngilizce adları da arayın",
+  "@searchNamesInEnglish": {}
 }
