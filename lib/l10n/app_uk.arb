@@ -715,5 +715,7 @@
     "description": "Message when an action completed successfully, usually used as a heading"
   },
   "cacheWarning": "Через кешування може знадобитися деякий час, перш ніж зміни стануть видимими у всьому застосунку.",
-  "@cacheWarning": {}
+  "@cacheWarning": {},
+  "searchNamesInEnglish": "Також шукайте імена англійською мовою",
+  "@searchNamesInEnglish": {}
 }
