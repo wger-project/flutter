@@ -103,8 +103,8 @@ class NutritionPlansProvider with ChangeNotifier {
 
   /// Fetches and sets all plans fully, i.e. with all corresponding child objects
   Future<void> fetchAndSetAllPlansFull() async {
-    final data = await baseProvider.fetch(baseProvider.makeUrl(_nutritionalPlansPath));
-    for (final entry in data['results']) {
+    final data = await baseProvider.fetchPaginated(baseProvider.makeUrl(_nutritionalPlansPath));
+    for (final entry in data) {
       await fetchAndSetPlanFull(entry['id']);
     }
   }
@@ -411,16 +411,15 @@ class NutritionPlansProvider with ChangeNotifier {
 
   /// Load nutrition diary entries for plan
   Future<void> fetchAndSetLogs(NutritionalPlan plan) async {
-    // TODO(x): update fetch to that it can use the pagination
-    final data = await baseProvider.fetch(
+    final data = await baseProvider.fetchPaginated(
       baseProvider.makeUrl(
         _nutritionDiaryPath,
-        query: {'plan': plan.id.toString(), 'limit': '1000'},
+        query: {'plan': plan.id.toString(), 'limit': '999'},
       ),
     );
 
     plan.logs = [];
-    for (final logData in data['results']) {
+    for (final logData in data) {
       final log = Log.fromJson(logData);
       final ingredient = await fetchIngredient(log.ingredientId);
       log.ingredientObj = ingredient;
