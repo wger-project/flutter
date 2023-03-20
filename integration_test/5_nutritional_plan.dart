@@ -11,12 +11,12 @@ import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/theme/theme.dart';
 
-import '../test/other/base_provider_test.mocks.dart';
-import '../test/utils.dart';
+import '../test/user/provider_test.mocks.dart';
 
 Widget createNutritionalPlanScreen({locale = 'en'}) {
+  var mockBaseProvider = MockWgerBaseProvider();
+
   final key = GlobalKey<NavigatorState>();
-  final client = MockClient();
 
   final muesli = Ingredient(
     id: 1,
@@ -96,7 +96,7 @@ Widget createNutritionalPlanScreen({locale = 'en'}) {
   return MultiProvider(
     providers: [
       ChangeNotifierProvider<NutritionPlansProvider>(
-        create: (context) => NutritionPlansProvider(testAuthProvider, [], client),
+        create: (context) => NutritionPlansProvider(mockBaseProvider, []),
       ),
       ChangeNotifierProvider<BodyWeightProvider>(
         create: (context) => BodyWeightProvider(mockBaseProvider),

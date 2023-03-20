@@ -31,22 +31,19 @@ import 'package:wger/widgets/nutrition/charts.dart';
 
 import '../../test_data/nutritional_plans.dart';
 import 'nutritional_plan_screen_test.mocks.dart';
-import '../utils.dart';
 
 @GenerateMocks([WgerBaseProvider, AuthProvider, http.Client])
 void main() {
   Widget createNutritionalPlan({locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
-    final client = MockClient();
     final mockBaseProvider = MockWgerBaseProvider();
-    final mockAuthProvider = MockAuthProvider();
 
     final plan = getNutritionalPlan();
 
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<NutritionPlansProvider>(
-          create: (context) => NutritionPlansProvider(mockAuthProvider, [], client),
+          create: (context) => NutritionPlansProvider(mockBaseProvider, []),
         ),
         ChangeNotifierProvider<BodyWeightProvider>(
           create: (context) => BodyWeightProvider(mockBaseProvider),
