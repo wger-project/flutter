@@ -26,27 +26,24 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/set.dart';
 import 'package:wger/models/workouts/setting.dart';
-import 'package:wger/models/workouts/workout_plan.dart';
+import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 
-import './workout_form_test.mocks.dart';
-import './workout_set_form_test.mocks.dart';
 import '../../test_data/workouts.dart';
-import '../other/base_provider_test.mocks.dart';
-import '../utils.dart';
+import 'workout_set_form_test.mocks.dart';
 
-@GenerateMocks([ExercisesProvider])
+@GenerateMocks([ExercisesProvider, WgerBaseProvider, WorkoutPlansProvider])
 void main() {
   var mockWorkoutPlans = MockWorkoutPlansProvider();
-  final MockExercisesProvider mockExerciseProvider = MockExercisesProvider();
-  final WorkoutPlan workoutPlan = getWorkout();
-  final client = MockClient();
+  final mockBaseProvider = MockWgerBaseProvider();
+  final mockExerciseProvider = MockExercisesProvider();
+  final workoutPlan = getWorkout();
+
   Day day = Day();
 
   setUp(() {
-    final WorkoutPlan workoutPlan = getWorkout();
     day = workoutPlan.days.first;
     mockWorkoutPlans = MockWorkoutPlansProvider();
   });
@@ -54,10 +51,9 @@ void main() {
   Widget createHomeScreen({locale = 'en'}) {
     return ChangeNotifierProvider<WorkoutPlansProvider>(
       create: (context) => WorkoutPlansProvider(
-        testAuthProvider,
+        mockBaseProvider,
         mockExerciseProvider,
         [workoutPlan],
-        client,
       ),
       child: ChangeNotifierProvider<ExercisesProvider>(
           create: (context) => mockExerciseProvider,

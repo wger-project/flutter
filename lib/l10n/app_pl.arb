@@ -697,5 +697,23 @@
   "abs": "Brzuch",
   "@abs": {},
   "quads": "Mięsień czworogłowy uda",
-  "@quads": {}
+  "@quads": {},
+  "cardio": "Kardio",
+  "@cardio": {},
+  "contributeExerciseWarning": "Możesz dodawać ćwiczenia tylko wtedy, gdy Twoje konto jest starsze niż {days} dni i zweryfikowałeś swój adres e-mail",
+  "@contributeExerciseWarning": {
+    "description": "Number of days before which a person can add exercise",
+    "placeholders": {
+      "days": {
+        "type": "String",
+        "example": "14"
+      }
+    }
+  },
+  "success": "Sukces",
+  "@success": {
+    "description": "Message when an action completed successfully, usually used as a heading"
+  },
+  "cacheWarning": "Ze względu na buforowanie może minąć trochę czasu zanim zmiany będą widoczne w całej aplikacji.",
+  "@cacheWarning": {}
 }

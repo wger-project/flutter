@@ -90,8 +90,8 @@ class NutritionPlansProvider with ChangeNotifier {
   /// Fetches and sets all plans sparsely, i.e. only with the data on the plan
   /// object itself and no child attributes
   Future<void> fetchAndSetAllPlansSparse() async {
-    final url = baseProvider.makeUrl(_nutritionalPlansPath, query: {'limit': '1000'});
-    final data = await baseProvider.fetch(url);
+    final data = await fetch(makeUrl(_nutritionalPlansPath, query: {'limit': '1000'}));
+    _plans = [];
     for (final planData in data['results']) {
       final plan = NutritionalPlan.fromJson(planData);
       _plans.add(plan);

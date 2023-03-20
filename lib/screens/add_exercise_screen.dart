@@ -41,6 +41,8 @@ class AddExerciseStepper extends StatefulWidget {
 class _AddExerciseStepperState extends State<AddExerciseStepper> {
   int _currentStep = 0;
   int lastStepIndex = AddExerciseStepper.STEPS_IN_FORM - 1;
+  bool _isLoading = false;
+
   final List<GlobalKey<FormState>> _keys = [
     GlobalKey<FormState>(),
     GlobalKey<FormState>(),
@@ -57,17 +59,58 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             OutlinedButton(
-                onPressed: details.onStepCancel,
-                child: Text(AppLocalizations.of(context).previous)),
+              onPressed: details.onStepCancel,
+              child: Text(AppLocalizations.of(context).previous),
+            ),
             if (_currentStep == lastStepIndex)
               ElevatedButton(
-                onPressed: () async {
-                  final id = await context.read<AddExerciseProvider>().addExercise();
-                  final base = await context.read<ExercisesProvider>().fetchAndSetExerciseBase(id);
+                onPressed: _isLoading
+                    ? null
+                    : () async {
+                        setState(() {
+                          _isLoading = true;
+                        });
+                        final addExerciseProvider = context.read<AddExerciseProvider>();
+                        final exerciseProvider = context.read<ExercisesProvider>();
 
-                  Navigator.pushNamed(context, ExerciseDetailScreen.routeName, arguments: base);
-                },
-                child: Text(AppLocalizations.of(context).save),
+                        final baseId = await addExerciseProvider.addExercise();
+                        final base = await exerciseProvider.fetchAndSetExerciseBase(baseId);
+                        final name =
+                            base.getExercise(Localizations.localeOf(context).languageCode).name;
+
+                        setState(() {
+                          _isLoading = false;
+                        });
+
+                        if (!context.mounted) return;
+                        return showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text(AppLocalizations.of(context).success),
+                              content: Text(AppLocalizations.of(context).cacheWarning),
+                              actions: [
+                                TextButton(
+                                  child: Text(name),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                    Navigator.pushReplacementNamed(
+                                        context, ExerciseDetailScreen.routeName,
+                                        arguments: base);
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                child: _isLoading
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(),
+                      )
+                    : Text(AppLocalizations.of(context).save),
               )
             else
               ElevatedButton(

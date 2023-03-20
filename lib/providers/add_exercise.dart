@@ -204,14 +204,14 @@ class AddExerciseProvider with ChangeNotifier {
       await addExerciseTranslation(exerciseTranslationLang);
     }
 
-    // Clear everything
-    //clear();
-
     // Create the images
     await addImages(base);
 
+    // Clear everything
+    clear();
+
     // Return exercise ID
-    return exerciseTranslationEn.id!;
+    return base.id!;
   }
 
   Future<ExerciseBase> addExerciseBase() async {

@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/body_weight.dart';
@@ -28,10 +29,11 @@ import 'package:wger/widgets/core/charts.dart';
 import 'package:wger/widgets/weight/forms.dart';
 
 import '../../test_data/body_weight.dart';
-import '../workout/weight_unit_form_widget_test.mocks.dart';
+import 'weight_screen_test.mocks.dart';
 
+@GenerateMocks([BodyWeightProvider])
 void main() {
-  MockBodyWeightProvider mockWeightProvider = MockBodyWeightProvider();
+  var mockWeightProvider = MockBodyWeightProvider();
 
   Widget createWeightScreen({locale = 'en'}) {
     mockWeightProvider = MockBodyWeightProvider();

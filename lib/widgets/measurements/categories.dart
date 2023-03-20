@@ -17,29 +17,27 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/measurement.dart';
-import 'package:wger/screens/form_screen.dart';
-import 'package:wger/screens/measurement_entries_screen.dart';
-import 'package:wger/widgets/core/charts.dart';
 
 import 'categories_card.dart';
-import 'forms.dart';
 
 class CategoriesList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _provider = Provider.of<MeasurementProvider>(context, listen: false);
 
-    return ListView.builder(
-      padding: const EdgeInsets.all(10.0),
-      itemCount: _provider.categories.length,
-      itemBuilder: (context, index) {
-        final currentCategory = _provider.categories[index];
+    return RefreshIndicator(
+      onRefresh: () => _provider.fetchAndSetAllCategoriesAndEntries(),
+      child: ListView.builder(
+        padding: const EdgeInsets.all(10.0),
+        itemCount: _provider.categories.length,
+        itemBuilder: (context, index) {
+          final currentCategory = _provider.categories[index];
 
-        return CategoriesCard(currentCategory);
-      },
+          return CategoriesCard(currentCategory);
+        },
+      ),
     );
   }
 }

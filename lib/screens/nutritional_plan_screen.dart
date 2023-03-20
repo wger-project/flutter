@@ -101,7 +101,7 @@ class NutritionalPlanScreen extends StatelessWidget {
               ),
             ],
             flexibleSpace: FlexibleSpaceBar(
-              title: Text(_nutritionalPlan.description),
+              title: Text(_nutritionalPlan.getLabel(context)),
               background: const Image(
                 image: AssetImage('assets/images/backgrounds/nutritional_plans.jpg'),
                 fit: BoxFit.cover,
@@ -126,8 +126,7 @@ class NutritionalPlanScreen extends StatelessWidget {
                       )
                     : Consumer<NutritionPlansProvider>(
                         builder: (context, value, child) =>
-                            NutritionalPlanDetailWidget(_nutritionalPlan),
-                      ),
+                            NutritionalPlanDetailWidget(_nutritionalPlan)),
           ),
         ],
       ),

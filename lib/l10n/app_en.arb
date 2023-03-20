@@ -93,6 +93,10 @@
   "@labelDashboard": {
     "description": "Title for screen dashboard"
   },
+  "success": "Success",
+  "@success": {
+    "description": "Message when an action completed successfully, usually used as a heading"
+  },
   "successfullyDeleted": "Deleted",
   "@successfullyDeleted": {
     "description": "Message when an item was successfully deleted"
@@ -118,6 +122,7 @@
   "@searchExercise": {
     "description": "Label on set form. Selected exercises are added to the set"
   },
+  "searchNamesInEnglish": "Also search for names in English",
   "supersetWith": "superset with",
   "@supersetWith": {
     "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
@@ -629,6 +634,7 @@
       }
     }
   },
+  "cacheWarning": "Due to caching it might take some time till the changes are visible throughout the application.",
   "abs": "Abs",
   "arms": "Arms",
   "back": "Back",

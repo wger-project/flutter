@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
@@ -63,6 +65,10 @@ class NutritionalPlan {
   factory NutritionalPlan.fromJson(Map<String, dynamic> json) => _$NutritionalPlanFromJson(json);
 
   Map<String, dynamic> toJson() => _$NutritionalPlanToJson(this);
+
+  String getLabel(BuildContext context) {
+    return description != '' ? description : AppLocalizations.of(context).nutritionalPlan;
+  }
 
   /// Calculations
   NutritionalValues get nutritionalValues {

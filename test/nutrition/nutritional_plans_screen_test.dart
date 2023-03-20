@@ -20,31 +20,53 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
+import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/nutritional_plans_screen.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 
-import '../measurements/measurement_provider_test.mocks.dart';
+import 'nutritional_plan_screen_test.mocks.dart';
 
+@GenerateMocks([AuthProvider, http.Client])
 void main() {
+  final mockAuthProvider = MockAuthProvider();
+  final client = MockClient();
+
   Widget createHomeScreen({locale = 'en'}) {
-    final mockWgerBaseProvider = MockWgerBaseProvider();
+    when(client.delete(
+      any,
+      headers: anyNamed('headers'),
+    )).thenAnswer((_) async => http.Response('', 200));
 
     when(mockWgerBaseProvider.deleteRequest(any, any)).thenAnswer(
-      (_) async => http.Response('', 200),
+          (_) async => http.Response('', 200),
     );
+
+    when(mockAuthProvider.token).thenReturn('1234');
+    when(mockAuthProvider.serverUrl).thenReturn('http://localhost');
+    when(mockAuthProvider.getAppNameHeader()).thenReturn('wger app');
 
     return ChangeNotifierProvider<NutritionPlansProvider>(
       create: (context) => NutritionPlansProvider(
-        mockWgerBaseProvider,
+        mockAuthProvider,
         [
-          NutritionalPlan(id: 1, description: 'test plan 1', creationDate: DateTime(2021, 01, 01)),
-          NutritionalPlan(id: 2, description: 'test plan 2', creationDate: DateTime(2021, 01, 10)),
+          NutritionalPlan(
+            id: 1,
+            description: 'test plan 1',
+            creationDate: DateTime(2021, 01, 01),
+          ),
+          NutritionalPlan(
+            id: 2,
+            description: 'test plan 2',
+            creationDate: DateTime(2021, 01, 10),
+          ),
         ],
+        client,
       ),
       child: MaterialApp(
         locale: Locale(locale),

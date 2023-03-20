@@ -19,29 +19,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart' as http;
+import 'package:mockito/annotations.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/providers/auth.dart';
+import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 
 import '../../test_data/nutritional_plans.dart';
-import '../measurements/measurement_provider_test.mocks.dart';
-import '../other/base_provider_test.mocks.dart';
+import 'nutritional_plan_screen_test.mocks.dart';
 import '../utils.dart';
 
+@GenerateMocks([WgerBaseProvider, AuthProvider, http.Client])
 void main() {
   Widget createNutritionalPlan({locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
     final client = MockClient();
-    final mockWgerBaseProvider = MockWgerBaseProvider();
+    final mockBaseProvider = MockWgerBaseProvider();
+    final mockAuthProvider = MockAuthProvider();
 
     final plan = getNutritionalPlan();
 
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<NutritionPlansProvider>(
-          create: (context) => NutritionPlansProvider(mockWgerBaseProvider, []),
+          create: (context) => NutritionPlansProvider(mockAuthProvider, [], client),
         ),
         ChangeNotifierProvider<BodyWeightProvider>(
           create: (context) => BodyWeightProvider(mockBaseProvider),

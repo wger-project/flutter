@@ -69,33 +69,31 @@ class MyApp extends StatelessWidget {
           create: (ctx) => AuthProvider(),
         ),
         ChangeNotifierProxyProvider<AuthProvider, ExercisesProvider>(
-          create: (context) => ExercisesProvider(WgerBaseProvider(context.read<AuthProvider>())),
+          create: (context) => ExercisesProvider(
+              WgerBaseProvider(Provider.of<AuthProvider>(context, listen: false))),
           update: (context, base, previous) =>
               previous ?? ExercisesProvider(WgerBaseProvider(base)),
         ),
         ChangeNotifierProxyProvider2<AuthProvider, ExercisesProvider, WorkoutPlansProvider>(
           create: (context) => WorkoutPlansProvider(
-            context.read<AuthProvider>(),
-            context.read<ExercisesProvider>(),
+            WgerBaseProvider(Provider.of<AuthProvider>(context, listen: false)),
+            Provider.of<ExercisesProvider>(context, listen: false),
             [],
           ),
           update: (context, auth, exercises, previous) =>
-              previous ?? WorkoutPlansProvider(auth, exercises, []),
+              previous ?? WorkoutPlansProvider(WgerBaseProvider(auth), exercises, []),
         ),
         ChangeNotifierProxyProvider<AuthProvider, NutritionPlansProvider>(
-          create: (context) => NutritionPlansProvider(
-            WgerBaseProvider(context.read<AuthProvider>()),
-            [],
-          ),
-          update: (context, auth, previous) =>
-              previous ?? NutritionPlansProvider(WgerBaseProvider(auth), []),
+          create: (context) =>
+              NutritionPlansProvider(Provider.of<AuthProvider>(context, listen: false), []),
+          update: (context, auth, previous) => previous ?? NutritionPlansProvider(auth, []),
         ),
         ChangeNotifierProxyProvider<AuthProvider, MeasurementProvider>(
           create: (context) => MeasurementProvider(
-            WgerBaseProvider(context.read<AuthProvider>()),
+            WgerBaseProvider(Provider.of<AuthProvider>(context, listen: false)),
           ),
-          update: (context, auth, previous) =>
-              previous ?? MeasurementProvider(WgerBaseProvider(auth)),
+          update: (context, base, previous) =>
+              previous ?? MeasurementProvider(WgerBaseProvider(base)),
         ),
         ChangeNotifierProxyProvider<AuthProvider, UserProvider>(
           create: (context) => UserProvider(
@@ -104,12 +102,15 @@ class MyApp extends StatelessWidget {
           update: (context, base, previous) => previous ?? UserProvider(WgerBaseProvider(base)),
         ),
         ChangeNotifierProxyProvider<AuthProvider, BodyWeightProvider>(
-          create: (context) => BodyWeightProvider(WgerBaseProvider(context.read<AuthProvider>())),
+          create: (context) => BodyWeightProvider(
+            WgerBaseProvider(Provider.of<AuthProvider>(context, listen: false)),
+          ),
           update: (context, base, previous) =>
               previous ?? BodyWeightProvider(WgerBaseProvider(base)),
         ),
         ChangeNotifierProxyProvider<AuthProvider, GalleryProvider>(
-          create: (context) => GalleryProvider(context.read<AuthProvider>(), []),
+          create: (context) =>
+              GalleryProvider(Provider.of<AuthProvider>(context, listen: false), []),
           update: (context, auth, previous) => previous ?? GalleryProvider(auth, []),
         ),
         ChangeNotifierProxyProvider<AuthProvider, AddExerciseProvider>(
@@ -157,8 +158,15 @@ class MyApp extends StatelessWidget {
 
           // Workaround for https://github.com/flutter/flutter/issues/100857
           localeResolutionCallback: (deviceLocale, supportedLocales) {
-            if (supportedLocales.contains(deviceLocale)) {
-              return deviceLocale;
+            if (deviceLocale != null) {
+              for (final supportedLocale in supportedLocales) {
+                // Since we currently don't support any country specific locales
+                // such as de-DE and de-AT, it's sufficient to just check it like
+                // this. Otherwise we will need more logic with .countryCode
+                if (supportedLocale.languageCode == deviceLocale.languageCode) {
+                  return supportedLocale;
+                }
+              }
             }
             return const Locale('en');
           },
