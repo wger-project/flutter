@@ -330,14 +330,24 @@ class NutritionPlansProvider with ChangeNotifier {
   }
 
   /// Searches for an ingredient
-  Future<List> searchIngredient(String name, [String languageCode = 'en']) async {
+  Future<List> searchIngredient(
+    String name, {
+    String languageCode = 'en',
+    bool searchEnglish = false,
+  }) async {
     if (name.length <= 1) {
       return [];
     }
 
+    final languages = [languageCode];
+    if (searchEnglish && languageCode != LANGUAGE_SHORT_ENGLISH) {
+      languages.add(LANGUAGE_SHORT_ENGLISH);
+    }
+
     // Send the request
     final response = await baseProvider.fetch(
-      baseProvider.makeUrl(_ingredientSearchPath, query: {'term': name, 'language': languageCode}),
+      baseProvider
+          .makeUrl(_ingredientSearchPath, query: {'term': name, 'language': languages.join(',')}),
     );
 
     // Process the response
@@ -355,7 +365,7 @@ class NutritionPlansProvider with ChangeNotifier {
       baseProvider.makeUrl(_ingredientPath, query: {'code': code}),
     );
 
-    if (data["count"] == 0) {
+    if (data['count'] == 0) {
       return null;
     } else {
       return Ingredient.fromJson(data['results'][0]);

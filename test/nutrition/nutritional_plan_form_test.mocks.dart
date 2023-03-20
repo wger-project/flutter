@@ -319,16 +319,18 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i7.NutritionPlansP
       ) as _i8.Future<void>);
   @override
   _i8.Future<List<dynamic>> searchIngredient(
-    String? name, [
+    String? name, {
     String? languageCode = r'en',
-  ]) =>
+    bool? searchEnglish = false,
+  }) =>
       (super.noSuchMethod(
         Invocation.method(
           #searchIngredient,
-          [
-            name,
-            languageCode,
-          ],
+          [name],
+          {
+            #languageCode: languageCode,
+            #searchEnglish: searchEnglish,
+          },
         ),
         returnValue: _i8.Future<List<dynamic>>.value(<dynamic>[]),
       ) as _i8.Future<List<dynamic>>);

@@ -24,7 +24,7 @@ import '../other/base_provider_test.mocks.dart';
 import 'nutritional_plan_form_test.mocks.dart';
 
 void main() {
-  Ingredient ingr = Ingredient(
+  final ingredient = Ingredient(
     id: 1,
     code: '123456787',
     name: 'Water',
@@ -40,14 +40,12 @@ void main() {
   );
 
   late MockWgerBaseProvider mockWgerBaseProvider;
-  late NutritionPlansProvider mockNutritionWithClient;
 
   var mockNutrition = MockNutritionPlansProvider();
   final client = MockClient();
 
   setUp(() {
     mockWgerBaseProvider = MockWgerBaseProvider();
-    mockNutritionWithClient = NutritionPlansProvider(mockWgerBaseProvider, []);
   });
 
   var plan1 = NutritionalPlan.empty();
@@ -57,22 +55,25 @@ void main() {
   final Uri tUriEmptyCode = Uri.parse('https://localhost/api/v2/ingredient/?code=\"%20\"');
   final Uri tUriBadCode = Uri.parse('https://localhost/api/v2/ingredient/?code=222');
 
-  when(client.get(tUriRightCode, headers: anyNamed('headers'))).thenAnswer((_) =>
-      Future.value(http.Response(fixture('nutrition/search_ingredient_right_code.json'), 200)));
+  when(client.get(tUriRightCode, headers: anyNamed('headers'))).thenAnswer(
+    (_) => Future.value(http.Response(fixture('nutrition/search_ingredient_right_code.json'), 200)),
+  );
 
-  when(client.get(tUriEmptyCode, headers: anyNamed('headers'))).thenAnswer((_) =>
-      Future.value(http.Response(fixture('nutrition/search_ingredient_wrong_code.json'), 200)));
+  when(client.get(tUriEmptyCode, headers: anyNamed('headers'))).thenAnswer(
+    (_) => Future.value(http.Response(fixture('nutrition/search_ingredient_wrong_code.json'), 200)),
+  );
 
-  when(client.get(tUriBadCode, headers: anyNamed('headers'))).thenAnswer((_) =>
-      Future.value(http.Response(fixture('nutrition/search_ingredient_wrong_code.json'), 200)));
+  when(client.get(tUriBadCode, headers: anyNamed('headers'))).thenAnswer(
+    (_) => Future.value(http.Response(fixture('nutrition/search_ingredient_wrong_code.json'), 200)),
+  );
 
   setUp(() {
     plan1 = getNutritionalPlan();
     meal1 = plan1.meals.first;
-    final MealItem mealItem = MealItem(ingredientId: ingr.id, amount: 2);
+    final MealItem mealItem = MealItem(ingredientId: ingredient.id, amount: 2);
     mockNutrition = MockNutritionPlansProvider();
 
-    when(mockNutrition.searchIngredientWithCode('123')).thenAnswer((_) => Future.value(ingr));
+    when(mockNutrition.searchIngredientWithCode('123')).thenAnswer((_) => Future.value(ingredient));
     when(mockNutrition.searchIngredientWithCode('')).thenAnswer((_) => Future.value(null));
     when(mockNutrition.searchIngredientWithCode('222')).thenAnswer((_) => Future.value(null));
     when(mockNutrition.searchIngredient(any)).thenAnswer((_) =>
