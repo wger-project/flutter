@@ -47,7 +47,7 @@ dependencies:
   intl: ^0.17.0
   json_annotation: ^4.7.0
   version: ^3.0.2
-  package_info: ^2.0.2
+  package_info_plus: ^3.0.3
   provider: ^6.0.5
   rive: ^0.10.2
   shared_preferences: ^2.0.18
