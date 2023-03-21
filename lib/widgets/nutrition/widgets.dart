@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -64,7 +66,8 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
         decoration: InputDecoration(
           prefixIcon: const Icon(Icons.search),
           labelText: AppLocalizations.of(context).searchIngredient,
-          suffixIcon: widget._showScanner ? scanButton() : null,
+          suffixIcon:
+              (widget._showScanner || Platform.isLinux || Platform.isMacOS) ? scanButton() : null,
         ),
       ),
       suggestionsCallback: (pattern) async {
