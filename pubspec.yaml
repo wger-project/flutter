@@ -78,6 +78,9 @@ flutter_icons:
   image_path: "assets_dev/logo.png"
   adaptive_icon_background: "#2a4c7d"
   adaptive_icon_foreground: "assets_dev/logo_adaptive.png"
+  macos:
+    generate: true
+    image_path: "assets/images/logo.png"
 
 
 # For information on the generic Dart part of this file, see the
