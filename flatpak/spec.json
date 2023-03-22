@@ -1,0 +1,28 @@
+{
+    "appId": "de.wger.flutter",
+    "releases": [
+        {
+            "version": "1.5.3",
+            "date": "2023-03-16"
+        }
+    ],
+    "lowercaseAppName": "wger",
+    "runtimeVersion": "22.08",
+    "linuxReleaseBundleDirPath": "../build/linux/x64/release/bundle",
+    "appDataPath": "de.wger.flutter.appdata.xml",
+    "desktopPath": "de.wger.flutter.desktop",
+    "icons": {
+        "64x64": "logo64.png",
+        "128x126": "logo128.png",
+        "512x512": "logo512.png"
+    },
+    "finishArgs": [
+        "--share=ipc",
+        "--share=network",
+        "--socket=fallback-x11",
+        "--socket=wayland",
+        "--device=dri"
+    ],
+    "githubReleaseOrganization": "wger-project",
+    "githubReleaseProject": "flutter"
+}
