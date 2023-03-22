@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -77,19 +79,20 @@ class Gallery extends StatelessWidget {
                                           .deleteImage(currentImage);
                                       Navigator.of(context).pop();
                                     }),
-                                IconButton(
-                                    icon: const Icon(Icons.edit),
-                                    onPressed: () {
-                                      Navigator.pushNamed(
-                                        context,
-                                        FormScreen.routeName,
-                                        arguments: FormScreenArguments(
-                                          AppLocalizations.of(context).edit,
-                                          ImageForm(currentImage),
-                                          hasListView: true,
-                                        ),
-                                      );
-                                    }),
+                                if (!(Platform.isLinux || Platform.isMacOS))
+                                  IconButton(
+                                      icon: const Icon(Icons.edit),
+                                      onPressed: () {
+                                        Navigator.pushNamed(
+                                          context,
+                                          FormScreen.routeName,
+                                          arguments: FormScreenArguments(
+                                            AppLocalizations.of(context).edit,
+                                            ImageForm(currentImage),
+                                            hasListView: true,
+                                          ),
+                                        );
+                                      }),
                               ],
                             )
                           ],

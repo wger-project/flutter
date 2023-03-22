@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -35,20 +37,22 @@ class GalleryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: EmptyAppBar(AppLocalizations.of(context).gallery),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
-        onPressed: () {
-          Navigator.pushNamed(
-            context,
-            FormScreen.routeName,
-            arguments: FormScreenArguments(
-              AppLocalizations.of(context).addImage,
-              ImageForm(),
-              hasListView: true,
+      floatingActionButton: (Platform.isLinux || Platform.isMacOS)
+          ? null
+          : FloatingActionButton(
+              child: const Icon(Icons.add),
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  FormScreen.routeName,
+                  arguments: FormScreenArguments(
+                    AppLocalizations.of(context).addImage,
+                    ImageForm(),
+                    hasListView: true,
+                  ),
+                );
+              },
             ),
-          );
-        },
-      ),
       body: Consumer<GalleryProvider>(
         builder: (context, workoutProvider, child) => const Gallery(),
       ),
