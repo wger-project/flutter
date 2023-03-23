@@ -133,21 +133,17 @@ class PackageGenerator {
 
 // updates releases in ${appName}.appdata.xml
 class AppDataModifier {
-  static String replaceVersions(
-      String origAppDataContent, List<Release> versions) {
-    final joinedReleases = versions
-        .map((v) => '\t\t<release version="${v.version}" date="${v.date}" />')
-        .join('\n');
-    final releasesSection =
-        '<releases>\n$joinedReleases\n\t</releases>';
+  static String replaceVersions(String origAppDataContent, List<Release> versions) {
+    final joinedReleases =
+        versions.map((v) => '\t\t<release version="${v.version}" date="${v.date}" />').join('\n');
+    final releasesSection = '<releases>\n$joinedReleases\n\t</releases>';
     if (origAppDataContent.contains('<releases')) {
       return origAppDataContent
           .replaceAll('\n', '<~>')
           .replaceFirst(RegExp('<releases.*</releases>'), releasesSection)
           .replaceAll('<~>', '\n');
     } else {
-      return origAppDataContent.replaceFirst(
-          '</component>', '\n\t$releasesSection\n</component>');
+      return origAppDataContent.replaceFirst('</component>', '\n\t$releasesSection\n</component>');
     }
   }
 }
