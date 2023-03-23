@@ -70,8 +70,7 @@ class PackageGenerator {
           'The desktop file does not exist under the specified path: ${desktopFile.path}');
     }
 
-    desktopFile.copySync(
-        '${tempDir.path}/$appId.desktop');
+    desktopFile.copySync('${tempDir.path}/$appId.desktop');
 
     // icons
     final iconTempDir = Directory('${tempDir.path}/icons');
@@ -115,13 +114,8 @@ class PackageGenerator {
     final packagePath =
         '${outputDir.absolute.path}/${specJson.lowercaseAppName}-linux-$platformSuffix.tar.gz';
 
-    Process.runSync('cp', [
-      '-r',
-      '${buildDir.absolute.path}/.',
-      destDir.absolute.path
-    ]);
-    Process.runSync('tar', ['-czvf', packagePath, '.'],
-        workingDirectory: tempDir.absolute.path);
+    Process.runSync('cp', ['-r', '${buildDir.absolute.path}/.', destDir.absolute.path]);
+    Process.runSync('tar', ['-czvf', packagePath, '.'], workingDirectory: tempDir.absolute.path);
 
     print('Generated $packagePath');
 
