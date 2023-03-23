@@ -71,7 +71,7 @@ class PackageGenerator {
     }
 
     desktopFile.copySync(
-        '${tempDir.path}/$appId.desktop'); //todo does "$appName" have to be in the path too?
+        '${tempDir.path}/$appId.desktop');
 
     // icons
     final iconTempDir = Directory('${tempDir.path}/icons');
@@ -119,9 +119,9 @@ class PackageGenerator {
       '-r',
       '${buildDir.absolute.path}/.',
       destDir.absolute.path
-    ]); //todo test with spaces in name
+    ]);
     Process.runSync('tar', ['-czvf', packagePath, '.'],
-        workingDirectory: tempDir.absolute.path); //todo test with spaces in name
+        workingDirectory: tempDir.absolute.path);
 
     print('Generated $packagePath');
 
@@ -183,7 +183,7 @@ class FlatpakManifestGenerator {
             'ln -s /app/$appName/$appName /app/bin/$appName',
             ...specJson.flatpakCommandsAfterUnpack ?? [],
             ...specJson.icons.map((icon) =>
-                'install -Dm644 $appName/icons/${icon.type}/$appId.${icon.fileExtension} /app/share/icons/hicolor/${icon.type}/apps/$appId.${icon.fileExtension}'), //TODO THIS DOES NOT ACCOUNT FOR THE symbolic icon name!!!
+                'install -Dm644 $appName/icons/${icon.type}/$appId.${icon.fileExtension} /app/share/icons/hicolor/${icon.type}/apps/$appId.${icon.fileExtension}'),
             'install -Dm644 $appName/$appId.desktop /app/share/applications/$appId.desktop',
             'install -Dm644 $appName/$appId.appdata.xml /app/share/applications/$appId.appdata.xml'
           ],
