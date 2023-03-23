@@ -133,15 +133,21 @@ class PackageGenerator {
 
 // updates releases in ${appName}.appdata.xml
 class AppDataModifier {
-  static String replaceVersions(String origAppDataContent, List<Release> versions) {
-    final joinedReleases =
-        versions.map((v) => '<release version="${v.version}" date="${v.date}">').join('\n');
-    final releasesSection = '<releases>\n$joinedReleases\n</releases>';
+  static String replaceVersions(
+      String origAppDataContent, List<Release> versions) {
+    final joinedReleases = versions
+        .map((v) => '\t\t<release version="${v.version}" date="${v.date}" />')
+        .join('\n');
+    final releasesSection =
+        '<releases>\n$joinedReleases\n\t</releases>';
     if (origAppDataContent.contains('<releases')) {
-      return origAppDataContent.replaceFirst(
-          RegExp('<releases.*</releases>', multiLine: true), releasesSection);
+      return origAppDataContent
+          .replaceAll('\n', '<~>')
+          .replaceFirst(RegExp('<releases.*</releases>'), releasesSection)
+          .replaceAll('<~>', '\n');
     } else {
-      return origAppDataContent.replaceFirst('</component>', '$releasesSection\n</component>');
+      return origAppDataContent.replaceFirst(
+          '</component>', '\n\t$releasesSection\n</component>');
     }
   }
 }
@@ -236,7 +242,6 @@ class Icon {
 }
 
 class SpecJson {
-  //todo allow extra modules
   final String appId;
   final String lowercaseAppName;
   final List<Release> releases;
@@ -286,7 +291,7 @@ class SpecJson {
             return Icon(type: mapEntry.key as String, path: mapEntry.value as String);
           }).toList(),
           flatpakCommandsAfterUnpack:
-              (json['buildCommandsAfterUnpack'] as List?)?.map((bc) => bc as String)?.toList(),
+              (json['buildCommandsAfterUnpack'] as List?)?.map((bc) => bc as String).toList(),
           linuxArmReleaseBundleDirPath: json['linuxArmReleaseBundleDirPath'] as String?,
           extraModules: json['extraModules'] as List?,
           finishArgs: (json['finishArgs'] as List).map((fa) => fa as String).toList(),
