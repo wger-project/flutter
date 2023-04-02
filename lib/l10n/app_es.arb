@@ -701,5 +701,21 @@
   "shoulders": "Hombros",
   "@shoulders": {},
   "sz_bar": "Barra SZ",
-  "@sz_bar": {}
+  "@sz_bar": {},
+  "searchNamesInEnglish": "También busque nombres en Ingles",
+  "@searchNamesInEnglish": {},
+  "cacheWarning": "Debido al cache, puede tomar un tiempo hasta que los cambios sean visibles en toda la aplicación.",
+  "@cacheWarning": {},
+  "cardio": "Aerobico",
+  "@cardio": {},
+  "contributeExerciseWarning": "Podes contribuir ejercicios únicamente si tu cuenta tiene más de {days} días y tu email fue verificado",
+  "@contributeExerciseWarning": {
+    "description": "Number of days before which a person can add exercise",
+    "placeholders": {
+      "days": {
+        "type": "String",
+        "example": "14"
+      }
+    }
+  }
 }
