@@ -717,5 +717,9 @@
         "example": "14"
       }
     }
+  },
+  "success": "Éxito",
+  "@success": {
+    "description": "Message when an action completed successfully, usually used as a heading"
   }
 }
