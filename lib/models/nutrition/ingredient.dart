@@ -17,6 +17,7 @@
  */
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/json.dart';
+import 'package:wger/models/nutrition/image.dart';
 
 part 'ingredient.g.dart';
 
@@ -68,7 +69,9 @@ class Ingredient {
   @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
   final num sodium;
 
-  const Ingredient({
+  IngredientImage? image;
+
+  Ingredient({
     required this.id,
     required this.code,
     required this.name,
@@ -81,6 +84,7 @@ class Ingredient {
     required this.fatSaturated,
     required this.fibres,
     required this.sodium,
+    this.image,
   });
 
   // Boilerplate
