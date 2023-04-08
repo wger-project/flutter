@@ -27,9 +27,9 @@ void main() {
     final Map<String, dynamic> NutritionalPlanDetailResponse = jsonDecode(
       fixture('nutrition/nutritional_plan_detail_response.json'),
     );
-    final Map<String, dynamic> NutritionDiaryResponse = jsonDecode(
+    final List<dynamic> NutritionDiaryResponse = jsonDecode(
       fixture('nutrition/nutrition_diary_response.json'),
-    );
+    )['results'];
     final Map<String, dynamic> Ingredient59887Response = jsonDecode(
       fixture('nutrition/ingredient_59887_response.json'),
     );
@@ -72,7 +72,7 @@ void main() {
     when(mockWgerBaseProvider.fetch(planUri)).thenAnswer(
       (realInvocation) => Future.value(NutritionalPlanDetailResponse),
     );
-    when(mockWgerBaseProvider.fetch(diaryUri)).thenAnswer(
+    when(mockWgerBaseProvider.fetchPaginated(diaryUri)).thenAnswer(
       (realInvocation) => Future.value(NutritionDiaryResponse),
     );
   });
