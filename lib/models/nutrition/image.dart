@@ -30,8 +30,9 @@ class IngredientImage {
 
   /// Name of the product
   @JsonKey(required: true, name: 'ingredient_id')
-  final String ingredientId;
+  final int ingredientId;
 
+  /// URL of the image on the server
   @JsonKey(required: true)
   final String image;
 
@@ -39,14 +40,16 @@ class IngredientImage {
   @JsonKey(required: true)
   final int size;
 
-  const IngredientImage(
-      {required this.id,
-      required this.uuid,
-      required this.ingredientId,
-      required this.image,
-      required this.size});
+  const IngredientImage({
+    required this.id,
+    required this.uuid,
+    required this.ingredientId,
+    required this.image,
+    required this.size,
+  });
 
   // Boilerplate
   factory IngredientImage.fromJson(Map<String, dynamic> json) => _$IngredientImageFromJson(json);
+
   Map<String, dynamic> toJson() => _$IngredientImageToJson(this);
 }

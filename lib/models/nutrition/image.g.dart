@@ -14,7 +14,7 @@ IngredientImage _$IngredientImageFromJson(Map<String, dynamic> json) {
   return IngredientImage(
     id: json['id'] as int,
     uuid: json['uuid'] as String,
-    ingredientId: json['ingredient_id'] as String,
+    ingredientId: json['ingredient_id'] as int,
     image: json['image'] as String,
     size: json['size'] as int,
   );
