@@ -1,0 +1,18 @@
+{
+  "id": 59887,
+  "code": "4311501354155",
+  "name": "Baked Beans",
+  "creation_date": "2020-12-20",
+  "update_date": "2022-08-09",
+  "energy": 86,
+  "protein": "4.400",
+  "carbohydrates": "11.000",
+  "carbohydrates_sugar": "5.300",
+  "fat": "0.100",
+  "fat_saturated": "0.000",
+  "fibres": "5.000",
+  "sodium": "0.480",
+  "license": 5,
+  "license_author": "Open Food Facts",
+  "language": 1
+}
