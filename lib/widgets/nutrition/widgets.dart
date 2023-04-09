@@ -82,7 +82,7 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
             decoration: InputDecoration(
               prefixIcon: const Icon(Icons.search),
               labelText: AppLocalizations.of(context).searchIngredient,
-              suffixIcon: (widget._showScanner || Platform.isLinux || Platform.isMacOS)
+              suffixIcon: (widget.showScanner || Platform.isLinux || Platform.isMacOS)
                   ? scanButton()
                   : null,
             ),
