@@ -113,14 +113,18 @@
           "image": {
             "id": 3,
             "uuid": "778fe5cb-a5d9-42e5-9df2-2a47022b720f",
-            "ingredient_id": "58300",
+            "ingredient_id": 58300,
             "ingredient_uuid": "60e1f479-9af1-4bd4-b2a8-1ebe8974258e",
             "image": "http://localhost:8000/media/ingredients/60e1f479-9af1-4bd4-b2a8-1ebe8974258e/778fe5cb-a5d9-42e5-9df2-2a47022b720f.jpg",
             "last_update": "2022-08-09T15:31:46.833918+02:00",
             "size": 33617,
             "source_url": "",
             "license": 1,
-            "license_author": "kiliweb"
+            "license_author": "kiliweb",
+            "license_title": "Photo",
+            "license_object_url": "https://world.openfoodfacts.org/cgi/product_image.pl?code=4388844120334&id=2",
+            "license_author_url": "https://world.openfoodfacts.org/photographer/twoflower",
+            "license_derivative_source_url": ""
           },
           "order": 1,
           "amount": "100.00"
@@ -162,14 +166,18 @@
           "image": {
             "id": 5,
             "uuid": "81c07bef-02ea-47ba-a18e-d7388dc2bc01",
-            "ingredient_id": "10065",
+            "ingredient_id": 10065,
             "ingredient_uuid": "b0c47fa4-3898-4705-b8f5-184877d50b78",
             "image": "http://localhost:8000/media/ingredients/b0c47fa4-3898-4705-b8f5-184877d50b78/81c07bef-02ea-47ba-a18e-d7388dc2bc01.jpg",
             "last_update": "2022-08-09T15:45:58.511169+02:00",
             "size": 43397,
             "source_url": "",
             "license": 1,
-            "license_author": "tacinte"
+            "license_author": "tacinte",
+            "license_title": "Photo",
+            "license_object_url": "https://world.openfoodfacts.org/cgi/product_image.pl?code=4388844120334&id=2",
+            "license_author_url": "https://world.openfoodfacts.org/photographer/twoflower",
+            "license_derivative_source_url": ""
           },
           "order": 1,
           "amount": "200.00"
