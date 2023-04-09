@@ -40,12 +40,44 @@ class IngredientImage {
   @JsonKey(required: true)
   final int size;
 
+  // License information
+
+  /// License ID
+  @JsonKey(required: true, name: 'license')
+  final int licenseId;
+
+  /// Author(s)
+  @JsonKey(required: true, name: 'license_author')
+  final String author;
+
+  /// Author profile, if available
+  @JsonKey(required: true, name: 'license_author_url')
+  final String authorUrl;
+
+  /// The title of the image
+  @JsonKey(required: true, name: 'license_title')
+  final String title;
+
+  /// The URL of the original image
+  @JsonKey(required: true, name: 'license_object_url')
+  final String objectUrl;
+
+  /// The URL of the original image if this is a derivative object
+  @JsonKey(required: true, name: 'license_derivative_source_url')
+  final String derivativeSourceUrl;
+
   const IngredientImage({
     required this.id,
     required this.uuid,
     required this.ingredientId,
     required this.image,
     required this.size,
+    required this.licenseId,
+    required this.author,
+    required this.authorUrl,
+    required this.title,
+    required this.objectUrl,
+    required this.derivativeSourceUrl,
   });
 
   // Boilerplate

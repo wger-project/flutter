@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/misc.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/providers/nutrition.dart';
@@ -163,7 +164,16 @@ class MealItemWidget extends StatelessWidget {
 
     return ListTile(
       leading: _item.ingredientObj.image != null
-          ? CircleAvatar(backgroundImage: NetworkImage(_item.ingredientObj.image!.image))
+          ? GestureDetector(
+              child: CircleAvatar(backgroundImage: NetworkImage(_item.ingredientObj.image!.image)),
+              onTap: () async {
+                if (_item.ingredientObj.image!.objectUrl != '') {
+                  return launchURL(_item.ingredientObj.image!.objectUrl, context);
+                } else {
+                  return;
+                }
+              },
+            )
           : const CircleIconAvatar(Icon(Icons.image, color: Colors.grey)),
       title: Text(
         '${_item.amount.toStringAsFixed(0)}$unit ${_item.ingredientObj.name}',
