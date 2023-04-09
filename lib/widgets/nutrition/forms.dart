@@ -308,7 +308,7 @@ class IngredientLogForm extends StatelessWidget {
                 _mealItem.ingredientId = int.parse(_ingredientIdController.text);
 
                 try {
-                  Provider.of<NutritionPlansProvider>(context, listen: false).logIngredentToDiary(
+                  Provider.of<NutritionPlansProvider>(context, listen: false).logIngredientToDiary(
                       _mealItem, _plan.id!, DateTime.parse(_dateController.text));
                 } on WgerHttpException catch (error) {
                   showHttpExceptionErrorDialog(error, context);

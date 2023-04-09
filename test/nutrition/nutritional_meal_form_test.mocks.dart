@@ -352,7 +352,7 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i7.NutritionPlansP
         returnValueForMissingStub: _i8.Future<void>.value(),
       ) as _i8.Future<void>);
   @override
-  _i8.Future<void> logIngredentToDiary(
+  _i8.Future<void> logIngredientToDiary(
     _i5.MealItem? mealItem,
     int? planId, [
     DateTime? dateTime,

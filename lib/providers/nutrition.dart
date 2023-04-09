@@ -389,7 +389,7 @@ class NutritionPlansProvider with ChangeNotifier {
   }
 
   /// Log custom ingredient to nutrition diary
-  Future<void> logIngredentToDiary(MealItem mealItem, int planId, [DateTime? dateTime]) async {
+  Future<void> logIngredientToDiary(MealItem mealItem, int planId, [DateTime? dateTime]) async {
     final plan = findById(planId);
     mealItem.ingredientObj = await fetchIngredient(mealItem.ingredientId);
     final Log log = Log.fromMealItem(mealItem, plan.id!, null, dateTime);
