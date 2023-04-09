@@ -21,7 +21,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 #   - the version number is taken from the git tag vX.Y.Z
 #   - the build number is computed by reading the last one from the play store
 #     and increasing by one
-version: 1.5.3+30
+version: 1.5.4+31
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
