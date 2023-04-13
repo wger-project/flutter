@@ -556,5 +556,13 @@
     "placeholders": {
       "productName": {}
     }
+  },
+  "enterMinCharacters": "Пожалуйста, введите как минимум {min} символов",
+  "@enterMinCharacters": {
+    "description": "Error message when the user hasn't entered the minimum amount characters in a form",
+    "type": "text",
+    "placeholders": {
+      "min": {}
+    }
   }
 }
