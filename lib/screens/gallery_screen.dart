@@ -16,11 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/helpers/platform.dart';
 import 'package:wger/providers/gallery.dart';
 import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/gallery/forms.dart';
@@ -37,7 +36,7 @@ class GalleryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: EmptyAppBar(AppLocalizations.of(context).gallery),
-      floatingActionButton: (Platform.isLinux || Platform.isMacOS)
+      floatingActionButton: isDesktop
           ? null
           : FloatingActionButton(
               child: const Icon(Icons.add),

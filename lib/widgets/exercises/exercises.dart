@@ -16,8 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -25,6 +23,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/i18n.dart';
+import 'package:wger/helpers/platform.dart';
 import 'package:wger/models/exercises/base.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/models/exercises/translation.dart';
@@ -219,7 +218,7 @@ class ExerciseDetail extends StatelessWidget {
   List<Widget> getVideos() {
     // TODO: add carousel for the other videos
     final List<Widget> out = [];
-    if (_exerciseBase.videos.isNotEmpty && !(Platform.isLinux || Platform.isMacOS)) {
+    if (_exerciseBase.videos.isNotEmpty && !isDesktop) {
       _exerciseBase.videos.map((v) => ExerciseVideoWidget(video: v)).forEach((element) {
         out.add(element);
       });

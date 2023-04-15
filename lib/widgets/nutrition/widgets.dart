@@ -16,8 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
@@ -25,6 +23,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/platform.dart';
 import 'package:wger/helpers/ui.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/widgets/core/core.dart';
@@ -82,9 +81,7 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
             decoration: InputDecoration(
               prefixIcon: const Icon(Icons.search),
               labelText: AppLocalizations.of(context).searchIngredient,
-              suffixIcon: (widget.showScanner || Platform.isLinux || Platform.isMacOS)
-                  ? scanButton()
-                  : null,
+              suffixIcon: (widget.showScanner && !isDesktop) ? scanButton() : null,
             ),
           ),
           suggestionsCallback: (pattern) async {
