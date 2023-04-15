@@ -2,20 +2,25 @@ name: Flathub release
 on:
   push:
 
-jobs:
+defaults:
   run:
-    name: Make release
+    working-directory: wger
+
+jobs:
+  setup:
+    name: Setup
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          path: wger
 
-      - name: Checkout tools repo
+      - name: Checkout flathub repo
         uses: actions/checkout@v3
         with:
-          repository: wger-project/flathub
+          repository: wger-project/test
           path: flathub
-
       - name: Setup Java
         uses: actions/setup-java@v1
         with:
@@ -47,15 +52,40 @@ jobs:
 
       - name: Build application for linux
         run: |
-          sudo apt install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev
-          flutter build linux --release
+          # sudo apt install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev
+          # flutter build linux --release
           cd flatpak
-          dart flatpak_generator.dart spec.json
+          # dart flatpak_generator.dart spec.json
+          
+          cp spec.json ../../flathub
         env:
           WGER_API_KEY: ${{ secrets.WGER_API_KEY }}
 
-      - name: Archive code coverage results
+      - name: Push to flathub repository
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        with:
+          source-directory: 'flathub'
+          destination-github-username: 'wger-project'
+          destination-repository-name: 'test'
+          user-email: github-actions@github.com
+          target-branch: master
+          commit-message: Update spec.json
+
+      - name: Upload generated flatpak archive
         uses: actions/upload-artifact@v3
         with:
           name: Flatpak file
-          path: flatpak/wger-linux-x86_64.tar.gz
+          path: wger/flatpak/wger-linux-x86_64.tar.gz
+
+      #- name: Build AAB
+      #  run: flutter build appbundle --release
+      #  env:
+      #    WGER_API_KEY: ${{ secrets.WGER_API_KEY }}
+
+      #- name: Upload generated aab archive
+      #  uses: actions/upload-artifact@v3
+      #  with:
+      #    name: AAB file
+      #    path: wger/build/app/outputs/bundle/release/app-release.aab
