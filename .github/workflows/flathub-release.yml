@@ -1,0 +1,61 @@
+name: Flathub release
+on:
+  push:
+
+jobs:
+  run:
+    name: Make release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Checkout tools repo
+        uses: actions/checkout@v3
+        with:
+          repository: wger-project/flathub
+          path: flathub
+
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 17.x
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v1
+        with:
+          channel: 'stable'
+          flutter-version: '3.7.x'
+
+      - name: Decrypt config files
+        run: |
+          cd ./fastlane/metadata/envfiles
+          chmod +x ./decrypt_secrets.sh
+          ./decrypt_secrets.sh
+        env:
+          DECRYPTKEY_PLAYSTORE: ${{ secrets.DECRYPTKEY_PLAYSTORE }}
+          DECRYPTKEY_PLAYSTORE_SIGNING_KEY: ${{ secrets.DECRYPTKEY_PLAYSTORE_SIGNING_KEY }}
+          DECRYPTKEY_PROPERTIES: ${{ secrets.DECRYPTKEY_PROPERTIES }}
+
+      - name: Flutter info
+        run: |
+          dart --version
+          flutter --version
+
+      - name: Install Flutter dependencies
+        run: flutter pub get
+
+      - name: Build application for linux
+        run: |
+          sudo apt install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev
+          flutter build linux --release
+          cd flatpak
+          dart flatpak_generator.dart spec.json
+        env:
+          WGER_API_KEY: ${{ secrets.WGER_API_KEY }}
+
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v3
+        with:
+          name: Flatpak file
+          path: flatpak/wger-linux-x86_64.tar.gz
