@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+	<id>de.wger.flutter</id>
+	<name>wger</name>
+	<summary>Fitness/workout, nutrition and weight tracker</summary>
+
+	<metadata_license>CC0-1.0</metadata_license>
+	<project_license>AGPL-3.0-or-later</project_license>
+	<recommends>
+		<control>touch</control>
+		<control>pointing</control>
+		<control>keyboard</control>
+	</recommends>
+	<developer_name>wger</developer_name>
+	<url type="homepage">https://wger.de/</url>
+	<url type="bugtracker">https://github.com/wger-project/flutter/issues</url>
+
+	<custom>
+		<value key="Purism::form_factor">workstation</value>
+		<value key="Purism::form_factor">mobile</value>
+	</custom>
+
+	<description>
+            <p>From fitness lovers to fitness lovers – get your health organized with WGER, your Workout Manager!</p>
+            <p>Have you already found your #1 fitness app and do you love to create your own sports routines? No matter what type of sporty beast you are – we all have something in common: We love to keep track of our health data &lt;3</p>
+            <p>So we don’t judge you for still managing your fitness journey with your handy little workout log book but welcome to 2021!</p>
+            <p>We have developed a 100% free digital health and fitness tracker app for you, sized down to the most relevant features to make your life easier. Get started, keep training and celebrate your progress!</p>
+            <p>wger is an Open Source project and all about:</p>
+            <ul>
+            <li><strong>Your body:</strong> No need to google for the ingredients of your favourite treats – choose your daily meals from more than 78000 products and see the nutritional values. Add meals to the nutritional plan and keep an overview of your diet in the calendar.</li>
+            <li><strong>Your workouts:</strong> You know what is best for your body. Create your own workouts out of a growing variety from 200 different exercises. Then, use the Gym Mode to guide you through the training while you log your weights with one tap.</li>
+            <li><strong>Your progress:</strong> Never lose sight of your goals. Track your weight and keep your statistics.</li>
+            <li><strong>Your data:</strong> wger is your personalized fitness diary – but you own your data. Use the REST API to access and do amazing things with it.</li>
+            </ul>
+            <p>Please note: This free app is not based on additional fundings and we don’t ask you to donate money. More than that it is a community project which is growing constantly. So be prepared for new features anytime!</p>
+            <p><strong>OpenSource – what does that mean?</strong> Open Source means that the whole source code for this app and the server it talks to is free and available to anybody:</p>
+            <ul>
+            <li>Do you want to run wger on your own server for you or your local gym? Go ahead!</li>
+            <li>Do you miss a feature and want to implement it? Start now!</li>
+            <li>Do you want to check that nothing is being sent anywhere? You can!</li>
+            </ul>
+            <p>Join our community and become a part of sport enthusiasts and IT geeks from all over the world. We keep working on adjusting and optimizing the app customized to our needs. We love your input so feel free to jump in anytime and contribute your wishes and ideas!</p>
+            <ul>
+            <li>find the source code on <a href="https://github.com/wger-project">https://github.com/wger-project</a></li>
+            <li>ask your questions or just say hello on our discord Server <a href="https://discord.gg/rPWFv6W">https://discord.gg/rPWFv6W</a></li>
+            </ul>
+	</description>
+
+	<screenshots>
+		<screenshot type="default">
+			<caption>wger's dashboard</caption>
+			<image type="source">https://github.com/wger-project/flutter/raw/master/fastlane/metadata/android/en-US/images/phoneScreenshots/01%20-%20dashboard.png</image>
+		</screenshot>
+	</screenshots>
+
+	<releases>
+		<release version="1.5.3" date="2023-03-16" />
+	</releases>
+
+	<content_rating type="oars-1.1" />
+
+	<launchable type="desktop-id">de.wger.flutter.desktop</launchable>
+</component>

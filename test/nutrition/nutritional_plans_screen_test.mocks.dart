@@ -10,7 +10,7 @@ import 'dart:ui' as _i6;
 
 import 'package:http/http.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:package_info/package_info.dart' as _i4;
+import 'package:package_info_plus/package_info_plus.dart' as _i4;
 import 'package:wger/providers/auth.dart' as _i3;
 import 'package:wger/providers/base_provider.dart' as _i7;
 

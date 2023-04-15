@@ -26,7 +26,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
-import 'package:package_info/package_info.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:version/version.dart';
 import 'package:wger/exceptions/http_exception.dart';
@@ -59,7 +59,14 @@ class AuthProvider with ChangeNotifier {
     // TODO: this is a workaround since AndroidMetadata doesn't work while running tests
     if (checkMetadata ?? true) {
       try {
-        AndroidMetadata.metaDataAsMap.then((value) => metadata = value!);
+        if (Platform.isAndroid) {
+          AndroidMetadata.metaDataAsMap.then((value) => metadata = value!);
+        } else if (Platform.isLinux || Platform.isMacOS) {
+          metadata = {
+            MANIFEST_KEY_CHECK_UPDATE: Platform.environment[MANIFEST_KEY_CHECK_UPDATE] ?? '',
+            MANIFEST_KEY_API: Platform.environment[MANIFEST_KEY_API] ?? ''
+          };
+        }
       } on PlatformException {
         throw Exception('An error occurred reading the metadata from AndroidManifest');
       } catch (error) {}
@@ -94,8 +101,8 @@ class AuthProvider with ChangeNotifier {
   /// Checking if there is a new version of the application.
   Future<bool> applicationUpdateRequired([String? version, Map<String, String>? metadata]) async {
     metadata ??= this.metadata;
-    if (!metadata.containsKey('wger.check_min_app_version') ||
-        metadata['wger.check_min_app_version'] == 'false') {
+    if (!metadata.containsKey(MANIFEST_KEY_CHECK_UPDATE) ||
+        metadata[MANIFEST_KEY_CHECK_UPDATE] == 'false') {
       return false;
     }
 

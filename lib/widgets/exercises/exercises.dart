@@ -23,6 +23,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/i18n.dart';
+import 'package:wger/helpers/platform.dart';
 import 'package:wger/models/exercises/base.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/models/exercises/translation.dart';
@@ -217,7 +218,7 @@ class ExerciseDetail extends StatelessWidget {
   List<Widget> getVideos() {
     // TODO: add carousel for the other videos
     final List<Widget> out = [];
-    if (_exerciseBase.videos.isNotEmpty) {
+    if (_exerciseBase.videos.isNotEmpty && !isDesktop) {
       _exerciseBase.videos.map((v) => ExerciseVideoWidget(video: v)).forEach((element) {
         out.add(element);
       });

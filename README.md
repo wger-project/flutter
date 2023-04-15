@@ -48,6 +48,9 @@ Create a new file ``wger.properties`` in ``fastlane/metadata/envfiles/``:
 WGER_API_KEY=123456
 ```
 
+On Linux and macOS, add these as environment variables, e.g. by running the `source`
+command on the file.
+
 To just run/develop the app it only needs to have any value for WGER_API_KEY, but
 you need a correct value if you want to register via the app. For this, you need
 to allow (a probably dedicated) user on the wger server to register users on its
