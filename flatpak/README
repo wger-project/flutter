@@ -1,8 +1,0 @@
-To generate a release:
-
-1. Build the Linux release using Flutter.
-2. Add the new release version and date to the start of the "releases" list in the "spec.json" file (and adjust other parameters in the file if needed).
-3. Run "dart flatpak_generator.dart spec.json" in this folder.
-4. Upload the generated tar.gz file as a Github release, using the app's version name for the tag (e.g. "1.0.0").
-5. Test the Flatpak using the guide at https://docs.flatpak.org/en/latest/first-build.html, using the generated json manifest as your Flatpak manifest.
-6. Update your Flathub manifest file in your Flathub Github repo. (If the "flathub.json" file is not there yet, upload that too.)
