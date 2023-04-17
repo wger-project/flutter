@@ -21,6 +21,7 @@ jobs:
         with:
           repository: wger-project/test
           path: flathub
+
       - name: Setup Java
         uses: actions/setup-java@v1
         with:
@@ -56,8 +57,8 @@ jobs:
           flutter build linux --release
           cd flatpak/scripts
           dart pub get
-          dart flatpak_packager.dart --meta ../flatpak_meta.json --github -n pubspec.yaml
-          dart manifest_generator.dart --meta ../flatpak_meta.json --github -n pubspec.yaml
+          dart flatpak_packager.dart --meta ../flatpak_meta.json --github
+          dart manifest_generator.dart --meta ../flatpak_meta.json --github
           
           cp flatpak_generator_exports/de.wger.flutter.json ../../../flathub
           ls flatpak_generator_exports/wger-linux-x86_64.sha256
@@ -86,7 +87,7 @@ jobs:
       - name: Upload SHA256 checksum archive
         uses: actions/upload-artifact@v3
         with:
-          name: Flatpak file
+          name: Flatpak checksum file
           path: wger/flatpak/scripts/flatpak_generator_exports/wger-linux-x86_64.sha256
 
       #- name: Build AAB
