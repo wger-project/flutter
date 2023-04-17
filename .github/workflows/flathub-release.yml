@@ -52,12 +52,16 @@ jobs:
 
       - name: Build application for linux
         run: |
-          # sudo apt install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev
-          # flutter build linux --release
-          cd flatpak
-          # dart flatpak_generator.dart spec.json
+          sudo apt install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev
+          flutter build linux --release
+          cd flatpak/scripts
+          dart pub get
+          dart flatpak_packager.dart --meta ../flatpak_meta.json --github -n pubspec.yaml
+          dart manifest_generator.dart --meta ../flatpak_meta.json --github -n pubspec.yaml
           
-          cp spec.json ../../flathub
+          cp flatpak_generator_exports/de.wger.flutter.json ../../../flathub
+          ls flatpak_generator_exports/wger-linux-x86_64.sha256
+          ls flatpak_generator_exports/wger-linux-x86_64.tar.gz
         env:
           WGER_API_KEY: ${{ secrets.WGER_API_KEY }}
 
@@ -71,13 +75,19 @@ jobs:
           destination-repository-name: 'test'
           user-email: github-actions@github.com
           target-branch: master
-          commit-message: Update spec.json
+          commit-message: Update de.wger.flutter.json
 
       - name: Upload generated flatpak archive
         uses: actions/upload-artifact@v3
         with:
           name: Flatpak file
-          path: wger/flatpak/wger-linux-x86_64.tar.gz
+          path: wger/flatpak/scripts/flatpak_generator_exports/wger-linux-x86_64.tar.gz
+
+      - name: Upload SHA256 checksum archive
+        uses: actions/upload-artifact@v3
+        with:
+          name: Flatpak file
+          path: wger/flatpak/scripts/flatpak_generator_exports/wger-linux-x86_64.sha256
 
       #- name: Build AAB
       #  run: flutter build appbundle --release
