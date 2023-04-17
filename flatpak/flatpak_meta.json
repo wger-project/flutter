@@ -4,16 +4,10 @@
     "githubReleaseOrganization": "wger-project",
     "githubReleaseProject": "flutter",
     "localReleases": [
-        {
-            "version": "1.5.3",
-            "date": "2023-03-16"
-        }
+
     ],
     "localReleaseAssets": [
-        {
-            "arch": "x86_64",
-            "tarballPath": "./scripts/flatpak_generator exports/wger-linux-x86_64.tar.gz"
-        }
+
     ],
     "localLinuxBuildDir": "../build/linux",
     "appDataPath": "de.wger.flutter.appdata.xml",
