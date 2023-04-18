@@ -665,5 +665,7 @@
   "swiss_ball": "Swiss Ball",
   "triceps": "Triceps",
   "until_failure": "Until Failure",
-  "none__bodyweight_exercise_": "none (bodyweight exercise)"
+  "none__bodyweight_exercise_": "none (bodyweight exercise)",
+  "textPromptTitle": "Ready to start?",
+  "textPromptSubheading": "Press the action button to begin"
 }

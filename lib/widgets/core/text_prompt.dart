@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TextPrompt extends StatelessWidget {
   @override
@@ -8,12 +9,12 @@ class TextPrompt extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            'Ready to start?',
+            AppLocalizations.of(context).textPromptTitle,
             style: Theme.of(context).textTheme.headlineMedium,
           ),
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(top: 12),
-            child: Text('Press the action button to begin'),
+            child: Text(AppLocalizations.of(context).textPromptSubheading),
           ),
         ],
       ),
