@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'flatpak_shared.dart';
 
 void main(List<String> arguments) async {
@@ -25,7 +26,7 @@ void main(List<String> arguments) async {
 
   final fetchFromGithub = arguments.contains('--github');
 
-  final outputDir = Directory('${Directory.current.path}/flatpak_generator exports');
+  final outputDir = Directory('${Directory.current.path}/flatpak_generator_exports');
   outputDir.createSync();
 
   final manifestGenerator = FlatpakManifestGenerator(meta);
@@ -37,7 +38,7 @@ void main(List<String> arguments) async {
 
   final flathubJsonContent = await manifestGenerator.generateFlathubJson(fetchFromGithub);
   if (flathubJsonContent != null) {
-    final flathubJsonPath = '${outputDir.path}/flathub.json}';
+    final flathubJsonPath = '${outputDir.path}/flathub.json';
     final flathubJsonFile = File(flathubJsonPath);
     flathubJsonFile.writeAsStringSync(flathubJsonContent);
     print('Generated $flathubJsonPath');

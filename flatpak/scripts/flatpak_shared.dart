@@ -53,7 +53,7 @@ class GithubReleases {
   List<Release>? _releases;
   List<ReleaseAsset>? _latestReleaseAssets;
 
-  GithubReleases(this.githubReleaseOrganization, this.githubReleaseProject) {}
+  GithubReleases(this.githubReleaseOrganization, this.githubReleaseProject);
 
   Future<List<Release>> getReleases() async {
     if (_releases == null) {
@@ -84,7 +84,7 @@ class GithubReleases {
     await Future.forEach<dynamic>(decodedJson, (dynamic releaseDynamic) async {
       final releaseMap = releaseDynamic as Map;
 
-      final releaseDateAndTime = DateTime.parse((releaseMap['published_at'] as String));
+      final releaseDateAndTime = DateTime.parse(releaseMap['published_at'] as String);
       final releaseDateString = releaseDateAndTime.toIso8601String().split('T').first;
 
       if (latestReleaseAssetDate == null ||
@@ -167,16 +167,7 @@ class GithubReleases {
   }
 
   Future<String> _readSha(String shaUrl) async {
-    final urlSplitByScheme = shaUrl.split('://');
-    final urlWithoutScheme = urlSplitByScheme.last;
-    final firstSlashIndex = urlWithoutScheme.indexOf('/');
-    return (await http.get(Uri(
-            scheme: urlSplitByScheme.first,
-            host: urlWithoutScheme.substring(0, firstSlashIndex),
-            path: urlWithoutScheme.substring(firstSlashIndex))))
-        .body
-        .split(' ')
-        .first;
+    return (await http.get(Uri.parse(shaUrl))).body.split(' ').first;
   }
 }
 
@@ -246,7 +237,7 @@ class FlatpakMeta {
         throw Exception(
             'Metadata must include Github repository info if fetching releases from Github.');
       }
-      return await _githubReleases!.getLatestReleaseAssets();
+      return _githubReleases!.getLatestReleaseAssets();
     } else {
       if (_localReleases == null) {
         throw Exception('Metadata must include releases if not fetching releases from Github.');

@@ -30,16 +30,16 @@ void main(List<String> arguments) async {
 
   final fetchFromGithub = arguments.contains('--github');
 
-  final outputDir = Directory('${Directory.current.path}/flatpak_generator exports');
+  final outputDir = Directory('${Directory.current.path}/flatpak_generator_exports');
   outputDir.createSync();
 
   final packageGenerator = PackageGenerator(inputDir: metaFile.parent, meta: meta);
 
-  if (PackageGenerator.runningOnARM()) {
-    await packageGenerator.generatePackage(outputDir, CPUArchitecture.aarch64, fetchFromGithub);
-  } else {
-    await packageGenerator.generatePackage(outputDir, CPUArchitecture.x86_64, fetchFromGithub);
-  }
+  packageGenerator.generatePackage(
+    outputDir,
+    PackageGenerator.runningOnARM() ? CPUArchitecture.aarch64 : CPUArchitecture.x86_64,
+    fetchFromGithub,
+  );
 }
 
 class PackageGenerator {
@@ -101,17 +101,20 @@ class PackageGenerator {
     final destDir = Directory('${tempDir.path}/bin');
     destDir.createSync();
 
-    final packagePath =
-        '${outputDir.absolute.path}/${meta.lowercaseAppName}-linux-${arch.flatpakArchCode}.tar.gz';
+    final baseFileName = '${meta.lowercaseAppName}-linux-${arch.flatpakArchCode}';
 
+    final packagePath = '${outputDir.absolute.path}/$baseFileName.tar.gz';
     Process.runSync('cp', ['-r', '${buildDir.absolute.path}/.', destDir.absolute.path]);
     Process.runSync('tar', ['-czvf', packagePath, '.'], workingDirectory: tempDir.absolute.path);
-
     print('Generated $packagePath');
 
     final preShasum = Process.runSync('shasum', ['-a', '256', packagePath]);
+    final sha256 = preShasum.stdout.toString().split(' ').first;
 
-    shaByArch.putIfAbsent(arch, () => preShasum.stdout.toString().split(' ').first);
+    final shaFile = await File('${outputDir.path}/$baseFileName.sha256').writeAsString(sha256);
+    print('Generated ${shaFile.path}');
+
+    shaByArch.putIfAbsent(arch, () => sha256);
 
     tempDir.deleteSync(recursive: true);
   }
