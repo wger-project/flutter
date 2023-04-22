@@ -210,8 +210,8 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.headline6,
           ),
-        
-         NutritionalPlanHatchBarChartWidget(_nutritionalPlan),
+
+          NutritionalPlanHatchBarChartWidget(_nutritionalPlan),
           // Container(
           //   padding: const EdgeInsets.all(15),
           //   height: 300,
