@@ -17,8 +17,8 @@
  */
 
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:flex_seed_scheme/flex_seed_scheme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 const Color wgerPrimaryColor = Color(0xff2a4c7d);
@@ -28,6 +28,26 @@ const Color wgerSecondaryColor = Color(0xffe63946);
 const Color wgerSecondaryColorLight = Color(0xffF6B4BA);
 const Color wgerTextMuted = Colors.black38;
 const Color wgerBackground = Color(0xfff4f4f6);
+
+// Make a light ColorScheme from the seeds.
+final ColorScheme schemeLight = SeedColorScheme.fromSeeds(
+  brightness: Brightness.light,
+  // Primary key color is required, like seed color ColorScheme.fromSeed.
+  primaryKey: wgerPrimaryColor,
+  // You can add optional own seeds for secondary and tertiary key colors.
+  secondaryKey: wgerSecondaryColor,
+  // Tone chroma config and tone mapping is optional, if you do not add it
+  // you get the config matching Flutter's Material 3 ColorScheme.fromSeed.
+  tones: FlexTones.vivid(Brightness.light),
+);
+
+// Make a dark ColorScheme from the seeds.
+final ColorScheme schemeDark = SeedColorScheme.fromSeeds(
+  brightness: Brightness.dark,
+  primaryKey: wgerPrimaryColor,
+  secondaryKey: wgerSecondaryColor,
+  tones: FlexTones.vivid(Brightness.dark),
+);
 
 // Chart colors
 const charts.Color wgerChartPrimaryColor = charts.Color(r: 0x2a, g: 0x4c, b: 0x7d);
@@ -44,96 +64,32 @@ const materialSizes = {
   'h6': 20.0,
 };
 
-final ThemeData wgerTheme = ThemeData(
-  /*
-    * General stuff
-    */
-  primaryColor: wgerPrimaryColor,
-  scaffoldBackgroundColor: wgerBackground,
+final wgerLightTheme = ThemeData.from(
+  colorScheme: schemeLight,
+  useMaterial3: true,
+  textTheme: const TextTheme(
+    displayLarge: TextStyle(fontSize: 57, fontFamily: 'OpenSansLight', fontWeight: FontWeight.bold),
+    displayMedium:
+        TextStyle(fontSize: 45, fontFamily: 'OpenSansLight', fontWeight: FontWeight.bold),
+    displaySmall: TextStyle(fontSize: 36, fontFamily: 'OpenSansLight', fontWeight: FontWeight.bold),
+    headlineLarge: TextStyle(fontSize: 32, fontFamily: 'OpenSansLight'),
+    headlineMedium: TextStyle(fontSize: 28, fontFamily: 'OpenSansLight'),
+    headlineSmall: TextStyle(fontSize: 24, fontFamily: 'OpenSansLight'),
+    titleLarge: TextStyle(fontSize: 22, fontFamily: 'OpenSansLight'),
+    titleMedium: TextStyle(fontSize: 16, fontFamily: 'OpenSansLight'),
+    titleSmall: TextStyle(fontSize: 14, fontFamily: 'OpenSansLight'),
+    labelLarge: TextStyle(fontSize: 14, fontFamily: 'OpenSansLight'),
+    labelMedium: TextStyle(fontSize: 12, fontFamily: 'OpenSansLight'),
+    labelSmall: TextStyle(fontSize: 11, fontFamily: 'OpenSansLight'),
+    bodyLarge: TextStyle(fontSize: 16, fontFamily: 'OpenSansLight'),
+    bodyMedium: TextStyle(fontSize: 14, fontFamily: 'OpenSansLight'),
+    bodySmall: TextStyle(fontSize: 12, fontFamily: 'OpenSansLight'),
+  ),
+);
 
-  // This makes the visual density adapt to the platform that you run
-  // the app on. For desktop platforms, the controls will be smaller and
-  // closer together (more dense) than on mobile platforms.
-  visualDensity: VisualDensity.adaptivePlatformDensity,
-
-  // Show icons in the system's bar in light colors
-  appBarTheme: const AppBarTheme(
-    systemOverlayStyle: SystemUiOverlayStyle.dark,
-    color: wgerPrimaryColor,
-  ),
-
-  /*
-     * Text theme
-     */
-  textTheme: TextTheme(
-    headline1: const TextStyle(fontFamily: 'OpenSansLight', color: Colors.black),
-    headline2: const TextStyle(fontFamily: 'OpenSansLight', color: Colors.black),
-    headline3: TextStyle(
-      fontSize: materialSizes['h3']! * 0.8,
-      fontFamily: 'OpenSansBold',
-      color: Colors.black,
-    ),
-    headline4: TextStyle(
-      fontSize: materialSizes['h4']! * 0.8,
-      fontFamily: 'OpenSansBold',
-      color: Colors.black,
-    ),
-    headline5: TextStyle(
-      fontSize: materialSizes['h5'],
-      fontFamily: 'OpenSansBold',
-      color: Colors.black,
-    ),
-    headline6: TextStyle(
-      fontSize: materialSizes['h6']! * 0.8,
-      fontFamily: 'OpenSansBold',
-      color: Colors.black,
-    ),
-  ),
-
-  /*
-     * Button theme
-     */
-  textButtonTheme: TextButtonThemeData(
-    style: TextButton.styleFrom(
-      primary: wgerPrimaryButtonColor,
-    ),
-  ),
-  outlinedButtonTheme: OutlinedButtonThemeData(
-    style: OutlinedButton.styleFrom(
-      foregroundColor: wgerPrimaryButtonColor,
-      visualDensity: VisualDensity.compact,
-      side: const BorderSide(color: wgerPrimaryButtonColor),
-    ),
-  ),
-  elevatedButtonTheme: ElevatedButtonThemeData(
-    style: ElevatedButton.styleFrom(
-      backgroundColor: wgerPrimaryButtonColor,
-    ),
-  ),
-
-  /*
-    * Forms, etc.
-    */
-  sliderTheme: const SliderThemeData(
-    activeTrackColor: wgerPrimaryButtonColor,
-    thumbColor: wgerPrimaryColor,
-  ),
-  colorScheme: ColorScheme.fromSwatch().copyWith(secondary: wgerSecondaryColor),
-  // Text Selection Theme
-  textSelectionTheme: TextSelectionThemeData(
-    cursorColor: wgerPrimaryColor,
-    selectionColor: wgerPrimaryColor.withOpacity(0.2),
-    selectionHandleColor: wgerPrimaryColor,
-  ),
-  // Text Fields Theme
-  inputDecorationTheme: InputDecorationTheme(
-    focusColor: wgerPrimaryColor,
-    iconColor: Colors.grey.shade600,
-    floatingLabelStyle: const TextStyle(color: wgerPrimaryColor),
-    focusedBorder: const UnderlineInputBorder(
-      borderSide: BorderSide(color: wgerPrimaryColor),
-    ),
-  ),
+final wgerDarkTheme = ThemeData.from(
+  colorScheme: schemeDark,
+  useMaterial3: true,
 );
 
 const wgerCalendarStyle = CalendarStyle(

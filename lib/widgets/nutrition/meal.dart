@@ -232,14 +232,14 @@ class DismissibleMealHeader extends StatelessWidget {
             if (_meal.name != '')
               Text(
                 _meal.name,
-                style: Theme.of(context).textTheme.headline5,
+                style: Theme.of(context).textTheme.headlineSmall,
               ),
             Row(
               children: [
                 Expanded(
                   child: Text(
                     _meal.time!.format(context),
-                    style: Theme.of(context).textTheme.headline5,
+                    style: Theme.of(context).textTheme.headlineSmall,
                   ),
                 ),
                 IconButton(

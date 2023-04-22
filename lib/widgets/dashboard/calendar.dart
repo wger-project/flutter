@@ -17,7 +17,6 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -215,7 +214,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
           ListTile(
             title: Text(
               AppLocalizations.of(context).calendar,
-              style: Theme.of(context).textTheme.headline4,
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
             leading: const Icon(
               Icons.calendar_today_outlined,

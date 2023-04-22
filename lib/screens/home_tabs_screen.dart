@@ -144,7 +144,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
                   ),
                   Text(
                     AppLocalizations.of(context).loadingText,
-                    style: Theme.of(context).textTheme.headline5,
+                    style: Theme.of(context).textTheme.headlineSmall,
                   ),
                 ],
               ),

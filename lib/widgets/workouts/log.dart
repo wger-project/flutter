@@ -17,7 +17,6 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/ui.dart';
@@ -78,7 +77,7 @@ class _DayLogWidgetState extends State<DayLogWidget> {
         children: [
           Text(
             DateFormat.yMd(Localizations.localeOf(context).languageCode).format(widget._date),
-            style: Theme.of(context).textTheme.headline5,
+            style: Theme.of(context).textTheme.headlineSmall,
           ),
           if (widget._session != null) const Text('Session data here'),
           ...widget._exerciseData.keys.map((base) {
@@ -88,7 +87,7 @@ class _DayLogWidgetState extends State<DayLogWidget> {
                 if (widget._exerciseData[base]!.isNotEmpty)
                   Text(
                     exercise.name,
-                    style: Theme.of(context).textTheme.headline6,
+                    style: Theme.of(context).textTheme.headlineSmall,
                   )
                 else
                   Container(),

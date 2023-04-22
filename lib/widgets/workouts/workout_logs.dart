@@ -31,6 +31,7 @@ import 'package:wger/widgets/workouts/log.dart';
 class WorkoutLogs extends StatefulWidget {
   final WorkoutPlan _workoutPlan;
   final Function _changeMode;
+
   const WorkoutLogs(this._workoutPlan, this._changeMode);
 
   @override
@@ -65,7 +66,7 @@ class _WorkoutLogsState extends State<WorkoutLogs> {
           padding: const EdgeInsets.symmetric(vertical: 10),
           child: Text(
             AppLocalizations.of(context).labelWorkoutLogs,
-            style: Theme.of(context).textTheme.headline5,
+            style: Theme.of(context).textTheme.headlineSmall,
           ),
         ),
         Padding(

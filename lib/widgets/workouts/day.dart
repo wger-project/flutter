@@ -295,7 +295,7 @@ class DayHeaderDismissible extends StatelessWidget {
                 children: [
                   Text(
                     _day.description,
-                    style: Theme.of(context).textTheme.headline5,
+                    style: Theme.of(context).textTheme.headlineSmall,
                     overflow: TextOverflow.ellipsis,
                   ),
                   Text(_day.getDaysTextTranslated(Localizations.localeOf(context).languageCode)),

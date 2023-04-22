@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../models/measurements/measurement_category.dart';
 import '../../screens/form_screen.dart';
 import '../../screens/measurement_entries_screen.dart';
 import '../core/charts.dart';
 import 'forms.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CategoriesCard extends StatelessWidget {
   MeasurementCategory currentCategory;
@@ -23,7 +23,7 @@ class CategoriesCard extends StatelessWidget {
             padding: const EdgeInsets.only(top: 5),
             child: Text(
               currentCategory.name,
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
           ),
           Container(

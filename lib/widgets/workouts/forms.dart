@@ -582,7 +582,7 @@ class ExerciseSetting extends StatelessWidget {
             children: [
               Text(
                 AppLocalizations.of(context).setNr(i + 1),
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context).textTheme.titleLarge,
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -655,7 +655,7 @@ class ExerciseSetting extends StatelessWidget {
             ListTile(
               title: Text(
                 _exerciseBase.getExercise(Localizations.localeOf(context).languageCode).name,
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context).textTheme.titleLarge,
               ),
               subtitle: Text(_exerciseBase.category.name),
               contentPadding: EdgeInsets.zero,

@@ -127,7 +127,9 @@ class MyApp extends StatelessWidget {
       child: Consumer<AuthProvider>(
         builder: (ctx, auth, _) => MaterialApp(
           title: 'wger',
-          theme: wgerTheme,
+          theme: wgerLightTheme,
+          darkTheme: wgerDarkTheme,
+          themeMode: ThemeMode.system,
           home: auth.isAuth
               ? HomeTabsScreen()
               : FutureBuilder(

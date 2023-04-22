@@ -32,7 +32,9 @@ import 'package:wger/widgets/nutrition/meal.dart';
 
 class NutritionalPlanDetailWidget extends StatelessWidget {
   final NutritionalPlan _nutritionalPlan;
+
   const NutritionalPlanDetailWidget(this._nutritionalPlan);
+
   static const double tablePadding = 7;
 
   @override
@@ -208,10 +210,10 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
           Text(
             '${AppLocalizations.of(context).planned} / ${AppLocalizations.of(context).logged} / ${AppLocalizations.of(context).weekAverage}',
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.headline6,
+            style: Theme.of(context).textTheme.titleLarge,
           ),
-        
-         NutritionalPlanHatchBarChartWidget(_nutritionalPlan),
+
+          NutritionalPlanHatchBarChartWidget(_nutritionalPlan),
           // Container(
           //   padding: const EdgeInsets.all(15),
           //   height: 300,
@@ -221,7 +223,7 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
           Text(
             AppLocalizations.of(context).nutritionalDiary,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.headline6,
+            style: Theme.of(context).textTheme.titleLarge,
           ),
           Container(
             padding: const EdgeInsets.all(15),

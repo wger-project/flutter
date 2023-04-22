@@ -18,7 +18,6 @@
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
@@ -163,7 +162,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
           ListTile(
             title: Text(
               _hasContent ? _plan!.description : AppLocalizations.of(context).nutritionalPlan,
-              style: Theme.of(context).textTheme.headline4,
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
             subtitle: Text(
               _hasContent
@@ -255,7 +254,7 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
             ListTile(
               title: Text(
                 AppLocalizations.of(context).weight,
-                style: Theme.of(context).textTheme.headline4,
+                style: Theme.of(context).textTheme.headlineMedium,
               ),
               leading: const FaIcon(
                 FontAwesomeIcons.weight,
@@ -352,7 +351,7 @@ class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget>
             ListTile(
               title: Text(
                 AppLocalizations.of(context).measurements,
-                style: Theme.of(context).textTheme.headline4,
+                style: Theme.of(context).textTheme.headlineMedium,
               ),
               leading: const FaIcon(
                 FontAwesomeIcons.weight,
@@ -528,7 +527,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
           ListTile(
             title: Text(
               _hasContent ? _workoutPlan!.name : AppLocalizations.of(context).labelWorkoutPlan,
-              style: Theme.of(context).textTheme.headline4,
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
             subtitle: Text(
               _hasContent

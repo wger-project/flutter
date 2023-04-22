@@ -197,7 +197,7 @@ class StartPage extends StatelessWidget {
                               s.exerciseBaseObj
                                   .getExercise(Localizations.localeOf(context).languageCode)
                                   .name,
-                              style: Theme.of(context).textTheme.headline6,
+                              style: Theme.of(context).textTheme.titleLarge,
                             ),
                             ...set.getSmartRepr(s.exerciseBaseObj).map((e) => Text(e)).toList(),
                             const SizedBox(height: 15),
@@ -426,7 +426,7 @@ class _LogPageState extends State<LogPage> {
         children: [
           Text(
             AppLocalizations.of(context).newEntry,
-            style: Theme.of(context).textTheme.headline6,
+            style: Theme.of(context).textTheme.titleLarge,
             textAlign: TextAlign.center,
           ),
           if (!_detailed)
@@ -523,7 +523,7 @@ class _LogPageState extends State<LogPage> {
       children: [
         Text(
           AppLocalizations.of(context).labelWorkoutLogs,
-          style: Theme.of(context).textTheme.headline6,
+          style: Theme.of(context).textTheme.titleLarge,
           textAlign: TextAlign.center,
         ),
         ...widget._workoutPlan
@@ -569,7 +569,7 @@ class _LogPageState extends State<LogPage> {
       children: [
         Text(
           AppLocalizations.of(context).plateCalculator,
-          style: Theme.of(context).textTheme.headline6,
+          style: Theme.of(context).textTheme.titleLarge,
         ),
         SizedBox(
           height: 35,
@@ -629,7 +629,7 @@ class _LogPageState extends State<LogPage> {
         Center(
           child: Text(
             widget._setting.singleSettingRepText,
-            style: Theme.of(context).textTheme.headline3,
+            style: Theme.of(context).textTheme.displaySmall,
             textAlign: TextAlign.center,
           ),
         ),
@@ -688,13 +688,13 @@ class ExerciseOverview extends StatelessWidget {
             children: [
               Text(
                 getTranslation(_exerciseBase.category.name, context),
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context).textTheme.titleLarge,
                 textAlign: TextAlign.center,
               ),
               ..._exerciseBase.equipment
                   .map((e) => Text(
                         getTranslation(e.name, context),
-                        style: Theme.of(context).textTheme.headline6,
+                        style: Theme.of(context).textTheme.titleLarge,
                         textAlign: TextAlign.center,
                       ))
                   .toList(),
@@ -992,7 +992,7 @@ class _TimerWidgetState extends State<TimerWidget> {
           child: Center(
             child: Text(
               DateFormat('m:ss').format(today.add(Duration(seconds: _seconds))),
-              style: Theme.of(context).textTheme.headline1!.copyWith(color: wgerPrimaryColor),
+              style: Theme.of(context).textTheme.displayLarge!.copyWith(color: wgerPrimaryColor),
             ),
           ),
         ),
@@ -1115,7 +1115,7 @@ class NavigationHeader extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: Text(
               _title,
-              style: Theme.of(context).textTheme.headline5,
+              style: Theme.of(context).textTheme.headlineSmall,
               textAlign: TextAlign.center,
             ),
           ),
