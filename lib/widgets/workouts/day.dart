@@ -50,8 +50,8 @@ class SettingWidget extends StatelessWidget {
     return ListTile(
       leading: InkWell(
         child: SizedBox(
-          child: ExerciseImageWidget(image: setting.exerciseBaseObj.getMainImage),
           width: 45,
+          child: ExerciseImageWidget(image: setting.exerciseBaseObj.getMainImage),
         ),
         onTap: () {
           showDialog(
@@ -76,7 +76,8 @@ class SettingWidget extends StatelessWidget {
         },
       ),
       title: Text(
-          setting.exerciseBaseObj.getExercise(Localizations.localeOf(context).languageCode).name),
+        setting.exerciseBaseObj.getExercise(Localizations.localeOf(context).languageCode).name,
+      ),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -252,7 +253,6 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
                     AppLocalizations.of(context).newSet,
                     SetFormWidget(widget._day),
                     hasListView: true,
-                    backgroundColor: wgerBackground,
                     padding: EdgeInsets.zero,
                   ),
                 );
@@ -283,34 +283,6 @@ class DayHeaderDismissible extends StatelessWidget {
     return Dismissible(
       key: Key(_day.id.toString()),
       direction: DismissDirection.startToEnd,
-      child: Container(
-        padding: const EdgeInsets.all(10),
-        decoration: const BoxDecoration(color: Colors.white),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    _day.description,
-                    style: Theme.of(context).textTheme.headlineSmall,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  Text(_day.getDaysTextTranslated(Localizations.localeOf(context).languageCode)),
-                ],
-              ),
-            ),
-            IconButton(
-              icon: _expanded ? const Icon(Icons.unfold_less) : const Icon(Icons.unfold_more),
-              onPressed: () {
-                _toggle();
-              },
-            ),
-          ],
-        ),
-      ),
       background: Container(
         color: wgerPrimaryButtonColor, //Theme.of(context).primaryColor,
         alignment: Alignment.centerLeft,
@@ -336,6 +308,34 @@ class DayHeaderDismissible extends StatelessWidget {
         }
         return false;
       },
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(color: Theme.of(context).colorScheme.primaryContainer),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    _day.description,
+                    style: Theme.of(context).textTheme.headlineSmall,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(_day.getDaysTextTranslated(Localizations.localeOf(context).languageCode)),
+                ],
+              ),
+            ),
+            IconButton(
+              icon: _expanded ? const Icon(Icons.unfold_less) : const Icon(Icons.unfold_more),
+              onPressed: () {
+                _toggle();
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

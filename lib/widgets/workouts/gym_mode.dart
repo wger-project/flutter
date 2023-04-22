@@ -466,15 +466,6 @@ class _LogPageState extends State<LogPage> {
             },
           ),
           ElevatedButton(
-            child: (!_isSaving)
-                ? Text(AppLocalizations.of(context).save)
-                : const SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                    ),
-                  ),
             onPressed: _isSaving
                 ? null
                 : () async {
@@ -512,6 +503,15 @@ class _LogPageState extends State<LogPage> {
                       _isSaving = false;
                     }
                   },
+            child: (!_isSaving)
+                ? Text(AppLocalizations.of(context).save)
+                : const SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
+                  ),
           ),
         ],
       ),
@@ -649,7 +649,6 @@ class _LogPageState extends State<LogPage> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Card(
-            color: wgerBackground,
             child: getForm(),
           ),
         ),

@@ -170,9 +170,9 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                       .format(_plan!.creationDate)
                   : '',
             ),
-            leading: const Icon(
+            leading: Icon(
               Icons.restaurant,
-              color: Colors.black,
+              color: Theme.of(context).textTheme.headlineMedium!.color,
             ),
             trailing: getTrailing(),
             onTap: () {
@@ -256,9 +256,9 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                 AppLocalizations.of(context).weight,
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
-              leading: const FaIcon(
-                FontAwesomeIcons.weight,
-                color: Colors.black,
+              leading: FaIcon(
+                FontAwesomeIcons.weightScale,
+                color: Theme.of(context).textTheme.headlineMedium!.color,
               ),
             ),
             Column(
@@ -353,9 +353,9 @@ class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget>
                 AppLocalizations.of(context).measurements,
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
-              leading: const FaIcon(
-                FontAwesomeIcons.weight,
-                color: Colors.black,
+              leading: FaIcon(
+                FontAwesomeIcons.weightScale,
+                color: Theme.of(context).textTheme.headlineMedium!.color,
               ),
               trailing: IconButton(
                 icon: const Icon(Icons.arrow_forward),
@@ -394,13 +394,15 @@ class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget>
                             child: Container(
                               width: 12.0,
                               height: 12.0,
-                              margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                              margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
                               decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: (Theme.of(context).brightness == Brightness.dark
-                                          ? Colors.white
-                                          : wgerPrimaryColor)
-                                      .withOpacity(_current == entry.key ? 0.9 : 0.4)),
+                                shape: BoxShape.circle,
+                                color: Theme.of(context)
+                                    .textTheme
+                                    .headlineMedium!
+                                    .color!
+                                    .withOpacity(_current == entry.key ? 0.9 : 0.4),
+                              ),
                             ),
                           );
                         }).toList(),
@@ -535,9 +537,9 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                       .format(_workoutPlan!.creationDate)
                   : '',
             ),
-            leading: const Icon(
+            leading: Icon(
               Icons.fitness_center_outlined,
-              color: Colors.black,
+              color: Theme.of(context).textTheme.headlineMedium!.color,
             ),
             trailing: getTrailing(),
             onTap: () {

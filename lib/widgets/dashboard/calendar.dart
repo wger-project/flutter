@@ -216,9 +216,9 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
               AppLocalizations.of(context).calendar,
               style: Theme.of(context).textTheme.headlineMedium,
             ),
-            leading: const Icon(
+            leading: Icon(
               Icons.calendar_today_outlined,
-              color: Colors.black,
+              color: Theme.of(context).textTheme.headlineMedium!.color,
             ),
           ),
           TableCalendar<Event>(

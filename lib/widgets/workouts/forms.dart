@@ -31,7 +31,6 @@ import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
-import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/exercises/images.dart';
 
 class WorkoutForm extends StatelessWidget {
@@ -319,7 +318,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
         children: [
           Container(
             padding: const EdgeInsets.only(top: 10),
-            color: wgerPrimaryColorLight,
+            color: Theme.of(context).colorScheme.primaryContainer,
             child: Column(
               //crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -337,6 +336,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                       addSettings();
                     });
                   },
+                  inactiveColor: Theme.of(context).colorScheme.background,
                 ),
                 if (widget._set.settings.isNotEmpty)
                   SwitchListTile(
