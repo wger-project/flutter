@@ -584,8 +584,8 @@ class _LogPageState extends State<LogPage> {
                               Text(groupedPlates[key].toString()),
                               const Text('×'),
                               Container(
-                                decoration: const BoxDecoration(
-                                  color: wgerPrimaryColorLight,
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).colorScheme.primaryContainer,
                                   shape: BoxShape.circle,
                                 ),
                                 child: Padding(

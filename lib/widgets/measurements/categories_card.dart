@@ -27,7 +27,6 @@ class CategoriesCard extends StatelessWidget {
             ),
           ),
           Container(
-            color: Colors.white,
             padding: const EdgeInsets.all(10),
             height: 220,
             child: MeasurementChartWidget(
