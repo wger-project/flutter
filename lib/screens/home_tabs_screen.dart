@@ -36,6 +36,7 @@ import 'package:wger/screens/gallery_screen.dart';
 import 'package:wger/screens/nutritional_plans_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/screens/workout_plans_screen.dart';
+import 'package:wger/theme/theme.dart';
 
 class HomeTabsScreen extends StatefulWidget {
   static const routeName = '/dashboard2';
@@ -182,6 +183,9 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
               currentIndex: _selectedIndex,
               onTap: _onItemTapped,
               showUnselectedLabels: false,
+              selectedItemColor: Colors.white,
+              unselectedItemColor: wgerPrimaryColorLight,
+              backgroundColor: wgerPrimaryColor,
             ),
           );
         }
