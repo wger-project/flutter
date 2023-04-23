@@ -220,7 +220,7 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
                   ),
                 ],
               ),
-            const Divider(),
+            if (_expanded) const Divider(),
             ReorderableListView(
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,

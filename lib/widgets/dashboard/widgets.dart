@@ -162,7 +162,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
           ListTile(
             title: Text(
               _hasContent ? _plan!.description : AppLocalizations.of(context).nutritionalPlan,
-              style: Theme.of(context).textTheme.headlineMedium,
+              style: Theme.of(context).textTheme.headlineSmall,
             ),
             subtitle: Text(
               _hasContent
@@ -172,7 +172,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
             ),
             leading: Icon(
               Icons.restaurant,
-              color: Theme.of(context).textTheme.headlineMedium!.color,
+              color: Theme.of(context).textTheme.headlineSmall!.color,
             ),
             trailing: getTrailing(),
             onTap: () {
@@ -254,11 +254,11 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
             ListTile(
               title: Text(
                 AppLocalizations.of(context).weight,
-                style: Theme.of(context).textTheme.headlineMedium,
+                style: Theme.of(context).textTheme.headlineSmall,
               ),
               leading: FaIcon(
                 FontAwesomeIcons.weightScale,
-                color: Theme.of(context).textTheme.headlineMedium!.color,
+                color: Theme.of(context).textTheme.headlineSmall!.color,
               ),
             ),
             Column(
@@ -324,9 +324,9 @@ class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget>
 
   @override
   Widget build(BuildContext context) {
-    final _provider = Provider.of<MeasurementProvider>(context, listen: false);
+    final provider = Provider.of<MeasurementProvider>(context, listen: false);
 
-    List<Widget> items = _provider.categories
+    final items = provider.categories
         .map<Widget>(
           (item) => CategoriesCard(
             item,
@@ -351,11 +351,11 @@ class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget>
             ListTile(
               title: Text(
                 AppLocalizations.of(context).measurements,
-                style: Theme.of(context).textTheme.headlineMedium,
+                style: Theme.of(context).textTheme.headlineSmall,
               ),
               leading: FaIcon(
-                FontAwesomeIcons.weightScale,
-                color: Theme.of(context).textTheme.headlineMedium!.color,
+                FontAwesomeIcons.chartLine,
+                color: Theme.of(context).textTheme.headlineSmall!.color,
               ),
               trailing: IconButton(
                 icon: const Icon(Icons.arrow_forward),
@@ -368,11 +368,12 @@ class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget>
             Column(
               children: [
                 if (items.isNotEmpty)
-                  Column(children: [
-                    CarouselSlider(
-                      items: items,
-                      carouselController: _controller,
-                      options: CarouselOptions(
+                  Column(
+                    children: [
+                      CarouselSlider(
+                        items: items,
+                        carouselController: _controller,
+                        options: CarouselOptions(
                           autoPlay: false,
                           enlargeCenterPage: false,
                           viewportFraction: 1,
@@ -382,33 +383,35 @@ class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget>
                             setState(() {
                               _current = index;
                             });
-                          }),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: items.asMap().entries.map((entry) {
-                          return GestureDetector(
-                            onTap: () => _controller.animateToPage(entry.key),
-                            child: Container(
-                              width: 12.0,
-                              height: 12.0,
-                              margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Theme.of(context)
-                                    .textTheme
-                                    .headlineMedium!
-                                    .color!
-                                    .withOpacity(_current == entry.key ? 0.9 : 0.4),
-                              ),
-                            ),
-                          );
-                        }).toList(),
+                          },
+                        ),
                       ),
-                    ),
-                  ])
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: items.asMap().entries.map((entry) {
+                            return GestureDetector(
+                              onTap: () => _controller.animateToPage(entry.key),
+                              child: Container(
+                                width: 12.0,
+                                height: 12.0,
+                                margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .headlineSmall!
+                                      .color!
+                                      .withOpacity(_current == entry.key ? 0.9 : 0.4),
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ],
+                  )
                 else
                   NothingFound(
                     AppLocalizations.of(context).noMeasurementEntries,
@@ -529,7 +532,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
           ListTile(
             title: Text(
               _hasContent ? _workoutPlan!.name : AppLocalizations.of(context).labelWorkoutPlan,
-              style: Theme.of(context).textTheme.headlineMedium,
+              style: Theme.of(context).textTheme.headlineSmall,
             ),
             subtitle: Text(
               _hasContent
@@ -539,7 +542,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
             ),
             leading: Icon(
               Icons.fitness_center_outlined,
-              color: Theme.of(context).textTheme.headlineMedium!.color,
+              color: Theme.of(context).textTheme.headlineSmall!.color,
             ),
             trailing: getTrailing(),
             onTap: () {
