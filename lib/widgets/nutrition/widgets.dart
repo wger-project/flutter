@@ -21,6 +21,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/platform.dart';
@@ -197,7 +198,7 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
           showErrorDialog(e, context);
         }
       },
-      icon: Image.asset('assets/images/barcode_scanner_icon.png'),
+      icon: const FaIcon(FontAwesomeIcons.barcode),
     );
   }
 }
