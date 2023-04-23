@@ -129,7 +129,9 @@ class MyApp extends StatelessWidget {
           title: 'wger',
           theme: wgerLightTheme,
           darkTheme: wgerDarkTheme,
-          themeMode: ThemeMode.light,
+          highContrastTheme: wgerLightThemeHc,
+          highContrastDarkTheme: wgerDarkThemeHc,
+          themeMode: ThemeMode.system,
           home: auth.isAuth
               ? HomeTabsScreen()
               : FutureBuilder(

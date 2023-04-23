@@ -32,21 +32,34 @@ const Color wgerBackground = Color(0xfff4f4f6);
 // Make a light ColorScheme from the seeds.
 final ColorScheme schemeLight = SeedColorScheme.fromSeeds(
   brightness: Brightness.light,
-  // Primary key color is required, like seed color ColorScheme.fromSeed.
   primaryKey: wgerPrimaryColor,
-  // You can add optional own seeds for secondary and tertiary key colors.
+  primary: wgerPrimaryColor,
   secondaryKey: wgerSecondaryColor,
-  // Tone chroma config and tone mapping is optional, if you do not add it
-  // you get the config matching Flutter's Material 3 ColorScheme.fromSeed.
   tones: FlexTones.vivid(Brightness.light),
 );
 
 // Make a dark ColorScheme from the seeds.
 final ColorScheme schemeDark = SeedColorScheme.fromSeeds(
+  primaryKey: wgerPrimaryColor,
+  brightness: Brightness.dark,
+  secondaryKey: wgerSecondaryColor,
+  tones: FlexTones.vivid(Brightness.dark),
+);
+
+// Make a high contrast light ColorScheme from the seeds
+final ColorScheme schemeLightHc = SeedColorScheme.fromSeeds(
+  brightness: Brightness.light,
+  primaryKey: wgerPrimaryColor,
+  secondaryKey: wgerSecondaryColor,
+  tones: FlexTones.ultraContrast(Brightness.light),
+);
+
+// Make a ultra contrast dark ColorScheme from the seeds.
+final ColorScheme schemeDarkHc = SeedColorScheme.fromSeeds(
   brightness: Brightness.dark,
   primaryKey: wgerPrimaryColor,
   secondaryKey: wgerSecondaryColor,
-  tones: FlexTones.vivid(Brightness.dark),
+  tones: FlexTones.ultraContrast(Brightness.dark),
 );
 
 // Chart colors
@@ -89,6 +102,16 @@ final wgerLightTheme = ThemeData.from(
 
 final wgerDarkTheme = ThemeData.from(
   colorScheme: schemeDark,
+  useMaterial3: true,
+);
+
+final wgerLightThemeHc = ThemeData.from(
+  colorScheme: schemeLightHc,
+  useMaterial3: true,
+);
+
+final wgerDarkThemeHc = ThemeData.from(
+  colorScheme: schemeDarkHc,
   useMaterial3: true,
 );
 
