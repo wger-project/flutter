@@ -31,51 +31,39 @@ const Color wgerBackground = Color(0xfff4f4f6);
 
 // Make a light ColorScheme from the seeds.
 final ColorScheme schemeLight = SeedColorScheme.fromSeeds(
-  brightness: Brightness.light,
-  primaryKey: wgerPrimaryColor,
   primary: wgerPrimaryColor,
+  primaryKey: wgerPrimaryColor,
   secondaryKey: wgerSecondaryColor,
+  brightness: Brightness.light,
   tones: FlexTones.vivid(Brightness.light),
 );
 
 // Make a dark ColorScheme from the seeds.
 final ColorScheme schemeDark = SeedColorScheme.fromSeeds(
   primaryKey: wgerPrimaryColor,
-  brightness: Brightness.dark,
   secondaryKey: wgerSecondaryColor,
+  brightness: Brightness.dark,
   tones: FlexTones.vivid(Brightness.dark),
 );
 
 // Make a high contrast light ColorScheme from the seeds
 final ColorScheme schemeLightHc = SeedColorScheme.fromSeeds(
-  brightness: Brightness.light,
   primaryKey: wgerPrimaryColor,
   secondaryKey: wgerSecondaryColor,
+  brightness: Brightness.light,
   tones: FlexTones.ultraContrast(Brightness.light),
 );
 
 // Make a ultra contrast dark ColorScheme from the seeds.
 final ColorScheme schemeDarkHc = SeedColorScheme.fromSeeds(
-  brightness: Brightness.dark,
   primaryKey: wgerPrimaryColor,
   secondaryKey: wgerSecondaryColor,
+  brightness: Brightness.dark,
   tones: FlexTones.ultraContrast(Brightness.dark),
 );
 
 // Chart colors
-const charts.Color wgerChartPrimaryColor = charts.Color(r: 0x2a, g: 0x4c, b: 0x7d);
 const charts.Color wgerChartSecondaryColor = charts.Color(r: 0xe6, g: 0x39, b: 0x46);
-
-/// Original sizes for the material text theme
-/// https://api.flutter.dev/flutter/material/TextTheme-class.html
-const materialSizes = {
-  'h1': 96.0,
-  'h2': 60.0,
-  'h3': 48.0,
-  'h4': 34.0,
-  'h5': 24.0,
-  'h6': 20.0,
-};
 
 final wgerLightTheme = ThemeData.from(
   colorScheme: schemeLight,
