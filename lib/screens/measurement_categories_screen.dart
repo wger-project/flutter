@@ -21,6 +21,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/screens/form_screen.dart';
+import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/measurements/categories.dart';
 import 'package:wger/widgets/measurements/forms.dart';
 
@@ -34,7 +35,11 @@ class MeasurementCategoriesScreen extends StatelessWidget {
         title: Text(AppLocalizations.of(context).measurements),
       ),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
+        backgroundColor: wgerSecondaryColor,
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
         onPressed: () async {
           Navigator.pushNamed(
             context,

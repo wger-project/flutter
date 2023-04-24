@@ -22,6 +22,7 @@ import 'package:provider/provider.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/form_screen.dart';
+import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/workouts/app_bar.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 import 'package:wger/widgets/workouts/workout_plans_list.dart';
@@ -34,7 +35,7 @@ class WorkoutPlansScreen extends StatelessWidget {
     return Scaffold(
       appBar: WorkoutOverviewAppBar(),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
+        backgroundColor: wgerSecondaryColor,
         onPressed: () {
           Navigator.pushNamed(
             context,
@@ -45,6 +46,10 @@ class WorkoutPlansScreen extends StatelessWidget {
             ),
           );
         },
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
       ),
       body: Consumer<WorkoutPlansProvider>(
         builder: (context, workoutProvider, child) => WorkoutPlansList(workoutProvider),

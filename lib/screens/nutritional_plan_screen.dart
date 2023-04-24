@@ -22,6 +22,7 @@ import 'package:provider/provider.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/form_screen.dart';
+import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/nutritional_plan_detail.dart';
 
@@ -45,7 +46,11 @@ class NutritionalPlanScreen extends StatelessWidget {
     return Scaffold(
       //appBar: getAppBar(nutritionalPlan),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.history_edu),
+        backgroundColor: wgerSecondaryColor,
+        child: const Icon(
+          Icons.history_edu,
+          color: Colors.white,
+        ),
         onPressed: () {
           Navigator.pushNamed(
             context,
