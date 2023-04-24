@@ -41,7 +41,7 @@ class AuthScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: wgerBackground,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: Stack(
         children: <Widget>[
           Positioned(
@@ -50,7 +50,7 @@ class AuthScreen extends StatelessWidget {
             left: 0,
             child: Container(
               height: 0.55 * deviceSize.height,
-              color: Theme.of(context).primaryColor,
+              color: wgerPrimaryColor,
             ),
           ),
           SingleChildScrollView(
@@ -448,7 +448,7 @@ class _AuthCardState extends State<AuthCard> {
                               Text(
                                 text.substring(text.lastIndexOf('?') + 1, text.length),
                                 style: const TextStyle(
-                                  color: wgerPrimaryColor,
+                                  //color: wgerPrimaryColor,
                                   fontWeight: FontWeight.w700,
                                 ),
                               )
@@ -470,9 +470,6 @@ class _AuthCardState extends State<AuthCard> {
                       _hideCustomServer
                           ? AppLocalizations.of(context).useCustomServer
                           : AppLocalizations.of(context).useDefaultServer,
-                      style: const TextStyle(
-                        color: wgerPrimaryColor,
-                      ),
                     ),
                   ),
                 ],

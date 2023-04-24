@@ -25,7 +25,6 @@ import 'package:wger/models/nutrition/nutritional_values.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/nutritional_diary_screen.dart';
-import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/meal.dart';
@@ -78,8 +77,11 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Table(
               defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-              border: const TableBorder(
-                horizontalInside: BorderSide(width: 1, color: wgerTextMuted),
+              border: TableBorder(
+                horizontalInside: BorderSide(
+                  width: 1,
+                  color: Theme.of(context).colorScheme.outline,
+                ),
               ),
               columnWidths: const {0: FractionColumnWidth(0.4)},
               children: [

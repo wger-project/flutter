@@ -26,7 +26,6 @@ const Color wgerPrimaryButtonColor = Color(0xff266dd3);
 const Color wgerPrimaryColorLight = Color(0xff94B2DB);
 const Color wgerSecondaryColor = Color(0xffe63946);
 const Color wgerSecondaryColorLight = Color(0xffF6B4BA);
-const Color wgerTextMuted = Colors.black38;
 const Color wgerBackground = Color(0xfff4f4f6);
 
 // Make a light ColorScheme from the seeds.

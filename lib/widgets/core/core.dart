@@ -17,7 +17,6 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:wger/theme/theme.dart';
 
 class MutedText extends StatelessWidget {
   final String _text;
@@ -32,7 +31,7 @@ class MutedText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       _text,
-      style: const TextStyle(color: wgerTextMuted),
+      style: TextStyle(color: Theme.of(context).colorScheme.outline),
       textAlign: textAlign,
     );
   }
