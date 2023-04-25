@@ -18,7 +18,6 @@
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
@@ -191,7 +190,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                   Container(
                     padding: const EdgeInsets.all(15),
                     height: 180,
-                    child: NutritionalPlanPieChartWidget(_plan!.nutritionalValues),
+                    child: FlNutritionalPlanPieChartWidget(_plan!.nutritionalValues),
                   )
                 ],
               ),

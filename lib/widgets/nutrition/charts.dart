@@ -18,7 +18,8 @@
 
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:collection/collection.dart';
-import 'package:flutter/widgets.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
@@ -29,6 +30,83 @@ class NutritionData {
   final double value;
 
   NutritionData(this.name, this.value);
+}
+
+class FlNutritionalPlanPieChartWidget extends StatefulWidget {
+  final NutritionalValues nutritionalValues;
+
+  const FlNutritionalPlanPieChartWidget(this.nutritionalValues);
+
+  @override
+  State<StatefulWidget> createState() => FlNutritionalPlanPieChartState();
+}
+
+class FlNutritionalPlanPieChartState extends State<FlNutritionalPlanPieChartWidget> {
+  int touchedIndex = -1;
+
+  @override
+  Widget build(BuildContext context) {
+    return PieChart(
+      PieChartData(
+        pieTouchData: PieTouchData(
+          touchCallback: (FlTouchEvent event, pieTouchResponse) {
+            setState(() {
+              if (!event.isInterestedForInteractions ||
+                  pieTouchResponse == null ||
+                  pieTouchResponse.touchedSection == null) {
+                touchedIndex = -1;
+                return;
+              }
+              touchedIndex = pieTouchResponse.touchedSection!.touchedSectionIndex;
+            });
+          },
+        ),
+        borderData: FlBorderData(
+          show: false,
+        ),
+        sectionsSpace: 0,
+        centerSpaceRadius: 40,
+        sections: showingSections(),
+      ),
+    );
+  }
+
+  List<PieChartSectionData> showingSections() {
+    return List.generate(3, (i) {
+      final isTouched = i == touchedIndex;
+      final fontSize = isTouched ? 25.0 : 16.0;
+      final radius = isTouched ? 60.0 : 50.0;
+      switch (i) {
+        case 0:
+          return PieChartSectionData(
+            color: Colors.blue,
+            value: widget.nutritionalValues.fat,
+            title: AppLocalizations.of(context).fat,
+            radius: radius,
+            titleStyle: TextStyle(fontSize: fontSize),
+          );
+        case 1:
+          return PieChartSectionData(
+            color: Colors.amber,
+            value: widget.nutritionalValues.protein,
+            title: AppLocalizations.of(context).protein,
+            radius: radius,
+            titleStyle: TextStyle(fontSize: fontSize),
+          );
+        case 2:
+          return PieChartSectionData(
+            color: Colors.purple,
+            value: widget.nutritionalValues.carbohydrates,
+            title: AppLocalizations.of(context).carbohydrates,
+            radius: radius,
+            titleStyle: TextStyle(fontSize: fontSize),
+          );
+
+        default:
+          throw Error();
+      }
+    });
+  }
 }
 
 /// Nutritional plan pie chart widget
@@ -336,6 +414,7 @@ class NutritionalPlanHatchBarChartWidget extends StatelessWidget {
 class EnergyChart extends StatelessWidget {
   const EnergyChart({Key? key, required this.nutritionalPlan}) : super(key: key);
   final NutritionalPlan nutritionalPlan;
+
   NutritionalValues nutritionalValuesFromPlanLogsSevenDayAvg() {
     NutritionalValues sevenDaysAvg = NutritionalValues();
     int count = 0;
