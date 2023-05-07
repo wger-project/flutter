@@ -384,7 +384,7 @@ packages:
       name: flutter_typeahead
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.3.7"
+    version: "4.3.8"
   flutter_web_plugins:
     dependency: transitive
     description: flutter
