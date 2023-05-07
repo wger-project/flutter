@@ -19,22 +19,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/providers/base_provider.dart';
+import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
 
 import '../../test_data/workouts.dart';
-import '../other/base_provider_test.mocks.dart';
-import '../utils.dart';
+import 'workout_plan_screen_test.mocks.dart';
 
+@GenerateMocks([WgerBaseProvider])
 void main() {
+  final mockBaseProvider = MockWgerBaseProvider();
+  final exercisesProvider = ExercisesProvider(mockBaseProvider);
   Widget createHomeScreen({locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
-    final client = MockClient();
 
     return ChangeNotifierProvider<WorkoutPlansProvider>(
-      create: (context) =>
-          WorkoutPlansProvider(testAuthProvider, testExercisesProvider, [], client),
+      create: (context) => WorkoutPlansProvider(mockBaseProvider, exercisesProvider, []),
       child: MaterialApp(
         locale: Locale(locale),
         localizationsDelegates: AppLocalizations.localizationsDelegates,

@@ -30,21 +30,21 @@ import 'package:wger/models/exercises/base.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/comment.dart';
 import 'package:wger/models/exercises/equipment.dart';
-import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/image.dart';
 import 'package:wger/models/exercises/language.dart';
 import 'package:wger/models/exercises/muscle.dart';
+import 'package:wger/models/exercises/translation.dart';
 import 'package:wger/models/exercises/variation.dart';
 import 'package:wger/models/exercises/video.dart';
 import 'package:wger/providers/base_provider.dart';
 
 class ExercisesProvider with ChangeNotifier {
   final WgerBaseProvider baseProvider;
+
   ExercisesProvider(this.baseProvider);
 
   static const EXERCISE_CACHE_DAYS = 7;
   static const CACHE_VERSION = 4;
-  static const daysToCache = 7;
 
   static const _exerciseBaseInfoUrlPath = 'exercisebaseinfo';
   static const _exerciseSearchPath = 'exercise/search';
@@ -56,6 +56,7 @@ class ExercisesProvider with ChangeNotifier {
   static const _languageUrlPath = 'language';
 
   List<ExerciseBase> _exerciseBases = [];
+
   set exerciseBases(List<ExerciseBase> exercisesBases) {
     _exerciseBases = exercisesBases;
   }
@@ -67,14 +68,18 @@ class ExercisesProvider with ChangeNotifier {
   List<Variation> _variations = [];
 
   Filters? _filters;
+
   Filters? get filters => _filters;
+
   Future<void> setFilters(Filters? newFilters) async {
     _filters = newFilters;
     await findByFilters();
   }
 
   List<ExerciseBase> _filteredExerciseBases = [];
+
   List<ExerciseBase> get filteredExerciseBases => _filteredExerciseBases;
+
   set filteredExerciseBases(List<ExerciseBase> newFilteredExercises) {
     _filteredExerciseBases = newFilteredExercises;
     notifyListeners();
@@ -95,10 +100,15 @@ class ExercisesProvider with ChangeNotifier {
   }
 
   List<ExerciseBase> get bases => [..._exerciseBases];
+
   List<ExerciseCategory> get categories => [..._categories];
+
   List<Muscle> get muscles => [..._muscles];
+
   List<Equipment> get equipment => [..._equipment];
+
   List<Language> get languages => [..._languages];
+
   set languages(List<Language> languages) {
     _languages = languages;
   }
@@ -237,57 +247,41 @@ class ExercisesProvider with ChangeNotifier {
   }
 
   Future<void> fetchAndSetCategories() async {
-    final categories = await baseProvider.fetch(baseProvider.makeUrl(_categoriesUrlPath));
-    try {
-      for (final category in categories['results']) {
-        _categories.add(ExerciseCategory.fromJson(category));
-      }
-    } catch (error) {
-      rethrow;
+    final categories = await baseProvider.fetchPaginated(baseProvider.makeUrl(_categoriesUrlPath));
+    for (final category in categories) {
+      _categories.add(ExerciseCategory.fromJson(category));
     }
   }
 
   Future<void> fetchAndSetVariations() async {
-    final variations = await baseProvider.fetch(baseProvider.makeUrl(_exerciseVariationsUrlPath));
-    try {
-      for (final variation in variations['results']) {
-        _variations.add(Variation.fromJson(variation));
-      }
-    } catch (error) {
-      rethrow;
+    final variations =
+        await baseProvider.fetchPaginated(baseProvider.makeUrl(_exerciseVariationsUrlPath));
+    for (final variation in variations) {
+      _variations.add(Variation.fromJson(variation));
     }
   }
 
   Future<void> fetchAndSetMuscles() async {
-    final muscles = await baseProvider.fetch(baseProvider.makeUrl(_musclesUrlPath));
-    try {
-      for (final muscle in muscles['results']) {
-        _muscles.add(Muscle.fromJson(muscle));
-      }
-    } catch (error) {
-      rethrow;
+    final muscles = await baseProvider.fetchPaginated(baseProvider.makeUrl(_musclesUrlPath));
+
+    for (final muscle in muscles) {
+      _muscles.add(Muscle.fromJson(muscle));
     }
   }
 
   Future<void> fetchAndSetEquipment() async {
-    final equipments = await baseProvider.fetch(baseProvider.makeUrl(_equipmentUrlPath));
-    try {
-      for (final equipment in equipments['results']) {
-        _equipment.add(Equipment.fromJson(equipment));
-      }
-    } catch (error) {
-      rethrow;
+    final equipments = await baseProvider.fetchPaginated(baseProvider.makeUrl(_equipmentUrlPath));
+
+    for (final equipment in equipments) {
+      _equipment.add(Equipment.fromJson(equipment));
     }
   }
 
   Future<void> fetchAndSetLanguages() async {
-    final languageData = await baseProvider.fetch(baseProvider.makeUrl(_languageUrlPath));
-    try {
-      for (final language in languageData['results']) {
-        _languages.add(Language.fromJson(language));
-      }
-    } catch (error) {
-      rethrow;
+    final languageData = await baseProvider.fetchPaginated(baseProvider.makeUrl(_languageUrlPath));
+
+    for (final language in languageData) {
+      _languages.add(Language.fromJson(language));
     }
   }
 
@@ -322,9 +316,9 @@ class ExercisesProvider with ChangeNotifier {
     final images = baseData['images'].map((e) => ExerciseImage.fromJson(e)).toList();
     final videos = baseData['videos'].map((e) => Video.fromJson(e)).toList();
 
-    final List<Exercise> exercises = [];
+    final List<Translation> exercises = [];
     for (final exerciseData in baseData['exercises']) {
-      final exercise = Exercise.fromJson(exerciseData);
+      final exercise = Translation.fromJson(exerciseData);
       exercise.alias = exerciseData['aliases']
           .map((e) => Alias(exerciseId: exercise.id!, alias: e['alias']))
           .toList()
@@ -440,16 +434,22 @@ class ExercisesProvider with ChangeNotifier {
   ///
   /// We could do this locally, but the server has better text searching capabilities
   /// with postgresql.
-  Future<List<ExerciseBase>> searchExercise(String name, [String languageCode = 'en']) async {
+  Future<List<ExerciseBase>> searchExercise(String name,
+      {String languageCode = LANGUAGE_SHORT_ENGLISH, bool searchEnglish = false}) async {
     if (name.length <= 1) {
       return [];
+    }
+
+    final languages = [languageCode];
+    if (searchEnglish && languageCode != LANGUAGE_SHORT_ENGLISH) {
+      languages.add(LANGUAGE_SHORT_ENGLISH);
     }
 
     // Send the request
     final result = await baseProvider.fetch(
       baseProvider.makeUrl(
         _exerciseSearchPath,
-        query: {'term': name, 'language': languageCode},
+        query: {'term': name, 'language': languages.join(',')},
       ),
     );
 
@@ -509,6 +509,7 @@ class Filters {
   }
 
   bool _doesNeedUpdate = false;
+
   bool get doesNeedUpdate => _doesNeedUpdate;
 
   void markNeedsUpdate() {

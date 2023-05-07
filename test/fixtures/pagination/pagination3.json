@@ -1,0 +1,11 @@
+{
+  "count": 1,
+  "next": null,
+  "previous": "https://localhost/api/v2/itcrowd/?limit=20&offset=40",
+  "results": [
+    {
+      "id": 5,
+      "value": "And then steal his helmet."
+    }
+  ]
+}

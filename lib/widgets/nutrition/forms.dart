@@ -17,7 +17,6 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/exceptions/http_exception.dart';
@@ -148,9 +147,9 @@ class MealItemForm extends StatelessWidget {
             IngredientTypeahead(
               _ingredientIdController,
               _ingredientController,
-              true,
-              _barcode,
-              _test,
+              showScanner: true,
+              barcode: _barcode,
+              test: _test,
             ),
             TextFormField(
               key: const Key('field-weight'),
@@ -255,9 +254,6 @@ class IngredientLogForm extends StatelessWidget {
             IngredientTypeahead(
               _ingredientIdController,
               _ingredientController,
-              true,
-              '',
-              false,
             ),
             TextFormField(
               decoration: InputDecoration(labelText: AppLocalizations.of(context).weight),
@@ -277,7 +273,8 @@ class IngredientLogForm extends StatelessWidget {
               },
             ),
             TextFormField(
-              readOnly: true, // Stop keyboard from appearing
+              readOnly: true,
+              // Stop keyboard from appearing
               decoration: InputDecoration(
                 labelText: AppLocalizations.of(context).date,
                 suffixIcon: const Icon(Icons.calendar_today_outlined),
@@ -311,7 +308,7 @@ class IngredientLogForm extends StatelessWidget {
                 _mealItem.ingredientId = int.parse(_ingredientIdController.text);
 
                 try {
-                  Provider.of<NutritionPlansProvider>(context, listen: false).logIngredentToDiary(
+                  Provider.of<NutritionPlansProvider>(context, listen: false).logIngredientToDiary(
                       _mealItem, _plan.id!, DateTime.parse(_dateController.text));
                 } on WgerHttpException catch (error) {
                   showHttpExceptionErrorDialog(error, context);

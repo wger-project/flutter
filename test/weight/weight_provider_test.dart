@@ -16,82 +16,92 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
-import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/models/body_weight/weight_entry.dart';
+import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/body_weight.dart';
 
-import '../other/base_provider_test.mocks.dart';
-import '../utils.dart';
+import '../fixtures/fixture_reader.dart';
+import 'weight_provider_test.mocks.dart';
 
+@GenerateMocks([WgerBaseProvider])
 void main() {
+  var mockBaseProvider = MockWgerBaseProvider();
+
+  setUp(() {
+    mockBaseProvider = MockWgerBaseProvider();
+  });
+
   group('test body weight provider', () {
     test('Test that the weight entries are correctly loaded', () async {
-      final client = MockClient();
+      final uri = Uri(
+        scheme: 'https',
+        host: 'localhost',
+        path: 'api/v2/weightentry/',
+      );
+      when(mockBaseProvider.makeUrl(any, query: anyNamed('query'))).thenReturn(uri);
+      final Map<String, dynamic> weightEntries = jsonDecode(
+        fixture('weight/weight_entries.json'),
+      );
 
-      // Mock the server response
-      when(client.get(
-        Uri.https('localhost', 'api/v2/weightentry/', {'ordering': '-date'}),
-        headers: anyNamed('headers'),
-      )).thenAnswer((_) async => http.Response(
-          '{"results": [{"id": 1, "date": "2021-01-01", "weight": "80.00"}, '
-          '{"id": 2, "date": "2021-01-10", "weight": "99"},'
-          '{"id": 3, "date": "2021-01-20", "weight": "100.01"}]}',
-          200));
+      when(mockBaseProvider.fetchPaginated(uri)).thenAnswer(
+        (_) => Future.value(weightEntries['results']),
+      );
 
       // Load the entries
-      final BodyWeightProvider provider = BodyWeightProvider(testAuthProvider, [], client);
+      final BodyWeightProvider provider = BodyWeightProvider(mockBaseProvider);
       await provider.fetchAndSetEntries();
 
       // Check that everything is ok
       expect(provider.items, isA<List<WeightEntry>>());
-      expect(provider.items.length, 3);
+      expect(provider.items.length, 11);
     });
 
     test('Test adding a new weight entry', () async {
-      final client = MockClient();
+      // Arrange
+      final uri = Uri(
+        scheme: 'https',
+        host: 'localhost',
+        path: 'api/v2/weightentry/',
+      );
+      when(mockBaseProvider.makeUrl(any, query: anyNamed('query'))).thenReturn(uri);
+      when(mockBaseProvider.post({'id': null, 'weight': '80', 'date': '2021-01-01'}, uri))
+          .thenAnswer((_) => Future.value({'id': 25, 'date': '2021-01-01', 'weight': '80'}));
 
-      // Mock the server response
-      when(
-        client.post(
-          Uri.https('localhost', 'api/v2/weightentry/'),
-          headers: anyNamed('headers'),
-          body: '{"id":null,"weight":"80","date":"2021-01-01"}',
-        ),
-      ).thenAnswer(
-          (_) async => http.Response('{"id": 25, "date": "2021-01-01", "weight": "80"}', 200));
-
-      // POST the data to the server
+      // Act
+      final BodyWeightProvider provider = BodyWeightProvider(mockBaseProvider);
       final WeightEntry weightEntry = WeightEntry(date: DateTime(2021, 1, 1), weight: 80);
-      final BodyWeightProvider provider = BodyWeightProvider(testAuthProvider, [], client);
       final WeightEntry weightEntryNew = await provider.addEntry(weightEntry);
 
-      // Check that the server response is what we expect
+      // Assert
       expect(weightEntryNew.id, 25);
       expect(weightEntryNew.date, DateTime(2021, 1, 1));
       expect(weightEntryNew.weight, 80);
     });
 
     test('Test deleting an existing weight entry', () async {
-      final client = MockClient();
-
-      // Mock the server response
-      when(client.delete(
-        Uri.https('localhost', 'api/v2/weightentry/4/'),
-        headers: anyNamed('headers'),
-      )).thenAnswer((_) async => http.Response('', 200));
+      // Arrange
+      final uri = Uri(
+        scheme: 'https',
+        host: 'localhost',
+        path: 'api/v2/weightentry/4/',
+      );
+      when(mockBaseProvider.makeUrl(any, query: anyNamed('query'))).thenReturn(uri);
+      when(mockBaseProvider.deleteRequest('weightentry', 4)).thenAnswer(
+          (_) => Future.value(Response("{'id': 4, 'date': '2021-01-01', 'weight': '80'}", 204)));
 
       // DELETE the data from the server
-      final BodyWeightProvider provider = BodyWeightProvider(
-        testAuthProvider,
-        [
-          WeightEntry(id: 4, weight: 80, date: DateTime(2021, 1, 1)),
-          WeightEntry(id: 2, weight: 100, date: DateTime(2021, 2, 2)),
-          WeightEntry(id: 5, weight: 60, date: DateTime(2021, 2, 2))
-        ],
-        client,
-      );
+      final BodyWeightProvider provider = BodyWeightProvider(mockBaseProvider);
+      provider.items = [
+        WeightEntry(id: 4, weight: 80, date: DateTime(2021, 1, 1)),
+        WeightEntry(id: 2, weight: 100, date: DateTime(2021, 2, 2)),
+        WeightEntry(id: 5, weight: 60, date: DateTime(2021, 2, 2))
+      ];
       await provider.deleteEntry(4);
 
       // Check that the entry was removed from the entry list

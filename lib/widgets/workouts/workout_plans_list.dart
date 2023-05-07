@@ -22,6 +22,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
+import 'package:wger/widgets/core/text_prompt.dart';
 
 class WorkoutPlansList extends StatelessWidget {
   final WorkoutPlansProvider _workoutProvider;
@@ -30,87 +31,92 @@ class WorkoutPlansList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      padding: const EdgeInsets.all(10.0),
-      itemCount: _workoutProvider.items.length,
-      itemBuilder: (context, index) {
-        final currentWorkout = _workoutProvider.items[index];
-        return Dismissible(
-          key: Key(currentWorkout.id.toString()),
-          confirmDismiss: (direction) async {
-            // Delete workout from DB
-            final res = await showDialog(
-                context: context,
-                builder: (BuildContext contextDialog) {
-                  return AlertDialog(
-                    content: Text(
-                      AppLocalizations.of(context).confirmDelete(currentWorkout.name),
-                    ),
-                    actions: [
-                      TextButton(
-                        child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-                        onPressed: () => Navigator.of(contextDialog).pop(),
-                      ),
-                      TextButton(
-                        child: Text(
-                          AppLocalizations.of(context).delete,
-                          style: TextStyle(color: Theme.of(context).errorColor),
-                        ),
-                        onPressed: () {
-                          // Confirmed, delete the workout
-                          Provider.of<WorkoutPlansProvider>(context, listen: false)
-                              .deleteWorkout(currentWorkout.id!);
-
-                          // Close the popup
-                          Navigator.of(contextDialog).pop();
-
-                          // and inform the user
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                AppLocalizations.of(context).successfullyDeleted,
-                                textAlign: TextAlign.center,
-                              ),
+    return RefreshIndicator(
+      onRefresh: () => _workoutProvider.fetchAndSetAllPlansSparse(),
+      child: _workoutProvider.items.length == 0
+          ? TextPrompt()
+          : ListView.builder(
+              padding: const EdgeInsets.all(10.0),
+              itemCount: _workoutProvider.items.length,
+              itemBuilder: (context, index) {
+                final currentWorkout = _workoutProvider.items[index];
+                return Dismissible(
+                  key: Key(currentWorkout.id.toString()),
+                  confirmDismiss: (direction) async {
+                    // Delete workout from DB
+                    final res = await showDialog(
+                        context: context,
+                        builder: (BuildContext contextDialog) {
+                          return AlertDialog(
+                            content: Text(
+                              AppLocalizations.of(context).confirmDelete(currentWorkout.name),
                             ),
-                          );
-                        },
-                      ),
-                    ],
-                  );
-                });
-            return res;
-          },
-          background: Container(
-            color: Theme.of(context).errorColor,
-            alignment: Alignment.centerRight,
-            padding: const EdgeInsets.only(right: 20),
-            margin: const EdgeInsets.symmetric(
-              horizontal: 4,
-              vertical: 4,
-            ),
-            child: const Icon(
-              Icons.delete,
-              color: Colors.white,
-            ),
-          ),
-          direction: DismissDirection.endToStart,
-          child: Card(
-            child: ListTile(
-              onTap: () {
-                _workoutProvider.setCurrentPlan(currentWorkout.id!);
+                            actions: [
+                              TextButton(
+                                child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+                                onPressed: () => Navigator.of(contextDialog).pop(),
+                              ),
+                              TextButton(
+                                child: Text(
+                                  AppLocalizations.of(context).delete,
+                                  style: TextStyle(color: Theme.of(context).errorColor),
+                                ),
+                                onPressed: () {
+                                  // Confirmed, delete the workout
+                                  Provider.of<WorkoutPlansProvider>(context, listen: false)
+                                      .deleteWorkout(currentWorkout.id!);
 
-                Navigator.of(context)
-                    .pushNamed(WorkoutPlanScreen.routeName, arguments: currentWorkout);
+                                  // Close the popup
+                                  Navigator.of(contextDialog).pop();
+
+                                  // and inform the user
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        AppLocalizations.of(context).successfullyDeleted,
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          );
+                        });
+                    return res;
+                  },
+                  background: Container(
+                    color: Theme.of(context).errorColor,
+                    alignment: Alignment.centerRight,
+                    padding: const EdgeInsets.only(right: 20),
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 4,
+                      vertical: 4,
+                    ),
+                    child: const Icon(
+                      Icons.delete,
+                      color: Colors.white,
+                    ),
+                  ),
+                  direction: DismissDirection.endToStart,
+                  child: Card(
+                    child: ListTile(
+                      onTap: () {
+                        _workoutProvider.setCurrentPlan(currentWorkout.id!);
+
+                        Navigator.of(context)
+                            .pushNamed(WorkoutPlanScreen.routeName, arguments: currentWorkout);
+                      },
+                      title: Text(currentWorkout.name),
+                      subtitle: Text(
+                        DateFormat.yMd(Localizations.localeOf(context).languageCode)
+                            .format(currentWorkout.creationDate),
+                      ),
+                    ),
+                  ),
+                );
               },
-              title: Text(currentWorkout.name),
-              subtitle: Text(
-                DateFormat.yMd(Localizations.localeOf(context).languageCode)
-                    .format(currentWorkout.creationDate),
-              ),
             ),
-          ),
-        );
-      },
     );
   }
 }

@@ -23,28 +23,28 @@ List<gallery.Image> getTestImages() {
     gallery.Image(
       id: 1,
       url:
-          'https://github.com/wger-project/flutter/raw/master/android/fastlane/metadata/android/en-US/images/phoneScreenshots/01%20-%20workout%20plan.png?raw=true',
+          'https://raw.githubusercontent.com/wger-project/flutter/master/fastlane/metadata/android/en-US/images/phoneScreenshots/02%20-%20workout%20detail.png',
       description: 'A very cool image from the gym',
       date: DateTime(2021, 5, 30),
     ),
     gallery.Image(
       id: 2,
       url:
-          'https://github.com/wger-project/flutter/raw/master/android/fastlane/metadata/android/en-US/images/phoneScreenshots/02%20-%20workout%20log.png?raw=true',
+          'https://raw.githubusercontent.com/wger-project/flutter/master/fastlane/metadata/android/en-US/images/phoneScreenshots/01%20-%20dashboard.png',
       description: 'Some description',
       date: DateTime(2021, 4, 20),
     ),
     gallery.Image(
       id: 3,
       url:
-          'https://github.com/wger-project/flutter/raw/master/android/fastlane/metadata/android/en-US/images/phoneScreenshots/04%20-%20nutritional%20plan.png?raw=true',
+          'https://raw.githubusercontent.com/wger-project/flutter/master/fastlane/metadata/android/en-US/images/phoneScreenshots/05%20-%20nutritional%20plan.png',
       description: '1 22 333 4444',
       date: DateTime(2021, 5, 30),
     ),
     gallery.Image(
       id: 4,
       url:
-          'https://raw.githubusercontent.com/wger-project/flutter/master/android/fastlane/metadata/android/en-US/images/phoneScreenshots/05%20-%20weight.png',
+          'https://raw.githubusercontent.com/wger-project/flutter/master/fastlane/metadata/android/en-US/images/phoneScreenshots/06%20-%20weight.png',
       description: '',
       date: DateTime(2021, 2, 22),
     )

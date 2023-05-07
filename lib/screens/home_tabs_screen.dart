@@ -62,7 +62,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
     });
   }
 
-  final _screenList = <Widget>[
+  final _screenList = [
     DashboardScreen(),
     WorkoutPlansScreen(),
     NutritionScreen(),
@@ -72,8 +72,9 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
 
   /// Load initial data from the server
   Future<void> _loadEntries() async {
-    if (!Provider.of<AuthProvider>(context, listen: false).dataInit) {
-      final authProvider = context.read<AuthProvider>();
+    final authProvider = context.read<AuthProvider>();
+
+    if (!authProvider.dataInit) {
       final workoutPlansProvider = context.read<WorkoutPlansProvider>();
       final nutritionPlansProvider = context.read<NutritionPlansProvider>();
       final exercisesProvider = context.read<ExercisesProvider>();
@@ -118,7 +119,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
       }
     }
 
-    context.read<AuthProvider>().dataInit = true;
+    authProvider.dataInit = true;
   }
 
   @override

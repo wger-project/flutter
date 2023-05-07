@@ -41,7 +41,7 @@ class Setting {
   @JsonKey(required: true)
   late int order;
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   late ExerciseBase exerciseBaseObj;
 
   @JsonKey(required: true, name: 'exercise_base')
@@ -50,7 +50,7 @@ class Setting {
   @JsonKey(required: true, name: 'repetition_unit')
   late int repetitionUnitId;
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   late RepetitionUnit repetitionUnitObj;
 
   @JsonKey(required: true)
@@ -62,7 +62,7 @@ class Setting {
   @JsonKey(required: true, name: 'weight_unit')
   late int weightUnitId;
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   late WeightUnit weightUnitObj;
 
   /// Personal notes about this setting. Currently not used
@@ -89,6 +89,7 @@ class Setting {
 
   // Boilerplate
   factory Setting.fromJson(Map<String, dynamic> json) => _$SettingFromJson(json);
+
   Map<String, dynamic> toJson() => _$SettingToJson(this);
 
   set exerciseBase(ExerciseBase exerciseBase) {

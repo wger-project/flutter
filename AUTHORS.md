@@ -15,9 +15,11 @@
 - Ogundoyin Toluwani - <https://github.com/Tolu007>
 - Nenza Nurfirmansyah - <https://github.com/nenzan>
 - Florian Schmitz - <https://github.com/floodoo>
+- Adam Bujdoš - <https://github.com/bujdy>
 - Aman Negi - <https://github.com/AmanNegi>
 - Sandi Milohanic - <https://github.com/sandimilohanic>
 - Mohammad Rafigh - <https://github.com/mohammadrafigh>
+- Miroslav Mazel - <https://gitlab.com/12people>
 
 ## Translators
 

@@ -19,12 +19,15 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/user.dart';
 
 import '../fixtures/fixture_reader.dart';
-import '../measurements/measurement_provider_test.mocks.dart';
+import 'provider_test.mocks.dart';
 
+@GenerateMocks([WgerBaseProvider])
 void main() {
   late UserProvider userProvider;
   late MockWgerBaseProvider mockWgerBaseProvider;
@@ -78,8 +81,9 @@ void main() {
 
       // assert
       expect(userProvider.profile!.username, 'admin');
-      expect(userProvider.profile!.emailVerified, false);
+      expect(userProvider.profile!.emailVerified, true);
       expect(userProvider.profile!.email, 'me@example.com');
+      expect(userProvider.profile!.isTrustworthy, true);
     });
 
     test('Sending the verify email works', () async {

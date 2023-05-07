@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:wger/theme/theme.dart';
 
 /// Arguments passed to the form screen
@@ -59,9 +60,11 @@ class FormScreen extends StatelessWidget {
       backgroundColor: args.backgroundColor,
       appBar: AppBar(title: Text(args.title)),
       body: args.hasListView
-          ? Padding(
-              padding: args.padding,
-              child: args.widget,
+          ? Scrollable(
+              viewportBuilder: (BuildContext context, ViewportOffset position) => Padding(
+                padding: args.padding,
+                child: args.widget,
+              ),
             )
           : Column(
               mainAxisSize: MainAxisSize.max,

@@ -28,12 +28,16 @@ class Profile {
   @JsonKey(required: true, name: 'email_verified')
   bool emailVerified;
 
+  @JsonKey(required: true, name: 'is_trustworthy')
+  bool isTrustworthy;
+
   @JsonKey(required: true)
   String email;
 
   Profile({
     required this.username,
     required this.emailVerified,
+    required this.isTrustworthy,
     required this.email,
   });
 

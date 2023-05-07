@@ -32,7 +32,6 @@ class MeasurementProvider with ChangeNotifier {
   List<MeasurementCategory> _categories = [];
 
   MeasurementProvider(this.baseProvider);
-  //: super(auth, client);
 
   List<MeasurementCategory> get categories => _categories;
 

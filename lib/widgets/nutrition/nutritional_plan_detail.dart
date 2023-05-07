@@ -70,7 +70,7 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(15),
             height: 220,
-            child: NutritionalPlanPieChartWidget(nutritionalValues),
+            child: NutritionalPlanPieChartWidget(nutritionalValues), // chart
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -210,11 +210,13 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.headline6,
           ),
-          Container(
-            padding: const EdgeInsets.all(15),
-            height: 300,
-            child: NutritionalPlanHatchBarChartWidget(_nutritionalPlan),
-          ),
+
+          NutritionalPlanHatchBarChartWidget(_nutritionalPlan),
+          // Container(
+          //   padding: const EdgeInsets.all(15),
+          //   height: 300,
+          //   child: NutritionalPlanHatchBarChartWidget(_nutritionalPlan), //  chart
+          // ),
           const Padding(padding: EdgeInsets.all(8.0)),
           Text(
             AppLocalizations.of(context).nutritionalDiary,
@@ -224,7 +226,7 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(15),
             height: 220,
-            child: NutritionalDiaryChartWidget(nutritionalPlan: _nutritionalPlan),
+            child: NutritionalDiaryChartWidget(nutritionalPlan: _nutritionalPlan), //  chart
           ),
           SizedBox(
             height: 200,

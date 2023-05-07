@@ -41,18 +41,18 @@ class Set {
   @JsonKey(required: true, defaultValue: '')
   late String comment;
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   List<ExerciseBase> exerciseBasesObj = [];
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   List<int> exerciseBasesIds = [];
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   List<Setting> settings = [];
 
   /// Computed settings (instead of 4x10 this has [10, 10, 10, 10]), used for
   /// the gym mode where the individual values are used
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   List<Setting> settingsComputed = [];
 
   Set({
@@ -147,5 +147,6 @@ class Set {
 
   // Boilerplate
   factory Set.fromJson(Map<String, dynamic> json) => _$SetFromJson(json);
+
   Map<String, dynamic> toJson() => _$SetToJson(this);
 }

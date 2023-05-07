@@ -93,9 +93,11 @@ extension TimeOfDayExtension on TimeOfDay {
 }
 
 void launchURL(String url, BuildContext context) async {
-  await canLaunchUrl(Uri.parse(url))
-      ? await launchUrl(Uri.parse(url))
-      : ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Could not open $url.')),
-        );
+  final scaffoldMessenger = ScaffoldMessenger.of(context);
+  final launched = await launchUrl(Uri.parse(url));
+  if (!launched) {
+    scaffoldMessenger.showSnackBar(
+      SnackBar(content: Text('Could not open $url.')),
+    );
+  }
 }

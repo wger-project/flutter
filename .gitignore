@@ -31,7 +31,6 @@
 .pub/
 /build/
 
-
 # Web related
 lib/generated_plugin_registrant.dart
 
@@ -48,7 +47,6 @@ app.*.map.json
 /fastlane/metadata/envfiles/wger.properties
 /fastlane/metadata/envfiles/keys.jks
 /fastlane/metadata/envfiles/key.properties
-
 
 # Others
 /vendor/bundle/ruby/

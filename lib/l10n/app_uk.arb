@@ -57,7 +57,7 @@
   },
   "username": "Ім'я користувача",
   "@username": {},
-  "customServerHint": "Введіть адресу свого власного сервера, інакше буде використовуватися сервер за промовчанням",
+  "customServerHint": "Введіть адресу власного сервера, інакше буде використовуватися за замовчуванням",
   "@customServerHint": {
     "description": "Hint text for the form where the users can enter their own wger instance"
   },
@@ -65,7 +65,7 @@
   "@reset": {
     "description": "Button text allowing the user to reset the entered values to the default"
   },
-  "loginInstead": "Натомість увійти",
+  "loginInstead": "Вже маєте обліковий запис? Увійти",
   "@loginInstead": {},
   "labelWorkoutPlans": "Плани тренувань",
   "@labelWorkoutPlans": {
@@ -203,7 +203,7 @@
   "@successfullySaved": {
     "description": "Message when an item was successfully saved"
   },
-  "registerInstead": "Натомість зареєструватися",
+  "registerInstead": "У вас немає облікового запису? Зареєструйтесь зараз",
   "@registerInstead": {},
   "labelBottomNavNutrition": "Харчування",
   "@labelBottomNavNutrition": {
@@ -443,7 +443,7 @@
   "@aboutSourceTitle": {
     "description": "Title for source code section in the about dialog"
   },
-  "aboutSourceText": "Отримайте джерельний код цього додатка та його сервера на github",
+  "aboutSourceText": "Отримайте джерельний код цього застосунку та його сервера на github",
   "@aboutSourceText": {
     "description": "Text for source code section in the about dialog"
   },
@@ -463,7 +463,7 @@
   "@aboutTranslationTitle": {
     "description": "Title for translation section in the about dialog"
   },
-  "aboutTranslationText": "Цей додаток перекладено на Weblate. Якщо ви також хочете допомогти, клацніть на посилання та почніть переклад",
+  "aboutTranslationText": "Цей заатосунок перекладено на Weblate. Якщо ви також хочете допомогти, клацніть на посилання та почніть переклад",
   "@aboutTranslationText": {
     "description": "Text for translation section in the about dialog"
   },
@@ -527,7 +527,7 @@
   },
   "appUpdateTitle": "Потрібне оновлення",
   "@appUpdateTitle": {},
-  "appUpdateContent": "Ця версія програми несумісна з сервером, будь ласка, оновіть додаток.",
+  "appUpdateContent": "Ця версія застосунку несумісна з сервером, будь ласка, оновіть застосунок.",
   "@appUpdateContent": {},
   "productFound": "Виріб знайдено",
   "@productFound": {
@@ -556,5 +556,170 @@
   "rir": "RiR",
   "@rir": {
     "description": "Shorthand for Repetitions In Reserve"
-  }
+  },
+  "miles": "Милі",
+  "@miles": {},
+  "aboutPageTitle": "Про Wger",
+  "@aboutPageTitle": {},
+  "noMeasurementEntries": "У вас немає записів вимірювання",
+  "@noMeasurementEntries": {},
+  "moreMeasurementEntries": "Додати нове вимірювання",
+  "@moreMeasurementEntries": {
+    "description": "Message shown when the user wants to add new measurement"
+  },
+  "verifiedEmailInfo": "Повідомлення з підтвердженням електронної пошти надіслано на {email}",
+  "@verifiedEmailInfo": {
+    "placeholders": {
+      "email": {}
+    }
+  },
+  "addExercise": "Додати вправу",
+  "@addExercise": {},
+  "none__bodyweight_exercise_": "немає (вправи з власною вагою)",
+  "@none__bodyweight_exercise_": {},
+  "abs": "Живіт",
+  "@abs": {},
+  "baseData": "Основи англійської",
+  "@baseData": {
+    "description": "The base data for an exercise such as category, trained muscles, etc."
+  },
+  "minutes": "Хвилини",
+  "@minutes": {},
+  "glutes": "Сідниці",
+  "@glutes": {},
+  "kilometers": "Кілометри",
+  "@kilometers": {},
+  "seconds": "Секунди",
+  "@seconds": {},
+  "bench": "Лавка",
+  "@bench": {},
+  "barbell": "Штанга",
+  "@barbell": {},
+  "triceps": "Трицепс",
+  "@triceps": {},
+  "swiss_ball": "Швейцарський м'яч",
+  "@swiss_ball": {},
+  "lower_back": "Нижня частина спини",
+  "@lower_back": {},
+  "shoulders": "Плечі",
+  "@shoulders": {},
+  "hamstrings": "Підколінні сухожилля",
+  "@hamstrings": {},
+  "chest": "Груди",
+  "@chest": {},
+  "biceps": "Біцепс",
+  "@biceps": {},
+  "dumbbell": "Гантеля",
+  "@dumbbell": {},
+  "gym_mat": "Гімнастичний мат",
+  "@gym_mat": {},
+  "incline_bench": "Похила лавка",
+  "@incline_bench": {},
+  "lats": "Найширші м'язи спини",
+  "@lats": {},
+  "legs": "Ноги",
+  "@legs": {},
+  "back": "Спина",
+  "@back": {},
+  "quads": "Квадроцикли",
+  "@quads": {},
+  "arms": "Руки",
+  "@arms": {},
+  "sz_bar": "SZ-Штанга",
+  "@sz_bar": {},
+  "kettlebell": "Гиря",
+  "@kettlebell": {},
+  "calves": "Ікри",
+  "@calves": {},
+  "pull_up_bar": "Перекладина",
+  "@pull_up_bar": {},
+  "until_failure": "До відмови",
+  "@until_failure": {},
+  "userProfile": "Твій профіль",
+  "@userProfile": {},
+  "exerciseList": "Список вправ",
+  "@exerciseList": {},
+  "exercises": "Вправи",
+  "@exercises": {
+    "description": "Multiple exercises for a workout"
+  },
+  "exerciseName": "Назва вправи",
+  "@exerciseName": {
+    "description": "Label for the name of a workout exercise"
+  },
+  "add_exercise_image_license": "Зображення повинні бути сумісні з ліцензією CC BY SA. Якщо ви сумніваєтеся, завантажуйте лише фотографії, які ви зробили самі.",
+  "@add_exercise_image_license": {},
+  "translateExercise": "Перекладіть цю вправу зараз",
+  "@translateExercise": {},
+  "selectEntry": "Будь ласка, виберіть запис",
+  "@selectEntry": {},
+  "enterMinCharacters": "Будь ласка, введіть принаймні {min} символи",
+  "@enterMinCharacters": {
+    "description": "Error message when the user hasn't entered the minimum amount characters in a form",
+    "type": "text",
+    "placeholders": {
+      "min": {}
+    }
+  },
+  "baseNameEnglish": "Всі вправи потребують базової назви англійською",
+  "@baseNameEnglish": {},
+  "variations": "Варіації",
+  "@variations": {
+    "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"
+  },
+  "alsoKnownAs": "Також відомий як: {aliases}",
+  "@alsoKnownAs": {
+    "placeholders": {
+      "aliases": {}
+    },
+    "description": "List of alternative names for an exercise"
+  },
+  "verifiedEmail": "Підтверджена електронна пошта",
+  "@verifiedEmail": {},
+  "unVerifiedEmail": "Непідтверджена електронна пошта",
+  "@unVerifiedEmail": {},
+  "verifiedEmailReason": "Вам потрібно підтвердити свою електронну пошту, щоб виконувати вправи",
+  "@verifiedEmailReason": {},
+  "alternativeNames": "Альтернативні назви",
+  "@alternativeNames": {},
+  "oneNamePerLine": "Одне ім'я на рядок",
+  "@oneNamePerLine": {},
+  "whatVariationsExist": "Які варіації цієї вправи існують, якщо такі є?",
+  "@whatVariationsExist": {},
+  "previous": "Попередній",
+  "@previous": {},
+  "next": "Наступний",
+  "@next": {},
+  "images": "Зображення",
+  "@images": {},
+  "language": "Мова",
+  "@language": {},
+  "contributeExercise": "Внести вправу",
+  "@contributeExercise": {},
+  "translation": "Переклад",
+  "@translation": {},
+  "cardio": "Кардіо",
+  "@cardio": {},
+  "contributeExerciseWarning": "Ви можете брати участь у вправах, лише якщо ваш обліковий запис старший за {days} днів і підтвердив вашу електронну пошту",
+  "@contributeExerciseWarning": {
+    "description": "Number of days before which a person can add exercise",
+    "placeholders": {
+      "days": {
+        "type": "String",
+        "example": "14"
+      }
+    }
+  },
+  "success": "Успіх",
+  "@success": {
+    "description": "Message when an action completed successfully, usually used as a heading"
+  },
+  "cacheWarning": "Через кешування може знадобитися деякий час, перш ніж зміни стануть видимими у всьому застосунку.",
+  "@cacheWarning": {},
+  "searchNamesInEnglish": "Також шукайте імена англійською мовою",
+  "@searchNamesInEnglish": {},
+  "textPromptTitle": "Готові почати?",
+  "@textPromptTitle": {},
+  "textPromptSubheading": "Натисніть кнопку дії, щоб почати",
+  "@textPromptSubheading": {}
 }

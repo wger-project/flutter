@@ -22,7 +22,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/models/workouts/workout_plan.dart';
+import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/gym_mode.dart';
@@ -30,32 +30,25 @@ import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 import 'package:wger/widgets/workouts/gym_mode.dart';
 
-import './workout_set_form_test.mocks.dart';
 import '../../test_data/exercises.dart';
 import '../../test_data/workouts.dart';
-import '../other/base_provider_test.mocks.dart';
-import '../utils.dart';
+import 'gym_mode_screen_test.mocks.dart';
 
-@GenerateMocks([ExercisesProvider])
+@GenerateMocks([WgerBaseProvider, ExercisesProvider])
 void main() {
+  final mockBaseProvider = MockWgerBaseProvider();
+  final key = GlobalKey<NavigatorState>();
+
+  final mockExerciseProvider = MockExercisesProvider();
+  final workoutPlan = getWorkout();
+  final bases = getTestExerciseBases();
+
   Widget createHomeScreen({locale = 'en'}) {
-    final key = GlobalKey<NavigatorState>();
-    final client = MockClient();
-
-    final mockExerciseProvider = MockExercisesProvider();
-    final WorkoutPlan workoutPlan = getWorkout();
-
-    final bases = getTestExerciseBases();
-
-    when(mockExerciseProvider.findExerciseBaseById(1)).thenReturn(bases[0]);
-    when(mockExerciseProvider.findExerciseBaseById(6)).thenReturn(bases[5]);
-
     return ChangeNotifierProvider<WorkoutPlansProvider>(
       create: (context) => WorkoutPlansProvider(
-        testAuthProvider,
+        mockBaseProvider,
         mockExerciseProvider,
         [workoutPlan],
-        client,
       ),
       child: ChangeNotifierProvider<ExercisesProvider>(
         create: (context) => mockExerciseProvider,
@@ -82,6 +75,9 @@ void main() {
   }
 
   testWidgets('Test the widgets on the gym mode screen', (WidgetTester tester) async {
+    when(mockExerciseProvider.findExerciseBaseById(1)).thenReturn(bases[0]);
+    when(mockExerciseProvider.findExerciseBaseById(6)).thenReturn(bases[5]);
+
     await tester.pumpWidget(createHomeScreen());
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();

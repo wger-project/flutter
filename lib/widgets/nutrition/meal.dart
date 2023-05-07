@@ -20,11 +20,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/misc.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/theme/theme.dart';
+import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/helpers.dart';
 
@@ -160,46 +162,46 @@ class MealItemWidget extends StatelessWidget {
     final String unit = AppLocalizations.of(context).g;
     final values = _item.nutritionalValues;
 
-    return Container(
-      padding: const EdgeInsets.all(5),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: double.infinity,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Flexible(
-                    child: Text(
-                  '${_item.amount.toStringAsFixed(0)}$unit ${_item.ingredientObj.name}',
-                  overflow: TextOverflow.ellipsis,
-                )),
-                if (_expanded)
-                  IconButton(
-                    icon: const Icon(Icons.delete),
-                    iconSize: ICON_SIZE_SMALL,
-                    onPressed: () {
-                      // Delete the meal item
-                      Provider.of<NutritionPlansProvider>(context, listen: false)
-                          .deleteMealItem(_item);
-
-                      // and inform the user
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                            content: Text(
-                          AppLocalizations.of(context).successfullyDeleted,
-                          textAlign: TextAlign.center,
-                        )),
-                      );
-                    },
-                  ),
-              ],
-            ),
-          ),
-          if (_expanded) ...getMutedNutritionalValues(values, context),
-        ],
+    return ListTile(
+      leading: _item.ingredientObj.image != null
+          ? GestureDetector(
+              child: CircleAvatar(backgroundImage: NetworkImage(_item.ingredientObj.image!.image)),
+              onTap: () async {
+                if (_item.ingredientObj.image!.objectUrl != '') {
+                  return launchURL(_item.ingredientObj.image!.objectUrl, context);
+                } else {
+                  return;
+                }
+              },
+            )
+          : const CircleIconAvatar(Icon(Icons.image, color: Colors.grey)),
+      title: Text(
+        '${_item.amount.toStringAsFixed(0)}$unit ${_item.ingredientObj.name}',
+        overflow: TextOverflow.ellipsis,
       ),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [if (_expanded) ...getMutedNutritionalValues(values, context)],
+      ),
+      trailing: _expanded
+          ? IconButton(
+              icon: const Icon(Icons.delete),
+              iconSize: ICON_SIZE_SMALL,
+              onPressed: () {
+                // Delete the meal item
+                Provider.of<NutritionPlansProvider>(context, listen: false).deleteMealItem(_item);
+
+                // and inform the user
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                      content: Text(
+                    AppLocalizations.of(context).successfullyDeleted,
+                    textAlign: TextAlign.center,
+                  )),
+                );
+              },
+            )
+          : const SizedBox(),
     );
   }
 }

@@ -95,7 +95,9 @@ final ThemeData wgerTheme = ThemeData(
      */
   textButtonTheme: TextButtonThemeData(
     style: TextButton.styleFrom(
-      primary: wgerPrimaryButtonColor,
+//       This primary is deprecated and should not be used
+//       primary: wgerPrimaryButtonColor,
+      foregroundColor: wgerPrimaryButtonColor,
     ),
   ),
   outlinedButtonTheme: OutlinedButtonThemeData(

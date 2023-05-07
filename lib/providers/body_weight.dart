@@ -17,22 +17,25 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/models/body_weight/weight_entry.dart';
-import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/base_provider.dart';
 
-class BodyWeightProvider extends WgerBaseProvider with ChangeNotifier {
-  static const bodyWeightUrl = 'weightentry';
+class BodyWeightProvider with ChangeNotifier {
+  final WgerBaseProvider baseProvider;
+
+  static const BODY_WEIGHT_URL = 'weightentry';
 
   List<WeightEntry> _entries = [];
-  BodyWeightProvider(AuthProvider auth, List<WeightEntry> entries, [http.Client? client])
-      : _entries = entries,
-        super(auth, client);
+
+  BodyWeightProvider(this.baseProvider);
 
   List<WeightEntry> get items {
     return [..._entries];
+  }
+
+  void set items(List<WeightEntry> entries) {
+    _entries = entries;
   }
 
   /// Clears all lists
@@ -59,20 +62,22 @@ class BodyWeightProvider extends WgerBaseProvider with ChangeNotifier {
 
   Future<List<WeightEntry>> fetchAndSetEntries() async {
     // Process the response
-    final data = await fetch(makeUrl(bodyWeightUrl, query: {'ordering': '-date'}));
-    final List<WeightEntry> loadedEntries = [];
-    for (final entry in data['results']) {
-      loadedEntries.add(WeightEntry.fromJson(entry));
+    final data = await baseProvider.fetchPaginated(baseProvider.makeUrl(
+      BODY_WEIGHT_URL,
+      query: {'ordering': '-date', 'limit': '100'},
+    ));
+    _entries = [];
+    for (final entry in data) {
+      _entries.add(WeightEntry.fromJson(entry));
     }
 
-    _entries = loadedEntries;
     notifyListeners();
     return _entries;
   }
 
   Future<WeightEntry> addEntry(WeightEntry entry) async {
     // Create entry and return it
-    final data = await post(entry.toJson(), makeUrl(bodyWeightUrl));
+    final data = await baseProvider.post(entry.toJson(), baseProvider.makeUrl(BODY_WEIGHT_URL));
     final WeightEntry weightEntry = WeightEntry.fromJson(data);
     _entries.add(weightEntry);
     _entries.sort((a, b) => b.date.compareTo(a.date));
@@ -82,7 +87,10 @@ class BodyWeightProvider extends WgerBaseProvider with ChangeNotifier {
 
   /// Update an existing weight entry
   Future<void> editEntry(WeightEntry entry) async {
-    await patch(entry.toJson(), makeUrl(bodyWeightUrl, id: entry.id));
+    await baseProvider.patch(
+      entry.toJson(),
+      baseProvider.makeUrl(BODY_WEIGHT_URL, id: entry.id),
+    );
     notifyListeners();
   }
 
@@ -93,10 +101,7 @@ class BodyWeightProvider extends WgerBaseProvider with ChangeNotifier {
     _entries.removeAt(existingEntryIndex);
     notifyListeners();
 
-    final response = await deleteRequest(
-      bodyWeightUrl,
-      id,
-    );
+    final response = await baseProvider.deleteRequest(BODY_WEIGHT_URL, id);
 
     // ...but that didn't work, put it back again
     if (response.statusCode >= 400) {

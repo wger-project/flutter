@@ -95,3 +95,7 @@ enum EXERCISE_IMAGE_ART_STYLE {
 /// Colors used for muscles
 const COLOR_MAIN_MUSCLES = Colors.red;
 const COLOR_SECONDARY_MUSCLES = Colors.orange;
+
+// Min account age to contribute exercises. Needs to be kept in sync with
+// the value on the backend
+const MIN_ACCOUNT_AGE = 14;

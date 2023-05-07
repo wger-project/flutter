@@ -1,0 +1,15 @@
+{
+  "count": 2,
+  "next": "https://localhost/api/v2/itcrowd/?limit=20&offset=40",
+  "previous": "https://localhost/api/v2/itcrowd/?limit=20",
+  "results": [
+    {
+      "id": 3,
+      "value": "You wouldn't steal a baby."
+    },
+    {
+      "id": 4,
+      "value": "You wouldn't shoot a policeman."
+    }
+  ]
+}

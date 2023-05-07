@@ -1,12 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'exercise.dart';
+part of 'translation.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-Exercise _$ExerciseFromJson(Map<String, dynamic> json) {
+Translation _$TranslationFromJson(Map<String, dynamic> json) {
   $checkKeys(
     json,
     requiredKeys: const [
@@ -19,7 +19,7 @@ Exercise _$ExerciseFromJson(Map<String, dynamic> json) {
       'description'
     ],
   );
-  return Exercise(
+  return Translation(
     id: json['id'] as int?,
     uuid: json['uuid'] as String?,
     creationDate:
@@ -30,7 +30,7 @@ Exercise _$ExerciseFromJson(Map<String, dynamic> json) {
   )..languageId = json['language'] as int;
 }
 
-Map<String, dynamic> _$ExerciseToJson(Exercise instance) => <String, dynamic>{
+Map<String, dynamic> _$TranslationToJson(Translation instance) => <String, dynamic>{
       'id': instance.id,
       'uuid': instance.uuid,
       'language': instance.languageId,

@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
@@ -29,9 +30,10 @@ import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 
-import './nutritional_plan_form_test.mocks.dart';
 import '../../test_data/nutritional_plans.dart';
+import 'nutritional_meal_form_test.mocks.dart';
 
+@GenerateMocks([NutritionPlansProvider])
 void main() {
   var mockNutrition = MockNutritionPlansProvider();
 

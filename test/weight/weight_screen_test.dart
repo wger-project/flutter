@@ -19,7 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:http/http.dart' as http;
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/body_weight.dart';
@@ -29,48 +29,33 @@ import 'package:wger/widgets/core/charts.dart';
 import 'package:wger/widgets/weight/forms.dart';
 
 import '../../test_data/body_weight.dart';
-import '../other/base_provider_test.mocks.dart';
-import '../utils.dart';
+import 'weight_screen_test.mocks.dart';
 
+@GenerateMocks([BodyWeightProvider])
 void main() {
-  Widget createHomeScreen({locale = 'en'}) {
-    final client = MockClient();
-    when(client.delete(
-      any,
-      headers: anyNamed('headers'),
-    )).thenAnswer((_) async => http.Response('', 200));
-    when(client.post(
-      any,
-      headers: anyNamed('headers'),
-      body: anyNamed('body'),
-    )).thenAnswer(
-        (_) async => http.Response('{"id": 3, "date": "2021-01-01", "weight": "80"}', 200));
+  var mockWeightProvider = MockBodyWeightProvider();
+
+  Widget createWeightScreen({locale = 'en'}) {
+    mockWeightProvider = MockBodyWeightProvider();
+    when(mockWeightProvider.items).thenReturn(getWeightEntries());
 
     return ChangeNotifierProvider<BodyWeightProvider>(
-      create: (context) => BodyWeightProvider(
-        testAuthProvider,
-        [
-          weightEntry1,
-          weightEntry2,
-        ],
-        client,
-      ),
+      create: (context) => mockWeightProvider,
       child: MaterialApp(
         locale: Locale(locale),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: WeightScreen(),
         routes: {
-          FormScreen.routeName: (ctx) => FormScreen(),
+          FormScreen.routeName: (_) => FormScreen(),
         },
       ),
     );
   }
 
   testWidgets('Test the widgets on the body weight screen', (WidgetTester tester) async {
-    await tester.pumpWidget(createHomeScreen());
+    await tester.pumpWidget(createWeightScreen());
 
-    //debugDumpApp();
     expect(find.text('Weight'), findsOneWidget);
     expect(find.byType(MeasurementChartWidget), findsOneWidget);
     expect(find.byType(Dismissible), findsNWidgets(2));
@@ -78,15 +63,16 @@ void main() {
   });
 
   testWidgets('Test deleting an item by dragging the dismissible', (WidgetTester tester) async {
-    await tester.pumpWidget(createHomeScreen());
+    await tester.pumpWidget(createWeightScreen());
 
     await tester.drag(find.byKey(const Key('1')), const Offset(-500.0, 0.0));
     await tester.pumpAndSettle();
+    verify(mockWeightProvider.deleteEntry(1)).called(1);
     expect(find.byType(ListTile), findsOneWidget);
   });
 
   testWidgets('Test the form on the body weight screen', (WidgetTester tester) async {
-    await tester.pumpWidget(createHomeScreen());
+    await tester.pumpWidget(createWeightScreen());
 
     expect(find.byType(WeightForm), findsNothing);
     await tester.tap(find.byType(FloatingActionButton));
@@ -95,14 +81,14 @@ void main() {
   });
 
   testWidgets('Tests the localization of dates - EN', (WidgetTester tester) async {
-    await tester.pumpWidget(createHomeScreen());
+    await tester.pumpWidget(createWeightScreen());
 
     expect(find.text('1/1/2021'), findsOneWidget);
     expect(find.text('1/10/2021'), findsOneWidget);
   });
 
   testWidgets('Tests the localization of dates - DE', (WidgetTester tester) async {
-    await tester.pumpWidget(createHomeScreen(locale: 'de'));
+    await tester.pumpWidget(createWeightScreen(locale: 'de'));
 
     expect(find.text('1.1.2021'), findsOneWidget);
     expect(find.text('10.1.2021'), findsOneWidget);

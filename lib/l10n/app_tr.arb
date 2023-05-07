@@ -697,5 +697,25 @@
     "description": "Message shown when the user wants to add new measurement"
   },
   "aboutPageTitle": "Wger Hakkında",
-  "@aboutPageTitle": {}
+  "@aboutPageTitle": {},
+  "cardio": "Kardiyo",
+  "@cardio": {},
+  "contributeExerciseWarning": "Yalnızca hesabınız {days} günden eskiyse ve e-posta adresinizi doğruladıysanız egzersizlere katkıda bulunabilirsiniz",
+  "@contributeExerciseWarning": {
+    "description": "Number of days before which a person can add exercise",
+    "placeholders": {
+      "days": {
+        "type": "String",
+        "example": "14"
+      }
+    }
+  },
+  "success": "Başarılı",
+  "@success": {
+    "description": "Message when an action completed successfully, usually used as a heading"
+  },
+  "cacheWarning": "Önbelleğe alma nedeniyle değişikliklerin uygulama genelinde görünür olması biraz zaman alabilir.",
+  "@cacheWarning": {},
+  "searchNamesInEnglish": "Ayrıca İngilizce adları da arayın",
+  "@searchNamesInEnglish": {}
 }

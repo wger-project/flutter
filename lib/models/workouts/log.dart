@@ -33,7 +33,7 @@ class Log {
   @JsonKey(required: true, name: 'exercise_base')
   late int exerciseBaseId;
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   late ExerciseBase exerciseBaseObj;
 
   @JsonKey(required: true, name: 'workout')
@@ -48,7 +48,7 @@ class Log {
   @JsonKey(required: true, name: 'repetition_unit')
   late int repetitionUnitId;
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   late RepetitionUnit repetitionUnitObj;
 
   @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
@@ -57,7 +57,7 @@ class Log {
   @JsonKey(required: true, name: 'weight_unit')
   late int weightUnitId;
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   late WeightUnit weightUnitObj;
 
   @JsonKey(required: true, toJson: toDate)
@@ -82,6 +82,7 @@ class Log {
 
   // Boilerplate
   factory Log.fromJson(Map<String, dynamic> json) => _$LogFromJson(json);
+
   Map<String, dynamic> toJson() => _$LogToJson(this);
 
   set exerciseBase(ExerciseBase base) {

@@ -76,17 +76,20 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProxyProvider2<AuthProvider, ExercisesProvider, WorkoutPlansProvider>(
           create: (context) => WorkoutPlansProvider(
-            Provider.of<AuthProvider>(context, listen: false),
+            WgerBaseProvider(Provider.of<AuthProvider>(context, listen: false)),
             Provider.of<ExercisesProvider>(context, listen: false),
             [],
           ),
           update: (context, auth, exercises, previous) =>
-              previous ?? WorkoutPlansProvider(auth, exercises, []),
+              previous ?? WorkoutPlansProvider(WgerBaseProvider(auth), exercises, []),
         ),
         ChangeNotifierProxyProvider<AuthProvider, NutritionPlansProvider>(
-          create: (context) =>
-              NutritionPlansProvider(Provider.of<AuthProvider>(context, listen: false), []),
-          update: (context, auth, previous) => previous ?? NutritionPlansProvider(auth, []),
+          create: (context) => NutritionPlansProvider(
+            WgerBaseProvider(Provider.of<AuthProvider>(context, listen: false)),
+            [],
+          ),
+          update: (context, auth, previous) =>
+              previous ?? NutritionPlansProvider(WgerBaseProvider(auth), []),
         ),
         ChangeNotifierProxyProvider<AuthProvider, MeasurementProvider>(
           create: (context) => MeasurementProvider(
@@ -102,9 +105,11 @@ class MyApp extends StatelessWidget {
           update: (context, base, previous) => previous ?? UserProvider(WgerBaseProvider(base)),
         ),
         ChangeNotifierProxyProvider<AuthProvider, BodyWeightProvider>(
-          create: (context) =>
-              BodyWeightProvider(Provider.of<AuthProvider>(context, listen: false), []),
-          update: (context, auth, previous) => previous ?? BodyWeightProvider(auth, []),
+          create: (context) => BodyWeightProvider(
+            WgerBaseProvider(Provider.of<AuthProvider>(context, listen: false)),
+          ),
+          update: (context, base, previous) =>
+              previous ?? BodyWeightProvider(WgerBaseProvider(base)),
         ),
         ChangeNotifierProxyProvider<AuthProvider, GalleryProvider>(
           create: (context) =>
@@ -153,7 +158,21 @@ class MyApp extends StatelessWidget {
           },
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          debugShowCheckedModeBanner: false,
+
+          // Workaround for https://github.com/flutter/flutter/issues/100857
+          localeResolutionCallback: (deviceLocale, supportedLocales) {
+            if (deviceLocale != null) {
+              for (final supportedLocale in supportedLocales) {
+                // Since we currently don't support any country specific locales
+                // such as de-DE and de-AT, it's sufficient to just check it like
+                // this. Otherwise we will need more logic with .countryCode
+                if (supportedLocale.languageCode == deviceLocale.languageCode) {
+                  return supportedLocale;
+                }
+              }
+            }
+            return const Locale('en');
+          },
         ),
       ),
     );

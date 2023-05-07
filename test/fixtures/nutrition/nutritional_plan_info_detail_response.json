@@ -1,0 +1,199 @@
+{
+  "id": 1,
+  "language": {
+    "id": 1,
+    "short_name": "de",
+    "full_name": "Deutsch"
+  },
+  "creation_date": "2022-08-09",
+  "description": "",
+  "get_nutritional_values": {
+    "total": {
+      "energy": 853.0,
+      "protein": 12.08,
+      "carbohydrates": 180.7,
+      "carbohydrates_sugar": 139.62,
+      "fat": 4.92,
+      "fat_saturated": 0.71,
+      "fibres": 11.96,
+      "sodium": 0.48,
+      "energy_kilojoule": 3568.95
+    },
+    "percent": {
+      "protein": 5.66,
+      "carbohydrates": 84.74,
+      "fat": 5.19
+    },
+    "per_kg": {
+      "protein": 0.0,
+      "carbohydrates": 0.0,
+      "fat": 0.0
+    }
+  },
+  "meals": [
+    {
+      "id": 1,
+      "plan": 1,
+      "order": 1,
+      "time": "08:00:00",
+      "name": "Frühstück",
+      "meal_items": [
+        {
+          "id": 1,
+          "meal": 1,
+          "ingredient": 59887,
+          "ingredient_obj": {
+            "id": 59887,
+            "code": "4311501354155",
+            "name": "Baked Beans",
+            "creation_date": "2020-12-20",
+            "update_date": "2022-08-09",
+            "energy": 86,
+            "protein": "4.400",
+            "carbohydrates": "11.000",
+            "carbohydrates_sugar": "5.300",
+            "fat": "0.100",
+            "fat_saturated": "0.000",
+            "fibres": "5.000",
+            "sodium": "0.480",
+            "license": {
+              "id": 5,
+              "full_name": "Open Data Commons Open Database License",
+              "short_name": "ODbL",
+              "url": "https://opendatacommons.org/licenses/odbl/"
+            },
+            "license_author": "Open Food Facts",
+            "ingredientweightunit_set": [],
+            "language": {
+              "id": 1,
+              "short_name": "de",
+              "full_name": "Deutsch"
+            }
+          },
+          "weight_unit": null,
+          "weight_unit_obj": null,
+          "image": null,
+          "order": 1,
+          "amount": "100.00"
+        },
+        {
+          "id": 2,
+          "meal": 1,
+          "ingredient": 58300,
+          "ingredient_obj": {
+            "id": 58300,
+            "code": "4071800000992",
+            "name": "1688 Mehrkorn",
+            "creation_date": "2020-12-20",
+            "update_date": "2022-08-09",
+            "energy": 229,
+            "protein": "7.680",
+            "carbohydrates": "35.700",
+            "carbohydrates_sugar": "2.320",
+            "fat": "4.820",
+            "fat_saturated": "0.714",
+            "fibres": "6.960",
+            "sodium": "0.000",
+            "license": {
+              "id": 5,
+              "full_name": "Open Data Commons Open Database License",
+              "short_name": "ODbL",
+              "url": "https://opendatacommons.org/licenses/odbl/"
+            },
+            "license_author": "Open Food Facts",
+            "ingredientweightunit_set": [],
+            "language": {
+              "id": 2,
+              "short_name": "en",
+              "full_name": "English"
+            }
+          },
+          "weight_unit": null,
+          "weight_unit_obj": null,
+          "image": {
+            "id": 3,
+            "uuid": "778fe5cb-a5d9-42e5-9df2-2a47022b720f",
+            "ingredient_id": 58300,
+            "ingredient_uuid": "60e1f479-9af1-4bd4-b2a8-1ebe8974258e",
+            "image": "http://localhost:8000/media/ingredients/60e1f479-9af1-4bd4-b2a8-1ebe8974258e/778fe5cb-a5d9-42e5-9df2-2a47022b720f.jpg",
+            "last_update": "2022-08-09T15:31:46.833918+02:00",
+            "size": 33617,
+            "source_url": "",
+            "license": 1,
+            "license_author": "kiliweb",
+            "license_title": "Photo",
+            "license_object_url": "https://world.openfoodfacts.org/cgi/product_image.pl?code=4388844120334&id=2",
+            "license_author_url": "https://world.openfoodfacts.org/photographer/twoflower",
+            "license_derivative_source_url": ""
+          },
+          "order": 1,
+          "amount": "100.00"
+        },
+        {
+          "id": 3,
+          "meal": 1,
+          "ingredient": 10065,
+          "ingredient_obj": {
+            "id": 10065,
+            "code": "0043647440020",
+            "name": "'Old Times' Orange Fine Cut Marmalade",
+            "creation_date": "2020-12-20",
+            "update_date": "2022-08-09",
+            "energy": 269,
+            "protein": "0.000",
+            "carbohydrates": "67.000",
+            "carbohydrates_sugar": "66.000",
+            "fat": "0.000",
+            "fat_saturated": "0.000",
+            "fibres": null,
+            "sodium": "0.000",
+            "license": {
+              "id": 5,
+              "full_name": "Open Data Commons Open Database License",
+              "short_name": "ODbL",
+              "url": "https://opendatacommons.org/licenses/odbl/"
+            },
+            "license_author": "Open Food Facts",
+            "ingredientweightunit_set": [],
+            "language": {
+              "id": 2,
+              "short_name": "en",
+              "full_name": "English"
+            }
+          },
+          "weight_unit": null,
+          "weight_unit_obj": null,
+          "image": {
+            "id": 5,
+            "uuid": "81c07bef-02ea-47ba-a18e-d7388dc2bc01",
+            "ingredient_id": 10065,
+            "ingredient_uuid": "b0c47fa4-3898-4705-b8f5-184877d50b78",
+            "image": "http://localhost:8000/media/ingredients/b0c47fa4-3898-4705-b8f5-184877d50b78/81c07bef-02ea-47ba-a18e-d7388dc2bc01.jpg",
+            "last_update": "2022-08-09T15:45:58.511169+02:00",
+            "size": 43397,
+            "source_url": "",
+            "license": 1,
+            "license_author": "tacinte",
+            "license_title": "Photo",
+            "license_object_url": "https://world.openfoodfacts.org/cgi/product_image.pl?code=4388844120334&id=2",
+            "license_author_url": "https://world.openfoodfacts.org/photographer/twoflower",
+            "license_derivative_source_url": ""
+          },
+          "order": 1,
+          "amount": "200.00"
+        }
+      ],
+      "get_nutritional_values": {
+        "energy": 853.0,
+        "protein": 12.08,
+        "carbohydrates": 180.7,
+        "carbohydrates_sugar": 139.62,
+        "fat": 4.92,
+        "fat_saturated": 0.71,
+        "fibres": 11.96,
+        "sodium": 0.48,
+        "energy_kilojoule": 3568.95
+      }
+    }
+  ]
+}

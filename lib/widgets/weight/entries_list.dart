@@ -42,93 +42,97 @@ class WeightEntriesList extends StatelessWidget {
               _weightProvider.items.map((e) => MeasurementChartEntry(e.weight, e.date)).toList()),
         ),
         TextButton(
-            onPressed: () => Navigator.pushNamed(
-                  context,
-                  MeasurementCategoriesScreen.routeName,
-                ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text(AppLocalizations.of(context).measurements),
-                const Icon(Icons.chevron_right)
-              ],
-            )),
+          onPressed: () => Navigator.pushNamed(
+            context,
+            MeasurementCategoriesScreen.routeName,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text(AppLocalizations.of(context).measurements),
+              const Icon(Icons.chevron_right)
+            ],
+          ),
+        ),
         Expanded(
-          child: ListView.builder(
-            padding: const EdgeInsets.all(10.0),
-            itemCount: _weightProvider.items.length,
-            itemBuilder: (context, index) {
-              final currentEntry = _weightProvider.items[index];
-              return Dismissible(
-                key: Key(currentEntry.id.toString()),
-                onDismissed: (direction) {
-                  if (direction == DismissDirection.endToStart) {
-                    // Delete entry from DB
-                    _weightProvider.deleteEntry(currentEntry.id!);
+          child: RefreshIndicator(
+            onRefresh: () => _weightProvider.fetchAndSetEntries(),
+            child: ListView.builder(
+              padding: const EdgeInsets.all(10.0),
+              itemCount: _weightProvider.items.length,
+              itemBuilder: (context, index) {
+                final currentEntry = _weightProvider.items[index];
+                return Dismissible(
+                  key: Key(currentEntry.id.toString()),
+                  onDismissed: (direction) {
+                    if (direction == DismissDirection.endToStart) {
+                      // Delete entry from DB
+                      _weightProvider.deleteEntry(currentEntry.id!);
 
-                    // and inform the user
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          AppLocalizations.of(context).successfullyDeleted,
-                          textAlign: TextAlign.center,
+                      // and inform the user
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            AppLocalizations.of(context).successfullyDeleted,
+                            textAlign: TextAlign.center,
+                          ),
                         ),
-                      ),
-                    );
-                  }
-                },
-                confirmDismiss: (direction) async {
-                  // Edit entry
-                  if (direction == DismissDirection.startToEnd) {
-                    Navigator.pushNamed(
-                      context,
-                      FormScreen.routeName,
-                      arguments: FormScreenArguments(
-                        AppLocalizations.of(context).edit,
-                        WeightForm(currentEntry),
-                      ),
-                    );
-                    return false;
-                  }
-                  return true;
-                },
-                secondaryBackground: Container(
-                  color: Theme.of(context).errorColor,
-                  alignment: Alignment.centerRight,
-                  padding: const EdgeInsets.only(right: 20),
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 4,
-                    vertical: 4,
-                  ),
-                  child: const Icon(
-                    Icons.delete,
-                    color: Colors.white,
-                  ),
-                ),
-                background: Container(
-                  color: wgerPrimaryButtonColor,
-                  alignment: Alignment.centerLeft,
-                  padding: const EdgeInsets.only(left: 20),
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 4,
-                    vertical: 4,
-                  ),
-                  child: const Icon(
-                    Icons.edit,
-                    color: Colors.white,
-                  ),
-                ),
-                child: Card(
-                  child: ListTile(
-                    title: Text('${currentEntry.weight} kg'),
-                    subtitle: Text(
-                      DateFormat.yMd(Localizations.localeOf(context).languageCode)
-                          .format(currentEntry.date),
+                      );
+                    }
+                  },
+                  confirmDismiss: (direction) async {
+                    // Edit entry
+                    if (direction == DismissDirection.startToEnd) {
+                      Navigator.pushNamed(
+                        context,
+                        FormScreen.routeName,
+                        arguments: FormScreenArguments(
+                          AppLocalizations.of(context).edit,
+                          WeightForm(currentEntry),
+                        ),
+                      );
+                      return false;
+                    }
+                    return true;
+                  },
+                  secondaryBackground: Container(
+                    color: Theme.of(context).errorColor,
+                    alignment: Alignment.centerRight,
+                    padding: const EdgeInsets.only(right: 20),
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 4,
+                      vertical: 4,
+                    ),
+                    child: const Icon(
+                      Icons.delete,
+                      color: Colors.white,
                     ),
                   ),
-                ),
-              );
-            },
+                  background: Container(
+                    color: wgerPrimaryButtonColor,
+                    alignment: Alignment.centerLeft,
+                    padding: const EdgeInsets.only(left: 20),
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 4,
+                      vertical: 4,
+                    ),
+                    child: const Icon(
+                      Icons.edit,
+                      color: Colors.white,
+                    ),
+                  ),
+                  child: Card(
+                    child: ListTile(
+                      title: Text('${currentEntry.weight} kg'),
+                      subtitle: Text(
+                        DateFormat.yMd(Localizations.localeOf(context).languageCode)
+                            .format(currentEntry.date),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
           ),
         ),
       ],

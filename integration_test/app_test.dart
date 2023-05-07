@@ -16,8 +16,8 @@ Future<void> takeScreenshot(tester, binding, String language, String name) async
     await binding.convertFlutterSurfaceToImage();
     await tester.pumpAndSettle();
   }
-  await binding
-      .takeScreenshot('fastlane/metadata/android/$language/images/phoneScreenshots/$name.png');
+  final filename = 'fastlane/metadata/android/$language/images/phoneScreenshots/$name.png';
+  await binding.takeScreenshot(filename);
 }
 
 // Available languages in weblate for the android metadata (not necessarily
@@ -28,13 +28,12 @@ const languages = [
   // Note: it seems if too many languages are processed at once, some processes
   // disappear and no images are written. Doing this in smaller steps works fine
 
-  /*
   'ca',
   'de-DE',
   'en-US',
   'es-ES',
   'fr-FR',
-   */
+
   /*
   'hi-IN',
   'hr',
@@ -42,13 +41,11 @@ const languages = [
   'pt-BR',
   'nb-NO',
    */
-  /*
   'pl-PL',
   'ru-RU',
   'tr-TR',
   'uk',
   'zh-CN'
-   */
 ];
 
 void main() {

@@ -18,23 +18,31 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/platform.dart';
 import 'package:wger/helpers/ui.dart';
 import 'package:wger/providers/nutrition.dart';
+import 'package:wger/widgets/core/core.dart';
 
 class IngredientTypeahead extends StatefulWidget {
   final TextEditingController _ingredientController;
   final TextEditingController _ingredientIdController;
-  late String? _barcode;
-  late final bool? _test;
-  final bool _showScanner;
 
-  IngredientTypeahead(this._ingredientIdController, this._ingredientController, this._showScanner,
-      [this._barcode, this._test]);
+  String? barcode = '';
+  late final bool? test;
+  final bool showScanner;
+
+  IngredientTypeahead(
+    this._ingredientIdController,
+    this._ingredientController, {
+    this.showScanner = true,
+    this.test = false,
+    this.barcode = '',
+  });
 
   @override
   _IngredientTypeaheadState createState() => _IngredientTypeaheadState();
@@ -44,7 +52,12 @@ Future<String> scanBarcode(BuildContext context) async {
   String barcode;
   try {
     barcode = await FlutterBarcodeScanner.scanBarcode(
-        '#ff6666', AppLocalizations.of(context).close, true, ScanMode.BARCODE);
+      '#ff6666',
+      AppLocalizations.of(context).close,
+      true,
+      ScanMode.BARCODE,
+    );
+
     if (barcode.compareTo('-1') == 0) {
       return '';
     }
@@ -56,113 +69,135 @@ Future<String> scanBarcode(BuildContext context) async {
 }
 
 class _IngredientTypeaheadState extends State<IngredientTypeahead> {
+  var _searchEnglish = true;
+
   @override
   Widget build(BuildContext context) {
-    return TypeAheadFormField(
-      textFieldConfiguration: TextFieldConfiguration(
-        controller: widget._ingredientController,
-        decoration: InputDecoration(
-          prefixIcon: const Icon(Icons.search),
-          labelText: AppLocalizations.of(context).searchIngredient,
-          suffixIcon: widget._showScanner ? scanButton() : null,
+    return Column(
+      children: [
+        TypeAheadFormField(
+          textFieldConfiguration: TextFieldConfiguration(
+            controller: widget._ingredientController,
+            decoration: InputDecoration(
+              prefixIcon: const Icon(Icons.search),
+              labelText: AppLocalizations.of(context).searchIngredient,
+              suffixIcon: (widget.showScanner && !isDesktop) ? scanButton() : null,
+            ),
+          ),
+          suggestionsCallback: (pattern) async {
+            return Provider.of<NutritionPlansProvider>(context, listen: false).searchIngredient(
+              pattern,
+              languageCode: Localizations.localeOf(context).languageCode,
+              searchEnglish: _searchEnglish,
+            );
+          },
+          itemBuilder: (context, dynamic suggestion) {
+            final url = context.read<NutritionPlansProvider>().baseProvider.auth.serverUrl;
+            return ListTile(
+              leading: suggestion['data']['image'] != null
+                  ? CircleAvatar(backgroundImage: NetworkImage(url! + suggestion['data']['image']))
+                  : const CircleIconAvatar(Icon(Icons.image, color: Colors.grey)),
+              title: Text(suggestion['value']),
+              subtitle: Text(suggestion['data']['id'].toString()),
+            );
+          },
+          transitionBuilder: (context, suggestionsBox, controller) {
+            return suggestionsBox;
+          },
+          onSuggestionSelected: (dynamic suggestion) {
+            widget._ingredientIdController.text = suggestion['data']['id'].toString();
+            widget._ingredientController.text = suggestion['value'];
+          },
+          validator: (value) {
+            if (value!.isEmpty) {
+              return AppLocalizations.of(context).selectIngredient;
+            }
+            return null;
+          },
         ),
-      ),
-      suggestionsCallback: (pattern) async {
-        return Provider.of<NutritionPlansProvider>(context, listen: false).searchIngredient(
-          pattern,
-          Localizations.localeOf(context).languageCode,
-        );
-      },
-      itemBuilder: (context, dynamic suggestion) {
-        return ListTile(
-          title: Text(suggestion['value']),
-          subtitle: Text(suggestion['data']['id'].toString()),
-        );
-      },
-      transitionBuilder: (context, suggestionsBox, controller) {
-        return suggestionsBox;
-      },
-      onSuggestionSelected: (dynamic suggestion) {
-        widget._ingredientIdController.text = suggestion['data']['id'].toString();
-        widget._ingredientController.text = suggestion['value'];
-      },
-      validator: (value) {
-        if (value!.isEmpty) {
-          return AppLocalizations.of(context).selectIngredient;
-        }
-        return null;
-      },
+        if (Localizations.localeOf(context).languageCode != LANGUAGE_SHORT_ENGLISH)
+          SwitchListTile(
+            title: Text(AppLocalizations.of(context).searchNamesInEnglish),
+            value: _searchEnglish,
+            onChanged: (_) {
+              setState(() {
+                _searchEnglish = !_searchEnglish;
+              });
+            },
+            dense: true,
+          ),
+      ],
     );
   }
 
   Widget scanButton() {
     return IconButton(
-        key: const Key('scan-button'),
-        onPressed: () async {
-          try {
-            if (!widget._test!) {
-              widget._barcode = await scanBarcode(context);
-            }
-
-            if (widget._barcode!.isNotEmpty) {
-              final result = await Provider.of<NutritionPlansProvider>(context, listen: false)
-                  .searchIngredientWithCode(widget._barcode!);
-
-              if (result != null) {
-                showDialog(
-                  context: context,
-                  builder: (ctx) => AlertDialog(
-                    key: const Key('found-dialog'),
-                    title: Text(AppLocalizations.of(context).productFound),
-                    content:
-                        Text(AppLocalizations.of(context).productFoundDescription(result.name)),
-                    actions: [
-                      TextButton(
-                        key: const Key('found-dialog-confirm-button'),
-                        child: Text(MaterialLocalizations.of(context).continueButtonLabel),
-                        onPressed: () {
-                          widget._ingredientController.text = result.name;
-                          widget._ingredientIdController.text = result.id.toString();
-                          Navigator.of(ctx).pop();
-                        },
-                      ),
-                      TextButton(
-                        key: const Key('found-dialog-close-button'),
-                        child: Text(MaterialLocalizations.of(context).closeButtonLabel),
-                        onPressed: () {
-                          Navigator.of(ctx).pop();
-                        },
-                      )
-                    ],
-                  ),
-                );
-              } else {
-                //nothing is matching barcode
-                showDialog(
-                  context: context,
-                  builder: (ctx) => AlertDialog(
-                    key: const Key('notFound-dialog'),
-                    title: Text(AppLocalizations.of(context).productNotFound),
-                    content: Text(
-                      AppLocalizations.of(context).productNotFoundDescription(widget._barcode!),
-                    ),
-                    actions: [
-                      TextButton(
-                        key: const Key('notFound-dialog-close-button'),
-                        child: Text(MaterialLocalizations.of(context).closeButtonLabel),
-                        onPressed: () {
-                          Navigator.of(ctx).pop();
-                        },
-                      )
-                    ],
-                  ),
-                );
-              }
-            }
-          } catch (e) {
-            showErrorDialog(e, context);
+      key: const Key('scan-button'),
+      onPressed: () async {
+        try {
+          if (!widget.test!) {
+            widget.barcode = await scanBarcode(context);
           }
-        },
-        icon: Image.asset('assets/images/barcode_scanner_icon.png'));
+
+          if (widget.barcode!.isNotEmpty) {
+            final result = await Provider.of<NutritionPlansProvider>(context, listen: false)
+                .searchIngredientWithCode(widget.barcode!);
+
+            if (result != null) {
+              showDialog(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  key: const Key('found-dialog'),
+                  title: Text(AppLocalizations.of(context).productFound),
+                  content: Text(AppLocalizations.of(context).productFoundDescription(result.name)),
+                  actions: [
+                    TextButton(
+                      key: const Key('found-dialog-confirm-button'),
+                      child: Text(MaterialLocalizations.of(context).continueButtonLabel),
+                      onPressed: () {
+                        widget._ingredientController.text = result.name;
+                        widget._ingredientIdController.text = result.id.toString();
+                        Navigator.of(ctx).pop();
+                      },
+                    ),
+                    TextButton(
+                      key: const Key('found-dialog-close-button'),
+                      child: Text(MaterialLocalizations.of(context).closeButtonLabel),
+                      onPressed: () {
+                        Navigator.of(ctx).pop();
+                      },
+                    )
+                  ],
+                ),
+              );
+            } else {
+              //nothing is matching barcode
+              showDialog(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  key: const Key('notFound-dialog'),
+                  title: Text(AppLocalizations.of(context).productNotFound),
+                  content: Text(
+                    AppLocalizations.of(context).productNotFoundDescription(widget.barcode!),
+                  ),
+                  actions: [
+                    TextButton(
+                      key: const Key('notFound-dialog-close-button'),
+                      child: Text(MaterialLocalizations.of(context).closeButtonLabel),
+                      onPressed: () {
+                        Navigator.of(ctx).pop();
+                      },
+                    )
+                  ],
+                ),
+              );
+            }
+          }
+        } catch (e) {
+          showErrorDialog(e, context);
+        }
+      },
+      icon: Image.asset('assets/images/barcode_scanner_icon.png'),
+    );
   }
 }

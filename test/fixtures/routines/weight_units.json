@@ -1,0 +1,31 @@
+{
+  "count": 6,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 3,
+      "name": "BodyWeight"
+    },
+    {
+      "id": 1,
+      "name": "kg"
+    },
+    {
+      "id": 5,
+      "name": "KilometersPerHour"
+    },
+    {
+      "id": 2,
+      "name": "lb"
+    },
+    {
+      "id": 6,
+      "name": "MilesPerHour"
+    },
+    {
+      "id": 4,
+      "name": "Plates"
+    }
+  ]
+}
