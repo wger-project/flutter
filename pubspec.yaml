@@ -66,7 +66,7 @@ dev_dependencies:
     sdk: flutter
   build_runner: ^2.3.3
   flutter_launcher_icons: ^0.13.1
-  json_serializable: ^6.6.1
+  json_serializable: ^6.6.2
   mockito: ^5.4.0
   network_image_mock: ^2.1.1
   flutter_lints: ^2.0.1
