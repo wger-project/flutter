@@ -241,6 +241,8 @@
   },
   "save": "Save",
   "@save": {},
+  "verify": "Verify",
+  "@verify": {},
   "addSet": "Add set",
   "@addSet": {
     "description": "Label for the button that adds a set (to a workout day)"
