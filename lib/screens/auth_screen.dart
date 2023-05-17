@@ -246,7 +246,7 @@ class _AuthCardState extends State<AuthCard> {
                     textInputAction: TextInputAction.next,
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
-                      if (value.isEmpty) {
+                      if (value==null || value.isEmpty) {
                         return AppLocalizations.of(context).invalidUsername;
                       }
                       if (!RegExp(r'^[\w.@+-]+$').hasMatch(value!)) {
