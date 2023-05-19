@@ -159,7 +159,7 @@
   },
   "loginInstead": "登录",
   "@loginInstead": {},
-  "registerInstead": "注册",
+  "registerInstead": "没有帐户？点击注册",
   "@registerInstead": {},
   "reset": "重置",
   "@reset": {
@@ -556,5 +556,11 @@
   "logged": "已记录",
   "@logged": {
     "description": "Header for the column of 'logged' nutritional values, i.e. what was eaten"
+  },
+  "userProfile": "账户",
+  "@userProfile": {},
+  "exerciseName": "锻炼名",
+  "@exerciseName": {
+    "description": "Label for the name of a workout exercise"
   }
 }

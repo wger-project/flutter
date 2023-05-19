@@ -36,8 +36,12 @@ const DEFAULT_WEIGHT_UNIT = 1;
 /// Default impression for a workout session (neutral)
 const DEFAULT_IMPRESSION = 2;
 
-/// Default weight unit is "repetition"
-const DEFAULT_REPETITION_UNIT = 1;
+// Weight and repetition units for the workout logs
+const REP_UNIT_REPETITIONS = 1;
+const REP_UNIT_TILL_FAILURE = 2;
+
+const WEIGHT_UNIT_KG = 1;
+const WEIGHT_UNIT_LB = 2;
 
 /// Time to locally cache values such as ingredients, etc
 const DAYS_TO_CACHE = 20;
