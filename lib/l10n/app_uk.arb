@@ -717,5 +717,9 @@
   "cacheWarning": "Через кешування може знадобитися деякий час, перш ніж зміни стануть видимими у всьому застосунку.",
   "@cacheWarning": {},
   "searchNamesInEnglish": "Також шукайте імена англійською мовою",
-  "@searchNamesInEnglish": {}
+  "@searchNamesInEnglish": {},
+  "textPromptTitle": "Готові почати?",
+  "@textPromptTitle": {},
+  "textPromptSubheading": "Натисніть кнопку дії, щоб почати",
+  "@textPromptSubheading": {}
 }

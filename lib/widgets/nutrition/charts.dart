@@ -178,8 +178,8 @@ class NutritionalPlanHatchBarChartWidget extends StatelessWidget {
     return Column(
       children: [
         Container(
-           padding: const EdgeInsets.all(15),
-            height: 220,
+          padding: const EdgeInsets.all(15),
+          height: 220,
           child: charts.BarChart(
             [
               charts.Series<NutritionData, String>(
@@ -187,8 +187,8 @@ class NutritionalPlanHatchBarChartWidget extends StatelessWidget {
                 domainFn: (nutritionEntry, index) => nutritionEntry.name,
                 measureFn: (nutritionEntry, index) => nutritionEntry.value,
                 data: [
-                  NutritionData(
-                      AppLocalizations.of(context).energy, _nutritionalPlan.nutritionalValues.energy),
+                  NutritionData(AppLocalizations.of(context).energy,
+                      _nutritionalPlan.nutritionalValues.energy),
                 ],
               ),
               charts.Series<NutritionData, String>(
@@ -197,7 +197,8 @@ class NutritionalPlanHatchBarChartWidget extends StatelessWidget {
                 measureFn: (nutritionEntry, index) => nutritionEntry.value,
                 fillPatternFn: (nutritionEntry, index) => charts.FillPatternType.forwardHatch,
                 data: [
-                  NutritionData(AppLocalizations.of(context).energy, loggedNutritionalValues.energy),
+                  NutritionData(
+                      AppLocalizations.of(context).energy, loggedNutritionalValues.energy),
                 ],
               ),
               charts.Series<NutritionData, String>(
@@ -223,8 +224,9 @@ class NutritionalPlanHatchBarChartWidget extends StatelessWidget {
             ),
           ),
         ),
-        Container( padding: const EdgeInsets.all(15),
-            height: 300,
+        Container(
+          padding: const EdgeInsets.all(15),
+          height: 300,
           child: charts.BarChart(
             [
               charts.Series<NutritionData, String>(
@@ -276,7 +278,7 @@ class NutritionalPlanHatchBarChartWidget extends StatelessWidget {
                   //     AppLocalizations.of(context).energy,
                   //     loggedNutritionalValues.energy
                   //   ),
-        
+
                   NutritionData(
                       AppLocalizations.of(context).protein, loggedNutritionalValues.protein),
                   NutritionData(AppLocalizations.of(context).carbohydrates,
@@ -286,8 +288,10 @@ class NutritionalPlanHatchBarChartWidget extends StatelessWidget {
                   NutritionData(AppLocalizations.of(context).fat, loggedNutritionalValues.fat),
                   NutritionData(AppLocalizations.of(context).saturatedFat,
                       loggedNutritionalValues.fatSaturated),
-                  NutritionData(AppLocalizations.of(context).fibres, loggedNutritionalValues.fibres),
-                  NutritionData(AppLocalizations.of(context).sodium, loggedNutritionalValues.sodium),
+                  NutritionData(
+                      AppLocalizations.of(context).fibres, loggedNutritionalValues.fibres),
+                  NutritionData(
+                      AppLocalizations.of(context).sodium, loggedNutritionalValues.sodium),
                 ],
               ),
               charts.Series<NutritionData, String>(
@@ -299,9 +303,11 @@ class NutritionalPlanHatchBarChartWidget extends StatelessWidget {
                   NutritionData(AppLocalizations.of(context).protein, sevenDayAvg.protein),
                   NutritionData(
                       AppLocalizations.of(context).carbohydrates, sevenDayAvg.carbohydrates),
-                  NutritionData(AppLocalizations.of(context).sugars, sevenDayAvg.carbohydratesSugar),
+                  NutritionData(
+                      AppLocalizations.of(context).sugars, sevenDayAvg.carbohydratesSugar),
                   NutritionData(AppLocalizations.of(context).fat, sevenDayAvg.fat),
-                  NutritionData(AppLocalizations.of(context).saturatedFat, sevenDayAvg.fatSaturated),
+                  NutritionData(
+                      AppLocalizations.of(context).saturatedFat, sevenDayAvg.fatSaturated),
                   NutritionData(AppLocalizations.of(context).fibres, sevenDayAvg.fibres),
                   NutritionData(AppLocalizations.of(context).sodium, sevenDayAvg.sodium),
                 ],
