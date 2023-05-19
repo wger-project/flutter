@@ -85,7 +85,7 @@ class WorkoutPlansProvider with ChangeNotifier {
 
   /// Return the default weight unit (reps)
   RepetitionUnit get defaultRepetitionUnit {
-    return _repetitionUnit.firstWhere((element) => element.id == DEFAULT_REPETITION_UNIT);
+    return _repetitionUnit.firstWhere((element) => element.id == REP_UNIT_REPETITIONS);
   }
 
   List<WorkoutPlan> getPlans() {
