@@ -190,7 +190,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                   Container(
                     padding: const EdgeInsets.all(15),
                     height: 180,
-                    child: FlNutritionalPlanPieChartWidget(_plan!.nutritionalValues),
+                    child: NutritionalPlanPieChartWidget(_plan!.nutritionalValues),
                   )
                 ],
               ),

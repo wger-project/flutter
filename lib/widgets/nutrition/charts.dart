@@ -21,9 +21,11 @@ import 'package:collection/collection.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:wger/helpers/colors.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
 import 'package:wger/theme/theme.dart';
+import 'package:wger/widgets/core/charts.dart';
 
 class NutritionData {
   final String name;
@@ -32,133 +34,125 @@ class NutritionData {
   NutritionData(this.name, this.value);
 }
 
-class FlNutritionalPlanPieChartWidget extends StatefulWidget {
+class NutritionalPlanPieChartWidget extends StatefulWidget {
   final NutritionalValues nutritionalValues;
 
-  const FlNutritionalPlanPieChartWidget(this.nutritionalValues);
+  const NutritionalPlanPieChartWidget(this.nutritionalValues);
 
   @override
   State<StatefulWidget> createState() => FlNutritionalPlanPieChartState();
 }
 
-class FlNutritionalPlanPieChartState extends State<FlNutritionalPlanPieChartWidget> {
+class FlNutritionalPlanPieChartState extends State<NutritionalPlanPieChartWidget> {
   int touchedIndex = -1;
 
   @override
   Widget build(BuildContext context) {
-    return PieChart(
-      PieChartData(
-        pieTouchData: PieTouchData(
-          touchCallback: (FlTouchEvent event, pieTouchResponse) {
-            setState(() {
-              if (!event.isInterestedForInteractions ||
-                  pieTouchResponse == null ||
-                  pieTouchResponse.touchedSection == null) {
-                touchedIndex = -1;
-                return;
-              }
-              touchedIndex = pieTouchResponse.touchedSection!.touchedSectionIndex;
-            });
-          },
+    return Row(
+      children: [
+        const SizedBox(
+          height: 18,
         ),
-        borderData: FlBorderData(
-          show: false,
+        Expanded(
+          child: AspectRatio(
+            aspectRatio: 1,
+            child: PieChart(
+              PieChartData(
+                pieTouchData: PieTouchData(
+                  touchCallback: (FlTouchEvent event, pieTouchResponse) {
+                    setState(() {
+                      if (!event.isInterestedForInteractions ||
+                          pieTouchResponse == null ||
+                          pieTouchResponse.touchedSection == null) {
+                        touchedIndex = -1;
+                        return;
+                      }
+                      touchedIndex = pieTouchResponse.touchedSection!.touchedSectionIndex;
+                    });
+                  },
+                ),
+                borderData: FlBorderData(
+                  show: false,
+                ),
+                sectionsSpace: 0,
+                centerSpaceRadius: 0,
+                sections: showingSections(),
+              ),
+            ),
+          ),
         ),
-        sectionsSpace: 0,
-        centerSpaceRadius: 40,
-        sections: showingSections(),
-      ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Indicator(
+              color: LIST_OF_COLORS3[0],
+              text: AppLocalizations.of(context).fat,
+              isSquare: true,
+            ),
+            const SizedBox(
+              height: 4,
+            ),
+            Indicator(
+              color: LIST_OF_COLORS3[1],
+              text: AppLocalizations.of(context).protein,
+              isSquare: true,
+            ),
+            const SizedBox(
+              height: 4,
+            ),
+            Indicator(
+              color: LIST_OF_COLORS3[2],
+              text: AppLocalizations.of(context).carbohydrates,
+              isSquare: true,
+            ),
+          ],
+        ),
+        const SizedBox(
+          width: 28,
+        ),
+      ],
     );
   }
 
   List<PieChartSectionData> showingSections() {
+    final colors = generateChartColors(3).iterator;
+
     return List.generate(3, (i) {
       final isTouched = i == touchedIndex;
-      final fontSize = isTouched ? 25.0 : 16.0;
-      final radius = isTouched ? 60.0 : 50.0;
+      final radius = isTouched ? 92.0 : 80.0;
+      colors.moveNext();
+
       switch (i) {
         case 0:
           return PieChartSectionData(
-            color: Colors.blue,
-            value: widget.nutritionalValues.fat,
-            title: AppLocalizations.of(context).fat,
-            radius: radius,
-            titleStyle: TextStyle(fontSize: fontSize),
-          );
+              color: colors.current,
+              value: widget.nutritionalValues.fat,
+              title: '${widget.nutritionalValues.fat.toStringAsFixed(1)}g',
+              titlePositionPercentageOffset: 0.5,
+              radius: radius,
+              titleStyle: const TextStyle(color: Colors.white70));
         case 1:
           return PieChartSectionData(
-            color: Colors.amber,
+            color: colors.current,
             value: widget.nutritionalValues.protein,
-            title: AppLocalizations.of(context).protein,
+            title: '${widget.nutritionalValues.protein.toStringAsFixed(1)}g',
+            titlePositionPercentageOffset: 0.5,
             radius: radius,
-            titleStyle: TextStyle(fontSize: fontSize),
           );
         case 2:
           return PieChartSectionData(
-            color: Colors.purple,
+            color: colors.current,
             value: widget.nutritionalValues.carbohydrates,
-            title: AppLocalizations.of(context).carbohydrates,
+            title: '${widget.nutritionalValues.carbohydrates.toStringAsFixed(1)}g',
+            titlePositionPercentageOffset: 0.5,
             radius: radius,
-            titleStyle: TextStyle(fontSize: fontSize),
           );
 
         default:
           throw Error();
       }
     });
-  }
-}
-
-/// Nutritional plan pie chart widget
-class NutritionalPlanPieChartWidget extends StatelessWidget {
-  final NutritionalValues _nutritionalValues;
-
-  /// [_nutritionalValues] are the calculated [NutritionalValues] for the wanted
-  /// plan.
-  const NutritionalPlanPieChartWidget(this._nutritionalValues);
-
-  @override
-  Widget build(BuildContext context) {
-    if (_nutritionalValues.energy == 0) {
-      return Container();
-    }
-
-    return charts.PieChart<String>([
-      charts.Series<NutritionData, String>(
-        id: 'NutritionalValues',
-        domainFn: (nutritionEntry, index) => nutritionEntry.name,
-        measureFn: (nutritionEntry, index) => nutritionEntry.value,
-        data: [
-          NutritionData(
-            AppLocalizations.of(context).protein,
-            _nutritionalValues.protein,
-          ),
-          NutritionData(
-            AppLocalizations.of(context).fat,
-            _nutritionalValues.fat,
-          ),
-          NutritionData(
-            AppLocalizations.of(context).carbohydrates,
-            _nutritionalValues.carbohydrates,
-          ),
-        ],
-        labelAccessorFn: (NutritionData row, _) =>
-            '${row.name}\n${row.value.toStringAsFixed(0)}${AppLocalizations.of(context).g}',
-      )
-    ],
-        defaultRenderer: charts.ArcRendererConfig(arcWidth: 60, arcRendererDecorators: [
-          charts.ArcLabelDecorator(
-            labelPosition: charts.ArcLabelPosition.outside,
-          )
-        ])
-        /*
-      defaultRenderer: new charts.ArcRendererConfig(
-        arcWidth: 60,
-        arcRendererDecorators: [new charts.ArcLabelDecorator()],
-      ),
-
-       */
-        );
   }
 }
 
