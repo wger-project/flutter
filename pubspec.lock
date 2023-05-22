@@ -728,10 +728,10 @@ packages:
     dependency: "direct main"
     description:
       name: package_info_plus
-      sha256: "10259b111176fba5c505b102e3a5b022b51dd97e30522e906d6922c745584745"
+      sha256: "28386bbe89ab5a7919a47cea99cdd1128e5a6e0bbd7eaafe20440ead84a15de3"
       url: "https://pub.dev"
     source: hosted
-    version: "3.1.2"
+    version: "4.0.1"
   package_info_plus_platform_interface:
     dependency: transitive
     description:
