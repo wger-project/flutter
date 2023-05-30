@@ -327,10 +327,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_html
-      sha256: "342c7908f0a67bcec62b6e0f7cf23e23bafe7f64693665dd35be98d5e783bdfd"
+      sha256: "850c07bc6c1ed060d3eb3e88469a598260a13eb45d8978b197c1348e0a2b101f"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.0-alpha.6"
+    version: "3.0.0-beta.1"
   flutter_keyboard_visibility:
     dependency: transitive
     description:
@@ -620,6 +620,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.1"
+  list_counter:
+    dependency: transitive
+    description:
+      name: list_counter
+      sha256: c447ae3dfcd1c55f0152867090e67e219d42fe6d4f2807db4bbe8b8d69912237
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.2"
   logging:
     dependency: transitive
     description:
@@ -708,14 +716,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
-  numerus:
-    dependency: transitive
-    description:
-      name: numerus
-      sha256: "436759d84f233b40107d0cc31cfa92d24e0960afeb2e506be70926d4cddffd9e"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.0"
   package_config:
     dependency: transitive
     description:
