@@ -9,9 +9,9 @@
   "@labelWorkoutPlans": {
     "description": "Title for screen workout plans"
   },
-  "registerInstead": "Зарегистроваться вместо этого",
+  "registerInstead": "У вас нет аккаунта? Зарегистрируйтесь сейчас",
   "@registerInstead": {},
-  "loginInstead": "Войти вместо этого",
+  "loginInstead": "Уже есть аккаунт? Войти",
   "@loginInstead": {},
   "labelDashboard": "Панель управления",
   "@labelDashboard": {
@@ -564,5 +564,238 @@
     "placeholders": {
       "min": {}
     }
+  },
+  "noMeasurementEntries": "У вас нет записей измерений",
+  "@noMeasurementEntries": {},
+  "moreMeasurementEntries": "Добавить новое измерение",
+  "@moreMeasurementEntries": {
+    "description": "Message shown when the user wants to add new measurement"
+  },
+  "userProfile": "Ваш профиль",
+  "@userProfile": {},
+  "exerciseList": "Список упражнений",
+  "@exerciseList": {},
+  "baseNameEnglish": "Для всех упражнений необходимо базовое название на английском языке",
+  "@baseNameEnglish": {},
+  "verifiedEmail": "Подтвержденный адрес электронной почты",
+  "@verifiedEmail": {},
+  "swiss_ball": "Гимнастический мяч",
+  "@swiss_ball": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "chest": "Грудь",
+  "@chest": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kettlebell": "Гиря",
+  "@kettlebell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "calves": "Икры",
+  "@calves": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "success": "Успешно",
+  "@success": {
+    "description": "Message when an action completed successfully, usually used as a heading"
+  },
+  "exerciseName": "Название упражнения",
+  "@exerciseName": {
+    "description": "Label for the name of a workout exercise"
+  },
+  "textPromptTitle": "Готовы начать?",
+  "@textPromptTitle": {},
+  "body_weight": "Вес тела",
+  "@body_weight": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "cardio": "Кардио",
+  "@cardio": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "dumbbell": "Гантели",
+  "@dumbbell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "gym_mat": "Спортивный коврик",
+  "@gym_mat": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "incline_bench": "Наклонная скамья",
+  "@incline_bench": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kilometers_per_hour": "км/ч",
+  "@kilometers_per_hour": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "lats": "Широчайшие",
+  "@lats": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "miles": "Мили",
+  "@miles": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "miles_per_hour": "миль/ч",
+  "@miles_per_hour": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "plates": "Блины",
+  "@plates": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "quads": "Четырехглавые",
+  "@quads": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "sz_bar": "SZ-гриф",
+  "@sz_bar": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kg": "кг",
+  "@kg": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "lb": "фунт",
+  "@lb": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "images": "Изображения",
+  "@images": {},
+  "language": "Язык",
+  "@language": {},
+  "abs": "Пресс",
+  "@abs": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "arms": "Руки",
+  "@arms": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "back": "Спина",
+  "@back": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "biceps": "Бицепсы",
+  "@biceps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "translation": "Перевод",
+  "@translation": {},
+  "baseData": "Основы на английском",
+  "@baseData": {
+    "description": "The base data for an exercise such as category, trained muscles, etc."
+  },
+  "glutes": "Ягодицы",
+  "@glutes": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kilometers": "Километры",
+  "@kilometers": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "seconds": "Секунд",
+  "@seconds": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "until_failure": "До отказа",
+  "@until_failure": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "bench": "Скамья",
+  "@bench": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "barbell": "Штанга",
+  "@barbell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "none__bodyweight_exercise_": "без (с собственным весом)",
+  "@none__bodyweight_exercise_": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "shoulders": "Плечи",
+  "@shoulders": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "next": "Следующее",
+  "@next": {},
+  "pull_up_bar": "Турник",
+  "@pull_up_bar": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "exercises": "Упражнения",
+  "@exercises": {
+    "description": "Multiple exercises for a workout"
+  },
+  "add_exercise_image_license": "Изображения должны быть совместимы с CC BY SA лицензией. Если вы сомневаетесь, загружайте только те фотографии, которые вы сделали сами",
+  "@add_exercise_image_license": {},
+  "unVerifiedEmail": "Неподтвержденный адрес электронной почты",
+  "@unVerifiedEmail": {},
+  "contributeExercise": "Добавить упражнение",
+  "@contributeExercise": {},
+  "addExercise": "Добавить упражнение",
+  "@addExercise": {},
+  "translateExercise": "Перевести это упражнение",
+  "@translateExercise": {},
+  "contributeExerciseWarning": "Вы можете добавлять упражнения только в том случае, если ваша учетная запись старше {days} дней и вы подтвердили свою электронную почту",
+  "@contributeExerciseWarning": {
+    "description": "Number of days before which a person can add exercise",
+    "placeholders": {
+      "days": {
+        "type": "String",
+        "example": "14"
+      }
+    }
+  },
+  "textPromptSubheading": "Нажмите кнопку действия, чтобы начать",
+  "@textPromptSubheading": {},
+  "minutes": "Минут",
+  "@minutes": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "triceps": "Трицепс",
+  "@triceps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "searchNamesInEnglish": "Также ищите названия на английском",
+  "@searchNamesInEnglish": {},
+  "selectEntry": "Пожалуйста, выберите запись",
+  "@selectEntry": {},
+  "variations": "Варианты",
+  "@variations": {
+    "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"
+  },
+  "alsoKnownAs": "Также известно как: {aliases}",
+  "@alsoKnownAs": {
+    "placeholders": {
+      "aliases": {}
+    },
+    "description": "List of alternative names for an exercise"
+  },
+  "verifiedEmailReason": "Вам необходимо подтвердить свой адрес электронной почты, чтобы добавлять упражнения",
+  "@verifiedEmailReason": {},
+  "verifiedEmailInfo": "Письмо с подтверждением отправлено на {email}",
+  "@verifiedEmailInfo": {
+    "placeholders": {
+      "email": {}
+    }
+  },
+  "alternativeNames": "Альтернативные названия",
+  "@alternativeNames": {},
+  "oneNamePerLine": "Одно название на строку",
+  "@oneNamePerLine": {},
+  "whatVariationsExist": "Какие варианты этого упражнения существуют, если таковые имеются?",
+  "@whatVariationsExist": {},
+  "previous": "Предыдущее",
+  "@previous": {},
+  "aboutPageTitle": "О Wger",
+  "@aboutPageTitle": {},
+  "cacheWarning": "Из-за кэширования может пройти некоторое время, прежде чем изменения станут видны во всем приложении.",
+  "@cacheWarning": {},
+  "legs": "Ноги",
+  "@legs": {
+    "description": "Generated entry for translation for server strings"
   }
 }
