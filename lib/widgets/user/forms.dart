@@ -22,6 +22,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/user/profile.dart';
 import 'package:wger/providers/user.dart';
+import 'package:wger/theme/theme.dart';
 
 class UserProfileForm extends StatelessWidget {
   late final Profile _profile;
@@ -40,39 +41,23 @@ class UserProfileForm extends StatelessWidget {
       child: Column(
         children: [
           ListTile(
+            leading: const Icon(Icons.person, color: wgerPrimaryColor),
             title: Text(AppLocalizations.of(context).username),
             subtitle: Text(_profile.username),
           ),
           ListTile(
-            title: Text(
-              _profile.emailVerified
-                  ? AppLocalizations.of(context).verifiedEmail
-                  : AppLocalizations.of(context).unVerifiedEmail,
-            ),
-            subtitle: Text(AppLocalizations.of(context).verifiedEmailReason),
-            trailing: _profile.emailVerified
-                ? const Icon(Icons.mark_email_read, color: Colors.green)
-                : const Icon(Icons.forward_to_inbox),
-            onTap: () async {
-              // Email is already verified
-              if (_profile.emailVerified) {
-                return;
-              }
-
-              // Verify
-              await context.read<UserProvider>().verifyEmail();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    AppLocalizations.of(context).verifiedEmailInfo(_profile.email),
-                  ),
-                ),
-              );
-            },
-          ),
-          ListTile(
+            leading: const Icon(Icons.email_rounded, color: wgerPrimaryColor),
             title: TextFormField(
-              decoration: InputDecoration(labelText: AppLocalizations.of(context).email),
+              decoration: InputDecoration(
+                  labelText: _profile.emailVerified
+                      ? AppLocalizations.of(context).verifiedEmail
+                      : AppLocalizations.of(context).unVerifiedEmail,
+                  suffixIcon: _profile.emailVerified
+                      ? const Icon(
+                          Icons.check_circle,
+                          color: Colors.green,
+                        )
+                      : null),
               controller: emailController,
               keyboardType: TextInputType.emailAddress,
               onSaved: (newValue) {
@@ -86,8 +71,30 @@ class UserProfileForm extends StatelessWidget {
               },
             ),
           ),
+          if (!_profile.emailVerified)
+            OutlinedButton(
+              onPressed: () async {
+                // Email is already verified
+                if (_profile.emailVerified) {
+                  return;
+                }
+
+                // Verify
+                await context.read<UserProvider>().verifyEmail();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      AppLocalizations.of(context).verifiedEmailInfo(_profile.email),
+                    ),
+                  ),
+                );
+              },
+              child: Text(AppLocalizations.of(context).verify),
+            ),
           ElevatedButton(
-            child: Text(AppLocalizations.of(context).save),
+            style: ElevatedButton.styleFrom(
+                backgroundColor: wgerPrimaryButtonColor,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50))),
             onPressed: () async {
               // Validate and save the current values to the weightEntry
               final isValid = _form.currentState!.validate();
@@ -103,6 +110,7 @@ class UserProfileForm extends StatelessWidget {
                 SnackBar(content: Text(AppLocalizations.of(context).successfullySaved)),
               );
             },
+            child: Text(AppLocalizations.of(context).save),
           ),
         ],
       ),
