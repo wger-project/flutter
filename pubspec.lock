@@ -433,10 +433,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_typeahead
-      sha256: "5af4f54a3f051ff3b549b8f2b952e5ad3e5f60ee4717fd27406d1c64d3e24edd"
+      sha256: d72e7079d01b4ec109a12b01b06a85c09a41ae4531f8a0ca5ef9f759ce4e64a2
       url: "https://pub.dev"
     source: hosted
-    version: "4.5.0"
+    version: "4.6.1"
   flutter_web_plugins:
     dependency: transitive
     description: flutter
@@ -804,6 +804,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.4"
+  pointer_interceptor:
+    dependency: transitive
+    description:
+      name: pointer_interceptor
+      sha256: "6aa680b30d96dccef496933d00208ad25f07e047f644dc98ce03ec6141633a9a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.9.3+4"
   pool:
     dependency: transitive
     description:
