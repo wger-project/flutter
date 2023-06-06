@@ -745,5 +745,11 @@
   "plates": "Пластини",
   "@plates": {
     "description": "Generated entry for translation for server strings"
+  },
+  "verify": "Підтвердити",
+  "@verify": {},
+  "max_reps": "Максимальна кількість повторень",
+  "@max_reps": {
+    "description": "Generated entry for translation for server strings"
   }
 }
