@@ -719,6 +719,10 @@
   "@legs": {
     "description": "Generated entry for translation for server strings"
   },
+  "max_reps": "Max Reps",
+  "@max_reps": {
+    "description": "Generated entry for translation for server strings"
+  },
   "miles": "Miles",
   "@miles": {
     "description": "Generated entry for translation for server strings"
