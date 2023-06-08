@@ -65,7 +65,8 @@ class _FakeResponse_3 extends _i1.SmartFake implements _i2.Response {
         );
 }
 
-class _FakeStreamedResponse_4 extends _i1.SmartFake implements _i2.StreamedResponse {
+class _FakeStreamedResponse_4 extends _i1.SmartFake
+    implements _i2.StreamedResponse {
   _FakeStreamedResponse_4(
     Object parent,
     Invocation parentInvocation,
@@ -108,7 +109,8 @@ class MockAuthProvider extends _i1.Mock implements _i3.AuthProvider {
         returnValueForMissingStub: null,
       );
   @override
-  set applicationVersion(_i4.PackageInfo? _applicationVersion) => super.noSuchMethod(
+  set applicationVersion(_i4.PackageInfo? _applicationVersion) =>
+      super.noSuchMethod(
         Invocation.setter(
           #applicationVersion,
           _applicationVersion,
@@ -227,7 +229,8 @@ class MockAuthProvider extends _i1.Mock implements _i3.AuthProvider {
             #serverUrl: serverUrl,
           },
         ),
-        returnValue: _i5.Future<Map<String, _i3.LoginActions>>.value(<String, _i3.LoginActions>{}),
+        returnValue: _i5.Future<Map<String, _i3.LoginActions>>.value(
+            <String, _i3.LoginActions>{}),
       ) as _i5.Future<Map<String, _i3.LoginActions>>);
   @override
   _i5.Future<Map<String, _i3.LoginActions>> login(
@@ -244,7 +247,8 @@ class MockAuthProvider extends _i1.Mock implements _i3.AuthProvider {
             serverUrl,
           ],
         ),
-        returnValue: _i5.Future<Map<String, _i3.LoginActions>>.value(<String, _i3.LoginActions>{}),
+        returnValue: _i5.Future<Map<String, _i3.LoginActions>>.value(
+            <String, _i3.LoginActions>{}),
       ) as _i5.Future<Map<String, _i3.LoginActions>>);
   @override
   _i5.Future<String> getServerUrlFromPrefs() => (super.noSuchMethod(
@@ -355,7 +359,8 @@ class MockWgerBaseProvider extends _i1.Mock implements _i7.WgerBaseProvider {
         returnValueForMissingStub: null,
       );
   @override
-  Map<String, String> getDefaultHeaders({dynamic includeAuth = false}) => (super.noSuchMethod(
+  Map<String, String> getDefaultHeaders({dynamic includeAuth = false}) =>
+      (super.noSuchMethod(
         Invocation.method(
           #getDefaultHeaders,
           [],
@@ -399,7 +404,8 @@ class MockWgerBaseProvider extends _i1.Mock implements _i7.WgerBaseProvider {
           #fetch,
           [uri],
         ),
-        returnValue: _i5.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
+        returnValue:
+            _i5.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
       ) as _i5.Future<Map<String, dynamic>>);
   @override
   _i5.Future<List<dynamic>> fetchPaginated(Uri? uri) => (super.noSuchMethod(
@@ -422,7 +428,8 @@ class MockWgerBaseProvider extends _i1.Mock implements _i7.WgerBaseProvider {
             uri,
           ],
         ),
-        returnValue: _i5.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
+        returnValue:
+            _i5.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
       ) as _i5.Future<Map<String, dynamic>>);
   @override
   _i5.Future<Map<String, dynamic>> patch(
@@ -437,7 +444,8 @@ class MockWgerBaseProvider extends _i1.Mock implements _i7.WgerBaseProvider {
             uri,
           ],
         ),
-        returnValue: _i5.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
+        returnValue:
+            _i5.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
       ) as _i5.Future<Map<String, dynamic>>);
   @override
   _i5.Future<_i2.Response> deleteRequest(
@@ -660,12 +668,14 @@ class MockClient extends _i1.Mock implements _i2.Client {
         returnValue: _i5.Future<_i9.Uint8List>.value(_i9.Uint8List(0)),
       ) as _i5.Future<_i9.Uint8List>);
   @override
-  _i5.Future<_i2.StreamedResponse> send(_i2.BaseRequest? request) => (super.noSuchMethod(
+  _i5.Future<_i2.StreamedResponse> send(_i2.BaseRequest? request) =>
+      (super.noSuchMethod(
         Invocation.method(
           #send,
           [request],
         ),
-        returnValue: _i5.Future<_i2.StreamedResponse>.value(_FakeStreamedResponse_4(
+        returnValue:
+            _i5.Future<_i2.StreamedResponse>.value(_FakeStreamedResponse_4(
           this,
           Invocation.method(
             #send,

@@ -9,7 +9,12 @@ part of 'profile.dart';
 Profile _$ProfileFromJson(Map<String, dynamic> json) {
   $checkKeys(
     json,
-    requiredKeys: const ['username', 'email_verified', 'is_trustworthy', 'email'],
+    requiredKeys: const [
+      'username',
+      'email_verified',
+      'is_trustworthy',
+      'email'
+    ],
   );
   return Profile(
     username: json['username'] as String,

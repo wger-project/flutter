@@ -43,11 +43,12 @@ Ingredient _$IngredientFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$IngredientToJson(Ingredient instance) => <String, dynamic>{
+Map<String, dynamic> _$IngredientToJson(Ingredient instance) =>
+    <String, dynamic>{
       'id': instance.id,
       'code': instance.code,
       'name': instance.name,
-      'creation_date': toDate(instance.creationDate),
+      'creation_date': instance.creationDate.toIso8601String(),
       'energy': instance.energy,
       'carbohydrates': numToString(instance.carbohydrates),
       'carbohydrates_sugar': numToString(instance.carbohydratesSugar),
