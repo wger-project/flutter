@@ -34,7 +34,7 @@ class Ingredient {
   @JsonKey(required: true)
   final String name;
 
-  @JsonKey(required: true, name: 'creation_date', toJson: toDate)
+  @JsonKey(required: true, name: 'creation_date')
   final DateTime creationDate;
 
   /// Energy in kJ per 100g of product

@@ -241,6 +241,8 @@
   },
   "save": "Save",
   "@save": {},
+  "verify": "Verify",
+  "@verify": {},
   "addSet": "Add set",
   "@addSet": {
     "description": "Label for the button that adds a set (to a workout day)"
@@ -635,37 +637,154 @@
     }
   },
   "cacheWarning": "Due to caching it might take some time till the changes are visible throughout the application.",
-  "abs": "Abs",
-  "arms": "Arms",
-  "back": "Back",
-  "barbell": "Barbell",
-  "bench": "Bench",
-  "biceps": "Biceps",
-  "calves": "Calves",
-  "cardio": "Cardio",
-  "chest": "Chest",
-  "dumbbell": "Dumbbell",
-  "glutes": "Glutes",
-  "gym_mat": "Gym mat",
-  "hamstrings": "Hamstrings",
-  "incline_bench": "Incline bench",
-  "kettlebell": "Kettlebell",
-  "kilometers": "Kilometers",
-  "lats": "Lats",
-  "legs": "Legs",
-  "lower_back": "Lower back",
-  "miles": "Miles",
-  "minutes": "Minutes",
-  "pull_up_bar": "Pull-up bar",
-  "quads": "Quads",
-  "repetitions": "Repetitions",
-  "sz_bar": "SZ-Bar",
-  "seconds": "Seconds",
-  "shoulders": "Shoulders",
-  "swiss_ball": "Swiss Ball",
-  "triceps": "Triceps",
-  "until_failure": "Until Failure",
-  "none__bodyweight_exercise_": "none (bodyweight exercise)",
   "textPromptTitle": "Ready to start?",
-  "textPromptSubheading": "Press the action button to begin"
+  "textPromptSubheading": "Press the action button to begin",
+  "abs": "Abs",
+  "@abs": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "arms": "Arms",
+  "@arms": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "back": "Back",
+  "@back": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "barbell": "Barbell",
+  "@barbell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "bench": "Bench",
+  "@bench": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "biceps": "Biceps",
+  "@biceps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "body_weight": "Body Weight",
+  "@body_weight": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "calves": "Calves",
+  "@calves": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "cardio": "Cardio",
+  "@cardio": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "chest": "Chest",
+  "@chest": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "dumbbell": "Dumbbell",
+  "@dumbbell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "glutes": "Glutes",
+  "@glutes": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "gym_mat": "Gym mat",
+  "@gym_mat": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "hamstrings": "Hamstrings",
+  "@hamstrings": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "incline_bench": "Incline bench",
+  "@incline_bench": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kettlebell": "Kettlebell",
+  "@kettlebell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kilometers": "Kilometers",
+  "@kilometers": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kilometers_per_hour": "Kilometers Per Hour",
+  "@kilometers_per_hour": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "lats": "Lats",
+  "@lats": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "legs": "Legs",
+  "@legs": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "max_reps": "Max Reps",
+  "@max_reps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "miles": "Miles",
+  "@miles": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "miles_per_hour": "Miles Per Hour",
+  "@miles_per_hour": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "minutes": "Minutes",
+  "@minutes": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "plates": "Plates",
+  "@plates": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "pull_up_bar": "Pull-up bar",
+  "@pull_up_bar": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "quads": "Quads",
+  "@quads": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "repetitions": "Repetitions",
+  "@repetitions": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "sz_bar": "SZ-Bar",
+  "@sz_bar": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "seconds": "Seconds",
+  "@seconds": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "shoulders": "Shoulders",
+  "@shoulders": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "swiss_ball": "Swiss Ball",
+  "@swiss_ball": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "triceps": "Triceps",
+  "@triceps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "until_failure": "Until Failure",
+  "@until_failure": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kg": "kg",
+  "@kg": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "lb": "lb",
+  "@lb": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "none__bodyweight_exercise_": "none (bodyweight exercise)",
+  "@none__bodyweight_exercise_": {
+    "description": "Generated entry for translation for server strings"
+  }
 }
