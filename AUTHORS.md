@@ -19,6 +19,7 @@
 - Aman Negi - <https://github.com/AmanNegi>
 - Sandi Milohanic - <https://github.com/sandimilohanic>
 - Miroslav Mazel - <https://gitlab.com/12people>
+- artchiee - <https://github.com/artchiee>
 
 ## Translators
 
