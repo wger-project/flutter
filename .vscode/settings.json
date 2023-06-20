@@ -1,24 +1,4 @@
 {
   "dart.lineLength": 100,
   "diffEditor.ignoreTrimWhitespace": true,
-  "workbench.colorCustomizations": {
-    "activityBar.activeBackground": "#55b9e8",
-    "activityBar.background": "#55b9e8",
-    "activityBar.foreground": "#15202b",
-    "activityBar.inactiveForeground": "#15202b99",
-    "activityBarBadge.background": "#c51b8e",
-    "activityBarBadge.foreground": "#e7e7e7",
-    "commandCenter.border": "#15202b99",
-    "sash.hoverBorder": "#55b9e8",
-    "statusBar.background": "#28a7e2",
-    "statusBar.foreground": "#15202b",
-    "statusBarItem.hoverBackground": "#1a89bd",
-    "statusBarItem.remoteBackground": "#28a7e2",
-    "statusBarItem.remoteForeground": "#15202b",
-    "titleBar.activeBackground": "#28a7e2",
-    "titleBar.activeForeground": "#15202b",
-    "titleBar.inactiveBackground": "#28a7e299",
-    "titleBar.inactiveForeground": "#15202b99"
-  },
-  "peacock.color": "#28a7e2"
 }
