@@ -17,13 +17,14 @@
  */
 
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+//import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-//import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/platform.dart';
@@ -33,22 +34,20 @@ import 'package:wger/widgets/core/core.dart';
 
 import 'package:flutter_zxing/flutter_zxing.dart';
 
+
 class ScanReader extends StatelessWidget {
   String? scannedr;
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: ReaderWidget(
-        onScan: (result) {
-          debugPrint('Reader widget res : => ');
-          scannedr = result.text;
-          debugPrint(scannedr);
-          Navigator.pop(context, scannedr);
-        },
-      ),
-    );
-  }
+  Widget build(BuildContext context) => Scaffold(
+        body: ReaderWidget(
+          onScan: (result) {
+            scannedr = result.text;
+            Navigator.pop(context, scannedr);
+          },
+        ),
+      );
+
 }
 
 class IngredientTypeahead extends StatefulWidget {
@@ -56,7 +55,7 @@ class IngredientTypeahead extends StatefulWidget {
   final TextEditingController _ingredientIdController;
 
   String? barcode = '';
-  Code? result;
+  //Code? result;
 
   late final bool? test;
   final bool showScanner;
@@ -76,20 +75,20 @@ class IngredientTypeahead extends StatefulWidget {
 class _IngredientTypeaheadState extends State<IngredientTypeahead> {
   var _searchEnglish = true;
 
-  Future<String> _readerscan(BuildContext context) async {
-    String barcode;
+  Future<String> readerscan(BuildContext context) async {
+    String scannedcode;
     try {
-      barcode =
+      scannedcode =
           await Navigator.of(context).push(MaterialPageRoute(builder: (context) => ScanReader()));
 
-      if (barcode.compareTo('-1') == 0) {
+      if (scannedcode.compareTo('-1') == 0) {
         return '';
       }
     } on PlatformException {
       return '';
     }
 
-    return barcode;
+    return scannedcode;
   }
 
   @override
@@ -157,8 +156,7 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
       onPressed: () async {
         try {
           if (!widget.test!) {
-            // using navigation to call Reader Widget and return context(scan result)
-            widget.barcode = await _readerscan(context);
+            widget.barcode = await readerscan(context);
           }
 
           if (widget.barcode!.isNotEmpty) {
@@ -216,8 +214,10 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
             }
           }
         } catch (e) {
-          debugPrint('scanner did not fire!! ');
           showErrorDialog(e, context);
+          // Need to pop back since reader scan is a widget 
+          // otherwise returns null when back button is pressed
+          return Navigator.pop(context); 
         }
       },
       icon: Image.asset('assets/images/barcode_scanner_icon.png'),
