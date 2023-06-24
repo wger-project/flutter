@@ -43,7 +43,7 @@
   "@invalidUsername": {
     "description": "Error message when the user enters an invalid username"
   },
-  "customServerUrl": "URL instanca wger -a",
+  "customServerUrl": "URL wger instance",
   "@customServerUrl": {
     "description": "Label in the form where the users can enter their own wger instance"
   },
@@ -209,7 +209,7 @@
   "@aboutContactUsTitle": {
     "description": "Title for contact us section in the about dialog"
   },
-  "enterRepetitionsOrWeight": "Ispuni ponavljanja ili težinu za barem jedan od setova",
+  "enterRepetitionsOrWeight": "Upiši broj ponavljanja ili težinu za barem jedan od setova",
   "@enterRepetitionsOrWeight": {
     "description": "Error message when the user hasn't filled in the forms for exercise sets"
   },
@@ -271,7 +271,7 @@
   "@dataCopied": {
     "description": "Snackbar message to show on copying data to a new log entry"
   },
-  "usernameValidChars": "Korisničko ime može sadržavati samo slova, brojeve i specijalne znakove @, +, ., -, and _",
+  "usernameValidChars": "Korisničko ime može sadržavati samo slova, brojeve i sljedeće znakove: @, +, ., -, _",
   "@usernameValidChars": {
     "description": "Error message when the user tries to register a username with forbidden characters"
   },
@@ -305,7 +305,7 @@
   "@reset": {
     "description": "Button text allowing the user to reset the entered values to the default"
   },
-  "jumpTo": "Skoči na",
+  "jumpTo": "Prijeđi na",
   "@jumpTo": {
     "description": "Imperative. Label used in popup allowing the user to jump to a specific exercise while in the gym mode"
   },
@@ -447,7 +447,7 @@
   "@muscles": {
     "description": "(main) muscles trained by an exercise"
   },
-  "dayDescriptionHelp": "Opis onoga što se radi na današnji dan (npr. 'Pull day') ili koji su dijelovi tijela trenirani (npr. 'Prsa i ramena')",
+  "dayDescriptionHelp": "Opis onoga što se radi na današnji dan (npr. „dan povlačenja”) ili koji su dijelovi tijela trenirani (npr. „prsa i ramena”)",
   "@dayDescriptionHelp": {},
   "setNr": "Set {nr}",
   "@setNr": {
@@ -483,15 +483,15 @@
   },
   "selectExercises": "Ako želiš izraditi skup setova, potraži nekoliko vježbi i one će se spojiti u jednu grupu",
   "@selectExercises": {},
-  "gymMode": "Način rada u teretani",
+  "gymMode": "Modus teretane",
   "@gymMode": {
     "description": "Label when starting the gym mode"
   },
-  "plateCalculator": "Ploče",
+  "plateCalculator": "Pločasti utezi",
   "@plateCalculator": {
     "description": "Label used for the plate calculator in the gym mode"
   },
-  "plateCalculatorNotDivisible": "Nije moguće postići težinu s dostupnim pločama",
+  "plateCalculatorNotDivisible": "Nije moguće postići težinu s dostupnim pločastim utezima",
   "@plateCalculatorNotDivisible": {
     "description": "Error message when the current weight is not reachable with plates (e.g. 33.1 kg)"
   },
@@ -599,7 +599,7 @@
   "@chest": {
     "description": "Generated entry for translation for server strings"
   },
-  "sz_bar": "SZ šipka",
+  "sz_bar": "Zaobljena šipka",
   "@sz_bar": {
     "description": "Generated entry for translation for server strings"
   },
@@ -700,7 +700,7 @@
   },
   "textPromptTitle": "Spreman?",
   "@textPromptTitle": {},
-  "barbell": "Utezi",
+  "barbell": "Šipka",
   "@barbell": {
     "description": "Generated entry for translation for server strings"
   },
@@ -768,7 +768,7 @@
   "@baseNameEnglish": {},
   "next": "Sljedeće",
   "@next": {},
-  "contributeExercise": "Dodaj vježbu",
+  "contributeExercise": "Doprinesi vježbu",
   "@contributeExercise": {},
   "bench": "Klupa",
   "@bench": {
@@ -801,5 +801,11 @@
   "miles": "Milje",
   "@miles": {
     "description": "Generated entry for translation for server strings"
-  }
+  },
+  "max_reps": "Maks. broj ponavljanja",
+  "@max_reps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "verify": "Potvrdi",
+  "@verify": {}
 }
