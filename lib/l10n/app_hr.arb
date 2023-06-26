@@ -345,7 +345,7 @@
   "@goToToday": {
     "description": "Label on button to jump back to 'today' in the calendar widget"
   },
-  "kcal": "Kcal",
+  "kcal": "kcal",
   "@kcal": {
     "description": "Energy in a meal in kilocalories, kcal"
   },
@@ -573,7 +573,7 @@
   "@images": {},
   "alternativeNames": "Alternativna imena",
   "@alternativeNames": {},
-  "previous": "Prethodno",
+  "previous": "Prethodna",
   "@previous": {},
   "oneNamePerLine": "Jedno ime po retku",
   "@oneNamePerLine": {},
@@ -742,7 +742,7 @@
   "@kg": {
     "description": "Generated entry for translation for server strings"
   },
-  "lb": "lb",
+  "lb": "funta",
   "@lb": {
     "description": "Generated entry for translation for server strings"
   },
@@ -766,7 +766,7 @@
   },
   "baseNameEnglish": "Sve vježbe trebaju osnovno ime na engleskom jeziku",
   "@baseNameEnglish": {},
-  "next": "Sljedeće",
+  "next": "Sljedeća",
   "@next": {},
   "contributeExercise": "Doprinesi vježbu",
   "@contributeExercise": {},
