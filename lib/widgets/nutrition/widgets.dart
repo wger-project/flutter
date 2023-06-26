@@ -34,7 +34,6 @@ import 'package:wger/widgets/core/core.dart';
 
 import 'package:flutter_zxing/flutter_zxing.dart';
 
-
 class ScanReader extends StatelessWidget {
   String? scannedr;
 
@@ -47,7 +46,6 @@ class ScanReader extends StatelessWidget {
           },
         ),
       );
-
 }
 
 class IngredientTypeahead extends StatefulWidget {
@@ -215,9 +213,9 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
           }
         } catch (e) {
           showErrorDialog(e, context);
-          // Need to pop back since reader scan is a widget 
+          // Need to pop back since reader scan is a widget
           // otherwise returns null when back button is pressed
-          return Navigator.pop(context); 
+          return Navigator.pop(context);
         }
       },
       icon: Image.asset('assets/images/barcode_scanner_icon.png'),

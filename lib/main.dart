@@ -53,7 +53,6 @@ import 'providers/auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_zxing/flutter_zxing.dart';
 
-
 void main() {
   zx.setLogEnabled(kDebugMode);
   // Needs to be called before runApp
