@@ -1,4 +1,4 @@
 {
-    "dart.lineLength": 100,
-    "diffEditor.ignoreTrimWhitespace": true,
+  "dart.lineLength": 100,
+  "diffEditor.ignoreTrimWhitespace": true,
 }
