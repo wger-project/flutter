@@ -43,17 +43,17 @@
   "@invalidUsername": {
     "description": "Error message when the user enters an invalid username"
   },
-  "customServerUrl": "URL instanca wger -a",
+  "customServerUrl": "URL wger instance",
   "@customServerUrl": {
     "description": "Label in the form where the users can enter their own wger instance"
   },
-  "customServerHint": "Upiši adresu vlastitog poslužitelja, inače će se koristiti zadana",
+  "customServerHint": "Upiši adresu tvog poslužitelja, inače će se koristiti zadani",
   "@customServerHint": {
     "description": "Hint text for the form where the users can enter their own wger instance"
   },
-  "registerInstead": "Umjesto toga se registriraj",
+  "registerInstead": "Nemaš račun? Registriraj se",
   "@registerInstead": {},
-  "loginInstead": "Umjesto toga se prijavi",
+  "loginInstead": "Već imaš račun? Prijavi se",
   "@loginInstead": {},
   "labelWorkoutPlans": "Planovi treninga",
   "@labelWorkoutPlans": {
@@ -209,7 +209,7 @@
   "@aboutContactUsTitle": {
     "description": "Title for contact us section in the about dialog"
   },
-  "enterRepetitionsOrWeight": "Ispuni ponavljanja ili težinu za barem jedan od setova",
+  "enterRepetitionsOrWeight": "Upiši broj ponavljanja ili težinu za barem jedan od setova",
   "@enterRepetitionsOrWeight": {
     "description": "Error message when the user hasn't filled in the forms for exercise sets"
   },
@@ -221,7 +221,7 @@
   "@selectExercise": {
     "description": "Error message when the user hasn't selected an exercise in the form"
   },
-  "enterCharacters": "Upiši znakove između {min} i {max}",
+  "enterCharacters": "Upiši {min} do {max} znakova",
   "@enterCharacters": {
     "description": "Error message when the user hasn't entered the correct number of characters in a form",
     "type": "text",
@@ -271,7 +271,7 @@
   "@dataCopied": {
     "description": "Snackbar message to show on copying data to a new log entry"
   },
-  "usernameValidChars": "Korisničko ime može sadržavati samo slova, brojeve i specijalne znakove @, +, ., -, and _",
+  "usernameValidChars": "Korisničko ime može sadržavati samo slova, brojeve i sljedeće znakove: @, +, ., -, _",
   "@usernameValidChars": {
     "description": "Error message when the user tries to register a username with forbidden characters"
   },
@@ -305,7 +305,7 @@
   "@reset": {
     "description": "Button text allowing the user to reset the entered values to the default"
   },
-  "jumpTo": "Skoči na",
+  "jumpTo": "Prijeđi na",
   "@jumpTo": {
     "description": "Imperative. Label used in popup allowing the user to jump to a specific exercise while in the gym mode"
   },
@@ -447,7 +447,7 @@
   "@muscles": {
     "description": "(main) muscles trained by an exercise"
   },
-  "dayDescriptionHelp": "Opis onoga što se radi na današnji dan (npr. 'Pull day') ili koji su dijelovi tijela trenirani (npr. 'Prsa i ramena')",
+  "dayDescriptionHelp": "Opis onoga što se radi na današnji dan (npr. „dan povlačenja”) ili koji su dijelovi tijela trenirani (npr. „prsa i ramena”)",
   "@dayDescriptionHelp": {},
   "setNr": "Set {nr}",
   "@setNr": {
@@ -483,15 +483,15 @@
   },
   "selectExercises": "Ako želiš izraditi skup setova, potraži nekoliko vježbi i one će se spojiti u jednu grupu",
   "@selectExercises": {},
-  "gymMode": "Način rada u teretani",
+  "gymMode": "Modus teretane",
   "@gymMode": {
     "description": "Label when starting the gym mode"
   },
-  "plateCalculator": "Ploče",
+  "plateCalculator": "Pločasti utezi",
   "@plateCalculator": {
     "description": "Label used for the plate calculator in the gym mode"
   },
-  "plateCalculatorNotDivisible": "Nije moguće postići težinu s dostupnim pločama",
+  "plateCalculatorNotDivisible": "Nije moguće postići težinu s dostupnim pločastim utezima",
   "@plateCalculatorNotDivisible": {
     "description": "Error message when the current weight is not reachable with plates (e.g. 33.1 kg)"
   },
@@ -556,5 +556,256 @@
   "close": "Zatvori",
   "@close": {
     "description": "Translation for close"
-  }
+  },
+  "enterMinCharacters": "Upiši barem {min} znakova",
+  "@enterMinCharacters": {
+    "description": "Error message when the user hasn't entered the minimum amount characters in a form",
+    "type": "text",
+    "placeholders": {
+      "min": {}
+    }
+  },
+  "add_exercise_image_license": "Slike moraju biti kompatibilne s licencom CC BY SA. Ako si u nedoumici, prenesi samo svoje vlastite fotografije.",
+  "@add_exercise_image_license": {},
+  "whatVariationsExist": "Koje varijante ove vježbe postoje?",
+  "@whatVariationsExist": {},
+  "images": "Slike",
+  "@images": {},
+  "alternativeNames": "Alternativna imena",
+  "@alternativeNames": {},
+  "previous": "Prethodno",
+  "@previous": {},
+  "oneNamePerLine": "Jedno ime po retku",
+  "@oneNamePerLine": {},
+  "translation": "Prijevod",
+  "@translation": {},
+  "addExercise": "Dodaj vježbu",
+  "@addExercise": {},
+  "translateExercise": "Prevedi ovu vježbu",
+  "@translateExercise": {},
+  "baseData": "Osnovni podaci na engleskom jeziku",
+  "@baseData": {
+    "description": "The base data for an exercise such as category, trained muscles, etc."
+  },
+  "arms": "Ruke",
+  "@arms": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "back": "Leđa",
+  "@back": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "chest": "Prsa",
+  "@chest": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "sz_bar": "Zaobljena šipka",
+  "@sz_bar": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "userProfile": "Tvoj profil",
+  "@userProfile": {},
+  "exerciseList": "Popis vježbi",
+  "@exerciseList": {},
+  "exercises": "Vježbe",
+  "@exercises": {
+    "description": "Multiple exercises for a workout"
+  },
+  "exerciseName": "Ime vježbe",
+  "@exerciseName": {
+    "description": "Label for the name of a workout exercise"
+  },
+  "selectEntry": "Odaberi unos",
+  "@selectEntry": {},
+  "success": "Uspjeh",
+  "@success": {
+    "description": "Message when an action completed successfully, usually used as a heading"
+  },
+  "noMeasurementEntries": "Nemaš unose mjerenja",
+  "@noMeasurementEntries": {},
+  "moreMeasurementEntries": "Dodaj novo mjerenje",
+  "@moreMeasurementEntries": {
+    "description": "Message shown when the user wants to add new measurement"
+  },
+  "variations": "Varijante",
+  "@variations": {
+    "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"
+  },
+  "alsoKnownAs": "Poznato i kao: {aliases}",
+  "@alsoKnownAs": {
+    "placeholders": {
+      "aliases": {}
+    },
+    "description": "List of alternative names for an exercise"
+  },
+  "verifiedEmail": "Potvrđena e-mail adresa",
+  "@verifiedEmail": {},
+  "unVerifiedEmail": "Nepotvrđena e-mail adresa",
+  "@unVerifiedEmail": {},
+  "verifiedEmailInfo": "E-mail poruka za potvrdu je poslana na {email}",
+  "@verifiedEmailInfo": {
+    "placeholders": {
+      "email": {}
+    }
+  },
+  "contributeExerciseWarning": "Vježbe možeš dodati samo ako je tvoj račun stariji od {days} dana i ako si potvrdio/la tvoju e-mail adresu",
+  "@contributeExerciseWarning": {
+    "description": "Number of days before which a person can add exercise",
+    "placeholders": {
+      "days": {
+        "type": "String",
+        "example": "14"
+      }
+    }
+  },
+  "cacheWarning": "Zbog predmemoriranja, vidljivost promjena u aplikaciji može nešto potrajati.",
+  "@cacheWarning": {},
+  "verifiedEmailReason": "Za dodavanje vježbi moraš potvrditi tvoju e-mail adresu",
+  "@verifiedEmailReason": {},
+  "cardio": "Kardio",
+  "@cardio": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "quads": "Ekstenzije nogu",
+  "@quads": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "pull_up_bar": "Šipka za povlačenje",
+  "@pull_up_bar": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "shoulders": "Ramena",
+  "@shoulders": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "triceps": "Triceps",
+  "@triceps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "swiss_ball": "Lopta za fitness",
+  "@swiss_ball": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "until_failure": "Do neuspjeha",
+  "@until_failure": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "none__bodyweight_exercise_": "ništa (vježba za tjelesnu težinu)",
+  "@none__bodyweight_exercise_": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "seconds": "Sekunde",
+  "@seconds": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "textPromptTitle": "Spreman?",
+  "@textPromptTitle": {},
+  "barbell": "Šipka",
+  "@barbell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "calves": "Lisni mišići",
+  "@calves": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "textPromptSubheading": "Počni pritiskom gumba radnje",
+  "@textPromptSubheading": {},
+  "body_weight": "Tjelesna težina",
+  "@body_weight": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kilometers": "Kilometri",
+  "@kilometers": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kilometers_per_hour": "Kilometara na sat",
+  "@kilometers_per_hour": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "lats": "Leđni mišići",
+  "@lats": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "miles_per_hour": "Milja na sat",
+  "@miles_per_hour": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "minutes": "Minute",
+  "@minutes": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "plates": "Ploče",
+  "@plates": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kg": "kg",
+  "@kg": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "lb": "lb",
+  "@lb": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "searchNamesInEnglish": "Također traži imena na engleskom jeziku",
+  "@searchNamesInEnglish": {},
+  "language": "Jezik",
+  "@language": {},
+  "aboutPageTitle": "Wger informacije",
+  "@aboutPageTitle": {},
+  "abs": "Trbuh",
+  "@abs": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "gym_mat": "Podloga za treniranje",
+  "@gym_mat": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "incline_bench": "Nagnuta klupa",
+  "@incline_bench": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "baseNameEnglish": "Sve vježbe trebaju osnovno ime na engleskom jeziku",
+  "@baseNameEnglish": {},
+  "next": "Sljedeće",
+  "@next": {},
+  "contributeExercise": "Doprinesi vježbu",
+  "@contributeExercise": {},
+  "bench": "Klupa",
+  "@bench": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "dumbbell": "Ručni uteg",
+  "@dumbbell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "biceps": "Bicepsi",
+  "@biceps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "glutes": "Stražnjica",
+  "@glutes": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "hamstrings": "Tetive koljena",
+  "@hamstrings": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kettlebell": "Kuglasti uteg",
+  "@kettlebell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "legs": "Noge",
+  "@legs": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "miles": "Milje",
+  "@miles": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "max_reps": "Maks. broj ponavljanja",
+  "@max_reps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "verify": "Potvrdi",
+  "@verify": {}
 }

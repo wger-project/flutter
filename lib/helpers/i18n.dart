@@ -28,6 +28,9 @@ String getTranslation(String value, BuildContext context) {
     case 'Biceps':
       return AppLocalizations.of(context).biceps;
 
+    case 'Body Weight':
+      return AppLocalizations.of(context).body_weight;
+
     case 'Calves':
       return AppLocalizations.of(context).calves;
 
@@ -58,20 +61,29 @@ String getTranslation(String value, BuildContext context) {
     case 'Kilometers':
       return AppLocalizations.of(context).kilometers;
 
+    case 'Kilometers Per Hour':
+      return AppLocalizations.of(context).kilometers_per_hour;
+
     case 'Lats':
       return AppLocalizations.of(context).lats;
 
     case 'Legs':
       return AppLocalizations.of(context).legs;
 
-    case 'Lower back':
-      return AppLocalizations.of(context).lower_back;
+    case 'Max Reps':
+      return AppLocalizations.of(context).max_reps;
 
     case 'Miles':
       return AppLocalizations.of(context).miles;
 
+    case 'Miles Per Hour':
+      return AppLocalizations.of(context).miles_per_hour;
+
     case 'Minutes':
       return AppLocalizations.of(context).minutes;
+
+    case 'Plates':
+      return AppLocalizations.of(context).plates;
 
     case 'Pull-up bar':
       return AppLocalizations.of(context).pull_up_bar;
@@ -99,6 +111,12 @@ String getTranslation(String value, BuildContext context) {
 
     case 'Until Failure':
       return AppLocalizations.of(context).until_failure;
+
+    case 'kg':
+      return AppLocalizations.of(context).kg;
+
+    case 'lb':
+      return AppLocalizations.of(context).lb;
 
     case 'none (bodyweight exercise)':
       return AppLocalizations.of(context).none__bodyweight_exercise_;

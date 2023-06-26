@@ -2,6 +2,7 @@
 
 ## Developers
 
+- Jigar Prajapati - <https://github.com/Jiggy9>
 - Roland Geider – <https://github.com/rolandgeider>
 - Dylan Aird - <https://github.com/Dolaned>
 - Jannik Norden - <https://github.com/Jannik-dev>
@@ -19,6 +20,8 @@
 - Aman Negi - <https://github.com/AmanNegi>
 - Sandi Milohanic - <https://github.com/sandimilohanic>
 - Miroslav Mazel - <https://gitlab.com/12people>
+- artchiee - <https://github.com/artchiee>
+- Tejas Bir Singh - <https://github.com/tejasbirsingh>
 
 ## Translators
 

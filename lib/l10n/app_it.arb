@@ -584,5 +584,25 @@
   "previous": "Precedente",
   "@previous": {},
   "next": "Successivo",
-  "@next": {}
+  "@next": {},
+  "gym_mat": "Materassino da palestra",
+  "@gym_mat": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "verifiedEmailInfo": "Un'email di verifica è stata inviata a {email}",
+  "@verifiedEmailInfo": {
+    "placeholders": {
+      "email": {}
+    }
+  },
+  "oneNamePerLine": "Un nome per linea",
+  "@oneNamePerLine": {},
+  "textPromptTitle": "Pronto a iniziare?",
+  "@textPromptTitle": {},
+  "moreMeasurementEntries": "Aggiungi una nuova misura",
+  "@moreMeasurementEntries": {
+    "description": "Message shown when the user wants to add new measurement"
+  },
+  "searchNamesInEnglish": "Cerca anche nei nomi in inglese",
+  "@searchNamesInEnglish": {}
 }
