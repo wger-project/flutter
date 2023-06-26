@@ -1,4 +1,4 @@
-name: Google Play release
+name: Build release artefacts
 on:
   push:
     tags:
