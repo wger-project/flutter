@@ -4,9 +4,9 @@ on:
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+'
 
-  defaults:
-    run:
-      working-directory: wger
+defaults:
+  run:
+    working-directory: wger
 
 jobs:
   deploy_android:
@@ -109,10 +109,11 @@ jobs:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         with:
           source-directory: flathub
-          destination-github-username: wger-project
-          destination-repository-name: test
+          destination-github-username: flathub
+          destination-repository-name: de.wger.flutter
           user-email: github-actions@github.com
-          target-branch: master
+          target-branch: flathub-${{ env.VERSION }}
+          create-target-branch-if-needed: true
           commit-message: Update de.wger.flutter.json
 
       # Note: the original tag that triggered the workflow is in the form vX.Y.Z
