@@ -179,7 +179,7 @@
   },
   "carbohydrates": "Ugljikohidrati",
   "@carbohydrates": {},
-  "carbohydratesShort": "C",
+  "carbohydratesShort": "U",
   "@carbohydratesShort": {
     "description": "The first letter or short name of the word 'Carbohydrates', used in overviews"
   },
@@ -187,7 +187,7 @@
   "@sugars": {},
   "fat": "Masti",
   "@fat": {},
-  "fatShort": "F",
+  "fatShort": "M",
   "@fatShort": {
     "description": "The first letter or short name of the word 'Fat', used in overviews"
   },
@@ -369,7 +369,7 @@
   "@noWorkoutPlans": {
     "description": "Message shown when the user has no workout plans"
   },
-  "amount": "Iznos",
+  "amount": "Količina",
   "@amount": {
     "description": "The amount (e.g. in grams) of an ingredient in a meal"
   },
