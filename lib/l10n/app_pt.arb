@@ -745,5 +745,11 @@
     "description": "Generated entry for translation for server strings"
   },
   "searchNamesInEnglish": "Também buscar nomes em inglês",
-  "@searchNamesInEnglish": {}
+  "@searchNamesInEnglish": {},
+  "verify": "Verificar",
+  "@verify": {},
+  "max_reps": "Repetição Máxima",
+  "@max_reps": {
+    "description": "Generated entry for translation for server strings"
+  }
 }
