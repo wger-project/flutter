@@ -33,7 +33,7 @@ Otvoreni kod znači da je cijeli izvorni kod za ovaj program i poslužitelj s ko
 * Nedostaje ti funkcija i želiš je implementirati? Počni odmah!
 * Želiš provjeriti da se nigdje ništa ne šalje? Možeš!
 
-Pridruži se našoj zajednici i postani dio sportskih entuzijasta i IT geekova iz cijelog svijeta. Nastavljamo raditi na prilagodbi i optimizaciji programa prilagođen našim potrebama. Volimo tvoj doprinos, stoga se slobodno uključi u bilo koje vrijeme i doprinesi svojim željama i idejama!
+Pridruži se našoj zajednici i postani dio sportskih entuzijasta i IT geekova iz cijelog svijeta. Nastavljamo raditi na prilagodbi i optimizaciji programa prilagođen našim potrebama. Volimo tvoj doprinos, stoga se slobodno uključi u bilo koje vrijeme i predloži tvoje želje i ideje!
 
 -> pronađi izvorni kod na https://github.com/wger-project
 -> postavljaj pitanja ili se jednostavno predstavi na našem Discord poslužitelju https://discord.gg/rPWFv6W
