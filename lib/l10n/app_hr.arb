@@ -135,11 +135,11 @@
   "@reps": {
     "description": "Shorthand for repetitions, used when space constraints are tighter"
   },
-  "rir": "Rezervna ponavljanja",
+  "rir": "PUR",
   "@rir": {
     "description": "Shorthand for Repetitions In Reserve"
   },
-  "rirNotUsed": "Rezervna ponavljanja se ne koriste",
+  "rirNotUsed": "PUR se ne koristi",
   "@rirNotUsed": {
     "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
   },
@@ -209,7 +209,7 @@
   "@aboutContactUsTitle": {
     "description": "Title for contact us section in the about dialog"
   },
-  "enterRepetitionsOrWeight": "Upiši broj ponavljanja ili težinu za barem jedan od setova",
+  "enterRepetitionsOrWeight": "Upiši broj ponavljanja ili težinu za barem jednu seriju",
   "@enterRepetitionsOrWeight": {
     "description": "Error message when the user hasn't filled in the forms for exercise sets"
   },
@@ -230,7 +230,7 @@
       "max": {}
     }
   },
-  "nrOfSets": "Broj setova po vježbi: {nrOfSets}",
+  "nrOfSets": "Broj serija po vježbi: {nrOfSets}",
   "@nrOfSets": {
     "description": "Label shown on the slider where the user selects the nr of sets",
     "type": "text",
@@ -238,7 +238,7 @@
       "nrOfSets": {}
     }
   },
-  "setUnitsAndRir": "Postavi jedinice i rezervna ponavljanja",
+  "setUnitsAndRir": "Postavi jedinice i PUR",
   "@setUnitsAndRir": {
     "description": "Label shown on the slider where the user can toggle showing units and RiR",
     "type": "text"
@@ -277,7 +277,7 @@
   },
   "logHelpEntries": "Ako u jednom danu postoji više od jednog unosa s istim brojem ponavljanja, ali različitim težinama, na dijagramu je prikazan samo unos s većom težinom.",
   "@logHelpEntries": {},
-  "addSet": "Dodaj set",
+  "addSet": "Dodaj seriju",
   "@addSet": {
     "description": "Label for the button that adds a set (to a workout day)"
   },
@@ -427,7 +427,7 @@
   "@equipment": {
     "description": "Equipment needed to perform an exercise"
   },
-  "supersetWith": "u skupu setova sa",
+  "supersetWith": "u nasdkup sa",
   "@supersetWith": {
     "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
   },
@@ -449,7 +449,7 @@
   },
   "dayDescriptionHelp": "Opis onoga što se radi na današnji dan (npr. „dan povlačenja”) ili koji su dijelovi tijela trenirani (npr. „prsa i ramena”)",
   "@dayDescriptionHelp": {},
-  "setNr": "Set {nr}",
+  "setNr": "Serija br. {nr}",
   "@setNr": {
     "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
     "type": "text",
@@ -457,7 +457,7 @@
       "nr": {}
     }
   },
-  "sameRepetitions": "Ako radiš ista ponavljanja i težinu za sve setove, ispuni jedan redak. Na primjer, za 4 seta jednostavno upiši 10 za ponavljanja, to automatski postaje „4 × 10”.",
+  "sameRepetitions": "Ako radiš ista ponavljanja i težinu za sve serije, ispuni jedan redak. Na primjer, za 4 serije jednostavno upiši 10 za ponavljanja, to automatski postaje „4 × 10”.",
   "@sameRepetitions": {},
   "comment": "Komentar",
   "@comment": {
@@ -477,11 +477,11 @@
   },
   "newDay": "Novi dan",
   "@newDay": {},
-  "newSet": "Novi set",
+  "newSet": "Nova serija",
   "@newSet": {
     "description": "Header when adding a new set to a workout day"
   },
-  "selectExercises": "Ako želiš izraditi skup setova, potraži nekoliko vježbi i one će se spojiti u jednu grupu",
+  "selectExercises": "Ako želiš izraditi nasdkup, traži i odaberi vježbe koje će se grupirati u jednu grupu",
   "@selectExercises": {},
   "gymMode": "Modus teretane",
   "@gymMode": {
@@ -505,7 +505,7 @@
   "@appUpdateTitle": {},
   "appUpdateContent": "Ova verzija aplikacije nije kompatibilna s poslužiteljem. Aktualiziraj svoju aplikaciju.",
   "@appUpdateContent": {},
-  "set": "Set",
+  "set": "Serija",
   "@set": {
     "description": "A set in a workout plan"
   },
