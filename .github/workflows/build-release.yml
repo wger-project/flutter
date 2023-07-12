@@ -109,7 +109,7 @@ jobs:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         with:
           source-directory: flathub
-          destination-github-username: flathub
+          destination-github-username: wger-project
           destination-repository-name: de.wger.flutter
           user-email: github-actions@github.com
           target-branch: flathub-${{ env.VERSION }}
