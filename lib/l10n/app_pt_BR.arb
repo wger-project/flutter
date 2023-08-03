@@ -1,1 +1,44 @@
-{}
+{
+  "nutritionalPlan": "Plano nutricional",
+  "@nutritionalPlan": {},
+  "weight": "Peso",
+  "@weight": {
+    "description": "The weight of a workout log or body weight entry"
+  },
+  "date": "Data",
+  "@date": {
+    "description": "The date of a workout log or body weight entry"
+  },
+  "value": "Valor",
+  "@value": {
+    "description": "The value of a measurement entry"
+  },
+  "unit": "Unidade",
+  "@unit": {
+    "description": "The unit used for a repetition (kg, time, etc.)"
+  },
+  "edit": "Editar",
+  "@edit": {},
+  "delete": "Excluir",
+  "@delete": {},
+  "login": "Entrar",
+  "@login": {
+    "description": "Text for login button"
+  },
+  "userProfile": "Seu perfil",
+  "@userProfile": {},
+  "logout": "Sair",
+  "@logout": {
+    "description": "Text for logout button"
+  },
+  "notes": "Notas",
+  "@notes": {
+    "description": "Personal notes, e.g. for a workout session"
+  },
+  "description": "Descrição",
+  "@description": {},
+  "register": "Inscrever-se",
+  "@register": {
+    "description": "Text for registration button"
+  }
+}
