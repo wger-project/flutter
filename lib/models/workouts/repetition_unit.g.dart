@@ -17,7 +17,8 @@ RepetitionUnit _$RepetitionUnitFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$RepetitionUnitToJson(RepetitionUnit instance) => <String, dynamic>{
+Map<String, dynamic> _$RepetitionUnitToJson(RepetitionUnit instance) =>
+    <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
     };

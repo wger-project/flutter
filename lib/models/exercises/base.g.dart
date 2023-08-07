@@ -13,8 +13,8 @@ ExerciseBase _$ExerciseBaseFromJson(Map<String, dynamic> json) {
       'id',
       'uuid',
       'variations',
-      'creation_date',
-      'update_date',
+      'created',
+      'last_update',
       'category',
       'muscles',
       'muscles_secondary',
@@ -24,24 +24,31 @@ ExerciseBase _$ExerciseBaseFromJson(Map<String, dynamic> json) {
   return ExerciseBase(
     id: json['id'] as int?,
     uuid: json['uuid'] as String?,
-    creationDate:
-        json['creation_date'] == null ? null : DateTime.parse(json['creation_date'] as String),
-    updateDate: json['update_date'] == null ? null : DateTime.parse(json['update_date'] as String),
+    created: json['created'] == null
+        ? null
+        : DateTime.parse(json['created'] as String),
+    lastUpdate: json['last_update'] == null
+        ? null
+        : DateTime.parse(json['last_update'] as String),
     variationId: json['variations'] as int?,
   )
     ..categoryId = json['category'] as int
-    ..musclesIds = (json['muscles'] as List<dynamic>).map((e) => e as int).toList()
-    ..musclesSecondaryIds =
-        (json['muscles_secondary'] as List<dynamic>).map((e) => e as int).toList()
-    ..equipmentIds = (json['equipment'] as List<dynamic>).map((e) => e as int).toList();
+    ..musclesIds =
+        (json['muscles'] as List<dynamic>).map((e) => e as int).toList()
+    ..musclesSecondaryIds = (json['muscles_secondary'] as List<dynamic>)
+        .map((e) => e as int)
+        .toList()
+    ..equipmentIds =
+        (json['equipment'] as List<dynamic>).map((e) => e as int).toList();
 }
 
-Map<String, dynamic> _$ExerciseBaseToJson(ExerciseBase instance) => <String, dynamic>{
+Map<String, dynamic> _$ExerciseBaseToJson(ExerciseBase instance) =>
+    <String, dynamic>{
       'id': instance.id,
       'uuid': instance.uuid,
       'variations': instance.variationId,
-      'creation_date': instance.creationDate?.toIso8601String(),
-      'update_date': instance.updateDate?.toIso8601String(),
+      'created': instance.created?.toIso8601String(),
+      'last_update': instance.lastUpdate?.toIso8601String(),
       'category': instance.categoryId,
       'muscles': instance.musclesIds,
       'muscles_secondary': instance.musclesSecondaryIds,

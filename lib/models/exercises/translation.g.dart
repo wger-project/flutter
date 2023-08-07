@@ -13,7 +13,7 @@ Translation _$TranslationFromJson(Map<String, dynamic> json) {
       'id',
       'uuid',
       'language',
-      'creation_date',
+      'created',
       'exercise_base',
       'name',
       'description'
@@ -22,19 +22,21 @@ Translation _$TranslationFromJson(Map<String, dynamic> json) {
   return Translation(
     id: json['id'] as int?,
     uuid: json['uuid'] as String?,
-    creationDate:
-        json['creation_date'] == null ? null : DateTime.parse(json['creation_date'] as String),
+    created: json['created'] == null
+        ? null
+        : DateTime.parse(json['created'] as String),
     name: json['name'] as String,
     description: json['description'] as String,
     baseId: json['exercise_base'] as int?,
   )..languageId = json['language'] as int;
 }
 
-Map<String, dynamic> _$TranslationToJson(Translation instance) => <String, dynamic>{
+Map<String, dynamic> _$TranslationToJson(Translation instance) =>
+    <String, dynamic>{
       'id': instance.id,
       'uuid': instance.uuid,
       'language': instance.languageId,
-      'creation_date': instance.creationDate?.toIso8601String(),
+      'created': instance.created?.toIso8601String(),
       'exercise_base': instance.baseId,
       'name': instance.name,
       'description': instance.description,
