@@ -70,6 +70,7 @@ jobs:
 
       - name: Build application for linux
         run: |
+          sudo apt update
           sudo apt install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev
           flutter build linux --release
           cd flatpak/scripts
