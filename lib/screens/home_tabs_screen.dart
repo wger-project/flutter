@@ -93,8 +93,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
           nutritionPlansProvider.fetchIngredientsFromCache(),
           exercisesProvider.fetchAndSetExercises(),
         ]);
-      }
-      catch (e) {
+      } catch (e) {
         log('fire! fire!');
         log(e.toString());
       }
@@ -149,13 +148,8 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
                     ),
                   ),
                   Text(
-                    AppLocalizations
-                        .of(context)
-                        .loadingText,
-                    style: Theme
-                        .of(context)
-                        .textTheme
-                        .headline5,
+                    AppLocalizations.of(context).loadingText,
+                    style: Theme.of(context).textTheme.headline5,
                   ),
                 ],
               ),
@@ -168,36 +162,26 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
               items: [
                 BottomNavigationBarItem(
                   icon: const Icon(Icons.dashboard),
-                  label: AppLocalizations
-                      .of(context)
-                      .labelDashboard,
+                  label: AppLocalizations.of(context).labelDashboard,
                 ),
                 BottomNavigationBarItem(
                   icon: const Icon(Icons.fitness_center),
-                  label: AppLocalizations
-                      .of(context)
-                      .labelBottomNavWorkout,
+                  label: AppLocalizations.of(context).labelBottomNavWorkout,
                 ),
                 BottomNavigationBarItem(
                   icon: const Icon(Icons.restaurant),
-                  label: AppLocalizations
-                      .of(context)
-                      .labelBottomNavNutrition,
+                  label: AppLocalizations.of(context).labelBottomNavNutrition,
                 ),
                 BottomNavigationBarItem(
                   icon: const FaIcon(
                     FontAwesomeIcons.weightScale,
                     size: 20,
                   ),
-                  label: AppLocalizations
-                      .of(context)
-                      .weight,
+                  label: AppLocalizations.of(context).weight,
                 ),
                 BottomNavigationBarItem(
                   icon: const Icon(Icons.photo_library),
-                  label: AppLocalizations
-                      .of(context)
-                      .gallery,
+                  label: AppLocalizations.of(context).gallery,
                 ),
               ],
               type: BottomNavigationBarType.fixed,
