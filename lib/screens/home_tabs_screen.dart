@@ -85,13 +85,18 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
 
       // Base data
       log('Loading base data');
-      await Future.wait([
-        authProvider.setServerVersion(),
-        userProvider.fetchAndSetProfile(),
-        workoutPlansProvider.fetchAndSetUnits(),
-        nutritionPlansProvider.fetchIngredientsFromCache(),
-        exercisesProvider.fetchAndSetExercises(),
-      ]);
+      try {
+        await Future.wait([
+          authProvider.setServerVersion(),
+          userProvider.fetchAndSetProfile(),
+          workoutPlansProvider.fetchAndSetUnits(),
+          nutritionPlansProvider.fetchIngredientsFromCache(),
+          exercisesProvider.fetchAndSetExercises(),
+        ]);
+      } catch (e) {
+        log('fire! fire!');
+        log(e.toString());
+      }
 
       // Plans, weight and gallery
       log('Loading plans, weight, measurements and gallery');

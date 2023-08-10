@@ -5,7 +5,8 @@
 If we use a new version, update the version used by
 
 * Github Actions in `android-release.yaml` in this repository
-* Fdroid build recipe in [their repo](https://gitlab.com/fdroid/fdroiddata/-/blob/master/metadata/de.wger.flutter.yml).
+* Fdroid build recipe
+  in [their repo](https://gitlab.com/fdroid/fdroiddata/-/blob/master/metadata/de.wger.flutter.yml).
   Since this can potentially take some time, it should happen well in advance
 
 ## 2. Dry-run release before uploading
@@ -13,6 +14,7 @@ If we use a new version, update the version used by
 * Increase build nr in pubspec.yaml (revert after the dry-run was successful)
 * `flutter build appbundle --release`
 * `bundle install`
+* `bundle update fastlane`
 * `bundle exec fastlane android test_configuration` (needs the different keys available)
 
 It might be necessary to repeat these steps if upload_to_play_store returns any errors
@@ -32,7 +34,6 @@ Set the vX.Y.Z tag locally, push it and delete it. It will get recreated to X.Y.
 by github actions.
 
 `TAG=vX.Y.Z && git tag $TAG && git push origin $TAG && git tag -d $TAG`
-
 
 ## 4. Edit release
 

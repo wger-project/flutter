@@ -38,7 +38,7 @@ Alternatively, you can use one of our test servers, just ask us for access.
 Install Flutter, and all its dependencies, and create a new virtual device:
 <https://flutter.dev/docs/get-started/install>.
 
-The app currently uses flutter 3.3
+The app currently uses flutter 3.7
 
 ### 3
 

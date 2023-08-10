@@ -7,7 +7,7 @@
   "@kcal": {
     "description": "Energy in a meal in kilocalories, kcal"
   },
-  "reps": "Reps",
+  "reps": "Repeticiones",
   "@reps": {
     "description": "Shorthand for repetitions, used when space constraints are tighter"
   },
@@ -721,5 +721,39 @@
   "success": "Éxito",
   "@success": {
     "description": "Message when an action completed successfully, usually used as a heading"
+  },
+  "verify": "Verificar",
+  "@verify": {},
+  "textPromptTitle": "¿Listo para comenzar?",
+  "@textPromptTitle": {},
+  "textPromptSubheading": "Presione el botón para continuar",
+  "@textPromptSubheading": {},
+  "lb": "lb",
+  "@lb": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "max_reps": "Reps Max",
+  "@max_reps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "body_weight": "Peso Corporal",
+  "@body_weight": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kilometers_per_hour": "Kilómetros por Hora",
+  "@kilometers_per_hour": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "miles_per_hour": "Millas por Hora",
+  "@miles_per_hour": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "plates": "Platos",
+  "@plates": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kg": "Kg",
+  "@kg": {
+    "description": "Generated entry for translation for server strings"
   }
 }

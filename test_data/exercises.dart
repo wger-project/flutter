@@ -48,8 +48,8 @@ const testEquipment = [tEquipment1, tEquipment2, tEquipment3];
 final benchPress = ExerciseBase(
   id: 1,
   uuid: '364f196c-881b-4839-8bfc-9e8f651521b6',
-  creationDate: DateTime(2021, 09, 01),
-  updateDate: DateTime(2021, 09, 10),
+  created: DateTime(2021, 09, 01),
+  lastUpdate: DateTime(2021, 09, 10),
   category: tCategory1,
   equipment: const [tEquipment1, tEquipment2],
   muscles: const [tMuscle1, tMuscle2],
@@ -59,8 +59,8 @@ final benchPress = ExerciseBase(
 final crunches = ExerciseBase(
   id: 2,
   uuid: '82415754-fc4c-49ea-8ca7-1516dd36d5a0',
-  creationDate: DateTime(2021, 08, 01),
-  updateDate: DateTime(2021, 08, 10),
+  created: DateTime(2021, 08, 01),
+  lastUpdate: DateTime(2021, 08, 10),
   category: tCategory2,
   equipment: const [tEquipment2],
   muscles: const [tMuscle1],
@@ -70,8 +70,8 @@ final crunches = ExerciseBase(
 final deadLift = ExerciseBase(
   id: 3,
   uuid: 'ca84e2c5-5608-4d6d-ba57-6d4b6b5e7acd',
-  creationDate: DateTime(2021, 08, 01),
-  updateDate: DateTime(2021, 08, 01),
+  created: DateTime(2021, 08, 01),
+  lastUpdate: DateTime(2021, 08, 01),
   category: tCategory3,
   equipment: const [tEquipment2],
   muscles: const [tMuscle1],
@@ -81,8 +81,8 @@ final deadLift = ExerciseBase(
 final curls = ExerciseBase(
   id: 4,
   uuid: '361f024c-fdf8-4146-b7d7-0c1b67c58141',
-  creationDate: DateTime(2021, 08, 01),
-  updateDate: DateTime(2021, 08, 01),
+  created: DateTime(2021, 08, 01),
+  lastUpdate: DateTime(2021, 08, 01),
   category: tCategory3,
   equipment: const [tEquipment2],
   muscles: const [tMuscle1],
@@ -91,8 +91,8 @@ final curls = ExerciseBase(
 final squats = ExerciseBase(
   id: 5,
   uuid: '361f024c-fdf8-4146-b7d7-0c1b67c58141',
-  creationDate: DateTime(2021, 08, 01),
-  updateDate: DateTime(2021, 08, 01),
+  created: DateTime(2021, 08, 01),
+  lastUpdate: DateTime(2021, 08, 01),
   category: tCategory3,
   equipment: const [tEquipment2],
   muscles: const [tMuscle1],
@@ -101,8 +101,8 @@ final squats = ExerciseBase(
 final sideRaises = ExerciseBase(
   id: 6,
   uuid: '721ff972-c568-41e3-8cf5-cf1e5c5c801c',
-  creationDate: DateTime(2022, 11, 01),
-  updateDate: DateTime(2022, 11, 01),
+  created: DateTime(2022, 11, 01),
+  lastUpdate: DateTime(2022, 11, 01),
   category: tCategory4,
   equipment: const [tEquipment2],
   muscles: const [tMuscle1],
@@ -112,7 +112,7 @@ final sideRaises = ExerciseBase(
 final benchPressDe = Translation(
   id: 1,
   uuid: 'f4cc326b-e497-4bd7-a71d-0eb1db522743',
-  creationDate: DateTime(2021, 1, 15),
+  created: DateTime(2021, 1, 15),
   name: 'Bankdrücken',
   description: 'add clever text',
   baseId: benchPress.id,
@@ -121,7 +121,7 @@ final benchPressDe = Translation(
 final benchPressEn = Translation(
   id: 7,
   uuid: 'f4cc326b-e497-4bd7-a71d-0eb1db522743',
-  creationDate: DateTime(2021, 1, 15),
+  created: DateTime(2021, 1, 15),
   name: 'Bench press',
   description: 'add clever text',
   baseId: benchPress.id,
@@ -131,7 +131,7 @@ final benchPressEn = Translation(
 final deadLiftEn = Translation(
   id: 2,
   uuid: 'b7f51a1a-0368-4dfc-a03c-d629a4089b4a',
-  creationDate: DateTime(2021, 1, 15),
+  created: DateTime(2021, 1, 15),
   name: 'Dead Lift',
   description: 'Lorem ipsum etc',
   baseId: crunches.id,
@@ -141,7 +141,7 @@ final deadLiftEn = Translation(
 final crunchesFr = Translation(
   id: 3,
   uuid: 'd83f572d-add5-48dc-89cf-75f6770284f1',
-  creationDate: DateTime(2021, 4, 1),
+  created: DateTime(2021, 4, 1),
   name: 'Crunches',
   description: 'The man in black fled across the desert, and the gunslinger followed',
   baseId: deadLift.id,
@@ -151,7 +151,7 @@ final crunchesFr = Translation(
 final crunchesDe = Translation(
   id: 4,
   uuid: 'a3e96c1d-b35f-4b0e-9cf4-ca37666cf521',
-  creationDate: DateTime(2021, 4, 1),
+  created: DateTime(2021, 4, 1),
   name: 'Crunches',
   description: 'The story so far: in the beginning, the universe was created',
   baseId: deadLift.id,
@@ -161,7 +161,7 @@ final crunchesDe = Translation(
 final crunchesEn = Translation(
   id: 5,
   uuid: '8c49a816-2247-4116-94bb-b5c0ce09c609',
-  creationDate: DateTime(2021, 4, 1),
+  created: DateTime(2021, 4, 1),
   name: 'test exercise 5',
   description: 'I am an invisible man',
   baseId: deadLift.id,
@@ -171,7 +171,7 @@ final crunchesEn = Translation(
 final curlsEn = Translation(
   id: 6,
   uuid: '259a637e-957f-4fe1-b61b-f56e3793ebcd',
-  creationDate: DateTime(2021, 4, 1),
+  created: DateTime(2021, 4, 1),
   name: 'Curls',
   description: 'It was a bright cold day in April, and the clocks were striking thirteen',
   baseId: curls.id,
@@ -181,7 +181,7 @@ final curlsEn = Translation(
 final squatsEn = Translation(
   id: 8,
   uuid: '259a637e-957f-4fe1-b61b-f56e3793ebcd',
-  creationDate: DateTime(2021, 4, 1),
+  created: DateTime(2021, 4, 1),
   name: 'Squats',
   description: 'It was a bright cold day in April, and the clocks were striking thirteen',
   baseId: curls.id,
@@ -191,7 +191,7 @@ final squatsEn = Translation(
 final sideRaisesEn = Translation(
   id: 9,
   uuid: '6bf89ad0-5a43-4e98-91d3-a8c6886c9712',
-  creationDate: DateTime(2022, 11, 1),
+  created: DateTime(2022, 11, 1),
   name: 'Side raises',
   description: 'It was a bright cold day in April, and the clocks were striking thirteen',
   baseId: curls.id,

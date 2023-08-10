@@ -1,6 +1,9 @@
 {
   "id": 9,
   "uuid": "1b020b3a-3732-4c7e-92fd-a0cec90ed69b",
+  "created": "2023-08-06T11:20:14.368566+02:00",
+  "last_update": "2023-04-22T12:18:33.904542+02:00",
+  "last_update_global": "2023-04-22T12:18:33.907201+02:00",
   "category": {
     "id": 10,
     "name": "Abs"
@@ -152,7 +155,7 @@
           "comment": "have fun"
         }
       ],
-      "creation_date": "2015-08-03",
+      "created": "2015-08-03T18:22:54.909478+02:00",
       "language": 2,
       "license": 2,
       "license_author": "deusinvictus"
@@ -181,7 +184,7 @@
           "comment": "pasatelo bien!"
         }
       ],
-      "creation_date": "2022-03-14",
+      "created": "2022-03-14T18:22:54.909478+02:00",
       "language": 3,
       "license": 2,
       "license_author": "tester McTestface"
@@ -200,7 +203,7 @@
           "comment": "mach die Übung richtig"
         }
       ],
-      "creation_date": "2022-03-14",
+      "created": "2022-03-14T18:22:54.909478+02:00",
       "language": 1,
       "license": 2,
       "license_author": "tester McTestface"

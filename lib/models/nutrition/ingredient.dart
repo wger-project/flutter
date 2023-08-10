@@ -34,8 +34,8 @@ class Ingredient {
   @JsonKey(required: true)
   final String name;
 
-  @JsonKey(required: true, name: 'creation_date', toJson: toDate)
-  final DateTime creationDate;
+  @JsonKey(required: true, name: 'created')
+  final DateTime created;
 
   /// Energy in kJ per 100g of product
   @JsonKey(required: true)
@@ -75,7 +75,7 @@ class Ingredient {
     required this.id,
     required this.code,
     required this.name,
-    required this.creationDate,
+    required this.created,
     required this.energy,
     required this.carbohydrates,
     required this.carbohydratesSugar,
@@ -89,5 +89,6 @@ class Ingredient {
 
   // Boilerplate
   factory Ingredient.fromJson(Map<String, dynamic> json) => _$IngredientFromJson(json);
+
   Map<String, dynamic> toJson() => _$IngredientToJson(this);
 }

@@ -39,11 +39,11 @@ class ExerciseBase extends Equatable {
   @JsonKey(required: true, name: 'variations')
   final int? variationId;
 
-  @JsonKey(required: true, name: 'creation_date')
-  final DateTime? creationDate;
+  @JsonKey(required: true, name: 'created')
+  final DateTime? created;
 
-  @JsonKey(required: true, name: 'update_date')
-  final DateTime? updateDate;
+  @JsonKey(required: true, name: 'last_update')
+  final DateTime? lastUpdate;
 
   @JsonKey(required: true, name: 'category')
   late int categoryId;
@@ -81,8 +81,8 @@ class ExerciseBase extends Equatable {
   ExerciseBase({
     this.id,
     this.uuid,
-    this.creationDate,
-    this.updateDate,
+    this.created,
+    this.lastUpdate,
     this.variationId,
     List<Muscle>? muscles,
     List<Muscle>? musclesSecondary,
@@ -115,7 +115,7 @@ class ExerciseBase extends Equatable {
     }
 
     if (exercises != null) {
-      this.translations = exercises;
+      translations = exercises;
     }
 
     if (videos != null) {
@@ -166,8 +166,8 @@ class ExerciseBase extends Equatable {
   List<Object?> get props => [
         id,
         uuid,
-        creationDate,
-        updateDate,
+        created,
+        lastUpdate,
         category,
         equipment,
         muscles,

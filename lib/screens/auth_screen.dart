@@ -246,12 +246,13 @@ class _AuthCardState extends State<AuthCard> {
                     textInputAction: TextInputAction.next,
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return AppLocalizations.of(context).invalidUsername;
+                      }
                       if (!RegExp(r'^[\w.@+-]+$').hasMatch(value!)) {
                         return AppLocalizations.of(context).usernameValidChars;
                       }
-                      if (value.isEmpty) {
-                        return AppLocalizations.of(context).invalidUsername;
-                      }
+
                       return null;
                     },
                     inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'\s\b|\b\s'))],

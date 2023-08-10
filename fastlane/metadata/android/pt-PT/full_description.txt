@@ -1,0 +1,39 @@
+Feito por amantes da vida fitness - organize sua saúde com o WGER, seu Gerenciador de Treinos!
+
+Você já encontrou o seu aplicativo de fitness nº1? Você adora criar suas próprias rotinas de treino? Não importa que tipo de fera esportiva você seja - todos nós temos algo em comum: adoramos acompanhar nossos dados de saúde <3
+
+Nós não te julgamos por ainda gerenciar sua jornada fitness em um caderno, mas bem-vindo(a) ao século 21!
+
+Desenvolvemos um aplicativo de acompanhemento de saúde e fitness 100% gratuito para você, reduzido aos recursos mais relevantes para facilitar sua vida. Comece, treine e comemore seu progresso!
+
+O wger é um projeto open-source que é sobre:
+* Seu Corpo
+* Seus Treinos
+* Seu Progresso
+* Seus Dados
+
+Seu Corpo:
+Não precisa pesquisar no Google os ingredientes de suas receitas favoritas - escolha suas refeições diárias entre mais de 78.000 itens e veja os valores nutricionais. Adicione as refeições ao plano nutricional e mantenha uma visão geral de sua dieta no calendário.
+
+Seus Treinos:
+Você sabe o que é melhor para o seu corpo. Crie seus próprios treinos a partir de uma variedade de mais de 200 exercícios. Em seguida, use o Modo Academia para orientá-lo durante o treino, enquanto registra suas cargas com um clique.
+
+Seu Progresso:
+Nunca perca de vista seus objetivos. Acompanhe seu peso e mantenha suas estatísticas.
+
+Seus Dados:
+O wger é o seu diário fitness personalizado - mas você é dono(a) dos seus dados. Use a REST API para acessá-los e fazer coisas incríveis com eles.
+
+Obs.: Este aplicativo gratuito não é baseado em financiamentos adicionais e não pedimos que você doe dinheiro. Mais do que isso, é um projeto comunitário em constante crescimento. Portanto, esteja preparado(a) para novos recursos a qualquer momento!
+
+#CódigoAberto - o que isso significa?
+
+Código aberto significa que todo o código-fonte deste aplicativo e do servidor ao qual ele se conecta é gratuito e está disponível para qualquer pessoa:
+* Você quer executar o wger em seu próprio servidor, para você ou para sua academia? Sinta-se à vontade!
+* Está sentindo falta de um recurso e quer implementá-lo? Comece agora!
+* Quer verificar se nenhum dado está sendo compartilhado? Você pode!
+
+Junte-se à nossa comunidade e faça parte dos entusiastas do esporte e geeks de TI de todo o mundo. Continuamos trabalhando para ajustar e otimizar o aplicativo de acordo com nossas necessidades. Amamos suas contribuições, então sinta-se à vontade para participar a qualquer momento e contribuir com seus desejos e ideias!
+
+-> encontre o código-fonte em https://github.com/wger-project
+-> faça suas perguntas ou apenas diga Olá no nosso servidor do Discord https://discord.gg/rPWFv6W

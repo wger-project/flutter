@@ -207,9 +207,9 @@
   "@labelWorkoutPlans": {
     "description": "Title for screen workout plans"
   },
-  "loginInstead": "All'accesso",
+  "loginInstead": "Hai già un account? Registrati ora",
   "@loginInstead": {},
-  "registerInstead": "Alla registrazione",
+  "registerInstead": "Non hai un account? Registrati ora",
   "@registerInstead": {},
   "reset": "Rerimposta",
   "@reset": {
@@ -584,5 +584,95 @@
   "previous": "Precedente",
   "@previous": {},
   "next": "Successivo",
-  "@next": {}
+  "@next": {},
+  "gym_mat": "Materassino da palestra",
+  "@gym_mat": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "verifiedEmailInfo": "Un'email di verifica è stata inviata a {email}",
+  "@verifiedEmailInfo": {
+    "placeholders": {
+      "email": {}
+    }
+  },
+  "oneNamePerLine": "Un nome per linea",
+  "@oneNamePerLine": {},
+  "textPromptTitle": "Pronto a iniziare?",
+  "@textPromptTitle": {},
+  "moreMeasurementEntries": "Aggiungi una nuova misura",
+  "@moreMeasurementEntries": {
+    "description": "Message shown when the user wants to add new measurement"
+  },
+  "searchNamesInEnglish": "Cerca anche nei nomi in inglese",
+  "@searchNamesInEnglish": {},
+  "verify": "Verifica",
+  "@verify": {},
+  "legs": "Gambe",
+  "@legs": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "miles": "Miglia",
+  "@miles": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "seconds": "Secondi",
+  "@seconds": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "shoulders": "Spalle",
+  "@shoulders": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "max_reps": "Ripetizioni massime",
+  "@max_reps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kg": "kg",
+  "@kg": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "triceps": "Tricipiti",
+  "@triceps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "chest": "Petto",
+  "@chest": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "selectEntry": "Per favore seleziona un elemento",
+  "@selectEntry": {},
+  "success": "Completato",
+  "@success": {
+    "description": "Message when an action completed successfully, usually used as a heading"
+  },
+  "verifiedEmailReason": "Devi verificare la tua email per contribuire agli esercizi",
+  "@verifiedEmailReason": {},
+  "cardio": "Cardio",
+  "@cardio": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "quads": "Quadricipiti",
+  "@quads": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kilometers_per_hour": "Chilometri all'ora",
+  "@kilometers_per_hour": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kilometers": "Chilometri",
+  "@kilometers": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "glutes": "Glutei",
+  "@glutes": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "minutes": "Minuti",
+  "@minutes": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "miles_per_hour": "Miglia per ora",
+  "@miles_per_hour": {
+    "description": "Generated entry for translation for server strings"
+  }
 }
