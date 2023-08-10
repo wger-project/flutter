@@ -113,9 +113,9 @@ jobs:
           destination-github-username: wger-project
           destination-repository-name: de.wger.flutter
           user-email: github-actions@github.com
-          target-branch: flathub-${{ env.VERSION }}
+          target-branch: release-${{ env.VERSION }}
           create-target-branch-if-needed: true
-          commit-message: Update de.wger.flutter.json
+          commit-message: Update to ${{ env.VERSION }}
 
       # Note: the original tag that triggered the workflow is in the form vX.Y.Z
       #       but the pubspec.yaml is committed in the commit after that one.
