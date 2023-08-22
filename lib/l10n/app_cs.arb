@@ -553,5 +553,68 @@
     "description": "Header label for dialog when product is found with barcode"
   },
   "appUpdateContent": "Tato verze aplikace není kompatibilní se serverem, aktualizujte prosím svou aplikaci.",
-  "@appUpdateContent": {}
+  "@appUpdateContent": {},
+  "add_exercise_image_license": "Obrázky musí být licencovány pod CC BY SA licencí. Pokud si nejste jisti, nahrávejte pouze fotky které jste sami pořídili",
+  "@add_exercise_image_license": {},
+  "verify": "Ověřit",
+  "@verify": {},
+  "alternativeNames": "Alternativní jména",
+  "@alternativeNames": {},
+  "oneNamePerLine": "Jedno jméno na jeden řádek",
+  "@oneNamePerLine": {},
+  "whatVariationsExist": "Existují nějaké varianty tohoto cviku?",
+  "@whatVariationsExist": {},
+  "previous": "Předešlé",
+  "@previous": {},
+  "next": "Další",
+  "@next": {},
+  "addExercise": "Přidat cvik",
+  "@addExercise": {},
+  "translation": "Překlad",
+  "@translation": {},
+  "baseData": "Základy v angličtině",
+  "@baseData": {
+    "description": "The base data for an exercise such as category, trained muscles, etc."
+  },
+  "productFoundDescription": "Čárový kód náleží tomuto produktu: {productName}. Chcete pokračovat?",
+  "@productFoundDescription": {
+    "description": "Dialog info when product is found with barcode",
+    "type": "text",
+    "placeholders": {
+      "productName": {}
+    }
+  },
+  "scanBarcode": "Naskenovat čárový kód",
+  "@scanBarcode": {
+    "description": "Label for scan barcode button"
+  },
+  "productNotFound": "Produkt nenalezen",
+  "@productNotFound": {
+    "description": "Header label for dialog when product is not found with barcode"
+  },
+  "images": "Obrázky",
+  "@images": {},
+  "language": "Jazyk",
+  "@language": {},
+  "aboutPageTitle": "O Wger",
+  "@aboutPageTitle": {},
+  "contributeExercise": "Přispějte cvik",
+  "@contributeExercise": {},
+  "setUnitsAndRir": "Upravte  jednotky a  OvR",
+  "@setUnitsAndRir": {
+    "description": "Label shown on the slider where the user can toggle showing units and RiR",
+    "type": "text"
+  },
+  "close": "Zavřít",
+  "@close": {
+    "description": "Translation for close"
+  },
+  "productNotFoundDescription": "Produkt s naskenovaným čárovým kódem {barcode} nebyl nalezen v databázi wger",
+  "@productNotFoundDescription": {
+    "description": "Dialog info when product is not found with barcode",
+    "type": "text",
+    "placeholders": {
+      "barcode": {}
+    }
+  }
 }
