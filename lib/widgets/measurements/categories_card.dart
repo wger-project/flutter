@@ -26,8 +26,10 @@ class CategoriesCard extends StatelessWidget {
               style: Theme.of(context).textTheme.headline6,
             ),
           ),
+
+          // #FIXME  : Measurements Dashboard (Custom color set )
           Container(
-            color: Colors.white,
+            color: Color.fromARGB(255, 159, 114, 211),
             padding: const EdgeInsets.all(10),
             height: 220,
             child: MeasurementChartWidget(

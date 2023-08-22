@@ -36,8 +36,10 @@ class EntriesList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(children: [
+      // #TODO  ! : Measurements chart > detail page chart (custom color set )
       Container(
-        color: Theme.of(context).cardColor,
+        //color: Theme.of(context).cardColor,
+        color: Colors.lightGreenAccent,
         padding: const EdgeInsets.all(10),
         height: 220,
         child: MeasurementChartWidget(
