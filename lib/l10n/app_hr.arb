@@ -807,5 +807,9 @@
     "description": "Generated entry for translation for server strings"
   },
   "verify": "Potvrdi",
-  "@verify": {}
+  "@verify": {},
+  "lower_back": "Donji dio leđa",
+  "@lower_back": {
+    "description": "Generated entry for translation for server strings"
+  }
 }
