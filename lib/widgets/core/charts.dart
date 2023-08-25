@@ -17,6 +17,7 @@
  */
 
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:wger/theme/theme.dart';
 
@@ -45,6 +46,9 @@ class MeasurementChartWidget extends StatelessWidget {
           id: 'Measurement',
           colorFn: (_, __) => wgerChartSecondaryColor,
           domainFn: (MeasurementChartEntry entry, _) => entry.date,
+
+          // expression body => same as above(arrow expression)
+          //domainFn: (MeasurementChartEntry entry, _){ return entry.date;} ,
           measureFn: (MeasurementChartEntry entry, _) => entry.value,
           data: _entries,
         )
@@ -57,6 +61,20 @@ class MeasurementChartWidget extends StatelessWidget {
     );
   }
 }
+
+// // #TODO : Del Later ///  test state less >> del later
+// class GetEntries extends StatelessWidget {
+// final List<MeasurementChartEntry> _entries;
+// const GetEntries(this._entries);
+
+// @override
+// Widget build(BuildContext context) {
+// // return old entries above
+
+// var entriesal = _entries.toString();
+// return Text(entriesal);
+// }
+// }
 
 class Indicator extends StatelessWidget {
   const Indicator({
