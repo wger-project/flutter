@@ -70,7 +70,7 @@ dev_dependencies:
   json_serializable: ^6.6.2
   mockito: ^5.4.0
   network_image_mock: ^2.1.1
-  flutter_lints: ^2.0.2
+  flutter_lints: ^2.0.3
   cider: ^0.1.6
 
 flutter_icons:
