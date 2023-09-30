@@ -1,1 +1,140 @@
-{}
+{
+  "useDefaultServer": "Χρήση προεπιλεγμένου διακομιστή",
+  "@useDefaultServer": {
+    "description": "Toggle button allowing users to switch between the default and a custom wger server"
+  },
+  "labelBottomNavWorkout": "Προπόνηση",
+  "@labelBottomNavWorkout": {
+    "description": "Label used in bottom navigation, use a short word"
+  },
+  "reset": "Επαναφορά",
+  "@reset": {
+    "description": "Button text allowing the user to reset the entered values to the default"
+  },
+  "kg": "kg",
+  "@kg": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "password": "Κωδικός",
+  "@password": {},
+  "nutritionalPlan": "Διατροφικό σχέδιο",
+  "@nutritionalPlan": {},
+  "invalidUsername": "Παρακαλώ εισάγετε ένα έγκυρο όνομα χρήστη",
+  "@invalidUsername": {
+    "description": "Error message when the user enters an invalid username"
+  },
+  "next": "Επόμενο",
+  "@next": {},
+  "date": "Ημερομηνία",
+  "@date": {
+    "description": "The date of a workout log or body weight entry"
+  },
+  "loginInstead": "Έχετε ήδη λογαριασμό; Σύνδεση",
+  "@loginInstead": {},
+  "passwordTooShort": "Ο κωδικός πρόσβασης είναι πολύ σύντομος",
+  "@passwordTooShort": {
+    "description": "Error message when the user a password that is too short"
+  },
+  "email": "Διεύθυνση ηλεκτρονικού ταχυδρομείου",
+  "@email": {},
+  "edit": "Επεξεργασία",
+  "@edit": {},
+  "username": "Όνομα χρήστη",
+  "@username": {},
+  "value": "Αξία",
+  "@value": {
+    "description": "The value of a measurement entry"
+  },
+  "customServerHint": "Εισάγετε τη διεύθυνση του δικού σας διακομιστή, διαφορετικά θα χρησιμοποιηθεί η προεπιλεγμένη",
+  "@customServerHint": {
+    "description": "Hint text for the form where the users can enter their own wger instance"
+  },
+  "useCustomServer": "Χρήση προσαρμοσμένου διακομιστή",
+  "@useCustomServer": {
+    "description": "Toggle button allowing users to switch between the default and a custom wger server"
+  },
+  "delete": "Διαγραφή",
+  "@delete": {},
+  "notes": "Σημειώσεις",
+  "@notes": {
+    "description": "Personal notes, e.g. for a workout session"
+  },
+  "difference": "Διαφορά",
+  "@difference": {},
+  "register": "Εγγραφή",
+  "@register": {
+    "description": "Text for registration button"
+  },
+  "registerInstead": "Δεν έχετε λογαριασμό; Εγγραφείτε τώρα",
+  "@registerInstead": {},
+  "usernameValidChars": "Ένα όνομα χρήστη μπορεί να περιέχει μόνο γράμματα, ψηφία και τους χαρακτήρες @, +, ., - και _",
+  "@usernameValidChars": {
+    "description": "Error message when the user tries to register a username with forbidden characters"
+  },
+  "labelWorkoutPlans": "Προγράμματα προπόνησης",
+  "@labelWorkoutPlans": {
+    "description": "Title for screen workout plans"
+  },
+  "previous": "Προηγούμενο",
+  "@previous": {},
+  "userProfile": "Το προφίλ σας",
+  "@userProfile": {},
+  "lb": "lb",
+  "@lb": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "labelWorkoutLogs": "Ημερολόγια προπόνησης",
+  "@labelWorkoutLogs": {
+    "description": "(Workout) logs"
+  },
+  "kJ": "kJ",
+  "@kJ": {
+    "description": "Energy in a meal in kilo joules, kJ"
+  },
+  "labelBottomNavNutrition": "Διατροφή",
+  "@labelBottomNavNutrition": {
+    "description": "Label used in bottom navigation, use a short word"
+  },
+  "invalidUrl": "Παρακαλώ εισάγετε ένα έγκυρο URL",
+  "@invalidUrl": {
+    "description": "Error message when the user enters an invalid URL, e.g. in the login form"
+  },
+  "kcal": "kcal",
+  "@kcal": {
+    "description": "Energy in a meal in kilocalories, kcal"
+  },
+  "g": "γρ",
+  "@g": {
+    "description": "Abbreviation for gram"
+  },
+  "logout": "Αποσύνδεση",
+  "@logout": {
+    "description": "Text for logout button"
+  },
+  "customServerUrl": "URL της περίπτωσης wger",
+  "@customServerUrl": {
+    "description": "Label in the form where the users can enter their own wger instance"
+  },
+  "login": "Συνδεθείτε",
+  "@login": {
+    "description": "Text for login button"
+  },
+  "unit": "Μονάδα",
+  "@unit": {
+    "description": "The unit used for a repetition (kg, time, etc.)"
+  },
+  "passwordsDontMatch": "Οι κωδικοί πρόσβασης δεν ταιριάζουν",
+  "@passwordsDontMatch": {
+    "description": "Error message when the user enters two different passwords during registration"
+  },
+  "weight": "Βάρος",
+  "@weight": {
+    "description": "The weight of a workout log or body weight entry"
+  },
+  "invalidEmail": "Παρακαλώ εισάγετε μια έγκυρη διεύθυνση ηλεκτρονικού ταχυδρομείου",
+  "@invalidEmail": {
+    "description": "Error message when the user enters an invalid email"
+  },
+  "confirmPassword": "Επιβεβαίωση κωδικού πρόσβασης",
+  "@confirmPassword": {}
+}
