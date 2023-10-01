@@ -49,7 +49,7 @@ dependencies:
   package_info_plus: ^4.1.0
   provider: ^6.0.5
   rive: ^0.11.4
-  shared_preferences: ^2.2.0
+  shared_preferences: ^2.2.1
   table_calendar: ^3.0.8
   url_launcher: ^6.1.11
   flutter_barcode_scanner: ^2.0.0
