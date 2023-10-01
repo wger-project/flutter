@@ -182,19 +182,15 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
             },
           ),
           if (_hasContent)
-            Container(
-              color: Colors.blue,
-              padding: const EdgeInsets.only(left: 10),
-              child: Column(
-                children: [
-                  ...getContent(),
-                  Container(
-                    padding: const EdgeInsets.all(15),
-                    height: 180,
-                    child: NutritionalPlanPieChartWidget(_plan!.nutritionalValues),
-                  )
-                ],
-              ),
+            Column(
+              children: [
+                ...getContent(),
+                Container(
+                  padding: const EdgeInsets.all(15),
+                  height: 180,
+                  child: FlNutritionalPlanPieChartWidget(_plan!.nutritionalValues),
+                )
+              ],
             )
           else
             NothingFound(
@@ -345,85 +341,79 @@ class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget>
     }
     return Consumer<MeasurementProvider>(
         builder: (context, workoutProvider, child) => Card(
-              child: Container(
-                color: Colors.amberAccent,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ListTile(
-                      title: Text(
-                        AppLocalizations.of(context).measurements,
-                        style: Theme.of(context).textTheme.headline4,
-                      ),
-                      leading: const FaIcon(
-                        FontAwesomeIcons.weight,
-                        color: Colors.black,
-                      ),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.arrow_forward),
-                        onPressed: () => Navigator.pushNamed(
-                          context,
-                          MeasurementCategoriesScreen.routeName,
-                        ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ListTile(
+                    title: Text(
+                      AppLocalizations.of(context).measurements,
+                      style: Theme.of(context).textTheme.headline4,
+                    ),
+                    leading: const FaIcon(
+                      FontAwesomeIcons.weight,
+                      color: Colors.black,
+                    ),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.arrow_forward),
+                      onPressed: () => Navigator.pushNamed(
+                        context,
+                        MeasurementCategoriesScreen.routeName,
                       ),
                     ),
-
-                    //color: Colors.lightBlue,
-                    Column(
-                      children: [
-                        if (items.isNotEmpty)
-                          Column(children: [
-                            CarouselSlider(
-                              items: items,
-                              carouselController: _controller,
-                              options: CarouselOptions(
-                                  autoPlay: false,
-                                  enlargeCenterPage: false,
-                                  viewportFraction: 1,
-                                  enableInfiniteScroll: false,
-                                  aspectRatio: 1.1,
-                                  onPageChanged: (index, reason) {
-                                    setState(() {
-                                      _current = index;
-                                    });
-                                  }),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 10),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: items.asMap().entries.map(
-                                  (entry) {
-                                    return GestureDetector(
-                                      onTap: () => _controller.animateToPage(entry.key),
-                                      child: Container(
-                                        width: 12.0,
-                                        height: 12.0,
-                                        margin:
-                                            EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: (Theme.of(context).brightness == Brightness.dark
-                                                    ? Colors.white
-                                                    : wgerPrimaryColor)
-                                                .withOpacity(_current == entry.key ? 0.9 : 0.4)),
-                                      ),
-                                    );
-                                  },
-                                ).toList(),
-                              ),
-                            ),
-                          ])
-                        else
-                          NothingFound(
-                            AppLocalizations.of(context).noMeasurementEntries,
-                            AppLocalizations.of(context).newEntry,
-                            MeasurementCategoryForm(),
+                  ),
+                  Column(
+                    children: [
+                      if (items.isNotEmpty)
+                        Column(children: [
+                          CarouselSlider(
+                            items: items,
+                            carouselController: _controller,
+                            options: CarouselOptions(
+                                autoPlay: false,
+                                enlargeCenterPage: false,
+                                viewportFraction: 1,
+                                enableInfiniteScroll: false,
+                                aspectRatio: 1.1,
+                                onPageChanged: (index, reason) {
+                                  setState(() {
+                                    _current = index;
+                                  });
+                                }),
                           ),
-                      ],
-                    ),
-                  ],
-                ),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: items.asMap().entries.map(
+                                (entry) {
+                                  return GestureDetector(
+                                    onTap: () => _controller.animateToPage(entry.key),
+                                    child: Container(
+                                      width: 12.0,
+                                      height: 12.0,
+                                      margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                                      decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: (Theme.of(context).brightness == Brightness.dark
+                                                  ? Colors.white
+                                                  : wgerPrimaryColor)
+                                              .withOpacity(_current == entry.key ? 0.9 : 0.4)),
+                                    ),
+                                  );
+                                },
+                              ).toList(),
+                            ),
+                          ),
+                        ])
+                      else
+                        NothingFound(
+                          AppLocalizations.of(context).noMeasurementEntries,
+                          AppLocalizations.of(context).newEntry,
+                          MeasurementCategoryForm(),
+                        ),
+                    ],
+                  ),
+                ],
               ),
             ));
   }

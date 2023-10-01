@@ -32,6 +32,7 @@ class NutritionalDiaryDetailWidget extends StatelessWidget {
   final NutritionalPlan _nutritionalPlan;
   final DateTime _date;
   static const double tablePadding = 7;
+
   const NutritionalDiaryDetailWidget(this._nutritionalPlan, this._date);
 
   Widget getTable(
@@ -223,7 +224,7 @@ class NutritionalDiaryDetailWidget extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(15),
                 height: 220,
-                child: NutritionalPlanPieChartWidget(valuesDate),
+                child: FlNutritionalPlanPieChartWidget(valuesDate),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
