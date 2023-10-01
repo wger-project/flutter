@@ -38,7 +38,7 @@ class WeightEntriesList extends StatelessWidget {
           color: Theme.of(context).cardColor,
           padding: const EdgeInsets.all(15),
           height: 220,
-          child: MeasurementChartWidget(
+          child: MeasurementChartWidgetFl(
               _weightProvider.items.map((e) => MeasurementChartEntry(e.weight, e.date)).toList()),
         ),
         TextButton(

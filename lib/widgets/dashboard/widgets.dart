@@ -44,9 +44,6 @@ import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/weight/forms.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 
-// line chart import
-import 'package:wger/widgets/core/fl_chart_line.dart';
-
 class DashboardNutritionWidget extends StatefulWidget {
   @override
   _DashboardNutritionWidgetState createState() => _DashboardNutritionWidgetState();
@@ -271,28 +268,11 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                   Column(
                     children: [
                       Container(
-                          color: Colors.amberAccent,
-                          padding: const EdgeInsets.all(15),
-                          height: 180,
-                          child: MeasurementChartWidget(weightEntriesData.items
-                              .map((e) => MeasurementChartEntry(e.weight, e.date))
-                              .toList()),
-                        ),
-
-                      // Fl _chart line sample 2 for testing
-                      Container(
-                        color: Color.fromARGB(255, 68, 150, 118),
-                        padding: const EdgeInsets.all(15),
-                        height: 180,
-                        //child: null,
-                        //child: LineChartSample2(),
-                        child: LineChartSample2(
-                          weightEntriesData.items
-                              .map((e) => MeasurementChartEntryflchat(e.weight, e.date))
-                              .toList(),
-                        ),
+                        height: 200,
+                        child: MeasurementChartWidgetFl(weightEntriesData.items
+                            .map((e) => MeasurementChartEntry(e.weight, e.date))
+                            .toList()),
                       ),
-
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
@@ -388,62 +368,61 @@ class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget>
                       ),
                     ),
 
-                      //color: Colors.lightBlue,
-                      Column(
-                        children: [
-                          if (items.isNotEmpty)
-                            Column(children: [
-                              CarouselSlider(
-                                items: items,
-                                carouselController: _controller,
-                                options: CarouselOptions(
-                                    autoPlay: false,
-                                    enlargeCenterPage: false,
-                                    viewportFraction: 1,
-                                    enableInfiniteScroll: false,
-                                    aspectRatio: 1.1,
-                                    onPageChanged: (index, reason) {
-                                      setState(() {
-                                        _current = index;
-                                      });
-                                    }),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 10),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: items.asMap().entries.map(
-                                      (entry) {
-                                        return GestureDetector(
-                                          onTap: () => _controller.animateToPage(entry.key),
-                                          child: Container(
-                                            width: 12.0,
-                                            height: 12.0,
-                                            margin: EdgeInsets.symmetric(
-                                                vertical: 8.0, horizontal: 4.0),
-                                            decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                    color: (Theme.of(context).brightness == Brightness.dark
-                                                            ? Colors.white
-                                                            : wgerPrimaryColor)
-                                                    .withOpacity(
-                                                        _current == entry.key ? 0.9 : 0.4)),
-                                          ),
-                                        );
-                                      },
-                                  ).toList(),
-                                  ),
-                                ),
-                            ])
-                          else
-                            NothingFound(
-                              AppLocalizations.of(context).noMeasurementEntries,
-                              AppLocalizations.of(context).newEntry,
-                              MeasurementCategoryForm(),
+                    //color: Colors.lightBlue,
+                    Column(
+                      children: [
+                        if (items.isNotEmpty)
+                          Column(children: [
+                            CarouselSlider(
+                              items: items,
+                              carouselController: _controller,
+                              options: CarouselOptions(
+                                  autoPlay: false,
+                                  enlargeCenterPage: false,
+                                  viewportFraction: 1,
+                                  enableInfiniteScroll: false,
+                                  aspectRatio: 1.1,
+                                  onPageChanged: (index, reason) {
+                                    setState(() {
+                                      _current = index;
+                                    });
+                                  }),
                             ),
-                        ],
-                      ),
-                  ], 
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 10),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: items.asMap().entries.map(
+                                  (entry) {
+                                    return GestureDetector(
+                                      onTap: () => _controller.animateToPage(entry.key),
+                                      child: Container(
+                                        width: 12.0,
+                                        height: 12.0,
+                                        margin:
+                                            EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: (Theme.of(context).brightness == Brightness.dark
+                                                    ? Colors.white
+                                                    : wgerPrimaryColor)
+                                                .withOpacity(_current == entry.key ? 0.9 : 0.4)),
+                                      ),
+                                    );
+                                  },
+                                ).toList(),
+                              ),
+                            ),
+                          ])
+                        else
+                          NothingFound(
+                            AppLocalizations.of(context).noMeasurementEntries,
+                            AppLocalizations.of(context).newEntry,
+                            MeasurementCategoryForm(),
+                          ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ));

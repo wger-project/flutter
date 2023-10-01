@@ -68,6 +68,6 @@ void main() {
     expect(find.text('body fat'), findsOneWidget);
     expect(find.text('biceps'), findsOneWidget);
     expect(find.byType(Card), findsNWidgets(2));
-    expect(find.byType(MeasurementChartWidget), findsNWidgets(2));
+    expect(find.byType(MeasurementChartWidgetFl), findsNWidgets(2));
   });
 }

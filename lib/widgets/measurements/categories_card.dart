@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../models/measurements/measurement_category.dart';
 import '../../screens/form_screen.dart';
 import '../../screens/measurement_entries_screen.dart';
 import '../core/charts.dart';
 import 'forms.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CategoriesCard extends StatelessWidget {
   MeasurementCategory currentCategory;
@@ -26,13 +26,10 @@ class CategoriesCard extends StatelessWidget {
               style: Theme.of(context).textTheme.headline6,
             ),
           ),
-
-          // #FIXME  : Measurements Dashboard (Custom color set )
           Container(
-            color: Color.fromARGB(255, 159, 114, 211),
             padding: const EdgeInsets.all(10),
             height: 220,
-            child: MeasurementChartWidget(
+            child: MeasurementChartWidgetFl(
               currentCategory.entries.map((e) => MeasurementChartEntry(e.value, e.date)).toList(),
               unit: currentCategory.unit,
             ),

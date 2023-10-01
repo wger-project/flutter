@@ -42,7 +42,7 @@ class EntriesList extends StatelessWidget {
         color: Colors.lightGreenAccent,
         padding: const EdgeInsets.all(10),
         height: 220,
-        child: MeasurementChartWidget(
+        child: MeasurementChartWidgetFl(
           _category.entries.map((e) => MeasurementChartEntry(e.value, e.date)).toList(),
           unit: _category.unit,
         ),

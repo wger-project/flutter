@@ -57,7 +57,7 @@ void main() {
     await tester.pumpWidget(createWeightScreen());
 
     expect(find.text('Weight'), findsOneWidget);
-    expect(find.byType(MeasurementChartWidget), findsOneWidget);
+    expect(find.byType(MeasurementChartWidgetFl), findsOneWidget);
     expect(find.byType(Dismissible), findsNWidgets(2));
     expect(find.byType(ListTile), findsNWidgets(2));
   });
