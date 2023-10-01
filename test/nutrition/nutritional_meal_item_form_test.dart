@@ -28,7 +28,7 @@ void main() {
     id: 1,
     code: '123456787',
     name: 'Water',
-    creationDate: DateTime(2021, 5, 1),
+    created: DateTime(2021, 5, 1),
     energy: 500,
     carbohydrates: 10,
     carbohydratesSugar: 2,

@@ -1,1 +1,16 @@
-{}
+{
+  "userProfile": "ملفك الشخصي",
+  "@userProfile": {},
+  "login": "تسجيل الدخول",
+  "@login": {
+    "description": "Text for login button"
+  },
+  "logout": "تسجيل خروج",
+  "@logout": {
+    "description": "Text for logout button"
+  },
+  "invalidUrl": "أدخل رابط صحيح من فضلك",
+  "@invalidUrl": {
+    "description": "Error message when the user enters an invalid URL, e.g. in the login form"
+  }
+}

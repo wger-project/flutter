@@ -325,7 +325,7 @@ class ExercisesProvider with ChangeNotifier {
     final exerciseBase = ExerciseBase(
       id: baseData['id'],
       uuid: baseData['uuid'],
-      creationDate: null,
+      created: null,
       //creationDate: toDate(baseData['creation_date']),
       musclesSecondary: musclesSecondary.cast<Muscle>(),
       muscles: musclesPrimary.cast<Muscle>(),

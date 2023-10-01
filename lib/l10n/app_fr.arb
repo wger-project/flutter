@@ -725,5 +725,41 @@
   "seconds": "Secondes",
   "@seconds": {},
   "until_failure": "Jusqu'à l'échec",
-  "@until_failure": {}
+  "@until_failure": {},
+  "textPromptTitle": "Prêt à commencer ?",
+  "@textPromptTitle": {},
+  "textPromptSubheading": "Cliquez sur le bouton pour commencer",
+  "@textPromptSubheading": {},
+  "body_weight": "Poids corporel",
+  "@body_weight": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kilometers_per_hour": "Kilomètres Par Heure",
+  "@kilometers_per_hour": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "miles_per_hour": "Miles Par Heure",
+  "@miles_per_hour": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "plates": "Disques de poids",
+  "@plates": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kg": "kg",
+  "@kg": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "lb": "lb",
+  "@lb": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "searchNamesInEnglish": "Chercher également en termes anglais",
+  "@searchNamesInEnglish": {},
+  "max_reps": "Maximum de répétitions",
+  "@max_reps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "verify": "Vérifier",
+  "@verify": {}
 }

@@ -39,8 +39,8 @@ class Translation extends Equatable {
   @JsonKey(includeFromJson: false, includeToJson: false)
   late Language languageObj;
 
-  @JsonKey(required: true, name: 'creation_date')
-  final DateTime? creationDate;
+  @JsonKey(required: true, name: 'created')
+  final DateTime? created;
 
   @JsonKey(required: true, name: 'exercise_base')
   late int? baseId;
@@ -60,7 +60,7 @@ class Translation extends Equatable {
   Translation({
     this.id,
     this.uuid,
-    this.creationDate,
+    this.created,
     required this.name,
     required this.description,
     int? baseId,
@@ -96,7 +96,7 @@ class Translation extends Equatable {
         baseId,
         uuid,
         languageId,
-        creationDate,
+        created,
         name,
         description,
       ];

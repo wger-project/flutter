@@ -50,8 +50,11 @@ import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/about.dart';
 
 import 'providers/auth.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_zxing/flutter_zxing.dart';
 
 void main() {
+  zx.setLogEnabled(kDebugMode);
   // Needs to be called before runApp
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -158,21 +161,6 @@ class MyApp extends StatelessWidget {
           },
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-
-          // Workaround for https://github.com/flutter/flutter/issues/100857
-          localeResolutionCallback: (deviceLocale, supportedLocales) {
-            if (deviceLocale != null) {
-              for (final supportedLocale in supportedLocales) {
-                // Since we currently don't support any country specific locales
-                // such as de-DE and de-AT, it's sufficient to just check it like
-                // this. Otherwise we will need more logic with .countryCode
-                if (supportedLocale.languageCode == deviceLocale.languageCode) {
-                  return supportedLocale;
-                }
-              }
-            }
-            return const Locale('en');
-          },
         ),
       ),
     );

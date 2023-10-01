@@ -241,6 +241,8 @@
   },
   "save": "Save",
   "@save": {},
+  "verify": "Verify",
+  "@verify": {},
   "addSet": "Add set",
   "@addSet": {
     "description": "Label for the button that adds a set (to a workout day)"
@@ -715,6 +717,14 @@
   },
   "legs": "Legs",
   "@legs": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "lower_back": "Lower back",
+  "@lower_back": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "max_reps": "Max Reps",
+  "@max_reps": {
     "description": "Generated entry for translation for server strings"
   },
   "miles": "Miles",

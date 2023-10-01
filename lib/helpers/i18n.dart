@@ -70,6 +70,12 @@ String getTranslation(String value, BuildContext context) {
     case 'Legs':
       return AppLocalizations.of(context).legs;
 
+    case 'Lower back':
+      return AppLocalizations.of(context).lower_back;
+
+    case 'Max Reps':
+      return AppLocalizations.of(context).max_reps;
+
     case 'Miles':
       return AppLocalizations.of(context).miles;
 

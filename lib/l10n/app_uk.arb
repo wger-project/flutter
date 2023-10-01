@@ -621,7 +621,7 @@
   "@legs": {},
   "back": "Спина",
   "@back": {},
-  "quads": "Квадроцикли",
+  "quads": "Квадрицепс",
   "@quads": {},
   "arms": "Руки",
   "@arms": {},
@@ -721,5 +721,35 @@
   "textPromptTitle": "Готові почати?",
   "@textPromptTitle": {},
   "textPromptSubheading": "Натисніть кнопку дії, щоб почати",
-  "@textPromptSubheading": {}
+  "@textPromptSubheading": {},
+  "body_weight": "Вага тіла",
+  "@body_weight": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kg": "кг",
+  "@kg": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kilometers_per_hour": "Кілометрів на годину",
+  "@kilometers_per_hour": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "miles_per_hour": "Миль на годину",
+  "@miles_per_hour": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "lb": "фунт",
+  "@lb": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "plates": "Пластини",
+  "@plates": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "verify": "Підтвердити",
+  "@verify": {},
+  "max_reps": "Максимальна кількість повторень",
+  "@max_reps": {
+    "description": "Generated entry for translation for server strings"
+  }
 }
