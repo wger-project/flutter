@@ -174,19 +174,19 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
     String text;
     switch (value.toInt()) {
       case 0:
-        text = 'Protein';
+        text = AppLocalizations.of(context).protein;
         break;
       case 1:
-        text = 'Carbohydrates';
+        text = AppLocalizations.of(context).carbohydrates;
         break;
       case 2:
-        text = 'Sugars';
+        text = AppLocalizations.of(context).sugars;
         break;
       case 3:
-        text = 'Fat';
+        text = AppLocalizations.of(context).fat;
         break;
       case 4:
-        text = 'Saturated fat';
+        text = AppLocalizations.of(context).saturatedFat;
         break;
 
       default:
