@@ -512,18 +512,16 @@ class FlNutritionalDiaryChartWidgetState extends State<FlNutritionalDiaryChartWi
             final date = DateTime.fromMillisecondsSinceEpoch(group.x);
 
             return BarTooltipItem(
-              '${DateFormat.yMMMd().format(date)}\n',
+              '${DateFormat.yMMMd(Localizations.localeOf(context).languageCode).format(date)}\n',
               const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
-                fontSize: 18,
               ),
               children: <TextSpan>[
                 TextSpan(
                   text: '${(rod.toY - 1).toStringAsFixed(0)} kcal',
-                  style: TextStyle(
-                    color: widget.touchedBarColor,
-                    fontSize: 16,
+                  style: const TextStyle(
+                    color: Colors.white,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
