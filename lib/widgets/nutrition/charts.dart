@@ -16,14 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
 import 'package:wger/helpers/colors.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
-import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/charts.dart';
 
 class NutritionData {
@@ -217,9 +216,9 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
 
   @override
   Widget build(BuildContext context) {
-    final NutritionalValues planned = widget._nutritionalPlan.nutritionalValues;
-    final NutritionalValues loggedToday = widget._nutritionalPlan.nutritionalValuesToday;
-    final NutritionalValues logged7DayAvg = widget._nutritionalPlan.nutritionalValues7DayAvg;
+    final planned = widget._nutritionalPlan.nutritionalValues;
+    final loggedToday = widget._nutritionalPlan.nutritionalValuesToday;
+    final logged7DayAvg = widget._nutritionalPlan.nutritionalValues7DayAvg;
 
     final colorPlanned = LIST_OF_COLORS3[0];
     final colorLoggedToday = LIST_OF_COLORS3[1];
@@ -393,40 +392,195 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
   }
 }
 
-class NutritionalDiaryChartWidget extends StatelessWidget {
-  const NutritionalDiaryChartWidget({
+class FlNutritionalDiaryChartWidget extends StatefulWidget {
+  final NutritionalPlan _nutritionalPlan;
+
+  const FlNutritionalDiaryChartWidget({
     Key? key,
     required NutritionalPlan nutritionalPlan,
   })  : _nutritionalPlan = nutritionalPlan,
         super(key: key);
 
-  final NutritionalPlan _nutritionalPlan;
+  final Color barBackgroundColor = Colors.black12;
+  final Color barColor = Colors.red;
+  final Color touchedBarColor = Colors.deepOrange;
+
+  @override
+  State<StatefulWidget> createState() => FlNutritionalDiaryChartWidgetState();
+}
+
+class FlNutritionalDiaryChartWidgetState extends State<FlNutritionalDiaryChartWidget> {
+  final Duration animDuration = const Duration(milliseconds: 250);
+
+  int touchedIndex = -1;
 
   @override
   Widget build(BuildContext context) {
-    return charts.TimeSeriesChart(
-      [
-        charts.Series<List<dynamic>, DateTime>(
-          id: 'NutritionDiary',
-          colorFn: (datum, index) => wgerChartSecondaryColor,
-          domainFn: (datum, index) => datum[1],
-          measureFn: (datum, index) => datum[0].energy,
-          data: _nutritionalPlan.logEntriesValues.keys
-              .map((e) => [_nutritionalPlan.logEntriesValues[e], e])
-              .toList(),
-        )
-      ],
-      defaultRenderer: charts.BarRendererConfig<DateTime>(),
-      behaviors: [
-        charts.RangeAnnotation([
-          charts.LineAnnotationSegment(
-            _nutritionalPlan.nutritionalValues.energy,
-            charts.RangeAnnotationAxisType.measure,
-            strokeWidthPx: 2,
-            color: charts.MaterialPalette.gray.shade600,
+    return AspectRatio(
+      aspectRatio: 1,
+      child: BarChart(
+        mainBarData(),
+        swapAnimationDuration: animDuration,
+      ),
+    );
+  }
+
+  List<DateTime> getDatesBetween(DateTime startDate, DateTime endDate) {
+    final List<DateTime> dateList = [];
+    DateTime currentDate = startDate;
+
+    while (currentDate.isBefore(endDate) || currentDate.isAtSameMomentAs(endDate)) {
+      dateList.add(currentDate);
+      currentDate = currentDate.add(const Duration(days: 1));
+    }
+
+    return dateList;
+  }
+
+  BarChartGroupData makeGroupData(
+    int x,
+    double y, {
+    bool isTouched = false,
+    Color? barColor,
+    double width = 1.5,
+    List<int> showTooltips = const [],
+  }) {
+    barColor ??= widget.barColor;
+    return BarChartGroupData(
+      x: x,
+      barRods: [
+        BarChartRodData(
+          toY: isTouched ? y + 1 : y,
+          color: isTouched ? widget.touchedBarColor : barColor,
+          width: width,
+          borderSide: isTouched
+              ? const BorderSide(color: Colors.black54)
+              : const BorderSide(color: Colors.white, width: 0),
+          backDrawRodData: BackgroundBarChartRodData(
+            show: true,
+            toY: 20,
+            color: widget.barBackgroundColor,
           ),
-        ]),
+        ),
       ],
+      showingTooltipIndicators: showTooltips,
+    );
+  }
+
+  List<BarChartGroupData> showingGroups() {
+    final logEntries = widget._nutritionalPlan.logEntriesValues;
+    final List<BarChartGroupData> out = [];
+    final dateList = getDatesBetween(logEntries.keys.last, logEntries.keys.first);
+
+    for (final date in dateList) {
+      out.add(
+        makeGroupData(
+          date.millisecondsSinceEpoch,
+          logEntries.containsKey(date) ? logEntries[date]!.energy : 0,
+          isTouched: date.millisecondsSinceEpoch == touchedIndex,
+        ),
+      );
+    }
+
+    return out;
+  }
+
+  Widget leftTitles(double value, TitleMeta meta) {
+    if (value == meta.max) {
+      return Container();
+    }
+    const style = TextStyle(
+      fontSize: 10,
+    );
+    return SideTitleWidget(
+      axisSide: meta.axisSide,
+      child: Text(
+        '${meta.formattedValue} kcal',
+        style: style,
+      ),
+    );
+  }
+
+  BarChartData mainBarData() {
+    return BarChartData(
+      barTouchData: BarTouchData(
+        touchTooltipData: BarTouchTooltipData(
+          tooltipBgColor: Colors.blueGrey,
+          tooltipHorizontalAlignment: FLHorizontalAlignment.right,
+          tooltipMargin: -10,
+          getTooltipItem: (group, groupIndex, rod, rodIndex) {
+            final date = DateTime.fromMillisecondsSinceEpoch(group.x);
+
+            return BarTooltipItem(
+              '${DateFormat.yMMMd().format(date)}\n',
+              const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+              children: <TextSpan>[
+                TextSpan(
+                  text: '${(rod.toY - 1).toStringAsFixed(0)} kcal',
+                  style: TextStyle(
+                    color: widget.touchedBarColor,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+        touchCallback: (FlTouchEvent event, barTouchResponse) {
+          setState(() {
+            if (!event.isInterestedForInteractions ||
+                barTouchResponse == null ||
+                barTouchResponse.spot == null) {
+              touchedIndex = -1;
+              return;
+            }
+            touchedIndex = barTouchResponse.spot!.touchedBarGroupIndex;
+          });
+        },
+      ),
+      titlesData: FlTitlesData(
+        show: true,
+        rightTitles: AxisTitles(
+          sideTitles: SideTitles(showTitles: false),
+        ),
+        topTitles: AxisTitles(
+          sideTitles: SideTitles(showTitles: false),
+        ),
+        bottomTitles: AxisTitles(
+          sideTitles: SideTitles(showTitles: false),
+        ),
+        leftTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            reservedSize: 60,
+            getTitlesWidget: leftTitles,
+          ),
+        ),
+      ),
+      borderData: FlBorderData(
+        show: false,
+      ),
+      gridData: FlGridData(
+        show: true,
+        getDrawingHorizontalLine: (value) => FlLine(
+          color: Colors.grey,
+          strokeWidth: 1,
+        ),
+        drawVerticalLine: false,
+      ),
+      barGroups: showingGroups(),
+    );
+  }
+
+  Future<dynamic> refreshState() async {
+    setState(() {});
+    await Future<dynamic>.delayed(
+      animDuration + const Duration(milliseconds: 50),
     );
   }
 }

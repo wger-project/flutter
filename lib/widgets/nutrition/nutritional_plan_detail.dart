@@ -226,7 +226,7 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(15),
             height: 220,
-            child: NutritionalDiaryChartWidget(nutritionalPlan: _nutritionalPlan), //  chart
+            child: FlNutritionalDiaryChartWidget(nutritionalPlan: _nutritionalPlan), //  chart
           ),
           SizedBox(
             height: 200,

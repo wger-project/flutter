@@ -81,7 +81,7 @@ void main() {
     expect(find.text('300g Broccoli cake'), findsOneWidget);
 
     expect(find.byType(Dismissible), findsNWidgets(2));
-    expect(find.byType(NutritionalDiaryChartWidget), findsNothing);
+    expect(find.byType(FlNutritionalDiaryChartWidget), findsNothing);
   });
 
   testWidgets('Tests the localization of times - EN', (WidgetTester tester) async {
