@@ -470,9 +470,9 @@ class FlNutritionalDiaryChartWidgetState extends State<FlNutritionalDiaryChartWi
   List<BarChartGroupData> showingGroups() {
     final logEntries = widget._nutritionalPlan.logEntriesValues;
     final List<BarChartGroupData> out = [];
-    final dateList = getDatesBetween(logEntries.keys.last, logEntries.keys.first);
+    final dateList = getDatesBetween(logEntries.keys.first, logEntries.keys.last);
 
-    for (final date in dateList) {
+    for (final date in dateList.reversed) {
       out.add(
         makeGroupData(
           date.millisecondsSinceEpoch,
