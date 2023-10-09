@@ -300,6 +300,8 @@ class WorkoutPlansProvider with ChangeNotifier {
         query: {'id': base.id.toString()},
       ),
     );
+    // log(data.toString());
+
     return data;
   }
 

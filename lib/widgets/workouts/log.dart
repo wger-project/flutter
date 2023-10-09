@@ -17,7 +17,6 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/ui.dart';
@@ -48,7 +47,7 @@ class ExerciseLogChart extends StatelessWidget {
         height: 150,
         child: snapshot.connectionState == ConnectionState.waiting
             ? const Center(child: CircularProgressIndicator())
-            : LogChartWidget(snapshot.data!, _currentDate),
+            : LogChartWidgetFl(snapshot.data!, _currentDate),
       ),
     );
   }

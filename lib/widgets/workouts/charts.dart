@@ -16,10 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
+import 'package:wger/helpers/colors.dart';
 
 /// Sample time series data type.
 class TimeSeriesLog {
@@ -29,53 +29,112 @@ class TimeSeriesLog {
   TimeSeriesLog(this.time, this.weight);
 }
 
-class LogChartWidget extends StatelessWidget {
+class LogChartWidgetFl extends StatefulWidget {
   final Map _data;
   final DateTime _currentDate;
-  const LogChartWidget(this._data, this._currentDate);
+
+  const LogChartWidgetFl(this._data, this._currentDate);
+
+  @override
+  State<LogChartWidgetFl> createState() => _LogChartWidgetFlState();
+}
+
+class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
+  final interval = 15 * Duration.millisecondsPerDay / 1000 / 60;
 
   @override
   Widget build(BuildContext context) {
-    return _data.containsKey('chart_data') && _data['chart_data'].length > 0
-        ? charts.TimeSeriesChart(
-            [
-              ..._data['chart_data'].map((e) {
-                return charts.Series<TimeSeriesLog, DateTime>(
-                  id: '${e.first['reps']} ${AppLocalizations.of(context).reps}',
-                  domainFn: (datum, index) => datum.time,
-                  measureFn: (datum, index) => datum.weight,
-                  data: [
-                    ...e.map(
-                      (entry) => TimeSeriesLog(
-                        DateTime.parse(entry['date']),
-                        double.parse(entry['weight']),
-                      ),
-                    ),
-                  ],
-                );
-              }),
-            ],
-            primaryMeasureAxis: const charts.NumericAxisSpec(
-              tickProviderSpec: charts.BasicNumericTickProviderSpec(zeroBound: false),
-            ),
-            behaviors: [
-              charts.SeriesLegend(
-                position: charts.BehaviorPosition.bottom,
-                desiredMaxColumns: 4,
+    return AspectRatio(
+      aspectRatio: 1.70,
+      child: Padding(
+        padding: const EdgeInsets.only(
+          right: 18,
+          left: 12,
+          top: 24,
+          bottom: 12,
+        ),
+        child: LineChart(
+          mainData(),
+        ),
+      ),
+    );
+  }
+
+  LineChartData mainData() {
+    return LineChartData(
+      gridData: FlGridData(
+        show: true,
+        drawVerticalLine: true,
+        //horizontalInterval: 1,
+        //verticalInterval: interval,
+        getDrawingHorizontalLine: (value) {
+          return FlLine(
+            color: Colors.grey,
+            strokeWidth: 1,
+          );
+        },
+        getDrawingVerticalLine: (value) {
+          return FlLine(
+            color: Colors.grey,
+            strokeWidth: 1,
+          );
+        },
+      ),
+      titlesData: FlTitlesData(
+        show: true,
+        rightTitles: AxisTitles(
+          sideTitles: SideTitles(showTitles: false),
+        ),
+        topTitles: AxisTitles(
+          sideTitles: SideTitles(showTitles: false),
+        ),
+        bottomTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            getTitlesWidget: (value, meta) {
+              final DateTime date = DateTime.fromMillisecondsSinceEpoch(value.toInt() * 1000 * 60);
+              return Text(
+                DateFormat.yMd(Localizations.localeOf(context).languageCode).format(date),
+              );
+            },
+            interval: interval,
+          ),
+        ),
+        leftTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            reservedSize: 50,
+            getTitlesWidget: (value, meta) {
+              return Text(value.toString());
+            },
+          ),
+        ),
+      ),
+      borderData: FlBorderData(
+        show: true,
+        border: Border.all(color: const Color(0xff37434d)),
+      ),
+      lineBarsData: [
+        ...widget._data['chart_data'].map(
+          (e) {
+            return LineChartBarData(
+              spots: [
+                ...e.map((entry) => FlSpot(
+                      DateTime.parse(entry['date']).millisecondsSinceEpoch / 1000 / 60,
+                      double.parse(entry['weight']),
+                    ))
+              ],
+              isCurved: false,
+              color: getRandomColor(widget._data['chart_data'].length, e.first['reps']),
+              barWidth: 2,
+              isStrokeCapRound: true,
+              dotData: FlDotData(
+                show: false,
               ),
-              charts.RangeAnnotation([
-                charts.LineAnnotationSegment(
-                  _currentDate, charts.RangeAnnotationAxisType.domain,
-                  strokeWidthPx: 2,
-                  labelPosition: charts.AnnotationLabelPosition.margin,
-                  color: charts.Color.black,
-                  dashPattern: [0, 1, 1, 1],
-                  //startLabel: DateFormat.yMd(Localizations.localeOf(context).languageCode)
-                  //      .format(_currentDate),
-                )
-              ]),
-            ],
-          )
-        : Container();
+            );
+          },
+        )
+      ],
+    );
   }
 }
