@@ -95,7 +95,12 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
         leftTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
-            reservedSize: 30,
+            reservedSize: 65,
+            getTitlesWidget: (value, meta) {
+              return Text(
+                '$value ${widget.unit}',
+              );
+            },
           ),
         ),
       ),
