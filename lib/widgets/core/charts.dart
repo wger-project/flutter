@@ -54,8 +54,6 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
 
   LineChartData mainData() {
     return LineChartData(
-      // minY: 75,
-      // maxY: 90,
       gridData: FlGridData(
         show: true,
         drawVerticalLine: true,
@@ -97,10 +95,7 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
         leftTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
-            // interval: 1,
-            //interval: interval,
-            //getTitlesWidget: leftTitleWidgets,
-            reservedSize: 42,
+            reservedSize: 30,
           ),
         ),
       ),
@@ -133,20 +128,6 @@ class MeasurementChartEntry {
 
   MeasurementChartEntry(this.value, this.date);
 }
-
-// // #TODO : Del Later ///  test state less >> del later
-// class GetEntries extends StatelessWidget {
-// final List<MeasurementChartEntry> _entries;
-// const GetEntries(this._entries);
-
-// @override
-// Widget build(BuildContext context) {
-// // return old entries above
-
-// var entriesal = _entries.toString();
-// return Text(entriesal);
-// }
-// }
 
 class Indicator extends StatelessWidget {
   const Indicator({
