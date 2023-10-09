@@ -87,7 +87,9 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
             showTitles: true,
             getTitlesWidget: (value, meta) {
               final DateTime date = DateTime.fromMillisecondsSinceEpoch(value.toInt() * 1000 * 60);
-              return Text(DateFormat.yMd().format(date));
+              return Text(
+                DateFormat.yMd(Localizations.localeOf(context).languageCode).format(date),
+              );
             },
             interval: interval,
           ),
