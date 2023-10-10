@@ -18,6 +18,7 @@
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:wger/helpers/colors.dart';
 
@@ -40,8 +41,6 @@ class LogChartWidgetFl extends StatefulWidget {
 }
 
 class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
-  final interval = 15 * Duration.millisecondsPerDay / 1000 / 60;
-
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
@@ -61,6 +60,11 @@ class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
   }
 
   LineChartData mainData() {
+    final dayDiff = DateTime.parse(widget._data['logs'].keys.last)
+        .difference(DateTime.parse(widget._data['logs'].keys.first));
+
+    final interval = dayDiff.inDays * 1.3 * Duration.millisecondsPerDay;
+
     return LineChartData(
       gridData: FlGridData(
         show: true,
@@ -92,7 +96,7 @@ class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
           sideTitles: SideTitles(
             showTitles: true,
             getTitlesWidget: (value, meta) {
-              final DateTime date = DateTime.fromMillisecondsSinceEpoch(value.toInt() * 1000 * 60);
+              final DateTime date = DateTime.fromMillisecondsSinceEpoch(value.toInt());
               return Text(
                 DateFormat.yMd(Localizations.localeOf(context).languageCode).format(date),
               );
@@ -103,9 +107,9 @@ class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
         leftTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
-            reservedSize: 50,
+            reservedSize: 70,
             getTitlesWidget: (value, meta) {
-              return Text(value.toString());
+              return Text('$value ${AppLocalizations.of(context).kg}');
             },
           ),
         ),
@@ -120,7 +124,7 @@ class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
             return LineChartBarData(
               spots: [
                 ...e.map((entry) => FlSpot(
-                      DateTime.parse(entry['date']).millisecondsSinceEpoch / 1000 / 60,
+                      DateTime.parse(entry['date']).millisecondsSinceEpoch.toDouble(),
                       double.parse(entry['weight']),
                     ))
               ],
