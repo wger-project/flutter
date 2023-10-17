@@ -271,6 +271,14 @@
   "@noNutritionalPlans": {
     "description": "Message shown when the user has no nutritional plans"
   },
+  "onlyLogging": "Only track calories",
+  "onlyLoggingHelpText": "Check the box if you only want to log your calories and don't want to setup a detailed nutritional plan with specific meals",
+  "addGoalsToPlan": "Add goals to this plan",
+  "addGoalsToPlanHelpText": "This allows you to set general goals for energy, protein, carbohydrates or fat for the plan. Note that if you set-up a detailed meal plan, these values will take precedence.",
+  "goalEnergy": "Energy goal",
+  "goalProtein": "Protein goal",
+  "goalCarbohydrates": "Carbohydrates goal",
+  "goalFat": "Fat goal",
   "anErrorOccurred": "An Error Occurred!",
   "@anErrorOccurred": {},
   "weight": "Weight",

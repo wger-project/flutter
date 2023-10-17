@@ -39,6 +39,21 @@ class NutritionalPlan {
   @JsonKey(required: true, name: 'creation_date', toJson: toDate)
   late DateTime creationDate;
 
+  @JsonKey(required: true, name: 'only_logging')
+  late bool onlyLogging;
+
+  @JsonKey(required: true, name: 'goal_energy')
+  late num? goalEnergy;
+
+  @JsonKey(required: true, name: 'goal_protein')
+  late num? goalProtein;
+
+  @JsonKey(required: true, name: 'goal_carbohydrates')
+  late num? goalCarbohydrates;
+
+  @JsonKey(required: true, name: 'goal_fat')
+  late num? goalFat;
+
   @JsonKey(includeFromJson: false, includeToJson: false, defaultValue: [])
   List<Meal> meals = [];
 
@@ -47,6 +62,11 @@ class NutritionalPlan {
 
   NutritionalPlan({
     this.id,
+    this.onlyLogging = false,
+    this.goalEnergy,
+    this.goalProtein,
+    this.goalCarbohydrates,
+    this.goalFat,
     required this.description,
     required this.creationDate,
     List<Meal>? meals,
@@ -67,7 +87,9 @@ class NutritionalPlan {
   Map<String, dynamic> toJson() => _$NutritionalPlanToJson(this);
 
   String getLabel(BuildContext context) {
-    return description != '' ? description : AppLocalizations.of(context).nutritionalPlan;
+    return description != '' ? description : AppLocalizations
+        .of(context)
+        .nutritionalPlan;
   }
 
   /// Calculations

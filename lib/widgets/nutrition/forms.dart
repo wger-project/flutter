@@ -192,8 +192,8 @@ class MealItemForm extends StatelessWidget {
             ),
             if (_listMealItems.isNotEmpty) const SizedBox(height: 10.0),
             Container(
-              child: Text(AppLocalizations.of(context).recentlyUsedIngredients),
               padding: const EdgeInsets.all(10.0),
+              child: Text(AppLocalizations.of(context).recentlyUsedIngredients),
             ),
             Expanded(
               child: ListView.builder(
@@ -353,15 +353,27 @@ class IngredientLogForm extends StatelessWidget {
   }
 }
 
-class PlanForm extends StatelessWidget {
-  final _form = GlobalKey<FormState>();
-  final _descriptionController = TextEditingController();
+class PlanForm extends StatefulWidget {
   late NutritionalPlan _plan;
 
   PlanForm([NutritionalPlan? plan]) {
     _plan = plan ?? NutritionalPlan.empty();
-    _descriptionController.text = _plan.description;
   }
+
+  @override
+  State<PlanForm> createState() => _PlanFormState();
+}
+
+class _PlanFormState extends State<PlanForm> {
+  final _form = GlobalKey<FormState>();
+
+  final _descriptionController = TextEditingController();
+  final _goalEnergyController = TextEditingController();
+
+  //text:widget._plan.description
+
+  bool _onlyLogging = true;
+  bool _addGoals = false;
 
   @override
   Widget build(BuildContext context) {
@@ -376,9 +388,116 @@ class PlanForm extends StatelessWidget {
             controller: _descriptionController,
             onFieldSubmitted: (_) {},
             onSaved: (newValue) {
-              _plan.description = newValue!;
+              widget._plan.description = newValue!;
             },
           ),
+          SwitchListTile(
+            title: Text(AppLocalizations.of(context).onlyLogging),
+            subtitle: Text(AppLocalizations.of(context).onlyLoggingHelpText),
+            value: _onlyLogging,
+            onChanged: (value) {
+              setState(() {
+                _onlyLogging = !_onlyLogging;
+              });
+              widget._plan.onlyLogging = value;
+            },
+            dense: false,
+          ),
+          SwitchListTile(
+            title: Text(AppLocalizations.of(context).addGoalsToPlan),
+            subtitle: Text(AppLocalizations.of(context).addGoalsToPlanHelpText),
+            value: _addGoals,
+            onChanged: (value) {
+              setState(() {
+                _addGoals = !_addGoals;
+              });
+            },
+            dense: false,
+          ),
+          if (_addGoals)
+            Column(
+              children: [
+                TextFormField(
+                  key: const Key('field-goal-energy'),
+                  decoration: InputDecoration(labelText: AppLocalizations.of(context).goalEnergy),
+                  controller: _goalEnergyController,
+                  keyboardType: TextInputType.number,
+                  onSaved: (newValue) {
+                    widget._plan.goalEnergy = double.parse(newValue!);
+                  },
+                  validator: (value) {
+                    if (value == '') {
+                      return null;
+                    }
+                    try {
+                      double.parse(value!);
+                    } catch (error) {
+                      return AppLocalizations.of(context).enterValidNumber;
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  key: const Key('field-goal-protein'),
+                  decoration: InputDecoration(labelText: AppLocalizations.of(context).goalProtein),
+                  keyboardType: TextInputType.number,
+                  onSaved: (newValue) {
+                    widget._plan.goalProtein = double.parse(newValue!);
+                  },
+                  validator: (value) {
+                    if (value == '') {
+                      return null;
+                    }
+                    try {
+                      double.parse(value!);
+                    } catch (error) {
+                      return AppLocalizations.of(context).enterValidNumber;
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  key: const Key('field-goal-carbohydrates'),
+                  decoration:
+                      InputDecoration(labelText: AppLocalizations.of(context).goalCarbohydrates),
+                  keyboardType: TextInputType.number,
+                  onSaved: (newValue) {
+                    widget._plan.goalCarbohydrates = double.parse(newValue!);
+                  },
+                  validator: (value) {
+                    if (value == '') {
+                      return null;
+                    }
+                    try {
+                      double.parse(value!);
+                    } catch (error) {
+                      return AppLocalizations.of(context).enterValidNumber;
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  key: const Key('field-goal-fat'),
+                  decoration: InputDecoration(labelText: AppLocalizations.of(context).goalFat),
+                  keyboardType: TextInputType.number,
+                  onSaved: (newValue) {
+                    widget._plan.goalFat = double.parse(newValue!);
+                  },
+                  validator: (value) {
+                    if (value == '') {
+                      return null;
+                    }
+                    try {
+                      double.parse(value!);
+                    } catch (error) {
+                      return AppLocalizations.of(context).enterValidNumber;
+                    }
+                    return null;
+                  },
+                ),
+              ],
+            ),
+
           ElevatedButton(
             key: const Key(SUBMIT_BUTTON_KEY_NAME),
             child: Text(AppLocalizations.of(context).save),
@@ -392,15 +511,16 @@ class PlanForm extends StatelessWidget {
 
               // Save to DB
               try {
-                if (_plan.id != null) {
-                  await Provider.of<NutritionPlansProvider>(context, listen: false).editPlan(_plan);
+                if (widget._plan.id != null) {
+                  await Provider.of<NutritionPlansProvider>(context, listen: false)
+                      .editPlan(widget._plan);
                   Navigator.of(context).pop();
                 } else {
-                  _plan = await Provider.of<NutritionPlansProvider>(context, listen: false)
-                      .addPlan(_plan);
+                  widget._plan = await Provider.of<NutritionPlansProvider>(context, listen: false)
+                      .addPlan(widget._plan);
                   Navigator.of(context).pushReplacementNamed(
                     NutritionalPlanScreen.routeName,
-                    arguments: _plan,
+                    arguments: widget._plan,
                   );
                 }
 

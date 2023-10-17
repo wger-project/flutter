@@ -28,7 +28,13 @@ class UpdateAppScreen extends StatelessWidget {
           AppLocalizations.of(context).appUpdateTitle,
           style: Theme.of(context).textTheme.headline5,
         ),
-        content: Text(AppLocalizations.of(context).appUpdateContent),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(AppLocalizations.of(context).appUpdateContent),
+            Text(AppLocalizations.of(context).appUpdateContent),
+          ],
+        ),
         actions: null,
       ),
     );
