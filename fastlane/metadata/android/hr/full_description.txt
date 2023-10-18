@@ -1,4 +1,4 @@
-Od ljubitelja fitnessa za ljubitelja fitnessa – organiziraj svoje zdravlje s WGER, tvojim upravljaöem treninga!
+Od ljubitelja fitnessa za ljubitelje fitnessa – organiziraj svoje zdravlje s WGER, tvojim upravljačem treninga!
 
 Već si pronašao/la omiljeni program za fitness i voliš stvarati vlastite sportske rutine? Bez obzira na vrstu sportske zvijeri – svi imamo nešto zajedničko: Volimo pratiti naše zdravstvene podatke <3
 
@@ -22,7 +22,7 @@ Tvoj napredak:
 Nikada ne gubi iz vida svoje ciljeve. Prati svoju težinu i vodi statistiku.
 
 Tvoji podaci:
-wger je tvoj personalizirani dnevnik fitnessa – ali ti posjeduješ svoje podatke. Koristi REST API za pristup i obavi s njim nevjerojatnih stvari.
+wger je tvoj personalizirani dnevnik fitnessa – ali ti posjeduješ svoje podatke. Koristi REST API za pristup i obavi s njim nevjerojatne stvari.
 
 Napomena: Ovaj besplatni program ne temelji se na dodatnim sredstvima i ne tražimo da doniraš novac. Više od toga, ovo je projekt zajednice koji stalno raste. Stoga budi spreman/na za nove funkcije u bilo kojem trenutku!
 
