@@ -1,0 +1,119 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (C) 2020, 2021 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * wger Workout Manager is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
+import 'package:provider/provider.dart';
+import 'package:wger/models/routines/setting.dart';
+import 'package:wger/models/routines/weight_unit.dart';
+import 'package:wger/providers/body_weight.dart';
+import 'package:wger/providers/routine.dart';
+import 'package:wger/screens/routine_screen.dart';
+import 'package:wger/widgets/routines/forms.dart';
+
+import './workout_form_test.mocks.dart';
+
+@GenerateMocks([BodyWeightProvider])
+void main() {
+  var mockRoutineProvider = MockRoutineProvider();
+
+  const unit1 = WeightUnit(id: 1, name: 'kg');
+  const unit2 = WeightUnit(id: 2, name: 'donkeys');
+  const unit3 = WeightUnit(id: 3, name: 'plates');
+
+  final setting1 = Setting(
+    setId: 1,
+    order: 1,
+    exerciseBaseId: 1,
+    repetitionUnitId: 1,
+    reps: 2,
+    weightUnitId: 1,
+    comment: 'comment',
+    rir: '1',
+  );
+  setting1.weightUnitObj = unit1;
+
+  setUp(() {
+    mockRoutineProvider = MockRoutineProvider();
+    when(mockRoutineProvider.weightUnits).thenAnswer((_) => [unit1, unit2, unit3]);
+  });
+
+  Widget createHomeScreen() {
+    final key = GlobalKey<NavigatorState>();
+
+    return ChangeNotifierProvider<RoutineProvider>(
+      create: (context) => mockRoutineProvider,
+      child: MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        navigatorKey: key,
+        home: Scaffold(
+          body: WeightUnitInputWidget(setting1),
+        ),
+        routes: {
+          RoutineScreen.routeName: (ctx) => RoutineScreen(),
+        },
+      ),
+    );
+  }
+
+  testWidgets('Test that the entries are shown', (WidgetTester tester) async {
+    // arrange
+    final key1 = find.byKey(const Key('1'));
+    final key2 = find.byKey(const Key('2'));
+    final key3 = find.byKey(const Key('3'));
+    await tester.pumpWidget(createHomeScreen());
+    await tester.pump();
+
+    // assert
+    expect(key1, findsOneWidget);
+    expect(
+      (tester.widget(key1) as DropdownMenuItem<WeightUnit>).value!.name,
+      equals('kg'),
+    );
+
+    expect(key2, findsOneWidget);
+    expect(
+      (tester.widget(key2) as DropdownMenuItem<WeightUnit>).value!.name,
+      equals('donkeys'),
+    );
+    expect(key3, findsOneWidget);
+    expect(
+      (tester.widget(key3) as DropdownMenuItem<WeightUnit>).value!.name,
+      equals('plates'),
+    );
+  });
+
+  testWidgets('Test that the correct units are set after selection', (WidgetTester tester) async {
+    // arrange
+    await tester.pumpWidget(createHomeScreen());
+    await tester.pump();
+
+    // act
+    expect(setting1.weightUnitObj, equals(unit1));
+    await tester.tap(find.byKey(const Key('1')));
+    await tester.pump();
+    await tester.tap(find.text('donkeys').last);
+
+    // assert
+    expect(setting1.weightUnitObj, equals(unit2));
+  });
+}

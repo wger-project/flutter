@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 
 import '1_dashboard.dart';
-import '2_workout.dart';
+import '2_routine.dart';
 import '3_gym_mode.dart';
 import '4_measurements.dart';
 import '5_nutritional_plan.dart';
@@ -61,7 +61,7 @@ void main() {
       });
 
       testWidgets('workout detail screen - $language', (WidgetTester tester) async {
-        await tester.pumpWidget(createWorkoutDetailScreen(locale: languageCode));
+        await tester.pumpWidget(createRoutineDetailScreen(locale: languageCode));
         await tester.tap(find.byType(TextButton));
         await tester.pumpAndSettle();
         await takeScreenshot(tester, binding, language, '02 - workout detail');

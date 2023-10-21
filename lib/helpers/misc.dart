@@ -19,8 +19,8 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/models/workouts/repetition_unit.dart';
-import 'package:wger/models/workouts/weight_unit.dart';
+import 'package:wger/models/routines/repetition_unit.dart';
+import 'package:wger/models/routines/weight_unit.dart';
 
 /// Returns the text representation for a single setting, used in the gym mode
 String repText(

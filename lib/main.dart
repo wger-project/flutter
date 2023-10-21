@@ -16,8 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_zxing/flutter_zxing.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/add_exercise.dart';
 import 'package:wger/providers/base_provider.dart';
@@ -26,8 +28,8 @@ import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/gallery.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/routine.dart';
 import 'package:wger/providers/user.dart';
-import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
 import 'package:wger/screens/auth_screen.dart';
 import 'package:wger/screens/dashboard.dart';
@@ -42,16 +44,14 @@ import 'package:wger/screens/measurement_entries_screen.dart';
 import 'package:wger/screens/nutritional_diary_screen.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/screens/nutritional_plans_screen.dart';
+import 'package:wger/screens/routine_screen.dart';
+import 'package:wger/screens/routines_screen.dart';
 import 'package:wger/screens/splash_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
-import 'package:wger/screens/workout_plan_screen.dart';
-import 'package:wger/screens/workout_plans_screen.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/about.dart';
 
 import 'providers/auth.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter_zxing/flutter_zxing.dart';
 
 void main() {
   zx.setLogEnabled(kDebugMode);
@@ -77,14 +77,14 @@ class MyApp extends StatelessWidget {
           update: (context, base, previous) =>
               previous ?? ExercisesProvider(WgerBaseProvider(base)),
         ),
-        ChangeNotifierProxyProvider2<AuthProvider, ExercisesProvider, WorkoutPlansProvider>(
-          create: (context) => WorkoutPlansProvider(
+        ChangeNotifierProxyProvider2<AuthProvider, ExercisesProvider, RoutineProvider>(
+          create: (context) => RoutineProvider(
             WgerBaseProvider(Provider.of<AuthProvider>(context, listen: false)),
             Provider.of<ExercisesProvider>(context, listen: false),
             [],
           ),
           update: (context, auth, exercises, previous) =>
-              previous ?? WorkoutPlansProvider(WgerBaseProvider(auth), exercises, []),
+              previous ?? RoutineProvider(WgerBaseProvider(auth), exercises, []),
         ),
         ChangeNotifierProxyProvider<AuthProvider, NutritionPlansProvider>(
           create: (context) => NutritionPlansProvider(
@@ -152,8 +152,8 @@ class MyApp extends StatelessWidget {
             NutritionalDiaryScreen.routeName: (ctx) => NutritionalDiaryScreen(),
             NutritionalPlanScreen.routeName: (ctx) => NutritionalPlanScreen(),
             WeightScreen.routeName: (ctx) => WeightScreen(),
-            WorkoutPlanScreen.routeName: (ctx) => WorkoutPlanScreen(),
-            WorkoutPlansScreen.routeName: (ctx) => WorkoutPlansScreen(),
+            RoutineScreen.routeName: (ctx) => RoutineScreen(),
+            RoutinesScreen.routeName: (ctx) => RoutinesScreen(),
             ExercisesScreen.routeName: (ctx) => const ExercisesScreen(),
             ExerciseDetailScreen.routeName: (ctx) => const ExerciseDetailScreen(),
             AddExerciseScreen.routeName: (ctx) => const AddExerciseScreen(),

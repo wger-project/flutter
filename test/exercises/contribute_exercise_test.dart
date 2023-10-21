@@ -29,7 +29,7 @@ import 'package:wger/screens/add_exercise_screen.dart';
 
 import '../../test_data/exercises.dart';
 import '../../test_data/profile.dart';
-import '../workout/gym_mode_screen_test.mocks.dart';
+import '../routine/gym_mode_screen_test.mocks.dart';
 import 'contribute_exercise_test.mocks.dart';
 
 @GenerateMocks([AddExerciseProvider, UserProvider])

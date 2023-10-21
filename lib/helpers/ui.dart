@@ -24,8 +24,8 @@ import 'package:provider/provider.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/models/exercises/base.dart';
 import 'package:wger/models/exercises/translation.dart';
-import 'package:wger/models/workouts/log.dart';
-import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/models/routines/log.dart';
+import 'package:wger/providers/routine.dart';
 
 void showErrorDialog(dynamic exception, BuildContext context) {
   log('showErrorDialog: ');
@@ -129,7 +129,7 @@ dynamic showDeleteDialog(
               ),
               onPressed: () {
                 exerciseData[exercise]!.removeWhere((el) => el.id == log.id);
-                Provider.of<WorkoutPlansProvider>(context, listen: false).deleteLog(
+                Provider.of<RoutineProvider>(context, listen: false).deleteLog(
                   log,
                 );
 
