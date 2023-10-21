@@ -22,6 +22,7 @@
 - Miroslav Mazel - <https://gitlab.com/12people>
 - artchiee - <https://github.com/artchiee>
 - Tejas Bir Singh - <https://github.com/tejasbirsingh>
+- Abhishek Saini - <https://github.com/Abhisheksainii>
 
 ## Translators
 
