@@ -8,9 +8,9 @@ Razvili smo 100 % besplatan program za digitalno praćenje zdravlja i fitnessa,
 
 wger je projekt otvorenog koda za:
 * Tvoje tijelo
-* Tvoje treninge
+* Tvoji treninzi
 * Tvoj napredak
-* Tvoje podatke
+* Tvoji podaci
 
 Tvoje tijelo:
 Nema potrebe za guglanjem sastojaka omiljenih poslastica – odaberi dnevne obroke od više od 78.000 proizvoda i pogledaj nutritivne vrijednosti. Dodaj obroke u plan prehrane i čuvaj pregled svoje prehrane u kalendaru.
