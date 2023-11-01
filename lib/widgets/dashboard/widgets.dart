@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:developer';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -24,6 +26,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
+import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
@@ -57,8 +60,24 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
   @override
   void initState() {
     super.initState();
-    _plan = Provider.of<NutritionPlansProvider>(context, listen: false).currentPlan;
-    _hasContent = _plan != null;
+    _initNutritionData();
+  }
+
+  Future<void> _initNutritionData() async {
+    final nutritionPlansProvider = context.read<NutritionPlansProvider>();
+
+    if (!nutritionPlansProvider.nutritionDataInit) {
+      log('Loading Nutrition plans');
+      await Future.wait([
+        nutritionPlansProvider.fetchAndSetAllPlansSparse(),
+      ]);
+      log('Loading current nutritional plan');
+      if (nutritionPlansProvider.currentPlan != null) {
+        final plan = nutritionPlansProvider.currentPlan!;
+        await nutritionPlansProvider.fetchAndSetPlanFull(plan.id!);
+      }
+      nutritionPlansProvider.nutritionDataInit = true;
+    }
   }
 
   List<Widget> getContent() {
@@ -156,6 +175,8 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
 
   @override
   Widget build(BuildContext context) {
+    _plan = Provider.of<NutritionPlansProvider>(context, listen: true).currentPlan;
+    _hasContent = _plan != null;
     return Card(
       child: Column(
         children: [
@@ -240,6 +261,24 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
   late BodyWeightProvider weightEntriesData;
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _initWeightData();
+  }
+
+  Future<void> _initWeightData() async {
+    final weightProvider = context.read<BodyWeightProvider>();
+    if (!weightProvider.wightDataInit) {
+      log('Loading weight');
+      await Future.wait([
+        weightProvider.fetchAndSetEntries(),
+      ]);
+      weightProvider.wightDataInit = true;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     weightEntriesData = Provider.of<BodyWeightProvider>(context, listen: false);
 
@@ -317,6 +356,24 @@ class DashboardMeasurementWidget extends StatefulWidget {
 class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget> {
   int _current = 0;
   final CarouselController _controller = CarouselController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _initMeasurementData();
+  }
+
+  Future<void> _initMeasurementData() async {
+    final measurementProvider = context.read<MeasurementProvider>();
+    if (!measurementProvider.measurementDataInit) {
+      log('Loading measurements');
+      await Future.wait([
+        measurementProvider.fetchAndSetAllCategoriesAndEntries(),
+      ]);
+      measurementProvider.measurementDataInit = true;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -433,8 +490,29 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
   @override
   void initState() {
     super.initState();
-    _workoutPlan = context.read<WorkoutPlansProvider>().activePlan;
-    _hasContent = _workoutPlan != null;
+    _initWorkoutPlansData();
+  }
+
+  Future<void> _initWorkoutPlansData() async {
+    final workoutPlansProvider = context.read<WorkoutPlansProvider>();
+
+    if (!workoutPlansProvider.workoutPlansDatainit) {
+      log('Loading Workout plans');
+      try {
+        await Future.wait([
+          workoutPlansProvider.fetchAndSetAllPlansSparse(),
+        ]);
+      } catch (e, _) {
+        log(e.toString());
+      }
+      log('Loading current workout plan');
+      if (workoutPlansProvider.activePlan != null) {
+        final planId = workoutPlansProvider.activePlan!.id!;
+        await workoutPlansProvider.fetchAndSetWorkoutPlanFull(planId);
+        workoutPlansProvider.setCurrentPlan(planId);
+      }
+      workoutPlansProvider.workoutPlansDatainit = true;
+    }
   }
 
   Widget getTrailing() {
@@ -518,6 +596,8 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
 
   @override
   Widget build(BuildContext context) {
+    _workoutPlan = Provider.of<WorkoutPlansProvider>(context, listen: true).activePlan;
+    _hasContent = _workoutPlan != null;
     return Card(
       child: Column(
         children: [

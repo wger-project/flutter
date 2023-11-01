@@ -159,6 +159,8 @@ class WorkoutPlansProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  bool workoutPlansDatainit = false;
+
   /// Fetches a workout plan sparsely, i.e. only with the data on the plan
   /// object itself and no child attributes
   Future<WorkoutPlan> fetchAndSetPlanSparse(int planId) async {
