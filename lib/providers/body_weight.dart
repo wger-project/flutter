@@ -38,6 +38,8 @@ class BodyWeightProvider with ChangeNotifier {
     _entries = entries;
   }
 
+  bool wightDataInit = false;
+
   /// Clears all lists
   void clear() {
     _entries = [];
