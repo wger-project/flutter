@@ -24,7 +24,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 1.5.6+34
 
 environment:
-  sdk: '>=2.17.0 <3.0.0'
+  sdk: ">=2.17.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -59,6 +59,9 @@ dependencies:
   flutter_svg: ^2.0.5
   fl_chart: ^0.62.0
   flutter_zxing: ^1.1.2
+
+dependency_overrides:
+  intl: any
 
 dev_dependencies:
   flutter_test:
