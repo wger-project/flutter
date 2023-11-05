@@ -9,7 +9,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
-import 'package:wger/widgets/core/charts.dart';
+import 'package:wger/widgets/measurements/charts.dart';
 //import 'package:intl/intl.dart';
 //import 'package:wger/widgets/core/charts.dart';
 
@@ -177,14 +177,13 @@ class _LineChartSample2State extends State<LineChartSample2> {
   //   );
   // }
 
-
   // #TODO : needs to be changed (values for (y) axis)
   Widget leftTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(
       fontWeight: FontWeight.bold,
       fontSize: 15,
     );
-    
+
     String text;
     switch (value.toInt()) {
       case 1:

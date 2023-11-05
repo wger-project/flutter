@@ -136,5 +136,23 @@
     "description": "Error message when the user enters an invalid email"
   },
   "confirmPassword": "Επιβεβαίωση κωδικού πρόσβασης",
-  "@confirmPassword": {}
+  "@confirmPassword": {},
+  "images": "Εικόνες",
+  "@images": {},
+  "save": "Αποθήκευση",
+  "@save": {},
+  "description": "Περιγραφή",
+  "@description": {},
+  "name": "Όνομα",
+  "@name": {
+    "description": "Name for a workout or nutritional plan"
+  },
+  "translation": "Μετάφραση",
+  "@translation": {},
+  "language": "Γλώσσα",
+  "@language": {},
+  "category": "Κατηγορία",
+  "@category": {
+    "description": "Category for an exercise, ingredient, etc."
+  }
 }

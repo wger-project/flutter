@@ -20,6 +20,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
+import 'package:wger/helpers/charts.dart';
 import 'package:wger/helpers/colors.dart';
 
 /// Sample time series data type.
@@ -47,8 +48,6 @@ class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
       aspectRatio: 1.70,
       child: Padding(
         padding: const EdgeInsets.only(
-          right: 18,
-          left: 12,
           top: 24,
           bottom: 12,
         ),
@@ -60,17 +59,12 @@ class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
   }
 
   LineChartData mainData() {
-    final dayDiff = DateTime.parse(widget._data['logs'].keys.last)
-        .difference(DateTime.parse(widget._data['logs'].keys.first));
-
-    final interval = dayDiff.inDays * 1.3 * Duration.millisecondsPerDay;
+    final colors = generateChartColors(widget._data['chart_data'].length).iterator;
 
     return LineChartData(
       gridData: FlGridData(
         show: true,
         drawVerticalLine: true,
-        //horizontalInterval: 1,
-        //verticalInterval: interval,
         getDrawingHorizontalLine: (value) {
           return FlLine(
             color: Colors.grey,
@@ -96,12 +90,21 @@ class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
           sideTitles: SideTitles(
             showTitles: true,
             getTitlesWidget: (value, meta) {
+              // Don't show the first and last entries, otherwise they'll overlap with the
+              // calculated interval
+              if (value == meta.min || value == meta.max) {
+                return const Text('');
+              }
+
               final DateTime date = DateTime.fromMillisecondsSinceEpoch(value.toInt());
               return Text(
                 DateFormat.yMd(Localizations.localeOf(context).languageCode).format(date),
               );
             },
-            interval: interval,
+            interval: chartGetInterval(
+              DateTime.parse(widget._data['logs'].keys.first),
+              DateTime.parse(widget._data['logs'].keys.last),
+            ),
           ),
         ),
         leftTitles: AxisTitles(
@@ -121,15 +124,18 @@ class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
       lineBarsData: [
         ...widget._data['chart_data'].map(
           (e) {
+            colors.moveNext();
             return LineChartBarData(
               spots: [
-                ...e.map((entry) => FlSpot(
-                      DateTime.parse(entry['date']).millisecondsSinceEpoch.toDouble(),
-                      double.parse(entry['weight']),
-                    ))
+                ...e.map(
+                  (entry) => FlSpot(
+                    DateTime.parse(entry['date']).millisecondsSinceEpoch.toDouble(),
+                    double.parse(entry['weight']),
+                  ),
+                )
               ],
               isCurved: false,
-              color: getRandomColor(widget._data['chart_data'].length, e.first['reps']),
+              color: colors.current,
               barWidth: 2,
               isStrokeCapRound: true,
               dotData: FlDotData(

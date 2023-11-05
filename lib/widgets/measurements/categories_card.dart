@@ -4,7 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../models/measurements/measurement_category.dart';
 import '../../screens/form_screen.dart';
 import '../../screens/measurement_entries_screen.dart';
-import '../core/charts.dart';
+import 'charts.dart';
 import 'forms.dart';
 
 class CategoriesCard extends StatelessWidget {

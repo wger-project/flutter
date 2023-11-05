@@ -351,7 +351,6 @@ class WorkoutPlansProvider with ChangeNotifier {
       'weightUnit': _weightUnits.map((e) => e.toJson()).toList(),
     };
     prefs.setString('workoutUnits', json.encode(exerciseData));
-    log(json.encode(exerciseData));
     notifyListeners();
   }
 

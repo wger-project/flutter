@@ -26,7 +26,7 @@ import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/screens/measurement_categories_screen.dart';
-import 'package:wger/widgets/core/charts.dart';
+import 'package:wger/widgets/measurements/charts.dart';
 
 import 'measurement_categories_screen_test.mocks.dart';
 

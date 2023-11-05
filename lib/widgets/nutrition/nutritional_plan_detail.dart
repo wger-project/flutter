@@ -20,12 +20,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/helpers/colors.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/nutritional_diary_screen.dart';
 import 'package:wger/theme/theme.dart';
+import 'package:wger/widgets/measurements/charts.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/meal.dart';
@@ -212,12 +214,42 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.headline6,
           ),
+
           Container(
-            padding: const EdgeInsets.all(15),
+            padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
             height: 300,
             child: NutritionalDiaryChartWidgetFl(nutritionalPlan: _nutritionalPlan), //  chart
           ),
-          const Padding(padding: EdgeInsets.all(8.0)),
+          // const Padding(padding: EdgeInsets.all(8.0)),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 40, left: 25, right: 25),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Indicator(
+                  color: LIST_OF_COLORS3[0],
+                  text: AppLocalizations.of(context).planned,
+                  isSquare: true,
+                ),
+                const SizedBox(
+                  width: 4,
+                ),
+                Indicator(
+                  color: LIST_OF_COLORS3[1],
+                  text: AppLocalizations.of(context).logged,
+                  isSquare: true,
+                ),
+                const SizedBox(
+                  width: 4,
+                ),
+                Indicator(
+                  color: LIST_OF_COLORS3[2],
+                  text: AppLocalizations.of(context).weekAverage,
+                  isSquare: true,
+                ),
+              ],
+            ),
+          ),
           Text(
             AppLocalizations.of(context).nutritionalDiary,
             textAlign: TextAlign.center,
