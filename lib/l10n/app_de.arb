@@ -730,5 +730,23 @@
   "swiss_ball": "Gymnastikball",
   "@swiss_ball": {},
   "none__bodyweight_exercise_": "keine (Körpergewichtsübung)",
-  "@none__bodyweight_exercise_": {}
+  "@none__bodyweight_exercise_": {},
+  "body_weight": "Körpergewicht",
+  "@body_weight": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kg": "kg",
+  "@kg": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kilometers_per_hour": "Kilometer pro Stunde",
+  "@kilometers_per_hour": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "miles_per_hour": "Meilen pro Stunde",
+  "@miles_per_hour": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "verify": "Verifizieren",
+  "@verify": {}
 }

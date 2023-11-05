@@ -91,7 +91,7 @@
   "@exercise": {
     "description": "An exercise for a workout"
   },
-  "logHelpEntriesUnits": "Imaj na umu da su ovdje ucrtani samo unosi s jedinicom težine (kg ili lb) i ponavljanjima, druge kombinacije kao što su vrijeme ili do neuspjeha se ovdje zanemaruju.",
+  "logHelpEntriesUnits": "Napomena: prikazuju se samo unosi s jedinicom težine (kg ili lb) i ponavljanja, druge kombinacije kao što su vrijeme ili do neuspjeha se ovdje zanemaruju.",
   "@logHelpEntriesUnits": {},
   "description": "Opis",
   "@description": {},
