@@ -93,7 +93,9 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
                 DateFormat.yMd(Localizations.localeOf(context).languageCode).format(date),
               );
             },
-            interval: chartGetInterval(widget._entries.last.date, widget._entries.first.date),
+            interval: widget._entries.isNotEmpty
+                ? chartGetInterval(widget._entries.last.date, widget._entries.first.date)
+                : 1000,
           ),
         ),
         leftTitles: AxisTitles(
