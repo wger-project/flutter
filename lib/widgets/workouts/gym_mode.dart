@@ -466,15 +466,6 @@ class _LogPageState extends State<LogPage> {
             },
           ),
           ElevatedButton(
-            child: (!_isSaving)
-                ? Text(AppLocalizations.of(context).save)
-                : const SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                    ),
-                  ),
             onPressed: _isSaving
                 ? null
                 : () async {
@@ -512,6 +503,15 @@ class _LogPageState extends State<LogPage> {
                       _isSaving = false;
                     }
                   },
+            child: (!_isSaving)
+                ? Text(AppLocalizations.of(context).save)
+                : const SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
+                  ),
           ),
         ],
       ),
@@ -781,17 +781,6 @@ class _SessionPageState extends State<SessionPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ToggleButtons(
-                  children: const <Widget>[
-                    Icon(
-                      Icons.sentiment_very_dissatisfied,
-                    ),
-                    Icon(
-                      Icons.sentiment_neutral,
-                    ),
-                    Icon(
-                      Icons.sentiment_very_satisfied,
-                    ),
-                  ],
                   renderBorder: false,
                   onPressed: (int index) {
                     setState(() {
@@ -809,6 +798,17 @@ class _SessionPageState extends State<SessionPage> {
                     });
                   },
                   isSelected: selectedImpression,
+                  children: const <Widget>[
+                    Icon(
+                      Icons.sentiment_very_dissatisfied,
+                    ),
+                    Icon(
+                      Icons.sentiment_neutral,
+                    ),
+                    Icon(
+                      Icons.sentiment_very_satisfied,
+                    ),
+                  ],
                 ),
                 TextFormField(
                   decoration: InputDecoration(

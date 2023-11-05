@@ -192,8 +192,8 @@ class MealItemForm extends StatelessWidget {
             ),
             if (_listMealItems.isNotEmpty) const SizedBox(height: 10.0),
             Container(
-              child: Text(AppLocalizations.of(context).recentlyUsedIngredients),
               padding: const EdgeInsets.all(10.0),
+              child: Text(AppLocalizations.of(context).recentlyUsedIngredients),
             ),
             Expanded(
               child: ListView.builder(
@@ -320,8 +320,8 @@ class IngredientLogForm extends StatelessWidget {
             ),
             if (diaryEntries.isNotEmpty) const SizedBox(height: 10.0),
             Container(
-              child: Text(AppLocalizations.of(context).recentlyUsedIngredients),
               padding: const EdgeInsets.all(10.0),
+              child: Text(AppLocalizations.of(context).recentlyUsedIngredients),
             ),
             Expanded(
               child: ListView.builder(
@@ -392,16 +392,21 @@ class PlanForm extends StatelessWidget {
 
               // Save to DB
               try {
+                final navigator = Navigator.of(context);
                 if (_plan.id != null) {
                   await Provider.of<NutritionPlansProvider>(context, listen: false).editPlan(_plan);
-                  Navigator.of(context).pop();
+                  if (context.mounted) {
+                    navigator.pop();
+                  }
                 } else {
                   _plan = await Provider.of<NutritionPlansProvider>(context, listen: false)
                       .addPlan(_plan);
-                  Navigator.of(context).pushReplacementNamed(
-                    NutritionalPlanScreen.routeName,
-                    arguments: _plan,
-                  );
+                  if (context.mounted) {
+                    navigator.pushReplacementNamed(
+                      NutritionalPlanScreen.routeName,
+                      arguments: _plan,
+                    );
+                  }
                 }
 
                 // Saving was successful, reset the data
