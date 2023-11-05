@@ -19,6 +19,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:wger/helpers/charts.dart';
 import 'package:wger/theme/theme.dart';
 
 class MeasurementChartWidgetFl extends StatefulWidget {
@@ -32,8 +33,6 @@ class MeasurementChartWidgetFl extends StatefulWidget {
 }
 
 class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
-  final interval = 15 * Duration.millisecondsPerDay / 1000 / 60;
-
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
@@ -84,12 +83,17 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
           sideTitles: SideTitles(
             showTitles: true,
             getTitlesWidget: (value, meta) {
-              final DateTime date = DateTime.fromMillisecondsSinceEpoch(value.toInt() * 1000 * 60);
+              // Don't show the first and last entries, otherwise they'll overlap with the
+              // calculated interval
+              if (value == meta.min || value == meta.max) {
+                return const Text('');
+              }
+              final DateTime date = DateTime.fromMillisecondsSinceEpoch(value.toInt());
               return Text(
                 DateFormat.yMd(Localizations.localeOf(context).languageCode).format(date),
               );
             },
-            interval: interval,
+            interval: chartGetInterval(widget._entries.last.date, widget._entries.first.date),
           ),
         ),
         leftTitles: AxisTitles(
@@ -112,7 +116,7 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
         LineChartBarData(
           spots: [
             ...widget._entries
-                .map((e) => FlSpot(e.date.millisecondsSinceEpoch / 1000 / 60, e.value.toDouble()))
+                .map((e) => FlSpot(e.date.millisecondsSinceEpoch.toDouble(), e.value.toDouble()))
           ],
           isCurved: false,
           color: wgerSecondaryColor,

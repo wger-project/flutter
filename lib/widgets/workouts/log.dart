@@ -44,7 +44,7 @@ class ExerciseLogChart extends StatelessWidget {
     return FutureBuilder(
       future: getChartEntries(context),
       builder: (context, AsyncSnapshot<Map<String, dynamic>> snapshot) => SizedBox(
-        height: 150,
+        height: 190,
         child: snapshot.connectionState == ConnectionState.waiting
             ? const Center(child: CircularProgressIndicator())
             : LogChartWidgetFl(snapshot.data!, _currentDate),
