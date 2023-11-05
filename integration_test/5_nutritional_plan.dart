@@ -14,7 +14,7 @@ import 'package:wger/theme/theme.dart';
 import '../test/user/provider_test.mocks.dart';
 
 Widget createNutritionalPlanScreen({locale = 'en'}) {
-  var mockBaseProvider = MockWgerBaseProvider();
+  final mockBaseProvider = MockWgerBaseProvider();
 
   final key = GlobalKey<NavigatorState>();
 
