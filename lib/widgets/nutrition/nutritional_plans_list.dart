@@ -32,7 +32,7 @@ class NutritionalPlansList extends StatelessWidget {
   Widget build(BuildContext context) {
     return RefreshIndicator(
       onRefresh: () => _nutritionProvider.fetchAndSetAllPlansSparse(),
-      child: _nutritionProvider.items.length == 0
+      child: _nutritionProvider.items.isEmpty
           ? TextPrompt()
           : ListView.builder(
               padding: const EdgeInsets.all(10.0),
