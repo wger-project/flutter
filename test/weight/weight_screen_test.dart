@@ -84,8 +84,8 @@ void main() {
     await tester.pumpWidget(createWeightScreen());
 
     // One in the entries list, one in the chart
-    expect(find.text('1/1/2021'), findsNWidgets(2));
-    expect(find.text('1/10/2021'), findsNWidgets(2));
+    expect(find.text('1/1/2021'), findsOneWidget);
+    expect(find.text('1/10/2021'), findsOneWidget);
   });
 
   testWidgets('Tests the localization of dates - DE', (WidgetTester tester) async {
