@@ -119,11 +119,17 @@ class WeightForm extends StatelessWidget {
                     : await Provider.of<BodyWeightProvider>(context, listen: false)
                         .editEntry(_weightEntry);
               } on WgerHttpException catch (error) {
-                showHttpExceptionErrorDialog(error, context);
+                if (context.mounted) {
+                  showHttpExceptionErrorDialog(error, context);
+                }
               } catch (error) {
-                showErrorDialog(error, context);
+                if (context.mounted) {
+                  showErrorDialog(error, context);
+                }
               }
-              Navigator.of(context).pop();
+              if (context.mounted) {
+                Navigator.of(context).pop();
+              }
             },
           ),
         ],

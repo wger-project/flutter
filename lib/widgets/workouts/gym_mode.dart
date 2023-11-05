@@ -496,10 +496,14 @@ class _LogPageState extends State<LogPage> {
                       );
                       _isSaving = false;
                     } on WgerHttpException catch (error) {
-                      showHttpExceptionErrorDialog(error, context);
+                      if (mounted) {
+                        showHttpExceptionErrorDialog(error, context);
+                      }
                       _isSaving = false;
                     } catch (error) {
-                      showErrorDialog(error, context);
+                      if (mounted) {
+                        showErrorDialog(error, context);
+                      }
                       _isSaving = false;
                     }
                   },
@@ -902,11 +906,17 @@ class _SessionPageState extends State<SessionPage> {
                     try {
                       await Provider.of<WorkoutPlansProvider>(context, listen: false)
                           .addSession(_session);
-                      Navigator.of(context).pop();
+                      if (mounted) {
+                        Navigator.of(context).pop();
+                      }
                     } on WgerHttpException catch (error) {
-                      showHttpExceptionErrorDialog(error, context);
+                      if (mounted) {
+                        showHttpExceptionErrorDialog(error, context);
+                      }
                     } catch (error) {
-                      showErrorDialog(error, context);
+                      if (mounted) {
+                        showErrorDialog(error, context);
+                      }
                     }
                   },
                 ),

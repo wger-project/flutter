@@ -49,7 +49,9 @@ mixin ExerciseImagePickerMixin {
         }
 
         if (!isFileValid) {
-          showDialog(context: context, builder: (context) => Text(errorMessage));
+          if (context.mounted) {
+            showDialog(context: context, builder: (context) => Text(errorMessage));
+          }
           return;
         }
       }

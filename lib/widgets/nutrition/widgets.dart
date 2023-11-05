@@ -207,10 +207,12 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
             }
           }
         } catch (e) {
-          showErrorDialog(e, context);
-          // Need to pop back since reader scan is a widget
-          // otherwise returns null when back button is pressed
-          return Navigator.pop(context);
+          if (context.mounted) {
+            showErrorDialog(e, context);
+            // Need to pop back since reader scan is a widget
+            // otherwise returns null when back button is pressed
+            return Navigator.pop(context);
+          }
         }
       },
       icon: Image.asset('assets/images/barcode_scanner_icon.png'),

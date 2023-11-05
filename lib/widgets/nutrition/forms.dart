@@ -392,17 +392,16 @@ class PlanForm extends StatelessWidget {
 
               // Save to DB
               try {
-                final navigator = Navigator.of(context);
                 if (_plan.id != null) {
                   await Provider.of<NutritionPlansProvider>(context, listen: false).editPlan(_plan);
                   if (context.mounted) {
-                    navigator.pop();
+                    Navigator.of(context).pop();
                   }
                 } else {
                   _plan = await Provider.of<NutritionPlansProvider>(context, listen: false)
                       .addPlan(_plan);
                   if (context.mounted) {
-                    navigator.pushReplacementNamed(
+                    Navigator.of(context).pushReplacementNamed(
                       NutritionalPlanScreen.routeName,
                       arguments: _plan,
                     );
@@ -412,9 +411,13 @@ class PlanForm extends StatelessWidget {
                 // Saving was successful, reset the data
                 _descriptionController.clear();
               } on WgerHttpException catch (error) {
-                showHttpExceptionErrorDialog(error, context);
+                if (context.mounted) {
+                  showHttpExceptionErrorDialog(error, context);
+                }
               } catch (error) {
-                showErrorDialog(error, context);
+                if (context.mounted) {
+                  showErrorDialog(error, context);
+                }
               }
             },
           ),
