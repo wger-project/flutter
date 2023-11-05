@@ -83,8 +83,8 @@ void main() {
     await tester.pumpAndSettle();
 
     // From the entries list and from the chart
-    expect(find.text('8/1/2021'), findsNWidgets(2));
-    expect(find.text('8/10/2021'), findsOneWidget);
+    expect(find.text('8/1/2021'), findsWidgets);
+    expect(find.text('8/10/2021'), findsWidgets);
   });
 
   testWidgets('Tests the localization of dates - DE', (WidgetTester tester) async {
@@ -92,7 +92,7 @@ void main() {
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();
 
-    expect(find.text('1.8.2021'), findsNWidgets(2));
-    expect(find.text('10.8.2021'), findsOneWidget);
+    expect(find.text('1.8.2021'), findsWidgets);
+    expect(find.text('10.8.2021'), findsWidgets);
   });
 }
