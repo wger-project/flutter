@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:collection/collection.dart';
+import 'package:community_charts_flutter/community_charts_flutter.dart' as charts;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
