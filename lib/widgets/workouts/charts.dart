@@ -59,12 +59,12 @@ class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
   }
 
   LineChartData mainData() {
+    final colors = generateChartColors(widget._data['chart_data'].length).iterator;
+
     return LineChartData(
       gridData: FlGridData(
         show: true,
         drawVerticalLine: true,
-        //horizontalInterval: 1,
-        //verticalInterval: interval,
         getDrawingHorizontalLine: (value) {
           return FlLine(
             color: Colors.grey,
@@ -124,15 +124,18 @@ class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
       lineBarsData: [
         ...widget._data['chart_data'].map(
           (e) {
+            colors.moveNext();
             return LineChartBarData(
               spots: [
-                ...e.map((entry) => FlSpot(
-                      DateTime.parse(entry['date']).millisecondsSinceEpoch.toDouble(),
-                      double.parse(entry['weight']),
-                    ))
+                ...e.map(
+                  (entry) => FlSpot(
+                    DateTime.parse(entry['date']).millisecondsSinceEpoch.toDouble(),
+                    double.parse(entry['weight']),
+                  ),
+                )
               ],
               isCurved: false,
-              color: getRandomColor(widget._data['chart_data'].length, e.first['reps']),
+              color: colors.current,
               barWidth: 2,
               isStrokeCapRound: true,
               dotData: FlDotData(
