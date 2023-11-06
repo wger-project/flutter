@@ -75,7 +75,7 @@ dev_dependencies:
 
   # Better icons have been added manually, Android now uses vector icon
   # TODO Consider removing flutter_launcher_icons completely
-  flutter_icons:
+flutter_icons:
   android: false
   ios: false
   image_path: "assets_dev/logo.png"
