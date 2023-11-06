@@ -1048,18 +1048,18 @@ packages:
     dependency: "direct main"
     description:
       name: rive
-      sha256: f3b8af0898c987d68019e91d92257edd902c28c816e49de033a7272e86bd5425
+      sha256: a8740aedb9f5c341c521b3c370bcee6e7cd6363d1a39a565533d7ed2424d6fbe
       url: "https://pub.dev"
     source: hosted
-    version: "0.11.4"
+    version: "0.12.2"
   rive_common:
     dependency: transitive
     description:
       name: rive_common
-      sha256: f6687f9d70e6fd3888a9b0e9c0b307966d2ce74cf00cfb01dce906c3bbada52f
+      sha256: f4e20d0a99c5040c85624a3eb2b0b6b19e614d93a693c3bb25cf6e7bb2d3d6d3
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.0"
+    version: "0.2.8"
   shared_preferences:
     dependency: "direct main"
     description:
