@@ -23,14 +23,6 @@ import 'package:intl/intl.dart';
 import 'package:wger/helpers/charts.dart';
 import 'package:wger/helpers/colors.dart';
 
-/// Sample time series data type.
-class TimeSeriesLog {
-  final DateTime time;
-  final double weight;
-
-  TimeSeriesLog(this.time, this.weight);
-}
-
 class LogChartWidgetFl extends StatefulWidget {
   final Map _data;
   final DateTime _currentDate;
@@ -58,28 +50,21 @@ class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
     );
   }
 
-  int findRepsForWeight(List<dynamic> data, int weight) {
-    for (final dataList in data) {
-      if (dataList != null) {
-        for (final entry in dataList) {
-          if (double.parse(entry['weight']).toInt() == weight) {
-            return entry['reps'];
-          }
-        }
-      }
-    }
-    return -1; // Return -1 if the weight is not found
-  }
-
   LineTouchData tooltipData() {
-    return LineTouchData(touchTooltipData: LineTouchTooltipData(getTooltipItems: (touchedSpots) {
-      return touchedSpots.map((touchedSpot) {
-        return LineTooltipItem(
-          '${findRepsForWeight(widget._data["chart_data"], (touchedSpot.y).toInt())} reps: ${touchedSpot.y} kg',
-          const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        );
-      }).toList();
-    }));
+    return LineTouchData(
+      touchTooltipData: LineTouchTooltipData(
+        getTooltipItems: (touchedSpots) {
+          return touchedSpots.map((touchedSpot) {
+            final reps = widget._data['chart_data'][touchedSpot.barIndex].first['reps'];
+
+            return LineTooltipItem(
+              '$reps × ${touchedSpot.y} kg',
+              const TextStyle(color: Colors.white),
+            );
+          }).toList();
+        },
+      ),
+    );
   }
 
   LineChartData mainData() {
@@ -147,28 +132,31 @@ class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
         border: Border.all(color: const Color(0xff37434d)),
       ),
       lineBarsData: [
-        ...widget._data['chart_data'].map(
-          (e) {
-            colors.moveNext();
-            return LineChartBarData(
-              spots: [
-                ...e.map(
-                  (entry) => FlSpot(
-                    DateTime.parse(entry['date']).millisecondsSinceEpoch.toDouble(),
-                    double.parse(entry['weight']),
-                  ),
-                )
-              ],
-              isCurved: false,
-              color: colors.current,
-              barWidth: 2,
-              isStrokeCapRound: true,
-              dotData: FlDotData(
-                show: false,
+        ...widget._data['chart_data'].map((e) {
+          colors.moveNext();
+          return LineChartBarData(
+            spots: [
+              ...e.map(
+                (entry) => FlSpot(
+                  DateTime.parse(entry['date']).millisecondsSinceEpoch.toDouble(),
+                  double.parse(entry['weight']),
+                ),
+              )
+            ],
+            isCurved: true,
+            color: colors.current,
+            barWidth: 2,
+            isStrokeCapRound: true,
+            dotData: FlDotData(
+              show: true,
+              getDotPainter: (p0, p1, p2, p3) => FlDotCirclePainter(
+                radius: 2,
+                color: Colors.black,
+                strokeWidth: 0,
               ),
-            );
-          },
-        )
+            ),
+          );
+        })
       ],
     );
   }
