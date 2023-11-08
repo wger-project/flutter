@@ -214,13 +214,11 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.headline6,
           ),
-
           Container(
             padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
             height: 300,
             child: NutritionalDiaryChartWidgetFl(nutritionalPlan: _nutritionalPlan), //  chart
           ),
-          // const Padding(padding: EdgeInsets.all(8.0)),
           Padding(
             padding: const EdgeInsets.only(bottom: 40, left: 25, right: 25),
             child: Row(
@@ -230,22 +228,19 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                   color: LIST_OF_COLORS3[0],
                   text: AppLocalizations.of(context).planned,
                   isSquare: true,
-                ),
-                const SizedBox(
-                  width: 4,
+                  marginRight: 0,
                 ),
                 Indicator(
                   color: LIST_OF_COLORS3[1],
                   text: AppLocalizations.of(context).logged,
                   isSquare: true,
-                ),
-                const SizedBox(
-                  width: 4,
+                  marginRight: 0,
                 ),
                 Indicator(
                   color: LIST_OF_COLORS3[2],
                   text: AppLocalizations.of(context).weekAverage,
                   isSquare: true,
+                  marginRight: 0,
                 ),
               ],
             ),

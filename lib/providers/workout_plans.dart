@@ -18,7 +18,6 @@
 
 import 'dart:convert';
 import 'dart:developer' as dev;
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -300,8 +299,6 @@ class WorkoutPlansProvider with ChangeNotifier {
         query: {'id': base.id.toString()},
       ),
     );
-    // log(data.toString());
-
     return data;
   }
 
