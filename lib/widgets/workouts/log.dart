@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -39,20 +38,51 @@ class ExerciseLogChart extends StatelessWidget {
   Widget build(BuildContext context) {
     final workoutPlansData = Provider.of<WorkoutPlansProvider>(context, listen: false);
     final workout = workoutPlansData.currentPlan;
+    var colors = generateChartColors(1).iterator;
 
     Future<Map<String, dynamic>> getChartEntries(BuildContext context) async {
       return workoutPlansData.fetchLogData(workout!, _base);
     }
 
     return FutureBuilder(
-      future: getChartEntries(context),
-      builder: (context, AsyncSnapshot<Map<String, dynamic>> snapshot) => SizedBox(
-        height: 190,
-        child: snapshot.connectionState == ConnectionState.waiting
-            ? const Center(child: CircularProgressIndicator())
-            : LogChartWidgetFl(snapshot.data!, _currentDate),
-      ),
-    );
+        future: getChartEntries(context),
+        builder: (context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            colors = generateChartColors(snapshot.data!['chart_data'].length).iterator;
+          }
+
+          return SizedBox(
+            height: 260,
+            child: snapshot.connectionState == ConnectionState.waiting
+                ? const Center(child: CircularProgressIndicator())
+                : Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      LogChartWidgetFl(snapshot.data!, _currentDate),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ...snapshot.data!['chart_data'].map((e) {
+                            // e is the list of logs with the same reps, so we can just take the
+                            // first entry and read the reps from it. Yes, this is an amazingly ugly hack
+                            final reps = e.first['reps'];
+
+                            colors.moveNext();
+                            return Indicator(
+                              color: colors.current,
+                              text: reps.toString(),
+                              isSquare: false,
+                            );
+                          }).toList(),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      )
+                    ],
+                  ),
+          );
+        });
   }
 }
 
@@ -112,35 +142,6 @@ class _DayLogWidgetState extends State<DayLogWidget> {
                     )
                     .toList(),
                 ExerciseLogChart(base, widget._date),
-                Padding(
-                  padding: const EdgeInsets.all(30.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Indicator(
-                        color: LIST_OF_COLORS3[0],
-                        text: AppLocalizations.of(context).eight_reps,
-                        isSquare: false,
-                      ),
-                      const SizedBox(
-                        width: 15,
-                      ),
-                      Indicator(
-                        color: LIST_OF_COLORS3[1],
-                        text: AppLocalizations.of(context).ten_reps,
-                        isSquare: false,
-                      ),
-                      const SizedBox(
-                        width: 15,
-                      ),
-                      Indicator(
-                        color: LIST_OF_COLORS3[2],
-                        text: AppLocalizations.of(context).twelve_reps,
-                        isSquare: false,
-                      ),
-                    ],
-                  ),
-                ),
               ],
             );
           }).toList()

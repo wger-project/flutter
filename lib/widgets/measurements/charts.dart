@@ -159,6 +159,7 @@ class Indicator extends StatelessWidget {
     required this.text,
     required this.isSquare,
     this.size = 16,
+    this.marginRight = 15,
     this.textColor,
   });
 
@@ -166,6 +167,7 @@ class Indicator extends StatelessWidget {
   final String text;
   final bool isSquare;
   final double size;
+  final double marginRight;
   final Color? textColor;
 
   @override
@@ -188,7 +190,10 @@ class Indicator extends StatelessWidget {
           style: TextStyle(
             color: textColor,
           ),
-        )
+        ),
+        SizedBox(
+          width: marginRight,
+        ),
       ],
     );
   }
