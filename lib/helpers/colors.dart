@@ -41,18 +41,3 @@ Iterable<Color> generateChartColors(int nrOfItems) sync* {
     yield color;
   }
 }
-
-/// Returns a random color based on the given seed
-Color getRandomColor(int nrOfItems, int seed) {
-  final List<Color> colors;
-
-  if (nrOfItems <= 3) {
-    colors = LIST_OF_COLORS3;
-  } else if (nrOfItems <= 5) {
-    colors = LIST_OF_COLORS5;
-  } else {
-    colors = LIST_OF_COLORS8;
-  }
-
-  return colors[Random(seed).nextInt(colors.length)];
-}
