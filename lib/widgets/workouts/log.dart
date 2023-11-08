@@ -16,14 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/helpers/colors.dart';
 import 'package:wger/helpers/ui.dart';
 import 'package:wger/models/exercises/base.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/session.dart';
 import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/widgets/measurements/charts.dart';
 import 'package:wger/widgets/workouts/charts.dart';
 
 class ExerciseLogChart extends StatelessWidget {
@@ -109,7 +112,35 @@ class _DayLogWidgetState extends State<DayLogWidget> {
                     )
                     .toList(),
                 ExerciseLogChart(base, widget._date),
-                const SizedBox(height: 30),
+                Padding(
+                  padding: const EdgeInsets.all(30.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Indicator(
+                        color: LIST_OF_COLORS3[0],
+                        text: AppLocalizations.of(context).eight_reps,
+                        isSquare: false,
+                      ),
+                      const SizedBox(
+                        width: 15,
+                      ),
+                      Indicator(
+                        color: LIST_OF_COLORS3[1],
+                        text: AppLocalizations.of(context).ten_reps,
+                        isSquare: false,
+                      ),
+                      const SizedBox(
+                        width: 15,
+                      ),
+                      Indicator(
+                        color: LIST_OF_COLORS3[2],
+                        text: AppLocalizations.of(context).twelve_reps,
+                        isSquare: false,
+                      ),
+                    ],
+                  ),
+                ),
               ],
             );
           }).toList()

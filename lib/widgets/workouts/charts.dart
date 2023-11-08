@@ -58,10 +58,35 @@ class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
     );
   }
 
+  int findRepsForWeight(List<dynamic> data, int weight) {
+    for (final dataList in data) {
+      if (dataList != null) {
+        for (final entry in dataList) {
+          if (double.parse(entry['weight']).toInt() == weight) {
+            return entry['reps'];
+          }
+        }
+      }
+    }
+    return -1; // Return -1 if the weight is not found
+  }
+
+  LineTouchData tooltipData() {
+    return LineTouchData(touchTooltipData: LineTouchTooltipData(getTooltipItems: (touchedSpots) {
+      return touchedSpots.map((touchedSpot) {
+        return LineTooltipItem(
+          '${findRepsForWeight(widget._data["chart_data"], (touchedSpot.y).toInt())} reps: ${touchedSpot.y} kg',
+          const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        );
+      }).toList();
+    }));
+  }
+
   LineChartData mainData() {
     final colors = generateChartColors(widget._data['chart_data'].length).iterator;
 
     return LineChartData(
+      lineTouchData: tooltipData(),
       gridData: FlGridData(
         show: true,
         drawVerticalLine: true,

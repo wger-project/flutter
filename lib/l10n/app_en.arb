@@ -155,6 +155,18 @@
   "@reps": {
     "description": "Shorthand for repetitions, used when space constraints are tighter"
   },
+  "eight_reps": "8",
+  "@reps": {
+    "description": "Shorthand for 8 repetitions, used when space constraints are tighter"
+  },
+  "ten_reps": "10",
+  "@reps": {
+    "description": "Shorthand for 10 repetitions, used when space constraints are tighter"
+  },
+  "twelve_reps": "12",
+  "@reps": {
+    "description": "Shorthand for 12 repetitions, used when space constraints are tighter"
+  },
   "rir": "RiR",
   "@rir": {
     "description": "Shorthand for Repetitions In Reserve"
