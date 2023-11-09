@@ -76,29 +76,14 @@ void main() {
 
   testWidgets('Test that the entries are shown', (WidgetTester tester) async {
     // arrange
-    final key1 = find.byKey(const Key('1'));
-    final key2 = find.byKey(const Key('2'));
-    final key3 = find.byKey(const Key('3'));
     await tester.pumpWidget(createHomeScreen());
+    await tester.tap(find.byKey(const Key('1')));
     await tester.pump();
 
     // assert
-    expect(key1, findsOneWidget);
-    expect(
-      (tester.widget(key1) as DropdownMenuItem<RepetitionUnit>).value!.name,
-      equals('some rep unit'),
-    );
-
-    expect(key2, findsOneWidget);
-    expect(
-      (tester.widget(key2) as DropdownMenuItem<RepetitionUnit>).value!.name,
-      equals('another name'),
-    );
-    expect(key3, findsOneWidget);
-    expect(
-      (tester.widget(key3) as DropdownMenuItem<RepetitionUnit>).value!.name,
-      equals('this is repetition number 3'),
-    );
+    expect(find.text('some rep unit'), findsWidgets);
+    expect(find.text('another name'), findsWidgets);
+    expect(find.text('this is repetition number 3'), findsWidgets);
   });
 
   testWidgets('Test that the correct units are set after selection', (WidgetTester tester) async {

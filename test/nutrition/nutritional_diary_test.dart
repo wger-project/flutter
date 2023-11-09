@@ -41,7 +41,7 @@ void main() {
   testWidgets('Test the detail view for the nutritional plan', (WidgetTester tester) async {
     await tester.pumpWidget(getWidget());
 
-    expect(find.byType(NutritionalPlanPieChartWidget), findsOneWidget);
+    expect(find.byType(FlNutritionalPlanPieChartWidget), findsOneWidget);
     expect(find.byType(Table), findsOneWidget);
 
     expect(find.text('519kcal'), findsOneWidget, reason: 'find total energy');

@@ -38,13 +38,12 @@ Alternatively, you can use the test server (the db is reset every day):
 * password: `flutteruser`
 * API key: `31e2ea0322c07b9df583a9b6d1e794f7139e78d4`
 
-
 ### 2
 
 Install Flutter, and all its dependencies, and create a new virtual device:
 <https://flutter.dev/docs/get-started/install>.
 
-The app currently uses flutter 3.7
+The app currently uses flutter 3.13
 
 ### 3
 
