@@ -69,11 +69,11 @@
   "@registerInstead": {},
   "loginInstead": "Already have an account? Login",
   "@loginInstead": {},
-  "labelWorkoutPlans": "Workout plans",
+  "labelWorkoutPlans": "Routines",
   "@labelWorkoutPlans": {
-    "description": "Title for screen workout plans"
+    "description": "Title for screen routine list"
   },
-  "labelBottomNavWorkout": "Workout",
+  "labelBottomNavWorkout": "Routine",
   "@labelBottomNavWorkout": {
     "description": "Label used in bottom navigation, use a short word"
   },
@@ -108,11 +108,11 @@
   "exerciseList": "Exercise list",
   "exercise": "Exercise",
   "@exercise": {
-    "description": "An exercise for a workout"
+    "description": "An exercise for a workout or routine"
   },
   "exercises": "Exercises",
   "@exercises": {
-    "description": "Multiple exercises for a workout"
+    "description": "Multiple exercises for a workout or routine"
   },
   "exerciseName": "Exercise Name",
   "@exerciseName": {
@@ -143,13 +143,13 @@
   "@category": {
     "description": "Category for an exercise, ingredient, etc."
   },
-  "newWorkout": "New workout plan",
+  "newWorkout": "New routine",
   "@newWorkout": {
-    "description": "Header when adding a new workout"
+    "description": "Header when adding a new routine"
   },
-  "noWorkoutPlans": "You have no workout plans",
+  "noWorkoutPlans": "You have no routines",
   "@noWorkoutPlans": {
-    "description": "Message shown when the user has no workout plans"
+    "description": "Message shown when the user has no routines"
   },
   "reps": "Reps",
   "@reps": {
@@ -169,7 +169,7 @@
   "@repetitionUnit": {},
   "set": "Set",
   "@set": {
-    "description": "A set in a workout plan"
+    "description": "A set in a routine"
   },
   "dayDescriptionHelp": "A description of what is done on this day (e.g. 'pull day') or what body parts are trained (e.g. 'chest and shoulders')",
   "@dayDescriptionHelp": {},
@@ -237,7 +237,7 @@
   "@description": {},
   "name": "Name",
   "@name": {
-    "description": "Name for a workout or nutritional plan"
+    "description": "Name for a routine or nutritional plan"
   },
   "save": "Save",
   "@save": {},
@@ -404,7 +404,7 @@
     "description": "Message shown when the user has no logged weight entries"
   },
   "noMeasurementEntries": "You have no measurement entries",
-  "@noMeasurementntries": {
+  "@noMeasurementEntries": {
     "description": "Message shown when the user has no logged measurement entries"
   },
   "moreMeasurementEntries": "Add new measurement",

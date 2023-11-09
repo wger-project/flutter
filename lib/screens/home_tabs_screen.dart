@@ -29,13 +29,13 @@ import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/gallery.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/routine.dart';
 import 'package:wger/providers/user.dart';
-import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/dashboard.dart';
 import 'package:wger/screens/gallery_screen.dart';
 import 'package:wger/screens/nutritional_plans_screen.dart';
+import 'package:wger/screens/routines_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
-import 'package:wger/screens/workout_plans_screen.dart';
 import 'package:wger/theme/theme.dart';
 
 class HomeTabsScreen extends StatefulWidget {
@@ -64,7 +64,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
 
   final _screenList = [
     DashboardScreen(),
-    WorkoutPlansScreen(),
+    RoutinesScreen(),
     NutritionScreen(),
     WeightScreen(),
     const GalleryScreen(),
@@ -75,7 +75,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
     final authProvider = context.read<AuthProvider>();
 
     if (!authProvider.dataInit) {
-      final workoutPlansProvider = context.read<WorkoutPlansProvider>();
+      final workoutPlansProvider = context.read<RoutineProvider>();
       final nutritionPlansProvider = context.read<NutritionPlansProvider>();
       final exercisesProvider = context.read<ExercisesProvider>();
       final galleryProvider = context.read<GalleryProvider>();
@@ -103,7 +103,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
       await Future.wait([
         galleryProvider.fetchAndSetGallery(),
         nutritionPlansProvider.fetchAndSetAllPlansSparse(),
-        workoutPlansProvider.fetchAndSetAllPlansSparse(),
+        workoutPlansProvider.fetchAndSetAllRoutinesSparse(),
         weightProvider.fetchAndSetEntries(),
         measurementProvider.fetchAndSetAllCategoriesAndEntries(),
       ]);
@@ -117,9 +117,9 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
 
       // Current workout plan
       log('Loading current workout plan');
-      if (workoutPlansProvider.activePlan != null) {
-        final planId = workoutPlansProvider.activePlan!.id!;
-        await workoutPlansProvider.fetchAndSetWorkoutPlanFull(planId);
+      if (workoutPlansProvider.activeRoutine != null) {
+        final planId = workoutPlansProvider.activeRoutine!.id!;
+        await workoutPlansProvider.fetchAndSetRoutineFull(planId);
         workoutPlansProvider.setCurrentPlan(planId);
       }
     }

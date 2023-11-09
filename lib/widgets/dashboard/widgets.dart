@@ -23,17 +23,17 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
-import 'package:wger/models/workouts/workout_plan.dart';
+import 'package:wger/models/routines/routine.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
-import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/providers/routine.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/screens/measurement_categories_screen.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
+import 'package:wger/screens/routine_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
-import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/measurements/charts.dart';
 import 'package:wger/widgets/core/core.dart';
@@ -41,8 +41,8 @@ import 'package:wger/widgets/measurements/categories_card.dart';
 import 'package:wger/widgets/measurements/forms.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
+import 'package:wger/widgets/routines/forms.dart';
 import 'package:wger/widgets/weight/forms.dart';
-import 'package:wger/widgets/workouts/forms.dart';
 
 class DashboardNutritionWidget extends StatefulWidget {
   @override
@@ -428,13 +428,13 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
   var _showDetail = false;
   bool _hasContent = false;
 
-  WorkoutPlan? _workoutPlan;
+  Routine? _routine;
 
   @override
   void initState() {
     super.initState();
-    _workoutPlan = context.read<WorkoutPlansProvider>().activePlan;
-    _hasContent = _workoutPlan != null;
+    _routine = context.read<RoutineProvider>().activeRoutine;
+    _hasContent = _routine != null;
   }
 
   Widget getTrailing() {
@@ -452,7 +452,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
       return out;
     }
 
-    for (final day in _workoutPlan!.days) {
+    for (final day in _routine!.days) {
       out.add(SizedBox(
         width: double.infinity,
         child: Row(
@@ -523,13 +523,13 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
         children: [
           ListTile(
             title: Text(
-              _hasContent ? _workoutPlan!.name : AppLocalizations.of(context).labelWorkoutPlan,
+              _hasContent ? _routine!.name : AppLocalizations.of(context).labelWorkoutPlan,
               style: Theme.of(context).textTheme.headline4,
             ),
             subtitle: Text(
               _hasContent
                   ? DateFormat.yMd(Localizations.localeOf(context).languageCode)
-                      .format(_workoutPlan!.creationDate)
+                      .format(_routine!.creationDate)
                   : '',
             ),
             leading: const Icon(
@@ -556,7 +556,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
             NothingFound(
               AppLocalizations.of(context).noWorkoutPlans,
               AppLocalizations.of(context).newWorkout,
-              WorkoutForm(WorkoutPlan.empty()),
+              RoutineForm(Routine.empty()),
             ),
           if (_hasContent)
             Row(
@@ -565,8 +565,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                 TextButton(
                   child: Text(AppLocalizations.of(context).goToDetailPage),
                   onPressed: () {
-                    Navigator.of(context)
-                        .pushNamed(WorkoutPlanScreen.routeName, arguments: _workoutPlan);
+                    Navigator.of(context).pushNamed(RoutineScreen.routeName, arguments: _routine);
                   },
                 ),
               ],

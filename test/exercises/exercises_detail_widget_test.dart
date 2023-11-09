@@ -24,7 +24,7 @@ import 'package:wger/providers/exercises.dart';
 import 'package:wger/widgets/exercises/exercises.dart';
 
 import '../../test_data/exercises.dart';
-import '../workout/gym_mode_screen_test.mocks.dart';
+import '../routine/gym_mode_screen_test.mocks.dart';
 
 void main() {
   final mockProvider = MockExercisesProvider();

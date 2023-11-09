@@ -23,8 +23,8 @@ import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/gallery.dart';
 import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/routine.dart';
 import 'package:wger/providers/user.dart';
-import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/core/about.dart';
 import 'package:wger/widgets/user/forms.dart';
@@ -88,7 +88,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                           title: Text(AppLocalizations.of(context).logout),
                           onTap: () {
                             context.read<AuthProvider>().logout();
-                            context.read<WorkoutPlansProvider>().clear();
+                            context.read<RoutineProvider>().clear();
                             context.read<NutritionPlansProvider>().clear();
                             context.read<BodyWeightProvider>().clear();
                             context.read<GalleryProvider>().clear();

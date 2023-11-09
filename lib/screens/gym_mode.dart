@@ -18,9 +18,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/models/workouts/day.dart';
-import 'package:wger/providers/workout_plans.dart';
-import 'package:wger/widgets/workouts/gym_mode.dart';
+import 'package:wger/models/routines/day.dart';
+import 'package:wger/providers/routine.dart';
+import 'package:wger/widgets/routines/gym_mode.dart';
 
 class GymModeScreen extends StatelessWidget {
   static const routeName = '/gym-mode';
@@ -32,7 +32,7 @@ class GymModeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Consumer<WorkoutPlansProvider>(
+        child: Consumer<RoutineProvider>(
           builder: (context, value, child) => GymMode(_day),
         ),
       ),
