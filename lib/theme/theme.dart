@@ -59,7 +59,6 @@ final ColorScheme schemeDarkHc = SeedColorScheme.fromSeeds(
   tones: FlexTones.ultraContrast(Brightness.dark),
 );
 
-
 final wgerLightTheme = ThemeData.from(
   colorScheme: schemeLight,
   useMaterial3: true,
@@ -98,30 +97,31 @@ final wgerDarkThemeHc = ThemeData.from(
   useMaterial3: true,
 );
 
-const wgerCalendarStyle = CalendarStyle(
+CalendarStyle getWgerCalendarStyle(ThemeData theme) {
+  return CalendarStyle(
 // Use `CalendarStyle` to customize the UI
-  outsideDaysVisible: false,
-  todayDecoration: BoxDecoration(
-    color: Colors.amber,
-    shape: BoxShape.circle,
-  ),
-
-  markerDecoration: BoxDecoration(
-    color: Colors.black,
-    shape: BoxShape.circle,
-  ),
-  selectedDecoration: BoxDecoration(
-    color: wgerSecondaryColor,
-    shape: BoxShape.circle,
-  ),
-  rangeStartDecoration: BoxDecoration(
-    color: wgerSecondaryColor,
-    shape: BoxShape.circle,
-  ),
-  rangeEndDecoration: BoxDecoration(
-    color: wgerSecondaryColor,
-    shape: BoxShape.circle,
-  ),
-  rangeHighlightColor: wgerSecondaryColorLight,
-  weekendTextStyle: TextStyle(color: wgerSecondaryColor),
-);
+    outsideDaysVisible: false,
+    todayDecoration: const BoxDecoration(
+      color: Colors.amber,
+      shape: BoxShape.circle,
+    ),
+    markerDecoration: BoxDecoration(
+      color: theme.textTheme.headlineLarge?.color,
+      shape: BoxShape.circle,
+    ),
+    selectedDecoration: const BoxDecoration(
+      color: wgerSecondaryColor,
+      shape: BoxShape.circle,
+    ),
+    rangeStartDecoration: const BoxDecoration(
+      color: wgerSecondaryColor,
+      shape: BoxShape.circle,
+    ),
+    rangeEndDecoration: const BoxDecoration(
+      color: wgerSecondaryColor,
+      shape: BoxShape.circle,
+    ),
+    rangeHighlightColor: wgerSecondaryColorLight,
+    weekendTextStyle: const TextStyle(color: wgerSecondaryColor),
+  );
+}

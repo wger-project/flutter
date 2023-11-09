@@ -237,7 +237,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
             rangeSelectionMode: _rangeSelectionMode,
             eventLoader: _getEventsForDay,
             startingDayOfWeek: StartingDayOfWeek.monday,
-            calendarStyle: wgerCalendarStyle,
+            calendarStyle: getWgerCalendarStyle(Theme.of(context)),
             onDaySelected: _onDaySelected,
             onRangeSelected: _onRangeSelected,
             onFormatChanged: (format) {},

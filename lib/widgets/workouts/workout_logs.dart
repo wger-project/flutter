@@ -175,7 +175,7 @@ class _WorkoutLogCalendarState extends State<WorkoutLogCalendar> {
           selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
           calendarFormat: CalendarFormat.month,
           startingDayOfWeek: StartingDayOfWeek.monday,
-          calendarStyle: wgerCalendarStyle,
+          calendarStyle: getWgerCalendarStyle(Theme.of(context)),
           eventLoader: _getEventsForDay,
           availableGestures: AvailableGestures.horizontalSwipe,
           availableCalendarFormats: const {
