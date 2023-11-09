@@ -24,7 +24,7 @@ import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/theme/theme.dart';
-import 'package:wger/widgets/core/charts.dart';
+import 'package:wger/widgets/measurements/charts.dart';
 
 import 'forms.dart';
 
@@ -40,7 +40,7 @@ class EntriesList extends StatelessWidget {
         color: Theme.of(context).cardColor,
         padding: const EdgeInsets.all(10),
         height: 220,
-        child: MeasurementChartWidget(
+        child: MeasurementChartWidgetFl(
           _category.entries.map((e) => MeasurementChartEntry(e.value, e.date)).toList(),
           unit: _category.unit,
         ),

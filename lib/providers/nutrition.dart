@@ -415,7 +415,7 @@ class NutritionPlansProvider with ChangeNotifier {
     final data = await baseProvider.fetchPaginated(
       baseProvider.makeUrl(
         _nutritionDiaryPath,
-        query: {'plan': plan.id.toString(), 'limit': '999'},
+        query: {'plan': plan.id.toString(), 'limit': '999', 'ordering': 'datetime'},
       ),
     );
 

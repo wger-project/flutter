@@ -25,7 +25,7 @@ import 'package:provider/provider.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
-import 'package:wger/widgets/core/charts.dart';
+import 'package:wger/widgets/measurements/charts.dart';
 import 'package:wger/widgets/weight/forms.dart';
 
 import '../../test_data/body_weight.dart';
@@ -57,7 +57,7 @@ void main() {
     await tester.pumpWidget(createWeightScreen());
 
     expect(find.text('Weight'), findsOneWidget);
-    expect(find.byType(MeasurementChartWidget), findsOneWidget);
+    expect(find.byType(MeasurementChartWidgetFl), findsOneWidget);
     expect(find.byType(Dismissible), findsNWidgets(2));
     expect(find.byType(ListTile), findsNWidgets(2));
   });
@@ -83,6 +83,7 @@ void main() {
   testWidgets('Tests the localization of dates - EN', (WidgetTester tester) async {
     await tester.pumpWidget(createWeightScreen());
 
+    // One in the entries list, one in the chart
     expect(find.text('1/1/2021'), findsOneWidget);
     expect(find.text('1/10/2021'), findsOneWidget);
   });
