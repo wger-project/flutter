@@ -5,7 +5,7 @@ on:
       - '**.dart'
       - 'pubspec.yaml'
   pull_request:
-    branches: [ pull_request, master ]
+    branches: [ master, ]
     paths:
       - '**.dart'
       - 'pubspec.yaml'
