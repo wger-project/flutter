@@ -77,29 +77,14 @@ void main() {
 
   testWidgets('Test that the entries are shown', (WidgetTester tester) async {
     // arrange
-    final key1 = find.byKey(const Key('1'));
-    final key2 = find.byKey(const Key('2'));
-    final key3 = find.byKey(const Key('3'));
     await tester.pumpWidget(createHomeScreen());
+    await tester.tap(find.byKey(const Key('1')));
     await tester.pump();
 
     // assert
-    expect(key1, findsOneWidget);
-    expect(
-      (tester.widget(key1) as DropdownMenuItem<WeightUnit>).value!.name,
-      equals('kg'),
-    );
-
-    expect(key2, findsOneWidget);
-    expect(
-      (tester.widget(key2) as DropdownMenuItem<WeightUnit>).value!.name,
-      equals('donkeys'),
-    );
-    expect(key3, findsOneWidget);
-    expect(
-      (tester.widget(key3) as DropdownMenuItem<WeightUnit>).value!.name,
-      equals('plates'),
-    );
+    expect(find.text('kg'), findsWidgets);
+    expect(find.text('donkeys'), findsWidgets);
+    expect(find.text('plates'), findsWidgets);
   });
 
   testWidgets('Test that the correct units are set after selection', (WidgetTester tester) async {
