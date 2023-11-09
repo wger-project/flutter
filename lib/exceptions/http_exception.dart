@@ -29,12 +29,11 @@ class WgerHttpException implements Exception {
       errors = {'unknown_error': 'An unknown error occurred, no further information available'};
     } else {
       try {
-        errors = json.decode(responseBody);
+        errors = {'unknown_error': json.decode(responseBody)};
       } catch (e) {
-        errors = responseBody;
+        errors = {'unknown_error': responseBody};
       }
     }
-    errors = errors;
   }
 
   @override

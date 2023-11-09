@@ -18,28 +18,29 @@
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:wger/helpers/charts.dart';
-import 'package:wger/helpers/colors.dart';
+import 'package:wger/theme/theme.dart';
 
-class LogChartWidgetFl extends StatefulWidget {
-  final Map _data;
-  final DateTime _currentDate;
+class MeasurementChartWidgetFl extends StatefulWidget {
+  final List<MeasurementChartEntry> _entries;
+  final String unit;
 
-  const LogChartWidgetFl(this._data, this._currentDate);
+  const MeasurementChartWidgetFl(this._entries, {this.unit = 'kg'});
 
   @override
-  State<LogChartWidgetFl> createState() => _LogChartWidgetFlState();
+  State<MeasurementChartWidgetFl> createState() => _MeasurementChartWidgetFlState();
 }
 
-class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
+class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
       aspectRatio: 1.70,
       child: Padding(
         padding: const EdgeInsets.only(
+          right: 18,
+          left: 12,
           top: 24,
           bottom: 12,
         ),
@@ -51,30 +52,24 @@ class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
   }
 
   LineTouchData tooltipData() {
-    return LineTouchData(
-      touchTooltipData: LineTouchTooltipData(
-        getTooltipItems: (touchedSpots) {
-          return touchedSpots.map((touchedSpot) {
-            final reps = widget._data['chart_data'][touchedSpot.barIndex].first['reps'];
-
-            return LineTooltipItem(
-              '$reps × ${touchedSpot.y} kg',
-              const TextStyle(color: Colors.white),
-            );
-          }).toList();
-        },
-      ),
-    );
+    return LineTouchData(touchTooltipData: LineTouchTooltipData(getTooltipItems: (touchedSpots) {
+      return touchedSpots.map((touchedSpot) {
+        return LineTooltipItem(
+          '${touchedSpot.y} kg',
+          const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+        );
+      }).toList();
+    }));
   }
 
   LineChartData mainData() {
-    final colors = generateChartColors(widget._data['chart_data'].length).iterator;
-
     return LineChartData(
       lineTouchData: tooltipData(),
       gridData: FlGridData(
         show: true,
         drawVerticalLine: true,
+        //horizontalInterval: 1,
+        //verticalInterval: interval,
         getDrawingHorizontalLine: (value) {
           return FlLine(
             color: Colors.grey,
@@ -105,24 +100,24 @@ class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
               if (value == meta.min || value == meta.max) {
                 return const Text('');
               }
-
               final DateTime date = DateTime.fromMillisecondsSinceEpoch(value.toInt());
               return Text(
                 DateFormat.yMd(Localizations.localeOf(context).languageCode).format(date),
               );
             },
-            interval: chartGetInterval(
-              DateTime.parse(widget._data['logs'].keys.first),
-              DateTime.parse(widget._data['logs'].keys.last),
-            ),
+            interval: widget._entries.isNotEmpty
+                ? chartGetInterval(widget._entries.last.date, widget._entries.first.date)
+                : 1000,
           ),
         ),
         leftTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
-            reservedSize: 70,
+            reservedSize: 65,
             getTitlesWidget: (value, meta) {
-              return Text('$value ${AppLocalizations.of(context).kg}');
+              return Text(
+                '$value ${widget.unit}',
+              );
             },
           ),
         ),
@@ -132,31 +127,73 @@ class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
         border: Border.all(color: const Color(0xff37434d)),
       ),
       lineBarsData: [
-        ...widget._data['chart_data'].map((e) {
-          colors.moveNext();
-          return LineChartBarData(
-            spots: [
-              ...e.map(
-                (entry) => FlSpot(
-                  DateTime.parse(entry['date']).millisecondsSinceEpoch.toDouble(),
-                  double.parse(entry['weight']),
-                ),
-              )
-            ],
-            isCurved: true,
-            color: colors.current,
-            barWidth: 2,
-            isStrokeCapRound: true,
-            dotData: FlDotData(
-              show: true,
-              getDotPainter: (p0, p1, p2, p3) => FlDotCirclePainter(
-                radius: 2,
-                color: Colors.black,
-                strokeWidth: 0,
-              ),
-            ),
-          );
-        })
+        LineChartBarData(
+          spots: [
+            ...widget._entries
+                .map((e) => FlSpot(e.date.millisecondsSinceEpoch.toDouble(), e.value.toDouble()))
+          ],
+          isCurved: false,
+          color: wgerSecondaryColor,
+          barWidth: 2,
+          isStrokeCapRound: true,
+          dotData: FlDotData(
+            show: true,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class MeasurementChartEntry {
+  num value;
+  DateTime date;
+
+  MeasurementChartEntry(this.value, this.date);
+}
+
+class Indicator extends StatelessWidget {
+  const Indicator({
+    super.key,
+    required this.color,
+    required this.text,
+    required this.isSquare,
+    this.size = 16,
+    this.marginRight = 15,
+    this.textColor,
+  });
+
+  final Color color;
+  final String text;
+  final bool isSquare;
+  final double size;
+  final double marginRight;
+  final Color? textColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: <Widget>[
+        Container(
+          width: size,
+          height: size,
+          decoration: BoxDecoration(
+            shape: isSquare ? BoxShape.rectangle : BoxShape.circle,
+            color: color,
+          ),
+        ),
+        const SizedBox(
+          width: 4,
+        ),
+        Text(
+          text,
+          style: TextStyle(
+            color: textColor,
+          ),
+        ),
+        SizedBox(
+          width: marginRight,
+        ),
       ],
     );
   }

@@ -35,7 +35,7 @@ import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/theme/theme.dart';
-import 'package:wger/widgets/core/charts.dart';
+import 'package:wger/widgets/measurements/charts.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/measurements/categories_card.dart';
 import 'package:wger/widgets/measurements/forms.dart';
@@ -182,18 +182,15 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
             },
           ),
           if (_hasContent)
-            Container(
-              padding: const EdgeInsets.only(left: 10),
-              child: Column(
-                children: [
-                  ...getContent(),
-                  Container(
-                    padding: const EdgeInsets.all(15),
-                    height: 180,
-                    child: NutritionalPlanPieChartWidget(_plan!.nutritionalValues),
-                  )
-                ],
-              ),
+            Column(
+              children: [
+                ...getContent(),
+                Container(
+                  padding: const EdgeInsets.all(15),
+                  height: 180,
+                  child: FlNutritionalPlanPieChartWidget(_plan!.nutritionalValues),
+                )
+              ],
             )
           else
             NothingFound(
@@ -267,9 +264,8 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                   Column(
                     children: [
                       Container(
-                        padding: const EdgeInsets.all(15),
-                        height: 180,
-                        child: MeasurementChartWidget(weightEntriesData.items
+                        height: 200,
+                        child: MeasurementChartWidgetFl(weightEntriesData.items
                             .map((e) => MeasurementChartEntry(e.weight, e.date))
                             .toList()),
                       ),

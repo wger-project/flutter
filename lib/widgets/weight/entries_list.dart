@@ -24,7 +24,7 @@ import 'package:wger/providers/body_weight.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/measurement_categories_screen.dart';
 import 'package:wger/theme/theme.dart';
-import 'package:wger/widgets/core/charts.dart';
+import 'package:wger/widgets/measurements/charts.dart';
 import 'package:wger/widgets/weight/forms.dart';
 
 class WeightEntriesList extends StatelessWidget {
@@ -38,7 +38,7 @@ class WeightEntriesList extends StatelessWidget {
           color: Theme.of(context).cardColor,
           padding: const EdgeInsets.all(15),
           height: 220,
-          child: MeasurementChartWidget(
+          child: MeasurementChartWidgetFl(
               _weightProvider.items.map((e) => MeasurementChartEntry(e.weight, e.date)).toList()),
         ),
         TextButton(

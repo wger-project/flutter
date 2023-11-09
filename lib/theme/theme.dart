@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flex_seed_scheme/flex_seed_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -61,8 +60,6 @@ final ColorScheme schemeDarkHc = SeedColorScheme.fromSeeds(
   tones: FlexTones.ultraContrast(Brightness.dark),
 );
 
-// Chart colors
-const charts.Color wgerChartSecondaryColor = charts.Color(r: 0xe6, g: 0x39, b: 0x46);
 
 final wgerLightTheme = ThemeData.from(
   colorScheme: schemeLight,

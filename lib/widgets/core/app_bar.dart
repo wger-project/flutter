@@ -29,7 +29,7 @@ import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/core/about.dart';
 import 'package:wger/widgets/user/forms.dart';
 
-class MainAppBar extends StatelessWidget with PreferredSizeWidget {
+class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String _title;
 
   MainAppBar(this._title);
@@ -113,7 +113,7 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
 }
 
 /// App bar that only displays a title
-class EmptyAppBar extends StatelessWidget with PreferredSizeWidget {
+class EmptyAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String _title;
 
   EmptyAppBar(this._title);
