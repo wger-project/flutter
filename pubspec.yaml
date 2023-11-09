@@ -73,16 +73,17 @@ dev_dependencies:
   flutter_lints: ^3.0.1
   cider: ^0.2.4
 
+  # Better icons have been added manually, Android now uses vector icon
+  # TODO Consider removing flutter_launcher_icons completely
 flutter_icons:
-  android: true
-  ios: true
+  android: false
+  ios: false
   image_path: "assets_dev/logo.png"
   adaptive_icon_background: "#2a4c7d"
   adaptive_icon_foreground: "assets_dev/logo_adaptive.png"
   macos:
-    generate: true
+    generate: false
     image_path: "assets/images/logo.png"
-
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

@@ -32,7 +32,7 @@ import 'package:wger/widgets/user/forms.dart';
 class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String _title;
 
-  MainAppBar(this._title);
+  const MainAppBar(this._title);
 
   @override
   Widget build(BuildContext context) {
@@ -116,7 +116,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
 class EmptyAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String _title;
 
-  EmptyAppBar(this._title);
+  const EmptyAppBar(this._title);
 
   @override
   Widget build(BuildContext context) {

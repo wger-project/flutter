@@ -466,15 +466,6 @@ class _LogPageState extends State<LogPage> {
             },
           ),
           ElevatedButton(
-            child: (!_isSaving)
-                ? Text(AppLocalizations.of(context).save)
-                : const SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                    ),
-                  ),
             onPressed: _isSaving
                 ? null
                 : () async {
@@ -505,13 +496,26 @@ class _LogPageState extends State<LogPage> {
                       );
                       _isSaving = false;
                     } on WgerHttpException catch (error) {
-                      showHttpExceptionErrorDialog(error, context);
+                      if (mounted) {
+                        showHttpExceptionErrorDialog(error, context);
+                      }
                       _isSaving = false;
                     } catch (error) {
-                      showErrorDialog(error, context);
+                      if (mounted) {
+                        showErrorDialog(error, context);
+                      }
                       _isSaving = false;
                     }
                   },
+            child: (!_isSaving)
+                ? Text(AppLocalizations.of(context).save)
+                : const SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
+                  ),
           ),
         ],
       ),
@@ -781,17 +785,6 @@ class _SessionPageState extends State<SessionPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ToggleButtons(
-                  children: const <Widget>[
-                    Icon(
-                      Icons.sentiment_very_dissatisfied,
-                    ),
-                    Icon(
-                      Icons.sentiment_neutral,
-                    ),
-                    Icon(
-                      Icons.sentiment_very_satisfied,
-                    ),
-                  ],
                   renderBorder: false,
                   onPressed: (int index) {
                     setState(() {
@@ -809,6 +802,17 @@ class _SessionPageState extends State<SessionPage> {
                     });
                   },
                   isSelected: selectedImpression,
+                  children: const <Widget>[
+                    Icon(
+                      Icons.sentiment_very_dissatisfied,
+                    ),
+                    Icon(
+                      Icons.sentiment_neutral,
+                    ),
+                    Icon(
+                      Icons.sentiment_very_satisfied,
+                    ),
+                  ],
                 ),
                 TextFormField(
                   decoration: InputDecoration(
@@ -902,11 +906,17 @@ class _SessionPageState extends State<SessionPage> {
                     try {
                       await Provider.of<WorkoutPlansProvider>(context, listen: false)
                           .addSession(_session);
-                      Navigator.of(context).pop();
+                      if (mounted) {
+                        Navigator.of(context).pop();
+                      }
                     } on WgerHttpException catch (error) {
-                      showHttpExceptionErrorDialog(error, context);
+                      if (mounted) {
+                        showHttpExceptionErrorDialog(error, context);
+                      }
                     } catch (error) {
-                      showErrorDialog(error, context);
+                      if (mounted) {
+                        showErrorDialog(error, context);
+                      }
                     }
                   },
                 ),

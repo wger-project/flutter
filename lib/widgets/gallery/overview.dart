@@ -39,7 +39,7 @@ class Gallery extends StatelessWidget {
       padding: const EdgeInsets.all(5),
       child: RefreshIndicator(
         onRefresh: () => provider.fetchAndSetGallery(),
-        child: provider.images.length == 0
+        child: provider.images.isEmpty
             ? TextPrompt()
             : MasonryGridView.count(
                 crossAxisCount: 2,

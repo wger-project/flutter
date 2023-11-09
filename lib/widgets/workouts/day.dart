@@ -50,8 +50,8 @@ class SettingWidget extends StatelessWidget {
     return ListTile(
       leading: InkWell(
         child: SizedBox(
-          child: ExerciseImageWidget(image: setting.exerciseBaseObj.getMainImage),
           width: 45,
+          child: ExerciseImageWidget(image: setting.exerciseBaseObj.getMainImage),
         ),
         onTap: () {
           showDialog(
@@ -224,19 +224,19 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               buildDefaultDragHandles: false,
-              onReorder: (_oldIndex, _newIndex) async {
-                int _startIndex = 0;
-                if (_oldIndex < _newIndex) {
-                  _newIndex -= 1;
-                  _startIndex = _oldIndex;
+              onReorder: (oldIndex, newIndex) async {
+                int startIndex = 0;
+                if (oldIndex < newIndex) {
+                  newIndex -= 1;
+                  startIndex = oldIndex;
                 } else {
-                  _startIndex = _newIndex;
+                  startIndex = newIndex;
                 }
                 setState(() {
-                  _sets.insert(_newIndex, _sets.removeAt(_oldIndex));
+                  _sets.insert(newIndex, _sets.removeAt(oldIndex));
                 });
                 _sets = await Provider.of<WorkoutPlansProvider>(context, listen: false)
-                    .reorderSets(_sets, _startIndex);
+                    .reorderSets(_sets, startIndex);
               },
               children: [
                 for (var i = 0; i < widget._day.sets.length; i++) getSetRow(widget._day.sets[i], i),
@@ -283,6 +283,31 @@ class DayHeaderDismissible extends StatelessWidget {
     return Dismissible(
       key: Key(_day.id.toString()),
       direction: DismissDirection.startToEnd,
+      background: Container(
+        color: wgerPrimaryButtonColor, //Theme.of(context).primaryColor,
+        alignment: Alignment.centerLeft,
+        padding: const EdgeInsets.only(left: 10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              AppLocalizations.of(context).gymMode,
+              style: const TextStyle(color: Colors.white),
+            ),
+            const Icon(
+              Icons.play_arrow,
+              color: Colors.white,
+            ),
+          ],
+        ),
+      ),
+      confirmDismiss: (direction) async {
+        // Delete day
+        if (direction == DismissDirection.startToEnd) {
+          Navigator.of(context).pushNamed(GymModeScreen.routeName, arguments: _day);
+        }
+        return false;
+      },
       child: Container(
         padding: const EdgeInsets.all(10),
         decoration: const BoxDecoration(color: Colors.white),
@@ -311,31 +336,6 @@ class DayHeaderDismissible extends StatelessWidget {
           ],
         ),
       ),
-      background: Container(
-        color: wgerPrimaryButtonColor, //Theme.of(context).primaryColor,
-        alignment: Alignment.centerLeft,
-        padding: const EdgeInsets.only(left: 10),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              AppLocalizations.of(context).gymMode,
-              style: const TextStyle(color: Colors.white),
-            ),
-            const Icon(
-              Icons.play_arrow,
-              color: Colors.white,
-            ),
-          ],
-        ),
-      ),
-      confirmDismiss: (direction) async {
-        // Delete day
-        if (direction == DismissDirection.startToEnd) {
-          Navigator.of(context).pushNamed(GymModeScreen.routeName, arguments: _day);
-        }
-        return false;
-      },
     );
   }
 }

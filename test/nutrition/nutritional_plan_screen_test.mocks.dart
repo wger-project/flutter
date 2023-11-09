@@ -65,8 +65,7 @@ class _FakeResponse_3 extends _i1.SmartFake implements _i3.Response {
         );
 }
 
-class _FakeStreamedResponse_4 extends _i1.SmartFake
-    implements _i3.StreamedResponse {
+class _FakeStreamedResponse_4 extends _i1.SmartFake implements _i3.StreamedResponse {
   _FakeStreamedResponse_4(
     Object parent,
     Invocation parentInvocation,
@@ -121,8 +120,7 @@ class MockWgerBaseProvider extends _i1.Mock implements _i4.WgerBaseProvider {
       );
 
   @override
-  Map<String, String> getDefaultHeaders({dynamic includeAuth = false}) =>
-      (super.noSuchMethod(
+  Map<String, String> getDefaultHeaders({dynamic includeAuth = false}) => (super.noSuchMethod(
         Invocation.method(
           #getDefaultHeaders,
           [],
@@ -168,8 +166,7 @@ class MockWgerBaseProvider extends _i1.Mock implements _i4.WgerBaseProvider {
           #fetch,
           [uri],
         ),
-        returnValue:
-            _i5.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
+        returnValue: _i5.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
       ) as _i5.Future<Map<String, dynamic>>);
 
   @override
@@ -194,8 +191,7 @@ class MockWgerBaseProvider extends _i1.Mock implements _i4.WgerBaseProvider {
             uri,
           ],
         ),
-        returnValue:
-            _i5.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
+        returnValue: _i5.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
       ) as _i5.Future<Map<String, dynamic>>);
 
   @override
@@ -211,8 +207,7 @@ class MockWgerBaseProvider extends _i1.Mock implements _i4.WgerBaseProvider {
             uri,
           ],
         ),
-        returnValue:
-            _i5.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
+        returnValue: _i5.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
       ) as _i5.Future<Map<String, dynamic>>);
 
   @override
@@ -277,8 +272,7 @@ class MockAuthProvider extends _i1.Mock implements _i2.AuthProvider {
       );
 
   @override
-  set applicationVersion(_i6.PackageInfo? _applicationVersion) =>
-      super.noSuchMethod(
+  set applicationVersion(_i6.PackageInfo? _applicationVersion) => super.noSuchMethod(
         Invocation.setter(
           #applicationVersion,
           _applicationVersion,
@@ -410,8 +404,7 @@ class MockAuthProvider extends _i1.Mock implements _i2.AuthProvider {
             #serverUrl: serverUrl,
           },
         ),
-        returnValue: _i5.Future<Map<String, _i2.LoginActions>>.value(
-            <String, _i2.LoginActions>{}),
+        returnValue: _i5.Future<Map<String, _i2.LoginActions>>.value(<String, _i2.LoginActions>{}),
       ) as _i5.Future<Map<String, _i2.LoginActions>>);
 
   @override
@@ -429,8 +422,7 @@ class MockAuthProvider extends _i1.Mock implements _i2.AuthProvider {
             serverUrl,
           ],
         ),
-        returnValue: _i5.Future<Map<String, _i2.LoginActions>>.value(
-            <String, _i2.LoginActions>{}),
+        returnValue: _i5.Future<Map<String, _i2.LoginActions>>.value(<String, _i2.LoginActions>{}),
       ) as _i5.Future<Map<String, _i2.LoginActions>>);
 
   @override
@@ -711,14 +703,12 @@ class MockClient extends _i1.Mock implements _i3.Client {
       ) as _i5.Future<_i9.Uint8List>);
 
   @override
-  _i5.Future<_i3.StreamedResponse> send(_i3.BaseRequest? request) =>
-      (super.noSuchMethod(
+  _i5.Future<_i3.StreamedResponse> send(_i3.BaseRequest? request) => (super.noSuchMethod(
         Invocation.method(
           #send,
           [request],
         ),
-        returnValue:
-            _i5.Future<_i3.StreamedResponse>.value(_FakeStreamedResponse_4(
+        returnValue: _i5.Future<_i3.StreamedResponse>.value(_FakeStreamedResponse_4(
           this,
           Invocation.method(
             #send,
