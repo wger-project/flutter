@@ -245,45 +245,51 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
               ],
             ),
           ),
-          Text(
-            AppLocalizations.of(context).nutritionalDiary,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.headline6,
-          ),
-          Container(
-            padding: const EdgeInsets.all(15),
-            height: 220,
-            child: FlNutritionalDiaryChartWidget(nutritionalPlan: _nutritionalPlan), //  chart
-          ),
-          SizedBox(
-            height: 200,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
+          if (_nutritionalPlan.logEntriesValues.isNotEmpty)
+            Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                Text(
+                  AppLocalizations.of(context).nutritionalDiary,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headline6,
+                ),
+                Container(
+                  padding: const EdgeInsets.all(15),
+                  height: 220,
+                  child: FlNutritionalDiaryChartWidget(nutritionalPlan: _nutritionalPlan), //  chart
+                ),
+                SizedBox(
+                  height: 200,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
                     children: [
-                      TextButton(onPressed: () {}, child: const Text('')),
-                      Text(
-                          '${AppLocalizations.of(context).energyShort} (${AppLocalizations.of(context).kcal})'),
-                      Text(
-                          '${AppLocalizations.of(context).proteinShort} (${AppLocalizations.of(context).g})'),
-                      Text(
-                          '${AppLocalizations.of(context).carbohydratesShort} (${AppLocalizations.of(context).g})'),
-                      Text(
-                          '${AppLocalizations.of(context).fatShort} (${AppLocalizations.of(context).g})'),
+                      Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            TextButton(onPressed: () {}, child: const Text('')),
+                            Text(
+                                '${AppLocalizations.of(context).energyShort} (${AppLocalizations.of(context).kcal})'),
+                            Text(
+                                '${AppLocalizations.of(context).proteinShort} (${AppLocalizations.of(context).g})'),
+                            Text(
+                                '${AppLocalizations.of(context).carbohydratesShort} (${AppLocalizations.of(context).g})'),
+                            Text(
+                                '${AppLocalizations.of(context).fatShort} (${AppLocalizations.of(context).g})'),
+                          ],
+                        ),
+                      ),
+                      ..._nutritionalPlan.logEntriesValues.entries
+                          .map((entry) =>
+                              NutritionDiaryEntry(entry.key, entry.value, _nutritionalPlan))
+                          .toList()
+                          .reversed,
                     ],
                   ),
-                ),
-                ..._nutritionalPlan.logEntriesValues.entries
-                    .map((entry) => NutritionDiaryEntry(entry.key, entry.value, _nutritionalPlan))
-                    .toList()
-                    .reversed,
+                )
               ],
             ),
-          )
         ],
       ),
     );
