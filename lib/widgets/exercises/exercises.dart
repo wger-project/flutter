@@ -200,16 +200,28 @@ class ExerciseDetail extends StatelessWidget {
 
   Widget getCategoriesAndEquipment(BuildContext context) {
     final List<Widget> out = [];
+    final theme = Theme.of(context);
 
     out.add(
-      Chip(label: Text(getTranslation(_exerciseBase.category.name, context))),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        child: Chip(
+          label: Text(getTranslation(_exerciseBase.category.name, context)),
+          padding: EdgeInsets.zero,
+          backgroundColor: theme.splashColor,
+        ),
+      ),
     );
     if (_exerciseBase.equipment.isNotEmpty) {
       _exerciseBase.equipment
-          .map((e) => Chip(label: Text(getTranslation(e.name, context))))
-          .forEach((element) {
-        out.add(element);
-      });
+          .map((e) => Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: Chip(
+                    label: Text(getTranslation(e.name, context)),
+                    padding: EdgeInsets.zero,
+                    backgroundColor: theme.splashColor),
+              ))
+          .forEach((element) => out.add(element));
     }
     out.add(const SizedBox(height: PADDING));
     return Row(children: [...out]);
