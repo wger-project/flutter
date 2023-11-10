@@ -199,15 +199,15 @@ class StartPage extends StatelessWidget {
                                   .name,
                               style: Theme.of(context).textTheme.titleLarge,
                             ),
-                            ...set.getSmartRepr(s.exerciseBaseObj).map((e) => Text(e)).toList(),
+                            ...set.getSmartRepr(s.exerciseBaseObj).map((e) => Text(e)),
                             const SizedBox(height: 15),
                           ],
                         );
-                      }).toList(),
+                      }),
                     ],
                   );
                 },
-              ).toList(),
+              ),
             ],
           ),
         ),
@@ -552,7 +552,7 @@ class _LogPageState extends State<LogPage> {
             },
             contentPadding: const EdgeInsets.symmetric(horizontal: 40),
           );
-        }).toList(),
+        }),
       ],
     );
   }
@@ -577,37 +577,35 @@ class _LogPageState extends State<LogPage> {
               ? Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    ...groupedPlates.keys
-                        .map(
-                          (key) => Row(
-                            children: [
-                              Text(groupedPlates[key].toString()),
-                              const Text('×'),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).colorScheme.primaryContainer,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 3),
-                                  child: SizedBox(
-                                    height: 35,
-                                    width: 35,
-                                    child: Align(
-                                      alignment: Alignment.center,
-                                      child: Text(
-                                        key.toString(),
-                                        style: const TextStyle(fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
+                    ...groupedPlates.keys.map(
+                      (key) => Row(
+                        children: [
+                          Text(groupedPlates[key].toString()),
+                          const Text('×'),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.primaryContainer,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 3),
+                              child: SizedBox(
+                                height: 35,
+                                width: 35,
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    key.toString(),
+                                    style: const TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 10),
-                            ],
+                            ),
                           ),
-                        )
-                        .toList()
+                          const SizedBox(width: 10),
+                        ],
+                      ),
+                    )
                   ],
                 )
               : MutedText(AppLocalizations.of(context).plateCalculatorNotDivisible),
@@ -690,13 +688,11 @@ class ExerciseOverview extends StatelessWidget {
                 style: Theme.of(context).textTheme.titleLarge,
                 textAlign: TextAlign.center,
               ),
-              ..._exerciseBase.equipment
-                  .map((e) => Text(
-                        getTranslation(e.name, context),
-                        style: Theme.of(context).textTheme.titleLarge,
-                        textAlign: TextAlign.center,
-                      ))
-                  .toList(),
+              ..._exerciseBase.equipment.map((e) => Text(
+                    getTranslation(e.name, context),
+                    style: Theme.of(context).textTheme.titleLarge,
+                    textAlign: TextAlign.center,
+                  )),
               if (_exerciseBase.images.isNotEmpty)
                 SizedBox(
                   width: double.infinity,
@@ -704,7 +700,7 @@ class ExerciseOverview extends StatelessWidget {
                   child: ListView(
                     scrollDirection: Axis.horizontal,
                     children: [
-                      ..._exerciseBase.images.map((e) => ExerciseImageWidget(image: e)).toList(),
+                      ..._exerciseBase.images.map((e) => ExerciseImageWidget(image: e)),
                     ],
                   ),
                 ),
@@ -780,17 +776,6 @@ class _SessionPageState extends State<SessionPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ToggleButtons(
-                  children: const <Widget>[
-                    Icon(
-                      Icons.sentiment_very_dissatisfied,
-                    ),
-                    Icon(
-                      Icons.sentiment_neutral,
-                    ),
-                    Icon(
-                      Icons.sentiment_very_satisfied,
-                    ),
-                  ],
                   renderBorder: false,
                   onPressed: (int index) {
                     setState(() {
@@ -808,6 +793,17 @@ class _SessionPageState extends State<SessionPage> {
                     });
                   },
                   isSelected: selectedImpression,
+                  children: const <Widget>[
+                    Icon(
+                      Icons.sentiment_very_dissatisfied,
+                    ),
+                    Icon(
+                      Icons.sentiment_neutral,
+                    ),
+                    Icon(
+                      Icons.sentiment_very_satisfied,
+                    ),
+                  ],
                 ),
                 TextFormField(
                   decoration: InputDecoration(
@@ -1084,7 +1080,7 @@ class NavigationHeader extends StatelessWidget {
                   Navigator.of(context).pop();
                 },
               );
-            }).toList(),
+            }),
           ],
         ),
       ),
