@@ -16,29 +16,44 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flex_seed_scheme/flex_seed_scheme.dart';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+
+// Color scheme, please consult
+// * https://pub.dev/packages/flex_color_scheme
+// * https://rydmike.com/flexseedscheme/demo-v1/#/
 
 const Color wgerPrimaryColor = Color(0xff2a4c7d);
 const Color wgerPrimaryButtonColor = Color(0xff266dd3);
 const Color wgerPrimaryColorLight = Color(0xff94B2DB);
 const Color wgerSecondaryColor = Color(0xffe63946);
 const Color wgerSecondaryColorLight = Color(0xffF6B4BA);
+const Color wgerTertiaryColor = Color(0xFF6CA450);
+
+const FlexSubThemesData wgerSubThemeData = FlexSubThemesData(
+  fabSchemeColor: SchemeColor.secondary,
+  inputDecoratorBorderType: FlexInputBorderType.underline,
+  useTextTheme: true,
+);
 
 // Make a light ColorScheme from the seeds.
 final ColorScheme schemeLight = SeedColorScheme.fromSeeds(
   primary: wgerPrimaryColor,
   primaryKey: wgerPrimaryColor,
   secondaryKey: wgerSecondaryColor,
+  secondary: wgerSecondaryColor,
+  tertiaryKey: wgerTertiaryColor,
   brightness: Brightness.light,
   tones: FlexTones.vivid(Brightness.light),
 );
 
 // Make a dark ColorScheme from the seeds.
 final ColorScheme schemeDark = SeedColorScheme.fromSeeds(
+// primary: wgerPrimaryColor,
   primaryKey: wgerPrimaryColor,
   secondaryKey: wgerSecondaryColor,
+  secondary: wgerSecondaryColor,
   brightness: Brightness.dark,
   tones: FlexTones.vivid(Brightness.dark),
 );
@@ -59,47 +74,34 @@ final ColorScheme schemeDarkHc = SeedColorScheme.fromSeeds(
   tones: FlexTones.ultraContrast(Brightness.dark),
 );
 
-final wgerLightTheme = ThemeData.from(
+final wgerLightTheme = FlexThemeData.light(
   colorScheme: schemeLight,
   useMaterial3: true,
-  textTheme: const TextTheme(
-    displayLarge: TextStyle(fontSize: 57, fontFamily: 'OpenSansLight', fontWeight: FontWeight.bold),
-    displayMedium:
-        TextStyle(fontSize: 45, fontFamily: 'OpenSansLight', fontWeight: FontWeight.bold),
-    displaySmall: TextStyle(fontSize: 36, fontFamily: 'OpenSansLight', fontWeight: FontWeight.bold),
-    headlineLarge: TextStyle(fontSize: 32, fontFamily: 'OpenSansLight'),
-    headlineMedium: TextStyle(fontSize: 28, fontFamily: 'OpenSansLight'),
-    headlineSmall: TextStyle(fontSize: 24, fontFamily: 'OpenSansLight'),
-    titleLarge: TextStyle(fontSize: 22, fontFamily: 'OpenSansLight'),
-    titleMedium: TextStyle(fontSize: 16, fontFamily: 'OpenSansLight'),
-    titleSmall: TextStyle(fontSize: 14, fontFamily: 'OpenSansLight'),
-    labelLarge: TextStyle(fontSize: 14, fontFamily: 'OpenSansLight'),
-    labelMedium: TextStyle(fontSize: 12, fontFamily: 'OpenSansLight'),
-    labelSmall: TextStyle(fontSize: 11, fontFamily: 'OpenSansLight'),
-    bodyLarge: TextStyle(fontSize: 16, fontFamily: 'OpenSansLight'),
-    bodyMedium: TextStyle(fontSize: 14, fontFamily: 'OpenSansLight'),
-    bodySmall: TextStyle(fontSize: 12, fontFamily: 'OpenSansLight'),
-  ),
+  appBarStyle: FlexAppBarStyle.primary,
+  subThemesData: wgerSubThemeData,
 );
 
-final wgerDarkTheme = ThemeData.from(
+final wgerDarkTheme = FlexThemeData.dark(
   colorScheme: schemeDark,
   useMaterial3: true,
+  subThemesData: wgerSubThemeData,
 );
 
-final wgerLightThemeHc = ThemeData.from(
+final wgerLightThemeHc = FlexThemeData.light(
   colorScheme: schemeLightHc,
   useMaterial3: true,
+  appBarStyle: FlexAppBarStyle.primary,
+  subThemesData: wgerSubThemeData,
 );
 
-final wgerDarkThemeHc = ThemeData.from(
+final wgerDarkThemeHc = FlexThemeData.dark(
   colorScheme: schemeDarkHc,
   useMaterial3: true,
+  subThemesData: wgerSubThemeData,
 );
 
 CalendarStyle getWgerCalendarStyle(ThemeData theme) {
   return CalendarStyle(
-// Use `CalendarStyle` to customize the UI
     outsideDaysVisible: false,
     todayDecoration: const BoxDecoration(
       color: Colors.amber,

@@ -16,8 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_zxing/flutter_zxing.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/add_exercise.dart';
 import 'package:wger/providers/base_provider.dart';
@@ -50,8 +52,6 @@ import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/about.dart';
 
 import 'providers/auth.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter_zxing/flutter_zxing.dart';
 
 void main() {
   zx.setLogEnabled(kDebugMode);
