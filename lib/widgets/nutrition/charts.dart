@@ -417,7 +417,7 @@ class FlNutritionalDiaryChartWidgetState extends State<FlNutritionalDiaryChartWi
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
-      aspectRatio: 1,
+      aspectRatio: 1.66,
       child: BarChart(
         mainBarData(),
         swapAnimationDuration: animDuration,
