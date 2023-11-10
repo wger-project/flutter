@@ -25,7 +25,6 @@ import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/form_screen.dart';
-import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/helpers.dart';
@@ -85,8 +84,8 @@ class _MealWidgetState extends State<MealWidget> {
                   ),
                   if (widget._meal.mealItems.isNotEmpty)
                     Ink(
-                      decoration: const ShapeDecoration(
-                        color: wgerPrimaryButtonColor,
+                      decoration: ShapeDecoration(
+                        color: Theme.of(context).primaryColor, //wgerPrimaryButtonColor,
                         shape: CircleBorder(),
                       ),
                       child: IconButton(
@@ -224,7 +223,7 @@ class DismissibleMealHeader extends StatelessWidget {
       key: Key(_meal.id.toString()),
       direction: DismissDirection.startToEnd,
       background: Container(
-        color: wgerPrimaryButtonColor, //Theme.of(context).primaryColor,
+        color: Theme.of(context).primaryColor, //wgerPrimaryButtonColor,
         alignment: Alignment.centerLeft,
         padding: const EdgeInsets.only(left: 10),
         child: Column(
@@ -258,7 +257,7 @@ class DismissibleMealHeader extends StatelessWidget {
       },
       child: Container(
         padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(color: Theme.of(context).colorScheme.primaryContainer),
+        decoration: BoxDecoration(color: Theme.of(context).colorScheme.inversePrimary),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

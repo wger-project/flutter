@@ -22,7 +22,6 @@ import 'package:provider/provider.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/form_screen.dart';
-import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/nutritional_plan_detail.dart';
 
@@ -41,12 +40,11 @@ class NutritionalPlanScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _nutritionalPlan = ModalRoute.of(context)!.settings.arguments as NutritionalPlan;
+    final nutritionalPlan = ModalRoute.of(context)!.settings.arguments as NutritionalPlan;
 
     return Scaffold(
       //appBar: getAppBar(nutritionalPlan),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: wgerSecondaryColor,
         child: const Icon(
           Icons.history_edu,
           color: Colors.white,
@@ -57,7 +55,7 @@ class NutritionalPlanScreen extends StatelessWidget {
             FormScreen.routeName,
             arguments: FormScreenArguments(
               AppLocalizations.of(context).logIngredient,
-              IngredientLogForm(_nutritionalPlan),
+              IngredientLogForm(nutritionalPlan),
               hasListView: true,
             ),
           );
@@ -79,14 +77,14 @@ class NutritionalPlanScreen extends StatelessWidget {
                       FormScreen.routeName,
                       arguments: FormScreenArguments(
                         AppLocalizations.of(context).edit,
-                        PlanForm(_nutritionalPlan),
+                        PlanForm(nutritionalPlan),
                       ),
                     );
 
                     // Delete
                   } else if (value == NutritionalPlanOptions.delete) {
                     Provider.of<NutritionPlansProvider>(context, listen: false)
-                        .deletePlan(_nutritionalPlan.id!);
+                        .deletePlan(nutritionalPlan.id!);
                     Navigator.of(context).pop();
                   }
                 },
@@ -106,7 +104,12 @@ class NutritionalPlanScreen extends StatelessWidget {
               ),
             ],
             flexibleSpace: FlexibleSpaceBar(
-              title: Text(_nutritionalPlan.getLabel(context)),
+              title: Text(
+                nutritionalPlan.getLabel(context),
+                style: const TextStyle(
+                  color: Colors.white,
+                ),
+              ),
               background: const Image(
                 image: AssetImage('assets/images/backgrounds/nutritional_plans.jpg'),
                 fit: BoxFit.cover,
@@ -114,7 +117,7 @@ class NutritionalPlanScreen extends StatelessWidget {
             ),
           ),
           FutureBuilder(
-            future: _loadFullPlan(context, _nutritionalPlan.id!),
+            future: _loadFullPlan(context, nutritionalPlan.id!),
             builder: (context, AsyncSnapshot<NutritionalPlan> snapshot) =>
                 snapshot.connectionState == ConnectionState.waiting
                     ? SliverList(
@@ -131,7 +134,7 @@ class NutritionalPlanScreen extends StatelessWidget {
                       )
                     : Consumer<NutritionPlansProvider>(
                         builder: (context, value, child) =>
-                            NutritionalPlanDetailWidget(_nutritionalPlan)),
+                            NutritionalPlanDetailWidget(nutritionalPlan)),
           ),
         ],
       ),

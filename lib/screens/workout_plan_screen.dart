@@ -78,7 +78,10 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
             expandedHeight: 250,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
-              title: Text(workoutPlan.name),
+              title: Text(
+                workoutPlan.name,
+                style: const TextStyle(color: Colors.white),
+              ),
               background: const Image(
                 image: AssetImage('assets/images/backgrounds/workout_plans.jpg'),
                 fit: BoxFit.cover,

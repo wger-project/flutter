@@ -27,6 +27,7 @@ import 'package:wger/widgets/workouts/forms.dart';
 class WorkoutPlanDetail extends StatefulWidget {
   final WorkoutPlan _workoutPlan;
   final Function _changeMode;
+
   const WorkoutPlanDetail(this._workoutPlan, this._changeMode);
 
   @override
@@ -57,7 +58,7 @@ class _WorkoutPlanDetailState extends State<WorkoutPlanDetail> {
             padding: const EdgeInsets.all(15),
             child: Text(widget._workoutPlan.description),
           ),
-        ...widget._workoutPlan.days.map((workoutDay) => WorkoutDayWidget(workoutDay)).toList(),
+        ...widget._workoutPlan.days.map((workoutDay) => WorkoutDayWidget(workoutDay)),
         Column(
           children: [
             ElevatedButton(

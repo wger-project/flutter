@@ -21,7 +21,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/screens/form_screen.dart';
-import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/weight/entries_list.dart';
 import 'package:wger/widgets/weight/forms.dart';
@@ -34,7 +33,6 @@ class WeightScreen extends StatelessWidget {
     return Scaffold(
       appBar: EmptyAppBar(AppLocalizations.of(context).weight),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: wgerSecondaryColor,
         child: const Icon(
           Icons.add,
           color: Colors.white,

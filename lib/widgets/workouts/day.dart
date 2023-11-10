@@ -26,7 +26,6 @@ import 'package:wger/models/workouts/setting.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/gym_mode.dart';
-import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/exercises/exercises.dart';
 import 'package:wger/widgets/exercises/images.dart';
@@ -186,9 +185,9 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
                   ),
                   if (widget._day.sets.isNotEmpty)
                     Ink(
-                      decoration: const ShapeDecoration(
-                        color: wgerPrimaryButtonColor,
-                        shape: CircleBorder(),
+                      decoration: ShapeDecoration(
+                        color: Theme.of(context).primaryColor,
+                        shape: const CircleBorder(),
                       ),
                       child: IconButton(
                         icon: const Icon(Icons.play_arrow),
@@ -284,7 +283,7 @@ class DayHeaderDismissible extends StatelessWidget {
       key: Key(_day.id.toString()),
       direction: DismissDirection.startToEnd,
       background: Container(
-        color: wgerPrimaryButtonColor, //Theme.of(context).primaryColor,
+        color: Theme.of(context).primaryColor,
         alignment: Alignment.centerLeft,
         padding: const EdgeInsets.only(left: 10),
         child: Column(
@@ -310,7 +309,7 @@ class DayHeaderDismissible extends StatelessWidget {
       },
       child: Container(
         padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(color: Theme.of(context).colorScheme.primaryContainer),
+        decoration: BoxDecoration(color: Theme.of(context).colorScheme.inversePrimary),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

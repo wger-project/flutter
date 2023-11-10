@@ -33,7 +33,9 @@ import 'package:wger/widgets/nutrition/meal.dart';
 
 class NutritionalPlanDetailWidget extends StatelessWidget {
   final NutritionalPlan _nutritionalPlan;
+
   const NutritionalPlanDetailWidget(this._nutritionalPlan);
+
   static const double tablePadding = 7;
 
   @override
@@ -49,9 +51,7 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
       delegate: SliverChildListDelegate(
         [
           const SizedBox(height: 10),
-          ..._nutritionalPlan.meals
-              .map((meal) => MealWidget(meal, _nutritionalPlan.allMealItems))
-              .toList(),
+          ..._nutritionalPlan.meals.map((meal) => MealWidget(meal, _nutritionalPlan.allMealItems)),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: ElevatedButton(

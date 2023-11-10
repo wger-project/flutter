@@ -211,7 +211,7 @@ class StartPage extends StatelessWidget {
             ],
           ),
         ),
-        ElevatedButton(
+        FilledButton(
           child: Text(AppLocalizations.of(context).start),
           onPressed: () {
             _controller.nextPage(
