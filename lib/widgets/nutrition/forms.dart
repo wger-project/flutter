@@ -192,8 +192,8 @@ class MealItemForm extends StatelessWidget {
             ),
             if (_listMealItems.isNotEmpty) const SizedBox(height: 10.0),
             Container(
-              child: Text(AppLocalizations.of(context).recentlyUsedIngredients),
               padding: const EdgeInsets.all(10.0),
+              child: Text(AppLocalizations.of(context).recentlyUsedIngredients),
             ),
             Expanded(
               child: ListView.builder(
@@ -320,8 +320,8 @@ class IngredientLogForm extends StatelessWidget {
             ),
             if (diaryEntries.isNotEmpty) const SizedBox(height: 10.0),
             Container(
-              child: Text(AppLocalizations.of(context).recentlyUsedIngredients),
               padding: const EdgeInsets.all(10.0),
+              child: Text(AppLocalizations.of(context).recentlyUsedIngredients),
             ),
             Expanded(
               child: ListView.builder(
@@ -394,22 +394,30 @@ class PlanForm extends StatelessWidget {
               try {
                 if (_plan.id != null) {
                   await Provider.of<NutritionPlansProvider>(context, listen: false).editPlan(_plan);
-                  Navigator.of(context).pop();
+                  if (context.mounted) {
+                    Navigator.of(context).pop();
+                  }
                 } else {
                   _plan = await Provider.of<NutritionPlansProvider>(context, listen: false)
                       .addPlan(_plan);
-                  Navigator.of(context).pushReplacementNamed(
-                    NutritionalPlanScreen.routeName,
-                    arguments: _plan,
-                  );
+                  if (context.mounted) {
+                    Navigator.of(context).pushReplacementNamed(
+                      NutritionalPlanScreen.routeName,
+                      arguments: _plan,
+                    );
+                  }
                 }
 
                 // Saving was successful, reset the data
                 _descriptionController.clear();
               } on WgerHttpException catch (error) {
-                showHttpExceptionErrorDialog(error, context);
+                if (context.mounted) {
+                  showHttpExceptionErrorDialog(error, context);
+                }
               } catch (error) {
-                showErrorDialog(error, context);
+                if (context.mounted) {
+                  showErrorDialog(error, context);
+                }
               }
             },
           ),

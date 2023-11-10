@@ -25,7 +25,7 @@ import 'package:wger/screens/add_exercise_screen.dart';
 import 'filter_modal.dart';
 
 class FilterRow extends StatefulWidget {
-  FilterRow({Key? key}) : super(key: key);
+  const FilterRow({Key? key}) : super(key: key);
 
   @override
   _FilterRowState createState() => _FilterRowState();
@@ -89,8 +89,8 @@ class _FilterRowState extends State<FilterRow> {
                 itemBuilder: (context) {
                   return [
                     PopupMenuItem<ExerciseMoreOption>(
-                      child: Text(AppLocalizations.of(context).contributeExercise),
                       value: ExerciseMoreOption.ADD_EXERCISE,
+                      child: Text(AppLocalizations.of(context).contributeExercise),
                     )
                   ];
                 },

@@ -46,6 +46,13 @@ class _WorkoutLogsState extends State<WorkoutLogs> {
     return Column(
       children: [
         ToggleButtons(
+          renderBorder: false,
+          onPressed: (int index) {
+            if (index == 0) {
+              widget._changeMode(WorkoutScreenMode.workout);
+            }
+          },
+          isSelected: const [false, true],
           children: const <Widget>[
             Icon(
               Icons.table_chart_outlined,
@@ -54,13 +61,6 @@ class _WorkoutLogsState extends State<WorkoutLogs> {
               Icons.show_chart,
             ),
           ],
-          renderBorder: false,
-          onPressed: (int index) {
-            if (index == 0) {
-              widget._changeMode(WorkoutScreenMode.workout);
-            }
-          },
-          isSelected: const [false, true],
         ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 10),

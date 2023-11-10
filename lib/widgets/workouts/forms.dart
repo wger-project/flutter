@@ -103,15 +103,19 @@ class WorkoutForm extends StatelessWidget {
               // Save to DB
               if (_plan.id != null) {
                 await Provider.of<WorkoutPlansProvider>(context, listen: false).editWorkout(_plan);
-                Navigator.of(context).pop();
+                if (context.mounted) {
+                  Navigator.of(context).pop();
+                }
               } else {
                 final WorkoutPlan newPlan =
                     await Provider.of<WorkoutPlansProvider>(context, listen: false)
                         .addWorkout(_plan);
-                Navigator.of(context).pushReplacementNamed(
-                  WorkoutPlanScreen.routeName,
-                  arguments: newPlan,
-                );
+                if (context.mounted) {
+                  Navigator.of(context).pushReplacementNamed(
+                    WorkoutPlanScreen.routeName,
+                    arguments: newPlan,
+                  );
+                }
               }
             },
           ),
@@ -541,7 +545,9 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                     widget._day.sets.add(widget._set);
 
                     // Close the bottom sheet
-                    Navigator.of(context).pop();
+                    if (context.mounted) {
+                      Navigator.of(context).pop();
+                    }
                   },
                 ),
               ],

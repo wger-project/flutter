@@ -224,19 +224,19 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               buildDefaultDragHandles: false,
-              onReorder: (_oldIndex, _newIndex) async {
-                int _startIndex = 0;
-                if (_oldIndex < _newIndex) {
-                  _newIndex -= 1;
-                  _startIndex = _oldIndex;
+              onReorder: (oldIndex, newIndex) async {
+                int startIndex = 0;
+                if (oldIndex < newIndex) {
+                  newIndex -= 1;
+                  startIndex = oldIndex;
                 } else {
-                  _startIndex = _newIndex;
+                  startIndex = newIndex;
                 }
                 setState(() {
-                  _sets.insert(_newIndex, _sets.removeAt(_oldIndex));
+                  _sets.insert(newIndex, _sets.removeAt(oldIndex));
                 });
                 _sets = await Provider.of<WorkoutPlansProvider>(context, listen: false)
-                    .reorderSets(_sets, _startIndex);
+                    .reorderSets(_sets, startIndex);
               },
               children: [
                 for (var i = 0; i < widget._day.sets.length; i++) getSetRow(widget._day.sets[i], i),
