@@ -34,6 +34,7 @@ const Color wgerTertiaryColor = Color(0xFF6CA450);
 const FlexSubThemesData wgerSubThemeData = FlexSubThemesData(
   fabSchemeColor: SchemeColor.secondary,
   inputDecoratorBorderType: FlexInputBorderType.underline,
+  inputDecoratorIsFilled: false,
   useTextTheme: true,
 );
 
