@@ -17,6 +17,7 @@ class CategoriesCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: elevation,
+      color: Theme.of(context).colorScheme.onInverseSurface,
       child: Column(
         children: [
           Padding(
