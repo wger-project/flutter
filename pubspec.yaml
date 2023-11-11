@@ -105,9 +105,6 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: BebasNeue
-      fonts:
-        - asset: assets/fonts/BebasNeue-Regular.ttf
     - family: RobotoCondensed
       fonts:
         - asset: assets/fonts/RobotoCondensed-VariableFont_wght.ttf
