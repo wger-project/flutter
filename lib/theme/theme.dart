@@ -38,11 +38,19 @@ const FlexSubThemesData wgerSubThemeData = FlexSubThemesData(
     fabSchemeColor: SchemeColor.secondary,
     inputDecoratorBorderType: FlexInputBorderType.underline,
     inputDecoratorIsFilled: false,
-    useTextTheme: true);
+    useTextTheme: true,
+    appBarBackgroundSchemeColor: SchemeColor.background,
+    appBarScrolledUnderElevation: 4,
+    navigationBarBackgroundSchemeColor: SchemeColor.primary,
+    navigationBarSelectedIconSchemeColor: SchemeColor.onPrimary,
+    navigationBarUnselectedIconSchemeColor: SchemeColor.onPrimary,
+    navigationBarIndicatorSchemeColor: SchemeColor.onPrimary,
+    navigationBarIndicatorOpacity: 0.24,
+    navigationBarHeight: 56);
 
-const String wgerDisplayFont = 'BebasNeue';
-const String wgerHeadingFont = 'RobotoCondensed';
-const List<FontVariation> robotoHeadingWeight = <FontVariation>[FontVariation('wght', 600)];
+const String wgerDisplayFont = 'RobotoCondensed';
+const List<FontVariation> displayFontBoldWeight = <FontVariation>[FontVariation('wght', 600)];
+const List<FontVariation> displayFontHeavyWeight = <FontVariation>[FontVariation('wght', 800)];
 
 // Make a light ColorScheme from the seeds.
 final ColorScheme schemeLight = SeedColorScheme.fromSeeds(
@@ -82,51 +90,63 @@ final ColorScheme schemeDarkHc = SeedColorScheme.fromSeeds(
 );
 
 const wgerTextTheme = TextTheme(
-  displayLarge: TextStyle(fontFamily: wgerDisplayFont, fontFamilyFallback: [wgerHeadingFont]),
-  displayMedium: TextStyle(fontFamily: wgerDisplayFont, fontFamilyFallback: [wgerHeadingFont]),
-  displaySmall: TextStyle(fontFamily: wgerDisplayFont, fontFamilyFallback: [wgerHeadingFont]),
-  headlineLarge: TextStyle(fontFamily: wgerHeadingFont),
+  displayLarge: TextStyle(
+    fontFamily: wgerDisplayFont,
+    fontVariations: displayFontHeavyWeight,
+  ),
+  displayMedium: TextStyle(
+    fontFamily: wgerDisplayFont,
+    fontVariations: displayFontHeavyWeight,
+  ),
+  displaySmall: TextStyle(
+    fontFamily: wgerDisplayFont,
+    fontVariations: displayFontHeavyWeight,
+  ),
+  headlineLarge: TextStyle(
+    fontFamily: wgerDisplayFont,
+    fontVariations: displayFontBoldWeight,
+  ),
   headlineMedium: TextStyle(
-    fontFamily: wgerHeadingFont,
-    fontVariations: robotoHeadingWeight,
+    fontFamily: wgerDisplayFont,
+    fontVariations: displayFontBoldWeight,
   ),
   headlineSmall: TextStyle(
-    fontFamily: wgerHeadingFont,
-    fontVariations: robotoHeadingWeight,
-    color: Colors.black,
+    fontFamily: wgerDisplayFont,
+    fontVariations: displayFontBoldWeight,
   ),
   titleLarge: TextStyle(
-    fontFamily: wgerHeadingFont,
-    fontVariations: robotoHeadingWeight,
-    color: Colors.black,
+    fontFamily: wgerDisplayFont,
+    fontVariations: displayFontBoldWeight,
   ),
-  titleMedium: TextStyle(fontFamily: wgerHeadingFont, fontVariations: robotoHeadingWeight),
-  titleSmall: TextStyle(fontFamily: wgerHeadingFont, fontVariations: robotoHeadingWeight),
+  titleMedium: TextStyle(fontFamily: wgerDisplayFont, fontVariations: displayFontBoldWeight),
+  titleSmall: TextStyle(fontFamily: wgerDisplayFont, fontVariations: displayFontBoldWeight),
 );
 
 final wgerLightTheme = FlexThemeData.light(
     colorScheme: schemeLight,
     useMaterial3: true,
-    appBarStyle: FlexAppBarStyle.primary,
+    appBarStyle: FlexAppBarStyle.surface,
     subThemesData: wgerSubThemeData,
     textTheme: wgerTextTheme);
 
 final wgerDarkTheme = FlexThemeData.dark(
     colorScheme: schemeDark,
     useMaterial3: true,
+    appBarStyle: FlexAppBarStyle.surface,
     subThemesData: wgerSubThemeData,
     textTheme: wgerTextTheme);
 
 final wgerLightThemeHc = FlexThemeData.light(
     colorScheme: schemeLightHc,
     useMaterial3: true,
-    appBarStyle: FlexAppBarStyle.primary,
+    appBarStyle: FlexAppBarStyle.surface,
     subThemesData: wgerSubThemeData,
     textTheme: wgerTextTheme);
 
 final wgerDarkThemeHc = FlexThemeData.dark(
     colorScheme: schemeDarkHc,
     useMaterial3: true,
+    appBarStyle: FlexAppBarStyle.surface,
     subThemesData: wgerSubThemeData,
     textTheme: wgerTextTheme);
 
