@@ -22,6 +22,7 @@ import 'package:provider/provider.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/form_screen.dart';
+import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 import 'package:wger/widgets/workouts/workout_logs.dart';
 import 'package:wger/widgets/workouts/workout_plan_detail.dart';
@@ -69,6 +70,7 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
 
   @override
   Widget build(BuildContext context) {
+    const appBarForeground = Colors.white;
     final workoutPlan = ModalRoute.of(context)!.settings.arguments as WorkoutPlan;
 
     return Scaffold(
@@ -77,10 +79,12 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
           SliverAppBar(
             expandedHeight: 250,
             pinned: true,
+            iconTheme: const IconThemeData(color: appBarForeground),
+            backgroundColor: wgerPrimaryColor,
             flexibleSpace: FlexibleSpaceBar(
               title: Text(
                 workoutPlan.name,
-                style: const TextStyle(color: Colors.white),
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(color: appBarForeground),
               ),
               background: const Image(
                 image: AssetImage('assets/images/backgrounds/workout_plans.jpg'),
@@ -89,7 +93,7 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
             ),
             actions: [
               PopupMenuButton<WorkoutOptions>(
-                icon: const Icon(Icons.more_vert),
+                icon: const Icon(Icons.more_vert, color: appBarForeground),
                 onSelected: (value) {
                   // Edit
                   if (value == WorkoutOptions.edit) {

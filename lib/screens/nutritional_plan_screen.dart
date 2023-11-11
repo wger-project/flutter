@@ -40,6 +40,7 @@ class NutritionalPlanScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const appBarForeground = Colors.white;
     final nutritionalPlan = ModalRoute.of(context)!.settings.arguments as NutritionalPlan;
 
     return Scaffold(
@@ -64,11 +65,13 @@ class NutritionalPlanScreen extends StatelessWidget {
       body: CustomScrollView(
         slivers: <Widget>[
           SliverAppBar(
+            foregroundColor: appBarForeground,
             expandedHeight: 250,
             pinned: true,
+            iconTheme: const IconThemeData(color: appBarForeground),
             actions: [
               PopupMenuButton<NutritionalPlanOptions>(
-                icon: const Icon(Icons.more_vert),
+                icon: const Icon(Icons.more_vert, color: appBarForeground),
                 onSelected: (value) {
                   // Edit
                   if (value == NutritionalPlanOptions.edit) {
@@ -106,9 +109,7 @@ class NutritionalPlanScreen extends StatelessWidget {
             flexibleSpace: FlexibleSpaceBar(
               title: Text(
                 nutritionalPlan.getLabel(context),
-                style: const TextStyle(
-                  color: Colors.white,
-                ),
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(color: appBarForeground),
               ),
               background: const Image(
                 image: AssetImage('assets/images/backgrounds/nutritional_plans.jpg'),
