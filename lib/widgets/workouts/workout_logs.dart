@@ -55,7 +55,7 @@ class _WorkoutLogsState extends State<WorkoutLogs> {
           isSelected: const [false, true],
           children: const <Widget>[
             Icon(
-              Icons.table_chart_outlined,
+              Icons.table_chart,
             ),
             Icon(
               Icons.show_chart,

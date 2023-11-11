@@ -70,11 +70,10 @@ class AuthScreen extends StatelessWidget {
                     margin: const EdgeInsets.only(bottom: 20.0),
                     padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 94.0),
                     child: const Text(
-                      'WGER',
+                      'wger',
                       style: TextStyle(
                         color: Colors.white70,
                         fontSize: 30,
-                        fontFamily: 'OpenSansBold',
                         fontWeight: FontWeight.bold,
                       ),
                     ),

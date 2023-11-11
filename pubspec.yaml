@@ -105,13 +105,12 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: OpenSansLight
+    - family: BebasNeue
       fonts:
-        - asset: assets/fonts/OpenSans-Light.ttf
-    - family: OpenSansBold
+        - asset: assets/fonts/BebasNeue-Regular.ttf
+    - family: RobotoCondensed
       fonts:
-        - asset: assets/fonts/OpenSans-Bold.ttf
-          weight: 700
+        - asset: assets/fonts/RobotoCondensed-VariableFont_wght.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

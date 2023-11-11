@@ -17,7 +17,10 @@
  */
 
 import 'package:flex_color_scheme/flex_color_scheme.dart';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 // Color scheme, please consult
@@ -32,11 +35,14 @@ const Color wgerSecondaryColorLight = Color(0xffF6B4BA);
 const Color wgerTertiaryColor = Color(0xFF6CA450);
 
 const FlexSubThemesData wgerSubThemeData = FlexSubThemesData(
-  fabSchemeColor: SchemeColor.secondary,
-  inputDecoratorBorderType: FlexInputBorderType.underline,
-  inputDecoratorIsFilled: false,
-  useTextTheme: true,
-);
+    fabSchemeColor: SchemeColor.secondary,
+    inputDecoratorBorderType: FlexInputBorderType.underline,
+    inputDecoratorIsFilled: false,
+    useTextTheme: true);
+
+const String wgerDisplayFont = 'BebasNeue';
+const String wgerHeadingFont = 'RobotoCondensed';
+const List<FontVariation> robotoHeadingWeight = <FontVariation>[FontVariation('wght', 600)];
 
 // Make a light ColorScheme from the seeds.
 final ColorScheme schemeLight = SeedColorScheme.fromSeeds(
@@ -75,31 +81,54 @@ final ColorScheme schemeDarkHc = SeedColorScheme.fromSeeds(
   tones: FlexTones.ultraContrast(Brightness.dark),
 );
 
-final wgerLightTheme = FlexThemeData.light(
-  colorScheme: schemeLight,
-  useMaterial3: true,
-  appBarStyle: FlexAppBarStyle.primary,
-  subThemesData: wgerSubThemeData,
+const wgerTextTheme = TextTheme(
+  displayLarge: TextStyle(fontFamily: wgerDisplayFont, fontFamilyFallback: [wgerHeadingFont]),
+  displayMedium: TextStyle(fontFamily: wgerDisplayFont, fontFamilyFallback: [wgerHeadingFont]),
+  displaySmall: TextStyle(fontFamily: wgerDisplayFont, fontFamilyFallback: [wgerHeadingFont]),
+  headlineLarge: TextStyle(fontFamily: wgerHeadingFont),
+  headlineMedium: TextStyle(
+    fontFamily: wgerHeadingFont,
+    fontVariations: robotoHeadingWeight,
+  ),
+  headlineSmall: TextStyle(
+    fontFamily: wgerHeadingFont,
+    fontVariations: robotoHeadingWeight,
+    color: Colors.black,
+  ),
+  titleLarge: TextStyle(
+    fontFamily: wgerHeadingFont,
+    fontVariations: robotoHeadingWeight,
+    color: Colors.black,
+  ),
+  titleMedium: TextStyle(fontFamily: wgerHeadingFont, fontVariations: robotoHeadingWeight),
+  titleSmall: TextStyle(fontFamily: wgerHeadingFont, fontVariations: robotoHeadingWeight),
 );
+
+final wgerLightTheme = FlexThemeData.light(
+    colorScheme: schemeLight,
+    useMaterial3: true,
+    appBarStyle: FlexAppBarStyle.primary,
+    subThemesData: wgerSubThemeData,
+    textTheme: wgerTextTheme);
 
 final wgerDarkTheme = FlexThemeData.dark(
-  colorScheme: schemeDark,
-  useMaterial3: true,
-  subThemesData: wgerSubThemeData,
-);
+    colorScheme: schemeDark,
+    useMaterial3: true,
+    subThemesData: wgerSubThemeData,
+    textTheme: wgerTextTheme);
 
 final wgerLightThemeHc = FlexThemeData.light(
-  colorScheme: schemeLightHc,
-  useMaterial3: true,
-  appBarStyle: FlexAppBarStyle.primary,
-  subThemesData: wgerSubThemeData,
-);
+    colorScheme: schemeLightHc,
+    useMaterial3: true,
+    appBarStyle: FlexAppBarStyle.primary,
+    subThemesData: wgerSubThemeData,
+    textTheme: wgerTextTheme);
 
 final wgerDarkThemeHc = FlexThemeData.dark(
-  colorScheme: schemeDarkHc,
-  useMaterial3: true,
-  subThemesData: wgerSubThemeData,
-);
+    colorScheme: schemeDarkHc,
+    useMaterial3: true,
+    subThemesData: wgerSubThemeData,
+    textTheme: wgerTextTheme);
 
 CalendarStyle getWgerCalendarStyle(ThemeData theme) {
   return CalendarStyle(

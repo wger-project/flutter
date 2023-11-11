@@ -160,7 +160,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
             bottomNavigationBar: BottomNavigationBar(
               items: [
                 BottomNavigationBarItem(
-                  icon: const Icon(Icons.dashboard),
+                  icon: const Icon(Icons.home),
                   label: AppLocalizations.of(context).labelDashboard,
                 ),
                 BottomNavigationBarItem(
@@ -187,6 +187,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
               currentIndex: _selectedIndex,
               onTap: _onItemTapped,
               showUnselectedLabels: false,
+              showSelectedLabels: false,
             ),
           );
         }

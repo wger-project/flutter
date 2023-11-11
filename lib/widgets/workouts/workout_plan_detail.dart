@@ -49,7 +49,7 @@ class _WorkoutPlanDetailState extends State<WorkoutPlanDetail> {
             },
             isSelected: const [true, false],
             children: const <Widget>[
-              Icon(Icons.table_chart_outlined),
+              Icon(Icons.table_chart),
               Icon(Icons.show_chart),
             ],
           ),

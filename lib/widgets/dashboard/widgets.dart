@@ -537,7 +537,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                   : '',
             ),
             leading: Icon(
-              Icons.fitness_center_outlined,
+              Icons.fitness_center,
               color: Theme.of(context).textTheme.headlineSmall!.color,
             ),
             trailing: getTrailing(),
