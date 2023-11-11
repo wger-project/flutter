@@ -631,7 +631,7 @@ class _LogPageState extends State<LogPage> {
         Center(
           child: Text(
             widget._setting.singleSettingRepText,
-            style: Theme.of(context).textTheme.displaySmall,
+            style: Theme.of(context).textTheme.headlineMedium,
             textAlign: TextAlign.center,
           ),
         ),
