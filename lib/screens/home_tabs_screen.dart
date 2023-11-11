@@ -157,37 +157,35 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
         } else {
           return Scaffold(
             body: _screenList.elementAt(_selectedIndex),
-            bottomNavigationBar: BottomNavigationBar(
-              items: [
-                BottomNavigationBarItem(
+            bottomNavigationBar: NavigationBar(
+              destinations: [
+                NavigationDestination(
                   icon: const Icon(Icons.home),
                   label: AppLocalizations.of(context).labelDashboard,
                 ),
-                BottomNavigationBarItem(
+                NavigationDestination(
                   icon: const Icon(Icons.fitness_center),
                   label: AppLocalizations.of(context).labelBottomNavWorkout,
                 ),
-                BottomNavigationBarItem(
+                NavigationDestination(
                   icon: const Icon(Icons.restaurant),
                   label: AppLocalizations.of(context).labelBottomNavNutrition,
                 ),
-                BottomNavigationBarItem(
+                NavigationDestination(
                   icon: const FaIcon(
                     FontAwesomeIcons.weightScale,
                     size: 20,
                   ),
                   label: AppLocalizations.of(context).weight,
                 ),
-                BottomNavigationBarItem(
+                NavigationDestination(
                   icon: const Icon(Icons.photo_library),
                   label: AppLocalizations.of(context).gallery,
                 ),
               ],
-              type: BottomNavigationBarType.fixed,
-              currentIndex: _selectedIndex,
-              onTap: _onItemTapped,
-              showUnselectedLabels: false,
-              showSelectedLabels: false,
+              onDestinationSelected: _onItemTapped,
+              selectedIndex: _selectedIndex,
+              labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
             ),
           );
         }
