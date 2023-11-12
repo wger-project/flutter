@@ -24,7 +24,7 @@ import 'package:wger/providers/body_weight.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/measurement_categories_screen.dart';
 import 'package:wger/theme/theme.dart';
-import 'package:wger/widgets/core/charts.dart';
+import 'package:wger/widgets/measurements/charts.dart';
 import 'package:wger/widgets/weight/forms.dart';
 
 class WeightEntriesList extends StatelessWidget {

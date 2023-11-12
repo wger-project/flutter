@@ -187,17 +187,19 @@ class _AuthCardState extends State<AuthCard> {
         _isLoading = false;
       });
     } on WgerHttpException catch (error) {
-      showHttpExceptionErrorDialog(error, context);
+      if (mounted) {
+        showHttpExceptionErrorDialog(error, context);
+      }
       setState(() {
         _isLoading = false;
       });
     } catch (error) {
       if (mounted) {
         showErrorDialog(error, context);
-        setState(() {
-          _isLoading = false;
-        });
       }
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -249,7 +251,7 @@ class _AuthCardState extends State<AuthCard> {
                       if (value == null || value.isEmpty) {
                         return AppLocalizations.of(context).invalidUsername;
                       }
-                      if (!RegExp(r'^[\w.@+-]+$').hasMatch(value!)) {
+                      if (!RegExp(r'^[\w.@+-]+$').hasMatch(value)) {
                         return AppLocalizations.of(context).usernameValidChars;
                       }
 

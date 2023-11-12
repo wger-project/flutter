@@ -21,29 +21,29 @@ void main() {
     const String diaryUrl = 'nutritiondiary';
     const String ingredientUrl = 'ingredient';
 
-    final Map<String, dynamic> NutritionalPlanInfoResponse = jsonDecode(
+    final Map<String, dynamic> nutritionalPlanInfoResponse = jsonDecode(
       fixture('nutrition/nutritional_plan_info_detail_response.json'),
     );
-    final Map<String, dynamic> NutritionalPlanDetailResponse = jsonDecode(
+    final Map<String, dynamic> nutritionalPlanDetailResponse = jsonDecode(
       fixture('nutrition/nutritional_plan_detail_response.json'),
     );
-    final List<dynamic> NutritionDiaryResponse = jsonDecode(
+    final List<dynamic> nutritionDiaryResponse = jsonDecode(
       fixture('nutrition/nutrition_diary_response.json'),
     )['results'];
-    final Map<String, dynamic> Ingredient59887Response = jsonDecode(
+    final Map<String, dynamic> ingredient59887Response = jsonDecode(
       fixture('nutrition/ingredient_59887_response.json'),
     );
-    final Map<String, dynamic> Ingredient10065Response = jsonDecode(
+    final Map<String, dynamic> ingredient10065Response = jsonDecode(
       fixture('nutrition/ingredient_10065_response.json'),
     );
-    final Map<String, dynamic> Ingredient58300Response = jsonDecode(
+    final Map<String, dynamic> ingredient58300Response = jsonDecode(
       fixture('nutrition/ingredient_58300_response.json'),
     );
 
     final ingredientList = [
-      Ingredient.fromJson(Ingredient59887Response),
-      Ingredient.fromJson(Ingredient10065Response),
-      Ingredient.fromJson(Ingredient58300Response),
+      Ingredient.fromJson(ingredient59887Response),
+      Ingredient.fromJson(ingredient10065Response),
+      Ingredient.fromJson(ingredient58300Response),
     ];
 
     nutritionProvider.ingredients = ingredientList;
@@ -67,13 +67,13 @@ void main() {
     when(mockWgerBaseProvider.makeUrl(planUrl, id: anyNamed('id'))).thenReturn(planUri);
     when(mockWgerBaseProvider.makeUrl(diaryUrl, query: anyNamed('query'))).thenReturn(diaryUri);
     when(mockWgerBaseProvider.fetch(planInfoUri)).thenAnswer(
-      (realInvocation) => Future.value(NutritionalPlanInfoResponse),
+      (realInvocation) => Future.value(nutritionalPlanInfoResponse),
     );
     when(mockWgerBaseProvider.fetch(planUri)).thenAnswer(
-      (realInvocation) => Future.value(NutritionalPlanDetailResponse),
+      (realInvocation) => Future.value(nutritionalPlanDetailResponse),
     );
     when(mockWgerBaseProvider.fetchPaginated(diaryUri)).thenAnswer(
-      (realInvocation) => Future.value(NutritionDiaryResponse),
+      (realInvocation) => Future.value(nutritionDiaryResponse),
     );
   });
 

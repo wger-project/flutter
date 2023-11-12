@@ -49,8 +49,8 @@ class _AddExerciseDropdownButtonState extends State<AddExerciseDropdownButton> {
         items: widget.items
             .map(
               (item) => DropdownMenuItem<String>(
-                child: Text(item),
                 value: item,
+                child: Text(item),
               ),
             )
             .toList(),

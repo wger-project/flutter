@@ -16,23 +16,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'dart:developer';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 //import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_zxing/flutter_zxing.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/platform.dart';
 import 'package:wger/helpers/ui.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/widgets/core/core.dart';
-
-import 'package:flutter_zxing/flutter_zxing.dart';
 
 class ScanReader extends StatelessWidget {
   String? scannedr;
@@ -212,10 +207,12 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
             }
           }
         } catch (e) {
-          showErrorDialog(e, context);
-          // Need to pop back since reader scan is a widget
-          // otherwise returns null when back button is pressed
-          return Navigator.pop(context);
+          if (context.mounted) {
+            showErrorDialog(e, context);
+            // Need to pop back since reader scan is a widget
+            // otherwise returns null when back button is pressed
+            return Navigator.pop(context);
+          }
         }
       },
       icon: Image.asset('assets/images/barcode_scanner_icon.png'),

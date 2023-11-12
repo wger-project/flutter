@@ -23,7 +23,7 @@ import 'package:intl/intl.dart';
 import 'package:wger/helpers/colors.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
-import 'package:wger/widgets/core/charts.dart';
+import 'package:wger/widgets/measurements/charts.dart';
 
 class NutritionData {
   final String name;

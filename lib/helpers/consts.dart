@@ -88,6 +88,7 @@ const LANGUAGE_SHORT_ENGLISH = 'en';
 ///
 /// Values taken from exercises/models/image.py
 enum EXERCISE_IMAGE_ART_STYLE {
+  // ignore: unused_field
   _, // 0 is not used
   LINE_ART,
   THREE_D,

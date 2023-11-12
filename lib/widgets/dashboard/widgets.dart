@@ -38,7 +38,7 @@ import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/theme/theme.dart';
-import 'package:wger/widgets/core/charts.dart';
+import 'package:wger/widgets/measurements/charts.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/measurements/categories_card.dart';
 import 'package:wger/widgets/measurements/forms.dart';

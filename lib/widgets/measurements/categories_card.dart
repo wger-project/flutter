@@ -4,14 +4,14 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../models/measurements/measurement_category.dart';
 import '../../screens/form_screen.dart';
 import '../../screens/measurement_entries_screen.dart';
-import '../core/charts.dart';
+import 'charts.dart';
 import 'forms.dart';
 
 class CategoriesCard extends StatelessWidget {
-  MeasurementCategory currentCategory;
-  double? elevation;
+  final MeasurementCategory currentCategory;
+  final double? elevation;
 
-  CategoriesCard(this.currentCategory, {this.elevation});
+  const CategoriesCard(this.currentCategory, {this.elevation});
 
   @override
   Widget build(BuildContext context) {

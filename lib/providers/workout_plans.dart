@@ -18,7 +18,6 @@
 
 import 'dart:convert';
 import 'dart:developer' as dev;
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -302,8 +301,6 @@ class WorkoutPlansProvider with ChangeNotifier {
         query: {'id': base.id.toString()},
       ),
     );
-    // log(data.toString());
-
     return data;
   }
 
@@ -353,7 +350,6 @@ class WorkoutPlansProvider with ChangeNotifier {
       'weightUnit': _weightUnits.map((e) => e.toJson()).toList(),
     };
     prefs.setString('workoutUnits', json.encode(exerciseData));
-    log(json.encode(exerciseData));
     notifyListeners();
   }
 

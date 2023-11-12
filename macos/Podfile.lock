@@ -1,4 +1,8 @@
 PODS:
+  - file_selector_macos (0.0.1):
+    - FlutterMacOS
+  - flutter_zxing (0.0.1):
+    - FlutterMacOS
   - FlutterMacOS (1.0.0)
   - package_info_plus (0.0.1):
     - FlutterMacOS
@@ -9,18 +13,21 @@ PODS:
     - FlutterMacOS
   - url_launcher_macos (0.0.1):
     - FlutterMacOS
-  - wakelock_macos (0.0.1):
-    - FlutterMacOS
 
 DEPENDENCIES:
+  - file_selector_macos (from `Flutter/ephemeral/.symlinks/plugins/file_selector_macos/macos`)
+  - flutter_zxing (from `Flutter/ephemeral/.symlinks/plugins/flutter_zxing/macos`)
   - FlutterMacOS (from `Flutter/ephemeral`)
   - package_info_plus (from `Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos`)
   - rive_common (from `Flutter/ephemeral/.symlinks/plugins/rive_common/macos`)
-  - shared_preferences_foundation (from `Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/macos`)
+  - shared_preferences_foundation (from `Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/darwin`)
   - url_launcher_macos (from `Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos`)
-  - wakelock_macos (from `Flutter/ephemeral/.symlinks/plugins/wakelock_macos/macos`)
 
 EXTERNAL SOURCES:
+  file_selector_macos:
+    :path: Flutter/ephemeral/.symlinks/plugins/file_selector_macos/macos
+  flutter_zxing:
+    :path: Flutter/ephemeral/.symlinks/plugins/flutter_zxing/macos
   FlutterMacOS:
     :path: Flutter/ephemeral
   package_info_plus:
@@ -28,20 +35,19 @@ EXTERNAL SOURCES:
   rive_common:
     :path: Flutter/ephemeral/.symlinks/plugins/rive_common/macos
   shared_preferences_foundation:
-    :path: Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/macos
+    :path: Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/darwin
   url_launcher_macos:
     :path: Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos
-  wakelock_macos:
-    :path: Flutter/ephemeral/.symlinks/plugins/wakelock_macos/macos
 
 SPEC CHECKSUMS:
+  file_selector_macos: 0f85c1108e2fd597b58246bc0b0c1cb483d7593b
+  flutter_zxing: ea030278aa2a051cd81a5b0053be9d0569d11c9a
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
   package_info_plus: 02d7a575e80f194102bef286361c6c326e4c29ce
-  rive_common: e966d74ca90edb3761cfc559d0f4c884ee947576
+  rive_common: acedcab7802c0ece4b0d838b71d7deb637e1309a
   shared_preferences_foundation: 986fc17f3d3251412d18b0265f9c64113a8c2472
   url_launcher_macos: 5335912b679c073563f29d89d33d10d459f95451
-  wakelock_macos: bc3f2a9bd8d2e6c89fee1e1822e7ddac3bd004a9
 
-PODFILE CHECKSUM: 353c8bcc5d5b0994e508d035b5431cfe18c1dea7
+PODFILE CHECKSUM: 0d3963a09fc94f580682bd88480486da345dc3f0
 
-COCOAPODS: 1.12.0
+COCOAPODS: 1.13.0
