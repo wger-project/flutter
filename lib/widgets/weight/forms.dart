@@ -49,7 +49,7 @@ class WeightForm extends StatelessWidget {
             readOnly: true, // Stop keyboard from appearing
             decoration: InputDecoration(
               labelText: AppLocalizations.of(context).date,
-              suffixIcon: const Icon(Icons.calendar_today_outlined),
+              suffixIcon: const Icon(Icons.calendar_today),
             ),
             enableInteractiveSelection: false,
             controller: dateController,

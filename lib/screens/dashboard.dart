@@ -35,6 +35,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Scaffold(
       appBar: MainAppBar(AppLocalizations.of(context).labelDashboard),
       body: SingleChildScrollView(
+        padding: const EdgeInsets.all(10),
         child: Column(
           children: [
             DashboardWorkoutWidget(),

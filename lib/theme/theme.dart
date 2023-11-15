@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:ui';
+
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -32,11 +34,22 @@ const Color wgerSecondaryColorLight = Color(0xffF6B4BA);
 const Color wgerTertiaryColor = Color(0xFF6CA450);
 
 const FlexSubThemesData wgerSubThemeData = FlexSubThemesData(
-  fabSchemeColor: SchemeColor.secondary,
-  inputDecoratorBorderType: FlexInputBorderType.underline,
-  inputDecoratorIsFilled: false,
-  useTextTheme: true,
-);
+    fabSchemeColor: SchemeColor.secondary,
+    inputDecoratorBorderType: FlexInputBorderType.underline,
+    inputDecoratorIsFilled: false,
+    useTextTheme: true,
+    appBarBackgroundSchemeColor: SchemeColor.background,
+    appBarScrolledUnderElevation: 4,
+    navigationBarBackgroundSchemeColor: SchemeColor.primary,
+    navigationBarSelectedIconSchemeColor: SchemeColor.onPrimary,
+    navigationBarUnselectedIconSchemeColor: SchemeColor.onPrimary,
+    navigationBarIndicatorSchemeColor: SchemeColor.onPrimary,
+    navigationBarIndicatorOpacity: 0.24,
+    navigationBarHeight: 56);
+
+const String wgerDisplayFont = 'RobotoCondensed';
+const List<FontVariation> displayFontBoldWeight = <FontVariation>[FontVariation('wght', 600)];
+const List<FontVariation> displayFontHeavyWeight = <FontVariation>[FontVariation('wght', 800)];
 
 // Make a light ColorScheme from the seeds.
 final ColorScheme schemeLight = SeedColorScheme.fromSeeds(
@@ -75,31 +88,66 @@ final ColorScheme schemeDarkHc = SeedColorScheme.fromSeeds(
   tones: FlexTones.ultraContrast(Brightness.dark),
 );
 
-final wgerLightTheme = FlexThemeData.light(
-  colorScheme: schemeLight,
-  useMaterial3: true,
-  appBarStyle: FlexAppBarStyle.primary,
-  subThemesData: wgerSubThemeData,
+const wgerTextTheme = TextTheme(
+  displayLarge: TextStyle(
+    fontFamily: wgerDisplayFont,
+    fontVariations: displayFontHeavyWeight,
+  ),
+  displayMedium: TextStyle(
+    fontFamily: wgerDisplayFont,
+    fontVariations: displayFontHeavyWeight,
+  ),
+  displaySmall: TextStyle(
+    fontFamily: wgerDisplayFont,
+    fontVariations: displayFontHeavyWeight,
+  ),
+  headlineLarge: TextStyle(
+    fontFamily: wgerDisplayFont,
+    fontVariations: displayFontBoldWeight,
+  ),
+  headlineMedium: TextStyle(
+    fontFamily: wgerDisplayFont,
+    fontVariations: displayFontBoldWeight,
+  ),
+  headlineSmall: TextStyle(
+    fontFamily: wgerDisplayFont,
+    fontVariations: displayFontBoldWeight,
+  ),
+  titleLarge: TextStyle(
+    fontFamily: wgerDisplayFont,
+    fontVariations: displayFontBoldWeight,
+  ),
+  titleMedium: TextStyle(fontFamily: wgerDisplayFont, fontVariations: displayFontBoldWeight),
+  titleSmall: TextStyle(fontFamily: wgerDisplayFont, fontVariations: displayFontBoldWeight),
 );
+
+final wgerLightTheme = FlexThemeData.light(
+    colorScheme: schemeLight,
+    useMaterial3: true,
+    appBarStyle: FlexAppBarStyle.surface,
+    subThemesData: wgerSubThemeData,
+    textTheme: wgerTextTheme);
 
 final wgerDarkTheme = FlexThemeData.dark(
-  colorScheme: schemeDark,
-  useMaterial3: true,
-  subThemesData: wgerSubThemeData,
-);
+    colorScheme: schemeDark,
+    useMaterial3: true,
+    appBarStyle: FlexAppBarStyle.surface,
+    subThemesData: wgerSubThemeData,
+    textTheme: wgerTextTheme);
 
 final wgerLightThemeHc = FlexThemeData.light(
-  colorScheme: schemeLightHc,
-  useMaterial3: true,
-  appBarStyle: FlexAppBarStyle.primary,
-  subThemesData: wgerSubThemeData,
-);
+    colorScheme: schemeLightHc,
+    useMaterial3: true,
+    appBarStyle: FlexAppBarStyle.surface,
+    subThemesData: wgerSubThemeData,
+    textTheme: wgerTextTheme);
 
 final wgerDarkThemeHc = FlexThemeData.dark(
-  colorScheme: schemeDarkHc,
-  useMaterial3: true,
-  subThemesData: wgerSubThemeData,
-);
+    colorScheme: schemeDarkHc,
+    useMaterial3: true,
+    appBarStyle: FlexAppBarStyle.surface,
+    subThemesData: wgerSubThemeData,
+    textTheme: wgerTextTheme);
 
 CalendarStyle getWgerCalendarStyle(ThemeData theme) {
   return CalendarStyle(

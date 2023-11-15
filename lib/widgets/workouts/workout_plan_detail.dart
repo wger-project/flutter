@@ -40,19 +40,21 @@ class _WorkoutPlanDetailState extends State<WorkoutPlanDetail> {
     return Column(
       children: [
         if (widget._workoutPlan.days.isNotEmpty)
-          ToggleButtons(
-            renderBorder: false,
-            onPressed: (int index) {
-              if (index == 1) {
-                widget._changeMode(WorkoutScreenMode.log);
-              }
-            },
-            isSelected: const [true, false],
-            children: const <Widget>[
-              Icon(Icons.table_chart_outlined),
-              Icon(Icons.show_chart),
-            ],
-          ),
+          Padding(
+              padding: const EdgeInsets.all(10),
+              child: ToggleButtons(
+                renderBorder: false,
+                onPressed: (int index) {
+                  if (index == 1) {
+                    widget._changeMode(WorkoutScreenMode.log);
+                  }
+                },
+                isSelected: const [true, false],
+                children: const <Widget>[
+                  Icon(Icons.table_chart),
+                  Icon(Icons.show_chart),
+                ],
+              )),
         if (widget._workoutPlan.description != '')
           Padding(
             padding: const EdgeInsets.all(15),

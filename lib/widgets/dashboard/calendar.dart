@@ -217,7 +217,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
               style: Theme.of(context).textTheme.headlineMedium,
             ),
             leading: Icon(
-              Icons.calendar_today_outlined,
+              Icons.calendar_today,
               color: Theme.of(context).textTheme.headlineMedium!.color,
             ),
           ),
