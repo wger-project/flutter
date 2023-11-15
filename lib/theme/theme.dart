@@ -60,7 +60,7 @@ final ColorScheme schemeLight = SeedColorScheme.fromSeeds(
 
 // Make a dark ColorScheme from the seeds.
 final ColorScheme schemeDark = SeedColorScheme.fromSeeds(
-// primary: wgerPrimaryColor,
+  // primary: wgerPrimaryColor,
   primaryKey: wgerPrimaryColor,
   secondaryKey: wgerSecondaryColor,
   secondary: wgerSecondaryColor,
@@ -134,24 +134,24 @@ final wgerLightTheme = FlexThemeData.light(
 final wgerDarkTheme = FlexThemeData.dark(
   colorScheme: schemeDark,
   useMaterial3: true,
-  appBarStyle: FlexAppBarStyle.surface,
   subThemesData: wgerSubThemeData,
   textTheme: wgerTextTheme,
 );
 
 final wgerLightThemeHc = FlexThemeData.light(
-    colorScheme: schemeLightHc,
-    useMaterial3: true,
-    appBarStyle: FlexAppBarStyle.surface,
-    subThemesData: wgerSubThemeData,
-    textTheme: wgerTextTheme);
+  colorScheme: schemeLightHc,
+  useMaterial3: true,
+  appBarStyle: FlexAppBarStyle.primary,
+  subThemesData: wgerSubThemeData,
+  textTheme: wgerTextTheme,
+);
 
 final wgerDarkThemeHc = FlexThemeData.dark(
-    colorScheme: schemeDarkHc,
-    useMaterial3: true,
-    appBarStyle: FlexAppBarStyle.surface,
-    subThemesData: wgerSubThemeData,
-    textTheme: wgerTextTheme);
+  colorScheme: schemeDarkHc,
+  useMaterial3: true,
+  subThemesData: wgerSubThemeData,
+  textTheme: wgerTextTheme,
+);
 
 CalendarStyle getWgerCalendarStyle(ThemeData theme) {
   return CalendarStyle(
