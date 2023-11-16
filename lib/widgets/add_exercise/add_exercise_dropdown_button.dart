@@ -17,7 +17,8 @@ class AddExerciseDropdownButton extends StatefulWidget {
   final FormFieldSetter<String?>? onSaved;
 
   @override
-  _AddExerciseDropdownButtonState createState() => _AddExerciseDropdownButtonState();
+  _AddExerciseDropdownButtonState createState() =>
+      _AddExerciseDropdownButtonState();
 }
 
 class _AddExerciseDropdownButtonState extends State<AddExerciseDropdownButton> {
@@ -39,7 +40,8 @@ class _AddExerciseDropdownButtonState extends State<AddExerciseDropdownButton> {
         },
         value: _selectedItem,
         decoration: InputDecoration(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(10)),
           ),

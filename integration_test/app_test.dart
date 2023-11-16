@@ -11,12 +11,14 @@ import '4_measurements.dart';
 import '5_nutritional_plan.dart';
 import '6_weight.dart';
 
-Future<void> takeScreenshot(tester, binding, String language, String name) async {
+Future<void> takeScreenshot(
+    tester, binding, String language, String name) async {
   if (Platform.isAndroid) {
     await binding.convertFlutterSurfaceToImage();
     await tester.pumpAndSettle();
   }
-  final filename = 'fastlane/metadata/android/$language/images/phoneScreenshots/$name.png';
+  final filename =
+      'fastlane/metadata/android/$language/images/phoneScreenshots/$name.png';
   await binding.takeScreenshot(filename);
 }
 
@@ -60,8 +62,10 @@ void main() {
         await takeScreenshot(tester, binding, language, '01 - dashboard');
       });
 
-      testWidgets('workout detail screen - $language', (WidgetTester tester) async {
-        await tester.pumpWidget(createWorkoutDetailScreen(locale: languageCode));
+      testWidgets('workout detail screen - $language',
+          (WidgetTester tester) async {
+        await tester
+            .pumpWidget(createWorkoutDetailScreen(locale: languageCode));
         await tester.tap(find.byType(TextButton));
         await tester.pumpAndSettle();
         await takeScreenshot(tester, binding, language, '02 - workout detail');
@@ -74,19 +78,24 @@ void main() {
         await takeScreenshot(tester, binding, language, '03 - gym mode');
       });
 
-      testWidgets('measurement screen - $language', (WidgetTester tester) async {
+      testWidgets('measurement screen - $language',
+          (WidgetTester tester) async {
         await tester.pumpWidget(createMeasurementScreen(locale: languageCode));
         await takeScreenshot(tester, binding, language, '04 - measurements');
       });
 
-      testWidgets('nutritional plan detail - $language', (WidgetTester tester) async {
-        await tester.pumpWidget(createNutritionalPlanScreen(locale: languageCode));
+      testWidgets('nutritional plan detail - $language',
+          (WidgetTester tester) async {
+        await tester
+            .pumpWidget(createNutritionalPlanScreen(locale: languageCode));
         await tester.tap(find.byType(TextButton));
         await tester.pumpAndSettle();
-        await takeScreenshot(tester, binding, language, '05 - nutritional plan');
+        await takeScreenshot(
+            tester, binding, language, '05 - nutritional plan');
       });
 
-      testWidgets('body weight screen - $language', (WidgetTester tester) async {
+      testWidgets('body weight screen - $language',
+          (WidgetTester tester) async {
         await tester.pumpWidget(createWeightScreen(locale: languageCode));
         await tester.pumpAndSettle();
         await takeScreenshot(tester, binding, language, '06 - weight');

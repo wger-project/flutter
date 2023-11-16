@@ -83,13 +83,16 @@ void main() {
         'd8aa5990-bb47-4111-9823-e2fbd98fe07f',
         '49a159e1-1e00-409a-81c9-b4d4489fbd67'
       ]);
-      expect(base.videos.map((v) => v.uuid), ['63e996e9-a772-4ca5-9d09-8b4be03f6be4']);
+      expect(base.videos.map((v) => v.uuid),
+          ['63e996e9-a772-4ca5-9d09-8b4be03f6be4']);
 
       final exercise1 = base.translations[0];
       expect(exercise1.name, '2 Handed Kettlebell Swing');
       expect(exercise1.languageObj.shortName, 'en');
-      expect(exercise1.notes[0].comment, "it's important to do the exercise correctly");
-      expect(exercise1.notes[1].comment, 'put a lot of effort into this exercise');
+      expect(exercise1.notes[0].comment,
+          "it's important to do the exercise correctly");
+      expect(
+          exercise1.notes[1].comment, 'put a lot of effort into this exercise');
       expect(exercise1.notes[2].comment, 'have fun');
       expect(exercise1.alias[0].alias, 'double handed kettlebell');
       expect(exercise1.alias[1].alias, 'Kettlebell russian style');

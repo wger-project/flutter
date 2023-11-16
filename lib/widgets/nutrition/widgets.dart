@@ -71,8 +71,8 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
   Future<String> readerscan(BuildContext context) async {
     String scannedcode;
     try {
-      scannedcode =
-          await Navigator.of(context).push(MaterialPageRoute(builder: (context) => ScanReader()));
+      scannedcode = await Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => ScanReader()));
 
       if (scannedcode.compareTo('-1') == 0) {
         return '';
@@ -94,22 +94,31 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
             decoration: InputDecoration(
               prefixIcon: const Icon(Icons.search),
               labelText: AppLocalizations.of(context).searchIngredient,
-              suffixIcon: (widget.showScanner && !isDesktop) ? scanButton() : null,
+              suffixIcon:
+                  (widget.showScanner && !isDesktop) ? scanButton() : null,
             ),
           ),
           suggestionsCallback: (pattern) async {
-            return Provider.of<NutritionPlansProvider>(context, listen: false).searchIngredient(
+            return Provider.of<NutritionPlansProvider>(context, listen: false)
+                .searchIngredient(
               pattern,
               languageCode: Localizations.localeOf(context).languageCode,
               searchEnglish: _searchEnglish,
             );
           },
           itemBuilder: (context, dynamic suggestion) {
-            final url = context.read<NutritionPlansProvider>().baseProvider.auth.serverUrl;
+            final url = context
+                .read<NutritionPlansProvider>()
+                .baseProvider
+                .auth
+                .serverUrl;
             return ListTile(
               leading: suggestion['data']['image'] != null
-                  ? CircleAvatar(backgroundImage: NetworkImage(url! + suggestion['data']['image']))
-                  : const CircleIconAvatar(Icon(Icons.image, color: Colors.grey)),
+                  ? CircleAvatar(
+                      backgroundImage:
+                          NetworkImage(url! + suggestion['data']['image']))
+                  : const CircleIconAvatar(
+                      Icon(Icons.image, color: Colors.grey)),
               title: Text(suggestion['value']),
               subtitle: Text(suggestion['data']['id'].toString()),
             );
@@ -118,7 +127,8 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
             return suggestionsBox;
           },
           onSuggestionSelected: (dynamic suggestion) {
-            widget._ingredientIdController.text = suggestion['data']['id'].toString();
+            widget._ingredientIdController.text =
+                suggestion['data']['id'].toString();
             widget._ingredientController.text = suggestion['value'];
           },
           validator: (value) {
@@ -128,7 +138,8 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
             return null;
           },
         ),
-        if (Localizations.localeOf(context).languageCode != LANGUAGE_SHORT_ENGLISH)
+        if (Localizations.localeOf(context).languageCode !=
+            LANGUAGE_SHORT_ENGLISH)
           SwitchListTile(
             title: Text(AppLocalizations.of(context).searchNamesInEnglish),
             value: _searchEnglish,
@@ -153,7 +164,8 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
           }
 
           if (widget.barcode!.isNotEmpty) {
-            final result = await Provider.of<NutritionPlansProvider>(context, listen: false)
+            final result = await Provider.of<NutritionPlansProvider>(context,
+                    listen: false)
                 .searchIngredientWithCode(widget.barcode!);
 
             if (result != null) {
@@ -162,20 +174,24 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
                 builder: (ctx) => AlertDialog(
                   key: const Key('found-dialog'),
                   title: Text(AppLocalizations.of(context).productFound),
-                  content: Text(AppLocalizations.of(context).productFoundDescription(result.name)),
+                  content: Text(AppLocalizations.of(context)
+                      .productFoundDescription(result.name)),
                   actions: [
                     TextButton(
                       key: const Key('found-dialog-confirm-button'),
-                      child: Text(MaterialLocalizations.of(context).continueButtonLabel),
+                      child: Text(MaterialLocalizations.of(context)
+                          .continueButtonLabel),
                       onPressed: () {
                         widget._ingredientController.text = result.name;
-                        widget._ingredientIdController.text = result.id.toString();
+                        widget._ingredientIdController.text =
+                            result.id.toString();
                         Navigator.of(ctx).pop();
                       },
                     ),
                     TextButton(
                       key: const Key('found-dialog-close-button'),
-                      child: Text(MaterialLocalizations.of(context).closeButtonLabel),
+                      child: Text(
+                          MaterialLocalizations.of(context).closeButtonLabel),
                       onPressed: () {
                         Navigator.of(ctx).pop();
                       },
@@ -191,12 +207,14 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
                   key: const Key('notFound-dialog'),
                   title: Text(AppLocalizations.of(context).productNotFound),
                   content: Text(
-                    AppLocalizations.of(context).productNotFoundDescription(widget.barcode!),
+                    AppLocalizations.of(context)
+                        .productNotFoundDescription(widget.barcode!),
                   ),
                   actions: [
                     TextButton(
                       key: const Key('notFound-dialog-close-button'),
-                      child: Text(MaterialLocalizations.of(context).closeButtonLabel),
+                      child: Text(
+                          MaterialLocalizations.of(context).closeButtonLabel),
                       onPressed: () {
                         Navigator.of(ctx).pop();
                       },

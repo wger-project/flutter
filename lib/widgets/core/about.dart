@@ -85,7 +85,10 @@ class _AboutPageState extends State<AboutPage> {
             SizedBox(height: 0.025 * deviceSize.height),
             Text(
               AppLocalizations.of(context).aboutDescription,
-              style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 16),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium!
+                  .copyWith(fontSize: 16),
             ),
             SizedBox(height: 0.04 * deviceSize.height),
             ListTile(
@@ -102,7 +105,8 @@ class _AboutPageState extends State<AboutPage> {
                 ],
               ),
               contentPadding: EdgeInsets.zero,
-              onTap: () async => launchURL('https://github.com/wger-project', context),
+              onTap: () async =>
+                  launchURL('https://github.com/wger-project', context),
             ),
             const SizedBox(height: 10),
             ListTile(
@@ -119,8 +123,9 @@ class _AboutPageState extends State<AboutPage> {
                 ],
               ),
               contentPadding: EdgeInsets.zero,
-              onTap: () async =>
-                  launchURL('https://github.com/wger-project/flutter/issues/new/choose', context),
+              onTap: () async => launchURL(
+                  'https://github.com/wger-project/flutter/issues/new/choose',
+                  context),
             ),
             const SizedBox(height: 10),
             ListTile(
@@ -137,7 +142,8 @@ class _AboutPageState extends State<AboutPage> {
                 ],
               ),
               contentPadding: EdgeInsets.zero,
-              onTap: () async => launchURL('https://discord.gg/rPWFv6W', context),
+              onTap: () async =>
+                  launchURL('https://discord.gg/rPWFv6W', context),
             ),
             const SizedBox(height: 10),
             ListTile(
@@ -154,7 +160,8 @@ class _AboutPageState extends State<AboutPage> {
                 ],
               ),
               contentPadding: EdgeInsets.zero,
-              onTap: () async => launchURL('https://hosted.weblate.org/engage/wger/', context),
+              onTap: () async =>
+                  launchURL('https://hosted.weblate.org/engage/wger/', context),
             ),
             ListTile(
               leading: const Icon(Icons.article),
@@ -164,7 +171,8 @@ class _AboutPageState extends State<AboutPage> {
                 showLicensePage(
                   context: context,
                   applicationName: 'wger',
-                  applicationVersion: 'App: ${authProvider.applicationVersion!.version}\n'
+                  applicationVersion:
+                      'App: ${authProvider.applicationVersion!.version}\n'
                       'Server: ${authProvider.serverVersion}',
                   applicationLegalese: '\u{a9} 2020 - 2021 contributors',
                   applicationIcon: Padding(

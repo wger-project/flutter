@@ -14,7 +14,8 @@ void main(List<String> arguments) async {
         'You must run this script with a metadata file argument, using the --meta flag.');
   }
   if (arguments.length == metaIndex + 1) {
-    throw Exception('The --meta flag must be followed by the path to the metadata file.');
+    throw Exception(
+        'The --meta flag must be followed by the path to the metadata file.');
   }
 
   final metaFile = File(arguments[metaIndex + 1]);
@@ -26,17 +27,20 @@ void main(List<String> arguments) async {
 
   final fetchFromGithub = arguments.contains('--github');
 
-  final outputDir = Directory('${Directory.current.path}/flatpak_generator_exports');
+  final outputDir =
+      Directory('${Directory.current.path}/flatpak_generator_exports');
   outputDir.createSync();
 
   final manifestGenerator = FlatpakManifestGenerator(meta);
-  final manifestContent = await manifestGenerator.generateFlatpakManifest(fetchFromGithub);
+  final manifestContent =
+      await manifestGenerator.generateFlatpakManifest(fetchFromGithub);
   final manifestPath = '${outputDir.path}/${meta.appId}.json';
   final manifestFile = File(manifestPath);
   manifestFile.writeAsStringSync(manifestContent);
   print('Generated $manifestPath');
 
-  final flathubJsonContent = await manifestGenerator.generateFlathubJson(fetchFromGithub);
+  final flathubJsonContent =
+      await manifestGenerator.generateFlathubJson(fetchFromGithub);
   if (flathubJsonContent != null) {
     final flathubJsonPath = '${outputDir.path}/flathub.json';
     final flathubJsonFile = File(flathubJsonPath);
@@ -115,7 +119,8 @@ class FlatpakManifestGenerator {
 
     const encoder = JsonEncoder.withIndent('  ');
 
-    final onlyArchListInput = fetchFromGithub ? _githubArchSupport! : _localArchSupport!;
+    final onlyArchListInput =
+        fetchFromGithub ? _githubArchSupport! : _localArchSupport!;
 
     final onlyArchList = List<String>.empty(growable: true);
     for (final e in onlyArchListInput.entries) {
@@ -131,7 +136,8 @@ class FlatpakManifestGenerator {
     }
   }
 
-  void _lazyGenerateArchSupportMap(bool fetchFromGithub, List<ReleaseAsset> assets) {
+  void _lazyGenerateArchSupportMap(
+      bool fetchFromGithub, List<ReleaseAsset> assets) {
     if (fetchFromGithub) {
       if (_githubArchSupport == null) {
         _githubArchSupport = <CPUArchitecture, bool>{

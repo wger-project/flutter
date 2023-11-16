@@ -68,7 +68,8 @@ class AuthScreen extends StatelessWidget {
                   ),
                   Container(
                     margin: const EdgeInsets.only(bottom: 20.0),
-                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 94.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 8.0, horizontal: 94.0),
                     child: const Text(
                       'WGER',
                       style: TextStyle(
@@ -138,8 +139,10 @@ class _AuthCardState extends State<AuthCard> {
     //
     // If not, the user will not be able to register via the app
     try {
-      final metadata = Provider.of<AuthProvider>(context, listen: false).metadata;
-      if (metadata.containsKey(MANIFEST_KEY_API) && metadata[MANIFEST_KEY_API] == '') {
+      final metadata =
+          Provider.of<AuthProvider>(context, listen: false).metadata;
+      if (metadata.containsKey(MANIFEST_KEY_API) &&
+          metadata[MANIFEST_KEY_API] == '') {
         _canRegister = false;
       }
     } on PlatformException {
@@ -161,8 +164,10 @@ class _AuthCardState extends State<AuthCard> {
       // Login existing user
       late Map<String, LoginActions> res;
       if (_authMode == AuthMode.Login) {
-        res = await Provider.of<AuthProvider>(context, listen: false)
-            .login(_authData['username']!, _authData['password']!, _authData['serverUrl']!);
+        res = await Provider.of<AuthProvider>(context, listen: false).login(
+            _authData['username']!,
+            _authData['password']!,
+            _authData['serverUrl']!);
 
         // Register new user
       } else {
@@ -230,7 +235,8 @@ class _AuthCardState extends State<AuthCard> {
       elevation: 8.0,
       child: Container(
         width: deviceSize.width * 0.9,
-        padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 0.025 * deviceSize.height),
+        padding: EdgeInsets.symmetric(
+            horizontal: 15.0, vertical: 0.025 * deviceSize.height),
         child: Form(
           key: _formKey,
           child: SingleChildScrollView(
@@ -257,7 +263,9 @@ class _AuthCardState extends State<AuthCard> {
 
                       return null;
                     },
-                    inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'\s\b|\b\s'))],
+                    inputFormatters: [
+                      FilteringTextInputFormatter.deny(RegExp(r'\s\b|\b\s'))
+                    ],
                     onSaved: (value) {
                       _authData['username'] = value!;
                     },
@@ -292,7 +300,9 @@ class _AuthCardState extends State<AuthCard> {
                         labelText: AppLocalizations.of(context).password,
                         prefixIcon: const Icon(Icons.password),
                         suffixIcon: IconButton(
-                          icon: Icon(isObscure ? Icons.visibility_off : Icons.visibility),
+                          icon: Icon(isObscure
+                              ? Icons.visibility_off
+                              : Icons.visibility),
                           onPressed: () {
                             isObscure = !isObscure;
                             updateState(() {});
@@ -319,10 +329,13 @@ class _AuthCardState extends State<AuthCard> {
                       return TextFormField(
                         key: const Key('inputPassword2'),
                         decoration: InputDecoration(
-                          labelText: AppLocalizations.of(context).confirmPassword,
+                          labelText:
+                              AppLocalizations.of(context).confirmPassword,
                           prefixIcon: const Icon(Icons.password),
                           suffixIcon: IconButton(
-                            icon: Icon(confirmIsObscure ? Icons.visibility_off : Icons.visibility),
+                            icon: Icon(confirmIsObscure
+                                ? Icons.visibility_off
+                                : Icons.visibility),
                             onPressed: () {
                               confirmIsObscure = !confirmIsObscure;
                               updateState(() {});
@@ -335,7 +348,8 @@ class _AuthCardState extends State<AuthCard> {
                         validator: _authMode == AuthMode.Signup
                             ? (value) {
                                 if (value != _passwordController.text) {
-                                  return AppLocalizations.of(context).passwordsDontMatch;
+                                  return AppLocalizations.of(context)
+                                      .passwordsDontMatch;
                                 }
                                 return null;
                               }
@@ -353,8 +367,10 @@ class _AuthCardState extends State<AuthCard> {
                           child: TextFormField(
                             key: const Key('inputServer'),
                             decoration: InputDecoration(
-                                labelText: AppLocalizations.of(context).customServerUrl,
-                                helperText: AppLocalizations.of(context).customServerHint,
+                                labelText: AppLocalizations.of(context)
+                                    .customServerUrl,
+                                helperText: AppLocalizations.of(context)
+                                    .customServerHint,
                                 helperMaxLines: 4),
                             controller: _serverUrlController,
                             validator: (value) {
@@ -369,8 +385,10 @@ class _AuthCardState extends State<AuthCard> {
                             },
                             onSaved: (value) {
                               // Remove any trailing slash
-                              if (value!.lastIndexOf('/') == (value.length - 1)) {
-                                value = value.substring(0, value.lastIndexOf('/'));
+                              if (value!.lastIndexOf('/') ==
+                                  (value.length - 1)) {
+                                value =
+                                    value.substring(0, value.lastIndexOf('/'));
                               }
                               _authData['serverUrl'] = value;
                             },
@@ -414,7 +432,8 @@ class _AuthCardState extends State<AuthCard> {
                       child: Center(
                         child: _isLoading
                             ? const CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation(Colors.white),
+                                valueColor:
+                                    AlwaysStoppedAnimation(Colors.white),
                               )
                             : Text(
                                 _authMode == AuthMode.Login
@@ -449,7 +468,8 @@ class _AuthCardState extends State<AuthCard> {
                                 text.substring(0, text.lastIndexOf('?') + 1),
                               ),
                               Text(
-                                text.substring(text.lastIndexOf('?') + 1, text.length),
+                                text.substring(
+                                    text.lastIndexOf('?') + 1, text.length),
                                 style: const TextStyle(
                                   color: wgerPrimaryColor,
                                   fontWeight: FontWeight.w700,

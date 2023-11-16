@@ -15,7 +15,8 @@ Widget createWorkoutDetailScreen({locale = 'en'}) {
   final mockWorkoutProvider = MockWorkoutPlansProvider();
   final workout = getWorkout();
   when(mockWorkoutProvider.activePlan).thenReturn(workout);
-  when(mockWorkoutProvider.fetchAndSetWorkoutPlanFull(1)).thenAnswer((_) => Future.value(workout));
+  when(mockWorkoutProvider.fetchAndSetWorkoutPlanFull(1))
+      .thenAnswer((_) => Future.value(workout));
 
   return MultiProvider(
     providers: [

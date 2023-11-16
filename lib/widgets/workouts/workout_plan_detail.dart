@@ -57,7 +57,9 @@ class _WorkoutPlanDetailState extends State<WorkoutPlanDetail> {
             padding: const EdgeInsets.all(15),
             child: Text(widget._workoutPlan.description),
           ),
-        ...widget._workoutPlan.days.map((workoutDay) => WorkoutDayWidget(workoutDay)).toList(),
+        ...widget._workoutPlan.days
+            .map((workoutDay) => WorkoutDayWidget(workoutDay))
+            .toList(),
         Column(
           children: [
             ElevatedButton(

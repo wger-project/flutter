@@ -25,7 +25,9 @@ class AddExerciseScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final profile = context.read<UserProvider>().profile;
 
-    return profile!.isTrustworthy ? const AddExerciseStepper() : const EmailNotVerified();
+    return profile!.isTrustworthy
+        ? const AddExerciseStepper()
+        : const EmailNotVerified();
   }
 }
 
@@ -70,13 +72,18 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
                         setState(() {
                           _isLoading = true;
                         });
-                        final addExerciseProvider = context.read<AddExerciseProvider>();
-                        final exerciseProvider = context.read<ExercisesProvider>();
+                        final addExerciseProvider =
+                            context.read<AddExerciseProvider>();
+                        final exerciseProvider =
+                            context.read<ExercisesProvider>();
 
                         final baseId = await addExerciseProvider.addExercise();
-                        final base = await exerciseProvider.fetchAndSetExerciseBase(baseId);
-                        final name =
-                            base.getExercise(Localizations.localeOf(context).languageCode).name;
+                        final base = await exerciseProvider
+                            .fetchAndSetExerciseBase(baseId);
+                        final name = base
+                            .getExercise(
+                                Localizations.localeOf(context).languageCode)
+                            .name;
 
                         setState(() {
                           _isLoading = false;
@@ -88,7 +95,8 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
                           builder: (BuildContext context) {
                             return AlertDialog(
                               title: Text(AppLocalizations.of(context).success),
-                              content: Text(AppLocalizations.of(context).cacheWarning),
+                              content: Text(
+                                  AppLocalizations.of(context).cacheWarning),
                               actions: [
                                 TextButton(
                                   child: Text(name),

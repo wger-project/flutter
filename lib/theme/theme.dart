@@ -63,8 +63,10 @@ final ThemeData wgerTheme = ThemeData(
      * Text theme
      */
   textTheme: TextTheme(
-    headline1: const TextStyle(fontFamily: 'OpenSansLight', color: Colors.black),
-    headline2: const TextStyle(fontFamily: 'OpenSansLight', color: Colors.black),
+    headline1:
+        const TextStyle(fontFamily: 'OpenSansLight', color: Colors.black),
+    headline2:
+        const TextStyle(fontFamily: 'OpenSansLight', color: Colors.black),
     headline3: TextStyle(
       fontSize: materialSizes['h3']! * 0.8,
       fontFamily: 'OpenSansBold',

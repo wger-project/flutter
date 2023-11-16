@@ -52,7 +52,8 @@ void main() {
 
   setUp(() {
     mockWorkoutPlans = MockWorkoutPlansProvider();
-    when(mockWorkoutPlans.repetitionUnits).thenAnswer((_) => [unit1, unit2, unit3]);
+    when(mockWorkoutPlans.repetitionUnits)
+        .thenAnswer((_) => [unit1, unit2, unit3]);
   });
 
   Widget createHomeScreen() {
@@ -86,7 +87,8 @@ void main() {
     expect(find.text('this is repetition number 3'), findsWidgets);
   });
 
-  testWidgets('Test that the correct units are set after selection', (WidgetTester tester) async {
+  testWidgets('Test that the correct units are set after selection',
+      (WidgetTester tester) async {
     // arrange
     await tester.pumpWidget(createHomeScreen());
     await tester.pump();

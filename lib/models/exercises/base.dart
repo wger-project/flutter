@@ -49,7 +49,7 @@ class ExerciseBase extends Equatable {
   late int categoryId;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  late final ExerciseCategory category;
+  ExerciseCategory? category;
 
   @JsonKey(required: true, name: 'muscles')
   List<int> musclesIds = [];
@@ -158,7 +158,8 @@ class ExerciseBase extends Equatable {
   }
 
   // Boilerplate
-  factory ExerciseBase.fromJson(Map<String, dynamic> json) => _$ExerciseBaseFromJson(json);
+  factory ExerciseBase.fromJson(Map<String, dynamic> json) =>
+      _$ExerciseBaseFromJson(json);
 
   Map<String, dynamic> toJson() => _$ExerciseBaseToJson(this);
 

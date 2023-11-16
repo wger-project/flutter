@@ -62,7 +62,8 @@ void main() {
   );
 
   const category1 = ExerciseCategory(id: 1, name: 'Arms');
-  const muscle1 = Muscle(id: 1, name: 'Biceps brachii', nameEn: 'Biceps', isFront: true);
+  const muscle1 =
+      Muscle(id: 1, name: 'Biceps brachii', nameEn: 'Biceps', isFront: true);
   const equipment1 = Equipment(id: 1, name: 'Barbell');
   const language1 = Language(id: 1, shortName: 'de', fullName: 'Deutsch');
 
@@ -97,7 +98,8 @@ void main() {
         .thenAnswer((_) => Future.value(tMuscleMap['results']));
 
     // Mock equipment
-    when(mockBaseProvider.makeUrl(equipmentUrl)).thenReturn(tEquipmentEntriesUri);
+    when(mockBaseProvider.makeUrl(equipmentUrl))
+        .thenReturn(tEquipmentEntriesUri);
     when(mockBaseProvider.fetchPaginated(tEquipmentEntriesUri))
         .thenAnswer((_) => Future.value(tEquipmentMap['results']));
 
@@ -108,7 +110,8 @@ void main() {
         .thenAnswer((_) => Future.value(tLanguageMap['results']));
 
     // Mock base info response
-    when(mockBaseProvider.makeUrl(exerciseBaseInfoUrl)).thenReturn(texerciseBaseInfoUri);
+    when(mockBaseProvider.makeUrl(exerciseBaseInfoUrl))
+        .thenReturn(texerciseBaseInfoUri);
     when(mockBaseProvider.fetch(texerciseBaseInfoUri))
         .thenAnswer((_) => Future.value(tExerciseBaseInfoMap));
   });
@@ -127,7 +130,8 @@ void main() {
 
     test('should throw a NoResultException if no category is found', () {
       // act & assert
-      expect(() => provider.findCategoryById(3), throwsA(isA<NoSuchEntryException>()));
+      expect(() => provider.findCategoryById(3),
+          throwsA(isA<NoSuchEntryException>()));
     });
   });
 
@@ -145,7 +149,8 @@ void main() {
 
     test('should throw a NoResultException if no muscle is found', () {
       // act & assert
-      expect(() => provider.findMuscleById(3), throwsA(isA<NoSuchEntryException>()));
+      expect(() => provider.findMuscleById(3),
+          throwsA(isA<NoSuchEntryException>()));
     });
   });
 
@@ -163,7 +168,8 @@ void main() {
 
     test('should throw a NoResultException if no equipment is found', () {
       // act & assert
-      expect(() => provider.findEquipmentById(10), throwsA(isA<NoSuchEntryException>()));
+      expect(() => provider.findEquipmentById(10),
+          throwsA(isA<NoSuchEntryException>()));
     });
   });
 
@@ -181,7 +187,8 @@ void main() {
 
     test('should throw a NoResultException if no equipment is found', () {
       // act & assert
-      expect(() => provider.findLanguageById(10), throwsA(isA<NoSuchEntryException>()));
+      expect(() => provider.findLanguageById(10),
+          throwsA(isA<NoSuchEntryException>()));
     });
   });
 
@@ -204,7 +211,8 @@ void main() {
         SharedPreferences.setMockInitialValues({});
 
         filters = Filters(
-          exerciseCategories: FilterCategory<ExerciseCategory>(title: 'Muscle Groups', items: {}),
+          exerciseCategories: FilterCategory<ExerciseCategory>(
+              title: 'Muscle Groups', items: {}),
           equipment: FilterCategory<Equipment>(title: 'Equipment', items: {}),
         );
 
@@ -227,10 +235,12 @@ void main() {
         );
       });
 
-      test('A muscle is selected with no search term. Should find results', () async {
+      test('A muscle is selected with no search term. Should find results',
+          () async {
         // arrange
         final Filters tFilters = filters.copyWith(
-          exerciseCategories: filters.exerciseCategories.copyWith(items: {data.tCategory1: true}),
+          exerciseCategories: filters.exerciseCategories
+              .copyWith(items: {data.tCategory1: true}),
         );
 
         // act
@@ -238,13 +248,16 @@ void main() {
 
         // assert
         verifyNever(provider.baseProvider.fetch(tSearchByNameUri));
-        expect(provider.filteredExerciseBases, [data.getTestExerciseBases()[0]]);
+        expect(
+            provider.filteredExerciseBases, [data.getTestExerciseBases()[0]]);
       });
 
-      test('A muscle is selected with no search term. Should not find results', () async {
+      test('A muscle is selected with no search term. Should not find results',
+          () async {
         // arrange
         final Filters tFilters = filters.copyWith(
-          exerciseCategories: filters.exerciseCategories.copyWith(items: {data.tCategory5: true}),
+          exerciseCategories: filters.exerciseCategories
+              .copyWith(items: {data.tCategory5: true}),
         );
 
         // act
@@ -255,10 +268,12 @@ void main() {
         expect(provider.filteredExerciseBases, isEmpty);
       });
 
-      test('An equipment is selected with no search term. Should find results', () async {
+      test('An equipment is selected with no search term. Should find results',
+          () async {
         // arrange
         final Filters tFilters = filters.copyWith(
-          equipment: filters.equipment.copyWith(items: {data.tEquipment1: true}),
+          equipment:
+              filters.equipment.copyWith(items: {data.tEquipment1: true}),
         );
 
         // act
@@ -266,13 +281,17 @@ void main() {
 
         // assert
         verifyNever(provider.baseProvider.fetch(tSearchByNameUri));
-        expect(provider.filteredExerciseBases, [data.getTestExerciseBases()[0]]);
+        expect(
+            provider.filteredExerciseBases, [data.getTestExerciseBases()[0]]);
       });
 
-      test('An equipment is selected with no search term. Should not find results', () async {
+      test(
+          'An equipment is selected with no search term. Should not find results',
+          () async {
         // arrange
         final Filters tFilters = filters.copyWith(
-          equipment: filters.equipment.copyWith(items: {data.tEquipment3: true}),
+          equipment:
+              filters.equipment.copyWith(items: {data.tEquipment3: true}),
         );
 
         // act
@@ -286,8 +305,10 @@ void main() {
       test('A muscle and equipment is selected and there is a match', () async {
         // arrange
         final Filters tFilters = filters.copyWith(
-          exerciseCategories: filters.exerciseCategories.copyWith(items: {data.tCategory2: true}),
-          equipment: filters.equipment.copyWith(items: {data.tEquipment2: true}),
+          exerciseCategories: filters.exerciseCategories
+              .copyWith(items: {data.tCategory2: true}),
+          equipment:
+              filters.equipment.copyWith(items: {data.tEquipment2: true}),
         );
 
         // act
@@ -295,13 +316,15 @@ void main() {
 
         // assert
         verifyNever(provider.baseProvider.fetch(tSearchByNameUri));
-        expect(provider.filteredExerciseBases, [data.getTestExerciseBases()[1]]);
+        expect(
+            provider.filteredExerciseBases, [data.getTestExerciseBases()[1]]);
       });
 
       test('A muscle and equipment is selected but no match', () async {
         // arrange
         final Filters tFilters = filters.copyWith(
-          exerciseCategories: filters.exerciseCategories.copyWith(items: {data.tCategory2: true}),
+          exerciseCategories: filters.exerciseCategories
+              .copyWith(items: {data.tCategory2: true}),
           equipment: filters.equipment.copyWith(items: {equipment1: true}),
         );
 
@@ -318,7 +341,10 @@ void main() {
         setUp(() {
           const String tSearchTerm = 'press';
           const String tSearchLanguage = 'en';
-          final Map<String, dynamic> query = {'term': tSearchTerm, 'language': tSearchLanguage};
+          final Map<String, dynamic> query = {
+            'term': tSearchTerm,
+            'language': tSearchLanguage
+          };
           tSearchByNameUri = Uri(
             scheme: 'http',
             host: 'localhost',
@@ -336,7 +362,8 @@ void main() {
               query: {'term': tSearchTerm, 'language': tSearchLanguage},
             ),
           ).thenReturn(tSearchByNameUri);
-          when(mockBaseProvider.fetch(tSearchByNameUri)).thenAnswer((_) async => tSearchResponse);
+          when(mockBaseProvider.fetch(tSearchByNameUri))
+              .thenAnswer((_) async => tSearchResponse);
         });
 
         test('Should find results from search term', () async {
@@ -353,11 +380,14 @@ void main() {
             [data.getTestExerciseBases()[0], data.getTestExerciseBases()[1]],
           );
         });
-        test('Should find items from selection but should filter them by search term', () async {
+        test(
+            'Should find items from selection but should filter them by search term',
+            () async {
           // arrange
           final Filters tFilters = filters.copyWith(
             searchTerm: 'press',
-            exerciseCategories: filters.exerciseCategories.copyWith(items: {data.tCategory3: true}),
+            exerciseCategories: filters.exerciseCategories
+                .copyWith(items: {data.tCategory3: true}),
           );
 
           // act

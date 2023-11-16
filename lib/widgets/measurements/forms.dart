@@ -31,7 +31,11 @@ class MeasurementCategoryForm extends StatelessWidget {
   final nameController = TextEditingController();
   final unitController = TextEditingController();
 
-  final Map<String, dynamic> categoryData = {'id': null, 'name': '', 'unit': ''};
+  final Map<String, dynamic> categoryData = {
+    'id': null,
+    'name': '',
+    'unit': ''
+  };
 
   MeasurementCategoryForm([MeasurementCategory? category]) {
     //this._category = category ?? MeasurementCategory();
@@ -55,7 +59,8 @@ class MeasurementCategoryForm extends StatelessWidget {
           TextFormField(
             decoration: InputDecoration(
               labelText: AppLocalizations.of(context).name,
-              helperText: AppLocalizations.of(context).measurementCategoriesHelpText,
+              helperText:
+                  AppLocalizations.of(context).measurementCategoriesHelpText,
             ),
             controller: nameController,
             onSaved: (newValue) {
@@ -73,7 +78,8 @@ class MeasurementCategoryForm extends StatelessWidget {
           TextFormField(
             decoration: InputDecoration(
               labelText: AppLocalizations.of(context).unit,
-              helperText: AppLocalizations.of(context).measurementEntriesHelpText,
+              helperText:
+                  AppLocalizations.of(context).measurementEntriesHelpText,
             ),
             controller: unitController,
             onSaved: (newValue) {
@@ -99,15 +105,19 @@ class MeasurementCategoryForm extends StatelessWidget {
               // Save the entry on the server
               try {
                 categoryData['id'] == null
-                    ? await Provider.of<MeasurementProvider>(context, listen: false).addCategory(
+                    ? await Provider.of<MeasurementProvider>(context,
+                            listen: false)
+                        .addCategory(
                         MeasurementCategory(
                           id: categoryData['id'],
                           name: categoryData['name'],
                           unit: categoryData['unit'],
                         ),
                       )
-                    : await Provider.of<MeasurementProvider>(context, listen: false).editCategory(
-                        categoryData['id'], categoryData['name'], categoryData['unit']);
+                    : await Provider.of<MeasurementProvider>(context,
+                            listen: false)
+                        .editCategory(categoryData['id'], categoryData['name'],
+                            categoryData['unit']);
               } on WgerHttpException catch (error) {
                 if (context.mounted) {
                   showHttpExceptionErrorDialog(error, context);
@@ -161,7 +171,8 @@ class MeasurementEntryForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final measurementProvider = Provider.of<MeasurementProvider>(context, listen: false);
+    final measurementProvider =
+        Provider.of<MeasurementProvider>(context, listen: false);
     final measurementCategory = measurementProvider.categories.firstWhere(
       (category) => category.id == _categoryId,
     );
@@ -171,7 +182,8 @@ class MeasurementEntryForm extends StatelessWidget {
       child: Column(
         children: [
           TextFormField(
-            decoration: InputDecoration(labelText: AppLocalizations.of(context).date),
+            decoration:
+                InputDecoration(labelText: AppLocalizations.of(context).date),
             readOnly: true, // Hide text cursor
             controller: _dateController,
             onTap: () async {
@@ -212,7 +224,8 @@ class MeasurementEntryForm extends StatelessWidget {
             decoration: InputDecoration(
               labelText: AppLocalizations.of(context).value,
               suffixIcon: Text(measurementCategory.unit),
-              suffixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
+              suffixIconConstraints:
+                  const BoxConstraints(minWidth: 0, minHeight: 0),
             ),
             controller: _valueController,
             keyboardType: TextInputType.number,
@@ -233,7 +246,8 @@ class MeasurementEntryForm extends StatelessWidget {
           ),
           // Value
           TextFormField(
-            decoration: InputDecoration(labelText: AppLocalizations.of(context).notes),
+            decoration:
+                InputDecoration(labelText: AppLocalizations.of(context).notes),
             controller: _notesController,
             onSaved: (newValue) {
               _entryData['notes'] = newValue;
@@ -241,8 +255,10 @@ class MeasurementEntryForm extends StatelessWidget {
             validator: (value) {
               const minLength = 0;
               const maxLength = 100;
-              if (value!.isNotEmpty && (value.length < minLength || value.length > maxLength)) {
-                return AppLocalizations.of(context).enterCharacters(minLength, maxLength);
+              if (value!.isNotEmpty &&
+                  (value.length < minLength || value.length > maxLength)) {
+                return AppLocalizations.of(context)
+                    .enterCharacters(minLength, maxLength);
               }
               return null;
             },
@@ -261,7 +277,8 @@ class MeasurementEntryForm extends StatelessWidget {
               // Save the entry on the server
               try {
                 _entryData['id'] == null
-                    ? await Provider.of<MeasurementProvider>(context, listen: false)
+                    ? await Provider.of<MeasurementProvider>(context,
+                            listen: false)
                         .addEntry(MeasurementEntry(
                         id: _entryData['id'],
                         category: _entryData['category'],
@@ -269,7 +286,9 @@ class MeasurementEntryForm extends StatelessWidget {
                         value: _entryData['value'],
                         notes: _entryData['notes'],
                       ))
-                    : await Provider.of<MeasurementProvider>(context, listen: false).editEntry(
+                    : await Provider.of<MeasurementProvider>(context,
+                            listen: false)
+                        .editEntry(
                         _entryData['id'],
                         _entryData['category'],
                         _entryData['value'],

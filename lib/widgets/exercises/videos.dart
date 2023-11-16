@@ -68,7 +68,8 @@ class _ExerciseVideoWidgetState extends State<ExerciseVideoWidget> {
 ///
 /// Taken from this example: https://pub.dev/packages/video_player/example
 class _ControlsOverlay extends StatelessWidget {
-  const _ControlsOverlay({Key? key, required this.controller}) : super(key: key);
+  const _ControlsOverlay({Key? key, required this.controller})
+      : super(key: key);
 
   static const _playbackRates = [
     0.25,

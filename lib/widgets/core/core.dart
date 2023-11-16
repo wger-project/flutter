@@ -65,7 +65,8 @@ class CircleIconAvatar extends StatelessWidget {
 
   final Color color;
 
-  const CircleIconAvatar(this._icon, {this.radius = 20, this.color = Colors.black12});
+  const CircleIconAvatar(this._icon,
+      {this.radius = 20, this.color = Colors.black12});
 
   @override
   Widget build(BuildContext context) {

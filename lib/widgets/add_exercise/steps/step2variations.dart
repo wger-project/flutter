@@ -38,12 +38,15 @@ class Step2Variations extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 //mainAxisSize: MainAxisSize.max,
                                 children: [
-                                  ...exerciseProvider.exerciseBasesByVariation[key]!
+                                  ...exerciseProvider
+                                      .exerciseBasesByVariation[key]!
                                       .map(
                                         (base) => Text(
                                           base
                                               .getExercise(
-                                                  Localizations.localeOf(context).languageCode)
+                                                  Localizations.localeOf(
+                                                          context)
+                                                      .languageCode)
                                               .name,
                                           overflow: TextOverflow.ellipsis,
                                         ),
@@ -56,7 +59,8 @@ class Step2Variations extends StatelessWidget {
                             Consumer<AddExerciseProvider>(
                               builder: (ctx, provider, __) => Switch(
                                   value: provider.variationId == key,
-                                  onChanged: (state) => provider.variationId = key),
+                                  onChanged: (state) =>
+                                      provider.variationId = key),
                             ),
                           ],
                         ),
@@ -76,7 +80,9 @@ class Step2Variations extends StatelessWidget {
                                 children: [
                                   Text(
                                     base
-                                        .getExercise(Localizations.localeOf(context).languageCode)
+                                        .getExercise(
+                                            Localizations.localeOf(context)
+                                                .languageCode)
                                         .name,
                                     overflow: TextOverflow.ellipsis,
                                   ),
@@ -86,8 +92,10 @@ class Step2Variations extends StatelessWidget {
                             ),
                             Consumer<AddExerciseProvider>(
                               builder: (ctx, provider, __) => Switch(
-                                value: provider.newVariationForExercise == base.id,
-                                onChanged: (state) => provider.newVariationForExercise = base.id,
+                                value:
+                                    provider.newVariationForExercise == base.id,
+                                onChanged: (state) =>
+                                    provider.newVariationForExercise = base.id,
                               ),
                             ),
                           ],

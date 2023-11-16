@@ -59,6 +59,11 @@ dependencies:
   flutter_svg: ^2.0.5
   fl_chart: ^0.64.0
   flutter_zxing: ^1.1.2
+  drift: ^2.13.1
+  path: ^1.8.3
+  path_provider: ^2.1.1
+  sqlite3_flutter_libs: ^0.5.18
+  get_it: ^7.6.4
 
 dev_dependencies:
   flutter_test:
@@ -71,6 +76,7 @@ dev_dependencies:
   network_image_mock: ^2.1.1
   flutter_lints: ^3.0.1
   cider: ^0.2.4
+  drift_dev: ^2.13.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

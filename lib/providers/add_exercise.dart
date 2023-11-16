@@ -65,11 +65,13 @@ class AddExerciseProvider with ChangeNotifier {
 
   set descriptionEn(String description) => _descriptionEn = description;
 
-  set descriptionTrans(String description) => _descriptionTranslation = description;
+  set descriptionTrans(String description) =>
+      _descriptionTranslation = description;
 
   set alternateNamesEn(List<String> names) => _alternativeNamesEn = names;
 
-  set alternateNamesTrans(List<String> names) => _alternativeNamesTranslation = names;
+  set alternateNamesTrans(List<String> names) =>
+      _alternativeNamesTranslation = names;
 
   set equipment(List<Equipment> equipment) => _equipment = equipment;
 
@@ -185,7 +187,8 @@ class AddExerciseProvider with ChangeNotifier {
     exerciseTranslationEn = await addExerciseTranslation(exerciseTranslationEn);
     for (final alias in _alternativeNamesEn) {
       if (alias.isNotEmpty) {
-        exerciseTranslationEn.alias.add(await addExerciseAlias(alias, exerciseTranslationEn.id!));
+        exerciseTranslationEn.alias
+            .add(await addExerciseAlias(alias, exerciseTranslationEn.id!));
       }
     }
 
@@ -193,7 +196,8 @@ class AddExerciseProvider with ChangeNotifier {
     if (language != null) {
       Translation exerciseTranslationLang = exerciseTranslation;
       exerciseTranslationLang.base = base;
-      exerciseTranslationLang = await addExerciseTranslation(exerciseTranslationLang);
+      exerciseTranslationLang =
+          await addExerciseTranslation(exerciseTranslationLang);
       for (final alias in _alternativeNamesTranslation) {
         if (alias.isNotEmpty) {
           exerciseTranslationLang.alias.add(
@@ -217,7 +221,8 @@ class AddExerciseProvider with ChangeNotifier {
   Future<ExerciseBase> addExerciseBase() async {
     final Uri postUri = baseProvider.makeUrl(_exerciseBaseUrlPath);
 
-    final Map<String, dynamic> newBaseMap = await baseProvider.post(base.toJson(), postUri);
+    final Map<String, dynamic> newBaseMap =
+        await baseProvider.post(base.toJson(), postUri);
     final ExerciseBase newExerciseBase = ExerciseBase.fromJson(newBaseMap);
     notifyListeners();
 
@@ -228,7 +233,8 @@ class AddExerciseProvider with ChangeNotifier {
     final Uri postUri = baseProvider.makeUrl(_exerciseVariationPath);
 
     // We send an empty dictionary since at the moment the variations only have an ID
-    final Map<String, dynamic> variationMap = await baseProvider.post({}, postUri);
+    final Map<String, dynamic> variationMap =
+        await baseProvider.post({}, postUri);
     final Variation newVariation = Variation.fromJson(variationMap);
     _variationId = newVariation.id;
     notifyListeners();
@@ -237,7 +243,8 @@ class AddExerciseProvider with ChangeNotifier {
 
   Future<void> addImages(ExerciseBase base) async {
     for (final image in _exerciseImages) {
-      final request = http.MultipartRequest('POST', baseProvider.makeUrl(_imagesUrlPath));
+      final request =
+          http.MultipartRequest('POST', baseProvider.makeUrl(_imagesUrlPath));
       request.headers.addAll(baseProvider.getDefaultHeaders(includeAuth: true));
 
       request.files.add(await http.MultipartFile.fromPath('image', image.path));
@@ -253,7 +260,8 @@ class AddExerciseProvider with ChangeNotifier {
   Future<Translation> addExerciseTranslation(Translation exercise) async {
     final Uri postUri = baseProvider.makeUrl(_exerciseTranslationUrlPath);
 
-    final Map<String, dynamic> newTranslation = await baseProvider.post(exercise.toJson(), postUri);
+    final Map<String, dynamic> newTranslation =
+        await baseProvider.post(exercise.toJson(), postUri);
     final Translation newExercise = Translation.fromJson(newTranslation);
     notifyListeners();
 
@@ -264,7 +272,8 @@ class AddExerciseProvider with ChangeNotifier {
     final alias = Alias(exerciseId: exerciseId, alias: name);
     final Uri postUri = baseProvider.makeUrl(_exerciseAliasPath);
 
-    final Alias newAlias = Alias.fromJson(await baseProvider.post(alias.toJson(), postUri));
+    final Alias newAlias =
+        Alias.fromJson(await baseProvider.post(alias.toJson(), postUri));
     notifyListeners();
 
     return newAlias;
