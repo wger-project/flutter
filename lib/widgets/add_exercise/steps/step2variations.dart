@@ -19,7 +19,7 @@ class Step2Variations extends StatelessWidget {
         children: [
           Text(
             AppLocalizations.of(context).whatVariationsExist,
-            style: Theme.of(context).textTheme.caption,
+            style: Theme.of(context).textTheme.bodySmall,
           ),
           const SizedBox(height: 10),
           SizedBox(
@@ -48,7 +48,7 @@ class Step2Variations extends StatelessWidget {
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       )
-                                      .toList(),
+                                      ,
                                   const SizedBox(height: 20),
                                 ],
                               ),
@@ -61,7 +61,7 @@ class Step2Variations extends StatelessWidget {
                           ],
                         ),
                       )
-                      .toList(),
+                      ,
                   // Exercise bases without variations
                   ...exerciseProvider.bases
                       .where((b) => b.variationId == null)
@@ -93,7 +93,7 @@ class Step2Variations extends StatelessWidget {
                           ],
                         ),
                       )
-                      .toList(),
+                      ,
                 ],
               ),
             ),

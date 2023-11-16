@@ -80,7 +80,7 @@ class SettingWidget extends StatelessWidget {
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ...set.getSmartRepr(setting.exerciseBaseObj).map((e) => Text(e)).toList(),
+          ...set.getSmartRepr(setting.exerciseBaseObj).map((e) => Text(e)),
         ],
       ),
     );
@@ -140,7 +140,7 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
                       toggle: _toggleExpanded,
                     ),
                   )
-                  .toList(),
+                  ,
               const Divider(),
             ],
           ),

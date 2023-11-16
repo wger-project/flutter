@@ -25,8 +25,7 @@ import 'package:wger/providers/auth.dart';
 
 class AboutPage extends StatefulWidget {
   static String routeName = '/AboutPage';
-
-  const AboutPage({Key? key}) : super(key: key);
+  const AboutPage({super.key});
 
   @override
   State<AboutPage> createState() => _AboutPageState();

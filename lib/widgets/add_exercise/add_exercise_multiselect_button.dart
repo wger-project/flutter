@@ -10,14 +10,13 @@ class AddExerciseMultiselectButton<T> extends StatefulWidget {
   final Function displayName;
 
   const AddExerciseMultiselectButton(
-      {Key? key,
+      {super.key,
       required this.items,
       required this.title,
       required this.onChange,
       this.initialItems = const [],
       this.onSaved,
-      required this.displayName})
-      : super(key: key);
+      required this.displayName});
 
   @override
   _AddExerciseMultiselectButtonState createState() => _AddExerciseMultiselectButtonState<T>();

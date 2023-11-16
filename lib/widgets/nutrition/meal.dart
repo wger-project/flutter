@@ -86,7 +86,7 @@ class _MealWidgetState extends State<MealWidget> {
                     Ink(
                       decoration: ShapeDecoration(
                         color: Theme.of(context).primaryColor, //wgerPrimaryButtonColor,
-                        shape: CircleBorder(),
+                        shape: const CircleBorder(),
                       ),
                       child: IconButton(
                         icon: const Icon(Icons.history_edu),
@@ -121,7 +121,7 @@ class _MealWidgetState extends State<MealWidget> {
                 ],
               ),
             if (_expanded) const Divider(),
-            ...widget._meal.mealItems.map((item) => MealItemWidget(item, _expanded)).toList(),
+            ...widget._meal.mealItems.map((item) => MealItemWidget(item, _expanded)),
             OutlinedButton(
               child: Text(AppLocalizations.of(context).addIngredient),
               onPressed: () {

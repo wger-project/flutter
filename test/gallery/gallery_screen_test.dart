@@ -28,8 +28,8 @@ import 'package:wger/providers/gallery.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/gallery/overview.dart';
 
-import './gallery_screen_test.mocks.dart';
 import '../../test_data/gallery.dart';
+import './gallery_screen_test.mocks.dart';
 
 @GenerateMocks([GalleryProvider])
 void main() {

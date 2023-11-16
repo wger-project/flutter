@@ -68,7 +68,7 @@ class _ExerciseCategoryInputWidgetState<T> extends State<ExerciseCategoryInputWi
         ),
         onChanged: (T? newValue) {
           setState(() {
-            selectedEntry = newValue!;
+            selectedEntry = newValue as T;
             widget._callback(newValue);
           });
         },

@@ -38,7 +38,7 @@ class MutedText extends StatelessWidget {
 }
 
 class Pill extends StatelessWidget {
-  const Pill({Key? key, required this.title}) : super(key: key);
+  const Pill({super.key, required this.title});
 
   final String title;
 

@@ -17,7 +17,7 @@ import 'package:wger/widgets/user/forms.dart';
 import 'form_screen.dart';
 
 class AddExerciseScreen extends StatelessWidget {
-  const AddExerciseScreen({Key? key}) : super(key: key);
+  const AddExerciseScreen({super.key});
 
   static const routeName = '/exercises/add';
 
@@ -30,7 +30,7 @@ class AddExerciseScreen extends StatelessWidget {
 }
 
 class AddExerciseStepper extends StatefulWidget {
-  const AddExerciseStepper({Key? key}) : super(key: key);
+  const AddExerciseStepper({super.key});
 
   static const STEPS_IN_FORM = 5;
 
@@ -182,8 +182,8 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
 
 class EmailNotVerified extends StatelessWidget {
   const EmailNotVerified({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

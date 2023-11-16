@@ -209,7 +209,7 @@ class _DayFormWidgetState extends State<DayFormWidget> {
             },
           ),
           const SizedBox(height: 10),
-          ...Day.weekdays.keys.map((dayNr) => DayCheckbox(dayNr, widget._day)).toList(),
+          ...Day.weekdays.keys.map((dayNr) => DayCheckbox(dayNr, widget._day)),
           ElevatedButton(
             key: const Key(SUBMIT_BUTTON_KEY_NAME),
             child: Text(AppLocalizations.of(context).save),
@@ -428,7 +428,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                         },
                         onSuggestionSelected: (ExerciseBase exerciseSuggestion) {
                           addExercise(exerciseSuggestion);
-                          this._exercisesController.text = '';
+                          _exercisesController.text = '';
                         },
                         validator: (value) {
                           // At least one exercise must be selected
@@ -510,7 +510,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                         ),
                     ],
                   );
-                }).toList(),
+                }),
                 ElevatedButton(
                   key: const Key(SUBMIT_BUTTON_KEY_NAME),
                   child: Text(AppLocalizations.of(context).save),
@@ -800,7 +800,7 @@ class _RiRInputWidgetState extends State<RiRInputWidget> {
     if (value < 0) {
       return AppLocalizations.of(context).rirNotUsed;
     }
-    return '${value.toString()} ${AppLocalizations.of(context).rir}';
+    return '$value ${AppLocalizations.of(context).rir}';
   }
 
   String mapDoubleToAllowedRir(double value) {
@@ -848,7 +848,7 @@ class _RiRInputWidgetState extends State<RiRInputWidget> {
 class WeightUnitInputWidget extends StatefulWidget {
   final dynamic _setting;
 
-  const WeightUnitInputWidget(this._setting, {Key? key}) : super(key: key);
+  const WeightUnitInputWidget(this._setting, {super.key});
 
   @override
   _WeightUnitInputWidgetState createState() => _WeightUnitInputWidgetState();

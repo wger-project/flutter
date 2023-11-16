@@ -263,7 +263,7 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                 if (weightEntriesData.items.isNotEmpty)
                   Column(
                     children: [
-                      Container(
+                      SizedBox(
                         height: 200,
                         child: MeasurementChartWidgetFl(weightEntriesData.items
                             .map((e) => MeasurementChartEntry(e.weight, e.date))
@@ -509,7 +509,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                         ],
                       )
                     : Container();
-              }).toList(),
+              }),
             ],
           ),
         ));
