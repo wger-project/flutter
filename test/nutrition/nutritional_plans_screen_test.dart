@@ -81,8 +81,7 @@ void main() {
     );
   }
 
-  testWidgets('Test the widgets on the nutritional plans screen',
-      (WidgetTester tester) async {
+  testWidgets('Test the widgets on the nutritional plans screen', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen());
 
     //debugDumpApp();
@@ -91,8 +90,7 @@ void main() {
     expect(find.byType(ListTile), findsNWidgets(2));
   });
 
-  testWidgets('Test deleting an item by dragging the dismissible',
-      (WidgetTester tester) async {
+  testWidgets('Test deleting an item by dragging the dismissible', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen());
 
     await tester.drag(find.byKey(const Key('1')), const Offset(-500.0, 0.0));
@@ -107,8 +105,7 @@ void main() {
     expect(find.byType(ListTile), findsOneWidget);
   });
 
-  testWidgets('Test the form on the nutritional plan screen',
-      (WidgetTester tester) async {
+  testWidgets('Test the form on the nutritional plan screen', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen());
 
     expect(find.byType(PlanForm), findsNothing);
@@ -117,16 +114,14 @@ void main() {
     expect(find.byType(PlanForm), findsOneWidget);
   });
 
-  testWidgets('Tests the localization of dates - EN',
-      (WidgetTester tester) async {
+  testWidgets('Tests the localization of dates - EN', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen());
 
     expect(find.text('1/1/2021'), findsOneWidget);
     expect(find.text('1/10/2021'), findsOneWidget);
   });
 
-  testWidgets('Tests the localization of dates - DE',
-      (WidgetTester tester) async {
+  testWidgets('Tests the localization of dates - DE', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen(locale: 'de'));
 
     expect(find.text('1.1.2021'), findsOneWidget);

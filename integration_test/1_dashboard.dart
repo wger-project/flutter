@@ -34,20 +34,17 @@ Widget createDashboardScreen({locale = 'en'}) {
       }
     ]
   };
-  when(mockWorkoutProvider.fetchSessionData())
-      .thenAnswer((a) => Future.value(logs));
+  when(mockWorkoutProvider.fetchSessionData()).thenAnswer((a) => Future.value(logs));
 
   final mockNutritionProvider = MockNutritionPlansProvider();
-  when(mockNutritionProvider.currentPlan)
-      .thenAnswer((realInvocation) => getNutritionalPlan());
+  when(mockNutritionProvider.currentPlan).thenAnswer((realInvocation) => getNutritionalPlan());
   when(mockNutritionProvider.items).thenReturn([getNutritionalPlan()]);
 
   final mockWeightProvider = MockBodyWeightProvider();
   when(mockWeightProvider.items).thenReturn(getWeightEntries());
 
   final mockMeasurementProvider = MockMeasurementProvider();
-  when(mockMeasurementProvider.categories)
-      .thenReturn(getMeasurementCategories());
+  when(mockMeasurementProvider.categories).thenReturn(getMeasurementCategories());
 
   return MultiProvider(
     providers: [

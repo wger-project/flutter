@@ -13,8 +13,7 @@ class Step5Images extends StatefulWidget {
   State<Step5Images> createState() => _Step5ImagesState();
 }
 
-class _Step5ImagesState extends State<Step5Images>
-    with ExerciseImagePickerMixin {
+class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin {
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -34,8 +33,7 @@ class _Step5ImagesState extends State<Step5Images>
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       IconButton(
-                        onPressed: () =>
-                            pickImages(context, pickFromCamera: true),
+                        onPressed: () => pickImages(context, pickFromCamera: true),
                         icon: const Icon(Icons.camera_alt),
                       ),
                       IconButton(

@@ -29,12 +29,7 @@ class MeasurementEntry extends Equatable {
     required this.notes,
   });
 
-  MeasurementEntry copyWith(
-          {int? id,
-          int? category,
-          DateTime? date,
-          num? value,
-          String? notes}) =>
+  MeasurementEntry copyWith({int? id, int? category, DateTime? date, num? value, String? notes}) =>
       MeasurementEntry(
         id: id ?? this.id,
         category: category ?? this.category,
@@ -44,8 +39,7 @@ class MeasurementEntry extends Equatable {
       );
 
   // Boilerplate
-  factory MeasurementEntry.fromJson(Map<String, dynamic> json) =>
-      _$MeasurementEntryFromJson(json);
+  factory MeasurementEntry.fromJson(Map<String, dynamic> json) => _$MeasurementEntryFromJson(json);
 
   Map<String, dynamic> toJson() => _$MeasurementEntryToJson(this);
 

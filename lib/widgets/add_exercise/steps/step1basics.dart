@@ -35,16 +35,15 @@ class Step1Basics extends StatelessWidget {
             helperText: AppLocalizations.of(context).baseNameEnglish,
             isRequired: true,
             validator: (name) => validateName(name, context),
-            onSaved: (String? name) =>
-                addExerciseProvider.exerciseNameEn = name!,
+            onSaved: (String? name) => addExerciseProvider.exerciseNameEn = name!,
           ),
           AddExerciseTextArea(
             onChange: (value) => {},
             title: AppLocalizations.of(context).alternativeNames,
             isMultiline: true,
             helperText: AppLocalizations.of(context).oneNamePerLine,
-            onSaved: (String? alternateName) => addExerciseProvider
-                .alternateNamesEn = alternateName!.split('\n'),
+            onSaved: (String? alternateName) =>
+                addExerciseProvider.alternateNamesEn = alternateName!.split('\n'),
           ),
           ExerciseCategoryInputWidget<ExerciseCategory>(
             key: const Key('category-dropdown'),
@@ -58,8 +57,7 @@ class Step1Basics extends StatelessWidget {
                 return AppLocalizations.of(context).selectEntry;
               }
             },
-            displayName: (ExerciseCategory c) =>
-                getTranslation(c.name, context),
+            displayName: (ExerciseCategory c) => getTranslation(c.name, context),
           ),
           AddExerciseMultiselectButton<Equipment>(
             key: const Key('equipment-multiselect'),
@@ -86,10 +84,7 @@ class Step1Basics extends StatelessWidget {
               addExerciseProvider.primaryMuscles = muscles.cast<Muscle>();
             },
             displayName: (Muscle e) =>
-                e.name +
-                (e.nameEn.isNotEmpty
-                    ? '\n(${getTranslation(e.nameEn, context)})'
-                    : ''),
+                e.name + (e.nameEn.isNotEmpty ? '\n(${getTranslation(e.nameEn, context)})' : ''),
           ),
           AddExerciseMultiselectButton<Muscle>(
             key: const Key('secondary-muscles-multiselect'),
@@ -103,10 +98,7 @@ class Step1Basics extends StatelessWidget {
               addExerciseProvider.secondaryMuscles = muscles.cast<Muscle>();
             },
             displayName: (Muscle e) =>
-                e.name +
-                (e.nameEn.isNotEmpty
-                    ? '\n(${getTranslation(e.nameEn, context)})'
-                    : ''),
+                e.name + (e.nameEn.isNotEmpty ? '\n(${getTranslation(e.nameEn, context)})' : ''),
           ),
           Consumer<AddExerciseProvider>(
             builder: (context, value, child) => MuscleRowWidget(

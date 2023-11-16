@@ -42,7 +42,6 @@ class Profile {
   });
 
   // Boilerplate
-  factory Profile.fromJson(Map<String, dynamic> json) =>
-      _$ProfileFromJson(json);
+  factory Profile.fromJson(Map<String, dynamic> json) => _$ProfileFromJson(json);
   Map<String, dynamic> toJson() => _$ProfileToJson(this);
 }

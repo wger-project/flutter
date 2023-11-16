@@ -30,8 +30,7 @@ import 'package:wger/widgets/weight/forms.dart';
 class WeightEntriesList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final _weightProvider =
-        Provider.of<BodyWeightProvider>(context, listen: false);
+    final _weightProvider = Provider.of<BodyWeightProvider>(context, listen: false);
 
     return Column(
       children: [
@@ -39,9 +38,8 @@ class WeightEntriesList extends StatelessWidget {
           color: Theme.of(context).cardColor,
           padding: const EdgeInsets.all(15),
           height: 220,
-          child: MeasurementChartWidgetFl(_weightProvider.items
-              .map((e) => MeasurementChartEntry(e.weight, e.date))
-              .toList()),
+          child: MeasurementChartWidgetFl(
+              _weightProvider.items.map((e) => MeasurementChartEntry(e.weight, e.date)).toList()),
         ),
         TextButton(
           onPressed: () => Navigator.pushNamed(
@@ -127,8 +125,7 @@ class WeightEntriesList extends StatelessWidget {
                     child: ListTile(
                       title: Text('${currentEntry.weight} kg'),
                       subtitle: Text(
-                        DateFormat.yMd(
-                                Localizations.localeOf(context).languageCode)
+                        DateFormat.yMd(Localizations.localeOf(context).languageCode)
                             .format(currentEntry.date),
                       ),
                     ),

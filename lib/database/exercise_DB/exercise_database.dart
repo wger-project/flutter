@@ -17,16 +17,12 @@ part 'exercise_database.g.dart';
 @DataClassName('ExerciseTable')
 class ExerciseTableItems extends Table {
   IntColumn get id => integer().autoIncrement()();
-  TextColumn get exercisebase =>
-      text().map(const ExerciseBaseConverter()).nullable()();
+  TextColumn get exercisebase => text().map(const ExerciseBaseConverter()).nullable()();
   TextColumn get muscle => text().map(const MuscleConverter()).nullable()();
-  TextColumn get category =>
-      text().map(const ExerciseCategoryConverter()).nullable()();
-  TextColumn get variation =>
-      text().map(const VariationConverter()).nullable()();
+  TextColumn get category => text().map(const ExerciseCategoryConverter()).nullable()();
+  TextColumn get variation => text().map(const VariationConverter()).nullable()();
   TextColumn get language => text().map(const LanguageConverter()).nullable()();
-  TextColumn get equipment =>
-      text().map(const EquipmentConverter()).nullable()();
+  TextColumn get equipment => text().map(const EquipmentConverter()).nullable()();
   DateTimeColumn get expiresIn => dateTime().nullable()();
 }
 

@@ -20,10 +20,8 @@ Widget createGymModeScreen({locale = 'en'}) {
 
   final mockExerciseProvider = MockExercisesProvider();
 
-  when(mockExerciseProvider.findExerciseBaseById(1))
-      .thenReturn(bases[0]); // bench press
-  when(mockExerciseProvider.findExerciseBaseById(6))
-      .thenReturn(bases[5]); // side raises
+  when(mockExerciseProvider.findExerciseBaseById(1)).thenReturn(bases[0]); // bench press
+  when(mockExerciseProvider.findExerciseBaseById(6)).thenReturn(bases[5]); // side raises
   //when(mockExerciseProvider.findExerciseBaseById(2)).thenReturn(bases[1]); // crunches
   //when(mockExerciseProvider.findExerciseBaseById(3)).thenReturn(bases[2]); // dead lift
 

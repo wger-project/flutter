@@ -21,5 +21,4 @@ import 'package:flutter/foundation.dart';
 // Note: we're not using Platform.isAndroid etc because during tests these would+
 // always take the value of the current platform. TargetPlatform is always Android
 // during tests, but can be changed to check for correct UI switches, etc.
-final isDesktop = [TargetPlatform.linux, TargetPlatform.macOS]
-    .contains(defaultTargetPlatform);
+final isDesktop = [TargetPlatform.linux, TargetPlatform.macOS].contains(defaultTargetPlatform);

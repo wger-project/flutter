@@ -75,8 +75,7 @@ class Day {
     final now = DateTime.now();
     final firstDayOfWeek = now.subtract(Duration(days: now.weekday));
 
-    return DateFormat(DateFormat.WEEKDAY, locale)
-        .format(firstDayOfWeek.add(Duration(days: day)));
+    return DateFormat(DateFormat.WEEKDAY, locale).format(firstDayOfWeek.add(Duration(days: day)));
   }
 
   // Boilerplate

@@ -59,8 +59,7 @@ class Gallery extends StatelessWidget {
                           child: Column(
                             children: [
                               Text(
-                                DateFormat.yMd(Localizations.localeOf(context)
-                                        .languageCode)
+                                DateFormat.yMd(Localizations.localeOf(context).languageCode)
                                     .format(currentImage.date),
                                 style: Theme.of(context).textTheme.headline5,
                               ),
@@ -68,8 +67,7 @@ class Gallery extends StatelessWidget {
                                 child: Image.network(currentImage.url!),
                               ),
                               Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 8),
+                                padding: const EdgeInsets.symmetric(vertical: 8),
                                 child: Text(currentImage.description),
                               ),
                               Row(
@@ -78,8 +76,7 @@ class Gallery extends StatelessWidget {
                                   IconButton(
                                       icon: const Icon(Icons.delete),
                                       onPressed: () {
-                                        Provider.of<GalleryProvider>(context,
-                                                listen: false)
+                                        Provider.of<GalleryProvider>(context, listen: false)
                                             .deleteImage(currentImage);
                                         Navigator.of(context).pop();
                                       }),
@@ -108,8 +105,7 @@ class Gallery extends StatelessWidget {
                     },
                     child: FadeInImage(
                       key: Key('image-${currentImage.id}'),
-                      placeholder:
-                          const AssetImage('assets/images/placeholder.png'),
+                      placeholder: const AssetImage('assets/images/placeholder.png'),
                       image: NetworkImage(currentImage.url!),
                       fit: BoxFit.cover,
                     ),

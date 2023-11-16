@@ -63,14 +63,12 @@ class AuthProvider with ChangeNotifier {
           AndroidMetadata.metaDataAsMap.then((value) => metadata = value!);
         } else if (Platform.isLinux || Platform.isMacOS) {
           metadata = {
-            MANIFEST_KEY_CHECK_UPDATE:
-                Platform.environment[MANIFEST_KEY_CHECK_UPDATE] ?? '',
+            MANIFEST_KEY_CHECK_UPDATE: Platform.environment[MANIFEST_KEY_CHECK_UPDATE] ?? '',
             MANIFEST_KEY_API: Platform.environment[MANIFEST_KEY_API] ?? ''
           };
         }
       } on PlatformException {
-        throw Exception(
-            'An error occurred reading the metadata from AndroidManifest');
+        throw Exception('An error occurred reading the metadata from AndroidManifest');
       } catch (error) {}
     }
   }
@@ -101,8 +99,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   /// Checking if there is a new version of the application.
-  Future<bool> applicationUpdateRequired(
-      [String? version, Map<String, String>? metadata]) async {
+  Future<bool> applicationUpdateRequired([String? version, Map<String, String>? metadata]) async {
     metadata ??= this.metadata;
     if (!metadata.containsKey(MANIFEST_KEY_CHECK_UPDATE) ||
         metadata[MANIFEST_KEY_CHECK_UPDATE] == 'false') {
@@ -125,10 +122,7 @@ class AuthProvider with ChangeNotifier {
       required String serverUrl}) async {
     // Register
     try {
-      final Map<String, String> data = {
-        'username': username,
-        'password': password
-      };
+      final Map<String, String> data = {'username': username, 'password': password};
       if (email != '') {
         data['email'] = email;
       }
@@ -136,8 +130,7 @@ class AuthProvider with ChangeNotifier {
         makeUri(serverUrl, REGISTRATION_URL),
         headers: {
           HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
-          HttpHeaders.authorizationHeader:
-              'Token ${metadata[MANIFEST_KEY_API]}',
+          HttpHeaders.authorizationHeader: 'Token ${metadata[MANIFEST_KEY_API]}',
           HttpHeaders.userAgentHeader: getAppNameHeader(),
         },
         body: json.encode(data),

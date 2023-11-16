@@ -50,14 +50,12 @@ class EquipmentConverter extends TypeConverter<Equipment, String> {
   }
 }
 
-class ExerciseCategoryConverter
-    extends TypeConverter<ExerciseCategory, String> {
+class ExerciseCategoryConverter extends TypeConverter<ExerciseCategory, String> {
   const ExerciseCategoryConverter();
 
   @override
   ExerciseCategory fromSql(String fromDb) {
-    return ExerciseCategory.fromJson(
-        json.decode(fromDb) as Map<String, dynamic>);
+    return ExerciseCategory.fromJson(json.decode(fromDb) as Map<String, dynamic>);
   }
 
   @override

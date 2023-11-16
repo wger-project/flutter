@@ -28,15 +28,13 @@ class AddExerciseTextArea extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: TextFormField(
-        keyboardType:
-            isMultiline ? TextInputType.multiline : TextInputType.text,
+        keyboardType: isMultiline ? TextInputType.multiline : TextInputType.text,
         maxLines: isMultiline ? null : DEFAULT_LINES,
         minLines: isMultiline ? MULTILINE_MIN_LINES : DEFAULT_LINES,
         validator: validator,
         onSaved: onSaved,
         decoration: InputDecoration(
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(10)),
           ),

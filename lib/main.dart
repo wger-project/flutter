@@ -81,21 +81,19 @@ class MyApp extends StatelessWidget {
           create: (ctx) => AuthProvider(),
         ),
         ChangeNotifierProxyProvider<AuthProvider, ExercisesProvider>(
-          create: (context) => ExercisesProvider(WgerBaseProvider(
-              Provider.of<AuthProvider>(context, listen: false))),
+          create: (context) => ExercisesProvider(
+              WgerBaseProvider(Provider.of<AuthProvider>(context, listen: false))),
           update: (context, base, previous) =>
               previous ?? ExercisesProvider(WgerBaseProvider(base)),
         ),
-        ChangeNotifierProxyProvider2<AuthProvider, ExercisesProvider,
-            WorkoutPlansProvider>(
+        ChangeNotifierProxyProvider2<AuthProvider, ExercisesProvider, WorkoutPlansProvider>(
           create: (context) => WorkoutPlansProvider(
             WgerBaseProvider(Provider.of<AuthProvider>(context, listen: false)),
             Provider.of<ExercisesProvider>(context, listen: false),
             [],
           ),
           update: (context, auth, exercises, previous) =>
-              previous ??
-              WorkoutPlansProvider(WgerBaseProvider(auth), exercises, []),
+              previous ?? WorkoutPlansProvider(WgerBaseProvider(auth), exercises, []),
         ),
         ChangeNotifierProxyProvider<AuthProvider, NutritionPlansProvider>(
           create: (context) => NutritionPlansProvider(
@@ -116,8 +114,7 @@ class MyApp extends StatelessWidget {
           create: (context) => UserProvider(
             WgerBaseProvider(Provider.of<AuthProvider>(context, listen: false)),
           ),
-          update: (context, base, previous) =>
-              previous ?? UserProvider(WgerBaseProvider(base)),
+          update: (context, base, previous) => previous ?? UserProvider(WgerBaseProvider(base)),
         ),
         ChangeNotifierProxyProvider<AuthProvider, BodyWeightProvider>(
           create: (context) => BodyWeightProvider(
@@ -127,10 +124,9 @@ class MyApp extends StatelessWidget {
               previous ?? BodyWeightProvider(WgerBaseProvider(base)),
         ),
         ChangeNotifierProxyProvider<AuthProvider, GalleryProvider>(
-          create: (context) => GalleryProvider(
-              Provider.of<AuthProvider>(context, listen: false), []),
-          update: (context, auth, previous) =>
-              previous ?? GalleryProvider(auth, []),
+          create: (context) =>
+              GalleryProvider(Provider.of<AuthProvider>(context, listen: false), []),
+          update: (context, auth, previous) => previous ?? GalleryProvider(auth, []),
         ),
         ChangeNotifierProxyProvider<AuthProvider, AddExerciseProvider>(
           create: (context) => AddExerciseProvider(
@@ -149,8 +145,7 @@ class MyApp extends StatelessWidget {
               : FutureBuilder(
                   future: auth.tryAutoLogin(),
                   builder: (ctx, authResultSnapshot) =>
-                      authResultSnapshot.connectionState ==
-                              ConnectionState.waiting
+                      authResultSnapshot.connectionState == ConnectionState.waiting
                           ? SplashScreen()
                           : AuthScreen(),
                 ),
@@ -160,10 +155,8 @@ class MyApp extends StatelessWidget {
             GalleryScreen.routeName: (ctx) => const GalleryScreen(),
             GymModeScreen.routeName: (ctx) => GymModeScreen(),
             HomeTabsScreen.routeName: (ctx) => HomeTabsScreen(),
-            MeasurementCategoriesScreen.routeName: (ctx) =>
-                MeasurementCategoriesScreen(),
-            MeasurementEntriesScreen.routeName: (ctx) =>
-                MeasurementEntriesScreen(),
+            MeasurementCategoriesScreen.routeName: (ctx) => MeasurementCategoriesScreen(),
+            MeasurementEntriesScreen.routeName: (ctx) => MeasurementEntriesScreen(),
             NutritionScreen.routeName: (ctx) => NutritionScreen(),
             NutritionalDiaryScreen.routeName: (ctx) => NutritionalDiaryScreen(),
             NutritionalPlanScreen.routeName: (ctx) => NutritionalPlanScreen(),
@@ -171,8 +164,7 @@ class MyApp extends StatelessWidget {
             WorkoutPlanScreen.routeName: (ctx) => WorkoutPlanScreen(),
             WorkoutPlansScreen.routeName: (ctx) => WorkoutPlansScreen(),
             ExercisesScreen.routeName: (ctx) => const ExercisesScreen(),
-            ExerciseDetailScreen.routeName: (ctx) =>
-                const ExerciseDetailScreen(),
+            ExerciseDetailScreen.routeName: (ctx) => const ExerciseDetailScreen(),
             AddExerciseScreen.routeName: (ctx) => const AddExerciseScreen(),
             AboutPage.routeName: (ctx) => const AboutPage(),
           },

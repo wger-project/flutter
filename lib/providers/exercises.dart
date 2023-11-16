@@ -136,8 +136,7 @@ class ExercisesProvider with ChangeNotifier {
           title: 'Equipment',
           items: Map.fromEntries(
             _equipment.map(
-              (singleEquipment) =>
-                  MapEntry<Equipment, bool>(singleEquipment, false),
+              (singleEquipment) => MapEntry<Equipment, bool>(singleEquipment, false),
             ),
           ),
         ),
@@ -167,15 +166,13 @@ class ExercisesProvider with ChangeNotifier {
 
     // Filter by exercise category and equipment (REPLACE WITH HTTP REQUEST)
     filteredExerciseBases = filteredItems.where((exercise) {
-      final bool isInAnyCategory =
-          filters!.exerciseCategories.selected.contains(exercise.category);
+      final bool isInAnyCategory = filters!.exerciseCategories.selected.contains(exercise.category);
 
       final bool doesContainAnyEquipment = filters!.equipment.selected.any(
         (selectedEquipment) => exercise.equipment.contains(selectedEquipment),
       );
 
-      return (isInAnyCategory ||
-              filters!.exerciseCategories.selected.isEmpty) &&
+      return (isInAnyCategory || filters!.exerciseCategories.selected.isEmpty) &&
           (doesContainAnyEquipment || filters!.equipment.selected.isEmpty);
     }).toList();
   }
@@ -203,8 +200,7 @@ class ExercisesProvider with ChangeNotifier {
   /// returned exercises. Since this is typically called by one exercise, we are
   /// not interested in seeing that same exercise returned in the list of variations.
   /// If this parameter is not passed, all exercises are returned.
-  List<ExerciseBase> findExerciseBasesByVariationId(int id,
-      {int? exerciseBaseIdToExclude}) {
+  List<ExerciseBase> findExerciseBasesByVariationId(int id, {int? exerciseBaseIdToExclude}) {
     var out = _exerciseBases.where((base) => base.variationId == id).toList();
 
     if (exerciseBaseIdToExclude != null) {
@@ -246,24 +242,22 @@ class ExercisesProvider with ChangeNotifier {
   }
 
   Future<void> fetchAndSetCategories() async {
-    final categories = await baseProvider
-        .fetchPaginated(baseProvider.makeUrl(_categoriesUrlPath));
+    final categories = await baseProvider.fetchPaginated(baseProvider.makeUrl(_categoriesUrlPath));
     for (final category in categories) {
       _categories.add(ExerciseCategory.fromJson(category));
     }
   }
 
   Future<void> fetchAndSetVariations() async {
-    final variations = await baseProvider
-        .fetchPaginated(baseProvider.makeUrl(_exerciseVariationsUrlPath));
+    final variations =
+        await baseProvider.fetchPaginated(baseProvider.makeUrl(_exerciseVariationsUrlPath));
     for (final variation in variations) {
       _variations.add(Variation.fromJson(variation));
     }
   }
 
   Future<void> fetchAndSetMuscles() async {
-    final muscles = await baseProvider
-        .fetchPaginated(baseProvider.makeUrl(_musclesUrlPath));
+    final muscles = await baseProvider.fetchPaginated(baseProvider.makeUrl(_musclesUrlPath));
 
     for (final muscle in muscles) {
       _muscles.add(Muscle.fromJson(muscle));
@@ -271,8 +265,7 @@ class ExercisesProvider with ChangeNotifier {
   }
 
   Future<void> fetchAndSetEquipment() async {
-    final equipments = await baseProvider
-        .fetchPaginated(baseProvider.makeUrl(_equipmentUrlPath));
+    final equipments = await baseProvider.fetchPaginated(baseProvider.makeUrl(_equipmentUrlPath));
 
     for (final equipment in equipments) {
       _equipment.add(Equipment.fromJson(equipment));
@@ -280,8 +273,7 @@ class ExercisesProvider with ChangeNotifier {
   }
 
   Future<void> fetchAndSetLanguages() async {
-    final languageData = await baseProvider
-        .fetchPaginated(baseProvider.makeUrl(_languageUrlPath));
+    final languageData = await baseProvider.fetchPaginated(baseProvider.makeUrl(_languageUrlPath));
 
     for (final language in languageData) {
       _languages.add(Language.fromJson(language));
@@ -313,14 +305,10 @@ class ExercisesProvider with ChangeNotifier {
   /// a full exercise base
   ExerciseBase readExerciseBaseFromBaseInfo(dynamic baseData) {
     final category = ExerciseCategory.fromJson(baseData['category']);
-    final musclesPrimary =
-        baseData['muscles'].map((e) => Muscle.fromJson(e)).toList();
-    final musclesSecondary =
-        baseData['muscles_secondary'].map((e) => Muscle.fromJson(e)).toList();
-    final equipment =
-        baseData['equipment'].map((e) => Equipment.fromJson(e)).toList();
-    final images =
-        baseData['images'].map((e) => ExerciseImage.fromJson(e)).toList();
+    final musclesPrimary = baseData['muscles'].map((e) => Muscle.fromJson(e)).toList();
+    final musclesSecondary = baseData['muscles_secondary'].map((e) => Muscle.fromJson(e)).toList();
+    final equipment = baseData['equipment'].map((e) => Equipment.fromJson(e)).toList();
+    final images = baseData['images'].map((e) => ExerciseImage.fromJson(e)).toList();
     final videos = baseData['videos'].map((e) => Video.fromJson(e)).toList();
 
     final List<Translation> exercises = [];
@@ -330,10 +318,8 @@ class ExercisesProvider with ChangeNotifier {
           .map((e) => Alias(exerciseId: exercise.id!, alias: e['alias']))
           .toList()
           .cast<Alias>();
-      exercise.notes = exerciseData['notes']
-          .map((e) => Comment.fromJson(e))
-          .toList()
-          .cast<Comment>();
+      exercise.notes =
+          exerciseData['notes'].map((e) => Comment.fromJson(e)).toList().cast<Comment>();
       exercise.baseId = baseData['id'];
       exercise.language = findLanguageById(exerciseData['language']);
       exercises.add(exercise);
@@ -390,8 +376,7 @@ class ExercisesProvider with ChangeNotifier {
     // Only uncomment if need to delete the table, (only for testing purposes).
     // database.delete(database.exerciseTableItems).go();
     // Fetch the list of rows from ExercisesDataTable. ExerciseTable is the Type of the Row
-    final List<ExerciseTable> items =
-        await database.select(database.exerciseTableItems).get();
+    final List<ExerciseTable> items = await database.select(database.exerciseTableItems).get();
 
     final prefs = await SharedPreferences.getInstance();
     await checkExerciseCacheVersion();
@@ -427,8 +412,7 @@ class ExercisesProvider with ChangeNotifier {
 
     // Load categories, muscles, equipment and languages
     final data = await Future.wait<dynamic>([
-      baseProvider.fetch(baseProvider
-          .makeUrl(_exerciseBaseInfoUrlPath, query: {'limit': '1000'})),
+      baseProvider.fetch(baseProvider.makeUrl(_exerciseBaseInfoUrlPath, query: {'limit': '1000'})),
       fetchAndSetCategories(),
       fetchAndSetMuscles(),
       fetchAndSetEquipment(),
@@ -438,41 +422,27 @@ class ExercisesProvider with ChangeNotifier {
 
     final exerciseBaseData = data[0]['results'];
 
-    _exerciseBases = exerciseBaseData
-        .map((e) => readExerciseBaseFromBaseInfo(e))
-        .toList()
-        .cast<ExerciseBase>();
+    _exerciseBases =
+        exerciseBaseData.map((e) => readExerciseBaseFromBaseInfo(e)).toList().cast<ExerciseBase>();
 
     try {
       // Save the result to the cache
       for (int i = 0; i < _exerciseBases.length; i++) {
         await database.into(database.exerciseTableItems).insert(
               ExerciseTableItemsCompanion.insert(
-                category: (i < _categories.length)
-                    ? Value(_categories[i])
-                    : const Value(null),
-                equipment: (i < _equipment.length)
-                    ? Value(_equipment[i])
-                    : const Value(null),
-                exercisebase: (i < _exerciseBases.length)
-                    ? Value(_exerciseBases[i])
-                    : const Value(null),
-                muscle: (i < _muscles.length)
-                    ? Value(_muscles[i])
-                    : const Value(null),
-                variation: (i < _variations.length)
-                    ? Value(_variations[i])
-                    : const Value(null),
-                language: (i < _languages.length)
-                    ? Value(_languages[i])
-                    : const Value(null),
+                category: (i < _categories.length) ? Value(_categories[i]) : const Value(null),
+                equipment: (i < _equipment.length) ? Value(_equipment[i]) : const Value(null),
+                exercisebase:
+                    (i < _exerciseBases.length) ? Value(_exerciseBases[i]) : const Value(null),
+                muscle: (i < _muscles.length) ? Value(_muscles[i]) : const Value(null),
+                variation: (i < _variations.length) ? Value(_variations[i]) : const Value(null),
+                language: (i < _languages.length) ? Value(_languages[i]) : const Value(null),
               ),
             );
       }
       final cacheData = {
-        'expiresIn': DateTime.now()
-            .add(const Duration(days: EXERCISE_CACHE_DAYS))
-            .toIso8601String(),
+        'expiresIn':
+            DateTime.now().add(const Duration(days: EXERCISE_CACHE_DAYS)).toIso8601String(),
       };
       log("Saved ${_exerciseBases.length} exercises to cache. Valid till ${cacheData['expiresIn']}");
 
@@ -490,8 +460,7 @@ class ExercisesProvider with ChangeNotifier {
   /// We could do this locally, but the server has better text searching capabilities
   /// with postgresql.
   Future<List<ExerciseBase>> searchExercise(String name,
-      {String languageCode = LANGUAGE_SHORT_ENGLISH,
-      bool searchEnglish = false}) async {
+      {String languageCode = LANGUAGE_SHORT_ENGLISH, bool searchEnglish = false}) async {
     if (name.length <= 1) {
       return [];
     }
@@ -559,10 +528,8 @@ class Filters {
   List<FilterCategory> get filterCategories => [exerciseCategories, equipment];
 
   bool get isNothingMarked {
-    final isExerciseCategoryMarked =
-        exerciseCategories.items.values.any((isMarked) => isMarked);
-    final isEquipmentMarked =
-        equipment.items.values.any((isMarked) => isMarked);
+    final isExerciseCategoryMarked = exerciseCategories.items.values.any((isMarked) => isMarked);
+    final isEquipmentMarked = equipment.items.values.any((isMarked) => isMarked);
     return !isExerciseCategoryMarked && !isEquipmentMarked;
   }
 

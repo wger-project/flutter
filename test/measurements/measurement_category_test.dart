@@ -76,8 +76,7 @@ void main() {
     test('should copyWith objects of this class', () {
       // arrange
 
-      final MeasurementCategory tMeasurementCategoryCopied =
-          MeasurementCategory(
+      final MeasurementCategory tMeasurementCategoryCopied = MeasurementCategory(
         id: 1234,
         name: 'Coolness',
         unit: 'lp',
@@ -108,11 +107,9 @@ void main() {
       expect(result, tMeasurementEntry);
     });
 
-    test('should throw a NoSuchEntryException if no MeasurementEntry was found',
-        () {
+    test('should throw a NoSuchEntryException if no MeasurementEntry was found', () {
       // act & assert
-      expect(() => tMeasurementCategory.findEntryById(83),
-          throwsA(isA<NoSuchEntryException>()));
+      expect(() => tMeasurementCategory.findEntryById(83), throwsA(isA<NoSuchEntryException>()));
     });
   });
 }

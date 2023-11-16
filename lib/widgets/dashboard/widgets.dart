@@ -46,8 +46,7 @@ import 'package:wger/widgets/workouts/forms.dart';
 
 class DashboardNutritionWidget extends StatefulWidget {
   @override
-  _DashboardNutritionWidgetState createState() =>
-      _DashboardNutritionWidgetState();
+  _DashboardNutritionWidgetState createState() => _DashboardNutritionWidgetState();
 }
 
 class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
@@ -58,8 +57,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
   @override
   void initState() {
     super.initState();
-    _plan =
-        Provider.of<NutritionPlansProvider>(context, listen: false).currentPlan;
+    _plan = Provider.of<NutritionPlansProvider>(context, listen: false).currentPlan;
     _hasContent = _plan != null;
   }
 
@@ -102,8 +100,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
               icon: const Icon(Icons.history_edu),
               color: wgerPrimaryButtonColor,
               onPressed: () {
-                Provider.of<NutritionPlansProvider>(context, listen: false)
-                    .logMealToDiary(meal);
+                Provider.of<NutritionPlansProvider>(context, listen: false).logMealToDiary(meal);
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
@@ -134,8 +131,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                       ),
                     ),
                     const SizedBox(width: 5),
-                    Text(
-                        '${item.amount.toStringAsFixed(0)} ${AppLocalizations.of(context).g}'),
+                    Text('${item.amount.toStringAsFixed(0)} ${AppLocalizations.of(context).g}'),
                   ],
                 ),
               ],
@@ -155,9 +151,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
       return const Text('');
     }
 
-    return _showDetail
-        ? const Icon(Icons.expand_less)
-        : const Icon(Icons.expand_more);
+    return _showDetail ? const Icon(Icons.expand_less) : const Icon(Icons.expand_more);
   }
 
   @override
@@ -167,9 +161,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
         children: [
           ListTile(
             title: Text(
-              _hasContent
-                  ? _plan!.description
-                  : AppLocalizations.of(context).nutritionalPlan,
+              _hasContent ? _plan!.description : AppLocalizations.of(context).nutritionalPlan,
               style: Theme.of(context).textTheme.headline4,
             ),
             subtitle: Text(
@@ -196,8 +188,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                 Container(
                   padding: const EdgeInsets.all(15),
                   height: 180,
-                  child:
-                      FlNutritionalPlanPieChartWidget(_plan!.nutritionalValues),
+                  child: FlNutritionalPlanPieChartWidget(_plan!.nutritionalValues),
                 )
               ],
             )
@@ -228,9 +219,8 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                 TextButton(
                   child: Text(AppLocalizations.of(context).goToDetailPage),
                   onPressed: () {
-                    Navigator.of(context).pushNamed(
-                        NutritionalPlanScreen.routeName,
-                        arguments: _plan);
+                    Navigator.of(context)
+                        .pushNamed(NutritionalPlanScreen.routeName, arguments: _plan);
                   },
                 ),
               ],
@@ -283,11 +273,9 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           TextButton(
-                              child: Text(
-                                  AppLocalizations.of(context).goToDetailPage),
+                              child: Text(AppLocalizations.of(context).goToDetailPage),
                               onPressed: () {
-                                Navigator.of(context)
-                                    .pushNamed(WeightScreen.routeName);
+                                Navigator.of(context).pushNamed(WeightScreen.routeName);
                               }),
                           IconButton(
                             icon: const Icon(Icons.add),
@@ -323,12 +311,10 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
 
 class DashboardMeasurementWidget extends StatefulWidget {
   @override
-  _DashboardMeasurementWidgetState createState() =>
-      _DashboardMeasurementWidgetState();
+  _DashboardMeasurementWidgetState createState() => _DashboardMeasurementWidgetState();
 }
 
-class _DashboardMeasurementWidgetState
-    extends State<DashboardMeasurementWidget> {
+class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget> {
   int _current = 0;
   final CarouselController _controller = CarouselController();
 
@@ -401,23 +387,17 @@ class _DashboardMeasurementWidgetState
                               children: items.asMap().entries.map(
                                 (entry) {
                                   return GestureDetector(
-                                    onTap: () =>
-                                        _controller.animateToPage(entry.key),
+                                    onTap: () => _controller.animateToPage(entry.key),
                                     child: Container(
                                       width: 12.0,
                                       height: 12.0,
-                                      margin: EdgeInsets.symmetric(
-                                          vertical: 8.0, horizontal: 4.0),
+                                      margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
                                       decoration: BoxDecoration(
                                           shape: BoxShape.circle,
-                                          color: (Theme.of(context)
-                                                          .brightness ==
-                                                      Brightness.dark
+                                          color: (Theme.of(context).brightness == Brightness.dark
                                                   ? Colors.white
                                                   : wgerPrimaryColor)
-                                              .withOpacity(_current == entry.key
-                                                  ? 0.9
-                                                  : 0.4)),
+                                              .withOpacity(_current == entry.key ? 0.9 : 0.4)),
                                     ),
                                   );
                                 },
@@ -462,9 +442,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
       return const Text('');
     }
 
-    return _showDetail
-        ? const Icon(Icons.expand_less)
-        : const Icon(Icons.expand_more);
+    return _showDetail ? const Icon(Icons.expand_less) : const Icon(Icons.expand_more);
   }
 
   List<Widget> getContent() {
@@ -496,8 +474,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
               icon: const Icon(Icons.play_arrow),
               color: wgerPrimaryButtonColor,
               onPressed: () {
-                Navigator.of(context)
-                    .pushNamed(GymModeScreen.routeName, arguments: day);
+                Navigator.of(context).pushNamed(GymModeScreen.routeName, arguments: day);
               },
             ),
           ],
@@ -518,13 +495,10 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(s.exerciseBaseObj
-                                  .getExercise(Localizations.localeOf(context)
-                                      .languageCode)
+                                  .getExercise(Localizations.localeOf(context).languageCode)
                                   .name),
                               const SizedBox(width: 10),
-                              MutedText(set
-                                  .getSmartRepr(s.exerciseBaseObj)
-                                  .join('\n')),
+                              MutedText(set.getSmartRepr(s.exerciseBaseObj).join('\n')),
                             ],
                           ),
                           const SizedBox(height: 10),
@@ -549,9 +523,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
         children: [
           ListTile(
             title: Text(
-              _hasContent
-                  ? _workoutPlan!.name
-                  : AppLocalizations.of(context).labelWorkoutPlan,
+              _hasContent ? _workoutPlan!.name : AppLocalizations.of(context).labelWorkoutPlan,
               style: Theme.of(context).textTheme.headline4,
             ),
             subtitle: Text(
@@ -593,8 +565,8 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                 TextButton(
                   child: Text(AppLocalizations.of(context).goToDetailPage),
                   onPressed: () {
-                    Navigator.of(context).pushNamed(WorkoutPlanScreen.routeName,
-                        arguments: _workoutPlan);
+                    Navigator.of(context)
+                        .pushNamed(WorkoutPlanScreen.routeName, arguments: _workoutPlan);
                   },
                 ),
               ],

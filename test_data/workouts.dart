@@ -29,8 +29,7 @@ import './exercises.dart';
 const weightUnit1 = WeightUnit(id: 1, name: 'kg');
 const weightUnit2 = WeightUnit(id: 2, name: 'metric tonnes');
 
-const RepetitionUnit repetitionUnit1 =
-    RepetitionUnit(id: 1, name: 'Repetitions');
+const RepetitionUnit repetitionUnit1 = RepetitionUnit(id: 1, name: 'Repetitions');
 const RepetitionUnit repetitionUnit2 = RepetitionUnit(id: 2, name: 'Hours');
 
 WorkoutPlan getWorkout() {

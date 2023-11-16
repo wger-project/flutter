@@ -63,8 +63,7 @@ class WorkoutPlan {
   }
 
   // Boilerplate
-  factory WorkoutPlan.fromJson(Map<String, dynamic> json) =>
-      _$WorkoutPlanFromJson(json);
+  factory WorkoutPlan.fromJson(Map<String, dynamic> json) => _$WorkoutPlanFromJson(json);
 
   Map<String, dynamic> toJson() => _$WorkoutPlanToJson(this);
 
@@ -74,11 +73,8 @@ class WorkoutPlan {
   /// means here that the values are the same, i.e. logs with the same weight,
   /// reps, etc. are considered equal. Workout ID, Log ID and date are not
   /// considered.
-  List<Log> filterLogsByExerciseBase(ExerciseBase exerciseBase,
-      {bool unique = false}) {
-    var out = logs
-        .where((element) => element.exerciseBaseId == exerciseBase.id)
-        .toList();
+  List<Log> filterLogsByExerciseBase(ExerciseBase exerciseBase, {bool unique = false}) {
+    var out = logs.where((element) => element.exerciseBaseId == exerciseBase.id).toList();
 
     if (unique) {
       out = out.toSet().toList();

@@ -20,12 +20,10 @@ class AddExerciseMultiselectButton<T> extends StatefulWidget {
       : super(key: key);
 
   @override
-  _AddExerciseMultiselectButtonState createState() =>
-      _AddExerciseMultiselectButtonState<T>();
+  _AddExerciseMultiselectButtonState createState() => _AddExerciseMultiselectButtonState<T>();
 }
 
-class _AddExerciseMultiselectButtonState<T>
-    extends State<AddExerciseMultiselectButton> {
+class _AddExerciseMultiselectButtonState<T> extends State<AddExerciseMultiselectButton> {
   List<T> _selectedItems = [];
 
   @override
@@ -35,9 +33,8 @@ class _AddExerciseMultiselectButtonState<T>
       child: MultiSelectDialogField(
         initialValue: widget.initialItems,
         onSaved: widget.onSaved,
-        items: widget.items
-            .map((item) => MultiSelectItem<T>(item, widget.displayName(item)))
-            .toList(),
+        items:
+            widget.items.map((item) => MultiSelectItem<T>(item, widget.displayName(item))).toList(),
         onConfirm: (value) {
           setState(() {
             _selectedItems = value.cast<T>();

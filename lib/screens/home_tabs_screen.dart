@@ -45,8 +45,7 @@ class HomeTabsScreen extends StatefulWidget {
   _HomeTabsScreenState createState() => _HomeTabsScreenState();
 }
 
-class _HomeTabsScreenState extends State<HomeTabsScreen>
-    with SingleTickerProviderStateMixin {
+class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProviderStateMixin {
   late Future<void> _initialData;
   int _selectedIndex = 0;
 

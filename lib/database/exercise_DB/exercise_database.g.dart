@@ -11,76 +11,55 @@ class $ExerciseTableItemsTable extends ExerciseTableItems
   $ExerciseTableItemsTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
+  late final GeneratedColumn<int> id = GeneratedColumn<int>('id', aliasedName, false,
       hasAutoIncrement: true,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _exercisebaseMeta =
-      const VerificationMeta('exercisebase');
+      defaultConstraints: GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _exercisebaseMeta = const VerificationMeta('exercisebase');
   @override
-  late final GeneratedColumnWithTypeConverter<ExerciseBase?, String>
-      exercisebase = GeneratedColumn<String>('exercisebase', aliasedName, true,
+  late final GeneratedColumnWithTypeConverter<ExerciseBase?, String> exercisebase =
+      GeneratedColumn<String>('exercisebase', aliasedName, true,
               type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<ExerciseBase?>(
-              $ExerciseTableItemsTable.$converterexercisebasen);
+          .withConverter<ExerciseBase?>($ExerciseTableItemsTable.$converterexercisebasen);
   static const VerificationMeta _muscleMeta = const VerificationMeta('muscle');
   @override
-  late final GeneratedColumnWithTypeConverter<Muscle?, String> muscle =
-      GeneratedColumn<String>('muscle', aliasedName, true,
-              type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<Muscle?>($ExerciseTableItemsTable.$convertermusclen);
-  static const VerificationMeta _categoryMeta =
-      const VerificationMeta('category');
+  late final GeneratedColumnWithTypeConverter<Muscle?, String> muscle = GeneratedColumn<String>(
+          'muscle', aliasedName, true,
+          type: DriftSqlType.string, requiredDuringInsert: false)
+      .withConverter<Muscle?>($ExerciseTableItemsTable.$convertermusclen);
+  static const VerificationMeta _categoryMeta = const VerificationMeta('category');
   @override
-  late final GeneratedColumnWithTypeConverter<ExerciseCategory?, String>
-      category = GeneratedColumn<String>('category', aliasedName, true,
+  late final GeneratedColumnWithTypeConverter<ExerciseCategory?, String> category =
+      GeneratedColumn<String>('category', aliasedName, true,
               type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<ExerciseCategory?>(
-              $ExerciseTableItemsTable.$convertercategoryn);
-  static const VerificationMeta _variationMeta =
-      const VerificationMeta('variation');
+          .withConverter<ExerciseCategory?>($ExerciseTableItemsTable.$convertercategoryn);
+  static const VerificationMeta _variationMeta = const VerificationMeta('variation');
   @override
   late final GeneratedColumnWithTypeConverter<Variation?, String> variation =
       GeneratedColumn<String>('variation', aliasedName, true,
               type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<Variation?>(
-              $ExerciseTableItemsTable.$convertervariationn);
-  static const VerificationMeta _languageMeta =
-      const VerificationMeta('language');
+          .withConverter<Variation?>($ExerciseTableItemsTable.$convertervariationn);
+  static const VerificationMeta _languageMeta = const VerificationMeta('language');
   @override
-  late final GeneratedColumnWithTypeConverter<Language?, String> language =
-      GeneratedColumn<String>('language', aliasedName, true,
-              type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<Language?>(
-              $ExerciseTableItemsTable.$converterlanguagen);
-  static const VerificationMeta _equipmentMeta =
-      const VerificationMeta('equipment');
+  late final GeneratedColumnWithTypeConverter<Language?, String> language = GeneratedColumn<String>(
+          'language', aliasedName, true,
+          type: DriftSqlType.string, requiredDuringInsert: false)
+      .withConverter<Language?>($ExerciseTableItemsTable.$converterlanguagen);
+  static const VerificationMeta _equipmentMeta = const VerificationMeta('equipment');
   @override
   late final GeneratedColumnWithTypeConverter<Equipment?, String> equipment =
       GeneratedColumn<String>('equipment', aliasedName, true,
               type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<Equipment?>(
-              $ExerciseTableItemsTable.$converterequipmentn);
-  static const VerificationMeta _expiresInMeta =
-      const VerificationMeta('expiresIn');
+          .withConverter<Equipment?>($ExerciseTableItemsTable.$converterequipmentn);
+  static const VerificationMeta _expiresInMeta = const VerificationMeta('expiresIn');
   @override
   late final GeneratedColumn<DateTime> expiresIn = GeneratedColumn<DateTime>(
       'expires_in', aliasedName, true,
       type: DriftSqlType.dateTime, requiredDuringInsert: false);
   @override
-  List<GeneratedColumn> get $columns => [
-        id,
-        exercisebase,
-        muscle,
-        category,
-        variation,
-        language,
-        equipment,
-        expiresIn
-      ];
+  List<GeneratedColumn> get $columns =>
+      [id, exercisebase, muscle, category, variation, language, equipment, expiresIn];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -101,8 +80,8 @@ class $ExerciseTableItemsTable extends ExerciseTableItems
     context.handle(_languageMeta, const VerificationResult.success());
     context.handle(_equipmentMeta, const VerificationResult.success());
     if (data.containsKey('expires_in')) {
-      context.handle(_expiresInMeta,
-          expiresIn.isAcceptableOrUnknown(data['expires_in']!, _expiresInMeta));
+      context.handle(
+          _expiresInMeta, expiresIn.isAcceptableOrUnknown(data['expires_in']!, _expiresInMeta));
     }
     return context;
   }
@@ -113,26 +92,20 @@ class $ExerciseTableItemsTable extends ExerciseTableItems
   ExerciseTable map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return ExerciseTable(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      exercisebase: $ExerciseTableItemsTable.$converterexercisebasen.fromSql(
-          attachedDatabase.typeMapping.read(
-              DriftSqlType.string, data['${effectivePrefix}exercisebase'])),
+      id: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      exercisebase: $ExerciseTableItemsTable.$converterexercisebasen.fromSql(attachedDatabase
+          .typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}exercisebase'])),
       muscle: $ExerciseTableItemsTable.$convertermusclen.fromSql(
-          attachedDatabase.typeMapping
-              .read(DriftSqlType.string, data['${effectivePrefix}muscle'])),
-      category: $ExerciseTableItemsTable.$convertercategoryn.fromSql(
-          attachedDatabase.typeMapping
-              .read(DriftSqlType.string, data['${effectivePrefix}category'])),
-      variation: $ExerciseTableItemsTable.$convertervariationn.fromSql(
-          attachedDatabase.typeMapping
-              .read(DriftSqlType.string, data['${effectivePrefix}variation'])),
-      language: $ExerciseTableItemsTable.$converterlanguagen.fromSql(
-          attachedDatabase.typeMapping
-              .read(DriftSqlType.string, data['${effectivePrefix}language'])),
-      equipment: $ExerciseTableItemsTable.$converterequipmentn.fromSql(
-          attachedDatabase.typeMapping
-              .read(DriftSqlType.string, data['${effectivePrefix}equipment'])),
+          attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}muscle'])),
+      category: $ExerciseTableItemsTable.$convertercategoryn.fromSql(attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}category'])),
+      variation: $ExerciseTableItemsTable.$convertervariationn.fromSql(attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}variation'])),
+      language: $ExerciseTableItemsTable.$converterlanguagen.fromSql(attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}language'])),
+      equipment: $ExerciseTableItemsTable.$converterequipmentn.fromSql(attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}equipment'])),
       expiresIn: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}expires_in']),
     );
@@ -143,28 +116,23 @@ class $ExerciseTableItemsTable extends ExerciseTableItems
     return $ExerciseTableItemsTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<ExerciseBase, String> $converterexercisebase =
-      const ExerciseBaseConverter();
+  static TypeConverter<ExerciseBase, String> $converterexercisebase = const ExerciseBaseConverter();
   static TypeConverter<ExerciseBase?, String?> $converterexercisebasen =
       NullAwareTypeConverter.wrap($converterexercisebase);
-  static TypeConverter<Muscle, String> $convertermuscle =
-      const MuscleConverter();
+  static TypeConverter<Muscle, String> $convertermuscle = const MuscleConverter();
   static TypeConverter<Muscle?, String?> $convertermusclen =
       NullAwareTypeConverter.wrap($convertermuscle);
   static TypeConverter<ExerciseCategory, String> $convertercategory =
       const ExerciseCategoryConverter();
   static TypeConverter<ExerciseCategory?, String?> $convertercategoryn =
       NullAwareTypeConverter.wrap($convertercategory);
-  static TypeConverter<Variation, String> $convertervariation =
-      const VariationConverter();
+  static TypeConverter<Variation, String> $convertervariation = const VariationConverter();
   static TypeConverter<Variation?, String?> $convertervariationn =
       NullAwareTypeConverter.wrap($convertervariation);
-  static TypeConverter<Language, String> $converterlanguage =
-      const LanguageConverter();
+  static TypeConverter<Language, String> $converterlanguage = const LanguageConverter();
   static TypeConverter<Language?, String?> $converterlanguagen =
       NullAwareTypeConverter.wrap($converterlanguage);
-  static TypeConverter<Equipment, String> $converterequipment =
-      const EquipmentConverter();
+  static TypeConverter<Equipment, String> $converterequipment = const EquipmentConverter();
   static TypeConverter<Equipment?, String?> $converterequipmentn =
       NullAwareTypeConverter.wrap($converterequipment);
 }
@@ -224,31 +192,18 @@ class ExerciseTable extends DataClass implements Insertable<ExerciseTable> {
   ExerciseTableItemsCompanion toCompanion(bool nullToAbsent) {
     return ExerciseTableItemsCompanion(
       id: Value(id),
-      exercisebase: exercisebase == null && nullToAbsent
-          ? const Value.absent()
-          : Value(exercisebase),
-      muscle:
-          muscle == null && nullToAbsent ? const Value.absent() : Value(muscle),
-      category: category == null && nullToAbsent
-          ? const Value.absent()
-          : Value(category),
-      variation: variation == null && nullToAbsent
-          ? const Value.absent()
-          : Value(variation),
-      language: language == null && nullToAbsent
-          ? const Value.absent()
-          : Value(language),
-      equipment: equipment == null && nullToAbsent
-          ? const Value.absent()
-          : Value(equipment),
-      expiresIn: expiresIn == null && nullToAbsent
-          ? const Value.absent()
-          : Value(expiresIn),
+      exercisebase:
+          exercisebase == null && nullToAbsent ? const Value.absent() : Value(exercisebase),
+      muscle: muscle == null && nullToAbsent ? const Value.absent() : Value(muscle),
+      category: category == null && nullToAbsent ? const Value.absent() : Value(category),
+      variation: variation == null && nullToAbsent ? const Value.absent() : Value(variation),
+      language: language == null && nullToAbsent ? const Value.absent() : Value(language),
+      equipment: equipment == null && nullToAbsent ? const Value.absent() : Value(equipment),
+      expiresIn: expiresIn == null && nullToAbsent ? const Value.absent() : Value(expiresIn),
     );
   }
 
-  factory ExerciseTable.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory ExerciseTable.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return ExerciseTable(
       id: serializer.fromJson<int>(json['id']),
@@ -287,8 +242,7 @@ class ExerciseTable extends DataClass implements Insertable<ExerciseTable> {
           Value<DateTime?> expiresIn = const Value.absent()}) =>
       ExerciseTable(
         id: id ?? this.id,
-        exercisebase:
-            exercisebase.present ? exercisebase.value : this.exercisebase,
+        exercisebase: exercisebase.present ? exercisebase.value : this.exercisebase,
         muscle: muscle.present ? muscle.value : this.muscle,
         category: category.present ? category.value : this.category,
         variation: variation.present ? variation.value : this.variation,
@@ -312,8 +266,8 @@ class ExerciseTable extends DataClass implements Insertable<ExerciseTable> {
   }
 
   @override
-  int get hashCode => Object.hash(id, exercisebase, muscle, category, variation,
-      language, equipment, expiresIn);
+  int get hashCode =>
+      Object.hash(id, exercisebase, muscle, category, variation, language, equipment, expiresIn);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -409,8 +363,7 @@ class ExerciseTableItemsCompanion extends UpdateCompanion<ExerciseTable> {
     if (exercisebase.present) {
       final converter = $ExerciseTableItemsTable.$converterexercisebasen;
 
-      map['exercisebase'] =
-          Variable<String>(converter.toSql(exercisebase.value));
+      map['exercisebase'] = Variable<String>(converter.toSql(exercisebase.value));
     }
     if (muscle.present) {
       final converter = $ExerciseTableItemsTable.$convertermusclen;
@@ -461,8 +414,7 @@ class ExerciseTableItemsCompanion extends UpdateCompanion<ExerciseTable> {
 
 abstract class _$ExerciseDatabase extends GeneratedDatabase {
   _$ExerciseDatabase(QueryExecutor e) : super(e);
-  late final $ExerciseTableItemsTable exerciseTableItems =
-      $ExerciseTableItemsTable(this);
+  late final $ExerciseTableItemsTable exerciseTableItems = $ExerciseTableItemsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
