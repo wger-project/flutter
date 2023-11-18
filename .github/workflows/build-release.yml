@@ -80,9 +80,9 @@ jobs:
         with:
           tag_name: ${{ env.VERSION }}
           files: |
-            wger/build/app/outputs/bundle/release/app-release.aab
-            wger/flatpak/scripts/flatpak_generator_exports/wger-linux-x86_64.tar.gz
-            wger/flatpak/scripts/flatpak_generator_exports/wger-linux-x86_64.sha256
+            build/app/outputs/bundle/release/app-release.aab
+            flatpak/scripts/flatpak_generator_exports/wger-linux-x86_64.tar.gz
+            flatpak/scripts/flatpak_generator_exports/wger-linux-x86_64.sha256
 
       - name: Generate flathub manifest
         run: |
