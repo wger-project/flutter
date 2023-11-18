@@ -9,10 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout application code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Setup Java
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
           java-version: 17.x
 
@@ -22,7 +22,7 @@ jobs:
           ruby-version: 3
 
       - name: Setup Flutter
-        uses: subosito/flutter-action@v1
+        uses: subosito/flutter-action@v2
         with:
           channel: stable
           flutter-version: 3.16.x
@@ -117,8 +117,9 @@ jobs:
           git config user.name Github-Actions
           git config user.email github-actions@github.com
           git checkout -b release-${{ env.VERSION }}
-          git add .
+          git add pubspec.yaml
           git commit -m "Bump version to $( flutter pub run cider version )"
           git tag ${{ env.VERSION }}
-          git push origin --tags
-          git push origin --delete ${{ env.VERSION_V }}
+          git push ${{ env.VERSION }}
+          git push --delete ${{ env.VERSION_V }}
+          git push
