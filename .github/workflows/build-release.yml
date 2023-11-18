@@ -114,11 +114,11 @@ jobs:
       #       one without the v and push it.
       - name: Commit pubspec version and delete tag
         run: |
-          git config user.name Github-actions
+          git config user.name Github-Actions
           git config user.email github-actions@github.com
-          git branch release-${{ env.VERSION }}
+          git checkout -b release-${{ env.VERSION }}
           git add .
           git commit -m "Bump version to $( flutter pub run cider version )"
           git tag ${{ env.VERSION }}
-          git push origin HEAD:master --tags
+          git push origin --tags
           git push origin --delete ${{ env.VERSION_V }}
