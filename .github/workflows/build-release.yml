@@ -89,15 +89,15 @@ jobs:
           cd flatpak/scripts
           dart pub get
           dart manifest_generator.dart --meta ../flatpak_meta.json --github
-          mkdir /tmp/flathub
-          cp flatpak_generator_exports/de.wger.flutter.json /tmp/flathub
+          mkdir ../../flathub
+          cp flatpak_generator_exports/de.wger.flutter.json ../../flathub
 
       - name: Push updated config to flathub repository
         uses: cpina/github-action-push-to-another-repository@main
         env:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         with:
-          source-directory: /tmp/flathub
+          source-directory: flathub
           destination-github-username: wger-project
           destination-repository-name: de.wger.flutter
           user-email: github-actions@github.com
@@ -112,7 +112,7 @@ jobs:
       #       would not work, as it would trigger this workflow again. So as
       #       a workaround, we use the v-tag to trigger this workflow, add a new
       #       one without the v and push it.
-      - name: Commit pubspec version and delete branch
+      - name: Commit pubspec version and delete tag
         run: |
           git config user.name Github-actions
           git config user.email github-actions@github.com
