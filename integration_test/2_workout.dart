@@ -28,7 +28,7 @@ Widget createWorkoutDetailScreen({locale = 'en'}) {
       debugShowCheckedModeBanner: false,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      theme: wgerTheme,
+      theme: wgerLightTheme,
       navigatorKey: key,
       home: TextButton(
         onPressed: () => key.currentState!.push(

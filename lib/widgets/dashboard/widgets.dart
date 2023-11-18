@@ -38,9 +38,9 @@ import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/theme/theme.dart';
-import 'package:wger/widgets/measurements/charts.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/measurements/categories_card.dart';
+import 'package:wger/widgets/measurements/charts.dart';
 import 'package:wger/widgets/measurements/forms.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
@@ -183,7 +183,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
           ListTile(
             title: Text(
               _hasContent ? _plan!.description : AppLocalizations.of(context).nutritionalPlan,
-              style: Theme.of(context).textTheme.headline4,
+              style: Theme.of(context).textTheme.headlineSmall,
             ),
             subtitle: Text(
               _hasContent
@@ -191,9 +191,9 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                       .format(_plan!.creationDate)
                   : '',
             ),
-            leading: const Icon(
+            leading: Icon(
               Icons.restaurant,
-              color: Colors.black,
+              color: Theme.of(context).textTheme.headlineSmall!.color,
             ),
             trailing: getTrailing(),
             onTap: () {
@@ -290,11 +290,11 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
             ListTile(
               title: Text(
                 AppLocalizations.of(context).weight,
-                style: Theme.of(context).textTheme.headline4,
+                style: Theme.of(context).textTheme.headlineSmall,
               ),
-              leading: const FaIcon(
-                FontAwesomeIcons.weight,
-                color: Colors.black,
+              leading: FaIcon(
+                FontAwesomeIcons.weightScale,
+                color: Theme.of(context).textTheme.headlineSmall!.color,
               ),
             ),
             Column(
@@ -377,9 +377,9 @@ class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget>
 
   @override
   Widget build(BuildContext context) {
-    final _provider = Provider.of<MeasurementProvider>(context, listen: false);
+    final provider = Provider.of<MeasurementProvider>(context, listen: false);
 
-    List<Widget> items = _provider.categories
+    final items = provider.categories
         .map<Widget>(
           (item) => CategoriesCard(
             item,
@@ -397,82 +397,86 @@ class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget>
       );
     }
     return Consumer<MeasurementProvider>(
-        builder: (context, workoutProvider, child) => Card(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  ListTile(
-                    title: Text(
-                      AppLocalizations.of(context).measurements,
-                      style: Theme.of(context).textTheme.headline4,
-                    ),
-                    leading: const FaIcon(
-                      FontAwesomeIcons.weight,
-                      color: Colors.black,
-                    ),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.arrow_forward),
-                      onPressed: () => Navigator.pushNamed(
-                        context,
-                        MeasurementCategoriesScreen.routeName,
-                      ),
-                    ),
-                  ),
+      builder: (context, workoutProvider, child) => Card(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              title: Text(
+                AppLocalizations.of(context).measurements,
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+              leading: FaIcon(
+                FontAwesomeIcons.chartLine,
+                color: Theme.of(context).textTheme.headlineSmall!.color,
+              ),
+              trailing: IconButton(
+                icon: const Icon(Icons.arrow_forward),
+                onPressed: () => Navigator.pushNamed(
+                  context,
+                  MeasurementCategoriesScreen.routeName,
+                ),
+              ),
+            ),
+            Column(
+              children: [
+                if (items.isNotEmpty)
                   Column(
                     children: [
-                      if (items.isNotEmpty)
-                        Column(children: [
-                          CarouselSlider(
-                            items: items,
-                            carouselController: _controller,
-                            options: CarouselOptions(
-                                autoPlay: false,
-                                enlargeCenterPage: false,
-                                viewportFraction: 1,
-                                enableInfiniteScroll: false,
-                                aspectRatio: 1.1,
-                                onPageChanged: (index, reason) {
-                                  setState(() {
-                                    _current = index;
-                                  });
-                                }),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: items.asMap().entries.map(
-                                (entry) {
-                                  return GestureDetector(
-                                    onTap: () => _controller.animateToPage(entry.key),
-                                    child: Container(
-                                      width: 12.0,
-                                      height: 12.0,
-                                      margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
-                                      decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: (Theme.of(context).brightness == Brightness.dark
-                                                  ? Colors.white
-                                                  : wgerPrimaryColor)
-                                              .withOpacity(_current == entry.key ? 0.9 : 0.4)),
-                                    ),
-                                  );
-                                },
-                              ).toList(),
-                            ),
-                          ),
-                        ])
-                      else
-                        NothingFound(
-                          AppLocalizations.of(context).noMeasurementEntries,
-                          AppLocalizations.of(context).newEntry,
-                          MeasurementCategoryForm(),
+                      CarouselSlider(
+                        items: items,
+                        carouselController: _controller,
+                        options: CarouselOptions(
+                          autoPlay: false,
+                          enlargeCenterPage: false,
+                          viewportFraction: 1,
+                          enableInfiniteScroll: false,
+                          aspectRatio: 1.1,
+                          onPageChanged: (index, reason) {
+                            setState(() {
+                              _current = index;
+                            });
+                          },
                         ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: items.asMap().entries.map((entry) {
+                            return GestureDetector(
+                              onTap: () => _controller.animateToPage(entry.key),
+                              child: Container(
+                                width: 12.0,
+                                height: 12.0,
+                                margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .headlineSmall!
+                                      .color!
+                                      .withOpacity(_current == entry.key ? 0.9 : 0.4),
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
                     ],
+                  )
+                else
+                  NothingFound(
+                    AppLocalizations.of(context).noMeasurementEntries,
+                    AppLocalizations.of(context).newEntry,
+                    MeasurementCategoryForm(),
                   ),
-                ],
-              ),
-            ));
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -604,7 +608,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
           ListTile(
             title: Text(
               _hasContent ? _workoutPlan!.name : AppLocalizations.of(context).labelWorkoutPlan,
-              style: Theme.of(context).textTheme.headline4,
+              style: Theme.of(context).textTheme.headlineSmall,
             ),
             subtitle: Text(
               _hasContent
@@ -612,9 +616,9 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                       .format(_workoutPlan!.creationDate)
                   : '',
             ),
-            leading: const Icon(
-              Icons.fitness_center_outlined,
-              color: Colors.black,
+            leading: Icon(
+              Icons.fitness_center,
+              color: Theme.of(context).textTheme.headlineSmall!.color,
             ),
             trailing: getTrailing(),
             onTap: () {

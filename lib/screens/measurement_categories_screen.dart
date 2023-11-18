@@ -34,7 +34,10 @@ class MeasurementCategoriesScreen extends StatelessWidget {
         title: Text(AppLocalizations.of(context).measurements),
       ),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
         onPressed: () async {
           Navigator.pushNamed(
             context,

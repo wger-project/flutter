@@ -197,21 +197,21 @@ class StartPage extends StatelessWidget {
                               s.exerciseBaseObj
                                   .getExercise(Localizations.localeOf(context).languageCode)
                                   .name,
-                              style: Theme.of(context).textTheme.headline6,
+                              style: Theme.of(context).textTheme.titleLarge,
                             ),
-                            ...set.getSmartRepr(s.exerciseBaseObj).map((e) => Text(e)).toList(),
+                            ...set.getSmartRepr(s.exerciseBaseObj).map((e) => Text(e)),
                             const SizedBox(height: 15),
                           ],
                         );
-                      }).toList(),
+                      }),
                     ],
                   );
                 },
-              ).toList(),
+              ),
             ],
           ),
         ),
-        ElevatedButton(
+        FilledButton(
           child: Text(AppLocalizations.of(context).start),
           onPressed: () {
             _controller.nextPage(
@@ -426,7 +426,7 @@ class _LogPageState extends State<LogPage> {
         children: [
           Text(
             AppLocalizations.of(context).newEntry,
-            style: Theme.of(context).textTheme.headline6,
+            style: Theme.of(context).textTheme.titleLarge,
             textAlign: TextAlign.center,
           ),
           if (!_detailed)
@@ -527,7 +527,7 @@ class _LogPageState extends State<LogPage> {
       children: [
         Text(
           AppLocalizations.of(context).labelWorkoutLogs,
-          style: Theme.of(context).textTheme.headline6,
+          style: Theme.of(context).textTheme.titleLarge,
           textAlign: TextAlign.center,
         ),
         ...widget._workoutPlan
@@ -556,7 +556,7 @@ class _LogPageState extends State<LogPage> {
             },
             contentPadding: const EdgeInsets.symmetric(horizontal: 40),
           );
-        }).toList(),
+        }),
       ],
     );
   }
@@ -573,7 +573,7 @@ class _LogPageState extends State<LogPage> {
       children: [
         Text(
           AppLocalizations.of(context).plateCalculator,
-          style: Theme.of(context).textTheme.headline6,
+          style: Theme.of(context).textTheme.titleLarge,
         ),
         SizedBox(
           height: 35,
@@ -581,37 +581,35 @@ class _LogPageState extends State<LogPage> {
               ? Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    ...groupedPlates.keys
-                        .map(
-                          (key) => Row(
-                            children: [
-                              Text(groupedPlates[key].toString()),
-                              const Text('×'),
-                              Container(
-                                decoration: const BoxDecoration(
-                                  color: wgerPrimaryColorLight,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 3),
-                                  child: SizedBox(
-                                    height: 35,
-                                    width: 35,
-                                    child: Align(
-                                      alignment: Alignment.center,
-                                      child: Text(
-                                        key.toString(),
-                                        style: const TextStyle(fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
+                    ...groupedPlates.keys.map(
+                      (key) => Row(
+                        children: [
+                          Text(groupedPlates[key].toString()),
+                          const Text('×'),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.primaryContainer,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 3),
+                              child: SizedBox(
+                                height: 35,
+                                width: 35,
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    key.toString(),
+                                    style: const TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 10),
-                            ],
+                            ),
                           ),
-                        )
-                        .toList()
+                          const SizedBox(width: 10),
+                        ],
+                      ),
+                    )
                   ],
                 )
               : MutedText(AppLocalizations.of(context).plateCalculatorNotDivisible),
@@ -633,7 +631,7 @@ class _LogPageState extends State<LogPage> {
         Center(
           child: Text(
             widget._setting.singleSettingRepText,
-            style: Theme.of(context).textTheme.headline3,
+            style: Theme.of(context).textTheme.headlineMedium,
             textAlign: TextAlign.center,
           ),
         ),
@@ -653,7 +651,6 @@ class _LogPageState extends State<LogPage> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Card(
-            color: wgerBackground,
             child: getForm(),
           ),
         ),
@@ -692,16 +689,14 @@ class ExerciseOverview extends StatelessWidget {
             children: [
               Text(
                 getTranslation(_exerciseBase.category.name, context),
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context).textTheme.titleLarge,
                 textAlign: TextAlign.center,
               ),
-              ..._exerciseBase.equipment
-                  .map((e) => Text(
-                        getTranslation(e.name, context),
-                        style: Theme.of(context).textTheme.headline6,
-                        textAlign: TextAlign.center,
-                      ))
-                  .toList(),
+              ..._exerciseBase.equipment.map((e) => Text(
+                    getTranslation(e.name, context),
+                    style: Theme.of(context).textTheme.titleLarge,
+                    textAlign: TextAlign.center,
+                  )),
               if (_exerciseBase.images.isNotEmpty)
                 SizedBox(
                   width: double.infinity,
@@ -709,7 +704,7 @@ class ExerciseOverview extends StatelessWidget {
                   child: ListView(
                     scrollDirection: Axis.horizontal,
                     children: [
-                      ..._exerciseBase.images.map((e) => ExerciseImageWidget(image: e)).toList(),
+                      ..._exerciseBase.images.map((e) => ExerciseImageWidget(image: e)),
                     ],
                   ),
                 ),
@@ -1002,7 +997,7 @@ class _TimerWidgetState extends State<TimerWidget> {
           child: Center(
             child: Text(
               DateFormat('m:ss').format(today.add(Duration(seconds: _seconds))),
-              style: Theme.of(context).textTheme.headline1!.copyWith(color: wgerPrimaryColor),
+              style: Theme.of(context).textTheme.displayLarge!.copyWith(color: wgerPrimaryColor),
             ),
           ),
         ),
@@ -1095,7 +1090,7 @@ class NavigationHeader extends StatelessWidget {
                   Navigator.of(context).pop();
                 },
               );
-            }).toList(),
+            }),
           ],
         ),
       ),
@@ -1125,7 +1120,7 @@ class NavigationHeader extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: Text(
               _title,
-              style: Theme.of(context).textTheme.headline5,
+              style: Theme.of(context).textTheme.headlineSmall,
               textAlign: TextAlign.center,
             ),
           ),

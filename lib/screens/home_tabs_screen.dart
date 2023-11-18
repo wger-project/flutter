@@ -36,7 +36,6 @@ import 'package:wger/screens/gallery_screen.dart';
 import 'package:wger/screens/nutritional_plans_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/screens/workout_plans_screen.dart';
-import 'package:wger/theme/theme.dart';
 
 class HomeTabsScreen extends StatefulWidget {
   static const routeName = '/dashboard2';
@@ -149,7 +148,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
                   ),
                   Text(
                     AppLocalizations.of(context).loadingText,
-                    style: Theme.of(context).textTheme.headline5,
+                    style: Theme.of(context).textTheme.headlineSmall,
                   ),
                 ],
               ),
@@ -158,39 +157,35 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
         } else {
           return Scaffold(
             body: _screenList.elementAt(_selectedIndex),
-            bottomNavigationBar: BottomNavigationBar(
-              items: [
-                BottomNavigationBarItem(
-                  icon: const Icon(Icons.dashboard),
+            bottomNavigationBar: NavigationBar(
+              destinations: [
+                NavigationDestination(
+                  icon: const Icon(Icons.home),
                   label: AppLocalizations.of(context).labelDashboard,
                 ),
-                BottomNavigationBarItem(
+                NavigationDestination(
                   icon: const Icon(Icons.fitness_center),
                   label: AppLocalizations.of(context).labelBottomNavWorkout,
                 ),
-                BottomNavigationBarItem(
+                NavigationDestination(
                   icon: const Icon(Icons.restaurant),
                   label: AppLocalizations.of(context).labelBottomNavNutrition,
                 ),
-                BottomNavigationBarItem(
+                NavigationDestination(
                   icon: const FaIcon(
                     FontAwesomeIcons.weightScale,
                     size: 20,
                   ),
                   label: AppLocalizations.of(context).weight,
                 ),
-                BottomNavigationBarItem(
+                NavigationDestination(
                   icon: const Icon(Icons.photo_library),
                   label: AppLocalizations.of(context).gallery,
                 ),
               ],
-              type: BottomNavigationBarType.fixed,
-              currentIndex: _selectedIndex,
-              selectedItemColor: Colors.white,
-              unselectedItemColor: wgerPrimaryColorLight,
-              backgroundColor: wgerPrimaryColor,
-              onTap: _onItemTapped,
-              showUnselectedLabels: false,
+              onDestinationSelected: _onItemTapped,
+              selectedIndex: _selectedIndex,
+              labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
             ),
           );
         }

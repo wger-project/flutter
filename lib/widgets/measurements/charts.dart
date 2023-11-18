@@ -20,7 +20,6 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:wger/helpers/charts.dart';
-import 'package:wger/theme/theme.dart';
 
 class MeasurementChartWidgetFl extends StatefulWidget {
   final List<MeasurementChartEntry> _entries;
@@ -133,10 +132,10 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
                 .map((e) => FlSpot(e.date.millisecondsSinceEpoch.toDouble(), e.value.toDouble()))
           ],
           isCurved: false,
-          color: wgerSecondaryColor,
+          color: Theme.of(context).colorScheme.secondary,
           barWidth: 2,
           isStrokeCapRound: true,
-          dotData: FlDotData(
+          dotData: const FlDotData(
             show: true,
           ),
         ),

@@ -16,149 +16,167 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:ui';
+
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:table_calendar/table_calendar.dart';
+
+// Color scheme, please consult
+// * https://pub.dev/packages/flex_color_scheme
+// * https://rydmike.com/flexseedscheme/demo-v1/#/
 
 const Color wgerPrimaryColor = Color(0xff2a4c7d);
 const Color wgerPrimaryButtonColor = Color(0xff266dd3);
 const Color wgerPrimaryColorLight = Color(0xff94B2DB);
 const Color wgerSecondaryColor = Color(0xffe63946);
 const Color wgerSecondaryColorLight = Color(0xffF6B4BA);
-const Color wgerTextMuted = Colors.black38;
-const Color wgerBackground = Color(0xfff4f4f6);
+const Color wgerTertiaryColor = Color(0xFF6CA450);
 
-// Chart colors
+const FlexSubThemesData wgerSubThemeData = FlexSubThemesData(
+  fabSchemeColor: SchemeColor.secondary,
+  inputDecoratorBorderType: FlexInputBorderType.underline,
+  inputDecoratorIsFilled: false,
+  useTextTheme: true,
+  appBarScrolledUnderElevation: 4,
+  navigationBarIndicatorOpacity: 0.24,
+  navigationBarHeight: 56,
+);
 
-/// Original sizes for the material text theme
-/// https://api.flutter.dev/flutter/material/TextTheme-class.html
-const materialSizes = {
-  'h1': 96.0,
-  'h2': 60.0,
-  'h3': 48.0,
-  'h4': 34.0,
-  'h5': 24.0,
-  'h6': 20.0,
-};
+const String wgerDisplayFont = 'RobotoCondensed';
+const List<FontVariation> displayFontBoldWeight = <FontVariation>[FontVariation('wght', 600)];
+const List<FontVariation> displayFontHeavyWeight = <FontVariation>[FontVariation('wght', 800)];
 
-final ThemeData wgerTheme = ThemeData(
-  /*
-    * General stuff
-    */
-  primaryColor: wgerPrimaryColor,
-  scaffoldBackgroundColor: wgerBackground,
+// Make a light ColorScheme from the seeds.
+final ColorScheme schemeLight = SeedColorScheme.fromSeeds(
+  primary: wgerPrimaryColor,
+  primaryKey: wgerPrimaryColor,
+  secondaryKey: wgerSecondaryColor,
+  secondary: wgerSecondaryColor,
+  tertiaryKey: wgerTertiaryColor,
+  brightness: Brightness.light,
+  tones: FlexTones.vivid(Brightness.light),
+);
 
-  // This makes the visual density adapt to the platform that you run
-  // the app on. For desktop platforms, the controls will be smaller and
-  // closer together (more dense) than on mobile platforms.
-  visualDensity: VisualDensity.adaptivePlatformDensity,
+// Make a dark ColorScheme from the seeds.
+final ColorScheme schemeDark = SeedColorScheme.fromSeeds(
+  // primary: wgerPrimaryColor,
+  primaryKey: wgerPrimaryColor,
+  secondaryKey: wgerSecondaryColor,
+  secondary: wgerSecondaryColor,
+  brightness: Brightness.dark,
+  tones: FlexTones.vivid(Brightness.dark),
+);
 
-  // Show icons in the system's bar in light colors
-  appBarTheme: const AppBarTheme(
-    systemOverlayStyle: SystemUiOverlayStyle.dark,
-    color: wgerPrimaryColor,
+// Make a high contrast light ColorScheme from the seeds
+final ColorScheme schemeLightHc = SeedColorScheme.fromSeeds(
+  primaryKey: wgerPrimaryColor,
+  secondaryKey: wgerSecondaryColor,
+  brightness: Brightness.light,
+  tones: FlexTones.ultraContrast(Brightness.light),
+);
+
+// Make a ultra contrast dark ColorScheme from the seeds.
+final ColorScheme schemeDarkHc = SeedColorScheme.fromSeeds(
+  primaryKey: wgerPrimaryColor,
+  secondaryKey: wgerSecondaryColor,
+  brightness: Brightness.dark,
+  tones: FlexTones.ultraContrast(Brightness.dark),
+);
+
+const wgerTextTheme = TextTheme(
+  displayLarge: TextStyle(
+    fontFamily: wgerDisplayFont,
+    fontVariations: displayFontHeavyWeight,
   ),
-
-  /*
-     * Text theme
-     */
-  textTheme: TextTheme(
-    headline1: const TextStyle(fontFamily: 'OpenSansLight', color: Colors.black),
-    headline2: const TextStyle(fontFamily: 'OpenSansLight', color: Colors.black),
-    headline3: TextStyle(
-      fontSize: materialSizes['h3']! * 0.8,
-      fontFamily: 'OpenSansBold',
-      color: Colors.black,
-    ),
-    headline4: TextStyle(
-      fontSize: materialSizes['h4']! * 0.8,
-      fontFamily: 'OpenSansBold',
-      color: Colors.black,
-    ),
-    headline5: TextStyle(
-      fontSize: materialSizes['h5'],
-      fontFamily: 'OpenSansBold',
-      color: Colors.black,
-    ),
-    headline6: TextStyle(
-      fontSize: materialSizes['h6']! * 0.8,
-      fontFamily: 'OpenSansBold',
-      color: Colors.black,
-    ),
+  displayMedium: TextStyle(
+    fontFamily: wgerDisplayFont,
+    fontVariations: displayFontHeavyWeight,
   ),
-
-  /*
-     * Button theme
-     */
-  textButtonTheme: TextButtonThemeData(
-    style: TextButton.styleFrom(
-//       This primary is deprecated and should not be used
-//       primary: wgerPrimaryButtonColor,
-      foregroundColor: wgerPrimaryButtonColor,
-    ),
+  displaySmall: TextStyle(
+    fontFamily: wgerDisplayFont,
+    fontVariations: displayFontHeavyWeight,
   ),
-  outlinedButtonTheme: OutlinedButtonThemeData(
-    style: OutlinedButton.styleFrom(
-      foregroundColor: wgerPrimaryButtonColor,
-      visualDensity: VisualDensity.compact,
-      side: const BorderSide(color: wgerPrimaryButtonColor),
-    ),
+  headlineLarge: TextStyle(
+    fontFamily: wgerDisplayFont,
+    fontVariations: displayFontBoldWeight,
   ),
-  elevatedButtonTheme: ElevatedButtonThemeData(
-    style: ElevatedButton.styleFrom(
-      backgroundColor: wgerPrimaryButtonColor,
-    ),
+  headlineMedium: TextStyle(
+    fontFamily: wgerDisplayFont,
+    fontVariations: displayFontBoldWeight,
   ),
-
-  /*
-    * Forms, etc.
-    */
-  sliderTheme: const SliderThemeData(
-    activeTrackColor: wgerPrimaryButtonColor,
-    thumbColor: wgerPrimaryColor,
+  headlineSmall: TextStyle(
+    fontFamily: wgerDisplayFont,
+    fontVariations: displayFontBoldWeight,
   ),
-  colorScheme: ColorScheme.fromSwatch().copyWith(secondary: wgerSecondaryColor),
-  // Text Selection Theme
-  textSelectionTheme: TextSelectionThemeData(
-    cursorColor: wgerPrimaryColor,
-    selectionColor: wgerPrimaryColor.withOpacity(0.2),
-    selectionHandleColor: wgerPrimaryColor,
+  titleLarge: TextStyle(
+    fontFamily: wgerDisplayFont,
+    fontVariations: displayFontBoldWeight,
   ),
-  // Text Fields Theme
-  inputDecorationTheme: InputDecorationTheme(
-    focusColor: wgerPrimaryColor,
-    iconColor: Colors.grey.shade600,
-    floatingLabelStyle: const TextStyle(color: wgerPrimaryColor),
-    focusedBorder: const UnderlineInputBorder(
-      borderSide: BorderSide(color: wgerPrimaryColor),
-    ),
+  titleMedium: TextStyle(
+    fontFamily: wgerDisplayFont,
+    fontVariations: displayFontBoldWeight,
+  ),
+  titleSmall: TextStyle(
+    fontFamily: wgerDisplayFont,
+    fontVariations: displayFontBoldWeight,
   ),
 );
 
-const wgerCalendarStyle = CalendarStyle(
-// Use `CalendarStyle` to customize the UI
-  outsideDaysVisible: false,
-  todayDecoration: BoxDecoration(
-    color: Colors.amber,
-    shape: BoxShape.circle,
-  ),
-
-  markerDecoration: BoxDecoration(
-    color: Colors.black,
-    shape: BoxShape.circle,
-  ),
-  selectedDecoration: BoxDecoration(
-    color: wgerSecondaryColor,
-    shape: BoxShape.circle,
-  ),
-  rangeStartDecoration: BoxDecoration(
-    color: wgerSecondaryColor,
-    shape: BoxShape.circle,
-  ),
-  rangeEndDecoration: BoxDecoration(
-    color: wgerSecondaryColor,
-    shape: BoxShape.circle,
-  ),
-  rangeHighlightColor: wgerSecondaryColorLight,
-  weekendTextStyle: TextStyle(color: wgerSecondaryColor),
+final wgerLightTheme = FlexThemeData.light(
+  colorScheme: schemeLight,
+  useMaterial3: true,
+  appBarStyle: FlexAppBarStyle.primary,
+  subThemesData: wgerSubThemeData,
+  textTheme: wgerTextTheme,
 );
+
+final wgerDarkTheme = FlexThemeData.dark(
+  colorScheme: schemeDark,
+  useMaterial3: true,
+  subThemesData: wgerSubThemeData,
+  textTheme: wgerTextTheme,
+);
+
+final wgerLightThemeHc = FlexThemeData.light(
+  colorScheme: schemeLightHc,
+  useMaterial3: true,
+  appBarStyle: FlexAppBarStyle.primary,
+  subThemesData: wgerSubThemeData,
+  textTheme: wgerTextTheme,
+);
+
+final wgerDarkThemeHc = FlexThemeData.dark(
+  colorScheme: schemeDarkHc,
+  useMaterial3: true,
+  subThemesData: wgerSubThemeData,
+  textTheme: wgerTextTheme,
+);
+
+CalendarStyle getWgerCalendarStyle(ThemeData theme) {
+  return CalendarStyle(
+    outsideDaysVisible: false,
+    todayDecoration: const BoxDecoration(
+      color: Colors.amber,
+      shape: BoxShape.circle,
+    ),
+    markerDecoration: BoxDecoration(
+      color: theme.textTheme.headlineLarge?.color,
+      shape: BoxShape.circle,
+    ),
+    selectedDecoration: const BoxDecoration(
+      color: wgerSecondaryColor,
+      shape: BoxShape.circle,
+    ),
+    rangeStartDecoration: const BoxDecoration(
+      color: wgerSecondaryColor,
+      shape: BoxShape.circle,
+    ),
+    rangeEndDecoration: const BoxDecoration(
+      color: wgerSecondaryColor,
+      shape: BoxShape.circle,
+    ),
+    rangeHighlightColor: wgerSecondaryColorLight,
+    weekendTextStyle: const TextStyle(color: wgerSecondaryColor),
+  );
+}

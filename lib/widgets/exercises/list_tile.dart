@@ -52,7 +52,7 @@ class ExerciseListTile extends StatelessWidget {
       ),
       title: Text(
         exerciseBase.getExercise(Localizations.localeOf(context).languageCode).name,
-        //style: theme.textTheme.headline6,
+        //style: theme.textTheme.titleLarge,
         overflow: TextOverflow.ellipsis,
         maxLines: 2,
       ),
