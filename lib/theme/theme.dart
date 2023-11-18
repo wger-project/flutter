@@ -34,18 +34,14 @@ const Color wgerSecondaryColorLight = Color(0xffF6B4BA);
 const Color wgerTertiaryColor = Color(0xFF6CA450);
 
 const FlexSubThemesData wgerSubThemeData = FlexSubThemesData(
-    fabSchemeColor: SchemeColor.secondary,
-    inputDecoratorBorderType: FlexInputBorderType.underline,
-    inputDecoratorIsFilled: false,
-    useTextTheme: true,
-    appBarBackgroundSchemeColor: SchemeColor.background,
-    appBarScrolledUnderElevation: 4,
-    navigationBarBackgroundSchemeColor: SchemeColor.primary,
-    navigationBarSelectedIconSchemeColor: SchemeColor.onPrimary,
-    navigationBarUnselectedIconSchemeColor: SchemeColor.onPrimary,
-    navigationBarIndicatorSchemeColor: SchemeColor.onPrimary,
-    navigationBarIndicatorOpacity: 0.24,
-    navigationBarHeight: 56);
+  fabSchemeColor: SchemeColor.secondary,
+  inputDecoratorBorderType: FlexInputBorderType.underline,
+  inputDecoratorIsFilled: false,
+  useTextTheme: true,
+  appBarScrolledUnderElevation: 4,
+  navigationBarIndicatorOpacity: 0.24,
+  navigationBarHeight: 56,
+);
 
 const String wgerDisplayFont = 'RobotoCondensed';
 const List<FontVariation> displayFontBoldWeight = <FontVariation>[FontVariation('wght', 600)];
@@ -64,7 +60,7 @@ final ColorScheme schemeLight = SeedColorScheme.fromSeeds(
 
 // Make a dark ColorScheme from the seeds.
 final ColorScheme schemeDark = SeedColorScheme.fromSeeds(
-// primary: wgerPrimaryColor,
+  // primary: wgerPrimaryColor,
   primaryKey: wgerPrimaryColor,
   secondaryKey: wgerSecondaryColor,
   secondary: wgerSecondaryColor,
@@ -117,37 +113,45 @@ const wgerTextTheme = TextTheme(
     fontFamily: wgerDisplayFont,
     fontVariations: displayFontBoldWeight,
   ),
-  titleMedium: TextStyle(fontFamily: wgerDisplayFont, fontVariations: displayFontBoldWeight),
-  titleSmall: TextStyle(fontFamily: wgerDisplayFont, fontVariations: displayFontBoldWeight),
+  titleMedium: TextStyle(
+    fontFamily: wgerDisplayFont,
+    fontVariations: displayFontBoldWeight,
+  ),
+  titleSmall: TextStyle(
+    fontFamily: wgerDisplayFont,
+    fontVariations: displayFontBoldWeight,
+  ),
 );
 
 final wgerLightTheme = FlexThemeData.light(
-    colorScheme: schemeLight,
-    useMaterial3: true,
-    appBarStyle: FlexAppBarStyle.surface,
-    subThemesData: wgerSubThemeData,
-    textTheme: wgerTextTheme);
+  colorScheme: schemeLight,
+  useMaterial3: true,
+  appBarStyle: FlexAppBarStyle.primary,
+  subThemesData: wgerSubThemeData,
+  textTheme: wgerTextTheme,
+);
 
 final wgerDarkTheme = FlexThemeData.dark(
-    colorScheme: schemeDark,
-    useMaterial3: true,
-    appBarStyle: FlexAppBarStyle.surface,
-    subThemesData: wgerSubThemeData,
-    textTheme: wgerTextTheme);
+  colorScheme: schemeDark,
+  useMaterial3: true,
+  subThemesData: wgerSubThemeData,
+  textTheme: wgerTextTheme,
+);
 
 final wgerLightThemeHc = FlexThemeData.light(
-    colorScheme: schemeLightHc,
-    useMaterial3: true,
-    appBarStyle: FlexAppBarStyle.surface,
-    subThemesData: wgerSubThemeData,
-    textTheme: wgerTextTheme);
+  colorScheme: schemeLightHc,
+  useMaterial3: true,
+  appBarStyle: FlexAppBarStyle.primary,
+  subThemesData: wgerSubThemeData,
+  textTheme: wgerTextTheme,
+);
 
 final wgerDarkThemeHc = FlexThemeData.dark(
-    colorScheme: schemeDarkHc,
-    useMaterial3: true,
-    appBarStyle: FlexAppBarStyle.surface,
-    subThemesData: wgerSubThemeData,
-    textTheme: wgerTextTheme);
+  colorScheme: schemeDarkHc,
+  useMaterial3: true,
+  subThemesData: wgerSubThemeData,
+  textTheme: wgerTextTheme,
+);
 
 CalendarStyle getWgerCalendarStyle(ThemeData theme) {
   return CalendarStyle(
