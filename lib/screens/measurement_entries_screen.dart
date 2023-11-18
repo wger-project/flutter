@@ -72,7 +72,7 @@ class MeasurementEntriesScreen extends StatelessWidget {
                             TextButton(
                               child: Text(
                                 AppLocalizations.of(context).delete,
-                                style: TextStyle(color: Theme.of(context).errorColor),
+                                style: TextStyle(color: Theme.of(context).colorScheme.error),
                               ),
                               onPressed: () {
                                 // Confirmed, delete the workout
@@ -115,7 +115,10 @@ class MeasurementEntriesScreen extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
         onPressed: () async {
           Navigator.pushNamed(
             context,

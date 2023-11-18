@@ -23,7 +23,6 @@ import 'package:provider/provider.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/measurement_categories_screen.dart';
-import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/measurements/charts.dart';
 import 'package:wger/widgets/weight/forms.dart';
 
@@ -35,7 +34,6 @@ class WeightEntriesList extends StatelessWidget {
     return Column(
       children: [
         Container(
-          color: Theme.of(context).cardColor,
           padding: const EdgeInsets.all(15),
           height: 220,
           child: MeasurementChartWidgetFl(
@@ -109,7 +107,7 @@ class WeightEntriesList extends StatelessWidget {
                     ),
                   ),
                   background: Container(
-                    color: wgerPrimaryButtonColor,
+                    // color: wgerPrimaryButtonColor,
                     alignment: Alignment.centerLeft,
                     padding: const EdgeInsets.only(left: 20),
                     margin: const EdgeInsets.symmetric(

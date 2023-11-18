@@ -39,7 +39,7 @@ Widget createGymModeScreen({locale = 'en'}) {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
-        theme: wgerTheme,
+        theme: wgerLightTheme,
         home: TextButton(
           onPressed: () => key.currentState!.push(
             MaterialPageRoute<void>(

@@ -277,7 +277,7 @@ class IngredientLogForm extends StatelessWidget {
               // Stop keyboard from appearing
               decoration: InputDecoration(
                 labelText: AppLocalizations.of(context).date,
-                suffixIcon: const Icon(Icons.calendar_today_outlined),
+                suffixIcon: const Icon(Icons.calendar_today),
               ),
               enableInteractiveSelection: false,
               controller: _dateController,

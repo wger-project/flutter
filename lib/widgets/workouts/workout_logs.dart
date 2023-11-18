@@ -31,6 +31,7 @@ import 'package:wger/widgets/workouts/log.dart';
 class WorkoutLogs extends StatefulWidget {
   final WorkoutPlan _workoutPlan;
   final Function _changeMode;
+
   const WorkoutLogs(this._workoutPlan, this._changeMode);
 
   @override
@@ -54,7 +55,7 @@ class _WorkoutLogsState extends State<WorkoutLogs> {
           isSelected: const [false, true],
           children: const <Widget>[
             Icon(
-              Icons.table_chart_outlined,
+              Icons.table_chart,
             ),
             Icon(
               Icons.show_chart,
@@ -65,7 +66,7 @@ class _WorkoutLogsState extends State<WorkoutLogs> {
           padding: const EdgeInsets.symmetric(vertical: 10),
           child: Text(
             AppLocalizations.of(context).labelWorkoutLogs,
-            style: Theme.of(context).textTheme.headline5,
+            style: Theme.of(context).textTheme.headlineSmall,
           ),
         ),
         Padding(
@@ -174,7 +175,7 @@ class _WorkoutLogCalendarState extends State<WorkoutLogCalendar> {
           selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
           calendarFormat: CalendarFormat.month,
           startingDayOfWeek: StartingDayOfWeek.monday,
-          calendarStyle: wgerCalendarStyle,
+          calendarStyle: getWgerCalendarStyle(Theme.of(context)),
           eventLoader: _getEventsForDay,
           availableGestures: AvailableGestures.horizontalSwipe,
           availableCalendarFormats: const {

@@ -22,6 +22,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter_zxing/flutter_zxing.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/platform.dart';
@@ -48,6 +49,7 @@ class IngredientTypeahead extends StatefulWidget {
   final TextEditingController _ingredientIdController;
 
   String? barcode = '';
+
   //Code? result;
 
   late final bool? test;
@@ -215,7 +217,7 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
           }
         }
       },
-      icon: Image.asset('assets/images/barcode_scanner_icon.png'),
+      icon: const FaIcon(FontAwesomeIcons.barcode),
     );
   }
 }

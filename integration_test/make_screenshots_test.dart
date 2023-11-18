@@ -20,7 +20,7 @@ Future<void> takeScreenshot(tester, binding, String language, String name) async
   await binding.takeScreenshot(filename);
 }
 
-// Available languages in weblate for the android metadata (not necessarily
+// Available languages in weblate for the fastlane/metadata/android folder (not necessarily
 // those for which the application is translated)
 const languages = [
   //'de-DE',

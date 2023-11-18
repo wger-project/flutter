@@ -31,7 +31,6 @@ import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
-import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/exercises/images.dart';
 
 class WorkoutForm extends StatelessWidget {
@@ -323,7 +322,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
         children: [
           Container(
             padding: const EdgeInsets.only(top: 10),
-            color: wgerPrimaryColorLight,
+            color: Theme.of(context).colorScheme.primaryContainer,
             child: Column(
               //crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -341,6 +340,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                       addSettings();
                     });
                   },
+                  inactiveColor: Theme.of(context).colorScheme.background,
                 ),
                 if (widget._set.settings.isNotEmpty)
                   SwitchListTile(
@@ -588,7 +588,7 @@ class ExerciseSetting extends StatelessWidget {
             children: [
               Text(
                 AppLocalizations.of(context).setNr(i + 1),
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context).textTheme.titleLarge,
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -661,7 +661,7 @@ class ExerciseSetting extends StatelessWidget {
             ListTile(
               title: Text(
                 _exerciseBase.getExercise(Localizations.localeOf(context).languageCode).name,
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context).textTheme.titleLarge,
               ),
               subtitle: Text(_exerciseBase.category!.name),
               contentPadding: EdgeInsets.zero,

@@ -26,7 +26,7 @@ class UpdateAppScreen extends StatelessWidget {
       body: AlertDialog(
         title: Text(
           AppLocalizations.of(context).appUpdateTitle,
-          style: Theme.of(context).textTheme.headline5,
+          style: Theme.of(context).textTheme.headlineSmall,
         ),
         content: Text(AppLocalizations.of(context).appUpdateContent),
         actions: null,

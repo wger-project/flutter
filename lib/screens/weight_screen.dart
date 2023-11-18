@@ -33,7 +33,10 @@ class WeightScreen extends StatelessWidget {
     return Scaffold(
       appBar: EmptyAppBar(AppLocalizations.of(context).weight),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
         onPressed: () async {
           Navigator.pushNamed(
             context,

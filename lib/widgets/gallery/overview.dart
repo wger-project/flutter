@@ -55,13 +55,12 @@ class Gallery extends StatelessWidget {
                         builder: (context) => Container(
                           key: Key('image-${currentImage.id}-detail'),
                           padding: const EdgeInsets.all(10),
-                          color: Colors.white,
                           child: Column(
                             children: [
                               Text(
                                 DateFormat.yMd(Localizations.localeOf(context).languageCode)
                                     .format(currentImage.date),
-                                style: Theme.of(context).textTheme.headline5,
+                                style: Theme.of(context).textTheme.headlineSmall,
                               ),
                               Expanded(
                                 child: Image.network(currentImage.url!),

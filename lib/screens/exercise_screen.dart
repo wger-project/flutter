@@ -23,7 +23,7 @@ import 'package:wger/widgets/exercises/exercises.dart';
 class ExerciseDetailScreen extends StatelessWidget {
   static const routeName = '/exercise-detail';
 
-  const ExerciseDetailScreen({Key? key}) : super(key: key);
+  const ExerciseDetailScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -21,10 +21,10 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 #   - the version number is taken from the git tag vX.Y.Z
 #   - the build number is computed by reading the last one from the play store
 #     and increasing by one
-version: 1.5.6+34
+version: 1.6.0+35
 
 environment:
-  sdk: ">=2.17.0 <3.0.0"
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   flutter:
@@ -46,7 +46,7 @@ dependencies:
   json_annotation: ^4.8.1
   version: ^3.0.2
   package_info_plus: ^4.2.0
-  provider: ^6.0.5
+  provider: ^6.1.1
   rive: ^0.12.2
   shared_preferences: ^2.2.2
   table_calendar: ^3.0.8
@@ -64,6 +64,8 @@ dependencies:
   path_provider: ^2.1.1
   sqlite3_flutter_libs: ^0.5.18
   get_it: ^7.6.4
+  flex_seed_scheme: ^1.4.0
+  flex_color_scheme: ^7.3.1
 
 dev_dependencies:
   flutter_test:
@@ -72,7 +74,7 @@ dev_dependencies:
     sdk: flutter
   build_runner: ^2.3.3
   json_serializable: ^6.6.2
-  mockito: ^5.4.0
+  mockito: ^5.4.3
   network_image_mock: ^2.1.1
   flutter_lints: ^3.0.1
   cider: ^0.2.4
@@ -109,13 +111,9 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: OpenSansLight
+    - family: RobotoCondensed
       fonts:
-        - asset: assets/fonts/OpenSans-Light.ttf
-    - family: OpenSansBold
-      fonts:
-        - asset: assets/fonts/OpenSans-Bold.ttf
-          weight: 700
+        - asset: assets/fonts/RobotoCondensed-VariableFont_wght.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

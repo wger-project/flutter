@@ -43,7 +43,7 @@ Alternatively, you can use the test server (the db is reset every day):
 Install Flutter, and all its dependencies, and create a new virtual device:
 <https://flutter.dev/docs/get-started/install>.
 
-The app currently uses flutter 3.13
+The app currently uses flutter 3.16
 
 ### 3
 

@@ -156,10 +156,9 @@ class FlNutritionalPlanPieChartState extends State<FlNutritionalPlanPieChartWidg
 
 class NutritionalDiaryChartWidgetFl extends StatefulWidget {
   const NutritionalDiaryChartWidgetFl({
-    Key? key,
+    super.key,
     required NutritionalPlan nutritionalPlan,
-  })  : _nutritionalPlan = nutritionalPlan,
-        super(key: key);
+  }) : _nutritionalPlan = nutritionalPlan;
 
   final NutritionalPlan _nutritionalPlan;
 
@@ -254,17 +253,17 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
                       getTitlesWidget: leftTitles,
                     ),
                   ),
-                  topTitles: AxisTitles(
+                  topTitles: const AxisTitles(
                     sideTitles: SideTitles(showTitles: false),
                   ),
-                  rightTitles: AxisTitles(
+                  rightTitles: const AxisTitles(
                     sideTitles: SideTitles(showTitles: false),
                   ),
                 ),
                 gridData: FlGridData(
                   show: true,
                   checkToShowHorizontalLine: (value) => value % 10 == 0,
-                  getDrawingHorizontalLine: (value) => FlLine(
+                  getDrawingHorizontalLine: (value) => const FlLine(
                     color: Colors.black,
                     strokeWidth: 1,
                   ),
@@ -401,7 +400,6 @@ class FlNutritionalDiaryChartWidget extends StatefulWidget {
   })  : _nutritionalPlan = nutritionalPlan,
         super(key: key);
 
-  final Color barBackgroundColor = Colors.black12;
   final Color barColor = Colors.red;
   final Color touchedBarColor = Colors.deepOrange;
 
@@ -417,7 +415,7 @@ class FlNutritionalDiaryChartWidgetState extends State<FlNutritionalDiaryChartWi
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
-      aspectRatio: 1,
+      aspectRatio: 1.66,
       child: BarChart(
         mainBarData(),
         swapAnimationDuration: animDuration,
@@ -459,7 +457,7 @@ class FlNutritionalDiaryChartWidgetState extends State<FlNutritionalDiaryChartWi
           backDrawRodData: BackgroundBarChartRodData(
             show: true,
             toY: 20,
-            color: widget.barBackgroundColor,
+            // color: Colors.black,
           ),
         ),
       ],
