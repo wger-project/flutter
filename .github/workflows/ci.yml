@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@v1
 
       - name: Install Flutter
-        uses: subosito/flutter-action@v1
+        uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
           flutter-version: '3.16.x'
