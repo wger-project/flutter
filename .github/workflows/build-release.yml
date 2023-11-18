@@ -74,7 +74,6 @@ jobs:
         uses: maierj/fastlane-action@v2.2.1
         with:
           lane: production
-          subdirectory: wger
 
       - name: Make Github release
         uses: softprops/action-gh-release@v1
