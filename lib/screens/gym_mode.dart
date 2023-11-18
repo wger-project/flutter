@@ -27,13 +27,12 @@ class GymModeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _day = ModalRoute.of(context)!.settings.arguments as Day;
+    final day = ModalRoute.of(context)!.settings.arguments as Day;
 
     return Scaffold(
-      backgroundColor: Colors.white,
       body: SafeArea(
         child: Consumer<WorkoutPlansProvider>(
-          builder: (context, value, child) => GymMode(_day),
+          builder: (context, value, child) => GymMode(day),
         ),
       ),
     );

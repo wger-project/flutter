@@ -34,7 +34,6 @@ class WorkoutPlansScreen extends StatelessWidget {
     return Scaffold(
       appBar: WorkoutOverviewAppBar(),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
         onPressed: () {
           Navigator.pushNamed(
             context,
@@ -45,6 +44,10 @@ class WorkoutPlansScreen extends StatelessWidget {
             ),
           );
         },
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
       ),
       body: Consumer<WorkoutPlansProvider>(
         builder: (context, workoutProvider, child) => WorkoutPlansList(workoutProvider),

@@ -62,7 +62,7 @@ class _ExerciseFilterModalBodyState extends State<ExerciseFilterModalBody> {
                 return Container(
                   child: Text(
                     filterCategory.title,
-                    style: theme.textTheme.headline5,
+                    style: theme.textTheme.headlineSmall,
                   ),
                 );
               },

@@ -17,13 +17,14 @@ class CategoriesCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: elevation,
+      color: Theme.of(context).colorScheme.onInverseSurface,
       child: Column(
         children: [
           Padding(
             padding: const EdgeInsets.only(top: 5),
             child: Text(
               currentCategory.name,
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
           ),
           Container(

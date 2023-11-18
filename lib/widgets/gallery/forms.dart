@@ -135,7 +135,7 @@ class _ImageFormState extends State<ImageForm> {
             key: const Key('field-date'),
             decoration: InputDecoration(
               labelText: AppLocalizations.of(context).date,
-              suffixIcon: const Icon(Icons.calendar_today_outlined),
+              suffixIcon: const Icon(Icons.calendar_today),
             ),
             readOnly: true, // Stop keyboard from appearing
             controller: dateController,

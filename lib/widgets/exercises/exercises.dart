@@ -85,7 +85,7 @@ class ExerciseDetail extends StatelessWidget {
 
     out.add(Text(
       AppLocalizations.of(context).variations,
-      style: Theme.of(context).textTheme.headline5,
+      style: Theme.of(context).textTheme.headlineSmall,
     ));
     Provider.of<ExercisesProvider>(context, listen: false)
         .findExerciseBasesByVariationId(
@@ -107,7 +107,7 @@ class ExerciseDetail extends StatelessWidget {
     if (_exercise.notes.isNotEmpty) {
       out.add(Text(
         AppLocalizations.of(context).notes,
-        style: Theme.of(context).textTheme.headline5,
+        style: Theme.of(context).textTheme.headlineSmall,
       ));
       for (final e in _exercise.notes) {
         out.add(Text(e.comment));
@@ -122,7 +122,7 @@ class ExerciseDetail extends StatelessWidget {
     final List<Widget> out = [];
     out.add(Text(
       AppLocalizations.of(context).muscles,
-      style: Theme.of(context).textTheme.headline5,
+      style: Theme.of(context).textTheme.headlineSmall,
     ));
     out.add(Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -180,7 +180,7 @@ class ExerciseDetail extends StatelessWidget {
     final List<Widget> out = [];
     out.add(Text(
       AppLocalizations.of(context).description,
-      style: Theme.of(context).textTheme.headline5,
+      style: Theme.of(context).textTheme.headlineSmall,
     ));
     out.add(Html(data: _exercise.description));
 
@@ -200,16 +200,28 @@ class ExerciseDetail extends StatelessWidget {
 
   Widget getCategoriesAndEquipment(BuildContext context) {
     final List<Widget> out = [];
+    final theme = Theme.of(context);
 
     out.add(
-      Chip(label: Text(getTranslation(_exerciseBase.category.name, context))),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        child: Chip(
+          label: Text(getTranslation(_exerciseBase.category.name, context)),
+          padding: EdgeInsets.zero,
+          backgroundColor: theme.splashColor,
+        ),
+      ),
     );
     if (_exerciseBase.equipment.isNotEmpty) {
       _exerciseBase.equipment
-          .map((e) => Chip(label: Text(getTranslation(e.name, context))))
-          .forEach((element) {
-        out.add(element);
-      });
+          .map((e) => Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: Chip(
+                    label: Text(getTranslation(e.name, context)),
+                    padding: EdgeInsets.zero,
+                    backgroundColor: theme.splashColor),
+              ))
+          .forEach((element) => out.add(element));
     }
     out.add(const SizedBox(height: PADDING));
     return Row(children: [...out]);

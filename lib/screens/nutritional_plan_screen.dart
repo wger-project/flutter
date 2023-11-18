@@ -40,19 +40,23 @@ class NutritionalPlanScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _nutritionalPlan = ModalRoute.of(context)!.settings.arguments as NutritionalPlan;
+    const appBarForeground = Colors.white;
+    final nutritionalPlan = ModalRoute.of(context)!.settings.arguments as NutritionalPlan;
 
     return Scaffold(
       //appBar: getAppBar(nutritionalPlan),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.history_edu),
+        child: const Icon(
+          Icons.history_edu,
+          color: Colors.white,
+        ),
         onPressed: () {
           Navigator.pushNamed(
             context,
             FormScreen.routeName,
             arguments: FormScreenArguments(
               AppLocalizations.of(context).logIngredient,
-              IngredientLogForm(_nutritionalPlan),
+              IngredientLogForm(nutritionalPlan),
               hasListView: true,
             ),
           );
@@ -61,11 +65,13 @@ class NutritionalPlanScreen extends StatelessWidget {
       body: CustomScrollView(
         slivers: <Widget>[
           SliverAppBar(
+            foregroundColor: appBarForeground,
             expandedHeight: 250,
             pinned: true,
+            iconTheme: const IconThemeData(color: appBarForeground),
             actions: [
               PopupMenuButton<NutritionalPlanOptions>(
-                icon: const Icon(Icons.more_vert),
+                icon: const Icon(Icons.more_vert, color: appBarForeground),
                 onSelected: (value) {
                   // Edit
                   if (value == NutritionalPlanOptions.edit) {
@@ -74,14 +80,14 @@ class NutritionalPlanScreen extends StatelessWidget {
                       FormScreen.routeName,
                       arguments: FormScreenArguments(
                         AppLocalizations.of(context).edit,
-                        PlanForm(_nutritionalPlan),
+                        PlanForm(nutritionalPlan),
                       ),
                     );
 
                     // Delete
                   } else if (value == NutritionalPlanOptions.delete) {
                     Provider.of<NutritionPlansProvider>(context, listen: false)
-                        .deletePlan(_nutritionalPlan.id!);
+                        .deletePlan(nutritionalPlan.id!);
                     Navigator.of(context).pop();
                   }
                 },
@@ -101,7 +107,10 @@ class NutritionalPlanScreen extends StatelessWidget {
               ),
             ],
             flexibleSpace: FlexibleSpaceBar(
-              title: Text(_nutritionalPlan.getLabel(context)),
+              title: Text(
+                nutritionalPlan.getLabel(context),
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(color: appBarForeground),
+              ),
               background: const Image(
                 image: AssetImage('assets/images/backgrounds/nutritional_plans.jpg'),
                 fit: BoxFit.cover,
@@ -109,7 +118,7 @@ class NutritionalPlanScreen extends StatelessWidget {
             ),
           ),
           FutureBuilder(
-            future: _loadFullPlan(context, _nutritionalPlan.id!),
+            future: _loadFullPlan(context, nutritionalPlan.id!),
             builder: (context, AsyncSnapshot<NutritionalPlan> snapshot) =>
                 snapshot.connectionState == ConnectionState.waiting
                     ? SliverList(
@@ -126,7 +135,7 @@ class NutritionalPlanScreen extends StatelessWidget {
                       )
                     : Consumer<NutritionPlansProvider>(
                         builder: (context, value, child) =>
-                            NutritionalPlanDetailWidget(_nutritionalPlan)),
+                            NutritionalPlanDetailWidget(nutritionalPlan)),
           ),
         ],
       ),

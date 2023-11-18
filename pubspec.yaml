@@ -59,6 +59,8 @@ dependencies:
   flutter_svg: ^2.0.5
   fl_chart: ^0.64.0
   flutter_zxing: ^1.1.2
+  flex_seed_scheme: ^1.4.0
+  flex_color_scheme: ^7.3.1
 
 dev_dependencies:
   flutter_test:
@@ -103,13 +105,9 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: OpenSansLight
+    - family: RobotoCondensed
       fonts:
-        - asset: assets/fonts/OpenSans-Light.ttf
-    - family: OpenSansBold
-      fonts:
-        - asset: assets/fonts/OpenSans-Bold.ttf
-          weight: 700
+        - asset: assets/fonts/RobotoCondensed-VariableFont_wght.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
