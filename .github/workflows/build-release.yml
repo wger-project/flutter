@@ -4,24 +4,12 @@ on:
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+'
 
-defaults:
-  run:
-    working-directory: wger
-
 jobs:
   deploy_android:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout application code
         uses: actions/checkout@v2
-        with:
-          path: wger
-
-      - name: Checkout flathub repo
-        uses: actions/checkout@v3
-        with:
-          repository: wger-project/test
-          path: flathub
 
       - name: Setup Java
         uses: actions/setup-java@v1
@@ -102,14 +90,15 @@ jobs:
           cd flatpak/scripts
           dart pub get
           dart manifest_generator.dart --meta ../flatpak_meta.json --github
-          cp flatpak_generator_exports/de.wger.flutter.json ../../../flathub
+          mkdir /tmp/flathub
+          cp flatpak_generator_exports/de.wger.flutter.json /tmp/flathub
 
-      - name: Push config to flathub repository
+      - name: Push updated config to flathub repository
         uses: cpina/github-action-push-to-another-repository@main
         env:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         with:
-          source-directory: flathub
+          source-directory: /tmp/flathub
           destination-github-username: wger-project
           destination-repository-name: de.wger.flutter
           user-email: github-actions@github.com
