@@ -71,7 +71,7 @@ jobs:
           WGER_API_KEY: ${{ secrets.WGER_API_KEY }}
 
       - name: Upload build to Play Store
-        uses: maierj/fastlane-action@v2.2.1
+        uses: maierj/fastlane-action@v3.0.0
         with:
           lane: production
 
