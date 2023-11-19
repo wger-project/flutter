@@ -135,7 +135,7 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
           color: Theme.of(context).colorScheme.secondary,
           barWidth: 2,
           isStrokeCapRound: true,
-          dotData: const FlDotData(
+          dotData: FlDotData(
             show: true,
           ),
         ),
