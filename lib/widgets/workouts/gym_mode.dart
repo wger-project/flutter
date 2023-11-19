@@ -689,11 +689,8 @@ class ExerciseOverview extends StatelessWidget {
             children: [
               Text(
                 getTranslation(_exerciseBase.category!.name, context),
-                style: Theme.of(context).textTheme.headline6,
-
-                getTranslation(_exerciseBase.category.name, context),
+                semanticsLabel: getTranslation(_exerciseBase.category!.name, context),
                 style: Theme.of(context).textTheme.titleLarge,
-
                 textAlign: TextAlign.center,
               ),
               ..._exerciseBase.equipment.map((e) => Text(

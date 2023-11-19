@@ -203,12 +203,10 @@ class ExerciseDetail extends StatelessWidget {
     final theme = Theme.of(context);
 
     out.add(
-      Chip(label: Text(getTranslation(_exerciseBase.category!.name, context))),
-
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4),
         child: Chip(
-          label: Text(getTranslation(_exerciseBase.category.name, context)),
+          label: Text(getTranslation(_exerciseBase.category!.name, context)),
           padding: EdgeInsets.zero,
           backgroundColor: theme.splashColor,
         ),
