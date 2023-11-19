@@ -86,7 +86,7 @@ If you're not sure if something is a bug or not, feel free to file a bug anyway.
 
 * **Discord:** <https://discord.gg/rPWFv6W>
 * **Issue tracker:** <https://github.com/wger-project/flutter/issues>
-* **Twitter:** <https://twitter.com/wger_project>
+* **Mastodon:** <https://fosstodon.org/@wger>
 
 ## License
 
