@@ -36,6 +36,7 @@ class _AboutPageState extends State<AboutPage> {
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final today = DateTime.now();
 
     return Scaffold(
       appBar: AppBar(
@@ -79,7 +80,7 @@ class _AboutPageState extends State<AboutPage> {
             Padding(
               padding: EdgeInsets.only(left: 0.225 * deviceSize.width),
               child: Text(
-                '\u{a9} 2020 - 2021 contributors',
+                '\u{a9} 2020 - ${today.year} contributors',
                 style: Theme.of(context).textTheme.bodySmall,
               ),
             ),
