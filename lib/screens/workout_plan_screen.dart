@@ -82,6 +82,7 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
             iconTheme: const IconThemeData(color: appBarForeground),
             backgroundColor: wgerPrimaryColor,
             flexibleSpace: FlexibleSpaceBar(
+              titlePadding: const EdgeInsets.fromLTRB(56, 0, 56, 16),
               title: Text(
                 workoutPlan.name,
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(color: appBarForeground),

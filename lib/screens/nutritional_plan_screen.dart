@@ -107,6 +107,7 @@ class NutritionalPlanScreen extends StatelessWidget {
               ),
             ],
             flexibleSpace: FlexibleSpaceBar(
+              titlePadding: const EdgeInsets.fromLTRB(56, 0, 56, 16),
               title: Text(
                 nutritionalPlan.getLabel(context),
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(color: appBarForeground),
