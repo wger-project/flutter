@@ -58,15 +58,21 @@ void main() {
 
     expect(find.text('Weight'), findsOneWidget);
     expect(find.byType(MeasurementChartWidgetFl), findsOneWidget);
-    expect(find.byType(Dismissible), findsNWidgets(2));
+    expect(find.byType(Card), findsNWidgets(2));
     expect(find.byType(ListTile), findsNWidgets(2));
   });
 
-  testWidgets('Test deleting an item by dragging the dismissible', (WidgetTester tester) async {
+  testWidgets('Test deleting an item using the Delete button', (WidgetTester tester) async {
     await tester.pumpWidget(createWeightScreen());
 
-    await tester.drag(find.byKey(const Key('1')), const Offset(-500.0, 0.0));
+    expect(find.byType(ListTile), findsNWidgets(2));
+
+    await tester.tap(find.byTooltip('Show menu').first);
     await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Delete'));
+    await tester.pumpAndSettle();
+
     verify(mockWeightProvider.deleteEntry(1)).called(1);
     expect(find.byType(ListTile), findsOneWidget);
   });
