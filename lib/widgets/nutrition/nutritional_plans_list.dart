@@ -39,78 +39,70 @@ class NutritionalPlansList extends StatelessWidget {
               itemCount: _nutritionProvider.items.length,
               itemBuilder: (context, index) {
                 final currentPlan = _nutritionProvider.items[index];
-                return Dismissible(
-                  key: Key(currentPlan.id.toString()),
-                  confirmDismiss: (direction) async {
-                    // Delete workout from DB
-                    final bool? res = await showDialog(
-                        context: context,
-                        builder: (BuildContext contextDialog) {
-                          return AlertDialog(
-                            content: Text(
-                              AppLocalizations.of(context).confirmDelete(currentPlan.description),
-                            ),
-                            actions: [
-                              TextButton(
-                                child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-                                onPressed: () => Navigator.of(contextDialog).pop(),
-                              ),
-                              TextButton(
-                                child: Text(
-                                  AppLocalizations.of(context).delete,
-                                  style: TextStyle(color: Theme.of(context).colorScheme.error),
-                                ),
-                                onPressed: () {
-                                  // Confirmed, delete the workout
-                                  _nutritionProvider.deletePlan(currentPlan.id!);
-
-                                  // Close the popup
-                                  Navigator.of(contextDialog).pop();
-
-                                  // and inform the user
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        AppLocalizations.of(context).successfullyDeleted,
-                                        textAlign: TextAlign.center,
-                                      ),
+                return Card(
+                  child: ListTile(
+                    onTap: () {
+                      Navigator.of(context).pushNamed(
+                        NutritionalPlanScreen.routeName,
+                        arguments: currentPlan,
+                      );
+                    },
+                    title: Text(currentPlan.getLabel(context)),
+                    subtitle: Text(
+                      DateFormat.yMd(Localizations.localeOf(context).languageCode)
+                          .format(currentPlan.creationDate),
+                    ),
+                    trailing: Row(mainAxisSize: MainAxisSize.min, children: [
+                      const VerticalDivider(),
+                      IconButton(
+                        icon: const Icon(Icons.delete),
+                        tooltip: AppLocalizations.of(context).delete,
+                        onPressed: () async {
+                          // Delete workout from DB
+                          await showDialog(
+                              context: context,
+                              builder: (BuildContext contextDialog) {
+                                return AlertDialog(
+                                  content: Text(
+                                    AppLocalizations.of(context)
+                                        .confirmDelete(currentPlan.description),
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      child:
+                                          Text(MaterialLocalizations.of(context).cancelButtonLabel),
+                                      onPressed: () => Navigator.of(contextDialog).pop(),
                                     ),
-                                  );
-                                },
-                              ),
-                            ],
-                          );
-                        });
-                    return res;
-                  },
-                  background: Container(
-                    color: Theme.of(context).colorScheme.error,
-                    alignment: Alignment.centerRight,
-                    padding: const EdgeInsets.only(right: 20),
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 4,
-                      vertical: 4,
-                    ),
-                    child: const Icon(
-                      Icons.delete,
-                      color: Colors.white,
-                    ),
-                  ),
-                  direction: DismissDirection.endToStart,
-                  child: Card(
-                    child: ListTile(
-                      onTap: () {
-                        Navigator.of(context).pushNamed(
-                          NutritionalPlanScreen.routeName,
-                          arguments: currentPlan,
-                        );
-                      },
-                      title: Text(currentPlan.getLabel(context)),
-                      subtitle: Text(
-                        DateFormat.yMd(Localizations.localeOf(context).languageCode)
-                            .format(currentPlan.creationDate),
-                      ),
-                    ),
+                                    TextButton(
+                                      child: Text(
+                                        AppLocalizations.of(context).delete,
+                                        style:
+                                            TextStyle(color: Theme.of(context).colorScheme.error),
+                                      ),
+                                      onPressed: () {
+                                        // Confirmed, delete the workout
+                                        _nutritionProvider.deletePlan(currentPlan.id!);
+
+                                        // Close the popup
+                                        Navigator.of(contextDialog).pop();
+
+                                        // and inform the user
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                              AppLocalizations.of(context).successfullyDeleted,
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                );
+                              });
+                        },
+                      )
+                    ]),
                   ),
                 );
               },

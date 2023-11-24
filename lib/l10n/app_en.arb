@@ -798,5 +798,11 @@
   "none__bodyweight_exercise_": "none (bodyweight exercise)",
   "@none__bodyweight_exercise_": {
     "description": "Generated entry for translation for server strings"
-  }
+  },
+  "editSchedule": "Edit schedule",
+  "log": "Log",
+  "@log": {
+    "description": "Log a specific meal"
+  },
+  "done": "Done"
 }

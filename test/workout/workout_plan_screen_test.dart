@@ -67,7 +67,7 @@ void main() {
     expect(find.text('3 day workout'), findsOneWidget);
     expect(find.text('chest, shoulders'), findsOneWidget);
     expect(find.text('legs'), findsOneWidget);
-    expect(find.byType(Dismissible), findsNWidgets(2));
+    expect(find.byType(Card), findsNWidgets(2));
   });
 
   testWidgets('Tests the localization of times - EN', (WidgetTester tester) async {

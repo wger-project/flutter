@@ -80,7 +80,7 @@ void main() {
     expect(find.text('75g Burger soup'), findsOneWidget);
     expect(find.text('300g Broccoli cake'), findsOneWidget);
 
-    expect(find.byType(Dismissible), findsNWidgets(2));
+    expect(find.byType(Card), findsNWidgets(2));
     expect(find.byType(FlNutritionalDiaryChartWidget), findsNothing);
   });
 
