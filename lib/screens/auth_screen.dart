@@ -41,7 +41,7 @@ class AuthScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: wgerBackground,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: Stack(
         children: <Widget>[
           Positioned(
@@ -50,7 +50,7 @@ class AuthScreen extends StatelessWidget {
             left: 0,
             child: Container(
               height: 0.55 * deviceSize.height,
-              color: Theme.of(context).primaryColor,
+              color: wgerPrimaryColor,
             ),
           ),
           SingleChildScrollView(
@@ -70,11 +70,10 @@ class AuthScreen extends StatelessWidget {
                     margin: const EdgeInsets.only(bottom: 20.0),
                     padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 94.0),
                     child: const Text(
-                      'WGER',
+                      'wger',
                       style: TextStyle(
                         color: Colors.white70,
                         fontSize: 30,
-                        fontFamily: 'OpenSansBold',
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -187,17 +186,19 @@ class _AuthCardState extends State<AuthCard> {
         _isLoading = false;
       });
     } on WgerHttpException catch (error) {
-      showHttpExceptionErrorDialog(error, context);
+      if (mounted) {
+        showHttpExceptionErrorDialog(error, context);
+      }
       setState(() {
         _isLoading = false;
       });
     } catch (error) {
       if (mounted) {
         showErrorDialog(error, context);
-        setState(() {
-          _isLoading = false;
-        });
       }
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -249,7 +250,7 @@ class _AuthCardState extends State<AuthCard> {
                       if (value == null || value.isEmpty) {
                         return AppLocalizations.of(context).invalidUsername;
                       }
-                      if (!RegExp(r'^[\w.@+-]+$').hasMatch(value!)) {
+                      if (!RegExp(r'^[\w.@+-]+$').hasMatch(value)) {
                         return AppLocalizations.of(context).usernameValidChars;
                       }
 
@@ -449,7 +450,7 @@ class _AuthCardState extends State<AuthCard> {
                               Text(
                                 text.substring(text.lastIndexOf('?') + 1, text.length),
                                 style: const TextStyle(
-                                  color: wgerPrimaryColor,
+                                  //color: wgerPrimaryColor,
                                   fontWeight: FontWeight.w700,
                                 ),
                               )
@@ -471,9 +472,6 @@ class _AuthCardState extends State<AuthCard> {
                       _hideCustomServer
                           ? AppLocalizations.of(context).useCustomServer
                           : AppLocalizations.of(context).useDefaultServer,
-                      style: const TextStyle(
-                        color: wgerPrimaryColor,
-                      ),
                     ),
                   ),
                 ],

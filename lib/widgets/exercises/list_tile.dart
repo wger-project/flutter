@@ -23,7 +23,7 @@ import 'package:wger/screens/exercise_screen.dart';
 import 'package:wger/widgets/exercises/images.dart';
 
 class ExerciseListTile extends StatelessWidget {
-  const ExerciseListTile({Key? key, required this.exerciseBase}) : super(key: key);
+  const ExerciseListTile({super.key, required this.exerciseBase});
 
   final ExerciseBase exerciseBase;
 
@@ -52,7 +52,7 @@ class ExerciseListTile extends StatelessWidget {
       ),
       title: Text(
         exerciseBase.getExercise(Localizations.localeOf(context).languageCode).name,
-        //style: theme.textTheme.headline6,
+        //style: theme.textTheme.titleLarge,
         overflow: TextOverflow.ellipsis,
         maxLines: 2,
       ),

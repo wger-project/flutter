@@ -24,7 +24,6 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/models/gallery/image.dart' as gallery;
-import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/base_provider.dart';
 
 class GalleryProvider extends WgerBaseProvider with ChangeNotifier {
@@ -32,9 +31,8 @@ class GalleryProvider extends WgerBaseProvider with ChangeNotifier {
 
   List<gallery.Image> images = [];
 
-  GalleryProvider(AuthProvider auth, List<gallery.Image> entries, [http.Client? client])
-      : images = entries,
-        super(auth, client);
+  GalleryProvider(super.auth, List<gallery.Image> entries, [super.client])
+      : images = entries;
 
   /// Clears all lists
   void clear() {
@@ -103,7 +101,7 @@ class GalleryProvider extends WgerBaseProvider with ChangeNotifier {
   }
 
   Future<void> deleteImage(gallery.Image image) async {
-    var response = await deleteRequest(_galleryUrlPath, image.id!);
+    final response = await deleteRequest(_galleryUrlPath, image.id!);
     images.removeWhere((element) => element.id == image.id);
 
     notifyListeners();

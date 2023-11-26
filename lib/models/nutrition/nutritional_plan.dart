@@ -104,6 +104,30 @@ class NutritionalPlan {
     return out;
   }
 
+  NutritionalValues get nutritionalValuesToday {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+
+    return logEntriesValues.containsKey(today) ? logEntriesValues[today]! : NutritionalValues();
+  }
+
+  NutritionalValues get nutritionalValues7DayAvg {
+    final currentDate = DateTime.now();
+    final sevenDaysAgo = currentDate.subtract(const Duration(days: 7));
+
+    final entries = logs.where((obj) {
+      final DateTime objDate = obj.datetime;
+      return objDate.isAfter(sevenDaysAgo) && objDate.isBefore(currentDate);
+    }).toList();
+
+    var out = NutritionalValues();
+    for (final log in entries) {
+      out = out + log.nutritionalValues;
+    }
+
+    return out;
+  }
+
   /// Calculates the percentage each macro nutrient adds to the total energy
   BaseNutritionalValues energyPercentage(NutritionalValues values) {
     return BaseNutritionalValues(

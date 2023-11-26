@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 class AddExerciseDropdownButton extends StatefulWidget {
   const AddExerciseDropdownButton({
-    Key? key,
+    super.key,
     required this.items,
     required this.title,
     required this.onChange,
     this.validator,
     this.onSaved,
-  }) : super(key: key);
+  });
 
   final List<String> items;
   final String title;
@@ -49,8 +49,8 @@ class _AddExerciseDropdownButtonState extends State<AddExerciseDropdownButton> {
         items: widget.items
             .map(
               (item) => DropdownMenuItem<String>(
-                child: Text(item),
                 value: item,
+                child: Text(item),
               ),
             )
             .toList(),

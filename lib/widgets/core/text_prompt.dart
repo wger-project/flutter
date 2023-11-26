@@ -13,7 +13,7 @@ class TextPrompt extends StatelessWidget {
             style: Theme.of(context).textTheme.headlineMedium,
           ),
           Padding(
-            padding: EdgeInsets.only(top: 12),
+            padding: const EdgeInsets.only(top: 12),
             child: Text(AppLocalizations.of(context).textPromptSubheading),
           ),
         ],

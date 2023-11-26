@@ -52,7 +52,7 @@ void main() {
   var meal1 = Meal();
 
   final Uri tUriRightCode = Uri.parse('https://localhost/api/v2/ingredient/?code=123');
-  final Uri tUriEmptyCode = Uri.parse('https://localhost/api/v2/ingredient/?code=\"%20\"');
+  final Uri tUriEmptyCode = Uri.parse('https://localhost/api/v2/ingredient/?code="%20"');
   final Uri tUriBadCode = Uri.parse('https://localhost/api/v2/ingredient/?code=222');
 
   when(client.get(tUriRightCode, headers: anyNamed('headers'))).thenAnswer(

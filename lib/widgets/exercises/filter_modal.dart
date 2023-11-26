@@ -23,8 +23,8 @@ import 'package:wger/providers/exercises.dart';
 
 class ExerciseFilterModalBody extends StatefulWidget {
   const ExerciseFilterModalBody({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   _ExerciseFilterModalBodyState createState() => _ExerciseFilterModalBodyState();
@@ -62,7 +62,7 @@ class _ExerciseFilterModalBodyState extends State<ExerciseFilterModalBody> {
                 return Container(
                   child: Text(
                     filterCategory.title,
-                    style: theme.textTheme.headline5,
+                    style: theme.textTheme.headlineSmall,
                   ),
                 );
               },

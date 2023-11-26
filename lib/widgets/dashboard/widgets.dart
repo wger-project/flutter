@@ -18,7 +18,6 @@
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
@@ -36,9 +35,9 @@ import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/theme/theme.dart';
-import 'package:wger/widgets/core/charts.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/measurements/categories_card.dart';
+import 'package:wger/widgets/measurements/charts.dart';
 import 'package:wger/widgets/measurements/forms.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
@@ -163,7 +162,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
           ListTile(
             title: Text(
               _hasContent ? _plan!.description : AppLocalizations.of(context).nutritionalPlan,
-              style: Theme.of(context).textTheme.headline4,
+              style: Theme.of(context).textTheme.headlineSmall,
             ),
             subtitle: Text(
               _hasContent
@@ -171,9 +170,9 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                       .format(_plan!.creationDate)
                   : '',
             ),
-            leading: const Icon(
+            leading: Icon(
               Icons.restaurant,
-              color: Colors.black,
+              color: Theme.of(context).textTheme.headlineSmall!.color,
             ),
             trailing: getTrailing(),
             onTap: () {
@@ -183,18 +182,15 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
             },
           ),
           if (_hasContent)
-            Container(
-              padding: const EdgeInsets.only(left: 10),
-              child: Column(
-                children: [
-                  ...getContent(),
-                  Container(
-                    padding: const EdgeInsets.all(15),
-                    height: 180,
-                    child: NutritionalPlanPieChartWidget(_plan!.nutritionalValues),
-                  )
-                ],
-              ),
+            Column(
+              children: [
+                ...getContent(),
+                Container(
+                  padding: const EdgeInsets.all(15),
+                  height: 180,
+                  child: FlNutritionalPlanPieChartWidget(_plan!.nutritionalValues),
+                )
+              ],
             )
           else
             NothingFound(
@@ -255,11 +251,11 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
             ListTile(
               title: Text(
                 AppLocalizations.of(context).weight,
-                style: Theme.of(context).textTheme.headline4,
+                style: Theme.of(context).textTheme.headlineSmall,
               ),
-              leading: const FaIcon(
-                FontAwesomeIcons.weight,
-                color: Colors.black,
+              leading: FaIcon(
+                FontAwesomeIcons.weightScale,
+                color: Theme.of(context).textTheme.headlineSmall!.color,
               ),
             ),
             Column(
@@ -267,10 +263,9 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                 if (weightEntriesData.items.isNotEmpty)
                   Column(
                     children: [
-                      Container(
-                        padding: const EdgeInsets.all(15),
-                        height: 180,
-                        child: MeasurementChartWidget(weightEntriesData.items
+                      SizedBox(
+                        height: 200,
+                        child: MeasurementChartWidgetFl(weightEntriesData.items
                             .map((e) => MeasurementChartEntry(e.weight, e.date))
                             .toList()),
                       ),
@@ -325,9 +320,9 @@ class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget>
 
   @override
   Widget build(BuildContext context) {
-    final _provider = Provider.of<MeasurementProvider>(context, listen: false);
+    final provider = Provider.of<MeasurementProvider>(context, listen: false);
 
-    List<Widget> items = _provider.categories
+    final items = provider.categories
         .map<Widget>(
           (item) => CategoriesCard(
             item,
@@ -352,11 +347,11 @@ class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget>
             ListTile(
               title: Text(
                 AppLocalizations.of(context).measurements,
-                style: Theme.of(context).textTheme.headline4,
+                style: Theme.of(context).textTheme.headlineSmall,
               ),
-              leading: const FaIcon(
-                FontAwesomeIcons.weight,
-                color: Colors.black,
+              leading: FaIcon(
+                FontAwesomeIcons.chartLine,
+                color: Theme.of(context).textTheme.headlineSmall!.color,
               ),
               trailing: IconButton(
                 icon: const Icon(Icons.arrow_forward),
@@ -369,11 +364,12 @@ class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget>
             Column(
               children: [
                 if (items.isNotEmpty)
-                  Column(children: [
-                    CarouselSlider(
-                      items: items,
-                      carouselController: _controller,
-                      options: CarouselOptions(
+                  Column(
+                    children: [
+                      CarouselSlider(
+                        items: items,
+                        carouselController: _controller,
+                        options: CarouselOptions(
                           autoPlay: false,
                           enlargeCenterPage: false,
                           viewportFraction: 1,
@@ -383,31 +379,35 @@ class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget>
                             setState(() {
                               _current = index;
                             });
-                          }),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: items.asMap().entries.map((entry) {
-                          return GestureDetector(
-                            onTap: () => _controller.animateToPage(entry.key),
-                            child: Container(
-                              width: 12.0,
-                              height: 12.0,
-                              margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: (Theme.of(context).brightness == Brightness.dark
-                                          ? Colors.white
-                                          : wgerPrimaryColor)
-                                      .withOpacity(_current == entry.key ? 0.9 : 0.4)),
-                            ),
-                          );
-                        }).toList(),
+                          },
+                        ),
                       ),
-                    ),
-                  ])
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: items.asMap().entries.map((entry) {
+                            return GestureDetector(
+                              onTap: () => _controller.animateToPage(entry.key),
+                              child: Container(
+                                width: 12.0,
+                                height: 12.0,
+                                margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .headlineSmall!
+                                      .color!
+                                      .withOpacity(_current == entry.key ? 0.9 : 0.4),
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ],
+                  )
                 else
                   NothingFound(
                     AppLocalizations.of(context).noMeasurementEntries,
@@ -509,7 +509,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                         ],
                       )
                     : Container();
-              }).toList(),
+              }),
             ],
           ),
         ));
@@ -528,7 +528,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
           ListTile(
             title: Text(
               _hasContent ? _workoutPlan!.name : AppLocalizations.of(context).labelWorkoutPlan,
-              style: Theme.of(context).textTheme.headline4,
+              style: Theme.of(context).textTheme.headlineSmall,
             ),
             subtitle: Text(
               _hasContent
@@ -536,9 +536,9 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                       .format(_workoutPlan!.creationDate)
                   : '',
             ),
-            leading: const Icon(
-              Icons.fitness_center_outlined,
-              color: Colors.black,
+            leading: Icon(
+              Icons.fitness_center,
+              color: Theme.of(context).textTheme.headlineSmall!.color,
             ),
             trailing: getTrailing(),
             onTap: () {

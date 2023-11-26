@@ -152,10 +152,10 @@ void main() {
       await provider.fetchAndSetUnits();
       final prefsJson = jsonDecode(prefs.getString('workoutUnits')!);
 
-      expect(prefsJson["repetitionUnits"].length, 7);
-      expect(prefsJson["weightUnit"].length, 6);
-      expect(true, DateTime.parse(prefsJson["date"]).isBefore(DateTime.now()));
-      expect(true, DateTime.parse(prefsJson["expiresIn"]).isAfter(DateTime.now()));
+      expect(prefsJson['repetitionUnits'].length, 7);
+      expect(prefsJson['weightUnit'].length, 6);
+      expect(true, DateTime.parse(prefsJson['date']).isBefore(DateTime.now()));
+      expect(true, DateTime.parse(prefsJson['expiresIn']).isAfter(DateTime.now()));
     });
   });
 }

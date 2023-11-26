@@ -17,7 +17,6 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -215,11 +214,11 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
           ListTile(
             title: Text(
               AppLocalizations.of(context).calendar,
-              style: Theme.of(context).textTheme.headline4,
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
-            leading: const Icon(
-              Icons.calendar_today_outlined,
-              color: Colors.black,
+            leading: Icon(
+              Icons.calendar_today,
+              color: Theme.of(context).textTheme.headlineMedium!.color,
             ),
           ),
           TableCalendar<Event>(
@@ -238,7 +237,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
             rangeSelectionMode: _rangeSelectionMode,
             eventLoader: _getEventsForDay,
             startingDayOfWeek: StartingDayOfWeek.monday,
-            calendarStyle: wgerCalendarStyle,
+            calendarStyle: getWgerCalendarStyle(Theme.of(context)),
             onDaySelected: _onDaySelected,
             onRangeSelected: _onRangeSelected,
             onFormatChanged: (format) {},
@@ -271,7 +270,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
                           subtitle: Text(event.description),
                           //onTap: () => print('$event tapped!'),
                         ))
-                    .toList()
+                    
               ],
             ),
           ),

@@ -24,7 +24,6 @@ import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
 import 'package:wger/providers/nutrition.dart';
-import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/helpers.dart';
 
@@ -32,6 +31,7 @@ class NutritionalDiaryDetailWidget extends StatelessWidget {
   final NutritionalPlan _nutritionalPlan;
   final DateTime _date;
   static const double tablePadding = 7;
+
   const NutritionalDiaryDetailWidget(this._nutritionalPlan, this._date);
 
   Widget getTable(
@@ -41,8 +41,8 @@ class NutritionalDiaryDetailWidget extends StatelessWidget {
   ) {
     return Table(
       defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-      border: const TableBorder(
-        horizontalInside: BorderSide(width: 1, color: wgerTextMuted),
+      border: TableBorder(
+        horizontalInside: BorderSide(width: 1, color: Theme.of(context).colorScheme.outline),
       ),
       columnWidths: const {0: FractionColumnWidth(0.4)},
       children: [
@@ -223,7 +223,7 @@ class NutritionalDiaryDetailWidget extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(15),
                 height: 220,
-                child: NutritionalPlanPieChartWidget(valuesDate),
+                child: FlNutritionalPlanPieChartWidget(valuesDate),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),

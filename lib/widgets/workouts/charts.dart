@@ -16,66 +16,148 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
+import 'package:wger/helpers/charts.dart';
+import 'package:wger/helpers/colors.dart';
 
-/// Sample time series data type.
-class TimeSeriesLog {
-  final DateTime time;
-  final double weight;
-
-  TimeSeriesLog(this.time, this.weight);
-}
-
-class LogChartWidget extends StatelessWidget {
+class LogChartWidgetFl extends StatefulWidget {
   final Map _data;
   final DateTime _currentDate;
-  const LogChartWidget(this._data, this._currentDate);
+
+  const LogChartWidgetFl(this._data, this._currentDate);
 
   @override
+  State<LogChartWidgetFl> createState() => _LogChartWidgetFlState();
+}
+
+class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
+  @override
   Widget build(BuildContext context) {
-    return _data.containsKey('chart_data') && _data['chart_data'].length > 0
-        ? charts.TimeSeriesChart(
-            [
-              ..._data['chart_data'].map((e) {
-                return charts.Series<TimeSeriesLog, DateTime>(
-                  id: '${e.first['reps']} ${AppLocalizations.of(context).reps}',
-                  domainFn: (datum, index) => datum.time,
-                  measureFn: (datum, index) => datum.weight,
-                  data: [
-                    ...e.map(
-                      (entry) => TimeSeriesLog(
-                        DateTime.parse(entry['date']),
-                        double.parse(entry['weight']),
-                      ),
-                    ),
-                  ],
-                );
-              }),
-            ],
-            primaryMeasureAxis: const charts.NumericAxisSpec(
-              tickProviderSpec: charts.BasicNumericTickProviderSpec(zeroBound: false),
+    return AspectRatio(
+      aspectRatio: 1.70,
+      child: Padding(
+        padding: const EdgeInsets.only(
+          top: 24,
+          bottom: 12,
+        ),
+        child: LineChart(
+          mainData(),
+        ),
+      ),
+    );
+  }
+
+  LineTouchData tooltipData() {
+    return LineTouchData(
+      touchTooltipData: LineTouchTooltipData(
+        getTooltipItems: (touchedSpots) {
+          return touchedSpots.map((touchedSpot) {
+            final reps = widget._data['chart_data'][touchedSpot.barIndex].first['reps'];
+
+            return LineTooltipItem(
+              '$reps × ${touchedSpot.y} kg',
+              const TextStyle(color: Colors.white),
+            );
+          }).toList();
+        },
+      ),
+    );
+  }
+
+  LineChartData mainData() {
+    final colors = generateChartColors(widget._data['chart_data'].length).iterator;
+
+    return LineChartData(
+      lineTouchData: tooltipData(),
+      gridData: FlGridData(
+        show: true,
+        drawVerticalLine: true,
+        getDrawingHorizontalLine: (value) {
+          return const FlLine(
+            color: Colors.grey,
+            strokeWidth: 1,
+          );
+        },
+        getDrawingVerticalLine: (value) {
+          return const FlLine(
+            color: Colors.grey,
+            strokeWidth: 1,
+          );
+        },
+      ),
+      titlesData: FlTitlesData(
+        show: true,
+        rightTitles: const AxisTitles(
+          sideTitles: SideTitles(showTitles: false),
+        ),
+        topTitles: const AxisTitles(
+          sideTitles: SideTitles(showTitles: false),
+        ),
+        bottomTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            getTitlesWidget: (value, meta) {
+              // Don't show the first and last entries, otherwise they'll overlap with the
+              // calculated interval
+              if (value == meta.min || value == meta.max) {
+                return const Text('');
+              }
+
+              final DateTime date = DateTime.fromMillisecondsSinceEpoch(value.toInt());
+              return Text(
+                DateFormat.yMd(Localizations.localeOf(context).languageCode).format(date),
+              );
+            },
+            interval: chartGetInterval(
+              DateTime.parse(widget._data['logs'].keys.first),
+              DateTime.parse(widget._data['logs'].keys.last),
             ),
-            behaviors: [
-              charts.SeriesLegend(
-                position: charts.BehaviorPosition.bottom,
-                desiredMaxColumns: 4,
-              ),
-              charts.RangeAnnotation([
-                charts.LineAnnotationSegment(
-                  _currentDate, charts.RangeAnnotationAxisType.domain,
-                  strokeWidthPx: 2,
-                  labelPosition: charts.AnnotationLabelPosition.margin,
-                  color: charts.Color.black,
-                  dashPattern: [0, 1, 1, 1],
-                  //startLabel: DateFormat.yMd(Localizations.localeOf(context).languageCode)
-                  //      .format(_currentDate),
-                )
-              ]),
+          ),
+        ),
+        leftTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            reservedSize: 70,
+            getTitlesWidget: (value, meta) {
+              return Text('$value ${AppLocalizations.of(context).kg}');
+            },
+          ),
+        ),
+      ),
+      borderData: FlBorderData(
+        show: true,
+        border: Border.all(color: const Color(0xff37434d)),
+      ),
+      lineBarsData: [
+        ...widget._data['chart_data'].map((e) {
+          colors.moveNext();
+          return LineChartBarData(
+            spots: [
+              ...e.map(
+                (entry) => FlSpot(
+                  DateTime.parse(entry['date']).millisecondsSinceEpoch.toDouble(),
+                  double.parse(entry['weight']),
+                ),
+              )
             ],
-          )
-        : Container();
+            isCurved: true,
+            color: colors.current,
+            barWidth: 2,
+            isStrokeCapRound: true,
+            dotData: FlDotData(
+              show: true,
+              getDotPainter: (p0, p1, p2, p3) => FlDotCirclePainter(
+                radius: 2,
+                color: Colors.black,
+                strokeWidth: 0,
+              ),
+            ),
+          );
+        })
+      ],
+    );
   }
 }

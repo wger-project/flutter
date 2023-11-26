@@ -45,13 +45,13 @@ void main() {
 
   group('model', () {
     test('Test the individual values from the model', () {
-      WeightEntry _weightModel;
+      WeightEntry weightModel;
       //_weightModel = WeightEntry();
-      _weightModel = WeightEntry(id: 1, weight: 80, date: DateTime(2020, 10, 01));
+      weightModel = WeightEntry(id: 1, weight: 80, date: DateTime(2020, 10, 01));
 
-      expect(_weightModel.id, 1);
-      expect(_weightModel.weight, 80);
-      expect(_weightModel.date, DateTime(2020, 10, 01));
+      expect(weightModel.id, 1);
+      expect(weightModel.weight, 80);
+      expect(weightModel.date, DateTime(2020, 10, 01));
     });
   });
 }

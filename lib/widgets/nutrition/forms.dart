@@ -277,7 +277,7 @@ class IngredientLogForm extends StatelessWidget {
               // Stop keyboard from appearing
               decoration: InputDecoration(
                 labelText: AppLocalizations.of(context).date,
-                suffixIcon: const Icon(Icons.calendar_today_outlined),
+                suffixIcon: const Icon(Icons.calendar_today),
               ),
               enableInteractiveSelection: false,
               controller: _dateController,
@@ -320,8 +320,8 @@ class IngredientLogForm extends StatelessWidget {
             ),
             if (diaryEntries.isNotEmpty) const SizedBox(height: 10.0),
             Container(
-              child: Text(AppLocalizations.of(context).recentlyUsedIngredients),
               padding: const EdgeInsets.all(10.0),
+              child: Text(AppLocalizations.of(context).recentlyUsedIngredients),
             ),
             Expanded(
               child: ListView.builder(
@@ -512,24 +512,31 @@ class _PlanFormState extends State<PlanForm> {
               // Save to DB
               try {
                 if (widget._plan.id != null) {
-                  await Provider.of<NutritionPlansProvider>(context, listen: false)
-                      .editPlan(widget._plan);
-                  Navigator.of(context).pop();
+                  await Provider.of<NutritionPlansProvider>(context, listen: false).editPlan(_plan);
+                  if (context.mounted) {
+                    Navigator.of(context).pop();
+                  }
                 } else {
                   widget._plan = await Provider.of<NutritionPlansProvider>(context, listen: false)
                       .addPlan(widget._plan);
-                  Navigator.of(context).pushReplacementNamed(
-                    NutritionalPlanScreen.routeName,
-                    arguments: widget._plan,
-                  );
+                  if (context.mounted) {
+                    Navigator.of(context).pushReplacementNamed(
+                      NutritionalPlanScreen.routeName,
+                      arguments: widget._plan,
+                    );
+                  }
                 }
 
                 // Saving was successful, reset the data
                 _descriptionController.clear();
               } on WgerHttpException catch (error) {
-                showHttpExceptionErrorDialog(error, context);
+                if (context.mounted) {
+                  showHttpExceptionErrorDialog(error, context);
+                }
               } catch (error) {
-                showErrorDialog(error, context);
+                if (context.mounted) {
+                  showErrorDialog(error, context);
+                }
               }
             },
           ),

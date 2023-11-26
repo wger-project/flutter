@@ -26,7 +26,6 @@ import 'package:wger/models/workouts/setting.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/gym_mode.dart';
-import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/exercises/exercises.dart';
 import 'package:wger/widgets/exercises/images.dart';
@@ -50,8 +49,8 @@ class SettingWidget extends StatelessWidget {
     return ListTile(
       leading: InkWell(
         child: SizedBox(
-          child: ExerciseImageWidget(image: setting.exerciseBaseObj.getMainImage),
           width: 45,
+          child: ExerciseImageWidget(image: setting.exerciseBaseObj.getMainImage),
         ),
         onTap: () {
           showDialog(
@@ -76,11 +75,12 @@ class SettingWidget extends StatelessWidget {
         },
       ),
       title: Text(
-          setting.exerciseBaseObj.getExercise(Localizations.localeOf(context).languageCode).name),
+        setting.exerciseBaseObj.getExercise(Localizations.localeOf(context).languageCode).name,
+      ),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ...set.getSmartRepr(setting.exerciseBaseObj).map((e) => Text(e)).toList(),
+          ...set.getSmartRepr(setting.exerciseBaseObj).map((e) => Text(e)),
         ],
       ),
     );
@@ -140,7 +140,7 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
                       toggle: _toggleExpanded,
                     ),
                   )
-                  .toList(),
+                  ,
               const Divider(),
             ],
           ),
@@ -185,9 +185,9 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
                   ),
                   if (widget._day.sets.isNotEmpty)
                     Ink(
-                      decoration: const ShapeDecoration(
-                        color: wgerPrimaryButtonColor,
-                        shape: CircleBorder(),
+                      decoration: ShapeDecoration(
+                        color: Theme.of(context).primaryColor,
+                        shape: const CircleBorder(),
                       ),
                       child: IconButton(
                         icon: const Icon(Icons.play_arrow),
@@ -219,24 +219,24 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
                   ),
                 ],
               ),
-            const Divider(),
+            if (_expanded) const Divider(),
             ReorderableListView(
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               buildDefaultDragHandles: false,
-              onReorder: (_oldIndex, _newIndex) async {
-                int _startIndex = 0;
-                if (_oldIndex < _newIndex) {
-                  _newIndex -= 1;
-                  _startIndex = _oldIndex;
+              onReorder: (oldIndex, newIndex) async {
+                int startIndex = 0;
+                if (oldIndex < newIndex) {
+                  newIndex -= 1;
+                  startIndex = oldIndex;
                 } else {
-                  _startIndex = _newIndex;
+                  startIndex = newIndex;
                 }
                 setState(() {
-                  _sets.insert(_newIndex, _sets.removeAt(_oldIndex));
+                  _sets.insert(newIndex, _sets.removeAt(oldIndex));
                 });
                 _sets = await Provider.of<WorkoutPlansProvider>(context, listen: false)
-                    .reorderSets(_sets, _startIndex);
+                    .reorderSets(_sets, startIndex);
               },
               children: [
                 for (var i = 0; i < widget._day.sets.length; i++) getSetRow(widget._day.sets[i], i),
@@ -252,7 +252,6 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
                     AppLocalizations.of(context).newSet,
                     SetFormWidget(widget._day),
                     hasListView: true,
-                    backgroundColor: wgerBackground,
                     padding: EdgeInsets.zero,
                   ),
                 );
@@ -283,36 +282,8 @@ class DayHeaderDismissible extends StatelessWidget {
     return Dismissible(
       key: Key(_day.id.toString()),
       direction: DismissDirection.startToEnd,
-      child: Container(
-        padding: const EdgeInsets.all(10),
-        decoration: const BoxDecoration(color: Colors.white),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    _day.description,
-                    style: Theme.of(context).textTheme.headline5,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  Text(_day.getDaysTextTranslated(Localizations.localeOf(context).languageCode)),
-                ],
-              ),
-            ),
-            IconButton(
-              icon: _expanded ? const Icon(Icons.unfold_less) : const Icon(Icons.unfold_more),
-              onPressed: () {
-                _toggle();
-              },
-            ),
-          ],
-        ),
-      ),
       background: Container(
-        color: wgerPrimaryButtonColor, //Theme.of(context).primaryColor,
+        color: Theme.of(context).primaryColor,
         alignment: Alignment.centerLeft,
         padding: const EdgeInsets.only(left: 10),
         child: Column(
@@ -336,6 +307,34 @@ class DayHeaderDismissible extends StatelessWidget {
         }
         return false;
       },
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(color: Theme.of(context).colorScheme.inversePrimary),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    _day.description,
+                    style: Theme.of(context).textTheme.headlineSmall,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(_day.getDaysTextTranslated(Localizations.localeOf(context).languageCode)),
+                ],
+              ),
+            ),
+            IconButton(
+              icon: _expanded ? const Icon(Icons.unfold_less) : const Icon(Icons.unfold_more),
+              onPressed: () {
+                _toggle();
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

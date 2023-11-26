@@ -59,7 +59,7 @@ class _GymModeState extends State<GymMode> {
   var _totalElements = 1;
 
   /// Map with the first (navigation) page for each exercise
-  final Map<String, int> _exercisePages = {};
+  final Map<ExerciseBase, int> _exercisePages = {};
   final PageController _controller = PageController(
     initialPage: 0,
   );
@@ -89,7 +89,7 @@ class _GymModeState extends State<GymMode> {
             .findExerciseBaseById(setting.exerciseBaseId);
 
         if (firstPage) {
-          _exercisePages[exerciseBase.uuid!] = currentPage;
+          _exercisePages[exerciseBase] = currentPage;
           currentPage++;
         }
 
@@ -169,7 +169,7 @@ class _GymModeState extends State<GymMode> {
 class StartPage extends StatelessWidget {
   final PageController _controller;
   final Day _day;
-  final Map<String, int> _exercisePages;
+  final Map<ExerciseBase, int> _exercisePages;
 
   const StartPage(this._controller, this._day, this._exercisePages);
 
@@ -197,21 +197,21 @@ class StartPage extends StatelessWidget {
                               s.exerciseBaseObj
                                   .getExercise(Localizations.localeOf(context).languageCode)
                                   .name,
-                              style: Theme.of(context).textTheme.headline6,
+                              style: Theme.of(context).textTheme.titleLarge,
                             ),
-                            ...set.getSmartRepr(s.exerciseBaseObj).map((e) => Text(e)).toList(),
+                            ...set.getSmartRepr(s.exerciseBaseObj).map((e) => Text(e)),
                             const SizedBox(height: 15),
                           ],
                         );
-                      }).toList(),
+                      }),
                     ],
                   );
                 },
-              ).toList(),
+              ),
             ],
           ),
         ),
-        ElevatedButton(
+        FilledButton(
           child: Text(AppLocalizations.of(context).start),
           onPressed: () {
             _controller.nextPage(
@@ -235,7 +235,7 @@ class LogPage extends StatefulWidget {
   final ExerciseBase _exerciseBase;
   final WorkoutPlan _workoutPlan;
   final double _ratioCompleted;
-  final Map<String, int> _exercisePages;
+  final Map<ExerciseBase, int> _exercisePages;
   final Log _log = Log.empty();
 
   LogPage(
@@ -426,7 +426,7 @@ class _LogPageState extends State<LogPage> {
         children: [
           Text(
             AppLocalizations.of(context).newEntry,
-            style: Theme.of(context).textTheme.headline6,
+            style: Theme.of(context).textTheme.titleLarge,
             textAlign: TextAlign.center,
           ),
           if (!_detailed)
@@ -466,15 +466,6 @@ class _LogPageState extends State<LogPage> {
             },
           ),
           ElevatedButton(
-            child: (!_isSaving)
-                ? Text(AppLocalizations.of(context).save)
-                : const SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                    ),
-                  ),
             onPressed: _isSaving
                 ? null
                 : () async {
@@ -505,13 +496,26 @@ class _LogPageState extends State<LogPage> {
                       );
                       _isSaving = false;
                     } on WgerHttpException catch (error) {
-                      showHttpExceptionErrorDialog(error, context);
+                      if (mounted) {
+                        showHttpExceptionErrorDialog(error, context);
+                      }
                       _isSaving = false;
                     } catch (error) {
-                      showErrorDialog(error, context);
+                      if (mounted) {
+                        showErrorDialog(error, context);
+                      }
                       _isSaving = false;
                     }
                   },
+            child: (!_isSaving)
+                ? Text(AppLocalizations.of(context).save)
+                : const SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
+                  ),
           ),
         ],
       ),
@@ -523,7 +527,7 @@ class _LogPageState extends State<LogPage> {
       children: [
         Text(
           AppLocalizations.of(context).labelWorkoutLogs,
-          style: Theme.of(context).textTheme.headline6,
+          style: Theme.of(context).textTheme.titleLarge,
           textAlign: TextAlign.center,
         ),
         ...widget._workoutPlan
@@ -552,7 +556,7 @@ class _LogPageState extends State<LogPage> {
             },
             contentPadding: const EdgeInsets.symmetric(horizontal: 40),
           );
-        }).toList(),
+        }),
       ],
     );
   }
@@ -569,7 +573,7 @@ class _LogPageState extends State<LogPage> {
       children: [
         Text(
           AppLocalizations.of(context).plateCalculator,
-          style: Theme.of(context).textTheme.headline6,
+          style: Theme.of(context).textTheme.titleLarge,
         ),
         SizedBox(
           height: 35,
@@ -577,37 +581,35 @@ class _LogPageState extends State<LogPage> {
               ? Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    ...groupedPlates.keys
-                        .map(
-                          (key) => Row(
-                            children: [
-                              Text(groupedPlates[key].toString()),
-                              const Text('×'),
-                              Container(
-                                decoration: const BoxDecoration(
-                                  color: wgerPrimaryColorLight,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 3),
-                                  child: SizedBox(
-                                    height: 35,
-                                    width: 35,
-                                    child: Align(
-                                      alignment: Alignment.center,
-                                      child: Text(
-                                        key.toString(),
-                                        style: const TextStyle(fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
+                    ...groupedPlates.keys.map(
+                      (key) => Row(
+                        children: [
+                          Text(groupedPlates[key].toString()),
+                          const Text('×'),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.primaryContainer,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 3),
+                              child: SizedBox(
+                                height: 35,
+                                width: 35,
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    key.toString(),
+                                    style: const TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 10),
-                            ],
+                            ),
                           ),
-                        )
-                        .toList()
+                          const SizedBox(width: 10),
+                        ],
+                      ),
+                    )
                   ],
                 )
               : MutedText(AppLocalizations.of(context).plateCalculatorNotDivisible),
@@ -629,7 +631,7 @@ class _LogPageState extends State<LogPage> {
         Center(
           child: Text(
             widget._setting.singleSettingRepText,
-            style: Theme.of(context).textTheme.headline3,
+            style: Theme.of(context).textTheme.headlineMedium,
             textAlign: TextAlign.center,
           ),
         ),
@@ -649,7 +651,6 @@ class _LogPageState extends State<LogPage> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Card(
-            color: wgerBackground,
             child: getForm(),
           ),
         ),
@@ -663,7 +664,7 @@ class ExerciseOverview extends StatelessWidget {
   final PageController _controller;
   final ExerciseBase _exerciseBase;
   final double _ratioCompleted;
-  final Map<String, int> _exercisePages;
+  final Map<ExerciseBase, int> _exercisePages;
 
   const ExerciseOverview(
     this._controller,
@@ -688,16 +689,14 @@ class ExerciseOverview extends StatelessWidget {
             children: [
               Text(
                 getTranslation(_exerciseBase.category.name, context),
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context).textTheme.titleLarge,
                 textAlign: TextAlign.center,
               ),
-              ..._exerciseBase.equipment
-                  .map((e) => Text(
-                        getTranslation(e.name, context),
-                        style: Theme.of(context).textTheme.headline6,
-                        textAlign: TextAlign.center,
-                      ))
-                  .toList(),
+              ..._exerciseBase.equipment.map((e) => Text(
+                    getTranslation(e.name, context),
+                    style: Theme.of(context).textTheme.titleLarge,
+                    textAlign: TextAlign.center,
+                  )),
               if (_exerciseBase.images.isNotEmpty)
                 SizedBox(
                   width: double.infinity,
@@ -705,7 +704,7 @@ class ExerciseOverview extends StatelessWidget {
                   child: ListView(
                     scrollDirection: Axis.horizontal,
                     children: [
-                      ..._exerciseBase.images.map((e) => ExerciseImageWidget(image: e)).toList(),
+                      ..._exerciseBase.images.map((e) => ExerciseImageWidget(image: e)),
                     ],
                   ),
                 ),
@@ -726,7 +725,7 @@ class SessionPage extends StatefulWidget {
   final WorkoutPlan _workoutPlan;
   final PageController _controller;
   final TimeOfDay _start;
-  final Map<String, int> _exercisePages;
+  final Map<ExerciseBase, int> _exercisePages;
 
   const SessionPage(
     this._workoutPlan,
@@ -781,17 +780,6 @@ class _SessionPageState extends State<SessionPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ToggleButtons(
-                  children: const <Widget>[
-                    Icon(
-                      Icons.sentiment_very_dissatisfied,
-                    ),
-                    Icon(
-                      Icons.sentiment_neutral,
-                    ),
-                    Icon(
-                      Icons.sentiment_very_satisfied,
-                    ),
-                  ],
                   renderBorder: false,
                   onPressed: (int index) {
                     setState(() {
@@ -809,6 +797,17 @@ class _SessionPageState extends State<SessionPage> {
                     });
                   },
                   isSelected: selectedImpression,
+                  children: const <Widget>[
+                    Icon(
+                      Icons.sentiment_very_dissatisfied,
+                    ),
+                    Icon(
+                      Icons.sentiment_neutral,
+                    ),
+                    Icon(
+                      Icons.sentiment_very_satisfied,
+                    ),
+                  ],
                 ),
                 TextFormField(
                   decoration: InputDecoration(
@@ -902,11 +901,17 @@ class _SessionPageState extends State<SessionPage> {
                     try {
                       await Provider.of<WorkoutPlansProvider>(context, listen: false)
                           .addSession(_session);
-                      Navigator.of(context).pop();
+                      if (mounted) {
+                        Navigator.of(context).pop();
+                      }
                     } on WgerHttpException catch (error) {
-                      showHttpExceptionErrorDialog(error, context);
+                      if (mounted) {
+                        showHttpExceptionErrorDialog(error, context);
+                      }
                     } catch (error) {
-                      showErrorDialog(error, context);
+                      if (mounted) {
+                        showErrorDialog(error, context);
+                      }
                     }
                   },
                 ),
@@ -927,9 +932,13 @@ class _SessionPageState extends State<SessionPage> {
 class TimerWidget extends StatefulWidget {
   final PageController _controller;
   final double _ratioCompleted;
-  final Map<String, int> _exercisePages;
+  final Map<ExerciseBase, int> _exercisePages;
 
-  const TimerWidget(this._controller, this._ratioCompleted, this._exercisePages);
+  const TimerWidget(
+    this._controller,
+    this._ratioCompleted,
+    this._exercisePages,
+  );
 
   @override
   _TimerWidgetState createState() => _TimerWidgetState();
@@ -992,7 +1001,7 @@ class _TimerWidgetState extends State<TimerWidget> {
           child: Center(
             child: Text(
               DateFormat('m:ss').format(today.add(Duration(seconds: _seconds))),
-              style: Theme.of(context).textTheme.headline1!.copyWith(color: wgerPrimaryColor),
+              style: Theme.of(context).textTheme.displayLarge!.copyWith(color: wgerPrimaryColor),
             ),
           ),
         ),
@@ -1054,7 +1063,7 @@ class NavigationFooter extends StatelessWidget {
 class NavigationHeader extends StatelessWidget {
   final PageController _controller;
   final String _title;
-  final Map<String, int> exercisePages;
+  final Map<ExerciseBase, int> exercisePages;
 
   const NavigationHeader(
     this._title,
@@ -1074,7 +1083,7 @@ class NavigationHeader extends StatelessWidget {
           children: [
             ...exercisePages.keys.map((e) {
               return ListTile(
-                title: Text(e),
+                title: Text(e.getExercise(Localizations.localeOf(context).languageCode).name),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {
                   _controller.animateToPage(
@@ -1085,7 +1094,7 @@ class NavigationHeader extends StatelessWidget {
                   Navigator.of(context).pop();
                 },
               );
-            }).toList(),
+            }),
           ],
         ),
       ),
@@ -1115,7 +1124,7 @@ class NavigationHeader extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: Text(
               _title,
-              style: Theme.of(context).textTheme.headline5,
+              style: Theme.of(context).textTheme.headlineSmall,
               textAlign: TextAlign.center,
             ),
           ),

@@ -25,18 +25,14 @@ import 'categories_card.dart';
 class CategoriesList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final _provider = Provider.of<MeasurementProvider>(context, listen: false);
+    final provider = Provider.of<MeasurementProvider>(context, listen: false);
 
     return RefreshIndicator(
-      onRefresh: () => _provider.fetchAndSetAllCategoriesAndEntries(),
+      onRefresh: () => provider.fetchAndSetAllCategoriesAndEntries(),
       child: ListView.builder(
         padding: const EdgeInsets.all(10.0),
-        itemCount: _provider.categories.length,
-        itemBuilder: (context, index) {
-          final currentCategory = _provider.categories[index];
-
-          return CategoriesCard(currentCategory);
-        },
+        itemCount: provider.categories.length,
+        itemBuilder: (context, index) => CategoriesCard(provider.categories[index]),
       ),
     );
   }

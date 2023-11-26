@@ -32,7 +32,7 @@ class NutritionalPlansList extends StatelessWidget {
   Widget build(BuildContext context) {
     return RefreshIndicator(
       onRefresh: () => _nutritionProvider.fetchAndSetAllPlansSparse(),
-      child: _nutritionProvider.items.length == 0
+      child: _nutritionProvider.items.isEmpty
           ? TextPrompt()
           : ListView.builder(
               padding: const EdgeInsets.all(10.0),
@@ -58,7 +58,7 @@ class NutritionalPlansList extends StatelessWidget {
                               TextButton(
                                 child: Text(
                                   AppLocalizations.of(context).delete,
-                                  style: TextStyle(color: Theme.of(context).errorColor),
+                                  style: TextStyle(color: Theme.of(context).colorScheme.error),
                                 ),
                                 onPressed: () {
                                   // Confirmed, delete the workout
@@ -84,7 +84,7 @@ class NutritionalPlansList extends StatelessWidget {
                     return res;
                   },
                   background: Container(
-                    color: Theme.of(context).errorColor,
+                    color: Theme.of(context).colorScheme.error,
                     alignment: Alignment.centerRight,
                     padding: const EdgeInsets.only(right: 20),
                     margin: const EdgeInsets.symmetric(

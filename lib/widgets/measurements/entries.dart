@@ -24,7 +24,7 @@ import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/theme/theme.dart';
-import 'package:wger/widgets/core/charts.dart';
+import 'package:wger/widgets/measurements/charts.dart';
 
 import 'forms.dart';
 
@@ -37,10 +37,9 @@ class EntriesList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(children: [
       Container(
-        color: Theme.of(context).cardColor,
         padding: const EdgeInsets.all(10),
         height: 220,
-        child: MeasurementChartWidget(
+        child: MeasurementChartWidgetFl(
           _category.entries.map((e) => MeasurementChartEntry(e.value, e.date)).toList(),
           unit: _category.unit,
         ),
@@ -87,7 +86,7 @@ class EntriesList extends StatelessWidget {
                 return true;
               },
               secondaryBackground: Container(
-                color: Theme.of(context).errorColor,
+                color: Theme.of(context).colorScheme.error,
                 alignment: Alignment.centerRight,
                 padding: const EdgeInsets.only(right: 20),
                 margin: const EdgeInsets.symmetric(
@@ -114,7 +113,7 @@ class EntriesList extends StatelessWidget {
               ),
               child: Card(
                 child: ListTile(
-                  title: Text('${currentEntry.value.toString()} ${_category.unit}'),
+                  title: Text('${currentEntry.value} ${_category.unit}'),
                   subtitle: Text(
                     DateFormat.yMd(Localizations.localeOf(context).languageCode)
                         .format(currentEntry.date),

@@ -17,7 +17,6 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:video_player/video_player.dart';
 import 'package:wger/models/exercises/video.dart';
 
@@ -69,7 +68,7 @@ class _ExerciseVideoWidgetState extends State<ExerciseVideoWidget> {
 ///
 /// Taken from this example: https://pub.dev/packages/video_player/example
 class _ControlsOverlay extends StatelessWidget {
-  const _ControlsOverlay({Key? key, required this.controller}) : super(key: key);
+  const _ControlsOverlay({required this.controller});
 
   static const _playbackRates = [
     0.25,

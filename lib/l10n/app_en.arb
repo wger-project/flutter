@@ -471,6 +471,14 @@
   "@aboutContactUsText": {
     "description": "Text for contact us section in the about dialog"
   },
+  "aboutMastodonTitle": "Mastodon",
+  "@aboutMastodonTitle": {
+    "description": "Title for mastodon section in the about dialog"
+  },
+  "aboutMastodonText": "Follow us on mastodon for updates and news about the project",
+  "@aboutMastodonText": {
+    "description": "Text for the mastodon section in the about dialog"
+  },
   "aboutTranslationTitle": "Translation",
   "@aboutTranslationTitle": {
     "description": "Title for translation section in the about dialog"

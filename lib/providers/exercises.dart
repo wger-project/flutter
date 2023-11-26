@@ -65,7 +65,7 @@ class ExercisesProvider with ChangeNotifier {
   List<Muscle> _muscles = [];
   List<Equipment> _equipment = [];
   List<Language> _languages = [];
-  List<Variation> _variations = [];
+  final List<Variation> _variations = [];
 
   Filters? _filters;
 
@@ -522,7 +522,7 @@ class Filters {
       exerciseCategories: exerciseCategories ?? this.exerciseCategories,
       equipment: equipment ?? this.equipment,
       searchTerm: searchTerm ?? this.searchTerm,
-      doesNeedUpdate: doesNeedUpdate ?? this._doesNeedUpdate,
+      doesNeedUpdate: doesNeedUpdate ?? _doesNeedUpdate,
     );
   }
 }

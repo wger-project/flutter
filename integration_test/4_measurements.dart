@@ -24,7 +24,7 @@ Widget createMeasurementScreen({locale = 'en'}) {
       debugShowCheckedModeBanner: false,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      theme: wgerTheme,
+      theme: wgerLightTheme,
       home: MeasurementCategoriesScreen(),
     ),
   );

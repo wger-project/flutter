@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wger/widgets/core/app_bar.dart';
@@ -36,6 +35,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Scaffold(
       appBar: MainAppBar(AppLocalizations.of(context).labelDashboard),
       body: SingleChildScrollView(
+        padding: const EdgeInsets.all(10),
         child: Column(
           children: [
             DashboardWorkoutWidget(),

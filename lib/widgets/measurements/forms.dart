@@ -17,7 +17,6 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/exceptions/http_exception.dart';
@@ -110,11 +109,17 @@ class MeasurementCategoryForm extends StatelessWidget {
                     : await Provider.of<MeasurementProvider>(context, listen: false).editCategory(
                         categoryData['id'], categoryData['name'], categoryData['unit']);
               } on WgerHttpException catch (error) {
-                showHttpExceptionErrorDialog(error, context);
+                if (context.mounted) {
+                  showHttpExceptionErrorDialog(error, context);
+                }
               } catch (error) {
-                showErrorDialog(error, context);
+                if (context.mounted) {
+                  showErrorDialog(error, context);
+                }
               }
-              Navigator.of(context).pop();
+              if (context.mounted) {
+                Navigator.of(context).pop();
+              }
             },
           ),
         ],
@@ -272,11 +277,17 @@ class MeasurementEntryForm extends StatelessWidget {
                         _entryData['date'],
                       );
               } on WgerHttpException catch (error) {
-                showHttpExceptionErrorDialog(error, context);
+                if (context.mounted) {
+                  showHttpExceptionErrorDialog(error, context);
+                }
               } catch (error) {
-                showErrorDialog(error, context);
+                if (context.mounted) {
+                  showErrorDialog(error, context);
+                }
               }
-              Navigator.of(context).pop();
+              if (context.mounted) {
+                Navigator.of(context).pop();
+              }
             },
           ),
         ],

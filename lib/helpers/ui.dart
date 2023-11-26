@@ -125,7 +125,7 @@ dynamic showDeleteDialog(
             TextButton(
               child: Text(
                 AppLocalizations.of(context).delete,
-                style: TextStyle(color: Theme.of(context).errorColor),
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
               ),
               onPressed: () {
                 exerciseData[exercise]!.removeWhere((el) => el.id == log.id);

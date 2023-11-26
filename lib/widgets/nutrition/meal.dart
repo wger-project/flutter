@@ -25,7 +25,6 @@ import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/form_screen.dart';
-import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/helpers.dart';
@@ -85,9 +84,9 @@ class _MealWidgetState extends State<MealWidget> {
                   ),
                   if (widget._meal.mealItems.isNotEmpty)
                     Ink(
-                      decoration: const ShapeDecoration(
-                        color: wgerPrimaryButtonColor,
-                        shape: CircleBorder(),
+                      decoration: ShapeDecoration(
+                        color: Theme.of(context).primaryColor, //wgerPrimaryButtonColor,
+                        shape: const CircleBorder(),
                       ),
                       child: IconButton(
                         icon: const Icon(Icons.history_edu),
@@ -121,8 +120,8 @@ class _MealWidgetState extends State<MealWidget> {
                   ),
                 ],
               ),
-            const Divider(),
-            ...widget._meal.mealItems.map((item) => MealItemWidget(item, _expanded)).toList(),
+            if (_expanded) const Divider(),
+            ...widget._meal.mealItems.map((item) => MealItemWidget(item, _expanded)),
             OutlinedButton(
               child: Text(AppLocalizations.of(context).addIngredient),
               onPressed: () {
@@ -223,39 +222,8 @@ class DismissibleMealHeader extends StatelessWidget {
     return Dismissible(
       key: Key(_meal.id.toString()),
       direction: DismissDirection.startToEnd,
-      child: Container(
-        padding: const EdgeInsets.all(10),
-        decoration: const BoxDecoration(color: Colors.white),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (_meal.name != '')
-              Text(
-                _meal.name,
-                style: Theme.of(context).textTheme.headline5,
-              ),
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    _meal.time!.format(context),
-                    style: Theme.of(context).textTheme.headline5,
-                  ),
-                ),
-                IconButton(
-                  visualDensity: VisualDensity.compact,
-                  icon: _expanded ? const Icon(Icons.unfold_less) : const Icon(Icons.unfold_more),
-                  onPressed: () {
-                    _toggle();
-                  },
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
       background: Container(
-        color: wgerPrimaryButtonColor, //Theme.of(context).primaryColor,
+        color: Theme.of(context).primaryColor, //wgerPrimaryButtonColor,
         alignment: Alignment.centerLeft,
         padding: const EdgeInsets.only(left: 10),
         child: Column(
@@ -287,6 +255,37 @@ class DismissibleMealHeader extends StatelessWidget {
         }
         return false;
       },
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(color: Theme.of(context).colorScheme.inversePrimary),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (_meal.name != '')
+              Text(
+                _meal.name,
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    _meal.time!.format(context),
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                ),
+                IconButton(
+                  visualDensity: VisualDensity.compact,
+                  icon: _expanded ? const Icon(Icons.unfold_less) : const Icon(Icons.unfold_more),
+                  onPressed: () {
+                    _toggle();
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

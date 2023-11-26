@@ -1,36 +1,36 @@
 import 'package:flutter/material.dart';
-
-import '../../models/measurements/measurement_category.dart';
-import '../../screens/form_screen.dart';
-import '../../screens/measurement_entries_screen.dart';
-import '../core/charts.dart';
-import 'forms.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class CategoriesCard extends StatelessWidget {
-  MeasurementCategory currentCategory;
-  double? elevation;
+import 'package:wger/models/measurements/measurement_category.dart';
+import 'package:wger/screens/form_screen.dart';
+import 'package:wger/screens/measurement_entries_screen.dart';
+import 'charts.dart';
+import 'forms.dart';
 
-  CategoriesCard(this.currentCategory, {this.elevation});
+class CategoriesCard extends StatelessWidget {
+  final MeasurementCategory currentCategory;
+  final double? elevation;
+
+  const CategoriesCard(this.currentCategory, {this.elevation});
 
   @override
   Widget build(BuildContext context) {
     return Card(
       elevation: elevation,
+      color: Theme.of(context).colorScheme.onInverseSurface,
       child: Column(
         children: [
           Padding(
             padding: const EdgeInsets.only(top: 5),
             child: Text(
               currentCategory.name,
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
           ),
           Container(
-            color: Colors.white,
             padding: const EdgeInsets.all(10),
             height: 220,
-            child: MeasurementChartWidget(
+            child: MeasurementChartWidgetFl(
               currentCategory.entries.map((e) => MeasurementChartEntry(e.value, e.date)).toList(),
               unit: currentCategory.unit,
             ),

@@ -22,7 +22,7 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
         children: [
           Text(
             AppLocalizations.of(context).add_exercise_image_license,
-            style: Theme.of(context).textTheme.caption,
+            style: Theme.of(context).textTheme.bodySmall,
           ),
           Consumer<AddExerciseProvider>(
             builder: (ctx, provider, __) => provider.exerciseImages.isNotEmpty
@@ -45,7 +45,7 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
           ),
           Text(
             'Only JPEG, PNG and WEBP files below 20 MB are supported',
-            style: Theme.of(context).textTheme.caption,
+            style: Theme.of(context).textTheme.bodySmall,
           )
         ],
       ),

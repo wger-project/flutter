@@ -31,7 +31,6 @@ import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
-import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/exercises/images.dart';
 
 class WorkoutForm extends StatelessWidget {
@@ -104,15 +103,19 @@ class WorkoutForm extends StatelessWidget {
               // Save to DB
               if (_plan.id != null) {
                 await Provider.of<WorkoutPlansProvider>(context, listen: false).editWorkout(_plan);
-                Navigator.of(context).pop();
+                if (context.mounted) {
+                  Navigator.of(context).pop();
+                }
               } else {
                 final WorkoutPlan newPlan =
                     await Provider.of<WorkoutPlansProvider>(context, listen: false)
                         .addWorkout(_plan);
-                Navigator.of(context).pushReplacementNamed(
-                  WorkoutPlanScreen.routeName,
-                  arguments: newPlan,
-                );
+                if (context.mounted) {
+                  Navigator.of(context).pushReplacementNamed(
+                    WorkoutPlanScreen.routeName,
+                    arguments: newPlan,
+                  );
+                }
               }
             },
           ),
@@ -206,7 +209,7 @@ class _DayFormWidgetState extends State<DayFormWidget> {
             },
           ),
           const SizedBox(height: 10),
-          ...Day.weekdays.keys.map((dayNr) => DayCheckbox(dayNr, widget._day)).toList(),
+          ...Day.weekdays.keys.map((dayNr) => DayCheckbox(dayNr, widget._day)),
           ElevatedButton(
             key: const Key(SUBMIT_BUTTON_KEY_NAME),
             child: Text(AppLocalizations.of(context).save),
@@ -319,7 +322,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
         children: [
           Container(
             padding: const EdgeInsets.only(top: 10),
-            color: wgerPrimaryColorLight,
+            color: Theme.of(context).colorScheme.primaryContainer,
             child: Column(
               //crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -337,6 +340,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                       addSettings();
                     });
                   },
+                  inactiveColor: Theme.of(context).colorScheme.background,
                 ),
                 if (widget._set.settings.isNotEmpty)
                   SwitchListTile(
@@ -424,7 +428,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                         },
                         onSuggestionSelected: (ExerciseBase exerciseSuggestion) {
                           addExercise(exerciseSuggestion);
-                          this._exercisesController.text = '';
+                          _exercisesController.text = '';
                         },
                         validator: (value) {
                           // At least one exercise must be selected
@@ -506,7 +510,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                         ),
                     ],
                   );
-                }).toList(),
+                }),
                 ElevatedButton(
                   key: const Key(SUBMIT_BUTTON_KEY_NAME),
                   child: Text(AppLocalizations.of(context).save),
@@ -541,7 +545,9 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                     widget._day.sets.add(widget._set);
 
                     // Close the bottom sheet
-                    Navigator.of(context).pop();
+                    if (context.mounted) {
+                      Navigator.of(context).pop();
+                    }
                   },
                 ),
               ],
@@ -582,7 +588,7 @@ class ExerciseSetting extends StatelessWidget {
             children: [
               Text(
                 AppLocalizations.of(context).setNr(i + 1),
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context).textTheme.titleLarge,
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -655,7 +661,7 @@ class ExerciseSetting extends StatelessWidget {
             ListTile(
               title: Text(
                 _exerciseBase.getExercise(Localizations.localeOf(context).languageCode).name,
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context).textTheme.titleLarge,
               ),
               subtitle: Text(_exerciseBase.category.name),
               contentPadding: EdgeInsets.zero,
@@ -794,7 +800,7 @@ class _RiRInputWidgetState extends State<RiRInputWidget> {
     if (value < 0) {
       return AppLocalizations.of(context).rirNotUsed;
     }
-    return '${value.toString()} ${AppLocalizations.of(context).rir}';
+    return '$value ${AppLocalizations.of(context).rir}';
   }
 
   String mapDoubleToAllowedRir(double value) {
@@ -842,7 +848,7 @@ class _RiRInputWidgetState extends State<RiRInputWidget> {
 class WeightUnitInputWidget extends StatefulWidget {
   final dynamic _setting;
 
-  const WeightUnitInputWidget(this._setting, {Key? key}) : super(key: key);
+  const WeightUnitInputWidget(this._setting, {super.key});
 
   @override
   _WeightUnitInputWidgetState createState() => _WeightUnitInputWidgetState();

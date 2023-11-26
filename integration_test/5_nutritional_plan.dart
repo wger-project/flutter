@@ -14,7 +14,7 @@ import 'package:wger/theme/theme.dart';
 import '../test/user/provider_test.mocks.dart';
 
 Widget createNutritionalPlanScreen({locale = 'en'}) {
-  var mockBaseProvider = MockWgerBaseProvider();
+  final mockBaseProvider = MockWgerBaseProvider();
 
   final key = GlobalKey<NavigatorState>();
 
@@ -107,7 +107,7 @@ Widget createNutritionalPlanScreen({locale = 'en'}) {
       debugShowCheckedModeBanner: false,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      theme: wgerTheme,
+      theme: wgerLightTheme,
       navigatorKey: key,
       home: TextButton(
         onPressed: () => key.currentState!.push(
