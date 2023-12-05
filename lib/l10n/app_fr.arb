@@ -7,7 +7,7 @@
   "@weight": {
     "description": "The weight of a workout log or body weight entry"
   },
-  "confirmDelete": "Êtes-vous sûr·e de vouloir supprimer « {toDelete} » ?",
+  "confirmDelete": "Êtes-vous sûre de vouloir supprimer « {toDelete} » ?",
   "@confirmDelete": {
     "description": "Confirmation text before the user deletes an object",
     "type": "text",
@@ -648,7 +648,7 @@
   "@glutes": {},
   "kilometers": "Kilomètres",
   "@kilometers": {},
-  "barbell": "Haltères",
+  "barbell": "Barre",
   "@barbell": {},
   "lower_back": "Bas du dos",
   "@lower_back": {},

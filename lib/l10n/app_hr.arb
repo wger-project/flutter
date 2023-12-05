@@ -811,5 +811,13 @@
   "lower_back": "Donji dio leđa",
   "@lower_back": {
     "description": "Generated entry for translation for server strings"
+  },
+  "aboutMastodonTitle": "Mastodon",
+  "@aboutMastodonTitle": {
+    "description": "Title for mastodon section in the about dialog"
+  },
+  "aboutMastodonText": "Prati nas na Mastodonu za nove verzije i novosti o projektu",
+  "@aboutMastodonText": {
+    "description": "Text for the mastodon section in the about dialog"
   }
 }
