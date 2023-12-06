@@ -194,7 +194,7 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
                       ),
                       TextButton.icon(
                         icon: const Icon(Icons.calendar_month),
-                        label: Text(AppLocalizations.of(context).editSchedule),
+                        label: Text(AppLocalizations.of(context).edit),
                         onPressed: () {
                           Navigator.pushNamed(
                             context,
