@@ -18,7 +18,8 @@ void main(List<String> arguments) async {
         'You must run this script with a metadata file argument, using the --meta flag.');
   }
   if (arguments.length == metaIndex + 1) {
-    throw Exception('The --meta flag must be followed by the path to the metadata file.');
+    throw Exception(
+        'The --meta flag must be followed by the path to the metadata file.');
   }
 
   final metaFile = File(arguments[metaIndex + 1]);
@@ -30,14 +31,18 @@ void main(List<String> arguments) async {
 
   final fetchFromGithub = arguments.contains('--github');
 
-  final outputDir = Directory('${Directory.current.path}/flatpak_generator_exports');
+  final outputDir =
+      Directory('${Directory.current.path}/flatpak_generator_exports');
   outputDir.createSync();
 
-  final packageGenerator = PackageGenerator(inputDir: metaFile.parent, meta: meta);
+  final packageGenerator =
+      PackageGenerator(inputDir: metaFile.parent, meta: meta);
 
   packageGenerator.generatePackage(
     outputDir,
-    PackageGenerator.runningOnARM() ? CPUArchitecture.aarch64 : CPUArchitecture.x86_64,
+    PackageGenerator.runningOnARM()
+        ? CPUArchitecture.aarch64
+        : CPUArchitecture.x86_64,
     fetchFromGithub,
   );
 }
@@ -49,8 +54,8 @@ class PackageGenerator {
 
   PackageGenerator({required this.inputDir, required this.meta});
 
-  Future<void> generatePackage(
-      Directory outputDir, CPUArchitecture arch, bool fetchReleasesFromGithub) async {
+  Future<void> generatePackage(Directory outputDir, CPUArchitecture arch,
+      bool fetchReleasesFromGithub) async {
     final tempDir = outputDir.createTempSync('flutter_generator_temp');
     final appId = meta.appId;
 
@@ -85,7 +90,8 @@ class PackageGenerator {
     }
 
     final editedAppDataContent = AppDataModifier.replaceVersions(
-        origAppDataFile.readAsStringSync(), await meta.getReleases(fetchReleasesFromGithub));
+        origAppDataFile.readAsStringSync(),
+        await meta.getReleases(fetchReleasesFromGithub));
 
     final editedAppDataFile = File('${tempDir.path}/$appId.appdata.xml');
     editedAppDataFile.writeAsStringSync(editedAppDataContent);
@@ -101,17 +107,21 @@ class PackageGenerator {
     final destDir = Directory('${tempDir.path}/bin');
     destDir.createSync();
 
-    final baseFileName = '${meta.lowercaseAppName}-linux-${arch.flatpakArchCode}';
+    final baseFileName =
+        '${meta.lowercaseAppName}-linux-${arch.flatpakArchCode}';
 
     final packagePath = '${outputDir.absolute.path}/$baseFileName.tar.gz';
-    Process.runSync('cp', ['-r', '${buildDir.absolute.path}/.', destDir.absolute.path]);
-    Process.runSync('tar', ['-czvf', packagePath, '.'], workingDirectory: tempDir.absolute.path);
+    Process.runSync(
+        'cp', ['-r', '${buildDir.absolute.path}/.', destDir.absolute.path]);
+    Process.runSync('tar', ['-czvf', packagePath, '.'],
+        workingDirectory: tempDir.absolute.path);
     print('Generated $packagePath');
 
     final preShasum = Process.runSync('shasum', ['-a', '256', packagePath]);
     final sha256 = preShasum.stdout.toString().split(' ').first;
 
-    final shaFile = await File('${outputDir.path}/$baseFileName.sha256').writeAsString(sha256);
+    final shaFile = await File('${outputDir.path}/$baseFileName.sha256')
+        .writeAsString(sha256);
     print('Generated ${shaFile.path}');
 
     shaByArch.putIfAbsent(arch, () => sha256);
@@ -128,17 +138,21 @@ class PackageGenerator {
 
 // updates releases in ${appName}.appdata.xml
 class AppDataModifier {
-  static String replaceVersions(String origAppDataContent, List<Release> versions) {
-    final joinedReleases =
-        versions.map((v) => '\t\t<release version="${v.version}" date="${v.date}" />').join('\n');
-    final releasesSection = '<releases>\n$joinedReleases\n\t</releases>'; //todo check this
+  static String replaceVersions(
+      String origAppDataContent, List<Release> versions) {
+    final joinedReleases = versions
+        .map((v) => '\t\t<release version="${v.version}" date="${v.date}" />')
+        .join('\n');
+    final releasesSection =
+        '<releases>\n$joinedReleases\n\t</releases>'; //todo check this
     if (origAppDataContent.contains('<releases')) {
       return origAppDataContent
           .replaceAll('\n', '<~>')
           .replaceFirst(RegExp('<releases.*</releases>'), releasesSection)
           .replaceAll('<~>', '\n');
     } else {
-      return origAppDataContent.replaceFirst('</component>', '\n\t$releasesSection\n</component>');
+      return origAppDataContent.replaceFirst(
+          '</component>', '\n\t$releasesSection\n</component>');
     }
   }
 }

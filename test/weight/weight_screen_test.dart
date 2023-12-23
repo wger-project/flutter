@@ -53,7 +53,8 @@ void main() {
     );
   }
 
-  testWidgets('Test the widgets on the body weight screen', (WidgetTester tester) async {
+  testWidgets('Test the widgets on the body weight screen',
+      (WidgetTester tester) async {
     await tester.pumpWidget(createWeightScreen());
 
     expect(find.text('Weight'), findsOneWidget);
@@ -62,7 +63,8 @@ void main() {
     expect(find.byType(ListTile), findsNWidgets(2));
   });
 
-  testWidgets('Test deleting an item by dragging the dismissible', (WidgetTester tester) async {
+  testWidgets('Test deleting an item by dragging the dismissible',
+      (WidgetTester tester) async {
     await tester.pumpWidget(createWeightScreen());
 
     await tester.drag(find.byKey(const Key('1')), const Offset(-500.0, 0.0));
@@ -71,7 +73,8 @@ void main() {
     expect(find.byType(ListTile), findsOneWidget);
   });
 
-  testWidgets('Test the form on the body weight screen', (WidgetTester tester) async {
+  testWidgets('Test the form on the body weight screen',
+      (WidgetTester tester) async {
     await tester.pumpWidget(createWeightScreen());
 
     expect(find.byType(WeightForm), findsNothing);
@@ -80,7 +83,8 @@ void main() {
     expect(find.byType(WeightForm), findsOneWidget);
   });
 
-  testWidgets('Tests the localization of dates - EN', (WidgetTester tester) async {
+  testWidgets('Tests the localization of dates - EN',
+      (WidgetTester tester) async {
     await tester.pumpWidget(createWeightScreen());
 
     // One in the entries list, one in the chart
@@ -88,7 +92,8 @@ void main() {
     expect(find.text('1/10/2021'), findsOneWidget);
   });
 
-  testWidgets('Tests the localization of dates - DE', (WidgetTester tester) async {
+  testWidgets('Tests the localization of dates - DE',
+      (WidgetTester tester) async {
     await tester.pumpWidget(createWeightScreen(locale: 'de'));
 
     expect(find.text('1.1.2021'), findsOneWidget);

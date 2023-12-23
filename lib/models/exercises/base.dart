@@ -48,34 +48,34 @@ class ExerciseBase extends Equatable {
   @JsonKey(required: true, name: 'category')
   late int categoryId;
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(includeFromJson: true, includeToJson: true, name: 'categories')
   ExerciseCategory? category;
 
   @JsonKey(required: true, name: 'muscles')
   List<int> musclesIds = [];
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(includeFromJson: false, includeToJson: true, name: 'muscless')
   List<Muscle> muscles = [];
 
   @JsonKey(required: true, name: 'muscles_secondary')
   List<int> musclesSecondaryIds = [];
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(includeFromJson: false, includeToJson: true)
   List<Muscle> musclesSecondary = [];
 
   @JsonKey(required: true, name: 'equipment')
   List<int> equipmentIds = [];
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(includeFromJson: false, includeToJson: true, name: 'equipments')
   List<Equipment> equipment = [];
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(includeFromJson: false, includeToJson: true)
   List<ExerciseImage> images = [];
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(includeFromJson: true, includeToJson: true)
   List<Translation> translations = [];
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(includeFromJson: false, includeToJson: true)
   List<Video> videos = [];
 
   ExerciseBase({
@@ -114,6 +114,10 @@ class ExerciseBase extends Equatable {
       equipmentIds = equipment.map((e) => e.id).toList();
     }
 
+    if (exercises == null) {
+      print("Exercises are NULL");
+    }
+
     if (exercises != null) {
       translations = exercises;
     }
@@ -139,7 +143,7 @@ class ExerciseBase extends Equatable {
       (e) => e.languageObj.shortName == languageCode,
       orElse: () => translations.firstWhere(
         (e) => e.languageObj.shortName == LANGUAGE_SHORT_ENGLISH,
-        orElse: () => translations.first,
+        orElse: () => Translation(name: "name", description: "description"),
       ),
     );
   }
@@ -158,7 +162,8 @@ class ExerciseBase extends Equatable {
   }
 
   // Boilerplate
-  factory ExerciseBase.fromJson(Map<String, dynamic> json) => _$ExerciseBaseFromJson(json);
+  factory ExerciseBase.fromJson(Map<String, dynamic> json) =>
+      _$ExerciseBaseFromJson(json);
 
   Map<String, dynamic> toJson() => _$ExerciseBaseToJson(this);
 

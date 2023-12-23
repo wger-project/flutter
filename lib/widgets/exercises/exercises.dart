@@ -42,7 +42,8 @@ class ExerciseDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _exercise = _exerciseBase.getExercise(Localizations.localeOf(context).languageCode);
+    _exercise =
+        _exerciseBase.getExercise(Localizations.localeOf(context).languageCode);
 
     return SingleChildScrollView(
       child: Column(
@@ -156,7 +157,9 @@ class ExerciseDetail extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const MuscleColorHelper(main: true),
-          ..._exerciseBase.muscles.map((e) => Text(e.nameTranslated(context))).toList(),
+          ..._exerciseBase.muscles
+              .map((e) => Text(e.nameTranslated(context)))
+              .toList(),
         ],
       ),
     );
@@ -231,7 +234,9 @@ class ExerciseDetail extends StatelessWidget {
     // TODO: add carousel for the other videos
     final List<Widget> out = [];
     if (_exerciseBase.videos.isNotEmpty && !isDesktop) {
-      _exerciseBase.videos.map((v) => ExerciseVideoWidget(video: v)).forEach((element) {
+      _exerciseBase.videos
+          .map((v) => ExerciseVideoWidget(video: v))
+          .forEach((element) {
         out.add(element);
       });
 
@@ -242,10 +247,10 @@ class ExerciseDetail extends StatelessWidget {
 
   List<Widget> getAliases(BuildContext context) {
     final List<Widget> out = [];
-    if (_exercise.alias.isNotEmpty) {
+    if (_exercise.aliases.isNotEmpty) {
       out.add(MutedText(
-        AppLocalizations.of(context)
-            .alsoKnownAs(_exercise.alias.map((e) => e.alias).toList().join(', ')),
+        AppLocalizations.of(context).alsoKnownAs(
+            _exercise.aliases.map((e) => e.alias).toList().join(', ')),
       ));
       out.add(const SizedBox(height: PADDING));
     }
@@ -287,7 +292,8 @@ class MuscleRowWidget extends StatelessWidget {
   final List<Muscle> muscles;
   final List<Muscle> musclesSecondary;
 
-  const MuscleRowWidget({required this.muscles, required this.musclesSecondary});
+  const MuscleRowWidget(
+      {required this.muscles, required this.musclesSecondary});
 
   @override
   Widget build(BuildContext context) {
@@ -331,7 +337,8 @@ class MuscleWidget extends StatelessWidget {
     this.isFront = true,
   }) {
     this.muscles = muscles.where((m) => m.isFront == isFront).toList();
-    this.musclesSecondary = musclesSecondary.where((m) => m.isFront == isFront).toList();
+    this.musclesSecondary =
+        musclesSecondary.where((m) => m.isFront == isFront).toList();
   }
 
   @override
@@ -342,10 +349,12 @@ class MuscleWidget extends StatelessWidget {
       children: [
         SvgPicture.asset('assets/images/muscles/$background.svg'),
         ...muscles
-            .map((m) => SvgPicture.asset('assets/images/muscles/main/muscle-${m.id}.svg'))
+            .map((m) => SvgPicture.asset(
+                'assets/images/muscles/main/muscle-${m.id}.svg'))
             .toList(),
         ...musclesSecondary
-            .map((m) => SvgPicture.asset('assets/images/muscles/secondary/muscle-${m.id}.svg'))
+            .map((m) => SvgPicture.asset(
+                'assets/images/muscles/secondary/muscle-${m.id}.svg'))
             .toList(),
       ],
     );

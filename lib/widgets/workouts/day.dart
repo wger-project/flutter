@@ -50,7 +50,8 @@ class SettingWidget extends StatelessWidget {
       leading: InkWell(
         child: SizedBox(
           width: 45,
-          child: ExerciseImageWidget(image: setting.exerciseBaseObj.getMainImage),
+          child:
+              ExerciseImageWidget(image: setting.exerciseBaseObj.getMainImage),
         ),
         onTap: () {
           showDialog(
@@ -63,7 +64,8 @@ class SettingWidget extends StatelessWidget {
                 content: ExerciseDetail(setting.exerciseBaseObj),
                 actions: [
                   TextButton(
-                    child: Text(MaterialLocalizations.of(context).closeButtonLabel),
+                    child: Text(
+                        MaterialLocalizations.of(context).closeButtonLabel),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -75,12 +77,17 @@ class SettingWidget extends StatelessWidget {
         },
       ),
       title: Text(
-        setting.exerciseBaseObj.getExercise(Localizations.localeOf(context).languageCode).name,
+        setting.exerciseBaseObj
+            .getExercise(Localizations.localeOf(context).languageCode)
+            .name,
       ),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ...set.getSmartRepr(setting.exerciseBaseObj).map((e) => Text(e)).toList(),
+          ...set
+              .getSmartRepr(setting.exerciseBaseObj)
+              .map((e) => Text(e))
+              .toList(),
         ],
       ),
     );
@@ -124,7 +131,8 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
             icon: const Icon(Icons.delete),
             iconSize: ICON_SIZE_SMALL,
             onPressed: () {
-              Provider.of<WorkoutPlansProvider>(context, listen: false).deleteSet(set);
+              Provider.of<WorkoutPlansProvider>(context, listen: false)
+                  .deleteSet(set);
             },
           ),
         Expanded(
@@ -177,7 +185,8 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
                 children: [
                   IconButton(
                     onPressed: () {
-                      Provider.of<WorkoutPlansProvider>(context, listen: false).deleteDay(
+                      Provider.of<WorkoutPlansProvider>(context, listen: false)
+                          .deleteDay(
                         widget._day,
                       );
                     },
@@ -208,7 +217,8 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
                         arguments: FormScreenArguments(
                           AppLocalizations.of(context).edit,
                           DayFormWidget(
-                              Provider.of<WorkoutPlansProvider>(context, listen: false)
+                              Provider.of<WorkoutPlansProvider>(context,
+                                      listen: false)
                                   .findById(widget._day.workoutId),
                               widget._day),
                           hasListView: true,
@@ -235,11 +245,13 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
                 setState(() {
                   _sets.insert(newIndex, _sets.removeAt(oldIndex));
                 });
-                _sets = await Provider.of<WorkoutPlansProvider>(context, listen: false)
+                _sets = await Provider.of<WorkoutPlansProvider>(context,
+                        listen: false)
                     .reorderSets(_sets, startIndex);
               },
               children: [
-                for (var i = 0; i < widget._day.sets.length; i++) getSetRow(widget._day.sets[i], i),
+                for (var i = 0; i < widget._day.sets.length; i++)
+                  getSetRow(widget._day.sets[i], i),
               ],
             ),
             OutlinedButton(
@@ -303,13 +315,15 @@ class DayHeaderDismissible extends StatelessWidget {
       confirmDismiss: (direction) async {
         // Delete day
         if (direction == DismissDirection.startToEnd) {
-          Navigator.of(context).pushNamed(GymModeScreen.routeName, arguments: _day);
+          Navigator.of(context)
+              .pushNamed(GymModeScreen.routeName, arguments: _day);
         }
         return false;
       },
       child: Container(
         padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(color: Theme.of(context).colorScheme.inversePrimary),
+        decoration:
+            BoxDecoration(color: Theme.of(context).colorScheme.inversePrimary),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -322,12 +336,15 @@ class DayHeaderDismissible extends StatelessWidget {
                     style: Theme.of(context).textTheme.headlineSmall,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  Text(_day.getDaysTextTranslated(Localizations.localeOf(context).languageCode)),
+                  Text(_day.getDaysTextTranslated(
+                      Localizations.localeOf(context).languageCode)),
                 ],
               ),
             ),
             IconButton(
-              icon: _expanded ? const Icon(Icons.unfold_less) : const Icon(Icons.unfold_more),
+              icon: _expanded
+                  ? const Icon(Icons.unfold_less)
+                  : const Icon(Icons.unfold_more),
               onPressed: () {
                 _toggle();
               },

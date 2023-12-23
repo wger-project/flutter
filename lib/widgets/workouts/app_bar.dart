@@ -26,7 +26,8 @@ enum _WorkoutAppBarOptions {
   contribute,
 }
 
-class WorkoutOverviewAppBar extends StatelessWidget implements PreferredSizeWidget {
+class WorkoutOverviewAppBar extends StatelessWidget
+    implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(

@@ -58,7 +58,8 @@ class _MealWidgetState extends State<MealWidget> {
       child: Card(
         child: Column(
           children: [
-            DismissibleMealHeader(_expanded, _toggleExpanded, meal: widget._meal),
+            DismissibleMealHeader(_expanded, _toggleExpanded,
+                meal: widget._meal),
             if (_expanded)
               Row(
                 mainAxisSize: MainAxisSize.max,
@@ -67,7 +68,8 @@ class _MealWidgetState extends State<MealWidget> {
                   IconButton(
                     onPressed: () {
                       // Delete the meal
-                      Provider.of<NutritionPlansProvider>(context, listen: false)
+                      Provider.of<NutritionPlansProvider>(context,
+                              listen: false)
                           .deleteMeal(widget._meal);
 
                       // and inform the user
@@ -85,14 +87,16 @@ class _MealWidgetState extends State<MealWidget> {
                   if (widget._meal.mealItems.isNotEmpty)
                     Ink(
                       decoration: ShapeDecoration(
-                        color: Theme.of(context).primaryColor, //wgerPrimaryButtonColor,
+                        color: Theme.of(context)
+                            .primaryColor, //wgerPrimaryButtonColor,
                         shape: CircleBorder(),
                       ),
                       child: IconButton(
                         icon: const Icon(Icons.history_edu),
                         color: Colors.white,
                         onPressed: () {
-                          Provider.of<NutritionPlansProvider>(context, listen: false)
+                          Provider.of<NutritionPlansProvider>(context,
+                                  listen: false)
                               .logMealToDiary(widget._meal);
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
@@ -121,7 +125,9 @@ class _MealWidgetState extends State<MealWidget> {
                 ],
               ),
             if (_expanded) const Divider(),
-            ...widget._meal.mealItems.map((item) => MealItemWidget(item, _expanded)).toList(),
+            ...widget._meal.mealItems
+                .map((item) => MealItemWidget(item, _expanded))
+                .toList(),
             OutlinedButton(
               child: Text(AppLocalizations.of(context).addIngredient),
               onPressed: () {
@@ -164,10 +170,13 @@ class MealItemWidget extends StatelessWidget {
     return ListTile(
       leading: _item.ingredientObj.image != null
           ? GestureDetector(
-              child: CircleAvatar(backgroundImage: NetworkImage(_item.ingredientObj.image!.image)),
+              child: CircleAvatar(
+                  backgroundImage:
+                      NetworkImage(_item.ingredientObj.image!.image)),
               onTap: () async {
                 if (_item.ingredientObj.image!.objectUrl != '') {
-                  return launchURL(_item.ingredientObj.image!.objectUrl, context);
+                  return launchURL(
+                      _item.ingredientObj.image!.objectUrl, context);
                 } else {
                   return;
                 }
@@ -180,7 +189,9 @@ class MealItemWidget extends StatelessWidget {
       ),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [if (_expanded) ...getMutedNutritionalValues(values, context)],
+        children: [
+          if (_expanded) ...getMutedNutritionalValues(values, context)
+        ],
       ),
       trailing: _expanded
           ? IconButton(
@@ -188,7 +199,8 @@ class MealItemWidget extends StatelessWidget {
               iconSize: ICON_SIZE_SMALL,
               onPressed: () {
                 // Delete the meal item
-                Provider.of<NutritionPlansProvider>(context, listen: false).deleteMealItem(_item);
+                Provider.of<NutritionPlansProvider>(context, listen: false)
+                    .deleteMealItem(_item);
 
                 // and inform the user
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -243,7 +255,8 @@ class DismissibleMealHeader extends StatelessWidget {
       confirmDismiss: (direction) async {
         // Delete
         if (direction == DismissDirection.startToEnd) {
-          Provider.of<NutritionPlansProvider>(context, listen: false).logMealToDiary(_meal);
+          Provider.of<NutritionPlansProvider>(context, listen: false)
+              .logMealToDiary(_meal);
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
@@ -257,7 +270,8 @@ class DismissibleMealHeader extends StatelessWidget {
       },
       child: Container(
         padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(color: Theme.of(context).colorScheme.inversePrimary),
+        decoration:
+            BoxDecoration(color: Theme.of(context).colorScheme.inversePrimary),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -276,7 +290,9 @@ class DismissibleMealHeader extends StatelessWidget {
                 ),
                 IconButton(
                   visualDensity: VisualDensity.compact,
-                  icon: _expanded ? const Icon(Icons.unfold_less) : const Icon(Icons.unfold_more),
+                  icon: _expanded
+                      ? const Icon(Icons.unfold_less)
+                      : const Icon(Icons.unfold_more),
                   onPressed: () {
                     _toggle();
                   },

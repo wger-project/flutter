@@ -47,7 +47,11 @@ void main() {
 
     // act
     final result = tMeasurementEntry.copyWith(
-        id: 83, category: 17, date: DateTime(1960), value: 93, notes: 'Interesting');
+        id: 83,
+        category: 17,
+        date: DateTime(1960),
+        value: 93,
+        notes: 'Interesting');
 
     // assert
     expect(result, tMeasurementEntryCopied);

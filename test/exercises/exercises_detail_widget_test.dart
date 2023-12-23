@@ -44,7 +44,8 @@ void main() {
     );
   }
 
-  testWidgets('Test the widgets on the exercise detail widget', (WidgetTester tester) async {
+  testWidgets('Test the widgets on the exercise detail widget',
+      (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen());
     await tester.pumpAndSettle();
 
@@ -53,9 +54,12 @@ void main() {
     expect(find.text('Bench'), findsOneWidget, reason: 'Equipment');
     expect(find.text('Dumbbell'), findsOneWidget, reason: 'Equipment');
 
-    expect(find.text('Muscles'), findsNWidgets(2), reason: 'One header, one sub header');
-    expect(find.text('Flutterus maximus (Glutes)'), findsOneWidget, reason: 'Muscles');
-    expect(find.text('Biceps brachii (Biceps)'), findsOneWidget, reason: 'Muscles');
+    expect(find.text('Muscles'), findsNWidgets(2),
+        reason: 'One header, one sub header');
+    expect(find.text('Flutterus maximus (Glutes)'), findsOneWidget,
+        reason: 'Muscles');
+    expect(find.text('Biceps brachii (Biceps)'), findsOneWidget,
+        reason: 'Muscles');
 
     expect(find.text('Secondary muscles'), findsOneWidget);
     expect(
@@ -63,8 +67,10 @@ void main() {
       findsNWidgets(2),
       reason: 'Two diagrams, one for front, one for the back',
     );
-    expect(find.text('Gluteus maximus'), findsOneWidget, reason: 'Secondary muscles');
-    expect(find.text('Description'), findsOneWidget, reason: 'Description header');
+    expect(find.text('Gluteus maximus'), findsOneWidget,
+        reason: 'Secondary muscles');
+    expect(find.text('Description'), findsOneWidget,
+        reason: 'Description header');
     expect(find.text('add clever text'), findsOneWidget, reason: 'Description');
     expect(find.text('Variations'), findsNothing);
   });

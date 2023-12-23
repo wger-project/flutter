@@ -62,12 +62,15 @@ class NutritionalPlan {
   }
 
   // Boilerplate
-  factory NutritionalPlan.fromJson(Map<String, dynamic> json) => _$NutritionalPlanFromJson(json);
+  factory NutritionalPlan.fromJson(Map<String, dynamic> json) =>
+      _$NutritionalPlanFromJson(json);
 
   Map<String, dynamic> toJson() => _$NutritionalPlanToJson(this);
 
   String getLabel(BuildContext context) {
-    return description != '' ? description : AppLocalizations.of(context).nutritionalPlan;
+    return description != ''
+        ? description
+        : AppLocalizations.of(context).nutritionalPlan;
   }
 
   /// Calculations
@@ -86,7 +89,9 @@ class NutritionalPlan {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
 
-    return logEntriesValues.containsKey(today) ? logEntriesValues[today]! : NutritionalValues();
+    return logEntriesValues.containsKey(today)
+        ? logEntriesValues[today]!
+        : NutritionalValues();
   }
 
   NutritionalValues get nutritionalValues7DayAvg {
@@ -109,9 +114,12 @@ class NutritionalPlan {
   /// Calculates the percentage each macro nutrient adds to the total energy
   BaseNutritionalValues energyPercentage(NutritionalValues values) {
     return BaseNutritionalValues(
-      values.protein > 0 ? ((values.protein * ENERGY_PROTEIN * 100) / values.energy) : 0,
+      values.protein > 0
+          ? ((values.protein * ENERGY_PROTEIN * 100) / values.energy)
+          : 0,
       values.carbohydrates > 0
-          ? ((values.carbohydrates * ENERGY_CARBOHYDRATES * 100) / values.energy)
+          ? ((values.carbohydrates * ENERGY_CARBOHYDRATES * 100) /
+              values.energy)
           : 0,
       values.fat > 0 ? ((values.fat * ENERGY_FAT * 100) / values.energy) : 0,
     );
@@ -131,7 +139,8 @@ class NutritionalPlan {
   Map<DateTime, NutritionalValues> get logEntriesValues {
     final out = <DateTime, NutritionalValues>{};
     for (final log in logs) {
-      final date = DateTime(log.datetime.year, log.datetime.month, log.datetime.day);
+      final date =
+          DateTime(log.datetime.year, log.datetime.month, log.datetime.day);
 
       if (!out.containsKey(date)) {
         out[date] = NutritionalValues();
@@ -156,7 +165,8 @@ class NutritionalPlan {
     final List<Log> out = [];
     for (final log in logs) {
       final dateKey = DateTime(date.year, date.month, date.day);
-      final logKey = DateTime(log.datetime.year, log.datetime.month, log.datetime.day);
+      final logKey =
+          DateTime(log.datetime.year, log.datetime.month, log.datetime.day);
 
       if (dateKey == logKey) {
         out.add(log);
@@ -173,7 +183,8 @@ class NutritionalPlan {
     final List<MealItem> out = [];
     for (final meal in meals) {
       for (final mealItem in meal.mealItems) {
-        final ingredientInList = out.where((e) => e.ingredientId == mealItem.ingredientId);
+        final ingredientInList =
+            out.where((e) => e.ingredientId == mealItem.ingredientId);
 
         if (ingredientInList.isEmpty) {
           out.add(mealItem);

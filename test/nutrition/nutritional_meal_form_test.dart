@@ -104,7 +104,8 @@ void main() {
     verifyNever(mockNutrition.addMeal(any, any));
   });
 
-  testWidgets('Test creating a new nutritional plan', (WidgetTester tester) async {
+  testWidgets('Test creating a new nutritional plan',
+      (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen(meal2));
     await tester.pumpAndSettle();
 

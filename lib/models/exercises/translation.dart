@@ -36,7 +36,7 @@ class Translation extends Equatable {
   @JsonKey(required: true, name: 'language')
   late int languageId;
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(includeFromJson: true, includeToJson: true)
   late Language languageObj;
 
   @JsonKey(required: true, name: 'created')
@@ -51,11 +51,11 @@ class Translation extends Equatable {
   @JsonKey(required: true)
   final String description;
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(includeFromJson: true, includeToJson: true)
   List<Comment> notes = [];
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  List<Alias> alias = [];
+  @JsonKey(includeFromJson: true, includeToJson: true)
+  List<Alias> aliases = [];
 
   Translation({
     this.id,
@@ -67,7 +67,7 @@ class Translation extends Equatable {
     language,
   }) {
     if (baseId != null) {
-      baseId = baseId;
+      this.baseId = baseId;
     }
 
     if (language != null) {
@@ -86,7 +86,8 @@ class Translation extends Equatable {
   }
 
   // Boilerplate
-  factory Translation.fromJson(Map<String, dynamic> json) => _$TranslationFromJson(json);
+  factory Translation.fromJson(Map<String, dynamic> json) =>
+      _$TranslationFromJson(json);
 
   Map<String, dynamic> toJson() => _$TranslationToJson(this);
 

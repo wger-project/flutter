@@ -21,7 +21,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
 
-List<Widget> getMutedNutritionalValues(NutritionalValues values, BuildContext context) {
+List<Widget> getMutedNutritionalValues(
+    NutritionalValues values, BuildContext context) {
   final List<Widget> out = [
     Text(
       '${AppLocalizations.of(context).energy}: '

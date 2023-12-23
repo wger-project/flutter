@@ -48,21 +48,26 @@ class NutritionalPlansList extends StatelessWidget {
                         builder: (BuildContext contextDialog) {
                           return AlertDialog(
                             content: Text(
-                              AppLocalizations.of(context).confirmDelete(currentPlan.description),
+                              AppLocalizations.of(context)
+                                  .confirmDelete(currentPlan.description),
                             ),
                             actions: [
                               TextButton(
-                                child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-                                onPressed: () => Navigator.of(contextDialog).pop(),
+                                child: Text(MaterialLocalizations.of(context)
+                                    .cancelButtonLabel),
+                                onPressed: () =>
+                                    Navigator.of(contextDialog).pop(),
                               ),
                               TextButton(
                                 child: Text(
                                   AppLocalizations.of(context).delete,
-                                  style: TextStyle(color: Theme.of(context).errorColor),
+                                  style: TextStyle(
+                                      color: Theme.of(context).errorColor),
                                 ),
                                 onPressed: () {
                                   // Confirmed, delete the workout
-                                  _nutritionProvider.deletePlan(currentPlan.id!);
+                                  _nutritionProvider
+                                      .deletePlan(currentPlan.id!);
 
                                   // Close the popup
                                   Navigator.of(contextDialog).pop();
@@ -71,7 +76,8 @@ class NutritionalPlansList extends StatelessWidget {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       content: Text(
-                                        AppLocalizations.of(context).successfullyDeleted,
+                                        AppLocalizations.of(context)
+                                            .successfullyDeleted,
                                         textAlign: TextAlign.center,
                                       ),
                                     ),
@@ -107,7 +113,8 @@ class NutritionalPlansList extends StatelessWidget {
                       },
                       title: Text(currentPlan.getLabel(context)),
                       subtitle: Text(
-                        DateFormat.yMd(Localizations.localeOf(context).languageCode)
+                        DateFormat.yMd(
+                                Localizations.localeOf(context).languageCode)
                             .format(currentPlan.creationDate),
                       ),
                     ),

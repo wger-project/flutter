@@ -28,9 +28,12 @@ const tLanguage2 = Language(id: 2, shortName: 'en', fullName: 'English');
 const tLanguage3 = Language(id: 3, shortName: 'fr', fullName: 'Français');
 const testLanguages = [tLanguage1, tLanguage2, tLanguage3];
 
-const tMuscle1 = Muscle(id: 1, name: 'Flutterus maximus', nameEn: 'Glutes', isFront: true);
-const tMuscle2 = Muscle(id: 2, name: 'Biceps brachii', nameEn: 'Biceps', isFront: true);
-const tMuscle3 = Muscle(id: 3, name: 'Gluteus maximus', nameEn: 'Glutes', isFront: false);
+const tMuscle1 =
+    Muscle(id: 1, name: 'Flutterus maximus', nameEn: 'Glutes', isFront: true);
+const tMuscle2 =
+    Muscle(id: 2, name: 'Biceps brachii', nameEn: 'Biceps', isFront: true);
+const tMuscle3 =
+    Muscle(id: 3, name: 'Gluteus maximus', nameEn: 'Glutes', isFront: false);
 const testMuscles = [tMuscle1, tMuscle2, tMuscle3];
 
 const tCategory1 = ExerciseCategory(id: 1, name: 'Arms');
@@ -38,7 +41,13 @@ const tCategory2 = ExerciseCategory(id: 2, name: 'Legs');
 const tCategory3 = ExerciseCategory(id: 3, name: 'Abs');
 const tCategory4 = ExerciseCategory(id: 4, name: 'Shoulders');
 const tCategory5 = ExerciseCategory(id: 5, name: 'Calves');
-const testCategories = [tCategory1, tCategory2, tCategory3, tCategory4, tCategory5];
+const testCategories = [
+  tCategory1,
+  tCategory2,
+  tCategory3,
+  tCategory4,
+  tCategory5
+];
 
 const tEquipment1 = Equipment(id: 1, name: 'Bench');
 const tEquipment2 = Equipment(id: 1, name: 'Dumbbell');
@@ -143,7 +152,8 @@ final crunchesFr = Translation(
   uuid: 'd83f572d-add5-48dc-89cf-75f6770284f1',
   created: DateTime(2021, 4, 1),
   name: 'Crunches',
-  description: 'The man in black fled across the desert, and the gunslinger followed',
+  description:
+      'The man in black fled across the desert, and the gunslinger followed',
   baseId: deadLift.id,
   language: tLanguage3,
 );
@@ -173,7 +183,8 @@ final curlsEn = Translation(
   uuid: '259a637e-957f-4fe1-b61b-f56e3793ebcd',
   created: DateTime(2021, 4, 1),
   name: 'Curls',
-  description: 'It was a bright cold day in April, and the clocks were striking thirteen',
+  description:
+      'It was a bright cold day in April, and the clocks were striking thirteen',
   baseId: curls.id,
   language: tLanguage2,
 );
@@ -183,7 +194,8 @@ final squatsEn = Translation(
   uuid: '259a637e-957f-4fe1-b61b-f56e3793ebcd',
   created: DateTime(2021, 4, 1),
   name: 'Squats',
-  description: 'It was a bright cold day in April, and the clocks were striking thirteen',
+  description:
+      'It was a bright cold day in April, and the clocks were striking thirteen',
   baseId: curls.id,
   language: tLanguage2,
 );
@@ -193,7 +205,8 @@ final sideRaisesEn = Translation(
   uuid: '6bf89ad0-5a43-4e98-91d3-a8c6886c9712',
   created: DateTime(2022, 11, 1),
   name: 'Side raises',
-  description: 'It was a bright cold day in April, and the clocks were striking thirteen',
+  description:
+      'It was a bright cold day in April, and the clocks were striking thirteen',
   baseId: curls.id,
   language: tLanguage2,
 );

@@ -74,7 +74,8 @@ void main() {
     );
   }
 
-  testWidgets('Test the widgets on the gym mode screen', (WidgetTester tester) async {
+  testWidgets('Test the widgets on the gym mode screen',
+      (WidgetTester tester) async {
     when(mockExerciseProvider.findExerciseBaseById(1)).thenReturn(bases[0]);
     when(mockExerciseProvider.findExerciseBaseById(6)).thenReturn(bases[5]);
 
@@ -114,10 +115,12 @@ void main() {
     expect(find.text('Bench press'), findsOneWidget);
     expect(find.byType(LogPage), findsOneWidget);
     expect(find.byType(Form), findsOneWidget);
-    expect(find.byType(ListTile), findsNWidgets(3), reason: 'Two logs and the switch tile');
+    expect(find.byType(ListTile), findsNWidgets(3),
+        reason: 'Two logs and the switch tile');
     expect(find.text('10 × 10 kg  (1.5 RiR)'), findsOneWidget);
     expect(find.text('12 × 10 kg  (2 RiR)'), findsOneWidget);
-    expect(find.text('Make sure to warm up'), findsOneWidget, reason: 'Set comment');
+    expect(find.text('Make sure to warm up'), findsOneWidget,
+        reason: 'Set comment');
     expect(find.byIcon(Icons.close), findsOneWidget);
     expect(find.byIcon(Icons.menu), findsOneWidget);
     expect(find.byIcon(Icons.chevron_left), findsOneWidget);

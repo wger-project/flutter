@@ -83,7 +83,8 @@ class UserProfileForm extends StatelessWidget {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
-                      AppLocalizations.of(context).verifiedEmailInfo(_profile.email),
+                      AppLocalizations.of(context)
+                          .verifiedEmailInfo(_profile.email),
                     ),
                   ),
                 );
@@ -93,7 +94,8 @@ class UserProfileForm extends StatelessWidget {
           ElevatedButton(
             style: ElevatedButton.styleFrom(
                 backgroundColor: wgerPrimaryButtonColor,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50))),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50))),
             onPressed: () async {
               // Validate and save the current values to the weightEntry
               final isValid = _form.currentState!.validate();
@@ -106,7 +108,9 @@ class UserProfileForm extends StatelessWidget {
               context.read<UserProvider>().saveProfile();
               Navigator.of(context).pop();
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(AppLocalizations.of(context).successfullySaved)),
+                SnackBar(
+                    content:
+                        Text(AppLocalizations.of(context).successfullySaved)),
               );
             },
             child: Text(AppLocalizations.of(context).save),

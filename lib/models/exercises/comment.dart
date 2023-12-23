@@ -25,7 +25,7 @@ class Comment {
   @JsonKey(required: true)
   final int id;
 
-  @JsonKey(required: true, name: 'exercise')
+  @JsonKey(name: 'exercise')
   final int exerciseId;
 
   @JsonKey(required: true)
@@ -38,6 +38,7 @@ class Comment {
   });
 
   // Boilerplate
-  factory Comment.fromJson(Map<String, dynamic> json) => _$CommentFromJson(json);
+  factory Comment.fromJson(Map<String, dynamic> json) =>
+      _$CommentFromJson(json);
   Map<String, dynamic> toJson() => _$CommentToJson(this);
 }

@@ -33,6 +33,7 @@ import 'package:wger/models/exercises/base.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/comment.dart';
 import 'package:wger/models/exercises/equipment.dart';
+import 'package:wger/models/exercises/exercise_base_data.dart';
 import 'package:wger/models/exercises/image.dart';
 import 'package:wger/models/exercises/language.dart';
 import 'package:wger/models/exercises/muscle.dart';
@@ -136,7 +137,8 @@ class ExercisesProvider with ChangeNotifier {
           title: 'Equipment',
           items: Map.fromEntries(
             _equipment.map(
-              (singleEquipment) => MapEntry<Equipment, bool>(singleEquipment, false),
+              (singleEquipment) =>
+                  MapEntry<Equipment, bool>(singleEquipment, false),
             ),
           ),
         ),
@@ -166,13 +168,15 @@ class ExercisesProvider with ChangeNotifier {
 
     // Filter by exercise category and equipment (REPLACE WITH HTTP REQUEST)
     filteredExerciseBases = filteredItems.where((exercise) {
-      final bool isInAnyCategory = filters!.exerciseCategories.selected.contains(exercise.category);
+      final bool isInAnyCategory =
+          filters!.exerciseCategories.selected.contains(exercise.category);
 
       final bool doesContainAnyEquipment = filters!.equipment.selected.any(
         (selectedEquipment) => exercise.equipment.contains(selectedEquipment),
       );
 
-      return (isInAnyCategory || filters!.exerciseCategories.selected.isEmpty) &&
+      return (isInAnyCategory ||
+              filters!.exerciseCategories.selected.isEmpty) &&
           (doesContainAnyEquipment || filters!.equipment.selected.isEmpty);
     }).toList();
   }
@@ -200,7 +204,8 @@ class ExercisesProvider with ChangeNotifier {
   /// returned exercises. Since this is typically called by one exercise, we are
   /// not interested in seeing that same exercise returned in the list of variations.
   /// If this parameter is not passed, all exercises are returned.
-  List<ExerciseBase> findExerciseBasesByVariationId(int id, {int? exerciseBaseIdToExclude}) {
+  List<ExerciseBase> findExerciseBasesByVariationId(int id,
+      {int? exerciseBaseIdToExclude}) {
     var out = _exerciseBases.where((base) => base.variationId == id).toList();
 
     if (exerciseBaseIdToExclude != null) {
@@ -242,22 +247,24 @@ class ExercisesProvider with ChangeNotifier {
   }
 
   Future<void> fetchAndSetCategories() async {
-    final categories = await baseProvider.fetchPaginated(baseProvider.makeUrl(_categoriesUrlPath));
+    final categories = await baseProvider
+        .fetchPaginated(baseProvider.makeUrl(_categoriesUrlPath));
     for (final category in categories) {
       _categories.add(ExerciseCategory.fromJson(category));
     }
   }
 
   Future<void> fetchAndSetVariations() async {
-    final variations =
-        await baseProvider.fetchPaginated(baseProvider.makeUrl(_exerciseVariationsUrlPath));
+    final variations = await baseProvider
+        .fetchPaginated(baseProvider.makeUrl(_exerciseVariationsUrlPath));
     for (final variation in variations) {
       _variations.add(Variation.fromJson(variation));
     }
   }
 
   Future<void> fetchAndSetMuscles() async {
-    final muscles = await baseProvider.fetchPaginated(baseProvider.makeUrl(_musclesUrlPath));
+    final muscles = await baseProvider
+        .fetchPaginated(baseProvider.makeUrl(_musclesUrlPath));
 
     for (final muscle in muscles) {
       _muscles.add(Muscle.fromJson(muscle));
@@ -265,7 +272,8 @@ class ExercisesProvider with ChangeNotifier {
   }
 
   Future<void> fetchAndSetEquipment() async {
-    final equipments = await baseProvider.fetchPaginated(baseProvider.makeUrl(_equipmentUrlPath));
+    final equipments = await baseProvider
+        .fetchPaginated(baseProvider.makeUrl(_equipmentUrlPath));
 
     for (final equipment in equipments) {
       _equipment.add(Equipment.fromJson(equipment));
@@ -273,7 +281,8 @@ class ExercisesProvider with ChangeNotifier {
   }
 
   Future<void> fetchAndSetLanguages() async {
-    final languageData = await baseProvider.fetchPaginated(baseProvider.makeUrl(_languageUrlPath));
+    final languageData = await baseProvider
+        .fetchPaginated(baseProvider.makeUrl(_languageUrlPath));
 
     for (final language in languageData) {
       _languages.add(Language.fromJson(language));
@@ -293,7 +302,8 @@ class ExercisesProvider with ChangeNotifier {
         baseProvider.makeUrl(_exerciseBaseInfoUrlPath, id: exerciseBaseId),
       );
 
-      final newBase = readExerciseBaseFromBaseInfo(baseData);
+      final newBase =
+          readExerciseBaseFromBaseInfo(ExerciseBaseData.fromJson(baseData));
 
       // TODO: save to cache. Since we can't easily generate the JSON, perhaps just reload?
       _exerciseBases.add(newBase);
@@ -303,40 +313,37 @@ class ExercisesProvider with ChangeNotifier {
 
   /// Parses the response from the exercisebaseinfo endpoint and returns
   /// a full exercise base
-  ExerciseBase readExerciseBaseFromBaseInfo(dynamic baseData) {
-    final category = ExerciseCategory.fromJson(baseData['category']);
-    final musclesPrimary = baseData['muscles'].map((e) => Muscle.fromJson(e)).toList();
-    final musclesSecondary = baseData['muscles_secondary'].map((e) => Muscle.fromJson(e)).toList();
-    final equipment = baseData['equipment'].map((e) => Equipment.fromJson(e)).toList();
-    final images = baseData['images'].map((e) => ExerciseImage.fromJson(e)).toList();
-    final videos = baseData['videos'].map((e) => Video.fromJson(e)).toList();
-
+  ExerciseBase readExerciseBaseFromBaseInfo(ExerciseBaseData baseData) {
     final List<Translation> exercises = [];
-    for (final exerciseData in baseData['exercises']) {
-      final exercise = Translation.fromJson(exerciseData);
-      exercise.alias = exerciseData['aliases']
-          .map((e) => Alias(exerciseId: exercise.id!, alias: e['alias']))
+    for (final exerciseData in baseData.exercises) {
+      final exercise = Translation(
+        id: exerciseData.id,
+        uuid: exerciseData.uuid,
+        name: exerciseData.name,
+        description: exerciseData.description,
+        baseId: baseData.id,
+      );
+      exercise.aliases = exerciseData.aliases
+          .map((e) => Alias(exerciseId: exercise.id ?? 0, alias: e.alias))
           .toList()
           .cast<Alias>();
-      exercise.notes =
-          exerciseData['notes'].map((e) => Comment.fromJson(e)).toList().cast<Comment>();
-      exercise.baseId = baseData['id'];
-      exercise.language = findLanguageById(exerciseData['language']);
+      exercise.notes = exerciseData.notes;
+      exercise.language = findLanguageById(exerciseData.languageId);
       exercises.add(exercise);
     }
 
     final exerciseBase = ExerciseBase(
-      id: baseData['id'],
-      uuid: baseData['uuid'],
+      id: baseData.id,
+      uuid: baseData.uuid,
       created: null,
       //creationDate: toDate(baseData['creation_date']),
-      musclesSecondary: musclesSecondary.cast<Muscle>(),
-      muscles: musclesPrimary.cast<Muscle>(),
-      equipment: equipment.cast<Equipment>(),
-      category: category,
-      images: images.cast<ExerciseImage>(),
+      musclesSecondary: baseData.muscles,
+      muscles: baseData.muscles,
+      equipment: baseData.equipment,
+      category: baseData.category,
+      images: baseData.images,
       exercises: exercises,
-      videos: videos.cast<Video>(),
+      videos: baseData.videos,
     );
 
     return exerciseBase;
@@ -374,9 +381,10 @@ class ExercisesProvider with ChangeNotifier {
     final database = locator<ExerciseDatabase>();
 
     // Only uncomment if need to delete the table, (only for testing purposes).
-    // database.delete(database.exerciseTableItems).go();
+    // await database.delete(database.exerciseTableItems).go();
     // Fetch the list of rows from ExercisesDataTable. ExerciseTable is the Type of the Row
-    final List<ExerciseTable> items = await database.select(database.exerciseTableItems).get();
+    final List<ExerciseTable> items =
+        await database.select(database.exerciseTableItems).get();
 
     final prefs = await SharedPreferences.getInstance();
     await checkExerciseCacheVersion();
@@ -412,37 +420,54 @@ class ExercisesProvider with ChangeNotifier {
 
     // Load categories, muscles, equipment and languages
     final data = await Future.wait<dynamic>([
-      baseProvider.fetch(baseProvider.makeUrl(_exerciseBaseInfoUrlPath, query: {'limit': '1000'})),
+      baseProvider.fetch(baseProvider
+          .makeUrl(_exerciseBaseInfoUrlPath, query: {'limit': '1000'})),
       fetchAndSetCategories(),
       fetchAndSetMuscles(),
       fetchAndSetEquipment(),
       fetchAndSetLanguages(),
       fetchAndSetVariations(),
     ]);
+    final List<dynamic> exerciseData = data[0]['results'];
 
-    final exerciseBaseData = data[0]['results'];
+    final List<ExerciseBaseData> exerciseBaseData =
+        exerciseData.map((e) => ExerciseBaseData.fromJson(e)).toList();
 
-    _exerciseBases =
-        exerciseBaseData.map((e) => readExerciseBaseFromBaseInfo(e)).toList().cast<ExerciseBase>();
-
+    _exerciseBases = exerciseBaseData
+        .map((e) => readExerciseBaseFromBaseInfo(e))
+        .toList()
+        .cast<ExerciseBase>();
     try {
       // Save the result to the cache
       for (int i = 0; i < _exerciseBases.length; i++) {
         await database.into(database.exerciseTableItems).insert(
               ExerciseTableItemsCompanion.insert(
-                category: (i < _categories.length) ? Value(_categories[i]) : const Value(null),
-                equipment: (i < _equipment.length) ? Value(_equipment[i]) : const Value(null),
-                exercisebase:
-                    (i < _exerciseBases.length) ? Value(_exerciseBases[i]) : const Value(null),
-                muscle: (i < _muscles.length) ? Value(_muscles[i]) : const Value(null),
-                variation: (i < _variations.length) ? Value(_variations[i]) : const Value(null),
-                language: (i < _languages.length) ? Value(_languages[i]) : const Value(null),
+                category: (i < _categories.length)
+                    ? Value(_categories[i])
+                    : const Value(null),
+                equipment: (i < _equipment.length)
+                    ? Value(_equipment[i])
+                    : const Value(null),
+                exercisebase: (i < _exerciseBases.length)
+                    ? Value(_exerciseBases[i])
+                    : const Value(null),
+                muscle: (i < _muscles.length)
+                    ? Value(_muscles[i])
+                    : const Value(null),
+                variation: (i < _variations.length)
+                    ? Value(_variations[i])
+                    : const Value(null),
+                language: (i < _languages.length)
+                    ? Value(_languages[i])
+                    : const Value(null),
               ),
             );
       }
+      // final List<ExerciseTable> items = await database.select(database.exerciseTableItems).get();
       final cacheData = {
-        'expiresIn':
-            DateTime.now().add(const Duration(days: EXERCISE_CACHE_DAYS)).toIso8601String(),
+        'expiresIn': DateTime.now()
+            .add(const Duration(days: EXERCISE_CACHE_DAYS))
+            .toIso8601String(),
       };
       log("Saved ${_exerciseBases.length} exercises to cache. Valid till ${cacheData['expiresIn']}");
 
@@ -460,7 +485,8 @@ class ExercisesProvider with ChangeNotifier {
   /// We could do this locally, but the server has better text searching capabilities
   /// with postgresql.
   Future<List<ExerciseBase>> searchExercise(String name,
-      {String languageCode = LANGUAGE_SHORT_ENGLISH, bool searchEnglish = false}) async {
+      {String languageCode = LANGUAGE_SHORT_ENGLISH,
+      bool searchEnglish = false}) async {
     if (name.length <= 1) {
       return [];
     }
@@ -528,8 +554,10 @@ class Filters {
   List<FilterCategory> get filterCategories => [exerciseCategories, equipment];
 
   bool get isNothingMarked {
-    final isExerciseCategoryMarked = exerciseCategories.items.values.any((isMarked) => isMarked);
-    final isEquipmentMarked = equipment.items.values.any((isMarked) => isMarked);
+    final isExerciseCategoryMarked =
+        exerciseCategories.items.values.any((isMarked) => isMarked);
+    final isEquipmentMarked =
+        equipment.items.values.any((isMarked) => isMarked);
     return !isExerciseCategoryMarked && !isEquipmentMarked;
   }
 

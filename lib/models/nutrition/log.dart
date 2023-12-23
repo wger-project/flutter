@@ -67,7 +67,8 @@ class Log {
     this.comment,
   });
 
-  Log.fromMealItem(MealItem mealItem, this.planId, this.mealId, [DateTime? dateTime]) {
+  Log.fromMealItem(MealItem mealItem, this.planId, this.mealId,
+      [DateTime? dateTime]) {
     ingredientId = mealItem.ingredientId;
     ingredientObj = mealItem.ingredientObj;
     weightUnitId = mealItem.weightUnitId;
@@ -86,8 +87,9 @@ class Log {
     final out = NutritionalValues();
 
     //final weight = amount;
-    final weight =
-        weightUnitObj == null ? amount : amount * weightUnitObj!.amount * weightUnitObj!.grams;
+    final weight = weightUnitObj == null
+        ? amount
+        : amount * weightUnitObj!.amount * weightUnitObj!.grams;
 
     out.energy = ingredientObj.energy * weight / 100;
     out.protein = ingredientObj.protein * weight / 100;

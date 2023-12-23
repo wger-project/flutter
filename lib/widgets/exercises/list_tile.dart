@@ -23,7 +23,8 @@ import 'package:wger/screens/exercise_screen.dart';
 import 'package:wger/widgets/exercises/images.dart';
 
 class ExerciseListTile extends StatelessWidget {
-  const ExerciseListTile({Key? key, required this.exerciseBase}) : super(key: key);
+  const ExerciseListTile({Key? key, required this.exerciseBase})
+      : super(key: key);
 
   final ExerciseBase exerciseBase;
 
@@ -51,7 +52,9 @@ class ExerciseListTile extends StatelessWidget {
         ),
       ),
       title: Text(
-        exerciseBase.getExercise(Localizations.localeOf(context).languageCode).name,
+        exerciseBase
+            .getExercise(Localizations.localeOf(context).languageCode)
+            .name,
         //style: theme.textTheme.titleLarge,
         overflow: TextOverflow.ellipsis,
         maxLines: 2,
@@ -60,7 +63,8 @@ class ExerciseListTile extends StatelessWidget {
         '${getTranslation(exerciseBase.category!.name, context)} / ${exerciseBase.equipment.map((e) => getTranslation(e.name, context)).toList().join(', ')}',
       ),
       onTap: () {
-        Navigator.pushNamed(context, ExerciseDetailScreen.routeName, arguments: exerciseBase);
+        Navigator.pushNamed(context, ExerciseDetailScreen.routeName,
+            arguments: exerciseBase);
       },
     );
   }

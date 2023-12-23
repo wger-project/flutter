@@ -36,7 +36,8 @@ class ExerciseLogChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final workoutPlansData = Provider.of<WorkoutPlansProvider>(context, listen: false);
+    final workoutPlansData =
+        Provider.of<WorkoutPlansProvider>(context, listen: false);
     final workout = workoutPlansData.currentPlan;
     var colors = generateChartColors(1).iterator;
 
@@ -48,7 +49,8 @@ class ExerciseLogChart extends StatelessWidget {
         future: getChartEntries(context),
         builder: (context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            colors = generateChartColors(snapshot.data!['chart_data'].length).iterator;
+            colors = generateChartColors(snapshot.data!['chart_data'].length)
+                .iterator;
           }
 
           return SizedBox(
@@ -109,12 +111,14 @@ class _DayLogWidgetState extends State<DayLogWidget> {
       child: Column(
         children: [
           Text(
-            DateFormat.yMd(Localizations.localeOf(context).languageCode).format(widget._date),
+            DateFormat.yMd(Localizations.localeOf(context).languageCode)
+                .format(widget._date),
             style: Theme.of(context).textTheme.headlineSmall,
           ),
           if (widget._session != null) const Text('Session data here'),
           ...widget._exerciseData.keys.map((base) {
-            final exercise = base.getExercise(Localizations.localeOf(context).languageCode);
+            final exercise =
+                base.getExercise(Localizations.localeOf(context).languageCode);
             return Column(
               children: [
                 if (widget._exerciseData[base]!.isNotEmpty)
@@ -133,8 +137,8 @@ class _DayLogWidgetState extends State<DayLogWidget> {
                           IconButton(
                             icon: const Icon(Icons.delete),
                             onPressed: () async {
-                              showDeleteDialog(
-                                  context, exercise.name, log, exercise, widget._exerciseData);
+                              showDeleteDialog(context, exercise.name, log,
+                                  exercise, widget._exerciseData);
                             },
                           ),
                         ],

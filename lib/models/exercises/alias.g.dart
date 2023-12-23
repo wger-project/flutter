@@ -9,11 +9,11 @@ part of 'alias.dart';
 Alias _$AliasFromJson(Map<String, dynamic> json) {
   $checkKeys(
     json,
-    requiredKeys: const ['id', 'exercise', 'alias'],
+    requiredKeys: const ['id', 'alias'],
   );
   return Alias(
     id: json['id'] as int?,
-    exerciseId: json['exercise'] as int,
+    exerciseId: json['exercise'] as int?,
     alias: json['alias'] as String,
   );
 }

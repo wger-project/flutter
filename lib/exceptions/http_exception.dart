@@ -26,7 +26,10 @@ class WgerHttpException implements Exception {
   /// JSON. Will use the response as-is if it fails.
   WgerHttpException(dynamic responseBody) {
     if (responseBody == null) {
-      errors = {'unknown_error': 'An unknown error occurred, no further information available'};
+      errors = {
+        'unknown_error':
+            'An unknown error occurred, no further information available'
+      };
     } else {
       try {
         errors = {'unknown_error': json.decode(responseBody)};

@@ -46,10 +46,12 @@ class ExerciseCategoryInputWidget<T> extends StatefulWidget {
   }
 
   @override
-  _ExerciseCategoryInputWidgetState createState() => _ExerciseCategoryInputWidgetState<T>();
+  _ExerciseCategoryInputWidgetState createState() =>
+      _ExerciseCategoryInputWidgetState<T>();
 }
 
-class _ExerciseCategoryInputWidgetState<T> extends State<ExerciseCategoryInputWidget> {
+class _ExerciseCategoryInputWidgetState<T>
+    extends State<ExerciseCategoryInputWidget> {
   @override
   Widget build(BuildContext context) {
     T? selectedEntry;

@@ -25,8 +25,8 @@ class Alias {
   @JsonKey(required: true)
   final int? id;
 
-  @JsonKey(required: true, name: 'exercise')
-  final int exerciseId;
+  @JsonKey(name: 'exercise')
+  final int? exerciseId;
 
   @JsonKey(required: true)
   final String alias;

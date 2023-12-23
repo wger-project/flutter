@@ -29,4 +29,5 @@ final AuthProvider testAuthProvider = AuthProvider(MockClient(), false)
 
 // Test Exercises provider
 final mockBaseProvider = MockWgerBaseProvider();
-final ExercisesProvider testExercisesProvider = ExercisesProvider(mockBaseProvider);
+final ExercisesProvider testExercisesProvider =
+    ExercisesProvider(mockBaseProvider);

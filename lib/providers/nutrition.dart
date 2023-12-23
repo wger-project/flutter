@@ -46,7 +46,8 @@ class NutritionPlansProvider with ChangeNotifier {
   List<NutritionalPlan> _plans = [];
   List<Ingredient> _ingredients = [];
 
-  NutritionPlansProvider(this.baseProvider, List<NutritionalPlan> entries) : _plans = entries;
+  NutritionPlansProvider(this.baseProvider, List<NutritionalPlan> entries)
+      : _plans = entries;
 
   List<NutritionalPlan> get items {
     return [..._plans];
@@ -91,8 +92,8 @@ class NutritionPlansProvider with ChangeNotifier {
   /// Fetches and sets all plans sparsely, i.e. only with the data on the plan
   /// object itself and no child attributes
   Future<void> fetchAndSetAllPlansSparse() async {
-    final data = await baseProvider
-        .fetchPaginated(baseProvider.makeUrl(_nutritionalPlansPath, query: {'limit': '1000'}));
+    final data = await baseProvider.fetchPaginated(
+        baseProvider.makeUrl(_nutritionalPlansPath, query: {'limit': '1000'}));
     _plans = [];
     for (final planData in data) {
       final plan = NutritionalPlan.fromJson(planData);
@@ -104,7 +105,8 @@ class NutritionPlansProvider with ChangeNotifier {
 
   /// Fetches and sets all plans fully, i.e. with all corresponding child objects
   Future<void> fetchAndSetAllPlansFull() async {
-    final data = await baseProvider.fetchPaginated(baseProvider.makeUrl(_nutritionalPlansPath));
+    final data = await baseProvider
+        .fetchPaginated(baseProvider.makeUrl(_nutritionalPlansPath));
     for (final entry in data) {
       await fetchAndSetPlanFull(entry['id']);
     }
@@ -194,7 +196,8 @@ class NutritionPlansProvider with ChangeNotifier {
     _plans.removeAt(existingPlanIndex);
     notifyListeners();
 
-    final response = await baseProvider.deleteRequest(_nutritionalPlansPath, id);
+    final response =
+        await baseProvider.deleteRequest(_nutritionalPlansPath, id);
 
     if (response.statusCode >= 400) {
       _plans.insert(existingPlanIndex, existingPlan);
@@ -251,7 +254,8 @@ class NutritionPlansProvider with ChangeNotifier {
 
   /// Adds a meal item to a meal
   Future<MealItem> addMealItem(MealItem mealItem, Meal meal) async {
-    final data = await baseProvider.post(mealItem.toJson(), baseProvider.makeUrl(_mealItemPath));
+    final data = await baseProvider.post(
+        mealItem.toJson(), baseProvider.makeUrl(_mealItemPath));
 
     mealItem = MealItem.fromJson(data);
     mealItem.ingredientObj = await fetchIngredient(mealItem.ingredientId);
@@ -271,7 +275,8 @@ class NutritionPlansProvider with ChangeNotifier {
     notifyListeners();
 
     // Try to delete
-    final response = await baseProvider.deleteRequest(_mealItemPath, mealItem.id!);
+    final response =
+        await baseProvider.deleteRequest(_mealItemPath, mealItem.id!);
     if (response.statusCode >= 400) {
       meal.mealItems.insert(mealItemIndex, existingMealItem);
       notifyListeners();
@@ -314,7 +319,8 @@ class NutritionPlansProvider with ChangeNotifier {
     if (prefs.containsKey(PREFS_INGREDIENTS)) {
       final ingredientData = json.decode(prefs.getString(PREFS_INGREDIENTS)!);
       if (DateTime.parse(ingredientData['expiresIn']).isAfter(DateTime.now())) {
-        ingredientData['ingredients'].forEach((e) => _ingredients.add(Ingredient.fromJson(e)));
+        ingredientData['ingredients']
+            .forEach((e) => _ingredients.add(Ingredient.fromJson(e)));
         log("Read ${ingredientData['ingredients'].length} ingredients from cache. Valid till ${ingredientData['expiresIn']}");
         return;
       }
@@ -323,7 +329,9 @@ class NutritionPlansProvider with ChangeNotifier {
     // Initialise an empty cache
     final ingredientData = {
       'date': DateTime.now().toIso8601String(),
-      'expiresIn': DateTime.now().add(const Duration(days: DAYS_TO_CACHE)).toIso8601String(),
+      'expiresIn': DateTime.now()
+          .add(const Duration(days: DAYS_TO_CACHE))
+          .toIso8601String(),
       'ingredients': []
     };
     prefs.setString(PREFS_INGREDIENTS, json.encode(ingredientData));
@@ -347,8 +355,8 @@ class NutritionPlansProvider with ChangeNotifier {
 
     // Send the request
     final response = await baseProvider.fetch(
-      baseProvider
-          .makeUrl(_ingredientSearchPath, query: {'term': name, 'language': languages.join(',')}),
+      baseProvider.makeUrl(_ingredientSearchPath,
+          query: {'term': name, 'language': languages.join(',')}),
     );
 
     // Process the response
@@ -390,12 +398,14 @@ class NutritionPlansProvider with ChangeNotifier {
   }
 
   /// Log custom ingredient to nutrition diary
-  Future<void> logIngredientToDiary(MealItem mealItem, int planId, [DateTime? dateTime]) async {
+  Future<void> logIngredientToDiary(MealItem mealItem, int planId,
+      [DateTime? dateTime]) async {
     final plan = findById(planId);
     mealItem.ingredientObj = await fetchIngredient(mealItem.ingredientId);
     final Log log = Log.fromMealItem(mealItem, plan.id!, null, dateTime);
 
-    final data = await baseProvider.post(log.toJson(), baseProvider.makeUrl(_nutritionDiaryPath));
+    final data = await baseProvider.post(
+        log.toJson(), baseProvider.makeUrl(_nutritionDiaryPath));
     log.id = data['id'];
     plan.logs.add(log);
     notifyListeners();
@@ -415,7 +425,11 @@ class NutritionPlansProvider with ChangeNotifier {
     final data = await baseProvider.fetchPaginated(
       baseProvider.makeUrl(
         _nutritionDiaryPath,
-        query: {'plan': plan.id.toString(), 'limit': '999', 'ordering': 'datetime'},
+        query: {
+          'plan': plan.id.toString(),
+          'limit': '999',
+          'ordering': 'datetime'
+        },
       ),
     );
 

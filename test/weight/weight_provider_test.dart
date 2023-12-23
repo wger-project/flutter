@@ -44,7 +44,8 @@ void main() {
         host: 'localhost',
         path: 'api/v2/weightentry/',
       );
-      when(mockBaseProvider.makeUrl(any, query: anyNamed('query'))).thenReturn(uri);
+      when(mockBaseProvider.makeUrl(any, query: anyNamed('query')))
+          .thenReturn(uri);
       final Map<String, dynamic> weightEntries = jsonDecode(
         fixture('weight/weight_entries.json'),
       );
@@ -69,13 +70,17 @@ void main() {
         host: 'localhost',
         path: 'api/v2/weightentry/',
       );
-      when(mockBaseProvider.makeUrl(any, query: anyNamed('query'))).thenReturn(uri);
-      when(mockBaseProvider.post({'id': null, 'weight': '80', 'date': '2021-01-01'}, uri))
-          .thenAnswer((_) => Future.value({'id': 25, 'date': '2021-01-01', 'weight': '80'}));
+      when(mockBaseProvider.makeUrl(any, query: anyNamed('query')))
+          .thenReturn(uri);
+      when(mockBaseProvider
+              .post({'id': null, 'weight': '80', 'date': '2021-01-01'}, uri))
+          .thenAnswer((_) =>
+              Future.value({'id': 25, 'date': '2021-01-01', 'weight': '80'}));
 
       // Act
       final BodyWeightProvider provider = BodyWeightProvider(mockBaseProvider);
-      final WeightEntry weightEntry = WeightEntry(date: DateTime(2021, 1, 1), weight: 80);
+      final WeightEntry weightEntry =
+          WeightEntry(date: DateTime(2021, 1, 1), weight: 80);
       final WeightEntry weightEntryNew = await provider.addEntry(weightEntry);
 
       // Assert
@@ -91,9 +96,11 @@ void main() {
         host: 'localhost',
         path: 'api/v2/weightentry/4/',
       );
-      when(mockBaseProvider.makeUrl(any, query: anyNamed('query'))).thenReturn(uri);
-      when(mockBaseProvider.deleteRequest('weightentry', 4)).thenAnswer(
-          (_) => Future.value(Response("{'id': 4, 'date': '2021-01-01', 'weight': '80'}", 204)));
+      when(mockBaseProvider.makeUrl(any, query: anyNamed('query')))
+          .thenReturn(uri);
+      when(mockBaseProvider.deleteRequest('weightentry', 4)).thenAnswer((_) =>
+          Future.value(Response(
+              "{'id': 4, 'date': '2021-01-01', 'weight': '80'}", 204)));
 
       // DELETE the data from the server
       final BodyWeightProvider provider = BodyWeightProvider(mockBaseProvider);

@@ -46,7 +46,11 @@ class Ingredient {
   final num carbohydrates;
 
   /// g per 100g of product
-  @JsonKey(required: true, fromJson: stringToNum, toJson: numToString, name: 'carbohydrates_sugar')
+  @JsonKey(
+      required: true,
+      fromJson: stringToNum,
+      toJson: numToString,
+      name: 'carbohydrates_sugar')
   final num carbohydratesSugar;
 
   /// g per 100g of product
@@ -58,7 +62,11 @@ class Ingredient {
   final num fat;
 
   /// g per 100g of product
-  @JsonKey(required: true, fromJson: stringToNum, toJson: numToString, name: 'fat_saturated')
+  @JsonKey(
+      required: true,
+      fromJson: stringToNum,
+      toJson: numToString,
+      name: 'fat_saturated')
   final num fatSaturated;
 
   /// g per 100g of product
@@ -88,7 +96,8 @@ class Ingredient {
   });
 
   // Boilerplate
-  factory Ingredient.fromJson(Map<String, dynamic> json) => _$IngredientFromJson(json);
+  factory Ingredient.fromJson(Map<String, dynamic> json) =>
+      _$IngredientFromJson(json);
 
   Map<String, dynamic> toJson() => _$IngredientToJson(this);
 }

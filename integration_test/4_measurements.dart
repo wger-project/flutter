@@ -11,7 +11,8 @@ import '../test_data/measurements.dart';
 
 Widget createMeasurementScreen({locale = 'en'}) {
   final mockMeasurementProvider = MockMeasurementProvider();
-  when(mockMeasurementProvider.categories).thenReturn(getMeasurementCategories());
+  when(mockMeasurementProvider.categories)
+      .thenReturn(getMeasurementCategories());
 
   return MultiProvider(
     providers: [

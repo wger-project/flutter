@@ -63,9 +63,12 @@ void main() {
       host: 'localhost',
       path: 'api/v2/$diaryUrl',
     );
-    when(mockWgerBaseProvider.makeUrl(planInfoUrl, id: anyNamed('id'))).thenReturn(planInfoUri);
-    when(mockWgerBaseProvider.makeUrl(planUrl, id: anyNamed('id'))).thenReturn(planUri);
-    when(mockWgerBaseProvider.makeUrl(diaryUrl, query: anyNamed('query'))).thenReturn(diaryUri);
+    when(mockWgerBaseProvider.makeUrl(planInfoUrl, id: anyNamed('id')))
+        .thenReturn(planInfoUri);
+    when(mockWgerBaseProvider.makeUrl(planUrl, id: anyNamed('id')))
+        .thenReturn(planUri);
+    when(mockWgerBaseProvider.makeUrl(diaryUrl, query: anyNamed('query')))
+        .thenReturn(diaryUri);
     when(mockWgerBaseProvider.fetch(planInfoUri)).thenAnswer(
       (realInvocation) => Future.value(nutritionalPlanInfoResponse),
     );

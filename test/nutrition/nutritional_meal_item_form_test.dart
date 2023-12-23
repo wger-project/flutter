@@ -51,20 +51,26 @@ void main() {
   var plan1 = NutritionalPlan.empty();
   var meal1 = Meal();
 
-  final Uri tUriRightCode = Uri.parse('https://localhost/api/v2/ingredient/?code=123');
-  final Uri tUriEmptyCode = Uri.parse('https://localhost/api/v2/ingredient/?code=\"%20\"');
-  final Uri tUriBadCode = Uri.parse('https://localhost/api/v2/ingredient/?code=222');
+  final Uri tUriRightCode =
+      Uri.parse('https://localhost/api/v2/ingredient/?code=123');
+  final Uri tUriEmptyCode =
+      Uri.parse('https://localhost/api/v2/ingredient/?code=\"%20\"');
+  final Uri tUriBadCode =
+      Uri.parse('https://localhost/api/v2/ingredient/?code=222');
 
   when(client.get(tUriRightCode, headers: anyNamed('headers'))).thenAnswer(
-    (_) => Future.value(http.Response(fixture('nutrition/search_ingredient_right_code.json'), 200)),
+    (_) => Future.value(http.Response(
+        fixture('nutrition/search_ingredient_right_code.json'), 200)),
   );
 
   when(client.get(tUriEmptyCode, headers: anyNamed('headers'))).thenAnswer(
-    (_) => Future.value(http.Response(fixture('nutrition/search_ingredient_wrong_code.json'), 200)),
+    (_) => Future.value(http.Response(
+        fixture('nutrition/search_ingredient_wrong_code.json'), 200)),
   );
 
   when(client.get(tUriBadCode, headers: anyNamed('headers'))).thenAnswer(
-    (_) => Future.value(http.Response(fixture('nutrition/search_ingredient_wrong_code.json'), 200)),
+    (_) => Future.value(http.Response(
+        fixture('nutrition/search_ingredient_wrong_code.json'), 200)),
   );
 
   setUp(() {
@@ -73,16 +79,22 @@ void main() {
     final MealItem mealItem = MealItem(ingredientId: ingredient.id, amount: 2);
     mockNutrition = MockNutritionPlansProvider();
 
-    when(mockNutrition.searchIngredientWithCode('123')).thenAnswer((_) => Future.value(ingredient));
-    when(mockNutrition.searchIngredientWithCode('')).thenAnswer((_) => Future.value(null));
-    when(mockNutrition.searchIngredientWithCode('222')).thenAnswer((_) => Future.value(null));
-    when(mockNutrition.searchIngredient(any)).thenAnswer((_) =>
-        Future.value(json.decode(fixture('nutrition/ingredient_suggestions')) as List<dynamic>));
+    when(mockNutrition.searchIngredientWithCode('123'))
+        .thenAnswer((_) => Future.value(ingredient));
+    when(mockNutrition.searchIngredientWithCode(''))
+        .thenAnswer((_) => Future.value(null));
+    when(mockNutrition.searchIngredientWithCode('222'))
+        .thenAnswer((_) => Future.value(null));
+    when(mockNutrition.searchIngredient(any)).thenAnswer((_) => Future.value(
+        json.decode(fixture('nutrition/ingredient_suggestions'))
+            as List<dynamic>));
 
-    when(mockNutrition.addMealItem(any, meal1)).thenAnswer((_) => Future.value(mealItem));
+    when(mockNutrition.addMealItem(any, meal1))
+        .thenAnswer((_) => Future.value(mealItem));
   });
 
-  Widget createMealItemFormScreen(Meal meal, String code, bool test, {locale = 'en'}) {
+  Widget createMealItemFormScreen(Meal meal, String code, bool test,
+      {locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
 
     return ChangeNotifierProvider<NutritionPlansProvider>(
@@ -105,7 +117,8 @@ void main() {
     );
   }
 
-  testWidgets('Test the widgets on the meal item form', (WidgetTester tester) async {
+  testWidgets('Test the widgets on the meal item form',
+      (WidgetTester tester) async {
     await tester.pumpWidget(createMealItemFormScreen(meal1, '', true));
     await tester.pumpAndSettle();
 
@@ -264,7 +277,8 @@ void main() {
       expect(find.text('Please enter a valid number'), findsOneWidget);
     });
 
-    testWidgets('save ingredient with incorrect weight input type', (WidgetTester tester) async {
+    testWidgets('save ingredient with incorrect weight input type',
+        (WidgetTester tester) async {
       await tester.pumpWidget(createMealItemFormScreen(meal1, '123', true));
 
       await tester.tap(find.byKey(const Key('scan-button')));

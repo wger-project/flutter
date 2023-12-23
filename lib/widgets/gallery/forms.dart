@@ -113,7 +113,8 @@ class _ImageFormState extends State<ImageForm> {
                               _showPicker(ImageSource.camera);
                             },
                             leading: const Icon(Icons.photo_camera),
-                            title: Text(AppLocalizations.of(context).takePicture),
+                            title:
+                                Text(AppLocalizations.of(context).takePicture),
                           ),
                           ListTile(
                               onTap: () {
@@ -121,7 +122,8 @@ class _ImageFormState extends State<ImageForm> {
                                 _showPicker(ImageSource.gallery);
                               },
                               leading: const Icon(Icons.photo_library),
-                              title: Text(AppLocalizations.of(context).chooseFromLibrary))
+                              title: Text(AppLocalizations.of(context)
+                                  .chooseFromLibrary))
                         ],
                       ),
                     );
@@ -166,7 +168,8 @@ class _ImageFormState extends State<ImageForm> {
           ),
           TextFormField(
             key: const Key('field-description'),
-            decoration: InputDecoration(labelText: AppLocalizations.of(context).description),
+            decoration: InputDecoration(
+                labelText: AppLocalizations.of(context).description),
             minLines: 3,
             maxLines: 10,
             controller: descriptionController,

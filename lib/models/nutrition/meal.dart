@@ -38,7 +38,11 @@ class Meal {
   @JsonKey(name: 'name')
   late String name;
 
-  @JsonKey(includeFromJson: false, includeToJson: false, name: 'meal_items', defaultValue: [])
+  @JsonKey(
+      includeFromJson: false,
+      includeToJson: false,
+      name: 'meal_items',
+      defaultValue: [])
   List<MealItem> mealItems = [];
 
   Meal({

@@ -28,7 +28,8 @@ class MeasurementChartWidgetFl extends StatefulWidget {
   const MeasurementChartWidgetFl(this._entries, {this.unit = 'kg'});
 
   @override
-  State<MeasurementChartWidgetFl> createState() => _MeasurementChartWidgetFlState();
+  State<MeasurementChartWidgetFl> createState() =>
+      _MeasurementChartWidgetFlState();
 }
 
 class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
@@ -51,7 +52,8 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
   }
 
   LineTouchData tooltipData() {
-    return LineTouchData(touchTooltipData: LineTouchTooltipData(getTooltipItems: (touchedSpots) {
+    return LineTouchData(
+        touchTooltipData: LineTouchTooltipData(getTooltipItems: (touchedSpots) {
       return touchedSpots.map((touchedSpot) {
         return LineTooltipItem(
           '${touchedSpot.y} kg',
@@ -99,13 +101,16 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
               if (value == meta.min || value == meta.max) {
                 return const Text('');
               }
-              final DateTime date = DateTime.fromMillisecondsSinceEpoch(value.toInt());
+              final DateTime date =
+                  DateTime.fromMillisecondsSinceEpoch(value.toInt());
               return Text(
-                DateFormat.yMd(Localizations.localeOf(context).languageCode).format(date),
+                DateFormat.yMd(Localizations.localeOf(context).languageCode)
+                    .format(date),
               );
             },
             interval: widget._entries.isNotEmpty
-                ? chartGetInterval(widget._entries.last.date, widget._entries.first.date)
+                ? chartGetInterval(
+                    widget._entries.last.date, widget._entries.first.date)
                 : 1000,
           ),
         ),
@@ -128,8 +133,8 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
       lineBarsData: [
         LineChartBarData(
           spots: [
-            ...widget._entries
-                .map((e) => FlSpot(e.date.millisecondsSinceEpoch.toDouble(), e.value.toDouble()))
+            ...widget._entries.map((e) => FlSpot(
+                e.date.millisecondsSinceEpoch.toDouble(), e.value.toDouble()))
           ],
           isCurved: false,
           color: Theme.of(context).colorScheme.secondary,

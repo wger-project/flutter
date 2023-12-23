@@ -31,7 +31,9 @@ class CategoriesCard extends StatelessWidget {
             padding: const EdgeInsets.all(10),
             height: 220,
             child: MeasurementChartWidgetFl(
-              currentCategory.entries.map((e) => MeasurementChartEntry(e.value, e.date)).toList(),
+              currentCategory.entries
+                  .map((e) => MeasurementChartEntry(e.value, e.date))
+                  .toList(),
               unit: currentCategory.unit,
             ),
           ),

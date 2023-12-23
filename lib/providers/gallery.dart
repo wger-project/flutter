@@ -32,7 +32,8 @@ class GalleryProvider extends WgerBaseProvider with ChangeNotifier {
 
   List<gallery.Image> images = [];
 
-  GalleryProvider(AuthProvider auth, List<gallery.Image> entries, [http.Client? client])
+  GalleryProvider(AuthProvider auth, List<gallery.Image> entries,
+      [http.Client? client])
       : images = entries,
         super(auth, client);
 
@@ -63,7 +64,8 @@ class GalleryProvider extends WgerBaseProvider with ChangeNotifier {
       HttpHeaders.authorizationHeader: 'Token ${auth.token}',
       HttpHeaders.userAgentHeader: auth.getAppNameHeader(),
     });
-    request.files.add(await http.MultipartFile.fromPath('image', imageFile.path));
+    request.files
+        .add(await http.MultipartFile.fromPath('image', imageFile.path));
     request.fields['date'] = toDate(image.date)!;
     request.fields['description'] = image.description;
 
@@ -77,7 +79,8 @@ class GalleryProvider extends WgerBaseProvider with ChangeNotifier {
   }
 
   Future<void> editImage(gallery.Image image, XFile? imageFile) async {
-    final request = http.MultipartRequest('PATCH', makeUrl(_galleryUrlPath, id: image.id));
+    final request =
+        http.MultipartRequest('PATCH', makeUrl(_galleryUrlPath, id: image.id));
     request.headers.addAll({
       HttpHeaders.authorizationHeader: 'Token ${auth.token}',
       HttpHeaders.userAgentHeader: auth.getAppNameHeader(),
@@ -85,7 +88,8 @@ class GalleryProvider extends WgerBaseProvider with ChangeNotifier {
 
     // Only send the image if a new one was selected
     if (imageFile != null) {
-      request.files.add(await http.MultipartFile.fromPath('image', imageFile.path));
+      request.files
+          .add(await http.MultipartFile.fromPath('image', imageFile.path));
     }
 
     // Update image info
