@@ -249,6 +249,12 @@ class FlatpakMeta {
   static FlatpakMeta fromJson(File jsonFile) {
     try {
       final dynamic json = jsonDecode(jsonFile.readAsStringSync());
+      final localReleaseAssetsFile = File(
+        '${Directory.current.path}/flatpak_generator_exports/local_release_assets.json'
+      );
+      if (localReleaseAssetsFile.existsSync()) {
+        json['localReleaseAssets'] = jsonDecode(localReleaseAssetsFile.readAsStringSync());
+      }
       return FlatpakMeta(
           appId: json['appId'] as String,
           lowercaseAppName: json['lowercaseAppName'] as String,
@@ -270,7 +276,7 @@ class FlatpakMeta {
               throw Exception(
                   'Architecture must be either "${CPUArchitecture.x86_64.flatpakArchCode}" or "${CPUArchitecture.aarch64.flatpakArchCode}"');
             }
-            final tarballPath = '${jsonFile.parent.path}/${raMap['tarballPath'] as String}';
+            final tarballPath = raMap['tarballPath'] as String;
             final preShasum = Process.runSync('shasum', ['-a', '256', tarballPath]);
             final shasum = preShasum.stdout.toString().split(' ').first;
             if (preShasum.exitCode != 0) {

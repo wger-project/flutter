@@ -116,6 +116,10 @@ class PackageGenerator {
 
     shaByArch.putIfAbsent(arch, () => sha256);
 
+    final localReleaseAssetsFile = await File('${outputDir.path}/local_release_assets.json')
+      .writeAsString('[{"arch": "${arch.flatpakArchCode}", "tarballPath": "$packagePath"}]');
+    print('Generated ${localReleaseAssetsFile.path}');
+
     tempDir.deleteSync(recursive: true);
   }
 
