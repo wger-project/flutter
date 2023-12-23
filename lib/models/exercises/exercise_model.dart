@@ -18,6 +18,5 @@ class ExerciseData with _$ExerciseData {
     required List<Comment> notes,
   }) = _ExerciseData;
 
-  factory ExerciseData.fromJson(Map<String, dynamic> json) =>
-      _$ExerciseDataFromJson(json);
+  factory ExerciseData.fromJson(Map<String, dynamic> json) => _$ExerciseDataFromJson(json);
 }

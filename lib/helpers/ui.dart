@@ -49,8 +49,7 @@ void showErrorDialog(dynamic exception, BuildContext context) {
   );
 }
 
-void showHttpExceptionErrorDialog(
-    WgerHttpException exception, BuildContext context) async {
+void showHttpExceptionErrorDialog(WgerHttpException exception, BuildContext context) async {
   log('showHttpExceptionErrorDialog: ');
   log(exception.toString());
   log('-------------------');
@@ -59,8 +58,7 @@ void showHttpExceptionErrorDialog(
   for (final key in exception.errors!.keys) {
     // Error headers
     // Ensure that the error heading first letter is capitalized.
-    final String errorHeaderMsg =
-        key[0].toUpperCase() + key.substring(1, key.length);
+    final String errorHeaderMsg = key[0].toUpperCase() + key.substring(1, key.length);
 
     errorList.add(
       Text(
@@ -131,8 +129,7 @@ dynamic showDeleteDialog(
               ),
               onPressed: () {
                 exerciseData[exercise]!.removeWhere((el) => el.id == log.id);
-                Provider.of<WorkoutPlansProvider>(context, listen: false)
-                    .deleteLog(
+                Provider.of<WorkoutPlansProvider>(context, listen: false).deleteLog(
                   log,
                 );
 

@@ -35,18 +35,8 @@ void main() {
     mockMeasurementProvider = MockMeasurementProvider();
     when(mockMeasurementProvider.findCategoryById(any)).thenReturn(
       MeasurementCategory(id: 1, name: 'body fat', unit: '%', entries: [
-        MeasurementEntry(
-            id: 1,
-            category: 1,
-            date: DateTime(2021, 8, 1),
-            value: 10.2,
-            notes: ''),
-        MeasurementEntry(
-            id: 1,
-            category: 1,
-            date: DateTime(2021, 8, 10),
-            value: 18.1,
-            notes: 'a'),
+        MeasurementEntry(id: 1, category: 1, date: DateTime(2021, 8, 1), value: 10.2, notes: ''),
+        MeasurementEntry(id: 1, category: 1, date: DateTime(2021, 8, 10), value: 18.1, notes: 'a'),
       ]),
     );
   });
@@ -74,8 +64,7 @@ void main() {
     );
   }
 
-  testWidgets('Test the widgets on the measurement entries screen',
-      (WidgetTester tester) async {
+  testWidgets('Test the widgets on the measurement entries screen', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen());
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();
@@ -88,8 +77,7 @@ void main() {
     expect(find.text('18.1 %'), findsNWidgets(2));
   });
 
-  testWidgets('Tests the localization of dates - EN',
-      (WidgetTester tester) async {
+  testWidgets('Tests the localization of dates - EN', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen());
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();
@@ -99,8 +87,7 @@ void main() {
     expect(find.text('8/10/2021'), findsWidgets);
   });
 
-  testWidgets('Tests the localization of dates - DE',
-      (WidgetTester tester) async {
+  testWidgets('Tests the localization of dates - DE', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen(locale: 'de'));
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();

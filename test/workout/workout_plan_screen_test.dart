@@ -37,8 +37,7 @@ void main() {
     final key = GlobalKey<NavigatorState>();
 
     return ChangeNotifierProvider<WorkoutPlansProvider>(
-      create: (context) =>
-          WorkoutPlansProvider(mockBaseProvider, exercisesProvider, []),
+      create: (context) => WorkoutPlansProvider(mockBaseProvider, exercisesProvider, []),
       child: MaterialApp(
         locale: Locale(locale),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -60,8 +59,7 @@ void main() {
     );
   }
 
-  testWidgets('Test the widgets on the nutritional plan screen',
-      (WidgetTester tester) async {
+  testWidgets('Test the widgets on the nutritional plan screen', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen());
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();
@@ -72,8 +70,7 @@ void main() {
     expect(find.byType(Dismissible), findsNWidgets(2));
   });
 
-  testWidgets('Tests the localization of times - EN',
-      (WidgetTester tester) async {
+  testWidgets('Tests the localization of times - EN', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen());
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();
@@ -82,8 +79,7 @@ void main() {
     expect(find.text('Thursday'), findsOneWidget);
   });
 
-  testWidgets('Tests the localization of times - DE',
-      (WidgetTester tester) async {
+  testWidgets('Tests the localization of times - DE', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen(locale: 'de'));
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();

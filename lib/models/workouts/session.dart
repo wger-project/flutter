@@ -41,18 +41,10 @@ class WorkoutSession {
   @JsonKey(required: false, defaultValue: '')
   late String notes;
 
-  @JsonKey(
-      required: true,
-      name: 'time_start',
-      toJson: timeToString,
-      fromJson: stringToTime)
+  @JsonKey(required: true, name: 'time_start', toJson: timeToString, fromJson: stringToTime)
   late TimeOfDay timeStart;
 
-  @JsonKey(
-      required: true,
-      name: 'time_end',
-      toJson: timeToString,
-      fromJson: stringToTime)
+  @JsonKey(required: true, name: 'time_end', toJson: timeToString, fromJson: stringToTime)
   late TimeOfDay timeEnd;
 
   WorkoutSession();
@@ -73,8 +65,7 @@ class WorkoutSession {
   }
 
   // Boilerplate
-  factory WorkoutSession.fromJson(Map<String, dynamic> json) =>
-      _$WorkoutSessionFromJson(json);
+  factory WorkoutSession.fromJson(Map<String, dynamic> json) => _$WorkoutSessionFromJson(json);
   Map<String, dynamic> toJson() => _$WorkoutSessionToJson(this);
 
   String? get impressionAsString {

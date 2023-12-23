@@ -55,8 +55,7 @@ class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
       touchTooltipData: LineTouchTooltipData(
         getTooltipItems: (touchedSpots) {
           return touchedSpots.map((touchedSpot) {
-            final reps =
-                widget._data['chart_data'][touchedSpot.barIndex].first['reps'];
+            final reps = widget._data['chart_data'][touchedSpot.barIndex].first['reps'];
 
             return LineTooltipItem(
               '$reps × ${touchedSpot.y} kg',
@@ -69,8 +68,7 @@ class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
   }
 
   LineChartData mainData() {
-    final colors =
-        generateChartColors(widget._data['chart_data'].length).iterator;
+    final colors = generateChartColors(widget._data['chart_data'].length).iterator;
 
     return LineChartData(
       lineTouchData: tooltipData(),
@@ -108,11 +106,9 @@ class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
                 return const Text('');
               }
 
-              final DateTime date =
-                  DateTime.fromMillisecondsSinceEpoch(value.toInt());
+              final DateTime date = DateTime.fromMillisecondsSinceEpoch(value.toInt());
               return Text(
-                DateFormat.yMd(Localizations.localeOf(context).languageCode)
-                    .format(date),
+                DateFormat.yMd(Localizations.localeOf(context).languageCode).format(date),
               );
             },
             interval: chartGetInterval(
@@ -142,9 +138,7 @@ class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
             spots: [
               ...e.map(
                 (entry) => FlSpot(
-                  DateTime.parse(entry['date'])
-                      .millisecondsSinceEpoch
-                      .toDouble(),
+                  DateTime.parse(entry['date']).millisecondsSinceEpoch.toDouble(),
                   double.parse(entry['weight']),
                 ),
               )

@@ -55,8 +55,7 @@ class FormScreen extends StatelessWidget {
       appBar: AppBar(title: Text(args.title)),
       body: args.hasListView
           ? Scrollable(
-              viewportBuilder:
-                  (BuildContext context, ViewportOffset position) => Padding(
+              viewportBuilder: (BuildContext context, ViewportOffset position) => Padding(
                 padding: args.padding,
                 child: args.widget,
               ),

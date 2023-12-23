@@ -40,9 +40,7 @@ class EntriesList extends StatelessWidget {
         padding: const EdgeInsets.all(10),
         height: 220,
         child: MeasurementChartWidgetFl(
-          _category.entries
-              .map((e) => MeasurementChartEntry(e.value, e.date))
-              .toList(),
+          _category.entries.map((e) => MeasurementChartEntry(e.value, e.date)).toList(),
           unit: _category.unit,
         ),
       ),
@@ -52,8 +50,7 @@ class EntriesList extends StatelessWidget {
           itemCount: _category.entries.length,
           itemBuilder: (context, index) {
             final currentEntry = _category.entries[index];
-            final provider =
-                Provider.of<MeasurementProvider>(context, listen: false);
+            final provider = Provider.of<MeasurementProvider>(context, listen: false);
 
             return Dismissible(
               key: Key(currentEntry.id.toString()),
@@ -116,8 +113,7 @@ class EntriesList extends StatelessWidget {
               ),
               child: Card(
                 child: ListTile(
-                  title: Text(
-                      '${currentEntry.value.toString()} ${_category.unit}'),
+                  title: Text('${currentEntry.value.toString()} ${_category.unit}'),
                   subtitle: Text(
                     DateFormat.yMd(Localizations.localeOf(context).languageCode)
                         .format(currentEntry.date),

@@ -39,8 +39,7 @@ class Language extends Equatable {
   });
 
   // Boilerplate
-  factory Language.fromJson(Map<String, dynamic> json) =>
-      _$LanguageFromJson(json);
+  factory Language.fromJson(Map<String, dynamic> json) => _$LanguageFromJson(json);
   Map<String, dynamic> toJson() => _$LanguageToJson(this);
 
   @override

@@ -25,10 +25,8 @@ void main() {
     test('Regular weights', () async {
       expect(plateCalculator(40, BAR_WEIGHT, AVAILABLE_PLATES), [10]);
       expect(plateCalculator(100, BAR_WEIGHT, AVAILABLE_PLATES), [15, 15, 10]);
-      expect(plateCalculator(102.5, BAR_WEIGHT, AVAILABLE_PLATES),
-          [15, 15, 10, 1.25]);
-      expect(
-          plateCalculator(140, BAR_WEIGHT, AVAILABLE_PLATES), [15, 15, 15, 15]);
+      expect(plateCalculator(102.5, BAR_WEIGHT, AVAILABLE_PLATES), [15, 15, 10, 1.25]);
+      expect(plateCalculator(140, BAR_WEIGHT, AVAILABLE_PLATES), [15, 15, 15, 15]);
       expect(plateCalculator(45, BAR_WEIGHT, AVAILABLE_PLATES), [10, 2.5]);
       expect(plateCalculator(85, BAR_WEIGHT, AVAILABLE_PLATES), [15, 15, 2.5]);
     });

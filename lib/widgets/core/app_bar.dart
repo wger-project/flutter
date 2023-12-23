@@ -49,8 +49,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                     title: Text(AppLocalizations.of(context).optionsLabel),
                     actions: [
                       TextButton(
-                        child: Text(
-                            MaterialLocalizations.of(context).closeButtonLabel),
+                        child: Text(MaterialLocalizations.of(context).closeButtonLabel),
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
@@ -70,8 +69,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                               FormScreen.routeName,
                               arguments: FormScreenArguments(
                                 AppLocalizations.of(context).userProfile,
-                                UserProfileForm(
-                                    context.read<UserProvider>().profile!),
+                                UserProfileForm(context.read<UserProvider>().profile!),
                               ),
                             );
                           },
@@ -79,11 +77,9 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                         ListTile(
                           leading: const Icon(Icons.info),
                           onTap: () {
-                            Navigator.of(context)
-                                .pushNamed(AboutPage.routeName);
+                            Navigator.of(context).pushNamed(AboutPage.routeName);
                           },
-                          title:
-                              Text(AppLocalizations.of(context).aboutPageTitle),
+                          title: Text(AppLocalizations.of(context).aboutPageTitle),
                         ),
                         const Divider(),
                         ListTile(

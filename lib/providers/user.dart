@@ -38,8 +38,7 @@ class UserProvider with ChangeNotifier {
 
   /// Fetch the current user's profile
   Future<void> fetchAndSetProfile() async {
-    final userData =
-        await baseProvider.fetch(baseProvider.makeUrl(PROFILE_URL));
+    final userData = await baseProvider.fetch(baseProvider.makeUrl(PROFILE_URL));
     try {
       profile = Profile.fromJson(userData);
     } catch (error) {

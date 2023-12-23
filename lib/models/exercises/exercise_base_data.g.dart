@@ -6,13 +6,11 @@ part of 'exercise_base_data.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$ExerciseBaseDataImpl _$$ExerciseBaseDataImplFromJson(
-        Map<String, dynamic> json) =>
+_$ExerciseBaseDataImpl _$$ExerciseBaseDataImplFromJson(Map<String, dynamic> json) =>
     _$ExerciseBaseDataImpl(
       id: json['id'] as int,
       uuid: json['uuid'] as String,
-      category:
-          ExerciseCategory.fromJson(json['category'] as Map<String, dynamic>),
+      category: ExerciseCategory.fromJson(json['category'] as Map<String, dynamic>),
       muscles: (json['muscles'] as List<dynamic>)
           .map((e) => Muscle.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -33,8 +31,7 @@ _$ExerciseBaseDataImpl _$$ExerciseBaseDataImplFromJson(
           .toList(),
     );
 
-Map<String, dynamic> _$$ExerciseBaseDataImplToJson(
-        _$ExerciseBaseDataImpl instance) =>
+Map<String, dynamic> _$$ExerciseBaseDataImplToJson(_$ExerciseBaseDataImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
       'uuid': instance.uuid,

@@ -162,8 +162,7 @@ class ExerciseBase extends Equatable {
   }
 
   // Boilerplate
-  factory ExerciseBase.fromJson(Map<String, dynamic> json) =>
-      _$ExerciseBaseFromJson(json);
+  factory ExerciseBase.fromJson(Map<String, dynamic> json) => _$ExerciseBaseFromJson(json);
 
   Map<String, dynamic> toJson() => _$ExerciseBaseToJson(this);
 

@@ -35,8 +35,7 @@ class MeasurementEntriesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final categoryId = ModalRoute.of(context)!.settings.arguments as int;
-    final category =
-        Provider.of<MeasurementProvider>(context).findCategoryById(categoryId);
+    final category = Provider.of<MeasurementProvider>(context).findCategoryById(categoryId);
 
     return Scaffold(
       appBar: AppBar(
@@ -63,26 +62,21 @@ class MeasurementEntriesScreen extends StatelessWidget {
                       builder: (BuildContext contextDialog) {
                         return AlertDialog(
                           content: Text(
-                            AppLocalizations.of(context)
-                                .confirmDelete(category.name),
+                            AppLocalizations.of(context).confirmDelete(category.name),
                           ),
                           actions: [
                             TextButton(
-                              child: Text(MaterialLocalizations.of(context)
-                                  .cancelButtonLabel),
-                              onPressed: () =>
-                                  Navigator.of(contextDialog).pop(),
+                              child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+                              onPressed: () => Navigator.of(contextDialog).pop(),
                             ),
                             TextButton(
                               child: Text(
                                 AppLocalizations.of(context).delete,
-                                style: TextStyle(
-                                    color: Theme.of(context).colorScheme.error),
+                                style: TextStyle(color: Theme.of(context).colorScheme.error),
                               ),
                               onPressed: () {
                                 // Confirmed, delete the workout
-                                Provider.of<MeasurementProvider>(context,
-                                        listen: false)
+                                Provider.of<MeasurementProvider>(context, listen: false)
                                     .deleteCategory(category.id!);
 
                                 // Close the popup
@@ -92,8 +86,7 @@ class MeasurementEntriesScreen extends StatelessWidget {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(
-                                      AppLocalizations.of(context)
-                                          .successfullyDeleted,
+                                      AppLocalizations.of(context).successfullyDeleted,
                                       textAlign: TextAlign.center,
                                     ),
                                   ),

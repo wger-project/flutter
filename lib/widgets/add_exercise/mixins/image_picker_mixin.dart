@@ -17,8 +17,7 @@ mixin ExerciseImagePickerMixin {
 
   bool _validateFileType(File file) {
     final extension = file.path.split('.').last;
-    return validFileExtensions
-        .any((element) => extension == element.toLowerCase());
+    return validFileExtensions.any((element) => extension == element.toLowerCase());
   }
 
   void pickImages(BuildContext context, {bool pickFromCamera = false}) async {
@@ -26,8 +25,7 @@ mixin ExerciseImagePickerMixin {
 
     List<XFile>? images;
     if (pickFromCamera) {
-      final pictureTaken =
-          await imagePicker.pickImage(source: ImageSource.camera);
+      final pictureTaken = await imagePicker.pickImage(source: ImageSource.camera);
       images = pictureTaken == null ? null : [pictureTaken];
     } else {
       images = await imagePicker.pickMultiImage();
@@ -52,8 +50,7 @@ mixin ExerciseImagePickerMixin {
 
         if (!isFileValid) {
           if (context.mounted) {
-            showDialog(
-                context: context, builder: (context) => Text(errorMessage));
+            showDialog(context: context, builder: (context) => Text(errorMessage));
           }
           return;
         }

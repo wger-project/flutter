@@ -41,8 +41,7 @@ class FlNutritionalPlanPieChartWidget extends StatefulWidget {
   State<StatefulWidget> createState() => FlNutritionalPlanPieChartState();
 }
 
-class FlNutritionalPlanPieChartState
-    extends State<FlNutritionalPlanPieChartWidget> {
+class FlNutritionalPlanPieChartState extends State<FlNutritionalPlanPieChartWidget> {
   int touchedIndex = -1;
 
   @override
@@ -66,8 +65,7 @@ class FlNutritionalPlanPieChartState
                         touchedIndex = -1;
                         return;
                       }
-                      touchedIndex =
-                          pieTouchResponse.touchedSection!.touchedSectionIndex;
+                      touchedIndex = pieTouchResponse.touchedSection!.touchedSectionIndex;
                     });
                   },
                 ),
@@ -144,8 +142,7 @@ class FlNutritionalPlanPieChartState
           return PieChartSectionData(
             color: colors.current,
             value: widget.nutritionalValues.carbohydrates,
-            title:
-                '${widget.nutritionalValues.carbohydrates.toStringAsFixed(0)}g',
+            title: '${widget.nutritionalValues.carbohydrates.toStringAsFixed(0)}g',
             titlePositionPercentageOffset: 0.5,
             radius: radius,
           );
@@ -169,8 +166,7 @@ class NutritionalDiaryChartWidgetFl extends StatefulWidget {
   State<StatefulWidget> createState() => NutritionalDiaryChartWidgetFlState();
 }
 
-class NutritionalDiaryChartWidgetFlState
-    extends State<NutritionalDiaryChartWidgetFl> {
+class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidgetFl> {
   Widget bottomTitles(double value, TitleMeta meta) {
     const style = TextStyle(fontSize: 10);
     String text;
@@ -411,8 +407,7 @@ class FlNutritionalDiaryChartWidget extends StatefulWidget {
   State<StatefulWidget> createState() => FlNutritionalDiaryChartWidgetState();
 }
 
-class FlNutritionalDiaryChartWidgetState
-    extends State<FlNutritionalDiaryChartWidget> {
+class FlNutritionalDiaryChartWidgetState extends State<FlNutritionalDiaryChartWidget> {
   final Duration animDuration = const Duration(milliseconds: 250);
 
   int touchedIndex = -1;
@@ -432,8 +427,7 @@ class FlNutritionalDiaryChartWidgetState
     final List<DateTime> dateList = [];
     DateTime currentDate = startDate;
 
-    while (currentDate.isBefore(endDate) ||
-        currentDate.isAtSameMomentAs(endDate)) {
+    while (currentDate.isBefore(endDate) || currentDate.isAtSameMomentAs(endDate)) {
       dateList.add(currentDate);
       currentDate = currentDate.add(const Duration(days: 1));
     }
@@ -474,8 +468,7 @@ class FlNutritionalDiaryChartWidgetState
   List<BarChartGroupData> showingGroups() {
     final logEntries = widget._nutritionalPlan.logEntriesValues;
     final List<BarChartGroupData> out = [];
-    final dateList =
-        getDatesBetween(logEntries.keys.first, logEntries.keys.last);
+    final dateList = getDatesBetween(logEntries.keys.first, logEntries.keys.last);
 
     for (final date in dateList.reversed) {
       out.add(

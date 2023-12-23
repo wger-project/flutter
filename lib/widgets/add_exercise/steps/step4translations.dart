@@ -61,8 +61,7 @@ class _Step4TranslationState extends State<Step4Translation> {
                   title: '${AppLocalizations.of(context).name}*',
                   isRequired: true,
                   validator: (name) => validateName(name, context),
-                  onSaved: (String? name) =>
-                      addExerciseProvider.exerciseNameTrans = name!,
+                  onSaved: (String? name) => addExerciseProvider.exerciseNameTrans = name!,
                 ),
                 AddExerciseTextArea(
                   onChange: (value) => {},
@@ -74,8 +73,7 @@ class _Step4TranslationState extends State<Step4Translation> {
                     if (alternateNames?.isNotEmpty == true) {
                       final names = alternateNames!.split('\n');
                       for (final name in names) {
-                        if (name.length < MIN_CHARS_NAME ||
-                            name.length > MAX_CHARS_NAME) {
+                        if (name.length < MIN_CHARS_NAME || name.length > MAX_CHARS_NAME) {
                           return AppLocalizations.of(context).enterCharacters(
                             MIN_CHARS_NAME,
                             MAX_CHARS_NAME,
@@ -85,8 +83,8 @@ class _Step4TranslationState extends State<Step4Translation> {
                     }
                     return null;
                   },
-                  onSaved: (String? alternateName) => addExerciseProvider
-                      .alternateNamesTrans = alternateName!.split('\n'),
+                  onSaved: (String? alternateName) =>
+                      addExerciseProvider.alternateNamesTrans = alternateName!.split('\n'),
                 ),
                 AddExerciseTextArea(
                   onChange: (value) => {},

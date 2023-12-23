@@ -38,32 +38,12 @@ void main() {
     mockMeasurementProvider = MockMeasurementProvider();
     when(mockMeasurementProvider.categories).thenReturn([
       MeasurementCategory(id: 1, name: 'body fat', unit: '%', entries: [
-        MeasurementEntry(
-            id: 1,
-            category: 1,
-            date: DateTime(2021, 9, 1),
-            value: 10,
-            notes: ''),
-        MeasurementEntry(
-            id: 2,
-            category: 1,
-            date: DateTime(2021, 9, 5),
-            value: 11,
-            notes: ''),
+        MeasurementEntry(id: 1, category: 1, date: DateTime(2021, 9, 1), value: 10, notes: ''),
+        MeasurementEntry(id: 2, category: 1, date: DateTime(2021, 9, 5), value: 11, notes: ''),
       ]),
       MeasurementCategory(id: 2, name: 'biceps', unit: 'cm', entries: [
-        MeasurementEntry(
-            id: 3,
-            category: 2,
-            date: DateTime(2021, 9, 1),
-            value: 30,
-            notes: ''),
-        MeasurementEntry(
-            id: 4,
-            category: 2,
-            date: DateTime(2021, 9, 5),
-            value: 40,
-            notes: ''),
+        MeasurementEntry(id: 3, category: 2, date: DateTime(2021, 9, 1), value: 30, notes: ''),
+        MeasurementEntry(id: 4, category: 2, date: DateTime(2021, 9, 5), value: 40, notes: ''),
       ]),
     ]);
   });
@@ -80,8 +60,7 @@ void main() {
     );
   }
 
-  testWidgets('Test the widgets on the measurement category screen',
-      (WidgetTester tester) async {
+  testWidgets('Test the widgets on the measurement category screen', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen());
     await tester.pumpAndSettle();
 

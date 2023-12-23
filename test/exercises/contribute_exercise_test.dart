@@ -41,12 +41,9 @@ void main() {
   Widget createExerciseScreen({locale = 'en'}) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<ExercisesProvider>(
-            create: (context) => mockExerciseProvider),
-        ChangeNotifierProvider<AddExerciseProvider>(
-            create: (context) => mockAddExerciseProvider),
-        ChangeNotifierProvider<UserProvider>(
-            create: (context) => mockUserProvider),
+        ChangeNotifierProvider<ExercisesProvider>(create: (context) => mockExerciseProvider),
+        ChangeNotifierProvider<AddExerciseProvider>(create: (context) => mockAddExerciseProvider),
+        ChangeNotifierProvider<UserProvider>(create: (context) => mockUserProvider),
       ],
       child: MaterialApp(
         locale: Locale(locale),
@@ -57,8 +54,7 @@ void main() {
     );
   }
 
-  testWidgets('Unverified users see an info widget',
-      (WidgetTester tester) async {
+  testWidgets('Unverified users see an info widget', (WidgetTester tester) async {
     // Arrange
     tProfile1.isTrustworthy = false;
     when(mockUserProvider.profile).thenReturn(tProfile1);
@@ -71,8 +67,7 @@ void main() {
     expect(find.byType(AddExerciseStepper), findsNothing);
   });
 
-  testWidgets('Verified users see the stepper to add exercises',
-      (WidgetTester tester) async {
+  testWidgets('Verified users see the stepper to add exercises', (WidgetTester tester) async {
     // Arrange
     tProfile1.isTrustworthy = true;
     when(mockUserProvider.profile).thenReturn(tProfile1);

@@ -27,8 +27,7 @@ _$ExerciseDataImpl _$$ExerciseDataImplFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$$ExerciseDataImplToJson(_$ExerciseDataImpl instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$$ExerciseDataImplToJson(_$ExerciseDataImpl instance) => <String, dynamic>{
       'id': instance.id,
       'uuid': instance.uuid,
       'language': instance.languageId,

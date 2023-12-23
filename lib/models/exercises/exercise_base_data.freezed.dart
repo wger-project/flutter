@@ -34,14 +34,12 @@ mixin _$ExerciseBaseData {
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
-  $ExerciseBaseDataCopyWith<ExerciseBaseData> get copyWith =>
-      throw _privateConstructorUsedError;
+  $ExerciseBaseDataCopyWith<ExerciseBaseData> get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $ExerciseBaseDataCopyWith<$Res> {
-  factory $ExerciseBaseDataCopyWith(
-          ExerciseBaseData value, $Res Function(ExerciseBaseData) then) =
+  factory $ExerciseBaseDataCopyWith(ExerciseBaseData value, $Res Function(ExerciseBaseData) then) =
       _$ExerciseBaseDataCopyWithImpl<$Res, ExerciseBaseData>;
   @useResult
   $Res call(
@@ -121,10 +119,9 @@ class _$ExerciseBaseDataCopyWithImpl<$Res, $Val extends ExerciseBaseData>
 }
 
 /// @nodoc
-abstract class _$$ExerciseBaseDataImplCopyWith<$Res>
-    implements $ExerciseBaseDataCopyWith<$Res> {
-  factory _$$ExerciseBaseDataImplCopyWith(_$ExerciseBaseDataImpl value,
-          $Res Function(_$ExerciseBaseDataImpl) then) =
+abstract class _$$ExerciseBaseDataImplCopyWith<$Res> implements $ExerciseBaseDataCopyWith<$Res> {
+  factory _$$ExerciseBaseDataImplCopyWith(
+          _$ExerciseBaseDataImpl value, $Res Function(_$ExerciseBaseDataImpl) then) =
       __$$ExerciseBaseDataImplCopyWithImpl<$Res>;
   @override
   @useResult
@@ -144,8 +141,8 @@ abstract class _$$ExerciseBaseDataImplCopyWith<$Res>
 class __$$ExerciseBaseDataImplCopyWithImpl<$Res>
     extends _$ExerciseBaseDataCopyWithImpl<$Res, _$ExerciseBaseDataImpl>
     implements _$$ExerciseBaseDataImplCopyWith<$Res> {
-  __$$ExerciseBaseDataImplCopyWithImpl(_$ExerciseBaseDataImpl _value,
-      $Res Function(_$ExerciseBaseDataImpl) _then)
+  __$$ExerciseBaseDataImplCopyWithImpl(
+      _$ExerciseBaseDataImpl _value, $Res Function(_$ExerciseBaseDataImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -210,8 +207,7 @@ class _$ExerciseBaseDataImpl implements _ExerciseBaseData {
       required this.uuid,
       required this.category,
       required final List<Muscle> muscles,
-      @JsonKey(name: 'muscles_secondary')
-      required final List<Muscle> musclesSecondary,
+      @JsonKey(name: 'muscles_secondary') required final List<Muscle> musclesSecondary,
       required final List<Equipment> equipment,
       required final List<ExerciseData> exercises,
       required final List<ExerciseImage> images,
@@ -246,8 +242,7 @@ class _$ExerciseBaseDataImpl implements _ExerciseBaseData {
   @override
   @JsonKey(name: 'muscles_secondary')
   List<Muscle> get musclesSecondary {
-    if (_musclesSecondary is EqualUnmodifiableListView)
-      return _musclesSecondary;
+    if (_musclesSecondary is EqualUnmodifiableListView) return _musclesSecondary;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_musclesSecondary);
   }
@@ -296,15 +291,11 @@ class _$ExerciseBaseDataImpl implements _ExerciseBaseData {
             other is _$ExerciseBaseDataImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.uuid, uuid) || other.uuid == uuid) &&
-            (identical(other.category, category) ||
-                other.category == category) &&
+            (identical(other.category, category) || other.category == category) &&
             const DeepCollectionEquality().equals(other._muscles, _muscles) &&
-            const DeepCollectionEquality()
-                .equals(other._musclesSecondary, _musclesSecondary) &&
-            const DeepCollectionEquality()
-                .equals(other._equipment, _equipment) &&
-            const DeepCollectionEquality()
-                .equals(other._exercises, _exercises) &&
+            const DeepCollectionEquality().equals(other._musclesSecondary, _musclesSecondary) &&
+            const DeepCollectionEquality().equals(other._equipment, _equipment) &&
+            const DeepCollectionEquality().equals(other._exercises, _exercises) &&
             const DeepCollectionEquality().equals(other._images, _images) &&
             const DeepCollectionEquality().equals(other._videos, _videos));
   }
@@ -327,8 +318,7 @@ class _$ExerciseBaseDataImpl implements _ExerciseBaseData {
   @override
   @pragma('vm:prefer-inline')
   _$$ExerciseBaseDataImplCopyWith<_$ExerciseBaseDataImpl> get copyWith =>
-      __$$ExerciseBaseDataImplCopyWithImpl<_$ExerciseBaseDataImpl>(
-          this, _$identity);
+      __$$ExerciseBaseDataImplCopyWithImpl<_$ExerciseBaseDataImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
@@ -344,15 +334,13 @@ abstract class _ExerciseBaseData implements ExerciseBaseData {
       required final String uuid,
       required final ExerciseCategory category,
       required final List<Muscle> muscles,
-      @JsonKey(name: 'muscles_secondary')
-      required final List<Muscle> musclesSecondary,
+      @JsonKey(name: 'muscles_secondary') required final List<Muscle> musclesSecondary,
       required final List<Equipment> equipment,
       required final List<ExerciseData> exercises,
       required final List<ExerciseImage> images,
       required final List<Video> videos}) = _$ExerciseBaseDataImpl;
 
-  factory _ExerciseBaseData.fromJson(Map<String, dynamic> json) =
-      _$ExerciseBaseDataImpl.fromJson;
+  factory _ExerciseBaseData.fromJson(Map<String, dynamic> json) = _$ExerciseBaseDataImpl.fromJson;
 
   @override
   int get id;

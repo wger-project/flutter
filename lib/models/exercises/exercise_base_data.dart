@@ -25,6 +25,5 @@ class ExerciseBaseData with _$ExerciseBaseData {
     required List<Video> videos,
   }) = _ExerciseBaseData;
 
-  factory ExerciseBaseData.fromJson(Map<String, dynamic> json) =>
-      _$ExerciseBaseDataFromJson(json);
+  factory ExerciseBaseData.fromJson(Map<String, dynamic> json) => _$ExerciseBaseDataFromJson(json);
 }

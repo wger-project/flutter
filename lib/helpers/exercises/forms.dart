@@ -14,8 +14,7 @@ String? validateName(String? name, BuildContext context) {
   }
 
   if (name.length < MIN_CHARS_NAME || name.length > MAX_CHARS_NAME) {
-    return AppLocalizations.of(context)
-        .enterCharacters(MIN_CHARS_NAME, MAX_CHARS_NAME);
+    return AppLocalizations.of(context).enterCharacters(MIN_CHARS_NAME, MAX_CHARS_NAME);
   }
 
   return null;
@@ -27,8 +26,7 @@ String? validateDescription(String? name, BuildContext context) {
   }
 
   if (name.length < MIN_CHARS_DESCRIPTION) {
-    return AppLocalizations.of(context)
-        .enterMinCharacters(MIN_CHARS_DESCRIPTION);
+    return AppLocalizations.of(context).enterMinCharacters(MIN_CHARS_DESCRIPTION);
   }
 
   return null;

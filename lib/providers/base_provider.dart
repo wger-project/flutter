@@ -51,8 +51,7 @@ class WgerBaseProvider {
   }
 
   /// Helper function to make a URL.
-  Uri makeUrl(String path,
-      {int? id, String? objectMethod, Map<String, dynamic>? query}) {
+  Uri makeUrl(String path, {int? id, String? objectMethod, Map<String, dynamic>? query}) {
     return makeUri(auth.serverUrl!, path, id, objectMethod, query);
   }
 

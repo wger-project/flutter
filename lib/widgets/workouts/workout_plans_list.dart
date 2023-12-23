@@ -49,26 +49,21 @@ class WorkoutPlansList extends StatelessWidget {
                         builder: (BuildContext contextDialog) {
                           return AlertDialog(
                             content: Text(
-                              AppLocalizations.of(context)
-                                  .confirmDelete(currentWorkout.name),
+                              AppLocalizations.of(context).confirmDelete(currentWorkout.name),
                             ),
                             actions: [
                               TextButton(
-                                child: Text(MaterialLocalizations.of(context)
-                                    .cancelButtonLabel),
-                                onPressed: () =>
-                                    Navigator.of(contextDialog).pop(),
+                                child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+                                onPressed: () => Navigator.of(contextDialog).pop(),
                               ),
                               TextButton(
                                 child: Text(
                                   AppLocalizations.of(context).delete,
-                                  style: TextStyle(
-                                      color: Theme.of(context).errorColor),
+                                  style: TextStyle(color: Theme.of(context).errorColor),
                                 ),
                                 onPressed: () {
                                   // Confirmed, delete the workout
-                                  Provider.of<WorkoutPlansProvider>(context,
-                                          listen: false)
+                                  Provider.of<WorkoutPlansProvider>(context, listen: false)
                                       .deleteWorkout(currentWorkout.id!);
 
                                   // Close the popup
@@ -78,8 +73,7 @@ class WorkoutPlansList extends StatelessWidget {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       content: Text(
-                                        AppLocalizations.of(context)
-                                            .successfullyDeleted,
+                                        AppLocalizations.of(context).successfullyDeleted,
                                         textAlign: TextAlign.center,
                                       ),
                                     ),
@@ -110,14 +104,12 @@ class WorkoutPlansList extends StatelessWidget {
                       onTap: () {
                         _workoutProvider.setCurrentPlan(currentWorkout.id!);
 
-                        Navigator.of(context).pushNamed(
-                            WorkoutPlanScreen.routeName,
-                            arguments: currentWorkout);
+                        Navigator.of(context)
+                            .pushNamed(WorkoutPlanScreen.routeName, arguments: currentWorkout);
                       },
                       title: Text(currentWorkout.name),
                       subtitle: Text(
-                        DateFormat.yMd(
-                                Localizations.localeOf(context).languageCode)
+                        DateFormat.yMd(Localizations.localeOf(context).languageCode)
                             .format(currentWorkout.creationDate),
                       ),
                     ),

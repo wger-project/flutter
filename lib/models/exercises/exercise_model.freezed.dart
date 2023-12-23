@@ -33,14 +33,12 @@ mixin _$ExerciseData {
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
-  $ExerciseDataCopyWith<ExerciseData> get copyWith =>
-      throw _privateConstructorUsedError;
+  $ExerciseDataCopyWith<ExerciseData> get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $ExerciseDataCopyWith<$Res> {
-  factory $ExerciseDataCopyWith(
-          ExerciseData value, $Res Function(ExerciseData) then) =
+  factory $ExerciseDataCopyWith(ExerciseData value, $Res Function(ExerciseData) then) =
       _$ExerciseDataCopyWithImpl<$Res, ExerciseData>;
   @useResult
   $Res call(
@@ -114,8 +112,7 @@ class _$ExerciseDataCopyWithImpl<$Res, $Val extends ExerciseData>
 }
 
 /// @nodoc
-abstract class _$$ExerciseDataImplCopyWith<$Res>
-    implements $ExerciseDataCopyWith<$Res> {
+abstract class _$$ExerciseDataImplCopyWith<$Res> implements $ExerciseDataCopyWith<$Res> {
   factory _$$ExerciseDataImplCopyWith(
           _$ExerciseDataImpl value, $Res Function(_$ExerciseDataImpl) then) =
       __$$ExerciseDataImplCopyWithImpl<$Res>;
@@ -249,11 +246,9 @@ class _$ExerciseDataImpl implements _ExerciseData {
             other is _$ExerciseDataImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.uuid, uuid) || other.uuid == uuid) &&
-            (identical(other.languageId, languageId) ||
-                other.languageId == languageId) &&
+            (identical(other.languageId, languageId) || other.languageId == languageId) &&
             (identical(other.baseId, baseId) || other.baseId == baseId) &&
-            (identical(other.description, description) ||
-                other.description == description) &&
+            (identical(other.description, description) || other.description == description) &&
             (identical(other.name, name) || other.name == name) &&
             const DeepCollectionEquality().equals(other._aliases, _aliases) &&
             const DeepCollectionEquality().equals(other._notes, _notes));
@@ -261,16 +256,8 @@ class _$ExerciseDataImpl implements _ExerciseData {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      id,
-      uuid,
-      languageId,
-      baseId,
-      description,
-      name,
-      const DeepCollectionEquality().hash(_aliases),
-      const DeepCollectionEquality().hash(_notes));
+  int get hashCode => Object.hash(runtimeType, id, uuid, languageId, baseId, description, name,
+      const DeepCollectionEquality().hash(_aliases), const DeepCollectionEquality().hash(_notes));
 
   @JsonKey(ignore: true)
   @override
@@ -297,8 +284,7 @@ abstract class _ExerciseData implements ExerciseData {
       required final List<Alias> aliases,
       required final List<Comment> notes}) = _$ExerciseDataImpl;
 
-  factory _ExerciseData.fromJson(Map<String, dynamic> json) =
-      _$ExerciseDataImpl.fromJson;
+  factory _ExerciseData.fromJson(Map<String, dynamic> json) = _$ExerciseDataImpl.fromJson;
 
   @override
   int get id;

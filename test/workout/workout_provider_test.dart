@@ -56,8 +56,7 @@ void main() {
       );
 
       // Load the entries
-      final provider =
-          WorkoutPlansProvider(mockBaseProvider, exercisesProvider, []);
+      final provider = WorkoutPlansProvider(mockBaseProvider, exercisesProvider, []);
       final plan = await provider.fetchAndSetPlanSparse(325397);
       final plans = provider.getPlans();
 
@@ -87,8 +86,7 @@ void main() {
       );
 
       // Load the entries
-      final provider =
-          WorkoutPlansProvider(mockBaseProvider, exercisesProvider, []);
+      final provider = WorkoutPlansProvider(mockBaseProvider, exercisesProvider, []);
 
       await provider.fetchAndSetPlanSparse(325397);
       await provider.deleteWorkout(325397);
@@ -100,15 +98,13 @@ void main() {
       final exercisesProvider = ExercisesProvider(mockBaseProvider);
 
       final uri = Uri.https('localhost', 'api/v2/setting-repetitionunit/');
-      final tRepetitionUnits =
-          jsonDecode(fixture('routines/repetition_units.json'));
+      final tRepetitionUnits = jsonDecode(fixture('routines/repetition_units.json'));
       when(mockBaseProvider.makeUrl('setting-repetitionunit')).thenReturn(uri);
       when(mockBaseProvider.fetchPaginated(uri))
           .thenAnswer((_) => Future.value(tRepetitionUnits['results']));
 
       // Load the entries
-      final provider =
-          WorkoutPlansProvider(mockBaseProvider, exercisesProvider, []);
+      final provider = WorkoutPlansProvider(mockBaseProvider, exercisesProvider, []);
       await provider.fetchAndSetRepetitionUnits();
       final repetitionUnits = provider.repetitionUnits;
 
@@ -122,12 +118,10 @@ void main() {
       when(mockBaseProvider.fetchPaginated(uri))
           .thenAnswer((_) => Future.value(tWeightUnits['results']));
 
-      final ExercisesProvider testExercisesProvider =
-          ExercisesProvider(mockBaseProvider);
+      final ExercisesProvider testExercisesProvider = ExercisesProvider(mockBaseProvider);
 
       // Load the entries
-      final provider =
-          WorkoutPlansProvider(mockBaseProvider, testExercisesProvider, []);
+      final provider = WorkoutPlansProvider(mockBaseProvider, testExercisesProvider, []);
       await provider.fetchAndSetWeightUnits();
       final weightUnits = provider.weightUnits;
 
@@ -137,17 +131,14 @@ void main() {
 
     test('Test that fetch and set both type of units', () async {
       final weightUri = Uri.https('localhost', 'api/v2/setting-weightunit/');
-      when(mockBaseProvider.makeUrl('setting-weightunit'))
-          .thenReturn(weightUri);
+      when(mockBaseProvider.makeUrl('setting-weightunit')).thenReturn(weightUri);
       final tWeightUnits = jsonDecode(fixture('routines/weight_units.json'));
       when(mockBaseProvider.fetchPaginated(weightUri))
           .thenAnswer((_) => Future.value(tWeightUnits['results']));
 
       final repUnit = Uri.https('localhost', 'api/v2/setting-repetitionunit/');
-      final tRepetitionUnits =
-          jsonDecode(fixture('routines/repetition_units.json'));
-      when(mockBaseProvider.makeUrl('setting-repetitionunit'))
-          .thenReturn(repUnit);
+      final tRepetitionUnits = jsonDecode(fixture('routines/repetition_units.json'));
+      when(mockBaseProvider.makeUrl('setting-repetitionunit')).thenReturn(repUnit);
       when(mockBaseProvider.fetchPaginated(repUnit))
           .thenAnswer((_) => Future.value(tRepetitionUnits['results']));
 
@@ -157,16 +148,14 @@ void main() {
       final prefs = await SharedPreferences.getInstance();
 
       // Load the entries
-      final provider =
-          WorkoutPlansProvider(mockBaseProvider, exercisesProvider, []);
+      final provider = WorkoutPlansProvider(mockBaseProvider, exercisesProvider, []);
       await provider.fetchAndSetUnits();
       final prefsJson = jsonDecode(prefs.getString('workoutUnits')!);
 
       expect(prefsJson['repetitionUnits'].length, 7);
       expect(prefsJson['weightUnit'].length, 6);
       expect(true, DateTime.parse(prefsJson['date']).isBefore(DateTime.now()));
-      expect(
-          true, DateTime.parse(prefsJson['expiresIn']).isAfter(DateTime.now()));
+      expect(true, DateTime.parse(prefsJson['expiresIn']).isAfter(DateTime.now()));
     });
   });
 }

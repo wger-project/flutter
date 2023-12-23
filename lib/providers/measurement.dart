@@ -68,15 +68,13 @@ class MeasurementProvider with ChangeNotifier {
     final categoryIndex = _categories.indexOf(category);
 
     // Process the response
-    final requestUrl = baseProvider
-        .makeUrl(_entryUrl, query: {'category': category.id.toString()});
+    final requestUrl = baseProvider.makeUrl(_entryUrl, query: {'category': category.id.toString()});
     final data = await baseProvider.fetch(requestUrl);
     final List<MeasurementEntry> loadedEntries = [];
     for (final entry in data['results']) {
       loadedEntries.add(MeasurementEntry.fromJson(entry));
     }
-    final MeasurementCategory editedCategory =
-        category.copyWith(entries: loadedEntries);
+    final MeasurementCategory editedCategory = category.copyWith(entries: loadedEntries);
     _categories.removeAt(categoryIndex);
     _categories.insert(categoryIndex, editedCategory);
     notifyListeners();
@@ -85,18 +83,15 @@ class MeasurementProvider with ChangeNotifier {
   /// Fetches and sets the measurement categories and their entries
   Future<void> fetchAndSetAllCategoriesAndEntries() async {
     await fetchAndSetCategories();
-    await Future.wait(
-        _categories.map((e) => fetchAndSetCategoryEntries(e.id!)).toList());
+    await Future.wait(_categories.map((e) => fetchAndSetCategoryEntries(e.id!)).toList());
   }
 
   /// Adds a measurement category
   Future<void> addCategory(MeasurementCategory category) async {
     final Uri postUri = baseProvider.makeUrl(_categoryUrl);
 
-    final Map<String, dynamic> newCategoryMap =
-        await baseProvider.post(category.toJson(), postUri);
-    final MeasurementCategory newCategory =
-        MeasurementCategory.fromJson(newCategoryMap);
+    final Map<String, dynamic> newCategoryMap = await baseProvider.post(category.toJson(), postUri);
+    final MeasurementCategory newCategory = MeasurementCategory.fromJson(newCategoryMap);
     _categories.add(newCategory);
     _categories.sort((a, b) => a.name.compareTo(b.name));
     notifyListeners();
@@ -123,16 +118,14 @@ class MeasurementProvider with ChangeNotifier {
   Future<void> editCategory(int id, String? newName, String? newUnit) async {
     final MeasurementCategory oldCategory = findCategoryById(id);
     final int categoryIndex = _categories.indexOf(oldCategory);
-    final MeasurementCategory tempNewCategory =
-        oldCategory.copyWith(name: newName, unit: newUnit);
+    final MeasurementCategory tempNewCategory = oldCategory.copyWith(name: newName, unit: newUnit);
 
     final Map<String, dynamic> response = await baseProvider.patch(
       tempNewCategory.toJson(),
       baseProvider.makeUrl(_categoryUrl, id: id),
     );
     final MeasurementCategory newCategory =
-        MeasurementCategory.fromJson(response)
-            .copyWith(entries: oldCategory.entries);
+        MeasurementCategory.fromJson(response).copyWith(entries: oldCategory.entries);
     _categories.removeAt(categoryIndex);
     _categories.insert(categoryIndex, newCategory);
     notifyListeners();
@@ -142,8 +135,7 @@ class MeasurementProvider with ChangeNotifier {
   Future<void> addEntry(MeasurementEntry entry) async {
     final Uri postUri = baseProvider.makeUrl(_entryUrl);
 
-    final Map<String, dynamic> newEntryMap =
-        await baseProvider.post(entry.toJson(), postUri);
+    final Map<String, dynamic> newEntryMap = await baseProvider.post(entry.toJson(), postUri);
     final MeasurementEntry newEntry = MeasurementEntry.fromJson(newEntryMap);
 
     final MeasurementCategory category = findCategoryById(newEntry.category);
@@ -191,8 +183,8 @@ class MeasurementProvider with ChangeNotifier {
       date: newDate,
     );
 
-    final Map<String, dynamic> response = await baseProvider.patch(
-        tempNewEntry.toJson(), baseProvider.makeUrl(_entryUrl, id: id));
+    final Map<String, dynamic> response =
+        await baseProvider.patch(tempNewEntry.toJson(), baseProvider.makeUrl(_entryUrl, id: id));
 
     final MeasurementEntry newEntry = MeasurementEntry.fromJson(response);
     category.entries.removeAt(entryIndex);

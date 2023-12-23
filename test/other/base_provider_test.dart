@@ -50,20 +50,16 @@ void main() {
         provider.makeUrl('endpoint', query: {'a': '2', 'b': 'c'}),
       );
       expect(
-        Uri.https(
-            'localhost', '/api/v2/endpoint/log_data/', {'a': '2', 'b': 'c'}),
-        provider.makeUrl('endpoint',
-            objectMethod: 'log_data', query: {'a': '2', 'b': 'c'}),
+        Uri.https('localhost', '/api/v2/endpoint/log_data/', {'a': '2', 'b': 'c'}),
+        provider.makeUrl('endpoint', objectMethod: 'log_data', query: {'a': '2', 'b': 'c'}),
       );
       expect(
         Uri.https('localhost', '/api/v2/endpoint/42/', {'a': '2', 'b': 'c'}),
         provider.makeUrl('endpoint', id: 42, query: {'a': '2', 'b': 'c'}),
       );
       expect(
-        Uri.https(
-            'localhost', '/api/v2/endpoint/42/log_data/', {'a': '2', 'b': 'c'}),
-        provider.makeUrl('endpoint',
-            id: 42, objectMethod: 'log_data', query: {'a': '2', 'b': 'c'}),
+        Uri.https('localhost', '/api/v2/endpoint/42/log_data/', {'a': '2', 'b': 'c'}),
+        provider.makeUrl('endpoint', id: 42, objectMethod: 'log_data', query: {'a': '2', 'b': 'c'}),
       );
     });
 
@@ -85,26 +81,20 @@ void main() {
         provider.makeUrl('endpoint', id: 5, objectMethod: 'log_data'),
       );
       expect(
-        Uri.https(
-            'example.com', '/wger-url/api/v2/endpoint/', {'a': '2', 'b': 'c'}),
+        Uri.https('example.com', '/wger-url/api/v2/endpoint/', {'a': '2', 'b': 'c'}),
         provider.makeUrl('endpoint', query: {'a': '2', 'b': 'c'}),
       );
       expect(
-        Uri.https('example.com', '/wger-url/api/v2/endpoint/log_data/',
-            {'a': '2', 'b': 'c'}),
-        provider.makeUrl('endpoint',
-            objectMethod: 'log_data', query: {'a': '2', 'b': 'c'}),
+        Uri.https('example.com', '/wger-url/api/v2/endpoint/log_data/', {'a': '2', 'b': 'c'}),
+        provider.makeUrl('endpoint', objectMethod: 'log_data', query: {'a': '2', 'b': 'c'}),
       );
       expect(
-        Uri.https('example.com', '/wger-url/api/v2/endpoint/42/',
-            {'a': '2', 'b': 'c'}),
+        Uri.https('example.com', '/wger-url/api/v2/endpoint/42/', {'a': '2', 'b': 'c'}),
         provider.makeUrl('endpoint', id: 42, query: {'a': '2', 'b': 'c'}),
       );
       expect(
-        Uri.https('example.com', '/wger-url/api/v2/endpoint/42/log_data/',
-            {'a': '2', 'b': 'c'}),
-        provider.makeUrl('endpoint',
-            id: 42, objectMethod: 'log_data', query: {'a': '2', 'b': 'c'}),
+        Uri.https('example.com', '/wger-url/api/v2/endpoint/42/log_data/', {'a': '2', 'b': 'c'}),
+        provider.makeUrl('endpoint', id: 42, objectMethod: 'log_data', query: {'a': '2', 'b': 'c'}),
       );
     });
   });
@@ -142,8 +132,7 @@ void main() {
           .thenAnswer((_) => Future.value(response3));
 
       // Act
-      final WgerBaseProvider provider =
-          WgerBaseProvider(testAuthProvider, mockHttpClient);
+      final WgerBaseProvider provider = WgerBaseProvider(testAuthProvider, mockHttpClient);
       final data = await provider.fetchPaginated(paginationUri1);
 
       // Assert

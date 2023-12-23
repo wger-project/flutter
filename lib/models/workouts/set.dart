@@ -114,9 +114,7 @@ class Set {
 
   /// Returns all settings for the given exercise
   List<Setting> filterSettingsByExercise(ExerciseBase exerciseBase) {
-    return settings
-        .where((element) => element.exerciseBaseId == exerciseBase.id)
-        .toList();
+    return settings.where((element) => element.exerciseBaseId == exerciseBase.id).toList();
   }
 
   /// Returns a list with all repetitions for the given exercise

@@ -81,8 +81,7 @@ class IngredientImage {
   });
 
   // Boilerplate
-  factory IngredientImage.fromJson(Map<String, dynamic> json) =>
-      _$IngredientImageFromJson(json);
+  factory IngredientImage.fromJson(Map<String, dynamic> json) => _$IngredientImageFromJson(json);
 
   Map<String, dynamic> toJson() => _$IngredientImageToJson(this);
 }

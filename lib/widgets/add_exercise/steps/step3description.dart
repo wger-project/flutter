@@ -23,8 +23,7 @@ class Step3Description extends StatelessWidget {
             isRequired: true,
             isMultiline: true,
             validator: (name) => validateDescription(name, context),
-            onSaved: (String? description) =>
-                addExerciseProvider.descriptionEn = description!,
+            onSaved: (String? description) => addExerciseProvider.descriptionEn = description!,
           ),
         ],
       ),

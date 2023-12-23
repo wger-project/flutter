@@ -44,14 +44,10 @@ class ExerciseBaseConverter extends TypeConverter<ExerciseBase, String> {
     final Map<String, dynamic> baseData = json.decode(fromDb);
 
     final category = ExerciseCategory.fromJson(baseData['categories']);
-    final musclesPrimary =
-        baseData['muscless'].map((e) => Muscle.fromJson(e)).toList();
-    final musclesSecondary =
-        baseData['musclesSecondary'].map((e) => Muscle.fromJson(e)).toList();
-    final equipment =
-        baseData['equipments'].map((e) => Equipment.fromJson(e)).toList();
-    final images =
-        baseData['images'].map((e) => ExerciseImage.fromJson(e)).toList();
+    final musclesPrimary = baseData['muscless'].map((e) => Muscle.fromJson(e)).toList();
+    final musclesSecondary = baseData['musclesSecondary'].map((e) => Muscle.fromJson(e)).toList();
+    final equipment = baseData['equipments'].map((e) => Equipment.fromJson(e)).toList();
+    final images = baseData['images'].map((e) => ExerciseImage.fromJson(e)).toList();
     final videos = baseData['videos'].map((e) => Video.fromJson(e)).toList();
 
     final List<Translation> exercises = [];
@@ -62,14 +58,10 @@ class ExerciseBaseConverter extends TypeConverter<ExerciseBase, String> {
         description: exerciseData['description'],
         baseId: baseData['id'],
       );
-      exercise.aliases = exerciseData['aliases']
-          .map((e) => Alias.fromJson(e))
-          .toList()
-          .cast<Alias>();
-      exercise.notes = exerciseData['notes']
-          .map((e) => Comment.fromJson(e))
-          .toList()
-          .cast<Comment>();
+      exercise.aliases =
+          exerciseData['aliases'].map((e) => Alias.fromJson(e)).toList().cast<Alias>();
+      exercise.notes =
+          exerciseData['notes'].map((e) => Comment.fromJson(e)).toList().cast<Comment>();
       exercise.language = Language.fromJson(exerciseData['languageObj']);
       exercises.add(exercise);
     }
@@ -124,14 +116,12 @@ class EquipmentConverter extends TypeConverter<Equipment, String> {
   }
 }
 
-class ExerciseCategoryConverter
-    extends TypeConverter<ExerciseCategory, String> {
+class ExerciseCategoryConverter extends TypeConverter<ExerciseCategory, String> {
   const ExerciseCategoryConverter();
 
   @override
   ExerciseCategory fromSql(String fromDb) {
-    return ExerciseCategory.fromJson(
-        json.decode(fromDb) as Map<String, dynamic>);
+    return ExerciseCategory.fromJson(json.decode(fromDb) as Map<String, dynamic>);
   }
 
   @override
