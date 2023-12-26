@@ -15,6 +15,7 @@ ExerciseBase _$ExerciseBaseFromJson(Map<String, dynamic> json) {
       'variations',
       'created',
       'last_update',
+      'last_update_global',
       'category',
       'muscles',
       'muscles_secondary',
@@ -26,6 +27,9 @@ ExerciseBase _$ExerciseBaseFromJson(Map<String, dynamic> json) {
     uuid: json['uuid'] as String?,
     created: json['created'] == null ? null : DateTime.parse(json['created'] as String),
     lastUpdate: json['last_update'] == null ? null : DateTime.parse(json['last_update'] as String),
+    lastUpdateGlobal: json['last_update_global'] == null
+        ? null
+        : DateTime.parse(json['last_update_global'] as String),
     variationId: json['variations'] as int?,
     category: json['categories'] == null
         ? null
@@ -47,15 +51,11 @@ Map<String, dynamic> _$ExerciseBaseToJson(ExerciseBase instance) => <String, dyn
       'variations': instance.variationId,
       'created': instance.created?.toIso8601String(),
       'last_update': instance.lastUpdate?.toIso8601String(),
+      'last_update_global': instance.lastUpdateGlobal?.toIso8601String(),
       'category': instance.categoryId,
       'categories': instance.category?.toJson(),
       'muscles': instance.musclesIds,
-      'muscless': instance.muscles.map((e) => e.toJson()).toList(),
       'muscles_secondary': instance.musclesSecondaryIds,
       'musclesSecondary': instance.musclesSecondary.map((e) => e.toJson()).toList(),
       'equipment': instance.equipmentIds,
-      'equipments': instance.equipment.map((e) => e.toJson()).toList(),
-      'images': instance.images.map((e) => e.toJson()).toList(),
-      'translations': instance.translations.map((e) => e.toJson()).toList(),
-      'videos': instance.videos.map((e) => e.toJson()).toList(),
     };

@@ -10,6 +10,9 @@ _$ExerciseBaseDataImpl _$$ExerciseBaseDataImplFromJson(Map<String, dynamic> json
     _$ExerciseBaseDataImpl(
       id: json['id'] as int,
       uuid: json['uuid'] as String,
+      created: DateTime.parse(json['created'] as String),
+      lastUpdate: DateTime.parse(json['last_update'] as String),
+      lastUpdateGlobal: DateTime.parse(json['last_update_global'] as String),
       category: ExerciseCategory.fromJson(json['category'] as Map<String, dynamic>),
       muscles: (json['muscles'] as List<dynamic>)
           .map((e) => Muscle.fromJson(e as Map<String, dynamic>))
@@ -35,6 +38,9 @@ Map<String, dynamic> _$$ExerciseBaseDataImplToJson(_$ExerciseBaseDataImpl instan
     <String, dynamic>{
       'id': instance.id,
       'uuid': instance.uuid,
+      'created': instance.created.toIso8601String(),
+      'last_update': instance.lastUpdate.toIso8601String(),
+      'last_update_global': instance.lastUpdateGlobal.toIso8601String(),
       'category': instance.category,
       'muscles': instance.muscles,
       'muscles_secondary': instance.musclesSecondary,

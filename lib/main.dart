@@ -16,18 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_zxing/flutter_zxing.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/core/locator.dart';
-import 'package:wger/database/exercise_DB/exercise_database.dart';
-import 'package:wger/models/exercises/base.dart';
-import 'package:wger/models/exercises/category.dart';
-import 'package:wger/models/exercises/equipment.dart';
-import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/providers/add_exercise.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/body_weight.dart';

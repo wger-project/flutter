@@ -21,7 +21,14 @@ ExerciseBaseData _$ExerciseBaseDataFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$ExerciseBaseData {
   int get id => throw _privateConstructorUsedError;
-  String get uuid => throw _privateConstructorUsedError;
+  String get uuid => throw _privateConstructorUsedError; // ignore: invalid_annotation_target
+  @JsonKey(name: 'created')
+  DateTime get created => throw _privateConstructorUsedError; // ignore: invalid_annotation_target
+  @JsonKey(name: 'last_update')
+  DateTime get lastUpdate =>
+      throw _privateConstructorUsedError; // ignore: invalid_annotation_target
+  @JsonKey(name: 'last_update_global')
+  DateTime get lastUpdateGlobal => throw _privateConstructorUsedError;
   ExerciseCategory get category => throw _privateConstructorUsedError;
   List<Muscle> get muscles =>
       throw _privateConstructorUsedError; // ignore: invalid_annotation_target
@@ -45,6 +52,9 @@ abstract class $ExerciseBaseDataCopyWith<$Res> {
   $Res call(
       {int id,
       String uuid,
+      @JsonKey(name: 'created') DateTime created,
+      @JsonKey(name: 'last_update') DateTime lastUpdate,
+      @JsonKey(name: 'last_update_global') DateTime lastUpdateGlobal,
       ExerciseCategory category,
       List<Muscle> muscles,
       @JsonKey(name: 'muscles_secondary') List<Muscle> musclesSecondary,
@@ -69,6 +79,9 @@ class _$ExerciseBaseDataCopyWithImpl<$Res, $Val extends ExerciseBaseData>
   $Res call({
     Object? id = null,
     Object? uuid = null,
+    Object? created = null,
+    Object? lastUpdate = null,
+    Object? lastUpdateGlobal = null,
     Object? category = null,
     Object? muscles = null,
     Object? musclesSecondary = null,
@@ -86,6 +99,18 @@ class _$ExerciseBaseDataCopyWithImpl<$Res, $Val extends ExerciseBaseData>
           ? _value.uuid
           : uuid // ignore: cast_nullable_to_non_nullable
               as String,
+      created: null == created
+          ? _value.created
+          : created // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+      lastUpdate: null == lastUpdate
+          ? _value.lastUpdate
+          : lastUpdate // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+      lastUpdateGlobal: null == lastUpdateGlobal
+          ? _value.lastUpdateGlobal
+          : lastUpdateGlobal // ignore: cast_nullable_to_non_nullable
+              as DateTime,
       category: null == category
           ? _value.category
           : category // ignore: cast_nullable_to_non_nullable
@@ -128,6 +153,9 @@ abstract class _$$ExerciseBaseDataImplCopyWith<$Res> implements $ExerciseBaseDat
   $Res call(
       {int id,
       String uuid,
+      @JsonKey(name: 'created') DateTime created,
+      @JsonKey(name: 'last_update') DateTime lastUpdate,
+      @JsonKey(name: 'last_update_global') DateTime lastUpdateGlobal,
       ExerciseCategory category,
       List<Muscle> muscles,
       @JsonKey(name: 'muscles_secondary') List<Muscle> musclesSecondary,
@@ -150,6 +178,9 @@ class __$$ExerciseBaseDataImplCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? uuid = null,
+    Object? created = null,
+    Object? lastUpdate = null,
+    Object? lastUpdateGlobal = null,
     Object? category = null,
     Object? muscles = null,
     Object? musclesSecondary = null,
@@ -167,6 +198,18 @@ class __$$ExerciseBaseDataImplCopyWithImpl<$Res>
           ? _value.uuid
           : uuid // ignore: cast_nullable_to_non_nullable
               as String,
+      created: null == created
+          ? _value.created
+          : created // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+      lastUpdate: null == lastUpdate
+          ? _value.lastUpdate
+          : lastUpdate // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+      lastUpdateGlobal: null == lastUpdateGlobal
+          ? _value.lastUpdateGlobal
+          : lastUpdateGlobal // ignore: cast_nullable_to_non_nullable
+              as DateTime,
       category: null == category
           ? _value.category
           : category // ignore: cast_nullable_to_non_nullable
@@ -205,6 +248,9 @@ class _$ExerciseBaseDataImpl implements _ExerciseBaseData {
   _$ExerciseBaseDataImpl(
       {required this.id,
       required this.uuid,
+      @JsonKey(name: 'created') required this.created,
+      @JsonKey(name: 'last_update') required this.lastUpdate,
+      @JsonKey(name: 'last_update_global') required this.lastUpdateGlobal,
       required this.category,
       required final List<Muscle> muscles,
       @JsonKey(name: 'muscles_secondary') required final List<Muscle> musclesSecondary,
@@ -226,6 +272,18 @@ class _$ExerciseBaseDataImpl implements _ExerciseBaseData {
   final int id;
   @override
   final String uuid;
+// ignore: invalid_annotation_target
+  @override
+  @JsonKey(name: 'created')
+  final DateTime created;
+// ignore: invalid_annotation_target
+  @override
+  @JsonKey(name: 'last_update')
+  final DateTime lastUpdate;
+// ignore: invalid_annotation_target
+  @override
+  @JsonKey(name: 'last_update_global')
+  final DateTime lastUpdateGlobal;
   @override
   final ExerciseCategory category;
   final List<Muscle> _muscles;
@@ -281,7 +339,7 @@ class _$ExerciseBaseDataImpl implements _ExerciseBaseData {
 
   @override
   String toString() {
-    return 'ExerciseBaseData(id: $id, uuid: $uuid, category: $category, muscles: $muscles, musclesSecondary: $musclesSecondary, equipment: $equipment, exercises: $exercises, images: $images, videos: $videos)';
+    return 'ExerciseBaseData(id: $id, uuid: $uuid, created: $created, lastUpdate: $lastUpdate, lastUpdateGlobal: $lastUpdateGlobal, category: $category, muscles: $muscles, musclesSecondary: $musclesSecondary, equipment: $equipment, exercises: $exercises, images: $images, videos: $videos)';
   }
 
   @override
@@ -291,6 +349,10 @@ class _$ExerciseBaseDataImpl implements _ExerciseBaseData {
             other is _$ExerciseBaseDataImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.uuid, uuid) || other.uuid == uuid) &&
+            (identical(other.created, created) || other.created == created) &&
+            (identical(other.lastUpdate, lastUpdate) || other.lastUpdate == lastUpdate) &&
+            (identical(other.lastUpdateGlobal, lastUpdateGlobal) ||
+                other.lastUpdateGlobal == lastUpdateGlobal) &&
             (identical(other.category, category) || other.category == category) &&
             const DeepCollectionEquality().equals(other._muscles, _muscles) &&
             const DeepCollectionEquality().equals(other._musclesSecondary, _musclesSecondary) &&
@@ -306,6 +368,9 @@ class _$ExerciseBaseDataImpl implements _ExerciseBaseData {
       runtimeType,
       id,
       uuid,
+      created,
+      lastUpdate,
+      lastUpdateGlobal,
       category,
       const DeepCollectionEquality().hash(_muscles),
       const DeepCollectionEquality().hash(_musclesSecondary),
@@ -332,6 +397,9 @@ abstract class _ExerciseBaseData implements ExerciseBaseData {
   factory _ExerciseBaseData(
       {required final int id,
       required final String uuid,
+      @JsonKey(name: 'created') required final DateTime created,
+      @JsonKey(name: 'last_update') required final DateTime lastUpdate,
+      @JsonKey(name: 'last_update_global') required final DateTime lastUpdateGlobal,
       required final ExerciseCategory category,
       required final List<Muscle> muscles,
       @JsonKey(name: 'muscles_secondary') required final List<Muscle> musclesSecondary,
@@ -346,6 +414,15 @@ abstract class _ExerciseBaseData implements ExerciseBaseData {
   int get id;
   @override
   String get uuid;
+  @override // ignore: invalid_annotation_target
+  @JsonKey(name: 'created')
+  DateTime get created;
+  @override // ignore: invalid_annotation_target
+  @JsonKey(name: 'last_update')
+  DateTime get lastUpdate;
+  @override // ignore: invalid_annotation_target
+  @JsonKey(name: 'last_update_global')
+  DateTime get lastUpdateGlobal;
   @override
   ExerciseCategory get category;
   @override

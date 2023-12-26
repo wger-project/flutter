@@ -6,11 +6,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/exceptions/no_such_entry_exception.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
-import 'package:wger/models/exercises/language.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/providers/exercises.dart';
 
 import '../../test_data/exercises.dart' as data;
+import '../../test_data/exercises.dart';
 import '../fixtures/fixture_reader.dart';
 import '../measurements/measurement_provider_test.mocks.dart';
 
@@ -63,8 +63,6 @@ void main() {
 
   const category1 = ExerciseCategory(id: 1, name: 'Arms');
   const muscle1 = Muscle(id: 1, name: 'Biceps brachii', nameEn: 'Biceps', isFront: true);
-  const equipment1 = Equipment(id: 1, name: 'Barbell');
-  const language1 = Language(id: 1, shortName: 'de', fullName: 'Deutsch');
 
   final Map<String, dynamic> tCategoryMap = jsonDecode(
     fixture('exercises/category_entries.json'),
@@ -116,7 +114,7 @@ void main() {
   group('findCategoryById()', () {
     test('should return a category for an id', () async {
       // arrange
-      await provider.fetchAndSetCategories();
+      await provider.fetchAndSetCategoriesFromApi();
 
       // act
       final result = provider.findCategoryById(1);
@@ -134,7 +132,7 @@ void main() {
   group('findMuscleById()', () {
     test('should return a muscle for an id', () async {
       // arrange
-      await provider.fetchAndSetMuscles();
+      await provider.fetchAndSetMusclesFromApi();
 
       // act
       final result = provider.findMuscleById(1);
@@ -152,13 +150,13 @@ void main() {
   group('findEquipmentById()', () {
     test('should return an equipment for an id', () async {
       // arrange
-      await provider.fetchAndSetEquipment();
+      await provider.fetchAndSetEquipmentsFromApi();
 
       // act
       final result = provider.findEquipmentById(1);
 
       // assert
-      expect(result, equipment1);
+      expect(result, tEquipment1);
     });
 
     test('should throw a NoResultException if no equipment is found', () {
@@ -170,13 +168,13 @@ void main() {
   group('findLanguageById()', () {
     test('should return a language for an id', () async {
       // arrange
-      await provider.fetchAndSetLanguages();
+      await provider.fetchAndSetLanguagesFromApi();
 
       // act
       final result = provider.findLanguageById(1);
 
       // assert
-      expect(result, language1);
+      expect(result, tLanguage1);
     });
 
     test('should throw a NoResultException if no equipment is found', () {
@@ -302,7 +300,7 @@ void main() {
         // arrange
         final Filters tFilters = filters.copyWith(
           exerciseCategories: filters.exerciseCategories.copyWith(items: {data.tCategory2: true}),
-          equipment: filters.equipment.copyWith(items: {equipment1: true}),
+          equipment: filters.equipment.copyWith(items: {tEquipment1: true}),
         );
 
         // act

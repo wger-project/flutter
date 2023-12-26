@@ -1,10 +1,6 @@
 import 'dart:convert';
 
 import 'package:drift/drift.dart';
-import 'package:flutter/src/widgets/framework.dart';
-// import 'package:path/path.dart';
-import 'package:provider/provider.dart';
-import 'package:wger/exceptions/no_such_entry_exception.dart';
 import 'package:wger/models/exercises/alias.dart';
 import 'package:wger/models/exercises/base.dart';
 import 'package:wger/models/exercises/category.dart';
@@ -16,25 +12,6 @@ import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/models/exercises/translation.dart';
 import 'package:wger/models/exercises/variation.dart';
 import 'package:wger/models/exercises/video.dart';
-import 'package:wger/providers/auth.dart';
-import 'package:wger/providers/base_provider.dart';
-
-// List<Language> _languages = [];
-// Future<void> fetchAndSetLanguages(BuildContext context) async {
-//   final baseProvider= WgerBaseProvider(Provider.of<AuthProvider>(context, listen: false))
-//   final languageData = await baseProvider.fetchPaginated(baseProvider.makeUrl('language'));
-
-//   for (final language in languageData) {
-//     _languages.add(Language.fromJson(language));
-//   }
-// }
-
-// Language findLanguageById(int id) {
-//   return _languages.firstWhere(
-//     (language) => language.id == id,
-//     orElse: () => throw NoSuchEntryException(),
-//   );
-// }
 
 class ExerciseBaseConverter extends TypeConverter<ExerciseBase, String> {
   const ExerciseBaseConverter();
@@ -50,20 +27,18 @@ class ExerciseBaseConverter extends TypeConverter<ExerciseBase, String> {
     final images = baseData['images'].map((e) => ExerciseImage.fromJson(e)).toList();
     final videos = baseData['videos'].map((e) => Video.fromJson(e)).toList();
 
-    final List<Translation> exercises = [];
+    final List<Translation> translations = [];
     for (final exerciseData in baseData['translations']) {
-      final exercise = Translation(
+      final translation = Translation(
         id: exerciseData['id'],
         name: exerciseData['name'],
         description: exerciseData['description'],
         baseId: baseData['id'],
       );
-      exercise.aliases =
-          exerciseData['aliases'].map((e) => Alias.fromJson(e)).toList().cast<Alias>();
-      exercise.notes =
-          exerciseData['notes'].map((e) => Comment.fromJson(e)).toList().cast<Comment>();
-      exercise.language = Language.fromJson(exerciseData['languageObj']);
-      exercises.add(exercise);
+      translation.aliases = exerciseData['aliases'].map((e) => Alias.fromJson(e)).toList();
+      translation.notes = exerciseData['notes'].map((e) => Comment.fromJson(e)).toList();
+      translation.language = Language.fromJson(exerciseData['languageObj']);
+      translations.add(translation);
     }
 
     final exerciseBase = ExerciseBase(
@@ -76,7 +51,7 @@ class ExerciseBaseConverter extends TypeConverter<ExerciseBase, String> {
       equipment: equipment.cast<Equipment>(),
       category: category,
       images: images.cast<ExerciseImage>(),
-      exercises: exercises,
+      exercises: translations,
       videos: videos.cast<Video>(),
     );
     return exerciseBase;

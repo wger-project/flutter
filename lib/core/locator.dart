@@ -1,7 +1,8 @@
 import 'dart:developer';
 
 import 'package:get_it/get_it.dart';
-import 'package:wger/database/exercise_DB/exercise_database.dart';
+import 'package:wger/database/exercises/exercise_database.dart';
+import 'package:wger/database/ingredients/ingredients_database.dart';
 
 final locator = GetIt.asNewInstance();
 
@@ -14,7 +15,9 @@ class ServiceLocator {
 
   Future<void> _initDB() async {
     final exerciseDB = ExerciseDatabase();
+    final ingredientDB = IngredientDatabase();
     locator.registerSingleton<ExerciseDatabase>(exerciseDB);
+    locator.registerSingleton<IngredientDatabase>(ingredientDB);
   }
 
   Future<void> configure() async {

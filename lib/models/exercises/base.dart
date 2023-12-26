@@ -45,6 +45,9 @@ class ExerciseBase extends Equatable {
   @JsonKey(required: true, name: 'last_update')
   final DateTime? lastUpdate;
 
+  @JsonKey(required: true, name: 'last_update_global')
+  final DateTime? lastUpdateGlobal;
+
   @JsonKey(required: true, name: 'category')
   late int categoryId;
 
@@ -54,7 +57,7 @@ class ExerciseBase extends Equatable {
   @JsonKey(required: true, name: 'muscles')
   List<int> musclesIds = [];
 
-  @JsonKey(includeFromJson: false, includeToJson: true, name: 'muscless')
+  @JsonKey(includeFromJson: false, includeToJson: false)
   List<Muscle> muscles = [];
 
   @JsonKey(required: true, name: 'muscles_secondary')
@@ -66,16 +69,16 @@ class ExerciseBase extends Equatable {
   @JsonKey(required: true, name: 'equipment')
   List<int> equipmentIds = [];
 
-  @JsonKey(includeFromJson: false, includeToJson: true, name: 'equipments')
+  @JsonKey(includeFromJson: false, includeToJson: false)
   List<Equipment> equipment = [];
 
-  @JsonKey(includeFromJson: false, includeToJson: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   List<ExerciseImage> images = [];
 
-  @JsonKey(includeFromJson: true, includeToJson: true)
+  @JsonKey(includeFromJson: true, includeToJson: false)
   List<Translation> translations = [];
 
-  @JsonKey(includeFromJson: false, includeToJson: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   List<Video> videos = [];
 
   ExerciseBase({
@@ -83,6 +86,7 @@ class ExerciseBase extends Equatable {
     this.uuid,
     this.created,
     this.lastUpdate,
+    this.lastUpdateGlobal,
     this.variationId,
     List<Muscle>? muscles,
     List<Muscle>? musclesSecondary,
@@ -114,9 +118,9 @@ class ExerciseBase extends Equatable {
       equipmentIds = equipment.map((e) => e.id).toList();
     }
 
-    if (exercises == null) {
-      print("Exercises are NULL");
-    }
+    // if (exercises == null) {
+    //   print("Exercises are NULL");
+    // }
 
     if (exercises != null) {
       translations = exercises;

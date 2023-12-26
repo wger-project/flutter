@@ -4,7 +4,6 @@ import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise_model.dart';
 import 'package:wger/models/exercises/image.dart';
 import 'package:wger/models/exercises/muscle.dart';
-import 'package:wger/models/exercises/translation.dart';
 import 'package:wger/models/exercises/video.dart';
 
 part 'exercise_base_data.freezed.dart';
@@ -15,6 +14,12 @@ class ExerciseBaseData with _$ExerciseBaseData {
   factory ExerciseBaseData({
     required int id,
     required String uuid,
+    // ignore: invalid_annotation_target
+    @JsonKey(name: 'created') required DateTime created,
+    // ignore: invalid_annotation_target
+    @JsonKey(name: 'last_update') required DateTime lastUpdate,
+    // ignore: invalid_annotation_target
+    @JsonKey(name: 'last_update_global') required DateTime lastUpdateGlobal,
     required ExerciseCategory category,
     required List<Muscle> muscles,
     // ignore: invalid_annotation_target

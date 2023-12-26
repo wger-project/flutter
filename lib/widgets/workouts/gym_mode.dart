@@ -86,7 +86,7 @@ class _GymModeState extends State<GymMode> {
       var firstPage = true;
       for (final setting in set.settingsComputed) {
         final exerciseBase = Provider.of<ExercisesProvider>(context, listen: false)
-            .findExerciseBaseById(setting.exerciseBaseId);
+            .findExerciseById(setting.exerciseBaseId);
 
         if (firstPage) {
           _exercisePages[exerciseBase.uuid!] = currentPage;
@@ -114,7 +114,7 @@ class _GymModeState extends State<GymMode> {
       var firstPage = true;
       for (final setting in set.settingsComputed) {
         final ratioCompleted = currentElement / _totalElements;
-        final exerciseBase = exerciseProvider.findExerciseBaseById(setting.exerciseBaseId);
+        final exerciseBase = exerciseProvider.findExerciseById(setting.exerciseBaseId);
         currentElement++;
 
         if (firstPage) {

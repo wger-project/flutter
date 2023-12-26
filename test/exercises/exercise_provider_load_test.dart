@@ -21,7 +21,7 @@ void main() {
     path: 'api/v2/$exerciseBaseInfoUrl/9/',
   );
 
-  final Map<String, dynamic> tExerciseBaseInfoMap = jsonDecode(
+  final Map<String, dynamic> tExerciseInfoMap = jsonDecode(
     fixture('exercises/exercisebaseinfo_response.json'),
   );
 
@@ -36,7 +36,7 @@ void main() {
       mockBaseProvider.makeUrl(exerciseBaseInfoUrl, id: 9),
     ).thenReturn(tExerciseBaseInfoUri);
     when(mockBaseProvider.fetch(tExerciseBaseInfoUri))
-        .thenAnswer((_) => Future.value(tExerciseBaseInfoMap));
+        .thenAnswer((_) => Future.value(tExerciseInfoMap));
   });
 
   group('Correctly loads and parses data from the server', () {
@@ -63,7 +63,7 @@ void main() {
 
       // arrange and act
       final base =
-          provider.readExerciseBaseFromBaseInfo(ExerciseBaseData.fromJson(tExerciseBaseInfoMap));
+          provider.readExerciseBaseFromBaseInfo(ExerciseBaseData.fromJson(tExerciseInfoMap));
 
       // assert
       expect(base.id, 9);
@@ -76,8 +76,9 @@ void main() {
         'Obliquus externus abdominis',
       ]);
       expect(base.musclesSecondary.map((e) => e.name), [
-        'Anterior deltoid',
-        'Trapezius',
+        'Biceps femoris',
+        'Brachialis',
+        'Obliquus externus abdominis',
       ]);
       expect(base.images.map((e) => e.uuid), [
         '1f5d2b2f-d4ea-4eeb-9377-56176465e08d',

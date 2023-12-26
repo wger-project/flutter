@@ -26,6 +26,8 @@ import 'package:wger/models/exercises/translation.dart';
 const tLanguage1 = Language(id: 1, shortName: 'de', fullName: 'Deutsch');
 const tLanguage2 = Language(id: 2, shortName: 'en', fullName: 'English');
 const tLanguage3 = Language(id: 3, shortName: 'fr', fullName: 'Français');
+const tLanguage4 = Language(id: 12, shortName: 'es', fullName: 'Español');
+const tLanguage5 = Language(id: 13, shortName: 'it', fullName: 'Italiano');
 const testLanguages = [tLanguage1, tLanguage2, tLanguage3];
 
 const tMuscle1 = Muscle(id: 1, name: 'Flutterus maximus', nameEn: 'Glutes', isFront: true);
@@ -41,8 +43,9 @@ const tCategory5 = ExerciseCategory(id: 5, name: 'Calves');
 const testCategories = [tCategory1, tCategory2, tCategory3, tCategory4, tCategory5];
 
 const tEquipment1 = Equipment(id: 1, name: 'Bench');
-const tEquipment2 = Equipment(id: 1, name: 'Dumbbell');
-const tEquipment3 = Equipment(id: 2, name: 'Bench');
+const tEquipment2 = Equipment(id: 2, name: 'Dumbbell');
+const tEquipment3 = Equipment(id: 3, name: 'Bench');
+const tEquipment4 = Equipment(id: 10, name: 'Gym mat');
 const testEquipment = [tEquipment1, tEquipment2, tEquipment3];
 
 final benchPress = ExerciseBase(
