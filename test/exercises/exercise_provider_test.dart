@@ -193,7 +193,7 @@ void main() {
 
       // assert
       verifyNever(provider.baseProvider.fetch(tSearchByNameUri));
-      expect(provider.filteredExerciseBases, isEmpty);
+      expect(provider.filteredExercises, isEmpty);
     });
 
     group('Filters are not null', () {
@@ -220,7 +220,7 @@ void main() {
         verifyNever(provider.baseProvider.fetch(tSearchByNameUri));
 
         expect(
-          provider.filteredExerciseBases,
+          provider.filteredExercises,
           data.getTestExerciseBases(),
         );
       });
@@ -236,7 +236,7 @@ void main() {
 
         // assert
         verifyNever(provider.baseProvider.fetch(tSearchByNameUri));
-        expect(provider.filteredExerciseBases, [data.getTestExerciseBases()[0]]);
+        expect(provider.filteredExercises, [data.getTestExerciseBases()[0]]);
       });
 
       test('A muscle is selected with no search term. Should not find results', () async {
@@ -250,7 +250,7 @@ void main() {
 
         // assert
         verifyNever(provider.baseProvider.fetch(tSearchByNameUri));
-        expect(provider.filteredExerciseBases, isEmpty);
+        expect(provider.filteredExercises, isEmpty);
       });
 
       test('An equipment is selected with no search term. Should find results', () async {
@@ -264,7 +264,7 @@ void main() {
 
         // assert
         verifyNever(provider.baseProvider.fetch(tSearchByNameUri));
-        expect(provider.filteredExerciseBases, [data.getTestExerciseBases()[0]]);
+        expect(provider.filteredExercises, [data.getTestExerciseBases()[0]]);
       });
 
       test('An equipment is selected with no search term. Should not find results', () async {
@@ -278,7 +278,7 @@ void main() {
 
         // assert
         verifyNever(provider.baseProvider.fetch(tSearchByNameUri));
-        expect(provider.filteredExerciseBases, isEmpty);
+        expect(provider.filteredExercises, isEmpty);
       });
 
       test('A muscle and equipment is selected and there is a match', () async {
@@ -293,7 +293,7 @@ void main() {
 
         // assert
         verifyNever(provider.baseProvider.fetch(tSearchByNameUri));
-        expect(provider.filteredExerciseBases, [data.getTestExerciseBases()[1]]);
+        expect(provider.filteredExercises, [data.getTestExerciseBases()[1]]);
       });
 
       test('A muscle and equipment is selected but no match', () async {
@@ -308,7 +308,7 @@ void main() {
 
         // assert
         verifyNever(provider.baseProvider.fetch(tSearchByNameUri));
-        expect(provider.filteredExerciseBases, isEmpty);
+        expect(provider.filteredExercises, isEmpty);
       });
 
       group('Search term', () {
@@ -347,7 +347,7 @@ void main() {
           // assert
           verify(provider.baseProvider.fetch(tSearchByNameUri)).called(1);
           expect(
-            provider.filteredExerciseBases,
+            provider.filteredExercises,
             [data.getTestExerciseBases()[0], data.getTestExerciseBases()[1]],
           );
         });
@@ -363,7 +363,7 @@ void main() {
 
           // assert
           verify(provider.baseProvider.fetch(tSearchByNameUri)).called(1);
-          expect(provider.filteredExerciseBases, isEmpty);
+          expect(provider.filteredExercises, isEmpty);
         });
       });
     });

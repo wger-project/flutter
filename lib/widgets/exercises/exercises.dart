@@ -24,7 +24,7 @@ import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/i18n.dart';
 import 'package:wger/helpers/platform.dart';
-import 'package:wger/models/exercises/base.dart';
+import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/models/exercises/translation.dart';
 import 'package:wger/providers/exercises.dart';
@@ -34,7 +34,7 @@ import 'package:wger/widgets/exercises/list_tile.dart';
 import 'package:wger/widgets/exercises/videos.dart';
 
 class ExerciseDetail extends StatelessWidget {
-  final ExerciseBase _exerciseBase;
+  final Exercise _exerciseBase;
   late Translation _exercise;
   static const PADDING = 9.0;
 

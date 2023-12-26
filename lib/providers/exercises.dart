@@ -28,9 +28,9 @@ import 'package:wger/database/exercises/exercise_database.dart';
 import 'package:wger/exceptions/no_such_entry_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/exercises/alias.dart';
-import 'package:wger/models/exercises/base.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
+import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/exercise_base_data.dart';
 import 'package:wger/models/exercises/language.dart';
 import 'package:wger/models/exercises/muscle.dart';
@@ -46,7 +46,7 @@ class ExercisesProvider with ChangeNotifier {
   static const EXERCISE_CACHE_DAYS = 7;
   static const CACHE_VERSION = 4;
 
-  static const exerciseBaseInfoUrlPath = 'exercisebaseinfo';
+  static const exerciseInfoUrlPath = 'exercisebaseinfo';
   static const exerciseSearchPath = 'exercise/search';
 
   static const exerciseVariationsUrlPath = 'variation';
@@ -55,10 +55,10 @@ class ExercisesProvider with ChangeNotifier {
   static const equipmentUrlPath = 'equipment';
   static const languageUrlPath = 'language';
 
-  List<ExerciseBase> _exerciseBases = [];
+  List<Exercise> _exercises = [];
 
-  set exerciseBases(List<ExerciseBase> exercisesBases) {
-    _exerciseBases = exercisesBases;
+  set exerciseBases(List<Exercise> exercisesBases) {
+    _exercises = exercisesBases;
   }
 
   List<ExerciseCategory> _categories = [];
@@ -76,30 +76,30 @@ class ExercisesProvider with ChangeNotifier {
     await findByFilters();
   }
 
-  List<ExerciseBase> _filteredExerciseBases = [];
+  List<Exercise> _filteredExercises = [];
 
-  List<ExerciseBase> get filteredExerciseBases => _filteredExerciseBases;
+  List<Exercise> get filteredExercises => _filteredExercises;
 
-  set filteredExerciseBases(List<ExerciseBase> newFilteredExercises) {
-    _filteredExerciseBases = newFilteredExercises;
+  set filteredExercises(List<Exercise> newFilteredExercises) {
+    _filteredExercises = newFilteredExercises;
     notifyListeners();
   }
 
-  Map<int, List<ExerciseBase>> get exerciseBasesByVariation {
-    final Map<int, List<ExerciseBase>> variations = {};
+  Map<int, List<Exercise>> get exerciseBasesByVariation {
+    final Map<int, List<Exercise>> variations = {};
 
-    for (final base in _exerciseBases.where((e) => e.variationId != null)) {
-      if (!variations.containsKey(base.variationId)) {
-        variations[base.variationId!] = [];
+    for (final exercise in _exercises.where((e) => e.variationId != null)) {
+      if (!variations.containsKey(exercise.variationId)) {
+        variations[exercise.variationId!] = [];
       }
 
-      variations[base.variationId]!.add(base);
+      variations[exercise.variationId]!.add(exercise);
     }
 
     return variations;
   }
 
-  List<ExerciseBase> get bases => [..._exerciseBases];
+  List<Exercise> get bases => [..._exercises];
 
   List<ExerciseCategory> get categories => [..._categories];
 
@@ -144,25 +144,25 @@ class ExercisesProvider with ChangeNotifier {
   Future<void> findByFilters() async {
     // Filters not initialized
     if (filters == null) {
-      filteredExerciseBases = [];
+      filteredExercises = [];
       return;
     }
 
     // Filters are initialized and nothing is marked
     if (filters!.isNothingMarked && filters!.searchTerm.length <= 1) {
-      filteredExerciseBases = _exerciseBases;
+      filteredExercises = _exercises;
       return;
     }
 
-    filteredExerciseBases = [];
+    filteredExercises = [];
 
-    List<ExerciseBase> filteredItems = _exerciseBases;
+    List<Exercise> filteredItems = _exercises;
     if (filters!.searchTerm.length > 1) {
       filteredItems = await searchExercise(filters!.searchTerm);
     }
 
     // Filter by exercise category and equipment (REPLACE WITH HTTP REQUEST)
-    filteredExerciseBases = filteredItems.where((exercise) {
+    filteredExercises = filteredItems.where((exercise) {
       final bool isInAnyCategory = filters!.exerciseCategories.selected.contains(exercise.category);
 
       final bool doesContainAnyEquipment = filters!.equipment.selected.any(
@@ -180,12 +180,12 @@ class ExercisesProvider with ChangeNotifier {
     _muscles = [];
     _categories = [];
     _languages = [];
-    _exerciseBases = [];
+    _exercises = [];
   }
 
   /// Find exercise base by ID
-  ExerciseBase findExerciseById(int id) {
-    return _exerciseBases.firstWhere(
+  Exercise findExerciseById(int id) {
+    return _exercises.firstWhere(
       (base) => base.id == id,
       orElse: () => throw NoSuchEntryException(),
     );
@@ -197,8 +197,8 @@ class ExercisesProvider with ChangeNotifier {
   /// returned exercises. Since this is typically called by one exercise, we are
   /// not interested in seeing that same exercise returned in the list of variations.
   /// If this parameter is not passed, all exercises are returned.
-  List<ExerciseBase> findExerciseBasesByVariationId(int id, {int? exerciseBaseIdToExclude}) {
-    var out = _exerciseBases.where((base) => base.variationId == id).toList();
+  List<Exercise> findExerciseBasesByVariationId(int id, {int? exerciseBaseIdToExclude}) {
+    var out = _exercises.where((base) => base.variationId == id).toList();
 
     if (exerciseBaseIdToExclude != null) {
       out = out.where((e) => e.id != exerciseBaseIdToExclude).toList();
@@ -287,15 +287,15 @@ class ExercisesProvider with ChangeNotifier {
   /// If the exercise is not known locally, it is fetched from the server.
   /// This method is called when a workout is first loaded, after that the
   /// regular not-async getById method can be used
-  Future<ExerciseBase> fetchAndSetExerciseBase(int exerciseBaseId) async {
+  Future<Exercise> fetchAndSetExercise(int exerciseId) async {
     try {
-      return findExerciseById(exerciseBaseId);
+      return findExerciseById(exerciseId);
     } on NoSuchEntryException {
       final baseData = await baseProvider.fetch(
-        baseProvider.makeUrl(exerciseBaseInfoUrlPath, id: exerciseBaseId),
+        baseProvider.makeUrl(exerciseInfoUrlPath, id: exerciseId),
       );
 
-      final exercise = readExerciseBaseFromBaseInfo(ExerciseBaseData.fromJson(baseData));
+      final exercise = readExerciseFromBaseInfo(ExerciseBaseData.fromJson(baseData));
       final database = locator<ExerciseDatabase>();
 
       final exerciseDb = await (database.select(database.exercises)
@@ -318,21 +318,21 @@ class ExercisesProvider with ChangeNotifier {
       if (exerciseDb != null && lastUpdateApi.isAfter(exerciseDb.lastUpdate)) {
         (database.update(database.exercises)..where((e) => e.id.equals(baseData['id']))).write(
           ExercisesCompanion(
-            id: baseData['id'],
+            id: Value(baseData['id']),
             data: Value(jsonEncode(baseData)),
             lastUpdate: Value(DateTime.parse(baseData['last_update_global'])),
           ),
         );
       }
 
-      _exerciseBases.add(exercise);
+      _exercises.add(exercise);
       return exercise;
     }
   }
 
   /// Parses the response from the "exercisebaseinfo" endpoint and returns
   /// a full exercise base
-  ExerciseBase readExerciseBaseFromBaseInfo(ExerciseBaseData baseData) {
+  Exercise readExerciseFromBaseInfo(ExerciseBaseData baseData) {
     final List<Translation> translations = [];
     for (final translationData in baseData.exercises) {
       final translation = Translation(
@@ -340,7 +340,7 @@ class ExercisesProvider with ChangeNotifier {
         uuid: translationData.uuid,
         name: translationData.name,
         description: translationData.description,
-        baseId: baseData.id,
+        exerciseId: baseData.id,
       );
       translation.aliases = translationData.aliases
           .map((e) => Alias(exerciseId: translation.id ?? 0, alias: e.alias))
@@ -350,7 +350,7 @@ class ExercisesProvider with ChangeNotifier {
       translations.add(translation);
     }
 
-    final exerciseBase = ExerciseBase(
+    return Exercise(
       id: baseData.id,
       uuid: baseData.uuid,
       created: baseData.created,
@@ -361,11 +361,9 @@ class ExercisesProvider with ChangeNotifier {
       equipment: baseData.equipment,
       category: baseData.category,
       images: baseData.images,
-      exercises: translations,
+      translations: translations,
       videos: baseData.videos,
     );
-
-    return exerciseBase;
   }
 
   /// Checks the required cache version
@@ -467,8 +465,9 @@ class ExercisesProvider with ChangeNotifier {
     final exercises = await database.select(database.exercises).get();
     log('Loaded ${exercises.length} exercises from cache');
 
-    _exerciseBases = exercises
-        .map((e) => readExerciseBaseFromBaseInfo(ExerciseBaseData.fromJson(json.decode(e.data))))
+    _exercises = exercises
+        .map((e) => readExerciseFromBaseInfo(ExerciseBaseData.fromJson(json.decode(e.data))))
+        //.map((e) => e.data)
         .toList();
 
     // updateExerciseCache(database);
@@ -476,14 +475,14 @@ class ExercisesProvider with ChangeNotifier {
 
   Future<void> updateExerciseCache(ExerciseDatabase database) async {
     final data = await Future.wait<dynamic>([
-      baseProvider.fetch(baseProvider.makeUrl(exerciseBaseInfoUrlPath, query: {'limit': '1000'})),
+      baseProvider.fetch(baseProvider.makeUrl(exerciseInfoUrlPath, query: {'limit': '1000'})),
       // TODO: variations!
       //fetchAndSetVariationsFromApi(),
     ]);
 
     final List<dynamic> exercisesData = data[0]['results'];
     final exerciseBaseData = exercisesData.map((e) => ExerciseBaseData.fromJson(e)).toList();
-    _exerciseBases = exerciseBaseData.map((e) => readExerciseBaseFromBaseInfo(e)).toList();
+    _exercises = exerciseBaseData.map((e) => readExerciseFromBaseInfo(e)).toList();
 
     // Insert new entries and update ones that have been edited
     Future.forEach(exercisesData, (exerciseData) async {
@@ -550,7 +549,7 @@ class ExercisesProvider with ChangeNotifier {
     });
     validTill = DateTime.now().add(const Duration(days: EXERCISE_CACHE_DAYS));
     await prefs.setString(PREFS_LAST_UPDATED_MUSCLES, validTill.toIso8601String());
-    log('Wrote ${_muscles.length} muscles from cache. Valid till ${validTill}');
+    log('Wrote ${_muscles.length} muscles from cache. Valid till $validTill');
   }
 
   /// Fetches and sets the available categories
@@ -655,7 +654,7 @@ class ExercisesProvider with ChangeNotifier {
   ///
   /// We could do this locally, but the server has better text searching capabilities
   /// with postgresql.
-  Future<List<ExerciseBase>> searchExercise(String name,
+  Future<List<Exercise>> searchExercise(String name,
       {String languageCode = LANGUAGE_SHORT_ENGLISH, bool searchEnglish = false}) async {
     if (name.length <= 1) {
       return [];
@@ -676,8 +675,8 @@ class ExercisesProvider with ChangeNotifier {
 
     // Process the response
     return Future.wait(
-      (result['suggestions'] as List).map<Future<ExerciseBase>>(
-        (entry) => fetchAndSetExerciseBase(entry['data']['base_id']),
+      (result['suggestions'] as List).map<Future<Exercise>>(
+        (entry) => fetchAndSetExercise(entry['data']['base_id']),
       ),
     );
   }

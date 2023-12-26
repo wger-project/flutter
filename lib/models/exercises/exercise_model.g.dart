@@ -15,7 +15,7 @@ _$ExerciseDataImpl _$$ExerciseDataImplFromJson(Map<String, dynamic> json) {
     id: json['id'] as int,
     uuid: json['uuid'] as String,
     languageId: json['language'] as int,
-    baseId: json['exercise_base'] as int,
+    exerciseId: json['exercise_base'] as int,
     description: json['description'] as String,
     name: json['name'] as String,
     aliases: (json['aliases'] as List<dynamic>)
@@ -31,7 +31,7 @@ Map<String, dynamic> _$$ExerciseDataImplToJson(_$ExerciseDataImpl instance) => <
       'id': instance.id,
       'uuid': instance.uuid,
       'language': instance.languageId,
-      'exercise_base': instance.baseId,
+      'exercise_base': instance.exerciseId,
       'description': instance.description,
       'name': instance.name,
       'aliases': instance.aliases,

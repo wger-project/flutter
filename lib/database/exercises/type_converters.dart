@@ -2,10 +2,10 @@ import 'dart:convert';
 
 import 'package:drift/drift.dart';
 import 'package:wger/models/exercises/alias.dart';
-import 'package:wger/models/exercises/base.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/comment.dart';
 import 'package:wger/models/exercises/equipment.dart';
+import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/image.dart';
 import 'package:wger/models/exercises/language.dart';
 import 'package:wger/models/exercises/muscle.dart';
@@ -13,11 +13,11 @@ import 'package:wger/models/exercises/translation.dart';
 import 'package:wger/models/exercises/variation.dart';
 import 'package:wger/models/exercises/video.dart';
 
-class ExerciseBaseConverter extends TypeConverter<ExerciseBase, String> {
+class ExerciseBaseConverter extends TypeConverter<Exercise, String> {
   const ExerciseBaseConverter();
 
   @override
-  ExerciseBase fromSql(String fromDb) {
+  Exercise fromSql(String fromDb) {
     final Map<String, dynamic> baseData = json.decode(fromDb);
 
     final category = ExerciseCategory.fromJson(baseData['categories']);
@@ -33,7 +33,7 @@ class ExerciseBaseConverter extends TypeConverter<ExerciseBase, String> {
         id: exerciseData['id'],
         name: exerciseData['name'],
         description: exerciseData['description'],
-        baseId: baseData['id'],
+        exerciseId: baseData['id'],
       );
       translation.aliases = exerciseData['aliases'].map((e) => Alias.fromJson(e)).toList();
       translation.notes = exerciseData['notes'].map((e) => Comment.fromJson(e)).toList();
@@ -41,7 +41,7 @@ class ExerciseBaseConverter extends TypeConverter<ExerciseBase, String> {
       translations.add(translation);
     }
 
-    final exerciseBase = ExerciseBase(
+    final exerciseBase = Exercise(
       id: baseData['id'],
       uuid: baseData['uuid'],
       created: null,
@@ -51,14 +51,14 @@ class ExerciseBaseConverter extends TypeConverter<ExerciseBase, String> {
       equipment: equipment.cast<Equipment>(),
       category: category,
       images: images.cast<ExerciseImage>(),
-      exercises: translations,
+      translations: translations,
       videos: videos.cast<Video>(),
     );
     return exerciseBase;
   }
 
   @override
-  String toSql(ExerciseBase value) {
+  String toSql(Exercise value) {
     return json.encode(value.toJson());
   }
 }

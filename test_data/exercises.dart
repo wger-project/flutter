@@ -16,9 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:wger/models/exercises/base.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
+import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/language.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/models/exercises/translation.dart';
@@ -48,7 +48,7 @@ const tEquipment3 = Equipment(id: 3, name: 'Bench');
 const tEquipment4 = Equipment(id: 10, name: 'Gym mat');
 const testEquipment = [tEquipment1, tEquipment2, tEquipment3];
 
-final benchPress = ExerciseBase(
+final benchPress = Exercise(
   id: 1,
   uuid: '364f196c-881b-4839-8bfc-9e8f651521b6',
   created: DateTime(2021, 09, 01),
@@ -59,7 +59,7 @@ final benchPress = ExerciseBase(
   musclesSecondary: const [tMuscle3],
 );
 
-final crunches = ExerciseBase(
+final crunches = Exercise(
   id: 2,
   uuid: '82415754-fc4c-49ea-8ca7-1516dd36d5a0',
   created: DateTime(2021, 08, 01),
@@ -70,7 +70,7 @@ final crunches = ExerciseBase(
   musclesSecondary: const [tMuscle2],
 );
 
-final deadLift = ExerciseBase(
+final deadLift = Exercise(
   id: 3,
   uuid: 'ca84e2c5-5608-4d6d-ba57-6d4b6b5e7acd',
   created: DateTime(2021, 08, 01),
@@ -81,7 +81,7 @@ final deadLift = ExerciseBase(
   musclesSecondary: const [tMuscle2],
 );
 
-final curls = ExerciseBase(
+final curls = Exercise(
   id: 4,
   uuid: '361f024c-fdf8-4146-b7d7-0c1b67c58141',
   created: DateTime(2021, 08, 01),
@@ -91,7 +91,7 @@ final curls = ExerciseBase(
   muscles: const [tMuscle1],
   musclesSecondary: const [tMuscle2],
 );
-final squats = ExerciseBase(
+final squats = Exercise(
   id: 5,
   uuid: '361f024c-fdf8-4146-b7d7-0c1b67c58141',
   created: DateTime(2021, 08, 01),
@@ -101,7 +101,7 @@ final squats = ExerciseBase(
   muscles: const [tMuscle1],
   musclesSecondary: const [tMuscle2],
 );
-final sideRaises = ExerciseBase(
+final sideRaises = Exercise(
   id: 6,
   uuid: '721ff972-c568-41e3-8cf5-cf1e5c5c801c',
   created: DateTime(2022, 11, 01),
@@ -118,7 +118,7 @@ final benchPressDe = Translation(
   created: DateTime(2021, 1, 15),
   name: 'Bankdrücken',
   description: 'add clever text',
-  baseId: benchPress.id,
+  exerciseId: benchPress.id,
   language: tLanguage1,
 );
 final benchPressEn = Translation(
@@ -127,7 +127,7 @@ final benchPressEn = Translation(
   created: DateTime(2021, 1, 15),
   name: 'Bench press',
   description: 'add clever text',
-  baseId: benchPress.id,
+  exerciseId: benchPress.id,
   language: tLanguage1,
 );
 
@@ -137,7 +137,7 @@ final deadLiftEn = Translation(
   created: DateTime(2021, 1, 15),
   name: 'Dead Lift',
   description: 'Lorem ipsum etc',
-  baseId: crunches.id,
+  exerciseId: crunches.id,
   language: tLanguage2,
 );
 
@@ -147,7 +147,7 @@ final crunchesFr = Translation(
   created: DateTime(2021, 4, 1),
   name: 'Crunches',
   description: 'The man in black fled across the desert, and the gunslinger followed',
-  baseId: deadLift.id,
+  exerciseId: deadLift.id,
   language: tLanguage3,
 );
 
@@ -157,7 +157,7 @@ final crunchesDe = Translation(
   created: DateTime(2021, 4, 1),
   name: 'Crunches',
   description: 'The story so far: in the beginning, the universe was created',
-  baseId: deadLift.id,
+  exerciseId: deadLift.id,
   language: tLanguage1,
 );
 
@@ -167,7 +167,7 @@ final crunchesEn = Translation(
   created: DateTime(2021, 4, 1),
   name: 'test exercise 5',
   description: 'I am an invisible man',
-  baseId: deadLift.id,
+  exerciseId: deadLift.id,
   language: tLanguage2,
 );
 
@@ -177,7 +177,7 @@ final curlsEn = Translation(
   created: DateTime(2021, 4, 1),
   name: 'Curls',
   description: 'It was a bright cold day in April, and the clocks were striking thirteen',
-  baseId: curls.id,
+  exerciseId: curls.id,
   language: tLanguage2,
 );
 
@@ -187,7 +187,7 @@ final squatsEn = Translation(
   created: DateTime(2021, 4, 1),
   name: 'Squats',
   description: 'It was a bright cold day in April, and the clocks were striking thirteen',
-  baseId: curls.id,
+  exerciseId: curls.id,
   language: tLanguage2,
 );
 
@@ -197,11 +197,11 @@ final sideRaisesEn = Translation(
   created: DateTime(2022, 11, 1),
   name: 'Side raises',
   description: 'It was a bright cold day in April, and the clocks were striking thirteen',
-  baseId: curls.id,
+  exerciseId: curls.id,
   language: tLanguage2,
 );
 
-List<ExerciseBase> getTestExerciseBases() {
+List<Exercise> getTestExerciseBases() {
   benchPress.translations = [benchPressEn, benchPressDe];
   crunches.translations = [crunchesEn, crunchesDe, crunchesFr];
   deadLift.translations = [deadLiftEn];

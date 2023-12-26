@@ -71,7 +71,7 @@ WorkoutPlan getWorkout() {
   final settingBenchPress = Setting(
     setId: 1,
     order: 1,
-    exerciseBaseId: 1,
+    exerciseId: 1,
     repetitionUnitId: 1,
     reps: 6,
     weightUnitId: 1,
@@ -80,7 +80,7 @@ WorkoutPlan getWorkout() {
   );
   settingBenchPress.repetitionUnit = repetitionUnit1;
   settingBenchPress.weightUnit = weightUnit1;
-  settingBenchPress.exerciseBase = testBases[0];
+  settingBenchPress.exercise = testBases[0];
   settingBenchPress.weight = 80;
 
   final setBenchPress = Set.withData(
@@ -97,7 +97,7 @@ WorkoutPlan getWorkout() {
   final settingSquat = Setting(
     setId: 2,
     order: 1,
-    exerciseBaseId: 8,
+    exerciseId: 8,
     repetitionUnitId: 1,
     reps: 8,
     weightUnitId: 1,
@@ -106,7 +106,7 @@ WorkoutPlan getWorkout() {
   );
   settingSquat.repetitionUnit = repetitionUnit1;
   settingSquat.weightUnit = weightUnit1;
-  settingSquat.exerciseBase = testBases[4];
+  settingSquat.exercise = testBases[4];
   settingSquat.weight = 120;
 
   final setSquat = Set.withData(
@@ -122,7 +122,7 @@ WorkoutPlan getWorkout() {
   final settingSideRaises = Setting(
     setId: 2,
     order: 1,
-    exerciseBaseId: 8,
+    exerciseId: 8,
     repetitionUnitId: 1,
     reps: 12,
     weightUnitId: 1,
@@ -131,7 +131,7 @@ WorkoutPlan getWorkout() {
   );
   settingSideRaises.repetitionUnit = repetitionUnit1;
   settingSideRaises.weightUnit = weightUnit1;
-  settingSideRaises.exerciseBase = testBases[5];
+  settingSideRaises.exercise = testBases[5];
   settingSideRaises.weight = 6;
 
   final setSideRaises = Set.withData(

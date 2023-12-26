@@ -21,7 +21,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/colors.dart';
 import 'package:wger/helpers/ui.dart';
-import 'package:wger/models/exercises/base.dart';
+import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/session.dart';
 import 'package:wger/providers/workout_plans.dart';
@@ -29,7 +29,7 @@ import 'package:wger/widgets/measurements/charts.dart';
 import 'package:wger/widgets/workouts/charts.dart';
 
 class ExerciseLogChart extends StatelessWidget {
-  final ExerciseBase _base;
+  final Exercise _base;
   final DateTime _currentDate;
 
   const ExerciseLogChart(this._base, this._currentDate);
@@ -89,7 +89,7 @@ class ExerciseLogChart extends StatelessWidget {
 class DayLogWidget extends StatefulWidget {
   final DateTime _date;
   final WorkoutSession? _session;
-  final Map<ExerciseBase, List<Log>> _exerciseData;
+  final Map<Exercise, List<Log>> _exerciseData;
 
   const DayLogWidget(this._date, this._exerciseData, this._session);
 

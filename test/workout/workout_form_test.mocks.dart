@@ -8,7 +8,7 @@ import 'dart:ui' as _i16;
 
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i15;
-import 'package:wger/models/exercises/base.dart' as _i13;
+import 'package:wger/models/exercises/exercise.dart' as _i13;
 import 'package:wger/models/exercises/translation.dart' as _i14;
 import 'package:wger/models/workouts/day.dart' as _i6;
 import 'package:wger/models/workouts/log.dart' as _i10;
@@ -331,7 +331,7 @@ class MockWorkoutPlansProvider extends _i1.Mock implements _i11.WorkoutPlansProv
   @override
   _i12.Future<Map<String, dynamic>> fetchLogData(
     _i5.WorkoutPlan? workout,
-    _i13.ExerciseBase? base,
+    _i13.Exercise? base,
   ) =>
       (super.noSuchMethod(
         Invocation.method(

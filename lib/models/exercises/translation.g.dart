@@ -25,7 +25,7 @@ Translation _$TranslationFromJson(Map<String, dynamic> json) {
     created: json['created'] == null ? null : DateTime.parse(json['created'] as String),
     name: json['name'] as String,
     description: json['description'] as String,
-    baseId: json['exercise_base'] as int?,
+    exerciseId: json['exercise_base'] as int?,
   )
     ..languageId = json['language'] as int
     ..languageObj = Language.fromJson(json['languageObj'] as Map<String, dynamic>)
@@ -43,7 +43,7 @@ Map<String, dynamic> _$TranslationToJson(Translation instance) => <String, dynam
       'language': instance.languageId,
       'languageObj': instance.languageObj,
       'created': instance.created?.toIso8601String(),
-      'exercise_base': instance.baseId,
+      'exercise_base': instance.exerciseId,
       'name': instance.name,
       'description': instance.description,
       'notes': instance.notes,

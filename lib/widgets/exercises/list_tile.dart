@@ -18,14 +18,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:wger/helpers/i18n.dart';
-import 'package:wger/models/exercises/base.dart';
+import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/screens/exercise_screen.dart';
 import 'package:wger/widgets/exercises/images.dart';
 
 class ExerciseListTile extends StatelessWidget {
   const ExerciseListTile({Key? key, required this.exerciseBase}) : super(key: key);
 
-  final ExerciseBase exerciseBase;
+  final Exercise exerciseBase;
 
   @override
   Widget build(BuildContext context) {

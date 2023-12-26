@@ -26,10 +26,10 @@ import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/models/exercises/translation.dart';
 import 'package:wger/models/exercises/video.dart';
 
-part 'base.g.dart';
+part 'exercise.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class ExerciseBase extends Equatable {
+class Exercise extends Equatable {
   @JsonKey(required: true)
   final int? id;
 
@@ -81,7 +81,7 @@ class ExerciseBase extends Equatable {
   @JsonKey(includeFromJson: false, includeToJson: false)
   List<Video> videos = [];
 
-  ExerciseBase({
+  Exercise({
     this.id,
     this.uuid,
     this.created,
@@ -92,7 +92,7 @@ class ExerciseBase extends Equatable {
     List<Muscle>? musclesSecondary,
     List<Equipment>? equipment,
     List<ExerciseImage>? images,
-    List<Translation>? exercises,
+    List<Translation>? translations,
     ExerciseCategory? category,
     List<Video>? videos,
   }) {
@@ -118,12 +118,8 @@ class ExerciseBase extends Equatable {
       equipmentIds = equipment.map((e) => e.id).toList();
     }
 
-    // if (exercises == null) {
-    //   print("Exercises are NULL");
-    // }
-
-    if (exercises != null) {
-      translations = exercises;
+    if (translations != null) {
+      translations = translations;
     }
 
     if (videos != null) {
@@ -166,9 +162,9 @@ class ExerciseBase extends Equatable {
   }
 
   // Boilerplate
-  factory ExerciseBase.fromJson(Map<String, dynamic> json) => _$ExerciseBaseFromJson(json);
+  factory Exercise.fromJson(Map<String, dynamic> json) => _$ExerciseFromJson(json);
 
-  Map<String, dynamic> toJson() => _$ExerciseBaseToJson(this);
+  Map<String, dynamic> toJson() => _$ExerciseToJson(this);
 
   @override
   List<Object?> get props => [

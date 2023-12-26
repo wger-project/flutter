@@ -5,9 +5,9 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/exercises/alias.dart';
-import 'package:wger/models/exercises/base.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
+import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/language.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/models/exercises/translation.dart';
@@ -32,7 +32,7 @@ class AddExerciseProvider with ChangeNotifier {
   List<String> _alternativeNamesEn = [];
   List<String> _alternativeNamesTranslation = [];
   ExerciseCategory? category;
-  List<ExerciseBase> _variations = [];
+  List<Exercise> _variations = [];
   List<Equipment> _equipment = [];
   List<Muscle> _primaryMuscles = [];
   List<Muscle> _secondaryMuscles = [];
@@ -93,8 +93,8 @@ class AddExerciseProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  ExerciseBase get base {
-    return ExerciseBase(
+  Exercise get exercise {
+    return Exercise(
       category: category,
       equipment: _equipment,
       muscles: _primaryMuscles,
@@ -103,7 +103,7 @@ class AddExerciseProvider with ChangeNotifier {
     );
   }
 
-  Translation get exerciseEn {
+  Translation get translationEn {
     return Translation(
       name: _nameEn!,
       description: _descriptionEn!,
@@ -111,7 +111,7 @@ class AddExerciseProvider with ChangeNotifier {
     );
   }
 
-  Translation get exerciseTranslation {
+  Translation get translation {
     return Translation(
       name: _nameTranslation!,
       description: _descriptionTranslation!,
@@ -176,12 +176,12 @@ class AddExerciseProvider with ChangeNotifier {
       await addVariation();
     }
 
-    // Create the base
-    final base = await addExerciseBase();
+    // Create the exercise
+    final exercise = await addExerciseBase();
 
     // Create the base description in English
-    Translation exerciseTranslationEn = exerciseEn;
-    exerciseTranslationEn.base = base;
+    Translation exerciseTranslationEn = translationEn;
+    exerciseTranslationEn.exercise = exercise;
     exerciseTranslationEn = await addExerciseTranslation(exerciseTranslationEn);
     for (final alias in _alternativeNamesEn) {
       if (alias.isNotEmpty) {
@@ -191,8 +191,8 @@ class AddExerciseProvider with ChangeNotifier {
 
     // Create the translations
     if (language != null) {
-      Translation exerciseTranslationLang = exerciseTranslation;
-      exerciseTranslationLang.base = base;
+      Translation exerciseTranslationLang = translation;
+      exerciseTranslationLang.exercise = exercise;
       exerciseTranslationLang = await addExerciseTranslation(exerciseTranslationLang);
       for (final alias in _alternativeNamesTranslation) {
         if (alias.isNotEmpty) {
@@ -205,20 +205,20 @@ class AddExerciseProvider with ChangeNotifier {
     }
 
     // Create the images
-    await addImages(base);
+    await addImages(exercise);
 
     // Clear everything
     clear();
 
     // Return exercise ID
-    return base.id!;
+    return exercise.id!;
   }
 
-  Future<ExerciseBase> addExerciseBase() async {
+  Future<Exercise> addExerciseBase() async {
     final Uri postUri = baseProvider.makeUrl(_exerciseBaseUrlPath);
 
-    final Map<String, dynamic> newBaseMap = await baseProvider.post(base.toJson(), postUri);
-    final ExerciseBase newExerciseBase = ExerciseBase.fromJson(newBaseMap);
+    final Map<String, dynamic> newBaseMap = await baseProvider.post(exercise.toJson(), postUri);
+    final Exercise newExerciseBase = Exercise.fromJson(newBaseMap);
     notifyListeners();
 
     return newExerciseBase;
@@ -235,7 +235,7 @@ class AddExerciseProvider with ChangeNotifier {
     return newVariation;
   }
 
-  Future<void> addImages(ExerciseBase base) async {
+  Future<void> addImages(Exercise base) async {
     for (final image in _exerciseImages) {
       final request = http.MultipartRequest('POST', baseProvider.makeUrl(_imagesUrlPath));
       request.headers.addAll(baseProvider.getDefaultHeaders(includeAuth: true));

@@ -10,8 +10,10 @@ class ExerciseData with _$ExerciseData {
   factory ExerciseData({
     required int id,
     required String uuid,
+    // ignore: invalid_annotation_target
     @JsonKey(name: 'language') required int languageId,
-    @JsonKey(required: true, name: 'exercise_base') required int baseId,
+    // ignore: invalid_annotation_target
+    @JsonKey(required: true, name: 'exercise_base') required int exerciseId,
     required String description,
     required String name,
     required List<Alias> aliases,

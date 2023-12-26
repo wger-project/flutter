@@ -42,7 +42,7 @@ void main() {
   group('Correctly loads and parses data from the server', () {
     test('test that fetchAndSetExerciseBase finds an existing base', () async {
       // arrange and act
-      final base = await provider.fetchAndSetExerciseBase(1);
+      final base = await provider.fetchAndSetExercise(1);
 
       // assert
       verifyNever(provider.baseProvider.fetch(tExerciseBaseInfoUri));
@@ -51,7 +51,7 @@ void main() {
 
     test('test that fetchAndSetExerciseBase fetches a new base', () async {
       // arrange and act
-      final base = await provider.fetchAndSetExerciseBase(9);
+      final base = await provider.fetchAndSetExercise(9);
 
       // assert
       verify(provider.baseProvider.fetch(tExerciseBaseInfoUri));
@@ -62,8 +62,7 @@ void main() {
       // arrange
 
       // arrange and act
-      final base =
-          provider.readExerciseBaseFromBaseInfo(ExerciseBaseData.fromJson(tExerciseInfoMap));
+      final base = provider.readExerciseFromBaseInfo(ExerciseBaseData.fromJson(tExerciseInfoMap));
 
       // assert
       expect(base.id, 9);

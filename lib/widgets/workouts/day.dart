@@ -50,17 +50,17 @@ class SettingWidget extends StatelessWidget {
       leading: InkWell(
         child: SizedBox(
           width: 45,
-          child: ExerciseImageWidget(image: setting.exerciseBaseObj.getMainImage),
+          child: ExerciseImageWidget(image: setting.exerciseObj.getMainImage),
         ),
         onTap: () {
           showDialog(
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: Text(setting.exerciseBaseObj
+                title: Text(setting.exerciseObj
                     .getExercise(Localizations.localeOf(context).languageCode)
                     .name),
-                content: ExerciseDetail(setting.exerciseBaseObj),
+                content: ExerciseDetail(setting.exerciseObj),
                 actions: [
                   TextButton(
                     child: Text(MaterialLocalizations.of(context).closeButtonLabel),
@@ -75,12 +75,12 @@ class SettingWidget extends StatelessWidget {
         },
       ),
       title: Text(
-        setting.exerciseBaseObj.getExercise(Localizations.localeOf(context).languageCode).name,
+        setting.exerciseObj.getExercise(Localizations.localeOf(context).languageCode).name,
       ),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ...set.getSmartRepr(setting.exerciseBaseObj).map((e) => Text(e)).toList(),
+          ...set.getSmartRepr(setting.exerciseObj).map((e) => Text(e)).toList(),
         ],
       ),
     );

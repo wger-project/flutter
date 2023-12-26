@@ -74,7 +74,7 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
                         final exerciseProvider = context.read<ExercisesProvider>();
 
                         final baseId = await addExerciseProvider.addExercise();
-                        final base = await exerciseProvider.fetchAndSetExerciseBase(baseId);
+                        final base = await exerciseProvider.fetchAndSetExercise(baseId);
                         final name =
                             base.getExercise(Localizations.localeOf(context).languageCode).name;
 

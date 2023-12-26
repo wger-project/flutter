@@ -29,7 +29,7 @@ import 'package:wger/helpers/i18n.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/misc.dart';
 import 'package:wger/helpers/ui.dart';
-import 'package:wger/models/exercises/base.dart';
+import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/session.dart';
@@ -86,7 +86,7 @@ class _GymModeState extends State<GymMode> {
       var firstPage = true;
       for (final setting in set.settingsComputed) {
         final exerciseBase = Provider.of<ExercisesProvider>(context, listen: false)
-            .findExerciseById(setting.exerciseBaseId);
+            .findExerciseById(setting.exerciseId);
 
         if (firstPage) {
           _exercisePages[exerciseBase.uuid!] = currentPage;
@@ -114,7 +114,7 @@ class _GymModeState extends State<GymMode> {
       var firstPage = true;
       for (final setting in set.settingsComputed) {
         final ratioCompleted = currentElement / _totalElements;
-        final exerciseBase = exerciseProvider.findExerciseById(setting.exerciseBaseId);
+        final exerciseBase = exerciseProvider.findExerciseById(setting.exerciseId);
         currentElement++;
 
         if (firstPage) {
@@ -194,12 +194,12 @@ class StartPage extends StatelessWidget {
                         return Column(
                           children: [
                             Text(
-                              s.exerciseBaseObj
+                              s.exerciseObj
                                   .getExercise(Localizations.localeOf(context).languageCode)
                                   .name,
                               style: Theme.of(context).textTheme.titleLarge,
                             ),
-                            ...set.getSmartRepr(s.exerciseBaseObj).map((e) => Text(e)),
+                            ...set.getSmartRepr(s.exerciseObj).map((e) => Text(e)),
                             const SizedBox(height: 15),
                           ],
                         );
@@ -232,7 +232,7 @@ class LogPage extends StatefulWidget {
   final PageController _controller;
   final Setting _setting;
   final Set _set;
-  final ExerciseBase _exerciseBase;
+  final Exercise _exerciseBase;
   final WorkoutPlan _workoutPlan;
   final double _ratioCompleted;
   final Map<String, int> _exercisePages;
@@ -662,7 +662,7 @@ class _LogPageState extends State<LogPage> {
 
 class ExerciseOverview extends StatelessWidget {
   final PageController _controller;
-  final ExerciseBase _exerciseBase;
+  final Exercise _exerciseBase;
   final double _ratioCompleted;
   final Map<String, int> _exercisePages;
 

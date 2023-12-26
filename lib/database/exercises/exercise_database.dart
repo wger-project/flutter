@@ -18,7 +18,7 @@ class Exercises extends Table {
 
   TextColumn get data => text()();
 
-  // TextColumn get exercisedata => text().map(const ExerciseBaseConverter())();
+  // TextColumn get data => text().map(const ExerciseBaseConverter())();
 
   DateTimeColumn get lastUpdate => dateTime()();
 }

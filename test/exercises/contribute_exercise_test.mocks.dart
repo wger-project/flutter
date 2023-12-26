@@ -9,9 +9,9 @@ import 'dart:ui' as _i14;
 
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:wger/models/exercises/alias.dart' as _i6;
-import 'package:wger/models/exercises/base.dart' as _i3;
 import 'package:wger/models/exercises/category.dart' as _i9;
 import 'package:wger/models/exercises/equipment.dart' as _i11;
+import 'package:wger/models/exercises/exercise.dart' as _i3;
 import 'package:wger/models/exercises/language.dart' as _i8;
 import 'package:wger/models/exercises/muscle.dart' as _i12;
 import 'package:wger/models/exercises/translation.dart' as _i4;
@@ -44,8 +44,8 @@ class _FakeWgerBaseProvider_0 extends _i1.SmartFake implements _i2.WgerBaseProvi
         );
 }
 
-class _FakeExerciseBase_1 extends _i1.SmartFake implements _i3.ExerciseBase {
-  _FakeExerciseBase_1(
+class _FakeExercise_1 extends _i1.SmartFake implements _i3.Exercise {
+  _FakeExercise_1(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -219,29 +219,29 @@ class MockAddExerciseProvider extends _i1.Mock implements _i7.AddExerciseProvide
       );
 
   @override
-  _i3.ExerciseBase get base => (super.noSuchMethod(
-        Invocation.getter(#base),
-        returnValue: _FakeExerciseBase_1(
+  _i3.Exercise get exercise => (super.noSuchMethod(
+        Invocation.getter(#exercise),
+        returnValue: _FakeExercise_1(
           this,
-          Invocation.getter(#base),
+          Invocation.getter(#exercise),
         ),
-      ) as _i3.ExerciseBase);
+      ) as _i3.Exercise);
 
   @override
-  _i4.Translation get exerciseEn => (super.noSuchMethod(
-        Invocation.getter(#exerciseEn),
+  _i4.Translation get translationEn => (super.noSuchMethod(
+        Invocation.getter(#translationEn),
         returnValue: _FakeTranslation_2(
           this,
-          Invocation.getter(#exerciseEn),
+          Invocation.getter(#translationEn),
         ),
       ) as _i4.Translation);
 
   @override
-  _i4.Translation get exerciseTranslation => (super.noSuchMethod(
-        Invocation.getter(#exerciseTranslation),
+  _i4.Translation get translation => (super.noSuchMethod(
+        Invocation.getter(#translation),
         returnValue: _FakeTranslation_2(
           this,
-          Invocation.getter(#exerciseTranslation),
+          Invocation.getter(#translation),
         ),
       ) as _i4.Translation);
 
@@ -336,19 +336,19 @@ class MockAddExerciseProvider extends _i1.Mock implements _i7.AddExerciseProvide
       ) as _i13.Future<int>);
 
   @override
-  _i13.Future<_i3.ExerciseBase> addExerciseBase() => (super.noSuchMethod(
+  _i13.Future<_i3.Exercise> addExerciseBase() => (super.noSuchMethod(
         Invocation.method(
           #addExerciseBase,
           [],
         ),
-        returnValue: _i13.Future<_i3.ExerciseBase>.value(_FakeExerciseBase_1(
+        returnValue: _i13.Future<_i3.Exercise>.value(_FakeExercise_1(
           this,
           Invocation.method(
             #addExerciseBase,
             [],
           ),
         )),
-      ) as _i13.Future<_i3.ExerciseBase>);
+      ) as _i13.Future<_i3.Exercise>);
 
   @override
   _i13.Future<_i5.Variation> addVariation() => (super.noSuchMethod(
@@ -366,7 +366,7 @@ class MockAddExerciseProvider extends _i1.Mock implements _i7.AddExerciseProvide
       ) as _i13.Future<_i5.Variation>);
 
   @override
-  _i13.Future<void> addImages(_i3.ExerciseBase? base) => (super.noSuchMethod(
+  _i13.Future<void> addImages(_i3.Exercise? base) => (super.noSuchMethod(
         Invocation.method(
           #addImages,
           [base],

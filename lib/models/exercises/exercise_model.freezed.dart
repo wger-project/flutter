@@ -21,11 +21,11 @@ ExerciseData _$ExerciseDataFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$ExerciseData {
   int get id => throw _privateConstructorUsedError;
-  String get uuid => throw _privateConstructorUsedError;
+  String get uuid => throw _privateConstructorUsedError; // ignore: invalid_annotation_target
   @JsonKey(name: 'language')
-  int get languageId => throw _privateConstructorUsedError;
+  int get languageId => throw _privateConstructorUsedError; // ignore: invalid_annotation_target
   @JsonKey(required: true, name: 'exercise_base')
-  int get baseId => throw _privateConstructorUsedError;
+  int get exerciseId => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   List<Alias> get aliases => throw _privateConstructorUsedError;
@@ -45,7 +45,7 @@ abstract class $ExerciseDataCopyWith<$Res> {
       {int id,
       String uuid,
       @JsonKey(name: 'language') int languageId,
-      @JsonKey(required: true, name: 'exercise_base') int baseId,
+      @JsonKey(required: true, name: 'exercise_base') int exerciseId,
       String description,
       String name,
       List<Alias> aliases,
@@ -68,7 +68,7 @@ class _$ExerciseDataCopyWithImpl<$Res, $Val extends ExerciseData>
     Object? id = null,
     Object? uuid = null,
     Object? languageId = null,
-    Object? baseId = null,
+    Object? exerciseId = null,
     Object? description = null,
     Object? name = null,
     Object? aliases = null,
@@ -87,9 +87,9 @@ class _$ExerciseDataCopyWithImpl<$Res, $Val extends ExerciseData>
           ? _value.languageId
           : languageId // ignore: cast_nullable_to_non_nullable
               as int,
-      baseId: null == baseId
-          ? _value.baseId
-          : baseId // ignore: cast_nullable_to_non_nullable
+      exerciseId: null == exerciseId
+          ? _value.exerciseId
+          : exerciseId // ignore: cast_nullable_to_non_nullable
               as int,
       description: null == description
           ? _value.description
@@ -122,7 +122,7 @@ abstract class _$$ExerciseDataImplCopyWith<$Res> implements $ExerciseDataCopyWit
       {int id,
       String uuid,
       @JsonKey(name: 'language') int languageId,
-      @JsonKey(required: true, name: 'exercise_base') int baseId,
+      @JsonKey(required: true, name: 'exercise_base') int exerciseId,
       String description,
       String name,
       List<Alias> aliases,
@@ -143,7 +143,7 @@ class __$$ExerciseDataImplCopyWithImpl<$Res>
     Object? id = null,
     Object? uuid = null,
     Object? languageId = null,
-    Object? baseId = null,
+    Object? exerciseId = null,
     Object? description = null,
     Object? name = null,
     Object? aliases = null,
@@ -162,9 +162,9 @@ class __$$ExerciseDataImplCopyWithImpl<$Res>
           ? _value.languageId
           : languageId // ignore: cast_nullable_to_non_nullable
               as int,
-      baseId: null == baseId
-          ? _value.baseId
-          : baseId // ignore: cast_nullable_to_non_nullable
+      exerciseId: null == exerciseId
+          ? _value.exerciseId
+          : exerciseId // ignore: cast_nullable_to_non_nullable
               as int,
       description: null == description
           ? _value.description
@@ -193,7 +193,7 @@ class _$ExerciseDataImpl implements _ExerciseData {
       {required this.id,
       required this.uuid,
       @JsonKey(name: 'language') required this.languageId,
-      @JsonKey(required: true, name: 'exercise_base') required this.baseId,
+      @JsonKey(required: true, name: 'exercise_base') required this.exerciseId,
       required this.description,
       required this.name,
       required final List<Alias> aliases,
@@ -208,12 +208,14 @@ class _$ExerciseDataImpl implements _ExerciseData {
   final int id;
   @override
   final String uuid;
+// ignore: invalid_annotation_target
   @override
   @JsonKey(name: 'language')
   final int languageId;
+// ignore: invalid_annotation_target
   @override
   @JsonKey(required: true, name: 'exercise_base')
-  final int baseId;
+  final int exerciseId;
   @override
   final String description;
   @override
@@ -236,7 +238,7 @@ class _$ExerciseDataImpl implements _ExerciseData {
 
   @override
   String toString() {
-    return 'ExerciseData(id: $id, uuid: $uuid, languageId: $languageId, baseId: $baseId, description: $description, name: $name, aliases: $aliases, notes: $notes)';
+    return 'ExerciseData(id: $id, uuid: $uuid, languageId: $languageId, exerciseId: $exerciseId, description: $description, name: $name, aliases: $aliases, notes: $notes)';
   }
 
   @override
@@ -247,7 +249,7 @@ class _$ExerciseDataImpl implements _ExerciseData {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.uuid, uuid) || other.uuid == uuid) &&
             (identical(other.languageId, languageId) || other.languageId == languageId) &&
-            (identical(other.baseId, baseId) || other.baseId == baseId) &&
+            (identical(other.exerciseId, exerciseId) || other.exerciseId == exerciseId) &&
             (identical(other.description, description) || other.description == description) &&
             (identical(other.name, name) || other.name == name) &&
             const DeepCollectionEquality().equals(other._aliases, _aliases) &&
@@ -256,7 +258,7 @@ class _$ExerciseDataImpl implements _ExerciseData {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, uuid, languageId, baseId, description, name,
+  int get hashCode => Object.hash(runtimeType, id, uuid, languageId, exerciseId, description, name,
       const DeepCollectionEquality().hash(_aliases), const DeepCollectionEquality().hash(_notes));
 
   @JsonKey(ignore: true)
@@ -278,7 +280,7 @@ abstract class _ExerciseData implements ExerciseData {
       {required final int id,
       required final String uuid,
       @JsonKey(name: 'language') required final int languageId,
-      @JsonKey(required: true, name: 'exercise_base') required final int baseId,
+      @JsonKey(required: true, name: 'exercise_base') required final int exerciseId,
       required final String description,
       required final String name,
       required final List<Alias> aliases,
@@ -290,12 +292,12 @@ abstract class _ExerciseData implements ExerciseData {
   int get id;
   @override
   String get uuid;
-  @override
+  @override // ignore: invalid_annotation_target
   @JsonKey(name: 'language')
   int get languageId;
-  @override
+  @override // ignore: invalid_annotation_target
   @JsonKey(required: true, name: 'exercise_base')
-  int get baseId;
+  int get exerciseId;
   @override
   String get description;
   @override

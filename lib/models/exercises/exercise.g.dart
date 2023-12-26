@@ -1,12 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'base.dart';
+part of 'exercise.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-ExerciseBase _$ExerciseBaseFromJson(Map<String, dynamic> json) {
+Exercise _$ExerciseFromJson(Map<String, dynamic> json) {
   $checkKeys(
     json,
     requiredKeys: const [
@@ -22,7 +22,7 @@ ExerciseBase _$ExerciseBaseFromJson(Map<String, dynamic> json) {
       'equipment'
     ],
   );
-  return ExerciseBase(
+  return Exercise(
     id: json['id'] as int?,
     uuid: json['uuid'] as String?,
     created: json['created'] == null ? null : DateTime.parse(json['created'] as String),
@@ -31,6 +31,9 @@ ExerciseBase _$ExerciseBaseFromJson(Map<String, dynamic> json) {
         ? null
         : DateTime.parse(json['last_update_global'] as String),
     variationId: json['variations'] as int?,
+    translations: (json['translations'] as List<dynamic>?)
+        ?.map((e) => Translation.fromJson(e as Map<String, dynamic>))
+        .toList(),
     category: json['categories'] == null
         ? null
         : ExerciseCategory.fromJson(json['categories'] as Map<String, dynamic>),
@@ -39,13 +42,10 @@ ExerciseBase _$ExerciseBaseFromJson(Map<String, dynamic> json) {
     ..musclesIds = (json['muscles'] as List<dynamic>).map((e) => e as int).toList()
     ..musclesSecondaryIds =
         (json['muscles_secondary'] as List<dynamic>).map((e) => e as int).toList()
-    ..equipmentIds = (json['equipment'] as List<dynamic>).map((e) => e as int).toList()
-    ..translations = (json['translations'] as List<dynamic>)
-        .map((e) => Translation.fromJson(e as Map<String, dynamic>))
-        .toList();
+    ..equipmentIds = (json['equipment'] as List<dynamic>).map((e) => e as int).toList();
 }
 
-Map<String, dynamic> _$ExerciseBaseToJson(ExerciseBase instance) => <String, dynamic>{
+Map<String, dynamic> _$ExerciseToJson(Exercise instance) => <String, dynamic>{
       'id': instance.id,
       'uuid': instance.uuid,
       'variations': instance.variationId,
