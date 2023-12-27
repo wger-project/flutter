@@ -12,5 +12,812 @@
   "invalidUrl": "أدخل رابط صحيح من فضلك",
   "@invalidUrl": {
     "description": "Error message when the user enters an invalid URL, e.g. in the login form"
-  }
+  },
+  "verifiedEmailReason": "تحتاج إلى التحقق من بريدك الإلكتروني للمساهمة في التمارين",
+  "@verifiedEmailReason": {},
+  "comment": "تعليق",
+  "@comment": {
+    "description": "Comment, additional information"
+  },
+  "selectIngredient": "الرجاء تحديد العنصر",
+  "@selectIngredient": {
+    "description": "Error message when the user hasn't selected an ingredient from the autocompleter"
+  },
+  "logIngredient": "حفظ في مذكرة التغذية",
+  "@logIngredient": {},
+  "equipment": "الادوات",
+  "@equipment": {
+    "description": "Equipment needed to perform an exercise"
+  },
+  "useDefaultServer": "استخدم السيرفر الافتراضي",
+  "@useDefaultServer": {
+    "description": "Toggle button allowing users to switch between the default and a custom wger server"
+  },
+  "enterValidNumber": "أدخل رقمًا صحيحًا",
+  "@enterValidNumber": {
+    "description": "Error message when the user has submitted an invalid number (e.g. '3,.,.,.')"
+  },
+  "saturatedFat": "الدهون المشبعة",
+  "@saturatedFat": {},
+  "verifiedEmail": "بريد إلكتروني مفعّل",
+  "@verifiedEmail": {},
+  "mealLogged": "سُجّلت الوجبة في اليوميات",
+  "@mealLogged": {},
+  "images": "الصور",
+  "@images": {},
+  "alsoKnownAs": "يُعرف أيضًا باسم: {aliases}",
+  "@alsoKnownAs": {
+    "placeholders": {
+      "aliases": {}
+    },
+    "description": "List of alternative names for an exercise"
+  },
+  "close": "إقفال",
+  "@close": {
+    "description": "Translation for close"
+  },
+  "body_weight": "وزن الجسم",
+  "@body_weight": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "successfullyDeleted": "تم الحذف",
+  "@successfullyDeleted": {
+    "description": "Message when an item was successfully deleted"
+  },
+  "save": "حفظ",
+  "@save": {},
+  "dumbbell": "أثقال صغيرة",
+  "@dumbbell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "dataCopied": "تم نسخ البيانات إلى الإدخال الجديد",
+  "@dataCopied": {
+    "description": "Snackbar message to show on copying data to a new log entry"
+  },
+  "goToToday": "الذهاب لليوم",
+  "@goToToday": {
+    "description": "Label on button to jump back to 'today' in the calendar widget"
+  },
+  "enterRepetitionsOrWeight": "يرجى ملء التكرارات أو الوزن لواحدة على الأقل من المجموعات",
+  "@enterRepetitionsOrWeight": {
+    "description": "Error message when the user hasn't filled in the forms for exercise sets"
+  },
+  "baseData": "الأساسيات بالإنجليزية",
+  "@baseData": {
+    "description": "The base data for an exercise such as category, trained muscles, etc."
+  },
+  "glutes": "المؤخرة",
+  "@glutes": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "set": "مجموعة",
+  "@set": {
+    "description": "A set in a workout plan"
+  },
+  "calves": "بطة الرجل",
+  "@calves": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "labelBottomNavWorkout": "تمرين",
+  "@labelBottomNavWorkout": {
+    "description": "Label used in bottom navigation, use a short word"
+  },
+  "reset": "إعادة ضبط",
+  "@reset": {
+    "description": "Button text allowing the user to reset the entered values to the default"
+  },
+  "oneNamePerLine": "اسم واحد لكل سطر",
+  "@oneNamePerLine": {},
+  "kg": "كغم",
+  "@kg": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "noMeasurementEntries": "لا يوجد إدخالات قياس",
+  "@noMeasurementEntries": {},
+  "password": "كلمة المرور",
+  "@password": {},
+  "nutritionalPlan": "الخطة الغذائية",
+  "@nutritionalPlan": {},
+  "invalidUsername": "الرجاء كتابة اسم مستخدم صحيح",
+  "@invalidUsername": {
+    "description": "Error message when the user enters an invalid username"
+  },
+  "newSet": "مجموعة جديدة",
+  "@newSet": {
+    "description": "Header when adding a new set to a workout day"
+  },
+  "impression": "انطباع",
+  "@impression": {
+    "description": "General impression (e.g. for a workout session) such as good, bad, etc."
+  },
+  "plateCalculator": "الأطباق",
+  "@plateCalculator": {
+    "description": "Label used for the plate calculator in the gym mode"
+  },
+  "newNutritionalPlan": "خطة تغذية جديدة",
+  "@newNutritionalPlan": {},
+  "chest": "الصدر",
+  "@chest": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "productNotFoundDescription": "لم يتم العثور على المنتج الممسوح ضوئيًا {barcode} في wger",
+  "@productNotFoundDescription": {
+    "description": "Dialog info when product is not found with barcode",
+    "type": "text",
+    "placeholders": {
+      "barcode": {}
+    }
+  },
+  "setNr": "مجموعة {nr}",
+  "@setNr": {
+    "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {}
+    }
+  },
+  "next": "التالي",
+  "@next": {},
+  "shoulders": "أكتاف",
+  "@shoulders": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "cardio": "عضلة القلب",
+  "@cardio": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "fat": "دهون",
+  "@fat": {},
+  "timeStartAhead": "وقت البدء لا يجب أن يكون متقدمًا على وقت الانتهاء",
+  "@timeStartAhead": {},
+  "carbohydrates": "كربوهيدرات",
+  "@carbohydrates": {},
+  "noWorkoutPlans": "لا يوجد خطة تمارين",
+  "@noWorkoutPlans": {
+    "description": "Message shown when the user has no workout plans"
+  },
+  "aboutTranslationTitle": "ترجمة",
+  "@aboutTranslationTitle": {
+    "description": "Title for translation section in the about dialog"
+  },
+  "date": "التاريخ",
+  "@date": {
+    "description": "The date of a workout log or body weight entry"
+  },
+  "muscles": "العضلات",
+  "@muscles": {
+    "description": "(main) muscles trained by an exercise"
+  },
+  "total": "المجموع",
+  "@total": {
+    "description": "Label used for total sums of e.g. calories or similar"
+  },
+  "dayDescriptionHelp": "وصف لما يتم القيام به في هذا اليوم (مثال، \"يوم السحب\") أو ما هي أجزاء الجسم التي سيتم تدريبها (مثال، \"الصدر والكتفين\")",
+  "@dayDescriptionHelp": {},
+  "gymMode": "وضع النادي",
+  "@gymMode": {
+    "description": "Label when starting the gym mode"
+  },
+  "logged": "سُجلت",
+  "@logged": {
+    "description": "Header for the column of 'logged' nutritional values, i.e. what was eaten"
+  },
+  "amount": "الكمية",
+  "@amount": {
+    "description": "The amount (e.g. in grams) of an ingredient in a meal"
+  },
+  "loginInstead": "لديك حساب ؟ تسجيل الدخول",
+  "@loginInstead": {},
+  "productFound": "عُثِر على المنتج",
+  "@productFound": {
+    "description": "Header label for dialog when product is found with barcode"
+  },
+  "pause": "إيقاف",
+  "@pause": {
+    "description": "Noun, not an imperative! Label used for the pause when using the gym mode"
+  },
+  "textPromptTitle": "مستعد للبدء ؟",
+  "@textPromptTitle": {},
+  "success": "مكتمل",
+  "@success": {
+    "description": "Message when an action completed successfully, usually used as a heading"
+  },
+  "passwordTooShort": "كلمة المرور قصيرة",
+  "@passwordTooShort": {
+    "description": "Error message when the user a password that is too short"
+  },
+  "repetitionUnit": "عدد التكرارات المتبقية",
+  "@repetitionUnit": {},
+  "weightUnit": "وحدة الوزن",
+  "@weightUnit": {},
+  "email": "البريد الإلكتروني",
+  "@email": {},
+  "searchIngredient": "ابحث عن عنصر",
+  "@searchIngredient": {
+    "description": "Label on ingredient search form"
+  },
+  "edit": "تعديل",
+  "@edit": {},
+  "aboutBugsText": "في حال مواجهتك لأي خلل أو الحاجة لإضافة ميزة جديدة للتطبيق، تواصل معنا",
+  "@aboutBugsText": {
+    "description": "Text for bugs section in the about dialog"
+  },
+  "setUnitsAndRir": "تعيين الوحدات و RiR",
+  "@setUnitsAndRir": {
+    "description": "Label shown on the slider where the user can toggle showing units and RiR",
+    "type": "text"
+  },
+  "abs": "عضلات المعدة",
+  "@abs": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "anErrorOccurred": "حصل خطأ!",
+  "@anErrorOccurred": {},
+  "aboutContactUsTitle": "قل اهلاً!",
+  "@aboutContactUsTitle": {
+    "description": "Title for contact us section in the about dialog"
+  },
+  "selectExercise": "اختر تمرين",
+  "@selectExercise": {
+    "description": "Error message when the user hasn't selected an exercise in the form"
+  },
+  "productNotFound": "المنتج غير موجود",
+  "@productNotFound": {
+    "description": "Header label for dialog when product is not found with barcode"
+  },
+  "plates": "أطباق",
+  "@plates": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "enterValue": "ادخل قيمة من فضلك",
+  "@enterValue": {
+    "description": "Error message when the user hasn't entered a value on a required field"
+  },
+  "logMeal": "سجّل الوجبة",
+  "@logMeal": {},
+  "newEntry": "إضافة جديدة",
+  "@newEntry": {
+    "description": "Title when adding a new entry such as a weight or log entry"
+  },
+  "enterCharacters": "الرجاء إدخال ما بين {min} و{max} من الأحرف",
+  "@enterCharacters": {
+    "description": "Error message when the user hasn't entered the correct number of characters in a form",
+    "type": "text",
+    "placeholders": {
+      "min": {},
+      "max": {}
+    }
+  },
+  "recentlyUsedIngredients": "المكونات المضافة مؤخرًا",
+  "@recentlyUsedIngredients": {
+    "description": "A message when a user adds a new ingredient to a meal."
+  },
+  "description": "الوصف",
+  "@description": {},
+  "addSet": "أضف مجموعة",
+  "@addSet": {
+    "description": "Label for the button that adds a set (to a workout day)"
+  },
+  "newWorkout": "خطة تمارين جديدة",
+  "@newWorkout": {
+    "description": "Header when adding a new workout"
+  },
+  "energyShort": "ط",
+  "@energyShort": {
+    "description": "The first letter or short name of the word 'Energy', used in overviews"
+  },
+  "name": "الاسم",
+  "@name": {
+    "description": "Name for a workout or nutritional plan"
+  },
+  "percentEnergy": "نسبة الطاقة",
+  "@percentEnergy": {},
+  "add_exercise_image_license": "يجب أن تكون الصور متوافقة مع ترخيص CC BY SA. في حال عدم تأكدك، قم بتحميل الصور التي إلتقطتها.",
+  "@add_exercise_image_license": {},
+  "searchNamesInEnglish": "ابحث بأسماء التمارين بالانجليزي",
+  "@searchNamesInEnglish": {},
+  "seconds": "ثواني",
+  "@seconds": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kilometers": "كيلومترات",
+  "@kilometers": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "username": "اسم المستخدم",
+  "@username": {},
+  "value": "قيمة",
+  "@value": {
+    "description": "The value of a measurement entry"
+  },
+  "exercise": "تمرين",
+  "@exercise": {
+    "description": "An exercise for a workout"
+  },
+  "customServerHint": "ادخل عنوان الخادم خاصتك أو سيستخدم الخادم الافتراضي",
+  "@customServerHint": {
+    "description": "Hint text for the form where the users can enter their own wger instance"
+  },
+  "addIngredient": "أضف مكونًا",
+  "@addIngredient": {},
+  "gym_mat": "سجّاد التمارين",
+  "@gym_mat": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "useCustomServer": "استخدم سيرفر مخصص",
+  "@useCustomServer": {
+    "description": "Toggle button allowing users to switch between the default and a custom wger server"
+  },
+  "verifiedEmailInfo": "أُرسلت رسالة للتحقق إلى {email}",
+  "@verifiedEmailInfo": {
+    "placeholders": {
+      "email": {}
+    }
+  },
+  "fatShort": "د",
+  "@fatShort": {
+    "description": "The first letter or short name of the word 'Fat', used in overviews"
+  },
+  "legs": "الأرجل",
+  "@legs": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "appUpdateTitle": "التحديث متطلب",
+  "@appUpdateTitle": {},
+  "back": "الظهر",
+  "@back": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "cacheWarning": "بسبب التخزين المؤقت، قد يستغرق الأمر بعض الوقت حتى تصبح التغييرات مرئية في التطبيق.",
+  "@cacheWarning": {},
+  "quads": "عضلات الفخذ",
+  "@quads": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "delete": "حذف",
+  "@delete": {},
+  "takePicture": "إلتقط صورة",
+  "@takePicture": {},
+  "start": "ابدأ",
+  "@start": {
+    "description": "Label on button to start the gym mode (i.e., an imperative)"
+  },
+  "notes": "ملاحظات",
+  "@notes": {
+    "description": "Personal notes, e.g. for a workout session"
+  },
+  "jumpTo": "القفز إلى",
+  "@jumpTo": {
+    "description": "Imperative. Label used in popup allowing the user to jump to a specific exercise while in the gym mode"
+  },
+  "difference": "الفرق",
+  "@difference": {},
+  "register": "تسجيل",
+  "@register": {
+    "description": "Text for registration button"
+  },
+  "fibres": "الألياف",
+  "@fibres": {},
+  "aboutDescription": "شكرًا لاستخدامك وقر! وقر مشروع تعاوني مفتوح المصدر، تم إنشاؤه بواسطة عشّاق اللياقة البدنية من جميع أنحاء العالم.",
+  "@aboutDescription": {
+    "description": "Text in the about dialog"
+  },
+  "timeStart": "وقت البدء",
+  "@timeStart": {
+    "description": "The starting time of a workout"
+  },
+  "lower_back": "أسفل الظهر",
+  "@lower_back": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "selectImage": "الرجاء اختيار صورة",
+  "@selectImage": {
+    "description": "Label and error message when the user hasn't selected an image to save"
+  },
+  "baseNameEnglish": "جميع التمارين تتطلب اسم أساسي بالإنجليزية",
+  "@baseNameEnglish": {},
+  "searchExercise": "ابحث عن تمرين لإضافته",
+  "@searchExercise": {
+    "description": "Label on set form. Selected exercises are added to the set"
+  },
+  "registerInstead": "ليس لديك حساب ؟ سجّل الان",
+  "@registerInstead": {},
+  "aboutMastodonTitle": "Mastodon",
+  "@aboutMastodonTitle": {
+    "description": "Title for mastodon section in the about dialog"
+  },
+  "repetitions": "التكرار",
+  "@repetitions": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "moreMeasurementEntries": "أضف قياس جديد",
+  "@moreMeasurementEntries": {
+    "description": "Message shown when the user wants to add new measurement"
+  },
+  "usernameValidChars": "يجب أن يحتوي اسم المستخدم على كلاً من : أحرف، أرقام، رموز مثل @ ، + ، . ، - ، _",
+  "@usernameValidChars": {
+    "description": "Error message when the user tries to register a username with forbidden characters"
+  },
+  "sz_bar": "البار المجعد SZ-Bar",
+  "@sz_bar": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "loadingText": "تحميل ...",
+  "@loadingText": {
+    "description": "Text to show when entries are being loaded in the background: Loading..."
+  },
+  "selectExercises": "إذا كنت تريد إجراء مجموعة شاملة، يمكنك البحث عن عدة تمارين، وسيتم جمعها معًا",
+  "@selectExercises": {},
+  "nutritionalDiary": "مذكرة التغذية",
+  "@nutritionalDiary": {},
+  "protein": "بروتين",
+  "@protein": {},
+  "labelWorkoutPlans": "خطط التمارين",
+  "@labelWorkoutPlans": {
+    "description": "Title for screen workout plans"
+  },
+  "proteinShort": "ب",
+  "@proteinShort": {
+    "description": "The first letter or short name of the word 'Protein', used in overviews"
+  },
+  "kilometers_per_hour": "كيلومترات في الساعة",
+  "@kilometers_per_hour": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "alternativeNames": "أسماء بديلة",
+  "@alternativeNames": {},
+  "noWeightEntries": "ليس لديك أي إدخالات للوزن",
+  "@noWeightEntries": {
+    "description": "Message shown when the user has no logged weight entries"
+  },
+  "addImage": "إضافة صورة",
+  "@addImage": {},
+  "noNutritionalPlans": "لا يوجد لديك أي خطط تغذية",
+  "@noNutritionalPlans": {
+    "description": "Message shown when the user has no nutritional plans"
+  },
+  "previous": "السابق",
+  "@previous": {},
+  "incline_bench": "مقعد مائل للأعلى",
+  "@incline_bench": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "lb": "رطل",
+  "@lb": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "goToDetailPage": "الذهاب لصفحة التفاصيل",
+  "@goToDetailPage": {},
+  "labelWorkoutLogs": "سجلات التمرين",
+  "@labelWorkoutLogs": {
+    "description": "(Workout) logs"
+  },
+  "aboutTranslationText": "يُترجم التطبيق على weblate إذا كنت تريد المساعدة اضغط على الرابط وابدأ الترجمة",
+  "@aboutTranslationText": {
+    "description": "Text for translation section in the about dialog"
+  },
+  "ingredient": "المكونات",
+  "@ingredient": {},
+  "measurementCategoriesHelpText": "فئة القياس، مثل \"العضلة ذات الرأسين\" أو \"دهون الجسم\"",
+  "@measurementCategoriesHelpText": {},
+  "miles": "أميال",
+  "@miles": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "rirNotUsed": "عدد التكرارات المتبقية غير موجود",
+  "@rirNotUsed": {
+    "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
+  },
+  "todaysWorkout": "تمرينك اليوم",
+  "@todaysWorkout": {},
+  "aboutSourceText": "اطلع على الكود المصدري للتطبيق والسيرفر في القت هب",
+  "@aboutSourceText": {
+    "description": "Text for source code section in the about dialog"
+  },
+  "translateExercise": "ترجم التدريب الآن",
+  "@translateExercise": {},
+  "kJ": "كيلو جول",
+  "@kJ": {
+    "description": "Energy in a meal in kilo joules, kJ"
+  },
+  "sodium": "صوديوم",
+  "@sodium": {},
+  "swiss_ball": "الكرة السويسرية",
+  "@swiss_ball": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "gallery": "الألبوم",
+  "@gallery": {},
+  "aboutMastodonText": "تابعنا على Mastodon لأحدث الأخبار حول المشروع",
+  "@aboutMastodonText": {
+    "description": "Text for the mastodon section in the about dialog"
+  },
+  "translation": "الترجمة",
+  "@translation": {},
+  "successfullySaved": "تم الحفظ",
+  "@successfullySaved": {
+    "description": "Message when an item was successfully saved"
+  },
+  "optionsLabel": "الخيارات",
+  "@optionsLabel": {
+    "description": "Label for the popup with general app options"
+  },
+  "exerciseList": "قائمة التمارين",
+  "@exerciseList": {},
+  "whatVariationsExist": "ما الاختلافات الموجودة في التمرين، إن وجدت؟",
+  "@whatVariationsExist": {},
+  "appUpdateContent": "لا يتوافق الإصدار الحالي مع السيرفر، يرجى تحديث التطبيق.",
+  "@appUpdateContent": {},
+  "energy": "الطاقة",
+  "@energy": {
+    "description": "Energy in a meal, ingredient etc. e.g. in kJ"
+  },
+  "newDay": "يوم جديد",
+  "@newDay": {},
+  "scanBarcode": "‌صوّر الرمز التسلسلي",
+  "@scanBarcode": {
+    "description": "Label for scan barcode button"
+  },
+  "toggleDetails": "تبديل التفاصيل",
+  "@toggleDetails": {
+    "description": "Switch to toggle detail / overview"
+  },
+  "musclesSecondary": "العضلات الثانوية",
+  "@musclesSecondary": {
+    "description": "secondary muscles trained by an exercise"
+  },
+  "aboutContactUsText": "إذا كنت تريد مراسلتنا فنحن موجودين في Discord، اهلاً بك",
+  "@aboutContactUsText": {
+    "description": "Text for contact us section in the about dialog"
+  },
+  "minutes": "دقائق",
+  "@minutes": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "biceps": "العضلة ذات الرأسين أو عضلة الذراع",
+  "@biceps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "miles_per_hour": "أميال في الساعة",
+  "@miles_per_hour": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "labelDashboard": "لوحة العمليات",
+  "@labelDashboard": {
+    "description": "Title for screen dashboard"
+  },
+  "timeEnd": "وقت الانتهاء",
+  "@timeEnd": {
+    "description": "The end time of a workout"
+  },
+  "planned": "مخططة",
+  "@planned": {
+    "description": "Header for the column of 'planned' nutritional values, i.e. what should be eaten"
+  },
+  "logHelpEntries": "إذا كان هناك في يوم واحد أكثر من إدخال بنفس عدد التكرارات، ولكن بأوزان مختلفة، فسيتم عرض الإدخال ذو الوزن الأعلى فقط في الرسم البياني.",
+  "@logHelpEntries": {},
+  "exerciseName": "اسم التمرين",
+  "@exerciseName": {
+    "description": "Label for the name of a workout exercise"
+  },
+  "pull_up_bar": "بار السحب",
+  "@pull_up_bar": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "bench": "المقعد",
+  "@bench": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "arms": "الأدوات",
+  "@arms": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "labelBottomNavNutrition": "التغذية",
+  "@labelBottomNavNutrition": {
+    "description": "Label used in bottom navigation, use a short word"
+  },
+  "language": "اللغة",
+  "@language": {},
+  "nutritionalPlans": "خطط غذائية",
+  "@nutritionalPlans": {},
+  "contributeExercise": "ساهم في التمرين",
+  "@contributeExercise": {},
+  "kcal": "سعرة",
+  "@kcal": {
+    "description": "Energy in a meal in kilocalories, kcal"
+  },
+  "g": "قرام",
+  "@g": {
+    "description": "Abbreviation for gram"
+  },
+  "addMeal": "أضف وجبة",
+  "@addMeal": {},
+  "sameRepetitions": "إذا قمت بنفس التكرارات والوزن لجميع المجموعات، فيمكنك فقط ملء صف واحد، مثال : لأربع مجموعات فقط أدخل 10 للتكرارات، ويصبح هذا تلقائيًا \"4 × 10\".",
+  "@sameRepetitions": {},
+  "barbell": "الحديد",
+  "@barbell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "measurementEntriesHelpText": "الوحدة المستخدمة لقياس الفئة مثل \"سم\" أو \"%\"",
+  "@measurementEntriesHelpText": {},
+  "supersetWith": "مجموعة شاملة مع",
+  "@supersetWith": {
+    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
+  },
+  "sugars": "سكريات",
+  "@sugars": {},
+  "customServerUrl": "رابط عنصر wger",
+  "@customServerUrl": {
+    "description": "Label in the form where the users can enter their own wger instance"
+  },
+  "aboutBugsTitle": "لديك مشكلة أو فكرة ؟",
+  "@aboutBugsTitle": {
+    "description": "Title for bugs section in the about dialog"
+  },
+  "carbohydratesShort": "ك",
+  "@carbohydratesShort": {
+    "description": "The first letter or short name of the word 'Carbohydrates', used in overviews"
+  },
+  "addExercise": "أضف التمرين",
+  "@addExercise": {},
+  "measurements": "القياسات",
+  "@measurements": {
+    "description": "Categories for the measurements such as biceps size, body fat, etc."
+  },
+  "reps": "التكرارات الفعالة",
+  "@reps": {
+    "description": "Shorthand for repetitions, used when space constraints are tighter"
+  },
+  "macronutrients": "مغذيات كبيرة",
+  "@macronutrients": {},
+  "unit": "الوحدة",
+  "@unit": {
+    "description": "The unit used for a repetition (kg, time, etc.)"
+  },
+  "aboutPageTitle": "عن وقر wger",
+  "@aboutPageTitle": {},
+  "plateCalculatorNotDivisible": "لا يمكن الوصول إلى الوزن بالأطباق المتوفرة",
+  "@plateCalculatorNotDivisible": {
+    "description": "Error message when the current weight is not reachable with plates (e.g. 33.1 kg)"
+  },
+  "contributeExerciseWarning": "لا يمكنك المساهمة بالتمارين إلا إذا كان حسابك أقدم من {days} يومًا وبريدك الإلكتروني مفعّل",
+  "@contributeExerciseWarning": {
+    "description": "Number of days before which a person can add exercise",
+    "placeholders": {
+      "days": {
+        "type": "String",
+        "example": "14"
+      }
+    }
+  },
+  "confirmDelete": "أمتأكد لحذف '{toDelete}'؟",
+  "@confirmDelete": {
+    "description": "Confirmation text before the user deletes an object",
+    "type": "text",
+    "placeholders": {
+      "toDelete": {}
+    }
+  },
+  "passwordsDontMatch": "كلمات المرور غير متطابقة",
+  "@passwordsDontMatch": {
+    "description": "Error message when the user enters two different passwords during registration"
+  },
+  "triceps": "العضلة ثلاثة الرؤوس العضدية",
+  "@triceps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "weight": "الوزن",
+  "@weight": {
+    "description": "The weight of a workout log or body weight entry"
+  },
+  "gPerBodyKg": "قرام لكل كيلو قرام من الجسم",
+  "@gPerBodyKg": {
+    "description": "Label used for total sums of e.g. calories or similar in grams per Kg of body weight"
+  },
+  "chooseFromLibrary": "اختر من الألبوم",
+  "@chooseFromLibrary": {},
+  "selectEntry": "اختر قيمة",
+  "@selectEntry": {},
+  "variations": "اختلافات",
+  "@variations": {
+    "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"
+  },
+  "enterMinCharacters": "الرجاء إدخال {min} حرفًا على الأقل",
+  "@enterMinCharacters": {
+    "description": "Error message when the user hasn't entered the minimum amount characters in a form",
+    "type": "text",
+    "placeholders": {
+      "min": {}
+    }
+  },
+  "weekAverage": "متوسط سبع أيام",
+  "@weekAverage": {
+    "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
+  },
+  "invalidEmail": "الرجاء كتابة بريد إلكتروني صحيح",
+  "@invalidEmail": {
+    "description": "Error message when the user enters an invalid email"
+  },
+  "kettlebell": "الكرة الحديدية",
+  "@kettlebell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "max_reps": "أقصى عدد للتكرارات الفعالة",
+  "@max_reps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "labelWorkoutPlan": "خطط التمارين",
+  "@labelWorkoutPlan": {
+    "description": "Title for screen workout plan"
+  },
+  "nrOfSets": "المجموعات لكل تمرين: {nrOfSets}",
+  "@nrOfSets": {
+    "description": "Label shown on the slider where the user selects the nr of sets",
+    "type": "text",
+    "placeholders": {
+      "nrOfSets": {}
+    }
+  },
+  "none__bodyweight_exercise_": "لا شيء (تمرين وزن الجسم)",
+  "@none__bodyweight_exercise_": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "category": "الفئة",
+  "@category": {
+    "description": "Category for an exercise, ingredient, etc."
+  },
+  "rir": "عدد التكرارات المتبقية",
+  "@rir": {
+    "description": "Shorthand for Repetitions In Reserve"
+  },
+  "productFoundDescription": "يتوافق رمز الباركود مع هذا المنتج: {productName}. أتريد الاستمرار؟",
+  "@productFoundDescription": {
+    "description": "Dialog info when product is found with barcode",
+    "type": "text",
+    "placeholders": {
+      "productName": {}
+    }
+  },
+  "exercises": "التمارين",
+  "@exercises": {
+    "description": "Multiple exercises for a workout"
+  },
+  "time": "وقت",
+  "@time": {
+    "description": "The time of a meal or workout"
+  },
+  "calendar": "التقويم",
+  "@calendar": {},
+  "until_failure": "وصولاً للفشل",
+  "@until_failure": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "lats": "العضلة الظهرية العريضة",
+  "@lats": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "verify": "تأكيد",
+  "@verify": {},
+  "workoutSession": "جلسة تدريب",
+  "@workoutSession": {
+    "description": "A (logged) workout session"
+  },
+  "logHelpEntriesUnits": "لاحظ أنه يتم رسم الإدخالات التي تحتوي على وحدة الوزن (كجم أو رطل) والتكرارات فقط، ويتم هنا تجاهل المجموعات الأخرى مثل الوقت أو حتى الفشل العضلي.",
+  "@logHelpEntriesUnits": {},
+  "unVerifiedEmail": "بريد إلكتروني غير مفعّل",
+  "@unVerifiedEmail": {},
+  "confirmPassword": "تأكيد كلمة المرور",
+  "@confirmPassword": {},
+  "hamstrings": "أوتار الركبة",
+  "@hamstrings": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "aboutSourceTitle": "كود المصدر",
+  "@aboutSourceTitle": {
+    "description": "Title for source code section in the about dialog"
+  },
+  "textPromptSubheading": "اضغط على الزر للبدء",
+  "@textPromptSubheading": {},
+  "measurement": "القياس",
+  "@measurement": {}
 }
