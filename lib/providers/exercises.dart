@@ -391,7 +391,7 @@ class ExercisesProvider with ChangeNotifier {
     }
   }
 
-  Future<void> initCacheTimesLocalPrefs() async {
+  Future<void> initCacheTimesLocalPrefs({forceInit = false}) async {
     final prefs = await SharedPreferences.getInstance();
 
     // TODO: The exercise data was previously saved in PREFS_EXERCISES. This
@@ -404,16 +404,16 @@ class ExercisesProvider with ChangeNotifier {
 
     final initDate = DateTime(2023, 1, 1).toIso8601String();
 
-    if (!prefs.containsKey(PREFS_LAST_UPDATED_MUSCLES)) {
+    if (forceInit || !prefs.containsKey(PREFS_LAST_UPDATED_MUSCLES)) {
       await prefs.setString(PREFS_LAST_UPDATED_MUSCLES, initDate);
     }
-    if (!prefs.containsKey(PREFS_LAST_UPDATED_EQUIPMENT)) {
+    if (forceInit || !prefs.containsKey(PREFS_LAST_UPDATED_EQUIPMENT)) {
       await prefs.setString(PREFS_LAST_UPDATED_EQUIPMENT, initDate);
     }
-    if (!prefs.containsKey(PREFS_LAST_UPDATED_LANGUAGES)) {
+    if (forceInit || !prefs.containsKey(PREFS_LAST_UPDATED_LANGUAGES)) {
       await prefs.setString(PREFS_LAST_UPDATED_LANGUAGES, initDate);
     }
-    if (!prefs.containsKey(PREFS_LAST_UPDATED_CATEGORIES)) {
+    if (forceInit || !prefs.containsKey(PREFS_LAST_UPDATED_CATEGORIES)) {
       await prefs.setString(PREFS_LAST_UPDATED_CATEGORIES, initDate);
     }
   }
@@ -421,8 +421,7 @@ class ExercisesProvider with ChangeNotifier {
   Future<void> clearAllCachesAndPrefs() async {
     final database = locator<ExerciseDatabase>();
     await database.deleteEverything();
-
-    await initCacheTimesLocalPrefs();
+    await initCacheTimesLocalPrefs(forceInit: true);
   }
 
   /// Loads all needed data for the exercises from the local cache, or if not available,

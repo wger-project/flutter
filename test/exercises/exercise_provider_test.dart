@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/exceptions/no_such_entry_exception.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/muscle.dart';
@@ -83,6 +84,7 @@ void main() {
   setUp(() {
     mockBaseProvider = MockWgerBaseProvider();
     provider = ExercisesProvider(mockBaseProvider);
+    SharedPreferences.setMockInitialValues({});
 
     // Mock categories
     when(mockBaseProvider.makeUrl(categoryUrl)).thenReturn(tCategoryEntriesUri);
@@ -366,6 +368,64 @@ void main() {
           expect(provider.filteredExercises, isEmpty);
         });
       });
+    });
+  });
+
+  group('local prefs', () {
+    test('initCacheTimesLocalPrefs correctly initalises the cache values', () async {
+      // arrange
+      const initValue = '2023-01-01T00:00:00.000';
+      final prefs = await SharedPreferences.getInstance();
+
+      // act
+      await provider.initCacheTimesLocalPrefs();
+
+      // assert
+      expect(prefs.getString(PREFS_LAST_UPDATED_MUSCLES), initValue);
+      expect(prefs.getString(PREFS_LAST_UPDATED_EQUIPMENT), initValue);
+      expect(prefs.getString(PREFS_LAST_UPDATED_CATEGORIES), initValue);
+      expect(prefs.getString(PREFS_LAST_UPDATED_LANGUAGES), initValue);
+    });
+
+    test('calling initCacheTimesLocalPrefs again does nothing', () async {
+      // arrange
+      final prefs = await SharedPreferences.getInstance();
+      const newValue = '2023-10-10T01:18:35.000';
+
+      // act
+      await provider.initCacheTimesLocalPrefs();
+      prefs.setString(PREFS_LAST_UPDATED_MUSCLES, newValue);
+      prefs.setString(PREFS_LAST_UPDATED_EQUIPMENT, newValue);
+      prefs.setString(PREFS_LAST_UPDATED_CATEGORIES, newValue);
+      prefs.setString(PREFS_LAST_UPDATED_LANGUAGES, newValue);
+      await provider.initCacheTimesLocalPrefs();
+
+      // Assert
+      expect(prefs.getString(PREFS_LAST_UPDATED_MUSCLES), newValue);
+      expect(prefs.getString(PREFS_LAST_UPDATED_EQUIPMENT), newValue);
+      expect(prefs.getString(PREFS_LAST_UPDATED_CATEGORIES), newValue);
+      expect(prefs.getString(PREFS_LAST_UPDATED_LANGUAGES), newValue);
+    });
+
+    test('calling initCacheTimesLocalPrefs with forceInit replaces the date', () async {
+      // arrange
+      final prefs = await SharedPreferences.getInstance();
+      const initValue = '2023-01-01T00:00:00.000';
+      const newValue = '2023-10-10T01:18:35.000';
+
+      // act
+      await provider.initCacheTimesLocalPrefs();
+      prefs.setString(PREFS_LAST_UPDATED_MUSCLES, newValue);
+      prefs.setString(PREFS_LAST_UPDATED_EQUIPMENT, newValue);
+      prefs.setString(PREFS_LAST_UPDATED_CATEGORIES, newValue);
+      prefs.setString(PREFS_LAST_UPDATED_LANGUAGES, newValue);
+      await provider.initCacheTimesLocalPrefs(forceInit: true);
+
+      // Assert
+      expect(prefs.getString(PREFS_LAST_UPDATED_MUSCLES), initValue);
+      expect(prefs.getString(PREFS_LAST_UPDATED_EQUIPMENT), initValue);
+      expect(prefs.getString(PREFS_LAST_UPDATED_CATEGORIES), initValue);
+      expect(prefs.getString(PREFS_LAST_UPDATED_LANGUAGES), initValue);
     });
   });
 }
