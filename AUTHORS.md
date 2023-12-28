@@ -23,8 +23,12 @@
 - artchiee - <https://github.com/artchiee>
 - Tejas Bir Singh - <https://github.com/tejasbirsingh>
 - Abhishek Saini - <https://github.com/Abhisheksainii>
+- Hanaa - <https://github.com/hn-n>
 
 ## Translators
+
+- Saudi Arabian
+  - Hanaa <programmerhanaa@gmail.com> 
 
 - German
 
