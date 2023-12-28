@@ -149,12 +149,17 @@ class _AuthCardState extends State<AuthCard> {
   }
 
   void preFillTextfields() {
-    if (kDebugMode) {
+    if (kDebugMode && _authMode == AuthMode.Login) {
       setState(() {
         _usernameController.text = 'user';
         _passwordController.text = 'flutteruser';
       });
     }
+  }
+
+  void resetTextfields() {
+    _usernameController.clear();
+    _passwordController.clear();
   }
 
   void _submit(BuildContext context) async {
@@ -223,10 +228,12 @@ class _AuthCardState extends State<AuthCard> {
       setState(() {
         _authMode = AuthMode.Signup;
       });
+      resetTextfields();
     } else {
       setState(() {
         _authMode = AuthMode.Login;
       });
+      preFillTextfields();
     }
   }
 
