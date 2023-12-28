@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -143,6 +144,16 @@ class _AuthCardState extends State<AuthCard> {
       }
     } on PlatformException {
       _canRegister = false;
+    }
+    preFillTextfields();
+  }
+
+  void preFillTextfields() {
+    if (kDebugMode) {
+      setState(() {
+        _usernameController.text = 'user';
+        _passwordController.text = 'flutteruser';
+      });
     }
   }
 
