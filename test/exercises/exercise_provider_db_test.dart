@@ -7,6 +7,8 @@ import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/database/exercises/exercise_database.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/misc.dart';
+import 'package:wger/models/exercises/exercise_api.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/providers/exercises.dart';
 
@@ -31,10 +33,16 @@ void main() {
     path: 'api/v2/$categoryUrl/',
   );
 
-  final Uri texerciseBaseInfoUri = Uri(
+  final Uri tExerciseInfoUri = Uri(
     scheme: 'http',
     host: 'localhost',
     path: 'api/v2/$exerciseBaseInfoUrl/',
+  );
+
+  final Uri tExerciseInfoDetailUri = Uri(
+    scheme: 'http',
+    host: 'localhost',
+    path: 'api/v2/$exerciseBaseInfoUrl/9/',
   );
 
   final Uri tMuscleEntriesUri = Uri(
@@ -101,13 +109,20 @@ void main() {
     // Mock languages
     when(mockBaseProvider.makeUrl(languageUrl, query: anyNamed('query')))
         .thenReturn(tLanguageEntriesUri);
-    when(mockBaseProvider.fetchPaginated(tLanguageEntriesUri))
-        .thenAnswer((_) => Future.value(tLanguageMap['results']));
+    when(mockBaseProvider.fetchPaginated(tLanguageEntriesUri)).thenAnswer(
+      (_) => Future.value(tLanguageMap['results']),
+    );
 
     // Mock base info response
-    when(mockBaseProvider.makeUrl(exerciseBaseInfoUrl)).thenReturn(texerciseBaseInfoUri);
-    when(mockBaseProvider.fetch(texerciseBaseInfoUri))
-        .thenAnswer((_) => Future.value(tExerciseBaseInfoMap));
+    when(mockBaseProvider.makeUrl(exerciseBaseInfoUrl)).thenReturn(tExerciseInfoUri);
+    when(mockBaseProvider.fetch(tExerciseInfoUri)).thenAnswer(
+      (_) => Future.value(tExerciseBaseInfoMap),
+    );
+
+    when(mockBaseProvider.makeUrl(exerciseBaseInfoUrl, id: 9)).thenReturn(tExerciseInfoDetailUri);
+    when(mockBaseProvider.fetch(tExerciseInfoDetailUri)).thenAnswer(
+      (_) => Future.value(tExerciseBaseInfoMap),
+    );
   });
 
   tearDown(() async {
@@ -126,10 +141,7 @@ void main() {
       // Assert
       final updateTime = DateTime.parse(prefs.getString(PREFS_LAST_UPDATED_MUSCLES)!);
       final valid = DateTime.now().add(const Duration(days: ExercisesProvider.EXERCISE_CACHE_DAYS));
-      expect(
-        DateTime(updateTime.year, updateTime.month, updateTime.day),
-        DateTime(valid.year, valid.month, valid.day),
-      );
+      expect(updateTime.isSameDayAs(valid), true);
 
       final muscles = await database.select(database.muscles).get();
 
@@ -144,6 +156,7 @@ void main() {
       expect(muscles[2].id, 4);
       expect(muscles[2].data, muscle3);
 
+      expect(provider.muscles.length, 3);
       expect(provider.muscles[0], muscle2);
       expect(provider.muscles[1], muscle1);
       expect(provider.muscles[2], muscle3);
@@ -169,11 +182,9 @@ void main() {
 
       // Assert
       final updateTime = DateTime.parse(prefs.getString(PREFS_LAST_UPDATED_MUSCLES)!);
-      expect(
-        DateTime(updateTime.year, updateTime.month, updateTime.day),
-        DateTime(valid.year, valid.month, valid.day),
-      );
+      expect(updateTime.isSameDayAs(valid), true);
 
+      expect(provider.muscles.length, 2);
       expect(provider.muscles[0], muscle1);
       expect(provider.muscles[1], muscle2);
 
@@ -193,10 +204,7 @@ void main() {
       // Assert
       final updateTime = DateTime.parse(prefs.getString(PREFS_LAST_UPDATED_LANGUAGES)!);
       final valid = DateTime.now().add(const Duration(days: ExercisesProvider.EXERCISE_CACHE_DAYS));
-      expect(
-        DateTime(updateTime.year, updateTime.month, updateTime.day),
-        DateTime(valid.year, valid.month, valid.day),
-      );
+      expect(updateTime.isSameDayAs(valid), true);
 
       final languages = await database.select(database.languages).get();
 
@@ -214,6 +222,7 @@ void main() {
       expect(languages[3].id, tLanguage3.id);
       expect(languages[3].data, tLanguage3);
 
+      expect(provider.languages.length, 5);
       expect(provider.languages[0], tLanguage1);
       expect(provider.languages[1], tLanguage2);
       expect(provider.languages[2], tLanguage4);
@@ -240,11 +249,9 @@ void main() {
 
       // Assert
       final updateTime = DateTime.parse(prefs.getString(PREFS_LAST_UPDATED_LANGUAGES)!);
-      expect(
-        DateTime(updateTime.year, updateTime.month, updateTime.day),
-        DateTime(valid.year, valid.month, valid.day),
-      );
+      expect(updateTime.isSameDayAs(valid), true);
 
+      expect(provider.languages.length, 2);
       expect(provider.languages[0], tLanguage1);
       expect(provider.languages[1], tLanguage2);
 
@@ -263,10 +270,7 @@ void main() {
       // Assert
       final updateTime = DateTime.parse(prefs.getString(PREFS_LAST_UPDATED_CATEGORIES)!);
       final valid = DateTime.now().add(const Duration(days: ExercisesProvider.EXERCISE_CACHE_DAYS));
-      expect(
-        DateTime(updateTime.year, updateTime.month, updateTime.day),
-        DateTime(valid.year, valid.month, valid.day),
-      );
+      expect(updateTime.isSameDayAs(valid), true);
 
       final categories = await database.select(database.categories).get();
 
@@ -278,6 +282,7 @@ void main() {
       expect(categories[1].id, tCategory2.id);
       expect(categories[1].data, tCategory2);
 
+      expect(provider.categories.length, 2);
       expect(provider.categories[0], tCategory1);
       expect(provider.categories[1], tCategory2);
     });
@@ -302,11 +307,9 @@ void main() {
 
       // Assert
       final updateTime = DateTime.parse(prefs.getString(PREFS_LAST_UPDATED_CATEGORIES)!);
-      expect(
-        DateTime(updateTime.year, updateTime.month, updateTime.day),
-        DateTime(valid.year, valid.month, valid.day),
-      );
+      expect(updateTime.isSameDayAs(valid), true);
 
+      expect(provider.categories.length, 2);
       expect(provider.categories[0], tCategory1);
       expect(provider.categories[1], tCategory2);
 
@@ -326,10 +329,7 @@ void main() {
       // Assert
       final updateTime = DateTime.parse(prefs.getString(PREFS_LAST_UPDATED_EQUIPMENT)!);
       final valid = DateTime.now().add(const Duration(days: ExercisesProvider.EXERCISE_CACHE_DAYS));
-      expect(
-        DateTime(updateTime.year, updateTime.month, updateTime.day),
-        DateTime(valid.year, valid.month, valid.day),
-      );
+      expect(updateTime.isSameDayAs(valid), true);
 
       final equipmentList = await database.select(database.equipments).get();
 
@@ -341,6 +341,7 @@ void main() {
       expect(equipmentList[1].id, tEquipment2.id);
       expect(equipmentList[1].data, tEquipment2);
 
+      expect(provider.equipment.length, 4);
       expect(provider.equipment[0], tEquipment1);
       expect(provider.equipment[1], tEquipment2);
       expect(provider.equipment[2], tEquipment3);
@@ -367,11 +368,9 @@ void main() {
 
       // Assert
       final updateTime = DateTime.parse(prefs.getString(PREFS_LAST_UPDATED_EQUIPMENT)!);
-      expect(
-        DateTime(updateTime.year, updateTime.month, updateTime.day),
-        DateTime(valid.year, valid.month, valid.day),
-      );
+      expect(updateTime.isSameDayAs(valid), true);
 
+      expect(provider.equipment.length, 2);
       expect(provider.equipment[0], tEquipment1);
       expect(provider.equipment[1], tEquipment2);
 
@@ -392,6 +391,7 @@ void main() {
               id: tExerciseBaseInfoMap['id'],
               data: json.encode(tExerciseBaseInfoMap),
               lastUpdate: DateTime.parse(tExerciseBaseInfoMap['last_update_global']),
+              lastFetched: DateTime.now(),
             ),
           );
       await database
@@ -406,12 +406,99 @@ void main() {
 
       // Act
       await provider.fetchAndSetLanguages(database);
-      await provider.fetchAndSetExercises(database);
+      await provider.setExercisesFromDatabase(database);
 
       // Assert
-      expect(provider.bases[0].id, 9);
-      expect(provider.bases[0].uuid, '1b020b3a-3732-4c7e-92fd-a0cec90ed69b');
+      expect(provider.exercises.length, 1);
+      expect(provider.exercises.first.id, 9);
+      expect(provider.exercises.first.uuid, '1b020b3a-3732-4c7e-92fd-a0cec90ed69b');
       verifyNever(mockBaseProvider.fetchPaginated(any));
+    });
+
+    test('fetching a known exercise - no API refresh', () async {
+      // Arrange
+      provider.languages = testLanguages;
+      await database.into(database.exercises).insert(
+            ExercisesCompanion.insert(
+              id: tExerciseBaseInfoMap['id'],
+              data: json.encode(tExerciseBaseInfoMap),
+              lastUpdate: DateTime.parse(tExerciseBaseInfoMap['last_update_global']),
+              lastFetched: DateTime.now().subtract(const Duration(hours: 1)),
+            ),
+          );
+
+      // Assert
+      expect(provider.exercises.length, 0);
+
+      // Act
+      await provider.handleUpdateExerciseFromApi(database, 9);
+
+      // Assert
+      expect(provider.exercises.length, 1);
+      expect(provider.exercises.first.id, 9);
+      expect(provider.exercises.first.uuid, '1b020b3a-3732-4c7e-92fd-a0cec90ed69b');
+      verifyNever(mockBaseProvider.fetch(any));
+    });
+
+    test('fetching a known exercise - needed API refresh - no new data', () async {
+      // Arrange
+      provider.languages = testLanguages;
+      await database.into(database.exercises).insert(
+            ExercisesCompanion.insert(
+              id: tExerciseBaseInfoMap['id'],
+              data: json.encode(tExerciseBaseInfoMap),
+              lastUpdate: DateTime.parse(tExerciseBaseInfoMap['last_update_global']),
+              lastFetched: DateTime.now().subtract(const Duration(days: 10)),
+            ),
+          );
+
+      // Assert
+      expect(provider.exercises.length, 0);
+
+      // Act
+      await provider.handleUpdateExerciseFromApi(database, 9);
+      final exerciseDb = await (database.select(database.exercises)..where((e) => e.id.equals(9)))
+          .getSingleOrNull();
+
+      // Assert
+      verify(mockBaseProvider.fetch(any));
+      expect(provider.exercises.length, 1);
+      expect(provider.exercises.first.id, 9);
+      expect(provider.exercises.first.uuid, '1b020b3a-3732-4c7e-92fd-a0cec90ed69b');
+      expect(exerciseDb!.lastFetched.isSameDayAs(DateTime.now()), true);
+    });
+
+    test('fetching a known exercise - needed API refresh - new data from API', () async {
+      // Arrange
+      provider.languages = testLanguages;
+      final newData = Map.from(tExerciseBaseInfoMap);
+      newData['uuid'] = 'bf6d5557-1c49-48fd-922e-75d11f81d4eb';
+
+      await database.into(database.exercises).insert(
+            ExercisesCompanion.insert(
+              id: newData['id'],
+              data: json.encode(newData),
+              lastUpdate: DateTime(2023, 1, 1),
+              lastFetched: DateTime.now().subtract(const Duration(days: 10)),
+            ),
+          );
+
+      // Assert
+      expect(provider.exercises.length, 0);
+
+      // Act
+      await provider.handleUpdateExerciseFromApi(database, 9);
+      final exerciseDb = await (database.select(database.exercises)..where((e) => e.id.equals(9)))
+          .getSingleOrNull();
+      final exerciseData = ExerciseApiData.fromString(exerciseDb!.data);
+
+      // Assert
+      verify(mockBaseProvider.fetch(any));
+      expect(provider.exercises.length, 1);
+      expect(provider.exercises.first.id, 9);
+      expect(provider.exercises.first.uuid, '1b020b3a-3732-4c7e-92fd-a0cec90ed69b');
+      expect(exerciseDb.lastFetched.isSameDayAs(DateTime.now()), true);
+      expect(exerciseData.uuid, '1b020b3a-3732-4c7e-92fd-a0cec90ed69b');
     });
   });
 }

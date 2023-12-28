@@ -63,7 +63,7 @@ class Step2Variations extends StatelessWidget {
                       )
                       .toList(),
                   // Exercise bases without variations
-                  ...exerciseProvider.bases
+                  ...exerciseProvider.exercises
                       .where((b) => b.variationId == null)
                       .map(
                         (base) => Row(

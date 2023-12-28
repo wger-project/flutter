@@ -1,62 +1,30 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/exercise_api.dart';
-import 'package:wger/providers/exercises.dart';
 
 import '../../test_data/exercises.dart';
 import '../fixtures/fixture_reader.dart';
-import '../measurements/measurement_provider_test.mocks.dart';
 
 void main() {
-  late MockWgerBaseProvider mockBaseProvider;
-  late ExercisesProvider provider;
-
-  const String exerciseBaseInfoUrl = 'exercisebaseinfo';
-
-  final Uri tExerciseBaseInfoUri = Uri(
-    scheme: 'http',
-    host: 'localhost',
-    path: 'api/v2/$exerciseBaseInfoUrl/9/',
-  );
-
   final Map<String, dynamic> tExerciseInfoMap = jsonDecode(
     fixture('exercises/exercisebaseinfo_response.json'),
   );
 
-  setUp(() {
-    mockBaseProvider = MockWgerBaseProvider();
-    provider = ExercisesProvider(mockBaseProvider);
-    provider.exercises = getTestExerciseBases();
-    provider.languages = [tLanguage1, tLanguage2, tLanguage3];
-
-    // Mock base info response
-    when(
-      mockBaseProvider.makeUrl(exerciseBaseInfoUrl, id: 9),
-    ).thenReturn(tExerciseBaseInfoUri);
-    when(mockBaseProvider.fetch(tExerciseBaseInfoUri))
-        .thenAnswer((_) => Future.value(tExerciseInfoMap));
-  });
-
-  group('Correctly loads and parses data from the server', () {
-    test('test that fetchAndSetExerciseBase finds an existing base', () async {
+  group('Model tests', () {
+    test('test getExercise', () async {
       // arrange and act
-      final base = await provider.fetchAndSetExercise(1);
+      final base = getTestExerciseBases()[1];
 
       // assert
-      verifyNever(provider.baseProvider.fetch(tExerciseBaseInfoUri));
-      expect(base.id, 1);
-    });
-
-    test('test that fetchAndSetExerciseBase fetches a new base', () async {
-      // arrange and act
-      final base = await provider.fetchAndSetExercise(9);
-
-      // assert
-      verify(provider.baseProvider.fetch(tExerciseBaseInfoUri));
-      expect(base.id, 9);
+      expect(base.getExercise('en').id, 5);
+      expect(base.getExercise('en-UK').id, 5);
+      expect(base.getExercise('de').id, 4);
+      expect(base.getExercise('de-AT').id, 4);
+      expect(base.getExercise('fr').id, 3);
+      expect(base.getExercise('fr-FR').id, 3);
+      expect(base.getExercise('pt').id, 5); // English again
     });
 
     test('Load the readExerciseBaseFromBaseInfo parse method', () {
@@ -72,6 +40,9 @@ void main() {
       expect(exercise.id, 9);
       expect(exercise.uuid, '1b020b3a-3732-4c7e-92fd-a0cec90ed69b');
       expect(exercise.categoryId, 10);
+      expect(exercise.variationId, 25);
+      expect(exercise.authors, ["Foo Bar"]);
+      expect(exercise.authorsGlobal, ["Foo Bar", "tester McTestface", "Mr. X"]);
       expect(exercise.equipment.map((e) => e.name), ['Kettlebell']);
       expect(exercise.muscles.map((e) => e.name), [
         'Biceps femoris',

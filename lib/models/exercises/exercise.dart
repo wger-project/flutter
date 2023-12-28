@@ -21,7 +21,9 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
+import 'package:wger/models/exercises/exercise_api.dart';
 import 'package:wger/models/exercises/image.dart';
+import 'package:wger/models/exercises/language.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/models/exercises/translation.dart';
 import 'package:wger/models/exercises/video.dart';
@@ -31,22 +33,22 @@ part 'exercise.g.dart';
 @JsonSerializable(explicitToJson: true)
 class Exercise extends Equatable {
   @JsonKey(required: true)
-  final int? id;
+  late final int? id;
 
   @JsonKey(required: true)
-  final String? uuid;
+  late final String? uuid;
 
   @JsonKey(required: true, name: 'variations')
-  final int? variationId;
+  late final int? variationId;
 
   @JsonKey(required: true, name: 'created')
-  final DateTime? created;
+  late final DateTime? created;
 
   @JsonKey(required: true, name: 'last_update')
-  final DateTime? lastUpdate;
+  late final DateTime? lastUpdate;
 
   @JsonKey(required: true, name: 'last_update_global')
-  final DateTime? lastUpdateGlobal;
+  late final DateTime? lastUpdateGlobal;
 
   @JsonKey(required: true, name: 'category')
   late int categoryId;
@@ -81,6 +83,12 @@ class Exercise extends Equatable {
   @JsonKey(includeFromJson: false, includeToJson: false)
   List<Video> videos = [];
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  List<String> authors = [];
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  List<String> authorsGlobal = [];
+
   Exercise({
     this.id,
     this.uuid,
@@ -95,6 +103,8 @@ class Exercise extends Equatable {
     List<Translation>? translations,
     ExerciseCategory? category,
     List<Video>? videos,
+    List<String>? authors,
+    List<String>? authorsGlobal,
   }) {
     this.images = images ?? [];
     this.equipment = equipment ?? [];
@@ -119,12 +129,44 @@ class Exercise extends Equatable {
     }
 
     if (translations != null) {
-      translations = translations;
+      this.translations = translations;
     }
 
     if (videos != null) {
       this.videos = videos;
     }
+    this.authors = authors ?? [];
+    this.authorsGlobal = authorsGlobal ?? [];
+  }
+
+  Exercise.fromApiData(ExerciseApiData baseData, List<Language> languages) {
+    final List<Translation> translations = [];
+    for (final translationData in baseData.translations) {
+      final translation = translationData;
+      translation.language = languages.firstWhere((l) => l.id == translationData.languageId);
+      translations.add(translation);
+    }
+
+    id = baseData.id;
+    uuid = baseData.uuid;
+    categoryId = baseData.category.id;
+    category = baseData.category;
+
+    created = baseData.created;
+    lastUpdate = baseData.lastUpdate;
+    lastUpdateGlobal = baseData.lastUpdateGlobal;
+
+    musclesSecondary = baseData.muscles;
+    muscles = baseData.muscles;
+    equipment = baseData.equipment;
+    category = baseData.category;
+    images = baseData.images;
+    this.translations = translations;
+    videos = baseData.videos;
+
+    authors = baseData.authors;
+    authorsGlobal = baseData.authorsGlobal;
+    variationId = baseData.variationId;
   }
 
   /// Returns exercises for the given language
@@ -143,7 +185,7 @@ class Exercise extends Equatable {
       (e) => e.languageObj.shortName == languageCode,
       orElse: () => translations.firstWhere(
         (e) => e.languageObj.shortName == LANGUAGE_SHORT_ENGLISH,
-        orElse: () => Translation(name: "name", description: "description"),
+        orElse: () => translations.first,
       ),
     );
   }

@@ -21,8 +21,13 @@ class $ExercisesTable extends Exercises with TableInfo<$ExercisesTable, Exercise
   late final GeneratedColumn<DateTime> lastUpdate = GeneratedColumn<DateTime>(
       'last_update', aliasedName, false,
       type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _lastFetchedMeta = const VerificationMeta('lastFetched');
   @override
-  List<GeneratedColumn> get $columns => [id, data, lastUpdate];
+  late final GeneratedColumn<DateTime> lastFetched = GeneratedColumn<DateTime>(
+      'last_fetched', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, data, lastUpdate, lastFetched];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -49,6 +54,12 @@ class $ExercisesTable extends Exercises with TableInfo<$ExercisesTable, Exercise
     } else if (isInserting) {
       context.missing(_lastUpdateMeta);
     }
+    if (data.containsKey('last_fetched')) {
+      context.handle(_lastFetchedMeta,
+          lastFetched.isAcceptableOrUnknown(data['last_fetched']!, _lastFetchedMeta));
+    } else if (isInserting) {
+      context.missing(_lastFetchedMeta);
+    }
     return context;
   }
 
@@ -62,6 +73,8 @@ class $ExercisesTable extends Exercises with TableInfo<$ExercisesTable, Exercise
       data: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}data'])!,
       lastUpdate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}last_update'])!,
+      lastFetched: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}last_fetched'])!,
     );
   }
 
@@ -75,13 +88,20 @@ class ExerciseTable extends DataClass implements Insertable<ExerciseTable> {
   final int id;
   final String data;
   final DateTime lastUpdate;
-  const ExerciseTable({required this.id, required this.data, required this.lastUpdate});
+
+  /// The date when the exercise was last fetched from the API. While we know
+  /// when the exercise itself was last updated in `lastUpdate`, we can save
+  /// ourselves a lot of requests if we don't check too often
+  final DateTime lastFetched;
+  const ExerciseTable(
+      {required this.id, required this.data, required this.lastUpdate, required this.lastFetched});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['data'] = Variable<String>(data);
     map['last_update'] = Variable<DateTime>(lastUpdate);
+    map['last_fetched'] = Variable<DateTime>(lastFetched);
     return map;
   }
 
@@ -90,6 +110,7 @@ class ExerciseTable extends DataClass implements Insertable<ExerciseTable> {
       id: Value(id),
       data: Value(data),
       lastUpdate: Value(lastUpdate),
+      lastFetched: Value(lastFetched),
     );
   }
 
@@ -99,6 +120,7 @@ class ExerciseTable extends DataClass implements Insertable<ExerciseTable> {
       id: serializer.fromJson<int>(json['id']),
       data: serializer.fromJson<String>(json['data']),
       lastUpdate: serializer.fromJson<DateTime>(json['lastUpdate']),
+      lastFetched: serializer.fromJson<DateTime>(json['lastFetched']),
     );
   }
   @override
@@ -108,74 +130,90 @@ class ExerciseTable extends DataClass implements Insertable<ExerciseTable> {
       'id': serializer.toJson<int>(id),
       'data': serializer.toJson<String>(data),
       'lastUpdate': serializer.toJson<DateTime>(lastUpdate),
+      'lastFetched': serializer.toJson<DateTime>(lastFetched),
     };
   }
 
-  ExerciseTable copyWith({int? id, String? data, DateTime? lastUpdate}) => ExerciseTable(
+  ExerciseTable copyWith({int? id, String? data, DateTime? lastUpdate, DateTime? lastFetched}) =>
+      ExerciseTable(
         id: id ?? this.id,
         data: data ?? this.data,
         lastUpdate: lastUpdate ?? this.lastUpdate,
+        lastFetched: lastFetched ?? this.lastFetched,
       );
   @override
   String toString() {
     return (StringBuffer('ExerciseTable(')
           ..write('id: $id, ')
           ..write('data: $data, ')
-          ..write('lastUpdate: $lastUpdate')
+          ..write('lastUpdate: $lastUpdate, ')
+          ..write('lastFetched: $lastFetched')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, data, lastUpdate);
+  int get hashCode => Object.hash(id, data, lastUpdate, lastFetched);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is ExerciseTable &&
           other.id == this.id &&
           other.data == this.data &&
-          other.lastUpdate == this.lastUpdate);
+          other.lastUpdate == this.lastUpdate &&
+          other.lastFetched == this.lastFetched);
 }
 
 class ExercisesCompanion extends UpdateCompanion<ExerciseTable> {
   final Value<int> id;
   final Value<String> data;
   final Value<DateTime> lastUpdate;
+  final Value<DateTime> lastFetched;
   final Value<int> rowid;
   const ExercisesCompanion({
     this.id = const Value.absent(),
     this.data = const Value.absent(),
     this.lastUpdate = const Value.absent(),
+    this.lastFetched = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   ExercisesCompanion.insert({
     required int id,
     required String data,
     required DateTime lastUpdate,
+    required DateTime lastFetched,
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         data = Value(data),
-        lastUpdate = Value(lastUpdate);
+        lastUpdate = Value(lastUpdate),
+        lastFetched = Value(lastFetched);
   static Insertable<ExerciseTable> custom({
     Expression<int>? id,
     Expression<String>? data,
     Expression<DateTime>? lastUpdate,
+    Expression<DateTime>? lastFetched,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (data != null) 'data': data,
       if (lastUpdate != null) 'last_update': lastUpdate,
+      if (lastFetched != null) 'last_fetched': lastFetched,
       if (rowid != null) 'rowid': rowid,
     });
   }
 
   ExercisesCompanion copyWith(
-      {Value<int>? id, Value<String>? data, Value<DateTime>? lastUpdate, Value<int>? rowid}) {
+      {Value<int>? id,
+      Value<String>? data,
+      Value<DateTime>? lastUpdate,
+      Value<DateTime>? lastFetched,
+      Value<int>? rowid}) {
     return ExercisesCompanion(
       id: id ?? this.id,
       data: data ?? this.data,
       lastUpdate: lastUpdate ?? this.lastUpdate,
+      lastFetched: lastFetched ?? this.lastFetched,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -192,6 +230,9 @@ class ExercisesCompanion extends UpdateCompanion<ExerciseTable> {
     if (lastUpdate.present) {
       map['last_update'] = Variable<DateTime>(lastUpdate.value);
     }
+    if (lastFetched.present) {
+      map['last_fetched'] = Variable<DateTime>(lastFetched.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -204,6 +245,7 @@ class ExercisesCompanion extends UpdateCompanion<ExerciseTable> {
           ..write('id: $id, ')
           ..write('data: $data, ')
           ..write('lastUpdate: $lastUpdate, ')
+          ..write('lastFetched: $lastFetched, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();

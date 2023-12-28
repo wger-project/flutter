@@ -27,14 +27,12 @@ import 'package:wger/core/locator.dart';
 import 'package:wger/database/exercises/exercise_database.dart';
 import 'package:wger/exceptions/no_such_entry_exception.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/models/exercises/alias.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
-import 'package:wger/models/exercises/exercise_base_data.dart';
+import 'package:wger/models/exercises/exercise_api.dart';
 import 'package:wger/models/exercises/language.dart';
 import 'package:wger/models/exercises/muscle.dart';
-import 'package:wger/models/exercises/translation.dart';
 import 'package:wger/models/exercises/variation.dart';
 import 'package:wger/providers/base_provider.dart';
 
@@ -44,6 +42,7 @@ class ExercisesProvider with ChangeNotifier {
   ExercisesProvider(this.baseProvider);
 
   static const EXERCISE_CACHE_DAYS = 7;
+  static const EXERCISE_FETCH_HOURS = 4;
   static const CACHE_VERSION = 4;
 
   static const exerciseInfoUrlPath = 'exercisebaseinfo';
@@ -55,11 +54,7 @@ class ExercisesProvider with ChangeNotifier {
   static const equipmentUrlPath = 'equipment';
   static const languageUrlPath = 'language';
 
-  List<Exercise> _exercises = [];
-
-  set exerciseBases(List<Exercise> exercisesBases) {
-    _exercises = exercisesBases;
-  }
+  List<Exercise> exercises = [];
 
   List<ExerciseCategory> _categories = [];
   List<Muscle> _muscles = [];
@@ -88,7 +83,7 @@ class ExercisesProvider with ChangeNotifier {
   Map<int, List<Exercise>> get exerciseBasesByVariation {
     final Map<int, List<Exercise>> variations = {};
 
-    for (final exercise in _exercises.where((e) => e.variationId != null)) {
+    for (final exercise in exercises.where((e) => e.variationId != null)) {
       if (!variations.containsKey(exercise.variationId)) {
         variations[exercise.variationId!] = [];
       }
@@ -98,8 +93,6 @@ class ExercisesProvider with ChangeNotifier {
 
     return variations;
   }
-
-  List<Exercise> get bases => [..._exercises];
 
   List<ExerciseCategory> get categories => [..._categories];
 
@@ -150,13 +143,13 @@ class ExercisesProvider with ChangeNotifier {
 
     // Filters are initialized and nothing is marked
     if (filters!.isNothingMarked && filters!.searchTerm.length <= 1) {
-      filteredExercises = _exercises;
+      filteredExercises = exercises;
       return;
     }
 
     filteredExercises = [];
 
-    List<Exercise> filteredItems = _exercises;
+    List<Exercise> filteredItems = exercises;
     if (filters!.searchTerm.length > 1) {
       filteredItems = await searchExercise(filters!.searchTerm);
     }
@@ -180,12 +173,14 @@ class ExercisesProvider with ChangeNotifier {
     _muscles = [];
     _categories = [];
     _languages = [];
-    _exercises = [];
+    exercises = [];
   }
 
   /// Find exercise base by ID
+  ///
+  /// Note: prefer using the async `fetchAndSetExercise` method
   Exercise findExerciseById(int id) {
-    return _exercises.firstWhere(
+    return exercises.firstWhere(
       (base) => base.id == id,
       orElse: () => throw NoSuchEntryException(),
     );
@@ -198,7 +193,7 @@ class ExercisesProvider with ChangeNotifier {
   /// not interested in seeing that same exercise returned in the list of variations.
   /// If this parameter is not passed, all exercises are returned.
   List<Exercise> findExerciseBasesByVariationId(int id, {int? exerciseBaseIdToExclude}) {
-    var out = _exercises.where((base) => base.variationId == id).toList();
+    var out = exercises.where((base) => base.variationId == id).toList();
 
     if (exerciseBaseIdToExclude != null) {
       out = out.where((e) => e.id != exerciseBaseIdToExclude).toList();
@@ -277,93 +272,100 @@ class ExercisesProvider with ChangeNotifier {
     }
   }
 
-  Future<Language> fetchAndSetLanguageFromApi(int id) async {
-    final language = await baseProvider.fetch(baseProvider.makeUrl(languageUrlPath, id: id));
-    return Language.fromJson(language);
-  }
-
   /// Returns the exercise with the given ID
   ///
   /// If the exercise is not known locally, it is fetched from the server.
-  /// This method is called when a workout is first loaded, after that the
-  /// regular not-async getById method can be used
   Future<Exercise> fetchAndSetExercise(int exerciseId) async {
+    final database = locator<ExerciseDatabase>();
+
     try {
-      return findExerciseById(exerciseId);
+      final exercise = findExerciseById(exerciseId);
+
+      // Note: no await since we don't care for the updated data right now. It
+      // will be written to the db whenever the request finishes and we will get
+      // the updated exercise the next time
+      handleUpdateExerciseFromApi(database, exerciseId);
+
+      return exercise;
     } on NoSuchEntryException {
+      return handleUpdateExerciseFromApi(database, exerciseId);
+    }
+  }
+
+  /// Handles updates to exercises from the server to the local database
+  ///
+  /// The current logic is:
+  /// Is the exercise known locally:
+  /// -> no: fetch and add to the DB
+  /// -> yes: Do we need to re-fetch?
+  ///    -> no: just return what we have in the DB
+  ///    -> yes: fetch data and update if necessary
+  Future<Exercise> handleUpdateExerciseFromApi(ExerciseDatabase database, int exerciseId) async {
+    Exercise exercise;
+    final exerciseDb = await (database.select(database.exercises)
+          ..where((e) => e.id.equals(exerciseId)))
+        .getSingleOrNull();
+
+    // Exercise is already known locally
+    if (exerciseDb != null) {
+      final nextFetch = exerciseDb.lastFetched.add(const Duration(hours: EXERCISE_FETCH_HOURS));
+      final exerciseDbData = ExerciseApiData.fromString(exerciseDb.data);
+      exercise = Exercise.fromApiData(exerciseDbData, _languages);
+
+      // Fetch and update
+      if (nextFetch.isBefore(DateTime.now())) {
+        final apiData = await baseProvider.fetch(
+          baseProvider.makeUrl(exerciseInfoUrlPath, id: exerciseId),
+        );
+        final exerciseApiData = ExerciseApiData.fromJson(apiData);
+
+        // There have been changes on the server, update
+        if (exerciseApiData.lastUpdateGlobal.isAfter(exerciseDb.lastUpdate)) {
+          exercise = Exercise.fromApiData(exerciseApiData, _languages);
+
+          await (database.update(database.exercises)..where((e) => e.id.equals(exerciseId))).write(
+            ExercisesCompanion(
+              data: Value(jsonEncode(apiData)),
+              lastUpdate: Value(exerciseApiData.lastUpdateGlobal),
+              lastFetched: Value(DateTime.now()),
+            ),
+          );
+          // Update last fetched date, otherwise we'll keep hitting the API
+        } else {
+          await (database.update(database.exercises)..where((e) => e.id.equals(exerciseId))).write(
+            ExercisesCompanion(lastFetched: Value(DateTime.now())),
+          );
+        }
+      }
+      // New exercise, fetch and insert to DB
+    } else {
       final baseData = await baseProvider.fetch(
         baseProvider.makeUrl(exerciseInfoUrlPath, id: exerciseId),
       );
 
-      final exercise = readExerciseFromBaseInfo(ExerciseBaseData.fromJson(baseData));
-      final database = locator<ExerciseDatabase>();
+      final exerciseData = ExerciseApiData.fromJson(baseData);
+      exercise = Exercise.fromApiData(exerciseData, _languages);
 
-      final exerciseDb = await (database.select(database.exercises)
-            ..where((e) => e.id.equals(baseData['id'])))
-          .getSingleOrNull();
-
-      // New exercise, insert
       if (exerciseDb == null) {
-        database.into(database.exercises).insert(
+        await database.into(database.exercises).insert(
               ExercisesCompanion.insert(
-                id: baseData['id'],
-                data: jsonEncode(baseData),
-                lastUpdate: DateTime.parse(baseData['last_update_global']),
-              ),
+                  id: exerciseData.id,
+                  data: jsonEncode(baseData),
+                  lastUpdate: exerciseData.lastUpdateGlobal,
+                  lastFetched: DateTime.now()),
             );
       }
-
-      // If there were updates on the server, update
-      final lastUpdateApi = DateTime.parse(baseData['last_update_global']);
-      if (exerciseDb != null && lastUpdateApi.isAfter(exerciseDb.lastUpdate)) {
-        (database.update(database.exercises)..where((e) => e.id.equals(baseData['id']))).write(
-          ExercisesCompanion(
-            id: Value(baseData['id']),
-            data: Value(jsonEncode(baseData)),
-            lastUpdate: Value(DateTime.parse(baseData['last_update_global'])),
-          ),
-        );
-      }
-
-      _exercises.add(exercise);
-      return exercise;
-    }
-  }
-
-  /// Parses the response from the "exercisebaseinfo" endpoint and returns
-  /// a full exercise base
-  Exercise readExerciseFromBaseInfo(ExerciseBaseData baseData) {
-    final List<Translation> translations = [];
-    for (final translationData in baseData.exercises) {
-      final translation = Translation(
-        id: translationData.id,
-        uuid: translationData.uuid,
-        name: translationData.name,
-        description: translationData.description,
-        exerciseId: baseData.id,
-      );
-      translation.aliases = translationData.aliases
-          .map((e) => Alias(exerciseId: translation.id ?? 0, alias: e.alias))
-          .toList();
-      translation.notes = translationData.notes;
-      translation.language = findLanguageById(translationData.languageId);
-      translations.add(translation);
     }
 
-    return Exercise(
-      id: baseData.id,
-      uuid: baseData.uuid,
-      created: baseData.created,
-      lastUpdate: baseData.lastUpdate,
-      lastUpdateGlobal: baseData.lastUpdateGlobal,
-      musclesSecondary: baseData.muscles,
-      muscles: baseData.muscles,
-      equipment: baseData.equipment,
-      category: baseData.category,
-      images: baseData.images,
-      translations: translations,
-      videos: baseData.videos,
-    );
+    // Either update or add the exercise to local list
+    final index = exercises.indexWhere((element) => element.id == exerciseId);
+    if (index != -1) {
+      exercises[index] = exercise;
+    } else {
+      exercises.add(exercise);
+    }
+
+    return exercise;
   }
 
   /// Checks the required cache version
@@ -430,7 +432,7 @@ class ExercisesProvider with ChangeNotifier {
   /// - Categories
   /// - Languages
   /// - Equipment
-  /// - Exercises
+  /// - Exercises (only local cache)
   Future<void> fetchAndSetInitialData() async {
     clear();
 
@@ -446,32 +448,30 @@ class ExercisesProvider with ChangeNotifier {
       fetchAndSetLanguages(database),
       fetchAndSetEquipments(database),
     ]);
-    await fetchAndSetExercises(database);
+    await setExercisesFromDatabase(database);
 
     _initFilters();
     notifyListeners();
   }
 
-  /// Fetches and sets the available exercises
-  ///
-  /// We first try to read from the local DB, and from the API if the data is too old
-  Future<void> fetchAndSetExercises(ExerciseDatabase database,
+  /// Set the available exercises as available in the db
+  Future<void> setExercisesFromDatabase(ExerciseDatabase database,
       {bool forceDeleteCache = false}) async {
     if (forceDeleteCache) {
       await database.delete(database.exercises).go();
     }
 
-    final exercises = await database.select(database.exercises).get();
-    log('Loaded ${exercises.length} exercises from cache');
+    final exercisesDb = await database.select(database.exercises).get();
+    log('Loaded ${exercisesDb.length} exercises from cache');
 
-    _exercises = exercises
-        .map((e) => readExerciseFromBaseInfo(ExerciseBaseData.fromJson(json.decode(e.data))))
-        //.map((e) => e.data)
+    exercises = exercisesDb
+        .map((e) => Exercise.fromApiData(ExerciseApiData.fromJson(json.decode(e.data)), _languages))
         .toList();
 
     // updateExerciseCache(database);
   }
 
+  /// Updates the exercise database with *all* the exercises from the server
   Future<void> updateExerciseCache(ExerciseDatabase database) async {
     final data = await Future.wait<dynamic>([
       baseProvider.fetch(baseProvider.makeUrl(exerciseInfoUrlPath, query: {'limit': '1000'})),
@@ -480,8 +480,9 @@ class ExercisesProvider with ChangeNotifier {
     ]);
 
     final List<dynamic> exercisesData = data[0]['results'];
-    final exerciseBaseData = exercisesData.map((e) => ExerciseBaseData.fromJson(e)).toList();
-    _exercises = exerciseBaseData.map((e) => readExerciseFromBaseInfo(e)).toList();
+    exercises = exercisesData
+        .map((e) => Exercise.fromApiData(ExerciseApiData.fromJson(e), _languages))
+        .toList();
 
     // Insert new entries and update ones that have been edited
     Future.forEach(exercisesData, (exerciseData) async {
@@ -493,10 +494,10 @@ class ExercisesProvider with ChangeNotifier {
       if (exercise == null) {
         database.into(database.exercises).insert(
               ExercisesCompanion.insert(
-                id: exerciseData['id'],
-                data: jsonEncode(exerciseData),
-                lastUpdate: DateTime.parse(exerciseData['last_update_global']),
-              ),
+                  id: exerciseData['id'],
+                  data: jsonEncode(exerciseData),
+                  lastUpdate: DateTime.parse(exerciseData['last_update_global']),
+                  lastFetched: DateTime.now()),
             );
       }
 
@@ -511,6 +512,7 @@ class ExercisesProvider with ChangeNotifier {
             id: Value(exerciseData['id']),
             data: Value(jsonEncode(exerciseData)),
             lastUpdate: Value(DateTime.parse(exerciseData['last_update_global'])),
+            lastFetched: Value(DateTime.now()),
           ),
         );
       }

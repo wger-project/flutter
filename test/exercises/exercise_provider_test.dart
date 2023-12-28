@@ -208,7 +208,7 @@ void main() {
           equipment: FilterCategory<Equipment>(title: 'Equipment', items: {}),
         );
 
-        provider.exerciseBases = data.getTestExerciseBases();
+        provider.exercises = data.getTestExerciseBases();
       });
 
       test('Nothing is selected with no search term', () async {

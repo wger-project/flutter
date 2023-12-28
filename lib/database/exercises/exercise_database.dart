@@ -21,6 +21,11 @@ class Exercises extends Table {
   // TextColumn get data => text().map(const ExerciseBaseConverter())();
 
   DateTimeColumn get lastUpdate => dateTime()();
+
+  /// The date when the exercise was last fetched from the API. While we know
+  /// when the exercise itself was last updated in `lastUpdate`, we can save
+  /// ourselves a lot of requests if we don't check too often
+  DateTimeColumn get lastFetched => dateTime()();
 }
 
 @DataClassName('MuscleTable')
