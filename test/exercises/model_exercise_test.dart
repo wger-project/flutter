@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/models/exercises/exercise.dart';
-import 'package:wger/models/exercises/exercise_api.dart';
 
 import '../../test_data/exercises.dart';
 import '../fixtures/fixture_reader.dart';
@@ -31,8 +30,8 @@ void main() {
       // arrange
 
       // arrange and act
-      final exercise = Exercise.fromApiData(
-        ExerciseApiData.fromJson(tExerciseInfoMap),
+      final exercise = Exercise.fromApiDataJson(
+        tExerciseInfoMap,
         const [tLanguage1, tLanguage2, tLanguage3],
       );
 

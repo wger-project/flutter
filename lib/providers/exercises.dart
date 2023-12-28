@@ -309,8 +309,7 @@ class ExercisesProvider with ChangeNotifier {
     // Exercise is already known locally
     if (exerciseDb != null) {
       final nextFetch = exerciseDb.lastFetched.add(const Duration(hours: EXERCISE_FETCH_HOURS));
-      final exerciseDbData = ExerciseApiData.fromString(exerciseDb.data);
-      exercise = Exercise.fromApiData(exerciseDbData, _languages);
+      exercise = Exercise.fromApiDataString(exerciseDb.data, _languages);
 
       // Fetch and update
       if (nextFetch.isBefore(DateTime.now())) {
@@ -326,7 +325,7 @@ class ExercisesProvider with ChangeNotifier {
           await (database.update(database.exercises)..where((e) => e.id.equals(exerciseId))).write(
             ExercisesCompanion(
               data: Value(jsonEncode(apiData)),
-              lastUpdate: Value(exerciseApiData.lastUpdateGlobal),
+              lastUpdate: Value(exercise.lastUpdateGlobal!),
               lastFetched: Value(DateTime.now()),
             ),
           );
@@ -342,16 +341,14 @@ class ExercisesProvider with ChangeNotifier {
       final baseData = await baseProvider.fetch(
         baseProvider.makeUrl(exerciseInfoUrlPath, id: exerciseId),
       );
-
-      final exerciseData = ExerciseApiData.fromJson(baseData);
-      exercise = Exercise.fromApiData(exerciseData, _languages);
+      exercise = Exercise.fromApiDataJson(baseData, _languages);
 
       if (exerciseDb == null) {
         await database.into(database.exercises).insert(
               ExercisesCompanion.insert(
-                  id: exerciseData.id,
+                  id: exercise.id!,
                   data: jsonEncode(baseData),
-                  lastUpdate: exerciseData.lastUpdateGlobal,
+                  lastUpdate: exercise.lastUpdateGlobal!,
                   lastFetched: DateTime.now()),
             );
       }
@@ -464,9 +461,7 @@ class ExercisesProvider with ChangeNotifier {
     final exercisesDb = await database.select(database.exercises).get();
     log('Loaded ${exercisesDb.length} exercises from cache');
 
-    exercises = exercisesDb
-        .map((e) => Exercise.fromApiData(ExerciseApiData.fromJson(json.decode(e.data)), _languages))
-        .toList();
+    exercises = exercisesDb.map((e) => Exercise.fromApiDataString(e.data, _languages)).toList();
 
     // updateExerciseCache(database);
   }
@@ -480,9 +475,7 @@ class ExercisesProvider with ChangeNotifier {
     ]);
 
     final List<dynamic> exercisesData = data[0]['results'];
-    exercises = exercisesData
-        .map((e) => Exercise.fromApiData(ExerciseApiData.fromJson(e), _languages))
-        .toList();
+    exercises = exercisesData.map((e) => Exercise.fromApiDataJson(e, _languages)).toList();
 
     // Insert new entries and update ones that have been edited
     Future.forEach(exercisesData, (exerciseData) async {

@@ -139,6 +139,12 @@ class Exercise extends Equatable {
     this.authorsGlobal = authorsGlobal ?? [];
   }
 
+  Exercise.fromApiDataString(String baseData, List<Language> languages)
+      : this.fromApiData(ExerciseApiData.fromString(baseData), languages);
+
+  Exercise.fromApiDataJson(Map<String, dynamic> baseData, List<Language> languages)
+      : this.fromApiData(ExerciseApiData.fromJson(baseData), languages);
+
   Exercise.fromApiData(ExerciseApiData baseData, List<Language> languages) {
     final List<Translation> translations = [];
     for (final translationData in baseData.translations) {
