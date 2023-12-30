@@ -359,7 +359,7 @@ class MockExercisesProvider extends _i1.Mock implements _i18.ExercisesProvider {
       ) as _i3.Exercise);
 
   @override
-  List<_i3.Exercise> findExerciseBasesByVariationId(
+  List<_i3.Exercise> findExercisesByVariationId(
     int? id, {
     int? exerciseBaseIdToExclude,
   }) =>

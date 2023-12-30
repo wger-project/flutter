@@ -88,7 +88,7 @@ class ExerciseDetail extends StatelessWidget {
       style: Theme.of(context).textTheme.headlineSmall,
     ));
     Provider.of<ExercisesProvider>(context, listen: false)
-        .findExerciseBasesByVariationId(
+        .findExercisesByVariationId(
       _exerciseBase.variationId!,
       exerciseBaseIdToExclude: _exerciseBase.id,
     )

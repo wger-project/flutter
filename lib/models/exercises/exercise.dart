@@ -146,13 +146,6 @@ class Exercise extends Equatable {
       : this.fromApiData(ExerciseApiData.fromJson(baseData), languages);
 
   Exercise.fromApiData(ExerciseApiData baseData, List<Language> languages) {
-    final List<Translation> translations = [];
-    for (final translationData in baseData.translations) {
-      final translation = translationData;
-      translation.language = languages.firstWhere((l) => l.id == translationData.languageId);
-      translations.add(translation);
-    }
-
     id = baseData.id;
     uuid = baseData.uuid;
     categoryId = baseData.category.id;
@@ -166,12 +159,16 @@ class Exercise extends Equatable {
     muscles = baseData.muscles;
     equipment = baseData.equipment;
     category = baseData.category;
-    images = baseData.images;
-    this.translations = translations;
+    translations = baseData.translations.map((e) {
+      e.language = languages.firstWhere((l) => l.id == e.languageId);
+      return e;
+    }).toList();
     videos = baseData.videos;
+    images = baseData.images;
 
     authors = baseData.authors;
     authorsGlobal = baseData.authorsGlobal;
+
     variationId = baseData.variationId;
   }
 
