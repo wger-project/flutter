@@ -33,7 +33,6 @@ import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/exercise_api.dart';
 import 'package:wger/models/exercises/language.dart';
 import 'package:wger/models/exercises/muscle.dart';
-import 'package:wger/models/exercises/variation.dart';
 import 'package:wger/providers/base_provider.dart';
 
 class ExercisesProvider with ChangeNotifier {
@@ -48,7 +47,6 @@ class ExercisesProvider with ChangeNotifier {
   static const exerciseInfoUrlPath = 'exercisebaseinfo';
   static const exerciseSearchPath = 'exercise/search';
 
-  static const exerciseVariationsUrlPath = 'variation';
   static const categoriesUrlPath = 'exercisecategory';
   static const musclesUrlPath = 'muscle';
   static const equipmentUrlPath = 'equipment';
@@ -60,7 +58,6 @@ class ExercisesProvider with ChangeNotifier {
   List<Muscle> _muscles = [];
   List<Equipment> _equipment = [];
   List<Language> _languages = [];
-  List<Variation> _variations = [];
 
   Filters? _filters;
 
@@ -237,14 +234,6 @@ class ExercisesProvider with ChangeNotifier {
     final categories = await baseProvider.fetchPaginated(baseProvider.makeUrl(categoriesUrlPath));
     for (final category in categories) {
       _categories.add(ExerciseCategory.fromJson(category));
-    }
-  }
-
-  Future<void> fetchAndSetVariationsFromApi() async {
-    final variations =
-        await baseProvider.fetchPaginated(baseProvider.makeUrl(exerciseVariationsUrlPath));
-    for (final variation in variations) {
-      _variations.add(Variation.fromJson(variation));
     }
   }
 
@@ -468,13 +457,11 @@ class ExercisesProvider with ChangeNotifier {
 
   /// Updates the exercise database with *all* the exercises from the server
   Future<void> updateExerciseCache(ExerciseDatabase database) async {
-    final data = await Future.wait<dynamic>([
-      baseProvider.fetch(baseProvider.makeUrl(exerciseInfoUrlPath, query: {'limit': '1000'})),
-      // TODO: variations!
-      //fetchAndSetVariationsFromApi(),
-    ]);
+    final data = await baseProvider.fetch(
+      baseProvider.makeUrl(exerciseInfoUrlPath, query: {'limit': '1000'}),
+    );
 
-    final List<dynamic> exercisesData = data[0]['results'];
+    final List<dynamic> exercisesData = data['results'];
     exercises = exercisesData.map((e) => Exercise.fromApiDataJson(e, _languages)).toList();
 
     // Insert new entries and update ones that have been edited
