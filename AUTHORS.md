@@ -28,7 +28,7 @@
 ## Translators
 
 - Saudi Arabian
-  - Hanaa Allohibi <programmerhanaa@gmail.com> 
+  - Hanaa Allohibi <Gmail: programmerHanaa> 
 
 - German
 
