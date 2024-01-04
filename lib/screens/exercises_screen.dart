@@ -19,6 +19,18 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
   late final TextEditingController _exerciseNameController;
 
   @override
+  void initState() {
+    _exerciseNameController = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _exerciseNameController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     //final size = MediaQuery.of(context).size;
     final exercisesList = Provider.of<ExercisesProvider>(context).filteredExerciseBases;
@@ -42,12 +54,6 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
         ],
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _exerciseNameController.dispose();
-    super.dispose();
   }
 }
 
