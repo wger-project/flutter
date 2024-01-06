@@ -442,7 +442,6 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                           );
                         },
                         transitionBuilder: (context, suggestionsBox, controller) {
-                          // TODO: Return suggestion box w/ button
                           return suggestionsBox;
                         },
                         onSuggestionSelected: (ExerciseBase exerciseSuggestion) {
