@@ -420,6 +420,10 @@
   "@searchExercise": {
     "description": "Label on set form. Selected exercises are added to the set"
   },
+  "noMatchingExerciseFound": "لم نجد تمرين بهذا الأسم",
+  "@noMatchingExerciseFound": {
+    "description": "Message returned if no exercise match the searched string"
+  },
   "registerInstead": "ليس لديك حساب ؟ سجّل الان",
   "@registerInstead": {},
   "aboutMastodonTitle": "Mastodon",
