@@ -74,23 +74,23 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
     final authProvider = context.read<AuthProvider>();
 
     if (!authProvider.dataInit) {
-      final workoutPlansProvider = context.read<WorkoutPlansProvider>();
-      final nutritionPlansProvider = context.read<NutritionPlansProvider>();
-      final exercisesProvider = context.read<ExercisesProvider>();
-      final galleryProvider = context.read<GalleryProvider>();
-      final weightProvider = context.read<BodyWeightProvider>();
-      final measurementProvider = context.read<MeasurementProvider>();
-      final userProvider = context.read<UserProvider>();
+      // final workoutPlansProvider = context.read<WorkoutPlansProvider>();
+      // final nutritionPlansProvider = context.read<NutritionPlansProvider>();
+      // final exercisesProvider = context.read<ExercisesProvider>();
+      // final galleryProvider = context.read<GalleryProvider>();
+
+      // final userProvider = context.read<UserProvider>();
 
       // Base data
       log('Loading base data');
       try {
         await Future.wait([
           authProvider.setServerVersion(),
-          userProvider.fetchAndSetProfile(),
-          workoutPlansProvider.fetchAndSetUnits(),
-          nutritionPlansProvider.fetchIngredientsFromCache(),
-          exercisesProvider.fetchAndSetExercises(),
+          context.read<UserProvider>().fetchAndSetProfile(),
+          context.read<WorkoutPlansProvider>().fetchAndSetUnits(),
+          context.read<NutritionPlansProvider>().fetchIngredientsFromCache(),
+          context.read<ExercisesProvider>().fetchAndSetExercises(),
+          context.read<GalleryProvider>().fetchAndSetGallery(),
         ]);
       } catch (e) {
         log('fire! fire!');
@@ -98,29 +98,29 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
       }
 
       // Plans, weight and gallery
-      log('Loading plans, weight, measurements and gallery');
-      await Future.wait([
-        galleryProvider.fetchAndSetGallery(),
-        nutritionPlansProvider.fetchAndSetAllPlansSparse(),
-        workoutPlansProvider.fetchAndSetAllPlansSparse(),
-        weightProvider.fetchAndSetEntries(),
-        measurementProvider.fetchAndSetAllCategoriesAndEntries(),
-      ]);
+      // log('Loading plans, weight, measurements and gallery');
+      // await Future.wait([
+      // galleryProvider.fetchAndSetGallery(),
+      // nutritionPlansProvider.fetchAndSetAllPlansSparse(),
+      // workoutPlansProvider.fetchAndSetAllPlansSparse(),
+      // weightProvider.fetchAndSetEntries(),
+      // measurementProvider.fetchAndSetAllCategoriesAndEntries(),
+      // ]);
 
       // Current nutritional plan
-      log('Loading current nutritional plan');
-      if (nutritionPlansProvider.currentPlan != null) {
-        final plan = nutritionPlansProvider.currentPlan!;
-        await nutritionPlansProvider.fetchAndSetPlanFull(plan.id!);
-      }
+      // log('Loading current nutritional plan');
+      // if (nutritionPlansProvider.currentPlan != null) {
+      //   final plan = nutritionPlansProvider.currentPlan!;
+      //   await nutritionPlansProvider.fetchAndSetPlanFull(plan.id!);
+      // }
 
-      // Current workout plan
-      log('Loading current workout plan');
-      if (workoutPlansProvider.activePlan != null) {
-        final planId = workoutPlansProvider.activePlan!.id!;
-        await workoutPlansProvider.fetchAndSetWorkoutPlanFull(planId);
-        workoutPlansProvider.setCurrentPlan(planId);
-      }
+      // // Current workout plan
+      // log('Loading current workout plan');
+      // if (workoutPlansProvider.activePlan != null) {
+      //   final planId = workoutPlansProvider.activePlan!.id!;
+      //   await workoutPlansProvider.fetchAndSetWorkoutPlanFull(planId);
+      //   workoutPlansProvider.setCurrentPlan(planId);
+      // }
     }
 
     authProvider.dataInit = true;

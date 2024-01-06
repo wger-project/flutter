@@ -52,6 +52,8 @@ class NutritionPlansProvider with ChangeNotifier {
     return [..._plans];
   }
 
+  bool nutritionDataInit = false;
+
   set ingredients(items) {
     _ingredients = items;
   }

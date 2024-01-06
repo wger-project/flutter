@@ -40,6 +40,8 @@ class MeasurementProvider with ChangeNotifier {
     _categories = [];
   }
 
+  bool measurementDataInit = false;
+
   /// Finds the category by ID
   MeasurementCategory findCategoryById(int id) {
     return _categories.firstWhere(

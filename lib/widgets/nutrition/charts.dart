@@ -253,17 +253,17 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
                       getTitlesWidget: leftTitles,
                     ),
                   ),
-                  topTitles: const AxisTitles(
+                  topTitles: AxisTitles(
                     sideTitles: SideTitles(showTitles: false),
                   ),
-                  rightTitles: const AxisTitles(
+                  rightTitles: AxisTitles(
                     sideTitles: SideTitles(showTitles: false),
                   ),
                 ),
                 gridData: FlGridData(
                   show: true,
                   checkToShowHorizontalLine: (value) => value % 10 == 0,
-                  getDrawingHorizontalLine: (value) => const FlLine(
+                  getDrawingHorizontalLine: (value) => FlLine(
                     color: Colors.black,
                     strokeWidth: 1,
                   ),
