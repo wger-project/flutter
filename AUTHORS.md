@@ -23,6 +23,7 @@
 - artchiee - <https://github.com/artchiee>
 - Tejas Bir Singh - <https://github.com/tejasbirsingh>
 - Abhishek Saini - <https://github.com/Abhisheksainii>
+- Shey Alnasrawi - <https://github.com/Milksheyke>
 
 ## Translators
 
