@@ -30,6 +30,7 @@ import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/screens/add_exercise_screen.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/widgets/exercises/images.dart';
 
@@ -423,7 +424,25 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                             ),
                           );
                         },
+                        noItemsFoundBuilder: (context) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(AppLocalizations.of(context).noMatchingExerciseFound),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pushNamed(AddExerciseScreen.routeName);
+                                  },
+                                  child: Text(AppLocalizations.of(context).contributeExercise),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
                         transitionBuilder: (context, suggestionsBox, controller) {
+                          // TODO: Return suggestion box w/ button
                           return suggestionsBox;
                         },
                         onSuggestionSelected: (ExerciseBase exerciseSuggestion) {
