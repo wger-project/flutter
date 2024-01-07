@@ -145,19 +145,19 @@ class _AuthCardState extends State<AuthCard> {
     } on PlatformException {
       _canRegister = false;
     }
-    preFillTextfields();
+    _preFillTextfields();
   }
 
-  void preFillTextfields() {
+  void _preFillTextfields() {
     if (kDebugMode && _authMode == AuthMode.Login) {
       setState(() {
-        _usernameController.text = 'user';
-        _passwordController.text = 'flutteruser';
+        _usernameController.text = USER_NAME;
+        _passwordController.text = PASSWORD;
       });
     }
   }
 
-  void resetTextfields() {
+  void _resetTextfields() {
     _usernameController.clear();
     _passwordController.clear();
   }
@@ -228,12 +228,12 @@ class _AuthCardState extends State<AuthCard> {
       setState(() {
         _authMode = AuthMode.Signup;
       });
-      resetTextfields();
+      _resetTextfields();
     } else {
       setState(() {
         _authMode = AuthMode.Login;
       });
-      preFillTextfields();
+      _preFillTextfields();
     }
   }
 

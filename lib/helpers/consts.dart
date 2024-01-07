@@ -26,6 +26,10 @@ const double ICON_SIZE_SMALL = 20;
 /// Default wger server during login
 const DEFAULT_SERVER = 'https://wger.de';
 
+// Debug mode Login Data
+const USER_NAME = 'user';
+const PASSWORD = 'flutteruser';
+
 /// Keys used in the android manifest
 const MANIFEST_KEY_API = 'wger.api_key';
 const MANIFEST_KEY_CHECK_UPDATE = 'wger.check_min_app_version';
