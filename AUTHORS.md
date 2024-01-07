@@ -24,6 +24,7 @@
 - Tejas Bir Singh - <https://github.com/tejasbirsingh>
 - Abhishek Saini - <https://github.com/Abhisheksainii>
 - Hanaa Allohibi - <https://github.com/hn-n>
+- Shey Alnasrawi - <https://github.com/Milksheyke>
 
 ## Translators
 
