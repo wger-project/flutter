@@ -125,7 +125,8 @@ class _AuthCardState extends State<AuthCard> {
   final _passwordController = TextEditingController();
   final _password2Controller = TextEditingController();
   final _emailController = TextEditingController();
-  final _serverUrlController = TextEditingController(text: DEFAULT_SERVER);
+  final _serverUrlController =
+      TextEditingController(text: kDebugMode ? DEFAULT_SERVER_TEST : DEFAULT_SERVER_PROD);
 
   @override
   void initState() {
@@ -220,7 +221,7 @@ class _AuthCardState extends State<AuthCard> {
 
   void _switchAuthMode() {
     if (!_canRegister) {
-      launchURL(DEFAULT_SERVER, context);
+      launchURL(DEFAULT_SERVER_PROD, context);
       return;
     }
 
@@ -402,7 +403,8 @@ class _AuthCardState extends State<AuthCard> {
                             IconButton(
                               icon: const Icon(Icons.undo),
                               onPressed: () {
-                                _serverUrlController.text = DEFAULT_SERVER;
+                                _serverUrlController.text =
+                                    kDebugMode ? DEFAULT_SERVER_TEST : DEFAULT_SERVER_PROD;
                               },
                             ),
                             Text(AppLocalizations.of(context).reset)
