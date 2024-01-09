@@ -85,7 +85,10 @@ void main() {
 
   setUp(() {
     mockBaseProvider = MockWgerBaseProvider();
-    provider = ExercisesProvider(mockBaseProvider);
+    provider = ExercisesProvider(
+      mockBaseProvider,
+      database: ExerciseDatabase.inMemory(NativeDatabase.memory()),
+    );
     database = ExerciseDatabase.inMemory(NativeDatabase.memory());
 
     WidgetsFlutterBinding.ensureInitialized();

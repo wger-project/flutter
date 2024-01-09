@@ -37,8 +37,11 @@ import 'package:wger/providers/base_provider.dart';
 
 class ExercisesProvider with ChangeNotifier {
   final WgerBaseProvider baseProvider;
+  late ExerciseDatabase database;
 
-  ExercisesProvider(this.baseProvider);
+  ExercisesProvider(this.baseProvider, {ExerciseDatabase? database}) {
+    this.database = database ?? locator<ExerciseDatabase>();
+  }
 
   static const EXERCISE_CACHE_DAYS = 7;
   static const EXERCISE_FETCH_HOURS = 4;
@@ -265,7 +268,7 @@ class ExercisesProvider with ChangeNotifier {
   ///
   /// If the exercise is not known locally, it is fetched from the server.
   Future<Exercise> fetchAndSetExercise(int exerciseId) async {
-    final database = locator<ExerciseDatabase>();
+    //final database = locator<ExerciseDatabase>();
 
     try {
       final exercise = findExerciseById(exerciseId);
@@ -360,7 +363,6 @@ class ExercisesProvider with ChangeNotifier {
   /// can change and we need to invalidate it as a result
   Future<void> checkExerciseCacheVersion() async {
     final prefs = await SharedPreferences.getInstance();
-    final database = locator<ExerciseDatabase>();
     if (prefs.containsKey(PREFS_EXERCISE_CACHE_VERSION)) {
       final cacheVersion = prefs.getInt(PREFS_EXERCISE_CACHE_VERSION)!;
 
@@ -407,7 +409,6 @@ class ExercisesProvider with ChangeNotifier {
   }
 
   Future<void> clearAllCachesAndPrefs() async {
-    final database = locator<ExerciseDatabase>();
     await database.deleteEverything();
     await initCacheTimesLocalPrefs(forceInit: true);
   }
@@ -421,8 +422,6 @@ class ExercisesProvider with ChangeNotifier {
   /// - Exercises (only local cache)
   Future<void> fetchAndSetInitialData() async {
     clear();
-
-    final database = locator<ExerciseDatabase>();
 
     await initCacheTimesLocalPrefs();
     await checkExerciseCacheVersion();

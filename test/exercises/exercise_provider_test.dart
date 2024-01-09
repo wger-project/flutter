@@ -1,8 +1,11 @@
 import 'dart:convert';
 
+import 'package:drift/drift.dart';
+import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wger/database/exercises/exercise_database.dart';
 import 'package:wger/exceptions/no_such_entry_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/exercises/category.dart';
@@ -32,10 +35,10 @@ void main() {
     path: 'api/v2/$categoryUrl/',
   );
 
-  final Uri texerciseBaseInfoUri = Uri(
+  final Uri tExerciseInfoUri = Uri(
     scheme: 'http',
     host: 'localhost',
-    path: 'api/v2/$exerciseBaseInfoUrl/',
+    path: 'api/v2/$exerciseBaseInfoUrl/1/',
   );
 
   final Uri tMuscleEntriesUri = Uri(
@@ -81,10 +84,21 @@ void main() {
     fixture('exercises/exercisebaseinfo_response.json'),
   );
 
+  setUpAll(() async {
+    // Needs to be configured here, setUp runs on every test, setUpAll only once
+    //await ServiceLocator().configure();
+  });
+
   setUp(() {
     mockBaseProvider = MockWgerBaseProvider();
-    provider = ExercisesProvider(mockBaseProvider);
+    provider = ExercisesProvider(
+      mockBaseProvider,
+      database: ExerciseDatabase.inMemory(NativeDatabase.memory()),
+    );
+    provider.languages = [...testLanguages];
+
     SharedPreferences.setMockInitialValues({});
+    driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
 
     // Mock categories
     when(mockBaseProvider.makeUrl(categoryUrl)).thenReturn(tCategoryEntriesUri);
@@ -108,8 +122,9 @@ void main() {
         .thenAnswer((_) => Future.value(tLanguageMap['results']));
 
     // Mock base info response
-    when(mockBaseProvider.makeUrl(exerciseBaseInfoUrl)).thenReturn(texerciseBaseInfoUri);
-    when(mockBaseProvider.fetch(texerciseBaseInfoUri))
+    when(mockBaseProvider.makeUrl(exerciseBaseInfoUrl, id: 1)).thenReturn(tExerciseInfoUri);
+    when(mockBaseProvider.makeUrl(exerciseBaseInfoUrl, id: 2)).thenReturn(tExerciseInfoUri);
+    when(mockBaseProvider.fetch(tExerciseInfoUri))
         .thenAnswer((_) => Future.value(tExerciseBaseInfoMap));
   });
 

@@ -1,7 +1,12 @@
 import 'dart:convert';
 
+import 'package:drift/drift.dart';
+import 'package:drift/native.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:wger/core/locator.dart';
+import 'package:wger/database/exercises/exercise_database.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/providers/exercises.dart';
 
@@ -21,13 +26,30 @@ void main() {
     path: 'api/v2/$exerciseBaseInfoUrl/9/',
   );
 
+  final Uri tExerciseBaseInfoUri2 = Uri(
+    scheme: 'http',
+    host: 'localhost',
+    path: 'api/v2/$exerciseBaseInfoUrl/1/',
+  );
+
   final Map<String, dynamic> tExerciseInfoMap = jsonDecode(
     fixture('exercises/exercisebaseinfo_response.json'),
   );
 
-  setUp(() {
+  setUpAll(() async {
+    // Needs to be configured here, setUp runs on every test, setUpAll only once
+    await ServiceLocator().configure();
+  });
+
+  setUp(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
+
     mockBaseProvider = MockWgerBaseProvider();
-    provider = ExercisesProvider(mockBaseProvider);
+    provider = ExercisesProvider(
+      mockBaseProvider,
+      database: ExerciseDatabase.inMemory(NativeDatabase.memory()),
+    );
     provider.exercises = getTestExerciseBases();
     provider.languages = [tLanguage1, tLanguage2, tLanguage3];
 
@@ -35,7 +57,13 @@ void main() {
     when(
       mockBaseProvider.makeUrl(exerciseBaseInfoUrl, id: 9),
     ).thenReturn(tExerciseBaseInfoUri);
+    when(
+      mockBaseProvider.makeUrl(exerciseBaseInfoUrl, id: 1),
+    ).thenReturn(tExerciseBaseInfoUri2);
+
     when(mockBaseProvider.fetch(tExerciseBaseInfoUri))
+        .thenAnswer((_) => Future.value(tExerciseInfoMap));
+    when(mockBaseProvider.fetch(tExerciseBaseInfoUri2))
         .thenAnswer((_) => Future.value(tExerciseInfoMap));
   });
 
@@ -45,7 +73,7 @@ void main() {
       final base = await provider.fetchAndSetExercise(1);
 
       // assert
-      verifyNever(provider.baseProvider.fetch(tExerciseBaseInfoUri));
+      verifyNever(provider.baseProvider.fetch(tExerciseBaseInfoUri2));
       expect(base.id, 1);
     });
 

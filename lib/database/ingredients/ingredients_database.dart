@@ -20,6 +20,9 @@ class Ingredients extends Table {
 class IngredientDatabase extends _$IngredientDatabase {
   IngredientDatabase() : super(_openConnection());
 
+  // Named constructor for creating in-memory database
+  IngredientDatabase.inMemory(super.e);
+
   @override
   // TODO: implement schemaVersion
   int get schemaVersion => 1;
