@@ -14,7 +14,8 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          java-version: 17.x
+          java-version: '17'
+          distribution: 'oracle'
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
