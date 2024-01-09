@@ -86,7 +86,7 @@ class EntriesList extends StatelessWidget {
                 return true;
               },
               secondaryBackground: Container(
-                color: Theme.of(context).errorColor,
+                color: Theme.of(context).colorScheme.error,
                 alignment: Alignment.centerRight,
                 padding: const EdgeInsets.only(right: 20),
                 margin: const EdgeInsets.symmetric(
@@ -113,7 +113,7 @@ class EntriesList extends StatelessWidget {
               ),
               child: Card(
                 child: ListTile(
-                  title: Text('${currentEntry.value.toString()} ${_category.unit}'),
+                  title: Text('${currentEntry.value} ${_category.unit}'),
                   subtitle: Text(
                     DateFormat.yMd(Localizations.localeOf(context).languageCode)
                         .format(currentEntry.date),

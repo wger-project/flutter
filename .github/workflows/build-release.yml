@@ -4,27 +4,15 @@ on:
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+'
 
-defaults:
-  run:
-    working-directory: wger
-
 jobs:
   deploy_android:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout application code
-        uses: actions/checkout@v2
-        with:
-          path: wger
-
-      - name: Checkout flathub repo
-        uses: actions/checkout@v3
-        with:
-          repository: wger-project/test
-          path: flathub
+        uses: actions/checkout@v4
 
       - name: Setup Java
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v4
         with:
           java-version: 17.x
 
@@ -34,7 +22,7 @@ jobs:
           ruby-version: 3
 
       - name: Setup Flutter
-        uses: subosito/flutter-action@v1
+        uses: subosito/flutter-action@v2
         with:
           channel: stable
           flutter-version: 3.16.x
@@ -83,28 +71,28 @@ jobs:
           WGER_API_KEY: ${{ secrets.WGER_API_KEY }}
 
       - name: Upload build to Play Store
-        uses: maierj/fastlane-action@v2.2.1
+        uses: maierj/fastlane-action@v3.0.0
         with:
           lane: production
-          subdirectory: wger
 
       - name: Make Github release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ env.VERSION }}
           files: |
-            wger/build/app/outputs/bundle/release/app-release.aab
-            wger/flatpak/scripts/flatpak_generator_exports/wger-linux-x86_64.tar.gz
-            wger/flatpak/scripts/flatpak_generator_exports/wger-linux-x86_64.sha256
+            build/app/outputs/bundle/release/app-release.aab
+            flatpak/scripts/flatpak_generator_exports/wger-linux-x86_64.tar.gz
+            flatpak/scripts/flatpak_generator_exports/wger-linux-x86_64.sha256
 
       - name: Generate flathub manifest
         run: |
           cd flatpak/scripts
           dart pub get
           dart manifest_generator.dart --meta ../flatpak_meta.json --github
-          cp flatpak_generator_exports/de.wger.flutter.json ../../../flathub
+          mkdir ../../flathub
+          cp flatpak_generator_exports/de.wger.flutter.json ../../flathub
 
-      - name: Push config to flathub repository
+      - name: Push updated config to flathub repository
         uses: cpina/github-action-push-to-another-repository@main
         env:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
@@ -124,12 +112,14 @@ jobs:
       #       would not work, as it would trigger this workflow again. So as
       #       a workaround, we use the v-tag to trigger this workflow, add a new
       #       one without the v and push it.
-      - name: Commit pubspec version and delete branch
+      - name: Commit pubspec version and delete tag
         run: |
-          git config user.name Github-actions
+          git config user.name Github-Actions
           git config user.email github-actions@github.com
-          git add .
+          git checkout -b release-${{ env.VERSION }}
+          git add pubspec.yaml
           git commit -m "Bump version to $( flutter pub run cider version )"
           git tag ${{ env.VERSION }}
-          git push origin HEAD:master --tags
-          git push origin --delete ${{ env.VERSION_V }}
+          git push ${{ env.VERSION }}
+          git push --delete ${{ env.VERSION_V }}
+          git push

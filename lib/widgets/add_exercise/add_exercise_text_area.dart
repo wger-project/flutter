@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class AddExerciseTextArea extends StatelessWidget {
   const AddExerciseTextArea({
-    Key? key,
+    super.key,
     required this.onChange,
     required this.title,
     this.helperText = '',
@@ -10,7 +10,7 @@ class AddExerciseTextArea extends StatelessWidget {
     this.isMultiline = false,
     this.validator,
     this.onSaved,
-  }) : super(key: key);
+  });
 
   final ValueChanged<String> onChange;
   final bool isRequired;

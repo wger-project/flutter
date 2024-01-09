@@ -730,7 +730,7 @@ class Filters {
       exerciseCategories: exerciseCategories ?? this.exerciseCategories,
       equipment: equipment ?? this.equipment,
       searchTerm: searchTerm ?? this.searchTerm,
-      doesNeedUpdate: doesNeedUpdate ?? this._doesNeedUpdate,
+      doesNeedUpdate: doesNeedUpdate ?? _doesNeedUpdate,
     );
   }
 }

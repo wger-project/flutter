@@ -91,17 +91,17 @@ class NutritionalPlan {
 
   NutritionalValues get nutritionalValues7DayAvg {
     final currentDate = DateTime.now();
-    final sevenDaysAgo = currentDate.subtract(Duration(days: 7));
+    final sevenDaysAgo = currentDate.subtract(const Duration(days: 7));
 
     final entries = logs.where((obj) {
-      DateTime objDate = obj.datetime;
+      final DateTime objDate = obj.datetime;
       return objDate.isAfter(sevenDaysAgo) && objDate.isBefore(currentDate);
     }).toList();
 
     var out = NutritionalValues();
-    entries.forEach((log) {
+    for (final log in entries) {
       out = out + log.nutritionalValues;
-    });
+    }
 
     return out;
   }

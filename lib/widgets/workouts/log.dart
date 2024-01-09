@@ -140,14 +140,14 @@ class _DayLogWidgetState extends State<DayLogWidget> {
                         ],
                       ),
                     )
-                    .toList(),
+                    ,
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15),
                   child: ExerciseLogChart(base, widget._date),
                 )
               ],
             );
-          }).toList()
+          })
         ],
       ),
     );

@@ -23,7 +23,7 @@ import 'package:wger/screens/exercise_screen.dart';
 import 'package:wger/widgets/exercises/images.dart';
 
 class ExerciseListTile extends StatelessWidget {
-  const ExerciseListTile({Key? key, required this.exerciseBase}) : super(key: key);
+  const ExerciseListTile({super.key, required this.exerciseBase});
 
   final Exercise exerciseBase;
 

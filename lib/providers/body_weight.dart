@@ -34,7 +34,7 @@ class BodyWeightProvider with ChangeNotifier {
     return [..._entries];
   }
 
-  void set items(List<WeightEntry> entries) {
+  set items(List<WeightEntry> entries) {
     _entries = entries;
   }
 

@@ -11,12 +11,22 @@ import '4_measurements.dart';
 import '5_nutritional_plan.dart';
 import '6_weight.dart';
 
+// Type of device
+enum DeviceType {
+  phoneScreenshots,
+  sevenInchScreenshots,
+  tenInchScreenshots,
+  tvScreenshots,
+  wearScreenshots
+}
+final destination = DeviceType.phoneScreenshots.name;
+
 Future<void> takeScreenshot(tester, binding, String language, String name) async {
   if (Platform.isAndroid) {
     await binding.convertFlutterSurfaceToImage();
     await tester.pumpAndSettle();
   }
-  final filename = 'fastlane/metadata/android/$language/images/phoneScreenshots/$name.png';
+  final filename = 'fastlane/metadata/android/$language/images/$destination/$name.png';
   await binding.takeScreenshot(filename);
 }
 
@@ -34,13 +44,11 @@ const languages = [
   'es-ES',
   'fr-FR',
 
-  /*
   'hi-IN',
   'hr',
   'it-IT',
   'pt-BR',
   'nb-NO',
-   */
   'pl-PL',
   'ru-RU',
   'tr-TR',

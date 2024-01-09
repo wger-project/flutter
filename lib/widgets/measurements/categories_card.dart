@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../../models/measurements/measurement_category.dart';
-import '../../screens/form_screen.dart';
-import '../../screens/measurement_entries_screen.dart';
+import 'package:wger/models/measurements/measurement_category.dart';
+import 'package:wger/screens/form_screen.dart';
+import 'package:wger/screens/measurement_entries_screen.dart';
 import 'charts.dart';
 import 'forms.dart';
 

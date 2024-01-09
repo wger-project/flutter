@@ -751,5 +751,13 @@
   "lb": "lb",
   "@lb": {
     "description": "Generated entry for translation for server strings"
+  },
+  "aboutMastodonTitle": "Mastodon",
+  "@aboutMastodonTitle": {
+    "description": "Title for mastodon section in the about dialog"
+  },
+  "aboutMastodonText": "Projeyle ilgili güncellemeler ve haberler için bizi Mastodon'da takip edin",
+  "@aboutMastodonText": {
+    "description": "Text for the mastodon section in the about dialog"
   }
 }

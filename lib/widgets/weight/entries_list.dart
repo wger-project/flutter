@@ -29,7 +29,7 @@ import 'package:wger/widgets/weight/forms.dart';
 class WeightEntriesList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final _weightProvider = Provider.of<BodyWeightProvider>(context, listen: false);
+    final weightProvider = Provider.of<BodyWeightProvider>(context, listen: false);
 
     return Column(
       children: [
@@ -37,7 +37,7 @@ class WeightEntriesList extends StatelessWidget {
           padding: const EdgeInsets.all(15),
           height: 220,
           child: MeasurementChartWidgetFl(
-              _weightProvider.items.map((e) => MeasurementChartEntry(e.weight, e.date)).toList()),
+              weightProvider.items.map((e) => MeasurementChartEntry(e.weight, e.date)).toList()),
         ),
         TextButton(
           onPressed: () => Navigator.pushNamed(
@@ -54,18 +54,18 @@ class WeightEntriesList extends StatelessWidget {
         ),
         Expanded(
           child: RefreshIndicator(
-            onRefresh: () => _weightProvider.fetchAndSetEntries(),
+            onRefresh: () => weightProvider.fetchAndSetEntries(),
             child: ListView.builder(
               padding: const EdgeInsets.all(10.0),
-              itemCount: _weightProvider.items.length,
+              itemCount: weightProvider.items.length,
               itemBuilder: (context, index) {
-                final currentEntry = _weightProvider.items[index];
+                final currentEntry = weightProvider.items[index];
                 return Dismissible(
                   key: Key(currentEntry.id.toString()),
                   onDismissed: (direction) {
                     if (direction == DismissDirection.endToStart) {
                       // Delete entry from DB
-                      _weightProvider.deleteEntry(currentEntry.id!);
+                      weightProvider.deleteEntry(currentEntry.id!);
 
                       // and inform the user
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -94,7 +94,7 @@ class WeightEntriesList extends StatelessWidget {
                     return true;
                   },
                   secondaryBackground: Container(
-                    color: Theme.of(context).errorColor,
+                    color: Theme.of(context).colorScheme.error,
                     alignment: Alignment.centerRight,
                     padding: const EdgeInsets.only(right: 20),
                     margin: const EdgeInsets.symmetric(

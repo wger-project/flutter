@@ -18,13 +18,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/misc.dart';
 import 'package:wger/providers/auth.dart';
 
 class AboutPage extends StatefulWidget {
   static String routeName = '/AboutPage';
-  const AboutPage({Key? key}) : super(key: key);
+  const AboutPage({super.key});
 
   @override
   State<AboutPage> createState() => _AboutPageState();
@@ -35,6 +36,7 @@ class _AboutPageState extends State<AboutPage> {
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final today = DateTime.now();
 
     return Scaffold(
       appBar: AppBar(
@@ -78,7 +80,7 @@ class _AboutPageState extends State<AboutPage> {
             Padding(
               padding: EdgeInsets.only(left: 0.225 * deviceSize.width),
               child: Text(
-                '\u{a9} 2020 - 2021 contributors',
+                '\u{a9} 2020 - ${today.year} contributors',
                 style: Theme.of(context).textTheme.bodySmall,
               ),
             ),
@@ -124,7 +126,7 @@ class _AboutPageState extends State<AboutPage> {
             ),
             const SizedBox(height: 10),
             ListTile(
-              leading: const Icon(Icons.chat),
+              leading: const Icon(FontAwesomeIcons.discord),
               title: Text(AppLocalizations.of(context).aboutContactUsTitle),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -138,6 +140,23 @@ class _AboutPageState extends State<AboutPage> {
               ),
               contentPadding: EdgeInsets.zero,
               onTap: () async => launchURL('https://discord.gg/rPWFv6W', context),
+            ),
+            const SizedBox(height: 10),
+            ListTile(
+              leading: const Icon(FontAwesomeIcons.mastodon),
+              title: Text(AppLocalizations.of(context).aboutMastodonTitle),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(AppLocalizations.of(context).aboutMastodonText),
+                  const Text(
+                    'https://fosstodon.org/@wger',
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                ],
+              ),
+              contentPadding: EdgeInsets.zero,
+              onTap: () async => launchURL('https://fosstodon.org/@wger', context),
             ),
             const SizedBox(height: 10),
             ListTile(

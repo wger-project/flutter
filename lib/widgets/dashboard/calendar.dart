@@ -270,7 +270,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
                           subtitle: Text(event.description),
                           //onTap: () => print('$event tapped!'),
                         ))
-                    .toList()
+                    
               ],
             ),
           ),

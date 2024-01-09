@@ -16,10 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_zxing/flutter_zxing.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/core/locator.dart';
 import 'package:wger/providers/add_exercise.dart';
@@ -55,7 +53,8 @@ import 'package:wger/widgets/core/about.dart';
 import 'providers/auth.dart';
 
 void main() async {
-  zx.setLogEnabled(kDebugMode);
+  //zx.setLogEnabled(kDebugMode);
+
   // Needs to be called before runApp
   WidgetsFlutterBinding.ensureInitialized();
 

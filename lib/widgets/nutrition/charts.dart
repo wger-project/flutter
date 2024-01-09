@@ -158,7 +158,7 @@ class NutritionalDiaryChartWidgetFl extends StatefulWidget {
   const NutritionalDiaryChartWidgetFl({
     super.key,
     required NutritionalPlan nutritionalPlan,
-  }) : _nutritionalPlan = nutritionalPlan;
+  })  : _nutritionalPlan = nutritionalPlan;
 
   final NutritionalPlan _nutritionalPlan;
 
@@ -395,10 +395,9 @@ class FlNutritionalDiaryChartWidget extends StatefulWidget {
   final NutritionalPlan _nutritionalPlan;
 
   const FlNutritionalDiaryChartWidget({
-    Key? key,
+    super.key,
     required NutritionalPlan nutritionalPlan,
-  })  : _nutritionalPlan = nutritionalPlan,
-        super(key: key);
+  })  : _nutritionalPlan = nutritionalPlan;
 
   final Color barColor = Colors.red;
   final Color touchedBarColor = Colors.deepOrange;
@@ -541,13 +540,13 @@ class FlNutritionalDiaryChartWidgetState extends State<FlNutritionalDiaryChartWi
       ),
       titlesData: FlTitlesData(
         show: true,
-        rightTitles: AxisTitles(
+        rightTitles: const AxisTitles(
           sideTitles: SideTitles(showTitles: false),
         ),
-        topTitles: AxisTitles(
+        topTitles: const AxisTitles(
           sideTitles: SideTitles(showTitles: false),
         ),
-        bottomTitles: AxisTitles(
+        bottomTitles: const AxisTitles(
           sideTitles: SideTitles(showTitles: false),
         ),
         leftTitles: AxisTitles(
@@ -563,7 +562,7 @@ class FlNutritionalDiaryChartWidgetState extends State<FlNutritionalDiaryChartWi
       ),
       gridData: FlGridData(
         show: true,
-        getDrawingHorizontalLine: (value) => FlLine(
+        getDrawingHorizontalLine: (value) => const FlLine(
           color: Colors.grey,
           strokeWidth: 1,
         ),

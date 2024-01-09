@@ -77,7 +77,7 @@ class GithubReleases {
         .body;
     final decodedJson = jsonDecode(releaseJsonContent) as List;
 
-    DateTime? latestReleaseAssetDate = null;
+    DateTime? latestReleaseAssetDate;
 
     final releases = List<Release>.empty(growable: true);
 

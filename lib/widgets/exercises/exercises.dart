@@ -156,7 +156,7 @@ class ExerciseDetail extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const MuscleColorHelper(main: true),
-          ..._exerciseBase.muscles.map((e) => Text(e.nameTranslated(context))).toList(),
+          ..._exerciseBase.muscles.map((e) => Text(e.nameTranslated(context))),
         ],
       ),
     );
@@ -166,7 +166,7 @@ class ExerciseDetail extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const MuscleColorHelper(main: false),
-          ..._exerciseBase.musclesSecondary.map((e) => Text(e.name)).toList(),
+          ..._exerciseBase.musclesSecondary.map((e) => Text(e.name)),
         ],
       ),
     );
@@ -259,8 +259,8 @@ class MuscleColorHelper extends StatelessWidget {
 
   const MuscleColorHelper({
     this.main = true,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -343,10 +343,10 @@ class MuscleWidget extends StatelessWidget {
         SvgPicture.asset('assets/images/muscles/$background.svg'),
         ...muscles
             .map((m) => SvgPicture.asset('assets/images/muscles/main/muscle-${m.id}.svg'))
-            .toList(),
+            ,
         ...musclesSecondary
             .map((m) => SvgPicture.asset('assets/images/muscles/secondary/muscle-${m.id}.svg'))
-            .toList(),
+            ,
       ],
     );
   }

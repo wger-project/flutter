@@ -70,13 +70,13 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
         //horizontalInterval: 1,
         //verticalInterval: interval,
         getDrawingHorizontalLine: (value) {
-          return FlLine(
+          return const FlLine(
             color: Colors.grey,
             strokeWidth: 1,
           );
         },
         getDrawingVerticalLine: (value) {
-          return FlLine(
+          return const FlLine(
             color: Colors.grey,
             strokeWidth: 1,
           );
@@ -84,10 +84,10 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
       ),
       titlesData: FlTitlesData(
         show: true,
-        rightTitles: AxisTitles(
+        rightTitles: const AxisTitles(
           sideTitles: SideTitles(showTitles: false),
         ),
-        topTitles: AxisTitles(
+        topTitles: const AxisTitles(
           sideTitles: SideTitles(showTitles: false),
         ),
         bottomTitles: AxisTitles(

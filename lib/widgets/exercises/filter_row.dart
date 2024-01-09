@@ -25,7 +25,7 @@ import 'package:wger/screens/add_exercise_screen.dart';
 import 'filter_modal.dart';
 
 class FilterRow extends StatefulWidget {
-  const FilterRow({Key? key}) : super(key: key);
+  const FilterRow({super.key});
 
   @override
   _FilterRowState createState() => _FilterRowState();

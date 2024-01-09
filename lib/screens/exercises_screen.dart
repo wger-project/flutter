@@ -8,7 +8,7 @@ import 'package:wger/widgets/exercises/filter_row.dart';
 import 'package:wger/widgets/exercises/list_tile.dart';
 
 class ExercisesScreen extends StatefulWidget {
-  const ExercisesScreen({Key? key}) : super(key: key);
+  const ExercisesScreen({super.key});
   static const routeName = '/exercises';
 
   @override
@@ -27,9 +27,9 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
       appBar: EmptyAppBar(AppLocalizations.of(context).exercises),
       body: Column(
         children: [
-          FilterRow(),
+          const FilterRow(),
           Expanded(
-            child: exercisesList == null
+            child: exercisesList.isEmpty
                 ? const Center(
                     child: SizedBox(
                       height: 100,
@@ -53,9 +53,8 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
 
 class _ExercisesList extends StatelessWidget {
   const _ExercisesList({
-    Key? key,
     required this.exerciseBaseList,
-  }) : super(key: key);
+  });
 
   final List<Exercise> exerciseBaseList;
 

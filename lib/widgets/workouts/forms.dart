@@ -30,6 +30,7 @@ import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/screens/add_exercise_screen.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/widgets/exercises/images.dart';
 
@@ -209,7 +210,7 @@ class _DayFormWidgetState extends State<DayFormWidget> {
             },
           ),
           const SizedBox(height: 10),
-          ...Day.weekdays.keys.map((dayNr) => DayCheckbox(dayNr, widget._day)).toList(),
+          ...Day.weekdays.keys.map((dayNr) => DayCheckbox(dayNr, widget._day)),
           ElevatedButton(
             key: const Key(SUBMIT_BUTTON_KEY_NAME),
             child: Text(AppLocalizations.of(context).save),
@@ -423,12 +424,29 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                             ),
                           );
                         },
+                        noItemsFoundBuilder: (context) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(AppLocalizations.of(context).noMatchingExerciseFound),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pushNamed(AddExerciseScreen.routeName);
+                                  },
+                                  child: Text(AppLocalizations.of(context).contributeExercise),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
                         transitionBuilder: (context, suggestionsBox, controller) {
                           return suggestionsBox;
                         },
                         onSuggestionSelected: (Exercise exerciseSuggestion) {
                           addExercise(exerciseSuggestion);
-                          this._exercisesController.text = '';
+                          _exercisesController.text = '';
                         },
                         validator: (value) {
                           // At least one exercise must be selected
@@ -509,7 +527,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                         ),
                     ],
                   );
-                }).toList(),
+                }),
                 ElevatedButton(
                   key: const Key(SUBMIT_BUTTON_KEY_NAME),
                   child: Text(AppLocalizations.of(context).save),
@@ -799,7 +817,7 @@ class _RiRInputWidgetState extends State<RiRInputWidget> {
     if (value < 0) {
       return AppLocalizations.of(context).rirNotUsed;
     }
-    return '${value.toString()} ${AppLocalizations.of(context).rir}';
+    return '$value ${AppLocalizations.of(context).rir}';
   }
 
   String mapDoubleToAllowedRir(double value) {
@@ -847,7 +865,7 @@ class _RiRInputWidgetState extends State<RiRInputWidget> {
 class WeightUnitInputWidget extends StatefulWidget {
   final dynamic _setting;
 
-  const WeightUnitInputWidget(this._setting, {Key? key}) : super(key: key);
+  const WeightUnitInputWidget(this._setting, {super.key});
 
   @override
   _WeightUnitInputWidgetState createState() => _WeightUnitInputWidgetState();

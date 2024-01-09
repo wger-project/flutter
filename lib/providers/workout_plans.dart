@@ -120,6 +120,7 @@ class WorkoutPlansProvider with ChangeNotifier {
     if (_workoutPlans.isNotEmpty) {
       return _workoutPlans.first;
     }
+    return null;
   }
 
   /*
