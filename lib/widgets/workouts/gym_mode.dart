@@ -59,7 +59,7 @@ class _GymModeState extends State<GymMode> {
   var _totalElements = 1;
 
   /// Map with the first (navigation) page for each exercise
-  final Map<ExerciseBase, int> _exercisePages = {};
+  final Map<Exercise, int> _exercisePages = {};
   final PageController _controller = PageController(
     initialPage: 0,
   );
@@ -169,7 +169,7 @@ class _GymModeState extends State<GymMode> {
 class StartPage extends StatelessWidget {
   final PageController _controller;
   final Day _day;
-  final Map<ExerciseBase, int> _exercisePages;
+  final Map<Exercise, int> _exercisePages;
 
   const StartPage(this._controller, this._day, this._exercisePages);
 
@@ -235,7 +235,7 @@ class LogPage extends StatefulWidget {
   final Exercise _exerciseBase;
   final WorkoutPlan _workoutPlan;
   final double _ratioCompleted;
-  final Map<ExerciseBase, int> _exercisePages;
+  final Map<Exercise, int> _exercisePages;
   final Log _log = Log.empty();
 
   LogPage(
@@ -664,7 +664,7 @@ class ExerciseOverview extends StatelessWidget {
   final PageController _controller;
   final Exercise _exerciseBase;
   final double _ratioCompleted;
-  final Map<ExerciseBase, int> _exercisePages;
+  final Map<Exercise, int> _exercisePages;
 
   const ExerciseOverview(
     this._controller,
@@ -726,7 +726,7 @@ class SessionPage extends StatefulWidget {
   final WorkoutPlan _workoutPlan;
   final PageController _controller;
   final TimeOfDay _start;
-  final Map<ExerciseBase, int> _exercisePages;
+  final Map<Exercise, int> _exercisePages;
 
   const SessionPage(
     this._workoutPlan,
@@ -933,7 +933,7 @@ class _SessionPageState extends State<SessionPage> {
 class TimerWidget extends StatefulWidget {
   final PageController _controller;
   final double _ratioCompleted;
-  final Map<ExerciseBase, int> _exercisePages;
+  final Map<Exercise, int> _exercisePages;
 
   const TimerWidget(
     this._controller,
@@ -1064,7 +1064,7 @@ class NavigationFooter extends StatelessWidget {
 class NavigationHeader extends StatelessWidget {
   final PageController _controller;
   final String _title;
-  final Map<ExerciseBase, int> exercisePages;
+  final Map<Exercise, int> exercisePages;
 
   const NavigationHeader(
     this._title,
