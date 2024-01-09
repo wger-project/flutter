@@ -19,7 +19,8 @@ enum DeviceType {
   tvScreenshots,
   wearScreenshots
 }
-final destination = DeviceType.phoneScreenshots.name;
+
+final destination = DeviceType.tenInchScreenshots.name;
 
 Future<void> takeScreenshot(tester, binding, String language, String name) async {
   if (Platform.isAndroid) {
@@ -33,22 +34,22 @@ Future<void> takeScreenshot(tester, binding, String language, String name) async
 // Available languages in weblate for the fastlane/metadata/android folder (not necessarily
 // those for which the application is translated)
 const languages = [
-  //'de-DE',
-
   // Note: it seems if too many languages are processed at once, some processes
   // disappear and no images are written. Doing this in smaller steps works fine
 
   'ca',
   'de-DE',
+  'el-GR',
   'en-US',
   'es-ES',
-  'fr-FR',
 
+  'fr-FR',
   'hi-IN',
   'hr',
   'it-IT',
   'pt-BR',
   'nb-NO',
+
   'pl-PL',
   'ru-RU',
   'tr-TR',
