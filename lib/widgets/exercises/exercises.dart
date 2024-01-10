@@ -341,12 +341,9 @@ class MuscleWidget extends StatelessWidget {
     return Stack(
       children: [
         SvgPicture.asset('assets/images/muscles/$background.svg'),
-        ...muscles
-            .map((m) => SvgPicture.asset('assets/images/muscles/main/muscle-${m.id}.svg'))
-            ,
+        ...muscles.map((m) => SvgPicture.asset('assets/images/muscles/main/muscle-${m.id}.svg')),
         ...musclesSecondary
-            .map((m) => SvgPicture.asset('assets/images/muscles/secondary/muscle-${m.id}.svg'))
-            ,
+            .map((m) => SvgPicture.asset('assets/images/muscles/secondary/muscle-${m.id}.svg')),
       ],
     );
   }

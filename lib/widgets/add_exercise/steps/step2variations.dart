@@ -28,44 +28,37 @@ class Step2Variations extends StatelessWidget {
               child: Column(
                 children: [
                   // Exercise bases with variations
-                  ...exerciseProvider.exerciseBasesByVariation.keys
-                      .map(
-                        (key) => Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Flexible(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                //mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  ...exerciseProvider.exerciseBasesByVariation[key]!
-                                      .map(
-                                        (base) => Text(
-                                          base
-                                              .getExercise(
-                                                  Localizations.localeOf(context).languageCode)
-                                              .name,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      )
-                                      ,
-                                  const SizedBox(height: 20),
-                                ],
+                  ...exerciseProvider.exerciseBasesByVariation.keys.map(
+                    (key) => Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Flexible(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            //mainAxisSize: MainAxisSize.max,
+                            children: [
+                              ...exerciseProvider.exerciseBasesByVariation[key]!.map(
+                                (base) => Text(
+                                  base
+                                      .getExercise(Localizations.localeOf(context).languageCode)
+                                      .name,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
-                            ),
-                            Consumer<AddExerciseProvider>(
-                              builder: (ctx, provider, __) => Switch(
-                                  value: provider.variationId == key,
-                                  onChanged: (state) => provider.variationId = key),
-                            ),
-                          ],
+                              const SizedBox(height: 20),
+                            ],
+                          ),
                         ),
-                      )
-                      ,
+                        Consumer<AddExerciseProvider>(
+                          builder: (ctx, provider, __) => Switch(
+                              value: provider.variationId == key,
+                              onChanged: (state) => provider.variationId = key),
+                        ),
+                      ],
+                    ),
+                  ),
                   // Exercise bases without variations
-                  ...exerciseProvider.bases
-                      .where((b) => b.variationId == null)
-                      .map(
+                  ...exerciseProvider.bases.where((b) => b.variationId == null).map(
                         (base) => Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -92,8 +85,7 @@ class Step2Variations extends StatelessWidget {
                             ),
                           ],
                         ),
-                      )
-                      ,
+                      ),
                 ],
               ),
             ),

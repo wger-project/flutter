@@ -131,16 +131,14 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
           child: Column(
             children: [
               if (set.comment != '') MutedText(set.comment),
-              ...set.settingsFiltered
-                  .map(
-                    (setting) => SettingWidget(
-                      set: set,
-                      setting: setting,
-                      expanded: _expanded,
-                      toggle: _toggleExpanded,
-                    ),
-                  )
-                  ,
+              ...set.settingsFiltered.map(
+                (setting) => SettingWidget(
+                  set: set,
+                  setting: setting,
+                  expanded: _expanded,
+                  toggle: _toggleExpanded,
+                ),
+              ),
               const Divider(),
             ],
           ),

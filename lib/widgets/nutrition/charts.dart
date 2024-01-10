@@ -158,7 +158,7 @@ class NutritionalDiaryChartWidgetFl extends StatefulWidget {
   const NutritionalDiaryChartWidgetFl({
     super.key,
     required NutritionalPlan nutritionalPlan,
-  })  : _nutritionalPlan = nutritionalPlan;
+  }) : _nutritionalPlan = nutritionalPlan;
 
   final NutritionalPlan _nutritionalPlan;
 
@@ -397,7 +397,7 @@ class FlNutritionalDiaryChartWidget extends StatefulWidget {
   const FlNutritionalDiaryChartWidget({
     super.key,
     required NutritionalPlan nutritionalPlan,
-  })  : _nutritionalPlan = nutritionalPlan;
+  }) : _nutritionalPlan = nutritionalPlan;
 
   final Color barColor = Colors.red;
   final Color touchedBarColor = Colors.deepOrange;

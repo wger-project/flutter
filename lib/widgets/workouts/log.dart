@@ -124,23 +124,21 @@ class _DayLogWidgetState extends State<DayLogWidget> {
                   )
                 else
                   Container(),
-                ...widget._exerciseData[base]!
-                    .map(
-                      (log) => Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(log.singleLogRepTextNoNl),
-                          IconButton(
-                            icon: const Icon(Icons.delete),
-                            onPressed: () async {
-                              showDeleteDialog(
-                                  context, exercise.name, log, exercise, widget._exerciseData);
-                            },
-                          ),
-                        ],
+                ...widget._exerciseData[base]!.map(
+                  (log) => Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(log.singleLogRepTextNoNl),
+                      IconButton(
+                        icon: const Icon(Icons.delete),
+                        onPressed: () async {
+                          showDeleteDialog(
+                              context, exercise.name, log, exercise, widget._exerciseData);
+                        },
                       ),
-                    )
-                    ,
+                    ],
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15),
                   child: ExerciseLogChart(base, widget._date),

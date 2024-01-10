@@ -18,41 +18,39 @@ class PreviewExerciseImages extends StatelessWidget with ExerciseImagePickerMixi
     return SizedBox(
       height: 300,
       child: ListView(scrollDirection: Axis.horizontal, children: [
-        ...selectedImages
-            .map(
-              (file) => SizedBox(
-                height: 200,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Stack(
-                    children: [
-                      Image.file(file),
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: Padding(
-                          padding: const EdgeInsets.all(3.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.grey.withOpacity(0.5),
-                              borderRadius: const BorderRadius.all(Radius.circular(20)),
-                            ),
-                            child: IconButton(
-                              iconSize: 20,
-                              onPressed: () =>
-                                  context.read<AddExerciseProvider>().removeExercise(file.path),
-                              color: Colors.white,
-                              icon: const Icon(Icons.delete),
-                            ),
-                          ),
+        ...selectedImages.map(
+          (file) => SizedBox(
+            height: 200,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Stack(
+                children: [
+                  Image.file(file),
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: Padding(
+                      padding: const EdgeInsets.all(3.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey.withOpacity(0.5),
+                          borderRadius: const BorderRadius.all(Radius.circular(20)),
+                        ),
+                        child: IconButton(
+                          iconSize: 20,
+                          onPressed: () =>
+                              context.read<AddExerciseProvider>().removeExercise(file.path),
+                          color: Colors.white,
+                          icon: const Icon(Icons.delete),
                         ),
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               ),
-            )
-            ,
+            ),
+          ),
+        ),
         const SizedBox(
           width: 10,
         ),
