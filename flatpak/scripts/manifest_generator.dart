@@ -1,7 +1,19 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 import 'dart:io';
-
 import 'flatpak_shared.dart';
+
+/// Generates the Flatpak manifest.
+/// (Separate from the package generation, as those are generated per each
+/// architecture.)
+///
+/// arguments:
+/// --meta [file]
+///   Required argument for providing the metadata file for this script.
+
+/// --github
+///   Use this option to pull release info from Github rather than the metadata file.
 
 void main(List<String> arguments) async {
   if (Platform.isWindows) {
@@ -14,7 +26,8 @@ void main(List<String> arguments) async {
         'You must run this script with a metadata file argument, using the --meta flag.');
   }
   if (arguments.length == metaIndex + 1) {
-    throw Exception('The --meta flag must be followed by the path to the metadata file.');
+    throw Exception(
+        'The --meta flag must be followed by the path to the metadata file.');
   }
 
   final metaFile = File(arguments[metaIndex + 1]);
@@ -22,21 +35,25 @@ void main(List<String> arguments) async {
     throw Exception('The provided metadata file does not exist.');
   }
 
-  final meta = FlatpakMeta.fromJson(metaFile);
-
   final fetchFromGithub = arguments.contains('--github');
 
-  final outputDir = Directory('${Directory.current.path}/flatpak_generator_exports');
+  final meta =
+      FlatpakMeta.fromJson(metaFile, skipLocalReleases: fetchFromGithub);
+
+  final outputDir =
+      Directory('${Directory.current.path}/flatpak_generator_exports');
   outputDir.createSync();
 
   final manifestGenerator = FlatpakManifestGenerator(meta);
-  final manifestContent = await manifestGenerator.generateFlatpakManifest(fetchFromGithub);
+  final manifestContent =
+      await manifestGenerator.generateFlatpakManifest(fetchFromGithub);
   final manifestPath = '${outputDir.path}/${meta.appId}.json';
   final manifestFile = File(manifestPath);
   manifestFile.writeAsStringSync(manifestContent);
   print('Generated $manifestPath');
 
-  final flathubJsonContent = await manifestGenerator.generateFlathubJson(fetchFromGithub);
+  final flathubJsonContent =
+      await manifestGenerator.generateFlathubJson(fetchFromGithub);
   if (flathubJsonContent != null) {
     final flathubJsonPath = '${outputDir.path}/flathub.json';
     final flathubJsonFile = File(flathubJsonPath);
@@ -56,7 +73,7 @@ class FlatpakManifestGenerator {
   Future<String> generateFlatpakManifest(bool fetchFromGithub) async {
     final appName = meta.lowercaseAppName;
     final appId = meta.appId;
-    final assets = await meta.getReleaseAssets(fetchFromGithub);
+    final assets = await meta.getLatestReleaseAssets(fetchFromGithub);
 
     if (assets == null) {
       throw Exception('There are no associated assets.');
@@ -88,7 +105,7 @@ class FlatpakManifestGenerator {
             ...meta.icons.map((icon) =>
                 'install -Dm644 $appName/icons/${icon.type}/${icon.getFilename(appId)} /app/share/icons/hicolor/${icon.type}/apps/${icon.getFilename(appId)}'),
             'install -Dm644 $appName/$appId.desktop /app/share/applications/$appId.desktop',
-            'install -Dm644 $appName/$appId.appdata.xml /app/share/applications/$appId.appdata.xml'
+            'install -Dm644 $appName/$appId.metainfo.xml /app/share/metainfo/$appId.metainfo.xml'
           ],
           'sources': assets
               .map((a) => {
@@ -105,7 +122,7 @@ class FlatpakManifestGenerator {
   }
 
   Future<String?> generateFlathubJson(bool fetchFromGithub) async {
-    final assets = await meta.getReleaseAssets(fetchFromGithub);
+    final assets = await meta.getLatestReleaseAssets(fetchFromGithub);
 
     if (assets == null) {
       throw Exception('There are no associated assets.');
@@ -115,7 +132,8 @@ class FlatpakManifestGenerator {
 
     const encoder = JsonEncoder.withIndent('  ');
 
-    final onlyArchListInput = fetchFromGithub ? _githubArchSupport! : _localArchSupport!;
+    final onlyArchListInput =
+        fetchFromGithub ? _githubArchSupport! : _localArchSupport!;
 
     final onlyArchList = List<String>.empty(growable: true);
     for (final e in onlyArchListInput.entries) {
@@ -131,7 +149,8 @@ class FlatpakManifestGenerator {
     }
   }
 
-  void _lazyGenerateArchSupportMap(bool fetchFromGithub, List<ReleaseAsset> assets) {
+  void _lazyGenerateArchSupportMap(
+      bool fetchFromGithub, List<ReleaseAsset> assets) {
     if (fetchFromGithub) {
       if (_githubArchSupport == null) {
         _githubArchSupport = <CPUArchitecture, bool>{
