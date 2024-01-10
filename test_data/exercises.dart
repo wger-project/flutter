@@ -23,6 +23,8 @@ import 'package:wger/models/exercises/language.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/models/exercises/translation.dart';
 
+import 'screenshots_exercises.dart';
+
 const tLanguage1 = Language(id: 1, shortName: 'de', fullName: 'Deutsch');
 const tLanguage2 = Language(id: 2, shortName: 'en', fullName: 'English');
 const tLanguage3 = Language(id: 3, shortName: 'fr', fullName: 'Français');
@@ -205,6 +207,17 @@ List<ExerciseBase> getTestExerciseBases() {
   curls.translations = [curlsEn];
   squats.translations = [squatsEn];
   sideRaises.translations = [sideRaisesEn];
+
+  return [benchPress, crunches, deadLift, curls, squats, sideRaises];
+}
+
+List<ExerciseBase> getScreenshotExercises() {
+  benchPress.translations = benchPressTranslations;
+  crunches.translations = crunchesTranslations;
+  deadLift.translations = deadLiftTranslations;
+  curls.translations = curlsTranslations;
+  squats.translations = squatsTranslations;
+  sideRaises.translations = raisesTranslations;
 
   return [benchPress, crunches, deadLift, curls, squats, sideRaises];
 }
