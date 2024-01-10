@@ -121,6 +121,6 @@ jobs:
           git add pubspec.yaml
           git commit -m "Bump version to $( flutter pub run cider version )"
           git tag ${{ env.VERSION }}
-          git push ${{ env.VERSION }}
-          git push --delete ${{ env.VERSION_V }}
+          git push origin ${{ env.VERSION }}
+          git push origin --delete ${{ env.VERSION_V }}
           git push
