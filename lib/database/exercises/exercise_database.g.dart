@@ -317,8 +317,7 @@ class MuscleTable extends DataClass implements Insertable<MuscleTable> {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     {
-      final converter = $MusclesTable.$converterdata;
-      map['data'] = Variable<String>(converter.toSql(data));
+      map['data'] = Variable<String>($MusclesTable.$converterdata.toSql(data));
     }
     return map;
   }
@@ -409,9 +408,7 @@ class MusclesCompanion extends UpdateCompanion<MuscleTable> {
       map['id'] = Variable<int>(id.value);
     }
     if (data.present) {
-      final converter = $MusclesTable.$converterdata;
-
-      map['data'] = Variable<String>(converter.toSql(data.value));
+      map['data'] = Variable<String>($MusclesTable.$converterdata.toSql(data.value));
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -495,8 +492,7 @@ class EquipmentTable extends DataClass implements Insertable<EquipmentTable> {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     {
-      final converter = $EquipmentsTable.$converterdata;
-      map['data'] = Variable<String>(converter.toSql(data));
+      map['data'] = Variable<String>($EquipmentsTable.$converterdata.toSql(data));
     }
     return map;
   }
@@ -587,9 +583,7 @@ class EquipmentsCompanion extends UpdateCompanion<EquipmentTable> {
       map['id'] = Variable<int>(id.value);
     }
     if (data.present) {
-      final converter = $EquipmentsTable.$converterdata;
-
-      map['data'] = Variable<String>(converter.toSql(data.value));
+      map['data'] = Variable<String>($EquipmentsTable.$converterdata.toSql(data.value));
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -673,8 +667,7 @@ class CategoryTable extends DataClass implements Insertable<CategoryTable> {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     {
-      final converter = $CategoriesTable.$converterdata;
-      map['data'] = Variable<String>(converter.toSql(data));
+      map['data'] = Variable<String>($CategoriesTable.$converterdata.toSql(data));
     }
     return map;
   }
@@ -765,9 +758,7 @@ class CategoriesCompanion extends UpdateCompanion<CategoryTable> {
       map['id'] = Variable<int>(id.value);
     }
     if (data.present) {
-      final converter = $CategoriesTable.$converterdata;
-
-      map['data'] = Variable<String>(converter.toSql(data.value));
+      map['data'] = Variable<String>($CategoriesTable.$converterdata.toSql(data.value));
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -851,8 +842,7 @@ class LanguagesTable extends DataClass implements Insertable<LanguagesTable> {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     {
-      final converter = $LanguagesTable.$converterdata;
-      map['data'] = Variable<String>(converter.toSql(data));
+      map['data'] = Variable<String>($LanguagesTable.$converterdata.toSql(data));
     }
     return map;
   }
@@ -943,9 +933,7 @@ class LanguagesCompanion extends UpdateCompanion<LanguagesTable> {
       map['id'] = Variable<int>(id.value);
     }
     if (data.present) {
-      final converter = $LanguagesTable.$converterdata;
-
-      map['data'] = Variable<String>(converter.toSql(data.value));
+      map['data'] = Variable<String>($LanguagesTable.$converterdata.toSql(data.value));
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);

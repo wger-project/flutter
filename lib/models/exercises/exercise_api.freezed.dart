@@ -425,7 +425,7 @@ class _$ExerciseBaseDataImpl implements _ExerciseBaseData {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ExerciseBaseDataImpl &&
