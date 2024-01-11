@@ -28,8 +28,8 @@ const DEFAULT_SERVER_PROD = 'https://wger.de';
 const DEFAULT_SERVER_TEST = 'https://wger-master.rge.uber.space/';
 
 // Debug mode Login Data
-const USER_NAME = 'user';
-const PASSWORD = 'flutteruser';
+const TESTSERVER_USER_NAME = 'user';
+const TESTSERVER_PASSWORD = 'flutteruser';
 
 /// Keys used in the android manifest
 const MANIFEST_KEY_API = 'wger.api_key';

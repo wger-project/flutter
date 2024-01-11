@@ -152,8 +152,8 @@ class _AuthCardState extends State<AuthCard> {
   void _preFillTextfields() {
     if (kDebugMode && _authMode == AuthMode.Login) {
       setState(() {
-        _usernameController.text = USER_NAME;
-        _passwordController.text = PASSWORD;
+        _usernameController.text = TESTSERVER_USER_NAME;
+        _passwordController.text = TESTSERVER_PASSWORD;
       });
     }
   }
