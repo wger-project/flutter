@@ -107,7 +107,7 @@ class ExercisesProvider with ChangeNotifier {
   }
 
   // Initialize filters for exercises search in exercises list
-  void _initFilters() {
+  void initFilters() {
     if (_muscles.isEmpty || _equipment.isEmpty || _filters != null) {
       return;
     }
@@ -268,8 +268,6 @@ class ExercisesProvider with ChangeNotifier {
   ///
   /// If the exercise is not known locally, it is fetched from the server.
   Future<Exercise> fetchAndSetExercise(int exerciseId) async {
-    //final database = locator<ExerciseDatabase>();
-
     try {
       final exercise = findExerciseById(exerciseId);
 
@@ -435,7 +433,7 @@ class ExercisesProvider with ChangeNotifier {
     ]);
     await setExercisesFromDatabase(database);
 
-    _initFilters();
+    initFilters();
     notifyListeners();
   }
 
@@ -450,8 +448,6 @@ class ExercisesProvider with ChangeNotifier {
     log('Loaded ${exercisesDb.length} exercises from cache');
 
     exercises = exercisesDb.map((e) => Exercise.fromApiDataString(e.data, _languages)).toList();
-
-    // updateExerciseCache(database);
   }
 
   /// Updates the exercise database with *all* the exercises from the server
