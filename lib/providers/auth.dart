@@ -208,7 +208,7 @@ class AuthProvider with ChangeNotifier {
   Future<String> getServerUrlFromPrefs() async {
     final prefs = await SharedPreferences.getInstance();
     if (!prefs.containsKey('lastServer')) {
-      return DEFAULT_SERVER;
+      return DEFAULT_SERVER_PROD;
     }
 
     final userData = json.decode(prefs.getString('lastServer')!);

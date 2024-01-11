@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -124,7 +125,8 @@ class _AuthCardState extends State<AuthCard> {
   final _passwordController = TextEditingController();
   final _password2Controller = TextEditingController();
   final _emailController = TextEditingController();
-  final _serverUrlController = TextEditingController(text: DEFAULT_SERVER);
+  final _serverUrlController =
+      TextEditingController(text: kDebugMode ? DEFAULT_SERVER_TEST : DEFAULT_SERVER_PROD);
 
   @override
   void initState() {
@@ -144,6 +146,21 @@ class _AuthCardState extends State<AuthCard> {
     } on PlatformException {
       _canRegister = false;
     }
+    _preFillTextfields();
+  }
+
+  void _preFillTextfields() {
+    if (kDebugMode && _authMode == AuthMode.Login) {
+      setState(() {
+        _usernameController.text = USER_NAME;
+        _passwordController.text = PASSWORD;
+      });
+    }
+  }
+
+  void _resetTextfields() {
+    _usernameController.clear();
+    _passwordController.clear();
   }
 
   void _submit(BuildContext context) async {
@@ -204,7 +221,7 @@ class _AuthCardState extends State<AuthCard> {
 
   void _switchAuthMode() {
     if (!_canRegister) {
-      launchURL(DEFAULT_SERVER, context);
+      launchURL(DEFAULT_SERVER_PROD, context);
       return;
     }
 
@@ -212,10 +229,12 @@ class _AuthCardState extends State<AuthCard> {
       setState(() {
         _authMode = AuthMode.Signup;
       });
+      _resetTextfields();
     } else {
       setState(() {
         _authMode = AuthMode.Login;
       });
+      _preFillTextfields();
     }
   }
 
@@ -384,7 +403,8 @@ class _AuthCardState extends State<AuthCard> {
                             IconButton(
                               icon: const Icon(Icons.undo),
                               onPressed: () {
-                                _serverUrlController.text = DEFAULT_SERVER;
+                                _serverUrlController.text =
+                                    kDebugMode ? DEFAULT_SERVER_TEST : DEFAULT_SERVER_PROD;
                               },
                             ),
                             Text(AppLocalizations.of(context).reset)
