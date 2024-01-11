@@ -59,6 +59,7 @@ class AboutEntry extends StatelessWidget {
 
 class AboutPage extends StatefulWidget {
   static String routeName = '/AboutPage';
+
   const AboutPage({super.key});
 
   @override
@@ -157,6 +158,13 @@ class _AboutPageState extends State<AboutPage> {
               content: AppLocalizations.of(context).aboutTranslationText,
               url: 'https://hosted.weblate.org/engage/wger',
               icon: const Icon(Icons.translate),
+            ),
+            const SizedBox(height: 10),
+            AboutEntry(
+              title: AppLocalizations.of(context).aboutDonateTitle,
+              content: AppLocalizations.of(context).aboutDonateText,
+              url: 'https://www.buymeacoffee.com/wger',
+              icon: const Icon(FontAwesomeIcons.moneyBill1),
             ),
             ListTile(
               leading: const Icon(Icons.article),
