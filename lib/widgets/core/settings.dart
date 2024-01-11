@@ -20,42 +20,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/helpers/misc.dart';
 import 'package:wger/providers/exercises.dart';
-
-class AboutEntry extends StatelessWidget {
-  final String url;
-  final String title;
-  final String content;
-  final Icon icon;
-
-  const AboutEntry({
-    required this.title,
-    required this.content,
-    required this.url,
-    required this.icon,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: icon,
-      title: Text(title),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(content),
-          Text(
-            url,
-            style: const TextStyle(color: Colors.blue),
-          ),
-        ],
-      ),
-      contentPadding: EdgeInsets.zero,
-      onTap: () async => launchURL(url, context),
-    );
-  }
-}
 
 class SettingsPage extends StatefulWidget {
   static String routeName = '/SettingsPage';
