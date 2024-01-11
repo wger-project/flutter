@@ -483,6 +483,8 @@
   "@aboutTranslationText": {
     "description": "Text for translation section in the about dialog"
   },
+  "aboutDonateTitle": "Donate",
+  "aboutDonateText": "Buy us a coffee to help the project, pay for server costs, and keep us fueled",
   "calendar": "Calendar",
   "@calendar": {},
   "goToToday": "Go to today",

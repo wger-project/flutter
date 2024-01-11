@@ -16,7 +16,7 @@ import '../test_data/workouts.dart';
 Widget createGymModeScreen({locale = 'en'}) {
   final key = GlobalKey<NavigatorState>();
   final bases = getTestExerciseBases();
-  final workout = getWorkout();
+  final workout = getWorkout(exercises: getScreenshotExercises());
 
   final mockExerciseProvider = MockExercisesProvider();
 

@@ -23,8 +23,43 @@ import 'package:provider/provider.dart';
 import 'package:wger/helpers/misc.dart';
 import 'package:wger/providers/auth.dart';
 
+class AboutEntry extends StatelessWidget {
+  final String url;
+  final String title;
+  final String content;
+  final Icon icon;
+
+  const AboutEntry({
+    required this.title,
+    required this.content,
+    required this.url,
+    required this.icon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: icon,
+      title: Text(title),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(content),
+          Text(
+            url,
+            style: const TextStyle(color: Colors.blue),
+          ),
+        ],
+      ),
+      contentPadding: EdgeInsets.zero,
+      onTap: () async => launchURL(url, context),
+    );
+  }
+}
+
 class AboutPage extends StatefulWidget {
   static String routeName = '/AboutPage';
+
   const AboutPage({super.key});
 
   @override
@@ -89,91 +124,47 @@ class _AboutPageState extends State<AboutPage> {
               AppLocalizations.of(context).aboutDescription,
               style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 16),
             ),
-            SizedBox(height: 0.04 * deviceSize.height),
-            ListTile(
-              leading: const Icon(Icons.code),
-              title: Text(AppLocalizations.of(context).aboutSourceTitle),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(AppLocalizations.of(context).aboutSourceText),
-                  const Text(
-                    'https://github.com/wger-project',
-                    style: TextStyle(color: Colors.blue),
-                  ),
-                ],
-              ),
-              contentPadding: EdgeInsets.zero,
-              onTap: () async => launchURL('https://github.com/wger-project', context),
+            const SizedBox(height: 10),
+            AboutEntry(
+              title: AppLocalizations.of(context).aboutSourceTitle,
+              content: AppLocalizations.of(context).aboutSourceText,
+              url: 'https://github.com/wger-project',
+              icon: const Icon(Icons.code),
             ),
             const SizedBox(height: 10),
-            ListTile(
-              leading: const Icon(Icons.bug_report),
-              title: Text(AppLocalizations.of(context).aboutBugsTitle),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(AppLocalizations.of(context).aboutBugsText),
-                  const Text(
-                    'https://github.com/wger-project/flutter/issues/new/choose',
-                    style: TextStyle(color: Colors.blue),
-                  )
-                ],
-              ),
-              contentPadding: EdgeInsets.zero,
-              onTap: () async =>
-                  launchURL('https://github.com/wger-project/flutter/issues/new/choose', context),
+            AboutEntry(
+              title: AppLocalizations.of(context).aboutBugsTitle,
+              content: AppLocalizations.of(context).aboutBugsText,
+              url: 'https://github.com/wger-project/flutter/issues/new/choose',
+              icon: const Icon(Icons.bug_report),
             ),
             const SizedBox(height: 10),
-            ListTile(
-              leading: const Icon(FontAwesomeIcons.discord),
-              title: Text(AppLocalizations.of(context).aboutContactUsTitle),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(AppLocalizations.of(context).aboutContactUsText),
-                  const Text(
-                    'https://discord.gg/rPWFv6W',
-                    style: TextStyle(color: Colors.blue),
-                  ),
-                ],
-              ),
-              contentPadding: EdgeInsets.zero,
-              onTap: () async => launchURL('https://discord.gg/rPWFv6W', context),
+            AboutEntry(
+              title: AppLocalizations.of(context).aboutContactUsTitle,
+              content: AppLocalizations.of(context).aboutContactUsText,
+              url: 'https://discord.gg/rPWFv6W',
+              icon: const Icon(FontAwesomeIcons.discord),
             ),
             const SizedBox(height: 10),
-            ListTile(
-              leading: const Icon(FontAwesomeIcons.mastodon),
-              title: Text(AppLocalizations.of(context).aboutMastodonTitle),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(AppLocalizations.of(context).aboutMastodonText),
-                  const Text(
-                    'https://fosstodon.org/@wger',
-                    style: TextStyle(color: Colors.blue),
-                  ),
-                ],
-              ),
-              contentPadding: EdgeInsets.zero,
-              onTap: () async => launchURL('https://fosstodon.org/@wger', context),
+            AboutEntry(
+              title: AppLocalizations.of(context).aboutMastodonTitle,
+              content: AppLocalizations.of(context).aboutMastodonText,
+              url: 'https://fosstodon.org/@wger',
+              icon: const Icon(FontAwesomeIcons.mastodon),
             ),
             const SizedBox(height: 10),
-            ListTile(
-              leading: const Icon(Icons.translate),
-              title: Text(AppLocalizations.of(context).aboutTranslationTitle),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(AppLocalizations.of(context).aboutTranslationText),
-                  const Text(
-                    'https://hosted.weblate.org/engage/wger/',
-                    style: TextStyle(color: Colors.blue),
-                  ),
-                ],
-              ),
-              contentPadding: EdgeInsets.zero,
-              onTap: () async => launchURL('https://hosted.weblate.org/engage/wger/', context),
+            AboutEntry(
+              title: AppLocalizations.of(context).aboutTranslationTitle,
+              content: AppLocalizations.of(context).aboutTranslationText,
+              url: 'https://hosted.weblate.org/engage/wger',
+              icon: const Icon(Icons.translate),
+            ),
+            const SizedBox(height: 10),
+            AboutEntry(
+              title: AppLocalizations.of(context).aboutDonateTitle,
+              content: AppLocalizations.of(context).aboutDonateText,
+              url: 'https://www.buymeacoffee.com/wger',
+              icon: const Icon(FontAwesomeIcons.moneyBill1),
             ),
             ListTile(
               leading: const Icon(Icons.article),

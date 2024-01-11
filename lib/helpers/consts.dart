@@ -24,7 +24,12 @@ import 'package:intl/intl.dart';
 const double ICON_SIZE_SMALL = 20;
 
 /// Default wger server during login
-const DEFAULT_SERVER = 'https://wger.de';
+const DEFAULT_SERVER_PROD = 'https://wger.de';
+const DEFAULT_SERVER_TEST = 'https://wger-master.rge.uber.space/';
+
+// Debug mode Login Data
+const TESTSERVER_USER_NAME = 'user';
+const TESTSERVER_PASSWORD = 'flutteruser';
 
 /// Keys used in the android manifest
 const MANIFEST_KEY_API = 'wger.api_key';

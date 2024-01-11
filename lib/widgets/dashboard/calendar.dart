@@ -250,27 +250,25 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
             valueListenable: _selectedEvents,
             builder: (context, value, _) => Column(
               children: [
-                ...value
-                    .map((event) => ListTile(
-                          title: Text((() {
-                            switch (event.type) {
-                              case EventType.caloriesDiary:
-                                return AppLocalizations.of(context).nutritionalDiary;
+                ...value.map((event) => ListTile(
+                      title: Text((() {
+                        switch (event.type) {
+                          case EventType.caloriesDiary:
+                            return AppLocalizations.of(context).nutritionalDiary;
 
-                              case EventType.session:
-                                return AppLocalizations.of(context).workoutSession;
+                          case EventType.session:
+                            return AppLocalizations.of(context).workoutSession;
 
-                              case EventType.weight:
-                                return AppLocalizations.of(context).weight;
+                          case EventType.weight:
+                            return AppLocalizations.of(context).weight;
 
-                              case EventType.measurement:
-                                return AppLocalizations.of(context).measurement;
-                            }
-                          })()),
-                          subtitle: Text(event.description),
-                          //onTap: () => print('$event tapped!'),
-                        ))
-                    
+                          case EventType.measurement:
+                            return AppLocalizations.of(context).measurement;
+                        }
+                      })()),
+                      subtitle: Text(event.description),
+                      //onTap: () => print('$event tapped!'),
+                    ))
               ],
             ),
           ),
