@@ -70,7 +70,6 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     final exerciseProvider = Provider.of<ExercisesProvider>(context, listen: false);
-    final today = DateTime.now();
 
     return Scaffold(
         appBar: AppBar(
@@ -84,7 +83,7 @@ class _SettingsPageState extends State<SettingsPage> {
               subtitle: Text(AppLocalizations.of(context).settingsCacheDescription),
               trailing: IconButton(
                 key: const ValueKey('cacheIcon'),
-                icon: const Icon(Icons.cached),
+                icon: const Icon(Icons.delete),
                 onPressed: () async {
                   await exerciseProvider.clearAllCachesAndPrefs();
 
