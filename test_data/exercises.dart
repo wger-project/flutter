@@ -214,7 +214,7 @@ List<Exercise> getTestExerciseBases() {
   return [benchPress, crunches, deadLift, curls, squats, sideRaises];
 }
 
-List<ExerciseBase> getScreenshotExercises() {
+List<Exercise> getScreenshotExercises() {
   benchPress.translations = benchPressTranslations;
   crunches.translations = crunchesTranslations;
   deadLift.translations = deadLiftTranslations;

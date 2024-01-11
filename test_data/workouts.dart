@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:wger/models/exercises/base.dart';
+import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
@@ -33,7 +33,7 @@ const weightUnit2 = WeightUnit(id: 2, name: 'metric tonnes');
 const RepetitionUnit repetitionUnit1 = RepetitionUnit(id: 1, name: 'Repetitions');
 const RepetitionUnit repetitionUnit2 = RepetitionUnit(id: 2, name: 'Hours');
 
-WorkoutPlan getWorkout({List<ExerciseBase>? exercises}) {
+WorkoutPlan getWorkout({List<Exercise>? exercises}) {
   final testBases = exercises ?? getTestExerciseBases();
 
   final log1 = Log.empty()
