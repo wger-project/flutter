@@ -30,7 +30,7 @@ class IngredientDatabase extends _$IngredientDatabase {
 
 LazyDatabase _openConnection() {
   return LazyDatabase(() async {
-    final dbFolder = await getApplicationDocumentsDirectory();
+    final dbFolder = await getApplicationCacheDirectory();
     final file = File(p.join(dbFolder.path, 'ingredients.sqlite'));
     return NativeDatabase.createInBackground(file);
   });
