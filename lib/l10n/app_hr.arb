@@ -819,5 +819,11 @@
   "aboutMastodonText": "Prati nas na Mastodonu za nove verzije i novosti o projektu",
   "@aboutMastodonText": {
     "description": "Text for the mastodon section in the about dialog"
-  }
+  },
+  "noMatchingExerciseFound": "Nisu pronađene odgovarajuće vježbe",
+  "@noMatchingExerciseFound": {
+    "description": "Message returned if no exercises match the searched string"
+  },
+  "aboutDonateTitle": "Doniraj",
+  "@aboutDonateTitle": {}
 }
