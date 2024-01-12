@@ -3,20 +3,21 @@ import 'dart:io';
 
 import 'package:http/http.dart' as http;
 
+/// Shared files for the two Flatpak-related scripts.
+
 class Release {
   final String version;
-  final String date; //todo add resources
+  final String date; //TODO add resources
 
   Release({required this.version, required this.date});
 }
 
 enum CPUArchitecture {
   x86_64('x86_64', 'x64'),
-  aarch64('aarch64', 'aarch64');
+  aarch64('aarch64', 'arm64');
 
   final String flatpakArchCode;
   final String flutterDirName;
-
   const CPUArchitecture(this.flatpakArchCode, this.flutterDirName);
 }
 
@@ -55,21 +56,21 @@ class GithubReleases {
 
   GithubReleases(this.githubReleaseOrganization, this.githubReleaseProject);
 
-  Future<List<Release>> getReleases() async {
+  Future<List<Release>> getReleases(bool canBeEmpty) async {
     if (_releases == null) {
-      await _fetchReleasesAndAssets();
+      await _fetchReleasesAndAssets(canBeEmpty);
     }
     return _releases!;
   }
 
   Future<List<ReleaseAsset>?> getLatestReleaseAssets() async {
     if (_releases == null) {
-      await _fetchReleasesAndAssets();
+      await _fetchReleasesAndAssets(false);
     }
     return _latestReleaseAssets;
   }
 
-  Future<void> _fetchReleasesAndAssets() async {
+  Future<void> _fetchReleasesAndAssets(bool canBeEmpty) async {
     final releaseJsonContent = (await http.get(Uri(
             scheme: 'https',
             host: 'api.github.com',
@@ -89,7 +90,7 @@ class GithubReleases {
 
       if (latestReleaseAssetDate == null ||
           (latestReleaseAssetDate?.compareTo(releaseDateAndTime) == -1)) {
-        final assets = await _parseReleaseAssets(releaseMap['assets'] as List);
+        final assets = await _parseGithubReleaseAssets(releaseMap['assets'] as List);
         if (assets != null) {
           _latestReleaseAssets = assets;
           latestReleaseAssetDate = releaseDateAndTime;
@@ -99,12 +100,14 @@ class GithubReleases {
       releases.add(Release(version: releaseMap['name'] as String, date: releaseDateString));
     });
 
-    if (releases.isNotEmpty) {
+    if (releases.isNotEmpty || canBeEmpty) {
       _releases = releases;
+    } else {
+      throw Exception("Github must contain at least 1 release.");
     }
   }
 
-  Future<List<ReleaseAsset>?> _parseReleaseAssets(List assetMaps) async {
+  Future<List<ReleaseAsset>?> _parseGithubReleaseAssets(List assetMaps) async {
     String? x64TarballUrl;
     String? x64Sha;
     String? aarch64TarballUrl;
@@ -166,15 +169,14 @@ class GithubReleases {
     return res.isEmpty ? null : res;
   }
 
-  Future<String> _readSha(String shaUrl) async {
-    return (await http.get(Uri.parse(shaUrl))).body.split(' ').first;
-  }
+  Future<String> _readSha(String shaUrl) async =>
+      (await http.get(Uri.parse(shaUrl))).body.split(' ').first;
 }
 
 class FlatpakMeta {
   final String appId;
   final String lowercaseAppName;
-  final String appDataPath;
+  final String appStreamPath;
   final String desktopPath;
   final List<Icon> icons;
 
@@ -202,7 +204,7 @@ class FlatpakMeta {
       required List<Release>? localReleases,
       required List<ReleaseAsset>? localReleaseAssets,
       required this.localLinuxBuildDir,
-      required this.appDataPath,
+      required this.appStreamPath,
       required this.desktopPath,
       required this.icons,
       required this.freedesktopRuntime,
@@ -216,28 +218,37 @@ class FlatpakMeta {
     }
   }
 
-  Future<List<Release>> getReleases(bool fetchReleasesFromGithub) async {
+  Future<List<Release>> getReleases(
+      bool fetchReleasesFromGithub, String? addedTodaysVersion) async {
+    final releases = List<Release>.empty(growable: true);
+    if (addedTodaysVersion != null) {
+      releases.add(Release(
+          version: addedTodaysVersion, date: DateTime.now().toIso8601String().split("T").first));
+    }
     if (fetchReleasesFromGithub) {
       if (_githubReleases == null) {
         throw Exception(
             'Metadata must include Github repository info if fetching releases from Github.');
       }
-      return await _githubReleases!.getReleases();
+      releases.addAll(await _githubReleases!.getReleases(addedTodaysVersion != null));
     } else {
-      if (_localReleases == null) {
+      if (_localReleases == null && addedTodaysVersion == null) {
         throw Exception('Metadata must include releases if not fetching releases from Github.');
       }
-      return _localReleases!;
+      if (_localReleases?.isNotEmpty ?? false) {
+        releases.addAll(_localReleases!);
+      }
     }
+    return releases;
   }
 
-  Future<List<ReleaseAsset>?> getReleaseAssets(bool fetchReleasesFromGithub) async {
+  Future<List<ReleaseAsset>?> getLatestReleaseAssets(bool fetchReleasesFromGithub) async {
     if (fetchReleasesFromGithub) {
       if (_githubReleases == null) {
         throw Exception(
             'Metadata must include Github repository info if fetching releases from Github.');
       }
-      return _githubReleases!.getLatestReleaseAssets();
+      return await _githubReleases!.getLatestReleaseAssets();
     } else {
       if (_localReleases == null) {
         throw Exception('Metadata must include releases if not fetching releases from Github.');
@@ -246,7 +257,7 @@ class FlatpakMeta {
     }
   }
 
-  static FlatpakMeta fromJson(File jsonFile) {
+  static FlatpakMeta fromJson(File jsonFile, {bool skipLocalReleases = false}) {
     try {
       final dynamic json = jsonDecode(jsonFile.readAsStringSync());
       return FlatpakMeta(
@@ -254,36 +265,42 @@ class FlatpakMeta {
           lowercaseAppName: json['lowercaseAppName'] as String,
           githubReleaseOrganization: json['githubReleaseOrganization'] as String?,
           githubReleaseProject: json['githubReleaseProject'] as String?,
-          localReleases: (json['localReleases'] as List?)?.map((dynamic r) {
-            final rMap = r as Map;
-            return Release(version: rMap['version'] as String, date: rMap['date'] as String);
-          }).toList(),
-          localReleaseAssets: (json['localReleaseAssets'] as List?)?.map((dynamic ra) {
-            final raMap = ra as Map;
-            final archString = raMap['arch'] as String;
-            final arch = (archString == CPUArchitecture.x86_64.flatpakArchCode)
-                ? CPUArchitecture.x86_64
-                : (archString == CPUArchitecture.aarch64.flatpakArchCode)
-                    ? CPUArchitecture.aarch64
-                    : null;
-            if (arch == null) {
-              throw Exception(
-                  'Architecture must be either "${CPUArchitecture.x86_64.flatpakArchCode}" or "${CPUArchitecture.aarch64.flatpakArchCode}"');
-            }
-            final tarballPath = '${jsonFile.parent.path}/${raMap['tarballPath'] as String}';
-            final preShasum = Process.runSync('shasum', ['-a', '256', tarballPath]);
-            final shasum = preShasum.stdout.toString().split(' ').first;
-            if (preShasum.exitCode != 0) {
-              throw Exception(preShasum.stderr);
-            }
-            return ReleaseAsset(
-                arch: arch,
-                tarballUrlOrPath: tarballPath,
-                isRelativeLocalPath: true,
-                tarballSha256: shasum);
-          }).toList(),
+          localReleases: skipLocalReleases
+              ? null
+              : (json['localReleases'] as List?)?.map((dynamic r) {
+                  final rMap = r as Map;
+                  return Release(version: rMap['version'] as String, date: rMap['date'] as String);
+                }).toList(),
+          localReleaseAssets: skipLocalReleases
+              ? null
+              : (json['localReleaseAssets'] as List?)?.map((dynamic ra) {
+                  final raMap = ra as Map;
+                  final archString = raMap['arch'] as String;
+                  final arch = (archString == CPUArchitecture.x86_64.flatpakArchCode)
+                      ? CPUArchitecture.x86_64
+                      : (archString == CPUArchitecture.aarch64.flatpakArchCode)
+                          ? CPUArchitecture.aarch64
+                          : null;
+                  if (arch == null) {
+                    throw Exception(
+                        'Architecture must be either "${CPUArchitecture.x86_64.flatpakArchCode}" or "${CPUArchitecture.aarch64.flatpakArchCode}"');
+                  }
+                  final tarballFile =
+                      File('${jsonFile.parent.path}/${raMap['tarballPath'] as String}');
+                  final tarballPath = tarballFile.absolute.path;
+                  final preShasum = Process.runSync('shasum', ['-a', '256', tarballPath]);
+                  final shasum = preShasum.stdout.toString().split(' ').first;
+                  if (preShasum.exitCode != 0) {
+                    throw Exception(preShasum.stderr);
+                  }
+                  return ReleaseAsset(
+                      arch: arch,
+                      tarballUrlOrPath: tarballPath,
+                      isRelativeLocalPath: true,
+                      tarballSha256: shasum);
+                }).toList(),
           localLinuxBuildDir: json['localLinuxBuildDir'] as String,
-          appDataPath: json['appDataPath'] as String,
+          appStreamPath: json['appStreamPath'] as String,
           desktopPath: json['desktopPath'] as String,
           icons: (json['icons'] as Map).entries.map((mapEntry) {
             return Icon(type: mapEntry.key as String, path: mapEntry.value as String);

@@ -19,7 +19,7 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/misc.dart';
-import 'package:wger/models/exercises/base.dart';
+import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
 
@@ -42,10 +42,10 @@ class Setting {
   late int order;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  late ExerciseBase exerciseBaseObj;
+  late Exercise exerciseObj;
 
   @JsonKey(required: true, name: 'exercise_base')
-  late int exerciseBaseId;
+  late int exerciseId;
 
   @JsonKey(required: true, name: 'repetition_unit')
   late int repetitionUnitId;
@@ -77,7 +77,7 @@ class Setting {
     this.id,
     required this.setId,
     required this.order,
-    required this.exerciseBaseId,
+    required this.exerciseId,
     required this.repetitionUnitId,
     required this.reps,
     required this.weightUnitId,
@@ -92,9 +92,9 @@ class Setting {
 
   Map<String, dynamic> toJson() => _$SettingToJson(this);
 
-  set exerciseBase(ExerciseBase exerciseBase) {
-    exerciseBaseObj = exerciseBase;
-    exerciseBaseId = exerciseBase.id!;
+  set exercise(Exercise exercise) {
+    exerciseObj = exercise;
+    exerciseId = exercise.id!;
   }
 
   set weightUnit(WeightUnit weightUnit) {

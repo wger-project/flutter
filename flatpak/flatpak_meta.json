@@ -3,14 +3,8 @@
     "lowercaseAppName": "wger",
     "githubReleaseOrganization": "wger-project",
     "githubReleaseProject": "flutter",
-    "localReleases": [
-
-    ],
-    "localReleaseAssets": [
-
-    ],
     "localLinuxBuildDir": "../build/linux",
-    "appDataPath": "de.wger.flutter.appdata.xml",
+    "appStreamPath": "de.wger.flutter.metainfo.xml",
     "desktopPath": "de.wger.flutter.desktop",
     "icons": {
         "64x64": "logo64.png",

@@ -92,6 +92,15 @@ extension TimeOfDayExtension on TimeOfDay {
   }
 }
 
+extension DateTimeExtension on DateTime {
+  bool isSameDayAs(DateTime other) {
+    final thisDay = DateTime(year, month, day);
+    final otherDay = DateTime(other.year, other.month, other.day);
+
+    return thisDay.isAtSameMomentAs(otherDay);
+  }
+}
+
 void launchURL(String url, BuildContext context) async {
   final scaffoldMessenger = ScaffoldMessenger.of(context);
   final launched = await launchUrl(Uri.parse(url));

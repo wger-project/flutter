@@ -330,7 +330,7 @@
   },
   "difference": "Difference",
   "@difference": {},
-  "percentEnergy": "Percent of energy",
+  "percentEnergy": "Persenan Energi",
   "@percentEnergy": {},
   "gPerBodyKg": "g per body kg",
   "@gPerBodyKg": {
@@ -557,5 +557,7 @@
   "close": "Close",
   "@close": {
     "description": "Translation for close"
-  }
+  },
+  "userProfile": "Profilmu",
+  "@userProfile": {}
 }

@@ -34,7 +34,7 @@ class Muscle extends Equatable {
   @JsonKey(required: true, name: 'name_en')
   final String nameEn;
 
-  @JsonKey(name: 'is_front', required: true)
+  @JsonKey(required: true, name: 'is_front')
   final bool isFront;
 
   const Muscle({
@@ -46,6 +46,7 @@ class Muscle extends Equatable {
 
   // Boilerplate
   factory Muscle.fromJson(Map<String, dynamic> json) => _$MuscleFromJson(json);
+
   Map<String, dynamic> toJson() => _$MuscleToJson(this);
 
   @override

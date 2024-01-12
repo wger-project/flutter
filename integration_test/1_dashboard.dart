@@ -14,13 +14,14 @@ import '../test/nutrition/nutritional_plan_form_test.mocks.dart';
 import '../test/workout/weight_unit_form_widget_test.mocks.dart';
 import '../test/workout/workout_form_test.mocks.dart';
 import '../test_data/body_weight.dart';
+import '../test_data/exercises.dart';
 import '../test_data/measurements.dart';
 import '../test_data/nutritional_plans.dart';
 import '../test_data/workouts.dart';
 
 Widget createDashboardScreen({locale = 'en'}) {
   final mockWorkoutProvider = MockWorkoutPlansProvider();
-  when(mockWorkoutProvider.activePlan).thenReturn(getWorkout());
+  when(mockWorkoutProvider.activePlan).thenReturn(getWorkout(exercises: getScreenshotExercises()));
 
   final Map<String, dynamic> logs = {
     'results': [

@@ -16,12 +16,12 @@ import '../test_data/workouts.dart';
 Widget createGymModeScreen({locale = 'en'}) {
   final key = GlobalKey<NavigatorState>();
   final bases = getTestExerciseBases();
-  final workout = getWorkout();
+  final workout = getWorkout(exercises: getScreenshotExercises());
 
   final mockExerciseProvider = MockExercisesProvider();
 
-  when(mockExerciseProvider.findExerciseBaseById(1)).thenReturn(bases[0]); // bench press
-  when(mockExerciseProvider.findExerciseBaseById(6)).thenReturn(bases[5]); // side raises
+  when(mockExerciseProvider.findExerciseById(1)).thenReturn(bases[0]); // bench press
+  when(mockExerciseProvider.findExerciseById(6)).thenReturn(bases[5]); // side raises
   //when(mockExerciseProvider.findExerciseBaseById(2)).thenReturn(bases[1]); // crunches
   //when(mockExerciseProvider.findExerciseBaseById(3)).thenReturn(bases[2]); // dead lift
 
