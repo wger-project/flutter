@@ -21,7 +21,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/models/exercises/base.dart';
+import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/set.dart';
@@ -281,14 +281,14 @@ class _SetFormWidgetState extends State<SetFormWidget> {
   final _exercisesController = TextEditingController();
 
   /// Removes an exercise from the current set
-  void removeExerciseBase(ExerciseBase base) {
+  void removeExerciseBase(Exercise base) {
     setState(() {
       widget._set.removeExercise(base);
     });
   }
 
   /// Adds an exercise to the current set
-  void addExercise(ExerciseBase base) {
+  void addExercise(Exercise base) {
     setState(() {
       widget._set.addExerciseBase(base);
       addSettings();
@@ -306,7 +306,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
       for (int loop = 0; loop < widget._set.sets; loop++) {
         final Setting setting = Setting.empty();
         setting.order = order;
-        setting.exerciseBase = exercise;
+        setting.exercise = exercise;
         setting.weightUnit = workoutProvider.defaultWeightUnit;
         setting.repetitionUnit = workoutProvider.defaultRepetitionUnit;
 
@@ -363,7 +363,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                 Card(
                   child: Column(
                     children: [
-                      TypeAheadFormField<ExerciseBase>(
+                      TypeAheadFormField<Exercise>(
                         key: const Key('field-typeahead'),
                         textFieldConfiguration: TextFieldConfiguration(
                           controller: _exercisesController,
@@ -408,7 +408,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                                 searchEnglish: _searchEnglish,
                               );
                         },
-                        itemBuilder: (BuildContext context, ExerciseBase exerciseSuggestion) {
+                        itemBuilder: (BuildContext context, Exercise exerciseSuggestion) {
                           return ListTile(
                             leading: SizedBox(
                               width: 45,
@@ -420,7 +420,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                                   .name,
                             ),
                             subtitle: Text(
-                              '${exerciseSuggestion.category.name} / ${exerciseSuggestion.equipment.map((e) => e.name).join(', ')}',
+                              '${exerciseSuggestion.category!.name} / ${exerciseSuggestion.equipment.map((e) => e.name).join(', ')}',
                             ),
                           );
                         },
@@ -444,7 +444,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                         transitionBuilder: (context, suggestionsBox, controller) {
                           return suggestionsBox;
                         },
-                        onSuggestionSelected: (ExerciseBase exerciseSuggestion) {
+                        onSuggestionSelected: (Exercise exerciseSuggestion) {
                           addExercise(exerciseSuggestion);
                           _exercisesController.text = '';
                         },
@@ -502,9 +502,8 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                   final index = entry.key;
                   final exercise = entry.value;
                   final showSupersetInfo = (index + 1) < widget._set.exerciseBasesObj.length;
-                  final settings = widget._set.settings
-                      .where((e) => e.exerciseBaseObj.id == exercise.id)
-                      .toList();
+                  final settings =
+                      widget._set.settings.where((e) => e.exerciseObj.id == exercise.id).toList();
 
                   return Column(
                     children: [
@@ -578,7 +577,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
 }
 
 class ExerciseSetting extends StatelessWidget {
-  final ExerciseBase _exerciseBase;
+  final Exercise _exerciseBase;
   late final int _numberOfSets;
   final bool _detailed;
   final Function removeExercise;
@@ -681,7 +680,7 @@ class ExerciseSetting extends StatelessWidget {
                 _exerciseBase.getExercise(Localizations.localeOf(context).languageCode).name,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
-              subtitle: Text(_exerciseBase.category.name),
+              subtitle: Text(_exerciseBase.category!.name),
               contentPadding: EdgeInsets.zero,
               leading: ExerciseImageWidget(image: _exerciseBase.getMainImage),
               trailing: IconButton(

@@ -59,8 +59,14 @@ dependencies:
   flutter_svg: ^2.0.5
   fl_chart: ^0.66.0
   flutter_zxing: ^1.5.2
+  drift: ^2.13.1
+  path: ^1.8.3
+  path_provider: ^2.1.1
+  sqlite3_flutter_libs: ^0.5.18
+  get_it: ^7.6.4
   flex_seed_scheme: ^1.4.0
   flex_color_scheme: ^7.3.1
+  freezed_annotation: ^2.4.1
 
 dev_dependencies:
   flutter_test:
@@ -68,11 +74,13 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   build_runner: ^2.3.3
-  json_serializable: ^6.6.2
+  json_serializable: ^6.7.1
   mockito: ^5.4.4
   network_image_mock: ^2.1.1
   flutter_lints: ^3.0.1
   cider: ^0.2.4
+  drift_dev: ^2.13.1
+  freezed: ^2.4.5
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

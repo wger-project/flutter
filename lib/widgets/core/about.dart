@@ -57,16 +57,11 @@ class AboutEntry extends StatelessWidget {
   }
 }
 
-class AboutPage extends StatefulWidget {
+class AboutPage extends StatelessWidget {
   static String routeName = '/AboutPage';
 
   const AboutPage({super.key});
 
-  @override
-  State<AboutPage> createState() => _AboutPageState();
-}
-
-class _AboutPageState extends State<AboutPage> {
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;

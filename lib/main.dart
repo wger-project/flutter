@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/core/locator.dart';
 import 'package:wger/providers/add_exercise.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/body_weight.dart';
@@ -48,15 +49,18 @@ import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/screens/workout_plans_screen.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/about.dart';
+import 'package:wger/widgets/core/settings.dart';
 
 import 'providers/auth.dart';
 
-void main() {
+void main() async {
   //zx.setLogEnabled(kDebugMode);
 
   // Needs to be called before runApp
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Locator to initialize exerciseDB
+  await ServiceLocator().configure();
   // Application
   runApp(MyApp());
 }
@@ -161,6 +165,7 @@ class MyApp extends StatelessWidget {
             ExerciseDetailScreen.routeName: (ctx) => const ExerciseDetailScreen(),
             AddExerciseScreen.routeName: (ctx) => const AddExerciseScreen(),
             AboutPage.routeName: (ctx) => const AboutPage(),
+            SettingsPage.routeName: (ctx) => const SettingsPage(),
           },
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,

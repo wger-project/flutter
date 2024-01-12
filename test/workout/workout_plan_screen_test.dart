@@ -16,11 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/database/exercises/exercise_database.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/workout_plans.dart';
@@ -32,7 +34,10 @@ import 'workout_plan_screen_test.mocks.dart';
 @GenerateMocks([WgerBaseProvider])
 void main() {
   final mockBaseProvider = MockWgerBaseProvider();
-  final exercisesProvider = ExercisesProvider(mockBaseProvider);
+  final exercisesProvider = ExercisesProvider(
+    mockBaseProvider,
+    database: ExerciseDatabase.inMemory(NativeDatabase.memory()),
+  );
   Widget createHomeScreen({locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
 

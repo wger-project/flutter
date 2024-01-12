@@ -27,6 +27,7 @@ import 'package:wger/providers/user.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/core/about.dart';
+import 'package:wger/widgets/core/settings.dart';
 import 'package:wger/widgets/user/forms.dart';
 
 class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -50,9 +51,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                     actions: [
                       TextButton(
                         child: Text(MaterialLocalizations.of(context).closeButtonLabel),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
+                        onPressed: () => Navigator.of(context).pop(),
                       ),
                     ],
                     contentPadding: EdgeInsets.zero,
@@ -63,22 +62,23 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                           //dense: true,
                           leading: const Icon(Icons.person),
                           title: Text(AppLocalizations.of(context).userProfile),
-                          onTap: () {
-                            Navigator.pushNamed(
-                              context,
-                              FormScreen.routeName,
-                              arguments: FormScreenArguments(
-                                AppLocalizations.of(context).userProfile,
-                                UserProfileForm(context.read<UserProvider>().profile!),
-                              ),
-                            );
-                          },
+                          onTap: () => Navigator.pushNamed(
+                            context,
+                            FormScreen.routeName,
+                            arguments: FormScreenArguments(
+                              AppLocalizations.of(context).userProfile,
+                              UserProfileForm(context.read<UserProvider>().profile!),
+                            ),
+                          ),
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.settings),
+                          onTap: () => Navigator.of(context).pushNamed(SettingsPage.routeName),
+                          title: Text(AppLocalizations.of(context).settingsTitle),
                         ),
                         ListTile(
                           leading: const Icon(Icons.info),
-                          onTap: () {
-                            Navigator.of(context).pushNamed(AboutPage.routeName);
-                          },
+                          onTap: () => Navigator.of(context).pushNamed(AboutPage.routeName),
                           title: Text(AppLocalizations.of(context).aboutPageTitle),
                         ),
                         const Divider(),

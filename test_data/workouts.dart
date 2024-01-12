@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:wger/models/exercises/base.dart';
+import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
@@ -33,7 +33,7 @@ const weightUnit2 = WeightUnit(id: 2, name: 'metric tonnes');
 const RepetitionUnit repetitionUnit1 = RepetitionUnit(id: 1, name: 'Repetitions');
 const RepetitionUnit repetitionUnit2 = RepetitionUnit(id: 2, name: 'Hours');
 
-WorkoutPlan getWorkout({List<ExerciseBase>? exercises}) {
+WorkoutPlan getWorkout({List<Exercise>? exercises}) {
   final testBases = exercises ?? getTestExerciseBases();
 
   final log1 = Log.empty()
@@ -72,7 +72,7 @@ WorkoutPlan getWorkout({List<ExerciseBase>? exercises}) {
   final settingBenchPress = Setting(
     setId: 1,
     order: 1,
-    exerciseBaseId: 1,
+    exerciseId: 1,
     repetitionUnitId: 1,
     reps: 6,
     weightUnitId: 1,
@@ -81,7 +81,7 @@ WorkoutPlan getWorkout({List<ExerciseBase>? exercises}) {
   );
   settingBenchPress.repetitionUnit = repetitionUnit1;
   settingBenchPress.weightUnit = weightUnit1;
-  settingBenchPress.exerciseBase = testBases[0];
+  settingBenchPress.exercise = testBases[0];
   settingBenchPress.weight = 80;
 
   final setBenchPress = Set.withData(
@@ -98,7 +98,7 @@ WorkoutPlan getWorkout({List<ExerciseBase>? exercises}) {
   final settingSquat = Setting(
     setId: 2,
     order: 1,
-    exerciseBaseId: 8,
+    exerciseId: 8,
     repetitionUnitId: 1,
     reps: 8,
     weightUnitId: 1,
@@ -107,7 +107,7 @@ WorkoutPlan getWorkout({List<ExerciseBase>? exercises}) {
   );
   settingSquat.repetitionUnit = repetitionUnit1;
   settingSquat.weightUnit = weightUnit1;
-  settingSquat.exerciseBase = testBases[4];
+  settingSquat.exercise = testBases[4];
   settingSquat.weight = 120;
 
   final setSquat = Set.withData(
@@ -123,7 +123,7 @@ WorkoutPlan getWorkout({List<ExerciseBase>? exercises}) {
   final settingSideRaises = Setting(
     setId: 2,
     order: 1,
-    exerciseBaseId: 8,
+    exerciseId: 8,
     repetitionUnitId: 1,
     reps: 12,
     weightUnitId: 1,
@@ -132,7 +132,7 @@ WorkoutPlan getWorkout({List<ExerciseBase>? exercises}) {
   );
   settingSideRaises.repetitionUnit = repetitionUnit1;
   settingSideRaises.weightUnit = weightUnit1;
-  settingSideRaises.exerciseBase = testBases[5];
+  settingSideRaises.exercise = testBases[5];
   settingSideRaises.weight = 6;
 
   final setSideRaises = Set.withData(

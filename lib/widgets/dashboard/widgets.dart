@@ -498,11 +498,11 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(s.exerciseBaseObj
+                              Text(s.exerciseObj
                                   .getExercise(Localizations.localeOf(context).languageCode)
                                   .name),
                               const SizedBox(width: 10),
-                              MutedText(set.getSmartRepr(s.exerciseBaseObj).join('\n')),
+                              MutedText(set.getSmartRepr(s.exerciseObj).join('\n')),
                             ],
                           ),
                           const SizedBox(height: 10),

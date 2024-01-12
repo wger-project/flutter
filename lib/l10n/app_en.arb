@@ -639,6 +639,10 @@
   "@baseData": {
     "description": "The base data for an exercise such as category, trained muscles, etc."
   },
+  "settingsTitle": "Settings",
+  "settingsCacheTitle": "Cache",
+  "settingsCacheDescription": "Exercise cache",
+  "settingsCacheDeletedSnackbar": "Cache successfully cleared",
   "aboutPageTitle": "About Wger",
   "contributeExerciseWarning": "You can only contribute exercises if your account is older than {days} days and have verified your email",
   "@contributeExerciseWarning": {

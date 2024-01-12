@@ -25,7 +25,7 @@ class Comment {
   @JsonKey(required: true)
   final int id;
 
-  @JsonKey(required: true, name: 'exercise')
+  @JsonKey(name: 'exercise')
   final int exerciseId;
 
   @JsonKey(required: true)

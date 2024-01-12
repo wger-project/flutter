@@ -58,7 +58,7 @@ class Step2Variations extends StatelessWidget {
                     ),
                   ),
                   // Exercise bases without variations
-                  ...exerciseProvider.bases.where((b) => b.variationId == null).map(
+                  ...exerciseProvider.exercises.where((b) => b.variationId == null).map(
                         (base) => Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
