@@ -211,7 +211,8 @@ final benchPressDE = Translation(
   created: DateTime(2021, 1, 15),
   name: 'Bankdrücken LH',
   description:
-      '''<p>Lege dich auf die Bank, die Stange direkt über die Augen, die Knie etwas angewinkelt und die Füße fest auf dem Boden. Greife die Stange breit und lasse sie langsam und kontrolliert runter, dabei sollte die Stange kurz auf Brustwarzenhöhe den Körper berühren. Dann das Gewicht wieder hochdrücken bis die Arme durchgestreckt sind.</p>
+      '''
+<p>Lege dich auf die Bank, die Stange direkt über die Augen, die Knie etwas angewinkelt und die Füße fest auf dem Boden. Greife die Stange breit und lasse sie langsam und kontrolliert runter, dabei sollte die Stange kurz auf Brustwarzenhöhe den Körper berühren. Dann das Gewicht wieder hochdrücken bis die Arme durchgestreckt sind.</p>
 <p>Bei hohem Gewicht, empfielt sich natürlich einen <em>Spotter</em> zu haben, der einen hilft falls man die Stange nicht alleine hochdrücken kann.</p>
 <p>Mit der Breite des Griffs kann außerdem kontrolliert werden, welcher Bereich der Brust stärker belastet wird:</p>
 <ul>
@@ -228,7 +229,8 @@ final benchPressEN = Translation(
   created: DateTime(2021, 1, 15),
   name: 'Bench Press',
   description:
-      '''<p>Lay down on a bench, the bar should be directly above your eyes, the knees are somewhat angled and the feet are firmly on the floor. Concentrate, breath deeply and grab the bar more than shoulder wide. Bring it slowly down till it briefly touches your chest at the height of your nipples. Push the bar up.</p>
+      '''
+<p>Lay down on a bench, the bar should be directly above your eyes, the knees are somewhat angled and the feet are firmly on the floor. Concentrate, breath deeply and grab the bar more than shoulder wide. Bring it slowly down till it briefly touches your chest at the height of your nipples. Push the bar up.</p>
 <p>If you train with a high weight it is advisable to have a <em>spotter</em> that can help you up if you can't lift the weight on your own.</p>
 <p>With the width of the grip you can also control which part of the chest is trained more:</p>
 <ul>
@@ -257,7 +259,8 @@ final deadLiftEN = Translation(
   created: DateTime(2021, 1, 15),
   name: 'Deadlifts',
   description:
-      '''<p>Stand firmly, with your feet slightly more than shoulder wide apart. Stand directly behind the bar where it should barely touch your shin, your feet pointing a bit out. Bend down with a straight back, the knees also pointing somewhat out. Grab the bar with a shoulder wide grip, one underhand, one reverse grip.</p>
+      '''
+<p>Stand firmly, with your feet slightly more than shoulder wide apart. Stand directly behind the bar where it should barely touch your shin, your feet pointing a bit out. Bend down with a straight back, the knees also pointing somewhat out. Grab the bar with a shoulder wide grip, one underhand, one reverse grip.</p>
 <p>Pull the weight up. At the highest point make a slight hollow back and pull the bar back. Hold 1 or 2 seconds that position. Go down, making sure the back is not bent. Once down you can either go back again as soon as the weights touch the floor, or make a pause, depending on the weight.</p>''',
   exerciseId: 184,
   language: tLanguage2,
@@ -269,7 +272,8 @@ final deadLiftDE = Translation(
   created: DateTime(2021, 1, 15),
   name: 'Kreuzheben',
   description:
-      '''<p>Stelle dich mit etwas mehr als schulterbreitem Stand vor der Stange, die Füße zeigen leicht nach außen, die Stange ist direkt darüber und sehr nahe am Schienbein. Beuge die Knie (zeigen ebenfalls etwas nach außen) und neige den Oberkörper (bleibt während der ganzen Übung gerade). Greife die Stange schulterbreit mit einem Unter- und einem Obergriff.</p>
+      '''
+<p>Stelle dich mit etwas mehr als schulterbreitem Stand vor der Stange, die Füße zeigen leicht nach außen, die Stange ist direkt darüber und sehr nahe am Schienbein. Beuge die Knie (zeigen ebenfalls etwas nach außen) und neige den Oberkörper (bleibt während der ganzen Übung gerade). Greife die Stange schulterbreit mit einem Unter- und einem Obergriff.</p>
 <p>Ziehe nun die Stange nach oben. An der höchsten Stelle mache ein leichtes Hohlkreuz und drücke die Schultern nach hinten. Gehe wieder runter, wobei du darauf achtest, dass der Rücken gerade bleibt und sich nicht krümmt. Du kannst unten angekommen eine kleine Pause einlegen oder sofort weitermachen.</p>''',
   exerciseId: 184,
   language: tLanguage1,
@@ -281,7 +285,8 @@ final deadLiftPT = Translation(
   created: DateTime(2021, 1, 15),
   name: 'Levantamento terra',
   description:
-      '''Fique firme, com os pés ligeiramente mais afastados do que os ombros. Fique diretamente atrás da barra, onde ela mal deve tocar sua canela, com os pés apontando um pouco para fora. Curve-se com as costas retas, os joelhos também apontando um pouco para fora. Agarre a barra com uma pegada na largura dos ombros, uma pegada por baixo e uma pegada reversa.
+      '''
+Fique firme, com os pés ligeiramente mais afastados do que os ombros. Fique diretamente atrás da barra, onde ela mal deve tocar sua canela, com os pés apontando um pouco para fora. Curve-se com as costas retas, os joelhos também apontando um pouco para fora. Agarre a barra com uma pegada na largura dos ombros, uma pegada por baixo e uma pegada reversa.
 
 Puxe o peso para cima. No ponto mais alto, faça uma leve depressão para trás e puxe a barra para trás. Segure 1 ou 2 segundos nessa posição. Desça, certificando-se de que as costas não estão dobradas. Depois de descer, você pode voltar assim que os pesos tocarem o chão ou fazer uma pausa, dependendo do peso.''',
   exerciseId: 184,
@@ -293,7 +298,8 @@ final deadLiftIT = Translation(
   uuid: '7c088d54-6732-4d5e-aae8-9be8d4a1f111',
   created: DateTime(2021, 1, 15),
   name: 'Stacco',
-  description: '''StaccoStacco
+  description: '''
+StaccoStacco
 Stacco''',
   exerciseId: 184,
   language: tLanguage13,
@@ -373,7 +379,8 @@ final crunchesDE = Translation(
   created: DateTime(2021, 1, 15),
   name: 'Crunches',
   description:
-      '''<p>Lege dich auf eine Matte mit angewinkelten Beinen. Die Füße werden irgendwie festgehalten (Partner, Lanhghantel, o.Ä.) und die Hände werden hinter dem Nacken verschränkt. Aus dieser Position führe den Oberkörper so weit nach oben, bis Kopf oder Ellenbogen die angewinkelten Beine berühren.</p>
+      '''
+<p>Lege dich auf eine Matte mit angewinkelten Beinen. Die Füße werden irgendwie festgehalten (Partner, Lanhghantel, o.Ä.) und die Hände werden hinter dem Nacken verschränkt. Aus dieser Position führe den Oberkörper so weit nach oben, bis Kopf oder Ellenbogen die angewinkelten Beine berühren.</p>
 <p>Es ist wichtig, dass dieser Vorgang mit einer rollenden Bewegung durchgeführt wird: die Wirbelsäule sollte sich Wirbel für Wirbel von der Matte lösen. Ein Hohlkreuz ist stets zu vermeiden.</p>''',
   exerciseId: 167,
   language: tLanguage1,
@@ -500,7 +507,8 @@ final curlsEN = Translation(
   created: DateTime(2021, 1, 15),
   name: 'Biceps Curls With Dumbbell',
   description:
-      '''<p>Hold two barbells, the arms are streched, the hands are on your side, the palms face inwards. Bend the arms and bring the weight with a fast movement up. At the same time, rotate your arms by 90 degrees at the very beginning of the movement. At the highest point, rotate a little the weights further outwards. Without a pause, bring them down, slowly.</p>
+      '''
+<p>Hold two barbells, the arms are streched, the hands are on your side, the palms face inwards. Bend the arms and bring the weight with a fast movement up. At the same time, rotate your arms by 90 degrees at the very beginning of the movement. At the highest point, rotate a little the weights further outwards. Without a pause, bring them down, slowly.</p>
 <p>Don't allow your body to swing during the exercise, all work is done by the biceps, which are the only mucles that should move (pay attention to the elbows).</p>''',
   exerciseId: 92,
   language: tLanguage2,
@@ -512,7 +520,8 @@ final curlsDE = Translation(
   created: DateTime(2021, 1, 15),
   name: 'Bizeps KH-Curls',
   description:
-      '''<p>Halte zwei Kurzhantel mit ausgestreckten Armen neben dem Körper, die Handflächen zeigen nach innen. Beuge die Arme und brige die Hanteln mit einer schnellen Bewegung nach oben wobei sie gleichzeitig um 90 Grad gedreht werden. Am höchsten Punkt kann man die Hanteln ganz leicht weiter nach außen drehen. Ohne Pause wird das Gewicht nun kontrolliert nach unten gebracht. Beachte, dass die Bewegung nach oben schneller ist als nach unten.</p>
+      '''
+<p>Halte zwei Kurzhantel mit ausgestreckten Armen neben dem Körper, die Handflächen zeigen nach innen. Beuge die Arme und brige die Hanteln mit einer schnellen Bewegung nach oben wobei sie gleichzeitig um 90 Grad gedreht werden. Am höchsten Punkt kann man die Hanteln ganz leicht weiter nach außen drehen. Ohne Pause wird das Gewicht nun kontrolliert nach unten gebracht. Beachte, dass die Bewegung nach oben schneller ist als nach unten.</p>
 <p>Während des Bewegungablaufs darf der Körper nicht mitschwingen. Die Ellenbogen bleiben dabei immer an der Stelle.</p>''',
   exerciseId: 92,
   language: tLanguage1,
@@ -557,7 +566,8 @@ final raisesDE = Translation(
   uuid: '72e78f4d-65f7-4ddd-9247-cdc1e133fa80',
   created: DateTime(2021, 1, 15),
   name: 'Seitheben KH',
-  description: '''<ol>
+  description: '''
+<ol>
 <li>Aufrechter Stand, Kopf nach vorne gerichtet, eine Kurzhantel in jeder Hand.</li>
 <li>Handflächen nach innen, in Richtung des Körpers, gerichtet.</li>
 <li>Hebe die Hanteln seitlich nach oben, ohne Schwung zu holen. Atme aus. Die Ellenbogen sind leicht gebeugt. Hebe die Kurzhanteln soweit, bis die Arme parallel zum Boden sind.</li>
