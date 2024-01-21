@@ -759,5 +759,21 @@
   "aboutMastodonText": "Projeyle ilgili güncellemeler ve haberler için bizi Mastodon'da takip edin",
   "@aboutMastodonText": {
     "description": "Text for the mastodon section in the about dialog"
-  }
+  },
+  "settingsTitle": "Ayarlar",
+  "@settingsTitle": {},
+  "settingsCacheTitle": "Önbellek",
+  "@settingsCacheTitle": {},
+  "noMatchingExerciseFound": "Eşleşen egzersiz bulunamadı",
+  "@noMatchingExerciseFound": {
+    "description": "Message returned if no exercises match the searched string"
+  },
+  "aboutDonateTitle": "Bağış yap",
+  "@aboutDonateTitle": {},
+  "aboutDonateText": "Projeye yardımcı olmak, sunucu masraflarını karşılamak ve geliştirmeyi desteklemek için bağış yapın",
+  "@aboutDonateText": {},
+  "settingsCacheDescription": "Egzersiz önbelleği",
+  "@settingsCacheDescription": {},
+  "settingsCacheDeletedSnackbar": "Önbellek başarıyla temizlendi",
+  "@settingsCacheDeletedSnackbar": {}
 }
