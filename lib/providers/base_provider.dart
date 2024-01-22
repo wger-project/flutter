@@ -37,7 +37,7 @@ class WgerBaseProvider {
     this.client = client ?? http.Client();
   }
 
-  Map<String, String> getDefaultHeaders({includeAuth = false}) {
+  Map<String, String> getDefaultHeaders({bool includeAuth = false}) {
     final out = {
       HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
       HttpHeaders.userAgentHeader: auth.getAppNameHeader(),

@@ -28,9 +28,9 @@ import 'package:wger/models/workouts/log.dart';
 import 'package:wger/providers/workout_plans.dart';
 
 void showErrorDialog(dynamic exception, BuildContext context) {
-  log('showErrorDialog: ');
-  log(exception.toString());
-  log('=====================');
+  // log('showErrorDialog: ');
+  // log(exception.toString());
+  // log('=====================');
 
   showDialog(
     context: context,
@@ -55,6 +55,7 @@ void showHttpExceptionErrorDialog(WgerHttpException exception, BuildContext cont
   log('-------------------');
 
   final List<Widget> errorList = [];
+
   for (final key in exception.errors!.keys) {
     // Error headers
     // Ensure that the error heading first letter is capitalized.
