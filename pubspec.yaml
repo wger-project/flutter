@@ -38,7 +38,7 @@ dependencies:
   equatable: ^2.0.5
   flutter_calendar_carousel: ^2.4.1
   flutter_html: ^3.0.0-beta.2
-  flutter_typeahead: ^4.8.0
+  flutter_typeahead: ^5.0.2
   font_awesome_flutter: ^10.4.0
   http: ^1.2.0
   image_picker: ^1.0.6
