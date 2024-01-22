@@ -234,6 +234,7 @@ class MockAuthProvider extends _i1.Mock implements _i3.AuthProvider {
     required String? password,
     required String? email,
     required String? serverUrl,
+    String? locale = r'en',
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -244,6 +245,7 @@ class MockAuthProvider extends _i1.Mock implements _i3.AuthProvider {
             #password: password,
             #email: email,
             #serverUrl: serverUrl,
+            #locale: locale,
           },
         ),
         returnValue: _i5.Future<Map<String, _i3.LoginActions>>.value(<String, _i3.LoginActions>{}),
@@ -399,7 +401,7 @@ class MockWgerBaseProvider extends _i1.Mock implements _i8.WgerBaseProvider {
       );
 
   @override
-  Map<String, String> getDefaultHeaders({dynamic includeAuth = false}) => (super.noSuchMethod(
+  Map<String, String> getDefaultHeaders({bool? includeAuth = false}) => (super.noSuchMethod(
         Invocation.method(
           #getDefaultHeaders,
           [],
