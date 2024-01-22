@@ -59,7 +59,7 @@ dependencies:
   flutter_svg: ^2.0.5
   fl_chart: ^0.66.0
   flutter_zxing: ^1.5.2
-  drift: ^2.13.1
+  drift: ^2.15.0
   path: ^1.8.3
   path_provider: ^2.1.1
   sqlite3_flutter_libs: ^0.5.18
