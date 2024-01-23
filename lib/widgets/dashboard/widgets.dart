@@ -27,6 +27,7 @@ import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/user.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/gym_mode.dart';
@@ -243,6 +244,7 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final profile = context.read<UserProvider>().profile;
     weightEntriesData = Provider.of<BodyWeightProvider>(context, listen: false);
 
     return Consumer<BodyWeightProvider>(
@@ -267,9 +269,13 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                     children: [
                       SizedBox(
                         height: 200,
-                        child: MeasurementChartWidgetFl(weightEntriesData.items
-                            .map((e) => MeasurementChartEntry(e.weight, e.date))
-                            .toList()),
+                        child: MeasurementChartWidgetFl(
+                            weightEntriesData.items
+                                .map((e) => MeasurementChartEntry(e.weight, e.date))
+                                .toList(),
+                            unit: profile!.isMetric
+                                ? AppLocalizations.of(context).kg
+                                : AppLocalizations.of(context).lb),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -31,6 +31,11 @@ class Profile {
   @JsonKey(required: true, name: 'is_trustworthy')
   bool isTrustworthy;
 
+  @JsonKey(required: true, name: 'weight_unit')
+  String weightUnitStr;
+
+  bool get isMetric => weightUnitStr == 'kg';
+
   @JsonKey(required: true)
   String email;
 
@@ -39,9 +44,11 @@ class Profile {
     required this.emailVerified,
     required this.isTrustworthy,
     required this.email,
+    required this.weightUnitStr,
   });
 
   // Boilerplate
   factory Profile.fromJson(Map<String, dynamic> json) => _$ProfileFromJson(json);
+
   Map<String, dynamic> toJson() => _$ProfileToJson(this);
 }

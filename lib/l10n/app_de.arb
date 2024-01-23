@@ -785,7 +785,7 @@
   "@settingsCacheDescription": {},
   "settingsCacheDeletedSnackbar": "Zwischenspeicher erfolgreich gelöscht",
   "@settingsCacheDeletedSnackbar": {},
-  "lb": "Pfund",
+  "lb": "lb",
   "@lb": {
     "description": "Generated entry for translation for server strings"
   }

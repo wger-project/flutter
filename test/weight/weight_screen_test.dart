@@ -23,32 +23,43 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/body_weight.dart';
+import 'package:wger/providers/user.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/widgets/measurements/charts.dart';
 import 'package:wger/widgets/weight/forms.dart';
 
 import '../../test_data/body_weight.dart';
+import '../../test_data/profile.dart';
 import 'weight_screen_test.mocks.dart';
 
-@GenerateMocks([BodyWeightProvider])
+@GenerateMocks([BodyWeightProvider, UserProvider])
 void main() {
-  var mockWeightProvider = MockBodyWeightProvider();
+  late MockBodyWeightProvider mockWeightProvider;
+  late MockUserProvider mockUserProvider;
 
-  Widget createWeightScreen({locale = 'en'}) {
+  setUp(() {
     mockWeightProvider = MockBodyWeightProvider();
     when(mockWeightProvider.items).thenReturn(getWeightEntries());
 
-    return ChangeNotifierProvider<BodyWeightProvider>(
-      create: (context) => mockWeightProvider,
-      child: MaterialApp(
-        locale: Locale(locale),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: WeightScreen(),
-        routes: {
-          FormScreen.routeName: (_) => FormScreen(),
-        },
+    mockUserProvider = MockUserProvider();
+    when(mockUserProvider.profile).thenReturn(tProfile1);
+  });
+
+  Widget createWeightScreen({locale = 'en'}) {
+    return ChangeNotifierProvider<UserProvider>(
+      create: (context) => mockUserProvider,
+      child: ChangeNotifierProvider<BodyWeightProvider>(
+        create: (context) => mockWeightProvider,
+        child: MaterialApp(
+          locale: Locale(locale),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: WeightScreen(),
+          routes: {
+            FormScreen.routeName: (_) => FormScreen(),
+          },
+        ),
       ),
     );
   }

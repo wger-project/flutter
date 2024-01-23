@@ -167,6 +167,7 @@
   "@rirNotUsed": {
     "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
   },
+  "useMetric": "Use metric units for body weight",
   "weightUnit": "Weight unit",
   "@weightUnit": {},
   "repetitionUnit": "Repetition unit",
