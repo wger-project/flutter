@@ -5,4 +5,5 @@ final tProfile1 = Profile(
   emailVerified: true,
   isTrustworthy: true,
   email: 'admin@google.com',
+  weightUnitStr: 'kg',
 );

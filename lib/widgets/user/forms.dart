@@ -23,14 +23,26 @@ import 'package:wger/models/user/profile.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/theme/theme.dart';
 
-class UserProfileForm extends StatelessWidget {
+class UserProfileForm extends StatefulWidget {
   late final Profile _profile;
-  final _form = GlobalKey<FormState>();
-  final emailController = TextEditingController();
 
   UserProfileForm(Profile profile) {
     _profile = profile;
-    emailController.text = _profile.email;
+  }
+
+  @override
+  State<UserProfileForm> createState() => _UserProfileFormState();
+}
+
+class _UserProfileFormState extends State<UserProfileForm> {
+  final _form = GlobalKey<FormState>();
+
+  final emailController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    emailController.text = widget._profile.email;
   }
 
   @override
@@ -42,16 +54,29 @@ class UserProfileForm extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.person, color: wgerPrimaryColor),
             title: Text(AppLocalizations.of(context).username),
-            subtitle: Text(_profile.username),
+            subtitle: Text(widget._profile.username),
+          ),
+          SwitchListTile(
+            title: Text(AppLocalizations.of(context).useMetric),
+            subtitle: Text(widget._profile.weightUnitStr),
+            value: widget._profile.isMetric,
+            onChanged: (_) {
+              setState(() {
+                widget._profile.weightUnitStr = widget._profile.isMetric
+                    ? AppLocalizations.of(context).lb
+                    : AppLocalizations.of(context).kg;
+              });
+            },
+            dense: true,
           ),
           ListTile(
             leading: const Icon(Icons.email_rounded, color: wgerPrimaryColor),
             title: TextFormField(
               decoration: InputDecoration(
-                  labelText: _profile.emailVerified
+                  labelText: widget._profile.emailVerified
                       ? AppLocalizations.of(context).verifiedEmail
                       : AppLocalizations.of(context).unVerifiedEmail,
-                  suffixIcon: _profile.emailVerified
+                  suffixIcon: widget._profile.emailVerified
                       ? const Icon(
                           Icons.check_circle,
                           color: Colors.green,
@@ -60,7 +85,7 @@ class UserProfileForm extends StatelessWidget {
               controller: emailController,
               keyboardType: TextInputType.emailAddress,
               onSaved: (newValue) {
-                _profile.email = newValue!;
+                widget._profile.email = newValue!;
               },
               validator: (value) {
                 if (value!.isNotEmpty && !value.contains('@')) {
@@ -70,11 +95,11 @@ class UserProfileForm extends StatelessWidget {
               },
             ),
           ),
-          if (!_profile.emailVerified)
+          if (!widget._profile.emailVerified)
             OutlinedButton(
               onPressed: () async {
                 // Email is already verified
-                if (_profile.emailVerified) {
+                if (widget._profile.emailVerified) {
                   return;
                 }
 
@@ -83,7 +108,7 @@ class UserProfileForm extends StatelessWidget {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
-                      AppLocalizations.of(context).verifiedEmailInfo(_profile.email),
+                      AppLocalizations.of(context).verifiedEmailInfo(widget._profile.email),
                     ),
                   ),
                 );
@@ -91,9 +116,6 @@ class UserProfileForm extends StatelessWidget {
               child: Text(AppLocalizations.of(context).verify),
             ),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(
-                backgroundColor: wgerPrimaryButtonColor,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50))),
             onPressed: () async {
               // Validate and save the current values to the weightEntry
               final isValid = _form.currentState!.validate();

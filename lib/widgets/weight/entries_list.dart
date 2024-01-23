@@ -21,6 +21,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/body_weight.dart';
+import 'package:wger/providers/user.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/measurement_categories_screen.dart';
 import 'package:wger/widgets/measurements/charts.dart';
@@ -29,6 +30,7 @@ import 'package:wger/widgets/weight/forms.dart';
 class WeightEntriesList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final profile = context.read<UserProvider>().profile;
     final weightProvider = Provider.of<BodyWeightProvider>(context, listen: false);
 
     return Column(
@@ -37,7 +39,11 @@ class WeightEntriesList extends StatelessWidget {
           padding: const EdgeInsets.all(15),
           height: 220,
           child: MeasurementChartWidgetFl(
-              weightProvider.items.map((e) => MeasurementChartEntry(e.weight, e.date)).toList()),
+            weightProvider.items.map((e) => MeasurementChartEntry(e.weight, e.date)).toList(),
+            unit: profile!.isMetric
+                ? AppLocalizations.of(context).kg
+                : AppLocalizations.of(context).lb,
+          ),
         ),
         TextButton(
           onPressed: () => Navigator.pushNamed(

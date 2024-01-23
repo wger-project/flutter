@@ -8,8 +8,10 @@ import 'dart:ui' as _i6;
 
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:wger/models/body_weight/weight_entry.dart' as _i3;
+import 'package:wger/models/user/profile.dart' as _i8;
 import 'package:wger/providers/base_provider.dart' as _i2;
 import 'package:wger/providers/body_weight.dart' as _i4;
+import 'package:wger/providers/user.dart' as _i7;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -151,6 +153,114 @@ class MockBodyWeightProvider extends _i1.Mock implements _i4.BodyWeightProvider 
         Invocation.method(
           #deleteEntry,
           [id],
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
+
+  @override
+  void addListener(_i6.VoidCallback? listener) => super.noSuchMethod(
+        Invocation.method(
+          #addListener,
+          [listener],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void removeListener(_i6.VoidCallback? listener) => super.noSuchMethod(
+        Invocation.method(
+          #removeListener,
+          [listener],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void dispose() => super.noSuchMethod(
+        Invocation.method(
+          #dispose,
+          [],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void notifyListeners() => super.noSuchMethod(
+        Invocation.method(
+          #notifyListeners,
+          [],
+        ),
+        returnValueForMissingStub: null,
+      );
+}
+
+/// A class which mocks [UserProvider].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockUserProvider extends _i1.Mock implements _i7.UserProvider {
+  MockUserProvider() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i2.WgerBaseProvider get baseProvider => (super.noSuchMethod(
+        Invocation.getter(#baseProvider),
+        returnValue: _FakeWgerBaseProvider_0(
+          this,
+          Invocation.getter(#baseProvider),
+        ),
+      ) as _i2.WgerBaseProvider);
+
+  @override
+  set profile(_i8.Profile? _profile) => super.noSuchMethod(
+        Invocation.setter(
+          #profile,
+          _profile,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  bool get hasListeners => (super.noSuchMethod(
+        Invocation.getter(#hasListeners),
+        returnValue: false,
+      ) as bool);
+
+  @override
+  void clear() => super.noSuchMethod(
+        Invocation.method(
+          #clear,
+          [],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  _i5.Future<void> fetchAndSetProfile() => (super.noSuchMethod(
+        Invocation.method(
+          #fetchAndSetProfile,
+          [],
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> saveProfile() => (super.noSuchMethod(
+        Invocation.method(
+          #saveProfile,
+          [],
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> verifyEmail() => (super.noSuchMethod(
+        Invocation.method(
+          #verifyEmail,
+          [],
         ),
         returnValue: _i5.Future<void>.value(),
         returnValueForMissingStub: _i5.Future<void>.value(),
