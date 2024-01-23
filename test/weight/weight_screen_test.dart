@@ -33,12 +33,14 @@ import 'weight_screen_test.mocks.dart';
 
 @GenerateMocks([BodyWeightProvider])
 void main() {
-  var mockWeightProvider = MockBodyWeightProvider();
+  late MockBodyWeightProvider mockWeightProvider;
 
-  Widget createWeightScreen({locale = 'en'}) {
+  setUp(() {
     mockWeightProvider = MockBodyWeightProvider();
     when(mockWeightProvider.items).thenReturn(getWeightEntries());
+  });
 
+  Widget createWeightScreen({locale = 'en'}) {
     return ChangeNotifierProvider<BodyWeightProvider>(
       create: (context) => mockWeightProvider,
       child: MaterialApp(
@@ -58,17 +60,23 @@ void main() {
 
     expect(find.text('Weight'), findsOneWidget);
     expect(find.byType(MeasurementChartWidgetFl), findsOneWidget);
-    expect(find.byType(Dismissible), findsNWidgets(2));
+    expect(find.byType(Card), findsNWidgets(2));
     expect(find.byType(ListTile), findsNWidgets(2));
   });
 
-  testWidgets('Test deleting an item by dragging the dismissible', (WidgetTester tester) async {
+  testWidgets('Test deleting an item using the Delete button', (WidgetTester tester) async {
+    // Arrange
     await tester.pumpWidget(createWeightScreen());
 
-    await tester.drag(find.byKey(const Key('1')), const Offset(-500.0, 0.0));
+    // Act
+    expect(find.byType(ListTile), findsNWidgets(2));
+    await tester.tap(find.byTooltip('Show menu').first);
+    await tester.pumpAndSettle();
+
+    // Assert
+    await tester.tap(find.text('Delete'));
     await tester.pumpAndSettle();
     verify(mockWeightProvider.deleteEntry(1)).called(1);
-    expect(find.byType(ListTile), findsOneWidget);
   });
 
   testWidgets('Test the form on the body weight screen', (WidgetTester tester) async {
@@ -83,7 +91,6 @@ void main() {
   testWidgets('Tests the localization of dates - EN', (WidgetTester tester) async {
     await tester.pumpWidget(createWeightScreen());
 
-    // One in the entries list, one in the chart
     expect(find.text('1/1/2021'), findsOneWidget);
     expect(find.text('1/10/2021'), findsOneWidget);
   });
