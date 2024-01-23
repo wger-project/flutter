@@ -24,7 +24,7 @@ import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/i18n.dart';
 import 'package:wger/helpers/platform.dart';
-import 'package:wger/models/exercises/base.dart';
+import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/models/exercises/translation.dart';
 import 'package:wger/providers/exercises.dart';
@@ -34,7 +34,7 @@ import 'package:wger/widgets/exercises/list_tile.dart';
 import 'package:wger/widgets/exercises/videos.dart';
 
 class ExerciseDetail extends StatelessWidget {
-  final ExerciseBase _exerciseBase;
+  final Exercise _exerciseBase;
   late Translation _exercise;
   static const PADDING = 9.0;
 
@@ -88,7 +88,7 @@ class ExerciseDetail extends StatelessWidget {
       style: Theme.of(context).textTheme.headlineSmall,
     ));
     Provider.of<ExercisesProvider>(context, listen: false)
-        .findExerciseBasesByVariationId(
+        .findExercisesByVariationId(
       _exerciseBase.variationId!,
       exerciseBaseIdToExclude: _exerciseBase.id,
     )
@@ -206,7 +206,7 @@ class ExerciseDetail extends StatelessWidget {
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4),
         child: Chip(
-          label: Text(getTranslation(_exerciseBase.category.name, context)),
+          label: Text(getTranslation(_exerciseBase.category!.name, context)),
           padding: EdgeInsets.zero,
           backgroundColor: theme.splashColor,
         ),
@@ -242,10 +242,10 @@ class ExerciseDetail extends StatelessWidget {
 
   List<Widget> getAliases(BuildContext context) {
     final List<Widget> out = [];
-    if (_exercise.alias.isNotEmpty) {
+    if (_exercise.aliases.isNotEmpty) {
       out.add(MutedText(
         AppLocalizations.of(context)
-            .alsoKnownAs(_exercise.alias.map((e) => e.alias).toList().join(', ')),
+            .alsoKnownAs(_exercise.aliases.map((e) => e.alias).toList().join(', ')),
       ));
       out.add(const SizedBox(height: PADDING));
     }
@@ -341,12 +341,9 @@ class MuscleWidget extends StatelessWidget {
     return Stack(
       children: [
         SvgPicture.asset('assets/images/muscles/$background.svg'),
-        ...muscles
-            .map((m) => SvgPicture.asset('assets/images/muscles/main/muscle-${m.id}.svg'))
-            ,
+        ...muscles.map((m) => SvgPicture.asset('assets/images/muscles/main/muscle-${m.id}.svg')),
         ...musclesSecondary
-            .map((m) => SvgPicture.asset('assets/images/muscles/secondary/muscle-${m.id}.svg'))
-            ,
+            .map((m) => SvgPicture.asset('assets/images/muscles/secondary/muscle-${m.id}.svg')),
       ],
     );
   }

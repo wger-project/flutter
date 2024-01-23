@@ -26,7 +26,6 @@ void main() {
   group('min application version check', () {
     test('app version higher than min version', () async {
       // arrange
-
       when(mockClient.get(tVersionUri)).thenAnswer((_) => Future(() => Response('"1.2.0"', 200)));
       final updateNeeded = await authProvider.applicationUpdateRequired('1.3.0', testMetadata);
 

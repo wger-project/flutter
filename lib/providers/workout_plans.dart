@@ -23,7 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/models/exercises/base.dart';
+import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/translation.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/log.dart';
@@ -214,16 +214,15 @@ class WorkoutPlansProvider with ChangeNotifier {
         for (final settingEntry in settingData) {
           final workoutSetting = Setting.fromJson(settingEntry);
 
-          workoutSetting.exerciseBase =
-              await _exercises.fetchAndSetExerciseBase(workoutSetting.exerciseBaseId);
+          workoutSetting.exercise = await _exercises.fetchAndSetExercise(workoutSetting.exerciseId);
           workoutSetting.weightUnit = _weightUnits.firstWhere(
             (e) => e.id == workoutSetting.weightUnitId,
           );
           workoutSetting.repetitionUnit = _repetitionUnit.firstWhere(
             (e) => e.id == workoutSetting.repetitionUnitId,
           );
-          if (!workoutSet.exerciseBasesIds.contains(workoutSetting.exerciseBaseId)) {
-            workoutSet.addExerciseBase(workoutSetting.exerciseBaseObj);
+          if (!workoutSet.exerciseBasesIds.contains(workoutSetting.exerciseId)) {
+            workoutSet.addExerciseBase(workoutSetting.exerciseObj);
           }
 
           settings.add(workoutSetting);
@@ -248,7 +247,7 @@ class WorkoutPlansProvider with ChangeNotifier {
         final log = Log.fromJson(logEntry);
         log.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
         log.repetitionUnit = _repetitionUnit.firstWhere((e) => e.id == log.weightUnitId);
-        log.exerciseBase = await _exercises.fetchAndSetExerciseBase(log.exerciseBaseId);
+        log.exerciseBase = await _exercises.fetchAndSetExercise(log.exerciseBaseId);
         plan.logs.add(log);
       } catch (e) {
         dev.log('fire! fire!');
@@ -291,7 +290,7 @@ class WorkoutPlansProvider with ChangeNotifier {
     }
   }
 
-  Future<Map<String, dynamic>> fetchLogData(WorkoutPlan workout, ExerciseBase base) async {
+  Future<Map<String, dynamic>> fetchLogData(WorkoutPlan workout, Exercise base) async {
     final data = await baseProvider.fetch(
       baseProvider.makeUrl(
         _workoutPlansUrlPath,
@@ -504,7 +503,7 @@ class WorkoutPlansProvider with ChangeNotifier {
     log.id = newLog.id;
     log.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
     log.repetitionUnit = _repetitionUnit.firstWhere((e) => e.id == log.weightUnitId);
-    log.exerciseBase = await _exercises.fetchAndSetExerciseBase(log.exerciseBaseId);
+    log.exerciseBase = await _exercises.fetchAndSetExercise(log.exerciseBaseId);
 
     final plan = findById(log.workoutPlan);
     plan.logs.add(log);

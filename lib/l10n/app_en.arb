@@ -122,6 +122,10 @@
   "@searchExercise": {
     "description": "Label on set form. Selected exercises are added to the set"
   },
+  "noMatchingExerciseFound": "No matching exercises found",
+  "@noMatchingExerciseFound": {
+    "description": "Message returned if no exercises match the searched string"
+  },
   "searchNamesInEnglish": "Also search for names in English",
   "supersetWith": "superset with",
   "@supersetWith": {
@@ -479,6 +483,8 @@
   "@aboutTranslationText": {
     "description": "Text for translation section in the about dialog"
   },
+  "aboutDonateTitle": "Donate",
+  "aboutDonateText": "Buy us a coffee to help the project, pay for server costs, and keep us fueled",
   "calendar": "Calendar",
   "@calendar": {},
   "goToToday": "Go to today",
@@ -633,6 +639,10 @@
   "@baseData": {
     "description": "The base data for an exercise such as category, trained muscles, etc."
   },
+  "settingsTitle": "Settings",
+  "settingsCacheTitle": "Cache",
+  "settingsCacheDescription": "Exercise cache",
+  "settingsCacheDeletedSnackbar": "Cache successfully cleared",
   "aboutPageTitle": "About Wger",
   "contributeExerciseWarning": "You can only contribute exercises if your account is older than {days} days and have verified your email",
   "@contributeExerciseWarning": {
@@ -799,10 +809,9 @@
   "@none__bodyweight_exercise_": {
     "description": "Generated entry for translation for server strings"
   },
-  "editSchedule": "Edit schedule",
   "log": "Log",
   "@log": {
-    "description": "Log a specific meal"
+    "description": "Log a specific meal (imperative form)"
   },
   "done": "Done"
 }

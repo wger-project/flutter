@@ -264,12 +264,15 @@
     "description": "The weight of a workout log or body weight entry"
   },
   "measurement": "測定",
+  "@measurement": {},
   "measurements": "測定結果",
   "@measurements": {
     "description": "Categories for the measurements such as biceps size, body fat, etc."
   },
   "measurementCategoriesHelpText": "Measurement category, such as 'biceps' or 'body fat'",
+  "@measurementCategoriesHelpText": {},
   "measurementEntriesHelpText": "The unit used to measure the category such as 'cm' or '%'",
+  "@measurementEntriesHelpText": {},
   "date": "日付",
   "@date": {
     "description": "The date of a workout log or body weight entry"
@@ -295,6 +298,7 @@
     "description": "The end time of a workout"
   },
   "timeStartAhead": "終了時刻を開始時刻より前にすることはできません",
+  "@timeStartAhead": {},
   "ingredient": "食材",
   "@ingredient": {},
   "energy": "エネルギー",
@@ -310,6 +314,7 @@
     "description": "Energy in a meal in kilocalories, kcal"
   },
   "macronutrients": "大栄養素",
+  "@macronutrients": {},
   "planned": "計画された",
   "@planned": {
     "description": "Header for the column of 'planned' nutritional values, i.e. what should be eaten"
@@ -323,7 +328,9 @@
     "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
   },
   "difference": "違い",
+  "@difference": {},
   "percentEnergy": "エネルギーの割合（%）",
+  "@percentEnergy": {},
   "gPerBodyKg": "体重（kg）に対するエネルギー（g）の割合",
   "@gPerBodyKg": {
     "description": "Label used for total sums of e.g. calories or similar in grams per Kg of body weight"
@@ -344,13 +351,13 @@
   "@protein": {},
   "proteinShort": "P",
   "@proteinShort": {
-    "description" : "The first letter or short name of the word 'Protein', used in overviews"
+    "description": "The first letter or short name of the word 'Protein', used in overviews"
   },
   "carbohydrates": "炭水化物",
   "@carbohydrates": {},
   "carbohydratesShort": "C",
   "@carbohydratesShort": {
-    "description" : "The first letter or short name of the word 'Carbohydrates', used in overviews"
+    "description": "The first letter or short name of the word 'Carbohydrates', used in overviews"
   },
   "sugars": "糖分",
   "@sugars": {},
@@ -358,7 +365,7 @@
   "@fat": {},
   "fatShort": "F",
   "@fatShort": {
-    "description" : "The first letter or short name of the word 'Fat', used in overviews"
+    "description": "The first letter or short name of the word 'Fat', used in overviews"
   },
   "saturatedFat": "Saturated fat",
   "@saturatedFat": {},
@@ -405,6 +412,7 @@
     "description": "Switch to toggle detail / overview"
   },
   "goToDetailPage": "Go to detail page",
+  "@goToDetailPage": {},
   "aboutDescription": "Thank you for using wger! wger is a collaborative open source project, made by fitness enthusiasts from around the world.",
   "@aboutDescription": {
     "description": "Text in the about dialog"
@@ -502,21 +510,25 @@
     "description": "Label for the popup with general app options"
   },
   "takePicture": "Take a picture",
+  "@takePicture": {},
   "chooseFromLibrary": "Choose from photo library",
+  "@chooseFromLibrary": {},
   "gallery": "Gallery",
+  "@gallery": {},
   "addImage": "Add image",
+  "@addImage": {},
   "dataCopied": "Data copied to new entry",
   "@dataCopied": {
     "description": "Snackbar message to show on copying data to a new log entry"
   },
-  "appUpdateTitle" : "Update needed",
-  "appUpdateContent" : "This version of the app is not compatible with the server, please update your application.",
-
+  "appUpdateTitle": "Update needed",
+  "@appUpdateTitle": {},
+  "appUpdateContent": "This version of the app is not compatible with the server, please update your application.",
+  "@appUpdateContent": {},
   "productFound": "Product found",
   "@productFound": {
     "description": "Header label for dialog when product is found with barcode"
   },
-
   "productFoundDescription": "The barcode corresponds to this product: {productName}. Do you want to continue?",
   "@productFoundDescription": {
     "description": "Dialog info when product is found with barcode",
@@ -544,5 +556,7 @@
   "close": "Close",
   "@close": {
     "description": "Translation for close"
-  }
+  },
+  "userProfile": "あなたのプロフィール",
+  "@userProfile": {}
 }

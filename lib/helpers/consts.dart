@@ -24,7 +24,12 @@ import 'package:intl/intl.dart';
 const double ICON_SIZE_SMALL = 20;
 
 /// Default wger server during login
-const DEFAULT_SERVER = 'https://wger.de';
+const DEFAULT_SERVER_PROD = 'https://wger.de';
+const DEFAULT_SERVER_TEST = 'https://wger-master.rge.uber.space/';
+
+// Debug mode Login Data
+const TESTSERVER_USER_NAME = 'user';
+const TESTSERVER_PASSWORD = 'flutteruser';
 
 /// Keys used in the android manifest
 const MANIFEST_KEY_API = 'wger.api_key';
@@ -51,6 +56,10 @@ const SUBMIT_BUTTON_KEY_NAME = 'submit-button';
 
 /// Local Preferences keys
 const PREFS_EXERCISES = 'exerciseData';
+const PREFS_LAST_UPDATED_MUSCLES = 'lastUpdatedMuscles';
+const PREFS_LAST_UPDATED_EQUIPMENT = 'lastUpdatedEquipment';
+const PREFS_LAST_UPDATED_CATEGORIES = 'lastUpdatedCategories';
+const PREFS_LAST_UPDATED_LANGUAGES = 'lastUpdatedLanguages';
 const PREFS_EXERCISE_CACHE_VERSION = 'cacheVersion';
 const PREFS_INGREDIENTS = 'ingredientData';
 

@@ -94,7 +94,7 @@ class _MealWidgetState extends State<MealWidget> {
                         },
                       ),
                       TextButton.icon(
-                        label: Text(AppLocalizations.of(context).editSchedule),
+                        label: Text(AppLocalizations.of(context).edit),
                         onPressed: () {
                           Navigator.pushNamed(
                             context,

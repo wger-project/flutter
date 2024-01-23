@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -23,6 +24,7 @@ import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/database/exercises/exercise_database.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
@@ -37,7 +39,10 @@ import 'workout_plans_screen_test.mocks.dart';
 @GenerateMocks([WgerBaseProvider])
 void main() {
   var mockBaseProvider = MockWgerBaseProvider();
-  final testExercisesProvider = ExercisesProvider(mockBaseProvider);
+  final testExercisesProvider = ExercisesProvider(
+    mockBaseProvider,
+    database: ExerciseDatabase.inMemory(NativeDatabase.memory()),
+  );
 
   setUp(() {
     mockBaseProvider = MockWgerBaseProvider();

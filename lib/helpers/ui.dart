@@ -22,15 +22,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/exceptions/http_exception.dart';
-import 'package:wger/models/exercises/base.dart';
+import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/translation.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/providers/workout_plans.dart';
 
 void showErrorDialog(dynamic exception, BuildContext context) {
-  log('showErrorDialog: ');
-  log(exception.toString());
-  log('=====================');
+  // log('showErrorDialog: ');
+  // log(exception.toString());
+  // log('=====================');
 
   showDialog(
     context: context,
@@ -55,6 +55,7 @@ void showHttpExceptionErrorDialog(WgerHttpException exception, BuildContext cont
   log('-------------------');
 
   final List<Widget> errorList = [];
+
   for (final key in exception.errors!.keys) {
     // Error headers
     // Ensure that the error heading first letter is capitalized.
@@ -108,7 +109,7 @@ dynamic showDeleteDialog(
   String confirmDeleteName,
   Log log,
   Translation exercise,
-  Map<ExerciseBase, List<Log>> exerciseData,
+  Map<Exercise, List<Log>> exerciseData,
 ) async {
   final res = await showDialog(
       context: context,

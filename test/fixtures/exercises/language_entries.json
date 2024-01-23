@@ -14,19 +14,19 @@
       "full_name": "English"
     },
     {
-      "id": 4,
+      "id": 12,
       "short_name": "es",
       "full_name": "Español"
     },
     {
-      "id": 12,
+      "id": 3,
       "short_name": "fr",
       "full_name": "Français"
     },
     {
       "id": 13,
       "short_name": "it",
-      "full_name": "Italian"
+      "full_name": "Italiano"
     }
   ]
 }

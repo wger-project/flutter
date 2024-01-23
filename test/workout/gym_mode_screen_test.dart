@@ -75,8 +75,8 @@ void main() {
   }
 
   testWidgets('Test the widgets on the gym mode screen', (WidgetTester tester) async {
-    when(mockExerciseProvider.findExerciseBaseById(1)).thenReturn(bases[0]);
-    when(mockExerciseProvider.findExerciseBaseById(6)).thenReturn(bases[5]);
+    when(mockExerciseProvider.findExerciseById(1)).thenReturn(bases[0]);
+    when(mockExerciseProvider.findExerciseById(6)).thenReturn(bases[5]);
 
     await tester.pumpWidget(createHomeScreen());
     await tester.tap(find.byType(TextButton));

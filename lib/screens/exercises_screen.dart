@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/models/exercises/base.dart';
+import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/exercises/filter_row.dart';
@@ -19,9 +19,21 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
   late final TextEditingController _exerciseNameController;
 
   @override
+  void initState() {
+    _exerciseNameController = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _exerciseNameController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     //final size = MediaQuery.of(context).size;
-    final exercisesList = Provider.of<ExercisesProvider>(context).filteredExerciseBases;
+    final exercisesList = Provider.of<ExercisesProvider>(context).filteredExercises;
 
     return Scaffold(
       appBar: EmptyAppBar(AppLocalizations.of(context).exercises),
@@ -43,12 +55,6 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
       ),
     );
   }
-
-  @override
-  void dispose() {
-    _exerciseNameController.dispose();
-    super.dispose();
-  }
 }
 
 class _ExercisesList extends StatelessWidget {
@@ -56,7 +62,7 @@ class _ExercisesList extends StatelessWidget {
     required this.exerciseBaseList,
   });
 
-  final List<ExerciseBase> exerciseBaseList;
+  final List<Exercise> exerciseBaseList;
 
   @override
   Widget build(BuildContext context) {
