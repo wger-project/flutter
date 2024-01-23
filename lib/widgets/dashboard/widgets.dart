@@ -206,7 +206,17 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 TextButton(
-                  child: Text(AppLocalizations.of(context).logIngredient),
+                  child: Text(AppLocalizations.of(context).goToDetailPage),
+                  onPressed: () {
+                    Navigator.of(context)
+                        .pushNamed(NutritionalPlanScreen.routeName, arguments: _plan);
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(
+                    Icons.history_edu,
+                  ),
+                  tooltip: AppLocalizations.of(context).logIngredient,
                   onPressed: () {
                     Navigator.pushNamed(
                       context,
@@ -217,13 +227,6 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                         hasListView: true,
                       ),
                     );
-                  },
-                ),
-                TextButton(
-                  child: Text(AppLocalizations.of(context).goToDetailPage),
-                  onPressed: () {
-                    Navigator.of(context)
-                        .pushNamed(NutritionalPlanScreen.routeName, arguments: _plan);
                   },
                 ),
               ],
