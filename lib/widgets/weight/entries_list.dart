@@ -81,23 +81,24 @@ class WeightEntriesList extends StatelessWidget {
                                     ),
                                   )),
                           PopupMenuItem(
-                              child: Text(AppLocalizations.of(context).delete),
-                              onTap: () async {
-                                // Delete entry from DB
-                                await weightProvider.deleteEntry(currentEntry.id!);
+                            child: Text(AppLocalizations.of(context).delete),
+                            onTap: () async {
+                              // Delete entry from DB
+                              await weightProvider.deleteEntry(currentEntry.id!);
 
-                                // and inform the user
-                                if (context.mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        AppLocalizations.of(context).successfullyDeleted,
-                                        textAlign: TextAlign.center,
-                                      ),
+                              // and inform the user
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      AppLocalizations.of(context).successfullyDeleted,
+                                      textAlign: TextAlign.center,
                                     ),
-                                  );
-                                }
-                              })
+                                  ),
+                                );
+                              }
+                            },
+                          )
                         ];
                       },
                     ),
