@@ -401,7 +401,7 @@
   "@aboutBugsTitle": {
     "description": "Title for bugs section in the about dialog"
   },
-  "aboutContactUsText": "Ako želi razgovarati s nama, skoči na Discord poslužitelj i kontaktiraj nas",
+  "aboutContactUsText": "Ako želiš s nama razgovarati prijeđi na Discord poslužitelj i kontaktiraj nas",
   "@aboutContactUsText": {
     "description": "Text for contact us section in the about dialog"
   },
@@ -825,5 +825,15 @@
     "description": "Message returned if no exercises match the searched string"
   },
   "aboutDonateTitle": "Doniraj",
-  "@aboutDonateTitle": {}
+  "@aboutDonateTitle": {},
+  "aboutDonateText": "Pomogni projektu: kupi nam kavu, plati troškove poslužitelja i potiči nas u našem radu",
+  "@aboutDonateText": {},
+  "settingsTitle": "Postavke",
+  "@settingsTitle": {},
+  "settingsCacheTitle": "Predmemorija",
+  "@settingsCacheTitle": {},
+  "settingsCacheDescription": "Izvrši predmemoriju",
+  "@settingsCacheDescription": {},
+  "settingsCacheDeletedSnackbar": "Predmemorija je uspješno izbrisana",
+  "@settingsCacheDeletedSnackbar": {}
 }

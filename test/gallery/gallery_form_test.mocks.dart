@@ -195,7 +195,7 @@ class MockGalleryProvider extends _i1.Mock implements _i4.GalleryProvider {
       ) as _i6.Future<void>);
 
   @override
-  Map<String, String> getDefaultHeaders({dynamic includeAuth = false}) => (super.noSuchMethod(
+  Map<String, String> getDefaultHeaders({bool? includeAuth = false}) => (super.noSuchMethod(
         Invocation.method(
           #getDefaultHeaders,
           [],

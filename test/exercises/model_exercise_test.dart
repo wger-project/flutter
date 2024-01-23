@@ -40,8 +40,8 @@ void main() {
       expect(exercise.uuid, '1b020b3a-3732-4c7e-92fd-a0cec90ed69b');
       expect(exercise.categoryId, 10);
       expect(exercise.variationId, 25);
-      expect(exercise.authors, ["Foo Bar"]);
-      expect(exercise.authorsGlobal, ["Foo Bar", "tester McTestface", "Mr. X"]);
+      expect(exercise.authors, ['Foo Bar']);
+      expect(exercise.authorsGlobal, ['Foo Bar', 'tester McTestface', 'Mr. X']);
       expect(exercise.equipment.map((e) => e.name), ['Kettlebell']);
       expect(exercise.muscles.map((e) => e.name), [
         'Biceps femoris',

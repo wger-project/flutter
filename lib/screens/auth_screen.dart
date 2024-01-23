@@ -177,16 +177,21 @@ class _AuthCardState extends State<AuthCard> {
       // Login existing user
       late Map<String, LoginActions> res;
       if (_authMode == AuthMode.Login) {
-        res = await Provider.of<AuthProvider>(context, listen: false)
-            .login(_authData['username']!, _authData['password']!, _authData['serverUrl']!);
+        res = await Provider.of<AuthProvider>(context, listen: false).login(
+          _authData['username']!,
+          _authData['password']!,
+          _authData['serverUrl']!,
+        );
 
         // Register new user
       } else {
         res = await Provider.of<AuthProvider>(context, listen: false).register(
-            username: _authData['username']!,
-            password: _authData['password']!,
-            email: _authData['email']!,
-            serverUrl: _authData['serverUrl']!);
+          username: _authData['username']!,
+          password: _authData['password']!,
+          email: _authData['email']!,
+          serverUrl: _authData['serverUrl']!,
+          locale: Localizations.localeOf(context).languageCode,
+        );
       }
 
       // Check if update is required else continue normally

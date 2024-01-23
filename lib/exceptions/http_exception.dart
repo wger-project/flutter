@@ -29,7 +29,8 @@ class WgerHttpException implements Exception {
       errors = {'unknown_error': 'An unknown error occurred, no further information available'};
     } else {
       try {
-        errors = {'unknown_error': json.decode(responseBody)};
+        final response = json.decode(responseBody);
+        errors = (response is Map ? response : {'unknown_error': response}).cast<String, dynamic>();
       } catch (e) {
         errors = {'unknown_error': responseBody};
       }

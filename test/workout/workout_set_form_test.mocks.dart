@@ -755,7 +755,7 @@ class MockWgerBaseProvider extends _i1.Mock implements _i2.WgerBaseProvider {
       );
 
   @override
-  Map<String, String> getDefaultHeaders({dynamic includeAuth = false}) => (super.noSuchMethod(
+  Map<String, String> getDefaultHeaders({bool? includeAuth = false}) => (super.noSuchMethod(
         Invocation.method(
           #getDefaultHeaders,
           [],

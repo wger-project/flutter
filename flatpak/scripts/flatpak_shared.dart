@@ -103,7 +103,7 @@ class GithubReleases {
     if (releases.isNotEmpty || canBeEmpty) {
       _releases = releases;
     } else {
-      throw Exception("Github must contain at least 1 release.");
+      throw Exception('Github must contain at least 1 release.');
     }
   }
 
@@ -223,7 +223,7 @@ class FlatpakMeta {
     final releases = List<Release>.empty(growable: true);
     if (addedTodaysVersion != null) {
       releases.add(Release(
-          version: addedTodaysVersion, date: DateTime.now().toIso8601String().split("T").first));
+          version: addedTodaysVersion, date: DateTime.now().toIso8601String().split('T').first));
     }
     if (fetchReleasesFromGithub) {
       if (_githubReleases == null) {
