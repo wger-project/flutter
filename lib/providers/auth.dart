@@ -30,6 +30,8 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:version/version.dart';
 import 'package:wger/exceptions/http_exception.dart';
+import 'package:wger/exceptions/logger.abs.dart';
+import 'package:wger/exceptions/logger_adaptor.dart';
 import 'package:wger/helpers/consts.dart';
 
 import 'helpers.dart';
@@ -40,6 +42,8 @@ enum LoginActions {
 }
 
 class AuthProvider with ChangeNotifier {
+  late final Logging logger = LoggingAdaptor('AuthProvider');
+  
   String? token;
   String? serverUrl;
   String? serverVersion;
@@ -83,6 +87,7 @@ class AuthProvider with ChangeNotifier {
   /// Server application version
   Future<void> setServerVersion() async {
     final response = await client.get(makeUri(serverUrl!, SERVER_VERSION_URL));
+    logger.info('Server version set successfully');
     serverVersion = json.decode(response.body);
   }
 
