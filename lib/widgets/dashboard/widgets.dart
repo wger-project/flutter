@@ -575,7 +575,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
             ),
           if (_hasContent)
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 TextButton(
                   child: Text(AppLocalizations.of(context).goToDetailPage),
