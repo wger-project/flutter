@@ -23,7 +23,6 @@ import 'package:provider/provider.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/screens/form_screen.dart';
-import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/measurements/charts.dart';
 
 import 'forms.dart';
