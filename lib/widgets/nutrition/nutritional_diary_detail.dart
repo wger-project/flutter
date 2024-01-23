@@ -195,6 +195,7 @@ class NutritionalDiaryDetailWidget extends StatelessWidget {
             ),
           ),
           IconButton(
+              tooltip: AppLocalizations.of(context).delete,
               onPressed: () {
                 Provider.of<NutritionPlansProvider>(context, listen: false)
                     .deleteLog(log.id!, _nutritionalPlan.id!);

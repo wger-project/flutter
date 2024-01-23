@@ -43,11 +43,18 @@ class MealWidget extends StatefulWidget {
 }
 
 class _MealWidgetState extends State<MealWidget> {
-  bool _expanded = false;
+  bool _showingDetails = false;
+  bool _editing = false;
 
-  void _toggleExpanded() {
+  void _toggleEditing() {
     setState(() {
-      _expanded = !_expanded;
+      _editing = !_editing;
+    });
+  }
+
+  void _toggleDetails() {
+    setState(() {
+      _showingDetails = !_showingDetails;
     });
   }
 
@@ -57,85 +64,72 @@ class _MealWidgetState extends State<MealWidget> {
       padding: const EdgeInsets.all(3),
       child: Card(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            DismissibleMealHeader(_expanded, _toggleExpanded, meal: widget._meal),
-            if (_expanded)
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      // Delete the meal
-                      Provider.of<NutritionPlansProvider>(context, listen: false)
-                          .deleteMeal(widget._meal);
-
-                      // and inform the user
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            AppLocalizations.of(context).successfullyDeleted,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      );
-                    },
-                    icon: const Icon(Icons.delete),
-                  ),
-                  if (widget._meal.mealItems.isNotEmpty)
-                    Ink(
-                      decoration: ShapeDecoration(
-                        color: Theme.of(context).primaryColor, //wgerPrimaryButtonColor,
-                        shape: const CircleBorder(),
-                      ),
-                      child: IconButton(
-                        icon: const Icon(Icons.history_edu),
-                        color: Colors.white,
+            MealHeader(
+                editing: _editing,
+                toggleEditing: _toggleEditing,
+                showingDetails: _showingDetails,
+                toggleDetails: _toggleDetails,
+                meal: widget._meal),
+            if (_editing)
+              Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: Wrap(
+                    spacing: 8,
+                    children: [
+                      TextButton.icon(
+                        icon: const Icon(Icons.add),
+                        label: Text(AppLocalizations.of(context).addIngredient),
                         onPressed: () {
-                          Provider.of<NutritionPlansProvider>(context, listen: false)
-                              .logMealToDiary(widget._meal);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                AppLocalizations.of(context).mealLogged,
-                                textAlign: TextAlign.center,
-                              ),
+                          Navigator.pushNamed(
+                            context,
+                            FormScreen.routeName,
+                            arguments: FormScreenArguments(
+                              AppLocalizations.of(context).addIngredient,
+                              MealItemForm(widget._meal, widget._listMealItems),
+                              hasListView: true,
                             ),
                           );
                         },
                       ),
-                    ),
-                  IconButton(
-                    onPressed: () {
-                      Navigator.pushNamed(
-                        context,
-                        FormScreen.routeName,
-                        arguments: FormScreenArguments(
-                          AppLocalizations.of(context).edit,
-                          MealForm(widget._meal.planId, widget._meal),
-                        ),
-                      );
-                    },
-                    icon: const Icon(Icons.edit),
-                  ),
-                ],
-              ),
-            if (_expanded) const Divider(),
-            ...widget._meal.mealItems.map((item) => MealItemWidget(item, _expanded)),
-            OutlinedButton(
-              child: Text(AppLocalizations.of(context).addIngredient),
-              onPressed: () {
-                Navigator.pushNamed(
-                  context,
-                  FormScreen.routeName,
-                  arguments: FormScreenArguments(
-                    AppLocalizations.of(context).addIngredient,
-                    MealItemForm(widget._meal, widget._listMealItems),
-                    hasListView: true,
-                  ),
-                );
-              },
-            ),
+                      TextButton.icon(
+                        label: Text(AppLocalizations.of(context).editSchedule),
+                        onPressed: () {
+                          Navigator.pushNamed(
+                            context,
+                            FormScreen.routeName,
+                            arguments: FormScreenArguments(
+                              AppLocalizations.of(context).edit,
+                              MealForm(widget._meal.planId, widget._meal),
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.timer),
+                      ),
+                      TextButton.icon(
+                          onPressed: () {
+                            // Delete the meal
+                            Provider.of<NutritionPlansProvider>(context, listen: false)
+                                .deleteMeal(widget._meal);
+
+                            // and inform the user
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  AppLocalizations.of(context).successfullyDeleted,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            );
+                          },
+                          label: Text(AppLocalizations.of(context).delete),
+                          icon: const Icon(Icons.delete)),
+                    ],
+                  )),
+            const Divider(),
+            ...widget._meal.mealItems
+                .map((item) => MealItemWidget(item, _showingDetails, _editing)),
           ],
         ),
       ),
@@ -144,10 +138,11 @@ class _MealWidgetState extends State<MealWidget> {
 }
 
 class MealItemWidget extends StatelessWidget {
-  final bool _expanded;
+  final bool _editing;
+  final bool _showingDetails;
   final MealItem _item;
 
-  const MealItemWidget(this._item, this._expanded);
+  const MealItemWidget(this._item, this._showingDetails, this._editing);
 
   @override
   Widget build(BuildContext context) {
@@ -180,11 +175,12 @@ class MealItemWidget extends StatelessWidget {
       ),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [if (_expanded) ...getMutedNutritionalValues(values, context)],
+        children: [if (_showingDetails) ...getMutedNutritionalValues(values, context)],
       ),
-      trailing: _expanded
+      trailing: _editing
           ? IconButton(
               icon: const Icon(Icons.delete),
+              tooltip: AppLocalizations.of(context).delete,
               iconSize: ICON_SIZE_SMALL,
               onPressed: () {
                 // Delete the meal item
@@ -205,87 +201,95 @@ class MealItemWidget extends StatelessWidget {
   }
 }
 
-class DismissibleMealHeader extends StatelessWidget {
-  final bool _expanded;
-  final Function _toggle;
+class MealHeader extends StatelessWidget {
+  final bool _editing;
+  final bool _showingDetails;
+  final Function _toggleEditing;
+  final Function _toggleDetails;
 
-  const DismissibleMealHeader(
-    this._expanded,
-    this._toggle, {
+  const MealHeader({
     required Meal meal,
-  }) : _meal = meal;
+    required bool editing,
+    required Function toggleEditing,
+    required bool showingDetails,
+    required Function toggleDetails,
+  })  : _toggleDetails = toggleDetails,
+        _toggleEditing = toggleEditing,
+        _showingDetails = showingDetails,
+        _editing = editing,
+        _meal = meal;
 
   final Meal _meal;
 
   @override
   Widget build(BuildContext context) {
-    return Dismissible(
-      key: Key(_meal.id.toString()),
-      direction: DismissDirection.startToEnd,
-      background: Container(
-        color: Theme.of(context).primaryColor, //wgerPrimaryButtonColor,
-        alignment: Alignment.centerLeft,
-        padding: const EdgeInsets.only(left: 10),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ListTile(
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          title: Row(children: [
+            Expanded(
+              child: (_meal.name != '')
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          _meal.name,
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        Text(
+                          _meal.time!.format(context),
+                          style: Theme.of(context).textTheme.headlineSmall,
+                        )
+                      ],
+                    )
+                  : Text(
+                      _meal.time!.format(context),
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    ),
+            ),
             Text(
-              AppLocalizations.of(context).logMeal,
-              style: const TextStyle(color: Colors.white),
+              AppLocalizations.of(context).log,
+              style: Theme.of(context)
+                  .textTheme
+                  .labelLarge
+                  ?.copyWith(color: Theme.of(context).colorScheme.primary),
             ),
-            const Icon(
-              Icons.history_edu,
-              color: Colors.white,
+            const SizedBox(width: 26),
+            const SizedBox(height: 40, width: 1, child: VerticalDivider()),
+          ]),
+          trailing: Row(mainAxisSize: MainAxisSize.min, children: [
+            IconButton(
+              icon: _showingDetails ? const Icon(Icons.info) : const Icon(Icons.info_outline),
+              onPressed: () {
+                _toggleDetails();
+              },
+              tooltip: AppLocalizations.of(context).toggleDetails,
             ),
-          ],
-        ),
-      ),
-      confirmDismiss: (direction) async {
-        // Delete
-        if (direction == DismissDirection.startToEnd) {
-          Provider.of<NutritionPlansProvider>(context, listen: false).logMealToDiary(_meal);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                AppLocalizations.of(context).mealLogged,
-                textAlign: TextAlign.center,
-              ),
-            ),
-          );
-        }
-        return false;
-      },
-      child: Container(
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(color: Theme.of(context).colorScheme.inversePrimary),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (_meal.name != '')
-              Text(
-                _meal.name,
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    _meal.time!.format(context),
-                    style: Theme.of(context).textTheme.headlineSmall,
-                  ),
+            const SizedBox(width: 5),
+            IconButton(
+              icon: _editing ? const Icon(Icons.done) : const Icon(Icons.edit),
+              tooltip:
+                  _editing ? AppLocalizations.of(context).done : AppLocalizations.of(context).edit,
+              onPressed: () {
+                _toggleEditing();
+              },
+            )
+          ]),
+          onTap: () {
+            Provider.of<NutritionPlansProvider>(context, listen: false).logMealToDiary(_meal);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  AppLocalizations.of(context).mealLogged,
+                  textAlign: TextAlign.center,
                 ),
-                IconButton(
-                  visualDensity: VisualDensity.compact,
-                  icon: _expanded ? const Icon(Icons.unfold_less) : const Icon(Icons.unfold_more),
-                  onPressed: () {
-                    _toggle();
-                  },
-                ),
-              ],
-            ),
-          ],
+              ),
+            );
+          },
         ),
-      ),
+      ],
     );
   }
 }

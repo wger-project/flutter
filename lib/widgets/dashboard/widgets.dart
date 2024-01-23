@@ -146,14 +146,6 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
     return out;
   }
 
-  Widget getTrailing() {
-    if (!_hasContent) {
-      return const Text('');
-    }
-
-    return _showDetail ? const Icon(Icons.expand_less) : const Icon(Icons.expand_more);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -174,7 +166,15 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
               Icons.restaurant,
               color: Theme.of(context).textTheme.headlineSmall!.color,
             ),
-            trailing: getTrailing(),
+            trailing: _hasContent
+                ? Tooltip(
+                    message: AppLocalizations.of(context).toggleDetails,
+                    child: _showDetail
+                        ? const Icon(
+                            Icons.info,
+                          )
+                        : const Icon(Icons.info_outline))
+                : const SizedBox(),
             onTap: () {
               setState(() {
                 _showDetail = !_showDetail;
@@ -182,16 +182,18 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
             },
           ),
           if (_hasContent)
-            Column(
-              children: [
-                ...getContent(),
-                Container(
-                  padding: const EdgeInsets.all(15),
-                  height: 180,
-                  child: FlNutritionalPlanPieChartWidget(_plan!.nutritionalValues),
-                )
-              ],
-            )
+            Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Column(
+                  children: [
+                    ...getContent(),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 15),
+                      height: 180,
+                      child: FlNutritionalPlanPieChartWidget(_plan!.nutritionalValues),
+                    )
+                  ],
+                ))
           else
             NothingFound(
               AppLocalizations.of(context).noNutritionalPlans,
@@ -441,14 +443,6 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
     _hasContent = _workoutPlan != null;
   }
 
-  Widget getTrailing() {
-    if (!_hasContent) {
-      return const Text('');
-    }
-
-    return _showDetail ? const Icon(Icons.expand_less) : const Icon(Icons.expand_more);
-  }
-
   List<Widget> getContent() {
     final List<Widget> out = [];
 
@@ -540,7 +534,15 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
               Icons.fitness_center,
               color: Theme.of(context).textTheme.headlineSmall!.color,
             ),
-            trailing: getTrailing(),
+            trailing: _hasContent
+                ? Tooltip(
+                    message: AppLocalizations.of(context).toggleDetails,
+                    child: _showDetail
+                        ? const Icon(
+                            Icons.info,
+                          )
+                        : const Icon(Icons.info_outline))
+                : const SizedBox(),
             onTap: () {
               setState(() {
                 _showDetail = !_showDetail;
@@ -548,8 +550,8 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
             },
           ),
           if (_hasContent)
-            Container(
-              padding: const EdgeInsets.only(left: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Column(
                 children: [
                   ...getContent(),
