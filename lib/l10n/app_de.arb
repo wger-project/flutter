@@ -468,7 +468,7 @@
   "@supersetWith": {
     "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
   },
-  "total": "Gesamt",
+  "total": "Summe",
   "@total": {
     "description": "Label used for total sums of e.g. calories or similar"
   },
