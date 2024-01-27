@@ -775,5 +775,13 @@
   "settingsCacheDescription": "Egzersiz önbelleği",
   "@settingsCacheDescription": {},
   "settingsCacheDeletedSnackbar": "Önbellek başarıyla temizlendi",
-  "@settingsCacheDeletedSnackbar": {}
+  "@settingsCacheDeletedSnackbar": {},
+  "log": "Kaydet",
+  "@log": {
+    "description": "Log a specific meal (imperative form)"
+  },
+  "useMetric": "Vücut ağırlığı için metrik birimler kullan",
+  "@useMetric": {},
+  "done": "Bitti",
+  "@done": {}
 }
