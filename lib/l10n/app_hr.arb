@@ -835,5 +835,13 @@
   "settingsCacheDescription": "Izvrši predmemoriju",
   "@settingsCacheDescription": {},
   "settingsCacheDeletedSnackbar": "Predmemorija je uspješno izbrisana",
-  "@settingsCacheDeletedSnackbar": {}
+  "@settingsCacheDeletedSnackbar": {},
+  "useMetric": "Koristi metričke jedinice za tjelesnu težinu",
+  "@useMetric": {},
+  "log": "Zapiši",
+  "@log": {
+    "description": "Log a specific meal (imperative form)"
+  },
+  "done": "Obavljeno",
+  "@done": {}
 }

@@ -83,14 +83,15 @@ void main() {
 
     //debugDumpApp();
     expect(find.text('Workout plans'), findsOneWidget);
-    expect(find.byType(Dismissible), findsNWidgets(2));
+    expect(find.byType(Card), findsNWidgets(2));
     expect(find.byType(ListTile), findsNWidgets(2));
   });
 
-  testWidgets('Test deleting an item by dragging the dismissible', (WidgetTester tester) async {
+  testWidgets('Test deleting an item using the Delete button', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen());
 
-    await tester.drag(find.byKey(const Key('1')), const Offset(-500.0, 0.0));
+    await tester.tap(find.byIcon(Icons.delete).first);
+
     await tester.pumpAndSettle();
 
     // Confirmation dialog

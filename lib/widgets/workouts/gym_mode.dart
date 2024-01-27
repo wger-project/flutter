@@ -1131,7 +1131,7 @@ class NavigationHeader extends StatelessWidget {
           ),
         ),
         IconButton(
-          icon: const Icon(Icons.menu),
+          icon: const Icon(Icons.toc),
           onPressed: () {
             showDialog(
               context: context,

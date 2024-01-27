@@ -167,6 +167,7 @@
   "@rirNotUsed": {
     "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
   },
+  "useMetric": "Use metric units for body weight",
   "weightUnit": "Weight unit",
   "@weightUnit": {},
   "repetitionUnit": "Repetition unit",
@@ -808,5 +809,10 @@
   "none__bodyweight_exercise_": "none (bodyweight exercise)",
   "@none__bodyweight_exercise_": {
     "description": "Generated entry for translation for server strings"
-  }
+  },
+  "log": "Log",
+  "@log": {
+    "description": "Log a specific meal (imperative form)"
+  },
+  "done": "Done"
 }

@@ -92,6 +92,7 @@ jobs:
           dart manifest_generator.dart --meta ../flatpak_meta.json --github
           mkdir ../../flathub
           cp flatpak_generator_exports/de.wger.flutter.json ../../flathub
+          cp flatpak_generator_exports/flathub.json ../../flathub
 
       - name: Push updated config to flathub repository
         uses: cpina/github-action-push-to-another-repository@main
@@ -120,7 +121,5 @@ jobs:
           git checkout -b release-${{ env.VERSION }}
           git add pubspec.yaml
           git commit -m "Bump version to $( flutter pub run cider version )"
-          git tag ${{ env.VERSION }}
-          git push origin ${{ env.VERSION }}
           git push origin --delete ${{ env.VERSION_V }}
           git push
