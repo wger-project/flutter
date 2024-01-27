@@ -788,5 +788,11 @@
   "lb": "lb",
   "@lb": {
     "description": "Generated entry for translation for server strings"
-  }
+  },
+  "useMetric": "Metrische Einheiten für das Körpergewicht verwenden",
+  "@useMetric": {},
+  "done": "Fertig",
+  "@done": {},
+  "searchNamesInEnglish": "Namen auch auf English suchen",
+  "@searchNamesInEnglish": {}
 }
