@@ -140,7 +140,6 @@ class AuthProvider with ChangeNotifier {
     if (response.statusCode >= 400) {
       throw WgerHttpException(response.body);
     }
-
     // If update is required don't log in user
     if (await applicationUpdateRequired()) {
       return {'action': LoginActions.update};
@@ -174,7 +173,10 @@ class AuthProvider with ChangeNotifier {
     await initData(serverUrl);
 
     // If update is required don't log in user
-    if (await applicationUpdateRequired()) {
+    if (await applicationUpdateRequired(
+      applicationVersion!.version,
+      {MANIFEST_KEY_CHECK_UPDATE: 'true'},
+    )) {
       return {'action': LoginActions.update};
     }
 
