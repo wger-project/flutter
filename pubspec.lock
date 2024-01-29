@@ -226,7 +226,7 @@ packages:
     source: hosted
     version: "0.4.1"
   clock:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: clock
       sha256: cb6d7f03e1de671e34607e909a7213e31d7752be4fb66a86d29fe1eb14bfb5cf
@@ -389,10 +389,10 @@ packages:
     dependency: "direct main"
     description:
       name: fl_chart
-      sha256: fe6fec7d85975a99c73b9515a69a6e291364accfa0e4a5b3ce6de814d74b9a1c
+      sha256: b5e2b0f13d93f8c532b5a2786bfb44580de1f50b927bf95813fa1af617e9caf8
       url: "https://pub.dev"
     source: hosted
-    version: "0.66.0"
+    version: "0.66.1"
   flex_color_scheme:
     dependency: "direct main"
     description:
