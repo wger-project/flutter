@@ -93,9 +93,7 @@ void main() {
       body: anyNamed('body'),
     )).thenAnswer((_) => Future(() => Response(json.encode(responseLoginOk), 200)));
 
-    when(mockClient.get(
-      any,
-    )).thenAnswer((_) => Future(() => Response('"1.2.3.4"', 200)));
+    when(mockClient.get(any)).thenAnswer((_) => Future(() => Response('"1.2.3.4"', 200)));
 
     when(mockClient.post(
       tRegistration,

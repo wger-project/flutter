@@ -56,3 +56,47 @@ Map<String, dynamic> _$$ExerciseBaseDataImplToJson(_$ExerciseBaseDataImpl instan
       'author_history': instance.authors,
       'total_authors_history': instance.authorsGlobal,
     };
+
+_$ExerciseSearchDetailsImpl _$$ExerciseSearchDetailsImplFromJson(Map<String, dynamic> json) =>
+    _$ExerciseSearchDetailsImpl(
+      translationId: json['id'] as int,
+      exerciseId: json['base_id'] as int,
+      name: json['name'] as String,
+      category: json['category'] as String,
+      image: json['image'] as String?,
+      imageThumbnail: json['image_thumbnail'] as String?,
+    );
+
+Map<String, dynamic> _$$ExerciseSearchDetailsImplToJson(_$ExerciseSearchDetailsImpl instance) =>
+    <String, dynamic>{
+      'id': instance.translationId,
+      'base_id': instance.exerciseId,
+      'name': instance.name,
+      'category': instance.category,
+      'image': instance.image,
+      'image_thumbnail': instance.imageThumbnail,
+    };
+
+_$ExerciseSearchEntryImpl _$$ExerciseSearchEntryImplFromJson(Map<String, dynamic> json) =>
+    _$ExerciseSearchEntryImpl(
+      value: json['value'] as String,
+      data: ExerciseSearchDetails.fromJson(json['data'] as Map<String, dynamic>),
+    );
+
+Map<String, dynamic> _$$ExerciseSearchEntryImplToJson(_$ExerciseSearchEntryImpl instance) =>
+    <String, dynamic>{
+      'value': instance.value,
+      'data': instance.data,
+    };
+
+_$ExerciseApiSearchImpl _$$ExerciseApiSearchImplFromJson(Map<String, dynamic> json) =>
+    _$ExerciseApiSearchImpl(
+      suggestions: (json['suggestions'] as List<dynamic>)
+          .map((e) => ExerciseSearchEntry.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+
+Map<String, dynamic> _$$ExerciseApiSearchImplToJson(_$ExerciseApiSearchImpl instance) =>
+    <String, dynamic>{
+      'suggestions': instance.suggestions,
+    };

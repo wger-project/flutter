@@ -24,6 +24,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/exceptions/no_such_entry_exception.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/models/exercises/ingredient_api.dart';
 import 'package:wger/models/nutrition/image.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/log.dart';
@@ -331,7 +332,7 @@ class NutritionPlansProvider with ChangeNotifier {
   }
 
   /// Searches for an ingredient
-  Future<List> searchIngredient(
+  Future<List<IngredientApiSearchEntry>> searchIngredient(
     String name, {
     String languageCode = 'en',
     bool searchEnglish = false,
@@ -352,7 +353,7 @@ class NutritionPlansProvider with ChangeNotifier {
     );
 
     // Process the response
-    return response['suggestions'];
+    return IngredientApiSearch.fromJson(response).suggestions;
   }
 
   /// Searches for an ingredient with code

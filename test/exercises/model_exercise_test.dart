@@ -14,7 +14,7 @@ void main() {
   group('Model tests', () {
     test('test getExercise', () async {
       // arrange and act
-      final base = getTestExerciseBases()[1];
+      final base = getTestExercises()[1];
 
       // assert
       expect(base.getExercise('en').id, 5);

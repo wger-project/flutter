@@ -17,8 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-//import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:flutter/services.dart'; //import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter_zxing/flutter_zxing.dart';
@@ -27,6 +26,7 @@ import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/platform.dart';
 import 'package:wger/helpers/ui.dart';
+import 'package:wger/models/exercises/ingredient_api.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/widgets/core/core.dart';
 
@@ -90,44 +90,56 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        TypeAheadFormField(
-          textFieldConfiguration: TextFieldConfiguration(
-            controller: widget._ingredientController,
-            decoration: InputDecoration(
-              prefixIcon: const Icon(Icons.search),
-              labelText: AppLocalizations.of(context).searchIngredient,
-              suffixIcon: (widget.showScanner && !isDesktop) ? scanButton() : null,
-            ),
-          ),
-          suggestionsCallback: (pattern) async {
+        TypeAheadField<IngredientApiSearchEntry>(
+          controller: widget._ingredientController,
+          builder: (context, controller, focusNode) {
+            return TextFormField(
+              controller: controller,
+              focusNode: focusNode,
+              autofocus: true,
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return AppLocalizations.of(context).selectIngredient;
+                }
+                return null;
+              },
+              decoration: InputDecoration(
+                prefixIcon: const Icon(Icons.search),
+                labelText: AppLocalizations.of(context).searchIngredient,
+                suffixIcon: (widget.showScanner && !isDesktop) ? scanButton() : null,
+              ),
+            );
+          },
+          suggestionsCallback: (pattern) {
+            if (pattern == '') {
+              return null;
+            }
+
             return Provider.of<NutritionPlansProvider>(context, listen: false).searchIngredient(
               pattern,
               languageCode: Localizations.localeOf(context).languageCode,
               searchEnglish: _searchEnglish,
             );
           },
-          itemBuilder: (context, dynamic suggestion) {
+          itemBuilder: (context, suggestion) {
             final url = context.read<NutritionPlansProvider>().baseProvider.auth.serverUrl;
             return ListTile(
-              leading: suggestion['data']['image'] != null
-                  ? CircleAvatar(backgroundImage: NetworkImage(url! + suggestion['data']['image']))
+              leading: suggestion.data.image != null
+                  ? CircleAvatar(backgroundImage: NetworkImage(url! + suggestion.data.image!))
                   : const CircleIconAvatar(Icon(Icons.image, color: Colors.grey)),
-              title: Text(suggestion['value']),
-              subtitle: Text(suggestion['data']['id'].toString()),
+              title: Text(suggestion.value),
+              // subtitle: Text(suggestion.data.id.toString()),
             );
           },
-          transitionBuilder: (context, suggestionsBox, controller) {
-            return suggestionsBox;
-          },
-          onSuggestionSelected: (dynamic suggestion) {
-            widget._ingredientIdController.text = suggestion['data']['id'].toString();
-            widget._ingredientController.text = suggestion['value'];
-          },
-          validator: (value) {
-            if (value!.isEmpty) {
-              return AppLocalizations.of(context).selectIngredient;
-            }
-            return null;
+          transitionBuilder: (context, animation, child) => FadeTransition(
+            opacity: CurvedAnimation(parent: animation, curve: Curves.fastOutSlowIn),
+            child: child,
+          ),
+          onSelected: (suggestion) {
+            //SuggestionsController.of(context).;
+
+            widget._ingredientIdController.text = suggestion.data.id.toString();
+            widget._ingredientController.text = suggestion.value;
           },
         ),
         if (Localizations.localeOf(context).languageCode != LANGUAGE_SHORT_ENGLISH)

@@ -41,7 +41,7 @@ void main() {
 
   final mockExerciseProvider = MockExercisesProvider();
   final workoutPlan = getWorkout();
-  final bases = getTestExerciseBases();
+  final bases = getTestExercises();
 
   Widget createHomeScreen({locale = 'en'}) {
     return ChangeNotifierProvider<WorkoutPlansProvider>(
