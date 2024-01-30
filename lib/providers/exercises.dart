@@ -649,12 +649,9 @@ class ExercisesProvider with ChangeNotifier {
       ),
     );
 
-    // Process the response
-    return Future.wait(
-      (result['suggestions'] as List).map<Future<Exercise>>(
-        (entry) => fetchAndSetExercise(entry['data']['base_id']),
-      ),
-    );
+    // Load the ingredients
+    final results = ExerciseApiSearch.fromJson(result);
+    return Future.wait(results.suggestions.map((e) => fetchAndSetExercise(e.data.exerciseId)));
   }
 }
 

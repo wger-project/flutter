@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/models/exercises/ingredient_api.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
@@ -76,8 +77,13 @@ void main() {
     when(mockNutrition.searchIngredientWithCode('123')).thenAnswer((_) => Future.value(ingredient));
     when(mockNutrition.searchIngredientWithCode('')).thenAnswer((_) => Future.value(null));
     when(mockNutrition.searchIngredientWithCode('222')).thenAnswer((_) => Future.value(null));
-    when(mockNutrition.searchIngredient(any)).thenAnswer((_) =>
-        Future.value(json.decode(fixture('nutrition/ingredient_suggestions')) as List<dynamic>));
+    when(mockNutrition.searchIngredient(any,
+            languageCode: anyNamed('languageCode'), searchEnglish: anyNamed('searchEnglish')))
+        .thenAnswer(
+      (_) => Future.value(
+          IngredientApiSearch.fromJson(json.decode(fixture('nutrition/ingredient_suggestions')))
+              .suggestions),
+    );
 
     when(mockNutrition.addMealItem(any, meal1)).thenAnswer((_) => Future.value(mealItem));
   });
@@ -109,8 +115,8 @@ void main() {
     await tester.pumpWidget(createMealItemFormScreen(meal1, '', true));
     await tester.pumpAndSettle();
 
-    expect(find.byType(TypeAheadFormField), findsOneWidget);
-    expect(find.byType(TextFormField), findsOneWidget);
+    expect(find.byType(TypeAheadField<IngredientApiSearchEntry>), findsOneWidget);
+    expect(find.byType(TextFormField), findsWidgets);
     expect(find.byKey(const Key('scan-button')), findsOneWidget);
     expect(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)), findsOneWidget);
 
@@ -248,6 +254,8 @@ void main() {
     });
 
     testWidgets('save ingredient without weight', (WidgetTester tester) async {
+      await tester.binding.setSurfaceSize(const Size(1080, 1920));
+      tester.view.devicePixelRatio = 1.0;
       await tester.pumpWidget(createMealItemFormScreen(meal1, '123', true));
 
       await tester.tap(find.byKey(const Key('scan-button')));

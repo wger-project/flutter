@@ -203,7 +203,7 @@ final sideRaisesEn = Translation(
   language: tLanguage2,
 );
 
-List<Exercise> getTestExerciseBases() {
+List<Exercise> getTestExercises() {
   benchPress.translations = [benchPressEn, benchPressDe];
   crunches.translations = [crunchesEn, crunchesDe, crunchesFr];
   deadLift.translations = [deadLiftEn];

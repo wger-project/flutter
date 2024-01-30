@@ -50,7 +50,7 @@ void main() {
       mockBaseProvider,
       database: ExerciseDatabase.inMemory(NativeDatabase.memory()),
     );
-    provider.exercises = getTestExerciseBases();
+    provider.exercises = getTestExercises();
     provider.languages = [tLanguage1, tLanguage2, tLanguage3];
 
     // Mock base info response

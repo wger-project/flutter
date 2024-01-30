@@ -223,7 +223,7 @@ void main() {
           equipment: FilterCategory<Equipment>(title: 'Equipment', items: {}),
         );
 
-        provider.exercises = data.getTestExerciseBases();
+        provider.exercises = data.getTestExercises();
       });
 
       test('Nothing is selected with no search term', () async {
@@ -238,7 +238,7 @@ void main() {
 
         expect(
           provider.filteredExercises,
-          data.getTestExerciseBases(),
+          data.getTestExercises(),
         );
       });
 
@@ -253,7 +253,7 @@ void main() {
 
         // assert
         verifyNever(provider.baseProvider.fetch(tSearchByNameUri));
-        expect(provider.filteredExercises, [data.getTestExerciseBases()[0]]);
+        expect(provider.filteredExercises, [data.getTestExercises()[0]]);
       });
 
       test('A muscle is selected with no search term. Should not find results', () async {
@@ -281,7 +281,7 @@ void main() {
 
         // assert
         verifyNever(provider.baseProvider.fetch(tSearchByNameUri));
-        expect(provider.filteredExercises, [data.getTestExerciseBases()[0]]);
+        expect(provider.filteredExercises, [data.getTestExercises()[0]]);
       });
 
       test('An equipment is selected with no search term. Should not find results', () async {
@@ -310,7 +310,7 @@ void main() {
 
         // assert
         verifyNever(provider.baseProvider.fetch(tSearchByNameUri));
-        expect(provider.filteredExercises, [data.getTestExerciseBases()[1]]);
+        expect(provider.filteredExercises, [data.getTestExercises()[1]]);
       });
 
       test('A muscle and equipment is selected but no match', () async {
@@ -365,7 +365,7 @@ void main() {
           verify(provider.baseProvider.fetch(tSearchByNameUri)).called(1);
           expect(
             provider.filteredExercises,
-            [data.getTestExerciseBases()[0], data.getTestExerciseBases()[1]],
+            [data.getTestExercises()[0], data.getTestExercises()[1]],
           );
         });
         test('Should find items from selection but should filter them by search term', () async {

@@ -4,9 +4,10 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i8;
-import 'dart:ui' as _i9;
+import 'dart:ui' as _i10;
 
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:wger/models/exercises/ingredient_api.dart' as _i9;
 import 'package:wger/models/nutrition/ingredient.dart' as _i6;
 import 'package:wger/models/nutrition/meal.dart' as _i4;
 import 'package:wger/models/nutrition/meal_item.dart' as _i5;
@@ -341,7 +342,7 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i7.NutritionPlansP
       ) as _i8.Future<void>);
 
   @override
-  _i8.Future<List<dynamic>> searchIngredient(
+  _i8.Future<List<_i9.IngredientApiSearchEntry>> searchIngredient(
     String? name, {
     String? languageCode = r'en',
     bool? searchEnglish = false,
@@ -355,8 +356,9 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i7.NutritionPlansP
             #searchEnglish: searchEnglish,
           },
         ),
-        returnValue: _i8.Future<List<dynamic>>.value(<dynamic>[]),
-      ) as _i8.Future<List<dynamic>>);
+        returnValue:
+            _i8.Future<List<_i9.IngredientApiSearchEntry>>.value(<_i9.IngredientApiSearchEntry>[]),
+      ) as _i8.Future<List<_i9.IngredientApiSearchEntry>>);
 
   @override
   _i8.Future<_i6.Ingredient?> searchIngredientWithCode(String? code) => (super.noSuchMethod(
@@ -424,7 +426,7 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i7.NutritionPlansP
       ) as _i8.Future<void>);
 
   @override
-  void addListener(_i9.VoidCallback? listener) => super.noSuchMethod(
+  void addListener(_i10.VoidCallback? listener) => super.noSuchMethod(
         Invocation.method(
           #addListener,
           [listener],
@@ -433,7 +435,7 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i7.NutritionPlansP
       );
 
   @override
-  void removeListener(_i9.VoidCallback? listener) => super.noSuchMethod(
+  void removeListener(_i10.VoidCallback? listener) => super.noSuchMethod(
         Invocation.method(
           #removeListener,
           [listener],

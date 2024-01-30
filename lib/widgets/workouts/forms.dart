@@ -363,105 +363,125 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                 Card(
                   child: Column(
                     children: [
-                      TypeAheadFormField<Exercise>(
+                      TypeAheadField<Exercise>(
                         key: const Key('field-typeahead'),
-                        textFieldConfiguration: TextFieldConfiguration(
-                          controller: _exercisesController,
-                          decoration: InputDecoration(
-                            labelText: AppLocalizations.of(context).searchExercise,
-                            prefixIcon: const Icon(Icons.search),
-                            suffixIcon: IconButton(
-                              icon: const Icon(Icons.help),
-                              onPressed: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) => AlertDialog(
-                                    content: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(AppLocalizations.of(context).selectExercises),
-                                        const SizedBox(height: 10),
-                                        Text(AppLocalizations.of(context).sameRepetitions)
+                        decorationBuilder: (context, child) {
+                          return Material(
+                            type: MaterialType.card,
+                            elevation: 4,
+                            borderRadius: BorderRadius.circular(8),
+                            child: child,
+                          );
+                        },
+                        controller: _exercisesController,
+                        builder: (context, controller, focusNode) {
+                          return TextFormField(
+                            controller: controller,
+                            focusNode: focusNode,
+                            // autofocus: true,
+                            decoration: InputDecoration(
+                              labelText: AppLocalizations.of(context).searchExercise,
+                              prefixIcon: const Icon(Icons.search),
+                              suffixIcon: IconButton(
+                                icon: const Icon(Icons.help),
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      content: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(AppLocalizations.of(context).selectExercises),
+                                          const SizedBox(height: 10),
+                                          Text(AppLocalizations.of(context).sameRepetitions)
+                                        ],
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          child: Text(
+                                              MaterialLocalizations.of(context).closeButtonLabel),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
                                       ],
                                     ),
-                                    actions: [
-                                      TextButton(
-                                        child: Text(
-                                            MaterialLocalizations.of(context).closeButtonLabel),
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
+                                  );
+                                },
+                              ),
+                              errorMaxLines: 2,
+                              border: InputBorder.none,
                             ),
-                            errorMaxLines: 2,
-                            border: InputBorder.none,
-                          ),
-                        ),
+                            validator: (value) {
+                              // At least one exercise must be selected
+                              if (widget._set.exerciseBasesIds.isEmpty) {
+                                return AppLocalizations.of(context).selectExercise;
+                              }
+
+                              // At least one setting has to be filled in
+                              if (widget._set.settings
+                                      .where((s) => s.weight == null && s.reps == null)
+                                      .length ==
+                                  widget._set.settings.length) {
+                                return AppLocalizations.of(context).enterRepetitionsOrWeight;
+                              }
+                              return null;
+                            },
+                          );
+                        },
                         suggestionsCallback: (pattern) {
+                          if (pattern == '') {
+                            return null;
+                          }
                           return context.read<ExercisesProvider>().searchExercise(
                                 pattern,
                                 languageCode: Localizations.localeOf(context).languageCode,
                                 searchEnglish: _searchEnglish,
                               );
                         },
-                        itemBuilder: (BuildContext context, Exercise exerciseSuggestion) {
-                          return ListTile(
-                            leading: SizedBox(
-                              width: 45,
-                              child: ExerciseImageWidget(image: exerciseSuggestion.getMainImage),
-                            ),
-                            title: Text(
-                              exerciseSuggestion
-                                  .getExercise(Localizations.localeOf(context).languageCode)
-                                  .name,
-                            ),
-                            subtitle: Text(
-                              '${exerciseSuggestion.category!.name} / ${exerciseSuggestion.equipment.map((e) => e.name).join(', ')}',
-                            ),
-                          );
-                        },
-                        noItemsFoundBuilder: (context) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8.0),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(AppLocalizations.of(context).noMatchingExerciseFound),
-                                TextButton(
+                        itemBuilder: (BuildContext context, Exercise exerciseSuggestion) =>
+                            ListTile(
+                          key: Key('exercise-${exerciseSuggestion.id}'),
+                          leading: SizedBox(
+                            width: 45,
+                            child: ExerciseImageWidget(image: exerciseSuggestion.getMainImage),
+                          ),
+                          title: Text(
+                            exerciseSuggestion
+                                .getExercise(Localizations.localeOf(context).languageCode)
+                                .name,
+                          ),
+                          subtitle: Text(
+                            '${exerciseSuggestion.category!.name} / ${exerciseSuggestion.equipment.map((e) => e.name).join(', ')}',
+                          ),
+                        ),
+                        emptyBuilder: (context) {
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              ListTile(
+                                title: Text(AppLocalizations.of(context).noMatchingExerciseFound),
+                              ),
+                              ListTile(
+                                title: OutlinedButton(
                                   onPressed: () {
                                     Navigator.of(context).pushNamed(AddExerciseScreen.routeName);
                                   },
                                   child: Text(AppLocalizations.of(context).contributeExercise),
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           );
                         },
-                        transitionBuilder: (context, suggestionsBox, controller) {
-                          return suggestionsBox;
-                        },
-                        onSuggestionSelected: (Exercise exerciseSuggestion) {
+                        transitionBuilder: (context, animation, child) => FadeTransition(
+                          opacity: CurvedAnimation(parent: animation, curve: Curves.fastOutSlowIn),
+                          child: child,
+                        ),
+                        onSelected: (Exercise exerciseSuggestion) {
+                          // SuggestionsController.of(context).select(exerciseSuggestion);
+
                           addExercise(exerciseSuggestion);
                           _exercisesController.text = '';
-                        },
-                        validator: (value) {
-                          // At least one exercise must be selected
-                          if (widget._set.exerciseBasesIds.isEmpty) {
-                            return AppLocalizations.of(context).selectExercise;
-                          }
-
-                          // At least one setting has to be filled in
-                          if (widget._set.settings
-                                  .where((s) => s.weight == null && s.reps == null)
-                                  .length ==
-                              widget._set.settings.length) {
-                            return AppLocalizations.of(context).enterRepetitionsOrWeight;
-                          }
-                          return null;
                         },
                       ),
                       if (Localizations.localeOf(context).languageCode != LANGUAGE_SHORT_ENGLISH)

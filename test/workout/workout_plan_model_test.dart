@@ -27,16 +27,16 @@ void main() {
       final workout = getWorkout();
 
       expect(workout.logs.length, 3);
-      final logExercise1 = workout.filterLogsByExerciseBase(getTestExerciseBases()[0]);
+      final logExercise1 = workout.filterLogsByExerciseBase(getTestExercises()[0]);
       expect(logExercise1.length, 2);
       expect(logExercise1[0].id, 1);
       expect(logExercise1[1].id, 2);
 
-      final logExercise2 = workout.filterLogsByExerciseBase(getTestExerciseBases()[1]);
+      final logExercise2 = workout.filterLogsByExerciseBase(getTestExercises()[1]);
       expect(logExercise2.length, 1);
       expect(logExercise2[0].id, 3);
 
-      expect(workout.filterLogsByExerciseBase(getTestExerciseBases()[2]).length, 0);
+      expect(workout.filterLogsByExerciseBase(getTestExercises()[2]).length, 0);
     });
   });
 }

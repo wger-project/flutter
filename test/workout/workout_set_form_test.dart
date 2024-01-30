@@ -31,6 +31,7 @@ import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 
+import '../../test_data/exercises.dart';
 import '../../test_data/workouts.dart';
 import 'workout_set_form_test.mocks.dart';
 
@@ -84,6 +85,13 @@ void main() {
     when(mockWorkoutPlans.addSet(any)).thenAnswer((_) => Future.value(Set.empty()));
     when(mockWorkoutPlans.addSetting(any)).thenAnswer((_) => Future.value(Setting.empty()));
     when(mockWorkoutPlans.fetchSmartText(any, any)).thenAnswer((_) => Future.value('2 x 10'));
+    when(mockExerciseProvider.searchExercise(
+      any,
+      languageCode: anyNamed('languageCode'),
+      searchEnglish: anyNamed('searchEnglish'),
+    )).thenAnswer(
+      (_) => Future.value([getTestExercises().first]),
+    );
 
     await tester.pumpWidget(createHomeScreen());
     await tester.pumpAndSettle();
@@ -91,6 +99,7 @@ void main() {
     await tester.enterText(find.byKey(const Key('field-typeahead')), 'exercise');
     await tester.pumpAndSettle();
 
+    //await tester.tap(find.byKey(const Key('exercise-1')));
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
     //verify(mockWorkoutPlans.addSet(any));

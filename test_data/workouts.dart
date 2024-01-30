@@ -34,7 +34,7 @@ const RepetitionUnit repetitionUnit1 = RepetitionUnit(id: 1, name: 'Repetitions'
 const RepetitionUnit repetitionUnit2 = RepetitionUnit(id: 2, name: 'Hours');
 
 WorkoutPlan getWorkout({List<Exercise>? exercises}) {
-  final testBases = exercises ?? getTestExerciseBases();
+  final testBases = exercises ?? getTestExercises();
 
   final log1 = Log.empty()
     ..id = 1
