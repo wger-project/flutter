@@ -755,5 +755,37 @@
   "kg": "Kg",
   "@kg": {
     "description": "Generated entry for translation for server strings"
-  }
+  },
+  "useMetric": "Utilizar unidades metricas para el peso corporal",
+  "@useMetric": {},
+  "settingsTitle": "Configuraciones",
+  "@settingsTitle": {},
+  "settingsCacheTitle": "Cache",
+  "@settingsCacheTitle": {},
+  "settingsCacheDeletedSnackbar": "Cache borrado exitosamente",
+  "@settingsCacheDeletedSnackbar": {},
+  "log": "Registro",
+  "@log": {
+    "description": "Log a specific meal (imperative form)"
+  },
+  "done": "Listo",
+  "@done": {},
+  "noMatchingExerciseFound": "No se encontraron ejercicios que coincidan",
+  "@noMatchingExerciseFound": {
+    "description": "Message returned if no exercises match the searched string"
+  },
+  "aboutMastodonTitle": "Mastodon",
+  "@aboutMastodonTitle": {
+    "description": "Title for mastodon section in the about dialog"
+  },
+  "aboutMastodonText": "Siguenos en mastodon para recibir actualizaciones y noticias sobre el proyecto",
+  "@aboutMastodonText": {
+    "description": "Text for the mastodon section in the about dialog"
+  },
+  "settingsCacheDescription": "Cache de ejercicios",
+  "@settingsCacheDescription": {},
+  "aboutDonateTitle": "Donar",
+  "@aboutDonateTitle": {},
+  "aboutDonateText": "Invítanos un café para ayudar al proyecto, cubrir los costos del servidor y mantenernos activos",
+  "@aboutDonateText": {}
 }

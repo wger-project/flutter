@@ -468,7 +468,7 @@
   "@supersetWith": {
     "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
   },
-  "total": "Gesamt",
+  "total": "Summe",
   "@total": {
     "description": "Label used for total sums of e.g. calories or similar"
   },
@@ -788,5 +788,11 @@
   "lb": "lb",
   "@lb": {
     "description": "Generated entry for translation for server strings"
-  }
+  },
+  "useMetric": "Metrische Einheiten für das Körpergewicht verwenden",
+  "@useMetric": {},
+  "done": "Fertig",
+  "@done": {},
+  "searchNamesInEnglish": "Namen auch auf English suchen",
+  "@searchNamesInEnglish": {}
 }
