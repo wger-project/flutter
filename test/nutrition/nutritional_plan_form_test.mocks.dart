@@ -28,8 +28,7 @@ import 'package:wger/providers/nutrition.dart' as _i7;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeWgerBaseProvider_0 extends _i1.SmartFake
-    implements _i2.WgerBaseProvider {
+class _FakeWgerBaseProvider_0 extends _i1.SmartFake implements _i2.WgerBaseProvider {
   _FakeWgerBaseProvider_0(
     Object parent,
     Invocation parentInvocation,
@@ -39,8 +38,7 @@ class _FakeWgerBaseProvider_0 extends _i1.SmartFake
         );
 }
 
-class _FakeNutritionalPlan_1 extends _i1.SmartFake
-    implements _i3.NutritionalPlan {
+class _FakeNutritionalPlan_1 extends _i1.SmartFake implements _i3.NutritionalPlan {
   _FakeNutritionalPlan_1(
     Object parent,
     Invocation parentInvocation,
@@ -83,8 +81,7 @@ class _FakeIngredient_4 extends _i1.SmartFake implements _i6.Ingredient {
 /// A class which mocks [NutritionPlansProvider].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockNutritionPlansProvider extends _i1.Mock
-    implements _i7.NutritionPlansProvider {
+class MockNutritionPlansProvider extends _i1.Mock implements _i7.NutritionPlansProvider {
   MockNutritionPlansProvider() {
     _i1.throwOnMissingStub(this);
   }
@@ -170,14 +167,12 @@ class MockNutritionPlansProvider extends _i1.Mock
       ) as _i8.Future<void>);
 
   @override
-  _i8.Future<_i3.NutritionalPlan> fetchAndSetPlanSparse(int? planId) =>
-      (super.noSuchMethod(
+  _i8.Future<_i3.NutritionalPlan> fetchAndSetPlanSparse(int? planId) => (super.noSuchMethod(
         Invocation.method(
           #fetchAndSetPlanSparse,
           [planId],
         ),
-        returnValue:
-            _i8.Future<_i3.NutritionalPlan>.value(_FakeNutritionalPlan_1(
+        returnValue: _i8.Future<_i3.NutritionalPlan>.value(_FakeNutritionalPlan_1(
           this,
           Invocation.method(
             #fetchAndSetPlanSparse,
@@ -187,14 +182,12 @@ class MockNutritionPlansProvider extends _i1.Mock
       ) as _i8.Future<_i3.NutritionalPlan>);
 
   @override
-  _i8.Future<_i3.NutritionalPlan> fetchAndSetPlanFull(int? planId) =>
-      (super.noSuchMethod(
+  _i8.Future<_i3.NutritionalPlan> fetchAndSetPlanFull(int? planId) => (super.noSuchMethod(
         Invocation.method(
           #fetchAndSetPlanFull,
           [planId],
         ),
-        returnValue:
-            _i8.Future<_i3.NutritionalPlan>.value(_FakeNutritionalPlan_1(
+        returnValue: _i8.Future<_i3.NutritionalPlan>.value(_FakeNutritionalPlan_1(
           this,
           Invocation.method(
             #fetchAndSetPlanFull,
@@ -204,14 +197,12 @@ class MockNutritionPlansProvider extends _i1.Mock
       ) as _i8.Future<_i3.NutritionalPlan>);
 
   @override
-  _i8.Future<_i3.NutritionalPlan> addPlan(_i3.NutritionalPlan? planData) =>
-      (super.noSuchMethod(
+  _i8.Future<_i3.NutritionalPlan> addPlan(_i3.NutritionalPlan? planData) => (super.noSuchMethod(
         Invocation.method(
           #addPlan,
           [planData],
         ),
-        returnValue:
-            _i8.Future<_i3.NutritionalPlan>.value(_FakeNutritionalPlan_1(
+        returnValue: _i8.Future<_i3.NutritionalPlan>.value(_FakeNutritionalPlan_1(
           this,
           Invocation.method(
             #addPlan,
@@ -316,8 +307,7 @@ class MockNutritionPlansProvider extends _i1.Mock
       ) as _i8.Future<_i5.MealItem>);
 
   @override
-  _i8.Future<void> deleteMealItem(_i5.MealItem? mealItem) =>
-      (super.noSuchMethod(
+  _i8.Future<void> deleteMealItem(_i5.MealItem? mealItem) => (super.noSuchMethod(
         Invocation.method(
           #deleteMealItem,
           [mealItem],
@@ -327,8 +317,7 @@ class MockNutritionPlansProvider extends _i1.Mock
       ) as _i8.Future<void>);
 
   @override
-  _i8.Future<_i6.Ingredient> fetchIngredient(int? ingredientId) =>
-      (super.noSuchMethod(
+  _i8.Future<_i6.Ingredient> fetchIngredient(int? ingredientId) => (super.noSuchMethod(
         Invocation.method(
           #fetchIngredient,
           [ingredientId],
@@ -372,8 +361,7 @@ class MockNutritionPlansProvider extends _i1.Mock
       ) as _i8.Future<List<_i9.IngredientApiSearchEntry>>);
 
   @override
-  _i8.Future<_i6.Ingredient?> searchIngredientWithCode(String? code) =>
-      (super.noSuchMethod(
+  _i8.Future<_i6.Ingredient?> searchIngredientWithCode(String? code) => (super.noSuchMethod(
         Invocation.method(
           #searchIngredientWithCode,
           [code],
@@ -428,8 +416,7 @@ class MockNutritionPlansProvider extends _i1.Mock
       ) as _i8.Future<void>);
 
   @override
-  _i8.Future<void> fetchAndSetLogs(_i3.NutritionalPlan? plan) =>
-      (super.noSuchMethod(
+  _i8.Future<void> fetchAndSetLogs(_i3.NutritionalPlan? plan) => (super.noSuchMethod(
         Invocation.method(
           #fetchAndSetLogs,
           [plan],

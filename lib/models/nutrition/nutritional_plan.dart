@@ -87,9 +87,7 @@ class NutritionalPlan {
   Map<String, dynamic> toJson() => _$NutritionalPlanToJson(this);
 
   String getLabel(BuildContext context) {
-    return description != '' ? description : AppLocalizations
-        .of(context)
-        .nutritionalPlan;
+    return description != '' ? description : AppLocalizations.of(context).nutritionalPlan;
   }
 
   /// Calculations
