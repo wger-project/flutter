@@ -379,7 +379,7 @@ class _PlanFormState extends State<PlanForm> {
   Widget build(BuildContext context) {
     return Form(
       key: _form,
-      child: Column(
+      child: ListView(
         children: [
           // Description
           TextFormField(
@@ -401,7 +401,6 @@ class _PlanFormState extends State<PlanForm> {
               });
               widget._plan.onlyLogging = value;
             },
-            dense: false,
           ),
           SwitchListTile(
             title: Text(AppLocalizations.of(context).addGoalsToPlan),
@@ -412,14 +411,16 @@ class _PlanFormState extends State<PlanForm> {
                 _addGoals = !_addGoals;
               });
             },
-            dense: false,
           ),
           if (_addGoals)
             Column(
               children: [
                 TextFormField(
                   key: const Key('field-goal-energy'),
-                  decoration: InputDecoration(labelText: AppLocalizations.of(context).goalEnergy),
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context).goalEnergy,
+                    suffix: Text(AppLocalizations.of(context).kcal),
+                  ),
                   controller: _goalEnergyController,
                   keyboardType: TextInputType.number,
                   onSaved: (newValue) {
@@ -437,63 +438,23 @@ class _PlanFormState extends State<PlanForm> {
                     return null;
                   },
                 ),
-                TextFormField(
+                GoalMacros(
+                  widget: widget,
+                  label: AppLocalizations.of(context).goalProtein,
+                  onSaved: (String value) => widget._plan.goalProtein = double.parse(value),
                   key: const Key('field-goal-protein'),
-                  decoration: InputDecoration(labelText: AppLocalizations.of(context).goalProtein),
-                  keyboardType: TextInputType.number,
-                  onSaved: (newValue) {
-                    widget._plan.goalProtein = double.parse(newValue!);
-                  },
-                  validator: (value) {
-                    if (value == '') {
-                      return null;
-                    }
-                    try {
-                      double.parse(value!);
-                    } catch (error) {
-                      return AppLocalizations.of(context).enterValidNumber;
-                    }
-                    return null;
-                  },
                 ),
-                TextFormField(
+                GoalMacros(
+                  widget: widget,
+                  label: AppLocalizations.of(context).goalCarbohydrates,
+                  onSaved: (String value) => widget._plan.goalCarbohydrates = double.parse(value),
                   key: const Key('field-goal-carbohydrates'),
-                  decoration:
-                      InputDecoration(labelText: AppLocalizations.of(context).goalCarbohydrates),
-                  keyboardType: TextInputType.number,
-                  onSaved: (newValue) {
-                    widget._plan.goalCarbohydrates = double.parse(newValue!);
-                  },
-                  validator: (value) {
-                    if (value == '') {
-                      return null;
-                    }
-                    try {
-                      double.parse(value!);
-                    } catch (error) {
-                      return AppLocalizations.of(context).enterValidNumber;
-                    }
-                    return null;
-                  },
                 ),
-                TextFormField(
+                GoalMacros(
+                  widget: widget,
+                  label: AppLocalizations.of(context).goalFat,
+                  onSaved: (String value) => widget._plan.goalFat = double.parse(value),
                   key: const Key('field-goal-fat'),
-                  decoration: InputDecoration(labelText: AppLocalizations.of(context).goalFat),
-                  keyboardType: TextInputType.number,
-                  onSaved: (newValue) {
-                    widget._plan.goalFat = double.parse(newValue!);
-                  },
-                  validator: (value) {
-                    if (value == '') {
-                      return null;
-                    }
-                    try {
-                      double.parse(value!);
-                    } catch (error) {
-                      return AppLocalizations.of(context).enterValidNumber;
-                    }
-                    return null;
-                  },
                 ),
               ],
             ),
@@ -512,7 +473,8 @@ class _PlanFormState extends State<PlanForm> {
               // Save to DB
               try {
                 if (widget._plan.id != null) {
-                  await Provider.of<NutritionPlansProvider>(context, listen: false).editPlan(_plan);
+                  await Provider.of<NutritionPlansProvider>(context, listen: false)
+                      .editPlan(widget._plan);
                   if (context.mounted) {
                     Navigator.of(context).pop();
                   }
@@ -542,6 +504,46 @@ class _PlanFormState extends State<PlanForm> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class GoalMacros extends StatelessWidget {
+  GoalMacros({
+    super.key,
+    required this.widget,
+    required this.label,
+    required this.onSaved,
+  });
+
+  final PlanForm widget;
+  final String label;
+  final Function onSaved;
+  final TextEditingController controller = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+        suffixText: AppLocalizations.of(context).g,
+      ),
+      keyboardType: TextInputType.number,
+      onSaved: (newValue) {
+        onSaved(newValue);
+      },
+      validator: (value) {
+        if (value == '') {
+          return null;
+        }
+        try {
+          double.parse(value!);
+        } catch (error) {
+          return AppLocalizations.of(context).enterValidNumber;
+        }
+        return null;
+      },
     );
   }
 }

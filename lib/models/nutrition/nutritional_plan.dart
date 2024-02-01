@@ -62,13 +62,13 @@ class NutritionalPlan {
 
   NutritionalPlan({
     this.id,
+    required this.description,
+    required this.creationDate,
     this.onlyLogging = false,
     this.goalEnergy,
     this.goalProtein,
     this.goalCarbohydrates,
     this.goalFat,
-    required this.description,
-    required this.creationDate,
     List<Meal>? meals,
     List<Log>? logs,
   }) {
@@ -79,6 +79,7 @@ class NutritionalPlan {
   NutritionalPlan.empty() {
     creationDate = DateTime.now();
     description = '';
+    onlyLogging = false;
   }
 
   // Boilerplate
