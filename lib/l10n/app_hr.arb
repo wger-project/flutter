@@ -401,7 +401,7 @@
   "@aboutBugsTitle": {
     "description": "Title for bugs section in the about dialog"
   },
-  "aboutContactUsText": "Ako želi razgovarati s nama, skoči na Discord poslužitelj i kontaktiraj nas",
+  "aboutContactUsText": "Ako želiš s nama razgovarati prijeđi na Discord poslužitelj i kontaktiraj nas",
   "@aboutContactUsText": {
     "description": "Text for contact us section in the about dialog"
   },
@@ -487,7 +487,7 @@
   "@gymMode": {
     "description": "Label when starting the gym mode"
   },
-  "plateCalculator": "Pločasti utezi",
+  "plateCalculator": "Ploče",
   "@plateCalculator": {
     "description": "Label used for the plate calculator in the gym mode"
   },
@@ -682,7 +682,7 @@
   "@triceps": {
     "description": "Generated entry for translation for server strings"
   },
-  "swiss_ball": "Lopta za fitness",
+  "swiss_ball": "Gimnastička lopta",
   "@swiss_ball": {
     "description": "Generated entry for translation for server strings"
   },
@@ -811,5 +811,37 @@
   "lower_back": "Donji dio leđa",
   "@lower_back": {
     "description": "Generated entry for translation for server strings"
-  }
+  },
+  "aboutMastodonTitle": "Mastodon",
+  "@aboutMastodonTitle": {
+    "description": "Title for mastodon section in the about dialog"
+  },
+  "aboutMastodonText": "Prati nas na Mastodonu za nove verzije i novosti o projektu",
+  "@aboutMastodonText": {
+    "description": "Text for the mastodon section in the about dialog"
+  },
+  "noMatchingExerciseFound": "Nisu pronađene odgovarajuće vježbe",
+  "@noMatchingExerciseFound": {
+    "description": "Message returned if no exercises match the searched string"
+  },
+  "aboutDonateTitle": "Doniraj",
+  "@aboutDonateTitle": {},
+  "aboutDonateText": "Pomogni projektu: kupi nam kavu, plati troškove poslužitelja i potiči nas u našem radu",
+  "@aboutDonateText": {},
+  "settingsTitle": "Postavke",
+  "@settingsTitle": {},
+  "settingsCacheTitle": "Predmemorija",
+  "@settingsCacheTitle": {},
+  "settingsCacheDescription": "Izvrši predmemoriju",
+  "@settingsCacheDescription": {},
+  "settingsCacheDeletedSnackbar": "Predmemorija je uspješno izbrisana",
+  "@settingsCacheDeletedSnackbar": {},
+  "useMetric": "Koristi metričke jedinice za tjelesnu težinu",
+  "@useMetric": {},
+  "log": "Zapiši",
+  "@log": {
+    "description": "Log a specific meal (imperative form)"
+  },
+  "done": "Obavljeno",
+  "@done": {}
 }

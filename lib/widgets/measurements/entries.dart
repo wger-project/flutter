@@ -23,7 +23,6 @@ import 'package:provider/provider.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/screens/form_screen.dart';
-import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/measurements/charts.dart';
 
 import 'forms.dart';
@@ -52,72 +51,46 @@ class EntriesList extends StatelessWidget {
             final currentEntry = _category.entries[index];
             final provider = Provider.of<MeasurementProvider>(context, listen: false);
 
-            return Dismissible(
-              key: Key(currentEntry.id.toString()),
-              onDismissed: (direction) {
-                if (direction == DismissDirection.endToStart) {
-                  // Delete entry from DB
-                  provider.deleteEntry(currentEntry.id!, currentEntry.category);
+            return Card(
+              child: ListTile(
+                title: Text('${currentEntry.value} ${_category.unit}'),
+                subtitle: Text(
+                  DateFormat.yMd(Localizations.localeOf(context).languageCode)
+                      .format(currentEntry.date),
+                ),
+                trailing: PopupMenuButton(
+                  itemBuilder: (BuildContext context) {
+                    return [
+                      PopupMenuItem(
+                          child: Text(AppLocalizations.of(context).edit),
+                          onTap: () => Navigator.pushNamed(
+                                context,
+                                FormScreen.routeName,
+                                arguments: FormScreenArguments(
+                                  AppLocalizations.of(context).edit,
+                                  MeasurementEntryForm(currentEntry.category, currentEntry),
+                                ),
+                              )),
+                      PopupMenuItem(
+                          child: Text(AppLocalizations.of(context).delete),
+                          onTap: () async {
+                            // Delete entry from DB
+                            await provider.deleteEntry(currentEntry.id!, currentEntry.category);
 
-                  // and inform the user
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        AppLocalizations.of(context).successfullyDeleted,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  );
-                }
-              },
-              confirmDismiss: (direction) async {
-                // Edit entry
-                if (direction == DismissDirection.startToEnd) {
-                  Navigator.pushNamed(
-                    context,
-                    FormScreen.routeName,
-                    arguments: FormScreenArguments(
-                      AppLocalizations.of(context).edit,
-                      MeasurementEntryForm(currentEntry.category, currentEntry),
-                    ),
-                  );
-                  return false;
-                }
-                return true;
-              },
-              secondaryBackground: Container(
-                color: Theme.of(context).colorScheme.error,
-                alignment: Alignment.centerRight,
-                padding: const EdgeInsets.only(right: 20),
-                margin: const EdgeInsets.symmetric(
-                  horizontal: 4,
-                  vertical: 4,
-                ),
-                child: const Icon(
-                  Icons.delete,
-                  color: Colors.white,
-                ),
-              ),
-              background: Container(
-                color: wgerPrimaryButtonColor,
-                alignment: Alignment.centerLeft,
-                padding: const EdgeInsets.only(left: 20),
-                margin: const EdgeInsets.symmetric(
-                  horizontal: 4,
-                  vertical: 4,
-                ),
-                child: const Icon(
-                  Icons.edit,
-                  color: Colors.white,
-                ),
-              ),
-              child: Card(
-                child: ListTile(
-                  title: Text('${currentEntry.value} ${_category.unit}'),
-                  subtitle: Text(
-                    DateFormat.yMd(Localizations.localeOf(context).languageCode)
-                        .format(currentEntry.date),
-                  ),
+                            // and inform the user
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    AppLocalizations.of(context).successfullyDeleted,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              );
+                            }
+                          })
+                    ];
+                  },
                 ),
               ),
             );

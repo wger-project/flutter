@@ -31,7 +31,7 @@ import 'weight_provider_test.mocks.dart';
 
 @GenerateMocks([WgerBaseProvider])
 void main() {
-  var mockBaseProvider = MockWgerBaseProvider();
+  late MockWgerBaseProvider mockBaseProvider;
 
   setUp(() {
     mockBaseProvider = MockWgerBaseProvider();

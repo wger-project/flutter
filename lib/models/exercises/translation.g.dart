@@ -27,8 +27,15 @@ Translation _$TranslationFromJson(Map<String, dynamic> json) {
         : DateTime.parse(json['created'] as String),
     name: json['name'] as String,
     description: json['description'] as String,
-    baseId: json['exercise_base'] as int?,
-  )..languageId = json['language'] as int;
+    exerciseId: json['exercise_base'] as int?,
+  )
+    ..languageId = json['language'] as int
+    ..notes = (json['notes'] as List<dynamic>)
+        .map((e) => Comment.fromJson(e as Map<String, dynamic>))
+        .toList()
+    ..aliases = (json['aliases'] as List<dynamic>)
+        .map((e) => Alias.fromJson(e as Map<String, dynamic>))
+        .toList();
 }
 
 Map<String, dynamic> _$TranslationToJson(Translation instance) =>
@@ -37,7 +44,7 @@ Map<String, dynamic> _$TranslationToJson(Translation instance) =>
       'uuid': instance.uuid,
       'language': instance.languageId,
       'created': instance.created?.toIso8601String(),
-      'exercise_base': instance.baseId,
+      'exercise_base': instance.exerciseId,
       'name': instance.name,
       'description': instance.description,
     };

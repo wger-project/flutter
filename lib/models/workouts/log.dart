@@ -19,7 +19,7 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/misc.dart';
-import 'package:wger/models/exercises/base.dart';
+import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
 
@@ -34,7 +34,7 @@ class Log {
   late int exerciseBaseId;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  late ExerciseBase exerciseBaseObj;
+  late Exercise exerciseBaseObj;
 
   @JsonKey(required: true, name: 'workout')
   late int workoutPlan;
@@ -85,7 +85,7 @@ class Log {
 
   Map<String, dynamic> toJson() => _$LogToJson(this);
 
-  set exerciseBase(ExerciseBase base) {
+  set exerciseBase(Exercise base) {
     exerciseBaseObj = base;
     exerciseBaseId = base.id!;
   }

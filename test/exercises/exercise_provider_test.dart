@@ -1,16 +1,20 @@
 import 'dart:convert';
 
+import 'package:drift/drift.dart';
+import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wger/database/exercises/exercise_database.dart';
 import 'package:wger/exceptions/no_such_entry_exception.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
-import 'package:wger/models/exercises/language.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/providers/exercises.dart';
 
 import '../../test_data/exercises.dart' as data;
+import '../../test_data/exercises.dart';
 import '../fixtures/fixture_reader.dart';
 import '../measurements/measurement_provider_test.mocks.dart';
 
@@ -31,10 +35,10 @@ void main() {
     path: 'api/v2/$categoryUrl/',
   );
 
-  final Uri texerciseBaseInfoUri = Uri(
+  final Uri tExerciseInfoUri = Uri(
     scheme: 'http',
     host: 'localhost',
-    path: 'api/v2/$exerciseBaseInfoUrl/',
+    path: 'api/v2/$exerciseBaseInfoUrl/1/',
   );
 
   final Uri tMuscleEntriesUri = Uri(
@@ -63,8 +67,6 @@ void main() {
 
   const category1 = ExerciseCategory(id: 1, name: 'Arms');
   const muscle1 = Muscle(id: 1, name: 'Biceps brachii', nameEn: 'Biceps', isFront: true);
-  const equipment1 = Equipment(id: 1, name: 'Barbell');
-  const language1 = Language(id: 1, shortName: 'de', fullName: 'Deutsch');
 
   final Map<String, dynamic> tCategoryMap = jsonDecode(
     fixture('exercises/category_entries.json'),
@@ -82,9 +84,21 @@ void main() {
     fixture('exercises/exercisebaseinfo_response.json'),
   );
 
+  setUpAll(() async {
+    // Needs to be configured here, setUp runs on every test, setUpAll only once
+    //await ServiceLocator().configure();
+  });
+
   setUp(() {
     mockBaseProvider = MockWgerBaseProvider();
-    provider = ExercisesProvider(mockBaseProvider);
+    provider = ExercisesProvider(
+      mockBaseProvider,
+      database: ExerciseDatabase.inMemory(NativeDatabase.memory()),
+    );
+    provider.languages = [...testLanguages];
+
+    SharedPreferences.setMockInitialValues({});
+    driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
 
     // Mock categories
     when(mockBaseProvider.makeUrl(categoryUrl)).thenReturn(tCategoryEntriesUri);
@@ -108,15 +122,16 @@ void main() {
         .thenAnswer((_) => Future.value(tLanguageMap['results']));
 
     // Mock base info response
-    when(mockBaseProvider.makeUrl(exerciseBaseInfoUrl)).thenReturn(texerciseBaseInfoUri);
-    when(mockBaseProvider.fetch(texerciseBaseInfoUri))
+    when(mockBaseProvider.makeUrl(exerciseBaseInfoUrl, id: 1)).thenReturn(tExerciseInfoUri);
+    when(mockBaseProvider.makeUrl(exerciseBaseInfoUrl, id: 2)).thenReturn(tExerciseInfoUri);
+    when(mockBaseProvider.fetch(tExerciseInfoUri))
         .thenAnswer((_) => Future.value(tExerciseBaseInfoMap));
   });
 
   group('findCategoryById()', () {
     test('should return a category for an id', () async {
       // arrange
-      await provider.fetchAndSetCategories();
+      await provider.fetchAndSetCategoriesFromApi();
 
       // act
       final result = provider.findCategoryById(1);
@@ -134,7 +149,7 @@ void main() {
   group('findMuscleById()', () {
     test('should return a muscle for an id', () async {
       // arrange
-      await provider.fetchAndSetMuscles();
+      await provider.fetchAndSetMusclesFromApi();
 
       // act
       final result = provider.findMuscleById(1);
@@ -152,13 +167,13 @@ void main() {
   group('findEquipmentById()', () {
     test('should return an equipment for an id', () async {
       // arrange
-      await provider.fetchAndSetEquipment();
+      await provider.fetchAndSetEquipmentsFromApi();
 
       // act
       final result = provider.findEquipmentById(1);
 
       // assert
-      expect(result, equipment1);
+      expect(result, tEquipment1);
     });
 
     test('should throw a NoResultException if no equipment is found', () {
@@ -170,13 +185,13 @@ void main() {
   group('findLanguageById()', () {
     test('should return a language for an id', () async {
       // arrange
-      await provider.fetchAndSetLanguages();
+      await provider.fetchAndSetLanguagesFromApi();
 
       // act
       final result = provider.findLanguageById(1);
 
       // assert
-      expect(result, language1);
+      expect(result, tLanguage1);
     });
 
     test('should throw a NoResultException if no equipment is found', () {
@@ -195,7 +210,7 @@ void main() {
 
       // assert
       verifyNever(provider.baseProvider.fetch(tSearchByNameUri));
-      expect(provider.filteredExerciseBases, isEmpty);
+      expect(provider.filteredExercises, isEmpty);
     });
 
     group('Filters are not null', () {
@@ -208,7 +223,7 @@ void main() {
           equipment: FilterCategory<Equipment>(title: 'Equipment', items: {}),
         );
 
-        provider.exerciseBases = data.getTestExerciseBases();
+        provider.exercises = data.getTestExercises();
       });
 
       test('Nothing is selected with no search term', () async {
@@ -222,8 +237,8 @@ void main() {
         verifyNever(provider.baseProvider.fetch(tSearchByNameUri));
 
         expect(
-          provider.filteredExerciseBases,
-          data.getTestExerciseBases(),
+          provider.filteredExercises,
+          data.getTestExercises(),
         );
       });
 
@@ -238,7 +253,7 @@ void main() {
 
         // assert
         verifyNever(provider.baseProvider.fetch(tSearchByNameUri));
-        expect(provider.filteredExerciseBases, [data.getTestExerciseBases()[0]]);
+        expect(provider.filteredExercises, [data.getTestExercises()[0]]);
       });
 
       test('A muscle is selected with no search term. Should not find results', () async {
@@ -252,7 +267,7 @@ void main() {
 
         // assert
         verifyNever(provider.baseProvider.fetch(tSearchByNameUri));
-        expect(provider.filteredExerciseBases, isEmpty);
+        expect(provider.filteredExercises, isEmpty);
       });
 
       test('An equipment is selected with no search term. Should find results', () async {
@@ -266,7 +281,7 @@ void main() {
 
         // assert
         verifyNever(provider.baseProvider.fetch(tSearchByNameUri));
-        expect(provider.filteredExerciseBases, [data.getTestExerciseBases()[0]]);
+        expect(provider.filteredExercises, [data.getTestExercises()[0]]);
       });
 
       test('An equipment is selected with no search term. Should not find results', () async {
@@ -280,7 +295,7 @@ void main() {
 
         // assert
         verifyNever(provider.baseProvider.fetch(tSearchByNameUri));
-        expect(provider.filteredExerciseBases, isEmpty);
+        expect(provider.filteredExercises, isEmpty);
       });
 
       test('A muscle and equipment is selected and there is a match', () async {
@@ -295,14 +310,14 @@ void main() {
 
         // assert
         verifyNever(provider.baseProvider.fetch(tSearchByNameUri));
-        expect(provider.filteredExerciseBases, [data.getTestExerciseBases()[1]]);
+        expect(provider.filteredExercises, [data.getTestExercises()[1]]);
       });
 
       test('A muscle and equipment is selected but no match', () async {
         // arrange
         final Filters tFilters = filters.copyWith(
           exerciseCategories: filters.exerciseCategories.copyWith(items: {data.tCategory2: true}),
-          equipment: filters.equipment.copyWith(items: {equipment1: true}),
+          equipment: filters.equipment.copyWith(items: {tEquipment1: true}),
         );
 
         // act
@@ -310,7 +325,7 @@ void main() {
 
         // assert
         verifyNever(provider.baseProvider.fetch(tSearchByNameUri));
-        expect(provider.filteredExerciseBases, isEmpty);
+        expect(provider.filteredExercises, isEmpty);
       });
 
       group('Search term', () {
@@ -349,8 +364,8 @@ void main() {
           // assert
           verify(provider.baseProvider.fetch(tSearchByNameUri)).called(1);
           expect(
-            provider.filteredExerciseBases,
-            [data.getTestExerciseBases()[0], data.getTestExerciseBases()[1]],
+            provider.filteredExercises,
+            [data.getTestExercises()[0], data.getTestExercises()[1]],
           );
         });
         test('Should find items from selection but should filter them by search term', () async {
@@ -365,9 +380,67 @@ void main() {
 
           // assert
           verify(provider.baseProvider.fetch(tSearchByNameUri)).called(1);
-          expect(provider.filteredExerciseBases, isEmpty);
+          expect(provider.filteredExercises, isEmpty);
         });
       });
+    });
+  });
+
+  group('local prefs', () {
+    test('initCacheTimesLocalPrefs correctly initalises the cache values', () async {
+      // arrange
+      const initValue = '2023-01-01T00:00:00.000';
+      final prefs = await SharedPreferences.getInstance();
+
+      // act
+      await provider.initCacheTimesLocalPrefs();
+
+      // assert
+      expect(prefs.getString(PREFS_LAST_UPDATED_MUSCLES), initValue);
+      expect(prefs.getString(PREFS_LAST_UPDATED_EQUIPMENT), initValue);
+      expect(prefs.getString(PREFS_LAST_UPDATED_CATEGORIES), initValue);
+      expect(prefs.getString(PREFS_LAST_UPDATED_LANGUAGES), initValue);
+    });
+
+    test('calling initCacheTimesLocalPrefs again does nothing', () async {
+      // arrange
+      final prefs = await SharedPreferences.getInstance();
+      const newValue = '2023-10-10T01:18:35.000';
+
+      // act
+      await provider.initCacheTimesLocalPrefs();
+      prefs.setString(PREFS_LAST_UPDATED_MUSCLES, newValue);
+      prefs.setString(PREFS_LAST_UPDATED_EQUIPMENT, newValue);
+      prefs.setString(PREFS_LAST_UPDATED_CATEGORIES, newValue);
+      prefs.setString(PREFS_LAST_UPDATED_LANGUAGES, newValue);
+      await provider.initCacheTimesLocalPrefs();
+
+      // Assert
+      expect(prefs.getString(PREFS_LAST_UPDATED_MUSCLES), newValue);
+      expect(prefs.getString(PREFS_LAST_UPDATED_EQUIPMENT), newValue);
+      expect(prefs.getString(PREFS_LAST_UPDATED_CATEGORIES), newValue);
+      expect(prefs.getString(PREFS_LAST_UPDATED_LANGUAGES), newValue);
+    });
+
+    test('calling initCacheTimesLocalPrefs with forceInit replaces the date', () async {
+      // arrange
+      final prefs = await SharedPreferences.getInstance();
+      const initValue = '2023-01-01T00:00:00.000';
+      const newValue = '2023-10-10T01:18:35.000';
+
+      // act
+      await provider.initCacheTimesLocalPrefs();
+      prefs.setString(PREFS_LAST_UPDATED_MUSCLES, newValue);
+      prefs.setString(PREFS_LAST_UPDATED_EQUIPMENT, newValue);
+      prefs.setString(PREFS_LAST_UPDATED_CATEGORIES, newValue);
+      prefs.setString(PREFS_LAST_UPDATED_LANGUAGES, newValue);
+      await provider.initCacheTimesLocalPrefs(forceInit: true);
+
+      // Assert
+      expect(prefs.getString(PREFS_LAST_UPDATED_MUSCLES), initValue);
+      expect(prefs.getString(PREFS_LAST_UPDATED_EQUIPMENT), initValue);
+      expect(prefs.getString(PREFS_LAST_UPDATED_CATEGORIES), initValue);
+      expect(prefs.getString(PREFS_LAST_UPDATED_LANGUAGES), initValue);
     });
   });
 }

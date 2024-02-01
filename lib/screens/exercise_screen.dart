@@ -17,7 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:wger/models/exercises/base.dart';
+import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/widgets/exercises/exercises.dart';
 
 class ExerciseDetailScreen extends StatelessWidget {
@@ -27,7 +27,7 @@ class ExerciseDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final exerciseBase = ModalRoute.of(context)!.settings.arguments as ExerciseBase;
+    final exerciseBase = ModalRoute.of(context)!.settings.arguments as Exercise;
 
     return Scaffold(
       appBar: AppBar(

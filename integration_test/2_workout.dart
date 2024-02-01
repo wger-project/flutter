@@ -7,13 +7,14 @@ import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/theme/theme.dart';
 
 import '../test/workout/workout_form_test.mocks.dart';
+import '../test_data/exercises.dart';
 import '../test_data/workouts.dart';
 
 Widget createWorkoutDetailScreen({locale = 'en'}) {
   final key = GlobalKey<NavigatorState>();
 
   final mockWorkoutProvider = MockWorkoutPlansProvider();
-  final workout = getWorkout();
+  final workout = getWorkout(exercises: getScreenshotExercises());
   when(mockWorkoutProvider.activePlan).thenReturn(workout);
   when(mockWorkoutProvider.fetchAndSetWorkoutPlanFull(1)).thenAnswer((_) => Future.value(workout));
 
@@ -33,7 +34,7 @@ Widget createWorkoutDetailScreen({locale = 'en'}) {
       home: TextButton(
         onPressed: () => key.currentState!.push(
           MaterialPageRoute<void>(
-            settings: RouteSettings(arguments: getWorkout()),
+            settings: RouteSettings(arguments: workout),
             builder: (_) => WorkoutPlanScreen(),
           ),
         ),

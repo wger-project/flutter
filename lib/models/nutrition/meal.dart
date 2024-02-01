@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/json.dart';
@@ -54,7 +55,7 @@ class Meal {
 
     this.mealItems = mealItems ?? [];
 
-    this.time = time ?? TimeOfDay.now();
+    this.time = time ?? TimeOfDay.fromDateTime(clock.now());
     this.name = name ?? '';
   }
 

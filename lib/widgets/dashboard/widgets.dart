@@ -27,6 +27,7 @@ import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/user.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/gym_mode.dart';
@@ -146,14 +147,6 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
     return out;
   }
 
-  Widget getTrailing() {
-    if (!_hasContent) {
-      return const Text('');
-    }
-
-    return _showDetail ? const Icon(Icons.expand_less) : const Icon(Icons.expand_more);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -174,7 +167,15 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
               Icons.restaurant,
               color: Theme.of(context).textTheme.headlineSmall!.color,
             ),
-            trailing: getTrailing(),
+            trailing: _hasContent
+                ? Tooltip(
+                    message: AppLocalizations.of(context).toggleDetails,
+                    child: _showDetail
+                        ? const Icon(
+                            Icons.info,
+                          )
+                        : const Icon(Icons.info_outline))
+                : const SizedBox(),
             onTap: () {
               setState(() {
                 _showDetail = !_showDetail;
@@ -182,16 +183,18 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
             },
           ),
           if (_hasContent)
-            Column(
-              children: [
-                ...getContent(),
-                Container(
-                  padding: const EdgeInsets.all(15),
-                  height: 180,
-                  child: FlNutritionalPlanPieChartWidget(_plan!.nutritionalValues),
-                )
-              ],
-            )
+            Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Column(
+                  children: [
+                    ...getContent(),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 15),
+                      height: 180,
+                      child: FlNutritionalPlanPieChartWidget(_plan!.nutritionalValues),
+                    )
+                  ],
+                ))
           else
             NothingFound(
               AppLocalizations.of(context).noNutritionalPlans,
@@ -203,7 +206,17 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 TextButton(
-                  child: Text(AppLocalizations.of(context).logIngredient),
+                  child: Text(AppLocalizations.of(context).goToDetailPage),
+                  onPressed: () {
+                    Navigator.of(context)
+                        .pushNamed(NutritionalPlanScreen.routeName, arguments: _plan);
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(
+                    Icons.history_edu,
+                  ),
+                  tooltip: AppLocalizations.of(context).logIngredient,
                   onPressed: () {
                     Navigator.pushNamed(
                       context,
@@ -214,13 +227,6 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                         hasListView: true,
                       ),
                     );
-                  },
-                ),
-                TextButton(
-                  child: Text(AppLocalizations.of(context).goToDetailPage),
-                  onPressed: () {
-                    Navigator.of(context)
-                        .pushNamed(NutritionalPlanScreen.routeName, arguments: _plan);
                   },
                 ),
               ],
@@ -241,6 +247,7 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final profile = context.read<UserProvider>().profile;
     weightEntriesData = Provider.of<BodyWeightProvider>(context, listen: false);
 
     return Consumer<BodyWeightProvider>(
@@ -265,9 +272,13 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                     children: [
                       SizedBox(
                         height: 200,
-                        child: MeasurementChartWidgetFl(weightEntriesData.items
-                            .map((e) => MeasurementChartEntry(e.weight, e.date))
-                            .toList()),
+                        child: MeasurementChartWidgetFl(
+                            weightEntriesData.items
+                                .map((e) => MeasurementChartEntry(e.weight, e.date))
+                                .toList(),
+                            unit: profile!.isMetric
+                                ? AppLocalizations.of(context).kg
+                                : AppLocalizations.of(context).lb),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -441,14 +452,6 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
     _hasContent = _workoutPlan != null;
   }
 
-  Widget getTrailing() {
-    if (!_hasContent) {
-      return const Text('');
-    }
-
-    return _showDetail ? const Icon(Icons.expand_less) : const Icon(Icons.expand_more);
-  }
-
   List<Widget> getContent() {
     final List<Widget> out = [];
 
@@ -498,11 +501,11 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(s.exerciseBaseObj
+                              Text(s.exerciseObj
                                   .getExercise(Localizations.localeOf(context).languageCode)
                                   .name),
                               const SizedBox(width: 10),
-                              MutedText(set.getSmartRepr(s.exerciseBaseObj).join('\n')),
+                              MutedText(set.getSmartRepr(s.exerciseObj).join('\n')),
                             ],
                           ),
                           const SizedBox(height: 10),
@@ -540,7 +543,15 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
               Icons.fitness_center,
               color: Theme.of(context).textTheme.headlineSmall!.color,
             ),
-            trailing: getTrailing(),
+            trailing: _hasContent
+                ? Tooltip(
+                    message: AppLocalizations.of(context).toggleDetails,
+                    child: _showDetail
+                        ? const Icon(
+                            Icons.info,
+                          )
+                        : const Icon(Icons.info_outline))
+                : const SizedBox(),
             onTap: () {
               setState(() {
                 _showDetail = !_showDetail;
@@ -548,8 +559,8 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
             },
           ),
           if (_hasContent)
-            Container(
-              padding: const EdgeInsets.only(left: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Column(
                 children: [
                   ...getContent(),
@@ -564,7 +575,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
             ),
           if (_hasContent)
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 TextButton(
                   child: Text(AppLocalizations.of(context).goToDetailPage),

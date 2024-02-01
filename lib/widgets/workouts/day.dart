@@ -50,17 +50,17 @@ class SettingWidget extends StatelessWidget {
       leading: InkWell(
         child: SizedBox(
           width: 45,
-          child: ExerciseImageWidget(image: setting.exerciseBaseObj.getMainImage),
+          child: ExerciseImageWidget(image: setting.exerciseObj.getMainImage),
         ),
         onTap: () {
           showDialog(
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: Text(setting.exerciseBaseObj
+                title: Text(setting.exerciseObj
                     .getExercise(Localizations.localeOf(context).languageCode)
                     .name),
-                content: ExerciseDetail(setting.exerciseBaseObj),
+                content: ExerciseDetail(setting.exerciseObj),
                 actions: [
                   TextButton(
                     child: Text(MaterialLocalizations.of(context).closeButtonLabel),
@@ -75,12 +75,12 @@ class SettingWidget extends StatelessWidget {
         },
       ),
       title: Text(
-        setting.exerciseBaseObj.getExercise(Localizations.localeOf(context).languageCode).name,
+        setting.exerciseObj.getExercise(Localizations.localeOf(context).languageCode).name,
       ),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ...set.getSmartRepr(setting.exerciseBaseObj).map((e) => Text(e)),
+          ...set.getSmartRepr(setting.exerciseObj).map((e) => Text(e)),
         ],
       ),
     );
@@ -97,7 +97,7 @@ class WorkoutDayWidget extends StatefulWidget {
 }
 
 class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
-  bool _expanded = false;
+  bool _editing = false;
   late List<Set> _sets;
 
   @override
@@ -109,20 +109,21 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
 
   void _toggleExpanded() {
     setState(() {
-      _expanded = !_expanded;
+      _editing = !_editing;
     });
   }
 
   Widget getSetRow(Set set, int index) {
     return Row(
       key: ValueKey(set.id),
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        if (_expanded)
+        if (_editing)
           IconButton(
             visualDensity: VisualDensity.compact,
             icon: const Icon(Icons.delete),
             iconSize: ICON_SIZE_SMALL,
+            tooltip: AppLocalizations.of(context).delete,
             onPressed: () {
               Provider.of<WorkoutPlansProvider>(context, listen: false).deleteSet(set);
             },
@@ -131,21 +132,19 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
           child: Column(
             children: [
               if (set.comment != '') MutedText(set.comment),
-              ...set.settingsFiltered
-                  .map(
-                    (setting) => SettingWidget(
-                      set: set,
-                      setting: setting,
-                      expanded: _expanded,
-                      toggle: _toggleExpanded,
-                    ),
-                  )
-                  ,
+              ...set.settingsFiltered.map(
+                (setting) => SettingWidget(
+                  set: set,
+                  setting: setting,
+                  expanded: _editing,
+                  toggle: _toggleExpanded,
+                ),
+              ),
               const Divider(),
             ],
           ),
         ),
-        if (_expanded)
+        if (_editing)
           ReorderableDragStartListener(
             index: index,
             child: const IconButton(
@@ -164,62 +163,65 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
       child: Card(
         margin: EdgeInsets.zero,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            DayHeaderDismissible(
+            DayHeader(
               day: widget._day,
-              expanded: _expanded,
+              expanded: _editing,
               toggle: _toggleExpanded,
             ),
-            if (_expanded)
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      Provider.of<WorkoutPlansProvider>(context, listen: false).deleteDay(
-                        widget._day,
-                      );
-                    },
-                    icon: const Icon(Icons.delete),
-                  ),
-                  if (widget._day.sets.isNotEmpty)
-                    Ink(
-                      decoration: ShapeDecoration(
-                        color: Theme.of(context).primaryColor,
-                        shape: const CircleBorder(),
-                      ),
-                      child: IconButton(
-                        icon: const Icon(Icons.play_arrow),
-                        color: Colors.white,
+            if (_editing)
+              Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: Wrap(
+                    spacing: 8,
+                    children: [
+                      TextButton.icon(
+                        label: Text(AppLocalizations.of(context).addSet),
+                        icon: const Icon(Icons.add),
                         onPressed: () {
-                          Navigator.of(context).pushNamed(
-                            GymModeScreen.routeName,
-                            arguments: widget._day,
+                          Navigator.pushNamed(
+                            context,
+                            FormScreen.routeName,
+                            arguments: FormScreenArguments(
+                              AppLocalizations.of(context).newSet,
+                              SetFormWidget(widget._day),
+                              hasListView: true,
+                              padding: EdgeInsets.zero,
+                            ),
                           );
                         },
                       ),
-                    ),
-                  IconButton(
-                    onPressed: () {
-                      Navigator.pushNamed(
-                        context,
-                        FormScreen.routeName,
-                        arguments: FormScreenArguments(
-                          AppLocalizations.of(context).edit,
-                          DayFormWidget(
-                              Provider.of<WorkoutPlansProvider>(context, listen: false)
-                                  .findById(widget._day.workoutId),
-                              widget._day),
-                          hasListView: true,
-                        ),
-                      );
-                    },
-                    icon: const Icon(Icons.edit),
-                  ),
-                ],
-              ),
-            if (_expanded) const Divider(),
+                      TextButton.icon(
+                        icon: const Icon(Icons.calendar_month),
+                        label: Text(AppLocalizations.of(context).edit),
+                        onPressed: () {
+                          Navigator.pushNamed(
+                            context,
+                            FormScreen.routeName,
+                            arguments: FormScreenArguments(
+                              AppLocalizations.of(context).edit,
+                              DayFormWidget(
+                                  Provider.of<WorkoutPlansProvider>(context, listen: false)
+                                      .findById(widget._day.workoutId),
+                                  widget._day),
+                              hasListView: true,
+                            ),
+                          );
+                        },
+                      ),
+                      TextButton.icon(
+                        icon: const Icon(Icons.delete),
+                        label: Text(AppLocalizations.of(context).delete),
+                        onPressed: () {
+                          Provider.of<WorkoutPlansProvider>(context, listen: false).deleteDay(
+                            widget._day,
+                          );
+                        },
+                      ),
+                    ],
+                  )),
+            const Divider(),
             ReorderableListView(
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
@@ -242,21 +244,6 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
                 for (var i = 0; i < widget._day.sets.length; i++) getSetRow(widget._day.sets[i], i),
               ],
             ),
-            OutlinedButton(
-              child: Text(AppLocalizations.of(context).addSet),
-              onPressed: () {
-                Navigator.pushNamed(
-                  context,
-                  FormScreen.routeName,
-                  arguments: FormScreenArguments(
-                    AppLocalizations.of(context).newSet,
-                    SetFormWidget(widget._day),
-                    hasListView: true,
-                    padding: EdgeInsets.zero,
-                  ),
-                );
-              },
-            ),
           ],
         ),
       ),
@@ -264,77 +251,48 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
   }
 }
 
-class DayHeaderDismissible extends StatelessWidget {
+class DayHeader extends StatelessWidget {
   final Day _day;
-  final bool _expanded;
+  final bool _editing;
   final Function _toggle;
 
-  const DayHeaderDismissible({
+  const DayHeader({
     required Day day,
     required bool expanded,
     required Function toggle,
   })  : _day = day,
-        _expanded = expanded,
+        _editing = expanded,
         _toggle = toggle;
 
   @override
   Widget build(BuildContext context) {
-    return Dismissible(
-      key: Key(_day.id.toString()),
-      direction: DismissDirection.startToEnd,
-      background: Container(
-        color: Theme.of(context).primaryColor,
-        alignment: Alignment.centerLeft,
-        padding: const EdgeInsets.only(left: 10),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              AppLocalizations.of(context).gymMode,
-              style: const TextStyle(color: Colors.white),
-            ),
-            const Icon(
-              Icons.play_arrow,
-              color: Colors.white,
-            ),
-          ],
-        ),
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      title: Text(
+        _day.description,
+        style: Theme.of(context).textTheme.headlineSmall,
+        overflow: TextOverflow.ellipsis,
       ),
-      confirmDismiss: (direction) async {
-        // Delete day
-        if (direction == DismissDirection.startToEnd) {
-          Navigator.of(context).pushNamed(GymModeScreen.routeName, arguments: _day);
-        }
-        return false;
+      subtitle: Text(_day.getDaysTextTranslated(Localizations.localeOf(context).languageCode)),
+      leading: const Icon(Icons.play_arrow),
+      minLeadingWidth: 8,
+      trailing: Row(mainAxisSize: MainAxisSize.min, children: [
+        const SizedBox(height: 40, width: 1, child: VerticalDivider()),
+        const SizedBox(width: 10),
+        IconButton(
+          icon: _editing ? const Icon(Icons.done) : const Icon(Icons.edit),
+          tooltip: _editing ? AppLocalizations.of(context).done : AppLocalizations.of(context).edit,
+          onPressed: () {
+            _toggle();
+          },
+        )
+      ]),
+      onTap: () {
+        Navigator.of(context).pushNamed(
+          GymModeScreen.routeName,
+          arguments: _day,
+        );
       },
-      child: Container(
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(color: Theme.of(context).colorScheme.inversePrimary),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    _day.description,
-                    style: Theme.of(context).textTheme.headlineSmall,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  Text(_day.getDaysTextTranslated(Localizations.localeOf(context).languageCode)),
-                ],
-              ),
-            ),
-            IconButton(
-              icon: _expanded ? const Icon(Icons.unfold_less) : const Icon(Icons.unfold_more),
-              onPressed: () {
-                _toggle();
-              },
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

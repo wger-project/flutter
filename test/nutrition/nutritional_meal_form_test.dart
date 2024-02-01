@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -39,7 +40,6 @@ void main() {
 
   var plan1 = NutritionalPlan.empty();
   var meal1 = Meal();
-  final meal2 = Meal();
 
   when(mockNutrition.editMeal(any)).thenAnswer((_) => Future.value(Meal()));
   when(mockNutrition.addMeal(any, any)).thenAnswer((_) => Future.value(Meal()));
@@ -105,22 +105,40 @@ void main() {
   });
 
   testWidgets('Test creating a new nutritional plan', (WidgetTester tester) async {
-    await tester.pumpWidget(createHomeScreen(meal2));
-    await tester.pumpAndSettle();
+    // DateTime.now() is difficult to mock as it pull directly from the platform
+    // currently being run. The clock pacakge (https://pub.dev/packages/clock)
+    // addresses this issue, using clock.now() allows us to set a fixed value as the
+    // response when using withClock.
+    final fixedDateTimeValue = DateTime(2020, 09, 01, 01, 01);
+    withClock(Clock.fixed(fixedDateTimeValue), () async {
+      // The time set in the meal object is what is displayed by default
+      // and can be matched with the find.text function. By creating the meal
+      // wrapped in the withClock it also shares the same now value.
+      final fixedTimeMeal = Meal();
 
-    expect(
-      find.text(timeToString(TimeOfDay.now())!),
-      findsOneWidget,
-      reason: 'Current time is filled in',
-    );
+      await tester.pumpWidget(createHomeScreen(fixedTimeMeal));
+      await tester.pumpAndSettle();
 
-    await tester.enterText(find.byKey(const Key('field-time')), '08:00');
-    await tester.enterText(find.byKey(const Key('field-name')), 'test meal');
-    await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
+      expect(
+        clock.now(),
+        fixedDateTimeValue,
+        reason: 'Current time is set to a fixed value for testing',
+      );
 
-    // Correct method was called
-    verifyNever(mockNutrition.editMeal(any));
-    verify(mockNutrition.addMeal(any, any));
+      expect(
+        find.text(timeToString(TimeOfDay.fromDateTime(clock.now()))!),
+        findsOneWidget,
+        reason: 'Current time is filled in',
+      );
+
+      await tester.enterText(find.byKey(const Key('field-time')), '08:00');
+      await tester.enterText(find.byKey(const Key('field-name')), 'test meal');
+      await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
+
+      // Correct method was called
+      verifyNever(mockNutrition.editMeal(any));
+      verify(mockNutrition.addMeal(any, any));
+    });
 
     // Detail page
     // ...

@@ -5,18 +5,18 @@
   "results": [
     {
       "id": 1,
-      "name": "Barbell"
-    },
-    {
-      "id": 8,
       "name": "Bench"
     },
     {
-      "id": 3,
+      "id": 2,
       "name": "Dumbbell"
     },
     {
-      "id": 4,
+      "id": 3,
+      "name": "Bench"
+    },
+    {
+      "id": 10,
       "name": "Gym mat"
     }
   ]

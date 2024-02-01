@@ -83,8 +83,7 @@ class AuthProvider with ChangeNotifier {
   /// Server application version
   Future<void> setServerVersion() async {
     final response = await client.get(makeUri(serverUrl!, SERVER_VERSION_URL));
-    final responseData = json.decode(response.body);
-    serverVersion = responseData;
+    serverVersion = json.decode(response.body);
   }
 
   Future<void> initData(String serverUrl) async {
@@ -115,41 +114,39 @@ class AuthProvider with ChangeNotifier {
   }
 
   /// Registers a new user
-  Future<Map<String, LoginActions>> register(
-      {required String username,
-      required String password,
-      required String email,
-      required String serverUrl}) async {
+  Future<Map<String, LoginActions>> register({
+    required String username,
+    required String password,
+    required String email,
+    required String serverUrl,
+    String locale = 'en',
+  }) async {
     // Register
-    try {
-      final Map<String, String> data = {'username': username, 'password': password};
-      if (email != '') {
-        data['email'] = email;
-      }
-      final response = await client.post(
-        makeUri(serverUrl, REGISTRATION_URL),
-        headers: {
-          HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
-          HttpHeaders.authorizationHeader: 'Token ${metadata[MANIFEST_KEY_API]}',
-          HttpHeaders.userAgentHeader: getAppNameHeader(),
-        },
-        body: json.encode(data),
-      );
-      final responseData = json.decode(response.body);
-
-      if (response.statusCode >= 400) {
-        throw WgerHttpException(responseData);
-      }
-
-      // If update is required don't log in user
-      if (await applicationUpdateRequired()) {
-        return {'action': LoginActions.update};
-      }
-
-      return login(username, password, serverUrl);
-    } catch (error) {
-      rethrow;
+    final Map<String, String> data = {'username': username, 'password': password};
+    if (email != '') {
+      data['email'] = email;
     }
+    final response = await client.post(
+      makeUri(serverUrl, REGISTRATION_URL),
+      headers: {
+        HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
+        HttpHeaders.authorizationHeader: 'Token ${metadata[MANIFEST_KEY_API]}',
+        HttpHeaders.userAgentHeader: getAppNameHeader(),
+        HttpHeaders.acceptLanguageHeader: locale
+      },
+      body: json.encode(data),
+    );
+
+    if (response.statusCode >= 400) {
+      throw WgerHttpException(response.body);
+    }
+
+    // If update is required don't log in user
+    if (await applicationUpdateRequired()) {
+      return {'action': LoginActions.update};
+    }
+
+    return login(username, password, serverUrl);
   }
 
   /// Authenticates a user
@@ -160,55 +157,51 @@ class AuthProvider with ChangeNotifier {
   ) async {
     await logout(shouldNotify: false);
 
-    try {
-      final response = await client.post(
-        makeUri(serverUrl, LOGIN_URL),
-        headers: <String, String>{
-          HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
-          HttpHeaders.userAgentHeader: getAppNameHeader(),
-        },
-        body: json.encode({'username': username, 'password': password}),
-      );
-      final responseData = json.decode(response.body);
+    final response = await client.post(
+      makeUri(serverUrl, LOGIN_URL),
+      headers: <String, String>{
+        HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
+        HttpHeaders.userAgentHeader: getAppNameHeader(),
+      },
+      body: json.encode({'username': username, 'password': password}),
+    );
+    final responseData = json.decode(response.body);
 
-      if (response.statusCode >= 400) {
-        throw WgerHttpException(responseData);
-      }
-
-      await initData(serverUrl);
-
-      // If update is required don't log in user
-      if (await applicationUpdateRequired()) {
-        return {'action': LoginActions.update};
-      }
-
-      // Log user in
-      token = responseData['token'];
-      notifyListeners();
-
-      // store login data in shared preferences
-      final prefs = await SharedPreferences.getInstance();
-      final userData = json.encode({
-        'token': token,
-        'serverUrl': this.serverUrl,
-      });
-      final serverData = json.encode({
-        'serverUrl': this.serverUrl,
-      });
-
-      prefs.setString('userData', userData);
-      prefs.setString('lastServer', serverData);
-      return {'action': LoginActions.proceed};
-    } catch (error) {
-      rethrow;
+    if (response.statusCode >= 400) {
+      throw WgerHttpException(response.body);
     }
+
+    await initData(serverUrl);
+
+    // If update is required don't log in user
+    if (await applicationUpdateRequired()) {
+      return {'action': LoginActions.update};
+    }
+
+    // Log user in
+    token = responseData['token'];
+    notifyListeners();
+
+    // store login data in shared preferences
+    final prefs = await SharedPreferences.getInstance();
+    final userData = json.encode({
+      'token': token,
+      'serverUrl': this.serverUrl,
+    });
+    final serverData = json.encode({
+      'serverUrl': this.serverUrl,
+    });
+
+    prefs.setString('userData', userData);
+    prefs.setString('lastServer', serverData);
+    return {'action': LoginActions.proceed};
   }
 
   /// Loads the last server URL from which the user successfully logged in
   Future<String> getServerUrlFromPrefs() async {
     final prefs = await SharedPreferences.getInstance();
     if (!prefs.containsKey('lastServer')) {
-      return DEFAULT_SERVER;
+      return DEFAULT_SERVER_PROD;
     }
 
     final userData = json.decode(prefs.getString('lastServer')!);

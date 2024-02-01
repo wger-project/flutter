@@ -38,7 +38,7 @@ void main() {
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: GlobalKey<NavigatorState>(),
         home: Scaffold(
-          body: ExerciseDetail(getTestExerciseBases()[0]),
+          body: ExerciseDetail(getTestExercises()[0]),
         ),
       ),
     );

@@ -17,7 +17,7 @@
  */
 
 import 'package:json_annotation/json_annotation.dart';
-import 'package:wger/models/exercises/base.dart';
+import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/setting.dart';
 
 part 'set.g.dart';
@@ -42,7 +42,7 @@ class Set {
   late String comment;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  List<ExerciseBase> exerciseBasesObj = [];
+  List<Exercise> exerciseBasesObj = [];
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   List<int> exerciseBasesIds = [];
@@ -92,7 +92,7 @@ class Set {
 
     for (final setting in settings) {
       final foundSettings = out.where(
-        (element) => element.exerciseBaseId == setting.exerciseBaseId,
+        (element) => element.exerciseId == setting.exerciseId,
       );
 
       if (foundSettings.isEmpty) {
@@ -102,23 +102,23 @@ class Set {
     return out;
   }
 
-  void addExerciseBase(ExerciseBase base) {
+  void addExerciseBase(Exercise base) {
     exerciseBasesObj.add(base);
     exerciseBasesIds.add(base.id!);
   }
 
-  void removeExercise(ExerciseBase base) {
+  void removeExercise(Exercise base) {
     exerciseBasesObj.removeWhere((e) => e.id == base.id);
     exerciseBasesIds.removeWhere((e) => e == base.id);
   }
 
   /// Returns all settings for the given exercise
-  List<Setting> filterSettingsByExercise(ExerciseBase exerciseBase) {
-    return settings.where((element) => element.exerciseBaseId == exerciseBase.id).toList();
+  List<Setting> filterSettingsByExercise(Exercise exerciseBase) {
+    return settings.where((element) => element.exerciseId == exerciseBase.id).toList();
   }
 
   /// Returns a list with all repetitions for the given exercise
-  List<String> getSmartRepr(ExerciseBase exerciseBase) {
+  List<String> getSmartRepr(Exercise exerciseBase) {
     final List<String> out = [];
 
     final settingList = filterSettingsByExercise(exerciseBase);
@@ -141,7 +141,7 @@ class Set {
   }
 
   /// Returns a string with all repetitions for the given exercise
-  String getSmartTextRepr(ExerciseBase execiseBase) {
+  String getSmartTextRepr(Exercise execiseBase) {
     return getSmartRepr(execiseBase).join(' – ');
   }
 

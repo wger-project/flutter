@@ -19,8 +19,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/models/exercises/alias.dart';
-import 'package:wger/models/exercises/base.dart';
 import 'package:wger/models/exercises/comment.dart';
+import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/language.dart';
 
 part 'translation.g.dart';
@@ -43,7 +43,7 @@ class Translation extends Equatable {
   final DateTime? created;
 
   @JsonKey(required: true, name: 'exercise_base')
-  late int? baseId;
+  late int? exerciseId;
 
   @JsonKey(required: true)
   final String name;
@@ -51,11 +51,11 @@ class Translation extends Equatable {
   @JsonKey(required: true)
   final String description;
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(includeFromJson: true, includeToJson: false)
   List<Comment> notes = [];
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  List<Alias> alias = [];
+  @JsonKey(includeFromJson: true, includeToJson: false)
+  List<Alias> aliases = [];
 
   Translation({
     this.id,
@@ -63,11 +63,11 @@ class Translation extends Equatable {
     this.created,
     required this.name,
     required this.description,
-    int? baseId,
+    int? exerciseId,
     language,
   }) {
-    if (baseId != null) {
-      baseId = baseId;
+    if (exerciseId != null) {
+      this.exerciseId = exerciseId;
     }
 
     if (language != null) {
@@ -76,8 +76,8 @@ class Translation extends Equatable {
     }
   }
 
-  set base(ExerciseBase base) {
-    baseId = base.id;
+  set exercise(Exercise exercise) {
+    exerciseId = exercise.id;
   }
 
   set language(Language language) {
@@ -93,7 +93,7 @@ class Translation extends Equatable {
   @override
   List<Object?> get props => [
         id,
-        baseId,
+        exerciseId,
         uuid,
         languageId,
         created,

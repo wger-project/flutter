@@ -8,11 +8,11 @@ If you want to contribute, hop on the Discord server and say hi!
 
 
 <p>
-<img src="https://raw.githubusercontent.com/wger-project/flutter/master/fastlane/metadata/android/en-US/images/phoneScreenshots/01%20-%20dashboard.png" width="200" />
+<img src="https://raw.githubusercontent.com/wger-project/flutter/master/fastlane/metadata/android/en-US/images/phoneScreenshots/01%20-%20dashboard.png" width="200" alt="" />
 
-<img src="https://raw.githubusercontent.com/wger-project/flutter/master/fastlane/metadata/android/en-US/images/phoneScreenshots/04%20-%20measurements.png" width="200" />
+<img src="https://raw.githubusercontent.com/wger-project/flutter/master/fastlane/metadata/android/en-US/images/phoneScreenshots/04%20-%20measurements.png" width="200" alt="" />
 
-<img src="https://raw.githubusercontent.com/wger-project/flutter/master/fastlane/metadata/android/en-US/images/phoneScreenshots/05%20-%20nutritional%20plan.png" width="200" />
+<img src="https://raw.githubusercontent.com/wger-project/flutter/master/fastlane/metadata/android/en-US/images/phoneScreenshots/05%20-%20nutritional%20plan.png" width="200" alt="" />
 </p>
 
 ## Installation
@@ -40,29 +40,30 @@ Alternatively, you can use the test server (the db is reset every day):
 
 ### 2
 
-Install Flutter, and all its dependencies, and create a new virtual device:
+Install Flutter and all its dependencies, and create a new virtual device:
 <https://flutter.dev/docs/get-started/install>.
 
 The app currently uses flutter 3.16
 
 ### 3
+The application will complain about an API key not being set. You can just
+ignore this during development, this is only important if you want to register
+directly over the app. If you just want to login, you can skip this section.
 
-Create a new file ``wger.properties`` in ``fastlane/metadata/envfiles/``:
+If you want to register directly over the app, you need to set a user on the backend
+that is allowed to do this. For this, create/register a new user, generate an api key
+and run ``python3 manage.py add-user-rest theusername`` (you can later list all the
+registered users with ``python3 manage.py list-users-api``).
+
+Then create a new file ``wger.properties`` in ``fastlane/metadata/envfiles/`` and
+add the key:
 
 ```properties
 WGER_API_KEY=123456
 ```
 
-On Linux and macOS, add these as environment variables, e.g. by running the `source`
+Alternatively, add the key as an environment variables, e.g. by running the `source`
 command on the file.
-
-To just run/develop the app it only needs to have any value for WGER_API_KEY, but
-you need a correct value if you want to register via the app. For this, you need
-to allow (a probably dedicated) user on the wger server to register users on its
-behalf. For this, generate an API KEY by visiting <http://localhost:8000/de/user/api-key>
-on your local instance and then run ``python3 manage.py add-user-rest the username``
-
-You can later list all the registered users with: ``python3 manage.py list-users-api``
 
 ### 4
 
@@ -74,7 +75,7 @@ You can run the tests with the ``flutter test``
 
 ## Translation
 
-Translate the app to your language on  [Weblate](https://hosted.weblate.org/engage/wger/).
+Translate the app to your language on [Weblate](https://hosted.weblate.org/engage/wger/).
 
 [![translation status](https://hosted.weblate.org/widgets/wger/-/mobile/multi-blue.svg)](https://hosted.weblate.org/engage/wger/)
 

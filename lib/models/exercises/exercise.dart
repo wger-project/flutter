@@ -21,35 +21,40 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
+import 'package:wger/models/exercises/exercise_api.dart';
 import 'package:wger/models/exercises/image.dart';
+import 'package:wger/models/exercises/language.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/models/exercises/translation.dart';
 import 'package:wger/models/exercises/video.dart';
 
-part 'base.g.dart';
+part 'exercise.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class ExerciseBase extends Equatable {
+class Exercise extends Equatable {
   @JsonKey(required: true)
-  final int? id;
+  late final int? id;
 
   @JsonKey(required: true)
-  final String? uuid;
+  late final String? uuid;
 
   @JsonKey(required: true, name: 'variations')
-  final int? variationId;
+  late final int? variationId;
 
   @JsonKey(required: true, name: 'created')
-  final DateTime? created;
+  late final DateTime? created;
 
   @JsonKey(required: true, name: 'last_update')
-  final DateTime? lastUpdate;
+  late final DateTime? lastUpdate;
+
+  @JsonKey(required: true, name: 'last_update_global')
+  late final DateTime? lastUpdateGlobal;
 
   @JsonKey(required: true, name: 'category')
   late int categoryId;
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  late final ExerciseCategory category;
+  @JsonKey(includeFromJson: true, includeToJson: true, name: 'categories')
+  ExerciseCategory? category;
 
   @JsonKey(required: true, name: 'muscles')
   List<int> musclesIds = [];
@@ -60,7 +65,7 @@ class ExerciseBase extends Equatable {
   @JsonKey(required: true, name: 'muscles_secondary')
   List<int> musclesSecondaryIds = [];
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(includeFromJson: false, includeToJson: true)
   List<Muscle> musclesSecondary = [];
 
   @JsonKey(required: true, name: 'equipment')
@@ -72,25 +77,34 @@ class ExerciseBase extends Equatable {
   @JsonKey(includeFromJson: false, includeToJson: false)
   List<ExerciseImage> images = [];
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(includeFromJson: true, includeToJson: false)
   List<Translation> translations = [];
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   List<Video> videos = [];
 
-  ExerciseBase({
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  List<String> authors = [];
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  List<String> authorsGlobal = [];
+
+  Exercise({
     this.id,
     this.uuid,
     this.created,
     this.lastUpdate,
+    this.lastUpdateGlobal,
     this.variationId,
     List<Muscle>? muscles,
     List<Muscle>? musclesSecondary,
     List<Equipment>? equipment,
     List<ExerciseImage>? images,
-    List<Translation>? exercises,
+    List<Translation>? translations,
     ExerciseCategory? category,
     List<Video>? videos,
+    List<String>? authors,
+    List<String>? authorsGlobal,
   }) {
     this.images = images ?? [];
     this.equipment = equipment ?? [];
@@ -114,13 +128,48 @@ class ExerciseBase extends Equatable {
       equipmentIds = equipment.map((e) => e.id).toList();
     }
 
-    if (exercises != null) {
-      translations = exercises;
+    if (translations != null) {
+      this.translations = translations;
     }
 
     if (videos != null) {
       this.videos = videos;
     }
+    this.authors = authors ?? [];
+    this.authorsGlobal = authorsGlobal ?? [];
+  }
+
+  Exercise.fromApiDataString(String baseData, List<Language> languages)
+      : this.fromApiData(ExerciseApiData.fromString(baseData), languages);
+
+  Exercise.fromApiDataJson(Map<String, dynamic> baseData, List<Language> languages)
+      : this.fromApiData(ExerciseApiData.fromJson(baseData), languages);
+
+  Exercise.fromApiData(ExerciseApiData baseData, List<Language> languages) {
+    id = baseData.id;
+    uuid = baseData.uuid;
+    categoryId = baseData.category.id;
+    category = baseData.category;
+
+    created = baseData.created;
+    lastUpdate = baseData.lastUpdate;
+    lastUpdateGlobal = baseData.lastUpdateGlobal;
+
+    musclesSecondary = baseData.muscles;
+    muscles = baseData.muscles;
+    equipment = baseData.equipment;
+    category = baseData.category;
+    translations = baseData.translations.map((e) {
+      e.language = languages.firstWhere((l) => l.id == e.languageId);
+      return e;
+    }).toList();
+    videos = baseData.videos;
+    images = baseData.images;
+
+    authors = baseData.authors;
+    authorsGlobal = baseData.authorsGlobal;
+
+    variationId = baseData.variationId;
   }
 
   /// Returns exercises for the given language
@@ -158,9 +207,9 @@ class ExerciseBase extends Equatable {
   }
 
   // Boilerplate
-  factory ExerciseBase.fromJson(Map<String, dynamic> json) => _$ExerciseBaseFromJson(json);
+  factory Exercise.fromJson(Map<String, dynamic> json) => _$ExerciseFromJson(json);
 
-  Map<String, dynamic> toJson() => _$ExerciseBaseToJson(this);
+  Map<String, dynamic> toJson() => _$ExerciseToJson(this);
 
   @override
   List<Object?> get props => [

@@ -158,7 +158,15 @@
       "created": "2015-08-03T18:22:54.909478+02:00",
       "language": 2,
       "license": 2,
-      "license_author": "deusinvictus"
+      "license_author": "deusinvictus",
+      "license_title": "",
+      "license_object_url": "",
+      "license_author_url": "",
+      "license_derivative_source_url": "",
+      "author_history": [
+        "deusinvictus",
+        "Foo Bar"
+      ]
     },
     {
       "id": 856,
@@ -187,7 +195,14 @@
       "created": "2022-03-14T18:22:54.909478+02:00",
       "language": 3,
       "license": 2,
-      "license_author": "tester McTestface"
+      "license_author": "tester McTestface",
+      "license_title": "",
+      "license_object_url": "",
+      "license_author_url": "",
+      "license_derivative_source_url": "",
+      "author_history": [
+        "tester McTestface"
+      ]
     },
     {
       "id": 855,
@@ -205,9 +220,25 @@
       ],
       "created": "2022-03-14T18:22:54.909478+02:00",
       "language": 1,
-      "license": 2,
-      "license_author": "tester McTestface"
+      "license": 1,
+      "license_title": "",
+      "license_object_url": "",
+      "license_author": "GrosseHund",
+      "license_author_url": "",
+      "license_derivative_source_url": "",
+      "author_history": [
+        "GrosseHund",
+        "Wunschcoach"
+      ]
     }
   ],
-  "variations": 25
+  "variations": 25,
+  "author_history": [
+    "Foo Bar"
+  ],
+  "total_authors_history": [
+    "Foo Bar",
+    "tester McTestface",
+    "Mr. X"
+  ]
 }

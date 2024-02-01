@@ -18,14 +18,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:wger/helpers/i18n.dart';
-import 'package:wger/models/exercises/base.dart';
+import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/screens/exercise_screen.dart';
 import 'package:wger/widgets/exercises/images.dart';
 
 class ExerciseListTile extends StatelessWidget {
   const ExerciseListTile({super.key, required this.exerciseBase});
 
-  final ExerciseBase exerciseBase;
+  final Exercise exerciseBase;
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +57,7 @@ class ExerciseListTile extends StatelessWidget {
         maxLines: 2,
       ),
       subtitle: Text(
-        '${getTranslation(exerciseBase.category.name, context)} / ${exerciseBase.equipment.map((e) => getTranslation(e.name, context)).toList().join(', ')}',
+        '${getTranslation(exerciseBase.category!.name, context)} / ${exerciseBase.equipment.map((e) => getTranslation(e.name, context)).toList().join(', ')}',
       ),
       onTap: () {
         Navigator.pushNamed(context, ExerciseDetailScreen.routeName, arguments: exerciseBase);

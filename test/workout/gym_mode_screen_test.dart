@@ -41,7 +41,7 @@ void main() {
 
   final mockExerciseProvider = MockExercisesProvider();
   final workoutPlan = getWorkout();
-  final bases = getTestExerciseBases();
+  final bases = getTestExercises();
 
   Widget createHomeScreen({locale = 'en'}) {
     return ChangeNotifierProvider<WorkoutPlansProvider>(
@@ -75,8 +75,8 @@ void main() {
   }
 
   testWidgets('Test the widgets on the gym mode screen', (WidgetTester tester) async {
-    when(mockExerciseProvider.findExerciseBaseById(1)).thenReturn(bases[0]);
-    when(mockExerciseProvider.findExerciseBaseById(6)).thenReturn(bases[5]);
+    when(mockExerciseProvider.findExerciseById(1)).thenReturn(bases[0]);
+    when(mockExerciseProvider.findExerciseById(6)).thenReturn(bases[5]);
 
     await tester.pumpWidget(createHomeScreen());
     await tester.tap(find.byType(TextButton));
@@ -90,7 +90,7 @@ void main() {
     expect(find.text('Bench press'), findsOneWidget);
     expect(find.text('Side raises'), findsOneWidget);
     expect(find.byIcon(Icons.close), findsOneWidget);
-    expect(find.byIcon(Icons.menu), findsOneWidget);
+    expect(find.byIcon(Icons.toc), findsOneWidget);
     expect(find.byIcon(Icons.chevron_left), findsNothing);
     expect(find.byIcon(Icons.chevron_right), findsOneWidget);
     await tester.tap(find.byIcon(Icons.chevron_right));
@@ -102,7 +102,7 @@ void main() {
     expect(find.text('Bench press'), findsOneWidget);
     expect(find.byType(ExerciseOverview), findsOneWidget);
     expect(find.byIcon(Icons.close), findsOneWidget);
-    expect(find.byIcon(Icons.menu), findsOneWidget);
+    expect(find.byIcon(Icons.toc), findsOneWidget);
     expect(find.byIcon(Icons.chevron_left), findsOneWidget);
     expect(find.byIcon(Icons.chevron_right), findsOneWidget);
     await tester.drag(find.byType(ExerciseOverview), const Offset(-500.0, 0.0));
@@ -119,7 +119,7 @@ void main() {
     expect(find.text('12 × 10 kg  (2 RiR)'), findsOneWidget);
     expect(find.text('Make sure to warm up'), findsOneWidget, reason: 'Set comment');
     expect(find.byIcon(Icons.close), findsOneWidget);
-    expect(find.byIcon(Icons.menu), findsOneWidget);
+    expect(find.byIcon(Icons.toc), findsOneWidget);
     expect(find.byIcon(Icons.chevron_left), findsOneWidget);
     expect(find.byIcon(Icons.chevron_right), findsOneWidget);
 
@@ -145,7 +145,7 @@ void main() {
     expect(find.text('Pause'), findsOneWidget);
     expect(find.byType(TimerWidget), findsOneWidget);
     expect(find.byIcon(Icons.close), findsOneWidget);
-    expect(find.byIcon(Icons.menu), findsOneWidget);
+    expect(find.byIcon(Icons.toc), findsOneWidget);
     expect(find.byIcon(Icons.chevron_left), findsOneWidget);
     expect(find.byIcon(Icons.chevron_right), findsOneWidget);
     await tester.tap(find.byIcon(Icons.chevron_right));

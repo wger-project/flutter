@@ -468,7 +468,7 @@
   "@supersetWith": {
     "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
   },
-  "total": "Gesamt",
+  "total": "Summe",
   "@total": {
     "description": "Label used for total sums of e.g. calories or similar"
   },
@@ -620,7 +620,7 @@
   },
   "images": "Bilder",
   "@images": {},
-  "language": "Bilder",
+  "language": "Sprache",
   "@language": {},
   "add_exercise_image_license": "Bilder müssen mit der CC BY SA Lizenz vereinbar sein. Wenn du dir unsicher bist lade nur Bilder hoch, welche du selbst gemacht hast.",
   "@add_exercise_image_license": {},
@@ -748,5 +748,51 @@
     "description": "Generated entry for translation for server strings"
   },
   "verify": "Verifizieren",
-  "@verify": {}
+  "@verify": {},
+  "textPromptTitle": "Bereit zu starten?",
+  "@textPromptTitle": {},
+  "settingsTitle": "Einstellung",
+  "@settingsTitle": {},
+  "textPromptSubheading": "Drücken Sie die Aktionstaste, um zu beginnen",
+  "@textPromptSubheading": {},
+  "max_reps": "Max. Wiederholungen",
+  "@max_reps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "noMatchingExerciseFound": "Diese Übung wurde nicht gefunden",
+  "@noMatchingExerciseFound": {
+    "description": "Message returned if no exercises match the searched string"
+  },
+  "aboutMastodonTitle": "Mastodon",
+  "@aboutMastodonTitle": {
+    "description": "Title for mastodon section in the about dialog"
+  },
+  "plates": "Platten",
+  "@plates": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "aboutMastodonText": "Folgen Sie uns auf Mastodon für Updates und Neuigkeiten zum Projekt",
+  "@aboutMastodonText": {
+    "description": "Text for the mastodon section in the about dialog"
+  },
+  "aboutDonateTitle": "Spende",
+  "@aboutDonateTitle": {},
+  "aboutDonateText": "Kaufen Sie uns einen Kaffee, um das Projekt zu unterstützen, Serverkosten zu decken und uns weiterhin zu versorgen",
+  "@aboutDonateText": {},
+  "settingsCacheTitle": "Zwischenspeicher",
+  "@settingsCacheTitle": {},
+  "settingsCacheDescription": "Übungs-Zwischenspeicher",
+  "@settingsCacheDescription": {},
+  "settingsCacheDeletedSnackbar": "Zwischenspeicher erfolgreich gelöscht",
+  "@settingsCacheDeletedSnackbar": {},
+  "lb": "lb",
+  "@lb": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "useMetric": "Metrische Einheiten für das Körpergewicht verwenden",
+  "@useMetric": {},
+  "done": "Fertig",
+  "@done": {},
+  "searchNamesInEnglish": "Namen auch auf English suchen",
+  "@searchNamesInEnglish": {}
 }

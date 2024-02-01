@@ -12,14 +12,15 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
-          java-version: 17.x
+          java-version: '17'
+          distribution: 'oracle'
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3
+          ruby-version: '3.2'
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
@@ -63,7 +64,7 @@ jobs:
           flutter build linux --release
           cd flatpak/scripts
           dart pub get
-          dart flatpak_packager.dart --meta ../flatpak_meta.json --github
+          dart flatpak_packager.dart --meta ../flatpak_meta.json --github --addTodaysVersion ${{ env.VERSION }}
 
       - name: Build AAB
         run: flutter build appbundle --release
@@ -71,9 +72,9 @@ jobs:
           WGER_API_KEY: ${{ secrets.WGER_API_KEY }}
 
       - name: Upload build to Play Store
-        uses: maierj/fastlane-action@v3.0.0
-        with:
-          lane: production
+        run: |
+          bundle install
+          bundle exec fastlane android production
 
       - name: Make Github release
         uses: softprops/action-gh-release@v1
@@ -91,6 +92,7 @@ jobs:
           dart manifest_generator.dart --meta ../flatpak_meta.json --github
           mkdir ../../flathub
           cp flatpak_generator_exports/de.wger.flutter.json ../../flathub
+          cp flatpak_generator_exports/flathub.json ../../flathub
 
       - name: Push updated config to flathub repository
         uses: cpina/github-action-push-to-another-repository@main
@@ -119,7 +121,5 @@ jobs:
           git checkout -b release-${{ env.VERSION }}
           git add pubspec.yaml
           git commit -m "Bump version to $( flutter pub run cider version )"
-          git tag ${{ env.VERSION }}
-          git push ${{ env.VERSION }}
-          git push --delete ${{ env.VERSION_V }}
+          git push origin --delete ${{ env.VERSION_V }}
           git push

@@ -674,5 +674,164 @@
   "miles_per_hour": "Miglia per ora",
   "@miles_per_hour": {
     "description": "Generated entry for translation for server strings"
+  },
+  "noMeasurementEntries": "Non hai voci di misurazione",
+  "@noMeasurementEntries": {},
+  "add_exercise_image_license": "Le immagini devono essere compatibili con la licenza CC BY SA. In caso di dubbi, carica solo le foto che hai scattato tu stesso.",
+  "@add_exercise_image_license": {},
+  "baseNameEnglish": "Tutti gli esercizi necessitano di un nome base in inglese",
+  "@baseNameEnglish": {},
+  "aboutMastodonTitle": "Mastodonte",
+  "@aboutMastodonTitle": {
+    "description": "Title for mastodon section in the about dialog"
+  },
+  "aboutMastodonText": "Seguici su mastodon per aggiornamenti e novità sul progetto",
+  "@aboutMastodonText": {
+    "description": "Text for the mastodon section in the about dialog"
+  },
+  "enterMinCharacters": "Inserisci almeno {min} caratteri",
+  "@enterMinCharacters": {
+    "description": "Error message when the user hasn't entered the minimum amount characters in a form",
+    "type": "text",
+    "placeholders": {
+      "min": {}
+    }
+  },
+  "sz_bar": "SZ-Bar",
+  "@sz_bar": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "variations": "Variazioni",
+  "@variations": {
+    "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"
+  },
+  "unVerifiedEmail": "Email non Verificata",
+  "@unVerifiedEmail": {},
+  "alsoKnownAs": "Conosciuto anche come: {aliases}",
+  "@alsoKnownAs": {
+    "placeholders": {
+      "aliases": {}
+    },
+    "description": "List of alternative names for an exercise"
+  },
+  "verifiedEmail": "Email Verificata",
+  "@verifiedEmail": {},
+  "alternativeNames": "Nomi Alternativi",
+  "@alternativeNames": {},
+  "translation": "Traduzione",
+  "@translation": {},
+  "translateExercise": "Traduci questo esercizio ora",
+  "@translateExercise": {},
+  "baseData": "Informazioni Base in Inglese",
+  "@baseData": {
+    "description": "The base data for an exercise such as category, trained muscles, etc."
+  },
+  "contributeExercise": "Contribuisci aggiungendo un esercizio",
+  "@contributeExercise": {},
+  "barbell": "Bilanciere",
+  "@barbell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "swiss_ball": "Fitball",
+  "@swiss_ball": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "none__bodyweight_exercise_": "nessuno (esercizio con il peso corporeo)",
+  "@none__bodyweight_exercise_": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "biceps": "Bicipiti",
+  "@biceps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "calves": "Polpacci",
+  "@calves": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "abs": "Addominali",
+  "@abs": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kettlebell": "Kettlebell",
+  "@kettlebell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "images": "Immagini",
+  "@images": {},
+  "incline_bench": "Panca Inclinata",
+  "@incline_bench": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "lats": "Muscoli Dorsali",
+  "@lats": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "aboutPageTitle": "A proposito di Wger",
+  "@aboutPageTitle": {},
+  "contributeExerciseWarning": "Puoi contribuire agli esercizi solo se il tuo account è più vecchio di {days} giorni e hai verificato la tua email",
+  "@contributeExerciseWarning": {
+    "description": "Number of days before which a person can add exercise",
+    "placeholders": {
+      "days": {
+        "type": "String",
+        "example": "14"
+      }
+    }
+  },
+  "language": "Lingua",
+  "@language": {},
+  "textPromptSubheading": "Premi il pulsante azione per iniziare",
+  "@textPromptSubheading": {},
+  "arms": "Braccia",
+  "@arms": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "bench": "Panca",
+  "@bench": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "body_weight": "Peso Corporeo",
+  "@body_weight": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "dumbbell": "Manubrio",
+  "@dumbbell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "plates": "Piastre",
+  "@plates": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "until_failure": "Fino al fallimento",
+  "@until_failure": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "lb": "lb",
+  "@lb": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "hamstrings": "Cosce",
+  "@hamstrings": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "pull_up_bar": "Barra per trazioni",
+  "@pull_up_bar": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "noMatchingExerciseFound": "Non sono stati trovati esercizi corrispondenti",
+  "@noMatchingExerciseFound": {
+    "description": "Message returned if no exercises match the searched string"
+  },
+  "whatVariationsExist": "Ci sono delle variazioni per questo esercizio, se ne esistono?",
+  "@whatVariationsExist": {},
+  "cacheWarning": "A causa del caching potrebbe volerci del tempo affinchè i cambiamenti siano visibili attraverso l'applicazione.",
+  "@cacheWarning": {},
+  "back": "Schiena",
+  "@back": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "lower_back": "Zona Lombare",
+  "@lower_back": {
+    "description": "Generated entry for translation for server strings"
   }
 }

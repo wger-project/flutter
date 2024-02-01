@@ -751,5 +751,37 @@
   "lb": "lb",
   "@lb": {
     "description": "Generated entry for translation for server strings"
-  }
+  },
+  "aboutMastodonTitle": "Mastodon",
+  "@aboutMastodonTitle": {
+    "description": "Title for mastodon section in the about dialog"
+  },
+  "aboutMastodonText": "Projeyle ilgili güncellemeler ve haberler için bizi Mastodon'da takip edin",
+  "@aboutMastodonText": {
+    "description": "Text for the mastodon section in the about dialog"
+  },
+  "settingsTitle": "Ayarlar",
+  "@settingsTitle": {},
+  "settingsCacheTitle": "Önbellek",
+  "@settingsCacheTitle": {},
+  "noMatchingExerciseFound": "Eşleşen egzersiz bulunamadı",
+  "@noMatchingExerciseFound": {
+    "description": "Message returned if no exercises match the searched string"
+  },
+  "aboutDonateTitle": "Bağış yap",
+  "@aboutDonateTitle": {},
+  "aboutDonateText": "Projeye yardımcı olmak, sunucu masraflarını karşılamak ve geliştirmeyi desteklemek için bağış yapın",
+  "@aboutDonateText": {},
+  "settingsCacheDescription": "Egzersiz önbelleği",
+  "@settingsCacheDescription": {},
+  "settingsCacheDeletedSnackbar": "Önbellek başarıyla temizlendi",
+  "@settingsCacheDeletedSnackbar": {},
+  "log": "Kaydet",
+  "@log": {
+    "description": "Log a specific meal (imperative form)"
+  },
+  "useMetric": "Vücut ağırlığı için metrik birimler kullan",
+  "@useMetric": {},
+  "done": "Bitti",
+  "@done": {}
 }
