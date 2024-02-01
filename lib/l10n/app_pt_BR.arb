@@ -482,5 +482,77 @@
     "description": "Title for source code section in the about dialog"
   },
   "measurement": "Medição",
-  "@measurement": {}
+  "@measurement": {},
+  "nrOfSets": "Séries por exercício: {nrOfSets}",
+  "@nrOfSets": {
+    "description": "Label shown on the slider where the user selects the nr of sets",
+    "type": "text",
+    "placeholders": {
+      "nrOfSets": {}
+    }
+  },
+  "useMetric": "Use unidades métricas para peso corporal",
+  "@useMetric": {},
+  "aboutMastodonTitle": "",
+  "@aboutMastodonTitle": {
+    "description": "Title for mastodon section in the about dialog"
+  },
+  "selectEntry": "Por favor, selecione uma entrada",
+  "@selectEntry": {},
+  "noMatchingExerciseFound": "Nenhum exercício correspondente encontrado",
+  "@noMatchingExerciseFound": {
+    "description": "Message returned if no exercises match the searched string"
+  },
+  "selectExercise": "Por favor, selecione um exercício",
+  "@selectExercise": {
+    "description": "Error message when the user hasn't selected an exercise in the form"
+  },
+  "enterValidNumber": "Por favor, insira um número válido",
+  "@enterValidNumber": {
+    "description": "Error message when the user has submitted an invalid number (e.g. '3,.,.,.')"
+  },
+  "baseNameEnglish": "Todos os exercícios necessitam de um nome base em inglês",
+  "@baseNameEnglish": {},
+  "aboutMastodonText": "Siga-nos no Mastodon para atualizações e novidades sobre o projeto",
+  "@aboutMastodonText": {
+    "description": "Text for the mastodon section in the about dialog"
+  },
+  "labelBottomNavWorkout": "Treino",
+  "@labelBottomNavWorkout": {
+    "description": "Label used in bottom navigation, use a short word"
+  },
+  "reps": "Reps",
+  "@reps": {
+    "description": "Shorthand for repetitions, used when space constraints are tighter"
+  },
+  "rir": "ReR",
+  "@rir": {
+    "description": "Shorthand for Repetitions In Reserve"
+  },
+  "setUnitsAndRir": "Unidades e RIR da série",
+  "@setUnitsAndRir": {
+    "description": "Label shown on the slider where the user can toggle showing units and RiR",
+    "type": "text"
+  },
+  "aboutDonateTitle": "Doações",
+  "@aboutDonateTitle": {},
+  "aboutDonateText": "Compre-nos um café para ajudar no projeto, pague pelos custos do servidor e nos mantenha abastecidos",
+  "@aboutDonateText": {},
+  "enterCharacters": "Por favor, utilize entre {min} e {max} caracteres",
+  "@enterCharacters": {
+    "description": "Error message when the user hasn't entered the correct number of characters in a form",
+    "type": "text",
+    "placeholders": {
+      "min": {},
+      "max": {}
+    }
+  },
+  "enterMinCharacters": "Por favor, utilize pelo menos {min} caracteres",
+  "@enterMinCharacters": {
+    "description": "Error message when the user hasn't entered the minimum amount characters in a form",
+    "type": "text",
+    "placeholders": {
+      "min": {}
+    }
+  }
 }
