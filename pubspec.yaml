@@ -79,7 +79,7 @@ dev_dependencies:
   mockito: ^5.4.4
   network_image_mock: ^2.1.1
   flutter_lints: ^3.0.1
-  cider: ^0.2.4
+  cider: ^0.2.6
   drift_dev: ^2.15.0
   freezed: ^2.4.5
 
