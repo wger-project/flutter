@@ -493,7 +493,7 @@
   },
   "useMetric": "Use unidades métricas para peso corporal",
   "@useMetric": {},
-  "aboutMastodonTitle": "",
+  "aboutMastodonTitle": "Mastodon",
   "@aboutMastodonTitle": {
     "description": "Title for mastodon section in the about dialog"
   },
@@ -554,5 +554,64 @@
     "placeholders": {
       "min": {}
     }
-  }
+  },
+  "gallery": "Galeria",
+  "@gallery": {},
+  "alsoKnownAs": "Também conhecido como:{aliases}",
+  "@alsoKnownAs": {
+    "placeholders": {
+      "aliases": {}
+    },
+    "description": "List of alternative names for an exercise"
+  },
+  "recentlyUsedIngredients": "Ingredientes adicionados recentemente",
+  "@recentlyUsedIngredients": {
+    "description": "A message when a user adds a new ingredient to a meal."
+  },
+  "addImage": "Adicionar imagem",
+  "@addImage": {},
+  "scanBarcode": "Escaneie o código de barras",
+  "@scanBarcode": {
+    "description": "Label for scan barcode button"
+  },
+  "dataCopied": "Dados copiados para o novo registro",
+  "@dataCopied": {
+    "description": "Snackbar message to show on copying data to a new log entry"
+  },
+  "appUpdateContent": "Esta versão do aplicativo não é compatível com o servidor, por favor atualize o aplicativo.",
+  "@appUpdateContent": {},
+  "productFound": "Produto encontrado",
+  "@productFound": {
+    "description": "Header label for dialog when product is found with barcode"
+  },
+  "appUpdateTitle": "Atualização necessária",
+  "@appUpdateTitle": {},
+  "takePicture": "Tire uma foto",
+  "@takePicture": {},
+  "selectIngredient": "Por favor, selecione um ingrediente",
+  "@selectIngredient": {
+    "description": "Error message when the user hasn't selected an ingredient from the autocompleter"
+  },
+  "selectImage": "Por favor, selecione uma imagem",
+  "@selectImage": {
+    "description": "Label and error message when the user hasn't selected an image to save"
+  },
+  "optionsLabel": "Opções",
+  "@optionsLabel": {
+    "description": "Label for the popup with general app options"
+  },
+  "productNotFound": "Produto não encontrado",
+  "@productNotFound": {
+    "description": "Header label for dialog when product is not found with barcode"
+  },
+  "variations": "Variações",
+  "@variations": {
+    "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"
+  },
+  "verifiedEmail": "Email verificado",
+  "@verifiedEmail": {},
+  "chooseFromLibrary": "Escolher na galeria",
+  "@chooseFromLibrary": {},
+  "unVerifiedEmail": "Email não verificado",
+  "@unVerifiedEmail": {}
 }
