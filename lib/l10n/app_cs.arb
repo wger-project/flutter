@@ -512,7 +512,7 @@
   "@aboutBugsText": {
     "description": "Text for bugs section in the about dialog"
   },
-  "aboutContactUsTitle": "Pozdravujte!",
+  "aboutContactUsTitle": "Řekněte ahoj!",
   "@aboutContactUsTitle": {
     "description": "Title for contact us section in the about dialog"
   },
@@ -596,7 +596,7 @@
   "@images": {},
   "language": "Jazyk",
   "@language": {},
-  "aboutPageTitle": "O Wger",
+  "aboutPageTitle": "O aplikaci Wger",
   "@aboutPageTitle": {},
   "contributeExercise": "Přispějte cvik",
   "@contributeExercise": {},
