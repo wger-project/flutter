@@ -243,12 +243,10 @@ class DashboardWeightWidget extends StatefulWidget {
 }
 
 class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
-  late BodyWeightProvider weightEntriesData;
-
   @override
   Widget build(BuildContext context) {
     final profile = context.read<UserProvider>().profile;
-    weightEntriesData = Provider.of<BodyWeightProvider>(context, listen: false);
+    final weightProvider = context.read<BodyWeightProvider>();
 
     return Consumer<BodyWeightProvider>(
       builder: (context, workoutProvider, child) => Card(
@@ -267,13 +265,13 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
             ),
             Column(
               children: [
-                if (weightEntriesData.items.isNotEmpty)
+                if (weightProvider.items.isNotEmpty)
                   Column(
                     children: [
                       SizedBox(
                         height: 200,
                         child: MeasurementChartWidgetFl(
-                            weightEntriesData.items
+                            weightProvider.items
                                 .map((e) => MeasurementChartEntry(e.weight, e.date))
                                 .toList(),
                             unit: profile!.isMetric
@@ -296,7 +294,7 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                                 FormScreen.routeName,
                                 arguments: FormScreenArguments(
                                   AppLocalizations.of(context).newEntry,
-                                  WeightForm(),
+                                  WeightForm(weightProvider.getNewestEntry()?.copyWith(id: null)),
                                 ),
                               );
                             },
