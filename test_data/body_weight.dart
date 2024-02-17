@@ -18,9 +18,9 @@
 
 import 'package:wger/models/body_weight/weight_entry.dart';
 
-final weightEntry1 = WeightEntry(id: 1, weight: 80, date: DateTime(2021, 01, 01));
-final weightEntry2 = WeightEntry(id: 2, weight: 81, date: DateTime(2021, 01, 10));
+final testWeightEntry1 = WeightEntry(id: 1, weight: 80, date: DateTime(2021, 01, 01));
+final testWeightEntry2 = WeightEntry(id: 2, weight: 81, date: DateTime(2021, 01, 10));
 
 List<WeightEntry> getWeightEntries() {
-  return [weightEntry1, weightEntry2];
+  return [testWeightEntry1, testWeightEntry2];
 }

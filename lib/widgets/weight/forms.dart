@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/json.dart';
@@ -34,7 +35,7 @@ class WeightForm extends StatelessWidget {
 
   WeightForm([WeightEntry? weightEntry]) {
     _weightEntry = weightEntry ?? WeightEntry(date: DateTime.now());
-    weightController.text = _weightEntry.id == null ? '' : _weightEntry.weight.toString();
+    weightController.text = _weightEntry.weight == 0 ? '' : _weightEntry.weight.toString();
     dateController.text = toDate(_weightEntry.date)!;
   }
 
@@ -46,10 +47,15 @@ class WeightForm extends StatelessWidget {
         children: [
           // Weight date
           TextFormField(
-            readOnly: true, // Stop keyboard from appearing
+            key: const Key('dateInput'),
+            readOnly: true,
+            // Stop keyboard from appearing
             decoration: InputDecoration(
               labelText: AppLocalizations.of(context).date,
-              suffixIcon: const Icon(Icons.calendar_today),
+              suffixIcon: const Icon(
+                Icons.calendar_today,
+                key: Key('calendarIcon'),
+              ),
             ),
             enableInteractiveSelection: false,
             controller: dateController,
@@ -83,7 +89,60 @@ class WeightForm extends StatelessWidget {
 
           // Weight
           TextFormField(
-            decoration: InputDecoration(labelText: AppLocalizations.of(context).weight),
+            key: const Key('weightInput'),
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context).weight,
+              prefix: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    key: const Key('quickMinus'),
+                    icon: const FaIcon(FontAwesomeIcons.circleMinus),
+                    onPressed: () {
+                      try {
+                        final num newValue = num.parse(weightController.text) - 1;
+                        weightController.text = newValue.toString();
+                      } on FormatException {}
+                    },
+                  ),
+                  IconButton(
+                    key: const Key('quickMinusSmall'),
+                    icon: const FaIcon(FontAwesomeIcons.minus),
+                    onPressed: () {
+                      try {
+                        final num newValue = num.parse(weightController.text) - 0.25;
+                        weightController.text = newValue.toString();
+                      } on FormatException {}
+                    },
+                  ),
+                ],
+              ),
+              suffix: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    key: const Key('quickPlusSmall'),
+                    icon: const FaIcon(FontAwesomeIcons.plus),
+                    onPressed: () {
+                      try {
+                        final num newValue = num.parse(weightController.text) + 0.25;
+                        weightController.text = newValue.toString();
+                      } on FormatException {}
+                    },
+                  ),
+                  IconButton(
+                    key: const Key('quickPlus'),
+                    icon: const FaIcon(FontAwesomeIcons.circlePlus),
+                    onPressed: () {
+                      try {
+                        final num newValue = num.parse(weightController.text) + 1;
+                        weightController.text = newValue.toString();
+                      } on FormatException {}
+                    },
+                  ),
+                ],
+              ),
+            ),
             controller: weightController,
             keyboardType: TextInputType.number,
             onSaved: (newValue) {
@@ -113,11 +172,10 @@ class WeightForm extends StatelessWidget {
 
               // Save the entry on the server
               try {
+                final provider = Provider.of<BodyWeightProvider>(context, listen: false);
                 _weightEntry.id == null
-                    ? await Provider.of<BodyWeightProvider>(context, listen: false)
-                        .addEntry(_weightEntry)
-                    : await Provider.of<BodyWeightProvider>(context, listen: false)
-                        .editEntry(_weightEntry);
+                    ? await provider.addEntry(_weightEntry)
+                    : await provider.editEntry(_weightEntry);
               } on WgerHttpException catch (error) {
                 if (context.mounted) {
                   showHttpExceptionErrorDialog(error, context);
