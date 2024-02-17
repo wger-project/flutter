@@ -43,9 +43,9 @@ class BodyWeightProvider with ChangeNotifier {
     _entries = [];
   }
 
-  /// Returns the latest (newest) weight entry or null if there are no entries
-  WeightEntry? getLastEntry() {
-    return _entries.isNotEmpty ? _entries.last : null;
+  /// Returns the latest (newest) weight entry or null if there are none
+  WeightEntry? getNewestEntry() {
+    return _entries.isNotEmpty ? _entries.first : null;
   }
 
   WeightEntry findById(int id) {
