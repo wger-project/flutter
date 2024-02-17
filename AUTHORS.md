@@ -26,6 +26,7 @@
 - Hanaa Allohibi - <https://github.com/hn-n>
 - Shey Alnasrawi - <https://github.com/Milksheyke>
 - Costas Korai - <https://github.com/watcher6280>
+- Bassam Mutairi - <https://github.com/mutairibassam>
 
 ## Translators
 
