@@ -26,7 +26,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: 3.16.x
+          flutter-version: 3.19.x
 
       - name: Flutter info
         run: |
