@@ -63,11 +63,11 @@
   "@noWorkoutPlans": {
     "description": "Message shown when the user has no workout plans"
   },
-  "rir": "RiR",
+  "rir": "OvR",
   "@rir": {
     "description": "Shorthand for Repetitions In Reserve"
   },
-  "rirNotUsed": "nepoužité RiR",
+  "rirNotUsed": "nepoužitá OvR",
   "@rirNotUsed": {
     "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
   },
@@ -440,7 +440,7 @@
   },
   "measurement": "Měření",
   "@measurement": {},
-  "nutritionalPlan": "Nutriční plán",
+  "nutritionalPlan": "Výživový plán",
   "@nutritionalPlan": {},
   "noNutritionalPlans": "Nemáte žádné výživové plány",
   "@noNutritionalPlans": {
@@ -448,7 +448,7 @@
   },
   "anErrorOccurred": "Vyskytla se chyba!",
   "@anErrorOccurred": {},
-  "weight": "Hmotnost",
+  "weight": "Váha",
   "@weight": {
     "description": "The weight of a workout log or body weight entry"
   },
@@ -486,7 +486,7 @@
   },
   "noMeasurementEntries": "Nemáte žádné záznamy měření",
   "@noMeasurementEntries": {},
-  "delete": "Smazat",
+  "delete": "Odstranit",
   "@delete": {},
   "confirmDelete": "Přejete si skutečně odstranit '{toDelete}'?",
   "@confirmDelete": {
