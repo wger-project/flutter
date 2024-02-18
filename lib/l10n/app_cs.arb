@@ -105,7 +105,7 @@
   "@logHelpEntriesUnits": {},
   "description": "Popis",
   "@description": {},
-  "name": "Jméno",
+  "name": "Název",
   "@name": {
     "description": "Name for a workout or nutritional plan"
   },
@@ -428,7 +428,7 @@
   "@newSet": {
     "description": "Header when adding a new set to a workout day"
   },
-  "workoutSession": "Cvičení",
+  "workoutSession": "Tréninková relace",
   "@workoutSession": {
     "description": "A (logged) workout session"
   },
@@ -568,7 +568,7 @@
   "@previous": {},
   "next": "Další",
   "@next": {},
-  "addExercise": "Přidat cvik",
+  "addExercise": "Přidat cvičení",
   "@addExercise": {},
   "translation": "Překlad",
   "@translation": {},
@@ -598,9 +598,9 @@
   "@language": {},
   "aboutPageTitle": "O aplikaci Wger",
   "@aboutPageTitle": {},
-  "contributeExercise": "Přispějte cvik",
+  "contributeExercise": "Přidejte cvičení",
   "@contributeExercise": {},
-  "setUnitsAndRir": "Upravte  jednotky a  OvR",
+  "setUnitsAndRir": "Nastavit jednotky a OvR",
   "@setUnitsAndRir": {
     "description": "Label shown on the slider where the user can toggle showing units and RiR",
     "type": "text"
@@ -616,5 +616,56 @@
     "placeholders": {
       "barcode": {}
     }
-  }
+  },
+  "useMetric": "Použít metrické jednotky pro tělesnou váhu",
+  "@useMetric": {},
+  "aboutDonateText": "Kupte nám kávu, abyste pomohli projektu, zaplatili náklady na server a udrželi nás funkční",
+  "@aboutDonateText": {},
+  "verifiedEmail": "Ověřený e-mail",
+  "@verifiedEmail": {},
+  "settingsTitle": "Nastavení",
+  "@settingsTitle": {},
+  "settingsCacheTitle": "Mezipaměť",
+  "@settingsCacheTitle": {},
+  "settingsCacheDescription": "Mezipaměť cvičení",
+  "@settingsCacheDescription": {},
+  "noMatchingExerciseFound": "Nenalezeny žádné odpovídající tréninky",
+  "@noMatchingExerciseFound": {
+    "description": "Message returned if no exercises match the searched string"
+  },
+  "aboutMastodonTitle": "Mastodon",
+  "@aboutMastodonTitle": {
+    "description": "Title for mastodon section in the about dialog"
+  },
+  "aboutMastodonText": "Sledujte nás na Mastodonu pro aktualizace a novinky o projektu",
+  "@aboutMastodonText": {
+    "description": "Text for the mastodon section in the about dialog"
+  },
+  "unVerifiedEmail": "Neověřený e-mail",
+  "@unVerifiedEmail": {},
+  "alsoKnownAs": "Také známé jako: {aliases}",
+  "@alsoKnownAs": {
+    "placeholders": {
+      "aliases": {}
+    },
+    "description": "List of alternative names for an exercise"
+  },
+  "searchNamesInEnglish": "Také hledat názvy v angličtině",
+  "@searchNamesInEnglish": {},
+  "aboutDonateTitle": "Přispět",
+  "@aboutDonateTitle": {},
+  "variations": "Variace",
+  "@variations": {
+    "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"
+  },
+  "verifiedEmailReason": "Pro přidávání cvičení musíte ověřit svůj e-mail",
+  "@verifiedEmailReason": {},
+  "verifiedEmailInfo": "Ověřovací e-mail byl odeslán na adresu {email}",
+  "@verifiedEmailInfo": {
+    "placeholders": {
+      "email": {}
+    }
+  },
+  "translateExercise": "Přeložte toto cvičení",
+  "@translateExercise": {}
 }
