@@ -30,6 +30,8 @@ class WeightScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final lastWeightEntry = context.read<BodyWeightProvider>().getNewestEntry();
+
     return Scaffold(
       appBar: EmptyAppBar(AppLocalizations.of(context).weight),
       floatingActionButton: FloatingActionButton(
@@ -43,7 +45,7 @@ class WeightScreen extends StatelessWidget {
             FormScreen.routeName,
             arguments: FormScreenArguments(
               AppLocalizations.of(context).newEntry,
-              WeightForm(),
+              WeightForm(lastWeightEntry?.copyWith(id: null)),
             ),
           );
         },

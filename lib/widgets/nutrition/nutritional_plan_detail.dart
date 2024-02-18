@@ -42,7 +42,8 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final nutritionalValues = _nutritionalPlan.nutritionalValues;
     final valuesPercentage = _nutritionalPlan.energyPercentage(nutritionalValues);
-    final lastWeightEntry = Provider.of<BodyWeightProvider>(context, listen: false).getLastEntry();
+    final lastWeightEntry =
+        Provider.of<BodyWeightProvider>(context, listen: false).getNewestEntry();
     final valuesGperKg = lastWeightEntry != null
         ? _nutritionalPlan.gPerBodyKg(lastWeightEntry.weight, nutritionalValues)
         : null;
