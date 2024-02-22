@@ -63,11 +63,11 @@
   "@noWorkoutPlans": {
     "description": "Message shown when the user has no workout plans"
   },
-  "rir": "RiR",
+  "rir": "OvR",
   "@rir": {
     "description": "Shorthand for Repetitions In Reserve"
   },
-  "rirNotUsed": "nepoužité RiR",
+  "rirNotUsed": "nepoužitá OvR",
   "@rirNotUsed": {
     "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
   },
@@ -105,7 +105,7 @@
   "@logHelpEntriesUnits": {},
   "description": "Popis",
   "@description": {},
-  "name": "Jméno",
+  "name": "Název",
   "@name": {
     "description": "Name for a workout or nutritional plan"
   },
@@ -428,7 +428,7 @@
   "@newSet": {
     "description": "Header when adding a new set to a workout day"
   },
-  "workoutSession": "Cvičení",
+  "workoutSession": "Tréninková relace",
   "@workoutSession": {
     "description": "A (logged) workout session"
   },
@@ -440,7 +440,7 @@
   },
   "measurement": "Měření",
   "@measurement": {},
-  "nutritionalPlan": "Nutriční plán",
+  "nutritionalPlan": "Výživový plán",
   "@nutritionalPlan": {},
   "noNutritionalPlans": "Nemáte žádné výživové plány",
   "@noNutritionalPlans": {
@@ -448,7 +448,7 @@
   },
   "anErrorOccurred": "Vyskytla se chyba!",
   "@anErrorOccurred": {},
-  "weight": "Hmotnost",
+  "weight": "Váha",
   "@weight": {
     "description": "The weight of a workout log or body weight entry"
   },
@@ -486,7 +486,7 @@
   },
   "noMeasurementEntries": "Nemáte žádné záznamy měření",
   "@noMeasurementEntries": {},
-  "delete": "Smazat",
+  "delete": "Odstranit",
   "@delete": {},
   "confirmDelete": "Přejete si skutečně odstranit '{toDelete}'?",
   "@confirmDelete": {
@@ -554,7 +554,7 @@
   },
   "appUpdateContent": "Tato verze aplikace není kompatibilní se serverem, aktualizujte prosím svou aplikaci.",
   "@appUpdateContent": {},
-  "add_exercise_image_license": "Obrázky musí být licencovány pod CC BY SA licencí. Pokud si nejste jisti, nahrávejte pouze fotky které jste sami pořídili",
+  "add_exercise_image_license": "Obrázky musí být kompatibilní s licencí CC BY SA. Pokud si nejste jistí, nahrajte pouze fotky, které jste sami pořídili.",
   "@add_exercise_image_license": {},
   "verify": "Ověřit",
   "@verify": {},
@@ -568,7 +568,7 @@
   "@previous": {},
   "next": "Další",
   "@next": {},
-  "addExercise": "Přidat cvik",
+  "addExercise": "Přidat cvičení",
   "@addExercise": {},
   "translation": "Překlad",
   "@translation": {},
@@ -598,9 +598,9 @@
   "@language": {},
   "aboutPageTitle": "O aplikaci Wger",
   "@aboutPageTitle": {},
-  "contributeExercise": "Přispějte cvik",
+  "contributeExercise": "Přidejte cvičení",
   "@contributeExercise": {},
-  "setUnitsAndRir": "Upravte  jednotky a  OvR",
+  "setUnitsAndRir": "Nastavit jednotky a OvR",
   "@setUnitsAndRir": {
     "description": "Label shown on the slider where the user can toggle showing units and RiR",
     "type": "text"
@@ -615,6 +615,233 @@
     "type": "text",
     "placeholders": {
       "barcode": {}
+    }
+  },
+  "useMetric": "Použít metrické jednotky pro tělesnou váhu",
+  "@useMetric": {},
+  "aboutDonateText": "Kupte nám kávu, abyste pomohli projektu, zaplatili náklady na server a udrželi nás funkční",
+  "@aboutDonateText": {},
+  "verifiedEmail": "Ověřený e-mail",
+  "@verifiedEmail": {},
+  "settingsTitle": "Nastavení",
+  "@settingsTitle": {},
+  "settingsCacheTitle": "Mezipaměť",
+  "@settingsCacheTitle": {},
+  "settingsCacheDescription": "Mezipaměť cvičení",
+  "@settingsCacheDescription": {},
+  "noMatchingExerciseFound": "Nenalezeny žádné odpovídající tréninky",
+  "@noMatchingExerciseFound": {
+    "description": "Message returned if no exercises match the searched string"
+  },
+  "aboutMastodonTitle": "Mastodon",
+  "@aboutMastodonTitle": {
+    "description": "Title for mastodon section in the about dialog"
+  },
+  "aboutMastodonText": "Sledujte nás na Mastodonu pro aktualizace a novinky o projektu",
+  "@aboutMastodonText": {
+    "description": "Text for the mastodon section in the about dialog"
+  },
+  "unVerifiedEmail": "Neověřený e-mail",
+  "@unVerifiedEmail": {},
+  "alsoKnownAs": "Také známé jako: {aliases}",
+  "@alsoKnownAs": {
+    "placeholders": {
+      "aliases": {}
+    },
+    "description": "List of alternative names for an exercise"
+  },
+  "searchNamesInEnglish": "Také hledat názvy v angličtině",
+  "@searchNamesInEnglish": {},
+  "aboutDonateTitle": "Přispět",
+  "@aboutDonateTitle": {},
+  "variations": "Variace",
+  "@variations": {
+    "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"
+  },
+  "verifiedEmailReason": "Pro přidávání cvičení musíte ověřit svůj e-mail",
+  "@verifiedEmailReason": {},
+  "verifiedEmailInfo": "Ověřovací e-mail byl odeslán na adresu {email}",
+  "@verifiedEmailInfo": {
+    "placeholders": {
+      "email": {}
+    }
+  },
+  "translateExercise": "Přeložte toto cvičení",
+  "@translateExercise": {},
+  "barbell": "Vzpěračská činka",
+  "@barbell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "abs": "Břišní svaly",
+  "@abs": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "pull_up_bar": "Hrazda",
+  "@pull_up_bar": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "triceps": "Tricepsy",
+  "@triceps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "done": "Hotovo",
+  "@done": {},
+  "settingsCacheDeletedSnackbar": "Mezipaměť úspěšně vymazána",
+  "@settingsCacheDeletedSnackbar": {},
+  "textPromptSubheading": "Začněte stisknutím akčního tlačítka",
+  "@textPromptSubheading": {},
+  "back": "Záda",
+  "@back": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "bench": "Lavice",
+  "@bench": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "biceps": "Bicepsy",
+  "@biceps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "calves": "Lýtka",
+  "@calves": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "cardio": "Kardio",
+  "@cardio": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "chest": "Hrudník",
+  "@chest": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "dumbbell": "Jednoruční činka",
+  "@dumbbell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "glutes": "Hýždě",
+  "@glutes": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "gym_mat": "Gymnastická podložka",
+  "@gym_mat": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kettlebell": "Kettlebell",
+  "@kettlebell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "lats": "Široký sval zádový",
+  "@lats": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "legs": "Nohy",
+  "@legs": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "lower_back": "Dolní část zad",
+  "@lower_back": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "swiss_ball": "Gymnastický míč",
+  "@swiss_ball": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "until_failure": "Do selhání",
+  "@until_failure": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "log": "Záznam",
+  "@log": {
+    "description": "Log a specific meal (imperative form)"
+  },
+  "cacheWarning": "Kvůli ukládání do mezipaměti může zobrazení změn v aplikaci chvíli trvat.",
+  "@cacheWarning": {},
+  "textPromptTitle": "Připraveni začít?",
+  "@textPromptTitle": {},
+  "body_weight": "Tělesná hmotnost",
+  "@body_weight": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "hamstrings": "Zadní stehenní svaly",
+  "@hamstrings": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kilometers": "Kilometry",
+  "@kilometers": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "incline_bench": "Šikmá lavice",
+  "@incline_bench": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kilometers_per_hour": "Kilometry za hodinu",
+  "@kilometers_per_hour": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kg": "kg",
+  "@kg": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "lb": "lb",
+  "@lb": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "none__bodyweight_exercise_": "žádný (cvičení s vlastní vahou)",
+  "@none__bodyweight_exercise_": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "max_reps": "Max. opakování",
+  "@max_reps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "miles": "Míle",
+  "@miles": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "miles_per_hour": "Míle za hodinu",
+  "@miles_per_hour": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "minutes": "Minuty",
+  "@minutes": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "quads": "Čtyřhlavý sval stehenní",
+  "@quads": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "repetitions": "Opakování",
+  "@repetitions": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "sz_bar": "SZ-Bar",
+  "@sz_bar": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "shoulders": "Ramena",
+  "@shoulders": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "seconds": "Sekundy",
+  "@seconds": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "plates": "Závaží",
+  "@plates": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "arms": "Paže",
+  "@arms": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "contributeExerciseWarning": "Cvičení můžete přidávat pouze, pokud je váš účet starší než {days} dní a máte ověřený e-mail",
+  "@contributeExerciseWarning": {
+    "description": "Number of days before which a person can add exercise",
+    "placeholders": {
+      "days": {
+        "type": "String",
+        "example": "14"
+      }
     }
   }
 }
