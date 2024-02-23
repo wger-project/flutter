@@ -85,7 +85,7 @@ class FlNutritionalPlanPieChartState extends State<FlNutritionalPlanPieChartWidg
           children: [
             Indicator(
               color: LIST_OF_COLORS3[0],
-              text: AppLocalizations.of(context).fat,
+              text: AppLocalizations.of(context).carbohydrates,
               isSquare: true,
             ),
             const SizedBox(
@@ -101,7 +101,7 @@ class FlNutritionalPlanPieChartState extends State<FlNutritionalPlanPieChartWidg
             ),
             Indicator(
               color: LIST_OF_COLORS3[2],
-              text: AppLocalizations.of(context).carbohydrates,
+              text: AppLocalizations.of(context).fat,
               isSquare: true,
             ),
           ],
@@ -114,25 +114,24 @@ class FlNutritionalPlanPieChartState extends State<FlNutritionalPlanPieChartWidg
   }
 
   List<PieChartSectionData> showingSections() {
-    final colors = generateChartColors(3).iterator;
-
     return List.generate(3, (i) {
       final isTouched = i == touchedIndex;
       final radius = isTouched ? 92.0 : 80.0;
-      colors.moveNext();
 
       switch (i) {
         case 0:
           return PieChartSectionData(
-              color: colors.current,
-              value: widget.nutritionalValues.fat,
-              title: '${widget.nutritionalValues.fat.toStringAsFixed(0)}g',
-              titlePositionPercentageOffset: 0.5,
-              radius: radius,
-              titleStyle: const TextStyle(color: Colors.white70));
+            color: LIST_OF_COLORS3[0],
+            value: widget.nutritionalValues.carbohydrates,
+            title: '${widget.nutritionalValues.carbohydrates.toStringAsFixed(0)}g',
+            titlePositionPercentageOffset: 0.5,
+            radius: radius,
+            titleStyle: const TextStyle(color: Colors.white70),
+          );
+
         case 1:
           return PieChartSectionData(
-            color: colors.current,
+            color: LIST_OF_COLORS3[1],
             value: widget.nutritionalValues.protein,
             title: '${widget.nutritionalValues.protein.toStringAsFixed(0)}g',
             titlePositionPercentageOffset: 0.5,
@@ -140,9 +139,9 @@ class FlNutritionalPlanPieChartState extends State<FlNutritionalPlanPieChartWidg
           );
         case 2:
           return PieChartSectionData(
-            color: colors.current,
-            value: widget.nutritionalValues.carbohydrates,
-            title: '${widget.nutritionalValues.carbohydrates.toStringAsFixed(0)}g',
+            color: LIST_OF_COLORS3[2],
+            value: widget.nutritionalValues.fat,
+            title: '${widget.nutritionalValues.fat.toStringAsFixed(0)}g',
             titlePositionPercentageOffset: 0.5,
             radius: radius,
           );
