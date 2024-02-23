@@ -36,16 +36,13 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
 
   const NutritionalPlanDetailWidget(this._nutritionalPlan);
 
-  static const double tablePadding = 7;
-
   @override
   Widget build(BuildContext context) {
-    final nutritionalValues = _nutritionalPlan.plannedNutritionalValues;
-    final valuesPercentage = _nutritionalPlan.energyPercentage(nutritionalValues);
+    final plannedNutritionalValues = _nutritionalPlan.plannedNutritionalValues;
     final lastWeightEntry =
         Provider.of<BodyWeightProvider>(context, listen: false).getNewestEntry();
     final valuesGperKg = lastWeightEntry != null
-        ? _nutritionalPlan.gPerBodyKg(lastWeightEntry.weight, nutritionalValues)
+        ? _nutritionalPlan.gPerBodyKg(lastWeightEntry.weight, plannedNutritionalValues)
         : null;
 
     return SliverList(
@@ -79,141 +76,14 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(15),
             height: 220,
-            child: FlNutritionalPlanPieChartWidget(nutritionalValues), // chart
+            child: FlNutritionalPlanPieChartWidget(plannedNutritionalValues), // chart
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Table(
-              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-              border: TableBorder(
-                horizontalInside: BorderSide(
-                  width: 1,
-                  color: Theme.of(context).colorScheme.outline,
-                ),
-              ),
-              columnWidths: const {0: FractionColumnWidth(0.4)},
-              children: [
-                TableRow(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: tablePadding),
-                      child: Text(
-                        AppLocalizations.of(context).macronutrients,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Text(
-                      AppLocalizations.of(context).total,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      AppLocalizations.of(context).percentEnergy,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      AppLocalizations.of(context).gPerBodyKg,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-                TableRow(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: tablePadding),
-                      child: Text(AppLocalizations.of(context).energy),
-                    ),
-                    Text(
-                      nutritionalValues.energy.toStringAsFixed(0) +
-                          AppLocalizations.of(context).kcal,
-                    ),
-                    const Text(''),
-                    const Text(''),
-                  ],
-                ),
-                TableRow(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: tablePadding),
-                      child: Text(AppLocalizations.of(context).protein),
-                    ),
-                    Text(nutritionalValues.protein.toStringAsFixed(0) +
-                        AppLocalizations.of(context).g),
-                    Text(valuesPercentage.protein.toStringAsFixed(1)),
-                    Text(valuesGperKg != null ? valuesGperKg.protein.toStringAsFixed(1) : ''),
-                  ],
-                ),
-                TableRow(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: tablePadding),
-                      child: Text(AppLocalizations.of(context).carbohydrates),
-                    ),
-                    Text(nutritionalValues.carbohydrates.toStringAsFixed(0) +
-                        AppLocalizations.of(context).g),
-                    Text(valuesPercentage.carbohydrates.toStringAsFixed(1)),
-                    Text(valuesGperKg != null ? valuesGperKg.carbohydrates.toStringAsFixed(1) : ''),
-                  ],
-                ),
-                TableRow(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: tablePadding, horizontal: 12),
-                      child: Text(AppLocalizations.of(context).sugars),
-                    ),
-                    Text(nutritionalValues.carbohydratesSugar.toStringAsFixed(0) +
-                        AppLocalizations.of(context).g),
-                    const Text(''),
-                    const Text(''),
-                  ],
-                ),
-                TableRow(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: tablePadding),
-                      child: Text(AppLocalizations.of(context).fat),
-                    ),
-                    Text(nutritionalValues.fat.toStringAsFixed(0) + AppLocalizations.of(context).g),
-                    Text(valuesPercentage.fat.toStringAsFixed(1)),
-                    Text(valuesGperKg != null ? valuesGperKg.fat.toStringAsFixed(1) : ''),
-                  ],
-                ),
-                TableRow(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: tablePadding, horizontal: 12),
-                      child: Text(AppLocalizations.of(context).saturatedFat),
-                    ),
-                    Text(nutritionalValues.fatSaturated.toStringAsFixed(0) +
-                        AppLocalizations.of(context).g),
-                    const Text(''),
-                    const Text(''),
-                  ],
-                ),
-                TableRow(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: tablePadding),
-                      child: Text(AppLocalizations.of(context).fibres),
-                    ),
-                    Text(nutritionalValues.fibres.toStringAsFixed(0) +
-                        AppLocalizations.of(context).g),
-                    const Text(''),
-                    const Text(''),
-                  ],
-                ),
-                TableRow(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: tablePadding),
-                      child: Text(AppLocalizations.of(context).sodium),
-                    ),
-                    Text(nutritionalValues.sodium.toStringAsFixed(0) +
-                        AppLocalizations.of(context).g),
-                    const Text(''),
-                    const Text(''),
-                  ],
-                ),
-              ],
+            child: MacronutrientsTable(
+              plannedNutritionalValues: plannedNutritionalValues,
+              plannedValuesPercentage: _nutritionalPlan.energyPercentage(plannedNutritionalValues),
+              plannedValuesGperKg: valuesGperKg,
             ),
           ),
           const Padding(padding: EdgeInsets.all(8.0)),
@@ -300,6 +170,159 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
             ),
         ],
       ),
+    );
+  }
+}
+
+class MacronutrientsTable extends StatelessWidget {
+  const MacronutrientsTable({
+    super.key,
+    required this.plannedNutritionalValues,
+    required this.plannedValuesPercentage,
+    required this.plannedValuesGperKg,
+  });
+
+  static const double tablePadding = 7;
+  final NutritionalValues plannedNutritionalValues;
+  final BaseNutritionalValues plannedValuesPercentage;
+  final BaseNutritionalValues? plannedValuesGperKg;
+
+  @override
+  Widget build(BuildContext context) {
+    return Table(
+      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+      border: TableBorder(
+        horizontalInside: BorderSide(
+          width: 1,
+          color: Theme.of(context).colorScheme.outline,
+        ),
+      ),
+      columnWidths: const {0: FractionColumnWidth(0.4)},
+      children: [
+        TableRow(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: tablePadding),
+              child: Text(
+                AppLocalizations.of(context).macronutrients,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+            Text(
+              AppLocalizations.of(context).total,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            Text(
+              AppLocalizations.of(context).percentEnergy,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            Text(
+              AppLocalizations.of(context).gPerBodyKg,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+        TableRow(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: tablePadding),
+              child: Text(AppLocalizations.of(context).energy),
+            ),
+            Text(
+              plannedNutritionalValues.energy.toStringAsFixed(0) +
+                  AppLocalizations.of(context).kcal,
+            ),
+            const Text(''),
+            const Text(''),
+          ],
+        ),
+        TableRow(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: tablePadding),
+              child: Text(AppLocalizations.of(context).protein),
+            ),
+            Text(plannedNutritionalValues.protein.toStringAsFixed(0) +
+                AppLocalizations.of(context).g),
+            Text(plannedValuesPercentage.protein.toStringAsFixed(1)),
+            Text(
+                plannedValuesGperKg != null ? plannedValuesGperKg!.protein.toStringAsFixed(1) : ''),
+          ],
+        ),
+        TableRow(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: tablePadding),
+              child: Text(AppLocalizations.of(context).carbohydrates),
+            ),
+            Text(plannedNutritionalValues.carbohydrates.toStringAsFixed(0) +
+                AppLocalizations.of(context).g),
+            Text(plannedValuesPercentage.carbohydrates.toStringAsFixed(1)),
+            Text(plannedValuesGperKg != null
+                ? plannedValuesGperKg!.carbohydrates.toStringAsFixed(1)
+                : ''),
+          ],
+        ),
+        TableRow(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: tablePadding, horizontal: 12),
+              child: Text(AppLocalizations.of(context).sugars),
+            ),
+            Text(plannedNutritionalValues.carbohydratesSugar.toStringAsFixed(0) +
+                AppLocalizations.of(context).g),
+            const Text(''),
+            const Text(''),
+          ],
+        ),
+        TableRow(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: tablePadding),
+              child: Text(AppLocalizations.of(context).fat),
+            ),
+            Text(plannedNutritionalValues.fat.toStringAsFixed(0) + AppLocalizations.of(context).g),
+            Text(plannedValuesPercentage.fat.toStringAsFixed(1)),
+            Text(plannedValuesGperKg != null ? plannedValuesGperKg!.fat.toStringAsFixed(1) : ''),
+          ],
+        ),
+        TableRow(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: tablePadding, horizontal: 12),
+              child: Text(AppLocalizations.of(context).saturatedFat),
+            ),
+            Text(plannedNutritionalValues.fatSaturated.toStringAsFixed(0) +
+                AppLocalizations.of(context).g),
+            const Text(''),
+            const Text(''),
+          ],
+        ),
+        TableRow(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: tablePadding),
+              child: Text(AppLocalizations.of(context).fibres),
+            ),
+            Text(plannedNutritionalValues.fibres.toStringAsFixed(0) +
+                AppLocalizations.of(context).g),
+            const Text(''),
+            const Text(''),
+          ],
+        ),
+        TableRow(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: tablePadding),
+              child: Text(AppLocalizations.of(context).sodium),
+            ),
+            Text(plannedNutritionalValues.sodium.toStringAsFixed(0) +
+                AppLocalizations.of(context).g),
+            const Text(''),
+            const Text(''),
+          ],
+        ),
+      ],
     );
   }
 }
