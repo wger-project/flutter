@@ -40,7 +40,7 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final nutritionalValues = _nutritionalPlan.nutritionalValues;
+    final nutritionalValues = _nutritionalPlan.plannedNutritionalValues;
     final valuesPercentage = _nutritionalPlan.energyPercentage(nutritionalValues);
     final lastWeightEntry =
         Provider.of<BodyWeightProvider>(context, listen: false).getNewestEntry();
@@ -240,7 +240,7 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                 ),
                 Indicator(
                   color: LIST_OF_COLORS3[1],
-                  text: AppLocalizations.of(context).logged,
+                  text: AppLocalizations.of(context).today,
                   isSquare: true,
                   marginRight: 0,
                 ),

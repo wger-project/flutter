@@ -91,26 +91,44 @@ class NutritionalPlan {
     return description != '' ? description : AppLocalizations.of(context).nutritionalPlan;
   }
 
+  bool get hasAnyGoals {
+    return goalEnergy != null ||
+        goalFat != null ||
+        goalProtein != null ||
+        goalCarbohydrates != null;
+  }
+
   /// Calculations
-  NutritionalValues get nutritionalValues {
-    // This is already done on the server. It might be better to read it from there.
+  ///
+  /// note that (some of) this is already done on the server. It might be better
+  /// to read it from there, but on the other hand we might want to do more locally
+  /// so that a mostly offline mode is possible.
+  NutritionalValues get plannedNutritionalValues {
     var out = NutritionalValues();
 
-    for (final meal in meals) {
-      out += meal.plannedNutritionalValues;
+    // If there are set goals, they take preference over any meals
+    if (hasAnyGoals) {
+      out.energy = goalEnergy != null ? goalEnergy!.toDouble() : 0;
+      out.fat = goalFat != null ? goalFat!.toDouble() : 0;
+      out.carbohydrates = goalCarbohydrates != null ? goalCarbohydrates!.toDouble() : 0;
+      out.protein = goalProtein != null ? goalProtein!.toDouble() : 0;
+    } else {
+      for (final meal in meals) {
+        out += meal.plannedNutritionalValues;
+      }
     }
 
     return out;
   }
 
-  NutritionalValues get nutritionalValuesToday {
+  NutritionalValues get loggedNutritionalValuesToday {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
 
     return logEntriesValues.containsKey(today) ? logEntriesValues[today]! : NutritionalValues();
   }
 
-  NutritionalValues get nutritionalValues7DayAvg {
+  NutritionalValues get loggedNutritionalValues7DayAvg {
     final currentDate = DateTime.now();
     final sevenDaysAgo = currentDate.subtract(const Duration(days: 7));
 

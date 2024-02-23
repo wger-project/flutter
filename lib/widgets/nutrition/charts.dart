@@ -211,9 +211,9 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
 
   @override
   Widget build(BuildContext context) {
-    final planned = widget._nutritionalPlan.nutritionalValues;
-    final loggedToday = widget._nutritionalPlan.nutritionalValuesToday;
-    final logged7DayAvg = widget._nutritionalPlan.nutritionalValues7DayAvg;
+    final planned = widget._nutritionalPlan.plannedNutritionalValues;
+    final loggedToday = widget._nutritionalPlan.loggedNutritionalValuesToday;
+    final logged7DayAvg = widget._nutritionalPlan.loggedNutritionalValues7DayAvg;
 
     final colorPlanned = LIST_OF_COLORS3[0];
     final colorLoggedToday = LIST_OF_COLORS3[1];

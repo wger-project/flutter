@@ -208,7 +208,7 @@ class NutritionalDiaryDetailWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final valuesTotal = _nutritionalPlan.nutritionalValues;
+    final valuesTotal = _nutritionalPlan.plannedNutritionalValues;
     final valuesDate = _nutritionalPlan.getValuesForDate(_date);
     final logs = _nutritionalPlan.getLogsForDate(_date);
 

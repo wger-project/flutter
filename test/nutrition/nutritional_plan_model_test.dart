@@ -32,7 +32,7 @@ void main() {
   group('model tests', () {
     test('Test the nutritionalValues method for nutritional plans', () {
       final values = NutritionalValues.values(4118.75, 32.75, 347.5, 9.5, 59.0, 37.75, 52.5, 30.5);
-      expect(plan.nutritionalValues, values);
+      expect(plan.plannedNutritionalValues, values);
     });
 
     test('Test the nutritionalValues method for meals', () {

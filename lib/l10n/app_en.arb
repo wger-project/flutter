@@ -346,7 +346,8 @@
   "@logged": {
     "description": "Header for the column of 'logged' nutritional values, i.e. what was eaten"
   },
-  "loggedToday": "LoggedToday",
+  "today": "Today",
+  "loggedToday": "Logged today",
   "weekAverage": "7 day average",
   "@weekAverage": {
     "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"

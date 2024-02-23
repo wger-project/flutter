@@ -372,6 +372,7 @@ class _PlanFormState extends State<PlanForm> {
 
   //text:widget._plan.description
 
+  // TODO: read the values from the form
   bool _onlyLogging = true;
   bool _addGoals = false;
 
