@@ -36,7 +36,7 @@ class MealItem {
   late int ingredientId;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  late Ingredient ingredientObj;
+  late Ingredient ingredient;
 
   @JsonKey(required: false, name: 'weight_unit')
   int? weightUnitId;
@@ -59,7 +59,7 @@ class MealItem {
       this.mealId = mealId;
     }
     if (ingredient != null) {
-      ingredientObj = ingredient;
+      this.ingredient = ingredient;
       ingredientId = ingredient.id;
     }
   }
@@ -79,14 +79,14 @@ class MealItem {
     //final weight = this.weightUnit == null ? amount : amount * weightUnit.amount * weightUnit.grams;
     final weight = amount;
 
-    out.energy = ingredientObj.energy * weight / 100;
-    out.protein = ingredientObj.protein * weight / 100;
-    out.carbohydrates = ingredientObj.carbohydrates * weight / 100;
-    out.carbohydratesSugar = ingredientObj.carbohydratesSugar * weight / 100;
-    out.fat = ingredientObj.fat * weight / 100;
-    out.fatSaturated = ingredientObj.fatSaturated * weight / 100;
-    out.fibres = ingredientObj.fibres * weight / 100;
-    out.sodium = ingredientObj.sodium * weight / 100;
+    out.energy = ingredient.energy * weight / 100;
+    out.protein = ingredient.protein * weight / 100;
+    out.carbohydrates = ingredient.carbohydrates * weight / 100;
+    out.carbohydratesSugar = ingredient.carbohydratesSugar * weight / 100;
+    out.fat = ingredient.fat * weight / 100;
+    out.fatSaturated = ingredient.fatSaturated * weight / 100;
+    out.fibres = ingredient.fibres * weight / 100;
+    out.sodium = ingredient.sodium * weight / 100;
 
     return out;
   }

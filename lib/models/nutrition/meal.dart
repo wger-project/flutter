@@ -16,10 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/json.dart';
+import 'package:wger/helpers/misc.dart';
+import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
 
@@ -39,33 +40,32 @@ class Meal {
   @JsonKey(name: 'name')
   late String name;
 
-  @JsonKey(includeFromJson: false, includeToJson: false, name: 'meal_items', defaultValue: [])
+  @JsonKey(includeFromJson: false, includeToJson: false, defaultValue: [])
   List<MealItem> mealItems = [];
+
+  @JsonKey(includeFromJson: false, includeToJson: false, defaultValue: [])
+  List<Log> diaryEntries = [];
 
   Meal({
     this.id,
     int? plan,
-    TimeOfDay? time,
+    this.time,
     String? name,
     List<MealItem>? mealItems,
+    List<Log>? diaryEntries,
   }) {
     if (plan != null) {
       planId = plan;
     }
 
     this.mealItems = mealItems ?? [];
-
-    this.time = time ?? TimeOfDay.fromDateTime(clock.now());
+    this.diaryEntries = diaryEntries ?? [];
+    //this.time = time ?? TimeOfDay.fromDateTime(clock.now());
     this.name = name ?? '';
   }
 
-  // Boilerplate
-  factory Meal.fromJson(Map<String, dynamic> json) => _$MealFromJson(json);
-
-  Map<String, dynamic> toJson() => _$MealToJson(this);
-
   /// Calculations
-  NutritionalValues get nutritionalValues {
+  NutritionalValues get plannedNutritionalValues {
     // This is already done on the server. It might be better to read it from there.
     var out = NutritionalValues();
 
@@ -75,4 +75,20 @@ class Meal {
 
     return out;
   }
+
+  /// Returns the logged nutritional values for today
+  NutritionalValues get loggedNutritionalValuesToday {
+    var out = NutritionalValues();
+
+    for (final item in diaryEntries.where((l) => l.datetime.isSameDayAs(DateTime.now()))) {
+      out += item.nutritionalValues;
+    }
+
+    return out;
+  }
+
+  // Boilerplate
+  factory Meal.fromJson(Map<String, dynamic> json) => _$MealFromJson(json);
+
+  Map<String, dynamic> toJson() => _$MealToJson(this);
 }

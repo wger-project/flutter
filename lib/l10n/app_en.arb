@@ -336,10 +336,6 @@
   "@energyShort": {
     "description": "The first letter or short name of the word 'Energy', used in overviews"
   },
-  "kcal": "kcal",
-  "@kcal": {
-    "description": "Energy in a meal in kilocalories, kcal"
-  },
   "macronutrients": "Macronutrients",
   "@macronutrients": {},
   "planned": "Planned",
@@ -350,6 +346,7 @@
   "@logged": {
     "description": "Header for the column of 'logged' nutritional values, i.e. what was eaten"
   },
+  "loggedToday": "LoggedToday",
   "weekAverage": "7 day average",
   "@weekAverage": {
     "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
@@ -366,6 +363,18 @@
   "@total": {
     "description": "Label used for total sums of e.g. calories or similar"
   },
+  "kcal": "kcal",
+  "@kcal": {
+    "description": "Energy in a meal in kilocalories, kcal"
+  },
+  "kcalValue": "{value} kcal",
+  "@kcalValue": {
+    "description": "A value in kcal, e.g. 500 kcal",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
+  },
   "kJ": "kJ",
   "@kJ": {
     "description": "Energy in a meal in kilo joules, kJ"
@@ -373,6 +382,22 @@
   "g": "g",
   "@g": {
     "description": "Abbreviation for gram"
+  },
+  "gValue": "{value} g",
+  "@gValue": {
+    "description": "A value in grams, e.g. 5 g",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "percentValue": "{value} %",
+  "@percentValue": {
+    "description": "A value in percent, e.g. 10 %",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
   },
   "protein": "Protein",
   "@protein": {},

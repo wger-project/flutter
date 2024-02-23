@@ -106,9 +106,7 @@ class NutritionPlansProvider with ChangeNotifier {
   /// Fetches and sets all plans fully, i.e. with all corresponding child objects
   Future<void> fetchAndSetAllPlansFull() async {
     final data = await baseProvider.fetchPaginated(baseProvider.makeUrl(_nutritionalPlansPath));
-    for (final entry in data) {
-      await fetchAndSetPlanFull(entry['id']);
-    }
+    await Future.wait(data.map((e) => fetchAndSetPlanFull(e['id'])).toList());
   }
 
   /// Fetches and sets the given nutritional plan
@@ -153,7 +151,7 @@ class NutritionPlansProvider with ChangeNotifier {
           final image = IngredientImage.fromJson(mealItemData['image']);
           ingredient.image = image;
         }
-        mealItem.ingredientObj = ingredient;
+        mealItem.ingredient = ingredient;
         mealItems.add(mealItem);
       }
       meal.mealItems = mealItems;
@@ -163,6 +161,9 @@ class NutritionPlansProvider with ChangeNotifier {
 
     // Logs
     await fetchAndSetLogs(plan);
+    for (final meal in meals) {
+      meal.diaryEntries = plan.diaryEntries.where((e) => e.mealId == meal.id).toList();
+    }
 
     // ... and done
     notifyListeners();
@@ -255,7 +256,7 @@ class NutritionPlansProvider with ChangeNotifier {
     final data = await baseProvider.post(mealItem.toJson(), baseProvider.makeUrl(_mealItemPath));
 
     mealItem = MealItem.fromJson(data);
-    mealItem.ingredientObj = await fetchIngredient(mealItem.ingredientId);
+    mealItem.ingredient = await fetchIngredient(mealItem.ingredientId);
     meal.mealItems.add(mealItem);
     notifyListeners();
 
@@ -385,7 +386,7 @@ class NutritionPlansProvider with ChangeNotifier {
         baseProvider.makeUrl(_nutritionDiaryPath),
       );
       log.id = data['id'];
-      plan.logs.add(log);
+      plan.diaryEntries.add(log);
     }
     notifyListeners();
   }
@@ -393,12 +394,12 @@ class NutritionPlansProvider with ChangeNotifier {
   /// Log custom ingredient to nutrition diary
   Future<void> logIngredientToDiary(MealItem mealItem, int planId, [DateTime? dateTime]) async {
     final plan = findById(planId);
-    mealItem.ingredientObj = await fetchIngredient(mealItem.ingredientId);
+    mealItem.ingredient = await fetchIngredient(mealItem.ingredientId);
     final Log log = Log.fromMealItem(mealItem, plan.id!, null, dateTime);
 
     final data = await baseProvider.post(log.toJson(), baseProvider.makeUrl(_nutritionDiaryPath));
     log.id = data['id'];
-    plan.logs.add(log);
+    plan.diaryEntries.add(log);
     notifyListeners();
   }
 
@@ -407,7 +408,7 @@ class NutritionPlansProvider with ChangeNotifier {
     await baseProvider.deleteRequest(_nutritionDiaryPath, logId);
 
     final plan = findById(planId);
-    plan.logs.removeWhere((element) => element.id == logId);
+    plan.diaryEntries.removeWhere((element) => element.id == logId);
     notifyListeners();
   }
 
@@ -420,12 +421,12 @@ class NutritionPlansProvider with ChangeNotifier {
       ),
     );
 
-    plan.logs = [];
+    plan.diaryEntries = [];
     for (final logData in data) {
       final log = Log.fromJson(logData);
       final ingredient = await fetchIngredient(log.ingredientId);
       log.ingredientObj = ingredient;
-      plan.logs.add(log);
+      plan.diaryEntries.add(log);
     }
     notifyListeners();
   }

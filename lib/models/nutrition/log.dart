@@ -69,7 +69,7 @@ class Log {
 
   Log.fromMealItem(MealItem mealItem, this.planId, this.mealId, [DateTime? dateTime]) {
     ingredientId = mealItem.ingredientId;
-    ingredientObj = mealItem.ingredientObj;
+    ingredientObj = mealItem.ingredient;
     weightUnitId = mealItem.weightUnitId;
     datetime = dateTime ?? DateTime.now();
     amount = mealItem.amount;

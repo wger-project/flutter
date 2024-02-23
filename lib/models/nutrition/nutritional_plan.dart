@@ -58,7 +58,7 @@ class NutritionalPlan {
   List<Meal> meals = [];
 
   @JsonKey(includeFromJson: false, includeToJson: false, defaultValue: [])
-  List<Log> logs = [];
+  List<Log> diaryEntries = [];
 
   NutritionalPlan({
     this.id,
@@ -70,10 +70,10 @@ class NutritionalPlan {
     this.goalCarbohydrates,
     this.goalFat,
     List<Meal>? meals,
-    List<Log>? logs,
+    List<Log>? diaryEntries,
   }) {
     this.meals = meals ?? [];
-    this.logs = logs ?? [];
+    this.diaryEntries = diaryEntries ?? [];
   }
 
   NutritionalPlan.empty() {
@@ -97,7 +97,7 @@ class NutritionalPlan {
     var out = NutritionalValues();
 
     for (final meal in meals) {
-      out += meal.nutritionalValues;
+      out += meal.plannedNutritionalValues;
     }
 
     return out;
@@ -114,7 +114,7 @@ class NutritionalPlan {
     final currentDate = DateTime.now();
     final sevenDaysAgo = currentDate.subtract(const Duration(days: 7));
 
-    final entries = logs.where((obj) {
+    final entries = diaryEntries.where((obj) {
       final DateTime objDate = obj.datetime;
       return objDate.isAfter(sevenDaysAgo) && objDate.isBefore(currentDate);
     }).toList();
@@ -151,7 +151,7 @@ class NutritionalPlan {
 
   Map<DateTime, NutritionalValues> get logEntriesValues {
     final out = <DateTime, NutritionalValues>{};
-    for (final log in logs) {
+    for (final log in diaryEntries) {
       final date = DateTime(log.datetime.year, log.datetime.month, log.datetime.day);
 
       if (!out.containsKey(date)) {
@@ -175,7 +175,7 @@ class NutritionalPlan {
   /// Returns the nutritional logs for the given date
   List<Log> getLogsForDate(DateTime date) {
     final List<Log> out = [];
-    for (final log in logs) {
+    for (final log in diaryEntries) {
       final dateKey = DateTime(date.year, date.month, date.day);
       final logKey = DateTime(log.datetime.year, log.datetime.month, log.datetime.day);
 
@@ -202,5 +202,15 @@ class NutritionalPlan {
       }
     }
     return out;
+  }
+
+  Meal pseudoMealOthers(String name) {
+    return Meal(
+      id: -1,
+      plan: id,
+      name: name,
+      time: null,
+      diaryEntries: diaryEntries.where((e) => e.mealId == null).toList(),
+    );
   }
 }

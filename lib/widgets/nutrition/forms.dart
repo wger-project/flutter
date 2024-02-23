@@ -203,14 +203,14 @@ class MealItemForm extends StatelessWidget {
                   return Card(
                     child: ListTile(
                       onTap: () {
-                        _ingredientController.text = _listMealItems[index].ingredientObj.name;
+                        _ingredientController.text = _listMealItems[index].ingredient.name;
                         _ingredientIdController.text =
-                            _listMealItems[index].ingredientObj.id.toString();
+                            _listMealItems[index].ingredient.id.toString();
                         _amountController.text = _listMealItems[index].amount.toStringAsFixed(0);
                         _mealItem.ingredientId = _listMealItems[index].ingredientId;
                         _mealItem.amount = _listMealItems[index].amount;
                       },
-                      title: Text(_listMealItems[index].ingredientObj.name),
+                      title: Text(_listMealItems[index].ingredient.name),
                       subtitle: Text('${_listMealItems[index].amount.toStringAsFixed(0)}$unit'),
                       trailing: const Icon(Icons.copy),
                     ),
@@ -242,7 +242,7 @@ class IngredientLogForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final diaryEntries = _plan.logs;
+    final diaryEntries = _plan.diaryEntries;
     final String unit = AppLocalizations.of(context).g;
 
     return Container(
@@ -338,7 +338,7 @@ class IngredientLogForm extends StatelessWidget {
                         _mealItem.ingredientId = diaryEntries[index].ingredientId;
                         _mealItem.amount = diaryEntries[index].amount;
                       },
-                      title: Text(_plan.logs[index].ingredientObj.name),
+                      title: Text(_plan.diaryEntries[index].ingredientObj.name),
                       subtitle: Text('${diaryEntries[index].amount.toStringAsFixed(0)}$unit'),
                       trailing: const Icon(Icons.copy),
                     ),

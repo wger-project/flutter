@@ -22,13 +22,13 @@ NutritionalPlan _$NutritionalPlanFromJson(Map<String, dynamic> json) {
   );
   return NutritionalPlan(
     id: json['id'] as int?,
+    description: json['description'] as String,
+    creationDate: DateTime.parse(json['creation_date'] as String),
     onlyLogging: json['only_logging'] as bool? ?? false,
     goalEnergy: json['goal_energy'] as num?,
     goalProtein: json['goal_protein'] as num?,
     goalCarbohydrates: json['goal_carbohydrates'] as num?,
     goalFat: json['goal_fat'] as num?,
-    description: json['description'] as String,
-    creationDate: DateTime.parse(json['creation_date'] as String),
   );
 }
 

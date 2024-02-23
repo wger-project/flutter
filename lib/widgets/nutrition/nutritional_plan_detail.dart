@@ -52,7 +52,14 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
       delegate: SliverChildListDelegate(
         [
           const SizedBox(height: 10),
-          ..._nutritionalPlan.meals.map((meal) => MealWidget(meal, _nutritionalPlan.allMealItems)),
+          ..._nutritionalPlan.meals.map((meal) => MealWidget(
+                meal,
+                _nutritionalPlan.allMealItems,
+              )),
+          MealWidget(
+            _nutritionalPlan.pseudoMealOthers('Other logs'),
+            _nutritionalPlan.allMealItems,
+          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: ElevatedButton(
@@ -211,7 +218,7 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
           ),
           const Padding(padding: EdgeInsets.all(8.0)),
           Text(
-            '${AppLocalizations.of(context).planned} / ${AppLocalizations.of(context).logged} / ${AppLocalizations.of(context).weekAverage}',
+            AppLocalizations.of(context).logged,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.titleLarge,
           ),
@@ -252,7 +259,7 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                 Text(
                   AppLocalizations.of(context).nutritionalDiary,
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.titleLarge,
+                  style: Theme.of(context).textTheme.titleSmall,
                 ),
                 Container(
                   padding: const EdgeInsets.all(15),

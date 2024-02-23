@@ -85,16 +85,16 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 MutedText(
-                    '${AppLocalizations.of(context).energyShort} ${meal.nutritionalValues.energy.toStringAsFixed(0)}${AppLocalizations.of(context).kcal}'),
+                    '${AppLocalizations.of(context).energyShort} ${meal.plannedNutritionalValues.energy.toStringAsFixed(0)}${AppLocalizations.of(context).kcal}'),
                 const MutedText(' / '),
                 MutedText(
-                    '${AppLocalizations.of(context).proteinShort} ${meal.nutritionalValues.protein.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
+                    '${AppLocalizations.of(context).proteinShort} ${meal.plannedNutritionalValues.protein.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
                 const MutedText(' / '),
                 MutedText(
-                    '${AppLocalizations.of(context).carbohydratesShort} ${meal.nutritionalValues.carbohydrates.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
+                    '${AppLocalizations.of(context).carbohydratesShort} ${meal.plannedNutritionalValues.carbohydrates.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
                 const MutedText(' / '),
                 MutedText(
-                    '${AppLocalizations.of(context).fatShort} ${meal.nutritionalValues.fat.toStringAsFixed(0)}${AppLocalizations.of(context).g} '),
+                    '${AppLocalizations.of(context).fatShort} ${meal.plannedNutritionalValues.fat.toStringAsFixed(0)}${AppLocalizations.of(context).g} '),
               ],
             ),
             IconButton(
@@ -127,7 +127,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                   children: [
                     Flexible(
                       child: Text(
-                        item.ingredientObj.name,
+                        item.ingredient.name,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),

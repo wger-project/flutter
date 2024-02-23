@@ -26,6 +26,7 @@ import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/core/core.dart';
+import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/helpers.dart';
 
@@ -43,7 +44,7 @@ class MealWidget extends StatefulWidget {
 }
 
 class _MealWidgetState extends State<MealWidget> {
-  bool _showingDetails = false;
+  bool _showDetails = false;
   bool _editing = false;
 
   void _toggleEditing() {
@@ -54,7 +55,7 @@ class _MealWidgetState extends State<MealWidget> {
 
   void _toggleDetails() {
     setState(() {
-      _showingDetails = !_showingDetails;
+      _showDetails = !_showDetails;
     });
   }
 
@@ -67,11 +68,12 @@ class _MealWidgetState extends State<MealWidget> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             MealHeader(
-                editing: _editing,
-                toggleEditing: _toggleEditing,
-                showingDetails: _showingDetails,
-                toggleDetails: _toggleDetails,
-                meal: widget._meal),
+              editing: _editing,
+              toggleEditing: _toggleEditing,
+              showingDetails: _showDetails,
+              toggleDetails: _toggleDetails,
+              meal: widget._meal,
+            ),
             if (_editing)
               Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8),
@@ -128,8 +130,19 @@ class _MealWidgetState extends State<MealWidget> {
                     ],
                   )),
             const Divider(),
-            ...widget._meal.mealItems
-                .map((item) => MealItemWidget(item, _showingDetails, _editing)),
+            ...widget._meal.mealItems.map((item) => MealItemWidget(item, _showDetails, _editing)),
+            Center(
+              child: Text(
+                AppLocalizations.of(context).loggedToday,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ),
+            if (widget._meal.plannedNutritionalValues.energy != 0 &&
+                widget._meal.loggedNutritionalValuesToday.energy != 0)
+              MealDiaryBarChartWidget(
+                planned: widget._meal.plannedNutritionalValues,
+                logged: widget._meal.loggedNutritionalValuesToday,
+              ),
           ],
         ),
       ),
@@ -157,12 +170,12 @@ class MealItemWidget extends StatelessWidget {
     final values = _item.nutritionalValues;
 
     return ListTile(
-      leading: _item.ingredientObj.image != null
+      leading: _item.ingredient.image != null
           ? GestureDetector(
-              child: CircleAvatar(backgroundImage: NetworkImage(_item.ingredientObj.image!.image)),
+              child: CircleAvatar(backgroundImage: NetworkImage(_item.ingredient.image!.image)),
               onTap: () async {
-                if (_item.ingredientObj.image!.objectUrl != '') {
-                  return launchURL(_item.ingredientObj.image!.objectUrl, context);
+                if (_item.ingredient.image!.objectUrl != '') {
+                  return launchURL(_item.ingredient.image!.objectUrl, context);
                 } else {
                   return;
                 }
@@ -170,7 +183,7 @@ class MealItemWidget extends StatelessWidget {
             )
           : const CircleIconAvatar(Icon(Icons.image, color: Colors.grey)),
       title: Text(
-        '${_item.amount.toStringAsFixed(0)}$unit ${_item.ingredientObj.name}',
+        '${_item.amount.toStringAsFixed(0)}$unit ${_item.ingredient.name}',
         overflow: TextOverflow.ellipsis,
       ),
       subtitle: Column(
@@ -238,10 +251,11 @@ class MealHeader extends StatelessWidget {
                           _meal.name,
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
-                        Text(
-                          _meal.time!.format(context),
-                          style: Theme.of(context).textTheme.headlineSmall,
-                        )
+                        if (_meal.time != null)
+                          Text(
+                            _meal.time!.format(context),
+                            style: Theme.of(context).textTheme.headlineSmall,
+                          )
                       ],
                     )
                   : Text(

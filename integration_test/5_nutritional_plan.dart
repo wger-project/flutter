@@ -89,9 +89,9 @@ Widget createNutritionalPlanScreen({locale = 'en'}) {
   );
 
   // Add logs
-  plan.logs.add(Log.fromMealItem(mealItem1, 1, 1, DateTime(2021, 6, 1)));
-  plan.logs.add(Log.fromMealItem(mealItem2, 1, 1, DateTime(2021, 6, 1)));
-  plan.logs.add(Log.fromMealItem(mealItem3, 1, 1, DateTime(2021, 6, 10)));
+  plan.diaryEntries.add(Log.fromMealItem(mealItem1, 1, 1, DateTime(2021, 6, 1)));
+  plan.diaryEntries.add(Log.fromMealItem(mealItem2, 1, 1, DateTime(2021, 6, 1)));
+  plan.diaryEntries.add(Log.fromMealItem(mealItem3, 1, 1, DateTime(2021, 6, 10)));
 
   return MultiProvider(
     providers: [
