@@ -169,8 +169,14 @@ class _MealWidgetState extends State<MealWidget> {
                       planned: widget._meal.plannedNutritionalValues,
                       logged: widget._meal.loggedNutritionalValuesToday,
                     ),
-                  ...widget._meal.diaryEntriesToday
-                      .map((item) => NutritionDiaryEntry(diaryEntry: item)),
+                  ...widget._meal.diaryEntriesToday.map((item) => Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            NutritionDiaryEntry(diaryEntry: item),
+                          ],
+                        ),
+                      )),
                 ],
               ),
           ],
