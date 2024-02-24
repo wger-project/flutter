@@ -480,17 +480,14 @@ class MealDiaryBarChartWidgetState extends State<MealDiaryBarChartWidget> {
                 ),
                 gridData: FlGridData(
                   show: true,
-                  checkToShowHorizontalLine: (value) => value % 10 == 0,
                   getDrawingHorizontalLine: (value) => const FlLine(
                     color: Colors.black,
                     strokeWidth: 1,
                   ),
                   drawVerticalLine: false,
                 ),
-                borderData: FlBorderData(
-                  show: false,
-                ),
-                groupsSpace: 30,
+                borderData: FlBorderData(show: false),
+                groupsSpace: 60,
                 // groupsSpace: barsSpace,
                 barGroups: [
                   BarChartGroupData(

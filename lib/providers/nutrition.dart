@@ -425,7 +425,7 @@ class NutritionPlansProvider with ChangeNotifier {
     for (final logData in data) {
       final log = Log.fromJson(logData);
       final ingredient = await fetchIngredient(log.ingredientId);
-      log.ingredientObj = ingredient;
+      log.ingredient = ingredient;
       plan.diaryEntries.add(log);
     }
     notifyListeners();

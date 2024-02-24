@@ -331,14 +331,13 @@ class IngredientLogForm extends StatelessWidget {
                   return Card(
                     child: ListTile(
                       onTap: () {
-                        _ingredientController.text = diaryEntries[index].ingredientObj.name;
-                        _ingredientIdController.text =
-                            diaryEntries[index].ingredientObj.id.toString();
+                        _ingredientController.text = diaryEntries[index].ingredient.name;
+                        _ingredientIdController.text = diaryEntries[index].ingredient.id.toString();
                         _amountController.text = diaryEntries[index].amount.toStringAsFixed(0);
                         _mealItem.ingredientId = diaryEntries[index].ingredientId;
                         _mealItem.amount = diaryEntries[index].amount;
                       },
-                      title: Text(_plan.diaryEntries[index].ingredientObj.name),
+                      title: Text(_plan.diaryEntries[index].ingredient.name),
                       subtitle: Text('${diaryEntries[index].amount.toStringAsFixed(0)}$unit'),
                       trailing: const Icon(Icons.copy),
                     ),

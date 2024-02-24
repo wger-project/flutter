@@ -132,12 +132,8 @@ class NutritionalPlan {
     final currentDate = DateTime.now();
     final sevenDaysAgo = currentDate.subtract(const Duration(days: 7));
 
-    final entries = diaryEntries.where((obj) {
-      final DateTime objDate = obj.datetime;
-      return objDate.isAfter(sevenDaysAgo) && objDate.isBefore(currentDate);
-    }).toList();
-
     var out = NutritionalValues();
+    final entries = diaryEntries.where((obj) => obj.datetime.isAfter(sevenDaysAgo)).toList();
     for (final log in entries) {
       out = out + log.nutritionalValues;
     }
@@ -224,7 +220,7 @@ class NutritionalPlan {
 
   Meal pseudoMealOthers(String name) {
     return Meal(
-      id: -1,
+      id: PSEUDO_MEAL_ID,
       plan: id,
       name: name,
       time: null,

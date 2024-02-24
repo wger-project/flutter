@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/misc.dart';
 import 'package:wger/models/nutrition/log.dart';
@@ -45,6 +46,9 @@ class Meal {
 
   @JsonKey(includeFromJson: false, includeToJson: false, defaultValue: [])
   List<Log> diaryEntries = [];
+
+  List<Log> get diaryEntriesToday =>
+      diaryEntries.where((element) => element.datetime.isSameDayAs(DateTime.now())).toList();
 
   Meal({
     this.id,
@@ -85,6 +89,10 @@ class Meal {
     }
 
     return out;
+  }
+
+  bool get isRealMeal {
+    return id != null && id != PSEUDO_MEAL_ID;
   }
 
   // Boilerplate
