@@ -1,0 +1,39 @@
+Od milovníků fitness, pro milovníky fitness – organizujte své zdraví s aplikací WGER, vaším workout managerem!
+
+Už máte svou oblíbenou fitness aplikaci a máte rádi vytváření vlastních sportovních plánů? Nezáleží, jaký typ sportovce jste – všichni máme jednu věc společnou: rádi sledujeme své zdraví <3
+
+Takže vás neodsuzujeme za to, že si stále vedete svou fitness cestu se svým praktickým tréninkovým deníkem, ale vítáme vás ve 21. století!
+
+Vyvinuli jsme 100% svobodný digitální fitness tracker vašeho zdraví, který obsahuje pouze to důležité, abychom vám ulehčili život. Začněte, trénujte a sledujte svůj pokrok!
+
+wger je open-source projekt, kterému záleží na následujícím:
+* Vaše tělo
+* Vaše tréninky
+* Váš postup
+* Vaše data
+
+Vaše tělo:
+Přestaňte googlit recepty vašich oblíbených pokrmů – zvolte si svá denní jídla z více než 78 000 produktů a sledujte jejich výživové hodnoty. Přidávejte jídla do svého výživového plánu a kontrolujte svou dietu v kalendáři.
+
+Vaše tréninky:
+Jen vy víte, co je nejlepší pro vaše tělo. Vytvářejte vlastní tréninky z více než 200 různých cvičení. Použijte režim posilovny, který vás provede vaším tréninkem, a zaznamenávejte svou váhu jediným klepnutím.
+
+Váš postup:
+Už nikdy neztratíte přehled o svých cílech. Sledujte svou váhu a ukládejte si statistiky.
+
+Vaše data:
+wger je váš personalizovaný fitness deník – vaše data jsou ale opravdu vaše. Použijte rozhraní REST API pro přístup a vytvořte s ním něco skvělého!
+
+Upozorňujeme: toto je bezplatná aplikace založená na dodatečném financování a nežádáme vás o peníze. Více než to je navíc aplikace komunitním projektem, který neustále roste. Buďte tedy připraveni na nové funkce!
+
+#OpenSource – co to znamená?
+
+Open Source znamená, že je celý zdrojový kód této aplikace a serveru, se kterým komunikuje, kompletně otevřený a dostupný komukoli:
+* Chcete spustit wger na vlastním serveru nebo ve vaší místní posilovně? Hurá do toho!
+* Chybí vám funkce a chtěli byste ji implementovat? Žádný problém!
+* Chcete si zkontrolovat, že vaše data neposíláme nikam pryč? Samozřejmě!
+
+Připojte se k naší komunitě a staňte se součástí nadšenců do sportu a IT nerdů z celého světa. Na aplikaci neustále pracujeme a upravujeme a optimalizujeme ji pro naše potřeby. Moc rádi uslyšíme váš názor, kdykoli se tedy můžete připojit a přispět svými nápady a přáními!
+
+-> zdrojové kódy najdete zde: https://github.com/wger-project
+-> zeptejte se na cokoli nebo nás jen pozdravte na našem Discord serveru: https://discord.gg/rPWFv6W
