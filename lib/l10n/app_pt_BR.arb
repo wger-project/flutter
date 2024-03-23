@@ -613,5 +613,71 @@
   "chooseFromLibrary": "Escolher na galeria",
   "@chooseFromLibrary": {},
   "unVerifiedEmail": "Email não verificado",
-  "@unVerifiedEmail": {}
+  "@unVerifiedEmail": {},
+  "add_exercise_image_license": "As imagens devem ser compatíveis com a licença CC BY SA. Em caso de dúvida, faça upload apenas de fotos que você mesmo tenha tirado.",
+  "@add_exercise_image_license": {},
+  "next": "Próximo",
+  "@next": {},
+  "settingsCacheTitle": "Cache",
+  "@settingsCacheTitle": {},
+  "settingsCacheDescription": "Cache do exercício",
+  "@settingsCacheDescription": {},
+  "settingsCacheDeletedSnackbar": "Cache limpa com sucesso",
+  "@settingsCacheDeletedSnackbar": {},
+  "translateExercise": "Traduza este exercício agora",
+  "@translateExercise": {},
+  "contributeExerciseWarning": "Você só pode contribuir com exercícios se sua conta tiver mais de {days} dias e se você tiver verificado seu e-mail",
+  "@contributeExerciseWarning": {
+    "description": "Number of days before which a person can add exercise",
+    "placeholders": {
+      "days": {
+        "type": "String",
+        "example": "14"
+      }
+    }
+  },
+  "whatVariationsExist": "Quais variações deste exercício existem, se houver?",
+  "@whatVariationsExist": {},
+  "previous": "Anterior",
+  "@previous": {},
+  "addExercise": "Adicionar exercício",
+  "@addExercise": {},
+  "verifiedEmailInfo": "Um e-mail foi enviado para {email}",
+  "@verifiedEmailInfo": {
+    "placeholders": {
+      "email": {}
+    }
+  },
+  "verifiedEmailReason": "Você precisa verificar seu e-mail para contribuir com exercícios",
+  "@verifiedEmailReason": {},
+  "alternativeNames": "Nomes alternativos",
+  "@alternativeNames": {},
+  "baseData": "Fundamentos em inglês",
+  "@baseData": {
+    "description": "The base data for an exercise such as category, trained muscles, etc."
+  },
+  "aboutPageTitle": "Sobre o Wger",
+  "@aboutPageTitle": {},
+  "productFoundDescription": "O código de barras corresponde a este produto: {productName}. Deseja continuar?",
+  "@productFoundDescription": {
+    "description": "Dialog info when product is found with barcode",
+    "type": "text",
+    "placeholders": {
+      "productName": {}
+    }
+  },
+  "productNotFoundDescription": "O produto com o código de barras escaneado {barcode} não foi encontrado no banco de dados da wger",
+  "@productNotFoundDescription": {
+    "description": "Dialog info when product is not found with barcode",
+    "type": "text",
+    "placeholders": {
+      "barcode": {}
+    }
+  },
+  "contributeExercise": "Contribuir com um exercício",
+  "@contributeExercise": {},
+  "oneNamePerLine": "Um nome por linha",
+  "@oneNamePerLine": {},
+  "settingsTitle": "Configurações",
+  "@settingsTitle": {}
 }

@@ -751,5 +751,37 @@
   "max_reps": "Repetição Máxima",
   "@max_reps": {
     "description": "Generated entry for translation for server strings"
-  }
+  },
+  "settingsCacheTitle": "Cache",
+  "@settingsCacheTitle": {},
+  "settingsCacheDescription": "Cache do exercício",
+  "@settingsCacheDescription": {},
+  "useMetric": "Use unidades métricas para o peso corpora",
+  "@useMetric": {},
+  "settingsTitle": "Configurações",
+  "@settingsTitle": {},
+  "settingsCacheDeletedSnackbar": "Cache limpo com sucesso",
+  "@settingsCacheDeletedSnackbar": {},
+  "log": "Log",
+  "@log": {
+    "description": "Log a specific meal (imperative form)"
+  },
+  "done": "Feito",
+  "@done": {},
+  "noMatchingExerciseFound": "Nenhum exercício correspondente encontrado",
+  "@noMatchingExerciseFound": {
+    "description": "Message returned if no exercises match the searched string"
+  },
+  "aboutMastodonTitle": "Mastodon",
+  "@aboutMastodonTitle": {
+    "description": "Title for mastodon section in the about dialog"
+  },
+  "aboutMastodonText": "Siga-nos no Mastodon para atualizações e notícias sobre o projeto",
+  "@aboutMastodonText": {
+    "description": "Text for the mastodon section in the about dialog"
+  },
+  "aboutDonateTitle": "Doar",
+  "@aboutDonateTitle": {},
+  "aboutDonateText": "Nos compre um café para ajudar o projeto, pagar os custos do servidor e nos manter energizados",
+  "@aboutDonateText": {}
 }
