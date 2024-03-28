@@ -23,6 +23,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
+import 'package:wger/exceptions/logger.abs.dart';
+import 'package:wger/exceptions/logger_adaptor.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/exercises.dart';
@@ -45,7 +47,9 @@ class HomeTabsScreen extends StatefulWidget {
 }
 
 class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProviderStateMixin {
+  late final Logging logger = LoggingAdaptor('HomeTabsScreen');
   late Future<void> _initialData;
+
   int _selectedIndex = 0;
 
   @override
@@ -83,7 +87,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
       final userProvider = context.read<UserProvider>();
 
       // Base data
-      log('Loading base data');
+      logger.info('Loading base data');
       try {
         await Future.wait([
           authProvider.setServerVersion(),
