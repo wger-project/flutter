@@ -77,7 +77,7 @@ jobs:
           bundle exec fastlane android production
 
       - name: Make Github release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.VERSION }}
           files: |
