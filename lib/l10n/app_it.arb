@@ -833,5 +833,25 @@
   "lower_back": "Zona Lombare",
   "@lower_back": {
     "description": "Generated entry for translation for server strings"
-  }
+  },
+  "useMetric": "Utilizza unità metrica per il peso corporeo",
+  "@useMetric": {},
+  "log": "Log",
+  "@log": {
+    "description": "Log a specific meal (imperative form)"
+  },
+  "aboutDonateTitle": "Donare",
+  "@aboutDonateTitle": {},
+  "aboutDonateText": "Offrici un caffè per aiutare il progetto, pagare i costi del server e mantenerci alimentati",
+  "@aboutDonateText": {},
+  "settingsTitle": "Impostazioni",
+  "@settingsTitle": {},
+  "settingsCacheTitle": "Cache",
+  "@settingsCacheTitle": {},
+  "settingsCacheDescription": "Cache degli esercizi",
+  "@settingsCacheDescription": {},
+  "settingsCacheDeletedSnackbar": "Cache svuotata con successo",
+  "@settingsCacheDeletedSnackbar": {},
+  "done": "Fatto",
+  "@done": {}
 }
