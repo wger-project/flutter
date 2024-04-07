@@ -834,7 +834,7 @@
   "@lower_back": {
     "description": "Generated entry for translation for server strings"
   },
-  "useMetric": "Utilizza unità metrica per il peso corporeo",
+  "useMetric": "Us",
   "@useMetric": {},
   "log": "Log",
   "@log": {
