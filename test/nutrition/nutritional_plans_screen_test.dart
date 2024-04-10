@@ -73,7 +73,7 @@ void main() {
         locale: Locale(locale),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: NutritionScreen(),
+        home: NutritionalPlansScreen(),
         routes: {
           FormScreen.routeName: (ctx) => FormScreen(),
         },
