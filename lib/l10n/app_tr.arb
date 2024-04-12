@@ -31,7 +31,7 @@
   "@successfullyDeleted": {
     "description": "Message when an item was successfully deleted"
   },
-  "labelDashboard": "Kontrol paneli",
+  "labelDashboard": "Gösterge Paneli",
   "@labelDashboard": {
     "description": "Title for screen dashboard"
   },
@@ -255,7 +255,7 @@
   "@save": {},
   "addMeal": "Yemek ekle",
   "@addMeal": {},
-  "mealLogged": "Günlüğe kaydedilen yemek",
+  "mealLogged": "Yemek günlüğe kaydedildi",
   "@mealLogged": {},
   "logMeal": "Bu yemeği kaydet",
   "@logMeal": {},
@@ -309,7 +309,7 @@
   "@energy": {
     "description": "Energy in a meal, ingredient etc. e.g. in kJ"
   },
-  "kcal": "kilo kalori",
+  "kcal": "kilokalori",
   "@kcal": {
     "description": "Energy in a meal in kilocalories, kcal"
   },
@@ -728,7 +728,7 @@
   "@max_reps": {
     "description": "Generated entry for translation for server strings"
   },
-  "plates": "Plates",
+  "plates": "Tabaklar",
   "@plates": {
     "description": "Generated entry for translation for server strings"
   },
