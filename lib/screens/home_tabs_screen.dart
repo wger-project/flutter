@@ -64,7 +64,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
   final _screenList = [
     DashboardScreen(),
     WorkoutPlansScreen(),
-    NutritionScreen(),
+    NutritionalPlansScreen(),
     WeightScreen(),
     const GalleryScreen(),
   ];

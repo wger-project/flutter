@@ -58,7 +58,7 @@ class NutritionalPlansList extends StatelessWidget {
                         icon: const Icon(Icons.delete),
                         tooltip: AppLocalizations.of(context).delete,
                         onPressed: () async {
-                          // Delete workout from DB
+                          // Delete the plan from DB
                           await showDialog(
                               context: context,
                               builder: (BuildContext contextDialog) {
@@ -80,7 +80,7 @@ class NutritionalPlansList extends StatelessWidget {
                                             TextStyle(color: Theme.of(context).colorScheme.error),
                                       ),
                                       onPressed: () {
-                                        // Confirmed, delete the workout
+                                        // Confirmed, delete the plan
                                         _nutritionProvider.deletePlan(currentPlan.id!);
 
                                         // Close the popup

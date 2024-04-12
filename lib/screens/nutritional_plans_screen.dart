@@ -25,7 +25,7 @@ import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/nutritional_plans_list.dart';
 
-class NutritionScreen extends StatelessWidget {
+class NutritionalPlansScreen extends StatelessWidget {
   static const routeName = '/nutrition';
 
   @override

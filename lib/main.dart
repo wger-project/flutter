@@ -155,7 +155,7 @@ class MyApp extends StatelessWidget {
             HomeTabsScreen.routeName: (ctx) => HomeTabsScreen(),
             MeasurementCategoriesScreen.routeName: (ctx) => MeasurementCategoriesScreen(),
             MeasurementEntriesScreen.routeName: (ctx) => MeasurementEntriesScreen(),
-            NutritionScreen.routeName: (ctx) => NutritionScreen(),
+            NutritionalPlansScreen.routeName: (ctx) => NutritionalPlansScreen(),
             NutritionalDiaryScreen.routeName: (ctx) => NutritionalDiaryScreen(),
             NutritionalPlanScreen.routeName: (ctx) => NutritionalPlanScreen(),
             WeightScreen.routeName: (ctx) => WeightScreen(),
