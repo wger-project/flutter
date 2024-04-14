@@ -64,7 +64,7 @@ class Meal {
 
     this.mealItems = mealItems ?? [];
     this.diaryEntries = diaryEntries ?? [];
-    //this.time = time ?? TimeOfDay.fromDateTime(clock.now());
+    time = time ?? TimeOfDay.fromDateTime(DateTime.now());
     this.name = name ?? '';
   }
 
