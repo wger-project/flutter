@@ -71,15 +71,14 @@ class Meal {
   /// Calculate total nutritional value
   // This is already done on the server. It might be better to read it from there.
   NutritionalValues get plannedNutritionalValues {
-    return mealItems.map((e) => e.nutritionalValues).reduce((a, b) => a + b);
+    return mealItems.fold(NutritionalValues(), (a, b) => a + b.nutritionalValues);
   }
 
   /// Returns the logged nutritional values for today
   NutritionalValues get loggedNutritionalValuesToday {
     return diaryEntries
         .where((l) => l.datetime.isSameDayAs(DateTime.now()))
-        .map((e) => e.nutritionalValues)
-        .reduce((a, b) => a + b);
+        .fold(NutritionalValues(), (a, b) => a + b.nutritionalValues);
   }
 
   bool get isRealMeal {

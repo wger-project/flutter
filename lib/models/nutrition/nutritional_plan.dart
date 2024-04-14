@@ -110,7 +110,7 @@ class NutritionalPlan {
   NutritionalValues get plannedNutritionalValues {
     // If there are set goals, they take preference over any meals
     if (hasAnyGoals) {
-      var out = NutritionalValues();
+      final out = NutritionalValues();
 
       out.energy = goalEnergy != null ? goalEnergy!.toDouble() : 0;
       out.fat = goalFat != null ? goalFat!.toDouble() : 0;
@@ -119,7 +119,7 @@ class NutritionalPlan {
       return out;
     }
 
-    return meals.map((e) => e.plannedNutritionalValues).reduce((a, b) => a + b);
+    return meals.fold(NutritionalValues(), (a, b) => a + b.plannedNutritionalValues);
   }
 
   NutritionalValues get loggedNutritionalValuesToday {
@@ -135,8 +135,7 @@ class NutritionalPlan {
 
     return diaryEntries
         .where((obj) => obj.datetime.isAfter(sevenDaysAgo))
-        .map((e) => e.nutritionalValues)
-        .reduce((a, b) => a + b);
+        .fold(NutritionalValues(), (a, b) => a + b.nutritionalValues);
   }
 
   /// Calculates the percentage each macro nutrient adds to the total energy
