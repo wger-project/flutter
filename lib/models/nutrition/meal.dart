@@ -68,27 +68,18 @@ class Meal {
     this.name = name ?? '';
   }
 
-  /// Calculations
+  /// Calculate total nutritional value
+  // This is already done on the server. It might be better to read it from there.
   NutritionalValues get plannedNutritionalValues {
-    // This is already done on the server. It might be better to read it from there.
-    var out = NutritionalValues();
-
-    for (final item in mealItems) {
-      out += item.nutritionalValues;
-    }
-
-    return out;
+    return mealItems.map((e) => e.nutritionalValues).reduce((a, b) => a + b);
   }
 
   /// Returns the logged nutritional values for today
   NutritionalValues get loggedNutritionalValuesToday {
-    var out = NutritionalValues();
-
-    for (final item in diaryEntries.where((l) => l.datetime.isSameDayAs(DateTime.now()))) {
-      out += item.nutritionalValues;
-    }
-
-    return out;
+    return diaryEntries
+        .where((l) => l.datetime.isSameDayAs(DateTime.now()))
+        .map((e) => e.nutritionalValues)
+        .reduce((a, b) => a + b);
   }
 
   bool get isRealMeal {
