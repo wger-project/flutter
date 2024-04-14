@@ -80,6 +80,10 @@ class NutritionalPlan {
     creationDate = DateTime.now();
     description = '';
     onlyLogging = false;
+    goalEnergy = null;
+    goalProtein = null;
+    goalCarbohydrates = null;
+    goalFat = null;
   }
 
   // Boilerplate
