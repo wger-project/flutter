@@ -57,22 +57,23 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
             _nutritionalPlan.pseudoMealOthers('Other logs'),
             _nutritionalPlan.allMealItems,
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(
-              child: Text(AppLocalizations.of(context).addMeal),
-              onPressed: () {
-                Navigator.pushNamed(
-                  context,
-                  FormScreen.routeName,
-                  arguments: FormScreenArguments(
-                    AppLocalizations.of(context).addMeal,
-                    MealForm(_nutritionalPlan.id!),
-                  ),
-                );
-              },
+          if (!_nutritionalPlan.onlyLogging)
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton(
+                child: Text(AppLocalizations.of(context).addMeal),
+                onPressed: () {
+                  Navigator.pushNamed(
+                    context,
+                    FormScreen.routeName,
+                    arguments: FormScreenArguments(
+                      AppLocalizations.of(context).addMeal,
+                      MealForm(_nutritionalPlan.id!),
+                    ),
+                  );
+                },
+              ),
             ),
-          ),
           Container(
             padding: const EdgeInsets.all(15),
             height: 220,
