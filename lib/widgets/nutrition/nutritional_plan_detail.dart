@@ -105,7 +105,13 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
               children: [
                 Indicator(
                   color: LIST_OF_COLORS3[0],
-                  text: AppLocalizations.of(context).planned,
+                  text: 'deficit',
+                  isSquare: true,
+                  marginRight: 0,
+                ),
+                const Indicator(
+                  color: Colors.red,
+                  text: 'surplus',
                   isSquare: true,
                   marginRight: 0,
                 ),

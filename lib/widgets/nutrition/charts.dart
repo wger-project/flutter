@@ -206,25 +206,49 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
     final colorLogged7Day = LIST_OF_COLORS3[2];
 
     BarChartGroupData barchartGroup(int x, double barsSpace, double barsWidth, String prop) {
+      final plan = planned.prop(prop);
+
+      BarChartRodData barChartRodData(double plan, double val, Color color) {
+        // paint a simple bar
+        if (plan == 0 || val == plan) {
+          return BarChartRodData(
+            toY: val,
+            color: color,
+            width: barsWidth,
+          );
+        }
+
+        // paint a surplus
+        if (val > plan) {
+          return BarChartRodData(
+            toY: val,
+            color: colorLoggedToday,
+            width: barsWidth,
+            rodStackItems: [
+              BarChartRodStackItem(0, plan, color),
+              BarChartRodStackItem(plan, val, Colors.red),
+            ],
+          );
+        }
+
+        // paint a deficit
+        return BarChartRodData(
+          toY: plan,
+          color: colorLoggedToday,
+          width: barsWidth,
+          rodStackItems: [
+            BarChartRodStackItem(0, val, color),
+            BarChartRodStackItem(val, plan, colorPlanned),
+          ],
+        );
+      }
+
       return BarChartGroupData(
         x: x,
         barsSpace: barsSpace,
         barRods: [
-          BarChartRodData(
-            toY: planned.prop(prop),
-            color: colorPlanned,
-            width: barsWidth,
-          ),
-          BarChartRodData(
-            toY: loggedToday.prop(prop),
-            color: colorLoggedToday,
-            width: barsWidth,
-          ),
-          BarChartRodData(
-            toY: logged7DayAvg.prop(prop),
-            color: colorLogged7Day,
-            width: barsWidth,
-          ),
+          barChartRodData(plan, loggedToday.prop(prop), colorLoggedToday),
+          barChartRodData(plan, logged7DayAvg.prop(prop), colorLogged7Day),
         ],
       );
     }
@@ -235,8 +259,8 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
         padding: const EdgeInsets.only(top: 16),
         child: LayoutBuilder(
           builder: (context, constraints) {
-            final barsSpace = 4.0 * constraints.maxWidth / 400;
-            final barsWidth = 8.0 * constraints.maxWidth / 400;
+            final barsSpace = 6.0 * constraints.maxWidth / 400;
+            final barsWidth = 12.0 * constraints.maxWidth / 400;
             return BarChart(
               BarChartData(
                 alignment: BarChartAlignment.center,
