@@ -106,6 +106,9 @@ enum EXERCISE_IMAGE_ART_STYLE {
   OTHER,
 }
 
+/// Dummy ID for pseudo meals
+const PSEUDO_MEAL_ID = -1;
+
 /// Colors used for muscles
 const COLOR_MAIN_MUSCLES = Colors.red;
 const COLOR_SECONDARY_MUSCLES = Colors.orange;

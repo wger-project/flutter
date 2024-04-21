@@ -22,13 +22,17 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter_zxing/flutter_zxing.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/platform.dart';
 import 'package:wger/helpers/ui.dart';
 import 'package:wger/models/exercises/ingredient_api.dart';
+import 'package:wger/models/nutrition/log.dart';
+import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/widgets/core/core.dart';
+import 'package:wger/widgets/nutrition/helpers.dart';
 
 class ScanReader extends StatelessWidget {
   String? scannedr;
@@ -230,6 +234,60 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
         }
       },
       icon: const FaIcon(FontAwesomeIcons.barcode),
+    );
+  }
+}
+
+class NutritionDiaryEntry extends StatelessWidget {
+  const NutritionDiaryEntry({
+    super.key,
+    required this.diaryEntry,
+    this.nutritionalPlan,
+  });
+
+  final Log diaryEntry;
+  final NutritionalPlan? nutritionalPlan;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Text(
+          DateFormat.Hm(Localizations.localeOf(context).languageCode).format(diaryEntry.datetime),
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '${AppLocalizations.of(context).gValue(diaryEntry.amount.toStringAsFixed(0))} ${diaryEntry.ingredient.name}',
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: 4),
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  ...getMutedNutritionalValues(diaryEntry.nutritionalValues, context),
+                ],
+              ),
+              const SizedBox(height: 12),
+            ],
+          ),
+        ),
+        if (nutritionalPlan != null)
+          IconButton(
+              tooltip: AppLocalizations.of(context).delete,
+              onPressed: () {
+                Provider.of<NutritionPlansProvider>(context, listen: false)
+                    .deleteLog(diaryEntry.id!, nutritionalPlan!.id!);
+              },
+              icon: const Icon(Icons.delete_outline)),
+      ],
     );
   }
 }

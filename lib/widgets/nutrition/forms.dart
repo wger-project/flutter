@@ -203,14 +203,14 @@ class MealItemForm extends StatelessWidget {
                   return Card(
                     child: ListTile(
                       onTap: () {
-                        _ingredientController.text = _listMealItems[index].ingredientObj.name;
+                        _ingredientController.text = _listMealItems[index].ingredient.name;
                         _ingredientIdController.text =
-                            _listMealItems[index].ingredientObj.id.toString();
+                            _listMealItems[index].ingredient.id.toString();
                         _amountController.text = _listMealItems[index].amount.toStringAsFixed(0);
                         _mealItem.ingredientId = _listMealItems[index].ingredientId;
                         _mealItem.amount = _listMealItems[index].amount;
                       },
-                      title: Text(_listMealItems[index].ingredientObj.name),
+                      title: Text(_listMealItems[index].ingredient.name),
                       subtitle: Text('${_listMealItems[index].amount.toStringAsFixed(0)}$unit'),
                       trailing: const Icon(Icons.copy),
                     ),
@@ -242,7 +242,7 @@ class IngredientLogForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final diaryEntries = _plan.logs;
+    final diaryEntries = _plan.diaryEntries;
     final String unit = AppLocalizations.of(context).g;
 
     return Container(
@@ -331,14 +331,13 @@ class IngredientLogForm extends StatelessWidget {
                   return Card(
                     child: ListTile(
                       onTap: () {
-                        _ingredientController.text = diaryEntries[index].ingredientObj.name;
-                        _ingredientIdController.text =
-                            diaryEntries[index].ingredientObj.id.toString();
+                        _ingredientController.text = diaryEntries[index].ingredient.name;
+                        _ingredientIdController.text = diaryEntries[index].ingredient.id.toString();
                         _amountController.text = diaryEntries[index].amount.toStringAsFixed(0);
                         _mealItem.ingredientId = diaryEntries[index].ingredientId;
                         _mealItem.amount = diaryEntries[index].amount;
                       },
-                      title: Text(_plan.logs[index].ingredientObj.name),
+                      title: Text(_plan.diaryEntries[index].ingredient.name),
                       subtitle: Text('${diaryEntries[index].amount.toStringAsFixed(0)}$unit'),
                       trailing: const Icon(Icons.copy),
                     ),
@@ -353,21 +352,39 @@ class IngredientLogForm extends StatelessWidget {
   }
 }
 
-class PlanForm extends StatelessWidget {
-  final _form = GlobalKey<FormState>();
-  final _descriptionController = TextEditingController();
+class PlanForm extends StatefulWidget {
   late NutritionalPlan _plan;
 
   PlanForm([NutritionalPlan? plan]) {
     _plan = plan ?? NutritionalPlan.empty();
-    _descriptionController.text = _plan.description;
+  }
+
+  @override
+  State<PlanForm> createState() => _PlanFormState();
+}
+
+class _PlanFormState extends State<PlanForm> {
+  final _form = GlobalKey<FormState>();
+
+  bool _onlyLogging = true;
+  bool _addGoals = false;
+
+  final _descriptionController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _onlyLogging = widget._plan.onlyLogging;
+    _addGoals = widget._plan.hasAnyGoals;
+    _descriptionController.text = widget._plan.description;
   }
 
   @override
   Widget build(BuildContext context) {
     return Form(
       key: _form,
-      child: Column(
+      child: ListView(
         children: [
           // Description
           TextFormField(
@@ -376,14 +393,79 @@ class PlanForm extends StatelessWidget {
             controller: _descriptionController,
             onFieldSubmitted: (_) {},
             onSaved: (newValue) {
-              _plan.description = newValue!;
+              widget._plan.description = newValue!;
             },
           ),
+          SwitchListTile(
+            title: Text(AppLocalizations.of(context).onlyLogging),
+            subtitle: Text(AppLocalizations.of(context).onlyLoggingHelpText),
+            value: _onlyLogging,
+            onChanged: (value) {
+              setState(() {
+                _onlyLogging = !_onlyLogging;
+              });
+              widget._plan.onlyLogging = value;
+            },
+          ),
+          SwitchListTile(
+            title: Text(AppLocalizations.of(context).addGoalsToPlan),
+            subtitle: Text(AppLocalizations.of(context).addGoalsToPlanHelpText),
+            value: _addGoals,
+            onChanged: (value) {
+              setState(() {
+                _addGoals = !_addGoals;
+              });
+              if (!value) {
+                widget._plan.goalEnergy = null;
+                widget._plan.goalProtein = null;
+                widget._plan.goalCarbohydrates = null;
+                widget._plan.goalFat = null;
+              }
+            },
+          ),
+          if (_addGoals)
+            Column(
+              children: [
+                GoalMacros(
+                  widget: widget,
+                  val: widget._plan.goalEnergy?.toString(),
+                  label: AppLocalizations.of(context).goalEnergy,
+                  suffix: AppLocalizations.of(context).kcal,
+                  onSave: (double value) => widget._plan.goalEnergy = value,
+                  key: const Key('field-goal-energy'),
+                ),
+                GoalMacros(
+                  widget: widget,
+                  val: widget._plan.goalProtein?.toString(),
+                  label: AppLocalizations.of(context).goalProtein,
+                  suffix: AppLocalizations.of(context).g,
+                  onSave: (double value) => widget._plan.goalProtein = value,
+                  key: const Key('field-goal-protein'),
+                ),
+                GoalMacros(
+                  widget: widget,
+                  val: widget._plan.goalCarbohydrates?.toString(),
+                  label: AppLocalizations.of(context).goalCarbohydrates,
+                  suffix: AppLocalizations.of(context).g,
+                  onSave: (double value) => widget._plan.goalCarbohydrates = value,
+                  key: const Key('field-goal-carbohydrates'),
+                ),
+                GoalMacros(
+                  widget: widget,
+                  val: widget._plan.goalFat?.toString(),
+                  label: AppLocalizations.of(context).goalFat,
+                  suffix: AppLocalizations.of(context).g,
+                  onSave: (double value) => widget._plan.goalFat = value,
+                  key: const Key('field-goal-fat'),
+                ),
+              ],
+            ),
+
           ElevatedButton(
             key: const Key(SUBMIT_BUTTON_KEY_NAME),
             child: Text(AppLocalizations.of(context).save),
             onPressed: () async {
-              // Validate and save the current values to the weightEntry
+              // Validate and save the current values to the plan
               final isValid = _form.currentState!.validate();
               if (!isValid) {
                 return;
@@ -392,18 +474,19 @@ class PlanForm extends StatelessWidget {
 
               // Save to DB
               try {
-                if (_plan.id != null) {
-                  await Provider.of<NutritionPlansProvider>(context, listen: false).editPlan(_plan);
+                if (widget._plan.id != null) {
+                  await Provider.of<NutritionPlansProvider>(context, listen: false)
+                      .editPlan(widget._plan);
                   if (context.mounted) {
                     Navigator.of(context).pop();
                   }
                 } else {
-                  _plan = await Provider.of<NutritionPlansProvider>(context, listen: false)
-                      .addPlan(_plan);
+                  widget._plan = await Provider.of<NutritionPlansProvider>(context, listen: false)
+                      .addPlan(widget._plan);
                   if (context.mounted) {
                     Navigator.of(context).pushReplacementNamed(
                       NutritionalPlanScreen.routeName,
-                      arguments: _plan,
+                      arguments: widget._plan,
                     );
                   }
                 }
@@ -423,6 +506,52 @@ class PlanForm extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class GoalMacros extends StatelessWidget {
+  const GoalMacros({
+    super.key,
+    required this.widget,
+    required this.label,
+    required this.suffix,
+    this.val,
+    required this.onSave,
+  });
+
+  final PlanForm widget;
+  final String label;
+  final String suffix;
+  final String? val;
+  final Function onSave;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      initialValue: val ?? '',
+      decoration: InputDecoration(
+        labelText: label,
+        suffixText: suffix,
+      ),
+      keyboardType: TextInputType.number,
+      onSaved: (newValue) {
+        if (newValue == null || newValue == '') {
+          return;
+        }
+        onSave(double.parse(newValue));
+      },
+      validator: (value) {
+        if (value == '') {
+          return null;
+        }
+        try {
+          double.parse(value!);
+        } catch (error) {
+          return AppLocalizations.of(context).enterValidNumber;
+        }
+        return null;
+      },
     );
   }
 }

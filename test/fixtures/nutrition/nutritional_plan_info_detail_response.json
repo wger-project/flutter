@@ -6,6 +6,11 @@
     "full_name": "Deutsch"
   },
   "creation_date": "2022-08-09",
+  "only_logging": false,
+  "goal_energy": null,
+  "goal_protein": null,
+  "goal_carbohydrates": null,
+  "goal_fat": null,
   "description": "",
   "get_nutritional_values": {
     "total": {

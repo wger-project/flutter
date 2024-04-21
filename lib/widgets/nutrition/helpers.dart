@@ -20,31 +20,23 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
+import 'package:wger/widgets/core/core.dart';
 
-List<Widget> getMutedNutritionalValues(NutritionalValues values, BuildContext context) {
-  final List<Widget> out = [
-    Text(
-      '${AppLocalizations.of(context).energy}: '
-      '${values.energy.toStringAsFixed(0)}'
-      '${AppLocalizations.of(context).kcal}',
-    ),
-    Text(
-      '${AppLocalizations.of(context).protein}: '
-      '${values.protein.toStringAsFixed(0)}'
-      '${AppLocalizations.of(context).g}',
-    ),
-    Text(
-      '${AppLocalizations.of(context).carbohydrates}: '
-      '${values.carbohydrates.toStringAsFixed(0)} '
-      '${AppLocalizations.of(context).g} '
-      '(${values.carbohydratesSugar.toStringAsFixed(0)} ${AppLocalizations.of(context).sugars})',
-    ),
-    Text(
-      '${AppLocalizations.of(context).fat}: '
-      '${values.fat.toStringAsFixed(0)}'
-      '${AppLocalizations.of(context).g} '
-      '(${values.fatSaturated.toStringAsFixed(0)} ${AppLocalizations.of(context).saturatedFat})',
-    ),
-  ];
-  return out;
-}
+List<Widget> getMutedNutritionalValues(NutritionalValues values, BuildContext context) => [
+      MutedText(
+        AppLocalizations.of(context).kcalValue(values.energy.toStringAsFixed(0)),
+        textAlign: TextAlign.right,
+      ),
+      MutedText(
+        AppLocalizations.of(context).gValue(values.protein.toStringAsFixed(0)),
+        textAlign: TextAlign.right,
+      ),
+      MutedText(
+        AppLocalizations.of(context).gValue(values.carbohydrates.toStringAsFixed(0)),
+        textAlign: TextAlign.right,
+      ),
+      MutedText(
+        AppLocalizations.of(context).gValue(values.fat.toStringAsFixed(0)),
+        textAlign: TextAlign.right,
+      ),
+    ];

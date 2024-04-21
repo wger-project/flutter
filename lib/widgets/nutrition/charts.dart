@@ -85,7 +85,7 @@ class FlNutritionalPlanPieChartState extends State<FlNutritionalPlanPieChartWidg
           children: [
             Indicator(
               color: LIST_OF_COLORS3[0],
-              text: AppLocalizations.of(context).fat,
+              text: AppLocalizations.of(context).carbohydrates,
               isSquare: true,
             ),
             const SizedBox(
@@ -101,7 +101,7 @@ class FlNutritionalPlanPieChartState extends State<FlNutritionalPlanPieChartWidg
             ),
             Indicator(
               color: LIST_OF_COLORS3[2],
-              text: AppLocalizations.of(context).carbohydrates,
+              text: AppLocalizations.of(context).fat,
               isSquare: true,
             ),
           ],
@@ -114,25 +114,24 @@ class FlNutritionalPlanPieChartState extends State<FlNutritionalPlanPieChartWidg
   }
 
   List<PieChartSectionData> showingSections() {
-    final colors = generateChartColors(3).iterator;
-
     return List.generate(3, (i) {
       final isTouched = i == touchedIndex;
       final radius = isTouched ? 92.0 : 80.0;
-      colors.moveNext();
 
       switch (i) {
         case 0:
           return PieChartSectionData(
-              color: colors.current,
-              value: widget.nutritionalValues.fat,
-              title: '${widget.nutritionalValues.fat.toStringAsFixed(0)}g',
-              titlePositionPercentageOffset: 0.5,
-              radius: radius,
-              titleStyle: const TextStyle(color: Colors.white70));
+            color: LIST_OF_COLORS3[0],
+            value: widget.nutritionalValues.carbohydrates,
+            title: '${widget.nutritionalValues.carbohydrates.toStringAsFixed(0)}g',
+            titlePositionPercentageOffset: 0.5,
+            radius: radius,
+            titleStyle: const TextStyle(color: Colors.white70),
+          );
+
         case 1:
           return PieChartSectionData(
-            color: colors.current,
+            color: LIST_OF_COLORS3[1],
             value: widget.nutritionalValues.protein,
             title: '${widget.nutritionalValues.protein.toStringAsFixed(0)}g',
             titlePositionPercentageOffset: 0.5,
@@ -140,9 +139,9 @@ class FlNutritionalPlanPieChartState extends State<FlNutritionalPlanPieChartWidg
           );
         case 2:
           return PieChartSectionData(
-            color: colors.current,
-            value: widget.nutritionalValues.carbohydrates,
-            title: '${widget.nutritionalValues.carbohydrates.toStringAsFixed(0)}g',
+            color: LIST_OF_COLORS3[2],
+            value: widget.nutritionalValues.fat,
+            title: '${widget.nutritionalValues.fat.toStringAsFixed(0)}g',
             titlePositionPercentageOffset: 0.5,
             radius: radius,
           );
@@ -169,28 +168,14 @@ class NutritionalDiaryChartWidgetFl extends StatefulWidget {
 class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidgetFl> {
   Widget bottomTitles(double value, TitleMeta meta) {
     const style = TextStyle(fontSize: 10);
-    String text;
-    switch (value.toInt()) {
-      case 0:
-        text = AppLocalizations.of(context).protein;
-        break;
-      case 1:
-        text = AppLocalizations.of(context).carbohydrates;
-        break;
-      case 2:
-        text = AppLocalizations.of(context).sugars;
-        break;
-      case 3:
-        text = AppLocalizations.of(context).fat;
-        break;
-      case 4:
-        text = AppLocalizations.of(context).saturatedFat;
-        break;
-
-      default:
-        text = '';
-        break;
-    }
+    final String text = switch (value.toInt()) {
+      0 => AppLocalizations.of(context).protein,
+      1 => AppLocalizations.of(context).carbohydrates,
+      2 => AppLocalizations.of(context).sugars,
+      3 => AppLocalizations.of(context).fat,
+      4 => AppLocalizations.of(context).saturatedFat,
+      _ => '',
+    };
     return SideTitleWidget(
       axisSide: meta.axisSide,
       child: Text(text, style: style),
@@ -201,27 +186,72 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
     if (value == meta.max) {
       return Container();
     }
-    const style = TextStyle(
-      fontSize: 10,
-    );
     return SideTitleWidget(
       axisSide: meta.axisSide,
       child: Text(
-        meta.formattedValue,
-        style: style,
+        AppLocalizations.of(context).gValue(meta.formattedValue),
+        style: const TextStyle(fontSize: 10),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final planned = widget._nutritionalPlan.nutritionalValues;
-    final loggedToday = widget._nutritionalPlan.nutritionalValuesToday;
-    final logged7DayAvg = widget._nutritionalPlan.nutritionalValues7DayAvg;
+    final planned = widget._nutritionalPlan.plannedNutritionalValues;
+    final loggedToday = widget._nutritionalPlan.loggedNutritionalValuesToday;
+    final logged7DayAvg = widget._nutritionalPlan.loggedNutritionalValues7DayAvg;
 
     final colorPlanned = LIST_OF_COLORS3[0];
     final colorLoggedToday = LIST_OF_COLORS3[1];
     final colorLogged7Day = LIST_OF_COLORS3[2];
+
+    BarChartGroupData barchartGroup(int x, double barsSpace, double barsWidth, String prop) {
+      final plan = planned.prop(prop);
+
+      BarChartRodData barChartRodData(double plan, double val, Color color) {
+        // paint a simple bar
+        if (plan == 0 || val == plan) {
+          return BarChartRodData(
+            toY: val,
+            color: color,
+            width: barsWidth,
+          );
+        }
+
+        // paint a surplus
+        if (val > plan) {
+          return BarChartRodData(
+            toY: val,
+            color: colorLoggedToday,
+            width: barsWidth,
+            rodStackItems: [
+              BarChartRodStackItem(0, plan, color),
+              BarChartRodStackItem(plan, val, Colors.red),
+            ],
+          );
+        }
+
+        // paint a deficit
+        return BarChartRodData(
+          toY: plan,
+          color: colorLoggedToday,
+          width: barsWidth,
+          rodStackItems: [
+            BarChartRodStackItem(0, val, color),
+            BarChartRodStackItem(val, plan, colorPlanned),
+          ],
+        );
+      }
+
+      return BarChartGroupData(
+        x: x,
+        barsSpace: barsSpace,
+        barRods: [
+          barChartRodData(plan, loggedToday.prop(prop), colorLoggedToday),
+          barChartRodData(plan, logged7DayAvg.prop(prop), colorLogged7Day),
+        ],
+      );
+    }
 
     return AspectRatio(
       aspectRatio: 1.66,
@@ -229,8 +259,8 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
         padding: const EdgeInsets.only(top: 16),
         child: LayoutBuilder(
           builder: (context, constraints) {
-            final barsSpace = 4.0 * constraints.maxWidth / 400;
-            final barsWidth = 8.0 * constraints.maxWidth / 400;
+            final barsSpace = 6.0 * constraints.maxWidth / 400;
+            final barsWidth = 12.0 * constraints.maxWidth / 400;
             return BarChart(
               BarChartData(
                 alignment: BarChartAlignment.center,
@@ -273,25 +303,143 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
                   show: false,
                 ),
                 groupsSpace: 30,
+                barGroups: [
+                  barchartGroup(0, barsSpace, barsWidth, 'protein'),
+                  barchartGroup(1, barsSpace, barsWidth, 'carbohydrates'),
+                  barchartGroup(2, barsSpace, barsWidth, 'carbohydratesSugar'),
+                  barchartGroup(3, barsSpace, barsWidth, 'fat'),
+                  barchartGroup(4, barsSpace, barsWidth, 'fatSaturated'),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class MealDiaryBarChartWidget extends StatefulWidget {
+  const MealDiaryBarChartWidget({
+    super.key,
+    required NutritionalValues logged,
+    required NutritionalValues planned,
+  })  : _logged = logged,
+        _planned = planned;
+
+  final NutritionalValues _logged;
+  final NutritionalValues _planned;
+
+  @override
+  State<StatefulWidget> createState() => MealDiaryBarChartWidgetState();
+}
+
+class MealDiaryBarChartWidgetState extends State<MealDiaryBarChartWidget> {
+  Widget bottomTitles(double value, TitleMeta meta) {
+    String text;
+    switch (value.toInt()) {
+      case 0:
+        text = AppLocalizations.of(context).protein;
+        break;
+      case 1:
+        text = AppLocalizations.of(context).carbohydrates;
+        break;
+      case 2:
+        text = AppLocalizations.of(context).fat;
+        break;
+      case 3:
+        text = AppLocalizations.of(context).energy;
+        break;
+      default:
+        text = '';
+        break;
+    }
+    return SideTitleWidget(
+      axisSide: meta.axisSide,
+      child: Text(
+        text,
+        style: const TextStyle(fontSize: 10),
+      ),
+    );
+  }
+
+  Widget leftTitles(double value, TitleMeta meta) => SideTitleWidget(
+        axisSide: meta.axisSide,
+        child: Text(
+          AppLocalizations.of(context).percentValue(value.toStringAsFixed(0)),
+          style: const TextStyle(fontSize: 10),
+        ),
+      );
+
+  @override
+  Widget build(BuildContext context) {
+    return AspectRatio(
+      aspectRatio: 2.5,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 16),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final barsSpace = 1.0 * constraints.maxWidth / 400;
+            final barsWidth = 10.0 * constraints.maxWidth / 400;
+            return BarChart(
+              BarChartData(
+                alignment: BarChartAlignment.center,
+                barTouchData: BarTouchData(
+                  enabled: false,
+                ),
+                titlesData: FlTitlesData(
+                  show: true,
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 48,
+                      getTitlesWidget: bottomTitles,
+                    ),
+                  ),
+                  leftTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 40,
+                      getTitlesWidget: leftTitles,
+                    ),
+                  ),
+                  topTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  rightTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                ),
+                gridData: FlGridData(
+                  show: true,
+                  getDrawingHorizontalLine: (value) => const FlLine(
+                    color: Colors.black,
+                    strokeWidth: 1,
+                  ),
+                  drawVerticalLine: false,
+                ),
+                borderData: FlBorderData(show: false),
+                groupsSpace: 60,
                 // groupsSpace: barsSpace,
                 barGroups: [
+                  BarChartGroupData(
+                    x: 3,
+                    barsSpace: barsSpace,
+                    barRods: [
+                      BarChartRodData(
+                        toY: widget._logged.energy / widget._planned.energy * 100,
+                        color: LIST_OF_COLORS3.first,
+                        width: barsWidth,
+                      ),
+                    ],
+                  ),
                   BarChartGroupData(
                     x: 0,
                     barsSpace: barsSpace,
                     barRods: [
                       BarChartRodData(
-                        toY: planned.protein,
-                        color: colorPlanned,
-                        width: barsWidth,
-                      ),
-                      BarChartRodData(
-                        toY: loggedToday.protein,
-                        color: colorLoggedToday,
-                        width: barsWidth,
-                      ),
-                      BarChartRodData(
-                        toY: logged7DayAvg.protein,
-                        color: colorLogged7Day,
+                        toY: widget._logged.protein / widget._planned.protein * 100,
+                        color: LIST_OF_COLORS3.first,
                         width: barsWidth,
                       ),
                     ],
@@ -301,18 +449,8 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
                     barsSpace: barsSpace,
                     barRods: [
                       BarChartRodData(
-                        toY: planned.carbohydrates,
-                        color: colorPlanned,
-                        width: barsWidth,
-                      ),
-                      BarChartRodData(
-                        toY: loggedToday.carbohydrates,
-                        color: colorLoggedToday,
-                        width: barsWidth,
-                      ),
-                      BarChartRodData(
-                        toY: logged7DayAvg.carbohydrates,
-                        color: colorLogged7Day,
+                        toY: widget._logged.carbohydrates / widget._planned.carbohydrates * 100,
+                        color: LIST_OF_COLORS3.first,
                         width: barsWidth,
                       ),
                     ],
@@ -322,60 +460,8 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
                     barsSpace: barsSpace,
                     barRods: [
                       BarChartRodData(
-                        toY: planned.carbohydratesSugar,
-                        color: colorPlanned,
-                        width: barsWidth,
-                      ),
-                      BarChartRodData(
-                        toY: loggedToday.carbohydratesSugar,
-                        color: colorLoggedToday,
-                        width: barsWidth,
-                      ),
-                      BarChartRodData(
-                        toY: logged7DayAvg.carbohydratesSugar,
-                        color: colorLogged7Day,
-                        width: barsWidth,
-                      ),
-                    ],
-                  ),
-                  BarChartGroupData(
-                    x: 3,
-                    barsSpace: barsSpace,
-                    barRods: [
-                      BarChartRodData(
-                        toY: planned.fat,
-                        color: colorPlanned,
-                        width: barsWidth,
-                      ),
-                      BarChartRodData(
-                        toY: loggedToday.fat,
-                        color: colorLoggedToday,
-                        width: barsWidth,
-                      ),
-                      BarChartRodData(
-                        toY: logged7DayAvg.fat,
-                        color: colorLogged7Day,
-                        width: barsWidth,
-                      ),
-                    ],
-                  ),
-                  BarChartGroupData(
-                    x: 4,
-                    barsSpace: barsSpace,
-                    barRods: [
-                      BarChartRodData(
-                        toY: planned.fatSaturated,
-                        color: colorPlanned,
-                        width: barsWidth,
-                      ),
-                      BarChartRodData(
-                        toY: loggedToday.fatSaturated,
-                        color: colorLoggedToday,
-                        width: barsWidth,
-                      ),
-                      BarChartRodData(
-                        toY: logged7DayAvg.fatSaturated,
-                        color: colorLogged7Day,
+                        toY: widget._logged.fat / widget._planned.fat * 100,
+                        color: LIST_OF_COLORS3.first,
                         width: barsWidth,
                       ),
                     ],
@@ -492,7 +578,7 @@ class FlNutritionalDiaryChartWidgetState extends State<FlNutritionalDiaryChartWi
     return SideTitleWidget(
       axisSide: meta.axisSide,
       child: Text(
-        '${meta.formattedValue} kcal',
+        AppLocalizations.of(context).kcalValue(meta.formattedValue),
         style: style,
       ),
     );
@@ -516,7 +602,7 @@ class FlNutritionalDiaryChartWidgetState extends State<FlNutritionalDiaryChartWi
               ),
               children: <TextSpan>[
                 TextSpan(
-                  text: '${(rod.toY - 1).toStringAsFixed(0)} kcal',
+                  text: AppLocalizations.of(context).kcalValue((rod.toY - 1).toStringAsFixed(0)),
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w500,

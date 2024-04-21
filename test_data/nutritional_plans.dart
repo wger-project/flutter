@@ -71,19 +71,19 @@ NutritionalPlan getNutritionalPlan() {
     ingredientId: 1,
     amount: 100,
   );
-  mealItem1.ingredientObj = ingredient1;
+  mealItem1.ingredient = ingredient1;
 
   final mealItem2 = MealItem(
     ingredientId: 2,
     amount: 75,
   );
-  mealItem2.ingredientObj = ingredient2;
+  mealItem2.ingredient = ingredient2;
 
   final mealItem3 = MealItem(
     ingredientId: 3,
     amount: 300,
   );
-  mealItem3.ingredientObj = ingredient3;
+  mealItem3.ingredient = ingredient3;
 
   final meal1 = Meal(
     id: 1,
@@ -109,9 +109,9 @@ NutritionalPlan getNutritionalPlan() {
   plan.meals = [meal1, meal2];
 
   // Add logs
-  plan.logs.add(Log.fromMealItem(mealItem1, 1, 1, DateTime(2021, 6, 1)));
-  plan.logs.add(Log.fromMealItem(mealItem2, 1, 1, DateTime(2021, 6, 1)));
-  plan.logs.add(Log.fromMealItem(mealItem3, 1, 1, DateTime(2021, 6, 10)));
+  plan.diaryEntries.add(Log.fromMealItem(mealItem1, 1, 1, DateTime(2021, 6, 1)));
+  plan.diaryEntries.add(Log.fromMealItem(mealItem2, 1, 1, DateTime(2021, 6, 1)));
+  plan.diaryEntries.add(Log.fromMealItem(mealItem3, 1, 1, DateTime(2021, 6, 10)));
 
   return plan;
 }

@@ -276,6 +276,14 @@
   "@noNutritionalPlans": {
     "description": "Message shown when the user has no nutritional plans"
   },
+  "onlyLogging": "Only track calories",
+  "onlyLoggingHelpText": "Check the box if you only want to log your calories and don't want to setup a detailed nutritional plan with specific meals",
+  "addGoalsToPlan": "Add goals to this plan",
+  "addGoalsToPlanHelpText": "This allows you to set general goals for energy, protein, carbohydrates or fat for the plan. Note that if you set-up a detailed meal plan, these values will take precedence.",
+  "goalEnergy": "Energy goal",
+  "goalProtein": "Protein goal",
+  "goalCarbohydrates": "Carbohydrates goal",
+  "goalFat": "Fat goal",
   "anErrorOccurred": "An Error Occurred!",
   "@anErrorOccurred": {},
   "weight": "Weight",
@@ -328,10 +336,6 @@
   "@energyShort": {
     "description": "The first letter or short name of the word 'Energy', used in overviews"
   },
-  "kcal": "kcal",
-  "@kcal": {
-    "description": "Energy in a meal in kilocalories, kcal"
-  },
   "macronutrients": "Macronutrients",
   "@macronutrients": {},
   "planned": "Planned",
@@ -342,6 +346,8 @@
   "@logged": {
     "description": "Header for the column of 'logged' nutritional values, i.e. what was eaten"
   },
+  "today": "Today",
+  "loggedToday": "Logged today",
   "weekAverage": "7 day average",
   "@weekAverage": {
     "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
@@ -358,6 +364,18 @@
   "@total": {
     "description": "Label used for total sums of e.g. calories or similar"
   },
+  "kcal": "kcal",
+  "@kcal": {
+    "description": "Energy in a meal in kilocalories, kcal"
+  },
+  "kcalValue": "{value} kcal",
+  "@kcalValue": {
+    "description": "A value in kcal, e.g. 500 kcal",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
+  },
   "kJ": "kJ",
   "@kJ": {
     "description": "Energy in a meal in kilo joules, kJ"
@@ -365,6 +383,22 @@
   "g": "g",
   "@g": {
     "description": "Abbreviation for gram"
+  },
+  "gValue": "{value} g",
+  "@gValue": {
+    "description": "A value in grams, e.g. 5 g",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "percentValue": "{value} %",
+  "@percentValue": {
+    "description": "A value in percent, e.g. 10 %",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
   },
   "protein": "Protein",
   "@protein": {},

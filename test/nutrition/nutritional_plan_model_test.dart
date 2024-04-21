@@ -32,13 +32,13 @@ void main() {
   group('model tests', () {
     test('Test the nutritionalValues method for nutritional plans', () {
       final values = NutritionalValues.values(4118.75, 32.75, 347.5, 9.5, 59.0, 37.75, 52.5, 30.5);
-      expect(plan.nutritionalValues, values);
+      expect(plan.plannedNutritionalValues, values);
     });
 
     test('Test the nutritionalValues method for meals', () {
       final meal = plan.meals.first;
       final values = NutritionalValues.values(518.75, 5.75, 17.5, 3.5, 29.0, 13.75, 49.5, 0.5);
-      expect(meal.nutritionalValues, values);
+      expect(meal.plannedNutritionalValues, values);
     });
 
     test('Test that the getter returns all meal items for a plan', () {

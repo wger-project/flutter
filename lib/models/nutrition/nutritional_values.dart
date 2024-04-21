@@ -82,6 +82,20 @@ class NutritionalValues {
         sodium == other.sodium;
   }
 
+  double prop(String name) {
+    return switch (name) {
+      'energy' => energy,
+      'protein' => protein,
+      'carbohydrates' => carbohydrates,
+      'carbohydratesSugar' => carbohydratesSugar,
+      'fat' => fat,
+      'fatSaturated' => fatSaturated,
+      'fibres' => fibres,
+      'sodium' => sodium,
+      _ => 0,
+    };
+  }
+
   @override
   String toString() {
     return 'e: $energy, p: $protein, c: $carbohydrates, cS: $carbohydratesSugar, f: $fat, fS: $fatSaturated, fi: $fibres, s: $sodium';

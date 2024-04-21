@@ -21,13 +21,16 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/misc.dart';
+import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/core/core.dart';
+import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/helpers.dart';
+import 'package:wger/widgets/nutrition/widgets.dart';
 
 class MealWidget extends StatefulWidget {
   final Meal _meal;
@@ -43,7 +46,7 @@ class MealWidget extends StatefulWidget {
 }
 
 class _MealWidgetState extends State<MealWidget> {
-  bool _showingDetails = false;
+  bool _showDetails = false;
   bool _editing = false;
 
   void _toggleEditing() {
@@ -54,7 +57,7 @@ class _MealWidgetState extends State<MealWidget> {
 
   void _toggleDetails() {
     setState(() {
-      _showingDetails = !_showingDetails;
+      _showDetails = !_showDetails;
     });
   }
 
@@ -67,11 +70,12 @@ class _MealWidgetState extends State<MealWidget> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             MealHeader(
-                editing: _editing,
-                toggleEditing: _toggleEditing,
-                showingDetails: _showingDetails,
-                toggleDetails: _toggleDetails,
-                meal: widget._meal),
+              editing: _editing,
+              toggleEditing: _toggleEditing,
+              showingDetails: _showDetails,
+              toggleDetails: _toggleDetails,
+              meal: widget._meal,
+            ),
             if (_editing)
               Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8),
@@ -128,8 +132,53 @@ class _MealWidgetState extends State<MealWidget> {
                     ],
                   )),
             const Divider(),
-            ...widget._meal.mealItems
-                .map((item) => MealItemWidget(item, _showingDetails, _editing)),
+            if (_showDetails && widget._meal.isRealMeal)
+              MealItemExpandedRow(
+                AppLocalizations.of(context).energy,
+                AppLocalizations.of(context).protein,
+                AppLocalizations.of(context).carbohydrates,
+                AppLocalizations.of(context).fat,
+              ),
+            ...widget._meal.mealItems.map((item) => MealItemWidget(item, _showDetails, _editing)),
+            if (_showDetails)
+              Column(
+                children: [
+                  // if (widget._meal.isRealMeal)
+                  //   MealItemExpandedRow(
+                  //     AppLocalizations.of(context).kcalValue(
+                  //       widget._meal.loggedNutritionalValuesToday.energy.toStringAsFixed(0),
+                  //     ),
+                  //     AppLocalizations.of(context).gValue(
+                  //       widget._meal.loggedNutritionalValuesToday.carbohydrates.toStringAsFixed(0),
+                  //     ),
+                  //     AppLocalizations.of(context).gValue(
+                  //       widget._meal.loggedNutritionalValuesToday.protein.toStringAsFixed(0),
+                  //     ),
+                  //     AppLocalizations.of(context).gValue(
+                  //       widget._meal.loggedNutritionalValuesToday.fat.toStringAsFixed(0),
+                  //     ),
+                  //   ),
+                  Center(
+                    child: Text(
+                      AppLocalizations.of(context).loggedToday,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  ),
+                  if (widget._meal.plannedNutritionalValues.energy != 0)
+                    MealDiaryBarChartWidget(
+                      planned: widget._meal.plannedNutritionalValues,
+                      logged: widget._meal.loggedNutritionalValuesToday,
+                    ),
+                  ...widget._meal.diaryEntriesToday.map((item) => Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            NutritionDiaryEntry(diaryEntry: item),
+                          ],
+                        ),
+                      )),
+                ],
+              ),
           ],
         ),
       ),
@@ -157,12 +206,12 @@ class MealItemWidget extends StatelessWidget {
     final values = _item.nutritionalValues;
 
     return ListTile(
-      leading: _item.ingredientObj.image != null
+      leading: _item.ingredient.image != null
           ? GestureDetector(
-              child: CircleAvatar(backgroundImage: NetworkImage(_item.ingredientObj.image!.image)),
+              child: CircleAvatar(backgroundImage: NetworkImage(_item.ingredient.image!.image)),
               onTap: () async {
-                if (_item.ingredientObj.image!.objectUrl != '') {
-                  return launchURL(_item.ingredientObj.image!.objectUrl, context);
+                if (_item.ingredient.image!.objectUrl != '') {
+                  return launchURL(_item.ingredient.image!.objectUrl, context);
                 } else {
                   return;
                 }
@@ -170,11 +219,12 @@ class MealItemWidget extends StatelessWidget {
             )
           : const CircleIconAvatar(Icon(Icons.image, color: Colors.grey)),
       title: Text(
-        '${_item.amount.toStringAsFixed(0)}$unit ${_item.ingredientObj.name}',
+        '${_item.amount.toStringAsFixed(0)}$unit ${_item.ingredient.name}',
         overflow: TextOverflow.ellipsis,
       ),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      subtitle: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisSize: MainAxisSize.max,
         children: [if (_showingDetails) ...getMutedNutritionalValues(values, context)],
       ),
       trailing: _editing
@@ -196,7 +246,94 @@ class MealItemWidget extends StatelessWidget {
                 );
               },
             )
-          : const SizedBox(),
+          : null,
+    );
+  }
+}
+
+class LogDiaryItemWidget extends StatelessWidget {
+  final Log _item;
+
+  const LogDiaryItemWidget(this._item);
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO(x): add real support for weight units
+    /*
+    String unit = _item.weightUnitId == null
+        ? AppLocalizations.of(context).g
+        : _item.weightUnitObj!.weightUnit.name;
+
+     */
+    final String unit = AppLocalizations.of(context).g;
+    final values = _item.nutritionalValues;
+
+    return ListTile(
+      leading: _item.ingredient.image != null
+          ? GestureDetector(
+              child: CircleAvatar(backgroundImage: NetworkImage(_item.ingredient.image!.image)),
+              onTap: () async {
+                if (_item.ingredient.image!.objectUrl != '') {
+                  return launchURL(_item.ingredient.image!.objectUrl, context);
+                } else {
+                  return;
+                }
+              },
+            )
+          : const CircleIconAvatar(Icon(Icons.image, color: Colors.grey)),
+      title: Text(
+        '${_item.amount.toStringAsFixed(0)}$unit ${_item.ingredient.name}',
+        overflow: TextOverflow.ellipsis,
+      ),
+      subtitle: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisSize: MainAxisSize.max,
+        children: [...getMutedNutritionalValues(values, context)],
+      ),
+    );
+  }
+}
+
+class MealItemExpandedRow extends StatelessWidget {
+  final String row1;
+  final String row2;
+  final String row3;
+  final String row4;
+  final Widget? leading;
+
+  const MealItemExpandedRow(this.row1, this.row2, this.row3, this.row4, {this.leading});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: leading ??
+          const CircleIconAvatar(
+            Icon(Icons.image, color: Colors.transparent),
+            color: Colors.transparent,
+          ),
+      subtitle: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        // crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          MutedText(
+            row1,
+            textAlign: TextAlign.right,
+          ),
+          MutedText(
+            row2,
+            textAlign: TextAlign.right,
+          ),
+          MutedText(
+            row3,
+            textAlign: TextAlign.right,
+          ),
+          MutedText(
+            row4,
+            textAlign: TextAlign.right,
+          ),
+        ],
+      ),
     );
   }
 }
@@ -238,10 +375,11 @@ class MealHeader extends StatelessWidget {
                           _meal.name,
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
-                        Text(
-                          _meal.time!.format(context),
-                          style: Theme.of(context).textTheme.headlineSmall,
-                        )
+                        if (_meal.time != null)
+                          Text(
+                            _meal.time!.format(context),
+                            style: Theme.of(context).textTheme.headlineSmall,
+                          )
                       ],
                     )
                   : Text(
@@ -249,34 +387,40 @@ class MealHeader extends StatelessWidget {
                       style: Theme.of(context).textTheme.headlineSmall,
                     ),
             ),
-            Text(
-              AppLocalizations.of(context).log,
-              style: Theme.of(context)
-                  .textTheme
-                  .labelLarge
-                  ?.copyWith(color: Theme.of(context).colorScheme.primary),
-            ),
+            if (_meal.isRealMeal)
+              Text(
+                AppLocalizations.of(context).log,
+                style: Theme.of(context)
+                    .textTheme
+                    .labelLarge
+                    ?.copyWith(color: Theme.of(context).colorScheme.primary),
+              ),
             const SizedBox(width: 26),
             const SizedBox(height: 40, width: 1, child: VerticalDivider()),
           ]),
-          trailing: Row(mainAxisSize: MainAxisSize.min, children: [
-            IconButton(
-              icon: _showingDetails ? const Icon(Icons.info) : const Icon(Icons.info_outline),
-              onPressed: () {
-                _toggleDetails();
-              },
-              tooltip: AppLocalizations.of(context).toggleDetails,
-            ),
-            const SizedBox(width: 5),
-            IconButton(
-              icon: _editing ? const Icon(Icons.done) : const Icon(Icons.edit),
-              tooltip:
-                  _editing ? AppLocalizations.of(context).done : AppLocalizations.of(context).edit,
-              onPressed: () {
-                _toggleEditing();
-              },
-            )
-          ]),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: _showingDetails ? const Icon(Icons.info) : const Icon(Icons.info_outline),
+                onPressed: () {
+                  _toggleDetails();
+                },
+                tooltip: AppLocalizations.of(context).toggleDetails,
+              ),
+              const SizedBox(width: 5),
+              if (_meal.isRealMeal)
+                IconButton(
+                  icon: _editing ? const Icon(Icons.done) : const Icon(Icons.edit),
+                  tooltip: _editing
+                      ? AppLocalizations.of(context).done
+                      : AppLocalizations.of(context).edit,
+                  onPressed: () {
+                    _toggleEditing();
+                  },
+                )
+            ],
+          ),
           onTap: () {
             Provider.of<NutritionPlansProvider>(context, listen: false).logMealToDiary(_meal);
             ScaffoldMessenger.of(context).showSnackBar(

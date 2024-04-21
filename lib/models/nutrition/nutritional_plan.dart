@@ -39,26 +39,51 @@ class NutritionalPlan {
   @JsonKey(required: true, name: 'creation_date', toJson: toDate)
   late DateTime creationDate;
 
+  @JsonKey(required: true, name: 'only_logging')
+  late bool onlyLogging;
+
+  @JsonKey(required: true, name: 'goal_energy')
+  late num? goalEnergy;
+
+  @JsonKey(required: true, name: 'goal_protein')
+  late num? goalProtein;
+
+  @JsonKey(required: true, name: 'goal_carbohydrates')
+  late num? goalCarbohydrates;
+
+  @JsonKey(required: true, name: 'goal_fat')
+  late num? goalFat;
+
   @JsonKey(includeFromJson: false, includeToJson: false, defaultValue: [])
   List<Meal> meals = [];
 
   @JsonKey(includeFromJson: false, includeToJson: false, defaultValue: [])
-  List<Log> logs = [];
+  List<Log> diaryEntries = [];
 
   NutritionalPlan({
     this.id,
     required this.description,
     required this.creationDate,
+    this.onlyLogging = false,
+    this.goalEnergy,
+    this.goalProtein,
+    this.goalCarbohydrates,
+    this.goalFat,
     List<Meal>? meals,
-    List<Log>? logs,
+    List<Log>? diaryEntries,
   }) {
     this.meals = meals ?? [];
-    this.logs = logs ?? [];
+    this.diaryEntries = diaryEntries ?? [];
   }
 
   NutritionalPlan.empty() {
     creationDate = DateTime.now();
     description = '';
+    onlyLogging = false;
+    goalEnergy = null;
+    goalProtein = null;
+    goalCarbohydrates = null;
+    goalFat = null;
   }
 
   // Boilerplate
@@ -70,40 +95,47 @@ class NutritionalPlan {
     return description != '' ? description : AppLocalizations.of(context).nutritionalPlan;
   }
 
-  /// Calculations
-  NutritionalValues get nutritionalValues {
-    // This is already done on the server. It might be better to read it from there.
-    var out = NutritionalValues();
-
-    for (final meal in meals) {
-      out += meal.nutritionalValues;
-    }
-
-    return out;
+  bool get hasAnyGoals {
+    return goalEnergy != null ||
+        goalFat != null ||
+        goalProtein != null ||
+        goalCarbohydrates != null;
   }
 
-  NutritionalValues get nutritionalValuesToday {
+  /// Calculations
+  ///
+  /// note that (some of) this is already done on the server. It might be better
+  /// to read it from there, but on the other hand we might want to do more locally
+  /// so that a mostly offline mode is possible.
+  NutritionalValues get plannedNutritionalValues {
+    // If there are set goals, they take preference over any meals
+    if (hasAnyGoals) {
+      final out = NutritionalValues();
+
+      out.energy = goalEnergy != null ? goalEnergy!.toDouble() : 0;
+      out.fat = goalFat != null ? goalFat!.toDouble() : 0;
+      out.carbohydrates = goalCarbohydrates != null ? goalCarbohydrates!.toDouble() : 0;
+      out.protein = goalProtein != null ? goalProtein!.toDouble() : 0;
+      return out;
+    }
+
+    return meals.fold(NutritionalValues(), (a, b) => a + b.plannedNutritionalValues);
+  }
+
+  NutritionalValues get loggedNutritionalValuesToday {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
 
     return logEntriesValues.containsKey(today) ? logEntriesValues[today]! : NutritionalValues();
   }
 
-  NutritionalValues get nutritionalValues7DayAvg {
+  NutritionalValues get loggedNutritionalValues7DayAvg {
     final currentDate = DateTime.now();
     final sevenDaysAgo = currentDate.subtract(const Duration(days: 7));
 
-    final entries = logs.where((obj) {
-      final DateTime objDate = obj.datetime;
-      return objDate.isAfter(sevenDaysAgo) && objDate.isBefore(currentDate);
-    }).toList();
-
-    var out = NutritionalValues();
-    for (final log in entries) {
-      out = out + log.nutritionalValues;
-    }
-
-    return out;
+    return diaryEntries
+        .where((obj) => obj.datetime.isAfter(sevenDaysAgo))
+        .fold(NutritionalValues(), (a, b) => a + b.nutritionalValues);
   }
 
   /// Calculates the percentage each macro nutrient adds to the total energy
@@ -130,7 +162,7 @@ class NutritionalPlan {
 
   Map<DateTime, NutritionalValues> get logEntriesValues {
     final out = <DateTime, NutritionalValues>{};
-    for (final log in logs) {
+    for (final log in diaryEntries) {
       final date = DateTime(log.datetime.year, log.datetime.month, log.datetime.day);
 
       if (!out.containsKey(date)) {
@@ -154,7 +186,7 @@ class NutritionalPlan {
   /// Returns the nutritional logs for the given date
   List<Log> getLogsForDate(DateTime date) {
     final List<Log> out = [];
-    for (final log in logs) {
+    for (final log in diaryEntries) {
       final dateKey = DateTime(date.year, date.month, date.day);
       final logKey = DateTime(log.datetime.year, log.datetime.month, log.datetime.day);
 
@@ -181,5 +213,15 @@ class NutritionalPlan {
       }
     }
     return out;
+  }
+
+  Meal pseudoMealOthers(String name) {
+    return Meal(
+      id: PSEUDO_MEAL_ID,
+      plan: id,
+      name: name,
+      time: null,
+      diaryEntries: diaryEntries.where((e) => e.mealId == null).toList(),
+    );
   }
 }

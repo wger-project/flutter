@@ -81,6 +81,7 @@ class NutritionalPlanScreen extends StatelessWidget {
                       arguments: FormScreenArguments(
                         AppLocalizations.of(context).edit,
                         PlanForm(nutritionalPlan),
+                        hasListView: true,
                       ),
                     );
 
