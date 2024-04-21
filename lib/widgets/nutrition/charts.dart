@@ -201,9 +201,7 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
     final loggedToday = widget._nutritionalPlan.loggedNutritionalValuesToday;
     final logged7DayAvg = widget._nutritionalPlan.loggedNutritionalValues7DayAvg;
 
-    final colorPlanned = LIST_OF_COLORS3[0];
-    final colorLoggedToday = LIST_OF_COLORS3[1];
-    final colorLogged7Day = LIST_OF_COLORS3[2];
+    final [colorPlanned, colorLoggedToday, colorLogged7Day] = LIST_OF_COLORS3;
 
     BarChartGroupData barchartGroup(int x, double barsSpace, double barsWidth, String prop) {
       final plan = planned.prop(prop);

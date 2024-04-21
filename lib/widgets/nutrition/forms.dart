@@ -427,7 +427,6 @@ class _PlanFormState extends State<PlanForm> {
             Column(
               children: [
                 GoalMacros(
-                  widget: widget,
                   val: widget._plan.goalEnergy?.toString(),
                   label: AppLocalizations.of(context).goalEnergy,
                   suffix: AppLocalizations.of(context).kcal,
@@ -435,7 +434,6 @@ class _PlanFormState extends State<PlanForm> {
                   key: const Key('field-goal-energy'),
                 ),
                 GoalMacros(
-                  widget: widget,
                   val: widget._plan.goalProtein?.toString(),
                   label: AppLocalizations.of(context).goalProtein,
                   suffix: AppLocalizations.of(context).g,
@@ -443,7 +441,6 @@ class _PlanFormState extends State<PlanForm> {
                   key: const Key('field-goal-protein'),
                 ),
                 GoalMacros(
-                  widget: widget,
                   val: widget._plan.goalCarbohydrates?.toString(),
                   label: AppLocalizations.of(context).goalCarbohydrates,
                   suffix: AppLocalizations.of(context).g,
@@ -451,7 +448,6 @@ class _PlanFormState extends State<PlanForm> {
                   key: const Key('field-goal-carbohydrates'),
                 ),
                 GoalMacros(
-                  widget: widget,
                   val: widget._plan.goalFat?.toString(),
                   label: AppLocalizations.of(context).goalFat,
                   suffix: AppLocalizations.of(context).g,
@@ -513,18 +509,16 @@ class _PlanFormState extends State<PlanForm> {
 class GoalMacros extends StatelessWidget {
   const GoalMacros({
     super.key,
-    required this.widget,
     required this.label,
     required this.suffix,
-    this.val,
     required this.onSave,
+    this.val,
   });
 
-  final PlanForm widget;
   final String label;
   final String suffix;
-  final String? val;
   final Function onSave;
+  final String? val;
 
   @override
   Widget build(BuildContext context) {
