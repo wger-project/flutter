@@ -50,7 +50,7 @@ void main() {
     mockNutrition = MockNutritionPlansProvider();
   });
 
-  Widget createHomeScreen(Meal meal, {locale = 'en'}) {
+  Widget createFormScreen(Meal meal, {locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
 
     return ChangeNotifierProvider<NutritionPlansProvider>(
@@ -71,7 +71,7 @@ void main() {
   }
 
   testWidgets('Test the widgets on the meal form', (WidgetTester tester) async {
-    await tester.pumpWidget(createHomeScreen(meal1));
+    await tester.pumpWidget(createFormScreen(meal1));
     await tester.pumpAndSettle();
 
     expect(find.byType(TextFormField), findsNWidgets(2));
@@ -80,7 +80,7 @@ void main() {
   });
 
   testWidgets('Test editing an existing meal', (WidgetTester tester) async {
-    await tester.pumpWidget(createHomeScreen(meal1));
+    await tester.pumpWidget(createFormScreen(meal1));
     await tester.pumpAndSettle();
 
     expect(
@@ -114,9 +114,12 @@ void main() {
       // The time set in the meal object is what is displayed by default
       // and can be matched with the find.text function. By creating the meal
       // wrapped in the withClock it also shares the same now value.
-      final fixedTimeMeal = Meal();
 
-      await tester.pumpWidget(createHomeScreen(fixedTimeMeal));
+      // Note: it seems there is something wrong with withClock that seems to
+      //       get ignored, so passing the time to the constructor for now
+      final fixedTimeMeal = Meal(time: const TimeOfDay(hour: 1, minute: 1));
+
+      await tester.pumpWidget(createFormScreen(fixedTimeMeal));
       await tester.pumpAndSettle();
 
       expect(
