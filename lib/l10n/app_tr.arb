@@ -783,5 +783,49 @@
   "useMetric": "Vücut ağırlığı için metrik birimler kullan",
   "@useMetric": {},
   "done": "Bitti",
-  "@done": {}
+  "@done": {},
+  "gValue": "{value} g",
+  "@gValue": {
+    "description": "A value in grams, e.g. 5 g",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "addGoalsToPlan": "Bu plana hedefler ekle",
+  "@addGoalsToPlan": {},
+  "goalEnergy": "Enerji hedefi",
+  "@goalEnergy": {},
+  "goalProtein": "Protein hedefi",
+  "@goalProtein": {},
+  "onlyLogging": "Yalnızca kalorileri takip et",
+  "@onlyLogging": {},
+  "onlyLoggingHelpText": "Yalnızca kalorilerinizi kaydetmek istiyorsanız ve belirli öğünler için ayrıntılı bir beslenme planı oluşturmak istemiyorsanız kutuyu işaretleyin",
+  "@onlyLoggingHelpText": {},
+  "addGoalsToPlanHelpText": "Bu, plan için enerji, protein, karbonhidrat veya yağ için genel hedefler belirlemenize olanak tanır. Ayrıntılı bir yemek planı ayarlarsanız, bu değerlerin öncelikli olacağını unutmayın.",
+  "@addGoalsToPlanHelpText": {},
+  "loggedToday": "Bugün kaydedildi",
+  "@loggedToday": {},
+  "kcalValue": "{value} kcal",
+  "@kcalValue": {
+    "description": "A value in kcal, e.g. 500 kcal",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "goalCarbohydrates": "Karbonhidrat hedefi",
+  "@goalCarbohydrates": {},
+  "goalFat": "Yağ hedefi",
+  "@goalFat": {},
+  "today": "Bugün",
+  "@today": {},
+  "percentValue": "%{value}",
+  "@percentValue": {
+    "description": "A value in percent, e.g. 10 %",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
+  }
 }
