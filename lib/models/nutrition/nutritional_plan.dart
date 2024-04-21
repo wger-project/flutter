@@ -80,6 +80,10 @@ class NutritionalPlan {
     creationDate = DateTime.now();
     description = '';
     onlyLogging = false;
+    goalEnergy = null;
+    goalProtein = null;
+    goalCarbohydrates = null;
+    goalFat = null;
   }
 
   // Boilerplate
@@ -104,21 +108,18 @@ class NutritionalPlan {
   /// to read it from there, but on the other hand we might want to do more locally
   /// so that a mostly offline mode is possible.
   NutritionalValues get plannedNutritionalValues {
-    var out = NutritionalValues();
-
     // If there are set goals, they take preference over any meals
     if (hasAnyGoals) {
+      final out = NutritionalValues();
+
       out.energy = goalEnergy != null ? goalEnergy!.toDouble() : 0;
       out.fat = goalFat != null ? goalFat!.toDouble() : 0;
       out.carbohydrates = goalCarbohydrates != null ? goalCarbohydrates!.toDouble() : 0;
       out.protein = goalProtein != null ? goalProtein!.toDouble() : 0;
-    } else {
-      for (final meal in meals) {
-        out += meal.plannedNutritionalValues;
-      }
+      return out;
     }
 
-    return out;
+    return meals.fold(NutritionalValues(), (a, b) => a + b.plannedNutritionalValues);
   }
 
   NutritionalValues get loggedNutritionalValuesToday {
@@ -132,13 +133,9 @@ class NutritionalPlan {
     final currentDate = DateTime.now();
     final sevenDaysAgo = currentDate.subtract(const Duration(days: 7));
 
-    var out = NutritionalValues();
-    final entries = diaryEntries.where((obj) => obj.datetime.isAfter(sevenDaysAgo)).toList();
-    for (final log in entries) {
-      out = out + log.nutritionalValues;
-    }
-
-    return out;
+    return diaryEntries
+        .where((obj) => obj.datetime.isAfter(sevenDaysAgo))
+        .fold(NutritionalValues(), (a, b) => a + b.nutritionalValues);
   }
 
   /// Calculates the percentage each macro nutrient adds to the total energy

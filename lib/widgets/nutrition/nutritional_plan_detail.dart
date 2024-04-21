@@ -57,22 +57,23 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
             _nutritionalPlan.pseudoMealOthers('Other logs'),
             _nutritionalPlan.allMealItems,
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(
-              child: Text(AppLocalizations.of(context).addMeal),
-              onPressed: () {
-                Navigator.pushNamed(
-                  context,
-                  FormScreen.routeName,
-                  arguments: FormScreenArguments(
-                    AppLocalizations.of(context).addMeal,
-                    MealForm(_nutritionalPlan.id!),
-                  ),
-                );
-              },
+          if (!_nutritionalPlan.onlyLogging)
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton(
+                child: Text(AppLocalizations.of(context).addMeal),
+                onPressed: () {
+                  Navigator.pushNamed(
+                    context,
+                    FormScreen.routeName,
+                    arguments: FormScreenArguments(
+                      AppLocalizations.of(context).addMeal,
+                      MealForm(_nutritionalPlan.id!),
+                    ),
+                  );
+                },
+              ),
             ),
-          ),
           Container(
             padding: const EdgeInsets.all(15),
             height: 220,
@@ -104,7 +105,13 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
               children: [
                 Indicator(
                   color: LIST_OF_COLORS3[0],
-                  text: AppLocalizations.of(context).planned,
+                  text: 'deficit',
+                  isSquare: true,
+                  marginRight: 0,
+                ),
+                const Indicator(
+                  color: Colors.red,
+                  text: 'surplus',
                   isSquare: true,
                   marginRight: 0,
                 ),

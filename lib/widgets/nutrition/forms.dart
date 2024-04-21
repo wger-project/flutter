@@ -366,14 +366,19 @@ class PlanForm extends StatefulWidget {
 class _PlanFormState extends State<PlanForm> {
   final _form = GlobalKey<FormState>();
 
-  final _descriptionController = TextEditingController();
-  final _goalEnergyController = TextEditingController();
-
-  //text:widget._plan.description
-
-  // TODO: read the values from the form
   bool _onlyLogging = true;
   bool _addGoals = false;
+
+  final _descriptionController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _onlyLogging = widget._plan.onlyLogging;
+    _addGoals = widget._plan.hasAnyGoals;
+    _descriptionController.text = widget._plan.description;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -410,50 +415,47 @@ class _PlanFormState extends State<PlanForm> {
               setState(() {
                 _addGoals = !_addGoals;
               });
+              if (!value) {
+                widget._plan.goalEnergy = null;
+                widget._plan.goalProtein = null;
+                widget._plan.goalCarbohydrates = null;
+                widget._plan.goalFat = null;
+              }
             },
           ),
           if (_addGoals)
             Column(
               children: [
-                TextFormField(
+                GoalMacros(
+                  widget: widget,
+                  val: widget._plan.goalEnergy?.toString(),
+                  label: AppLocalizations.of(context).goalEnergy,
+                  suffix: AppLocalizations.of(context).kcal,
+                  onSave: (double value) => widget._plan.goalEnergy = value,
                   key: const Key('field-goal-energy'),
-                  decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context).goalEnergy,
-                    suffix: Text(AppLocalizations.of(context).kcal),
-                  ),
-                  controller: _goalEnergyController,
-                  keyboardType: TextInputType.number,
-                  onSaved: (newValue) {
-                    widget._plan.goalEnergy = double.parse(newValue!);
-                  },
-                  validator: (value) {
-                    if (value == '') {
-                      return null;
-                    }
-                    try {
-                      double.parse(value!);
-                    } catch (error) {
-                      return AppLocalizations.of(context).enterValidNumber;
-                    }
-                    return null;
-                  },
                 ),
                 GoalMacros(
                   widget: widget,
+                  val: widget._plan.goalProtein?.toString(),
                   label: AppLocalizations.of(context).goalProtein,
-                  onSaved: (String value) => widget._plan.goalProtein = double.parse(value),
+                  suffix: AppLocalizations.of(context).g,
+                  onSave: (double value) => widget._plan.goalProtein = value,
                   key: const Key('field-goal-protein'),
                 ),
                 GoalMacros(
                   widget: widget,
+                  val: widget._plan.goalCarbohydrates?.toString(),
                   label: AppLocalizations.of(context).goalCarbohydrates,
-                  onSaved: (String value) => widget._plan.goalCarbohydrates = double.parse(value),
+                  suffix: AppLocalizations.of(context).g,
+                  onSave: (double value) => widget._plan.goalCarbohydrates = value,
                   key: const Key('field-goal-carbohydrates'),
                 ),
                 GoalMacros(
                   widget: widget,
+                  val: widget._plan.goalFat?.toString(),
                   label: AppLocalizations.of(context).goalFat,
-                  onSaved: (String value) => widget._plan.goalFat = double.parse(value),
+                  suffix: AppLocalizations.of(context).g,
+                  onSave: (double value) => widget._plan.goalFat = value,
                   key: const Key('field-goal-fat'),
                 ),
               ],
@@ -463,7 +465,7 @@ class _PlanFormState extends State<PlanForm> {
             key: const Key(SUBMIT_BUTTON_KEY_NAME),
             child: Text(AppLocalizations.of(context).save),
             onPressed: () async {
-              // Validate and save the current values to the weightEntry
+              // Validate and save the current values to the plan
               final isValid = _form.currentState!.validate();
               if (!isValid) {
                 return;
@@ -509,29 +511,35 @@ class _PlanFormState extends State<PlanForm> {
 }
 
 class GoalMacros extends StatelessWidget {
-  GoalMacros({
+  const GoalMacros({
     super.key,
     required this.widget,
     required this.label,
-    required this.onSaved,
+    required this.suffix,
+    this.val,
+    required this.onSave,
   });
 
   final PlanForm widget;
   final String label;
-  final Function onSaved;
-  final TextEditingController controller = TextEditingController();
+  final String suffix;
+  final String? val;
+  final Function onSave;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      controller: controller,
+      initialValue: val ?? '',
       decoration: InputDecoration(
         labelText: label,
-        suffixText: AppLocalizations.of(context).g,
+        suffixText: suffix,
       ),
       keyboardType: TextInputType.number,
       onSaved: (newValue) {
-        onSaved(newValue);
+        if (newValue == null || newValue == '') {
+          return;
+        }
+        onSave(double.parse(newValue));
       },
       validator: (value) {
         if (value == '') {

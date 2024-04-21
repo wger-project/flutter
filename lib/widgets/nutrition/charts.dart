@@ -168,28 +168,14 @@ class NutritionalDiaryChartWidgetFl extends StatefulWidget {
 class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidgetFl> {
   Widget bottomTitles(double value, TitleMeta meta) {
     const style = TextStyle(fontSize: 10);
-    String text;
-    switch (value.toInt()) {
-      case 0:
-        text = AppLocalizations.of(context).protein;
-        break;
-      case 1:
-        text = AppLocalizations.of(context).carbohydrates;
-        break;
-      case 2:
-        text = AppLocalizations.of(context).sugars;
-        break;
-      case 3:
-        text = AppLocalizations.of(context).fat;
-        break;
-      case 4:
-        text = AppLocalizations.of(context).saturatedFat;
-        break;
-
-      default:
-        text = '';
-        break;
-    }
+    final String text = switch (value.toInt()) {
+      0 => AppLocalizations.of(context).protein,
+      1 => AppLocalizations.of(context).carbohydrates,
+      2 => AppLocalizations.of(context).sugars,
+      3 => AppLocalizations.of(context).fat,
+      4 => AppLocalizations.of(context).saturatedFat,
+      _ => '',
+    };
     return SideTitleWidget(
       axisSide: meta.axisSide,
       child: Text(text, style: style),
@@ -219,14 +205,62 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
     final colorLoggedToday = LIST_OF_COLORS3[1];
     final colorLogged7Day = LIST_OF_COLORS3[2];
 
+    BarChartGroupData barchartGroup(int x, double barsSpace, double barsWidth, String prop) {
+      final plan = planned.prop(prop);
+
+      BarChartRodData barChartRodData(double plan, double val, Color color) {
+        // paint a simple bar
+        if (plan == 0 || val == plan) {
+          return BarChartRodData(
+            toY: val,
+            color: color,
+            width: barsWidth,
+          );
+        }
+
+        // paint a surplus
+        if (val > plan) {
+          return BarChartRodData(
+            toY: val,
+            color: colorLoggedToday,
+            width: barsWidth,
+            rodStackItems: [
+              BarChartRodStackItem(0, plan, color),
+              BarChartRodStackItem(plan, val, Colors.red),
+            ],
+          );
+        }
+
+        // paint a deficit
+        return BarChartRodData(
+          toY: plan,
+          color: colorLoggedToday,
+          width: barsWidth,
+          rodStackItems: [
+            BarChartRodStackItem(0, val, color),
+            BarChartRodStackItem(val, plan, colorPlanned),
+          ],
+        );
+      }
+
+      return BarChartGroupData(
+        x: x,
+        barsSpace: barsSpace,
+        barRods: [
+          barChartRodData(plan, loggedToday.prop(prop), colorLoggedToday),
+          barChartRodData(plan, logged7DayAvg.prop(prop), colorLogged7Day),
+        ],
+      );
+    }
+
     return AspectRatio(
       aspectRatio: 1.66,
       child: Padding(
         padding: const EdgeInsets.only(top: 16),
         child: LayoutBuilder(
           builder: (context, constraints) {
-            final barsSpace = 4.0 * constraints.maxWidth / 400;
-            final barsWidth = 8.0 * constraints.maxWidth / 400;
+            final barsSpace = 6.0 * constraints.maxWidth / 400;
+            final barsWidth = 12.0 * constraints.maxWidth / 400;
             return BarChart(
               BarChartData(
                 alignment: BarChartAlignment.center,
@@ -269,115 +303,13 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
                   show: false,
                 ),
                 groupsSpace: 30,
-                // groupsSpace: barsSpace,
                 barGroups: [
-                  BarChartGroupData(
-                    x: 0,
-                    barsSpace: barsSpace,
-                    barRods: [
-                      BarChartRodData(
-                        toY: planned.protein,
-                        color: colorPlanned,
-                        width: barsWidth,
-                      ),
-                      BarChartRodData(
-                        toY: loggedToday.protein,
-                        color: colorLoggedToday,
-                        width: barsWidth,
-                      ),
-                      BarChartRodData(
-                        toY: logged7DayAvg.protein,
-                        color: colorLogged7Day,
-                        width: barsWidth,
-                      ),
-                    ],
-                  ),
-                  BarChartGroupData(
-                    x: 1,
-                    barsSpace: barsSpace,
-                    barRods: [
-                      BarChartRodData(
-                        toY: planned.carbohydrates,
-                        color: colorPlanned,
-                        width: barsWidth,
-                      ),
-                      BarChartRodData(
-                        toY: loggedToday.carbohydrates,
-                        color: colorLoggedToday,
-                        width: barsWidth,
-                      ),
-                      BarChartRodData(
-                        toY: logged7DayAvg.carbohydrates,
-                        color: colorLogged7Day,
-                        width: barsWidth,
-                      ),
-                    ],
-                  ),
-                  BarChartGroupData(
-                    x: 2,
-                    barsSpace: barsSpace,
-                    barRods: [
-                      BarChartRodData(
-                        toY: planned.carbohydratesSugar,
-                        color: colorPlanned,
-                        width: barsWidth,
-                      ),
-                      BarChartRodData(
-                        toY: loggedToday.carbohydratesSugar,
-                        color: colorLoggedToday,
-                        width: barsWidth,
-                      ),
-                      BarChartRodData(
-                        toY: logged7DayAvg.carbohydratesSugar,
-                        color: colorLogged7Day,
-                        width: barsWidth,
-                      ),
-                    ],
-                  ),
-                  BarChartGroupData(
-                    x: 3,
-                    barsSpace: barsSpace,
-                    barRods: [
-                      BarChartRodData(
-                        toY: planned.fat,
-                        color: colorPlanned,
-                        width: barsWidth,
-                      ),
-                      BarChartRodData(
-                        toY: loggedToday.fat,
-                        color: colorLoggedToday,
-                        width: barsWidth,
-                      ),
-                      BarChartRodData(
-                        toY: logged7DayAvg.fat,
-                        color: colorLogged7Day,
-                        width: barsWidth,
-                      ),
-                    ],
-                  ),
-                  BarChartGroupData(
-                    x: 4,
-                    barsSpace: barsSpace,
-                    barRods: [
-                      BarChartRodData(
-                        toY: planned.fatSaturated,
-                        color: colorPlanned,
-                        width: barsWidth,
-                      ),
-                      BarChartRodData(
-                        toY: loggedToday.fatSaturated,
-                        color: colorLoggedToday,
-                        width: barsWidth,
-                      ),
-                      BarChartRodData(
-                        toY: logged7DayAvg.fatSaturated,
-                        color: colorLogged7Day,
-                        width: barsWidth,
-                      ),
-                    ],
-                  ),
+                  barchartGroup(0, barsSpace, barsWidth, 'protein'),
+                  barchartGroup(1, barsSpace, barsWidth, 'carbohydrates'),
+                  barchartGroup(2, barsSpace, barsWidth, 'carbohydratesSugar'),
+                  barchartGroup(3, barsSpace, barsWidth, 'fat'),
+                  barchartGroup(4, barsSpace, barsWidth, 'fatSaturated'),
                 ],
-                // barGroups: getData(barsWidth, barsSpace),
               ),
             );
           },
