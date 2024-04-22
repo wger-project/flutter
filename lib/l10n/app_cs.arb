@@ -843,5 +843,49 @@
         "example": "14"
       }
     }
+  },
+  "onlyLogging": "Zaznamenávat pouze kalorie",
+  "@onlyLogging": {},
+  "onlyLoggingHelpText": "Zaškrtněte, pokud chcete pouze zaznamenávat své kalorie a nechcete nastavovat podrobný výživový plán s přesnými jídly",
+  "@onlyLoggingHelpText": {},
+  "addGoalsToPlanHelpText": "Tato možnost vám umožňuje nastavit cíle pro energii, bílkoviny, karbohydráty a tuk ve vašem plánu. Upozornění: pokud si nastavíte podrobný jídelní plán, tyto hodnoty budou mít přednost.",
+  "@addGoalsToPlanHelpText": {},
+  "addGoalsToPlan": "Přidat cíle do tohoto plánu",
+  "@addGoalsToPlan": {},
+  "goalEnergy": "Cíl energie",
+  "@goalEnergy": {},
+  "goalProtein": "Cíl bílkovin",
+  "@goalProtein": {},
+  "goalCarbohydrates": "Cíl karbohydrátů",
+  "@goalCarbohydrates": {},
+  "goalFat": "Cíl tuku",
+  "@goalFat": {},
+  "today": "Dnes",
+  "@today": {},
+  "loggedToday": "Zaznamenáno dnes",
+  "@loggedToday": {},
+  "kcalValue": "{value} kcal",
+  "@kcalValue": {
+    "description": "A value in kcal, e.g. 500 kcal",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "gValue": "{value} g",
+  "@gValue": {
+    "description": "A value in grams, e.g. 5 g",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "percentValue": "{value} %",
+  "@percentValue": {
+    "description": "A value in percent, e.g. 10 %",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
   }
 }
