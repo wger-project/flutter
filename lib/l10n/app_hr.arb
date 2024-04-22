@@ -107,7 +107,7 @@
   "@noNutritionalPlans": {
     "description": "Message shown when the user has no nutritional plans"
   },
-  "anErrorOccurred": "Došlo je do pogreške!",
+  "anErrorOccurred": "Dogodila se greška!",
   "@anErrorOccurred": {},
   "weight": "Težina",
   "@weight": {
@@ -843,5 +843,49 @@
     "description": "Log a specific meal (imperative form)"
   },
   "done": "Obavljeno",
-  "@done": {}
+  "@done": {},
+  "onlyLogging": "Prati samo kalorije",
+  "@onlyLogging": {},
+  "onlyLoggingHelpText": "Označi okvir ako želiš bilježiti samo svoje kalorije i ne želiš postaviti detaljan plan prehrane s određenim obrocima",
+  "@onlyLoggingHelpText": {},
+  "addGoalsToPlanHelpText": "Ovo omogućuje postavljanje općih ciljeva za energiju, proteine, ugljikohidrate ili masti za plan. Imaj na umu da će ove vrijednosti imati prednost ako postaviš detaljan plan obroka.",
+  "@addGoalsToPlanHelpText": {},
+  "percentValue": "{value} %",
+  "@percentValue": {
+    "description": "A value in percent, e.g. 10 %",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "addGoalsToPlan": "Dodaj ciljeve ovom planu",
+  "@addGoalsToPlan": {},
+  "goalEnergy": "Cilj za energiju",
+  "@goalEnergy": {},
+  "goalProtein": "Cilj za proteine",
+  "@goalProtein": {},
+  "goalCarbohydrates": "Cilj za ugljikohidrate",
+  "@goalCarbohydrates": {},
+  "goalFat": "Cilj za mast",
+  "@goalFat": {},
+  "today": "Danas",
+  "@today": {},
+  "loggedToday": "Zapisano danas",
+  "@loggedToday": {},
+  "kcalValue": "{value} kcal",
+  "@kcalValue": {
+    "description": "A value in kcal, e.g. 500 kcal",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "gValue": "{value} g",
+  "@gValue": {
+    "description": "A value in grams, e.g. 5 g",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
+  }
 }
