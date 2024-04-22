@@ -41,7 +41,7 @@ dependencies:
   flutter_typeahead: ^5.2.0
   font_awesome_flutter: ^10.7.0
   http: ^1.2.0
-  image_picker: ^1.0.8
+  image_picker: ^1.1.0
   intl: ^0.18.1
   json_annotation: ^4.8.1
   version: ^3.0.2
