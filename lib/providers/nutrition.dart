@@ -19,7 +19,9 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/exceptions/no_such_entry_exception.dart';
@@ -32,6 +34,10 @@ import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/base_provider.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
+import 'package:wger/screens/nutritional_plans_screen.dart';
 
 class NutritionPlansProvider with ChangeNotifier {
   static const _nutritionalPlansPath = 'nutritionplan';
@@ -44,10 +50,33 @@ class NutritionPlansProvider with ChangeNotifier {
   static const _ingredientImagePath = 'ingredient-image';
 
   final WgerBaseProvider baseProvider;
+  late BuildContext context;
   List<NutritionalPlan> _plans = [];
   List<Ingredient> _ingredients = [];
 
-  NutritionPlansProvider(this.baseProvider, List<NutritionalPlan> entries) : _plans = entries;
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  FlutterLocalNotificationsPlugin();
+
+  NutritionPlansProvider(this.context, this.baseProvider,
+      List<NutritionalPlan> entries)
+      : _plans = entries {
+    // Initialize the local notifications plugin
+    var initializationSettingsAndroid =
+    AndroidInitializationSettings('@mipmap/ic_launcher');
+    var initializationSettings = InitializationSettings(
+        android: initializationSettingsAndroid);
+    flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
+    // Initialize time zone
+    tz.initializeTimeZones();
+
+    // Initialize notification system
+    _initializeNotifications();
+  }
+
+  void navigateToNutritionalPlanScreen() {
+    Navigator.of(context).pushNamed(NutritionScreen.routeName);
+  }
 
   List<NutritionalPlan> get items {
     return [..._plans];
@@ -74,7 +103,7 @@ class NutritionPlansProvider with ChangeNotifier {
 
   NutritionalPlan findById(int id) {
     return _plans.firstWhere(
-      (plan) => plan.id == id,
+          (plan) => plan.id == id,
       orElse: () => throw NoSuchEntryException(),
     );
   }
@@ -93,7 +122,8 @@ class NutritionPlansProvider with ChangeNotifier {
   /// object itself and no child attributes
   Future<void> fetchAndSetAllPlansSparse() async {
     final data = await baseProvider
-        .fetchPaginated(baseProvider.makeUrl(_nutritionalPlansPath, query: {'limit': '1000'}));
+        .fetchPaginated(
+        baseProvider.makeUrl(_nutritionalPlansPath, query: {'limit': '1000'}));
     _plans = [];
     for (final planData in data) {
       final plan = NutritionalPlan.fromJson(planData);
@@ -105,8 +135,11 @@ class NutritionPlansProvider with ChangeNotifier {
 
   /// Fetches and sets all plans fully, i.e. with all corresponding child objects
   Future<void> fetchAndSetAllPlansFull() async {
-    final data = await baseProvider.fetchPaginated(baseProvider.makeUrl(_nutritionalPlansPath));
-    await Future.wait(data.map((e) => fetchAndSetPlanFull(e['id'])).toList());
+    final data = await baseProvider.fetchPaginated(
+        baseProvider.makeUrl(_nutritionalPlansPath));
+    for (final entry in data) {
+      await fetchAndSetPlanFull(entry['id']);
+    }
   }
 
   /// Fetches and sets the given nutritional plan
@@ -151,7 +184,7 @@ class NutritionPlansProvider with ChangeNotifier {
           final image = IngredientImage.fromJson(mealItemData['image']);
           ingredient.image = image;
         }
-        mealItem.ingredient = ingredient;
+        mealItem.ingredientObj = ingredient;
         mealItems.add(mealItem);
       }
       meal.mealItems = mealItems;
@@ -161,9 +194,6 @@ class NutritionPlansProvider with ChangeNotifier {
 
     // Logs
     await fetchAndSetLogs(plan);
-    for (final meal in meals) {
-      meal.diaryEntries = plan.diaryEntries.where((e) => e.mealId == meal.id).toList();
-    }
 
     // ... and done
     notifyListeners();
@@ -196,7 +226,8 @@ class NutritionPlansProvider with ChangeNotifier {
     _plans.removeAt(existingPlanIndex);
     notifyListeners();
 
-    final response = await baseProvider.deleteRequest(_nutritionalPlansPath, id);
+    final response = await baseProvider.deleteRequest(
+        _nutritionalPlansPath, id);
 
     if (response.statusCode >= 400) {
       _plans.insert(existingPlanIndex, existingPlan);
@@ -208,6 +239,7 @@ class NutritionPlansProvider with ChangeNotifier {
 
   /// Adds a meal to a plan
   Future<Meal> addMeal(Meal meal, int planId) async {
+    print("Adding meal...");
     final plan = findById(planId);
     final data = await baseProvider.post(
       meal.toJson(),
@@ -217,6 +249,9 @@ class NutritionPlansProvider with ChangeNotifier {
     meal = Meal.fromJson(data);
     plan.meals.add(meal);
     notifyListeners();
+
+    // Schedule meal's notification
+    _initializeNotifications();
 
     return meal;
   }
@@ -253,10 +288,11 @@ class NutritionPlansProvider with ChangeNotifier {
 
   /// Adds a meal item to a meal
   Future<MealItem> addMealItem(MealItem mealItem, Meal meal) async {
-    final data = await baseProvider.post(mealItem.toJson(), baseProvider.makeUrl(_mealItemPath));
+    final data = await baseProvider.post(
+        mealItem.toJson(), baseProvider.makeUrl(_mealItemPath));
 
     mealItem = MealItem.fromJson(data);
-    mealItem.ingredient = await fetchIngredient(mealItem.ingredientId);
+    mealItem.ingredientObj = await fetchIngredient(mealItem.ingredientId);
     meal.mealItems.add(mealItem);
     notifyListeners();
 
@@ -273,7 +309,8 @@ class NutritionPlansProvider with ChangeNotifier {
     notifyListeners();
 
     // Try to delete
-    final response = await baseProvider.deleteRequest(_mealItemPath, mealItem.id!);
+    final response = await baseProvider.deleteRequest(
+        _mealItemPath, mealItem.id!);
     if (response.statusCode >= 400) {
       meal.mealItems.insert(mealItemIndex, existingMealItem);
       notifyListeners();
@@ -316,8 +353,10 @@ class NutritionPlansProvider with ChangeNotifier {
     if (prefs.containsKey(PREFS_INGREDIENTS)) {
       final ingredientData = json.decode(prefs.getString(PREFS_INGREDIENTS)!);
       if (DateTime.parse(ingredientData['expiresIn']).isAfter(DateTime.now())) {
-        ingredientData['ingredients'].forEach((e) => _ingredients.add(Ingredient.fromJson(e)));
-        log("Read ${ingredientData['ingredients'].length} ingredients from cache. Valid till ${ingredientData['expiresIn']}");
+        ingredientData['ingredients'].forEach((e) =>
+            _ingredients.add(Ingredient.fromJson(e)));
+        log("Read ${ingredientData['ingredients']
+            .length} ingredients from cache. Valid till ${ingredientData['expiresIn']}");
         return;
       }
     }
@@ -325,7 +364,9 @@ class NutritionPlansProvider with ChangeNotifier {
     // Initialise an empty cache
     final ingredientData = {
       'date': DateTime.now().toIso8601String(),
-      'expiresIn': DateTime.now().add(const Duration(days: DAYS_TO_CACHE)).toIso8601String(),
+      'expiresIn': DateTime.now()
+          .add(const Duration(days: DAYS_TO_CACHE))
+          .toIso8601String(),
       'ingredients': []
     };
     prefs.setString(PREFS_INGREDIENTS, json.encode(ingredientData));
@@ -333,8 +374,7 @@ class NutritionPlansProvider with ChangeNotifier {
   }
 
   /// Searches for an ingredient
-  Future<List<IngredientApiSearchEntry>> searchIngredient(
-    String name, {
+  Future<List<IngredientApiSearchEntry>> searchIngredient(String name, {
     String languageCode = 'en',
     bool searchEnglish = false,
   }) async {
@@ -350,11 +390,14 @@ class NutritionPlansProvider with ChangeNotifier {
     // Send the request
     final response = await baseProvider.fetch(
       baseProvider
-          .makeUrl(_ingredientSearchPath, query: {'term': name, 'language': languages.join(',')}),
+          .makeUrl(_ingredientSearchPath,
+          query: {'term': name, 'language': languages.join(',')}),
     );
 
     // Process the response
-    return IngredientApiSearch.fromJson(response).suggestions;
+    return IngredientApiSearch
+        .fromJson(response)
+        .suggestions;
   }
 
   /// Searches for an ingredient with code
@@ -386,20 +429,22 @@ class NutritionPlansProvider with ChangeNotifier {
         baseProvider.makeUrl(_nutritionDiaryPath),
       );
       log.id = data['id'];
-      plan.diaryEntries.add(log);
+      plan.logs.add(log);
     }
     notifyListeners();
   }
 
   /// Log custom ingredient to nutrition diary
-  Future<void> logIngredientToDiary(MealItem mealItem, int planId, [DateTime? dateTime]) async {
+  Future<void> logIngredientToDiary(MealItem mealItem, int planId,
+      [DateTime? dateTime]) async {
     final plan = findById(planId);
-    mealItem.ingredient = await fetchIngredient(mealItem.ingredientId);
+    mealItem.ingredientObj = await fetchIngredient(mealItem.ingredientId);
     final Log log = Log.fromMealItem(mealItem, plan.id!, null, dateTime);
 
-    final data = await baseProvider.post(log.toJson(), baseProvider.makeUrl(_nutritionDiaryPath));
+    final data = await baseProvider.post(
+        log.toJson(), baseProvider.makeUrl(_nutritionDiaryPath));
     log.id = data['id'];
-    plan.diaryEntries.add(log);
+    plan.logs.add(log);
     notifyListeners();
   }
 
@@ -408,7 +453,7 @@ class NutritionPlansProvider with ChangeNotifier {
     await baseProvider.deleteRequest(_nutritionDiaryPath, logId);
 
     final plan = findById(planId);
-    plan.diaryEntries.removeWhere((element) => element.id == logId);
+    plan.logs.removeWhere((element) => element.id == logId);
     notifyListeners();
   }
 
@@ -417,17 +462,86 @@ class NutritionPlansProvider with ChangeNotifier {
     final data = await baseProvider.fetchPaginated(
       baseProvider.makeUrl(
         _nutritionDiaryPath,
-        query: {'plan': plan.id.toString(), 'limit': '999', 'ordering': 'datetime'},
+        query: {
+          'plan': plan.id.toString(),
+          'limit': '999',
+          'ordering': 'datetime'
+        },
       ),
     );
 
-    plan.diaryEntries = [];
+    plan.logs = [];
     for (final logData in data) {
       final log = Log.fromJson(logData);
       final ingredient = await fetchIngredient(log.ingredientId);
-      log.ingredient = ingredient;
-      plan.diaryEntries.add(log);
+      log.ingredientObj = ingredient;
+      plan.logs.add(log);
     }
     notifyListeners();
   }
+
+  /// NEW: Notification Manager for meals
+  /// Schedule notifications for all meals in the plans
+  Future<void> _initializeNotifications() async {
+    var androidPlatformChannelSpecifics =
+    AndroidInitializationSettings('@mipmap/ic_launcher');
+    var initializationSettings =
+    InitializationSettings(android: androidPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    _scheduleNotifications();
+  }
+
+  Future<void> _scheduleNotifications() async {
+    await flutterLocalNotificationsPlugin.cancelAll();
+    await _scheduleSingleNotification();
+  }
+
+  Future<void> _scheduleSingleNotification() async {
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      'wger_channel',
+      'wger_channel',
+      'Channel for wger notifications',
+      importance: Importance.max,
+      priority: Priority.high,
+      ticker: 'ticker',
+    );
+
+    var platformChannelSpecifics = NotificationDetails(
+      android: androidPlatformChannelSpecifics,
+    );
+
+    // Convert DateTime to TZDateTime
+    var scheduledDate = tz.TZDateTime.now(tz.local).add(Duration(seconds: 5));
+
+    // Create a mutable PendingIntent for Android S+
+    final androidNotification = AndroidNotificationDetails(
+      'wger_channel',
+      'wger_channel',
+      'Channel for wger notifications',
+      importance: Importance.max,
+      priority: Priority.high,
+      ticker: 'ticker',
+    );
+    final notificationDetails = NotificationDetails(
+        android: androidNotification);
+    final androidPlugin = FlutterLocalNotificationsPlugin();
+    await androidPlugin.zonedSchedule(
+      0,
+      'Nutrition Reminder',
+      'It\'s time for your meal!',
+      scheduledDate,
+      notificationDetails,
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation:
+      UILocalNotificationDateInterpretation.absoluteTime,
+      payload: 'meal', // Use payload to identify the notification type
+    );
+    print('notification scheduled!!!');
+  }
 }
+
+  // Schedule notifications // TO DO
+  // Look at Nutrition Provider: reads out current meal and has access to individual meals and their time
+  // Present notification that it's time for a meal and provide first 3 ingredients
+  // Present option to open meal or save to diary
+  // Need to create a user preference whether to turn off notifications (use logMealToDiary method)

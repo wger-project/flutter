@@ -50,6 +50,8 @@ import 'package:wger/screens/workout_plans_screen.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/about.dart';
 import 'package:wger/widgets/core/settings.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'providers/auth.dart';
 
@@ -61,8 +63,22 @@ void main() async {
 
   // Locator to initialize exerciseDB
   await ServiceLocator().configure();
+
   // Application
   runApp(MyApp());
+
+  // Request notification permission
+  await _requestNotificationPermission();
+}
+
+Future<void> _requestNotificationPermission() async {
+  // Request notification permission
+  var status = await Permission.notification.request();
+  if (status.isGranted) {
+    print('Notification permission granted');
+  } else {
+    print('Notification permission denied');
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -91,11 +107,11 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProxyProvider<AuthProvider, NutritionPlansProvider>(
           create: (context) => NutritionPlansProvider(
-            WgerBaseProvider(Provider.of<AuthProvider>(context, listen: false)),
+            context, WgerBaseProvider(Provider.of<AuthProvider>(context, listen: false)),
             [],
           ),
           update: (context, auth, previous) =>
-              previous ?? NutritionPlansProvider(WgerBaseProvider(auth), []),
+              previous ?? NutritionPlansProvider(context, WgerBaseProvider(auth), []),
         ),
         ChangeNotifierProxyProvider<AuthProvider, MeasurementProvider>(
           create: (context) => MeasurementProvider(
@@ -155,7 +171,7 @@ class MyApp extends StatelessWidget {
             HomeTabsScreen.routeName: (ctx) => HomeTabsScreen(),
             MeasurementCategoriesScreen.routeName: (ctx) => MeasurementCategoriesScreen(),
             MeasurementEntriesScreen.routeName: (ctx) => MeasurementEntriesScreen(),
-            NutritionalPlansScreen.routeName: (ctx) => NutritionalPlansScreen(),
+            NutritionScreen.routeName: (ctx) => NutritionScreen(),
             NutritionalDiaryScreen.routeName: (ctx) => NutritionalDiaryScreen(),
             NutritionalPlanScreen.routeName: (ctx) => NutritionalPlanScreen(),
             WeightScreen.routeName: (ctx) => WeightScreen(),
