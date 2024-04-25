@@ -81,7 +81,7 @@ dev_dependencies:
   flutter_lints: ^3.0.2
   cider: ^0.2.7
   drift_dev: ^2.17.0
-  freezed: ^2.5.1
+  freezed: ^2.5.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
