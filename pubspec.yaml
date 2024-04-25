@@ -34,7 +34,7 @@ dependencies:
 
   android_metadata: ^0.2.1
   collection: ^1.17.0
-  cupertino_icons: ^1.0.5
+  cupertino_icons: ^1.0.8
   equatable: ^2.0.5
   flutter_calendar_carousel: ^2.4.1
   flutter_html: ^3.0.0-beta.2
