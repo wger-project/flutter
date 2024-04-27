@@ -251,68 +251,62 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
       );
     }
 
-    return AspectRatio(
-      aspectRatio: 1.66,
-      child: Padding(
-        padding: const EdgeInsets.only(top: 16),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final barsSpace = 6.0 * constraints.maxWidth / 400;
-            final barsWidth = 12.0 * constraints.maxWidth / 400;
-            return BarChart(
-              BarChartData(
-                alignment: BarChartAlignment.center,
-                barTouchData: BarTouchData(
-                  enabled: false,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final barsSpace = 6.0 * constraints.maxWidth / 400;
+        final barsWidth = 12.0 * constraints.maxWidth / 400;
+        return BarChart(
+          BarChartData(
+            alignment: BarChartAlignment.center,
+            barTouchData: BarTouchData(
+              enabled: false,
+            ),
+            titlesData: FlTitlesData(
+              show: true,
+              bottomTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: true,
+                  reservedSize: 48,
+                  getTitlesWidget: bottomTitles,
                 ),
-                titlesData: FlTitlesData(
-                  show: true,
-                  bottomTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      reservedSize: 48,
-                      getTitlesWidget: bottomTitles,
-                    ),
-                  ),
-                  leftTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      reservedSize: 40,
-                      getTitlesWidget: leftTitles,
-                    ),
-                  ),
-                  topTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                  rightTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                ),
-                gridData: FlGridData(
-                  show: true,
-                  checkToShowHorizontalLine: (value) => value % 10 == 0,
-                  getDrawingHorizontalLine: (value) => const FlLine(
-                    color: Colors.black,
-                    strokeWidth: 1,
-                  ),
-                  drawVerticalLine: false,
-                ),
-                borderData: FlBorderData(
-                  show: false,
-                ),
-                groupsSpace: 30,
-                barGroups: [
-                  barchartGroup(0, barsSpace, barsWidth, 'protein'),
-                  barchartGroup(1, barsSpace, barsWidth, 'carbohydrates'),
-                  barchartGroup(2, barsSpace, barsWidth, 'carbohydratesSugar'),
-                  barchartGroup(3, barsSpace, barsWidth, 'fat'),
-                  barchartGroup(4, barsSpace, barsWidth, 'fatSaturated'),
-                ],
               ),
-            );
-          },
-        ),
-      ),
+              leftTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: true,
+                  reservedSize: 40,
+                  getTitlesWidget: leftTitles,
+                ),
+              ),
+              topTitles: const AxisTitles(
+                sideTitles: SideTitles(showTitles: false),
+              ),
+              rightTitles: const AxisTitles(
+                sideTitles: SideTitles(showTitles: false),
+              ),
+            ),
+            gridData: FlGridData(
+              show: true,
+              checkToShowHorizontalLine: (value) => value % 10 == 0,
+              getDrawingHorizontalLine: (value) => const FlLine(
+                color: Colors.black,
+                strokeWidth: 1,
+              ),
+              drawVerticalLine: false,
+            ),
+            borderData: FlBorderData(
+              show: false,
+            ),
+            groupsSpace: 30,
+            barGroups: [
+              barchartGroup(0, barsSpace, barsWidth, 'protein'),
+              barchartGroup(1, barsSpace, barsWidth, 'carbohydrates'),
+              barchartGroup(2, barsSpace, barsWidth, 'carbohydratesSugar'),
+              barchartGroup(3, barsSpace, barsWidth, 'fat'),
+              barchartGroup(4, barsSpace, barsWidth, 'fatSaturated'),
+            ],
+          ),
+        );
+      },
     );
   }
 }
