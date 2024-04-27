@@ -224,7 +224,7 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
             width: barsWidth,
             rodStackItems: [
               BarChartRodStackItem(0, plan, color),
-              BarChartRodStackItem(plan, val, Colors.red),
+              BarChartRodStackItem(plan, val, COLOR_SURPLUS),
             ],
           );
         }
