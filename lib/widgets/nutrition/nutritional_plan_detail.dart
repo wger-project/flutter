@@ -48,6 +48,15 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
     return SliverList(
         delegate: SliverChildListDelegate(
       [
+        SizedBox(
+          width: 300,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: FlNutritionalPlanGoalWidget(
+              nutritionalPlan: _nutritionalPlan,
+            ),
+          ),
+        ),
         const SizedBox(height: 10),
         ..._nutritionalPlan.meals.map((meal) => MealWidget(
               meal,

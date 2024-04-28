@@ -22,7 +22,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/helpers/colors.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/body_weight.dart';
@@ -63,23 +62,6 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
     super.initState();
     _plan = Provider.of<NutritionPlansProvider>(context, listen: false).currentPlan;
     _hasContent = _plan != null;
-  }
-
-  Widget getCalorieBalance() {
-    final planned = _plan!.plannedNutritionalValues.energy;
-    final consumed = _plan!.loggedNutritionalValuesToday.energy;
-    final balance = consumed - planned;
-
-    if (balance > 0) {
-      return Text(
-        '${balance.toStringAsFixed(0)} ${AppLocalizations.of(context).kcal} ${AppLocalizations.of(context).surplus}',
-        style: const TextStyle(color: COLOR_SURPLUS, fontWeight: FontWeight.bold, fontSize: 16),
-      );
-    }
-    return Text(
-      '${balance.abs().toStringAsFixed(0)} ${AppLocalizations.of(context).kcal} ${AppLocalizations.of(context).deficit}',
-      style: TextStyle(color: LIST_OF_COLORS3.first, fontWeight: FontWeight.bold, fontSize: 16),
-    );
   }
 
   List<Widget> getContent() {
@@ -216,10 +198,9 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                     ...getContent(),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 15),
-                      height: 180,
-                      child: NutritionalDiaryChartWidgetFl(nutritionalPlan: _plan!),
+                      height: 206,
+                      child: FlNutritionalPlanGoalWidget(nutritionalPlan: _plan!),
                     ),
-                    getCalorieBalance(),
                   ],
                 ))
           else

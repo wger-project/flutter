@@ -24,6 +24,123 @@ import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
 import 'package:wger/widgets/measurements/charts.dart';
 
+class FlNutritionalPlanGoalWidget extends StatefulWidget {
+  const FlNutritionalPlanGoalWidget({
+    super.key,
+    required NutritionalPlan nutritionalPlan,
+  }) : _nutritionalPlan = nutritionalPlan;
+
+  final NutritionalPlan _nutritionalPlan;
+
+  @override
+  State<StatefulWidget> createState() => FlNutritionalPlanGoalWidgetState();
+}
+
+// * fl_chart doesn't support horizontal bar charts yet.
+//   see https://github.com/imaNNeo/fl_chart/issues/113
+//   even if it did, i doubt it would let us put text between the gauges/bars
+// * LinearProgressIndicator has no way to visualize going beyond 100%, or
+//   using multiple colors to show multiple components such as surplus, deficit
+// * here we try drawing our own simple gauges that can go beyond 100%,and we
+//   can use multiple colors...
+class FlNutritionalPlanGoalWidgetState extends State<FlNutritionalPlanGoalWidget> {
+  // normWidth is the width representing 100% completion
+  // note that if val > plan, we will draw beyond this width
+  // therefore, caller must set this width to accommodate surpluses.
+  // why don't we just handle this inside this function? because it might be
+  // *another* gauge that's in surplus and we want to have consistent widths
+  // between all gauges
+  Widget _DIYGauge(BuildContext context, double normWidth, num? plan, double val) {
+    Container segment(double width, Color color) {
+      return Container(
+        height: 16,
+        width: width,
+        decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(15.0)),
+      );
+    }
+
+    // paint a simple bar
+    if (plan == null || val == plan) {
+      return segment(normWidth, LIST_OF_COLORS8[0]);
+    }
+
+    // paint a surplus
+    if (val > plan) {
+      return Stack(children: [
+        segment(normWidth * val / plan, COLOR_SURPLUS),
+        segment(normWidth, LIST_OF_COLORS8[0]),
+      ]);
+    }
+
+    // paint a deficit
+    return Stack(children: [
+      segment(normWidth, Theme.of(context).colorScheme.surface),
+      segment(normWidth * val / plan, LIST_OF_COLORS8[0]),
+    ]);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final plan = widget._nutritionalPlan;
+    final today = plan.loggedNutritionalValuesToday;
+
+    return LayoutBuilder(builder: (context, constraints) {
+      var maxVal = 1.0;
+// if any of the bars goes over 100%, find the one that goes over the most
+// that one needs the most horizontal space to show how much it goes over,
+// and therefore reduces the width of "100%" the most, and this width we want
+// to be consistent for all other bars
+      if (plan.goalProtein != null && today.protein / plan.goalProtein! > maxVal) {
+        maxVal = today.protein / plan.goalProtein!;
+      }
+
+      if (plan.goalCarbohydrates != null &&
+          today.carbohydrates / plan.goalCarbohydrates! > maxVal) {
+        maxVal = today.carbohydrates / plan.goalCarbohydrates!;
+      }
+
+      if (plan.goalFat != null && today.fat / plan.goalFat! > maxVal) {
+        maxVal = today.fat / plan.goalFat!;
+      }
+
+      if (plan.goalEnergy != null && today.energy / plan.goalEnergy! > maxVal) {
+        maxVal = today.energy / plan.goalEnergy!;
+      }
+
+      final normWidth = constraints.maxWidth / maxVal;
+
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(plan.goalProtein == null
+              ? '${AppLocalizations.of(context).protein}: ${today.protein.toStringAsFixed(0)} ${AppLocalizations.of(context).g}'
+              : '${AppLocalizations.of(context).protein}: ${today.protein.toStringAsFixed(0)} / ${plan.goalProtein} ${AppLocalizations.of(context).g}'),
+          const SizedBox(height: 2),
+          _DIYGauge(context, normWidth, plan.goalProtein, today.protein),
+          const SizedBox(height: 8),
+          Text(plan.goalCarbohydrates == null
+              ? '${AppLocalizations.of(context).carbohydrates}: ${today.carbohydrates.toStringAsFixed(0)} ${AppLocalizations.of(context).g}'
+              : '${AppLocalizations.of(context).carbohydrates}: ${today.carbohydrates.toStringAsFixed(0)} / ${plan.goalCarbohydrates} ${AppLocalizations.of(context).g}'),
+          const SizedBox(height: 2),
+          _DIYGauge(context, normWidth, plan.goalCarbohydrates, today.carbohydrates),
+          const SizedBox(height: 8),
+          Text(plan.goalFat == null
+              ? '${AppLocalizations.of(context).fat}: ${today.fat.toStringAsFixed(0)} ${AppLocalizations.of(context).g}'
+              : '${AppLocalizations.of(context).fat}: ${today.fat.toStringAsFixed(0)} / ${plan.goalFat} ${AppLocalizations.of(context).g}'),
+          const SizedBox(height: 2),
+          _DIYGauge(context, normWidth, plan.goalFat, today.fat),
+          const SizedBox(height: 8),
+          Text(plan.goalEnergy == null
+              ? '${AppLocalizations.of(context).energy}: ${today.energy.toStringAsFixed(0)} ${AppLocalizations.of(context).kcal}'
+              : '${AppLocalizations.of(context).energy}: ${today.energy.toStringAsFixed(0)} / ${plan.goalEnergy} ${AppLocalizations.of(context).kcal}'),
+          const SizedBox(height: 2),
+          _DIYGauge(context, normWidth, plan.goalEnergy, today.energy),
+        ],
+      );
+    });
+  }
+}
+
 class NutritionData {
   final String name;
   final double value;
