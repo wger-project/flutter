@@ -72,12 +72,14 @@ void main() {
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();
 
-    // PLan description
+    // Plan description
     expect(find.text('Less fat, more protein'), findsOneWidget);
 
     // Ingredients
     expect(find.text('100g Water'), findsOneWidget);
     expect(find.text('75g Burger soup'), findsOneWidget);
+    // the new goals widget pushes this content down a bit...
+    await tester.scrollUntilVisible(find.text('300g Broccoli cake'), 30);
     expect(find.text('300g Broccoli cake'), findsOneWidget);
 
     expect(find.byType(Card), findsNWidgets(2));
