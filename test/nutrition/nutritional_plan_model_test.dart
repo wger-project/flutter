@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:wger/models/nutrition/nutritional_goals.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
 
@@ -32,7 +33,7 @@ void main() {
   group('model tests', () {
     test('Test the nutritionalValues method for nutritional plans', () {
       final values = NutritionalValues.values(4118.75, 32.75, 347.5, 9.5, 59.0, 37.75, 52.5, 30.5);
-      expect(plan.plannedNutritionalValues, values);
+      expect(plan.nutritionalGoals, values);
     });
 
     test('Test the nutritionalValues method for meals', () {

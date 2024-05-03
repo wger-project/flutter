@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:math';
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -50,7 +52,7 @@ class FlNutritionalPlanGoalWidgetState extends State<FlNutritionalPlanGoalWidget
   // why don't we just handle this inside this function? because it might be
   // *another* gauge that's in surplus and we want to have consistent widths
   // between all gauges
-  Widget _DIYGauge(BuildContext context, double normWidth, num? plan, double val) {
+  Widget _DIYGauge(BuildContext context, double normWidth, double? plan, double val) {
     Container segment(double width, Color color) {
       return Container(
         height: 16,
@@ -82,59 +84,52 @@ class FlNutritionalPlanGoalWidgetState extends State<FlNutritionalPlanGoalWidget
   @override
   Widget build(BuildContext context) {
     final plan = widget._nutritionalPlan;
+    final goals = plan.nutritionalGoals;
     final today = plan.loggedNutritionalValuesToday;
 
     return LayoutBuilder(builder: (context, constraints) {
-      var maxVal = 1.0;
-// if any of the bars goes over 100%, find the one that goes over the most
-// that one needs the most horizontal space to show how much it goes over,
-// and therefore reduces the width of "100%" the most, and this width we want
-// to be consistent for all other bars
-      if (plan.goalProtein != null && today.protein / plan.goalProtein! > maxVal) {
-        maxVal = today.protein / plan.goalProtein!;
-      }
-
-      if (plan.goalCarbohydrates != null &&
-          today.carbohydrates / plan.goalCarbohydrates! > maxVal) {
-        maxVal = today.carbohydrates / plan.goalCarbohydrates!;
-      }
-
-      if (plan.goalFat != null && today.fat / plan.goalFat! > maxVal) {
-        maxVal = today.fat / plan.goalFat!;
-      }
-
-      if (plan.goalEnergy != null && today.energy / plan.goalEnergy! > maxVal) {
-        maxVal = today.energy / plan.goalEnergy!;
-      }
+      // if any of the bars goes over 100%, find the one that goes over the most
+      // that one needs the most horizontal space to show how much it goes over,
+      // and therefore reduces the width of "100%" the most, and this width we want
+      // to be consistent for all other bars.
+      // if none goes over, 100% means fill all available space
+      final maxVal = [
+        1.0,
+        if (goals.protein != null && goals.protein! > 0) today.protein / goals.protein!,
+        if (goals.carbohydrates != null && goals.carbohydrates! > 0)
+          today.carbohydrates / goals.carbohydrates!,
+        if (goals.fat != null && goals.fat! > 0) today.fat / goals.fat!,
+        if (goals.energy != null && goals.energy! > 0) today.energy / goals.energy!
+      ].reduce(max);
 
       final normWidth = constraints.maxWidth / maxVal;
+
+      String fmtMacro(String name, double today, double? goal, String unit) {
+        return '$name: ${today.toStringAsFixed(0)}${goal == null ? '' : ' /${goal.toStringAsFixed(0)}'} $unit';
+      }
 
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text(plan.goalProtein == null
-              ? '${AppLocalizations.of(context).protein}: ${today.protein.toStringAsFixed(0)} ${AppLocalizations.of(context).g}'
-              : '${AppLocalizations.of(context).protein}: ${today.protein.toStringAsFixed(0)} / ${plan.goalProtein} ${AppLocalizations.of(context).g}'),
+          Text(fmtMacro(AppLocalizations.of(context).protein, today.protein, goals.protein,
+              AppLocalizations.of(context).g)),
           const SizedBox(height: 2),
-          _DIYGauge(context, normWidth, plan.goalProtein, today.protein),
+          _DIYGauge(context, normWidth, goals.protein, today.protein),
           const SizedBox(height: 8),
-          Text(plan.goalCarbohydrates == null
-              ? '${AppLocalizations.of(context).carbohydrates}: ${today.carbohydrates.toStringAsFixed(0)} ${AppLocalizations.of(context).g}'
-              : '${AppLocalizations.of(context).carbohydrates}: ${today.carbohydrates.toStringAsFixed(0)} / ${plan.goalCarbohydrates} ${AppLocalizations.of(context).g}'),
+          Text(fmtMacro(AppLocalizations.of(context).carbohydrates, today.carbohydrates,
+              goals.carbohydrates, AppLocalizations.of(context).g)),
           const SizedBox(height: 2),
-          _DIYGauge(context, normWidth, plan.goalCarbohydrates, today.carbohydrates),
+          _DIYGauge(context, normWidth, goals.carbohydrates, today.carbohydrates),
           const SizedBox(height: 8),
-          Text(plan.goalFat == null
-              ? '${AppLocalizations.of(context).fat}: ${today.fat.toStringAsFixed(0)} ${AppLocalizations.of(context).g}'
-              : '${AppLocalizations.of(context).fat}: ${today.fat.toStringAsFixed(0)} / ${plan.goalFat} ${AppLocalizations.of(context).g}'),
+          Text(fmtMacro(AppLocalizations.of(context).fat, today.fat, goals.fat,
+              AppLocalizations.of(context).g)),
           const SizedBox(height: 2),
-          _DIYGauge(context, normWidth, plan.goalFat, today.fat),
+          _DIYGauge(context, normWidth, goals.fat, today.fat),
           const SizedBox(height: 8),
-          Text(plan.goalEnergy == null
-              ? '${AppLocalizations.of(context).energy}: ${today.energy.toStringAsFixed(0)} ${AppLocalizations.of(context).kcal}'
-              : '${AppLocalizations.of(context).energy}: ${today.energy.toStringAsFixed(0)} / ${plan.goalEnergy} ${AppLocalizations.of(context).kcal}'),
+          Text(fmtMacro(AppLocalizations.of(context).energy, today.energy, goals.energy,
+              AppLocalizations.of(context).kcal)),
           const SizedBox(height: 2),
-          _DIYGauge(context, normWidth, plan.goalEnergy, today.energy),
+          _DIYGauge(context, normWidth, goals.energy, today.energy),
         ],
       );
     });
@@ -313,7 +308,7 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
 
   @override
   Widget build(BuildContext context) {
-    final planned = widget._nutritionalPlan.plannedNutritionalValues;
+    final planned = widget._nutritionalPlan.nutritionalGoals;
     final loggedToday = widget._nutritionalPlan.loggedNutritionalValuesToday;
     final logged7DayAvg = widget._nutritionalPlan.loggedNutritionalValues7DayAvg;
 
@@ -322,9 +317,9 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
     BarChartGroupData barchartGroup(int x, double barsSpace, double barsWidth, String prop) {
       final plan = planned.prop(prop);
 
-      BarChartRodData barChartRodData(double plan, double val, Color color) {
+      BarChartRodData barChartRodData(double? plan, double val, Color color) {
         // paint a simple bar
-        if (plan == 0 || val == plan) {
+        if (plan == null || val == plan) {
           return BarChartRodData(
             toY: val,
             color: color,

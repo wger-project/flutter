@@ -20,8 +20,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/colors.dart';
+import 'package:wger/models/nutrition/nutritional_goals.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
-import 'package:wger/models/nutrition/nutritional_values.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/measurements/charts.dart';
@@ -37,12 +37,11 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final plannedNutritionalValues = _nutritionalPlan.plannedNutritionalValues;
+    final nutritionalGoals = _nutritionalPlan.nutritionalGoals;
     final lastWeightEntry =
         Provider.of<BodyWeightProvider>(context, listen: false).getNewestEntry();
-    final valuesGperKg = lastWeightEntry != null
-        ? _nutritionalPlan.gPerBodyKg(lastWeightEntry.weight, plannedNutritionalValues)
-        : null;
+    final nutritionalGoalsGperKg =
+        lastWeightEntry != null ? nutritionalGoals / lastWeightEntry.weight.toDouble() : null;
 
     return SliverList(
         delegate: SliverChildListDelegate(
@@ -82,17 +81,18 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
               },
             ),
           ),
-        Container(
-          padding: const EdgeInsets.all(15),
-          height: 220,
-          child: FlNutritionalPlanPieChartWidget(plannedNutritionalValues), // chart
-        ),
+        if (nutritionalGoals.isComplete())
+          Container(
+            padding: const EdgeInsets.all(15),
+            height: 220,
+            child: FlNutritionalPlanPieChartWidget(nutritionalGoals.toValues()),
+          ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: MacronutrientsTable(
-            plannedNutritionalValues: plannedNutritionalValues,
-            plannedValuesPercentage: _nutritionalPlan.energyPercentage(plannedNutritionalValues),
-            plannedValuesGperKg: valuesGperKg,
+            nutritionalGoals: nutritionalGoals,
+            plannedValuesPercentage: nutritionalGoals.energyPercentage(),
+            nutritionalGoalsGperKg: nutritionalGoalsGperKg,
           ),
         ),
         const Padding(padding: EdgeInsets.all(8.0)),
@@ -104,7 +104,7 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
         Container(
           padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
           height: 300,
-          child: NutritionalDiaryChartWidgetFl(nutritionalPlan: _nutritionalPlan), //  chart
+          child: NutritionalDiaryChartWidgetFl(nutritionalPlan: _nutritionalPlan),
         ),
         Padding(
           padding: const EdgeInsets.only(bottom: 40, left: 25, right: 25),
@@ -164,15 +164,15 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
 class MacronutrientsTable extends StatelessWidget {
   const MacronutrientsTable({
     super.key,
-    required this.plannedNutritionalValues,
+    required this.nutritionalGoals,
     required this.plannedValuesPercentage,
-    required this.plannedValuesGperKg,
+    required this.nutritionalGoalsGperKg,
   });
 
   static const double tablePadding = 7;
-  final NutritionalValues plannedNutritionalValues;
-  final BaseNutritionalValues plannedValuesPercentage;
-  final BaseNutritionalValues? plannedValuesGperKg;
+  final NutritionalGoals nutritionalGoals;
+  final NutritionalGoals plannedValuesPercentage;
+  final NutritionalGoals? nutritionalGoalsGperKg;
 
   @override
   Widget build(BuildContext context) {
@@ -216,8 +216,9 @@ class MacronutrientsTable extends StatelessWidget {
               child: Text(AppLocalizations.of(context).energy),
             ),
             Text(
-              plannedNutritionalValues.energy.toStringAsFixed(0) +
-                  AppLocalizations.of(context).kcal,
+              nutritionalGoals.energy != null
+                  ? nutritionalGoals.energy!.toStringAsFixed(0) + AppLocalizations.of(context).kcal
+                  : '',
             ),
             const Text(''),
             const Text(''),
@@ -229,11 +230,15 @@ class MacronutrientsTable extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: tablePadding),
               child: Text(AppLocalizations.of(context).protein),
             ),
-            Text(plannedNutritionalValues.protein.toStringAsFixed(0) +
-                AppLocalizations.of(context).g),
-            Text(plannedValuesPercentage.protein.toStringAsFixed(1)),
-            Text(
-                plannedValuesGperKg != null ? plannedValuesGperKg!.protein.toStringAsFixed(1) : ''),
+            Text(nutritionalGoals.protein != null
+                ? nutritionalGoals.protein!.toStringAsFixed(0) + AppLocalizations.of(context).g
+                : ''),
+            Text(plannedValuesPercentage.protein != null
+                ? plannedValuesPercentage.protein!.toStringAsFixed(1)
+                : ''),
+            Text(nutritionalGoalsGperKg != null && nutritionalGoalsGperKg!.protein != null
+                ? nutritionalGoalsGperKg!.protein!.toStringAsFixed(1)
+                : ''),
           ],
         ),
         TableRow(
@@ -242,11 +247,15 @@ class MacronutrientsTable extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: tablePadding),
               child: Text(AppLocalizations.of(context).carbohydrates),
             ),
-            Text(plannedNutritionalValues.carbohydrates.toStringAsFixed(0) +
-                AppLocalizations.of(context).g),
-            Text(plannedValuesPercentage.carbohydrates.toStringAsFixed(1)),
-            Text(plannedValuesGperKg != null
-                ? plannedValuesGperKg!.carbohydrates.toStringAsFixed(1)
+            Text(nutritionalGoals.carbohydrates != null
+                ? nutritionalGoals.carbohydrates!.toStringAsFixed(0) +
+                    AppLocalizations.of(context).g
+                : ''),
+            Text(plannedValuesPercentage.carbohydrates != null
+                ? plannedValuesPercentage.carbohydrates!.toStringAsFixed(1)
+                : ''),
+            Text(nutritionalGoalsGperKg != null && nutritionalGoalsGperKg!.carbohydrates != null
+                ? nutritionalGoalsGperKg!.carbohydrates!.toStringAsFixed(1)
                 : ''),
           ],
         ),
@@ -256,10 +265,12 @@ class MacronutrientsTable extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: tablePadding, horizontal: 12),
               child: Text(AppLocalizations.of(context).sugars),
             ),
-            Text(plannedNutritionalValues.carbohydratesSugar.toStringAsFixed(0) +
-                AppLocalizations.of(context).g),
             const Text(''),
             const Text(''),
+            Text(nutritionalGoals.carbohydratesSugar != null
+                ? nutritionalGoals.carbohydratesSugar!.toStringAsFixed(0) +
+                    AppLocalizations.of(context).g
+                : ''),
           ],
         ),
         TableRow(
@@ -268,9 +279,15 @@ class MacronutrientsTable extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: tablePadding),
               child: Text(AppLocalizations.of(context).fat),
             ),
-            Text(plannedNutritionalValues.fat.toStringAsFixed(0) + AppLocalizations.of(context).g),
-            Text(plannedValuesPercentage.fat.toStringAsFixed(1)),
-            Text(plannedValuesGperKg != null ? plannedValuesGperKg!.fat.toStringAsFixed(1) : ''),
+            Text(nutritionalGoals.fat != null
+                ? nutritionalGoals.fat!.toStringAsFixed(0) + AppLocalizations.of(context).g
+                : ''),
+            Text(plannedValuesPercentage.fat != null
+                ? plannedValuesPercentage.fat!.toStringAsFixed(1)
+                : ''),
+            Text(nutritionalGoalsGperKg != null && nutritionalGoalsGperKg!.fat != null
+                ? nutritionalGoalsGperKg!.fat!.toStringAsFixed(1)
+                : ''),
           ],
         ),
         TableRow(
@@ -279,10 +296,11 @@ class MacronutrientsTable extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: tablePadding, horizontal: 12),
               child: Text(AppLocalizations.of(context).saturatedFat),
             ),
-            Text(plannedNutritionalValues.fatSaturated.toStringAsFixed(0) +
-                AppLocalizations.of(context).g),
             const Text(''),
             const Text(''),
+            Text(nutritionalGoals.fatSaturated != null
+                ? nutritionalGoals.fatSaturated!.toStringAsFixed(0) + AppLocalizations.of(context).g
+                : ''),
           ],
         ),
         TableRow(
@@ -291,10 +309,11 @@ class MacronutrientsTable extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: tablePadding),
               child: Text(AppLocalizations.of(context).fibres),
             ),
-            Text(plannedNutritionalValues.fibres.toStringAsFixed(0) +
-                AppLocalizations.of(context).g),
             const Text(''),
             const Text(''),
+            Text(nutritionalGoals.fibres != null
+                ? nutritionalGoals.fibres!.toStringAsFixed(0) + AppLocalizations.of(context).g
+                : ''),
           ],
         ),
         TableRow(
@@ -303,10 +322,11 @@ class MacronutrientsTable extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: tablePadding),
               child: Text(AppLocalizations.of(context).sodium),
             ),
-            Text(plannedNutritionalValues.sodium.toStringAsFixed(0) +
-                AppLocalizations.of(context).g),
             const Text(''),
             const Text(''),
+            Text(nutritionalGoals.sodium != null
+                ? nutritionalGoals.sodium!.toStringAsFixed(0) + AppLocalizations.of(context).g
+                : ''),
           ],
         ),
       ],
