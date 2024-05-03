@@ -18,18 +18,17 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/colors.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/screens/form_screen.dart';
-import 'package:wger/screens/nutritional_diary_screen.dart';
 import 'package:wger/widgets/measurements/charts.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/meal.dart';
+import 'package:wger/widgets/nutrition/nutritional_diary_table.dart';
 
 class NutritionalPlanDetailWidget extends StatelessWidget {
   final NutritionalPlan _nutritionalPlan;
@@ -140,25 +139,22 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
           ),
         ),
         if (_nutritionalPlan.logEntriesValues.isNotEmpty)
-          Column(
-            children: [
-              Text(
-                AppLocalizations.of(context).nutritionalDiary,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleSmall,
-              ),
-              SizedBox(
-                  height: 200,
-                  child: SingleChildScrollView(
-                    child: Table(
-                      children: [
-                        nutrionalDiaryHeader(context, _nutritionalPlan),
-                        ..._nutritionalPlan.logEntriesValues.entries.map((entry) =>
-                            nutritionDiaryEntry(context, entry.key, entry.value, _nutritionalPlan))
-                      ],
-                    ),
-                  )),
-            ],
+          Padding(
+            padding: const EdgeInsets.only(bottom: 15, left: 15, right: 15),
+            child: Column(
+              children: [
+                Text(
+                  AppLocalizations.of(context).nutritionalDiary,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                SizedBox(
+                    height: 200,
+                    child: SingleChildScrollView(
+                      child: NutritionalDiaryTable(nutritionalPlan: _nutritionalPlan),
+                    )),
+              ],
+            ),
           ),
       ],
     ));
@@ -316,40 +312,4 @@ class MacronutrientsTable extends StatelessWidget {
       ],
     );
   }
-}
-
-TableRow nutrionalDiaryHeader(BuildContext context, final NutritionalPlan plan) {
-  return TableRow(
-    children: [
-      TextButton(onPressed: () {}, child: const Text('')),
-      Text('${AppLocalizations.of(context).energyShort} (${AppLocalizations.of(context).kcal})'),
-      if (plan.goalEnergy != null) Text(AppLocalizations.of(context).difference),
-      Text('${AppLocalizations.of(context).protein} (${AppLocalizations.of(context).g})'),
-      Text(
-          '${AppLocalizations.of(context).carbohydratesShort} (${AppLocalizations.of(context).g})'),
-      Text('${AppLocalizations.of(context).fatShort} (${AppLocalizations.of(context).g})'),
-    ],
-  );
-}
-
-TableRow nutritionDiaryEntry(final BuildContext context, final DateTime date,
-    final NutritionalValues values, final NutritionalPlan plan) {
-  return TableRow(
-    children: [
-      GestureDetector(
-          onTap: () => Navigator.of(context).pushNamed(
-                NutritionalDiaryScreen.routeName,
-                arguments: NutritionalDiaryArguments(plan, date),
-              ),
-          child: Text(
-            style: TextStyle(color: LIST_OF_COLORS3.first),
-            DateFormat.Md(Localizations.localeOf(context).languageCode).format(date),
-          )),
-      Text(values.energy.toStringAsFixed(0)),
-      if (plan.goalEnergy != null) Text((values.energy - plan.goalEnergy!).toStringAsFixed(0)),
-      Text(values.protein.toStringAsFixed(0)),
-      Text(values.carbohydrates.toStringAsFixed(0)),
-      Text(values.fat.toStringAsFixed(0)),
-    ],
-  );
 }
