@@ -27,8 +27,6 @@ import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
-import 'package:wger/widgets/nutrition/charts.dart';
-
 import '../../test_data/nutritional_plans.dart';
 import 'nutritional_plan_screen_test.mocks.dart';
 
