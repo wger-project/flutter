@@ -32,8 +32,17 @@ void main() {
 
   group('model tests', () {
     test('Test the nutritionalValues method for nutritional plans', () {
-      final values = NutritionalValues.values(4118.75, 32.75, 347.5, 9.5, 59.0, 37.75, 52.5, 30.5);
-      expect(plan.nutritionalGoals, values);
+      expect(
+          plan.nutritionalGoals,
+          NutritionalGoals(
+              energy: 4118.75,
+              protein: 32.75,
+              carbohydrates: 347.5,
+              carbohydratesSugar: 9.5,
+              fat: 59.0,
+              fatSaturated: 37.75,
+              fibres: 52.5,
+              sodium: 30.5));
     });
 
     test('Test the nutritionalValues method for meals', () {

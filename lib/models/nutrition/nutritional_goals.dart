@@ -139,4 +139,21 @@ class NutritionalGoals {
   //ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => Object.hash(
       energy, protein, carbohydrates, carbohydratesSugar, fat, fatSaturated, fibres, sodium);
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  bool operator ==(Object other) {
+    if (identical(this, other)) {
+      return true;
+    }
+    return other is NutritionalGoals &&
+        other.energy == energy &&
+        other.protein == protein &&
+        other.carbohydrates == carbohydrates &&
+        other.carbohydratesSugar == carbohydratesSugar &&
+        other.fat == fat &&
+        other.fatSaturated == fatSaturated &&
+        other.fibres == fibres &&
+        other.sodium == sodium;
+  }
 }
