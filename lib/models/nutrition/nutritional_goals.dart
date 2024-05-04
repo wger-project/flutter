@@ -16,20 +16,67 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
 
-class NutritionalGoals {
-  double? energy = 0;
-  double? protein = 0;
-  double? carbohydrates = 0;
-  double? carbohydratesSugar = 0;
-  double? fat = 0;
-  double? fatSaturated = 0;
-  double? fibres = 0;
-  double? sodium = 0;
+part 'nutritional_goals.freezed.dart';
 
-  NutritionalGoals({
+@freezed
+class NutritionalGoals {
+  final double? energy;
+  final double? protein;
+  final double? carbohydrates;
+  final double? carbohydratesSugar;
+  final double? fat;
+  final double? fatSaturated;
+  final double? fibres;
+  final double? sodium;
+
+  factory NutritionalGoals({
+    double? energy,
+    double? protein,
+    double? carbohydrates,
+    double? carbohydratesSugar,
+    double? fat,
+    double? fatSaturated,
+    double? fibres,
+    double? sodium,
+  }) {
+    // infer values where we can
+    if (energy == null) {
+      if (protein != null && carbohydrates != null && fat != null) {
+        energy = protein * ENERGY_PROTEIN + carbohydrates * ENERGY_CARBOHYDRATES + fat * ENERGY_FAT;
+      }
+    } else {
+      // TODO: input validation when the user modifies/creates the plan, to assure energy is high enough
+      if (protein == null && carbohydrates != null && fat != null) {
+        protein =
+            (energy - carbohydrates * ENERGY_CARBOHYDRATES - fat * ENERGY_FAT) / ENERGY_PROTEIN;
+        assert(protein > 0);
+      } else if (carbohydrates == null && protein != null && fat != null) {
+        carbohydrates =
+            (energy - protein * ENERGY_PROTEIN - fat * ENERGY_FAT) / ENERGY_CARBOHYDRATES;
+        assert(carbohydrates > 0);
+      } else if (fat == null && protein != null && carbohydrates != null) {
+        fat =
+            (energy - protein * ENERGY_PROTEIN - carbohydrates * ENERGY_CARBOHYDRATES) / ENERGY_FAT;
+        assert(fat > 0);
+      }
+    }
+    return NutritionalGoals._(
+      energy: energy,
+      protein: protein,
+      carbohydrates: carbohydrates,
+      carbohydratesSugar: carbohydratesSugar,
+      fat: fat,
+      fatSaturated: fatSaturated,
+      fibres: fibres,
+      sodium: sodium,
+    );
+  }
+
+  NutritionalGoals._({
     this.energy,
     this.protein,
     this.carbohydrates,
@@ -38,30 +85,7 @@ class NutritionalGoals {
     this.fatSaturated,
     this.fibres,
     this.sodium,
-  }) {
-    // infer values where we can
-    if (energy == null) {
-      if (protein != null && carbohydrates != null && fat != null) {
-        energy =
-            protein! * ENERGY_PROTEIN + carbohydrates! * ENERGY_CARBOHYDRATES + fat! * ENERGY_FAT;
-      }
-      return;
-    }
-    // TODO: input validation when the user modifies/creates the plan, to assure energy is high enough
-    if (protein == null && carbohydrates != null && fat != null) {
-      protein =
-          (energy! - carbohydrates! * ENERGY_CARBOHYDRATES - fat! * ENERGY_FAT) / ENERGY_PROTEIN;
-      assert(protein! > 0);
-    } else if (carbohydrates == null && protein != null && fat != null) {
-      carbohydrates =
-          (energy! - protein! * ENERGY_PROTEIN - fat! * ENERGY_FAT) / ENERGY_CARBOHYDRATES;
-      assert(carbohydrates! > 0);
-    } else if (fat == null && protein != null && carbohydrates != null) {
-      fat = (energy! - protein! * ENERGY_PROTEIN - carbohydrates! * ENERGY_CARBOHYDRATES) /
-          ENERGY_FAT;
-      assert(fat! > 0);
-    }
-  }
+  });
 
   NutritionalGoals operator /(double v) {
     return NutritionalGoals(
@@ -104,16 +128,25 @@ class NutritionalGoals {
     }
     assert(energy! > 0);
 
+    double? proteinPct;
+    double? carbohydratesPct;
+    double? fatPct;
+
     if (protein != null) {
-      goals.protein = (100 * protein! * ENERGY_PROTEIN) / energy!;
+      proteinPct = (100 * protein! * ENERGY_PROTEIN) / energy!;
     }
     if (carbohydrates != null) {
-      goals.carbohydrates = (100 * carbohydrates! * ENERGY_CARBOHYDRATES) / energy!;
+      carbohydratesPct = (100 * carbohydrates! * ENERGY_CARBOHYDRATES) / energy!;
     }
     if (fat != null) {
-      goals.fat = (100 * fat! * ENERGY_FAT) / energy!;
+      fatPct = (100 * fat! * ENERGY_FAT) / energy!;
     }
-    return goals;
+    return NutritionalGoals._(
+      energy: energy,
+      protein: proteinPct,
+      carbohydrates: carbohydratesPct,
+      fat: fatPct,
+    );
   }
 
   double? prop(String name) {
@@ -129,14 +162,4 @@ class NutritionalGoals {
       _ => 0,
     };
   }
-
-  @override
-  String toString() {
-    return 'e: $energy, p: $protein, c: $carbohydrates, cS: $carbohydratesSugar, f: $fat, fS: $fatSaturated, fi: $fibres, s: $sodium';
-  }
-
-  @override
-  //ignore: avoid_equals_and_hash_code_on_mutable_classes
-  int get hashCode => Object.hash(
-      energy, protein, carbohydrates, carbohydratesSugar, fat, fatSaturated, fibres, sodium);
 }
