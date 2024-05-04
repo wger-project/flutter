@@ -118,6 +118,10 @@ class NutritionalPlan {
         carbohydrates: goalCarbohydrates?.toDouble(),
       );
     }
+    // if there are no set goals and no defined meals, the goals are still undefined
+    if (meals.isEmpty) {
+      return NutritionalGoals();
+    }
     // otherwise, add up all the nutritional values of the meals and use that as goals
     final sumValues = meals.fold(NutritionalValues(), (a, b) => a + b.plannedNutritionalValues);
     return NutritionalGoals(

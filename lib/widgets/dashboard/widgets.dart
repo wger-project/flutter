@@ -625,6 +625,7 @@ class NothingFound extends StatelessWidget {
                 FormScreen.routeName,
                 arguments: FormScreenArguments(
                   _titleForm,
+                  hasListView: true,
                   _form,
                 ),
               );
