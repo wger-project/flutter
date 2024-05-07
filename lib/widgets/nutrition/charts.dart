@@ -43,8 +43,8 @@ class FlNutritionalPlanGoalWidget extends StatefulWidget {
 //   even if it did, i doubt it would let us put text between the gauges/bars
 // * LinearProgressIndicator has no way to visualize going beyond 100%, or
 //   using multiple colors to show multiple components such as surplus, deficit
-// * here we try drawing our own simple gauges that can go beyond 100%,and we
-//   can use multiple colors...
+// * here we draw our own simple gauges that can go beyond 100%,
+//   and support multiple segments
 class FlNutritionalPlanGoalWidgetState extends State<FlNutritionalPlanGoalWidget> {
   // normWidth is the width representing 100% completion
   // note that if val > plan, we will draw beyond this width

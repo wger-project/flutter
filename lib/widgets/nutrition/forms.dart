@@ -39,7 +39,7 @@ class MealForm extends StatelessWidget {
   final _nameController = TextEditingController();
 
   MealForm(this._planId, [meal]) {
-    _meal = meal ?? Meal(plan: _planId);
+    _meal = meal ?? Meal(plan: _planId, time: TimeOfDay.fromDateTime(DateTime.now()));
     _timeController.text = timeToString(_meal.time)!;
     _nameController.text = _meal.name;
   }

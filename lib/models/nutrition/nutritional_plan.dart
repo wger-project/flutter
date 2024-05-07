@@ -212,7 +212,6 @@ class NutritionalPlan {
       id: PSEUDO_MEAL_ID,
       plan: id,
       name: name,
-      time: null,
       diaryEntries: diaryEntries.where((e) => e.mealId == null).toList(),
     );
   }

@@ -407,7 +407,7 @@ class MealHeader extends StatelessWidget {
                       ],
                     )
                   : Text(
-                      _meal.time!.format(context),
+                      _meal.time != null ? _meal.time!.format(context) : '',
                       style: Theme.of(context).textTheme.headlineSmall,
                     ),
             ),
