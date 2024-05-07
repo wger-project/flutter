@@ -32,6 +32,12 @@ import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/helpers.dart';
 import 'package:wger/widgets/nutrition/widgets.dart';
 
+enum viewMode {
+  base, // just highlevel meal info (name, time)
+  withIngredients, // + ingredients
+  withAllDetails // + nutritional breakdown of ingredients, + logged today
+}
+
 class MealWidget extends StatefulWidget {
   final Meal _meal;
   final List<MealItem> _listMealItems;
@@ -46,7 +52,7 @@ class MealWidget extends StatefulWidget {
 }
 
 class _MealWidgetState extends State<MealWidget> {
-  bool _showDetails = false;
+  var _viewMode = viewMode.base;
   bool _editing = false;
 
   void _toggleEditing() {
@@ -57,7 +63,19 @@ class _MealWidgetState extends State<MealWidget> {
 
   void _toggleDetails() {
     setState(() {
-      _showDetails = !_showDetails;
+      if (widget._meal.isRealMeal) {
+        _viewMode = switch (_viewMode) {
+          viewMode.base => viewMode.withIngredients,
+          viewMode.withIngredients => viewMode.withAllDetails,
+          viewMode.withAllDetails => viewMode.base,
+        };
+      } else {
+        // the "other logs" fake meal doesn't have ingredients to show
+        _viewMode = switch (_viewMode) {
+          viewMode.base => viewMode.withAllDetails,
+          _ => viewMode.base,
+        };
+      }
     });
   }
 
@@ -72,8 +90,8 @@ class _MealWidgetState extends State<MealWidget> {
             MealHeader(
               editing: _editing,
               toggleEditing: _toggleEditing,
-              showingDetails: _showDetails,
-              toggleDetails: _toggleDetails,
+              viewMode: _viewMode,
+              toggleViewMode: _toggleDetails,
               meal: widget._meal,
             ),
             if (_editing)
@@ -131,16 +149,21 @@ class _MealWidgetState extends State<MealWidget> {
                           icon: const Icon(Icons.delete)),
                     ],
                   )),
-            const Divider(),
-            if (_showDetails && widget._meal.isRealMeal)
+            if (_viewMode == viewMode.withIngredients || _viewMode == viewMode.withAllDetails)
+              const Divider(),
+            if (_viewMode == viewMode.withAllDetails && widget._meal.isRealMeal)
               MealItemExpandedRow(
                 AppLocalizations.of(context).energy,
                 AppLocalizations.of(context).protein,
                 AppLocalizations.of(context).carbohydrates,
                 AppLocalizations.of(context).fat,
               ),
-            ...widget._meal.mealItems.map((item) => MealItemWidget(item, _showDetails, _editing)),
-            if (_showDetails)
+            if (_viewMode == viewMode.withIngredients || _viewMode == viewMode.withAllDetails)
+              if (widget._meal.mealItems.isEmpty && widget._meal.isRealMeal)
+                const ListTile(title: Text('No ingredients defined yet'))
+              else
+                ...widget._meal.mealItems.map((item) => MealItemWidget(item, _viewMode, _editing)),
+            if (_viewMode == viewMode.withAllDetails)
               Column(
                 children: [
                   // if (widget._meal.isRealMeal)
@@ -188,10 +211,10 @@ class _MealWidgetState extends State<MealWidget> {
 
 class MealItemWidget extends StatelessWidget {
   final bool _editing;
-  final bool _showingDetails;
+  final viewMode _viewMode;
   final MealItem _item;
 
-  const MealItemWidget(this._item, this._showingDetails, this._editing);
+  const MealItemWidget(this._item, this._viewMode, this._editing);
 
   @override
   Widget build(BuildContext context) {
@@ -225,7 +248,9 @@ class MealItemWidget extends StatelessWidget {
       subtitle: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.max,
-        children: [if (_showingDetails) ...getMutedNutritionalValues(values, context)],
+        children: [
+          if (_viewMode == viewMode.withAllDetails) ...getMutedNutritionalValues(values, context)
+        ],
       ),
       trailing: _editing
           ? IconButton(
@@ -339,24 +364,23 @@ class MealItemExpandedRow extends StatelessWidget {
 }
 
 class MealHeader extends StatelessWidget {
+  final Meal _meal;
   final bool _editing;
-  final bool _showingDetails;
+  final viewMode _viewMode;
   final Function _toggleEditing;
-  final Function _toggleDetails;
+  final Function _toggleViewMode;
 
   const MealHeader({
     required Meal meal,
     required bool editing,
+    required viewMode viewMode,
     required Function toggleEditing,
-    required bool showingDetails,
-    required Function toggleDetails,
-  })  : _toggleDetails = toggleDetails,
-        _toggleEditing = toggleEditing,
-        _showingDetails = showingDetails,
+    required Function toggleViewMode,
+  })  : _meal = meal,
         _editing = editing,
-        _meal = meal;
-
-  final Meal _meal;
+        _viewMode = viewMode,
+        _toggleViewMode = toggleViewMode,
+        _toggleEditing = toggleEditing;
 
   @override
   Widget build(BuildContext context) {
@@ -402,9 +426,13 @@ class MealHeader extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               IconButton(
-                icon: _showingDetails ? const Icon(Icons.info) : const Icon(Icons.info_outline),
+                icon: switch (_viewMode) {
+                  viewMode.base => const Icon(Icons.info_outline),
+                  viewMode.withIngredients => const Icon(Icons.info),
+                  viewMode.withAllDetails => const Icon(Icons.info),
+                },
                 onPressed: () {
-                  _toggleDetails();
+                  _toggleViewMode();
                 },
                 tooltip: AppLocalizations.of(context).toggleDetails,
               ),
