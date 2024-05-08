@@ -65,8 +65,9 @@ class MealForm extends StatelessWidget {
                   context: context,
                   initialTime: _meal.time!,
                 );
-
-                _timeController.text = timeToString(pickedTime)!;
+                if (pickedTime != null) {
+                  _timeController.text = timeToString(pickedTime)!;
+                }
               },
               onSaved: (newValue) {
                 _meal.time = stringToTime(newValue);
