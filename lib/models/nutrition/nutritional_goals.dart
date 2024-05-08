@@ -99,10 +99,12 @@ class NutritionalGoals {
   /// Calculates the percentage each macro nutrient adds to the total energy
   NutritionalGoals energyPercentage() {
     final goals = NutritionalGoals();
-    if (energy == null) {
+    // when you create a new plan or meal, somehow goals like energy is set to 0
+    // whereas strictly speaking it should be null. However,
+    // we know the intention so treat 0 as null here.
+    if (energy == null || energy == 0) {
       return goals;
     }
-    assert(energy! > 0);
 
     if (protein != null) {
       goals.protein = (100 * protein! * ENERGY_PROTEIN) / energy!;
