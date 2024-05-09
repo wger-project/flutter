@@ -222,7 +222,7 @@
   "@reps": {
     "description": "Shorthand for repetitions, used when space constraints are tighter"
   },
-  "rir": "Rezerwa powtórzeń",
+  "rir": "Liczba powtórzeń w rezerwie",
   "@rir": {
     "description": "Shorthand for Repetitions In Reserve"
   },
@@ -548,7 +548,7 @@
   "@enterValue": {
     "description": "Error message when the user hasn't entered a value on a required field"
   },
-  "setUnitsAndRir": "Ustaw jednostki oraz liczbę powtórzeń rezerwy",
+  "setUnitsAndRir": "Ustaw jednostki oraz rezerwę liczby powtórzeń",
   "@setUnitsAndRir": {
     "description": "Label shown on the slider where the user can toggle showing units and RiR",
     "type": "text"
@@ -715,5 +715,117 @@
     "description": "Message when an action completed successfully, usually used as a heading"
   },
   "cacheWarning": "Ze względu na buforowanie może minąć trochę czasu zanim zmiany będą widoczne w całej aplikacji.",
-  "@cacheWarning": {}
+  "@cacheWarning": {},
+  "useMetric": "Używaj systemu metrycznego (kg) dla masy ciała",
+  "@useMetric": {},
+  "verify": "Zweryfikuj",
+  "@verify": {},
+  "settingsTitle": "Ustawienia",
+  "@settingsTitle": {},
+  "settingsCacheDeletedSnackbar": "Pamięć podręczna pomyślnie została wyczyszczona",
+  "@settingsCacheDeletedSnackbar": {},
+  "settingsCacheDescription": "Pamięć podręczna ćwiczeń",
+  "@settingsCacheDescription": {},
+  "log": "Zarejestruj",
+  "@log": {
+    "description": "Log a specific meal (imperative form)"
+  },
+  "kilometers_per_hour": "Kilometrów na godzinę",
+  "@kilometers_per_hour": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "done": "Ukończone",
+  "@done": {},
+  "noMatchingExerciseFound": "Nie znaleziono ćwiczeń",
+  "@noMatchingExerciseFound": {
+    "description": "Message returned if no exercises match the searched string"
+  },
+  "searchNamesInEnglish": "Szukaj również w języku angielskim",
+  "@searchNamesInEnglish": {},
+  "aboutMastodonTitle": "Mastodon",
+  "@aboutMastodonTitle": {
+    "description": "Title for mastodon section in the about dialog"
+  },
+  "plates": "Talerze",
+  "@plates": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "lb": "lb",
+  "@lb": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "textPromptTitle": "Gotowy do startu?",
+  "@textPromptTitle": {},
+  "onlyLogging": "Tylko licz kalorie",
+  "@onlyLogging": {},
+  "onlyLoggingHelpText": "Zaznacz to pole jeśli wyłącznie chcesz śledzić kalorie i nie chcesz tworzyć szczegółowego planu diety z poszczególnymi posiłkami",
+  "@onlyLoggingHelpText": {},
+  "goalEnergy": "Cel energii",
+  "@goalEnergy": {},
+  "goalProtein": "Cel białka",
+  "@goalProtein": {},
+  "goalCarbohydrates": "Cel węglowodanów",
+  "@goalCarbohydrates": {},
+  "goalFat": "Cel tłuszczów",
+  "@goalFat": {},
+  "today": "Dzisiaj",
+  "@today": {},
+  "loggedToday": "Zarejestrowane dzisiaj",
+  "@loggedToday": {},
+  "kcalValue": "{value} kcal",
+  "@kcalValue": {
+    "description": "A value in kcal, e.g. 500 kcal",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "gValue": "{value} g",
+  "@gValue": {
+    "description": "A value in grams, e.g. 5 g",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "percentValue": "{value} %",
+  "@percentValue": {
+    "description": "A value in percent, e.g. 10 %",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "aboutMastodonText": "Obserwuj nas na Mastodonie, aby otrzymywać aktualizacje i aktualności na temat projektu",
+  "@aboutMastodonText": {
+    "description": "Text for the mastodon section in the about dialog"
+  },
+  "settingsCacheTitle": "Pamięć podręczna",
+  "@settingsCacheTitle": {},
+  "body_weight": "Masa ciała",
+  "@body_weight": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "textPromptSubheading": "Naciśnij przycisk, aby rozpocząć",
+  "@textPromptSubheading": {},
+  "aboutDonateText": "Zakup nam kawę, aby wspomóc projekt, opłacić koszty serwera i zapewnić nam energię",
+  "@aboutDonateText": {},
+  "aboutDonateTitle": "Wspomóż",
+  "@aboutDonateTitle": {},
+  "max_reps": "Maksymalna ilość powtórzeń",
+  "@max_reps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "miles_per_hour": "Mil na godzinę",
+  "@miles_per_hour": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kg": "kg",
+  "@kg": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "addGoalsToPlan": "Dodaj cele do tego planu",
+  "@addGoalsToPlan": {},
+  "addGoalsToPlanHelpText": "To pozwoli Ci ustawić ogólne cele dla energii, białka, węglowodanów i tłuszczy dla planu. Pamiętaj, że jeśli skonfigurujesz szczegółowy plan posiłków, te wartości będą miały pierwszeństwo.",
+  "@addGoalsToPlanHelpText": {}
 }
