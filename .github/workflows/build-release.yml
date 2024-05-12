@@ -71,6 +71,11 @@ jobs:
         env:
           WGER_API_KEY: ${{ secrets.WGER_API_KEY }}
 
+      - name: Build APK
+        run: flutter build apk --release
+        env:
+          WGER_API_KEY: ${{ secrets.WGER_API_KEY }}
+
       - name: Upload build to Play Store
         run: |
           bundle install
@@ -82,6 +87,7 @@ jobs:
           tag_name: ${{ env.VERSION }}
           files: |
             build/app/outputs/bundle/release/app-release.aab
+            build/app/outputs/bundle/release/app-release.apk
             flatpak/scripts/flatpak_generator_exports/wger-linux-x86_64.tar.gz
             flatpak/scripts/flatpak_generator_exports/wger-linux-x86_64.sha256
 
