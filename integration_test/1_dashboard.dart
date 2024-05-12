@@ -41,8 +41,10 @@ Widget createDashboardScreen({locale = 'en'}) {
   when(mockWorkoutProvider.fetchSessionData()).thenAnswer((a) => Future.value(logs));
 
   final mockNutritionProvider = MockNutritionPlansProvider();
-  when(mockNutritionProvider.currentPlan).thenAnswer((realInvocation) => getNutritionalPlan());
-  when(mockNutritionProvider.items).thenReturn([getNutritionalPlan()]);
+
+  when(mockNutritionProvider.currentPlan)
+      .thenAnswer((realInvocation) => getNutritionalPlanScreenshot());
+  when(mockNutritionProvider.items).thenReturn([getNutritionalPlanScreenshot()]);
 
   final mockWeightProvider = MockBodyWeightProvider();
   when(mockWeightProvider.items).thenReturn(getScreenshotWeightEntries());

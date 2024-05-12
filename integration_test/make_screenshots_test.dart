@@ -24,6 +24,7 @@ final destination = DeviceType.phoneScreenshots.name;
 
 Future<void> takeScreenshot(tester, binding, String language, String name) async {
   if (Platform.isAndroid) {
+    await tester.pumpAndSettle();
     await binding.convertFlutterSurfaceToImage();
     await tester.pumpAndSettle();
   }
@@ -38,28 +39,25 @@ const languages = [
   // disappear and no images are written. Doing this in smaller steps works fine
 
   'ca',
+  'cs-CZ',
   'de-DE',
   'el-GR',
   'en-US',
   'es-ES',
 
-  /*
-  'fr-FR',
-  'hi-IN',
-  'hr',
-  'it-IT',
-  'pt-BR',
-   */
+  // 'fr-FR',
+  // 'hi-IN',
+  // 'hr',
+  // 'it-IT',
+  // 'nb-NO',
+  // 'pl-PL',
 
-  /*
-  'nb-NO',
-  'pl-PL',
-  'ru-RU',
-  'tr-TR',
-  'uk',
-  'zh-CN'
-
-   */
+  // 'pt-BR',
+  // 'pt-PT',
+  // 'ru-RU',
+  // 'tr-TR',
+  // 'uk',
+  // 'zh-CN'
 ];
 
 void main() {

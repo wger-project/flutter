@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/log.dart';
@@ -65,6 +67,62 @@ final ingredient3 = Ingredient(
   fibres: 1,
   sodium: 10,
 );
+final muesli = Ingredient(
+  id: 1,
+  code: '123456787',
+  name: 'Müsli',
+  created: DateTime(2021, 5, 1),
+  energy: 500,
+  carbohydrates: 10,
+  carbohydratesSugar: 2,
+  protein: 5,
+  fat: 20,
+  fatSaturated: 7,
+  fibres: 12,
+  sodium: 0.5,
+);
+final milk = Ingredient(
+  id: 1,
+  code: '123456787',
+  name: 'Milk',
+  created: DateTime(2021, 5, 1),
+  energy: 500,
+  carbohydrates: 10,
+  carbohydratesSugar: 2,
+  protein: 5,
+  fat: 20,
+  fatSaturated: 7,
+  fibres: 12,
+  sodium: 0.5,
+);
+final apple = Ingredient(
+  id: 1,
+  code: '123456787',
+  name: 'Apple',
+  created: DateTime(2021, 5, 1),
+  energy: 500,
+  carbohydrates: 10,
+  carbohydratesSugar: 2,
+  protein: 5,
+  fat: 20,
+  fatSaturated: 7,
+  fibres: 12,
+  sodium: 0.5,
+);
+final cake = Ingredient(
+  id: 1,
+  code: '111111111',
+  name: 'Lemon CAke',
+  created: DateTime(2021, 5, 1),
+  energy: 400,
+  carbohydrates: 53,
+  carbohydratesSugar: 37,
+  protein: 4,
+  fat: 12,
+  fatSaturated: 0,
+  fibres: 0,
+  sodium: 0,
+);
 
 NutritionalPlan getNutritionalPlan() {
   final mealItem1 = MealItem(
@@ -112,6 +170,60 @@ NutritionalPlan getNutritionalPlan() {
   plan.diaryEntries.add(Log.fromMealItem(mealItem1, 1, 1, DateTime(2021, 6, 1)));
   plan.diaryEntries.add(Log.fromMealItem(mealItem2, 1, 1, DateTime(2021, 6, 1)));
   plan.diaryEntries.add(Log.fromMealItem(mealItem3, 1, 1, DateTime(2021, 6, 10)));
+
+  return plan;
+}
+
+NutritionalPlan getNutritionalPlanScreenshot() {
+  final random = Random();
+
+  final mealItem1 = MealItem(ingredientId: 1, amount: 100, ingredient: muesli);
+  final mealItem2 = MealItem(ingredientId: 2, amount: 75, ingredient: milk);
+  final mealItem3 = MealItem(ingredientId: 3, amount: 100, ingredient: apple);
+
+  final meal1 = Meal(
+    id: 1,
+    plan: 1,
+    time: const TimeOfDay(hour: 8, minute: 30),
+    name: 'Breakfast',
+    mealItems: [mealItem1, mealItem2],
+  );
+
+  final meal2 = Meal(
+    id: 2,
+    plan: 1,
+    time: const TimeOfDay(hour: 11, minute: 0),
+    name: 'Snack 1',
+    mealItems: [mealItem3],
+  );
+
+  final NutritionalPlan plan = NutritionalPlan(
+    id: 1,
+    description: 'Diet',
+    creationDate: DateTime(2021, 5, 23),
+    meals: [meal1, meal2],
+  );
+
+  // Add logs
+  plan.diaryEntries.add(Log.fromMealItem(mealItem1, 1, 1, DateTime.now()));
+  plan.diaryEntries.add(Log.fromMealItem(mealItem2, 1, 1, DateTime.now()));
+  plan.diaryEntries.add(Log.fromMealItem(mealItem3, 1, 1, DateTime.now()));
+
+  for (final i in plan.diaryEntries) {
+    i.datetime = DateTime.now();
+    i.amount = i.amount / (1.0 + random.nextDouble() * (4.0 - 1.0));
+  }
+
+  final log = Log(
+    mealId: meal1.id,
+    ingredientId: 1,
+    weightUnitId: 1,
+    amount: 40,
+    planId: plan.id!,
+    datetime: DateTime.now(),
+  );
+  log.ingredient = cake;
+  plan.diaryEntries.add(log);
 
   return plan;
 }
