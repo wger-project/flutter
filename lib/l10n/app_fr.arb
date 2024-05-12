@@ -769,5 +769,7 @@
   "noMatchingExerciseFound": "Aucun exercice correspondant n'a été trouvé",
   "@noMatchingExerciseFound": {
     "description": "Message returned if no exercises match the searched string"
-  }
+  },
+  "today": "Aujourd'hui",
+  "@today": {}
 }
