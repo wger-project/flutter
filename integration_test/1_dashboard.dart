@@ -5,10 +5,12 @@ import 'package:provider/provider.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/user.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/dashboard.dart';
 import 'package:wger/theme/theme.dart';
 
+import '../test/exercises/contribute_exercise_test.mocks.dart';
 import '../test/measurements/measurement_categories_screen_test.mocks.dart';
 import '../test/nutrition/nutritional_plan_form_test.mocks.dart';
 import '../test/workout/weight_unit_form_widget_test.mocks.dart';
@@ -17,6 +19,7 @@ import '../test_data/body_weight.dart';
 import '../test_data/exercises.dart';
 import '../test_data/measurements.dart';
 import '../test_data/nutritional_plans.dart';
+import '../test_data/profile.dart';
 import '../test_data/workouts.dart';
 
 Widget createDashboardScreen({locale = 'en'}) {
@@ -42,13 +45,19 @@ Widget createDashboardScreen({locale = 'en'}) {
   when(mockNutritionProvider.items).thenReturn([getNutritionalPlan()]);
 
   final mockWeightProvider = MockBodyWeightProvider();
-  when(mockWeightProvider.items).thenReturn(getWeightEntries());
+  when(mockWeightProvider.items).thenReturn(getScreenshotWeightEntries());
 
   final mockMeasurementProvider = MockMeasurementProvider();
   when(mockMeasurementProvider.categories).thenReturn(getMeasurementCategories());
 
+  final mockUserProvider = MockUserProvider();
+  when(mockUserProvider.profile).thenReturn(tProfile1);
+
   return MultiProvider(
     providers: [
+      ChangeNotifierProvider<UserProvider>(
+        create: (context) => mockUserProvider,
+      ),
       ChangeNotifierProvider<WorkoutPlansProvider>(
         create: (context) => mockWorkoutProvider,
       ),
