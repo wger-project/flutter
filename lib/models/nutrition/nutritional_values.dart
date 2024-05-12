@@ -106,11 +106,3 @@ class NutritionalValues {
   int get hashCode => Object.hash(
       energy, protein, carbohydrates, carbohydratesSugar, fat, fatSaturated, fibres, sodium);
 }
-
-class BaseNutritionalValues {
-  double protein = 0;
-  double carbohydrates = 0;
-  double fat = 0;
-
-  BaseNutritionalValues(this.protein, this.carbohydrates, this.fat);
-}
