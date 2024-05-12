@@ -887,5 +887,13 @@
     "placeholders": {
       "value": {}
     }
+  },
+  "surplus": "přebytek",
+  "@surplus": {
+    "description": "Caloric surplus (either planned or unplanned)"
+  },
+  "deficit": "nedostatek",
+  "@deficit": {
+    "description": "Caloric deficit (either planned or unplanned)"
   }
 }
