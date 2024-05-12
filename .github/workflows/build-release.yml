@@ -87,7 +87,7 @@ jobs:
           tag_name: ${{ env.VERSION }}
           files: |
             build/app/outputs/bundle/release/app-release.aab
-            build/app/outputs/bundle/release/app-release.apk
+            build/app/outputs/flutter-apk/app-release.apk
       #            flatpak/scripts/flatpak_generator_exports/wger-linux-x86_64.tar.gz
       #            flatpak/scripts/flatpak_generator_exports/wger-linux-x86_64.sha256
 
