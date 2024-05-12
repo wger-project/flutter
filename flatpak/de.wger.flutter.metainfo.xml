@@ -15,11 +15,6 @@
     <url type="homepage">https://wger.de/</url>
     <url type="bugtracker">https://github.com/wger-project/flutter/issues</url>
 
-    <custom>
-        <value key="Purism::form_factor">workstation</value>
-        <value key="Purism::form_factor">mobile</value>
-    </custom>
-
     <description>
         <p>
             From fitness lovers to fitness lovers – get your health organized with WGER,
