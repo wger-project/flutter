@@ -57,14 +57,14 @@ jobs:
           flutter pub run cider version ${{ env.VERSION }}+${{ env.BUILD }}
           flutter pub run cider bump build
 
-      #      - name: Build application for linux
-      #        run: |
-      #          sudo apt update
-      #          sudo apt install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev
-      #          flutter build linux --release
-      #          cd flatpak/scripts
-      #          dart pub get
-      #          dart flatpak_packager.dart --meta ../flatpak_meta.json --github --addTodaysVersion ${{ env.VERSION }}
+      - name: Build application for linux
+        run: |
+          sudo apt update
+          sudo apt install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev
+          flutter build linux --release
+          cd flatpak/scripts
+          dart pub get
+          dart flatpak_packager.dart --meta ../flatpak_meta.json --github --addTodaysVersion ${{ env.VERSION }}
 
       - name: Build AAB
         run: flutter build appbundle --release
@@ -88,30 +88,30 @@ jobs:
           files: |
             build/app/outputs/bundle/release/app-release.aab
             build/app/outputs/flutter-apk/app-release.apk
-      #            flatpak/scripts/flatpak_generator_exports/wger-linux-x86_64.tar.gz
-      #            flatpak/scripts/flatpak_generator_exports/wger-linux-x86_64.sha256
+            flatpak/scripts/flatpak_generator_exports/wger-linux-x86_64.tar.gz
+            flatpak/scripts/flatpak_generator_exports/wger-linux-x86_64.sha256
 
-      #      - name: Generate flathub manifest
-      #        run: |
-      #          cd flatpak/scripts
-      #          dart pub get
-      #          dart manifest_generator.dart --meta ../flatpak_meta.json --github
-      #          mkdir ../../flathub
-      #          cp flatpak_generator_exports/de.wger.flutter.json ../../flathub
-      #          cp flatpak_generator_exports/flathub.json ../../flathub
-      #
-      #      - name: Push updated config to flathub repository
-      #        uses: cpina/github-action-push-to-another-repository@main
-      #        env:
-      #          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-      #        with:
-      #          source-directory: flathub
-      #          destination-github-username: wger-project
-      #          destination-repository-name: de.wger.flutter
-      #          user-email: github-actions@github.com
-      #          target-branch: release-${{ env.VERSION }}
-      #          create-target-branch-if-needed: true
-      #          commit-message: Update to ${{ env.VERSION }}
+      - name: Generate flathub manifest
+        run: |
+          cd flatpak/scripts
+          dart pub get
+          dart manifest_generator.dart --meta ../flatpak_meta.json --github
+          mkdir ../../flathub
+          cp flatpak_generator_exports/de.wger.flutter.json ../../flathub
+          cp flatpak_generator_exports/flathub.json ../../flathub
+
+      - name: Push updated config to flathub repository
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        with:
+          source-directory: flathub
+          destination-github-username: wger-project
+          destination-repository-name: de.wger.flutter
+          user-email: github-actions@github.com
+          target-branch: release-${{ env.VERSION }}
+          create-target-branch-if-needed: true
+          commit-message: Update to ${{ env.VERSION }}
 
       # Note: the original tag that triggered the workflow is in the form vX.Y.Z
       #       but the pubspec.yaml is committed in the commit after that one.
