@@ -31,7 +31,7 @@ class NutritionalDiaryDetailWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final valuesPlanned = _nutritionalPlan.plannedNutritionalValues;
+    final nutritionalGoals = _nutritionalPlan.nutritionalGoals;
     final valuesLogged = _nutritionalPlan.getValuesForDate(_date);
     final logs = _nutritionalPlan.getLogsForDate(_date);
 
@@ -52,7 +52,7 @@ class NutritionalDiaryDetailWidget extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: NutritionDiaryTable(
-                  planned: valuesPlanned,
+                  planned: nutritionalGoals.toValues(),
                   logged: valuesLogged,
                 ),
               ),

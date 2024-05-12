@@ -24,6 +24,7 @@ import 'package:wger/helpers/json.dart';
 import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
+import 'package:wger/models/nutrition/nutritional_goals.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
 
 part 'nutritional_plan.g.dart';
@@ -107,19 +108,32 @@ class NutritionalPlan {
   /// note that (some of) this is already done on the server. It might be better
   /// to read it from there, but on the other hand we might want to do more locally
   /// so that a mostly offline mode is possible.
-  NutritionalValues get plannedNutritionalValues {
+  NutritionalGoals get nutritionalGoals {
     // If there are set goals, they take preference over any meals
     if (hasAnyGoals) {
-      final out = NutritionalValues();
-
-      out.energy = goalEnergy != null ? goalEnergy!.toDouble() : 0;
-      out.fat = goalFat != null ? goalFat!.toDouble() : 0;
-      out.carbohydrates = goalCarbohydrates != null ? goalCarbohydrates!.toDouble() : 0;
-      out.protein = goalProtein != null ? goalProtein!.toDouble() : 0;
-      return out;
+      return NutritionalGoals(
+        energy: goalEnergy?.toDouble(),
+        fat: goalFat?.toDouble(),
+        protein: goalProtein?.toDouble(),
+        carbohydrates: goalCarbohydrates?.toDouble(),
+      );
     }
-
-    return meals.fold(NutritionalValues(), (a, b) => a + b.plannedNutritionalValues);
+    // if there are no set goals and no defined meals, the goals are still undefined
+    if (meals.isEmpty) {
+      return NutritionalGoals();
+    }
+    // otherwise, add up all the nutritional values of the meals and use that as goals
+    final sumValues = meals.fold(NutritionalValues(), (a, b) => a + b.plannedNutritionalValues);
+    return NutritionalGoals(
+      energy: sumValues.energy,
+      fat: sumValues.fat,
+      protein: sumValues.protein,
+      carbohydrates: sumValues.carbohydrates,
+      carbohydratesSugar: sumValues.carbohydratesSugar,
+      fatSaturated: sumValues.fatSaturated,
+      fibres: sumValues.fibres,
+      sodium: sumValues.sodium,
+    );
   }
 
   NutritionalValues get loggedNutritionalValuesToday {
@@ -136,28 +150,6 @@ class NutritionalPlan {
     return diaryEntries
         .where((obj) => obj.datetime.isAfter(sevenDaysAgo))
         .fold(NutritionalValues(), (a, b) => a + b.nutritionalValues);
-  }
-
-  /// Calculates the percentage each macro nutrient adds to the total energy
-  BaseNutritionalValues energyPercentage(NutritionalValues values) {
-    return BaseNutritionalValues(
-      values.protein > 0 ? ((values.protein * ENERGY_PROTEIN * 100) / values.energy) : 0,
-      values.carbohydrates > 0
-          ? ((values.carbohydrates * ENERGY_CARBOHYDRATES * 100) / values.energy)
-          : 0,
-      values.fat > 0 ? ((values.fat * ENERGY_FAT * 100) / values.energy) : 0,
-    );
-  }
-
-  /// Calculates the grams per body-kg for each macro nutrient
-  BaseNutritionalValues gPerBodyKg(num weight, NutritionalValues values) {
-    assert(weight > 0);
-
-    return BaseNutritionalValues(
-      values.protein / weight,
-      values.carbohydrates / weight,
-      values.fat / weight,
-    );
   }
 
   Map<DateTime, NutritionalValues> get logEntriesValues {
@@ -220,7 +212,6 @@ class NutritionalPlan {
       id: PSEUDO_MEAL_ID,
       plan: id,
       name: name,
-      time: null,
       diaryEntries: diaryEntries.where((e) => e.mealId == null).toList(),
     );
   }

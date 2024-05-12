@@ -45,6 +45,8 @@ import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/weight/forms.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 
+enum viewMode { base, withMeals, withMealsDetails }
+
 class DashboardNutritionWidget extends StatefulWidget {
   @override
   _DashboardNutritionWidgetState createState() => _DashboardNutritionWidgetState();
@@ -52,7 +54,7 @@ class DashboardNutritionWidget extends StatefulWidget {
 
 class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
   NutritionalPlan? _plan;
-  var _showDetail = false;
+  var _viewMode = viewMode.base;
   bool _hasContent = false;
 
   @override
@@ -69,79 +71,81 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
       return out;
     }
 
-    for (final meal in _plan!.meals) {
-      out.add(
-        Row(
-          children: [
-            Expanded(
-              child: Text(
-                meal.time!.format(context),
-                style: const TextStyle(fontWeight: FontWeight.bold),
-                //textAlign: TextAlign.left,
+    if (_viewMode == viewMode.withMealsDetails || _viewMode == viewMode.withMeals) {
+      for (final meal in _plan!.meals) {
+        out.add(
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  meal.time!.format(context),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  //textAlign: TextAlign.left,
+                ),
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                MutedText(
-                    '${AppLocalizations.of(context).energyShort} ${meal.plannedNutritionalValues.energy.toStringAsFixed(0)}${AppLocalizations.of(context).kcal}'),
-                const MutedText(' / '),
-                MutedText(
-                    '${AppLocalizations.of(context).proteinShort} ${meal.plannedNutritionalValues.protein.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
-                const MutedText(' / '),
-                MutedText(
-                    '${AppLocalizations.of(context).carbohydratesShort} ${meal.plannedNutritionalValues.carbohydrates.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
-                const MutedText(' / '),
-                MutedText(
-                    '${AppLocalizations.of(context).fatShort} ${meal.plannedNutritionalValues.fat.toStringAsFixed(0)}${AppLocalizations.of(context).g} '),
-              ],
-            ),
-            IconButton(
-              icon: const Icon(Icons.history_edu),
-              color: wgerPrimaryButtonColor,
-              onPressed: () {
-                Provider.of<NutritionPlansProvider>(context, listen: false).logMealToDiary(meal);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      AppLocalizations.of(context).mealLogged,
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
-      );
-      out.add(const SizedBox(height: 5));
-
-      if (_showDetail) {
-        for (final item in meal.mealItems) {
-          out.add(
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Flexible(
-                      child: Text(
-                        item.ingredient.name,
-                        overflow: TextOverflow.ellipsis,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  MutedText(
+                      '${AppLocalizations.of(context).energyShort} ${meal.plannedNutritionalValues.energy.toStringAsFixed(0)}${AppLocalizations.of(context).kcal}'),
+                  const MutedText(' / '),
+                  MutedText(
+                      '${AppLocalizations.of(context).proteinShort} ${meal.plannedNutritionalValues.protein.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
+                  const MutedText(' / '),
+                  MutedText(
+                      '${AppLocalizations.of(context).carbohydratesShort} ${meal.plannedNutritionalValues.carbohydrates.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
+                  const MutedText(' / '),
+                  MutedText(
+                      '${AppLocalizations.of(context).fatShort} ${meal.plannedNutritionalValues.fat.toStringAsFixed(0)}${AppLocalizations.of(context).g} '),
+                ],
+              ),
+              IconButton(
+                icon: const Icon(Icons.history_edu),
+                color: wgerPrimaryButtonColor,
+                onPressed: () {
+                  Provider.of<NutritionPlansProvider>(context, listen: false).logMealToDiary(meal);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        AppLocalizations.of(context).mealLogged,
+                        textAlign: TextAlign.center,
                       ),
                     ),
-                    const SizedBox(width: 5),
-                    Text('${item.amount.toStringAsFixed(0)} ${AppLocalizations.of(context).g}'),
-                  ],
-                ),
-              ],
-            ),
-          );
+                  );
+                },
+              ),
+            ],
+          ),
+        );
+        out.add(const SizedBox(height: 5));
+
+        if (_viewMode == viewMode.withMealsDetails) {
+          for (final item in meal.mealItems) {
+            out.add(
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          item.ingredient.name,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      const SizedBox(width: 5),
+                      Text('${item.amount.toStringAsFixed(0)} ${AppLocalizations.of(context).g}'),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          }
+          out.add(const SizedBox(height: 10));
         }
-        out.add(const SizedBox(height: 10));
+        out.add(const Divider());
       }
-      out.add(const Divider());
     }
 
     return out;
@@ -170,15 +174,19 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
             trailing: _hasContent
                 ? Tooltip(
                     message: AppLocalizations.of(context).toggleDetails,
-                    child: _showDetail
-                        ? const Icon(
-                            Icons.info,
-                          )
-                        : const Icon(Icons.info_outline))
+                    child: switch (_viewMode) {
+                      viewMode.base => const Icon(Icons.info_outline),
+                      viewMode.withMeals => const Icon(Icons.info),
+                      viewMode.withMealsDetails => const Icon(Icons.info),
+                    })
                 : const SizedBox(),
             onTap: () {
               setState(() {
-                _showDetail = !_showDetail;
+                _viewMode = switch (_viewMode) {
+                  viewMode.base => viewMode.withMeals,
+                  viewMode.withMeals => viewMode.withMealsDetails,
+                  viewMode.withMealsDetails => viewMode.base,
+                };
               });
             },
           ),
@@ -190,9 +198,9 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                     ...getContent(),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 15),
-                      height: 180,
-                      child: FlNutritionalPlanPieChartWidget(_plan!.plannedNutritionalValues),
-                    )
+                      height: 206,
+                      child: FlNutritionalPlanGoalWidget(nutritionalPlan: _plan!),
+                    ),
                   ],
                 ))
           else
@@ -617,6 +625,7 @@ class NothingFound extends StatelessWidget {
                 FormScreen.routeName,
                 arguments: FormScreenArguments(
                   _titleForm,
+                  hasListView: true,
                   _form,
                 ),
               );

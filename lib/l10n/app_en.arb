@@ -352,6 +352,14 @@
   "@weekAverage": {
     "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
   },
+  "surplus": "surplus",
+  "@surplus": {
+    "description": "Caloric surplus (either planned or unplanned)"
+  },
+  "deficit": "deficit",
+  "@deficit": {
+    "description": "Caloric deficit (either planned or unplanned)"
+  },
   "difference": "Difference",
   "@difference": {},
   "percentEnergy": "Percent of energy",

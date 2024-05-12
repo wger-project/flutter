@@ -25,6 +25,8 @@ const LIST_OF_COLORS3 = [
   Color(0xFFFFA600),
 ];
 
+const COLOR_SURPLUS = Color.fromARGB(255, 231, 71, 71);
+
 Iterable<Color> generateChartColors(int nrOfItems) sync* {
   final List<Color> colors;
 

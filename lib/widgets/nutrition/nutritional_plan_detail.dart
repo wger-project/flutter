@@ -18,18 +18,17 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/colors.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
-import 'package:wger/models/nutrition/nutritional_values.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/screens/form_screen.dart';
-import 'package:wger/screens/nutritional_diary_screen.dart';
 import 'package:wger/widgets/measurements/charts.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
+import 'package:wger/widgets/nutrition/macro_nutrients_table.dart';
 import 'package:wger/widgets/nutrition/meal.dart';
+import 'package:wger/widgets/nutrition/nutritional_diary_table.dart';
 
 class NutritionalPlanDetailWidget extends StatelessWidget {
   final NutritionalPlan _nutritionalPlan;
@@ -38,334 +37,126 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final plannedNutritionalValues = _nutritionalPlan.plannedNutritionalValues;
+    final nutritionalGoals = _nutritionalPlan.nutritionalGoals;
     final lastWeightEntry =
         Provider.of<BodyWeightProvider>(context, listen: false).getNewestEntry();
-    final valuesGperKg = lastWeightEntry != null
-        ? _nutritionalPlan.gPerBodyKg(lastWeightEntry.weight, plannedNutritionalValues)
-        : null;
+    final nutritionalGoalsGperKg =
+        lastWeightEntry != null ? nutritionalGoals / lastWeightEntry.weight.toDouble() : null;
 
     return SliverList(
-      delegate: SliverChildListDelegate(
-        [
-          const SizedBox(height: 10),
-          ..._nutritionalPlan.meals.map((meal) => MealWidget(
-                meal,
-                _nutritionalPlan.allMealItems,
-              )),
-          MealWidget(
-            _nutritionalPlan.pseudoMealOthers('Other logs'),
-            _nutritionalPlan.allMealItems,
-          ),
-          if (!_nutritionalPlan.onlyLogging)
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(
-                child: Text(AppLocalizations.of(context).addMeal),
-                onPressed: () {
-                  Navigator.pushNamed(
-                    context,
-                    FormScreen.routeName,
-                    arguments: FormScreenArguments(
-                      AppLocalizations.of(context).addMeal,
-                      MealForm(_nutritionalPlan.id!),
-                    ),
-                  );
-                },
-              ),
+        delegate: SliverChildListDelegate(
+      [
+        SizedBox(
+          width: 300,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: FlNutritionalPlanGoalWidget(
+              nutritionalPlan: _nutritionalPlan,
             ),
+          ),
+        ),
+        const SizedBox(height: 10),
+        ..._nutritionalPlan.meals.map((meal) => MealWidget(
+              meal,
+              _nutritionalPlan.allMealItems,
+            )),
+        MealWidget(
+          _nutritionalPlan.pseudoMealOthers('Other logs'),
+          _nutritionalPlan.allMealItems,
+        ),
+        if (!_nutritionalPlan.onlyLogging)
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton(
+              child: Text(AppLocalizations.of(context).addMeal),
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  FormScreen.routeName,
+                  arguments: FormScreenArguments(
+                    AppLocalizations.of(context).addMeal,
+                    MealForm(_nutritionalPlan.id!),
+                  ),
+                );
+              },
+            ),
+          ),
+        if (nutritionalGoals.isComplete())
           Container(
             padding: const EdgeInsets.all(15),
             height: 220,
-            child: FlNutritionalPlanPieChartWidget(plannedNutritionalValues), // chart
+            child: FlNutritionalPlanPieChartWidget(nutritionalGoals.toValues()),
           ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: MacronutrientsTable(
+            nutritionalGoals: nutritionalGoals,
+            plannedValuesPercentage: nutritionalGoals.energyPercentage(),
+            nutritionalGoalsGperKg: nutritionalGoalsGperKg,
+          ),
+        ),
+        const Padding(padding: EdgeInsets.all(8.0)),
+        Text(
+          AppLocalizations.of(context).logged,
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        Container(
+          padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
+          height: 300,
+          child: NutritionalDiaryChartWidgetFl(nutritionalPlan: _nutritionalPlan),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 40, left: 25, right: 25),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Indicator(
+                color: LIST_OF_COLORS3[0],
+                text: AppLocalizations.of(context).deficit,
+                isSquare: true,
+                marginRight: 0,
+              ),
+              Indicator(
+                color: COLOR_SURPLUS,
+                text: AppLocalizations.of(context).surplus,
+                isSquare: true,
+                marginRight: 0,
+              ),
+              Indicator(
+                color: LIST_OF_COLORS3[1],
+                text: AppLocalizations.of(context).today,
+                isSquare: true,
+                marginRight: 0,
+              ),
+              Indicator(
+                color: LIST_OF_COLORS3[2],
+                text: AppLocalizations.of(context).weekAverage,
+                isSquare: true,
+                marginRight: 0,
+              ),
+            ],
+          ),
+        ),
+        if (_nutritionalPlan.logEntriesValues.isNotEmpty)
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: MacronutrientsTable(
-              plannedNutritionalValues: plannedNutritionalValues,
-              plannedValuesPercentage: _nutritionalPlan.energyPercentage(plannedNutritionalValues),
-              plannedValuesGperKg: valuesGperKg,
-            ),
-          ),
-          const Padding(padding: EdgeInsets.all(8.0)),
-          Text(
-            AppLocalizations.of(context).logged,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-          Container(
-            padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
-            height: 300,
-            child: NutritionalDiaryChartWidgetFl(nutritionalPlan: _nutritionalPlan), //  chart
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 40, left: 25, right: 25),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Indicator(
-                  color: LIST_OF_COLORS3[0],
-                  text: 'deficit',
-                  isSquare: true,
-                  marginRight: 0,
-                ),
-                const Indicator(
-                  color: Colors.red,
-                  text: 'surplus',
-                  isSquare: true,
-                  marginRight: 0,
-                ),
-                Indicator(
-                  color: LIST_OF_COLORS3[1],
-                  text: AppLocalizations.of(context).today,
-                  isSquare: true,
-                  marginRight: 0,
-                ),
-                Indicator(
-                  color: LIST_OF_COLORS3[2],
-                  text: AppLocalizations.of(context).weekAverage,
-                  isSquare: true,
-                  marginRight: 0,
-                ),
-              ],
-            ),
-          ),
-          if (_nutritionalPlan.logEntriesValues.isNotEmpty)
-            Column(
+            padding: const EdgeInsets.only(bottom: 15, left: 15, right: 15),
+            child: Column(
               children: [
                 Text(
                   AppLocalizations.of(context).nutritionalDiary,
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
-                Container(
-                  padding: const EdgeInsets.all(15),
-                  height: 220,
-                  child: FlNutritionalDiaryChartWidget(nutritionalPlan: _nutritionalPlan), //  chart
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
                 SizedBox(
-                  height: 200,
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            TextButton(onPressed: () {}, child: const Text('')),
-                            Text(
-                                '${AppLocalizations.of(context).energyShort} (${AppLocalizations.of(context).kcal})'),
-                            Text(
-                                '${AppLocalizations.of(context).proteinShort} (${AppLocalizations.of(context).g})'),
-                            Text(
-                                '${AppLocalizations.of(context).carbohydratesShort} (${AppLocalizations.of(context).g})'),
-                            Text(
-                                '${AppLocalizations.of(context).fatShort} (${AppLocalizations.of(context).g})'),
-                          ],
-                        ),
-                      ),
-                      ..._nutritionalPlan.logEntriesValues.entries
-                          .map((entry) =>
-                              NutritionDiaryEntry(entry.key, entry.value, _nutritionalPlan))
-                          .toList()
-                          .reversed,
-                    ],
-                  ),
-                )
+                    height: 200,
+                    child: SingleChildScrollView(
+                      child: NutritionalDiaryTable(nutritionalPlan: _nutritionalPlan),
+                    )),
               ],
             ),
-        ],
-      ),
-    );
-  }
-}
-
-class MacronutrientsTable extends StatelessWidget {
-  const MacronutrientsTable({
-    super.key,
-    required this.plannedNutritionalValues,
-    required this.plannedValuesPercentage,
-    required this.plannedValuesGperKg,
-  });
-
-  static const double tablePadding = 7;
-  final NutritionalValues plannedNutritionalValues;
-  final BaseNutritionalValues plannedValuesPercentage;
-  final BaseNutritionalValues? plannedValuesGperKg;
-
-  @override
-  Widget build(BuildContext context) {
-    return Table(
-      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-      border: TableBorder(
-        horizontalInside: BorderSide(
-          width: 1,
-          color: Theme.of(context).colorScheme.outline,
-        ),
-      ),
-      columnWidths: const {0: FractionColumnWidth(0.4)},
-      children: [
-        TableRow(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: tablePadding),
-              child: Text(
-                AppLocalizations.of(context).macronutrients,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-            Text(
-              AppLocalizations.of(context).total,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            Text(
-              AppLocalizations.of(context).percentEnergy,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            Text(
-              AppLocalizations.of(context).gPerBodyKg,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-        TableRow(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: tablePadding),
-              child: Text(AppLocalizations.of(context).energy),
-            ),
-            Text(
-              plannedNutritionalValues.energy.toStringAsFixed(0) +
-                  AppLocalizations.of(context).kcal,
-            ),
-            const Text(''),
-            const Text(''),
-          ],
-        ),
-        TableRow(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: tablePadding),
-              child: Text(AppLocalizations.of(context).protein),
-            ),
-            Text(plannedNutritionalValues.protein.toStringAsFixed(0) +
-                AppLocalizations.of(context).g),
-            Text(plannedValuesPercentage.protein.toStringAsFixed(1)),
-            Text(
-                plannedValuesGperKg != null ? plannedValuesGperKg!.protein.toStringAsFixed(1) : ''),
-          ],
-        ),
-        TableRow(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: tablePadding),
-              child: Text(AppLocalizations.of(context).carbohydrates),
-            ),
-            Text(plannedNutritionalValues.carbohydrates.toStringAsFixed(0) +
-                AppLocalizations.of(context).g),
-            Text(plannedValuesPercentage.carbohydrates.toStringAsFixed(1)),
-            Text(plannedValuesGperKg != null
-                ? plannedValuesGperKg!.carbohydrates.toStringAsFixed(1)
-                : ''),
-          ],
-        ),
-        TableRow(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: tablePadding, horizontal: 12),
-              child: Text(AppLocalizations.of(context).sugars),
-            ),
-            Text(plannedNutritionalValues.carbohydratesSugar.toStringAsFixed(0) +
-                AppLocalizations.of(context).g),
-            const Text(''),
-            const Text(''),
-          ],
-        ),
-        TableRow(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: tablePadding),
-              child: Text(AppLocalizations.of(context).fat),
-            ),
-            Text(plannedNutritionalValues.fat.toStringAsFixed(0) + AppLocalizations.of(context).g),
-            Text(plannedValuesPercentage.fat.toStringAsFixed(1)),
-            Text(plannedValuesGperKg != null ? plannedValuesGperKg!.fat.toStringAsFixed(1) : ''),
-          ],
-        ),
-        TableRow(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: tablePadding, horizontal: 12),
-              child: Text(AppLocalizations.of(context).saturatedFat),
-            ),
-            Text(plannedNutritionalValues.fatSaturated.toStringAsFixed(0) +
-                AppLocalizations.of(context).g),
-            const Text(''),
-            const Text(''),
-          ],
-        ),
-        TableRow(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: tablePadding),
-              child: Text(AppLocalizations.of(context).fibres),
-            ),
-            Text(plannedNutritionalValues.fibres.toStringAsFixed(0) +
-                AppLocalizations.of(context).g),
-            const Text(''),
-            const Text(''),
-          ],
-        ),
-        TableRow(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: tablePadding),
-              child: Text(AppLocalizations.of(context).sodium),
-            ),
-            Text(plannedNutritionalValues.sodium.toStringAsFixed(0) +
-                AppLocalizations.of(context).g),
-            const Text(''),
-            const Text(''),
-          ],
-        ),
+          ),
       ],
-    );
-  }
-}
-
-class NutritionDiaryEntry extends StatelessWidget {
-  final DateTime date;
-  final NutritionalValues values;
-  final NutritionalPlan plan;
-
-  const NutritionDiaryEntry(
-    this.date,
-    this.values,
-    this.plan,
-  );
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          TextButton(
-              onPressed: () => Navigator.of(context).pushNamed(
-                    NutritionalDiaryScreen.routeName,
-                    arguments: NutritionalDiaryArguments(plan, date),
-                  ),
-              child: Text(
-                DateFormat.yMd(Localizations.localeOf(context).languageCode).format(date),
-              )),
-          Text(values.energy.toStringAsFixed(0)),
-          Text(values.protein.toStringAsFixed(0)),
-          Text(values.carbohydrates.toStringAsFixed(0)),
-          Text(values.fat.toStringAsFixed(0)),
-        ],
-      ),
-    );
+    ));
   }
 }

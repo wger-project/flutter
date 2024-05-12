@@ -39,7 +39,7 @@ class MealForm extends StatelessWidget {
   final _nameController = TextEditingController();
 
   MealForm(this._planId, [meal]) {
-    _meal = meal ?? Meal(plan: _planId);
+    _meal = meal ?? Meal(plan: _planId, time: TimeOfDay.fromDateTime(DateTime.now()));
     _timeController.text = timeToString(_meal.time)!;
     _nameController.text = _meal.name;
   }
@@ -65,8 +65,9 @@ class MealForm extends StatelessWidget {
                   context: context,
                   initialTime: _meal.time!,
                 );
-
-                _timeController.text = timeToString(pickedTime)!;
+                if (pickedTime != null) {
+                  _timeController.text = timeToString(pickedTime)!;
+                }
               },
               onSaved: (newValue) {
                 _meal.time = stringToTime(newValue);
@@ -234,10 +235,13 @@ class IngredientLogForm extends StatelessWidget {
   final _ingredientIdController = TextEditingController();
   final _amountController = TextEditingController();
   final _dateController = TextEditingController();
+  final _timeController = TextEditingController();
 
   IngredientLogForm(this._plan) {
     _mealItem = MealItem.empty();
-    _dateController.text = toDate(DateTime.now())!;
+    final now = DateTime.now();
+    _dateController.text = toDate(now)!;
+    _timeController.text = timeToString(TimeOfDay.fromDateTime(now))!;
   }
 
   @override
@@ -272,31 +276,64 @@ class IngredientLogForm extends StatelessWidget {
                 return null;
               },
             ),
-            TextFormField(
-              readOnly: true,
-              // Stop keyboard from appearing
-              decoration: InputDecoration(
-                labelText: AppLocalizations.of(context).date,
-                suffixIcon: const Icon(Icons.calendar_today),
-              ),
-              enableInteractiveSelection: false,
-              controller: _dateController,
-              onTap: () async {
-                // Show Date Picker Here
-                final pickedDate = await showDatePicker(
-                  context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime(DateTime.now().year - 10),
-                  lastDate: DateTime.now(),
-                );
+            Row(
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    readOnly: true,
+                    // Stop keyboard from appearing
+                    decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context).date,
+                      // suffixIcon: const Icon(Icons.calendar_today),
+                    ),
+                    enableInteractiveSelection: false,
+                    controller: _dateController,
+                    onTap: () async {
+                      // Show Date Picker Here
+                      final pickedDate = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(DateTime.now().year - 10),
+                        lastDate: DateTime.now(),
+                      );
 
-                if (pickedDate != null) {
-                  _dateController.text = toDate(pickedDate)!;
-                }
-              },
-              onSaved: (newValue) {
-                _dateController.text = newValue!;
-              },
+                      if (pickedDate != null) {
+                        _dateController.text = toDate(pickedDate)!;
+                      }
+                    },
+                    onSaved: (newValue) {
+                      _dateController.text = newValue!;
+                    },
+                  ),
+                ),
+                Expanded(
+                  child: TextFormField(
+                    key: const Key('field-time'),
+                    decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context).time,
+                      //suffixIcon: const Icon(Icons.punch_clock)
+                    ),
+                    controller: _timeController,
+                    onTap: () async {
+                      // Stop keyboard from appearing
+                      FocusScope.of(context).requestFocus(FocusNode());
+
+                      // Open time picker
+                      final pickedTime = await showTimePicker(
+                        context: context,
+                        initialTime: stringToTime(_timeController.text),
+                      );
+                      if (pickedTime != null) {
+                        _timeController.text = timeToString(pickedTime)!;
+                      }
+                    },
+                    onSaved: (newValue) {
+                      _timeController.text = newValue!;
+                    },
+                    onFieldSubmitted: (_) {},
+                  ),
+                ),
+              ],
             ),
             ElevatedButton(
               child: Text(AppLocalizations.of(context).save),
@@ -308,8 +345,11 @@ class IngredientLogForm extends StatelessWidget {
                 _mealItem.ingredientId = int.parse(_ingredientIdController.text);
 
                 try {
-                  Provider.of<NutritionPlansProvider>(context, listen: false).logIngredientToDiary(
-                      _mealItem, _plan.id!, DateTime.parse(_dateController.text));
+                  var date = DateTime.parse(_dateController.text);
+                  final tod = stringToTime(_timeController.text);
+                  date = DateTime(date.year, date.month, date.day, tod.hour, tod.minute);
+                  Provider.of<NutritionPlansProvider>(context, listen: false)
+                      .logIngredientToDiary(_mealItem, _plan.id!, date);
                 } on WgerHttpException catch (error) {
                   showHttpExceptionErrorDialog(error, context);
                 } catch (error) {
@@ -427,7 +467,6 @@ class _PlanFormState extends State<PlanForm> {
             Column(
               children: [
                 GoalMacros(
-                  widget: widget,
                   val: widget._plan.goalEnergy?.toString(),
                   label: AppLocalizations.of(context).goalEnergy,
                   suffix: AppLocalizations.of(context).kcal,
@@ -435,7 +474,6 @@ class _PlanFormState extends State<PlanForm> {
                   key: const Key('field-goal-energy'),
                 ),
                 GoalMacros(
-                  widget: widget,
                   val: widget._plan.goalProtein?.toString(),
                   label: AppLocalizations.of(context).goalProtein,
                   suffix: AppLocalizations.of(context).g,
@@ -443,7 +481,6 @@ class _PlanFormState extends State<PlanForm> {
                   key: const Key('field-goal-protein'),
                 ),
                 GoalMacros(
-                  widget: widget,
                   val: widget._plan.goalCarbohydrates?.toString(),
                   label: AppLocalizations.of(context).goalCarbohydrates,
                   suffix: AppLocalizations.of(context).g,
@@ -451,7 +488,6 @@ class _PlanFormState extends State<PlanForm> {
                   key: const Key('field-goal-carbohydrates'),
                 ),
                 GoalMacros(
-                  widget: widget,
                   val: widget._plan.goalFat?.toString(),
                   label: AppLocalizations.of(context).goalFat,
                   suffix: AppLocalizations.of(context).g,
@@ -513,18 +549,16 @@ class _PlanFormState extends State<PlanForm> {
 class GoalMacros extends StatelessWidget {
   const GoalMacros({
     super.key,
-    required this.widget,
     required this.label,
     required this.suffix,
-    this.val,
     required this.onSave,
+    this.val,
   });
 
-  final PlanForm widget;
   final String label;
   final String suffix;
-  final String? val;
   final Function onSave;
+  final String? val;
 
   @override
   Widget build(BuildContext context) {
