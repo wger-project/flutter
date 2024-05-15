@@ -194,28 +194,19 @@ class FlNutritionalPlanPieChartState extends State<FlNutritionalPlanPieChartWidg
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Indicator(
-              color: LIST_OF_COLORS3[0],
-              text: AppLocalizations.of(context).carbohydrates,
-              isSquare: true,
-            ),
-            const SizedBox(
-              height: 4,
-            ),
-            Indicator(
-              color: LIST_OF_COLORS3[1],
-              text: AppLocalizations.of(context).protein,
-              isSquare: true,
-            ),
-            const SizedBox(
-              height: 4,
-            ),
-            Indicator(
-              color: LIST_OF_COLORS3[2],
-              text: AppLocalizations.of(context).fat,
-              isSquare: true,
-            ),
-          ],
+            (AppLocalizations.of(context).carbohydrates, LIST_OF_COLORS3[0]),
+            (AppLocalizations.of(context).protein, LIST_OF_COLORS3[1]),
+            (AppLocalizations.of(context).fat, LIST_OF_COLORS3[2])
+          ]
+              .map((e) => Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 2),
+                    child: Indicator(
+                      color: e.$2,
+                      text: e.$1,
+                      isSquare: true,
+                    ),
+                  ))
+              .toList(),
         ),
         const SizedBox(
           width: 28,
