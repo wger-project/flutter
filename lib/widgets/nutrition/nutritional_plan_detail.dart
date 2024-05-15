@@ -100,7 +100,7 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
           style: Theme.of(context).textTheme.titleLarge,
         ),
         Container(
-          padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
+          padding: const EdgeInsets.only(top: 16, left: 8, right: 8),
           height: 300,
           child: NutritionalDiaryChartWidgetFl(nutritionalPlan: _nutritionalPlan),
         ),
