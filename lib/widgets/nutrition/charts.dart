@@ -217,17 +217,17 @@ class FlNutritionalPlanPieChartState extends State<FlNutritionalPlanPieChartWidg
 
   List<PieChartSectionData> showingSections() {
     return [
-      (1, widget.nutritionalValues.protein),
-      (0, widget.nutritionalValues.carbohydrates),
-      (2, widget.nutritionalValues.fat)
+      (0, LIST_OF_COLORS3[1], widget.nutritionalValues.protein),
+      (1, LIST_OF_COLORS3[0], widget.nutritionalValues.carbohydrates),
+      (2, LIST_OF_COLORS3[2], widget.nutritionalValues.fat)
     ].map((e) {
       final isTouched = e.$1 == touchedIndex;
       final radius = isTouched ? 92.0 : 80.0;
 
       return PieChartSectionData(
-        color: LIST_OF_COLORS3[e.$1],
-        value: e.$2,
-        title: '${e.$2.toStringAsFixed(0)}g',
+        color: e.$2,
+        value: e.$3,
+        title: '${e.$3.toStringAsFixed(0)}g',
         titlePositionPercentageOffset: 0.5,
         radius: radius,
       );
