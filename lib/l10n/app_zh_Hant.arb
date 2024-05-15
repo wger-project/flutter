@@ -122,5 +122,19 @@
   "successfullyDeleted": "已刪除",
   "@successfullyDeleted": {
     "description": "Message when an item was successfully deleted"
-  }
+  },
+  "noMatchingExerciseFound": "沒有找到符合的運動項目",
+  "@noMatchingExerciseFound": {
+    "description": "Message returned if no exercises match the searched string"
+  },
+  "muscles": "肌肉",
+  "@muscles": {
+    "description": "(main) muscles trained by an exercise"
+  },
+  "equipment": "器材",
+  "@equipment": {
+    "description": "Equipment needed to perform an exercise"
+  },
+  "searchNamesInEnglish": "也用英文字詞搜尋",
+  "@searchNamesInEnglish": {}
 }

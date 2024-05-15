@@ -887,5 +887,13 @@
     "placeholders": {
       "value": {}
     }
+  },
+  "surplus": "višak",
+  "@surplus": {
+    "description": "Caloric surplus (either planned or unplanned)"
+  },
+  "deficit": "manjak",
+  "@deficit": {
+    "description": "Caloric deficit (either planned or unplanned)"
   }
 }
