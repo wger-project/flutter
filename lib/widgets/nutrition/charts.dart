@@ -426,31 +426,20 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Indicator(
-                    color: colorPlanned,
-                    text: AppLocalizations.of(context).deficit,
-                    isSquare: true,
-                    marginRight: 0,
-                  ),
-                  Indicator(
-                    color: COLOR_SURPLUS,
-                    text: AppLocalizations.of(context).surplus,
-                    isSquare: true,
-                    marginRight: 0,
-                  ),
-                  Indicator(
-                    color: colorLoggedToday,
-                    text: AppLocalizations.of(context).today,
-                    isSquare: true,
-                    marginRight: 0,
-                  ),
-                  Indicator(
-                    color: colorLogged7Day,
-                    text: AppLocalizations.of(context).weekAverage,
-                    isSquare: true,
-                    marginRight: 0,
-                  ),
-                ],
+                  (AppLocalizations.of(context).deficit, colorPlanned),
+                  (AppLocalizations.of(context).surplus, COLOR_SURPLUS),
+                  (AppLocalizations.of(context).today, colorLoggedToday),
+                  (AppLocalizations.of(context).weekAverage, colorLogged7Day)
+                ]
+                    .map(
+                      (e) => Indicator(
+                        color: e.$2,
+                        text: e.$1,
+                        isSquare: true,
+                        marginRight: 0,
+                      ),
+                    )
+                    .toList(),
               ),
             ),
           ],
