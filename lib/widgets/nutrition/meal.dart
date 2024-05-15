@@ -151,8 +151,7 @@ class _MealWidgetState extends State<MealWidget> {
                   )),
             if (_viewMode == viewMode.withIngredients || _viewMode == viewMode.withAllDetails)
               const Divider(),
-            if (_viewMode == viewMode.withAllDetails && widget._meal.isRealMeal)
-              const NutritionDiaryheader(),
+            if (_viewMode == viewMode.withAllDetails) const NutritionDiaryheader(),
             if (_viewMode == viewMode.withIngredients || _viewMode == viewMode.withAllDetails)
               if (widget._meal.mealItems.isEmpty && widget._meal.isRealMeal)
                 const ListTile(title: Text('No ingredients defined yet'))
