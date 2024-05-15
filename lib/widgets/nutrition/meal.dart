@@ -152,12 +152,7 @@ class _MealWidgetState extends State<MealWidget> {
             if (_viewMode == viewMode.withIngredients || _viewMode == viewMode.withAllDetails)
               const Divider(),
             if (_viewMode == viewMode.withAllDetails && widget._meal.isRealMeal)
-              MealItemExpandedRow(
-                AppLocalizations.of(context).energy,
-                AppLocalizations.of(context).protein,
-                AppLocalizations.of(context).carbohydrates,
-                AppLocalizations.of(context).fat,
-              ),
+              const NutritionDiaryheader(),
             if (_viewMode == viewMode.withIngredients || _viewMode == viewMode.withAllDetails)
               if (widget._meal.mealItems.isEmpty && widget._meal.isRealMeal)
                 const ListTile(title: Text('No ingredients defined yet'))
@@ -166,21 +161,6 @@ class _MealWidgetState extends State<MealWidget> {
             if (_viewMode == viewMode.withAllDetails)
               Column(
                 children: [
-                  // if (widget._meal.isRealMeal)
-                  //   MealItemExpandedRow(
-                  //     AppLocalizations.of(context).kcalValue(
-                  //       widget._meal.loggedNutritionalValuesToday.energy.toStringAsFixed(0),
-                  //     ),
-                  //     AppLocalizations.of(context).gValue(
-                  //       widget._meal.loggedNutritionalValuesToday.carbohydrates.toStringAsFixed(0),
-                  //     ),
-                  //     AppLocalizations.of(context).gValue(
-                  //       widget._meal.loggedNutritionalValuesToday.protein.toStringAsFixed(0),
-                  //     ),
-                  //     AppLocalizations.of(context).gValue(
-                  //       widget._meal.loggedNutritionalValuesToday.fat.toStringAsFixed(0),
-                  //     ),
-                  //   ),
                   Center(
                     child: Text(
                       AppLocalizations.of(context).loggedToday,
@@ -314,50 +294,6 @@ class LogDiaryItemWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.max,
         children: [...getMutedNutritionalValues(values, context)],
-      ),
-    );
-  }
-}
-
-class MealItemExpandedRow extends StatelessWidget {
-  final String row1;
-  final String row2;
-  final String row3;
-  final String row4;
-  final Widget? leading;
-
-  const MealItemExpandedRow(this.row1, this.row2, this.row3, this.row4, {this.leading});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: leading ??
-          const CircleIconAvatar(
-            Icon(Icons.image, color: Colors.transparent),
-            color: Colors.transparent,
-          ),
-      subtitle: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        // crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          MutedText(
-            row1,
-            textAlign: TextAlign.right,
-          ),
-          MutedText(
-            row2,
-            textAlign: TextAlign.right,
-          ),
-          MutedText(
-            row3,
-            textAlign: TextAlign.right,
-          ),
-          MutedText(
-            row4,
-            textAlign: TextAlign.right,
-          ),
-        ],
       ),
     );
   }
