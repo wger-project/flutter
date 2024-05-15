@@ -19,11 +19,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/helpers/colors.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/screens/form_screen.dart';
-import 'package:wger/widgets/measurements/charts.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/macro_nutrients_table.dart';
@@ -105,38 +103,6 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
           padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
           height: 300,
           child: NutritionalDiaryChartWidgetFl(nutritionalPlan: _nutritionalPlan),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 40, left: 25, right: 25),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Indicator(
-                color: LIST_OF_COLORS3[0],
-                text: AppLocalizations.of(context).deficit,
-                isSquare: true,
-                marginRight: 0,
-              ),
-              Indicator(
-                color: COLOR_SURPLUS,
-                text: AppLocalizations.of(context).surplus,
-                isSquare: true,
-                marginRight: 0,
-              ),
-              Indicator(
-                color: LIST_OF_COLORS3[1],
-                text: AppLocalizations.of(context).today,
-                isSquare: true,
-                marginRight: 0,
-              ),
-              Indicator(
-                color: LIST_OF_COLORS3[2],
-                text: AppLocalizations.of(context).weekAverage,
-                isSquare: true,
-                marginRight: 0,
-              ),
-            ],
-          ),
         ),
         if (_nutritionalPlan.logEntriesValues.isNotEmpty)
           Padding(

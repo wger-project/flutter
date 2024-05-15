@@ -366,56 +366,94 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
       builder: (context, constraints) {
         final barsSpace = 6.0 * constraints.maxWidth / 400;
         final barsWidth = 12.0 * constraints.maxWidth / 400;
-        return BarChart(
-          BarChartData(
-            alignment: BarChartAlignment.center,
-            barTouchData: BarTouchData(
-              enabled: false,
-            ),
-            titlesData: FlTitlesData(
-              show: true,
-              bottomTitles: AxisTitles(
-                sideTitles: SideTitles(
-                  showTitles: true,
-                  reservedSize: 48,
-                  getTitlesWidget: bottomTitles,
+        return Column(
+          children: [
+            Expanded(
+              child: BarChart(
+                BarChartData(
+                  alignment: BarChartAlignment.center,
+                  barTouchData: BarTouchData(
+                    enabled: false,
+                  ),
+                  titlesData: FlTitlesData(
+                    show: true,
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 48,
+                        getTitlesWidget: bottomTitles,
+                      ),
+                    ),
+                    leftTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 40,
+                        getTitlesWidget: leftTitles,
+                      ),
+                    ),
+                    topTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    rightTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                  ),
+                  gridData: FlGridData(
+                    show: true,
+                    checkToShowHorizontalLine: (value) => value % 10 == 0,
+                    getDrawingHorizontalLine: (value) => const FlLine(
+                      color: Colors.black,
+                      strokeWidth: 1,
+                    ),
+                    drawVerticalLine: false,
+                  ),
+                  borderData: FlBorderData(
+                    show: false,
+                  ),
+                  groupsSpace: 30,
+                  barGroups: [
+                    barchartGroup(0, barsSpace, barsWidth, 'protein'),
+                    barchartGroup(1, barsSpace, barsWidth, 'carbohydrates'),
+                    barchartGroup(2, barsSpace, barsWidth, 'carbohydratesSugar'),
+                    barchartGroup(3, barsSpace, barsWidth, 'fat'),
+                    barchartGroup(4, barsSpace, barsWidth, 'fatSaturated'),
+                  ],
                 ),
               ),
-              leftTitles: AxisTitles(
-                sideTitles: SideTitles(
-                  showTitles: true,
-                  reservedSize: 40,
-                  getTitlesWidget: leftTitles,
-                ),
-              ),
-              topTitles: const AxisTitles(
-                sideTitles: SideTitles(showTitles: false),
-              ),
-              rightTitles: const AxisTitles(
-                sideTitles: SideTitles(showTitles: false),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 40, left: 25, right: 25),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Indicator(
+                    color: colorPlanned,
+                    text: AppLocalizations.of(context).deficit,
+                    isSquare: true,
+                    marginRight: 0,
+                  ),
+                  Indicator(
+                    color: COLOR_SURPLUS,
+                    text: AppLocalizations.of(context).surplus,
+                    isSquare: true,
+                    marginRight: 0,
+                  ),
+                  Indicator(
+                    color: colorLoggedToday,
+                    text: AppLocalizations.of(context).today,
+                    isSquare: true,
+                    marginRight: 0,
+                  ),
+                  Indicator(
+                    color: colorLogged7Day,
+                    text: AppLocalizations.of(context).weekAverage,
+                    isSquare: true,
+                    marginRight: 0,
+                  ),
+                ],
               ),
             ),
-            gridData: FlGridData(
-              show: true,
-              checkToShowHorizontalLine: (value) => value % 10 == 0,
-              getDrawingHorizontalLine: (value) => const FlLine(
-                color: Colors.black,
-                strokeWidth: 1,
-              ),
-              drawVerticalLine: false,
-            ),
-            borderData: FlBorderData(
-              show: false,
-            ),
-            groupsSpace: 30,
-            barGroups: [
-              barchartGroup(0, barsSpace, barsWidth, 'protein'),
-              barchartGroup(1, barsSpace, barsWidth, 'carbohydrates'),
-              barchartGroup(2, barsSpace, barsWidth, 'carbohydratesSugar'),
-              barchartGroup(3, barsSpace, barsWidth, 'fat'),
-              barchartGroup(4, barsSpace, barsWidth, 'fatSaturated'),
-            ],
-          ),
+          ],
         );
       },
     );
