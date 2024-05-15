@@ -52,7 +52,7 @@ class FlNutritionalPlanGoalWidgetState extends State<FlNutritionalPlanGoalWidget
   // why don't we just handle this inside this function? because it might be
   // *another* gauge that's in surplus and we want to have consistent widths
   // between all gauges
-  Widget _DIYGauge(BuildContext context, double normWidth, double? plan, double val) {
+  Widget _diyGauge(BuildContext context, double normWidth, double? plan, double val) {
     Container segment(double width, Color color) {
       return Container(
         height: 16,
@@ -105,7 +105,7 @@ class FlNutritionalPlanGoalWidgetState extends State<FlNutritionalPlanGoalWidget
       final normWidth = constraints.maxWidth / maxVal;
 
       String fmtMacro(String name, double today, double? goal, String unit) {
-        return '$name: ${today.toStringAsFixed(0)}${goal == null ? '' : ' /${goal.toStringAsFixed(0)}'} $unit';
+        return '$name: ${today.toStringAsFixed(0)}${goal == null ? '' : ' / ${goal.toStringAsFixed(0)}'} $unit';
       }
 
       return Column(
@@ -114,22 +114,22 @@ class FlNutritionalPlanGoalWidgetState extends State<FlNutritionalPlanGoalWidget
           Text(fmtMacro(AppLocalizations.of(context).protein, today.protein, goals.protein,
               AppLocalizations.of(context).g)),
           const SizedBox(height: 2),
-          _DIYGauge(context, normWidth, goals.protein, today.protein),
+          _diyGauge(context, normWidth, goals.protein, today.protein),
           const SizedBox(height: 8),
           Text(fmtMacro(AppLocalizations.of(context).carbohydrates, today.carbohydrates,
               goals.carbohydrates, AppLocalizations.of(context).g)),
           const SizedBox(height: 2),
-          _DIYGauge(context, normWidth, goals.carbohydrates, today.carbohydrates),
+          _diyGauge(context, normWidth, goals.carbohydrates, today.carbohydrates),
           const SizedBox(height: 8),
           Text(fmtMacro(AppLocalizations.of(context).fat, today.fat, goals.fat,
               AppLocalizations.of(context).g)),
           const SizedBox(height: 2),
-          _DIYGauge(context, normWidth, goals.fat, today.fat),
+          _diyGauge(context, normWidth, goals.fat, today.fat),
           const SizedBox(height: 8),
           Text(fmtMacro(AppLocalizations.of(context).energy, today.energy, goals.energy,
               AppLocalizations.of(context).kcal)),
           const SizedBox(height: 2),
-          _DIYGauge(context, normWidth, goals.energy, today.energy),
+          _diyGauge(context, normWidth, goals.energy, today.energy),
         ],
       );
     });
@@ -235,6 +235,7 @@ class FlNutritionalPlanPieChartState extends State<FlNutritionalPlanPieChartWidg
   }
 }
 
+/// Shows results vs plan of common macros, for today and last 7 days, as barchart
 class NutritionalDiaryChartWidgetFl extends StatefulWidget {
   const NutritionalDiaryChartWidgetFl({
     super.key,
@@ -420,6 +421,7 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
   }
 }
 
+/// Barchart widget for what's logged today, energy and macros
 class MealDiaryBarChartWidget extends StatefulWidget {
   const MealDiaryBarChartWidget({
     super.key,
@@ -437,24 +439,13 @@ class MealDiaryBarChartWidget extends StatefulWidget {
 
 class MealDiaryBarChartWidgetState extends State<MealDiaryBarChartWidget> {
   Widget bottomTitles(double value, TitleMeta meta) {
-    String text;
-    switch (value.toInt()) {
-      case 0:
-        text = AppLocalizations.of(context).protein;
-        break;
-      case 1:
-        text = AppLocalizations.of(context).carbohydrates;
-        break;
-      case 2:
-        text = AppLocalizations.of(context).fat;
-        break;
-      case 3:
-        text = AppLocalizations.of(context).energy;
-        break;
-      default:
-        text = '';
-        break;
-    }
+    final String text = switch (value.toInt()) {
+      0 => AppLocalizations.of(context).protein,
+      1 => AppLocalizations.of(context).carbohydrates,
+      2 => AppLocalizations.of(context).fat,
+      3 => AppLocalizations.of(context).energy,
+      _ => '',
+    };
     return SideTitleWidget(
       axisSide: meta.axisSide,
       child: Text(
