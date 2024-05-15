@@ -216,42 +216,22 @@ class FlNutritionalPlanPieChartState extends State<FlNutritionalPlanPieChartWidg
   }
 
   List<PieChartSectionData> showingSections() {
-    return List.generate(3, (i) {
-      final isTouched = i == touchedIndex;
+    return [
+      (0, widget.nutritionalValues.carbohydrates),
+      (1, widget.nutritionalValues.protein),
+      (2, widget.nutritionalValues.fat)
+    ].map((e) {
+      final isTouched = e.$1 == touchedIndex;
       final radius = isTouched ? 92.0 : 80.0;
 
-      switch (i) {
-        case 0:
-          return PieChartSectionData(
-            color: LIST_OF_COLORS3[0],
-            value: widget.nutritionalValues.carbohydrates,
-            title: '${widget.nutritionalValues.carbohydrates.toStringAsFixed(0)}g',
-            titlePositionPercentageOffset: 0.5,
-            radius: radius,
-            titleStyle: const TextStyle(color: Colors.white70),
-          );
-
-        case 1:
-          return PieChartSectionData(
-            color: LIST_OF_COLORS3[1],
-            value: widget.nutritionalValues.protein,
-            title: '${widget.nutritionalValues.protein.toStringAsFixed(0)}g',
-            titlePositionPercentageOffset: 0.5,
-            radius: radius,
-          );
-        case 2:
-          return PieChartSectionData(
-            color: LIST_OF_COLORS3[2],
-            value: widget.nutritionalValues.fat,
-            title: '${widget.nutritionalValues.fat.toStringAsFixed(0)}g',
-            titlePositionPercentageOffset: 0.5,
-            radius: radius,
-          );
-
-        default:
-          throw Error();
-      }
-    });
+      return PieChartSectionData(
+        color: LIST_OF_COLORS3[e.$1],
+        value: e.$2,
+        title: '${e.$2.toStringAsFixed(0)}g',
+        titlePositionPercentageOffset: 0.5,
+        radius: radius,
+      );
+    }).toList();
   }
 }
 
