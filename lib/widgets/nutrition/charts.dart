@@ -194,8 +194,8 @@ class FlNutritionalPlanPieChartState extends State<FlNutritionalPlanPieChartWidg
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            (AppLocalizations.of(context).carbohydrates, LIST_OF_COLORS3[0]),
             (AppLocalizations.of(context).protein, LIST_OF_COLORS3[1]),
+            (AppLocalizations.of(context).carbohydrates, LIST_OF_COLORS3[0]),
             (AppLocalizations.of(context).fat, LIST_OF_COLORS3[2])
           ]
               .map((e) => Padding(
@@ -217,8 +217,8 @@ class FlNutritionalPlanPieChartState extends State<FlNutritionalPlanPieChartWidg
 
   List<PieChartSectionData> showingSections() {
     return [
-      (0, widget.nutritionalValues.carbohydrates),
       (1, widget.nutritionalValues.protein),
+      (0, widget.nutritionalValues.carbohydrates),
       (2, widget.nutritionalValues.fat)
     ].map((e) {
       final isTouched = e.$1 == touchedIndex;
