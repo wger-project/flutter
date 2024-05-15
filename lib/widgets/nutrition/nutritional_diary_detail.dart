@@ -60,6 +60,7 @@ class NutritionalDiaryDetailWidget extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 15),
+        const NutritionDiaryheader(),
         ...logs.map((e) => Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(

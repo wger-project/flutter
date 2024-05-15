@@ -68,6 +68,19 @@ class NutritionalValues {
     );
   }
 
+  NutritionalValues operator /(double o) {
+    return NutritionalValues.values(
+      energy / o,
+      protein / o,
+      carbohydrates / o,
+      carbohydratesSugar / o,
+      fat / o,
+      fatSaturated / o,
+      fibres / o,
+      sodium / o,
+    );
+  }
+
   @override
   //ignore: avoid_equals_and_hash_code_on_mutable_classes
   bool operator ==(other) {

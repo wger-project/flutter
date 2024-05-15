@@ -148,8 +148,9 @@ class NutritionalPlan {
     final sevenDaysAgo = currentDate.subtract(const Duration(days: 7));
 
     return diaryEntries
-        .where((obj) => obj.datetime.isAfter(sevenDaysAgo))
-        .fold(NutritionalValues(), (a, b) => a + b.nutritionalValues);
+            .where((obj) => obj.datetime.isAfter(sevenDaysAgo))
+            .fold(NutritionalValues(), (a, b) => a + b.nutritionalValues) /
+        7;
   }
 
   Map<DateTime, NutritionalValues> get logEntriesValues {

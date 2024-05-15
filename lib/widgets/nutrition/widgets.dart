@@ -238,6 +238,38 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
   }
 }
 
+class NutritionDiaryheader extends StatelessWidget {
+  final Widget? leading;
+
+  const NutritionDiaryheader({this.leading});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: leading ??
+          const CircleIconAvatar(
+            Icon(Icons.image, color: Colors.transparent),
+            color: Colors.transparent,
+          ),
+      subtitle: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          AppLocalizations.of(context).energy,
+          AppLocalizations.of(context).protein,
+          AppLocalizations.of(context).carbohydrates,
+          AppLocalizations.of(context).fat
+        ]
+            .map((e) => MutedText(
+                  e,
+                  textAlign: TextAlign.right,
+                ))
+            .toList(),
+      ),
+    );
+  }
+}
+
 class NutritionDiaryEntry extends StatelessWidget {
   const NutritionDiaryEntry({
     super.key,

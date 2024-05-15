@@ -194,28 +194,19 @@ class FlNutritionalPlanPieChartState extends State<FlNutritionalPlanPieChartWidg
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Indicator(
-              color: LIST_OF_COLORS3[0],
-              text: AppLocalizations.of(context).carbohydrates,
-              isSquare: true,
-            ),
-            const SizedBox(
-              height: 4,
-            ),
-            Indicator(
-              color: LIST_OF_COLORS3[1],
-              text: AppLocalizations.of(context).protein,
-              isSquare: true,
-            ),
-            const SizedBox(
-              height: 4,
-            ),
-            Indicator(
-              color: LIST_OF_COLORS3[2],
-              text: AppLocalizations.of(context).fat,
-              isSquare: true,
-            ),
-          ],
+            (AppLocalizations.of(context).protein, LIST_OF_COLORS3[1]),
+            (AppLocalizations.of(context).carbohydrates, LIST_OF_COLORS3[0]),
+            (AppLocalizations.of(context).fat, LIST_OF_COLORS3[2])
+          ]
+              .map((e) => Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 2),
+                    child: Indicator(
+                      color: e.$2,
+                      text: e.$1,
+                      isSquare: true,
+                    ),
+                  ))
+              .toList(),
         ),
         const SizedBox(
           width: 28,
@@ -225,42 +216,22 @@ class FlNutritionalPlanPieChartState extends State<FlNutritionalPlanPieChartWidg
   }
 
   List<PieChartSectionData> showingSections() {
-    return List.generate(3, (i) {
-      final isTouched = i == touchedIndex;
+    return [
+      (0, LIST_OF_COLORS3[1], widget.nutritionalValues.protein),
+      (1, LIST_OF_COLORS3[0], widget.nutritionalValues.carbohydrates),
+      (2, LIST_OF_COLORS3[2], widget.nutritionalValues.fat)
+    ].map((e) {
+      final isTouched = e.$1 == touchedIndex;
       final radius = isTouched ? 92.0 : 80.0;
 
-      switch (i) {
-        case 0:
-          return PieChartSectionData(
-            color: LIST_OF_COLORS3[0],
-            value: widget.nutritionalValues.carbohydrates,
-            title: '${widget.nutritionalValues.carbohydrates.toStringAsFixed(0)}g',
-            titlePositionPercentageOffset: 0.5,
-            radius: radius,
-            titleStyle: const TextStyle(color: Colors.white70),
-          );
-
-        case 1:
-          return PieChartSectionData(
-            color: LIST_OF_COLORS3[1],
-            value: widget.nutritionalValues.protein,
-            title: '${widget.nutritionalValues.protein.toStringAsFixed(0)}g',
-            titlePositionPercentageOffset: 0.5,
-            radius: radius,
-          );
-        case 2:
-          return PieChartSectionData(
-            color: LIST_OF_COLORS3[2],
-            value: widget.nutritionalValues.fat,
-            title: '${widget.nutritionalValues.fat.toStringAsFixed(0)}g',
-            titlePositionPercentageOffset: 0.5,
-            radius: radius,
-          );
-
-        default:
-          throw Error();
-      }
-    });
+      return PieChartSectionData(
+        color: e.$2,
+        value: e.$3,
+        title: '${e.$3.toStringAsFixed(0)}g',
+        titlePositionPercentageOffset: 0.5,
+        radius: radius,
+      );
+    }).toList();
   }
 }
 
@@ -366,56 +337,83 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
       builder: (context, constraints) {
         final barsSpace = 6.0 * constraints.maxWidth / 400;
         final barsWidth = 12.0 * constraints.maxWidth / 400;
-        return BarChart(
-          BarChartData(
-            alignment: BarChartAlignment.center,
-            barTouchData: BarTouchData(
-              enabled: false,
-            ),
-            titlesData: FlTitlesData(
-              show: true,
-              bottomTitles: AxisTitles(
-                sideTitles: SideTitles(
-                  showTitles: true,
-                  reservedSize: 48,
-                  getTitlesWidget: bottomTitles,
+        return Column(
+          children: [
+            Expanded(
+              child: BarChart(
+                BarChartData(
+                  alignment: BarChartAlignment.center,
+                  barTouchData: BarTouchData(
+                    enabled: false,
+                  ),
+                  titlesData: FlTitlesData(
+                    show: true,
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 48,
+                        getTitlesWidget: bottomTitles,
+                      ),
+                    ),
+                    leftTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 40,
+                        getTitlesWidget: leftTitles,
+                      ),
+                    ),
+                    topTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    rightTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                  ),
+                  gridData: FlGridData(
+                    show: true,
+                    checkToShowHorizontalLine: (value) => value % 10 == 0,
+                    getDrawingHorizontalLine: (value) => const FlLine(
+                      color: Colors.black,
+                      strokeWidth: 1,
+                    ),
+                    drawVerticalLine: false,
+                  ),
+                  borderData: FlBorderData(
+                    show: false,
+                  ),
+                  groupsSpace: 30,
+                  barGroups: [
+                    barchartGroup(0, barsSpace, barsWidth, 'protein'),
+                    barchartGroup(1, barsSpace, barsWidth, 'carbohydrates'),
+                    barchartGroup(2, barsSpace, barsWidth, 'carbohydratesSugar'),
+                    barchartGroup(3, barsSpace, barsWidth, 'fat'),
+                    barchartGroup(4, barsSpace, barsWidth, 'fatSaturated'),
+                  ],
                 ),
               ),
-              leftTitles: AxisTitles(
-                sideTitles: SideTitles(
-                  showTitles: true,
-                  reservedSize: 40,
-                  getTitlesWidget: leftTitles,
-                ),
-              ),
-              topTitles: const AxisTitles(
-                sideTitles: SideTitles(showTitles: false),
-              ),
-              rightTitles: const AxisTitles(
-                sideTitles: SideTitles(showTitles: false),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 40, left: 25, right: 25),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  (AppLocalizations.of(context).deficit, colorPlanned),
+                  (AppLocalizations.of(context).surplus, COLOR_SURPLUS),
+                  (AppLocalizations.of(context).today, colorLoggedToday),
+                  (AppLocalizations.of(context).weekAverage, colorLogged7Day)
+                ]
+                    .map(
+                      (e) => Indicator(
+                        color: e.$2,
+                        text: e.$1,
+                        isSquare: true,
+                        marginRight: 0,
+                      ),
+                    )
+                    .toList(),
               ),
             ),
-            gridData: FlGridData(
-              show: true,
-              checkToShowHorizontalLine: (value) => value % 10 == 0,
-              getDrawingHorizontalLine: (value) => const FlLine(
-                color: Colors.black,
-                strokeWidth: 1,
-              ),
-              drawVerticalLine: false,
-            ),
-            borderData: FlBorderData(
-              show: false,
-            ),
-            groupsSpace: 30,
-            barGroups: [
-              barchartGroup(0, barsSpace, barsWidth, 'protein'),
-              barchartGroup(1, barsSpace, barsWidth, 'carbohydrates'),
-              barchartGroup(2, barsSpace, barsWidth, 'carbohydratesSugar'),
-              barchartGroup(3, barsSpace, barsWidth, 'fat'),
-              barchartGroup(4, barsSpace, barsWidth, 'fatSaturated'),
-            ],
-          ),
+          ],
         );
       },
     );
