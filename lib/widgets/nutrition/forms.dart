@@ -148,7 +148,6 @@ class MealItemForm extends StatelessWidget {
             IngredientTypeahead(
               _ingredientIdController,
               _ingredientController,
-              showScanner: true,
               barcode: _barcode,
               test: _test,
             ),
