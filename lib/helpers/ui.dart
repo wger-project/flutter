@@ -35,8 +35,9 @@ void showErrorDialog(dynamic exception, BuildContext context) {
   showDialog(
     context: context,
     builder: (ctx) => AlertDialog(
+      scrollable: true,
       title: Text(AppLocalizations.of(context).anErrorOccurred),
-      content: Text(exception.toString()),
+      content: SelectableText(exception.toString()),
       actions: [
         TextButton(
           child: Text(MaterialLocalizations.of(context).closeButtonLabel),
