@@ -284,6 +284,7 @@
   "goalProtein": "Protein goal",
   "goalCarbohydrates": "Carbohydrates goal",
   "goalFat": "Fat goal",
+  "goalFiber": "Fiber goal",
   "anErrorOccurred": "An Error Occurred!",
   "@anErrorOccurred": {},
   "weight": "Weight",

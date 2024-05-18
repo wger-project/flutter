@@ -391,6 +391,15 @@ class IngredientLogForm extends StatelessWidget {
   }
 }
 
+enum GoalType {
+  meals('Based on my meals'),
+  basic('Set basic macros'),
+  advanced('Set advanced macros');
+
+  const GoalType(this.label);
+  final String label;
+}
+
 class PlanForm extends StatefulWidget {
   late NutritionalPlan _plan;
 
@@ -406,17 +415,26 @@ class _PlanFormState extends State<PlanForm> {
   final _form = GlobalKey<FormState>();
 
   bool _onlyLogging = true;
-  bool _addGoals = false;
+  GoalType _goalType = GoalType.meals;
 
   final _descriptionController = TextEditingController();
+  final TextEditingController colorController = TextEditingController();
+
+  GoalType? selectedGoal;
 
   @override
   void initState() {
     super.initState();
 
     _onlyLogging = widget._plan.onlyLogging;
-    _addGoals = widget._plan.hasAnyGoals;
     _descriptionController.text = widget._plan.description;
+    if (widget._plan.hasAnyAdvancedGoals) {
+      _goalType = GoalType.advanced;
+    } else if (widget._plan.hasAnyGoals) {
+      _goalType = GoalType.basic;
+    } else {
+      _goalType = GoalType.meals;
+    }
   }
 
   @override
@@ -446,23 +464,36 @@ class _PlanFormState extends State<PlanForm> {
               widget._plan.onlyLogging = value;
             },
           ),
-          SwitchListTile(
-            title: Text(AppLocalizations.of(context).addGoalsToPlan),
-            subtitle: Text(AppLocalizations.of(context).addGoalsToPlanHelpText),
-            value: _addGoals,
-            onChanged: (value) {
+          DropdownButtonFormField<GoalType>(
+            value: _goalType,
+            items: GoalType.values
+                .map(
+                  (e) => DropdownMenuItem<GoalType>(value: e, child: Text(e.label)),
+                )
+                .toList(),
+            onChanged: (GoalType? g) {
               setState(() {
-                _addGoals = !_addGoals;
+                if (g == null) {
+                  return;
+                }
+                switch (g) {
+                  case GoalType.meals:
+                    widget._plan.goalEnergy = null;
+                    widget._plan.goalProtein = null;
+                    widget._plan.goalCarbohydrates = null;
+                    widget._plan.goalFat = null;
+                    widget._plan.goalFibers = null;
+                  case GoalType.basic:
+                    widget._plan.goalFibers = null;
+                    break;
+                  default:
+                    break;
+                }
+                _goalType = g;
               });
-              if (!value) {
-                widget._plan.goalEnergy = null;
-                widget._plan.goalProtein = null;
-                widget._plan.goalCarbohydrates = null;
-                widget._plan.goalFat = null;
-              }
             },
           ),
-          if (_addGoals)
+          if (_goalType == GoalType.basic || _goalType == GoalType.advanced)
             Column(
               children: [
                 GoalMacros(
@@ -496,6 +527,14 @@ class _PlanFormState extends State<PlanForm> {
               ],
             ),
 
+          if (_goalType == GoalType.advanced)
+            GoalMacros(
+              val: widget._plan.goalFibers?.toString(),
+              label: AppLocalizations.of(context).goalFiber,
+              suffix: AppLocalizations.of(context).g,
+              onSave: (double value) => widget._plan.goalFibers = value,
+              key: const Key('field-goal-fibers'),
+            ),
           ElevatedButton(
             key: const Key(SUBMIT_BUTTON_KEY_NAME),
             child: Text(AppLocalizations.of(context).save),

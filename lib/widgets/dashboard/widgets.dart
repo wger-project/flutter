@@ -198,7 +198,6 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                     ...getContent(),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 15),
-                      height: 206,
                       child: FlNutritionalPlanGoalWidget(nutritionalPlan: _plan!),
                     ),
                   ],
