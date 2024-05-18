@@ -392,9 +392,9 @@ class IngredientLogForm extends StatelessWidget {
 }
 
 enum GoalType {
-  meals('Based on my meals'),
-  basic('Set basic macros'),
-  advanced('Set advanced macros');
+  meals('From meals'),
+  basic('Basic'),
+  advanced('Advanced');
 
   const GoalType(this.label);
   final String label;
@@ -464,34 +464,42 @@ class _PlanFormState extends State<PlanForm> {
               widget._plan.onlyLogging = value;
             },
           ),
-          DropdownButtonFormField<GoalType>(
-            value: _goalType,
-            items: GoalType.values
-                .map(
-                  (e) => DropdownMenuItem<GoalType>(value: e, child: Text(e.label)),
-                )
-                .toList(),
-            onChanged: (GoalType? g) {
-              setState(() {
-                if (g == null) {
-                  return;
-                }
-                switch (g) {
-                  case GoalType.meals:
-                    widget._plan.goalEnergy = null;
-                    widget._plan.goalProtein = null;
-                    widget._plan.goalCarbohydrates = null;
-                    widget._plan.goalFat = null;
-                    widget._plan.goalFibers = null;
-                  case GoalType.basic:
-                    widget._plan.goalFibers = null;
-                    break;
-                  default:
-                    break;
-                }
-                _goalType = g;
-              });
-            },
+          Row(
+            children: [
+              Text('Macro goals', style: Theme.of(context).textTheme.titleMedium),
+              const SizedBox(width: 8),
+              Expanded(
+                child: DropdownButtonFormField<GoalType>(
+                  value: _goalType,
+                  items: GoalType.values
+                      .map(
+                        (e) => DropdownMenuItem<GoalType>(value: e, child: Text(e.label)),
+                      )
+                      .toList(),
+                  onChanged: (GoalType? g) {
+                    setState(() {
+                      if (g == null) {
+                        return;
+                      }
+                      switch (g) {
+                        case GoalType.meals:
+                          widget._plan.goalEnergy = null;
+                          widget._plan.goalProtein = null;
+                          widget._plan.goalCarbohydrates = null;
+                          widget._plan.goalFat = null;
+                          widget._plan.goalFibers = null;
+                        case GoalType.basic:
+                          widget._plan.goalFibers = null;
+                          break;
+                        default:
+                          break;
+                      }
+                      _goalType = g;
+                    });
+                  },
+                ),
+              ),
+            ],
           ),
           if (_goalType == GoalType.basic || _goalType == GoalType.advanced)
             Column(
