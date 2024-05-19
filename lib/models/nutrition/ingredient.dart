@@ -18,6 +18,7 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/models/nutrition/image.dart';
+import 'package:wger/models/nutrition/nutritional_values.dart';
 
 part 'ingredient.g.dart';
 
@@ -91,4 +92,17 @@ class Ingredient {
   factory Ingredient.fromJson(Map<String, dynamic> json) => _$IngredientFromJson(json);
 
   Map<String, dynamic> toJson() => _$IngredientToJson(this);
+
+  NutritionalValues get nutritionalValues {
+    return NutritionalValues.values(
+      energy * 1,
+      protein * 1,
+      carbohydrates * 1,
+      carbohydratesSugar * 1,
+      fat * 1,
+      fatSaturated * 1,
+      fibres * 1,
+      sodium * 1,
+    );
+  }
 }
