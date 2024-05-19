@@ -28,6 +28,7 @@ import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
+import 'package:wger/widgets/nutrition/helpers.dart';
 import 'package:wger/widgets/nutrition/widgets.dart';
 
 class MealForm extends StatelessWidget {
@@ -210,8 +211,10 @@ class MealItemForm extends StatelessWidget {
                         _mealItem.ingredientId = _listMealItems[index].ingredientId;
                         _mealItem.amount = _listMealItems[index].amount;
                       },
-                      title: Text(_listMealItems[index].ingredient.name),
-                      subtitle: Text('${_listMealItems[index].amount.toStringAsFixed(0)}$unit'),
+                      title: Text(
+                          '${_listMealItems[index].ingredient.name} (${_listMealItems[index].amount.toStringAsFixed(0)}$unit)'),
+                      subtitle: Text(getShortNutritionValues(
+                          _listMealItems[index].ingredient.nutritionalValues, context)),
                       trailing: const Icon(Icons.copy),
                     ),
                   );
@@ -376,8 +379,10 @@ class IngredientLogForm extends StatelessWidget {
                         _mealItem.ingredientId = diaryEntries[index].ingredientId;
                         _mealItem.amount = diaryEntries[index].amount;
                       },
-                      title: Text(_plan.diaryEntries[index].ingredient.name),
-                      subtitle: Text('${diaryEntries[index].amount.toStringAsFixed(0)}$unit'),
+                      title: Text(
+                          '${diaryEntries[index].ingredient.name} (${diaryEntries[index].amount.toStringAsFixed(0)}$unit)'),
+                      subtitle: Text(getShortNutritionValues(
+                          diaryEntries[index].ingredient.nutritionalValues, context)),
                       trailing: const Icon(Icons.copy),
                     ),
                   );
