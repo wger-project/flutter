@@ -36,7 +36,7 @@ void main() {
     protein: 5,
     fat: 20,
     fatSaturated: 7,
-    fibres: 12,
+    fibers: 12,
     sodium: 0.5,
   );
 

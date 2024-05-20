@@ -9,7 +9,7 @@ part of 'ingredient_api.dart';
 _$IngredientApiSearchDetailsImpl _$$IngredientApiSearchDetailsImplFromJson(
         Map<String, dynamic> json) =>
     _$IngredientApiSearchDetailsImpl(
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
       name: json['name'] as String,
       image: json['image'] as String?,
       imageThumbnail: json['image_thumbnail'] as String?,

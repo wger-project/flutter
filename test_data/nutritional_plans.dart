@@ -36,7 +36,7 @@ final ingredient1 = Ingredient(
   protein: 5,
   fat: 20,
   fatSaturated: 7,
-  fibres: 12,
+  fibers: 12,
   sodium: 0.5,
 );
 final ingredient2 = Ingredient(
@@ -50,7 +50,7 @@ final ingredient2 = Ingredient(
   protein: 1,
   fat: 12,
   fatSaturated: 9,
-  fibres: 50,
+  fibers: 50,
   sodium: 0,
 );
 final ingredient3 = Ingredient(
@@ -64,7 +64,7 @@ final ingredient3 = Ingredient(
   protein: 9,
   fat: 10,
   fatSaturated: 8,
-  fibres: 1,
+  fibers: 1,
   sodium: 10,
 );
 final muesli = Ingredient(
@@ -78,7 +78,7 @@ final muesli = Ingredient(
   protein: 5,
   fat: 20,
   fatSaturated: 7,
-  fibres: 12,
+  fibers: 12,
   sodium: 0.5,
 );
 final milk = Ingredient(
@@ -92,7 +92,7 @@ final milk = Ingredient(
   protein: 5,
   fat: 20,
   fatSaturated: 7,
-  fibres: 12,
+  fibers: 12,
   sodium: 0.5,
 );
 final apple = Ingredient(
@@ -106,7 +106,7 @@ final apple = Ingredient(
   protein: 5,
   fat: 20,
   fatSaturated: 7,
-  fibres: 12,
+  fibers: 12,
   sodium: 0.5,
 );
 final cake = Ingredient(
@@ -120,7 +120,7 @@ final cake = Ingredient(
   protein: 4,
   fat: 12,
   fatSaturated: 0,
-  fibres: 0,
+  fibers: 0,
   sodium: 0,
 );
 

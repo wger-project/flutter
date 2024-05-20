@@ -8,9 +8,9 @@ part of 'exercise_api.dart';
 
 _$ExerciseBaseDataImpl _$$ExerciseBaseDataImplFromJson(Map<String, dynamic> json) =>
     _$ExerciseBaseDataImpl(
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
       uuid: json['uuid'] as String,
-      variationId: json['variations'] as int? ?? null,
+      variationId: (json['variations'] as num?)?.toInt() ?? null,
       created: DateTime.parse(json['created'] as String),
       lastUpdate: DateTime.parse(json['last_update'] as String),
       lastUpdateGlobal: DateTime.parse(json['last_update_global'] as String),
@@ -59,8 +59,8 @@ Map<String, dynamic> _$$ExerciseBaseDataImplToJson(_$ExerciseBaseDataImpl instan
 
 _$ExerciseSearchDetailsImpl _$$ExerciseSearchDetailsImplFromJson(Map<String, dynamic> json) =>
     _$ExerciseSearchDetailsImpl(
-      translationId: json['id'] as int,
-      exerciseId: json['base_id'] as int,
+      translationId: (json['id'] as num).toInt(),
+      exerciseId: (json['base_id'] as num).toInt(),
       name: json['name'] as String,
       category: json['category'] as String,
       image: json['image'] as String?,

@@ -23,7 +23,7 @@ class NutritionalValues {
   double carbohydratesSugar = 0;
   double fat = 0;
   double fatSaturated = 0;
-  double fibres = 0;
+  double fibers = 0;
   double sodium = 0;
 
   NutritionalValues();
@@ -35,7 +35,7 @@ class NutritionalValues {
     this.carbohydratesSugar,
     this.fat,
     this.fatSaturated,
-    this.fibres,
+    this.fibers,
     this.sodium,
   );
 
@@ -51,7 +51,7 @@ class NutritionalValues {
     carbohydratesSugar += data.carbohydratesSugar;
     fat += data.fat;
     fatSaturated += data.fatSaturated;
-    fibres += data.fibres;
+    fibers += data.fibers;
     sodium += data.sodium;
   }
 
@@ -63,7 +63,7 @@ class NutritionalValues {
       carbohydratesSugar + o.carbohydratesSugar,
       fat + o.fat,
       fatSaturated + o.fatSaturated,
-      fibres + o.fibres,
+      fibers + o.fibers,
       sodium + o.sodium,
     );
   }
@@ -76,7 +76,7 @@ class NutritionalValues {
       carbohydratesSugar / o,
       fat / o,
       fatSaturated / o,
-      fibres / o,
+      fibers / o,
       sodium / o,
     );
   }
@@ -91,7 +91,7 @@ class NutritionalValues {
         carbohydratesSugar == other.carbohydratesSugar &&
         fat == other.fat &&
         fatSaturated == other.fatSaturated &&
-        fibres == other.fibres &&
+        fibers == other.fibers &&
         sodium == other.sodium;
   }
 
@@ -103,7 +103,7 @@ class NutritionalValues {
       'carbohydratesSugar' => carbohydratesSugar,
       'fat' => fat,
       'fatSaturated' => fatSaturated,
-      'fibres' => fibres,
+      'fibres' => fibers,
       'sodium' => sodium,
       _ => 0,
     };
@@ -111,11 +111,11 @@ class NutritionalValues {
 
   @override
   String toString() {
-    return 'e: $energy, p: $protein, c: $carbohydrates, cS: $carbohydratesSugar, f: $fat, fS: $fatSaturated, fi: $fibres, s: $sodium';
+    return 'e: $energy, p: $protein, c: $carbohydrates, cS: $carbohydratesSugar, f: $fat, fS: $fatSaturated, fi: $fibers, s: $sodium';
   }
 
   @override
   //ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => Object.hash(
-      energy, protein, carbohydrates, carbohydratesSugar, fat, fatSaturated, fibres, sodium);
+      energy, protein, carbohydrates, carbohydratesSugar, fat, fatSaturated, fibers, sodium);
 }

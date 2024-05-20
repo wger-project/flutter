@@ -12,7 +12,7 @@ WeightEntry _$WeightEntryFromJson(Map<String, dynamic> json) {
     requiredKeys: const ['id', 'weight', 'date'],
   );
   return WeightEntry(
-    id: json['id'] as int?,
+    id: (json['id'] as num?)?.toInt(),
     weight: stringToNum(json['weight'] as String?),
     date: json['date'] == null ? null : DateTime.parse(json['date'] as String),
   );

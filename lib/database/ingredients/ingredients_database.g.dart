@@ -212,10 +212,118 @@ class IngredientsCompanion extends UpdateCompanion<IngredientTable> {
 
 abstract class _$IngredientDatabase extends GeneratedDatabase {
   _$IngredientDatabase(QueryExecutor e) : super(e);
+  _$IngredientDatabaseManager get managers => _$IngredientDatabaseManager(this);
   late final $IngredientsTable ingredients = $IngredientsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [ingredients];
+}
+
+typedef $$IngredientsTableInsertCompanionBuilder = IngredientsCompanion Function({
+  required int id,
+  required String data,
+  required DateTime lastUpdate,
+  Value<int> rowid,
+});
+typedef $$IngredientsTableUpdateCompanionBuilder = IngredientsCompanion Function({
+  Value<int> id,
+  Value<String> data,
+  Value<DateTime> lastUpdate,
+  Value<int> rowid,
+});
+
+class $$IngredientsTableTableManager extends RootTableManager<
+    _$IngredientDatabase,
+    $IngredientsTable,
+    IngredientTable,
+    $$IngredientsTableFilterComposer,
+    $$IngredientsTableOrderingComposer,
+    $$IngredientsTableProcessedTableManager,
+    $$IngredientsTableInsertCompanionBuilder,
+    $$IngredientsTableUpdateCompanionBuilder> {
+  $$IngredientsTableTableManager(_$IngredientDatabase db, $IngredientsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer: $$IngredientsTableFilterComposer(ComposerState(db, table)),
+          orderingComposer: $$IngredientsTableOrderingComposer(ComposerState(db, table)),
+          getChildManagerBuilder: (p) => $$IngredientsTableProcessedTableManager(p),
+          getUpdateCompanionBuilder: ({
+            Value<int> id = const Value.absent(),
+            Value<String> data = const Value.absent(),
+            Value<DateTime> lastUpdate = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              IngredientsCompanion(
+            id: id,
+            data: data,
+            lastUpdate: lastUpdate,
+            rowid: rowid,
+          ),
+          getInsertCompanionBuilder: ({
+            required int id,
+            required String data,
+            required DateTime lastUpdate,
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              IngredientsCompanion.insert(
+            id: id,
+            data: data,
+            lastUpdate: lastUpdate,
+            rowid: rowid,
+          ),
+        ));
+}
+
+class $$IngredientsTableProcessedTableManager extends ProcessedTableManager<
+    _$IngredientDatabase,
+    $IngredientsTable,
+    IngredientTable,
+    $$IngredientsTableFilterComposer,
+    $$IngredientsTableOrderingComposer,
+    $$IngredientsTableProcessedTableManager,
+    $$IngredientsTableInsertCompanionBuilder,
+    $$IngredientsTableUpdateCompanionBuilder> {
+  $$IngredientsTableProcessedTableManager(super.$state);
+}
+
+class $$IngredientsTableFilterComposer
+    extends FilterComposer<_$IngredientDatabase, $IngredientsTable> {
+  $$IngredientsTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) => ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get data => $state.composableBuilder(
+      column: $state.table.data,
+      builder: (column, joinBuilders) => ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<DateTime> get lastUpdate => $state.composableBuilder(
+      column: $state.table.lastUpdate,
+      builder: (column, joinBuilders) => ColumnFilters(column, joinBuilders: joinBuilders));
+}
+
+class $$IngredientsTableOrderingComposer
+    extends OrderingComposer<_$IngredientDatabase, $IngredientsTable> {
+  $$IngredientsTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) => ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get data => $state.composableBuilder(
+      column: $state.table.data,
+      builder: (column, joinBuilders) => ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<DateTime> get lastUpdate => $state.composableBuilder(
+      column: $state.table.lastUpdate,
+      builder: (column, joinBuilders) => ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+class _$IngredientDatabaseManager {
+  final _$IngredientDatabase _db;
+  _$IngredientDatabaseManager(this._db);
+  $$IngredientsTableTableManager get ingredients =>
+      $$IngredientsTableTableManager(_db, _db.ingredients);
 }

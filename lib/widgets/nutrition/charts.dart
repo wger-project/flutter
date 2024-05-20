@@ -100,7 +100,7 @@ class FlNutritionalPlanGoalWidgetState extends State<FlNutritionalPlanGoalWidget
           today.carbohydrates / goals.carbohydrates!,
         if (goals.fat != null && goals.fat! > 0) today.fat / goals.fat!,
         if (goals.energy != null && goals.energy! > 0) today.energy / goals.energy!,
-        if (goals.fibres != null && goals.fibres! > 0) today.fibres / goals.fibres!,
+        if (goals.fibers != null && goals.fibers! > 0) today.fibers / goals.fibers!,
       ].reduce(max);
 
       final normWidth = constraints.maxWidth / maxVal;
@@ -132,13 +132,13 @@ class FlNutritionalPlanGoalWidgetState extends State<FlNutritionalPlanGoalWidget
           const SizedBox(height: 2),
           _diyGauge(context, normWidth, goals.energy, today.energy),
           // optionally display the advanced macro goals:
-          if (goals.fibres != null)
+          if (goals.fibers != null)
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               const SizedBox(height: 8),
-              Text(fmtMacro(AppLocalizations.of(context).fibres, today.fibres, goals.fibres,
+              Text(fmtMacro(AppLocalizations.of(context).fibres, today.fibers, goals.fibers,
                   AppLocalizations.of(context).g)),
               const SizedBox(height: 2),
-              _diyGauge(context, normWidth, goals.fibres, today.fibres),
+              _diyGauge(context, normWidth, goals.fibers, today.fibers),
             ]),
         ],
       );
@@ -400,8 +400,8 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
                     barchartGroup(2, barsSpace, barsWidth, 'carbohydratesSugar'),
                     barchartGroup(3, barsSpace, barsWidth, 'fat'),
                     barchartGroup(4, barsSpace, barsWidth, 'fatSaturated'),
-                    if (widget._nutritionalPlan.nutritionalGoals.fibres != null)
-                      barchartGroup(5, barsSpace, barsWidth, 'fibres'),
+                    if (widget._nutritionalPlan.nutritionalGoals.fibers != null)
+                      barchartGroup(5, barsSpace, barsWidth, 'fibers'),
                   ],
                 ),
               ),

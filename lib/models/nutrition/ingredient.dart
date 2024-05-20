@@ -62,8 +62,8 @@ class Ingredient {
   final num fatSaturated;
 
   /// g per 100g of product
-  @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
-  final num fibres;
+  @JsonKey(required: true, fromJson: stringToNum, toJson: numToString, name: 'fibres')
+  final num fibers;
 
   /// g per 100g of product
   @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
@@ -82,7 +82,7 @@ class Ingredient {
     required this.protein,
     required this.fat,
     required this.fatSaturated,
-    required this.fibres,
+    required this.fibers,
     required this.sodium,
     this.image,
   });

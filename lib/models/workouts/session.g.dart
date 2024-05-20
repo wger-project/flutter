@@ -12,8 +12,8 @@ WorkoutSession _$WorkoutSessionFromJson(Map<String, dynamic> json) {
     requiredKeys: const ['id', 'workout', 'date', 'impression', 'time_start', 'time_end'],
   );
   return WorkoutSession()
-    ..id = json['id'] as int?
-    ..workoutId = json['workout'] as int
+    ..id = (json['id'] as num?)?.toInt()
+    ..workoutId = (json['workout'] as num).toInt()
     ..date = DateTime.parse(json['date'] as String)
     ..impression = stringToNum(json['impression'] as String?)
     ..notes = json['notes'] as String? ?? ''

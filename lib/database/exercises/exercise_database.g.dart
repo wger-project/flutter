@@ -954,6 +954,7 @@ class LanguagesCompanion extends UpdateCompanion<LanguagesTable> {
 
 abstract class _$ExerciseDatabase extends GeneratedDatabase {
   _$ExerciseDatabase(QueryExecutor e) : super(e);
+  _$ExerciseDatabaseManager get managers => _$ExerciseDatabaseManager(this);
   late final $ExercisesTable exercises = $ExercisesTable(this);
   late final $MusclesTable muscles = $MusclesTable(this);
   late final $EquipmentsTable equipments = $EquipmentsTable(this);
@@ -965,4 +966,473 @@ abstract class _$ExerciseDatabase extends GeneratedDatabase {
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
       [exercises, muscles, equipments, categories, languages];
+}
+
+typedef $$ExercisesTableInsertCompanionBuilder = ExercisesCompanion Function({
+  required int id,
+  required String data,
+  required DateTime lastUpdate,
+  required DateTime lastFetched,
+  Value<int> rowid,
+});
+typedef $$ExercisesTableUpdateCompanionBuilder = ExercisesCompanion Function({
+  Value<int> id,
+  Value<String> data,
+  Value<DateTime> lastUpdate,
+  Value<DateTime> lastFetched,
+  Value<int> rowid,
+});
+
+class $$ExercisesTableTableManager extends RootTableManager<
+    _$ExerciseDatabase,
+    $ExercisesTable,
+    ExerciseTable,
+    $$ExercisesTableFilterComposer,
+    $$ExercisesTableOrderingComposer,
+    $$ExercisesTableProcessedTableManager,
+    $$ExercisesTableInsertCompanionBuilder,
+    $$ExercisesTableUpdateCompanionBuilder> {
+  $$ExercisesTableTableManager(_$ExerciseDatabase db, $ExercisesTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer: $$ExercisesTableFilterComposer(ComposerState(db, table)),
+          orderingComposer: $$ExercisesTableOrderingComposer(ComposerState(db, table)),
+          getChildManagerBuilder: (p) => $$ExercisesTableProcessedTableManager(p),
+          getUpdateCompanionBuilder: ({
+            Value<int> id = const Value.absent(),
+            Value<String> data = const Value.absent(),
+            Value<DateTime> lastUpdate = const Value.absent(),
+            Value<DateTime> lastFetched = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              ExercisesCompanion(
+            id: id,
+            data: data,
+            lastUpdate: lastUpdate,
+            lastFetched: lastFetched,
+            rowid: rowid,
+          ),
+          getInsertCompanionBuilder: ({
+            required int id,
+            required String data,
+            required DateTime lastUpdate,
+            required DateTime lastFetched,
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              ExercisesCompanion.insert(
+            id: id,
+            data: data,
+            lastUpdate: lastUpdate,
+            lastFetched: lastFetched,
+            rowid: rowid,
+          ),
+        ));
+}
+
+class $$ExercisesTableProcessedTableManager extends ProcessedTableManager<
+    _$ExerciseDatabase,
+    $ExercisesTable,
+    ExerciseTable,
+    $$ExercisesTableFilterComposer,
+    $$ExercisesTableOrderingComposer,
+    $$ExercisesTableProcessedTableManager,
+    $$ExercisesTableInsertCompanionBuilder,
+    $$ExercisesTableUpdateCompanionBuilder> {
+  $$ExercisesTableProcessedTableManager(super.$state);
+}
+
+class $$ExercisesTableFilterComposer extends FilterComposer<_$ExerciseDatabase, $ExercisesTable> {
+  $$ExercisesTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) => ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get data => $state.composableBuilder(
+      column: $state.table.data,
+      builder: (column, joinBuilders) => ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<DateTime> get lastUpdate => $state.composableBuilder(
+      column: $state.table.lastUpdate,
+      builder: (column, joinBuilders) => ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<DateTime> get lastFetched => $state.composableBuilder(
+      column: $state.table.lastFetched,
+      builder: (column, joinBuilders) => ColumnFilters(column, joinBuilders: joinBuilders));
+}
+
+class $$ExercisesTableOrderingComposer
+    extends OrderingComposer<_$ExerciseDatabase, $ExercisesTable> {
+  $$ExercisesTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) => ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get data => $state.composableBuilder(
+      column: $state.table.data,
+      builder: (column, joinBuilders) => ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<DateTime> get lastUpdate => $state.composableBuilder(
+      column: $state.table.lastUpdate,
+      builder: (column, joinBuilders) => ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<DateTime> get lastFetched => $state.composableBuilder(
+      column: $state.table.lastFetched,
+      builder: (column, joinBuilders) => ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+typedef $$MusclesTableInsertCompanionBuilder = MusclesCompanion Function({
+  required int id,
+  required Muscle data,
+  Value<int> rowid,
+});
+typedef $$MusclesTableUpdateCompanionBuilder = MusclesCompanion Function({
+  Value<int> id,
+  Value<Muscle> data,
+  Value<int> rowid,
+});
+
+class $$MusclesTableTableManager extends RootTableManager<
+    _$ExerciseDatabase,
+    $MusclesTable,
+    MuscleTable,
+    $$MusclesTableFilterComposer,
+    $$MusclesTableOrderingComposer,
+    $$MusclesTableProcessedTableManager,
+    $$MusclesTableInsertCompanionBuilder,
+    $$MusclesTableUpdateCompanionBuilder> {
+  $$MusclesTableTableManager(_$ExerciseDatabase db, $MusclesTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer: $$MusclesTableFilterComposer(ComposerState(db, table)),
+          orderingComposer: $$MusclesTableOrderingComposer(ComposerState(db, table)),
+          getChildManagerBuilder: (p) => $$MusclesTableProcessedTableManager(p),
+          getUpdateCompanionBuilder: ({
+            Value<int> id = const Value.absent(),
+            Value<Muscle> data = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              MusclesCompanion(
+            id: id,
+            data: data,
+            rowid: rowid,
+          ),
+          getInsertCompanionBuilder: ({
+            required int id,
+            required Muscle data,
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              MusclesCompanion.insert(
+            id: id,
+            data: data,
+            rowid: rowid,
+          ),
+        ));
+}
+
+class $$MusclesTableProcessedTableManager extends ProcessedTableManager<
+    _$ExerciseDatabase,
+    $MusclesTable,
+    MuscleTable,
+    $$MusclesTableFilterComposer,
+    $$MusclesTableOrderingComposer,
+    $$MusclesTableProcessedTableManager,
+    $$MusclesTableInsertCompanionBuilder,
+    $$MusclesTableUpdateCompanionBuilder> {
+  $$MusclesTableProcessedTableManager(super.$state);
+}
+
+class $$MusclesTableFilterComposer extends FilterComposer<_$ExerciseDatabase, $MusclesTable> {
+  $$MusclesTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) => ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnWithTypeConverterFilters<Muscle, Muscle, String> get data => $state.composableBuilder(
+      column: $state.table.data,
+      builder: (column, joinBuilders) =>
+          ColumnWithTypeConverterFilters(column, joinBuilders: joinBuilders));
+}
+
+class $$MusclesTableOrderingComposer extends OrderingComposer<_$ExerciseDatabase, $MusclesTable> {
+  $$MusclesTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) => ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get data => $state.composableBuilder(
+      column: $state.table.data,
+      builder: (column, joinBuilders) => ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+typedef $$EquipmentsTableInsertCompanionBuilder = EquipmentsCompanion Function({
+  required int id,
+  required Equipment data,
+  Value<int> rowid,
+});
+typedef $$EquipmentsTableUpdateCompanionBuilder = EquipmentsCompanion Function({
+  Value<int> id,
+  Value<Equipment> data,
+  Value<int> rowid,
+});
+
+class $$EquipmentsTableTableManager extends RootTableManager<
+    _$ExerciseDatabase,
+    $EquipmentsTable,
+    EquipmentTable,
+    $$EquipmentsTableFilterComposer,
+    $$EquipmentsTableOrderingComposer,
+    $$EquipmentsTableProcessedTableManager,
+    $$EquipmentsTableInsertCompanionBuilder,
+    $$EquipmentsTableUpdateCompanionBuilder> {
+  $$EquipmentsTableTableManager(_$ExerciseDatabase db, $EquipmentsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer: $$EquipmentsTableFilterComposer(ComposerState(db, table)),
+          orderingComposer: $$EquipmentsTableOrderingComposer(ComposerState(db, table)),
+          getChildManagerBuilder: (p) => $$EquipmentsTableProcessedTableManager(p),
+          getUpdateCompanionBuilder: ({
+            Value<int> id = const Value.absent(),
+            Value<Equipment> data = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              EquipmentsCompanion(
+            id: id,
+            data: data,
+            rowid: rowid,
+          ),
+          getInsertCompanionBuilder: ({
+            required int id,
+            required Equipment data,
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              EquipmentsCompanion.insert(
+            id: id,
+            data: data,
+            rowid: rowid,
+          ),
+        ));
+}
+
+class $$EquipmentsTableProcessedTableManager extends ProcessedTableManager<
+    _$ExerciseDatabase,
+    $EquipmentsTable,
+    EquipmentTable,
+    $$EquipmentsTableFilterComposer,
+    $$EquipmentsTableOrderingComposer,
+    $$EquipmentsTableProcessedTableManager,
+    $$EquipmentsTableInsertCompanionBuilder,
+    $$EquipmentsTableUpdateCompanionBuilder> {
+  $$EquipmentsTableProcessedTableManager(super.$state);
+}
+
+class $$EquipmentsTableFilterComposer extends FilterComposer<_$ExerciseDatabase, $EquipmentsTable> {
+  $$EquipmentsTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) => ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnWithTypeConverterFilters<Equipment, Equipment, String> get data => $state.composableBuilder(
+      column: $state.table.data,
+      builder: (column, joinBuilders) =>
+          ColumnWithTypeConverterFilters(column, joinBuilders: joinBuilders));
+}
+
+class $$EquipmentsTableOrderingComposer
+    extends OrderingComposer<_$ExerciseDatabase, $EquipmentsTable> {
+  $$EquipmentsTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) => ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get data => $state.composableBuilder(
+      column: $state.table.data,
+      builder: (column, joinBuilders) => ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+typedef $$CategoriesTableInsertCompanionBuilder = CategoriesCompanion Function({
+  required int id,
+  required ExerciseCategory data,
+  Value<int> rowid,
+});
+typedef $$CategoriesTableUpdateCompanionBuilder = CategoriesCompanion Function({
+  Value<int> id,
+  Value<ExerciseCategory> data,
+  Value<int> rowid,
+});
+
+class $$CategoriesTableTableManager extends RootTableManager<
+    _$ExerciseDatabase,
+    $CategoriesTable,
+    CategoryTable,
+    $$CategoriesTableFilterComposer,
+    $$CategoriesTableOrderingComposer,
+    $$CategoriesTableProcessedTableManager,
+    $$CategoriesTableInsertCompanionBuilder,
+    $$CategoriesTableUpdateCompanionBuilder> {
+  $$CategoriesTableTableManager(_$ExerciseDatabase db, $CategoriesTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer: $$CategoriesTableFilterComposer(ComposerState(db, table)),
+          orderingComposer: $$CategoriesTableOrderingComposer(ComposerState(db, table)),
+          getChildManagerBuilder: (p) => $$CategoriesTableProcessedTableManager(p),
+          getUpdateCompanionBuilder: ({
+            Value<int> id = const Value.absent(),
+            Value<ExerciseCategory> data = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              CategoriesCompanion(
+            id: id,
+            data: data,
+            rowid: rowid,
+          ),
+          getInsertCompanionBuilder: ({
+            required int id,
+            required ExerciseCategory data,
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              CategoriesCompanion.insert(
+            id: id,
+            data: data,
+            rowid: rowid,
+          ),
+        ));
+}
+
+class $$CategoriesTableProcessedTableManager extends ProcessedTableManager<
+    _$ExerciseDatabase,
+    $CategoriesTable,
+    CategoryTable,
+    $$CategoriesTableFilterComposer,
+    $$CategoriesTableOrderingComposer,
+    $$CategoriesTableProcessedTableManager,
+    $$CategoriesTableInsertCompanionBuilder,
+    $$CategoriesTableUpdateCompanionBuilder> {
+  $$CategoriesTableProcessedTableManager(super.$state);
+}
+
+class $$CategoriesTableFilterComposer extends FilterComposer<_$ExerciseDatabase, $CategoriesTable> {
+  $$CategoriesTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) => ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnWithTypeConverterFilters<ExerciseCategory, ExerciseCategory, String> get data =>
+      $state.composableBuilder(
+          column: $state.table.data,
+          builder: (column, joinBuilders) =>
+              ColumnWithTypeConverterFilters(column, joinBuilders: joinBuilders));
+}
+
+class $$CategoriesTableOrderingComposer
+    extends OrderingComposer<_$ExerciseDatabase, $CategoriesTable> {
+  $$CategoriesTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) => ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get data => $state.composableBuilder(
+      column: $state.table.data,
+      builder: (column, joinBuilders) => ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+typedef $$LanguagesTableInsertCompanionBuilder = LanguagesCompanion Function({
+  required int id,
+  required Language data,
+  Value<int> rowid,
+});
+typedef $$LanguagesTableUpdateCompanionBuilder = LanguagesCompanion Function({
+  Value<int> id,
+  Value<Language> data,
+  Value<int> rowid,
+});
+
+class $$LanguagesTableTableManager extends RootTableManager<
+    _$ExerciseDatabase,
+    $LanguagesTable,
+    LanguagesTable,
+    $$LanguagesTableFilterComposer,
+    $$LanguagesTableOrderingComposer,
+    $$LanguagesTableProcessedTableManager,
+    $$LanguagesTableInsertCompanionBuilder,
+    $$LanguagesTableUpdateCompanionBuilder> {
+  $$LanguagesTableTableManager(_$ExerciseDatabase db, $LanguagesTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer: $$LanguagesTableFilterComposer(ComposerState(db, table)),
+          orderingComposer: $$LanguagesTableOrderingComposer(ComposerState(db, table)),
+          getChildManagerBuilder: (p) => $$LanguagesTableProcessedTableManager(p),
+          getUpdateCompanionBuilder: ({
+            Value<int> id = const Value.absent(),
+            Value<Language> data = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              LanguagesCompanion(
+            id: id,
+            data: data,
+            rowid: rowid,
+          ),
+          getInsertCompanionBuilder: ({
+            required int id,
+            required Language data,
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              LanguagesCompanion.insert(
+            id: id,
+            data: data,
+            rowid: rowid,
+          ),
+        ));
+}
+
+class $$LanguagesTableProcessedTableManager extends ProcessedTableManager<
+    _$ExerciseDatabase,
+    $LanguagesTable,
+    LanguagesTable,
+    $$LanguagesTableFilterComposer,
+    $$LanguagesTableOrderingComposer,
+    $$LanguagesTableProcessedTableManager,
+    $$LanguagesTableInsertCompanionBuilder,
+    $$LanguagesTableUpdateCompanionBuilder> {
+  $$LanguagesTableProcessedTableManager(super.$state);
+}
+
+class $$LanguagesTableFilterComposer extends FilterComposer<_$ExerciseDatabase, $LanguagesTable> {
+  $$LanguagesTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) => ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnWithTypeConverterFilters<Language, Language, String> get data => $state.composableBuilder(
+      column: $state.table.data,
+      builder: (column, joinBuilders) =>
+          ColumnWithTypeConverterFilters(column, joinBuilders: joinBuilders));
+}
+
+class $$LanguagesTableOrderingComposer
+    extends OrderingComposer<_$ExerciseDatabase, $LanguagesTable> {
+  $$LanguagesTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) => ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get data => $state.composableBuilder(
+      column: $state.table.data,
+      builder: (column, joinBuilders) => ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+class _$ExerciseDatabaseManager {
+  final _$ExerciseDatabase _db;
+  _$ExerciseDatabaseManager(this._db);
+  $$ExercisesTableTableManager get exercises => $$ExercisesTableTableManager(_db, _db.exercises);
+  $$MusclesTableTableManager get muscles => $$MusclesTableTableManager(_db, _db.muscles);
+  $$EquipmentsTableTableManager get equipments =>
+      $$EquipmentsTableTableManager(_db, _db.equipments);
+  $$CategoriesTableTableManager get categories =>
+      $$CategoriesTableTableManager(_db, _db.categories);
+  $$LanguagesTableTableManager get languages => $$LanguagesTableTableManager(_db, _db.languages);
 }

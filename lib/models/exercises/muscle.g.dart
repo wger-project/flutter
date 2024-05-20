@@ -12,7 +12,7 @@ Muscle _$MuscleFromJson(Map<String, dynamic> json) {
     requiredKeys: const ['id', 'name', 'name_en', 'is_front'],
   );
   return Muscle(
-    id: json['id'] as int,
+    id: (json['id'] as num).toInt(),
     name: json['name'] as String,
     nameEn: json['name_en'] as String,
     isFront: json['is_front'] as bool,

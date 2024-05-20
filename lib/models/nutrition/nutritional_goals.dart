@@ -26,7 +26,7 @@ class NutritionalGoals {
   double? carbohydratesSugar = 0;
   double? fat = 0;
   double? fatSaturated = 0;
-  double? fibres = 0;
+  double? fibers = 0;
   double? sodium = 0;
 
   NutritionalGoals({
@@ -36,7 +36,7 @@ class NutritionalGoals {
     this.carbohydratesSugar,
     this.fat,
     this.fatSaturated,
-    this.fibres,
+    this.fibers,
     this.sodium,
   }) {
     // infer values where we can
@@ -71,7 +71,7 @@ class NutritionalGoals {
       carbohydratesSugar: carbohydratesSugar != null ? carbohydratesSugar! / v : null,
       fat: fat != null ? fat! / v : null,
       fatSaturated: fatSaturated != null ? fatSaturated! / v : null,
-      fibres: fibres != null ? fibres! / v : null,
+      fibers: fibers != null ? fibers! / v : null,
       sodium: sodium != null ? sodium! / v : null,
     );
   }
@@ -91,7 +91,7 @@ class NutritionalGoals {
       carbohydratesSugar ?? 0,
       fat ?? 0,
       fatSaturated ?? 0,
-      fibres ?? 0,
+      fibers ?? 0,
       sodium ?? 0,
     );
   }
@@ -126,7 +126,7 @@ class NutritionalGoals {
       'carbohydratesSugar' => carbohydratesSugar,
       'fat' => fat,
       'fatSaturated' => fatSaturated,
-      'fibres' => fibres,
+      'fibres' => fibers,
       'sodium' => sodium,
       _ => 0,
     };
@@ -134,13 +134,13 @@ class NutritionalGoals {
 
   @override
   String toString() {
-    return 'e: $energy, p: $protein, c: $carbohydrates, cS: $carbohydratesSugar, f: $fat, fS: $fatSaturated, fi: $fibres, s: $sodium';
+    return 'e: $energy, p: $protein, c: $carbohydrates, cS: $carbohydratesSugar, f: $fat, fS: $fatSaturated, fi: $fibers, s: $sodium';
   }
 
   @override
   //ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => Object.hash(
-      energy, protein, carbohydrates, carbohydratesSugar, fat, fatSaturated, fibres, sodium);
+      energy, protein, carbohydrates, carbohydratesSugar, fat, fatSaturated, fibers, sodium);
 
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
@@ -155,7 +155,7 @@ class NutritionalGoals {
         other.carbohydratesSugar == carbohydratesSugar &&
         other.fat == fat &&
         other.fatSaturated == fatSaturated &&
-        other.fibres == fibres &&
+        other.fibers == fibers &&
         other.sodium == sodium;
   }
 }

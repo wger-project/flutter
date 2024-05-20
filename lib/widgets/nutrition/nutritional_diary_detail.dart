@@ -190,9 +190,9 @@ class NutritionDiaryTable extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: tablePadding),
               child: Text(AppLocalizations.of(context).fibres),
             ),
-            Text(AppLocalizations.of(context).gValue(planned.fibres.toStringAsFixed(0))),
-            Text(AppLocalizations.of(context).gValue(logged.fibres.toStringAsFixed(0))),
-            Text((logged.fibres - planned.fibres).toStringAsFixed(0)),
+            Text(AppLocalizations.of(context).gValue(planned.fibers.toStringAsFixed(0))),
+            Text(AppLocalizations.of(context).gValue(logged.fibers.toStringAsFixed(0))),
+            Text((logged.fibers - planned.fibers).toStringAsFixed(0)),
           ],
         ),
         TableRow(

@@ -152,8 +152,8 @@ class MacronutrientsTable extends StatelessWidget {
             ),
             const Text(''),
             const Text(''),
-            Text(nutritionalGoals.fibres != null
-                ? nutritionalGoals.fibres!.toStringAsFixed(0) + AppLocalizations.of(context).g
+            Text(nutritionalGoals.fibers != null
+                ? nutritionalGoals.fibers!.toStringAsFixed(0) + AppLocalizations.of(context).g
                 : ''),
           ],
         ),

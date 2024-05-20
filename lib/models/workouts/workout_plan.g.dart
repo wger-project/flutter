@@ -12,7 +12,7 @@ WorkoutPlan _$WorkoutPlanFromJson(Map<String, dynamic> json) {
     requiredKeys: const ['id', 'creation_date', 'name', 'description'],
   );
   return WorkoutPlan(
-    id: json['id'] as int?,
+    id: (json['id'] as num?)?.toInt(),
     creationDate: DateTime.parse(json['creation_date'] as String),
     name: json['name'] as String,
     description: json['description'] as String?,

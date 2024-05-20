@@ -25,17 +25,17 @@ Video _$VideoFromJson(Map<String, dynamic> json) {
     ],
   );
   return Video(
-    id: json['id'] as int,
+    id: (json['id'] as num).toInt(),
     uuid: json['uuid'] as String,
-    base: json['exercise_base'] as int,
-    size: json['size'] as int,
+    base: (json['exercise_base'] as num).toInt(),
+    size: (json['size'] as num).toInt(),
     url: json['video'] as String,
     duration: stringToNum(json['duration'] as String?),
-    width: json['width'] as int,
-    height: json['height'] as int,
+    width: (json['width'] as num).toInt(),
+    height: (json['height'] as num).toInt(),
     codec: json['codec'] as String,
     codecLong: json['codec_long'] as String,
-    license: json['license'] as int,
+    license: (json['license'] as num).toInt(),
     licenseAuthor: json['license_author'] as String?,
   );
 }
