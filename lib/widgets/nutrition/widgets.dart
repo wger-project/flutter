@@ -75,10 +75,13 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
   var _searchEnglish = true;
 
   Future<String> readerscan(BuildContext context) async {
-    String scannedcode;
+    String? scannedcode;
     try {
       scannedcode =
           await Navigator.of(context).push(MaterialPageRoute(builder: (context) => ScanReader()));
+      if (scannedcode == null) {
+        return '';
+      }
 
       if (scannedcode.compareTo('-1') == 0) {
         return '';
@@ -164,6 +167,7 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
   Widget scanButton() {
     return IconButton(
       key: const Key('scan-button'),
+      icon: const FaIcon(FontAwesomeIcons.barcode),
       onPressed: () async {
         try {
           if (!widget.test!) {
@@ -228,15 +232,11 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
             }
           }
         } catch (e) {
-          if (context.mounted) {
+          if (mounted) {
             showErrorDialog(e, context);
-            // Need to pop back since reader scan is a widget
-            // otherwise returns null when back button is pressed
-            return Navigator.pop(context);
           }
         }
       },
-      icon: const FaIcon(FontAwesomeIcons.barcode),
     );
   }
 }
