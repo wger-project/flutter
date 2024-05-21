@@ -39,6 +39,13 @@ class ScanReader extends StatelessWidget {
   Widget build(BuildContext context) => Scaffold(
         body: ReaderWidget(
           onScan: (result) {
+            // notes:
+            // 1. even if result.isValid, result.error is always non-null (and set to "")
+            // 2. i've never encountered scan errors to see when they occur, and
+            //    i wouldn't know what to do about them anyway, so we simply return
+            //    result.text in such case (which presumably will be null, or "")
+            // 3. when user cancels (swipe left / back button) this code is no longer
+            //    run and the caller receives null
             Navigator.pop(context, result.text);
           },
         ),
@@ -72,22 +79,20 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
   var _searchEnglish = true;
 
   Future<String> readerscan(BuildContext context) async {
-    String? scannedcode;
     try {
-      scannedcode =
-          await Navigator.of(context).push(MaterialPageRoute(builder: (context) => ScanReader()));
-      if (scannedcode == null) {
+      final code = await Navigator.of(context)
+          .push<String?>(MaterialPageRoute(builder: (context) => ScanReader()));
+      if (code == null) {
         return '';
       }
 
-      if (scannedcode.compareTo('-1') == 0) {
+      if (code.compareTo('-1') == 0) {
         return '';
       }
+      return code;
     } on PlatformException {
       return '';
     }
-
-    return scannedcode;
   }
 
   @override
