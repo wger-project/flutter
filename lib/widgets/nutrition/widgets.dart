@@ -173,6 +173,9 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
           if (widget.barcode!.isNotEmpty) {
             final result = await Provider.of<NutritionPlansProvider>(context, listen: false)
                 .searchIngredientWithCode(widget.barcode!);
+            if (!mounted) {
+              return;
+            }
 
             if (result != null) {
               showDialog(
