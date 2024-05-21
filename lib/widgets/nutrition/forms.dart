@@ -368,9 +368,9 @@ class _IngredientLogFormState extends State<IngredientLogForm> {
                       builder: (BuildContext context, AsyncSnapshot<Ingredient> snapshot) {
                         if (snapshot.hasData) {
                           _mealItem.ingredient = snapshot.data!;
-                          return Padding(
-                            padding: const EdgeInsets.only(top: 16),
-                            child:
+                          return ListTile(
+                            leading: IngredientAvatar(ingredient: _mealItem.ingredient),
+                            title:
                                 Text(getShortNutritionValues(_mealItem.nutritionalValues, context)),
                           );
                         } else if (snapshot.hasError) {

@@ -25,9 +25,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/misc.dart';
 import 'package:wger/helpers/platform.dart';
 import 'package:wger/helpers/ui.dart';
 import 'package:wger/models/exercises/ingredient_api.dart';
+import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/nutrition.dart';
@@ -333,5 +335,25 @@ class NutritionDiaryEntry extends StatelessWidget {
               icon: const Icon(Icons.delete_outline)),
       ],
     );
+  }
+}
+
+class IngredientAvatar extends StatelessWidget {
+  final Ingredient ingredient;
+
+  const IngredientAvatar({super.key, required this.ingredient});
+
+  @override
+  Widget build(BuildContext context) {
+    return ingredient.image != null
+        ? GestureDetector(
+            child: CircleAvatar(backgroundImage: NetworkImage(ingredient.image!.image)),
+            onTap: () async {
+              if (ingredient.image!.objectUrl != '') {
+                return launchURL(ingredient.image!.objectUrl, context);
+              }
+            },
+          )
+        : const CircleIconAvatar(Icon(Icons.image, color: Colors.grey));
   }
 }
