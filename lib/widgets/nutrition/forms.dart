@@ -23,6 +23,7 @@ import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/ui.dart';
+import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
@@ -228,19 +229,27 @@ class MealItemForm extends StatelessWidget {
   }
 }
 
-class IngredientLogForm extends StatelessWidget {
-  late MealItem _mealItem;
+class IngredientLogForm extends StatefulWidget {
   final NutritionalPlan _plan;
+  const IngredientLogForm(this._plan);
 
+  @override
+  State<IngredientLogForm> createState() => _IngredientLogFormState();
+}
+
+class _IngredientLogFormState extends State<IngredientLogForm> {
   final _form = GlobalKey<FormState>();
   final _ingredientController = TextEditingController();
   final _ingredientIdController = TextEditingController();
   final _amountController = TextEditingController();
   final _dateController = TextEditingController();
   final _timeController = TextEditingController();
+  final _mealItem = MealItem.empty();
 
-  IngredientLogForm(this._plan) {
-    _mealItem = MealItem.empty();
+  bool validIngredientId = false;
+  @override
+  void initState() {
+    super.initState();
     final now = DateTime.now();
     _dateController.text = toDate(now)!;
     _timeController.text = timeToString(TimeOfDay.fromDateTime(now))!;
@@ -248,7 +257,7 @@ class IngredientLogForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final diaryEntries = _plan.diaryEntries;
+    final diaryEntries = widget._plan.diaryEntries;
     final String unit = AppLocalizations.of(context).g;
 
     return Container(
@@ -261,25 +270,32 @@ class IngredientLogForm extends StatelessWidget {
               _ingredientIdController,
               _ingredientController,
             ),
-            TextFormField(
-              decoration: InputDecoration(labelText: AppLocalizations.of(context).weight),
-              controller: _amountController,
-              keyboardType: TextInputType.number,
-              onFieldSubmitted: (_) {},
-              onSaved: (newValue) {
-                _mealItem.amount = double.parse(newValue!);
-              },
-              validator: (value) {
-                try {
-                  double.parse(value!);
-                } catch (error) {
-                  return AppLocalizations.of(context).enterValidNumber;
-                }
-                return null;
-              },
-            ),
             Row(
               children: [
+                Expanded(
+                  child: TextFormField(
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context).weight),
+                    controller: _amountController,
+                    keyboardType: TextInputType.number,
+                    onFieldSubmitted: (_) {},
+                    onChanged: (value) {
+                      setState(() {
+                        _mealItem.amount = double.tryParse(value) ?? _mealItem.amount;
+                      });
+                    },
+                    onSaved: (value) {
+                      _mealItem.amount = double.parse(value!);
+                    },
+                    validator: (value) {
+                      try {
+                        double.parse(value!);
+                      } catch (error) {
+                        return AppLocalizations.of(context).enterValidNumber;
+                      }
+                      return null;
+                    },
+                  ),
+                ),
                 Expanded(
                   child: TextFormField(
                     readOnly: true,
@@ -337,6 +353,46 @@ class IngredientLogForm extends StatelessWidget {
                 ),
               ],
             ),
+            if (validIngredientId)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Text(
+                      'Macros preview',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    FutureBuilder<Ingredient>(
+                      future: Provider.of<NutritionPlansProvider>(context, listen: false)
+                          .fetchIngredient(_mealItem.ingredientId),
+                      builder: (BuildContext context, AsyncSnapshot<Ingredient> snapshot) {
+                        if (snapshot.hasData) {
+                          _mealItem.ingredient = snapshot.data!;
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 16),
+                            child:
+                                Text(getShortNutritionValues(_mealItem.nutritionalValues, context)),
+                          );
+                        } else if (snapshot.hasError) {
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 16),
+                            child: Text(
+                              'Ingredient lookup error: ${snapshot.error}',
+                              style: const TextStyle(color: Colors.red),
+                            ),
+                          );
+                        } else {
+                          return const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              ),
             ElevatedButton(
               child: Text(AppLocalizations.of(context).save),
               onPressed: () async {
@@ -351,7 +407,7 @@ class IngredientLogForm extends StatelessWidget {
                   final tod = stringToTime(_timeController.text);
                   date = DateTime(date.year, date.month, date.day, tod.hour, tod.minute);
                   Provider.of<NutritionPlansProvider>(context, listen: false)
-                      .logIngredientToDiary(_mealItem, _plan.id!, date);
+                      .logIngredientToDiary(_mealItem, widget._plan.id!, date);
                 } on WgerHttpException catch (error) {
                   showHttpExceptionErrorDialog(error, context);
                 } catch (error) {
@@ -376,8 +432,11 @@ class IngredientLogForm extends StatelessWidget {
                         _ingredientController.text = diaryEntries[index].ingredient.name;
                         _ingredientIdController.text = diaryEntries[index].ingredient.id.toString();
                         _amountController.text = diaryEntries[index].amount.toStringAsFixed(0);
-                        _mealItem.ingredientId = diaryEntries[index].ingredientId;
-                        _mealItem.amount = diaryEntries[index].amount;
+                        setState(() {
+                          _mealItem.ingredientId = diaryEntries[index].ingredientId;
+                          _mealItem.amount = diaryEntries[index].amount;
+                          validIngredientId = true;
+                        });
                       },
                       title: Text(
                           '${diaryEntries[index].ingredient.name} (${diaryEntries[index].amount.toStringAsFixed(0)}$unit)'),
