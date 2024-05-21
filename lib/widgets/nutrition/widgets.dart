@@ -56,14 +56,11 @@ class IngredientTypeahead extends StatefulWidget {
   final TextEditingController _ingredientController;
   final TextEditingController _ingredientIdController;
 
-  String? barcode = '';
-
-  //Code? result;
-
-  late final bool? test;
+  final String barcode;
+  final bool? test;
   final bool showScanner;
 
-  IngredientTypeahead(
+  const IngredientTypeahead(
     this._ingredientIdController,
     this._ingredientController, {
     this.showScanner = true,
@@ -77,6 +74,13 @@ class IngredientTypeahead extends StatefulWidget {
 
 class _IngredientTypeaheadState extends State<IngredientTypeahead> {
   var _searchEnglish = true;
+  late String barcode;
+
+  @override
+  void initState() {
+    super.initState();
+    barcode = widget.barcode; // for unit tests
+  }
 
   Future<String> readerscan(BuildContext context) async {
     try {
@@ -173,12 +177,15 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
       onPressed: () async {
         try {
           if (!widget.test!) {
-            widget.barcode = await readerscan(context);
+            barcode = await readerscan(context);
           }
 
-          if (widget.barcode!.isNotEmpty) {
+          if (barcode.isNotEmpty) {
+            if (!mounted) {
+              return;
+            }
             final result = await Provider.of<NutritionPlansProvider>(context, listen: false)
-                .searchIngredientWithCode(widget.barcode!);
+                .searchIngredientWithCode(barcode);
             if (!mounted) {
               return;
             }
@@ -218,7 +225,7 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
                   key: const Key('notFound-dialog'),
                   title: Text(AppLocalizations.of(context).productNotFound),
                   content: Text(
-                    AppLocalizations.of(context).productNotFoundDescription(widget.barcode!),
+                    AppLocalizations.of(context).productNotFoundDescription(barcode),
                   ),
                   actions: [
                     TextButton(
