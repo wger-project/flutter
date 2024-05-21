@@ -101,7 +101,7 @@ void main() {
         home: Scaffold(
           body: Scrollable(
             viewportBuilder: (BuildContext context, ViewportOffset position) =>
-                MealItemForm(meal, const [], null, code, test),
+                MealItemForm(meal, const [], code, test),
           ),
         ),
         routes: {
@@ -213,7 +213,7 @@ void main() {
     testWidgets('confirm found ingredient dialog', (WidgetTester tester) async {
       await tester.pumpWidget(createMealItemFormScreen(meal1, '123', true));
 
-      final MealItemForm formScreen = tester.widget(find.byType(MealItemForm));
+      final IngredientForm formScreen = tester.widget(find.byType(IngredientForm));
 
       await tester.tap(find.byKey(const Key('scan-button')));
       await tester.pumpAndSettle();
@@ -293,7 +293,7 @@ void main() {
         (WidgetTester tester) async {
       await tester.pumpWidget(createMealItemFormScreen(meal1, '123', true));
 
-      final MealItemForm formScreen = tester.widget(find.byType(MealItemForm));
+      final IngredientForm formScreen = tester.widget(find.byType(IngredientForm));
 
       await tester.tap(find.byKey(const Key('scan-button')));
       await tester.pumpAndSettle();

@@ -24,6 +24,7 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/ui.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
+import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
@@ -115,135 +116,57 @@ class MealForm extends StatelessWidget {
   }
 }
 
-class MealItemForm extends StatelessWidget {
-  final Meal _meal;
-  late final MealItem _mealItem;
-  final List<MealItem> _listMealItems;
-  late String _barcode;
-  late bool _test;
-
-  final _form = GlobalKey<FormState>();
-  final _ingredientIdController = TextEditingController();
-  final _ingredientController = TextEditingController();
-  final _amountController = TextEditingController();
-
-  MealItemForm(this._meal, this._listMealItems, [mealItem, code, test]) {
-    _mealItem = mealItem ?? MealItem.empty();
-    _test = test ?? false;
-    _barcode = code ?? '';
-    _mealItem.mealId = _meal.id!;
-  }
-
-  TextEditingController get ingredientIdController => _ingredientIdController;
-
-  MealItem get mealItem => _mealItem;
-
-  @override
-  Widget build(BuildContext context) {
-    final String unit = AppLocalizations.of(context).g;
-    return Container(
-      margin: const EdgeInsets.all(20),
-      child: Form(
-        key: _form,
-        child: Column(
-          children: [
-            IngredientTypeahead(
-              _ingredientIdController,
-              _ingredientController,
-              barcode: _barcode,
-              test: _test,
-            ),
-            TextFormField(
-              key: const Key('field-weight'),
-              decoration: InputDecoration(labelText: AppLocalizations.of(context).weight),
-              controller: _amountController,
-              keyboardType: TextInputType.number,
-              onFieldSubmitted: (_) {},
-              onSaved: (newValue) {
-                _mealItem.amount = double.parse(newValue!);
-              },
-              validator: (value) {
-                try {
-                  double.parse(value!);
-                } catch (error) {
-                  return AppLocalizations.of(context).enterValidNumber;
-                }
-                return null;
-              },
-            ),
-            ElevatedButton(
-              key: const Key(SUBMIT_BUTTON_KEY_NAME),
-              child: Text(AppLocalizations.of(context).save),
-              onPressed: () async {
-                if (!_form.currentState!.validate()) {
-                  return;
-                }
-                _form.currentState!.save();
-                _mealItem.ingredientId = int.parse(_ingredientIdController.text);
-
-                try {
-                  Provider.of<NutritionPlansProvider>(context, listen: false)
-                      .addMealItem(_mealItem, _meal);
-                } on WgerHttpException catch (error) {
-                  showHttpExceptionErrorDialog(error, context);
-                } catch (error) {
-                  showErrorDialog(error, context);
-                }
-                Navigator.of(context).pop();
-              },
-            ),
-            if (_listMealItems.isNotEmpty) const SizedBox(height: 10.0),
-            Container(
-              padding: const EdgeInsets.all(10.0),
-              child: Text(AppLocalizations.of(context).recentlyUsedIngredients),
-            ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: _listMealItems.length,
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  return Card(
-                    child: ListTile(
-                      onTap: () {
-                        _ingredientController.text = _listMealItems[index].ingredient.name;
-                        _ingredientIdController.text =
-                            _listMealItems[index].ingredient.id.toString();
-                        _amountController.text = _listMealItems[index].amount.toStringAsFixed(0);
-                        _mealItem.ingredientId = _listMealItems[index].ingredientId;
-                        _mealItem.amount = _listMealItems[index].amount;
-                      },
-                      title: Text(
-                          '${_listMealItems[index].ingredient.name} (${_listMealItems[index].amount.toStringAsFixed(0)}$unit)'),
-                      subtitle: Text(getShortNutritionValues(
-                          _listMealItems[index].ingredient.nutritionalValues, context)),
-                      trailing: const Icon(Icons.copy),
-                    ),
-                  );
-                },
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
+Widget MealItemForm(Meal meal, List<MealItem> recent, [String? barcode, bool? test]) {
+  return IngredientForm(
+      // TODO we use planId 0 here cause we don't have one and we don't need it I think?
+      recent: recent.map((e) => Log.fromMealItem(e, 0, e.mealId)).toList(),
+      onSave: (BuildContext context, MealItem mealItem, DateTime? dt) {
+        mealItem.mealId = meal.id!;
+        Provider.of<NutritionPlansProvider>(context, listen: false).addMealItem(mealItem, meal);
+      },
+      barcode: barcode ?? '',
+      test: test ?? false,
+      withDate: false);
 }
 
-class IngredientLogForm extends StatefulWidget {
-  final NutritionalPlan _plan;
-  const IngredientLogForm(this._plan);
-
-  @override
-  State<IngredientLogForm> createState() => _IngredientLogFormState();
+Widget IngredientLogForm(NutritionalPlan plan) {
+  return IngredientForm(
+      recent: plan.diaryEntries,
+      onSave: (BuildContext context, MealItem mealItem, DateTime? dt) {
+        Provider.of<NutritionPlansProvider>(context, listen: false)
+            .logIngredientToDiary(mealItem, plan.id!, dt);
+      },
+      withDate: true);
 }
 
-class _IngredientLogFormState extends State<IngredientLogForm> {
+/// IngredientForm is a form that lets the user pick an ingredient (and amount) to
+/// log to the diary or to add to a meal.
+class IngredientForm extends StatefulWidget {
+  final Function(BuildContext context, MealItem mealItem, DateTime? dt) onSave;
+  final List<Log> recent;
+  final bool withDate;
+  final String barcode;
+  final bool test;
+
+  const IngredientForm({
+    required this.recent,
+    required this.onSave,
+    required this.withDate,
+    this.barcode = '',
+    this.test = false,
+  });
+
+  @override
+  State<IngredientForm> createState() => _IngredientFormState();
+}
+
+class _IngredientFormState extends State<IngredientForm> {
   final _form = GlobalKey<FormState>();
   final _ingredientController = TextEditingController();
   final _ingredientIdController = TextEditingController();
   final _amountController = TextEditingController();
-  final _dateController = TextEditingController();
-  final _timeController = TextEditingController();
+  final _dateController = TextEditingController(); // optional
+  final _timeController = TextEditingController(); // optional
   final _mealItem = MealItem.empty();
 
   bool validIngredientId = false;
@@ -255,9 +178,12 @@ class _IngredientLogFormState extends State<IngredientLogForm> {
     _timeController.text = timeToString(TimeOfDay.fromDateTime(now))!;
   }
 
+  TextEditingController get ingredientIdController => _ingredientIdController;
+
+  MealItem get mealItem => _mealItem;
+
   @override
   Widget build(BuildContext context) {
-    final diaryEntries = widget._plan.diaryEntries;
     final String unit = AppLocalizations.of(context).g;
 
     return Container(
@@ -269,11 +195,14 @@ class _IngredientLogFormState extends State<IngredientLogForm> {
             IngredientTypeahead(
               _ingredientIdController,
               _ingredientController,
+              barcode: widget.barcode,
+              test: widget.test,
             ),
             Row(
               children: [
                 Expanded(
                   child: TextFormField(
+                    key: const Key('field-weight'), // needed ?
                     decoration: InputDecoration(labelText: AppLocalizations.of(context).weight),
                     controller: _amountController,
                     keyboardType: TextInputType.number,
@@ -296,61 +225,63 @@ class _IngredientLogFormState extends State<IngredientLogForm> {
                     },
                   ),
                 ),
-                Expanded(
-                  child: TextFormField(
-                    readOnly: true,
-                    // Stop keyboard from appearing
-                    decoration: InputDecoration(
-                      labelText: AppLocalizations.of(context).date,
-                      // suffixIcon: const Icon(Icons.calendar_today),
-                    ),
-                    enableInteractiveSelection: false,
-                    controller: _dateController,
-                    onTap: () async {
-                      // Show Date Picker Here
-                      final pickedDate = await showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime(DateTime.now().year - 10),
-                        lastDate: DateTime.now(),
-                      );
-
-                      if (pickedDate != null) {
-                        _dateController.text = toDate(pickedDate)!;
-                      }
-                    },
-                    onSaved: (newValue) {
-                      _dateController.text = newValue!;
-                    },
-                  ),
-                ),
-                Expanded(
-                  child: TextFormField(
-                    key: const Key('field-time'),
-                    decoration: InputDecoration(
-                      labelText: AppLocalizations.of(context).time,
-                      //suffixIcon: const Icon(Icons.punch_clock)
-                    ),
-                    controller: _timeController,
-                    onTap: () async {
+                if (widget.withDate)
+                  Expanded(
+                    child: TextFormField(
+                      readOnly: true,
                       // Stop keyboard from appearing
-                      FocusScope.of(context).requestFocus(FocusNode());
+                      decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context).date,
+                        // suffixIcon: const Icon(Icons.calendar_today),
+                      ),
+                      enableInteractiveSelection: false,
+                      controller: _dateController,
+                      onTap: () async {
+                        // Show Date Picker Here
+                        final pickedDate = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(DateTime.now().year - 10),
+                          lastDate: DateTime.now(),
+                        );
 
-                      // Open time picker
-                      final pickedTime = await showTimePicker(
-                        context: context,
-                        initialTime: stringToTime(_timeController.text),
-                      );
-                      if (pickedTime != null) {
-                        _timeController.text = timeToString(pickedTime)!;
-                      }
-                    },
-                    onSaved: (newValue) {
-                      _timeController.text = newValue!;
-                    },
-                    onFieldSubmitted: (_) {},
+                        if (pickedDate != null) {
+                          _dateController.text = toDate(pickedDate)!;
+                        }
+                      },
+                      onSaved: (newValue) {
+                        _dateController.text = newValue!;
+                      },
+                    ),
                   ),
-                ),
+                if (widget.withDate)
+                  Expanded(
+                    child: TextFormField(
+                      key: const Key('field-time'),
+                      decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context).time,
+                        //suffixIcon: const Icon(Icons.punch_clock)
+                      ),
+                      controller: _timeController,
+                      onTap: () async {
+                        // Stop keyboard from appearing
+                        FocusScope.of(context).requestFocus(FocusNode());
+
+                        // Open time picker
+                        final pickedTime = await showTimePicker(
+                          context: context,
+                          initialTime: stringToTime(_timeController.text),
+                        );
+                        if (pickedTime != null) {
+                          _timeController.text = timeToString(pickedTime)!;
+                        }
+                      },
+                      onSaved: (newValue) {
+                        _timeController.text = newValue!;
+                      },
+                      onFieldSubmitted: (_) {},
+                    ),
+                  ),
               ],
             ),
             if (validIngredientId)
@@ -394,6 +325,9 @@ class _IngredientLogFormState extends State<IngredientLogForm> {
                 ),
               ),
             ElevatedButton(
+              key: const Key(
+                  SUBMIT_BUTTON_KEY_NAME), // needed? mealItemForm had it, but not ingredientlogform
+
               child: Text(AppLocalizations.of(context).save),
               onPressed: () async {
                 if (!_form.currentState!.validate()) {
@@ -406,8 +340,7 @@ class _IngredientLogFormState extends State<IngredientLogForm> {
                   var date = DateTime.parse(_dateController.text);
                   final tod = stringToTime(_timeController.text);
                   date = DateTime(date.year, date.month, date.day, tod.hour, tod.minute);
-                  Provider.of<NutritionPlansProvider>(context, listen: false)
-                      .logIngredientToDiary(_mealItem, widget._plan.id!, date);
+                  widget.onSave(context, _mealItem, date);
                 } on WgerHttpException catch (error) {
                   showHttpExceptionErrorDialog(error, context);
                 } catch (error) {
@@ -416,32 +349,33 @@ class _IngredientLogFormState extends State<IngredientLogForm> {
                 Navigator.of(context).pop();
               },
             ),
-            if (diaryEntries.isNotEmpty) const SizedBox(height: 10.0),
+            if (widget.recent.isNotEmpty) const SizedBox(height: 10.0),
             Container(
               padding: const EdgeInsets.all(10.0),
               child: Text(AppLocalizations.of(context).recentlyUsedIngredients),
             ),
             Expanded(
               child: ListView.builder(
-                itemCount: diaryEntries.length,
+                itemCount: widget.recent.length,
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
                   return Card(
                     child: ListTile(
                       onTap: () {
-                        _ingredientController.text = diaryEntries[index].ingredient.name;
-                        _ingredientIdController.text = diaryEntries[index].ingredient.id.toString();
-                        _amountController.text = diaryEntries[index].amount.toStringAsFixed(0);
+                        _ingredientController.text = widget.recent[index].ingredient.name;
+                        _ingredientIdController.text =
+                            widget.recent[index].ingredient.id.toString();
+                        _amountController.text = widget.recent[index].amount.toStringAsFixed(0);
                         setState(() {
-                          _mealItem.ingredientId = diaryEntries[index].ingredientId;
-                          _mealItem.amount = diaryEntries[index].amount;
+                          _mealItem.ingredientId = widget.recent[index].ingredientId;
+                          _mealItem.amount = widget.recent[index].amount;
                           validIngredientId = true;
                         });
                       },
                       title: Text(
-                          '${diaryEntries[index].ingredient.name} (${diaryEntries[index].amount.toStringAsFixed(0)}$unit)'),
+                          '${widget.recent[index].ingredient.name} (${widget.recent[index].amount.toStringAsFixed(0)}$unit)'),
                       subtitle: Text(getShortNutritionValues(
-                          diaryEntries[index].ingredient.nutritionalValues, context)),
+                          widget.recent[index].ingredient.nutritionalValues, context)),
                       trailing: const Icon(Icons.copy),
                     ),
                   );
