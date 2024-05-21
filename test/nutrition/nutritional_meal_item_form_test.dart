@@ -213,7 +213,7 @@ void main() {
     testWidgets('confirm found ingredient dialog', (WidgetTester tester) async {
       await tester.pumpWidget(createMealItemFormScreen(meal1, '123', true));
 
-      final IngredientForm formScreen = tester.widget(find.byType(IngredientForm));
+      final IngredientFormState formState = tester.state(find.byType(IngredientForm));
 
       await tester.tap(find.byKey(const Key('scan-button')));
       await tester.pumpAndSettle();
@@ -223,7 +223,7 @@ void main() {
       await tester.tap(find.byKey(const Key('found-dialog-confirm-button')));
       await tester.pumpAndSettle();
 
-      expect(formScreen.ingredientIdController.text, '1');
+      expect(formState.ingredientIdController.text, '1');
     });
 
     testWidgets('close found ingredient dialog', (WidgetTester tester) async {
@@ -293,7 +293,7 @@ void main() {
         (WidgetTester tester) async {
       await tester.pumpWidget(createMealItemFormScreen(meal1, '123', true));
 
-      final IngredientForm formScreen = tester.widget(find.byType(IngredientForm));
+      final IngredientFormState formState = tester.state(find.byType(IngredientForm));
 
       await tester.tap(find.byKey(const Key('scan-button')));
       await tester.pumpAndSettle();
@@ -303,7 +303,7 @@ void main() {
       await tester.tap(find.byKey(const Key('found-dialog-confirm-button')));
       await tester.pumpAndSettle();
 
-      expect(formScreen.ingredientIdController.text, '1');
+      expect(formState.ingredientIdController.text, '1');
 
       await tester.enterText(find.byKey(const Key('field-weight')), '2');
       await tester.pumpAndSettle();
@@ -313,7 +313,7 @@ void main() {
       await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
       await tester.pumpAndSettle();
 
-      expect(formScreen.mealItem.amount, 2);
+      expect(formState.mealItem.amount, 2);
 
       verify(mockNutrition.addMealItem(any, meal1));
     });

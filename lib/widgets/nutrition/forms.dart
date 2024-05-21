@@ -157,10 +157,10 @@ class IngredientForm extends StatefulWidget {
   });
 
   @override
-  State<IngredientForm> createState() => _IngredientFormState();
+  State<IngredientForm> createState() => IngredientFormState();
 }
 
-class _IngredientFormState extends State<IngredientForm> {
+class IngredientFormState extends State<IngredientForm> {
   final _form = GlobalKey<FormState>();
   final _ingredientController = TextEditingController();
   final _ingredientIdController = TextEditingController();
@@ -209,7 +209,10 @@ class _IngredientFormState extends State<IngredientForm> {
                     onFieldSubmitted: (_) {},
                     onChanged: (value) {
                       setState(() {
-                        _mealItem.amount = double.tryParse(value) ?? _mealItem.amount;
+                        final v = double.tryParse(value);
+                        if (v != null) {
+                          _mealItem.amount = v;
+                        }
                       });
                     },
                     onSaved: (value) {
