@@ -72,6 +72,7 @@ class MealItem {
   Map<String, dynamic> toJson() => _$MealItemToJson(this);
 
   /// Calculations
+  /// TODO why does this not consider weightUnitObj ? should we do the same as Log.nutritionalValues here?
   NutritionalValues get nutritionalValues {
     // This is already done on the server. It might be better to read it from there.
     final out = NutritionalValues();
