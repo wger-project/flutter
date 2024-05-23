@@ -399,7 +399,7 @@
   "@total": {
     "description": "Label used for total sums of e.g. calories or similar"
   },
-  "fibres": "Клетчатка",
+  "fiber": "Клетчатка",
   "@fibres": {},
   "percentEnergy": "Процент энергии",
   "@percentEnergy": {},

@@ -125,7 +125,7 @@ class NutritionalPlan {
         fat: goalFat?.toDouble(),
         protein: goalProtein?.toDouble(),
         carbohydrates: goalCarbohydrates?.toDouble(),
-        fibers: goalFibers?.toDouble(),
+        fiber: goalFibers?.toDouble(),
       );
     }
     // if there are no set goals and no defined meals, the goals are still undefined
@@ -141,7 +141,7 @@ class NutritionalPlan {
       carbohydrates: sumValues.carbohydrates,
       carbohydratesSugar: sumValues.carbohydratesSugar,
       fatSaturated: sumValues.fatSaturated,
-      fibers: sumValues.fibers,
+      fiber: sumValues.fiber,
       sodium: sumValues.sodium,
     );
   }

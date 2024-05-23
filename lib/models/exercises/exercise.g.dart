@@ -25,8 +25,12 @@ Exercise _$ExerciseFromJson(Map<String, dynamic> json) {
   return Exercise(
     id: (json['id'] as num?)?.toInt(),
     uuid: json['uuid'] as String?,
-    created: json['created'] == null ? null : DateTime.parse(json['created'] as String),
-    lastUpdate: json['last_update'] == null ? null : DateTime.parse(json['last_update'] as String),
+    created: json['created'] == null
+        ? null
+        : DateTime.parse(json['created'] as String),
+    lastUpdate: json['last_update'] == null
+        ? null
+        : DateTime.parse(json['last_update'] as String),
     lastUpdateGlobal: json['last_update_global'] == null
         ? null
         : DateTime.parse(json['last_update_global'] as String),
@@ -39,10 +43,15 @@ Exercise _$ExerciseFromJson(Map<String, dynamic> json) {
         : ExerciseCategory.fromJson(json['categories'] as Map<String, dynamic>),
   )
     ..categoryId = (json['category'] as num).toInt()
-    ..musclesIds = (json['muscles'] as List<dynamic>).map((e) => (e as num).toInt()).toList()
-    ..musclesSecondaryIds =
-        (json['muscles_secondary'] as List<dynamic>).map((e) => (e as num).toInt()).toList()
-    ..equipmentIds = (json['equipment'] as List<dynamic>).map((e) => (e as num).toInt()).toList();
+    ..musclesIds = (json['muscles'] as List<dynamic>)
+        .map((e) => (e as num).toInt())
+        .toList()
+    ..musclesSecondaryIds = (json['muscles_secondary'] as List<dynamic>)
+        .map((e) => (e as num).toInt())
+        .toList()
+    ..equipmentIds = (json['equipment'] as List<dynamic>)
+        .map((e) => (e as num).toInt())
+        .toList();
 }
 
 Map<String, dynamic> _$ExerciseToJson(Exercise instance) => <String, dynamic>{
@@ -56,6 +65,7 @@ Map<String, dynamic> _$ExerciseToJson(Exercise instance) => <String, dynamic>{
       'categories': instance.category?.toJson(),
       'muscles': instance.musclesIds,
       'muscles_secondary': instance.musclesSecondaryIds,
-      'musclesSecondary': instance.musclesSecondary.map((e) => e.toJson()).toList(),
+      'musclesSecondary':
+          instance.musclesSecondary.map((e) => e.toJson()).toList(),
       'equipment': instance.equipmentIds,
     };

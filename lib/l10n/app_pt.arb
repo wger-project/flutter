@@ -179,7 +179,7 @@
   "@carbohydratesShort": {
     "description": "The first letter or short name of the word 'Carbohydrates', used in overviews"
   },
-  "fibres": "Fibra",
+  "fiber": "Fibra",
   "@fibres": {},
   "sodium": "Sódio",
   "@sodium": {},

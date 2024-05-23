@@ -472,7 +472,7 @@
   "@noWeightEntries": {
     "description": "Message shown when the user has no logged weight entries"
   },
-  "fibres": "Fibra",
+  "fiber": "Fibra",
   "@fibres": {},
   "sodium": "Sodi",
   "@sodium": {},

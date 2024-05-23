@@ -50,7 +50,7 @@ void main() {
     expect(find.text('4 g'), findsOneWidget, reason: 'find grams of sugar');
     expect(find.text('29 g'), findsOneWidget, reason: 'find grams of fat');
     expect(find.text('14 g'), findsOneWidget, reason: 'find grams of saturated fat');
-    expect(find.text('50 g'), findsOneWidget, reason: 'find grams of fibre');
+    expect(find.text('50 g'), findsOneWidget, reason: 'find grams of fiber');
 
     expect(find.text('100 g Water'), findsOneWidget, reason: 'Name of ingredient');
     expect(find.text('75 g Burger soup'), findsOneWidget, reason: 'Name of ingredient');

@@ -24,10 +24,12 @@ Map<String, dynamic> _$$IngredientApiSearchDetailsImplToJson(
       'image_thumbnail': instance.imageThumbnail,
     };
 
-_$IngredientApiSearchEntryImpl _$$IngredientApiSearchEntryImplFromJson(Map<String, dynamic> json) =>
+_$IngredientApiSearchEntryImpl _$$IngredientApiSearchEntryImplFromJson(
+        Map<String, dynamic> json) =>
     _$IngredientApiSearchEntryImpl(
       value: json['value'] as String,
-      data: IngredientApiSearchDetails.fromJson(json['data'] as Map<String, dynamic>),
+      data: IngredientApiSearchDetails.fromJson(
+          json['data'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$$IngredientApiSearchEntryImplToJson(
@@ -37,14 +39,17 @@ Map<String, dynamic> _$$IngredientApiSearchEntryImplToJson(
       'data': instance.data,
     };
 
-_$IngredientApiSearchImpl _$$IngredientApiSearchImplFromJson(Map<String, dynamic> json) =>
+_$IngredientApiSearchImpl _$$IngredientApiSearchImplFromJson(
+        Map<String, dynamic> json) =>
     _$IngredientApiSearchImpl(
       suggestions: (json['suggestions'] as List<dynamic>)
-          .map((e) => IngredientApiSearchEntry.fromJson(e as Map<String, dynamic>))
+          .map((e) =>
+              IngredientApiSearchEntry.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
-Map<String, dynamic> _$$IngredientApiSearchImplToJson(_$IngredientApiSearchImpl instance) =>
+Map<String, dynamic> _$$IngredientApiSearchImplToJson(
+        _$IngredientApiSearchImpl instance) =>
     <String, dynamic>{
       'suggestions': instance.suggestions,
     };

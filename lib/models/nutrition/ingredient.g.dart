@@ -20,7 +20,7 @@ Ingredient _$IngredientFromJson(Map<String, dynamic> json) {
       'protein',
       'fat',
       'fat_saturated',
-      'fibres',
+      'fiber',
       'sodium'
     ],
   );
@@ -35,7 +35,7 @@ Ingredient _$IngredientFromJson(Map<String, dynamic> json) {
     protein: stringToNum(json['protein'] as String?),
     fat: stringToNum(json['fat'] as String?),
     fatSaturated: stringToNum(json['fat_saturated'] as String?),
-    fibers: stringToNum(json['fibres'] as String?),
+    fiber: stringToNum(json['fiber'] as String?),
     sodium: stringToNum(json['sodium'] as String?),
     image: json['image'] == null
         ? null
@@ -43,7 +43,8 @@ Ingredient _$IngredientFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$IngredientToJson(Ingredient instance) => <String, dynamic>{
+Map<String, dynamic> _$IngredientToJson(Ingredient instance) =>
+    <String, dynamic>{
       'id': instance.id,
       'code': instance.code,
       'name': instance.name,
@@ -54,7 +55,7 @@ Map<String, dynamic> _$IngredientToJson(Ingredient instance) => <String, dynamic
       'protein': numToString(instance.protein),
       'fat': numToString(instance.fat),
       'fat_saturated': numToString(instance.fatSaturated),
-      'fibres': numToString(instance.fibers),
+      'fiber': numToString(instance.fiber),
       'sodium': numToString(instance.sodium),
       'image': instance.image,
     };
