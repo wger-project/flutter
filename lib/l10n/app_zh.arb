@@ -61,7 +61,7 @@
   "@workoutSession": {
     "description": "A (logged) workout session"
   },
-  "sameRepetitions": "填写次数和量级,则自动计算出相乘的结果作为数量",
+  "sameRepetitions": "如果您对所有组别进行相同的重复次数和重量，则只需填写一行即可。例如，对于 4 组，只需输入 10 次重复，这会自动变成「4 x 10」。",
   "@sameRepetitions": {},
   "exercise": "锻炼项目",
   "@exercise": {
@@ -87,7 +87,7 @@
   "@impression": {
     "description": "General impression (e.g. for a workout session) such as good, bad, etc."
   },
-  "notes": "备注",
+  "notes": "笔记",
   "@notes": {
     "description": "Personal notes, e.g. for a workout session"
   },
@@ -113,7 +113,7 @@
   "@newWorkout": {
     "description": "Header when adding a new workout"
   },
-  "category": "目录",
+  "category": "类别",
   "@category": {
     "description": "Category for an exercise, ingredient, etc."
   },
@@ -157,7 +157,7 @@
   "@labelWorkoutPlans": {
     "description": "Title for screen workout plans"
   },
-  "loginInstead": "登录",
+  "loginInstead": "已经有帐号了吗？立即登入",
   "@loginInstead": {},
   "registerInstead": "没有帐户？点击注册",
   "@registerInstead": {},
@@ -228,7 +228,7 @@
   "@aboutSourceTitle": {
     "description": "Title for source code section in the about dialog"
   },
-  "aboutDescription": "谢谢使用!",
+  "aboutDescription": "感谢您使用wger！ wger 是一个协作开源项目，由来自世界各地的健身爱好者创建。",
   "@aboutDescription": {
     "description": "Text in the about dialog"
   },
@@ -348,13 +348,13 @@
   "@addMeal": {},
   "save": "保存",
   "@save": {},
-  "name": "给你的计划起个名字",
+  "name": "名",
   "@name": {
     "description": "Name for a workout or nutritional plan"
   },
-  "description": "详细信息",
+  "description": "描述",
   "@description": {},
-  "logHelpEntriesUnits": "有计量单位和数量的会以图形化的方式展现，类似时间、未完成的项目将不会出现在这里",
+  "logHelpEntriesUnits": "请注意，系统只会绘制带重量单位（公斤或磅）和重复次数的纪录，其他组合（例如时间或直到力竭）将被忽略。",
   "@logHelpEntriesUnits": {},
   "selectIngredient": "请选择一个营养成分",
   "@selectIngredient": {
@@ -385,17 +385,17 @@
   "@addSet": {
     "description": "Label for the button that adds a set (to a workout day)"
   },
-  "logHelpEntries": "同一项目在当天有多次记录的情况下, 图中只显示训练量较大的项目",
+  "logHelpEntries": "如果一天内有多个相同重复次数但重量不同的条目，图表只会显示重量较高的条目。",
   "@logHelpEntries": {},
   "plateCalculator": "圈",
   "@plateCalculator": {
     "description": "Label used for the plate calculator in the gym mode"
   },
-  "rirNotUsed": "未设置组内重复次数",
+  "rirNotUsed": "保留次数未储存",
   "@rirNotUsed": {
     "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
   },
-  "rir": "组内重复次数",
+  "rir": "保留次数",
   "@rir": {
     "description": "Shorthand for Repetitions In Reserve"
   },
@@ -443,7 +443,7 @@
   "@aboutContactUsText": {
     "description": "Text for contact us section in the about dialog"
   },
-  "aboutBugsText": "反馈一下你的使用体验吧",
+  "aboutBugsText": "如果某些情况未如预期运作或您认为缺少某个功能，请与我们联络。",
   "@aboutBugsText": {
     "description": "Text for bugs section in the about dialog"
   },
@@ -467,7 +467,7 @@
   "@weekAverage": {
     "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
   },
-  "productFoundDescription": "对应此产品的条形码为{productName}。是否继续？{productName}",
+  "productFoundDescription": "此条码对应这产品：{productName}。您想继续吗？",
   "@productFoundDescription": {
     "description": "Dialog info when product is found with barcode",
     "type": "text",
@@ -487,7 +487,7 @@
   "@gPerBodyKg": {
     "description": "Label used for total sums of e.g. calories or similar in grams per Kg of body weight"
   },
-  "total": "总量",
+  "total": "总共",
   "@total": {
     "description": "Label used for total sums of e.g. calories or similar"
   },
@@ -537,9 +537,9 @@
   "@measurements": {
     "description": "Categories for the measurements such as biceps size, body fat, etc."
   },
-  "measurementCategoriesHelpText": "测量类别，如“上臂围”或“体脂”",
+  "measurementCategoriesHelpText": "测量类别，例如“二头肌”或“体脂”",
   "@measurementCategoriesHelpText": {},
-  "measurementEntriesHelpText": "用于度量的单位，如\"cm\"或\"%\"。",
+  "measurementEntriesHelpText": "用于测量类别的单位，例如「cm」或「%」",
   "@measurementEntriesHelpText": {},
   "value": "数值",
   "@value": {
@@ -562,5 +562,25 @@
   "exerciseName": "锻炼名",
   "@exerciseName": {
     "description": "Label for the name of a workout exercise"
-  }
+  },
+  "previous": "前一个",
+  "@previous": {},
+  "kg": "公斤",
+  "@kg": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "verify": "确认",
+  "@verify": {},
+  "next": "下一个",
+  "@next": {},
+  "success": "成功",
+  "@success": {
+    "description": "Message when an action completed successfully, usually used as a heading"
+  },
+  "lb": "磅",
+  "@lb": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "alternativeNames": "別称",
+  "@alternativeNames": {}
 }
