@@ -40,3 +40,12 @@ List<Widget> getMutedNutritionalValues(NutritionalValues values, BuildContext co
         textAlign: TextAlign.right,
       ),
     ];
+
+String getShortNutritionValues(NutritionalValues values, BuildContext context) {
+  final loc = AppLocalizations.of(context);
+  final e = '${loc.energyShort} ${loc.kcalValue(values.energy.toStringAsFixed(0))}';
+  final p = '${loc.proteinShort} ${loc.gValue(values.protein.toStringAsFixed(0))}';
+  final c = '${loc.carbohydratesShort} ${loc.gValue(values.carbohydrates.toStringAsFixed(0))}';
+  final f = '${loc.fatShort} ${loc.gValue(values.fat.toStringAsFixed(0))}';
+  return '$e / $p / $c / $f';
+}

@@ -83,21 +83,10 @@ class Log {
   /// Calculations
   NutritionalValues get nutritionalValues {
     // This is already done on the server. It might be better to read it from there.
-    final out = NutritionalValues();
 
-    //final weight = amount;
     final weight =
         weightUnitObj == null ? amount : amount * weightUnitObj!.amount * weightUnitObj!.grams;
 
-    out.energy = ingredient.energy * weight / 100;
-    out.protein = ingredient.protein * weight / 100;
-    out.carbohydrates = ingredient.carbohydrates * weight / 100;
-    out.carbohydratesSugar = ingredient.carbohydratesSugar * weight / 100;
-    out.fat = ingredient.fat * weight / 100;
-    out.fatSaturated = ingredient.fatSaturated * weight / 100;
-    out.fiber = ingredient.fiber * weight / 100;
-    out.sodium = ingredient.sodium * weight / 100;
-
-    return out;
+    return ingredient.nutritionalValues / (100 / weight);
   }
 }

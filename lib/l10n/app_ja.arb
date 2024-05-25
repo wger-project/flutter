@@ -143,11 +143,11 @@
   "@reps": {
     "description": "Shorthand for repetitions, used when space constraints are tighter"
   },
-  "rir": "反復準備",
+  "rir": "予備レップ",
   "@rir": {
     "description": "Shorthand for Repetitions In Reserve"
   },
-  "rirNotUsed": "反復準備が使用されていません",
+  "rirNotUsed": "予備レップは保存されていません",
   "@rirNotUsed": {
     "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
   },
@@ -558,5 +558,61 @@
     "description": "Translation for close"
   },
   "userProfile": "あなたのプロフィール",
-  "@userProfile": {}
+  "@userProfile": {},
+  "barbell": "バーベル",
+  "@barbell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "arms": "腕",
+  "@arms": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "chest": "胸",
+  "@chest": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "dumbbell": "ダンベル",
+  "@dumbbell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "success": "成功",
+  "@success": {
+    "description": "Message when an action completed successfully, usually used as a heading"
+  },
+  "cardio": "有酸素運動",
+  "@cardio": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "bench": "ベンチ",
+  "@bench": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "settingsCacheDescription": "エクササイズキャッシュ",
+  "@settingsCacheDescription": {},
+  "settingsTitle": "設定",
+  "@settingsTitle": {},
+  "settingsCacheTitle": "キャッシュ",
+  "@settingsCacheTitle": {},
+  "back": "戻る",
+  "@back": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "abs": "腹筋",
+  "@abs": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "biceps": "力こぶ",
+  "@biceps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "body_weight": "体重",
+  "@body_weight": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "verify": "確認する",
+  "@verify": {},
+  "calves": "ふくらはぎ",
+  "@calves": {
+    "description": "Generated entry for translation for server strings"
+  }
 }

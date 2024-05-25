@@ -25,9 +25,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/misc.dart';
 import 'package:wger/helpers/platform.dart';
 import 'package:wger/helpers/ui.dart';
 import 'package:wger/models/exercises/ingredient_api.dart';
+import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/nutrition.dart';
@@ -35,14 +37,18 @@ import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/nutrition/helpers.dart';
 
 class ScanReader extends StatelessWidget {
-  String? scannedr;
-
   @override
   Widget build(BuildContext context) => Scaffold(
         body: ReaderWidget(
           onScan: (result) {
-            scannedr = result.text;
-            Navigator.pop(context, scannedr);
+            // notes:
+            // 1. even if result.isValid, result.error is always non-null (and set to "")
+            // 2. i've never encountered scan errors to see when they occur, and
+            //    i wouldn't know what to do about them anyway, so we simply return
+            //    result.text in such case (which presumably will be null, or "")
+            // 3. when user cancels (swipe left / back button) this code is no longer
+            //    run and the caller receives null
+            Navigator.pop(context, result.text);
           },
         ),
       );
@@ -52,14 +58,11 @@ class IngredientTypeahead extends StatefulWidget {
   final TextEditingController _ingredientController;
   final TextEditingController _ingredientIdController;
 
-  String? barcode = '';
-
-  //Code? result;
-
-  late final bool? test;
+  final String barcode;
+  final bool? test;
   final bool showScanner;
 
-  IngredientTypeahead(
+  const IngredientTypeahead(
     this._ingredientIdController,
     this._ingredientController, {
     this.showScanner = true,
@@ -73,21 +76,29 @@ class IngredientTypeahead extends StatefulWidget {
 
 class _IngredientTypeaheadState extends State<IngredientTypeahead> {
   var _searchEnglish = true;
+  late String barcode;
+
+  @override
+  void initState() {
+    super.initState();
+    barcode = widget.barcode; // for unit tests
+  }
 
   Future<String> readerscan(BuildContext context) async {
-    String scannedcode;
     try {
-      scannedcode =
-          await Navigator.of(context).push(MaterialPageRoute(builder: (context) => ScanReader()));
-
-      if (scannedcode.compareTo('-1') == 0) {
+      final code = await Navigator.of(context)
+          .push<String?>(MaterialPageRoute(builder: (context) => ScanReader()));
+      if (code == null) {
         return '';
       }
+
+      if (code.compareTo('-1') == 0) {
+        return '';
+      }
+      return code;
     } on PlatformException {
       return '';
     }
-
-    return scannedcode;
   }
 
   @override
@@ -164,15 +175,22 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
   Widget scanButton() {
     return IconButton(
       key: const Key('scan-button'),
+      icon: const FaIcon(FontAwesomeIcons.barcode),
       onPressed: () async {
         try {
           if (!widget.test!) {
-            widget.barcode = await readerscan(context);
+            barcode = await readerscan(context);
           }
 
-          if (widget.barcode!.isNotEmpty) {
+          if (barcode.isNotEmpty) {
+            if (!mounted) {
+              return;
+            }
             final result = await Provider.of<NutritionPlansProvider>(context, listen: false)
-                .searchIngredientWithCode(widget.barcode!);
+                .searchIngredientWithCode(barcode);
+            if (!mounted) {
+              return;
+            }
 
             if (result != null) {
               showDialog(
@@ -209,7 +227,7 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
                   key: const Key('notFound-dialog'),
                   title: Text(AppLocalizations.of(context).productNotFound),
                   content: Text(
-                    AppLocalizations.of(context).productNotFoundDescription(widget.barcode!),
+                    AppLocalizations.of(context).productNotFoundDescription(barcode),
                   ),
                   actions: [
                     TextButton(
@@ -225,15 +243,11 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
             }
           }
         } catch (e) {
-          if (context.mounted) {
+          if (mounted) {
             showErrorDialog(e, context);
-            // Need to pop back since reader scan is a widget
-            // otherwise returns null when back button is pressed
-            return Navigator.pop(context);
           }
         }
       },
-      icon: const FaIcon(FontAwesomeIcons.barcode),
     );
   }
 }
@@ -321,5 +335,25 @@ class NutritionDiaryEntry extends StatelessWidget {
               icon: const Icon(Icons.delete_outline)),
       ],
     );
+  }
+}
+
+class IngredientAvatar extends StatelessWidget {
+  final Ingredient ingredient;
+
+  const IngredientAvatar({super.key, required this.ingredient});
+
+  @override
+  Widget build(BuildContext context) {
+    return ingredient.image != null
+        ? GestureDetector(
+            child: CircleAvatar(backgroundImage: NetworkImage(ingredient.image!.image)),
+            onTap: () async {
+              if (ingredient.image!.objectUrl != '') {
+                return launchURL(ingredient.image!.objectUrl, context);
+              }
+            },
+          )
+        : const CircleIconAvatar(Icon(Icons.image, color: Colors.grey));
   }
 }

@@ -42,6 +42,7 @@ import 'package:wger/widgets/measurements/charts.dart';
 import 'package:wger/widgets/measurements/forms.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
+import 'package:wger/widgets/nutrition/helpers.dart';
 import 'package:wger/widgets/weight/forms.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 
@@ -83,23 +84,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                   //textAlign: TextAlign.left,
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  MutedText(
-                      '${AppLocalizations.of(context).energyShort} ${meal.plannedNutritionalValues.energy.toStringAsFixed(0)}${AppLocalizations.of(context).kcal}'),
-                  const MutedText(' / '),
-                  MutedText(
-                      '${AppLocalizations.of(context).proteinShort} ${meal.plannedNutritionalValues.protein.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
-                  const MutedText(' / '),
-                  MutedText(
-                      '${AppLocalizations.of(context).carbohydratesShort} ${meal.plannedNutritionalValues.carbohydrates.toStringAsFixed(0)}${AppLocalizations.of(context).g}'),
-                  const MutedText(' / '),
-                  MutedText(
-                      '${AppLocalizations.of(context).fatShort} ${meal.plannedNutritionalValues.fat.toStringAsFixed(0)}${AppLocalizations.of(context).g} '),
-                ],
-              ),
+              MutedText(getShortNutritionValues(meal.plannedNutritionalValues, context)),
               IconButton(
                 icon: const Icon(Icons.history_edu),
                 color: wgerPrimaryButtonColor,
