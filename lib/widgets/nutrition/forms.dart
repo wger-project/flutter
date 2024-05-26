@@ -181,6 +181,27 @@ class IngredientFormState extends State<IngredientForm> {
 
   MealItem get mealItem => _mealItem;
 
+// note: make sure to set _mealItem.ingredient (before/after calling this)
+  void selectIngredient(int id, String name, num? amount) {
+    setState(() {
+      _mealItem.ingredientId = id;
+      _ingredientController.text = name;
+      _ingredientIdController.text = id.toString();
+      if (amount != null) {
+        _amountController.text = amount.toStringAsFixed(0);
+        _mealItem.amount = amount;
+      }
+    });
+  }
+
+// note: does not reset text search and amount inputs
+  void unSelectIngredient() {
+    setState(() {
+      _mealItem.ingredientId = 0;
+      _ingredientIdController.text = '';
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final String unit = AppLocalizations.of(context).g;
@@ -196,6 +217,8 @@ class IngredientFormState extends State<IngredientForm> {
               _ingredientController,
               barcode: widget.barcode,
               test: widget.test,
+              selectIngredient: selectIngredient,
+              unSelectIngredient: unSelectIngredient,
             ),
             Row(
               children: [
@@ -286,7 +309,7 @@ class IngredientFormState extends State<IngredientForm> {
                   ),
               ],
             ),
-            if (ingredientIdController.text.isNotEmpty)
+            if (ingredientIdController.text.isNotEmpty && _amountController.text.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
@@ -363,14 +386,9 @@ class IngredientFormState extends State<IngredientForm> {
                   return Card(
                     child: ListTile(
                       onTap: () {
-                        setState(() {
-                          _ingredientController.text = widget.recent[index].ingredient.name;
-                          _ingredientIdController.text =
-                              widget.recent[index].ingredient.id.toString();
-                          _amountController.text = widget.recent[index].amount.toStringAsFixed(0);
-                          _mealItem.ingredientId = widget.recent[index].ingredientId;
-                          _mealItem.amount = widget.recent[index].amount;
-                        });
+                        final ingredient = widget.recent[index].ingredient;
+                        selectIngredient(
+                            ingredient.id, ingredient.name, widget.recent[index].amount);
                       },
                       title: Text(
                           '${widget.recent[index].ingredient.name} (${widget.recent[index].amount.toStringAsFixed(0)}$unit)'),

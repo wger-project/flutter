@@ -63,12 +63,17 @@ class IngredientTypeahead extends StatefulWidget {
   final bool? test;
   final bool showScanner;
 
+  final Function(int id, String name, num? amount) selectIngredient;
+  final Function() unSelectIngredient;
+
   const IngredientTypeahead(
     this._ingredientIdController,
     this._ingredientController, {
     this.showScanner = true,
     this.test = false,
     this.barcode = '',
+    required this.selectIngredient,
+    required this.unSelectIngredient,
   });
 
   @override
@@ -120,9 +125,8 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
                 return null;
               },
               onChanged: (value) {
-                // if user changes the pattern, it means they want to drop the
-                // currently loaded ingredient (if any) and start a new search
-                widget._ingredientIdController.text = '';
+                // unselect to start a new search
+                widget.unSelectIngredient();
               },
               decoration: InputDecoration(
                 prefixIcon: const Icon(Icons.search),
@@ -158,10 +162,7 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
             child: child,
           ),
           onSelected: (suggestion) {
-            //SuggestionsController.of(context).;
-
-            widget._ingredientIdController.text = suggestion.data.id.toString();
-            widget._ingredientController.text = suggestion.value;
+            widget.selectIngredient(suggestion.data.id, suggestion.value, null);
           },
         ),
         if (Localizations.localeOf(context).languageCode != LANGUAGE_SHORT_ENGLISH)
@@ -221,8 +222,7 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
                       key: const Key('found-dialog-confirm-button'),
                       child: Text(MaterialLocalizations.of(context).continueButtonLabel),
                       onPressed: () {
-                        widget._ingredientController.text = result.name;
-                        widget._ingredientIdController.text = result.id.toString();
+                        widget.selectIngredient(result.id, result.name, null);
                         Navigator.of(ctx).pop();
                       },
                     ),
