@@ -169,7 +169,6 @@ class IngredientFormState extends State<IngredientForm> {
   final _timeController = TextEditingController(); // optional
   final _mealItem = MealItem.empty();
 
-  bool validIngredientId = false;
   @override
   void initState() {
     super.initState();
@@ -287,7 +286,7 @@ class IngredientFormState extends State<IngredientForm> {
                   ),
               ],
             ),
-            if (validIngredientId)
+            if (ingredientIdController.text.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
@@ -302,10 +301,9 @@ class IngredientFormState extends State<IngredientForm> {
                       builder: (BuildContext context, AsyncSnapshot<Ingredient> snapshot) {
                         if (snapshot.hasData) {
                           _mealItem.ingredient = snapshot.data!;
-                          return ListTile(
-                            leading: IngredientAvatar(ingredient: _mealItem.ingredient),
-                            title:
-                                Text(getShortNutritionValues(_mealItem.nutritionalValues, context)),
+                          return MealItemTile(
+                            ingredient: _mealItem.ingredient,
+                            nutritionalValues: _mealItem.nutritionalValues,
                           );
                         } else if (snapshot.hasError) {
                           return Padding(
@@ -365,14 +363,13 @@ class IngredientFormState extends State<IngredientForm> {
                   return Card(
                     child: ListTile(
                       onTap: () {
-                        _ingredientController.text = widget.recent[index].ingredient.name;
-                        _ingredientIdController.text =
-                            widget.recent[index].ingredient.id.toString();
-                        _amountController.text = widget.recent[index].amount.toStringAsFixed(0);
                         setState(() {
+                          _ingredientController.text = widget.recent[index].ingredient.name;
+                          _ingredientIdController.text =
+                              widget.recent[index].ingredient.id.toString();
+                          _amountController.text = widget.recent[index].amount.toStringAsFixed(0);
                           _mealItem.ingredientId = widget.recent[index].ingredientId;
                           _mealItem.amount = widget.recent[index].amount;
-                          validIngredientId = true;
                         });
                       },
                       title: Text(
