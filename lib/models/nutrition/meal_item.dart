@@ -91,4 +91,25 @@ class MealItem {
 
     return out;
   }
+
+  MealItem copyWith({
+    int? id,
+    int? mealId,
+    int? ingredientId,
+    int? weightUnitId,
+    num? amount,
+    Ingredient? ingredient,
+    IngredientWeightUnit? weightUnitObj,
+  }) {
+    final m = MealItem(
+      id: id ?? this.id,
+      mealId: mealId ?? this.mealId,
+      ingredientId: ingredientId ?? this.ingredientId,
+      weightUnitId: weightUnitId ?? this.weightUnitId,
+      amount: amount ?? this.amount,
+      ingredient: ingredient ?? this.ingredient,
+    );
+    m.weightUnitObj = weightUnitObj ?? this.weightUnitObj;
+    return m;
+  }
 }

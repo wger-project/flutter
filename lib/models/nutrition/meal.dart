@@ -88,4 +88,22 @@ class Meal {
   factory Meal.fromJson(Map<String, dynamic> json) => _$MealFromJson(json);
 
   Map<String, dynamic> toJson() => _$MealToJson(this);
+
+  Meal copyWith({
+    int? id,
+    int? planId,
+    TimeOfDay? time,
+    String? name,
+    List<MealItem>? mealItems,
+    List<Log>? diaryEntries,
+  }) {
+    return Meal(
+      id: id ?? this.id,
+      plan: planId ?? this.planId,
+      time: time ?? this.time,
+      name: name ?? this.name,
+      mealItems: mealItems ?? this.mealItems,
+      diaryEntries: diaryEntries ?? this.diaryEntries,
+    );
+  }
 }
