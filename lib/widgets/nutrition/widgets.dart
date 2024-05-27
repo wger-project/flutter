@@ -390,7 +390,7 @@ class MealItemTile extends StatelessWidget {
     return ListTile(
       leading: IngredientAvatar(ingredient: ingredient),
       title: Text(getShortNutritionValues(nutritionalValues, context)),
-      subtitle: Text(ingredient.id.toString()),
+      // subtitle: Text(ingredient.id.toString()),
     );
   }
 }
