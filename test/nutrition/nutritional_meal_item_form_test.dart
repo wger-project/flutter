@@ -305,6 +305,11 @@ void main() {
 
       expect(formState.ingredientIdController.text, '1');
 
+      // once ID and weight are set, it'll fetchIngredient and show macros preview
+      when(mockNutrition.fetchIngredient(1)).thenAnswer((_) => Future.value(
+            Ingredient.fromJson(jsonDecode(fixture('nutrition/ingredient_59887_response.json'))),
+          ));
+
       await tester.enterText(find.byKey(const Key('field-weight')), '2');
       await tester.pumpAndSettle();
 
