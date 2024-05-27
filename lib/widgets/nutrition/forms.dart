@@ -181,7 +181,6 @@ class IngredientFormState extends State<IngredientForm> {
 
   MealItem get mealItem => _mealItem;
 
-// note: make sure to set _mealItem.ingredient (before/after calling this)
   void selectIngredient(int id, String name, num? amount) {
     setState(() {
       _mealItem.ingredientId = id;
@@ -349,9 +348,7 @@ class IngredientFormState extends State<IngredientForm> {
                 ),
               ),
             ElevatedButton(
-              key: const Key(
-                  SUBMIT_BUTTON_KEY_NAME), // needed? mealItemForm had it, but not ingredientlogform
-
+              key: const Key(SUBMIT_BUTTON_KEY_NAME),
               child: Text(AppLocalizations.of(context).save),
               onPressed: () async {
                 if (!_form.currentState!.validate()) {
