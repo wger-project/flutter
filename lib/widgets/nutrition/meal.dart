@@ -39,11 +39,11 @@ enum viewMode {
 
 class MealWidget extends StatefulWidget {
   final Meal _meal;
-  final List<MealItem> _listMealItems;
+  final List<MealItem> _recentMealItems;
 
   const MealWidget(
     this._meal,
-    this._listMealItems,
+    this._recentMealItems,
   );
 
   @override
@@ -108,7 +108,7 @@ class _MealWidgetState extends State<MealWidget> {
                             FormScreen.routeName,
                             arguments: FormScreenArguments(
                               AppLocalizations.of(context).addIngredient,
-                              MealItemForm(widget._meal, widget._listMealItems),
+                              MealItemForm(widget._meal, widget._recentMealItems),
                               hasListView: true,
                             ),
                           );

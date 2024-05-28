@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -191,18 +192,32 @@ class NutritionalPlan {
     return out;
   }
 
-  /// Helper that returns all meal items for the current plan
-  ///
-  /// Duplicated ingredients are removed
-  List<MealItem> get allMealItems {
+  /// returns meal items across all meals
+  /// deduped by the combination of amount and ingredient ID
+  List<MealItem> get dedupMealItems {
     final List<MealItem> out = [];
     for (final meal in meals) {
       for (final mealItem in meal.mealItems) {
-        final ingredientInList = out.where((e) => e.ingredientId == mealItem.ingredientId);
+        final found = out.firstWhereOrNull(
+            (e) => e.amount == mealItem.amount && e.ingredientId == mealItem.ingredientId);
 
-        if (ingredientInList.isEmpty) {
+        if (found == null) {
           out.add(mealItem);
         }
+      }
+    }
+    return out;
+  }
+
+  /// returns diary entries
+  /// deduped by the combination of amount and ingredient ID
+  List<Log> get dedupDiaryEntries {
+    final out = <Log>[];
+    for (final log in diaryEntries) {
+      final found =
+          out.firstWhereOrNull((e) => e.amount == log.amount && e.ingredientId == log.ingredientId);
+      if (found == null) {
+        out.add(log);
       }
     }
     return out;

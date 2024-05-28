@@ -131,7 +131,7 @@ Widget MealItemForm(Meal meal, List<MealItem> recent, [String? barcode, bool? te
 
 Widget IngredientLogForm(NutritionalPlan plan) {
   return IngredientForm(
-      recent: plan.diaryEntries,
+      recent: plan.dedupDiaryEntries,
       onSave: (BuildContext context, MealItem mealItem, DateTime? dt) {
         Provider.of<NutritionPlansProvider>(context, listen: false)
             .logIngredientToDiary(mealItem, plan.id!, dt);
