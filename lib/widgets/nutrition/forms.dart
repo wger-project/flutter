@@ -169,7 +169,6 @@ class IngredientFormState extends State<IngredientForm> {
   final _timeController = TextEditingController(); // optional
   final _mealItem = MealItem.empty();
 
-  bool validIngredientId = false;
   @override
   void initState() {
     super.initState();
@@ -181,6 +180,26 @@ class IngredientFormState extends State<IngredientForm> {
   TextEditingController get ingredientIdController => _ingredientIdController;
 
   MealItem get mealItem => _mealItem;
+
+  void selectIngredient(int id, String name, num? amount) {
+    setState(() {
+      _mealItem.ingredientId = id;
+      _ingredientController.text = name;
+      _ingredientIdController.text = id.toString();
+      if (amount != null) {
+        _amountController.text = amount.toStringAsFixed(0);
+        _mealItem.amount = amount;
+      }
+    });
+  }
+
+// note: does not reset text search and amount inputs
+  void unSelectIngredient() {
+    setState(() {
+      _mealItem.ingredientId = 0;
+      _ingredientIdController.text = '';
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -197,6 +216,8 @@ class IngredientFormState extends State<IngredientForm> {
               _ingredientController,
               barcode: widget.barcode,
               test: widget.test,
+              selectIngredient: selectIngredient,
+              unSelectIngredient: unSelectIngredient,
             ),
             Row(
               children: [
@@ -287,7 +308,7 @@ class IngredientFormState extends State<IngredientForm> {
                   ),
               ],
             ),
-            if (validIngredientId)
+            if (ingredientIdController.text.isNotEmpty && _amountController.text.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
@@ -302,10 +323,9 @@ class IngredientFormState extends State<IngredientForm> {
                       builder: (BuildContext context, AsyncSnapshot<Ingredient> snapshot) {
                         if (snapshot.hasData) {
                           _mealItem.ingredient = snapshot.data!;
-                          return ListTile(
-                            leading: IngredientAvatar(ingredient: _mealItem.ingredient),
-                            title:
-                                Text(getShortNutritionValues(_mealItem.nutritionalValues, context)),
+                          return MealItemTile(
+                            ingredient: _mealItem.ingredient,
+                            nutritionalValues: _mealItem.nutritionalValues,
                           );
                         } else if (snapshot.hasError) {
                           return Padding(
@@ -328,9 +348,7 @@ class IngredientFormState extends State<IngredientForm> {
                 ),
               ),
             ElevatedButton(
-              key: const Key(
-                  SUBMIT_BUTTON_KEY_NAME), // needed? mealItemForm had it, but not ingredientlogform
-
+              key: const Key(SUBMIT_BUTTON_KEY_NAME),
               child: Text(AppLocalizations.of(context).save),
               onPressed: () async {
                 if (!_form.currentState!.validate()) {
@@ -365,15 +383,9 @@ class IngredientFormState extends State<IngredientForm> {
                   return Card(
                     child: ListTile(
                       onTap: () {
-                        _ingredientController.text = widget.recent[index].ingredient.name;
-                        _ingredientIdController.text =
-                            widget.recent[index].ingredient.id.toString();
-                        _amountController.text = widget.recent[index].amount.toStringAsFixed(0);
-                        setState(() {
-                          _mealItem.ingredientId = widget.recent[index].ingredientId;
-                          _mealItem.amount = widget.recent[index].amount;
-                          validIngredientId = true;
-                        });
+                        final ingredient = widget.recent[index].ingredient;
+                        selectIngredient(
+                            ingredient.id, ingredient.name, widget.recent[index].amount);
                       },
                       title: Text(
                           '${widget.recent[index].ingredient.name} (${widget.recent[index].amount.toStringAsFixed(0)}$unit)'),

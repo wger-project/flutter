@@ -32,6 +32,7 @@ import 'package:wger/models/exercises/ingredient_api.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
+import 'package:wger/models/nutrition/nutritional_values.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/nutrition/helpers.dart';
@@ -62,12 +63,17 @@ class IngredientTypeahead extends StatefulWidget {
   final bool? test;
   final bool showScanner;
 
+  final Function(int id, String name, num? amount) selectIngredient;
+  final Function() unSelectIngredient;
+
   const IngredientTypeahead(
     this._ingredientIdController,
     this._ingredientController, {
     this.showScanner = true,
     this.test = false,
     this.barcode = '',
+    required this.selectIngredient,
+    required this.unSelectIngredient,
   });
 
   @override
@@ -118,6 +124,10 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
                 }
                 return null;
               },
+              onChanged: (value) {
+                // unselect to start a new search
+                widget.unSelectIngredient();
+              },
               decoration: InputDecoration(
                 prefixIcon: const Icon(Icons.search),
                 labelText: AppLocalizations.of(context).searchIngredient,
@@ -126,7 +136,8 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
             );
           },
           suggestionsCallback: (pattern) {
-            if (pattern == '') {
+            // don't do search if user has already loaded a specific item
+            if (pattern == '' || widget._ingredientIdController.text.isNotEmpty) {
               return null;
             }
 
@@ -151,10 +162,7 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
             child: child,
           ),
           onSelected: (suggestion) {
-            //SuggestionsController.of(context).;
-
-            widget._ingredientIdController.text = suggestion.data.id.toString();
-            widget._ingredientController.text = suggestion.value;
+            widget.selectIngredient(suggestion.data.id, suggestion.value, null);
           },
         ),
         if (Localizations.localeOf(context).languageCode != LANGUAGE_SHORT_ENGLISH)
@@ -188,6 +196,7 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
             }
             final result = await Provider.of<NutritionPlansProvider>(context, listen: false)
                 .searchIngredientWithCode(barcode);
+            // TODO: show spinner...
             if (!mounted) {
               return;
             }
@@ -198,14 +207,22 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
                 builder: (ctx) => AlertDialog(
                   key: const Key('found-dialog'),
                   title: Text(AppLocalizations.of(context).productFound),
-                  content: Text(AppLocalizations.of(context).productFoundDescription(result.name)),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(AppLocalizations.of(context).productFoundDescription(result.name)),
+                      MealItemTile(
+                        ingredient: result,
+                        nutritionalValues: result.nutritionalValues,
+                      ),
+                    ],
+                  ),
                   actions: [
                     TextButton(
                       key: const Key('found-dialog-confirm-button'),
                       child: Text(MaterialLocalizations.of(context).continueButtonLabel),
                       onPressed: () {
-                        widget._ingredientController.text = result.name;
-                        widget._ingredientIdController.text = result.id.toString();
+                        widget.selectIngredient(result.id, result.name, null);
                         Navigator.of(ctx).pop();
                       },
                     ),
@@ -355,5 +372,25 @@ class IngredientAvatar extends StatelessWidget {
             },
           )
         : const CircleIconAvatar(Icon(Icons.image, color: Colors.grey));
+  }
+}
+
+class MealItemTile extends StatelessWidget {
+  final Ingredient ingredient;
+  final NutritionalValues nutritionalValues;
+
+  const MealItemTile({
+    super.key,
+    required this.ingredient,
+    required this.nutritionalValues,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: IngredientAvatar(ingredient: ingredient),
+      title: Text(getShortNutritionValues(nutritionalValues, context)),
+      // subtitle: Text(ingredient.id.toString()),
+    );
   }
 }
