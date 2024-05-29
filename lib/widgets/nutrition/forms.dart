@@ -131,7 +131,7 @@ Widget MealItemForm(Meal meal, List<MealItem> recent, [String? barcode, bool? te
 
 Widget IngredientLogForm(NutritionalPlan plan) {
   return IngredientForm(
-      recent: plan.diaryEntries,
+      recent: plan.dedupDiaryEntries,
       onSave: (BuildContext context, MealItem mealItem, DateTime? dt) {
         Provider.of<NutritionPlansProvider>(context, listen: false)
             .logIngredientToDiary(mealItem, plan.id!, dt);
@@ -168,6 +168,7 @@ class IngredientFormState extends State<IngredientForm> {
   final _dateController = TextEditingController(); // optional
   final _timeController = TextEditingController(); // optional
   final _mealItem = MealItem.empty();
+  var _searchQuery = ''; // copy from typeahead. for filtering suggestions
 
   @override
   void initState() {
@@ -201,10 +202,18 @@ class IngredientFormState extends State<IngredientForm> {
     });
   }
 
+  void updateSearchQuery(String query) {
+    setState(() {
+      _searchQuery = query;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final String unit = AppLocalizations.of(context).g;
-
+    final queryLower = _searchQuery.toLowerCase();
+    final suggestions =
+        widget.recent.where((e) => e.ingredient.name.toLowerCase().contains(queryLower)).toList();
     return Container(
       margin: const EdgeInsets.all(20),
       child: Form(
@@ -218,6 +227,7 @@ class IngredientFormState extends State<IngredientForm> {
               test: widget.test,
               selectIngredient: selectIngredient,
               unSelectIngredient: unSelectIngredient,
+              updateSearchQuery: updateSearchQuery,
             ),
             Row(
               children: [
@@ -370,27 +380,26 @@ class IngredientFormState extends State<IngredientForm> {
                 Navigator.of(context).pop();
               },
             ),
-            if (widget.recent.isNotEmpty) const SizedBox(height: 10.0),
+            if (suggestions.isNotEmpty) const SizedBox(height: 10.0),
             Container(
               padding: const EdgeInsets.all(10.0),
               child: Text(AppLocalizations.of(context).recentlyUsedIngredients),
             ),
             Expanded(
               child: ListView.builder(
-                itemCount: widget.recent.length,
+                itemCount: suggestions.length,
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
                   return Card(
                     child: ListTile(
                       onTap: () {
-                        final ingredient = widget.recent[index].ingredient;
-                        selectIngredient(
-                            ingredient.id, ingredient.name, widget.recent[index].amount);
+                        final ingredient = suggestions[index].ingredient;
+                        selectIngredient(ingredient.id, ingredient.name, suggestions[index].amount);
                       },
                       title: Text(
-                          '${widget.recent[index].ingredient.name} (${widget.recent[index].amount.toStringAsFixed(0)}$unit)'),
+                          '${suggestions[index].ingredient.name} (${suggestions[index].amount.toStringAsFixed(0)}$unit)'),
                       subtitle: Text(getShortNutritionValues(
-                          widget.recent[index].ingredient.nutritionalValues, context)),
+                          suggestions[index].ingredient.nutritionalValues, context)),
                       trailing: const Icon(Icons.copy),
                     ),
                   );

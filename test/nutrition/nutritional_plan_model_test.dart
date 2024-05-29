@@ -101,7 +101,7 @@ void main() {
     });
 
     test('Test that the getter returns all meal items for a plan', () {
-      expect(plan.allMealItems, plan.meals[0].mealItems + plan.meals[1].mealItems);
+      expect(plan.dedupMealItems, plan.meals[0].mealItems + plan.meals[1].mealItems);
     });
   });
 }
