@@ -11,7 +11,7 @@
   "goal_protein": null,
   "goal_carbohydrates": null,
   "goal_fat": null,
-  "goal_fibers": null,
+  "goal_fiber": null,
   "description": "",
   "get_nutritional_values": {
     "total": {

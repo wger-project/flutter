@@ -18,7 +18,7 @@ NutritionalPlan _$NutritionalPlanFromJson(Map<String, dynamic> json) {
       'goal_protein',
       'goal_carbohydrates',
       'goal_fat',
-      'goal_fibers'
+      'goal_fiber'
     ],
   );
   return NutritionalPlan(
@@ -30,12 +30,11 @@ NutritionalPlan _$NutritionalPlanFromJson(Map<String, dynamic> json) {
     goalProtein: json['goal_protein'] as num?,
     goalCarbohydrates: json['goal_carbohydrates'] as num?,
     goalFat: json['goal_fat'] as num?,
-    goalFibers: json['goal_fibers'] as num?,
+    goalFiber: json['goal_fiber'] as num?,
   );
 }
 
-Map<String, dynamic> _$NutritionalPlanToJson(NutritionalPlan instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$NutritionalPlanToJson(NutritionalPlan instance) => <String, dynamic>{
       'id': instance.id,
       'description': instance.description,
       'creation_date': toDate(instance.creationDate),
@@ -44,5 +43,5 @@ Map<String, dynamic> _$NutritionalPlanToJson(NutritionalPlan instance) =>
       'goal_protein': instance.goalProtein,
       'goal_carbohydrates': instance.goalCarbohydrates,
       'goal_fat': instance.goalFat,
-      'goal_fibers': instance.goalFibers,
+      'goal_fiber': instance.goalFiber,
     };

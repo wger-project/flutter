@@ -56,8 +56,8 @@ class NutritionalPlan {
   @JsonKey(required: true, name: 'goal_fat')
   late num? goalFat;
 
-  @JsonKey(required: true, name: 'goal_fibers')
-  late num? goalFibers;
+  @JsonKey(required: true, name: 'goal_fiber')
+  late num? goalFiber;
 
   @JsonKey(includeFromJson: false, includeToJson: false, defaultValue: [])
   List<Meal> meals = [];
@@ -74,7 +74,7 @@ class NutritionalPlan {
     this.goalProtein,
     this.goalCarbohydrates,
     this.goalFat,
-    this.goalFibers,
+    this.goalFiber,
     List<Meal>? meals,
     List<Log>? diaryEntries,
   }) {
@@ -89,7 +89,7 @@ class NutritionalPlan {
     goalEnergy = null;
     goalProtein = null;
     goalCarbohydrates = null;
-    goalFibers = null;
+    goalFiber = null;
     goalFat = null;
   }
 
@@ -110,7 +110,7 @@ class NutritionalPlan {
   }
 
   bool get hasAnyAdvancedGoals {
-    return goalFibers != null;
+    return goalFiber != null;
   }
 
   /// Calculations
@@ -126,7 +126,7 @@ class NutritionalPlan {
         fat: goalFat?.toDouble(),
         protein: goalProtein?.toDouble(),
         carbohydrates: goalCarbohydrates?.toDouble(),
-        fiber: goalFibers?.toDouble(),
+        fiber: goalFiber?.toDouble(),
       );
     }
     // if there are no set goals and no defined meals, the goals are still undefined
