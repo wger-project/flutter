@@ -65,6 +65,7 @@ class IngredientTypeahead extends StatefulWidget {
 
   final Function(int id, String name, num? amount) selectIngredient;
   final Function() unSelectIngredient;
+  final Function(String query) updateSearchQuery;
 
   const IngredientTypeahead(
     this._ingredientIdController,
@@ -74,6 +75,7 @@ class IngredientTypeahead extends StatefulWidget {
     this.barcode = '',
     required this.selectIngredient,
     required this.unSelectIngredient,
+    required this.updateSearchQuery,
   });
 
   @override
@@ -125,6 +127,7 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
                 return null;
               },
               onChanged: (value) {
+                widget.updateSearchQuery(value);
                 // unselect to start a new search
                 widget.unSelectIngredient();
               },
