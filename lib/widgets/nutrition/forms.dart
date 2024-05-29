@@ -512,9 +512,9 @@ class _PlanFormState extends State<PlanForm> {
                           widget._plan.goalProtein = null;
                           widget._plan.goalCarbohydrates = null;
                           widget._plan.goalFat = null;
-                          widget._plan.goalFibers = null;
+                          widget._plan.goalFiber = null;
                         case GoalType.basic:
-                          widget._plan.goalFibers = null;
+                          widget._plan.goalFiber = null;
                           break;
                         default:
                           break;
@@ -562,11 +562,11 @@ class _PlanFormState extends State<PlanForm> {
 
           if (_goalType == GoalType.advanced)
             GoalMacros(
-              val: widget._plan.goalFibers?.toString(),
+              val: widget._plan.goalFiber?.toString(),
               label: AppLocalizations.of(context).goalFiber,
               suffix: AppLocalizations.of(context).g,
-              onSave: (double value) => widget._plan.goalFibers = value,
-              key: const Key('field-goal-fibers'),
+              onSave: (double value) => widget._plan.goalFiber = value,
+              key: const Key('field-goal-fiber'),
             ),
           ElevatedButton(
             key: const Key(SUBMIT_BUTTON_KEY_NAME),

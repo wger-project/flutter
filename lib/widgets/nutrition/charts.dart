@@ -401,7 +401,7 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
                     barchartGroup(3, barsSpace, barsWidth, 'fat'),
                     barchartGroup(4, barsSpace, barsWidth, 'fatSaturated'),
                     if (widget._nutritionalPlan.nutritionalGoals.fiber != null)
-                      barchartGroup(5, barsSpace, barsWidth, 'fibers'),
+                      barchartGroup(5, barsSpace, barsWidth, 'fiber'),
                   ],
                 ),
               ),
