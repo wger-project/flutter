@@ -32,7 +32,6 @@ class UpdateAppScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(AppLocalizations.of(context).appUpdateContent),
-            Text(AppLocalizations.of(context).appUpdateContent),
           ],
         ),
         actions: null,
