@@ -17,11 +17,9 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/nutrition/meal.dart';
-import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/widgets/nutrition/meal.dart';
 import 'package:wger/widgets/nutrition/widgets.dart';
@@ -40,25 +38,11 @@ class LogMealScreen extends StatefulWidget {
 }
 
 class _LogMealScreenState extends State<LogMealScreen> {
-  late TextEditingController _controller;
-  int portionPct = 100;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+  double portionPct = 100;
 
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as LogMealArguments;
-    _controller.text = portionPct.toString();
     final meal = args.meal.copyWith(
         mealItems: args.meal.mealItems
             .map((mealItem) => mealItem.copyWith(amount: mealItem.amount * portionPct / 100))
@@ -71,7 +55,10 @@ class _LogMealScreenState extends State<LogMealScreen> {
       body: Consumer<NutritionPlansProvider>(
         builder: (context, nutritionProvider, child) => SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 8,
+              vertical: 16,
+            ),
             child: Column(
               children: [
                 Text(meal.name, style: Theme.of(context).textTheme.headlineSmall),
@@ -83,28 +70,17 @@ class _LogMealScreenState extends State<LogMealScreen> {
                       const NutritionDiaryheader(),
                       ...meal.mealItems
                           .map((item) => MealItemWidget(item, viewMode.withAllDetails, false)),
-                      Row(
-                        children: [
-                          Text('Portion size'),
-                          Expanded(
-                            child: TextField(
-                              maxLength: 4,
-                              maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                              keyboardType: TextInputType.number,
-                              decoration: InputDecoration(
-                                hintText: 'Enter the portion size as a percent',
-                              ),
-                              controller: _controller,
-                              onChanged: (value) {
-                                var v = int.tryParse(value);
-                                if (v == null) return;
-                                setState(() {
-                                  portionPct = v;
-                                });
-                              },
-                            ),
-                          ),
-                        ],
+                      const SizedBox(height: 32),
+                      Text(
+                        'Portion: ${portionPct.round()} %',
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                      Slider.adaptive(
+                        min: 0,
+                        max: 150,
+                        divisions: 30,
+                        onChanged: (value) => setState(() => portionPct = value),
+                        value: portionPct,
                       ),
                     ],
                   ),
