@@ -86,7 +86,7 @@ class MealItem {
     out.carbohydratesSugar = ingredient.carbohydratesSugar * weight / 100;
     out.fat = ingredient.fat * weight / 100;
     out.fatSaturated = ingredient.fatSaturated * weight / 100;
-    out.fibres = ingredient.fibres * weight / 100;
+    out.fiber = ingredient.fiber * weight / 100;
     out.sodium = ingredient.sodium * weight / 100;
 
     return out;

@@ -12,15 +12,16 @@ MeasurementEntry _$MeasurementEntryFromJson(Map<String, dynamic> json) {
     requiredKeys: const ['id', 'category', 'date', 'value', 'notes'],
   );
   return MeasurementEntry(
-    id: json['id'] as int?,
-    category: json['category'] as int,
+    id: (json['id'] as num?)?.toInt(),
+    category: (json['category'] as num).toInt(),
     date: DateTime.parse(json['date'] as String),
     value: json['value'] as num,
     notes: json['notes'] as String? ?? '',
   );
 }
 
-Map<String, dynamic> _$MeasurementEntryToJson(MeasurementEntry instance) => <String, dynamic>{
+Map<String, dynamic> _$MeasurementEntryToJson(MeasurementEntry instance) =>
+    <String, dynamic>{
       'id': instance.id,
       'category': instance.category,
       'date': toDate(instance.date),

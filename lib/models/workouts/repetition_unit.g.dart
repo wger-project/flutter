@@ -12,12 +12,13 @@ RepetitionUnit _$RepetitionUnitFromJson(Map<String, dynamic> json) {
     requiredKeys: const ['id', 'name'],
   );
   return RepetitionUnit(
-    id: json['id'] as int,
+    id: (json['id'] as num).toInt(),
     name: json['name'] as String,
   );
 }
 
-Map<String, dynamic> _$RepetitionUnitToJson(RepetitionUnit instance) => <String, dynamic>{
+Map<String, dynamic> _$RepetitionUnitToJson(RepetitionUnit instance) =>
+    <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
     };

@@ -12,7 +12,7 @@ Image _$ImageFromJson(Map<String, dynamic> json) {
     requiredKeys: const ['id', 'date', 'image'],
   );
   return Image(
-    id: json['id'] as int?,
+    id: (json['id'] as num?)?.toInt(),
     date: DateTime.parse(json['date'] as String),
     url: json['image'] as String?,
     description: json['description'] as String? ?? '',

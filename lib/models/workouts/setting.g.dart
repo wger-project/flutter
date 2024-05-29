@@ -23,13 +23,13 @@ Setting _$SettingFromJson(Map<String, dynamic> json) {
     ],
   );
   return Setting(
-    id: json['id'] as int?,
-    setId: json['set'] as int,
-    order: json['order'] as int,
-    exerciseId: json['exercise_base'] as int,
-    repetitionUnitId: json['repetition_unit'] as int,
-    reps: json['reps'] as int?,
-    weightUnitId: json['weight_unit'] as int,
+    id: (json['id'] as num?)?.toInt(),
+    setId: (json['set'] as num).toInt(),
+    order: (json['order'] as num).toInt(),
+    exerciseId: (json['exercise_base'] as num).toInt(),
+    repetitionUnitId: (json['repetition_unit'] as num).toInt(),
+    reps: (json['reps'] as num?)?.toInt(),
+    weightUnitId: (json['weight_unit'] as num).toInt(),
     comment: json['comment'] as String,
     rir: json['rir'] as String?,
   )..weight = stringToNum(json['weight'] as String?);

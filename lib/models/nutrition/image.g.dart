@@ -24,12 +24,12 @@ IngredientImage _$IngredientImageFromJson(Map<String, dynamic> json) {
     ],
   );
   return IngredientImage(
-    id: json['id'] as int,
+    id: (json['id'] as num).toInt(),
     uuid: json['uuid'] as String,
-    ingredientId: json['ingredient_id'] as int,
+    ingredientId: (json['ingredient_id'] as num).toInt(),
     image: json['image'] as String,
-    size: json['size'] as int,
-    licenseId: json['license'] as int,
+    size: (json['size'] as num).toInt(),
+    licenseId: (json['license'] as num).toInt(),
     author: json['license_author'] as String,
     authorUrl: json['license_author_url'] as String,
     title: json['license_title'] as String,
@@ -38,7 +38,8 @@ IngredientImage _$IngredientImageFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$IngredientImageToJson(IngredientImage instance) => <String, dynamic>{
+Map<String, dynamic> _$IngredientImageToJson(IngredientImage instance) =>
+    <String, dynamic>{
       'id': instance.id,
       'uuid': instance.uuid,
       'ingredient_id': instance.ingredientId,

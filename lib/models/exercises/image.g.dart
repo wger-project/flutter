@@ -12,15 +12,16 @@ ExerciseImage _$ExerciseImageFromJson(Map<String, dynamic> json) {
     requiredKeys: const ['id', 'uuid', 'exercise_base', 'image'],
   );
   return ExerciseImage(
-    id: json['id'] as int,
+    id: (json['id'] as num).toInt(),
     uuid: json['uuid'] as String,
-    exerciseBaseId: json['exercise_base'] as int,
+    exerciseBaseId: (json['exercise_base'] as num).toInt(),
     url: json['image'] as String,
     isMain: json['is_main'] as bool? ?? false,
   );
 }
 
-Map<String, dynamic> _$ExerciseImageToJson(ExerciseImage instance) => <String, dynamic>{
+Map<String, dynamic> _$ExerciseImageToJson(ExerciseImage instance) =>
+    <String, dynamic>{
       'id': instance.id,
       'uuid': instance.uuid,
       'exercise_base': instance.exerciseBaseId,

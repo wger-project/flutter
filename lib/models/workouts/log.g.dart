@@ -21,14 +21,14 @@ Log _$LogFromJson(Map<String, dynamic> json) {
     ],
   );
   return Log(
-    id: json['id'] as int?,
-    exerciseBaseId: json['exercise_base'] as int,
-    workoutPlan: json['workout'] as int,
-    reps: json['reps'] as int,
+    id: (json['id'] as num?)?.toInt(),
+    exerciseBaseId: (json['exercise_base'] as num).toInt(),
+    workoutPlan: (json['workout'] as num).toInt(),
+    reps: (json['reps'] as num).toInt(),
     rir: json['rir'] as String?,
-    repetitionUnitId: json['repetition_unit'] as int,
+    repetitionUnitId: (json['repetition_unit'] as num).toInt(),
     weight: stringToNum(json['weight'] as String?),
-    weightUnitId: json['weight_unit'] as int,
+    weightUnitId: (json['weight_unit'] as num).toInt(),
     date: DateTime.parse(json['date'] as String),
   );
 }

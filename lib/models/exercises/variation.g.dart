@@ -12,7 +12,7 @@ Variation _$VariationFromJson(Map<String, dynamic> json) {
     requiredKeys: const ['id'],
   );
   return Variation(
-    id: json['id'] as int,
+    id: (json['id'] as num).toInt(),
   );
 }
 

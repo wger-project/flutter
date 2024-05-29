@@ -11,6 +11,7 @@
   "goal_protein": null,
   "goal_carbohydrates": null,
   "goal_fat": null,
+  "goal_fibers": null,
   "description": "",
   "get_nutritional_values": {
     "total": {
@@ -20,7 +21,7 @@
       "carbohydrates_sugar": 139.62,
       "fat": 4.92,
       "fat_saturated": 0.71,
-      "fibres": 11.96,
+      "fiber": 11.96,
       "sodium": 0.48,
       "energy_kilojoule": 3568.95
     },
@@ -59,7 +60,7 @@
             "carbohydrates_sugar": "5.300",
             "fat": "0.100",
             "fat_saturated": "0.000",
-            "fibres": "5.000",
+            "fiber": "5.000",
             "sodium": "0.480",
             "license": {
               "id": 5,
@@ -97,7 +98,7 @@
             "carbohydrates_sugar": "2.320",
             "fat": "4.820",
             "fat_saturated": "0.714",
-            "fibres": "6.960",
+            "fiber": "6.960",
             "sodium": "0.000",
             "license": {
               "id": 5,
@@ -150,7 +151,7 @@
             "carbohydrates_sugar": "66.000",
             "fat": "0.000",
             "fat_saturated": "0.000",
-            "fibres": null,
+            "fiber": null,
             "sodium": "0.000",
             "license": {
               "id": 5,
@@ -195,7 +196,7 @@
         "carbohydrates_sugar": 139.62,
         "fat": 4.92,
         "fat_saturated": 0.71,
-        "fibres": 11.96,
+        "fiber": 11.96,
         "sodium": 0.48,
         "energy_kilojoule": 3568.95
       }

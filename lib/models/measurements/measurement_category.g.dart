@@ -12,7 +12,7 @@ MeasurementCategory _$MeasurementCategoryFromJson(Map<String, dynamic> json) {
     requiredKeys: const ['id', 'name', 'unit'],
   );
   return MeasurementCategory(
-    id: json['id'] as int?,
+    id: (json['id'] as num?)?.toInt(),
     name: json['name'] as String,
     unit: json['unit'] as String,
     entries: (json['entries'] as List<dynamic>?)
@@ -22,7 +22,9 @@ MeasurementCategory _$MeasurementCategoryFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$MeasurementCategoryToJson(MeasurementCategory instance) => <String, dynamic>{
+Map<String, dynamic> _$MeasurementCategoryToJson(
+        MeasurementCategory instance) =>
+    <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
       'unit': instance.unit,

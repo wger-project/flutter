@@ -55,6 +55,9 @@ class NutritionalPlan {
   @JsonKey(required: true, name: 'goal_fat')
   late num? goalFat;
 
+  @JsonKey(required: true, name: 'goal_fibers')
+  late num? goalFibers;
+
   @JsonKey(includeFromJson: false, includeToJson: false, defaultValue: [])
   List<Meal> meals = [];
 
@@ -70,6 +73,7 @@ class NutritionalPlan {
     this.goalProtein,
     this.goalCarbohydrates,
     this.goalFat,
+    this.goalFibers,
     List<Meal>? meals,
     List<Log>? diaryEntries,
   }) {
@@ -84,6 +88,7 @@ class NutritionalPlan {
     goalEnergy = null;
     goalProtein = null;
     goalCarbohydrates = null;
+    goalFibers = null;
     goalFat = null;
   }
 
@@ -103,6 +108,10 @@ class NutritionalPlan {
         goalCarbohydrates != null;
   }
 
+  bool get hasAnyAdvancedGoals {
+    return goalFibers != null;
+  }
+
   /// Calculations
   ///
   /// note that (some of) this is already done on the server. It might be better
@@ -110,12 +119,13 @@ class NutritionalPlan {
   /// so that a mostly offline mode is possible.
   NutritionalGoals get nutritionalGoals {
     // If there are set goals, they take preference over any meals
-    if (hasAnyGoals) {
+    if (hasAnyGoals || hasAnyAdvancedGoals) {
       return NutritionalGoals(
         energy: goalEnergy?.toDouble(),
         fat: goalFat?.toDouble(),
         protein: goalProtein?.toDouble(),
         carbohydrates: goalCarbohydrates?.toDouble(),
+        fiber: goalFibers?.toDouble(),
       );
     }
     // if there are no set goals and no defined meals, the goals are still undefined
@@ -131,7 +141,7 @@ class NutritionalPlan {
       carbohydrates: sumValues.carbohydrates,
       carbohydratesSugar: sumValues.carbohydratesSugar,
       fatSaturated: sumValues.fatSaturated,
-      fibres: sumValues.fibres,
+      fiber: sumValues.fiber,
       sodium: sumValues.sodium,
     );
   }

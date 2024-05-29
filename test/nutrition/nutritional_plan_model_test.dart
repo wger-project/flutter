@@ -41,7 +41,7 @@ void main() {
               carbohydratesSugar: 9.5,
               fat: 59.0,
               fatSaturated: 37.75,
-              fibres: 52.5,
+              fiber: 52.5,
               sodium: 30.5));
     });
     test('Test NutritionalPlan.nutritionalValues based on 3 macros and energy', () {

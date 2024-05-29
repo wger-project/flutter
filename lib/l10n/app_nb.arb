@@ -3,7 +3,7 @@
   "@aboutText": {
     "description": "Text in the about dialog"
   },
-  "fibres": "Fiber",
+  "fiber": "Fiber",
   "@fibres": {},
   "mealLogged": "Måltid lagt til i dagbok",
   "@mealLogged": {},

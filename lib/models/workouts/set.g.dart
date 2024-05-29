@@ -12,11 +12,11 @@ Set _$SetFromJson(Map<String, dynamic> json) {
     requiredKeys: const ['id', 'sets', 'order', 'comment'],
   );
   return Set(
-    day: json['exerciseday'] as int,
-    sets: json['sets'] as int,
-    order: json['order'] as int,
+    day: (json['exerciseday'] as num).toInt(),
+    sets: (json['sets'] as num).toInt(),
+    order: (json['order'] as num).toInt(),
   )
-    ..id = json['id'] as int?
+    ..id = (json['id'] as num?)?.toInt()
     ..comment = json['comment'] as String? ?? '';
 }
 

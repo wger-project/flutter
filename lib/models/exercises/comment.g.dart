@@ -12,8 +12,8 @@ Comment _$CommentFromJson(Map<String, dynamic> json) {
     requiredKeys: const ['id', 'comment'],
   );
   return Comment(
-    id: json['id'] as int,
-    exerciseId: json['exercise'] as int,
+    id: (json['id'] as num).toInt(),
+    exerciseId: (json['exercise'] as num).toInt(),
     comment: json['comment'] as String,
   );
 }

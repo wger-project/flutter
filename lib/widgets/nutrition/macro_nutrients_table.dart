@@ -148,12 +148,12 @@ class MacronutrientsTable extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: tablePadding),
-              child: Text(AppLocalizations.of(context).fibres),
+              child: Text(AppLocalizations.of(context).fiber),
             ),
             const Text(''),
             const Text(''),
-            Text(nutritionalGoals.fibres != null
-                ? nutritionalGoals.fibres!.toStringAsFixed(0) + AppLocalizations.of(context).g
+            Text(nutritionalGoals.fiber != null
+                ? nutritionalGoals.fiber!.toStringAsFixed(0) + AppLocalizations.of(context).g
                 : ''),
           ],
         ),

@@ -99,7 +99,8 @@ class FlNutritionalPlanGoalWidgetState extends State<FlNutritionalPlanGoalWidget
         if (goals.carbohydrates != null && goals.carbohydrates! > 0)
           today.carbohydrates / goals.carbohydrates!,
         if (goals.fat != null && goals.fat! > 0) today.fat / goals.fat!,
-        if (goals.energy != null && goals.energy! > 0) today.energy / goals.energy!
+        if (goals.energy != null && goals.energy! > 0) today.energy / goals.energy!,
+        if (goals.fiber != null && goals.fiber! > 0) today.fiber / goals.fiber!,
       ].reduce(max);
 
       final normWidth = constraints.maxWidth / maxVal;
@@ -130,6 +131,15 @@ class FlNutritionalPlanGoalWidgetState extends State<FlNutritionalPlanGoalWidget
               AppLocalizations.of(context).kcal)),
           const SizedBox(height: 2),
           _diyGauge(context, normWidth, goals.energy, today.energy),
+          // optionally display the advanced macro goals:
+          if (goals.fiber != null)
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              const SizedBox(height: 8),
+              Text(fmtMacro(AppLocalizations.of(context).fiber, today.fiber, goals.fiber,
+                  AppLocalizations.of(context).g)),
+              const SizedBox(height: 2),
+              _diyGauge(context, normWidth, goals.fiber, today.fiber),
+            ]),
         ],
       );
     });
@@ -257,6 +267,7 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
       2 => AppLocalizations.of(context).sugars,
       3 => AppLocalizations.of(context).fat,
       4 => AppLocalizations.of(context).saturatedFat,
+      5 => AppLocalizations.of(context).fiber,
       _ => '',
     };
     return SideTitleWidget(
@@ -389,6 +400,8 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
                     barchartGroup(2, barsSpace, barsWidth, 'carbohydratesSugar'),
                     barchartGroup(3, barsSpace, barsWidth, 'fat'),
                     barchartGroup(4, barsSpace, barsWidth, 'fatSaturated'),
+                    if (widget._nutritionalPlan.nutritionalGoals.fiber != null)
+                      barchartGroup(5, barsSpace, barsWidth, 'fibers'),
                   ],
                 ),
               ),

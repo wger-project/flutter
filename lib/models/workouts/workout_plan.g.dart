@@ -12,14 +12,15 @@ WorkoutPlan _$WorkoutPlanFromJson(Map<String, dynamic> json) {
     requiredKeys: const ['id', 'creation_date', 'name', 'description'],
   );
   return WorkoutPlan(
-    id: json['id'] as int?,
+    id: (json['id'] as num?)?.toInt(),
     creationDate: DateTime.parse(json['creation_date'] as String),
     name: json['name'] as String,
     description: json['description'] as String?,
   );
 }
 
-Map<String, dynamic> _$WorkoutPlanToJson(WorkoutPlan instance) => <String, dynamic>{
+Map<String, dynamic> _$WorkoutPlanToJson(WorkoutPlan instance) =>
+    <String, dynamic>{
       'id': instance.id,
       'creation_date': instance.creationDate.toIso8601String(),
       'name': instance.name,
