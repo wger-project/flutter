@@ -95,11 +95,11 @@ class FlNutritionalPlanGoalWidgetState extends State<FlNutritionalPlanGoalWidget
       // if none goes over, 100% means fill all available space
       final maxVal = [
         1.0,
+        if (goals.energy != null && goals.energy! > 0) today.energy / goals.energy!,
         if (goals.protein != null && goals.protein! > 0) today.protein / goals.protein!,
         if (goals.carbohydrates != null && goals.carbohydrates! > 0)
           today.carbohydrates / goals.carbohydrates!,
         if (goals.fat != null && goals.fat! > 0) today.fat / goals.fat!,
-        if (goals.energy != null && goals.energy! > 0) today.energy / goals.energy!,
         if (goals.fiber != null && goals.fiber! > 0) today.fiber / goals.fiber!,
       ].reduce(max);
 
@@ -112,6 +112,11 @@ class FlNutritionalPlanGoalWidgetState extends State<FlNutritionalPlanGoalWidget
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
+          Text(fmtMacro(AppLocalizations.of(context).energy, today.energy, goals.energy,
+              AppLocalizations.of(context).kcal)),
+          const SizedBox(height: 2),
+          _diyGauge(context, normWidth, goals.energy, today.energy),
+          const SizedBox(height: 8),
           Text(fmtMacro(AppLocalizations.of(context).protein, today.protein, goals.protein,
               AppLocalizations.of(context).g)),
           const SizedBox(height: 2),
@@ -126,11 +131,6 @@ class FlNutritionalPlanGoalWidgetState extends State<FlNutritionalPlanGoalWidget
               AppLocalizations.of(context).g)),
           const SizedBox(height: 2),
           _diyGauge(context, normWidth, goals.fat, today.fat),
-          const SizedBox(height: 8),
-          Text(fmtMacro(AppLocalizations.of(context).energy, today.energy, goals.energy,
-              AppLocalizations.of(context).kcal)),
-          const SizedBox(height: 2),
-          _diyGauge(context, normWidth, goals.energy, today.energy),
           // optionally display the advanced macro goals:
           if (goals.fiber != null)
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
