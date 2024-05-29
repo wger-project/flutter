@@ -112,6 +112,12 @@
                 https://raw.githubusercontent.com/wger-project/flutter/master/fastlane/metadata/android/en-US/images/phoneScreenshots/05%20-%20nutritional%20plan.png
             </image>
         </screenshot>
+        <screenshot>
+            <caption>Body weight</caption>
+            <image type="source">
+                https://raw.githubusercontent.com/wger-project/flutter/master/fastlane/metadata/android/en-US/images/phoneScreenshots/06%20-%20weight.png
+            </image>
+        </screenshot>
     </screenshots>
 
     <releases>
