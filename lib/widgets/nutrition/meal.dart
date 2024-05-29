@@ -25,6 +25,7 @@ import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/form_screen.dart';
+import 'package:wger/screens/log_meal_screen.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/helpers.dart';
@@ -360,17 +361,14 @@ class MealHeader extends StatelessWidget {
                 )
             ],
           ),
-          onTap: () {
-            Provider.of<NutritionPlansProvider>(context, listen: false).logMealToDiary(_meal);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  AppLocalizations.of(context).mealLogged,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            );
-          },
+          onTap: _meal.isRealMeal
+              ? () {
+                  Navigator.of(context).pushNamed(
+                    LogMealScreen.routeName,
+                    arguments: LogMealArguments(_meal),
+                  );
+                }
+              : null,
         ),
       ],
     );
