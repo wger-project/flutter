@@ -467,7 +467,10 @@ class _PlanFormState extends State<PlanForm> {
           ),
           Row(
             children: [
-              Text('Macro goals', style: Theme.of(context).textTheme.titleMedium),
+              Text(
+                AppLocalizations.of(context).goalMacro,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
               const SizedBox(width: 8),
               Expanded(
                 child: DropdownButtonFormField<GoalType>(
