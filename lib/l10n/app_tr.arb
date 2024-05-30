@@ -358,7 +358,7 @@
   "saturatedFat": "Doymuş yağ",
   "@saturatedFat": {},
   "fiber": "Lif",
-  "@fibres": {},
+  "@fiber": {},
   "delete": "Sil",
   "@delete": {},
   "edit": "Düzenle",
@@ -827,5 +827,19 @@
     "placeholders": {
       "value": {}
     }
+  },
+  "goalMacro": "Makro hedefleri",
+  "@goalMacro": {
+    "description": "The goal for macronutrients"
+  },
+  "goalFiber": "Lif hedefi",
+  "@goalFiber": {},
+  "surplus": "fazlalık",
+  "@surplus": {
+    "description": "Caloric surplus (either planned or unplanned)"
+  },
+  "deficit": "eksiklik",
+  "@deficit": {
+    "description": "Caloric deficit (either planned or unplanned)"
   }
 }
