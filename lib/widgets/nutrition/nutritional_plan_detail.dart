@@ -64,23 +64,6 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
           _nutritionalPlan.dedupMealItems,
           false,
         ),
-        if (!_nutritionalPlan.onlyLogging)
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(
-              child: Text(AppLocalizations.of(context).addMeal),
-              onPressed: () {
-                Navigator.pushNamed(
-                  context,
-                  FormScreen.routeName,
-                  arguments: FormScreenArguments(
-                    AppLocalizations.of(context).addMeal,
-                    MealForm(_nutritionalPlan.id!),
-                  ),
-                );
-              },
-            ),
-          ),
         if (nutritionalGoals.isComplete())
           Container(
             padding: const EdgeInsets.all(15),
