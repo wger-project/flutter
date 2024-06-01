@@ -135,6 +135,14 @@ Widget IngredientLogForm(NutritionalPlan plan) {
       onSave: (BuildContext context, MealItem mealItem, DateTime? dt) {
         Provider.of<NutritionPlansProvider>(context, listen: false)
             .logIngredientToDiary(mealItem, plan.id!, dt);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Ingredient logged to diary',
+              textAlign: TextAlign.center,
+            ),
+          ),
+        );
       },
       withDate: true);
 }
