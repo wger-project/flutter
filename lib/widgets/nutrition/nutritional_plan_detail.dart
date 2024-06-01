@@ -57,10 +57,12 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
         ..._nutritionalPlan.meals.map((meal) => MealWidget(
               meal,
               _nutritionalPlan.dedupMealItems,
+              false,
             )),
         MealWidget(
           _nutritionalPlan.pseudoMealOthers('Other logs'),
           _nutritionalPlan.dedupMealItems,
+          false,
         ),
         if (!_nutritionalPlan.onlyLogging)
           Padding(

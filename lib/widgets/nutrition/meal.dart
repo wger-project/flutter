@@ -40,10 +40,12 @@ enum viewMode {
 class MealWidget extends StatefulWidget {
   final Meal _meal;
   final List<MealItem> _recentMealItems;
+  final bool popTwice;
 
   const MealWidget(
     this._meal,
     this._recentMealItems,
+    this.popTwice,
   );
 
   @override
@@ -89,6 +91,7 @@ class _MealWidgetState extends State<MealWidget> {
             MealHeader(
               editing: _editing,
               toggleEditing: _toggleEditing,
+              popTwice: widget.popTwice,
               viewMode: _viewMode,
               toggleViewMode: _toggleDetails,
               meal: widget._meal,
@@ -278,6 +281,7 @@ class LogDiaryItemWidget extends StatelessWidget {
 class MealHeader extends StatelessWidget {
   final Meal _meal;
   final bool _editing;
+  final bool popTwice;
   final viewMode _viewMode;
   final Function _toggleEditing;
   final Function _toggleViewMode;
@@ -285,6 +289,7 @@ class MealHeader extends StatelessWidget {
   const MealHeader({
     required Meal meal,
     required bool editing,
+    this.popTwice = false,
     required viewMode viewMode,
     required Function toggleEditing,
     required Function toggleViewMode,
@@ -365,7 +370,7 @@ class MealHeader extends StatelessWidget {
               ? () {
                   Navigator.of(context).pushNamed(
                     LogMealScreen.routeName,
-                    arguments: LogMealArguments(_meal),
+                    arguments: LogMealArguments(_meal, popTwice),
                   );
                 }
               : null,
