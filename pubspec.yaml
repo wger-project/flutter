@@ -69,6 +69,8 @@ dependencies:
   flex_color_scheme: ^7.3.1
   freezed_annotation: ^2.4.1
   clock: ^1.1.1
+  flutter_svg_icons: ^0.0.1
+
 
 dev_dependencies:
   flutter_test:
@@ -103,6 +105,7 @@ flutter:
     - assets/images/muscles/
     - assets/images/muscles/main/
     - assets/images/muscles/secondary/
+    - assets/icons/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

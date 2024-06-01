@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Generator: Adobe Illustrator 19.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+
+<!-- License: CC0. Made by SVG Repo: https://www.svgrepo.com/svg/150226/meal -->
+
+<svg
+   version="1.1"
+   id="Layer_1"
+   x="0px"
+   y="0px"
+   viewBox="0 0 512.002 512.002"
+   style="enable-background:new 0 0 512.002 512.002;"
+   xml:space="preserve"
+   sodipodi:docname="meal-edit.svg"
+   inkscape:version="1.3.2 (091e20ef0f, 2023-11-25, custom)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><defs
+   id="defs8">
+	
+</defs><sodipodi:namedview
+   id="namedview8"
+   pagecolor="#ffffff"
+   bordercolor="#000000"
+   borderopacity="0.25"
+   inkscape:showpageshadow="2"
+   inkscape:pageopacity="0.0"
+   inkscape:pagecheckerboard="0"
+   inkscape:deskcolor="#d1d1d1"
+   inkscape:zoom="1.7363213"
+   inkscape:cx="257.15287"
+   inkscape:cy="257.15287"
+   inkscape:window-width="1920"
+   inkscape:window-height="1155"
+   inkscape:window-x="0"
+   inkscape:window-y="45"
+   inkscape:window-maximized="1"
+   inkscape:current-layer="Layer_1" />
+
+<circle
+   id="path2"
+   style="fill:#000000;stroke:#000000;stroke-width:0.2"
+   cx="521.88666"
+   cy="45.191727"
+   r="0.0043425169" /><path
+   d="M 576,657 H -64 c -24,0 -40,-16 -40,-40 0,-24 16,-40 40,-40 h 640 c 24,0 40,16 40,40 0,24 -16,40 -40,40 z"
+   id="path1-3"
+   style="stroke-width:40" /><g
+   id="g2-7"
+   transform="matrix(0,-3.2840933,3.2840933,0,211.59523,296.53997)">
+	<path
+   d="M 88.79,29.297 70.702,11.209 c -1.052,-1.052 -2.756,-1.052 -3.808,0 l -49.505,49.504 0.109,0.109 -0.171,-0.046 -6.772,25.272 0.004,0.001 c -0.309,0.935 -0.103,2.004 0.642,2.748 0.822,0.822 2.038,0.993 3.033,0.531 l 0.002,0.009 25.027,-6.706 -0.016,-0.059 0.038,0.038 49.505,-49.505 c 1.052,-1.052 1.052,-2.756 0,-3.808 z m -69.998,51.85 4.022,-15.009 10.988,10.988 z"
+   id="path1-5" />
+</g><g
+   id="g3"
+   transform="matrix(0.96951671,0,0,0.95088529,6.988638,111.33001)">
+	<g
+   id="g2">
+		<path
+   d="M 494.434,315.678 H 463.697 C 455.367,216.327 377.063,136.575 278.357,126.001 283.158,110.85 271.813,95.459 256,95.459 c -15.83,0 -27.153,15.407 -22.357,30.542 -98.707,10.574 -177.01,90.327 -185.34,189.677 H 17.566 C 7.865,315.678 0,323.543 0,333.244 c 0,9.701 7.865,17.565 17.566,17.565 h 29.99 v 13.612 c 0,28.738 23.381,52.119 52.12,52.119 h 312.648 c 28.74,0 52.12,-23.381 52.12,-52.119 v -13.612 h 29.99 c 9.701,0 17.565,-7.865 17.565,-17.565 10e-4,-9.701 -7.864,-17.566 -17.565,-17.566 z M 112.028,273.83 c 15.615,-37.716 46.155,-68.42 83.79,-84.238 8.943,-3.761 19.24,0.444 22.999,9.387 3.759,8.944 -0.444,19.241 -9.387,23 -29.17,12.261 -52.841,36.057 -64.942,65.29 -3.706,8.953 -13.973,13.224 -22.949,9.51 -8.963,-3.712 -13.221,-13.987 -9.511,-22.949 z m 317.285,90.591 c 0,9.367 -7.621,16.988 -16.989,16.988 H 99.676 c -9.368,0 -16.989,-7.621 -16.989,-16.988 v -13.612 h 346.626 z"
+   id="path1" />
+	</g>
+</g></svg>
