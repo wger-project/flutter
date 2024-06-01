@@ -18,10 +18,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_svg_icons/flutter_svg_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/form_screen.dart';
+import 'package:wger/screens/log_meals_screen.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/nutritional_plan_detail.dart';
 
@@ -45,22 +47,43 @@ class NutritionalPlanScreen extends StatelessWidget {
 
     return Scaffold(
       //appBar: getAppBar(nutritionalPlan),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(
-          Icons.history_edu,
-          color: Colors.white,
-        ),
-        onPressed: () {
-          Navigator.pushNamed(
-            context,
-            FormScreen.routeName,
-            arguments: FormScreenArguments(
-              AppLocalizations.of(context).logIngredient,
-              IngredientLogForm(nutritionalPlan),
-              hasListView: true,
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            heroTag: null,
+            tooltip: AppLocalizations.of(context).logIngredient,
+            onPressed: () {
+              Navigator.pushNamed(
+                context,
+                FormScreen.routeName,
+                arguments: FormScreenArguments(
+                  AppLocalizations.of(context).logIngredient,
+                  IngredientLogForm(nutritionalPlan),
+                  hasListView: true,
+                ),
+              );
+            },
+            child: const SvgIcon(
+              icon: SvgIconData('assets/icons/ingredient-diary.svg'),
+              color: Colors.white,
             ),
-          );
-        },
+          ),
+          const SizedBox(
+            width: 8,
+          ),
+          FloatingActionButton(
+            heroTag: null,
+            tooltip: 'Save meal to nutrition diary',
+            onPressed: () {
+              Navigator.of(context).pushNamed(LogMealsScreen.routeName, arguments: nutritionalPlan);
+            },
+            child: const SvgIcon(
+              icon: SvgIconData('assets/icons/meal-diary.svg'),
+              color: Colors.white,
+            ),
+          ),
+        ],
       ),
       body: CustomScrollView(
         slivers: <Widget>[
