@@ -63,7 +63,7 @@
   },
   "sameRepetitions": "如果您对所有组别进行相同的重复次数和重量，则只需填写一行即可。例如，对于 4 组，只需输入 10 次重复，这会自动变成「4 x 10」。",
   "@sameRepetitions": {},
-  "exercise": "锻炼项目",
+  "exercise": "锻炼",
   "@exercise": {
     "description": "An exercise for a workout"
   },
@@ -275,7 +275,7 @@
   "sodium": "钠",
   "@sodium": {},
   "fiber": "纤维",
-  "@fibres": {},
+  "@fiber": {},
   "saturatedFat": "饱和脂肪",
   "@saturatedFat": {},
   "fat": "脂肪",
@@ -582,5 +582,31 @@
     "description": "Generated entry for translation for server strings"
   },
   "alternativeNames": "別称",
-  "@alternativeNames": {}
+  "@alternativeNames": {},
+  "useMetric": "使用公制单位表示体重",
+  "@useMetric": {},
+  "kilometers": "公里",
+  "@kilometers": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "minutes": "分钟",
+  "@minutes": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "pull_up_bar": "上拉杆",
+  "@pull_up_bar": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "exerciseList": "锻炼清單",
+  "@exerciseList": {},
+  "exercises": "锻炼项目",
+  "@exercises": {
+    "description": "Multiple exercises for a workout"
+  },
+  "noMatchingExerciseFound": "未找到匹配的锻炼",
+  "@noMatchingExerciseFound": {
+    "description": "Message returned if no exercises match the searched string"
+  },
+  "searchNamesInEnglish": "同时搜索英文名称",
+  "@searchNamesInEnglish": {}
 }
