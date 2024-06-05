@@ -89,7 +89,6 @@ class NutritionalPlanScreen extends StatelessWidget {
         slivers: <Widget>[
           SliverAppBar(
             foregroundColor: appBarForeground,
-            expandedHeight: 250,
             pinned: true,
             iconTheme: const IconThemeData(color: appBarForeground),
             actions: [
@@ -155,10 +154,6 @@ class NutritionalPlanScreen extends StatelessWidget {
               title: Text(
                 nutritionalPlan.getLabel(context),
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(color: appBarForeground),
-              ),
-              background: const Image(
-                image: AssetImage('assets/images/backgrounds/nutritional_plans.jpg'),
-                fit: BoxFit.cover,
               ),
             ),
           ),

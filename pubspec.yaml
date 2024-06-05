@@ -101,7 +101,6 @@ flutter:
   assets:
     - assets/animations/
     - assets/images/
-    - assets/images/backgrounds/
     - assets/images/muscles/
     - assets/images/muscles/main/
     - assets/images/muscles/secondary/
