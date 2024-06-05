@@ -88,7 +88,9 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
               ),
               MutedText(getShortNutritionValues(meal.plannedNutritionalValues, context)),
               IconButton(
-                icon: const Icon(Icons.history_edu),
+                icon: const SvgIcon(
+                  icon: SvgIconData('assets/icons/meal-diary.svg'),
+                ),
                 color: wgerPrimaryButtonColor,
                 onPressed: () {
                   Provider.of<NutritionPlansProvider>(context, listen: false).logMealToDiary(meal);
