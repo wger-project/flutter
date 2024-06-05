@@ -32,6 +32,7 @@ import 'package:wger/providers/user.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/gym_mode.dart';
+import 'package:wger/screens/log_meal_screen.dart';
 import 'package:wger/screens/log_meals_screen.dart';
 import 'package:wger/screens/measurement_categories_screen.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
@@ -93,17 +94,12 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                 ),
                 color: wgerPrimaryButtonColor,
                 onPressed: () {
-                  Provider.of<NutritionPlansProvider>(context, listen: false).logMealToDiary(meal);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        AppLocalizations.of(context).mealLogged,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
+                  Navigator.of(context).pushNamed(
+                    LogMealScreen.routeName,
+                    arguments: LogMealArguments(meal, false),
                   );
                 },
-              ),
+              )
             ],
           ),
         );
