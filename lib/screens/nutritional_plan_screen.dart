@@ -30,7 +30,6 @@ import 'package:wger/widgets/nutrition/nutritional_plan_detail.dart';
 enum NutritionalPlanOptions {
   edit,
   delete,
-  addMeal,
 }
 
 class NutritionalPlanScreen extends StatelessWidget {
@@ -92,6 +91,22 @@ class NutritionalPlanScreen extends StatelessWidget {
             pinned: true,
             iconTheme: const IconThemeData(color: appBarForeground),
             actions: [
+              if (!nutritionalPlan.onlyLogging)
+                IconButton(
+                  icon: const SvgIcon(
+                    icon: SvgIconData('assets/icons/meal-add.svg'),
+                  ),
+                  onPressed: () {
+                    Navigator.pushNamed(
+                      context,
+                      FormScreen.routeName,
+                      arguments: FormScreenArguments(
+                        AppLocalizations.of(context).addMeal,
+                        MealForm(nutritionalPlan.id!),
+                      ),
+                    );
+                  },
+                ),
               PopupMenuButton<NutritionalPlanOptions>(
                 icon: const Icon(Icons.more_vert, color: appBarForeground),
                 onSelected: (value) {
@@ -109,15 +124,6 @@ class NutritionalPlanScreen extends StatelessWidget {
                     Provider.of<NutritionPlansProvider>(context, listen: false)
                         .deletePlan(nutritionalPlan.id!);
                     Navigator.of(context).pop();
-                  } else if (value == NutritionalPlanOptions.addMeal) {
-                    Navigator.pushNamed(
-                      context,
-                      FormScreen.routeName,
-                      arguments: FormScreenArguments(
-                        AppLocalizations.of(context).addMeal,
-                        MealForm(nutritionalPlan.id!),
-                      ),
-                    );
                   }
                 },
                 itemBuilder: (BuildContext context) {
@@ -135,16 +141,6 @@ class NutritionalPlanScreen extends StatelessWidget {
                           leading: const Icon(Icons.delete),
                           title: Text(AppLocalizations.of(context).delete)),
                     ),
-                    if (!nutritionalPlan.onlyLogging) const PopupMenuDivider(),
-                    if (!nutritionalPlan.onlyLogging)
-                      PopupMenuItem<NutritionalPlanOptions>(
-                        value: NutritionalPlanOptions.delete,
-                        child: ListTile(
-                            leading: const SvgIcon(
-                              icon: SvgIconData('assets/icons/meal-add.svg'),
-                            ),
-                            title: Text(AppLocalizations.of(context).addMeal)),
-                      ),
                   ];
                 },
               ),
