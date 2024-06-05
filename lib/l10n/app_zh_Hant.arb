@@ -177,7 +177,7 @@
   "@gymMode": {
     "description": "Label when starting the gym mode"
   },
-  "selectExercises": "如果你想做一個超級組，你可以搜尋幾個訓練，它們會組在一起。",
+  "selectExercises": "如果你想做一個超級組，你可以搜尋幾個訓練，它們會組在一起",
   "@selectExercises": {},
   "workoutSession": "訓練(節)",
   "@workoutSession": {
@@ -547,7 +547,7 @@
   "@today": {},
   "percentEnergy": "能量百分比",
   "@percentEnergy": {},
-  "onlyLoggingHelpText": "如果你只想記錄卡路里但不想設計有特定膳食的詳細營養計劃，請選中此框。",
+  "onlyLoggingHelpText": "如果你只想記錄卡路里但不想設計有特定膳食的詳細營養計劃，請選中此框",
   "@onlyLoggingHelpText": {},
   "addGoalsToPlanHelpText": "這使你可以為計劃設定能量、蛋白質、碳水化合物或脂肪的總體目標。請注意，如果你設定了詳細的膳食計劃，這些數值將取得優先權。",
   "@addGoalsToPlanHelpText": {},
@@ -895,5 +895,13 @@
   "repetitions": "次數",
   "@repetitions": {
     "description": "Generated entry for translation for server strings"
-  }
+  },
+  "goalMacro": "宏量營養素目標",
+  "@goalMacro": {
+    "description": "The goal for macronutrients"
+  },
+  "fiber": "纖維",
+  "@fiber": {},
+  "goalFiber": "纖維目標",
+  "@goalFiber": {}
 }

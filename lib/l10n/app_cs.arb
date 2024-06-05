@@ -204,7 +204,7 @@
   "saturatedFat": "Nasycené tuky",
   "@saturatedFat": {},
   "fiber": "Vláknina",
-  "@fibres": {},
+  "@fiber": {},
   "sodium": "Sodík",
   "@sodium": {},
   "amount": "Množství",
@@ -895,5 +895,11 @@
   "deficit": "nedostatek",
   "@deficit": {
     "description": "Caloric deficit (either planned or unplanned)"
+  },
+  "goalFiber": "Cíl vlákniny",
+  "@goalFiber": {},
+  "goalMacro": "Makro cíle",
+  "@goalMacro": {
+    "description": "The goal for macronutrients"
   }
 }
