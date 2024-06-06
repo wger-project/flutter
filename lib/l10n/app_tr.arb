@@ -205,7 +205,7 @@
   "@plateCalculator": {
     "description": "Label used for the plate calculator in the gym mode"
   },
-  "logIngredient": "Beslenme günlüğüne kaydet",
+  "logIngredient": "Malzemeyi beslenme günlüğüne kaydet",
   "@logIngredient": {},
   "comment": "Yorum",
   "@comment": {
@@ -257,7 +257,7 @@
   "@addMeal": {},
   "mealLogged": "Yemek günlüğe kaydedildi",
   "@mealLogged": {},
-  "logMeal": "Bu yemeği kaydet",
+  "logMeal": "Yemeği beslenme günlüğüne kaydet",
   "@logMeal": {},
   "addIngredient": "Malzeme ekle",
   "@addIngredient": {},
@@ -843,5 +843,7 @@
     "description": "Caloric deficit (either planned or unplanned)"
   },
   "ingredientLogged": "Malzeme günlüğe kaydedildi",
-  "@ingredientLogged": {}
+  "@ingredientLogged": {},
+  "selectMealToLog": "Günlüğe kaydetmek için bir yemek seçin",
+  "@selectMealToLog": {}
 }
