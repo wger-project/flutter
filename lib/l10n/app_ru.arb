@@ -400,7 +400,7 @@
     "description": "Label used for total sums of e.g. calories or similar"
   },
   "fiber": "Клетчатка",
-  "@fibres": {},
+  "@fiber": {},
   "percentEnergy": "Процент энергии",
   "@percentEnergy": {},
   "proteinShort": "Б",
@@ -797,5 +797,105 @@
   "legs": "Ноги",
   "@legs": {
     "description": "Generated entry for translation for server strings"
-  }
+  },
+  "goalMacro": "Цели по макронутриентам",
+  "@goalMacro": {
+    "description": "The goal for macronutrients"
+  },
+  "goalFiber": "Цель по волокну",
+  "@goalFiber": {},
+  "kcalValue": "{value} калорий",
+  "@kcalValue": {
+    "description": "A value in kcal, e.g. 500 kcal",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "aboutMastodonText": "Подписывайтесь на нас в Mastodon, чтобы получать обновления и новости о проекте",
+  "@aboutMastodonText": {
+    "description": "Text for the mastodon section in the about dialog"
+  },
+  "useMetric": "Использовать метрические единицы измерения для веса тела.",
+  "@useMetric": {},
+  "verify": "Подтвердить",
+  "@verify": {},
+  "settingsCacheTitle": "Кэш",
+  "@settingsCacheTitle": {},
+  "settingsCacheDescription": "Кэш упражнений",
+  "@settingsCacheDescription": {},
+  "noMatchingExerciseFound": "Не выбрано упражнение для замены",
+  "@noMatchingExerciseFound": {
+    "description": "Message returned if no exercises match the searched string"
+  },
+  "hamstrings": "Бёдра",
+  "@hamstrings": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "max_reps": "Максимальное количество повторений",
+  "@max_reps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "onlyLogging": "Только отслеживать калории",
+  "@onlyLogging": {},
+  "onlyLoggingHelpText": "Поставьте флажок, если вы хотите отслеживать только потребление калорий и не хотите создавать подробный план питания с конкретными блюдами",
+  "@onlyLoggingHelpText": {},
+  "goalEnergy": "Цель по энергии",
+  "@goalEnergy": {},
+  "goalProtein": "Цель по белкам",
+  "@goalProtein": {},
+  "goalCarbohydrates": "Цель по углеводам",
+  "@goalCarbohydrates": {},
+  "goalFat": "Цель по жирам",
+  "@goalFat": {},
+  "today": "Сегодня",
+  "@today": {},
+  "loggedToday": "Записано на сегодня",
+  "@loggedToday": {},
+  "gValue": "{value} гр",
+  "@gValue": {
+    "description": "A value in grams, e.g. 5 g",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "percentValue": "{value} %",
+  "@percentValue": {
+    "description": "A value in percent, e.g. 10 %",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "aboutDonateTitle": "Пожертвовать",
+  "@aboutDonateTitle": {},
+  "aboutDonateText": "Купите нам кофе, чтобы помочь проекту, оплатить затраты на сервер и поддерживать нас в тонусе",
+  "@aboutDonateText": {},
+  "settingsTitle": "Настройки",
+  "@settingsTitle": {},
+  "lower_back": "Нижняя часть спины",
+  "@lower_back": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "aboutMastodonTitle": "Мастодонт",
+  "@aboutMastodonTitle": {
+    "description": "Title for mastodon section in the about dialog"
+  },
+  "surplus": "превышение",
+  "@surplus": {
+    "description": "Caloric surplus (either planned or unplanned)"
+  },
+  "deficit": "дефицит",
+  "@deficit": {
+    "description": "Caloric deficit (either planned or unplanned)"
+  },
+  "settingsCacheDeletedSnackbar": "Кэш успешно очищен",
+  "@settingsCacheDeletedSnackbar": {},
+  "log": "Журнал",
+  "@log": {
+    "description": "Log a specific meal (imperative form)"
+  },
+  "done": "Завершить",
+  "@done": {}
 }

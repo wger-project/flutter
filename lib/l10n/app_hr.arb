@@ -194,7 +194,7 @@
   "saturatedFat": "Zasićene masti",
   "@saturatedFat": {},
   "fiber": "Vlakna",
-  "@fibres": {},
+  "@fiber": {},
   "sodium": "Natrij",
   "@sodium": {},
   "toggleDetails": "Prikaži detalje",
@@ -895,5 +895,11 @@
   "deficit": "manjak",
   "@deficit": {
     "description": "Caloric deficit (either planned or unplanned)"
+  },
+  "goalFiber": "Cilj za vlakna",
+  "@goalFiber": {},
+  "goalMacro": "Ciljevi za makronutrijente",
+  "@goalMacro": {
+    "description": "The goal for macronutrients"
   }
 }
