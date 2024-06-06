@@ -73,7 +73,7 @@ class NutritionalPlanScreen extends StatelessWidget {
           ),
           FloatingActionButton(
             heroTag: null,
-            tooltip: 'Save meal to nutrition diary',
+            tooltip: AppLocalizations.of(context).logMeal,
             onPressed: () {
               Navigator.of(context).pushNamed(LogMealsScreen.routeName, arguments: nutritionalPlan);
             },

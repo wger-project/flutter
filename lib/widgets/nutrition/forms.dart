@@ -136,9 +136,9 @@ Widget IngredientLogForm(NutritionalPlan plan) {
         Provider.of<NutritionPlansProvider>(context, listen: false)
             .logIngredientToDiary(mealItem, plan.id!, dt);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text(
-              'Ingredient logged to diary',
+              AppLocalizations.of(context).ingredientLogged,
               textAlign: TextAlign.center,
             ),
           ),

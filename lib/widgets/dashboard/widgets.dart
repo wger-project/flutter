@@ -207,8 +207,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                 Expanded(child: Container()),
                 IconButton(
                   icon: const SvgIcon(icon: SvgIconData('assets/icons/ingredient-diary.svg')),
-                  tooltip: AppLocalizations.of(context)
-                      .logIngredient, // TODO: message should mention *ingredient*
+                  tooltip: AppLocalizations.of(context).logIngredient,
                   onPressed: () {
                     Navigator.pushNamed(
                       context,
@@ -223,7 +222,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                 ),
                 IconButton(
                   icon: const SvgIcon(icon: SvgIconData('assets/icons/meal-diary.svg')),
-                  tooltip: 'Save meal to nutrition diary',
+                  tooltip: AppLocalizations.of(context).logMeal,
                   onPressed: () {
                     Navigator.of(context).pushNamed(LogMealsScreen.routeName, arguments: _plan);
                   },
