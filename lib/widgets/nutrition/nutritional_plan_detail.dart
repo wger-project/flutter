@@ -56,11 +56,13 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
               meal,
               _nutritionalPlan.dedupMealItems,
               false,
+              false,
             )),
         MealWidget(
           _nutritionalPlan.pseudoMealOthers('Other logs'),
           _nutritionalPlan.dedupMealItems,
           false,
+          true,
         ),
         if (nutritionalGoals.isComplete())
           Container(

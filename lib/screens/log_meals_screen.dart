@@ -45,6 +45,7 @@ class _LogMealsScreenState extends State<LogMealsScreen> {
                 nutritionalPlan.meals[index],
                 nutritionalPlan.dedupMealItems,
                 true,
+                true,
               )),
     );
   }

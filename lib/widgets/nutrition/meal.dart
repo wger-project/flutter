@@ -42,11 +42,13 @@ class MealWidget extends StatefulWidget {
   final Meal _meal;
   final List<MealItem> _recentMealItems;
   final bool popTwice;
+  final bool readOnly;
 
   const MealWidget(
     this._meal,
     this._recentMealItems,
     this.popTwice,
+    this.readOnly,
   );
 
   @override
@@ -93,6 +95,7 @@ class _MealWidgetState extends State<MealWidget> {
               editing: _editing,
               toggleEditing: _toggleEditing,
               popTwice: widget.popTwice,
+              readOnly: widget.readOnly,
               viewMode: _viewMode,
               toggleViewMode: _toggleDetails,
               meal: widget._meal,
@@ -283,6 +286,7 @@ class MealHeader extends StatelessWidget {
   final Meal _meal;
   final bool _editing;
   final bool popTwice;
+  final bool readOnly;
   final viewMode _viewMode;
   final Function _toggleEditing;
   final Function _toggleViewMode;
@@ -291,6 +295,7 @@ class MealHeader extends StatelessWidget {
     required Meal meal,
     required bool editing,
     this.popTwice = false,
+    this.readOnly = false,
     required viewMode viewMode,
     required Function toggleEditing,
     required Function toggleViewMode,
@@ -338,8 +343,8 @@ class MealHeader extends StatelessWidget {
                 },
                 tooltip: AppLocalizations.of(context).toggleDetails,
               ),
-              const SizedBox(width: 5),
-              if (_meal.isRealMeal)
+              if (_meal.isRealMeal && !readOnly) const SizedBox(width: 5),
+              if (_meal.isRealMeal && !readOnly)
                 IconButton(
                   icon: _editing ? const Icon(Icons.done) : const Icon(Icons.edit),
                   tooltip: _editing
