@@ -20,6 +20,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/core/locator.dart';
+import 'package:wger/exceptions/logger.abs.dart';
+import 'package:wger/exceptions/logger_adaptor.dart';
 import 'package:wger/providers/add_exercise.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/body_weight.dart';
@@ -51,6 +53,7 @@ import 'package:wger/screens/workout_plans_screen.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/about.dart';
 import 'package:wger/widgets/core/settings.dart';
+import 'package:flutter/foundation.dart' as foundation;
 
 import 'providers/auth.dart';
 
@@ -62,6 +65,12 @@ void main() async {
 
   // Locator to initialize exerciseDB
   await ServiceLocator().configure();
+  
+  // Set the LogLevel of the app depending on if the app is in release
+  // mode or not.
+  Logging.level = foundation.kReleaseMode ? LogLevel.off : LogLevel.fine;
+  LoggingAdaptor.listenForLogs();
+
   // Application
   runApp(MyApp());
 }
