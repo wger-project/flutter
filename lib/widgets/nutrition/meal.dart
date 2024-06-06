@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_svg_icons/flutter_svg_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/nutrition/log.dart';
@@ -308,36 +309,20 @@ class MealHeader extends StatelessWidget {
           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           title: Row(children: [
             Expanded(
-              child: (_meal.name != '')
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          _meal.name,
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                        if (_meal.time != null)
-                          Text(
-                            _meal.time!.format(context),
-                            style: Theme.of(context).textTheme.headlineSmall,
-                          )
-                      ],
-                    )
-                  : Text(
-                      _meal.time != null ? _meal.time!.format(context) : '',
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
-            ),
-            if (_meal.isRealMeal)
-              Text(
-                AppLocalizations.of(context).log,
-                style: Theme.of(context)
-                    .textTheme
-                    .labelLarge
-                    ?.copyWith(color: Theme.of(context).colorScheme.primary),
-              ),
-            const SizedBox(width: 26),
-            const SizedBox(height: 40, width: 1, child: VerticalDivider()),
+                child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  ((_meal.time != null) ? '${_meal.time!.format(context)} ' : '') + _meal.name,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                if (_meal.isRealMeal)
+                  Text(
+                    getShortNutritionValues(_meal.plannedNutritionalValues, context),
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+              ],
+            )),
           ]),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
@@ -363,7 +348,9 @@ class MealHeader extends StatelessWidget {
                   onPressed: () {
                     _toggleEditing();
                   },
-                )
+                ),
+              if (_meal.isRealMeal) const SizedBox(width: 5),
+              if (_meal.isRealMeal) const SvgIcon(icon: SvgIconData('assets/icons/meal-diary.svg')),
             ],
           ),
           onTap: _meal.isRealMeal
