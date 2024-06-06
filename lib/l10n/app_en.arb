@@ -256,11 +256,12 @@
   "@addMeal": {},
   "mealLogged": "Meal logged to diary",
   "@mealLogged": {},
-  "logMeal": "Log this meal",
+  "ingredientLogged": "Ingredient logged to diary",
+  "logMeal": "Log meal to nutrition diary",
   "@logMeal": {},
   "addIngredient": "Add ingredient",
   "@addIngredient": {},
-  "logIngredient": "Save to nutrition diary",
+  "logIngredient": "Log ingredient to nutrition diary",
   "@logIngredient": {},
   "searchIngredient": "Search ingredient",
   "@searchIngredient": {
@@ -282,6 +283,7 @@
   "@goalMacro": {
     "description": "The goal for macronutrients"
   },
+  "selectMealToLog": "Select a meal to log to diary",
   "goalEnergy": "Energy goal",
   "goalProtein": "Protein goal",
   "goalCarbohydrates": "Carbohydrates goal",

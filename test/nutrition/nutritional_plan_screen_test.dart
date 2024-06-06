@@ -134,7 +134,7 @@ void main() {
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();
 
-    expect(find.text('5:00 PM'), findsOneWidget);
+    expect(find.textContaining('5:00 PM'), findsOneWidget);
   });
 
   testWidgets('Tests the localization of times - DE', (WidgetTester tester) async {
@@ -142,6 +142,6 @@ void main() {
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();
 
-    expect(find.text('17:00'), findsOneWidget);
+    expect(find.textContaining('17:00'), findsOneWidget);
   });
 }

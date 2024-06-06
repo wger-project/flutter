@@ -26,8 +26,9 @@ import 'package:wger/widgets/nutrition/widgets.dart';
 
 class LogMealArguments {
   final Meal meal;
+  final bool popTwice;
 
-  LogMealArguments(this.meal);
+  LogMealArguments(this.meal, this.popTwice);
 }
 
 class LogMealScreen extends StatefulWidget {
@@ -104,6 +105,9 @@ class _LogMealScreenState extends State<LogMealScreen> {
                             ),
                           );
                           Navigator.of(context).pop();
+                          if (args.popTwice) {
+                            Navigator.of(context).pop();
+                          }
                         },
                       ),
                     TextButton(

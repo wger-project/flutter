@@ -77,7 +77,6 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
       body: CustomScrollView(
         slivers: <Widget>[
           SliverAppBar(
-            expandedHeight: 250,
             pinned: true,
             iconTheme: const IconThemeData(color: appBarForeground),
             backgroundColor: wgerPrimaryColor,
@@ -86,10 +85,6 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
               title: Text(
                 workoutPlan.name,
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(color: appBarForeground),
-              ),
-              background: const Image(
-                image: AssetImage('assets/images/backgrounds/workout_plans.jpg'),
-                fit: BoxFit.cover,
               ),
             ),
             actions: [

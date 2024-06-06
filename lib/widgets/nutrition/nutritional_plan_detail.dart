@@ -21,9 +21,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/body_weight.dart';
-import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
-import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/macro_nutrients_table.dart';
 import 'package:wger/widgets/nutrition/meal.dart';
 import 'package:wger/widgets/nutrition/nutritional_diary_table.dart';
@@ -57,28 +55,15 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
         ..._nutritionalPlan.meals.map((meal) => MealWidget(
               meal,
               _nutritionalPlan.dedupMealItems,
+              false,
+              false,
             )),
         MealWidget(
           _nutritionalPlan.pseudoMealOthers('Other logs'),
           _nutritionalPlan.dedupMealItems,
+          false,
+          true,
         ),
-        if (!_nutritionalPlan.onlyLogging)
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(
-              child: Text(AppLocalizations.of(context).addMeal),
-              onPressed: () {
-                Navigator.pushNamed(
-                  context,
-                  FormScreen.routeName,
-                  arguments: FormScreenArguments(
-                    AppLocalizations.of(context).addMeal,
-                    MealForm(_nutritionalPlan.id!),
-                  ),
-                );
-              },
-            ),
-          ),
         if (nutritionalGoals.isComplete())
           Container(
             padding: const EdgeInsets.all(15),

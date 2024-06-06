@@ -19,6 +19,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_svg_icons/flutter_svg_icons.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -31,6 +32,8 @@ import 'package:wger/providers/user.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/gym_mode.dart';
+import 'package:wger/screens/log_meal_screen.dart';
+import 'package:wger/screens/log_meals_screen.dart';
 import 'package:wger/screens/measurement_categories_screen.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
@@ -86,20 +89,17 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
               ),
               MutedText(getShortNutritionValues(meal.plannedNutritionalValues, context)),
               IconButton(
-                icon: const Icon(Icons.history_edu),
+                icon: const SvgIcon(
+                  icon: SvgIconData('assets/icons/meal-diary.svg'),
+                ),
                 color: wgerPrimaryButtonColor,
                 onPressed: () {
-                  Provider.of<NutritionPlansProvider>(context, listen: false).logMealToDiary(meal);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        AppLocalizations.of(context).mealLogged,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
+                  Navigator.of(context).pushNamed(
+                    LogMealScreen.routeName,
+                    arguments: LogMealArguments(meal, false),
                   );
                 },
-              ),
+              )
             ],
           ),
         );
@@ -195,7 +195,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
             ),
           if (_hasContent)
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 TextButton(
                   child: Text(AppLocalizations.of(context).goToDetailPage),
@@ -204,10 +204,9 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                         .pushNamed(NutritionalPlanScreen.routeName, arguments: _plan);
                   },
                 ),
+                Expanded(child: Container()),
                 IconButton(
-                  icon: const Icon(
-                    Icons.history_edu,
-                  ),
+                  icon: const SvgIcon(icon: SvgIconData('assets/icons/ingredient-diary.svg')),
                   tooltip: AppLocalizations.of(context).logIngredient,
                   onPressed: () {
                     Navigator.pushNamed(
@@ -219,6 +218,13 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                         hasListView: true,
                       ),
                     );
+                  },
+                ),
+                IconButton(
+                  icon: const SvgIcon(icon: SvgIconData('assets/icons/meal-diary.svg')),
+                  tooltip: AppLocalizations.of(context).logMeal,
+                  onPressed: () {
+                    Navigator.of(context).pushNamed(LogMealsScreen.routeName, arguments: _plan);
                   },
                 ),
               ],
