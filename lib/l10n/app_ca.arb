@@ -473,7 +473,7 @@
     "description": "Message shown when the user has no logged weight entries"
   },
   "fiber": "Fibra",
-  "@fibres": {},
+  "@fiber": {},
   "sodium": "Sodi",
   "@sodium": {},
   "delete": "Esborra",
