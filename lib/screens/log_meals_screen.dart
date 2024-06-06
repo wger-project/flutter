@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/widgets/nutrition/meal.dart';
 
@@ -36,7 +37,7 @@ class _LogMealsScreenState extends State<LogMealsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Select a meal to log to diary'),
+        title: Text(AppLocalizations.of(context).selectMealToLog),
       ),
       body: ListView.builder(
           itemCount: nutritionalPlan.meals.length,
