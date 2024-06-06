@@ -415,7 +415,7 @@
   "saturatedFat": "Tłuszcz nasycony",
   "@saturatedFat": {},
   "fiber": "Błonnik",
-  "@fibres": {},
+  "@fiber": {},
   "sodium": "Sód",
   "@sodium": {},
   "amount": "Ilość",
