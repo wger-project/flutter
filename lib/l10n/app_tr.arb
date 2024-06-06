@@ -841,5 +841,7 @@
   "deficit": "eksiklik",
   "@deficit": {
     "description": "Caloric deficit (either planned or unplanned)"
-  }
+  },
+  "ingredientLogged": "Malzeme günlüğe kaydedildi",
+  "@ingredientLogged": {}
 }
