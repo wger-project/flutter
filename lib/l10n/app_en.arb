@@ -260,7 +260,7 @@
   "@logMeal": {},
   "addIngredient": "Add ingredient",
   "@addIngredient": {},
-  "logIngredient": "Save to nutrition diary",
+  "logIngredient": "Save ingredient to nutrition diary",
   "@logIngredient": {},
   "searchIngredient": "Search ingredient",
   "@searchIngredient": {
