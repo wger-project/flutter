@@ -333,7 +333,6 @@ class NutritionPlansProvider with ChangeNotifier {
       'ingredients': [],
     };
     prefs.setString(PREFS_INGREDIENTS, json.encode(ingredientData));
-    return;
   }
 
   /// Searches for an ingredient
