@@ -694,7 +694,7 @@ class GoalMacros extends StatelessWidget {
 
   final String label;
   final String suffix;
-  final Function onSave;
+  final Function(double) onSave;
   final String? val;
 
   @override

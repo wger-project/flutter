@@ -291,8 +291,8 @@ class MealHeader extends StatelessWidget {
   final bool popTwice;
   final bool readOnly;
   final viewMode _viewMode;
-  final Function _toggleEditing;
-  final Function _toggleViewMode;
+  final Function() _toggleEditing;
+  final Function() _toggleViewMode;
 
   const MealHeader({
     required Meal meal,
@@ -300,8 +300,8 @@ class MealHeader extends StatelessWidget {
     this.popTwice = false,
     this.readOnly = false,
     required viewMode viewMode,
-    required Function toggleEditing,
-    required Function toggleViewMode,
+    required Function() toggleEditing,
+    required Function() toggleViewMode,
   })  : _meal = meal,
         _editing = editing,
         _viewMode = viewMode,
