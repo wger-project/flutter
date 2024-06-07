@@ -66,7 +66,6 @@ class WorkoutForm extends StatelessWidget {
               }
               return null;
             },
-            onFieldSubmitted: (_) {},
             onSaved: (newValue) {
               _plan.name = newValue!;
             },
@@ -87,7 +86,6 @@ class WorkoutForm extends StatelessWidget {
               }
               return null;
             },
-            onFieldSubmitted: (_) {},
             onSaved: (newValue) {
               _plan.description = newValue!;
             },

@@ -238,7 +238,6 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
             calendarStyle: getWgerCalendarStyle(Theme.of(context)),
             onDaySelected: _onDaySelected,
             onRangeSelected: _onRangeSelected,
-            onFormatChanged: (format) {},
             onPageChanged: (focusedDay) {
               _focusedDay = focusedDay;
             },

@@ -75,7 +75,6 @@ class MealForm extends StatelessWidget {
               onSaved: (newValue) {
                 _meal.time = stringToTime(newValue);
               },
-              onFieldSubmitted: (_) {},
             ),
             TextFormField(
               maxLength: 25,
@@ -85,7 +84,6 @@ class MealForm extends StatelessWidget {
               onSaved: (newValue) {
                 _meal.name = newValue as String;
               },
-              onFieldSubmitted: (_) {},
             ),
             ElevatedButton(
               key: const Key(SUBMIT_BUTTON_KEY_NAME),
@@ -269,7 +267,6 @@ class IngredientFormState extends State<IngredientForm> {
                     ),
                     controller: _amountController,
                     keyboardType: TextInputType.number,
-                    onFieldSubmitted: (_) {},
                     onChanged: (value) {
                       setState(() {
                         final v = double.tryParse(value);
@@ -345,7 +342,6 @@ class IngredientFormState extends State<IngredientForm> {
                       onSaved: (newValue) {
                         _timeController.text = newValue!;
                       },
-                      onFieldSubmitted: (_) {},
                     ),
                   ),
               ],
@@ -529,7 +525,6 @@ class _PlanFormState extends State<PlanForm> {
               labelText: AppLocalizations.of(context).description,
             ),
             controller: _descriptionController,
-            onFieldSubmitted: (_) {},
             onSaved: (newValue) {
               widget._plan.description = newValue!;
             },
