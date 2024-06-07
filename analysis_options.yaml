@@ -154,4 +154,16 @@ linter:
     use_test_throws_matchers: true
     valid_regexps: true
     void_checks: false
-
+dart_code_metrics:
+  extends:
+    - recommended
+  rules:
+    - avoid-shadowing: false # we shadow a lot, e.g. context in callbacks
+    - avoid-unsafe-collection-methods: false # we use foo[index] where index may not exist in theory, but in practice they will, in tests. also we can just handle the exceptions when they occur
+    - prefer-prefixed-global-constants: false # we don't really care for the 'k' prefix
+    - prefer-single-widget-per-file: false
+    - avoid-passing-self-as-argument: false # fairly harmless. and e.g. drift calls are like this
+  formatter:
+    indent: 0
+    line-length: 100
+    cascading-widget-extensions: true
