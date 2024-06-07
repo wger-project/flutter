@@ -42,6 +42,12 @@ class _WorkoutLogsState extends State<WorkoutLogs> {
   final dayController = TextEditingController();
 
   @override
+  void dispose() {
+    dayController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       children: [

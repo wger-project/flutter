@@ -150,7 +150,7 @@ class _GymModeState extends State<GymMode> {
         ...getContent(),
         SessionPage(
           Provider.of<WorkoutPlansProvider>(context, listen: false)
-            .findById(widget._workoutDay.workoutId),
+              .findById(widget._workoutDay.workoutId),
           _controller,
           widget._start,
           _exercisePages,
@@ -192,9 +192,7 @@ class StartPage extends StatelessWidget {
                                 .name,
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
-                          ...set
-                            .getSmartRepr(s.exerciseObj)
-                            .map((e) => Text(e)),
+                          ...set.getSmartRepr(s.exerciseObj).map((e) => Text(e)),
                           const SizedBox(height: 15),
                         ],
                       );
@@ -279,6 +277,8 @@ class _LogPageState extends State<LogPage> {
   @override
   void dispose() {
     focusNode.dispose();
+    _repsController.dispose();
+    _weightController.dispose();
     super.dispose();
   }
 
@@ -747,6 +747,15 @@ class _SessionPageState extends State<SessionPage> {
   }
 
   @override
+  void dispose() {
+    impressionController.dispose();
+    notesController.dispose();
+    timeStartController.dispose();
+    timeEndController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       children: [
@@ -977,10 +986,7 @@ class _TimerWidgetState extends State<TimerWidget> {
           child: Center(
             child: Text(
               DateFormat('m:ss').format(today.add(Duration(seconds: _seconds))),
-              style: Theme.of(context)
-                .textTheme
-                .displayLarge!
-                .copyWith(color: wgerPrimaryColor),
+              style: Theme.of(context).textTheme.displayLarge!.copyWith(color: wgerPrimaryColor),
             ),
           ),
         ),

@@ -198,6 +198,16 @@ class IngredientFormState extends State<IngredientForm> {
     _timeController.text = timeToString(TimeOfDay.fromDateTime(now))!;
   }
 
+  @override
+  void dispose() {
+    _ingredientController.dispose();
+    _ingredientIdController.dispose();
+    _amountController.dispose();
+    _dateController.dispose();
+    _timeController.dispose();
+    super.dispose();
+  }
+
   TextEditingController get ingredientIdController => _ingredientIdController;
 
   MealItem get mealItem => _mealItem;
@@ -232,9 +242,8 @@ class IngredientFormState extends State<IngredientForm> {
   Widget build(BuildContext context) {
     final String unit = AppLocalizations.of(context).g;
     final queryLower = _searchQuery.toLowerCase();
-    final suggestions = widget.recent
-      .where((e) => e.ingredient.name.toLowerCase().contains(queryLower))
-      .toList();
+    final suggestions =
+        widget.recent.where((e) => e.ingredient.name.toLowerCase().contains(queryLower)).toList();
     return Container(
       margin: const EdgeInsets.all(20),
       child: Form(
@@ -501,6 +510,13 @@ class _PlanFormState extends State<PlanForm> {
   }
 
   @override
+  void dispose() {
+    _descriptionController.dispose();
+    colorController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Form(
       key: _form,
@@ -540,13 +556,13 @@ class _PlanFormState extends State<PlanForm> {
                 child: DropdownButtonFormField<GoalType>(
                   value: _goalType,
                   items: GoalType.values
-                    .map(
-                      (e) => DropdownMenuItem<GoalType>(
-                        value: e,
-                        child: Text(e.label),
-                      ),
-                    )
-                    .toList(),
+                      .map(
+                        (e) => DropdownMenuItem<GoalType>(
+                          value: e,
+                          child: Text(e.label),
+                        ),
+                      )
+                      .toList(),
                   onChanged: (GoalType? g) {
                     setState(() {
                       if (g == null) {

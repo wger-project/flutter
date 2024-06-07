@@ -132,6 +132,16 @@ class _AuthCardState extends State<AuthCard> {
   );
 
   @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    _password2Controller.dispose();
+    _emailController.dispose();
+    _serverUrlController.dispose();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     super.initState();
     context.read<AuthProvider>().getServerUrlFromPrefs().then((value) {

@@ -46,6 +46,12 @@ class _UserProfileFormState extends State<UserProfileForm> {
   }
 
   @override
+  void dispose() {
+    emailController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Form(
       key: _form,
@@ -102,9 +108,7 @@ class _UserProfileFormState extends State<UserProfileForm> {
                 }
 
                 // Verify
-                await context
-                  .read<UserProvider>()
-                  .verifyEmail();
+                await context.read<UserProvider>().verifyEmail();
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
@@ -125,9 +129,7 @@ class _UserProfileFormState extends State<UserProfileForm> {
               _form.currentState!.save();
 
               // Update profile
-              context
-                .read<UserProvider>()
-                .saveProfile();
+              context.read<UserProvider>().saveProfile();
               Navigator.of(context).pop();
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(

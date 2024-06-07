@@ -47,6 +47,13 @@ class _ImageFormState extends State<ImageForm> {
   final TextEditingController descriptionController = TextEditingController();
 
   @override
+  void dispose() {
+    dateController.dispose();
+    descriptionController.dispose();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     super.initState();
 
@@ -190,11 +197,11 @@ class _ImageFormState extends State<ImageForm> {
 
               if (widget._image.id == null) {
                 Provider.of<GalleryProvider>(context, listen: false)
-                  .addImage(widget._image, _file!);
+                    .addImage(widget._image, _file!);
                 Navigator.of(context).pop();
               } else {
                 Provider.of<GalleryProvider>(context, listen: false)
-                  .editImage(widget._image, _file);
+                    .editImage(widget._image, _file);
                 Navigator.of(context).pop();
               }
             },

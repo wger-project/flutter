@@ -290,6 +290,12 @@ class _SetFormWidgetState extends State<SetFormWidget> {
     });
   }
 
+  @override
+  void dispose() {
+    _exercisesController.dispose();
+    super.dispose();
+  }
+
   /// Adds an exercise to the current set
   void addExercise(Exercise base) {
     setState(() {
@@ -336,9 +342,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                   min: 1,
                   max: 10,
                   divisions: 10,
-                  label: _currentSetSliderValue
-                    .round()
-                    .toString(),
+                  label: _currentSetSliderValue.round().toString(),
                   onChanged: (double value) {
                     setState(() {
                       widget._set.sets = value.round();
@@ -439,13 +443,11 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                           if (pattern == '') {
                             return null;
                           }
-                          return context
-                            .read<ExercisesProvider>()
-                            .searchExercise(
-                              pattern,
-                              languageCode: Localizations.localeOf(context).languageCode,
-                              searchEnglish: _searchEnglish,
-                            );
+                          return context.read<ExercisesProvider>().searchExercise(
+                                pattern,
+                                languageCode: Localizations.localeOf(context).languageCode,
+                                searchEnglish: _searchEnglish,
+                              );
                         },
                         itemBuilder: (
                           BuildContext context,
@@ -920,8 +922,8 @@ class _WeightUnitInputWidgetState extends State<WeightUnitInputWidget> {
         });
       },
       items: Provider.of<WorkoutPlansProvider>(context, listen: false)
-        .weightUnits
-        .map<DropdownMenuItem<WeightUnit>>((WeightUnit value) {
+          .weightUnits
+          .map<DropdownMenuItem<WeightUnit>>((WeightUnit value) {
         return DropdownMenuItem<WeightUnit>(
           key: Key(value.id.toString()),
           value: value,
@@ -962,8 +964,8 @@ class _RepetitionUnitInputWidgetState extends State<RepetitionUnitInputWidget> {
         });
       },
       items: Provider.of<WorkoutPlansProvider>(context, listen: false)
-        .repetitionUnits
-        .map<DropdownMenuItem<RepetitionUnit>>((RepetitionUnit value) {
+          .repetitionUnits
+          .map<DropdownMenuItem<RepetitionUnit>>((RepetitionUnit value) {
         return DropdownMenuItem<RepetitionUnit>(
           key: Key(value.id.toString()),
           value: value,
