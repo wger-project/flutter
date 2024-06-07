@@ -782,7 +782,7 @@ class _SessionPageState extends State<SessionPage> {
                     });
                   },
                   isSelected: selectedImpression,
-                  children: const <Widget>[
+                  children: const [
                     Icon(Icons.sentiment_very_dissatisfied),
                     Icon(Icons.sentiment_neutral),
                     Icon(Icons.sentiment_very_satisfied),

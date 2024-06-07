@@ -45,7 +45,7 @@ class AuthScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: Stack(
-        children: <Widget>[
+        children: [
           Positioned(
             top: 0,
             right: 0,
@@ -62,7 +62,7 @@ class AuthScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
+                children: [
                   SizedBox(height: 0.15 * deviceSize.height),
                   const Image(
                     image: AssetImage('assets/images/logo-white.png'),
@@ -265,7 +265,7 @@ class _AuthCardState extends State<AuthCard> {
           child: SingleChildScrollView(
             child: AutofillGroup(
               child: Column(
-                children: <Widget>[
+                children: [
                   TextFormField(
                     key: const Key('inputUsername'),
                     decoration: InputDecoration(
@@ -412,7 +412,7 @@ class _AuthCardState extends State<AuthCard> {
                         const SizedBox(width: 20),
                         Column(
                           mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
+                          children: [
                             IconButton(
                               icon: const Icon(Icons.undo),
                               onPressed: () {

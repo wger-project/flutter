@@ -167,7 +167,7 @@ class AuthProvider with ChangeNotifier {
 
     final response = await client.post(
       makeUri(serverUrl, LOGIN_URL),
-      headers: <String, String>{
+      headers: {
         HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
         HttpHeaders.userAgentHeader: getAppNameHeader(),
       },

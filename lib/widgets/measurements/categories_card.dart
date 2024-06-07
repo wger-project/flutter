@@ -32,15 +32,15 @@ class CategoriesCard extends StatelessWidget {
             height: 220,
             child: MeasurementChartWidgetFl(
               currentCategory.entries
-                  .map((e) => MeasurementChartEntry(e.value, e.date))
-                  .toList(),
+                .map((e) => MeasurementChartEntry(e.value, e.date))
+                .toList(),
               unit: currentCategory.unit,
             ),
           ),
           const Divider(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
+            children: [
               TextButton(
                 child: Text(AppLocalizations.of(context).goToDetailPage),
                 onPressed: () {

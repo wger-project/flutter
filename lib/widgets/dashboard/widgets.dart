@@ -204,7 +204,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
           if (_hasContent)
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
+              children: [
                 TextButton(
                   child: Text(AppLocalizations.of(context).goToDetailPage),
                   onPressed: () {
@@ -294,7 +294,7 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
+                        children: [
                           TextButton(
                             child: Text(
                               AppLocalizations.of(context).goToDetailPage,
@@ -594,7 +594,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
           if (_hasContent)
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
+              children: [
                 TextButton(
                   child: Text(AppLocalizations.of(context).goToDetailPage),
                   onPressed: () {

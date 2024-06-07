@@ -119,7 +119,7 @@ class FlNutritionalPlanGoalWidgetState extends State<FlNutritionalPlanGoalWidget
 
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
+        children: [
           Text(fmtMacro(
             AppLocalizations.of(context).energy,
             today.energy,

@@ -44,8 +44,8 @@ const FlexSubThemesData wgerSubThemeData = FlexSubThemesData(
 );
 
 const String wgerDisplayFont = 'RobotoCondensed';
-const List<FontVariation> displayFontBoldWeight = <FontVariation>[FontVariation('wght', 600)];
-const List<FontVariation> displayFontHeavyWeight = <FontVariation>[FontVariation('wght', 800)];
+const List<FontVariation> displayFontBoldWeight = [FontVariation('wght', 600)];
+const List<FontVariation> displayFontHeavyWeight = [FontVariation('wght', 800)];
 
 // Make a light ColorScheme from the seeds.
 final ColorScheme schemeLight = SeedColorScheme.fromSeeds(

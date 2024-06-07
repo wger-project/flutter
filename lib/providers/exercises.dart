@@ -114,7 +114,7 @@ class ExercisesProvider with ChangeNotifier {
 
     setFilters(
       Filters(
-        exerciseCategories: FilterCategory<ExerciseCategory>(
+        exerciseCategories: FilterCategory(
           title: 'Category',
           items: Map.fromEntries(
             _categories.map(
@@ -122,7 +122,7 @@ class ExercisesProvider with ChangeNotifier {
             ),
           ),
         ),
-        equipment: FilterCategory<Equipment>(
+        equipment: FilterCategory(
           title: 'Equipment',
           items: Map.fromEntries(
             _equipment.map(
@@ -689,7 +689,7 @@ class FilterCategory<T> {
     Map<T, bool>? items,
     String? title,
   }) {
-    return FilterCategory<T>(
+    return FilterCategory(
       isExpanded: isExpanded ?? this.isExpanded,
       items: items ?? this.items,
       title: title ?? this.title,

@@ -104,7 +104,7 @@ class _ImageFormState extends State<ImageForm> {
                     return SizedBox(
                       height: 150,
                       child: Column(
-                        children: <Widget>[
+                        children: [
                           ListTile(
                             onTap: () {
                               Navigator.of(context).pop();

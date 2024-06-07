@@ -76,7 +76,7 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
 
     return Scaffold(
       body: CustomScrollView(
-        slivers: <Widget>[
+        slivers: [
           SliverAppBar(
             pinned: true,
             iconTheme: const IconThemeData(color: appBarForeground),

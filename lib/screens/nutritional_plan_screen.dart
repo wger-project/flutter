@@ -87,7 +87,7 @@ class NutritionalPlanScreen extends StatelessWidget {
         ],
       ),
       body: CustomScrollView(
-        slivers: <Widget>[
+        slivers: [
           SliverAppBar(
             foregroundColor: appBarForeground,
             pinned: true,

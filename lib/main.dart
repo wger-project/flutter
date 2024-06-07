@@ -76,15 +76,15 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (ctx) => AuthProvider()),
         ChangeNotifierProxyProvider<AuthProvider, ExercisesProvider>(
           create: (context) => ExercisesProvider(
-            WgerBaseProvider(Provider.of<AuthProvider>(context, listen: false)),
+            WgerBaseProvider(Provider.of(context, listen: false)),
           ),
           update: (context, base, previous) =>
               previous ?? ExercisesProvider(WgerBaseProvider(base)),
         ),
         ChangeNotifierProxyProvider2<AuthProvider, ExercisesProvider, WorkoutPlansProvider>(
           create: (context) => WorkoutPlansProvider(
-            WgerBaseProvider(Provider.of<AuthProvider>(context, listen: false)),
-            Provider.of<ExercisesProvider>(context, listen: false),
+            WgerBaseProvider(Provider.of(context, listen: false)),
+            Provider.of(context, listen: false),
             [],
           ),
           update: (context, auth, exercises, previous) =>
@@ -92,7 +92,7 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProxyProvider<AuthProvider, NutritionPlansProvider>(
           create: (context) => NutritionPlansProvider(
-            WgerBaseProvider(Provider.of<AuthProvider>(context, listen: false)),
+            WgerBaseProvider(Provider.of(context, listen: false)),
             [],
           ),
           update: (context, auth, previous) =>
@@ -100,34 +100,34 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProxyProvider<AuthProvider, MeasurementProvider>(
           create: (context) => MeasurementProvider(
-            WgerBaseProvider(Provider.of<AuthProvider>(context, listen: false)),
+            WgerBaseProvider(Provider.of(context, listen: false)),
           ),
           update: (context, base, previous) =>
               previous ?? MeasurementProvider(WgerBaseProvider(base)),
         ),
         ChangeNotifierProxyProvider<AuthProvider, UserProvider>(
           create: (context) => UserProvider(
-            WgerBaseProvider(Provider.of<AuthProvider>(context, listen: false)),
+            WgerBaseProvider(Provider.of(context, listen: false)),
           ),
           update: (context, base, previous) => previous ?? UserProvider(WgerBaseProvider(base)),
         ),
         ChangeNotifierProxyProvider<AuthProvider, BodyWeightProvider>(
           create: (context) => BodyWeightProvider(
-            WgerBaseProvider(Provider.of<AuthProvider>(context, listen: false)),
+            WgerBaseProvider(Provider.of(context, listen: false)),
           ),
           update: (context, base, previous) =>
               previous ?? BodyWeightProvider(WgerBaseProvider(base)),
         ),
         ChangeNotifierProxyProvider<AuthProvider, GalleryProvider>(
           create: (context) => GalleryProvider(
-            Provider.of<AuthProvider>(context, listen: false),
+            Provider.of(context, listen: false),
             [],
           ),
           update: (context, auth, previous) => previous ?? GalleryProvider(auth, []),
         ),
         ChangeNotifierProxyProvider<AuthProvider, AddExerciseProvider>(
           create: (context) => AddExerciseProvider(
-            WgerBaseProvider(Provider.of<AuthProvider>(context, listen: false)),
+            WgerBaseProvider(Provider.of(context, listen: false)),
           ),
           update: (context, base, previous) =>
               previous ?? AddExerciseProvider(WgerBaseProvider(base)),

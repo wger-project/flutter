@@ -50,7 +50,7 @@ class _WorkoutPlanDetailState extends State<WorkoutPlanDetail> {
                 }
               },
               isSelected: const [true, false],
-              children: const <Widget>[
+              children: const [
                 Icon(Icons.table_chart),
                 Icon(Icons.show_chart),
               ],
@@ -61,8 +61,7 @@ class _WorkoutPlanDetailState extends State<WorkoutPlanDetail> {
             padding: const EdgeInsets.all(15),
             child: Text(widget._workoutPlan.description),
           ),
-        ...widget._workoutPlan.days
-            .map((workoutDay) => WorkoutDayWidget(workoutDay)),
+        ...widget._workoutPlan.days.map((workoutDay) => WorkoutDayWidget(workoutDay)),
         Column(
           children: [
             ElevatedButton(

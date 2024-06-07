@@ -167,7 +167,7 @@ class Indicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      children: <Widget>[
+      children: [
         Container(
           width: size,
           height: size,
