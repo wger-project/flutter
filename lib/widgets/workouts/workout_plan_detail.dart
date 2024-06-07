@@ -41,26 +41,28 @@ class _WorkoutPlanDetailState extends State<WorkoutPlanDetail> {
       children: [
         if (widget._workoutPlan.days.isNotEmpty)
           Padding(
-              padding: const EdgeInsets.all(10),
-              child: ToggleButtons(
-                renderBorder: false,
-                onPressed: (int index) {
-                  if (index == 1) {
-                    widget._changeMode(WorkoutScreenMode.log);
-                  }
-                },
-                isSelected: const [true, false],
-                children: const <Widget>[
-                  Icon(Icons.table_chart),
-                  Icon(Icons.show_chart),
-                ],
-              )),
+            padding: const EdgeInsets.all(10),
+            child: ToggleButtons(
+              renderBorder: false,
+              onPressed: (int index) {
+                if (index == 1) {
+                  widget._changeMode(WorkoutScreenMode.log);
+                }
+              },
+              isSelected: const [true, false],
+              children: const <Widget>[
+                Icon(Icons.table_chart),
+                Icon(Icons.show_chart),
+              ],
+            ),
+          ),
         if (widget._workoutPlan.description != '')
           Padding(
             padding: const EdgeInsets.all(15),
             child: Text(widget._workoutPlan.description),
           ),
-        ...widget._workoutPlan.days.map((workoutDay) => WorkoutDayWidget(workoutDay)),
+        ...widget._workoutPlan.days
+            .map((workoutDay) => WorkoutDayWidget(workoutDay)),
         Column(
           children: [
             ElevatedButton(

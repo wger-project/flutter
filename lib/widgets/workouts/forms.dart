@@ -73,7 +73,9 @@ class WorkoutForm extends StatelessWidget {
           ),
           TextFormField(
             key: const Key('field-description'),
-            decoration: InputDecoration(labelText: AppLocalizations.of(context).description),
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context).description,
+            ),
             minLines: 3,
             maxLines: 10,
             controller: workoutDescriptionController,
@@ -108,9 +110,10 @@ class WorkoutForm extends StatelessWidget {
                   Navigator.of(context).pop();
                 }
               } else {
-                final WorkoutPlan newPlan =
-                    await Provider.of<WorkoutPlansProvider>(context, listen: false)
-                        .addWorkout(_plan);
+                final WorkoutPlan newPlan = await Provider.of<WorkoutPlansProvider>(
+                  context,
+                  listen: false,
+                ).addWorkout(_plan);
                 if (context.mounted) {
                   Navigator.of(context).pushReplacementNamed(
                     WorkoutPlanScreen.routeName,
@@ -246,7 +249,7 @@ class _DayFormWidgetState extends State<DayFormWidget> {
                         onPressed: () {
                           Navigator.of(ctx).pop();
                         },
-                      )
+                      ),
                     ],
                   ),
                 );
@@ -333,7 +336,9 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                   min: 1,
                   max: 10,
                   divisions: 10,
-                  label: _currentSetSliderValue.round().toString(),
+                  label: _currentSetSliderValue
+                    .round()
+                    .toString(),
                   onChanged: (double value) {
                     setState(() {
                       widget._set.sets = value.round();
@@ -393,13 +398,14 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                                         children: [
                                           Text(AppLocalizations.of(context).selectExercises),
                                           const SizedBox(height: 10),
-                                          Text(AppLocalizations.of(context).sameRepetitions)
+                                          Text(AppLocalizations.of(context).sameRepetitions),
                                         ],
                                       ),
                                       actions: [
                                         TextButton(
                                           child: Text(
-                                              MaterialLocalizations.of(context).closeButtonLabel),
+                                            MaterialLocalizations.of(context).closeButtonLabel,
+                                          ),
                                           onPressed: () {
                                             Navigator.of(context).pop();
                                           },
@@ -433,18 +439,25 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                           if (pattern == '') {
                             return null;
                           }
-                          return context.read<ExercisesProvider>().searchExercise(
-                                pattern,
-                                languageCode: Localizations.localeOf(context).languageCode,
-                                searchEnglish: _searchEnglish,
-                              );
+                          return context
+                            .read<ExercisesProvider>()
+                            .searchExercise(
+                              pattern,
+                              languageCode: Localizations.localeOf(context).languageCode,
+                              searchEnglish: _searchEnglish,
+                            );
                         },
-                        itemBuilder: (BuildContext context, Exercise exerciseSuggestion) =>
+                        itemBuilder: (
+                          BuildContext context,
+                          Exercise exerciseSuggestion,
+                        ) =>
                             ListTile(
                           key: Key('exercise-${exerciseSuggestion.id}'),
                           leading: SizedBox(
                             width: 45,
-                            child: ExerciseImageWidget(image: exerciseSuggestion.getMainImage),
+                            child: ExerciseImageWidget(
+                              image: exerciseSuggestion.getMainImage,
+                            ),
                           ),
                           title: Text(
                             exerciseSuggestion
@@ -474,7 +487,10 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                           );
                         },
                         transitionBuilder: (context, animation, child) => FadeTransition(
-                          opacity: CurvedAnimation(parent: animation, curve: Curves.fastOutSlowIn),
+                          opacity: CurvedAnimation(
+                            parent: animation,
+                            curve: Curves.fastOutSlowIn,
+                          ),
                           child: child,
                         ),
                         onSelected: (Exercise exerciseSuggestion) {
@@ -494,7 +510,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                             });
                           },
                           dense: true,
-                        )
+                        ),
                     ],
                   ),
                 ),
@@ -558,8 +574,10 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                     }
                     _formKey.currentState!.save();
 
-                    final workoutProvider =
-                        Provider.of<WorkoutPlansProvider>(context, listen: false);
+                    final workoutProvider = Provider.of<WorkoutPlansProvider>(
+                      context,
+                      listen: false,
+                    );
 
                     // Save set
                     final Set setDb = await workoutProvider.addSet(widget._set);
@@ -704,10 +722,11 @@ class ExerciseSetting extends StatelessWidget {
               contentPadding: EdgeInsets.zero,
               leading: ExerciseImageWidget(image: _exerciseBase.getMainImage),
               trailing: IconButton(
-                  icon: const Icon(Icons.delete),
-                  onPressed: () {
-                    removeExercise(_exerciseBase);
-                  }),
+                icon: const Icon(Icons.delete),
+                onPressed: () {
+                  removeExercise(_exerciseBase);
+                },
+              ),
             ),
             const Divider(),
 
@@ -906,8 +925,8 @@ class _WeightUnitInputWidgetState extends State<WeightUnitInputWidget> {
         });
       },
       items: Provider.of<WorkoutPlansProvider>(context, listen: false)
-          .weightUnits
-          .map<DropdownMenuItem<WeightUnit>>((WeightUnit value) {
+        .weightUnits
+        .map<DropdownMenuItem<WeightUnit>>((WeightUnit value) {
         return DropdownMenuItem<WeightUnit>(
           key: Key(value.id.toString()),
           value: value,
@@ -937,7 +956,9 @@ class _RepetitionUnitInputWidgetState extends State<RepetitionUnitInputWidget> {
 
     return DropdownButtonFormField(
       value: selectedWeightUnit,
-      decoration: InputDecoration(labelText: AppLocalizations.of(context).repetitionUnit),
+      decoration: InputDecoration(
+        labelText: AppLocalizations.of(context).repetitionUnit,
+      ),
       isDense: true,
       onChanged: (RepetitionUnit? newValue) {
         setState(() {
@@ -946,8 +967,8 @@ class _RepetitionUnitInputWidgetState extends State<RepetitionUnitInputWidget> {
         });
       },
       items: Provider.of<WorkoutPlansProvider>(context, listen: false)
-          .repetitionUnits
-          .map<DropdownMenuItem<RepetitionUnit>>((RepetitionUnit value) {
+        .repetitionUnits
+        .map<DropdownMenuItem<RepetitionUnit>>((RepetitionUnit value) {
         return DropdownMenuItem<RepetitionUnit>(
           key: Key(value.id.toString()),
           value: value,

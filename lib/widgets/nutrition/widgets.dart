@@ -154,8 +154,12 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
             final url = context.read<NutritionPlansProvider>().baseProvider.auth.serverUrl;
             return ListTile(
               leading: suggestion.data.image != null
-                  ? CircleAvatar(backgroundImage: NetworkImage(url! + suggestion.data.image!))
-                  : const CircleIconAvatar(Icon(Icons.image, color: Colors.grey)),
+                  ? CircleAvatar(
+                      backgroundImage: NetworkImage(url! + suggestion.data.image!),
+                    )
+                  : const CircleIconAvatar(
+                      Icon(Icons.image, color: Colors.grey),
+                    ),
               title: Text(suggestion.value),
               // subtitle: Text(suggestion.data.id.toString()),
             );
@@ -197,8 +201,10 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
             if (!mounted) {
               return;
             }
-            final result = await Provider.of<NutritionPlansProvider>(context, listen: false)
-                .searchIngredientWithCode(barcode);
+            final result = await Provider.of<NutritionPlansProvider>(
+              context,
+              listen: false,
+            ).searchIngredientWithCode(barcode);
             // TODO: show spinner...
             if (!mounted) {
               return;
@@ -231,11 +237,13 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
                     ),
                     TextButton(
                       key: const Key('found-dialog-close-button'),
-                      child: Text(MaterialLocalizations.of(context).closeButtonLabel),
+                      child: Text(
+                        MaterialLocalizations.of(context).closeButtonLabel,
+                      ),
                       onPressed: () {
                         Navigator.of(ctx).pop();
                       },
-                    )
+                    ),
                   ],
                 ),
               );
@@ -252,11 +260,13 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
                   actions: [
                     TextButton(
                       key: const Key('notFound-dialog-close-button'),
-                      child: Text(MaterialLocalizations.of(context).closeButtonLabel),
+                      child: Text(
+                        MaterialLocalizations.of(context).closeButtonLabel,
+                      ),
                       onPressed: () {
                         Navigator.of(ctx).pop();
                       },
-                    )
+                    ),
                   ],
                 ),
               );
@@ -292,13 +302,13 @@ class NutritionDiaryheader extends StatelessWidget {
           AppLocalizations.of(context).energy,
           AppLocalizations.of(context).protein,
           AppLocalizations.of(context).carbohydrates,
-          AppLocalizations.of(context).fat
+          AppLocalizations.of(context).fat,
         ]
-            .map((e) => MutedText(
-                  e,
-                  textAlign: TextAlign.right,
-                ))
-            .toList(),
+          .map((e) => MutedText(
+                e,
+                textAlign: TextAlign.right,
+              ))
+          .toList(),
       ),
     );
   }
@@ -338,7 +348,10 @@ class NutritionDiaryEntry extends StatelessWidget {
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  ...getMutedNutritionalValues(diaryEntry.nutritionalValues, context),
+                  ...getMutedNutritionalValues(
+                    diaryEntry.nutritionalValues,
+                    context,
+                  ),
                 ],
               ),
               const SizedBox(height: 12),
@@ -347,12 +360,13 @@ class NutritionDiaryEntry extends StatelessWidget {
         ),
         if (nutritionalPlan != null)
           IconButton(
-              tooltip: AppLocalizations.of(context).delete,
-              onPressed: () {
-                Provider.of<NutritionPlansProvider>(context, listen: false)
-                    .deleteLog(diaryEntry.id!, nutritionalPlan!.id!);
-              },
-              icon: const Icon(Icons.delete_outline)),
+            tooltip: AppLocalizations.of(context).delete,
+            onPressed: () {
+              Provider.of<NutritionPlansProvider>(context, listen: false)
+                .deleteLog(diaryEntry.id!, nutritionalPlan!.id!);
+            },
+            icon: const Icon(Icons.delete_outline),
+          ),
       ],
     );
   }
@@ -367,7 +381,9 @@ class IngredientAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     return ingredient.image != null
         ? GestureDetector(
-            child: CircleAvatar(backgroundImage: NetworkImage(ingredient.image!.image)),
+            child: CircleAvatar(
+              backgroundImage: NetworkImage(ingredient.image!.image),
+            ),
             onTap: () async {
               if (ingredient.image!.objectUrl != '') {
                 return launchURL(ingredient.image!.objectUrl, context);

@@ -53,8 +53,11 @@ class WorkoutPlansProvider with ChangeNotifier {
   List<WeightUnit> _weightUnits = [];
   List<RepetitionUnit> _repetitionUnit = [];
 
-  WorkoutPlansProvider(this.baseProvider, ExercisesProvider exercises, List<WorkoutPlan> entries)
-      : _exercises = exercises,
+  WorkoutPlansProvider(
+    this.baseProvider,
+    ExercisesProvider exercises,
+    List<WorkoutPlan> entries,
+  )   : _exercises = exercises,
         _workoutPlans = entries;
 
   List<WorkoutPlan> get items {
@@ -207,7 +210,6 @@ class WorkoutPlansProvider with ChangeNotifier {
 
         fetchComputedSettings(workoutSet); // request!
 
-        // Settings
         final List<Setting> settings = [];
         final settingData = allSettingsData['results'].where((s) => s['set'] == workoutSet.id);
 
@@ -261,8 +263,10 @@ class WorkoutPlansProvider with ChangeNotifier {
   }
 
   Future<WorkoutPlan> addWorkout(WorkoutPlan workout) async {
-    final data =
-        await baseProvider.post(workout.toJson(), baseProvider.makeUrl(_workoutPlansUrlPath));
+    final data = await baseProvider.post(
+      workout.toJson(),
+      baseProvider.makeUrl(_workoutPlansUrlPath),
+    );
     final plan = WorkoutPlan.fromJson(data);
     _workoutPlans.insert(0, plan);
     notifyListeners();
@@ -271,7 +275,9 @@ class WorkoutPlansProvider with ChangeNotifier {
 
   Future<void> editWorkout(WorkoutPlan workout) async {
     await baseProvider.patch(
-        workout.toJson(), baseProvider.makeUrl(_workoutPlansUrlPath, id: workout.id));
+      workout.toJson(),
+      baseProvider.makeUrl(_workoutPlansUrlPath, id: workout.id),
+    );
     notifyListeners();
   }
 
@@ -290,7 +296,10 @@ class WorkoutPlansProvider with ChangeNotifier {
     }
   }
 
-  Future<Map<String, dynamic>> fetchLogData(WorkoutPlan workout, Exercise base) async {
+  Future<Map<String, dynamic>> fetchLogData(
+    WorkoutPlan workout,
+    Exercise base,
+  ) async {
     final data = await baseProvider.fetch(
       baseProvider.makeUrl(
         _workoutPlansUrlPath,
@@ -331,7 +340,9 @@ class WorkoutPlansProvider with ChangeNotifier {
         unitData['weightUnit'].forEach(
           (e) => _weightUnits.add(WeightUnit.fromJson(e)),
         );
-        dev.log("Read workout units data from cache. Valid till ${unitData['expiresIn']}");
+        dev.log(
+          "Read workout units data from cache. Valid till ${unitData['expiresIn']}",
+        );
         return;
       }
     }
@@ -359,7 +370,10 @@ class WorkoutPlansProvider with ChangeNotifier {
      * Saves a new day instance to the DB and adds it to the given workout
      */
     day.workoutId = workout.id!;
-    final data = await baseProvider.post(day.toJson(), baseProvider.makeUrl(_daysUrlPath));
+    final data = await baseProvider.post(
+      day.toJson(),
+      baseProvider.makeUrl(_daysUrlPath),
+    );
     day = Day.fromJson(data);
     day.sets = [];
     workout.days.insert(0, day);
@@ -368,7 +382,10 @@ class WorkoutPlansProvider with ChangeNotifier {
   }
 
   Future<void> editDay(Day day) async {
-    await baseProvider.patch(day.toJson(), baseProvider.makeUrl(_daysUrlPath, id: day.id));
+    await baseProvider.patch(
+      day.toJson(),
+      baseProvider.makeUrl(_daysUrlPath, id: day.id),
+    );
     notifyListeners();
   }
 
@@ -487,7 +504,10 @@ class WorkoutPlansProvider with ChangeNotifier {
   }
 
   Future<WorkoutSession> addSession(WorkoutSession session) async {
-    final data = await baseProvider.post(session.toJson(), baseProvider.makeUrl(_sessionUrlPath));
+    final data = await baseProvider.post(
+      session.toJson(),
+      baseProvider.makeUrl(_sessionUrlPath),
+    );
     final newSession = WorkoutSession.fromJson(data);
     notifyListeners();
     return newSession;
@@ -497,7 +517,10 @@ class WorkoutPlansProvider with ChangeNotifier {
    * Logs
    */
   Future<Log> addLog(Log log) async {
-    final data = await baseProvider.post(log.toJson(), baseProvider.makeUrl(_logsUrlPath));
+    final data = await baseProvider.post(
+      log.toJson(),
+      baseProvider.makeUrl(_logsUrlPath),
+    );
     final newLog = Log.fromJson(data);
 
     log.id = newLog.id;

@@ -33,20 +33,22 @@ class _LogMealsScreenState extends State<LogMealsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final nutritionalPlan = ModalRoute.of(context)!.settings.arguments as NutritionalPlan;
+    final nutritionalPlan =
+        ModalRoute.of(context)!.settings.arguments as NutritionalPlan;
 
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).selectMealToLog),
       ),
       body: ListView.builder(
-          itemCount: nutritionalPlan.meals.length,
-          itemBuilder: (context, index) => MealWidget(
-                nutritionalPlan.meals[index],
-                nutritionalPlan.dedupMealItems,
-                true,
-                true,
-              )),
+        itemCount: nutritionalPlan.meals.length,
+        itemBuilder: (context, index) => MealWidget(
+          nutritionalPlan.meals[index],
+          nutritionalPlan.dedupMealItems,
+          true,
+          true,
+        ),
+      ),
     );
   }
 }

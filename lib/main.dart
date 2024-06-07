@@ -78,7 +78,8 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProxyProvider<AuthProvider, ExercisesProvider>(
           create: (context) => ExercisesProvider(
-              WgerBaseProvider(Provider.of<AuthProvider>(context, listen: false))),
+            WgerBaseProvider(Provider.of<AuthProvider>(context, listen: false)),
+          ),
           update: (context, base, previous) =>
               previous ?? ExercisesProvider(WgerBaseProvider(base)),
         ),
@@ -120,8 +121,10 @@ class MyApp extends StatelessWidget {
               previous ?? BodyWeightProvider(WgerBaseProvider(base)),
         ),
         ChangeNotifierProxyProvider<AuthProvider, GalleryProvider>(
-          create: (context) =>
-              GalleryProvider(Provider.of<AuthProvider>(context, listen: false), []),
+          create: (context) => GalleryProvider(
+            Provider.of<AuthProvider>(context, listen: false),
+            [],
+          ),
           update: (context, auth, previous) => previous ?? GalleryProvider(auth, []),
         ),
         ChangeNotifierProxyProvider<AuthProvider, AddExerciseProvider>(
@@ -130,7 +133,7 @@ class MyApp extends StatelessWidget {
           ),
           update: (context, base, previous) =>
               previous ?? AddExerciseProvider(WgerBaseProvider(base)),
-        )
+        ),
       ],
       child: Consumer<AuthProvider>(
         builder: (ctx, auth, _) => MaterialApp(

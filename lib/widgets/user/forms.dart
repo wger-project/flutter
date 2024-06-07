@@ -73,15 +73,16 @@ class _UserProfileFormState extends State<UserProfileForm> {
             leading: const Icon(Icons.email_rounded, color: wgerPrimaryColor),
             title: TextFormField(
               decoration: InputDecoration(
-                  labelText: widget._profile.emailVerified
-                      ? AppLocalizations.of(context).verifiedEmail
-                      : AppLocalizations.of(context).unVerifiedEmail,
-                  suffixIcon: widget._profile.emailVerified
-                      ? const Icon(
-                          Icons.check_circle,
-                          color: Colors.green,
-                        )
-                      : null),
+                labelText: widget._profile.emailVerified
+                    ? AppLocalizations.of(context).verifiedEmail
+                    : AppLocalizations.of(context).unVerifiedEmail,
+                suffixIcon: widget._profile.emailVerified
+                    ? const Icon(
+                        Icons.check_circle,
+                        color: Colors.green,
+                      )
+                    : null,
+              ),
               controller: emailController,
               keyboardType: TextInputType.emailAddress,
               onSaved: (newValue) {
@@ -104,7 +105,9 @@ class _UserProfileFormState extends State<UserProfileForm> {
                 }
 
                 // Verify
-                await context.read<UserProvider>().verifyEmail();
+                await context
+                  .read<UserProvider>()
+                  .verifyEmail();
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
@@ -125,10 +128,14 @@ class _UserProfileFormState extends State<UserProfileForm> {
               _form.currentState!.save();
 
               // Update profile
-              context.read<UserProvider>().saveProfile();
+              context
+                .read<UserProvider>()
+                .saveProfile();
               Navigator.of(context).pop();
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(AppLocalizations.of(context).successfullySaved)),
+                SnackBar(
+                  content: Text(AppLocalizations.of(context).successfullySaved),
+                ),
               );
             },
             child: Text(AppLocalizations.of(context).save),

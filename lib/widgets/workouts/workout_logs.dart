@@ -140,7 +140,7 @@ class _WorkoutLogCalendarState extends State<WorkoutLogCalendar> {
           date,
           entry['session'],
           entry['exercises'],
-        )
+        ),
       ];
     }
 
@@ -190,17 +190,18 @@ class _WorkoutLogCalendarState extends State<WorkoutLogCalendar> {
         const SizedBox(height: 8.0),
         SizedBox(
           child: ValueListenableBuilder<List<WorkoutLogEvent>>(
-              valueListenable: _selectedEvents,
-              builder: (context, logEvents, _) {
-                // At the moment there is only one "event" per day
-                return logEvents.isNotEmpty
-                    ? DayLogWidget(
-                        logEvents.first.dateTime,
-                        logEvents.first.exercises,
-                        logEvents.first.session,
-                      )
-                    : Container();
-              }),
+            valueListenable: _selectedEvents,
+            builder: (context, logEvents, _) {
+              // At the moment there is only one "event" per day
+              return logEvents.isNotEmpty
+                  ? DayLogWidget(
+                      logEvents.first.dateTime,
+                      logEvents.first.exercises,
+                      logEvents.first.session,
+                    )
+                  : Container();
+            },
+          ),
         ),
       ],
     );

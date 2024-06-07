@@ -108,8 +108,10 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
           _events[date] = [];
         }
 
-        _events[date]!
-            .add(Event(EventType.measurement, '${category.name}: ${entry.value} ${category.unit}'));
+        _events[date]!.add(Event(
+          EventType.measurement,
+          '${category.name}: ${entry.value} ${category.unit}',
+        ));
       }
     }
 
@@ -268,7 +270,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
                       })()),
                       subtitle: Text(event.description),
                       //onTap: () => print('$event tapped!'),
-                    ))
+                    )),
               ],
             ),
           ),

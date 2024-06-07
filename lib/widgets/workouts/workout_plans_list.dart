@@ -42,26 +42,29 @@ class WorkoutPlansList extends StatelessWidget {
                 final currentWorkout = _workoutProvider.items[index];
 
                 return Card(
-                    child: ListTile(
-                  onTap: () {
-                    _workoutProvider.setCurrentPlan(currentWorkout.id!);
+                  child: ListTile(
+                    onTap: () {
+                      _workoutProvider.setCurrentPlan(currentWorkout.id!);
 
-                    Navigator.of(context)
-                        .pushNamed(WorkoutPlanScreen.routeName, arguments: currentWorkout);
-                  },
-                  title: Text(currentWorkout.name),
-                  subtitle: Text(
-                    DateFormat.yMd(Localizations.localeOf(context).languageCode)
-                        .format(currentWorkout.creationDate),
-                  ),
-                  trailing: Row(mainAxisSize: MainAxisSize.min, children: [
-                    const VerticalDivider(),
-                    IconButton(
-                      icon: const Icon(Icons.delete),
-                      tooltip: AppLocalizations.of(context).delete,
-                      onPressed: () async {
-                        // Delete workout from DB
-                        await showDialog(
+                      Navigator.of(context).pushNamed(
+                        WorkoutPlanScreen.routeName,
+                        arguments: currentWorkout,
+                      );
+                    },
+                    title: Text(currentWorkout.name),
+                    subtitle: Text(
+                      DateFormat.yMd(
+                        Localizations.localeOf(context).languageCode,
+                      ).format(currentWorkout.creationDate),
+                    ),
+                    trailing: Row(mainAxisSize: MainAxisSize.min, children: [
+                      const VerticalDivider(),
+                      IconButton(
+                        icon: const Icon(Icons.delete),
+                        tooltip: AppLocalizations.of(context).delete,
+                        onPressed: () async {
+                          // Delete workout from DB
+                          await showDialog(
                             context: context,
                             builder: (BuildContext contextDialog) {
                               return AlertDialog(
@@ -70,19 +73,24 @@ class WorkoutPlansList extends StatelessWidget {
                                 ),
                                 actions: [
                                   TextButton(
-                                    child:
-                                        Text(MaterialLocalizations.of(context).cancelButtonLabel),
+                                    child: Text(
+                                      MaterialLocalizations.of(context).cancelButtonLabel,
+                                    ),
                                     onPressed: () => Navigator.of(contextDialog).pop(),
                                   ),
                                   TextButton(
                                     child: Text(
                                       AppLocalizations.of(context).delete,
-                                      style: TextStyle(color: Theme.of(context).colorScheme.error),
+                                      style: TextStyle(
+                                        color: Theme.of(context).colorScheme.error,
+                                      ),
                                     ),
                                     onPressed: () {
                                       // Confirmed, delete the workout
-                                      Provider.of<WorkoutPlansProvider>(context, listen: false)
-                                          .deleteWorkout(currentWorkout.id!);
+                                      Provider.of<WorkoutPlansProvider>(
+                                        context,
+                                        listen: false,
+                                      ).deleteWorkout(currentWorkout.id!);
 
                                       // Close the popup
                                       Navigator.of(contextDialog).pop();
@@ -100,11 +108,13 @@ class WorkoutPlansList extends StatelessWidget {
                                   ),
                                 ],
                               );
-                            });
-                      },
-                    )
-                  ]),
-                ));
+                            },
+                          );
+                        },
+                      ),
+                    ]),
+                  ),
+                );
               },
             ),
     );

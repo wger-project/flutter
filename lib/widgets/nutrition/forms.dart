@@ -98,9 +98,14 @@ class MealForm extends StatelessWidget {
 
                 try {
                   _meal.id == null
-                      ? Provider.of<NutritionPlansProvider>(context, listen: false)
-                          .addMeal(_meal, _planId)
-                      : Provider.of<NutritionPlansProvider>(context, listen: false).editMeal(_meal);
+                      ? Provider.of<NutritionPlansProvider>(
+                          context,
+                          listen: false,
+                        ).addMeal(_meal, _planId)
+                      : Provider.of<NutritionPlansProvider>(
+                          context,
+                          listen: false,
+                        ).editMeal(_meal);
                 } on WgerHttpException catch (error) {
                   showHttpExceptionErrorDialog(error, context);
                 } catch (error) {
@@ -116,35 +121,42 @@ class MealForm extends StatelessWidget {
   }
 }
 
-Widget MealItemForm(Meal meal, List<MealItem> recent, [String? barcode, bool? test]) {
+Widget MealItemForm(
+  Meal meal,
+  List<MealItem> recent, [
+  String? barcode,
+  bool? test,
+]) {
   return IngredientForm(
-      // TODO we use planId 0 here cause we don't have one and we don't need it I think?
-      recent: recent.map((e) => Log.fromMealItem(e, 0, e.mealId)).toList(),
-      onSave: (BuildContext context, MealItem mealItem, DateTime? dt) {
-        mealItem.mealId = meal.id!;
-        Provider.of<NutritionPlansProvider>(context, listen: false).addMealItem(mealItem, meal);
-      },
-      barcode: barcode ?? '',
-      test: test ?? false,
-      withDate: false);
+    // TODO we use planId 0 here cause we don't have one and we don't need it I think?
+    recent: recent.map((e) => Log.fromMealItem(e, 0, e.mealId)).toList(),
+    onSave: (BuildContext context, MealItem mealItem, DateTime? dt) {
+      mealItem.mealId = meal.id!;
+      Provider.of<NutritionPlansProvider>(context, listen: false).addMealItem(mealItem, meal);
+    },
+    barcode: barcode ?? '',
+    test: test ?? false,
+    withDate: false,
+  );
 }
 
 Widget IngredientLogForm(NutritionalPlan plan) {
   return IngredientForm(
-      recent: plan.dedupDiaryEntries,
-      onSave: (BuildContext context, MealItem mealItem, DateTime? dt) {
-        Provider.of<NutritionPlansProvider>(context, listen: false)
-            .logIngredientToDiary(mealItem, plan.id!, dt);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              AppLocalizations.of(context).ingredientLogged,
-              textAlign: TextAlign.center,
-            ),
+    recent: plan.dedupDiaryEntries,
+    onSave: (BuildContext context, MealItem mealItem, DateTime? dt) {
+      Provider.of<NutritionPlansProvider>(context, listen: false)
+          .logIngredientToDiary(mealItem, plan.id!, dt);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context).ingredientLogged,
+            textAlign: TextAlign.center,
           ),
-        );
-      },
-      withDate: true);
+        ),
+      );
+    },
+    withDate: true,
+  );
 }
 
 /// IngredientForm is a form that lets the user pick an ingredient (and amount) to
@@ -202,7 +214,7 @@ class IngredientFormState extends State<IngredientForm> {
     });
   }
 
-// note: does not reset text search and amount inputs
+  // note: does not reset text search and amount inputs
   void unSelectIngredient() {
     setState(() {
       _mealItem.ingredientId = 0;
@@ -220,8 +232,9 @@ class IngredientFormState extends State<IngredientForm> {
   Widget build(BuildContext context) {
     final String unit = AppLocalizations.of(context).g;
     final queryLower = _searchQuery.toLowerCase();
-    final suggestions =
-        widget.recent.where((e) => e.ingredient.name.toLowerCase().contains(queryLower)).toList();
+    final suggestions = widget.recent
+      .where((e) => e.ingredient.name.toLowerCase().contains(queryLower))
+      .toList();
     return Container(
       margin: const EdgeInsets.all(20),
       child: Form(
@@ -242,7 +255,9 @@ class IngredientFormState extends State<IngredientForm> {
                 Expanded(
                   child: TextFormField(
                     key: const Key('field-weight'), // needed ?
-                    decoration: InputDecoration(labelText: AppLocalizations.of(context).weight),
+                    decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context).weight,
+                    ),
                     controller: _amountController,
                     keyboardType: TextInputType.number,
                     onFieldSubmitted: (_) {},
@@ -336,9 +351,14 @@ class IngredientFormState extends State<IngredientForm> {
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     FutureBuilder<Ingredient>(
-                      future: Provider.of<NutritionPlansProvider>(context, listen: false)
-                          .fetchIngredient(_mealItem.ingredientId),
-                      builder: (BuildContext context, AsyncSnapshot<Ingredient> snapshot) {
+                      future: Provider.of<NutritionPlansProvider>(
+                        context,
+                        listen: false,
+                      ).fetchIngredient(_mealItem.ingredientId),
+                      builder: (
+                        BuildContext context,
+                        AsyncSnapshot<Ingredient> snapshot,
+                      ) {
                         if (snapshot.hasData) {
                           _mealItem.ingredient = snapshot.data!;
                           return MealItemTile(
@@ -378,7 +398,13 @@ class IngredientFormState extends State<IngredientForm> {
                 try {
                   var date = DateTime.parse(_dateController.text);
                   final tod = stringToTime(_timeController.text);
-                  date = DateTime(date.year, date.month, date.day, tod.hour, tod.minute);
+                  date = DateTime(
+                    date.year,
+                    date.month,
+                    date.day,
+                    tod.hour,
+                    tod.minute,
+                  );
                   widget.onSave(context, _mealItem, date);
                 } on WgerHttpException catch (error) {
                   showHttpExceptionErrorDialog(error, context);
@@ -402,18 +428,25 @@ class IngredientFormState extends State<IngredientForm> {
                     child: ListTile(
                       onTap: () {
                         final ingredient = suggestions[index].ingredient;
-                        selectIngredient(ingredient.id, ingredient.name, suggestions[index].amount);
+                        selectIngredient(
+                          ingredient.id,
+                          ingredient.name,
+                          suggestions[index].amount,
+                        );
                       },
                       title: Text(
-                          '${suggestions[index].ingredient.name} (${suggestions[index].amount.toStringAsFixed(0)}$unit)'),
+                        '${suggestions[index].ingredient.name} (${suggestions[index].amount.toStringAsFixed(0)}$unit)',
+                      ),
                       subtitle: Text(getShortNutritionValues(
-                          suggestions[index].ingredient.nutritionalValues, context)),
+                        suggestions[index].ingredient.nutritionalValues,
+                        context,
+                      )),
                       trailing: const Icon(Icons.copy),
                     ),
                   );
                 },
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -476,7 +509,9 @@ class _PlanFormState extends State<PlanForm> {
           // Description
           TextFormField(
             key: const Key('field-description'),
-            decoration: InputDecoration(labelText: AppLocalizations.of(context).description),
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context).description,
+            ),
             controller: _descriptionController,
             onFieldSubmitted: (_) {},
             onSaved: (newValue) {
@@ -505,10 +540,13 @@ class _PlanFormState extends State<PlanForm> {
                 child: DropdownButtonFormField<GoalType>(
                   value: _goalType,
                   items: GoalType.values
-                      .map(
-                        (e) => DropdownMenuItem<GoalType>(value: e, child: Text(e.label)),
-                      )
-                      .toList(),
+                    .map(
+                      (e) => DropdownMenuItem<GoalType>(
+                        value: e,
+                        child: Text(e.label),
+                      ),
+                    )
+                    .toList(),
                   onChanged: (GoalType? g) {
                     setState(() {
                       if (g == null) {
@@ -590,14 +628,18 @@ class _PlanFormState extends State<PlanForm> {
               // Save to DB
               try {
                 if (widget._plan.id != null) {
-                  await Provider.of<NutritionPlansProvider>(context, listen: false)
-                      .editPlan(widget._plan);
+                  await Provider.of<NutritionPlansProvider>(
+                    context,
+                    listen: false,
+                  ).editPlan(widget._plan);
                   if (context.mounted) {
                     Navigator.of(context).pop();
                   }
                 } else {
-                  widget._plan = await Provider.of<NutritionPlansProvider>(context, listen: false)
-                      .addPlan(widget._plan);
+                  widget._plan = await Provider.of<NutritionPlansProvider>(
+                    context,
+                    listen: false,
+                  ).addPlan(widget._plan);
                   if (context.mounted) {
                     Navigator.of(context).pushReplacementNamed(
                       NutritionalPlanScreen.routeName,

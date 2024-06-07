@@ -52,12 +52,20 @@ class FlNutritionalPlanGoalWidgetState extends State<FlNutritionalPlanGoalWidget
   // why don't we just handle this inside this function? because it might be
   // *another* gauge that's in surplus and we want to have consistent widths
   // between all gauges
-  Widget _diyGauge(BuildContext context, double normWidth, double? plan, double val) {
+  Widget _diyGauge(
+    BuildContext context,
+    double normWidth,
+    double? plan,
+    double val,
+  ) {
     Container segment(double width, Color color) {
       return Container(
         height: 16,
         width: width,
-        decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(15.0)),
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(15.0),
+        ),
       );
     }
 
@@ -112,31 +120,56 @@ class FlNutritionalPlanGoalWidgetState extends State<FlNutritionalPlanGoalWidget
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text(fmtMacro(AppLocalizations.of(context).energy, today.energy, goals.energy,
-              AppLocalizations.of(context).kcal)),
+          Text(fmtMacro(
+            AppLocalizations.of(context).energy,
+            today.energy,
+            goals.energy,
+            AppLocalizations.of(context).kcal,
+          )),
           const SizedBox(height: 2),
           _diyGauge(context, normWidth, goals.energy, today.energy),
           const SizedBox(height: 8),
-          Text(fmtMacro(AppLocalizations.of(context).protein, today.protein, goals.protein,
-              AppLocalizations.of(context).g)),
+          Text(fmtMacro(
+            AppLocalizations.of(context).protein,
+            today.protein,
+            goals.protein,
+            AppLocalizations.of(context).g,
+          )),
           const SizedBox(height: 2),
           _diyGauge(context, normWidth, goals.protein, today.protein),
           const SizedBox(height: 8),
-          Text(fmtMacro(AppLocalizations.of(context).carbohydrates, today.carbohydrates,
-              goals.carbohydrates, AppLocalizations.of(context).g)),
+          Text(fmtMacro(
+            AppLocalizations.of(context).carbohydrates,
+            today.carbohydrates,
+            goals.carbohydrates,
+            AppLocalizations.of(context).g,
+          )),
           const SizedBox(height: 2),
-          _diyGauge(context, normWidth, goals.carbohydrates, today.carbohydrates),
+          _diyGauge(
+            context,
+            normWidth,
+            goals.carbohydrates,
+            today.carbohydrates,
+          ),
           const SizedBox(height: 8),
-          Text(fmtMacro(AppLocalizations.of(context).fat, today.fat, goals.fat,
-              AppLocalizations.of(context).g)),
+          Text(fmtMacro(
+            AppLocalizations.of(context).fat,
+            today.fat,
+            goals.fat,
+            AppLocalizations.of(context).g,
+          )),
           const SizedBox(height: 2),
           _diyGauge(context, normWidth, goals.fat, today.fat),
           // optionally display the advanced macro goals:
           if (goals.fiber != null)
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               const SizedBox(height: 8),
-              Text(fmtMacro(AppLocalizations.of(context).fiber, today.fiber, goals.fiber,
-                  AppLocalizations.of(context).g)),
+              Text(fmtMacro(
+                AppLocalizations.of(context).fiber,
+                today.fiber,
+                goals.fiber,
+                AppLocalizations.of(context).g,
+              )),
               const SizedBox(height: 2),
               _diyGauge(context, normWidth, goals.fiber, today.fiber),
             ]),
@@ -206,17 +239,17 @@ class FlNutritionalPlanPieChartState extends State<FlNutritionalPlanPieChartWidg
           children: [
             (AppLocalizations.of(context).protein, LIST_OF_COLORS3[1]),
             (AppLocalizations.of(context).carbohydrates, LIST_OF_COLORS3[0]),
-            (AppLocalizations.of(context).fat, LIST_OF_COLORS3[2])
+            (AppLocalizations.of(context).fat, LIST_OF_COLORS3[2]),
           ]
-              .map((e) => Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 2),
-                    child: Indicator(
-                      color: e.$2,
-                      text: e.$1,
-                      isSquare: true,
-                    ),
-                  ))
-              .toList(),
+            .map((e) => Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 2),
+                  child: Indicator(
+                    color: e.$2,
+                    text: e.$1,
+                    isSquare: true,
+                  ),
+                ))
+            .toList(),
         ),
         const SizedBox(
           width: 28,
@@ -229,7 +262,7 @@ class FlNutritionalPlanPieChartState extends State<FlNutritionalPlanPieChartWidg
     return [
       (0, LIST_OF_COLORS3[1], widget.nutritionalValues.protein),
       (1, LIST_OF_COLORS3[0], widget.nutritionalValues.carbohydrates),
-      (2, LIST_OF_COLORS3[2], widget.nutritionalValues.fat)
+      (2, LIST_OF_COLORS3[2], widget.nutritionalValues.fat),
     ].map((e) {
       final isTouched = e.$1 == touchedIndex;
       final radius = isTouched ? 92.0 : 80.0;
@@ -297,7 +330,12 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
 
     final [colorPlanned, colorLoggedToday, colorLogged7Day] = LIST_OF_COLORS3;
 
-    BarChartGroupData barchartGroup(int x, double barsSpace, double barsWidth, String prop) {
+    BarChartGroupData barchartGroup(
+      int x,
+      double barsSpace,
+      double barsWidth,
+      String prop,
+    ) {
       final plan = planned.prop(prop);
 
       BarChartRodData barChartRodData(double? plan, double val, Color color) {
@@ -397,7 +435,12 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
                   barGroups: [
                     barchartGroup(0, barsSpace, barsWidth, 'protein'),
                     barchartGroup(1, barsSpace, barsWidth, 'carbohydrates'),
-                    barchartGroup(2, barsSpace, barsWidth, 'carbohydratesSugar'),
+                    barchartGroup(
+                      2,
+                      barsSpace,
+                      barsWidth,
+                      'carbohydratesSugar',
+                    ),
                     barchartGroup(3, barsSpace, barsWidth, 'fat'),
                     barchartGroup(4, barsSpace, barsWidth, 'fatSaturated'),
                     if (widget._nutritionalPlan.nutritionalGoals.fiber != null)
@@ -414,17 +457,17 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
                   (AppLocalizations.of(context).deficit, colorPlanned),
                   (AppLocalizations.of(context).surplus, COLOR_SURPLUS),
                   (AppLocalizations.of(context).today, colorLoggedToday),
-                  (AppLocalizations.of(context).weekAverage, colorLogged7Day)
+                  (AppLocalizations.of(context).weekAverage, colorLogged7Day),
                 ]
-                    .map(
-                      (e) => Indicator(
-                        color: e.$2,
-                        text: e.$1,
-                        isSquare: true,
-                        marginRight: 0,
-                      ),
-                    )
-                    .toList(),
+                  .map(
+                    (e) => Indicator(
+                      color: e.$2,
+                      text: e.$1,
+                      isSquare: true,
+                      marginRight: 0,
+                    ),
+                  )
+                  .toList(),
               ),
             ),
           ],

@@ -156,7 +156,7 @@ class _GymModeState extends State<GymMode> {
         ...getContent(),
         SessionPage(
           Provider.of<WorkoutPlansProvider>(context, listen: false)
-              .findById(widget._workoutDay.workoutId),
+            .findById(widget._workoutDay.workoutId),
           _controller,
           widget._start,
           _exercisePages,
@@ -199,7 +199,9 @@ class StartPage extends StatelessWidget {
                                   .name,
                               style: Theme.of(context).textTheme.titleLarge,
                             ),
-                            ...set.getSmartRepr(s.exerciseObj).map((e) => Text(e)),
+                            ...set
+                              .getSmartRepr(s.exerciseObj)
+                              .map((e) => Text(e)),
                             const SizedBox(height: 15),
                           ],
                         );
@@ -215,7 +217,9 @@ class StartPage extends StatelessWidget {
           child: Text(AppLocalizations.of(context).start),
           onPressed: () {
             _controller.nextPage(
-                duration: const Duration(milliseconds: 200), curve: Curves.bounceIn);
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.bounceIn,
+            );
           },
         ),
         NavigationFooter(
@@ -452,7 +456,7 @@ class _LogPageState extends State<LogPage> {
               children: [
                 Flexible(child: getWeightWidget()),
                 const SizedBox(width: 8),
-                Flexible(child: WeightUnitInputWidget(widget._log))
+                Flexible(child: WeightUnitInputWidget(widget._log)),
               ],
             ),
           if (_detailed) RiRInputWidget(widget._log),
@@ -479,8 +483,10 @@ class _LogPageState extends State<LogPage> {
 
                     // Save the entry on the server
                     try {
-                      await Provider.of<WorkoutPlansProvider>(context, listen: false)
-                          .addLog(widget._log);
+                      await Provider.of<WorkoutPlansProvider>(
+                        context,
+                        listen: false,
+                      ).addLog(widget._log);
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           duration: const Duration(seconds: 2), // default is 4
@@ -535,8 +541,9 @@ class _LogPageState extends State<LogPage> {
             .map((log) {
           return ListTile(
             title: Text(log.singleLogRepTextNoNl),
-            subtitle:
-                Text(DateFormat.yMd(Localizations.localeOf(context).languageCode).format(log.date)),
+            subtitle: Text(
+              DateFormat.yMd(Localizations.localeOf(context).languageCode).format(log.date),
+            ),
             trailing: const Icon(Icons.copy),
             onTap: () {
               setState(() {
@@ -550,8 +557,9 @@ class _LogPageState extends State<LogPage> {
                 widget._log.weightUnit = log.weightUnitObj;
 
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                ScaffoldMessenger.of(context)
-                    .showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).dataCopied)));
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text(AppLocalizations.of(context).dataCopied),
+                ));
               });
             },
             contentPadding: const EdgeInsets.symmetric(horizontal: 40),
@@ -600,7 +608,9 @@ class _LogPageState extends State<LogPage> {
                                   alignment: Alignment.center,
                                   child: Text(
                                     key.toString(),
-                                    style: const TextStyle(fontWeight: FontWeight.bold),
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -609,10 +619,12 @@ class _LogPageState extends State<LogPage> {
                           const SizedBox(width: 10),
                         ],
                       ),
-                    )
+                    ),
                   ],
                 )
-              : MutedText(AppLocalizations.of(context).plateCalculatorNotDivisible),
+              : MutedText(
+                  AppLocalizations.of(context).plateCalculatorNotDivisible,
+                ),
         ),
         const SizedBox(height: 3),
       ],
@@ -642,9 +654,10 @@ class _LogPageState extends State<LogPage> {
           ),
         const SizedBox(height: 10),
         Expanded(
-            child: (widget._workoutPlan.filterLogsByExerciseBase(widget._exerciseBase).isNotEmpty)
-                ? getPastLogs()
-                : Container()),
+          child: (widget._workoutPlan.filterLogsByExerciseBase(widget._exerciseBase).isNotEmpty)
+              ? getPastLogs()
+              : Container(),
+        ),
         // Only show calculator for barbell
         if (widget._log.exerciseBaseObj.equipment.map((e) => e.id).contains(ID_EQUIPMENT_BARBELL))
           getPlates(),
@@ -710,9 +723,10 @@ class ExerciseOverview extends StatelessWidget {
                   ),
                 ),
               Html(
-                  data: _exerciseBase
-                      .getExercise(Localizations.localeOf(context).languageCode)
-                      .description),
+                data: _exerciseBase
+                    .getExercise(Localizations.localeOf(context).languageCode)
+                    .description,
+              ),
             ],
           ),
         ),
@@ -826,44 +840,46 @@ class _SessionPageState extends State<SessionPage> {
                   children: [
                     Flexible(
                       child: TextFormField(
-                          decoration: InputDecoration(
-                            labelText: AppLocalizations.of(context).timeStart,
-                            errorMaxLines: 2,
-                          ),
-                          controller: timeStartController,
-                          onFieldSubmitted: (_) {},
-                          onTap: () async {
-                            // Stop keyboard from appearing
-                            FocusScope.of(context).requestFocus(FocusNode());
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context).timeStart,
+                          errorMaxLines: 2,
+                        ),
+                        controller: timeStartController,
+                        onFieldSubmitted: (_) {},
+                        onTap: () async {
+                          // Stop keyboard from appearing
+                          FocusScope.of(context).requestFocus(FocusNode());
 
-                            // Open time picker
-                            final pickedTime = await showTimePicker(
-                              context: context,
-                              initialTime: _session.timeStart,
-                            );
+                          // Open time picker
+                          final pickedTime = await showTimePicker(
+                            context: context,
+                            initialTime: _session.timeStart,
+                          );
 
-                            if (pickedTime != null) {
-                              timeStartController.text = timeToString(pickedTime)!;
-                              _session.timeStart = pickedTime;
-                            }
-                          },
-                          onSaved: (newValue) {
-                            _session.timeStart = stringToTime(newValue);
-                          },
-                          validator: (_) {
-                            final TimeOfDay startTime = stringToTime(timeStartController.text);
-                            final TimeOfDay endTime = stringToTime(timeEndController.text);
-                            if (startTime.isAfter(endTime)) {
-                              return AppLocalizations.of(context).timeStartAhead;
-                            }
-                            return null;
-                          }),
+                          if (pickedTime != null) {
+                            timeStartController.text = timeToString(pickedTime)!;
+                            _session.timeStart = pickedTime;
+                          }
+                        },
+                        onSaved: (newValue) {
+                          _session.timeStart = stringToTime(newValue);
+                        },
+                        validator: (_) {
+                          final TimeOfDay startTime = stringToTime(timeStartController.text);
+                          final TimeOfDay endTime = stringToTime(timeEndController.text);
+                          if (startTime.isAfter(endTime)) {
+                            return AppLocalizations.of(context).timeStartAhead;
+                          }
+                          return null;
+                        },
+                      ),
                     ),
                     const SizedBox(width: 10),
                     Flexible(
                       child: TextFormField(
-                        decoration:
-                            InputDecoration(labelText: AppLocalizations.of(context).timeEnd),
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context).timeEnd,
+                        ),
                         controller: timeEndController,
                         onFieldSubmitted: (_) {},
                         onTap: () async {
@@ -900,8 +916,10 @@ class _SessionPageState extends State<SessionPage> {
 
                     // Save the entry on the server
                     try {
-                      await Provider.of<WorkoutPlansProvider>(context, listen: false)
-                          .addSession(_session);
+                      await Provider.of<WorkoutPlansProvider>(
+                        context,
+                        listen: false,
+                      ).addSession(_session);
                       if (mounted) {
                         Navigator.of(context).pop();
                       }
@@ -1002,7 +1020,10 @@ class _TimerWidgetState extends State<TimerWidget> {
           child: Center(
             child: Text(
               DateFormat('m:ss').format(today.add(Duration(seconds: _seconds))),
-              style: Theme.of(context).textTheme.displayLarge!.copyWith(color: wgerPrimaryColor),
+              style: Theme.of(context)
+                .textTheme
+                .displayLarge!
+                .copyWith(color: wgerPrimaryColor),
             ),
           ),
         ),
@@ -1018,8 +1039,12 @@ class NavigationFooter extends StatelessWidget {
   final bool showPrevious;
   final bool showNext;
 
-  const NavigationFooter(this._controller, this._ratioCompleted,
-      {this.showPrevious = true, this.showNext = true});
+  const NavigationFooter(
+    this._controller,
+    this._ratioCompleted, {
+    this.showPrevious = true,
+    this.showNext = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -1105,7 +1130,7 @@ class NavigationHeader extends StatelessWidget {
           onPressed: () {
             Navigator.of(context).pop();
           },
-        )
+        ),
       ],
     );
   }

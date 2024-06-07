@@ -71,7 +71,7 @@ class ExerciseDetail extends StatelessWidget {
           ...getMuscles(context),
 
           // Variants
-          ...getVariations(context)
+          ...getVariations(context),
         ],
       ),
     );
@@ -217,9 +217,10 @@ class ExerciseDetail extends StatelessWidget {
           .map((e) => Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 4),
                 child: Chip(
-                    label: Text(getTranslation(e.name, context)),
-                    padding: EdgeInsets.zero,
-                    backgroundColor: theme.splashColor),
+                  label: Text(getTranslation(e.name, context)),
+                  padding: EdgeInsets.zero,
+                  backgroundColor: theme.splashColor,
+                ),
               ))
           .forEach((element) => out.add(element));
     }
@@ -244,8 +245,9 @@ class ExerciseDetail extends StatelessWidget {
     final List<Widget> out = [];
     if (_exercise.aliases.isNotEmpty) {
       out.add(MutedText(
-        AppLocalizations.of(context)
-            .alsoKnownAs(_exercise.aliases.map((e) => e.alias).toList().join(', ')),
+        AppLocalizations.of(context).alsoKnownAs(
+          _exercise.aliases.map((e) => e.alias).toList().join(', '),
+        ),
       ));
       out.add(const SizedBox(height: PADDING));
     }
@@ -287,7 +289,10 @@ class MuscleRowWidget extends StatelessWidget {
   final List<Muscle> muscles;
   final List<Muscle> musclesSecondary;
 
-  const MuscleRowWidget({required this.muscles, required this.musclesSecondary});
+  const MuscleRowWidget({
+    required this.muscles,
+    required this.musclesSecondary,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -342,8 +347,9 @@ class MuscleWidget extends StatelessWidget {
       children: [
         SvgPicture.asset('assets/images/muscles/$background.svg'),
         ...muscles.map((m) => SvgPicture.asset('assets/images/muscles/main/muscle-${m.id}.svg')),
-        ...musclesSecondary
-            .map((m) => SvgPicture.asset('assets/images/muscles/secondary/muscle-${m.id}.svg')),
+        ...musclesSecondary.map((m) => SvgPicture.asset(
+              'assets/images/muscles/secondary/muscle-${m.id}.svg',
+            )),
       ],
     );
   }

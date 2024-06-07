@@ -43,67 +43,85 @@ class NutritionalDiaryTable extends StatelessWidget {
       children: [
         Text(style: Theme.of(context).textTheme.titleMedium, 'Date'),
         Text(
-            style: Theme.of(context).textTheme.titleMedium,
-            textAlign: TextAlign.end,
-            '${AppLocalizations.of(context).energyShort} (${AppLocalizations.of(context).kcal})'),
+          style: Theme.of(context).textTheme.titleMedium,
+          textAlign: TextAlign.end,
+          '${AppLocalizations.of(context).energyShort} (${AppLocalizations.of(context).kcal})',
+        ),
         if (goals.energy != null)
           Text(
-              style: Theme.of(context).textTheme.titleMedium,
-              textAlign: TextAlign.end,
-              AppLocalizations.of(context).difference),
-        Text(
             style: Theme.of(context).textTheme.titleMedium,
             textAlign: TextAlign.end,
-            '${AppLocalizations.of(context).proteinShort} (${AppLocalizations.of(context).g})'),
+            AppLocalizations.of(context).difference,
+          ),
         Text(
-            style: Theme.of(context).textTheme.titleMedium,
-            textAlign: TextAlign.end,
-            '${AppLocalizations.of(context).carbohydratesShort} (${AppLocalizations.of(context).g})'),
+          style: Theme.of(context).textTheme.titleMedium,
+          textAlign: TextAlign.end,
+          '${AppLocalizations.of(context).proteinShort} (${AppLocalizations.of(context).g})',
+        ),
         Text(
-            style: Theme.of(context).textTheme.titleMedium,
-            textAlign: TextAlign.end,
-            '${AppLocalizations.of(context).fatShort} (${AppLocalizations.of(context).g})'),
+          style: Theme.of(context).textTheme.titleMedium,
+          textAlign: TextAlign.end,
+          '${AppLocalizations.of(context).carbohydratesShort} (${AppLocalizations.of(context).g})',
+        ),
+        Text(
+          style: Theme.of(context).textTheme.titleMedium,
+          textAlign: TextAlign.end,
+          '${AppLocalizations.of(context).fatShort} (${AppLocalizations.of(context).g})',
+        ),
       ],
     );
   }
 
-  TableRow nutritionDiaryEntry(final BuildContext context, NutritionalGoals goals, DateTime date,
-      final NutritionalValues values) {
+  TableRow nutritionDiaryEntry(
+    final BuildContext context,
+    NutritionalGoals goals,
+    DateTime date,
+    final NutritionalValues values,
+  ) {
     return TableRow(
-        decoration: BoxDecoration(border: Border(top: BorderSide(color: Colors.grey[300]!))),
-        children: [
+      decoration: BoxDecoration(
+        border: Border(top: BorderSide(color: Colors.grey[300]!)),
+      ),
+      children: [
+        Text(
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(color: LIST_OF_COLORS3.first),
+          DateFormat.Md(Localizations.localeOf(context).languageCode).format(date),
+        ),
+        Text(
+          style: Theme.of(context).textTheme.titleMedium,
+          textAlign: TextAlign.end,
+          values.energy.toStringAsFixed(0),
+        ),
+        if (goals.energy != null)
           Text(
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(color: LIST_OF_COLORS3.first),
-            DateFormat.Md(Localizations.localeOf(context).languageCode).format(date),
+            style: Theme.of(context).textTheme.titleMedium,
+            textAlign: TextAlign.end,
+            (values.energy - goals.energy!).toStringAsFixed(0),
           ),
-          Text(
-              style: Theme.of(context).textTheme.titleMedium,
-              textAlign: TextAlign.end,
-              values.energy.toStringAsFixed(0)),
-          if (goals.energy != null)
-            Text(
-                style: Theme.of(context).textTheme.titleMedium,
-                textAlign: TextAlign.end,
-                (values.energy - goals.energy!).toStringAsFixed(0)),
-          Text(
-              style: Theme.of(context).textTheme.titleMedium,
-              textAlign: TextAlign.end,
-              values.protein.toStringAsFixed(0)),
-          Text(
-              style: Theme.of(context).textTheme.titleMedium,
-              textAlign: TextAlign.end,
-              values.carbohydrates.toStringAsFixed(0)),
-          Text(
-              style: Theme.of(context).textTheme.titleMedium,
-              textAlign: TextAlign.end,
-              values.fat.toStringAsFixed(0)),
-        ].map((element) {
-          return GestureDetector(
-              onTap: () => Navigator.of(context).pushNamed(
-                    NutritionalDiaryScreen.routeName,
-                    arguments: NutritionalDiaryArguments(plan, date),
-                  ),
-              child: element);
-        }).toList());
+        Text(
+          style: Theme.of(context).textTheme.titleMedium,
+          textAlign: TextAlign.end,
+          values.protein.toStringAsFixed(0),
+        ),
+        Text(
+          style: Theme.of(context).textTheme.titleMedium,
+          textAlign: TextAlign.end,
+          values.carbohydrates.toStringAsFixed(0),
+        ),
+        Text(
+          style: Theme.of(context).textTheme.titleMedium,
+          textAlign: TextAlign.end,
+          values.fat.toStringAsFixed(0),
+        ),
+      ].map((element) {
+        return GestureDetector(
+          onTap: () => Navigator.of(context).pushNamed(
+            NutritionalDiaryScreen.routeName,
+            arguments: NutritionalDiaryArguments(plan, date),
+          ),
+          child: element,
+        );
+      }).toList(),
+    );
   }
 }

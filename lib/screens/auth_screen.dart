@@ -69,7 +69,10 @@ class AuthScreen extends StatelessWidget {
                   ),
                   Container(
                     margin: const EdgeInsets.only(bottom: 20.0),
-                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 94.0),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 8.0,
+                      horizontal: 94.0,
+                    ),
                     child: const Text(
                       'wger',
                       style: TextStyle(
@@ -125,8 +128,9 @@ class _AuthCardState extends State<AuthCard> {
   final _passwordController = TextEditingController();
   final _password2Controller = TextEditingController();
   final _emailController = TextEditingController();
-  final _serverUrlController =
-      TextEditingController(text: kDebugMode ? DEFAULT_SERVER_TEST : DEFAULT_SERVER_PROD);
+  final _serverUrlController = TextEditingController(
+    text: kDebugMode ? DEFAULT_SERVER_TEST : DEFAULT_SERVER_PROD,
+  );
 
   @override
   void initState() {
@@ -253,7 +257,10 @@ class _AuthCardState extends State<AuthCard> {
       elevation: 8.0,
       child: Container(
         width: deviceSize.width * 0.9,
-        padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 0.025 * deviceSize.height),
+        padding: EdgeInsets.symmetric(
+          horizontal: 15.0,
+          vertical: 0.025 * deviceSize.height,
+        ),
         child: Form(
           key: _formKey,
           child: SingleChildScrollView(
@@ -263,9 +270,10 @@ class _AuthCardState extends State<AuthCard> {
                   TextFormField(
                     key: const Key('inputUsername'),
                     decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context).username,
-                        errorMaxLines: 2,
-                        prefixIcon: const Icon(Icons.account_circle)),
+                      labelText: AppLocalizations.of(context).username,
+                      errorMaxLines: 2,
+                      prefixIcon: const Icon(Icons.account_circle),
+                    ),
                     autofillHints: const [AutofillHints.username],
                     controller: _usernameController,
                     textInputAction: TextInputAction.next,
@@ -280,7 +288,9 @@ class _AuthCardState extends State<AuthCard> {
 
                       return null;
                     },
-                    inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'\s\b|\b\s'))],
+                    inputFormatters: [
+                      FilteringTextInputFormatter.deny(RegExp(r'\s\b|\b\s')),
+                    ],
                     onSaved: (value) {
                       _authData['username'] = value!;
                     },
@@ -376,9 +386,10 @@ class _AuthCardState extends State<AuthCard> {
                           child: TextFormField(
                             key: const Key('inputServer'),
                             decoration: InputDecoration(
-                                labelText: AppLocalizations.of(context).customServerUrl,
-                                helperText: AppLocalizations.of(context).customServerHint,
-                                helperMaxLines: 4),
+                              labelText: AppLocalizations.of(context).customServerUrl,
+                              helperText: AppLocalizations.of(context).customServerHint,
+                              helperMaxLines: 4,
+                            ),
                             controller: _serverUrlController,
                             validator: (value) {
                               if (Uri.tryParse(value!) == null) {
@@ -412,7 +423,7 @@ class _AuthCardState extends State<AuthCard> {
                                     kDebugMode ? DEFAULT_SERVER_TEST : DEFAULT_SERVER_PROD;
                               },
                             ),
-                            Text(AppLocalizations.of(context).reset)
+                            Text(AppLocalizations.of(context).reset),
                           ],
                         ),
                       ],
@@ -473,12 +484,15 @@ class _AuthCardState extends State<AuthCard> {
                                 text.substring(0, text.lastIndexOf('?') + 1),
                               ),
                               Text(
-                                text.substring(text.lastIndexOf('?') + 1, text.length),
+                                text.substring(
+                                  text.lastIndexOf('?') + 1,
+                                  text.length,
+                                ),
                                 style: const TextStyle(
                                   //color: wgerPrimaryColor,
                                   fontWeight: FontWeight.w700,
                                 ),
-                              )
+                              ),
                             ],
                           ),
                         ),

@@ -39,7 +39,9 @@ class EntriesList extends StatelessWidget {
         padding: const EdgeInsets.all(10),
         height: 220,
         child: MeasurementChartWidgetFl(
-          _category.entries.map((e) => MeasurementChartEntry(e.value, e.date)).toList(),
+          _category.entries
+            .map((e) => MeasurementChartEntry(e.value, e.date))
+            .toList(),
           unit: _category.unit,
         ),
       ),
@@ -56,39 +58,47 @@ class EntriesList extends StatelessWidget {
                 title: Text('${currentEntry.value} ${_category.unit}'),
                 subtitle: Text(
                   DateFormat.yMd(Localizations.localeOf(context).languageCode)
-                      .format(currentEntry.date),
+                    .format(currentEntry.date),
                 ),
                 trailing: PopupMenuButton(
                   itemBuilder: (BuildContext context) {
                     return [
                       PopupMenuItem(
-                          child: Text(AppLocalizations.of(context).edit),
-                          onTap: () => Navigator.pushNamed(
-                                context,
-                                FormScreen.routeName,
-                                arguments: FormScreenArguments(
-                                  AppLocalizations.of(context).edit,
-                                  MeasurementEntryForm(currentEntry.category, currentEntry),
-                                ),
-                              )),
+                        child: Text(AppLocalizations.of(context).edit),
+                        onTap: () => Navigator.pushNamed(
+                          context,
+                          FormScreen.routeName,
+                          arguments: FormScreenArguments(
+                            AppLocalizations.of(context).edit,
+                            MeasurementEntryForm(
+                              currentEntry.category,
+                              currentEntry,
+                            ),
+                          ),
+                        ),
+                      ),
                       PopupMenuItem(
-                          child: Text(AppLocalizations.of(context).delete),
-                          onTap: () async {
-                            // Delete entry from DB
-                            await provider.deleteEntry(currentEntry.id!, currentEntry.category);
+                        child: Text(AppLocalizations.of(context).delete),
+                        onTap: () async {
+                          // Delete entry from DB
+                          await provider.deleteEntry(
+                            currentEntry.id!,
+                            currentEntry.category,
+                          );
 
-                            // and inform the user
-                            if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    AppLocalizations.of(context).successfullyDeleted,
-                                    textAlign: TextAlign.center,
-                                  ),
+                          // and inform the user
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  AppLocalizations.of(context).successfullyDeleted,
+                                  textAlign: TextAlign.center,
                                 ),
-                              );
-                            }
-                          })
+                              ),
+                            );
+                          }
+                        },
+                      ),
                     ];
                   },
                 ),

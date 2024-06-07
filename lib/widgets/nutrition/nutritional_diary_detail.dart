@@ -65,7 +65,10 @@ class NutritionalDiaryDetailWidget extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
-                  NutritionDiaryEntry(diaryEntry: e, nutritionalPlan: _nutritionalPlan),
+                  NutritionDiaryEntry(
+                    diaryEntry: e,
+                    nutritionalPlan: _nutritionalPlan,
+                  ),
                 ],
               ),
             )),
@@ -153,11 +156,15 @@ class NutritionDiaryTable extends StatelessWidget {
         TableRow(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: tablePadding, horizontal: 12),
+              padding: const EdgeInsets.symmetric(
+                vertical: tablePadding,
+                horizontal: 12,
+              ),
               child: Text(AppLocalizations.of(context).sugars),
             ),
             Text(
-                AppLocalizations.of(context).gValue(planned.carbohydratesSugar.toStringAsFixed(0))),
+              AppLocalizations.of(context).gValue(planned.carbohydratesSugar.toStringAsFixed(0)),
+            ),
             Text(AppLocalizations.of(context).gValue(logged.carbohydratesSugar.toStringAsFixed(0))),
             Text((logged.carbohydratesSugar - planned.carbohydratesSugar).toStringAsFixed(0)),
           ],
@@ -176,7 +183,10 @@ class NutritionDiaryTable extends StatelessWidget {
         TableRow(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: tablePadding, horizontal: 12),
+              padding: const EdgeInsets.symmetric(
+                vertical: tablePadding,
+                horizontal: 12,
+              ),
               child: Text(AppLocalizations.of(context).saturatedFat),
             ),
             Text(AppLocalizations.of(context).gValue(planned.fatSaturated.toStringAsFixed(0))),

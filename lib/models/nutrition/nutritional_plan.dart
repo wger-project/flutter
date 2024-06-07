@@ -134,7 +134,10 @@ class NutritionalPlan {
       return NutritionalGoals();
     }
     // otherwise, add up all the nutritional values of the meals and use that as goals
-    final sumValues = meals.fold(NutritionalValues(), (a, b) => a + b.plannedNutritionalValues);
+    final sumValues = meals.fold(
+      NutritionalValues(),
+      (a, b) => a + b.plannedNutritionalValues,
+    );
     return NutritionalGoals(
       energy: sumValues.energy,
       fat: sumValues.fat,
@@ -209,7 +212,8 @@ class NutritionalPlan {
     for (final meal in meals) {
       for (final mealItem in meal.mealItems) {
         final found = out.firstWhereOrNull(
-            (e) => e.amount == mealItem.amount && e.ingredientId == mealItem.ingredientId);
+          (e) => e.amount == mealItem.amount && e.ingredientId == mealItem.ingredientId,
+        );
 
         if (found == null) {
           out.add(mealItem);
@@ -224,8 +228,9 @@ class NutritionalPlan {
   List<Log> get dedupDiaryEntries {
     final out = <Log>[];
     for (final log in diaryEntries) {
-      final found =
-          out.firstWhereOrNull((e) => e.amount == log.amount && e.ingredientId == log.ingredientId);
+      final found = out.firstWhereOrNull(
+        (e) => e.amount == log.amount && e.ingredientId == log.ingredientId,
+      );
       if (found == null) {
         out.add(log);
       }

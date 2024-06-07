@@ -39,7 +39,9 @@ class WeightEntriesList extends StatelessWidget {
           padding: const EdgeInsets.all(15),
           height: 220,
           child: MeasurementChartWidgetFl(
-            weightProvider.items.map((e) => MeasurementChartEntry(e.weight, e.date)).toList(),
+            weightProvider.items
+              .map((e) => MeasurementChartEntry(e.weight, e.date))
+              .toList(),
             unit: profile!.isMetric
                 ? AppLocalizations.of(context).kg
                 : AppLocalizations.of(context).lb,
@@ -54,7 +56,7 @@ class WeightEntriesList extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Text(AppLocalizations.of(context).measurements),
-              const Icon(Icons.chevron_right)
+              const Icon(Icons.chevron_right),
             ],
           ),
         ),
@@ -70,22 +72,24 @@ class WeightEntriesList extends StatelessWidget {
                   child: ListTile(
                     title: Text('${currentEntry.weight} kg'),
                     subtitle: Text(
-                      DateFormat.yMd(Localizations.localeOf(context).languageCode)
-                          .format(currentEntry.date),
+                      DateFormat.yMd(
+                        Localizations.localeOf(context).languageCode,
+                      ).format(currentEntry.date),
                     ),
                     trailing: PopupMenuButton(
                       itemBuilder: (BuildContext context) {
                         return [
                           PopupMenuItem(
-                              child: Text(AppLocalizations.of(context).edit),
-                              onTap: () => Navigator.pushNamed(
-                                    context,
-                                    FormScreen.routeName,
-                                    arguments: FormScreenArguments(
-                                      AppLocalizations.of(context).edit,
-                                      WeightForm(currentEntry),
-                                    ),
-                                  )),
+                            child: Text(AppLocalizations.of(context).edit),
+                            onTap: () => Navigator.pushNamed(
+                              context,
+                              FormScreen.routeName,
+                              arguments: FormScreenArguments(
+                                AppLocalizations.of(context).edit,
+                                WeightForm(currentEntry),
+                              ),
+                            ),
+                          ),
                           PopupMenuItem(
                             child: Text(AppLocalizations.of(context).delete),
                             onTap: () async {
@@ -104,7 +108,7 @@ class WeightEntriesList extends StatelessWidget {
                                 );
                               }
                             },
-                          )
+                          ),
                         ];
                       },
                     ),

@@ -34,37 +34,41 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
-    final exerciseProvider = Provider.of<ExercisesProvider>(context, listen: false);
+    final exerciseProvider =
+        Provider.of<ExercisesProvider>(context, listen: false);
 
     return Scaffold(
-        appBar: AppBar(
-          title: Text(AppLocalizations.of(context).settingsTitle),
-        ),
-        body: ListView(
-          children: [
-            ListTile(
-              // leading: const Icon(Icons.cached),
-              title: Text(AppLocalizations.of(context).settingsCacheTitle),
-              subtitle: Text(AppLocalizations.of(context).settingsCacheDescription),
-              trailing: IconButton(
-                key: const ValueKey('cacheIcon'),
-                icon: const Icon(Icons.delete),
-                onPressed: () async {
-                  await exerciseProvider.clearAllCachesAndPrefs();
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context).settingsTitle),
+      ),
+      body: ListView(
+        children: [
+          ListTile(
+            // leading: const Icon(Icons.cached),
+            title: Text(AppLocalizations.of(context).settingsCacheTitle),
+            subtitle:
+                Text(AppLocalizations.of(context).settingsCacheDescription),
+            trailing: IconButton(
+              key: const ValueKey('cacheIcon'),
+              icon: const Icon(Icons.delete),
+              onPressed: () async {
+                await exerciseProvider.clearAllCachesAndPrefs();
 
-                  if (context.mounted) {
-                    final snackBar = SnackBar(
-                      content: Text(AppLocalizations.of(context).settingsCacheDeletedSnackbar),
-                    );
+                if (context.mounted) {
+                  final snackBar = SnackBar(
+                    content: Text(AppLocalizations.of(context)
+                        .settingsCacheDeletedSnackbar),
+                  );
 
-                    // Find the ScaffoldMessenger in the widget tree
-                    // and use it to show a SnackBar.
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  }
-                },
-              ),
-            )
-          ],
-        ));
+                  // Find the ScaffoldMessenger in the widget tree
+                  // and use it to show a SnackBar.
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                }
+              },
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

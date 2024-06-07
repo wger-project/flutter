@@ -31,7 +31,11 @@ class MeasurementCategoryForm extends StatelessWidget {
   final nameController = TextEditingController();
   final unitController = TextEditingController();
 
-  final Map<String, dynamic> categoryData = {'id': null, 'name': '', 'unit': ''};
+  final Map<String, dynamic> categoryData = {
+    'id': null,
+    'name': '',
+    'unit': '',
+  };
 
   MeasurementCategoryForm([MeasurementCategory? category]) {
     //this._category = category ?? MeasurementCategory();
@@ -99,15 +103,24 @@ class MeasurementCategoryForm extends StatelessWidget {
               // Save the entry on the server
               try {
                 categoryData['id'] == null
-                    ? await Provider.of<MeasurementProvider>(context, listen: false).addCategory(
+                    ? await Provider.of<MeasurementProvider>(
+                        context,
+                        listen: false,
+                      ).addCategory(
                         MeasurementCategory(
                           id: categoryData['id'],
                           name: categoryData['name'],
                           unit: categoryData['unit'],
                         ),
                       )
-                    : await Provider.of<MeasurementProvider>(context, listen: false).editCategory(
-                        categoryData['id'], categoryData['name'], categoryData['unit']);
+                    : await Provider.of<MeasurementProvider>(
+                        context,
+                        listen: false,
+                      ).editCategory(
+                        categoryData['id'],
+                        categoryData['name'],
+                        categoryData['unit'],
+                      );
               } on WgerHttpException catch (error) {
                 if (context.mounted) {
                   showHttpExceptionErrorDialog(error, context);
@@ -261,15 +274,20 @@ class MeasurementEntryForm extends StatelessWidget {
               // Save the entry on the server
               try {
                 _entryData['id'] == null
-                    ? await Provider.of<MeasurementProvider>(context, listen: false)
-                        .addEntry(MeasurementEntry(
+                    ? await Provider.of<MeasurementProvider>(
+                        context,
+                        listen: false,
+                      ).addEntry(MeasurementEntry(
                         id: _entryData['id'],
                         category: _entryData['category'],
                         date: _entryData['date'],
                         value: _entryData['value'],
                         notes: _entryData['notes'],
                       ))
-                    : await Provider.of<MeasurementProvider>(context, listen: false).editEntry(
+                    : await Provider.of<MeasurementProvider>(
+                        context,
+                        listen: false,
+                      ).editEntry(
                         _entryData['id'],
                         _entryData['category'],
                         _entryData['value'],

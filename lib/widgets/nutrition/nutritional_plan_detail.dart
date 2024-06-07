@@ -40,74 +40,80 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
         lastWeightEntry != null ? nutritionalGoals / lastWeightEntry.weight.toDouble() : null;
 
     return SliverList(
-        delegate: SliverChildListDelegate(
-      [
-        SizedBox(
-          width: 300,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: FlNutritionalPlanGoalWidget(
+      delegate: SliverChildListDelegate(
+        [
+          SizedBox(
+            width: 300,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: FlNutritionalPlanGoalWidget(
+                nutritionalPlan: _nutritionalPlan,
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+          ..._nutritionalPlan.meals.map((meal) => MealWidget(
+                meal,
+                _nutritionalPlan.dedupMealItems,
+                false,
+                false,
+              )),
+          MealWidget(
+            _nutritionalPlan.pseudoMealOthers('Other logs'),
+            _nutritionalPlan.dedupMealItems,
+            false,
+            true,
+          ),
+          if (nutritionalGoals.isComplete())
+            Container(
+              padding: const EdgeInsets.all(15),
+              height: 220,
+              child: FlNutritionalPlanPieChartWidget(nutritionalGoals.toValues()),
+            ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: MacronutrientsTable(
+              nutritionalGoals: nutritionalGoals,
+              plannedValuesPercentage: nutritionalGoals.energyPercentage(),
+              nutritionalGoalsGperKg: nutritionalGoalsGperKg,
+            ),
+          ),
+          const Padding(padding: EdgeInsets.all(8.0)),
+          Text(
+            AppLocalizations.of(context).logged,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          Container(
+            padding: const EdgeInsets.only(top: 16, left: 8, right: 8),
+            height: 300,
+            child: NutritionalDiaryChartWidgetFl(
               nutritionalPlan: _nutritionalPlan,
             ),
           ),
-        ),
-        const SizedBox(height: 10),
-        ..._nutritionalPlan.meals.map((meal) => MealWidget(
-              meal,
-              _nutritionalPlan.dedupMealItems,
-              false,
-              false,
-            )),
-        MealWidget(
-          _nutritionalPlan.pseudoMealOthers('Other logs'),
-          _nutritionalPlan.dedupMealItems,
-          false,
-          true,
-        ),
-        if (nutritionalGoals.isComplete())
-          Container(
-            padding: const EdgeInsets.all(15),
-            height: 220,
-            child: FlNutritionalPlanPieChartWidget(nutritionalGoals.toValues()),
-          ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: MacronutrientsTable(
-            nutritionalGoals: nutritionalGoals,
-            plannedValuesPercentage: nutritionalGoals.energyPercentage(),
-            nutritionalGoalsGperKg: nutritionalGoalsGperKg,
-          ),
-        ),
-        const Padding(padding: EdgeInsets.all(8.0)),
-        Text(
-          AppLocalizations.of(context).logged,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
-        Container(
-          padding: const EdgeInsets.only(top: 16, left: 8, right: 8),
-          height: 300,
-          child: NutritionalDiaryChartWidgetFl(nutritionalPlan: _nutritionalPlan),
-        ),
-        if (_nutritionalPlan.logEntriesValues.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 15, left: 15, right: 15),
-            child: Column(
-              children: [
-                Text(
-                  AppLocalizations.of(context).nutritionalDiary,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                SizedBox(
+          if (_nutritionalPlan.logEntriesValues.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 15, left: 15, right: 15),
+              child: Column(
+                children: [
+                  Text(
+                    AppLocalizations.of(context).nutritionalDiary,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  SizedBox(
                     height: 200,
                     child: SingleChildScrollView(
-                      child: NutritionalDiaryTable(nutritionalPlan: _nutritionalPlan),
-                    )),
-              ],
+                      child: NutritionalDiaryTable(
+                        nutritionalPlan: _nutritionalPlan,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-      ],
-    ));
+        ],
+      ),
+    );
   }
 }

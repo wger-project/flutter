@@ -59,7 +59,8 @@ class _ExerciseVideoWidgetState extends State<ExerciseVideoWidget> {
               VideoPlayer(_controller),
               _ControlsOverlay(controller: _controller),
               VideoProgressIndicator(_controller, allowScrubbing: true),
-            ]))
+            ]),
+          )
         : Container();
   }
 }
@@ -118,7 +119,7 @@ class _ControlsOverlay extends StatelessWidget {
                   PopupMenuItem(
                     value: speed,
                     child: Text('${speed}x'),
-                  )
+                  ),
               ];
             },
             child: Padding(

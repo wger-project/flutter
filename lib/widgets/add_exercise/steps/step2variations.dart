@@ -40,7 +40,9 @@ class Step2Variations extends StatelessWidget {
                               ...exerciseProvider.exerciseBasesByVariation[key]!.map(
                                 (base) => Text(
                                   base
-                                      .getExercise(Localizations.localeOf(context).languageCode)
+                                      .getExercise(
+                                        Localizations.localeOf(context).languageCode,
+                                      )
                                       .name,
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -51,41 +53,46 @@ class Step2Variations extends StatelessWidget {
                         ),
                         Consumer<AddExerciseProvider>(
                           builder: (ctx, provider, __) => Switch(
-                              value: provider.variationId == key,
-                              onChanged: (state) => provider.variationId = key),
+                            value: provider.variationId == key,
+                            onChanged: (state) => provider.variationId = key,
+                          ),
                         ),
                       ],
                     ),
                   ),
                   // Exercise bases without variations
-                  ...exerciseProvider.exercises.where((b) => b.variationId == null).map(
-                        (base) => Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Flexible(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Text(
-                                    base
-                                        .getExercise(Localizations.localeOf(context).languageCode)
-                                        .name,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  const SizedBox(height: 20),
-                                ],
-                              ),
+                  ...exerciseProvider.exercises
+                    .where((b) => b.variationId == null)
+                    .map(
+                      (base) => Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Flexible(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Text(
+                                  base
+                                      .getExercise(
+                                        Localizations.localeOf(context).languageCode,
+                                      )
+                                      .name,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                const SizedBox(height: 20),
+                              ],
                             ),
-                            Consumer<AddExerciseProvider>(
-                              builder: (ctx, provider, __) => Switch(
-                                value: provider.newVariationForExercise == base.id,
-                                onChanged: (state) => provider.newVariationForExercise = base.id,
-                              ),
+                          ),
+                          Consumer<AddExerciseProvider>(
+                            builder: (ctx, provider, __) => Switch(
+                              value: provider.newVariationForExercise == base.id,
+                              onChanged: (state) => provider.newVariationForExercise = base.id,
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
+                    ),
                 ],
               ),
             ),

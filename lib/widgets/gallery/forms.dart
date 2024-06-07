@@ -116,12 +116,15 @@ class _ImageFormState extends State<ImageForm> {
                             title: Text(AppLocalizations.of(context).takePicture),
                           ),
                           ListTile(
-                              onTap: () {
-                                Navigator.of(context).pop();
-                                _showPicker(ImageSource.gallery);
-                              },
-                              leading: const Icon(Icons.photo_library),
-                              title: Text(AppLocalizations.of(context).chooseFromLibrary))
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              _showPicker(ImageSource.gallery);
+                            },
+                            leading: const Icon(Icons.photo_library),
+                            title: Text(
+                              AppLocalizations.of(context).chooseFromLibrary,
+                            ),
+                          ),
                         ],
                       ),
                     );
@@ -166,7 +169,9 @@ class _ImageFormState extends State<ImageForm> {
           ),
           TextFormField(
             key: const Key('field-description'),
-            decoration: InputDecoration(labelText: AppLocalizations.of(context).description),
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context).description,
+            ),
             minLines: 3,
             maxLines: 10,
             controller: descriptionController,
@@ -187,11 +192,11 @@ class _ImageFormState extends State<ImageForm> {
 
               if (widget._image.id == null) {
                 Provider.of<GalleryProvider>(context, listen: false)
-                    .addImage(widget._image, _file!);
+                  .addImage(widget._image, _file!);
                 Navigator.of(context).pop();
               } else {
                 Provider.of<GalleryProvider>(context, listen: false)
-                    .editImage(widget._image, _file);
+                  .editImage(widget._image, _file);
                 Navigator.of(context).pop();
               }
             },

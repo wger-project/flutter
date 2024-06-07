@@ -6,7 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:wger/providers/add_exercise.dart';
 import 'mixins/image_picker_mixin.dart';
 
-class PreviewExerciseImages extends StatelessWidget with ExerciseImagePickerMixin {
+class PreviewExerciseImages extends StatelessWidget
+    with ExerciseImagePickerMixin {
   PreviewExerciseImages({
     super.key,
     required this.selectedImages,
@@ -34,12 +35,14 @@ class PreviewExerciseImages extends StatelessWidget with ExerciseImagePickerMixi
                       child: Container(
                         decoration: BoxDecoration(
                           color: Colors.grey.withOpacity(0.5),
-                          borderRadius: const BorderRadius.all(Radius.circular(20)),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(20)),
                         ),
                         child: IconButton(
                           iconSize: 20,
-                          onPressed: () =>
-                              context.read<AddExerciseProvider>().removeExercise(file.path),
+                          onPressed: () => context
+                              .read<AddExerciseProvider>()
+                              .removeExercise(file.path),
                           color: Colors.white,
                           icon: const Icon(Icons.delete),
                         ),
@@ -67,7 +70,7 @@ class PreviewExerciseImages extends StatelessWidget with ExerciseImagePickerMixi
               ),
             ),
           ),
-        )
+        ),
       ]),
     );
   }

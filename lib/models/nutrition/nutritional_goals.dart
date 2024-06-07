@@ -42,22 +42,28 @@ class NutritionalGoals {
     // infer values where we can
     if (energy == null) {
       if (protein != null && carbohydrates != null && fat != null) {
-        energy =
-            protein! * ENERGY_PROTEIN + carbohydrates! * ENERGY_CARBOHYDRATES + fat! * ENERGY_FAT;
+        energy = protein! * ENERGY_PROTEIN +
+            carbohydrates! * ENERGY_CARBOHYDRATES +
+            fat! * ENERGY_FAT;
       }
       return;
     }
     // TODO: input validation when the user modifies/creates the plan, to assure energy is high enough
     if (protein == null && carbohydrates != null && fat != null) {
-      protein =
-          (energy! - carbohydrates! * ENERGY_CARBOHYDRATES - fat! * ENERGY_FAT) / ENERGY_PROTEIN;
+      protein = (energy! -
+              carbohydrates! * ENERGY_CARBOHYDRATES -
+              fat! * ENERGY_FAT) /
+          ENERGY_PROTEIN;
       assert(protein! > 0);
     } else if (carbohydrates == null && protein != null && fat != null) {
       carbohydrates =
-          (energy! - protein! * ENERGY_PROTEIN - fat! * ENERGY_FAT) / ENERGY_CARBOHYDRATES;
+          (energy! - protein! * ENERGY_PROTEIN - fat! * ENERGY_FAT) /
+              ENERGY_CARBOHYDRATES;
       assert(carbohydrates! > 0);
     } else if (fat == null && protein != null && carbohydrates != null) {
-      fat = (energy! - protein! * ENERGY_PROTEIN - carbohydrates! * ENERGY_CARBOHYDRATES) /
+      fat = (energy! -
+              protein! * ENERGY_PROTEIN -
+              carbohydrates! * ENERGY_CARBOHYDRATES) /
           ENERGY_FAT;
       assert(fat! > 0);
     }
@@ -68,7 +74,8 @@ class NutritionalGoals {
       energy: energy != null ? energy! / v : null,
       protein: protein != null ? protein! / v : null,
       carbohydrates: carbohydrates != null ? carbohydrates! / v : null,
-      carbohydratesSugar: carbohydratesSugar != null ? carbohydratesSugar! / v : null,
+      carbohydratesSugar:
+          carbohydratesSugar != null ? carbohydratesSugar! / v : null,
       fat: fat != null ? fat! / v : null,
       fatSaturated: fatSaturated != null ? fatSaturated! / v : null,
       fiber: fiber != null ? fiber! / v : null,
@@ -77,7 +84,10 @@ class NutritionalGoals {
   }
 
   bool isComplete() {
-    return energy != null && protein != null && carbohydrates != null && fat != null;
+    return energy != null &&
+        protein != null &&
+        carbohydrates != null &&
+        fat != null;
   }
 
   /// Convert goals into values.
@@ -110,7 +120,8 @@ class NutritionalGoals {
       goals.protein = (100 * protein! * ENERGY_PROTEIN) / energy!;
     }
     if (carbohydrates != null) {
-      goals.carbohydrates = (100 * carbohydrates! * ENERGY_CARBOHYDRATES) / energy!;
+      goals.carbohydrates =
+          (100 * carbohydrates! * ENERGY_CARBOHYDRATES) / energy!;
     }
     if (fat != null) {
       goals.fat = (100 * fat! * ENERGY_FAT) / energy!;
@@ -140,7 +151,15 @@ class NutritionalGoals {
   @override
   //ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => Object.hash(
-      energy, protein, carbohydrates, carbohydratesSugar, fat, fatSaturated, fiber, sodium);
+        energy,
+        protein,
+        carbohydrates,
+        carbohydratesSugar,
+        fat,
+        fatSaturated,
+        fiber,
+        sodium,
+      );
 
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes

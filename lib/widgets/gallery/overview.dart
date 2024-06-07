@@ -59,7 +59,7 @@ class Gallery extends StatelessWidget {
                             children: [
                               Text(
                                 DateFormat.yMd(Localizations.localeOf(context).languageCode)
-                                    .format(currentImage.date),
+                                  .format(currentImage.date),
                                 style: Theme.of(context).textTheme.headlineSmall,
                               ),
                               Expanded(
@@ -73,12 +73,15 @@ class Gallery extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   IconButton(
-                                      icon: const Icon(Icons.delete),
-                                      onPressed: () {
-                                        Provider.of<GalleryProvider>(context, listen: false)
-                                            .deleteImage(currentImage);
-                                        Navigator.of(context).pop();
-                                      }),
+                                    icon: const Icon(Icons.delete),
+                                    onPressed: () {
+                                      Provider.of<GalleryProvider>(
+                                        context,
+                                        listen: false,
+                                      ).deleteImage(currentImage);
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
                                   if (!isDesktop)
                                     IconButton(
                                       icon: const Icon(Icons.edit),
@@ -95,7 +98,7 @@ class Gallery extends StatelessWidget {
                                       },
                                     ),
                                 ],
-                              )
+                              ),
                             ],
                           ),
                         ),
