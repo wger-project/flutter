@@ -673,10 +673,7 @@ class ExerciseSetting extends StatelessWidget {
                   ),
                 ],
               ),
-              Flexible(
-                flex: 2,
-                child: RiRInputWidget(setting),
-              ),
+              Flexible(flex: 2, child: RiRInputWidget(setting)),
               const SizedBox(height: 15),
             ],
           ),
@@ -701,9 +698,7 @@ class ExerciseSetting extends StatelessWidget {
         );
       }
     }
-    return Column(
-      children: out,
-    );
+    return Column(children: out);
   }
 
   @override

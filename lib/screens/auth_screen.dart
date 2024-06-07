@@ -83,9 +83,7 @@ class AuthScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 0.025 * deviceSize.height),
-                  const Flexible(
-                    child: AuthCard(),
-                  ),
+                  const Flexible(child: AuthCard()),
                 ],
               ),
             ),
@@ -410,9 +408,7 @@ class _AuthCardState extends State<AuthCard> {
                             },
                           ),
                         ),
-                        const SizedBox(
-                          width: 20,
-                        ),
+                        const SizedBox(width: 20),
                         Column(
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
@@ -429,9 +425,7 @@ class _AuthCardState extends State<AuthCard> {
                       ],
                     ),
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
+                  const SizedBox(height: 20),
                   GestureDetector(
                     onTap: () {
                       if (!_isLoading) {

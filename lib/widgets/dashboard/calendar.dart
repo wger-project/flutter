@@ -170,9 +170,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
   List<Event> _getEventsForRange(DateTime start, DateTime end) {
     final days = daysInRange(start, end);
 
-    return [
-      for (final d in days) ..._getEventsForDay(d),
-    ];
+    return [for (final d in days) ..._getEventsForDay(d)];
   }
 
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
@@ -233,9 +231,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
             rangeEndDay: _rangeEnd,
             calendarFormat: CalendarFormat.month,
             availableGestures: AvailableGestures.horizontalSwipe,
-            availableCalendarFormats: const {
-              CalendarFormat.month: '',
-            },
+            availableCalendarFormats: const {CalendarFormat.month: ''},
             rangeSelectionMode: _rangeSelectionMode,
             eventLoader: _getEventsForDay,
             startingDayOfWeek: StartingDayOfWeek.monday,

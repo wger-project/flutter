@@ -68,9 +68,7 @@ class NutritionalPlanScreen extends StatelessWidget {
               color: Colors.white,
             ),
           ),
-          const SizedBox(
-            width: 8,
-          ),
+          const SizedBox(width: 8),
           FloatingActionButton(
             heroTag: null,
             tooltip: AppLocalizations.of(context).logMeal,

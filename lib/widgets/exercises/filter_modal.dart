@@ -22,9 +22,7 @@ import 'package:wger/helpers/i18n.dart';
 import 'package:wger/providers/exercises.dart';
 
 class ExerciseFilterModalBody extends StatefulWidget {
-  const ExerciseFilterModalBody({
-    super.key,
-  });
+  const ExerciseFilterModalBody({super.key});
 
   @override
   _ExerciseFilterModalBodyState createState() => _ExerciseFilterModalBodyState();
@@ -67,21 +65,18 @@ class _ExerciseFilterModalBodyState extends State<ExerciseFilterModalBody> {
                 );
               },
               body: Column(
-                children: filterCategory.items.entries.map(
-                  (currentEntry) {
-                    return SwitchListTile(
-                      title: Text(getTranslation(currentEntry.key.name, context)),
-                      value: currentEntry.value,
-                      onChanged: (_) {
-                        setState(() {
-                          filterCategory.items.update(currentEntry.key, (value) => !value);
-                          Provider.of<ExercisesProvider>(context, listen: false)
-                              .setFilters(filters);
-                        });
-                      },
-                    );
-                  },
-                ).toList(),
+                children: filterCategory.items.entries.map((currentEntry) {
+                  return SwitchListTile(
+                    title: Text(getTranslation(currentEntry.key.name, context)),
+                    value: currentEntry.value,
+                    onChanged: (_) {
+                      setState(() {
+                        filterCategory.items.update(currentEntry.key, (value) => !value);
+                        Provider.of<ExercisesProvider>(context, listen: false).setFilters(filters);
+                      });
+                    },
+                  );
+                }).toList(),
               ),
             );
           }).toList(),

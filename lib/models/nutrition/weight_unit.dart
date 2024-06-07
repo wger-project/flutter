@@ -28,10 +28,7 @@ class WeightUnit {
   @JsonKey(required: true)
   final String name;
 
-  WeightUnit({
-    required this.id,
-    required this.name,
-  });
+  WeightUnit({required this.id, required this.name});
 
   // Boilerplate
   factory WeightUnit.fromJson(Map<String, dynamic> json) => _$WeightUnitFromJson(json);

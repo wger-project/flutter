@@ -60,9 +60,7 @@ class _GymModeState extends State<GymMode> {
 
   /// Map with the first (navigation) page for each exercise
   final Map<Exercise, int> _exercisePages = {};
-  final PageController _controller = PageController(
-    initialPage: 0,
-  );
+  final PageController _controller = PageController(initialPage: 0);
 
   @override
   void dispose() {
@@ -148,11 +146,7 @@ class _GymModeState extends State<GymMode> {
     return PageView(
       controller: _controller,
       children: [
-        StartPage(
-          _controller,
-          widget._workoutDay,
-          _exercisePages,
-        ),
+        StartPage(_controller, widget._workoutDay, _exercisePages),
         ...getContent(),
         SessionPage(
           Provider.of<WorkoutPlansProvider>(context, listen: false)
@@ -186,30 +180,28 @@ class StartPage extends StatelessWidget {
         Expanded(
           child: ListView(
             children: [
-              ..._day.sets.map(
-                (set) {
-                  return Column(
-                    children: [
-                      ...set.settingsFiltered.map((s) {
-                        return Column(
-                          children: [
-                            Text(
-                              s.exerciseObj
-                                  .getExercise(Localizations.localeOf(context).languageCode)
-                                  .name,
-                              style: Theme.of(context).textTheme.titleLarge,
-                            ),
-                            ...set
-                              .getSmartRepr(s.exerciseObj)
-                              .map((e) => Text(e)),
-                            const SizedBox(height: 15),
-                          ],
-                        );
-                      }),
-                    ],
-                  );
-                },
-              ),
+              ..._day.sets.map((set) {
+                return Column(
+                  children: [
+                    ...set.settingsFiltered.map((s) {
+                      return Column(
+                        children: [
+                          Text(
+                            s.exerciseObj
+                                .getExercise(Localizations.localeOf(context).languageCode)
+                                .name,
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                          ...set
+                            .getSmartRepr(s.exerciseObj)
+                            .map((e) => Text(e)),
+                          const SizedBox(height: 15),
+                        ],
+                      );
+                    }),
+                  ],
+                );
+              }),
             ],
           ),
         ),
@@ -222,11 +214,7 @@ class StartPage extends StatelessWidget {
             );
           },
         ),
-        NavigationFooter(
-          _controller,
-          0,
-          showPrevious: false,
-        ),
+        NavigationFooter(_controller, 0, showPrevious: false),
       ],
     );
   }
@@ -298,10 +286,7 @@ class _LogPageState extends State<LogPage> {
     return Row(
       children: [
         IconButton(
-          icon: const Icon(
-            Icons.remove,
-            color: Colors.black,
-          ),
+          icon: const Icon(Icons.remove, color: Colors.black),
           onPressed: () {
             try {
               final int newValue = int.parse(_repsController.text) - 1;
@@ -336,10 +321,7 @@ class _LogPageState extends State<LogPage> {
           ),
         ),
         IconButton(
-          icon: const Icon(
-            Icons.add,
-            color: Colors.black,
-          ),
+          icon: const Icon(Icons.add, color: Colors.black),
           onPressed: () {
             try {
               final int newValue = int.parse(_repsController.text) + 1;
@@ -356,10 +338,7 @@ class _LogPageState extends State<LogPage> {
     return Row(
       children: [
         IconButton(
-          icon: const Icon(
-            Icons.remove,
-            color: Colors.black,
-          ),
+          icon: const Icon(Icons.remove, color: Colors.black),
           onPressed: () {
             try {
               final double newValue = double.parse(_weightController.text) - (2 * minPlateWeight);
@@ -404,10 +383,7 @@ class _LogPageState extends State<LogPage> {
           ),
         ),
         IconButton(
-          icon: const Icon(
-            Icons.add,
-            color: Colors.black,
-          ),
+          icon: const Icon(Icons.add, color: Colors.black),
           onPressed: () {
             try {
               final double newValue = double.parse(_weightController.text) + (2 * minPlateWeight);
@@ -647,11 +623,7 @@ class _LogPageState extends State<LogPage> {
             textAlign: TextAlign.center,
           ),
         ),
-        if (widget._set.comment != '')
-          Text(
-            widget._set.comment,
-            textAlign: TextAlign.center,
-          ),
+        if (widget._set.comment != '') Text(widget._set.comment, textAlign: TextAlign.center),
         const SizedBox(height: 10),
         Expanded(
           child: (widget._workoutPlan.filterLogsByExerciseBase(widget._exerciseBase).isNotEmpty)
@@ -663,9 +635,7 @@ class _LogPageState extends State<LogPage> {
           getPlates(),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: Card(
-            child: getForm(),
-          ),
+          child: Card(child: getForm()),
         ),
         NavigationFooter(widget._controller, widget._ratioCompleted),
       ],
@@ -813,15 +783,9 @@ class _SessionPageState extends State<SessionPage> {
                   },
                   isSelected: selectedImpression,
                   children: const <Widget>[
-                    Icon(
-                      Icons.sentiment_very_dissatisfied,
-                    ),
-                    Icon(
-                      Icons.sentiment_neutral,
-                    ),
-                    Icon(
-                      Icons.sentiment_very_satisfied,
-                    ),
+                    Icon(Icons.sentiment_very_dissatisfied),
+                    Icon(Icons.sentiment_neutral),
+                    Icon(Icons.sentiment_very_satisfied),
                   ],
                 ),
                 TextFormField(
@@ -938,11 +902,7 @@ class _SessionPageState extends State<SessionPage> {
             ),
           ),
         ),
-        NavigationFooter(
-          widget._controller,
-          1,
-          showNext: false,
-        ),
+        NavigationFooter(widget._controller, 1, showNext: false),
       ],
     );
   }
@@ -979,20 +939,17 @@ class _TimerWidgetState extends State<TimerWidget> {
     _timer?.cancel();
 
     const oneSecond = Duration(seconds: 1);
-    _timer = Timer.periodic(
-      oneSecond,
-      (Timer timer) {
-        if (_seconds == _maxSeconds) {
-          setState(() {
-            timer.cancel();
-          });
-        } else {
-          setState(() {
-            _seconds++;
-          });
-        }
-      },
-    );
+    _timer = Timer.periodic(oneSecond, (Timer timer) {
+      if (_seconds == _maxSeconds) {
+        setState(() {
+          timer.cancel();
+        });
+      } else {
+        setState(() {
+          _seconds++;
+        });
+      }
+    });
   }
 
   @override

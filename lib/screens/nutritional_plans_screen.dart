@@ -33,10 +33,7 @@ class NutritionalPlansScreen extends StatelessWidget {
     return Scaffold(
       appBar: EmptyAppBar(AppLocalizations.of(context).nutritionalPlans),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
+        child: const Icon(Icons.add, color: Colors.white),
         onPressed: () async {
           Navigator.pushNamed(
             context,

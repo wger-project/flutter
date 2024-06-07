@@ -22,10 +22,7 @@ class MutedText extends StatelessWidget {
   final String _text;
   final TextAlign textAlign;
 
-  const MutedText(
-    this._text, {
-    this.textAlign = TextAlign.left,
-  });
+  const MutedText(this._text, {this.textAlign = TextAlign.left});
 
   @override
   Widget build(BuildContext context) {
@@ -47,13 +44,13 @@ class Pill extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColorLight.withOpacity(0.15),
+        color: Theme.of(context)
+          .primaryColorLight
+          .withOpacity(0.15),
         border: Border.all(color: Colors.grey[300]!),
         borderRadius: BorderRadius.circular(5),
       ),
-      child: Text(
-        title,
-      ),
+      child: Text(title),
     );
   }
 }

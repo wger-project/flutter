@@ -30,9 +30,7 @@ class UpdateAppScreen extends StatelessWidget {
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(AppLocalizations.of(context).appUpdateContent),
-          ],
+          children: [Text(AppLocalizations.of(context).appUpdateContent)],
         ),
         actions: null,
       ),

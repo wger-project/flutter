@@ -350,10 +350,7 @@ class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget>
 
     final items = provider.categories
       .map<Widget>(
-        (item) => CategoriesCard(
-          item,
-          elevation: 0,
-        ),
+        (item) => CategoriesCard(item, elevation: 0),
       )
       .toList();
     if (items.isNotEmpty) {
@@ -495,10 +492,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
               ),
             ),
             Expanded(
-              child: MutedText(
-                day.getDaysText,
-                textAlign: TextAlign.right,
-              ),
+              child: MutedText(day.getDaysText, textAlign: TextAlign.right),
             ),
             IconButton(
               icon: const Icon(Icons.play_arrow),
@@ -571,11 +565,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
             trailing: _hasContent
                 ? Tooltip(
                     message: AppLocalizations.of(context).toggleDetails,
-                    child: _showDetail
-                        ? const Icon(
-                            Icons.info,
-                          )
-                        : const Icon(Icons.info_outline),
+                    child: _showDetail ? const Icon(Icons.info) : const Icon(Icons.info_outline),
                   )
                 : const SizedBox(),
             onTap: () {
@@ -588,9 +578,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Column(
-                children: [
-                  ...getContent(),
-                ],
+                children: [...getContent()],
               ),
             )
           else
@@ -637,10 +625,7 @@ class NothingFound extends StatelessWidget {
           Text(_title),
           IconButton(
             iconSize: 30,
-            icon: const Icon(
-              Icons.add_box,
-              color: wgerPrimaryButtonColor,
-            ),
+            icon: const Icon(Icons.add_box, color: wgerPrimaryButtonColor),
             onPressed: () async {
               Navigator.pushNamed(
                 context,

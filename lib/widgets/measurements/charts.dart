@@ -43,9 +43,7 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
           top: 24,
           bottom: 12,
         ),
-        child: LineChart(
-          mainData(),
-        ),
+        child: LineChart(mainData()),
       ),
     );
   }
@@ -72,16 +70,10 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
         //horizontalInterval: 1,
         //verticalInterval: interval,
         getDrawingHorizontalLine: (value) {
-          return const FlLine(
-            color: Colors.grey,
-            strokeWidth: 1,
-          );
+          return const FlLine(color: Colors.grey, strokeWidth: 1);
         },
         getDrawingVerticalLine: (value) {
-          return const FlLine(
-            color: Colors.grey,
-            strokeWidth: 1,
-          );
+          return const FlLine(color: Colors.grey, strokeWidth: 1);
         },
       ),
       titlesData: FlTitlesData(
@@ -119,9 +111,7 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
             showTitles: true,
             reservedSize: 65,
             getTitlesWidget: (value, meta) {
-              return Text(
-                '$value ${widget.unit}',
-              );
+              return Text('$value ${widget.unit}');
             },
           ),
         ),
@@ -142,9 +132,7 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
           color: Theme.of(context).colorScheme.secondary,
           barWidth: 2,
           isStrokeCapRound: true,
-          dotData: const FlDotData(
-            show: true,
-          ),
+          dotData: const FlDotData(show: true),
         ),
       ],
     );
@@ -188,18 +176,12 @@ class Indicator extends StatelessWidget {
             color: color,
           ),
         ),
-        const SizedBox(
-          width: 4,
-        ),
+        const SizedBox(width: 4),
         Text(
           text,
-          style: TextStyle(
-            color: textColor,
-          ),
+          style: TextStyle(color: textColor),
         ),
-        SizedBox(
-          width: marginRight,
-        ),
+        SizedBox(width: marginRight),
       ],
     );
   }

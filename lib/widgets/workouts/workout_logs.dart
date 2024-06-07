@@ -54,12 +54,8 @@ class _WorkoutLogsState extends State<WorkoutLogs> {
           },
           isSelected: const [false, true],
           children: const <Widget>[
-            Icon(
-              Icons.table_chart,
-            ),
-            Icon(
-              Icons.show_chart,
-            ),
+            Icon(Icons.table_chart),
+            Icon(Icons.show_chart),
           ],
         ),
         Padding(
@@ -136,11 +132,7 @@ class _WorkoutLogCalendarState extends State<WorkoutLogCalendar> {
     for (final date in widget._workoutPlan.logData.keys) {
       final entry = widget._workoutPlan.logData[date]!;
       _events[DateFormatLists.format(date)] = [
-        WorkoutLogEvent(
-          date,
-          entry['session'],
-          entry['exercises'],
-        ),
+        WorkoutLogEvent(date, entry['session'], entry['exercises']),
       ];
     }
 
@@ -178,9 +170,7 @@ class _WorkoutLogCalendarState extends State<WorkoutLogCalendar> {
           calendarStyle: getWgerCalendarStyle(Theme.of(context)),
           eventLoader: _getEventsForDay,
           availableGestures: AvailableGestures.horizontalSwipe,
-          availableCalendarFormats: const {
-            CalendarFormat.month: '',
-          },
+          availableCalendarFormats: const {CalendarFormat.month: ''},
           onDaySelected: _onDaySelected,
           onPageChanged: (focusedDay) {
             // No need to call `setState()` here

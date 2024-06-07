@@ -93,9 +93,7 @@ class ExerciseDetail extends StatelessWidget {
       exerciseBaseIdToExclude: _exerciseBase.id,
     )
         .forEach((element) {
-      out.add(ExerciseListTile(
-        exerciseBase: element,
-      ));
+      out.add(ExerciseListTile(exerciseBase: element));
     });
 
     out.add(const SizedBox(height: PADDING));
@@ -259,10 +257,7 @@ class ExerciseDetail extends StatelessWidget {
 class MuscleColorHelper extends StatelessWidget {
   final bool main;
 
-  const MuscleColorHelper({
-    this.main = true,
-    super.key,
-  });
+  const MuscleColorHelper({this.main = true, super.key});
 
   @override
   Widget build(BuildContext context) {

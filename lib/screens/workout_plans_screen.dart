@@ -44,10 +44,7 @@ class WorkoutPlansScreen extends StatelessWidget {
             ),
           );
         },
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
+        child: const Icon(Icons.add, color: Colors.white),
       ),
       body: Consumer<WorkoutPlansProvider>(
         builder: (context, workoutProvider, child) => WorkoutPlansList(workoutProvider),

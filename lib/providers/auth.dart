@@ -196,9 +196,7 @@ class AuthProvider with ChangeNotifier {
       'token': token,
       'serverUrl': this.serverUrl,
     });
-    final serverData = json.encode({
-      'serverUrl': this.serverUrl,
-    });
+    final serverData = json.encode({'serverUrl': this.serverUrl});
 
     prefs.setString('userData', userData);
     prefs.setString('lastServer', serverData);

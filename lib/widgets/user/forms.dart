@@ -77,10 +77,7 @@ class _UserProfileFormState extends State<UserProfileForm> {
                     ? AppLocalizations.of(context).verifiedEmail
                     : AppLocalizations.of(context).unVerifiedEmail,
                 suffixIcon: widget._profile.emailVerified
-                    ? const Icon(
-                        Icons.check_circle,
-                        color: Colors.green,
-                      )
+                    ? const Icon(Icons.check_circle, color: Colors.green)
                     : null,
               ),
               controller: emailController,

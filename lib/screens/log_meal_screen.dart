@@ -51,16 +51,11 @@ class _LogMealScreenState extends State<LogMealScreen> {
     );
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Log meal to diary'),
-      ),
+      appBar: AppBar(title: Text('Log meal to diary')),
       body: Consumer<NutritionPlansProvider>(
         builder: (context, nutritionProvider, child) => SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 8,
-              vertical: 16,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
             child: Column(
               children: [
                 Text(

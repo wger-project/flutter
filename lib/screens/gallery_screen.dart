@@ -39,10 +39,7 @@ class GalleryScreen extends StatelessWidget {
       floatingActionButton: isDesktop
           ? null
           : FloatingActionButton(
-              child: const Icon(
-                Icons.add,
-                color: Colors.white,
-              ),
+              child: const Icon(Icons.add, color: Colors.white),
               onPressed: () {
                 Navigator.pushNamed(
                   context,

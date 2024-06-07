@@ -64,10 +64,7 @@ class FormScreen extends StatelessWidget {
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Padding(
-                  padding: args.padding,
-                  child: args.widget,
-                ),
+                Padding(padding: args.padding, child: args.widget),
               ],
             ),
     );

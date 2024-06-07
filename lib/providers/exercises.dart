@@ -528,10 +528,7 @@ class ExercisesProvider with ChangeNotifier {
     await database.delete(database.muscles).go();
     await Future.forEach(_muscles, (e) async {
       await database.into(database.muscles).insert(
-            MusclesCompanion.insert(
-              id: e.id,
-              data: e,
-            ),
+            MusclesCompanion.insert(id: e.id, data: e),
           );
     });
     validTill = DateTime.now().add(const Duration(days: EXERCISE_CACHE_DAYS));
@@ -565,10 +562,7 @@ class ExercisesProvider with ChangeNotifier {
     await database.delete(database.categories).go();
     await Future.forEach(_categories, (e) async {
       await database.into(database.categories).insert(
-            CategoriesCompanion.insert(
-              id: e.id,
-              data: e,
-            ),
+            CategoriesCompanion.insert(id: e.id, data: e),
           );
     });
     validTill = DateTime.now().add(const Duration(days: EXERCISE_CACHE_DAYS));
@@ -600,10 +594,7 @@ class ExercisesProvider with ChangeNotifier {
     await database.delete(database.languages).go();
     await Future.forEach(_languages, (e) async {
       await database.into(database.languages).insert(
-            LanguagesCompanion.insert(
-              id: e.id,
-              data: e,
-            ),
+            LanguagesCompanion.insert(id: e.id, data: e),
           );
     });
     validTill = DateTime.now().add(const Duration(days: EXERCISE_CACHE_DAYS));
@@ -636,10 +627,7 @@ class ExercisesProvider with ChangeNotifier {
     await database.delete(database.equipments).go();
     await Future.forEach(_equipment, (e) async {
       await database.into(database.equipments).insert(
-            EquipmentsCompanion.insert(
-              id: e.id,
-              data: e,
-            ),
+            EquipmentsCompanion.insert(id: e.id, data: e),
           );
     });
     validTill = DateTime.now().add(const Duration(days: EXERCISE_CACHE_DAYS));

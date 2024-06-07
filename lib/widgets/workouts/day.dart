@@ -224,9 +224,7 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
                         Provider.of<WorkoutPlansProvider>(
                           context,
                           listen: false,
-                        ).deleteDay(
-                          widget._day,
-                        );
+                        ).deleteDay(widget._day);
                       },
                     ),
                   ],

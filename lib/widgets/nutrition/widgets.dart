@@ -303,12 +303,7 @@ class NutritionDiaryheader extends StatelessWidget {
           AppLocalizations.of(context).protein,
           AppLocalizations.of(context).carbohydrates,
           AppLocalizations.of(context).fat,
-        ]
-          .map((e) => MutedText(
-                e,
-                textAlign: TextAlign.right,
-              ))
-          .toList(),
+        ].map((e) => MutedText(e, textAlign: TextAlign.right)).toList(),
       ),
     );
   }

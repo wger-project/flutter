@@ -21,9 +21,7 @@ import 'package:video_player/video_player.dart';
 import 'package:wger/models/exercises/video.dart';
 
 class ExerciseVideoWidget extends StatefulWidget {
-  const ExerciseVideoWidget({
-    required this.video,
-  });
+  const ExerciseVideoWidget({required this.video});
 
   final Video video;
 
@@ -71,11 +69,7 @@ class _ExerciseVideoWidgetState extends State<ExerciseVideoWidget> {
 class _ControlsOverlay extends StatelessWidget {
   const _ControlsOverlay({required this.controller});
 
-  static const _playbackRates = [
-    0.25,
-    0.5,
-    1.0,
-  ];
+  static const _playbackRates = [0.25, 0.5, 1.0];
 
   final VideoPlayerController controller;
 
@@ -116,10 +110,7 @@ class _ControlsOverlay extends StatelessWidget {
             itemBuilder: (context) {
               return [
                 for (final speed in _playbackRates)
-                  PopupMenuItem(
-                    value: speed,
-                    child: Text('${speed}x'),
-                  ),
+                  PopupMenuItem(value: speed, child: Text('${speed}x')),
               ];
             },
             child: Padding(

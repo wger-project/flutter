@@ -202,9 +202,7 @@ class FlNutritionalPlanPieChartState extends State<FlNutritionalPlanPieChartWidg
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const SizedBox(
-          height: 18,
-        ),
+        const SizedBox(height: 18),
         Expanded(
           child: AspectRatio(
             aspectRatio: 1,
@@ -223,9 +221,7 @@ class FlNutritionalPlanPieChartState extends State<FlNutritionalPlanPieChartWidg
                     });
                   },
                 ),
-                borderData: FlBorderData(
-                  show: false,
-                ),
+                borderData: FlBorderData(show: false),
                 sectionsSpace: 0,
                 centerSpaceRadius: 0,
                 sections: showingSections(),
@@ -243,17 +239,11 @@ class FlNutritionalPlanPieChartState extends State<FlNutritionalPlanPieChartWidg
           ]
             .map((e) => Padding(
                   padding: const EdgeInsets.symmetric(vertical: 2),
-                  child: Indicator(
-                    color: e.$2,
-                    text: e.$1,
-                    isSquare: true,
-                  ),
+                  child: Indicator(color: e.$2, text: e.$1, isSquare: true),
                 ))
             .toList(),
         ),
-        const SizedBox(
-          width: 28,
-        ),
+        const SizedBox(width: 28),
       ],
     );
   }
@@ -341,11 +331,7 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
       BarChartRodData barChartRodData(double? plan, double val, Color color) {
         // paint a simple bar
         if (plan == null || val == plan) {
-          return BarChartRodData(
-            toY: val,
-            color: color,
-            width: barsWidth,
-          );
+          return BarChartRodData(toY: val, color: color, width: barsWidth);
         }
 
         // paint a surplus
@@ -393,9 +379,7 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
               child: BarChart(
                 BarChartData(
                   alignment: BarChartAlignment.center,
-                  barTouchData: BarTouchData(
-                    enabled: false,
-                  ),
+                  barTouchData: BarTouchData(enabled: false),
                   titlesData: FlTitlesData(
                     show: true,
                     bottomTitles: AxisTitles(
@@ -428,9 +412,7 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
                     ),
                     drawVerticalLine: false,
                   ),
-                  borderData: FlBorderData(
-                    show: false,
-                  ),
+                  borderData: FlBorderData(show: false),
                   groupsSpace: 30,
                   barGroups: [
                     barchartGroup(0, barsSpace, barsWidth, 'protein'),
@@ -504,10 +486,7 @@ class MealDiaryBarChartWidgetState extends State<MealDiaryBarChartWidget> {
     };
     return SideTitleWidget(
       axisSide: meta.axisSide,
-      child: Text(
-        text,
-        style: const TextStyle(fontSize: 10),
-      ),
+      child: Text(text, style: const TextStyle(fontSize: 10)),
     );
   }
 
@@ -532,9 +511,7 @@ class MealDiaryBarChartWidgetState extends State<MealDiaryBarChartWidget> {
             return BarChart(
               BarChartData(
                 alignment: BarChartAlignment.center,
-                barTouchData: BarTouchData(
-                  enabled: false,
-                ),
+                barTouchData: BarTouchData(enabled: false),
                 titlesData: FlTitlesData(
                   show: true,
                   bottomTitles: AxisTitles(

@@ -193,9 +193,7 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
 }
 
 class EmailNotVerified extends StatelessWidget {
-  const EmailNotVerified({
-    super.key,
-  });
+  const EmailNotVerified({super.key});
 
   @override
   Widget build(BuildContext context) {

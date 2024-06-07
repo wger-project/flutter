@@ -39,16 +39,12 @@ class _FilterRowState extends State<FilterRow> {
     super.initState();
 
     _exerciseNameController = TextEditingController()
-      ..addListener(
-        () {
-          final provider =
-              Provider.of<ExercisesProvider>(context, listen: false);
-          if (provider.filters!.searchTerm != _exerciseNameController.text) {
-            provider.setFilters(provider.filters!
-                .copyWith(searchTerm: _exerciseNameController.text));
-          }
-        },
-      );
+      ..addListener(() {
+        final provider = Provider.of<ExercisesProvider>(context, listen: false);
+        if (provider.filters!.searchTerm != _exerciseNameController.text) {
+          provider.setFilters(provider.filters!.copyWith(searchTerm: _exerciseNameController.text));
+        }
+      });
   }
 
   @override
@@ -91,8 +87,7 @@ class _FilterRowState extends State<FilterRow> {
                   return [
                     PopupMenuItem<ExerciseMoreOption>(
                       value: ExerciseMoreOption.ADD_EXERCISE,
-                      child:
-                          Text(AppLocalizations.of(context).contributeExercise),
+                      child: Text(AppLocalizations.of(context).contributeExercise),
                     ),
                   ];
                 },
@@ -102,8 +97,7 @@ class _FilterRowState extends State<FilterRow> {
                 onSelected: (ExerciseMoreOption selectedOption) {
                   switch (selectedOption) {
                     case ExerciseMoreOption.ADD_EXERCISE:
-                      Navigator.of(context)
-                          .pushNamed(AddExerciseScreen.routeName);
+                      Navigator.of(context).pushNamed(AddExerciseScreen.routeName);
                       break;
                   }
                 },

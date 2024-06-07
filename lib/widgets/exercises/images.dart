@@ -20,9 +20,7 @@ import 'package:flutter/widgets.dart';
 import 'package:wger/models/exercises/image.dart';
 
 class ExerciseImageWidget extends StatelessWidget {
-  const ExerciseImageWidget({
-    this.image,
-  });
+  const ExerciseImageWidget({this.image});
 
   final ExerciseImage? image;
 

@@ -69,9 +69,7 @@ class _ImageFormState extends State<ImageForm> {
   Widget getPicture() {
     // An image file was selected, use it
     if (_file != null) {
-      return Image(
-        image: FileImage(File(_file!.path)),
-      );
+      return Image(image: FileImage(File(_file!.path)));
     }
 
     // We are editing an existing entry

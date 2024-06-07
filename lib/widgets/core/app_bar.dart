@@ -137,10 +137,7 @@ class EmptyAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      title: Text(_title),
-      actions: const [],
-    );
+    return AppBar(title: Text(_title), actions: const []);
   }
 
   @override

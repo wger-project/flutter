@@ -28,10 +28,7 @@ class RepetitionUnit {
   @JsonKey(required: true)
   final String name;
 
-  const RepetitionUnit({
-    required this.id,
-    required this.name,
-  });
+  const RepetitionUnit({required this.id, required this.name});
 
   // Boilerplate
   factory RepetitionUnit.fromJson(Map<String, dynamic> json) => _$RepetitionUnitFromJson(json);

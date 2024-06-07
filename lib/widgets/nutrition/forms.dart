@@ -685,10 +685,7 @@ class GoalMacros extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       initialValue: val ?? '',
-      decoration: InputDecoration(
-        labelText: label,
-        suffixText: suffix,
-      ),
+      decoration: InputDecoration(labelText: label, suffixText: suffix),
       keyboardType: TextInputType.number,
       onSaved: (newValue) {
         if (newValue == null || newValue == '') {

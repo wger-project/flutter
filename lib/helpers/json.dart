@@ -48,9 +48,7 @@ String? toDate(DateTime? dateTime) {
  */
 TimeOfDay stringToTime(String? time) {
   final String out = time ?? '00:00';
-  return TimeOfDay.fromDateTime(
-    DateTime.parse('2020-01-01 $out'),
-  );
+  return TimeOfDay.fromDateTime(DateTime.parse('2020-01-01 $out'));
 }
 
 /*

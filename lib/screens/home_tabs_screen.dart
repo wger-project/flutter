@@ -182,10 +182,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
                   label: AppLocalizations.of(context).labelBottomNavNutrition,
                 ),
                 NavigationDestination(
-                  icon: const FaIcon(
-                    FontAwesomeIcons.weightScale,
-                    size: 20,
-                  ),
+                  icon: const FaIcon(FontAwesomeIcons.weightScale, size: 20),
                   label: AppLocalizations.of(context).weight,
                 ),
                 NavigationDestination(
