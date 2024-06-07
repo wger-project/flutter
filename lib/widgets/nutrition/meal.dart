@@ -323,7 +323,7 @@ class MealHeader extends StatelessWidget {
                 ),
                 if (_meal.isRealMeal)
                   Text(
-                    getShortNutritionValues(_meal.plannedNutritionalValues, context),
+                    getKcalConsumedVsPlanned(_meal, context),
                     style: Theme.of(context).textTheme.titleSmall,
                   ),
               ],
