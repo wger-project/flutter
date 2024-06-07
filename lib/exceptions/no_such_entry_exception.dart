@@ -1,1 +1,3 @@
-class NoSuchEntryException implements Exception {}
+class NoSuchEntryException implements Exception {
+  const NoSuchEntryException();
+}

@@ -23,6 +23,7 @@ import 'package:wger/providers/measurement.dart';
 import 'categories_card.dart';
 
 class CategoriesList extends StatelessWidget {
+  const CategoriesList();
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<MeasurementProvider>(context, listen: false);

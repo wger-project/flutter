@@ -33,6 +33,7 @@ enum NutritionalPlanOptions {
 }
 
 class NutritionalPlanScreen extends StatelessWidget {
+  const NutritionalPlanScreen();
   static const routeName = '/nutritional-plan-detail';
 
   Future<NutritionalPlan> _loadFullPlan(BuildContext context, int planId) {

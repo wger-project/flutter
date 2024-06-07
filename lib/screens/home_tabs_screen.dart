@@ -38,6 +38,7 @@ import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/screens/workout_plans_screen.dart';
 
 class HomeTabsScreen extends StatefulWidget {
+  const HomeTabsScreen();
   static const routeName = '/dashboard2';
 
   @override

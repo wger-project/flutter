@@ -26,6 +26,7 @@ import 'package:wger/widgets/weight/entries_list.dart';
 import 'package:wger/widgets/weight/forms.dart';
 
 class WeightScreen extends StatelessWidget {
+  const WeightScreen();
   static const routeName = '/weight';
 
   @override

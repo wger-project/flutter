@@ -7,7 +7,7 @@ import 'package:wger/providers/add_exercise.dart';
 import 'mixins/image_picker_mixin.dart';
 
 class PreviewExerciseImages extends StatelessWidget with ExerciseImagePickerMixin {
-  PreviewExerciseImages({super.key, required this.selectedImages});
+  const PreviewExerciseImages({super.key, required this.selectedImages});
 
   final List<File> selectedImages;
   @override

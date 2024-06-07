@@ -39,7 +39,7 @@ class IngredientWeightUnit {
   @JsonKey(required: true)
   final double amount;
 
-  IngredientWeightUnit({
+  const IngredientWeightUnit({
     required this.id,
     required this.weightUnit,
     required this.ingredient,

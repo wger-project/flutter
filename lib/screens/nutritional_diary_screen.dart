@@ -31,10 +31,11 @@ class NutritionalDiaryArguments {
   /// Date to show data for
   final DateTime date;
 
-  NutritionalDiaryArguments(this.plan, this.date);
+  const NutritionalDiaryArguments(this.plan, this.date);
 }
 
 class NutritionalDiaryScreen extends StatelessWidget {
+  const NutritionalDiaryScreen();
   static const routeName = '/nutritional-diary';
 
   @override

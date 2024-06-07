@@ -43,7 +43,7 @@ class Event {
   final EventType _type;
   final String _description;
 
-  Event(this._type, this._description);
+  const Event(this._type, this._description);
 
   String get description {
     return _description;

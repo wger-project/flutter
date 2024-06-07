@@ -36,6 +36,7 @@ enum AuthMode {
 }
 
 class AuthScreen extends StatelessWidget {
+  const AuthScreen();
   static const routeName = '/auth';
 
   @override

@@ -38,6 +38,7 @@ import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/nutrition/helpers.dart';
 
 class ScanReader extends StatelessWidget {
+  const ScanReader();
   @override
   Widget build(BuildContext context) => Scaffold(
         body: ReaderWidget(

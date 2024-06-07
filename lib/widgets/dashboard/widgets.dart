@@ -52,6 +52,7 @@ import 'package:wger/widgets/workouts/forms.dart';
 enum viewMode { base, withMeals, withMealsDetails }
 
 class DashboardNutritionWidget extends StatefulWidget {
+  const DashboardNutritionWidget();
   @override
   _DashboardNutritionWidgetState createState() => _DashboardNutritionWidgetState();
 }
@@ -249,6 +250,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
 }
 
 class DashboardWeightWidget extends StatefulWidget {
+  const DashboardWeightWidget();
   @override
   _DashboardWeightWidgetState createState() => _DashboardWeightWidgetState();
 }
@@ -336,6 +338,7 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
 }
 
 class DashboardMeasurementWidget extends StatefulWidget {
+  const DashboardMeasurementWidget();
   @override
   _DashboardMeasurementWidgetState createState() => _DashboardMeasurementWidgetState();
 }
@@ -455,6 +458,7 @@ class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget>
 }
 
 class DashboardWorkoutWidget extends StatefulWidget {
+  const DashboardWorkoutWidget();
   @override
   _DashboardWorkoutWidgetState createState() => _DashboardWorkoutWidgetState();
 }

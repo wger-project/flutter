@@ -28,6 +28,7 @@ import 'package:wger/widgets/measurements/charts.dart';
 import 'package:wger/widgets/weight/forms.dart';
 
 class WeightEntriesList extends StatelessWidget {
+  const WeightEntriesList();
   @override
   Widget build(BuildContext context) {
     final profile = context.read<UserProvider>().profile;

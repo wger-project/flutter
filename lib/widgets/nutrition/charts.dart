@@ -183,7 +183,7 @@ class NutritionData {
   final String name;
   final double value;
 
-  NutritionData(this.name, this.value);
+  const NutritionData(this.name, this.value);
 }
 
 class FlNutritionalPlanPieChartWidget extends StatefulWidget {

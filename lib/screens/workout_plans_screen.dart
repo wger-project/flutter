@@ -27,6 +27,7 @@ import 'package:wger/widgets/workouts/forms.dart';
 import 'package:wger/widgets/workouts/workout_plans_list.dart';
 
 class WorkoutPlansScreen extends StatelessWidget {
+  const WorkoutPlansScreen();
   static const routeName = '/workout-plans-list';
 
   @override

@@ -25,7 +25,7 @@ class Variation {
   @JsonKey(required: true)
   final int id;
 
-  Variation({required this.id});
+  const Variation({required this.id});
 
   // Boilerplate
   factory Variation.fromJson(Map<String, dynamic> json) => _$VariationFromJson(json);

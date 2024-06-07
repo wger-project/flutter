@@ -25,6 +25,7 @@ import 'package:wger/widgets/measurements/categories.dart';
 import 'package:wger/widgets/measurements/forms.dart';
 
 class MeasurementCategoriesScreen extends StatelessWidget {
+  const MeasurementCategoriesScreen();
   static const routeName = '/measurement-categories';
 
   @override

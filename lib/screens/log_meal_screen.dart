@@ -28,10 +28,11 @@ class LogMealArguments {
   final Meal meal;
   final bool popTwice;
 
-  LogMealArguments(this.meal, this.popTwice);
+  const LogMealArguments(this.meal, this.popTwice);
 }
 
 class LogMealScreen extends StatefulWidget {
+  const LogMealScreen();
   static const routeName = '/log-meal';
 
   @override

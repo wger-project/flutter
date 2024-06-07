@@ -35,7 +35,7 @@ class FormScreenArguments {
   /// Padding for the whole content, default 15px on all sides
   final EdgeInsets padding;
 
-  FormScreenArguments(
+  const FormScreenArguments(
     this.title,
     this.widget, {
     this.hasListView = false,
@@ -44,6 +44,7 @@ class FormScreenArguments {
 }
 
 class FormScreen extends StatelessWidget {
+  const FormScreen();
   static const routeName = '/form';
 
   @override

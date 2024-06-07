@@ -1,1 +1,3 @@
-class NoResultException implements Exception {}
+class NoResultException implements Exception {
+  const NoResultException();
+}

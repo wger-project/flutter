@@ -94,7 +94,7 @@ class WorkoutLogEvent {
   final WorkoutSession? session;
   final Map<Exercise, List<Log>> exercises;
 
-  WorkoutLogEvent(this.dateTime, this.session, this.exercises);
+  const WorkoutLogEvent(this.dateTime, this.session, this.exercises);
 }
 
 class WorkoutLogCalendar extends StatefulWidget {

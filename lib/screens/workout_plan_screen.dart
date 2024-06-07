@@ -38,6 +38,7 @@ enum WorkoutOptions {
 }
 
 class WorkoutPlanScreen extends StatefulWidget {
+  const WorkoutPlanScreen();
   static const routeName = '/workout-plan-detail';
 
   @override
