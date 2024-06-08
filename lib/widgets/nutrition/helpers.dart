@@ -51,6 +51,14 @@ String getShortNutritionValues(NutritionalValues values, BuildContext context) {
   return '$e / $p / $c / $f';
 }
 
+String getKcalConsumed(Meal meal, BuildContext context) {
+  final consumed =
+      meal.diaryEntriesToday.map((e) => e.nutritionalValues.energy).fold(0.0, (a, b) => a + b);
+  final loc = AppLocalizations.of(context);
+
+  return '${consumed.toStringAsFixed(0)} ${loc.kcal}';
+}
+
 String getKcalConsumedVsPlanned(Meal meal, BuildContext context) {
   final planned = meal.plannedNutritionalValues.energy;
   final consumed =

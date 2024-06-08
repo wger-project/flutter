@@ -321,11 +321,12 @@ class MealHeader extends StatelessWidget {
                   ((_meal.time != null) ? '${_meal.time!.format(context)} ' : '') + _meal.name,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-                if (_meal.isRealMeal)
-                  Text(
-                    getKcalConsumedVsPlanned(_meal, context),
-                    style: Theme.of(context).textTheme.titleSmall,
-                  ),
+                Text(
+                  _meal.isRealMeal
+                      ? getKcalConsumedVsPlanned(_meal, context)
+                      : getKcalConsumed(_meal, context),
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
               ],
             )),
           ]),
