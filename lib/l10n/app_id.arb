@@ -371,7 +371,7 @@
   "saturatedFat": "Saturated fat",
   "@saturatedFat": {},
   "fiber": "Fibre",
-  "@fibres": {},
+  "@fiber": {},
   "sodium": "Sodium",
   "@sodium": {},
   "amount": "Amount",

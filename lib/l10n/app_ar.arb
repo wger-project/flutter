@@ -397,7 +397,7 @@
     "description": "Text for registration button"
   },
   "fiber": "الألياف",
-  "@fibres": {},
+  "@fiber": {},
   "aboutDescription": "شكرًا لاستخدامك وقر! وقر مشروع تعاوني مفتوح المصدر، تم إنشاؤه بواسطة عشّاق اللياقة البدنية من جميع أنحاء العالم.",
   "@aboutDescription": {
     "description": "Text in the about dialog"
