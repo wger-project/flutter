@@ -74,46 +74,28 @@ class DiaryEntryTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Text(
-          DateFormat.Hm(Localizations.localeOf(context).languageCode).format(diaryEntry.datetime),
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '${AppLocalizations.of(context).gValue(diaryEntry.amount.toStringAsFixed(0))} ${diaryEntry.ingredient.name}',
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(height: 4),
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  ...getMutedNutritionalValues(diaryEntry.nutritionalValues, context),
-                ],
-              ),
-              const SizedBox(height: 12),
-            ],
-          ),
-        ),
-        if (nutritionalPlan != null)
-          IconButton(
-            tooltip: AppLocalizations.of(context).delete,
-            onPressed: () {
-              Provider.of<NutritionPlansProvider>(context, listen: false)
-                  .deleteLog(diaryEntry.id!, nutritionalPlan!.id!);
-            },
-            icon: const Icon(Icons.delete_outline),
-            iconSize: ICON_SIZE_SMALL,
-          ),
-      ],
+    return NutritionTile(
+      leading: Text(
+        DateFormat.Hm(Localizations.localeOf(context).languageCode).format(diaryEntry.datetime),
+        style: const TextStyle(fontWeight: FontWeight.bold),
+      ),
+      title: Text(
+        '${AppLocalizations.of(context).gValue(diaryEntry.amount.toStringAsFixed(0))} ${diaryEntry.ingredient.name}',
+        overflow: TextOverflow.ellipsis,
+      ),
+      subtitle: getNutritionRow(
+          context, getMutedNutritionalValues(diaryEntry.nutritionalValues, context)),
+      trailing: (nutritionalPlan == null)
+          ? null
+          : IconButton(
+              tooltip: AppLocalizations.of(context).delete,
+              onPressed: () {
+                Provider.of<NutritionPlansProvider>(context, listen: false)
+                    .deleteLog(diaryEntry.id!, nutritionalPlan!.id!);
+              },
+              icon: const Icon(Icons.delete_outline),
+              iconSize: ICON_SIZE_SMALL,
+            ),
     );
   }
 }
