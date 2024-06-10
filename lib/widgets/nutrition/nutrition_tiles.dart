@@ -28,7 +28,7 @@ class MealItemValuesTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return NutritionTile(
       leading: IngredientAvatar(ingredient: ingredient),
-      title: Text(getShortNutritionValues(nutritionalValues, context)), // TODO align
+      title: Text(getShortNutritionValues(nutritionalValues, context)),
     );
   }
 }
