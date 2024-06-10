@@ -168,7 +168,7 @@ class _MealWidgetState extends State<MealWidget> {
                 ...widget._meal.mealItems
                     .map((item) => MealItemEditableFullTile(item, _viewMode, _editing)),
             if (_viewMode == viewMode.withIngredients || _viewMode == viewMode.withAllDetails)
-              Divider(),
+              const Divider(),
             if (_viewMode == viewMode.withIngredients || _viewMode == viewMode.withAllDetails)
               NutritionTile(
                 vPadding: 0,
@@ -181,7 +181,7 @@ class _MealWidgetState extends State<MealWidget> {
             if (_viewMode == viewMode.withAllDetails)
               Column(
                 children: [
-                  Divider(),
+                  const Divider(),
                   Center(
                     child: Text(
                       AppLocalizations.of(context).loggedToday,
@@ -289,7 +289,7 @@ class LogDiaryItemWidget extends StatelessWidget {
       subtitle: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.max,
-        children: [...getMutedNutritionalValues(values, context)],
+        children: getMutedNutritionalValues(values, context),
       ),
     );
   }
