@@ -17,6 +17,8 @@ class MacronutrientsTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+
     return Table(
       defaultVerticalAlignment: TableCellVerticalAlignment.middle,
       border: TableBorder(
@@ -32,20 +34,20 @@ class MacronutrientsTable extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: tablePadding),
               child: Text(
-                AppLocalizations.of(context).macronutrients,
+                loc.macronutrients,
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
             Text(
-              AppLocalizations.of(context).total,
+              loc.total,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             Text(
-              AppLocalizations.of(context).percentEnergy,
+              loc.percentEnergy,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             Text(
-              AppLocalizations.of(context).gPerBodyKg,
+              loc.gPerBodyKg,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ],
@@ -54,11 +56,11 @@ class MacronutrientsTable extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: tablePadding),
-              child: Text(AppLocalizations.of(context).energy),
+              child: Text(loc.energy),
             ),
             Text(
               nutritionalGoals.energy != null
-                  ? nutritionalGoals.energy!.toStringAsFixed(0) + AppLocalizations.of(context).kcal
+                  ? loc.kcalValue(nutritionalGoals.energy!.toStringAsFixed(0))
                   : '',
             ),
             const Text(''),
@@ -69,10 +71,10 @@ class MacronutrientsTable extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: tablePadding),
-              child: Text(AppLocalizations.of(context).protein),
+              child: Text(loc.protein),
             ),
             Text(nutritionalGoals.protein != null
-                ? nutritionalGoals.protein!.toStringAsFixed(0) + AppLocalizations.of(context).g
+                ? loc.gValue(nutritionalGoals.protein!.toStringAsFixed(0))
                 : ''),
             Text(plannedValuesPercentage.protein != null
                 ? plannedValuesPercentage.protein!.toStringAsFixed(1)
@@ -86,11 +88,10 @@ class MacronutrientsTable extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: tablePadding),
-              child: Text(AppLocalizations.of(context).carbohydrates),
+              child: Text(loc.carbohydrates),
             ),
             Text(nutritionalGoals.carbohydrates != null
-                ? nutritionalGoals.carbohydrates!.toStringAsFixed(0) +
-                    AppLocalizations.of(context).g
+                ? loc.gValue(nutritionalGoals.carbohydrates!.toStringAsFixed(0))
                 : ''),
             Text(plannedValuesPercentage.carbohydrates != null
                 ? plannedValuesPercentage.carbohydrates!.toStringAsFixed(1)
@@ -104,13 +105,12 @@ class MacronutrientsTable extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: tablePadding, horizontal: 12),
-              child: Text(AppLocalizations.of(context).sugars),
+              child: Text(loc.sugars),
             ),
             const Text(''),
             const Text(''),
             Text(nutritionalGoals.carbohydratesSugar != null
-                ? nutritionalGoals.carbohydratesSugar!.toStringAsFixed(0) +
-                    AppLocalizations.of(context).g
+                ? loc.gValue(nutritionalGoals.carbohydratesSugar!.toStringAsFixed(0))
                 : ''),
           ],
         ),
@@ -118,10 +118,10 @@ class MacronutrientsTable extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: tablePadding),
-              child: Text(AppLocalizations.of(context).fat),
+              child: Text(loc.fat),
             ),
             Text(nutritionalGoals.fat != null
-                ? nutritionalGoals.fat!.toStringAsFixed(0) + AppLocalizations.of(context).g
+                ? loc.gValue(nutritionalGoals.fat!.toStringAsFixed(0))
                 : ''),
             Text(plannedValuesPercentage.fat != null
                 ? plannedValuesPercentage.fat!.toStringAsFixed(1)
@@ -135,12 +135,12 @@ class MacronutrientsTable extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: tablePadding, horizontal: 12),
-              child: Text(AppLocalizations.of(context).saturatedFat),
+              child: Text(loc.saturatedFat),
             ),
             const Text(''),
             const Text(''),
             Text(nutritionalGoals.fatSaturated != null
-                ? nutritionalGoals.fatSaturated!.toStringAsFixed(0) + AppLocalizations.of(context).g
+                ? loc.gValue(nutritionalGoals.fatSaturated!.toStringAsFixed(0))
                 : ''),
           ],
         ),
@@ -148,12 +148,12 @@ class MacronutrientsTable extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: tablePadding),
-              child: Text(AppLocalizations.of(context).fiber),
+              child: Text(loc.fiber),
             ),
             const Text(''),
             const Text(''),
             Text(nutritionalGoals.fiber != null
-                ? nutritionalGoals.fiber!.toStringAsFixed(0) + AppLocalizations.of(context).g
+                ? loc.gValue(nutritionalGoals.fiber!.toStringAsFixed(0))
                 : ''),
           ],
         ),
@@ -161,12 +161,12 @@ class MacronutrientsTable extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: tablePadding),
-              child: Text(AppLocalizations.of(context).sodium),
+              child: Text(loc.sodium),
             ),
             const Text(''),
             const Text(''),
             Text(nutritionalGoals.sodium != null
-                ? nutritionalGoals.sodium!.toStringAsFixed(0) + AppLocalizations.of(context).g
+                ? loc.gValue(nutritionalGoals.sodium!.toStringAsFixed(0))
                 : ''),
           ],
         ),
