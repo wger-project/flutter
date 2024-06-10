@@ -30,6 +30,8 @@ import 'package:wger/screens/log_meal_screen.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/helpers.dart';
+import 'package:wger/widgets/nutrition/nutrition_tile.dart';
+import 'package:wger/widgets/nutrition/nutrition_tiles.dart';
 import 'package:wger/widgets/nutrition/widgets.dart';
 
 enum viewMode {
@@ -157,15 +159,29 @@ class _MealWidgetState extends State<MealWidget> {
                   )),
             if (_viewMode == viewMode.withIngredients || _viewMode == viewMode.withAllDetails)
               const Divider(),
-            if (_viewMode == viewMode.withAllDetails) const NutritionDiaryheader(),
+            if (_viewMode == viewMode.withIngredients || _viewMode == viewMode.withAllDetails)
+              const DiaryheaderTile(),
             if (_viewMode == viewMode.withIngredients || _viewMode == viewMode.withAllDetails)
               if (widget._meal.mealItems.isEmpty && widget._meal.isRealMeal)
-                const ListTile(title: Text('No ingredients defined yet'))
+                const NutritionTile(title: Center(child: Text('No ingredients defined yet')))
               else
-                ...widget._meal.mealItems.map((item) => MealItemWidget(item, _viewMode, _editing)),
+                ...widget._meal.mealItems
+                    .map((item) => MealItemEditableFullTile(item, _viewMode, _editing)),
+            if (_viewMode == viewMode.withIngredients || _viewMode == viewMode.withAllDetails)
+              Divider(),
+            if (_viewMode == viewMode.withIngredients || _viewMode == viewMode.withAllDetails)
+              NutritionTile(
+                vPadding: 0,
+                leading: const Text('total'),
+                title: getNutritionRow(
+                  context,
+                  getMutedNutritionalValues(widget._meal.plannedNutritionalValues, context),
+                ),
+              ),
             if (_viewMode == viewMode.withAllDetails)
               Column(
                 children: [
+                  Divider(),
                   Center(
                     child: Text(
                       AppLocalizations.of(context).loggedToday,
@@ -181,7 +197,7 @@ class _MealWidgetState extends State<MealWidget> {
                         padding: const EdgeInsets.all(8.0),
                         child: Column(
                           children: [
-                            NutritionDiaryEntry(diaryEntry: item),
+                            DiaryEntryTile(diaryEntry: item),
                           ],
                         ),
                       )),
@@ -194,12 +210,13 @@ class _MealWidgetState extends State<MealWidget> {
   }
 }
 
-class MealItemWidget extends StatelessWidget {
+/// An editable NutritionTile showing the avatar, name, nutritional values
+class MealItemEditableFullTile extends StatelessWidget {
   final bool _editing;
   final viewMode _viewMode;
   final MealItem _item;
 
-  const MealItemWidget(this._item, this._viewMode, this._editing);
+  const MealItemEditableFullTile(this._item, this._viewMode, this._editing);
 
   @override
   Widget build(BuildContext context) {
@@ -213,22 +230,18 @@ class MealItemWidget extends StatelessWidget {
     final String unit = AppLocalizations.of(context).g;
     final values = _item.nutritionalValues;
 
-    return ListTile(
+    return NutritionTile(
       leading: IngredientAvatar(ingredient: _item.ingredient),
       title: Text(
         '${_item.amount.toStringAsFixed(0)}$unit ${_item.ingredient.name}',
         overflow: TextOverflow.ellipsis,
       ),
-      subtitle: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          if (_viewMode == viewMode.withAllDetails) ...getMutedNutritionalValues(values, context)
-        ],
-      ),
+      subtitle: (_viewMode != viewMode.withAllDetails && !_editing)
+          ? null
+          : getNutritionRow(context, getMutedNutritionalValues(values, context)),
       trailing: _editing
           ? IconButton(
-              icon: const Icon(Icons.delete),
+              icon: const Icon(Icons.delete, size: ICON_SIZE_SMALL),
               tooltip: AppLocalizations.of(context).delete,
               iconSize: ICON_SIZE_SMALL,
               onPressed: () {
@@ -267,7 +280,7 @@ class LogDiaryItemWidget extends StatelessWidget {
     final String unit = AppLocalizations.of(context).g;
     final values = _item.nutritionalValues;
 
-    return ListTile(
+    return NutritionTile(
       leading: IngredientAvatar(ingredient: _item.ingredient),
       title: Text(
         '${_item.amount.toStringAsFixed(0)}$unit ${_item.ingredient.name}',

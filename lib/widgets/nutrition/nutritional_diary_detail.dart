@@ -21,7 +21,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
-import 'package:wger/widgets/nutrition/widgets.dart';
+import 'package:wger/widgets/nutrition/nutrition_tiles.dart';
 
 class NutritionalDiaryDetailWidget extends StatelessWidget {
   final NutritionalPlan _nutritionalPlan;
@@ -60,12 +60,12 @@ class NutritionalDiaryDetailWidget extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 15),
-        const NutritionDiaryheader(),
+        const DiaryheaderTile(),
         ...logs.map((e) => Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
-                  NutritionDiaryEntry(diaryEntry: e, nutritionalPlan: _nutritionalPlan),
+                  DiaryEntryTile(diaryEntry: e, nutritionalPlan: _nutritionalPlan),
                 ],
               ),
             )),

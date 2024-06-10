@@ -22,7 +22,7 @@ import 'package:provider/provider.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/widgets/nutrition/meal.dart';
-import 'package:wger/widgets/nutrition/widgets.dart';
+import 'package:wger/widgets/nutrition/nutrition_tiles.dart';
 
 class LogMealArguments {
   final Meal meal;
@@ -68,9 +68,9 @@ class _LogMealScreenState extends State<LogMealScreen> {
                 else
                   Column(
                     children: [
-                      const NutritionDiaryheader(),
-                      ...meal.mealItems
-                          .map((item) => MealItemWidget(item, viewMode.withAllDetails, false)),
+                      const DiaryheaderTile(),
+                      ...meal.mealItems.map(
+                          (item) => MealItemEditableFullTile(item, viewMode.withAllDetails, false)),
                       const SizedBox(height: 32),
                       Text(
                         'Portion: ${portionPct.round()} %',

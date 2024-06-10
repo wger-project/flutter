@@ -23,24 +23,60 @@ import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
 import 'package:wger/widgets/core/core.dart';
 
+/*
+// flex factors, based on number of characters in English
+// other languages are usually similar, though for fat, often
+// use a bit more characters
+// energy:         6
+// protein:        7
+// carbohydrates: 13
+// fat:            6
+const nutritionColumnRatios = [6, 7, 13, 6];
+*/
+
+List<int> nutritionColumnFlexes(BuildContext context) {
+  return [
+    AppLocalizations.of(context).energy.characters.length,
+    AppLocalizations.of(context).protein.characters.length,
+    AppLocalizations.of(context).carbohydrates.characters.length,
+    AppLocalizations.of(context).fat.characters.length,
+  ].map((e) {
+    // if the word is really small (e.g. "fat"),
+    // we still want to have a minimum value to keep some spacing,
+    // especially because column values might become like "123 g"
+    return (e <= 3) ? 4 : e;
+  }).toList();
+}
+
 List<Widget> getMutedNutritionalValues(NutritionalValues values, BuildContext context) => [
-      MutedText(
-        AppLocalizations.of(context).kcalValue(values.energy.toStringAsFixed(0)),
-        textAlign: TextAlign.right,
-      ),
-      MutedText(
-        AppLocalizations.of(context).gValue(values.protein.toStringAsFixed(0)),
-        textAlign: TextAlign.right,
-      ),
-      MutedText(
-        AppLocalizations.of(context).gValue(values.carbohydrates.toStringAsFixed(0)),
-        textAlign: TextAlign.right,
-      ),
-      MutedText(
-        AppLocalizations.of(context).gValue(values.fat.toStringAsFixed(0)),
-        textAlign: TextAlign.right,
-      ),
-    ];
+      AppLocalizations.of(context).kcalValue(values.energy.toStringAsFixed(0)),
+      AppLocalizations.of(context).gValue(values.protein.toStringAsFixed(0)),
+      AppLocalizations.of(context).gValue(values.carbohydrates.toStringAsFixed(0)),
+      AppLocalizations.of(context).gValue(values.fat.toStringAsFixed(0)),
+    ]
+        .map((e) => MutedText(
+              e,
+              textAlign: TextAlign.right,
+              overflow: TextOverflow.ellipsis,
+            ))
+        .toList();
+
+// return a row of elements in the standard macros spacing
+Row getNutritionRow(BuildContext context, List<Widget> children) {
+  return Row(
+    mainAxisSize: MainAxisSize.max,
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: children.indexed
+        .map(
+          (e) => Flexible(
+            fit: FlexFit.tight,
+            flex: nutritionColumnFlexes(context)[e.$1],
+            child: e.$2,
+          ),
+        )
+        .toList(),
+  );
+}
 
 String getShortNutritionValues(NutritionalValues values, BuildContext context) {
   final loc = AppLocalizations.of(context);
