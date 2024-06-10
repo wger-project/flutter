@@ -21,7 +21,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg_icons/flutter_svg_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/providers/nutrition.dart';
@@ -259,38 +258,6 @@ class MealItemEditableFullTile extends StatelessWidget {
               },
             )
           : null,
-    );
-  }
-}
-
-class LogDiaryItemWidget extends StatelessWidget {
-  final Log _item;
-
-  const LogDiaryItemWidget(this._item);
-
-  @override
-  Widget build(BuildContext context) {
-    // TODO(x): add real support for weight units
-    /*
-    String unit = _item.weightUnitId == null
-        ? AppLocalizations.of(context).g
-        : _item.weightUnitObj!.weightUnit.name;
-
-     */
-    final String unit = AppLocalizations.of(context).g;
-    final values = _item.nutritionalValues;
-
-    return NutritionTile(
-      leading: IngredientAvatar(ingredient: _item.ingredient),
-      title: Text(
-        '${_item.amount.toStringAsFixed(0)}$unit ${_item.ingredient.name}',
-        overflow: TextOverflow.ellipsis,
-      ),
-      subtitle: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        mainAxisSize: MainAxisSize.max,
-        children: getMutedNutritionalValues(values, context),
-      ),
     );
   }
 }
