@@ -32,19 +32,15 @@ class MacronutrientsTable extends StatelessWidget {
       final goal = get(nutritionalGoals);
       final pct = get(plannedValuesPercentage);
       final perkg = nutritionalGoalsGperKg == null ? null : get(nutritionalGoalsGperKg!);
+      final valFn = g ? loc.gValue : loc.kcalValue;
+
       return TableRow(
         children: [
           Padding(
             padding: EdgeInsets.symmetric(vertical: tablePadding, horizontal: indent * 12),
             child: Text(title),
           ),
-          Text(
-              goal == null
-                  ? ''
-                  : (g
-                      ? loc.gValue(goal.toStringAsFixed(0))
-                      : loc.kcalValue(goal.toStringAsFixed(0))),
-              textAlign: TextAlign.right),
+          Text(goal != null ? valFn(goal.toStringAsFixed(0)) : '', textAlign: TextAlign.right),
           Text(pct != null ? pct.toStringAsFixed(1) : '', textAlign: TextAlign.right),
           Text(perkg != null ? perkg.toStringAsFixed(1) : '', textAlign: TextAlign.right),
         ],
