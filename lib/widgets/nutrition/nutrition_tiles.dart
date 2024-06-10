@@ -8,7 +8,6 @@ import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
 import 'package:wger/providers/nutrition.dart';
-import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/nutrition/helpers.dart';
 import 'package:wger/widgets/nutrition/nutrition_tile.dart';
 import 'package:wger/widgets/nutrition/widgets.dart';
@@ -42,22 +41,7 @@ class DiaryheaderTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return NutritionTile(
-      title: getNutritionRow(
-          context,
-          [
-            AppLocalizations.of(context).energy,
-            AppLocalizations.of(context).protein,
-            AppLocalizations.of(context).carbohydrates,
-            AppLocalizations.of(context).fat,
-          ]
-              .map((e) => MutedText(
-                    e,
-                    textAlign: TextAlign.right,
-                    overflow: TextOverflow.ellipsis,
-                  ))
-              .toList()),
-    );
+    return NutritionTile(title: getNutritionRow(context, muted(getNutritionColumnNames(context))));
   }
 }
 
@@ -84,7 +68,7 @@ class DiaryEntryTile extends StatelessWidget {
         overflow: TextOverflow.ellipsis,
       ),
       subtitle: getNutritionRow(
-          context, getMutedNutritionalValues(diaryEntry.nutritionalValues, context)),
+          context, muted(getNutritionalValues(diaryEntry.nutritionalValues, context))),
       trailing: (nutritionalPlan == null)
           ? null
           : IconButton(

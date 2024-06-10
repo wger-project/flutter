@@ -174,7 +174,7 @@ class _MealWidgetState extends State<MealWidget> {
                 leading: const Text('total'),
                 title: getNutritionRow(
                   context,
-                  getMutedNutritionalValues(widget._meal.plannedNutritionalValues, context),
+                  muted(getNutritionalValues(widget._meal.plannedNutritionalValues, context)),
                 ),
               ),
             if (_viewMode == viewMode.withAllDetails)
@@ -237,7 +237,7 @@ class MealItemEditableFullTile extends StatelessWidget {
       ),
       subtitle: (_viewMode != viewMode.withAllDetails && !_editing)
           ? null
-          : getNutritionRow(context, getMutedNutritionalValues(values, context)),
+          : getNutritionRow(context, muted(getNutritionalValues(values, context))),
       trailing: _editing
           ? IconButton(
               icon: const Icon(Icons.delete, size: ICON_SIZE_SMALL),
