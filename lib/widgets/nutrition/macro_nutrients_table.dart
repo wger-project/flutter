@@ -19,6 +19,33 @@ class MacronutrientsTable extends StatelessWidget {
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
 
+    Widget columnHeader(String title) => Padding(
+          padding: const EdgeInsets.symmetric(vertical: tablePadding),
+          child: Text(
+            title,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+        );
+
+    TableRow macroRow(int indent, bool g, String title, double? Function(NutritionalGoals ng) get) {
+      final goal = get(nutritionalGoals);
+      final pct = get(plannedValuesPercentage);
+      final perkg = nutritionalGoalsGperKg == null ? null : get(nutritionalGoalsGperKg!);
+      return TableRow(
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: tablePadding, horizontal: indent * 12),
+            child: Text(title),
+          ),
+          Text(goal == null
+              ? ''
+              : (g ? loc.gValue(goal.toStringAsFixed(0)) : loc.kcalValue(goal.toStringAsFixed(0)))),
+          Text(pct != null ? pct.toStringAsFixed(1) : ''),
+          Text(perkg != null ? perkg.toStringAsFixed(1) : ''),
+        ],
+      );
+    }
+
     return Table(
       defaultVerticalAlignment: TableCellVerticalAlignment.middle,
       border: TableBorder(
@@ -31,145 +58,20 @@ class MacronutrientsTable extends StatelessWidget {
       children: [
         TableRow(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: tablePadding),
-              child: Text(
-                loc.macronutrients,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-            Text(
-              loc.total,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            Text(
-              loc.percentEnergy,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            Text(
-              loc.gPerBodyKg,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
+            columnHeader(loc.macronutrients),
+            columnHeader(loc.total),
+            columnHeader(loc.percentEnergy),
+            columnHeader(loc.gPerBodyKg),
           ],
         ),
-        TableRow(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: tablePadding),
-              child: Text(loc.energy),
-            ),
-            Text(
-              nutritionalGoals.energy != null
-                  ? loc.kcalValue(nutritionalGoals.energy!.toStringAsFixed(0))
-                  : '',
-            ),
-            const Text(''),
-            const Text(''),
-          ],
-        ),
-        TableRow(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: tablePadding),
-              child: Text(loc.protein),
-            ),
-            Text(nutritionalGoals.protein != null
-                ? loc.gValue(nutritionalGoals.protein!.toStringAsFixed(0))
-                : ''),
-            Text(plannedValuesPercentage.protein != null
-                ? plannedValuesPercentage.protein!.toStringAsFixed(1)
-                : ''),
-            Text(nutritionalGoalsGperKg != null && nutritionalGoalsGperKg!.protein != null
-                ? nutritionalGoalsGperKg!.protein!.toStringAsFixed(1)
-                : ''),
-          ],
-        ),
-        TableRow(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: tablePadding),
-              child: Text(loc.carbohydrates),
-            ),
-            Text(nutritionalGoals.carbohydrates != null
-                ? loc.gValue(nutritionalGoals.carbohydrates!.toStringAsFixed(0))
-                : ''),
-            Text(plannedValuesPercentage.carbohydrates != null
-                ? plannedValuesPercentage.carbohydrates!.toStringAsFixed(1)
-                : ''),
-            Text(nutritionalGoalsGperKg != null && nutritionalGoalsGperKg!.carbohydrates != null
-                ? nutritionalGoalsGperKg!.carbohydrates!.toStringAsFixed(1)
-                : ''),
-          ],
-        ),
-        TableRow(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: tablePadding, horizontal: 12),
-              child: Text(loc.sugars),
-            ),
-            const Text(''),
-            const Text(''),
-            Text(nutritionalGoals.carbohydratesSugar != null
-                ? loc.gValue(nutritionalGoals.carbohydratesSugar!.toStringAsFixed(0))
-                : ''),
-          ],
-        ),
-        TableRow(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: tablePadding),
-              child: Text(loc.fat),
-            ),
-            Text(nutritionalGoals.fat != null
-                ? loc.gValue(nutritionalGoals.fat!.toStringAsFixed(0))
-                : ''),
-            Text(plannedValuesPercentage.fat != null
-                ? plannedValuesPercentage.fat!.toStringAsFixed(1)
-                : ''),
-            Text(nutritionalGoalsGperKg != null && nutritionalGoalsGperKg!.fat != null
-                ? nutritionalGoalsGperKg!.fat!.toStringAsFixed(1)
-                : ''),
-          ],
-        ),
-        TableRow(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: tablePadding, horizontal: 12),
-              child: Text(loc.saturatedFat),
-            ),
-            const Text(''),
-            const Text(''),
-            Text(nutritionalGoals.fatSaturated != null
-                ? loc.gValue(nutritionalGoals.fatSaturated!.toStringAsFixed(0))
-                : ''),
-          ],
-        ),
-        TableRow(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: tablePadding),
-              child: Text(loc.fiber),
-            ),
-            const Text(''),
-            const Text(''),
-            Text(nutritionalGoals.fiber != null
-                ? loc.gValue(nutritionalGoals.fiber!.toStringAsFixed(0))
-                : ''),
-          ],
-        ),
-        TableRow(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: tablePadding),
-              child: Text(loc.sodium),
-            ),
-            const Text(''),
-            const Text(''),
-            Text(nutritionalGoals.sodium != null
-                ? loc.gValue(nutritionalGoals.sodium!.toStringAsFixed(0))
-                : ''),
-          ],
-        ),
+        macroRow(0, false, loc.energy, (NutritionalGoals ng) => ng.energy),
+        macroRow(0, true, loc.protein, (NutritionalGoals ng) => ng.protein),
+        macroRow(0, true, loc.carbohydrates, (NutritionalGoals ng) => ng.carbohydrates),
+        macroRow(1, true, loc.sugars, (NutritionalGoals ng) => ng.carbohydratesSugar),
+        macroRow(0, true, loc.fat, (NutritionalGoals ng) => ng.fat),
+        macroRow(1, true, loc.saturatedFat, (NutritionalGoals ng) => ng.fatSaturated),
+        macroRow(0, true, loc.fiber, (NutritionalGoals ng) => ng.fiber),
+        macroRow(0, true, loc.sodium, (NutritionalGoals ng) => ng.sodium),
       ],
     );
   }
