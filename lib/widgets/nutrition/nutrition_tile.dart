@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 
 /// NutritionTile is similar to a non-interactive ListTile,
 /// but uses a fixed, easy to understand layout.
-/// any trailing value is overlayed over the title & subtitle, on the right
-/// as to not disturb the overall layout
 class NutritionTile extends StatelessWidget {
-  final Widget? leading; // will always be constrained to 40px wide
+  final Widget? leading; // always constrained to 40px wide
   final double vPadding;
   final Widget? title;
   final Widget? subtitle;
-  final Widget? trailing;
+  final Widget? trailing; // always constrained to 20px wide
 
   const NutritionTile({
     this.leading,
@@ -32,17 +30,17 @@ class NutritionTile extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           Expanded(
-            child: Stack(
+            child: Column(
               children: [
-                Column(
-                  children: [
-                    if (title != null) title!,
-                    if (subtitle != null) subtitle!,
-                  ],
-                ),
-                if (trailing != null) Align(alignment: Alignment.centerRight, child: trailing!),
+                if (title != null) title!,
+                if (subtitle != null) subtitle!,
               ],
             ),
+          ),
+          const SizedBox(width: 8),
+          ConstrainedBox(
+            constraints: const BoxConstraints(minWidth: 20, maxWidth: 20),
+            child: trailing ?? const SizedBox(width: 20),
           ),
         ],
       ),
