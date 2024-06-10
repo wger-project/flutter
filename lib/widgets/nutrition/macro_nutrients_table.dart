@@ -19,11 +19,12 @@ class MacronutrientsTable extends StatelessWidget {
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
 
-    Widget columnHeader(String title) => Padding(
+    Widget columnHeader(bool left, String title) => Padding(
           padding: const EdgeInsets.symmetric(vertical: tablePadding),
           child: Text(
             title,
             style: const TextStyle(fontWeight: FontWeight.bold),
+            textAlign: left ? TextAlign.left : TextAlign.right,
           ),
         );
 
@@ -37,11 +38,15 @@ class MacronutrientsTable extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: tablePadding, horizontal: indent * 12),
             child: Text(title),
           ),
-          Text(goal == null
-              ? ''
-              : (g ? loc.gValue(goal.toStringAsFixed(0)) : loc.kcalValue(goal.toStringAsFixed(0)))),
-          Text(pct != null ? pct.toStringAsFixed(1) : ''),
-          Text(perkg != null ? perkg.toStringAsFixed(1) : ''),
+          Text(
+              goal == null
+                  ? ''
+                  : (g
+                      ? loc.gValue(goal.toStringAsFixed(0))
+                      : loc.kcalValue(goal.toStringAsFixed(0))),
+              textAlign: TextAlign.right),
+          Text(pct != null ? pct.toStringAsFixed(1) : '', textAlign: TextAlign.right),
+          Text(perkg != null ? perkg.toStringAsFixed(1) : '', textAlign: TextAlign.right),
         ],
       );
     }
@@ -58,10 +63,10 @@ class MacronutrientsTable extends StatelessWidget {
       children: [
         TableRow(
           children: [
-            columnHeader(loc.macronutrients),
-            columnHeader(loc.total),
-            columnHeader(loc.percentEnergy),
-            columnHeader(loc.gPerBodyKg),
+            columnHeader(true, loc.macronutrients),
+            columnHeader(false, loc.total),
+            columnHeader(false, loc.percentEnergy),
+            columnHeader(false, loc.gPerBodyKg),
           ],
         ),
         macroRow(0, false, loc.energy, (NutritionalGoals ng) => ng.energy),
