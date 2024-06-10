@@ -89,11 +89,12 @@ class NutritionDiaryTable extends StatelessWidget {
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
 
-    Widget columnHeader(String title) => Padding(
+    Widget columnHeader(bool left, String title) => Padding(
           padding: const EdgeInsets.symmetric(vertical: tablePadding),
           child: Text(
             title,
             style: const TextStyle(fontWeight: FontWeight.bold),
+            textAlign: left ? TextAlign.left : TextAlign.right,
           ),
         );
 
@@ -104,9 +105,9 @@ class NutritionDiaryTable extends StatelessWidget {
               padding: EdgeInsets.symmetric(vertical: tablePadding, horizontal: indent * 12),
               child: Text(title),
             ),
-            Text(AppLocalizations.of(context).gValue(get(planned).toStringAsFixed(0))),
-            Text(AppLocalizations.of(context).gValue(get(logged).toStringAsFixed(0))),
-            Text((get(logged) - get(planned)).toStringAsFixed(0)),
+            Text(loc.gValue(get(planned).toStringAsFixed(0)), textAlign: TextAlign.right),
+            Text(loc.gValue(get(logged).toStringAsFixed(0)), textAlign: TextAlign.right),
+            Text((get(logged) - get(planned)).toStringAsFixed(0), textAlign: TextAlign.right),
           ],
         );
 
@@ -118,10 +119,10 @@ class NutritionDiaryTable extends StatelessWidget {
       columnWidths: const {0: FractionColumnWidth(0.4)},
       children: [
         TableRow(children: [
-          columnHeader(loc.macronutrients),
-          columnHeader(loc.planned),
-          columnHeader(loc.logged),
-          columnHeader(loc.difference),
+          columnHeader(true, loc.macronutrients),
+          columnHeader(false, loc.planned),
+          columnHeader(false, loc.logged),
+          columnHeader(false, loc.difference),
         ]),
         macroRow(0, loc.energy, (NutritionalValues nv) => nv.energy),
         macroRow(0, loc.protein, (NutritionalValues nv) => nv.protein),
