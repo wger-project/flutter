@@ -19,6 +19,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
 import 'package:wger/widgets/core/core.dart';
 
@@ -48,4 +49,19 @@ String getShortNutritionValues(NutritionalValues values, BuildContext context) {
   final c = '${loc.carbohydratesShort} ${loc.gValue(values.carbohydrates.toStringAsFixed(0))}';
   final f = '${loc.fatShort} ${loc.gValue(values.fat.toStringAsFixed(0))}';
   return '$e / $p / $c / $f';
+}
+
+String getKcalConsumed(Meal meal, BuildContext context) {
+  final consumed =
+      meal.diaryEntriesToday.map((e) => e.nutritionalValues.energy).fold(0.0, (a, b) => a + b);
+  return AppLocalizations.of(context).kcalValue(consumed.toStringAsFixed(0));
+}
+
+String getKcalConsumedVsPlanned(Meal meal, BuildContext context) {
+  final planned = meal.plannedNutritionalValues.energy;
+  final consumed =
+      meal.diaryEntriesToday.map((e) => e.nutritionalValues.energy).fold(0.0, (a, b) => a + b);
+  final loc = AppLocalizations.of(context);
+
+  return '${consumed.toStringAsFixed(0)} / ${planned.toStringAsFixed(0)} ${loc.kcal}';
 }

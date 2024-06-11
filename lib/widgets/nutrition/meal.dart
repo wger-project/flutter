@@ -318,14 +318,25 @@ class MealHeader extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  ((_meal.time != null) ? '${_meal.time!.format(context)} ' : '') + _meal.name,
-                  style: Theme.of(context).textTheme.titleMedium,
+                  _meal.name,
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
-                if (_meal.isRealMeal)
-                  Text(
-                    getShortNutritionValues(_meal.plannedNutritionalValues, context),
-                    style: Theme.of(context).textTheme.titleSmall,
-                  ),
+                Row(
+                  children: [
+                    if (_meal.time != null)
+                      Text(
+                        _meal.time!.format(context),
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                    if (_meal.time != null) const SizedBox(width: 12),
+                    Text(
+                      _meal.isRealMeal
+                          ? getKcalConsumedVsPlanned(_meal, context)
+                          : getKcalConsumed(_meal, context),
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                  ],
+                ),
               ],
             )),
           ]),
