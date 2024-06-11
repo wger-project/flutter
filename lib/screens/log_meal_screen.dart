@@ -51,7 +51,7 @@ class _LogMealScreenState extends State<LogMealScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Log meal to diary'),
+        title: const Text('Log meal to diary'),
       ),
       body: Consumer<NutritionPlansProvider>(
         builder: (context, nutritionProvider, child) => SingleChildScrollView(
