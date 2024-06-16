@@ -22,7 +22,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter_zxing/flutter_zxing.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/misc.dart';
@@ -30,12 +29,9 @@ import 'package:wger/helpers/platform.dart';
 import 'package:wger/helpers/ui.dart';
 import 'package:wger/models/exercises/ingredient_api.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
-import 'package:wger/models/nutrition/log.dart';
-import 'package:wger/models/nutrition/nutritional_plan.dart';
-import 'package:wger/models/nutrition/nutritional_values.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/widgets/core/core.dart';
-import 'package:wger/widgets/nutrition/helpers.dart';
+import 'package:wger/widgets/nutrition/nutrition_tiles.dart';
 
 class ScanReader extends StatelessWidget {
   @override
@@ -214,7 +210,7 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(AppLocalizations.of(context).productFoundDescription(result.name)),
-                      MealItemTile(
+                      MealItemValuesTile(
                         ingredient: result,
                         nutritionalValues: result.nutritionalValues,
                       ),
@@ -272,92 +268,6 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
   }
 }
 
-class NutritionDiaryheader extends StatelessWidget {
-  final Widget? leading;
-
-  const NutritionDiaryheader({this.leading});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: leading ??
-          const CircleIconAvatar(
-            Icon(Icons.image, color: Colors.transparent),
-            color: Colors.transparent,
-          ),
-      subtitle: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          AppLocalizations.of(context).energy,
-          AppLocalizations.of(context).protein,
-          AppLocalizations.of(context).carbohydrates,
-          AppLocalizations.of(context).fat
-        ]
-            .map((e) => MutedText(
-                  e,
-                  textAlign: TextAlign.right,
-                ))
-            .toList(),
-      ),
-    );
-  }
-}
-
-class NutritionDiaryEntry extends StatelessWidget {
-  const NutritionDiaryEntry({
-    super.key,
-    required this.diaryEntry,
-    this.nutritionalPlan,
-  });
-
-  final Log diaryEntry;
-  final NutritionalPlan? nutritionalPlan;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Text(
-          DateFormat.Hm(Localizations.localeOf(context).languageCode).format(diaryEntry.datetime),
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '${AppLocalizations.of(context).gValue(diaryEntry.amount.toStringAsFixed(0))} ${diaryEntry.ingredient.name}',
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(height: 4),
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  ...getMutedNutritionalValues(diaryEntry.nutritionalValues, context),
-                ],
-              ),
-              const SizedBox(height: 12),
-            ],
-          ),
-        ),
-        if (nutritionalPlan != null)
-          IconButton(
-              tooltip: AppLocalizations.of(context).delete,
-              onPressed: () {
-                Provider.of<NutritionPlansProvider>(context, listen: false)
-                    .deleteLog(diaryEntry.id!, nutritionalPlan!.id!);
-              },
-              icon: const Icon(Icons.delete_outline)),
-      ],
-    );
-  }
-}
-
 class IngredientAvatar extends StatelessWidget {
   final Ingredient ingredient;
 
@@ -375,25 +285,5 @@ class IngredientAvatar extends StatelessWidget {
             },
           )
         : const CircleIconAvatar(Icon(Icons.image, color: Colors.grey));
-  }
-}
-
-class MealItemTile extends StatelessWidget {
-  final Ingredient ingredient;
-  final NutritionalValues nutritionalValues;
-
-  const MealItemTile({
-    super.key,
-    required this.ingredient,
-    required this.nutritionalValues,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: IngredientAvatar(ingredient: ingredient),
-      title: Text(getShortNutritionValues(nutritionalValues, context)),
-      // subtitle: Text(ingredient.id.toString()),
-    );
   }
 }
