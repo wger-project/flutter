@@ -845,5 +845,7 @@
   "ingredientLogged": "Malzeme günlüğe kaydedildi",
   "@ingredientLogged": {},
   "selectMealToLog": "Günlüğe kaydetmek için bir yemek seçin",
-  "@selectMealToLog": {}
+  "@selectMealToLog": {},
+  "noIngredientsDefined": "Henüz malzeme tanımlanmadı",
+  "@noIngredientsDefined": {}
 }
