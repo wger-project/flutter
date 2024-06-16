@@ -22,7 +22,7 @@ import 'package:provider/provider.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/widgets/nutrition/meal.dart';
-import 'package:wger/widgets/nutrition/widgets.dart';
+import 'package:wger/widgets/nutrition/nutrition_tiles.dart';
 
 class LogMealArguments {
   final Meal meal;
@@ -51,7 +51,7 @@ class _LogMealScreenState extends State<LogMealScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Log meal to diary'),
+        title: Text(AppLocalizations.of(context).logMeal),
       ),
       body: Consumer<NutritionPlansProvider>(
         builder: (context, nutritionProvider, child) => SingleChildScrollView(
@@ -64,13 +64,13 @@ class _LogMealScreenState extends State<LogMealScreen> {
               children: [
                 Text(meal.name, style: Theme.of(context).textTheme.headlineSmall),
                 if (meal.mealItems.isEmpty)
-                  const ListTile(title: Text('No ingredients defined yet'))
+                  ListTile(title: Text(AppLocalizations.of(context).noIngredientsDefined))
                 else
                   Column(
                     children: [
-                      const NutritionDiaryheader(),
-                      ...meal.mealItems
-                          .map((item) => MealItemWidget(item, viewMode.withAllDetails, false)),
+                      const DiaryheaderTile(),
+                      ...meal.mealItems.map(
+                          (item) => MealItemEditableFullTile(item, viewMode.withAllDetails, false)),
                       const SizedBox(height: 32),
                       Text(
                         'Portion: ${portionPct.round()} %',

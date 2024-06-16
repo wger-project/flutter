@@ -21,7 +21,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg_icons/flutter_svg_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/providers/nutrition.dart';
@@ -30,6 +29,8 @@ import 'package:wger/screens/log_meal_screen.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/helpers.dart';
+import 'package:wger/widgets/nutrition/nutrition_tile.dart';
+import 'package:wger/widgets/nutrition/nutrition_tiles.dart';
 import 'package:wger/widgets/nutrition/widgets.dart';
 
 enum viewMode {
@@ -157,15 +158,33 @@ class _MealWidgetState extends State<MealWidget> {
                   )),
             if (_viewMode == viewMode.withIngredients || _viewMode == viewMode.withAllDetails)
               const Divider(),
-            if (_viewMode == viewMode.withAllDetails) const NutritionDiaryheader(),
+            if (_viewMode == viewMode.withIngredients || _viewMode == viewMode.withAllDetails)
+              const DiaryheaderTile(),
             if (_viewMode == viewMode.withIngredients || _viewMode == viewMode.withAllDetails)
               if (widget._meal.mealItems.isEmpty && widget._meal.isRealMeal)
-                const ListTile(title: Text('No ingredients defined yet'))
+                NutritionTile(
+                    title: Text(
+                  AppLocalizations.of(context).noIngredientsDefined,
+                  textAlign: TextAlign.left,
+                ))
               else
-                ...widget._meal.mealItems.map((item) => MealItemWidget(item, _viewMode, _editing)),
+                ...widget._meal.mealItems
+                    .map((item) => MealItemEditableFullTile(item, _viewMode, _editing)),
+            if (_viewMode == viewMode.withIngredients || _viewMode == viewMode.withAllDetails)
+              const Divider(),
+            if (_viewMode == viewMode.withIngredients || _viewMode == viewMode.withAllDetails)
+              NutritionTile(
+                vPadding: 0,
+                leading: const Text('total'),
+                title: getNutritionRow(
+                  context,
+                  muted(getNutritionalValues(widget._meal.plannedNutritionalValues, context)),
+                ),
+              ),
             if (_viewMode == viewMode.withAllDetails)
               Column(
                 children: [
+                  const Divider(),
                   Center(
                     child: Text(
                       AppLocalizations.of(context).loggedToday,
@@ -181,7 +200,7 @@ class _MealWidgetState extends State<MealWidget> {
                         padding: const EdgeInsets.all(8.0),
                         child: Column(
                           children: [
-                            NutritionDiaryEntry(diaryEntry: item),
+                            DiaryEntryTile(diaryEntry: item),
                           ],
                         ),
                       )),
@@ -194,12 +213,13 @@ class _MealWidgetState extends State<MealWidget> {
   }
 }
 
-class MealItemWidget extends StatelessWidget {
+/// An editable NutritionTile showing the avatar, name, nutritional values
+class MealItemEditableFullTile extends StatelessWidget {
   final bool _editing;
   final viewMode _viewMode;
   final MealItem _item;
 
-  const MealItemWidget(this._item, this._viewMode, this._editing);
+  const MealItemEditableFullTile(this._item, this._viewMode, this._editing);
 
   @override
   Widget build(BuildContext context) {
@@ -213,22 +233,24 @@ class MealItemWidget extends StatelessWidget {
     final String unit = AppLocalizations.of(context).g;
     final values = _item.nutritionalValues;
 
-    return ListTile(
+    return NutritionTile(
       leading: IngredientAvatar(ingredient: _item.ingredient),
-      title: Text(
-        '${_item.amount.toStringAsFixed(0)}$unit ${_item.ingredient.name}',
-        overflow: TextOverflow.ellipsis,
-      ),
-      subtitle: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      title: Row(
         mainAxisSize: MainAxisSize.max,
         children: [
-          if (_viewMode == viewMode.withAllDetails) ...getMutedNutritionalValues(values, context)
+          Text(
+            '${_item.amount.toStringAsFixed(0)}$unit ${_item.ingredient.name}',
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.left,
+          ),
         ],
       ),
+      subtitle: (_viewMode != viewMode.withAllDetails && !_editing)
+          ? null
+          : getNutritionRow(context, muted(getNutritionalValues(values, context))),
       trailing: _editing
           ? IconButton(
-              icon: const Icon(Icons.delete),
+              icon: const Icon(Icons.delete, size: ICON_SIZE_SMALL),
               tooltip: AppLocalizations.of(context).delete,
               iconSize: ICON_SIZE_SMALL,
               onPressed: () {
@@ -246,38 +268,6 @@ class MealItemWidget extends StatelessWidget {
               },
             )
           : null,
-    );
-  }
-}
-
-class LogDiaryItemWidget extends StatelessWidget {
-  final Log _item;
-
-  const LogDiaryItemWidget(this._item);
-
-  @override
-  Widget build(BuildContext context) {
-    // TODO(x): add real support for weight units
-    /*
-    String unit = _item.weightUnitId == null
-        ? AppLocalizations.of(context).g
-        : _item.weightUnitObj!.weightUnit.name;
-
-     */
-    final String unit = AppLocalizations.of(context).g;
-    final values = _item.nutritionalValues;
-
-    return ListTile(
-      leading: IngredientAvatar(ingredient: _item.ingredient),
-      title: Text(
-        '${_item.amount.toStringAsFixed(0)}$unit ${_item.ingredient.name}',
-        overflow: TextOverflow.ellipsis,
-      ),
-      subtitle: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        mainAxisSize: MainAxisSize.max,
-        children: [...getMutedNutritionalValues(values, context)],
-      ),
     );
   }
 }
@@ -318,14 +308,25 @@ class MealHeader extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  ((_meal.time != null) ? '${_meal.time!.format(context)} ' : '') + _meal.name,
-                  style: Theme.of(context).textTheme.titleMedium,
+                  _meal.name,
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
-                if (_meal.isRealMeal)
-                  Text(
-                    getShortNutritionValues(_meal.plannedNutritionalValues, context),
-                    style: Theme.of(context).textTheme.titleSmall,
-                  ),
+                Row(
+                  children: [
+                    if (_meal.time != null)
+                      Text(
+                        _meal.time!.format(context),
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                    if (_meal.time != null) const SizedBox(width: 12),
+                    Text(
+                      _meal.isRealMeal
+                          ? getKcalConsumedVsPlanned(_meal, context)
+                          : getKcalConsumed(_meal, context),
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                  ],
+                ),
               ],
             )),
           ]),

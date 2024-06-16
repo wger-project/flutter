@@ -180,7 +180,7 @@
     "description": "The first letter or short name of the word 'Carbohydrates', used in overviews"
   },
   "fiber": "Fibra",
-  "@fibres": {},
+  "@fiber": {},
   "sodium": "Sódio",
   "@sodium": {},
   "amount": "Quantidade",

@@ -317,7 +317,7 @@
   },
   "addIngredient": "Dodaj sastojak",
   "@addIngredient": {},
-  "logMeal": "Zapiši ovaj obrok",
+  "logMeal": "Zapiši obrok u dnevnik prehrane",
   "@logMeal": {},
   "value": "Vrijednost",
   "@value": {
@@ -515,7 +515,7 @@
   "@recentlyUsedIngredients": {
     "description": "A message when a user adds a new ingredient to a meal."
   },
-  "logIngredient": "Spremi u dnevnik prehrane",
+  "logIngredient": "Zapiši sastojak u dnevnik prehrane",
   "@logIngredient": {},
   "searchIngredient": "Traži sastojak",
   "@searchIngredient": {
@@ -901,5 +901,9 @@
   "goalMacro": "Ciljevi za makronutrijente",
   "@goalMacro": {
     "description": "The goal for macronutrients"
-  }
+  },
+  "selectMealToLog": "Odaberi obrok za zapis u dnevnik",
+  "@selectMealToLog": {},
+  "ingredientLogged": "Sastojak je upisan u dnevnik",
+  "@ingredientLogged": {}
 }
