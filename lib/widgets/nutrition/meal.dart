@@ -162,7 +162,11 @@ class _MealWidgetState extends State<MealWidget> {
               const DiaryheaderTile(),
             if (_viewMode == viewMode.withIngredients || _viewMode == viewMode.withAllDetails)
               if (widget._meal.mealItems.isEmpty && widget._meal.isRealMeal)
-                const NutritionTile(title: Center(child: Text('No ingredients defined yet')))
+                const NutritionTile(
+                    title: Text(
+                  'No ingredients defined yet',
+                  textAlign: TextAlign.left,
+                ))
               else
                 ...widget._meal.mealItems
                     .map((item) => MealItemEditableFullTile(item, _viewMode, _editing)),
@@ -231,9 +235,15 @@ class MealItemEditableFullTile extends StatelessWidget {
 
     return NutritionTile(
       leading: IngredientAvatar(ingredient: _item.ingredient),
-      title: Text(
-        '${_item.amount.toStringAsFixed(0)}$unit ${_item.ingredient.name}',
-        overflow: TextOverflow.ellipsis,
+      title: Row(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Text(
+            '${_item.amount.toStringAsFixed(0)}$unit ${_item.ingredient.name}',
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.left,
+          ),
+        ],
       ),
       subtitle: (_viewMode != viewMode.withAllDetails && !_editing)
           ? null
