@@ -905,5 +905,7 @@
   "ingredientLogged": "Ingredience zaznamenána do diáře",
   "@ingredientLogged": {},
   "selectMealToLog": "Vyberte jídlo k záznamu do diáře",
-  "@selectMealToLog": {}
+  "@selectMealToLog": {},
+  "noIngredientsDefined": "Zatím nebyly nastaveny žádné ingredience",
+  "@noIngredientsDefined": {}
 }
