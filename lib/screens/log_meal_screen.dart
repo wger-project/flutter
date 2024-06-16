@@ -51,7 +51,7 @@ class _LogMealScreenState extends State<LogMealScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Log meal to diary'),
+        title: Text(AppLocalizations.of(context).logMeal),
       ),
       body: Consumer<NutritionPlansProvider>(
         builder: (context, nutritionProvider, child) => SingleChildScrollView(
@@ -64,7 +64,7 @@ class _LogMealScreenState extends State<LogMealScreen> {
               children: [
                 Text(meal.name, style: Theme.of(context).textTheme.headlineSmall),
                 if (meal.mealItems.isEmpty)
-                  const ListTile(title: Text('No ingredients defined yet'))
+                  ListTile(title: Text(AppLocalizations.of(context).noIngredientsDefined))
                 else
                   Column(
                     children: [

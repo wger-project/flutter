@@ -162,9 +162,9 @@ class _MealWidgetState extends State<MealWidget> {
               const DiaryheaderTile(),
             if (_viewMode == viewMode.withIngredients || _viewMode == viewMode.withAllDetails)
               if (widget._meal.mealItems.isEmpty && widget._meal.isRealMeal)
-                const NutritionTile(
+                NutritionTile(
                     title: Text(
-                  'No ingredients defined yet',
+                  AppLocalizations.of(context).noIngredientsDefined,
                   textAlign: TextAlign.left,
                 ))
               else
