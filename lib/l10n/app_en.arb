@@ -122,6 +122,7 @@
   "@searchExercise": {
     "description": "Label on set form. Selected exercises are added to the set"
   },
+  "noIngredientsDefined": "No ingredients defined yet",
   "noMatchingExerciseFound": "No matching exercises found",
   "@noMatchingExerciseFound": {
     "description": "Message returned if no exercises match the searched string"

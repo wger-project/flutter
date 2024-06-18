@@ -38,26 +38,26 @@ const languages = [
   // Note: it seems if too many languages are processed at once, some processes
   // disappear and no images are written. Doing this in smaller steps works fine
 
-  'ca',
-  'cs-CZ',
-  'de-DE',
-  'el-GR',
-  'en-US',
-  'es-ES',
+  // 'ca',
+  // 'cs-CZ',
+  // 'de-DE',
+  // 'el-GR',
+  // 'en-US',
+  // 'es-ES',
 
-  // 'fr-FR',
-  // 'hi-IN',
-  // 'hr',
-  // 'it-IT',
-  // 'nb-NO',
-  // 'pl-PL',
+  'fr-FR',
+  'hi-IN',
+  'hr',
+  'it-IT',
+  'nb-NO',
+  'pl-PL',
 
-  // 'pt-BR',
-  // 'pt-PT',
-  // 'ru-RU',
-  // 'tr-TR',
-  // 'uk',
-  // 'zh-CN'
+  'pt-BR',
+  'pt-PT',
+  'ru-RU',
+  'tr-TR',
+  'uk',
+  'zh-CN'
 ];
 
 void main() {

@@ -19,27 +19,58 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
 import 'package:wger/widgets/core/core.dart';
 
-List<Widget> getMutedNutritionalValues(NutritionalValues values, BuildContext context) => [
-      MutedText(
-        AppLocalizations.of(context).kcalValue(values.energy.toStringAsFixed(0)),
-        textAlign: TextAlign.right,
-      ),
-      MutedText(
-        AppLocalizations.of(context).gValue(values.protein.toStringAsFixed(0)),
-        textAlign: TextAlign.right,
-      ),
-      MutedText(
-        AppLocalizations.of(context).gValue(values.carbohydrates.toStringAsFixed(0)),
-        textAlign: TextAlign.right,
-      ),
-      MutedText(
-        AppLocalizations.of(context).gValue(values.fat.toStringAsFixed(0)),
-        textAlign: TextAlign.right,
-      ),
+List<String> getNutritionColumnNames(BuildContext context) => [
+      AppLocalizations.of(context).energy,
+      AppLocalizations.of(context).protein,
+      AppLocalizations.of(context).carbohydrates,
+      AppLocalizations.of(context).fat,
     ];
+
+List<String> getNutritionalValues(NutritionalValues values, BuildContext context) => [
+      AppLocalizations.of(context).kcalValue(values.energy.toStringAsFixed(0)),
+      AppLocalizations.of(context).gValue(values.protein.toStringAsFixed(0)),
+      AppLocalizations.of(context).gValue(values.carbohydrates.toStringAsFixed(0)),
+      AppLocalizations.of(context).gValue(values.fat.toStringAsFixed(0)),
+    ];
+
+List<int> getNutritionColumnFlexes(BuildContext context) {
+  return getNutritionColumnNames(context).map((e) {
+    final l = e.characters.length;
+    // if the word is really small (e.g. "fat"),
+    // we still want to have a minimum value to keep some spacing,
+    // especially because column values might become like "123 g"
+    return (l <= 3) ? 4 : l;
+  }).toList();
+}
+
+List<Widget> muted(List<String> children) => children
+    .map((e) => MutedText(
+          e,
+          textAlign: TextAlign.right,
+          overflow: TextOverflow.ellipsis,
+        ))
+    .toList();
+
+// return a row of elements in the standard macros spacing
+Row getNutritionRow(BuildContext context, List<Widget> children) {
+  return Row(
+    mainAxisSize: MainAxisSize.max,
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: children.indexed
+        .map(
+          (e) => Flexible(
+            fit: FlexFit.tight,
+            flex: getNutritionColumnFlexes(context)[e.$1],
+            child: e.$2,
+          ),
+        )
+        .toList(),
+  );
+}
 
 String getShortNutritionValues(NutritionalValues values, BuildContext context) {
   final loc = AppLocalizations.of(context);
@@ -48,4 +79,19 @@ String getShortNutritionValues(NutritionalValues values, BuildContext context) {
   final c = '${loc.carbohydratesShort} ${loc.gValue(values.carbohydrates.toStringAsFixed(0))}';
   final f = '${loc.fatShort} ${loc.gValue(values.fat.toStringAsFixed(0))}';
   return '$e / $p / $c / $f';
+}
+
+String getKcalConsumed(Meal meal, BuildContext context) {
+  final consumed =
+      meal.diaryEntriesToday.map((e) => e.nutritionalValues.energy).fold(0.0, (a, b) => a + b);
+  return AppLocalizations.of(context).kcalValue(consumed.toStringAsFixed(0));
+}
+
+String getKcalConsumedVsPlanned(Meal meal, BuildContext context) {
+  final planned = meal.plannedNutritionalValues.energy;
+  final consumed =
+      meal.diaryEntriesToday.map((e) => e.nutritionalValues.energy).fold(0.0, (a, b) => a + b);
+  final loc = AppLocalizations.of(context);
+
+  return '${consumed.toStringAsFixed(0)} / ${planned.toStringAsFixed(0)} ${loc.kcal}';
 }

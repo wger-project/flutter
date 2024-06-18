@@ -31,6 +31,7 @@ import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/widgets/nutrition/helpers.dart';
+import 'package:wger/widgets/nutrition/nutrition_tiles.dart';
 import 'package:wger/widgets/nutrition/widgets.dart';
 
 class MealForm extends StatelessWidget {
@@ -366,7 +367,7 @@ class IngredientFormState extends State<IngredientForm> {
                       ) {
                         if (snapshot.hasData) {
                           _mealItem.ingredient = snapshot.data!;
-                          return MealItemTile(
+                          return MealItemValuesTile(
                             ingredient: _mealItem.ingredient,
                             nutritionalValues: _mealItem.nutritionalValues,
                           );

@@ -37,4 +37,9 @@ by github actions.
 
 ## 4. Edit release
 
-I necessary, edit the created release on github
+If necessary, edit the created release on github
+
+## 5. Merge pull requests
+
+* in the flathub repo: https://github.com/flathub/de.wger.flutter
+* in the flutter repo: https://github.com/wger-project/flutter/branches
