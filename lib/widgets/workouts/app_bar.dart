@@ -27,32 +27,36 @@ enum _WorkoutAppBarOptions {
 }
 
 class WorkoutOverviewAppBar extends StatelessWidget implements PreferredSizeWidget {
+  const WorkoutOverviewAppBar();
   @override
   Widget build(BuildContext context) {
     return AppBar(
       title: Text(AppLocalizations.of(context).labelWorkoutPlans),
       actions: [
-        PopupMenuButton(itemBuilder: (context) {
-          return [
-            PopupMenuItem<_WorkoutAppBarOptions>(
-              value: _WorkoutAppBarOptions.list,
-              child: Text(AppLocalizations.of(context).exerciseList),
-            ),
-            PopupMenuItem<_WorkoutAppBarOptions>(
-              value: _WorkoutAppBarOptions.contribute,
-              child: Text(AppLocalizations.of(context).contributeExercise),
-            ),
-          ];
-        }, onSelected: (value) {
-          switch (value) {
-            case _WorkoutAppBarOptions.contribute:
-              Navigator.of(context).pushNamed(AddExerciseScreen.routeName);
-              break;
-            case _WorkoutAppBarOptions.list:
-              Navigator.of(context).pushNamed(ExercisesScreen.routeName);
-              break;
-          }
-        }),
+        PopupMenuButton(
+          itemBuilder: (context) {
+            return [
+              PopupMenuItem<_WorkoutAppBarOptions>(
+                value: _WorkoutAppBarOptions.list,
+                child: Text(AppLocalizations.of(context).exerciseList),
+              ),
+              PopupMenuItem<_WorkoutAppBarOptions>(
+                value: _WorkoutAppBarOptions.contribute,
+                child: Text(AppLocalizations.of(context).contributeExercise),
+              ),
+            ];
+          },
+          onSelected: (value) {
+            switch (value) {
+              case _WorkoutAppBarOptions.contribute:
+                Navigator.of(context).pushNamed(AddExerciseScreen.routeName);
+                break;
+              case _WorkoutAppBarOptions.list:
+                Navigator.of(context).pushNamed(ExercisesScreen.routeName);
+                break;
+            }
+          },
+        ),
       ],
     );
   }

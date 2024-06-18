@@ -60,9 +60,7 @@ class _GymModeState extends State<GymMode> {
 
   /// Map with the first (navigation) page for each exercise
   final Map<Exercise, int> _exercisePages = {};
-  final PageController _controller = PageController(
-    initialPage: 0,
-  );
+  final PageController _controller = PageController(initialPage: 0);
 
   @override
   void dispose() {
@@ -148,11 +146,7 @@ class _GymModeState extends State<GymMode> {
     return PageView(
       controller: _controller,
       children: [
-        StartPage(
-          _controller,
-          widget._workoutDay,
-          _exercisePages,
-        ),
+        StartPage(_controller, widget._workoutDay, _exercisePages),
         ...getContent(),
         SessionPage(
           Provider.of<WorkoutPlansProvider>(context, listen: false)
@@ -186,28 +180,26 @@ class StartPage extends StatelessWidget {
         Expanded(
           child: ListView(
             children: [
-              ..._day.sets.map(
-                (set) {
-                  return Column(
-                    children: [
-                      ...set.settingsFiltered.map((s) {
-                        return Column(
-                          children: [
-                            Text(
-                              s.exerciseObj
-                                  .getExercise(Localizations.localeOf(context).languageCode)
-                                  .name,
-                              style: Theme.of(context).textTheme.titleLarge,
-                            ),
-                            ...set.getSmartRepr(s.exerciseObj).map((e) => Text(e)),
-                            const SizedBox(height: 15),
-                          ],
-                        );
-                      }),
-                    ],
-                  );
-                },
-              ),
+              ..._day.sets.map((set) {
+                return Column(
+                  children: [
+                    ...set.settingsFiltered.map((s) {
+                      return Column(
+                        children: [
+                          Text(
+                            s.exerciseObj
+                                .getExercise(Localizations.localeOf(context).languageCode)
+                                .name,
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                          ...set.getSmartRepr(s.exerciseObj).map((e) => Text(e)),
+                          const SizedBox(height: 15),
+                        ],
+                      );
+                    }),
+                  ],
+                );
+              }),
             ],
           ),
         ),
@@ -215,14 +207,12 @@ class StartPage extends StatelessWidget {
           child: Text(AppLocalizations.of(context).start),
           onPressed: () {
             _controller.nextPage(
-                duration: const Duration(milliseconds: 200), curve: Curves.bounceIn);
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.bounceIn,
+            );
           },
         ),
-        NavigationFooter(
-          _controller,
-          0,
-          showPrevious: false,
-        ),
+        NavigationFooter(_controller, 0, showPrevious: false),
       ],
     );
   }
@@ -287,6 +277,8 @@ class _LogPageState extends State<LogPage> {
   @override
   void dispose() {
     focusNode.dispose();
+    _repsController.dispose();
+    _weightController.dispose();
     super.dispose();
   }
 
@@ -294,10 +286,7 @@ class _LogPageState extends State<LogPage> {
     return Row(
       children: [
         IconButton(
-          icon: const Icon(
-            Icons.remove,
-            color: Colors.black,
-          ),
+          icon: const Icon(Icons.remove, color: Colors.black),
           onPressed: () {
             try {
               final int newValue = int.parse(_repsController.text) - 1;
@@ -332,10 +321,7 @@ class _LogPageState extends State<LogPage> {
           ),
         ),
         IconButton(
-          icon: const Icon(
-            Icons.add,
-            color: Colors.black,
-          ),
+          icon: const Icon(Icons.add, color: Colors.black),
           onPressed: () {
             try {
               final int newValue = int.parse(_repsController.text) + 1;
@@ -352,10 +338,7 @@ class _LogPageState extends State<LogPage> {
     return Row(
       children: [
         IconButton(
-          icon: const Icon(
-            Icons.remove,
-            color: Colors.black,
-          ),
+          icon: const Icon(Icons.remove, color: Colors.black),
           onPressed: () {
             try {
               final double newValue = double.parse(_weightController.text) - (2 * minPlateWeight);
@@ -400,10 +383,7 @@ class _LogPageState extends State<LogPage> {
           ),
         ),
         IconButton(
-          icon: const Icon(
-            Icons.add,
-            color: Colors.black,
-          ),
+          icon: const Icon(Icons.add, color: Colors.black),
           onPressed: () {
             try {
               final double newValue = double.parse(_weightController.text) + (2 * minPlateWeight);
@@ -452,7 +432,7 @@ class _LogPageState extends State<LogPage> {
               children: [
                 Flexible(child: getWeightWidget()),
                 const SizedBox(width: 8),
-                Flexible(child: WeightUnitInputWidget(widget._log))
+                Flexible(child: WeightUnitInputWidget(widget._log)),
               ],
             ),
           if (_detailed) RiRInputWidget(widget._log),
@@ -479,8 +459,10 @@ class _LogPageState extends State<LogPage> {
 
                     // Save the entry on the server
                     try {
-                      await Provider.of<WorkoutPlansProvider>(context, listen: false)
-                          .addLog(widget._log);
+                      await Provider.of<WorkoutPlansProvider>(
+                        context,
+                        listen: false,
+                      ).addLog(widget._log);
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           duration: const Duration(seconds: 2), // default is 4
@@ -535,8 +517,9 @@ class _LogPageState extends State<LogPage> {
             .map((log) {
           return ListTile(
             title: Text(log.singleLogRepTextNoNl),
-            subtitle:
-                Text(DateFormat.yMd(Localizations.localeOf(context).languageCode).format(log.date)),
+            subtitle: Text(
+              DateFormat.yMd(Localizations.localeOf(context).languageCode).format(log.date),
+            ),
             trailing: const Icon(Icons.copy),
             onTap: () {
               setState(() {
@@ -550,8 +533,9 @@ class _LogPageState extends State<LogPage> {
                 widget._log.weightUnit = log.weightUnitObj;
 
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                ScaffoldMessenger.of(context)
-                    .showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).dataCopied)));
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text(AppLocalizations.of(context).dataCopied),
+                ));
               });
             },
             contentPadding: const EdgeInsets.symmetric(horizontal: 40),
@@ -600,7 +584,9 @@ class _LogPageState extends State<LogPage> {
                                   alignment: Alignment.center,
                                   child: Text(
                                     key.toString(),
-                                    style: const TextStyle(fontWeight: FontWeight.bold),
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -609,10 +595,12 @@ class _LogPageState extends State<LogPage> {
                           const SizedBox(width: 10),
                         ],
                       ),
-                    )
+                    ),
                   ],
                 )
-              : MutedText(AppLocalizations.of(context).plateCalculatorNotDivisible),
+              : MutedText(
+                  AppLocalizations.of(context).plateCalculatorNotDivisible,
+                ),
         ),
         const SizedBox(height: 3),
       ],
@@ -635,24 +623,19 @@ class _LogPageState extends State<LogPage> {
             textAlign: TextAlign.center,
           ),
         ),
-        if (widget._set.comment != '')
-          Text(
-            widget._set.comment,
-            textAlign: TextAlign.center,
-          ),
+        if (widget._set.comment != '') Text(widget._set.comment, textAlign: TextAlign.center),
         const SizedBox(height: 10),
         Expanded(
-            child: (widget._workoutPlan.filterLogsByExerciseBase(widget._exerciseBase).isNotEmpty)
-                ? getPastLogs()
-                : Container()),
+          child: (widget._workoutPlan.filterLogsByExerciseBase(widget._exerciseBase).isNotEmpty)
+              ? getPastLogs()
+              : Container(),
+        ),
         // Only show calculator for barbell
         if (widget._log.exerciseBaseObj.equipment.map((e) => e.id).contains(ID_EQUIPMENT_BARBELL))
           getPlates(),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: Card(
-            child: getForm(),
-          ),
+          child: Card(child: getForm()),
         ),
         NavigationFooter(widget._controller, widget._ratioCompleted),
       ],
@@ -710,9 +693,10 @@ class ExerciseOverview extends StatelessWidget {
                   ),
                 ),
               Html(
-                  data: _exerciseBase
-                      .getExercise(Localizations.localeOf(context).languageCode)
-                      .description),
+                data: _exerciseBase
+                    .getExercise(Localizations.localeOf(context).languageCode)
+                    .description,
+              ),
             ],
           ),
         ),
@@ -763,6 +747,15 @@ class _SessionPageState extends State<SessionPage> {
   }
 
   @override
+  void dispose() {
+    impressionController.dispose();
+    notesController.dispose();
+    timeStartController.dispose();
+    timeEndController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       children: [
@@ -798,16 +791,10 @@ class _SessionPageState extends State<SessionPage> {
                     });
                   },
                   isSelected: selectedImpression,
-                  children: const <Widget>[
-                    Icon(
-                      Icons.sentiment_very_dissatisfied,
-                    ),
-                    Icon(
-                      Icons.sentiment_neutral,
-                    ),
-                    Icon(
-                      Icons.sentiment_very_satisfied,
-                    ),
+                  children: const [
+                    Icon(Icons.sentiment_very_dissatisfied),
+                    Icon(Icons.sentiment_neutral),
+                    Icon(Icons.sentiment_very_satisfied),
                   ],
                 ),
                 TextFormField(
@@ -826,44 +813,46 @@ class _SessionPageState extends State<SessionPage> {
                   children: [
                     Flexible(
                       child: TextFormField(
-                          decoration: InputDecoration(
-                            labelText: AppLocalizations.of(context).timeStart,
-                            errorMaxLines: 2,
-                          ),
-                          controller: timeStartController,
-                          onFieldSubmitted: (_) {},
-                          onTap: () async {
-                            // Stop keyboard from appearing
-                            FocusScope.of(context).requestFocus(FocusNode());
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context).timeStart,
+                          errorMaxLines: 2,
+                        ),
+                        controller: timeStartController,
+                        onFieldSubmitted: (_) {},
+                        onTap: () async {
+                          // Stop keyboard from appearing
+                          FocusScope.of(context).requestFocus(FocusNode());
 
-                            // Open time picker
-                            final pickedTime = await showTimePicker(
-                              context: context,
-                              initialTime: _session.timeStart,
-                            );
+                          // Open time picker
+                          final pickedTime = await showTimePicker(
+                            context: context,
+                            initialTime: _session.timeStart,
+                          );
 
-                            if (pickedTime != null) {
-                              timeStartController.text = timeToString(pickedTime)!;
-                              _session.timeStart = pickedTime;
-                            }
-                          },
-                          onSaved: (newValue) {
-                            _session.timeStart = stringToTime(newValue);
-                          },
-                          validator: (_) {
-                            final TimeOfDay startTime = stringToTime(timeStartController.text);
-                            final TimeOfDay endTime = stringToTime(timeEndController.text);
-                            if (startTime.isAfter(endTime)) {
-                              return AppLocalizations.of(context).timeStartAhead;
-                            }
-                            return null;
-                          }),
+                          if (pickedTime != null) {
+                            timeStartController.text = timeToString(pickedTime)!;
+                            _session.timeStart = pickedTime;
+                          }
+                        },
+                        onSaved: (newValue) {
+                          _session.timeStart = stringToTime(newValue);
+                        },
+                        validator: (_) {
+                          final TimeOfDay startTime = stringToTime(timeStartController.text);
+                          final TimeOfDay endTime = stringToTime(timeEndController.text);
+                          if (startTime.isAfter(endTime)) {
+                            return AppLocalizations.of(context).timeStartAhead;
+                          }
+                          return null;
+                        },
+                      ),
                     ),
                     const SizedBox(width: 10),
                     Flexible(
                       child: TextFormField(
-                        decoration:
-                            InputDecoration(labelText: AppLocalizations.of(context).timeEnd),
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context).timeEnd,
+                        ),
                         controller: timeEndController,
                         onFieldSubmitted: (_) {},
                         onTap: () async {
@@ -900,8 +889,10 @@ class _SessionPageState extends State<SessionPage> {
 
                     // Save the entry on the server
                     try {
-                      await Provider.of<WorkoutPlansProvider>(context, listen: false)
-                          .addSession(_session);
+                      await Provider.of<WorkoutPlansProvider>(
+                        context,
+                        listen: false,
+                      ).addSession(_session);
                       if (mounted) {
                         Navigator.of(context).pop();
                       }
@@ -920,11 +911,7 @@ class _SessionPageState extends State<SessionPage> {
             ),
           ),
         ),
-        NavigationFooter(
-          widget._controller,
-          1,
-          showNext: false,
-        ),
+        NavigationFooter(widget._controller, 1, showNext: false),
       ],
     );
   }
@@ -961,20 +948,17 @@ class _TimerWidgetState extends State<TimerWidget> {
     _timer?.cancel();
 
     const oneSecond = Duration(seconds: 1);
-    _timer = Timer.periodic(
-      oneSecond,
-      (Timer timer) {
-        if (_seconds == _maxSeconds) {
-          setState(() {
-            timer.cancel();
-          });
-        } else {
-          setState(() {
-            _seconds++;
-          });
-        }
-      },
-    );
+    _timer = Timer.periodic(oneSecond, (Timer timer) {
+      if (_seconds == _maxSeconds) {
+        setState(() {
+          timer.cancel();
+        });
+      } else {
+        setState(() {
+          _seconds++;
+        });
+      }
+    });
   }
 
   @override
@@ -1018,8 +1002,12 @@ class NavigationFooter extends StatelessWidget {
   final bool showPrevious;
   final bool showNext;
 
-  const NavigationFooter(this._controller, this._ratioCompleted,
-      {this.showPrevious = true, this.showNext = true});
+  const NavigationFooter(
+    this._controller,
+    this._ratioCompleted, {
+    this.showPrevious = true,
+    this.showNext = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -1105,7 +1093,7 @@ class NavigationHeader extends StatelessWidget {
           onPressed: () {
             Navigator.of(context).pop();
           },
-        )
+        ),
       ],
     );
   }

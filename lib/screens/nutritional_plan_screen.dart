@@ -33,6 +33,7 @@ enum NutritionalPlanOptions {
 }
 
 class NutritionalPlanScreen extends StatelessWidget {
+  const NutritionalPlanScreen();
   static const routeName = '/nutritional-plan-detail';
 
   Future<NutritionalPlan> _loadFullPlan(BuildContext context, int planId) {
@@ -68,14 +69,15 @@ class NutritionalPlanScreen extends StatelessWidget {
               color: Colors.white,
             ),
           ),
-          const SizedBox(
-            width: 8,
-          ),
+          const SizedBox(width: 8),
           FloatingActionButton(
             heroTag: null,
             tooltip: AppLocalizations.of(context).logMeal,
             onPressed: () {
-              Navigator.of(context).pushNamed(LogMealsScreen.routeName, arguments: nutritionalPlan);
+              Navigator.of(context).pushNamed(
+                LogMealsScreen.routeName,
+                arguments: nutritionalPlan,
+              );
             },
             child: const SvgIcon(
               icon: SvgIconData('assets/icons/meal-diary.svg'),
@@ -85,7 +87,7 @@ class NutritionalPlanScreen extends StatelessWidget {
         ],
       ),
       body: CustomScrollView(
-        slivers: <Widget>[
+        slivers: [
           SliverAppBar(
             foregroundColor: appBarForeground,
             pinned: true,
@@ -122,7 +124,7 @@ class NutritionalPlanScreen extends StatelessWidget {
                     );
                   } else if (value == NutritionalPlanOptions.delete) {
                     Provider.of<NutritionPlansProvider>(context, listen: false)
-                        .deletePlan(nutritionalPlan.id!);
+                      .deletePlan(nutritionalPlan.id!);
                     Navigator.of(context).pop();
                   }
                 },
@@ -131,15 +133,17 @@ class NutritionalPlanScreen extends StatelessWidget {
                     PopupMenuItem<NutritionalPlanOptions>(
                       value: NutritionalPlanOptions.edit,
                       child: ListTile(
-                          leading: const Icon(Icons.edit),
-                          title: Text(AppLocalizations.of(context).edit)),
+                        leading: const Icon(Icons.edit),
+                        title: Text(AppLocalizations.of(context).edit),
+                      ),
                     ),
                     const PopupMenuDivider(),
                     PopupMenuItem<NutritionalPlanOptions>(
                       value: NutritionalPlanOptions.delete,
                       child: ListTile(
-                          leading: const Icon(Icons.delete),
-                          title: Text(AppLocalizations.of(context).delete)),
+                        leading: const Icon(Icons.delete),
+                        title: Text(AppLocalizations.of(context).delete),
+                      ),
                     ),
                   ];
                 },
@@ -149,7 +153,10 @@ class NutritionalPlanScreen extends StatelessWidget {
               titlePadding: const EdgeInsets.fromLTRB(56, 0, 56, 16),
               title: Text(
                 nutritionalPlan.getLabel(context),
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(color: appBarForeground),
+                style: Theme.of(context)
+                  .textTheme
+                  .titleLarge
+                  ?.copyWith(color: appBarForeground),
               ),
             ),
           ),
@@ -165,13 +172,14 @@ class NutritionalPlanScreen extends StatelessWidget {
                               child: Center(
                                 child: CircularProgressIndicator(),
                               ),
-                            )
+                            ),
                           ],
                         ),
                       )
                     : Consumer<NutritionPlansProvider>(
                         builder: (context, value, child) =>
-                            NutritionalPlanDetailWidget(nutritionalPlan)),
+                            NutritionalPlanDetailWidget(nutritionalPlan),
+                      ),
           ),
         ],
       ),

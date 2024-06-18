@@ -52,6 +52,7 @@ import 'package:wger/widgets/workouts/forms.dart';
 enum viewMode { base, withMeals, withMealsDetails }
 
 class DashboardNutritionWidget extends StatefulWidget {
+  const DashboardNutritionWidget();
   @override
   _DashboardNutritionWidgetState createState() => _DashboardNutritionWidgetState();
 }
@@ -87,7 +88,10 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                   //textAlign: TextAlign.left,
                 ),
               ),
-              MutedText(getShortNutritionValues(meal.plannedNutritionalValues, context)),
+              MutedText(getShortNutritionValues(
+                meal.plannedNutritionalValues,
+                context,
+              )),
               IconButton(
                 icon: const SvgIcon(
                   icon: SvgIconData('assets/icons/meal-diary.svg'),
@@ -99,7 +103,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                     arguments: LogMealArguments(meal, false),
                   );
                 },
-              )
+              ),
             ],
           ),
         );
@@ -120,7 +124,9 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                         ),
                       ),
                       const SizedBox(width: 5),
-                      Text('${item.amount.toStringAsFixed(0)} ${AppLocalizations.of(context).g}'),
+                      Text(
+                        '${item.amount.toStringAsFixed(0)} ${AppLocalizations.of(context).g}',
+                      ),
                     ],
                   ),
                 ],
@@ -149,7 +155,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
             subtitle: Text(
               _hasContent
                   ? DateFormat.yMd(Localizations.localeOf(context).languageCode)
-                      .format(_plan!.creationDate)
+                    .format(_plan!.creationDate)
                   : '',
             ),
             leading: Icon(
@@ -163,7 +169,8 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                       viewMode.base => const Icon(Icons.info_outline),
                       viewMode.withMeals => const Icon(Icons.info),
                       viewMode.withMealsDetails => const Icon(Icons.info),
-                    })
+                    },
+                  )
                 : const SizedBox(),
             onTap: () {
               setState(() {
@@ -177,16 +184,17 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
           ),
           if (_hasContent)
             Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Column(
-                  children: [
-                    ...getContent(),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 15),
-                      child: FlNutritionalPlanGoalWidget(nutritionalPlan: _plan!),
-                    ),
-                  ],
-                ))
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Column(
+                children: [
+                  ...getContent(),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 15),
+                    child: FlNutritionalPlanGoalWidget(nutritionalPlan: _plan!),
+                  ),
+                ],
+              ),
+            )
           else
             NothingFound(
               AppLocalizations.of(context).noNutritionalPlans,
@@ -196,17 +204,21 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
           if (_hasContent)
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
+              children: [
                 TextButton(
                   child: Text(AppLocalizations.of(context).goToDetailPage),
                   onPressed: () {
-                    Navigator.of(context)
-                        .pushNamed(NutritionalPlanScreen.routeName, arguments: _plan);
+                    Navigator.of(context).pushNamed(
+                      NutritionalPlanScreen.routeName,
+                      arguments: _plan,
+                    );
                   },
                 ),
                 Expanded(child: Container()),
                 IconButton(
-                  icon: const SvgIcon(icon: SvgIconData('assets/icons/ingredient-diary.svg')),
+                  icon: const SvgIcon(
+                    icon: SvgIconData('assets/icons/ingredient-diary.svg'),
+                  ),
                   tooltip: AppLocalizations.of(context).logIngredient,
                   onPressed: () {
                     Navigator.pushNamed(
@@ -221,7 +233,9 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                   },
                 ),
                 IconButton(
-                  icon: const SvgIcon(icon: SvgIconData('assets/icons/meal-diary.svg')),
+                  icon: const SvgIcon(
+                    icon: SvgIconData('assets/icons/meal-diary.svg'),
+                  ),
                   tooltip: AppLocalizations.of(context).logMeal,
                   onPressed: () {
                     Navigator.of(context).pushNamed(LogMealsScreen.routeName, arguments: _plan);
@@ -236,6 +250,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
 }
 
 class DashboardWeightWidget extends StatefulWidget {
+  const DashboardWeightWidget();
   @override
   _DashboardWeightWidgetState createState() => _DashboardWeightWidgetState();
 }
@@ -269,21 +284,25 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                       SizedBox(
                         height: 200,
                         child: MeasurementChartWidgetFl(
-                            weightProvider.items
-                                .map((e) => MeasurementChartEntry(e.weight, e.date))
-                                .toList(),
-                            unit: profile!.isMetric
-                                ? AppLocalizations.of(context).kg
-                                : AppLocalizations.of(context).lb),
+                          weightProvider.items
+                            .map((e) => MeasurementChartEntry(e.weight, e.date))
+                            .toList(),
+                          unit: profile!.isMetric
+                              ? AppLocalizations.of(context).kg
+                              : AppLocalizations.of(context).lb,
+                        ),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
+                        children: [
                           TextButton(
-                              child: Text(AppLocalizations.of(context).goToDetailPage),
-                              onPressed: () {
-                                Navigator.of(context).pushNamed(WeightScreen.routeName);
-                              }),
+                            child: Text(
+                              AppLocalizations.of(context).goToDetailPage,
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).pushNamed(WeightScreen.routeName);
+                            },
+                          ),
                           IconButton(
                             icon: const Icon(Icons.add),
                             onPressed: () async {
@@ -292,7 +311,9 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                                 FormScreen.routeName,
                                 arguments: FormScreenArguments(
                                   AppLocalizations.of(context).newEntry,
-                                  WeightForm(weightProvider.getNewestEntry()?.copyWith(id: null)),
+                                  WeightForm(weightProvider
+                                    .getNewestEntry()
+                                    ?.copyWith(id: null)),
                                 ),
                               );
                             },
@@ -317,6 +338,7 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
 }
 
 class DashboardMeasurementWidget extends StatefulWidget {
+  const DashboardMeasurementWidget();
   @override
   _DashboardMeasurementWidgetState createState() => _DashboardMeasurementWidgetState();
 }
@@ -330,13 +352,10 @@ class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget>
     final provider = Provider.of<MeasurementProvider>(context, listen: false);
 
     final items = provider.categories
-        .map<Widget>(
-          (item) => CategoriesCard(
-            item,
-            elevation: 0,
-          ),
-        )
-        .toList();
+      .map<Widget>(
+        (item) => CategoriesCard(item, elevation: 0),
+      )
+      .toList();
     if (items.isNotEmpty) {
       items.add(
         NothingFound(
@@ -393,20 +412,28 @@ class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget>
                         padding: const EdgeInsets.only(bottom: 10),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: items.asMap().entries.map((entry) {
+                          children: items
+                            .asMap()
+                            .entries
+                            .map((entry) {
                             return GestureDetector(
                               onTap: () => _controller.animateToPage(entry.key),
                               child: Container(
                                 width: 12.0,
                                 height: 12.0,
-                                margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                                margin: const EdgeInsets.symmetric(
+                                  vertical: 8.0,
+                                  horizontal: 4.0,
+                                ),
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   color: Theme.of(context)
-                                      .textTheme
-                                      .headlineSmall!
-                                      .color!
-                                      .withOpacity(_current == entry.key ? 0.9 : 0.4),
+                                    .textTheme
+                                    .headlineSmall!
+                                    .color!
+                                    .withOpacity(
+                                      _current == entry.key ? 0.9 : 0.4,
+                                    ),
                                 ),
                               ),
                             );
@@ -431,6 +458,7 @@ class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget>
 }
 
 class DashboardWorkoutWidget extends StatefulWidget {
+  const DashboardWorkoutWidget();
   @override
   _DashboardWorkoutWidgetState createState() => _DashboardWorkoutWidgetState();
 }
@@ -468,10 +496,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
               ),
             ),
             Expanded(
-              child: MutedText(
-                day.getDaysText,
-                textAlign: TextAlign.right,
-              ),
+              child: MutedText(day.getDaysText, textAlign: TextAlign.right),
             ),
             IconButton(
               icon: const Icon(Icons.play_arrow),
@@ -501,7 +526,9 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                                   .getExercise(Localizations.localeOf(context).languageCode)
                                   .name),
                               const SizedBox(width: 10),
-                              MutedText(set.getSmartRepr(s.exerciseObj).join('\n')),
+                              MutedText(
+                                set.getSmartRepr(s.exerciseObj).join('\n'),
+                              ),
                             ],
                           ),
                           const SizedBox(height: 10),
@@ -532,7 +559,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
             subtitle: Text(
               _hasContent
                   ? DateFormat.yMd(Localizations.localeOf(context).languageCode)
-                      .format(_workoutPlan!.creationDate)
+                    .format(_workoutPlan!.creationDate)
                   : '',
             ),
             leading: Icon(
@@ -542,11 +569,8 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
             trailing: _hasContent
                 ? Tooltip(
                     message: AppLocalizations.of(context).toggleDetails,
-                    child: _showDetail
-                        ? const Icon(
-                            Icons.info,
-                          )
-                        : const Icon(Icons.info_outline))
+                    child: _showDetail ? const Icon(Icons.info) : const Icon(Icons.info_outline),
+                  )
                 : const SizedBox(),
             onTap: () {
               setState(() {
@@ -558,9 +582,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Column(
-                children: [
-                  ...getContent(),
-                ],
+                children: [...getContent()],
               ),
             )
           else
@@ -572,16 +594,18 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
           if (_hasContent)
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
+              children: [
                 TextButton(
                   child: Text(AppLocalizations.of(context).goToDetailPage),
                   onPressed: () {
-                    Navigator.of(context)
-                        .pushNamed(WorkoutPlanScreen.routeName, arguments: _workoutPlan);
+                    Navigator.of(context).pushNamed(
+                      WorkoutPlanScreen.routeName,
+                      arguments: _workoutPlan,
+                    );
                   },
                 ),
               ],
-            )
+            ),
         ],
       ),
     );
@@ -605,10 +629,7 @@ class NothingFound extends StatelessWidget {
           Text(_title),
           IconButton(
             iconSize: 30,
-            icon: const Icon(
-              Icons.add_box,
-              color: wgerPrimaryButtonColor,
-            ),
+            icon: const Icon(Icons.add_box, color: wgerPrimaryButtonColor),
             onPressed: () async {
               Navigator.pushNamed(
                 context,

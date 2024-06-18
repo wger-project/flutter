@@ -64,11 +64,13 @@ class AuthProvider with ChangeNotifier {
         } else if (Platform.isLinux || Platform.isMacOS) {
           metadata = {
             MANIFEST_KEY_CHECK_UPDATE: Platform.environment[MANIFEST_KEY_CHECK_UPDATE] ?? '',
-            MANIFEST_KEY_API: Platform.environment[MANIFEST_KEY_API] ?? ''
+            MANIFEST_KEY_API: Platform.environment[MANIFEST_KEY_API] ?? '',
           };
         }
       } on PlatformException {
-        throw Exception('An error occurred reading the metadata from AndroidManifest');
+        throw Exception(
+          'An error occurred reading the metadata from AndroidManifest',
+        );
       } catch (error) {}
     }
   }
@@ -98,7 +100,10 @@ class AuthProvider with ChangeNotifier {
   }
 
   /// Checking if there is a new version of the application.
-  Future<bool> applicationUpdateRequired([String? version, Map<String, String>? metadata]) async {
+  Future<bool> applicationUpdateRequired([
+    String? version,
+    Map<String, String>? metadata,
+  ]) async {
     metadata ??= this.metadata;
     if (!metadata.containsKey(MANIFEST_KEY_CHECK_UPDATE) ||
         metadata[MANIFEST_KEY_CHECK_UPDATE] == 'false') {
@@ -122,7 +127,10 @@ class AuthProvider with ChangeNotifier {
     String locale = 'en',
   }) async {
     // Register
-    final Map<String, String> data = {'username': username, 'password': password};
+    final Map<String, String> data = {
+      'username': username,
+      'password': password,
+    };
     if (email != '') {
       data['email'] = email;
     }
@@ -132,7 +140,7 @@ class AuthProvider with ChangeNotifier {
         HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
         HttpHeaders.authorizationHeader: 'Token ${metadata[MANIFEST_KEY_API]}',
         HttpHeaders.userAgentHeader: getAppNameHeader(),
-        HttpHeaders.acceptLanguageHeader: locale
+        HttpHeaders.acceptLanguageHeader: locale,
       },
       body: json.encode(data),
     );
@@ -159,7 +167,7 @@ class AuthProvider with ChangeNotifier {
 
     final response = await client.post(
       makeUri(serverUrl, LOGIN_URL),
-      headers: <String, String>{
+      headers: {
         HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
         HttpHeaders.userAgentHeader: getAppNameHeader(),
       },
@@ -188,9 +196,7 @@ class AuthProvider with ChangeNotifier {
       'token': token,
       'serverUrl': this.serverUrl,
     });
-    final serverData = json.encode({
-      'serverUrl': this.serverUrl,
-    });
+    final serverData = json.encode({'serverUrl': this.serverUrl});
 
     prefs.setString('userData', userData);
     prefs.setString('lastServer', serverData);

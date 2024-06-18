@@ -7,10 +7,7 @@ import 'package:wger/providers/add_exercise.dart';
 import 'mixins/image_picker_mixin.dart';
 
 class PreviewExerciseImages extends StatelessWidget with ExerciseImagePickerMixin {
-  PreviewExerciseImages({
-    super.key,
-    required this.selectedImages,
-  });
+  const PreviewExerciseImages({super.key, required this.selectedImages});
 
   final List<File> selectedImages;
   @override
@@ -38,8 +35,9 @@ class PreviewExerciseImages extends StatelessWidget with ExerciseImagePickerMixi
                         ),
                         child: IconButton(
                           iconSize: 20,
-                          onPressed: () =>
-                              context.read<AddExerciseProvider>().removeExercise(file.path),
+                          onPressed: () => context
+                            .read<AddExerciseProvider>()
+                            .removeExercise(file.path),
                           color: Colors.white,
                           icon: const Icon(Icons.delete),
                         ),
@@ -51,9 +49,7 @@ class PreviewExerciseImages extends StatelessWidget with ExerciseImagePickerMixi
             ),
           ),
         ),
-        const SizedBox(
-          width: 10,
-        ),
+        const SizedBox(width: 10),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Container(
@@ -67,7 +63,7 @@ class PreviewExerciseImages extends StatelessWidget with ExerciseImagePickerMixi
               ),
             ),
           ),
-        )
+        ),
       ]),
     );
   }

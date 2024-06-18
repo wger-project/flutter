@@ -23,6 +23,7 @@ import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/widgets/workouts/gym_mode.dart';
 
 class GymModeScreen extends StatelessWidget {
+  const GymModeScreen();
   static const routeName = '/gym-mode';
 
   @override

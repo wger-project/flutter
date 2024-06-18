@@ -42,6 +42,12 @@ class _WorkoutLogsState extends State<WorkoutLogs> {
   final dayController = TextEditingController();
 
   @override
+  void dispose() {
+    dayController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       children: [
@@ -53,13 +59,9 @@ class _WorkoutLogsState extends State<WorkoutLogs> {
             }
           },
           isSelected: const [false, true],
-          children: const <Widget>[
-            Icon(
-              Icons.table_chart,
-            ),
-            Icon(
-              Icons.show_chart,
-            ),
+          children: const [
+            Icon(Icons.table_chart),
+            Icon(Icons.show_chart),
           ],
         ),
         Padding(
@@ -98,7 +100,7 @@ class WorkoutLogEvent {
   final WorkoutSession? session;
   final Map<Exercise, List<Log>> exercises;
 
-  WorkoutLogEvent(this.dateTime, this.session, this.exercises);
+  const WorkoutLogEvent(this.dateTime, this.session, this.exercises);
 }
 
 class WorkoutLogCalendar extends StatefulWidget {
@@ -136,11 +138,7 @@ class _WorkoutLogCalendarState extends State<WorkoutLogCalendar> {
     for (final date in widget._workoutPlan.logData.keys) {
       final entry = widget._workoutPlan.logData[date]!;
       _events[DateFormatLists.format(date)] = [
-        WorkoutLogEvent(
-          date,
-          entry['session'],
-          entry['exercises'],
-        )
+        WorkoutLogEvent(date, entry['session'], entry['exercises']),
       ];
     }
 
@@ -178,9 +176,7 @@ class _WorkoutLogCalendarState extends State<WorkoutLogCalendar> {
           calendarStyle: getWgerCalendarStyle(Theme.of(context)),
           eventLoader: _getEventsForDay,
           availableGestures: AvailableGestures.horizontalSwipe,
-          availableCalendarFormats: const {
-            CalendarFormat.month: '',
-          },
+          availableCalendarFormats: const {CalendarFormat.month: ''},
           onDaySelected: _onDaySelected,
           onPageChanged: (focusedDay) {
             // No need to call `setState()` here
@@ -190,17 +186,18 @@ class _WorkoutLogCalendarState extends State<WorkoutLogCalendar> {
         const SizedBox(height: 8.0),
         SizedBox(
           child: ValueListenableBuilder<List<WorkoutLogEvent>>(
-              valueListenable: _selectedEvents,
-              builder: (context, logEvents, _) {
-                // At the moment there is only one "event" per day
-                return logEvents.isNotEmpty
-                    ? DayLogWidget(
-                        logEvents.first.dateTime,
-                        logEvents.first.exercises,
-                        logEvents.first.session,
-                      )
-                    : Container();
-              }),
+            valueListenable: _selectedEvents,
+            builder: (context, logEvents, _) {
+              // At the moment there is only one "event" per day
+              return logEvents.isNotEmpty
+                  ? DayLogWidget(
+                      logEvents.first.dateTime,
+                      logEvents.first.exercises,
+                      logEvents.first.session,
+                    )
+                  : Container();
+            },
+          ),
         ),
       ],
     );

@@ -66,14 +66,15 @@ class WorkoutForm extends StatelessWidget {
               }
               return null;
             },
-            onFieldSubmitted: (_) {},
             onSaved: (newValue) {
               _plan.name = newValue!;
             },
           ),
           TextFormField(
             key: const Key('field-description'),
-            decoration: InputDecoration(labelText: AppLocalizations.of(context).description),
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context).description,
+            ),
             minLines: 3,
             maxLines: 10,
             controller: workoutDescriptionController,
@@ -85,7 +86,6 @@ class WorkoutForm extends StatelessWidget {
               }
               return null;
             },
-            onFieldSubmitted: (_) {},
             onSaved: (newValue) {
               _plan.description = newValue!;
             },
@@ -108,9 +108,10 @@ class WorkoutForm extends StatelessWidget {
                   Navigator.of(context).pop();
                 }
               } else {
-                final WorkoutPlan newPlan =
-                    await Provider.of<WorkoutPlansProvider>(context, listen: false)
-                        .addWorkout(_plan);
+                final WorkoutPlan newPlan = await Provider.of<WorkoutPlansProvider>(
+                  context,
+                  listen: false,
+                ).addWorkout(_plan);
                 if (context.mounted) {
                   Navigator.of(context).pushReplacementNamed(
                     WorkoutPlanScreen.routeName,
@@ -246,7 +247,7 @@ class _DayFormWidgetState extends State<DayFormWidget> {
                         onPressed: () {
                           Navigator.of(ctx).pop();
                         },
-                      )
+                      ),
                     ],
                   ),
                 );
@@ -285,6 +286,12 @@ class _SetFormWidgetState extends State<SetFormWidget> {
     setState(() {
       widget._set.removeExercise(base);
     });
+  }
+
+  @override
+  void dispose() {
+    _exercisesController.dispose();
+    super.dispose();
   }
 
   /// Adds an exercise to the current set
@@ -393,13 +400,14 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                                         children: [
                                           Text(AppLocalizations.of(context).selectExercises),
                                           const SizedBox(height: 10),
-                                          Text(AppLocalizations.of(context).sameRepetitions)
+                                          Text(AppLocalizations.of(context).sameRepetitions),
                                         ],
                                       ),
                                       actions: [
                                         TextButton(
                                           child: Text(
-                                              MaterialLocalizations.of(context).closeButtonLabel),
+                                            MaterialLocalizations.of(context).closeButtonLabel,
+                                          ),
                                           onPressed: () {
                                             Navigator.of(context).pop();
                                           },
@@ -439,12 +447,17 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                                 searchEnglish: _searchEnglish,
                               );
                         },
-                        itemBuilder: (BuildContext context, Exercise exerciseSuggestion) =>
+                        itemBuilder: (
+                          BuildContext context,
+                          Exercise exerciseSuggestion,
+                        ) =>
                             ListTile(
                           key: Key('exercise-${exerciseSuggestion.id}'),
                           leading: SizedBox(
                             width: 45,
-                            child: ExerciseImageWidget(image: exerciseSuggestion.getMainImage),
+                            child: ExerciseImageWidget(
+                              image: exerciseSuggestion.getMainImage,
+                            ),
                           ),
                           title: Text(
                             exerciseSuggestion
@@ -474,7 +487,10 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                           );
                         },
                         transitionBuilder: (context, animation, child) => FadeTransition(
-                          opacity: CurvedAnimation(parent: animation, curve: Curves.fastOutSlowIn),
+                          opacity: CurvedAnimation(
+                            parent: animation,
+                            curve: Curves.fastOutSlowIn,
+                          ),
                           child: child,
                         ),
                         onSelected: (Exercise exerciseSuggestion) {
@@ -494,7 +510,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                             });
                           },
                           dense: true,
-                        )
+                        ),
                     ],
                   ),
                 ),
@@ -558,8 +574,10 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                     }
                     _formKey.currentState!.save();
 
-                    final workoutProvider =
-                        Provider.of<WorkoutPlansProvider>(context, listen: false);
+                    final workoutProvider = Provider.of<WorkoutPlansProvider>(
+                      context,
+                      listen: false,
+                    );
 
                     // Save set
                     final Set setDb = await workoutProvider.addSet(widget._set);
@@ -655,10 +673,7 @@ class ExerciseSetting extends StatelessWidget {
                   ),
                 ],
               ),
-              Flexible(
-                flex: 2,
-                child: RiRInputWidget(setting),
-              ),
+              Flexible(flex: 2, child: RiRInputWidget(setting)),
               const SizedBox(height: 15),
             ],
           ),
@@ -683,9 +698,7 @@ class ExerciseSetting extends StatelessWidget {
         );
       }
     }
-    return Column(
-      children: out,
-    );
+    return Column(children: out);
   }
 
   @override
@@ -704,10 +717,11 @@ class ExerciseSetting extends StatelessWidget {
               contentPadding: EdgeInsets.zero,
               leading: ExerciseImageWidget(image: _exerciseBase.getMainImage),
               trailing: IconButton(
-                  icon: const Icon(Icons.delete),
-                  onPressed: () {
-                    removeExercise(_exerciseBase);
-                  }),
+                icon: const Icon(Icons.delete),
+                onPressed: () {
+                  removeExercise(_exerciseBase);
+                },
+              ),
             ),
             const Divider(),
 
@@ -937,7 +951,9 @@ class _RepetitionUnitInputWidgetState extends State<RepetitionUnitInputWidget> {
 
     return DropdownButtonFormField(
       value: selectedWeightUnit,
-      decoration: InputDecoration(labelText: AppLocalizations.of(context).repetitionUnit),
+      decoration: InputDecoration(
+        labelText: AppLocalizations.of(context).repetitionUnit,
+      ),
       isDense: true,
       onChanged: (RepetitionUnit? newValue) {
         setState(() {

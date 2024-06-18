@@ -103,59 +103,63 @@ class _MealWidgetState extends State<MealWidget> {
             ),
             if (_editing)
               Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Wrap(
-                    spacing: 8,
-                    children: [
-                      TextButton.icon(
-                        icon: const Icon(Icons.add),
-                        label: Text(AppLocalizations.of(context).addIngredient),
-                        onPressed: () {
-                          Navigator.pushNamed(
-                            context,
-                            FormScreen.routeName,
-                            arguments: FormScreenArguments(
-                              AppLocalizations.of(context).addIngredient,
-                              MealItemForm(widget._meal, widget._recentMealItems),
-                              hasListView: true,
-                            ),
-                          );
-                        },
-                      ),
-                      TextButton.icon(
-                        label: Text(AppLocalizations.of(context).edit),
-                        onPressed: () {
-                          Navigator.pushNamed(
-                            context,
-                            FormScreen.routeName,
-                            arguments: FormScreenArguments(
-                              AppLocalizations.of(context).edit,
-                              MealForm(widget._meal.planId, widget._meal),
-                            ),
-                          );
-                        },
-                        icon: const Icon(Icons.timer),
-                      ),
-                      TextButton.icon(
-                          onPressed: () {
-                            // Delete the meal
-                            Provider.of<NutritionPlansProvider>(context, listen: false)
-                                .deleteMeal(widget._meal);
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Wrap(
+                  spacing: 8,
+                  children: [
+                    TextButton.icon(
+                      icon: const Icon(Icons.add),
+                      label: Text(AppLocalizations.of(context).addIngredient),
+                      onPressed: () {
+                        Navigator.pushNamed(
+                          context,
+                          FormScreen.routeName,
+                          arguments: FormScreenArguments(
+                            AppLocalizations.of(context).addIngredient,
+                            MealItemForm(widget._meal, widget._recentMealItems),
+                            hasListView: true,
+                          ),
+                        );
+                      },
+                    ),
+                    TextButton.icon(
+                      label: Text(AppLocalizations.of(context).edit),
+                      onPressed: () {
+                        Navigator.pushNamed(
+                          context,
+                          FormScreen.routeName,
+                          arguments: FormScreenArguments(
+                            AppLocalizations.of(context).edit,
+                            MealForm(widget._meal.planId, widget._meal),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.timer),
+                    ),
+                    TextButton.icon(
+                      onPressed: () {
+                        // Delete the meal
+                        Provider.of<NutritionPlansProvider>(
+                          context,
+                          listen: false,
+                        ).deleteMeal(widget._meal);
 
-                            // and inform the user
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  AppLocalizations.of(context).successfullyDeleted,
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            );
-                          },
-                          label: Text(AppLocalizations.of(context).delete),
-                          icon: const Icon(Icons.delete)),
-                    ],
-                  )),
+                        // and inform the user
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              AppLocalizations.of(context).successfullyDeleted,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        );
+                      },
+                      label: Text(AppLocalizations.of(context).delete),
+                      icon: const Icon(Icons.delete),
+                    ),
+                  ],
+                ),
+              ),
             if (_viewMode == viewMode.withIngredients || _viewMode == viewMode.withAllDetails)
               const Divider(),
             if (_viewMode == viewMode.withIngredients || _viewMode == viewMode.withAllDetails)
@@ -260,10 +264,11 @@ class MealItemEditableFullTile extends StatelessWidget {
                 // and inform the user
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                      content: Text(
-                    AppLocalizations.of(context).successfullyDeleted,
-                    textAlign: TextAlign.center,
-                  )),
+                    content: Text(
+                      AppLocalizations.of(context).successfullyDeleted,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                 );
               },
             )
@@ -278,8 +283,8 @@ class MealHeader extends StatelessWidget {
   final bool popTwice;
   final bool readOnly;
   final viewMode _viewMode;
-  final Function _toggleEditing;
-  final Function _toggleViewMode;
+  final Function() _toggleEditing;
+  final Function() _toggleViewMode;
 
   const MealHeader({
     required Meal meal,
@@ -287,8 +292,8 @@ class MealHeader extends StatelessWidget {
     this.popTwice = false,
     this.readOnly = false,
     required viewMode viewMode,
-    required Function toggleEditing,
-    required Function toggleViewMode,
+    required Function() toggleEditing,
+    required Function() toggleViewMode,
   })  : _meal = meal,
         _editing = editing,
         _viewMode = viewMode,

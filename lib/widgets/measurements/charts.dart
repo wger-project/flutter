@@ -43,22 +43,22 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
           top: 24,
           bottom: 12,
         ),
-        child: LineChart(
-          mainData(),
-        ),
+        child: LineChart(mainData()),
       ),
     );
   }
 
   LineTouchData tooltipData() {
-    return LineTouchData(touchTooltipData: LineTouchTooltipData(getTooltipItems: (touchedSpots) {
-      return touchedSpots.map((touchedSpot) {
-        return LineTooltipItem(
-          '${touchedSpot.y} kg',
-          const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-        );
-      }).toList();
-    }));
+    return LineTouchData(
+      touchTooltipData: LineTouchTooltipData(getTooltipItems: (touchedSpots) {
+        return touchedSpots.map((touchedSpot) {
+          return LineTooltipItem(
+            '${touchedSpot.y} kg',
+            const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+          );
+        }).toList();
+      }),
+    );
   }
 
   LineChartData mainData() {
@@ -70,16 +70,10 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
         //horizontalInterval: 1,
         //verticalInterval: interval,
         getDrawingHorizontalLine: (value) {
-          return const FlLine(
-            color: Colors.grey,
-            strokeWidth: 1,
-          );
+          return const FlLine(color: Colors.grey, strokeWidth: 1);
         },
         getDrawingVerticalLine: (value) {
-          return const FlLine(
-            color: Colors.grey,
-            strokeWidth: 1,
-          );
+          return const FlLine(color: Colors.grey, strokeWidth: 1);
         },
       ),
       titlesData: FlTitlesData(
@@ -105,7 +99,10 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
               );
             },
             interval: widget._entries.isNotEmpty
-                ? chartGetInterval(widget._entries.last.date, widget._entries.first.date)
+                ? chartGetInterval(
+                    widget._entries.last.date,
+                    widget._entries.first.date,
+                  )
                 : 1000,
           ),
         ),
@@ -114,9 +111,7 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
             showTitles: true,
             reservedSize: 65,
             getTitlesWidget: (value, meta) {
-              return Text(
-                '$value ${widget.unit}',
-              );
+              return Text('$value ${widget.unit}');
             },
           ),
         ),
@@ -128,16 +123,16 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
       lineBarsData: [
         LineChartBarData(
           spots: [
-            ...widget._entries
-                .map((e) => FlSpot(e.date.millisecondsSinceEpoch.toDouble(), e.value.toDouble()))
+            ...widget._entries.map((e) => FlSpot(
+                  e.date.millisecondsSinceEpoch.toDouble(),
+                  e.value.toDouble(),
+                )),
           ],
           isCurved: false,
           color: Theme.of(context).colorScheme.secondary,
           barWidth: 2,
           isStrokeCapRound: true,
-          dotData: const FlDotData(
-            show: true,
-          ),
+          dotData: const FlDotData(show: true),
         ),
       ],
     );
@@ -172,7 +167,7 @@ class Indicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      children: <Widget>[
+      children: [
         Container(
           width: size,
           height: size,
@@ -181,18 +176,12 @@ class Indicator extends StatelessWidget {
             color: color,
           ),
         ),
-        const SizedBox(
-          width: 4,
-        ),
+        const SizedBox(width: 4),
         Text(
           text,
-          style: TextStyle(
-            color: textColor,
-          ),
+          style: TextStyle(color: textColor),
         ),
-        SizedBox(
-          width: marginRight,
-        ),
+        SizedBox(width: marginRight),
       ],
     );
   }

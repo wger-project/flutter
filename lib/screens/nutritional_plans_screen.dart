@@ -26,6 +26,7 @@ import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/nutritional_plans_list.dart';
 
 class NutritionalPlansScreen extends StatelessWidget {
+  const NutritionalPlansScreen();
   static const routeName = '/nutrition';
 
   @override
@@ -33,10 +34,7 @@ class NutritionalPlansScreen extends StatelessWidget {
     return Scaffold(
       appBar: EmptyAppBar(AppLocalizations.of(context).nutritionalPlans),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
+        child: const Icon(Icons.add, color: Colors.white),
         onPressed: () async {
           Navigator.pushNamed(
             context,

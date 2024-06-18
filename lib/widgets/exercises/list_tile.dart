@@ -43,9 +43,7 @@ class ExerciseListTile extends StatelessWidget {
             child: SizedBox(
               height: IMG_SIZE,
               width: IMG_SIZE,
-              child: ExerciseImageWidget(
-                image: exerciseBase.getMainImage,
-              ),
+              child: ExerciseImageWidget(image: exerciseBase.getMainImage),
             ),
           ),
         ),

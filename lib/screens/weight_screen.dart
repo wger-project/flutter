@@ -26,19 +26,19 @@ import 'package:wger/widgets/weight/entries_list.dart';
 import 'package:wger/widgets/weight/forms.dart';
 
 class WeightScreen extends StatelessWidget {
+  const WeightScreen();
   static const routeName = '/weight';
 
   @override
   Widget build(BuildContext context) {
-    final lastWeightEntry = context.read<BodyWeightProvider>().getNewestEntry();
+    final lastWeightEntry = context
+      .read<BodyWeightProvider>()
+      .getNewestEntry();
 
     return Scaffold(
       appBar: EmptyAppBar(AppLocalizations.of(context).weight),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
+        child: const Icon(Icons.add, color: Colors.white),
         onPressed: () async {
           Navigator.pushNamed(
             context,

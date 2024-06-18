@@ -27,6 +27,7 @@ import 'package:wger/widgets/workouts/forms.dart';
 import 'package:wger/widgets/workouts/workout_plans_list.dart';
 
 class WorkoutPlansScreen extends StatelessWidget {
+  const WorkoutPlansScreen();
   static const routeName = '/workout-plans-list';
 
   @override
@@ -44,10 +45,7 @@ class WorkoutPlansScreen extends StatelessWidget {
             ),
           );
         },
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
+        child: const Icon(Icons.add, color: Colors.white),
       ),
       body: Consumer<WorkoutPlansProvider>(
         builder: (context, workoutProvider, child) => WorkoutPlansList(workoutProvider),

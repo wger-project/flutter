@@ -45,10 +45,7 @@ class AboutEntry extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(content),
-          Text(
-            url,
-            style: const TextStyle(color: Colors.blue),
-          ),
+          Text(url, style: const TextStyle(color: Colors.blue)),
         ],
       ),
       contentPadding: EdgeInsets.zero,
@@ -84,10 +81,7 @@ class AboutPage extends StatelessWidget {
               child: Row(
                 // mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(
-                    'assets/images/logo.png',
-                    width: 75,
-                  ),
+                  Image.asset('assets/images/logo.png', width: 75),
                   const SizedBox(width: 20),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -117,7 +111,10 @@ class AboutPage extends StatelessWidget {
             SizedBox(height: 0.025 * deviceSize.height),
             Text(
               AppLocalizations.of(context).aboutDescription,
-              style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 16),
+              style: Theme.of(context)
+                .textTheme
+                .bodyMedium!
+                .copyWith(fontSize: 16),
             ),
             const SizedBox(height: 10),
             AboutEntry(
@@ -174,10 +171,7 @@ class AboutPage extends StatelessWidget {
                   applicationLegalese: '\u{a9} 2020 - 2021 contributors',
                   applicationIcon: Padding(
                     padding: const EdgeInsets.only(top: 10),
-                    child: Image.asset(
-                      'assets/images/logo.png',
-                      width: 60,
-                    ),
+                    child: Image.asset('assets/images/logo.png', width: 60),
                   ),
                 );
               },

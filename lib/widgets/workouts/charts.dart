@@ -39,13 +39,8 @@ class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
     return AspectRatio(
       aspectRatio: 1.70,
       child: Padding(
-        padding: const EdgeInsets.only(
-          top: 24,
-          bottom: 12,
-        ),
-        child: LineChart(
-          mainData(),
-        ),
+        padding: const EdgeInsets.only(top: 24, bottom: 12),
+        child: LineChart(mainData()),
       ),
     );
   }
@@ -76,16 +71,10 @@ class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
         show: true,
         drawVerticalLine: true,
         getDrawingHorizontalLine: (value) {
-          return const FlLine(
-            color: Colors.grey,
-            strokeWidth: 1,
-          );
+          return const FlLine(color: Colors.grey, strokeWidth: 1);
         },
         getDrawingVerticalLine: (value) {
-          return const FlLine(
-            color: Colors.grey,
-            strokeWidth: 1,
-          );
+          return const FlLine(color: Colors.grey, strokeWidth: 1);
         },
       ),
       titlesData: FlTitlesData(
@@ -141,7 +130,7 @@ class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
                   DateTime.parse(entry['date']).millisecondsSinceEpoch.toDouble(),
                   double.parse(entry['weight']),
                 ),
-              )
+              ),
             ],
             isCurved: true,
             color: colors.current,
@@ -156,7 +145,7 @@ class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
               ),
             ),
           );
-        })
+        }),
       ],
     );
   }

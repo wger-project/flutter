@@ -31,7 +31,7 @@ class Comment {
   @JsonKey(required: true)
   final String comment;
 
-  Comment({
+  const Comment({
     required this.id,
     required this.exerciseId,
     required this.comment,

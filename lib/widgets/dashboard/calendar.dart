@@ -43,7 +43,7 @@ class Event {
   final EventType _type;
   final String _description;
 
-  Event(this._type, this._description);
+  const Event(this._type, this._description);
 
   String get description {
     return _description;
@@ -108,8 +108,10 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
           _events[date] = [];
         }
 
-        _events[date]!
-            .add(Event(EventType.measurement, '${category.name}: ${entry.value} ${category.unit}'));
+        _events[date]!.add(Event(
+          EventType.measurement,
+          '${category.name}: ${entry.value} ${category.unit}',
+        ));
       }
     }
 
@@ -168,9 +170,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
   List<Event> _getEventsForRange(DateTime start, DateTime end) {
     final days = daysInRange(start, end);
 
-    return [
-      for (final d in days) ..._getEventsForDay(d),
-    ];
+    return [for (final d in days) ..._getEventsForDay(d)];
   }
 
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
@@ -231,16 +231,13 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
             rangeEndDay: _rangeEnd,
             calendarFormat: CalendarFormat.month,
             availableGestures: AvailableGestures.horizontalSwipe,
-            availableCalendarFormats: const {
-              CalendarFormat.month: '',
-            },
+            availableCalendarFormats: const {CalendarFormat.month: ''},
             rangeSelectionMode: _rangeSelectionMode,
             eventLoader: _getEventsForDay,
             startingDayOfWeek: StartingDayOfWeek.monday,
             calendarStyle: getWgerCalendarStyle(Theme.of(context)),
             onDaySelected: _onDaySelected,
             onRangeSelected: _onRangeSelected,
-            onFormatChanged: (format) {},
             onPageChanged: (focusedDay) {
               _focusedDay = focusedDay;
             },
@@ -268,7 +265,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
                       })()),
                       subtitle: Text(event.description),
                       //onTap: () => print('$event tapped!'),
-                    ))
+                    )),
               ],
             ),
           ),

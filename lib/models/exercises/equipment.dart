@@ -29,10 +29,7 @@ class Equipment extends Equatable {
   @JsonKey(required: true)
   final String name;
 
-  const Equipment({
-    required this.id,
-    required this.name,
-  });
+  const Equipment({required this.id, required this.name});
 
   // Boilerplate
   factory Equipment.fromJson(Map<String, dynamic> json) => _$EquipmentFromJson(json);

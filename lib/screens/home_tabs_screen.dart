@@ -38,6 +38,7 @@ import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/screens/workout_plans_screen.dart';
 
 class HomeTabsScreen extends StatefulWidget {
+  const HomeTabsScreen();
   static const routeName = '/dashboard2';
 
   @override
@@ -182,10 +183,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
                   label: AppLocalizations.of(context).labelBottomNavNutrition,
                 ),
                 NavigationDestination(
-                  icon: const FaIcon(
-                    FontAwesomeIcons.weightScale,
-                    size: 20,
-                  ),
+                  icon: const FaIcon(FontAwesomeIcons.weightScale, size: 20),
                   label: AppLocalizations.of(context).weight,
                 ),
                 NavigationDestination(

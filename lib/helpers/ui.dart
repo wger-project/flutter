@@ -44,13 +44,16 @@ void showErrorDialog(dynamic exception, BuildContext context) {
           onPressed: () {
             Navigator.of(ctx).pop();
           },
-        )
+        ),
       ],
     ),
   );
 }
 
-void showHttpExceptionErrorDialog(WgerHttpException exception, BuildContext context) async {
+void showHttpExceptionErrorDialog(
+  WgerHttpException exception,
+  BuildContext context,
+) async {
   log('showHttpExceptionErrorDialog: ');
   log(exception.toString());
   log('-------------------');
@@ -95,7 +98,7 @@ void showHttpExceptionErrorDialog(WgerHttpException exception, BuildContext cont
           onPressed: () {
             Navigator.of(ctx).pop();
           },
-        )
+        ),
       ],
     ),
   );
@@ -113,42 +116,43 @@ dynamic showDeleteDialog(
   Map<Exercise, List<Log>> exerciseData,
 ) async {
   final res = await showDialog(
-      context: context,
-      builder: (BuildContext contextDialog) {
-        return AlertDialog(
-          content: Text(
-            AppLocalizations.of(context).confirmDelete(confirmDeleteName),
+    context: context,
+    builder: (BuildContext contextDialog) {
+      return AlertDialog(
+        content: Text(
+          AppLocalizations.of(context).confirmDelete(confirmDeleteName),
+        ),
+        actions: [
+          TextButton(
+            child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+            onPressed: () => Navigator.of(contextDialog).pop(),
           ),
-          actions: [
-            TextButton(
-              child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-              onPressed: () => Navigator.of(contextDialog).pop(),
+          TextButton(
+            child: Text(
+              AppLocalizations.of(context).delete,
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
             ),
-            TextButton(
-              child: Text(
-                AppLocalizations.of(context).delete,
-                style: TextStyle(color: Theme.of(context).colorScheme.error),
-              ),
-              onPressed: () {
-                exerciseData[exercise]!.removeWhere((el) => el.id == log.id);
-                Provider.of<WorkoutPlansProvider>(context, listen: false).deleteLog(
-                  log,
-                );
+            onPressed: () {
+              exerciseData[exercise]!.removeWhere((el) => el.id == log.id);
+              Provider.of<WorkoutPlansProvider>(context, listen: false).deleteLog(
+                log,
+              );
 
-                Navigator.of(contextDialog).pop();
+              Navigator.of(contextDialog).pop();
 
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      AppLocalizations.of(context).successfullyDeleted,
-                      textAlign: TextAlign.center,
-                    ),
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    AppLocalizations.of(context).successfullyDeleted,
+                    textAlign: TextAlign.center,
                   ),
-                );
-              },
-            ),
-          ],
-        );
-      });
+                ),
+              );
+            },
+          ),
+        ],
+      );
+    },
+  );
   return res;
 }

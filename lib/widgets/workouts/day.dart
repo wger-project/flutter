@@ -63,7 +63,9 @@ class SettingWidget extends StatelessWidget {
                 content: ExerciseDetail(setting.exerciseObj),
                 actions: [
                   TextButton(
-                    child: Text(MaterialLocalizations.of(context).closeButtonLabel),
+                    child: Text(
+                      MaterialLocalizations.of(context).closeButtonLabel,
+                    ),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -80,7 +82,9 @@ class SettingWidget extends StatelessWidget {
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ...set.getSmartRepr(setting.exerciseObj).map((e) => Text(e)),
+          ...set
+            .getSmartRepr(setting.exerciseObj)
+            .map((e) => Text(e)),
         ],
       ),
     );
@@ -172,55 +176,60 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
             ),
             if (_editing)
               Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Wrap(
-                    spacing: 8,
-                    children: [
-                      TextButton.icon(
-                        label: Text(AppLocalizations.of(context).addSet),
-                        icon: const Icon(Icons.add),
-                        onPressed: () {
-                          Navigator.pushNamed(
-                            context,
-                            FormScreen.routeName,
-                            arguments: FormScreenArguments(
-                              AppLocalizations.of(context).newSet,
-                              SetFormWidget(widget._day),
-                              hasListView: true,
-                              padding: EdgeInsets.zero,
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Wrap(
+                  spacing: 8,
+                  children: [
+                    TextButton.icon(
+                      label: Text(AppLocalizations.of(context).addSet),
+                      icon: const Icon(Icons.add),
+                      onPressed: () {
+                        Navigator.pushNamed(
+                          context,
+                          FormScreen.routeName,
+                          arguments: FormScreenArguments(
+                            AppLocalizations.of(context).newSet,
+                            SetFormWidget(widget._day),
+                            hasListView: true,
+                            padding: EdgeInsets.zero,
+                          ),
+                        );
+                      },
+                    ),
+                    TextButton.icon(
+                      icon: const Icon(Icons.calendar_month),
+                      label: Text(AppLocalizations.of(context).edit),
+                      onPressed: () {
+                        Navigator.pushNamed(
+                          context,
+                          FormScreen.routeName,
+                          arguments: FormScreenArguments(
+                            AppLocalizations.of(context).edit,
+                            DayFormWidget(
+                              Provider.of<WorkoutPlansProvider>(
+                                context,
+                                listen: false,
+                              ).findById(widget._day.workoutId),
+                              widget._day,
                             ),
-                          );
-                        },
-                      ),
-                      TextButton.icon(
-                        icon: const Icon(Icons.calendar_month),
-                        label: Text(AppLocalizations.of(context).edit),
-                        onPressed: () {
-                          Navigator.pushNamed(
-                            context,
-                            FormScreen.routeName,
-                            arguments: FormScreenArguments(
-                              AppLocalizations.of(context).edit,
-                              DayFormWidget(
-                                  Provider.of<WorkoutPlansProvider>(context, listen: false)
-                                      .findById(widget._day.workoutId),
-                                  widget._day),
-                              hasListView: true,
-                            ),
-                          );
-                        },
-                      ),
-                      TextButton.icon(
-                        icon: const Icon(Icons.delete),
-                        label: Text(AppLocalizations.of(context).delete),
-                        onPressed: () {
-                          Provider.of<WorkoutPlansProvider>(context, listen: false).deleteDay(
-                            widget._day,
-                          );
-                        },
-                      ),
-                    ],
-                  )),
+                            hasListView: true,
+                          ),
+                        );
+                      },
+                    ),
+                    TextButton.icon(
+                      icon: const Icon(Icons.delete),
+                      label: Text(AppLocalizations.of(context).delete),
+                      onPressed: () {
+                        Provider.of<WorkoutPlansProvider>(
+                          context,
+                          listen: false,
+                        ).deleteDay(widget._day);
+                      },
+                    ),
+                  ],
+                ),
+              ),
             const Divider(),
             ReorderableListView(
               physics: const NeverScrollableScrollPhysics(),
@@ -237,8 +246,10 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
                 setState(() {
                   _sets.insert(newIndex, _sets.removeAt(oldIndex));
                 });
-                _sets = await Provider.of<WorkoutPlansProvider>(context, listen: false)
-                    .reorderSets(_sets, startIndex);
+                _sets = await Provider.of<WorkoutPlansProvider>(
+                  context,
+                  listen: false,
+                ).reorderSets(_sets, startIndex);
               },
               children: [
                 for (var i = 0; i < widget._day.sets.length; i++) getSetRow(widget._day.sets[i], i),
@@ -285,7 +296,7 @@ class DayHeader extends StatelessWidget {
           onPressed: () {
             _toggle();
           },
-        )
+        ),
       ]),
       onTap: () {
         Navigator.of(context).pushNamed(

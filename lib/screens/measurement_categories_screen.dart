@@ -25,19 +25,15 @@ import 'package:wger/widgets/measurements/categories.dart';
 import 'package:wger/widgets/measurements/forms.dart';
 
 class MeasurementCategoriesScreen extends StatelessWidget {
+  const MeasurementCategoriesScreen();
   static const routeName = '/measurement-categories';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context).measurements),
-      ),
+      appBar: AppBar(title: Text(AppLocalizations.of(context).measurements)),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
+        child: const Icon(Icons.add, color: Colors.white),
         onPressed: () async {
           Navigator.pushNamed(
             context,

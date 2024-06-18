@@ -76,7 +76,6 @@ class MealForm extends StatelessWidget {
               onSaved: (newValue) {
                 _meal.time = stringToTime(newValue);
               },
-              onFieldSubmitted: (_) {},
             ),
             TextFormField(
               maxLength: 25,
@@ -86,7 +85,6 @@ class MealForm extends StatelessWidget {
               onSaved: (newValue) {
                 _meal.name = newValue as String;
               },
-              onFieldSubmitted: (_) {},
             ),
             ElevatedButton(
               key: const Key(SUBMIT_BUTTON_KEY_NAME),
@@ -99,9 +97,14 @@ class MealForm extends StatelessWidget {
 
                 try {
                   _meal.id == null
-                      ? Provider.of<NutritionPlansProvider>(context, listen: false)
-                          .addMeal(_meal, _planId)
-                      : Provider.of<NutritionPlansProvider>(context, listen: false).editMeal(_meal);
+                      ? Provider.of<NutritionPlansProvider>(
+                          context,
+                          listen: false,
+                        ).addMeal(_meal, _planId)
+                      : Provider.of<NutritionPlansProvider>(
+                          context,
+                          listen: false,
+                        ).editMeal(_meal);
                 } on WgerHttpException catch (error) {
                   showHttpExceptionErrorDialog(error, context);
                 } catch (error) {
@@ -117,35 +120,42 @@ class MealForm extends StatelessWidget {
   }
 }
 
-Widget MealItemForm(Meal meal, List<MealItem> recent, [String? barcode, bool? test]) {
+Widget MealItemForm(
+  Meal meal,
+  List<MealItem> recent, [
+  String? barcode,
+  bool? test,
+]) {
   return IngredientForm(
-      // TODO we use planId 0 here cause we don't have one and we don't need it I think?
-      recent: recent.map((e) => Log.fromMealItem(e, 0, e.mealId)).toList(),
-      onSave: (BuildContext context, MealItem mealItem, DateTime? dt) {
-        mealItem.mealId = meal.id!;
-        Provider.of<NutritionPlansProvider>(context, listen: false).addMealItem(mealItem, meal);
-      },
-      barcode: barcode ?? '',
-      test: test ?? false,
-      withDate: false);
+    // TODO we use planId 0 here cause we don't have one and we don't need it I think?
+    recent: recent.map((e) => Log.fromMealItem(e, 0, e.mealId)).toList(),
+    onSave: (BuildContext context, MealItem mealItem, DateTime? dt) {
+      mealItem.mealId = meal.id!;
+      Provider.of<NutritionPlansProvider>(context, listen: false).addMealItem(mealItem, meal);
+    },
+    barcode: barcode ?? '',
+    test: test ?? false,
+    withDate: false,
+  );
 }
 
 Widget IngredientLogForm(NutritionalPlan plan) {
   return IngredientForm(
-      recent: plan.dedupDiaryEntries,
-      onSave: (BuildContext context, MealItem mealItem, DateTime? dt) {
-        Provider.of<NutritionPlansProvider>(context, listen: false)
-            .logIngredientToDiary(mealItem, plan.id!, dt);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              AppLocalizations.of(context).ingredientLogged,
-              textAlign: TextAlign.center,
-            ),
+    recent: plan.dedupDiaryEntries,
+    onSave: (BuildContext context, MealItem mealItem, DateTime? dt) {
+      Provider.of<NutritionPlansProvider>(context, listen: false)
+          .logIngredientToDiary(mealItem, plan.id!, dt);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context).ingredientLogged,
+            textAlign: TextAlign.center,
           ),
-        );
-      },
-      withDate: true);
+        ),
+      );
+    },
+    withDate: true,
+  );
 }
 
 /// IngredientForm is a form that lets the user pick an ingredient (and amount) to
@@ -187,6 +197,16 @@ class IngredientFormState extends State<IngredientForm> {
     _timeController.text = timeToString(TimeOfDay.fromDateTime(now))!;
   }
 
+  @override
+  void dispose() {
+    _ingredientController.dispose();
+    _ingredientIdController.dispose();
+    _amountController.dispose();
+    _dateController.dispose();
+    _timeController.dispose();
+    super.dispose();
+  }
+
   TextEditingController get ingredientIdController => _ingredientIdController;
 
   MealItem get mealItem => _mealItem;
@@ -203,7 +223,7 @@ class IngredientFormState extends State<IngredientForm> {
     });
   }
 
-// note: does not reset text search and amount inputs
+  // note: does not reset text search and amount inputs
   void unSelectIngredient() {
     setState(() {
       _mealItem.ingredientId = 0;
@@ -243,10 +263,11 @@ class IngredientFormState extends State<IngredientForm> {
                 Expanded(
                   child: TextFormField(
                     key: const Key('field-weight'), // needed ?
-                    decoration: InputDecoration(labelText: AppLocalizations.of(context).weight),
+                    decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context).weight,
+                    ),
                     controller: _amountController,
                     keyboardType: TextInputType.number,
-                    onFieldSubmitted: (_) {},
                     onChanged: (value) {
                       setState(() {
                         final v = double.tryParse(value);
@@ -322,7 +343,6 @@ class IngredientFormState extends State<IngredientForm> {
                       onSaved: (newValue) {
                         _timeController.text = newValue!;
                       },
-                      onFieldSubmitted: (_) {},
                     ),
                   ),
               ],
@@ -337,9 +357,14 @@ class IngredientFormState extends State<IngredientForm> {
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     FutureBuilder<Ingredient>(
-                      future: Provider.of<NutritionPlansProvider>(context, listen: false)
-                          .fetchIngredient(_mealItem.ingredientId),
-                      builder: (BuildContext context, AsyncSnapshot<Ingredient> snapshot) {
+                      future: Provider.of<NutritionPlansProvider>(
+                        context,
+                        listen: false,
+                      ).fetchIngredient(_mealItem.ingredientId),
+                      builder: (
+                        BuildContext context,
+                        AsyncSnapshot<Ingredient> snapshot,
+                      ) {
                         if (snapshot.hasData) {
                           _mealItem.ingredient = snapshot.data!;
                           return MealItemValuesTile(
@@ -379,7 +404,13 @@ class IngredientFormState extends State<IngredientForm> {
                 try {
                   var date = DateTime.parse(_dateController.text);
                   final tod = stringToTime(_timeController.text);
-                  date = DateTime(date.year, date.month, date.day, tod.hour, tod.minute);
+                  date = DateTime(
+                    date.year,
+                    date.month,
+                    date.day,
+                    tod.hour,
+                    tod.minute,
+                  );
                   widget.onSave(context, _mealItem, date);
                 } on WgerHttpException catch (error) {
                   showHttpExceptionErrorDialog(error, context);
@@ -403,18 +434,25 @@ class IngredientFormState extends State<IngredientForm> {
                     child: ListTile(
                       onTap: () {
                         final ingredient = suggestions[index].ingredient;
-                        selectIngredient(ingredient.id, ingredient.name, suggestions[index].amount);
+                        selectIngredient(
+                          ingredient.id,
+                          ingredient.name,
+                          suggestions[index].amount,
+                        );
                       },
                       title: Text(
-                          '${suggestions[index].ingredient.name} (${suggestions[index].amount.toStringAsFixed(0)}$unit)'),
+                        '${suggestions[index].ingredient.name} (${suggestions[index].amount.toStringAsFixed(0)}$unit)',
+                      ),
                       subtitle: Text(getShortNutritionValues(
-                          suggestions[index].ingredient.nutritionalValues, context)),
+                        suggestions[index].ingredient.nutritionalValues,
+                        context,
+                      )),
                       trailing: const Icon(Icons.copy),
                     ),
                   );
                 },
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -469,6 +507,13 @@ class _PlanFormState extends State<PlanForm> {
   }
 
   @override
+  void dispose() {
+    _descriptionController.dispose();
+    colorController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Form(
       key: _form,
@@ -477,9 +522,10 @@ class _PlanFormState extends State<PlanForm> {
           // Description
           TextFormField(
             key: const Key('field-description'),
-            decoration: InputDecoration(labelText: AppLocalizations.of(context).description),
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context).description,
+            ),
             controller: _descriptionController,
-            onFieldSubmitted: (_) {},
             onSaved: (newValue) {
               widget._plan.description = newValue!;
             },
@@ -507,7 +553,10 @@ class _PlanFormState extends State<PlanForm> {
                   value: _goalType,
                   items: GoalType.values
                       .map(
-                        (e) => DropdownMenuItem<GoalType>(value: e, child: Text(e.label)),
+                        (e) => DropdownMenuItem<GoalType>(
+                          value: e,
+                          child: Text(e.label),
+                        ),
                       )
                       .toList(),
                   onChanged: (GoalType? g) {
@@ -591,14 +640,18 @@ class _PlanFormState extends State<PlanForm> {
               // Save to DB
               try {
                 if (widget._plan.id != null) {
-                  await Provider.of<NutritionPlansProvider>(context, listen: false)
-                      .editPlan(widget._plan);
+                  await Provider.of<NutritionPlansProvider>(
+                    context,
+                    listen: false,
+                  ).editPlan(widget._plan);
                   if (context.mounted) {
                     Navigator.of(context).pop();
                   }
                 } else {
-                  widget._plan = await Provider.of<NutritionPlansProvider>(context, listen: false)
-                      .addPlan(widget._plan);
+                  widget._plan = await Provider.of<NutritionPlansProvider>(
+                    context,
+                    listen: false,
+                  ).addPlan(widget._plan);
                   if (context.mounted) {
                     Navigator.of(context).pushReplacementNamed(
                       NutritionalPlanScreen.routeName,
@@ -637,17 +690,14 @@ class GoalMacros extends StatelessWidget {
 
   final String label;
   final String suffix;
-  final Function onSave;
+  final Function(double) onSave;
   final String? val;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       initialValue: val ?? '',
-      decoration: InputDecoration(
-        labelText: label,
-        suffixText: suffix,
-      ),
+      decoration: InputDecoration(labelText: label, suffixText: suffix),
       keyboardType: TextInputType.number,
       onSaved: (newValue) {
         if (newValue == null || newValue == '') {

@@ -31,11 +31,7 @@ class Alias {
   @JsonKey(required: true)
   final String alias;
 
-  Alias({
-    this.id,
-    required this.exerciseId,
-    required this.alias,
-  });
+  const Alias({this.id, required this.exerciseId, required this.alias});
 
   // Boilerplate
   factory Alias.fromJson(Map<String, dynamic> json) => _$AliasFromJson(json);

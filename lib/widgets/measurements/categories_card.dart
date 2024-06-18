@@ -31,23 +31,26 @@ class CategoriesCard extends StatelessWidget {
             padding: const EdgeInsets.all(10),
             height: 220,
             child: MeasurementChartWidgetFl(
-              currentCategory.entries.map((e) => MeasurementChartEntry(e.value, e.date)).toList(),
+              currentCategory.entries
+                .map((e) => MeasurementChartEntry(e.value, e.date))
+                .toList(),
               unit: currentCategory.unit,
             ),
           ),
           const Divider(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
+            children: [
               TextButton(
-                  child: Text(AppLocalizations.of(context).goToDetailPage),
-                  onPressed: () {
-                    Navigator.pushNamed(
-                      context,
-                      MeasurementEntriesScreen.routeName,
-                      arguments: currentCategory.id,
-                    );
-                  }),
+                child: Text(AppLocalizations.of(context).goToDetailPage),
+                onPressed: () {
+                  Navigator.pushNamed(
+                    context,
+                    MeasurementEntriesScreen.routeName,
+                    arguments: currentCategory.id,
+                  );
+                },
+              ),
               IconButton(
                 onPressed: () async {
                   await Navigator.pushNamed(

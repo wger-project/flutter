@@ -22,6 +22,7 @@ import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/widgets/nutrition/meal.dart';
 
 class LogMealsScreen extends StatefulWidget {
+  const LogMealsScreen();
   static const routeName = '/log-meals';
 
   @override
@@ -40,13 +41,14 @@ class _LogMealsScreenState extends State<LogMealsScreen> {
         title: Text(AppLocalizations.of(context).selectMealToLog),
       ),
       body: ListView.builder(
-          itemCount: nutritionalPlan.meals.length,
-          itemBuilder: (context, index) => MealWidget(
-                nutritionalPlan.meals[index],
-                nutritionalPlan.dedupMealItems,
-                true,
-                true,
-              )),
+        itemCount: nutritionalPlan.meals.length,
+        itemBuilder: (context, index) => MealWidget(
+          nutritionalPlan.meals[index],
+          nutritionalPlan.dedupMealItems,
+          true,
+          true,
+        ),
+      ),
     );
   }
 }

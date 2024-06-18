@@ -114,7 +114,7 @@ class ExercisesProvider with ChangeNotifier {
 
     setFilters(
       Filters(
-        exerciseCategories: FilterCategory<ExerciseCategory>(
+        exerciseCategories: FilterCategory(
           title: 'Category',
           items: Map.fromEntries(
             _categories.map(
@@ -122,7 +122,7 @@ class ExercisesProvider with ChangeNotifier {
             ),
           ),
         ),
-        equipment: FilterCategory<Equipment>(
+        equipment: FilterCategory(
           title: 'Equipment',
           items: Map.fromEntries(
             _equipment.map(
@@ -192,7 +192,10 @@ class ExercisesProvider with ChangeNotifier {
   /// returned exercises. Since this is typically called by one exercise, we are
   /// not interested in seeing that same exercise returned in the list of variations.
   /// If this parameter is not passed, all exercises are returned.
-  List<Exercise> findExercisesByVariationId(int id, {int? exerciseBaseIdToExclude}) {
+  List<Exercise> findExercisesByVariationId(
+    int id, {
+    int? exerciseBaseIdToExclude,
+  }) {
     var out = exercises.where((base) => base.variationId == id).toList();
 
     if (exerciseBaseIdToExclude != null) {
@@ -290,7 +293,10 @@ class ExercisesProvider with ChangeNotifier {
   /// -> yes: Do we need to re-fetch?
   ///    -> no: just return what we have in the DB
   ///    -> yes: fetch data and update if necessary
-  Future<Exercise> handleUpdateExerciseFromApi(ExerciseDatabase database, int exerciseId) async {
+  Future<Exercise> handleUpdateExerciseFromApi(
+    ExerciseDatabase database,
+    int exerciseId,
+  ) async {
     Exercise exercise;
     final exerciseDb = await (database.select(database.exercises)
           ..where((e) => e.id.equals(exerciseId)))
@@ -336,10 +342,11 @@ class ExercisesProvider with ChangeNotifier {
       if (exerciseDb == null) {
         await database.into(database.exercises).insert(
               ExercisesCompanion.insert(
-                  id: exercise.id!,
-                  data: jsonEncode(baseData),
-                  lastUpdate: exercise.lastUpdateGlobal!,
-                  lastFetched: DateTime.now()),
+                id: exercise.id!,
+                data: jsonEncode(baseData),
+                lastUpdate: exercise.lastUpdateGlobal!,
+                lastFetched: DateTime.now(),
+              ),
             );
       }
     }
@@ -438,8 +445,10 @@ class ExercisesProvider with ChangeNotifier {
   }
 
   /// Set the available exercises as available in the db
-  Future<void> setExercisesFromDatabase(ExerciseDatabase database,
-      {bool forceDeleteCache = false}) async {
+  Future<void> setExercisesFromDatabase(
+    ExerciseDatabase database, {
+    bool forceDeleteCache = false,
+  }) async {
     if (forceDeleteCache) {
       await database.delete(database.exercises).go();
     }
@@ -469,10 +478,11 @@ class ExercisesProvider with ChangeNotifier {
       if (exercise == null) {
         database.into(database.exercises).insert(
               ExercisesCompanion.insert(
-                  id: exerciseData['id'],
-                  data: jsonEncode(exerciseData),
-                  lastUpdate: DateTime.parse(exerciseData['last_update_global']),
-                  lastFetched: DateTime.now()),
+                id: exerciseData['id'],
+                data: jsonEncode(exerciseData),
+                lastUpdate: DateTime.parse(exerciseData['last_update_global']),
+                lastFetched: DateTime.now(),
+              ),
             );
       }
 
@@ -481,7 +491,8 @@ class ExercisesProvider with ChangeNotifier {
       if (exercise != null && lastUpdateApi.isAfter(exercise.lastUpdate)) {
         // TODO: timezones 🥳
         print(
-            'Exercise ${exercise.id}: update API $lastUpdateApi | Update DB: ${exercise.lastUpdate}');
+          'Exercise ${exercise.id}: update API $lastUpdateApi | Update DB: ${exercise.lastUpdate}',
+        );
         (database.update(database.exercises)..where((e) => e.id.equals(exerciseData['id']))).write(
           ExercisesCompanion(
             id: Value(exerciseData['id']),
@@ -517,14 +528,14 @@ class ExercisesProvider with ChangeNotifier {
     await database.delete(database.muscles).go();
     await Future.forEach(_muscles, (e) async {
       await database.into(database.muscles).insert(
-            MusclesCompanion.insert(
-              id: e.id,
-              data: e,
-            ),
+            MusclesCompanion.insert(id: e.id, data: e),
           );
     });
     validTill = DateTime.now().add(const Duration(days: EXERCISE_CACHE_DAYS));
-    await prefs.setString(PREFS_LAST_UPDATED_MUSCLES, validTill.toIso8601String());
+    await prefs.setString(
+      PREFS_LAST_UPDATED_MUSCLES,
+      validTill.toIso8601String(),
+    );
     log('Wrote ${_muscles.length} muscles from cache. Valid till $validTill');
   }
 
@@ -551,14 +562,14 @@ class ExercisesProvider with ChangeNotifier {
     await database.delete(database.categories).go();
     await Future.forEach(_categories, (e) async {
       await database.into(database.categories).insert(
-            CategoriesCompanion.insert(
-              id: e.id,
-              data: e,
-            ),
+            CategoriesCompanion.insert(id: e.id, data: e),
           );
     });
     validTill = DateTime.now().add(const Duration(days: EXERCISE_CACHE_DAYS));
-    await prefs.setString(PREFS_LAST_UPDATED_CATEGORIES, validTill.toIso8601String());
+    await prefs.setString(
+      PREFS_LAST_UPDATED_CATEGORIES,
+      validTill.toIso8601String(),
+    );
   }
 
   /// Fetches and sets the available languages
@@ -583,14 +594,14 @@ class ExercisesProvider with ChangeNotifier {
     await database.delete(database.languages).go();
     await Future.forEach(_languages, (e) async {
       await database.into(database.languages).insert(
-            LanguagesCompanion.insert(
-              id: e.id,
-              data: e,
-            ),
+            LanguagesCompanion.insert(id: e.id, data: e),
           );
     });
     validTill = DateTime.now().add(const Duration(days: EXERCISE_CACHE_DAYS));
-    await prefs.setString(PREFS_LAST_UPDATED_LANGUAGES, validTill.toIso8601String());
+    await prefs.setString(
+      PREFS_LAST_UPDATED_LANGUAGES,
+      validTill.toIso8601String(),
+    );
   }
 
   /// Fetches and sets the available equipment
@@ -616,22 +627,25 @@ class ExercisesProvider with ChangeNotifier {
     await database.delete(database.equipments).go();
     await Future.forEach(_equipment, (e) async {
       await database.into(database.equipments).insert(
-            EquipmentsCompanion.insert(
-              id: e.id,
-              data: e,
-            ),
+            EquipmentsCompanion.insert(id: e.id, data: e),
           );
     });
     validTill = DateTime.now().add(const Duration(days: EXERCISE_CACHE_DAYS));
-    await prefs.setString(PREFS_LAST_UPDATED_EQUIPMENT, validTill.toIso8601String());
+    await prefs.setString(
+      PREFS_LAST_UPDATED_EQUIPMENT,
+      validTill.toIso8601String(),
+    );
   }
 
   /// Searches for an exercise
   ///
   /// We could do this locally, but the server has better text searching capabilities
   /// with postgresql.
-  Future<List<Exercise>> searchExercise(String name,
-      {String languageCode = LANGUAGE_SHORT_ENGLISH, bool searchEnglish = false}) async {
+  Future<List<Exercise>> searchExercise(
+    String name, {
+    String languageCode = LANGUAGE_SHORT_ENGLISH,
+    bool searchEnglish = false,
+  }) async {
     if (name.length <= 1) {
       return [];
     }
@@ -651,7 +665,9 @@ class ExercisesProvider with ChangeNotifier {
 
     // Load the ingredients
     final results = ExerciseApiSearch.fromJson(result);
-    return Future.wait(results.suggestions.map((e) => fetchAndSetExercise(e.data.exerciseId)));
+    return Future.wait(
+      results.suggestions.map((e) => fetchAndSetExercise(e.data.exerciseId)),
+    );
   }
 }
 
@@ -673,7 +689,7 @@ class FilterCategory<T> {
     Map<T, bool>? items,
     String? title,
   }) {
-    return FilterCategory<T>(
+    return FilterCategory(
       isExpanded: isExpanded ?? this.isExpanded,
       items: items ?? this.items,
       title: title ?? this.title,

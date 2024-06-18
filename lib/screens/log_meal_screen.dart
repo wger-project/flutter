@@ -28,10 +28,11 @@ class LogMealArguments {
   final Meal meal;
   final bool popTwice;
 
-  LogMealArguments(this.meal, this.popTwice);
+  const LogMealArguments(this.meal, this.popTwice);
 }
 
 class LogMealScreen extends StatefulWidget {
+  const LogMealScreen();
   static const routeName = '/log-meal';
 
   @override
@@ -45,9 +46,10 @@ class _LogMealScreenState extends State<LogMealScreen> {
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as LogMealArguments;
     final meal = args.meal.copyWith(
-        mealItems: args.meal.mealItems
-            .map((mealItem) => mealItem.copyWith(amount: mealItem.amount * portionPct / 100))
-            .toList());
+      mealItems: args.meal.mealItems
+        .map((mealItem) => mealItem.copyWith(amount: mealItem.amount * portionPct / 100))
+        .toList(),
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -56,13 +58,13 @@ class _LogMealScreenState extends State<LogMealScreen> {
       body: Consumer<NutritionPlansProvider>(
         builder: (context, nutritionProvider, child) => SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 8,
-              vertical: 16,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
             child: Column(
               children: [
-                Text(meal.name, style: Theme.of(context).textTheme.headlineSmall),
+                Text(
+                  meal.name,
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
                 if (meal.mealItems.isEmpty)
                   ListTile(title: Text(AppLocalizations.of(context).noIngredientsDefined))
                 else
@@ -92,8 +94,10 @@ class _LogMealScreenState extends State<LogMealScreen> {
                       TextButton(
                         child: const Text('Log'),
                         onPressed: () async {
-                          await Provider.of<NutritionPlansProvider>(context, listen: false)
-                              .logMealToDiary(meal);
+                          await Provider.of<NutritionPlansProvider>(
+                            context,
+                            listen: false,
+                          ).logMealToDiary(meal);
                           // ignore: use_build_context_synchronously
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
@@ -111,7 +115,9 @@ class _LogMealScreenState extends State<LogMealScreen> {
                         },
                       ),
                     TextButton(
-                      child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+                      child: Text(
+                        MaterialLocalizations.of(context).cancelButtonLabel,
+                      ),
                       onPressed: () => Navigator.of(context).pop(),
                     ),
                   ],

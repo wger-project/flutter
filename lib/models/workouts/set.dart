@@ -55,11 +55,7 @@ class Set {
   @JsonKey(includeFromJson: false, includeToJson: false)
   List<Setting> settingsComputed = [];
 
-  Set({
-    required this.day,
-    required this.sets,
-    required this.order,
-  });
+  Set({required this.day, required this.sets, required this.order});
 
   Set.empty();
 

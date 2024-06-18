@@ -11,7 +11,7 @@ final locator = GetIt.asNewInstance();
 class ServiceLocator {
   factory ServiceLocator() => _singleton;
 
-  ServiceLocator._internal();
+  const ServiceLocator._internal();
 
   static final ServiceLocator _singleton = ServiceLocator._internal();
 

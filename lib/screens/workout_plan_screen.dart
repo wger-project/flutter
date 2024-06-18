@@ -38,6 +38,7 @@ enum WorkoutOptions {
 }
 
 class WorkoutPlanScreen extends StatefulWidget {
+  const WorkoutPlanScreen();
   static const routeName = '/workout-plan-detail';
 
   @override
@@ -75,7 +76,7 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
 
     return Scaffold(
       body: CustomScrollView(
-        slivers: <Widget>[
+        slivers: [
           SliverAppBar(
             pinned: true,
             iconTheme: const IconThemeData(color: appBarForeground),
@@ -84,7 +85,10 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
               titlePadding: const EdgeInsets.fromLTRB(56, 0, 56, 16),
               title: Text(
                 workoutPlan.name,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(color: appBarForeground),
+                style: Theme.of(context)
+                  .textTheme
+                  .titleLarge
+                  ?.copyWith(color: appBarForeground),
               ),
             ),
             actions: [
@@ -105,7 +109,7 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
                     // Delete
                   } else if (value == WorkoutOptions.delete) {
                     Provider.of<WorkoutPlansProvider>(context, listen: false)
-                        .deleteWorkout(workoutPlan.id!);
+                      .deleteWorkout(workoutPlan.id!);
                     Navigator.of(context).pop();
 
                     // Toggle Mode
@@ -135,9 +139,7 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
                   if (snapshot.connectionState == ConnectionState.waiting)
                     const SizedBox(
                       height: 200,
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      ),
+                      child: Center(child: CircularProgressIndicator()),
                     )
                   else
                     Consumer<WorkoutPlansProvider>(
@@ -146,7 +148,7 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
                 ],
               ),
             ),
-          )
+          ),
         ],
       ),
     );

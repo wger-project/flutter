@@ -37,7 +37,7 @@ class ExerciseImage {
   @JsonKey(name: 'is_main', defaultValue: false)
   final bool isMain;
 
-  ExerciseImage({
+  const ExerciseImage({
     required this.id,
     required this.uuid,
     required this.exerciseBaseId,

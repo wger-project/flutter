@@ -48,7 +48,7 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
     GlobalKey<FormState>(),
     GlobalKey<FormState>(),
     GlobalKey<FormState>(),
-    GlobalKey<FormState>()
+    GlobalKey<FormState>(),
   ];
 
   Widget _controlsBuilder(BuildContext context, ControlsDetails details) {
@@ -75,8 +75,11 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
 
                         final baseId = await addExerciseProvider.addExercise();
                         final base = await exerciseProvider.fetchAndSetExercise(baseId);
-                        final name =
-                            base.getExercise(Localizations.localeOf(context).languageCode).name;
+                        final name = base
+                            .getExercise(
+                              Localizations.localeOf(context).languageCode,
+                            )
+                            .name;
 
                         setState(() {
                           _isLoading = false;
@@ -88,15 +91,19 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
                           builder: (BuildContext context) {
                             return AlertDialog(
                               title: Text(AppLocalizations.of(context).success),
-                              content: Text(AppLocalizations.of(context).cacheWarning),
+                              content: Text(
+                                AppLocalizations.of(context).cacheWarning,
+                              ),
                               actions: [
                                 TextButton(
                                   child: Text(name),
                                   onPressed: () {
                                     Navigator.of(context).pop();
                                     Navigator.pushReplacementNamed(
-                                        context, ExerciseDetailScreen.routeName,
-                                        arguments: base);
+                                      context,
+                                      ExerciseDetailScreen.routeName,
+                                      arguments: base,
+                                    );
                                   },
                                 ),
                               ],
@@ -153,8 +160,13 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
         ],
         currentStep: _currentStep,
         onStepContinue: () {
-          if (_keys[_currentStep].currentState?.validate() ?? false) {
-            _keys[_currentStep].currentState?.save();
+          if (_keys[_currentStep]
+                .currentState
+                ?.validate() ??
+              false) {
+            _keys[_currentStep]
+              .currentState
+              ?.save();
 
             if (_currentStep != lastStepIndex) {
               setState(() {
@@ -181,9 +193,7 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
 }
 
 class EmailNotVerified extends StatelessWidget {
-  const EmailNotVerified({
-    super.key,
-  });
+  const EmailNotVerified({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -203,7 +213,7 @@ class EmailNotVerified extends StatelessWidget {
                   leading: const Icon(Icons.warning),
                   title: Text(AppLocalizations.of(context).unVerifiedEmail),
                   subtitle: Text(AppLocalizations.of(context)
-                      .contributeExerciseWarning(MIN_ACCOUNT_AGE.toString())),
+                    .contributeExerciseWarning(MIN_ACCOUNT_AGE.toString())),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,

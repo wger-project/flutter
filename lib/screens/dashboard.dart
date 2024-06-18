@@ -23,6 +23,7 @@ import 'package:wger/widgets/dashboard/calendar.dart';
 import 'package:wger/widgets/dashboard/widgets.dart';
 
 class DashboardScreen extends StatefulWidget {
+  const DashboardScreen();
   static const routeName = '/dashboard';
 
   @override

@@ -58,9 +58,7 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
 }
 
 class _ExercisesList extends StatelessWidget {
-  const _ExercisesList({
-    required this.exerciseBaseList,
-  });
+  const _ExercisesList({required this.exerciseBaseList});
 
   final List<Exercise> exerciseBaseList;
 
@@ -69,15 +67,11 @@ class _ExercisesList extends StatelessWidget {
     //final size = MediaQuery.of(context).size;
     return ListView.separated(
       separatorBuilder: (context, index) {
-        return const Divider(
-          thickness: 1,
-        );
+        return const Divider(thickness: 1);
       },
       itemCount: exerciseBaseList.length,
       itemBuilder: (context, index) {
-        return ExerciseListTile(
-          exerciseBase: exerciseBaseList[index],
-        );
+        return ExerciseListTile(exerciseBase: exerciseBaseList[index]);
 
         /*
         return Container(

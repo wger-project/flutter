@@ -9,6 +9,7 @@ part 'ingredients_database.g.dart';
 
 @DataClassName('IngredientTable')
 class Ingredients extends Table {
+  const Ingredients();
   IntColumn get id => integer()();
 
   TextColumn get data => text()();

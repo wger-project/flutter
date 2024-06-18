@@ -32,11 +32,7 @@ class WeightEntry {
   @JsonKey(required: true, toJson: toDate)
   late DateTime date;
 
-  WeightEntry({
-    this.id,
-    weight,
-    DateTime? date,
-  }) {
+  WeightEntry({this.id, weight, DateTime? date}) {
     this.date = date ?? DateTime.now();
 
     if (weight != null) {
