@@ -28,6 +28,7 @@
 - Costas Korai - <https://github.com/watcher6280>
 - Bassam Mutairi - <https://github.com/mutairibassam>
 - Dieter Plaetinck - <https://github.com/Dieterbe>
+- Mayank Malhotra - <https://github.com/mayank29malhotra>
 
 ## Translators
 
