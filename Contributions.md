@@ -104,4 +104,3 @@ Join our community discussions, ask questions, and share your feedback in the [D
 
 Thank you for contributing to the wger Flutter App! We appreciate your support and efforts to improve the project.
 ```
-
