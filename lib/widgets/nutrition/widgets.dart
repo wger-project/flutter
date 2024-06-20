@@ -31,6 +31,7 @@ import 'package:wger/models/exercises/ingredient_api.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/widgets/core/core.dart';
+import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/nutrition_tiles.dart';
 
 class ScanReader extends StatelessWidget {
@@ -159,6 +160,12 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
                     ),
               title: Text(suggestion.value),
               // subtitle: Text(suggestion.data.id.toString()),
+              trailing: IconButton(
+                icon: const Icon(Icons.info_outline),
+                onPressed: () {
+                  showIngredientDetails(context, suggestion.data.id, image: suggestion.data.image);
+                },
+              ),
             );
           },
           transitionBuilder: (context, animation, child) => FadeTransition(
