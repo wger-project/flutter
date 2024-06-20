@@ -72,7 +72,8 @@ class _LogMealScreenState extends State<LogMealScreen> {
                     children: [
                       const DiaryheaderTile(),
                       ...meal.mealItems.map(
-                          (item) => MealItemEditableFullTile(item, viewMode.withAllDetails, false)),
+                        (item) => MealItemEditableFullTile(item, viewMode.withAllDetails, false),
+                      ),
                       const SizedBox(height: 32),
                       Text(
                         'Portion: ${portionPct.round()} %',
