@@ -154,5 +154,155 @@
   "category": "Κατηγορία",
   "@category": {
     "description": "Category for an exercise, ingredient, etc."
+  },
+  "labelDashboard": "Ταμπλό",
+  "@labelDashboard": {
+    "description": "Title for screen dashboard"
+  },
+  "successfullySaved": "Αποθηκεύτηκε",
+  "@successfullySaved": {
+    "description": "Message when an item was successfully saved"
+  },
+  "exerciseList": "Λίστα ασκήσεων",
+  "@exerciseList": {},
+  "exercise": "Εξάσκηση",
+  "@exercise": {
+    "description": "An exercise for a workout"
+  },
+  "exercises": "Εξασκήσεις",
+  "@exercises": {
+    "description": "Multiple exercises for a workout"
+  },
+  "exerciseName": "Όνομα Εξάσκησης",
+  "@exerciseName": {
+    "description": "Label for the name of a workout exercise"
+  },
+  "musclesSecondary": "Δευτερεύοντες μύες",
+  "@musclesSecondary": {
+    "description": "secondary muscles trained by an exercise"
+  },
+  "rir": "ΕσΚ",
+  "@rir": {
+    "description": "Shorthand for Repetitions In Reserve"
+  },
+  "comment": "Σχόλιο",
+  "@comment": {
+    "description": "Comment, additional information"
+  },
+  "pause": "Παύση",
+  "@pause": {
+    "description": "Noun, not an imperative! Label used for the pause when using the gym mode"
+  },
+  "useMetric": "Χρήση μετρικών μονάδων για το βάρος σώματος",
+  "@useMetric": {},
+  "weightUnit": "Μονάδα βάρους",
+  "@weightUnit": {},
+  "set": "Ορισμός",
+  "@set": {
+    "description": "A set in a workout plan"
+  },
+  "dayDescriptionHelp": "Περιγραφή του τι γίνεται την ημέρα αυτή (π.χ. \"pull day\") ή ποια μέρη του σώματος γυμνάζονται (π.χ. \"στήθος και ώμοι\").",
+  "@dayDescriptionHelp": {},
+  "setNr": "Ορισμός {nr}",
+  "@setNr": {
+    "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {}
+    }
+  },
+  "newDay": "Νέα ημέρα",
+  "@newDay": {},
+  "sameRepetitions": "Αν κάνετε τις ίδιες επαναλήψεις και το ίδιο βάρος για όλα τα σετ, μπορείτε να συμπληρώσετε μόνο μία σειρά. Για παράδειγμα, για 4 σετ απλά εισάγετε 10 για τις επαναλήψεις, αυτό γίνεται αυτόματα \"4 x 10\".",
+  "@sameRepetitions": {},
+  "selectExercises": "Αν θέλετε να κάνετε ένα υπερσύνολο, μπορείτε να αναζητήσετε αρκετές ασκήσεις, οι οποίες θα ομαδοποιηθούν μαζί.",
+  "@selectExercises": {},
+  "repetitionUnit": "Μονάδα επανάληψης",
+  "@repetitionUnit": {},
+  "workoutSession": "Περίοδος προπόνησης",
+  "@workoutSession": {
+    "description": "A (logged) workout session"
+  },
+  "plateCalculator": "Πλάκες",
+  "@plateCalculator": {
+    "description": "Label used for the plate calculator in the gym mode"
+  },
+  "plateCalculatorNotDivisible": "Δεν είναι δυνατή η επίτευξη βάρους με τις διαθέσιμες πλάκες",
+  "@plateCalculatorNotDivisible": {
+    "description": "Error message when the current weight is not reachable with plates (e.g. 33.1 kg)"
+  },
+  "jumpTo": "Μετάβαση σε",
+  "@jumpTo": {
+    "description": "Imperative. Label used in popup allowing the user to jump to a specific exercise while in the gym mode"
+  },
+  "todaysWorkout": "Η προπόνησή σας σήμερα",
+  "@todaysWorkout": {},
+  "logHelpEntries": "Εάν σε μία ημέρα υπάρχουν περισσότερες από μία εγγραφές με τον ίδιο αριθμό επαναλήψεων, αλλά με διαφορετικά βάρη, στο διάγραμμα εμφανίζεται μόνο η εγγραφή με το μεγαλύτερο βάρος.",
+  "@logHelpEntries": {},
+  "logHelpEntriesUnits": "Σημειώστε ότι καταγράφονται μόνο καταχωρήσεις με μονάδα βάρους (kg ή lb) και επαναλήψεις, ενώ άλλοι συνδυασμοί όπως χρόνος ή μέχρι αποτυχίας αγνοούνται εδώ.\nΕλληνικά",
+  "@logHelpEntriesUnits": {},
+  "labelWorkoutPlan": "Πλάνο προπόνησης",
+  "@labelWorkoutPlan": {
+    "description": "Title for screen workout plan"
+  },
+  "noIngredientsDefined": "Δεν έχουν οριστεί συστατικά ακόμα",
+  "@noIngredientsDefined": {},
+  "searchExercise": "Αναζήτηση εξάσκησης για προσθήκη",
+  "@searchExercise": {
+    "description": "Label on set form. Selected exercises are added to the set"
+  },
+  "success": "Επιτυχία",
+  "@success": {
+    "description": "Message when an action completed successfully, usually used as a heading"
+  },
+  "successfullyDeleted": "Διαγράφηκε",
+  "@successfullyDeleted": {
+    "description": "Message when an item was successfully deleted"
+  },
+  "noWorkoutPlans": "Δεν έχετε πλάνα προπόνησης",
+  "@noWorkoutPlans": {
+    "description": "Message shown when the user has no workout plans"
+  },
+  "searchNamesInEnglish": "Επίσης, αναζητήστε ονόματα στα Αγγλικά",
+  "@searchNamesInEnglish": {},
+  "noMatchingExerciseFound": "Δεν βρέθηκαν αντίστοιχες ασκήσεις",
+  "@noMatchingExerciseFound": {
+    "description": "Message returned if no exercises match the searched string"
+  },
+  "supersetWith": "υπερσύνολο με",
+  "@supersetWith": {
+    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
+  },
+  "equipment": "Εξοπλισμός",
+  "@equipment": {
+    "description": "Equipment needed to perform an exercise"
+  },
+  "muscles": "Μύες",
+  "@muscles": {
+    "description": "(main) muscles trained by an exercise"
+  },
+  "newWorkout": "Νέο πλάνο προπόνησης",
+  "@newWorkout": {
+    "description": "Header when adding a new workout"
+  },
+  "reps": "Επαναλήψεις",
+  "@reps": {
+    "description": "Shorthand for repetitions, used when space constraints are tighter"
+  },
+  "rirNotUsed": "ΕσΚ δεν χρησιμοποιείται",
+  "@rirNotUsed": {
+    "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
+  },
+  "impression": "Εντύπωση",
+  "@impression": {
+    "description": "General impression (e.g. for a workout session) such as good, bad, etc."
+  },
+  "newSet": "Νέο σετ",
+  "@newSet": {
+    "description": "Header when adding a new set to a workout day"
+  },
+  "gymMode": "Λειτουργία γυμναστηρίου",
+  "@gymMode": {
+    "description": "Label when starting the gym mode"
   }
 }
