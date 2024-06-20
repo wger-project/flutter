@@ -49,7 +49,7 @@ class WeightScreen extends StatelessWidget {
         },
       ),
       body: Consumer<BodyWeightProvider>(
-        builder: (context, workoutProvider, child) => WeightEntriesList(),
+        builder: (context, workoutProvider, child) => const WeightEntriesList(),
       ),
     );
   }

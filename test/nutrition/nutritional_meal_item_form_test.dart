@@ -105,7 +105,7 @@ void main() {
           ),
         ),
         routes: {
-          NutritionalPlanScreen.routeName: (ctx) => NutritionalPlanScreen(),
+          NutritionalPlanScreen.routeName: (ctx) => const NutritionalPlanScreen(),
         },
       ),
     );

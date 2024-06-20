@@ -35,9 +35,9 @@ Widget createWeightScreen({locale = 'en'}) {
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       theme: wgerLightTheme,
-      home: WeightScreen(),
+      home: const WeightScreen(),
       routes: {
-        FormScreen.routeName: (ctx) => FormScreen(),
+        FormScreen.routeName: (ctx) => const FormScreen(),
       },
     ),
   );

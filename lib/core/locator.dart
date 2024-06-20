@@ -13,7 +13,7 @@ class ServiceLocator {
 
   const ServiceLocator._internal();
 
-  static final ServiceLocator _singleton = ServiceLocator._internal();
+  static const ServiceLocator _singleton = ServiceLocator._internal();
 
   Future<void> _initDB() async {
     ExerciseDatabase exerciseDB;

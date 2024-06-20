@@ -92,7 +92,7 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
   Future<String> readerscan(BuildContext context) async {
     try {
       final code = await Navigator.of(context)
-          .push<String?>(MaterialPageRoute(builder: (context) => ScanReader()));
+          .push<String?>(MaterialPageRoute(builder: (context) => const ScanReader()));
       if (code == null) {
         return '';
       }

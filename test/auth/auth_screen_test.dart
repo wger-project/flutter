@@ -63,10 +63,10 @@ void main() {
         ChangeNotifierProvider(create: (ctx) => authProvider),
       ],
       child: Consumer<AuthProvider>(
-        builder: (ctx, auth, _) => MaterialApp(
+        builder: (ctx, auth, _) => const MaterialApp(
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          locale: const Locale('en'),
+          locale: Locale('en'),
           home: AuthScreen(),
         ),
       ),

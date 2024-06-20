@@ -182,7 +182,7 @@ class ExercisesProvider with ChangeNotifier {
   Exercise findExerciseById(int id) {
     return exercises.firstWhere(
       (base) => base.id == id,
-      orElse: () => throw NoSuchEntryException(),
+      orElse: () => throw const NoSuchEntryException(),
     );
   }
 
@@ -208,7 +208,7 @@ class ExercisesProvider with ChangeNotifier {
   ExerciseCategory findCategoryById(int id) {
     return _categories.firstWhere(
       (cat) => cat.id == id,
-      orElse: () => throw NoSuchEntryException(),
+      orElse: () => throw const NoSuchEntryException(),
     );
   }
 
@@ -216,7 +216,7 @@ class ExercisesProvider with ChangeNotifier {
   Equipment findEquipmentById(int id) {
     return _equipment.firstWhere(
       (equipment) => equipment.id == id,
-      orElse: () => throw NoSuchEntryException(),
+      orElse: () => throw const NoSuchEntryException(),
     );
   }
 
@@ -224,7 +224,7 @@ class ExercisesProvider with ChangeNotifier {
   Muscle findMuscleById(int id) {
     return _muscles.firstWhere(
       (muscle) => muscle.id == id,
-      orElse: () => throw NoSuchEntryException(),
+      orElse: () => throw const NoSuchEntryException(),
     );
   }
 
@@ -232,7 +232,7 @@ class ExercisesProvider with ChangeNotifier {
   Language findLanguageById(int id) {
     return _languages.firstWhere(
       (language) => language.id == id,
-      orElse: () => throw NoSuchEntryException(),
+      orElse: () => throw const NoSuchEntryException(),
     );
   }
 

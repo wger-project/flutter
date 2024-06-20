@@ -64,7 +64,7 @@ void main() async {
   // Locator to initialize exerciseDB
   await ServiceLocator().configure();
   // Application
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -142,30 +142,30 @@ class MyApp extends StatelessWidget {
           highContrastDarkTheme: wgerDarkThemeHc,
           themeMode: ThemeMode.system,
           home: auth.isAuth
-              ? HomeTabsScreen()
+              ? const HomeTabsScreen()
               : FutureBuilder(
                   future: auth.tryAutoLogin(),
                   builder: (ctx, authResultSnapshot) =>
                       authResultSnapshot.connectionState == ConnectionState.waiting
-                          ? SplashScreen()
-                          : AuthScreen(),
+                          ? const SplashScreen()
+                          : const AuthScreen(),
                 ),
           routes: {
-            DashboardScreen.routeName: (ctx) => DashboardScreen(),
-            FormScreen.routeName: (ctx) => FormScreen(),
+            DashboardScreen.routeName: (ctx) => const DashboardScreen(),
+            FormScreen.routeName: (ctx) => const FormScreen(),
             GalleryScreen.routeName: (ctx) => const GalleryScreen(),
-            GymModeScreen.routeName: (ctx) => GymModeScreen(),
-            HomeTabsScreen.routeName: (ctx) => HomeTabsScreen(),
-            MeasurementCategoriesScreen.routeName: (ctx) => MeasurementCategoriesScreen(),
-            MeasurementEntriesScreen.routeName: (ctx) => MeasurementEntriesScreen(),
-            NutritionalPlansScreen.routeName: (ctx) => NutritionalPlansScreen(),
-            NutritionalDiaryScreen.routeName: (ctx) => NutritionalDiaryScreen(),
-            NutritionalPlanScreen.routeName: (ctx) => NutritionalPlanScreen(),
-            LogMealsScreen.routeName: (ctx) => LogMealsScreen(),
-            LogMealScreen.routeName: (ctx) => LogMealScreen(),
-            WeightScreen.routeName: (ctx) => WeightScreen(),
-            WorkoutPlanScreen.routeName: (ctx) => WorkoutPlanScreen(),
-            WorkoutPlansScreen.routeName: (ctx) => WorkoutPlansScreen(),
+            GymModeScreen.routeName: (ctx) => const GymModeScreen(),
+            HomeTabsScreen.routeName: (ctx) => const HomeTabsScreen(),
+            MeasurementCategoriesScreen.routeName: (ctx) => const MeasurementCategoriesScreen(),
+            MeasurementEntriesScreen.routeName: (ctx) => const MeasurementEntriesScreen(),
+            NutritionalPlansScreen.routeName: (ctx) => const NutritionalPlansScreen(),
+            NutritionalDiaryScreen.routeName: (ctx) => const NutritionalDiaryScreen(),
+            NutritionalPlanScreen.routeName: (ctx) => const NutritionalPlanScreen(),
+            LogMealsScreen.routeName: (ctx) => const LogMealsScreen(),
+            LogMealScreen.routeName: (ctx) => const LogMealScreen(),
+            WeightScreen.routeName: (ctx) => const WeightScreen(),
+            WorkoutPlanScreen.routeName: (ctx) => const WorkoutPlanScreen(),
+            WorkoutPlansScreen.routeName: (ctx) => const WorkoutPlansScreen(),
             ExercisesScreen.routeName: (ctx) => const ExercisesScreen(),
             ExerciseDetailScreen.routeName: (ctx) => const ExerciseDetailScreen(),
             AddExerciseScreen.routeName: (ctx) => const AddExerciseScreen(),

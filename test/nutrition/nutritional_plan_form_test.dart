@@ -62,7 +62,7 @@ void main() {
           body: PlanForm(plan),
         ),
         routes: {
-          NutritionalPlanScreen.routeName: (ctx) => NutritionalPlanScreen(),
+          NutritionalPlanScreen.routeName: (ctx) => const NutritionalPlanScreen(),
         },
       ),
     );

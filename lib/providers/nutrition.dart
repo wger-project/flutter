@@ -75,7 +75,7 @@ class NutritionPlansProvider with ChangeNotifier {
   NutritionalPlan findById(int id) {
     return _plans.firstWhere(
       (plan) => plan.id == id,
-      orElse: () => throw NoSuchEntryException(),
+      orElse: () => throw const NoSuchEntryException(),
     );
   }
 

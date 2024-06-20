@@ -34,7 +34,7 @@ Widget createNutritionalPlanScreen({locale = 'en'}) {
         onPressed: () => key.currentState!.push(
           MaterialPageRoute<void>(
             settings: RouteSettings(arguments: getNutritionalPlanScreenshot()),
-            builder: (_) => NutritionalPlanScreen(),
+            builder: (_) => const NutritionalPlanScreen(),
           ),
         ),
         child: const SizedBox(),

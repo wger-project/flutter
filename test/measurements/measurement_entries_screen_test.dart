@@ -55,7 +55,7 @@ void main() {
           onPressed: () => key.currentState!.push(
             MaterialPageRoute<void>(
               settings: const RouteSettings(arguments: 1),
-              builder: (_) => MeasurementEntriesScreen(),
+              builder: (_) => const MeasurementEntriesScreen(),
             ),
           ),
           child: Container(),

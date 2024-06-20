@@ -57,7 +57,7 @@ void main() {
           onPressed: () => key.currentState!.push(
             MaterialPageRoute<void>(
               settings: RouteSettings(arguments: plan),
-              builder: (_) => NutritionalPlanScreen(),
+              builder: (_) => const NutritionalPlanScreen(),
             ),
           ),
           child: const SizedBox(),

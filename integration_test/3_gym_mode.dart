@@ -44,13 +44,13 @@ Widget createGymModeScreen({locale = 'en'}) {
           onPressed: () => key.currentState!.push(
             MaterialPageRoute<void>(
               settings: RouteSettings(arguments: workout.days.first),
-              builder: (_) => GymModeScreen(),
+              builder: (_) => const GymModeScreen(),
             ),
           ),
           child: const SizedBox(),
         ),
         routes: {
-          WorkoutPlanScreen.routeName: (ctx) => WorkoutPlanScreen(),
+          WorkoutPlanScreen.routeName: (ctx) => const WorkoutPlanScreen(),
         },
       ),
     ),

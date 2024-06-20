@@ -44,7 +44,7 @@ class MeasurementProvider with ChangeNotifier {
   MeasurementCategory findCategoryById(int id) {
     return _categories.firstWhere(
       (category) => category.id == id,
-      orElse: () => throw NoSuchEntryException(),
+      orElse: () => throw const NoSuchEntryException(),
     );
   }
 

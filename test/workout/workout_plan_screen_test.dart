@@ -52,13 +52,13 @@ void main() {
           onPressed: () => key.currentState!.push(
             MaterialPageRoute<void>(
               settings: RouteSettings(arguments: getWorkout()),
-              builder: (_) => WorkoutPlanScreen(),
+              builder: (_) => const WorkoutPlanScreen(),
             ),
           ),
           child: const SizedBox(),
         ),
         routes: {
-          WorkoutPlanScreen.routeName: (ctx) => WorkoutPlanScreen(),
+          WorkoutPlanScreen.routeName: (ctx) => const WorkoutPlanScreen(),
         },
       ),
     );

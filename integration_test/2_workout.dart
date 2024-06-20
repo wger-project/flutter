@@ -35,7 +35,7 @@ Widget createWorkoutDetailScreen({locale = 'en'}) {
         onPressed: () => key.currentState!.push(
           MaterialPageRoute<void>(
             settings: RouteSettings(arguments: workout),
-            builder: (_) => WorkoutPlanScreen(),
+            builder: (_) => const WorkoutPlanScreen(),
           ),
         ),
         child: const SizedBox(),

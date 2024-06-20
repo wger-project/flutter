@@ -40,7 +40,7 @@ class Gallery extends StatelessWidget {
       child: RefreshIndicator(
         onRefresh: () => provider.fetchAndSetGallery(),
         child: provider.images.isEmpty
-            ? TextPrompt()
+            ? const TextPrompt()
             : MasonryGridView.count(
                 crossAxisCount: 2,
                 mainAxisSpacing: 5,
