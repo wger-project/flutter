@@ -117,17 +117,8 @@ void showIngredientDetails(BuildContext context, int id, {String? image}) {
         NutritionalGoals? goals;
 
         if (snapshot.hasData) {
-          ingredient = snapshot.data!;
-          goals = NutritionalGoals(
-            energy: ingredient.nutritionalValues.energy,
-            protein: ingredient.nutritionalValues.protein,
-            carbohydrates: ingredient.nutritionalValues.carbohydrates,
-            carbohydratesSugar: ingredient.nutritionalValues.carbohydratesSugar,
-            fat: ingredient.nutritionalValues.fat,
-            fatSaturated: ingredient.nutritionalValues.fatSaturated,
-            fiber: ingredient.nutritionalValues.fiber,
-            sodium: ingredient.nutritionalValues.sodium,
-          );
+          ingredient = snapshot.data;
+          goals = ingredient!.nutritionalValues.toGoals();
         }
         return AlertDialog(
           title: (snapshot.hasData) ? Text(ingredient!.name) : null,
