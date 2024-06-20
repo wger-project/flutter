@@ -40,9 +40,7 @@ class WeightEntriesList extends StatelessWidget {
           padding: const EdgeInsets.all(15),
           height: 220,
           child: MeasurementChartWidgetFl(
-            weightProvider.items
-              .map((e) => MeasurementChartEntry(e.weight, e.date))
-              .toList(),
+            weightProvider.items.map((e) => MeasurementChartEntry(e.weight, e.date)).toList(),
             unit: profile!.isMetric
                 ? AppLocalizations.of(context).kg
                 : AppLocalizations.of(context).lb,

@@ -34,8 +34,7 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
-    final exerciseProvider =
-        Provider.of<ExercisesProvider>(context, listen: false);
+    final exerciseProvider = Provider.of<ExercisesProvider>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
@@ -46,8 +45,7 @@ class _SettingsPageState extends State<SettingsPage> {
           ListTile(
             // leading: const Icon(Icons.cached),
             title: Text(AppLocalizations.of(context).settingsCacheTitle),
-            subtitle:
-                Text(AppLocalizations.of(context).settingsCacheDescription),
+            subtitle: Text(AppLocalizations.of(context).settingsCacheDescription),
             trailing: IconButton(
               key: const ValueKey('cacheIcon'),
               icon: const Icon(Icons.delete),
@@ -56,8 +54,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
                 if (context.mounted) {
                   final snackBar = SnackBar(
-                    content: Text(AppLocalizations.of(context)
-                        .settingsCacheDeletedSnackbar),
+                    content: Text(AppLocalizations.of(context).settingsCacheDeletedSnackbar),
                   );
 
                   // Find the ScaffoldMessenger in the widget tree

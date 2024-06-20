@@ -124,7 +124,7 @@ class NutritionalPlanScreen extends StatelessWidget {
                     );
                   } else if (value == NutritionalPlanOptions.delete) {
                     Provider.of<NutritionPlansProvider>(context, listen: false)
-                      .deletePlan(nutritionalPlan.id!);
+                        .deletePlan(nutritionalPlan.id!);
                     Navigator.of(context).pop();
                   }
                 },
@@ -153,10 +153,7 @@ class NutritionalPlanScreen extends StatelessWidget {
               titlePadding: const EdgeInsets.fromLTRB(56, 0, 56, 16),
               title: Text(
                 nutritionalPlan.getLabel(context),
-                style: Theme.of(context)
-                  .textTheme
-                  .titleLarge
-                  ?.copyWith(color: appBarForeground),
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(color: appBarForeground),
               ),
             ),
           ),

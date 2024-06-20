@@ -91,24 +91,12 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                         leading: const Icon(Icons.exit_to_app),
                         title: Text(AppLocalizations.of(context).logout),
                         onTap: () {
-                          context
-                            .read<AuthProvider>()
-                            .logout();
-                          context
-                            .read<WorkoutPlansProvider>()
-                            .clear();
-                          context
-                            .read<NutritionPlansProvider>()
-                            .clear();
-                          context
-                            .read<BodyWeightProvider>()
-                            .clear();
-                          context
-                            .read<GalleryProvider>()
-                            .clear();
-                          context
-                            .read<UserProvider>()
-                            .clear();
+                          context.read<AuthProvider>().logout();
+                          context.read<WorkoutPlansProvider>().clear();
+                          context.read<NutritionPlansProvider>().clear();
+                          context.read<BodyWeightProvider>().clear();
+                          context.read<GalleryProvider>().clear();
+                          context.read<UserProvider>().clear();
 
                           Navigator.of(context).pop();
                           Navigator.of(context).pushReplacementNamed('/');

@@ -47,8 +47,8 @@ class _LogMealScreenState extends State<LogMealScreen> {
     final args = ModalRoute.of(context)!.settings.arguments as LogMealArguments;
     final meal = args.meal.copyWith(
       mealItems: args.meal.mealItems
-        .map((mealItem) => mealItem.copyWith(amount: mealItem.amount * portionPct / 100))
-        .toList(),
+          .map((mealItem) => mealItem.copyWith(amount: mealItem.amount * portionPct / 100))
+          .toList(),
     );
 
     return Scaffold(

@@ -66,7 +66,7 @@ class NutritionalPlansList extends StatelessWidget {
                               return AlertDialog(
                                 content: Text(
                                   AppLocalizations.of(context)
-                                    .confirmDelete(currentPlan.description),
+                                      .confirmDelete(currentPlan.description),
                                 ),
                                 actions: [
                                   TextButton(

@@ -59,7 +59,7 @@ class Gallery extends StatelessWidget {
                             children: [
                               Text(
                                 DateFormat.yMd(Localizations.localeOf(context).languageCode)
-                                  .format(currentImage.date),
+                                    .format(currentImage.date),
                                 style: Theme.of(context).textTheme.headlineSmall,
                               ),
                               Expanded(

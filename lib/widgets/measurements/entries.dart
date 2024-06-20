@@ -39,9 +39,7 @@ class EntriesList extends StatelessWidget {
         padding: const EdgeInsets.all(10),
         height: 220,
         child: MeasurementChartWidgetFl(
-          _category.entries
-            .map((e) => MeasurementChartEntry(e.value, e.date))
-            .toList(),
+          _category.entries.map((e) => MeasurementChartEntry(e.value, e.date)).toList(),
           unit: _category.unit,
         ),
       ),
@@ -58,7 +56,7 @@ class EntriesList extends StatelessWidget {
                 title: Text('${currentEntry.value} ${_category.unit}'),
                 subtitle: Text(
                   DateFormat.yMd(Localizations.localeOf(context).languageCode)
-                    .format(currentEntry.date),
+                      .format(currentEntry.date),
                 ),
                 trailing: PopupMenuButton(
                   itemBuilder: (BuildContext context) {

@@ -35,9 +35,8 @@ class PreviewExerciseImages extends StatelessWidget with ExerciseImagePickerMixi
                         ),
                         child: IconButton(
                           iconSize: 20,
-                          onPressed: () => context
-                            .read<AddExerciseProvider>()
-                            .removeExercise(file.path),
+                          onPressed: () =>
+                              context.read<AddExerciseProvider>().removeExercise(file.path),
                           color: Colors.white,
                           icon: const Icon(Icons.delete),
                         ),

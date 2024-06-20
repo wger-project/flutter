@@ -82,9 +82,7 @@ class SettingWidget extends StatelessWidget {
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ...set
-            .getSmartRepr(setting.exerciseObj)
-            .map((e) => Text(e)),
+          ...set.getSmartRepr(setting.exerciseObj).map((e) => Text(e)),
         ],
       ),
     );

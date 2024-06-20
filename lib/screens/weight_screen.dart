@@ -31,9 +31,7 @@ class WeightScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final lastWeightEntry = context
-      .read<BodyWeightProvider>()
-      .getNewestEntry();
+    final lastWeightEntry = context.read<BodyWeightProvider>().getNewestEntry();
 
     return Scaffold(
       appBar: EmptyAppBar(AppLocalizations.of(context).weight),
