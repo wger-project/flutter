@@ -31,7 +31,7 @@ import 'package:wger/models/exercises/ingredient_api.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/widgets/core/core.dart';
-import 'package:wger/widgets/nutrition/forms.dart';
+import 'package:wger/widgets/nutrition/helpers.dart';
 import 'package:wger/widgets/nutrition/nutrition_tiles.dart';
 
 class ScanReader extends StatelessWidget {

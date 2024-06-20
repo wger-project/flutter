@@ -19,9 +19,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
+import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/meal.dart';
+import 'package:wger/models/nutrition/nutritional_goals.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
+import 'package:wger/providers/nutrition.dart';
 import 'package:wger/widgets/core/core.dart';
+import 'package:wger/widgets/nutrition/macro_nutrients_table.dart';
 
 List<String> getNutritionColumnNames(BuildContext context) => [
       AppLocalizations.of(context).energy,
@@ -94,4 +99,66 @@ String getKcalConsumedVsPlanned(Meal meal, BuildContext context) {
   final loc = AppLocalizations.of(context);
 
   return '${consumed.toStringAsFixed(0)} / ${planned.toStringAsFixed(0)} ${loc.kcal}';
+}
+
+void showIngredientDetails(BuildContext context, int id, {String? image}) {
+  // when loading recently used ingredients, we never get an image :'(
+  // we also don't get an image when querying the API
+  // however, the typeahead suggestion does get an image, so we allow passing it...
+
+  final url = context.read<NutritionPlansProvider>().baseProvider.auth.serverUrl;
+
+  showDialog(
+    context: context,
+    builder: (context) => FutureBuilder<Ingredient>(
+      future: Provider.of<NutritionPlansProvider>(context, listen: false).fetchIngredient(id),
+      builder: (BuildContext context, AsyncSnapshot<Ingredient> snapshot) {
+        Ingredient? ingredient;
+        NutritionalGoals? goals;
+
+        if (snapshot.hasData) {
+          ingredient = snapshot.data!;
+          goals = NutritionalGoals(
+            energy: ingredient.nutritionalValues.energy,
+            protein: ingredient.nutritionalValues.protein,
+            carbohydrates: ingredient.nutritionalValues.carbohydrates,
+            carbohydratesSugar: ingredient.nutritionalValues.carbohydratesSugar,
+            fat: ingredient.nutritionalValues.fat,
+            fatSaturated: ingredient.nutritionalValues.fatSaturated,
+            fiber: ingredient.nutritionalValues.fiber,
+            sodium: ingredient.nutritionalValues.sodium,
+          );
+        }
+        return AlertDialog(
+          title: (snapshot.hasData) ? Text(ingredient!.name) : null,
+          content: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (image != null)
+                  CircleAvatar(backgroundImage: NetworkImage(url! + image), radius: 128),
+                if (image != null) const SizedBox(height: 12),
+                if (snapshot.hasError)
+                  Text(
+                    'Ingredient lookup error: ${snapshot.error}',
+                    style: const TextStyle(color: Colors.red),
+                  ),
+                if (!snapshot.hasData && !snapshot.hasError) const CircularProgressIndicator(),
+                if (snapshot.hasData)
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(minWidth: 400),
+                    child: MacronutrientsTable(
+                      nutritionalGoals: goals!,
+                      plannedValuesPercentage: goals.energyPercentage(),
+                      nutritionalGoalsGperKg: null,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
+    ),
+  );
 }
