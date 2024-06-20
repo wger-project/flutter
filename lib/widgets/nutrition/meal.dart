@@ -204,9 +204,7 @@ class _MealWidgetState extends State<MealWidget> {
                   ...widget._meal.diaryEntriesToday.map((item) => Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Column(
-                          children: [
-                            DiaryEntryTile(diaryEntry: item),
-                          ],
+                          children: [DiaryEntryTile(diaryEntry: item)],
                         ),
                       )),
                 ],

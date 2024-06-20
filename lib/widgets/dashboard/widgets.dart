@@ -349,11 +349,8 @@ class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget>
   Widget build(BuildContext context) {
     final provider = Provider.of<MeasurementProvider>(context, listen: false);
 
-    final items = provider.categories
-        .map<Widget>(
-          (item) => CategoriesCard(item, elevation: 0),
-        )
-        .toList();
+    final items =
+        provider.categories.map<Widget>((item) => CategoriesCard(item, elevation: 0)).toList();
     if (items.isNotEmpty) {
       items.add(
         NothingFound(
@@ -573,9 +570,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
           if (_hasContent)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Column(
-                children: [...getContent()],
-              ),
+              child: Column(children: [...getContent()]),
             )
           else
             NothingFound(

@@ -64,9 +64,7 @@ class FormScreen extends StatelessWidget {
           : Column(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Padding(padding: args.padding, child: args.widget),
-              ],
+              children: [Padding(padding: args.padding, child: args.widget)],
             ),
     );
   }

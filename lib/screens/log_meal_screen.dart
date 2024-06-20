@@ -52,9 +52,7 @@ class _LogMealScreenState extends State<LogMealScreen> {
     );
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context).logMeal),
-      ),
+      appBar: AppBar(title: Text(AppLocalizations.of(context).logMeal)),
       body: Consumer<NutritionPlansProvider>(
         builder: (context, nutritionProvider, child) => SingleChildScrollView(
           child: Padding(
