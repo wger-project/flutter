@@ -484,9 +484,7 @@ void showIngredientDetails(BuildContext context, int id, {String? image}) {
   showDialog(
     context: context,
     builder: (context) => FutureBuilder<Ingredient>(
-      future: Future.delayed(const Duration(seconds: 5), () {
-        return Provider.of<NutritionPlansProvider>(context, listen: false).fetchIngredient(id);
-      }),
+      future: Provider.of<NutritionPlansProvider>(context, listen: false).fetchIngredient(id),
       builder: (BuildContext context, AsyncSnapshot<Ingredient> snapshot) {
         Ingredient? ingredient;
         NutritionalGoals? goals;
