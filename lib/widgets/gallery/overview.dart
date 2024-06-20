@@ -40,7 +40,7 @@ class Gallery extends StatelessWidget {
       child: RefreshIndicator(
         onRefresh: () => provider.fetchAndSetGallery(),
         child: provider.images.isEmpty
-            ? TextPrompt()
+            ? const TextPrompt()
             : MasonryGridView.count(
                 crossAxisCount: 2,
                 mainAxisSpacing: 5,
@@ -59,7 +59,7 @@ class Gallery extends StatelessWidget {
                             children: [
                               Text(
                                 DateFormat.yMd(Localizations.localeOf(context).languageCode)
-                                  .format(currentImage.date),
+                                    .format(currentImage.date),
                                 style: Theme.of(context).textTheme.headlineSmall,
                               ),
                               Expanded(

@@ -70,9 +70,9 @@ void main() {
         locale: Locale(locale),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: WorkoutPlansScreen(),
+        home: const WorkoutPlansScreen(),
         routes: {
-          FormScreen.routeName: (ctx) => FormScreen(),
+          FormScreen.routeName: (ctx) => const FormScreen(),
         },
       ),
     );

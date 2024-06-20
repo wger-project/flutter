@@ -34,7 +34,7 @@ class WorkoutPlansList extends StatelessWidget {
     return RefreshIndicator(
       onRefresh: () => _workoutProvider.fetchAndSetAllPlansSparse(),
       child: _workoutProvider.items.isEmpty
-          ? TextPrompt()
+          ? const TextPrompt()
           : ListView.builder(
               padding: const EdgeInsets.all(10.0),
               itemCount: _workoutProvider.items.length,

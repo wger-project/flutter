@@ -166,4 +166,4 @@ dart_code_metrics:
   formatter:
     indent: 0
     line-length: 100
-    cascading-widget-extensions: true
+    cascading-widget-extensions: false

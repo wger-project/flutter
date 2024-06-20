@@ -211,7 +211,7 @@ class _AuthCardState extends State<AuthCard> {
       if (res.containsKey('action')) {
         if (res['action'] == LoginActions.update && mounted) {
           Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => UpdateAppScreen()),
+            MaterialPageRoute(builder: (context) => const UpdateAppScreen()),
           );
           return;
         }

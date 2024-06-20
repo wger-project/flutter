@@ -33,7 +33,7 @@ class WorkoutPlansScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: WorkoutOverviewAppBar(),
+      appBar: const WorkoutOverviewAppBar(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pushNamed(

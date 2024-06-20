@@ -68,7 +68,9 @@ class DiaryEntryTile extends StatelessWidget {
         overflow: TextOverflow.ellipsis,
       ),
       subtitle: getNutritionRow(
-          context, muted(getNutritionalValues(diaryEntry.nutritionalValues, context))),
+        context,
+        muted(getNutritionalValues(diaryEntry.nutritionalValues, context)),
+      ),
       trailing: (nutritionalPlan == null)
           ? null
           : IconButton(

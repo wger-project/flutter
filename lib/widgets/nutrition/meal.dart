@@ -167,10 +167,11 @@ class _MealWidgetState extends State<MealWidget> {
             if (_viewMode == viewMode.withIngredients || _viewMode == viewMode.withAllDetails)
               if (widget._meal.mealItems.isEmpty && widget._meal.isRealMeal)
                 NutritionTile(
-                    title: Text(
-                  AppLocalizations.of(context).noIngredientsDefined,
-                  textAlign: TextAlign.left,
-                ))
+                  title: Text(
+                    AppLocalizations.of(context).noIngredientsDefined,
+                    textAlign: TextAlign.left,
+                  ),
+                )
               else
                 ...widget._meal.mealItems
                     .map((item) => MealItemEditableFullTile(item, _viewMode, _editing)),
@@ -203,9 +204,7 @@ class _MealWidgetState extends State<MealWidget> {
                   ...widget._meal.diaryEntriesToday.map((item) => Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Column(
-                          children: [
-                            DiaryEntryTile(diaryEntry: item),
-                          ],
+                          children: [DiaryEntryTile(diaryEntry: item)],
                         ),
                       )),
                 ],
@@ -309,31 +308,32 @@ class MealHeader extends StatelessWidget {
           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           title: Row(children: [
             Expanded(
-                child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  _meal.name,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                Row(
-                  children: [
-                    if (_meal.time != null)
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    _meal.name,
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  Row(
+                    children: [
+                      if (_meal.time != null)
+                        Text(
+                          _meal.time!.format(context),
+                          style: Theme.of(context).textTheme.titleSmall,
+                        ),
+                      if (_meal.time != null) const SizedBox(width: 12),
                       Text(
-                        _meal.time!.format(context),
+                        _meal.isRealMeal
+                            ? getKcalConsumedVsPlanned(_meal, context)
+                            : getKcalConsumed(_meal, context),
                         style: Theme.of(context).textTheme.titleSmall,
                       ),
-                    if (_meal.time != null) const SizedBox(width: 12),
-                    Text(
-                      _meal.isRealMeal
-                          ? getKcalConsumedVsPlanned(_meal, context)
-                          : getKcalConsumed(_meal, context),
-                      style: Theme.of(context).textTheme.titleSmall,
-                    ),
-                  ],
-                ),
-              ],
-            )),
+                    ],
+                  ),
+                ],
+              ),
+            ),
           ]),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,

@@ -61,13 +61,13 @@ void main() {
             onPressed: () => key.currentState!.push(
               MaterialPageRoute<void>(
                 settings: RouteSettings(arguments: workoutPlan.days.first),
-                builder: (_) => GymModeScreen(),
+                builder: (_) => const GymModeScreen(),
               ),
             ),
             child: const SizedBox(),
           ),
           routes: {
-            WorkoutPlanScreen.routeName: (ctx) => WorkoutPlanScreen(),
+            WorkoutPlanScreen.routeName: (ctx) => const WorkoutPlanScreen(),
           },
         ),
       ),

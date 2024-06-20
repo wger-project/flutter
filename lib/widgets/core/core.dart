@@ -50,9 +50,7 @@ class Pill extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
       decoration: BoxDecoration(
-        color: Theme.of(context)
-          .primaryColorLight
-          .withOpacity(0.15),
+        color: Theme.of(context).primaryColorLight.withOpacity(0.15),
         border: Border.all(color: Colors.grey[300]!),
         borderRadius: BorderRadius.circular(5),
       ),

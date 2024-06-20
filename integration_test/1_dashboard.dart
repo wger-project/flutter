@@ -79,7 +79,7 @@ Widget createDashboardScreen({locale = 'en'}) {
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       theme: wgerLightTheme,
-      home: DashboardScreen(),
+      home: const DashboardScreen(),
     ),
   );
 }

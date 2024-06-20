@@ -63,7 +63,7 @@ void main() {
           body: WorkoutForm(workoutPlan),
         ),
         routes: {
-          WorkoutPlanScreen.routeName: (ctx) => WorkoutPlanScreen(),
+          WorkoutPlanScreen.routeName: (ctx) => const WorkoutPlanScreen(),
         },
       ),
     );

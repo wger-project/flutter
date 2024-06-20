@@ -160,13 +160,8 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
         ],
         currentStep: _currentStep,
         onStepContinue: () {
-          if (_keys[_currentStep]
-                .currentState
-                ?.validate() ??
-              false) {
-            _keys[_currentStep]
-              .currentState
-              ?.save();
+          if (_keys[_currentStep].currentState?.validate() ?? false) {
+            _keys[_currentStep].currentState?.save();
 
             if (_currentStep != lastStepIndex) {
               setState(() {
@@ -213,7 +208,7 @@ class EmailNotVerified extends StatelessWidget {
                   leading: const Icon(Icons.warning),
                   title: Text(AppLocalizations.of(context).unVerifiedEmail),
                   subtitle: Text(AppLocalizations.of(context)
-                    .contributeExerciseWarning(MIN_ACCOUNT_AGE.toString())),
+                      .contributeExerciseWarning(MIN_ACCOUNT_AGE.toString())),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,

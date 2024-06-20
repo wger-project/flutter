@@ -237,11 +237,11 @@ class FlNutritionalPlanPieChartState extends State<FlNutritionalPlanPieChartWidg
             (AppLocalizations.of(context).carbohydrates, LIST_OF_COLORS3[0]),
             (AppLocalizations.of(context).fat, LIST_OF_COLORS3[2]),
           ]
-            .map((e) => Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 2),
-                  child: Indicator(color: e.$2, text: e.$1, isSquare: true),
-                ))
-            .toList(),
+              .map((e) => Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 2),
+                    child: Indicator(color: e.$2, text: e.$1, isSquare: true),
+                  ))
+              .toList(),
         ),
         const SizedBox(width: 28),
       ],
@@ -441,15 +441,15 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
                   (AppLocalizations.of(context).today, colorLoggedToday),
                   (AppLocalizations.of(context).weekAverage, colorLogged7Day),
                 ]
-                  .map(
-                    (e) => Indicator(
-                      color: e.$2,
-                      text: e.$1,
-                      isSquare: true,
-                      marginRight: 0,
-                    ),
-                  )
-                  .toList(),
+                    .map(
+                      (e) => Indicator(
+                        color: e.$2,
+                        text: e.$1,
+                        isSquare: true,
+                        marginRight: 0,
+                      ),
+                    )
+                    .toList(),
               ),
             ),
           ],

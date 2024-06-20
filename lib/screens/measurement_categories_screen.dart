@@ -46,7 +46,7 @@ class MeasurementCategoriesScreen extends StatelessWidget {
         },
       ),
       body: Consumer<MeasurementProvider>(
-        builder: (context, provider, child) => CategoriesList(),
+        builder: (context, provider, child) => const CategoriesList(),
       ),
     );
   }

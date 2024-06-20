@@ -111,10 +111,7 @@ class AboutPage extends StatelessWidget {
             SizedBox(height: 0.025 * deviceSize.height),
             Text(
               AppLocalizations.of(context).aboutDescription,
-              style: Theme.of(context)
-                .textTheme
-                .bodyMedium!
-                .copyWith(fontSize: 16),
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 16),
             ),
             const SizedBox(height: 10),
             AboutEntry(

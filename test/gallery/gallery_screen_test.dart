@@ -49,7 +49,7 @@ void main() {
         supportedLocales: AppLocalizations.supportedLocales,
         home: const Gallery(),
         routes: {
-          FormScreen.routeName: (ctx) => FormScreen(),
+          FormScreen.routeName: (ctx) => const FormScreen(),
         },
       ),
     );

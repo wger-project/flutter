@@ -69,7 +69,7 @@ void main() {
           body: WeightUnitInputWidget(setting1),
         ),
         routes: {
-          WorkoutPlanScreen.routeName: (ctx) => WorkoutPlanScreen(),
+          WorkoutPlanScreen.routeName: (ctx) => const WorkoutPlanScreen(),
         },
       ),
     );

@@ -47,14 +47,12 @@ class _LogMealScreenState extends State<LogMealScreen> {
     final args = ModalRoute.of(context)!.settings.arguments as LogMealArguments;
     final meal = args.meal.copyWith(
       mealItems: args.meal.mealItems
-        .map((mealItem) => mealItem.copyWith(amount: mealItem.amount * portionPct / 100))
-        .toList(),
+          .map((mealItem) => mealItem.copyWith(amount: mealItem.amount * portionPct / 100))
+          .toList(),
     );
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context).logMeal),
-      ),
+      appBar: AppBar(title: Text(AppLocalizations.of(context).logMeal)),
       body: Consumer<NutritionPlansProvider>(
         builder: (context, nutritionProvider, child) => SingleChildScrollView(
           child: Padding(
@@ -72,7 +70,8 @@ class _LogMealScreenState extends State<LogMealScreen> {
                     children: [
                       const DiaryheaderTile(),
                       ...meal.mealItems.map(
-                          (item) => MealItemEditableFullTile(item, viewMode.withAllDetails, false)),
+                        (item) => MealItemEditableFullTile(item, viewMode.withAllDetails, false),
+                      ),
                       const SizedBox(height: 32),
                       Text(
                         'Portion: ${portionPct.round()} %',

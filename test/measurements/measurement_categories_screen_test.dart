@@ -55,7 +55,7 @@ void main() {
         locale: Locale(locale),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: MeasurementCategoriesScreen(),
+        home: const MeasurementCategoriesScreen(),
       ),
     );
   }

@@ -155,7 +155,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
             subtitle: Text(
               _hasContent
                   ? DateFormat.yMd(Localizations.localeOf(context).languageCode)
-                    .format(_plan!.creationDate)
+                      .format(_plan!.creationDate)
                   : '',
             ),
             leading: Icon(
@@ -285,8 +285,8 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                         height: 200,
                         child: MeasurementChartWidgetFl(
                           weightProvider.items
-                            .map((e) => MeasurementChartEntry(e.weight, e.date))
-                            .toList(),
+                              .map((e) => MeasurementChartEntry(e.weight, e.date))
+                              .toList(),
                           unit: profile!.isMetric
                               ? AppLocalizations.of(context).kg
                               : AppLocalizations.of(context).lb,
@@ -311,9 +311,7 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                                 FormScreen.routeName,
                                 arguments: FormScreenArguments(
                                   AppLocalizations.of(context).newEntry,
-                                  WeightForm(weightProvider
-                                    .getNewestEntry()
-                                    ?.copyWith(id: null)),
+                                  WeightForm(weightProvider.getNewestEntry()?.copyWith(id: null)),
                                 ),
                               );
                             },
@@ -351,11 +349,8 @@ class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget>
   Widget build(BuildContext context) {
     final provider = Provider.of<MeasurementProvider>(context, listen: false);
 
-    final items = provider.categories
-      .map<Widget>(
-        (item) => CategoriesCard(item, elevation: 0),
-      )
-      .toList();
+    final items =
+        provider.categories.map<Widget>((item) => CategoriesCard(item, elevation: 0)).toList();
     if (items.isNotEmpty) {
       items.add(
         NothingFound(
@@ -412,10 +407,7 @@ class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget>
                         padding: const EdgeInsets.only(bottom: 10),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: items
-                            .asMap()
-                            .entries
-                            .map((entry) {
+                          children: items.asMap().entries.map((entry) {
                             return GestureDetector(
                               onTap: () => _controller.animateToPage(entry.key),
                               child: Container(
@@ -427,13 +419,10 @@ class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget>
                                 ),
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: Theme.of(context)
-                                    .textTheme
-                                    .headlineSmall!
-                                    .color!
-                                    .withOpacity(
-                                      _current == entry.key ? 0.9 : 0.4,
-                                    ),
+                                  color:
+                                      Theme.of(context).textTheme.headlineSmall!.color!.withOpacity(
+                                            _current == entry.key ? 0.9 : 0.4,
+                                          ),
                                 ),
                               ),
                             );
@@ -559,7 +548,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
             subtitle: Text(
               _hasContent
                   ? DateFormat.yMd(Localizations.localeOf(context).languageCode)
-                    .format(_workoutPlan!.creationDate)
+                      .format(_workoutPlan!.creationDate)
                   : '',
             ),
             leading: Icon(
@@ -581,9 +570,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
           if (_hasContent)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Column(
-                children: [...getContent()],
-              ),
+              child: Column(children: [...getContent()]),
             )
           else
             NothingFound(

@@ -35,15 +35,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MainAppBar(AppLocalizations.of(context).labelDashboard),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(10),
+      body: const SingleChildScrollView(
+        padding: EdgeInsets.all(10),
         child: Column(
           children: [
             DashboardWorkoutWidget(),
             DashboardNutritionWidget(),
             DashboardWeightWidget(),
             DashboardMeasurementWidget(),
-            const DashboardCalendarWidget(),
+            DashboardCalendarWidget(),
           ],
         ),
       ),

@@ -33,7 +33,7 @@ class NutritionalPlansList extends StatelessWidget {
     return RefreshIndicator(
       onRefresh: () => _nutritionProvider.fetchAndSetAllPlansSparse(),
       child: _nutritionProvider.items.isEmpty
-          ? TextPrompt()
+          ? const TextPrompt()
           : ListView.builder(
               padding: const EdgeInsets.all(10.0),
               itemCount: _nutritionProvider.items.length,
@@ -66,7 +66,7 @@ class NutritionalPlansList extends StatelessWidget {
                               return AlertDialog(
                                 content: Text(
                                   AppLocalizations.of(context)
-                                    .confirmDelete(currentPlan.description),
+                                      .confirmDelete(currentPlan.description),
                                 ),
                                 actions: [
                                   TextButton(

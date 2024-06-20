@@ -177,10 +177,7 @@ class Indicator extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 4),
-        Text(
-          text,
-          style: TextStyle(color: textColor),
-        ),
+        Text(text, style: TextStyle(color: textColor)),
         SizedBox(width: marginRight),
       ],
     );

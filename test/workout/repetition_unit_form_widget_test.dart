@@ -68,7 +68,7 @@ void main() {
           body: RepetitionUnitInputWidget(setting1),
         ),
         routes: {
-          WorkoutPlanScreen.routeName: (ctx) => WorkoutPlanScreen(),
+          WorkoutPlanScreen.routeName: (ctx) => const WorkoutPlanScreen(),
         },
       ),
     );
