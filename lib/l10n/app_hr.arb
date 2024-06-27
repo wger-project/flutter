@@ -905,5 +905,7 @@
   "selectMealToLog": "Odaberi obrok za zapis u dnevnik",
   "@selectMealToLog": {},
   "ingredientLogged": "Sastojak je upisan u dnevnik",
-  "@ingredientLogged": {}
+  "@ingredientLogged": {},
+  "noIngredientsDefined": "Još nije određen nijedan sastojak",
+  "@noIngredientsDefined": {}
 }
