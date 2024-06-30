@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:wger/models/nutrition/nutritional_goals.dart';
+
 class NutritionalValues {
   double energy = 0;
   double protein = 0;
@@ -112,6 +114,19 @@ class NutritionalValues {
   @override
   String toString() {
     return 'e: $energy, p: $protein, c: $carbohydrates, cS: $carbohydratesSugar, f: $fat, fS: $fatSaturated, fi: $fiber, s: $sodium';
+  }
+
+  NutritionalGoals toGoals() {
+    return NutritionalGoals(
+      energy: energy,
+      protein: protein,
+      carbohydrates: carbohydrates,
+      carbohydratesSugar: carbohydratesSugar,
+      fat: fat,
+      fatSaturated: fatSaturated,
+      fiber: fiber,
+      sodium: sodium,
+    );
   }
 
   @override

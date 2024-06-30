@@ -447,7 +447,19 @@ class IngredientFormState extends State<IngredientForm> {
                         suggestions[index].ingredient.nutritionalValues,
                         context,
                       )),
-                      trailing: const Icon(Icons.copy),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.info_outline),
+                            onPressed: () {
+                              showIngredientDetails(context, suggestions[index].ingredient.id);
+                            },
+                          ),
+                          const SizedBox(width: 5),
+                          const Icon(Icons.copy),
+                        ],
+                      ),
                     ),
                   );
                 },
