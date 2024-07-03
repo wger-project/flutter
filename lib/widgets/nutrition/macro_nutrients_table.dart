@@ -7,13 +7,15 @@ class MacronutrientsTable extends StatelessWidget {
     super.key,
     required this.nutritionalGoals,
     required this.plannedValuesPercentage,
-    required this.nutritionalGoalsGperKg,
+    this.nutritionalGoalsGperKg,
+    this.showGperKg = true,
   });
 
   static const double tablePadding = 7;
   final NutritionalGoals nutritionalGoals;
   final NutritionalGoals plannedValuesPercentage;
   final NutritionalGoals? nutritionalGoalsGperKg;
+  final bool showGperKg;
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +44,8 @@ class MacronutrientsTable extends StatelessWidget {
           ),
           Text(goal != null ? valFn(goal.toStringAsFixed(0)) : '', textAlign: TextAlign.right),
           Text(pct != null ? pct.toStringAsFixed(1) : '', textAlign: TextAlign.right),
-          Text(perkg != null ? perkg.toStringAsFixed(1) : '', textAlign: TextAlign.right),
+          if (showGperKg)
+            Text(perkg != null ? perkg.toStringAsFixed(1) : '', textAlign: TextAlign.right),
         ],
       );
     }
@@ -62,7 +65,7 @@ class MacronutrientsTable extends StatelessWidget {
             columnHeader(true, loc.macronutrients),
             columnHeader(false, loc.total),
             columnHeader(false, loc.percentEnergy),
-            columnHeader(false, loc.gPerBodyKg),
+            if (showGperKg) columnHeader(false, loc.gPerBodyKg),
           ],
         ),
         macroRow(0, false, loc.energy, (NutritionalGoals ng) => ng.energy),

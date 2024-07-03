@@ -141,7 +141,7 @@ void showIngredientDetails(BuildContext context, int id, {String? image}) {
                     child: MacronutrientsTable(
                       nutritionalGoals: goals!,
                       plannedValuesPercentage: goals.energyPercentage(),
-                      nutritionalGoalsGperKg: null,
+                      showGperKg: false,
                     ),
                   ),
               ],
