@@ -344,7 +344,7 @@
   "@start": {
     "description": "Label on button to start the gym mode (i.e., an imperative)"
   },
-  "logMeal": "Journaliser ce repas",
+  "logMeal": "Journaliser ce repas dans l'agenda",
   "@logMeal": {},
   "addSet": "Ajouter une série",
   "@addSet": {
@@ -531,7 +531,7 @@
   "@searchIngredient": {
     "description": "Label on ingredient search form"
   },
-  "logIngredient": "Sauvegarder dans le journal nutritionnel",
+  "logIngredient": "Journaliser l'ingrédient dans l'agenda nutritionnel",
   "@logIngredient": {},
   "close": "Fermer",
   "@close": {
@@ -756,7 +756,7 @@
   },
   "searchNamesInEnglish": "Recherchez également des noms en anglais",
   "@searchNamesInEnglish": {},
-  "max_reps": "Maximum de répétitions",
+  "max_reps": "Reps Maxi",
   "@max_reps": {
     "description": "Generated entry for translation for server strings"
   },
@@ -771,5 +771,87 @@
     "description": "Message returned if no exercises match the searched string"
   },
   "today": "Aujourd'hui",
-  "@today": {}
+  "@today": {},
+  "useMetric": "Utiliser le système métrique pour le poids du corps",
+  "@useMetric": {},
+  "onlyLogging": "Suivre uniquement les calories",
+  "@onlyLogging": {},
+  "onlyLoggingHelpText": "Cochez la case si vous souhaitez uniquement enregistrer vos calories et ne souhaitez pas établir un plan nutritionnel détaillé avec des repas spécifiques",
+  "@onlyLoggingHelpText": {},
+  "aboutMastodonTitle": "Mastodon",
+  "@aboutMastodonTitle": {
+    "description": "Title for mastodon section in the about dialog"
+  },
+  "aboutDonateTitle": "Faire un don",
+  "@aboutDonateTitle": {},
+  "goalEnergy": "Objectif énergétique",
+  "@goalEnergy": {},
+  "loggedToday": "Journalisé aujourd'hui",
+  "@loggedToday": {},
+  "kcalValue": "{value} kcal",
+  "@kcalValue": {
+    "description": "A value in kcal, e.g. 500 kcal",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "gValue": "{value} g",
+  "@gValue": {
+    "description": "A value in grams, e.g. 5 g",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "percentValue": "{value} %",
+  "@percentValue": {
+    "description": "A value in percent, e.g. 10 %",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "noIngredientsDefined": "Aucun ingrédient défini pour le moment",
+  "@noIngredientsDefined": {},
+  "ingredientLogged": "Ingrédient journalisé dans l'agenda",
+  "@ingredientLogged": {},
+  "goalMacro": "Objectif de macronutriments",
+  "@goalMacro": {
+    "description": "The goal for macronutrients"
+  },
+  "selectMealToLog": "Sélectionner un repas à journaliser dans l'agenda",
+  "@selectMealToLog": {},
+  "goalCarbohydrates": "Objectif glucides",
+  "@goalCarbohydrates": {},
+  "goalProtein": "Objectif protéines",
+  "@goalProtein": {},
+  "goalFat": "Objectif gras",
+  "@goalFat": {},
+  "goalFiber": "Objectif fibre",
+  "@goalFiber": {},
+  "surplus": "surplus",
+  "@surplus": {
+    "description": "Caloric surplus (either planned or unplanned)"
+  },
+  "deficit": "déficit",
+  "@deficit": {
+    "description": "Caloric deficit (either planned or unplanned)"
+  },
+  "aboutDonateText": "Achetez-nous un café pour aider le projet, payez les coûts du serveur et faites-nous le plein d'énergie",
+  "@aboutDonateText": {},
+  "settingsTitle": "Paramètres",
+  "@settingsTitle": {},
+  "settingsCacheTitle": "Cache",
+  "@settingsCacheTitle": {},
+  "settingsCacheDescription": "Cache d'exercices",
+  "@settingsCacheDescription": {},
+  "settingsCacheDeletedSnackbar": "Cache nettoyé avec succès",
+  "@settingsCacheDeletedSnackbar": {},
+  "log": "Journaliser",
+  "@log": {
+    "description": "Log a specific meal (imperative form)"
+  },
+  "done": "Fait",
+  "@done": {}
 }
