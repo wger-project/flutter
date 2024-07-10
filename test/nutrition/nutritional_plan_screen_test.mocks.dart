@@ -360,20 +360,20 @@ class MockAuthProvider extends _i1.Mock implements _i2.AuthProvider {
       ) as _i5.Future<void>);
 
   @override
-  _i5.Future<void> initData(String? serverUrl) => (super.noSuchMethod(
+  _i5.Future<void> setApplicationVersion() => (super.noSuchMethod(
         Invocation.method(
-          #initData,
-          [serverUrl],
+          #setApplicationVersion,
+          [],
         ),
         returnValue: _i5.Future<void>.value(),
         returnValueForMissingStub: _i5.Future<void>.value(),
       ) as _i5.Future<void>);
 
   @override
-  _i5.Future<void> setApplicationVersion() => (super.noSuchMethod(
+  _i5.Future<void> initVersions(String? serverUrl) => (super.noSuchMethod(
         Invocation.method(
-          #setApplicationVersion,
-          [],
+          #initVersions,
+          [serverUrl],
         ),
         returnValue: _i5.Future<void>.value(),
         returnValueForMissingStub: _i5.Future<void>.value(),
