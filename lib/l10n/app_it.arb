@@ -437,7 +437,7 @@
     "description": "Label shown on the slider where the user can toggle showing units and RiR",
     "type": "text"
   },
-  "rirNotUsed": "RiR (Repetitions in Reseverve) non utilizzato",
+  "rirNotUsed": "RiR (Repetitions in Reserve) non utilizzato",
   "@rirNotUsed": {
     "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
   },
