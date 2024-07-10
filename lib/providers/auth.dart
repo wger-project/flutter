@@ -88,15 +88,15 @@ class AuthProvider with ChangeNotifier {
     serverVersion = json.decode(response.body);
   }
 
-  Future<void> initData(String serverUrl) async {
-    this.serverUrl = serverUrl;
-    await setApplicationVersion();
-    await setServerVersion();
-  }
-
   /// (flutter) Application version
   Future<void> setApplicationVersion() async {
     applicationVersion = await PackageInfo.fromPlatform();
+  }
+
+  Future<void> initVersions(String serverUrl) async {
+    this.serverUrl = serverUrl;
+    await setApplicationVersion();
+    await setServerVersion();
   }
 
   /// Checking if there is a new version of the application.
@@ -149,11 +149,6 @@ class AuthProvider with ChangeNotifier {
       throw WgerHttpException(response.body);
     }
 
-    // If update is required don't log in user
-    if (await applicationUpdateRequired()) {
-      return {'action': LoginActions.update};
-    }
-
     return login(username, password, serverUrl);
   }
 
@@ -179,7 +174,7 @@ class AuthProvider with ChangeNotifier {
       throw WgerHttpException(response.body);
     }
 
-    await initData(serverUrl);
+    await initVersions(serverUrl);
 
     // If update is required don't log in user
     if (await applicationUpdateRequired()) {
