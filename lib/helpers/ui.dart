@@ -53,7 +53,7 @@ void showErrorDialog(dynamic exception, BuildContext context) {
 void showHttpExceptionErrorDialog(
   WgerHttpException exception,
   BuildContext context,
-) async {
+) {
   log('showHttpExceptionErrorDialog: ');
   log(exception.toString());
   log('-------------------');
@@ -67,7 +67,7 @@ void showHttpExceptionErrorDialog(
 
     errorList.add(
       Text(
-        errorHeaderMsg,
+        errorHeaderMsg.replaceAll('_', ' '),
         style: const TextStyle(fontWeight: FontWeight.bold),
       ),
     );
