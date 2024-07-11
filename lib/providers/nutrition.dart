@@ -304,9 +304,9 @@ class NutritionPlansProvider with ChangeNotifier {
       _ingredients.add(ingredient);
 
       final prefs = await SharedPreferences.getInstance();
-      final ingredientData = json.decode(prefs.getString('ingredientData')!);
+      final ingredientData = json.decode(prefs.getString(PREFS_INGREDIENTS)!);
       ingredientData['ingredients'].add(ingredient.toJson());
-      prefs.setString('ingredientData', json.encode(ingredientData));
+      prefs.setString(PREFS_INGREDIENTS, json.encode(ingredientData));
       log("Saved ingredient '${ingredient.name}' to cache.");
 
       return ingredient;

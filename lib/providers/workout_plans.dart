@@ -331,8 +331,8 @@ class WorkoutPlansProvider with ChangeNotifier {
   Future<void> fetchAndSetUnits() async {
     // Load units from cache, if available
     final prefs = await SharedPreferences.getInstance();
-    if (prefs.containsKey('workoutUnits')) {
-      final unitData = json.decode(prefs.getString('workoutUnits')!);
+    if (prefs.containsKey(PREFS_WORKOUT_UNITS)) {
+      final unitData = json.decode(prefs.getString(PREFS_WORKOUT_UNITS)!);
       if (DateTime.parse(unitData['expiresIn']).isAfter(DateTime.now())) {
         unitData['repetitionUnits'].forEach(
           (e) => _repetitionUnit.add(RepetitionUnit.fromJson(e)),
@@ -358,7 +358,7 @@ class WorkoutPlansProvider with ChangeNotifier {
       'repetitionUnits': _repetitionUnit.map((e) => e.toJson()).toList(),
       'weightUnit': _weightUnits.map((e) => e.toJson()).toList(),
     };
-    prefs.setString('workoutUnits', json.encode(exerciseData));
+    prefs.setString(PREFS_WORKOUT_UNITS, json.encode(exerciseData));
     notifyListeners();
   }
 
