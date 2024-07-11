@@ -132,6 +132,7 @@ class NutritionPlansProvider with ChangeNotifier {
     try {
       plan = findById(planId);
     } on NoSuchEntryException {
+      // TODO: remove this useless call, because we will fetch all details below
       plan = await fetchAndSetPlanSparse(planId);
     }
 
@@ -145,6 +146,7 @@ class NutritionPlansProvider with ChangeNotifier {
       final List<MealItem> mealItems = [];
       final meal = Meal.fromJson(mealData);
 
+      // TODO: we should add these ingredients to the ingredient cache
       for (final mealItemData in mealData['meal_items']) {
         final mealItem = MealItem.fromJson(mealItemData);
 
@@ -376,9 +378,10 @@ class NutritionPlansProvider with ChangeNotifier {
 
     if (data['count'] == 0) {
       return null;
-    } else {
-      return Ingredient.fromJson(data['results'][0]);
     }
+    // TODO we should probably add it to ingredient cache.
+    // TODO: we could also use the ingredient cache for code searches
+    return Ingredient.fromJson(data['results'][0]);
   }
 
   /// Log meal to nutrition diary

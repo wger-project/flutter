@@ -107,6 +107,7 @@ void showIngredientDetails(BuildContext context, int id, {String? image}) {
 
   final url = context.read<NutritionPlansProvider>().baseProvider.auth.serverUrl;
 
+// TODO: display source name and source URL for an ingredient in the UI
   showDialog(
     context: context,
     builder: (context) => FutureBuilder<Ingredient>(

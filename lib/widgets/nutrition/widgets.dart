@@ -224,6 +224,7 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(AppLocalizations.of(context).productFoundDescription(result.name)),
+                      // TODO replace with full view instead of small popup
                       MealItemValuesTile(
                         ingredient: result,
                         nutritionalValues: result.nutritionalValues,

@@ -353,7 +353,7 @@ class IngredientFormState extends State<IngredientForm> {
                 child: Column(
                   children: [
                     Text(
-                      'Macros preview',
+                      'Macros preview', // TODO fix l10n
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     FutureBuilder<Ingredient>(
@@ -367,6 +367,7 @@ class IngredientFormState extends State<IngredientForm> {
                       ) {
                         if (snapshot.hasData) {
                           _mealItem.ingredient = snapshot.data!;
+                          // here it could be nice to put the button to the popup
                           return MealItemValuesTile(
                             ingredient: _mealItem.ingredient,
                             nutritionalValues: _mealItem.nutritionalValues,
