@@ -161,6 +161,17 @@ class ExerciseTable extends DataClass implements Insertable<ExerciseTable> {
         lastUpdate: lastUpdate ?? this.lastUpdate,
         lastFetched: lastFetched ?? this.lastFetched,
       );
+  ExerciseTable copyWithCompanion(ExercisesCompanion data) {
+    return ExerciseTable(
+      id: data.id.present ? data.id.value : this.id,
+      data: data.data.present ? data.data.value : this.data,
+      lastUpdate:
+          data.lastUpdate.present ? data.lastUpdate.value : this.lastUpdate,
+      lastFetched:
+          data.lastFetched.present ? data.lastFetched.value : this.lastFetched,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('ExerciseTable(')
@@ -372,6 +383,13 @@ class MuscleTable extends DataClass implements Insertable<MuscleTable> {
         id: id ?? this.id,
         data: data ?? this.data,
       );
+  MuscleTable copyWithCompanion(MusclesCompanion data) {
+    return MuscleTable(
+      id: data.id.present ? data.id.value : this.id,
+      data: data.data.present ? data.data.value : this.data,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('MuscleTable(')
@@ -555,6 +573,13 @@ class EquipmentTable extends DataClass implements Insertable<EquipmentTable> {
         id: id ?? this.id,
         data: data ?? this.data,
       );
+  EquipmentTable copyWithCompanion(EquipmentsCompanion data) {
+    return EquipmentTable(
+      id: data.id.present ? data.id.value : this.id,
+      data: data.data.present ? data.data.value : this.data,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('EquipmentTable(')
@@ -740,6 +765,13 @@ class CategoryTable extends DataClass implements Insertable<CategoryTable> {
         id: id ?? this.id,
         data: data ?? this.data,
       );
+  CategoryTable copyWithCompanion(CategoriesCompanion data) {
+    return CategoryTable(
+      id: data.id.present ? data.id.value : this.id,
+      data: data.data.present ? data.data.value : this.data,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('CategoryTable(')
@@ -925,6 +957,13 @@ class LanguagesTable extends DataClass implements Insertable<LanguagesTable> {
         id: id ?? this.id,
         data: data ?? this.data,
       );
+  LanguagesTable copyWithCompanion(LanguagesCompanion data) {
+    return LanguagesTable(
+      id: data.id.present ? data.id.value : this.id,
+      data: data.data.present ? data.data.value : this.data,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('LanguagesTable(')
@@ -1009,7 +1048,7 @@ class LanguagesCompanion extends UpdateCompanion<LanguagesTable> {
 
 abstract class _$ExerciseDatabase extends GeneratedDatabase {
   _$ExerciseDatabase(QueryExecutor e) : super(e);
-  _$ExerciseDatabaseManager get managers => _$ExerciseDatabaseManager(this);
+  $ExerciseDatabaseManager get managers => $ExerciseDatabaseManager(this);
   late final $ExercisesTable exercises = $ExercisesTable(this);
   late final $MusclesTable muscles = $MusclesTable(this);
   late final $EquipmentsTable equipments = $EquipmentsTable(this);
@@ -1023,7 +1062,7 @@ abstract class _$ExerciseDatabase extends GeneratedDatabase {
       [exercises, muscles, equipments, categories, languages];
 }
 
-typedef $$ExercisesTableInsertCompanionBuilder = ExercisesCompanion Function({
+typedef $$ExercisesTableCreateCompanionBuilder = ExercisesCompanion Function({
   required int id,
   required String data,
   required DateTime lastUpdate,
@@ -1044,8 +1083,7 @@ class $$ExercisesTableTableManager extends RootTableManager<
     ExerciseTable,
     $$ExercisesTableFilterComposer,
     $$ExercisesTableOrderingComposer,
-    $$ExercisesTableProcessedTableManager,
-    $$ExercisesTableInsertCompanionBuilder,
+    $$ExercisesTableCreateCompanionBuilder,
     $$ExercisesTableUpdateCompanionBuilder> {
   $$ExercisesTableTableManager(_$ExerciseDatabase db, $ExercisesTable table)
       : super(TableManagerState(
@@ -1055,9 +1093,7 @@ class $$ExercisesTableTableManager extends RootTableManager<
               $$ExercisesTableFilterComposer(ComposerState(db, table)),
           orderingComposer:
               $$ExercisesTableOrderingComposer(ComposerState(db, table)),
-          getChildManagerBuilder: (p) =>
-              $$ExercisesTableProcessedTableManager(p),
-          getUpdateCompanionBuilder: ({
+          updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> data = const Value.absent(),
             Value<DateTime> lastUpdate = const Value.absent(),
@@ -1071,7 +1107,7 @@ class $$ExercisesTableTableManager extends RootTableManager<
             lastFetched: lastFetched,
             rowid: rowid,
           ),
-          getInsertCompanionBuilder: ({
+          createCompanionCallback: ({
             required int id,
             required String data,
             required DateTime lastUpdate,
@@ -1086,18 +1122,6 @@ class $$ExercisesTableTableManager extends RootTableManager<
             rowid: rowid,
           ),
         ));
-}
-
-class $$ExercisesTableProcessedTableManager extends ProcessedTableManager<
-    _$ExerciseDatabase,
-    $ExercisesTable,
-    ExerciseTable,
-    $$ExercisesTableFilterComposer,
-    $$ExercisesTableOrderingComposer,
-    $$ExercisesTableProcessedTableManager,
-    $$ExercisesTableInsertCompanionBuilder,
-    $$ExercisesTableUpdateCompanionBuilder> {
-  $$ExercisesTableProcessedTableManager(super.$state);
 }
 
 class $$ExercisesTableFilterComposer
@@ -1148,7 +1172,7 @@ class $$ExercisesTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
-typedef $$MusclesTableInsertCompanionBuilder = MusclesCompanion Function({
+typedef $$MusclesTableCreateCompanionBuilder = MusclesCompanion Function({
   required int id,
   required Muscle data,
   Value<int> rowid,
@@ -1165,8 +1189,7 @@ class $$MusclesTableTableManager extends RootTableManager<
     MuscleTable,
     $$MusclesTableFilterComposer,
     $$MusclesTableOrderingComposer,
-    $$MusclesTableProcessedTableManager,
-    $$MusclesTableInsertCompanionBuilder,
+    $$MusclesTableCreateCompanionBuilder,
     $$MusclesTableUpdateCompanionBuilder> {
   $$MusclesTableTableManager(_$ExerciseDatabase db, $MusclesTable table)
       : super(TableManagerState(
@@ -1176,8 +1199,7 @@ class $$MusclesTableTableManager extends RootTableManager<
               $$MusclesTableFilterComposer(ComposerState(db, table)),
           orderingComposer:
               $$MusclesTableOrderingComposer(ComposerState(db, table)),
-          getChildManagerBuilder: (p) => $$MusclesTableProcessedTableManager(p),
-          getUpdateCompanionBuilder: ({
+          updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<Muscle> data = const Value.absent(),
             Value<int> rowid = const Value.absent(),
@@ -1187,7 +1209,7 @@ class $$MusclesTableTableManager extends RootTableManager<
             data: data,
             rowid: rowid,
           ),
-          getInsertCompanionBuilder: ({
+          createCompanionCallback: ({
             required int id,
             required Muscle data,
             Value<int> rowid = const Value.absent(),
@@ -1198,18 +1220,6 @@ class $$MusclesTableTableManager extends RootTableManager<
             rowid: rowid,
           ),
         ));
-}
-
-class $$MusclesTableProcessedTableManager extends ProcessedTableManager<
-    _$ExerciseDatabase,
-    $MusclesTable,
-    MuscleTable,
-    $$MusclesTableFilterComposer,
-    $$MusclesTableOrderingComposer,
-    $$MusclesTableProcessedTableManager,
-    $$MusclesTableInsertCompanionBuilder,
-    $$MusclesTableUpdateCompanionBuilder> {
-  $$MusclesTableProcessedTableManager(super.$state);
 }
 
 class $$MusclesTableFilterComposer
@@ -1242,7 +1252,7 @@ class $$MusclesTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
-typedef $$EquipmentsTableInsertCompanionBuilder = EquipmentsCompanion Function({
+typedef $$EquipmentsTableCreateCompanionBuilder = EquipmentsCompanion Function({
   required int id,
   required Equipment data,
   Value<int> rowid,
@@ -1259,8 +1269,7 @@ class $$EquipmentsTableTableManager extends RootTableManager<
     EquipmentTable,
     $$EquipmentsTableFilterComposer,
     $$EquipmentsTableOrderingComposer,
-    $$EquipmentsTableProcessedTableManager,
-    $$EquipmentsTableInsertCompanionBuilder,
+    $$EquipmentsTableCreateCompanionBuilder,
     $$EquipmentsTableUpdateCompanionBuilder> {
   $$EquipmentsTableTableManager(_$ExerciseDatabase db, $EquipmentsTable table)
       : super(TableManagerState(
@@ -1270,9 +1279,7 @@ class $$EquipmentsTableTableManager extends RootTableManager<
               $$EquipmentsTableFilterComposer(ComposerState(db, table)),
           orderingComposer:
               $$EquipmentsTableOrderingComposer(ComposerState(db, table)),
-          getChildManagerBuilder: (p) =>
-              $$EquipmentsTableProcessedTableManager(p),
-          getUpdateCompanionBuilder: ({
+          updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<Equipment> data = const Value.absent(),
             Value<int> rowid = const Value.absent(),
@@ -1282,7 +1289,7 @@ class $$EquipmentsTableTableManager extends RootTableManager<
             data: data,
             rowid: rowid,
           ),
-          getInsertCompanionBuilder: ({
+          createCompanionCallback: ({
             required int id,
             required Equipment data,
             Value<int> rowid = const Value.absent(),
@@ -1293,18 +1300,6 @@ class $$EquipmentsTableTableManager extends RootTableManager<
             rowid: rowid,
           ),
         ));
-}
-
-class $$EquipmentsTableProcessedTableManager extends ProcessedTableManager<
-    _$ExerciseDatabase,
-    $EquipmentsTable,
-    EquipmentTable,
-    $$EquipmentsTableFilterComposer,
-    $$EquipmentsTableOrderingComposer,
-    $$EquipmentsTableProcessedTableManager,
-    $$EquipmentsTableInsertCompanionBuilder,
-    $$EquipmentsTableUpdateCompanionBuilder> {
-  $$EquipmentsTableProcessedTableManager(super.$state);
 }
 
 class $$EquipmentsTableFilterComposer
@@ -1337,7 +1332,7 @@ class $$EquipmentsTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
-typedef $$CategoriesTableInsertCompanionBuilder = CategoriesCompanion Function({
+typedef $$CategoriesTableCreateCompanionBuilder = CategoriesCompanion Function({
   required int id,
   required ExerciseCategory data,
   Value<int> rowid,
@@ -1354,8 +1349,7 @@ class $$CategoriesTableTableManager extends RootTableManager<
     CategoryTable,
     $$CategoriesTableFilterComposer,
     $$CategoriesTableOrderingComposer,
-    $$CategoriesTableProcessedTableManager,
-    $$CategoriesTableInsertCompanionBuilder,
+    $$CategoriesTableCreateCompanionBuilder,
     $$CategoriesTableUpdateCompanionBuilder> {
   $$CategoriesTableTableManager(_$ExerciseDatabase db, $CategoriesTable table)
       : super(TableManagerState(
@@ -1365,9 +1359,7 @@ class $$CategoriesTableTableManager extends RootTableManager<
               $$CategoriesTableFilterComposer(ComposerState(db, table)),
           orderingComposer:
               $$CategoriesTableOrderingComposer(ComposerState(db, table)),
-          getChildManagerBuilder: (p) =>
-              $$CategoriesTableProcessedTableManager(p),
-          getUpdateCompanionBuilder: ({
+          updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<ExerciseCategory> data = const Value.absent(),
             Value<int> rowid = const Value.absent(),
@@ -1377,7 +1369,7 @@ class $$CategoriesTableTableManager extends RootTableManager<
             data: data,
             rowid: rowid,
           ),
-          getInsertCompanionBuilder: ({
+          createCompanionCallback: ({
             required int id,
             required ExerciseCategory data,
             Value<int> rowid = const Value.absent(),
@@ -1388,18 +1380,6 @@ class $$CategoriesTableTableManager extends RootTableManager<
             rowid: rowid,
           ),
         ));
-}
-
-class $$CategoriesTableProcessedTableManager extends ProcessedTableManager<
-    _$ExerciseDatabase,
-    $CategoriesTable,
-    CategoryTable,
-    $$CategoriesTableFilterComposer,
-    $$CategoriesTableOrderingComposer,
-    $$CategoriesTableProcessedTableManager,
-    $$CategoriesTableInsertCompanionBuilder,
-    $$CategoriesTableUpdateCompanionBuilder> {
-  $$CategoriesTableProcessedTableManager(super.$state);
 }
 
 class $$CategoriesTableFilterComposer
@@ -1432,7 +1412,7 @@ class $$CategoriesTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
-typedef $$LanguagesTableInsertCompanionBuilder = LanguagesCompanion Function({
+typedef $$LanguagesTableCreateCompanionBuilder = LanguagesCompanion Function({
   required int id,
   required Language data,
   Value<int> rowid,
@@ -1449,8 +1429,7 @@ class $$LanguagesTableTableManager extends RootTableManager<
     LanguagesTable,
     $$LanguagesTableFilterComposer,
     $$LanguagesTableOrderingComposer,
-    $$LanguagesTableProcessedTableManager,
-    $$LanguagesTableInsertCompanionBuilder,
+    $$LanguagesTableCreateCompanionBuilder,
     $$LanguagesTableUpdateCompanionBuilder> {
   $$LanguagesTableTableManager(_$ExerciseDatabase db, $LanguagesTable table)
       : super(TableManagerState(
@@ -1460,9 +1439,7 @@ class $$LanguagesTableTableManager extends RootTableManager<
               $$LanguagesTableFilterComposer(ComposerState(db, table)),
           orderingComposer:
               $$LanguagesTableOrderingComposer(ComposerState(db, table)),
-          getChildManagerBuilder: (p) =>
-              $$LanguagesTableProcessedTableManager(p),
-          getUpdateCompanionBuilder: ({
+          updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<Language> data = const Value.absent(),
             Value<int> rowid = const Value.absent(),
@@ -1472,7 +1449,7 @@ class $$LanguagesTableTableManager extends RootTableManager<
             data: data,
             rowid: rowid,
           ),
-          getInsertCompanionBuilder: ({
+          createCompanionCallback: ({
             required int id,
             required Language data,
             Value<int> rowid = const Value.absent(),
@@ -1483,18 +1460,6 @@ class $$LanguagesTableTableManager extends RootTableManager<
             rowid: rowid,
           ),
         ));
-}
-
-class $$LanguagesTableProcessedTableManager extends ProcessedTableManager<
-    _$ExerciseDatabase,
-    $LanguagesTable,
-    LanguagesTable,
-    $$LanguagesTableFilterComposer,
-    $$LanguagesTableOrderingComposer,
-    $$LanguagesTableProcessedTableManager,
-    $$LanguagesTableInsertCompanionBuilder,
-    $$LanguagesTableUpdateCompanionBuilder> {
-  $$LanguagesTableProcessedTableManager(super.$state);
 }
 
 class $$LanguagesTableFilterComposer
@@ -1527,9 +1492,9 @@ class $$LanguagesTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
-class _$ExerciseDatabaseManager {
+class $ExerciseDatabaseManager {
   final _$ExerciseDatabase _db;
-  _$ExerciseDatabaseManager(this._db);
+  $ExerciseDatabaseManager(this._db);
   $$ExercisesTableTableManager get exercises =>
       $$ExercisesTableTableManager(_db, _db.exercises);
   $$MusclesTableTableManager get muscles =>
