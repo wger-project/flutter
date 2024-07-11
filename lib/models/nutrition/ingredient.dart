@@ -24,8 +24,23 @@ part 'ingredient.g.dart';
 
 @JsonSerializable()
 class Ingredient {
+  // fields returned by django api that we ignore here:
+  // uuid, last_updated, last_imported, weight_units, language
+  // all license fields
+
   @JsonKey(required: true)
   final int id;
+
+  // some ingredients don't have these 3 fields set.  E.g. USDA entries that
+  // have been removed upstream, or manually added ingredients.
+  @JsonKey(required: true, name: 'remote_id')
+  final String? remoteId;
+
+  @JsonKey(required: true, name: 'source_name')
+  final String? sourceName;
+
+  @JsonKey(required: true, name: 'source_url')
+  final String? sourceUrl;
 
   /// Barcode of the product
   @JsonKey(required: true)
@@ -73,6 +88,9 @@ class Ingredient {
   IngredientImage? image;
 
   Ingredient({
+    required this.remoteId,
+    required this.sourceName,
+    required this.sourceUrl,
     required this.id,
     required this.code,
     required this.name,

@@ -26,6 +26,9 @@ import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 
 final ingredient1 = Ingredient(
+  remoteId: '1',
+  sourceName: 'Built-in testdata',
+  sourceUrl: 'https://example.com/ingredient/1',
   id: 1,
   code: '123456787',
   name: 'Water',
@@ -40,6 +43,9 @@ final ingredient1 = Ingredient(
   sodium: 0.5,
 );
 final ingredient2 = Ingredient(
+  remoteId: '2',
+  sourceName: 'Built-in testdata',
+  sourceUrl: 'https://example.com/ingredient/2',
   id: 2,
   code: '123456788',
   name: 'Burger soup',
@@ -54,6 +60,9 @@ final ingredient2 = Ingredient(
   sodium: 0,
 );
 final ingredient3 = Ingredient(
+  remoteId: '3',
+  sourceName: 'Built-in testdata',
+  sourceUrl: 'https://example.com/ingredient/3',
   id: 3,
   code: '123456789',
   name: 'Broccoli cake',
@@ -68,6 +77,9 @@ final ingredient3 = Ingredient(
   sodium: 10,
 );
 final muesli = Ingredient(
+  remoteId: '1',
+  sourceName: 'Built-in testdata',
+  sourceUrl: 'https://example.com/ingredient/1',
   id: 1,
   code: '123456787',
   name: 'Müsli',
@@ -82,6 +94,9 @@ final muesli = Ingredient(
   sodium: 0.5,
 );
 final milk = Ingredient(
+  remoteId: '1',
+  sourceName: 'Built-in testdata',
+  sourceUrl: 'https://example.com/ingredient/1',
   id: 1,
   code: '123456787',
   name: 'Milk',
@@ -96,6 +111,9 @@ final milk = Ingredient(
   sodium: 0.5,
 );
 final apple = Ingredient(
+  remoteId: '1',
+  sourceName: 'Built-in testdata',
+  sourceUrl: 'https://example.com/ingredient/1',
   id: 1,
   code: '123456787',
   name: 'Apple',
@@ -110,6 +128,9 @@ final apple = Ingredient(
   sodium: 0.5,
 );
 final cake = Ingredient(
+  remoteId: '1',
+  sourceName: 'Built-in testdata',
+  sourceUrl: 'https://example.com/ingredient/1',
   id: 1,
   code: '111111111',
   name: 'Lemon CAke',

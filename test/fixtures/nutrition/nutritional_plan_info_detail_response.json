@@ -50,6 +50,9 @@
           "ingredient": 59887,
           "ingredient_obj": {
             "id": 59887,
+            "remote_id": 123456789,
+            "source_name": "Open Food Facts",
+            "source_url" : "https://world.openfoodfacts.org/ingredients/123456789",
             "code": "4311501354155",
             "name": "Baked Beans",
             "created": "2020-12-20",
@@ -88,6 +91,9 @@
           "ingredient": 58300,
           "ingredient_obj": {
             "id": 58300,
+            "remote_id": 123456788,
+            "source_name": "Open Food Facts",
+            "source_url" : "https://world.openfoodfacts.org/ingredients/123456788",
             "code": "4071800000992",
             "name": "1688 Mehrkorn",
             "created": "2020-12-20",
@@ -141,6 +147,9 @@
           "ingredient": 10065,
           "ingredient_obj": {
             "id": 10065,
+            "remote_id": 123456787,
+            "source_name": "Open Food Facts",
+            "source_url" : "https://world.openfoodfacts.org/ingredients/123456787",
             "code": "0043647440020",
             "name": "'Old Times' Orange Fine Cut Marmalade",
             "created": "2020-12-20",

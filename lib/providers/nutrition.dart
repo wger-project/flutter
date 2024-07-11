@@ -39,6 +39,7 @@ class NutritionPlansProvider with ChangeNotifier {
   static const _mealPath = 'meal';
   static const _mealItemPath = 'mealitem';
   static const _ingredientPath = 'ingredient';
+  static const _ingredientInfoPath = 'ingredientinfo';
   static const _ingredientSearchPath = 'ingredient/search';
   static const _nutritionDiaryPath = 'nutritiondiary';
   static const _ingredientImagePath = 'ingredient-image';
@@ -298,7 +299,7 @@ class NutritionPlansProvider with ChangeNotifier {
       // Get ingredient from the server and save to cache
     } on StateError {
       final data = await baseProvider.fetch(
-        baseProvider.makeUrl(_ingredientPath, id: ingredientId),
+        baseProvider.makeUrl(_ingredientInfoPath, id: ingredientId),
       );
       ingredient = Ingredient.fromJson(data);
       _ingredients.add(ingredient);
@@ -370,7 +371,7 @@ class NutritionPlansProvider with ChangeNotifier {
 
     // Send the request
     final data = await baseProvider.fetch(
-      baseProvider.makeUrl(_ingredientPath, query: {'code': code}),
+      baseProvider.makeUrl(_ingredientInfoPath, query: {'code': code}),
     );
 
     if (data['count'] == 0) {

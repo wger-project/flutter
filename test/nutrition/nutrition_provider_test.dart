@@ -31,13 +31,13 @@ void main() {
       fixture('nutrition/nutrition_diary_response.json'),
     )['results'];
     final Map<String, dynamic> ingredient59887Response = jsonDecode(
-      fixture('nutrition/ingredient_59887_response.json'),
+      fixture('nutrition/ingredientinfo_59887.json'),
     );
     final Map<String, dynamic> ingredient10065Response = jsonDecode(
-      fixture('nutrition/ingredient_10065_response.json'),
+      fixture('nutrition/ingredientinfo_10065.json'),
     );
     final Map<String, dynamic> ingredient58300Response = jsonDecode(
-      fixture('nutrition/ingredient_58300_response.json'),
+      fixture('nutrition/ingredientinfo_58300.json'),
     );
 
     final ingredientList = [

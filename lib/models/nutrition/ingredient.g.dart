@@ -11,6 +11,9 @@ Ingredient _$IngredientFromJson(Map<String, dynamic> json) {
     json,
     requiredKeys: const [
       'id',
+      'remote_id',
+      'source_name',
+      'source_url',
       'code',
       'name',
       'created',
@@ -25,6 +28,9 @@ Ingredient _$IngredientFromJson(Map<String, dynamic> json) {
     ],
   );
   return Ingredient(
+    remoteId: json['remote_id'] as String?,
+    sourceName: json['source_name'] as String?,
+    sourceUrl: json['source_url'] as String?,
     id: (json['id'] as num).toInt(),
     code: json['code'] as String?,
     name: json['name'] as String,
@@ -46,6 +52,9 @@ Ingredient _$IngredientFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$IngredientToJson(Ingredient instance) =>
     <String, dynamic>{
       'id': instance.id,
+      'remote_id': instance.remoteId,
+      'source_name': instance.sourceName,
+      'source_url': instance.sourceUrl,
       'code': instance.code,
       'name': instance.name,
       'created': instance.created.toIso8601String(),
