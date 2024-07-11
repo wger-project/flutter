@@ -128,6 +128,15 @@ class IngredientTable extends DataClass implements Insertable<IngredientTable> {
         data: data ?? this.data,
         lastUpdate: lastUpdate ?? this.lastUpdate,
       );
+  IngredientTable copyWithCompanion(IngredientsCompanion data) {
+    return IngredientTable(
+      id: data.id.present ? data.id.value : this.id,
+      data: data.data.present ? data.data.value : this.data,
+      lastUpdate:
+          data.lastUpdate.present ? data.lastUpdate.value : this.lastUpdate,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('IngredientTable(')
@@ -227,7 +236,7 @@ class IngredientsCompanion extends UpdateCompanion<IngredientTable> {
 
 abstract class _$IngredientDatabase extends GeneratedDatabase {
   _$IngredientDatabase(QueryExecutor e) : super(e);
-  _$IngredientDatabaseManager get managers => _$IngredientDatabaseManager(this);
+  $IngredientDatabaseManager get managers => $IngredientDatabaseManager(this);
   late final $IngredientsTable ingredients = $IngredientsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
@@ -236,7 +245,7 @@ abstract class _$IngredientDatabase extends GeneratedDatabase {
   List<DatabaseSchemaEntity> get allSchemaEntities => [ingredients];
 }
 
-typedef $$IngredientsTableInsertCompanionBuilder = IngredientsCompanion
+typedef $$IngredientsTableCreateCompanionBuilder = IngredientsCompanion
     Function({
   required int id,
   required String data,
@@ -257,8 +266,7 @@ class $$IngredientsTableTableManager extends RootTableManager<
     IngredientTable,
     $$IngredientsTableFilterComposer,
     $$IngredientsTableOrderingComposer,
-    $$IngredientsTableProcessedTableManager,
-    $$IngredientsTableInsertCompanionBuilder,
+    $$IngredientsTableCreateCompanionBuilder,
     $$IngredientsTableUpdateCompanionBuilder> {
   $$IngredientsTableTableManager(
       _$IngredientDatabase db, $IngredientsTable table)
@@ -269,9 +277,7 @@ class $$IngredientsTableTableManager extends RootTableManager<
               $$IngredientsTableFilterComposer(ComposerState(db, table)),
           orderingComposer:
               $$IngredientsTableOrderingComposer(ComposerState(db, table)),
-          getChildManagerBuilder: (p) =>
-              $$IngredientsTableProcessedTableManager(p),
-          getUpdateCompanionBuilder: ({
+          updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> data = const Value.absent(),
             Value<DateTime> lastUpdate = const Value.absent(),
@@ -283,7 +289,7 @@ class $$IngredientsTableTableManager extends RootTableManager<
             lastUpdate: lastUpdate,
             rowid: rowid,
           ),
-          getInsertCompanionBuilder: ({
+          createCompanionCallback: ({
             required int id,
             required String data,
             required DateTime lastUpdate,
@@ -296,18 +302,6 @@ class $$IngredientsTableTableManager extends RootTableManager<
             rowid: rowid,
           ),
         ));
-}
-
-class $$IngredientsTableProcessedTableManager extends ProcessedTableManager<
-    _$IngredientDatabase,
-    $IngredientsTable,
-    IngredientTable,
-    $$IngredientsTableFilterComposer,
-    $$IngredientsTableOrderingComposer,
-    $$IngredientsTableProcessedTableManager,
-    $$IngredientsTableInsertCompanionBuilder,
-    $$IngredientsTableUpdateCompanionBuilder> {
-  $$IngredientsTableProcessedTableManager(super.$state);
 }
 
 class $$IngredientsTableFilterComposer
@@ -348,9 +342,9 @@ class $$IngredientsTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
-class _$IngredientDatabaseManager {
+class $IngredientDatabaseManager {
   final _$IngredientDatabase _db;
-  _$IngredientDatabaseManager(this._db);
+  $IngredientDatabaseManager(this._db);
   $$IngredientsTableTableManager get ingredients =>
       $$IngredientsTableTableManager(_db, _db.ingredients);
 }
