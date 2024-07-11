@@ -25,6 +25,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/core/locator.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
@@ -156,7 +157,7 @@ void main() {
       // Load the entries
       final provider = WorkoutPlansProvider(mockBaseProvider, exercisesProvider, []);
       await provider.fetchAndSetUnits();
-      final prefsJson = jsonDecode(prefs.getString('workoutUnits')!);
+      final prefsJson = jsonDecode(prefs.getString(PREFS_WORKOUT_UNITS)!);
 
       expect(prefsJson['repetitionUnits'].length, 7);
       expect(prefsJson['weightUnit'].length, 6);

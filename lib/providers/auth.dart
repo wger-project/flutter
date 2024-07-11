@@ -193,29 +193,29 @@ class AuthProvider with ChangeNotifier {
     });
     final serverData = json.encode({'serverUrl': this.serverUrl});
 
-    prefs.setString('userData', userData);
-    prefs.setString('lastServer', serverData);
+    prefs.setString(PREFS_USER, userData);
+    prefs.setString(PREFS_LAST_SERVER, serverData);
     return {'action': LoginActions.proceed};
   }
 
   /// Loads the last server URL from which the user successfully logged in
   Future<String> getServerUrlFromPrefs() async {
     final prefs = await SharedPreferences.getInstance();
-    if (!prefs.containsKey('lastServer')) {
+    if (!prefs.containsKey(PREFS_LAST_SERVER)) {
       return DEFAULT_SERVER_PROD;
     }
 
-    final userData = json.decode(prefs.getString('lastServer')!);
+    final userData = json.decode(prefs.getString(PREFS_LAST_SERVER)!);
     return userData['serverUrl'] as String;
   }
 
   Future<bool> tryAutoLogin() async {
     final prefs = await SharedPreferences.getInstance();
-    if (!prefs.containsKey('userData')) {
+    if (!prefs.containsKey(PREFS_USER)) {
       log('autologin failed');
       return false;
     }
-    final extractedUserData = json.decode(prefs.getString('userData')!);
+    final extractedUserData = json.decode(prefs.getString(PREFS_USER)!);
 
     token = extractedUserData['token'];
     serverUrl = extractedUserData['serverUrl'];
@@ -239,7 +239,7 @@ class AuthProvider with ChangeNotifier {
     }
 
     final prefs = await SharedPreferences.getInstance();
-    prefs.remove('userData');
+    prefs.remove(PREFS_USER);
   }
 
   /// Returns the application name and version
