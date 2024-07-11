@@ -348,7 +348,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                       addSettings();
                     });
                   },
-                  inactiveColor: Theme.of(context).colorScheme.background,
+                  inactiveColor: Theme.of(context).colorScheme.surface,
                 ),
                 if (widget._set.settings.isNotEmpty)
                   SwitchListTile(
