@@ -38,11 +38,9 @@ class NutritionPlansProvider with ChangeNotifier {
   static const _nutritionalPlansInfoPath = 'nutritionplaninfo';
   static const _mealPath = 'meal';
   static const _mealItemPath = 'mealitem';
-  static const _ingredientPath = 'ingredient';
   static const _ingredientInfoPath = 'ingredientinfo';
   static const _ingredientSearchPath = 'ingredient/search';
   static const _nutritionDiaryPath = 'nutritiondiary';
-  static const _ingredientImagePath = 'ingredient-image';
 
   final WgerBaseProvider baseProvider;
   List<NutritionalPlan> _plans = [];

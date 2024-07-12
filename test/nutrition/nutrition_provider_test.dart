@@ -19,7 +19,6 @@ void main() {
     const String planInfoUrl = 'nutritionplaninfo';
     const String planUrl = 'nutritionplan';
     const String diaryUrl = 'nutritiondiary';
-    const String ingredientUrl = 'ingredient';
 
     final Map<String, dynamic> nutritionalPlanInfoResponse = jsonDecode(
       fixture('nutrition/nutritional_plan_info_detail_response.json'),
