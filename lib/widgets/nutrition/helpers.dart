@@ -110,15 +110,11 @@ void showIngredientDetails(BuildContext context, int id, {String? image}) {
         Ingredient? ingredient;
         NutritionalGoals? goals;
         String? source;
-        String? url;
 
         if (snapshot.hasData) {
           ingredient = snapshot.data;
           goals = ingredient!.nutritionalValues.toGoals();
           source = ingredient.sourceName ?? 'unknown';
-          url = ingredient.remoteId == null
-              ? null
-              : 'https://world.openfoodfacts.org/product/${ingredient.remoteId}';
         }
         return AlertDialog(
           title: (snapshot.hasData) ? Text(ingredient!.name) : null,
@@ -131,7 +127,7 @@ void showIngredientDetails(BuildContext context, int id, {String? image}) {
                 if (image != null) const SizedBox(height: 12),
                 if (snapshot.hasError)
                   Text(
-                    'Ingredient lookup error: ${snapshot.error}',
+                    'Ingredient lookup error: ${snapshot.error ?? 'unknown error'}',
                     style: const TextStyle(color: Colors.red),
                   ),
                 if (!snapshot.hasData && !snapshot.hasError) const CircularProgressIndicator(),
@@ -144,13 +140,14 @@ void showIngredientDetails(BuildContext context, int id, {String? image}) {
                       showGperKg: false,
                     ),
                   ),
-                if (snapshot.hasData && url == null) Text('Source: ${source!}'),
-                if (snapshot.hasData && url != null)
+                if (snapshot.hasData && ingredient!.licenseObjectURl == null)
+                  Text('Source: ${source!}'),
+                if (snapshot.hasData && ingredient!.licenseObjectURl != null)
                   Padding(
                     padding: const EdgeInsets.only(top: 12),
                     child: InkWell(
                       child: Text('Source: ${source!}'),
-                      onTap: () => launchURL(url!, context),
+                      onTap: () => launchURL(ingredient!.licenseObjectURl!, context),
                     ),
                   ),
               ],

@@ -26,7 +26,7 @@ part 'ingredient.g.dart';
 class Ingredient {
   // fields returned by django api that we ignore here:
   // uuid, last_updated, last_imported, weight_units, language
-  // all license fields
+  // most license fields
 
   @JsonKey(required: true)
   final int id;
@@ -41,6 +41,9 @@ class Ingredient {
 
   @JsonKey(required: true, name: 'source_url')
   final String? sourceUrl;
+
+  @JsonKey(required: true, name: 'license_object_url')
+  final String? licenseObjectURl;
 
   /// Barcode of the product
   @JsonKey(required: true)
@@ -91,6 +94,7 @@ class Ingredient {
     required this.remoteId,
     required this.sourceName,
     required this.sourceUrl,
+    this.licenseObjectURl,
     required this.id,
     required this.code,
     required this.name,
