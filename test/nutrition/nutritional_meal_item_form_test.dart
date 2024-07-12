@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/mockito.dart';
+import 'package:network_image_mock/network_image_mock.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/exercises/ingredient_api.dart';
@@ -127,13 +128,15 @@ void main() {
   });
 
   group('Test the AlertDialogs for scanning result', () {
+    // TODO: why do we need to support empty barcodes?
     testWidgets('with empty code', (WidgetTester tester) async {
       await tester.pumpWidget(createMealItemFormScreen(meal1, '', true));
 
       await tester.tap(find.byKey(const Key('scan-button')));
       await tester.pumpAndSettle();
 
-      expect(find.byType(AlertDialog), findsNothing);
+      expect(find.byKey(const Key('ingredient-scan-result-dialog')), findsOneWidget);
+      expect(find.byKey(const Key('ingredient-scan-result-dialog-confirm-button')), findsNothing);
     });
 
     testWidgets('with correct code', (WidgetTester tester) async {
@@ -142,7 +145,8 @@ void main() {
       await tester.tap(find.byKey(const Key('scan-button')));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('found-dialog')), findsOneWidget);
+      expect(find.byKey(const Key('ingredient-scan-result-dialog')), findsOneWidget);
+      expect(find.byKey(const Key('ingredient-scan-result-dialog-confirm-button')), findsOneWidget);
     });
 
     testWidgets('with incorrect code', (WidgetTester tester) async {
@@ -151,7 +155,8 @@ void main() {
       await tester.tap(find.byKey(const Key('scan-button')));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('notFound-dialog')), findsOneWidget);
+      expect(find.byKey(const Key('ingredient-scan-result-dialog')), findsOneWidget);
+      expect(find.byKey(const Key('ingredient-scan-result-dialog-confirm-button')), findsNothing);
     });
   });
 
@@ -221,9 +226,9 @@ void main() {
       await tester.tap(find.byKey(const Key('scan-button')));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('found-dialog')), findsOneWidget);
+      expect(find.byKey(const Key('ingredient-scan-result-dialog')), findsOneWidget);
 
-      await tester.tap(find.byKey(const Key('found-dialog-confirm-button')));
+      await tester.tap(find.byKey(const Key('ingredient-scan-result-dialog-confirm-button')));
       await tester.pumpAndSettle();
 
       expect(formState.ingredientIdController.text, '1');
@@ -235,12 +240,12 @@ void main() {
       await tester.tap(find.byKey(const Key('scan-button')));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('found-dialog')), findsOneWidget);
+      expect(find.byKey(const Key('ingredient-scan-result-dialog')), findsOneWidget);
 
-      await tester.tap(find.byKey(const Key('found-dialog-close-button')));
+      await tester.tap(find.byKey(const Key('ingredient-scan-result-dialog-close-button')));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('found-dialog')), findsNothing);
+      expect(find.byKey(const Key('ingredient-scan-result-dialog')), findsNothing);
     });
   });
 
@@ -264,9 +269,9 @@ void main() {
       await tester.tap(find.byKey(const Key('scan-button')));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('found-dialog')), findsOneWidget);
+      expect(find.byKey(const Key('ingredient-scan-result-dialog')), findsOneWidget);
 
-      await tester.tap(find.byKey(const Key('found-dialog-confirm-button')));
+      await tester.tap(find.byKey(const Key('ingredient-scan-result-dialog-confirm-button')));
       await tester.pumpAndSettle();
 
       await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
@@ -275,15 +280,16 @@ void main() {
       expect(find.text('Please enter a valid number'), findsOneWidget);
     });
 
+//TODO: isn't this test just a duplicate of the above one? can be removed?
     testWidgets('save ingredient with incorrect weight input type', (WidgetTester tester) async {
       await tester.pumpWidget(createMealItemFormScreen(meal1, '123', true));
 
       await tester.tap(find.byKey(const Key('scan-button')));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('found-dialog')), findsOneWidget);
+      expect(find.byKey(const Key('ingredient-scan-result-dialog')), findsOneWidget);
 
-      await tester.tap(find.byKey(const Key('found-dialog-confirm-button')));
+      await tester.tap(find.byKey(const Key('ingredient-scan-result-dialog-confirm-button')));
       await tester.pumpAndSettle();
 
       await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
@@ -301,22 +307,22 @@ void main() {
       await tester.tap(find.byKey(const Key('scan-button')));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('found-dialog')), findsOneWidget);
+      expect(find.byKey(const Key('ingredient-scan-result-dialog')), findsOneWidget);
 
-      await tester.tap(find.byKey(const Key('found-dialog-confirm-button')));
+      await tester.tap(find.byKey(const Key('ingredient-scan-result-dialog-confirm-button')));
       await tester.pumpAndSettle();
 
       expect(formState.ingredientIdController.text, '1');
 
-      // once ID and weight are set, it'll fetchIngredient and show macros preview
+      await tester.enterText(find.byKey(const Key('field-weight')), '2');
+
+      // once ID and weight are set, it'll fetchIngredient and show macros preview and ingredient image
       when(mockNutrition.fetchIngredient(1)).thenAnswer((_) => Future.value(
             Ingredient.fromJson(jsonDecode(fixture('nutrition/ingredientinfo_59887.json'))),
           ));
+      await mockNetworkImagesFor(() => tester.pumpAndSettle());
 
-      await tester.enterText(find.byKey(const Key('field-weight')), '2');
-      await tester.pumpAndSettle();
-
-      expect(find.byKey(const Key('found-dialog')), findsNothing);
+      expect(find.byKey(const Key('ingredient-scan-result-dialog')), findsNothing);
 
       await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
       await tester.pumpAndSettle();

@@ -430,16 +430,18 @@ class IngredientFormState extends State<IngredientForm> {
                 itemCount: suggestions.length,
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
+                  void select() {
+                    final ingredient = suggestions[index].ingredient;
+                    selectIngredient(
+                      ingredient.id,
+                      ingredient.name,
+                      suggestions[index].amount,
+                    );
+                  }
+
                   return Card(
                     child: ListTile(
-                      onTap: () {
-                        final ingredient = suggestions[index].ingredient;
-                        selectIngredient(
-                          ingredient.id,
-                          ingredient.name,
-                          suggestions[index].amount,
-                        );
-                      },
+                      onTap: select,
                       title: Text(
                         '${suggestions[index].ingredient.name} (${suggestions[index].amount.toStringAsFixed(0)}$unit)',
                       ),
@@ -456,7 +458,7 @@ class IngredientFormState extends State<IngredientForm> {
                               showIngredientDetails(
                                 context,
                                 suggestions[index].ingredient.id,
-                                image: suggestions[index].ingredient.image?.image,
+                                select: select,
                               );
                             },
                           ),

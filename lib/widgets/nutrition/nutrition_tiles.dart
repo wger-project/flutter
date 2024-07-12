@@ -35,7 +35,6 @@ class MealItemValuesTile extends StatelessWidget {
           showIngredientDetails(
             context,
             ingredient.id,
-            image: ingredient.image?.image,
           );
         },
       ),
