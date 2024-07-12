@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/helpers/misc.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/nutritional_goals.dart';
@@ -105,9 +106,8 @@ void showIngredientDetails(BuildContext context, int id, {String? image}) {
   // we also don't get an image when querying the API
   // however, the typeahead suggestion does get an image, so we allow passing it...
 
-  final url = context.read<NutritionPlansProvider>().baseProvider.auth.serverUrl;
+  final serverURL = context.read<NutritionPlansProvider>().baseProvider.auth.serverUrl;
 
-// TODO: display source name and source URL for an ingredient in the UI
   showDialog(
     context: context,
     builder: (context) => FutureBuilder<Ingredient>(
@@ -115,10 +115,16 @@ void showIngredientDetails(BuildContext context, int id, {String? image}) {
       builder: (BuildContext context, AsyncSnapshot<Ingredient> snapshot) {
         Ingredient? ingredient;
         NutritionalGoals? goals;
+        String? source;
+        String? url;
 
         if (snapshot.hasData) {
           ingredient = snapshot.data;
           goals = ingredient!.nutritionalValues.toGoals();
+          source = ingredient.sourceName ?? 'unknown';
+          url = ingredient.remoteId == null
+              ? null
+              : 'https://world.openfoodfacts.org/product/${ingredient.remoteId}';
         }
         return AlertDialog(
           title: (snapshot.hasData) ? Text(ingredient!.name) : null,
@@ -128,7 +134,7 @@ void showIngredientDetails(BuildContext context, int id, {String? image}) {
               mainAxisSize: MainAxisSize.min,
               children: [
                 if (image != null)
-                  CircleAvatar(backgroundImage: NetworkImage(url! + image), radius: 128),
+                  CircleAvatar(backgroundImage: NetworkImage(serverURL! + image), radius: 128),
                 if (image != null) const SizedBox(height: 12),
                 if (snapshot.hasError)
                   Text(
@@ -143,6 +149,15 @@ void showIngredientDetails(BuildContext context, int id, {String? image}) {
                       nutritionalGoals: goals!,
                       plannedValuesPercentage: goals.energyPercentage(),
                       showGperKg: false,
+                    ),
+                  ),
+                if (snapshot.hasData && url == null) Text('Source: ${source!}'),
+                if (snapshot.hasData && url != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 12),
+                    child: InkWell(
+                      child: Text('Source: ${source!}'),
+                      onTap: () => launchURL(url!, context),
                     ),
                   ),
               ],
