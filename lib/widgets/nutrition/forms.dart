@@ -454,7 +454,11 @@ class IngredientFormState extends State<IngredientForm> {
                           IconButton(
                             icon: const Icon(Icons.info_outline),
                             onPressed: () {
-                              showIngredientDetails(context, suggestions[index].ingredient.id);
+                              showIngredientDetails(
+                                context,
+                                suggestions[index].ingredient.id,
+                                image: suggestions[index].ingredient.image?.image,
+                              );
                             },
                           ),
                           const SizedBox(width: 5),

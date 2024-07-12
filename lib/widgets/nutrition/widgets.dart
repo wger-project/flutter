@@ -163,7 +163,11 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
               trailing: IconButton(
                 icon: const Icon(Icons.info_outline),
                 onPressed: () {
-                  showIngredientDetails(context, suggestion.data.id, image: suggestion.data.image);
+                  showIngredientDetails(
+                    context,
+                    suggestion.data.id,
+                    image: suggestion.data.image != null ? url! + suggestion.data.image! : null,
+                  );
                 },
               ),
             );

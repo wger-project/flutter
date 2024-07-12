@@ -102,12 +102,6 @@ String getKcalConsumedVsPlanned(Meal meal, BuildContext context) {
 }
 
 void showIngredientDetails(BuildContext context, int id, {String? image}) {
-  // when loading recently used ingredients, we never get an image :'(
-  // we also don't get an image when querying the API
-  // however, the typeahead suggestion does get an image, so we allow passing it...
-
-  final serverURL = context.read<NutritionPlansProvider>().baseProvider.auth.serverUrl;
-
   showDialog(
     context: context,
     builder: (context) => FutureBuilder<Ingredient>(
@@ -133,8 +127,7 @@ void showIngredientDetails(BuildContext context, int id, {String? image}) {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (image != null)
-                  CircleAvatar(backgroundImage: NetworkImage(serverURL! + image), radius: 128),
+                if (image != null) CircleAvatar(backgroundImage: NetworkImage(image), radius: 128),
                 if (image != null) const SizedBox(height: 12),
                 if (snapshot.hasError)
                   Text(
