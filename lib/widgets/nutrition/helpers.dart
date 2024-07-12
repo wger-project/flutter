@@ -116,41 +116,51 @@ void showIngredientDetails(BuildContext context, int id, {String? image}) {
           goals = ingredient!.nutritionalValues.toGoals();
           source = ingredient.sourceName ?? 'unknown';
         }
+        var radius = 100.0;
+        final height = MediaQuery.sizeOf(context).height;
+        final width = MediaQuery.sizeOf(context).width;
+        final smallest = height < width ? height : width;
+        if (smallest < 400) {
+          radius = smallest / 4;
+        }
         return AlertDialog(
           title: (snapshot.hasData) ? Text(ingredient!.name) : null,
-          content: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (image != null) CircleAvatar(backgroundImage: NetworkImage(image), radius: 128),
-                if (image != null) const SizedBox(height: 12),
-                if (snapshot.hasError)
-                  Text(
-                    'Ingredient lookup error: ${snapshot.error ?? 'unknown error'}',
-                    style: const TextStyle(color: Colors.red),
-                  ),
-                if (!snapshot.hasData && !snapshot.hasError) const CircularProgressIndicator(),
-                if (snapshot.hasData)
-                  ConstrainedBox(
-                    constraints: const BoxConstraints(minWidth: 400),
-                    child: MacronutrientsTable(
-                      nutritionalGoals: goals!,
-                      plannedValuesPercentage: goals.energyPercentage(),
-                      showGperKg: false,
+          content: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (image != null)
+                    CircleAvatar(backgroundImage: NetworkImage(image), radius: radius),
+                  if (image != null) const SizedBox(height: 12),
+                  if (snapshot.hasError)
+                    Text(
+                      'Ingredient lookup error: ${snapshot.error ?? 'unknown error'}',
+                      style: const TextStyle(color: Colors.red),
                     ),
-                  ),
-                if (snapshot.hasData && ingredient!.licenseObjectURl == null)
-                  Text('Source: ${source!}'),
-                if (snapshot.hasData && ingredient!.licenseObjectURl != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 12),
-                    child: InkWell(
-                      child: Text('Source: ${source!}'),
-                      onTap: () => launchURL(ingredient!.licenseObjectURl!, context),
+                  if (!snapshot.hasData && !snapshot.hasError) const CircularProgressIndicator(),
+                  if (snapshot.hasData)
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(minWidth: 400),
+                      child: MacronutrientsTable(
+                        nutritionalGoals: goals!,
+                        plannedValuesPercentage: goals.energyPercentage(),
+                        showGperKg: false,
+                      ),
                     ),
-                  ),
-              ],
+                  if (snapshot.hasData && ingredient!.licenseObjectURl == null)
+                    Text('Source: ${source!}'),
+                  if (snapshot.hasData && ingredient!.licenseObjectURl != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 12),
+                      child: InkWell(
+                        child: Text('Source: ${source!}'),
+                        onTap: () => launchURL(ingredient!.licenseObjectURl!, context),
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
         );
