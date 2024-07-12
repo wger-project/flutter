@@ -367,7 +367,6 @@ class IngredientFormState extends State<IngredientForm> {
                       ) {
                         if (snapshot.hasData) {
                           _mealItem.ingredient = snapshot.data!;
-                          // here it could be nice to put the button to the popup
                           return MealItemValuesTile(
                             ingredient: _mealItem.ingredient,
                             nutritionalValues: _mealItem.nutritionalValues,
