@@ -1,0 +1,76 @@
+name: 'Flutter common setup'
+description: 'Common steps needed to setup the application'
+inputs:
+  flutter-version:
+    description: 'flutter version'
+    required: true
+  java-version:
+    description: 'java version'
+    required: true
+  ruby-version:
+    description: 'ruby version'
+    required: true
+  version:
+    description: ""
+    required: true
+  decrypt-playstore:
+    required: false
+    default: 'false'
+    description: ""
+  key-playstore:
+    required: false
+    description: ""
+  key-playstore-sign:
+    required: false
+    description: ""
+  key-properties:
+    description: ""
+    required: false
+
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        java-version: ${{ inputs.java-version }}
+        distribution: 'oracle'
+        cache: 'gradle'
+
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        channel: stable
+        flutter-version: ${{ inputs.flutter-version }}
+        cache: true
+
+    - name: Install Flutter dependencies
+      run: flutter pub get
+      shell: bash
+
+    - name: Decrypt config files
+      if: ${{ inputs.decrypt-playstore == 'true' }}
+      run: |
+        cd ./fastlane/metadata/envfiles
+        chmod +x ./decrypt_secrets.sh
+        ./decrypt_secrets.sh
+      shell: bash
+      env:
+        DECRYPTKEY_PLAYSTORE: ${{ inputs.key-playstore }}
+        DECRYPTKEY_PLAYSTORE_SIGNING_KEY: ${{ inputs.key-playstore-sign }}
+        DECRYPTKEY_PROPERTIES: ${{ inputs.key-properties }}
+
+    - name: Extract build number
+      run: |
+        echo "BUILD=$(flutter pub run cider version | cut -d '+' -f 2)" >> $GITHUB_ENV
+      shell: bash
+
+    - name: Bump pubspec version
+      run: |
+        flutter pub run cider version ${{ inputs.version }}+${{ env.BUILD }}
+        flutter pub run cider bump build
+      shell: bash
+
+# TODO:
+#  flutter pub run cider version ${{ inputs.version }}+${{ env.BUILD }}
