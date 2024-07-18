@@ -32,7 +32,6 @@ import 'package:wger/providers/user.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/gym_mode.dart';
-import 'package:wger/screens/log_meal_screen.dart';
 import 'package:wger/screens/log_meals_screen.dart';
 import 'package:wger/screens/measurement_categories_screen.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
@@ -45,11 +44,8 @@ import 'package:wger/widgets/measurements/charts.dart';
 import 'package:wger/widgets/measurements/forms.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
-import 'package:wger/widgets/nutrition/helpers.dart';
 import 'package:wger/widgets/weight/forms.dart';
 import 'package:wger/widgets/workouts/forms.dart';
-
-enum viewMode { base, withMeals, withMealsDetails }
 
 class DashboardNutritionWidget extends StatefulWidget {
   const DashboardNutritionWidget();
@@ -59,7 +55,6 @@ class DashboardNutritionWidget extends StatefulWidget {
 
 class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
   NutritionalPlan? _plan;
-  var _viewMode = viewMode.base;
   bool _hasContent = false;
 
   @override
@@ -67,79 +62,6 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
     super.initState();
     _plan = Provider.of<NutritionPlansProvider>(context, listen: false).currentPlan;
     _hasContent = _plan != null;
-  }
-
-  List<Widget> getContent() {
-    final List<Widget> out = [];
-
-    if (!_hasContent) {
-      return out;
-    }
-
-    if (_viewMode == viewMode.withMealsDetails || _viewMode == viewMode.withMeals) {
-      for (final meal in _plan!.meals) {
-        out.add(
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  meal.time!.format(context),
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                  //textAlign: TextAlign.left,
-                ),
-              ),
-              MutedText(getShortNutritionValues(
-                meal.plannedNutritionalValues,
-                context,
-              )),
-              IconButton(
-                icon: const SvgIcon(
-                  icon: SvgIconData('assets/icons/meal-diary.svg'),
-                ),
-                color: wgerPrimaryButtonColor,
-                onPressed: () {
-                  Navigator.of(context).pushNamed(
-                    LogMealScreen.routeName,
-                    arguments: LogMealArguments(meal, false),
-                  );
-                },
-              ),
-            ],
-          ),
-        );
-        out.add(const SizedBox(height: 5));
-
-        if (_viewMode == viewMode.withMealsDetails) {
-          for (final item in meal.mealItems) {
-            out.add(
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Flexible(
-                        child: Text(
-                          item.ingredient.name,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      const SizedBox(width: 5),
-                      Text(
-                        '${item.amount.toStringAsFixed(0)} ${AppLocalizations.of(context).g}',
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            );
-          }
-          out.add(const SizedBox(height: 10));
-        }
-        out.add(const Divider());
-      }
-    }
-
-    return out;
   }
 
   @override
@@ -162,37 +84,13 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
               Icons.restaurant,
               color: Theme.of(context).textTheme.headlineSmall!.color,
             ),
-            trailing: _hasContent
-                ? Tooltip(
-                    message: AppLocalizations.of(context).toggleDetails,
-                    child: switch (_viewMode) {
-                      viewMode.base => const Icon(Icons.info_outline),
-                      viewMode.withMeals => const Icon(Icons.info),
-                      viewMode.withMealsDetails => const Icon(Icons.info),
-                    },
-                  )
-                : const SizedBox(),
-            onTap: () {
-              setState(() {
-                _viewMode = switch (_viewMode) {
-                  viewMode.base => viewMode.withMeals,
-                  viewMode.withMeals => viewMode.withMealsDetails,
-                  viewMode.withMealsDetails => viewMode.base,
-                };
-              });
-            },
           ),
           if (_hasContent)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Column(
-                children: [
-                  ...getContent(),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 15),
-                    child: FlNutritionalPlanGoalWidget(nutritionalPlan: _plan!),
-                  ),
-                ],
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 15),
+                child: FlNutritionalPlanGoalWidget(nutritionalPlan: _plan!),
               ),
             )
           else
