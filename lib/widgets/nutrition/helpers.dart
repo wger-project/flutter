@@ -16,12 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
+import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
+import 'package:wger/providers/nutrition.dart';
 import 'package:wger/widgets/core/core.dart';
+import 'package:wger/widgets/nutrition/ingredient_dialogs.dart';
 
 List<String> getNutritionColumnNames(BuildContext context) => [
       AppLocalizations.of(context).energy,
@@ -94,4 +97,16 @@ String getKcalConsumedVsPlanned(Meal meal, BuildContext context) {
   final loc = AppLocalizations.of(context);
 
   return '${consumed.toStringAsFixed(0)} / ${planned.toStringAsFixed(0)} ${loc.kcal}';
+}
+
+void showIngredientDetails(BuildContext context, int id, {void Function()? select}) {
+  showDialog(
+    context: context,
+    builder: (context) => FutureBuilder<Ingredient>(
+      future: Provider.of<NutritionPlansProvider>(context, listen: false).fetchIngredient(id),
+      builder: (BuildContext context, AsyncSnapshot<Ingredient> snapshot) {
+        return IngredientDetails(snapshot, select: select);
+      },
+    ),
+  );
 }

@@ -13,7 +13,7 @@ import 'package:wger/widgets/nutrition/nutrition_tile.dart';
 import 'package:wger/widgets/nutrition/widgets.dart';
 
 /// a NutritionTitle showing an ingredient, with its
-/// avatar and nutritional values
+/// avatar, nutritional values and button to popup its details
 class MealItemValuesTile extends StatelessWidget {
   final Ingredient ingredient;
   final NutritionalValues nutritionalValues;
@@ -29,6 +29,15 @@ class MealItemValuesTile extends StatelessWidget {
     return NutritionTile(
       leading: IngredientAvatar(ingredient: ingredient),
       title: Text(getShortNutritionValues(nutritionalValues, context)),
+      trailing: IconButton(
+        icon: const Icon(Icons.info_outline),
+        onPressed: () {
+          showIngredientDetails(
+            context,
+            ingredient.id,
+          );
+        },
+      ),
     );
   }
 }

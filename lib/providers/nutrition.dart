@@ -38,10 +38,9 @@ class NutritionPlansProvider with ChangeNotifier {
   static const _nutritionalPlansInfoPath = 'nutritionplaninfo';
   static const _mealPath = 'meal';
   static const _mealItemPath = 'mealitem';
-  static const _ingredientPath = 'ingredient';
+  static const _ingredientInfoPath = 'ingredientinfo';
   static const _ingredientSearchPath = 'ingredient/search';
   static const _nutritionDiaryPath = 'nutritiondiary';
-  static const _ingredientImagePath = 'ingredient-image';
 
   final WgerBaseProvider baseProvider;
   List<NutritionalPlan> _plans = [];
@@ -131,6 +130,7 @@ class NutritionPlansProvider with ChangeNotifier {
     try {
       plan = findById(planId);
     } on NoSuchEntryException {
+      // TODO: remove this useless call, because we will fetch all details below
       plan = await fetchAndSetPlanSparse(planId);
     }
 
@@ -144,6 +144,7 @@ class NutritionPlansProvider with ChangeNotifier {
       final List<MealItem> mealItems = [];
       final meal = Meal.fromJson(mealData);
 
+      // TODO: we should add these ingredients to the ingredient cache
       for (final mealItemData in mealData['meal_items']) {
         final mealItem = MealItem.fromJson(mealItemData);
 
@@ -298,7 +299,7 @@ class NutritionPlansProvider with ChangeNotifier {
       // Get ingredient from the server and save to cache
     } on StateError {
       final data = await baseProvider.fetch(
-        baseProvider.makeUrl(_ingredientPath, id: ingredientId),
+        baseProvider.makeUrl(_ingredientInfoPath, id: ingredientId),
       );
       ingredient = Ingredient.fromJson(data);
       _ingredients.add(ingredient);
@@ -370,14 +371,15 @@ class NutritionPlansProvider with ChangeNotifier {
 
     // Send the request
     final data = await baseProvider.fetch(
-      baseProvider.makeUrl(_ingredientPath, query: {'code': code}),
+      baseProvider.makeUrl(_ingredientInfoPath, query: {'code': code}),
     );
 
     if (data['count'] == 0) {
       return null;
-    } else {
-      return Ingredient.fromJson(data['results'][0]);
     }
+    // TODO we should probably add it to ingredient cache.
+    // TODO: we could also use the ingredient cache for code searches
+    return Ingredient.fromJson(data['results'][0]);
   }
 
   /// Log meal to nutrition diary

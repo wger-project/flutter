@@ -94,7 +94,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
           exercisesProvider.fetchAndSetInitialData(),
         ]);
       } catch (e) {
-        log('fire! fire!');
+        log('Exception loading base data');
         log(e.toString());
       }
 
@@ -109,7 +109,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
           measurementProvider.fetchAndSetAllCategoriesAndEntries(),
         ]);
       } catch (e) {
-        log('fire! fire!');
+        log('Exception loading plans, weight, measurements and gallery');
         log(e.toString());
       }
 
@@ -121,7 +121,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
           await nutritionPlansProvider.fetchAndSetPlanFull(plan.id!);
         }
       } catch (e) {
-        log('fire! fire!');
+        log('Exception loading current nutritional plan');
         log(e.toString());
       }
 

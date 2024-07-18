@@ -353,7 +353,7 @@ class IngredientFormState extends State<IngredientForm> {
                 child: Column(
                   children: [
                     Text(
-                      'Macros preview',
+                      'Macros preview', // TODO fix l10n
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     FutureBuilder<Ingredient>(
@@ -430,16 +430,18 @@ class IngredientFormState extends State<IngredientForm> {
                 itemCount: suggestions.length,
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
+                  void select() {
+                    final ingredient = suggestions[index].ingredient;
+                    selectIngredient(
+                      ingredient.id,
+                      ingredient.name,
+                      suggestions[index].amount,
+                    );
+                  }
+
                   return Card(
                     child: ListTile(
-                      onTap: () {
-                        final ingredient = suggestions[index].ingredient;
-                        selectIngredient(
-                          ingredient.id,
-                          ingredient.name,
-                          suggestions[index].amount,
-                        );
-                      },
+                      onTap: select,
                       title: Text(
                         '${suggestions[index].ingredient.name} (${suggestions[index].amount.toStringAsFixed(0)}$unit)',
                       ),
@@ -447,7 +449,23 @@ class IngredientFormState extends State<IngredientForm> {
                         suggestions[index].ingredient.nutritionalValues,
                         context,
                       )),
-                      trailing: const Icon(Icons.copy),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.info_outline),
+                            onPressed: () {
+                              showIngredientDetails(
+                                context,
+                                suggestions[index].ingredient.id,
+                                select: select,
+                              );
+                            },
+                          ),
+                          const SizedBox(width: 5),
+                          const Icon(Icons.copy),
+                        ],
+                      ),
                     ),
                   );
                 },

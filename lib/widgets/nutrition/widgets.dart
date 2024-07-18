@@ -31,7 +31,8 @@ import 'package:wger/models/exercises/ingredient_api.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/widgets/core/core.dart';
-import 'package:wger/widgets/nutrition/nutrition_tiles.dart';
+import 'package:wger/widgets/nutrition/helpers.dart';
+import 'package:wger/widgets/nutrition/ingredient_dialogs.dart';
 
 class ScanReader extends StatelessWidget {
   const ScanReader();
@@ -159,6 +160,18 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
                     ),
               title: Text(suggestion.value),
               // subtitle: Text(suggestion.data.id.toString()),
+              trailing: IconButton(
+                icon: const Icon(Icons.info_outline),
+                onPressed: () {
+                  showIngredientDetails(
+                    context,
+                    suggestion.data.id,
+                    select: () {
+                      widget.selectIngredient(suggestion.data.id, suggestion.value, null);
+                    },
+                  );
+                },
+              ),
             );
           },
           transitionBuilder: (context, animation, child) => FadeTransition(
@@ -193,87 +206,24 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
           if (!widget.test!) {
             barcode = await readerscan(context);
           }
-
-          if (barcode.isNotEmpty) {
-            if (!mounted) {
-              return;
-            }
-            final result = await Provider.of<NutritionPlansProvider>(
-              context,
-              listen: false,
-            ).searchIngredientWithCode(barcode);
-            // TODO: show spinner...
-            if (!mounted) {
-              return;
-            }
-
-            if (result != null) {
-              showDialog(
-                context: context,
-                builder: (ctx) => AlertDialog(
-                  key: const Key('found-dialog'),
-                  title: Text(AppLocalizations.of(context).productFound),
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(AppLocalizations.of(context).productFoundDescription(result.name)),
-                      MealItemValuesTile(
-                        ingredient: result,
-                        nutritionalValues: result.nutritionalValues,
-                      ),
-                    ],
-                  ),
-                  actions: [
-                    TextButton(
-                      key: const Key('found-dialog-confirm-button'),
-                      child: Text(MaterialLocalizations.of(context).continueButtonLabel),
-                      onPressed: () {
-                        widget.selectIngredient(result.id, result.name, null);
-                        Navigator.of(ctx).pop();
-                      },
-                    ),
-                    TextButton(
-                      key: const Key('found-dialog-close-button'),
-                      child: Text(
-                        MaterialLocalizations.of(context).closeButtonLabel,
-                      ),
-                      onPressed: () {
-                        Navigator.of(ctx).pop();
-                      },
-                    ),
-                  ],
-                ),
-              );
-            } else {
-              //nothing is matching barcode
-              showDialog(
-                context: context,
-                builder: (ctx) => AlertDialog(
-                  key: const Key('notFound-dialog'),
-                  title: Text(AppLocalizations.of(context).productNotFound),
-                  content: Text(
-                    AppLocalizations.of(context).productNotFoundDescription(barcode),
-                  ),
-                  actions: [
-                    TextButton(
-                      key: const Key('notFound-dialog-close-button'),
-                      child: Text(
-                        MaterialLocalizations.of(context).closeButtonLabel,
-                      ),
-                      onPressed: () {
-                        Navigator.of(ctx).pop();
-                      },
-                    ),
-                  ],
-                ),
-              );
-            }
-          }
         } catch (e) {
           if (mounted) {
             showErrorDialog(e, context);
           }
         }
+        if (!mounted) {
+          return;
+        }
+        showDialog(
+          context: context,
+          builder: (context) => FutureBuilder<Ingredient?>(
+            future: Provider.of<NutritionPlansProvider>(context, listen: false)
+                .searchIngredientWithCode(barcode),
+            builder: (BuildContext context, AsyncSnapshot<Ingredient?> snapshot) {
+              return IngredientScanResultDialog(snapshot, barcode, widget.selectIngredient);
+            },
+          ),
+        );
       },
     );
   }
