@@ -16,10 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/core/locator.dart';
+import 'package:wger/powersync.dart';
 import 'package:wger/providers/add_exercise.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/body_weight.dart';
@@ -52,14 +54,33 @@ import 'package:wger/screens/workout_plans_screen.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/about.dart';
 import 'package:wger/widgets/core/settings.dart';
+import 'package:logging/logging.dart';
 
 import 'providers/auth.dart';
 
 void main() async {
   //zx.setLogEnabled(kDebugMode);
+  Logger.root.level = Level.INFO;
+  Logger.root.onRecord.listen((record) {
+    if (kDebugMode) {
+      print('[${record.loggerName}] ${record.level.name}: ${record.time}: ${record.message}');
+
+      if (record.error != null) {
+        print(record.error);
+      }
+      if (record.stackTrace != null) {
+        print(record.stackTrace);
+      }
+    }
+  });
 
   // Needs to be called before runApp
   WidgetsFlutterBinding.ensureInitialized();
+
+  await openDatabase();
+
+  final loggedIn = await isLoggedIn();
+  print('is logged in $loggedIn');
 
   // Locator to initialize exerciseDB
   await ServiceLocator().configure();
