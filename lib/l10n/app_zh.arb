@@ -597,7 +597,7 @@
   "@pull_up_bar": {
     "description": "Generated entry for translation for server strings"
   },
-  "exerciseList": "锻炼清單",
+  "exerciseList": "锻炼清单",
   "@exerciseList": {},
   "exercises": "锻炼项目",
   "@exercises": {
@@ -608,5 +608,67 @@
     "description": "Message returned if no exercises match the searched string"
   },
   "searchNamesInEnglish": "同时搜索英文名称",
-  "@searchNamesInEnglish": {}
+  "@searchNamesInEnglish": {},
+  "goalFiber": "纤维素目标",
+  "@goalFiber": {},
+  "onlyLoggingHelpText": "如果你只想记录你的卡路里，而不想为特定的膳食制定详细的营养计划，请勾选此复选框",
+  "@onlyLoggingHelpText": {},
+  "onlyLogging": "只记录卡路里",
+  "@onlyLogging": {},
+  "goalEnergy": "能量目标",
+  "@goalEnergy": {},
+  "goalProtein": "蛋白质目标",
+  "@goalProtein": {},
+  "goalCarbohydrates": "碳水化合物目标",
+  "@goalCarbohydrates": {},
+  "goalFat": "脂肪目标",
+  "@goalFat": {},
+  "today": "今天",
+  "@today": {},
+  "loggedToday": "今天的记录",
+  "@loggedToday": {},
+  "surplus": "剩余",
+  "@surplus": {
+    "description": "Caloric surplus (either planned or unplanned)"
+  },
+  "noIngredientsDefined": "还没有定义配料",
+  "@noIngredientsDefined": {},
+  "ingredientLogged": "记录在日记中的成分",
+  "@ingredientLogged": {},
+  "goalMacro": "宏观目标",
+  "@goalMacro": {
+    "description": "The goal for macronutrients"
+  },
+  "selectMealToLog": "选择一顿饭记在日记里",
+  "@selectMealToLog": {},
+  "deficit": "不足额",
+  "@deficit": {
+    "description": "Caloric deficit (either planned or unplanned)"
+  },
+  "kcalValue": "{value} 千卡",
+  "@kcalValue": {
+    "description": "A value in kcal, e.g. 500 kcal",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "gValue": "{value} g",
+  "@gValue": {
+    "description": "A value in grams, e.g. 5 g",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "percentValue": "{value} %",
+  "@percentValue": {
+    "description": "A value in percent, e.g. 10 %",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "noMeasurementEntries": "您没有测量条目",
+  "@noMeasurementEntries": {}
 }
