@@ -328,7 +328,7 @@
   },
   "mealLogged": "Posiłek zarejestrowany w dzienniku",
   "@mealLogged": {},
-  "logMeal": "Zaloguj ten posiłek",
+  "logMeal": "Zapisz ten posiłek w dzienniku",
   "@logMeal": {},
   "addIngredient": "Dodaj składnik",
   "@addIngredient": {},

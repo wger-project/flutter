@@ -64,9 +64,9 @@
   "@reset": {
     "description": "Button text allowing the user to reset the entered values to the default"
   },
-  "registerInstead": "Mohon daftar terlebih dahulu",
+  "registerInstead": "Tidak punya akun? Buat akun",
   "@registerInstead": {},
-  "loginInstead": "Mohon masuk terlebih dahulu",
+  "loginInstead": "Punya akun? Masuk",
   "@loginInstead": {},
   "labelWorkoutPlans": "Daftar rencana workout",
   "@labelWorkoutPlans": {
@@ -559,5 +559,47 @@
     "description": "Translation for close"
   },
   "userProfile": "Profilmu",
-  "@userProfile": {}
+  "@userProfile": {},
+  "verify": "Verifikasi",
+  "@verify": {},
+  "useMetric": "Gunakan unit metrik untuk berat badan",
+  "@useMetric": {},
+  "exerciseList": "Daftar latihan",
+  "@exerciseList": {},
+  "success": "Berhasil",
+  "@success": {
+    "description": "Message when an action completed successfully, usually used as a heading"
+  },
+  "exercises": "Latihan",
+  "@exercises": {
+    "description": "Multiple exercises for a workout"
+  },
+  "exerciseName": "Nama Latihan",
+  "@exerciseName": {
+    "description": "Label for the name of a workout exercise"
+  },
+  "noMatchingExerciseFound": "Tidak ditemukan latihan yang sesuai",
+  "@noMatchingExerciseFound": {
+    "description": "Message returned if no exercises match the searched string"
+  },
+  "shoulders": "Bahu",
+  "@shoulders": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "onlyLogging": "Hanya melacak kalori",
+  "@onlyLogging": {},
+  "seconds": "Detik",
+  "@seconds": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "searchNamesInEnglish": "Cari juga nama-nama dalam bahasa Inggris",
+  "@searchNamesInEnglish": {},
+  "noIngredientsDefined": "Belum ada bahan yang ditetapkan",
+  "@noIngredientsDefined": {},
+  "ingredientLogged": "Bahan telah dicatat",
+  "@ingredientLogged": {},
+  "triceps": "Trisep",
+  "@triceps": {
+    "description": "Generated entry for translation for server strings"
+  }
 }
