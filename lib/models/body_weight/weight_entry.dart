@@ -43,7 +43,7 @@ class WeightEntry {
   WeightEntry copyWith({int? id, int? weight, DateTime? date}) => WeightEntry(
         id: id,
         weight: weight ?? this.weight,
-        date: date ?? DateTime.now(),
+        date: date ?? this.date,
       );
 
   // Boilerplate
