@@ -110,8 +110,8 @@ class WeightForm extends StatelessWidget {
                     icon: const FaIcon(FontAwesomeIcons.minus),
                     onPressed: () {
                       try {
-                        final num newValue = num.parse(weightController.text) - 0.25;
-                        weightController.text = newValue.toString();
+                        final num newValue = num.parse(weightController.text) - 0.1;
+                        weightController.text = newValue.toStringAsFixed(1);
                       } on FormatException {}
                     },
                   ),
@@ -125,8 +125,8 @@ class WeightForm extends StatelessWidget {
                     icon: const FaIcon(FontAwesomeIcons.plus),
                     onPressed: () {
                       try {
-                        final num newValue = num.parse(weightController.text) + 0.25;
-                        weightController.text = newValue.toString();
+                        final num newValue = num.parse(weightController.text) + 0.1;
+                        weightController.text = newValue.toStringAsFixed(1);
                       } on FormatException {}
                     },
                   ),

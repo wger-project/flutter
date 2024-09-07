@@ -43,7 +43,7 @@ class WeightScreen extends StatelessWidget {
             FormScreen.routeName,
             arguments: FormScreenArguments(
               AppLocalizations.of(context).newEntry,
-              WeightForm(lastWeightEntry?.copyWith(id: null)),
+              WeightForm(lastWeightEntry?.copyWith(id: null, date: DateTime.now())),
             ),
           );
         },

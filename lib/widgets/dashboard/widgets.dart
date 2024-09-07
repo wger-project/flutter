@@ -209,7 +209,9 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                                 FormScreen.routeName,
                                 arguments: FormScreenArguments(
                                   AppLocalizations.of(context).newEntry,
-                                  WeightForm(weightProvider.getNewestEntry()?.copyWith(id: null)),
+                                  WeightForm(weightProvider
+                                      .getNewestEntry()
+                                      ?.copyWith(id: null, date: DateTime.now())),
                                 ),
                               );
                             },

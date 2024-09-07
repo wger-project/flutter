@@ -29,11 +29,12 @@
 - Bassam Mutairi - <https://github.com/mutairibassam>
 - Dieter Plaetinck - <https://github.com/Dieterbe>
 - Dennis van Peer - <https://github.com/Denpeer>
+- sizzlesloth - <https://github.com/sizzlesloth>
 
 ## Translators
 
 - Saudi Arabian
-  - Hanaa Allohibi <Gmail: programmerHanaa> 
+  - Hanaa Allohibi <Gmail: programmerHanaa>
 
 - German
 
@@ -66,7 +67,7 @@
 - Norwegian Bokmål
 
   - Allan Nordhøy <epost@anotheragency.no> (98)
-  
+
 - Japanese
 
   - Kosei TANAKA <wms784.app@gmail.com> (97)
@@ -76,5 +77,5 @@
   - Nenza Nurfirmansyah <nnurfirmansyah@gmail.com> (73)
 
 - Croatian
-  
+
   - Sandi Milohaic <sandi.milohanic@gmail.com>
