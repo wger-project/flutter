@@ -1,24 +1,43 @@
 import 'package:powersync/powersync.dart';
 
 const todosTable = 'todos';
+const musclesTable = 'muscles';
 
 // these are the same ones as in postgres, except for 'id'
-Schema schema = const Schema(([
-  Table(todosTable, [
-    Column.text('list_id'),
-    Column.text('created_at'),
-    Column.text('completed_at'),
-    Column.text('description'),
-    Column.integer('completed'),
-    Column.text('created_by'),
-    Column.text('completed_by'),
-  ], indexes: [
-    // Index to allow efficient lookup within a list
-    Index('list', [IndexedColumn('list_id')])
-  ]),
-  Table('lists',
-      [Column.text('created_at'), Column.text('name'), Column.text('owner_id')])
-]));
+Schema schema = const Schema([
+  Table(
+    todosTable,
+    [
+      Column.text('list_id'),
+      Column.text('created_at'),
+      Column.text('completed_at'),
+      Column.text('description'),
+      Column.integer('completed'),
+      Column.text('created_by'),
+      Column.text('completed_by'),
+    ],
+    indexes: [
+      // Index to allow efficient lookup within a list
+      Index('list', [IndexedColumn('list_id')]),
+    ],
+  ),
+  Table(
+    'lists',
+    [
+      Column.text('created_at'),
+      Column.text('name'),
+      Column.text('owner_id'),
+    ],
+  ),
+  Table(
+    'muscles',
+    [
+      Column.text('name'),
+      Column.text('name_en'),
+      Column.text('is_front'),
+    ],
+  ),
+]);
 
 // post gres columns:
 // todos:

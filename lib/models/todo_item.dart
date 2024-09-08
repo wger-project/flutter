@@ -1,7 +1,6 @@
-import 'package:wger/models/schema.dart';
-
-import '../powersync.dart';
 import 'package:powersync/sqlite3.dart' as sqlite;
+import 'package:wger/models/schema.dart';
+import 'package:wger/powersync.dart';
 
 /// TodoItem represents a result row of a query on "todos".
 ///
@@ -14,18 +13,20 @@ class TodoItem {
   final String? photoId;
   final bool completed;
 
-  TodoItem(
-      {required this.id,
-      required this.description,
-      required this.completed,
-      required this.photoId});
+  TodoItem({
+    required this.id,
+    required this.description,
+    required this.completed,
+    required this.photoId,
+  });
 
   factory TodoItem.fromRow(sqlite.Row row) {
     return TodoItem(
-        id: row['id'],
-        description: row['description'],
-        photoId: row['photo_id'],
-        completed: row['completed'] == 1);
+      id: row['id'],
+      description: row['description'],
+      photoId: row['photo_id'],
+      completed: row['completed'] == 1,
+    );
   }
 
   Future<void> toggle() async {

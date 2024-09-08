@@ -1,7 +1,7 @@
 import 'package:powersync/sqlite3.dart' as sqlite;
+import 'package:wger/powersync.dart';
 
 import 'todo_item.dart';
-import '../powersync.dart';
 
 /// TodoList represents a result row of a query on "lists".
 ///
@@ -24,10 +24,11 @@ class TodoList {
 
   factory TodoList.fromRow(sqlite.Row row) {
     return TodoList(
-        id: row['id'],
-        name: row['name'],
-        completedCount: row['completed_count'],
-        pendingCount: row['pending_count']);
+      id: row['id'],
+      name: row['name'],
+      completedCount: row['completed_count'],
+      pendingCount: row['pending_count'],
+    );
   }
 
   /// Watch all lists.
@@ -55,12 +56,15 @@ class TodoList {
 
   /// Create a new list
   static Future<TodoList> create(String name) async {
-    final results = await db.execute('''
+    final results = await db.execute(
+      '''
       INSERT INTO
         lists(id, created_at, name, owner_id)
         VALUES(uuid(), datetime(), ?, ?)
       RETURNING *
-      ''', [name, await getUserId()]);
+      ''',
+      [name, await getUserId()],
+    );
     return TodoList.fromRow(results.first);
   }
 

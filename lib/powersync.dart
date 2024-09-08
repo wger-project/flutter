@@ -28,19 +28,15 @@ class DjangoConnector extends PowerSyncBackendConnector {
 
   DjangoConnector(this.db);
 
-  final ApiClient apiClient = ApiClient(AppConfig.djangoUrl);
+  final ApiClient apiClient = const ApiClient(AppConfig.djangoUrl);
 
   /// Get a token to authenticate against the PowerSync instance.
   @override
   Future<PowerSyncCredentials?> fetchCredentials() async {
-    final prefs = await SharedPreferences.getInstance();
-    final userId = prefs.getString('id');
-    if (userId == null) {
-      throw Exception('User does not have session');
-    }
     // Somewhat contrived to illustrate usage, see auth docs here:
     // https://docs.powersync.com/usage/installation/authentication-setup/custom
-    final session = await apiClient.getToken(userId);
+    // final wgerSession = await apiClient.getWgerJWTToken();
+    final session = await apiClient.getPowersyncToken();
     return PowerSyncCredentials(endpoint: AppConfig.powersyncUrl, token: session['token']);
   }
 

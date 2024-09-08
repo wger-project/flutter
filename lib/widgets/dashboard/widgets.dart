@@ -49,6 +49,7 @@ import 'package:wger/widgets/workouts/forms.dart';
 
 class DashboardNutritionWidget extends StatefulWidget {
   const DashboardNutritionWidget();
+
   @override
   _DashboardNutritionWidgetState createState() => _DashboardNutritionWidgetState();
 }
@@ -149,6 +150,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
 
 class DashboardWeightWidget extends StatefulWidget {
   const DashboardWeightWidget();
+
   @override
   _DashboardWeightWidgetState createState() => _DashboardWeightWidgetState();
 }
@@ -235,13 +237,14 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
 
 class DashboardMeasurementWidget extends StatefulWidget {
   const DashboardMeasurementWidget();
+
   @override
   _DashboardMeasurementWidgetState createState() => _DashboardMeasurementWidgetState();
 }
 
 class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget> {
   int _current = 0;
-  final CarouselController _controller = CarouselController();
+  final _controller = CarouselSliderController();
 
   @override
   Widget build(BuildContext context) {
@@ -346,6 +349,7 @@ class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget>
 
 class DashboardWorkoutWidget extends StatefulWidget {
   const DashboardWorkoutWidget();
+
   @override
   _DashboardWorkoutWidgetState createState() => _DashboardWorkoutWidgetState();
 }
