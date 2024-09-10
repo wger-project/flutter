@@ -18,14 +18,34 @@
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:wger/helpers/charts.dart';
 
+class MeasurementOverallChangeWidget extends StatelessWidget {
+  final MeasurementChartEntry _first;
+  final MeasurementChartEntry _last;
+  final String _unit;
+  const MeasurementOverallChangeWidget(this._first, this._last, this._unit);
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      'overall change ${(_last.value - _first.value).toStringAsFixed(1)} $_unit',
+    );
+  }
+}
+
+String weightUnit(bool isMetric, BuildContext context) {
+  return isMetric ? AppLocalizations.of(context).kg : AppLocalizations.of(context).lb;
+}
+
 class MeasurementChartWidgetFl extends StatefulWidget {
   final List<MeasurementChartEntry> _entries;
-  final String unit;
+  final List<MeasurementChartEntry>? avgs;
+  final String _unit;
 
-  const MeasurementChartWidgetFl(this._entries, {this.unit = 'kg'});
+  const MeasurementChartWidgetFl(this._entries, this._unit, {this.avgs});
 
   @override
   State<MeasurementChartWidgetFl> createState() => _MeasurementChartWidgetFlState();
@@ -37,12 +57,7 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
     return AspectRatio(
       aspectRatio: 1.70,
       child: Padding(
-        padding: const EdgeInsets.only(
-          right: 18,
-          left: 12,
-          top: 24,
-          bottom: 12,
-        ),
+        padding: const EdgeInsets.all(4),
         child: LineChart(mainData()),
       ),
     );
@@ -53,8 +68,8 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
       touchTooltipData: LineTouchTooltipData(getTooltipItems: (touchedSpots) {
         return touchedSpots.map((touchedSpot) {
           return LineTooltipItem(
-            '${touchedSpot.y} kg',
-            const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+            '${touchedSpot.y.toStringAsFixed(1)} ${widget._unit}',
+            TextStyle(color: touchedSpot.bar.color, fontWeight: FontWeight.bold),
           );
         }).toList();
       }),
@@ -67,13 +82,13 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
       gridData: FlGridData(
         show: true,
         drawVerticalLine: true,
-        //horizontalInterval: 1,
-        //verticalInterval: interval,
+        // horizontalInterval: 1,
+        // verticalInterval: 1,
         getDrawingHorizontalLine: (value) {
-          return const FlLine(color: Colors.grey, strokeWidth: 1);
+          return FlLine(color: Theme.of(context).colorScheme.primaryContainer, strokeWidth: 1);
         },
         getDrawingVerticalLine: (value) {
-          return const FlLine(color: Colors.grey, strokeWidth: 1);
+          return FlLine(color: Theme.of(context).colorScheme.primaryContainer, strokeWidth: 1);
         },
       ),
       titlesData: FlTitlesData(
@@ -94,8 +109,15 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
                 return const Text('');
               }
               final DateTime date = DateTime.fromMillisecondsSinceEpoch(value.toInt());
+              // if we go across years, show years in the ticks. otherwise leave them out
+              if (DateTime.fromMillisecondsSinceEpoch(meta.min.toInt()).year !=
+                  DateTime.fromMillisecondsSinceEpoch(meta.max.toInt()).year) {
+                return Text(
+                  DateFormat.yMd(Localizations.localeOf(context).languageCode).format(date),
+                );
+              }
               return Text(
-                DateFormat.yMd(Localizations.localeOf(context).languageCode).format(date),
+                DateFormat.Md(Localizations.localeOf(context).languageCode).format(date),
               );
             },
             interval: widget._entries.isNotEmpty
@@ -111,29 +133,47 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
             showTitles: true,
             reservedSize: 65,
             getTitlesWidget: (value, meta) {
-              return Text('$value ${widget.unit}');
+              // Don't show the first and last entries, otherwise they'll overlap with the
+              // calculated interval
+              if (value == meta.min || value == meta.max) {
+                return const Text('');
+              }
+              return Text('$value ${widget._unit}');
             },
           ),
         ),
       ),
       borderData: FlBorderData(
         show: true,
-        border: Border.all(color: const Color(0xff37434d)),
+        border: Border.all(color: Theme.of(context).colorScheme.primaryContainer),
       ),
       lineBarsData: [
         LineChartBarData(
-          spots: [
-            ...widget._entries.map((e) => FlSpot(
-                  e.date.millisecondsSinceEpoch.toDouble(),
-                  e.value.toDouble(),
-                )),
-          ],
+          spots: widget._entries
+              .map((e) => FlSpot(
+                    e.date.millisecondsSinceEpoch.toDouble(),
+                    e.value.toDouble(),
+                  ))
+              .toList(),
           isCurved: false,
-          color: Theme.of(context).colorScheme.secondary,
-          barWidth: 2,
+          color: Theme.of(context).colorScheme.primary,
+          barWidth: 0,
           isStrokeCapRound: true,
           dotData: const FlDotData(show: true),
         ),
+        if (widget.avgs != null)
+          LineChartBarData(
+            spots: widget.avgs!
+                .map((e) => FlSpot(
+                      e.date.millisecondsSinceEpoch.toDouble(),
+                      e.value.toDouble(),
+                    ))
+                .toList(),
+            isCurved: false,
+            color: Theme.of(context).colorScheme.tertiary,
+            barWidth: 1,
+            dotData: const FlDotData(show: false),
+          ),
       ],
     );
   }
@@ -144,6 +184,34 @@ class MeasurementChartEntry {
   DateTime date;
 
   MeasurementChartEntry(this.value, this.date);
+}
+
+// for each point, return the average of all the points in the 7 days preceeding it
+List<MeasurementChartEntry> moving7dAverage(List<MeasurementChartEntry> vals) {
+  var start = 0;
+  var end = 0;
+  final List<MeasurementChartEntry> out = <MeasurementChartEntry>[];
+
+  // first make sure our list is in ascending order
+  vals.sort((a, b) => a.date.compareTo(b.date));
+
+  while (end < vals.length) {
+    // since users can log measurements several days, or minutes apart,
+    // we can't make assumptions.  We have to manually advance 'start'
+    // such that it is always the first point within our desired range.
+    // posibly start == end (when there is only one point in the range)
+    final intervalStart = vals[end].date.subtract(const Duration(days: 7));
+    while (start < end && vals[start].date.isBefore(intervalStart)) {
+      start++;
+    }
+
+    final sub = vals.sublist(start, end + 1).map((e) => e.value);
+    final sum = sub.reduce((val, el) => val + el);
+    out.add(MeasurementChartEntry(sum / sub.length, vals[end].date));
+
+    end++;
+  }
+  return out;
 }
 
 class Indicator extends StatelessWidget {

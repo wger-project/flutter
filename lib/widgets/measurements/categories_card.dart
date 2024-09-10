@@ -32,7 +32,7 @@ class CategoriesCard extends StatelessWidget {
             height: 220,
             child: MeasurementChartWidgetFl(
               currentCategory.entries.map((e) => MeasurementChartEntry(e.value, e.date)).toList(),
-              unit: currentCategory.unit,
+              currentCategory.unit,
             ),
           ),
           const Divider(),

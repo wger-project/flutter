@@ -40,7 +40,7 @@ class EntriesList extends StatelessWidget {
         height: 220,
         child: MeasurementChartWidgetFl(
           _category.entries.map((e) => MeasurementChartEntry(e.value, e.date)).toList(),
-          unit: _category.unit,
+          _category.unit,
         ),
       ),
       Expanded(

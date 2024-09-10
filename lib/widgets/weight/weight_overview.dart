@@ -21,30 +21,96 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/body_weight.dart';
+import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/measurement_categories_screen.dart';
 import 'package:wger/widgets/measurements/charts.dart';
 import 'package:wger/widgets/weight/forms.dart';
 
-class WeightEntriesList extends StatelessWidget {
-  const WeightEntriesList();
+class WeightOverview extends StatelessWidget {
+  const WeightOverview();
   @override
   Widget build(BuildContext context) {
     final profile = context.read<UserProvider>().profile;
     final weightProvider = Provider.of<BodyWeightProvider>(context, listen: false);
+    final plan = Provider.of<NutritionPlansProvider>(context, listen: false).currentPlan;
 
-    return Column(
-      children: [
+    final entriesAll =
+        weightProvider.items.map((e) => MeasurementChartEntry(e.weight, e.date)).toList();
+    final entries7dAvg = moving7dAverage(entriesAll);
+
+    List<Widget> getOverviewWidgets(String title, bool isMetric, List<MeasurementChartEntry> raw,
+        List<MeasurementChartEntry> avg, BuildContext context) {
+      return [
+        Text(
+          title,
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
         Container(
           padding: const EdgeInsets.all(15),
           height: 220,
           child: MeasurementChartWidgetFl(
-            weightProvider.items.map((e) => MeasurementChartEntry(e.weight, e.date)).toList(),
-            unit: profile!.isMetric
-                ? AppLocalizations.of(context).kg
-                : AppLocalizations.of(context).lb,
+            raw,
+            weightUnit(isMetric, context),
+            avgs: avg,
           ),
+        ),
+        MeasurementOverallChangeWidget(
+          avg.first,
+          avg.last,
+          weightUnit(isMetric, context),
+        ),
+        const SizedBox(height: 8),
+      ];
+    }
+
+    return Column(
+      children: [
+        ...getOverviewWidgets(
+          'Weight all-time',
+          profile!.isMetric,
+          entriesAll,
+          entries7dAvg,
+          context,
+        ),
+        if (plan != null)
+          ...getOverviewWidgets(
+            'Weight during nutritional plan ${plan.description}',
+            profile.isMetric,
+            entriesAll.where((e) => e.date.isAfter(plan.creationDate)).toList(),
+            entries7dAvg.where((e) => e.date.isAfter(plan.creationDate)).toList(),
+            context,
+          ),
+        // if all time is significantly longer than 30 days (let's say > 75 days)
+        // and if there is is a plan and it also was > 75 days,
+        // then let's show a separate chart just focusing on the last 30 days
+        if (entriesAll.first.date
+                .isBefore(entriesAll.last.date.subtract(const Duration(days: 75))) &&
+            (plan == null ||
+                entriesAll
+                    .firstWhere((e) => e.date.isAfter(plan.creationDate))
+                    .date
+                    .isBefore(entriesAll.last.date.subtract(const Duration(days: 30)))))
+          ...getOverviewWidgets(
+            'Weight last 30 days',
+            profile.isMetric,
+            entriesAll
+                .where((e) => e.date.isAfter(DateTime.now().subtract(const Duration(days: 30))))
+                .toList(),
+            entries7dAvg
+                .where((e) => e.date.isAfter(DateTime.now().subtract(const Duration(days: 30))))
+                .toList(),
+            context,
+          ),
+
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Indicator(color: Theme.of(context).colorScheme.primary, text: 'raw', isSquare: true),
+            Indicator(color: Theme.of(context).colorScheme.tertiary, text: 'avg', isSquare: true),
+          ],
         ),
         TextButton(
           onPressed: () => Navigator.pushNamed(
@@ -59,7 +125,8 @@ class WeightEntriesList extends StatelessWidget {
             ],
           ),
         ),
-        Expanded(
+        SizedBox(
+          height: 300,
           child: RefreshIndicator(
             onRefresh: () => weightProvider.fetchAndSetEntries(),
             child: ListView.builder(
@@ -69,7 +136,7 @@ class WeightEntriesList extends StatelessWidget {
                 final currentEntry = weightProvider.items[index];
                 return Card(
                   child: ListTile(
-                    title: Text('${currentEntry.weight} kg'),
+                    title: Text('${currentEntry.weight} ${weightUnit(profile.isMetric, context)}'),
                     subtitle: Text(
                       DateFormat.yMd(
                         Localizations.localeOf(context).languageCode,
