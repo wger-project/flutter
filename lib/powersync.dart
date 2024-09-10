@@ -52,7 +52,7 @@ class DjangoConnector extends PowerSyncBackendConnector {
     }
 
     try {
-      for (var op in transaction.crud) {
+      for (final op in transaction.crud) {
         final record = {
           'table': op.table,
           'data': {'id': op.id, ...?op.opData},
@@ -86,9 +86,14 @@ late final PowerSyncDatabase db;
 // Hacky flag to ensure the database is only initialized once, better to do this with listeners
 bool _dbInitialized = false;
 
+/// id of the user currently logged in
+Future<String?> getUserId() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getString('id');
+}
+
 Future<bool> isLoggedIn() async {
-  final prefs = await SharedPreferences.getInstance(); // Initialize SharedPreferences
-  final userId = prefs.getString('id');
+  final userId = await getUserId();
   return userId != null;
 }
 
@@ -113,16 +118,13 @@ Future<void> openDatabase() async {
     // Otherwise, connect once logged in.
     currentConnector = DjangoConnector(db);
     db.connect(connector: currentConnector);
+
+    // TODO: should we respond to login state changing? like here:
+    // https://www.powersync.com/blog/flutter-tutorial-building-an-offline-first-chat-app-with-supabase-and-powersync#implement-auth-methods
   }
 }
 
 /// Explicit sign out - clear database and log out.
 Future<void> logout() async {
   await db.disconnectAndClear();
-}
-
-/// id of the user currently logged in
-Future<String?> getUserId() async {
-  final prefs = await SharedPreferences.getInstance();
-  return prefs.getString('id');
 }
