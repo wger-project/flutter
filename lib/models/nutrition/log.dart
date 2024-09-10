@@ -17,11 +17,14 @@
  */
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:powersync/sqlite3.dart' as sqlite;
 import 'package:wger/helpers/json.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/ingredient_weight_unit.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
+import 'package:wger/models/schema.dart';
+import 'package:wger/powersync.dart';
 
 part 'log.g.dart';
 
@@ -75,6 +78,19 @@ class Log {
     amount = mealItem.amount;
   }
 
+  factory Log.fromRow(sqlite.Row row) {
+    return Log(
+      id: row['id'],
+      mealId: row['meal_id'],
+      ingredientId: row['ingredient_id'],
+      weightUnitId: row['weight_unit_id'],
+      amount: row['amount'],
+      planId: row['plan_id'],
+      datetime: row['datetime'],
+      comment: row['comment'],
+    );
+  }
+
   // Boilerplate
   factory Log.fromJson(Map<String, dynamic> json) => _$LogFromJson(json);
 
@@ -89,4 +105,31 @@ class Log {
 
     return ingredient.nutritionalValues / (100 / weight);
   }
+/*
+  Future<void> delete() async {
+    await db.execute('DELETE FROM $logItemsTable WHERE id = ?', [id]);
+  }
+
+  static Future<void> addPhoto(String photoId, String id) async {
+    await db.execute('UPDATE $logItemsTable SET photo_id = ? WHERE id = ?', [photoId, id]);
+  }
+}
+
+  static Stream<List<TodoList>> watchLists() {
+    // This query is automatically re-run when data in "lists" or "todos" is modified.
+    return db.watch('SELECT * FROM lists ORDER BY created_at, id').map((results) {
+      return results.map(TodoList.fromRow).toList(growable: false);
+    });
+  }
+  
+ static Future<TodoList> create(String name) async {
+    final results = await db.execute('''
+      INSERT INTO
+        lists(id, created_at, name, owner_id)
+        VALUES(uuid(), datetime(), ?, ?)
+      RETURNING *
+      ''', [name, await getUserId()]);
+    return TodoList.fromRow(results.first);
+  }
+  */
 }
