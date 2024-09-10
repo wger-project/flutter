@@ -84,6 +84,7 @@ void main() async {
 
   // Locator to initialize exerciseDB
   await ServiceLocator().configure();
+  print('running myapp');
   // Application
   runApp(const MyApp());
 }

@@ -74,10 +74,14 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
   /// Load initial data from the server
   Future<void> _loadEntries() async {
     final connector = DjangoConnector(db);
-    final credentials = await connector.fetchCredentials();
-    print('----------');
-    print(credentials);
-    print('----------');
+    try {
+      final credentials = await connector.fetchCredentials();
+      print('----------');
+      print(credentials);
+      print('----------');
+    } catch (e) {
+      print('fail' + e.toString());
+    }
 
     final authProvider = context.read<AuthProvider>();
 

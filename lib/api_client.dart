@@ -48,7 +48,7 @@ class ApiClient {
   Future<Map<String, dynamic>> getPowersyncToken() async {
     final prefs = await SharedPreferences.getInstance();
     final apiData = json.decode(prefs.getString(PREFS_USER)!);
-
+    print('posting our token "${apiData["token"]}" to $baseUrl/api/v2/powersync-token');
     final response = await http.get(
       Uri.parse('$baseUrl/api/v2/powersync-token'),
       headers: {
@@ -56,6 +56,7 @@ class ApiClient {
         HttpHeaders.authorizationHeader: 'Token ${apiData["token"]}',
       },
     );
+    print('response: status ${response.statusCode}, body ${response.body}');
     if (response.statusCode == 200) {
       log.log(Level.ALL, response.body);
       return json.decode(response.body);
