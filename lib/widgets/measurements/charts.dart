@@ -103,8 +103,9 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
           sideTitles: SideTitles(
             showTitles: true,
             getTitlesWidget: (value, meta) {
-              // Don't show the first and last entries, otherwise they'll overlap with the
-              // calculated interval
+              // Don't show the first and last entries, to avoid overlap
+              // see https://stackoverflow.com/questions/73355777/flutter-fl-chart-how-can-we-avoid-the-overlap-of-the-ordinate
+              // this is needlessly aggressive if the titles are "sparse", but we should optimize for more busy data
               if (value == meta.min || value == meta.max) {
                 return const Text('');
               }
@@ -133,11 +134,13 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
             showTitles: true,
             reservedSize: 65,
             getTitlesWidget: (value, meta) {
-              // Don't show the first and last entries, otherwise they'll overlap with the
-              // calculated interval
+              // Don't show the first and last entries, to avoid overlap
+              // see https://stackoverflow.com/questions/73355777/flutter-fl-chart-how-can-we-avoid-the-overlap-of-the-ordinate
+              // this is needlessly aggressive if the titles are "sparse", but we should optimize for more busy data
               if (value == meta.min || value == meta.max) {
                 return const Text('');
               }
+
               return Text('$value ${widget._unit}');
             },
           ),
