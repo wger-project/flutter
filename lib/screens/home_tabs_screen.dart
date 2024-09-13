@@ -53,6 +53,10 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
   @override
   void initState() {
     super.initState();
+
+    final authProvider = context.read<AuthProvider>();
+    print('auth provider says surverurl is ${authProvider.serverUrl}');
+
     // Loading data here, since the build method can be called more than once
     _initialData = _loadEntries();
   }
@@ -82,7 +86,8 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
     } catch (e) {
       print('fail' + e.toString());
     }
-
+    final loggedIn = await isLoggedIn();
+    print('_loadEntries(): is logged in $loggedIn');
     final authProvider = context.read<AuthProvider>();
 
     if (!authProvider.dataInit) {

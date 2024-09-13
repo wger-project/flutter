@@ -31,7 +31,7 @@ class ApiClient {
     final response = await http.post(
       Uri.parse('$baseUrl/api/v2/token'),
       headers: {HttpHeaders.contentTypeHeader: 'application/json'},
-      body: json.encode({'username': 'admin', 'password': 'adminadmin'}),
+      body: json.encode({'username': 'admin', 'password': 'adminadmin'}), // FIXME
     );
     if (response.statusCode == 200) {
       log.log(Level.ALL, response.body);

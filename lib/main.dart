@@ -80,7 +80,7 @@ void main() async {
   await openDatabase();
 
   final loggedIn = await isLoggedIn();
-  print('is logged in $loggedIn');
+  print('main(): is logged in $loggedIn');
 
   // Locator to initialize exerciseDB
   await ServiceLocator().configure();
