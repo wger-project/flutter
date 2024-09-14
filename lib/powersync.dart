@@ -3,7 +3,6 @@ import 'package:logging/logging.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:powersync/powersync.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/api_client.dart';
 
 import './app_config.dart';
@@ -37,6 +36,7 @@ class DjangoConnector extends PowerSyncBackendConnector {
     // https://docs.powersync.com/usage/installation/authentication-setup/custom
     // final wgerSession = await apiClient.getWgerJWTToken();
     final session = await apiClient.getPowersyncToken();
+    // note: we don't set userId and expires property here. not sure if needed
     return PowerSyncCredentials(endpoint: AppConfig.powersyncUrl, token: session['token']);
   }
 
@@ -86,24 +86,13 @@ late final PowerSyncDatabase db;
 // Hacky flag to ensure the database is only initialized once, better to do this with listeners
 bool _dbInitialized = false;
 
-/// id of the user currently logged in
-Future<String?> getUserId() async {
-  final prefs = await SharedPreferences.getInstance();
-  return prefs.getString('id');
-}
-
-Future<bool> isLoggedIn() async {
-  final userId = await getUserId();
-  return userId != null;
-}
-
 Future<String> getDatabasePath() async {
   final dir = await getApplicationSupportDirectory();
   return join(dir.path, 'powersync-demo.db');
 }
 
 // opens the database and connects if logged in
-Future<void> openDatabase() async {
+Future<void> openDatabase(bool connect) async {
   // Open the local database
   if (!_dbInitialized) {
     db = PowerSyncDatabase(schema: schema, path: await getDatabasePath(), logger: attachedLogger);
@@ -111,12 +100,10 @@ Future<void> openDatabase() async {
     _dbInitialized = true;
   }
 
-  DjangoConnector? currentConnector;
-
-  if (await isLoggedIn()) {
+  if (connect) {
     // If the user is already logged in, connect immediately.
     // Otherwise, connect once logged in.
-    currentConnector = DjangoConnector(db);
+    final currentConnector = DjangoConnector(db);
     db.connect(connector: currentConnector);
 
     // TODO: should we respond to login state changing? like here:

@@ -77,11 +77,6 @@ void main() async {
   // Needs to be called before runApp
   WidgetsFlutterBinding.ensureInitialized();
 
-  await openDatabase();
-
-  final loggedIn = await isLoggedIn();
-  print('main(): is logged in $loggedIn');
-
   // Locator to initialize exerciseDB
   await ServiceLocator().configure();
   print('running myapp');

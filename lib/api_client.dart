@@ -14,32 +14,6 @@ class ApiClient {
 
   const ApiClient(this.baseUrl);
 
-  Future<Map<String, dynamic>> authenticate(String username, String password) async {
-    final response = await http.post(
-      Uri.parse('$baseUrl/api/v2/login/'),
-      headers: {'Content-Type': 'application/json'},
-      body: json.encode({'username': username, 'password': password}),
-    );
-    if (response.statusCode == 200) {
-      log.log(Level.ALL, response.body);
-      return json.decode(response.body);
-    }
-    throw Exception('Failed to authenticate');
-  }
-
-  Future<Map<String, dynamic>> getWgerJWTToken() async {
-    final response = await http.post(
-      Uri.parse('$baseUrl/api/v2/token'),
-      headers: {HttpHeaders.contentTypeHeader: 'application/json'},
-      body: json.encode({'username': 'admin', 'password': 'adminadmin'}), // FIXME
-    );
-    if (response.statusCode == 200) {
-      log.log(Level.ALL, response.body);
-      return json.decode(response.body);
-    }
-    throw Exception('Failed to fetch token');
-  }
-
   /// Returns a powersync JWT token token
   ///
   /// Note that at the moment we use the permanent API token for authentication

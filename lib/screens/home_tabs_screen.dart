@@ -54,8 +54,8 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
   void initState() {
     super.initState();
 
-    final authProvider = context.read<AuthProvider>();
-    print('auth provider says surverurl is ${authProvider.serverUrl}');
+    // do we need to await this? or if it's async, how do we handle failures?
+    _setupPowersync();
 
     // Loading data here, since the build method can be called more than once
     _initialData = _loadEntries();
@@ -75,19 +75,27 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
     const GalleryScreen(),
   ];
 
-  /// Load initial data from the server
-  Future<void> _loadEntries() async {
+  Future<void> _setupPowersync() async {
+    final authProvider = context.read<AuthProvider>();
+    print('auth provider says surverurl is ${authProvider.serverUrl}');
+    await openDatabase(false);
+
     final connector = DjangoConnector(db);
     try {
+      // TODO: should we cache these credentials? that's what their demo does?
+      // we could maybe get the initial token from the /api/v2/login call
       final credentials = await connector.fetchCredentials();
       print('----------');
       print(credentials);
       print('----------');
+      await openDatabase(true);
     } catch (e) {
       print('fail' + e.toString());
     }
-    final loggedIn = await isLoggedIn();
-    print('_loadEntries(): is logged in $loggedIn');
+  }
+
+  /// Load initial data from the server
+  Future<void> _loadEntries() async {
     final authProvider = context.read<AuthProvider>();
 
     if (!authProvider.dataInit) {
