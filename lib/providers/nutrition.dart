@@ -125,6 +125,9 @@ class NutritionPlansProvider with ChangeNotifier {
   }
 
   /// Fetches a plan fully, i.e. with all corresponding child objects
+  ///
+
+
   Future<NutritionalPlan> fetchAndSetPlanFull(int planId) async {
     NutritionalPlan plan;
     try {

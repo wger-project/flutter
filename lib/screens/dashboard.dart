@@ -16,8 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:wger/models/muscle.dart';
 import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/dashboard/calendar.dart';
 import 'package:wger/widgets/dashboard/widgets.dart';
@@ -39,6 +42,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         padding: EdgeInsets.all(10),
         child: Column(
           children: [
+            DashboardMuscleWidget(),
             DashboardWorkoutWidget(),
             DashboardNutritionWidget(),
             DashboardWeightWidget(),
@@ -48,5 +52,48 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
       ),
     );
+  }
+}
+
+class DashboardMuscleWidget extends StatefulWidget {
+  const DashboardMuscleWidget({super.key});
+
+  @override
+  _DashboardMuscleWidgetState createState() => _DashboardMuscleWidgetState();
+}
+
+class _DashboardMuscleWidgetState extends State<DashboardMuscleWidget> {
+  List<Muscle> _data = [];
+  StreamSubscription? _subscription;
+
+  _DashboardMuscleWidgetState();
+
+  @override
+  void initState() {
+    super.initState();
+    final stream = Muscle.watchMuscles();
+    _subscription = stream.listen((data) {
+      if (!context.mounted) {
+        return;
+      }
+      setState(() {
+        _data = data;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _subscription?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        color: Colors.brown,
+        child: Column(
+          children: [Text('muscles'), ..._data.map((e) => Text(e.name)).toList()],
+        ));
   }
 }

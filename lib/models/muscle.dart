@@ -25,12 +25,13 @@ class Muscle {
   }
 
   Future<void> delete() async {
-    await db.execute('DELETE FROM $musclesTable WHERE id = ?', [id]);
+    await db.execute('DELETE FROM $tableMuscles WHERE id = ?', [id]);
   }
 
   /// Watch all lists.
   static Stream<List<Muscle>> watchMuscles() {
-    return db.watch('SELECT * FROM $musclesTable ORDER BY id').map((results) {
+    return db.watch('SELECT * FROM $tableMuscles ORDER BY id').map((results) {
+      print('watchMuscles triggered' + results.toString());
       return results.map(Muscle.fromRow).toList(growable: false);
     });
   }

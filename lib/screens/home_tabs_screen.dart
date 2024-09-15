@@ -87,12 +87,10 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
       // TODO: should we cache these credentials? that's what their demo does?
       // we could maybe get the initial token from the /api/v2/login call
       final credentials = await connector.fetchCredentials();
-      print('----------');
-      print(credentials);
-      print('----------');
+      print('fetched credentials' + credentials.toString());
       await openDatabase(true, baseUrl, powerSyncUrl);
     } catch (e) {
-      print('fail' + e.toString());
+      print('failed to fetchCredentials()' + e.toString());
     }
   }
 
