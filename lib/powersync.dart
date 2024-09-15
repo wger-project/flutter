@@ -5,7 +5,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:powersync/powersync.dart';
 import 'package:wger/api_client.dart';
 
-import './app_config.dart';
 import './models/schema.dart';
 
 final log = Logger('powersync-django');
@@ -24,10 +23,13 @@ final List<RegExp> fatalResponseCodes = [
 
 class DjangoConnector extends PowerSyncBackendConnector {
   PowerSyncDatabase db;
+  String baseUrl;
+  String powersyncUrl;
+  late ApiClient apiClient;
 
-  DjangoConnector(this.db);
-
-  final ApiClient apiClient = const ApiClient(AppConfig.djangoUrl);
+  DjangoConnector(this.db, this.baseUrl, this.powersyncUrl) {
+    apiClient = ApiClient(baseUrl);
+  }
 
   /// Get a token to authenticate against the PowerSync instance.
   @override
@@ -37,7 +39,7 @@ class DjangoConnector extends PowerSyncBackendConnector {
     // final wgerSession = await apiClient.getWgerJWTToken();
     final session = await apiClient.getPowersyncToken();
     // note: we don't set userId and expires property here. not sure if needed
-    return PowerSyncCredentials(endpoint: AppConfig.powersyncUrl, token: session['token']);
+    return PowerSyncCredentials(endpoint: this.powersyncUrl, token: session['token']);
   }
 
   // Upload pending changes to Postgres via Django backend
@@ -92,7 +94,7 @@ Future<String> getDatabasePath() async {
 }
 
 // opens the database and connects if logged in
-Future<void> openDatabase(bool connect) async {
+Future<void> openDatabase(bool connect, String baseUrl, String powersyncUrl) async {
   // Open the local database
   if (!_dbInitialized) {
     db = PowerSyncDatabase(schema: schema, path: await getDatabasePath(), logger: attachedLogger);
@@ -103,7 +105,8 @@ Future<void> openDatabase(bool connect) async {
   if (connect) {
     // If the user is already logged in, connect immediately.
     // Otherwise, connect once logged in.
-    final currentConnector = DjangoConnector(db);
+
+    final currentConnector = DjangoConnector(db, baseUrl, powersyncUrl);
     db.connect(connector: currentConnector);
 
     // TODO: should we respond to login state changing? like here:

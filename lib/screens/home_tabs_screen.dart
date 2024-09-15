@@ -77,10 +77,12 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
 
   Future<void> _setupPowersync() async {
     final authProvider = context.read<AuthProvider>();
-    print('auth provider says surverurl is ${authProvider.serverUrl}');
-    await openDatabase(false);
+    final baseUrl = authProvider.serverUrl!;
+    final powerSyncUrl = baseUrl.replaceAll(':8000', ':8080');
 
-    final connector = DjangoConnector(db);
+    await openDatabase(false, baseUrl, powerSyncUrl);
+
+    final connector = DjangoConnector(db, baseUrl, powerSyncUrl);
     try {
       // TODO: should we cache these credentials? that's what their demo does?
       // we could maybe get the initial token from the /api/v2/login call
@@ -88,7 +90,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
       print('----------');
       print(credentials);
       print('----------');
-      await openDatabase(true);
+      await openDatabase(true, baseUrl, powerSyncUrl);
     } catch (e) {
       print('fail' + e.toString());
     }
