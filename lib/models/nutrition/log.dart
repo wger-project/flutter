@@ -25,6 +25,7 @@ import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
 import 'package:wger/models/schema.dart';
 import 'package:wger/powersync.dart';
+import 'package:powersync/sqlite3.dart' as sqlite;
 
 part 'log.g.dart';
 
@@ -80,13 +81,13 @@ class Log {
 
   factory Log.fromRow(sqlite.Row row) {
     return Log(
-      id: row['id'],
-      mealId: row['meal_id'],
-      ingredientId: row['ingredient_id'],
-      weightUnitId: row['weight_unit_id'],
+      id: int.parse(row['id']),
+      mealId: int.parse(row['meal_id']),
+      ingredientId: int.parse(row['ingredient_id']),
+      weightUnitId: int.parse(row['weight_unit_id']),
       amount: row['amount'],
-      planId: row['plan_id'],
-      datetime: row['datetime'],
+      planId: int.parse(row['plan_id']),
+      datetime: DateTime.parse(row['datetime']),
       comment: row['comment'],
     );
   }
@@ -105,6 +106,12 @@ class Log {
 
     return ingredient.nutritionalValues / (100 / weight);
   }
+
+  static Future<List<Log>> readByPlanId(int planId) async {
+    final results = await db.getAll('SELECT * FROM $tableLogItems WHERE plan_id = ?', [planId]);
+    return results.map((r) => Log.fromRow(r)).toList();
+  }
+
 /*
   Future<void> delete() async {
     await db.execute('DELETE FROM $logItemsTable WHERE id = ?', [id]);

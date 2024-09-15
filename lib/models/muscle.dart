@@ -31,7 +31,6 @@ class Muscle {
   /// Watch all lists.
   static Stream<List<Muscle>> watchMuscles() {
     return db.watch('SELECT * FROM $tableMuscles ORDER BY id').map((results) {
-      print('watchMuscles triggered' + results.toString());
       return results.map(Muscle.fromRow).toList(growable: false);
     });
   }

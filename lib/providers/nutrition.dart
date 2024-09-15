@@ -88,59 +88,10 @@ class NutritionPlansProvider with ChangeNotifier {
     return null;
   }
 
-  /// Fetches and sets all plans sparsely, i.e. only with the data on the plan
-  /// object itself and no child attributes
-  Future<void> fetchAndSetAllPlansSparse() async {
-    final data = await baseProvider.fetchPaginated(
-      baseProvider.makeUrl(_nutritionalPlansPath, query: {'limit': '1000'}),
-    );
-    _plans = [];
-    for (final planData in data) {
-      final plan = NutritionalPlan.fromJson(planData);
-      _plans.add(plan);
-      _plans.sort((a, b) => b.creationDate.compareTo(a.creationDate));
-    }
-    notifyListeners();
-  }
-
-  /// Fetches and sets all plans fully, i.e. with all corresponding child objects
-  Future<void> fetchAndSetAllPlansFull() async {
-    final data = await baseProvider.fetchPaginated(baseProvider.makeUrl(_nutritionalPlansPath));
-    await Future.wait(data.map((e) => fetchAndSetPlanFull(e['id'])).toList());
-  }
-
-  /// Fetches and sets the given nutritional plan
-  ///
-  /// This method only loads the data on the nutritional plan object itself,
-  /// no meals, etc.
-  Future<NutritionalPlan> fetchAndSetPlanSparse(int planId) async {
-    final url = baseProvider.makeUrl(_nutritionalPlansPath, id: planId);
-    final planData = await baseProvider.fetch(url);
-    final plan = NutritionalPlan.fromJson(planData);
-    _plans.add(plan);
-    _plans.sort((a, b) => b.creationDate.compareTo(a.creationDate));
-
-    notifyListeners();
-    return plan;
-  }
-
   /// Fetches a plan fully, i.e. with all corresponding child objects
   ///
-
-
+/*
   Future<NutritionalPlan> fetchAndSetPlanFull(int planId) async {
-    NutritionalPlan plan;
-    try {
-      plan = findById(planId);
-    } on NoSuchEntryException {
-      // TODO: remove this useless call, because we will fetch all details below
-      plan = await fetchAndSetPlanSparse(planId);
-    }
-
-    // Plan
-    final url = baseProvider.makeUrl(_nutritionalPlansInfoPath, id: planId);
-    final fullPlanData = await baseProvider.fetch(url);
-
     // Meals
     final List<Meal> meals = [];
     for (final mealData in fullPlanData['meals']) {
@@ -173,7 +124,9 @@ class NutritionPlansProvider with ChangeNotifier {
     // ... and done
     notifyListeners();
     return plan;
+    
   }
+  */
 
   Future<NutritionalPlan> addPlan(NutritionalPlan planData) async {
     final data = await baseProvider.post(

@@ -123,29 +123,16 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
       }
 
       // Plans, weight and gallery
-      log.log(Level.FINER, 'Loading plans, weight, measurements and gallery');
+      log.log(Level.FINER, 'Loading workouts, weight, measurements and gallery');
       try {
         await Future.wait([
           galleryProvider.fetchAndSetGallery(),
-          nutritionPlansProvider.fetchAndSetAllPlansSparse(),
           workoutPlansProvider.fetchAndSetAllPlansSparse(),
           weightProvider.fetchAndSetEntries(),
           measurementProvider.fetchAndSetAllCategoriesAndEntries(),
         ]);
       } catch (e) {
         log.log(Level.FINER, 'Exception loading plans, weight, measurements and gallery');
-        log.log(Level.FINER, e.toString());
-      }
-
-      // Current nutritional plan
-      log.log(Level.FINER, 'Loading current nutritional plan');
-      try {
-        if (nutritionPlansProvider.currentPlan != null) {
-          final plan = nutritionPlansProvider.currentPlan!;
-          await nutritionPlansProvider.fetchAndSetPlanFull(plan.id!);
-        }
-      } catch (e) {
-        log.log(Level.FINER, 'Exception loading current nutritional plan');
         log.log(Level.FINER, e.toString());
       }
 
