@@ -1,7 +1,7 @@
 import 'package:powersync/powersync.dart';
 
 const todosTable = 'todos';
-const musclesTable = 'muscles';
+const musclesTable = 'exercises_muscle';
 const logItemsTable = 'nutrition_logitem';
 
 /* 
@@ -62,7 +62,7 @@ Schema schema = const Schema([
     ],
   ),
   Table(
-    'muscles',
+    'exercises_muscle',
     [Column.text('name'), Column.text('name_en'), Column.text('is_front')],
   ),
 ]);
