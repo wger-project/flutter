@@ -45,7 +45,7 @@ dependencies:
   intl: ^0.19.0
   json_annotation: ^4.8.1
   version: ^3.0.2
-  package_info_plus: ^8.0.0
+  package_info_plus: ^8.0.2
   provider: ^6.1.2
   # Note, do not update rive! https://github.com/wger-project/flutter/issues/577
   rive: ^0.12.4
