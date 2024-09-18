@@ -30,9 +30,14 @@ class MeasurementOverallChangeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      'overall change ${(_last.value - _first.value).toStringAsFixed(1)} $_unit',
-    );
+    final delta = _last.value - _first.value;
+    final prefix = delta > 0
+        ? '+'
+        : delta < 0
+            ? '-'
+            : '';
+
+    return Text('overall change $prefix ${delta.abs().toStringAsFixed(1)} $_unit');
   }
 }
 

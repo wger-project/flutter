@@ -133,8 +133,10 @@ class MeasurementEntriesScreen extends StatelessWidget {
           );
         },
       ),
-      body: Consumer<MeasurementProvider>(
-        builder: (context, provider, child) => EntriesList(category),
+      body: SingleChildScrollView(
+        child: Consumer<MeasurementProvider>(
+          builder: (context, provider, child) => EntriesList(category),
+        ),
       ),
     );
   }

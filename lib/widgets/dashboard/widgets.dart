@@ -280,6 +280,9 @@ class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget>
                 FontAwesomeIcons.chartLine,
                 color: Theme.of(context).textTheme.headlineSmall!.color,
               ),
+              // TODO: this icon feels out of place and inconsistent with all
+              // other dashboard widgets.
+              // maybe we should just add a "Go to all" at the bottom of the widget
               trailing: IconButton(
                 icon: const Icon(Icons.arrow_forward),
                 onPressed: () => Navigator.pushNamed(
