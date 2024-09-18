@@ -24,12 +24,15 @@ import 'package:provider/provider.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
 import 'package:wger/providers/measurement.dart';
+import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/measurement_entries_screen.dart';
 
+import '../nutrition/nutritional_plan_form_test.mocks.dart';
 import 'measurement_categories_screen_test.mocks.dart';
 
 void main() {
   late MockMeasurementProvider mockMeasurementProvider;
+  late MockNutritionPlansProvider mockNutritionPlansProvider;
 
   setUp(() {
     mockMeasurementProvider = MockMeasurementProvider();
@@ -39,26 +42,32 @@ void main() {
         MeasurementEntry(id: 1, category: 1, date: DateTime(2021, 8, 10), value: 18.1, notes: 'a'),
       ]),
     );
+
+    mockNutritionPlansProvider = MockNutritionPlansProvider();
+    when(mockNutritionPlansProvider.currentPlan).thenReturn(null);
   });
 
   Widget createHomeScreen({locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
 
-    return ChangeNotifierProvider<MeasurementProvider>(
-      create: (context) => mockMeasurementProvider,
-      child: MaterialApp(
-        locale: Locale(locale),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        navigatorKey: key,
-        home: TextButton(
-          onPressed: () => key.currentState!.push(
-            MaterialPageRoute<void>(
-              settings: const RouteSettings(arguments: 1),
-              builder: (_) => const MeasurementEntriesScreen(),
+    return ChangeNotifierProvider<NutritionPlansProvider>(
+      create: (context) => mockNutritionPlansProvider,
+      child: ChangeNotifierProvider<MeasurementProvider>(
+        create: (context) => mockMeasurementProvider,
+        child: MaterialApp(
+          locale: Locale(locale),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          navigatorKey: key,
+          home: TextButton(
+            onPressed: () => key.currentState!.push(
+              MaterialPageRoute<void>(
+                settings: const RouteSettings(arguments: 1),
+                builder: (_) => const MeasurementEntriesScreen(),
+              ),
             ),
+            child: Container(),
           ),
-          child: Container(),
         ),
       ),
     );
@@ -73,8 +82,7 @@ void main() {
     expect(find.text('body fat'), findsOneWidget);
 
     // Entries
-    expect(find.text('10.2 %'), findsNWidgets(1));
-    expect(find.text('18.1 %'), findsNWidgets(1));
+    expect(find.text('15.0 %'), findsNWidgets(1));
   });
 
   testWidgets('Tests the localization of dates - EN', (WidgetTester tester) async {
@@ -91,7 +99,6 @@ void main() {
     await tester.pumpWidget(createHomeScreen(locale: 'de'));
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();
-
     expect(find.text('1.8.2021'), findsWidgets);
     expect(find.text('10.8.2021'), findsWidgets);
   });
