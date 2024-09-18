@@ -25,7 +25,7 @@ import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
 import 'package:wger/models/schema.dart';
 import 'package:wger/powersync.dart';
-import 'package:powersync/sqlite3.dart' as sqlite;
+import 'package:wger/providers/nutrition.dart';
 
 part 'log.g.dart';
 
@@ -82,11 +82,11 @@ class Log {
   factory Log.fromRow(sqlite.Row row) {
     return Log(
       id: int.parse(row['id']),
-      mealId: int.parse(row['meal_id']),
-      ingredientId: int.parse(row['ingredient_id']),
-      weightUnitId: int.parse(row['weight_unit_id']),
+      mealId: row['meal_id'],
+      ingredientId: row['ingredient_id'],
+      weightUnitId: row['weight_unit_id'],
       amount: row['amount'],
-      planId: int.parse(row['plan_id']),
+      planId: row['plan_id'],
       datetime: DateTime.parse(row['datetime']),
       comment: row['comment'],
     );
@@ -109,7 +109,22 @@ class Log {
 
   static Future<List<Log>> readByPlanId(int planId) async {
     final results = await db.getAll('SELECT * FROM $tableLogItems WHERE plan_id = ?', [planId]);
-    return results.map((r) => Log.fromRow(r)).toList();
+    return results.map((r) {
+      final log = Log.fromRow(r);
+      // TODO:
+      // need to find a way to set ingredients. since we don't use powersync for it, we need to fetch
+      // but this needs a context, therofere this needs a context, and all callers do, so we should probably 
+      // move all that stuff into the nutritionprovider, so we keep context out of the models
+      // however, still unsolved:
+      // mealItem stuff then?
+      // nutrition image
+      // nutrition_ingredientcategory
+  //     nutrition_ingredientweightunit
+  // nutrition_weightunit;
+  // nutrition_mealitem
+      log.ingredient = Provider.of<NutritionPlansProvider>(context, listen: false).fetchIngredient(id),
+      return log;
+    }).toList();
   }
 
 /*
@@ -121,22 +136,5 @@ class Log {
     await db.execute('UPDATE $logItemsTable SET photo_id = ? WHERE id = ?', [photoId, id]);
   }
 }
-
-  static Stream<List<TodoList>> watchLists() {
-    // This query is automatically re-run when data in "lists" or "todos" is modified.
-    return db.watch('SELECT * FROM lists ORDER BY created_at, id').map((results) {
-      return results.map(TodoList.fromRow).toList(growable: false);
-    });
-  }
-  
- static Future<TodoList> create(String name) async {
-    final results = await db.execute('''
-      INSERT INTO
-        lists(id, created_at, name, owner_id)
-        VALUES(uuid(), datetime(), ?, ?)
-      RETURNING *
-      ''', [name, await getUserId()]);
-    return TodoList.fromRow(results.first);
-  }
   */
 }

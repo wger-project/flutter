@@ -34,6 +34,7 @@ import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/base_provider.dart';
 
 class NutritionPlansProvider with ChangeNotifier {
+  // TODO: should be able to delete many of these paths and their corresponding code
   static const _nutritionalPlansPath = 'nutritionplan';
   static const _nutritionalPlansInfoPath = 'nutritionplaninfo';
   static const _mealPath = 'meal';
@@ -88,44 +89,11 @@ class NutritionPlansProvider with ChangeNotifier {
     return null;
   }
 
-  /// Fetches a plan fully, i.e. with all corresponding child objects
-  ///
 /*
-  Future<NutritionalPlan> fetchAndSetPlanFull(int planId) async {
-    // Meals
-    final List<Meal> meals = [];
-    for (final mealData in fullPlanData['meals']) {
-      final List<MealItem> mealItems = [];
-      final meal = Meal.fromJson(mealData);
-
-      // TODO: we should add these ingredients to the ingredient cache
-      for (final mealItemData in mealData['meal_items']) {
-        final mealItem = MealItem.fromJson(mealItemData);
-
-        final ingredient = Ingredient.fromJson(mealItemData['ingredient_obj']);
-        if (mealItemData['image'] != null) {
-          final image = IngredientImage.fromJson(mealItemData['image']);
+TODO implement:
           ingredient.image = image;
-        }
         mealItem.ingredient = ingredient;
-        mealItems.add(mealItem);
-      }
-      meal.mealItems = mealItems;
-      meals.add(meal);
-    }
-    plan.meals = meals;
 
-    // Logs
-    await fetchAndSetLogs(plan);
-    for (final meal in meals) {
-      meal.diaryEntries = plan.diaryEntries.where((e) => e.mealId == meal.id).toList();
-    }
-
-    // ... and done
-    notifyListeners();
-    return plan;
-    
-  }
   */
 
   Future<NutritionalPlan> addPlan(NutritionalPlan planData) async {

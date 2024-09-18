@@ -1,5 +1,20 @@
 import 'package:powersync/powersync.dart';
 
+/* nutrition tables in postgres:
+| public | nutrition_image                                    | table>
+| public | nutrition_ingredient                               | table> * # millions of ingredients
+| public | nutrition_ingredientcategory                       | table>
+| public | nutrition_ingredientweightunit                     | table>
+| public | nutrition_logitem                                  | table> * OK
+| public | nutrition_meal                                     | table> * OK 
+| public | nutrition_mealitem                                 | table> *
+| public | nutrition_nutritionplan                            | table> * OK
+| public | nutrition_weightunit                               | table> 
+
+assumptions: nutrition_ingredientcategory, nutrition_weightunit, nutrition_ingredientweightunit globals?
+*/
+
+// User,NutritionPlan,Meal,LogItem,MealItem,Ingredient
 const tableMuscles = 'exercises_muscle';
 const tableLogItems = 'nutrition_logitem';
 const tableNutritionPlans = 'nutrition_nutritionplan';

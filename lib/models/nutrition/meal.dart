@@ -18,13 +18,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:powersync/sqlite3.dart' as sqlite;
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/misc.dart';
 import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
-import 'package:powersync/sqlite3.dart' as sqlite;
 import 'package:wger/models/schema.dart';
 import 'package:wger/powersync.dart';
 
@@ -93,7 +93,7 @@ class Meal {
   factory Meal.fromRow(sqlite.Row row) {
     return Meal(
       id: int.parse(row['id']),
-      plan: int.parse(row['plan']),
+      plan: row['plan'],
       time: stringToTime(row['time']),
       name: row['name'],
     );
@@ -125,7 +125,9 @@ class Meal {
   }
 
   static Future<List<Meal>> readByPlanId(int planId) async {
+    print('Meal.readByPlanId: SELECT * FROM $tableMeals WHERE plan_id = $planId');
     final results = await db.getAll('SELECT * FROM $tableMeals WHERE plan_id = ?', [planId]);
+    print(results.rows.length);
     return results.map((r) => Meal.fromRow(r)).toList();
   }
 }
