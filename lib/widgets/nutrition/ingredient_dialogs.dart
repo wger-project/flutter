@@ -21,8 +21,8 @@ Widget ingredientImage(String url, BuildContext context) {
 
 class IngredientDetails extends StatelessWidget {
   final AsyncSnapshot<Ingredient> snapshot;
-  final void Function()? select;
-  const IngredientDetails(this.snapshot, {super.key, this.select});
+  final void Function()? onSelect;
+  const IngredientDetails(this.snapshot, {super.key, this.onSelect});
 
   @override
   Widget build(BuildContext context) {
@@ -76,12 +76,12 @@ class IngredientDetails extends StatelessWidget {
         ),
       ),
       actions: [
-        if (snapshot.hasData && select != null)
+        if (snapshot.hasData && onSelect != null)
           TextButton(
             key: const Key('ingredient-details-continue-button'),
             child: Text(MaterialLocalizations.of(context).continueButtonLabel),
             onPressed: () {
-              select!();
+              onSelect!();
               Navigator.of(context).pop();
             },
           ),
@@ -100,9 +100,14 @@ class IngredientDetails extends StatelessWidget {
 class IngredientScanResultDialog extends StatelessWidget {
   final AsyncSnapshot<Ingredient?> snapshot;
   final String barcode;
-  final Function(int id, String name, num? amount) selectIngredient;
+  final Function(int id, String name, num? amount) onSelectIngredient;
 
-  const IngredientScanResultDialog(this.snapshot, this.barcode, this.selectIngredient, {super.key});
+  const IngredientScanResultDialog(
+    this.snapshot,
+    this.barcode,
+    this.onSelectIngredient, {
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -181,7 +186,7 @@ class IngredientScanResultDialog extends StatelessWidget {
             key: const Key('ingredient-scan-result-dialog-confirm-button'),
             child: Text(MaterialLocalizations.of(context).continueButtonLabel),
             onPressed: () {
-              selectIngredient(ingredient!.id, ingredient.name, null);
+              onSelectIngredient(ingredient!.id, ingredient.name, null);
               Navigator.of(context).pop();
             },
           ),

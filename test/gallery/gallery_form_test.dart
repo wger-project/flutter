@@ -46,9 +46,7 @@ void main() {
         locale: Locale(locale),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: Scaffold(
-          body: useImage ? ImageForm(image) : ImageForm(),
-        ),
+        home: Scaffold(body: useImage ? ImageForm(image) : ImageForm()),
       ),
     );
   }

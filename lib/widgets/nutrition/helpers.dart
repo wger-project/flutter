@@ -105,7 +105,7 @@ void showIngredientDetails(BuildContext context, int id, {void Function()? selec
     builder: (context) => FutureBuilder<Ingredient>(
       future: Provider.of<NutritionPlansProvider>(context, listen: false).fetchIngredient(id),
       builder: (BuildContext context, AsyncSnapshot<Ingredient> snapshot) {
-        return IngredientDetails(snapshot, select: select);
+        return IngredientDetails(snapshot, onSelect: select);
       },
     ),
   );

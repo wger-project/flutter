@@ -23,7 +23,7 @@ import 'package:wger/models/workouts/weight_unit.dart';
 
 void main() {
   group('Test the singleSettingRepText method', () {
-    test('Default rep and weight units, no RiR', () async {
+    test('Default rep and weight units, no RiR', () {
       const repUnit = RepetitionUnit(id: 1, name: 'mol');
       const weightUnit = WeightUnit(id: 1, name: 'mg');
 
@@ -36,7 +36,7 @@ void main() {
       expect(setting.singleSettingRepText, '2 × 30 mg');
     });
 
-    test('Default rep and weight units', () async {
+    test('Default rep and weight units', () {
       const repUnit = RepetitionUnit(id: 1, name: 'mol');
       const weightUnit = WeightUnit(id: 1, name: 'mg');
 
@@ -49,7 +49,7 @@ void main() {
       expect(setting.singleSettingRepText, '2 × 30 mg \n (1.5 RiR)');
     });
 
-    test('No weight, default rep and weight units', () async {
+    test('No weight, default rep and weight units', () {
       const repUnit = RepetitionUnit(id: 1, name: 'mol');
       const weightUnit = WeightUnit(id: 1, name: 'mg');
 
@@ -62,7 +62,7 @@ void main() {
       expect(setting.singleSettingRepText, '2 mol \n (1.5 RiR)');
     });
 
-    test('Custom rep and weight units, no RiR', () async {
+    test('Custom rep and weight units, no RiR', () {
       const repUnit = RepetitionUnit(id: 2, name: 'mol');
       const weightUnit = WeightUnit(id: 2, name: 'mg');
 
@@ -75,7 +75,7 @@ void main() {
       expect(setting.singleSettingRepText, '2 mol × 30 mg');
     });
 
-    test('Custom rep and weight units, RiR', () async {
+    test('Custom rep and weight units, RiR', () {
       const repUnit = RepetitionUnit(id: 2, name: 'mol');
       const weightUnit = WeightUnit(id: 2, name: 'mg');
 

@@ -40,10 +40,8 @@ void main() {
   final client = MockClient();
 
   Widget createHomeScreen({locale = 'en'}) {
-    when(client.delete(
-      any,
-      headers: anyNamed('headers'),
-    )).thenAnswer((_) async => http.Response('', 200));
+    when(client.delete(any, headers: anyNamed('headers')))
+        .thenAnswer((_) async => http.Response('', 200));
 
     when(mockBaseProvider.deleteRequest(any, any)).thenAnswer(
       (_) async => http.Response('', 200),
@@ -74,9 +72,7 @@ void main() {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: const NutritionalPlansScreen(),
-        routes: {
-          FormScreen.routeName: (ctx) => const FormScreen(),
-        },
+        routes: {FormScreen.routeName: (ctx) => const FormScreen()},
       ),
     );
   }

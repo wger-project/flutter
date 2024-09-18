@@ -51,14 +51,12 @@ void main() {
 
       final uri = Uri.https('localhost', 'api/v2/workout/325397/');
       when(mockBaseProvider.makeUrl('workout', id: 325397)).thenReturn(uri);
-      when(mockBaseProvider.fetch(
-        uri,
-      )).thenAnswer(
+      when(mockBaseProvider.fetch(uri)).thenAnswer(
         (_) async => Future.value({
           'id': 325397,
           'name': 'Test workout',
           'creation_date': '2022-10-10',
-          'description': 'Test workout abcd'
+          'description': 'Test workout abcd',
         }),
       );
 
@@ -78,14 +76,12 @@ void main() {
       final exercisesProvider = ExercisesProvider(mockBaseProvider);
       final uri = Uri.https('localhost', 'api/v2/workout/325397/');
       when(mockBaseProvider.makeUrl('workout', id: 325397)).thenReturn(uri);
-      when(mockBaseProvider.fetch(
-        uri,
-      )).thenAnswer(
+      when(mockBaseProvider.fetch(uri)).thenAnswer(
         (_) async => Future.value({
           'id': 325397,
           'name': 'Test workout',
           'creation_date': '2022-10-10',
-          'description': 'Test workout abcd'
+          'description': 'Test workout abcd',
         }),
       );
       when(mockBaseProvider.deleteRequest('workout', 325397)).thenAnswer(

@@ -134,6 +134,7 @@ class NutritionalGoals {
 
   @override
   String toString() {
+    // ignore: avoid-nullable-interpolation
     return 'e: $energy, p: $protein, c: $carbohydrates, cS: $carbohydratesSugar, f: $fat, fS: $fatSaturated, fi: $fiber, s: $sodium';
   }
 

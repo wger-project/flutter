@@ -59,9 +59,7 @@ void main() {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
-        home: Scaffold(
-          body: WorkoutForm(workoutPlan),
-        ),
+        home: Scaffold(body: WorkoutForm(workoutPlan)),
         routes: {
           WorkoutPlanScreen.routeName: (ctx) => const WorkoutPlanScreen(),
         },
@@ -133,7 +131,11 @@ void main() {
 
   testWidgets('Test creating a new workout - name and description', (WidgetTester tester) async {
     final editWorkout = WorkoutPlan(
-        id: 2, creationDate: newPlan.creationDate, name: 'My workout', description: 'Get yuuuge');
+      id: 2,
+      creationDate: newPlan.creationDate,
+      name: 'My workout',
+      description: 'Get yuuuge',
+    );
     when(mockWorkoutPlans.addWorkout(any)).thenAnswer((_) => Future.value(editWorkout));
 
     await tester.pumpWidget(createHomeScreen(newPlan));

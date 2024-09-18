@@ -35,10 +35,11 @@ void main() {
     return ChangeNotifierProvider<ExercisesProvider>(
       create: (context) => mockExerciseProvider,
       child: MaterialApp(
-          locale: Locale(locale),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const SettingsPage()),
+        locale: Locale(locale),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: const SettingsPage(),
+      ),
     );
   }
 

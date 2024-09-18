@@ -93,14 +93,15 @@ void main() {
       );
       when(mockBaseProvider.makeUrl(any, query: anyNamed('query'))).thenReturn(uri);
       when(mockBaseProvider.deleteRequest('weightentry', 4)).thenAnswer(
-          (_) => Future.value(Response("{'id': 4, 'date': '2021-01-01', 'weight': '80'}", 204)));
+        (_) => Future.value(Response("{'id': 4, 'date': '2021-01-01', 'weight': '80'}", 204)),
+      );
 
       // DELETE the data from the server
       final BodyWeightProvider provider = BodyWeightProvider(mockBaseProvider);
       provider.items = [
         WeightEntry(id: 4, weight: 80, date: DateTime(2021, 1, 1)),
         WeightEntry(id: 2, weight: 100, date: DateTime(2021, 2, 2)),
-        WeightEntry(id: 5, weight: 60, date: DateTime(2021, 2, 2))
+        WeightEntry(id: 5, weight: 60, date: DateTime(2021, 2, 2)),
       ];
       await provider.deleteEntry(4);
 

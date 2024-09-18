@@ -84,7 +84,7 @@ void main() {
     fixture('exercises/exercisebaseinfo_response.json'),
   );
 
-  setUpAll(() async {
+  setUpAll(() {
     // Needs to be configured here, setUp runs on every test, setUpAll only once
     //await ServiceLocator().configure();
   });
@@ -236,10 +236,7 @@ void main() {
         // assert
         verifyNever(provider.baseProvider.fetch(tSearchByNameUri));
 
-        expect(
-          provider.filteredExercises,
-          data.getTestExercises(),
-        );
+        expect(provider.filteredExercises, data.getTestExercises());
       });
 
       test('A muscle is selected with no search term. Should find results', () async {

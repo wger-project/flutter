@@ -30,9 +30,7 @@ void main() {
       locale: Locale(locale),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      home: Scaffold(
-        body: WeightForm(weightEntry),
-      ),
+      home: Scaffold(body: WeightForm(weightEntry)),
     );
   }
 

@@ -64,9 +64,7 @@ void main() {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
-        home: Scaffold(
-          body: RepetitionUnitInputWidget(setting1),
-        ),
+        home: Scaffold(body: RepetitionUnitInputWidget(setting1)),
         routes: {
           WorkoutPlanScreen.routeName: (ctx) => const WorkoutPlanScreen(),
         },

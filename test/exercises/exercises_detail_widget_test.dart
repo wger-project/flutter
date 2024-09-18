@@ -37,9 +37,7 @@ void main() {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: GlobalKey<NavigatorState>(),
-        home: Scaffold(
-          body: ExerciseDetail(getTestExercises()[0]),
-        ),
+        home: Scaffold(body: ExerciseDetail(getTestExercises()[0])),
       ),
     );
   }
