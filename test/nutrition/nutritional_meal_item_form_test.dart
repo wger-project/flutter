@@ -21,7 +21,6 @@ import 'package:wger/widgets/nutrition/forms.dart';
 
 import '../../test_data/nutritional_plans.dart';
 import '../fixtures/fixture_reader.dart';
-import '../measurements/measurement_provider_test.mocks.dart';
 import '../other/base_provider_test.mocks.dart';
 import 'nutritional_plan_form_test.mocks.dart';
 
@@ -44,14 +43,8 @@ void main() {
     sodium: 0.5,
   );
 
-  late MockWgerBaseProvider mockWgerBaseProvider;
-
   var mockNutrition = MockNutritionPlansProvider();
   final client = MockClient();
-
-  setUp(() {
-    mockWgerBaseProvider = MockWgerBaseProvider();
-  });
 
   var plan1 = NutritionalPlan.empty();
   var meal1 = Meal();
