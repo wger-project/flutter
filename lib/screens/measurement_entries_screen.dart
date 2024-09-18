@@ -122,7 +122,7 @@ class MeasurementEntriesScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add, color: Colors.white),
-        onPressed: () async {
+        onPressed: () {
           Navigator.pushNamed(
             context,
             FormScreen.routeName,

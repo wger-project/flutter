@@ -84,7 +84,7 @@ void main() {
     fixture('exercises/exercisebaseinfo_response.json'),
   );
 
-  setUpAll(() async {
+  setUpAll(() {
     // Needs to be configured here, setUp runs on every test, setUpAll only once
     //await ServiceLocator().configure();
   });

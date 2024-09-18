@@ -12,7 +12,7 @@ void main() {
   );
 
   group('Model tests', () {
-    test('test getExercise', () async {
+    test('test getExercise', () {
       // arrange and act
       final base = getTestExercises()[1];
 

@@ -41,7 +41,7 @@ void main() {
     await ServiceLocator().configure();
   });
 
-  setUp(() async {
+  setUp(() {
     WidgetsFlutterBinding.ensureInitialized();
     driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
 

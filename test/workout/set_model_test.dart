@@ -22,7 +22,7 @@ import '../../test_data/workouts.dart';
 
 void main() {
   group('Test the getSmartTextRepr method for a set', () {
-    test('Repetitions and weigh units', () async {
+    test('Repetitions and weigh units', () {
       final workout = getWorkout();
       final set = workout.days.first.sets.first;
       final exercise1 = set.exerciseBasesObj[0];

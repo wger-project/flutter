@@ -209,7 +209,7 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                           ),
                           IconButton(
                             icon: const Icon(Icons.add),
-                            onPressed: () async {
+                            onPressed: () {
                               Navigator.pushNamed(
                                 context,
                                 FormScreen.routeName,
@@ -526,7 +526,7 @@ class NothingFound extends StatelessWidget {
           IconButton(
             iconSize: 30,
             icon: const Icon(Icons.add_box, color: wgerPrimaryButtonColor),
-            onPressed: () async {
+            onPressed: () {
               Navigator.pushNamed(
                 context,
                 FormScreen.routeName,

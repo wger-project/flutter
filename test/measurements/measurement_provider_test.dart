@@ -240,13 +240,13 @@ void main() {
 
     test(
         'should re-add the "removed" MeasurementCategory and relay the exception on WgerHttpException',
-        () async {
+        () {
       // arrange
       when(mockWgerBaseProvider.deleteRequest(any, any)).thenThrow(WgerHttpException('{}'));
 
       // act & assert
-      expect(() async => measurementProvider.deleteCategory(tCategoryId),
-          throwsA(isA<WgerHttpException>()));
+      expect(
+          () => measurementProvider.deleteCategory(tCategoryId), throwsA(isA<WgerHttpException>()));
       expect(measurementProvider.categories, tMeasurementCategories);
     });
   });
@@ -279,9 +279,7 @@ void main() {
 
     test("should throw a NoSuchEntryException if category doesn't exist", () {
       // act & assert
-      expect(
-          () async =>
-              measurementProvider.editCategory(83, tCategoryEditedName, tCategoryEditedUnit),
+      expect(() => measurementProvider.editCategory(83, tCategoryEditedName, tCategoryEditedUnit),
           throwsA(isA<NoSuchEntryException>()));
     });
 
@@ -439,7 +437,7 @@ void main() {
 
     test("should throw a NoSuchEntryException if the category isn't found", () {
       // act & assert
-      expect(() async => measurementProvider.deleteEntry(tEntryId, 83),
+      expect(() => measurementProvider.deleteEntry(tEntryId, 83),
           throwsA(isA<NoSuchEntryException>()));
     });
 
@@ -461,7 +459,7 @@ void main() {
 
     test(
         'should re-add the "removed" MeasurementEntry and throw a WgerHttpException if the api call fails',
-        () async {
+        () {
       // arrange
       final List<MeasurementCategory> tMeasurementCategories = [
         MeasurementCategory(id: 1, name: 'Strength', unit: 'kN', entries: [
@@ -485,7 +483,7 @@ void main() {
       when(mockWgerBaseProvider.deleteRequest(any, any)).thenThrow(WgerHttpException('{}'));
 
       // act & assert
-      expect(() async => measurementProvider.deleteEntry(tEntryId, tCategoryId),
+      expect(() => measurementProvider.deleteEntry(tEntryId, tCategoryId),
           throwsA(isA<WgerHttpException>()));
       expect(measurementProvider.categories, tMeasurementCategories);
     });

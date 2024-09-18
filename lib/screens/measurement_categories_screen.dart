@@ -34,7 +34,7 @@ class MeasurementCategoriesScreen extends StatelessWidget {
       appBar: AppBar(title: Text(AppLocalizations.of(context).measurements)),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add, color: Colors.white),
-        onPressed: () async {
+        onPressed: () {
           Navigator.pushNamed(
             context,
             FormScreen.routeName,

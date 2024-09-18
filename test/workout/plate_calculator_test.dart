@@ -22,7 +22,7 @@ import 'package:wger/helpers/gym_mode.dart';
 
 void main() {
   group('Test the plate calculator', () {
-    test('Regular weights', () async {
+    test('Regular weights', () {
       expect(plateCalculator(40, BAR_WEIGHT, AVAILABLE_PLATES), [10]);
       expect(plateCalculator(100, BAR_WEIGHT, AVAILABLE_PLATES), [15, 15, 10]);
       expect(plateCalculator(102.5, BAR_WEIGHT, AVAILABLE_PLATES), [15, 15, 10, 1.25]);
@@ -31,7 +31,7 @@ void main() {
       expect(plateCalculator(85, BAR_WEIGHT, AVAILABLE_PLATES), [15, 15, 2.5]);
     });
 
-    test('Exceptions', () async {
+    test('Exceptions', () {
       expect(
         plateCalculator(10, BAR_WEIGHT, AVAILABLE_PLATES),
         [],
@@ -47,7 +47,7 @@ void main() {
   });
 
   group('Test the plate calculator group', () {
-    test('Test groups', () async {
+    test('Test groups', () {
       expect(groupPlates([15, 15, 15, 10, 10, 5]), {15: 3, 10: 2, 5: 1});
       expect(groupPlates([15, 10, 5, 1.25]), {15: 1, 10: 1, 5: 1, 1.25: 1});
       expect(groupPlates([10, 10, 10, 10, 10, 10, 10]), {10: 7});
