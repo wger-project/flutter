@@ -38,7 +38,7 @@ void main() {
       MeasurementCategory(id: 1, name: 'Strength', unit: 'kN');
   final List<MeasurementCategory> tMeasurementCategories = [
     const MeasurementCategory(id: 1, name: 'Strength', unit: 'kN'),
-    const MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm')
+    const MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm'),
   ];
   final Map<String, dynamic> tMeasurementCategoriesMap =
       jsonDecode(fixture('measurement/measurement_categories.json'));
@@ -158,9 +158,9 @@ void main() {
             date: DateTime(2021, 7, 10),
             value: 15.00,
             notes: '',
-          )
+          ),
         ]),
-        const MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm')
+        const MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm'),
       ];
 
       // act
@@ -197,17 +197,18 @@ void main() {
     });
 
     test(
-        'should add the result from the post call to the categories List and sort the list by alphabetical order',
-        () async {
-      // arrange
-      await measurementProvider.fetchAndSetCategories();
+      'should add the result from the post call to the categories List and sort the list by alphabetical order',
+      () async {
+        // arrange
+        await measurementProvider.fetchAndSetCategories();
 
-      // act
-      await measurementProvider.addCategory(tMeasurementCategoryWithoutId);
+        // act
+        await measurementProvider.addCategory(tMeasurementCategoryWithoutId);
 
-      // assert
-      expect(measurementProvider.categories, tMeasurementCategoriesAdded);
-    });
+        // assert
+        expect(measurementProvider.categories, tMeasurementCategoriesAdded);
+      },
+    );
   });
 
   group('deleteCategory()', () {
@@ -215,23 +216,24 @@ void main() {
       await measurementProvider.fetchAndSetCategories();
     });
     test(
-        'should remove a MeasurementCategory from the categories list for an id and call the api to remove the MeasurementCategory',
-        () async {
-      // arrange
-      when(mockWgerBaseProvider.deleteRequest(any, any))
-          .thenAnswer((realInvocation) => Future.value(Response('', 200)));
+      'should remove a MeasurementCategory from the categories list for an id and call the api to remove the MeasurementCategory',
+      () async {
+        // arrange
+        when(mockWgerBaseProvider.deleteRequest(any, any))
+            .thenAnswer((realInvocation) => Future.value(Response('', 200)));
 
-      final List<MeasurementCategory> tMeasurementCategoriesOneDeleted = [
-        const MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm')
-      ];
+        final List<MeasurementCategory> tMeasurementCategoriesOneDeleted = [
+          const MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm'),
+        ];
 
-      // act
-      await measurementProvider.deleteCategory(tCategoryId);
+        // act
+        await measurementProvider.deleteCategory(tCategoryId);
 
-      // assert
-      verify(mockWgerBaseProvider.deleteRequest('measurement-category', tCategoryId));
-      expect(measurementProvider.categories, tMeasurementCategoriesOneDeleted);
-    });
+        // assert
+        verify(mockWgerBaseProvider.deleteRequest('measurement-category', tCategoryId));
+        expect(measurementProvider.categories, tMeasurementCategoriesOneDeleted);
+      },
+    );
 
     test('should throw a NoSuchEntryException if no category is found', () {
       // act & assert
@@ -239,16 +241,19 @@ void main() {
     });
 
     test(
-        'should re-add the "removed" MeasurementCategory and relay the exception on WgerHttpException',
-        () {
-      // arrange
-      when(mockWgerBaseProvider.deleteRequest(any, any)).thenThrow(WgerHttpException('{}'));
+      'should re-add the "removed" MeasurementCategory and relay the exception on WgerHttpException',
+      () {
+        // arrange
+        when(mockWgerBaseProvider.deleteRequest(any, any)).thenThrow(WgerHttpException('{}'));
 
-      // act & assert
-      expect(
-          () => measurementProvider.deleteCategory(tCategoryId), throwsA(isA<WgerHttpException>()));
-      expect(measurementProvider.categories, tMeasurementCategories);
-    });
+        // act & assert
+        expect(
+          () => measurementProvider.deleteCategory(tCategoryId),
+          throwsA(isA<WgerHttpException>()),
+        );
+        expect(measurementProvider.categories, tMeasurementCategories);
+      },
+    );
   });
 
   group('editCategory()', () {
@@ -279,8 +284,10 @@ void main() {
 
     test("should throw a NoSuchEntryException if category doesn't exist", () {
       // act & assert
-      expect(() => measurementProvider.editCategory(83, tCategoryEditedName, tCategoryEditedUnit),
-          throwsA(isA<NoSuchEntryException>()));
+      expect(
+        () => measurementProvider.editCategory(83, tCategoryEditedName, tCategoryEditedUnit),
+        throwsA(isA<NoSuchEntryException>()),
+      );
     });
 
     test('should call api to patch the category', () async {
@@ -297,9 +304,13 @@ void main() {
 
       // act & assert
       expect(
-          () => measurementProvider.editCategory(
-              tCategoryId, tCategoryEditedName, tCategoryEditedUnit),
-          throwsA(isA<WgerHttpException>()));
+        () => measurementProvider.editCategory(
+          tCategoryId,
+          tCategoryEditedName,
+          tCategoryEditedUnit,
+        ),
+        throwsA(isA<WgerHttpException>()),
+      );
       expect(measurementProvider.categories, tMeasurementCategories);
     });
   });
@@ -337,9 +348,9 @@ void main() {
           value: 15.00,
           notes: '',
         ),
-        tMeasurementEntry
+        tMeasurementEntry,
       ]),
-      const MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm')
+      const MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm'),
     ];
 
     setUp(() async {
@@ -372,17 +383,18 @@ void main() {
     });
 
     test(
-        "should add MeasurementEntry to its MeasurementCategory in the categories List and sort the category's list by date",
-        () async {
-      // arrange
-      await measurementProvider.fetchAndSetCategoryEntries(tCategoryId);
+      "should add MeasurementEntry to its MeasurementCategory in the categories List and sort the category's list by date",
+      () async {
+        // arrange
+        await measurementProvider.fetchAndSetCategoryEntries(tCategoryId);
 
-      // act
-      await measurementProvider.addEntry(tMeasurementEntryWithoutId);
+        // act
+        await measurementProvider.addEntry(tMeasurementEntryWithoutId);
 
-      // assert
-      expect(measurementProvider.categories, tMeasurementCategories);
-    });
+        // assert
+        expect(measurementProvider.categories, tMeasurementCategories);
+      },
+    );
 
     test('should throw a NoSuchEntryException if no category is found', () {
       // arrange
@@ -399,8 +411,10 @@ void main() {
           .thenAnswer((realInvocation) => Future.value(measurementEntryMapWrongCategory));
 
       // act & assert
-      expect(() => measurementProvider.addEntry(tMeasurementEntryWrongCategory),
-          throwsA(isA<NoSuchEntryException>()));
+      expect(
+        () => measurementProvider.addEntry(tMeasurementEntryWrongCategory),
+        throwsA(isA<NoSuchEntryException>()),
+      );
     });
   });
 
@@ -416,7 +430,7 @@ void main() {
           notes: 'Some important notes',
         ),
       ]),
-      const MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm')
+      const MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm'),
     ];
 
     setUp(() async {
@@ -437,17 +451,22 @@ void main() {
 
     test("should throw a NoSuchEntryException if the category isn't found", () {
       // act & assert
-      expect(() => measurementProvider.deleteEntry(tEntryId, 83),
-          throwsA(isA<NoSuchEntryException>()));
+      expect(
+        () => measurementProvider.deleteEntry(tEntryId, 83),
+        throwsA(isA<NoSuchEntryException>()),
+      );
     });
 
     test(
-        "should throw a NoSuchEntryException if the entry in the categories entries List isn't found",
-        () {
-      // act & assert
-      expect(() => measurementProvider.deleteEntry(83, tCategoryId),
-          throwsA(isA<NoSuchEntryException>()));
-    });
+      "should throw a NoSuchEntryException if the entry in the categories entries List isn't found",
+      () {
+        // act & assert
+        expect(
+          () => measurementProvider.deleteEntry(83, tCategoryId),
+          throwsA(isA<NoSuchEntryException>()),
+        );
+      },
+    );
 
     test('should call the api to remove the MeasurementEntry', () async {
       // act
@@ -458,35 +477,38 @@ void main() {
     });
 
     test(
-        'should re-add the "removed" MeasurementEntry and throw a WgerHttpException if the api call fails',
-        () {
-      // arrange
-      final List<MeasurementCategory> tMeasurementCategories = [
-        MeasurementCategory(id: 1, name: 'Strength', unit: 'kN', entries: [
-          MeasurementEntry(
-            id: 1,
-            category: 1,
-            date: DateTime(2021, 7, 21),
-            value: 10,
-            notes: 'Some important notes',
-          ),
-          MeasurementEntry(
-            id: 2,
-            category: 1,
-            date: DateTime(2021, 7, 10),
-            value: 15.00,
-            notes: '',
-          ),
-        ]),
-        const MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm')
-      ];
-      when(mockWgerBaseProvider.deleteRequest(any, any)).thenThrow(WgerHttpException('{}'));
+      'should re-add the "removed" MeasurementEntry and throw a WgerHttpException if the api call fails',
+      () {
+        // arrange
+        final List<MeasurementCategory> tMeasurementCategories = [
+          MeasurementCategory(id: 1, name: 'Strength', unit: 'kN', entries: [
+            MeasurementEntry(
+              id: 1,
+              category: 1,
+              date: DateTime(2021, 7, 21),
+              value: 10,
+              notes: 'Some important notes',
+            ),
+            MeasurementEntry(
+              id: 2,
+              category: 1,
+              date: DateTime(2021, 7, 10),
+              value: 15.00,
+              notes: '',
+            ),
+          ]),
+          const MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm'),
+        ];
+        when(mockWgerBaseProvider.deleteRequest(any, any)).thenThrow(WgerHttpException('{}'));
 
-      // act & assert
-      expect(() => measurementProvider.deleteEntry(tEntryId, tCategoryId),
-          throwsA(isA<WgerHttpException>()));
-      expect(measurementProvider.categories, tMeasurementCategories);
-    });
+        // act & assert
+        expect(
+          () => measurementProvider.deleteEntry(tEntryId, tCategoryId),
+          throwsA(isA<WgerHttpException>()),
+        );
+        expect(measurementProvider.categories, tMeasurementCategories);
+      },
+    );
   });
 
   group('editEntry()', () {
@@ -525,9 +547,9 @@ void main() {
             date: DateTime(2021, 7, 10),
             value: 15.00,
             notes: '',
-          )
+          ),
         ]),
-        const MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm')
+        const MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm'),
       ];
 
       // act
@@ -546,27 +568,29 @@ void main() {
     test("should throw a NoSuchEntryException if category doesn't exist", () {
       // act & assert
       expect(
-          () => measurementProvider.editEntry(
-                tEntryId,
-                83,
-                tEntryEditedValue,
-                tEntryEditedNote,
-                tEntryEditedDate,
-              ),
-          throwsA(isA<NoSuchEntryException>()));
+        () => measurementProvider.editEntry(
+          tEntryId,
+          83,
+          tEntryEditedValue,
+          tEntryEditedNote,
+          tEntryEditedDate,
+        ),
+        throwsA(isA<NoSuchEntryException>()),
+      );
     });
 
     test("should throw a NoSuchEntryException if entry doesn't exist", () {
       // act & assert
       expect(
-          () => measurementProvider.editEntry(
-                83,
-                tCategoryId,
-                tEntryEditedValue,
-                tEntryEditedNote,
-                tEntryEditedDate,
-              ),
-          throwsA(isA<NoSuchEntryException>()));
+        () => measurementProvider.editEntry(
+          83,
+          tCategoryId,
+          tEntryEditedValue,
+          tEntryEditedNote,
+          tEntryEditedDate,
+        ),
+        throwsA(isA<NoSuchEntryException>()),
+      );
     });
 
     test('should call api to patch the entry', () async {

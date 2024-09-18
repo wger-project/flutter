@@ -202,7 +202,7 @@ final squatsTranslations = [
   squatsEN,
   squatsEL,
   squatsAR,
-  squatsZH
+  squatsZH,
 ];
 
 final benchPressDE = Translation(
@@ -492,7 +492,7 @@ final crunchesTranslations = [
   crunchesRU,
   crunchesHE,
   crunchesAR,
-  crunchesZH
+  crunchesZH,
 ];
 
 final curlsEN = Translation(

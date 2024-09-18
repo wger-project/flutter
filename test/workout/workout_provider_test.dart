@@ -58,7 +58,7 @@ void main() {
           'id': 325397,
           'name': 'Test workout',
           'creation_date': '2022-10-10',
-          'description': 'Test workout abcd'
+          'description': 'Test workout abcd',
         }),
       );
 
@@ -85,7 +85,7 @@ void main() {
           'id': 325397,
           'name': 'Test workout',
           'creation_date': '2022-10-10',
-          'description': 'Test workout abcd'
+          'description': 'Test workout abcd',
         }),
       );
       when(mockBaseProvider.deleteRequest('workout', 325397)).thenAnswer(

@@ -33,65 +33,70 @@ void main() {
   group('model tests', () {
     test('Test NutritionalPlan.nutritionalGoals based on meals', () {
       expect(
-          plan.nutritionalGoals,
-          NutritionalGoals(
-              energy: 4118.75,
-              protein: 32.75,
-              carbohydrates: 347.5,
-              carbohydratesSugar: 9.5,
-              fat: 59.0,
-              fatSaturated: 37.75,
-              fiber: 52.5,
-              sodium: 30.5));
+        plan.nutritionalGoals,
+        NutritionalGoals(
+          energy: 4118.75,
+          protein: 32.75,
+          carbohydrates: 347.5,
+          carbohydratesSugar: 9.5,
+          fat: 59.0,
+          fatSaturated: 37.75,
+          fiber: 52.5,
+          sodium: 30.5,
+        ),
+      );
     });
     test('Test NutritionalPlan.nutritionalValues based on 3 macros and energy', () {
       expect(
-          NutritionalPlan(
-            description: '3 macros and energy defined',
-            creationDate: DateTime(2024, 5, 4),
-            goalProtein: 150,
-            goalCarbohydrates: 100,
-            goalFat: 100,
-            goalEnergy: 1500,
-          ).nutritionalGoals,
-          NutritionalGoals(
-            energy: 1500,
-            protein: 150,
-            carbohydrates: 100,
-            fat: 100,
-          ));
+        NutritionalPlan(
+          description: '3 macros and energy defined',
+          creationDate: DateTime(2024, 5, 4),
+          goalProtein: 150,
+          goalCarbohydrates: 100,
+          goalFat: 100,
+          goalEnergy: 1500,
+        ).nutritionalGoals,
+        NutritionalGoals(
+          energy: 1500,
+          protein: 150,
+          carbohydrates: 100,
+          fat: 100,
+        ),
+      );
     });
     test('Test NutritionalPlan.nutritionalValues based on 2 macros and energy', () {
       expect(
-          NutritionalPlan(
-            description: '2 macros and energy defined',
-            creationDate: DateTime(2024, 5, 4),
-            goalProtein: 100,
-            goalCarbohydrates: 100,
-            goalEnergy: 1700,
-          ).nutritionalGoals,
-          NutritionalGoals(
-            energy: 1700,
-            protein: 100,
-            carbohydrates: 100,
-            fat: 100, // inferred
-          ));
+        NutritionalPlan(
+          description: '2 macros and energy defined',
+          creationDate: DateTime(2024, 5, 4),
+          goalProtein: 100,
+          goalCarbohydrates: 100,
+          goalEnergy: 1700,
+        ).nutritionalGoals,
+        NutritionalGoals(
+          energy: 1700,
+          protein: 100,
+          carbohydrates: 100,
+          fat: 100, // inferred
+        ),
+      );
     });
     test('Test NutritionalPlan.nutritionalValues based on 3 macros only', () {
       expect(
-          NutritionalPlan(
-            description: '3 macros defined',
-            creationDate: DateTime(2024, 5, 4),
-            goalProtein: 100,
-            goalCarbohydrates: 100,
-            goalFat: 10,
-          ).nutritionalGoals,
-          NutritionalGoals(
-            energy: 890, // inferred
-            protein: 100,
-            carbohydrates: 100,
-            fat: 10,
-          ));
+        NutritionalPlan(
+          description: '3 macros defined',
+          creationDate: DateTime(2024, 5, 4),
+          goalProtein: 100,
+          goalCarbohydrates: 100,
+          goalFat: 10,
+        ).nutritionalGoals,
+        NutritionalGoals(
+          energy: 890, // inferred
+          protein: 100,
+          carbohydrates: 100,
+          fat: 10,
+        ),
+      );
     });
 
     test('Test the nutritionalValues method for meals', () {
