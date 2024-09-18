@@ -51,9 +51,7 @@ void main() {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
-        home: Scaffold(
-          body: DayFormWidget(workoutPlan),
-        ),
+        home: Scaffold(body: DayFormWidget(workoutPlan)),
       ),
     );
   }

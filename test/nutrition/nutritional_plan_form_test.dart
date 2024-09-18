@@ -58,9 +58,7 @@ void main() {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
-        home: Scaffold(
-          body: PlanForm(plan),
-        ),
+        home: Scaffold(body: PlanForm(plan)),
         routes: {
           NutritionalPlanScreen.routeName: (ctx) => const NutritionalPlanScreen(),
         },

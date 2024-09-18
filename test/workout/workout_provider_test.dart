@@ -51,9 +51,7 @@ void main() {
 
       final uri = Uri.https('localhost', 'api/v2/workout/325397/');
       when(mockBaseProvider.makeUrl('workout', id: 325397)).thenReturn(uri);
-      when(mockBaseProvider.fetch(
-        uri,
-      )).thenAnswer(
+      when(mockBaseProvider.fetch(uri)).thenAnswer(
         (_) async => Future.value({
           'id': 325397,
           'name': 'Test workout',
@@ -78,9 +76,7 @@ void main() {
       final exercisesProvider = ExercisesProvider(mockBaseProvider);
       final uri = Uri.https('localhost', 'api/v2/workout/325397/');
       when(mockBaseProvider.makeUrl('workout', id: 325397)).thenReturn(uri);
-      when(mockBaseProvider.fetch(
-        uri,
-      )).thenAnswer(
+      when(mockBaseProvider.fetch(uri)).thenAnswer(
         (_) async => Future.value({
           'id': 325397,
           'name': 'Test workout',

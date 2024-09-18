@@ -72,13 +72,9 @@ void main() {
       await loadAppFonts();
       final globalKey = GlobalKey();
       await tester.pumpWidgetBuilder(
-        Material(
-          key: globalKey,
-        ),
+        Material(key: globalKey),
         wrapper: materialAppWrapper(
-          localizations: [
-            AppLocalizations.delegate,
-          ],
+          localizations: [AppLocalizations.delegate],
         ),
         surfaceSize: const Size(500, 1000),
       );

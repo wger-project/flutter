@@ -2,86 +2,34 @@
 import 'package:wger/models/exercises/language.dart';
 import 'package:wger/models/exercises/translation.dart';
 
-const tLanguage21 = Language(
-  id: 21,
-  shortName: 'he',
-  fullName: 'עברית',
-);
-const tLanguage5 = Language(
-  id: 5,
-  shortName: 'ru',
-  fullName: 'Русский',
-);
-const tLanguage16 = Language(
-  id: 16,
-  shortName: 'tr',
-  fullName: 'Türkçe',
-);
+const tLanguage21 = Language(id: 21, shortName: 'he', fullName: 'עברית');
+const tLanguage5 = Language(id: 5, shortName: 'ru', fullName: 'Русский');
+const tLanguage16 = Language(id: 16, shortName: 'tr', fullName: 'Türkçe');
 const tLanguage22 = Language(
   id: 22,
   shortName: 'hr',
   fullName: 'Hrvatski jezik',
 );
-const tLanguage9 = Language(
-  id: 9,
-  shortName: 'cs',
-  fullName: 'Čeština',
-);
-const tLanguage4 = Language(
-  id: 4,
-  shortName: 'es',
-  fullName: 'Español',
-);
-const tLanguage24 = Language(
-  id: 24,
-  shortName: 'zh',
-  fullName: '漢語',
-);
+const tLanguage9 = Language(id: 9, shortName: 'cs', fullName: 'Čeština');
+const tLanguage4 = Language(id: 4, shortName: 'es', fullName: 'Español');
+const tLanguage24 = Language(id: 24, shortName: 'zh', fullName: '漢語');
 const tLanguage17 = Language(
   id: 17,
   shortName: 'ar',
   fullName: 'اَللُّغَةُ اَلْعَرَبِيَّة',
 );
-const tLanguage8 = Language(
-  id: 8,
-  shortName: 'el',
-  fullName: 'Ελληνικά',
-);
-const tLanguage2 = Language(
-  id: 2,
-  shortName: 'en',
-  fullName: 'English',
-);
-const tLanguage13 = Language(
-  id: 13,
-  shortName: 'it',
-  fullName: 'Italian',
-);
-const tLanguage12 = Language(
-  id: 12,
-  shortName: 'fr',
-  fullName: 'Français',
-);
-const tLanguage1 = Language(
-  id: 1,
-  shortName: 'de',
-  fullName: 'Deutsch',
-);
+const tLanguage8 = Language(id: 8, shortName: 'el', fullName: 'Ελληνικά');
+const tLanguage2 = Language(id: 2, shortName: 'en', fullName: 'English');
+const tLanguage13 = Language(id: 13, shortName: 'it', fullName: 'Italian');
+const tLanguage12 = Language(id: 12, shortName: 'fr', fullName: 'Français');
+const tLanguage1 = Language(id: 1, shortName: 'de', fullName: 'Deutsch');
 const tLanguage23 = Language(
   id: 23,
   shortName: 'id',
   fullName: 'Bahasa Indonesia',
 );
-const tLanguage6 = Language(
-  id: 6,
-  shortName: 'nl',
-  fullName: 'Nederlands',
-);
-const tLanguage7 = Language(
-  id: 7,
-  shortName: 'pt',
-  fullName: 'Português',
-);
+const tLanguage6 = Language(id: 6, shortName: 'nl', fullName: 'Nederlands');
+const tLanguage7 = Language(id: 7, shortName: 'pt', fullName: 'Português');
 
 final squatsPT = Translation(
   id: 1598,

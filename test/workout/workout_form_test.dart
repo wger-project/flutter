@@ -59,9 +59,7 @@ void main() {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
-        home: Scaffold(
-          body: WorkoutForm(workoutPlan),
-        ),
+        home: Scaffold(body: WorkoutForm(workoutPlan)),
         routes: {
           WorkoutPlanScreen.routeName: (ctx) => const WorkoutPlanScreen(),
         },

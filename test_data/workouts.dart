@@ -110,12 +110,7 @@ WorkoutPlan getWorkout({List<Exercise>? exercises}) {
   settingSquat.exercise = testBases[4];
   settingSquat.weight = 120;
 
-  final setSquat = Set.withData(
-    id: 2,
-    day: 1,
-    sets: 3,
-    order: 1,
-  );
+  final setSquat = Set.withData(id: 2, day: 1, sets: 3, order: 1);
   setSquat.addExerciseBase(testBases[4]);
   setSquat.settings.add(settingSquat);
   setSquat.settingsComputed = [settingSquat, settingSquat];
@@ -135,12 +130,7 @@ WorkoutPlan getWorkout({List<Exercise>? exercises}) {
   settingSideRaises.exercise = testBases[5];
   settingSideRaises.weight = 6;
 
-  final setSideRaises = Set.withData(
-    id: 3,
-    day: 1,
-    sets: 3,
-    order: 1,
-  );
+  final setSideRaises = Set.withData(id: 3, day: 1, sets: 3, order: 1);
   setSideRaises.addExerciseBase(testBases[5]);
   setSideRaises.settings.add(settingSideRaises);
   setSideRaises.settingsComputed = [settingSideRaises, settingSideRaises];

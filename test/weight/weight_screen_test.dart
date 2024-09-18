@@ -65,9 +65,7 @@ void main() {
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             home: const WeightScreen(),
-            routes: {
-              FormScreen.routeName: (_) => const FormScreen(),
-            },
+            routes: {FormScreen.routeName: (_) => const FormScreen()},
           ),
         ),
       ),

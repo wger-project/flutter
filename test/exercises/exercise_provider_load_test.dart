@@ -54,12 +54,8 @@ void main() {
     provider.languages = [tLanguage1, tLanguage2, tLanguage3];
 
     // Mock base info response
-    when(
-      mockBaseProvider.makeUrl(exerciseBaseInfoUrl, id: 9),
-    ).thenReturn(tExerciseBaseInfoUri);
-    when(
-      mockBaseProvider.makeUrl(exerciseBaseInfoUrl, id: 1),
-    ).thenReturn(tExerciseBaseInfoUri2);
+    when(mockBaseProvider.makeUrl(exerciseBaseInfoUrl, id: 9)).thenReturn(tExerciseBaseInfoUri);
+    when(mockBaseProvider.makeUrl(exerciseBaseInfoUrl, id: 1)).thenReturn(tExerciseBaseInfoUri2);
 
     when(mockBaseProvider.fetch(tExerciseBaseInfoUri))
         .thenAnswer((_) => Future.value(tExerciseInfoMap));
