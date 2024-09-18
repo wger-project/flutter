@@ -22,8 +22,8 @@ import 'package:provider/provider.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/core/app_bar.dart';
-import 'package:wger/widgets/weight/entries_list.dart';
 import 'package:wger/widgets/weight/forms.dart';
+import 'package:wger/widgets/weight/weight_overview.dart';
 
 class WeightScreen extends StatelessWidget {
   const WeightScreen();
@@ -48,8 +48,10 @@ class WeightScreen extends StatelessWidget {
           );
         },
       ),
-      body: Consumer<BodyWeightProvider>(
-        builder: (context, workoutProvider, child) => const WeightEntriesList(),
+      body: SingleChildScrollView(
+        child: Consumer<BodyWeightProvider>(
+          builder: (context, workoutProvider, child) => const WeightOverview(),
+        ),
       ),
     );
   }

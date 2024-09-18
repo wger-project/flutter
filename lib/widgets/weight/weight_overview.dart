@@ -21,30 +21,37 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/body_weight.dart';
+import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/measurement_categories_screen.dart';
 import 'package:wger/widgets/measurements/charts.dart';
+import 'package:wger/widgets/measurements/helpers.dart';
 import 'package:wger/widgets/weight/forms.dart';
 
-class WeightEntriesList extends StatelessWidget {
-  const WeightEntriesList();
+class WeightOverview extends StatelessWidget {
+  const WeightOverview();
   @override
   Widget build(BuildContext context) {
     final profile = context.read<UserProvider>().profile;
     final weightProvider = Provider.of<BodyWeightProvider>(context, listen: false);
+    final plan = Provider.of<NutritionPlansProvider>(context, listen: false).currentPlan;
+
+    final entriesAll =
+        weightProvider.items.map((e) => MeasurementChartEntry(e.weight, e.date)).toList();
+    final entries7dAvg = moving7dAverage(entriesAll);
+
+    final unit = weightUnit(profile!.isMetric, context);
 
     return Column(
       children: [
-        Container(
-          padding: const EdgeInsets.all(15),
-          height: 220,
-          child: MeasurementChartWidgetFl(
-            weightProvider.items.map((e) => MeasurementChartEntry(e.weight, e.date)).toList(),
-            unit: profile!.isMetric
-                ? AppLocalizations.of(context).kg
-                : AppLocalizations.of(context).lb,
-          ),
+        ...getOverviewWidgetsSeries(
+          'Weight',
+          entriesAll,
+          entries7dAvg,
+          plan,
+          unit,
+          context,
         ),
         TextButton(
           onPressed: () => Navigator.pushNamed(
@@ -59,7 +66,8 @@ class WeightEntriesList extends StatelessWidget {
             ],
           ),
         ),
-        Expanded(
+        SizedBox(
+          height: 300,
           child: RefreshIndicator(
             onRefresh: () => weightProvider.fetchAndSetEntries(),
             child: ListView.builder(
@@ -69,7 +77,7 @@ class WeightEntriesList extends StatelessWidget {
                 final currentEntry = weightProvider.items[index];
                 return Card(
                   child: ListTile(
-                    title: Text('${currentEntry.weight} kg'),
+                    title: Text('${currentEntry.weight} ${weightUnit(profile.isMetric, context)}'),
                     subtitle: Text(
                       DateFormat.yMd(
                         Localizations.localeOf(context).languageCode,
