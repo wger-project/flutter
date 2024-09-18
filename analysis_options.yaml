@@ -163,6 +163,8 @@ dart_code_metrics:
     - prefer-prefixed-global-constants: false # we don't really care for the 'k' prefix
     - prefer-single-widget-per-file: false
     - avoid-passing-self-as-argument: false # fairly harmless. and e.g. drift calls are like this
+    - avoid-passing-async-when-sync-expected: false # we really like to do this in onTap() etc, and it seems harmless
+
   formatter:
     indent: 0
     line-length: 100
