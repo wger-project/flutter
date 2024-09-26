@@ -20,7 +20,8 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wger/core/locator.dart';
+import 'package:wger/database/ingredients/ingredients_database.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/exceptions/no_such_entry_exception.dart';
 import 'package:wger/helpers/consts.dart';
@@ -43,10 +44,15 @@ class NutritionPlansProvider with ChangeNotifier {
   static const _nutritionDiaryPath = 'nutritiondiary';
 
   final WgerBaseProvider baseProvider;
+  late IngredientDatabase database;
   List<NutritionalPlan> _plans = [];
   List<Ingredient> _ingredients = [];
 
-  NutritionPlansProvider(this.baseProvider, List<NutritionalPlan> entries) : _plans = entries;
+  NutritionPlansProvider(this.baseProvider, List<NutritionalPlan> entries,
+      {IngredientDatabase? database})
+      : _plans = entries {
+    this.database = database ?? locator<IngredientDatabase>();
+  }
 
   List<NutritionalPlan> get items {
     return [..._plans];
@@ -286,6 +292,10 @@ class NutritionPlansProvider with ChangeNotifier {
     }
   }
 
+  Future<void> clearIngredientCaches() async {
+    await database.deleteEverything();
+  }
+
   /// Fetch and return an ingredient
   ///
   /// If the ingredient is not known locally, it is fetched from the server
@@ -294,46 +304,48 @@ class NutritionPlansProvider with ChangeNotifier {
 
     try {
       ingredient = _ingredients.firstWhere((e) => e.id == ingredientId);
-      return ingredient;
-
-      // Get ingredient from the server and save to cache
     } on StateError {
-      final data = await baseProvider.fetch(
-        baseProvider.makeUrl(_ingredientInfoPath, id: ingredientId),
-      );
-      ingredient = Ingredient.fromJson(data);
-      _ingredients.add(ingredient);
+      final ingredientDb = await (database.select(database.ingredients)
+            ..where((e) => e.id.equals(ingredientId)))
+          .getSingleOrNull();
 
-      final prefs = await SharedPreferences.getInstance();
-      final ingredientData = json.decode(prefs.getString(PREFS_INGREDIENTS)!);
-      ingredientData['ingredients'].add(ingredient.toJson());
-      prefs.setString(PREFS_INGREDIENTS, json.encode(ingredientData));
-      log("Saved ingredient '${ingredient.name}' to cache.");
+      // Try to fetch from local db
+      if (ingredientDb != null) {
+        ingredient = Ingredient.fromJson(jsonDecode(ingredientDb.data));
 
-      return ingredient;
-    }
-  }
+        // Prune old entries
+        if (DateTime.now()
+            .isAfter(ingredientDb.lastUpdate.add(const Duration(days: DAYS_TO_CACHE)))) {
+          (database.delete(database.ingredients)..where((i) => i.id.isValue(ingredientId))).go();
+        }
+      } else {
+        final data = await baseProvider.fetch(
+          baseProvider.makeUrl(_ingredientInfoPath, id: ingredientId),
+        );
+        ingredient = Ingredient.fromJson(data);
+        _ingredients.add(ingredient);
 
-  /// Loads the available ingredients from the local storage
-  Future<void> fetchIngredientsFromCache() async {
-    // Load exercises from cache, if available
-    final prefs = await SharedPreferences.getInstance();
-    if (prefs.containsKey(PREFS_INGREDIENTS)) {
-      final ingredientData = json.decode(prefs.getString(PREFS_INGREDIENTS)!);
-      if (DateTime.parse(ingredientData['expiresIn']).isAfter(DateTime.now())) {
-        ingredientData['ingredients'].forEach((e) => _ingredients.add(Ingredient.fromJson(e)));
-        log("Read ${ingredientData['ingredients'].length} ingredients from cache. Valid till ${ingredientData['expiresIn']}");
-        return;
+        database.into(database.ingredients).insert(
+              IngredientsCompanion.insert(
+                id: ingredientId,
+                data: jsonEncode(data),
+                lastUpdate: DateTime.now(),
+              ),
+            );
+        log("Saved ingredient '${ingredient.name}' to db cache");
       }
     }
 
-    // Initialise an empty cache
-    final ingredientData = {
-      'date': DateTime.now().toIso8601String(),
-      'expiresIn': DateTime.now().add(const Duration(days: DAYS_TO_CACHE)).toIso8601String(),
-      'ingredients': [],
-    };
-    prefs.setString(PREFS_INGREDIENTS, json.encode(ingredientData));
+    return ingredient;
+  }
+
+  /// Loads the available ingredients from the local cache
+  Future<void> fetchIngredientsFromCache() async {
+    final ingredientDb = await database.select(database.ingredients).get();
+    log("Read ${ingredientDb.length} ingredients from db cache");
+    if (ingredientDb.isNotEmpty) {
+      ingredients = ingredientDb.map((e) => Ingredient.fromJson(jsonDecode(e.data))).toList();
+    }
   }
 
   /// Searches for an ingredient
@@ -432,7 +444,7 @@ class NutritionPlansProvider with ChangeNotifier {
       baseProvider.makeUrl(
         _nutritionDiaryPath,
         query: {
-          'plan': plan.id.toString(),
+          'plan': plan.id?.toString(),
           'limit': '999',
           'ordering': 'datetime',
         },

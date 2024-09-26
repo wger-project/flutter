@@ -10,6 +10,7 @@ part 'ingredients_database.g.dart';
 @DataClassName('IngredientTable')
 class Ingredients extends Table {
   const Ingredients();
+
   IntColumn get id => integer()();
 
   TextColumn get data => text()();
@@ -27,6 +28,14 @@ class IngredientDatabase extends _$IngredientDatabase {
   @override
   // TODO: implement schemaVersion
   int get schemaVersion => 1;
+
+  Future<void> deleteEverything() {
+    return transaction(() async {
+      for (final table in allTables) {
+        await delete(table).go();
+      }
+    });
+  }
 }
 
 LazyDatabase _openConnection() {
