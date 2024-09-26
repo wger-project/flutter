@@ -315,7 +315,7 @@ class NutritionPlansProvider with ChangeNotifier {
 
         // Prune old entries
         if (DateTime.now()
-            .isAfter(ingredientDb.lastUpdate.add(const Duration(days: DAYS_TO_CACHE)))) {
+            .isAfter(ingredientDb.lastFetched.add(const Duration(days: DAYS_TO_CACHE)))) {
           (database.delete(database.ingredients)..where((i) => i.id.isValue(ingredientId))).go();
         }
       } else {
@@ -329,7 +329,7 @@ class NutritionPlansProvider with ChangeNotifier {
               IngredientsCompanion.insert(
                 id: ingredientId,
                 data: jsonEncode(data),
-                lastUpdate: DateTime.now(),
+                lastFetched: DateTime.now(),
               ),
             );
         log("Saved ingredient '${ingredient.name}' to db cache");

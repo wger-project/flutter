@@ -15,6 +15,7 @@ part 'exercise_database.g.dart';
 @DataClassName('ExerciseTable')
 class Exercises extends Table {
   const Exercises();
+
   IntColumn get id => integer()();
 
   TextColumn get data => text()();
@@ -32,6 +33,7 @@ class Exercises extends Table {
 @DataClassName('MuscleTable')
 class Muscles extends Table {
   const Muscles();
+
   IntColumn get id => integer()();
 
   TextColumn get data => text().map(const MuscleConverter())();
@@ -40,6 +42,7 @@ class Muscles extends Table {
 @DataClassName('CategoryTable')
 class Categories extends Table {
   const Categories();
+
   IntColumn get id => integer()();
 
   TextColumn get data => text().map(const ExerciseCategoryConverter())();
@@ -48,6 +51,7 @@ class Categories extends Table {
 @DataClassName('LanguagesTable')
 class Languages extends Table {
   const Languages();
+
   IntColumn get id => integer()();
 
   TextColumn get data => text().map(const LanguageConverter())();
@@ -56,6 +60,7 @@ class Languages extends Table {
 @DataClassName('EquipmentTable')
 class Equipments extends Table {
   const Equipments();
+
   IntColumn get id => integer()();
 
   TextColumn get data => text().map(const EquipmentConverter())();
@@ -69,8 +74,27 @@ class ExerciseDatabase extends _$ExerciseDatabase {
   ExerciseDatabase.inMemory(super.e);
 
   @override
-  // TODO: implement schemaVersion
   int get schemaVersion => 1;
+
+  /// There is not really a migration strategy. If we bump the version
+  /// number, delete everything and recreate the new tables. The provider
+  /// will fetch everything as needed from the server
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+        onUpgrade: (m, from, to) async {
+          // no-op, but needs to be defined
+          return;
+        },
+        beforeOpen: (openingDetails) async {
+          if (openingDetails.hadUpgrade) {
+            final m = createMigrator();
+            for (final table in allTables) {
+              await m.deleteTable(table.actualTableName);
+              await m.createTable(table);
+            }
+          }
+        },
+      );
 
   Future<void> deleteEverything() {
     return transaction(() async {
