@@ -362,40 +362,8 @@ class ExercisesProvider with ChangeNotifier {
     return exercise;
   }
 
-  /// Checks the required cache version
-  ///
-  /// This is needed since the content of the exercise cache (the API response)
-  /// can change and we need to invalidate it as a result
-  Future<void> checkExerciseCacheVersion() async {
-    final prefs = await SharedPreferences.getInstance();
-    if (prefs.containsKey(PREFS_EXERCISE_CACHE_VERSION)) {
-      final cacheVersion = prefs.getInt(PREFS_EXERCISE_CACHE_VERSION)!;
-
-      // Cache has has a different version, reset
-      if (cacheVersion != CACHE_VERSION) {
-        database.delete(database.exercises).go();
-      }
-      await prefs.setInt(PREFS_EXERCISE_CACHE_VERSION, CACHE_VERSION);
-
-      // Cache has no version key, reset
-      // Note: this is only needed for very old apps that update and could probably
-      // be just removed in the future
-    } else {
-      database.delete(database.exercises).go();
-      await prefs.setInt(PREFS_EXERCISE_CACHE_VERSION, CACHE_VERSION);
-    }
-  }
-
   Future<void> initCacheTimesLocalPrefs({forceInit = false}) async {
     final prefs = await SharedPreferences.getInstance();
-
-    // TODO: The exercise data was previously saved in PREFS_EXERCISES. This
-    //       can now be deleted. After some time when we can be sure all users
-    //       have updated their app, we can also remove this line and the
-    //       PREFS_EXERCISES constant
-    if (prefs.containsKey(PREFS_EXERCISES)) {
-      prefs.remove(PREFS_EXERCISES);
-    }
 
     final initDate = DateTime(2023, 1, 1).toIso8601String();
 
@@ -429,7 +397,6 @@ class ExercisesProvider with ChangeNotifier {
     clear();
 
     await initCacheTimesLocalPrefs();
-    await checkExerciseCacheVersion();
 
     // Load categories, muscles, equipment and languages
     await Future.wait([

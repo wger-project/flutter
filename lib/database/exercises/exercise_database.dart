@@ -73,6 +73,7 @@ class ExerciseDatabase extends _$ExerciseDatabase {
   // Named constructor for creating in-memory database
   ExerciseDatabase.inMemory(super.e);
 
+  /// Note that this needs to be bumped if the JSON response from the server changes
   @override
   int get schemaVersion => 1;
 

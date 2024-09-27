@@ -26,6 +26,7 @@ class IngredientDatabase extends _$IngredientDatabase {
   // Named constructor for creating in-memory database
   IngredientDatabase.inMemory(super.e);
 
+  /// Note that this needs to be bumped if the JSON response from the server changes
   @override
   int get schemaVersion => 2;
 
