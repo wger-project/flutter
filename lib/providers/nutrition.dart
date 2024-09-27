@@ -46,7 +46,7 @@ class NutritionPlansProvider with ChangeNotifier {
   final WgerBaseProvider baseProvider;
   late IngredientDatabase database;
   List<NutritionalPlan> _plans = [];
-  List<Ingredient> _ingredients = [];
+  List<Ingredient> ingredients = [];
 
   NutritionPlansProvider(this.baseProvider, List<NutritionalPlan> entries,
       {IngredientDatabase? database})
@@ -58,14 +58,10 @@ class NutritionPlansProvider with ChangeNotifier {
     return [..._plans];
   }
 
-  set ingredients(items) {
-    _ingredients = items;
-  }
-
   /// Clears all lists
   void clear() {
     _plans = [];
-    _ingredients = [];
+    ingredients = [];
   }
 
   /// Returns the current active nutritional plan. At the moment this is just
@@ -299,11 +295,12 @@ class NutritionPlansProvider with ChangeNotifier {
   /// Fetch and return an ingredient
   ///
   /// If the ingredient is not known locally, it is fetched from the server
-  Future<Ingredient> fetchIngredient(int ingredientId) async {
+  Future<Ingredient> fetchIngredient(int ingredientId, {IngredientDatabase? database}) async {
+    database ??= this.database;
     Ingredient ingredient;
 
     try {
-      ingredient = _ingredients.firstWhere((e) => e.id == ingredientId);
+      ingredient = ingredients.firstWhere((e) => e.id == ingredientId);
     } on StateError {
       final ingredientDb = await (database.select(database.ingredients)
             ..where((e) => e.id.equals(ingredientId)))
@@ -312,6 +309,7 @@ class NutritionPlansProvider with ChangeNotifier {
       // Try to fetch from local db
       if (ingredientDb != null) {
         ingredient = Ingredient.fromJson(jsonDecode(ingredientDb.data));
+        ingredients.add(ingredient);
         log("Loaded ingredient '${ingredient.name}' from db cache");
 
         // Prune old entries
@@ -324,7 +322,7 @@ class NutritionPlansProvider with ChangeNotifier {
           baseProvider.makeUrl(_ingredientInfoPath, id: ingredientId),
         );
         ingredient = Ingredient.fromJson(data);
-        _ingredients.add(ingredient);
+        ingredients.add(ingredient);
 
         database.into(database.ingredients).insert(
               IngredientsCompanion.insert(

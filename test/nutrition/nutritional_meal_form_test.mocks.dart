@@ -129,19 +129,25 @@ class MockNutritionPlansProvider extends _i1.Mock
       );
 
   @override
+  List<_i7.Ingredient> get ingredients => (super.noSuchMethod(
+        Invocation.getter(#ingredients),
+        returnValue: <_i7.Ingredient>[],
+      ) as List<_i7.Ingredient>);
+
+  @override
+  set ingredients(List<_i7.Ingredient>? _ingredients) => super.noSuchMethod(
+        Invocation.setter(
+          #ingredients,
+          _ingredients,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
   List<_i4.NutritionalPlan> get items => (super.noSuchMethod(
         Invocation.getter(#items),
         returnValue: <_i4.NutritionalPlan>[],
       ) as List<_i4.NutritionalPlan>);
-
-  @override
-  set ingredients(dynamic items) => super.noSuchMethod(
-        Invocation.setter(
-          #ingredients,
-          items,
-        ),
-        returnValueForMissingStub: null,
-      );
 
   @override
   bool get hasListeners => (super.noSuchMethod(
@@ -367,17 +373,22 @@ class MockNutritionPlansProvider extends _i1.Mock
       ) as _i9.Future<void>);
 
   @override
-  _i9.Future<_i7.Ingredient> fetchIngredient(int? ingredientId) =>
+  _i9.Future<_i7.Ingredient> fetchIngredient(
+    int? ingredientId, {
+    _i3.IngredientDatabase? database,
+  }) =>
       (super.noSuchMethod(
         Invocation.method(
           #fetchIngredient,
           [ingredientId],
+          {#database: database},
         ),
         returnValue: _i9.Future<_i7.Ingredient>.value(_FakeIngredient_5(
           this,
           Invocation.method(
             #fetchIngredient,
             [ingredientId],
+            {#database: database},
           ),
         )),
       ) as _i9.Future<_i7.Ingredient>);

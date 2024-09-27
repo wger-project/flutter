@@ -381,7 +381,7 @@ void main() {
     });
   });
 
-  group('Exercises', () {
+  group('Exercise cache DB', () {
     test('that if there is already valid data in the DB, the API is not hit', () async {
       // Arrange
       final prefs = await SharedPreferences.getInstance();

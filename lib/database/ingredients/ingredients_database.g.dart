@@ -83,6 +83,8 @@ class $IngredientsTable extends Ingredients
 class IngredientTable extends DataClass implements Insertable<IngredientTable> {
   final int id;
   final String data;
+
+  /// The date when the ingredient was last fetched from the server
   final DateTime lastFetched;
   const IngredientTable(
       {required this.id, required this.data, required this.lastFetched});
