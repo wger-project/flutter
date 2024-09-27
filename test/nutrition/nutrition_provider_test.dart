@@ -1,7 +1,9 @@
 import 'dart:convert';
 
+import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:wger/database/ingredients/ingredients_database.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/providers/nutrition.dart';
 
@@ -14,7 +16,11 @@ void main() {
 
   setUp(() {
     mockWgerBaseProvider = MockWgerBaseProvider();
-    nutritionProvider = NutritionPlansProvider(mockWgerBaseProvider, []);
+    nutritionProvider = NutritionPlansProvider(
+      mockWgerBaseProvider,
+      [],
+      database: IngredientDatabase.inMemory(NativeDatabase.memory()),
+    );
 
     const String planInfoUrl = 'nutritionplaninfo';
     const String planUrl = 'nutritionplan';

@@ -312,11 +312,12 @@ class NutritionPlansProvider with ChangeNotifier {
       // Try to fetch from local db
       if (ingredientDb != null) {
         ingredient = Ingredient.fromJson(jsonDecode(ingredientDb.data));
+        log("Loaded ingredient '${ingredient.name}' from db cache");
 
         // Prune old entries
         if (DateTime.now()
             .isAfter(ingredientDb.lastFetched.add(const Duration(days: DAYS_TO_CACHE)))) {
-          (database.delete(database.ingredients)..where((i) => i.id.isValue(ingredientId))).go();
+          (database.delete(database.ingredients)..where((i) => i.id.equals(ingredientId))).go();
         }
       } else {
         final data = await baseProvider.fetch(

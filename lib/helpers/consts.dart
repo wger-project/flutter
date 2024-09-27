@@ -60,7 +60,6 @@ const PREFS_LAST_UPDATED_MUSCLES = 'lastUpdatedMuscles';
 const PREFS_LAST_UPDATED_EQUIPMENT = 'lastUpdatedEquipment';
 const PREFS_LAST_UPDATED_CATEGORIES = 'lastUpdatedCategories';
 const PREFS_LAST_UPDATED_LANGUAGES = 'lastUpdatedLanguages';
-const PREFS_EXERCISE_CACHE_VERSION = 'cacheVersion';
 const PREFS_INGREDIENTS = 'ingredientData';
 const PREFS_WORKOUT_UNITS = 'workoutUnits';
 const PREFS_USER = 'userData';
