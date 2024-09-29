@@ -847,5 +847,7 @@
   "selectMealToLog": "Günlüğe kaydetmek için bir yemek seçin",
   "@selectMealToLog": {},
   "noIngredientsDefined": "Henüz malzeme tanımlanmadı",
-  "@noIngredientsDefined": {}
+  "@noIngredientsDefined": {},
+  "settingsIngredientCacheDescription": "Malzeme önbelleği",
+  "@settingsIngredientCacheDescription": {}
 }
