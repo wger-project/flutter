@@ -108,20 +108,23 @@ class NutritionalPlanScreen extends StatelessWidget {
               PopupMenuButton<NutritionalPlanOptions>(
                 icon: const Icon(Icons.more_vert, color: appBarForeground),
                 onSelected: (value) {
-                  if (value == NutritionalPlanOptions.edit) {
-                    Navigator.pushNamed(
-                      context,
-                      FormScreen.routeName,
-                      arguments: FormScreenArguments(
-                        AppLocalizations.of(context).edit,
-                        PlanForm(nutritionalPlan),
-                        hasListView: true,
-                      ),
-                    );
-                  } else if (value == NutritionalPlanOptions.delete) {
-                    Provider.of<NutritionPlansProvider>(context, listen: false)
-                        .deletePlan(nutritionalPlan.id!);
-                    Navigator.of(context).pop();
+                  switch (value) {
+                    case NutritionalPlanOptions.edit:
+                      Navigator.pushNamed(
+                        context,
+                        FormScreen.routeName,
+                        arguments: FormScreenArguments(
+                          AppLocalizations.of(context).edit,
+                          PlanForm(nutritionalPlan),
+                          hasListView: true,
+                        ),
+                      );
+                      break;
+                    case NutritionalPlanOptions.delete:
+                      Provider.of<NutritionPlansProvider>(context, listen: false)
+                          .deletePlan(nutritionalPlan.id!);
+                      Navigator.of(context).pop();
+                      break;
                   }
                 },
                 itemBuilder: (BuildContext context) {

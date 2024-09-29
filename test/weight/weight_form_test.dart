@@ -30,9 +30,7 @@ void main() {
       locale: Locale(locale),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      home: Scaffold(
-        body: WeightForm(weightEntry),
-      ),
+      home: Scaffold(body: WeightForm(weightEntry)),
     );
   }
 
@@ -52,10 +50,10 @@ void main() {
     expect(find.text('79'), findsOneWidget);
 
     await tester.tap(find.byKey(const Key('quickMinusSmall')));
-    expect(find.text('78.75'), findsOneWidget);
+    expect(find.text('78.9'), findsOneWidget);
 
     await tester.tap(find.byKey(const Key('quickPlus')));
-    expect(find.text('79.75'), findsOneWidget);
+    expect(find.text('79.9'), findsOneWidget);
 
     await tester.tap(find.byKey(const Key('quickPlusSmall')));
     expect(find.text('80.0'), findsOneWidget);

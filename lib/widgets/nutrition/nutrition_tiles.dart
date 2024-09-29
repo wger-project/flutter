@@ -32,10 +32,7 @@ class MealItemValuesTile extends StatelessWidget {
       trailing: IconButton(
         icon: const Icon(Icons.info_outline),
         onPressed: () {
-          showIngredientDetails(
-            context,
-            ingredient.id,
-          );
+          showIngredientDetails(context, ingredient.id);
         },
       ),
     );

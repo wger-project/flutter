@@ -15,9 +15,12 @@ class CategoriesCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final entriesAll =
+        currentCategory.entries.map((e) => MeasurementChartEntry(e.value, e.date)).toList();
+    final entries7dAvg = moving7dAverage(entriesAll);
+
     return Card(
       elevation: elevation,
-      color: Theme.of(context).colorScheme.onInverseSurface,
       child: Column(
         children: [
           Padding(
@@ -31,9 +34,15 @@ class CategoriesCard extends StatelessWidget {
             padding: const EdgeInsets.all(10),
             height: 220,
             child: MeasurementChartWidgetFl(
-              currentCategory.entries.map((e) => MeasurementChartEntry(e.value, e.date)).toList(),
-              unit: currentCategory.unit,
+              entriesAll,
+              currentCategory.unit,
+              avgs: entries7dAvg,
             ),
+          ),
+          MeasurementOverallChangeWidget(
+            entries7dAvg.first,
+            entries7dAvg.last,
+            currentCategory.unit,
           ),
           const Divider(),
           Row(

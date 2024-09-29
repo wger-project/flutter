@@ -39,7 +39,7 @@
   "@reset": {
     "description": "Button text allowing the user to reset the entered values to the default"
   },
-  "registerInstead": "Registra't",
+  "registerInstead": "No tens compte? Registra't",
   "@registerInstead": {},
   "labelBottomNavWorkout": "Entrenament",
   "@labelBottomNavWorkout": {
@@ -187,7 +187,7 @@
   "@mealLogged": {},
   "addIngredient": "Afegeix ingredient",
   "@addIngredient": {},
-  "logIngredient": "Desa al diari nutricional",
+  "logIngredient": "Registra l'ingredient al diari nutricional",
   "@logIngredient": {},
   "nutritionalPlan": "Pla nutricional",
   "@nutritionalPlan": {},
@@ -380,11 +380,11 @@
   "@useCustomServer": {
     "description": "Toggle button allowing users to switch between the default and a custom wger server"
   },
-  "customServerHint": "Introdueix l'adreça del teu servidor propi, altrament s'usarà el servidor per defecte",
+  "customServerHint": "Introdueix l'adreça del teu propi servidor, altrament s'usarà el servidor per defecte",
   "@customServerHint": {
     "description": "Hint text for the form where the users can enter their own wger instance"
   },
-  "loginInstead": "Entra",
+  "loginInstead": "Ja tens un compte? Entra",
   "@loginInstead": {},
   "labelWorkoutPlans": "Plans d'entrenament",
   "@labelWorkoutPlans": {
@@ -426,7 +426,7 @@
   },
   "timeStartAhead": "L'hora d'inici no pot ser posterior a la de finalització",
   "@timeStartAhead": {},
-  "logMeal": "Registra aquest àpat",
+  "logMeal": "Registra l'àpat al diari de nutrició",
   "@logMeal": {},
   "searchIngredient": "Cerca ingredient",
   "@searchIngredient": {
@@ -556,5 +556,352 @@
     "placeholders": {
       "barcode": {}
     }
+  },
+  "alternativeNames": "Noms alternatius",
+  "@alternativeNames": {},
+  "oneNamePerLine": "Un nom per línia",
+  "@oneNamePerLine": {},
+  "whatVariationsExist": "Quines variacions d'aquest exercici existeixen, si n'hi ha?",
+  "@whatVariationsExist": {},
+  "back": "Esquena",
+  "@back": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "useMetric": "Utilitza unitats mètriques per al pes corporal",
+  "@useMetric": {},
+  "verify": "Verifica",
+  "@verify": {},
+  "moreMeasurementEntries": "Afegeix una nova mesura",
+  "@moreMeasurementEntries": {
+    "description": "Message shown when the user wants to add new measurement"
+  },
+  "translation": "Traducció",
+  "@translation": {},
+  "translateExercise": "Tradueix aquest exercici ara",
+  "@translateExercise": {},
+  "verifiedEmail": "Correu electrònic verificat",
+  "@verifiedEmail": {},
+  "settingsTitle": "Configuració",
+  "@settingsTitle": {},
+  "settingsCacheTitle": "Caché",
+  "@settingsCacheTitle": {},
+  "textPromptSubheading": "Prem el botó d'acció per començar",
+  "@textPromptSubheading": {},
+  "abs": "Abdominals",
+  "@abs": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "body_weight": "Pes Corporal",
+  "@body_weight": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "calves": "Pantorrilles",
+  "@calves": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "cardio": "Cardio",
+  "@cardio": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "userProfile": "El teu perfil",
+  "@userProfile": {},
+  "success": "Èxit",
+  "@success": {
+    "description": "Message when an action completed successfully, usually used as a heading"
+  },
+  "exerciseList": "Llista d'exercicis",
+  "@exerciseList": {},
+  "exercises": "Exercicis",
+  "@exercises": {
+    "description": "Multiple exercises for a workout"
+  },
+  "exerciseName": "Nom de l'Exercici",
+  "@exerciseName": {
+    "description": "Label for the name of a workout exercise"
+  },
+  "noMeasurementEntries": "No tens dades de mesura",
+  "@noMeasurementEntries": {},
+  "unVerifiedEmail": "Correu electrònic no verificat",
+  "@unVerifiedEmail": {},
+  "seconds": "Segons",
+  "@seconds": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "noMatchingExerciseFound": "No s'han trobat exercicis coincidents",
+  "@noMatchingExerciseFound": {
+    "description": "Message returned if no exercises match the searched string"
+  },
+  "contributeExerciseWarning": "Només pots contribuir amb exercicis si el teu compte té més de {days} dies i has verificat el teu correu electrònic",
+  "@contributeExerciseWarning": {
+    "description": "Number of days before which a person can add exercise",
+    "placeholders": {
+      "days": {
+        "type": "String",
+        "example": "14"
+      }
+    }
+  },
+  "minutes": "Minuts",
+  "@minutes": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "goalProtein": "Objectiu de proteïnes",
+  "@goalProtein": {},
+  "goalCarbohydrates": "Objectiu de carbohidrats",
+  "@goalCarbohydrates": {},
+  "goalFat": "Objectiu de greixos",
+  "@goalFat": {},
+  "onlyLogging": "Només rastreja les calories",
+  "@onlyLogging": {},
+  "onlyLoggingHelpText": "Marca la casella si només vols registrar les teves calories i no vols configurar un pla nutricional detallat amb àpats específics",
+  "@onlyLoggingHelpText": {},
+  "goalEnergy": "Objectiu energètic",
+  "@goalEnergy": {},
+  "today": "Avui",
+  "@today": {},
+  "kcalValue": "{value} kcal",
+  "@kcalValue": {
+    "description": "A value in kcal, e.g. 500 kcal",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "gValue": "{value} g",
+  "@gValue": {
+    "description": "A value in grams, e.g. 5 g",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "percentValue": "{value} %",
+  "@percentValue": {
+    "description": "A value in percent, e.g. 10 %",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "aboutMastodonTitle": "Mastodon",
+  "@aboutMastodonTitle": {
+    "description": "Title for mastodon section in the about dialog"
+  },
+  "aboutMastodonText": "Segueix-nos a Mastodon per a actualitzacions i notícies sobre el projecte",
+  "@aboutMastodonText": {
+    "description": "Text for the mastodon section in the about dialog"
+  },
+  "selectEntry": "Si us plau, selecciona una entrada",
+  "@selectEntry": {},
+  "baseNameEnglish": "Tots els exercicis necessiten un nom base en anglès",
+  "@baseNameEnglish": {},
+  "verifiedEmailReason": "Has de verificar el teu correu electrònic per contribuir amb exercicis",
+  "@verifiedEmailReason": {},
+  "addExercise": "Afegeix un exercici",
+  "@addExercise": {},
+  "contributeExercise": "Contribueix un exercici",
+  "@contributeExercise": {},
+  "baseData": "Bàsics en anglès",
+  "@baseData": {
+    "description": "The base data for an exercise such as category, trained muscles, etc."
+  },
+  "arms": "Braços",
+  "@arms": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "bench": "Banc",
+  "@bench": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "biceps": "Bíceps",
+  "@biceps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kilometers": "Quilòmetres",
+  "@kilometers": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kilometers_per_hour": "Quilòmetres per hora",
+  "@kilometers_per_hour": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "until_failure": "Fins al falliment",
+  "@until_failure": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kg": "kg",
+  "@kg": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "lb": "lb",
+  "@lb": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "barbell": "Barra",
+  "@barbell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "hamstrings": "Isquiotibials",
+  "@hamstrings": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "incline_bench": "Banc inclinat",
+  "@incline_bench": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "searchNamesInEnglish": "Cerca també noms en anglès",
+  "@searchNamesInEnglish": {},
+  "aboutDonateTitle": "Dona",
+  "@aboutDonateTitle": {},
+  "aboutDonateText": "Compra'ns un cafè per ajudar amb el projecte, pagar els costos del servidor i mantenir-nos enèrgics",
+  "@aboutDonateText": {},
+  "quads": "Quadriceps",
+  "@quads": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "swiss_ball": "Fitball",
+  "@swiss_ball": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "sz_bar": "Barra Z",
+  "@sz_bar": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kettlebell": "Kettlebell",
+  "@kettlebell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "add_exercise_image_license": "Les imatges han de ser compatibles amb la llicència CC BY SA. Si tens dubtes, puja només fotos que hagis pres tu mateix.",
+  "@add_exercise_image_license": {},
+  "noIngredientsDefined": "Encara no s'han definit ingredients",
+  "@noIngredientsDefined": {},
+  "ingredientLogged": "Ingredient registrat al diari",
+  "@ingredientLogged": {},
+  "goalMacro": "Objectius de macronutrients",
+  "@goalMacro": {
+    "description": "The goal for macronutrients"
+  },
+  "selectMealToLog": "Selecciona un àpat per registrar al diari",
+  "@selectMealToLog": {},
+  "goalFiber": "Objectiu de fibra",
+  "@goalFiber": {},
+  "loggedToday": "Registrat avui",
+  "@loggedToday": {},
+  "enterMinCharacters": "Si us plau, introdueix almenys {min} caràcters",
+  "@enterMinCharacters": {
+    "description": "Error message when the user hasn't entered the minimum amount characters in a form",
+    "type": "text",
+    "placeholders": {
+      "min": {}
+    }
+  },
+  "variations": "Variacions",
+  "@variations": {
+    "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"
+  },
+  "alsoKnownAs": "També conegut com: {aliases}",
+  "@alsoKnownAs": {
+    "placeholders": {
+      "aliases": {}
+    },
+    "description": "List of alternative names for an exercise"
+  },
+  "verifiedEmailInfo": "S'ha enviat un correu electrònic de verificació a {email}",
+  "@verifiedEmailInfo": {
+    "placeholders": {
+      "email": {}
+    }
+  },
+  "previous": "Anterior",
+  "@previous": {},
+  "next": "Següent",
+  "@next": {},
+  "images": "Imatges",
+  "@images": {},
+  "language": "Llenguatge",
+  "@language": {},
+  "settingsExerciseCacheDescription": "Caché d'exercicis",
+  "@settingsExerciseCacheDescription": {},
+  "settingsCacheDeletedSnackbar": "Caché esborrada correctament",
+  "@settingsCacheDeletedSnackbar": {},
+  "aboutPageTitle": "Sobre Wger",
+  "@aboutPageTitle": {},
+  "cacheWarning": "A causa del caché, podria trigar una estona fins que els canvis siguin visibles a tota l'aplicació.",
+  "@cacheWarning": {},
+  "textPromptTitle": "Llest per començar?",
+  "@textPromptTitle": {},
+  "chest": "Pit/pectorals",
+  "@chest": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "gym_mat": "Matalàs de gimnàs",
+  "@gym_mat": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "lats": "Dorsals",
+  "@lats": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "legs": "Cames",
+  "@legs": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "dumbbell": "Manuelles",
+  "@dumbbell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "glutes": "Glutis",
+  "@glutes": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "pull_up_bar": "Barra de pull-ups",
+  "@pull_up_bar": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "lower_back": "Lumbar",
+  "@lower_back": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "max_reps": "Repetitions màximes",
+  "@max_reps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "miles": "Milles",
+  "@miles": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "miles_per_hour": "Milles per hora",
+  "@miles_per_hour": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "plates": "Discs",
+  "@plates": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "shoulders": "Espatlles",
+  "@shoulders": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "triceps": "Tríceps",
+  "@triceps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "none__bodyweight_exercise_": "cap (exercici de pes corporal)",
+  "@none__bodyweight_exercise_": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "log": "Registre",
+  "@log": {
+    "description": "Log a specific meal (imperative form)"
+  },
+  "done": "Ok",
+  "@done": {},
+  "deficit": "deficit",
+  "@deficit": {
+    "description": "Caloric deficit (either planned or unplanned)"
+  },
+  "surplus": "excedent",
+  "@surplus": {
+    "description": "Caloric surplus (either planned or unplanned)"
   }
 }

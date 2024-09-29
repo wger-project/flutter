@@ -11,7 +11,7 @@ void main() {
       date: DateTime(2021, 7, 22),
       value: 83,
       notes: 'notes',
-    )
+    ),
   ];
 
   final MeasurementEntry tMeasurementEntry = MeasurementEntry(
@@ -35,7 +35,7 @@ void main() {
     'category': 123,
     'date': '2021-07-22',
     'value': 83,
-    'notes': 'notes'
+    'notes': 'notes',
   };
 
   final Map<String, dynamic> tMeasurementCategoryMap = {

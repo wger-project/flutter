@@ -146,22 +146,13 @@ final cake = Ingredient(
 );
 
 NutritionalPlan getNutritionalPlan() {
-  final mealItem1 = MealItem(
-    ingredientId: 1,
-    amount: 100,
-  );
+  final mealItem1 = MealItem(ingredientId: 1, amount: 100);
   mealItem1.ingredient = ingredient1;
 
-  final mealItem2 = MealItem(
-    ingredientId: 2,
-    amount: 75,
-  );
+  final mealItem2 = MealItem(ingredientId: 2, amount: 75);
   mealItem2.ingredient = ingredient2;
 
-  final mealItem3 = MealItem(
-    ingredientId: 3,
-    amount: 300,
-  );
+  final mealItem3 = MealItem(ingredientId: 3, amount: 300);
   mealItem3.ingredient = ingredient3;
 
   final meal1 = Meal(

@@ -22,8 +22,10 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/providers/measurement.dart';
+import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/measurements/charts.dart';
+import 'package:wger/widgets/measurements/helpers.dart';
 
 import 'forms.dart';
 
@@ -34,16 +36,23 @@ class EntriesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final plan = Provider.of<NutritionPlansProvider>(context, listen: false).currentPlan;
+
+    final entriesAll =
+        _category.entries.map((e) => MeasurementChartEntry(e.value, e.date)).toList();
+    final entries7dAvg = moving7dAverage(entriesAll);
+
     return Column(children: [
-      Container(
-        padding: const EdgeInsets.all(10),
-        height: 220,
-        child: MeasurementChartWidgetFl(
-          _category.entries.map((e) => MeasurementChartEntry(e.value, e.date)).toList(),
-          unit: _category.unit,
-        ),
+      ...getOverviewWidgetsSeries(
+        _category.name,
+        entriesAll,
+        entries7dAvg,
+        plan,
+        _category.unit,
+        context,
       ),
-      Expanded(
+      SizedBox(
+        height: 300,
         child: ListView.builder(
           padding: const EdgeInsets.all(10.0),
           itemCount: _category.entries.length,

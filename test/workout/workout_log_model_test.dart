@@ -49,31 +49,31 @@ void main() {
       );
     });
 
-    test('Test equal values (besides Id, workoutPlan and date)', () async {
+    test('Test equal values (besides Id, workoutPlan and date)', () {
       expect(log1, log2);
     });
 
-    test('Test different rir values', () async {
+    test('Test different rir values', () {
       log1.rir = null;
       expect(log1, isNot(log2));
     });
 
-    test('Test different weight values', () async {
+    test('Test different weight values', () {
       log1.weight = 100;
       expect(log1, isNot(log2));
     });
 
-    test('Test different weight units', () async {
+    test('Test different weight units', () {
       log1.weightUnitId = 2;
       expect(log1, isNot(log2));
     });
 
-    test('Test different reps', () async {
+    test('Test different reps', () {
       log1.reps = 99;
       expect(log1, isNot(log2));
     });
 
-    test('Test different rep units', () async {
+    test('Test different rep units', () {
       log1.repetitionUnitId = 44;
       expect(log1, isNot(log2));
     });

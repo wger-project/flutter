@@ -17,7 +17,7 @@
  */
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/json.dart';
-import 'package:wger/models/nutrition/image.dart';
+import 'package:wger/models/nutrition/ingredient_image.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
 
 part 'ingredient.g.dart';

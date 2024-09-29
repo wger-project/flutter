@@ -57,16 +57,15 @@ void main() {
         [workoutPlan],
       ),
       child: ChangeNotifierProvider<ExercisesProvider>(
-          create: (context) => mockExerciseProvider,
-          child: MaterialApp(
-            locale: Locale(locale),
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
-            navigatorKey: GlobalKey<NavigatorState>(),
-            home: Scaffold(
-              body: SetFormWidget(day),
-            ),
-          )),
+        create: (context) => mockExerciseProvider,
+        child: MaterialApp(
+          locale: Locale(locale),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          navigatorKey: GlobalKey<NavigatorState>(),
+          home: Scaffold(body: SetFormWidget(day)),
+        ),
+      ),
     );
   }
 
@@ -89,9 +88,7 @@ void main() {
       any,
       languageCode: anyNamed('languageCode'),
       searchEnglish: anyNamed('searchEnglish'),
-    )).thenAnswer(
-      (_) => Future.value([getTestExercises().first]),
-    );
+    )).thenAnswer((_) => Future.value([getTestExercises().first]));
 
     await tester.pumpWidget(createHomeScreen());
     await tester.pumpAndSettle();

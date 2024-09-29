@@ -179,6 +179,10 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
     final profile = context.read<UserProvider>().profile;
     final weightProvider = context.read<BodyWeightProvider>();
 
+    final entriesAll =
+        weightProvider.items.map((e) => MeasurementChartEntry(e.weight, e.date)).toList();
+    final entries7dAvg = moving7dAverage(entriesAll);
+
     return Consumer<BodyWeightProvider>(
       builder: (context, workoutProvider, child) => Card(
         child: Column(
@@ -202,13 +206,15 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                       SizedBox(
                         height: 200,
                         child: MeasurementChartWidgetFl(
-                          weightProvider.items
-                              .map((e) => MeasurementChartEntry(e.weight, e.date))
-                              .toList(),
-                          unit: profile!.isMetric
-                              ? AppLocalizations.of(context).kg
-                              : AppLocalizations.of(context).lb,
+                          entriesAll,
+                          weightUnit(profile!.isMetric, context),
+                          avgs: entries7dAvg,
                         ),
+                      ),
+                      MeasurementOverallChangeWidget(
+                        entries7dAvg.first,
+                        entries7dAvg.last,
+                        weightUnit(profile.isMetric, context),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -223,13 +229,15 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                           ),
                           IconButton(
                             icon: const Icon(Icons.add),
-                            onPressed: () async {
+                            onPressed: () {
                               Navigator.pushNamed(
                                 context,
                                 FormScreen.routeName,
                                 arguments: FormScreenArguments(
                                   AppLocalizations.of(context).newEntry,
-                                  WeightForm(weightProvider.getNewestEntry()?.copyWith(id: null)),
+                                  WeightForm(weightProvider
+                                      .getNewestEntry()
+                                      ?.copyWith(id: null, date: DateTime.now())),
                                 ),
                               );
                             },
@@ -293,6 +301,9 @@ class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget>
                 FontAwesomeIcons.chartLine,
                 color: Theme.of(context).textTheme.headlineSmall!.color,
               ),
+              // TODO: this icon feels out of place and inconsistent with all
+              // other dashboard widgets.
+              // maybe we should just add a "Go to all" at the bottom of the widget
               trailing: IconButton(
                 icon: const Icon(Icons.arrow_forward),
                 onPressed: () => Navigator.pushNamed(
@@ -537,7 +548,7 @@ class NothingFound extends StatelessWidget {
           IconButton(
             iconSize: 30,
             icon: const Icon(Icons.add_box, color: wgerPrimaryButtonColor),
-            onPressed: () async {
+            onPressed: () {
               Navigator.pushNamed(
                 context,
                 FormScreen.routeName,

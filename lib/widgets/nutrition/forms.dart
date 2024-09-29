@@ -379,13 +379,12 @@ class IngredientFormState extends State<IngredientForm> {
                               style: const TextStyle(color: Colors.red),
                             ),
                           );
-                        } else {
-                          return const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(),
-                          );
                         }
+                        return const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(),
+                        );
                       },
                     ),
                   ],
@@ -394,7 +393,7 @@ class IngredientFormState extends State<IngredientForm> {
             ElevatedButton(
               key: const Key(SUBMIT_BUTTON_KEY_NAME),
               child: Text(AppLocalizations.of(context).save),
-              onPressed: () async {
+              onPressed: () {
                 if (!_form.currentState!.validate()) {
                   return;
                 }

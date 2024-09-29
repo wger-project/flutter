@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -23,6 +24,7 @@ import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/database/ingredients/ingredients_database.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/base_provider.dart';
@@ -38,12 +40,19 @@ void main() {
   final mockAuthProvider = MockAuthProvider();
   final mockBaseProvider = MockWgerBaseProvider();
   final client = MockClient();
+  late IngredientDatabase database;
+
+  setUp(() {
+    database = IngredientDatabase.inMemory(NativeDatabase.memory());
+  });
+
+  tearDown(() {
+    database.close();
+  });
 
   Widget createHomeScreen({locale = 'en'}) {
-    when(client.delete(
-      any,
-      headers: anyNamed('headers'),
-    )).thenAnswer((_) async => http.Response('', 200));
+    when(client.delete(any, headers: anyNamed('headers')))
+        .thenAnswer((_) async => http.Response('', 200));
 
     when(mockBaseProvider.deleteRequest(any, any)).thenAnswer(
       (_) async => http.Response('', 200),
@@ -68,15 +77,14 @@ void main() {
             creationDate: DateTime(2021, 01, 10),
           ),
         ],
+        database: database,
       ),
       child: MaterialApp(
         locale: Locale(locale),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: const NutritionalPlansScreen(),
-        routes: {
-          FormScreen.routeName: (ctx) => const FormScreen(),
-        },
+        routes: {FormScreen.routeName: (ctx) => const FormScreen()},
       ),
     );
   }

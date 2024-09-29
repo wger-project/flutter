@@ -17,7 +17,7 @@
  */
 import 'package:json_annotation/json_annotation.dart';
 
-part 'image.g.dart';
+part 'ingredient_image.g.dart';
 
 @JsonSerializable()
 class IngredientImage {

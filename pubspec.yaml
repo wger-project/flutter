@@ -37,7 +37,7 @@ dependencies:
   collection: ^1.17.0
   cupertino_icons: ^1.0.8
   equatable: ^2.0.5
-  flutter_calendar_carousel: ^2.4.1
+  flutter_calendar_carousel: ^2.4.4
   flutter_html: ^3.0.0-beta.2
   flutter_typeahead: ^5.2.0
   font_awesome_flutter: ^10.7.0
@@ -46,7 +46,7 @@ dependencies:
   intl: ^0.19.0
   json_annotation: ^4.8.1
   version: ^3.0.2
-  package_info_plus: ^8.0.0
+  package_info_plus: ^8.0.2
   provider: ^6.1.2
   # Note, do not update rive! https://github.com/wger-project/flutter/issues/577
   rive: ^0.12.4
@@ -68,7 +68,7 @@ dependencies:
   get_it: ^7.6.8
   flex_seed_scheme: ^1.5.0
   flex_color_scheme: ^7.3.1
-  freezed_annotation: ^2.4.1
+  freezed_annotation: ^2.4.4
   clock: ^1.1.1
   flutter_svg_icons: ^0.0.1
   sqlite_async: ^0.8.1

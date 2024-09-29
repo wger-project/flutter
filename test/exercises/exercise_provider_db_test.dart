@@ -84,12 +84,13 @@ void main() {
   );
 
   setUp(() {
+    database = ExerciseDatabase.inMemory(NativeDatabase.memory());
+
     mockBaseProvider = MockWgerBaseProvider();
     provider = ExercisesProvider(
       mockBaseProvider,
-      database: ExerciseDatabase.inMemory(NativeDatabase.memory()),
+      database: database,
     );
-    database = ExerciseDatabase.inMemory(NativeDatabase.memory());
 
     WidgetsFlutterBinding.ensureInitialized();
     SharedPreferences.setMockInitialValues({});
@@ -381,7 +382,7 @@ void main() {
     });
   });
 
-  group('Exercises', () {
+  group('Exercise cache DB', () {
     test('that if there is already valid data in the DB, the API is not hit', () async {
       // Arrange
       final prefs = await SharedPreferences.getInstance();

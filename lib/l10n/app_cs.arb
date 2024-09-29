@@ -627,8 +627,8 @@
   "@settingsTitle": {},
   "settingsCacheTitle": "Mezipaměť",
   "@settingsCacheTitle": {},
-  "settingsCacheDescription": "Mezipaměť cvičení",
-  "@settingsCacheDescription": {},
+  "settingsExerciseCacheDescription": "Mezipaměť cvičení",
+  "@settingsExerciseCacheDescription": {},
   "noMatchingExerciseFound": "Nenalezeny žádné odpovídající tréninky",
   "@noMatchingExerciseFound": {
     "description": "Message returned if no exercises match the searched string"

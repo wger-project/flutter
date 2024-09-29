@@ -30,7 +30,7 @@ import 'base_provider_test.mocks.dart';
 @GenerateMocks([http.Client])
 void main() {
   group('test base provider', () {
-    test('Test the makeUrl helper', () async {
+    test('Test the makeUrl helper', () {
       final WgerBaseProvider provider = WgerBaseProvider(testAuthProvider);
 
       expect(
@@ -63,7 +63,7 @@ void main() {
       );
     });
 
-    test('Test the makeUrl helper with sub url', () async {
+    test('Test the makeUrl helper with sub url', () {
       // Trailing slash is removed when saving the server URL
       testAuthProvider.serverUrl = 'https://example.com/wger-url';
       final WgerBaseProvider provider = WgerBaseProvider(testAuthProvider);

@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -23,26 +24,41 @@ import 'package:golden_toolkit/golden_toolkit.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/database/ingredients/ingredients_database.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
+
 import '../../test_data/nutritional_plans.dart';
 import 'nutritional_plan_screen_test.mocks.dart';
 
 @GenerateMocks([WgerBaseProvider, AuthProvider, http.Client])
 void main() {
+  late IngredientDatabase database;
+
+  setUp(() {
+    database = IngredientDatabase.inMemory(NativeDatabase.memory());
+  });
+
+  tearDown(() {
+    database.close();
+  });
+
   Widget createNutritionalPlan({locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
     final mockBaseProvider = MockWgerBaseProvider();
-
     final plan = getNutritionalPlan();
 
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<NutritionPlansProvider>(
-          create: (context) => NutritionPlansProvider(mockBaseProvider, []),
+          create: (context) => NutritionPlansProvider(
+            mockBaseProvider,
+            [],
+            database: database,
+          ),
         ),
         ChangeNotifierProvider<BodyWeightProvider>(
           create: (context) => BodyWeightProvider(mockBaseProvider),
@@ -72,13 +88,9 @@ void main() {
       await loadAppFonts();
       final globalKey = GlobalKey();
       await tester.pumpWidgetBuilder(
-        Material(
-          key: globalKey,
-        ),
+        Material(key: globalKey),
         wrapper: materialAppWrapper(
-          localizations: [
-            AppLocalizations.delegate,
-          ],
+          localizations: [AppLocalizations.delegate],
         ),
         surfaceSize: const Size(500, 1000),
       );

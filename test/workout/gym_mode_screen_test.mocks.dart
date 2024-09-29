@@ -630,16 +630,6 @@ class MockExercisesProvider extends _i1.Mock implements _i12.ExercisesProvider {
       ) as _i11.Future<_i6.Exercise>);
 
   @override
-  _i11.Future<void> checkExerciseCacheVersion() => (super.noSuchMethod(
-        Invocation.method(
-          #checkExerciseCacheVersion,
-          [],
-        ),
-        returnValue: _i11.Future<void>.value(),
-        returnValueForMissingStub: _i11.Future<void>.value(),
-      ) as _i11.Future<void>);
-
-  @override
   _i11.Future<void> initCacheTimesLocalPrefs({dynamic forceInit = false}) =>
       (super.noSuchMethod(
         Invocation.method(

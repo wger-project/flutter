@@ -122,7 +122,7 @@ class MeasurementEntriesScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add, color: Colors.white),
-        onPressed: () async {
+        onPressed: () {
           Navigator.pushNamed(
             context,
             FormScreen.routeName,
@@ -133,8 +133,10 @@ class MeasurementEntriesScreen extends StatelessWidget {
           );
         },
       ),
-      body: Consumer<MeasurementProvider>(
-        builder: (context, provider, child) => EntriesList(category),
+      body: SingleChildScrollView(
+        child: Consumer<MeasurementProvider>(
+          builder: (context, provider, child) => EntriesList(category),
+        ),
       ),
     );
   }

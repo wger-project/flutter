@@ -328,7 +328,7 @@
   },
   "mealLogged": "Posiłek zarejestrowany w dzienniku",
   "@mealLogged": {},
-  "logMeal": "Zaloguj ten posiłek",
+  "logMeal": "Zapisz ten posiłek w dzienniku",
   "@logMeal": {},
   "addIngredient": "Dodaj składnik",
   "@addIngredient": {},
@@ -476,7 +476,7 @@
   "@close": {
     "description": "Translation for close"
   },
-  "logIngredient": "Zapisz w dzienniku żywieniowym",
+  "logIngredient": "Zapisz składnik w dzienniku żywieniowym",
   "@logIngredient": {},
   "searchIngredient": "Wyszukaj składnik",
   "@searchIngredient": {
@@ -724,8 +724,8 @@
   "@settingsTitle": {},
   "settingsCacheDeletedSnackbar": "Pamięć podręczna pomyślnie została wyczyszczona",
   "@settingsCacheDeletedSnackbar": {},
-  "settingsCacheDescription": "Pamięć podręczna ćwiczeń",
-  "@settingsCacheDescription": {},
+  "settingsExerciseCacheDescription": "Pamięć podręczna ćwiczeń",
+  "@settingsExerciseCacheDescription": {},
   "log": "Zarejestruj",
   "@log": {
     "description": "Log a specific meal (imperative form)"
@@ -827,5 +827,25 @@
   "addGoalsToPlan": "Dodaj cele do tego planu",
   "@addGoalsToPlan": {},
   "addGoalsToPlanHelpText": "To pozwoli Ci ustawić ogólne cele dla energii, białka, węglowodanów i tłuszczy dla planu. Pamiętaj, że jeśli skonfigurujesz szczegółowy plan posiłków, te wartości będą miały pierwszeństwo.",
-  "@addGoalsToPlanHelpText": {}
+  "@addGoalsToPlanHelpText": {},
+  "goalMacro": "Cele makro",
+  "@goalMacro": {
+    "description": "The goal for macronutrients"
+  },
+  "surplus": "nadwyżka",
+  "@surplus": {
+    "description": "Caloric surplus (either planned or unplanned)"
+  },
+  "goalFiber": "Cel błonnikowy",
+  "@goalFiber": {},
+  "noIngredientsDefined": "Nie zdefiniowano jeszcze żadnych składników",
+  "@noIngredientsDefined": {},
+  "ingredientLogged": "Składnik zarejestrowany w dzienniku",
+  "@ingredientLogged": {},
+  "selectMealToLog": "Wybierz posiłek, który chcesz zapisać w dzienniku",
+  "@selectMealToLog": {},
+  "deficit": "deficyt",
+  "@deficit": {
+    "description": "Caloric deficit (either planned or unplanned)"
+  }
 }

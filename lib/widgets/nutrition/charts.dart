@@ -26,18 +26,6 @@ import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
 import 'package:wger/widgets/measurements/charts.dart';
 
-class FlNutritionalPlanGoalWidget extends StatefulWidget {
-  const FlNutritionalPlanGoalWidget({
-    super.key,
-    required NutritionalPlan nutritionalPlan,
-  }) : _nutritionalPlan = nutritionalPlan;
-
-  final NutritionalPlan _nutritionalPlan;
-
-  @override
-  State<StatefulWidget> createState() => FlNutritionalPlanGoalWidgetState();
-}
-
 // * fl_chart doesn't support horizontal bar charts yet.
 //   see https://github.com/imaNNeo/fl_chart/issues/113
 //   even if it did, i doubt it would let us put text between the gauges/bars
@@ -45,7 +33,14 @@ class FlNutritionalPlanGoalWidget extends StatefulWidget {
 //   using multiple colors to show multiple components such as surplus, deficit
 // * here we draw our own simple gauges that can go beyond 100%,
 //   and support multiple segments
-class FlNutritionalPlanGoalWidgetState extends State<FlNutritionalPlanGoalWidget> {
+class FlNutritionalPlanGoalWidget extends StatelessWidget {
+  const FlNutritionalPlanGoalWidget({
+    super.key,
+    required NutritionalPlan nutritionalPlan,
+  }) : _nutritionalPlan = nutritionalPlan;
+
+  final NutritionalPlan _nutritionalPlan;
+
   // normWidth is the width representing 100% completion
   // note that if val > plan, we will draw beyond this width
   // therefore, caller must set this width to accommodate surpluses.
@@ -91,7 +86,7 @@ class FlNutritionalPlanGoalWidgetState extends State<FlNutritionalPlanGoalWidget
 
   @override
   Widget build(BuildContext context) {
-    final plan = widget._nutritionalPlan;
+    final plan = _nutritionalPlan;
     final goals = plan.nutritionalGoals;
     final today = plan.loggedNutritionalValuesToday;
 

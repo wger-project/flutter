@@ -34,9 +34,9 @@ Widget createDashboardScreen({locale = 'en'}) {
         'date': '2022-12-01',
         'impression': '3',
         'time_start': '17:00',
-        'time_end': '19:00'
-      }
-    ]
+        'time_end': '19:00',
+      },
+    ],
   };
   when(mockWorkoutProvider.fetchSessionData()).thenAnswer((a) => Future.value(logs));
 

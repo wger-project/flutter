@@ -48,9 +48,7 @@ void main() {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: const Gallery(),
-        routes: {
-          FormScreen.routeName: (ctx) => const FormScreen(),
-        },
+        routes: {FormScreen.routeName: (ctx) => const FormScreen()},
       ),
     );
   }
