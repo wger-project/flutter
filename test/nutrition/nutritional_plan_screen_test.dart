@@ -36,10 +36,19 @@ import 'nutritional_plan_screen_test.mocks.dart';
 
 @GenerateMocks([WgerBaseProvider, AuthProvider, http.Client])
 void main() {
+  late IngredientDatabase database;
+
+  setUp(() {
+    database = IngredientDatabase.inMemory(NativeDatabase.memory());
+  });
+
+  tearDown(() {
+    database.close();
+  });
+
   Widget createNutritionalPlan({locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
     final mockBaseProvider = MockWgerBaseProvider();
-
     final plan = getNutritionalPlan();
 
     return MultiProvider(
@@ -48,7 +57,7 @@ void main() {
           create: (context) => NutritionPlansProvider(
             mockBaseProvider,
             [],
-            database: IngredientDatabase.inMemory(NativeDatabase.memory()),
+            database: database,
           ),
         ),
         ChangeNotifierProvider<BodyWeightProvider>(

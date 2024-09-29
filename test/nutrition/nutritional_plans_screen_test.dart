@@ -40,6 +40,15 @@ void main() {
   final mockAuthProvider = MockAuthProvider();
   final mockBaseProvider = MockWgerBaseProvider();
   final client = MockClient();
+  late IngredientDatabase database;
+
+  setUp(() {
+    database = IngredientDatabase.inMemory(NativeDatabase.memory());
+  });
+
+  tearDown(() {
+    database.close();
+  });
 
   Widget createHomeScreen({locale = 'en'}) {
     when(client.delete(any, headers: anyNamed('headers')))
@@ -68,7 +77,7 @@ void main() {
             creationDate: DateTime(2021, 01, 10),
           ),
         ],
-        database: IngredientDatabase.inMemory(NativeDatabase.memory()),
+        database: database,
       ),
       child: MaterialApp(
         locale: Locale(locale),
