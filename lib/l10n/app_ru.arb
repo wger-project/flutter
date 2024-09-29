@@ -822,8 +822,8 @@
   "@verify": {},
   "settingsCacheTitle": "Кэш",
   "@settingsCacheTitle": {},
-  "settingsCacheDescription": "Кэш упражнений",
-  "@settingsCacheDescription": {},
+  "settingsExerciseCacheDescription": "Кэш упражнений",
+  "@settingsExerciseCacheDescription": {},
   "noMatchingExerciseFound": "Не выбрано упражнение для замены",
   "@noMatchingExerciseFound": {
     "description": "Message returned if no exercises match the searched string"

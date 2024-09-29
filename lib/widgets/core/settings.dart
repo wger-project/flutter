@@ -21,20 +21,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/nutrition.dart';
 
-class SettingsPage extends StatefulWidget {
+class SettingsPage extends StatelessWidget {
   static String routeName = '/SettingsPage';
 
   const SettingsPage({super.key});
 
   @override
-  State<SettingsPage> createState() => _SettingsPageState();
-}
-
-class _SettingsPageState extends State<SettingsPage> {
-  @override
   Widget build(BuildContext context) {
     final exerciseProvider = Provider.of<ExercisesProvider>(context, listen: false);
+    final nutritionProvider = Provider.of<NutritionPlansProvider>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
@@ -43,11 +40,9 @@ class _SettingsPageState extends State<SettingsPage> {
       body: ListView(
         children: [
           ListTile(
-            // leading: const Icon(Icons.cached),
-            title: Text(AppLocalizations.of(context).settingsCacheTitle),
-            subtitle: Text(AppLocalizations.of(context).settingsCacheDescription),
+            title: Text(AppLocalizations.of(context).settingsExerciseCacheDescription),
             trailing: IconButton(
-              key: const ValueKey('cacheIcon'),
+              key: const ValueKey('cacheIconExercises'),
               icon: const Icon(Icons.delete),
               onPressed: () async {
                 await exerciseProvider.clearAllCachesAndPrefs();
@@ -57,8 +52,24 @@ class _SettingsPageState extends State<SettingsPage> {
                     content: Text(AppLocalizations.of(context).settingsCacheDeletedSnackbar),
                   );
 
-                  // Find the ScaffoldMessenger in the widget tree
-                  // and use it to show a SnackBar.
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                }
+              },
+            ),
+          ),
+          ListTile(
+            title: Text(AppLocalizations.of(context).settingsIngredientCacheDescription),
+            trailing: IconButton(
+              key: const ValueKey('cacheIconIngredients'),
+              icon: const Icon(Icons.delete),
+              onPressed: () async {
+                await nutritionProvider.clearIngredientCache();
+
+                if (context.mounted) {
+                  final snackBar = SnackBar(
+                    content: Text(AppLocalizations.of(context).settingsCacheDeletedSnackbar),
+                  );
+
                   ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 }
               },
