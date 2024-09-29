@@ -262,50 +262,6 @@ typedef $$IngredientsTableUpdateCompanionBuilder = IngredientsCompanion
   Value<int> rowid,
 });
 
-class $$IngredientsTableTableManager extends RootTableManager<
-    _$IngredientDatabase,
-    $IngredientsTable,
-    IngredientTable,
-    $$IngredientsTableFilterComposer,
-    $$IngredientsTableOrderingComposer,
-    $$IngredientsTableCreateCompanionBuilder,
-    $$IngredientsTableUpdateCompanionBuilder> {
-  $$IngredientsTableTableManager(
-      _$IngredientDatabase db, $IngredientsTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          filteringComposer:
-              $$IngredientsTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$IngredientsTableOrderingComposer(ComposerState(db, table)),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<String> data = const Value.absent(),
-            Value<DateTime> lastFetched = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              IngredientsCompanion(
-            id: id,
-            data: data,
-            lastFetched: lastFetched,
-            rowid: rowid,
-          ),
-          createCompanionCallback: ({
-            required int id,
-            required String data,
-            required DateTime lastFetched,
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              IngredientsCompanion.insert(
-            id: id,
-            data: data,
-            lastFetched: lastFetched,
-            rowid: rowid,
-          ),
-        ));
-}
-
 class $$IngredientsTableFilterComposer
     extends FilterComposer<_$IngredientDatabase, $IngredientsTable> {
   $$IngredientsTableFilterComposer(super.$state);
@@ -343,6 +299,75 @@ class $$IngredientsTableOrderingComposer
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
+
+class $$IngredientsTableTableManager extends RootTableManager<
+    _$IngredientDatabase,
+    $IngredientsTable,
+    IngredientTable,
+    $$IngredientsTableFilterComposer,
+    $$IngredientsTableOrderingComposer,
+    $$IngredientsTableCreateCompanionBuilder,
+    $$IngredientsTableUpdateCompanionBuilder,
+    (
+      IngredientTable,
+      BaseReferences<_$IngredientDatabase, $IngredientsTable, IngredientTable>
+    ),
+    IngredientTable,
+    PrefetchHooks Function()> {
+  $$IngredientsTableTableManager(
+      _$IngredientDatabase db, $IngredientsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$IngredientsTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$IngredientsTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> data = const Value.absent(),
+            Value<DateTime> lastFetched = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              IngredientsCompanion(
+            id: id,
+            data: data,
+            lastFetched: lastFetched,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required int id,
+            required String data,
+            required DateTime lastFetched,
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              IngredientsCompanion.insert(
+            id: id,
+            data: data,
+            lastFetched: lastFetched,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$IngredientsTableProcessedTableManager = ProcessedTableManager<
+    _$IngredientDatabase,
+    $IngredientsTable,
+    IngredientTable,
+    $$IngredientsTableFilterComposer,
+    $$IngredientsTableOrderingComposer,
+    $$IngredientsTableCreateCompanionBuilder,
+    $$IngredientsTableUpdateCompanionBuilder,
+    (
+      IngredientTable,
+      BaseReferences<_$IngredientDatabase, $IngredientsTable, IngredientTable>
+    ),
+    IngredientTable,
+    PrefetchHooks Function()>;
 
 class $IngredientDatabaseManager {
   final _$IngredientDatabase _db;
