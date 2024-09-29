@@ -1077,53 +1077,6 @@ typedef $$ExercisesTableUpdateCompanionBuilder = ExercisesCompanion Function({
   Value<int> rowid,
 });
 
-class $$ExercisesTableTableManager extends RootTableManager<
-    _$ExerciseDatabase,
-    $ExercisesTable,
-    ExerciseTable,
-    $$ExercisesTableFilterComposer,
-    $$ExercisesTableOrderingComposer,
-    $$ExercisesTableCreateCompanionBuilder,
-    $$ExercisesTableUpdateCompanionBuilder> {
-  $$ExercisesTableTableManager(_$ExerciseDatabase db, $ExercisesTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          filteringComposer:
-              $$ExercisesTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$ExercisesTableOrderingComposer(ComposerState(db, table)),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<String> data = const Value.absent(),
-            Value<DateTime> lastUpdate = const Value.absent(),
-            Value<DateTime> lastFetched = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              ExercisesCompanion(
-            id: id,
-            data: data,
-            lastUpdate: lastUpdate,
-            lastFetched: lastFetched,
-            rowid: rowid,
-          ),
-          createCompanionCallback: ({
-            required int id,
-            required String data,
-            required DateTime lastUpdate,
-            required DateTime lastFetched,
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              ExercisesCompanion.insert(
-            id: id,
-            data: data,
-            lastUpdate: lastUpdate,
-            lastFetched: lastFetched,
-            rowid: rowid,
-          ),
-        ));
-}
-
 class $$ExercisesTableFilterComposer
     extends FilterComposer<_$ExerciseDatabase, $ExercisesTable> {
   $$ExercisesTableFilterComposer(super.$state);
@@ -1172,6 +1125,77 @@ class $$ExercisesTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
+class $$ExercisesTableTableManager extends RootTableManager<
+    _$ExerciseDatabase,
+    $ExercisesTable,
+    ExerciseTable,
+    $$ExercisesTableFilterComposer,
+    $$ExercisesTableOrderingComposer,
+    $$ExercisesTableCreateCompanionBuilder,
+    $$ExercisesTableUpdateCompanionBuilder,
+    (
+      ExerciseTable,
+      BaseReferences<_$ExerciseDatabase, $ExercisesTable, ExerciseTable>
+    ),
+    ExerciseTable,
+    PrefetchHooks Function()> {
+  $$ExercisesTableTableManager(_$ExerciseDatabase db, $ExercisesTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$ExercisesTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$ExercisesTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> data = const Value.absent(),
+            Value<DateTime> lastUpdate = const Value.absent(),
+            Value<DateTime> lastFetched = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              ExercisesCompanion(
+            id: id,
+            data: data,
+            lastUpdate: lastUpdate,
+            lastFetched: lastFetched,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required int id,
+            required String data,
+            required DateTime lastUpdate,
+            required DateTime lastFetched,
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              ExercisesCompanion.insert(
+            id: id,
+            data: data,
+            lastUpdate: lastUpdate,
+            lastFetched: lastFetched,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$ExercisesTableProcessedTableManager = ProcessedTableManager<
+    _$ExerciseDatabase,
+    $ExercisesTable,
+    ExerciseTable,
+    $$ExercisesTableFilterComposer,
+    $$ExercisesTableOrderingComposer,
+    $$ExercisesTableCreateCompanionBuilder,
+    $$ExercisesTableUpdateCompanionBuilder,
+    (
+      ExerciseTable,
+      BaseReferences<_$ExerciseDatabase, $ExercisesTable, ExerciseTable>
+    ),
+    ExerciseTable,
+    PrefetchHooks Function()>;
 typedef $$MusclesTableCreateCompanionBuilder = MusclesCompanion Function({
   required int id,
   required Muscle data,
@@ -1182,45 +1206,6 @@ typedef $$MusclesTableUpdateCompanionBuilder = MusclesCompanion Function({
   Value<Muscle> data,
   Value<int> rowid,
 });
-
-class $$MusclesTableTableManager extends RootTableManager<
-    _$ExerciseDatabase,
-    $MusclesTable,
-    MuscleTable,
-    $$MusclesTableFilterComposer,
-    $$MusclesTableOrderingComposer,
-    $$MusclesTableCreateCompanionBuilder,
-    $$MusclesTableUpdateCompanionBuilder> {
-  $$MusclesTableTableManager(_$ExerciseDatabase db, $MusclesTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          filteringComposer:
-              $$MusclesTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$MusclesTableOrderingComposer(ComposerState(db, table)),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<Muscle> data = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              MusclesCompanion(
-            id: id,
-            data: data,
-            rowid: rowid,
-          ),
-          createCompanionCallback: ({
-            required int id,
-            required Muscle data,
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              MusclesCompanion.insert(
-            id: id,
-            data: data,
-            rowid: rowid,
-          ),
-        ));
-}
 
 class $$MusclesTableFilterComposer
     extends FilterComposer<_$ExerciseDatabase, $MusclesTable> {
@@ -1252,6 +1237,69 @@ class $$MusclesTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
+class $$MusclesTableTableManager extends RootTableManager<
+    _$ExerciseDatabase,
+    $MusclesTable,
+    MuscleTable,
+    $$MusclesTableFilterComposer,
+    $$MusclesTableOrderingComposer,
+    $$MusclesTableCreateCompanionBuilder,
+    $$MusclesTableUpdateCompanionBuilder,
+    (
+      MuscleTable,
+      BaseReferences<_$ExerciseDatabase, $MusclesTable, MuscleTable>
+    ),
+    MuscleTable,
+    PrefetchHooks Function()> {
+  $$MusclesTableTableManager(_$ExerciseDatabase db, $MusclesTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$MusclesTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$MusclesTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<Muscle> data = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              MusclesCompanion(
+            id: id,
+            data: data,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required int id,
+            required Muscle data,
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              MusclesCompanion.insert(
+            id: id,
+            data: data,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$MusclesTableProcessedTableManager = ProcessedTableManager<
+    _$ExerciseDatabase,
+    $MusclesTable,
+    MuscleTable,
+    $$MusclesTableFilterComposer,
+    $$MusclesTableOrderingComposer,
+    $$MusclesTableCreateCompanionBuilder,
+    $$MusclesTableUpdateCompanionBuilder,
+    (
+      MuscleTable,
+      BaseReferences<_$ExerciseDatabase, $MusclesTable, MuscleTable>
+    ),
+    MuscleTable,
+    PrefetchHooks Function()>;
 typedef $$EquipmentsTableCreateCompanionBuilder = EquipmentsCompanion Function({
   required int id,
   required Equipment data,
@@ -1262,45 +1310,6 @@ typedef $$EquipmentsTableUpdateCompanionBuilder = EquipmentsCompanion Function({
   Value<Equipment> data,
   Value<int> rowid,
 });
-
-class $$EquipmentsTableTableManager extends RootTableManager<
-    _$ExerciseDatabase,
-    $EquipmentsTable,
-    EquipmentTable,
-    $$EquipmentsTableFilterComposer,
-    $$EquipmentsTableOrderingComposer,
-    $$EquipmentsTableCreateCompanionBuilder,
-    $$EquipmentsTableUpdateCompanionBuilder> {
-  $$EquipmentsTableTableManager(_$ExerciseDatabase db, $EquipmentsTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          filteringComposer:
-              $$EquipmentsTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$EquipmentsTableOrderingComposer(ComposerState(db, table)),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<Equipment> data = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              EquipmentsCompanion(
-            id: id,
-            data: data,
-            rowid: rowid,
-          ),
-          createCompanionCallback: ({
-            required int id,
-            required Equipment data,
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              EquipmentsCompanion.insert(
-            id: id,
-            data: data,
-            rowid: rowid,
-          ),
-        ));
-}
 
 class $$EquipmentsTableFilterComposer
     extends FilterComposer<_$ExerciseDatabase, $EquipmentsTable> {
@@ -1332,6 +1341,69 @@ class $$EquipmentsTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
+class $$EquipmentsTableTableManager extends RootTableManager<
+    _$ExerciseDatabase,
+    $EquipmentsTable,
+    EquipmentTable,
+    $$EquipmentsTableFilterComposer,
+    $$EquipmentsTableOrderingComposer,
+    $$EquipmentsTableCreateCompanionBuilder,
+    $$EquipmentsTableUpdateCompanionBuilder,
+    (
+      EquipmentTable,
+      BaseReferences<_$ExerciseDatabase, $EquipmentsTable, EquipmentTable>
+    ),
+    EquipmentTable,
+    PrefetchHooks Function()> {
+  $$EquipmentsTableTableManager(_$ExerciseDatabase db, $EquipmentsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$EquipmentsTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$EquipmentsTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<Equipment> data = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              EquipmentsCompanion(
+            id: id,
+            data: data,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required int id,
+            required Equipment data,
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              EquipmentsCompanion.insert(
+            id: id,
+            data: data,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$EquipmentsTableProcessedTableManager = ProcessedTableManager<
+    _$ExerciseDatabase,
+    $EquipmentsTable,
+    EquipmentTable,
+    $$EquipmentsTableFilterComposer,
+    $$EquipmentsTableOrderingComposer,
+    $$EquipmentsTableCreateCompanionBuilder,
+    $$EquipmentsTableUpdateCompanionBuilder,
+    (
+      EquipmentTable,
+      BaseReferences<_$ExerciseDatabase, $EquipmentsTable, EquipmentTable>
+    ),
+    EquipmentTable,
+    PrefetchHooks Function()>;
 typedef $$CategoriesTableCreateCompanionBuilder = CategoriesCompanion Function({
   required int id,
   required ExerciseCategory data,
@@ -1342,45 +1414,6 @@ typedef $$CategoriesTableUpdateCompanionBuilder = CategoriesCompanion Function({
   Value<ExerciseCategory> data,
   Value<int> rowid,
 });
-
-class $$CategoriesTableTableManager extends RootTableManager<
-    _$ExerciseDatabase,
-    $CategoriesTable,
-    CategoryTable,
-    $$CategoriesTableFilterComposer,
-    $$CategoriesTableOrderingComposer,
-    $$CategoriesTableCreateCompanionBuilder,
-    $$CategoriesTableUpdateCompanionBuilder> {
-  $$CategoriesTableTableManager(_$ExerciseDatabase db, $CategoriesTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          filteringComposer:
-              $$CategoriesTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$CategoriesTableOrderingComposer(ComposerState(db, table)),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<ExerciseCategory> data = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              CategoriesCompanion(
-            id: id,
-            data: data,
-            rowid: rowid,
-          ),
-          createCompanionCallback: ({
-            required int id,
-            required ExerciseCategory data,
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              CategoriesCompanion.insert(
-            id: id,
-            data: data,
-            rowid: rowid,
-          ),
-        ));
-}
 
 class $$CategoriesTableFilterComposer
     extends FilterComposer<_$ExerciseDatabase, $CategoriesTable> {
@@ -1412,6 +1445,69 @@ class $$CategoriesTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
+class $$CategoriesTableTableManager extends RootTableManager<
+    _$ExerciseDatabase,
+    $CategoriesTable,
+    CategoryTable,
+    $$CategoriesTableFilterComposer,
+    $$CategoriesTableOrderingComposer,
+    $$CategoriesTableCreateCompanionBuilder,
+    $$CategoriesTableUpdateCompanionBuilder,
+    (
+      CategoryTable,
+      BaseReferences<_$ExerciseDatabase, $CategoriesTable, CategoryTable>
+    ),
+    CategoryTable,
+    PrefetchHooks Function()> {
+  $$CategoriesTableTableManager(_$ExerciseDatabase db, $CategoriesTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$CategoriesTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$CategoriesTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<ExerciseCategory> data = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              CategoriesCompanion(
+            id: id,
+            data: data,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required int id,
+            required ExerciseCategory data,
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              CategoriesCompanion.insert(
+            id: id,
+            data: data,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$CategoriesTableProcessedTableManager = ProcessedTableManager<
+    _$ExerciseDatabase,
+    $CategoriesTable,
+    CategoryTable,
+    $$CategoriesTableFilterComposer,
+    $$CategoriesTableOrderingComposer,
+    $$CategoriesTableCreateCompanionBuilder,
+    $$CategoriesTableUpdateCompanionBuilder,
+    (
+      CategoryTable,
+      BaseReferences<_$ExerciseDatabase, $CategoriesTable, CategoryTable>
+    ),
+    CategoryTable,
+    PrefetchHooks Function()>;
 typedef $$LanguagesTableCreateCompanionBuilder = LanguagesCompanion Function({
   required int id,
   required Language data,
@@ -1422,45 +1518,6 @@ typedef $$LanguagesTableUpdateCompanionBuilder = LanguagesCompanion Function({
   Value<Language> data,
   Value<int> rowid,
 });
-
-class $$LanguagesTableTableManager extends RootTableManager<
-    _$ExerciseDatabase,
-    $LanguagesTable,
-    LanguagesTable,
-    $$LanguagesTableFilterComposer,
-    $$LanguagesTableOrderingComposer,
-    $$LanguagesTableCreateCompanionBuilder,
-    $$LanguagesTableUpdateCompanionBuilder> {
-  $$LanguagesTableTableManager(_$ExerciseDatabase db, $LanguagesTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          filteringComposer:
-              $$LanguagesTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$LanguagesTableOrderingComposer(ComposerState(db, table)),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<Language> data = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              LanguagesCompanion(
-            id: id,
-            data: data,
-            rowid: rowid,
-          ),
-          createCompanionCallback: ({
-            required int id,
-            required Language data,
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              LanguagesCompanion.insert(
-            id: id,
-            data: data,
-            rowid: rowid,
-          ),
-        ));
-}
 
 class $$LanguagesTableFilterComposer
     extends FilterComposer<_$ExerciseDatabase, $LanguagesTable> {
@@ -1491,6 +1548,70 @@ class $$LanguagesTableOrderingComposer
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
+
+class $$LanguagesTableTableManager extends RootTableManager<
+    _$ExerciseDatabase,
+    $LanguagesTable,
+    LanguagesTable,
+    $$LanguagesTableFilterComposer,
+    $$LanguagesTableOrderingComposer,
+    $$LanguagesTableCreateCompanionBuilder,
+    $$LanguagesTableUpdateCompanionBuilder,
+    (
+      LanguagesTable,
+      BaseReferences<_$ExerciseDatabase, $LanguagesTable, LanguagesTable>
+    ),
+    LanguagesTable,
+    PrefetchHooks Function()> {
+  $$LanguagesTableTableManager(_$ExerciseDatabase db, $LanguagesTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$LanguagesTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$LanguagesTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<Language> data = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              LanguagesCompanion(
+            id: id,
+            data: data,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required int id,
+            required Language data,
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              LanguagesCompanion.insert(
+            id: id,
+            data: data,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$LanguagesTableProcessedTableManager = ProcessedTableManager<
+    _$ExerciseDatabase,
+    $LanguagesTable,
+    LanguagesTable,
+    $$LanguagesTableFilterComposer,
+    $$LanguagesTableOrderingComposer,
+    $$LanguagesTableCreateCompanionBuilder,
+    $$LanguagesTableUpdateCompanionBuilder,
+    (
+      LanguagesTable,
+      BaseReferences<_$ExerciseDatabase, $LanguagesTable, LanguagesTable>
+    ),
+    LanguagesTable,
+    PrefetchHooks Function()>;
 
 class $ExerciseDatabaseManager {
   final _$ExerciseDatabase _db;
