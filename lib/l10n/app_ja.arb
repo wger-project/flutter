@@ -587,8 +587,8 @@
   "@bench": {
     "description": "Generated entry for translation for server strings"
   },
-  "settingsCacheDescription": "エクササイズキャッシュ",
-  "@settingsCacheDescription": {},
+  "settingsExerciseCacheDescription": "エクササイズキャッシュ",
+  "@settingsExerciseCacheDescription": {},
   "settingsTitle": "設定",
   "@settingsTitle": {},
   "settingsCacheTitle": "キャッシュ",

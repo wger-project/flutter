@@ -724,8 +724,8 @@
   "@settingsTitle": {},
   "settingsCacheDeletedSnackbar": "Pamięć podręczna pomyślnie została wyczyszczona",
   "@settingsCacheDeletedSnackbar": {},
-  "settingsCacheDescription": "Pamięć podręczna ćwiczeń",
-  "@settingsCacheDescription": {},
+  "settingsExerciseCacheDescription": "Pamięć podręczna ćwiczeń",
+  "@settingsExerciseCacheDescription": {},
   "log": "Zarejestruj",
   "@log": {
     "description": "Log a specific meal (imperative form)"

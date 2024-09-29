@@ -16,12 +16,8 @@ void main() {
   late IngredientDatabase database;
   late Map<String, dynamic> ingredient59887Response;
 
-  // Needs to be configured here, setUp runs on every test, setUpAll only once
-  setUpAll(() {
-    database = IngredientDatabase.inMemory(NativeDatabase.memory());
-  });
-
   setUp(() {
+    database = IngredientDatabase.inMemory(NativeDatabase.memory());
     mockWgerBaseProvider = MockWgerBaseProvider();
     nutritionProvider = NutritionPlansProvider(
       mockWgerBaseProvider,
@@ -98,6 +94,10 @@ void main() {
     when(mockWgerBaseProvider.fetch(ingredientUri)).thenAnswer(
       (realInvocation) => Future.value(ingredient10065Response),
     );
+  });
+
+  tearDown(() async {
+    await database.close();
   });
 
   group('fetchAndSetPlanFull', () {

@@ -675,8 +675,8 @@
   "@settingsTitle": {},
   "settingsCacheTitle": "緩存",
   "@settingsCacheTitle": {},
-  "settingsCacheDescription": "訓練緩存",
-  "@settingsCacheDescription": {},
+  "settingsExerciseCacheDescription": "訓練緩存",
+  "@settingsExerciseCacheDescription": {},
   "gValue": "{value} 克",
   "@gValue": {
     "description": "A value in grams, e.g. 5 g",

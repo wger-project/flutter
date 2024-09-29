@@ -23,17 +23,22 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/nutrition.dart';
 import 'package:wger/widgets/core/settings.dart';
 
 import 'settings_test.mocks.dart';
 
-@GenerateMocks([ExercisesProvider])
+@GenerateMocks([ExercisesProvider, NutritionPlansProvider])
 void main() {
   final mockExerciseProvider = MockExercisesProvider();
+  final mockNutritionProvider = MockNutritionPlansProvider();
 
   Widget createSettingsScreen({locale = 'en'}) {
-    return ChangeNotifierProvider<ExercisesProvider>(
-      create: (context) => mockExerciseProvider,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<NutritionPlansProvider>(create: (context) => mockNutritionProvider),
+        ChangeNotifierProvider<ExercisesProvider>(create: (context) => mockExerciseProvider),
+      ],
       child: MaterialApp(
         locale: Locale(locale),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -44,12 +49,20 @@ void main() {
   }
 
   group('Cache', () {
-    testWidgets('Test the widgets on the gym mode screen', (WidgetTester tester) async {
+    testWidgets('Test resetting the exercise cache', (WidgetTester tester) async {
       await tester.pumpWidget(createSettingsScreen());
-      await tester.tap(find.byKey(const ValueKey('cacheIcon')));
+      await tester.tap(find.byKey(const ValueKey('cacheIconExercises')));
       await tester.pumpAndSettle();
 
       verify(mockExerciseProvider.clearAllCachesAndPrefs());
+    });
+
+    testWidgets('Test resetting the ingredient cache', (WidgetTester tester) async {
+      await tester.pumpWidget(createSettingsScreen());
+      await tester.tap(find.byKey(const ValueKey('cacheIconIngredients')));
+      await tester.pumpAndSettle();
+
+      verify(mockNutritionProvider.clearIngredientCaches());
     });
   });
 }

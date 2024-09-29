@@ -84,12 +84,13 @@ void main() {
   );
 
   setUp(() {
+    database = ExerciseDatabase.inMemory(NativeDatabase.memory());
+
     mockBaseProvider = MockWgerBaseProvider();
     provider = ExercisesProvider(
       mockBaseProvider,
-      database: ExerciseDatabase.inMemory(NativeDatabase.memory()),
+      database: database,
     );
-    database = ExerciseDatabase.inMemory(NativeDatabase.memory());
 
     WidgetsFlutterBinding.ensureInitialized();
     SharedPreferences.setMockInitialValues({});

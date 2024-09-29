@@ -782,8 +782,8 @@
   "@aboutMastodonText": {
     "description": "Text for the mastodon section in the about dialog"
   },
-  "settingsCacheDescription": "Cache de ejercicios",
-  "@settingsCacheDescription": {},
+  "settingsExerciseCacheDescription": "Cache de ejercicios",
+  "@settingsExerciseCacheDescription": {},
   "aboutDonateTitle": "Donar",
   "@aboutDonateTitle": {},
   "aboutDonateText": "Invítanos un café para ayudar al proyecto, cubrir los costos del servidor y mantenernos activos",
