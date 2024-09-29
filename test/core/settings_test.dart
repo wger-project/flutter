@@ -62,7 +62,7 @@ void main() {
       await tester.tap(find.byKey(const ValueKey('cacheIconIngredients')));
       await tester.pumpAndSettle();
 
-      verify(mockNutritionProvider.clearIngredientCaches());
+      verify(mockNutritionProvider.clearIngredientCache());
     });
   });
 }

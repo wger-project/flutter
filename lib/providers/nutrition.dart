@@ -288,7 +288,7 @@ class NutritionPlansProvider with ChangeNotifier {
     }
   }
 
-  Future<void> clearIngredientCaches() async {
+  Future<void> clearIngredientCache() async {
     await database.deleteEverything();
   }
 

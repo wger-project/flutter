@@ -909,9 +909,9 @@ class MockNutritionPlansProvider extends _i1.Mock
       ) as _i15.Future<void>);
 
   @override
-  _i15.Future<void> clearIngredientCaches() => (super.noSuchMethod(
+  _i15.Future<void> clearIngredientCache() => (super.noSuchMethod(
         Invocation.method(
-          #clearIngredientCaches,
+          #clearIngredientCache,
           [],
         ),
         returnValue: _i15.Future<void>.value(),

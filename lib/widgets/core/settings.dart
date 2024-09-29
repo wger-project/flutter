@@ -63,7 +63,7 @@ class SettingsPage extends StatelessWidget {
               key: const ValueKey('cacheIconIngredients'),
               icon: const Icon(Icons.delete),
               onPressed: () async {
-                await nutritionProvider.clearIngredientCaches();
+                await nutritionProvider.clearIngredientCache();
 
                 if (context.mounted) {
                   final snackBar = SnackBar(
