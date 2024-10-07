@@ -849,5 +849,30 @@
   "noIngredientsDefined": "Henüz malzeme tanımlanmadı",
   "@noIngredientsDefined": {},
   "settingsIngredientCacheDescription": "Malzeme önbelleği",
-  "@settingsIngredientCacheDescription": {}
+  "@settingsIngredientCacheDescription": {},
+  "chartAllTimeTitle": "tüm zamanlar {name}",
+  "@chartAllTimeTitle": {
+    "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "chart30DaysTitle": "son 30 gün {name}",
+  "@chart30DaysTitle": {
+    "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "chartDuringPlanTitle": "{planName} beslenme planı boyunca {chartName}",
+  "@chartDuringPlanTitle": {
+    "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
+    "type": "text",
+    "placeholders": {
+      "chartName": {},
+      "planName": {}
+    }
+  }
 }
