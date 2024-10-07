@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/widgets/measurements/charts.dart';
 
@@ -36,7 +37,7 @@ List<Widget> getOverviewWidgetsSeries(
   final monthAgo = DateTime.now().subtract(const Duration(days: 30));
   return [
     ...getOverviewWidgets(
-      '$name all-time',
+      AppLocalizations.of(context).chartAllTimeTitle(name),
       entriesAll,
       entries7dAvg,
       unit,
@@ -44,7 +45,7 @@ List<Widget> getOverviewWidgetsSeries(
     ),
     if (plan != null)
       ...getOverviewWidgets(
-        '$name during nutritional plan ${plan.description}',
+        AppLocalizations.of(context).chartDuringPlanTitle(name, plan.description),
         entriesAll.where((e) => e.date.isAfter(plan.creationDate)).toList(),
         entries7dAvg.where((e) => e.date.isAfter(plan.creationDate)).toList(),
         unit,
@@ -60,7 +61,7 @@ List<Widget> getOverviewWidgetsSeries(
                 .date
                 .isBefore(entriesAll.last.date.subtract(const Duration(days: 30)))))
       ...getOverviewWidgets(
-        '$name last 30 days',
+        AppLocalizations.of(context).chart30DaysTitle(name),
         entriesAll.where((e) => e.date.isAfter(monthAgo)).toList(),
         entries7dAvg.where((e) => e.date.isAfter(monthAgo)).toList(),
         unit,

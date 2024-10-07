@@ -31,6 +31,7 @@ import 'package:wger/widgets/weight/forms.dart';
 
 class WeightOverview extends StatelessWidget {
   const WeightOverview();
+
   @override
   Widget build(BuildContext context) {
     final profile = context.read<UserProvider>().profile;
@@ -46,7 +47,7 @@ class WeightOverview extends StatelessWidget {
     return Column(
       children: [
         ...getOverviewWidgetsSeries(
-          'Weight',
+          AppLocalizations.of(context).weight,
           entriesAll,
           entries7dAvg,
           plan,
