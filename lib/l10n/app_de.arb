@@ -381,7 +381,7 @@
   "@aboutDescription": {
     "description": "Text in the about dialog"
   },
-  "logMeal": "Diese Mahlzeit protokollieren",
+  "logMeal": "Gericht im Ernährungstagebuch protokollieren",
   "@logMeal": {},
   "category": "Kategorie",
   "@category": {
@@ -536,7 +536,7 @@
   "@searchIngredient": {
     "description": "Label on ingredient search form"
   },
-  "logIngredient": "Im Nährwerttagebuch speichern",
+  "logIngredient": "Zutat im Ernährungstagebuch protokollieren",
   "@logIngredient": {},
   "close": "Schließen",
   "@close": {
@@ -794,5 +794,96 @@
   "done": "Fertig",
   "@done": {},
   "searchNamesInEnglish": "Namen auch auf English suchen",
-  "@searchNamesInEnglish": {}
+  "@searchNamesInEnglish": {},
+  "goalMacro": "Makroziele",
+  "@goalMacro": {
+    "description": "The goal for macronutrients"
+  },
+  "goalFiber": "Ballaststoffziel",
+  "@goalFiber": {},
+  "loggedToday": "Heute protokolliert",
+  "@loggedToday": {},
+  "onlyLogging": "Nur Kalorien eintragen",
+  "@onlyLogging": {},
+  "onlyLoggingHelpText": "Setze das Häkchen, wenn du nur deine Kalorien protokollieren möchtest und keinen detaillierten Ernährungsplan mit spezifischen Mahlzeiten einrichten willst",
+  "@onlyLoggingHelpText": {},
+  "goalEnergy": "Energieziel",
+  "@goalEnergy": {},
+  "goalProtein": "Eiweißziel",
+  "@goalProtein": {},
+  "goalCarbohydrates": "Kohlenhydratziel",
+  "@goalCarbohydrates": {},
+  "goalFat": "Fettziel",
+  "@goalFat": {},
+  "today": "Heute",
+  "@today": {},
+  "log": "Protokollieren",
+  "@log": {
+    "description": "Log a specific meal (imperative form)"
+  },
+  "noIngredientsDefined": "Noch keine Zutaten definiert",
+  "@noIngredientsDefined": {},
+  "ingredientLogged": "Zutat im Tagebuch protokolliert",
+  "@ingredientLogged": {},
+  "selectMealToLog": "Wähle eine Mahlzeit, um sie im Tagebuch zu protokollieren",
+  "@selectMealToLog": {},
+  "chartAllTimeTitle": "{name} aller Zeiten",
+  "@chartAllTimeTitle": {
+    "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "chart30DaysTitle": "{name} der letzten 30 Tage",
+  "@chart30DaysTitle": {
+    "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "chartDuringPlanTitle": "{chartName} während des Ernährungsplans {planName}",
+  "@chartDuringPlanTitle": {
+    "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
+    "type": "text",
+    "placeholders": {
+      "chartName": {},
+      "planName": {}
+    }
+  },
+  "surplus": "Überschuss",
+  "@surplus": {
+    "description": "Caloric surplus (either planned or unplanned)"
+  },
+  "deficit": "Defizit",
+  "@deficit": {
+    "description": "Caloric deficit (either planned or unplanned)"
+  },
+  "kcalValue": "{value} kcal",
+  "@kcalValue": {
+    "description": "A value in kcal, e.g. 500 kcal",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "gValue": "{value} g",
+  "@gValue": {
+    "description": "A value in grams, e.g. 5 g",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "percentValue": "{value} %",
+  "@percentValue": {
+    "description": "A value in percent, e.g. 10 %",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "settingsIngredientCacheDescription": "Zutaten-Cache",
+  "@settingsIngredientCacheDescription": {}
 }
