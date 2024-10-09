@@ -36,10 +36,6 @@ class NutritionalPlanScreen extends StatelessWidget {
   const NutritionalPlanScreen();
   static const routeName = '/nutritional-plan-detail';
 
-  Future<NutritionalPlan> _loadFullPlan(BuildContext context, int planId) {
-    return Provider.of<NutritionPlansProvider>(context, listen: false).fetchAndSetPlanFull(planId);
-  }
-
   @override
   Widget build(BuildContext context) {
     const appBarForeground = Colors.white;
@@ -161,7 +157,7 @@ class NutritionalPlanScreen extends StatelessWidget {
             ),
           ),
           FutureBuilder(
-            future: _loadFullPlan(context, nutritionalPlan.id!),
+            future: NutritionalPlan.read(nutritionalPlan.id!),
             builder: (context, AsyncSnapshot<NutritionalPlan> snapshot) =>
                 snapshot.connectionState == ConnectionState.waiting
                     ? SliverList(

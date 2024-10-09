@@ -17,11 +17,15 @@
  */
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:powersync/sqlite3.dart' as sqlite;
 import 'package:wger/helpers/json.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/ingredient_weight_unit.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
+import 'package:wger/models/schema.dart';
+import 'package:wger/powersync.dart';
+import 'package:wger/providers/nutrition.dart';
 
 part 'log.g.dart';
 
@@ -75,6 +79,19 @@ class Log {
     amount = mealItem.amount;
   }
 
+  factory Log.fromRow(sqlite.Row row) {
+    return Log(
+      id: int.parse(row['id']),
+      mealId: row['meal_id'],
+      ingredientId: row['ingredient_id'],
+      weightUnitId: row['weight_unit_id'],
+      amount: row['amount'],
+      planId: row['plan_id'],
+      datetime: DateTime.parse(row['datetime']),
+      comment: row['comment'],
+    );
+  }
+
   // Boilerplate
   factory Log.fromJson(Map<String, dynamic> json) => _$LogFromJson(json);
 
@@ -89,4 +106,35 @@ class Log {
 
     return ingredient.nutritionalValues / (100 / weight);
   }
+
+  static Future<List<Log>> readByPlanId(int planId) async {
+    final results = await db.getAll('SELECT * FROM $tableLogItems WHERE plan_id = ?', [planId]);
+    return results.map((r) {
+      final log = Log.fromRow(r);
+      // TODO:
+      // need to find a way to set ingredients. since we don't use powersync for it, we need to fetch
+      // but this needs a context, therofere this needs a context, and all callers do, so we should probably 
+      // move all that stuff into the nutritionprovider, so we keep context out of the models
+      // however, still unsolved:
+      // mealItem stuff then?
+      // nutrition image
+      // nutrition_ingredientcategory
+  //     nutrition_ingredientweightunit
+  // nutrition_weightunit;
+  // nutrition_mealitem
+      log.ingredient = Provider.of<NutritionPlansProvider>(context, listen: false).fetchIngredient(id),
+      return log;
+    }).toList();
+  }
+
+/*
+  Future<void> delete() async {
+    await db.execute('DELETE FROM $logItemsTable WHERE id = ?', [id]);
+  }
+
+  static Future<void> addPhoto(String photoId, String id) async {
+    await db.execute('UPDATE $logItemsTable SET photo_id = ? WHERE id = ?', [photoId, id]);
+  }
+}
+  */
 }

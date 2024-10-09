@@ -18,12 +18,15 @@
 
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:powersync/sqlite3.dart' as sqlite;
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/misc.dart';
 import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
+import 'package:wger/models/schema.dart';
+import 'package:wger/powersync.dart';
 
 part 'meal.g.dart';
 
@@ -87,6 +90,15 @@ class Meal {
   // Boilerplate
   factory Meal.fromJson(Map<String, dynamic> json) => _$MealFromJson(json);
 
+  factory Meal.fromRow(sqlite.Row row) {
+    return Meal(
+      id: int.parse(row['id']),
+      plan: row['plan'],
+      time: stringToTime(row['time']),
+      name: row['name'],
+    );
+  }
+
   Map<String, dynamic> toJson() => _$MealToJson(this);
 
   Meal copyWith({
@@ -105,5 +117,17 @@ class Meal {
       mealItems: mealItems ?? this.mealItems,
       diaryEntries: diaryEntries ?? this.diaryEntries,
     );
+  }
+
+  static Future<Meal> read(int id) async {
+    final results = await db.get('SELECT * FROM $tableMeals WHERE id = ?', [id]);
+    return Meal.fromRow(results);
+  }
+
+  static Future<List<Meal>> readByPlanId(int planId) async {
+    print('Meal.readByPlanId: SELECT * FROM $tableMeals WHERE plan_id = $planId');
+    final results = await db.getAll('SELECT * FROM $tableMeals WHERE plan_id = ?', [planId]);
+    print(results.rows.length);
+    return results.map((r) => Meal.fromRow(r)).toList();
   }
 }

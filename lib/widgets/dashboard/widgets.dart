@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -56,13 +58,29 @@ class DashboardNutritionWidget extends StatefulWidget {
 
 class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
   NutritionalPlan? _plan;
+  StreamSubscription? _subscription;
+
   bool _hasContent = false;
 
   @override
   void initState() {
     super.initState();
-    _plan = Provider.of<NutritionPlansProvider>(context, listen: false).currentPlan;
-    _hasContent = _plan != null;
+    final stream = NutritionalPlan.watchNutritionPlanLast();
+    _subscription = stream.listen((plan) {
+      if (!context.mounted) {
+        return;
+      }
+      setState(() {
+        _plan = plan;
+        _hasContent = _plan != null;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _subscription?.cancel();
+    super.dispose();
   }
 
   @override
