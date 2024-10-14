@@ -51,7 +51,7 @@ dependencies:
   rive: ^0.12.4
   shared_preferences: ^2.3.2
   table_calendar: ^3.0.8
-  url_launcher: ^6.2.6
+  url_launcher: ^6.3.1
   flutter_barcode_scanner: ^2.0.0
   video_player: ^2.9.2
   flutter_staggered_grid_view: ^0.7.0
