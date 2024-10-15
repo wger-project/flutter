@@ -42,6 +42,7 @@ import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/measurements/categories_card.dart';
 import 'package:wger/widgets/measurements/charts.dart';
 import 'package:wger/widgets/measurements/forms.dart';
+import 'package:wger/widgets/measurements/helpers.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/weight/forms.dart';
@@ -161,9 +162,9 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
     final profile = context.read<UserProvider>().profile;
     final weightProvider = context.read<BodyWeightProvider>();
 
-    final entriesAll =
-        weightProvider.items.map((e) => MeasurementChartEntry(e.weight, e.date)).toList();
-    final entries7dAvg = moving7dAverage(entriesAll);
+    final (entriesAll, entries7dAvg) = sensibleRange(
+      weightProvider.items.map((e) => MeasurementChartEntry(e.weight, e.date)).toList(),
+    );
 
     return Consumer<BodyWeightProvider>(
       builder: (context, workoutProvider, child) => Card(

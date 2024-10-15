@@ -77,3 +77,30 @@ List<Widget> getOverviewWidgetsSeries(
     ),
   ];
 }
+
+// return the raw and average meaasurements for a "sensible range"
+// a sensible range is something relatively recent, which is most relevant
+// for the user to track their progress, but a range should always include
+// at least 5 points, and if not we chose a bigger one.
+// we return a range of the last 2 months, 4 months, or the full history
+(List<MeasurementChartEntry>, List<MeasurementChartEntry>) sensibleRange(
+  List<MeasurementChartEntry> entriesAll,
+) {
+  final entries7dAvg = moving7dAverage(entriesAll);
+  final twoMonthsAgo = DateTime.now().subtract(const Duration(days: 61));
+  final fourMonthsAgo = DateTime.now().subtract(const Duration(days: 122));
+
+  if (entriesAll.where((e) => e.date.isAfter(twoMonthsAgo)).length > 4) {
+    return (
+      entriesAll.where((e) => e.date.isAfter(twoMonthsAgo)).toList(),
+      entries7dAvg.where((e) => e.date.isAfter(twoMonthsAgo)).toList(),
+    );
+  }
+  if (entriesAll.where((e) => e.date.isAfter(fourMonthsAgo)).length > 4) {
+    return (
+      entriesAll.where((e) => e.date.isAfter(fourMonthsAgo)).toList(),
+      entries7dAvg.where((e) => e.date.isAfter(fourMonthsAgo)).toList(),
+    );
+  }
+  return (entriesAll, entries7dAvg);
+}
