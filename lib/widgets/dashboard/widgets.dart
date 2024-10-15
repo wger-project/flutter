@@ -194,11 +194,12 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                           avgs: entries7dAvg,
                         ),
                       ),
-                      MeasurementOverallChangeWidget(
-                        entries7dAvg.first,
-                        entries7dAvg.last,
-                        weightUnit(profile.isMetric, context),
-                      ),
+                      if (entries7dAvg.isNotEmpty)
+                        MeasurementOverallChangeWidget(
+                          entries7dAvg.first,
+                          entries7dAvg.last,
+                          weightUnit(profile.isMetric, context),
+                        ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
