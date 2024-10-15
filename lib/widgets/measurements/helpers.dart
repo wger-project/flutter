@@ -35,6 +35,8 @@ List<Widget> getOverviewWidgetsSeries(
   BuildContext context,
 ) {
   final monthAgo = DateTime.now().subtract(const Duration(days: 30));
+  final showPlan = plan != null && entriesAll.any((e) => e.date.isAfter(plan.creationDate));
+
   return [
     ...getOverviewWidgets(
       AppLocalizations.of(context).chartAllTimeTitle(name),
@@ -43,7 +45,7 @@ List<Widget> getOverviewWidgetsSeries(
       unit,
       context,
     ),
-    if (plan != null)
+    if (showPlan)
       ...getOverviewWidgets(
         AppLocalizations.of(context).chartDuringPlanTitle(name, plan.description),
         entriesAll.where((e) => e.date.isAfter(plan.creationDate)).toList(),
@@ -52,14 +54,18 @@ List<Widget> getOverviewWidgetsSeries(
         context,
       ),
     // if all time is significantly longer than 30 days (let's say > 75 days)
-    // and if there is is a plan and it also was > 75 days,
-    // then let's show a separate chart just focusing on the last 30 days
-    if (entriesAll.first.date.isBefore(entriesAll.last.date.subtract(const Duration(days: 75))) &&
+    // and any plan was also > 75 days,
+    // then let's show a separate chart just focusing on the last 30 days,
+    // if there is data for it.
+    if (entriesAll.isNotEmpty &&
+        entriesAll.first.date.isBefore(entriesAll.last.date.subtract(const Duration(days: 75))) &&
         (plan == null ||
-            entriesAll
-                .firstWhere((e) => e.date.isAfter(plan.creationDate))
-                .date
-                .isBefore(entriesAll.last.date.subtract(const Duration(days: 30)))))
+            (showPlan &&
+                entriesAll
+                    .firstWhere((e) => e.date.isAfter(plan.creationDate))
+                    .date
+                    .isBefore(entriesAll.last.date.subtract(const Duration(days: 30))))) &&
+        entriesAll.any((e) => e.date.isAfter(monthAgo)))
       ...getOverviewWidgets(
         AppLocalizations.of(context).chart30DaysTitle(name),
         entriesAll.where((e) => e.date.isAfter(monthAgo)).toList(),
