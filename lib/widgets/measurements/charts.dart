@@ -70,14 +70,24 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
 
   LineTouchData tooltipData() {
     return LineTouchData(
-      touchTooltipData: LineTouchTooltipData(getTooltipItems: (touchedSpots) {
-        return touchedSpots.map((touchedSpot) {
-          return LineTooltipItem(
-            '${touchedSpot.y.toStringAsFixed(1)} ${widget._unit}',
-            TextStyle(color: touchedSpot.bar.color, fontWeight: FontWeight.bold),
-          );
-        }).toList();
-      }),
+      touchTooltipData: LineTouchTooltipData(
+        getTooltipColor: (touchedSpot) => Theme.of(context).colorScheme.primaryContainer,
+        getTooltipItems: (touchedSpots) {
+          return touchedSpots.map((touchedSpot) {
+            final DateTime date = DateTime.fromMillisecondsSinceEpoch(touchedSpot.x.toInt());
+            final dateStr =
+                DateFormat.Md(Localizations.localeOf(context).languageCode).format(date);
+
+            return LineTooltipItem(
+              '$dateStr: ${touchedSpot.y.toStringAsFixed(1)} ${widget._unit}',
+              TextStyle(
+                color: touchedSpot.bar.color,
+                fontWeight: FontWeight.bold,
+              ),
+            );
+          }).toList();
+        },
+      ),
     );
   }
 
