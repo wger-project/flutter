@@ -341,7 +341,7 @@ class NutritionPlansProvider with ChangeNotifier {
   /// Loads the available ingredients from the local cache
   Future<void> fetchIngredientsFromCache() async {
     final ingredientDb = await database.select(database.ingredients).get();
-    log("Read ${ingredientDb.length} ingredients from db cache");
+    log('Read ${ingredientDb.length} ingredients from db cache');
     if (ingredientDb.isNotEmpty) {
       ingredients = ingredientDb.map((e) => Ingredient.fromJson(jsonDecode(e.data))).toList();
     }
