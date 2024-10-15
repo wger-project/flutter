@@ -40,11 +40,12 @@ class CategoriesCard extends StatelessWidget {
               avgs: entries7dAvg,
             ),
           ),
-          MeasurementOverallChangeWidget(
-            entries7dAvg.first,
-            entries7dAvg.last,
-            currentCategory.unit,
-          ),
+          if (entries7dAvg.isNotEmpty)
+            MeasurementOverallChangeWidget(
+              entries7dAvg.first,
+              entries7dAvg.last,
+              currentCategory.unit,
+            ),
           const Divider(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
