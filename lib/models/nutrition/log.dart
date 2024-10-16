@@ -107,24 +107,14 @@ class Log {
     return ingredient.nutritionalValues / (100 / weight);
   }
 
+  static Future<List<Log>> readByMealId(int mealId) async {
+    final results = await db.getAll('SELECT * FROM $tableLogItems WHERE meal_id = ?', [mealId]);
+    return results.map((r) => Log.fromRow(r)).toList();
+  }
+
   static Future<List<Log>> readByPlanId(int planId) async {
     final results = await db.getAll('SELECT * FROM $tableLogItems WHERE plan_id = ?', [planId]);
-    return results.map((r) {
-      final log = Log.fromRow(r);
-      // TODO:
-      // need to find a way to set ingredients. since we don't use powersync for it, we need to fetch
-      // but this needs a context, therofere this needs a context, and all callers do, so we should probably 
-      // move all that stuff into the nutritionprovider, so we keep context out of the models
-      // however, still unsolved:
-      // mealItem stuff then?
-      // nutrition image
-      // nutrition_ingredientcategory
-  //     nutrition_ingredientweightunit
-  // nutrition_weightunit;
-  // nutrition_mealitem
-      log.ingredient = Provider.of<NutritionPlansProvider>(context, listen: false).fetchIngredient(id),
-      return log;
-    }).toList();
+    return results.map((r) => Log.fromRow(r)).toList();
   }
 
 /*

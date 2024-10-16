@@ -16,10 +16,10 @@ assumptions: nutrition_ingredientcategory, nutrition_weightunit, nutrition_ingre
 
 // User,NutritionPlan,Meal,LogItem,MealItem,Ingredient
 const tableMuscles = 'exercises_muscle';
-const tableLogItems = 'nutrition_logitem';
+const tableLogItems = 'ivm_nutrition_logitem';
 const tableNutritionPlans = 'nutrition_nutritionplan';
-const tableMeals = 'nutrition_meal';
-const tableMealItems = 'nutrition_mealitem';
+const tableMeals = 'ivm_nutrition_meal';
+const tableMealItems = 'ivm_nutrition_mealitem';
 
 Schema schema = const Schema([
   Table(

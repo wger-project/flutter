@@ -65,7 +65,8 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
   @override
   void initState() {
     super.initState();
-    final stream = NutritionalPlan.watchNutritionPlanLast();
+    final stream =
+        Provider.of<NutritionPlansProvider>(context, listen: false).watchNutritionPlanLast();
     _subscription = stream.listen((plan) {
       if (!context.mounted) {
         return;
@@ -127,7 +128,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                   onPressed: () {
                     Navigator.of(context).pushNamed(
                       NutritionalPlanScreen.routeName,
-                      arguments: _plan,
+                      arguments: _plan!.id,
                     );
                   },
                 ),

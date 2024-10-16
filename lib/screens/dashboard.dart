@@ -42,7 +42,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
         padding: EdgeInsets.all(10),
         child: Column(
           children: [
-            DashboardMuscleWidget(),
             DashboardWorkoutWidget(),
             DashboardNutritionWidget(),
             DashboardWeightWidget(),

@@ -93,7 +93,7 @@ class Meal {
   factory Meal.fromRow(sqlite.Row row) {
     return Meal(
       id: int.parse(row['id']),
-      plan: row['plan'],
+      plan: row['plan_id'],
       time: stringToTime(row['time']),
       name: row['name'],
     );
@@ -103,7 +103,7 @@ class Meal {
 
   Meal copyWith({
     int? id,
-    int? planId,
+    int? plan,
     TimeOfDay? time,
     String? name,
     List<MealItem>? mealItems,
@@ -111,11 +111,19 @@ class Meal {
   }) {
     return Meal(
       id: id ?? this.id,
-      plan: planId ?? this.planId,
+      plan: plan ?? planId,
       time: time ?? this.time,
       name: name ?? this.name,
       mealItems: mealItems ?? this.mealItems,
       diaryEntries: diaryEntries ?? this.diaryEntries,
+    );
+  }
+
+  Future<Meal> loadChildren() async {
+    print('loadChildren called. plan is $planId');
+    return copyWith(
+      mealItems: await MealItem.readByMealId(id!),
+      diaryEntries: await Log.readByMealId(id!),
     );
   }
 
@@ -128,6 +136,6 @@ class Meal {
     print('Meal.readByPlanId: SELECT * FROM $tableMeals WHERE plan_id = $planId');
     final results = await db.getAll('SELECT * FROM $tableMeals WHERE plan_id = ?', [planId]);
     print(results.rows.length);
-    return results.map((r) => Meal.fromRow(r)).toList();
+    return Future.wait(results.map((r) => Meal.fromRow(r).loadChildren()));
   }
 }

@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg_icons/flutter_svg_icons.dart';
@@ -32,153 +34,189 @@ enum NutritionalPlanOptions {
   delete,
 }
 
-class NutritionalPlanScreen extends StatelessWidget {
+class NutritionalPlanScreen extends StatefulWidget {
   const NutritionalPlanScreen();
   static const routeName = '/nutritional-plan-detail';
 
   @override
+  _NutritionalPlanScreenState createState() => _NutritionalPlanScreenState();
+}
+
+class _NutritionalPlanScreenState extends State<NutritionalPlanScreen> {
+  NutritionalPlan? _plan;
+  StreamSubscription? _subscription;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final id = ModalRoute.of(context)!.settings.arguments as int;
+    //final id = 111;
+
+    final stream =
+        Provider.of<NutritionPlansProvider>(context, listen: false).watchNutritionPlan(id);
+    _subscription = stream.listen((plan) {
+      if (!context.mounted) {
+        return;
+      }
+      setState(() {
+        _plan = plan;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _subscription?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     const appBarForeground = Colors.white;
-    final nutritionalPlan = ModalRoute.of(context)!.settings.arguments as NutritionalPlan;
 
     return Scaffold(
       //appBar: getAppBar(nutritionalPlan),
-      floatingActionButton: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          FloatingActionButton(
-            heroTag: null,
-            tooltip: AppLocalizations.of(context).logIngredient,
-            onPressed: () {
-              Navigator.pushNamed(
-                context,
-                FormScreen.routeName,
-                arguments: FormScreenArguments(
-                  AppLocalizations.of(context).logIngredient,
-                  IngredientLogForm(nutritionalPlan),
-                  hasListView: true,
-                ),
-              );
-            },
-            child: const SvgIcon(
-              icon: SvgIconData('assets/icons/ingredient-diary.svg'),
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(width: 8),
-          FloatingActionButton(
-            heroTag: null,
-            tooltip: AppLocalizations.of(context).logMeal,
-            onPressed: () {
-              Navigator.of(context).pushNamed(
-                LogMealsScreen.routeName,
-                arguments: nutritionalPlan,
-              );
-            },
-            child: const SvgIcon(
-              icon: SvgIconData('assets/icons/meal-diary.svg'),
-              color: Colors.white,
-            ),
-          ),
-        ],
-      ),
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            foregroundColor: appBarForeground,
-            pinned: true,
-            iconTheme: const IconThemeData(color: appBarForeground),
-            actions: [
-              if (!nutritionalPlan.onlyLogging)
-                IconButton(
-                  icon: const SvgIcon(
-                    icon: SvgIconData('assets/icons/meal-add.svg'),
-                  ),
+      floatingActionButton: _plan == null
+          ? const Offstage()
+          : Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                FloatingActionButton(
+                  heroTag: null,
+                  tooltip: AppLocalizations.of(context).logIngredient,
                   onPressed: () {
                     Navigator.pushNamed(
                       context,
                       FormScreen.routeName,
                       arguments: FormScreenArguments(
-                        AppLocalizations.of(context).addMeal,
-                        MealForm(nutritionalPlan.id!),
+                        AppLocalizations.of(context).logIngredient,
+                        IngredientLogForm(_plan!),
+                        hasListView: true,
                       ),
                     );
                   },
+                  child: const SvgIcon(
+                    icon: SvgIconData('assets/icons/ingredient-diary.svg'),
+                    color: Colors.white,
+                  ),
                 ),
-              PopupMenuButton<NutritionalPlanOptions>(
-                icon: const Icon(Icons.more_vert, color: appBarForeground),
-                onSelected: (value) {
-                  switch (value) {
-                    case NutritionalPlanOptions.edit:
-                      Navigator.pushNamed(
-                        context,
-                        FormScreen.routeName,
-                        arguments: FormScreenArguments(
-                          AppLocalizations.of(context).edit,
-                          PlanForm(nutritionalPlan),
-                          hasListView: true,
-                        ),
-                      );
-                      break;
-                    case NutritionalPlanOptions.delete:
-                      Provider.of<NutritionPlansProvider>(context, listen: false)
-                          .deletePlan(nutritionalPlan.id!);
-                      Navigator.of(context).pop();
-                      break;
-                  }
-                },
-                itemBuilder: (BuildContext context) {
-                  return [
-                    PopupMenuItem<NutritionalPlanOptions>(
-                      value: NutritionalPlanOptions.edit,
-                      child: ListTile(
-                        leading: const Icon(Icons.edit),
-                        title: Text(AppLocalizations.of(context).edit),
-                      ),
-                    ),
-                    const PopupMenuDivider(),
-                    PopupMenuItem<NutritionalPlanOptions>(
-                      value: NutritionalPlanOptions.delete,
-                      child: ListTile(
-                        leading: const Icon(Icons.delete),
-                        title: Text(AppLocalizations.of(context).delete),
-                      ),
-                    ),
-                  ];
-                },
-              ),
-            ],
-            flexibleSpace: FlexibleSpaceBar(
-              titlePadding: const EdgeInsets.fromLTRB(56, 0, 56, 16),
-              title: Text(
-                nutritionalPlan.getLabel(context),
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(color: appBarForeground),
-              ),
+                const SizedBox(width: 8),
+                FloatingActionButton(
+                  heroTag: null,
+                  tooltip: AppLocalizations.of(context).logMeal,
+                  onPressed: () {
+                    Navigator.of(context).pushNamed(
+                      LogMealsScreen.routeName,
+                      arguments: _plan,
+                    );
+                  },
+                  child: const SvgIcon(
+                    icon: SvgIconData('assets/icons/meal-diary.svg'),
+                    color: Colors.white,
+                  ),
+                ),
+              ],
             ),
-          ),
-          FutureBuilder(
-            future: NutritionalPlan.read(nutritionalPlan.id!),
-            builder: (context, AsyncSnapshot<NutritionalPlan> snapshot) =>
-                snapshot.connectionState == ConnectionState.waiting
-                    ? SliverList(
-                        delegate: SliverChildListDelegate(
-                          [
-                            const SizedBox(
-                              height: 200,
-                              child: Center(
-                                child: CircularProgressIndicator(),
-                              ),
-                            ),
-                          ],
+      body: _plan == null
+          ? const Text('plan not found')
+          : CustomScrollView(
+              slivers: [
+                SliverAppBar(
+                  foregroundColor: appBarForeground,
+                  pinned: true,
+                  iconTheme: const IconThemeData(color: appBarForeground),
+                  actions: [
+                    if (!_plan!.onlyLogging)
+                      IconButton(
+                        icon: const SvgIcon(
+                          icon: SvgIconData('assets/icons/meal-add.svg'),
                         ),
-                      )
-                    : Consumer<NutritionPlansProvider>(
-                        builder: (context, value, child) =>
-                            NutritionalPlanDetailWidget(nutritionalPlan),
+                        onPressed: () {
+                          Navigator.pushNamed(
+                            context,
+                            FormScreen.routeName,
+                            arguments: FormScreenArguments(
+                              AppLocalizations.of(context).addMeal,
+                              MealForm(_plan!.id!),
+                            ),
+                          );
+                        },
                       ),
-          ),
-        ],
-      ),
+                    PopupMenuButton<NutritionalPlanOptions>(
+                      icon: const Icon(Icons.more_vert, color: appBarForeground),
+                      onSelected: (value) {
+                        switch (value) {
+                          case NutritionalPlanOptions.edit:
+                            Navigator.pushNamed(
+                              context,
+                              FormScreen.routeName,
+                              arguments: FormScreenArguments(
+                                AppLocalizations.of(context).edit,
+                                PlanForm(_plan),
+                                hasListView: true,
+                              ),
+                            );
+                            break;
+                          case NutritionalPlanOptions.delete:
+                            Provider.of<NutritionPlansProvider>(context, listen: false)
+                                .deletePlan(_plan!.id!);
+                            Navigator.of(context).pop();
+                            break;
+                        }
+                      },
+                      itemBuilder: (BuildContext context) {
+                        return [
+                          PopupMenuItem<NutritionalPlanOptions>(
+                            value: NutritionalPlanOptions.edit,
+                            child: ListTile(
+                              leading: const Icon(Icons.edit),
+                              title: Text(AppLocalizations.of(context).edit),
+                            ),
+                          ),
+                          const PopupMenuDivider(),
+                          PopupMenuItem<NutritionalPlanOptions>(
+                            value: NutritionalPlanOptions.delete,
+                            child: ListTile(
+                              leading: const Icon(Icons.delete),
+                              title: Text(AppLocalizations.of(context).delete),
+                            ),
+                          ),
+                        ];
+                      },
+                    ),
+                  ],
+                  flexibleSpace: FlexibleSpaceBar(
+                    titlePadding: const EdgeInsets.fromLTRB(56, 0, 56, 16),
+                    title: Text(
+                      _plan!.getLabel(context),
+                      style:
+                          Theme.of(context).textTheme.titleLarge?.copyWith(color: appBarForeground),
+                    ),
+                  ),
+                ),
+                FutureBuilder(
+                  future: NutritionalPlan.read(_plan!.id!),
+                  builder: (context, AsyncSnapshot<NutritionalPlan> snapshot) =>
+                      snapshot.connectionState == ConnectionState.waiting
+                          ? SliverList(
+                              delegate: SliverChildListDelegate(
+                                [
+                                  const SizedBox(
+                                    height: 200,
+                                    child: Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : Consumer<NutritionPlansProvider>(
+                              builder: (context, value, child) =>
+                                  NutritionalPlanDetailWidget(_plan!),
+                            ),
+                ),
+              ],
+            ),
     );
   }
 }

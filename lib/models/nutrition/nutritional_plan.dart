@@ -327,10 +327,10 @@ class NutritionalPlan {
     });
   }
 
-  static Stream<NutritionalPlan> watchNutritionPlan(int id) {
+  static Stream<NutritionalPlan?> watchNutritionPlan(int id) {
     return db.onChange([tableNutritionPlans, tableLogItems, tableMeals]).asyncMap((event) async {
-      final row = await db.get('SELECT * FROM $tableNutritionPlans WHERE id = ?', [id]);
-      return NutritionalPlan.fromRow(row).loadChildren();
+      final row = await db.getOptional('SELECT * FROM $tableNutritionPlans WHERE id = ?', [id]);
+      return row == null ? null : NutritionalPlan.fromRow(row).loadChildren();
     });
   }
 

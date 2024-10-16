@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
@@ -91,6 +92,66 @@ class NutritionPlansProvider with ChangeNotifier {
     return null;
   }
 
+  Future<NutritionalPlan> _enrichPlan(NutritionalPlan plan) async {
+    // TODO: set up ingredient images
+
+    final List<Log> diaryEntries = [];
+    for (final diaryEntry in plan.diaryEntries) {
+      diaryEntry.ingredient = await fetchIngredient(diaryEntry.ingredientId);
+      diaryEntries.add(diaryEntry);
+    }
+
+    final List<Meal> meals = [];
+    for (final meal in plan.meals) {
+      final List<MealItem> mealItems = [];
+      for (final mealItem in meal.mealItems) {
+        mealItem.ingredient = await fetchIngredient(mealItem.ingredientId);
+        mealItems.add(mealItem);
+      }
+      meal.mealItems = mealItems;
+      meal.diaryEntries = diaryEntries.where((d) => d.mealId == meal.id).toList();
+      meals.add(meal);
+    }
+
+    plan.meals = meals;
+    plan.diaryEntries = diaryEntries;
+
+    return plan;
+  }
+
+  Stream<NutritionalPlan?> watchNutritionPlan(int id) {
+    return NutritionalPlan.watchNutritionPlan(id).transform(
+      StreamTransformer.fromHandlers(
+        handleData: (plan, sink) async {
+          if (plan == null) {
+            sink.add(plan);
+            return;
+          }
+          sink.add(await _enrichPlan(plan));
+        },
+      ),
+    );
+  }
+
+  Stream<NutritionalPlan> watchNutritionPlanLast() {
+    return NutritionalPlan.watchNutritionPlanLast().transform(
+      StreamTransformer.fromHandlers(
+        handleData: (plan, sink) async {
+          sink.add(await _enrichPlan(plan));
+        },
+      ),
+    );
+  }
+
+  Stream<List<NutritionalPlan>> watchNutritionPlans() {
+    return NutritionalPlan.watchNutritionPlans().transform(
+      StreamTransformer.fromHandlers(
+        handleData: (plans, sink) async {
+          sink.add(await Future.wait(plans.map((plan) => _enrichPlan(plan))));
+        },
+      ),
+    );
+  }
 /*
 TODO implement:
           ingredient.image = image;

@@ -16,33 +16,64 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/widgets/core/text_prompt.dart';
 
-class NutritionalPlansList extends StatelessWidget {
-  final NutritionPlansProvider _nutritionProvider;
+class NutritionalPlansList extends StatefulWidget {
+  @override
+  _NutritionalPlansListState createState() => _NutritionalPlansListState();
+}
 
-  const NutritionalPlansList(this._nutritionProvider);
+class _NutritionalPlansListState extends State<NutritionalPlansList> {
+  List<NutritionalPlan> _plans = [];
+  StreamSubscription? _subscription;
+
+  @override
+  void initState() {
+    super.initState();
+    final stream =
+        Provider.of<NutritionPlansProvider>(context, listen: false).watchNutritionPlans();
+    _subscription = stream.listen((plans) {
+      if (!context.mounted) {
+        return;
+      }
+      setState(() {
+        _plans = plans;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _subscription?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return _nutritionProvider.items.isEmpty
+    final provider = Provider.of<NutritionPlansProvider>(context, listen: false);
+
+    return _plans.isEmpty
         ? const TextPrompt()
         : ListView.builder(
             padding: const EdgeInsets.all(10.0),
-            itemCount: _nutritionProvider.items.length,
+            itemCount: _plans.length,
             itemBuilder: (context, index) {
-              final currentPlan = _nutritionProvider.items[index];
+              final currentPlan = _plans[index];
               return Card(
                 child: ListTile(
                   onTap: () {
                     Navigator.of(context).pushNamed(
                       NutritionalPlanScreen.routeName,
-                      arguments: currentPlan,
+                      arguments: currentPlan.id,
                     );
                   },
                   title: Text(currentPlan.getLabel(context)),
@@ -57,7 +88,6 @@ class NutritionalPlansList extends StatelessWidget {
                       icon: const Icon(Icons.delete),
                       tooltip: AppLocalizations.of(context).delete,
                       onPressed: () async {
-                        // Delete the plan from DB
                         await showDialog(
                           context: context,
                           builder: (BuildContext contextDialog) {
@@ -80,13 +110,8 @@ class NutritionalPlansList extends StatelessWidget {
                                     ),
                                   ),
                                   onPressed: () {
-                                    // Confirmed, delete the plan
-                                    _nutritionProvider.deletePlan(currentPlan.id!);
-
-                                    // Close the popup
+                                    provider.deletePlan(currentPlan.id!);
                                     Navigator.of(contextDialog).pop();
-
-                                    // and inform the user
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                         content: Text(
