@@ -71,7 +71,7 @@ dependencies:
   freezed_annotation: ^2.4.4
   clock: ^1.1.1
   flutter_svg_icons: ^0.0.1
-  sqlite_async: ^0.8.1
+  sqlite_async: ^0.9.0
   logging: ^1.2.0
 
 dependency_overrides:
