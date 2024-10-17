@@ -4,6 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/measurement_entries_screen.dart';
+import 'package:wger/widgets/measurements/helpers.dart';
 import 'charts.dart';
 import 'forms.dart';
 
@@ -15,9 +16,9 @@ class CategoriesCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final entriesAll =
-        currentCategory.entries.map((e) => MeasurementChartEntry(e.value, e.date)).toList();
-    final entries7dAvg = moving7dAverage(entriesAll);
+    final (entriesAll, entries7dAvg) = sensibleRange(
+      currentCategory.entries.map((e) => MeasurementChartEntry(e.value, e.date)).toList(),
+    );
 
     return Card(
       elevation: elevation,
@@ -39,11 +40,12 @@ class CategoriesCard extends StatelessWidget {
               avgs: entries7dAvg,
             ),
           ),
-          MeasurementOverallChangeWidget(
-            entries7dAvg.first,
-            entries7dAvg.last,
-            currentCategory.unit,
-          ),
+          if (entries7dAvg.isNotEmpty)
+            MeasurementOverallChangeWidget(
+              entries7dAvg.first,
+              entries7dAvg.last,
+              currentCategory.unit,
+            ),
           const Divider(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

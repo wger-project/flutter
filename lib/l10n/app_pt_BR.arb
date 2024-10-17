@@ -679,5 +679,11 @@
   "oneNamePerLine": "Um nome por linha",
   "@oneNamePerLine": {},
   "settingsTitle": "Configurações",
-  "@settingsTitle": {}
+  "@settingsTitle": {},
+  "onlyLogging": "Apenas acompanhe calorias",
+  "@onlyLogging": {},
+  "ingredientLogged": "Ingrediente registrado no diário",
+  "@ingredientLogged": {},
+  "noIngredientsDefined": "Nenhum ingrediente definido ainda",
+  "@noIngredientsDefined": {}
 }

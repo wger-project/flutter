@@ -296,6 +296,31 @@
   "@weight": {
     "description": "The weight of a workout log or body weight entry"
   },
+  "chartAllTimeTitle": "{name} all-time",
+  "@chartAllTimeTitle": {
+    "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "chart30DaysTitle": "{name} last 30 days",
+  "@chart30DaysTitle": {
+    "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "chartDuringPlanTitle": "{chartName} during nutritional plan {planName}",
+  "@chartDuringPlanTitle": {
+    "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
+    "type": "text",
+    "placeholders": {
+      "chartName": {},
+      "planName": {}
+    }
+  },
   "measurement": "Measurement",
   "@measurement": {},
   "measurements": "Measurements",

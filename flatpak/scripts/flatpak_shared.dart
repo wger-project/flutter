@@ -248,7 +248,7 @@ class FlatpakMeta {
         throw Exception(
             'Metadata must include Github repository info if fetching releases from Github.');
       }
-      return await _githubReleases!.getLatestReleaseAssets();
+      return _githubReleases!.getLatestReleaseAssets();
     } else {
       if (_localReleases == null) {
         throw Exception('Metadata must include releases if not fetching releases from Github.');
