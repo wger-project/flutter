@@ -16,13 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
+import 'package:wger/powersync.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/exercises.dart';
@@ -39,6 +39,7 @@ import 'package:wger/screens/workout_plans_screen.dart';
 
 class HomeTabsScreen extends StatefulWidget {
   const HomeTabsScreen();
+
   static const routeName = '/dashboard2';
 
   @override
@@ -52,6 +53,10 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
   @override
   void initState() {
     super.initState();
+
+    // do we need to await this? or if it's async, how do we handle failures?
+    _setupPowersync();
+
     // Loading data here, since the build method can be called more than once
     _initialData = _loadEntries();
   }
@@ -70,6 +75,25 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
     const GalleryScreen(),
   ];
 
+  Future<void> _setupPowersync() async {
+    final authProvider = context.read<AuthProvider>();
+    final baseUrl = authProvider.serverUrl!;
+    final powerSyncUrl = baseUrl.replaceAll(':8000', ':8080');
+
+    await openDatabase(false, baseUrl, powerSyncUrl);
+
+    final connector = DjangoConnector(db, baseUrl, powerSyncUrl);
+    try {
+      // TODO: should we cache these credentials? that's what their demo does?
+      // we could maybe get the initial token from the /api/v2/login call
+      final credentials = await connector.fetchCredentials();
+      print('fetched credentials' + credentials.toString());
+      await openDatabase(true, baseUrl, powerSyncUrl);
+    } catch (e) {
+      print('failed to fetchCredentials()' + e.toString());
+    }
+  }
+
   /// Load initial data from the server
   Future<void> _loadEntries() async {
     final authProvider = context.read<AuthProvider>();
@@ -84,7 +108,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
       final userProvider = context.read<UserProvider>();
 
       // Base data
-      log('Loading base data');
+      log.log(Level.FINER, Level.FINER, 'Loading base data');
       try {
         await Future.wait([
           authProvider.setServerVersion(),
@@ -94,39 +118,26 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
           exercisesProvider.fetchAndSetInitialData(),
         ]);
       } catch (e) {
-        log('Exception loading base data');
-        log(e.toString());
+        log.log(Level.FINER, 'Exception loading base data');
+        log.log(Level.FINER, e.toString());
       }
 
       // Plans, weight and gallery
-      log('Loading plans, weight, measurements and gallery');
+      log.log(Level.FINER, 'Loading workouts, weight, measurements and gallery');
       try {
         await Future.wait([
           galleryProvider.fetchAndSetGallery(),
-          nutritionPlansProvider.fetchAndSetAllPlansSparse(),
           workoutPlansProvider.fetchAndSetAllPlansSparse(),
           weightProvider.fetchAndSetEntries(),
           measurementProvider.fetchAndSetAllCategoriesAndEntries(),
         ]);
       } catch (e) {
-        log('Exception loading plans, weight, measurements and gallery');
-        log(e.toString());
-      }
-
-      // Current nutritional plan
-      log('Loading current nutritional plan');
-      try {
-        if (nutritionPlansProvider.currentPlan != null) {
-          final plan = nutritionPlansProvider.currentPlan!;
-          await nutritionPlansProvider.fetchAndSetPlanFull(plan.id!);
-        }
-      } catch (e) {
-        log('Exception loading current nutritional plan');
-        log(e.toString());
+        log.log(Level.FINER, 'Exception loading plans, weight, measurements and gallery');
+        log.log(Level.FINER, e.toString());
       }
 
       // Current workout plan
-      log('Loading current workout plan');
+      log.log(Level.FINER, 'Loading current workout plan');
       if (workoutPlansProvider.activePlan != null) {
         final planId = workoutPlansProvider.activePlan!.id!;
         await workoutPlansProvider.fetchAndSetWorkoutPlanFull(planId);

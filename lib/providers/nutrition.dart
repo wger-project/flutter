@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
@@ -35,6 +36,7 @@ import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/base_provider.dart';
 
 class NutritionPlansProvider with ChangeNotifier {
+  // TODO: should be able to delete many of these paths and their corresponding code
   static const _nutritionalPlansPath = 'nutritionplan';
   static const _nutritionalPlansInfoPath = 'nutritionplaninfo';
   static const _mealPath = 'meal';
@@ -90,89 +92,72 @@ class NutritionPlansProvider with ChangeNotifier {
     return null;
   }
 
-  /// Fetches and sets all plans sparsely, i.e. only with the data on the plan
-  /// object itself and no child attributes
-  Future<void> fetchAndSetAllPlansSparse() async {
-    final data = await baseProvider.fetchPaginated(
-      baseProvider.makeUrl(_nutritionalPlansPath, query: {'limit': '1000'}),
-    );
-    _plans = [];
-    for (final planData in data) {
-      final plan = NutritionalPlan.fromJson(planData);
-      _plans.add(plan);
-      _plans.sort((a, b) => b.creationDate.compareTo(a.creationDate));
-    }
-    notifyListeners();
-  }
+  Future<NutritionalPlan> _enrichPlan(NutritionalPlan plan) async {
+    // TODO: set up ingredient images
 
-  /// Fetches and sets all plans fully, i.e. with all corresponding child objects
-  Future<void> fetchAndSetAllPlansFull() async {
-    final data = await baseProvider.fetchPaginated(baseProvider.makeUrl(_nutritionalPlansPath));
-    await Future.wait(data.map((e) => fetchAndSetPlanFull(e['id'])).toList());
-  }
-
-  /// Fetches and sets the given nutritional plan
-  ///
-  /// This method only loads the data on the nutritional plan object itself,
-  /// no meals, etc.
-  Future<NutritionalPlan> fetchAndSetPlanSparse(int planId) async {
-    final url = baseProvider.makeUrl(_nutritionalPlansPath, id: planId);
-    final planData = await baseProvider.fetch(url);
-    final plan = NutritionalPlan.fromJson(planData);
-    _plans.add(plan);
-    _plans.sort((a, b) => b.creationDate.compareTo(a.creationDate));
-
-    notifyListeners();
-    return plan;
-  }
-
-  /// Fetches a plan fully, i.e. with all corresponding child objects
-  Future<NutritionalPlan> fetchAndSetPlanFull(int planId) async {
-    NutritionalPlan plan;
-    try {
-      plan = findById(planId);
-    } on NoSuchEntryException {
-      // TODO: remove this useless call, because we will fetch all details below
-      plan = await fetchAndSetPlanSparse(planId);
+    final List<Log> diaryEntries = [];
+    for (final diaryEntry in plan.diaryEntries) {
+      diaryEntry.ingredient = await fetchIngredient(diaryEntry.ingredientId);
+      diaryEntries.add(diaryEntry);
     }
 
-    // Plan
-    final url = baseProvider.makeUrl(_nutritionalPlansInfoPath, id: planId);
-    final fullPlanData = await baseProvider.fetch(url);
-
-    // Meals
     final List<Meal> meals = [];
-    for (final mealData in fullPlanData['meals']) {
+    for (final meal in plan.meals) {
       final List<MealItem> mealItems = [];
-      final meal = Meal.fromJson(mealData);
-
-      // TODO: we should add these ingredients to the ingredient cache
-      for (final mealItemData in mealData['meal_items']) {
-        final mealItem = MealItem.fromJson(mealItemData);
-
-        final ingredient = Ingredient.fromJson(mealItemData['ingredient_obj']);
-        if (mealItemData['image'] != null) {
-          final image = IngredientImage.fromJson(mealItemData['image']);
-          ingredient.image = image;
-        }
-        mealItem.ingredient = ingredient;
+      for (final mealItem in meal.mealItems) {
+        mealItem.ingredient = await fetchIngredient(mealItem.ingredientId);
         mealItems.add(mealItem);
       }
       meal.mealItems = mealItems;
+      meal.diaryEntries = diaryEntries.where((d) => d.mealId == meal.id).toList();
       meals.add(meal);
     }
+
     plan.meals = meals;
+    plan.diaryEntries = diaryEntries;
 
-    // Logs
-    await fetchAndSetLogs(plan);
-    for (final meal in meals) {
-      meal.diaryEntries = plan.diaryEntries.where((e) => e.mealId == meal.id).toList();
-    }
-
-    // ... and done
-    notifyListeners();
     return plan;
   }
+
+  Stream<NutritionalPlan?> watchNutritionPlan(int id) {
+    return NutritionalPlan.watchNutritionPlan(id).transform(
+      StreamTransformer.fromHandlers(
+        handleData: (plan, sink) async {
+          if (plan == null) {
+            sink.add(plan);
+            return;
+          }
+          sink.add(await _enrichPlan(plan));
+        },
+      ),
+    );
+  }
+
+  Stream<NutritionalPlan> watchNutritionPlanLast() {
+    return NutritionalPlan.watchNutritionPlanLast().transform(
+      StreamTransformer.fromHandlers(
+        handleData: (plan, sink) async {
+          sink.add(await _enrichPlan(plan));
+        },
+      ),
+    );
+  }
+
+  Stream<List<NutritionalPlan>> watchNutritionPlans() {
+    return NutritionalPlan.watchNutritionPlans().transform(
+      StreamTransformer.fromHandlers(
+        handleData: (plans, sink) async {
+          sink.add(await Future.wait(plans.map((plan) => _enrichPlan(plan))));
+        },
+      ),
+    );
+  }
+/*
+TODO implement:
+          ingredient.image = image;
+        mealItem.ingredient = ingredient;
+
+  */
 
   Future<NutritionalPlan> addPlan(NutritionalPlan planData) async {
     final data = await baseProvider.post(

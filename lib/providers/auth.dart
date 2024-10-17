@@ -182,6 +182,7 @@ class AuthProvider with ChangeNotifier {
     }
 
     // Log user in
+    // should we update the backend to just include a powersync token also?
     token = responseData['token'];
     notifyListeners();
 

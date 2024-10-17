@@ -672,7 +672,7 @@ class _PlanFormState extends State<PlanForm> {
                   if (context.mounted) {
                     Navigator.of(context).pushReplacementNamed(
                       NutritionalPlanScreen.routeName,
-                      arguments: widget._plan,
+                      arguments: widget._plan.id,
                     );
                   }
                 }
