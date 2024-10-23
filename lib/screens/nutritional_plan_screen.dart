@@ -49,7 +49,7 @@ class _NutritionalPlanScreenState extends State<NutritionalPlanScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final id = ModalRoute.of(context)!.settings.arguments as int;
+    final id = ModalRoute.of(context)!.settings.arguments as String;
     //final id = 111;
 
     final stream =

@@ -28,7 +28,7 @@ import 'package:wger/widgets/nutrition/nutritional_diary_detail.dart';
 /// Arguments passed to the form screen
 class NutritionalDiaryArguments {
   /// Nutritional plan
-  final int plan;
+  final String plan;
 
   /// Date to show data for
   final DateTime date;

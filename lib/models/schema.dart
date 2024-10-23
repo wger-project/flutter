@@ -33,6 +33,7 @@ Schema schema = const Schema([
       Column.text('description'),
       Column.integer('has_goal_calories'),
       Column.integer('user_id'),
+      Column.integer('remote_id'),
       Column.integer('only_logging'),
       Column.integer('goal_carbohydrates'),
       Column.integer('goal_energy'),
@@ -47,10 +48,11 @@ Schema schema = const Schema([
       Column.text('datetime'),
       Column.text('comment'),
       Column.integer('amount'),
+      Column.integer('remote_id'),
       Column.integer('ingredient_id'),
-      Column.integer('plan_id'),
+      Column.text('plan_id'),
       Column.integer('weight_unit_id'),
-      Column.integer('meal_id'), // optional
+      Column.text('meal_id'), // optional
     ],
     indexes: [
       // Index('plan', [IndexedColumn('plan_id')])
@@ -60,8 +62,9 @@ Schema schema = const Schema([
     tableMeals,
     [
       Column.integer('order'),
+      Column.integer('remote_id'),
       Column.text('time'),
-      Column.integer('plan_id'),
+      Column.text('plan_id'),
       Column.text('name'),
     ],
   ),
@@ -71,7 +74,8 @@ Schema schema = const Schema([
       Column.integer('order'),
       Column.integer('amount'),
       Column.integer('ingredient_id'),
-      Column.integer('meal_id'),
+      Column.text('meal_id'),
+      Column.integer('remote_id'),
       Column.integer('weight_unit_id'),
     ],
   ),

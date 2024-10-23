@@ -10,7 +10,6 @@ NutritionalPlan _$NutritionalPlanFromJson(Map<String, dynamic> json) {
   $checkKeys(
     json,
     requiredKeys: const [
-      'id',
       'description',
       'creation_date',
       'only_logging',
@@ -22,7 +21,7 @@ NutritionalPlan _$NutritionalPlanFromJson(Map<String, dynamic> json) {
     ],
   );
   return NutritionalPlan(
-    id: (json['id'] as num?)?.toInt(),
+    id: json['id'] as String?,
     description: json['description'] as String,
     creationDate: DateTime.parse(json['creation_date'] as String),
     onlyLogging: json['only_logging'] as bool? ?? false,

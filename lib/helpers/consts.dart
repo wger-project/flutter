@@ -109,7 +109,7 @@ enum EXERCISE_IMAGE_ART_STYLE {
 }
 
 /// Dummy ID for pseudo meals
-const PSEUDO_MEAL_ID = -1;
+const PSEUDO_MEAL_ID = 'deadbeef';
 
 /// Colors used for muscles
 const COLOR_MAIN_MUSCLES = Colors.red;

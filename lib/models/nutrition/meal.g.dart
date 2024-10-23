@@ -7,10 +7,10 @@ part of 'meal.dart';
 // **************************************************************************
 
 Meal _$MealFromJson(Map<String, dynamic> json) => Meal(
-      id: (json['id'] as num?)?.toInt(),
+      id: json['id'] as String?,
       time: stringToTime(json['time'] as String?),
       name: json['name'] as String?,
-    )..planId = (json['plan'] as num).toInt();
+    )..planId = json['plan'] as String;
 
 Map<String, dynamic> _$MealToJson(Meal instance) => <String, dynamic>{
       'id': instance.id,

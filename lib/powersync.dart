@@ -60,6 +60,8 @@ class DjangoConnector extends PowerSyncBackendConnector {
           'data': {'id': op.id, ...?op.opData},
         };
 
+        log.fine('DIETER Uploading record', record);
+
         switch (op.op) {
           case UpdateType.put:
             await apiClient.upsert(record);

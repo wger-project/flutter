@@ -36,7 +36,7 @@ import 'package:wger/widgets/nutrition/widgets.dart';
 
 class MealForm extends StatelessWidget {
   late final Meal _meal;
-  final int _planId;
+  final String _planId;
 
   final _form = GlobalKey<FormState>();
   final _timeController = TextEditingController();
@@ -128,7 +128,7 @@ Widget MealItemForm(
 ]) {
   return IngredientForm(
     // TODO we use planId 0 here cause we don't have one and we don't need it I think?
-    recent: recent.map((e) => Log.fromMealItem(e, 0, e.mealId)).toList(),
+    recent: recent.map((e) => Log.fromMealItem(e, "0", e.mealId)).toList(),
     onSave: (BuildContext context, MealItem mealItem, DateTime? dt) {
       mealItem.mealId = meal.id!;
       Provider.of<NutritionPlansProvider>(context, listen: false).addMealItem(mealItem, meal);

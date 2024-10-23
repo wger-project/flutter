@@ -33,10 +33,10 @@ part 'meal.g.dart';
 @JsonSerializable()
 class Meal {
   @JsonKey(required: false)
-  late int? id;
+  late String? id;
 
   @JsonKey(name: 'plan')
-  late int planId;
+  late String planId;
 
   @JsonKey(toJson: timeToString, fromJson: stringToTime)
   TimeOfDay? time;
@@ -55,7 +55,7 @@ class Meal {
 
   Meal({
     this.id,
-    int? plan,
+    String? plan,
     this.time,
     String? name,
     List<MealItem>? mealItems,
@@ -92,7 +92,7 @@ class Meal {
 
   factory Meal.fromRow(sqlite.Row row) {
     return Meal(
-      id: int.parse(row['id']),
+      id: row['id'],
       plan: row['plan_id'],
       time: stringToTime(row['time']),
       name: row['name'],
@@ -102,8 +102,8 @@ class Meal {
   Map<String, dynamic> toJson() => _$MealToJson(this);
 
   Meal copyWith({
-    int? id,
-    int? plan,
+    String? id,
+    String? plan,
     TimeOfDay? time,
     String? name,
     List<MealItem>? mealItems,
@@ -127,12 +127,12 @@ class Meal {
     );
   }
 
-  static Future<Meal> read(int id) async {
+  static Future<Meal> read(String id) async {
     final results = await db.get('SELECT * FROM $tableMeals WHERE id = ?', [id]);
     return Meal.fromRow(results);
   }
 
-  static Future<List<Meal>> readByPlanId(int planId) async {
+  static Future<List<Meal>> readByPlanId(String planId) async {
     print('Meal.readByPlanId: SELECT * FROM $tableMeals WHERE plan_id = $planId');
     final results = await db.getAll('SELECT * FROM $tableMeals WHERE plan_id = ?', [planId]);
     print(results.rows.length);

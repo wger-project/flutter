@@ -35,7 +35,7 @@ void main() {
   var mockNutrition = MockNutritionPlansProvider();
 
   final plan1 = NutritionalPlan(
-    id: 1,
+    id: 'deadbeef',
     creationDate: DateTime(2021, 1, 1),
     description: 'test plan 1',
   );

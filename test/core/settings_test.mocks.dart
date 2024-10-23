@@ -711,79 +711,34 @@ class MockNutritionPlansProvider extends _i1.Mock
       );
 
   @override
-  _i10.NutritionalPlan findById(int? id) => (super.noSuchMethod(
+  _i15.Stream<_i10.NutritionalPlan?> watchNutritionPlan(String? id) =>
+      (super.noSuchMethod(
         Invocation.method(
-          #findById,
+          #watchNutritionPlan,
           [id],
         ),
-        returnValue: _FakeNutritionalPlan_8(
-          this,
-          Invocation.method(
-            #findById,
-            [id],
-          ),
-        ),
-      ) as _i10.NutritionalPlan);
+        returnValue: _i15.Stream<_i10.NutritionalPlan?>.empty(),
+      ) as _i15.Stream<_i10.NutritionalPlan?>);
 
   @override
-  _i11.Meal? findMealById(int? id) => (super.noSuchMethod(Invocation.method(
-        #findMealById,
-        [id],
-      )) as _i11.Meal?);
-
-  @override
-  _i15.Future<void> fetchAndSetAllPlansSparse() => (super.noSuchMethod(
-        Invocation.method(
-          #fetchAndSetAllPlansSparse,
-          [],
-        ),
-        returnValue: _i15.Future<void>.value(),
-        returnValueForMissingStub: _i15.Future<void>.value(),
-      ) as _i15.Future<void>);
-
-  @override
-  _i15.Future<void> fetchAndSetAllPlansFull() => (super.noSuchMethod(
-        Invocation.method(
-          #fetchAndSetAllPlansFull,
-          [],
-        ),
-        returnValue: _i15.Future<void>.value(),
-        returnValueForMissingStub: _i15.Future<void>.value(),
-      ) as _i15.Future<void>);
-
-  @override
-  _i15.Future<_i10.NutritionalPlan> fetchAndSetPlanSparse(int? planId) =>
+  _i15.Stream<_i10.NutritionalPlan> watchNutritionPlanLast() =>
       (super.noSuchMethod(
         Invocation.method(
-          #fetchAndSetPlanSparse,
-          [planId],
+          #watchNutritionPlanLast,
+          [],
         ),
-        returnValue:
-            _i15.Future<_i10.NutritionalPlan>.value(_FakeNutritionalPlan_8(
-          this,
-          Invocation.method(
-            #fetchAndSetPlanSparse,
-            [planId],
-          ),
-        )),
-      ) as _i15.Future<_i10.NutritionalPlan>);
+        returnValue: _i15.Stream<_i10.NutritionalPlan>.empty(),
+      ) as _i15.Stream<_i10.NutritionalPlan>);
 
   @override
-  _i15.Future<_i10.NutritionalPlan> fetchAndSetPlanFull(int? planId) =>
+  _i15.Stream<List<_i10.NutritionalPlan>> watchNutritionPlans() =>
       (super.noSuchMethod(
         Invocation.method(
-          #fetchAndSetPlanFull,
-          [planId],
+          #watchNutritionPlans,
+          [],
         ),
-        returnValue:
-            _i15.Future<_i10.NutritionalPlan>.value(_FakeNutritionalPlan_8(
-          this,
-          Invocation.method(
-            #fetchAndSetPlanFull,
-            [planId],
-          ),
-        )),
-      ) as _i15.Future<_i10.NutritionalPlan>);
+        returnValue: _i15.Stream<List<_i10.NutritionalPlan>>.empty(),
+      ) as _i15.Stream<List<_i10.NutritionalPlan>>);
 
   @override
   _i15.Future<_i10.NutritionalPlan> addPlan(_i10.NutritionalPlan? planData) =>
@@ -813,7 +768,7 @@ class MockNutritionPlansProvider extends _i1.Mock
       ) as _i15.Future<void>);
 
   @override
-  _i15.Future<void> deletePlan(int? id) => (super.noSuchMethod(
+  _i15.Future<void> deletePlan(String? id) => (super.noSuchMethod(
         Invocation.method(
           #deletePlan,
           [id],
@@ -825,7 +780,7 @@ class MockNutritionPlansProvider extends _i1.Mock
   @override
   _i15.Future<_i11.Meal> addMeal(
     _i11.Meal? meal,
-    int? planId,
+    String? planId,
   ) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -991,7 +946,7 @@ class MockNutritionPlansProvider extends _i1.Mock
   @override
   _i15.Future<void> logIngredientToDiary(
     _i12.MealItem? mealItem,
-    int? planId, [
+    String? planId, [
     DateTime? dateTime,
   ]) =>
       (super.noSuchMethod(
@@ -1009,8 +964,8 @@ class MockNutritionPlansProvider extends _i1.Mock
 
   @override
   _i15.Future<void> deleteLog(
-    int? logId,
-    int? planId,
+    String? logId,
+    String? planId,
   ) =>
       (super.noSuchMethod(
         Invocation.method(

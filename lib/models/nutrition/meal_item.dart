@@ -34,7 +34,7 @@ class MealItem {
   int? id;
 
   @JsonKey(required: false, name: 'meal')
-  late int mealId;
+  late String mealId;
 
   @JsonKey(required: false, name: 'ingredient')
   late int ingredientId;
@@ -53,7 +53,7 @@ class MealItem {
 
   MealItem({
     this.id,
-    int? mealId,
+    String? mealId,
     required this.ingredientId,
     this.weightUnitId,
     required this.amount,
@@ -107,7 +107,7 @@ class MealItem {
 
   MealItem copyWith({
     int? id,
-    int? mealId,
+    String? mealId,
     int? ingredientId,
     int? weightUnitId,
     num? amount,
@@ -126,7 +126,7 @@ class MealItem {
     return m;
   }
 
-  static Future<List<MealItem>> readByMealId(int mealId) async {
+  static Future<List<MealItem>> readByMealId(String mealId) async {
     final results = await db.getAll('SELECT * FROM $tableMealItems WHERE meal_id = ?', [mealId]);
     return results.map((r) => MealItem.fromRow(r)).toList();
   }

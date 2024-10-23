@@ -35,8 +35,8 @@ part 'nutritional_plan.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class NutritionalPlan {
-  @JsonKey(required: true)
-  int? id;
+  @JsonKey(required: false)
+  String? id;
 
   @JsonKey(required: true)
   late String description;
@@ -87,7 +87,7 @@ class NutritionalPlan {
 
   factory NutritionalPlan.fromRow(sqlite.Row row) {
     return NutritionalPlan(
-      id: int.parse(row['id']),
+      id: row['id'],
       description: row['description'],
       creationDate: DateTime.parse(row['creation_date']),
       onlyLogging: row['only_logging'] == 1,
@@ -100,7 +100,7 @@ class NutritionalPlan {
   }
 
   NutritionalPlan copyWith({
-    int? id,
+    String? id,
     String? description,
     DateTime? creationDate,
     bool? onlyLogging,
@@ -299,7 +299,7 @@ class NutritionalPlan {
     );
   }
 
-  static Future<NutritionalPlan> read(int id) async {
+  static Future<NutritionalPlan> read(String id) async {
     final row = await db.get('SELECT * FROM $tableNutritionPlans WHERE id = ?', [id]);
     return NutritionalPlan.fromRow(row).loadChildren();
   }
@@ -327,18 +327,21 @@ class NutritionalPlan {
     });
   }
 
-  static Stream<NutritionalPlan?> watchNutritionPlan(int id) {
+  static Stream<NutritionalPlan?> watchNutritionPlan(String id) {
     return db.onChange([tableNutritionPlans, tableLogItems, tableMeals]).asyncMap((event) async {
       final row = await db.getOptional('SELECT * FROM $tableNutritionPlans WHERE id = ?', [id]);
       return row == null ? null : NutritionalPlan.fromRow(row).loadChildren();
     });
   }
 
-  static Stream<NutritionalPlan> watchNutritionPlanLast() {
+  static Stream<NutritionalPlan?> watchNutritionPlanLast() {
     return db.onChange([tableNutritionPlans, tableLogItems, tableMeals]).asyncMap((event) async {
-      final row =
-          await db.get('SELECT * FROM $tableNutritionPlans ORDER BY creation_date DESC LIMIT 1');
-      return NutritionalPlan.fromRow(row).loadChildren();
+      final res =
+          await db.getAll('SELECT * FROM $tableNutritionPlans ORDER BY creation_date DESC LIMIT 1');
+      if (res.isEmpty) {
+        return null;
+      }
+      return NutritionalPlan.fromRow(res.first).loadChildren();
     });
   }
 /*

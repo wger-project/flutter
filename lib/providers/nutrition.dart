@@ -74,13 +74,14 @@ class NutritionPlansProvider with ChangeNotifier {
     }
     return null;
   }
-
+/*
   NutritionalPlan findById(int id) {
     return _plans.firstWhere(
       (plan) => plan.id == id,
       orElse: () => throw const NoSuchEntryException(),
     );
   }
+  
 
   Meal? findMealById(int id) {
     for (final plan in _plans) {
@@ -91,6 +92,7 @@ class NutritionPlansProvider with ChangeNotifier {
     }
     return null;
   }
+  */
 
   Future<NutritionalPlan> _enrichPlan(NutritionalPlan plan) async {
     // TODO: set up ingredient images
@@ -119,7 +121,7 @@ class NutritionPlansProvider with ChangeNotifier {
     return plan;
   }
 
-  Stream<NutritionalPlan?> watchNutritionPlan(int id) {
+  Stream<NutritionalPlan?> watchNutritionPlan(String id) {
     return NutritionalPlan.watchNutritionPlan(id).transform(
       StreamTransformer.fromHandlers(
         handleData: (plan, sink) async {
@@ -137,6 +139,9 @@ class NutritionPlansProvider with ChangeNotifier {
     return NutritionalPlan.watchNutritionPlanLast().transform(
       StreamTransformer.fromHandlers(
         handleData: (plan, sink) async {
+          if (plan == null) {
+            return;
+          }
           sink.add(await _enrichPlan(plan));
         },
       ),
@@ -172,31 +177,16 @@ TODO implement:
   }
 
   Future<void> editPlan(NutritionalPlan plan) async {
-    await baseProvider.patch(
-      plan.toJson(),
-      baseProvider.makeUrl(_nutritionalPlansPath, id: plan.id),
-    );
-    notifyListeners();
+// TODO
   }
 
-  Future<void> deletePlan(int id) async {
-    final existingPlanIndex = _plans.indexWhere((element) => element.id == id);
-    final existingPlan = _plans[existingPlanIndex];
-    _plans.removeAt(existingPlanIndex);
-    notifyListeners();
-
-    final response = await baseProvider.deleteRequest(_nutritionalPlansPath, id);
-
-    if (response.statusCode >= 400) {
-      _plans.insert(existingPlanIndex, existingPlan);
-      notifyListeners();
-      throw WgerHttpException(response.body);
-    }
-    //existingPlan = null;
+  Future<void> deletePlan(String id) async {
+// TODO
   }
 
   /// Adds a meal to a plan
-  Future<Meal> addMeal(Meal meal, int planId) async {
+  Future<Meal> addMeal(Meal meal, String planId) async {
+    /*
     final plan = findById(planId);
     final data = await baseProvider.post(
       meal.toJson(),
@@ -208,10 +198,13 @@ TODO implement:
     notifyListeners();
 
     return meal;
+    */
+    return meal;
   }
 
   /// Edits an existing meal
   Future<Meal> editMeal(Meal meal) async {
+    /*
     final data = await baseProvider.patch(
       meal.toJson(),
       baseProvider.makeUrl(_mealPath, id: meal.id),
@@ -219,11 +212,13 @@ TODO implement:
     meal = Meal.fromJson(data);
 
     notifyListeners();
+    */
     return meal;
   }
 
   /// Deletes a meal
   Future<void> deleteMeal(Meal meal) async {
+    /*
     // Get the meal
     final plan = findById(meal.planId);
     final mealIndex = plan.meals.indexWhere((e) => e.id == meal.id);
@@ -238,6 +233,8 @@ TODO implement:
       notifyListeners();
       throw WgerHttpException(response.body);
     }
+    */
+    return;
   }
 
   /// Adds a meal item to a meal
@@ -257,6 +254,7 @@ TODO implement:
 
   /// Deletes a meal
   Future<void> deleteMealItem(MealItem mealItem) async {
+    /*
     // Get the meal
     final meal = findMealById(mealItem.mealId)!;
     final mealItemIndex = meal.mealItems.indexWhere((e) => e.id == mealItem.id);
@@ -271,6 +269,7 @@ TODO implement:
       notifyListeners();
       throw WgerHttpException(response.body);
     }
+    */
   }
 
   Future<void> clearIngredientCache() async {
@@ -380,6 +379,7 @@ TODO implement:
 
   /// Log meal to nutrition diary
   Future<void> logMealToDiary(Meal meal) async {
+    /*
     for (final item in meal.mealItems) {
       final plan = findById(meal.planId);
       final Log log = Log.fromMealItem(item, plan.id!, meal.id);
@@ -392,34 +392,29 @@ TODO implement:
       plan.diaryEntries.add(log);
     }
     notifyListeners();
+    */
   }
 
   /// Log custom ingredient to nutrition diary
   Future<void> logIngredientToDiary(
     MealItem mealItem,
-    int planId, [
+    String planId, [
     DateTime? dateTime,
-  ]) async {
-    final plan = findById(planId);
-    mealItem.ingredient = await fetchIngredient(mealItem.ingredientId);
-    final Log log = Log.fromMealItem(mealItem, plan.id!, null, dateTime);
-
-    final data = await baseProvider.post(
-      log.toJson(),
-      baseProvider.makeUrl(_nutritionDiaryPath),
-    );
-    log.id = data['id'];
-    plan.diaryEntries.add(log);
-    notifyListeners();
+  ]) {
+    print(
+        'DIETER logIngredientToDiary called ingredient=${mealItem.ingredientId}, planId=$planId, dateTime=$dateTime');
+    return Log.fromMealItem(mealItem, planId, null, dateTime).log();
   }
 
   /// Deletes a log entry
-  Future<void> deleteLog(int logId, int planId) async {
+  Future<void> deleteLog(String logId, String planId) async {
+    /*
     await baseProvider.deleteRequest(_nutritionDiaryPath, logId);
 
     final plan = findById(planId);
     plan.diaryEntries.removeWhere((element) => element.id == logId);
     notifyListeners();
+    */
   }
 
   /// Load nutrition diary entries for plan

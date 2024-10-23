@@ -60,7 +60,7 @@ void main() {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
-        home: Scaffold(body: MealForm(1, meal)),
+        home: Scaffold(body: MealForm("1", meal)),
         routes: {
           NutritionalPlanScreen.routeName: (ctx) => const NutritionalPlanScreen(),
         },

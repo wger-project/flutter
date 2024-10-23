@@ -67,12 +67,12 @@ void main() {
         mockBaseProvider,
         [
           NutritionalPlan(
-            id: 1,
+            id: 'deadbeefa',
             description: 'test plan 1',
             creationDate: DateTime(2021, 01, 01),
           ),
           NutritionalPlan(
-            id: 2,
+            id: 'deadbeefb',
             description: 'test plan 2',
             creationDate: DateTime(2021, 01, 10),
           ),

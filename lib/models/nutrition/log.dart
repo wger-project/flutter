@@ -17,6 +17,7 @@
  */
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:powersync/powersync.dart';
 import 'package:powersync/sqlite3.dart' as sqlite;
 import 'package:wger/helpers/json.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
@@ -25,20 +26,19 @@ import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
 import 'package:wger/models/schema.dart';
 import 'package:wger/powersync.dart';
-import 'package:wger/providers/nutrition.dart';
 
 part 'log.g.dart';
 
 @JsonSerializable()
 class Log {
   @JsonKey(required: true)
-  int? id;
+  String? id;
 
   @JsonKey(required: false, name: 'meal')
-  int? mealId;
+  String? mealId;
 
   @JsonKey(required: true, name: 'plan')
-  int planId;
+  String planId;
 
   @JsonKey(required: true)
   late DateTime datetime;
@@ -81,7 +81,7 @@ class Log {
 
   factory Log.fromRow(sqlite.Row row) {
     return Log(
-      id: int.parse(row['id']),
+      id: row['id'],
       mealId: row['meal_id'],
       ingredientId: row['ingredient_id'],
       weightUnitId: row['weight_unit_id'],
@@ -107,12 +107,12 @@ class Log {
     return ingredient.nutritionalValues / (100 / weight);
   }
 
-  static Future<List<Log>> readByMealId(int mealId) async {
+  static Future<List<Log>> readByMealId(String mealId) async {
     final results = await db.getAll('SELECT * FROM $tableLogItems WHERE meal_id = ?', [mealId]);
     return results.map((r) => Log.fromRow(r)).toList();
   }
 
-  static Future<List<Log>> readByPlanId(int planId) async {
+  static Future<List<Log>> readByPlanId(String planId) async {
     final results = await db.getAll('SELECT * FROM $tableLogItems WHERE plan_id = ?', [planId]);
     return results.map((r) => Log.fromRow(r)).toList();
   }
@@ -121,10 +121,23 @@ class Log {
   Future<void> delete() async {
     await db.execute('DELETE FROM $logItemsTable WHERE id = ?', [id]);
   }
-
-  static Future<void> addPhoto(String photoId, String id) async {
-    await db.execute('UPDATE $logItemsTable SET photo_id = ? WHERE id = ?', [photoId, id]);
-  }
-}
   */
+
+  Future<void> log() async {
+    print('DIETER Log.log called id=$id, planId=$planId');
+    await db.execute(
+      'INSERT INTO $tableLogItems (id, meal_id, ingredient_id, weight_unit_id, amount, plan_id, datetime, comment) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      [
+        // generate an id using uuid
+        uuid.v4(),
+        mealId,
+        ingredientId,
+        weightUnitId,
+        amount,
+        planId,
+        datetime.toIso8601String(),
+        comment,
+      ],
+    );
+  }
 }
