@@ -603,10 +603,10 @@ packages:
     dependency: "direct main"
     description:
       name: get_it
-      sha256: d85128a5dae4ea777324730dc65edd9c9f43155c109d5cc0a69cab74139fbac1
+      sha256: "35c253f83f9e03cbac65ffa159510e41ae15f49b37291ab8c522d7a0b6f330cd"
       url: "https://pub.dev"
     source: hosted
-    version: "7.7.0"
+    version: "8.0.1"
   glob:
     dependency: transitive
     description:
