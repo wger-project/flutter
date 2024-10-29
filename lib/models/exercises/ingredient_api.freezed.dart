@@ -28,8 +28,12 @@ mixin _$IngredientApiSearchDetails {
   @JsonKey(name: 'image_thumbnail')
   String? get imageThumbnail => throw _privateConstructorUsedError;
 
+  /// Serializes this IngredientApiSearchDetails to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of IngredientApiSearchDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $IngredientApiSearchDetailsCopyWith<IngredientApiSearchDetails>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -59,6 +63,8 @@ class _$IngredientApiSearchDetailsCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of IngredientApiSearchDetails
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -114,6 +120,8 @@ class __$$IngredientApiSearchDetailsImplCopyWithImpl<$Res>
       $Res Function(_$IngredientApiSearchDetailsImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of IngredientApiSearchDetails
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -184,11 +192,13 @@ class _$IngredientApiSearchDetailsImpl implements _IngredientApiSearchDetails {
                 other.imageThumbnail == imageThumbnail));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, name, image, imageThumbnail);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of IngredientApiSearchDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$IngredientApiSearchDetailsImplCopyWith<_$IngredientApiSearchDetailsImpl>
@@ -221,12 +231,15 @@ abstract class _IngredientApiSearchDetails
   @override
   String get name;
   @override
-  String? get image;
-  @override // ignore: invalid_annotation_target
+  String? get image; // ignore: invalid_annotation_target
+  @override
   @JsonKey(name: 'image_thumbnail')
   String? get imageThumbnail;
+
+  /// Create a copy of IngredientApiSearchDetails
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$IngredientApiSearchDetailsImplCopyWith<_$IngredientApiSearchDetailsImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -241,8 +254,12 @@ mixin _$IngredientApiSearchEntry {
   String get value => throw _privateConstructorUsedError;
   IngredientApiSearchDetails get data => throw _privateConstructorUsedError;
 
+  /// Serializes this IngredientApiSearchEntry to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of IngredientApiSearchEntry
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $IngredientApiSearchEntryCopyWith<IngredientApiSearchEntry> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -269,6 +286,8 @@ class _$IngredientApiSearchEntryCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of IngredientApiSearchEntry
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -287,6 +306,8 @@ class _$IngredientApiSearchEntryCopyWithImpl<$Res,
     ) as $Val);
   }
 
+  /// Create a copy of IngredientApiSearchEntry
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $IngredientApiSearchDetailsCopyWith<$Res> get data {
@@ -321,6 +342,8 @@ class __$$IngredientApiSearchEntryImplCopyWithImpl<$Res>
       $Res Function(_$IngredientApiSearchEntryImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of IngredientApiSearchEntry
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -367,11 +390,13 @@ class _$IngredientApiSearchEntryImpl implements _IngredientApiSearchEntry {
             (identical(other.data, data) || other.data == data));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, value, data);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of IngredientApiSearchEntry
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$IngredientApiSearchEntryImplCopyWith<_$IngredientApiSearchEntryImpl>
@@ -399,8 +424,11 @@ abstract class _IngredientApiSearchEntry implements IngredientApiSearchEntry {
   String get value;
   @override
   IngredientApiSearchDetails get data;
+
+  /// Create a copy of IngredientApiSearchEntry
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$IngredientApiSearchEntryImplCopyWith<_$IngredientApiSearchEntryImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -414,8 +442,12 @@ mixin _$IngredientApiSearch {
   List<IngredientApiSearchEntry> get suggestions =>
       throw _privateConstructorUsedError;
 
+  /// Serializes this IngredientApiSearch to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of IngredientApiSearch
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $IngredientApiSearchCopyWith<IngredientApiSearch> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -439,6 +471,8 @@ class _$IngredientApiSearchCopyWithImpl<$Res, $Val extends IngredientApiSearch>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of IngredientApiSearch
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -472,6 +506,8 @@ class __$$IngredientApiSearchImplCopyWithImpl<$Res>
       $Res Function(_$IngredientApiSearchImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of IngredientApiSearch
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -518,12 +554,14 @@ class _$IngredientApiSearchImpl implements _IngredientApiSearch {
                 .equals(other._suggestions, _suggestions));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType, const DeepCollectionEquality().hash(_suggestions));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of IngredientApiSearch
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$IngredientApiSearchImplCopyWith<_$IngredientApiSearchImpl> get copyWith =>
@@ -548,8 +586,11 @@ abstract class _IngredientApiSearch implements IngredientApiSearch {
 
   @override
   List<IngredientApiSearchEntry> get suggestions;
+
+  /// Create a copy of IngredientApiSearch
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$IngredientApiSearchImplCopyWith<_$IngredientApiSearchImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

@@ -1078,51 +1078,69 @@ typedef $$ExercisesTableUpdateCompanionBuilder = ExercisesCompanion Function({
 });
 
 class $$ExercisesTableFilterComposer
-    extends FilterComposer<_$ExerciseDatabase, $ExercisesTable> {
-  $$ExercisesTableFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+    extends Composer<_$ExerciseDatabase, $ExercisesTable> {
+  $$ExercisesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get data => $state.composableBuilder(
-      column: $state.table.data,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get data => $composableBuilder(
+      column: $table.data, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<DateTime> get lastUpdate => $state.composableBuilder(
-      column: $state.table.lastUpdate,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<DateTime> get lastUpdate => $composableBuilder(
+      column: $table.lastUpdate, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<DateTime> get lastFetched => $state.composableBuilder(
-      column: $state.table.lastFetched,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<DateTime> get lastFetched => $composableBuilder(
+      column: $table.lastFetched, builder: (column) => ColumnFilters(column));
 }
 
 class $$ExercisesTableOrderingComposer
-    extends OrderingComposer<_$ExerciseDatabase, $ExercisesTable> {
-  $$ExercisesTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+    extends Composer<_$ExerciseDatabase, $ExercisesTable> {
+  $$ExercisesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get data => $state.composableBuilder(
-      column: $state.table.data,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get data => $composableBuilder(
+      column: $table.data, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<DateTime> get lastUpdate => $state.composableBuilder(
-      column: $state.table.lastUpdate,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<DateTime> get lastUpdate => $composableBuilder(
+      column: $table.lastUpdate, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<DateTime> get lastFetched => $state.composableBuilder(
-      column: $state.table.lastFetched,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<DateTime> get lastFetched => $composableBuilder(
+      column: $table.lastFetched, builder: (column) => ColumnOrderings(column));
+}
+
+class $$ExercisesTableAnnotationComposer
+    extends Composer<_$ExerciseDatabase, $ExercisesTable> {
+  $$ExercisesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get data =>
+      $composableBuilder(column: $table.data, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastUpdate => $composableBuilder(
+      column: $table.lastUpdate, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastFetched => $composableBuilder(
+      column: $table.lastFetched, builder: (column) => column);
 }
 
 class $$ExercisesTableTableManager extends RootTableManager<
@@ -1131,6 +1149,7 @@ class $$ExercisesTableTableManager extends RootTableManager<
     ExerciseTable,
     $$ExercisesTableFilterComposer,
     $$ExercisesTableOrderingComposer,
+    $$ExercisesTableAnnotationComposer,
     $$ExercisesTableCreateCompanionBuilder,
     $$ExercisesTableUpdateCompanionBuilder,
     (
@@ -1143,10 +1162,12 @@ class $$ExercisesTableTableManager extends RootTableManager<
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer:
-              $$ExercisesTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$ExercisesTableOrderingComposer(ComposerState(db, table)),
+          createFilteringComposer: () =>
+              $$ExercisesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ExercisesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ExercisesTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> data = const Value.absent(),
@@ -1188,6 +1209,7 @@ typedef $$ExercisesTableProcessedTableManager = ProcessedTableManager<
     ExerciseTable,
     $$ExercisesTableFilterComposer,
     $$ExercisesTableOrderingComposer,
+    $$ExercisesTableAnnotationComposer,
     $$ExercisesTableCreateCompanionBuilder,
     $$ExercisesTableUpdateCompanionBuilder,
     (
@@ -1208,33 +1230,53 @@ typedef $$MusclesTableUpdateCompanionBuilder = MusclesCompanion Function({
 });
 
 class $$MusclesTableFilterComposer
-    extends FilterComposer<_$ExerciseDatabase, $MusclesTable> {
-  $$MusclesTableFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+    extends Composer<_$ExerciseDatabase, $MusclesTable> {
+  $$MusclesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
 
   ColumnWithTypeConverterFilters<Muscle, Muscle, String> get data =>
-      $state.composableBuilder(
-          column: $state.table.data,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
+      $composableBuilder(
+          column: $table.data,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 }
 
 class $$MusclesTableOrderingComposer
-    extends OrderingComposer<_$ExerciseDatabase, $MusclesTable> {
-  $$MusclesTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+    extends Composer<_$ExerciseDatabase, $MusclesTable> {
+  $$MusclesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get data => $state.composableBuilder(
-      column: $state.table.data,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get data => $composableBuilder(
+      column: $table.data, builder: (column) => ColumnOrderings(column));
+}
+
+class $$MusclesTableAnnotationComposer
+    extends Composer<_$ExerciseDatabase, $MusclesTable> {
+  $$MusclesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<Muscle, String> get data =>
+      $composableBuilder(column: $table.data, builder: (column) => column);
 }
 
 class $$MusclesTableTableManager extends RootTableManager<
@@ -1243,6 +1285,7 @@ class $$MusclesTableTableManager extends RootTableManager<
     MuscleTable,
     $$MusclesTableFilterComposer,
     $$MusclesTableOrderingComposer,
+    $$MusclesTableAnnotationComposer,
     $$MusclesTableCreateCompanionBuilder,
     $$MusclesTableUpdateCompanionBuilder,
     (
@@ -1255,10 +1298,12 @@ class $$MusclesTableTableManager extends RootTableManager<
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer:
-              $$MusclesTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$MusclesTableOrderingComposer(ComposerState(db, table)),
+          createFilteringComposer: () =>
+              $$MusclesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$MusclesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$MusclesTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<Muscle> data = const Value.absent(),
@@ -1292,6 +1337,7 @@ typedef $$MusclesTableProcessedTableManager = ProcessedTableManager<
     MuscleTable,
     $$MusclesTableFilterComposer,
     $$MusclesTableOrderingComposer,
+    $$MusclesTableAnnotationComposer,
     $$MusclesTableCreateCompanionBuilder,
     $$MusclesTableUpdateCompanionBuilder,
     (
@@ -1312,33 +1358,53 @@ typedef $$EquipmentsTableUpdateCompanionBuilder = EquipmentsCompanion Function({
 });
 
 class $$EquipmentsTableFilterComposer
-    extends FilterComposer<_$ExerciseDatabase, $EquipmentsTable> {
-  $$EquipmentsTableFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+    extends Composer<_$ExerciseDatabase, $EquipmentsTable> {
+  $$EquipmentsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
 
   ColumnWithTypeConverterFilters<Equipment, Equipment, String> get data =>
-      $state.composableBuilder(
-          column: $state.table.data,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
+      $composableBuilder(
+          column: $table.data,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 }
 
 class $$EquipmentsTableOrderingComposer
-    extends OrderingComposer<_$ExerciseDatabase, $EquipmentsTable> {
-  $$EquipmentsTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+    extends Composer<_$ExerciseDatabase, $EquipmentsTable> {
+  $$EquipmentsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get data => $state.composableBuilder(
-      column: $state.table.data,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get data => $composableBuilder(
+      column: $table.data, builder: (column) => ColumnOrderings(column));
+}
+
+class $$EquipmentsTableAnnotationComposer
+    extends Composer<_$ExerciseDatabase, $EquipmentsTable> {
+  $$EquipmentsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<Equipment, String> get data =>
+      $composableBuilder(column: $table.data, builder: (column) => column);
 }
 
 class $$EquipmentsTableTableManager extends RootTableManager<
@@ -1347,6 +1413,7 @@ class $$EquipmentsTableTableManager extends RootTableManager<
     EquipmentTable,
     $$EquipmentsTableFilterComposer,
     $$EquipmentsTableOrderingComposer,
+    $$EquipmentsTableAnnotationComposer,
     $$EquipmentsTableCreateCompanionBuilder,
     $$EquipmentsTableUpdateCompanionBuilder,
     (
@@ -1359,10 +1426,12 @@ class $$EquipmentsTableTableManager extends RootTableManager<
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer:
-              $$EquipmentsTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$EquipmentsTableOrderingComposer(ComposerState(db, table)),
+          createFilteringComposer: () =>
+              $$EquipmentsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$EquipmentsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$EquipmentsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<Equipment> data = const Value.absent(),
@@ -1396,6 +1465,7 @@ typedef $$EquipmentsTableProcessedTableManager = ProcessedTableManager<
     EquipmentTable,
     $$EquipmentsTableFilterComposer,
     $$EquipmentsTableOrderingComposer,
+    $$EquipmentsTableAnnotationComposer,
     $$EquipmentsTableCreateCompanionBuilder,
     $$EquipmentsTableUpdateCompanionBuilder,
     (
@@ -1416,33 +1486,53 @@ typedef $$CategoriesTableUpdateCompanionBuilder = CategoriesCompanion Function({
 });
 
 class $$CategoriesTableFilterComposer
-    extends FilterComposer<_$ExerciseDatabase, $CategoriesTable> {
-  $$CategoriesTableFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+    extends Composer<_$ExerciseDatabase, $CategoriesTable> {
+  $$CategoriesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
 
   ColumnWithTypeConverterFilters<ExerciseCategory, ExerciseCategory, String>
-      get data => $state.composableBuilder(
-          column: $state.table.data,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
+      get data => $composableBuilder(
+          column: $table.data,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 }
 
 class $$CategoriesTableOrderingComposer
-    extends OrderingComposer<_$ExerciseDatabase, $CategoriesTable> {
-  $$CategoriesTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+    extends Composer<_$ExerciseDatabase, $CategoriesTable> {
+  $$CategoriesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get data => $state.composableBuilder(
-      column: $state.table.data,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get data => $composableBuilder(
+      column: $table.data, builder: (column) => ColumnOrderings(column));
+}
+
+class $$CategoriesTableAnnotationComposer
+    extends Composer<_$ExerciseDatabase, $CategoriesTable> {
+  $$CategoriesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<ExerciseCategory, String> get data =>
+      $composableBuilder(column: $table.data, builder: (column) => column);
 }
 
 class $$CategoriesTableTableManager extends RootTableManager<
@@ -1451,6 +1541,7 @@ class $$CategoriesTableTableManager extends RootTableManager<
     CategoryTable,
     $$CategoriesTableFilterComposer,
     $$CategoriesTableOrderingComposer,
+    $$CategoriesTableAnnotationComposer,
     $$CategoriesTableCreateCompanionBuilder,
     $$CategoriesTableUpdateCompanionBuilder,
     (
@@ -1463,10 +1554,12 @@ class $$CategoriesTableTableManager extends RootTableManager<
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer:
-              $$CategoriesTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$CategoriesTableOrderingComposer(ComposerState(db, table)),
+          createFilteringComposer: () =>
+              $$CategoriesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CategoriesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CategoriesTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<ExerciseCategory> data = const Value.absent(),
@@ -1500,6 +1593,7 @@ typedef $$CategoriesTableProcessedTableManager = ProcessedTableManager<
     CategoryTable,
     $$CategoriesTableFilterComposer,
     $$CategoriesTableOrderingComposer,
+    $$CategoriesTableAnnotationComposer,
     $$CategoriesTableCreateCompanionBuilder,
     $$CategoriesTableUpdateCompanionBuilder,
     (
@@ -1520,33 +1614,53 @@ typedef $$LanguagesTableUpdateCompanionBuilder = LanguagesCompanion Function({
 });
 
 class $$LanguagesTableFilterComposer
-    extends FilterComposer<_$ExerciseDatabase, $LanguagesTable> {
-  $$LanguagesTableFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+    extends Composer<_$ExerciseDatabase, $LanguagesTable> {
+  $$LanguagesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
 
   ColumnWithTypeConverterFilters<Language, Language, String> get data =>
-      $state.composableBuilder(
-          column: $state.table.data,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
+      $composableBuilder(
+          column: $table.data,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 }
 
 class $$LanguagesTableOrderingComposer
-    extends OrderingComposer<_$ExerciseDatabase, $LanguagesTable> {
-  $$LanguagesTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+    extends Composer<_$ExerciseDatabase, $LanguagesTable> {
+  $$LanguagesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get data => $state.composableBuilder(
-      column: $state.table.data,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get data => $composableBuilder(
+      column: $table.data, builder: (column) => ColumnOrderings(column));
+}
+
+class $$LanguagesTableAnnotationComposer
+    extends Composer<_$ExerciseDatabase, $LanguagesTable> {
+  $$LanguagesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<Language, String> get data =>
+      $composableBuilder(column: $table.data, builder: (column) => column);
 }
 
 class $$LanguagesTableTableManager extends RootTableManager<
@@ -1555,6 +1669,7 @@ class $$LanguagesTableTableManager extends RootTableManager<
     LanguagesTable,
     $$LanguagesTableFilterComposer,
     $$LanguagesTableOrderingComposer,
+    $$LanguagesTableAnnotationComposer,
     $$LanguagesTableCreateCompanionBuilder,
     $$LanguagesTableUpdateCompanionBuilder,
     (
@@ -1567,10 +1682,12 @@ class $$LanguagesTableTableManager extends RootTableManager<
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer:
-              $$LanguagesTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$LanguagesTableOrderingComposer(ComposerState(db, table)),
+          createFilteringComposer: () =>
+              $$LanguagesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$LanguagesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$LanguagesTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<Language> data = const Value.absent(),
@@ -1604,6 +1721,7 @@ typedef $$LanguagesTableProcessedTableManager = ProcessedTableManager<
     LanguagesTable,
     $$LanguagesTableFilterComposer,
     $$LanguagesTableOrderingComposer,
+    $$LanguagesTableAnnotationComposer,
     $$LanguagesTableCreateCompanionBuilder,
     $$LanguagesTableUpdateCompanionBuilder,
     (
