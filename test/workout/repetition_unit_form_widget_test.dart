@@ -23,7 +23,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
-import 'package:wger/models/workouts/setting.dart';
+import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/widgets/workouts/forms.dart';
@@ -38,15 +38,17 @@ void main() {
   const unit2 = RepetitionUnit(id: 2, name: 'another name');
   const unit3 = RepetitionUnit(id: 3, name: 'this is repetition number 3');
 
-  final setting1 = Setting(
-    setId: 1,
+  final setting1 = SlotEntry(
+    slotId: 1,
+    type: 'normal',
     order: 1,
     exerciseId: 1,
     repetitionUnitId: 1,
+    repetitionRounding: 0.25,
     reps: 2,
     weightUnitId: 1,
+    weightRounding: 0.25,
     comment: 'comment',
-    rir: '1',
   );
   setting1.repetitionUnitObj = unit1;
 

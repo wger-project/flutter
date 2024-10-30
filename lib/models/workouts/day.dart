@@ -16,66 +16,45 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:wger/models/workouts/set.dart';
+import 'package:wger/models/workouts/slot.dart';
 
 part 'day.g.dart';
 
 @JsonSerializable()
 class Day {
-  static const Map<int, String> weekdays = {
-    1: 'Monday',
-    2: 'Tuesday',
-    3: 'Wednesday',
-    4: 'Thursday',
-    5: 'Friday',
-    6: 'Saturday',
-    7: 'Sunday',
-  };
-
   @JsonKey(required: true)
   int? id;
 
-  @JsonKey(required: true, name: 'training')
-  late int workoutId;
+  @JsonKey(required: true, name: 'routine')
+  late int routineId;
+
+  @JsonKey(required: true)
+  late String name;
 
   @JsonKey(required: true)
   late String description;
 
-  @JsonKey(required: true, name: 'day')
-  List<int> daysOfWeek = [];
+  @JsonKey(required: true, name: 'is_rest')
+  late bool isRest;
+
+  @JsonKey(required: true, name: 'need_logs_to_advance')
+  late bool needLogsToAdvance;
+
+  @JsonKey(required: true)
+  late String type;
+
+  @JsonKey(required: true)
+  late Object config;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  List<Set> sets = [];
+  List<Slot> slots = [];
 
   //@JsonKey(includeFromJson: false, includeToJson: false)
   //late WorkoutPlan workout;
 
   Day() {
-    daysOfWeek = [];
-    sets = [];
-  }
-
-  String getDayName(int weekDay) {
-    return weekdays[weekDay]!;
-  }
-
-  String get getDaysText {
-    return daysOfWeek.map((e) => getDayName(e)).join(', ');
-  }
-
-  String getDaysTextTranslated(locale) {
-    return daysOfWeek.map((e) => getDayTranslated(e, locale)).join(', ');
-  }
-
-  /// Returns the translated name of the given day
-  String getDayTranslated(int day, locale) {
-    // Isn't there another way?... 🙄
-    final now = DateTime.now();
-    final firstDayOfWeek = now.subtract(Duration(days: now.weekday));
-
-    return DateFormat(DateFormat.WEEKDAY, locale).format(firstDayOfWeek.add(Duration(days: day)));
+    slots = [];
   }
 
   // Boilerplate

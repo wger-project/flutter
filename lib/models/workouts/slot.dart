@@ -18,21 +18,18 @@
 
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/models/exercises/exercise.dart';
-import 'package:wger/models/workouts/setting.dart';
+import 'package:wger/models/workouts/slot_entry.dart';
 
-part 'set.g.dart';
+part 'slot.g.dart';
 
 @JsonSerializable()
-class Set {
+class Slot {
   static const DEFAULT_NR_SETS = 4;
 
   @JsonKey(required: true)
   int? id;
 
-  @JsonKey(required: true)
-  late int sets;
-
-  @JsonKey(required: false, name: 'exerciseday')
+  @JsonKey(required: false)
   late int day;
 
   @JsonKey(required: true)
@@ -41,25 +38,34 @@ class Set {
   @JsonKey(required: true, defaultValue: '')
   late String comment;
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  List<Exercise> exerciseBasesObj = [];
+  @JsonKey(required: true)
+  late Object config;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  List<int> exerciseBasesIds = [];
+  List<Exercise> exercisesObj = [];
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  List<Setting> settings = [];
+  List<int> exercisesIds = [];
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  List<SlotEntry> entries = [];
 
   /// Computed settings (instead of 4x10 this has [10, 10, 10, 10]), used for
   /// the gym mode where the individual values are used
   @JsonKey(includeFromJson: false, includeToJson: false)
-  List<Setting> settingsComputed = [];
+  List<SlotEntry> settingsComputed = [];
 
-  Set({required this.day, required this.sets, required this.order});
+  Slot({
+    required this.id,
+    required this.day,
+    required this.comment,
+    required this.order,
+    required this.config,
+  });
 
-  Set.empty();
+  Slot.empty();
 
-  Set.withData({
+  Slot.withData({
     this.id,
     sets,
     day,
@@ -69,12 +75,11 @@ class Set {
     settings,
     settingsComputed,
   }) {
-    this.sets = sets ?? DEFAULT_NR_SETS;
     this.order = order ?? 1;
     this.comment = comment ?? '';
-    exerciseBasesObj = exercises ?? [];
-    exerciseBasesIds = exerciseBasesObj.map((e) => e.id!).toList();
-    this.settings = settings ?? [];
+    exercisesObj = exercises ?? [];
+    exercisesIds = exercisesObj.map((e) => e.id!).toList();
+    this.entries = settings ?? [];
     this.settingsComputed = settingsComputed ?? [];
     if (day != null) {
       this.day = day;
@@ -83,10 +88,10 @@ class Set {
 
   /// Return only one setting object per exercise, this makes rendering workout
   /// plans easier and the gym mode uses the synthetic settings anyway.
-  List<Setting> get settingsFiltered {
-    final List<Setting> out = [];
+  List<SlotEntry> get settingsFiltered {
+    final List<SlotEntry> out = [];
 
-    for (final setting in settings) {
+    for (final setting in entries) {
       final foundSettings = out.where(
         (element) => element.exerciseId == setting.exerciseId,
       );
@@ -99,18 +104,18 @@ class Set {
   }
 
   void addExerciseBase(Exercise base) {
-    exerciseBasesObj.add(base);
-    exerciseBasesIds.add(base.id!);
+    exercisesObj.add(base);
+    exercisesIds.add(base.id!);
   }
 
   void removeExercise(Exercise base) {
-    exerciseBasesObj.removeWhere((e) => e.id == base.id);
-    exerciseBasesIds.removeWhere((e) => e == base.id);
+    exercisesObj.removeWhere((e) => e.id == base.id);
+    exercisesIds.removeWhere((e) => e == base.id);
   }
 
   /// Returns all settings for the given exercise
-  List<Setting> filterSettingsByExercise(Exercise exerciseBase) {
-    return settings.where((element) => element.exerciseId == exerciseBase.id).toList();
+  List<SlotEntry> filterSettingsByExercise(Exercise exerciseBase) {
+    return entries.where((element) => element.exerciseId == exerciseBase.id).toList();
   }
 
   /// Returns a list with all repetitions for the given exercise
@@ -137,12 +142,12 @@ class Set {
   }
 
   /// Returns a string with all repetitions for the given exercise
-  String getSmartTextRepr(Exercise execiseBase) {
-    return getSmartRepr(execiseBase).join(' – ');
+  String getSmartTextRepr(Exercise exerciseBase) {
+    return getSmartRepr(exerciseBase).join(' – ');
   }
 
   // Boilerplate
-  factory Set.fromJson(Map<String, dynamic> json) => _$SetFromJson(json);
+  factory Slot.fromJson(Map<String, dynamic> json) => _$SlotFromJson(json);
 
-  Map<String, dynamic> toJson() => _$SetToJson(this);
+  Map<String, dynamic> toJson() => _$SlotToJson(this);
 }

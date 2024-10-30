@@ -21,8 +21,8 @@ import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/routine.dart';
-import 'package:wger/models/workouts/set.dart';
-import 'package:wger/models/workouts/setting.dart';
+import 'package:wger/models/workouts/slot.dart';
+import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
 
 import './exercises.dart';
@@ -69,22 +69,24 @@ Routine getWorkout({List<Exercise>? exercises}) {
   log3.weightUnit = weightUnit1;
   log3.repetitionUnit = repetitionUnit1;
 
-  final settingBenchPress = Setting(
-    setId: 1,
+  final settingBenchPress = SlotEntry(
+    slotId: 1,
+    type: 'normal',
     order: 1,
     exerciseId: 1,
     repetitionUnitId: 1,
+    repetitionRounding: 0.25,
     reps: 6,
     weightUnitId: 1,
+    weightRounding: 0.25,
     comment: 'ddd',
-    rir: '3',
   );
   settingBenchPress.repetitionUnit = repetitionUnit1;
   settingBenchPress.weightUnit = weightUnit1;
   settingBenchPress.exercise = testBases[0];
   settingBenchPress.weight = 80;
 
-  final setBenchPress = Set.withData(
+  final setBenchPress = Slot.withData(
     id: 1,
     day: 1,
     sets: 3,
@@ -92,63 +94,65 @@ Routine getWorkout({List<Exercise>? exercises}) {
     comment: 'Make sure to warm up',
   );
   setBenchPress.addExerciseBase(testBases[0]);
-  setBenchPress.settings.add(settingBenchPress);
+  setBenchPress.entries.add(settingBenchPress);
   setBenchPress.settingsComputed = [settingBenchPress, settingBenchPress];
 
-  final settingSquat = Setting(
-    setId: 2,
+  final settingSquat = SlotEntry(
+    slotId: 2,
+    type: 'normal',
     order: 1,
     exerciseId: 8,
     repetitionUnitId: 1,
+    repetitionRounding: 0.25,
     reps: 8,
     weightUnitId: 1,
+    weightRounding: 0.25,
     comment: 'ddd',
-    rir: '2',
   );
   settingSquat.repetitionUnit = repetitionUnit1;
   settingSquat.weightUnit = weightUnit1;
   settingSquat.exercise = testBases[4];
   settingSquat.weight = 120;
 
-  final setSquat = Set.withData(id: 2, day: 1, sets: 3, order: 1);
+  final setSquat = Slot.withData(id: 2, day: 1, sets: 3, order: 1);
   setSquat.addExerciseBase(testBases[4]);
-  setSquat.settings.add(settingSquat);
+  setSquat.entries.add(settingSquat);
   setSquat.settingsComputed = [settingSquat, settingSquat];
 
-  final settingSideRaises = Setting(
-    setId: 2,
+  final settingSideRaises = SlotEntry(
+    slotId: 2,
+    type: 'normal',
     order: 1,
     exerciseId: 8,
     repetitionUnitId: 1,
+    repetitionRounding: 0.25,
     reps: 12,
     weightUnitId: 1,
+    weightRounding: 0.25,
     comment: 'ddd',
-    rir: '',
   );
   settingSideRaises.repetitionUnit = repetitionUnit1;
   settingSideRaises.weightUnit = weightUnit1;
   settingSideRaises.exercise = testBases[5];
   settingSideRaises.weight = 6;
 
-  final setSideRaises = Set.withData(id: 3, day: 1, sets: 3, order: 1);
+  final setSideRaises = Slot.withData(id: 3, day: 1, sets: 3, order: 1);
   setSideRaises.addExerciseBase(testBases[5]);
-  setSideRaises.settings.add(settingSideRaises);
+  setSideRaises.entries.add(settingSideRaises);
   setSideRaises.settingsComputed = [settingSideRaises, settingSideRaises];
 
   final dayChestShoulders = Day()
     ..id = 1
-    ..workoutId = 1
-    ..description = 'chest, shoulders'
-    ..daysOfWeek = [1, 2];
-  dayChestShoulders.sets.add(setBenchPress);
-  dayChestShoulders.sets.add(setSideRaises);
+    ..routineId = 1
+    ..description = 'chest, shoulders';
+  dayChestShoulders.slots.add(setBenchPress);
+  dayChestShoulders.slots.add(setSideRaises);
 
   final dayLegs = Day()
     ..id = 2
-    ..workoutId = 1
-    ..description = 'legs'
-    ..daysOfWeek = [4];
-  dayLegs.sets.add(setSquat);
+    ..routineId = 1
+    ..description = 'legs';
+  dayLegs.slots.add(setSquat);
 
   final routine = Routine(
     id: 1,

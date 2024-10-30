@@ -21,8 +21,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/workouts/day.dart';
-import 'package:wger/models/workouts/set.dart';
-import 'package:wger/models/workouts/setting.dart';
+import 'package:wger/models/workouts/slot.dart';
+import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/gym_mode.dart';
@@ -32,8 +32,8 @@ import 'package:wger/widgets/exercises/images.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 
 class SettingWidget extends StatelessWidget {
-  final Set set;
-  final Setting setting;
+  final Slot set;
+  final SlotEntry setting;
   final bool expanded;
   final Function toggle;
 
@@ -100,12 +100,12 @@ class WorkoutDayWidget extends StatefulWidget {
 
 class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
   bool _editing = false;
-  late List<Set> _sets;
+  late List<Slot> _sets;
 
   @override
   void initState() {
     super.initState();
-    _sets = widget._day.sets;
+    _sets = widget._day.slots;
     _sets.sort((a, b) => a.order.compareTo(b.order));
   }
 
@@ -115,7 +115,7 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
     });
   }
 
-  Widget getSetRow(Set set, int index) {
+  Widget getSetRow(Slot set, int index) {
     return Row(
       key: ValueKey(set.id),
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -207,7 +207,7 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
                               Provider.of<WorkoutPlansProvider>(
                                 context,
                                 listen: false,
-                              ).findById(widget._day.workoutId),
+                              ).findById(widget._day.routineId),
                               widget._day,
                             ),
                             hasListView: true,
@@ -250,7 +250,8 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
                 ).reorderSets(_sets, startIndex);
               },
               children: [
-                for (var i = 0; i < widget._day.sets.length; i++) getSetRow(widget._day.sets[i], i),
+                for (var i = 0; i < widget._day.slots.length; i++)
+                  getSetRow(widget._day.slots[i], i),
               ],
             ),
           ],
@@ -278,11 +279,11 @@ class DayHeader extends StatelessWidget {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       title: Text(
-        _day.description,
+        _day.name,
         style: Theme.of(context).textTheme.headlineSmall,
         overflow: TextOverflow.ellipsis,
       ),
-      subtitle: Text(_day.getDaysTextTranslated(Localizations.localeOf(context).languageCode)),
+      subtitle: Text(_day.description),
       leading: const Icon(Icons.play_arrow),
       minLeadingWidth: 8,
       trailing: Row(mainAxisSize: MainAxisSize.min, children: [

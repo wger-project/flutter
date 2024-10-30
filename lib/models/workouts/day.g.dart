@@ -9,18 +9,35 @@ part of 'day.dart';
 Day _$DayFromJson(Map<String, dynamic> json) {
   $checkKeys(
     json,
-    requiredKeys: const ['id', 'training', 'description', 'day'],
+    requiredKeys: const [
+      'id',
+      'routine',
+      'name',
+      'description',
+      'is_rest',
+      'need_logs_to_advance',
+      'type',
+      'config'
+    ],
   );
   return Day()
     ..id = (json['id'] as num?)?.toInt()
-    ..workoutId = (json['training'] as num).toInt()
+    ..routineId = (json['routine'] as num).toInt()
+    ..name = json['name'] as String
     ..description = json['description'] as String
-    ..daysOfWeek = (json['day'] as List<dynamic>).map((e) => (e as num).toInt()).toList();
+    ..isRest = json['is_rest'] as bool
+    ..needLogsToAdvance = json['need_logs_to_advance'] as bool
+    ..type = json['type'] as String
+    ..config = json['config'] as Object;
 }
 
 Map<String, dynamic> _$DayToJson(Day instance) => <String, dynamic>{
       'id': instance.id,
-      'training': instance.workoutId,
+      'routine': instance.routineId,
+      'name': instance.name,
       'description': instance.description,
-      'day': instance.daysOfWeek,
+      'is_rest': instance.isRest,
+      'need_logs_to_advance': instance.needLogsToAdvance,
+      'type': instance.type,
+      'config': instance.config,
     };

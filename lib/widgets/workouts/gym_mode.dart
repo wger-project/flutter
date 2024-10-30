@@ -34,8 +34,8 @@ import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/session.dart';
-import 'package:wger/models/workouts/set.dart';
-import 'package:wger/models/workouts/setting.dart';
+import 'package:wger/models/workouts/slot.dart';
+import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/theme/theme.dart';
@@ -72,7 +72,7 @@ class _GymModeState extends State<GymMode> {
   void initState() {
     super.initState();
     // Calculate amount of elements for progress indicator
-    for (final set in widget._workoutDay.sets) {
+    for (final set in widget._workoutDay.slots) {
       _totalElements = _totalElements + set.settingsComputed.length;
     }
     // Calculate the pages for the navigation
@@ -80,7 +80,7 @@ class _GymModeState extends State<GymMode> {
     // This duplicates the code below in the getContent method, but it seems to
     // be the easiest way
     var currentPage = 1;
-    for (final set in widget._workoutDay.sets) {
+    for (final set in widget._workoutDay.slots) {
       var firstPage = true;
       for (final setting in set.settingsComputed) {
         final exerciseBase = Provider.of<ExercisesProvider>(context, listen: false)
@@ -108,7 +108,7 @@ class _GymModeState extends State<GymMode> {
     var currentElement = 1;
     final List<Widget> out = [];
 
-    for (final set in widget._workoutDay.sets) {
+    for (final set in widget._workoutDay.slots) {
       var firstPage = true;
       for (final setting in set.settingsComputed) {
         final ratioCompleted = currentElement / _totalElements;
@@ -129,7 +129,7 @@ class _GymModeState extends State<GymMode> {
           setting,
           set,
           exerciseBase,
-          workoutProvider.findById(widget._workoutDay.workoutId),
+          workoutProvider.findById(widget._workoutDay.routineId),
           ratioCompleted,
           _exercisePages,
         ));
@@ -150,7 +150,7 @@ class _GymModeState extends State<GymMode> {
         ...getContent(),
         SessionPage(
           Provider.of<WorkoutPlansProvider>(context, listen: false)
-              .findById(widget._workoutDay.workoutId),
+              .findById(widget._workoutDay.routineId),
           _controller,
           widget._start,
           _exercisePages,
@@ -180,7 +180,7 @@ class StartPage extends StatelessWidget {
         Expanded(
           child: ListView(
             children: [
-              ..._day.sets.map((set) {
+              ..._day.slots.map((set) {
                 return Column(
                   children: [
                     ...set.settingsFiltered.map((s) {
@@ -220,8 +220,8 @@ class StartPage extends StatelessWidget {
 
 class LogPage extends StatefulWidget {
   final PageController _controller;
-  final Setting _setting;
-  final Set _set;
+  final SlotEntry _entry;
+  final Slot _set;
   final Exercise _exerciseBase;
   final Routine _workoutPlan;
   final double _ratioCompleted;
@@ -230,7 +230,7 @@ class LogPage extends StatefulWidget {
 
   LogPage(
     this._controller,
-    this._setting,
+    this._entry,
     this._set,
     this._exerciseBase,
     this._workoutPlan,
@@ -240,9 +240,9 @@ class LogPage extends StatefulWidget {
     _log.date = DateTime.now();
     _log.workoutPlan = _workoutPlan.id!;
     _log.exerciseBase = _exerciseBase;
-    _log.weightUnit = _setting.weightUnitObj;
-    _log.repetitionUnit = _setting.repetitionUnitObj;
-    _log.rir = _setting.rir;
+    _log.weightUnit = _entry.weightUnitObj;
+    _log.repetitionUnit = _entry.repetitionUnitObj;
+    _log.rir = _entry.rir;
   }
 
   @override
@@ -251,7 +251,7 @@ class LogPage extends StatefulWidget {
 
 class _LogPageState extends State<LogPage> {
   final _form = GlobalKey<FormState>();
-  String rirValue = Setting.DEFAULT_RIR;
+  String rirValue = SlotEntry.DEFAULT_RIR;
   final _repsController = TextEditingController();
   final _weightController = TextEditingController();
   var _detailed = false;
@@ -265,12 +265,12 @@ class _LogPageState extends State<LogPage> {
 
     focusNode = FocusNode();
 
-    if (widget._setting.reps != null) {
-      _repsController.text = widget._setting.reps.toString();
+    if (widget._entry.reps != null) {
+      _repsController.text = widget._entry.reps.toString();
     }
 
-    if (widget._setting.weight != null) {
-      _weightController.text = widget._setting.weight.toString();
+    if (widget._entry.weight != null) {
+      _weightController.text = widget._entry.weight.toString();
     }
   }
 
@@ -618,7 +618,7 @@ class _LogPageState extends State<LogPage> {
         ),
         Center(
           child: Text(
-            widget._setting.singleSettingRepText,
+            widget._entry.singleSettingRepText,
             style: Theme.of(context).textTheme.headlineMedium,
             textAlign: TextAlign.center,
           ),

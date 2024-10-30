@@ -25,7 +25,8 @@ import 'package:wger/providers/measurement.dart' as _i4;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeWgerBaseProvider_0 extends _i1.SmartFake implements _i2.WgerBaseProvider {
+class _FakeWgerBaseProvider_0 extends _i1.SmartFake
+    implements _i2.WgerBaseProvider {
   _FakeWgerBaseProvider_0(
     Object parent,
     Invocation parentInvocation,
@@ -35,7 +36,8 @@ class _FakeWgerBaseProvider_0 extends _i1.SmartFake implements _i2.WgerBaseProvi
         );
 }
 
-class _FakeMeasurementCategory_1 extends _i1.SmartFake implements _i3.MeasurementCategory {
+class _FakeMeasurementCategory_1 extends _i1.SmartFake
+    implements _i3.MeasurementCategory {
   _FakeMeasurementCategory_1(
     Object parent,
     Invocation parentInvocation,
@@ -48,7 +50,8 @@ class _FakeMeasurementCategory_1 extends _i1.SmartFake implements _i3.Measuremen
 /// A class which mocks [MeasurementProvider].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockMeasurementProvider extends _i1.Mock implements _i4.MeasurementProvider {
+class MockMeasurementProvider extends _i1.Mock
+    implements _i4.MeasurementProvider {
   MockMeasurementProvider() {
     _i1.throwOnMissingStub(this);
   }
@@ -129,7 +132,8 @@ class MockMeasurementProvider extends _i1.Mock implements _i4.MeasurementProvide
       ) as _i5.Future<void>);
 
   @override
-  _i5.Future<void> addCategory(_i3.MeasurementCategory? category) => (super.noSuchMethod(
+  _i5.Future<void> addCategory(_i3.MeasurementCategory? category) =>
+      (super.noSuchMethod(
         Invocation.method(
           #addCategory,
           [category],

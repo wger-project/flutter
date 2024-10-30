@@ -18,7 +18,7 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
-import 'package:wger/models/workouts/setting.dart';
+import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
 
 void main() {
@@ -27,65 +27,60 @@ void main() {
       const repUnit = RepetitionUnit(id: 1, name: 'mol');
       const weightUnit = WeightUnit(id: 1, name: 'mg');
 
-      final setting = Setting.empty();
-      setting.reps = 2;
-      setting.weight = 30;
-      setting.rir = '';
-      setting.repetitionUnit = repUnit;
-      setting.weightUnit = weightUnit;
-      expect(setting.singleSettingRepText, '2 × 30 mg');
+      final entry = SlotEntry.empty();
+      entry.reps = 2;
+      entry.weight = 30;
+      entry.repetitionUnit = repUnit;
+      entry.weightUnit = weightUnit;
+      expect(entry.singleSettingRepText, '2 × 30 mg');
     });
 
     test('Default rep and weight units', () {
       const repUnit = RepetitionUnit(id: 1, name: 'mol');
       const weightUnit = WeightUnit(id: 1, name: 'mg');
 
-      final setting = Setting.empty();
-      setting.reps = 2;
-      setting.weight = 30;
-      setting.rir = '1.5';
-      setting.repetitionUnit = repUnit;
-      setting.weightUnit = weightUnit;
-      expect(setting.singleSettingRepText, '2 × 30 mg \n (1.5 RiR)');
+      final entry = SlotEntry.empty();
+      entry.reps = 2;
+      entry.weight = 30;
+      entry.repetitionUnit = repUnit;
+      entry.weightUnit = weightUnit;
+      expect(entry.singleSettingRepText, '2 × 30 mg \n (1.5 RiR)');
     });
 
     test('No weight, default rep and weight units', () {
       const repUnit = RepetitionUnit(id: 1, name: 'mol');
       const weightUnit = WeightUnit(id: 1, name: 'mg');
 
-      final setting = Setting.empty();
-      setting.reps = 2;
-      setting.weight = null;
-      setting.rir = '1.5';
-      setting.repetitionUnit = repUnit;
-      setting.weightUnit = weightUnit;
-      expect(setting.singleSettingRepText, '2 mol \n (1.5 RiR)');
+      final entry = SlotEntry.empty();
+      entry.reps = 2;
+      entry.weight = null;
+      entry.repetitionUnit = repUnit;
+      entry.weightUnit = weightUnit;
+      expect(entry.singleSettingRepText, '2 mol \n (1.5 RiR)');
     });
 
     test('Custom rep and weight units, no RiR', () {
       const repUnit = RepetitionUnit(id: 2, name: 'mol');
       const weightUnit = WeightUnit(id: 2, name: 'mg');
 
-      final setting = Setting.empty();
-      setting.reps = 2;
-      setting.weight = 30;
-      setting.rir = '';
-      setting.repetitionUnit = repUnit;
-      setting.weightUnit = weightUnit;
-      expect(setting.singleSettingRepText, '2 mol × 30 mg');
+      final slotEntry = SlotEntry.empty();
+      slotEntry.reps = 2;
+      slotEntry.weight = 30;
+      slotEntry.repetitionUnit = repUnit;
+      slotEntry.weightUnit = weightUnit;
+      expect(slotEntry.singleSettingRepText, '2 mol × 30 mg');
     });
 
     test('Custom rep and weight units, RiR', () {
       const repUnit = RepetitionUnit(id: 2, name: 'mol');
       const weightUnit = WeightUnit(id: 2, name: 'mg');
 
-      final setting = Setting.empty();
-      setting.reps = 2;
-      setting.weight = 30;
-      setting.rir = '3';
-      setting.repetitionUnit = repUnit;
-      setting.weightUnit = weightUnit;
-      expect(setting.singleSettingRepText, '2 mol × 30 mg \n (3 RiR)');
+      final slotEntry = SlotEntry.empty();
+      slotEntry.reps = 2;
+      slotEntry.weight = 30;
+      slotEntry.repetitionUnit = repUnit;
+      slotEntry.weightUnit = weightUnit;
+      expect(slotEntry.singleSettingRepText, '2 mol × 30 mg \n (3 RiR)');
     });
   });
 }

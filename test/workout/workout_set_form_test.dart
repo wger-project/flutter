@@ -24,8 +24,8 @@ import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/workouts/day.dart';
-import 'package:wger/models/workouts/set.dart';
-import 'package:wger/models/workouts/setting.dart';
+import 'package:wger/models/workouts/slot.dart';
+import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/workout_plans.dart';
@@ -81,8 +81,8 @@ void main() {
   });
 
   testWidgets('Test creating a new set', (WidgetTester tester) async {
-    when(mockWorkoutPlans.addSet(any)).thenAnswer((_) => Future.value(Set.empty()));
-    when(mockWorkoutPlans.addSetting(any)).thenAnswer((_) => Future.value(Setting.empty()));
+    when(mockWorkoutPlans.addSet(any)).thenAnswer((_) => Future.value(Slot.empty()));
+    when(mockWorkoutPlans.addSetting(any)).thenAnswer((_) => Future.value(SlotEntry.empty()));
     when(mockWorkoutPlans.fetchSmartText(any, any)).thenAnswer((_) => Future.value('2 x 10'));
     when(mockExerciseProvider.searchExercise(
       any,

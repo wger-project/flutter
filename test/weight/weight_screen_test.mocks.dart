@@ -26,7 +26,8 @@ import 'package:wger/providers/user.dart' as _i7;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeWgerBaseProvider_0 extends _i1.SmartFake implements _i2.WgerBaseProvider {
+class _FakeWgerBaseProvider_0 extends _i1.SmartFake
+    implements _i2.WgerBaseProvider {
   _FakeWgerBaseProvider_0(
     Object parent,
     Invocation parentInvocation,
@@ -49,7 +50,8 @@ class _FakeWeightEntry_1 extends _i1.SmartFake implements _i3.WeightEntry {
 /// A class which mocks [BodyWeightProvider].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockBodyWeightProvider extends _i1.Mock implements _i4.BodyWeightProvider {
+class MockBodyWeightProvider extends _i1.Mock
+    implements _i4.BodyWeightProvider {
   MockBodyWeightProvider() {
     _i1.throwOnMissingStub(this);
   }
@@ -109,7 +111,8 @@ class MockBodyWeightProvider extends _i1.Mock implements _i4.BodyWeightProvider 
       ) as _i3.WeightEntry);
 
   @override
-  _i3.WeightEntry? findByDate(DateTime? date) => (super.noSuchMethod(Invocation.method(
+  _i3.WeightEntry? findByDate(DateTime? date) =>
+      (super.noSuchMethod(Invocation.method(
         #findByDate,
         [date],
       )) as _i3.WeightEntry?);
@@ -120,11 +123,13 @@ class MockBodyWeightProvider extends _i1.Mock implements _i4.BodyWeightProvider 
           #fetchAndSetEntries,
           [],
         ),
-        returnValue: _i5.Future<List<_i3.WeightEntry>>.value(<_i3.WeightEntry>[]),
+        returnValue:
+            _i5.Future<List<_i3.WeightEntry>>.value(<_i3.WeightEntry>[]),
       ) as _i5.Future<List<_i3.WeightEntry>>);
 
   @override
-  _i5.Future<_i3.WeightEntry> addEntry(_i3.WeightEntry? entry) => (super.noSuchMethod(
+  _i5.Future<_i3.WeightEntry> addEntry(_i3.WeightEntry? entry) =>
+      (super.noSuchMethod(
         Invocation.method(
           #addEntry,
           [entry],

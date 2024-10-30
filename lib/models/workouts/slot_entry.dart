@@ -18,15 +18,14 @@
 
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/json.dart';
-import 'package:wger/helpers/misc.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
 
-part 'setting.g.dart';
+part 'slot_entry.g.dart';
 
 @JsonSerializable()
-class Setting {
+class SlotEntry {
   /// Allowed RiR values. This list must be kept in sync with RIR_OPTIONS in the
   /// wger server
   static const POSSIBLE_RIR_VALUES = ['', '0', '0.5', '1', '1.5', '2', '2.5', '3', '3.5', '4'];
@@ -35,16 +34,19 @@ class Setting {
   @JsonKey(required: true)
   int? id;
 
-  @JsonKey(required: true, name: 'set')
-  late int setId;
+  @JsonKey(required: true, name: 'slot')
+  late int slotId;
 
   @JsonKey(required: true)
   late int order;
 
+  @JsonKey(required: true)
+  late String type;
+
   @JsonKey(includeFromJson: false, includeToJson: false)
   late Exercise exerciseObj;
 
-  @JsonKey(required: true, name: 'exercise_base')
+  @JsonKey(required: true, name: 'exercise')
   late int exerciseId;
 
   @JsonKey(required: true, name: 'repetition_unit')
@@ -52,6 +54,9 @@ class Setting {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   late RepetitionUnit repetitionUnitObj;
+
+  @JsonKey(required: true, name: 'repetition_rounding')
+  late num repetitionRounding;
 
   @JsonKey(required: true)
   int? reps;
@@ -65,32 +70,39 @@ class Setting {
   @JsonKey(includeFromJson: false, includeToJson: false)
   late WeightUnit weightUnitObj;
 
-  /// Personal notes about this setting. Currently not used
+  @JsonKey(required: true, name: 'weight_rounding')
+  late num weightRounding;
+
   @JsonKey(required: true)
   late String comment = '';
 
-  /// Reps in Reserve
   @JsonKey(required: true)
-  String? rir = '';
+  late Object config;
 
-  Setting({
+  SlotEntry({
     this.id,
-    required this.setId,
+    required this.slotId,
     required this.order,
+    required this.type,
     required this.exerciseId,
     required this.repetitionUnitId,
+    required this.repetitionRounding,
     required this.reps,
     required this.weightUnitId,
+    required this.weightRounding,
     required this.comment,
-    required this.rir,
   });
 
-  Setting.empty();
+  SlotEntry.empty();
+
+  get rir {
+    return 'DELETE ME! RIR';
+  }
 
   // Boilerplate
-  factory Setting.fromJson(Map<String, dynamic> json) => _$SettingFromJson(json);
+  factory SlotEntry.fromJson(Map<String, dynamic> json) => _$SlotEntryFromJson(json);
 
-  Map<String, dynamic> toJson() => _$SettingToJson(this);
+  Map<String, dynamic> toJson() => _$SlotEntryToJson(this);
 
   set exercise(Exercise exercise) {
     exerciseObj = exercise;
@@ -107,16 +119,7 @@ class Setting {
     repetitionUnitId = repetitionUnit.id;
   }
 
-  void setRir(String newRir) {
-    if (POSSIBLE_RIR_VALUES.contains(newRir)) {
-      rir = newRir;
-    } else {
-      throw Exception('RiR value not allowed: $newRir');
-    }
-  }
-
-  /// Returns the text representation for a single setting, used in the gym mode
   String get singleSettingRepText {
-    return repText(reps, repetitionUnitObj, weight, weightUnitObj, rir);
+    return 'DELETE singleSettingRepText!';
   }
 }

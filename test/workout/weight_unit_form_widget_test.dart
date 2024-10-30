@@ -22,7 +22,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/models/workouts/setting.dart';
+import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/workout_plans.dart';
@@ -39,15 +39,17 @@ void main() {
   const unit2 = WeightUnit(id: 2, name: 'donkeys');
   const unit3 = WeightUnit(id: 3, name: 'plates');
 
-  final setting1 = Setting(
-    setId: 1,
+  final setting1 = SlotEntry(
+    slotId: 1,
+    type: 'normal',
     order: 1,
     exerciseId: 1,
     repetitionUnitId: 1,
+    repetitionRounding: 0.25,
     reps: 2,
     weightUnitId: 1,
+    weightRounding: 0.25,
     comment: 'comment',
-    rir: '1',
   );
   setting1.weightUnitObj = unit1;
 

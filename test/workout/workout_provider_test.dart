@@ -49,14 +49,17 @@ void main() {
     test('Test fetching and setting a plan', () async {
       final exercisesProvider = ExercisesProvider(mockBaseProvider);
 
-      final uri = Uri.https('localhost', 'api/v2/workout/325397/');
-      when(mockBaseProvider.makeUrl('workout', id: 325397)).thenReturn(uri);
+      final uri = Uri.https('localhost', 'api/v2/routine/325397/');
+      when(mockBaseProvider.makeUrl('routine', id: 325397)).thenReturn(uri);
       when(mockBaseProvider.fetch(uri)).thenAnswer(
         (_) async => Future.value({
           'id': 325397,
+          'created': '2022-10-10',
           'name': 'Test workout',
-          'creation_date': '2022-10-10',
           'description': 'Test workout abcd',
+          'start': '2021-12-20',
+          'end': '2022-06-06',
+          'fit_in_week': false
         }),
       );
 
@@ -84,7 +87,7 @@ void main() {
           'description': 'Test workout abcd',
         }),
       );
-      when(mockBaseProvider.deleteRequest('workout', 325397)).thenAnswer(
+      when(mockBaseProvider.deleteRequest('routine', 325397)).thenAnswer(
         (_) => Future.value(Response('', 204)),
       );
 

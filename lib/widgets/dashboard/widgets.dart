@@ -394,13 +394,13 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
           children: [
             Expanded(
               child: Text(
-                day.description,
+                day.name,
                 style: const TextStyle(fontWeight: FontWeight.bold),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
             Expanded(
-              child: MutedText(day.getDaysText, textAlign: TextAlign.right),
+              child: MutedText(day.description, textAlign: TextAlign.right),
             ),
             IconButton(
               icon: const Icon(Icons.play_arrow),
@@ -413,7 +413,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
         ),
       ));
 
-      for (final set in day.sets) {
+      for (final set in day.slots) {
         out.add(SizedBox(
           width: double.infinity,
           child: Column(

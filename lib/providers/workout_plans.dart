@@ -30,8 +30,8 @@ import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/session.dart';
-import 'package:wger/models/workouts/set.dart';
-import 'package:wger/models/workouts/setting.dart';
+import 'package:wger/models/workouts/slot.dart';
+import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
@@ -39,8 +39,8 @@ import 'package:wger/providers/exercises.dart';
 class WorkoutPlansProvider with ChangeNotifier {
   static const _routinesUrlPath = 'routine';
   static const _daysUrlPath = 'day';
-  static const _setsUrlPath = 'set';
-  static const _settingsUrlPath = 'setting';
+  static const _slotsUrlPath = 'slot';
+  static const _slotEntriesUrlPath = 'slot-entry';
   static const _logsUrlPath = 'workoutlog';
   static const _sessionUrlPath = 'workoutsession';
   static const _weightUnitUrlPath = 'setting-weightunit';
@@ -182,7 +182,7 @@ class WorkoutPlansProvider with ChangeNotifier {
     //
     // This is a bit ugly, but saves us sending lots of requests later on
     final allSettingsData = await baseProvider.fetch(
-      baseProvider.makeUrl(_settingsUrlPath, query: {'limit': '1000'}),
+      baseProvider.makeUrl(_slotEntriesUrlPath, query: {'limit': '1000'}),
     );
 
     Routine plan;
@@ -201,20 +201,20 @@ class WorkoutPlansProvider with ChangeNotifier {
       final day = Day.fromJson(dayEntry);
 
       // Sets
-      final List<Set> sets = [];
+      final List<Slot> sets = [];
       final setData = await baseProvider.fetch(
-        baseProvider.makeUrl(_setsUrlPath, query: {'exerciseday': day.id.toString()}),
+        baseProvider.makeUrl(_slotsUrlPath, query: {'exerciseday': day.id.toString()}),
       );
       for (final setEntry in setData['results']) {
-        final workoutSet = Set.fromJson(setEntry);
+        final workoutSet = Slot.fromJson(setEntry);
 
         fetchComputedSettings(workoutSet); // request!
 
-        final List<Setting> settings = [];
+        final List<SlotEntry> settings = [];
         final settingData = allSettingsData['results'].where((s) => s['set'] == workoutSet.id);
 
         for (final settingEntry in settingData) {
-          final workoutSetting = Setting.fromJson(settingEntry);
+          final workoutSetting = SlotEntry.fromJson(settingEntry);
 
           workoutSetting.exercise = await _exercises.fetchAndSetExercise(workoutSetting.exerciseId);
           workoutSetting.weightUnit = _weightUnits.firstWhere(
@@ -223,16 +223,16 @@ class WorkoutPlansProvider with ChangeNotifier {
           workoutSetting.repetitionUnit = _repetitionUnit.firstWhere(
             (e) => e.id == workoutSetting.repetitionUnitId,
           );
-          if (!workoutSet.exerciseBasesIds.contains(workoutSetting.exerciseId)) {
+          if (!workoutSet.exercisesIds.contains(workoutSetting.exerciseId)) {
             workoutSet.addExerciseBase(workoutSetting.exerciseObj);
           }
 
           settings.add(workoutSetting);
         }
-        workoutSet.settings = settings;
+        workoutSet.entries = settings;
         sets.add(workoutSet);
       }
-      day.sets = sets;
+      day.slots = sets;
       days.add(day);
     }
     plan.days = days;
@@ -369,13 +369,13 @@ class WorkoutPlansProvider with ChangeNotifier {
     /*
      * Saves a new day instance to the DB and adds it to the given workout
      */
-    day.workoutId = workout.id!;
+    day.routineId = workout.id!;
     final data = await baseProvider.post(
       day.toJson(),
       baseProvider.makeUrl(_daysUrlPath),
     );
     day = Day.fromJson(data);
-    day.sets = [];
+    day.slots = [];
     workout.days.insert(0, day);
     notifyListeners();
     return day;
@@ -400,48 +400,48 @@ class WorkoutPlansProvider with ChangeNotifier {
   /*
    * Sets
    */
-  Future<Set> addSet(Set workoutSet) async {
+  Future<Slot> addSet(Slot workoutSet) async {
     final data = await baseProvider.post(
       workoutSet.toJson(),
-      baseProvider.makeUrl(_setsUrlPath),
+      baseProvider.makeUrl(_slotsUrlPath),
     );
-    final set = Set.fromJson(data);
+    final set = Slot.fromJson(data);
     notifyListeners();
     return set;
   }
 
-  Future<void> editSet(Set workoutSet) async {
+  Future<void> editSet(Slot workoutSet) async {
     await baseProvider.patch(
       workoutSet.toJson(),
-      baseProvider.makeUrl(_setsUrlPath, id: workoutSet.id),
+      baseProvider.makeUrl(_slotsUrlPath, id: workoutSet.id),
     );
     notifyListeners();
   }
 
-  Future<List<Set>> reorderSets(List<Set> sets, int startIndex) async {
+  Future<List<Slot>> reorderSets(List<Slot> sets, int startIndex) async {
     for (int i = startIndex; i < sets.length; i++) {
       sets[i].order = i;
       await baseProvider.patch(
         sets[i].toJson(),
-        baseProvider.makeUrl(_setsUrlPath, id: sets[i].id),
+        baseProvider.makeUrl(_slotsUrlPath, id: sets[i].id),
       );
     }
     notifyListeners();
     return sets;
   }
 
-  Future<void> fetchComputedSettings(Set workoutSet) async {
+  Future<void> fetchComputedSettings(Slot workoutSet) async {
     final data = await baseProvider.fetch(
       baseProvider.makeUrl(
-        _setsUrlPath,
+        _slotsUrlPath,
         id: workoutSet.id,
         objectMethod: 'computed_settings',
       ),
     );
 
-    final List<Setting> settings = [];
+    final List<SlotEntry> settings = [];
     data['results'].forEach((e) {
-      final Setting workoutSetting = Setting.fromJson(e);
+      final SlotEntry workoutSetting = SlotEntry.fromJson(e);
 
       workoutSetting.weightUnitObj = _weightUnits.firstWhere(
         (unit) => unit.id == workoutSetting.weightUnitId,
@@ -456,10 +456,10 @@ class WorkoutPlansProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<String> fetchSmartText(Set workoutSet, Translation exercise) async {
+  Future<String> fetchSmartText(Slot workoutSet, Translation exercise) async {
     final data = await baseProvider.fetch(
       baseProvider.makeUrl(
-        _setsUrlPath,
+        _slotsUrlPath,
         id: workoutSet.id,
         objectMethod: 'smart_text',
         query: {'exercise': exercise.id.toString()},
@@ -469,12 +469,12 @@ class WorkoutPlansProvider with ChangeNotifier {
     return data['results'];
   }
 
-  Future<void> deleteSet(Set workoutSet) async {
-    await baseProvider.deleteRequest(_setsUrlPath, workoutSet.id!);
+  Future<void> deleteSet(Slot workoutSet) async {
+    await baseProvider.deleteRequest(_slotsUrlPath, workoutSet.id!);
 
     for (final workout in _workoutPlans) {
       for (final day in workout.days) {
-        day.sets.removeWhere((element) => element.id == workoutSet.id);
+        day.slots.removeWhere((element) => element.id == workoutSet.id);
       }
     }
     notifyListeners();
@@ -483,12 +483,12 @@ class WorkoutPlansProvider with ChangeNotifier {
   /*
    * Setting
    */
-  Future<Setting> addSetting(Setting workoutSetting) async {
+  Future<SlotEntry> addSetting(SlotEntry workoutSetting) async {
     final data = await baseProvider.post(
       workoutSetting.toJson(),
-      baseProvider.makeUrl(_settingsUrlPath),
+      baseProvider.makeUrl(_slotEntriesUrlPath),
     );
-    final setting = Setting.fromJson(data);
+    final setting = SlotEntry.fromJson(data);
     notifyListeners();
     return setting;
   }
