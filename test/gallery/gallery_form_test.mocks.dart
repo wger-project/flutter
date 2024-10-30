@@ -236,13 +236,13 @@ class MockGalleryProvider extends _i1.Mock implements _i4.GalleryProvider {
       ) as Uri);
 
   @override
-  _i6.Future<Map<String, dynamic>> fetch(Uri? uri) => (super.noSuchMethod(
+  _i6.Future<dynamic> fetch(Uri? uri) => (super.noSuchMethod(
         Invocation.method(
           #fetch,
           [uri],
         ),
-        returnValue: _i6.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
-      ) as _i6.Future<Map<String, dynamic>>);
+        returnValue: _i6.Future<dynamic>.value(),
+      ) as _i6.Future<dynamic>);
 
   @override
   _i6.Future<List<dynamic>> fetchPaginated(Uri? uri) => (super.noSuchMethod(

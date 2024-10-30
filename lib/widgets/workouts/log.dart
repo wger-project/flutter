@@ -36,7 +36,7 @@ class ExerciseLogChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final workoutPlansData = Provider.of<WorkoutPlansProvider>(context, listen: false);
+    final workoutPlansData = Provider.of<RoutinesProvider>(context, listen: false);
     final workout = workoutPlansData.currentPlan;
     var colors = generateChartColors(1).iterator;
 

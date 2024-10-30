@@ -7,9 +7,7 @@ class $IngredientsTable extends Ingredients with TableInfo<$IngredientsTable, In
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-
   $IngredientsTable(this.attachedDatabase, [this._alias]);
-
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>('id', aliasedName, false,
@@ -23,17 +21,13 @@ class $IngredientsTable extends Ingredients with TableInfo<$IngredientsTable, In
   late final GeneratedColumn<DateTime> lastFetched = GeneratedColumn<DateTime>(
       'last_fetched', aliasedName, false,
       type: DriftSqlType.dateTime, requiredDuringInsert: true);
-
   @override
   List<GeneratedColumn> get $columns => [id, data, lastFetched];
-
   @override
   String get aliasedName => _alias ?? actualTableName;
-
   @override
   String get actualTableName => $name;
   static const String $name = 'ingredients';
-
   @override
   VerificationContext validateIntegrity(Insertable<IngredientTable> instance,
       {bool isInserting = false}) {
@@ -60,7 +54,6 @@ class $IngredientsTable extends Ingredients with TableInfo<$IngredientsTable, In
 
   @override
   Set<GeneratedColumn> get $primaryKey => const {};
-
   @override
   IngredientTable map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -84,9 +77,7 @@ class IngredientTable extends DataClass implements Insertable<IngredientTable> {
 
   /// The date when the ingredient was last fetched from the server
   final DateTime lastFetched;
-
   const IngredientTable({required this.id, required this.data, required this.lastFetched});
-
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -112,7 +103,6 @@ class IngredientTable extends DataClass implements Insertable<IngredientTable> {
       lastFetched: serializer.fromJson<DateTime>(json['lastFetched']),
     );
   }
-
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
@@ -128,7 +118,6 @@ class IngredientTable extends DataClass implements Insertable<IngredientTable> {
         data: data ?? this.data,
         lastFetched: lastFetched ?? this.lastFetched,
       );
-
   IngredientTable copyWithCompanion(IngredientsCompanion data) {
     return IngredientTable(
       id: data.id.present ? data.id.value : this.id,
@@ -149,7 +138,6 @@ class IngredientTable extends DataClass implements Insertable<IngredientTable> {
 
   @override
   int get hashCode => Object.hash(id, data, lastFetched);
-
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -164,14 +152,12 @@ class IngredientsCompanion extends UpdateCompanion<IngredientTable> {
   final Value<String> data;
   final Value<DateTime> lastFetched;
   final Value<int> rowid;
-
   const IngredientsCompanion({
     this.id = const Value.absent(),
     this.data = const Value.absent(),
     this.lastFetched = const Value.absent(),
     this.rowid = const Value.absent(),
   });
-
   IngredientsCompanion.insert({
     required int id,
     required String data,
@@ -180,7 +166,6 @@ class IngredientsCompanion extends UpdateCompanion<IngredientTable> {
   })  : id = Value(id),
         data = Value(data),
         lastFetched = Value(lastFetched);
-
   static Insertable<IngredientTable> custom({
     Expression<int>? id,
     Expression<String>? data,
@@ -237,14 +222,11 @@ class IngredientsCompanion extends UpdateCompanion<IngredientTable> {
 
 abstract class _$IngredientDatabase extends GeneratedDatabase {
   _$IngredientDatabase(QueryExecutor e) : super(e);
-
   $IngredientDatabaseManager get managers => $IngredientDatabaseManager(this);
   late final $IngredientsTable ingredients = $IngredientsTable(this);
-
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
-
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [ingredients];
 }
@@ -270,7 +252,6 @@ class $$IngredientsTableFilterComposer extends Composer<_$IngredientDatabase, $I
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   ColumnFilters<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => ColumnFilters(column));
 
@@ -289,7 +270,6 @@ class $$IngredientsTableOrderingComposer extends Composer<_$IngredientDatabase, 
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   ColumnOrderings<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => ColumnOrderings(column));
 
@@ -309,7 +289,6 @@ class $$IngredientsTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
 
   GeneratedColumn<String> get data =>
@@ -384,9 +363,7 @@ typedef $$IngredientsTableProcessedTableManager = ProcessedTableManager<
 
 class $IngredientDatabaseManager {
   final _$IngredientDatabase _db;
-
   $IngredientDatabaseManager(this._db);
-
   $$IngredientsTableTableManager get ingredients =>
       $$IngredientsTableTableManager(_db, _db.ingredients);
 }

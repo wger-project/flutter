@@ -20,8 +20,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/models/workouts/day.dart';
+import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/models/workouts/slot.dart';
+import 'package:wger/models/workouts/slot_data.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/form_screen.dart';
@@ -90,9 +91,9 @@ class SettingWidget extends StatelessWidget {
 }
 
 class WorkoutDayWidget extends StatefulWidget {
-  final Day _day;
+  final DayData _dayData;
 
-  const WorkoutDayWidget(this._day);
+  const WorkoutDayWidget(this._dayData);
 
   @override
   _WorkoutDayWidgetState createState() => _WorkoutDayWidgetState();
@@ -100,13 +101,13 @@ class WorkoutDayWidget extends StatefulWidget {
 
 class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
   bool _editing = false;
-  late List<Slot> _sets;
+  late List<SlotData> _slots;
 
   @override
   void initState() {
     super.initState();
-    _sets = widget._day.slots;
-    _sets.sort((a, b) => a.order.compareTo(b.order));
+    _slots = widget._dayData.slots;
+    //_slots.sort((a, b) => a.order.compareTo(b.order));
   }
 
   void _toggleExpanded() {
@@ -115,9 +116,9 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
     });
   }
 
-  Widget getSetRow(Slot set, int index) {
+  Widget getSetRow(SlotData set, int index) {
     return Row(
-      key: ValueKey(set.id),
+      // key: ValueKey(set.id),
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         if (_editing)
@@ -127,21 +128,21 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
             iconSize: ICON_SIZE_SMALL,
             tooltip: AppLocalizations.of(context).delete,
             onPressed: () {
-              Provider.of<WorkoutPlansProvider>(context, listen: false).deleteSet(set);
+              // Provider.of<RoutinesProvider>(context, listen: false).deleteSet(set);
             },
           ),
         Expanded(
           child: Column(
             children: [
               if (set.comment != '') MutedText(set.comment),
-              ...set.settingsFiltered.map(
-                (setting) => SettingWidget(
-                  set: set,
-                  setting: setting,
-                  expanded: _editing,
-                  toggle: _toggleExpanded,
-                ),
-              ),
+              // ...set.settingsFiltered.map(
+              //   (setting) => SettingWidget(
+              //     set: set,
+              //     setting: setting,
+              //     expanded: _editing,
+              //     toggle: _toggleExpanded,
+              //   ),
+              // ),
               const Divider(),
             ],
           ),
@@ -168,7 +169,7 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             DayHeader(
-              day: widget._day,
+              day: widget._dayData,
               expanded: _editing,
               toggle: _toggleExpanded,
             ),
@@ -187,7 +188,7 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
                           FormScreen.routeName,
                           arguments: FormScreenArguments(
                             AppLocalizations.of(context).newSet,
-                            SetFormWidget(widget._day),
+                            SetFormWidget(widget._dayData.day),
                             hasListView: true,
                             padding: EdgeInsets.zero,
                           ),
@@ -204,11 +205,11 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
                           arguments: FormScreenArguments(
                             AppLocalizations.of(context).edit,
                             DayFormWidget(
-                              Provider.of<WorkoutPlansProvider>(
+                              Provider.of<RoutinesProvider>(
                                 context,
                                 listen: false,
-                              ).findById(widget._day.routineId),
-                              widget._day,
+                              ).findById(widget._dayData.day.routineId),
+                              widget._dayData.day,
                             ),
                             hasListView: true,
                           ),
@@ -219,10 +220,10 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
                       icon: const Icon(Icons.delete),
                       label: Text(AppLocalizations.of(context).delete),
                       onPressed: () {
-                        Provider.of<WorkoutPlansProvider>(
+                        Provider.of<RoutinesProvider>(
                           context,
                           listen: false,
-                        ).deleteDay(widget._day);
+                        ).deleteDay(widget._dayData.day);
                       },
                     ),
                   ],
@@ -242,16 +243,16 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
                   startIndex = newIndex;
                 }
                 setState(() {
-                  _sets.insert(newIndex, _sets.removeAt(oldIndex));
+                  _slots.insert(newIndex, _slots.removeAt(oldIndex));
                 });
-                _sets = await Provider.of<WorkoutPlansProvider>(
-                  context,
-                  listen: false,
-                ).reorderSets(_sets, startIndex);
+                // _slots = await Provider.of<RoutinesProvider>(
+                //   context,
+                //   listen: false,
+                // ).reorderSets(_slots, startIndex);
               },
               children: [
-                for (var i = 0; i < widget._day.slots.length; i++)
-                  getSetRow(widget._day.slots[i], i),
+                for (var i = 0; i < widget._dayData.slots.length; i++)
+                  getSetRow(widget._dayData.slots[i], i),
               ],
             ),
           ],
@@ -262,15 +263,15 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
 }
 
 class DayHeader extends StatelessWidget {
-  final Day _day;
+  final DayData _dayData;
   final bool _editing;
   final Function _toggle;
 
   const DayHeader({
-    required Day day,
+    required DayData day,
     required bool expanded,
     required Function toggle,
-  })  : _day = day,
+  })  : _dayData = day,
         _editing = expanded,
         _toggle = toggle;
 
@@ -279,11 +280,11 @@ class DayHeader extends StatelessWidget {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       title: Text(
-        _day.name,
+        _dayData.day.name,
         style: Theme.of(context).textTheme.headlineSmall,
         overflow: TextOverflow.ellipsis,
       ),
-      subtitle: Text(_day.description),
+      subtitle: Text(_dayData.day.description),
       leading: const Icon(Icons.play_arrow),
       minLeadingWidth: 8,
       trailing: Row(mainAxisSize: MainAxisSize.min, children: [
@@ -300,7 +301,7 @@ class DayHeader extends StatelessWidget {
       onTap: () {
         Navigator.of(context).pushNamed(
           GymModeScreen.routeName,
-          arguments: _day,
+          arguments: _dayData,
         );
       },
     );

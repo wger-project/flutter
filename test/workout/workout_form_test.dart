@@ -30,9 +30,9 @@ import 'package:wger/widgets/workouts/forms.dart';
 
 import './workout_form_test.mocks.dart';
 
-@GenerateMocks([WorkoutPlansProvider])
+@GenerateMocks([RoutinesProvider])
 void main() {
-  var mockWorkoutPlans = MockWorkoutPlansProvider();
+  var mockWorkoutPlans = MockRoutinesProvider();
 
   final existingPlan = Routine(
     id: 1,
@@ -45,7 +45,7 @@ void main() {
   final newPlan = Routine.empty();
 
   setUp(() {
-    mockWorkoutPlans = MockWorkoutPlansProvider();
+    mockWorkoutPlans = MockRoutinesProvider();
     when(mockWorkoutPlans.editWorkout(any)).thenAnswer((_) => Future.value(existingPlan));
     when(mockWorkoutPlans.fetchAndSetWorkoutPlanFull(any))
         .thenAnswer((_) => Future.value(existingPlan));
@@ -54,7 +54,7 @@ void main() {
   Widget createHomeScreen(Routine workoutPlan, {locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
 
-    return ChangeNotifierProvider<WorkoutPlansProvider>(
+    return ChangeNotifierProvider<RoutinesProvider>(
       create: (context) => mockWorkoutPlans,
       child: MaterialApp(
         locale: Locale(locale),
@@ -96,7 +96,7 @@ void main() {
 
     // Correct method was called
     verify(mockWorkoutPlans.editWorkout(any));
-    verifyNever(mockWorkoutPlans.addWorkout(any));
+    verifyNever(mockWorkoutPlans.addRoutine(any));
 
     // TODO(x): edit calls Navigator.pop(), since the form can only be reached from the
     //       detail page. The test needs to add the detail page to the stack so that
@@ -116,7 +116,7 @@ void main() {
       name: 'New cool workout',
     );
 
-    when(mockWorkoutPlans.addWorkout(any)).thenAnswer((_) => Future.value(editWorkout));
+    when(mockWorkoutPlans.addRoutine(any)).thenAnswer((_) => Future.value(editWorkout));
 
     await tester.pumpWidget(createHomeScreen(newPlan));
     await tester.pumpAndSettle();
@@ -126,7 +126,7 @@ void main() {
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
     verifyNever(mockWorkoutPlans.editWorkout(any));
-    verify(mockWorkoutPlans.addWorkout(any));
+    verify(mockWorkoutPlans.addRoutine(any));
 
     // Detail page
     await tester.pumpAndSettle();
@@ -142,7 +142,7 @@ void main() {
       name: 'My workout',
       description: 'Get yuuuge',
     );
-    when(mockWorkoutPlans.addWorkout(any)).thenAnswer((_) => Future.value(editWorkout));
+    when(mockWorkoutPlans.addRoutine(any)).thenAnswer((_) => Future.value(editWorkout));
 
     await tester.pumpWidget(createHomeScreen(newPlan));
     await tester.pumpAndSettle();
@@ -153,7 +153,7 @@ void main() {
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
     verifyNever(mockWorkoutPlans.editWorkout(any));
-    verify(mockWorkoutPlans.addWorkout(any));
+    verify(mockWorkoutPlans.addRoutine(any));
 
     // Detail page
     await tester.pumpAndSettle();

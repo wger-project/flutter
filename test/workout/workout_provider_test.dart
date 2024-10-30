@@ -64,7 +64,7 @@ void main() {
       );
 
       // Load the entries
-      final provider = WorkoutPlansProvider(mockBaseProvider, exercisesProvider, []);
+      final provider = RoutinesProvider(mockBaseProvider, exercisesProvider, []);
       final plan = await provider.fetchAndSetPlanSparse(325397);
       final plans = provider.getPlans();
 
@@ -92,7 +92,7 @@ void main() {
       );
 
       // Load the entries
-      final provider = WorkoutPlansProvider(mockBaseProvider, exercisesProvider, []);
+      final provider = RoutinesProvider(mockBaseProvider, exercisesProvider, []);
 
       await provider.fetchAndSetPlanSparse(325397);
       await provider.deleteWorkout(325397);
@@ -110,7 +110,7 @@ void main() {
           .thenAnswer((_) => Future.value(tRepetitionUnits['results']));
 
       // Load the entries
-      final provider = WorkoutPlansProvider(mockBaseProvider, exercisesProvider, []);
+      final provider = RoutinesProvider(mockBaseProvider, exercisesProvider, []);
       await provider.fetchAndSetRepetitionUnits();
       final repetitionUnits = provider.repetitionUnits;
 
@@ -127,7 +127,7 @@ void main() {
       final ExercisesProvider testExercisesProvider = ExercisesProvider(mockBaseProvider);
 
       // Load the entries
-      final provider = WorkoutPlansProvider(mockBaseProvider, testExercisesProvider, []);
+      final provider = RoutinesProvider(mockBaseProvider, testExercisesProvider, []);
       await provider.fetchAndSetWeightUnits();
       final weightUnits = provider.weightUnits;
 
@@ -154,7 +154,7 @@ void main() {
       final prefs = await SharedPreferences.getInstance();
 
       // Load the entries
-      final provider = WorkoutPlansProvider(mockBaseProvider, exercisesProvider, []);
+      final provider = RoutinesProvider(mockBaseProvider, exercisesProvider, []);
       await provider.fetchAndSetUnits();
       final prefsJson = jsonDecode(prefs.getString(PREFS_WORKOUT_UNITS)!);
 

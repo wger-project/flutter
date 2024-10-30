@@ -17,48 +17,48 @@
  */
 
 import 'package:json_annotation/json_annotation.dart';
-import 'package:wger/models/workouts/slot.dart';
 
-part 'day.g.dart';
+part 'base_config.g.dart';
 
 @JsonSerializable()
-class Day {
+class BaseConfig {
   @JsonKey(required: true)
-  int? id;
+  late int id;
 
-  @JsonKey(required: true, name: 'routine')
-  late int routineId;
-
-  @JsonKey(required: true)
-  late String name;
+  @JsonKey(required: true, name: 'slot_entry')
+  late int slotEntryId;
 
   @JsonKey(required: true)
-  late String description;
-
-  @JsonKey(required: true, name: 'is_rest')
-  late bool isRest;
-
-  @JsonKey(required: true, name: 'need_logs_to_advance')
-  late bool needLogsToAdvance;
+  late int iteration;
 
   @JsonKey(required: true)
-  late String type;
+  late String trigger;
 
   @JsonKey(required: true)
-  late Object? config;
+  late num value;
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  List<Slot> slots = [];
+  @JsonKey(required: true)
+  late String operation;
 
-  //@JsonKey(includeFromJson: false, includeToJson: false)
-  //late WorkoutPlan workout;
+  @JsonKey(required: true)
+  late String step;
 
-  Day() {
-    slots = [];
-  }
+  @JsonKey(required: true, name: 'need_log_to_apply')
+  late String needLogToApply;
+
+  BaseConfig({
+    required this.id,
+    required this.slotEntryId,
+    required this.iteration,
+    required this.trigger,
+    required this.value,
+    required this.operation,
+    required this.step,
+    required this.needLogToApply,
+  });
 
   // Boilerplate
-  factory Day.fromJson(Map<String, dynamic> json) => _$DayFromJson(json);
+  factory BaseConfig.fromJson(Map<String, dynamic> json) => _$BaseConfigFromJson(json);
 
-  Map<String, dynamic> toJson() => _$DayToJson(this);
+  Map<String, dynamic> toJson() => _$BaseConfigToJson(this);
 }

@@ -26,6 +26,7 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/translation.dart';
 import 'package:wger/models/workouts/day.dart';
+import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/routine.dart';
@@ -36,8 +37,11 @@ import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
 
-class WorkoutPlansProvider with ChangeNotifier {
+class RoutinesProvider with ChangeNotifier {
   static const _routinesUrlPath = 'routine';
+  static const _routinesStructureSubpath = 'structure';
+  static const _routinesDateSequenceSubpath = 'date-sequence-display';
+  static const _routinesCurrentIterationSubpath = 'current-iteration-display';
   static const _daysUrlPath = 'day';
   static const _slotsUrlPath = 'slot';
   static const _slotEntriesUrlPath = 'slot-entry';
@@ -53,7 +57,7 @@ class WorkoutPlansProvider with ChangeNotifier {
   List<WeightUnit> _weightUnits = [];
   List<RepetitionUnit> _repetitionUnit = [];
 
-  WorkoutPlansProvider(
+  RoutinesProvider(
     this.baseProvider,
     ExercisesProvider exercises,
     List<Routine> entries,
@@ -162,6 +166,23 @@ class WorkoutPlansProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void setExerciseAndUnits(List<DayData> entries) async {
+    for (final entry in entries) {
+      for (final slot in entry.slots) {
+        for (final setConfig in slot.setConfigs) {
+          setConfig.exercise = await _exercises.fetchAndSetExercise(setConfig.exerciseId);
+          // slotEntry.exerciseObj = await _exercises.fetchAndSetExercise(slotEntry.exerciseId);
+          // slotEntry.repetitionUnitObj = _repetitionUnit.firstWhere(
+          //   (e) => e.id == slotEntry.repetitionUnitId,
+          // );
+          // slotEntry.weightUnitObj = _weightUnits.firstWhere(
+          //   (e) => e.id == slotEntry.weightUnitId,
+          // );
+        }
+      }
+    }
+  }
+
   /// Fetches a workout plan sparsely, i.e. only with the data on the plan
   /// object itself and no child attributes
   Future<Routine> fetchAndSetPlanSparse(int planId) async {
@@ -177,80 +198,78 @@ class WorkoutPlansProvider with ChangeNotifier {
   }
 
   /// Fetches a workout plan fully, i.e. with all corresponding child attributes
-  Future<Routine> fetchAndSetWorkoutPlanFull(int workoutId) async {
-    // Load a list of all settings so that we can search through it
-    //
-    // This is a bit ugly, but saves us sending lots of requests later on
-    final allSettingsData = await baseProvider.fetch(
-      baseProvider.makeUrl(_slotEntriesUrlPath, query: {'limit': '1000'}),
-    );
+  Future<Routine> fetchAndSetWorkoutPlanFull(int routineId) async {
+    // Fetch structure and computed data
+    final results = await Future.wait([
+      baseProvider.fetch(
+        baseProvider.makeUrl(
+          _routinesUrlPath,
+          objectMethod: _routinesStructureSubpath,
+          id: routineId,
+        ),
+      ),
+      baseProvider.fetch(
+        baseProvider.makeUrl(
+          _routinesUrlPath,
+          id: routineId,
+          objectMethod: _routinesDateSequenceSubpath,
+        ),
+      ),
+      baseProvider.fetch(
+        baseProvider.makeUrl(
+          _routinesUrlPath,
+          id: routineId,
+          objectMethod: _routinesCurrentIterationSubpath,
+        ),
+      )
+    ]);
 
-    Routine plan;
-    try {
-      plan = findById(workoutId);
-    } on StateError {
-      plan = await fetchAndSetPlanSparse(workoutId);
-    }
+    final routine = Routine.fromJson(results[0] as Map<String, dynamic>);
 
-    // Days
-    final List<Day> days = [];
-    final daysData = await baseProvider.fetch(
-      baseProvider.makeUrl(_daysUrlPath, query: {'training': plan.id.toString()}),
-    );
-    for (final dayEntry in daysData['results']) {
-      final day = Day.fromJson(dayEntry);
+    final dayData = results[1] as List<dynamic>;
+    final currentIterationData = results[2] as List<dynamic>;
 
-      // Sets
-      final List<Slot> sets = [];
-      final setData = await baseProvider.fetch(
-        baseProvider.makeUrl(_slotsUrlPath, query: {'exerciseday': day.id.toString()}),
-      );
-      for (final setEntry in setData['results']) {
-        final workoutSet = Slot.fromJson(setEntry);
+    /*
+     * Set exercise, repetition and weight unit objects
+     */
+    final dayDataEntries = dayData.map((entry) => DayData.fromJson(entry)).toList();
+    setExerciseAndUnits(dayDataEntries);
 
-        fetchComputedSettings(workoutSet); // request!
+    final currentIterationDayDataEntries =
+        currentIterationData.map((entry) => DayData.fromJson(entry)).toList();
+    setExerciseAndUnits(currentIterationDayDataEntries);
 
-        final List<SlotEntry> settings = [];
-        final settingData = allSettingsData['results'].where((s) => s['set'] == workoutSet.id);
-
-        for (final settingEntry in settingData) {
-          final workoutSetting = SlotEntry.fromJson(settingEntry);
-
-          workoutSetting.exercise = await _exercises.fetchAndSetExercise(workoutSetting.exerciseId);
-          workoutSetting.weightUnit = _weightUnits.firstWhere(
-            (e) => e.id == workoutSetting.weightUnitId,
+    for (final day in routine.days) {
+      for (final slot in day.slots) {
+        for (final slotEntry in slot.entries) {
+          slotEntry.exerciseObj = await _exercises.fetchAndSetExercise(slotEntry.exerciseId);
+          slotEntry.repetitionUnitObj = _repetitionUnit.firstWhere(
+            (e) => e.id == slotEntry.repetitionUnitId,
           );
-          workoutSetting.repetitionUnit = _repetitionUnit.firstWhere(
-            (e) => e.id == workoutSetting.repetitionUnitId,
+          slotEntry.weightUnitObj = _weightUnits.firstWhere(
+            (e) => e.id == slotEntry.weightUnitId,
           );
-          if (!workoutSet.exercisesIds.contains(workoutSetting.exerciseId)) {
-            workoutSet.addExerciseBase(workoutSetting.exerciseObj);
-          }
-
-          settings.add(workoutSetting);
         }
-        workoutSet.entries = settings;
-        sets.add(workoutSet);
       }
-      day.slots = sets;
-      days.add(day);
     }
-    plan.days = days;
+
+    routine.dayData = dayDataEntries;
+    routine.dayDataCurrentIteration = currentIterationDayDataEntries;
 
     // Logs
-    plan.logs = [];
+    routine.logs = [];
 
     final logData = await baseProvider.fetchPaginated(baseProvider.makeUrl(
       _logsUrlPath,
-      query: {'workout': workoutId.toString(), 'limit': '100'},
+      query: {'workout': routineId.toString(), 'limit': '100'},
     ));
     for (final logEntry in logData) {
       try {
         final log = Log.fromJson(logEntry);
         log.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
         log.repetitionUnit = _repetitionUnit.firstWhere((e) => e.id == log.weightUnitId);
-        log.exerciseBase = await _exercises.fetchAndSetExercise(log.exerciseBaseId);
-        plan.logs.add(log);
+        log.exerciseBase = await _exercises.fetchAndSetExercise(log.exerciseId);
+        routine.logs.add(log);
       } catch (e) {
         dev.log('fire! fire!');
         dev.log(e.toString());
@@ -259,12 +278,12 @@ class WorkoutPlansProvider with ChangeNotifier {
 
     // ... and done
     notifyListeners();
-    return plan;
+    return routine;
   }
 
-  Future<Routine> addWorkout(Routine workout) async {
+  Future<Routine> addRoutine(Routine routine) async {
     final data = await baseProvider.post(
-      workout.toJson(),
+      routine.toJson(),
       baseProvider.makeUrl(_routinesUrlPath),
     );
     final plan = Routine.fromJson(data);
@@ -352,13 +371,13 @@ class WorkoutPlansProvider with ChangeNotifier {
     await fetchAndSetRepetitionUnits();
 
     // Save the result to the cache
-    final exerciseData = {
+    final cacheData = {
       'date': DateTime.now().toIso8601String(),
       'expiresIn': DateTime.now().add(const Duration(days: DAYS_TO_CACHE)).toIso8601String(),
       'repetitionUnits': _repetitionUnit.map((e) => e.toJson()).toList(),
       'weightUnit': _weightUnits.map((e) => e.toJson()).toList(),
     };
-    prefs.setString(PREFS_WORKOUT_UNITS, json.encode(exerciseData));
+    prefs.setString(PREFS_WORKOUT_UNITS, json.encode(cacheData));
     notifyListeners();
   }
 
@@ -469,12 +488,12 @@ class WorkoutPlansProvider with ChangeNotifier {
     return data['results'];
   }
 
-  Future<void> deleteSet(Slot workoutSet) async {
-    await baseProvider.deleteRequest(_slotsUrlPath, workoutSet.id!);
+  Future<void> deleteSet(int setId) async {
+    await baseProvider.deleteRequest(_slotsUrlPath, setId);
 
     for (final workout in _workoutPlans) {
       for (final day in workout.days) {
-        day.slots.removeWhere((element) => element.id == workoutSet.id);
+        day.slots.removeWhere((element) => element.id == setId);
       }
     }
     notifyListeners();
@@ -526,9 +545,9 @@ class WorkoutPlansProvider with ChangeNotifier {
     log.id = newLog.id;
     log.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
     log.repetitionUnit = _repetitionUnit.firstWhere((e) => e.id == log.weightUnitId);
-    log.exerciseBase = await _exercises.fetchAndSetExercise(log.exerciseBaseId);
+    log.exerciseBase = await _exercises.fetchAndSetExercise(log.exerciseId);
 
-    final plan = findById(log.workoutPlan);
+    final plan = findById(log.routineId);
     plan.logs.add(log);
     notifyListeners();
     return newLog;

@@ -25,10 +25,10 @@ import 'package:wger/widgets/workouts/day.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 
 class WorkoutPlanDetail extends StatefulWidget {
-  final Routine _workoutPlan;
+  final Routine _routine;
   final Function _changeMode;
 
-  const WorkoutPlanDetail(this._workoutPlan, this._changeMode);
+  const WorkoutPlanDetail(this._routine, this._changeMode);
 
   @override
   _WorkoutPlanDetailState createState() => _WorkoutPlanDetailState();
@@ -39,7 +39,7 @@ class _WorkoutPlanDetailState extends State<WorkoutPlanDetail> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        if (widget._workoutPlan.days.isNotEmpty)
+        if (widget._routine.dayDataCurrentIteration.isNotEmpty)
           Padding(
             padding: const EdgeInsets.all(10),
             child: ToggleButtons(
@@ -56,12 +56,12 @@ class _WorkoutPlanDetailState extends State<WorkoutPlanDetail> {
               ],
             ),
           ),
-        if (widget._workoutPlan.description != '')
+        if (widget._routine.description != '')
           Padding(
             padding: const EdgeInsets.all(15),
-            child: Text(widget._workoutPlan.description),
+            child: Text(widget._routine.description),
           ),
-        ...widget._workoutPlan.days.map((workoutDay) => WorkoutDayWidget(workoutDay)),
+        ...widget._routine.dayDataCurrentIteration.map((dayData) => WorkoutDayWidget(dayData)),
         Column(
           children: [
             ElevatedButton(
@@ -72,7 +72,7 @@ class _WorkoutPlanDetailState extends State<WorkoutPlanDetail> {
                   FormScreen.routeName,
                   arguments: FormScreenArguments(
                     AppLocalizations.of(context).newDay,
-                    DayFormWidget(widget._workoutPlan),
+                    DayFormWidget(widget._routine),
                     hasListView: true,
                   ),
                 );

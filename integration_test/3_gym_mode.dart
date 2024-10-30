@@ -25,8 +25,8 @@ Widget createGymModeScreen({locale = 'en'}) {
   //when(mockExerciseProvider.findExerciseBaseById(2)).thenReturn(bases[1]); // crunches
   //when(mockExerciseProvider.findExerciseBaseById(3)).thenReturn(bases[2]); // dead lift
 
-  return ChangeNotifierProvider<WorkoutPlansProvider>(
-    create: (context) => WorkoutPlansProvider(
+  return ChangeNotifierProvider<RoutinesProvider>(
+    create: (context) => RoutinesProvider(
       mockBaseProvider,
       mockExerciseProvider,
       [workout],

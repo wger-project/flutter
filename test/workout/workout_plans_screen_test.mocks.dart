@@ -108,8 +108,7 @@ class MockWgerBaseProvider extends _i1.Mock implements _i4.WgerBaseProvider {
       );
 
   @override
-  Map<String, String> getDefaultHeaders({bool? includeAuth = false}) =>
-      (super.noSuchMethod(
+  Map<String, String> getDefaultHeaders({bool? includeAuth = false}) => (super.noSuchMethod(
         Invocation.method(
           #getDefaultHeaders,
           [],
@@ -150,14 +149,13 @@ class MockWgerBaseProvider extends _i1.Mock implements _i4.WgerBaseProvider {
       ) as Uri);
 
   @override
-  _i5.Future<Map<String, dynamic>> fetch(Uri? uri) => (super.noSuchMethod(
+  _i5.Future<dynamic> fetch(Uri? uri) => (super.noSuchMethod(
         Invocation.method(
           #fetch,
           [uri],
         ),
-        returnValue:
-            _i5.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
-      ) as _i5.Future<Map<String, dynamic>>);
+        returnValue: _i5.Future<dynamic>.value(),
+      ) as _i5.Future<dynamic>);
 
   @override
   _i5.Future<List<dynamic>> fetchPaginated(Uri? uri) => (super.noSuchMethod(
@@ -181,8 +179,7 @@ class MockWgerBaseProvider extends _i1.Mock implements _i4.WgerBaseProvider {
             uri,
           ],
         ),
-        returnValue:
-            _i5.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
+        returnValue: _i5.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
       ) as _i5.Future<Map<String, dynamic>>);
 
   @override
@@ -198,8 +195,7 @@ class MockWgerBaseProvider extends _i1.Mock implements _i4.WgerBaseProvider {
             uri,
           ],
         ),
-        returnValue:
-            _i5.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
+        returnValue: _i5.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
       ) as _i5.Future<Map<String, dynamic>>);
 
   @override

@@ -376,7 +376,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
   @override
   void initState() {
     super.initState();
-    _workoutPlan = context.read<WorkoutPlansProvider>().activePlan;
+    _workoutPlan = context.read<RoutinesProvider>().activePlan;
     _hasContent = _workoutPlan != null;
   }
 

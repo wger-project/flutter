@@ -21,9 +21,7 @@ IngredientApiSearchDetails _$IngredientApiSearchDetailsFromJson(Map<String, dyna
 /// @nodoc
 mixin _$IngredientApiSearchDetails {
   int get id => throw _privateConstructorUsedError;
-
   String get name => throw _privateConstructorUsedError;
-
   String? get image => throw _privateConstructorUsedError; // ignore: invalid_annotation_target
   @JsonKey(name: 'image_thumbnail')
   String? get imageThumbnail => throw _privateConstructorUsedError;
@@ -43,7 +41,6 @@ abstract class $IngredientApiSearchDetailsCopyWith<$Res> {
   factory $IngredientApiSearchDetailsCopyWith(
           IngredientApiSearchDetails value, $Res Function(IngredientApiSearchDetails) then) =
       _$IngredientApiSearchDetailsCopyWithImpl<$Res, IngredientApiSearchDetails>;
-
   @useResult
   $Res call(
       {int id,
@@ -59,7 +56,6 @@ class _$IngredientApiSearchDetailsCopyWithImpl<$Res, $Val extends IngredientApiS
 
   // ignore: unused_field
   final $Val _value;
-
   // ignore: unused_field
   final $Res Function($Val) _then;
 
@@ -100,7 +96,6 @@ abstract class _$$IngredientApiSearchDetailsImplCopyWith<$Res>
   factory _$$IngredientApiSearchDetailsImplCopyWith(_$IngredientApiSearchDetailsImpl value,
           $Res Function(_$IngredientApiSearchDetailsImpl) then) =
       __$$IngredientApiSearchDetailsImplCopyWithImpl<$Res>;
-
   @override
   @useResult
   $Res call(
@@ -167,7 +162,6 @@ class _$IngredientApiSearchDetailsImpl implements _IngredientApiSearchDetails {
   final String name;
   @override
   final String? image;
-
 // ignore: invalid_annotation_target
   @override
   @JsonKey(name: 'image_thumbnail')
@@ -224,10 +218,8 @@ abstract class _IngredientApiSearchDetails implements IngredientApiSearchDetails
 
   @override
   int get id;
-
   @override
   String get name;
-
   @override
   String? get image; // ignore: invalid_annotation_target
   @override
@@ -249,7 +241,6 @@ IngredientApiSearchEntry _$IngredientApiSearchEntryFromJson(Map<String, dynamic>
 /// @nodoc
 mixin _$IngredientApiSearchEntry {
   String get value => throw _privateConstructorUsedError;
-
   IngredientApiSearchDetails get data => throw _privateConstructorUsedError;
 
   /// Serializes this IngredientApiSearchEntry to a JSON map.
@@ -267,7 +258,6 @@ abstract class $IngredientApiSearchEntryCopyWith<$Res> {
   factory $IngredientApiSearchEntryCopyWith(
           IngredientApiSearchEntry value, $Res Function(IngredientApiSearchEntry) then) =
       _$IngredientApiSearchEntryCopyWithImpl<$Res, IngredientApiSearchEntry>;
-
   @useResult
   $Res call({String value, IngredientApiSearchDetails data});
 
@@ -281,7 +271,6 @@ class _$IngredientApiSearchEntryCopyWithImpl<$Res, $Val extends IngredientApiSea
 
   // ignore: unused_field
   final $Val _value;
-
   // ignore: unused_field
   final $Res Function($Val) _then;
 
@@ -322,7 +311,6 @@ abstract class _$$IngredientApiSearchEntryImplCopyWith<$Res>
   factory _$$IngredientApiSearchEntryImplCopyWith(_$IngredientApiSearchEntryImpl value,
           $Res Function(_$IngredientApiSearchEntryImpl) then) =
       __$$IngredientApiSearchEntryImplCopyWithImpl<$Res>;
-
   @override
   @useResult
   $Res call({String value, IngredientApiSearchDetails data});
@@ -418,7 +406,6 @@ abstract class _IngredientApiSearchEntry implements IngredientApiSearchEntry {
 
   @override
   String get value;
-
   @override
   IngredientApiSearchDetails get data;
 
@@ -453,7 +440,6 @@ abstract class $IngredientApiSearchCopyWith<$Res> {
   factory $IngredientApiSearchCopyWith(
           IngredientApiSearch value, $Res Function(IngredientApiSearch) then) =
       _$IngredientApiSearchCopyWithImpl<$Res, IngredientApiSearch>;
-
   @useResult
   $Res call({List<IngredientApiSearchEntry> suggestions});
 }
@@ -465,7 +451,6 @@ class _$IngredientApiSearchCopyWithImpl<$Res, $Val extends IngredientApiSearch>
 
   // ignore: unused_field
   final $Val _value;
-
   // ignore: unused_field
   final $Res Function($Val) _then;
 
@@ -491,7 +476,6 @@ abstract class _$$IngredientApiSearchImplCopyWith<$Res>
   factory _$$IngredientApiSearchImplCopyWith(
           _$IngredientApiSearchImpl value, $Res Function(_$IngredientApiSearchImpl) then) =
       __$$IngredientApiSearchImplCopyWithImpl<$Res>;
-
   @override
   @useResult
   $Res call({List<IngredientApiSearchEntry> suggestions});
@@ -531,7 +515,6 @@ class _$IngredientApiSearchImpl implements _IngredientApiSearch {
       _$$IngredientApiSearchImplFromJson(json);
 
   final List<IngredientApiSearchEntry> _suggestions;
-
   @override
   List<IngredientApiSearchEntry> get suggestions {
     if (_suggestions is EqualUnmodifiableListView) return _suggestions;

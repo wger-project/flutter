@@ -27,8 +27,8 @@ void main() {
     setUp(() {
       log1 = Log(
         id: 123,
-        workoutPlan: 100,
-        exerciseBaseId: 1,
+        routineId: 100,
+        exerciseId: 1,
         reps: 10,
         rir: '1.5',
         repetitionUnitId: 1,
@@ -38,8 +38,8 @@ void main() {
       );
       log2 = Log(
         id: 9,
-        workoutPlan: 42,
-        exerciseBaseId: 1,
+        routineId: 42,
+        exerciseId: 1,
         reps: 10,
         rir: '1.5',
         repetitionUnitId: 1,

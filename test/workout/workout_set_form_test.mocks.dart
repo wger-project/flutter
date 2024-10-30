@@ -8,15 +8,16 @@ import 'dart:ui' as _i21;
 
 import 'package:http/http.dart' as _i10;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i24;
+import 'package:mockito/src/dummies.dart' as _i25;
 import 'package:wger/database/exercises/exercise_database.dart' as _i3;
 import 'package:wger/models/exercises/category.dart' as _i5;
 import 'package:wger/models/exercises/equipment.dart' as _i6;
 import 'package:wger/models/exercises/exercise.dart' as _i4;
 import 'package:wger/models/exercises/language.dart' as _i8;
 import 'package:wger/models/exercises/muscle.dart' as _i7;
-import 'package:wger/models/exercises/translation.dart' as _i23;
+import 'package:wger/models/exercises/translation.dart' as _i24;
 import 'package:wger/models/workouts/day.dart' as _i14;
+import 'package:wger/models/workouts/day_data.dart' as _i23;
 import 'package:wger/models/workouts/log.dart' as _i18;
 import 'package:wger/models/workouts/repetition_unit.dart' as _i12;
 import 'package:wger/models/workouts/routine.dart' as _i13;
@@ -42,8 +43,7 @@ import 'package:wger/providers/workout_plans.dart' as _i22;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeWgerBaseProvider_0 extends _i1.SmartFake
-    implements _i2.WgerBaseProvider {
+class _FakeWgerBaseProvider_0 extends _i1.SmartFake implements _i2.WgerBaseProvider {
   _FakeWgerBaseProvider_0(
     Object parent,
     Invocation parentInvocation,
@@ -53,8 +53,7 @@ class _FakeWgerBaseProvider_0 extends _i1.SmartFake
         );
 }
 
-class _FakeExerciseDatabase_1 extends _i1.SmartFake
-    implements _i3.ExerciseDatabase {
+class _FakeExerciseDatabase_1 extends _i1.SmartFake implements _i3.ExerciseDatabase {
   _FakeExerciseDatabase_1(
     Object parent,
     Invocation parentInvocation,
@@ -74,8 +73,7 @@ class _FakeExercise_2 extends _i1.SmartFake implements _i4.Exercise {
         );
 }
 
-class _FakeExerciseCategory_3 extends _i1.SmartFake
-    implements _i5.ExerciseCategory {
+class _FakeExerciseCategory_3 extends _i1.SmartFake implements _i5.ExerciseCategory {
   _FakeExerciseCategory_3(
     Object parent,
     Invocation parentInvocation,
@@ -165,8 +163,7 @@ class _FakeWeightUnit_11 extends _i1.SmartFake implements _i11.WeightUnit {
         );
 }
 
-class _FakeRepetitionUnit_12 extends _i1.SmartFake
-    implements _i12.RepetitionUnit {
+class _FakeRepetitionUnit_12 extends _i1.SmartFake implements _i12.RepetitionUnit {
   _FakeRepetitionUnit_12(
     Object parent,
     Invocation parentInvocation,
@@ -216,8 +213,7 @@ class _FakeSlotEntry_16 extends _i1.SmartFake implements _i16.SlotEntry {
         );
 }
 
-class _FakeWorkoutSession_17 extends _i1.SmartFake
-    implements _i17.WorkoutSession {
+class _FakeWorkoutSession_17 extends _i1.SmartFake implements _i17.WorkoutSession {
   _FakeWorkoutSession_17(
     Object parent,
     Invocation parentInvocation,
@@ -294,8 +290,7 @@ class MockExercisesProvider extends _i1.Mock implements _i19.ExercisesProvider {
       ) as List<_i4.Exercise>);
 
   @override
-  set filteredExercises(List<_i4.Exercise>? newFilteredExercises) =>
-      super.noSuchMethod(
+  set filteredExercises(List<_i4.Exercise>? newFilteredExercises) => super.noSuchMethod(
         Invocation.setter(
           #filteredExercises,
           newFilteredExercises,
@@ -304,8 +299,7 @@ class MockExercisesProvider extends _i1.Mock implements _i19.ExercisesProvider {
       );
 
   @override
-  Map<int, List<_i4.Exercise>> get exerciseBasesByVariation =>
-      (super.noSuchMethod(
+  Map<int, List<_i4.Exercise>> get exerciseBasesByVariation => (super.noSuchMethod(
         Invocation.getter(#exerciseBasesByVariation),
         returnValue: <int, List<_i4.Exercise>>{},
       ) as Map<int, List<_i4.Exercise>>);
@@ -517,8 +511,7 @@ class MockExercisesProvider extends _i1.Mock implements _i19.ExercisesProvider {
       ) as _i20.Future<void>);
 
   @override
-  _i20.Future<_i4.Exercise> fetchAndSetExercise(int? exerciseId) =>
-      (super.noSuchMethod(
+  _i20.Future<_i4.Exercise> fetchAndSetExercise(int? exerciseId) => (super.noSuchMethod(
         Invocation.method(
           #fetchAndSetExercise,
           [exerciseId],
@@ -558,8 +551,7 @@ class MockExercisesProvider extends _i1.Mock implements _i19.ExercisesProvider {
       ) as _i20.Future<_i4.Exercise>);
 
   @override
-  _i20.Future<void> initCacheTimesLocalPrefs({dynamic forceInit = false}) =>
-      (super.noSuchMethod(
+  _i20.Future<void> initCacheTimesLocalPrefs({dynamic forceInit = false}) => (super.noSuchMethod(
         Invocation.method(
           #initCacheTimesLocalPrefs,
           [],
@@ -605,8 +597,7 @@ class MockExercisesProvider extends _i1.Mock implements _i19.ExercisesProvider {
       ) as _i20.Future<void>);
 
   @override
-  _i20.Future<void> updateExerciseCache(_i3.ExerciseDatabase? database) =>
-      (super.noSuchMethod(
+  _i20.Future<void> updateExerciseCache(_i3.ExerciseDatabase? database) => (super.noSuchMethod(
         Invocation.method(
           #updateExerciseCache,
           [database],
@@ -616,8 +607,7 @@ class MockExercisesProvider extends _i1.Mock implements _i19.ExercisesProvider {
       ) as _i20.Future<void>);
 
   @override
-  _i20.Future<void> fetchAndSetMuscles(_i3.ExerciseDatabase? database) =>
-      (super.noSuchMethod(
+  _i20.Future<void> fetchAndSetMuscles(_i3.ExerciseDatabase? database) => (super.noSuchMethod(
         Invocation.method(
           #fetchAndSetMuscles,
           [database],
@@ -627,8 +617,7 @@ class MockExercisesProvider extends _i1.Mock implements _i19.ExercisesProvider {
       ) as _i20.Future<void>);
 
   @override
-  _i20.Future<void> fetchAndSetCategories(_i3.ExerciseDatabase? database) =>
-      (super.noSuchMethod(
+  _i20.Future<void> fetchAndSetCategories(_i3.ExerciseDatabase? database) => (super.noSuchMethod(
         Invocation.method(
           #fetchAndSetCategories,
           [database],
@@ -638,8 +627,7 @@ class MockExercisesProvider extends _i1.Mock implements _i19.ExercisesProvider {
       ) as _i20.Future<void>);
 
   @override
-  _i20.Future<void> fetchAndSetLanguages(_i3.ExerciseDatabase? database) =>
-      (super.noSuchMethod(
+  _i20.Future<void> fetchAndSetLanguages(_i3.ExerciseDatabase? database) => (super.noSuchMethod(
         Invocation.method(
           #fetchAndSetLanguages,
           [database],
@@ -649,8 +637,7 @@ class MockExercisesProvider extends _i1.Mock implements _i19.ExercisesProvider {
       ) as _i20.Future<void>);
 
   @override
-  _i20.Future<void> fetchAndSetEquipments(_i3.ExerciseDatabase? database) =>
-      (super.noSuchMethod(
+  _i20.Future<void> fetchAndSetEquipments(_i3.ExerciseDatabase? database) => (super.noSuchMethod(
         Invocation.method(
           #fetchAndSetEquipments,
           [database],
@@ -759,8 +746,7 @@ class MockWgerBaseProvider extends _i1.Mock implements _i2.WgerBaseProvider {
       );
 
   @override
-  Map<String, String> getDefaultHeaders({bool? includeAuth = false}) =>
-      (super.noSuchMethod(
+  Map<String, String> getDefaultHeaders({bool? includeAuth = false}) => (super.noSuchMethod(
         Invocation.method(
           #getDefaultHeaders,
           [],
@@ -801,14 +787,13 @@ class MockWgerBaseProvider extends _i1.Mock implements _i2.WgerBaseProvider {
       ) as Uri);
 
   @override
-  _i20.Future<Map<String, dynamic>> fetch(Uri? uri) => (super.noSuchMethod(
+  _i20.Future<dynamic> fetch(Uri? uri) => (super.noSuchMethod(
         Invocation.method(
           #fetch,
           [uri],
         ),
-        returnValue:
-            _i20.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
-      ) as _i20.Future<Map<String, dynamic>>);
+        returnValue: _i20.Future<dynamic>.value(),
+      ) as _i20.Future<dynamic>);
 
   @override
   _i20.Future<List<dynamic>> fetchPaginated(Uri? uri) => (super.noSuchMethod(
@@ -832,8 +817,7 @@ class MockWgerBaseProvider extends _i1.Mock implements _i2.WgerBaseProvider {
             uri,
           ],
         ),
-        returnValue:
-            _i20.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
+        returnValue: _i20.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
       ) as _i20.Future<Map<String, dynamic>>);
 
   @override
@@ -849,8 +833,7 @@ class MockWgerBaseProvider extends _i1.Mock implements _i2.WgerBaseProvider {
             uri,
           ],
         ),
-        returnValue:
-            _i20.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
+        returnValue: _i20.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
       ) as _i20.Future<Map<String, dynamic>>);
 
   @override
@@ -879,12 +862,11 @@ class MockWgerBaseProvider extends _i1.Mock implements _i2.WgerBaseProvider {
       ) as _i20.Future<_i10.Response>);
 }
 
-/// A class which mocks [WorkoutPlansProvider].
+/// A class which mocks [RoutinesProvider].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockWorkoutPlansProvider extends _i1.Mock
-    implements _i22.WorkoutPlansProvider {
-  MockWorkoutPlansProvider() {
+class MockRoutinesProvider extends _i1.Mock implements _i22.RoutinesProvider {
+  MockRoutinesProvider() {
     _i1.throwOnMissingStub(this);
   }
 
@@ -1020,8 +1002,16 @@ class MockWorkoutPlansProvider extends _i1.Mock
       ) as _i20.Future<void>);
 
   @override
-  _i20.Future<_i13.Routine> fetchAndSetPlanSparse(int? planId) =>
-      (super.noSuchMethod(
+  void setExerciseAndUnits(List<_i23.DayData>? entries) => super.noSuchMethod(
+        Invocation.method(
+          #setExerciseAndUnits,
+          [entries],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  _i20.Future<_i13.Routine> fetchAndSetPlanSparse(int? planId) => (super.noSuchMethod(
         Invocation.method(
           #fetchAndSetPlanSparse,
           [planId],
@@ -1036,33 +1026,31 @@ class MockWorkoutPlansProvider extends _i1.Mock
       ) as _i20.Future<_i13.Routine>);
 
   @override
-  _i20.Future<_i13.Routine> fetchAndSetWorkoutPlanFull(int? workoutId) =>
-      (super.noSuchMethod(
+  _i20.Future<_i13.Routine> fetchAndSetWorkoutPlanFull(int? routineId) => (super.noSuchMethod(
         Invocation.method(
           #fetchAndSetWorkoutPlanFull,
-          [workoutId],
+          [routineId],
         ),
         returnValue: _i20.Future<_i13.Routine>.value(_FakeRoutine_13(
           this,
           Invocation.method(
             #fetchAndSetWorkoutPlanFull,
-            [workoutId],
+            [routineId],
           ),
         )),
       ) as _i20.Future<_i13.Routine>);
 
   @override
-  _i20.Future<_i13.Routine> addWorkout(_i13.Routine? workout) =>
-      (super.noSuchMethod(
+  _i20.Future<_i13.Routine> addRoutine(_i13.Routine? routine) => (super.noSuchMethod(
         Invocation.method(
-          #addWorkout,
-          [workout],
+          #addRoutine,
+          [routine],
         ),
         returnValue: _i20.Future<_i13.Routine>.value(_FakeRoutine_13(
           this,
           Invocation.method(
-            #addWorkout,
-            [workout],
+            #addRoutine,
+            [routine],
           ),
         )),
       ) as _i20.Future<_i13.Routine>);
@@ -1100,8 +1088,7 @@ class MockWorkoutPlansProvider extends _i1.Mock
             base,
           ],
         ),
-        returnValue:
-            _i20.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
+        returnValue: _i20.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
       ) as _i20.Future<Map<String, dynamic>>);
 
   @override
@@ -1221,8 +1208,7 @@ class MockWorkoutPlansProvider extends _i1.Mock
       ) as _i20.Future<List<_i15.Slot>>);
 
   @override
-  _i20.Future<void> fetchComputedSettings(_i15.Slot? workoutSet) =>
-      (super.noSuchMethod(
+  _i20.Future<void> fetchComputedSettings(_i15.Slot? workoutSet) => (super.noSuchMethod(
         Invocation.method(
           #fetchComputedSettings,
           [workoutSet],
@@ -1234,7 +1220,7 @@ class MockWorkoutPlansProvider extends _i1.Mock
   @override
   _i20.Future<String> fetchSmartText(
     _i15.Slot? workoutSet,
-    _i23.Translation? exercise,
+    _i24.Translation? exercise,
   ) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -1244,7 +1230,7 @@ class MockWorkoutPlansProvider extends _i1.Mock
             exercise,
           ],
         ),
-        returnValue: _i20.Future<String>.value(_i24.dummyValue<String>(
+        returnValue: _i20.Future<String>.value(_i25.dummyValue<String>(
           this,
           Invocation.method(
             #fetchSmartText,
@@ -1257,18 +1243,17 @@ class MockWorkoutPlansProvider extends _i1.Mock
       ) as _i20.Future<String>);
 
   @override
-  _i20.Future<void> deleteSet(_i15.Slot? workoutSet) => (super.noSuchMethod(
+  _i20.Future<void> deleteSet(int? setId) => (super.noSuchMethod(
         Invocation.method(
           #deleteSet,
-          [workoutSet],
+          [setId],
         ),
         returnValue: _i20.Future<void>.value(),
         returnValueForMissingStub: _i20.Future<void>.value(),
       ) as _i20.Future<void>);
 
   @override
-  _i20.Future<_i16.SlotEntry> addSetting(_i16.SlotEntry? workoutSetting) =>
-      (super.noSuchMethod(
+  _i20.Future<_i16.SlotEntry> addSetting(_i16.SlotEntry? workoutSetting) => (super.noSuchMethod(
         Invocation.method(
           #addSetting,
           [workoutSetting],
@@ -1292,14 +1277,12 @@ class MockWorkoutPlansProvider extends _i1.Mock
       ) as _i20.Future<dynamic>);
 
   @override
-  _i20.Future<_i17.WorkoutSession> addSession(_i17.WorkoutSession? session) =>
-      (super.noSuchMethod(
+  _i20.Future<_i17.WorkoutSession> addSession(_i17.WorkoutSession? session) => (super.noSuchMethod(
         Invocation.method(
           #addSession,
           [session],
         ),
-        returnValue:
-            _i20.Future<_i17.WorkoutSession>.value(_FakeWorkoutSession_17(
+        returnValue: _i20.Future<_i17.WorkoutSession>.value(_FakeWorkoutSession_17(
           this,
           Invocation.method(
             #addSession,

@@ -30,9 +30,9 @@ import 'package:wger/widgets/workouts/forms.dart';
 
 import 'repetition_unit_form_widget_test.mocks.dart';
 
-@GenerateMocks([WorkoutPlansProvider])
+@GenerateMocks([RoutinesProvider])
 void main() {
-  var mockWorkoutPlans = MockWorkoutPlansProvider();
+  var mockWorkoutPlans = MockRoutinesProvider();
 
   const unit1 = RepetitionUnit(id: 1, name: 'some rep unit');
   const unit2 = RepetitionUnit(id: 2, name: 'another name');
@@ -45,7 +45,6 @@ void main() {
     exerciseId: 1,
     repetitionUnitId: 1,
     repetitionRounding: 0.25,
-    reps: 2,
     weightUnitId: 1,
     weightRounding: 0.25,
     comment: 'comment',
@@ -53,14 +52,14 @@ void main() {
   setting1.repetitionUnitObj = unit1;
 
   setUp(() {
-    mockWorkoutPlans = MockWorkoutPlansProvider();
+    mockWorkoutPlans = MockRoutinesProvider();
     when(mockWorkoutPlans.repetitionUnits).thenAnswer((_) => [unit1, unit2, unit3]);
   });
 
   Widget createHomeScreen() {
     final key = GlobalKey<NavigatorState>();
 
-    return ChangeNotifierProvider<WorkoutPlansProvider>(
+    return ChangeNotifierProvider<RoutinesProvider>(
       create: (context) => mockWorkoutPlans,
       child: MaterialApp(
         localizationsDelegates: AppLocalizations.localizationsDelegates,

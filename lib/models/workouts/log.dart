@@ -30,14 +30,14 @@ class Log {
   @JsonKey(required: true)
   int? id;
 
-  @JsonKey(required: true, name: 'exercise_base')
-  late int exerciseBaseId;
+  @JsonKey(required: true, name: 'exercise')
+  late int exerciseId;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  late Exercise exerciseBaseObj;
+  late Exercise exercise;
 
-  @JsonKey(required: true, name: 'workout')
-  late int workoutPlan;
+  @JsonKey(required: true, name: 'routine')
+  late int routineId;
 
   @JsonKey(required: true)
   late int reps;
@@ -68,8 +68,8 @@ class Log {
 
   Log({
     this.id,
-    required this.exerciseBaseId,
-    required this.workoutPlan,
+    required this.exerciseId,
+    required this.routineId,
     required this.reps,
     required this.rir,
     required this.repetitionUnitId,
@@ -86,8 +86,8 @@ class Log {
   Map<String, dynamic> toJson() => _$LogToJson(this);
 
   set exerciseBase(Exercise base) {
-    exerciseBaseObj = base;
-    exerciseBaseId = base.id!;
+    exercise = base;
+    exerciseId = base.id!;
   }
 
   set weightUnit(WeightUnit weightUnit) {
@@ -122,7 +122,7 @@ class Log {
   //ignore: avoid_equals_and_hash_code_on_mutable_classes
   bool operator ==(o) {
     return o is Log &&
-        exerciseBaseId == o.exerciseBaseId &&
+        exerciseId == o.exerciseId &&
         weight == o.weight &&
         weightUnitId == o.weightUnitId &&
         reps == o.reps &&
@@ -132,14 +132,13 @@ class Log {
 
   @override
   //ignore: avoid_equals_and_hash_code_on_mutable_classes
-  int get hashCode =>
-      Object.hash(exerciseBaseId, weight, weightUnitId, reps, repetitionUnitId, rir);
+  int get hashCode => Object.hash(exerciseId, weight, weightUnitId, reps, repetitionUnitId, rir);
 
   //@override
   //int get hashCode => super.hashCode;
 
   @override
   String toString() {
-    return 'Log(id: $id, ex: $exerciseBaseId, weightU: $weightUnitId, w: $weight, repU: $repetitionUnitId, rep: $reps, rir: $rir)';
+    return 'Log(id: $id, ex: $exerciseId, weightU: $weightUnitId, w: $weight, repU: $repetitionUnitId, rep: $reps, rir: $rir)';
   }
 }

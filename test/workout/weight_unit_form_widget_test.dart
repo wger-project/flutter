@@ -33,7 +33,7 @@ import './workout_form_test.mocks.dart';
 
 @GenerateMocks([BodyWeightProvider])
 void main() {
-  var mockWorkoutPlans = MockWorkoutPlansProvider();
+  var mockWorkoutPlans = MockRoutinesProvider();
 
   const unit1 = WeightUnit(id: 1, name: 'kg');
   const unit2 = WeightUnit(id: 2, name: 'donkeys');
@@ -46,7 +46,6 @@ void main() {
     exerciseId: 1,
     repetitionUnitId: 1,
     repetitionRounding: 0.25,
-    reps: 2,
     weightUnitId: 1,
     weightRounding: 0.25,
     comment: 'comment',
@@ -54,14 +53,14 @@ void main() {
   setting1.weightUnitObj = unit1;
 
   setUp(() {
-    mockWorkoutPlans = MockWorkoutPlansProvider();
+    mockWorkoutPlans = MockRoutinesProvider();
     when(mockWorkoutPlans.weightUnits).thenAnswer((_) => [unit1, unit2, unit3]);
   });
 
   Widget createHomeScreen() {
     final key = GlobalKey<NavigatorState>();
 
-    return ChangeNotifierProvider<WorkoutPlansProvider>(
+    return ChangeNotifierProvider<RoutinesProvider>(
       create: (context) => mockWorkoutPlans,
       child: MaterialApp(
         localizationsDelegates: AppLocalizations.localizationsDelegates,

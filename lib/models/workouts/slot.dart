@@ -39,7 +39,7 @@ class Slot {
   late String comment;
 
   @JsonKey(required: true)
-  late Object config;
+  late Object? config;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   List<Exercise> exercisesObj = [];

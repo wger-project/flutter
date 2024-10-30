@@ -57,8 +57,8 @@ void main() {
     when(mockBaseProvider.makeUrl('workout', query: anyNamed('query'))).thenReturn(uri);
     when(mockBaseProvider.deleteRequest(any, any)).thenAnswer((_) async => http.Response('', 204));
 
-    return ChangeNotifierProvider<WorkoutPlansProvider>(
-      create: (context) => WorkoutPlansProvider(
+    return ChangeNotifierProvider<RoutinesProvider>(
+      create: (context) => RoutinesProvider(
         mockBaseProvider,
         testExercisesProvider,
         [

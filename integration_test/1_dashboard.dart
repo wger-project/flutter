@@ -23,7 +23,7 @@ import '../test_data/profile.dart';
 import '../test_data/routines.dart';
 
 Widget createDashboardScreen({locale = 'en'}) {
-  final mockWorkoutProvider = MockWorkoutPlansProvider();
+  final mockWorkoutProvider = MockRoutinesProvider();
   when(mockWorkoutProvider.activePlan).thenReturn(getWorkout(exercises: getScreenshotExercises()));
 
   final Map<String, dynamic> logs = {
@@ -60,7 +60,7 @@ Widget createDashboardScreen({locale = 'en'}) {
       ChangeNotifierProvider<UserProvider>(
         create: (context) => mockUserProvider,
       ),
-      ChangeNotifierProvider<WorkoutPlansProvider>(
+      ChangeNotifierProvider<RoutinesProvider>(
         create: (context) => mockWorkoutProvider,
       ),
       ChangeNotifierProvider<NutritionPlansProvider>(

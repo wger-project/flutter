@@ -19,6 +19,7 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day.dart';
+import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/models/workouts/log.dart';
 
 part 'routine.g.dart';
@@ -46,8 +47,14 @@ class Routine {
   @JsonKey(required: true)
   late DateTime end;
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(includeFromJson: true, required: false, includeToJson: false)
   List<Day> days = [];
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  List<DayData> dayData = [];
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  List<DayData> dayDataCurrentIteration = [];
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   List<Log> logs = [];
@@ -86,7 +93,7 @@ class Routine {
   /// reps, etc. are considered equal. Workout ID, Log ID and date are not
   /// considered.
   List<Log> filterLogsByExerciseBase(Exercise exerciseBase, {bool unique = false}) {
-    var out = logs.where((element) => element.exerciseBaseId == exerciseBase.id).toList();
+    var out = logs.where((element) => element.exerciseId == exerciseBase.id).toList();
 
     if (unique) {
       out = out.toSet().toList();
@@ -101,7 +108,7 @@ class Routine {
   Map<DateTime, Map<String, dynamic>> get logData {
     final out = <DateTime, Map<String, dynamic>>{};
     for (final log in logs) {
-      final exercise = log.exerciseBaseObj;
+      final exercise = log.exercise;
       final date = log.date;
 
       if (!out.containsKey(date)) {

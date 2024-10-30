@@ -103,15 +103,15 @@ class WorkoutForm extends StatelessWidget {
 
               // Save to DB
               if (_plan.id != null) {
-                await Provider.of<WorkoutPlansProvider>(context, listen: false).editWorkout(_plan);
+                await Provider.of<RoutinesProvider>(context, listen: false).editWorkout(_plan);
                 if (context.mounted) {
                   Navigator.of(context).pop();
                 }
               } else {
-                final Routine newPlan = await Provider.of<WorkoutPlansProvider>(
+                final Routine newPlan = await Provider.of<RoutinesProvider>(
                   context,
                   listen: false,
-                ).addWorkout(_plan);
+                ).addRoutine(_plan);
                 if (context.mounted) {
                   Navigator.of(context).pushReplacementNamed(
                     WorkoutPlanScreen.routeName,
@@ -187,12 +187,12 @@ class _DayFormWidgetState extends State<DayFormWidget> {
 
               try {
                 if (widget._day.id == null) {
-                  Provider.of<WorkoutPlansProvider>(context, listen: false).addDay(
+                  Provider.of<RoutinesProvider>(context, listen: false).addDay(
                     widget._day,
                     widget.workout,
                   );
                 } else {
-                  Provider.of<WorkoutPlansProvider>(context, listen: false).editDay(
+                  Provider.of<RoutinesProvider>(context, listen: false).editDay(
                     widget._day,
                   );
                 }
@@ -268,7 +268,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
 
   /// Adds settings to the set
   void addSettings() {
-    final workoutProvider = context.read<WorkoutPlansProvider>();
+    final workoutProvider = context.read<RoutinesProvider>();
 
     widget._set.entries = [];
     int order = 0;
@@ -391,12 +391,12 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                               }
 
                               // At least one setting has to be filled in
-                              if (widget._set.entries
-                                      .where((s) => s.weight == null && s.reps == null)
-                                      .length ==
-                                  widget._set.entries.length) {
-                                return AppLocalizations.of(context).enterRepetitionsOrWeight;
-                              }
+                              // if (widget._set.entries
+                              //         .where((s) => s.weight == null && s.reps == null)
+                              //         .length ==
+                              //     widget._set.entries.length) {
+                              //   return AppLocalizations.of(context).enterRepetitionsOrWeight;
+                              // }
                               return null;
                             },
                           );
@@ -538,7 +538,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                     }
                     _formKey.currentState!.save();
 
-                    final workoutProvider = Provider.of<WorkoutPlansProvider>(
+                    final workoutProvider = Provider.of<RoutinesProvider>(
                       context,
                       listen: false,
                     );
@@ -548,7 +548,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                     widget._set.id = setDb.id;
 
                     // Remove unused settings
-                    widget._set.entries.removeWhere((s) => s.weight == null && s.reps == null);
+                    // widget._set.entries.removeWhere((s) => s.weight == null && s.reps == null);
 
                     // Save remaining settings
                     for (final setting in widget._set.entries) {
@@ -735,7 +735,7 @@ class RepsInputWidget extends StatelessWidget {
       onChanged: (newValue) {
         if (newValue != '') {
           try {
-            _setting.reps = int.parse(newValue);
+            // _setting.reps = int.parse(newValue);
           } catch (e) {}
         }
       },
@@ -772,7 +772,7 @@ class WeightInputWidget extends StatelessWidget {
       onChanged: (newValue) {
         if (newValue != '') {
           try {
-            _setting.weight = double.parse(newValue);
+            // _setting.weight = double.parse(newValue);
           } catch (e) {}
         }
       },
@@ -883,7 +883,7 @@ class _WeightUnitInputWidgetState extends State<WeightUnitInputWidget> {
           widget._setting.weightUnit = newValue;
         });
       },
-      items: Provider.of<WorkoutPlansProvider>(context, listen: false)
+      items: Provider.of<RoutinesProvider>(context, listen: false)
           .weightUnits
           .map<DropdownMenuItem<WeightUnit>>((WeightUnit value) {
         return DropdownMenuItem<WeightUnit>(
@@ -925,7 +925,7 @@ class _RepetitionUnitInputWidgetState extends State<RepetitionUnitInputWidget> {
           widget._setting.repetitionUnit = newValue;
         });
       },
-      items: Provider.of<WorkoutPlansProvider>(context, listen: false)
+      items: Provider.of<RoutinesProvider>(context, listen: false)
           .repetitionUnits
           .map<DropdownMenuItem<RepetitionUnit>>((RepetitionUnit value) {
         return DropdownMenuItem<RepetitionUnit>(

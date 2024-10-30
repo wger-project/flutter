@@ -21,7 +21,6 @@ ExerciseApiData _$ExerciseApiDataFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$ExerciseApiData {
   int get id => throw _privateConstructorUsedError;
-
   String get uuid => throw _privateConstructorUsedError; // ignore: invalid_annotation_target
   @JsonKey(name: 'variations')
   int? get variationId => throw _privateConstructorUsedError; // ignore: invalid_annotation_target
@@ -32,9 +31,7 @@ mixin _$ExerciseApiData {
       throw _privateConstructorUsedError; // ignore: invalid_annotation_target
   @JsonKey(name: 'last_update_global')
   DateTime get lastUpdateGlobal => throw _privateConstructorUsedError;
-
   ExerciseCategory get category => throw _privateConstructorUsedError;
-
   List<Muscle> get muscles =>
       throw _privateConstructorUsedError; // ignore: invalid_annotation_target
   @JsonKey(name: 'muscles_secondary')
@@ -42,11 +39,9 @@ mixin _$ExerciseApiData {
       throw _privateConstructorUsedError; // ignore: invalid_annotation_target
   List<Equipment> get equipment =>
       throw _privateConstructorUsedError; // ignore: invalid_annotation_target
-  @JsonKey(name: 'exercises')
+  @JsonKey(name: 'translations')
   List<Translation> get translations => throw _privateConstructorUsedError;
-
   List<ExerciseImage> get images => throw _privateConstructorUsedError;
-
   List<Video> get videos => throw _privateConstructorUsedError; // ignore: invalid_annotation_target
   @JsonKey(name: 'author_history')
   List<String> get authors =>
@@ -67,7 +62,6 @@ mixin _$ExerciseApiData {
 abstract class $ExerciseApiDataCopyWith<$Res> {
   factory $ExerciseApiDataCopyWith(ExerciseApiData value, $Res Function(ExerciseApiData) then) =
       _$ExerciseApiDataCopyWithImpl<$Res, ExerciseApiData>;
-
   @useResult
   $Res call(
       {int id,
@@ -80,7 +74,7 @@ abstract class $ExerciseApiDataCopyWith<$Res> {
       List<Muscle> muscles,
       @JsonKey(name: 'muscles_secondary') List<Muscle> musclesSecondary,
       List<Equipment> equipment,
-      @JsonKey(name: 'exercises') List<Translation> translations,
+      @JsonKey(name: 'translations') List<Translation> translations,
       List<ExerciseImage> images,
       List<Video> videos,
       @JsonKey(name: 'author_history') List<String> authors,
@@ -94,7 +88,6 @@ class _$ExerciseApiDataCopyWithImpl<$Res, $Val extends ExerciseApiData>
 
   // ignore: unused_field
   final $Val _value;
-
   // ignore: unused_field
   final $Res Function($Val) _then;
 
@@ -189,7 +182,6 @@ abstract class _$$ExerciseBaseDataImplCopyWith<$Res> implements $ExerciseApiData
   factory _$$ExerciseBaseDataImplCopyWith(
           _$ExerciseBaseDataImpl value, $Res Function(_$ExerciseBaseDataImpl) then) =
       __$$ExerciseBaseDataImplCopyWithImpl<$Res>;
-
   @override
   @useResult
   $Res call(
@@ -203,7 +195,7 @@ abstract class _$$ExerciseBaseDataImplCopyWith<$Res> implements $ExerciseApiData
       List<Muscle> muscles,
       @JsonKey(name: 'muscles_secondary') List<Muscle> musclesSecondary,
       List<Equipment> equipment,
-      @JsonKey(name: 'exercises') List<Translation> translations,
+      @JsonKey(name: 'translations') List<Translation> translations,
       List<ExerciseImage> images,
       List<Video> videos,
       @JsonKey(name: 'author_history') List<String> authors,
@@ -318,7 +310,7 @@ class _$ExerciseBaseDataImpl implements _ExerciseBaseData {
       required final List<Muscle> muscles,
       @JsonKey(name: 'muscles_secondary') required final List<Muscle> musclesSecondary,
       required final List<Equipment> equipment,
-      @JsonKey(name: 'exercises') required final List<Translation> translations,
+      @JsonKey(name: 'translations') required final List<Translation> translations,
       required final List<ExerciseImage> images,
       required final List<Video> videos,
       @JsonKey(name: 'author_history') required final List<String> authors,
@@ -339,22 +331,18 @@ class _$ExerciseBaseDataImpl implements _ExerciseBaseData {
   final int id;
   @override
   final String uuid;
-
 // ignore: invalid_annotation_target
   @override
   @JsonKey(name: 'variations')
   final int? variationId;
-
 // ignore: invalid_annotation_target
   @override
   @JsonKey(name: 'created')
   final DateTime created;
-
 // ignore: invalid_annotation_target
   @override
   @JsonKey(name: 'last_update')
   final DateTime lastUpdate;
-
 // ignore: invalid_annotation_target
   @override
   @JsonKey(name: 'last_update_global')
@@ -362,7 +350,6 @@ class _$ExerciseBaseDataImpl implements _ExerciseBaseData {
   @override
   final ExerciseCategory category;
   final List<Muscle> _muscles;
-
   @override
   List<Muscle> get muscles {
     if (_muscles is EqualUnmodifiableListView) return _muscles;
@@ -372,7 +359,6 @@ class _$ExerciseBaseDataImpl implements _ExerciseBaseData {
 
 // ignore: invalid_annotation_target
   final List<Muscle> _musclesSecondary;
-
 // ignore: invalid_annotation_target
   @override
   @JsonKey(name: 'muscles_secondary')
@@ -384,7 +370,6 @@ class _$ExerciseBaseDataImpl implements _ExerciseBaseData {
 
 // ignore: invalid_annotation_target
   final List<Equipment> _equipment;
-
 // ignore: invalid_annotation_target
   @override
   List<Equipment> get equipment {
@@ -395,10 +380,9 @@ class _$ExerciseBaseDataImpl implements _ExerciseBaseData {
 
 // ignore: invalid_annotation_target
   final List<Translation> _translations;
-
 // ignore: invalid_annotation_target
   @override
-  @JsonKey(name: 'exercises')
+  @JsonKey(name: 'translations')
   List<Translation> get translations {
     if (_translations is EqualUnmodifiableListView) return _translations;
     // ignore: implicit_dynamic_type
@@ -406,7 +390,6 @@ class _$ExerciseBaseDataImpl implements _ExerciseBaseData {
   }
 
   final List<ExerciseImage> _images;
-
   @override
   List<ExerciseImage> get images {
     if (_images is EqualUnmodifiableListView) return _images;
@@ -415,7 +398,6 @@ class _$ExerciseBaseDataImpl implements _ExerciseBaseData {
   }
 
   final List<Video> _videos;
-
   @override
   List<Video> get videos {
     if (_videos is EqualUnmodifiableListView) return _videos;
@@ -425,7 +407,6 @@ class _$ExerciseBaseDataImpl implements _ExerciseBaseData {
 
 // ignore: invalid_annotation_target
   final List<String> _authors;
-
 // ignore: invalid_annotation_target
   @override
   @JsonKey(name: 'author_history')
@@ -437,7 +418,6 @@ class _$ExerciseBaseDataImpl implements _ExerciseBaseData {
 
 // ignore: invalid_annotation_target
   final List<String> _authorsGlobal;
-
 // ignore: invalid_annotation_target
   @override
   @JsonKey(name: 'total_authors_history')
@@ -523,7 +503,7 @@ abstract class _ExerciseBaseData implements ExerciseApiData {
           required final List<Muscle> muscles,
           @JsonKey(name: 'muscles_secondary') required final List<Muscle> musclesSecondary,
           required final List<Equipment> equipment,
-          @JsonKey(name: 'exercises') required final List<Translation> translations,
+          @JsonKey(name: 'translations') required final List<Translation> translations,
           required final List<ExerciseImage> images,
           required final List<Video> videos,
           @JsonKey(name: 'author_history') required final List<String> authors,
@@ -534,7 +514,6 @@ abstract class _ExerciseBaseData implements ExerciseApiData {
 
   @override
   int get id;
-
   @override
   String get uuid; // ignore: invalid_annotation_target
   @override
@@ -549,10 +528,8 @@ abstract class _ExerciseBaseData implements ExerciseApiData {
   @override
   @JsonKey(name: 'last_update_global')
   DateTime get lastUpdateGlobal;
-
   @override
   ExerciseCategory get category;
-
   @override
   List<Muscle> get muscles; // ignore: invalid_annotation_target
   @override
@@ -561,12 +538,10 @@ abstract class _ExerciseBaseData implements ExerciseApiData {
   @override
   List<Equipment> get equipment; // ignore: invalid_annotation_target
   @override
-  @JsonKey(name: 'exercises')
+  @JsonKey(name: 'translations')
   List<Translation> get translations;
-
   @override
   List<ExerciseImage> get images;
-
   @override
   List<Video> get videos; // ignore: invalid_annotation_target
   @override
@@ -595,11 +570,8 @@ mixin _$ExerciseSearchDetails {
   int get translationId => throw _privateConstructorUsedError; // ignore: invalid_annotation_target
   @JsonKey(name: 'base_id')
   int get exerciseId => throw _privateConstructorUsedError;
-
   String get name => throw _privateConstructorUsedError;
-
   String get category => throw _privateConstructorUsedError;
-
   String? get image => throw _privateConstructorUsedError; // ignore: invalid_annotation_target
   @JsonKey(name: 'image_thumbnail')
   String? get imageThumbnail => throw _privateConstructorUsedError;
@@ -619,7 +591,6 @@ abstract class $ExerciseSearchDetailsCopyWith<$Res> {
   factory $ExerciseSearchDetailsCopyWith(
           ExerciseSearchDetails value, $Res Function(ExerciseSearchDetails) then) =
       _$ExerciseSearchDetailsCopyWithImpl<$Res, ExerciseSearchDetails>;
-
   @useResult
   $Res call(
       {@JsonKey(name: 'id') int translationId,
@@ -637,7 +608,6 @@ class _$ExerciseSearchDetailsCopyWithImpl<$Res, $Val extends ExerciseSearchDetai
 
   // ignore: unused_field
   final $Val _value;
-
   // ignore: unused_field
   final $Res Function($Val) _then;
 
@@ -688,7 +658,6 @@ abstract class _$$ExerciseSearchDetailsImplCopyWith<$Res>
   factory _$$ExerciseSearchDetailsImplCopyWith(
           _$ExerciseSearchDetailsImpl value, $Res Function(_$ExerciseSearchDetailsImpl) then) =
       __$$ExerciseSearchDetailsImplCopyWithImpl<$Res>;
-
   @override
   @useResult
   $Res call(
@@ -767,7 +736,6 @@ class _$ExerciseSearchDetailsImpl implements _ExerciseSearchDetails {
   @override
   @JsonKey(name: 'id')
   final int translationId;
-
 // ignore: invalid_annotation_target
   @override
   @JsonKey(name: 'base_id')
@@ -778,7 +746,6 @@ class _$ExerciseSearchDetailsImpl implements _ExerciseSearchDetails {
   final String category;
   @override
   final String? image;
-
 // ignore: invalid_annotation_target
   @override
   @JsonKey(name: 'image_thumbnail')
@@ -845,13 +812,10 @@ abstract class _ExerciseSearchDetails implements ExerciseSearchDetails {
   @override
   @JsonKey(name: 'base_id')
   int get exerciseId;
-
   @override
   String get name;
-
   @override
   String get category;
-
   @override
   String? get image; // ignore: invalid_annotation_target
   @override
@@ -873,7 +837,6 @@ ExerciseSearchEntry _$ExerciseSearchEntryFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$ExerciseSearchEntry {
   String get value => throw _privateConstructorUsedError;
-
   ExerciseSearchDetails get data => throw _privateConstructorUsedError;
 
   /// Serializes this ExerciseSearchEntry to a JSON map.
@@ -891,7 +854,6 @@ abstract class $ExerciseSearchEntryCopyWith<$Res> {
   factory $ExerciseSearchEntryCopyWith(
           ExerciseSearchEntry value, $Res Function(ExerciseSearchEntry) then) =
       _$ExerciseSearchEntryCopyWithImpl<$Res, ExerciseSearchEntry>;
-
   @useResult
   $Res call({String value, ExerciseSearchDetails data});
 
@@ -905,7 +867,6 @@ class _$ExerciseSearchEntryCopyWithImpl<$Res, $Val extends ExerciseSearchEntry>
 
   // ignore: unused_field
   final $Val _value;
-
   // ignore: unused_field
   final $Res Function($Val) _then;
 
@@ -946,7 +907,6 @@ abstract class _$$ExerciseSearchEntryImplCopyWith<$Res>
   factory _$$ExerciseSearchEntryImplCopyWith(
           _$ExerciseSearchEntryImpl value, $Res Function(_$ExerciseSearchEntryImpl) then) =
       __$$ExerciseSearchEntryImplCopyWithImpl<$Res>;
-
   @override
   @useResult
   $Res call({String value, ExerciseSearchDetails data});
@@ -1041,7 +1001,6 @@ abstract class _ExerciseSearchEntry implements ExerciseSearchEntry {
 
   @override
   String get value;
-
   @override
   ExerciseSearchDetails get data;
 
@@ -1075,7 +1034,6 @@ abstract class $ExerciseApiSearchCopyWith<$Res> {
   factory $ExerciseApiSearchCopyWith(
           ExerciseApiSearch value, $Res Function(ExerciseApiSearch) then) =
       _$ExerciseApiSearchCopyWithImpl<$Res, ExerciseApiSearch>;
-
   @useResult
   $Res call({List<ExerciseSearchEntry> suggestions});
 }
@@ -1087,7 +1045,6 @@ class _$ExerciseApiSearchCopyWithImpl<$Res, $Val extends ExerciseApiSearch>
 
   // ignore: unused_field
   final $Val _value;
-
   // ignore: unused_field
   final $Res Function($Val) _then;
 
@@ -1112,7 +1069,6 @@ abstract class _$$ExerciseApiSearchImplCopyWith<$Res> implements $ExerciseApiSea
   factory _$$ExerciseApiSearchImplCopyWith(
           _$ExerciseApiSearchImpl value, $Res Function(_$ExerciseApiSearchImpl) then) =
       __$$ExerciseApiSearchImplCopyWithImpl<$Res>;
-
   @override
   @useResult
   $Res call({List<ExerciseSearchEntry> suggestions});
@@ -1152,7 +1108,6 @@ class _$ExerciseApiSearchImpl implements _ExerciseApiSearch {
       _$$ExerciseApiSearchImplFromJson(json);
 
   final List<ExerciseSearchEntry> _suggestions;
-
   @override
   List<ExerciseSearchEntry> get suggestions {
     if (_suggestions is EqualUnmodifiableListView) return _suggestions;

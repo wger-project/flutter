@@ -42,7 +42,7 @@ Routine getWorkout({List<Exercise>? exercises}) {
     ..rir = '1.5'
     ..date = DateTime(2021, 5, 1)
     ..reps = 10
-    ..workoutPlan = 1;
+    ..routineId = 1;
   log1.exerciseBase = testBases[0];
   log1.weightUnit = weightUnit1;
   log1.repetitionUnit = repetitionUnit1;
@@ -53,7 +53,7 @@ Routine getWorkout({List<Exercise>? exercises}) {
     ..rir = '2'
     ..date = DateTime(2021, 5, 1)
     ..reps = 12
-    ..workoutPlan = 1;
+    ..routineId = 1;
   log2.exerciseBase = testBases[0];
   log2.weightUnit = weightUnit1;
   log2.repetitionUnit = repetitionUnit1;
@@ -64,7 +64,7 @@ Routine getWorkout({List<Exercise>? exercises}) {
     ..rir = ''
     ..date = DateTime(2021, 5, 2)
     ..reps = 8
-    ..workoutPlan = 1;
+    ..routineId = 1;
   log3.exerciseBase = testBases[1];
   log3.weightUnit = weightUnit1;
   log3.repetitionUnit = repetitionUnit1;
@@ -76,7 +76,6 @@ Routine getWorkout({List<Exercise>? exercises}) {
     exerciseId: 1,
     repetitionUnitId: 1,
     repetitionRounding: 0.25,
-    reps: 6,
     weightUnitId: 1,
     weightRounding: 0.25,
     comment: 'ddd',
@@ -84,7 +83,6 @@ Routine getWorkout({List<Exercise>? exercises}) {
   settingBenchPress.repetitionUnit = repetitionUnit1;
   settingBenchPress.weightUnit = weightUnit1;
   settingBenchPress.exercise = testBases[0];
-  settingBenchPress.weight = 80;
 
   final setBenchPress = Slot.withData(
     id: 1,
@@ -104,7 +102,6 @@ Routine getWorkout({List<Exercise>? exercises}) {
     exerciseId: 8,
     repetitionUnitId: 1,
     repetitionRounding: 0.25,
-    reps: 8,
     weightUnitId: 1,
     weightRounding: 0.25,
     comment: 'ddd',
@@ -112,7 +109,6 @@ Routine getWorkout({List<Exercise>? exercises}) {
   settingSquat.repetitionUnit = repetitionUnit1;
   settingSquat.weightUnit = weightUnit1;
   settingSquat.exercise = testBases[4];
-  settingSquat.weight = 120;
 
   final setSquat = Slot.withData(id: 2, day: 1, sets: 3, order: 1);
   setSquat.addExerciseBase(testBases[4]);
@@ -126,7 +122,6 @@ Routine getWorkout({List<Exercise>? exercises}) {
     exerciseId: 8,
     repetitionUnitId: 1,
     repetitionRounding: 0.25,
-    reps: 12,
     weightUnitId: 1,
     weightRounding: 0.25,
     comment: 'ddd',
@@ -134,7 +129,7 @@ Routine getWorkout({List<Exercise>? exercises}) {
   settingSideRaises.repetitionUnit = repetitionUnit1;
   settingSideRaises.weightUnit = weightUnit1;
   settingSideRaises.exercise = testBases[5];
-  settingSideRaises.weight = 6;
+  // settingSideRaises.weight = 6;
 
   final setSideRaises = Slot.withData(id: 3, day: 1, sets: 3, order: 1);
   setSideRaises.addExerciseBase(testBases[5]);

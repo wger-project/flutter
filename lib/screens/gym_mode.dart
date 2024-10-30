@@ -24,6 +24,7 @@ import 'package:wger/widgets/workouts/gym_mode.dart';
 
 class GymModeScreen extends StatelessWidget {
   const GymModeScreen();
+
   static const routeName = '/gym-mode';
 
   @override
@@ -32,7 +33,7 @@ class GymModeScreen extends StatelessWidget {
 
     return Scaffold(
       body: SafeArea(
-        child: Consumer<WorkoutPlansProvider>(
+        child: Consumer<RoutinesProvider>(
           builder: (context, value, child) => GymMode(day),
         ),
       ),

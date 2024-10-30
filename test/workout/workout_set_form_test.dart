@@ -35,9 +35,9 @@ import '../../test_data/exercises.dart';
 import '../../test_data/routines.dart';
 import 'workout_set_form_test.mocks.dart';
 
-@GenerateMocks([ExercisesProvider, WgerBaseProvider, WorkoutPlansProvider])
+@GenerateMocks([ExercisesProvider, WgerBaseProvider, RoutinesProvider])
 void main() {
-  var mockWorkoutPlans = MockWorkoutPlansProvider();
+  var mockWorkoutPlans = MockRoutinesProvider();
   final mockBaseProvider = MockWgerBaseProvider();
   final mockExerciseProvider = MockExercisesProvider();
   final workoutPlan = getWorkout();
@@ -46,12 +46,12 @@ void main() {
 
   setUp(() {
     day = workoutPlan.days.first;
-    mockWorkoutPlans = MockWorkoutPlansProvider();
+    mockWorkoutPlans = MockRoutinesProvider();
   });
 
   Widget createHomeScreen({locale = 'en'}) {
-    return ChangeNotifierProvider<WorkoutPlansProvider>(
-      create: (context) => WorkoutPlansProvider(
+    return ChangeNotifierProvider<RoutinesProvider>(
+      create: (context) => RoutinesProvider(
         mockBaseProvider,
         mockExerciseProvider,
         [workoutPlan],

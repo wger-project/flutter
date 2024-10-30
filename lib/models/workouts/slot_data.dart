@@ -17,48 +17,32 @@
  */
 
 import 'package:json_annotation/json_annotation.dart';
-import 'package:wger/models/workouts/slot.dart';
+import 'package:wger/models/workouts/set_config_data.dart';
 
-part 'day.g.dart';
+part 'slot_data.g.dart';
 
 @JsonSerializable()
-class Day {
+class SlotData {
   @JsonKey(required: true)
-  int? id;
+  late String comment;
 
-  @JsonKey(required: true, name: 'routine')
-  late int routineId;
+  @JsonKey(required: true, name: 'is_superset')
+  late bool isSuperset;
 
-  @JsonKey(required: true)
-  late String name;
+  @JsonKey(required: true, name: 'exercises')
+  late List<int> exerciseIds;
 
-  @JsonKey(required: true)
-  late String description;
+  @JsonKey(required: true, name: 'sets')
+  late List<SetConfigData> setConfigs;
 
-  @JsonKey(required: true, name: 'is_rest')
-  late bool isRest;
-
-  @JsonKey(required: true, name: 'need_logs_to_advance')
-  late bool needLogsToAdvance;
-
-  @JsonKey(required: true)
-  late String type;
-
-  @JsonKey(required: true)
-  late Object? config;
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  List<Slot> slots = [];
-
-  //@JsonKey(includeFromJson: false, includeToJson: false)
-  //late WorkoutPlan workout;
-
-  Day() {
-    slots = [];
-  }
+  SlotData({
+    required this.comment,
+    required this.isSuperset,
+    required this.exerciseIds,
+  });
 
   // Boilerplate
-  factory Day.fromJson(Map<String, dynamic> json) => _$DayFromJson(json);
+  factory SlotData.fromJson(Map<String, dynamic> json) => _$SlotDataFromJson(json);
 
-  Map<String, dynamic> toJson() => _$DayToJson(this);
+  Map<String, dynamic> toJson() => _$SlotDataToJson(this);
 }

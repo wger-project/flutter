@@ -104,7 +104,7 @@ class _GymModeState extends State<GymMode> {
   // Returns the list of exercise overview, sets and pause pages
   List<Widget> getContent() {
     final exerciseProvider = Provider.of<ExercisesProvider>(context, listen: false);
-    final workoutProvider = Provider.of<WorkoutPlansProvider>(context, listen: false);
+    final workoutProvider = Provider.of<RoutinesProvider>(context, listen: false);
     var currentElement = 1;
     final List<Widget> out = [];
 
@@ -149,7 +149,7 @@ class _GymModeState extends State<GymMode> {
         StartPage(_controller, widget._workoutDay, _exercisePages),
         ...getContent(),
         SessionPage(
-          Provider.of<WorkoutPlansProvider>(context, listen: false)
+          Provider.of<RoutinesProvider>(context, listen: false)
               .findById(widget._workoutDay.routineId),
           _controller,
           widget._start,
@@ -238,7 +238,7 @@ class LogPage extends StatefulWidget {
     this._exercisePages,
   ) {
     _log.date = DateTime.now();
-    _log.workoutPlan = _workoutPlan.id!;
+    _log.routineId = _workoutPlan.id!;
     _log.exerciseBase = _exerciseBase;
     _log.weightUnit = _entry.weightUnitObj;
     _log.repetitionUnit = _entry.repetitionUnitObj;
@@ -265,13 +265,13 @@ class _LogPageState extends State<LogPage> {
 
     focusNode = FocusNode();
 
-    if (widget._entry.reps != null) {
-      _repsController.text = widget._entry.reps.toString();
-    }
+    // if (widget._entry.reps != null) {
+    _repsController.text = 'widget._entry.reps.toString()';
+    // }
 
-    if (widget._entry.weight != null) {
-      _weightController.text = widget._entry.weight.toString();
-    }
+    // if (widget._entry.weight != null) {
+    _weightController.text = 'widget._entry.weight.toString()';
+    // }
   }
 
   @override
@@ -459,7 +459,7 @@ class _LogPageState extends State<LogPage> {
 
                     // Save the entry on the server
                     try {
-                      await Provider.of<WorkoutPlansProvider>(
+                      await Provider.of<RoutinesProvider>(
                         context,
                         listen: false,
                       ).addLog(widget._log);
@@ -631,7 +631,7 @@ class _LogPageState extends State<LogPage> {
               : Container(),
         ),
         // Only show calculator for barbell
-        if (widget._log.exerciseBaseObj.equipment.map((e) => e.id).contains(ID_EQUIPMENT_BARBELL))
+        if (widget._log.exercise.equipment.map((e) => e.id).contains(ID_EQUIPMENT_BARBELL))
           getPlates(),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -889,7 +889,7 @@ class _SessionPageState extends State<SessionPage> {
 
                     // Save the entry on the server
                     try {
-                      await Provider.of<WorkoutPlansProvider>(
+                      await Provider.of<RoutinesProvider>(
                         context,
                         listen: false,
                       ).addSession(_session);

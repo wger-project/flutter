@@ -39,6 +39,7 @@ import 'package:wger/screens/workout_plans_screen.dart';
 
 class HomeTabsScreen extends StatefulWidget {
   const HomeTabsScreen();
+
   static const routeName = '/dashboard2';
 
   @override
@@ -75,7 +76,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
     final authProvider = context.read<AuthProvider>();
 
     if (!authProvider.dataInit) {
-      final workoutPlansProvider = context.read<WorkoutPlansProvider>();
+      final workoutPlansProvider = context.read<RoutinesProvider>();
       final nutritionPlansProvider = context.read<NutritionPlansProvider>();
       final exercisesProvider = context.read<ExercisesProvider>();
       final galleryProvider = context.read<GalleryProvider>();

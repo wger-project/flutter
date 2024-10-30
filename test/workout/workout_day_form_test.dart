@@ -31,20 +31,20 @@ import 'package:wger/widgets/workouts/forms.dart';
 import '../../test_data/routines.dart';
 import 'workout_day_form_test.mocks.dart';
 
-@GenerateMocks([WorkoutPlansProvider])
+@GenerateMocks([RoutinesProvider])
 void main() {
-  var mockWorkoutPlans = MockWorkoutPlansProvider();
+  var mockWorkoutPlans = MockRoutinesProvider();
   Routine workoutPlan = Routine.empty();
 
   setUp(() {
     workoutPlan = getWorkout();
-    mockWorkoutPlans = MockWorkoutPlansProvider();
+    mockWorkoutPlans = MockRoutinesProvider();
   });
 
   Widget createHomeScreen({locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
 
-    return ChangeNotifierProvider<WorkoutPlansProvider>(
+    return ChangeNotifierProvider<RoutinesProvider>(
       create: (context) => mockWorkoutPlans,
       child: MaterialApp(
         locale: Locale(locale),

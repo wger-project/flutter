@@ -17,8 +17,8 @@
  */
 
 import 'package:json_annotation/json_annotation.dart';
-import 'package:wger/helpers/json.dart';
 import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/workouts/base_config.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
 
@@ -58,11 +58,11 @@ class SlotEntry {
   @JsonKey(required: true, name: 'repetition_rounding')
   late num repetitionRounding;
 
-  @JsonKey(required: true)
-  int? reps;
+  @JsonKey(required: true, name: 'reps_configs')
+  late List<BaseConfig> repsConfig;
 
-  @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
-  num? weight;
+  @JsonKey(required: true, name: 'max_reps_configs')
+  late List<BaseConfig> maxRepsConfig;
 
   @JsonKey(required: true, name: 'weight_unit')
   late int weightUnitId;
@@ -73,11 +73,29 @@ class SlotEntry {
   @JsonKey(required: true, name: 'weight_rounding')
   late num weightRounding;
 
+  @JsonKey(required: true, name: 'weight_configs')
+  late List<BaseConfig> weightConfigs;
+
+  @JsonKey(required: true, name: 'max_weight_configs')
+  late List<BaseConfig> maxWeightConfigs;
+
+  @JsonKey(required: true, name: 'set_nr_configs')
+  late List<BaseConfig> setNrConfigs;
+
+  @JsonKey(required: true, name: 'rir_configs')
+  late List<BaseConfig> rirConfigs;
+
+  @JsonKey(required: true, name: 'rest_configs')
+  late List<BaseConfig> restTimeConfigs;
+
+  @JsonKey(required: true, name: 'max_rest_configs')
+  late List<BaseConfig> maxRestTimeConfigs;
+
   @JsonKey(required: true)
   late String comment = '';
 
   @JsonKey(required: true)
-  late Object config;
+  late Object? config;
 
   SlotEntry({
     this.id,
@@ -87,7 +105,6 @@ class SlotEntry {
     required this.exerciseId,
     required this.repetitionUnitId,
     required this.repetitionRounding,
-    required this.reps,
     required this.weightUnitId,
     required this.weightRounding,
     required this.comment,

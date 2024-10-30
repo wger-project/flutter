@@ -134,7 +134,7 @@ dynamic showDeleteDialog(
             ),
             onPressed: () {
               exerciseData[exercise]!.removeWhere((el) => el.id == log.id);
-              Provider.of<WorkoutPlansProvider>(context, listen: false).deleteLog(
+              Provider.of<RoutinesProvider>(context, listen: false).deleteLog(
                 log,
               );
 

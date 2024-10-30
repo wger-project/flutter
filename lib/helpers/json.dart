@@ -23,6 +23,10 @@ num stringToNum(String? e) {
   return e == null ? 0 : num.parse(e);
 }
 
+num? stringToNumNull(String? e) {
+  return e == null ? null : num.parse(e);
+}
+
 String? numToString(num? e) {
   if (e == null) {
     return null;

@@ -44,8 +44,8 @@ void main() {
   final bases = getTestExercises();
 
   Widget createHomeScreen({locale = 'en'}) {
-    return ChangeNotifierProvider<WorkoutPlansProvider>(
-      create: (context) => WorkoutPlansProvider(
+    return ChangeNotifierProvider<RoutinesProvider>(
+      create: (context) => RoutinesProvider(
         mockBaseProvider,
         mockExerciseProvider,
         [workoutPlan],

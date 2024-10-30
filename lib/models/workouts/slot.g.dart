@@ -16,7 +16,7 @@ Slot _$SlotFromJson(Map<String, dynamic> json) {
     day: (json['day'] as num).toInt(),
     comment: json['comment'] as String? ?? '',
     order: (json['order'] as num).toInt(),
-    config: json['config'] as Object,
+    config: json['config'],
   );
 }
 

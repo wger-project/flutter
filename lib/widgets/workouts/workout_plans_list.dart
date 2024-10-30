@@ -25,7 +25,7 @@ import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/widgets/core/text_prompt.dart';
 
 class WorkoutPlansList extends StatelessWidget {
-  final WorkoutPlansProvider _workoutProvider;
+  final RoutinesProvider _workoutProvider;
 
   const WorkoutPlansList(this._workoutProvider);
 
@@ -87,7 +87,7 @@ class WorkoutPlansList extends StatelessWidget {
                                     ),
                                     onPressed: () {
                                       // Confirmed, delete the workout
-                                      Provider.of<WorkoutPlansProvider>(
+                                      Provider.of<RoutinesProvider>(
                                         context,
                                         listen: false,
                                       ).deleteWorkout(currentWorkout.id!);

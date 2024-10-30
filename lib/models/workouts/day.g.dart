@@ -28,7 +28,7 @@ Day _$DayFromJson(Map<String, dynamic> json) {
     ..isRest = json['is_rest'] as bool
     ..needLogsToAdvance = json['need_logs_to_advance'] as bool
     ..type = json['type'] as String
-    ..config = json['config'] as Object;
+    ..config = json['config'];
 }
 
 Map<String, dynamic> _$DayToJson(Day instance) => <String, dynamic>{

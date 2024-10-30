@@ -13,14 +13,14 @@ import '../test_data/routines.dart';
 Widget createWorkoutDetailScreen({locale = 'en'}) {
   final key = GlobalKey<NavigatorState>();
 
-  final mockWorkoutProvider = MockWorkoutPlansProvider();
+  final mockWorkoutProvider = MockRoutinesProvider();
   final workout = getWorkout(exercises: getScreenshotExercises());
   when(mockWorkoutProvider.activePlan).thenReturn(workout);
   when(mockWorkoutProvider.fetchAndSetWorkoutPlanFull(1)).thenAnswer((_) => Future.value(workout));
 
   return MultiProvider(
     providers: [
-      ChangeNotifierProvider<WorkoutPlansProvider>(
+      ChangeNotifierProvider<RoutinesProvider>(
         create: (context) => mockWorkoutProvider,
       ),
     ],

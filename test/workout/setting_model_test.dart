@@ -28,8 +28,6 @@ void main() {
       const weightUnit = WeightUnit(id: 1, name: 'mg');
 
       final entry = SlotEntry.empty();
-      entry.reps = 2;
-      entry.weight = 30;
       entry.repetitionUnit = repUnit;
       entry.weightUnit = weightUnit;
       expect(entry.singleSettingRepText, '2 × 30 mg');
@@ -40,8 +38,6 @@ void main() {
       const weightUnit = WeightUnit(id: 1, name: 'mg');
 
       final entry = SlotEntry.empty();
-      entry.reps = 2;
-      entry.weight = 30;
       entry.repetitionUnit = repUnit;
       entry.weightUnit = weightUnit;
       expect(entry.singleSettingRepText, '2 × 30 mg \n (1.5 RiR)');
@@ -52,8 +48,6 @@ void main() {
       const weightUnit = WeightUnit(id: 1, name: 'mg');
 
       final entry = SlotEntry.empty();
-      entry.reps = 2;
-      entry.weight = null;
       entry.repetitionUnit = repUnit;
       entry.weightUnit = weightUnit;
       expect(entry.singleSettingRepText, '2 mol \n (1.5 RiR)');
@@ -64,8 +58,6 @@ void main() {
       const weightUnit = WeightUnit(id: 2, name: 'mg');
 
       final slotEntry = SlotEntry.empty();
-      slotEntry.reps = 2;
-      slotEntry.weight = 30;
       slotEntry.repetitionUnit = repUnit;
       slotEntry.weightUnit = weightUnit;
       expect(slotEntry.singleSettingRepText, '2 mol × 30 mg');
@@ -76,8 +68,6 @@ void main() {
       const weightUnit = WeightUnit(id: 2, name: 'mg');
 
       final slotEntry = SlotEntry.empty();
-      slotEntry.reps = 2;
-      slotEntry.weight = 30;
       slotEntry.repetitionUnit = repUnit;
       slotEntry.weightUnit = weightUnit;
       expect(slotEntry.singleSettingRepText, '2 mol × 30 mg \n (3 RiR)');

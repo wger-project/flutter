@@ -56,8 +56,7 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
   }
 
   Future<Routine> _loadFullWorkout(BuildContext context, int planId) {
-    return Provider.of<WorkoutPlansProvider>(context, listen: false)
-        .fetchAndSetWorkoutPlanFull(planId);
+    return Provider.of<RoutinesProvider>(context, listen: false).fetchAndSetWorkoutPlanFull(planId);
   }
 
   Widget getBody(Routine plan) {
@@ -106,7 +105,7 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
 
                     // Delete
                   } else if (value == WorkoutOptions.delete) {
-                    Provider.of<WorkoutPlansProvider>(context, listen: false)
+                    Provider.of<RoutinesProvider>(context, listen: false)
                         .deleteWorkout(workoutPlan.id!);
                     Navigator.of(context).pop();
 
@@ -140,7 +139,7 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
                       child: Center(child: CircularProgressIndicator()),
                     )
                   else
-                    Consumer<WorkoutPlansProvider>(
+                    Consumer<RoutinesProvider>(
                       builder: (context, value, child) => getBody(workoutPlan),
                     ),
                 ],

@@ -41,8 +41,8 @@ void main() {
   Widget createHomeScreen({locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
 
-    return ChangeNotifierProvider<WorkoutPlansProvider>(
-      create: (context) => WorkoutPlansProvider(mockBaseProvider, exercisesProvider, []),
+    return ChangeNotifierProvider<RoutinesProvider>(
+      create: (context) => RoutinesProvider(mockBaseProvider, exercisesProvider, []),
       child: MaterialApp(
         locale: Locale(locale),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
