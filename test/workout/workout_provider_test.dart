@@ -27,8 +27,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/core/locator.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
+import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
-import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/workout_plans.dart';
@@ -66,7 +66,7 @@ void main() {
       final plans = provider.getPlans();
 
       // Check that everything is ok
-      expect(plan, isA<WorkoutPlan>());
+      expect(plan, isA<Routine>());
       expect(plan.id, 325397);
       expect(plan.description, 'Test workout abcd');
       expect(plans.length, 1);

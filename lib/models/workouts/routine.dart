@@ -21,15 +21,15 @@ import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/log.dart';
 
-part 'workout_plan.g.dart';
+part 'routine.g.dart';
 
 @JsonSerializable()
-class WorkoutPlan {
+class Routine {
   @JsonKey(required: true)
   int? id;
 
-  @JsonKey(required: true, name: 'creation_date')
-  late DateTime creationDate;
+  @JsonKey(required: true)
+  late DateTime created;
 
   @JsonKey(required: true, name: 'name')
   late String name;
@@ -37,16 +37,28 @@ class WorkoutPlan {
   @JsonKey(required: true, name: 'description')
   late String description;
 
+  @JsonKey(required: true, name: 'fit_in_week')
+  late bool fitInWeek;
+
+  @JsonKey(required: true)
+  late DateTime start;
+
+  @JsonKey(required: true)
+  late DateTime end;
+
   @JsonKey(includeFromJson: false, includeToJson: false)
   List<Day> days = [];
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   List<Log> logs = [];
 
-  WorkoutPlan({
+  Routine({
     this.id,
-    required this.creationDate,
+    required this.created,
     required this.name,
+    required this.start,
+    required this.end,
+    this.fitInWeek = false,
     String? description,
     List<Day>? days,
     List<Log>? logs,
@@ -56,16 +68,16 @@ class WorkoutPlan {
     this.description = description ?? '';
   }
 
-  WorkoutPlan.empty() {
-    creationDate = DateTime.now();
+  Routine.empty() {
+    created = DateTime.now();
     name = '';
     description = '';
   }
 
   // Boilerplate
-  factory WorkoutPlan.fromJson(Map<String, dynamic> json) => _$WorkoutPlanFromJson(json);
+  factory Routine.fromJson(Map<String, dynamic> json) => _$RoutineFromJson(json);
 
-  Map<String, dynamic> toJson() => _$WorkoutPlanToJson(this);
+  Map<String, dynamic> toJson() => _$RoutineToJson(this);
 
   /// Filters the workout logs by exercise and sorts them by date
   ///

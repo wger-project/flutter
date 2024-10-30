@@ -32,7 +32,7 @@ import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 
 import '../../test_data/exercises.dart';
-import '../../test_data/workouts.dart';
+import '../../test_data/routines.dart';
 import 'workout_set_form_test.mocks.dart';
 
 @GenerateMocks([ExercisesProvider, WgerBaseProvider, WorkoutPlansProvider])

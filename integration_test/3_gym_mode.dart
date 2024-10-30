@@ -11,7 +11,7 @@ import 'package:wger/theme/theme.dart';
 import '../test/utils.dart';
 import '../test/workout/gym_mode_screen_test.mocks.dart';
 import '../test_data/exercises.dart';
-import '../test_data/workouts.dart';
+import '../test_data/routines.dart';
 
 Widget createGymModeScreen({locale = 'en'}) {
   final key = GlobalKey<NavigatorState>();

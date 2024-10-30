@@ -31,7 +31,7 @@ import 'package:wger/widgets/workouts/forms.dart';
 import 'package:wger/widgets/workouts/gym_mode.dart';
 
 import '../../test_data/exercises.dart';
-import '../../test_data/workouts.dart';
+import '../../test_data/routines.dart';
 import 'gym_mode_screen_test.mocks.dart';
 
 @GenerateMocks([WgerBaseProvider, ExercisesProvider])

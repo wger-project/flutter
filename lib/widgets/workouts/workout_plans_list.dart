@@ -55,7 +55,7 @@ class WorkoutPlansList extends StatelessWidget {
                     subtitle: Text(
                       DateFormat.yMd(
                         Localizations.localeOf(context).languageCode,
-                      ).format(currentWorkout.creationDate),
+                      ).format(currentWorkout.created),
                     ),
                     trailing: Row(mainAxisSize: MainAxisSize.min, children: [
                       const VerticalDivider(),

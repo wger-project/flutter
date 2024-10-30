@@ -24,10 +24,10 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
+import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/set.dart';
 import 'package:wger/models/workouts/setting.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
-import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
@@ -35,7 +35,7 @@ import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/widgets/exercises/images.dart';
 
 class WorkoutForm extends StatelessWidget {
-  final WorkoutPlan _plan;
+  final Routine _plan;
   final _form = GlobalKey<FormState>();
 
   WorkoutForm(this._plan);
@@ -108,7 +108,7 @@ class WorkoutForm extends StatelessWidget {
                   Navigator.of(context).pop();
                 }
               } else {
-                final WorkoutPlan newPlan = await Provider.of<WorkoutPlansProvider>(
+                final Routine newPlan = await Provider.of<WorkoutPlansProvider>(
                   context,
                   listen: false,
                 ).addWorkout(_plan);
@@ -161,7 +161,7 @@ class _DayCheckboxState extends State<DayCheckbox> {
 }
 
 class DayFormWidget extends StatefulWidget {
-  final WorkoutPlan workout;
+  final Routine workout;
   final dayController = TextEditingController();
   late final Day _day;
 

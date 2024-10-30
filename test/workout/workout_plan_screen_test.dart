@@ -28,7 +28,7 @@ import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
 
-import '../../test_data/workouts.dart';
+import '../../test_data/routines.dart';
 import 'workout_plan_screen_test.mocks.dart';
 
 @GenerateMocks([WgerBaseProvider])

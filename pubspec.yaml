@@ -43,7 +43,7 @@ dependencies:
   http: ^1.2.2
   image_picker: ^1.1.0
   intl: ^0.19.0
-  json_annotation: ^4.8.1
+  json_annotation: ^4.9.0
   version: ^3.0.2
   package_info_plus: ^8.0.3
   provider: ^6.1.2

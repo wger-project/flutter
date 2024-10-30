@@ -28,16 +28,16 @@ import 'package:wger/models/exercises/translation.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
+import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/session.dart';
 import 'package:wger/models/workouts/set.dart';
 import 'package:wger/models/workouts/setting.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
-import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
 
 class WorkoutPlansProvider with ChangeNotifier {
-  static const _workoutPlansUrlPath = 'workout';
+  static const _routinesUrlPath = 'routine';
   static const _daysUrlPath = 'day';
   static const _setsUrlPath = 'set';
   static const _settingsUrlPath = 'setting';
@@ -46,21 +46,21 @@ class WorkoutPlansProvider with ChangeNotifier {
   static const _weightUnitUrlPath = 'setting-weightunit';
   static const _repetitionUnitUrlPath = 'setting-repetitionunit';
 
-  WorkoutPlan? _currentPlan;
+  Routine? _currentPlan;
   final ExercisesProvider _exercises;
   final WgerBaseProvider baseProvider;
-  List<WorkoutPlan> _workoutPlans = [];
+  List<Routine> _workoutPlans = [];
   List<WeightUnit> _weightUnits = [];
   List<RepetitionUnit> _repetitionUnit = [];
 
   WorkoutPlansProvider(
     this.baseProvider,
     ExercisesProvider exercises,
-    List<WorkoutPlan> entries,
+    List<Routine> entries,
   )   : _exercises = exercises,
         _workoutPlans = entries;
 
-  List<WorkoutPlan> get items {
+  List<Routine> get items {
     return [..._workoutPlans];
   }
 
@@ -90,11 +90,11 @@ class WorkoutPlansProvider with ChangeNotifier {
     return _repetitionUnit.firstWhere((element) => element.id == REP_UNIT_REPETITIONS);
   }
 
-  List<WorkoutPlan> getPlans() {
+  List<Routine> getPlans() {
     return _workoutPlans;
   }
 
-  WorkoutPlan findById(int id) {
+  Routine findById(int id) {
     return _workoutPlans.firstWhere((workoutPlan) => workoutPlan.id == id);
   }
 
@@ -108,7 +108,7 @@ class WorkoutPlansProvider with ChangeNotifier {
   }
 
   /// Returns the currently "active" workout plan
-  WorkoutPlan? get currentPlan {
+  Routine? get currentPlan {
     return _currentPlan;
   }
 
@@ -119,7 +119,7 @@ class WorkoutPlansProvider with ChangeNotifier {
 
   /// Returns the current active workout plan. At the moment this is just
   /// the latest, but this might change in the future.
-  WorkoutPlan? get activePlan {
+  Routine? get activePlan {
     if (_workoutPlans.isNotEmpty) {
       return _workoutPlans.first;
     }
@@ -135,7 +135,7 @@ class WorkoutPlansProvider with ChangeNotifier {
   Future<void> fetchAndSetAllPlansFull() async {
     final data = await baseProvider.fetch(
       baseProvider.makeUrl(
-        _workoutPlansUrlPath,
+        _routinesUrlPath,
         query: {'ordering': '-creation_date', 'limit': '1000'},
       ),
     );
@@ -150,34 +150,34 @@ class WorkoutPlansProvider with ChangeNotifier {
   /// object itself and no child attributes
   Future<void> fetchAndSetAllPlansSparse() async {
     final data = await baseProvider.fetch(
-      baseProvider.makeUrl(_workoutPlansUrlPath, query: {'limit': '1000'}),
+      baseProvider.makeUrl(_routinesUrlPath, query: {'limit': '1000'}),
     );
     _workoutPlans = [];
     for (final workoutPlanData in data['results']) {
-      final plan = WorkoutPlan.fromJson(workoutPlanData);
+      final plan = Routine.fromJson(workoutPlanData);
       _workoutPlans.add(plan);
     }
 
-    _workoutPlans.sort((a, b) => b.creationDate.compareTo(a.creationDate));
+    _workoutPlans.sort((a, b) => b.created.compareTo(a.created));
     notifyListeners();
   }
 
   /// Fetches a workout plan sparsely, i.e. only with the data on the plan
   /// object itself and no child attributes
-  Future<WorkoutPlan> fetchAndSetPlanSparse(int planId) async {
+  Future<Routine> fetchAndSetPlanSparse(int planId) async {
     final fullPlanData = await baseProvider.fetch(
-      baseProvider.makeUrl(_workoutPlansUrlPath, id: planId),
+      baseProvider.makeUrl(_routinesUrlPath, id: planId),
     );
-    final plan = WorkoutPlan.fromJson(fullPlanData);
+    final plan = Routine.fromJson(fullPlanData);
     _workoutPlans.add(plan);
-    _workoutPlans.sort((a, b) => b.creationDate.compareTo(a.creationDate));
+    _workoutPlans.sort((a, b) => b.created.compareTo(a.created));
 
     notifyListeners();
     return plan;
   }
 
   /// Fetches a workout plan fully, i.e. with all corresponding child attributes
-  Future<WorkoutPlan> fetchAndSetWorkoutPlanFull(int workoutId) async {
+  Future<Routine> fetchAndSetWorkoutPlanFull(int workoutId) async {
     // Load a list of all settings so that we can search through it
     //
     // This is a bit ugly, but saves us sending lots of requests later on
@@ -185,7 +185,7 @@ class WorkoutPlansProvider with ChangeNotifier {
       baseProvider.makeUrl(_settingsUrlPath, query: {'limit': '1000'}),
     );
 
-    WorkoutPlan plan;
+    Routine plan;
     try {
       plan = findById(workoutId);
     } on StateError {
@@ -262,21 +262,21 @@ class WorkoutPlansProvider with ChangeNotifier {
     return plan;
   }
 
-  Future<WorkoutPlan> addWorkout(WorkoutPlan workout) async {
+  Future<Routine> addWorkout(Routine workout) async {
     final data = await baseProvider.post(
       workout.toJson(),
-      baseProvider.makeUrl(_workoutPlansUrlPath),
+      baseProvider.makeUrl(_routinesUrlPath),
     );
-    final plan = WorkoutPlan.fromJson(data);
+    final plan = Routine.fromJson(data);
     _workoutPlans.insert(0, plan);
     notifyListeners();
     return plan;
   }
 
-  Future<void> editWorkout(WorkoutPlan workout) async {
+  Future<void> editWorkout(Routine workout) async {
     await baseProvider.patch(
       workout.toJson(),
-      baseProvider.makeUrl(_workoutPlansUrlPath, id: workout.id),
+      baseProvider.makeUrl(_routinesUrlPath, id: workout.id),
     );
     notifyListeners();
   }
@@ -287,7 +287,7 @@ class WorkoutPlansProvider with ChangeNotifier {
     _workoutPlans.removeAt(existingWorkoutIndex);
     notifyListeners();
 
-    final response = await baseProvider.deleteRequest(_workoutPlansUrlPath, id);
+    final response = await baseProvider.deleteRequest(_routinesUrlPath, id);
 
     if (response.statusCode >= 400) {
       _workoutPlans.insert(existingWorkoutIndex, existingWorkout);
@@ -297,12 +297,12 @@ class WorkoutPlansProvider with ChangeNotifier {
   }
 
   Future<Map<String, dynamic>> fetchLogData(
-    WorkoutPlan workout,
+    Routine workout,
     Exercise base,
   ) async {
     final data = await baseProvider.fetch(
       baseProvider.makeUrl(
-        _workoutPlansUrlPath,
+        _routinesUrlPath,
         id: workout.id,
         objectMethod: 'log_data',
         query: {'id': base.id.toString()},
@@ -365,7 +365,7 @@ class WorkoutPlansProvider with ChangeNotifier {
   /*
    * Days
    */
-  Future<Day> addDay(Day day, WorkoutPlan workout) async {
+  Future<Day> addDay(Day day, Routine workout) async {
     /*
      * Saves a new day instance to the DB and adds it to the given workout
      */

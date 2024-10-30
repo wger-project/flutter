@@ -18,14 +18,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:wger/models/workouts/workout_plan.dart';
+import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/widgets/workouts/day.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 
 class WorkoutPlanDetail extends StatefulWidget {
-  final WorkoutPlan _workoutPlan;
+  final Routine _workoutPlan;
   final Function _changeMode;
 
   const WorkoutPlanDetail(this._workoutPlan, this._changeMode);

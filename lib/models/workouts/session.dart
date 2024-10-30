@@ -29,8 +29,8 @@ class WorkoutSession {
   @JsonKey(required: true)
   int? id;
 
-  @JsonKey(required: true, name: 'workout')
-  late int workoutId;
+  @JsonKey(required: true, name: 'routine')
+  late int routineId;
 
   @JsonKey(required: true, toJson: toDate)
   late DateTime date;
@@ -51,7 +51,7 @@ class WorkoutSession {
 
   WorkoutSession.withData({
     required this.id,
-    required this.workoutId,
+    required this.routineId,
     required this.date,
     required this.impression,
     required this.notes,
@@ -66,6 +66,7 @@ class WorkoutSession {
 
   // Boilerplate
   factory WorkoutSession.fromJson(Map<String, dynamic> json) => _$WorkoutSessionFromJson(json);
+
   Map<String, dynamic> toJson() => _$WorkoutSessionToJson(this);
 
   String? get impressionAsString {

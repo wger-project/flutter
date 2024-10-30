@@ -24,7 +24,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
-import 'package:wger/models/workouts/workout_plan.dart';
+import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
@@ -371,7 +371,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
   var _showDetail = false;
   bool _hasContent = false;
 
-  WorkoutPlan? _workoutPlan;
+  Routine? _workoutPlan;
 
   @override
   void initState() {
@@ -463,7 +463,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
             subtitle: Text(
               _hasContent
                   ? DateFormat.yMd(Localizations.localeOf(context).languageCode)
-                      .format(_workoutPlan!.creationDate)
+                      .format(_workoutPlan!.created)
                   : '',
             ),
             leading: Icon(
@@ -491,7 +491,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
             NothingFound(
               AppLocalizations.of(context).noWorkoutPlans,
               AppLocalizations.of(context).newWorkout,
-              WorkoutForm(WorkoutPlan.empty()),
+              WorkoutForm(Routine.empty()),
             ),
           if (_hasContent)
             Row(

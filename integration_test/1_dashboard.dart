@@ -20,7 +20,7 @@ import '../test_data/exercises.dart';
 import '../test_data/measurements.dart';
 import '../test_data/nutritional_plans.dart';
 import '../test_data/profile.dart';
-import '../test_data/workouts.dart';
+import '../test_data/routines.dart';
 
 Widget createDashboardScreen({locale = 'en'}) {
   final mockWorkoutProvider = MockWorkoutPlansProvider();

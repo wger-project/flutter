@@ -32,10 +32,10 @@ import 'package:wger/helpers/ui.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/log.dart';
+import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/session.dart';
 import 'package:wger/models/workouts/set.dart';
 import 'package:wger/models/workouts/setting.dart';
-import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/theme/theme.dart';
@@ -223,7 +223,7 @@ class LogPage extends StatefulWidget {
   final Setting _setting;
   final Set _set;
   final Exercise _exerciseBase;
-  final WorkoutPlan _workoutPlan;
+  final Routine _workoutPlan;
   final double _ratioCompleted;
   final Map<Exercise, int> _exercisePages;
   final Log _log = Log.empty();
@@ -707,7 +707,7 @@ class ExerciseOverview extends StatelessWidget {
 }
 
 class SessionPage extends StatefulWidget {
-  final WorkoutPlan _workoutPlan;
+  final Routine _workoutPlan;
   final PageController _controller;
   final TimeOfDay _start;
   final Map<Exercise, int> _exercisePages;
@@ -741,7 +741,7 @@ class _SessionPageState extends State<SessionPage> {
 
     timeStartController.text = timeToString(widget._start)!;
     timeEndController.text = timeToString(TimeOfDay.now())!;
-    _session.workoutId = widget._workoutPlan.id!;
+    _session.routineId = widget._workoutPlan.id!;
     _session.impression = DEFAULT_IMPRESSION;
     _session.date = DateTime.now();
   }

@@ -19,7 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/models/workouts/workout_plan.dart';
+import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/theme/theme.dart';
@@ -39,6 +39,7 @@ enum WorkoutOptions {
 
 class WorkoutPlanScreen extends StatefulWidget {
   const WorkoutPlanScreen();
+
   static const routeName = '/workout-plan-detail';
 
   @override
@@ -54,12 +55,12 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
     });
   }
 
-  Future<WorkoutPlan> _loadFullWorkout(BuildContext context, int planId) {
+  Future<Routine> _loadFullWorkout(BuildContext context, int planId) {
     return Provider.of<WorkoutPlansProvider>(context, listen: false)
         .fetchAndSetWorkoutPlanFull(planId);
   }
 
-  Widget getBody(WorkoutPlan plan) {
+  Widget getBody(Routine plan) {
     switch (_mode) {
       case WorkoutScreenMode.workout:
         return WorkoutPlanDetail(plan, _changeMode);
@@ -72,7 +73,7 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
   @override
   Widget build(BuildContext context) {
     const appBarForeground = Colors.white;
-    final workoutPlan = ModalRoute.of(context)!.settings.arguments as WorkoutPlan;
+    final workoutPlan = ModalRoute.of(context)!.settings.arguments as Routine;
 
     return Scaffold(
       body: CustomScrollView(
@@ -130,7 +131,7 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
           ),
           FutureBuilder(
             future: _loadFullWorkout(context, workoutPlan.id!),
-            builder: (context, AsyncSnapshot<WorkoutPlan> snapshot) => SliverList(
+            builder: (context, AsyncSnapshot<Routine> snapshot) => SliverList(
               delegate: SliverChildListDelegate(
                 [
                   if (snapshot.connectionState == ConnectionState.waiting)

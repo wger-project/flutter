@@ -19,7 +19,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../test_data/exercises.dart';
-import '../../test_data/workouts.dart';
+import '../../test_data/routines.dart';
 
 void main() {
   group('model tests', () {

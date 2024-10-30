@@ -20,10 +20,10 @@ import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
+import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/set.dart';
 import 'package:wger/models/workouts/setting.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
-import 'package:wger/models/workouts/workout_plan.dart';
 
 import './exercises.dart';
 
@@ -33,7 +33,7 @@ const weightUnit2 = WeightUnit(id: 2, name: 'metric tonnes');
 const RepetitionUnit repetitionUnit1 = RepetitionUnit(id: 1, name: 'Repetitions');
 const RepetitionUnit repetitionUnit2 = RepetitionUnit(id: 2, name: 'Hours');
 
-WorkoutPlan getWorkout({List<Exercise>? exercises}) {
+Routine getWorkout({List<Exercise>? exercises}) {
   final testBases = exercises ?? getTestExercises();
 
   final log1 = Log.empty()
@@ -150,13 +150,15 @@ WorkoutPlan getWorkout({List<Exercise>? exercises}) {
     ..daysOfWeek = [4];
   dayLegs.sets.add(setSquat);
 
-  final workout = WorkoutPlan(
+  final routine = Routine(
     id: 1,
-    creationDate: DateTime(2021, 01, 01),
+    created: DateTime(2021, 01, 01),
     name: '3 day workout',
+    start: DateTime(2024, 11, 01),
+    end: DateTime(2024, 12, 01),
     days: [dayChestShoulders, dayLegs],
     logs: [log1, log2, log3],
   );
 
-  return workout;
+  return routine;
 }

@@ -25,7 +25,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/database/exercises/exercise_database.dart';
-import 'package:wger/models/workouts/workout_plan.dart';
+import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/workout_plans.dart';
@@ -62,8 +62,20 @@ void main() {
         mockBaseProvider,
         testExercisesProvider,
         [
-          WorkoutPlan(id: 1, creationDate: DateTime(2021, 01, 01), name: 'test 1'),
-          WorkoutPlan(id: 2, creationDate: DateTime(2021, 02, 12), name: 'test 2'),
+          Routine(
+            id: 1,
+            created: DateTime(2021, 01, 01),
+            start: DateTime(2024, 11, 1),
+            end: DateTime(2024, 12, 1),
+            name: 'test 1',
+          ),
+          Routine(
+            id: 2,
+            created: DateTime(2021, 02, 12),
+            start: DateTime(2024, 11, 1),
+            end: DateTime(2024, 12, 1),
+            name: 'test 2',
+          ),
         ],
       ),
       child: MaterialApp(

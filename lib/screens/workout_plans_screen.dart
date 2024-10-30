@@ -19,7 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/models/workouts/workout_plan.dart';
+import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/workouts/app_bar.dart';
@@ -28,6 +28,7 @@ import 'package:wger/widgets/workouts/workout_plans_list.dart';
 
 class WorkoutPlansScreen extends StatelessWidget {
   const WorkoutPlansScreen();
+
   static const routeName = '/workout-plans-list';
 
   @override
@@ -41,7 +42,7 @@ class WorkoutPlansScreen extends StatelessWidget {
             FormScreen.routeName,
             arguments: FormScreenArguments(
               AppLocalizations.of(context).newWorkout,
-              WorkoutForm(WorkoutPlan.empty()),
+              WorkoutForm(Routine.empty()),
             ),
           );
         },
