@@ -263,41 +263,60 @@ typedef $$IngredientsTableUpdateCompanionBuilder = IngredientsCompanion
 });
 
 class $$IngredientsTableFilterComposer
-    extends FilterComposer<_$IngredientDatabase, $IngredientsTable> {
-  $$IngredientsTableFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+    extends Composer<_$IngredientDatabase, $IngredientsTable> {
+  $$IngredientsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get data => $state.composableBuilder(
-      column: $state.table.data,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get data => $composableBuilder(
+      column: $table.data, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<DateTime> get lastFetched => $state.composableBuilder(
-      column: $state.table.lastFetched,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<DateTime> get lastFetched => $composableBuilder(
+      column: $table.lastFetched, builder: (column) => ColumnFilters(column));
 }
 
 class $$IngredientsTableOrderingComposer
-    extends OrderingComposer<_$IngredientDatabase, $IngredientsTable> {
-  $$IngredientsTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+    extends Composer<_$IngredientDatabase, $IngredientsTable> {
+  $$IngredientsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get data => $state.composableBuilder(
-      column: $state.table.data,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get data => $composableBuilder(
+      column: $table.data, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<DateTime> get lastFetched => $state.composableBuilder(
-      column: $state.table.lastFetched,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<DateTime> get lastFetched => $composableBuilder(
+      column: $table.lastFetched, builder: (column) => ColumnOrderings(column));
+}
+
+class $$IngredientsTableAnnotationComposer
+    extends Composer<_$IngredientDatabase, $IngredientsTable> {
+  $$IngredientsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get data =>
+      $composableBuilder(column: $table.data, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastFetched => $composableBuilder(
+      column: $table.lastFetched, builder: (column) => column);
 }
 
 class $$IngredientsTableTableManager extends RootTableManager<
@@ -306,6 +325,7 @@ class $$IngredientsTableTableManager extends RootTableManager<
     IngredientTable,
     $$IngredientsTableFilterComposer,
     $$IngredientsTableOrderingComposer,
+    $$IngredientsTableAnnotationComposer,
     $$IngredientsTableCreateCompanionBuilder,
     $$IngredientsTableUpdateCompanionBuilder,
     (
@@ -319,10 +339,12 @@ class $$IngredientsTableTableManager extends RootTableManager<
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer:
-              $$IngredientsTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$IngredientsTableOrderingComposer(ComposerState(db, table)),
+          createFilteringComposer: () =>
+              $$IngredientsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$IngredientsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$IngredientsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> data = const Value.absent(),
@@ -360,6 +382,7 @@ typedef $$IngredientsTableProcessedTableManager = ProcessedTableManager<
     IngredientTable,
     $$IngredientsTableFilterComposer,
     $$IngredientsTableOrderingComposer,
+    $$IngredientsTableAnnotationComposer,
     $$IngredientsTableCreateCompanionBuilder,
     $$IngredientsTableUpdateCompanionBuilder,
     (
