@@ -55,24 +55,25 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
     });
   }
 
-  Future<Routine> _loadFullWorkout(BuildContext context, int planId) {
-    return Provider.of<RoutinesProvider>(context, listen: false).fetchAndSetWorkoutPlanFull(planId);
+  Future<Routine> _loadFullWorkout(BuildContext context, int routineId) {
+    return Provider.of<RoutinesProvider>(context, listen: false)
+        .fetchAndSetWorkoutPlanFull(routineId);
   }
 
-  Widget getBody(Routine plan) {
+  Widget getBody(Routine routine) {
     switch (_mode) {
       case WorkoutScreenMode.workout:
-        return WorkoutPlanDetail(plan, _changeMode);
+        return WorkoutPlanDetail(routine, _changeMode);
 
       case WorkoutScreenMode.log:
-        return WorkoutLogs(plan, _changeMode);
+        return WorkoutLogs(routine, _changeMode);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     const appBarForeground = Colors.white;
-    final workoutPlan = ModalRoute.of(context)!.settings.arguments as Routine;
+    final routine = ModalRoute.of(context)!.settings.arguments as Routine;
 
     return Scaffold(
       body: CustomScrollView(
@@ -84,7 +85,7 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
             flexibleSpace: FlexibleSpaceBar(
               titlePadding: const EdgeInsets.fromLTRB(56, 0, 56, 16),
               title: Text(
-                workoutPlan.name,
+                routine.name,
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(color: appBarForeground),
               ),
             ),
@@ -99,14 +100,14 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
                       FormScreen.routeName,
                       arguments: FormScreenArguments(
                         AppLocalizations.of(context).edit,
-                        WorkoutForm(workoutPlan),
+                        WorkoutForm(routine),
                       ),
                     );
 
                     // Delete
                   } else if (value == WorkoutOptions.delete) {
                     Provider.of<RoutinesProvider>(context, listen: false)
-                        .deleteWorkout(workoutPlan.id!);
+                        .deleteWorkout(routine.id!);
                     Navigator.of(context).pop();
 
                     // Toggle Mode
@@ -129,7 +130,7 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
             ],
           ),
           FutureBuilder(
-            future: _loadFullWorkout(context, workoutPlan.id!),
+            future: _loadFullWorkout(context, routine.id!),
             builder: (context, AsyncSnapshot<Routine> snapshot) => SliverList(
               delegate: SliverChildListDelegate(
                 [
@@ -140,7 +141,7 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
                     )
                   else
                     Consumer<RoutinesProvider>(
-                      builder: (context, value, child) => getBody(workoutPlan),
+                      builder: (context, value, child) => getBody(routine),
                     ),
                 ],
               ),

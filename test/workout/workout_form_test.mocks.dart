@@ -265,9 +265,9 @@ class MockRoutinesProvider extends _i1.Mock implements _i11.RoutinesProvider {
       ) as _i12.Future<void>);
 
   @override
-  void setExerciseAndUnits(List<_i13.DayData>? entries) => super.noSuchMethod(
+  void setExercisesAndUnits(List<_i13.DayData>? entries) => super.noSuchMethod(
         Invocation.method(
-          #setExerciseAndUnits,
+          #setExercisesAndUnits,
           [entries],
         ),
         returnValueForMissingStub: null,

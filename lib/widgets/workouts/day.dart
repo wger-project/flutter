@@ -116,9 +116,9 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
     });
   }
 
-  Widget getSetRow(SlotData set, int index) {
+  Widget getSetRow(SlotData slotData, int index) {
     return Row(
-      // key: ValueKey(set.id),
+      key: ValueKey(index),
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         if (_editing)
@@ -134,7 +134,8 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
         Expanded(
           child: Column(
             children: [
-              if (set.comment != '') MutedText(set.comment),
+              if (slotData.comment != '') MutedText(slotData.comment),
+              Text('AAAAAAAA'),
               // ...set.settingsFiltered.map(
               //   (setting) => SettingWidget(
               //     set: set,
@@ -277,33 +278,46 @@ class DayHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      title: Text(
-        _dayData.day.name,
-        style: Theme.of(context).textTheme.headlineSmall,
-        overflow: TextOverflow.ellipsis,
-      ),
-      subtitle: Text(_dayData.day.description),
-      leading: const Icon(Icons.play_arrow),
-      minLeadingWidth: 8,
-      trailing: Row(mainAxisSize: MainAxisSize.min, children: [
-        const SizedBox(height: 40, width: 1, child: VerticalDivider()),
-        const SizedBox(width: 10),
-        IconButton(
-          icon: _editing ? const Icon(Icons.done) : const Icon(Icons.edit),
-          tooltip: _editing ? AppLocalizations.of(context).done : AppLocalizations.of(context).edit,
-          onPressed: () {
-            _toggle();
-          },
-        ),
-      ]),
-      onTap: () {
-        Navigator.of(context).pushNamed(
-          GymModeScreen.routeName,
-          arguments: _dayData,
-        );
-      },
-    );
+    return _dayData.day.isRest
+        ? ListTile(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            title: Text(
+              'REST DAY',
+              style: Theme.of(context).textTheme.headlineSmall,
+              overflow: TextOverflow.ellipsis,
+            ),
+            leading: const Icon(Icons.hotel),
+            minLeadingWidth: 8,
+          )
+        : ListTile(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            title: Text(
+              _dayData.day.name,
+              style: Theme.of(context).textTheme.headlineSmall,
+              overflow: TextOverflow.ellipsis,
+            ),
+            subtitle: Text(_dayData.day.description),
+            leading: const Icon(Icons.play_arrow),
+            minLeadingWidth: 8,
+            trailing: Row(mainAxisSize: MainAxisSize.min, children: [
+              const SizedBox(height: 40, width: 1, child: VerticalDivider()),
+              const SizedBox(width: 10),
+              IconButton(
+                icon: _editing ? const Icon(Icons.done) : const Icon(Icons.edit),
+                tooltip: _editing
+                    ? AppLocalizations.of(context).done
+                    : AppLocalizations.of(context).edit,
+                onPressed: () {
+                  _toggle();
+                },
+              ),
+            ]),
+            onTap: () {
+              Navigator.of(context).pushNamed(
+                GymModeScreen.routeName,
+                arguments: _dayData,
+              );
+            },
+          );
   }
 }

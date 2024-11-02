@@ -18,7 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/models/workouts/day.dart';
+import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/widgets/workouts/gym_mode.dart';
 
@@ -29,7 +29,7 @@ class GymModeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final day = ModalRoute.of(context)!.settings.arguments as Day;
+    final day = ModalRoute.of(context)!.settings.arguments as DayData;
 
     return Scaffold(
       body: SafeArea(

@@ -31,6 +31,7 @@ import 'package:wger/helpers/misc.dart';
 import 'package:wger/helpers/ui.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day.dart';
+import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/session.dart';
@@ -44,10 +45,10 @@ import 'package:wger/widgets/exercises/images.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 
 class GymMode extends StatefulWidget {
-  final Day _workoutDay;
+  final DayData _DayData;
   late final TimeOfDay _start;
 
-  GymMode(this._workoutDay) {
+  GymMode(this._DayData) {
     _start = TimeOfDay.now();
   }
 
@@ -72,7 +73,7 @@ class _GymModeState extends State<GymMode> {
   void initState() {
     super.initState();
     // Calculate amount of elements for progress indicator
-    for (final set in widget._workoutDay.slots) {
+    for (final set in widget._DayData.day.slots) {
       _totalElements = _totalElements + set.settingsComputed.length;
     }
     // Calculate the pages for the navigation
@@ -80,9 +81,10 @@ class _GymModeState extends State<GymMode> {
     // This duplicates the code below in the getContent method, but it seems to
     // be the easiest way
     var currentPage = 1;
-    for (final set in widget._workoutDay.slots) {
+    for (final set in widget._DayData.slots) {
       var firstPage = true;
-      for (final setting in set.settingsComputed) {
+      for (final setting in []) {
+        // for (final setting in set.settingsComputed) {
         final exerciseBase = Provider.of<ExercisesProvider>(context, listen: false)
             .findExerciseById(setting.exerciseId);
 
@@ -108,9 +110,10 @@ class _GymModeState extends State<GymMode> {
     var currentElement = 1;
     final List<Widget> out = [];
 
-    for (final set in widget._workoutDay.slots) {
+    for (final set in widget._DayData.day.slots) {
       var firstPage = true;
-      for (final setting in set.settingsComputed) {
+      for (final setting in []) {
+        // for (final setting in set.settingsComputed) {
         final ratioCompleted = currentElement / _totalElements;
         final exerciseBase = exerciseProvider.findExerciseById(setting.exerciseId);
         currentElement++;
@@ -129,7 +132,7 @@ class _GymModeState extends State<GymMode> {
           setting,
           set,
           exerciseBase,
-          workoutProvider.findById(widget._workoutDay.routineId),
+          workoutProvider.findById(widget._DayData.day.routineId),
           ratioCompleted,
           _exercisePages,
         ));
@@ -146,11 +149,11 @@ class _GymModeState extends State<GymMode> {
     return PageView(
       controller: _controller,
       children: [
-        StartPage(_controller, widget._workoutDay, _exercisePages),
+        StartPage(_controller, widget._DayData.day, _exercisePages),
         ...getContent(),
         SessionPage(
           Provider.of<RoutinesProvider>(context, listen: false)
-              .findById(widget._workoutDay.routineId),
+              .findById(widget._DayData.day.routineId),
           _controller,
           widget._start,
           _exercisePages,

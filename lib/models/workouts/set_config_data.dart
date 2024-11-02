@@ -19,6 +19,8 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/workouts/repetition_unit.dart';
+import 'package:wger/models/workouts/weight_unit.dart';
 
 part 'set_config_data.g.dart';
 
@@ -48,6 +50,9 @@ class SetConfigData {
   @JsonKey(required: true, name: 'weight_unit')
   late int? weightUnitId;
 
+  @JsonKey(includeToJson: false, includeFromJson: false)
+  late WeightUnit weightUnit;
+
   @JsonKey(required: true, name: 'weight_rounding', fromJson: stringToNumNull)
   late num? weightRounding;
 
@@ -59,6 +64,9 @@ class SetConfigData {
 
   @JsonKey(required: true, name: 'reps_unit')
   late int? repsUnitId;
+
+  @JsonKey(includeToJson: false, includeFromJson: false)
+  late RepetitionUnit repsUnit;
 
   @JsonKey(required: true, name: 'reps_rounding', fromJson: stringToNumNull)
   late num? repsRounding;

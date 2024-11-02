@@ -162,21 +162,22 @@ class RoutinesProvider with ChangeNotifier {
       _workoutPlans.add(plan);
     }
 
-    _workoutPlans.sort((a, b) => b.created.compareTo(a.created));
+    // _workoutPlans.sort((a, b) => b.created.compareTo(a.created));
     notifyListeners();
   }
 
-  void setExerciseAndUnits(List<DayData> entries) async {
+  void setExercisesAndUnits(List<DayData> entries) async {
     for (final entry in entries) {
       for (final slot in entry.slots) {
         for (final setConfig in slot.setConfigs) {
-          setConfig.exercise = await _exercises.fetchAndSetExercise(setConfig.exerciseId);
-          // slotEntry.exerciseObj = await _exercises.fetchAndSetExercise(slotEntry.exerciseId);
-          // slotEntry.repetitionUnitObj = _repetitionUnit.firstWhere(
-          //   (e) => e.id == slotEntry.repetitionUnitId,
+          setConfig.exercise = (await _exercises.fetchAndSetExercise(setConfig.exerciseId))!;
+
+          // setConfig.repsUnit = _repetitionUnit.firstWhere(
+          //   (e) => e.id == setConfig.repsUnitId,
           // );
-          // slotEntry.weightUnitObj = _weightUnits.firstWhere(
-          //   (e) => e.id == slotEntry.weightUnitId,
+          //
+          // setConfig.weightUnit = _weightUnits.firstWhere(
+          //   (e) => e.id == setConfig.weightUnitId,
           // );
         }
       }
@@ -233,16 +234,16 @@ class RoutinesProvider with ChangeNotifier {
      * Set exercise, repetition and weight unit objects
      */
     final dayDataEntries = dayData.map((entry) => DayData.fromJson(entry)).toList();
-    setExerciseAndUnits(dayDataEntries);
+    setExercisesAndUnits(dayDataEntries); // in-place update
 
     final currentIterationDayDataEntries =
         currentIterationData.map((entry) => DayData.fromJson(entry)).toList();
-    setExerciseAndUnits(currentIterationDayDataEntries);
+    setExercisesAndUnits(currentIterationDayDataEntries); // in-place update
 
     for (final day in routine.days) {
       for (final slot in day.slots) {
         for (final slotEntry in slot.entries) {
-          slotEntry.exerciseObj = await _exercises.fetchAndSetExercise(slotEntry.exerciseId);
+          slotEntry.exerciseObj = (await _exercises.fetchAndSetExercise(slotEntry.exerciseId))!;
           slotEntry.repetitionUnitObj = _repetitionUnit.firstWhere(
             (e) => e.id == slotEntry.repetitionUnitId,
           );
@@ -268,15 +269,18 @@ class RoutinesProvider with ChangeNotifier {
         final log = Log.fromJson(logEntry);
         log.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
         log.repetitionUnit = _repetitionUnit.firstWhere((e) => e.id == log.weightUnitId);
-        log.exerciseBase = await _exercises.fetchAndSetExercise(log.exerciseId);
+        log.exerciseBase = (await _exercises.fetchAndSetExercise(log.exerciseId))!;
         routine.logs.add(log);
       } catch (e) {
-        dev.log('fire! fire!');
+        dev.log('Error while processing the logs for a routine!');
         dev.log(e.toString());
       }
     }
 
     // ... and done
+    final routineIndex = _workoutPlans.indexWhere((r) => r.id == routineId);
+    _workoutPlans.replaceRange(routineIndex, routineIndex + 1, [routine]);
+
     notifyListeners();
     return routine;
   }
@@ -545,7 +549,7 @@ class RoutinesProvider with ChangeNotifier {
     log.id = newLog.id;
     log.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
     log.repetitionUnit = _repetitionUnit.firstWhere((e) => e.id == log.weightUnitId);
-    log.exerciseBase = await _exercises.fetchAndSetExercise(log.exerciseId);
+    log.exerciseBase = (await _exercises.fetchAndSetExercise(log.exerciseId))!;
 
     final plan = findById(log.routineId);
     plan.logs.add(log);
