@@ -888,5 +888,14 @@
   "@log": {
     "description": "Log a specific meal (imperative form)"
   },
-  "done": "Done"
+  "done": "Done",
+  "overallChangeWeight": "Overall change",
+  "@overallChangeWeight": {
+    "description": "Overall change in weight"
+  },
+  "goalTypeMeals": "From meals",
+  "goalTypeBasic": "Basic",
+  "goalTypeAdvanced": "Advanced",
+  "indicatorRaw": "raw",
+  "indicatorAvg": "avg"
 }
