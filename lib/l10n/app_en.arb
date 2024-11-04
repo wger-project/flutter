@@ -891,11 +891,26 @@
   "done": "Done",
   "overallChangeWeight": "Overall change",
   "@overallChangeWeight": {
-    "description": "Overall change in weight"
+    "description": "Overall change in weight, added for localization"
   },
   "goalTypeMeals": "From meals",
+  "@goalTypeMeals": {
+    "description": "added for localization of Class GoalType's filed meals"
+  },
   "goalTypeBasic": "Basic",
+  "@goalTypeBasic": {
+    "description": "added for localization of Class GoalType's filed basic"
+  },
   "goalTypeAdvanced": "Advanced",
+  "@goalTypeAdvanced": {
+    "description": "added for localization of Class GoalType's filed advanced"
+  },
   "indicatorRaw": "raw",
-  "indicatorAvg": "avg"
+  "@indicatorRaw": {
+    "description": "added for localization of Class Indicator's field text"
+  },
+  "indicatorAvg": "avg",
+  "@indicatorAvg": {
+    "description": "added for localization of Class Indicator's field text"
+  }
 }

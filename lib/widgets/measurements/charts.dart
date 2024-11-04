@@ -37,7 +37,9 @@ class MeasurementOverallChangeWidget extends StatelessWidget {
             ? '-'
             : '';
 
-    return Text('${AppLocalizations.of(context).overallChangeWeight} $prefix ${delta.abs().toStringAsFixed(1)} $_unit');
+    // ignore: prefer_interpolation_to_compose_strings
+    return Text(AppLocalizations.of(context).overallChangeWeight +
+      '$prefix ${delta.abs().toStringAsFixed(1)} $_unit');
   }
 }
 

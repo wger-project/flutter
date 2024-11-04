@@ -252,7 +252,7 @@
   "@delete": {},
   "loadingText": "加载中...",
   "@loadingText": {
-    "description": "Text to show when entries are being loaded in the background: Loading..."
+    "description": "Text to show when entries are being loaded in the background: Loading..., changed from \"加载\" to \"加载中\""
   },
   "edit": "编辑",
   "@edit": {},
@@ -326,7 +326,7 @@
   },
   "weight": "体重",
   "@weight": {
-    "description": "The weight of a workout log or body weight entry"
+    "description": "The weight of a workout log or body weight entry, changed from \"重量\" to \"体重\"" 
   },
   "anErrorOccurred": "出错了!",
   "@anErrorOccurred": {},
@@ -350,7 +350,7 @@
   "@save": {},
   "name": "名称",
   "@name": {
-    "description": "Name for a workout or nutritional plan"
+    "description": "Name for a workout or nutritional plan, changed from \"名\" to \"名称\""
   },
   "description": "描述",
   "@description": {},
@@ -698,5 +698,11 @@
   "indicatorRaw": "原始值",
   "indicatorAvg": "平均值",
   "textPromptTitle": "准备就绪？",
-  "textPromptSubheading": "点击右下角按钮开始"
+  "@textPromptTitle": {
+    "description": "Title for the text prompt"
+  },
+  "textPromptSubheading": "点击右下角按钮开始",
+  "@textPromptSubheading": {
+    "description": "Subheading for the text prompt"
+  }
 }
