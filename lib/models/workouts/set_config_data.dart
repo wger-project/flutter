@@ -38,6 +38,9 @@ class SetConfigData {
   @JsonKey(required: true)
   late String type;
 
+  @JsonKey(required: true, name: 'text_repr')
+  late String textRepr;
+
   @JsonKey(required: true, name: 'sets')
   late num? nrOfSets;
 

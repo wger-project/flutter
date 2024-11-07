@@ -13,6 +13,7 @@ SetConfigData _$SetConfigDataFromJson(Map<String, dynamic> json) {
       'exercise',
       'slot_entry_id',
       'type',
+      'text_repr',
       'sets',
       'weight',
       'max_weight',
@@ -46,6 +47,7 @@ SetConfigData _$SetConfigDataFromJson(Map<String, dynamic> json) {
     maxRestTime: stringToNum(json['max_rest'] as String?),
     comment: json['comment'] as String,
   )
+    ..textRepr = json['text_repr'] as String
     ..nrOfSets = json['sets'] as num?
     ..maxWeight = stringToNumNull(json['max_weight'] as String?);
 }
@@ -54,6 +56,7 @@ Map<String, dynamic> _$SetConfigDataToJson(SetConfigData instance) => <String, d
       'exercise': instance.exerciseId,
       'slot_entry_id': instance.slotEntryId,
       'type': instance.type,
+      'text_repr': instance.textRepr,
       'sets': instance.nrOfSets,
       'weight': instance.weight,
       'max_weight': instance.maxWeight,

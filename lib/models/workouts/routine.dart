@@ -57,6 +57,9 @@ class Routine {
   List<DayData> dayDataCurrentIteration = [];
 
   @JsonKey(includeFromJson: false, includeToJson: false)
+  List<DayData> dayDataCurrentIterationGym = [];
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
   List<Log> logs = [];
 
   Routine({

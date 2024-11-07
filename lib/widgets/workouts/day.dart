@@ -21,9 +21,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/workouts/day_data.dart';
-import 'package:wger/models/workouts/slot.dart';
+import 'package:wger/models/workouts/set_config_data.dart';
 import 'package:wger/models/workouts/slot_data.dart';
-import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/gym_mode.dart';
@@ -33,14 +32,12 @@ import 'package:wger/widgets/exercises/images.dart';
 import 'package:wger/widgets/workouts/forms.dart';
 
 class SettingWidget extends StatelessWidget {
-  final Slot set;
-  final SlotEntry setting;
+  final SetConfigData setConfigData;
   final bool expanded;
   final Function toggle;
 
   const SettingWidget({
-    required this.set,
-    required this.setting,
+    required this.setConfigData,
     required this.expanded,
     required this.toggle,
   });
@@ -48,45 +45,39 @@ class SettingWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: InkWell(
-        child: SizedBox(
-          width: 45,
-          child: ExerciseImageWidget(image: setting.exerciseObj.getMainImage),
-        ),
-        onTap: () {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text(setting.exerciseObj
-                    .getExercise(Localizations.localeOf(context).languageCode)
-                    .name),
-                content: ExerciseDetail(setting.exerciseObj),
-                actions: [
-                  TextButton(
-                    child: Text(
-                      MaterialLocalizations.of(context).closeButtonLabel,
+        leading: InkWell(
+          child: SizedBox(
+            width: 45,
+            child: ExerciseImageWidget(image: setConfigData.exercise.getMainImage),
+          ),
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text(setConfigData.exercise
+                      .getExercise(Localizations.localeOf(context).languageCode)
+                      .name),
+                  content: ExerciseDetail(setConfigData.exercise),
+                  actions: [
+                    TextButton(
+                      child: Text(
+                        MaterialLocalizations.of(context).closeButtonLabel,
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
                     ),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              );
-            },
-          );
-        },
-      ),
-      title: Text(
-        setting.exerciseObj.getExercise(Localizations.localeOf(context).languageCode).name,
-      ),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ...set.getSmartRepr(setting.exerciseObj).map((e) => Text(e)),
-        ],
-      ),
-    );
+                  ],
+                );
+              },
+            );
+          },
+        ),
+        title: Text(
+          setConfigData.exercise.getExercise(Localizations.localeOf(context).languageCode).name,
+        ),
+        subtitle: Text(setConfigData.textRepr));
   }
 }
 
@@ -116,7 +107,7 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
     });
   }
 
-  Widget getSetRow(SlotData slotData, int index) {
+  Widget getSlotDataRow(SlotData slotData, int index) {
     return Row(
       key: ValueKey(index),
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -135,15 +126,13 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
           child: Column(
             children: [
               if (slotData.comment != '') MutedText(slotData.comment),
-              Text('AAAAAAAA'),
-              // ...set.settingsFiltered.map(
-              //   (setting) => SettingWidget(
-              //     set: set,
-              //     setting: setting,
-              //     expanded: _editing,
-              //     toggle: _toggleExpanded,
-              //   ),
-              // ),
+              ...slotData.setConfigs.map(
+                (setting) => SettingWidget(
+                  setConfigData: setting,
+                  expanded: _editing,
+                  toggle: _toggleExpanded,
+                ),
+              ),
               const Divider(),
             ],
           ),
@@ -189,7 +178,7 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
                           FormScreen.routeName,
                           arguments: FormScreenArguments(
                             AppLocalizations.of(context).newSet,
-                            SetFormWidget(widget._dayData.day),
+                            SetFormWidget(widget._dayData.day!),
                             hasListView: true,
                             padding: EdgeInsets.zero,
                           ),
@@ -209,7 +198,7 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
                               Provider.of<RoutinesProvider>(
                                 context,
                                 listen: false,
-                              ).findById(widget._dayData.day.routineId),
+                              ).findById(widget._dayData.day!.routineId),
                               widget._dayData.day,
                             ),
                             hasListView: true,
@@ -224,7 +213,7 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
                         Provider.of<RoutinesProvider>(
                           context,
                           listen: false,
-                        ).deleteDay(widget._dayData.day);
+                        ).deleteDay(widget._dayData.day!);
                       },
                     ),
                   ],
@@ -253,7 +242,7 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
               },
               children: [
                 for (var i = 0; i < widget._dayData.slots.length; i++)
-                  getSetRow(widget._dayData.slots[i], i),
+                  getSlotDataRow(widget._dayData.slots[i], i),
               ],
             ),
           ],
@@ -278,7 +267,7 @@ class DayHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _dayData.day.isRest
+    return _dayData.day == null || _dayData.day!.isRest
         ? ListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             title: Text(
@@ -292,11 +281,11 @@ class DayHeader extends StatelessWidget {
         : ListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             title: Text(
-              _dayData.day.name,
+              _dayData.day!.name,
               style: Theme.of(context).textTheme.headlineSmall,
               overflow: TextOverflow.ellipsis,
             ),
-            subtitle: Text(_dayData.day.description),
+            subtitle: Text(_dayData.day!.description),
             leading: const Icon(Icons.play_arrow),
             minLeadingWidth: 8,
             trailing: Row(mainAxisSize: MainAxisSize.min, children: [

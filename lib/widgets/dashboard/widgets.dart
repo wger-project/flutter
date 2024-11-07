@@ -387,59 +387,61 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
       return out;
     }
 
-    for (final day in _workoutPlan!.days) {
+    for (final dayData in _workoutPlan!.dayDataCurrentIteration) {
       out.add(SizedBox(
         width: double.infinity,
         child: Row(
           children: [
             Expanded(
               child: Text(
-                day.name,
+                dayData.day == null || dayData.day!.isRest ? 'REST DAY' : dayData.day!.name,
                 style: const TextStyle(fontWeight: FontWeight.bold),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
             Expanded(
-              child: MutedText(day.description, textAlign: TextAlign.right),
+              child: MutedText(dayData.day != null ? dayData.day!.description : '',
+                  textAlign: TextAlign.right),
             ),
-            IconButton(
-              icon: const Icon(Icons.play_arrow),
-              color: wgerPrimaryButtonColor,
-              onPressed: () {
-                Navigator.of(context).pushNamed(GymModeScreen.routeName, arguments: day);
-              },
-            ),
+            if (dayData.day == null || dayData.day!.isRest)
+              const Icon(Icons.hotel)
+            else
+              IconButton(
+                icon: const Icon(Icons.play_arrow),
+                color: wgerPrimaryButtonColor,
+                onPressed: () {
+                  Navigator.of(context).pushNamed(GymModeScreen.routeName, arguments: dayData);
+                },
+              ),
           ],
         ),
       ));
 
-      for (final set in day.slots) {
+      for (final slotData in dayData.slots) {
         out.add(SizedBox(
           width: double.infinity,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ...set.settingsFiltered.map((s) {
-                return _showDetail
+              ...slotData.setConfigs.map(
+                (s) => _showDetail
                     ? Column(
                         children: [
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(s.exerciseObj
+                              Text(s.exercise
                                   .getExercise(Localizations.localeOf(context).languageCode)
                                   .name),
                               const SizedBox(width: 10),
-                              MutedText(
-                                set.getSmartRepr(s.exerciseObj).join('\n'),
-                              ),
+                              MutedText(s.textRepr),
                             ],
                           ),
                           const SizedBox(height: 10),
                         ],
                       )
-                    : Container();
-              }),
+                    : Container(),
+              ),
             ],
           ),
         ));

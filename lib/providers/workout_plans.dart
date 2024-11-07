@@ -41,7 +41,8 @@ class RoutinesProvider with ChangeNotifier {
   static const _routinesUrlPath = 'routine';
   static const _routinesStructureSubpath = 'structure';
   static const _routinesDateSequenceSubpath = 'date-sequence-display';
-  static const _routinesCurrentIterationSubpath = 'current-iteration-display';
+  static const _routinesCurrentIterationDisplaySubpath = 'current-iteration-display';
+  static const _routinesCurrentIterationGymSubpath = 'current-iteration-gym';
   static const _daysUrlPath = 'day';
   static const _slotsUrlPath = 'slot';
   static const _slotEntriesUrlPath = 'slot-entry';
@@ -220,15 +221,28 @@ class RoutinesProvider with ChangeNotifier {
         baseProvider.makeUrl(
           _routinesUrlPath,
           id: routineId,
-          objectMethod: _routinesCurrentIterationSubpath,
+          objectMethod: _routinesCurrentIterationDisplaySubpath,
         ),
-      )
+      ),
+      baseProvider.fetch(
+        baseProvider.makeUrl(
+          _routinesUrlPath,
+          id: routineId,
+          objectMethod: _routinesCurrentIterationGymSubpath,
+        ),
+      ),
+      baseProvider.fetchPaginated(baseProvider.makeUrl(
+        _logsUrlPath,
+        query: {'workout': routineId.toString(), 'limit': '900'},
+      ))
     ]);
 
     final routine = Routine.fromJson(results[0] as Map<String, dynamic>);
 
     final dayData = results[1] as List<dynamic>;
-    final currentIterationData = results[2] as List<dynamic>;
+    final currentIterationDisplayData = results[2] as List<dynamic>;
+    final currentIterationGymData = results[2] as List<dynamic>;
+    final logData = results[3] as List<dynamic>;
 
     /*
      * Set exercise, repetition and weight unit objects
@@ -237,8 +251,12 @@ class RoutinesProvider with ChangeNotifier {
     setExercisesAndUnits(dayDataEntries); // in-place update
 
     final currentIterationDayDataEntries =
-        currentIterationData.map((entry) => DayData.fromJson(entry)).toList();
+        currentIterationDisplayData.map((entry) => DayData.fromJson(entry)).toList();
     setExercisesAndUnits(currentIterationDayDataEntries); // in-place update
+
+    // final currentIterationDayDataEntriesGym =
+    //     currentIterationGymData.map((entry) => DayData.fromJson(entry)).toList();
+    // setExercisesAndUnits(currentIterationDayDataEntriesGym); // in-place update
 
     for (final day in routine.days) {
       for (final slot in day.slots) {
@@ -256,14 +274,15 @@ class RoutinesProvider with ChangeNotifier {
 
     routine.dayData = dayDataEntries;
     routine.dayDataCurrentIteration = currentIterationDayDataEntries;
+    // routine.dayDataCurrentIterationGym = currentIterationDayDataEntriesGym;
 
     // Logs
     routine.logs = [];
 
-    final logData = await baseProvider.fetchPaginated(baseProvider.makeUrl(
-      _logsUrlPath,
-      query: {'workout': routineId.toString(), 'limit': '100'},
-    ));
+    // final logData = await baseProvider.fetchPaginated(baseProvider.makeUrl(
+    //   _logsUrlPath,
+    //   query: {'workout': routineId.toString(), 'limit': '900'},
+    // ));
     for (final logEntry in logData) {
       try {
         final log = Log.fromJson(logEntry);

@@ -34,7 +34,7 @@ class DayData {
   late String? label;
 
   @JsonKey(required: false)
-  late Day day;
+  late Day? day;
 
   @JsonKey(required: false)
   late List<SlotData> slots;
