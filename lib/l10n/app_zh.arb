@@ -250,9 +250,9 @@
   },
   "delete": "删除",
   "@delete": {},
-  "loadingText": "加载...",
+  "loadingText": "加载中...",
   "@loadingText": {
-    "description": "Text to show when entries are being loaded in the background: Loading..."
+    "description": "Text to show when entries are being loaded in the background: Loading..., changed from \"加载\" to \"加载中\""
   },
   "edit": "编辑",
   "@edit": {},
@@ -324,9 +324,9 @@
   "@date": {
     "description": "The date of a workout log or body weight entry"
   },
-  "weight": "重量",
+  "weight": "体重",
   "@weight": {
-    "description": "The weight of a workout log or body weight entry"
+    "description": "The weight of a workout log or body weight entry, changed from \"重量\" to \"体重\"" 
   },
   "anErrorOccurred": "出错了!",
   "@anErrorOccurred": {},
@@ -348,9 +348,9 @@
   "@addMeal": {},
   "save": "保存",
   "@save": {},
-  "name": "名",
+  "name": "名称",
   "@name": {
-    "description": "Name for a workout or nutritional plan"
+    "description": "Name for a workout or nutritional plan, changed from \"名\" to \"名称\""
   },
   "description": "描述",
   "@description": {},
@@ -670,5 +670,39 @@
     }
   },
   "noMeasurementEntries": "您没有测量条目",
-  "@noMeasurementEntries": {}
+  "@noMeasurementEntries": {},
+  "overallChangeWeight": "总体变化",
+  "@overallChangeWeight": {
+    "description": "Overall change in weight"
+  },
+  "goalTypeMeals": "从饮食出发",
+  "goalTypeBasic": "基础",
+  "goalTypeAdvanced": "进阶",
+  "chartAllTimeTitle": "{name} 历史记录曲线",
+  "@chartAllTimeTitle": {
+    "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "chartDuringPlanTitle": "{chartName} 在计划 \"{planName}\" 期间的改变曲线",
+  "@chartDuringPlanTitle": {
+    "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
+    "type": "text",
+    "placeholders": {
+      "chartName": {},
+      "planName": {}
+    }
+  },
+  "indicatorRaw": "原始值",
+  "indicatorAvg": "平均值",
+  "textPromptTitle": "准备就绪？",
+  "@textPromptTitle": {
+    "description": "Title for the text prompt"
+  },
+  "textPromptSubheading": "点击右下角按钮开始",
+  "@textPromptSubheading": {
+    "description": "Subheading for the text prompt"
+  }
 }
