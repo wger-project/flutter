@@ -363,7 +363,7 @@
   "@weight": {
     "description": "The weight of a workout log or body weight entry"
   },
-  "chartAllTimeTitle": "{பெயர்} எல்லா நேரத்திலும்",
+  "chartAllTimeTitle": "{name} எல்லா நேரத்திலும்",
   "@chartAllTimeTitle": {
     "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
     "type": "text",
@@ -371,7 +371,7 @@
       "name": {}
     }
   },
-  "chart30DaysTitle": "{பெயர்} கடைசி 30 நாட்கள்",
+  "chart30DaysTitle": "{name} கடைசி 30 நாட்கள்",
   "@chart30DaysTitle": {
     "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
     "type": "text",
@@ -379,7 +379,7 @@
       "name": {}
     }
   },
-  "chartDuringPlanTitle": "{விளக்கப்படம் {ஊட்டச்சத்து திட்டத்தின் போது {பிளானேம்}",
+  "chartDuringPlanTitle": "{chartName} ஊட்டச்சத்து திட்டத்தின் போது {planName}",
   "@chartDuringPlanTitle": {
     "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
     "type": "text",
@@ -450,7 +450,7 @@
   "@kcal": {
     "description": "Energy in a meal in kilocalories, kcal"
   },
-  "kcalValue": "{மதிப்பு} கிலோகலோரி",
+  "kcalValue": "{value} கிலோகலோரி",
   "@kcalValue": {
     "description": "A value in kcal, e.g. 500 kcal",
     "type": "text",
@@ -466,7 +466,7 @@
   "@g": {
     "description": "Abbreviation for gram"
   },
-  "gValue": "{மதிப்பு} g",
+  "gValue": "{value} g",
   "@gValue": {
     "description": "A value in grams, e.g. 5 g",
     "type": "text",
@@ -474,7 +474,7 @@
       "value": {}
     }
   },
-  "percentValue": "{மதிப்பு} %",
+  "percentValue": "{value} %",
   "@percentValue": {
     "description": "A value in percent, e.g. 10 %",
     "type": "text",
@@ -524,7 +524,7 @@
   "@loadingText": {
     "description": "Text to show when entries are being loaded in the background: Loading..."
   },
-  "confirmDelete": "நீங்கள் நிச்சயமாக '{டோட்லீட்}' நீக்க விரும்புகிறீர்களா?",
+  "confirmDelete": "நீங்கள் நிச்சயமாக '{toDelete}' நீக்க விரும்புகிறீர்களா?",
   "@confirmDelete": {
     "description": "Confirmation text before the user deletes an object",
     "type": "text",
@@ -617,7 +617,7 @@
       "max": {}
     }
   },
-  "enterMinCharacters": "தயவுசெய்து குறைந்தது {நிமிடம்} எழுத்துக்களை உள்ளிடவும்",
+  "enterMinCharacters": "தயவுசெய்து குறைந்தது {min} எழுத்துக்களை உள்ளிடவும்",
   "@enterMinCharacters": {
     "description": "Error message when the user hasn't entered the minimum amount characters in a form",
     "type": "text",
@@ -678,7 +678,7 @@
   "@productFound": {
     "description": "Header label for dialog when product is found with barcode"
   },
-  "productFoundDescription": "பார்கோடு இந்த தயாரிப்புக்கு ஒத்திருக்கிறது: {தயாரிப்பு பெயர்}. நீங்கள் தொடர விரும்புகிறீர்களா?",
+  "productFoundDescription": "பார்கோடு இந்த தயாரிப்புக்கு ஒத்திருக்கிறது: {productName}. நீங்கள் தொடர விரும்புகிறீர்களா?",
   "@productFoundDescription": {
     "description": "Dialog info when product is found with barcode",
     "type": "text",
@@ -690,7 +690,7 @@
   "@productNotFound": {
     "description": "Header label for dialog when product is not found with barcode"
   },
-  "productNotFoundDescription": "ச்கேன் செய்யப்பட்ட பார்கோடு {பார்கோடு with உடன் தயாரிப்பு WGER தரவுத்தளத்தில் காணப்படவில்லை",
+  "productNotFoundDescription": "ச்கேன் செய்யப்பட்ட பார்கோடு {barcode} உடன் தயாரிப்பு WGER தரவுத்தளத்தில் காணப்படவில்லை",
   "@productNotFoundDescription": {
     "description": "Dialog info when product is not found with barcode",
     "type": "text",
@@ -708,7 +708,7 @@
   "@variations": {
     "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"
   },
-  "alsoKnownAs": "என்றும் அழைக்கப்படுகிறது: {மாற்றுப்பெயர்கள்}",
+  "alsoKnownAs": "என்றும் அழைக்கப்படுகிறது: {aliases}",
   "@alsoKnownAs": {
     "placeholders": {
       "aliases": {}
@@ -721,7 +721,7 @@
   "@unVerifiedEmail": {},
   "verifiedEmailReason": "பயிற்சிகள் பங்களிக்க உங்கள் மின்னஞ்சலை சரிபார்க்க வேண்டும்",
   "@verifiedEmailReason": {},
-  "verifiedEmailInfo": "சரிபார்ப்பு மின்னஞ்சல் {மின்னஞ்சல்} க்கு அனுப்பப்பட்டது",
+  "verifiedEmailInfo": "சரிபார்ப்பு மின்னஞ்சல் {email} க்கு அனுப்பப்பட்டது",
   "@verifiedEmailInfo": {
     "placeholders": {
       "email": {}
@@ -757,7 +757,7 @@
   "@settingsCacheDeletedSnackbar": {},
   "aboutPageTitle": "Wger பற்றி",
   "@aboutPageTitle": {},
-  "contributeExerciseWarning": "உங்கள் கணக்கு {நாட்கள்} நாட்களை விட பழையதாக இருந்தால் மட்டுமே நீங்கள் பயிற்சிகளை பங்களிக்க முடியும், மேலும் உங்கள் மின்னஞ்சலை சரிபார்த்துள்ளீர்கள்",
+  "contributeExerciseWarning": "உங்கள் கணக்கு {days} நாட்களை விட பழையதாக இருந்தால் மட்டுமே நீங்கள் பயிற்சிகளை பங்களிக்க முடியும், மேலும் உங்கள் மின்னஞ்சலை சரிபார்த்துள்ளீர்கள்",
   "@contributeExerciseWarning": {
     "description": "Number of days before which a person can add exercise",
     "placeholders": {
