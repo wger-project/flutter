@@ -627,7 +627,7 @@
   },
   "baseNameEnglish": "அனைத்து பயிற்சிகளுக்கும் ஆங்கிலத்தில் அடிப்படை பெயர் தேவை",
   "@baseNameEnglish": {},
-  "nrOfSets": "ஒரு உடற்பயிற்சிக்கு அமைக்கிறது: {nrofsets}",
+  "nrOfSets": "ஒரு உடற்பயிற்சிக்கு அமைக்கிறது: {nrOfSets}",
   "@nrOfSets": {
     "description": "Label shown on the slider where the user selects the nr of sets",
     "type": "text",
