@@ -41,5 +41,7 @@ If necessary, edit the created release on github
 
 ## 5. Merge pull requests
 
-* in the flathub repo: https://github.com/flathub/de.wger.flutter
+* in the flathub
+  repo: https://github.com/flathub/de.wger.flutter/compare/master...wger-project:de.wger.flutter:master
+* in the fork sync master https://github.com/wger-project/de.wger.flutter
 * in the flutter repo: https://github.com/wger-project/flutter/branches
