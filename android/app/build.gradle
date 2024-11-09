@@ -30,27 +30,6 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 
-// Key for wger.de REST API
-def wgerProperties = new Properties()
-def localMapsPropertiesFile = rootProject.file('../fastlane/metadata/envfiles/wger.properties')
-if (localMapsPropertiesFile.exists()) {
-    project.logger.info('Load maps properties from local file')
-    localMapsPropertiesFile.withReader('UTF-8') { reader ->
-        wgerProperties.load(reader)
-    }
-} else {
-    project.logger.info('Load maps properties from environment')
-    try {
-        wgerProperties['WGER_API_KEY'] = System.getenv('WGER_API_KEY')
-    } catch (NullPointerException e) {
-        project.logger.warn('Failed to load WGER_API_KEY from environment.', e)
-    }
-}
-def wgerApiKey = wgerProperties.getProperty('WGER_API_KEY')
-if (wgerApiKey == null) {
-    wgerApiKey = ""
-    project.logger.error('Wger Api Key not configured. Set it in `/fastlane/metadata/android/envfiles/wger.properties` or in the environment variable `WGER_API_KEY`')
-}
 
 android {
     compileSdkVersion 34
@@ -80,7 +59,6 @@ android {
         targetSdkVersion 34
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
-        manifestPlaceholders += [WGER_API_KEY: wgerApiKey]
     }
 
     signingConfigs {

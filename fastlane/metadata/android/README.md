@@ -4,7 +4,7 @@
 
 If we use a new version, update the version used by
 
-* Github Actions in `android-release.yaml` in this repository
+* Github Actions in `build-release.yml` in this repository
 * Fdroid build recipe
   in [their repo](https://gitlab.com/fdroid/fdroiddata/-/blob/master/metadata/de.wger.flutter.yml).
   Since this can potentially take some time, it should happen well in advance

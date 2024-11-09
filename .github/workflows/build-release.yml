@@ -68,13 +68,9 @@ jobs:
 
       - name: Build AAB
         run: flutter build appbundle --release
-        env:
-          WGER_API_KEY: ${{ secrets.WGER_API_KEY }}
 
       - name: Build APK
         run: flutter build apk --release
-        env:
-          WGER_API_KEY: ${{ secrets.WGER_API_KEY }}
 
       - name: Upload build to Play Store
         run: |

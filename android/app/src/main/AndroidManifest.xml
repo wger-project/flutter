@@ -29,9 +29,6 @@
         android:networkSecurityConfig="@xml/network_security_config">
 
         <meta-data
-            android:name="wger.api_key"
-            android:value="${WGER_API_KEY}" />
-        <meta-data
             android:name="wger.check_min_app_version"
             android:value="true" />
 
