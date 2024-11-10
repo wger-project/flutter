@@ -20,7 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/widgets/core/text_prompt.dart';
 

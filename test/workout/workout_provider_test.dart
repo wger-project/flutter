@@ -31,7 +31,7 @@ import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
-import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/providers/routines.dart';
 
 import '../fixtures/fixture_reader.dart';
 import 'workout_provider_test.mocks.dart';

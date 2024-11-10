@@ -25,7 +25,7 @@ import 'package:provider/provider.dart';
 import 'package:wger/database/exercises/exercise_database.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
-import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
 
 import '../../test_data/routines.dart';

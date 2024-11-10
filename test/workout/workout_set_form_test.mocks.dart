@@ -28,7 +28,7 @@ import 'package:wger/models/workouts/weight_unit.dart' as _i11;
 import 'package:wger/providers/auth.dart' as _i9;
 import 'package:wger/providers/base_provider.dart' as _i2;
 import 'package:wger/providers/exercises.dart' as _i19;
-import 'package:wger/providers/workout_plans.dart' as _i22;
+import 'package:wger/providers/routines.dart' as _i22;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values

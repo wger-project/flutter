@@ -23,7 +23,7 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/models/workouts/set_config_data.dart';
 import 'package:wger/models/workouts/slot_data.dart';
-import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/widgets/core/core.dart';

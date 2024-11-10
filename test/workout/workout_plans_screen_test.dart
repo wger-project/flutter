@@ -28,7 +28,7 @@ import 'package:wger/database/exercises/exercise_database.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
-import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/workout_plans_screen.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
