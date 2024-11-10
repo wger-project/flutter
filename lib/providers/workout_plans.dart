@@ -173,13 +173,13 @@ class RoutinesProvider with ChangeNotifier {
         for (final setConfig in slot.setConfigs) {
           setConfig.exercise = (await _exercises.fetchAndSetExercise(setConfig.exerciseId))!;
 
-          // setConfig.repsUnit = _repetitionUnit.firstWhere(
-          //   (e) => e.id == setConfig.repsUnitId,
-          // );
-          //
-          // setConfig.weightUnit = _weightUnits.firstWhere(
-          //   (e) => e.id == setConfig.weightUnitId,
-          // );
+          setConfig.repsUnit = _repetitionUnit.firstWhere(
+            (e) => e.id == setConfig.repsUnitId,
+          );
+
+          setConfig.weightUnit = _weightUnits.firstWhere(
+            (e) => e.id == setConfig.weightUnitId,
+          );
         }
       }
     }
@@ -231,18 +231,20 @@ class RoutinesProvider with ChangeNotifier {
           objectMethod: _routinesCurrentIterationGymSubpath,
         ),
       ),
-      baseProvider.fetchPaginated(baseProvider.makeUrl(
-        _logsUrlPath,
-        query: {'workout': routineId.toString(), 'limit': '900'},
-      ))
+      baseProvider.fetchPaginated(
+        baseProvider.makeUrl(
+          _logsUrlPath,
+          query: {'routine': routineId.toString(), 'limit': '900'},
+        ),
+      ),
     ]);
 
     final routine = Routine.fromJson(results[0] as Map<String, dynamic>);
 
     final dayData = results[1] as List<dynamic>;
     final currentIterationDisplayData = results[2] as List<dynamic>;
-    final currentIterationGymData = results[2] as List<dynamic>;
-    final logData = results[3] as List<dynamic>;
+    final currentIterationGymData = results[3] as List<dynamic>;
+    final logData = results[4] as List<dynamic>;
 
     /*
      * Set exercise, repetition and weight unit objects
@@ -279,10 +281,6 @@ class RoutinesProvider with ChangeNotifier {
     // Logs
     routine.logs = [];
 
-    // final logData = await baseProvider.fetchPaginated(baseProvider.makeUrl(
-    //   _logsUrlPath,
-    //   query: {'workout': routineId.toString(), 'limit': '900'},
-    // ));
     for (final logEntry in logData) {
       try {
         final log = Log.fromJson(logEntry);
