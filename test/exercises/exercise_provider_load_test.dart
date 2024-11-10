@@ -70,7 +70,7 @@ void main() {
 
       // assert
       verifyNever(provider.baseProvider.fetch(tExerciseBaseInfoUri2));
-      expect(base.id, 1);
+      expect(base?.id, 1);
     });
 
     test('test that fetchAndSetExerciseBase fetches a new base', () async {
@@ -79,7 +79,7 @@ void main() {
 
       // assert
       verify(provider.baseProvider.fetch(tExerciseBaseInfoUri));
-      expect(base.id, 9);
+      expect(base?.id, 9);
     });
 
     test('Load the readExerciseBaseFromBaseInfo parse method', () {

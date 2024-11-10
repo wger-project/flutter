@@ -42,7 +42,7 @@ import 'package:wger/providers/routines.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/exercises/images.dart';
-import 'package:wger/widgets/workouts/forms.dart';
+import 'package:wger/widgets/routines/forms.dart';
 
 class GymMode extends StatefulWidget {
   final DayData _DayData;

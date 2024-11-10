@@ -21,8 +21,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
-import 'package:wger/widgets/workouts/day.dart';
-import 'package:wger/widgets/workouts/forms.dart';
+import 'package:wger/widgets/routines/day.dart';
+import 'package:wger/widgets/routines/forms.dart';
 
 class WorkoutPlanDetail extends StatefulWidget {
   final Routine _routine;

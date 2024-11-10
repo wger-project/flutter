@@ -27,7 +27,7 @@ import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
-import 'package:wger/widgets/workouts/forms.dart';
+import 'package:wger/widgets/routines/forms.dart';
 
 import './workout_form_test.mocks.dart';
 

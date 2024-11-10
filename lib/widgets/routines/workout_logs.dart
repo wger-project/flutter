@@ -26,7 +26,7 @@ import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/session.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/theme/theme.dart';
-import 'package:wger/widgets/workouts/log.dart';
+import 'package:wger/widgets/routines/log.dart';
 
 class WorkoutLogs extends StatefulWidget {
   final Routine _workoutPlan;

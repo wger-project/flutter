@@ -26,7 +26,7 @@ import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/session.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/widgets/measurements/charts.dart';
-import 'package:wger/widgets/workouts/charts.dart';
+import 'package:wger/widgets/routines/charts.dart';
 
 class ExerciseLogChart extends StatelessWidget {
   final Exercise _base;

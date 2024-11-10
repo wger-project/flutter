@@ -29,7 +29,7 @@ import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/exercises/exercises.dart';
 import 'package:wger/widgets/exercises/images.dart';
-import 'package:wger/widgets/workouts/forms.dart';
+import 'package:wger/widgets/routines/forms.dart';
 
 class SettingWidget extends StatelessWidget {
   final SetConfigData setConfigData;

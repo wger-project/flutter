@@ -23,9 +23,9 @@ import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/theme/theme.dart';
-import 'package:wger/widgets/workouts/forms.dart';
-import 'package:wger/widgets/workouts/workout_logs.dart';
-import 'package:wger/widgets/workouts/workout_plan_detail.dart';
+import 'package:wger/widgets/routines/forms.dart';
+import 'package:wger/widgets/routines/workout_logs.dart';
+import 'package:wger/widgets/routines/workout_plan_detail.dart';
 
 enum WorkoutScreenMode {
   workout,

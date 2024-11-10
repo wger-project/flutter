@@ -27,8 +27,8 @@ import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
-import 'package:wger/widgets/workouts/forms.dart';
-import 'package:wger/widgets/workouts/gym_mode.dart';
+import 'package:wger/widgets/routines/forms.dart';
+import 'package:wger/widgets/routines/gym_mode.dart';
 
 import '../../test_data/exercises.dart';
 import '../../test_data/routines.dart';

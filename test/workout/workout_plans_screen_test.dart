@@ -32,7 +32,7 @@ import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/workout_plans_screen.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
-import 'package:wger/widgets/workouts/forms.dart';
+import 'package:wger/widgets/routines/forms.dart';
 
 import 'workout_plans_screen_test.mocks.dart';
 

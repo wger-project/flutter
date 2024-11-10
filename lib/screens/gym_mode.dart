@@ -20,7 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/providers/routines.dart';
-import 'package:wger/widgets/workouts/gym_mode.dart';
+import 'package:wger/widgets/routines/gym_mode.dart';
 
 class GymModeScreen extends StatelessWidget {
   const GymModeScreen();
