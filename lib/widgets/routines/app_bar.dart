@@ -18,16 +18,29 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
+import 'package:wger/models/workouts/routine.dart';
+import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
 import 'package:wger/screens/exercises_screen.dart';
+import 'package:wger/screens/form_screen.dart';
+import 'package:wger/screens/routine_logs_screen.dart';
+import 'package:wger/widgets/routines/forms.dart';
 
-enum _WorkoutAppBarOptions {
+enum _RoutineAppBarOptions {
   list,
   contribute,
 }
 
-class WorkoutOverviewAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const WorkoutOverviewAppBar();
+enum _RoutineDetailBarOptions {
+  edit,
+  delete,
+  logs,
+}
+
+class RoutineListAppBar extends StatelessWidget implements PreferredSizeWidget {
+  const RoutineListAppBar();
+
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -36,24 +49,84 @@ class WorkoutOverviewAppBar extends StatelessWidget implements PreferredSizeWidg
         PopupMenuButton(
           itemBuilder: (context) {
             return [
-              PopupMenuItem<_WorkoutAppBarOptions>(
-                value: _WorkoutAppBarOptions.list,
+              PopupMenuItem<_RoutineAppBarOptions>(
+                value: _RoutineAppBarOptions.list,
                 child: Text(AppLocalizations.of(context).exerciseList),
               ),
-              PopupMenuItem<_WorkoutAppBarOptions>(
-                value: _WorkoutAppBarOptions.contribute,
+              PopupMenuItem<_RoutineAppBarOptions>(
+                value: _RoutineAppBarOptions.contribute,
                 child: Text(AppLocalizations.of(context).contributeExercise),
               ),
             ];
           },
           onSelected: (value) {
             switch (value) {
-              case _WorkoutAppBarOptions.contribute:
+              case _RoutineAppBarOptions.contribute:
                 Navigator.of(context).pushNamed(AddExerciseScreen.routeName);
                 break;
-              case _WorkoutAppBarOptions.list:
+              case _RoutineAppBarOptions.list:
                 Navigator.of(context).pushNamed(ExercisesScreen.routeName);
                 break;
+            }
+          },
+        ),
+      ],
+    );
+  }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+}
+
+class RoutineDetailAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final Routine routine;
+
+  const RoutineDetailAppBar(this.routine);
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      title: Text(routine.name),
+      actions: [
+        PopupMenuButton(
+          itemBuilder: (context) {
+            return [
+              PopupMenuItem<_RoutineDetailBarOptions>(
+                value: _RoutineDetailBarOptions.logs,
+                child: Text(AppLocalizations.of(context).labelWorkoutLogs),
+              ),
+              PopupMenuItem<_RoutineDetailBarOptions>(
+                value: _RoutineDetailBarOptions.edit,
+                child: Text(AppLocalizations.of(context).edit),
+              ),
+              PopupMenuItem<_RoutineDetailBarOptions>(
+                value: _RoutineDetailBarOptions.delete,
+                child: Text(AppLocalizations.of(context).delete),
+              ),
+            ];
+          },
+          onSelected: (value) {
+            switch (value) {
+              case _RoutineDetailBarOptions.edit:
+                Navigator.pushNamed(
+                  context,
+                  FormScreen.routeName,
+                  arguments: FormScreenArguments(
+                    AppLocalizations.of(context).edit,
+                    WorkoutForm(routine),
+                  ),
+                );
+
+              case _RoutineDetailBarOptions.logs:
+                Navigator.pushNamed(
+                  context,
+                  WorkoutLogsScreen.routeName,
+                  arguments: routine,
+                );
+
+              case _RoutineDetailBarOptions.delete:
+                Provider.of<RoutinesProvider>(context, listen: false).deleteWorkout(routine.id!);
+                Navigator.of(context).pop();
             }
           },
         ),

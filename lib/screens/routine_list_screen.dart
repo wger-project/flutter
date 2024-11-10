@@ -34,7 +34,7 @@ class RoutineListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const WorkoutOverviewAppBar(),
+      appBar: const RoutineListAppBar(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pushNamed(
