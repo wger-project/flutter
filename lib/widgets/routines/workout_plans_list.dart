@@ -21,7 +21,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/routines.dart';
-import 'package:wger/screens/workout_plan_screen.dart';
+import 'package:wger/screens/routine_screen.dart';
 import 'package:wger/widgets/core/text_prompt.dart';
 
 class WorkoutPlansList extends StatelessWidget {
@@ -48,7 +48,7 @@ class WorkoutPlansList extends StatelessWidget {
                       _workoutProvider.setCurrentPlan(currentWorkout.id!);
 
                       Navigator.of(context).pushNamed(
-                        WorkoutPlanScreen.routeName,
+                        RoutineScreen.routeName,
                         arguments: currentWorkout,
                       );
                     },

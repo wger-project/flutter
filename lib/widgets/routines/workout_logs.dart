@@ -24,15 +24,13 @@ import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/session.dart';
-import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/routines/log.dart';
 
 class WorkoutLogs extends StatefulWidget {
   final Routine _workoutPlan;
-  final Function _changeMode;
 
-  const WorkoutLogs(this._workoutPlan, this._changeMode);
+  const WorkoutLogs(this._workoutPlan);
 
   @override
   _WorkoutLogsState createState() => _WorkoutLogsState();
@@ -51,16 +49,6 @@ class _WorkoutLogsState extends State<WorkoutLogs> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        ToggleButtons(
-          renderBorder: false,
-          onPressed: (int index) {
-            if (index == 0) {
-              widget._changeMode(WorkoutScreenMode.workout);
-            }
-          },
-          isSelected: const [false, true],
-          children: const [Icon(Icons.table_chart), Icon(Icons.show_chart)],
-        ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 10),
           child: Text(

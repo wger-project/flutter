@@ -18,39 +18,45 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/models/workouts/routine.dart';
-import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/form_screen.dart';
-import 'package:wger/widgets/routines/app_bar.dart';
+import 'package:wger/widgets/routines/day.dart';
 import 'package:wger/widgets/routines/forms.dart';
-import 'package:wger/widgets/routines/workout_plans_list.dart';
 
-class WorkoutPlansScreen extends StatelessWidget {
-  const WorkoutPlansScreen();
+class RoutineDetail extends StatelessWidget {
+  final Routine _routine;
 
-  static const routeName = '/workout-plans-list';
+  const RoutineDetail(this._routine);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const WorkoutOverviewAppBar(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(
-            context,
-            FormScreen.routeName,
-            arguments: FormScreenArguments(
-              AppLocalizations.of(context).newWorkout,
-              WorkoutForm(Routine.empty()),
+    return Column(
+      children: [
+        if (_routine.description.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.all(15),
+            child: Text(_routine.description),
+          ),
+        ..._routine.dayDataCurrentIteration.map((dayData) => WorkoutDayWidget(dayData)),
+        Column(
+          children: [
+            ElevatedButton(
+              child: Text(AppLocalizations.of(context).newDay),
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  FormScreen.routeName,
+                  arguments: FormScreenArguments(
+                    AppLocalizations.of(context).newDay,
+                    DayFormWidget(_routine),
+                    hasListView: true,
+                  ),
+                );
+              },
             ),
-          );
-        },
-        child: const Icon(Icons.add, color: Colors.white),
-      ),
-      body: Consumer<RoutinesProvider>(
-        builder: (context, workoutProvider, child) => WorkoutPlansList(workoutProvider),
-      ),
+          ],
+        ),
+      ],
     );
   }
 }

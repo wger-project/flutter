@@ -30,7 +30,7 @@ import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/form_screen.dart';
-import 'package:wger/screens/workout_plans_screen.dart';
+import 'package:wger/screens/routine_list_screen.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/routines/forms.dart';
 
@@ -82,7 +82,7 @@ void main() {
         locale: Locale(locale),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: const WorkoutPlansScreen(),
+        home: const RoutineListScreen(),
         routes: {FormScreen.routeName: (ctx) => const FormScreen()},
       ),
     );

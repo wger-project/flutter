@@ -31,7 +31,7 @@ import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
-import 'package:wger/screens/workout_plan_screen.dart';
+import 'package:wger/screens/routine_screen.dart';
 import 'package:wger/widgets/exercises/images.dart';
 
 class WorkoutForm extends StatelessWidget {
@@ -114,7 +114,7 @@ class WorkoutForm extends StatelessWidget {
                 ).addRoutine(_plan);
                 if (context.mounted) {
                   Navigator.of(context).pushReplacementNamed(
-                    WorkoutPlanScreen.routeName,
+                    RoutineScreen.routeName,
                     arguments: newPlan,
                   );
                 }

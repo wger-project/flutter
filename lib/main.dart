@@ -45,10 +45,11 @@ import 'package:wger/screens/measurement_entries_screen.dart';
 import 'package:wger/screens/nutritional_diary_screen.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/screens/nutritional_plans_screen.dart';
+import 'package:wger/screens/routine_list_screen.dart';
+import 'package:wger/screens/routine_logs_screen.dart';
+import 'package:wger/screens/routine_screen.dart';
 import 'package:wger/screens/splash_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
-import 'package:wger/screens/workout_plan_screen.dart';
-import 'package:wger/screens/workout_plans_screen.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/about.dart';
 import 'package:wger/widgets/core/settings.dart';
@@ -164,8 +165,9 @@ class MyApp extends StatelessWidget {
             LogMealsScreen.routeName: (ctx) => const LogMealsScreen(),
             LogMealScreen.routeName: (ctx) => const LogMealScreen(),
             WeightScreen.routeName: (ctx) => const WeightScreen(),
-            WorkoutPlanScreen.routeName: (ctx) => const WorkoutPlanScreen(),
-            WorkoutPlansScreen.routeName: (ctx) => const WorkoutPlansScreen(),
+            RoutineScreen.routeName: (ctx) => const RoutineScreen(),
+            WorkoutLogsScreen.routeName: (ctx) => const WorkoutLogsScreen(),
+            RoutineListScreen.routeName: (ctx) => const RoutineListScreen(),
             ExercisesScreen.routeName: (ctx) => const ExercisesScreen(),
             ExerciseDetailScreen.routeName: (ctx) => const ExerciseDetailScreen(),
             AddExerciseScreen.routeName: (ctx) => const AddExerciseScreen(),

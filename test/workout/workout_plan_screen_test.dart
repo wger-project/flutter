@@ -26,7 +26,7 @@ import 'package:wger/database/exercises/exercise_database.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/routines.dart';
-import 'package:wger/screens/workout_plan_screen.dart';
+import 'package:wger/screens/routine_screen.dart';
 
 import '../../test_data/routines.dart';
 import 'workout_plan_screen_test.mocks.dart';
@@ -52,13 +52,13 @@ void main() {
           onPressed: () => key.currentState!.push(
             MaterialPageRoute<void>(
               settings: RouteSettings(arguments: getWorkout()),
-              builder: (_) => const WorkoutPlanScreen(),
+              builder: (_) => const RoutineScreen(),
             ),
           ),
           child: const SizedBox(),
         ),
         routes: {
-          WorkoutPlanScreen.routeName: (ctx) => const WorkoutPlanScreen(),
+          RoutineScreen.routeName: (ctx) => const RoutineScreen(),
         },
       ),
     );

@@ -25,49 +25,20 @@ import 'package:wger/screens/form_screen.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/routines/forms.dart';
 import 'package:wger/widgets/routines/workout_logs.dart';
-import 'package:wger/widgets/routines/workout_plan_detail.dart';
-
-enum WorkoutScreenMode {
-  workout,
-  log,
-}
 
 enum WorkoutOptions {
   edit,
   delete,
 }
 
-class WorkoutPlanScreen extends StatefulWidget {
-  const WorkoutPlanScreen();
+class WorkoutLogsScreen extends StatelessWidget {
+  const WorkoutLogsScreen();
 
-  static const routeName = '/workout-plan-detail';
-
-  @override
-  _WorkoutPlanScreenState createState() => _WorkoutPlanScreenState();
-}
-
-class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
-  WorkoutScreenMode _mode = WorkoutScreenMode.workout;
-
-  void _changeMode(WorkoutScreenMode newMode) {
-    setState(() {
-      _mode = newMode;
-    });
-  }
+  static const routeName = '/workout-logs';
 
   Future<Routine> _loadFullWorkout(BuildContext context, int routineId) {
     return Provider.of<RoutinesProvider>(context, listen: false)
         .fetchAndSetWorkoutPlanFull(routineId);
-  }
-
-  Widget getBody(Routine routine) {
-    switch (_mode) {
-      case WorkoutScreenMode.workout:
-        return WorkoutPlanDetail(routine, _changeMode);
-
-      case WorkoutScreenMode.log:
-        return WorkoutLogs(routine, _changeMode);
-    }
   }
 
   @override
@@ -141,7 +112,7 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
                     )
                   else
                     Consumer<RoutinesProvider>(
-                      builder: (context, value, child) => getBody(routine),
+                      builder: (context, value, child) => WorkoutLogs(routine),
                     ),
                 ],
               ),

@@ -25,7 +25,7 @@ import 'package:provider/provider.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/providers/routines.dart';
-import 'package:wger/screens/workout_plan_screen.dart';
+import 'package:wger/screens/routine_screen.dart';
 import 'package:wger/widgets/routines/forms.dart';
 
 import 'repetition_unit_form_widget_test.mocks.dart';
@@ -67,7 +67,7 @@ void main() {
         navigatorKey: key,
         home: Scaffold(body: RepetitionUnitInputWidget(setting1)),
         routes: {
-          WorkoutPlanScreen.routeName: (ctx) => const WorkoutPlanScreen(),
+          RoutineScreen.routeName: (ctx) => const RoutineScreen(),
         },
       ),
     );

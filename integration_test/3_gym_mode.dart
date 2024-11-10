@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/gym_mode.dart';
-import 'package:wger/screens/workout_plan_screen.dart';
+import 'package:wger/screens/routine_screen.dart';
 import 'package:wger/theme/theme.dart';
 
 import '../test/utils.dart';
@@ -50,7 +50,7 @@ Widget createGymModeScreen({locale = 'en'}) {
           child: const SizedBox(),
         ),
         routes: {
-          WorkoutPlanScreen.routeName: (ctx) => const WorkoutPlanScreen(),
+          RoutineScreen.routeName: (ctx) => const RoutineScreen(),
         },
       ),
     ),

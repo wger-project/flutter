@@ -34,8 +34,8 @@ import 'package:wger/providers/user.dart';
 import 'package:wger/screens/dashboard.dart';
 import 'package:wger/screens/gallery_screen.dart';
 import 'package:wger/screens/nutritional_plans_screen.dart';
+import 'package:wger/screens/routine_list_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
-import 'package:wger/screens/workout_plans_screen.dart';
 
 class HomeTabsScreen extends StatefulWidget {
   const HomeTabsScreen();
@@ -65,7 +65,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
 
   final _screenList = [
     const DashboardScreen(),
-    const WorkoutPlansScreen(),
+    const RoutineListScreen(),
     const NutritionalPlansScreen(),
     const WeightScreen(),
     const GalleryScreen(),

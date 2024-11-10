@@ -35,8 +35,8 @@ import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/screens/log_meals_screen.dart';
 import 'package:wger/screens/measurement_categories_screen.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
+import 'package:wger/screens/routine_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
-import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/measurements/categories_card.dart';
@@ -503,7 +503,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                   child: Text(AppLocalizations.of(context).goToDetailPage),
                   onPressed: () {
                     Navigator.of(context).pushNamed(
-                      WorkoutPlanScreen.routeName,
+                      RoutineScreen.routeName,
                       arguments: _workoutPlan,
                     );
                   },
