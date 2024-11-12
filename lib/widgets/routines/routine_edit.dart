@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:wger/models/workouts/routine.dart';
+import 'package:wger/widgets/routines/forms/day.dart';
 import 'package:wger/widgets/routines/forms/routine.dart';
 
 class RoutineEdit extends StatelessWidget {
@@ -29,7 +30,13 @@ class RoutineEdit extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8),
-      child: Column(children: [RoutineForm(_routine)]),
+      child: ListView(
+        children: [
+          RoutineForm(_routine),
+          Container(height: 10),
+          ReorderableDaysList(_routine.days, _routine.id!),
+        ],
+      ),
     );
   }
 }

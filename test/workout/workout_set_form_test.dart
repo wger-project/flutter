@@ -83,7 +83,6 @@ void main() {
   testWidgets('Test creating a new set', (WidgetTester tester) async {
     when(mockWorkoutPlans.addSet(any)).thenAnswer((_) => Future.value(Slot.empty()));
     when(mockWorkoutPlans.addSetting(any)).thenAnswer((_) => Future.value(SlotEntry.empty()));
-    when(mockWorkoutPlans.fetchSmartText(any, any)).thenAnswer((_) => Future.value('2 x 10'));
     when(mockExerciseProvider.searchExercise(
       any,
       languageCode: anyNamed('languageCode'),

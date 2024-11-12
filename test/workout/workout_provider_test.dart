@@ -65,7 +65,7 @@ void main() {
 
       // Load the entries
       final provider = RoutinesProvider(mockBaseProvider, exercisesProvider, []);
-      final plan = await provider.fetchAndSetPlanSparse(325397);
+      final plan = await provider.fetchAndSetRoutineSparse(325397);
       final plans = provider.getPlans();
 
       // Check that everything is ok
@@ -94,7 +94,7 @@ void main() {
       // Load the entries
       final provider = RoutinesProvider(mockBaseProvider, exercisesProvider, []);
 
-      await provider.fetchAndSetPlanSparse(325397);
+      await provider.fetchAndSetRoutineSparse(325397);
       await provider.deleteRoutine(325397);
       final plans = provider.getPlans();
       expect(plans.length, 0);

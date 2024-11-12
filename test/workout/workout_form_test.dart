@@ -47,7 +47,7 @@ void main() {
   setUp(() {
     mockWorkoutPlans = MockRoutinesProvider();
     when(mockWorkoutPlans.editRoutine(any)).thenAnswer((_) => Future.value(existingPlan));
-    when(mockWorkoutPlans.fetchAndSetWorkoutPlanFull(any))
+    when(mockWorkoutPlans.fetchAndSetRoutineFull(any))
         .thenAnswer((_) => Future.value(existingPlan));
   });
 

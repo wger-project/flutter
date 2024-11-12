@@ -131,7 +131,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
       log('Loading current workout plan');
       if (workoutPlansProvider.activePlan != null) {
         final planId = workoutPlansProvider.activePlan!.id!;
-        await workoutPlansProvider.fetchAndSetWorkoutPlanFull(planId);
+        await workoutPlansProvider.fetchAndSetRoutineFull(planId);
         workoutPlansProvider.setCurrentPlan(planId);
       }
     }

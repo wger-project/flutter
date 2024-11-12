@@ -17,7 +17,8 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:wger/models/workouts/routine.dart';
+import 'package:provider/provider.dart';
+import 'package:wger/providers/routines.dart';
 import 'package:wger/widgets/routines/app_bar.dart';
 import 'package:wger/widgets/routines/routine_edit.dart';
 
@@ -28,7 +29,9 @@ class RoutineEditScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final routine = ModalRoute.of(context)!.settings.arguments as Routine;
+    final routineId = ModalRoute.of(context)!.settings.arguments as int;
+
+    final routine = Provider.of<RoutinesProvider>(context).findById(routineId);
 
     return Scaffold(
       appBar: RoutineDetailAppBar(routine),

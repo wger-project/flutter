@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/routines.dart';
-import 'package:wger/screens/routine_screen.dart';
 
 class RoutineForm extends StatefulWidget {
   final Routine _routine;
@@ -203,20 +202,11 @@ class _RoutineFormState extends State<RoutineForm> {
               if (widget._routine.id != null) {
                 await Provider.of<RoutinesProvider>(context, listen: false)
                     .editRoutine(widget._routine);
-                if (context.mounted) {
-                  Navigator.of(context).pop();
-                }
               } else {
                 final Routine newPlan = await Provider.of<RoutinesProvider>(
                   context,
                   listen: false,
                 ).addRoutine(widget._routine);
-                if (context.mounted) {
-                  Navigator.of(context).pushReplacementNamed(
-                    RoutineScreen.routeName,
-                    arguments: newPlan,
-                  );
-                }
               }
             },
           ),

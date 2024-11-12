@@ -50,6 +50,9 @@ class Day {
   late String type;
 
   @JsonKey(required: true)
+  late num order;
+
+  @JsonKey(required: true)
   late Object? config;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -59,6 +62,17 @@ class Day {
   //late WorkoutPlan workout;
 
   Day() {
+    slots = [];
+  }
+
+  Day.empty() {
+    name = 'new day';
+    description = '';
+    type = 'custom';
+    isRest = false;
+    needLogsToAdvance = false;
+    order = 0;
+    config = {};
     slots = [];
   }
 

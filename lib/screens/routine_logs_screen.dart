@@ -29,8 +29,7 @@ class WorkoutLogsScreen extends StatelessWidget {
   static const routeName = '/workout-logs';
 
   Future<Routine> _loadFullWorkout(BuildContext context, int routineId) {
-    return Provider.of<RoutinesProvider>(context, listen: false)
-        .fetchAndSetWorkoutPlanFull(routineId);
+    return Provider.of<RoutinesProvider>(context, listen: false).fetchAndSetRoutineFull(routineId);
   }
 
   @override

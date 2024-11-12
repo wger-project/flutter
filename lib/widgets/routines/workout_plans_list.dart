@@ -32,7 +32,7 @@ class WorkoutPlansList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      onRefresh: () => _workoutProvider.fetchAndSetAllPlansFull(),
+      onRefresh: () => _workoutProvider.fetchAndSetAllRoutinesFull(),
       // onRefresh: () => _workoutProvider.fetchAndSetAllPlansSparse(),
       child: _workoutProvider.items.isEmpty
           ? const TextPrompt()

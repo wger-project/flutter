@@ -4,12 +4,10 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i12;
-import 'dart:ui' as _i17;
+import 'dart:ui' as _i15;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i16;
 import 'package:wger/models/exercises/exercise.dart' as _i14;
-import 'package:wger/models/exercises/translation.dart' as _i15;
 import 'package:wger/models/workouts/day.dart' as _i6;
 import 'package:wger/models/workouts/day_data.dart' as _i13;
 import 'package:wger/models/workouts/log.dart' as _i10;
@@ -245,9 +243,9 @@ class MockRoutinesProvider extends _i1.Mock implements _i11.RoutinesProvider {
       );
 
   @override
-  _i12.Future<void> fetchAndSetAllPlansFull() => (super.noSuchMethod(
+  _i12.Future<void> fetchAndSetAllRoutinesFull() => (super.noSuchMethod(
         Invocation.method(
-          #fetchAndSetAllPlansFull,
+          #fetchAndSetAllRoutinesFull,
           [],
         ),
         returnValue: _i12.Future<void>.value(),
@@ -274,30 +272,30 @@ class MockRoutinesProvider extends _i1.Mock implements _i11.RoutinesProvider {
       );
 
   @override
-  _i12.Future<_i5.Routine> fetchAndSetPlanSparse(int? planId) => (super.noSuchMethod(
+  _i12.Future<_i5.Routine> fetchAndSetRoutineSparse(int? planId) => (super.noSuchMethod(
         Invocation.method(
-          #fetchAndSetPlanSparse,
+          #fetchAndSetRoutineSparse,
           [planId],
         ),
         returnValue: _i12.Future<_i5.Routine>.value(_FakeRoutine_3(
           this,
           Invocation.method(
-            #fetchAndSetPlanSparse,
+            #fetchAndSetRoutineSparse,
             [planId],
           ),
         )),
       ) as _i12.Future<_i5.Routine>);
 
   @override
-  _i12.Future<_i5.Routine> fetchAndSetWorkoutPlanFull(int? routineId) => (super.noSuchMethod(
+  _i12.Future<_i5.Routine> fetchAndSetRoutineFull(int? routineId) => (super.noSuchMethod(
         Invocation.method(
-          #fetchAndSetWorkoutPlanFull,
+          #fetchAndSetRoutineFull,
           [routineId],
         ),
         returnValue: _i12.Future<_i5.Routine>.value(_FakeRoutine_3(
           this,
           Invocation.method(
-            #fetchAndSetWorkoutPlanFull,
+            #fetchAndSetRoutineFull,
             [routineId],
           ),
         )),
@@ -386,25 +384,21 @@ class MockRoutinesProvider extends _i1.Mock implements _i11.RoutinesProvider {
 
   @override
   _i12.Future<_i6.Day> addDay(
-    _i6.Day? day,
-    _i5.Routine? workout,
-  ) =>
+    _i6.Day? day, {
+    dynamic refresh = false,
+  }) =>
       (super.noSuchMethod(
         Invocation.method(
           #addDay,
-          [
-            day,
-            workout,
-          ],
+          [day],
+          {#refresh: refresh},
         ),
         returnValue: _i12.Future<_i6.Day>.value(_FakeDay_4(
           this,
           Invocation.method(
             #addDay,
-            [
-              day,
-              workout,
-            ],
+            [day],
+            {#refresh: refresh},
           ),
         )),
       ) as _i12.Future<_i6.Day>);
@@ -414,6 +408,16 @@ class MockRoutinesProvider extends _i1.Mock implements _i11.RoutinesProvider {
         Invocation.method(
           #editDay,
           [day],
+        ),
+        returnValue: _i12.Future<void>.value(),
+        returnValueForMissingStub: _i12.Future<void>.value(),
+      ) as _i12.Future<void>);
+
+  @override
+  _i12.Future<void> editDays(List<_i6.Day>? days) => (super.noSuchMethod(
+        Invocation.method(
+          #editDays,
+          [days],
         ),
         returnValue: _i12.Future<void>.value(),
         returnValueForMissingStub: _i12.Future<void>.value(),
@@ -479,31 +483,6 @@ class MockRoutinesProvider extends _i1.Mock implements _i11.RoutinesProvider {
         returnValue: _i12.Future<void>.value(),
         returnValueForMissingStub: _i12.Future<void>.value(),
       ) as _i12.Future<void>);
-
-  @override
-  _i12.Future<String> fetchSmartText(
-    _i7.Slot? workoutSet,
-    _i15.Translation? exercise,
-  ) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #fetchSmartText,
-          [
-            workoutSet,
-            exercise,
-          ],
-        ),
-        returnValue: _i12.Future<String>.value(_i16.dummyValue<String>(
-          this,
-          Invocation.method(
-            #fetchSmartText,
-            [
-              workoutSet,
-              exercise,
-            ],
-          ),
-        )),
-      ) as _i12.Future<String>);
 
   @override
   _i12.Future<void> deleteSet(int? setId) => (super.noSuchMethod(
@@ -580,7 +559,7 @@ class MockRoutinesProvider extends _i1.Mock implements _i11.RoutinesProvider {
       ) as _i12.Future<void>);
 
   @override
-  void addListener(_i17.VoidCallback? listener) => super.noSuchMethod(
+  void addListener(_i15.VoidCallback? listener) => super.noSuchMethod(
         Invocation.method(
           #addListener,
           [listener],
@@ -589,7 +568,7 @@ class MockRoutinesProvider extends _i1.Mock implements _i11.RoutinesProvider {
       );
 
   @override
-  void removeListener(_i17.VoidCallback? listener) => super.noSuchMethod(
+  void removeListener(_i15.VoidCallback? listener) => super.noSuchMethod(
         Invocation.method(
           #removeListener,
           [listener],

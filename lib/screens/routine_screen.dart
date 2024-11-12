@@ -30,8 +30,7 @@ class RoutineScreen extends StatelessWidget {
   static const routeName = '/routine-detail';
 
   Future<Routine> _loadFullWorkout(BuildContext context, int routineId) {
-    return Provider.of<RoutinesProvider>(context, listen: false)
-        .fetchAndSetWorkoutPlanFull(routineId);
+    return Provider.of<RoutinesProvider>(context, listen: false).fetchAndSetRoutineFull(routineId);
   }
 
   @override
