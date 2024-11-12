@@ -41,10 +41,12 @@ class _ReorderableDaysListState extends State<ReorderableDaysList> {
               AppLocalizations.of(context).newDay,
               style: Theme.of(context).textTheme.titleMedium,
             ),
-            onTap: () {
+            onTap: () async {
               final newDay = Day.empty();
               newDay.routineId = widget.routineId;
-              Provider.of<RoutinesProvider>(context, listen: false).addDay(newDay, refresh: true);
+              final result = await Provider.of<RoutinesProvider>(context, listen: false)
+                  .addDay(newDay, refresh: true);
+              widget.onDaySelected(result.id!);
             },
           );
         }
