@@ -434,24 +434,24 @@ class MockRoutinesProvider extends _i1.Mock implements _i11.RoutinesProvider {
       ) as _i12.Future<void>);
 
   @override
-  _i12.Future<_i7.Slot> addSet(_i7.Slot? workoutSet) => (super.noSuchMethod(
+  _i12.Future<_i7.Slot> addSlot(_i7.Slot? slot) => (super.noSuchMethod(
         Invocation.method(
-          #addSet,
-          [workoutSet],
+          #addSlot,
+          [slot],
         ),
         returnValue: _i12.Future<_i7.Slot>.value(_FakeSlot_5(
           this,
           Invocation.method(
-            #addSet,
-            [workoutSet],
+            #addSlot,
+            [slot],
           ),
         )),
       ) as _i12.Future<_i7.Slot>);
 
   @override
-  _i12.Future<void> editSet(_i7.Slot? workoutSet) => (super.noSuchMethod(
+  _i12.Future<void> editSlot(_i7.Slot? workoutSet) => (super.noSuchMethod(
         Invocation.method(
-          #editSet,
+          #editSlot,
           [workoutSet],
         ),
         returnValue: _i12.Future<void>.value(),
@@ -459,17 +459,10 @@ class MockRoutinesProvider extends _i1.Mock implements _i11.RoutinesProvider {
       ) as _i12.Future<void>);
 
   @override
-  _i12.Future<List<_i7.Slot>> reorderSets(
-    List<_i7.Slot>? sets,
-    int? startIndex,
-  ) =>
-      (super.noSuchMethod(
+  _i12.Future<List<_i7.Slot>> editSlots(List<_i7.Slot>? slots) => (super.noSuchMethod(
         Invocation.method(
-          #reorderSets,
-          [
-            sets,
-            startIndex,
-          ],
+          #editSlots,
+          [slots],
         ),
         returnValue: _i12.Future<List<_i7.Slot>>.value(<_i7.Slot>[]),
       ) as _i12.Future<List<_i7.Slot>>);

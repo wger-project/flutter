@@ -34,7 +34,7 @@ import 'package:wger/widgets/routines/forms.dart';
 class SlotFormWidgetNg extends StatefulWidget {
   final Day _day;
 
-  SlotFormWidgetNg(this._day);
+  const SlotFormWidgetNg(this._day);
 
   @override
   _SlotFormWidgetStateNg createState() => _SlotFormWidgetStateNg();
@@ -43,13 +43,80 @@ class SlotFormWidgetNg extends StatefulWidget {
 class _SlotFormWidgetStateNg extends State<SlotFormWidgetNg> {
   @override
   Widget build(BuildContext context) {
-    return Form(
-        child: Column(
-      children: [
-        Text(widget._day.id!.toString()),
-        ...widget._day.slots.map((slot) => Text(slot.id!.toString())).toList()
-      ],
-    ));
+    final slots = widget._day.slots;
+
+    return ReorderableListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: slots.length + 1,
+      itemBuilder: (context, index) {
+        // "add slot" button always at the end
+        if (index == widget._day.slots.length) {
+          return ListTile(
+            key: const ValueKey('add-set'),
+            // tileColor: Theme.of(context).highlightColor,
+            leading: const Icon(Icons.add),
+            title: Text(
+              AppLocalizations.of(context).newSet,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            onTap: () async {},
+          );
+        }
+
+        final slot = slots[index];
+
+        return ListTile(
+          title: Text('Set ${index + 1}'),
+          leading: ReorderableDragStartListener(
+            index: index,
+            child: const Icon(Icons.drag_handle),
+          ),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextButton.icon(
+                onPressed: () {},
+                icon: const Icon(Icons.add),
+                label: const Text('superset'),
+              ),
+              TextButton.icon(
+                onPressed: () {},
+                icon: const Icon(Icons.ssid_chart),
+                label: const Text('progression'),
+              ),
+              // IconButton(
+              //   onPressed: () {},
+              //   icon: const Icon(Icons.add),
+              // ),
+              // IconButton(
+              //   icon: const Icon(Icons.ssid_chart),
+              //   onPressed: () {
+              //     //widget._showDeleteConfirmationDialog(context, day); // Call the dialog function
+              //   },
+              // ),
+            ],
+          ),
+          key: ValueKey(slot), // Important: Provide a unique key for each item
+        );
+      },
+      onReorder: (int oldIndex, int newIndex) {
+        setState(() {
+          // Update the order of slots in your data source
+          if (oldIndex < newIndex) {
+            newIndex -= 1;
+          }
+          final item = slots.removeAt(oldIndex);
+          slots.insert(newIndex, item);
+
+          for (int i = 0; i < slots.length; i++) {
+            slots[i].order = i + 1;
+          }
+
+          Provider.of<RoutinesProvider>(context, listen: false).editSlots(slots);
+        });
+      },
+    );
   }
 }
 
@@ -373,7 +440,7 @@ class _SlotFormWidgetState extends State<SlotFormWidget> {
                     );
 
                     // Save set
-                    final Slot setDb = await workoutProvider.addSet(widget._slot);
+                    final Slot setDb = await workoutProvider.addSlot(widget._slot);
                     widget._slot.id = setDb.id;
 
                     // Remove unused settings

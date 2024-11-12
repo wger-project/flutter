@@ -102,7 +102,7 @@ class _ReorderableDaysListState extends State<ReorderableDaysList> {
                     : const Icon(Icons.edit),
               ),
               IconButton(
-                icon: Icon(Icons.delete),
+                icon: const Icon(Icons.delete),
                 onPressed: () {
                   widget._showDeleteConfirmationDialog(context, day); // Call the dialog function
                 },

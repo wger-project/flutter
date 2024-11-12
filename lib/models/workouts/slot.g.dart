@@ -17,9 +17,10 @@ Slot _$SlotFromJson(Map<String, dynamic> json) {
     comment: json['comment'] as String? ?? '',
     order: (json['order'] as num).toInt(),
     config: json['config'],
-  )..entries = (json['entries'] as List<dynamic>)
-      .map((e) => SlotEntry.fromJson(e as Map<String, dynamic>))
-      .toList();
+  )..entries = (json['entries'] as List<dynamic>?)
+          ?.map((e) => SlotEntry.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      [];
 }
 
 Map<String, dynamic> _$SlotToJson(Slot instance) => <String, dynamic>{

@@ -81,7 +81,7 @@ void main() {
   });
 
   testWidgets('Test creating a new set', (WidgetTester tester) async {
-    when(mockWorkoutPlans.addSet(any)).thenAnswer((_) => Future.value(Slot.empty()));
+    when(mockWorkoutPlans.addSlot(any)).thenAnswer((_) => Future.value(Slot.empty()));
     when(mockWorkoutPlans.addSetting(any)).thenAnswer((_) => Future.value(SlotEntry.empty()));
     when(mockExerciseProvider.searchExercise(
       any,

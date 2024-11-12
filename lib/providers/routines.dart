@@ -452,9 +452,9 @@ class RoutinesProvider with ChangeNotifier {
   /*
    * Sets
    */
-  Future<Slot> addSet(Slot workoutSet) async {
+  Future<Slot> addSlot(Slot slot) async {
     final data = await baseProvider.post(
-      workoutSet.toJson(),
+      slot.toJson(),
       baseProvider.makeUrl(_slotsUrlPath),
     );
     final set = Slot.fromJson(data);
@@ -462,7 +462,7 @@ class RoutinesProvider with ChangeNotifier {
     return set;
   }
 
-  Future<void> editSet(Slot workoutSet) async {
+  Future<void> editSlot(Slot workoutSet) async {
     await baseProvider.patch(
       workoutSet.toJson(),
       baseProvider.makeUrl(_slotsUrlPath, id: workoutSet.id),
@@ -470,16 +470,16 @@ class RoutinesProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<List<Slot>> reorderSets(List<Slot> sets, int startIndex) async {
-    for (int i = startIndex; i < sets.length; i++) {
-      sets[i].order = i;
+  Future<List<Slot>> editSlots(List<Slot> slots) async {
+    for (final slot in slots) {
       await baseProvider.patch(
-        sets[i].toJson(),
-        baseProvider.makeUrl(_slotsUrlPath, id: sets[i].id),
+        slot.toJson(),
+        baseProvider.makeUrl(_slotsUrlPath, id: slot.id),
       );
     }
+
     notifyListeners();
-    return sets;
+    return slots;
   }
 
   Future<void> fetchComputedSettings(Slot workoutSet) async {
