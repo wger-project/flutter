@@ -19,6 +19,34 @@ class ReorderableDaysList extends StatefulWidget {
     required this.onDaySelected,
   });
 
+  void _showDeleteConfirmationDialog(BuildContext context, Day day) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirm Delete'),
+          content: const Text('Are you sure you want to delete this day?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () async {
+                days.remove(day);
+                await Provider.of<RoutinesProvider>(context, listen: false).deleteDay(day.id!);
+                Navigator.of(context).pop();
+              },
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   State<ReorderableDaysList> createState() => _ReorderableDaysListState();
 }
@@ -61,13 +89,24 @@ class _ReorderableDaysListState extends State<ReorderableDaysList> {
             index: index,
             child: const Icon(Icons.drag_handle),
           ),
-          trailing: IconButton(
-            onPressed: () {
-              widget.onDaySelected(day.id!);
-            },
-            icon: day.id == widget.selectedDayId
-                ? const Icon(Icons.edit_off)
-                : const Icon(Icons.edit),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                onPressed: () {
+                  widget.onDaySelected(day.id!);
+                },
+                icon: day.id == widget.selectedDayId
+                    ? const Icon(Icons.edit_off)
+                    : const Icon(Icons.edit),
+              ),
+              IconButton(
+                icon: Icon(Icons.delete),
+                onPressed: () {
+                  widget._showDeleteConfirmationDialog(context, day); // Call the dialog function
+                },
+              ),
+            ],
           ),
         );
       },

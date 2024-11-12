@@ -1155,10 +1155,10 @@ class MockRoutinesProvider extends _i1.Mock implements _i22.RoutinesProvider {
       ) as _i20.Future<void>);
 
   @override
-  _i20.Future<void> deleteDay(_i14.Day? day) => (super.noSuchMethod(
+  _i20.Future<void> deleteDay(int? dayId) => (super.noSuchMethod(
         Invocation.method(
           #deleteDay,
-          [day],
+          [dayId],
         ),
         returnValue: _i20.Future<void>.value(),
         returnValueForMissingStub: _i20.Future<void>.value(),

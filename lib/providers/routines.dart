@@ -441,10 +441,10 @@ class RoutinesProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> deleteDay(Day day) async {
-    await baseProvider.deleteRequest(_daysUrlPath, day.id!);
+  Future<void> deleteDay(int dayId) async {
+    await baseProvider.deleteRequest(_daysUrlPath, dayId);
     for (final workout in _routines) {
-      workout.days.removeWhere((element) => element.id == day.id);
+      workout.days.removeWhere((element) => element.id == dayId);
     }
     notifyListeners();
   }
