@@ -3,22 +3,27 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/workouts/day.dart';
-import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/routines.dart';
 
 class ReorderableDaysList extends StatefulWidget {
-  int routineId;
-  List<Day> days;
+  final int routineId;
+  final List<Day> days;
+  final int? selectedDayId;
+  final ValueChanged<int> onDaySelected;
 
-  ReorderableDaysList(this.days, this.routineId, {super.key});
+  const ReorderableDaysList({
+    super.key,
+    required this.routineId,
+    required this.days,
+    required this.selectedDayId,
+    required this.onDaySelected,
+  });
 
   @override
   State<ReorderableDaysList> createState() => _ReorderableDaysListState();
 }
 
 class _ReorderableDaysListState extends State<ReorderableDaysList> {
-  int? selectedDayId;
-
   @override
   Widget build(BuildContext context) {
     return ReorderableListView.builder(
@@ -47,7 +52,7 @@ class _ReorderableDaysListState extends State<ReorderableDaysList> {
         final day = widget.days[index];
 
         return ListTile(
-          tileColor: day.id == selectedDayId ? Theme.of(context).highlightColor : null,
+          tileColor: day.id == widget.selectedDayId ? Theme.of(context).highlightColor : null,
           key: ValueKey(day),
           title: Text(day.isRest ? 'REST DAY!' : day.name),
           leading: ReorderableDragStartListener(
@@ -56,11 +61,11 @@ class _ReorderableDaysListState extends State<ReorderableDaysList> {
           ),
           trailing: IconButton(
             onPressed: () {
-              setState(() {
-                selectedDayId = day.id;
-              });
+              widget.onDaySelected(day.id!);
             },
-            icon: const Icon(Icons.edit),
+            icon: day.id == widget.selectedDayId
+                ? const Icon(Icons.edit_off)
+                : const Icon(Icons.edit),
           ),
         );
       },
@@ -84,16 +89,11 @@ class _ReorderableDaysListState extends State<ReorderableDaysList> {
 }
 
 class DayFormWidget extends StatefulWidget {
-  final Routine routine;
-  final dayController = TextEditingController();
-  late final Day _day;
+  final int routineId;
+  late final Day day;
 
-  DayFormWidget(this.routine, [Day? day]) {
-    _day = day ?? Day();
-    _day.routineId = routine.id!;
-    if (_day.id != null) {
-      dayController.text = day!.description;
-    }
+  DayFormWidget({required this.routineId, required this.day, super.key}) {
+    day.routineId = routineId;
   }
 
   @override
@@ -101,14 +101,59 @@ class DayFormWidget extends StatefulWidget {
 }
 
 class _DayFormWidgetState extends State<DayFormWidget> {
+  final descriptionController = TextEditingController();
+  final nameController = TextEditingController();
+  late bool isRestDay;
+
   final _form = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    isRestDay = widget.day.isRest;
+    descriptionController.text = widget.day.description;
+    nameController.text = widget.day.name;
+  }
+
+  @override
+  void dispose() {
+    descriptionController.dispose();
+    nameController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Form(
       key: _form,
-      child: ListView(
+      child: Column(
         children: [
+          Text(
+            widget.day.isRest ? 'REST DAY' : widget.day.name,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          TextFormField(
+            key: const Key('field-name'),
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context).name,
+            ),
+            controller: nameController,
+            onSaved: (value) {
+              widget.day.name = value!;
+            },
+            validator: (value) {
+              if (value!.isEmpty ||
+                  value.length < MIN_LENGTH_NAME ||
+                  value.length > MAX_LENGTH_NAME) {
+                return AppLocalizations.of(context).enterCharacters(
+                  MIN_LENGTH_NAME,
+                  MAX_LENGTH_NAME,
+                );
+              }
+
+              return null;
+            },
+          ),
           TextFormField(
             key: const Key('field-description'),
             decoration: InputDecoration(
@@ -116,18 +161,28 @@ class _DayFormWidgetState extends State<DayFormWidget> {
               helperText: AppLocalizations.of(context).dayDescriptionHelp,
               helperMaxLines: 3,
             ),
-            controller: widget.dayController,
+            controller: descriptionController,
             onSaved: (value) {
-              widget._day.description = value!;
+              widget.day.description = value!;
             },
+            minLines: 2,
+            maxLines: 10,
             validator: (value) {
-              const minLength = 1;
-              const maxLength = 100;
-              if (value!.isEmpty || value.length < minLength || value.length > maxLength) {
-                return AppLocalizations.of(context).enterCharacters(minLength, maxLength);
+              if (value != null && value.length > MAX_LENGTH_DESCRIPTION) {
+                return AppLocalizations.of(context).enterCharacters(0, MAX_LENGTH_DESCRIPTION);
               }
 
               return null;
+            },
+          ),
+          SwitchListTile(
+            title: const Text('is rest day'),
+            value: isRestDay,
+            onChanged: (value) {
+              setState(() {
+                isRestDay = value;
+              });
+              widget.day.isRest = value;
             },
           ),
           ElevatedButton(
@@ -140,19 +195,9 @@ class _DayFormWidgetState extends State<DayFormWidget> {
               _form.currentState!.save();
 
               try {
-                if (widget._day.id == null) {
-                  // Provider.of<RoutinesProvider>(context, listen: false).addDay(
-                  //   widget._day,
-                  //   widget.routine,
-                  // );
-                } else {
-                  Provider.of<RoutinesProvider>(context, listen: false).editDay(
-                    widget._day,
-                  );
-                }
-
-                widget.dayController.clear();
-                Navigator.of(context).pop();
+                Provider.of<RoutinesProvider>(context, listen: false).editDay(
+                  widget.day,
+                );
               } catch (error) {
                 await showDialog(
                   context: context,

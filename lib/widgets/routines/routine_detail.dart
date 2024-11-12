@@ -29,7 +29,7 @@ class RoutineDetail extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(height: 10),
+        const SizedBox(height: 10),
         if (_routine.description.isNotEmpty)
           Padding(
             padding: const EdgeInsets.all(15),
