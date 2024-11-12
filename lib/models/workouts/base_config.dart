@@ -17,6 +17,7 @@
  */
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:wger/helpers/json.dart';
 
 part 'base_config.g.dart';
 
@@ -31,10 +32,10 @@ class BaseConfig {
   @JsonKey(required: true)
   late int iteration;
 
-  @JsonKey(required: true)
-  late String trigger;
+  // @JsonKey(required: true)
+  // late String trigger;
 
-  @JsonKey(required: true)
+  @JsonKey(required: true, fromJson: stringOrIntToNum)
   late num value;
 
   @JsonKey(required: true)
@@ -44,13 +45,13 @@ class BaseConfig {
   late String step;
 
   @JsonKey(required: true, name: 'need_log_to_apply')
-  late String needLogToApply;
+  late bool needLogToApply;
 
   BaseConfig({
     required this.id,
     required this.slotEntryId,
     required this.iteration,
-    required this.trigger,
+    // required this.trigger,
     required this.value,
     required this.operation,
     required this.step,

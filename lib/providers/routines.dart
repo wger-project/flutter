@@ -344,7 +344,7 @@ class RoutinesProvider with ChangeNotifier {
         _routinesUrlPath,
         id: workout.id,
         objectMethod: 'log_data',
-        query: {'id': base.id.toString()},
+        query: {'id': base.id!.toString()},
       ),
     );
     return data;

@@ -25,20 +25,20 @@ import 'package:wger/models/workouts/log.dart';
 
 part 'routine.g.dart';
 
-const MIN_LENGTH_DESCRIPTION = 0;
-const MAX_LENGTH_DESCRIPTION = 1000;
-
-const MIN_LENGTH_NAME = 3;
-const MAX_LENGTH_NAME = 25;
-
-/// In weeks
-const MIN_DURATION = 2;
-
-/// In weeks
-const MAX_DURATION = 16;
-
 @JsonSerializable()
 class Routine {
+  static const MIN_LENGTH_DESCRIPTION = 0;
+  static const MAX_LENGTH_DESCRIPTION = 1000;
+
+  static const MIN_LENGTH_NAME = 3;
+  static const MAX_LENGTH_NAME = 25;
+
+  /// In weeks
+  static const MIN_DURATION = 2;
+
+  /// In weeks
+  static const MAX_DURATION = 16;
+
   @JsonKey(required: true)
   int? id;
 

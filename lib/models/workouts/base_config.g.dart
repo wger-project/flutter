@@ -13,7 +13,6 @@ BaseConfig _$BaseConfigFromJson(Map<String, dynamic> json) {
       'id',
       'slot_entry',
       'iteration',
-      'trigger',
       'value',
       'operation',
       'step',
@@ -24,11 +23,10 @@ BaseConfig _$BaseConfigFromJson(Map<String, dynamic> json) {
     id: (json['id'] as num).toInt(),
     slotEntryId: (json['slot_entry'] as num).toInt(),
     iteration: (json['iteration'] as num).toInt(),
-    trigger: json['trigger'] as String,
-    value: json['value'] as num,
+    value: stringOrIntToNum(json['value']),
     operation: json['operation'] as String,
     step: json['step'] as String,
-    needLogToApply: json['need_log_to_apply'] as String,
+    needLogToApply: json['need_log_to_apply'] as bool,
   );
 }
 
@@ -36,7 +34,6 @@ Map<String, dynamic> _$BaseConfigToJson(BaseConfig instance) => <String, dynamic
       'id': instance.id,
       'slot_entry': instance.slotEntryId,
       'iteration': instance.iteration,
-      'trigger': instance.trigger,
       'value': instance.value,
       'operation': instance.operation,
       'step': instance.step,

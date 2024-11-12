@@ -30,7 +30,11 @@ Day _$DayFromJson(Map<String, dynamic> json) {
     ..needLogsToAdvance = json['need_logs_to_advance'] as bool
     ..type = json['type'] as String
     ..order = json['order'] as num
-    ..config = json['config'];
+    ..config = json['config']
+    ..slots = (json['slots'] as List<dynamic>?)
+            ?.map((e) => Slot.fromJson(e as Map<String, dynamic>))
+            .toList() ??
+        [];
 }
 
 Map<String, dynamic> _$DayToJson(Day instance) => <String, dynamic>{

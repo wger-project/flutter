@@ -21,13 +21,12 @@ import 'package:wger/models/workouts/slot.dart';
 
 part 'day.g.dart';
 
-const MIN_LENGTH_NAME = 3;
-const MAX_LENGTH_NAME = 20;
-
-const MAX_LENGTH_DESCRIPTION = 1000;
-
 @JsonSerializable()
 class Day {
+  static const MIN_LENGTH_NAME = 3;
+  static const MAX_LENGTH_NAME = 20;
+  static const MAX_LENGTH_DESCRIPTION = 1000;
+
   @JsonKey(required: true)
   int? id;
 
@@ -55,11 +54,8 @@ class Day {
   @JsonKey(required: true)
   late Object? config;
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(required: false, defaultValue: [], includeFromJson: true, includeToJson: false)
   List<Slot> slots = [];
-
-  //@JsonKey(includeFromJson: false, includeToJson: false)
-  //late WorkoutPlan workout;
 
   Day() {
     slots = [];

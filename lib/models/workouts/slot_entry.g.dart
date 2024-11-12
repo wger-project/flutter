@@ -13,6 +13,7 @@ SlotEntry _$SlotEntryFromJson(Map<String, dynamic> json) {
       'id',
       'slot',
       'order',
+      'comment',
       'type',
       'exercise',
       'repetition_unit',
@@ -27,7 +28,6 @@ SlotEntry _$SlotEntryFromJson(Map<String, dynamic> json) {
       'rir_configs',
       'rest_configs',
       'max_rest_configs',
-      'comment',
       'config'
     ],
   );
@@ -38,9 +38,9 @@ SlotEntry _$SlotEntryFromJson(Map<String, dynamic> json) {
     type: json['type'] as String,
     exerciseId: (json['exercise'] as num).toInt(),
     repetitionUnitId: (json['repetition_unit'] as num).toInt(),
-    repetitionRounding: json['repetition_rounding'] as num,
+    repetitionRounding: stringToNum(json['repetition_rounding'] as String?),
     weightUnitId: (json['weight_unit'] as num).toInt(),
-    weightRounding: json['weight_rounding'] as num,
+    weightRounding: stringToNum(json['weight_rounding'] as String?),
     comment: json['comment'] as String,
   )
     ..repsConfig = (json['reps_configs'] as List<dynamic>)
@@ -74,6 +74,7 @@ Map<String, dynamic> _$SlotEntryToJson(SlotEntry instance) => <String, dynamic>{
       'id': instance.id,
       'slot': instance.slotId,
       'order': instance.order,
+      'comment': instance.comment,
       'type': instance.type,
       'exercise': instance.exerciseId,
       'repetition_unit': instance.repetitionUnitId,
@@ -88,6 +89,5 @@ Map<String, dynamic> _$SlotEntryToJson(SlotEntry instance) => <String, dynamic>{
       'rir_configs': instance.rirConfigs,
       'rest_configs': instance.restTimeConfigs,
       'max_rest_configs': instance.maxRestTimeConfigs,
-      'comment': instance.comment,
       'config': instance.config,
     };

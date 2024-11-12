@@ -53,11 +53,11 @@ class _RoutineFormState extends State<RoutineForm> {
             controller: workoutNameController,
             validator: (value) {
               if (value!.isEmpty ||
-                  value.length < MIN_LENGTH_NAME ||
-                  value.length > MAX_LENGTH_NAME) {
+                  value.length < Routine.MIN_LENGTH_NAME ||
+                  value.length > Routine.MAX_LENGTH_NAME) {
                 return AppLocalizations.of(context).enterCharacters(
-                  MIN_LENGTH_NAME,
-                  MAX_LENGTH_NAME,
+                  Routine.MIN_LENGTH_NAME,
+                  Routine.MAX_LENGTH_NAME,
                 );
               }
               return null;
@@ -73,10 +73,10 @@ class _RoutineFormState extends State<RoutineForm> {
             maxLines: 10,
             controller: workoutDescriptionController,
             validator: (value) {
-              if (value!.length > MAX_LENGTH_DESCRIPTION) {
+              if (value!.length > Routine.MAX_LENGTH_DESCRIPTION) {
                 return AppLocalizations.of(context).enterCharacters(
-                  MIN_LENGTH_DESCRIPTION,
-                  MAX_LENGTH_DESCRIPTION,
+                  Routine.MIN_LENGTH_DESCRIPTION,
+                  Routine.MAX_LENGTH_DESCRIPTION,
                 );
               }
               return null;
@@ -93,11 +93,11 @@ class _RoutineFormState extends State<RoutineForm> {
               if (endDate.isBefore(startDate)) {
                 return 'End date must be after start date';
               }
-              if (endDate.difference(startDate).inDays < MIN_DURATION * 7) {
-                return 'Duration of the routine must be more than $MIN_DURATION weeks';
+              if (endDate.difference(startDate).inDays < Routine.MIN_DURATION * 7) {
+                return 'Duration of the routine must be more than ${Routine.MIN_DURATION} weeks';
               }
-              if (endDate.difference(startDate).inDays > MAX_DURATION * 7) {
-                return 'Duration of the routine must be less than $MAX_DURATION weeks';
+              if (endDate.difference(startDate).inDays > Routine.MAX_DURATION * 7) {
+                return 'Duration of the routine must be less than ${Routine.MAX_DURATION} weeks';
               }
               return null;
             },

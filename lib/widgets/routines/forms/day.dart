@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/providers/routines.dart';
+import 'package:wger/widgets/routines/forms/slot.dart';
 
 class ReorderableDaysList extends StatefulWidget {
   final int routineId;
@@ -184,11 +185,11 @@ class _DayFormWidgetState extends State<DayFormWidget> {
             },
             validator: (value) {
               if (value!.isEmpty ||
-                  value.length < MIN_LENGTH_NAME ||
-                  value.length > MAX_LENGTH_NAME) {
+                  value.length < Day.MIN_LENGTH_NAME ||
+                  value.length > Day.MAX_LENGTH_NAME) {
                 return AppLocalizations.of(context).enterCharacters(
-                  MIN_LENGTH_NAME,
-                  MAX_LENGTH_NAME,
+                  Day.MIN_LENGTH_NAME,
+                  Day.MAX_LENGTH_NAME,
                 );
               }
 
@@ -209,8 +210,8 @@ class _DayFormWidgetState extends State<DayFormWidget> {
             minLines: 2,
             maxLines: 10,
             validator: (value) {
-              if (value != null && value.length > MAX_LENGTH_DESCRIPTION) {
-                return AppLocalizations.of(context).enterCharacters(0, MAX_LENGTH_DESCRIPTION);
+              if (value != null && value.length > Day.MAX_LENGTH_DESCRIPTION) {
+                return AppLocalizations.of(context).enterCharacters(0, Day.MAX_LENGTH_DESCRIPTION);
               }
 
               return null;
@@ -258,6 +259,7 @@ class _DayFormWidgetState extends State<DayFormWidget> {
               }
             },
           ),
+          SlotFormWidgetNg(widget.day),
         ],
       ),
     );

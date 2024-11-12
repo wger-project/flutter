@@ -47,7 +47,7 @@ class Slot {
   @JsonKey(includeFromJson: false, includeToJson: false)
   List<int> exercisesIds = [];
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(required: false, includeFromJson: true, defaultValue: [], includeToJson: false)
   List<SlotEntry> entries = [];
 
   /// Computed settings (instead of 4x10 this has [10, 10, 10, 10]), used for
@@ -67,7 +67,6 @@ class Slot {
 
   Slot.withData({
     this.id,
-    sets,
     day,
     comment,
     order,
@@ -79,7 +78,7 @@ class Slot {
     this.comment = comment ?? '';
     exercisesObj = exercises ?? [];
     exercisesIds = exercisesObj.map((e) => e.id!).toList();
-    this.entries = settings ?? [];
+    entries = settings ?? [];
     this.settingsComputed = settingsComputed ?? [];
     if (day != null) {
       this.day = day;

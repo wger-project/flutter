@@ -17,6 +17,7 @@
  */
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:wger/helpers/json.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/base_config.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
@@ -41,6 +42,9 @@ class SlotEntry {
   late int order;
 
   @JsonKey(required: true)
+  late String comment;
+
+  @JsonKey(required: true)
   late String type;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -55,7 +59,7 @@ class SlotEntry {
   @JsonKey(includeFromJson: false, includeToJson: false)
   late RepetitionUnit repetitionUnitObj;
 
-  @JsonKey(required: true, name: 'repetition_rounding')
+  @JsonKey(required: true, name: 'repetition_rounding', fromJson: stringToNum)
   late num repetitionRounding;
 
   @JsonKey(required: true, name: 'reps_configs')
@@ -70,7 +74,7 @@ class SlotEntry {
   @JsonKey(includeFromJson: false, includeToJson: false)
   late WeightUnit weightUnitObj;
 
-  @JsonKey(required: true, name: 'weight_rounding')
+  @JsonKey(required: true, name: 'weight_rounding', fromJson: stringToNum)
   late num weightRounding;
 
   @JsonKey(required: true, name: 'weight_configs')
@@ -90,9 +94,6 @@ class SlotEntry {
 
   @JsonKey(required: true, name: 'max_rest_configs')
   late List<BaseConfig> maxRestTimeConfigs;
-
-  @JsonKey(required: true)
-  late String comment = '';
 
   @JsonKey(required: true)
   late Object? config;

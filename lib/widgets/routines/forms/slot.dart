@@ -31,12 +31,34 @@ import 'package:wger/screens/add_exercise_screen.dart';
 import 'package:wger/widgets/exercises/images.dart';
 import 'package:wger/widgets/routines/forms.dart';
 
+class SlotFormWidgetNg extends StatefulWidget {
+  final Day _day;
+
+  SlotFormWidgetNg(this._day);
+
+  @override
+  _SlotFormWidgetStateNg createState() => _SlotFormWidgetStateNg();
+}
+
+class _SlotFormWidgetStateNg extends State<SlotFormWidgetNg> {
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+        child: Column(
+      children: [
+        Text(widget._day.id!.toString()),
+        ...widget._day.slots.map((slot) => Text(slot.id!.toString())).toList()
+      ],
+    ));
+  }
+}
+
 class SlotFormWidget extends StatefulWidget {
   final Day _day;
   late final Slot _slot;
 
   SlotFormWidget(this._day, [Slot? set]) {
-    _slot = set ?? Slot.withData(day: _day.id, order: _day.slots.length, sets: 4);
+    _slot = set ?? Slot.withData(day: _day.id, order: _day.slots.length);
   }
 
   @override
