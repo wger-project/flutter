@@ -17,22 +17,14 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/models/workouts/routine.dart';
-import 'package:wger/providers/routines.dart';
-import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/routines/app_bar.dart';
-import 'package:wger/widgets/routines/routine_detail.dart';
+import 'package:wger/widgets/routines/routine_edit.dart';
 
-class RoutineScreen extends StatelessWidget {
-  const RoutineScreen({super.key});
+class RoutineEditScreen extends StatelessWidget {
+  const RoutineEditScreen();
 
-  static const routeName = '/routine-detail';
-
-  Future<Routine> _loadFullWorkout(BuildContext context, int routineId) {
-    return Provider.of<RoutinesProvider>(context, listen: false)
-        .fetchAndSetWorkoutPlanFull(routineId);
-  }
+  static const routeName = '/routine-edit';
 
   @override
   Widget build(BuildContext context) {
@@ -40,19 +32,7 @@ class RoutineScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: RoutineDetailAppBar(routine),
-      body: FutureBuilder(
-        future: _loadFullWorkout(context, routine.id!),
-        builder: (context, snapshot) => ListView(
-          children: [
-            if (snapshot.connectionState == ConnectionState.waiting)
-              const BoxedProgressIndicator()
-            else
-              Consumer<RoutinesProvider>(
-                builder: (context, value, child) => RoutineDetail(routine),
-              ),
-          ],
-        ),
-      ),
+      body: RoutineEdit(routine),
     );
   }
 }

@@ -23,9 +23,8 @@ import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
 import 'package:wger/screens/exercises_screen.dart';
-import 'package:wger/screens/form_screen.dart';
+import 'package:wger/screens/routine_edit_screen.dart';
 import 'package:wger/screens/routine_logs_screen.dart';
-import 'package:wger/widgets/routines/forms.dart';
 
 enum _RoutineAppBarOptions {
   list,
@@ -110,11 +109,8 @@ class RoutineDetailAppBar extends StatelessWidget implements PreferredSizeWidget
               case _RoutineDetailBarOptions.edit:
                 Navigator.pushNamed(
                   context,
-                  FormScreen.routeName,
-                  arguments: FormScreenArguments(
-                    AppLocalizations.of(context).edit,
-                    WorkoutForm(routine),
-                  ),
+                  RoutineEditScreen.routeName,
+                  arguments: routine,
                 );
 
               case _RoutineDetailBarOptions.logs:
@@ -125,7 +121,7 @@ class RoutineDetailAppBar extends StatelessWidget implements PreferredSizeWidget
                 );
 
               case _RoutineDetailBarOptions.delete:
-                Provider.of<RoutinesProvider>(context, listen: false).deleteWorkout(routine.id!);
+                Provider.of<RoutinesProvider>(context, listen: false).deleteRoutine(routine.id!);
                 Navigator.of(context).pop();
             }
           },

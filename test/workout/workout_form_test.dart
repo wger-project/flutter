@@ -46,7 +46,7 @@ void main() {
 
   setUp(() {
     mockWorkoutPlans = MockRoutinesProvider();
-    when(mockWorkoutPlans.editWorkout(any)).thenAnswer((_) => Future.value(existingPlan));
+    when(mockWorkoutPlans.editRoutine(any)).thenAnswer((_) => Future.value(existingPlan));
     when(mockWorkoutPlans.fetchAndSetWorkoutPlanFull(any))
         .thenAnswer((_) => Future.value(existingPlan));
   });
@@ -61,7 +61,7 @@ void main() {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
-        home: Scaffold(body: WorkoutForm(workoutPlan)),
+        home: Scaffold(body: RoutineForm(workoutPlan)),
         routes: {
           RoutineScreen.routeName: (ctx) => const RoutineScreen(),
         },
@@ -95,7 +95,7 @@ void main() {
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
     // Correct method was called
-    verify(mockWorkoutPlans.editWorkout(any));
+    verify(mockWorkoutPlans.editRoutine(any));
     verifyNever(mockWorkoutPlans.addRoutine(any));
 
     // TODO(x): edit calls Navigator.pop(), since the form can only be reached from the
@@ -125,7 +125,7 @@ void main() {
     await tester.enterText(find.byKey(const Key('field-name')), editWorkout.name);
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
-    verifyNever(mockWorkoutPlans.editWorkout(any));
+    verifyNever(mockWorkoutPlans.editRoutine(any));
     verify(mockWorkoutPlans.addRoutine(any));
 
     // Detail page
@@ -152,7 +152,7 @@ void main() {
     await tester.enterText(find.byKey(const Key('field-description')), editWorkout.description);
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
-    verifyNever(mockWorkoutPlans.editWorkout(any));
+    verifyNever(mockWorkoutPlans.editRoutine(any));
     verify(mockWorkoutPlans.addRoutine(any));
 
     // Detail page

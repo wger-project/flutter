@@ -16,39 +16,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:json_annotation/json_annotation.dart';
-import 'package:wger/helpers/json.dart';
+import 'package:flutter/material.dart';
+import 'package:wger/models/workouts/routine.dart';
+import 'package:wger/widgets/routines/forms.dart';
 
-part 'image.g.dart';
+class RoutineEdit extends StatelessWidget {
+  final Routine _routine;
 
-@JsonSerializable()
-class Image {
-  @JsonKey(required: true)
-  int? id;
+  const RoutineEdit(this._routine);
 
-  @JsonKey(required: true, toJson: dateToYYYYMMDD)
-  late DateTime date;
-
-  @JsonKey(required: true, name: 'image')
-  String? url;
-
-  @JsonKey(defaultValue: '')
-  late String description;
-
-  Image({
-    required this.id,
-    required this.date,
-    required this.url,
-    required this.description,
-  });
-
-  Image.emtpy() {
-    date = DateTime.now();
-    description = '';
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: Column(children: [RoutineForm(_routine)]),
+    );
   }
-
-  // Boilerplate
-  factory Image.fromJson(Map<String, dynamic> json) => _$ImageFromJson(json);
-
-  Map<String, dynamic> toJson() => _$ImageToJson(this);
 }

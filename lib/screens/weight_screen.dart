@@ -27,6 +27,7 @@ import 'package:wger/widgets/weight/weight_overview.dart';
 
 class WeightScreen extends StatelessWidget {
   const WeightScreen();
+
   static const routeName = '/weight';
 
   @override
@@ -37,7 +38,7 @@ class WeightScreen extends StatelessWidget {
       appBar: EmptyAppBar(AppLocalizations.of(context).weight),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add, color: Colors.white),
-        onPressed: () async {
+        onPressed: () {
           Navigator.pushNamed(
             context,
             FormScreen.routeName,

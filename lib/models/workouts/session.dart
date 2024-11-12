@@ -32,7 +32,7 @@ class WorkoutSession {
   @JsonKey(required: true, name: 'routine')
   late int routineId;
 
-  @JsonKey(required: true, toJson: toDate)
+  @JsonKey(required: true, toJson: dateToYYYYMMDD)
   late DateTime date;
 
   @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)

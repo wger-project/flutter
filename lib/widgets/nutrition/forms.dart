@@ -193,7 +193,7 @@ class IngredientFormState extends State<IngredientForm> {
   void initState() {
     super.initState();
     final now = DateTime.now();
-    _dateController.text = toDate(now)!;
+    _dateController.text = dateToYYYYMMDD(now)!;
     _timeController.text = timeToString(TimeOfDay.fromDateTime(now))!;
   }
 
@@ -262,7 +262,8 @@ class IngredientFormState extends State<IngredientForm> {
               children: [
                 Expanded(
                   child: TextFormField(
-                    key: const Key('field-weight'), // needed ?
+                    key: const Key('field-weight'),
+                    // needed ?
                     decoration: InputDecoration(
                       labelText: AppLocalizations.of(context).weight,
                     ),
@@ -310,7 +311,7 @@ class IngredientFormState extends State<IngredientForm> {
                         );
 
                         if (pickedDate != null) {
-                          _dateController.text = toDate(pickedDate)!;
+                          _dateController.text = dateToYYYYMMDD(pickedDate)!;
                         }
                       },
                       onSaved: (newValue) {
@@ -483,6 +484,7 @@ enum GoalType {
   advanced('Advanced');
 
   const GoalType(this.label);
+
   final String label;
 }
 

@@ -42,5 +42,5 @@ Map<String, dynamic> _$LogToJson(Log instance) => <String, dynamic>{
       'repetition_unit': instance.repetitionUnitId,
       'weight': numToString(instance.weight),
       'weight_unit': instance.weightUnitId,
-      'date': toDate(instance.date),
+      'date': dateToYYYYMMDD(instance.date),
     };

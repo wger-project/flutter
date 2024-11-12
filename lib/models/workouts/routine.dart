@@ -17,12 +17,25 @@
  */
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:wger/helpers/json.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/models/workouts/log.dart';
 
 part 'routine.g.dart';
+
+const MIN_LENGTH_DESCRIPTION = 0;
+const MAX_LENGTH_DESCRIPTION = 1000;
+
+const MIN_LENGTH_NAME = 3;
+const MAX_LENGTH_NAME = 25;
+
+/// In weeks
+const MIN_DURATION = 2;
+
+/// In weeks
+const MAX_DURATION = 16;
 
 @JsonSerializable()
 class Routine {
@@ -41,10 +54,10 @@ class Routine {
   @JsonKey(required: true, name: 'fit_in_week')
   late bool fitInWeek;
 
-  @JsonKey(required: true)
+  @JsonKey(required: true, toJson: dateToYYYYMMDD)
   late DateTime start;
 
-  @JsonKey(required: true)
+  @JsonKey(required: true, toJson: dateToYYYYMMDD)
   late DateTime end;
 
   @JsonKey(includeFromJson: true, required: false, includeToJson: false)

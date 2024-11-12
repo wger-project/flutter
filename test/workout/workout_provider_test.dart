@@ -95,7 +95,7 @@ void main() {
       final provider = RoutinesProvider(mockBaseProvider, exercisesProvider, []);
 
       await provider.fetchAndSetPlanSparse(325397);
-      await provider.deleteWorkout(325397);
+      await provider.deleteRoutine(325397);
       final plans = provider.getPlans();
       expect(plans.length, 0);
     });

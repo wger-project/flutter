@@ -17,45 +17,25 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wger/models/workouts/routine.dart';
-import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/routines/day.dart';
-import 'package:wger/widgets/routines/forms.dart';
 
 class RoutineDetail extends StatelessWidget {
   final Routine _routine;
 
-  const RoutineDetail(this._routine);
+  const RoutineDetail(this._routine, {super.key});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
+        Container(height: 10),
         if (_routine.description.isNotEmpty)
           Padding(
             padding: const EdgeInsets.all(15),
             child: Text(_routine.description),
           ),
-        ..._routine.dayDataCurrentIteration.map((dayData) => WorkoutDayWidget(dayData)),
-        Column(
-          children: [
-            ElevatedButton(
-              child: Text(AppLocalizations.of(context).newDay),
-              onPressed: () {
-                Navigator.pushNamed(
-                  context,
-                  FormScreen.routeName,
-                  arguments: FormScreenArguments(
-                    AppLocalizations.of(context).newDay,
-                    DayFormWidget(_routine),
-                    hasListView: true,
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
+        ..._routine.dayDataCurrentIteration.map((dayData) => RoutineDayWidget(dayData)),
       ],
     );
   }

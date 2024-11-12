@@ -42,7 +42,7 @@ class RoutineListScreen extends StatelessWidget {
             FormScreen.routeName,
             arguments: FormScreenArguments(
               AppLocalizations.of(context).newWorkout,
-              WorkoutForm(Routine.empty()),
+              RoutineForm(Routine.empty()),
             ),
           );
         },

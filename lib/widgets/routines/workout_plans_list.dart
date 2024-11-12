@@ -91,7 +91,7 @@ class WorkoutPlansList extends StatelessWidget {
                                       Provider.of<RoutinesProvider>(
                                         context,
                                         listen: false,
-                                      ).deleteWorkout(currentWorkout.id!);
+                                      ).deleteRoutine(currentWorkout.id!);
 
                                       // Close the popup
                                       Navigator.of(contextDialog).pop();

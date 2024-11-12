@@ -45,6 +45,7 @@ import 'package:wger/screens/measurement_entries_screen.dart';
 import 'package:wger/screens/nutritional_diary_screen.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/screens/nutritional_plans_screen.dart';
+import 'package:wger/screens/routine_edit_screen.dart';
 import 'package:wger/screens/routine_list_screen.dart';
 import 'package:wger/screens/routine_logs_screen.dart';
 import 'package:wger/screens/routine_screen.dart';
@@ -166,6 +167,7 @@ class MyApp extends StatelessWidget {
             LogMealScreen.routeName: (ctx) => const LogMealScreen(),
             WeightScreen.routeName: (ctx) => const WeightScreen(),
             RoutineScreen.routeName: (ctx) => const RoutineScreen(),
+            RoutineEditScreen.routeName: (ctx) => const RoutineEditScreen(),
             WorkoutLogsScreen.routeName: (ctx) => const WorkoutLogsScreen(),
             RoutineListScreen.routeName: (ctx) => const RoutineListScreen(),
             ExercisesScreen.routeName: (ctx) => const ExercisesScreen(),

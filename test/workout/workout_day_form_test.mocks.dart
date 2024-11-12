@@ -319,19 +319,19 @@ class MockRoutinesProvider extends _i1.Mock implements _i11.RoutinesProvider {
       ) as _i12.Future<_i5.Routine>);
 
   @override
-  _i12.Future<void> editWorkout(_i5.Routine? workout) => (super.noSuchMethod(
+  _i12.Future<void> editRoutine(_i5.Routine? routine) => (super.noSuchMethod(
         Invocation.method(
-          #editWorkout,
-          [workout],
+          #editRoutine,
+          [routine],
         ),
         returnValue: _i12.Future<void>.value(),
         returnValueForMissingStub: _i12.Future<void>.value(),
       ) as _i12.Future<void>);
 
   @override
-  _i12.Future<void> deleteWorkout(int? id) => (super.noSuchMethod(
+  _i12.Future<void> deleteRoutine(int? id) => (super.noSuchMethod(
         Invocation.method(
-          #deleteWorkout,
+          #deleteRoutine,
           [id],
         ),
         returnValue: _i12.Future<void>.value(),

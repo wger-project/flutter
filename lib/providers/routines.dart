@@ -313,15 +313,15 @@ class RoutinesProvider with ChangeNotifier {
     return plan;
   }
 
-  Future<void> editWorkout(Routine workout) async {
+  Future<void> editRoutine(Routine routine) async {
     await baseProvider.patch(
-      workout.toJson(),
-      baseProvider.makeUrl(_routinesUrlPath, id: workout.id),
+      routine.toJson(),
+      baseProvider.makeUrl(_routinesUrlPath, id: routine.id),
     );
     notifyListeners();
   }
 
-  Future<void> deleteWorkout(int id) async {
+  Future<void> deleteRoutine(int id) async {
     final existingWorkoutIndex = _workoutPlans.indexWhere((element) => element.id == id);
     final existingWorkout = _workoutPlans[existingWorkoutIndex];
     _workoutPlans.removeAt(existingWorkoutIndex);

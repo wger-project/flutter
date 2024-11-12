@@ -30,12 +30,12 @@ void main() {
 
     group('toDate', () {
       test('should return null for null input', () {
-        expect(toDate(null), isNull);
+        expect(dateToYYYYMMDD(null), isNull);
       });
 
       test('should format DateTime to yyyy-MM-dd', () {
         final dateTime = DateTime(2022, 1, 30);
-        expect(toDate(dateTime), '2022-01-30');
+        expect(dateToYYYYMMDD(dateTime), '2022-01-30');
       });
     });
 

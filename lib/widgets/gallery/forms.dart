@@ -57,7 +57,7 @@ class _ImageFormState extends State<ImageForm> {
   void initState() {
     super.initState();
 
-    dateController.text = toDate(widget._image.date)!;
+    dateController.text = dateToYYYYMMDD(widget._image.date)!;
     descriptionController.text = widget._image.description;
   }
 
@@ -145,7 +145,8 @@ class _ImageFormState extends State<ImageForm> {
               labelText: AppLocalizations.of(context).date,
               suffixIcon: const Icon(Icons.calendar_today),
             ),
-            readOnly: true, // Stop keyboard from appearing
+            readOnly: true,
+            // Stop keyboard from appearing
             controller: dateController,
             onTap: () async {
               // Stop keyboard from appearing
@@ -159,7 +160,7 @@ class _ImageFormState extends State<ImageForm> {
                 lastDate: DateTime.now(),
               );
 
-              dateController.text = toDate(pickedDate)!;
+              dateController.text = dateToYYYYMMDD(pickedDate)!;
             },
             onSaved: (newValue) {
               widget._image.date = DateTime.parse(newValue!);

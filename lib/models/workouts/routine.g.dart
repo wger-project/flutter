@@ -31,6 +31,6 @@ Map<String, dynamic> _$RoutineToJson(Routine instance) => <String, dynamic>{
       'name': instance.name,
       'description': instance.description,
       'fit_in_week': instance.fitInWeek,
-      'start': instance.start.toIso8601String(),
-      'end': instance.end.toIso8601String(),
+      'start': dateToYYYYMMDD(instance.start),
+      'end': dateToYYYYMMDD(instance.end),
     };

@@ -493,7 +493,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
             NothingFound(
               AppLocalizations.of(context).noWorkoutPlans,
               AppLocalizations.of(context).newWorkout,
-              WorkoutForm(Routine.empty()),
+              RoutineForm(Routine.empty()),
             ),
           if (_hasContent)
             Row(

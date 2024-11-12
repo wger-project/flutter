@@ -130,7 +130,7 @@ void main() {
     expect(find.byType(PlanForm), findsNothing);
     await tester.tap(find.byType(FloatingActionButton));
     await tester.pumpAndSettle();
-    expect(find.byType(WorkoutForm), findsOneWidget);
+    expect(find.byType(RoutineForm), findsOneWidget);
   });
 
   testWidgets('Tests the localization of dates - EN', (WidgetTester tester) async {
