@@ -18,7 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:wger/models/workouts/routine.dart';
-import 'package:wger/widgets/routines/forms.dart';
+import 'package:wger/widgets/routines/forms/routine.dart';
 
 class RoutineEdit extends StatelessWidget {
   final Routine _routine;

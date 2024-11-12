@@ -17,19 +17,13 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:provider/provider.dart';
-import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/models/workouts/set_config_data.dart';
 import 'package:wger/models/workouts/slot_data.dart';
-import 'package:wger/providers/routines.dart';
-import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/exercises/exercises.dart';
 import 'package:wger/widgets/exercises/images.dart';
-import 'package:wger/widgets/routines/forms.dart';
 
 class SettingWidget extends StatelessWidget {
   final SetConfigData setConfigData;
@@ -81,24 +75,23 @@ class SettingWidget extends StatelessWidget {
   }
 }
 
-class WorkoutDayWidget extends StatefulWidget {
+class RoutineDayWidget extends StatefulWidget {
   final DayData _dayData;
 
-  const WorkoutDayWidget(this._dayData);
+  const RoutineDayWidget(this._dayData);
 
   @override
-  _WorkoutDayWidgetState createState() => _WorkoutDayWidgetState();
+  _RoutineDayWidgetState createState() => _RoutineDayWidgetState();
 }
 
-class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
-  bool _editing = false;
+class _RoutineDayWidgetState extends State<RoutineDayWidget> {
+  bool _editing = true;
   late List<SlotData> _slots;
 
   @override
   void initState() {
     super.initState();
     _slots = widget._dayData.slots;
-    //_slots.sort((a, b) => a.order.compareTo(b.order));
   }
 
   void _toggleExpanded() {
@@ -108,43 +101,18 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
   }
 
   Widget getSlotDataRow(SlotData slotData, int index) {
-    return Row(
+    return Column(
       key: ValueKey(index),
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        if (_editing)
-          IconButton(
-            visualDensity: VisualDensity.compact,
-            icon: const Icon(Icons.delete),
-            iconSize: ICON_SIZE_SMALL,
-            tooltip: AppLocalizations.of(context).delete,
-            onPressed: () {
-              // Provider.of<RoutinesProvider>(context, listen: false).deleteSet(set);
-            },
-          ),
-        Expanded(
-          child: Column(
-            children: [
-              if (slotData.comment != '') MutedText(slotData.comment),
-              ...slotData.setConfigs.map(
-                (setting) => SettingWidget(
-                  setConfigData: setting,
-                  expanded: _editing,
-                  toggle: _toggleExpanded,
-                ),
-              ),
-              const Divider(),
-            ],
+        if (slotData.comment != '') MutedText(slotData.comment),
+        ...slotData.setConfigs.map(
+          (setting) => SettingWidget(
+            setConfigData: setting,
+            expanded: _editing,
+            toggle: _toggleExpanded,
           ),
         ),
-        if (_editing)
-          ReorderableDragStartListener(
-            index: index,
-            child: const IconButton(
-              icon: Icon(Icons.drag_handle),
-              onPressed: null,
-            ),
-          ),
+        // const Divider(),
       ],
     );
   }
@@ -158,73 +126,14 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            DayHeader(
-              day: widget._dayData,
-              expanded: _editing,
-              toggle: _toggleExpanded,
-            ),
-            if (_editing)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                child: Wrap(
-                  spacing: 8,
-                  children: [
-                    TextButton.icon(
-                      label: Text(AppLocalizations.of(context).addSet),
-                      icon: const Icon(Icons.add),
-                      onPressed: () {
-                        Navigator.pushNamed(
-                          context,
-                          FormScreen.routeName,
-                          arguments: FormScreenArguments(
-                            AppLocalizations.of(context).newSet,
-                            SetFormWidget(widget._dayData.day!),
-                            hasListView: true,
-                            padding: EdgeInsets.zero,
-                          ),
-                        );
-                      },
-                    ),
-                    TextButton.icon(
-                      icon: const Icon(Icons.calendar_month),
-                      label: Text(AppLocalizations.of(context).edit),
-                      onPressed: () {
-                        Navigator.pushNamed(
-                          context,
-                          FormScreen.routeName,
-                          arguments: FormScreenArguments(
-                            AppLocalizations.of(context).edit,
-                            DayFormWidget(
-                              Provider.of<RoutinesProvider>(
-                                context,
-                                listen: false,
-                              ).findById(widget._dayData.day!.routineId),
-                              widget._dayData.day,
-                            ),
-                            hasListView: true,
-                          ),
-                        );
-                      },
-                    ),
-                    TextButton.icon(
-                      icon: const Icon(Icons.delete),
-                      label: Text(AppLocalizations.of(context).delete),
-                      onPressed: () {
-                        Provider.of<RoutinesProvider>(
-                          context,
-                          listen: false,
-                        ).deleteDay(widget._dayData.day!);
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            const Divider(),
+            DayHeader(day: widget._dayData),
+
+            // TODO: !!! move reorderable to own form widget
             ReorderableListView(
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               buildDefaultDragHandles: false,
-              onReorder: (oldIndex, newIndex) async {
+              onReorder: (oldIndex, newIndex) {
                 int startIndex = 0;
                 if (oldIndex < newIndex) {
                   newIndex -= 1;
@@ -235,10 +144,6 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
                 setState(() {
                   _slots.insert(newIndex, _slots.removeAt(oldIndex));
                 });
-                // _slots = await Provider.of<RoutinesProvider>(
-                //   context,
-                //   listen: false,
-                // ).reorderSets(_slots, startIndex);
               },
               children: [
                 for (var i = 0; i < widget._dayData.slots.length; i++)
@@ -254,21 +159,15 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
 
 class DayHeader extends StatelessWidget {
   final DayData _dayData;
-  final bool _editing;
-  final Function _toggle;
 
-  const DayHeader({
-    required DayData day,
-    required bool expanded,
-    required Function toggle,
-  })  : _dayData = day,
-        _editing = expanded,
-        _toggle = toggle;
+  const DayHeader({required DayData day}) : _dayData = day;
 
   @override
   Widget build(BuildContext context) {
     return _dayData.day == null || _dayData.day!.isRest
         ? ListTile(
+            // tileColor: Colors.amber,
+            tileColor: Theme.of(context).focusColor,
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             title: Text(
               'REST DAY',
@@ -279,6 +178,7 @@ class DayHeader extends StatelessWidget {
             minLeadingWidth: 8,
           )
         : ListTile(
+            tileColor: Theme.of(context).focusColor,
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             title: Text(
               _dayData.day!.name,
@@ -288,19 +188,6 @@ class DayHeader extends StatelessWidget {
             subtitle: Text(_dayData.day!.description),
             leading: const Icon(Icons.play_arrow),
             minLeadingWidth: 8,
-            trailing: Row(mainAxisSize: MainAxisSize.min, children: [
-              const SizedBox(height: 40, width: 1, child: VerticalDivider()),
-              const SizedBox(width: 10),
-              IconButton(
-                icon: _editing ? const Icon(Icons.done) : const Icon(Icons.edit),
-                tooltip: _editing
-                    ? AppLocalizations.of(context).done
-                    : AppLocalizations.of(context).edit,
-                onPressed: () {
-                  _toggle();
-                },
-              ),
-            ]),
             onTap: () {
               Navigator.of(context).pushNamed(
                 GymModeScreen.routeName,

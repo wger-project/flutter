@@ -27,7 +27,9 @@ import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/screens/routine_screen.dart';
-import 'package:wger/widgets/routines/forms.dart';
+import 'package:wger/widgets/routines/forms/reps_unit.dart';
+import 'package:wger/widgets/routines/forms/rir.dart';
+import 'package:wger/widgets/routines/forms/weight_unit.dart';
 import 'package:wger/widgets/routines/gym_mode.dart';
 
 import '../../test_data/exercises.dart';
@@ -66,9 +68,7 @@ void main() {
             ),
             child: const SizedBox(),
           ),
-          routes: {
-            RoutineScreen.routeName: (ctx) => const RoutineScreen(),
-          },
+          routes: {RoutineScreen.routeName: (ctx) => const RoutineScreen()},
         ),
       ),
     );

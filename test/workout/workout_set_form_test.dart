@@ -29,7 +29,7 @@ import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/routines.dart';
-import 'package:wger/widgets/routines/forms.dart';
+import 'package:wger/widgets/routines/forms/slot.dart';
 
 import '../../test_data/exercises.dart';
 import '../../test_data/routines.dart';
@@ -63,7 +63,7 @@ void main() {
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           navigatorKey: GlobalKey<NavigatorState>(),
-          home: Scaffold(body: SetFormWidget(day)),
+          home: Scaffold(body: SlotFormWidget(day)),
         ),
       ),
     );

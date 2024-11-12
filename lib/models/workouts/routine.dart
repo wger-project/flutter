@@ -92,7 +92,6 @@ class Routine {
   }
 
   Routine.empty() {
-    created = DateTime.now();
     name = '';
     description = '';
   }

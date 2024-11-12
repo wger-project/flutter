@@ -23,7 +23,7 @@ import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/routines/app_bar.dart';
-import 'package:wger/widgets/routines/forms.dart';
+import 'package:wger/widgets/routines/forms/routine.dart';
 import 'package:wger/widgets/routines/workout_plans_list.dart';
 
 class RoutineListScreen extends StatelessWidget {

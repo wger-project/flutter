@@ -45,7 +45,7 @@ import 'package:wger/widgets/measurements/forms.dart';
 import 'package:wger/widgets/measurements/helpers.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
-import 'package:wger/widgets/routines/forms.dart';
+import 'package:wger/widgets/routines/forms/routine.dart';
 import 'package:wger/widgets/weight/forms.dart';
 
 class DashboardNutritionWidget extends StatefulWidget {

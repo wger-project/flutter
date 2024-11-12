@@ -27,7 +27,7 @@ import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/routine_screen.dart';
-import 'package:wger/widgets/routines/forms.dart';
+import 'package:wger/widgets/routines/forms/weight_unit.dart';
 
 import './workout_form_test.mocks.dart';
 
@@ -67,9 +67,7 @@ void main() {
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
         home: Scaffold(body: WeightUnitInputWidget(setting1)),
-        routes: {
-          RoutineScreen.routeName: (ctx) => const RoutineScreen(),
-        },
+        routes: {RoutineScreen.routeName: (ctx) => const RoutineScreen()},
       ),
     );
   }

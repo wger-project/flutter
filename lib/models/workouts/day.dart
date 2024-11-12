@@ -21,6 +21,11 @@ import 'package:wger/models/workouts/slot.dart';
 
 part 'day.g.dart';
 
+const MIN_LENGTH_NAME = 3;
+const MAX_LENGTH_NAME = 20;
+
+const MAX_LENGTH_DESCRIPTION = 1000;
+
 @JsonSerializable()
 class Day {
   @JsonKey(required: true)
