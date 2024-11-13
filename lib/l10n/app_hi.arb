@@ -149,7 +149,7 @@
   "@logMeal": {},
   "addIngredient": "सामग्री जोड़ें",
   "@addIngredient": {},
-  "logIngredient": "पोषण डायरी में सहेजें",
+  "logIngredient": "पोषण डायरी में सामग्री दर्ज करें",
   "@logIngredient": {},
   "searchIngredient": "सामग्री खोजें",
   "@searchIngredient": {},
@@ -324,5 +324,15 @@
   "scanBarcode": "बारकोड स्कैन करें",
   "@scanBarcode": {},
   "close": "बंद करें",
-  "@close": {}
+  "@close": {},
+  "userProfile": "आपकी प्रोफ़ाइल",
+  "@userProfile": {},
+  "invalidUsername": "कृपया सही यूजरनेम प्रविष्ट करे",
+  "@invalidUsername": {
+    "description": "Error message when the user enters an invalid username"
+  },
+  "onlyLogging": "सिर्फ कैलोरी ट्रैक करें",
+  "@onlyLogging": {},
+  "onlyLoggingHelpText": "यदि आप केवल अपनी कैलोरी लॉग करना चाहते हैं और विशिष्ट भोजन के साथ विस्तृत पोषण योजना नहीं बनाना चाहते हैं तो बॉक्स को चेक करें",
+  "@onlyLoggingHelpText": {}
 }
