@@ -43,7 +43,7 @@
   },
   "noMeasurementEntries": "உங்களிடம் அளவீட்டு உள்ளீடுகள் இல்லை",
   "@noMeasurementEntries": {},
-  "delete": "அழி",
+  "delete": "நீக்கு",
   "@delete": {},
   "gallery": "கேலரி",
   "@gallery": {},
@@ -392,7 +392,7 @@
   "@measurementCategoriesHelpText": {},
   "measurementEntriesHelpText": "'செ.மீ' அல்லது '%' போன்ற வகையை அளவிட பயன்படுத்தப்படும் அலகு",
   "@measurementEntriesHelpText": {},
-  "date": "திகதி",
+  "date": "தேதி",
   "@date": {
     "description": "The date of a workout log or body weight entry"
   },
