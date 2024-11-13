@@ -39,39 +39,40 @@ class SettingWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-        leading: InkWell(
-          child: SizedBox(
-            width: 45,
-            child: ExerciseImageWidget(image: setConfigData.exercise.getMainImage),
-          ),
-          onTap: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: Text(setConfigData.exercise
-                      .getExercise(Localizations.localeOf(context).languageCode)
-                      .name),
-                  content: ExerciseDetail(setConfigData.exercise),
-                  actions: [
-                    TextButton(
-                      child: Text(
-                        MaterialLocalizations.of(context).closeButtonLabel,
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
+      leading: InkWell(
+        child: SizedBox(
+          width: 45,
+          child: ExerciseImageWidget(image: setConfigData.exercise.getMainImage),
+        ),
+        onTap: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text(setConfigData.exercise
+                    .getExercise(Localizations.localeOf(context).languageCode)
+                    .name),
+                content: ExerciseDetail(setConfigData.exercise),
+                actions: [
+                  TextButton(
+                    child: Text(
+                      MaterialLocalizations.of(context).closeButtonLabel,
                     ),
-                  ],
-                );
-              },
-            );
-          },
-        ),
-        title: Text(
-          setConfigData.exercise.getExercise(Localizations.localeOf(context).languageCode).name,
-        ),
-        subtitle: Text(setConfigData.textRepr));
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      ),
+      title: Text(
+        setConfigData.exercise.getExercise(Localizations.localeOf(context).languageCode).name,
+      ),
+      subtitle: Text(setConfigData.textRepr),
+    );
   }
 }
 
@@ -100,9 +101,8 @@ class _RoutineDayWidgetState extends State<RoutineDayWidget> {
     });
   }
 
-  Widget getSlotDataRow(SlotData slotData, int index) {
+  Widget getSlotDataRow(SlotData slotData) {
     return Column(
-      key: ValueKey(index),
       children: [
         if (slotData.comment != '') MutedText(slotData.comment),
         ...slotData.setConfigs.map(
@@ -127,29 +127,7 @@ class _RoutineDayWidgetState extends State<RoutineDayWidget> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             DayHeader(day: widget._dayData),
-
-            // TODO: !!! move reorderable to own form widget
-            ReorderableListView(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              buildDefaultDragHandles: false,
-              onReorder: (oldIndex, newIndex) {
-                int startIndex = 0;
-                if (oldIndex < newIndex) {
-                  newIndex -= 1;
-                  startIndex = oldIndex;
-                } else {
-                  startIndex = newIndex;
-                }
-                setState(() {
-                  _slots.insert(newIndex, _slots.removeAt(oldIndex));
-                });
-              },
-              children: [
-                for (var i = 0; i < widget._dayData.slots.length; i++)
-                  getSlotDataRow(widget._dayData.slots[i], i),
-              ],
-            ),
+            ...widget._dayData.slots.map((e) => getSlotDataRow(e)).toList(),
           ],
         ),
       ),
@@ -164,36 +142,38 @@ class DayHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _dayData.day == null || _dayData.day!.isRest
-        ? ListTile(
-            // tileColor: Colors.amber,
-            tileColor: Theme.of(context).focusColor,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            title: Text(
-              'REST DAY',
-              style: Theme.of(context).textTheme.headlineSmall,
-              overflow: TextOverflow.ellipsis,
-            ),
-            leading: const Icon(Icons.hotel),
-            minLeadingWidth: 8,
-          )
-        : ListTile(
-            tileColor: Theme.of(context).focusColor,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            title: Text(
-              _dayData.day!.name,
-              style: Theme.of(context).textTheme.headlineSmall,
-              overflow: TextOverflow.ellipsis,
-            ),
-            subtitle: Text(_dayData.day!.description),
-            leading: const Icon(Icons.play_arrow),
-            minLeadingWidth: 8,
-            onTap: () {
-              Navigator.of(context).pushNamed(
-                GymModeScreen.routeName,
-                arguments: _dayData,
-              );
-            },
-          );
+    if (_dayData.day == null || _dayData.day!.isRest) {
+      return ListTile(
+        // tileColor: Colors.amber,
+        tileColor: Theme.of(context).focusColor,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        title: Text(
+          'REST DAY',
+          style: Theme.of(context).textTheme.headlineSmall,
+          overflow: TextOverflow.ellipsis,
+        ),
+        leading: const Icon(Icons.hotel),
+        minLeadingWidth: 8,
+      );
+    }
+
+    return ListTile(
+      tileColor: Theme.of(context).focusColor,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      title: Text(
+        _dayData.day!.name,
+        style: Theme.of(context).textTheme.headlineSmall,
+        overflow: TextOverflow.ellipsis,
+      ),
+      subtitle: Text(_dayData.day!.description),
+      leading: const Icon(Icons.play_arrow),
+      minLeadingWidth: 8,
+      onTap: () {
+        Navigator.of(context).pushNamed(
+          GymModeScreen.routeName,
+          arguments: _dayData,
+        );
+      },
+    );
   }
 }
