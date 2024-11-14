@@ -23,7 +23,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/misc.dart';
 import 'package:wger/helpers/ui.dart';
 import 'package:wger/screens/update_app_screen.dart';
 import 'package:wger/theme/theme.dart';
@@ -37,6 +36,7 @@ enum AuthMode {
 
 class AuthScreen extends StatelessWidget {
   const AuthScreen();
+
   static const routeName = '/auth';
 
   @override
@@ -113,7 +113,6 @@ class _AuthCardState extends State<AuthCard> {
   bool confirmIsObscure = true;
 
   final GlobalKey<FormState> _formKey = GlobalKey();
-  bool _canRegister = true;
   AuthMode _authMode = AuthMode.Login;
   bool _hideCustomServer = true;
   final Map<String, String> _authData = {
@@ -148,17 +147,6 @@ class _AuthCardState extends State<AuthCard> {
       _serverUrlController.text = value;
     });
 
-    // Check if the API key is set
-    //
-    // If not, the user will not be able to register via the app
-    try {
-      final metadata = Provider.of<AuthProvider>(context, listen: false).metadata;
-      if (metadata.containsKey(MANIFEST_KEY_API) && metadata[MANIFEST_KEY_API] == '') {
-        _canRegister = false;
-      }
-    } on PlatformException {
-      _canRegister = false;
-    }
     _preFillTextfields();
   }
 
@@ -238,11 +226,6 @@ class _AuthCardState extends State<AuthCard> {
   }
 
   void _switchAuthMode() {
-    if (!_canRegister) {
-      launchURL(DEFAULT_SERVER_PROD, context);
-      return;
-    }
-
     if (_authMode == AuthMode.Login) {
       setState(() {
         _authMode = AuthMode.Signup;
@@ -482,9 +465,9 @@ class _AuthCardState extends State<AuthCard> {
                         },
                         child: Container(
                           color: Colors.transparent,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                          child: Column(
                             children: [
+                              // TODO: i18n!
                               Text(
                                 text.substring(0, text.lastIndexOf('?') + 1),
                               ),

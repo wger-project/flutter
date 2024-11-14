@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/body_weight.dart';
+import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
@@ -20,6 +21,9 @@ Widget createWeightScreen({locale = 'en'}) {
   final mockUserProvider = MockUserProvider();
   when(mockUserProvider.profile).thenReturn(tProfile1);
 
+  final mockNutritionPlansProvider = MockNutritionPlansProvider();
+  when(mockNutritionPlansProvider.currentPlan).thenReturn(null);
+
   return MultiProvider(
     providers: [
       ChangeNotifierProvider<UserProvider>(
@@ -27,6 +31,9 @@ Widget createWeightScreen({locale = 'en'}) {
       ),
       ChangeNotifierProvider<BodyWeightProvider>(
         create: (context) => mockWeightProvider,
+      ),
+      ChangeNotifierProvider<NutritionPlansProvider>(
+        create: (context) => mockNutritionPlansProvider,
       ),
     ],
     child: MaterialApp(

@@ -486,6 +486,17 @@ enum GoalType {
   const GoalType(this.label);
 
   final String label;
+
+  String getI18nLabel(BuildContext context) {
+    switch (this) {
+      case GoalType.meals:
+        return AppLocalizations.of(context).goalTypeMeals;
+      case GoalType.basic:
+        return AppLocalizations.of(context).goalTypeBasic;
+      case GoalType.advanced:
+        return AppLocalizations.of(context).goalTypeAdvanced;
+    }
+  }
 }
 
 class PlanForm extends StatefulWidget {
@@ -574,7 +585,7 @@ class _PlanFormState extends State<PlanForm> {
                       .map(
                         (e) => DropdownMenuItem<GoalType>(
                           value: e,
-                          child: Text(e.label),
+                          child: Text(e.getI18nLabel(context)),
                         ),
                       )
                       .toList(),

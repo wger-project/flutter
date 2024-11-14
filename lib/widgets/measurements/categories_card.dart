@@ -22,60 +22,63 @@ class CategoriesCard extends StatelessWidget {
 
     return Card(
       elevation: elevation,
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 5),
-            child: Text(
-              currentCategory.name,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.all(10),
-            height: 220,
-            child: MeasurementChartWidgetFl(
-              entriesAll,
-              currentCategory.unit,
-              avgs: entries7dAvg,
-            ),
-          ),
-          if (entries7dAvg.isNotEmpty)
-            MeasurementOverallChangeWidget(
-              entries7dAvg.first,
-              entries7dAvg.last,
-              currentCategory.unit,
-            ),
-          const Divider(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              TextButton(
-                child: Text(AppLocalizations.of(context).goToDetailPage),
-                onPressed: () {
-                  Navigator.pushNamed(
-                    context,
-                    MeasurementEntriesScreen.routeName,
-                    arguments: currentCategory.id,
-                  );
-                },
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 5),
+              child: Text(
+                currentCategory.name,
+                style: Theme.of(context).textTheme.titleLarge,
               ),
-              IconButton(
-                onPressed: () async {
-                  await Navigator.pushNamed(
-                    context,
-                    FormScreen.routeName,
-                    arguments: FormScreenArguments(
-                      AppLocalizations.of(context).newEntry,
-                      MeasurementEntryForm(currentCategory.id!),
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.add),
+            ),
+            Container(
+              padding: const EdgeInsets.all(10),
+              height: 220,
+              child: MeasurementChartWidgetFl(
+                entriesAll,
+                currentCategory.unit,
+                avgs: entries7dAvg,
               ),
-            ],
-          ),
-        ],
+            ),
+            if (entries7dAvg.isNotEmpty)
+              MeasurementOverallChangeWidget(
+                entries7dAvg.first,
+                entries7dAvg.last,
+                currentCategory.unit,
+              ),
+            const Divider(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                TextButton(
+                  child: Text(AppLocalizations.of(context).goToDetailPage),
+                  onPressed: () {
+                    Navigator.pushNamed(
+                      context,
+                      MeasurementEntriesScreen.routeName,
+                      arguments: currentCategory.id,
+                    );
+                  },
+                ),
+                IconButton(
+                  onPressed: () async {
+                    await Navigator.pushNamed(
+                      context,
+                      FormScreen.routeName,
+                      arguments: FormScreenArguments(
+                        AppLocalizations.of(context).newEntry,
+                        MeasurementEntryForm(currentCategory.id!),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.add),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -64,7 +64,6 @@ class AuthProvider with ChangeNotifier {
         } else if (Platform.isLinux || Platform.isMacOS) {
           metadata = {
             MANIFEST_KEY_CHECK_UPDATE: Platform.environment[MANIFEST_KEY_CHECK_UPDATE] ?? '',
-            MANIFEST_KEY_API: Platform.environment[MANIFEST_KEY_API] ?? '',
           };
         }
       } on PlatformException {
@@ -105,6 +104,7 @@ class AuthProvider with ChangeNotifier {
     Map<String, String>? metadata,
   ]) async {
     metadata ??= this.metadata;
+
     if (!metadata.containsKey(MANIFEST_KEY_CHECK_UPDATE) ||
         metadata[MANIFEST_KEY_CHECK_UPDATE] == 'false') {
       return false;
@@ -138,7 +138,6 @@ class AuthProvider with ChangeNotifier {
       makeUri(serverUrl, REGISTRATION_URL),
       headers: {
         HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
-        HttpHeaders.authorizationHeader: 'Token ${metadata[MANIFEST_KEY_API]}',
         HttpHeaders.userAgentHeader: getAppNameHeader(),
         HttpHeaders.acceptLanguageHeader: locale,
       },

@@ -43,29 +43,9 @@ Alternatively, you can use the test server (the db is reset every day):
 Install Flutter and all its dependencies, and create a new virtual device:
 <https://flutter.dev/docs/get-started/install>.
 
-The app currently uses flutter 3.22
+The app currently uses flutter 3.24
 
 ### 3
-The application will complain about an API key not being set. You can just
-ignore this during development, this is only important if you want to register
-directly over the app. If you just want to login, you can skip this section.
-
-If you want to register directly over the app, you need to set a user on the backend
-that is allowed to do this. For this, create/register a new user, generate an api key
-and run ``python3 manage.py add-user-rest theusername`` (you can later list all the
-registered users with ``python3 manage.py list-users-api``).
-
-Then create a new file ``wger.properties`` in ``fastlane/metadata/envfiles/`` and
-add the key:
-
-```properties
-WGER_API_KEY=123456
-```
-
-Alternatively, add the key as an environment variables, e.g. by running the `source`
-command on the file.
-
-### 4
 
 Start the application with ``flutter run`` or use your IDE
 (please note that depending on how you run your emulator you will need to change the IP address of

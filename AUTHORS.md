@@ -30,6 +30,8 @@
 - Dieter Plaetinck - <https://github.com/Dieterbe>
 - Dennis van Peer - <https://github.com/Denpeer>
 - sizzlesloth - <https://github.com/sizzlesloth>
+- Arya Singh - <https://github.com/ARYPROGRAMMER>
+- Xianglin Zeng - <https://github.com/FutureYL3>
 
 ## Translators
 

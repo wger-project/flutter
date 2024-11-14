@@ -32,10 +32,9 @@ import 'package:wger/widgets/weight/forms.dart';
 
 import '../../test_data/body_weight.dart';
 import '../../test_data/profile.dart';
-import '../nutrition/nutritional_plan_form_test.mocks.dart';
 import 'weight_screen_test.mocks.dart';
 
-@GenerateMocks([BodyWeightProvider, UserProvider])
+@GenerateMocks([BodyWeightProvider, UserProvider, NutritionPlansProvider])
 void main() {
   late MockBodyWeightProvider mockWeightProvider;
   late MockUserProvider mockUserProvider;
@@ -54,25 +53,30 @@ void main() {
   });
 
   Widget createWeightScreen({locale = 'en'}) {
-    return ChangeNotifierProvider<NutritionPlansProvider>(
-      create: (context) => mockNutritionPlansProvider,
-      child: ChangeNotifierProvider<UserProvider>(
-        create: (context) => mockUserProvider,
-        child: ChangeNotifierProvider<BodyWeightProvider>(
-          create: (context) => mockWeightProvider,
-          child: MaterialApp(
-            locale: Locale(locale),
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
-            home: const WeightScreen(),
-            routes: {FormScreen.routeName: (_) => const FormScreen()},
-          ),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<NutritionPlansProvider>(
+          create: (ctx) => mockNutritionPlansProvider,
         ),
+        ChangeNotifierProvider<BodyWeightProvider>(
+          create: (context) => mockWeightProvider,
+        ),
+        ChangeNotifierProvider<UserProvider>(
+          create: (context) => mockUserProvider,
+        ),
+      ],
+      child: MaterialApp(
+        locale: Locale(locale),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: const WeightScreen(),
+        routes: {FormScreen.routeName: (_) => const FormScreen()},
       ),
     );
   }
 
-  testWidgets('Test the widgets on the body weight screen', (WidgetTester tester) async {
+  testWidgets('Test the widgets on the body weight screen',
+      (WidgetTester tester) async {
     await tester.pumpWidget(createWeightScreen());
 
     expect(find.text('Weight'), findsOneWidget);
@@ -81,7 +85,8 @@ void main() {
     expect(find.byType(ListTile), findsNWidgets(2));
   });
 
-  testWidgets('Test deleting an item using the Delete button', (WidgetTester tester) async {
+  testWidgets('Test deleting an item using the Delete button',
+      (WidgetTester tester) async {
     // Arrange
     await tester.pumpWidget(createWeightScreen());
 
@@ -96,7 +101,8 @@ void main() {
     verify(mockWeightProvider.deleteEntry(1)).called(1);
   });
 
-  testWidgets('Test the form on the body weight screen', (WidgetTester tester) async {
+  testWidgets('Test the form on the body weight screen',
+      (WidgetTester tester) async {
     await tester.pumpWidget(createWeightScreen());
 
     expect(find.byType(WeightForm), findsNothing);
@@ -105,14 +111,16 @@ void main() {
     expect(find.byType(WeightForm), findsOneWidget);
   });
 
-  testWidgets('Tests the localization of dates - EN', (WidgetTester tester) async {
+  testWidgets('Tests the localization of dates - EN',
+      (WidgetTester tester) async {
     await tester.pumpWidget(createWeightScreen());
     // these don't work because we only have 2 points, and to prevent overlaps we don't display their titles
     // expect(find.text('1/1'), findsOneWidget);
     //  expect(find.text('1/10'), findsOneWidget);
   });
 
-  testWidgets('Tests the localization of dates - DE', (WidgetTester tester) async {
+  testWidgets('Tests the localization of dates - DE',
+      (WidgetTester tester) async {
     await tester.pumpWidget(createWeightScreen(locale: 'de'));
     // these don't work because we only have 2 points, and to prevent overlaps we don't display their titles
     // expect(find.text('1.1.'), findsOneWidget);

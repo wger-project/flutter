@@ -4,7 +4,7 @@
 
 If we use a new version, update the version used by
 
-* Github Actions in `android-release.yaml` in this repository
+* Github Actions in `build-release.yml` in this repository
 * Fdroid build recipe
   in [their repo](https://gitlab.com/fdroid/fdroiddata/-/blob/master/metadata/de.wger.flutter.yml).
   Since this can potentially take some time, it should happen well in advance
@@ -41,5 +41,7 @@ If necessary, edit the created release on github
 
 ## 5. Merge pull requests
 
-* in the flathub repo: https://github.com/flathub/de.wger.flutter
+* in the flathub
+  repo: https://github.com/flathub/de.wger.flutter/compare/master...wger-project:de.wger.flutter:master
+* in the fork sync master https://github.com/wger-project/de.wger.flutter
 * in the flutter repo: https://github.com/wger-project/flutter/branches

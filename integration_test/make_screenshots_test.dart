@@ -20,7 +20,7 @@ enum DeviceType {
   wearScreenshots
 }
 
-final destination = DeviceType.phoneScreenshots.name;
+final destination = DeviceType.tenInchScreenshots.name;
 
 Future<void> takeScreenshot(tester, binding, String language, String name) async {
   if (Platform.isAndroid) {
@@ -38,12 +38,12 @@ const languages = [
   // Note: it seems if too many languages are processed at once, some processes
   // disappear and no images are written. Doing this in smaller steps works fine
 
-  // 'ca',
-  // 'cs-CZ',
-  // 'de-DE',
-  // 'el-GR',
-  // 'en-US',
-  // 'es-ES',
+  'ca',
+  'cs-CZ',
+  'de-DE',
+  'el-GR',
+  'en-US',
+  'es-ES',
 
   'fr-FR',
   'hi-IN',
