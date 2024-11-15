@@ -400,8 +400,11 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
               ),
             ),
             Expanded(
-              child: MutedText(dayData.day != null ? dayData.day!.description : '',
-                  textAlign: TextAlign.right),
+              child: MutedText(
+                dayData.day != null ? dayData.day!.description : '',
+                textAlign: TextAlign.right,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
             if (dayData.day == null || dayData.day!.isRest)
               const Icon(Icons.hotel)

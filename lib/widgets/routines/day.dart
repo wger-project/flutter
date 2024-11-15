@@ -87,13 +87,6 @@ class RoutineDayWidget extends StatefulWidget {
 
 class _RoutineDayWidgetState extends State<RoutineDayWidget> {
   bool _editing = true;
-  late List<SlotData> _slots;
-
-  @override
-  void initState() {
-    super.initState();
-    _slots = widget._dayData.slots;
-  }
 
   void _toggleExpanded() {
     setState(() {
@@ -104,7 +97,7 @@ class _RoutineDayWidgetState extends State<RoutineDayWidget> {
   Widget getSlotDataRow(SlotData slotData) {
     return Column(
       children: [
-        if (slotData.comment != '') MutedText(slotData.comment),
+        if (slotData.comment.isNotEmpty) MutedText(slotData.comment),
         ...slotData.setConfigs.map(
           (setting) => SettingWidget(
             setConfigData: setting,

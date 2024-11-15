@@ -55,77 +55,88 @@ class ReorderableDaysList extends StatefulWidget {
 class _ReorderableDaysListState extends State<ReorderableDaysList> {
   @override
   Widget build(BuildContext context) {
-    return ReorderableListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: widget.days.length + 1,
-      itemBuilder: (context, index) {
-        // "add day" button always at the end
-        if (index == widget.days.length) {
-          return ListTile(
-            key: const ValueKey('add-day'),
-            // tileColor: Theme.of(context).highlightColor,
-            leading: const Icon(Icons.add),
-            title: Text(
-              AppLocalizations.of(context).newDay,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            onTap: () async {
-              final newDay = Day.empty();
-              newDay.routineId = widget.routineId;
-              final result = await Provider.of<RoutinesProvider>(context, listen: false)
-                  .addDay(newDay, refresh: true);
-              widget.onDaySelected(result.id!);
-            },
-          );
-        }
+    return Column(
+      children: [
+        ReorderableListView.builder(
+          buildDefaultDragHandles: false,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: widget.days.length,
+          itemBuilder: (context, index) {
+            final day = widget.days[index];
+            final isDaySelected = day.id == widget.selectedDayId;
 
-        final day = widget.days[index];
-
-        return ListTile(
-          tileColor: day.id == widget.selectedDayId ? Theme.of(context).highlightColor : null,
-          key: ValueKey(day),
-          title: Text(day.isRest ? 'REST DAY!' : day.name),
-          leading: ReorderableDragStartListener(
-            index: index,
-            child: const Icon(Icons.drag_handle),
-          ),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton(
-                onPressed: () {
-                  widget.onDaySelected(day.id!);
-                },
-                icon: day.id == widget.selectedDayId
-                    ? const Icon(Icons.edit_off)
-                    : const Icon(Icons.edit),
+            return Card(
+              key: ValueKey(day),
+              child: ListTile(
+                //selected: day.id == widget.selectedDayId,
+                tileColor: isDaySelected ? Theme.of(context).highlightColor : null,
+                key: ValueKey(day),
+                title: Text(day.isRest ? 'REST DAY!' : day.name),
+                leading: ReorderableDragStartListener(
+                  index: index,
+                  child: const Icon(Icons.drag_handle),
+                ),
+                subtitle: Text(
+                  day.isRest ? '' : day.description,
+                  style: const TextStyle(overflow: TextOverflow.ellipsis),
+                ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        widget.onDaySelected(day.id!);
+                      },
+                      icon: isDaySelected ? const Icon(Icons.edit_off) : const Icon(Icons.edit),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.delete),
+                      onPressed: () {
+                        widget._showDeleteConfirmationDialog(
+                          context,
+                          day,
+                        ); // Call the dialog function
+                      },
+                    ),
+                  ],
+                ),
               ),
-              IconButton(
-                icon: const Icon(Icons.delete),
-                onPressed: () {
-                  widget._showDeleteConfirmationDialog(context, day); // Call the dialog function
-                },
-              ),
-            ],
+            );
+          },
+          onReorder: (int oldIndex, int newIndex) {
+            setState(() {
+              if (oldIndex < newIndex) {
+                newIndex -= 1;
+              }
+              final Day item = widget.days.removeAt(oldIndex);
+              widget.days.insert(newIndex, item);
+
+              for (int i = 0; i < widget.days.length; i++) {
+                widget.days[i].order = i + 1;
+              }
+            });
+
+            Provider.of<RoutinesProvider>(context, listen: false).editDays(widget.days);
+          },
+        ),
+        ListTile(
+          key: const ValueKey('add-day'),
+          // tileColor: Theme.of(context).highlightColor,
+          leading: const Icon(Icons.add),
+          title: Text(
+            AppLocalizations.of(context).newDay,
+            style: Theme.of(context).textTheme.titleMedium,
           ),
-        );
-      },
-      onReorder: (int oldIndex, int newIndex) {
-        setState(() {
-          if (oldIndex < newIndex) {
-            newIndex -= 1;
-          }
-          final Day item = widget.days.removeAt(oldIndex);
-          widget.days.insert(newIndex, item);
-
-          for (int i = 0; i < widget.days.length; i++) {
-            widget.days[i].order = i + 1;
-          }
-        });
-
-        Provider.of<RoutinesProvider>(context, listen: false).editDays(widget.days);
-      },
+          onTap: () async {
+            final newDay = Day.empty();
+            newDay.routineId = widget.routineId;
+            final result = await Provider.of<RoutinesProvider>(context, listen: false)
+                .addDay(newDay, refresh: true);
+            widget.onDaySelected(result.id!);
+          },
+        ),
+      ],
     );
   }
 }
@@ -196,6 +207,17 @@ class _DayFormWidgetState extends State<DayFormWidget> {
               return null;
             },
           ),
+          SwitchListTile(
+            title: const Text('is rest day'),
+            value: isRestDay,
+            contentPadding: const EdgeInsets.all(4),
+            onChanged: (value) {
+              setState(() {
+                isRestDay = value;
+              });
+              widget.day.isRest = value;
+            },
+          ),
           TextFormField(
             key: const Key('field-description'),
             decoration: InputDecoration(
@@ -215,16 +237,6 @@ class _DayFormWidgetState extends State<DayFormWidget> {
               }
 
               return null;
-            },
-          ),
-          SwitchListTile(
-            title: const Text('is rest day'),
-            value: isRestDay,
-            onChanged: (value) {
-              setState(() {
-                isRestDay = value;
-              });
-              widget.day.isRest = value;
             },
           ),
           ElevatedButton(
@@ -259,7 +271,7 @@ class _DayFormWidgetState extends State<DayFormWidget> {
               }
             },
           ),
-          SlotFormWidgetNg(widget.day),
+          ReorderableSlotList(widget.day.slots),
         ],
       ),
     );

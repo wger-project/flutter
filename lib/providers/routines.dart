@@ -470,7 +470,7 @@ class RoutinesProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<List<Slot>> editSlots(List<Slot> slots) async {
+  Future<void> editSlots(List<Slot> slots) async {
     for (final slot in slots) {
       await baseProvider.patch(
         slot.toJson(),
@@ -479,7 +479,6 @@ class RoutinesProvider with ChangeNotifier {
     }
 
     notifyListeners();
-    return slots;
   }
 
   Future<void> fetchComputedSettings(Slot workoutSet) async {

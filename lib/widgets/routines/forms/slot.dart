@@ -31,91 +31,177 @@ import 'package:wger/screens/add_exercise_screen.dart';
 import 'package:wger/widgets/exercises/images.dart';
 import 'package:wger/widgets/routines/forms.dart';
 
-class SlotFormWidgetNg extends StatefulWidget {
-  final Day _day;
+class SlotDetailWidget extends StatelessWidget {
+  final int index;
+  final Slot slot;
 
-  const SlotFormWidgetNg(this._day);
+  SlotDetailWidget(this.slot, this.index, {super.key});
+
+  Widget getHeader() {
+    return Row(
+      children: [
+        Expanded(child: Text('Set ${index + 1}')),
+        TextButton.icon(
+          onPressed: () {},
+          icon: const Icon(Icons.add),
+          label: const Text('superset'),
+        ),
+        TextButton.icon(
+          onPressed: () {},
+          icon: const Icon(Icons.ssid_chart),
+          label: const Text('progression'),
+        )
+      ],
+    );
+  }
+
+  Widget getEntryRow(SlotEntry entry, String languageCode) {
+    return Column(
+      children: [
+        Text(entry.exerciseObj.getExercise(languageCode).name),
+        TextFormField(
+          decoration: InputDecoration(labelText: 'Sets'),
+        ),
+        TextFormField(
+          decoration: InputDecoration(labelText: 'Weight'),
+        ),
+        TextFormField(
+          decoration: InputDecoration(labelText: 'Reps'),
+        ),
+      ],
+    );
+  }
+
+  @override
+  build(BuildContext context) {
+    final languageCode = Localizations.localeOf(context).languageCode;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        getHeader(),
+        ...slot.entries.map((entry) => getEntryRow(entry, languageCode)),
+        SizedBox(height: 30),
+      ],
+    );
+  }
+}
+
+class ReorderableSlotList extends StatefulWidget {
+  final List<Slot> slots;
+
+  const ReorderableSlotList(this.slots);
 
   @override
   _SlotFormWidgetStateNg createState() => _SlotFormWidgetStateNg();
 }
 
-class _SlotFormWidgetStateNg extends State<SlotFormWidgetNg> {
+class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
+  int? selectedSlotId;
+  bool simpleMode = true;
+
   @override
   Widget build(BuildContext context) {
-    final slots = widget._day.slots;
+    final languageCode = Localizations.localeOf(context).languageCode;
 
-    return ReorderableListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: slots.length + 1,
-      itemBuilder: (context, index) {
-        // "add slot" button always at the end
-        if (index == widget._day.slots.length) {
-          return ListTile(
-            key: const ValueKey('add-set'),
-            // tileColor: Theme.of(context).highlightColor,
-            leading: const Icon(Icons.add),
-            title: Text(
-              AppLocalizations.of(context).newSet,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            onTap: () async {},
-          );
-        }
+    Slot? selectedSlot;
+    if (selectedSlotId != null) {
+      selectedSlot = widget.slots.firstWhere((slot) => slot.id == selectedSlotId);
+    }
 
-        final slot = slots[index];
+    return Column(
+      children: [
+        SwitchListTile(
+          value: simpleMode,
+          title: const Text('simple mode'),
+          contentPadding: const EdgeInsets.all(4),
+          onChanged: (value) {
+            setState(() {
+              simpleMode = value;
+            });
+          },
+        ),
+        ReorderableListView.builder(
+          buildDefaultDragHandles: false,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: widget.slots.length,
+          itemBuilder: (context, index) {
+            final slot = widget.slots[index];
+            final isSlotSelected = slot.id == selectedSlotId;
 
-        return ListTile(
-          title: Text('Set ${index + 1}'),
-          leading: ReorderableDragStartListener(
-            index: index,
-            child: const Icon(Icons.drag_handle),
-          ),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextButton.icon(
-                onPressed: () {},
-                icon: const Icon(Icons.add),
-                label: const Text('superset'),
+            // return SlotDetailTile(slot, index, key: ValueKey(slot.id));
+
+            return Card(
+              key: ValueKey(slot.id),
+              child: ListTile(
+                title: Text('Set ${index + 1}'),
+                tileColor: isSlotSelected ? Theme.of(context).highlightColor : null,
+                leading: ReorderableDragStartListener(
+                  index: index,
+                  child: const Icon(Icons.drag_handle),
+                ),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ...slot.entries.map((e) => Text(e.exerciseObj.getExercise(languageCode).name)),
+                  ],
+                ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        setState(() {
+                          if (selectedSlotId == slot.id) {
+                            selectedSlotId = null;
+                          } else {
+                            selectedSlotId = slot.id;
+                          }
+                        });
+                        // widget.onDaySelected(day.id!);
+                      },
+                      icon: isSlotSelected ? const Icon(Icons.edit_off) : const Icon(Icons.edit),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.delete),
+                      onPressed: () {
+                        // widget._showDeleteConfirmationDialog(
+                        //     context, day); // Call the dialog function
+                      },
+                    ),
+                  ],
+                ),
               ),
-              TextButton.icon(
-                onPressed: () {},
-                icon: const Icon(Icons.ssid_chart),
-                label: const Text('progression'),
-              ),
-              // IconButton(
-              //   onPressed: () {},
-              //   icon: const Icon(Icons.add),
-              // ),
-              // IconButton(
-              //   icon: const Icon(Icons.ssid_chart),
-              //   onPressed: () {
-              //     //widget._showDeleteConfirmationDialog(context, day); // Call the dialog function
-              //   },
-              // ),
-            ],
+            );
+          },
+          onReorder: (int oldIndex, int newIndex) {
+            setState(() {
+              // Update the order of slots in your data source
+              if (oldIndex < newIndex) {
+                newIndex -= 1;
+              }
+              final item = widget.slots.removeAt(oldIndex);
+              widget.slots.insert(newIndex, item);
+
+              for (int i = 0; i < widget.slots.length; i++) {
+                widget.slots[i].order = i + 1;
+              }
+
+              Provider.of<RoutinesProvider>(context, listen: false).editSlots(widget.slots);
+            });
+          },
+        ),
+        ListTile(
+          leading: const Icon(Icons.add),
+          title: Text(
+            AppLocalizations.of(context).newSet,
+            style: Theme.of(context).textTheme.titleMedium,
           ),
-          key: ValueKey(slot), // Important: Provide a unique key for each item
-        );
-      },
-      onReorder: (int oldIndex, int newIndex) {
-        setState(() {
-          // Update the order of slots in your data source
-          if (oldIndex < newIndex) {
-            newIndex -= 1;
-          }
-          final item = slots.removeAt(oldIndex);
-          slots.insert(newIndex, item);
-
-          for (int i = 0; i < slots.length; i++) {
-            slots[i].order = i + 1;
-          }
-
-          Provider.of<RoutinesProvider>(context, listen: false).editSlots(slots);
-        });
-      },
+          onTap: () async {},
+        ),
+        if (selectedSlot != null) Text(selectedSlot.id!.toString()),
+      ],
     );
   }
 }

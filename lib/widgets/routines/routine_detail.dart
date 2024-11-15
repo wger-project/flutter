@@ -22,8 +22,9 @@ import 'package:wger/widgets/routines/day.dart';
 
 class RoutineDetail extends StatelessWidget {
   final Routine _routine;
+  final bool viewMode;
 
-  const RoutineDetail(this._routine, {super.key});
+  const RoutineDetail(this._routine, {this.viewMode = false, super.key});
 
   @override
   Widget build(BuildContext context) {

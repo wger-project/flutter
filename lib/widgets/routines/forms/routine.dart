@@ -174,6 +174,7 @@ class _RoutineFormState extends State<RoutineForm> {
           SwitchListTile(
             title: const Text('Fit in week'),
             value: widget._routine.fitInWeek,
+            contentPadding: const EdgeInsets.all(4),
             onChanged: (bool? value) {
               if (value == null) {
                 return;
