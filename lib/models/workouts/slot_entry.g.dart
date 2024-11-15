@@ -43,10 +43,10 @@ SlotEntry _$SlotEntryFromJson(Map<String, dynamic> json) {
     weightRounding: stringToNum(json['weight_rounding'] as String?),
     comment: json['comment'] as String,
   )
-    ..repsConfig = (json['reps_configs'] as List<dynamic>)
+    ..repsConfigs = (json['reps_configs'] as List<dynamic>)
         .map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
         .toList()
-    ..maxRepsConfig = (json['max_reps_configs'] as List<dynamic>)
+    ..maxRepsConfigs = (json['max_reps_configs'] as List<dynamic>)
         .map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
         .toList()
     ..weightConfigs = (json['weight_configs'] as List<dynamic>)
@@ -79,8 +79,8 @@ Map<String, dynamic> _$SlotEntryToJson(SlotEntry instance) => <String, dynamic>{
       'exercise': instance.exerciseId,
       'repetition_unit': instance.repetitionUnitId,
       'repetition_rounding': instance.repetitionRounding,
-      'reps_configs': instance.repsConfig,
-      'max_reps_configs': instance.maxRepsConfig,
+      'reps_configs': instance.repsConfigs,
+      'max_reps_configs': instance.maxRepsConfigs,
       'weight_unit': instance.weightUnitId,
       'weight_rounding': instance.weightRounding,
       'weight_configs': instance.weightConfigs,

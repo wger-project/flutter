@@ -22,8 +22,10 @@ import 'dart:developer' as dev;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/exceptions/http_exception.dart';
+import 'package:wger/exceptions/no_such_entry_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/workouts/base_config.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/models/workouts/log.dart';
@@ -49,6 +51,9 @@ class RoutinesProvider with ChangeNotifier {
   static const _sessionUrlPath = 'workoutsession';
   static const _weightUnitUrlPath = 'setting-weightunit';
   static const _repetitionUnitUrlPath = 'setting-repetitionunit';
+  static const _routineConfigSets = 'sets-config';
+  static const _routineConfigWeights = 'weights-config';
+  static const _routineConfigReps = 'reps-config';
 
   Routine? _currentPlan;
   final ExercisesProvider _exercises;
@@ -478,6 +483,34 @@ class RoutinesProvider with ChangeNotifier {
       );
     }
 
+    notifyListeners();
+  }
+
+  String getConfigUrl(String type) {
+    switch (type) {
+      case 'sets':
+        return _routineConfigSets;
+      case 'weights':
+        return _routineConfigWeights;
+      case 'reps':
+        return _routineConfigReps;
+    }
+    throw const NoSuchEntryException();
+  }
+
+  Future<void> editConfig(BaseConfig config, String type) async {
+    await baseProvider.patch(
+      config.toJson(),
+      baseProvider.makeUrl(getConfigUrl(type), id: config.id),
+    );
+    notifyListeners();
+  }
+
+  Future<void> addConfig(BaseConfig config, String type) async {
+    await baseProvider.post(
+      config.toJson(),
+      baseProvider.makeUrl(getConfigUrl(type)),
+    );
     notifyListeners();
   }
 

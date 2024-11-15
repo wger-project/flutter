@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -31,60 +33,114 @@ import 'package:wger/screens/add_exercise_screen.dart';
 import 'package:wger/widgets/exercises/images.dart';
 import 'package:wger/widgets/routines/forms.dart';
 
-class SlotDetailWidget extends StatelessWidget {
-  final int index;
-  final Slot slot;
+class SlotEntryForm extends StatelessWidget {
+  final SlotEntry entry;
 
-  SlotDetailWidget(this.slot, this.index, {super.key});
+  final setsController = TextEditingController();
+  final weightController = TextEditingController();
+  final repsController = TextEditingController();
 
-  Widget getHeader() {
-    return Row(
-      children: [
-        Expanded(child: Text('Set ${index + 1}')),
-        TextButton.icon(
-          onPressed: () {},
-          icon: const Icon(Icons.add),
-          label: const Text('superset'),
-        ),
-        TextButton.icon(
-          onPressed: () {},
-          icon: const Icon(Icons.ssid_chart),
-          label: const Text('progression'),
-        )
-      ],
-    );
+  SlotEntryForm(this.entry, {super.key}) {
+    if (entry.setNrConfigs.isNotEmpty) {
+      setsController.text = entry.setNrConfigs.first.value.toString();
+    }
+    if (entry.weightConfigs.isNotEmpty) {
+      weightController.text = entry.weightConfigs.first.value.toString();
+    }
+    if (entry.repsConfigs.isNotEmpty) {
+      repsController.text = entry.repsConfigs.first.value.toString();
+    }
   }
 
-  Widget getEntryRow(SlotEntry entry, String languageCode) {
-    return Column(
-      children: [
-        Text(entry.exerciseObj.getExercise(languageCode).name),
-        TextFormField(
-          decoration: InputDecoration(labelText: 'Sets'),
-        ),
-        TextFormField(
-          decoration: InputDecoration(labelText: 'Weight'),
-        ),
-        TextFormField(
-          decoration: InputDecoration(labelText: 'Reps'),
-        ),
-      ],
-    );
-  }
+  final _form = GlobalKey<FormState>();
 
   @override
   build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
     final languageCode = Localizations.localeOf(context).languageCode;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        getHeader(),
-        ...slot.entries.map((entry) => getEntryRow(entry, languageCode)),
-        SizedBox(height: 30),
-      ],
+    return Form(
+      key: _form,
+      child: Column(
+        children: [
+          Text(entry.exerciseObj.getExercise(languageCode).name),
+          TextFormField(
+            controller: setsController,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(labelText: 'Sets'),
+          ),
+          TextFormField(
+            controller: weightController,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(labelText: i18n.weight),
+          ),
+          TextFormField(
+            controller: repsController,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(labelText: i18n.repetitions),
+          ),
+          const SizedBox(height: 5),
+          OutlinedButton(
+            key: const Key(SUBMIT_BUTTON_KEY_NAME),
+            child: Text(AppLocalizations.of(context).save),
+            onPressed: () {
+              if (!_form.currentState!.validate()) {
+                return;
+              }
+              _form.currentState!.save();
+
+              final provider = Provider.of<RoutinesProvider>(context, listen: false);
+              if (weightController.text.isNotEmpty) {
+                log('process weight...');
+                if (entry.weightConfigs.isNotEmpty) {
+                  log('update first config');
+                  entry.weightConfigs.first.value = num.parse(weightController.text);
+                  provider.editConfig(entry.weightConfigs.first, 'weights');
+                } else {
+                  log('creating config');
+                }
+              }
+
+              if (setsController.text.isNotEmpty) {
+                log('process sets...');
+                if (entry.setNrConfigs.isNotEmpty) {
+                  entry.setNrConfigs.first.value = num.parse(setsController.text);
+                  provider.editConfig(entry.setNrConfigs.first, 'sets');
+                } else {
+                  log('creating config');
+                }
+              }
+              if (repsController.text.isNotEmpty) {
+                log('process reps...');
+                if (entry.repsConfigs.isNotEmpty) {
+                  entry.repsConfigs.first.value = num.parse(repsController.text);
+                  provider.editConfig(entry.repsConfigs.first, 'reps');
+                } else {
+                  log('creating config');
+                }
+              }
+            },
+          ),
+          const SizedBox(height: 15),
+        ],
+      ),
     );
   }
+}
+
+class SlotDetailWidget extends StatelessWidget {
+  final Slot slot;
+
+  const SlotDetailWidget(this.slot, {super.key});
+
+  @override
+  build(BuildContext context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ...slot.entries.map((entry) => SlotEntryForm(entry)),
+          const SizedBox(height: 30),
+        ],
+      );
 }
 
 class ReorderableSlotList extends StatefulWidget {
@@ -130,48 +186,56 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
             final slot = widget.slots[index];
             final isSlotSelected = slot.id == selectedSlotId;
 
-            // return SlotDetailTile(slot, index, key: ValueKey(slot.id));
-
             return Card(
               key: ValueKey(slot.id),
-              child: ListTile(
-                title: Text('Set ${index + 1}'),
-                tileColor: isSlotSelected ? Theme.of(context).highlightColor : null,
-                leading: ReorderableDragStartListener(
-                  index: index,
-                  child: const Icon(Icons.drag_handle),
-                ),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ...slot.entries.map((e) => Text(e.exerciseObj.getExercise(languageCode).name)),
-                  ],
-                ),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        setState(() {
-                          if (selectedSlotId == slot.id) {
-                            selectedSlotId = null;
-                          } else {
-                            selectedSlotId = slot.id;
-                          }
-                        });
-                        // widget.onDaySelected(day.id!);
-                      },
-                      icon: isSlotSelected ? const Icon(Icons.edit_off) : const Icon(Icons.edit),
+              child: Column(
+                children: [
+                  ListTile(
+                    title: Text('Set ${index + 1}'),
+                    tileColor: isSlotSelected ? Theme.of(context).highlightColor : null,
+                    leading: selectedSlotId == null
+                        ? ReorderableDragStartListener(
+                            index: index,
+                            child: const Icon(Icons.drag_handle),
+                          )
+                        : const Icon(Icons.block),
+                    // : const Icon(Icons.filter_list_off),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ...slot.entries
+                            .map((e) => Text(e.exerciseObj.getExercise(languageCode).name)),
+                      ],
                     ),
-                    IconButton(
-                      icon: const Icon(Icons.delete),
-                      onPressed: () {
-                        // widget._showDeleteConfirmationDialog(
-                        //     context, day); // Call the dialog function
-                      },
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            setState(() {
+                              if (selectedSlotId == slot.id) {
+                                selectedSlotId = null;
+                              } else {
+                                selectedSlotId = slot.id;
+                              }
+                            });
+                            // widget.onDaySelected(day.id!);
+                          },
+                          icon:
+                              isSlotSelected ? const Icon(Icons.edit_off) : const Icon(Icons.edit),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete),
+                          onPressed: () {
+                            // widget._showDeleteConfirmationDialog(
+                            //     context, day); // Call the dialog function
+                          },
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                  if (isSlotSelected) SlotDetailWidget(slot),
+                ],
               ),
             );
           },
@@ -198,7 +262,7 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
             AppLocalizations.of(context).newSet,
             style: Theme.of(context).textTheme.titleMedium,
           ),
-          onTap: () async {},
+          onTap: () {},
         ),
         if (selectedSlot != null) Text(selectedSlot.id!.toString()),
       ],

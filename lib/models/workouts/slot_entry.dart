@@ -63,10 +63,10 @@ class SlotEntry {
   late num repetitionRounding;
 
   @JsonKey(required: true, name: 'reps_configs')
-  late List<BaseConfig> repsConfig;
+  late List<BaseConfig> repsConfigs;
 
   @JsonKey(required: true, name: 'max_reps_configs')
-  late List<BaseConfig> maxRepsConfig;
+  late List<BaseConfig> maxRepsConfigs;
 
   @JsonKey(required: true, name: 'weight_unit')
   late int weightUnitId;
