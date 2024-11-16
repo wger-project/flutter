@@ -28,29 +28,49 @@ import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
+import 'package:wger/widgets/exercises/autocompleter.dart';
 import 'package:wger/widgets/exercises/images.dart';
 import 'package:wger/widgets/routines/forms.dart';
 
-class SlotEntryForm extends StatelessWidget {
+class SlotEntryForm extends StatefulWidget {
   final SlotEntry entry;
 
+  const SlotEntryForm(this.entry, {super.key});
+
+  @override
+  State<SlotEntryForm> createState() => _SlotEntryFormState();
+}
+
+class _SlotEntryFormState extends State<SlotEntryForm> {
   final setsController = TextEditingController();
   final weightController = TextEditingController();
   final repsController = TextEditingController();
 
-  SlotEntryForm(this.entry, {super.key}) {
-    if (entry.nrOfSetsConfigs.isNotEmpty) {
-      setsController.text = entry.nrOfSetsConfigs.first.value.toString();
+  final _form = GlobalKey<FormState>();
+
+  var _edit = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.entry.nrOfSetsConfigs.isNotEmpty) {
+      setsController.text = widget.entry.nrOfSetsConfigs.first.value.toString();
     }
-    if (entry.weightConfigs.isNotEmpty) {
-      weightController.text = entry.weightConfigs.first.value.toString();
+    if (widget.entry.weightConfigs.isNotEmpty) {
+      weightController.text = widget.entry.weightConfigs.first.value.toString();
     }
-    if (entry.repsConfigs.isNotEmpty) {
-      repsController.text = entry.repsConfigs.first.value.toString();
+    if (widget.entry.repsConfigs.isNotEmpty) {
+      repsController.text = widget.entry.repsConfigs.first.value.toString();
     }
   }
 
-  final _form = GlobalKey<FormState>();
+  @override
+  void dispose() {
+    setsController.dispose();
+    weightController.dispose();
+    repsController.dispose();
+    super.dispose();
+  }
 
   @override
   build(BuildContext context) {
@@ -61,7 +81,39 @@ class SlotEntryForm extends StatelessWidget {
       key: _form,
       child: Column(
         children: [
-          Text(entry.exerciseObj.getExercise(languageCode).name),
+          ListTile(
+            title: Text(
+              widget.entry.exerciseObj.getExercise(languageCode).name,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _edit = !_edit;
+                    });
+                  },
+                  icon: _edit ? const Icon(Icons.edit_off) : const Icon(Icons.edit),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.delete),
+                  onPressed: () {
+                    context.read<RoutinesProvider>().deleteSlotEntry(widget.entry.id!);
+                  },
+                ),
+              ],
+            ),
+          ),
+          if (_edit)
+            ExerciseAutocompleter(
+              onExerciseSelected: (exercise) => {
+                setState(() {
+                  widget.entry.exercise = exercise;
+                })
+              },
+            ),
           TextFormField(
             controller: setsController,
             keyboardType: TextInputType.number,
@@ -90,9 +142,9 @@ class SlotEntryForm extends StatelessWidget {
               final provider = Provider.of<RoutinesProvider>(context, listen: false);
 
               // Process new, edited or entries to be deleted
-              provider.handleConfig(entry, weightController.text, ConfigType.weight);
-              provider.handleConfig(entry, setsController.text, ConfigType.sets);
-              provider.handleConfig(entry, repsController.text, ConfigType.reps);
+              provider.handleConfig(widget.entry, weightController.text, ConfigType.weight);
+              provider.handleConfig(widget.entry, setsController.text, ConfigType.sets);
+              provider.handleConfig(widget.entry, repsController.text, ConfigType.reps);
             },
           ),
           const SizedBox(height: 15),
@@ -382,9 +434,9 @@ class _SlotFormWidgetState extends State<SlotFormWidget> {
                                       content: Column(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
-                                          Text(AppLocalizations.of(context).selectExercises),
-                                          const SizedBox(height: 10),
-                                          Text(AppLocalizations.of(context).sameRepetitions),
+                                          // Text(AppLocalizations.of(context).selectExercises),
+                                          // const SizedBox(height: 10),
+                                          // Text(AppLocalizations.of(context).sameRepetitions),
                                         ],
                                       ),
                                       actions: [

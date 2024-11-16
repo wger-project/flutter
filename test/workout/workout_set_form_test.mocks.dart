@@ -1312,7 +1312,7 @@ class MockRoutinesProvider extends _i1.Mock implements _i23.RoutinesProvider {
       ) as _i21.Future<void>);
 
   @override
-  _i21.Future<void> deleteSet(int? setId) => (super.noSuchMethod(
+  _i21.Future<void> deleteSlot(int? setId) => (super.noSuchMethod(
         Invocation.method(
           #deleteSet,
           [setId],

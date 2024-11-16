@@ -22,7 +22,6 @@ import 'dart:developer' as dev;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/exceptions/http_exception.dart';
-import 'package:wger/exceptions/no_such_entry_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/base_config.dart';
@@ -486,6 +485,19 @@ class RoutinesProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> deleteSlotEntry(int id) async {
+    await baseProvider.deleteRequest(_slotsUrlPath, id);
+    for (final routine in _routines) {
+      for (final day in routine.days) {
+        for (final slot in day.slots) {
+          slot.entries.removeWhere((e) => e.id == id);
+        }
+      }
+    }
+
+    notifyListeners();
+  }
+
   String getConfigUrl(ConfigType type) {
     switch (type) {
       case ConfigType.sets:
@@ -495,7 +507,6 @@ class RoutinesProvider with ChangeNotifier {
       case ConfigType.reps:
         return _routineConfigReps;
     }
-    throw const NoSuchEntryException();
   }
 
   Future<BaseConfig> editConfig(BaseConfig config, ConfigType type) async {
@@ -546,11 +557,11 @@ class RoutinesProvider with ChangeNotifier {
     }
   }
 
-  Future<void> fetchComputedSettings(Slot workoutSet) async {
+  Future<void> fetchComputedSettings(Slot slot) async {
     final data = await baseProvider.fetch(
       baseProvider.makeUrl(
         _slotsUrlPath,
-        id: workoutSet.id,
+        id: slot.id,
         objectMethod: 'computed_settings',
       ),
     );
@@ -568,16 +579,16 @@ class RoutinesProvider with ChangeNotifier {
       settings.add(workoutSetting);
     });
 
-    workoutSet.settingsComputed = settings;
+    slot.settingsComputed = settings;
     notifyListeners();
   }
 
-  Future<void> deleteSet(int setId) async {
-    await baseProvider.deleteRequest(_slotsUrlPath, setId);
+  Future<void> deleteSlot(int slotId) async {
+    await baseProvider.deleteRequest(_slotsUrlPath, slotId);
 
     for (final workout in _routines) {
       for (final day in workout.days) {
-        day.slots.removeWhere((element) => element.id == setId);
+        day.slots.removeWhere((slot) => slot.id == slotId);
       }
     }
     notifyListeners();
