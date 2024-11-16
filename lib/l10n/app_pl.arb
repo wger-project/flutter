@@ -140,10 +140,6 @@
       "nrOfSets": {}
     }
   },
-  "supersetWith": "Dodatkowa seria",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
-  },
   "rirNotUsed": "Bez rezerwy powtórzeń",
   "@rirNotUsed": {
     "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
@@ -539,10 +535,6 @@
   "goToToday": "Przejdź do dziś",
   "@goToToday": {
     "description": "Label on button to jump back to 'today' in the calendar widget"
-  },
-  "enterRepetitionsOrWeight": "Proszę wypełnić powtórzenia lub wagę przynajmniej jednej serii",
-  "@enterRepetitionsOrWeight": {
-    "description": "Error message when the user hasn't filled in the forms for exercise sets"
   },
   "enterValue": "proszę wprowadzić wartość",
   "@enterValue": {

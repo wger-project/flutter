@@ -429,10 +429,6 @@
   "@noWeightEntries": {
     "description": "Message shown when the user has no logged weight entries"
   },
-  "supersetWith": "суперсет с",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
-  },
   "newEntry": "Новая запись",
   "@newEntry": {
     "description": "Title when adding a new entry such as a weight or log entry"
@@ -478,10 +474,6 @@
   "goToToday": "Перейти на сегодня",
   "@goToToday": {
     "description": "Label on button to jump back to 'today' in the calendar widget"
-  },
-  "enterRepetitionsOrWeight": "Пожалуйста, укажите количество повторений или вес хотя бы для одного из сетов",
-  "@enterRepetitionsOrWeight": {
-    "description": "Error message when the user hasn't filled in the forms for exercise sets"
   },
   "optionsLabel": "Опции",
   "@optionsLabel": {

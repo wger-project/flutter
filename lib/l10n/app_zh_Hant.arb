@@ -249,8 +249,6 @@
   "@fatShort": {
     "description": "The first letter or short name of the word 'Fat', used in overviews"
   },
-  "fibres": "纖維",
-  "@fibres": {},
   "sodium": "鈉",
   "@sodium": {},
   "edit": "編輯",
@@ -284,10 +282,6 @@
   "enterValue": "請輸入數值",
   "@enterValue": {
     "description": "Error message when the user hasn't entered a value on a required field"
-  },
-  "enterRepetitionsOrWeight": "請為至少一組輸入重複次數或重量",
-  "@enterRepetitionsOrWeight": {
-    "description": "Error message when the user hasn't filled in the forms for exercise sets"
   },
   "aboutBugsText": "如果某些情況未如預期運作或您認為缺少某個功能，請與我們聯絡。",
   "@aboutBugsText": {
@@ -632,10 +626,6 @@
   "miles_per_hour": "英里／小時",
   "@miles_per_hour": {
     "description": "Generated entry for translation for server strings"
-  },
-  "supersetWith": "超級組",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
   },
   "weekAverage": "七天平均值",
   "@weekAverage": {

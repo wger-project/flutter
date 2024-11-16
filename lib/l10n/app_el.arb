@@ -269,10 +269,6 @@
   "@noMatchingExerciseFound": {
     "description": "Message returned if no exercises match the searched string"
   },
-  "supersetWith": "υπερσύνολο με",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
-  },
   "equipment": "Εξοπλισμός",
   "@equipment": {
     "description": "Equipment needed to perform an exercise"

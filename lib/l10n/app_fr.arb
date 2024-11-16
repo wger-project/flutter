@@ -33,10 +33,6 @@
   },
   "calendar": "Calendrier",
   "@calendar": {},
-  "aboutText": "wger est un logiciel libre, sous licence AFPLv3+ et disponible sur GitHub:",
-  "@aboutText": {
-    "description": "Text in the about dialog"
-  },
   "toggleDetails": "Afficher les détails",
   "@toggleDetails": {
     "description": "Switch to toggle detail / overview"
@@ -115,8 +111,6 @@
   "@date": {
     "description": "The date of a workout log or body weight entry"
   },
-  "dismiss": "Rejeter",
-  "@dismiss": {},
   "anErrorOccurred": "Une erreur s’est produite !",
   "@anErrorOccurred": {},
   "noNutritionalPlans": "Aucun programme nutritionnel",
@@ -300,10 +294,6 @@
   "@selectExercise": {
     "description": "Error message when the user hasn't selected an exercise in the form"
   },
-  "enterRepetitionsOrWeight": "Veuillez indiquer les répétitions ou le poids pour au moins une des séries",
-  "@enterRepetitionsOrWeight": {
-    "description": "Error message when the user hasn't filled in the forms for exercise sets"
-  },
   "aboutTranslationText": "Cette application est traduite sur Weblate. Si vous voulez aussi aider, cliquez sur le lien et commencez à traduire",
   "@aboutTranslationText": {
     "description": "Text for translation section in the about dialog"
@@ -451,10 +441,6 @@
   },
   "timeStartAhead": "L'heure de début ne peut pas être après à l'heure de fin",
   "@timeStartAhead": {},
-  "supersetWith": "supersérie avec",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
-  },
   "plateCalculatorNotDivisible": "Impossible d'atteindre le poids avec les disques disponibles",
   "@plateCalculatorNotDivisible": {
     "description": "Error message when the current weight is not reachable with plates (e.g. 33.1 kg)"

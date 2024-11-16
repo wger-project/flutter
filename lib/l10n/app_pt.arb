@@ -67,10 +67,6 @@
   "@exercise": {
     "description": "An exercise for a workout"
   },
-  "supersetWith": "conjunto com",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
-  },
   "equipment": "Equipamento",
   "@equipment": {
     "description": "Equipment needed to perform an exercise"
@@ -500,10 +496,6 @@
   "aboutSourceText": "Obtenha o código fonte deste aplicativo e seu servidor no github",
   "@aboutSourceText": {
     "description": "Text for source code section in the about dialog"
-  },
-  "enterRepetitionsOrWeight": "Por favor, preencha as repetições ou o peso para pelo menos um dos conjuntos",
-  "@enterRepetitionsOrWeight": {
-    "description": "Error message when the user hasn't filled in the forms for exercise sets"
   },
   "setUnitsAndRir": "Definir unidades e ReR",
   "@setUnitsAndRir": {

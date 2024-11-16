@@ -326,7 +326,7 @@
   },
   "weight": "体重",
   "@weight": {
-    "description": "The weight of a workout log or body weight entry, changed from \"重量\" to \"体重\"" 
+    "description": "The weight of a workout log or body weight entry, changed from \"重量\" to \"体重\""
   },
   "anErrorOccurred": "出错了!",
   "@anErrorOccurred": {},
@@ -372,10 +372,6 @@
     "placeholders": {
       "nrOfSets": {}
     }
-  },
-  "enterRepetitionsOrWeight": "请至少填写其中一项的重复次数或重量",
-  "@enterRepetitionsOrWeight": {
-    "description": "Error message when the user hasn't filled in the forms for exercise sets"
   },
   "timeStartAhead": "开始时间不能早于结束时间",
   "@timeStartAhead": {},
@@ -434,10 +430,6 @@
   "newSet": "新增训练日",
   "@newSet": {
     "description": "Header when adding a new set to a workout day"
-  },
-  "supersetWith": "组合",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
   },
   "aboutContactUsText": "聊一聊",
   "@aboutContactUsText": {

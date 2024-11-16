@@ -108,10 +108,6 @@
   "@searchExercise": {
     "description": "Label on set form. Selected exercises are added to the set"
   },
-  "supersetWith": "tambahkan dengan",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
-  },
   "equipment": "Perlengkapan",
   "@equipment": {
     "description": "Equipment needed to perform an exercise"
@@ -455,10 +451,6 @@
   "goToToday": "Go to today",
   "@goToToday": {
     "description": "Label on button to jump back to 'today' in the calendar widget"
-  },
-  "enterRepetitionsOrWeight": "Please fill in either the repetitions or the weight for at least one of the sets",
-  "@enterRepetitionsOrWeight": {
-    "description": "Error message when the user hasn't filled in the forms for exercise sets"
   },
   "enterValue": "Please enter a value",
   "@enterValue": {

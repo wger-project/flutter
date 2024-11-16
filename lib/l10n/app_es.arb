@@ -44,10 +44,6 @@
   "@enterValue": {
     "description": "Error message when the user hasn't entered a value on a required field"
   },
-  "enterRepetitionsOrWeight": "Por favor completa las repeticiones o pesos para al menos una de las series",
-  "@enterRepetitionsOrWeight": {
-    "description": "Error message when the user hasn't filled in the forms for exercise sets"
-  },
   "goToToday": "Ir a \"hoy\"",
   "@goToToday": {
     "description": "Label on button to jump back to 'today' in the calendar widget"
@@ -180,8 +176,6 @@
   "@weight": {
     "description": "The weight of a workout log or body weight entry"
   },
-  "dismiss": "Cerrar",
-  "@dismiss": {},
   "anErrorOccurred": "¡Un error ha ocurrido!",
   "@anErrorOccurred": {},
   "noNutritionalPlans": "No tienes planes nutricionales",
@@ -493,10 +487,6 @@
   "searchIngredient": "Buscar ingrediente",
   "@searchIngredient": {
     "description": "Label on ingredient search form"
-  },
-  "supersetWith": "en conjunto con",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
   },
   "rirNotUsed": "Valor ReR sin usar",
   "@rirNotUsed": {

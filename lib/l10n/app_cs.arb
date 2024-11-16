@@ -239,10 +239,6 @@
   },
   "calendar": "Kalendář",
   "@calendar": {},
-  "enterRepetitionsOrWeight": "Prosím, vyplňte buď počet opakování, nebo hmotnost u alespoň jedné sady",
-  "@enterRepetitionsOrWeight": {
-    "description": "Error message when the user hasn't filled in the forms for exercise sets"
-  },
   "enterValue": "Prosím zadejte hodnotu",
   "@enterValue": {
     "description": "Error message when the user hasn't entered a value on a required field"
@@ -371,10 +367,6 @@
   "searchExercise": "Hledat cvičení, které chcete přidat",
   "@searchExercise": {
     "description": "Label on set form. Selected exercises are added to the set"
-  },
-  "supersetWith": "superset s",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
   },
   "logMeal": "Zaznamenat do nutričního diáře",
   "@logMeal": {},

@@ -78,10 +78,6 @@
   "@goToToday": {
     "description": "Label on button to jump back to 'today' in the calendar widget"
   },
-  "enterRepetitionsOrWeight": "يرجى ملء التكرارات أو الوزن لواحدة على الأقل من المجموعات",
-  "@enterRepetitionsOrWeight": {
-    "description": "Error message when the user hasn't filled in the forms for exercise sets"
-  },
   "baseData": "الأساسيات بالإنجليزية",
   "@baseData": {
     "description": "The base data for an exercise such as category, trained muscles, etc."
@@ -644,10 +640,6 @@
   },
   "measurementEntriesHelpText": "الوحدة المستخدمة لقياس الفئة مثل \"سم\" أو \"%\"",
   "@measurementEntriesHelpText": {},
-  "supersetWith": "مجموعة شاملة مع",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
-  },
   "sugars": "سكريات",
   "@sugars": {},
   "customServerUrl": "رابط عنصر wger",

@@ -19,10 +19,6 @@
   },
   "calendar": "Calendario",
   "@calendar": {},
-  "aboutText": "wger è rilasciato con \"permesso d'autore\", licenza AGPLv3+ e disponibile su GitHub:",
-  "@aboutText": {
-    "description": "Text in the about dialog"
-  },
   "toggleDetails": "Scegli dettagli",
   "@toggleDetails": {
     "description": "Switch to toggle detail / overview"
@@ -113,8 +109,6 @@
   "@weight": {
     "description": "The weight of a workout log or body weight entry"
   },
-  "dismiss": "Annulla",
-  "@dismiss": {},
   "noNutritionalPlans": "Non hai nessun piano nutrizionale",
   "@noNutritionalPlans": {
     "description": "Message shown when the user has no nutritional plans"
@@ -336,10 +330,6 @@
   "@logout": {
     "description": "Text for logout button"
   },
-  "enterRepetitionsOrWeight": "Inserisci sia le ripetizioni che il peso per almeno una delle serie",
-  "@enterRepetitionsOrWeight": {
-    "description": "Error message when the user hasn't filled in the forms for exercise sets"
-  },
   "aboutTranslationText": "Questa applicazione è tradotta su weblate. Se anche tu vuoi contribuire, clicca sul link e inizia a tradurre",
   "@aboutTranslationText": {
     "description": "Text for translation section in the about dialog"
@@ -514,10 +504,6 @@
   "recentlyUsedIngredients": "Ingredienti aggiunti di recente",
   "@recentlyUsedIngredients": {
     "description": "A message when a user adds a new ingredient to a meal."
-  },
-  "supersetWith": "superset con",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
   },
   "plateCalculator": "Piastre",
   "@plateCalculator": {

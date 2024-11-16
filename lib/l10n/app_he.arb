@@ -73,10 +73,6 @@
   "@searchExercise": {
     "description": "Label on set form. Selected exercises are added to the set"
   },
-  "supersetWith": "סט תרגילים ראשי עם",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
-  },
   "muscles": "שרירים",
   "@muscles": {
     "description": "(main) muscles trained by an exercise"
@@ -340,10 +336,6 @@
   "aboutSourceText": "לקבלת קוד המקור של אפליקציה זאת והשרת שלה בגיטהאב",
   "@aboutSourceText": {
     "description": "Text for source code section in the about dialog"
-  },
-  "enterRepetitionsOrWeight": "אנא מלאו את החזרות או את המשקל בלפחות אחד מהסטים",
-  "@enterRepetitionsOrWeight": {
-    "description": "Error message when the user hasn't filled in the forms for exercise sets"
   },
   "setUnitsAndRir": "יחידות סט וחזרות בעתודה",
   "@setUnitsAndRir": {
