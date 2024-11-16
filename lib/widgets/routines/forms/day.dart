@@ -25,8 +25,8 @@ class ReorderableDaysList extends StatefulWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Confirm Delete'),
-          content: const Text('Are you sure you want to delete this day?'),
+          title: Text(AppLocalizations.of(context).delete),
+          content: Text(AppLocalizations.of(context).confirmDelete(day.name)),
           actions: [
             TextButton(
               onPressed: () {
@@ -55,6 +55,9 @@ class ReorderableDaysList extends StatefulWidget {
 class _ReorderableDaysListState extends State<ReorderableDaysList> {
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
+    final provider = context.read<RoutinesProvider>();
+
     return Column(
       children: [
         ReorderableListView.builder(
@@ -72,13 +75,13 @@ class _ReorderableDaysListState extends State<ReorderableDaysList> {
                 //selected: day.id == widget.selectedDayId,
                 tileColor: isDaySelected ? Theme.of(context).highlightColor : null,
                 key: ValueKey(day),
-                title: Text(day.isRest ? 'REST DAY!' : day.name),
+                title: Text(day.isRest ? i18n.restDay : day.name),
                 leading: ReorderableDragStartListener(
                   index: index,
                   child: const Icon(Icons.drag_handle),
                 ),
                 subtitle: Text(
-                  day.isRest ? '' : day.description,
+                  day.description,
                   style: const TextStyle(overflow: TextOverflow.ellipsis),
                 ),
                 trailing: Row(
@@ -117,7 +120,7 @@ class _ReorderableDaysListState extends State<ReorderableDaysList> {
               }
             });
 
-            Provider.of<RoutinesProvider>(context, listen: false).editDays(widget.days);
+            provider.editDays(widget.days);
           },
         ),
         ListTile(
@@ -129,11 +132,17 @@ class _ReorderableDaysListState extends State<ReorderableDaysList> {
             style: Theme.of(context).textTheme.titleMedium,
           ),
           onTap: () async {
-            final newDay = Day.empty();
-            newDay.routineId = widget.routineId;
-            final result = await Provider.of<RoutinesProvider>(context, listen: false)
-                .addDay(newDay, refresh: true);
-            widget.onDaySelected(result.id!);
+            final day = Day.empty();
+            day.name = i18n.newDay;
+            day.routineId = widget.routineId;
+            final newDay = await provider.addDay(day);
+
+            // final newSlot = await provider.addSlot(Slot.withData(
+            //   day: newDay.id,
+            //   order: 1,
+            // ));
+
+            widget.onDaySelected(newDay.id!);
           },
         ),
       ],
@@ -177,15 +186,32 @@ class _DayFormWidgetState extends State<DayFormWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
+
     return Form(
       key: _form,
       child: Column(
         children: [
           Text(
-            widget.day.isRest ? 'REST DAY' : widget.day.name,
+            widget.day.isRest ? i18n.restDay : widget.day.name,
             style: Theme.of(context).textTheme.titleLarge,
           ),
+          SwitchListTile(
+            title: Text(i18n.isRestDay),
+            subtitle: Text(i18n.isRestDayHelp),
+            value: isRestDay,
+            contentPadding: const EdgeInsets.all(4),
+            onChanged: (value) {
+              setState(() {
+                isRestDay = value;
+                nameController.clear();
+                descriptionController.clear();
+              });
+              widget.day.isRest = value;
+            },
+          ),
           TextFormField(
+            enabled: !widget.day.isRest,
             key: const Key('field-name'),
             decoration: InputDecoration(
               labelText: AppLocalizations.of(context).name,
@@ -195,6 +221,10 @@ class _DayFormWidgetState extends State<DayFormWidget> {
               widget.day.name = value!;
             },
             validator: (value) {
+              if (widget.day.isRest) {
+                return null;
+              }
+
               if (value!.isEmpty ||
                   value.length < Day.MIN_LENGTH_NAME ||
                   value.length > Day.MAX_LENGTH_NAME) {
@@ -207,19 +237,9 @@ class _DayFormWidgetState extends State<DayFormWidget> {
               return null;
             },
           ),
-          SwitchListTile(
-            title: const Text('is rest day'),
-            value: isRestDay,
-            contentPadding: const EdgeInsets.all(4),
-            onChanged: (value) {
-              setState(() {
-                isRestDay = value;
-              });
-              widget.day.isRest = value;
-            },
-          ),
           TextFormField(
             key: const Key('field-description'),
+            enabled: !widget.day.isRest,
             decoration: InputDecoration(
               labelText: AppLocalizations.of(context).description,
               helperText: AppLocalizations.of(context).dayDescriptionHelp,
@@ -232,6 +252,10 @@ class _DayFormWidgetState extends State<DayFormWidget> {
             minLines: 2,
             maxLines: 10,
             validator: (value) {
+              if (widget.day.isRest) {
+                return null;
+              }
+
               if (value != null && value.length > Day.MAX_LENGTH_DESCRIPTION) {
                 return AppLocalizations.of(context).enterCharacters(0, Day.MAX_LENGTH_DESCRIPTION);
               }
@@ -239,6 +263,7 @@ class _DayFormWidgetState extends State<DayFormWidget> {
               return null;
             },
           ),
+          const SizedBox(height: 5),
           ElevatedButton(
             key: const Key(SUBMIT_BUTTON_KEY_NAME),
             child: Text(AppLocalizations.of(context).save),
@@ -271,7 +296,8 @@ class _DayFormWidgetState extends State<DayFormWidget> {
               }
             },
           ),
-          ReorderableSlotList(widget.day.slots, widget.day.id!),
+          const SizedBox(height: 5),
+          ReorderableSlotList(widget.day.slots, widget.day),
         ],
       ),
     );

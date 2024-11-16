@@ -156,6 +156,10 @@
   "@reps": {
     "description": "Shorthand for repetitions, used when space constraints are tighter"
   },
+  "sets": "Sets",
+  "@sets": {
+    "description": "The number of sets to be done for one exercise"
+  },
   "rir": "RiR",
   "@rir": {
     "description": "Shorthand for Repetitions In Reserve"
@@ -201,6 +205,11 @@
   "@workoutSession": {
     "description": "A (logged) workout session"
   },
+  "restDay": "Rest day",
+  "isRestDay": "Is rest day",
+  "isRestDayHelp": "Please consider that all sets are removed from rest days when saved",
+  "routineDays": "Days in routine",
+  "resultingRoutine": "Resulting routine",
   "newDay": "New day",
   "@newDay": {},
   "newSet": "New set",
@@ -697,7 +706,11 @@
   "images": "Images",
   "language": "Language",
   "addExercise": "Add exercise",
+  "fitInWeek": "Fit in week",
+  "fitInWeekHelp": "Select if you want to fit the workout days into a week, you can add e.g. three days and mark this checkbox.",
   "addSuperset": "Add superset",
+  "setHasProgression": "Set has progression",
+  "setHasProgressionWarning": "Please note that at the moment it is not possible to edit all settings for a set on the mobile application or configure the progression. ",
   "setHasNoExercises": "This set has no exercises yet!",
   "contributeExercise": "Contribute an exercise",
   "translation": "Translation",

@@ -419,7 +419,7 @@ class RoutinesProvider with ChangeNotifier {
     day = Day.fromJson(data);
     day.slots = [];
     final routine = findById(day.routineId);
-    routine.days.insert(0, day);
+    routine.days.add(day);
     if (refresh) {
       fetchAndSetRoutineFull(day.routineId);
     }

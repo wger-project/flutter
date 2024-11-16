@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/slot.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/providers/routines.dart';
@@ -35,6 +36,8 @@ class SlotEntryForm extends StatefulWidget {
 }
 
 class _SlotEntryFormState extends State<SlotEntryForm> {
+  final iconSize = 18.0;
+
   final setsController = TextEditingController();
   final weightController = TextEditingController();
   final repsController = TextEditingController();
@@ -89,10 +92,12 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
                       _edit = !_edit;
                     });
                   },
-                  icon: _edit ? const Icon(Icons.edit_off) : const Icon(Icons.edit),
+                  icon: _edit
+                      ? Icon(Icons.edit_off, size: iconSize)
+                      : Icon(Icons.edit, size: iconSize),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.delete),
+                  icon: Icon(Icons.delete, size: iconSize),
                   onPressed: () {
                     context.read<RoutinesProvider>().deleteSlotEntry(widget.entry.id!);
                   },
@@ -111,7 +116,7 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
           TextFormField(
             controller: setsController,
             keyboardType: TextInputType.number,
-            decoration: InputDecoration(labelText: 'Sets'),
+            decoration: InputDecoration(labelText: i18n.sets),
           ),
           TextFormField(
             controller: weightController,
@@ -197,9 +202,9 @@ class _SlotDetailWidgetState extends State<SlotDetailWidget> {
 
 class ReorderableSlotList extends StatefulWidget {
   final List<Slot> slots;
-  final int dayId;
+  final Day day;
 
-  const ReorderableSlotList(this.slots, this.dayId);
+  const ReorderableSlotList(this.slots, this.day);
 
   @override
   _SlotFormWidgetStateNg createState() => _SlotFormWidgetStateNg();
@@ -217,23 +222,19 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
 
     final languageCode = Localizations.localeOf(context).languageCode;
 
-    Slot? selectedSlot;
-    if (selectedSlotId != null) {
-      selectedSlot = widget.slots.firstWhere((slot) => slot.id == selectedSlotId);
-    }
-
     return Column(
       children: [
-        SwitchListTile(
-          value: simpleMode,
-          title: const Text('simple mode'),
-          contentPadding: const EdgeInsets.all(4),
-          onChanged: (value) {
-            setState(() {
-              simpleMode = value;
-            });
-          },
-        ),
+        if (!widget.day.isRest)
+          SwitchListTile(
+            value: simpleMode,
+            title: const Text('Simple edit mode'),
+            contentPadding: const EdgeInsets.all(4),
+            onChanged: (value) {
+              setState(() {
+                simpleMode = value;
+              });
+            },
+          ),
         ReorderableListView.builder(
           buildDefaultDragHandles: false,
           shrinkWrap: true,
@@ -249,7 +250,8 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
               child: Column(
                 children: [
                   ListTile(
-                    title: Text(i18n.setNr(index + 1)),
+                    title: Text(slot.id.toString()),
+                    // title: Text(i18n.setNr(index + 1)),
                     tileColor: isCurrentSlotSelected ? Theme.of(context).highlightColor : null,
                     leading: selectedSlotId == null
                         ? ReorderableDragStartListener(
@@ -314,22 +316,23 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
             });
           },
         ),
-        ListTile(
-          leading: const Icon(Icons.add),
-          title: Text(
-            i18n.newSet,
-            style: Theme.of(context).textTheme.titleMedium,
+        if (!widget.day.isRest)
+          ListTile(
+            leading: const Icon(Icons.add),
+            title: Text(
+              i18n.addSet,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            onTap: () async {
+              final newSlot = await provider.addSlot(Slot.withData(
+                day: widget.day.id,
+                order: widget.slots.length + 1,
+              ));
+              setState(() {
+                selectedSlotId = newSlot.id;
+              });
+            },
           ),
-          onTap: () async {
-            final newSlot = await provider.addSlot(Slot.withData(
-              day: widget.dayId,
-              order: widget.slots.length + 1,
-            ));
-            setState(() {
-              selectedSlotId = newSlot.id;
-            });
-          },
-        ),
       ],
     );
   }

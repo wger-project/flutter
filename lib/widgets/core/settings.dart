@@ -30,6 +30,7 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
     final exerciseProvider = Provider.of<ExercisesProvider>(context, listen: false);
     final nutritionProvider = Provider.of<NutritionPlansProvider>(context, listen: false);
 
@@ -40,7 +41,12 @@ class SettingsPage extends StatelessWidget {
       body: ListView(
         children: [
           ListTile(
-            title: Text(AppLocalizations.of(context).settingsExerciseCacheDescription),
+              title: Text(
+            i18n.settingsCacheTitle,
+            style: Theme.of(context).textTheme.headlineSmall,
+          )),
+          ListTile(
+            title: Text(i18n.settingsExerciseCacheDescription),
             trailing: IconButton(
               key: const ValueKey('cacheIconExercises'),
               icon: const Icon(Icons.delete),
@@ -49,7 +55,7 @@ class SettingsPage extends StatelessWidget {
 
                 if (context.mounted) {
                   final snackBar = SnackBar(
-                    content: Text(AppLocalizations.of(context).settingsCacheDeletedSnackbar),
+                    content: Text(i18n.settingsCacheDeletedSnackbar),
                   );
 
                   ScaffoldMessenger.of(context).showSnackBar(snackBar);

@@ -394,7 +394,9 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
           children: [
             Expanded(
               child: Text(
-                dayData.day == null || dayData.day!.isRest ? 'REST DAY' : dayData.day!.name,
+                dayData.day == null || dayData.day!.isRest
+                    ? AppLocalizations.of(context).restDay
+                    : dayData.day!.name,
                 style: const TextStyle(fontWeight: FontWeight.bold),
                 overflow: TextOverflow.ellipsis,
               ),

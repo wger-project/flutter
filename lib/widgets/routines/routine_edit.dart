@@ -16,9 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/routine.dart';
+import 'package:wger/providers/routines.dart';
 import 'package:wger/widgets/routines/forms/day.dart';
 import 'package:wger/widgets/routines/forms/routine.dart';
 import 'package:wger/widgets/routines/routine_detail.dart';
@@ -33,13 +37,26 @@ class RoutineEdit extends StatefulWidget {
 }
 
 class _RoutineEditState extends State<RoutineEdit> {
+  late Future<Routine> _dataFuture;
   int? selectedDayId;
 
   @override
+  void initState() {
+    super.initState();
+    _dataFuture = context
+        .read<RoutinesProvider>()
+        .fetchAndSetRoutineFull(widget._routine.id!); // Initialize the Future here
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
+
+    final provider = context.read<RoutinesProvider>();
+
     Day? selectedDay;
     if (selectedDayId != null) {
-      selectedDay = widget._routine.days.firstWhere((day) => day.id == selectedDayId);
+      selectedDay = widget._routine.days.firstWhereOrNull((day) => day.id == selectedDayId);
     }
 
     return Padding(
@@ -49,6 +66,10 @@ class _RoutineEditState extends State<RoutineEdit> {
           children: [
             RoutineForm(widget._routine),
             Container(height: 10),
+            Text(
+              i18n.routineDays,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
             ReorderableDaysList(
               routineId: widget._routine.id!,
               days: widget._routine.days,
@@ -69,13 +90,37 @@ class _RoutineEditState extends State<RoutineEdit> {
                 day: selectedDay,
                 routineId: widget._routine.id!,
               ),
-            const SizedBox(height: 50),
+            const SizedBox(height: 25),
             Text(
-              'Resulting routine',
+              i18n.resultingRoutine,
               style: Theme.of(context).textTheme.titleLarge,
             ),
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  _dataFuture = provider.fetchAndSetRoutineFull(widget._routine.id!);
+                });
+              },
+              icon: const Icon(Icons.refresh),
+            ),
             const Divider(),
-            RoutineDetail(widget._routine),
+            FutureBuilder<Routine>(
+              future: _dataFuture,
+              builder: (BuildContext context, AsyncSnapshot<Routine> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const SizedBox(
+                    height: 200,
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+                } else if (snapshot.hasData) {
+                  return RoutineDetail(snapshot.data!);
+                }
+                return const Text('No data available');
+              },
+            ),
+            // RoutineDetail(widget._routine),
           ],
         ),
       ),

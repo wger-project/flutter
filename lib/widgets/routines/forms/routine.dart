@@ -43,19 +43,21 @@ class _RoutineFormState extends State<RoutineForm> {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
+
     return Form(
       key: _form,
       child: Column(
         children: [
           TextFormField(
             key: const Key('field-name'),
-            decoration: InputDecoration(labelText: AppLocalizations.of(context).name),
+            decoration: InputDecoration(labelText: i18n.name),
             controller: workoutNameController,
             validator: (value) {
               if (value!.isEmpty ||
                   value.length < Routine.MIN_LENGTH_NAME ||
                   value.length > Routine.MAX_LENGTH_NAME) {
-                return AppLocalizations.of(context).enterCharacters(
+                return i18n.enterCharacters(
                   Routine.MIN_LENGTH_NAME,
                   Routine.MAX_LENGTH_NAME,
                 );
@@ -68,13 +70,13 @@ class _RoutineFormState extends State<RoutineForm> {
           ),
           TextFormField(
             key: const Key('field-description'),
-            decoration: InputDecoration(labelText: AppLocalizations.of(context).description),
+            decoration: InputDecoration(labelText: i18n.description),
             minLines: 3,
             maxLines: 10,
             controller: workoutDescriptionController,
             validator: (value) {
               if (value!.length > Routine.MAX_LENGTH_DESCRIPTION) {
-                return AppLocalizations.of(context).enterCharacters(
+                return i18n.enterCharacters(
                   Routine.MIN_LENGTH_DESCRIPTION,
                   Routine.MAX_LENGTH_DESCRIPTION,
                 );
@@ -171,8 +173,11 @@ class _RoutineFormState extends State<RoutineForm> {
               }
             },
           ),
+          const SizedBox(height: 5),
           SwitchListTile(
-            title: const Text('Fit in week'),
+            title: Text(i18n.fitInWeek),
+            subtitle: Text(i18n.fitInWeekHelp),
+            isThreeLine: true,
             value: widget._routine.fitInWeek,
             contentPadding: const EdgeInsets.all(4),
             onChanged: (bool? value) {
@@ -188,6 +193,7 @@ class _RoutineFormState extends State<RoutineForm> {
               }
             },
           ),
+          const SizedBox(height: 5),
           ElevatedButton(
             key: const Key(SUBMIT_BUTTON_KEY_NAME),
             child: Text(AppLocalizations.of(context).save),
