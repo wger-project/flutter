@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/routines.dart';
+import 'package:wger/widgets/core/progress_indicator.dart';
 
 class RoutineForm extends StatefulWidget {
   final Routine _routine;
@@ -18,6 +19,7 @@ class RoutineForm extends StatefulWidget {
 class _RoutineFormState extends State<RoutineForm> {
   final _form = GlobalKey<FormState>();
 
+  bool isSaving = false;
   late bool fitInWeek;
   late DateTime startDate;
   late DateTime endDate;
@@ -196,26 +198,36 @@ class _RoutineFormState extends State<RoutineForm> {
           const SizedBox(height: 5),
           ElevatedButton(
             key: const Key(SUBMIT_BUTTON_KEY_NAME),
-            child: Text(AppLocalizations.of(context).save),
-            onPressed: () async {
-              // Validate and save
-              final isValid = _form.currentState!.validate();
-              if (!isValid) {
-                return;
-              }
-              _form.currentState!.save();
+            onPressed: isSaving
+                ? null
+                : () async {
+                    // Validate and save
+                    final isValid = _form.currentState!.validate();
+                    if (!isValid) {
+                      return;
+                    }
+                    _form.currentState!.save();
+                    setState(() {
+                      isSaving = true;
+                    });
 
-              // Save to DB
-              if (widget._routine.id != null) {
-                await Provider.of<RoutinesProvider>(context, listen: false)
-                    .editRoutine(widget._routine);
-              } else {
-                final Routine newPlan = await Provider.of<RoutinesProvider>(
-                  context,
-                  listen: false,
-                ).addRoutine(widget._routine);
-              }
-            },
+                    // Save to DB
+                    if (widget._routine.id != null) {
+                      await Provider.of<RoutinesProvider>(context, listen: false)
+                          .editRoutine(widget._routine);
+                    } else {
+                      final Routine newPlan = await Provider.of<RoutinesProvider>(
+                        context,
+                        listen: false,
+                      ).addRoutine(widget._routine);
+                    }
+
+                    setState(() {
+                      isSaving = false;
+                    });
+                  },
+            child:
+                isSaving ? const FormProgressIndicator() : Text(AppLocalizations.of(context).save),
           ),
         ],
       ),
