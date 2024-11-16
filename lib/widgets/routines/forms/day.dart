@@ -271,7 +271,7 @@ class _DayFormWidgetState extends State<DayFormWidget> {
               }
             },
           ),
-          ReorderableSlotList(widget.day.slots),
+          ReorderableSlotList(widget.day.slots, widget.day.id!),
         ],
       ),
     );

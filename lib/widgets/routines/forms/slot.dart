@@ -171,8 +171,9 @@ class SlotDetailWidget extends StatelessWidget {
 
 class ReorderableSlotList extends StatefulWidget {
   final List<Slot> slots;
+  final int dayId;
 
-  const ReorderableSlotList(this.slots);
+  const ReorderableSlotList(this.slots, this.dayId);
 
   @override
   _SlotFormWidgetStateNg createState() => _SlotFormWidgetStateNg();
@@ -184,6 +185,8 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
 
   @override
   Widget build(BuildContext context) {
+    final provider = context.read<RoutinesProvider>();
+
     final languageCode = Localizations.localeOf(context).languageCode;
 
     Slot? selectedSlot;
@@ -229,6 +232,11 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        if (slot.entries.isEmpty)
+                          Card(
+                            child: Text('no exercises'),
+                            color: Theme.of(context).splashColor,
+                          ),
                         ...slot.entries
                             .map((e) => Text(e.exerciseObj.getExercise(languageCode).name)),
                       ],
@@ -252,10 +260,7 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
                         ),
                         IconButton(
                           icon: const Icon(Icons.delete),
-                          onPressed: () {
-                            // widget._showDeleteConfirmationDialog(
-                            //     context, day); // Call the dialog function
-                          },
+                          onPressed: () => provider.deleteSlot(slot.id!),
                         ),
                       ],
                     ),
@@ -278,7 +283,7 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
                 widget.slots[i].order = i + 1;
               }
 
-              Provider.of<RoutinesProvider>(context, listen: false).editSlots(widget.slots);
+              provider.editSlots(widget.slots);
             });
           },
         ),
@@ -288,7 +293,9 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
             AppLocalizations.of(context).newSet,
             style: Theme.of(context).textTheme.titleMedium,
           ),
-          onTap: () {},
+          onTap: () {
+            provider.addSlot(Slot.withData(day: widget.dayId, order: widget.slots.length + 1));
+          },
         ),
         if (selectedSlot != null) Text(selectedSlot.id!.toString()),
       ],

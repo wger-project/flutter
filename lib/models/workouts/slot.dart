@@ -67,19 +67,18 @@ class Slot {
 
   Slot.withData({
     this.id,
-    day,
-    comment,
-    order,
-    exercises,
-    settings,
-    settingsComputed,
+    int? day,
+    String? comment,
+    int? order,
+    List<Exercise>? exercises,
+    List<SlotEntry>? entries,
   }) {
     this.order = order ?? 1;
     this.comment = comment ?? '';
+    config = null;
     exercisesObj = exercises ?? [];
     exercisesIds = exercisesObj.map((e) => e.id!).toList();
-    entries = settings ?? [];
-    this.settingsComputed = settingsComputed ?? [];
+    entries = entries ?? [];
     if (day != null) {
       this.day = day;
     }
