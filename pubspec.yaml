@@ -89,6 +89,9 @@ dev_dependencies:
   freezed: ^2.5.2
   golden_toolkit: ^0.15.0
 
+  # Script to read out unused translations
+  #translations_cleaner: ^0.0.5
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

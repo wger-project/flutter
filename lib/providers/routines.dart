@@ -86,7 +86,7 @@ class RoutinesProvider with ChangeNotifier {
 
   /// Return the default weight unit (kg)
   WeightUnit get defaultWeightUnit {
-    return _weightUnits.firstWhere((element) => element.id == DEFAULT_WEIGHT_UNIT);
+    return _weightUnits.firstWhere((element) => element.id == WEIGHT_UNIT_KG_ID);
   }
 
   List<RepetitionUnit> get repetitionUnits {
@@ -95,7 +95,7 @@ class RoutinesProvider with ChangeNotifier {
 
   /// Return the default weight unit (reps)
   RepetitionUnit get defaultRepetitionUnit {
-    return _repetitionUnit.firstWhere((element) => element.id == REP_UNIT_REPETITIONS);
+    return _repetitionUnit.firstWhere((element) => element.id == REP_UNIT_REPETITIONS_ID);
   }
 
   List<Routine> getPlans() {
@@ -477,7 +477,7 @@ class RoutinesProvider with ChangeNotifier {
   }
 
   Future<void> deleteSlot(int slotId) async {
-    final data = await baseProvider.deleteRequest(_slotsUrlPath, slotId);
+    await baseProvider.deleteRequest(_slotsUrlPath, slotId);
 
     for (final routine in _routines) {
       for (final day in routine.days) {
@@ -508,8 +508,31 @@ class RoutinesProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<SlotEntry> addSlotEntry(SlotEntry entry) async {
+    final data = await baseProvider.post(
+      entry.toJson(),
+      baseProvider.makeUrl(_slotEntriesUrlPath),
+    );
+    final newEntry = SlotEntry.fromJson(data);
+    newEntry.exerciseObj = (await _exercises.fetchAndSetExercise(newEntry.exerciseId))!;
+
+    for (final routine in _routines) {
+      for (final day in routine.days) {
+        for (final slot in day.slots) {
+          if (slot.id == entry.slotId) {
+            slot.entries.add(newEntry);
+            break;
+          }
+        }
+      }
+    }
+
+    notifyListeners();
+    return newEntry;
+  }
+
   Future<void> deleteSlotEntry(int id) async {
-    await baseProvider.deleteRequest(_slotsUrlPath, id);
+    await baseProvider.deleteRequest(_slotEntriesUrlPath, id);
     for (final routine in _routines) {
       for (final day in routine.days) {
         for (final slot in day.slots) {

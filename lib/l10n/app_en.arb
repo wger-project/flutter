@@ -706,6 +706,8 @@
   "images": "Images",
   "language": "Language",
   "addExercise": "Add exercise",
+  "addSuperset": "Add superset",
+  "setHasNoExercises": "This set has no exercises yet!",
   "contributeExercise": "Contribute an exercise",
   "translation": "Translation",
   "translateExercise": "Translate this exercise now",

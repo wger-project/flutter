@@ -9,7 +9,7 @@ import 'dart:ui' as _i17;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i16;
 import 'package:wger/models/exercises/exercise.dart' as _i15;
-import 'package:wger/models/workouts/base_config.dart' as _i8;
+import 'package:wger/models/workouts/base_config.dart' as _i9;
 import 'package:wger/models/workouts/day.dart' as _i6;
 import 'package:wger/models/workouts/day_data.dart' as _i14;
 import 'package:wger/models/workouts/log.dart' as _i11;
@@ -17,7 +17,7 @@ import 'package:wger/models/workouts/repetition_unit.dart' as _i4;
 import 'package:wger/models/workouts/routine.dart' as _i5;
 import 'package:wger/models/workouts/session.dart' as _i10;
 import 'package:wger/models/workouts/slot.dart' as _i7;
-import 'package:wger/models/workouts/slot_entry.dart' as _i9;
+import 'package:wger/models/workouts/slot_entry.dart' as _i8;
 import 'package:wger/models/workouts/weight_unit.dart' as _i3;
 import 'package:wger/providers/base_provider.dart' as _i2;
 import 'package:wger/providers/routines.dart' as _i12;
@@ -95,8 +95,8 @@ class _FakeSlot_5 extends _i1.SmartFake implements _i7.Slot {
         );
 }
 
-class _FakeBaseConfig_6 extends _i1.SmartFake implements _i8.BaseConfig {
-  _FakeBaseConfig_6(
+class _FakeSlotEntry_6 extends _i1.SmartFake implements _i8.SlotEntry {
+  _FakeSlotEntry_6(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -105,8 +105,8 @@ class _FakeBaseConfig_6 extends _i1.SmartFake implements _i8.BaseConfig {
         );
 }
 
-class _FakeSlotEntry_7 extends _i1.SmartFake implements _i9.SlotEntry {
-  _FakeSlotEntry_7(
+class _FakeBaseConfig_7 extends _i1.SmartFake implements _i9.BaseConfig {
+  _FakeBaseConfig_7(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -491,6 +491,21 @@ class MockRoutinesProvider extends _i1.Mock implements _i12.RoutinesProvider {
       ) as _i13.Future<void>);
 
   @override
+  _i13.Future<_i8.SlotEntry> addSlotEntry(_i8.SlotEntry? entry) => (super.noSuchMethod(
+        Invocation.method(
+          #addSlotEntry,
+          [entry],
+        ),
+        returnValue: _i13.Future<_i8.SlotEntry>.value(_FakeSlotEntry_6(
+          this,
+          Invocation.method(
+            #addSlotEntry,
+            [entry],
+          ),
+        )),
+      ) as _i13.Future<_i8.SlotEntry>);
+
+  @override
   _i13.Future<void> deleteSlotEntry(int? id) => (super.noSuchMethod(
         Invocation.method(
           #deleteSlotEntry,
@@ -501,7 +516,7 @@ class MockRoutinesProvider extends _i1.Mock implements _i12.RoutinesProvider {
       ) as _i13.Future<void>);
 
   @override
-  String getConfigUrl(_i9.ConfigType? type) => (super.noSuchMethod(
+  String getConfigUrl(_i8.ConfigType? type) => (super.noSuchMethod(
         Invocation.method(
           #getConfigUrl,
           [type],
@@ -516,9 +531,9 @@ class MockRoutinesProvider extends _i1.Mock implements _i12.RoutinesProvider {
       ) as String);
 
   @override
-  _i13.Future<_i8.BaseConfig> editConfig(
-    _i8.BaseConfig? config,
-    _i9.ConfigType? type,
+  _i13.Future<_i9.BaseConfig> editConfig(
+    _i9.BaseConfig? config,
+    _i8.ConfigType? type,
   ) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -528,7 +543,7 @@ class MockRoutinesProvider extends _i1.Mock implements _i12.RoutinesProvider {
             type,
           ],
         ),
-        returnValue: _i13.Future<_i8.BaseConfig>.value(_FakeBaseConfig_6(
+        returnValue: _i13.Future<_i9.BaseConfig>.value(_FakeBaseConfig_7(
           this,
           Invocation.method(
             #editConfig,
@@ -538,12 +553,12 @@ class MockRoutinesProvider extends _i1.Mock implements _i12.RoutinesProvider {
             ],
           ),
         )),
-      ) as _i13.Future<_i8.BaseConfig>);
+      ) as _i13.Future<_i9.BaseConfig>);
 
   @override
-  _i13.Future<_i8.BaseConfig> addConfig(
-    _i8.BaseConfig? config,
-    _i9.ConfigType? type,
+  _i13.Future<_i9.BaseConfig> addConfig(
+    _i9.BaseConfig? config,
+    _i8.ConfigType? type,
   ) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -553,7 +568,7 @@ class MockRoutinesProvider extends _i1.Mock implements _i12.RoutinesProvider {
             type,
           ],
         ),
-        returnValue: _i13.Future<_i8.BaseConfig>.value(_FakeBaseConfig_6(
+        returnValue: _i13.Future<_i9.BaseConfig>.value(_FakeBaseConfig_7(
           this,
           Invocation.method(
             #addConfig,
@@ -563,12 +578,12 @@ class MockRoutinesProvider extends _i1.Mock implements _i12.RoutinesProvider {
             ],
           ),
         )),
-      ) as _i13.Future<_i8.BaseConfig>);
+      ) as _i13.Future<_i9.BaseConfig>);
 
   @override
   _i13.Future<void> deleteConfig(
     int? id,
-    _i9.ConfigType? type,
+    _i8.ConfigType? type,
   ) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -584,9 +599,9 @@ class MockRoutinesProvider extends _i1.Mock implements _i12.RoutinesProvider {
 
   @override
   _i13.Future<void> handleConfig(
-    _i9.SlotEntry? entry,
+    _i8.SlotEntry? entry,
     String? input,
-    _i9.ConfigType? type,
+    _i8.ConfigType? type,
   ) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -612,19 +627,19 @@ class MockRoutinesProvider extends _i1.Mock implements _i12.RoutinesProvider {
       ) as _i13.Future<void>);
 
   @override
-  _i13.Future<_i9.SlotEntry> addSetting(_i9.SlotEntry? workoutSetting) => (super.noSuchMethod(
+  _i13.Future<_i8.SlotEntry> addSetting(_i8.SlotEntry? workoutSetting) => (super.noSuchMethod(
         Invocation.method(
           #addSetting,
           [workoutSetting],
         ),
-        returnValue: _i13.Future<_i9.SlotEntry>.value(_FakeSlotEntry_7(
+        returnValue: _i13.Future<_i8.SlotEntry>.value(_FakeSlotEntry_6(
           this,
           Invocation.method(
             #addSetting,
             [workoutSetting],
           ),
         )),
-      ) as _i13.Future<_i9.SlotEntry>);
+      ) as _i13.Future<_i8.SlotEntry>);
 
   @override
   _i13.Future<dynamic> fetchSessionData() => (super.noSuchMethod(

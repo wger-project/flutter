@@ -35,14 +35,14 @@ const TESTSERVER_PASSWORD = 'flutteruser';
 const MANIFEST_KEY_CHECK_UPDATE = 'wger.check_min_app_version';
 
 /// Default weight unit is "kg"
-const DEFAULT_WEIGHT_UNIT = 1;
+const WEIGHT_UNIT_KG_ID = 1;
 
 /// Default impression for a workout session (neutral)
 const DEFAULT_IMPRESSION = 2;
 
 // Weight and repetition units for the workout logs
-const REP_UNIT_REPETITIONS = 1;
-const REP_UNIT_TILL_FAILURE = 2;
+const REP_UNIT_REPETITIONS_ID = 1;
+const REP_UNIT_TILL_FAILURE_ID = 2;
 
 const WEIGHT_UNIT_KG = 1;
 const WEIGHT_UNIT_LB = 2;

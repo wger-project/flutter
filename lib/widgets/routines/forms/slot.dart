@@ -18,19 +18,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/models/exercises/exercise.dart';
-import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/slot.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
-import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/routines.dart';
-import 'package:wger/screens/add_exercise_screen.dart';
 import 'package:wger/widgets/exercises/autocompleter.dart';
-import 'package:wger/widgets/exercises/images.dart';
-import 'package:wger/widgets/routines/forms.dart';
 
 class SlotEntryForm extends StatefulWidget {
   final SlotEntry entry;
@@ -73,7 +66,7 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
   }
 
   @override
-  build(BuildContext context) {
+  Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
     final languageCode = Localizations.localeOf(context).languageCode;
 
@@ -85,6 +78,7 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
             title: Text(
               widget.entry.exerciseObj.getExercise(languageCode).name,
               style: Theme.of(context).textTheme.titleMedium,
+              // textAlign: TextAlign.center,
             ),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
@@ -132,7 +126,7 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
           const SizedBox(height: 5),
           OutlinedButton(
             key: const Key(SUBMIT_BUTTON_KEY_NAME),
-            child: Text(AppLocalizations.of(context).save),
+            child: Text(i18n.save),
             onPressed: () async {
               if (!_form.currentState!.validate()) {
                 return;
@@ -147,26 +141,58 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
               provider.handleConfig(widget.entry, repsController.text, ConfigType.reps);
             },
           ),
-          const SizedBox(height: 15),
+          const SizedBox(height: 10),
         ],
       ),
     );
   }
 }
 
-class SlotDetailWidget extends StatelessWidget {
+class SlotDetailWidget extends StatefulWidget {
   final Slot slot;
 
   const SlotDetailWidget(this.slot, {super.key});
 
   @override
-  build(BuildContext context) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ...slot.entries.map((entry) => SlotEntryForm(entry)),
-          const SizedBox(height: 30),
-        ],
-      );
+  State<SlotDetailWidget> createState() => _SlotDetailWidgetState();
+}
+
+class _SlotDetailWidgetState extends State<SlotDetailWidget> {
+  bool _addSuperset = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
+    final provider = context.read<RoutinesProvider>();
+
+    return Column(
+      children: [
+        ...widget.slot.entries.map((entry) => SlotEntryForm(entry)),
+        const SizedBox(height: 10),
+        if (_addSuperset || widget.slot.entries.isEmpty)
+          ExerciseAutocompleter(
+            onExerciseSelected: (exercise) async {
+              final SlotEntry entry = SlotEntry.withData(
+                slotId: widget.slot.id!,
+                order: widget.slot.entries.length + 1,
+                exercise: exercise,
+              );
+
+              _addSuperset = false;
+              await provider.addSlotEntry(entry);
+            },
+          ),
+        FilledButton(
+            onPressed: () {
+              setState(() {
+                _addSuperset = !_addSuperset;
+              });
+            },
+            child: Text(i18n.addSuperset)),
+        const SizedBox(height: 5),
+      ],
+    );
+  }
 }
 
 class ReorderableSlotList extends StatefulWidget {
@@ -185,6 +211,8 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
+
     final provider = context.read<RoutinesProvider>();
 
     final languageCode = Localizations.localeOf(context).languageCode;
@@ -213,34 +241,31 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
           itemCount: widget.slots.length,
           itemBuilder: (context, index) {
             final slot = widget.slots[index];
-            final isSlotSelected = slot.id == selectedSlotId;
+            final isCurrentSlotSelected = slot.id == selectedSlotId;
 
             return Card(
+              color: slot.entries.isEmpty ? Theme.of(context).colorScheme.inversePrimary : null,
               key: ValueKey(slot.id),
               child: Column(
                 children: [
                   ListTile(
-                    title: Text('Set ${index + 1}'),
-                    tileColor: isSlotSelected ? Theme.of(context).highlightColor : null,
+                    title: Text(i18n.setNr(index + 1)),
+                    tileColor: isCurrentSlotSelected ? Theme.of(context).highlightColor : null,
                     leading: selectedSlotId == null
                         ? ReorderableDragStartListener(
                             index: index,
                             child: const Icon(Icons.drag_handle),
                           )
                         : const Icon(Icons.block),
-                    // : const Icon(Icons.filter_list_off),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (slot.entries.isEmpty)
-                          Card(
-                            child: Text('no exercises'),
-                            color: Theme.of(context).splashColor,
+                    subtitle: slot.entries.isEmpty
+                        ? Text(i18n.setHasNoExercises)
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ...slot.entries
+                                  .map((e) => Text(e.exerciseObj.getExercise(languageCode).name)),
+                            ],
                           ),
-                        ...slot.entries
-                            .map((e) => Text(e.exerciseObj.getExercise(languageCode).name)),
-                      ],
-                    ),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -253,19 +278,21 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
                                 selectedSlotId = slot.id;
                               }
                             });
-                            // widget.onDaySelected(day.id!);
                           },
-                          icon:
-                              isSlotSelected ? const Icon(Icons.edit_off) : const Icon(Icons.edit),
+                          icon: isCurrentSlotSelected
+                              ? const Icon(Icons.edit_off)
+                              : const Icon(Icons.edit),
                         ),
                         IconButton(
-                          icon: const Icon(Icons.delete),
-                          onPressed: () => provider.deleteSlot(slot.id!),
-                        ),
+                            icon: const Icon(Icons.delete),
+                            onPressed: () async {
+                              selectedSlotId = null;
+                              await provider.deleteSlot(slot.id!);
+                            }),
                       ],
                     ),
                   ),
-                  if (isSlotSelected) SlotDetailWidget(slot),
+                  if (isCurrentSlotSelected) SlotDetailWidget(slot),
                 ],
               ),
             );
@@ -290,369 +317,20 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
         ListTile(
           leading: const Icon(Icons.add),
           title: Text(
-            AppLocalizations.of(context).newSet,
+            i18n.newSet,
             style: Theme.of(context).textTheme.titleMedium,
           ),
-          onTap: () {
-            provider.addSlot(Slot.withData(day: widget.dayId, order: widget.slots.length + 1));
+          onTap: () async {
+            final newSlot = await provider.addSlot(Slot.withData(
+              day: widget.dayId,
+              order: widget.slots.length + 1,
+            ));
+            setState(() {
+              selectedSlotId = newSlot.id;
+            });
           },
         ),
-        if (selectedSlot != null) Text(selectedSlot.id!.toString()),
       ],
-    );
-  }
-}
-
-class SlotFormWidget extends StatefulWidget {
-  final Day _day;
-  late final Slot _slot;
-
-  SlotFormWidget(this._day, [Slot? set]) {
-    _slot = set ?? Slot.withData(day: _day.id, order: _day.slots.length);
-  }
-
-  @override
-  _SlotFormWidgetState createState() => _SlotFormWidgetState();
-}
-
-class _SlotFormWidgetState extends State<SlotFormWidget> {
-  double _currentSetSliderValue = Slot.DEFAULT_NR_SETS.toDouble();
-  bool _detailed = false;
-  bool _searchEnglish = true;
-
-  // Form stuff
-  final GlobalKey<FormState> _formKey = GlobalKey();
-  final _exercisesController = TextEditingController();
-
-  /// Removes an exercise from the current set
-  void removeExerciseBase(Exercise base) {
-    setState(() {
-      widget._slot.removeExercise(base);
-    });
-  }
-
-  @override
-  void dispose() {
-    _exercisesController.dispose();
-    super.dispose();
-  }
-
-  /// Adds an exercise to the current set
-  void addExercise(Exercise base) {
-    setState(() {
-      widget._slot.addExerciseBase(base);
-      addSettings();
-    });
-  }
-
-  /// Adds settings to the set
-  void addSettings() {
-    final workoutProvider = context.read<RoutinesProvider>();
-
-    widget._slot.entries = [];
-    int order = 0;
-    for (final exercise in widget._slot.exercisesObj) {
-      order++;
-      // for (int loop = 0; loop < widget._set.sets; loop++) {
-      final SlotEntry setting = SlotEntry.empty();
-      setting.order = order;
-      setting.exercise = exercise;
-      setting.weightUnit = workoutProvider.defaultWeightUnit;
-      setting.repetitionUnit = workoutProvider.defaultRepetitionUnit;
-
-      widget._slot.entries.add(setting);
-      // }
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: ListView(
-        children: [
-          Container(
-            padding: const EdgeInsets.only(top: 10),
-            color: Theme.of(context).colorScheme.primaryContainer,
-            child: Column(
-              //crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(AppLocalizations.of(context).nrOfSets(_currentSetSliderValue.round())),
-                Slider(
-                  value: _currentSetSliderValue,
-                  min: 1,
-                  max: 10,
-                  divisions: 10,
-                  label: _currentSetSliderValue.round().toString(),
-                  onChanged: (double value) {
-                    setState(() {
-                      // widget._set.sets = value.round();
-                      _currentSetSliderValue = value;
-                      addSettings();
-                    });
-                  },
-                  inactiveColor: Theme.of(context).colorScheme.surface,
-                ),
-                if (widget._slot.entries.isNotEmpty)
-                  SwitchListTile(
-                    title: Text(AppLocalizations.of(context).setUnitsAndRir),
-                    value: _detailed,
-                    onChanged: (value) {
-                      setState(() {
-                        _detailed = !_detailed;
-                      });
-                    },
-                  ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                Card(
-                  child: Column(
-                    children: [
-                      TypeAheadField<Exercise>(
-                        key: const Key('field-typeahead'),
-                        decorationBuilder: (context, child) {
-                          return Material(
-                            type: MaterialType.card,
-                            elevation: 4,
-                            borderRadius: BorderRadius.circular(8),
-                            child: child,
-                          );
-                        },
-                        controller: _exercisesController,
-                        builder: (context, controller, focusNode) {
-                          return TextFormField(
-                            controller: controller,
-                            focusNode: focusNode,
-                            // autofocus: true,
-                            decoration: InputDecoration(
-                              labelText: AppLocalizations.of(context).searchExercise,
-                              prefixIcon: const Icon(Icons.search),
-                              suffixIcon: IconButton(
-                                icon: const Icon(Icons.help),
-                                onPressed: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) => AlertDialog(
-                                      content: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          // Text(AppLocalizations.of(context).selectExercises),
-                                          // const SizedBox(height: 10),
-                                          // Text(AppLocalizations.of(context).sameRepetitions),
-                                        ],
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                          child: Text(
-                                            MaterialLocalizations.of(context).closeButtonLabel,
-                                          ),
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                              ),
-                              errorMaxLines: 2,
-                              border: InputBorder.none,
-                            ),
-                            validator: (value) {
-                              // At least one exercise must be selected
-                              if (widget._slot.exercisesIds.isEmpty) {
-                                return AppLocalizations.of(context).selectExercise;
-                              }
-
-                              // At least one setting has to be filled in
-                              // if (widget._set.entries
-                              //         .where((s) => s.weight == null && s.reps == null)
-                              //         .length ==
-                              //     widget._set.entries.length) {
-                              //   return AppLocalizations.of(context).enterRepetitionsOrWeight;
-                              // }
-                              return null;
-                            },
-                          );
-                        },
-                        suggestionsCallback: (pattern) {
-                          if (pattern == '') {
-                            return null;
-                          }
-                          return context.read<ExercisesProvider>().searchExercise(
-                                pattern,
-                                languageCode: Localizations.localeOf(context).languageCode,
-                                searchEnglish: _searchEnglish,
-                              );
-                        },
-                        itemBuilder: (
-                          BuildContext context,
-                          Exercise exerciseSuggestion,
-                        ) =>
-                            ListTile(
-                          key: Key('exercise-${exerciseSuggestion.id}'),
-                          leading: SizedBox(
-                            width: 45,
-                            child: ExerciseImageWidget(
-                              image: exerciseSuggestion.getMainImage,
-                            ),
-                          ),
-                          title: Text(
-                            exerciseSuggestion
-                                .getExercise(Localizations.localeOf(context).languageCode)
-                                .name,
-                          ),
-                          subtitle: Text(
-                            '${exerciseSuggestion.category!.name} / ${exerciseSuggestion.equipment.map((e) => e.name).join(', ')}',
-                          ),
-                        ),
-                        emptyBuilder: (context) {
-                          return Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              ListTile(
-                                title: Text(AppLocalizations.of(context).noMatchingExerciseFound),
-                              ),
-                              ListTile(
-                                title: OutlinedButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pushNamed(AddExerciseScreen.routeName);
-                                  },
-                                  child: Text(AppLocalizations.of(context).contributeExercise),
-                                ),
-                              ),
-                            ],
-                          );
-                        },
-                        transitionBuilder: (context, animation, child) => FadeTransition(
-                          opacity: CurvedAnimation(
-                            parent: animation,
-                            curve: Curves.fastOutSlowIn,
-                          ),
-                          child: child,
-                        ),
-                        onSelected: (Exercise exerciseSuggestion) {
-                          // SuggestionsController.of(context).select(exerciseSuggestion);
-
-                          addExercise(exerciseSuggestion);
-                          _exercisesController.text = '';
-                        },
-                      ),
-                      if (Localizations.localeOf(context).languageCode != LANGUAGE_SHORT_ENGLISH)
-                        SwitchListTile(
-                          title: Text(AppLocalizations.of(context).searchNamesInEnglish),
-                          value: _searchEnglish,
-                          onChanged: (_) {
-                            setState(() {
-                              _searchEnglish = !_searchEnglish;
-                            });
-                          },
-                          dense: true,
-                        ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 10),
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context).comment,
-                    errorMaxLines: 2,
-                  ),
-                  keyboardType: TextInputType.text,
-                  validator: (value) {
-                    const minLength = 0;
-                    const maxLength = 200;
-                    if (value!.length > maxLength) {
-                      return AppLocalizations.of(context).enterCharacters(minLength, maxLength);
-                    }
-                    return null;
-                  },
-                  onSaved: (newValue) {
-                    widget._slot.comment = newValue!;
-                  },
-                ),
-                const SizedBox(height: 10),
-                ...widget._slot.exercisesObj.asMap().entries.map((entry) {
-                  final index = entry.key;
-                  final exercise = entry.value;
-                  final showSupersetInfo = (index + 1) < widget._slot.exercisesObj.length;
-                  final settings =
-                      widget._slot.entries.where((e) => e.exerciseObj.id == exercise.id).toList();
-
-                  return Column(
-                    children: [
-                      ExerciseSetting(
-                        exercise,
-                        settings,
-                        _detailed,
-                        _currentSetSliderValue,
-                        removeExerciseBase,
-                      ),
-                      if (showSupersetInfo)
-                        const Padding(
-                          padding: EdgeInsets.all(3.0),
-                          child: Text('+'),
-                        ),
-                      if (showSupersetInfo) Text(AppLocalizations.of(context).supersetWith),
-                      if (showSupersetInfo)
-                        const Padding(
-                          padding: EdgeInsets.all(3.0),
-                          child: Text('+'),
-                        ),
-                    ],
-                  );
-                }),
-                ElevatedButton(
-                  key: const Key(SUBMIT_BUTTON_KEY_NAME),
-                  child: Text(AppLocalizations.of(context).save),
-                  onPressed: () async {
-                    final isValid = _formKey.currentState!.validate();
-                    if (!isValid) {
-                      return;
-                    }
-                    _formKey.currentState!.save();
-
-                    final workoutProvider = Provider.of<RoutinesProvider>(
-                      context,
-                      listen: false,
-                    );
-
-                    // Save set
-                    final Slot setDb = await workoutProvider.addSlot(widget._slot);
-                    widget._slot.id = setDb.id;
-
-                    // Remove unused settings
-                    // widget._set.entries.removeWhere((s) => s.weight == null && s.reps == null);
-
-                    // Save remaining settings
-                    for (final setting in widget._slot.entries) {
-                      setting.slotId = setDb.id!;
-                      setting.comment = '';
-
-                      final SlotEntry settingDb = await workoutProvider.addSetting(setting);
-                      setting.id = settingDb.id;
-                    }
-
-                    // Add to workout day
-                    workoutProvider.fetchComputedSettings(widget._slot);
-                    widget._day.slots.add(widget._slot);
-
-                    // Close the bottom sheet
-                    if (context.mounted) {
-                      Navigator.of(context).pop();
-                    }
-                  },
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

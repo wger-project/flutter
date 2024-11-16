@@ -17,6 +17,7 @@
  */
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/base_config.dart';
@@ -68,11 +69,11 @@ class SlotEntry {
   @JsonKey(required: true, name: 'repetition_rounding', fromJson: stringToNum)
   late num repetitionRounding;
 
-  @JsonKey(required: true, name: 'reps_configs')
-  late List<BaseConfig> repsConfigs;
+  @JsonKey(required: false, name: 'reps_configs', includeToJson: false, defaultValue: [])
+  late List<BaseConfig> repsConfigs = [];
 
-  @JsonKey(required: true, name: 'max_reps_configs')
-  late List<BaseConfig> maxRepsConfigs;
+  @JsonKey(required: false, name: 'max_reps_configs', includeToJson: false, defaultValue: [])
+  late List<BaseConfig> maxRepsConfigs = [];
 
   @JsonKey(required: true, name: 'weight_unit')
   late int weightUnitId;
@@ -83,23 +84,23 @@ class SlotEntry {
   @JsonKey(required: true, name: 'weight_rounding', fromJson: stringToNum)
   late num weightRounding;
 
-  @JsonKey(required: true, name: 'weight_configs')
-  late List<BaseConfig> weightConfigs;
+  @JsonKey(required: false, name: 'weight_configs', includeToJson: false, defaultValue: [])
+  late List<BaseConfig> weightConfigs = [];
 
-  @JsonKey(required: true, name: 'max_weight_configs')
-  late List<BaseConfig> maxWeightConfigs;
+  @JsonKey(required: false, name: 'max_weight_configs', includeToJson: false, defaultValue: [])
+  late List<BaseConfig> maxWeightConfigs = [];
 
-  @JsonKey(required: true, name: 'set_nr_configs')
-  late List<BaseConfig> nrOfSetsConfigs;
+  @JsonKey(required: false, name: 'set_nr_configs', includeToJson: false, defaultValue: [])
+  late List<BaseConfig> nrOfSetsConfigs = [];
 
-  @JsonKey(required: true, name: 'rir_configs')
-  late List<BaseConfig> rirConfigs;
+  @JsonKey(required: false, name: 'rir_configs', includeToJson: false, defaultValue: [])
+  late List<BaseConfig> rirConfigs = [];
 
-  @JsonKey(required: true, name: 'rest_configs')
-  late List<BaseConfig> restTimeConfigs;
+  @JsonKey(required: false, name: 'rest_configs', includeToJson: false, defaultValue: [])
+  late List<BaseConfig> restTimeConfigs = [];
 
-  @JsonKey(required: true, name: 'max_rest_configs')
-  late List<BaseConfig> maxRestTimeConfigs;
+  @JsonKey(required: false, name: 'max_rest_configs', includeToJson: false, defaultValue: [])
+  late List<BaseConfig> maxRestTimeConfigs = [];
 
   @JsonKey(required: true)
   late Object? config;
@@ -118,6 +119,30 @@ class SlotEntry {
   });
 
   SlotEntry.empty();
+
+  SlotEntry.withData({
+    required this.slotId,
+    String? comment,
+    int? order,
+    String? type,
+    required Exercise exercise,
+    int? weightUnitId,
+    num? weightRounding,
+    int? repetitionUnitId,
+    num? repetitionRounding,
+  }) {
+    this.order = order ?? 1;
+    this.comment = comment ?? '';
+    config = null;
+    this.type = type ?? 'normal';
+    exerciseObj = exercise;
+    exerciseId = exercise.id!;
+    this.weightUnitId = weightUnitId ?? WEIGHT_UNIT_KG_ID;
+    this.weightRounding = weightRounding ?? 2.5;
+
+    this.repetitionUnitId = repetitionUnitId ?? REP_UNIT_REPETITIONS_ID;
+    this.repetitionRounding = repetitionRounding ?? 1;
+  }
 
   get rir {
     return 'DELETE ME! RIR';

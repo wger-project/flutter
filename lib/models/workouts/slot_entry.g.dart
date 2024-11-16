@@ -18,16 +18,8 @@ SlotEntry _$SlotEntryFromJson(Map<String, dynamic> json) {
       'exercise',
       'repetition_unit',
       'repetition_rounding',
-      'reps_configs',
-      'max_reps_configs',
       'weight_unit',
       'weight_rounding',
-      'weight_configs',
-      'max_weight_configs',
-      'set_nr_configs',
-      'rir_configs',
-      'rest_configs',
-      'max_rest_configs',
       'config'
     ],
   );
@@ -43,30 +35,38 @@ SlotEntry _$SlotEntryFromJson(Map<String, dynamic> json) {
     weightRounding: stringToNum(json['weight_rounding'] as String?),
     comment: json['comment'] as String,
   )
-    ..repsConfigs = (json['reps_configs'] as List<dynamic>)
-        .map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
-        .toList()
-    ..maxRepsConfigs = (json['max_reps_configs'] as List<dynamic>)
-        .map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
-        .toList()
-    ..weightConfigs = (json['weight_configs'] as List<dynamic>)
-        .map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
-        .toList()
-    ..maxWeightConfigs = (json['max_weight_configs'] as List<dynamic>)
-        .map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
-        .toList()
-    ..nrOfSetsConfigs = (json['set_nr_configs'] as List<dynamic>)
-        .map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
-        .toList()
-    ..rirConfigs = (json['rir_configs'] as List<dynamic>)
-        .map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
-        .toList()
-    ..restTimeConfigs = (json['rest_configs'] as List<dynamic>)
-        .map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
-        .toList()
-    ..maxRestTimeConfigs = (json['max_rest_configs'] as List<dynamic>)
-        .map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
-        .toList()
+    ..repsConfigs = (json['reps_configs'] as List<dynamic>?)
+            ?.map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
+            .toList() ??
+        []
+    ..maxRepsConfigs = (json['max_reps_configs'] as List<dynamic>?)
+            ?.map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
+            .toList() ??
+        []
+    ..weightConfigs = (json['weight_configs'] as List<dynamic>?)
+            ?.map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
+            .toList() ??
+        []
+    ..maxWeightConfigs = (json['max_weight_configs'] as List<dynamic>?)
+            ?.map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
+            .toList() ??
+        []
+    ..nrOfSetsConfigs = (json['set_nr_configs'] as List<dynamic>?)
+            ?.map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
+            .toList() ??
+        []
+    ..rirConfigs = (json['rir_configs'] as List<dynamic>?)
+            ?.map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
+            .toList() ??
+        []
+    ..restTimeConfigs = (json['rest_configs'] as List<dynamic>?)
+            ?.map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
+            .toList() ??
+        []
+    ..maxRestTimeConfigs = (json['max_rest_configs'] as List<dynamic>?)
+            ?.map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
+            .toList() ??
+        []
     ..config = json['config'];
 }
 
@@ -78,15 +78,7 @@ Map<String, dynamic> _$SlotEntryToJson(SlotEntry instance) => <String, dynamic>{
       'exercise': instance.exerciseId,
       'repetition_unit': instance.repetitionUnitId,
       'repetition_rounding': instance.repetitionRounding,
-      'reps_configs': instance.repsConfigs,
-      'max_reps_configs': instance.maxRepsConfigs,
       'weight_unit': instance.weightUnitId,
       'weight_rounding': instance.weightRounding,
-      'weight_configs': instance.weightConfigs,
-      'max_weight_configs': instance.maxWeightConfigs,
-      'set_nr_configs': instance.nrOfSetsConfigs,
-      'rir_configs': instance.rirConfigs,
-      'rest_configs': instance.restTimeConfigs,
-      'max_rest_configs': instance.maxRestTimeConfigs,
       'config': instance.config,
     };
