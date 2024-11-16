@@ -1182,6 +1182,16 @@ class MockRoutinesProvider extends _i1.Mock implements _i23.RoutinesProvider {
       ) as _i21.Future<_i15.Slot>);
 
   @override
+  _i21.Future<void> deleteSlot(int? slotId) => (super.noSuchMethod(
+        Invocation.method(
+          #deleteSlot,
+          [slotId],
+        ),
+        returnValue: _i21.Future<void>.value(),
+        returnValueForMissingStub: _i21.Future<void>.value(),
+      ) as _i21.Future<void>);
+
+  @override
   _i21.Future<void> editSlot(_i15.Slot? workoutSet) => (super.noSuchMethod(
         Invocation.method(
           #editSlot,
@@ -1196,6 +1206,16 @@ class MockRoutinesProvider extends _i1.Mock implements _i23.RoutinesProvider {
         Invocation.method(
           #editSlots,
           [slots],
+        ),
+        returnValue: _i21.Future<void>.value(),
+        returnValueForMissingStub: _i21.Future<void>.value(),
+      ) as _i21.Future<void>);
+
+  @override
+  _i21.Future<void> deleteSlotEntry(int? id) => (super.noSuchMethod(
+        Invocation.method(
+          #deleteSlotEntry,
+          [id],
         ),
         returnValue: _i21.Future<void>.value(),
         returnValueForMissingStub: _i21.Future<void>.value(),
@@ -1284,7 +1304,7 @@ class MockRoutinesProvider extends _i1.Mock implements _i23.RoutinesProvider {
       ) as _i21.Future<void>);
 
   @override
-  _i21.Future<dynamic> handleConfig(
+  _i21.Future<void> handleConfig(
     _i17.SlotEntry? entry,
     String? input,
     _i17.ConfigType? type,
@@ -1298,24 +1318,15 @@ class MockRoutinesProvider extends _i1.Mock implements _i23.RoutinesProvider {
             type,
           ],
         ),
-        returnValue: _i21.Future<dynamic>.value(),
-      ) as _i21.Future<dynamic>);
-
-  @override
-  _i21.Future<void> fetchComputedSettings(_i15.Slot? workoutSet) => (super.noSuchMethod(
-        Invocation.method(
-          #fetchComputedSettings,
-          [workoutSet],
-        ),
         returnValue: _i21.Future<void>.value(),
         returnValueForMissingStub: _i21.Future<void>.value(),
       ) as _i21.Future<void>);
 
   @override
-  _i21.Future<void> deleteSlot(int? setId) => (super.noSuchMethod(
+  _i21.Future<void> fetchComputedSettings(_i15.Slot? slot) => (super.noSuchMethod(
         Invocation.method(
-          #deleteSet,
-          [setId],
+          #fetchComputedSettings,
+          [slot],
         ),
         returnValue: _i21.Future<void>.value(),
         returnValueForMissingStub: _i21.Future<void>.value(),

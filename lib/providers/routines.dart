@@ -462,8 +462,31 @@ class RoutinesProvider with ChangeNotifier {
       baseProvider.makeUrl(_slotsUrlPath),
     );
     final set = Slot.fromJson(data);
+
+    for (final routine in _routines) {
+      for (final day in routine.days) {
+        if (day.id == slot.day) {
+          day.slots.add(set);
+          break;
+        }
+      }
+    }
+
     notifyListeners();
     return set;
+  }
+
+  Future<void> deleteSlot(int slotId) async {
+    final data = await baseProvider.deleteRequest(_slotsUrlPath, slotId);
+
+    for (final routine in _routines) {
+      for (final day in routine.days) {
+        day.slots.removeWhere((s) => s.id == slotId);
+        break;
+      }
+    }
+
+    notifyListeners();
   }
 
   Future<void> editSlot(Slot workoutSet) async {
@@ -580,17 +603,6 @@ class RoutinesProvider with ChangeNotifier {
     });
 
     slot.settingsComputed = settings;
-    notifyListeners();
-  }
-
-  Future<void> deleteSlot(int slotId) async {
-    await baseProvider.deleteRequest(_slotsUrlPath, slotId);
-
-    for (final workout in _routines) {
-      for (final day in workout.days) {
-        day.slots.removeWhere((slot) => slot.id == slotId);
-      }
-    }
     notifyListeners();
   }
 
