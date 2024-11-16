@@ -38,7 +38,8 @@ class SlotEntryForm extends StatefulWidget {
 class _SlotEntryFormState extends State<SlotEntryForm> {
   final iconSize = 18.0;
 
-  final setsController = TextEditingController();
+  double setsSliderValue = 1.0;
+
   final weightController = TextEditingController();
   final repsController = TextEditingController();
 
@@ -50,19 +51,18 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
   void initState() {
     super.initState();
     if (widget.entry.nrOfSetsConfigs.isNotEmpty) {
-      setsController.text = widget.entry.nrOfSetsConfigs.first.value.toString();
+      setsSliderValue = widget.entry.nrOfSetsConfigs.first.value.toDouble();
     }
     if (widget.entry.weightConfigs.isNotEmpty) {
       weightController.text = widget.entry.weightConfigs.first.value.toString();
     }
     if (widget.entry.repsConfigs.isNotEmpty) {
-      repsController.text = widget.entry.repsConfigs.first.value.toString();
+      repsController.text = widget.entry.repsConfigs.first.value.round().toString();
     }
   }
 
   @override
   void dispose() {
-    setsController.dispose();
     weightController.dispose();
     repsController.dispose();
     super.dispose();
@@ -113,20 +113,40 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
                 })
               },
             ),
-          TextFormField(
-            controller: setsController,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(labelText: i18n.sets),
+          Text('${i18n.sets} — ${setsSliderValue.round()}'),
+          Slider.adaptive(
+            value: setsSliderValue,
+            min: 0,
+            max: 20,
+            divisions: 20,
+            label: setsSliderValue.round().toString(),
+            onChanged: (double value) {
+              setState(() {
+                setsSliderValue = value;
+              });
+            },
           ),
           TextFormField(
             controller: weightController,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(labelText: i18n.weight),
+            validator: (value) {
+              if (value != null && double.tryParse(value) == null) {
+                return i18n.enterValidNumber;
+              }
+              return null;
+            },
           ),
           TextFormField(
             controller: repsController,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(labelText: i18n.repetitions),
+            validator: (value) {
+              if (value != null && int.tryParse(value) == null) {
+                return i18n.enterValidNumber;
+              }
+              return null;
+            },
           ),
           const SizedBox(height: 5),
           OutlinedButton(
@@ -141,9 +161,21 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
               final provider = Provider.of<RoutinesProvider>(context, listen: false);
 
               // Process new, edited or entries to be deleted
-              provider.handleConfig(widget.entry, weightController.text, ConfigType.weight);
-              provider.handleConfig(widget.entry, setsController.text, ConfigType.sets);
-              provider.handleConfig(widget.entry, repsController.text, ConfigType.reps);
+              provider.handleConfig(
+                widget.entry,
+                weightController.text,
+                ConfigType.weight,
+              );
+              provider.handleConfig(
+                widget.entry,
+                setsSliderValue == 0 ? '' : setsSliderValue.toString(),
+                ConfigType.sets,
+              );
+              provider.handleConfig(
+                widget.entry,
+                repsController.text,
+                ConfigType.reps,
+              );
             },
           ),
           const SizedBox(height: 10),
@@ -228,6 +260,7 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
           SwitchListTile(
             value: simpleMode,
             title: const Text('Simple edit mode'),
+            subtitle: const Text('Hides some more advanced fields when editing'),
             contentPadding: const EdgeInsets.all(4),
             onChanged: (value) {
               setState(() {
@@ -250,8 +283,8 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
               child: Column(
                 children: [
                   ListTile(
-                    title: Text(slot.id.toString()),
-                    // title: Text(i18n.setNr(index + 1)),
+                    // title: Text(slot.id.toString()),
+                    title: Text(i18n.setNr(index + 1)),
                     tileColor: isCurrentSlotSelected ? Theme.of(context).highlightColor : null,
                     leading: selectedSlotId == null
                         ? ReorderableDragStartListener(
