@@ -49,8 +49,12 @@ mixin _$ExerciseApiData {
   @JsonKey(name: 'total_authors_history')
   List<String> get authorsGlobal => throw _privateConstructorUsedError;
 
+  /// Serializes this ExerciseApiData to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of ExerciseApiData
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $ExerciseApiDataCopyWith<ExerciseApiData> get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -87,6 +91,8 @@ class _$ExerciseApiDataCopyWithImpl<$Res, $Val extends ExerciseApiData>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of ExerciseApiData
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -204,6 +210,8 @@ class __$$ExerciseBaseDataImplCopyWithImpl<$Res>
       _$ExerciseBaseDataImpl _value, $Res Function(_$ExerciseBaseDataImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of ExerciseApiData
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -447,7 +455,7 @@ class _$ExerciseBaseDataImpl implements _ExerciseBaseData {
             const DeepCollectionEquality().equals(other._authorsGlobal, _authorsGlobal));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -467,7 +475,9 @@ class _$ExerciseBaseDataImpl implements _ExerciseBaseData {
       const DeepCollectionEquality().hash(_authors),
       const DeepCollectionEquality().hash(_authorsGlobal));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of ExerciseApiData
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$ExerciseBaseDataImplCopyWith<_$ExerciseBaseDataImpl> get copyWith =>
@@ -505,43 +515,46 @@ abstract class _ExerciseBaseData implements ExerciseApiData {
   @override
   int get id;
   @override
-  String get uuid;
-  @override // ignore: invalid_annotation_target
+  String get uuid; // ignore: invalid_annotation_target
+  @override
   @JsonKey(name: 'variations')
-  int? get variationId;
-  @override // ignore: invalid_annotation_target
+  int? get variationId; // ignore: invalid_annotation_target
+  @override
   @JsonKey(name: 'created')
-  DateTime get created;
-  @override // ignore: invalid_annotation_target
+  DateTime get created; // ignore: invalid_annotation_target
+  @override
   @JsonKey(name: 'last_update')
-  DateTime get lastUpdate;
-  @override // ignore: invalid_annotation_target
+  DateTime get lastUpdate; // ignore: invalid_annotation_target
+  @override
   @JsonKey(name: 'last_update_global')
   DateTime get lastUpdateGlobal;
   @override
   ExerciseCategory get category;
   @override
-  List<Muscle> get muscles;
-  @override // ignore: invalid_annotation_target
+  List<Muscle> get muscles; // ignore: invalid_annotation_target
+  @override
   @JsonKey(name: 'muscles_secondary')
-  List<Muscle> get musclesSecondary;
-  @override // ignore: invalid_annotation_target
-  List<Equipment> get equipment;
-  @override // ignore: invalid_annotation_target
+  List<Muscle> get musclesSecondary; // ignore: invalid_annotation_target
+  @override
+  List<Equipment> get equipment; // ignore: invalid_annotation_target
+  @override
   @JsonKey(name: 'translations')
   List<Translation> get translations;
   @override
   List<ExerciseImage> get images;
   @override
-  List<Video> get videos;
-  @override // ignore: invalid_annotation_target
+  List<Video> get videos; // ignore: invalid_annotation_target
+  @override
   @JsonKey(name: 'author_history')
-  List<String> get authors;
-  @override // ignore: invalid_annotation_target
+  List<String> get authors; // ignore: invalid_annotation_target
+  @override
   @JsonKey(name: 'total_authors_history')
   List<String> get authorsGlobal;
+
+  /// Create a copy of ExerciseApiData
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ExerciseBaseDataImplCopyWith<_$ExerciseBaseDataImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -563,8 +576,12 @@ mixin _$ExerciseSearchDetails {
   @JsonKey(name: 'image_thumbnail')
   String? get imageThumbnail => throw _privateConstructorUsedError;
 
+  /// Serializes this ExerciseSearchDetails to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of ExerciseSearchDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $ExerciseSearchDetailsCopyWith<ExerciseSearchDetails> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -594,6 +611,8 @@ class _$ExerciseSearchDetailsCopyWithImpl<$Res, $Val extends ExerciseSearchDetai
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of ExerciseSearchDetails
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -658,6 +677,8 @@ class __$$ExerciseSearchDetailsImplCopyWithImpl<$Res>
       _$ExerciseSearchDetailsImpl _value, $Res Function(_$ExerciseSearchDetailsImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of ExerciseSearchDetails
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -750,12 +771,14 @@ class _$ExerciseSearchDetailsImpl implements _ExerciseSearchDetails {
                 other.imageThumbnail == imageThumbnail));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
       Object.hash(runtimeType, translationId, exerciseId, name, category, image, imageThumbnail);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of ExerciseSearchDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$ExerciseSearchDetailsImplCopyWith<_$ExerciseSearchDetailsImpl> get copyWith =>
@@ -782,10 +805,11 @@ abstract class _ExerciseSearchDetails implements ExerciseSearchDetails {
   factory _ExerciseSearchDetails.fromJson(Map<String, dynamic> json) =
       _$ExerciseSearchDetailsImpl.fromJson;
 
-  @override // ignore: invalid_annotation_target
+// ignore: invalid_annotation_target
+  @override
   @JsonKey(name: 'id')
-  int get translationId;
-  @override // ignore: invalid_annotation_target
+  int get translationId; // ignore: invalid_annotation_target
+  @override
   @JsonKey(name: 'base_id')
   int get exerciseId;
   @override
@@ -793,12 +817,15 @@ abstract class _ExerciseSearchDetails implements ExerciseSearchDetails {
   @override
   String get category;
   @override
-  String? get image;
-  @override // ignore: invalid_annotation_target
+  String? get image; // ignore: invalid_annotation_target
+  @override
   @JsonKey(name: 'image_thumbnail')
   String? get imageThumbnail;
+
+  /// Create a copy of ExerciseSearchDetails
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ExerciseSearchDetailsImplCopyWith<_$ExerciseSearchDetailsImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -812,8 +839,12 @@ mixin _$ExerciseSearchEntry {
   String get value => throw _privateConstructorUsedError;
   ExerciseSearchDetails get data => throw _privateConstructorUsedError;
 
+  /// Serializes this ExerciseSearchEntry to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of ExerciseSearchEntry
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $ExerciseSearchEntryCopyWith<ExerciseSearchEntry> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -839,6 +870,8 @@ class _$ExerciseSearchEntryCopyWithImpl<$Res, $Val extends ExerciseSearchEntry>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of ExerciseSearchEntry
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -857,6 +890,8 @@ class _$ExerciseSearchEntryCopyWithImpl<$Res, $Val extends ExerciseSearchEntry>
     ) as $Val);
   }
 
+  /// Create a copy of ExerciseSearchEntry
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $ExerciseSearchDetailsCopyWith<$Res> get data {
@@ -888,6 +923,8 @@ class __$$ExerciseSearchEntryImplCopyWithImpl<$Res>
       _$ExerciseSearchEntryImpl _value, $Res Function(_$ExerciseSearchEntryImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of ExerciseSearchEntry
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -934,11 +971,13 @@ class _$ExerciseSearchEntryImpl implements _ExerciseSearchEntry {
             (identical(other.data, data) || other.data == data));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, value, data);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of ExerciseSearchEntry
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$ExerciseSearchEntryImplCopyWith<_$ExerciseSearchEntryImpl> get copyWith =>
@@ -964,8 +1003,11 @@ abstract class _ExerciseSearchEntry implements ExerciseSearchEntry {
   String get value;
   @override
   ExerciseSearchDetails get data;
+
+  /// Create a copy of ExerciseSearchEntry
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ExerciseSearchEntryImplCopyWith<_$ExerciseSearchEntryImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -978,8 +1020,12 @@ ExerciseApiSearch _$ExerciseApiSearchFromJson(Map<String, dynamic> json) {
 mixin _$ExerciseApiSearch {
   List<ExerciseSearchEntry> get suggestions => throw _privateConstructorUsedError;
 
+  /// Serializes this ExerciseApiSearch to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of ExerciseApiSearch
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $ExerciseApiSearchCopyWith<ExerciseApiSearch> get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -1002,6 +1048,8 @@ class _$ExerciseApiSearchCopyWithImpl<$Res, $Val extends ExerciseApiSearch>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of ExerciseApiSearch
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1034,6 +1082,8 @@ class __$$ExerciseApiSearchImplCopyWithImpl<$Res>
       _$ExerciseApiSearchImpl _value, $Res Function(_$ExerciseApiSearchImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of ExerciseApiSearch
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1078,11 +1128,13 @@ class _$ExerciseApiSearchImpl implements _ExerciseApiSearch {
             const DeepCollectionEquality().equals(other._suggestions, _suggestions));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, const DeepCollectionEquality().hash(_suggestions));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of ExerciseApiSearch
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$ExerciseApiSearchImplCopyWith<_$ExerciseApiSearchImpl> get copyWith =>
@@ -1104,8 +1156,11 @@ abstract class _ExerciseApiSearch implements ExerciseApiSearch {
 
   @override
   List<ExerciseSearchEntry> get suggestions;
+
+  /// Create a copy of ExerciseApiSearch
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ExerciseApiSearchImplCopyWith<_$ExerciseApiSearchImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

@@ -26,7 +26,6 @@ Routine _$RoutineFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$RoutineToJson(Routine instance) => <String, dynamic>{
-      'id': instance.id,
       'created': instance.created.toIso8601String(),
       'name': instance.name,
       'description': instance.description,

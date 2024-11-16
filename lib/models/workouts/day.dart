@@ -27,7 +27,7 @@ class Day {
   static const MAX_LENGTH_NAME = 20;
   static const MAX_LENGTH_DESCRIPTION = 1000;
 
-  @JsonKey(required: true)
+  @JsonKey(required: true, includeToJson: false)
   int? id;
 
   @JsonKey(required: true, name: 'routine')

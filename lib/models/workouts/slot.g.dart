@@ -24,7 +24,6 @@ Slot _$SlotFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$SlotToJson(Slot instance) => <String, dynamic>{
-      'id': instance.id,
       'day': instance.day,
       'order': instance.order,
       'comment': instance.comment,

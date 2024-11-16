@@ -52,7 +52,7 @@ class RoutinesProvider with ChangeNotifier {
   static const _weightUnitUrlPath = 'setting-weightunit';
   static const _repetitionUnitUrlPath = 'setting-repetitionunit';
   static const _routineConfigSets = 'sets-config';
-  static const _routineConfigWeights = 'weights-config';
+  static const _routineConfigWeights = 'weight-config';
   static const _routineConfigReps = 'reps-config';
 
   Routine? _currentPlan;
@@ -486,32 +486,64 @@ class RoutinesProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  String getConfigUrl(String type) {
+  String getConfigUrl(ConfigType type) {
     switch (type) {
-      case 'sets':
+      case ConfigType.sets:
         return _routineConfigSets;
-      case 'weights':
+      case ConfigType.weight:
         return _routineConfigWeights;
-      case 'reps':
+      case ConfigType.reps:
         return _routineConfigReps;
     }
     throw const NoSuchEntryException();
   }
 
-  Future<void> editConfig(BaseConfig config, String type) async {
-    await baseProvider.patch(
+  Future<BaseConfig> editConfig(BaseConfig config, ConfigType type) async {
+    final data = await baseProvider.patch(
       config.toJson(),
       baseProvider.makeUrl(getConfigUrl(type), id: config.id),
     );
+
     notifyListeners();
+    return BaseConfig.fromJson(data);
   }
 
-  Future<void> addConfig(BaseConfig config, String type) async {
-    await baseProvider.post(
+  Future<BaseConfig> addConfig(BaseConfig config, ConfigType type) async {
+    final data = await baseProvider.post(
       config.toJson(),
       baseProvider.makeUrl(getConfigUrl(type)),
     );
     notifyListeners();
+    return BaseConfig.fromJson(data);
+  }
+
+  Future<void> deleteConfig(int id, ConfigType type) async {
+    await baseProvider.deleteRequest(getConfigUrl(type), id);
+    notifyListeners();
+  }
+
+  Future<void> handleConfig(SlotEntry entry, String input, ConfigType type) async {
+    final configs = entry.getConfigsByType(type);
+    final config = configs.isNotEmpty ? configs.first : null;
+    final value = input.isNotEmpty ? num.parse(input) : null;
+
+    if (value == null && config != null) {
+      // Value removed, delete entry
+      configs.removeWhere((c) => c.id! == config.id!);
+      await deleteConfig(config.id!, type);
+    } else if (config != null) {
+      // Update existing value
+      configs.first.value = value!;
+      await editConfig(configs.first, type);
+    } else if (value != null && config == null) {
+      // Create new config
+      configs.add(
+        await addConfig(
+          BaseConfig.firstIteration(value, entry.id!),
+          type,
+        ),
+      );
+    }
   }
 
   Future<void> fetchComputedSettings(Slot workoutSet) async {

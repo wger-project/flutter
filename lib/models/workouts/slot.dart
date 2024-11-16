@@ -26,7 +26,7 @@ part 'slot.g.dart';
 class Slot {
   static const DEFAULT_NR_SETS = 4;
 
-  @JsonKey(required: true)
+  @JsonKey(required: true, includeToJson: false)
   int? id;
 
   @JsonKey(required: false)

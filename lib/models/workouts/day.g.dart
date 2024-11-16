@@ -38,7 +38,6 @@ Day _$DayFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$DayToJson(Day instance) => <String, dynamic>{
-      'id': instance.id,
       'routine': instance.routineId,
       'name': instance.name,
       'description': instance.description,

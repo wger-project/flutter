@@ -20,7 +20,7 @@ BaseConfig _$BaseConfigFromJson(Map<String, dynamic> json) {
     ],
   );
   return BaseConfig(
-    id: (json['id'] as num).toInt(),
+    id: (json['id'] as num?)?.toInt(),
     slotEntryId: (json['slot_entry'] as num).toInt(),
     iteration: (json['iteration'] as num).toInt(),
     value: stringOrIntToNum(json['value']),
@@ -31,7 +31,6 @@ BaseConfig _$BaseConfigFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$BaseConfigToJson(BaseConfig instance) => <String, dynamic>{
-      'id': instance.id,
       'slot_entry': instance.slotEntryId,
       'iteration': instance.iteration,
       'value': instance.value,

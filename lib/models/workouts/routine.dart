@@ -39,7 +39,7 @@ class Routine {
   /// In weeks
   static const MAX_DURATION = 16;
 
-  @JsonKey(required: true)
+  @JsonKey(required: true, includeToJson: false)
   int? id;
 
   @JsonKey(required: true)

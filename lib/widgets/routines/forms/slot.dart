@@ -16,8 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -41,8 +39,8 @@ class SlotEntryForm extends StatelessWidget {
   final repsController = TextEditingController();
 
   SlotEntryForm(this.entry, {super.key}) {
-    if (entry.setNrConfigs.isNotEmpty) {
-      setsController.text = entry.setNrConfigs.first.value.toString();
+    if (entry.nrOfSetsConfigs.isNotEmpty) {
+      setsController.text = entry.nrOfSetsConfigs.first.value.toString();
     }
     if (entry.weightConfigs.isNotEmpty) {
       weightController.text = entry.weightConfigs.first.value.toString();
@@ -83,42 +81,18 @@ class SlotEntryForm extends StatelessWidget {
           OutlinedButton(
             key: const Key(SUBMIT_BUTTON_KEY_NAME),
             child: Text(AppLocalizations.of(context).save),
-            onPressed: () {
+            onPressed: () async {
               if (!_form.currentState!.validate()) {
                 return;
               }
               _form.currentState!.save();
 
               final provider = Provider.of<RoutinesProvider>(context, listen: false);
-              if (weightController.text.isNotEmpty) {
-                log('process weight...');
-                if (entry.weightConfigs.isNotEmpty) {
-                  log('update first config');
-                  entry.weightConfigs.first.value = num.parse(weightController.text);
-                  provider.editConfig(entry.weightConfigs.first, 'weights');
-                } else {
-                  log('creating config');
-                }
-              }
 
-              if (setsController.text.isNotEmpty) {
-                log('process sets...');
-                if (entry.setNrConfigs.isNotEmpty) {
-                  entry.setNrConfigs.first.value = num.parse(setsController.text);
-                  provider.editConfig(entry.setNrConfigs.first, 'sets');
-                } else {
-                  log('creating config');
-                }
-              }
-              if (repsController.text.isNotEmpty) {
-                log('process reps...');
-                if (entry.repsConfigs.isNotEmpty) {
-                  entry.repsConfigs.first.value = num.parse(repsController.text);
-                  provider.editConfig(entry.repsConfigs.first, 'reps');
-                } else {
-                  log('creating config');
-                }
-              }
+              // Process new, edited or entries to be deleted
+              provider.handleConfig(entry, weightController.text, ConfigType.weight);
+              provider.handleConfig(entry, setsController.text, ConfigType.sets);
+              provider.handleConfig(entry, repsController.text, ConfigType.reps);
             },
           ),
           const SizedBox(height: 15),

@@ -25,6 +25,12 @@ import 'package:wger/models/workouts/weight_unit.dart';
 
 part 'slot_entry.g.dart';
 
+enum ConfigType {
+  weight,
+  reps,
+  sets,
+}
+
 @JsonSerializable()
 class SlotEntry {
   /// Allowed RiR values. This list must be kept in sync with RIR_OPTIONS in the
@@ -32,7 +38,7 @@ class SlotEntry {
   static const POSSIBLE_RIR_VALUES = ['', '0', '0.5', '1', '1.5', '2', '2.5', '3', '3.5', '4'];
   static const DEFAULT_RIR = '';
 
-  @JsonKey(required: true)
+  @JsonKey(required: true, includeToJson: false)
   int? id;
 
   @JsonKey(required: true, name: 'slot')
@@ -84,7 +90,7 @@ class SlotEntry {
   late List<BaseConfig> maxWeightConfigs;
 
   @JsonKey(required: true, name: 'set_nr_configs')
-  late List<BaseConfig> setNrConfigs;
+  late List<BaseConfig> nrOfSetsConfigs;
 
   @JsonKey(required: true, name: 'rir_configs')
   late List<BaseConfig> rirConfigs;
@@ -115,6 +121,17 @@ class SlotEntry {
 
   get rir {
     return 'DELETE ME! RIR';
+  }
+
+  List<BaseConfig> getConfigsByType(ConfigType type) {
+    switch (type) {
+      case ConfigType.weight:
+        return weightConfigs;
+      case ConfigType.sets:
+        return nrOfSetsConfigs;
+      case ConfigType.reps:
+        return repsConfigs;
+    }
   }
 
   // Boilerplate

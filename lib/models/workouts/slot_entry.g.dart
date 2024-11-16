@@ -55,7 +55,7 @@ SlotEntry _$SlotEntryFromJson(Map<String, dynamic> json) {
     ..maxWeightConfigs = (json['max_weight_configs'] as List<dynamic>)
         .map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
         .toList()
-    ..setNrConfigs = (json['set_nr_configs'] as List<dynamic>)
+    ..nrOfSetsConfigs = (json['set_nr_configs'] as List<dynamic>)
         .map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
         .toList()
     ..rirConfigs = (json['rir_configs'] as List<dynamic>)
@@ -71,7 +71,6 @@ SlotEntry _$SlotEntryFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$SlotEntryToJson(SlotEntry instance) => <String, dynamic>{
-      'id': instance.id,
       'slot': instance.slotId,
       'order': instance.order,
       'comment': instance.comment,
@@ -85,7 +84,7 @@ Map<String, dynamic> _$SlotEntryToJson(SlotEntry instance) => <String, dynamic>{
       'weight_rounding': instance.weightRounding,
       'weight_configs': instance.weightConfigs,
       'max_weight_configs': instance.maxWeightConfigs,
-      'set_nr_configs': instance.setNrConfigs,
+      'set_nr_configs': instance.nrOfSetsConfigs,
       'rir_configs': instance.rirConfigs,
       'rest_configs': instance.restTimeConfigs,
       'max_rest_configs': instance.maxRestTimeConfigs,

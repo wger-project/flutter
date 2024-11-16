@@ -23,8 +23,8 @@ part 'base_config.g.dart';
 
 @JsonSerializable()
 class BaseConfig {
-  @JsonKey(required: true)
-  late int id;
+  @JsonKey(required: true, includeToJson: false)
+  late int? id;
 
   @JsonKey(required: true, name: 'slot_entry')
   late int slotEntryId;
@@ -57,6 +57,13 @@ class BaseConfig {
     required this.step,
     required this.needLogToApply,
   });
+
+  BaseConfig.firstIteration(this.value, this.slotEntryId) {
+    iteration = 1;
+    operation = 'r';
+    step = 'abs';
+    needLogToApply = false;
+  }
 
   // Boilerplate
   factory BaseConfig.fromJson(Map<String, dynamic> json) => _$BaseConfigFromJson(json);
