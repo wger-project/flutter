@@ -43,19 +43,21 @@ class RoutineListAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
+
     return AppBar(
-      title: Text(AppLocalizations.of(context).labelWorkoutPlans),
+      title: Text(i18n.labelWorkoutPlans),
       actions: [
         PopupMenuButton(
           itemBuilder: (context) {
             return [
               PopupMenuItem<_RoutineAppBarOptions>(
                 value: _RoutineAppBarOptions.list,
-                child: Text(AppLocalizations.of(context).exerciseList),
+                child: Text(i18n.exerciseList),
               ),
               PopupMenuItem<_RoutineAppBarOptions>(
                 value: _RoutineAppBarOptions.contribute,
-                child: Text(AppLocalizations.of(context).contributeExercise),
+                child: Text(i18n.contributeExercise),
               ),
             ];
           },
@@ -85,31 +87,34 @@ class RoutineDetailAppBar extends StatelessWidget implements PreferredSizeWidget
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
+    final provider = context.read<RoutinesProvider>();
+
     return AppBar(
       title: Text(routine.name),
       actions: [
         PopupMenuButton(
           itemBuilder: (context) {
             return [
-              PopupMenuItem<_RoutineDetailBarOptions>(
+              const PopupMenuItem<_RoutineDetailBarOptions>(
                 value: _RoutineDetailBarOptions.reload,
                 child: Text('debug / reload'),
               ),
               PopupMenuItem<_RoutineDetailBarOptions>(
                 value: _RoutineDetailBarOptions.logs,
-                child: Text(AppLocalizations.of(context).labelWorkoutLogs),
+                child: Text(i18n.labelWorkoutLogs),
               ),
               PopupMenuItem<_RoutineDetailBarOptions>(
                 value: _RoutineDetailBarOptions.edit,
-                child: Text(AppLocalizations.of(context).edit),
+                child: Text(i18n.edit),
               ),
               PopupMenuItem<_RoutineDetailBarOptions>(
                 value: _RoutineDetailBarOptions.delete,
-                child: Text(AppLocalizations.of(context).delete),
+                child: Text(i18n.delete),
               ),
             ];
           },
-          onSelected: (value) {
+          onSelected: (value) async {
             switch (value) {
               case _RoutineDetailBarOptions.edit:
                 Navigator.pushNamed(
@@ -126,12 +131,11 @@ class RoutineDetailAppBar extends StatelessWidget implements PreferredSizeWidget
                 );
 
               case _RoutineDetailBarOptions.delete:
-                Provider.of<RoutinesProvider>(context, listen: false).deleteRoutine(routine.id!);
+                provider.deleteRoutine(routine.id!);
                 Navigator.of(context).pop();
 
               case _RoutineDetailBarOptions.reload:
-                Provider.of<RoutinesProvider>(context, listen: false)
-                    .fetchAndSetRoutineFull(routine.id!);
+                await provider.fetchAndSetRoutineFull(routine.id!);
             }
           },
         ),

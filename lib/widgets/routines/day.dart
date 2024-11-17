@@ -26,19 +26,15 @@ import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/exercises/exercises.dart';
 import 'package:wger/widgets/exercises/images.dart';
 
-class SettingWidget extends StatelessWidget {
+class SetConfigDataWidget extends StatelessWidget {
   final SetConfigData setConfigData;
-  final bool expanded;
-  final Function toggle;
 
-  const SettingWidget({
-    required this.setConfigData,
-    required this.expanded,
-    required this.toggle,
-  });
+  const SetConfigDataWidget({required this.setConfigData});
 
   @override
   Widget build(BuildContext context) {
+    final languageCode = Localizations.localeOf(context).languageCode;
+
     return ListTile(
       leading: InkWell(
         child: SizedBox(
@@ -50,9 +46,7 @@ class SettingWidget extends StatelessWidget {
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: Text(setConfigData.exercise
-                    .getExercise(Localizations.localeOf(context).languageCode)
-                    .name),
+                title: Text(setConfigData.exercise.getExercise(languageCode).name),
                 content: ExerciseDetail(setConfigData.exercise),
                 actions: [
                   TextButton(
@@ -69,42 +63,23 @@ class SettingWidget extends StatelessWidget {
           );
         },
       ),
-      title: Text(
-        setConfigData.exercise.getExercise(Localizations.localeOf(context).languageCode).name,
-      ),
+      title: Text(setConfigData.exercise.getExercise(languageCode).name),
       subtitle: Text(setConfigData.textRepr),
     );
   }
 }
 
-class RoutineDayWidget extends StatefulWidget {
+class RoutineDayWidget extends StatelessWidget {
   final DayData _dayData;
 
   const RoutineDayWidget(this._dayData);
-
-  @override
-  _RoutineDayWidgetState createState() => _RoutineDayWidgetState();
-}
-
-class _RoutineDayWidgetState extends State<RoutineDayWidget> {
-  bool _editing = true;
-
-  void _toggleExpanded() {
-    setState(() {
-      _editing = !_editing;
-    });
-  }
 
   Widget getSlotDataRow(SlotData slotData) {
     return Column(
       children: [
         if (slotData.comment.isNotEmpty) MutedText(slotData.comment),
         ...slotData.setConfigs.map(
-          (setting) => SettingWidget(
-            setConfigData: setting,
-            expanded: _editing,
-            toggle: _toggleExpanded,
-          ),
+          (setting) => SetConfigDataWidget(setConfigData: setting),
         ),
         // const Divider(),
       ],
@@ -120,8 +95,8 @@ class _RoutineDayWidgetState extends State<RoutineDayWidget> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            DayHeader(day: widget._dayData),
-            ...widget._dayData.slots.map((e) => getSlotDataRow(e)).toList(),
+            DayHeader(day: _dayData),
+            ..._dayData.slots.map((e) => getSlotDataRow(e)).toList(),
           ],
         ),
       ),

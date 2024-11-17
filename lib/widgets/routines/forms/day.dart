@@ -21,12 +21,14 @@ class ReorderableDaysList extends StatefulWidget {
   });
 
   void _showDeleteConfirmationDialog(BuildContext context, Day day) {
+    final i18n = AppLocalizations.of(context);
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(AppLocalizations.of(context).delete),
-          content: Text(AppLocalizations.of(context).confirmDelete(day.name)),
+          title: Text(i18n.delete),
+          content: Text(i18n.confirmDelete(day.isRest ? i18n.restDay : day.name)),
           actions: [
             TextButton(
               onPressed: () {
@@ -37,7 +39,7 @@ class ReorderableDaysList extends StatefulWidget {
             TextButton(
               onPressed: () async {
                 days.remove(day);
-                await Provider.of<RoutinesProvider>(context, listen: false).deleteDay(day.id!);
+                await context.read<RoutinesProvider>().deleteDay(day.id!);
                 Navigator.of(context).pop();
               },
               child: const Text('Delete'),
@@ -88,19 +90,15 @@ class _ReorderableDaysListState extends State<ReorderableDaysList> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     IconButton(
-                      onPressed: () {
-                        widget.onDaySelected(day.id!);
-                      },
+                      onPressed: () => widget.onDaySelected(day.id!),
                       icon: isDaySelected ? const Icon(Icons.edit_off) : const Icon(Icons.edit),
                     ),
                     IconButton(
                       icon: const Icon(Icons.delete),
-                      onPressed: () {
-                        widget._showDeleteConfirmationDialog(
-                          context,
-                          day,
-                        ); // Call the dialog function
-                      },
+                      onPressed: () => widget._showDeleteConfirmationDialog(
+                        context,
+                        day,
+                      ),
                     ),
                   ],
                 ),

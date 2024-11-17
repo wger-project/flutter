@@ -41,6 +41,7 @@ import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/core.dart';
+import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/exercises/images.dart';
 import 'package:wger/widgets/routines/forms/reps_unit.dart';
 import 'package:wger/widgets/routines/forms/rir.dart';
@@ -451,59 +452,52 @@ class _LogPageState extends State<LogPage> {
             },
           ),
           ElevatedButton(
-            onPressed: _isSaving
-                ? null
-                : () async {
-                    // Validate and save the current values to the weightEntry
-                    final isValid = _form.currentState!.validate();
-                    if (!isValid) {
-                      return;
-                    }
-                    _isSaving = true;
-                    _form.currentState!.save();
+              onPressed: _isSaving
+                  ? null
+                  : () async {
+                      // Validate and save the current values to the weightEntry
+                      final isValid = _form.currentState!.validate();
+                      if (!isValid) {
+                        return;
+                      }
+                      _isSaving = true;
+                      _form.currentState!.save();
 
-                    // Save the entry on the server
-                    try {
-                      await Provider.of<RoutinesProvider>(
-                        context,
-                        listen: false,
-                      ).addLog(widget._log);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          duration: const Duration(seconds: 2), // default is 4
-                          content: Text(
-                            AppLocalizations.of(context).successfullySaved,
-                            textAlign: TextAlign.center,
+                      // Save the entry on the server
+                      try {
+                        await Provider.of<RoutinesProvider>(
+                          context,
+                          listen: false,
+                        ).addLog(widget._log);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            duration: const Duration(seconds: 2), // default is 4
+                            content: Text(
+                              AppLocalizations.of(context).successfullySaved,
+                              textAlign: TextAlign.center,
+                            ),
                           ),
-                        ),
-                      );
-                      widget._controller.nextPage(
-                        duration: DEFAULT_ANIMATION_DURATION,
-                        curve: DEFAULT_ANIMATION_CURVE,
-                      );
-                      _isSaving = false;
-                    } on WgerHttpException catch (error) {
-                      if (mounted) {
-                        showHttpExceptionErrorDialog(error, context);
+                        );
+                        widget._controller.nextPage(
+                          duration: DEFAULT_ANIMATION_DURATION,
+                          curve: DEFAULT_ANIMATION_CURVE,
+                        );
+                        _isSaving = false;
+                      } on WgerHttpException catch (error) {
+                        if (mounted) {
+                          showHttpExceptionErrorDialog(error, context);
+                        }
+                        _isSaving = false;
+                      } catch (error) {
+                        if (mounted) {
+                          showErrorDialog(error, context);
+                        }
+                        _isSaving = false;
                       }
-                      _isSaving = false;
-                    } catch (error) {
-                      if (mounted) {
-                        showErrorDialog(error, context);
-                      }
-                      _isSaving = false;
-                    }
-                  },
-            child: (!_isSaving)
-                ? Text(AppLocalizations.of(context).save)
-                : const SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                    ),
-                  ),
-          ),
+                    },
+              child: _isSaving
+                  ? const FormProgressIndicator()
+                  : Text(AppLocalizations.of(context).save)),
         ],
       ),
     );
