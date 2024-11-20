@@ -96,7 +96,7 @@ class RoutineDayWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             DayHeader(day: _dayData),
-            ..._dayData.slots.map((e) => getSlotDataRow(e)).toList(),
+            ..._dayData.slots.map((e) => getSlotDataRow(e)),
           ],
         ),
       ),

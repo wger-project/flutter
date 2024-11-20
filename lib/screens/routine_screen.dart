@@ -29,25 +29,31 @@ class RoutineScreen extends StatelessWidget {
 
   static const routeName = '/routine-detail';
 
-  Future<Routine> _loadFullWorkout(BuildContext context, int routineId) {
-    return Provider.of<RoutinesProvider>(context, listen: false).fetchAndSetRoutineFull(routineId);
-  }
-
   @override
   Widget build(BuildContext context) {
-    final routine = ModalRoute.of(context)!.settings.arguments as Routine;
+    final routineArgs = ModalRoute.of(context)!.settings.arguments as Routine;
+    final provider = context.read<RoutinesProvider>();
 
     return Scaffold(
-      appBar: RoutineDetailAppBar(routine),
+      appBar: RoutineDetailAppBar(routineArgs),
+      body: SingleChildScrollView(
+        child: Consumer<RoutinesProvider>(
+          builder: (context, value, child) => RoutineDetail(routineArgs),
+        ),
+      ),
+    );
+
+    return Scaffold(
+      appBar: RoutineDetailAppBar(routineArgs),
       body: FutureBuilder(
-        future: _loadFullWorkout(context, routine.id!),
+        future: provider.fetchAndSetRoutineFull(routineArgs.id!),
         builder: (context, snapshot) => ListView(
           children: [
             if (snapshot.connectionState == ConnectionState.waiting)
               const BoxedProgressIndicator()
             else
               Consumer<RoutinesProvider>(
-                builder: (context, value, child) => RoutineDetail(routine),
+                builder: (context, value, child) => RoutineDetail(snapshot.data!),
               ),
           ],
         ),

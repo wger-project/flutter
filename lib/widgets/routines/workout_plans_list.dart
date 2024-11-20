@@ -25,31 +25,33 @@ import 'package:wger/screens/routine_screen.dart';
 import 'package:wger/widgets/core/text_prompt.dart';
 
 class WorkoutPlansList extends StatelessWidget {
-  final RoutinesProvider _workoutProvider;
+  final RoutinesProvider _routineProvider;
 
-  const WorkoutPlansList(this._workoutProvider);
+  const WorkoutPlansList(this._routineProvider);
 
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      onRefresh: () => _workoutProvider.fetchAndSetAllRoutinesFull(),
+      onRefresh: () => _routineProvider.fetchAndSetAllRoutinesFull(),
       // onRefresh: () => _workoutProvider.fetchAndSetAllPlansSparse(),
-      child: _workoutProvider.items.isEmpty
+      child: _routineProvider.items.isEmpty
           ? const TextPrompt()
           : ListView.builder(
               padding: const EdgeInsets.all(10.0),
-              itemCount: _workoutProvider.items.length,
+              itemCount: _routineProvider.items.length,
               itemBuilder: (context, index) {
-                final currentWorkout = _workoutProvider.items[index];
+                final currentWorkout = _routineProvider.items[index];
 
                 return Card(
                   child: ListTile(
-                    onTap: () {
-                      _workoutProvider.setCurrentPlan(currentWorkout.id!);
+                    onTap: () async {
+                      _routineProvider.setCurrentPlan(currentWorkout.id!);
+                      final routine =
+                          await _routineProvider.fetchAndSetRoutineFull(currentWorkout.id!);
 
                       Navigator.of(context).pushNamed(
                         RoutineScreen.routeName,
-                        arguments: currentWorkout,
+                        arguments: routine,
                       );
                     },
                     title: Text(currentWorkout.name),

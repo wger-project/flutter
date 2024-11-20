@@ -36,7 +36,9 @@ class RoutineDetail extends StatelessWidget {
             padding: const EdgeInsets.all(15),
             child: Text(_routine.description),
           ),
-        ..._routine.dayDataCurrentIteration.map((dayData) => RoutineDayWidget(dayData)),
+        ..._routine.dayDataCurrentIteration
+            .where((dayData) => dayData.day != null)
+            .map((dayData) => RoutineDayWidget(dayData)),
       ],
     );
   }

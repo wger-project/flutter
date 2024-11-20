@@ -299,7 +299,8 @@ class RoutinesProvider with ChangeNotifier {
 
     // ... and done
     final routineIndex = _routines.indexWhere((r) => r.id == routineId);
-    _routines.replaceRange(routineIndex, routineIndex + 1, [routine]);
+    _routines[routineIndex] = routine;
+    // _routines.replaceRange(routineIndex, routineIndex + 1, [routine]);
 
     notifyListeners();
     return routine;
@@ -321,6 +322,8 @@ class RoutinesProvider with ChangeNotifier {
       routine.toJson(),
       baseProvider.makeUrl(_routinesUrlPath, id: routine.id),
     );
+    await fetchAndSetRoutineFull(routine.id!);
+
     notifyListeners();
   }
 
