@@ -3,7 +3,7 @@
   "@userProfile": {},
   "weightUnit": "எடை அலகு",
   "@weightUnit": {},
-  "setNr": "{nr} அமைக்கவும்",
+  "setNr": "{nr} அமை",
   "@setNr": {
     "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
     "type": "text",
@@ -43,7 +43,7 @@
   },
   "noMeasurementEntries": "உங்களிடம் அளவீட்டு உள்ளீடுகள் இல்லை",
   "@noMeasurementEntries": {},
-  "delete": "நீக்கு",
+  "delete": "அழி",
   "@delete": {},
   "gallery": "கேலரி",
   "@gallery": {},
@@ -183,7 +183,7 @@
   "@labelDashboard": {
     "description": "Title for screen dashboard"
   },
-  "success": "செய்",
+  "success": "வெற்றி",
   "@success": {
     "description": "Message when an action completed successfully, usually used as a heading"
   },
@@ -259,7 +259,7 @@
   },
   "useMetric": "உடல் எடைக்கு மெட்ரிக் அலகுகளைப் பயன்படுத்துங்கள்",
   "@useMetric": {},
-  "repetitionUnit": "மீண்டும் மீண்டும் அலகு",
+  "repetitionUnit": "மீண்டும் அலகு",
   "@repetitionUnit": {},
   "set": "கணம்",
   "@set": {
@@ -267,7 +267,7 @@
   },
   "dayDescriptionHelp": "இந்த நாளில் என்ன செய்யப்படுகிறது என்பதற்கான விளக்கம் (எ.கா. 'இழுக்க நாள்') அல்லது என்ன உடல் பாகங்கள் பயிற்சி அளிக்கப்படுகின்றன (எ.கா. 'மார்பு மற்றும் தோள்கள்')",
   "@dayDescriptionHelp": {},
-  "sameRepetitions": "எல்லா தொகுப்புகளுக்கும் நீங்கள் அதே மறுபடியும் மறுபடியும் எடையும் செய்தால், நீங்கள் ஒரு வரிசையை நிரப்பலாம். எடுத்துக்காட்டாக, 4 செட்களுக்கு மறுபடியும் மறுபடியும் 10 ஐ உள்ளிடவும், இது தானாகவே \"4 ஃச் 10\" ஆகிறது.",
+  "sameRepetitions": "எல்லா தொகுப்புகளுக்கும் நீங்கள் அதே மறுபடியும் எடையும் செய்தால், நீங்கள் ஒரு வரிசையை நிரப்பலாம். எடுத்துக்காட்டாக, 4 செட்களுக்கு மறுபடியும் 10 ஐ உள்ளிடவும், இது தானாகவே \"4 ஃச் 10\" ஆகிறது.",
   "@sameRepetitions": {},
   "comment": "கருத்து",
   "@comment": {
@@ -303,7 +303,7 @@
   },
   "todaysWorkout": "இன்று உங்கள் பயிற்சி",
   "@todaysWorkout": {},
-  "logHelpEntries": "ஒரு நாளில் ஒரே எண்ணிக்கையிலான மறுபடியும் மறுபடியும் ஒன்றுக்கு மேற்பட்ட நுழைவு இருந்தால், ஆனால் வெவ்வேறு எடைகள் இருந்தால், அதிக எடையுடன் நுழைவு மட்டுமே வரைபடத்தில் காட்டப்பட்டுள்ளது.",
+  "logHelpEntries": "ஒரு நாளில் ஒரே எண்ணிக்கையிலான மறுபடியும் ஒன்றுக்கு மேற்பட்ட நுழைவு இருந்தால், ஆனால் வெவ்வேறு எடைகள் இருந்தால், அதிக எடையுடன் நுழைவு மட்டுமே வரைபடத்தில் காட்டப்பட்டுள்ளது.",
   "@logHelpEntries": {},
   "logHelpEntriesUnits": "ஒரு எடை அலகு (கிலோ அல்லது எல்பி) மற்றும் மறுபடியும் உள்ளீடுகள் மட்டுமே பட்டியலிடப்பட்டுள்ளன என்பதை நினைவில் கொள்க, நேரம் போன்ற பிற சேர்க்கைகள் அல்லது தோல்வி வரை இங்கே புறக்கணிக்கப்படும்.",
   "@logHelpEntriesUnits": {},
@@ -379,7 +379,7 @@
       "name": {}
     }
   },
-  "chartDuringPlanTitle": "{chartName} ஊட்டச்சத்து திட்டத்தின் போது {planName}",
+  "chartDuringPlanTitle": "{chartName}ஊட்டச்சத்து திட்டத்தின்போது {planName}",
   "@chartDuringPlanTitle": {
     "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
     "type": "text",
@@ -392,7 +392,7 @@
   "@measurementCategoriesHelpText": {},
   "measurementEntriesHelpText": "'செ.மீ' அல்லது '%' போன்ற வகையை அளவிட பயன்படுத்தப்படும் அலகு",
   "@measurementEntriesHelpText": {},
-  "date": "தேதி",
+  "date": "திகதி",
   "@date": {
     "description": "The date of a workout log or body weight entry"
   },
@@ -458,7 +458,7 @@
       "value": {}
     }
   },
-  "kJ": "கே.சே.",
+  "kJ": "கேசே",
   "@kJ": {
     "description": "Energy in a meal in kilo joules, kJ"
   },
@@ -524,7 +524,7 @@
   "@loadingText": {
     "description": "Text to show when entries are being loaded in the background: Loading..."
   },
-  "confirmDelete": "நீங்கள் நிச்சயமாக '{toDelete}' நீக்க விரும்புகிறீர்களா?",
+  "confirmDelete": "நீங்கள் நிச்சயமாக '{டோட்லீட்}' நீக்க விரும்புகிறீர்களா?",
   "@confirmDelete": {
     "description": "Confirmation text before the user deletes an object",
     "type": "text",
@@ -594,7 +594,7 @@
   "@goToToday": {
     "description": "Label on button to jump back to 'today' in the calendar widget"
   },
-  "enterRepetitionsOrWeight": "தயவுசெய்து மறுபடியும் மறுபடியும் அல்லது எடையை நிரப்பவும்",
+  "enterRepetitionsOrWeight": "தயவுசெய்து மறுபடியும் அல்லது எடையை நிரப்பவும்",
   "@enterRepetitionsOrWeight": {
     "description": "Error message when the user hasn't filled in the forms for exercise sets"
   },
@@ -627,7 +627,7 @@
   },
   "baseNameEnglish": "அனைத்து பயிற்சிகளுக்கும் ஆங்கிலத்தில் அடிப்படை பெயர் தேவை",
   "@baseNameEnglish": {},
-  "nrOfSets": "ஒரு உடற்பயிற்சிக்கு அமைக்கிறது: {nrOfSets}",
+  "nrOfSets": "ஒரு பயிற்சிக்கு அமைக்கிறது: {nrOfSets}",
   "@nrOfSets": {
     "description": "Label shown on the slider where the user selects the nr of sets",
     "type": "text",
@@ -678,7 +678,7 @@
   "@productFound": {
     "description": "Header label for dialog when product is found with barcode"
   },
-  "productFoundDescription": "பார்கோடு இந்த தயாரிப்புக்கு ஒத்திருக்கிறது: {productName}. நீங்கள் தொடர விரும்புகிறீர்களா?",
+  "productFoundDescription": "பார்கோடு இந்தத் தயாரிப்புக்கு ஒத்திருக்கிறது: {productName}. நீங்கள் தொடர விரும்புகிறீர்களா?",
   "@productFoundDescription": {
     "description": "Dialog info when product is found with barcode",
     "type": "text",
@@ -690,7 +690,7 @@
   "@productNotFound": {
     "description": "Header label for dialog when product is not found with barcode"
   },
-  "productNotFoundDescription": "ச்கேன் செய்யப்பட்ட பார்கோடு {barcode} உடன் தயாரிப்பு WGER தரவுத்தளத்தில் காணப்படவில்லை",
+  "productNotFoundDescription": "ச்கேன் செய்யப்பட்ட பார்கோடு {barcode} with உடன் தயாரிப்பு WGER தரவுத்தளத்தில் காணப்படவில்லை",
   "@productNotFoundDescription": {
     "description": "Dialog info when product is not found with barcode",
     "type": "text",
@@ -757,7 +757,7 @@
   "@settingsCacheDeletedSnackbar": {},
   "aboutPageTitle": "Wger பற்றி",
   "@aboutPageTitle": {},
-  "contributeExerciseWarning": "உங்கள் கணக்கு {days} நாட்களை விட பழையதாக இருந்தால் மட்டுமே நீங்கள் பயிற்சிகளை பங்களிக்க முடியும், மேலும் உங்கள் மின்னஞ்சலை சரிபார்த்துள்ளீர்கள்",
+  "contributeExerciseWarning": "உங்கள் கணக்கு {days} நாட்களைவிடப் பழையதாக இருந்தால் மட்டுமே நீங்கள் பயிற்சிகளைப் பங்களிக்க முடியும், மேலும் உங்கள் மின்னஞ்சலைச் சரிபார்த்துள்ளீர்கள்",
   "@contributeExerciseWarning": {
     "description": "Number of days before which a person can add exercise",
     "placeholders": {
@@ -885,7 +885,7 @@
   "@quads": {
     "description": "Generated entry for translation for server strings"
   },
-  "repetitions": "மறுபடியும் மறுபடியும்",
+  "repetitions": "மறுபடியும்",
   "@repetitions": {
     "description": "Generated entry for translation for server strings"
   },
@@ -930,5 +930,29 @@
     "description": "Log a specific meal (imperative form)"
   },
   "done": "முடிந்தது",
-  "@done": {}
+  "@done": {},
+  "overallChangeWeight": "ஒட்டுமொத்த மாற்றம்",
+  "@overallChangeWeight": {
+    "description": "Overall change in weight, added for localization"
+  },
+  "goalTypeMeals": "உணவில் இருந்து",
+  "@goalTypeMeals": {
+    "description": "added for localization of Class GoalType's filed meals"
+  },
+  "goalTypeBasic": "அடிப்படை",
+  "@goalTypeBasic": {
+    "description": "added for localization of Class GoalType's filed basic"
+  },
+  "goalTypeAdvanced": "மேம்பட்ட",
+  "@goalTypeAdvanced": {
+    "description": "added for localization of Class GoalType's filed advanced"
+  },
+  "indicatorRaw": "மூல",
+  "@indicatorRaw": {
+    "description": "added for localization of Class Indicator's field text"
+  },
+  "indicatorAvg": "ஏ.வி.சி",
+  "@indicatorAvg": {
+    "description": "added for localization of Class Indicator's field text"
+  }
 }
