@@ -85,7 +85,7 @@ dev_dependencies:
   flutter_lints: ^5.0.0
   cider: ^0.2.7
   drift_dev: ^2.20.3
-  freezed: ^2.5.2
+  freezed: ^2.5.7
   golden_toolkit: ^0.15.0
 
 # For information on the generic Dart part of this file, see the
