@@ -153,8 +153,6 @@ class ExercisesProvider with ChangeNotifier {
     if (filters!.searchTerm.length > 1) {
       filteredItems = await searchExercise(filters!.searchTerm);
     }
-
-    // Filter by exercise category and equipment (REPLACE WITH HTTP REQUEST)
     filteredExercises = filteredItems.where((exercise) {
       final bool isInAnyCategory = filters!.exerciseCategories.selected.contains(exercise.category);
 
@@ -181,7 +179,7 @@ class ExercisesProvider with ChangeNotifier {
   /// Note: prefer using the async `fetchAndSetExercise` method
   Exercise findExerciseById(int id) {
     return exercises.firstWhere(
-      (base) => base.id == id,
+      (exercise) => exercise.id == id,
       orElse: () => throw const NoSuchEntryException(),
     );
   }
@@ -270,14 +268,14 @@ class ExercisesProvider with ChangeNotifier {
   /// Returns the exercise with the given ID
   ///
   /// If the exercise is not known locally, it is fetched from the server.
-  Future<Exercise> fetchAndSetExercise(int exerciseId) async {
+  Future<Exercise?> fetchAndSetExercise(int exerciseId) async {
     try {
       final exercise = findExerciseById(exerciseId);
 
       // Note: no await since we don't care for the updated data right now. It
       // will be written to the db whenever the request finishes and we will get
       // the updated exercise the next time
-      handleUpdateExerciseFromApi(database, exerciseId);
+      //handleUpdateExerciseFromApi(database, exerciseId);
 
       return exercise;
     } on NoSuchEntryException {
@@ -298,9 +296,21 @@ class ExercisesProvider with ChangeNotifier {
     int exerciseId,
   ) async {
     Exercise exercise;
-    final exerciseDb = await (database.select(database.exercises)
-          ..where((e) => e.id.equals(exerciseId)))
-        .getSingleOrNull();
+
+    // TODO: this should be a .getSingleOrNull()!!! However, for some reason there
+    //       are duplicates in the db. Perhaps a race condition so that two
+    //       entries are written at the same time or something?
+    final exerciseResult =
+        await (database.select(database.exercises)..where((e) => e.id.equals(exerciseId))).get();
+
+    ExerciseTable? exerciseDb;
+    if (exerciseResult.length > 0) {
+      exerciseDb = exerciseResult.first;
+    } else {
+      exerciseDb = null;
+    }
+
+    log(exerciseResult.toString());
 
     // Exercise is already known locally
     if (exerciseDb != null) {
@@ -334,16 +344,16 @@ class ExercisesProvider with ChangeNotifier {
       }
       // New exercise, fetch and insert to DB
     } else {
-      final baseData = await baseProvider.fetch(
+      final exerciseData = await baseProvider.fetch(
         baseProvider.makeUrl(exerciseInfoUrlPath, id: exerciseId),
       );
-      exercise = Exercise.fromApiDataJson(baseData, _languages);
+      exercise = Exercise.fromApiDataJson(exerciseData, _languages);
 
       if (exerciseDb == null) {
         await database.into(database.exercises).insert(
               ExercisesCompanion.insert(
                 id: exercise.id!,
-                data: jsonEncode(baseData),
+                data: jsonEncode(exerciseData),
                 lastUpdate: exercise.lastUpdateGlobal!,
                 lastFetched: DateTime.now(),
               ),
@@ -352,7 +362,7 @@ class ExercisesProvider with ChangeNotifier {
     }
 
     // Either update or add the exercise to local list
-    final index = exercises.indexWhere((element) => element.id == exerciseId);
+    final index = exercises.indexWhere((exercise) => exercise.id == exerciseId);
     if (index != -1) {
       exercises[index] = exercise;
     } else {
@@ -424,52 +434,6 @@ class ExercisesProvider with ChangeNotifier {
     log('Loaded ${exercisesDb.length} exercises from cache');
 
     exercises = exercisesDb.map((e) => Exercise.fromApiDataString(e.data, _languages)).toList();
-  }
-
-  /// Updates the exercise database with *all* the exercises from the server
-  Future<void> updateExerciseCache(ExerciseDatabase database) async {
-    final data = await baseProvider.fetch(
-      baseProvider.makeUrl(exerciseInfoUrlPath, query: {'limit': '1000'}),
-    );
-
-    final List<dynamic> exercisesData = data['results'];
-    exercises = exercisesData.map((e) => Exercise.fromApiDataJson(e, _languages)).toList();
-
-    // Insert new entries and update ones that have been edited
-    Future.forEach(exercisesData, (exerciseData) async {
-      final exercise = await (database.select(database.exercises)
-            ..where((e) => e.id.equals(exerciseData['id'])))
-          .getSingleOrNull();
-
-      // New exercise, insert
-      if (exercise == null) {
-        database.into(database.exercises).insert(
-              ExercisesCompanion.insert(
-                id: exerciseData['id'],
-                data: jsonEncode(exerciseData),
-                lastUpdate: DateTime.parse(exerciseData['last_update_global']),
-                lastFetched: DateTime.now(),
-              ),
-            );
-      }
-
-      // If there were updates on the server, update
-      final lastUpdateApi = DateTime.parse(exerciseData['last_update_global']);
-      if (exercise != null && lastUpdateApi.isAfter(exercise.lastUpdate)) {
-        // TODO: timezones 🥳
-        print(
-          'Exercise ${exercise.id}: update API $lastUpdateApi | Update DB: ${exercise.lastUpdate}',
-        );
-        (database.update(database.exercises)..where((e) => e.id.equals(exerciseData['id']))).write(
-          ExercisesCompanion(
-            id: Value(exerciseData['id']),
-            data: Value(jsonEncode(exerciseData)),
-            lastUpdate: Value(DateTime.parse(exerciseData['last_update_global'])),
-            lastFetched: Value(DateTime.now()),
-          ),
-        );
-      }
-    });
   }
 
   /// Fetches and sets the available muscles
@@ -630,11 +594,21 @@ class ExercisesProvider with ChangeNotifier {
       ),
     );
 
-    // Load the ingredients
+    // Load the exercises
     final results = ExerciseApiSearch.fromJson(result);
-    return Future.wait(
-      results.suggestions.map((e) => fetchAndSetExercise(e.data.exerciseId)),
-    );
+
+    final List<Exercise> out = [];
+    for (final result in results.suggestions) {
+      final exercise = await fetchAndSetExercise(result.data.exerciseId);
+      if (exercise != null) {
+        out.add(exercise);
+      }
+    }
+    // return Future.wait(
+    //   results.suggestions.map((e) => fetchAndSetExercise(e.data.exerciseId)),
+    // );
+
+    return out;
   }
 }
 

@@ -5,8 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/routines.dart';
 import 'package:wger/providers/user.dart';
-import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/dashboard.dart';
 import 'package:wger/theme/theme.dart';
 
@@ -20,10 +20,10 @@ import '../test_data/exercises.dart';
 import '../test_data/measurements.dart';
 import '../test_data/nutritional_plans.dart';
 import '../test_data/profile.dart';
-import '../test_data/workouts.dart';
+import '../test_data/routines.dart';
 
 Widget createDashboardScreen({locale = 'en'}) {
-  final mockWorkoutProvider = MockWorkoutPlansProvider();
+  final mockWorkoutProvider = MockRoutinesProvider();
   when(mockWorkoutProvider.activePlan).thenReturn(getWorkout(exercises: getScreenshotExercises()));
 
   final Map<String, dynamic> logs = {
@@ -60,7 +60,7 @@ Widget createDashboardScreen({locale = 'en'}) {
       ChangeNotifierProvider<UserProvider>(
         create: (context) => mockUserProvider,
       ),
-      ChangeNotifierProvider<WorkoutPlansProvider>(
+      ChangeNotifierProvider<RoutinesProvider>(
         create: (context) => mockWorkoutProvider,
       ),
       ChangeNotifierProvider<NutritionPlansProvider>(

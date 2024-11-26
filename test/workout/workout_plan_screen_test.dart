@@ -25,10 +25,10 @@ import 'package:provider/provider.dart';
 import 'package:wger/database/exercises/exercise_database.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
-import 'package:wger/providers/workout_plans.dart';
-import 'package:wger/screens/workout_plan_screen.dart';
+import 'package:wger/providers/routines.dart';
+import 'package:wger/screens/routine_screen.dart';
 
-import '../../test_data/workouts.dart';
+import '../../test_data/routines.dart';
 import 'workout_plan_screen_test.mocks.dart';
 
 @GenerateMocks([WgerBaseProvider])
@@ -41,8 +41,8 @@ void main() {
   Widget createHomeScreen({locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
 
-    return ChangeNotifierProvider<WorkoutPlansProvider>(
-      create: (context) => WorkoutPlansProvider(mockBaseProvider, exercisesProvider, []),
+    return ChangeNotifierProvider<RoutinesProvider>(
+      create: (context) => RoutinesProvider(mockBaseProvider, exercisesProvider, []),
       child: MaterialApp(
         locale: Locale(locale),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -52,13 +52,13 @@ void main() {
           onPressed: () => key.currentState!.push(
             MaterialPageRoute<void>(
               settings: RouteSettings(arguments: getWorkout()),
-              builder: (_) => const WorkoutPlanScreen(),
+              builder: (_) => const RoutineScreen(),
             ),
           ),
           child: const SizedBox(),
         ),
         routes: {
-          WorkoutPlanScreen.routeName: (ctx) => const WorkoutPlanScreen(),
+          RoutineScreen.routeName: (ctx) => const RoutineScreen(),
         },
       ),
     );

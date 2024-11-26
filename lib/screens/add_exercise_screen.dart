@@ -73,12 +73,10 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
                         final addExerciseProvider = context.read<AddExerciseProvider>();
                         final exerciseProvider = context.read<ExercisesProvider>();
 
-                        final baseId = await addExerciseProvider.addExercise();
-                        final base = await exerciseProvider.fetchAndSetExercise(baseId);
-                        final name = base
-                            .getExercise(
-                              Localizations.localeOf(context).languageCode,
-                            )
+                        final exerciseId = await addExerciseProvider.addExercise();
+                        final exercise = await exerciseProvider.fetchAndSetExercise(exerciseId);
+                        final name = exercise!
+                            .getExercise(Localizations.localeOf(context).languageCode)
                             .name;
 
                         setState(() {
@@ -102,7 +100,7 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
                                     Navigator.pushReplacementNamed(
                                       context,
                                       ExerciseDetailScreen.routeName,
-                                      arguments: base,
+                                      arguments: exercise,
                                     );
                                   },
                                 ),

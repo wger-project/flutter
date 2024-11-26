@@ -24,19 +24,19 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
-import 'package:wger/models/workouts/workout_plan.dart';
+import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/routines.dart';
 import 'package:wger/providers/user.dart';
-import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/screens/log_meals_screen.dart';
 import 'package:wger/screens/measurement_categories_screen.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
+import 'package:wger/screens/routine_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
-import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/measurements/categories_card.dart';
@@ -45,8 +45,8 @@ import 'package:wger/widgets/measurements/forms.dart';
 import 'package:wger/widgets/measurements/helpers.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
+import 'package:wger/widgets/routines/forms/routine.dart';
 import 'package:wger/widgets/weight/forms.dart';
-import 'package:wger/widgets/workouts/forms.dart';
 
 class DashboardNutritionWidget extends StatefulWidget {
   const DashboardNutritionWidget();
@@ -371,12 +371,12 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
   var _showDetail = false;
   bool _hasContent = false;
 
-  WorkoutPlan? _workoutPlan;
+  Routine? _workoutPlan;
 
   @override
   void initState() {
     super.initState();
-    _workoutPlan = context.read<WorkoutPlansProvider>().activePlan;
+    _workoutPlan = context.read<RoutinesProvider>().activePlan;
     _hasContent = _workoutPlan != null;
   }
 
@@ -387,59 +387,66 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
       return out;
     }
 
-    for (final day in _workoutPlan!.days) {
+    for (final dayData in _workoutPlan!.dayDataCurrentIteration) {
       out.add(SizedBox(
         width: double.infinity,
         child: Row(
           children: [
             Expanded(
               child: Text(
-                day.description,
+                dayData.day == null || dayData.day!.isRest
+                    ? AppLocalizations.of(context).restDay
+                    : dayData.day!.name,
                 style: const TextStyle(fontWeight: FontWeight.bold),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
             Expanded(
-              child: MutedText(day.getDaysText, textAlign: TextAlign.right),
+              child: MutedText(
+                dayData.day != null ? dayData.day!.description : '',
+                textAlign: TextAlign.right,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
-            IconButton(
-              icon: const Icon(Icons.play_arrow),
-              color: wgerPrimaryButtonColor,
-              onPressed: () {
-                Navigator.of(context).pushNamed(GymModeScreen.routeName, arguments: day);
-              },
-            ),
+            if (dayData.day == null || dayData.day!.isRest)
+              const Icon(Icons.hotel)
+            else
+              IconButton(
+                icon: const Icon(Icons.play_arrow),
+                color: wgerPrimaryButtonColor,
+                onPressed: () {
+                  Navigator.of(context).pushNamed(GymModeScreen.routeName, arguments: dayData);
+                },
+              ),
           ],
         ),
       ));
 
-      for (final set in day.sets) {
+      for (final slotData in dayData.slots) {
         out.add(SizedBox(
           width: double.infinity,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ...set.settingsFiltered.map((s) {
-                return _showDetail
+              ...slotData.setConfigs.map(
+                (s) => _showDetail
                     ? Column(
                         children: [
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(s.exerciseObj
+                              Text(s.exercise
                                   .getExercise(Localizations.localeOf(context).languageCode)
                                   .name),
                               const SizedBox(width: 10),
-                              MutedText(
-                                set.getSmartRepr(s.exerciseObj).join('\n'),
-                              ),
+                              MutedText(s.textRepr),
                             ],
                           ),
                           const SizedBox(height: 10),
                         ],
                       )
-                    : Container();
-              }),
+                    : Container(),
+              ),
             ],
           ),
         ));
@@ -463,7 +470,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
             subtitle: Text(
               _hasContent
                   ? DateFormat.yMd(Localizations.localeOf(context).languageCode)
-                      .format(_workoutPlan!.creationDate)
+                      .format(_workoutPlan!.created)
                   : '',
             ),
             leading: Icon(
@@ -491,7 +498,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
             NothingFound(
               AppLocalizations.of(context).noWorkoutPlans,
               AppLocalizations.of(context).newWorkout,
-              WorkoutForm(WorkoutPlan.empty()),
+              RoutineForm(Routine.empty()),
             ),
           if (_hasContent)
             Row(
@@ -501,7 +508,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                   child: Text(AppLocalizations.of(context).goToDetailPage),
                   onPressed: () {
                     Navigator.of(context).pushNamed(
-                      WorkoutPlanScreen.routeName,
+                      RoutineScreen.routeName,
                       arguments: _workoutPlan,
                     );
                   },

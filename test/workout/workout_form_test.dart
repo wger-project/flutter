@@ -23,45 +23,47 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/models/workouts/workout_plan.dart';
-import 'package:wger/providers/workout_plans.dart';
-import 'package:wger/screens/workout_plan_screen.dart';
-import 'package:wger/widgets/workouts/forms.dart';
+import 'package:wger/models/workouts/routine.dart';
+import 'package:wger/providers/routines.dart';
+import 'package:wger/screens/routine_screen.dart';
+import 'package:wger/widgets/routines/forms/routine.dart';
 
 import './workout_form_test.mocks.dart';
 
-@GenerateMocks([WorkoutPlansProvider])
+@GenerateMocks([RoutinesProvider])
 void main() {
-  var mockWorkoutPlans = MockWorkoutPlansProvider();
+  var mockWorkoutPlans = MockRoutinesProvider();
 
-  final existingPlan = WorkoutPlan(
+  final existingPlan = Routine(
     id: 1,
-    creationDate: DateTime(2021, 1, 1),
+    created: DateTime(2021, 1, 1),
+    start: DateTime(2024, 11, 1),
+    end: DateTime(2024, 12, 1),
     name: 'test 1',
     description: 'description 1',
   );
-  final newPlan = WorkoutPlan.empty();
+  final newPlan = Routine.empty();
 
   setUp(() {
-    mockWorkoutPlans = MockWorkoutPlansProvider();
-    when(mockWorkoutPlans.editWorkout(any)).thenAnswer((_) => Future.value(existingPlan));
-    when(mockWorkoutPlans.fetchAndSetWorkoutPlanFull(any))
+    mockWorkoutPlans = MockRoutinesProvider();
+    when(mockWorkoutPlans.editRoutine(any)).thenAnswer((_) => Future.value(existingPlan));
+    when(mockWorkoutPlans.fetchAndSetRoutineFull(any))
         .thenAnswer((_) => Future.value(existingPlan));
   });
 
-  Widget createHomeScreen(WorkoutPlan workoutPlan, {locale = 'en'}) {
+  Widget createHomeScreen(Routine workoutPlan, {locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
 
-    return ChangeNotifierProvider<WorkoutPlansProvider>(
+    return ChangeNotifierProvider<RoutinesProvider>(
       create: (context) => mockWorkoutPlans,
       child: MaterialApp(
         locale: Locale(locale),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
-        home: Scaffold(body: WorkoutForm(workoutPlan)),
+        home: Scaffold(body: RoutineForm(workoutPlan)),
         routes: {
-          WorkoutPlanScreen.routeName: (ctx) => const WorkoutPlanScreen(),
+          RoutineScreen.routeName: (ctx) => const RoutineScreen(),
         },
       ),
     );
@@ -93,8 +95,8 @@ void main() {
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
     // Correct method was called
-    verify(mockWorkoutPlans.editWorkout(any));
-    verifyNever(mockWorkoutPlans.addWorkout(any));
+    verify(mockWorkoutPlans.editRoutine(any));
+    verifyNever(mockWorkoutPlans.addRoutine(any));
 
     // TODO(x): edit calls Navigator.pop(), since the form can only be reached from the
     //       detail page. The test needs to add the detail page to the stack so that
@@ -106,13 +108,15 @@ void main() {
   });
 
   testWidgets('Test creating a new workout - only name', (WidgetTester tester) async {
-    final editWorkout = WorkoutPlan(
+    final editWorkout = Routine(
       id: 2,
-      creationDate: newPlan.creationDate,
+      created: newPlan.created,
+      start: DateTime(2024, 11, 1),
+      end: DateTime(2024, 12, 1),
       name: 'New cool workout',
     );
 
-    when(mockWorkoutPlans.addWorkout(any)).thenAnswer((_) => Future.value(editWorkout));
+    when(mockWorkoutPlans.addRoutine(any)).thenAnswer((_) => Future.value(editWorkout));
 
     await tester.pumpWidget(createHomeScreen(newPlan));
     await tester.pumpAndSettle();
@@ -121,8 +125,8 @@ void main() {
     await tester.enterText(find.byKey(const Key('field-name')), editWorkout.name);
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
-    verifyNever(mockWorkoutPlans.editWorkout(any));
-    verify(mockWorkoutPlans.addWorkout(any));
+    verifyNever(mockWorkoutPlans.editRoutine(any));
+    verify(mockWorkoutPlans.addRoutine(any));
 
     // Detail page
     await tester.pumpAndSettle();
@@ -130,13 +134,15 @@ void main() {
   });
 
   testWidgets('Test creating a new workout - name and description', (WidgetTester tester) async {
-    final editWorkout = WorkoutPlan(
+    final editWorkout = Routine(
       id: 2,
-      creationDate: newPlan.creationDate,
+      created: newPlan.created,
+      start: DateTime(2024, 11, 1),
+      end: DateTime(2024, 12, 1),
       name: 'My workout',
       description: 'Get yuuuge',
     );
-    when(mockWorkoutPlans.addWorkout(any)).thenAnswer((_) => Future.value(editWorkout));
+    when(mockWorkoutPlans.addRoutine(any)).thenAnswer((_) => Future.value(editWorkout));
 
     await tester.pumpWidget(createHomeScreen(newPlan));
     await tester.pumpAndSettle();
@@ -146,8 +152,8 @@ void main() {
     await tester.enterText(find.byKey(const Key('field-description')), editWorkout.description);
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
-    verifyNever(mockWorkoutPlans.editWorkout(any));
-    verify(mockWorkoutPlans.addWorkout(any));
+    verifyNever(mockWorkoutPlans.editRoutine(any));
+    verify(mockWorkoutPlans.addRoutine(any));
 
     // Detail page
     await tester.pumpAndSettle();

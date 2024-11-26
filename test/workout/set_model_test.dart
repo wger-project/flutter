@@ -18,14 +18,14 @@
 
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../test_data/workouts.dart';
+import '../../test_data/routines.dart';
 
 void main() {
   group('Test the getSmartTextRepr method for a set', () {
     test('Repetitions and weigh units', () {
       final workout = getWorkout();
-      final set = workout.days.first.sets.first;
-      final exercise1 = set.exerciseBasesObj[0];
+      final set = workout.days.first.slots.first;
+      final exercise1 = set.exercisesObj[0];
 
       expect(set.getSmartTextRepr(exercise1), '6 × 80 kg  (3 RiR)');
     });

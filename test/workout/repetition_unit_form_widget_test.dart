@@ -23,42 +23,43 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
-import 'package:wger/models/workouts/setting.dart';
-import 'package:wger/providers/workout_plans.dart';
-import 'package:wger/screens/workout_plan_screen.dart';
-import 'package:wger/widgets/workouts/forms.dart';
+import 'package:wger/models/workouts/slot_entry.dart';
+import 'package:wger/providers/routines.dart';
+import 'package:wger/screens/routine_screen.dart';
+import 'package:wger/widgets/routines/forms/reps_unit.dart';
 
 import 'repetition_unit_form_widget_test.mocks.dart';
 
-@GenerateMocks([WorkoutPlansProvider])
+@GenerateMocks([RoutinesProvider])
 void main() {
-  var mockWorkoutPlans = MockWorkoutPlansProvider();
+  var mockWorkoutPlans = MockRoutinesProvider();
 
   const unit1 = RepetitionUnit(id: 1, name: 'some rep unit');
   const unit2 = RepetitionUnit(id: 2, name: 'another name');
   const unit3 = RepetitionUnit(id: 3, name: 'this is repetition number 3');
 
-  final setting1 = Setting(
-    setId: 1,
+  final setting1 = SlotEntry(
+    slotId: 1,
+    type: 'normal',
     order: 1,
     exerciseId: 1,
     repetitionUnitId: 1,
-    reps: 2,
+    repetitionRounding: 0.25,
     weightUnitId: 1,
+    weightRounding: 0.25,
     comment: 'comment',
-    rir: '1',
   );
   setting1.repetitionUnitObj = unit1;
 
   setUp(() {
-    mockWorkoutPlans = MockWorkoutPlansProvider();
+    mockWorkoutPlans = MockRoutinesProvider();
     when(mockWorkoutPlans.repetitionUnits).thenAnswer((_) => [unit1, unit2, unit3]);
   });
 
   Widget createHomeScreen() {
     final key = GlobalKey<NavigatorState>();
 
-    return ChangeNotifierProvider<WorkoutPlansProvider>(
+    return ChangeNotifierProvider<RoutinesProvider>(
       create: (context) => mockWorkoutPlans,
       child: MaterialApp(
         localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -66,7 +67,7 @@ void main() {
         navigatorKey: key,
         home: Scaffold(body: RepetitionUnitInputWidget(setting1)),
         routes: {
-          WorkoutPlanScreen.routeName: (ctx) => const WorkoutPlanScreen(),
+          RoutineScreen.routeName: (ctx) => const RoutineScreen(),
         },
       ),
     );

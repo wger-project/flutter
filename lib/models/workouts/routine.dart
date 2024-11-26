@@ -17,19 +17,33 @@
  */
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:wger/helpers/json.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day.dart';
+import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/models/workouts/log.dart';
 
-part 'workout_plan.g.dart';
+part 'routine.g.dart';
 
 @JsonSerializable()
-class WorkoutPlan {
-  @JsonKey(required: true)
+class Routine {
+  static const MIN_LENGTH_DESCRIPTION = 0;
+  static const MAX_LENGTH_DESCRIPTION = 1000;
+
+  static const MIN_LENGTH_NAME = 3;
+  static const MAX_LENGTH_NAME = 25;
+
+  /// In weeks
+  static const MIN_DURATION = 2;
+
+  /// In weeks
+  static const MAX_DURATION = 16;
+
+  @JsonKey(required: true, includeToJson: false)
   int? id;
 
-  @JsonKey(required: true, name: 'creation_date')
-  late DateTime creationDate;
+  @JsonKey(required: true)
+  late DateTime created;
 
   @JsonKey(required: true, name: 'name')
   late String name;
@@ -37,16 +51,37 @@ class WorkoutPlan {
   @JsonKey(required: true, name: 'description')
   late String description;
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(required: true, name: 'fit_in_week')
+  late bool fitInWeek;
+
+  @JsonKey(required: true, toJson: dateToYYYYMMDD)
+  late DateTime start;
+
+  @JsonKey(required: true, toJson: dateToYYYYMMDD)
+  late DateTime end;
+
+  @JsonKey(includeFromJson: true, required: false, includeToJson: false)
   List<Day> days = [];
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  List<DayData> dayData = [];
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  List<DayData> dayDataCurrentIteration = [];
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  List<DayData> dayDataCurrentIterationGym = [];
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   List<Log> logs = [];
 
-  WorkoutPlan({
+  Routine({
     this.id,
-    required this.creationDate,
+    required this.created,
     required this.name,
+    required this.start,
+    required this.end,
+    this.fitInWeek = false,
     String? description,
     List<Day>? days,
     List<Log>? logs,
@@ -56,16 +91,15 @@ class WorkoutPlan {
     this.description = description ?? '';
   }
 
-  WorkoutPlan.empty() {
-    creationDate = DateTime.now();
+  Routine.empty() {
     name = '';
     description = '';
   }
 
   // Boilerplate
-  factory WorkoutPlan.fromJson(Map<String, dynamic> json) => _$WorkoutPlanFromJson(json);
+  factory Routine.fromJson(Map<String, dynamic> json) => _$RoutineFromJson(json);
 
-  Map<String, dynamic> toJson() => _$WorkoutPlanToJson(this);
+  Map<String, dynamic> toJson() => _$RoutineToJson(this);
 
   /// Filters the workout logs by exercise and sorts them by date
   ///
@@ -74,7 +108,7 @@ class WorkoutPlan {
   /// reps, etc. are considered equal. Workout ID, Log ID and date are not
   /// considered.
   List<Log> filterLogsByExerciseBase(Exercise exerciseBase, {bool unique = false}) {
-    var out = logs.where((element) => element.exerciseBaseId == exerciseBase.id).toList();
+    var out = logs.where((element) => element.exerciseId == exerciseBase.id).toList();
 
     if (unique) {
       out = out.toSet().toList();
@@ -89,7 +123,7 @@ class WorkoutPlan {
   Map<DateTime, Map<String, dynamic>> get logData {
     final out = <DateTime, Map<String, dynamic>>{};
     for (final log in logs) {
-      final exercise = log.exerciseBaseObj;
+      final exercise = log.exercise;
       final date = log.date;
 
       if (!out.containsKey(date)) {

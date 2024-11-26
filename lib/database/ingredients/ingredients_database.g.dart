@@ -3,24 +3,20 @@
 part of 'ingredients_database.dart';
 
 // ignore_for_file: type=lint
-class $IngredientsTable extends Ingredients
-    with TableInfo<$IngredientsTable, IngredientTable> {
+class $IngredientsTable extends Ingredients with TableInfo<$IngredientsTable, IngredientTable> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
   $IngredientsTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
+  late final GeneratedColumn<int> id = GeneratedColumn<int>('id', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
   static const VerificationMeta _dataMeta = const VerificationMeta('data');
   @override
-  late final GeneratedColumn<String> data = GeneratedColumn<String>(
-      'data', aliasedName, false,
+  late final GeneratedColumn<String> data = GeneratedColumn<String>('data', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _lastFetchedMeta =
-      const VerificationMeta('lastFetched');
+  static const VerificationMeta _lastFetchedMeta = const VerificationMeta('lastFetched');
   @override
   late final GeneratedColumn<DateTime> lastFetched = GeneratedColumn<DateTime>(
       'last_fetched', aliasedName, false,
@@ -43,16 +39,13 @@ class $IngredientsTable extends Ingredients
       context.missing(_idMeta);
     }
     if (data.containsKey('data')) {
-      context.handle(
-          _dataMeta, this.data.isAcceptableOrUnknown(data['data']!, _dataMeta));
+      context.handle(_dataMeta, this.data.isAcceptableOrUnknown(data['data']!, _dataMeta));
     } else if (isInserting) {
       context.missing(_dataMeta);
     }
     if (data.containsKey('last_fetched')) {
-      context.handle(
-          _lastFetchedMeta,
-          lastFetched.isAcceptableOrUnknown(
-              data['last_fetched']!, _lastFetchedMeta));
+      context.handle(_lastFetchedMeta,
+          lastFetched.isAcceptableOrUnknown(data['last_fetched']!, _lastFetchedMeta));
     } else if (isInserting) {
       context.missing(_lastFetchedMeta);
     }
@@ -65,10 +58,8 @@ class $IngredientsTable extends Ingredients
   IngredientTable map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return IngredientTable(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      data: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}data'])!,
+      id: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      data: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}data'])!,
       lastFetched: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}last_fetched'])!,
     );
@@ -86,8 +77,7 @@ class IngredientTable extends DataClass implements Insertable<IngredientTable> {
 
   /// The date when the ingredient was last fetched from the server
   final DateTime lastFetched;
-  const IngredientTable(
-      {required this.id, required this.data, required this.lastFetched});
+  const IngredientTable({required this.id, required this.data, required this.lastFetched});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -105,8 +95,7 @@ class IngredientTable extends DataClass implements Insertable<IngredientTable> {
     );
   }
 
-  factory IngredientTable.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory IngredientTable.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return IngredientTable(
       id: serializer.fromJson<int>(json['id']),
@@ -124,8 +113,7 @@ class IngredientTable extends DataClass implements Insertable<IngredientTable> {
     };
   }
 
-  IngredientTable copyWith({int? id, String? data, DateTime? lastFetched}) =>
-      IngredientTable(
+  IngredientTable copyWith({int? id, String? data, DateTime? lastFetched}) => IngredientTable(
         id: id ?? this.id,
         data: data ?? this.data,
         lastFetched: lastFetched ?? this.lastFetched,
@@ -134,8 +122,7 @@ class IngredientTable extends DataClass implements Insertable<IngredientTable> {
     return IngredientTable(
       id: data.id.present ? data.id.value : this.id,
       data: data.data.present ? data.data.value : this.data,
-      lastFetched:
-          data.lastFetched.present ? data.lastFetched.value : this.lastFetched,
+      lastFetched: data.lastFetched.present ? data.lastFetched.value : this.lastFetched,
     );
   }
 
@@ -194,10 +181,7 @@ class IngredientsCompanion extends UpdateCompanion<IngredientTable> {
   }
 
   IngredientsCompanion copyWith(
-      {Value<int>? id,
-      Value<String>? data,
-      Value<DateTime>? lastFetched,
-      Value<int>? rowid}) {
+      {Value<int>? id, Value<String>? data, Value<DateTime>? lastFetched, Value<int>? rowid}) {
     return IngredientsCompanion(
       id: id ?? this.id,
       data: data ?? this.data,
@@ -247,23 +231,20 @@ abstract class _$IngredientDatabase extends GeneratedDatabase {
   List<DatabaseSchemaEntity> get allSchemaEntities => [ingredients];
 }
 
-typedef $$IngredientsTableCreateCompanionBuilder = IngredientsCompanion
-    Function({
+typedef $$IngredientsTableCreateCompanionBuilder = IngredientsCompanion Function({
   required int id,
   required String data,
   required DateTime lastFetched,
   Value<int> rowid,
 });
-typedef $$IngredientsTableUpdateCompanionBuilder = IngredientsCompanion
-    Function({
+typedef $$IngredientsTableUpdateCompanionBuilder = IngredientsCompanion Function({
   Value<int> id,
   Value<String> data,
   Value<DateTime> lastFetched,
   Value<int> rowid,
 });
 
-class $$IngredientsTableFilterComposer
-    extends Composer<_$IngredientDatabase, $IngredientsTable> {
+class $$IngredientsTableFilterComposer extends Composer<_$IngredientDatabase, $IngredientsTable> {
   $$IngredientsTableFilterComposer({
     required super.$db,
     required super.$table,
@@ -271,18 +252,17 @@ class $$IngredientsTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnFilters<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+  ColumnFilters<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get data => $composableBuilder(
-      column: $table.data, builder: (column) => ColumnFilters(column));
+  ColumnFilters<String> get data =>
+      $composableBuilder(column: $table.data, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<DateTime> get lastFetched => $composableBuilder(
-      column: $table.lastFetched, builder: (column) => ColumnFilters(column));
+  ColumnFilters<DateTime> get lastFetched =>
+      $composableBuilder(column: $table.lastFetched, builder: (column) => ColumnFilters(column));
 }
 
-class $$IngredientsTableOrderingComposer
-    extends Composer<_$IngredientDatabase, $IngredientsTable> {
+class $$IngredientsTableOrderingComposer extends Composer<_$IngredientDatabase, $IngredientsTable> {
   $$IngredientsTableOrderingComposer({
     required super.$db,
     required super.$table,
@@ -290,14 +270,14 @@ class $$IngredientsTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnOrderings<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+  ColumnOrderings<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get data => $composableBuilder(
-      column: $table.data, builder: (column) => ColumnOrderings(column));
+  ColumnOrderings<String> get data =>
+      $composableBuilder(column: $table.data, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<DateTime> get lastFetched => $composableBuilder(
-      column: $table.lastFetched, builder: (column) => ColumnOrderings(column));
+  ColumnOrderings<DateTime> get lastFetched =>
+      $composableBuilder(column: $table.lastFetched, builder: (column) => ColumnOrderings(column));
 }
 
 class $$IngredientsTableAnnotationComposer
@@ -309,14 +289,13 @@ class $$IngredientsTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  GeneratedColumn<int> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
+  GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
 
   GeneratedColumn<String> get data =>
       $composableBuilder(column: $table.data, builder: (column) => column);
 
-  GeneratedColumn<DateTime> get lastFetched => $composableBuilder(
-      column: $table.lastFetched, builder: (column) => column);
+  GeneratedColumn<DateTime> get lastFetched =>
+      $composableBuilder(column: $table.lastFetched, builder: (column) => column);
 }
 
 class $$IngredientsTableTableManager extends RootTableManager<
@@ -328,21 +307,15 @@ class $$IngredientsTableTableManager extends RootTableManager<
     $$IngredientsTableAnnotationComposer,
     $$IngredientsTableCreateCompanionBuilder,
     $$IngredientsTableUpdateCompanionBuilder,
-    (
-      IngredientTable,
-      BaseReferences<_$IngredientDatabase, $IngredientsTable, IngredientTable>
-    ),
+    (IngredientTable, BaseReferences<_$IngredientDatabase, $IngredientsTable, IngredientTable>),
     IngredientTable,
     PrefetchHooks Function()> {
-  $$IngredientsTableTableManager(
-      _$IngredientDatabase db, $IngredientsTable table)
+  $$IngredientsTableTableManager(_$IngredientDatabase db, $IngredientsTable table)
       : super(TableManagerState(
           db: db,
           table: table,
-          createFilteringComposer: () =>
-              $$IngredientsTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$IngredientsTableOrderingComposer($db: db, $table: table),
+          createFilteringComposer: () => $$IngredientsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () => $$IngredientsTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$IngredientsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
@@ -369,9 +342,8 @@ class $$IngredientsTableTableManager extends RootTableManager<
             lastFetched: lastFetched,
             rowid: rowid,
           ),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
-              .toList(),
+          withReferenceMapper: (p0) =>
+              p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
           prefetchHooksCallback: null,
         ));
 }
@@ -385,10 +357,7 @@ typedef $$IngredientsTableProcessedTableManager = ProcessedTableManager<
     $$IngredientsTableAnnotationComposer,
     $$IngredientsTableCreateCompanionBuilder,
     $$IngredientsTableUpdateCompanionBuilder,
-    (
-      IngredientTable,
-      BaseReferences<_$IngredientDatabase, $IngredientsTable, IngredientTable>
-    ),
+    (IngredientTable, BaseReferences<_$IngredientDatabase, $IngredientsTable, IngredientTable>),
     IngredientTable,
     PrefetchHooks Function()>;
 

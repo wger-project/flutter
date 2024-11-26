@@ -31,23 +31,27 @@ import 'package:wger/helpers/misc.dart';
 import 'package:wger/helpers/ui.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day.dart';
+import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/models/workouts/log.dart';
+import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/session.dart';
-import 'package:wger/models/workouts/set.dart';
-import 'package:wger/models/workouts/setting.dart';
-import 'package:wger/models/workouts/workout_plan.dart';
+import 'package:wger/models/workouts/slot.dart';
+import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/providers/exercises.dart';
-import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/providers/routines.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/core.dart';
+import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/exercises/images.dart';
-import 'package:wger/widgets/workouts/forms.dart';
+import 'package:wger/widgets/routines/forms/reps_unit.dart';
+import 'package:wger/widgets/routines/forms/rir.dart';
+import 'package:wger/widgets/routines/forms/weight_unit.dart';
 
 class GymMode extends StatefulWidget {
-  final Day _workoutDay;
+  final DayData _DayData;
   late final TimeOfDay _start;
 
-  GymMode(this._workoutDay) {
+  GymMode(this._DayData) {
     _start = TimeOfDay.now();
   }
 
@@ -72,7 +76,7 @@ class _GymModeState extends State<GymMode> {
   void initState() {
     super.initState();
     // Calculate amount of elements for progress indicator
-    for (final set in widget._workoutDay.sets) {
+    for (final set in widget._DayData.day!.slots) {
       _totalElements = _totalElements + set.settingsComputed.length;
     }
     // Calculate the pages for the navigation
@@ -80,9 +84,10 @@ class _GymModeState extends State<GymMode> {
     // This duplicates the code below in the getContent method, but it seems to
     // be the easiest way
     var currentPage = 1;
-    for (final set in widget._workoutDay.sets) {
+    for (final _ in widget._DayData.slots) {
       var firstPage = true;
-      for (final setting in set.settingsComputed) {
+      for (final setting in []) {
+        // for (final setting in set.settingsComputed) {
         final exerciseBase = Provider.of<ExercisesProvider>(context, listen: false)
             .findExerciseById(setting.exerciseId);
 
@@ -104,13 +109,14 @@ class _GymModeState extends State<GymMode> {
   // Returns the list of exercise overview, sets and pause pages
   List<Widget> getContent() {
     final exerciseProvider = Provider.of<ExercisesProvider>(context, listen: false);
-    final workoutProvider = Provider.of<WorkoutPlansProvider>(context, listen: false);
+    final workoutProvider = Provider.of<RoutinesProvider>(context, listen: false);
     var currentElement = 1;
     final List<Widget> out = [];
 
-    for (final set in widget._workoutDay.sets) {
+    for (final set in widget._DayData.day!.slots) {
       var firstPage = true;
-      for (final setting in set.settingsComputed) {
+      for (final setting in []) {
+        // for (final setting in set.settingsComputed) {
         final ratioCompleted = currentElement / _totalElements;
         final exerciseBase = exerciseProvider.findExerciseById(setting.exerciseId);
         currentElement++;
@@ -129,7 +135,7 @@ class _GymModeState extends State<GymMode> {
           setting,
           set,
           exerciseBase,
-          workoutProvider.findById(widget._workoutDay.workoutId),
+          workoutProvider.findById(widget._DayData.day!.routineId),
           ratioCompleted,
           _exercisePages,
         ));
@@ -146,11 +152,11 @@ class _GymModeState extends State<GymMode> {
     return PageView(
       controller: _controller,
       children: [
-        StartPage(_controller, widget._workoutDay, _exercisePages),
+        StartPage(_controller, widget._DayData.day!, _exercisePages),
         ...getContent(),
         SessionPage(
-          Provider.of<WorkoutPlansProvider>(context, listen: false)
-              .findById(widget._workoutDay.workoutId),
+          Provider.of<RoutinesProvider>(context, listen: false)
+              .findById(widget._DayData.day!.routineId),
           _controller,
           widget._start,
           _exercisePages,
@@ -180,7 +186,7 @@ class StartPage extends StatelessWidget {
         Expanded(
           child: ListView(
             children: [
-              ..._day.sets.map((set) {
+              ..._day.slots.map((set) {
                 return Column(
                   children: [
                     ...set.settingsFiltered.map((s) {
@@ -220,17 +226,17 @@ class StartPage extends StatelessWidget {
 
 class LogPage extends StatefulWidget {
   final PageController _controller;
-  final Setting _setting;
-  final Set _set;
+  final SlotEntry _entry;
+  final Slot _set;
   final Exercise _exerciseBase;
-  final WorkoutPlan _workoutPlan;
+  final Routine _workoutPlan;
   final double _ratioCompleted;
   final Map<Exercise, int> _exercisePages;
   final Log _log = Log.empty();
 
   LogPage(
     this._controller,
-    this._setting,
+    this._entry,
     this._set,
     this._exerciseBase,
     this._workoutPlan,
@@ -238,11 +244,11 @@ class LogPage extends StatefulWidget {
     this._exercisePages,
   ) {
     _log.date = DateTime.now();
-    _log.workoutPlan = _workoutPlan.id!;
+    _log.routineId = _workoutPlan.id!;
     _log.exerciseBase = _exerciseBase;
-    _log.weightUnit = _setting.weightUnitObj;
-    _log.repetitionUnit = _setting.repetitionUnitObj;
-    _log.rir = _setting.rir;
+    _log.weightUnit = _entry.weightUnitObj;
+    _log.repetitionUnit = _entry.repetitionUnitObj;
+    _log.rir = _entry.rir;
   }
 
   @override
@@ -251,7 +257,7 @@ class LogPage extends StatefulWidget {
 
 class _LogPageState extends State<LogPage> {
   final _form = GlobalKey<FormState>();
-  String rirValue = Setting.DEFAULT_RIR;
+  String rirValue = SlotEntry.DEFAULT_RIR;
   final _repsController = TextEditingController();
   final _weightController = TextEditingController();
   var _detailed = false;
@@ -265,13 +271,13 @@ class _LogPageState extends State<LogPage> {
 
     focusNode = FocusNode();
 
-    if (widget._setting.reps != null) {
-      _repsController.text = widget._setting.reps.toString();
-    }
+    // if (widget._entry.reps != null) {
+    _repsController.text = 'widget._entry.reps.toString()';
+    // }
 
-    if (widget._setting.weight != null) {
-      _weightController.text = widget._setting.weight.toString();
-    }
+    // if (widget._entry.weight != null) {
+    _weightController.text = 'widget._entry.weight.toString()';
+    // }
   }
 
   @override
@@ -446,59 +452,52 @@ class _LogPageState extends State<LogPage> {
             },
           ),
           ElevatedButton(
-            onPressed: _isSaving
-                ? null
-                : () async {
-                    // Validate and save the current values to the weightEntry
-                    final isValid = _form.currentState!.validate();
-                    if (!isValid) {
-                      return;
-                    }
-                    _isSaving = true;
-                    _form.currentState!.save();
+              onPressed: _isSaving
+                  ? null
+                  : () async {
+                      // Validate and save the current values to the weightEntry
+                      final isValid = _form.currentState!.validate();
+                      if (!isValid) {
+                        return;
+                      }
+                      _isSaving = true;
+                      _form.currentState!.save();
 
-                    // Save the entry on the server
-                    try {
-                      await Provider.of<WorkoutPlansProvider>(
-                        context,
-                        listen: false,
-                      ).addLog(widget._log);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          duration: const Duration(seconds: 2), // default is 4
-                          content: Text(
-                            AppLocalizations.of(context).successfullySaved,
-                            textAlign: TextAlign.center,
+                      // Save the entry on the server
+                      try {
+                        await Provider.of<RoutinesProvider>(
+                          context,
+                          listen: false,
+                        ).addLog(widget._log);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            duration: const Duration(seconds: 2), // default is 4
+                            content: Text(
+                              AppLocalizations.of(context).successfullySaved,
+                              textAlign: TextAlign.center,
+                            ),
                           ),
-                        ),
-                      );
-                      widget._controller.nextPage(
-                        duration: DEFAULT_ANIMATION_DURATION,
-                        curve: DEFAULT_ANIMATION_CURVE,
-                      );
-                      _isSaving = false;
-                    } on WgerHttpException catch (error) {
-                      if (mounted) {
-                        showHttpExceptionErrorDialog(error, context);
+                        );
+                        widget._controller.nextPage(
+                          duration: DEFAULT_ANIMATION_DURATION,
+                          curve: DEFAULT_ANIMATION_CURVE,
+                        );
+                        _isSaving = false;
+                      } on WgerHttpException catch (error) {
+                        if (mounted) {
+                          showHttpExceptionErrorDialog(error, context);
+                        }
+                        _isSaving = false;
+                      } catch (error) {
+                        if (mounted) {
+                          showErrorDialog(error, context);
+                        }
+                        _isSaving = false;
                       }
-                      _isSaving = false;
-                    } catch (error) {
-                      if (mounted) {
-                        showErrorDialog(error, context);
-                      }
-                      _isSaving = false;
-                    }
-                  },
-            child: (!_isSaving)
-                ? Text(AppLocalizations.of(context).save)
-                : const SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                    ),
-                  ),
-          ),
+                    },
+              child: _isSaving
+                  ? const FormProgressIndicator()
+                  : Text(AppLocalizations.of(context).save)),
         ],
       ),
     );
@@ -618,7 +617,7 @@ class _LogPageState extends State<LogPage> {
         ),
         Center(
           child: Text(
-            widget._setting.singleSettingRepText,
+            widget._entry.singleSettingRepText,
             style: Theme.of(context).textTheme.headlineMedium,
             textAlign: TextAlign.center,
           ),
@@ -631,7 +630,7 @@ class _LogPageState extends State<LogPage> {
               : Container(),
         ),
         // Only show calculator for barbell
-        if (widget._log.exerciseBaseObj.equipment.map((e) => e.id).contains(ID_EQUIPMENT_BARBELL))
+        if (widget._log.exercise.equipment.map((e) => e.id).contains(ID_EQUIPMENT_BARBELL))
           getPlates(),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -707,7 +706,7 @@ class ExerciseOverview extends StatelessWidget {
 }
 
 class SessionPage extends StatefulWidget {
-  final WorkoutPlan _workoutPlan;
+  final Routine _workoutPlan;
   final PageController _controller;
   final TimeOfDay _start;
   final Map<Exercise, int> _exercisePages;
@@ -741,7 +740,7 @@ class _SessionPageState extends State<SessionPage> {
 
     timeStartController.text = timeToString(widget._start)!;
     timeEndController.text = timeToString(TimeOfDay.now())!;
-    _session.workoutId = widget._workoutPlan.id!;
+    _session.routineId = widget._workoutPlan.id!;
     _session.impression = DEFAULT_IMPRESSION;
     _session.date = DateTime.now();
   }
@@ -889,7 +888,7 @@ class _SessionPageState extends State<SessionPage> {
 
                     // Save the entry on the server
                     try {
-                      await Provider.of<WorkoutPlansProvider>(
+                      await Provider.of<RoutinesProvider>(
                         context,
                         listen: false,
                       ).addSession(_session);

@@ -128,10 +128,6 @@
     "description": "Message returned if no exercises match the searched string"
   },
   "searchNamesInEnglish": "Also search for names in English",
-  "supersetWith": "superset with",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
-  },
   "equipment": "Equipment",
   "@equipment": {
     "description": "Equipment needed to perform an exercise"
@@ -159,6 +155,10 @@
   "reps": "Reps",
   "@reps": {
     "description": "Shorthand for repetitions, used when space constraints are tighter"
+  },
+  "sets": "Sets",
+  "@sets": {
+    "description": "The number of sets to be done for one exercise"
   },
   "rir": "RiR",
   "@rir": {
@@ -205,6 +205,11 @@
   "@workoutSession": {
     "description": "A (logged) workout session"
   },
+  "restDay": "Rest day",
+  "isRestDay": "Is rest day",
+  "isRestDayHelp": "Please consider that all sets are removed from rest days when saved",
+  "routineDays": "Days in routine",
+  "resultingRoutine": "Resulting routine",
   "newDay": "New day",
   "@newDay": {},
   "newSet": "New set",
@@ -462,7 +467,6 @@
   "saturatedFat": "Saturated fat",
   "@saturatedFat": {},
   "fiber": "Fibers",
-  "@fibres": {},
   "sodium": "Sodium",
   "@sodium": {},
   "amount": "Amount",
@@ -564,10 +568,6 @@
   "goToToday": "Go to today",
   "@goToToday": {
     "description": "Label on button to jump back to 'today' in the calendar widget"
-  },
-  "enterRepetitionsOrWeight": "Please fill in either the repetitions or the weight for at least one of the sets",
-  "@enterRepetitionsOrWeight": {
-    "description": "Error message when the user hasn't filled in the forms for exercise sets"
   },
   "enterValue": "Please enter a value",
   "@enterValue": {
@@ -706,6 +706,12 @@
   "images": "Images",
   "language": "Language",
   "addExercise": "Add exercise",
+  "fitInWeek": "Fit in week",
+  "fitInWeekHelp": "Select if you want to fit the workout days into a week, you can add e.g. three days and mark this checkbox.",
+  "addSuperset": "Add superset",
+  "setHasProgression": "Set has progression",
+  "setHasProgressionWarning": "Please note that at the moment it is not possible to edit all settings for a set on the mobile application or configure the progression. ",
+  "setHasNoExercises": "This set has no exercises yet!",
   "contributeExercise": "Contribute an exercise",
   "translation": "Translation",
   "translateExercise": "Translate this exercise now",

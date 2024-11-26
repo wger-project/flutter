@@ -26,7 +26,7 @@ class Image {
   @JsonKey(required: true)
   int? id;
 
-  @JsonKey(required: true, toJson: toDate)
+  @JsonKey(required: true, toJson: dateToYYYYMMDD)
   late DateTime date;
 
   @JsonKey(required: true, name: 'image')
@@ -49,5 +49,6 @@ class Image {
 
   // Boilerplate
   factory Image.fromJson(Map<String, dynamic> json) => _$ImageFromJson(json);
+
   Map<String, dynamic> toJson() => _$ImageToJson(this);
 }

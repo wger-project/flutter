@@ -27,7 +27,7 @@ import 'package:wger/models/workouts/session.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
-import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/providers/routines.dart';
 import 'package:wger/theme/theme.dart';
 
 /// Types of events
@@ -116,7 +116,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
     }
 
     // Process workout sessions
-    final WorkoutPlansProvider plans = Provider.of<WorkoutPlansProvider>(context, listen: false);
+    final RoutinesProvider plans = Provider.of<RoutinesProvider>(context, listen: false);
     await plans.fetchSessionData().then((entries) {
       for (final entry in entries['results']) {
         final session = WorkoutSession.fromJson(entry);

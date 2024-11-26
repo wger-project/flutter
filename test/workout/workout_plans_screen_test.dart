@@ -25,14 +25,14 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/database/exercises/exercise_database.dart';
-import 'package:wger/models/workouts/workout_plan.dart';
+import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
-import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/form_screen.dart';
-import 'package:wger/screens/workout_plans_screen.dart';
+import 'package:wger/screens/routine_list_screen.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
-import 'package:wger/widgets/workouts/forms.dart';
+import 'package:wger/widgets/routines/forms/routine.dart';
 
 import 'workout_plans_screen_test.mocks.dart';
 
@@ -57,20 +57,32 @@ void main() {
     when(mockBaseProvider.makeUrl('workout', query: anyNamed('query'))).thenReturn(uri);
     when(mockBaseProvider.deleteRequest(any, any)).thenAnswer((_) async => http.Response('', 204));
 
-    return ChangeNotifierProvider<WorkoutPlansProvider>(
-      create: (context) => WorkoutPlansProvider(
+    return ChangeNotifierProvider<RoutinesProvider>(
+      create: (context) => RoutinesProvider(
         mockBaseProvider,
         testExercisesProvider,
         [
-          WorkoutPlan(id: 1, creationDate: DateTime(2021, 01, 01), name: 'test 1'),
-          WorkoutPlan(id: 2, creationDate: DateTime(2021, 02, 12), name: 'test 2'),
+          Routine(
+            id: 1,
+            created: DateTime(2021, 01, 01),
+            start: DateTime(2024, 11, 1),
+            end: DateTime(2024, 12, 1),
+            name: 'test 1',
+          ),
+          Routine(
+            id: 2,
+            created: DateTime(2021, 02, 12),
+            start: DateTime(2024, 11, 1),
+            end: DateTime(2024, 12, 1),
+            name: 'test 2',
+          ),
         ],
       ),
       child: MaterialApp(
         locale: Locale(locale),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: const WorkoutPlansScreen(),
+        home: const RoutineListScreen(),
         routes: {FormScreen.routeName: (ctx) => const FormScreen()},
       ),
     );
@@ -118,7 +130,7 @@ void main() {
     expect(find.byType(PlanForm), findsNothing);
     await tester.tap(find.byType(FloatingActionButton));
     await tester.pumpAndSettle();
-    expect(find.byType(WorkoutForm), findsOneWidget);
+    expect(find.byType(RoutineForm), findsOneWidget);
   });
 
   testWidgets('Tests the localization of dates - EN', (WidgetTester tester) async {

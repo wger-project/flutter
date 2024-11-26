@@ -24,9 +24,9 @@ import 'package:wger/helpers/ui.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/session.dart';
-import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/providers/routines.dart';
 import 'package:wger/widgets/measurements/charts.dart';
-import 'package:wger/widgets/workouts/charts.dart';
+import 'package:wger/widgets/routines/charts.dart';
 
 class ExerciseLogChart extends StatelessWidget {
   final Exercise _base;
@@ -36,7 +36,7 @@ class ExerciseLogChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final workoutPlansData = Provider.of<WorkoutPlansProvider>(context, listen: false);
+    final workoutPlansData = Provider.of<RoutinesProvider>(context, listen: false);
     final workout = workoutPlansData.currentPlan;
     var colors = generateChartColors(1).iterator;
 

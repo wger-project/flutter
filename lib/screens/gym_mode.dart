@@ -18,21 +18,22 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/models/workouts/day.dart';
-import 'package:wger/providers/workout_plans.dart';
-import 'package:wger/widgets/workouts/gym_mode.dart';
+import 'package:wger/models/workouts/day_data.dart';
+import 'package:wger/providers/routines.dart';
+import 'package:wger/widgets/routines/gym_mode.dart';
 
 class GymModeScreen extends StatelessWidget {
   const GymModeScreen();
+
   static const routeName = '/gym-mode';
 
   @override
   Widget build(BuildContext context) {
-    final day = ModalRoute.of(context)!.settings.arguments as Day;
+    final day = ModalRoute.of(context)!.settings.arguments as DayData;
 
     return Scaffold(
       body: SafeArea(
-        child: Consumer<WorkoutPlansProvider>(
+        child: Consumer<RoutinesProvider>(
           builder: (context, value, child) => GymMode(day),
         ),
       ),

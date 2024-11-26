@@ -3,15 +3,15 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/exercises.dart';
-import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/gym_mode.dart';
-import 'package:wger/screens/workout_plan_screen.dart';
+import 'package:wger/screens/routine_screen.dart';
 import 'package:wger/theme/theme.dart';
 
 import '../test/utils.dart';
 import '../test/workout/gym_mode_screen_test.mocks.dart';
 import '../test_data/exercises.dart';
-import '../test_data/workouts.dart';
+import '../test_data/routines.dart';
 
 Widget createGymModeScreen({locale = 'en'}) {
   final key = GlobalKey<NavigatorState>();
@@ -25,8 +25,8 @@ Widget createGymModeScreen({locale = 'en'}) {
   //when(mockExerciseProvider.findExerciseBaseById(2)).thenReturn(bases[1]); // crunches
   //when(mockExerciseProvider.findExerciseBaseById(3)).thenReturn(bases[2]); // dead lift
 
-  return ChangeNotifierProvider<WorkoutPlansProvider>(
-    create: (context) => WorkoutPlansProvider(
+  return ChangeNotifierProvider<RoutinesProvider>(
+    create: (context) => RoutinesProvider(
       mockBaseProvider,
       mockExerciseProvider,
       [workout],
@@ -50,7 +50,7 @@ Widget createGymModeScreen({locale = 'en'}) {
           child: const SizedBox(),
         ),
         routes: {
-          WorkoutPlanScreen.routeName: (ctx) => const WorkoutPlanScreen(),
+          RoutineScreen.routeName: (ctx) => const RoutineScreen(),
         },
       ),
     ),

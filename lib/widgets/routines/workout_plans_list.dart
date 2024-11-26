@@ -20,19 +20,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/providers/workout_plans.dart';
-import 'package:wger/screens/workout_plan_screen.dart';
+import 'package:wger/providers/routines.dart';
+import 'package:wger/screens/routine_screen.dart';
 import 'package:wger/widgets/core/text_prompt.dart';
 
 class WorkoutPlansList extends StatelessWidget {
-  final WorkoutPlansProvider _workoutProvider;
+  final RoutinesProvider _workoutProvider;
 
   const WorkoutPlansList(this._workoutProvider);
 
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      onRefresh: () => _workoutProvider.fetchAndSetAllPlansSparse(),
+      onRefresh: () => _workoutProvider.fetchAndSetAllRoutinesFull(),
+      // onRefresh: () => _workoutProvider.fetchAndSetAllPlansSparse(),
       child: _workoutProvider.items.isEmpty
           ? const TextPrompt()
           : ListView.builder(
@@ -47,7 +48,7 @@ class WorkoutPlansList extends StatelessWidget {
                       _workoutProvider.setCurrentPlan(currentWorkout.id!);
 
                       Navigator.of(context).pushNamed(
-                        WorkoutPlanScreen.routeName,
+                        RoutineScreen.routeName,
                         arguments: currentWorkout,
                       );
                     },
@@ -55,7 +56,7 @@ class WorkoutPlansList extends StatelessWidget {
                     subtitle: Text(
                       DateFormat.yMd(
                         Localizations.localeOf(context).languageCode,
-                      ).format(currentWorkout.creationDate),
+                      ).format(currentWorkout.created),
                     ),
                     trailing: Row(mainAxisSize: MainAxisSize.min, children: [
                       const VerticalDivider(),
@@ -87,10 +88,10 @@ class WorkoutPlansList extends StatelessWidget {
                                     ),
                                     onPressed: () {
                                       // Confirmed, delete the workout
-                                      Provider.of<WorkoutPlansProvider>(
+                                      Provider.of<RoutinesProvider>(
                                         context,
                                         listen: false,
-                                      ).deleteWorkout(currentWorkout.id!);
+                                      ).deleteRoutine(currentWorkout.id!);
 
                                       // Close the popup
                                       Navigator.of(contextDialog).pop();

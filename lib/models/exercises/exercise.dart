@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/consts.dart';
@@ -194,11 +195,7 @@ class Exercise extends Equatable {
   }
 
   ExerciseImage? get getMainImage {
-    try {
-      return images.firstWhere((image) => image.isMain);
-    } on StateError {
-      return null;
-    }
+    return images.firstWhereOrNull((image) => image.isMain);
   }
 
   set setCategory(ExerciseCategory category) {

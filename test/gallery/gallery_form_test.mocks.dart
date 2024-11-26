@@ -195,8 +195,7 @@ class MockGalleryProvider extends _i1.Mock implements _i4.GalleryProvider {
       ) as _i6.Future<void>);
 
   @override
-  Map<String, String> getDefaultHeaders({bool? includeAuth = false}) =>
-      (super.noSuchMethod(
+  Map<String, String> getDefaultHeaders({bool? includeAuth = false}) => (super.noSuchMethod(
         Invocation.method(
           #getDefaultHeaders,
           [],
@@ -237,14 +236,13 @@ class MockGalleryProvider extends _i1.Mock implements _i4.GalleryProvider {
       ) as Uri);
 
   @override
-  _i6.Future<Map<String, dynamic>> fetch(Uri? uri) => (super.noSuchMethod(
+  _i6.Future<dynamic> fetch(Uri? uri) => (super.noSuchMethod(
         Invocation.method(
           #fetch,
           [uri],
         ),
-        returnValue:
-            _i6.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
-      ) as _i6.Future<Map<String, dynamic>>);
+        returnValue: _i6.Future<dynamic>.value(),
+      ) as _i6.Future<dynamic>);
 
   @override
   _i6.Future<List<dynamic>> fetchPaginated(Uri? uri) => (super.noSuchMethod(
@@ -268,8 +266,7 @@ class MockGalleryProvider extends _i1.Mock implements _i4.GalleryProvider {
             uri,
           ],
         ),
-        returnValue:
-            _i6.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
+        returnValue: _i6.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
       ) as _i6.Future<Map<String, dynamic>>);
 
   @override
@@ -285,8 +282,7 @@ class MockGalleryProvider extends _i1.Mock implements _i4.GalleryProvider {
             uri,
           ],
         ),
-        returnValue:
-            _i6.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
+        returnValue: _i6.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
       ) as _i6.Future<Map<String, dynamic>>);
 
   @override

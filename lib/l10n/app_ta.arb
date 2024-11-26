@@ -221,10 +221,6 @@
   },
   "searchNamesInEnglish": "ஆங்கிலத்தில் பெயர்களையும் தேடுங்கள்",
   "@searchNamesInEnglish": {},
-  "supersetWith": "உடன் சூப்பர்செட்",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
-  },
   "equipment": "உபகரணங்கள்",
   "@equipment": {
     "description": "Equipment needed to perform an exercise"
@@ -593,10 +589,6 @@
   "goToToday": "இன்று செல்லுங்கள்",
   "@goToToday": {
     "description": "Label on button to jump back to 'today' in the calendar widget"
-  },
-  "enterRepetitionsOrWeight": "தயவுசெய்து மறுபடியும் மறுபடியும் அல்லது எடையை நிரப்பவும்",
-  "@enterRepetitionsOrWeight": {
-    "description": "Error message when the user hasn't filled in the forms for exercise sets"
   },
   "enterValue": "தயவுசெய்து ஒரு மதிப்பை உள்ளிடவும்",
   "@enterValue": {

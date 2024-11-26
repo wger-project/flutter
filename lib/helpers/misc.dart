@@ -42,7 +42,7 @@ String repText(
     // rather "8 repetitions". If there is weight we want to output "8 x 50kg",
     // since the repetitions are implied. If other units are used, we always
     // print them
-    if (repetitionUnitObj.id != REP_UNIT_REPETITIONS || weight == 0 || weight == null) {
+    if (repetitionUnitObj.id != REP_UNIT_REPETITIONS_ID || weight == 0 || weight == null) {
       out.add(repetitionUnitObj.name);
     }
   }

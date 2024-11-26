@@ -61,7 +61,7 @@ class GalleryProvider extends WgerBaseProvider with ChangeNotifier {
       HttpHeaders.userAgentHeader: auth.getAppNameHeader(),
     });
     request.files.add(await http.MultipartFile.fromPath('image', imageFile.path));
-    request.fields['date'] = toDate(image.date)!;
+    request.fields['date'] = dateToYYYYMMDD(image.date)!;
     request.fields['description'] = image.description;
 
     final res = await request.send();

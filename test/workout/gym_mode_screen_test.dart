@@ -24,14 +24,16 @@ import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
-import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/gym_mode.dart';
-import 'package:wger/screens/workout_plan_screen.dart';
-import 'package:wger/widgets/workouts/forms.dart';
-import 'package:wger/widgets/workouts/gym_mode.dart';
+import 'package:wger/screens/routine_screen.dart';
+import 'package:wger/widgets/routines/forms/reps_unit.dart';
+import 'package:wger/widgets/routines/forms/rir.dart';
+import 'package:wger/widgets/routines/forms/weight_unit.dart';
+import 'package:wger/widgets/routines/gym_mode.dart';
 
 import '../../test_data/exercises.dart';
-import '../../test_data/workouts.dart';
+import '../../test_data/routines.dart';
 import 'gym_mode_screen_test.mocks.dart';
 
 @GenerateMocks([WgerBaseProvider, ExercisesProvider])
@@ -44,8 +46,8 @@ void main() {
   final bases = getTestExercises();
 
   Widget createHomeScreen({locale = 'en'}) {
-    return ChangeNotifierProvider<WorkoutPlansProvider>(
-      create: (context) => WorkoutPlansProvider(
+    return ChangeNotifierProvider<RoutinesProvider>(
+      create: (context) => RoutinesProvider(
         mockBaseProvider,
         mockExerciseProvider,
         [workoutPlan],
@@ -66,9 +68,7 @@ void main() {
             ),
             child: const SizedBox(),
           ),
-          routes: {
-            WorkoutPlanScreen.routeName: (ctx) => const WorkoutPlanScreen(),
-          },
+          routes: {RoutineScreen.routeName: (ctx) => const RoutineScreen()},
         ),
       ),
     );

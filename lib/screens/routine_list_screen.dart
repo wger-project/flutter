@@ -19,21 +19,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/models/workouts/workout_plan.dart';
-import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/models/workouts/routine.dart';
+import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/form_screen.dart';
-import 'package:wger/widgets/workouts/app_bar.dart';
-import 'package:wger/widgets/workouts/forms.dart';
-import 'package:wger/widgets/workouts/workout_plans_list.dart';
+import 'package:wger/widgets/routines/app_bar.dart';
+import 'package:wger/widgets/routines/forms/routine.dart';
+import 'package:wger/widgets/routines/workout_plans_list.dart';
 
-class WorkoutPlansScreen extends StatelessWidget {
-  const WorkoutPlansScreen();
+class RoutineListScreen extends StatelessWidget {
+  const RoutineListScreen();
+
   static const routeName = '/workout-plans-list';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const WorkoutOverviewAppBar(),
+      appBar: const RoutineListAppBar(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pushNamed(
@@ -41,13 +42,13 @@ class WorkoutPlansScreen extends StatelessWidget {
             FormScreen.routeName,
             arguments: FormScreenArguments(
               AppLocalizations.of(context).newWorkout,
-              WorkoutForm(WorkoutPlan.empty()),
+              RoutineForm(Routine.empty()),
             ),
           );
         },
         child: const Icon(Icons.add, color: Colors.white),
       ),
-      body: Consumer<WorkoutPlansProvider>(
+      body: Consumer<RoutinesProvider>(
         builder: (context, workoutProvider, child) => WorkoutPlansList(workoutProvider),
       ),
     );

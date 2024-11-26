@@ -1,0 +1,236 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:wger/helpers/consts.dart';
+import 'package:wger/models/workouts/routine.dart';
+import 'package:wger/providers/routines.dart';
+import 'package:wger/widgets/core/progress_indicator.dart';
+
+class RoutineForm extends StatefulWidget {
+  final Routine _routine;
+
+  const RoutineForm(this._routine);
+
+  @override
+  State<RoutineForm> createState() => _RoutineFormState();
+}
+
+class _RoutineFormState extends State<RoutineForm> {
+  final _form = GlobalKey<FormState>();
+
+  bool isSaving = false;
+  late bool fitInWeek;
+  late DateTime startDate;
+  late DateTime endDate;
+  final workoutNameController = TextEditingController();
+  final workoutDescriptionController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    fitInWeek = widget._routine.fitInWeek;
+    workoutNameController.text = widget._routine.name;
+    workoutDescriptionController.text = widget._routine.description;
+    startDate = widget._routine.start;
+    endDate = widget._routine.end;
+  }
+
+  @override
+  void dispose() {
+    workoutNameController.dispose();
+    workoutDescriptionController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
+
+    return Form(
+      key: _form,
+      child: Column(
+        children: [
+          TextFormField(
+            key: const Key('field-name'),
+            decoration: InputDecoration(labelText: i18n.name),
+            controller: workoutNameController,
+            validator: (value) {
+              if (value!.isEmpty ||
+                  value.length < Routine.MIN_LENGTH_NAME ||
+                  value.length > Routine.MAX_LENGTH_NAME) {
+                return i18n.enterCharacters(
+                  Routine.MIN_LENGTH_NAME,
+                  Routine.MAX_LENGTH_NAME,
+                );
+              }
+              return null;
+            },
+            onSaved: (newValue) {
+              widget._routine.name = newValue!;
+            },
+          ),
+          TextFormField(
+            key: const Key('field-description'),
+            decoration: InputDecoration(labelText: i18n.description),
+            minLines: 3,
+            maxLines: 10,
+            controller: workoutDescriptionController,
+            validator: (value) {
+              if (value!.length > Routine.MAX_LENGTH_DESCRIPTION) {
+                return i18n.enterCharacters(
+                  Routine.MIN_LENGTH_DESCRIPTION,
+                  Routine.MAX_LENGTH_DESCRIPTION,
+                );
+              }
+              return null;
+            },
+            onSaved: (newValue) {
+              widget._routine.description = newValue!;
+            },
+          ),
+          TextFormField(
+            key: const Key('field-start-date'),
+            // Stop keyboard from appearing
+            readOnly: true,
+            validator: (value) {
+              if (endDate.isBefore(startDate)) {
+                return 'End date must be after start date';
+              }
+              if (endDate.difference(startDate).inDays < Routine.MIN_DURATION * 7) {
+                return 'Duration of the routine must be more than ${Routine.MIN_DURATION} weeks';
+              }
+              if (endDate.difference(startDate).inDays > Routine.MAX_DURATION * 7) {
+                return 'Duration of the routine must be less than ${Routine.MAX_DURATION} weeks';
+              }
+              return null;
+            },
+            decoration: const InputDecoration(
+              labelText: 'Start date',
+              suffixIcon: Icon(
+                Icons.calendar_today,
+                key: Key('calendarIcon'),
+              ),
+            ),
+            enableInteractiveSelection: false,
+            controller: TextEditingController(
+              text: DateFormat.yMd(
+                Localizations.localeOf(context).languageCode,
+              ).format(startDate),
+            ),
+            onTap: () async {
+              final picked = await showDatePicker(
+                context: context,
+                initialDate: startDate,
+                firstDate: DateTime(DateTime.now().year - 10),
+                lastDate: DateTime.now(),
+              );
+
+              if (picked == null) {
+                return;
+              }
+
+              widget._routine.start = picked;
+              if (mounted) {
+                setState(() {
+                  startDate = picked;
+                });
+              }
+            },
+          ),
+          TextFormField(
+            key: const Key('field-end-date'),
+            // Stop keyboard from appearing
+            readOnly: true,
+            decoration: const InputDecoration(
+              labelText: 'End date',
+              suffixIcon: Icon(
+                Icons.calendar_today,
+                key: Key('calendarIcon'),
+              ),
+            ),
+            enableInteractiveSelection: false,
+            controller: TextEditingController(
+              text: DateFormat.yMd(
+                Localizations.localeOf(context).languageCode,
+              ).format(endDate),
+            ),
+            onTap: () async {
+              final picked = await showDatePicker(
+                context: context,
+                initialDate: endDate,
+                firstDate: DateTime(DateTime.now().year - 10),
+                lastDate: DateTime.now(),
+              );
+
+              if (picked == null) {
+                return;
+              }
+
+              widget._routine.end = picked;
+              if (mounted) {
+                setState(() {
+                  endDate = picked;
+                });
+              }
+            },
+          ),
+          const SizedBox(height: 5),
+          SwitchListTile(
+            title: Text(i18n.fitInWeek),
+            subtitle: Text(i18n.fitInWeekHelp),
+            isThreeLine: true,
+            value: widget._routine.fitInWeek,
+            contentPadding: const EdgeInsets.all(4),
+            onChanged: (bool? value) {
+              if (value == null) {
+                return;
+              }
+
+              widget._routine.fitInWeek = value;
+              if (mounted) {
+                setState(() {
+                  fitInWeek = value;
+                });
+              }
+            },
+          ),
+          const SizedBox(height: 5),
+          ElevatedButton(
+            key: const Key(SUBMIT_BUTTON_KEY_NAME),
+            onPressed: isSaving
+                ? null
+                : () async {
+                    // Validate and save
+                    final isValid = _form.currentState!.validate();
+                    if (!isValid) {
+                      return;
+                    }
+                    _form.currentState!.save();
+                    setState(() {
+                      isSaving = true;
+                    });
+
+                    // Save to DB
+                    if (widget._routine.id != null) {
+                      await Provider.of<RoutinesProvider>(context, listen: false)
+                          .editRoutine(widget._routine);
+                    } else {
+                      final Routine newPlan = await Provider.of<RoutinesProvider>(
+                        context,
+                        listen: false,
+                      ).addRoutine(widget._routine);
+                    }
+
+                    setState(() {
+                      isSaving = false;
+                    });
+                  },
+            child:
+                isSaving ? const FormProgressIndicator() : Text(AppLocalizations.of(context).save),
+          ),
+        ],
+      ),
+    );
+  }
+}

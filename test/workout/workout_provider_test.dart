@@ -27,11 +27,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/core/locator.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
+import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
-import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
-import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/providers/routines.dart';
 
 import '../fixtures/fixture_reader.dart';
 import 'workout_provider_test.mocks.dart';
@@ -49,24 +49,27 @@ void main() {
     test('Test fetching and setting a plan', () async {
       final exercisesProvider = ExercisesProvider(mockBaseProvider);
 
-      final uri = Uri.https('localhost', 'api/v2/workout/325397/');
-      when(mockBaseProvider.makeUrl('workout', id: 325397)).thenReturn(uri);
+      final uri = Uri.https('localhost', 'api/v2/routine/325397/');
+      when(mockBaseProvider.makeUrl('routine', id: 325397)).thenReturn(uri);
       when(mockBaseProvider.fetch(uri)).thenAnswer(
         (_) async => Future.value({
           'id': 325397,
+          'created': '2022-10-10',
           'name': 'Test workout',
-          'creation_date': '2022-10-10',
           'description': 'Test workout abcd',
+          'start': '2021-12-20',
+          'end': '2022-06-06',
+          'fit_in_week': false
         }),
       );
 
       // Load the entries
-      final provider = WorkoutPlansProvider(mockBaseProvider, exercisesProvider, []);
-      final plan = await provider.fetchAndSetPlanSparse(325397);
+      final provider = RoutinesProvider(mockBaseProvider, exercisesProvider, []);
+      final plan = await provider.fetchAndSetRoutineSparse(325397);
       final plans = provider.getPlans();
 
       // Check that everything is ok
-      expect(plan, isA<WorkoutPlan>());
+      expect(plan, isA<Routine>());
       expect(plan.id, 325397);
       expect(plan.description, 'Test workout abcd');
       expect(plans.length, 1);
@@ -84,15 +87,15 @@ void main() {
           'description': 'Test workout abcd',
         }),
       );
-      when(mockBaseProvider.deleteRequest('workout', 325397)).thenAnswer(
+      when(mockBaseProvider.deleteRequest('routine', 325397)).thenAnswer(
         (_) => Future.value(Response('', 204)),
       );
 
       // Load the entries
-      final provider = WorkoutPlansProvider(mockBaseProvider, exercisesProvider, []);
+      final provider = RoutinesProvider(mockBaseProvider, exercisesProvider, []);
 
-      await provider.fetchAndSetPlanSparse(325397);
-      await provider.deleteWorkout(325397);
+      await provider.fetchAndSetRoutineSparse(325397);
+      await provider.deleteRoutine(325397);
       final plans = provider.getPlans();
       expect(plans.length, 0);
     });
@@ -107,7 +110,7 @@ void main() {
           .thenAnswer((_) => Future.value(tRepetitionUnits['results']));
 
       // Load the entries
-      final provider = WorkoutPlansProvider(mockBaseProvider, exercisesProvider, []);
+      final provider = RoutinesProvider(mockBaseProvider, exercisesProvider, []);
       await provider.fetchAndSetRepetitionUnits();
       final repetitionUnits = provider.repetitionUnits;
 
@@ -124,7 +127,7 @@ void main() {
       final ExercisesProvider testExercisesProvider = ExercisesProvider(mockBaseProvider);
 
       // Load the entries
-      final provider = WorkoutPlansProvider(mockBaseProvider, testExercisesProvider, []);
+      final provider = RoutinesProvider(mockBaseProvider, testExercisesProvider, []);
       await provider.fetchAndSetWeightUnits();
       final weightUnits = provider.weightUnits;
 
@@ -151,7 +154,7 @@ void main() {
       final prefs = await SharedPreferences.getInstance();
 
       // Load the entries
-      final provider = WorkoutPlansProvider(mockBaseProvider, exercisesProvider, []);
+      final provider = RoutinesProvider(mockBaseProvider, exercisesProvider, []);
       await provider.fetchAndSetUnits();
       final prefsJson = jsonDecode(prefs.getString(PREFS_WORKOUT_UNITS)!);
 

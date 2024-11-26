@@ -22,17 +22,15 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/log.dart';
+import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/session.dart';
-import 'package:wger/models/workouts/workout_plan.dart';
-import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/theme/theme.dart';
-import 'package:wger/widgets/workouts/log.dart';
+import 'package:wger/widgets/routines/log.dart';
 
 class WorkoutLogs extends StatefulWidget {
-  final WorkoutPlan _workoutPlan;
-  final Function _changeMode;
+  final Routine _workoutPlan;
 
-  const WorkoutLogs(this._workoutPlan, this._changeMode);
+  const WorkoutLogs(this._workoutPlan);
 
   @override
   _WorkoutLogsState createState() => _WorkoutLogsState();
@@ -51,16 +49,6 @@ class _WorkoutLogsState extends State<WorkoutLogs> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        ToggleButtons(
-          renderBorder: false,
-          onPressed: (int index) {
-            if (index == 0) {
-              widget._changeMode(WorkoutScreenMode.workout);
-            }
-          },
-          isSelected: const [false, true],
-          children: const [Icon(Icons.table_chart), Icon(Icons.show_chart)],
-        ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 10),
           child: Text(
@@ -101,7 +89,7 @@ class WorkoutLogEvent {
 }
 
 class WorkoutLogCalendar extends StatefulWidget {
-  final WorkoutPlan _workoutPlan;
+  final Routine _workoutPlan;
 
   const WorkoutLogCalendar(this._workoutPlan);
 

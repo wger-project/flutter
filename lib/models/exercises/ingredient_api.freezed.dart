@@ -14,8 +14,7 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
-IngredientApiSearchDetails _$IngredientApiSearchDetailsFromJson(
-    Map<String, dynamic> json) {
+IngredientApiSearchDetails _$IngredientApiSearchDetailsFromJson(Map<String, dynamic> json) {
   return _IngredientApiSearchDetails.fromJson(json);
 }
 
@@ -23,8 +22,7 @@ IngredientApiSearchDetails _$IngredientApiSearchDetailsFromJson(
 mixin _$IngredientApiSearchDetails {
   int get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
-  String? get image =>
-      throw _privateConstructorUsedError; // ignore: invalid_annotation_target
+  String? get image => throw _privateConstructorUsedError; // ignore: invalid_annotation_target
   @JsonKey(name: 'image_thumbnail')
   String? get imageThumbnail => throw _privateConstructorUsedError;
 
@@ -34,16 +32,15 @@ mixin _$IngredientApiSearchDetails {
   /// Create a copy of IngredientApiSearchDetails
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $IngredientApiSearchDetailsCopyWith<IngredientApiSearchDetails>
-      get copyWith => throw _privateConstructorUsedError;
+  $IngredientApiSearchDetailsCopyWith<IngredientApiSearchDetails> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $IngredientApiSearchDetailsCopyWith<$Res> {
-  factory $IngredientApiSearchDetailsCopyWith(IngredientApiSearchDetails value,
-          $Res Function(IngredientApiSearchDetails) then) =
-      _$IngredientApiSearchDetailsCopyWithImpl<$Res,
-          IngredientApiSearchDetails>;
+  factory $IngredientApiSearchDetailsCopyWith(
+          IngredientApiSearchDetails value, $Res Function(IngredientApiSearchDetails) then) =
+      _$IngredientApiSearchDetailsCopyWithImpl<$Res, IngredientApiSearchDetails>;
   @useResult
   $Res call(
       {int id,
@@ -53,8 +50,7 @@ abstract class $IngredientApiSearchDetailsCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$IngredientApiSearchDetailsCopyWithImpl<$Res,
-        $Val extends IngredientApiSearchDetails>
+class _$IngredientApiSearchDetailsCopyWithImpl<$Res, $Val extends IngredientApiSearchDetails>
     implements $IngredientApiSearchDetailsCopyWith<$Res> {
   _$IngredientApiSearchDetailsCopyWithImpl(this._value, this._then);
 
@@ -97,8 +93,7 @@ class _$IngredientApiSearchDetailsCopyWithImpl<$Res,
 /// @nodoc
 abstract class _$$IngredientApiSearchDetailsImplCopyWith<$Res>
     implements $IngredientApiSearchDetailsCopyWith<$Res> {
-  factory _$$IngredientApiSearchDetailsImplCopyWith(
-          _$IngredientApiSearchDetailsImpl value,
+  factory _$$IngredientApiSearchDetailsImplCopyWith(_$IngredientApiSearchDetailsImpl value,
           $Res Function(_$IngredientApiSearchDetailsImpl) then) =
       __$$IngredientApiSearchDetailsImplCopyWithImpl<$Res>;
   @override
@@ -112,11 +107,9 @@ abstract class _$$IngredientApiSearchDetailsImplCopyWith<$Res>
 
 /// @nodoc
 class __$$IngredientApiSearchDetailsImplCopyWithImpl<$Res>
-    extends _$IngredientApiSearchDetailsCopyWithImpl<$Res,
-        _$IngredientApiSearchDetailsImpl>
+    extends _$IngredientApiSearchDetailsCopyWithImpl<$Res, _$IngredientApiSearchDetailsImpl>
     implements _$$IngredientApiSearchDetailsImplCopyWith<$Res> {
-  __$$IngredientApiSearchDetailsImplCopyWithImpl(
-      _$IngredientApiSearchDetailsImpl _value,
+  __$$IngredientApiSearchDetailsImplCopyWithImpl(_$IngredientApiSearchDetailsImpl _value,
       $Res Function(_$IngredientApiSearchDetailsImpl) _then)
       : super(_value, _then);
 
@@ -160,8 +153,7 @@ class _$IngredientApiSearchDetailsImpl implements _IngredientApiSearchDetails {
       required this.image,
       @JsonKey(name: 'image_thumbnail') required this.imageThumbnail});
 
-  factory _$IngredientApiSearchDetailsImpl.fromJson(
-          Map<String, dynamic> json) =>
+  factory _$IngredientApiSearchDetailsImpl.fromJson(Map<String, dynamic> json) =>
       _$$IngredientApiSearchDetailsImplFromJson(json);
 
   @override
@@ -201,9 +193,9 @@ class _$IngredientApiSearchDetailsImpl implements _IngredientApiSearchDetails {
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$IngredientApiSearchDetailsImplCopyWith<_$IngredientApiSearchDetailsImpl>
-      get copyWith => __$$IngredientApiSearchDetailsImplCopyWithImpl<
-          _$IngredientApiSearchDetailsImpl>(this, _$identity);
+  _$$IngredientApiSearchDetailsImplCopyWith<_$IngredientApiSearchDetailsImpl> get copyWith =>
+      __$$IngredientApiSearchDetailsImplCopyWithImpl<_$IngredientApiSearchDetailsImpl>(
+          this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
@@ -213,14 +205,12 @@ class _$IngredientApiSearchDetailsImpl implements _IngredientApiSearchDetails {
   }
 }
 
-abstract class _IngredientApiSearchDetails
-    implements IngredientApiSearchDetails {
+abstract class _IngredientApiSearchDetails implements IngredientApiSearchDetails {
   factory _IngredientApiSearchDetails(
           {required final int id,
           required final String name,
           required final String? image,
-          @JsonKey(name: 'image_thumbnail')
-          required final String? imageThumbnail}) =
+          @JsonKey(name: 'image_thumbnail') required final String? imageThumbnail}) =
       _$IngredientApiSearchDetailsImpl;
 
   factory _IngredientApiSearchDetails.fromJson(Map<String, dynamic> json) =
@@ -240,12 +230,11 @@ abstract class _IngredientApiSearchDetails
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$IngredientApiSearchDetailsImplCopyWith<_$IngredientApiSearchDetailsImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  _$$IngredientApiSearchDetailsImplCopyWith<_$IngredientApiSearchDetailsImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
-IngredientApiSearchEntry _$IngredientApiSearchEntryFromJson(
-    Map<String, dynamic> json) {
+IngredientApiSearchEntry _$IngredientApiSearchEntryFromJson(Map<String, dynamic> json) {
   return _IngredientApiSearchEntry.fromJson(json);
 }
 
@@ -266,8 +255,8 @@ mixin _$IngredientApiSearchEntry {
 
 /// @nodoc
 abstract class $IngredientApiSearchEntryCopyWith<$Res> {
-  factory $IngredientApiSearchEntryCopyWith(IngredientApiSearchEntry value,
-          $Res Function(IngredientApiSearchEntry) then) =
+  factory $IngredientApiSearchEntryCopyWith(
+          IngredientApiSearchEntry value, $Res Function(IngredientApiSearchEntry) then) =
       _$IngredientApiSearchEntryCopyWithImpl<$Res, IngredientApiSearchEntry>;
   @useResult
   $Res call({String value, IngredientApiSearchDetails data});
@@ -276,8 +265,7 @@ abstract class $IngredientApiSearchEntryCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$IngredientApiSearchEntryCopyWithImpl<$Res,
-        $Val extends IngredientApiSearchEntry>
+class _$IngredientApiSearchEntryCopyWithImpl<$Res, $Val extends IngredientApiSearchEntry>
     implements $IngredientApiSearchEntryCopyWith<$Res> {
   _$IngredientApiSearchEntryCopyWithImpl(this._value, this._then);
 
@@ -320,8 +308,7 @@ class _$IngredientApiSearchEntryCopyWithImpl<$Res,
 /// @nodoc
 abstract class _$$IngredientApiSearchEntryImplCopyWith<$Res>
     implements $IngredientApiSearchEntryCopyWith<$Res> {
-  factory _$$IngredientApiSearchEntryImplCopyWith(
-          _$IngredientApiSearchEntryImpl value,
+  factory _$$IngredientApiSearchEntryImplCopyWith(_$IngredientApiSearchEntryImpl value,
           $Res Function(_$IngredientApiSearchEntryImpl) then) =
       __$$IngredientApiSearchEntryImplCopyWithImpl<$Res>;
   @override
@@ -334,12 +321,10 @@ abstract class _$$IngredientApiSearchEntryImplCopyWith<$Res>
 
 /// @nodoc
 class __$$IngredientApiSearchEntryImplCopyWithImpl<$Res>
-    extends _$IngredientApiSearchEntryCopyWithImpl<$Res,
-        _$IngredientApiSearchEntryImpl>
+    extends _$IngredientApiSearchEntryCopyWithImpl<$Res, _$IngredientApiSearchEntryImpl>
     implements _$$IngredientApiSearchEntryImplCopyWith<$Res> {
   __$$IngredientApiSearchEntryImplCopyWithImpl(
-      _$IngredientApiSearchEntryImpl _value,
-      $Res Function(_$IngredientApiSearchEntryImpl) _then)
+      _$IngredientApiSearchEntryImpl _value, $Res Function(_$IngredientApiSearchEntryImpl) _then)
       : super(_value, _then);
 
   /// Create a copy of IngredientApiSearchEntry
@@ -399,9 +384,9 @@ class _$IngredientApiSearchEntryImpl implements _IngredientApiSearchEntry {
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$IngredientApiSearchEntryImplCopyWith<_$IngredientApiSearchEntryImpl>
-      get copyWith => __$$IngredientApiSearchEntryImplCopyWithImpl<
-          _$IngredientApiSearchEntryImpl>(this, _$identity);
+  _$$IngredientApiSearchEntryImplCopyWith<_$IngredientApiSearchEntryImpl> get copyWith =>
+      __$$IngredientApiSearchEntryImplCopyWithImpl<_$IngredientApiSearchEntryImpl>(
+          this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
@@ -413,9 +398,8 @@ class _$IngredientApiSearchEntryImpl implements _IngredientApiSearchEntry {
 
 abstract class _IngredientApiSearchEntry implements IngredientApiSearchEntry {
   factory _IngredientApiSearchEntry(
-          {required final String value,
-          required final IngredientApiSearchDetails data}) =
-      _$IngredientApiSearchEntryImpl;
+      {required final String value,
+      required final IngredientApiSearchDetails data}) = _$IngredientApiSearchEntryImpl;
 
   factory _IngredientApiSearchEntry.fromJson(Map<String, dynamic> json) =
       _$IngredientApiSearchEntryImpl.fromJson;
@@ -429,8 +413,8 @@ abstract class _IngredientApiSearchEntry implements IngredientApiSearchEntry {
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$IngredientApiSearchEntryImplCopyWith<_$IngredientApiSearchEntryImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  _$$IngredientApiSearchEntryImplCopyWith<_$IngredientApiSearchEntryImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 IngredientApiSearch _$IngredientApiSearchFromJson(Map<String, dynamic> json) {
@@ -439,8 +423,7 @@ IngredientApiSearch _$IngredientApiSearchFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$IngredientApiSearch {
-  List<IngredientApiSearchEntry> get suggestions =>
-      throw _privateConstructorUsedError;
+  List<IngredientApiSearchEntry> get suggestions => throw _privateConstructorUsedError;
 
   /// Serializes this IngredientApiSearch to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -490,8 +473,8 @@ class _$IngredientApiSearchCopyWithImpl<$Res, $Val extends IngredientApiSearch>
 /// @nodoc
 abstract class _$$IngredientApiSearchImplCopyWith<$Res>
     implements $IngredientApiSearchCopyWith<$Res> {
-  factory _$$IngredientApiSearchImplCopyWith(_$IngredientApiSearchImpl value,
-          $Res Function(_$IngredientApiSearchImpl) then) =
+  factory _$$IngredientApiSearchImplCopyWith(
+          _$IngredientApiSearchImpl value, $Res Function(_$IngredientApiSearchImpl) then) =
       __$$IngredientApiSearchImplCopyWithImpl<$Res>;
   @override
   @useResult
@@ -502,8 +485,8 @@ abstract class _$$IngredientApiSearchImplCopyWith<$Res>
 class __$$IngredientApiSearchImplCopyWithImpl<$Res>
     extends _$IngredientApiSearchCopyWithImpl<$Res, _$IngredientApiSearchImpl>
     implements _$$IngredientApiSearchImplCopyWith<$Res> {
-  __$$IngredientApiSearchImplCopyWithImpl(_$IngredientApiSearchImpl _value,
-      $Res Function(_$IngredientApiSearchImpl) _then)
+  __$$IngredientApiSearchImplCopyWithImpl(
+      _$IngredientApiSearchImpl _value, $Res Function(_$IngredientApiSearchImpl) _then)
       : super(_value, _then);
 
   /// Create a copy of IngredientApiSearch
@@ -525,8 +508,7 @@ class __$$IngredientApiSearchImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$IngredientApiSearchImpl implements _IngredientApiSearch {
-  _$IngredientApiSearchImpl(
-      {required final List<IngredientApiSearchEntry> suggestions})
+  _$IngredientApiSearchImpl({required final List<IngredientApiSearchEntry> suggestions})
       : _suggestions = suggestions;
 
   factory _$IngredientApiSearchImpl.fromJson(Map<String, dynamic> json) =>
@@ -550,14 +532,12 @@ class _$IngredientApiSearchImpl implements _IngredientApiSearch {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$IngredientApiSearchImpl &&
-            const DeepCollectionEquality()
-                .equals(other._suggestions, _suggestions));
+            const DeepCollectionEquality().equals(other._suggestions, _suggestions));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, const DeepCollectionEquality().hash(_suggestions));
+  int get hashCode => Object.hash(runtimeType, const DeepCollectionEquality().hash(_suggestions));
 
   /// Create a copy of IngredientApiSearch
   /// with the given fields replaced by the non-null parameter values.
@@ -565,8 +545,7 @@ class _$IngredientApiSearchImpl implements _IngredientApiSearch {
   @override
   @pragma('vm:prefer-inline')
   _$$IngredientApiSearchImplCopyWith<_$IngredientApiSearchImpl> get copyWith =>
-      __$$IngredientApiSearchImplCopyWithImpl<_$IngredientApiSearchImpl>(
-          this, _$identity);
+      __$$IngredientApiSearchImplCopyWithImpl<_$IngredientApiSearchImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
@@ -577,8 +556,7 @@ class _$IngredientApiSearchImpl implements _IngredientApiSearch {
 }
 
 abstract class _IngredientApiSearch implements IngredientApiSearch {
-  factory _IngredientApiSearch(
-          {required final List<IngredientApiSearchEntry> suggestions}) =
+  factory _IngredientApiSearch({required final List<IngredientApiSearchEntry> suggestions}) =
       _$IngredientApiSearchImpl;
 
   factory _IngredientApiSearch.fromJson(Map<String, dynamic> json) =
