@@ -524,7 +524,7 @@
   "@loadingText": {
     "description": "Text to show when entries are being loaded in the background: Loading..."
   },
-  "confirmDelete": "நீங்கள் நிச்சயமாக '{டோட்லீட்}' நீக்க விரும்புகிறீர்களா?",
+  "confirmDelete": "நீங்கள் நிச்சயமாக '{toDelete}' நீக்க விரும்புகிறீர்களா?",
   "@confirmDelete": {
     "description": "Confirmation text before the user deletes an object",
     "type": "text",
