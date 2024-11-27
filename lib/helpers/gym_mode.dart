@@ -19,7 +19,7 @@
 /// Calculates the number of plates needed to reach a specific weight
 List<num> plateCalculator(num totalWeight, num barWeight, List<num> plates) {
   final List<num> ans = [];
-
+  print("total weight is $totalWeight");
   // Weight is less than the bar
   if (totalWeight < barWeight) {
     return [];

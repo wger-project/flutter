@@ -37,7 +37,9 @@ import 'package:wger/models/workouts/set.dart';
 import 'package:wger/models/workouts/setting.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/plate_weights.dart';
 import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/screens/add_plate_weights.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/exercises/images.dart';
@@ -546,29 +548,53 @@ class _LogPageState extends State<LogPage> {
   }
 
   Widget getPlates() {
+    num x=num.parse(_weightController.text);
     final plates = plateCalculator(
-      double.parse(_weightController.text),
+      x,
       BAR_WEIGHT,
       AVAILABLE_PLATES,
     );
-    final groupedPlates = groupPlates(plates);
+    Map<num,int> groupedPlates;
+    groupedPlates = groupPlates(plates);
+    return Consumer<PlateWeights>(
+      builder: (context,plate_provider,child)=>
+       Column(
+        children: [
+          Container(
+            child: Text("Weight of Bar is :- $BAR_WEIGHT Kg's",style: TextStyle(fontSize: 20),),
+            ),
+          SizedBox(height: 10,),
+          Container(
+            child: Text("Available Weight's are:- ",style: TextStyle(fontSize: 20),),
+            ),
+            SizedBox(height: 10,),
+          Container(
+            child: Text("kg: 1.25, 2.5, 5, 10, 15, 20, and 25 kg",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold)),
+            ),
+          
+          Container(
+            child: Text("lb: 2.5, 5, 10, 25, 35, and 45 lbs",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+          ),
 
-    return Column(
-      children: [
-        Text(
-          AppLocalizations.of(context).plateCalculator,
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
-        SizedBox(
-          height: 35,
-          child: plates.isNotEmpty
+          ElevatedButton(onPressed: (){
+                  plate_provider.weight_in_kg=x;
+                  plate_provider.tot_weight=x;
+                  
+                  plate_provider.printweights();
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const AddPlateWeights()));
+                },
+                child: Text("Enter  custom Denomination's")
+              ),
+          SizedBox(
+            height: 35,
+          child: (plate_provider.flag?plate_provider.weights.isNotEmpty:plates.isNotEmpty)
               ? Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    ...groupedPlates.keys.map(
+                    ...(plate_provider.flag?plate_provider.grouped:groupedPlates).keys.map(
                       (key) => Row(
                         children: [
-                          Text(groupedPlates[key].toString()),
+                          Text(plate_provider.flag?(plate_provider.grouped[key].toString()):(groupedPlates[key].toString())),
                           const Text('×'),
                           Container(
                             decoration: BoxDecoration(
@@ -601,12 +627,13 @@ class _LogPageState extends State<LogPage> {
               : MutedText(
                   AppLocalizations.of(context).plateCalculatorNotDivisible,
                 ),
-        ),
-        const SizedBox(height: 3),
-      ],
+          ),
+        ],
+        
+      ),
+      
     );
   }
-
   @override
   Widget build(BuildContext context) {
     return Column(

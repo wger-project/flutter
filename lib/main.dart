@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -27,6 +26,7 @@ import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/gallery.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/plate_weights.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
@@ -57,7 +57,7 @@ import 'providers/auth.dart';
 
 void main() async {
   //zx.setLogEnabled(kDebugMode);
-
+  
   // Needs to be called before runApp
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -73,6 +73,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (context) => PlateWeights()),
         ChangeNotifierProvider(create: (ctx) => AuthProvider()),
         ChangeNotifierProxyProvider<AuthProvider, ExercisesProvider>(
           create: (context) => ExercisesProvider(
