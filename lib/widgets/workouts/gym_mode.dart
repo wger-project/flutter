@@ -337,66 +337,73 @@ class _LogPageState extends State<LogPage> {
 
   Widget getWeightWidget() {
     const minPlateWeight = 1.25;
-    return Row(
-      children: [
-        IconButton(
-          icon: const Icon(Icons.remove, color: Colors.black),
-          onPressed: () {
-            try {
-              final double newValue = double.parse(_weightController.text) - (2 * minPlateWeight);
-              if (newValue > 0) {
+    return Consumer<PlateWeights>(
+      builder: (context,plateProvider, child) => 
+      Row(
+        children: [
+          IconButton(
+            icon: const Icon(Icons.remove, color: Colors.black),
+            onPressed: () {
+              try {
+                final double newValue = double.parse(_weightController.text) - (2 * minPlateWeight);
+                if (newValue > 0) {
+                  plateProvider.setWeight(newValue);
+                  plateProvider.calculatePlates();
+                  setState(() {
+                    widget._log.weight = newValue;
+                    _weightController.text = newValue.toString();
+                  });
+                }
+              } on FormatException {}
+            },
+          ),
+          Expanded(
+            child: TextFormField(
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context).weight,
+              ),
+              controller: _weightController,
+              keyboardType: TextInputType.number,
+              onFieldSubmitted: (_) {},
+              onChanged: (value) {
+                try {
+                  double.parse(value);
+                  setState(() {
+                    widget._log.weight = double.parse(value);
+                  });
+                } on FormatException {}
+              },
+              onSaved: (newValue) {
+                setState(() {
+                  widget._log.weight = double.parse(newValue!);
+                });
+              },
+              validator: (value) {
+                try {
+                  double.parse(value!);
+                } catch (error) {
+                  return AppLocalizations.of(context).enterValidNumber;
+                }
+                return null;
+              },
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.add, color: Colors.black),
+            onPressed: () {
+              try {
+                final double newValue = double.parse(_weightController.text) + (2 * minPlateWeight);
+                plateProvider.setWeight(newValue);
+                plateProvider.calculatePlates();
                 setState(() {
                   widget._log.weight = newValue;
                   _weightController.text = newValue.toString();
                 });
-              }
-            } on FormatException {}
-          },
-        ),
-        Expanded(
-          child: TextFormField(
-            decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).weight,
-            ),
-            controller: _weightController,
-            keyboardType: TextInputType.number,
-            onFieldSubmitted: (_) {},
-            onChanged: (value) {
-              try {
-                double.parse(value);
-                setState(() {
-                  widget._log.weight = double.parse(value);
-                });
               } on FormatException {}
             },
-            onSaved: (newValue) {
-              setState(() {
-                widget._log.weight = double.parse(newValue!);
-              });
-            },
-            validator: (value) {
-              try {
-                double.parse(value!);
-              } catch (error) {
-                return AppLocalizations.of(context).enterValidNumber;
-              }
-              return null;
-            },
           ),
-        ),
-        IconButton(
-          icon: const Icon(Icons.add, color: Colors.black),
-          onPressed: () {
-            try {
-              final double newValue = double.parse(_weightController.text) + (2 * minPlateWeight);
-              setState(() {
-                widget._log.weight = newValue;
-                _weightController.text = newValue.toString();
-              });
-            } on FormatException {}
-          },
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -547,222 +554,75 @@ class _LogPageState extends State<LogPage> {
     );
   }
 
-
-  // Widget getPlates() {
-  //   final plates = plateCalculator(
-  //     double.parse(_weightController.text),
-  //     BAR_WEIGHT,
-  //     AVAILABLE_PLATES,
-  //   );
-  //   final groupedPlates = groupPlates(plates);
-
-  //   return SingleChildScrollView(
-  //     child: Column(
-  //       children: [
-  //         Row(
-  //           children: [
-  //             Text(
-  //           AppLocalizations.of(context).plateCalculator,
-  //           style: Theme.of(context).textTheme.titleLarge,
-  //         ),
-  //         ElevatedButton(onPressed: (){}, 
-  //         child: Text("Customise")),
-  //           ],
-  //         ),
-
-  //         // Text(
-  //         //   AppLocalizations.of(context).plateCalculator,
-  //         //   style: Theme.of(context).textTheme.titleLarge,
-  //         // ),
-  //         SizedBox(height: 10,),
-  //         // ElevatedButton(onPressed: (){}, 
-  //         // child: Text("dfsdfdf")),
-  //         SizedBox(
-  //           height: 35,
-  //           child: plates.isNotEmpty
-  //               ? Row(
-  //                   mainAxisAlignment: MainAxisAlignment.center,
-  //                   children: [
-  //                     ...groupedPlates.keys.map(
-  //                       (key) => Row(
-  //                         children: [
-  //                           Text(groupedPlates[key].toString()),
-  //                           const Text('×'),
-  //                           Container(
-  //                             decoration: BoxDecoration(
-  //                               color: Theme.of(context).colorScheme.primaryContainer,
-  //                               shape: BoxShape.circle,
-  //                             ),
-  //                             child: Padding(
-  //                               padding: const EdgeInsets.symmetric(horizontal: 3),
-  //                               child: SizedBox(
-  //                                 height: 35,
-  //                                 width: 35,
-  //                                 child: Align(
-  //                                   alignment: Alignment.center,
-  //                                   child: Text(
-  //                                     key.toString(),
-  //                                     style: const TextStyle(
-  //                                       fontWeight: FontWeight.bold,
-  //                                     ),
-  //                                   ),
-  //                                 ),
-  //                               ),
-  //                             ),
-  //                           ),
-  //                           const SizedBox(width: 10),
-  //                         ],
-  //                       ),
-  //                     ),
-  //                   ],
-  //                 )
-  //               : MutedText(
-  //                   AppLocalizations.of(context).plateCalculatorNotDivisible,
-  //                 ),
-  //         ),
-  //         const SizedBox(height: 3),
-  //       ],
-  //     ),
-  //   );
-  // }
-
-
   Widget getPlates() {
-    num x=num.parse(_weightController.text);
-    print("object called");
-    final plates = plateCalculator(
-      x,
-      BAR_WEIGHT,
-      AVAILABLE_PLATES,
-    );
+    final plates = plateCalculator(num.parse(_weightController.text),BAR_WEIGHT,AVAILABLE_PLATES);
     Map<num,int> groupedPlates;
     groupedPlates = groupPlates(plates);
-    return Consumer<PlateWeights>(builder: (context,plate_provider, child) =>
+    return Consumer<PlateWeights>(builder: (context,plateProvider, child) =>
       SingleChildScrollView(
         child: Column(
-              children: [
-                // Container(
-                //   child: Text("Weight of Bar is :- $BAR_WEIGHT Kg's",style: TextStyle(fontSize: 20),),
-                //   ),
-                // SizedBox(height: 10,),
-                // Container(
-                //   child: Text("Available Weight's are:- ",style: TextStyle(fontSize: 20),),
-                //   ),
-                //   SizedBox(height: 10,),
-                // Container(
-                //   child: Text("kg: 1.25, 2.5, 5, 10, 15, 20, and 25 kg",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold)),
-                //   ),
-                
-                // Container(
-                //   child: Text("lb: 2.5, 5, 10, 25, 35, and 45 lbs",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-                // ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                  
-                  ElevatedButton(onPressed: (){
-                          plate_provider.flag=false;
-                          plate_provider.tot_weight=x;
-                          plate_provider.printweights();
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const AddPlateWeights()));
-                        },
-                        child: Text("Enter  custom Denomination's")
-                      ),
-                      Padding(padding: EdgeInsets.all(10)),
-                  ],
-                ),
-                SizedBox(
-                    height: 35,
-                  child: (plate_provider.flag?plate_provider.selected_weights.isNotEmpty:plates.isNotEmpty)
-                      ? Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(onPressed: () {
+                      plateProvider.flag=false;
+                      plateProvider.setWeight(num.parse(_weightController.text));
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const AddPlateWeights()));
+                    },
+                    child: const Text("Enter custom Denomination's")
+                  ),
+                    const Padding(padding: EdgeInsets.all(10)),
+                ],
+            ),
+            SizedBox (
+              height: 35,
+                child: (plateProvider.flag?plateProvider.selectedWeights.isNotEmpty:plates.isNotEmpty)
+                 ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text ('Plates:-',style: TextStyle(),),
+                        ...(plateProvider.flag?plateProvider.grouped:groupedPlates).keys.map(
+                        (key) => Row (
                           children: [
-                            Text("Plates:-",style: TextStyle(),),
-                            ...(plate_provider.flag?plate_provider.grouped:groupedPlates).keys.map(
-                              (key) => Row(
-                                children: [
-                                  Text(plate_provider.flag?(plate_provider.grouped[key].toString()):(groupedPlates[key].toString())),
-                                  const Text('×'),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(context).colorScheme.primaryContainer,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 3),
-                                      child: SizedBox(
-                                        height: 35,
-                                        width: 35,
-                                        child: Align(
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            key.toString(),
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
+                            Text(plateProvider.flag?(plateProvider.grouped[key].toString()):(groupedPlates[key].toString())),
+                              const Text('×'),
+                                Container (
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context).colorScheme.primaryContainer,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Padding (
+                                    padding: const EdgeInsets.symmetric(horizontal: 3),
+                                    child: SizedBox (
+                                      height: 35,
+                                      width: 35,
+                                      child: Align (
+                                        alignment: Alignment.center,
+                                        child: Text (
+                                          key.toString(),
+                                          style: const TextStyle(fontWeight: FontWeight.bold,),
                                         ),
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(width: 10),
+                                ),
+                                const SizedBox(width: 10),
                                 ],
                               ),
                             ),
                           ],
                         )
-                      : MutedText(
-                          AppLocalizations.of(context).plateCalculatorNotDivisible,
-                        ),
-                  ),
-                
-              ],
-              
+                        : MutedText (
+                            AppLocalizations.of(context).plateCalculatorNotDivisible,
+                          ),
             ),
+          ],
+        ),
       ),
-      
     );
   }
-  @override
-  // Widget build(BuildContext context) {
-  //   return SingleChildScrollView(
-  //     child: Column(
-  //           children: [
-  //             NavigationHeader(
-  //               widget._exerciseBase.getExercise(Localizations.localeOf(context).languageCode).name,
-  //               widget._controller,
-  //               exercisePages: widget._exercisePages,
-  //             ),
-  //             Center(
-  //               child: Text(
-  //                 widget._setting.singleSettingRepText,
-  //                 style: Theme.of(context).textTheme.headlineMedium,
-  //                 textAlign: TextAlign.center,
-  //               ),
-  //             ),
-  //             if (widget._set.comment != '') Text(widget._set.comment, textAlign: TextAlign.center),
-  //             const SizedBox(height: 10),
-  //             Container(
-  //               height: 15,
-  //               child: (
-  //                 widget._workoutPlan.filterLogsByExerciseBase(widget._exerciseBase).isNotEmpty)
-  //                   ? getPastLogs()
-  //                   : Container(),
-  //             ),
-  //             // Only show calculator for barbell
-  //             if (widget._log.exerciseBaseObj.equipment.map((e) => e.id).contains(ID_EQUIPMENT_BARBELL))
-  //               getPlates(),
-  //             Padding(
-  //               padding: const EdgeInsets.symmetric(horizontal: 15),
-  //               child: Card(child: getForm()),
-  //             ),
-  //             NavigationFooter(widget._controller, widget._ratioCompleted),
-  //           ],
-          
-  //       ),
-  //   );
-    
-  // }
+
   @override
   Widget build(BuildContext context) {
     return Column(
