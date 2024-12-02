@@ -65,7 +65,7 @@ dependencies:
   sqlite3_flutter_libs: ^0.5.20
   get_it: ^8.0.2
   flex_seed_scheme: ^3.4.1
-  flex_color_scheme: ^8.0.1
+  flex_color_scheme: ^8.0.2
   freezed_annotation: ^2.4.4
   clock: ^1.1.1
   flutter_svg_icons: ^0.0.1
