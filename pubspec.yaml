@@ -84,7 +84,7 @@ dev_dependencies:
   network_image_mock: ^2.1.1
   flutter_lints: ^5.0.0
   cider: ^0.2.7
-  drift_dev: ^2.20.3
+  drift_dev: ^2.22.0
   freezed: ^2.5.7
   golden_toolkit: ^0.15.0
 
