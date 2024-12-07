@@ -1,23 +1,23 @@
 {
-    "appId": "de.wger.flutter",
-    "lowercaseAppName": "wger",
-    "githubReleaseOrganization": "wger-project",
-    "githubReleaseProject": "flutter",
-    "localLinuxBuildDir": "../build/linux",
-    "appStreamPath": "de.wger.flutter.metainfo.xml",
-    "desktopPath": "de.wger.flutter.desktop",
-    "icons": {
-        "64x64": "logo64.png",
-        "128x126": "logo128.png",
-        "512x512": "logo512.png"
-    },
-    "freedesktopRuntime": "22.08",
-    "finishArgs": [
-        "--share=ipc",
-        "--share=network",
-        "--socket=fallback-x11",
-        "--socket=wayland",
-        "--socket=pulseaudio",
-        "--device=dri"
-    ]
+  "appId": "de.wger.flutter",
+  "lowercaseAppName": "wger",
+  "githubReleaseOrganization": "wger-project",
+  "githubReleaseProject": "flutter",
+  "localLinuxBuildDir": "../build/linux",
+  "appStreamPath": "de.wger.flutter.metainfo.xml",
+  "desktopPath": "de.wger.flutter.desktop",
+  "icons": {
+    "64x64": "logo64.png",
+    "128x126": "logo128.png",
+    "512x512": "logo512.png"
+  },
+  "freedesktopRuntime": "24.08",
+  "finishArgs": [
+    "--share=ipc",
+    "--share=network",
+    "--socket=fallback-x11",
+    "--socket=wayland",
+    "--socket=pulseaudio",
+    "--device=dri"
+  ]
 }

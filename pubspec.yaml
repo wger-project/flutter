@@ -35,7 +35,7 @@ dependencies:
   android_metadata: ^0.2.1
   collection: ^1.17.0
   cupertino_icons: ^1.0.8
-  equatable: ^2.0.5
+  equatable: ^2.0.7
   flutter_calendar_carousel: ^2.4.4
   flutter_html: ^3.0.0-beta.2
   flutter_typeahead: ^5.2.0
@@ -47,8 +47,7 @@ dependencies:
   version: ^3.0.2
   package_info_plus: ^8.1.1
   provider: ^6.1.2
-  # Note, do not update rive! https://github.com/wger-project/flutter/issues/577
-  rive: ^0.12.4
+  rive: ^0.13.19
   shared_preferences: ^2.3.3
   table_calendar: ^3.0.8
   url_launcher: ^6.3.1
@@ -58,15 +57,15 @@ dependencies:
   carousel_slider: ^5.0.0
   multi_select_flutter: ^4.1.3
   flutter_svg: ^2.0.14
-  fl_chart: ^0.69.0
-  flutter_zxing: ^1.5.2
+  fl_chart: ^0.69.2
+  flutter_zxing: ^1.8.1
   drift: ^2.16.0
   path: ^1.8.3
   path_provider: ^2.1.5
   sqlite3_flutter_libs: ^0.5.20
-  get_it: ^7.6.8
+  get_it: ^8.0.2
   flex_seed_scheme: ^3.4.1
-  flex_color_scheme: ^8.0.1
+  flex_color_scheme: ^8.0.2
   freezed_annotation: ^2.4.4
   clock: ^1.1.1
   flutter_svg_icons: ^0.0.1
@@ -80,13 +79,13 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   build_runner: ^2.4.13
-  json_serializable: ^6.8.0
+  json_serializable: ^6.9.0
   mockito: ^5.4.4
   network_image_mock: ^2.1.1
   flutter_lints: ^5.0.0
   cider: ^0.2.7
-  drift_dev: ^2.20.3
-  freezed: ^2.5.2
+  drift_dev: ^2.22.0
+  freezed: ^2.5.7
   golden_toolkit: ^0.15.0
 
 # For information on the generic Dart part of this file, see the

@@ -303,11 +303,11 @@
   "@addMeal": {},
   "mealLogged": "Страву записано в щоденник",
   "@mealLogged": {},
-  "logMeal": "Записати цю страву",
+  "logMeal": "Запис прийому їжі в щоденник харчування",
   "@logMeal": {},
   "addIngredient": "Додати інгредієнт",
   "@addIngredient": {},
-  "logIngredient": "Зберегти в щоденник харчування",
+  "logIngredient": "Занесіть інгредієнт до щоденника харчування",
   "@logIngredient": {},
   "searchIngredient": "Пошук інгредієнта",
   "@searchIngredient": {
@@ -751,5 +751,148 @@
   "max_reps": "Максимальна кількість повторень",
   "@max_reps": {
     "description": "Generated entry for translation for server strings"
-  }
+  },
+  "goalMacro": "Макроцілі",
+  "@goalMacro": {
+    "description": "The goal for macronutrients"
+  },
+  "goalFiber": "Волокно гол",
+  "@goalFiber": {},
+  "goalTypeBasic": "Базовий",
+  "@goalTypeBasic": {
+    "description": "added for localization of Class GoalType's filed basic"
+  },
+  "goalTypeAdvanced": "Просунутий",
+  "@goalTypeAdvanced": {
+    "description": "added for localization of Class GoalType's filed advanced"
+  },
+  "useMetric": "Використовуйте метричні одиниці вимірювання маси тіла",
+  "@useMetric": {},
+  "settingsTitle": "налаштування",
+  "@settingsTitle": {},
+  "deficit": "дефіцит",
+  "@deficit": {
+    "description": "Caloric deficit (either planned or unplanned)"
+  },
+  "gValue": "{value} г",
+  "@gValue": {
+    "description": "A value in grams, e.g. 5 g",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "percentValue": "{value} %",
+  "@percentValue": {
+    "description": "A value in percent, e.g. 10 %",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "settingsExerciseCacheDescription": "Кеш вправ",
+  "@settingsExerciseCacheDescription": {},
+  "chartAllTimeTitle": "{name} за весь час",
+  "@chartAllTimeTitle": {
+    "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "chart30DaysTitle": "{name} останні 30 днів",
+  "@chart30DaysTitle": {
+    "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "chartDuringPlanTitle": "{chartName} під час плану харчування {planName}",
+  "@chartDuringPlanTitle": {
+    "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
+    "type": "text",
+    "placeholders": {
+      "chartName": {},
+      "planName": {}
+    }
+  },
+  "kcalValue": "{value} ккал",
+  "@kcalValue": {
+    "description": "A value in kcal, e.g. 500 kcal",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "log": "Журнал",
+  "@log": {
+    "description": "Log a specific meal (imperative form)"
+  },
+  "settingsIngredientCacheDescription": "Кеш інгредієнтів",
+  "@settingsIngredientCacheDescription": {},
+  "overallChangeWeight": "Загальна зміна",
+  "@overallChangeWeight": {
+    "description": "Overall change in weight, added for localization"
+  },
+  "goalTypeMeals": "Від їжі",
+  "@goalTypeMeals": {
+    "description": "added for localization of Class GoalType's filed meals"
+  },
+  "indicatorRaw": "сирий",
+  "@indicatorRaw": {
+    "description": "added for localization of Class Indicator's field text"
+  },
+  "indicatorAvg": "середнє",
+  "@indicatorAvg": {
+    "description": "added for localization of Class Indicator's field text"
+  },
+  "onlyLogging": "Слідкуйте лише за калоріями",
+  "@onlyLogging": {},
+  "onlyLoggingHelpText": "Поставте прапорець, якщо ви хочете лише реєструвати свої калорії та не хочете встановлювати детальний план харчування з певними стравами",
+  "@onlyLoggingHelpText": {},
+  "goalEnergy": "Енергетична мета",
+  "@goalEnergy": {},
+  "goalProtein": "Білкова мета",
+  "@goalProtein": {},
+  "goalCarbohydrates": "Мета вуглеводів",
+  "@goalCarbohydrates": {},
+  "goalFat": "Товстий гол",
+  "@goalFat": {},
+  "today": "Сьогодні",
+  "@today": {},
+  "loggedToday": "Зареєстровано сьогодні",
+  "@loggedToday": {},
+  "aboutDonateTitle": "Пожертвуйте",
+  "@aboutDonateTitle": {},
+  "aboutDonateText": "Купіть нам каву, щоб допомогти проекту, оплатити витрати на сервер і підтримати нас",
+  "@aboutDonateText": {},
+  "surplus": "надлишок",
+  "@surplus": {
+    "description": "Caloric surplus (either planned or unplanned)"
+  },
+  "aboutMastodonText": "Слідкуйте за оновленнями та новинами про проект на Mastodon",
+  "@aboutMastodonText": {
+    "description": "Text for the mastodon section in the about dialog"
+  },
+  "done": "Готово",
+  "@done": {},
+  "noIngredientsDefined": "Інгредієнти ще не визначені",
+  "@noIngredientsDefined": {},
+  "noMatchingExerciseFound": "Відповідних вправ не знайдено",
+  "@noMatchingExerciseFound": {
+    "description": "Message returned if no exercises match the searched string"
+  },
+  "ingredientLogged": "Інгредієнт зареєстровано в щоденнику",
+  "@ingredientLogged": {},
+  "selectMealToLog": "Виберіть страву, щоб записати в щоденник",
+  "@selectMealToLog": {},
+  "aboutMastodonTitle": "Мастодонт",
+  "@aboutMastodonTitle": {
+    "description": "Title for mastodon section in the about dialog"
+  },
+  "settingsCacheTitle": "Кеш",
+  "@settingsCacheTitle": {},
+  "settingsCacheDeletedSnackbar": "Кеш успішно очищено",
+  "@settingsCacheDeletedSnackbar": {}
 }
