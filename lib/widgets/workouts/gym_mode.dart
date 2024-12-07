@@ -37,7 +37,9 @@ import 'package:wger/models/workouts/set.dart';
 import 'package:wger/models/workouts/setting.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/plate_weights.dart';
 import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/screens/add_plate_weights.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/exercises/images.dart';
@@ -335,66 +337,73 @@ class _LogPageState extends State<LogPage> {
 
   Widget getWeightWidget() {
     const minPlateWeight = 1.25;
-    return Row(
-      children: [
-        IconButton(
-          icon: const Icon(Icons.remove, color: Colors.black),
-          onPressed: () {
-            try {
-              final double newValue = double.parse(_weightController.text) - (2 * minPlateWeight);
-              if (newValue > 0) {
+    return Consumer<PlateWeights>(
+      builder: (context,plateProvider, child) => 
+      Row(
+        children: [
+          IconButton(
+            icon: const Icon(Icons.remove, color: Colors.black),
+            onPressed: () {
+              try {
+                final double newValue = double.parse(_weightController.text) - (2 * minPlateWeight);
+                if (newValue > 0) {
+                  plateProvider.setWeight(newValue);
+                  plateProvider.calculatePlates();
+                  setState(() {
+                    widget._log.weight = newValue;
+                    _weightController.text = newValue.toString();
+                  });
+                }
+              } on FormatException {}
+            },
+          ),
+          Expanded(
+            child: TextFormField(
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context).weight,
+              ),
+              controller: _weightController,
+              keyboardType: TextInputType.number,
+              onFieldSubmitted: (_) {},
+              onChanged: (value) {
+                try {
+                  double.parse(value);
+                  setState(() {
+                    widget._log.weight = double.parse(value);
+                  });
+                } on FormatException {}
+              },
+              onSaved: (newValue) {
+                setState(() {
+                  widget._log.weight = double.parse(newValue!);
+                });
+              },
+              validator: (value) {
+                try {
+                  double.parse(value!);
+                } catch (error) {
+                  return AppLocalizations.of(context).enterValidNumber;
+                }
+                return null;
+              },
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.add, color: Colors.black),
+            onPressed: () {
+              try {
+                final double newValue = double.parse(_weightController.text) + (2 * minPlateWeight);
+                plateProvider.setWeight(newValue);
+                plateProvider.calculatePlates();
                 setState(() {
                   widget._log.weight = newValue;
                   _weightController.text = newValue.toString();
                 });
-              }
-            } on FormatException {}
-          },
-        ),
-        Expanded(
-          child: TextFormField(
-            decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).weight,
-            ),
-            controller: _weightController,
-            keyboardType: TextInputType.number,
-            onFieldSubmitted: (_) {},
-            onChanged: (value) {
-              try {
-                double.parse(value);
-                setState(() {
-                  widget._log.weight = double.parse(value);
-                });
               } on FormatException {}
             },
-            onSaved: (newValue) {
-              setState(() {
-                widget._log.weight = double.parse(newValue!);
-              });
-            },
-            validator: (value) {
-              try {
-                double.parse(value!);
-              } catch (error) {
-                return AppLocalizations.of(context).enterValidNumber;
-              }
-              return null;
-            },
           ),
-        ),
-        IconButton(
-          icon: const Icon(Icons.add, color: Colors.black),
-          onPressed: () {
-            try {
-              final double newValue = double.parse(_weightController.text) + (2 * minPlateWeight);
-              setState(() {
-                widget._log.weight = newValue;
-                _weightController.text = newValue.toString();
-              });
-            } on FormatException {}
-          },
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -546,64 +555,71 @@ class _LogPageState extends State<LogPage> {
   }
 
   Widget getPlates() {
-    final plates = plateCalculator(
-      double.parse(_weightController.text),
-      BAR_WEIGHT,
-      AVAILABLE_PLATES,
-    );
-    final groupedPlates = groupPlates(plates);
-
-    return Column(
-      children: [
-        Text(
-          AppLocalizations.of(context).plateCalculator,
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
-        SizedBox(
-          height: 35,
-          child: plates.isNotEmpty
-              ? Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ...groupedPlates.keys.map(
-                      (key) => Row(
-                        children: [
-                          Text(groupedPlates[key].toString()),
-                          const Text('×'),
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.primaryContainer,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 3),
-                              child: SizedBox(
-                                height: 35,
-                                width: 35,
-                                child: Align(
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    key.toString(),
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
+    final plates = plateCalculator(num.parse(_weightController.text),BAR_WEIGHT,AVAILABLE_PLATES);
+    Map<num,int> groupedPlates;
+    groupedPlates = groupPlates(plates);
+    return Consumer<PlateWeights>(builder: (context,plateProvider, child) =>
+      SingleChildScrollView(
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(onPressed: () {
+                      plateProvider.flag=false;
+                      plateProvider.setWeight(num.parse(_weightController.text));
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const AddPlateWeights()));
+                    },
+                    child: const Text("Enter custom Denomination's")
+                  ),
+                    const Padding(padding: EdgeInsets.all(10)),
+                ],
+            ),
+            SizedBox (
+              height: 35,
+                child: (plateProvider.flag?plateProvider.selectedWeights.isNotEmpty:plates.isNotEmpty)
+                 ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text ('Plates:-',style: TextStyle(),),
+                        ...(plateProvider.flag?plateProvider.grouped:groupedPlates).keys.map(
+                        (key) => Row (
+                          children: [
+                            Text(plateProvider.flag?(plateProvider.grouped[key].toString()):(groupedPlates[key].toString())),
+                              const Text('×'),
+                                Container (
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context).colorScheme.primaryContainer,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Padding (
+                                    padding: const EdgeInsets.symmetric(horizontal: 3),
+                                    child: SizedBox (
+                                      height: 35,
+                                      width: 35,
+                                      child: Align (
+                                        alignment: Alignment.center,
+                                        child: Text (
+                                          key.toString(),
+                                          style: const TextStyle(fontWeight: FontWeight.bold,),
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
+                                const SizedBox(width: 10),
+                                ],
                               ),
                             ),
+                          ],
+                        )
+                        : MutedText (
+                            AppLocalizations.of(context).plateCalculatorNotDivisible,
                           ),
-                          const SizedBox(width: 10),
-                        ],
-                      ),
-                    ),
-                  ],
-                )
-              : MutedText(
-                  AppLocalizations.of(context).plateCalculatorNotDivisible,
-                ),
+            ),
+          ],
         ),
-        const SizedBox(height: 3),
-      ],
+      ),
     );
   }
 
@@ -642,6 +658,8 @@ class _LogPageState extends State<LogPage> {
     );
   }
 }
+
+
 
 class ExerciseOverview extends StatelessWidget {
   final PageController _controller;
