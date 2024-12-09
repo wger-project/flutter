@@ -563,10 +563,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_zxing
-      sha256: "828c4826c2eb7668dcc80848b41b9a80437f7535aabc8c2062202c6070e4d4bb"
+      sha256: "5b2670f151a6d96643204ff3a781e073739c23a91ef5fc39742bf13fb8287b4c"
       url: "https://pub.dev"
     source: hosted
-    version: "1.8.1"
+    version: "1.8.2"
   font_awesome_flutter:
     dependency: "direct main"
     description:
