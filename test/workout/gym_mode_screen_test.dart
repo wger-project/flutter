@@ -24,6 +24,7 @@ import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/plate_weights.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
@@ -78,10 +79,15 @@ void main() {
     when(mockExerciseProvider.findExerciseById(1)).thenReturn(bases[0]);
     when(mockExerciseProvider.findExerciseById(6)).thenReturn(bases[5]);
 
-    await tester.pumpWidget(createHomeScreen());
+    await tester.pumpWidget(ChangeNotifierProvider(
+      create: (context) => PlateWeights(),
+      builder: (context, _) => createHomeScreen(),
+    ));
+    //await tester.pumpWidget(createHomeScreen());
     await tester.tap(find.byType(TextButton));
+    //print(find.byType(TextButton));
     await tester.pumpAndSettle();
-
+    //await tester.ensureVisible(find.byKey(Key(key as String)));
     //
     // Start page
     //
@@ -114,6 +120,7 @@ void main() {
     expect(find.text('Bench press'), findsOneWidget);
     expect(find.byType(LogPage), findsOneWidget);
     expect(find.byType(Form), findsOneWidget);
+    // print(find.byType(Form));
     expect(find.byType(ListTile), findsNWidgets(3), reason: 'Two logs and the switch tile');
     expect(find.text('10 × 10 kg  (1.5 RiR)'), findsOneWidget);
     expect(find.text('12 × 10 kg  (2 RiR)'), findsOneWidget);

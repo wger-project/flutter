@@ -13,6 +13,7 @@
 - Thilina Herath - <https://github.com/ThilinaTCH>
 - Marko Milosevic - <https://github.com/TaarnStar>
 - Karthik Reddy (Axel) - <https://github.com/AxelBlaz3>
+- Ayush Sourav Jagaty - <https://github.com/AyushJagaty>
 - Ogundoyin Toluwani - <https://github.com/Tolu007>
 - Nenza Nurfirmansyah - <https://github.com/nenzan>
 - Florian Schmitz - <https://github.com/floodoo>
