@@ -26,20 +26,22 @@ class MeasurementOverallChangeWidget extends StatelessWidget {
   final MeasurementChartEntry _first;
   final MeasurementChartEntry _last;
   final String _unit;
+
   const MeasurementOverallChangeWidget(this._first, this._last, this._unit);
 
   @override
   Widget build(BuildContext context) {
     final delta = _last.value - _first.value;
-    final prefix = delta > 0
-        ? '+'
-        : delta < 0
-            ? '-'
-            : '';
+    String prefix = '';
+    if (delta > 0) {
+      prefix = '+';
+    } else if (delta < 0) {
+      prefix = '-';
+    }
 
     // ignore: prefer_interpolation_to_compose_strings
     return Text(AppLocalizations.of(context).overallChangeWeight +
-      '$prefix ${delta.abs().toStringAsFixed(1)} $_unit');
+        ' $prefix${delta.abs().toStringAsFixed(1)} $_unit');
   }
 }
 
