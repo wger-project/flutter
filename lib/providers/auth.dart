@@ -21,9 +21,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:android_metadata/android_metadata.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:package_info_plus/package_info_plus.dart';
@@ -55,23 +53,6 @@ class AuthProvider with ChangeNotifier {
 
   AuthProvider([http.Client? client, bool? checkMetadata]) {
     this.client = client ?? http.Client();
-
-    // TODO: this is a workaround since AndroidMetadata doesn't work while running tests
-    if (checkMetadata ?? true) {
-      try {
-        if (Platform.isAndroid) {
-          AndroidMetadata.metaDataAsMap.then((value) => metadata = value!);
-        } else if (Platform.isLinux || Platform.isMacOS) {
-          metadata = {
-            MANIFEST_KEY_CHECK_UPDATE: Platform.environment[MANIFEST_KEY_CHECK_UPDATE] ?? '',
-          };
-        }
-      } on PlatformException {
-        throw Exception(
-          'An error occurred reading the metadata from AndroidManifest',
-        );
-      } catch (error) {}
-    }
   }
 
   /// flag to indicate that the application has successfully loaded all initial data

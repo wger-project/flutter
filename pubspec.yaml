@@ -32,7 +32,6 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  android_metadata: ^0.2.1
   collection: ^1.17.0
   cupertino_icons: ^1.0.8
   equatable: ^2.0.7
@@ -47,7 +46,7 @@ dependencies:
   version: ^3.0.2
   package_info_plus: ^8.1.1
   provider: ^6.1.2
-  rive: ^0.13.19
+  rive: ^0.13.20
   shared_preferences: ^2.3.3
   table_calendar: ^3.0.8
   url_launcher: ^6.3.1
