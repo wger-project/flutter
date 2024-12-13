@@ -84,10 +84,7 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
 
             return LineTooltipItem(
               '$dateStr: ${touchedSpot.y.toStringAsFixed(1)} ${widget._unit}',
-              TextStyle(
-                color: touchedSpot.bar.color,
-                fontWeight: FontWeight.bold,
-              ),
+              TextStyle(color: touchedSpot.bar.color),
             );
           }).toList();
         },
@@ -160,7 +157,7 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
                 return const Text('');
               }
 
-              return Text('$value ${widget._unit}');
+              return Text('${value.toStringAsFixed(1)} ${widget._unit}');
             },
           ),
         ),
@@ -208,7 +205,7 @@ class MeasurementChartEntry {
   MeasurementChartEntry(this.value, this.date);
 }
 
-// for each point, return the average of all the points in the 7 days preceeding it
+// for each point, return the average of all the points in the 7 days preceding it
 List<MeasurementChartEntry> moving7dAverage(List<MeasurementChartEntry> vals) {
   var start = 0;
   var end = 0;
