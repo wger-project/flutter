@@ -25,6 +25,9 @@ jobs:
       - run: dart --version
       - run: flutter --version
 
+      - name: Install sqlite3-dev
+        run: apt install libsqlite3-dev
+
       - name: Install app dependencies
         run: flutter pub get
 
