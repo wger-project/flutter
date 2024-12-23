@@ -77,7 +77,7 @@ dev_dependencies:
     sdk: flutter
   integration_test:
     sdk: flutter
-  build_runner: ^2.4.13
+  build_runner: ^2.4.14
   cider: ^0.2.7
   drift_dev: ^2.22.0
   flutter_lints: ^5.0.0
