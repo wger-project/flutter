@@ -99,7 +99,7 @@
   "@comment": {
     "description": "Comment, additional information"
   },
-  "logIngredient": "Salvar no diário nutricional",
+  "logIngredient": "Salvar ingrediente no diário nutricional",
   "@logIngredient": {},
   "equipment": "Equipamento",
   "@equipment": {
@@ -225,7 +225,7 @@
   "@enterValue": {
     "description": "Error message when the user hasn't entered a value on a required field"
   },
-  "logMeal": "Registrar esta refeição",
+  "logMeal": "Registrar refeição para diário de nutrição",
   "@logMeal": {},
   "newEntry": "Nova entrada",
   "@newEntry": {
@@ -685,5 +685,274 @@
   "ingredientLogged": "Ingrediente registrado no diário",
   "@ingredientLogged": {},
   "noIngredientsDefined": "Nenhum ingrediente definido ainda",
-  "@noIngredientsDefined": {}
+  "@noIngredientsDefined": {},
+  "bench": "Banco",
+  "@bench": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "goalFiber": "Meta de fibras",
+  "@goalFiber": {},
+  "overallChangeWeight": "Mudança geral",
+  "@overallChangeWeight": {
+    "description": "Overall change in weight, added for localization"
+  },
+  "goalTypeMeals": "De refeições",
+  "@goalTypeMeals": {
+    "description": "added for localization of Class GoalType's filed meals"
+  },
+  "goalTypeBasic": "Básico",
+  "@goalTypeBasic": {
+    "description": "added for localization of Class GoalType's filed basic"
+  },
+  "goalTypeAdvanced": "Avançado",
+  "@goalTypeAdvanced": {
+    "description": "added for localization of Class GoalType's filed advanced"
+  },
+  "indicatorRaw": "bruto",
+  "@indicatorRaw": {
+    "description": "added for localization of Class Indicator's field text"
+  },
+  "indicatorAvg": "média",
+  "@indicatorAvg": {
+    "description": "added for localization of Class Indicator's field text"
+  },
+  "seconds": "Segundos",
+  "@seconds": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "textPromptTitle": "Pronto para iniciar?",
+  "@textPromptTitle": {},
+  "textPromptSubheading": "Aperte o botão de ação para começar",
+  "@textPromptSubheading": {},
+  "chest": "Peito",
+  "@chest": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "max_reps": "Repetições Máximas",
+  "@max_reps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "pull_up_bar": "Barra de Pull-up",
+  "@pull_up_bar": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "quads": "Quadríceps",
+  "@quads": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "goalFat": "Meta de gordura",
+  "@goalFat": {},
+  "body_weight": "Peso Corporal",
+  "@body_weight": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kilometers": "Quilômetros",
+  "@kilometers": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kilometers_per_hour": "Quilômetros por hora",
+  "@kilometers_per_hour": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "miles_per_hour": "Milhas por hora",
+  "@miles_per_hour": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "minutes": "Minutos",
+  "@minutes": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "sz_bar": "Barra Curvada",
+  "@sz_bar": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "goalProtein": "Meta de proteína",
+  "@goalProtein": {},
+  "goalEnergy": "Meta energética",
+  "@goalEnergy": {},
+  "today": "Hoje",
+  "@today": {},
+  "arms": "Braços",
+  "@arms": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "calves": "Panturrilha",
+  "@calves": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "triceps": "Tríceps",
+  "@triceps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "goalCarbohydrates": "Meta de carbohidratos",
+  "@goalCarbohydrates": {},
+  "onlyLoggingHelpText": "Marque a caixa se você apenas quiser registrar suas calorias e não quer configurar um plano nutricional detalhado com refeições específicas",
+  "@onlyLoggingHelpText": {},
+  "kcalValue": "{value} kcal",
+  "@kcalValue": {
+    "description": "A value in kcal, e.g. 500 kcal",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "percentValue": "{value} %",
+  "@percentValue": {
+    "description": "A value in percent, e.g. 10 %",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "goalMacro": "Macro Objetivos",
+  "@goalMacro": {
+    "description": "The goal for macronutrients"
+  },
+  "selectMealToLog": "Selecione uma refeição para registrar no diário",
+  "@selectMealToLog": {},
+  "loggedToday": "Registrado hoje",
+  "@loggedToday": {},
+  "surplus": "excedente",
+  "@surplus": {
+    "description": "Caloric surplus (either planned or unplanned)"
+  },
+  "deficit": "déficit",
+  "@deficit": {
+    "description": "Caloric deficit (either planned or unplanned)"
+  },
+  "gValue": "{value} g",
+  "@gValue": {
+    "description": "A value in grams, e.g. 5 g",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "abs": "Abdômen",
+  "@abs": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "back": "Costas",
+  "@back": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "barbell": "Barra",
+  "@barbell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "cardio": "Cardio",
+  "@cardio": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "dumbbell": "Haltere",
+  "@dumbbell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "glutes": "Glúteos",
+  "@glutes": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "gym_mat": "Tapete",
+  "@gym_mat": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "hamstrings": "Tendões",
+  "@hamstrings": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kettlebell": "Kettlebell",
+  "@kettlebell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "lats": "Dorsal",
+  "@lats": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "legs": "Pernas",
+  "@legs": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "lower_back": "Lombar",
+  "@lower_back": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "plates": "Anilhas",
+  "@plates": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "repetitions": "Repetições",
+  "@repetitions": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "shoulders": "Ombros",
+  "@shoulders": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "until_failure": "Até a falha",
+  "@until_failure": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kg": "kg",
+  "@kg": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "none__bodyweight_exercise_": "nenhum (exercício com peso corporal)",
+  "@none__bodyweight_exercise_": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "lb": "lb",
+  "@lb": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "chartAllTimeTitle": "{name} total",
+  "@chartAllTimeTitle": {
+    "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "chart30DaysTitle": "{name} últimos 30 dias",
+  "@chart30DaysTitle": {
+    "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "chartDuringPlanTitle": "{chartName} durante plano nutricional {planName}",
+  "@chartDuringPlanTitle": {
+    "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
+    "type": "text",
+    "placeholders": {
+      "chartName": {},
+      "planName": {}
+    }
+  },
+  "settingsIngredientCacheDescription": "Cache de Ingredientes",
+  "@settingsIngredientCacheDescription": {},
+  "cacheWarning": "Devido ao cache pode demorar algum tempo até que mudanças estejam visíveis na aplicação.",
+  "@cacheWarning": {},
+  "swiss_ball": "Bola Suíça",
+  "@swiss_ball": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "log": "Registro",
+  "@log": {
+    "description": "Log a specific meal (imperative form)"
+  },
+  "done": "Feito",
+  "@done": {},
+  "incline_bench": "Banco inclinado",
+  "@incline_bench": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "miles": "Milhas",
+  "@miles": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "biceps": "Bíceps",
+  "@biceps": {
+    "description": "Generated entry for translation for server strings"
+  }
 }
