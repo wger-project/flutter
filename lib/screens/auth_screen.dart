@@ -120,6 +120,7 @@ class _AuthCardState extends State<AuthCard> {
     'email': '',
     'password': '',
     'serverUrl': '',
+    'apitoken': '',
   };
   var _isLoading = false;
   final _usernameController = TextEditingController();
@@ -129,6 +130,7 @@ class _AuthCardState extends State<AuthCard> {
   final _serverUrlController = TextEditingController(
     text: kDebugMode ? DEFAULT_SERVER_TEST : DEFAULT_SERVER_PROD,
   );
+  final _apitokenController = TextEditingController();
 
   @override
   void dispose() {
@@ -137,6 +139,7 @@ class _AuthCardState extends State<AuthCard> {
     _password2Controller.dispose();
     _emailController.dispose();
     _serverUrlController.dispose();
+    _apitokenController.dispose();
     super.dispose();
   }
 
@@ -162,6 +165,7 @@ class _AuthCardState extends State<AuthCard> {
   void _resetTextfields() {
     _usernameController.clear();
     _passwordController.clear();
+    _apitokenController.clear();
   }
 
   void _submit(BuildContext context) async {
@@ -182,6 +186,7 @@ class _AuthCardState extends State<AuthCard> {
           _authData['username']!,
           _authData['password']!,
           _authData['serverUrl']!,
+          _authData['apitoken']!,
         );
 
         // Register new user
@@ -271,6 +276,10 @@ class _AuthCardState extends State<AuthCard> {
                     textInputAction: TextInputAction.next,
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
+                      if(!_apitokenController.text.isEmpty) {
+                          return null;
+                      }
+
                       if (value == null || value.isEmpty) {
                         return AppLocalizations.of(context).invalidUsername;
                       }
@@ -329,6 +338,10 @@ class _AuthCardState extends State<AuthCard> {
                       controller: _passwordController,
                       textInputAction: TextInputAction.next,
                       validator: (value) {
+                        if(!_apitokenController.text.isEmpty) {
+                            return null;
+                        }
+
                         if (value!.isEmpty || value.length < 8) {
                           return AppLocalizations.of(context).passwordTooShort;
                         }
@@ -367,6 +380,58 @@ class _AuthCardState extends State<AuthCard> {
                             : null,
                       );
                     }),
+                  if (_authMode != AuthMode.Signup)
+                    Row(children: <Widget>[
+                      Expanded(
+                        child: new Container(
+                            margin: const EdgeInsets.only(left: 10.0, right: 20.0),
+                            child: Divider(
+                              color: Colors.black,
+                              height: 36,
+                            )),
+                      ),
+                      Text("OR"),
+                      Expanded(
+                        child: new Container(
+                            margin: const EdgeInsets.only(left: 20.0, right: 10.0),
+                            child: Divider(
+                              color: Colors.black,
+                              height: 36,
+                            )),
+                      ),
+                    ]),
+                  if (_authMode != AuthMode.Signup)
+                    TextFormField(
+                      key: const Key('inputApitoken'),
+                      decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context).apitoken,
+                        errorMaxLines: 2,
+                        prefixIcon: const Icon(Icons.password),
+                      ),
+                      // autofillHints: const [AutofillHints.apitoken],
+                      controller: _apitokenController,
+                      textInputAction: TextInputAction.next,
+                      keyboardType: TextInputType.emailAddress,
+                      validator: (value) {
+                        if(!_usernameController.text.isEmpty || !_passwordController.text.isEmpty) {
+                            return null;
+                        }
+                        if (value == null || value.isEmpty) {
+                          return AppLocalizations.of(context).invalidApitoken;
+                        }
+                        if (!RegExp(r'^[a-f0-9]{40}$').hasMatch(value)) {
+                          return AppLocalizations.of(context).apitokenValidChars;
+                        }
+
+                        return null;
+                      },
+                      inputFormatters: [
+                        FilteringTextInputFormatter.deny(RegExp(r'\s\b|\b\s')),
+                      ],
+                      onSaved: (value) {
+                        _authData['apitoken'] = value!;
+                      },
+                    ),
                   // Off-stage widgets are kept in the tree, otherwise the server URL
                   // would not be saved to _authData
                   Offstage(

@@ -48,6 +48,7 @@ class AuthProvider with ChangeNotifier {
   static const SERVER_VERSION_URL = 'version';
   static const REGISTRATION_URL = 'register';
   static const LOGIN_URL = 'login';
+  static const TEST_URL = 'userprofile';
 
   late http.Client client;
 
@@ -129,7 +130,7 @@ class AuthProvider with ChangeNotifier {
       throw WgerHttpException(response.body);
     }
 
-    return login(username, password, serverUrl);
+    return login(username, password, serverUrl, null);
   }
 
   /// Authenticates a user
@@ -137,21 +138,43 @@ class AuthProvider with ChangeNotifier {
     String username,
     String password,
     String serverUrl,
+    String? apiToken,
   ) async {
     await logout(shouldNotify: false);
 
-    final response = await client.post(
-      makeUri(serverUrl, LOGIN_URL),
-      headers: {
-        HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
-        HttpHeaders.userAgentHeader: getAppNameHeader(),
-      },
-      body: json.encode({'username': username, 'password': password}),
-    );
-    final responseData = json.decode(response.body);
+    String token;
 
-    if (response.statusCode >= 400) {
-      throw WgerHttpException(response.body);
+    if (apiToken != null) {
+      final response = await client.get(
+        makeUri(serverUrl, TEST_URL),
+        headers: {
+          HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
+          HttpHeaders.userAgentHeader: getAppNameHeader(),
+          HttpHeaders.authorizationHeader: 'Token ${apiToken}',
+        },
+      );
+
+      if (response.statusCode != 200) {
+        throw WgerHttpException(response.body);
+      }
+
+      token = apiToken;
+    } else {
+      final response = await client.post(
+        makeUri(serverUrl, LOGIN_URL),
+        headers: {
+          HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
+          HttpHeaders.userAgentHeader: getAppNameHeader(),
+        },
+        body: json.encode({'username': username, 'password': password}),
+      );
+      final responseData = json.decode(response.body);
+
+      if (response.statusCode >= 400) {
+        throw WgerHttpException(response.body);
+      }
+
+      token = responseData['token'];
     }
 
     await initVersions(serverUrl);
@@ -162,7 +185,6 @@ class AuthProvider with ChangeNotifier {
     }
 
     // Log user in
-    token = responseData['token'];
     notifyListeners();
 
     // store login data in shared preferences
