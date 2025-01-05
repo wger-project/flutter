@@ -371,13 +371,13 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
   var _showDetail = false;
   bool _hasContent = false;
 
-  Routine? _workoutPlan;
+  Routine? _routine;
 
   @override
   void initState() {
     super.initState();
-    _workoutPlan = context.read<RoutinesProvider>().activePlan;
-    _hasContent = _workoutPlan != null;
+    _routine = context.read<RoutinesProvider>().activeRoutine;
+    _hasContent = _routine != null;
   }
 
   List<Widget> getContent() {
@@ -387,7 +387,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
       return out;
     }
 
-    for (final dayData in _workoutPlan!.dayDataCurrentIteration) {
+    for (final dayData in _routine!.dayDataCurrentIteration) {
       out.add(SizedBox(
         width: double.infinity,
         child: Row(
@@ -415,7 +415,10 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                 icon: const Icon(Icons.play_arrow),
                 color: wgerPrimaryButtonColor,
                 onPressed: () {
-                  Navigator.of(context).pushNamed(GymModeScreen.routeName, arguments: dayData);
+                  Navigator.of(context).pushNamed(
+                    GymModeScreen.routeName,
+                    arguments: GymModeArguments(_routine!.id!, dayData.day!.id!, dayData.iteration),
+                  );
                 },
               ),
           ],
@@ -464,13 +467,13 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
         children: [
           ListTile(
             title: Text(
-              _hasContent ? _workoutPlan!.name : AppLocalizations.of(context).labelWorkoutPlan,
+              _hasContent ? _routine!.name : AppLocalizations.of(context).labelWorkoutPlan,
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             subtitle: Text(
               _hasContent
                   ? DateFormat.yMd(Localizations.localeOf(context).languageCode)
-                      .format(_workoutPlan!.created)
+                      .format(_routine!.created)
                   : '',
             ),
             leading: Icon(
@@ -509,7 +512,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                   onPressed: () {
                     Navigator.of(context).pushNamed(
                       RoutineScreen.routeName,
-                      arguments: _workoutPlan,
+                      arguments: _routine,
                     );
                   },
                 ),

@@ -246,9 +246,9 @@ class MockRoutinesProvider extends _i1.Mock implements _i12.RoutinesProvider {
       );
 
   @override
-  void resetCurrentPlan() => super.noSuchMethod(
+  void resetCurrentRoutine() => super.noSuchMethod(
         Invocation.method(
-          #resetCurrentPlan,
+          #resetCurrentRoutine,
           [],
         ),
         returnValueForMissingStub: null,

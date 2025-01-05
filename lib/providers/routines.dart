@@ -41,7 +41,7 @@ class RoutinesProvider with ChangeNotifier {
   static const _routinesUrlPath = 'routine';
   static const _routinesStructureSubpath = 'structure';
   static const _routinesDateSequenceDisplaySubpath = 'date-sequence-display';
-  static const _routinesDateSequenceGymSubpath = 'date-sequence-display';
+  static const _routinesDateSequenceGymSubpath = 'date-sequence-gym';
   static const _routinesCurrentIterationDisplaySubpath = 'current-iteration-display';
   static const _routinesCurrentIterationGymSubpath = 'current-iteration-gym';
   static const _daysUrlPath = 'day';
@@ -104,11 +104,11 @@ class RoutinesProvider with ChangeNotifier {
   }
 
   Routine findById(int id) {
-    return _routines.firstWhere((workoutPlan) => workoutPlan.id == id);
+    return _routines.firstWhere((routine) => routine.id == id);
   }
 
   int findIndexById(int id) {
-    return _routines.indexWhere((workoutPlan) => workoutPlan.id == id);
+    return _routines.indexWhere((routine) => routine.id == id);
   }
 
   /// Set the currently "active" workout plan
@@ -122,13 +122,13 @@ class RoutinesProvider with ChangeNotifier {
   }
 
   /// Reset the currently "active" workout plan to null
-  void resetCurrentPlan() {
+  void resetCurrentRoutine() {
     _currentPlan = null;
   }
 
   /// Returns the current active workout plan. At the moment this is just
   /// the latest, but this might change in the future.
-  Routine? get activePlan {
+  Routine? get activeRoutine {
     if (_routines.isNotEmpty) {
       return _routines.first;
     }
@@ -136,7 +136,7 @@ class RoutinesProvider with ChangeNotifier {
   }
 
   /*
-   * Workouts
+   * Routines
    */
 
   /// Fetches and sets all workout plans fully, i.e. with all corresponding child
@@ -254,8 +254,8 @@ class RoutinesProvider with ChangeNotifier {
 
     final dayData = results[1] as List<dynamic>;
     final dayDataGym = results[2] as List<dynamic>;
-    final currentIterationDisplayData = results[3] as List<dynamic>;
-    final currentIterationGymData = results[4] as List<dynamic>;
+    final currentIterationDayData = results[3] as List<dynamic>;
+    final currentIterationDayDataGym = results[4] as List<dynamic>;
     final logData = results[5] as List<dynamic>;
 
     /*
@@ -269,13 +269,13 @@ class RoutinesProvider with ChangeNotifier {
     final dayDataEntriesGym = dayDataGym.map((entry) => DayData.fromJson(entry)).toList();
     setExercisesAndUnits(dayDataEntriesGym);
 
-    final currentIterationDayDataEntries =
-        currentIterationDisplayData.map((entry) => DayData.fromJson(entry)).toList();
-    setExercisesAndUnits(currentIterationDayDataEntries);
+    final currentIteration =
+        currentIterationDayData.map((entry) => DayData.fromJson(entry)).toList();
+    setExercisesAndUnits(currentIteration);
 
-    final currentIterationDayDataEntriesGym =
-        currentIterationGymData.map((entry) => DayData.fromJson(entry)).toList();
-    setExercisesAndUnits(currentIterationDayDataEntriesGym);
+    final currentIterationGym =
+        currentIterationDayDataGym.map((entry) => DayData.fromJson(entry)).toList();
+    setExercisesAndUnits(currentIterationGym);
 
     for (final day in routine.days) {
       for (final slot in day.slots) {
@@ -293,8 +293,8 @@ class RoutinesProvider with ChangeNotifier {
 
     routine.dayData = dayDataEntriesDisplay;
     routine.dayDataGym = dayDataEntriesGym;
-    routine.dayDataCurrentIteration = currentIterationDayDataEntries;
-    routine.dayDataCurrentIterationGym = currentIterationDayDataEntriesGym;
+    routine.dayDataCurrentIteration = currentIteration;
+    routine.dayDataCurrentIterationGym = currentIterationGym;
 
     // Logs
     routine.logs = [];
@@ -314,8 +314,11 @@ class RoutinesProvider with ChangeNotifier {
 
     // ... and done
     final routineIndex = _routines.indexWhere((r) => r.id == routineId);
-    _routines[routineIndex] = routine;
-    // _routines.replaceRange(routineIndex, routineIndex + 1, [routine]);
+    if (routineIndex != -1) {
+      _routines[routineIndex] = routine;
+    } else {
+      _routines.add(routine);
+    }
 
     notifyListeners();
     return routine;

@@ -76,7 +76,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
     final authProvider = context.read<AuthProvider>();
 
     if (!authProvider.dataInit) {
-      final workoutPlansProvider = context.read<RoutinesProvider>();
+      final routinesProvider = context.read<RoutinesProvider>();
       final nutritionPlansProvider = context.read<NutritionPlansProvider>();
       final exercisesProvider = context.read<ExercisesProvider>();
       final galleryProvider = context.read<GalleryProvider>();
@@ -90,7 +90,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
         await Future.wait([
           authProvider.setServerVersion(),
           userProvider.fetchAndSetProfile(),
-          workoutPlansProvider.fetchAndSetUnits(),
+          routinesProvider.fetchAndSetUnits(),
           nutritionPlansProvider.fetchIngredientsFromCache(),
           exercisesProvider.fetchAndSetInitialData(),
         ]);
@@ -105,8 +105,8 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
         await Future.wait([
           galleryProvider.fetchAndSetGallery(),
           nutritionPlansProvider.fetchAndSetAllPlansSparse(),
-          workoutPlansProvider.fetchAndSetAllPlansSparse(),
-          // workoutPlansProvider.fetchAndSetAllPlansFull(),
+          routinesProvider.fetchAndSetAllPlansSparse(),
+          // routinesProvider.fetchAndSetAllRoutinesFull(),
           weightProvider.fetchAndSetEntries(),
           measurementProvider.fetchAndSetAllCategoriesAndEntries(),
         ]);
@@ -129,10 +129,10 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
 
       // Current workout plan
       log('Loading current workout plan');
-      if (workoutPlansProvider.activePlan != null) {
-        final planId = workoutPlansProvider.activePlan!.id!;
-        await workoutPlansProvider.fetchAndSetRoutineFull(planId);
-        workoutPlansProvider.setCurrentPlan(planId);
+      if (routinesProvider.activeRoutine != null) {
+        final planId = routinesProvider.activeRoutine!.id!;
+        await routinesProvider.fetchAndSetRoutineFull(planId);
+        routinesProvider.setCurrentPlan(planId);
       }
     }
 

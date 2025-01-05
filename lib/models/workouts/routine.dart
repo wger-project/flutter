@@ -110,8 +110,8 @@ class Routine {
   /// means here that the values are the same, i.e. logs with the same weight,
   /// reps, etc. are considered equal. Workout ID, Log ID and date are not
   /// considered.
-  List<Log> filterLogsByExerciseBase(Exercise exerciseBase, {bool unique = false}) {
-    var out = logs.where((element) => element.exerciseId == exerciseBase.id).toList();
+  List<Log> filterLogsByExercise(Exercise exercise, {bool unique = false}) {
+    var out = logs.where((element) => element.exerciseId == exercise.id).toList();
 
     if (unique) {
       out = out.toSet().toList();

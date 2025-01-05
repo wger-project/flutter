@@ -24,7 +24,7 @@ import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/routines/app_bar.dart';
 import 'package:wger/widgets/routines/forms/routine.dart';
-import 'package:wger/widgets/routines/workout_plans_list.dart';
+import 'package:wger/widgets/routines/routines_list.dart';
 
 class RoutineListScreen extends StatelessWidget {
   const RoutineListScreen();
@@ -49,7 +49,7 @@ class RoutineListScreen extends StatelessWidget {
         child: const Icon(Icons.add, color: Colors.white),
       ),
       body: Consumer<RoutinesProvider>(
-        builder: (context, workoutProvider, child) => WorkoutPlansList(workoutProvider),
+        builder: (context, workoutProvider, child) => RoutinesList(workoutProvider),
       ),
     );
   }

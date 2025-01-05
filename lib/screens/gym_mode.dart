@@ -18,9 +18,16 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/widgets/routines/gym_mode.dart';
+
+class GymModeArguments {
+  final int routineId;
+  final int dayId;
+  final int iteration;
+
+  const GymModeArguments(this.routineId, this.dayId, this.iteration);
+}
 
 class GymModeScreen extends StatelessWidget {
   const GymModeScreen();
@@ -29,12 +36,18 @@ class GymModeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final day = ModalRoute.of(context)!.settings.arguments as DayData;
+    final args = ModalRoute.of(context)!.settings.arguments as GymModeArguments;
+
+    final routinesProvider = context.read<RoutinesProvider>();
+    final routine = routinesProvider.findById(args.routineId);
+    final dayData = routine.dayDataGym
+        .where((e) => e.iteration == args.iteration && e.day?.id == args.dayId)
+        .first;
 
     return Scaffold(
       body: SafeArea(
         child: Consumer<RoutinesProvider>(
-          builder: (context, value, child) => GymMode(day),
+          builder: (context, value, child) => GymMode(dayData),
         ),
       ),
     );

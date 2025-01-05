@@ -510,7 +510,7 @@ class _LogPageState extends State<LogPage> {
           style: Theme.of(context).textTheme.titleLarge,
           textAlign: TextAlign.center,
         ),
-        ...widget._workoutPlan.filterLogsByExerciseBase(widget._exercise, unique: true).map((log) {
+        ...widget._workoutPlan.filterLogsByExercise(widget._exercise, unique: true).map((log) {
           return ListTile(
             title: Text(log.singleLogRepTextNoNl),
             subtitle: Text(
@@ -543,7 +543,7 @@ class _LogPageState extends State<LogPage> {
 
   Widget getPlates() {
     final plates = plateCalculator(
-      double.parse(_weightController.text),
+      double.parse(_weightController.text == '' ? '0' : _weightController.text),
       BAR_WEIGHT,
       AVAILABLE_PLATES,
     );
@@ -623,7 +623,7 @@ class _LogPageState extends State<LogPage> {
           Text(widget._slotData.comment, textAlign: TextAlign.center),
         const SizedBox(height: 10),
         Expanded(
-          child: (widget._workoutPlan.filterLogsByExerciseBase(widget._exercise).isNotEmpty)
+          child: (widget._workoutPlan.filterLogsByExercise(widget._exercise).isNotEmpty)
               ? getPastLogs()
               : Container(),
         ),

@@ -24,16 +24,15 @@ import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/routine_screen.dart';
 import 'package:wger/widgets/core/text_prompt.dart';
 
-class WorkoutPlansList extends StatelessWidget {
+class RoutinesList extends StatelessWidget {
   final RoutinesProvider _routineProvider;
 
-  const WorkoutPlansList(this._routineProvider);
+  const RoutinesList(this._routineProvider);
 
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
       onRefresh: () => _routineProvider.fetchAndSetAllRoutinesFull(),
-      // onRefresh: () => _workoutProvider.fetchAndSetAllPlansSparse(),
       child: _routineProvider.items.isEmpty
           ? const TextPrompt()
           : ListView.builder(
@@ -56,9 +55,8 @@ class WorkoutPlansList extends StatelessWidget {
                     },
                     title: Text(currentWorkout.name),
                     subtitle: Text(
-                      DateFormat.yMd(
-                        Localizations.localeOf(context).languageCode,
-                      ).format(currentWorkout.created),
+                      '${DateFormat.yMd(Localizations.localeOf(context).languageCode).format(currentWorkout.start)}'
+                      ' - ${DateFormat.yMd(Localizations.localeOf(context).languageCode).format(currentWorkout.end)}',
                     ),
                     trailing: Row(mainAxisSize: MainAxisSize.min, children: [
                       const VerticalDivider(),
