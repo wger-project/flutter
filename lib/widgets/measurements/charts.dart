@@ -26,20 +26,22 @@ class MeasurementOverallChangeWidget extends StatelessWidget {
   final MeasurementChartEntry _first;
   final MeasurementChartEntry _last;
   final String _unit;
+
   const MeasurementOverallChangeWidget(this._first, this._last, this._unit);
 
   @override
   Widget build(BuildContext context) {
     final delta = _last.value - _first.value;
-    final prefix = delta > 0
-        ? '+'
-        : delta < 0
-            ? '-'
-            : '';
+    String prefix = '';
+    if (delta > 0) {
+      prefix = '+';
+    } else if (delta < 0) {
+      prefix = '-';
+    }
 
     // ignore: prefer_interpolation_to_compose_strings
     return Text(AppLocalizations.of(context).overallChangeWeight +
-        '$prefix ${delta.abs().toStringAsFixed(1)} $_unit');
+        ' $prefix${delta.abs().toStringAsFixed(1)} $_unit');
   }
 }
 
@@ -82,10 +84,7 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
 
             return LineTooltipItem(
               '$dateStr: ${touchedSpot.y.toStringAsFixed(1)} ${widget._unit}',
-              TextStyle(
-                color: touchedSpot.bar.color,
-                fontWeight: FontWeight.bold,
-              ),
+              TextStyle(color: touchedSpot.bar.color),
             );
           }).toList();
         },
@@ -158,7 +157,7 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
                 return const Text('');
               }
 
-              return Text('$value ${widget._unit}');
+              return Text('${value.toStringAsFixed(1)} ${widget._unit}');
             },
           ),
         ),
@@ -206,7 +205,7 @@ class MeasurementChartEntry {
   MeasurementChartEntry(this.value, this.date);
 }
 
-// for each point, return the average of all the points in the 7 days preceeding it
+// for each point, return the average of all the points in the 7 days preceding it
 List<MeasurementChartEntry> moving7dAverage(List<MeasurementChartEntry> vals) {
   var start = 0;
   var end = 0;

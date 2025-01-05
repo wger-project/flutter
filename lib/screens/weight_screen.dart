@@ -51,7 +51,7 @@ class WeightScreen extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Consumer<BodyWeightProvider>(
-          builder: (context, workoutProvider, child) => const WeightOverview(),
+          builder: (context, provider, child) => WeightOverview(provider),
         ),
       ),
     );

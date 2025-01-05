@@ -7,9 +7,13 @@ allprojects {
 
 rootProject.buildDir = '../build'
 
-subprojects {
 
-    // Workaround for APK builds - https://github.com/flutter/flutter/issues/153281
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+
+// Workaround for APK builds - https://github.com/flutter/flutter/issues/153281
+subprojects {
     afterEvaluate { project ->
         if (project.extensions.findByName("android") != null) {
             Integer pluginCompileSdk = project.android.compileSdk
@@ -25,13 +29,39 @@ subprojects {
                                 + " to increase their compileSdk to the latest (otherwise try updating to the latest version)."
                 )
                 project.android {
-                    compileSdk 31
+                    compileSdk 34
                 }
             }
         }
     }
+}
 
-    project.buildDir = "${rootProject.buildDir}/${project.name}"
+// Workaround for " Could not create an instance of type com.android.build.api.variant.impl.LibraryVariantBuilderImpl." error
+// Note that this instance seems to be caused by flutter_barcode_scanner, which hasn't been
+// updated in three years, might be time to look for a different package
+subprojects {
+    afterEvaluate { project ->
+        if (project.hasProperty('android')) {
+            project.android {
+                if (namespace == null) {
+                    project.logger.error(
+                            "Warning: project "
+                                    + project.name
+                                    + " has no namespace set, this will prevent compilation, "
+                                    + " setting one now to "
+                                    + project.group
+                                    + "\nIf there is not a new version of " + project.name + ", consider filing an issue against "
+                                    + project.name
+                    )
+
+                    namespace project.group
+                }
+            }
+        }
+    }
+}
+
+subprojects {
     project.evaluationDependsOn(':app')
 }
 

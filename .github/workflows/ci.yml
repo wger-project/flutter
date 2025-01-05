@@ -20,10 +20,13 @@ jobs:
         with:
           cache: true
           channel: 'stable'
-          flutter-version: '3.24.x'
+          flutter-version: '3.27.x'
 
       - run: dart --version
       - run: flutter --version
+
+      - name: Install sqlite3-dev
+        run: sudo apt install libsqlite3-dev
 
       - name: Install app dependencies
         run: flutter pub get
