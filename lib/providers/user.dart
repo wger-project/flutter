@@ -19,6 +19,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:path/path.dart';
 import 'package:wger/models/user/profile.dart';
 import 'package:wger/providers/base_provider.dart';
 
@@ -35,7 +37,15 @@ class UserProvider with ChangeNotifier {
   void clear() {
     profile = null;
   }
-
+  // change the unit of plates
+  void unitChange(){
+    if(profile?.weightUnitStr == 'kg'){
+      profile?.weightUnitStr = 'lb';
+    }else{
+      profile?.weightUnitStr = 'kg';
+    }
+    ChangeNotifier();
+  }
   /// Fetch the current user's profile
   Future<void> fetchAndSetProfile() async {
     final userData = await baseProvider.fetch(baseProvider.makeUrl(PROFILE_URL));

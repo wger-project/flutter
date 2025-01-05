@@ -18,6 +18,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/core/locator.dart';
 import 'package:wger/providers/add_exercise.dart';
 import 'package:wger/providers/base_provider.dart';
@@ -57,10 +58,8 @@ import 'providers/auth.dart';
 
 void main() async {
   //zx.setLogEnabled(kDebugMode);
-  
   // Needs to be called before runApp
   WidgetsFlutterBinding.ensureInitialized();
-
   // Locator to initialize exerciseDB
   await ServiceLocator().configure();
   // Application

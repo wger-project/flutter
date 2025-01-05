@@ -16,12 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/gym_mode.dart';
@@ -262,15 +264,15 @@ class _LogPageState extends State<LogPage> {
   late FocusNode focusNode;
 
   @override
-  void initState() {
+  void initState(){
     super.initState();
-
+    // WidgetsBinding.instance.addPostFrameCallback((_){
+    //   Provider.of<PlateWeights>(context,listen: false).readPlates();
+    // });
     focusNode = FocusNode();
-
     if (widget._setting.reps != null) {
       _repsController.text = widget._setting.reps.toString();
     }
-
     if (widget._setting.weight != null) {
       _weightController.text = widget._setting.weight.toString();
     }
@@ -555,71 +557,68 @@ class _LogPageState extends State<LogPage> {
   }
 
   Widget getPlates() {
+    print('get plates');
     final plates = plateCalculator(num.parse(_weightController.text),BAR_WEIGHT,AVAILABLE_PLATES);
     Map<num,int> groupedPlates;
     groupedPlates = groupPlates(plates);
-    return Consumer<PlateWeights>(builder: (context,plateProvider, child) =>
-      SingleChildScrollView(
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(onPressed: () {
-                      plateProvider.flag=false;
-                      plateProvider.setWeight(num.parse(_weightController.text));
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const AddPlateWeights()));
-                    },
-                    child: const Text("Enter custom Denomination's")
-                  ),
-                    const Padding(padding: EdgeInsets.all(10)),
-                ],
-            ),
-            SizedBox (
-              height: 35,
-                child: (plateProvider.flag?plateProvider.selectedWeights.isNotEmpty:plates.isNotEmpty)
-                 ? Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text ('Plates:-',style: TextStyle(),),
-                        ...(plateProvider.flag?plateProvider.grouped:groupedPlates).keys.map(
-                        (key) => Row (
-                          children: [
-                            Text(plateProvider.flag?(plateProvider.grouped[key].toString()):(groupedPlates[key].toString())),
-                              const Text('×'),
-                                Container (
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(context).colorScheme.primaryContainer,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Padding (
-                                    padding: const EdgeInsets.symmetric(horizontal: 3),
-                                    child: SizedBox (
-                                      height: 35,
-                                      width: 35,
-                                      child: Align (
-                                        alignment: Alignment.center,
-                                        child: Text (
-                                          key.toString(),
-                                          style: const TextStyle(fontWeight: FontWeight.bold,),
+    return Consumer<PlateWeights>(
+      builder: (context, plateProvider , child)=>
+        SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox (
+                height: 35,
+                  child: (plateProvider.plateChoiceExists?plateProvider.selectedWeights.isNotEmpty:plates.isNotEmpty)
+                   ? Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          IconButton(
+                            onPressed: (){
+                              plateProvider.plateChoiceExists=false;
+                              plateProvider.setWeight(num.parse(_weightController.text));
+                              Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const AddPlateWeights()));
+                            }, 
+                            icon: const Icon(Icons.settings),
+                          ),
+                          const Text ('Plates:-',style: TextStyle(),),
+                          ...(plateProvider.plateChoiceExists?plateProvider.grouped:groupedPlates).keys.map(
+                          (key) => Row (
+                            children: [
+                              Text(plateProvider.plateChoiceExists?(plateProvider.grouped[key].toString()):(groupedPlates[key].toString())),
+                                const Text('×'),
+                                  Container (
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(context).colorScheme.primaryContainer,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Padding (
+                                      padding: const EdgeInsets.symmetric(horizontal: 3),
+                                      child: SizedBox (
+                                        height: 35,
+                                        width: 35,
+                                        child: Align (
+                                          alignment: Alignment.center,
+                                          child: Text (
+                                            key.toString(),
+                                            style: const TextStyle(fontWeight: FontWeight.bold,),
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
+                                  const SizedBox(width: 10),
+                                  ],
                                 ),
-                                const SizedBox(width: 10),
-                                ],
                               ),
+                            ],
+                          )
+                          : MutedText (
+                              AppLocalizations.of(context).plateCalculatorNotDivisible,
                             ),
-                          ],
-                        )
-                        : MutedText (
-                            AppLocalizations.of(context).plateCalculatorNotDivisible,
-                          ),
-            ),
-          ],
+              ),
+            ],
+          ),
         ),
-      ),
     );
   }
 

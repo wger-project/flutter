@@ -1,4 +1,5 @@
 {
   "dart.lineLength": 100,
   "diffEditor.ignoreTrimWhitespace": true,
+  "cmake.sourceDirectory": "/Users/ayush/flutter/linux",
 }
