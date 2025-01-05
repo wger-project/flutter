@@ -48,10 +48,10 @@ import 'package:wger/widgets/routines/forms/rir.dart';
 import 'package:wger/widgets/routines/forms/weight_unit.dart';
 
 class GymMode extends StatefulWidget {
-  final DayData _DayData;
+  final DayData _dayData;
   late final TimeOfDay _start;
 
-  GymMode(this._DayData) {
+  GymMode(this._dayData) {
     _start = TimeOfDay.now();
   }
 
@@ -77,7 +77,7 @@ class _GymModeState extends State<GymMode> {
     super.initState();
     // Calculate amount of elements for progress indicator
 
-    for (final slot in widget._DayData.slots) {
+    for (final slot in widget._dayData.slots) {
       _totalElements += slot.setConfigs.length;
     }
     // Calculate the pages for the navigation
@@ -85,7 +85,7 @@ class _GymModeState extends State<GymMode> {
     // This duplicates the code below in the getContent method, but it seems to
     // be the easiest way
     var currentPage = 1;
-    for (final slot in widget._DayData.slots) {
+    for (final slot in widget._dayData.slots) {
       var firstPage = true;
       for (final config in slot.setConfigs) {
         final exercise = Provider.of<ExercisesProvider>(context, listen: false)
@@ -113,7 +113,7 @@ class _GymModeState extends State<GymMode> {
     var currentElement = 1;
     final List<Widget> out = [];
 
-    for (final slotData in widget._DayData.slots) {
+    for (final slotData in widget._dayData.slots) {
       var firstPage = true;
       for (final config in slotData.setConfigs) {
         final ratioCompleted = currentElement / _totalElements;
@@ -134,7 +134,7 @@ class _GymModeState extends State<GymMode> {
           config,
           slotData,
           exercise,
-          workoutProvider.findById(widget._DayData.day!.routineId),
+          workoutProvider.findById(widget._dayData.day!.routineId),
           ratioCompleted,
           _exercisePages,
         ));
@@ -151,11 +151,11 @@ class _GymModeState extends State<GymMode> {
     return PageView(
       controller: _controller,
       children: [
-        StartPage(_controller, widget._DayData.day!, _exercisePages),
+        StartPage(_controller, widget._dayData.day!, _exercisePages),
         ...getContent(),
         SessionPage(
           Provider.of<RoutinesProvider>(context, listen: false)
-              .findById(widget._DayData.day!.routineId),
+              .findById(widget._dayData.day!.routineId),
           _controller,
           widget._start,
           _exercisePages,
@@ -197,7 +197,7 @@ class StartPage extends StatelessWidget {
                                 .name,
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
-                          ...slot.getSmartRepr(entry.exerciseObj).map((e) => Text(e)),
+                          const Text('TODO'),
                           const SizedBox(height: 15),
                         ],
                       );

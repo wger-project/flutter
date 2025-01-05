@@ -105,11 +105,6 @@ class Log {
   }
 
   /// Returns the text representation for a single setting, used in the gym mode
-  String get singleLogRepText {
-    return repText(reps, repetitionUnitObj, weight, weightUnitObj, rir);
-  }
-
-  /// Returns the text representation for a single setting, used in the gym mode
   String get singleLogRepTextNoNl {
     return repText(reps, repetitionUnitObj, weight, weightUnitObj, rir).replaceAll('\n', '');
   }

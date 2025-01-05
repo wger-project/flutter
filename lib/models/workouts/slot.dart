@@ -50,11 +50,6 @@ class Slot {
   @JsonKey(required: false, includeFromJson: true, defaultValue: [], includeToJson: false)
   List<SlotEntry> entries = [];
 
-  /// Computed settings (instead of 4x10 this has [10, 10, 10, 10]), used for
-  /// the gym mode where the individual values are used
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  List<SlotEntry> settingsComputed = [];
-
   Slot({
     required this.id,
     required this.day,
@@ -84,23 +79,6 @@ class Slot {
     }
   }
 
-  /// Return only one setting object per exercise, this makes rendering workout
-  /// plans easier and the gym mode uses the synthetic settings anyway.
-  List<SlotEntry> get settingsFiltered {
-    final List<SlotEntry> out = [];
-
-    for (final setting in entries) {
-      final foundSettings = out.where(
-        (element) => element.exerciseId == setting.exerciseId,
-      );
-
-      if (foundSettings.isEmpty) {
-        out.add(setting);
-      }
-    }
-    return out;
-  }
-
   void addExerciseBase(Exercise base) {
     exercisesObj.add(base);
     exercisesIds.add(base.id!);
@@ -111,37 +89,8 @@ class Slot {
     exercisesIds.removeWhere((e) => e == base.id);
   }
 
-  /// Returns all settings for the given exercise
-  List<SlotEntry> filterSettingsByExercise(Exercise exerciseBase) {
-    return entries.where((element) => element.exerciseId == exerciseBase.id).toList();
-  }
-
-  /// Returns a list with all repetitions for the given exercise
-  List<String> getSmartRepr(Exercise exerciseBase) {
-    final List<String> out = [];
-
-    final settingList = filterSettingsByExercise(exerciseBase);
-
-    if (settingList.isEmpty) {
-      out.add('');
-    }
-
-    if (settingList.length == 1) {
-      out.add(settingList.first.singleSettingRepText.replaceAll('\n', ''));
-    }
-
-    if (settingList.length > 1) {
-      for (final setting in settingList) {
-        out.add(setting.singleSettingRepText.replaceAll('\n', ''));
-      }
-    }
-
-    return out;
-  }
-
-  /// Returns a string with all repetitions for the given exercise
-  String getSmartTextRepr(Exercise exerciseBase) {
-    return getSmartRepr(exerciseBase).join(' – ');
+  bool get isSuperset {
+    return exercisesObj.length > 1;
   }
 
   // Boilerplate

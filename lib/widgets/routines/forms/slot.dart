@@ -286,9 +286,7 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
-
     final provider = context.read<RoutinesProvider>();
-
     final languageCode = Localizations.localeOf(context).languageCode;
 
     return Column(
@@ -296,8 +294,7 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
         if (!widget.day.isRest)
           SwitchListTile(
             value: simpleMode,
-            title: const Text('Simple edit mode'),
-            subtitle: const Text('Hides some more advanced fields when editing'),
+            title: Text(i18n.simpleMode),
             contentPadding: const EdgeInsets.all(4),
             onChanged: (value) {
               setState(() {
@@ -320,7 +317,9 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
               child: Column(
                 children: [
                   ListTile(
-                    title: Text(i18n.exerciseNr(index + 1)),
+                    title: slot.isSuperset
+                        ? Text(i18n.supersetNr(index + 1))
+                        : Text(i18n.exerciseNr(index + 1)),
                     tileColor: isCurrentSlotSelected ? Theme.of(context).highlightColor : null,
                     leading: selectedSlotId == null
                         ? ReorderableDragStartListener(

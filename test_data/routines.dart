@@ -92,7 +92,6 @@ Routine getWorkout({List<Exercise>? exercises}) {
   );
   setBenchPress.addExerciseBase(testBases[0]);
   setBenchPress.entries.add(settingBenchPress);
-  setBenchPress.settingsComputed = [settingBenchPress, settingBenchPress];
 
   final settingSquat = SlotEntry(
     slotId: 2,
@@ -112,7 +111,6 @@ Routine getWorkout({List<Exercise>? exercises}) {
   final setSquat = Slot.withData(id: 2, day: 1, order: 1);
   setSquat.addExerciseBase(testBases[4]);
   setSquat.entries.add(settingSquat);
-  setSquat.settingsComputed = [settingSquat, settingSquat];
 
   final settingSideRaises = SlotEntry(
     slotId: 2,
@@ -133,7 +131,6 @@ Routine getWorkout({List<Exercise>? exercises}) {
   final setSideRaises = Slot.withData(id: 3, day: 1, order: 1);
   setSideRaises.addExerciseBase(testBases[5]);
   setSideRaises.entries.add(settingSideRaises);
-  setSideRaises.settingsComputed = [settingSideRaises, settingSideRaises];
 
   final dayChestShoulders = Day()
     ..id = 1
