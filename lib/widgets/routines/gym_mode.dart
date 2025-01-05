@@ -27,7 +27,6 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/gym_mode.dart';
 import 'package:wger/helpers/i18n.dart';
 import 'package:wger/helpers/json.dart';
-import 'package:wger/helpers/misc.dart';
 import 'package:wger/helpers/ui.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day.dart';
@@ -35,7 +34,8 @@ import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/session.dart';
-import 'package:wger/models/workouts/slot.dart';
+import 'package:wger/models/workouts/set_config_data.dart';
+import 'package:wger/models/workouts/slot_data.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/routines.dart';
@@ -76,23 +76,23 @@ class _GymModeState extends State<GymMode> {
   void initState() {
     super.initState();
     // Calculate amount of elements for progress indicator
-    for (final set in widget._DayData.day!.slots) {
-      _totalElements = _totalElements + set.settingsComputed.length;
+
+    for (final slot in widget._DayData.slots) {
+      _totalElements += slot.setConfigs.length;
     }
     // Calculate the pages for the navigation
     //
     // This duplicates the code below in the getContent method, but it seems to
     // be the easiest way
     var currentPage = 1;
-    for (final _ in widget._DayData.slots) {
+    for (final slot in widget._DayData.slots) {
       var firstPage = true;
-      for (final setting in []) {
-        // for (final setting in set.settingsComputed) {
-        final exerciseBase = Provider.of<ExercisesProvider>(context, listen: false)
-            .findExerciseById(setting.exerciseId);
+      for (final config in slot.setConfigs) {
+        final exercise = Provider.of<ExercisesProvider>(context, listen: false)
+            .findExerciseById(config.exerciseId);
 
         if (firstPage) {
-          _exercisePages[exerciseBase] = currentPage;
+          _exercisePages[exercise] = currentPage;
           currentPage++;
         }
 
@@ -113,18 +113,17 @@ class _GymModeState extends State<GymMode> {
     var currentElement = 1;
     final List<Widget> out = [];
 
-    for (final set in widget._DayData.day!.slots) {
+    for (final slotData in widget._DayData.slots) {
       var firstPage = true;
-      for (final setting in []) {
-        // for (final setting in set.settingsComputed) {
+      for (final config in slotData.setConfigs) {
         final ratioCompleted = currentElement / _totalElements;
-        final exerciseBase = exerciseProvider.findExerciseById(setting.exerciseId);
+        final exercise = exerciseProvider.findExerciseById(config.exerciseId);
         currentElement++;
 
         if (firstPage) {
           out.add(ExerciseOverview(
             _controller,
-            exerciseBase,
+            exercise,
             ratioCompleted,
             _exercisePages,
           ));
@@ -132,9 +131,9 @@ class _GymModeState extends State<GymMode> {
 
         out.add(LogPage(
           _controller,
-          setting,
-          set,
-          exerciseBase,
+          config,
+          slotData,
+          exercise,
           workoutProvider.findById(widget._DayData.day!.routineId),
           ratioCompleted,
           _exercisePages,
@@ -186,19 +185,19 @@ class StartPage extends StatelessWidget {
         Expanded(
           child: ListView(
             children: [
-              ..._day.slots.map((set) {
+              ..._day.slots.map((slot) {
                 return Column(
                   children: [
-                    ...set.settingsFiltered.map((s) {
+                    ...slot.entries.map((entry) {
                       return Column(
                         children: [
                           Text(
-                            s.exerciseObj
+                            entry.exerciseObj
                                 .getExercise(Localizations.localeOf(context).languageCode)
                                 .name,
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
-                          ...set.getSmartRepr(s.exerciseObj).map((e) => Text(e)),
+                          ...slot.getSmartRepr(entry.exerciseObj).map((e) => Text(e)),
                           const SizedBox(height: 15),
                         ],
                       );
@@ -226,9 +225,9 @@ class StartPage extends StatelessWidget {
 
 class LogPage extends StatefulWidget {
   final PageController _controller;
-  final SlotEntry _entry;
-  final Slot _set;
-  final Exercise _exerciseBase;
+  final SetConfigData _configData;
+  final SlotData _slotData;
+  final Exercise _exercise;
   final Routine _workoutPlan;
   final double _ratioCompleted;
   final Map<Exercise, int> _exercisePages;
@@ -236,19 +235,19 @@ class LogPage extends StatefulWidget {
 
   LogPage(
     this._controller,
-    this._entry,
-    this._set,
-    this._exerciseBase,
+    this._configData,
+    this._slotData,
+    this._exercise,
     this._workoutPlan,
     this._ratioCompleted,
     this._exercisePages,
   ) {
     _log.date = DateTime.now();
     _log.routineId = _workoutPlan.id!;
-    _log.exerciseBase = _exerciseBase;
-    _log.weightUnit = _entry.weightUnitObj;
-    _log.repetitionUnit = _entry.repetitionUnitObj;
-    _log.rir = _entry.rir;
+    _log.exerciseBase = _exercise;
+    _log.weightUnit = _configData.weightUnit;
+    _log.repetitionUnit = _configData.repsUnit;
+    _log.rir = _configData.rir;
   }
 
   @override
@@ -271,13 +270,13 @@ class _LogPageState extends State<LogPage> {
 
     focusNode = FocusNode();
 
-    // if (widget._entry.reps != null) {
-    _repsController.text = 'widget._entry.reps.toString()';
-    // }
+    if (widget._configData.reps != null) {
+      _repsController.text = widget._configData.reps!.toString();
+    }
 
-    // if (widget._entry.weight != null) {
-    _weightController.text = 'widget._entry.weight.toString()';
-    // }
+    if (widget._configData.weight != null) {
+      _weightController.text = widget._configData.weight!.toString();
+    }
   }
 
   @override
@@ -511,9 +510,7 @@ class _LogPageState extends State<LogPage> {
           style: Theme.of(context).textTheme.titleLarge,
           textAlign: TextAlign.center,
         ),
-        ...widget._workoutPlan
-            .filterLogsByExerciseBase(widget._exerciseBase, unique: true)
-            .map((log) {
+        ...widget._workoutPlan.filterLogsByExerciseBase(widget._exercise, unique: true).map((log) {
           return ListTile(
             title: Text(log.singleLogRepTextNoNl),
             subtitle: Text(
@@ -611,21 +608,22 @@ class _LogPageState extends State<LogPage> {
     return Column(
       children: [
         NavigationHeader(
-          widget._exerciseBase.getExercise(Localizations.localeOf(context).languageCode).name,
+          widget._exercise.getExercise(Localizations.localeOf(context).languageCode).name,
           widget._controller,
           exercisePages: widget._exercisePages,
         ),
         Center(
           child: Text(
-            widget._entry.singleSettingRepText,
+            widget._configData.textRepr,
             style: Theme.of(context).textTheme.headlineMedium,
             textAlign: TextAlign.center,
           ),
         ),
-        if (widget._set.comment != '') Text(widget._set.comment, textAlign: TextAlign.center),
+        if (widget._slotData.comment != '')
+          Text(widget._slotData.comment, textAlign: TextAlign.center),
         const SizedBox(height: 10),
         Expanded(
-          child: (widget._workoutPlan.filterLogsByExerciseBase(widget._exerciseBase).isNotEmpty)
+          child: (widget._workoutPlan.filterLogsByExerciseBase(widget._exercise).isNotEmpty)
               ? getPastLogs()
               : Container(),
         ),

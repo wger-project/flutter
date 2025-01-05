@@ -67,6 +67,9 @@ class Routine {
   List<DayData> dayData = [];
 
   @JsonKey(includeFromJson: false, includeToJson: false)
+  List<DayData> dayDataGym = [];
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
   List<DayData> dayDataCurrentIteration = [];
 
   @JsonKey(includeFromJson: false, includeToJson: false)

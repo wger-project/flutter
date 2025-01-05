@@ -40,7 +40,8 @@ import 'package:wger/providers/exercises.dart';
 class RoutinesProvider with ChangeNotifier {
   static const _routinesUrlPath = 'routine';
   static const _routinesStructureSubpath = 'structure';
-  static const _routinesDateSequenceSubpath = 'date-sequence-display';
+  static const _routinesDateSequenceDisplaySubpath = 'date-sequence-display';
+  static const _routinesDateSequenceGymSubpath = 'date-sequence-display';
   static const _routinesCurrentIterationDisplaySubpath = 'current-iteration-display';
   static const _routinesCurrentIterationGymSubpath = 'current-iteration-gym';
   static const _daysUrlPath = 'day';
@@ -217,7 +218,14 @@ class RoutinesProvider with ChangeNotifier {
         baseProvider.makeUrl(
           _routinesUrlPath,
           id: routineId,
-          objectMethod: _routinesDateSequenceSubpath,
+          objectMethod: _routinesDateSequenceDisplaySubpath,
+        ),
+      ),
+      baseProvider.fetch(
+        baseProvider.makeUrl(
+          _routinesUrlPath,
+          id: routineId,
+          objectMethod: _routinesDateSequenceGymSubpath,
         ),
       ),
       baseProvider.fetch(
@@ -245,23 +253,29 @@ class RoutinesProvider with ChangeNotifier {
     final routine = Routine.fromJson(results[0] as Map<String, dynamic>);
 
     final dayData = results[1] as List<dynamic>;
-    final currentIterationDisplayData = results[2] as List<dynamic>;
-    final currentIterationGymData = results[3] as List<dynamic>;
-    final logData = results[4] as List<dynamic>;
+    final dayDataGym = results[2] as List<dynamic>;
+    final currentIterationDisplayData = results[3] as List<dynamic>;
+    final currentIterationGymData = results[4] as List<dynamic>;
+    final logData = results[5] as List<dynamic>;
 
     /*
      * Set exercise, repetition and weight unit objects
+     *
+     * note that setExercisesAndUnits modifies the list in-place
      */
-    final dayDataEntries = dayData.map((entry) => DayData.fromJson(entry)).toList();
-    setExercisesAndUnits(dayDataEntries); // in-place update
+    final dayDataEntriesDisplay = dayData.map((entry) => DayData.fromJson(entry)).toList();
+    setExercisesAndUnits(dayDataEntriesDisplay);
+
+    final dayDataEntriesGym = dayDataGym.map((entry) => DayData.fromJson(entry)).toList();
+    setExercisesAndUnits(dayDataEntriesGym);
 
     final currentIterationDayDataEntries =
         currentIterationDisplayData.map((entry) => DayData.fromJson(entry)).toList();
-    setExercisesAndUnits(currentIterationDayDataEntries); // in-place update
+    setExercisesAndUnits(currentIterationDayDataEntries);
 
-    // final currentIterationDayDataEntriesGym =
-    //     currentIterationGymData.map((entry) => DayData.fromJson(entry)).toList();
-    // setExercisesAndUnits(currentIterationDayDataEntriesGym); // in-place update
+    final currentIterationDayDataEntriesGym =
+        currentIterationGymData.map((entry) => DayData.fromJson(entry)).toList();
+    setExercisesAndUnits(currentIterationDayDataEntriesGym);
 
     for (final day in routine.days) {
       for (final slot in day.slots) {
@@ -277,9 +291,10 @@ class RoutinesProvider with ChangeNotifier {
       }
     }
 
-    routine.dayData = dayDataEntries;
+    routine.dayData = dayDataEntriesDisplay;
+    routine.dayDataGym = dayDataEntriesGym;
     routine.dayDataCurrentIteration = currentIterationDayDataEntries;
-    // routine.dayDataCurrentIterationGym = currentIterationDayDataEntriesGym;
+    routine.dayDataCurrentIterationGym = currentIterationDayDataEntriesGym;
 
     // Logs
     routine.logs = [];
