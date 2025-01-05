@@ -47,6 +47,9 @@ class BaseConfig {
   @JsonKey(required: true, name: 'need_log_to_apply')
   late bool needLogToApply;
 
+  @JsonKey(required: true, name: 'requirements')
+  late dynamic requirements;
+
   BaseConfig({
     required this.id,
     required this.slotEntryId,
@@ -56,6 +59,7 @@ class BaseConfig {
     required this.operation,
     required this.step,
     required this.needLogToApply,
+    required this.requirements,
   });
 
   BaseConfig.firstIteration(this.value, this.slotEntryId) {
@@ -63,6 +67,7 @@ class BaseConfig {
     operation = 'r';
     step = 'abs';
     needLogToApply = false;
+    requirements = null;
   }
 
   // Boilerplate

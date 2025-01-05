@@ -471,10 +471,10 @@ class MockRoutinesProvider extends _i1.Mock implements _i12.RoutinesProvider {
       ) as _i13.Future<void>);
 
   @override
-  _i13.Future<void> editSlot(_i7.Slot? workoutSet) => (super.noSuchMethod(
+  _i13.Future<void> editSlot(_i7.Slot? slot) => (super.noSuchMethod(
         Invocation.method(
           #editSlot,
-          [workoutSet],
+          [slot],
         ),
         returnValue: _i13.Future<void>.value(),
         returnValueForMissingStub: _i13.Future<void>.value(),
@@ -510,6 +510,16 @@ class MockRoutinesProvider extends _i1.Mock implements _i12.RoutinesProvider {
         Invocation.method(
           #deleteSlotEntry,
           [id],
+        ),
+        returnValue: _i13.Future<void>.value(),
+        returnValueForMissingStub: _i13.Future<void>.value(),
+      ) as _i13.Future<void>);
+
+  @override
+  _i13.Future<void> editSlotEntry(_i8.SlotEntry? entry) => (super.noSuchMethod(
+        Invocation.method(
+          #editSlotEntry,
+          [entry],
         ),
         returnValue: _i13.Future<void>.value(),
         returnValueForMissingStub: _i13.Future<void>.value(),
@@ -615,31 +625,6 @@ class MockRoutinesProvider extends _i1.Mock implements _i12.RoutinesProvider {
         returnValue: _i13.Future<void>.value(),
         returnValueForMissingStub: _i13.Future<void>.value(),
       ) as _i13.Future<void>);
-
-  @override
-  _i13.Future<void> fetchComputedSettings(_i7.Slot? slot) => (super.noSuchMethod(
-        Invocation.method(
-          #fetchComputedSettings,
-          [slot],
-        ),
-        returnValue: _i13.Future<void>.value(),
-        returnValueForMissingStub: _i13.Future<void>.value(),
-      ) as _i13.Future<void>);
-
-  @override
-  _i13.Future<_i8.SlotEntry> addSetting(_i8.SlotEntry? workoutSetting) => (super.noSuchMethod(
-        Invocation.method(
-          #addSetting,
-          [workoutSetting],
-        ),
-        returnValue: _i13.Future<_i8.SlotEntry>.value(_FakeSlotEntry_6(
-          this,
-          Invocation.method(
-            #addSetting,
-            [workoutSetting],
-          ),
-        )),
-      ) as _i13.Future<_i8.SlotEntry>);
 
   @override
   _i13.Future<dynamic> fetchSessionData() => (super.noSuchMethod(

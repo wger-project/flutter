@@ -72,7 +72,7 @@ class _RoutineEditState extends State<RoutineEdit> {
             ),
             ReorderableDaysList(
               routineId: widget._routine.id!,
-              days: widget._routine.days,
+              days: widget._routine.days.where((day) => day.id != null).toList(),
               selectedDayId: selectedDayId,
               onDaySelected: (id) {
                 setState(() {
@@ -115,7 +115,7 @@ class _RoutineEditState extends State<RoutineEdit> {
                     ),
                   );
                 } else if (snapshot.hasData) {
-                  return RoutineDetail(snapshot.data!);
+                  return RoutineDetail(snapshot.data!, viewMode: true);
                 }
                 return const Text('No data available');
               },

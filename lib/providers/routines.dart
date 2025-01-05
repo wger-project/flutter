@@ -510,10 +510,10 @@ class RoutinesProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> editSlot(Slot workoutSet) async {
+  Future<void> editSlot(Slot slot) async {
     await baseProvider.patch(
-      workoutSet.toJson(),
-      baseProvider.makeUrl(_slotsUrlPath, id: workoutSet.id),
+      slot.toJson(),
+      baseProvider.makeUrl(_slotsUrlPath, id: slot.id),
     );
     notifyListeners();
   }
@@ -561,6 +561,15 @@ class RoutinesProvider with ChangeNotifier {
         }
       }
     }
+
+    notifyListeners();
+  }
+
+  Future<void> editSlotEntry(SlotEntry entry) async {
+    await baseProvider.patch(
+      entry.toJson(),
+      baseProvider.makeUrl(_slotEntriesUrlPath, id: entry.id),
+    );
 
     notifyListeners();
   }
@@ -622,45 +631,6 @@ class RoutinesProvider with ChangeNotifier {
         ),
       );
     }
-  }
-
-  Future<void> fetchComputedSettings(Slot slot) async {
-    final data = await baseProvider.fetch(
-      baseProvider.makeUrl(
-        _slotsUrlPath,
-        id: slot.id,
-        objectMethod: 'computed_settings',
-      ),
-    );
-
-    final List<SlotEntry> settings = [];
-    data['results'].forEach((e) {
-      final SlotEntry workoutSetting = SlotEntry.fromJson(e);
-
-      workoutSetting.weightUnitObj = _weightUnits.firstWhere(
-        (unit) => unit.id == workoutSetting.weightUnitId,
-      );
-      workoutSetting.repetitionUnitObj = _repetitionUnit.firstWhere(
-        (unit) => unit.id == workoutSetting.repetitionUnitId,
-      );
-      settings.add(workoutSetting);
-    });
-
-    slot.settingsComputed = settings;
-    notifyListeners();
-  }
-
-  /*
-   * Setting
-   */
-  Future<SlotEntry> addSetting(SlotEntry workoutSetting) async {
-    final data = await baseProvider.post(
-      workoutSetting.toJson(),
-      baseProvider.makeUrl(_slotEntriesUrlPath),
-    );
-    final setting = SlotEntry.fromJson(data);
-    notifyListeners();
-    return setting;
   }
 
   /*

@@ -16,7 +16,8 @@ BaseConfig _$BaseConfigFromJson(Map<String, dynamic> json) {
       'value',
       'operation',
       'step',
-      'need_log_to_apply'
+      'need_log_to_apply',
+      'requirements'
     ],
   );
   return BaseConfig(
@@ -27,6 +28,7 @@ BaseConfig _$BaseConfigFromJson(Map<String, dynamic> json) {
     operation: json['operation'] as String,
     step: json['step'] as String,
     needLogToApply: json['need_log_to_apply'] as bool,
+    requirements: json['requirements'],
   );
 }
 
@@ -37,4 +39,5 @@ Map<String, dynamic> _$BaseConfigToJson(BaseConfig instance) => <String, dynamic
       'operation': instance.operation,
       'step': instance.step,
       'need_log_to_apply': instance.needLogToApply,
+      'requirements': instance.requirements,
     };

@@ -20,11 +20,43 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/slot.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/widgets/exercises/autocompleter.dart';
+
+class ProgressionRulesInfoBox extends StatelessWidget {
+  final Exercise exercise;
+
+  const ProgressionRulesInfoBox(this.exercise, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final languageCode = Localizations.localeOf(context).languageCode;
+    final i18n = AppLocalizations.of(context);
+
+    return Column(
+      children: [
+        ListTile(
+          title: Text(
+            exercise.getExercise(languageCode).name,
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+        ),
+        ListTile(
+          leading: const Icon(Icons.info),
+          tileColor: Theme.of(context).colorScheme.primaryContainer,
+          title: Text(
+            i18n.progressionRules,
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+        ),
+      ],
+    );
+  }
+}
 
 class SlotEntryForm extends StatefulWidget {
   final SlotEntry entry;
@@ -176,6 +208,7 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
                 repsController.text,
                 ConfigType.reps,
               );
+              provider.editSlotEntry(widget.entry);
             },
           ),
           const SizedBox(height: 10),
@@ -204,7 +237,9 @@ class _SlotDetailWidgetState extends State<SlotDetailWidget> {
 
     return Column(
       children: [
-        ...widget.slot.entries.map((entry) => SlotEntryForm(entry)),
+        ...widget.slot.entries.map((entry) => entry.hasProgressionRules
+            ? ProgressionRulesInfoBox(entry.exerciseObj)
+            : SlotEntryForm(entry)),
         const SizedBox(height: 10),
         if (_addSuperset || widget.slot.entries.isEmpty)
           ExerciseAutocompleter(
@@ -219,13 +254,15 @@ class _SlotDetailWidgetState extends State<SlotDetailWidget> {
               await provider.addSlotEntry(entry);
             },
           ),
-        FilledButton(
+        if (widget.slot.entries.isNotEmpty)
+          FilledButton(
             onPressed: () {
               setState(() {
                 _addSuperset = !_addSuperset;
               });
             },
-            child: Text(i18n.addSuperset)),
+            child: Text(i18n.addSuperset),
+          ),
         const SizedBox(height: 5),
       ],
     );
@@ -283,8 +320,7 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
               child: Column(
                 children: [
                   ListTile(
-                    // title: Text(slot.id.toString()),
-                    title: Text(i18n.setNr(index + 1)),
+                    title: Text(i18n.exerciseNr(index + 1)),
                     tileColor: isCurrentSlotSelected ? Theme.of(context).highlightColor : null,
                     leading: selectedSlotId == null
                         ? ReorderableDragStartListener(
@@ -353,7 +389,7 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
           ListTile(
             leading: const Icon(Icons.add),
             title: Text(
-              i18n.addSet,
+              i18n.addExercise,
               style: Theme.of(context).textTheme.titleMedium,
             ),
             onTap: () async {

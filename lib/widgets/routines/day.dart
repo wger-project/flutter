@@ -72,8 +72,9 @@ class SetConfigDataWidget extends StatelessWidget {
 class RoutineDayWidget extends StatelessWidget {
   final DayData _dayData;
   final int _routineId;
+  final bool _viewMode;
 
-  const RoutineDayWidget(this._dayData, this._routineId);
+  const RoutineDayWidget(this._dayData, this._routineId, this._viewMode);
 
   Widget getSlotDataRow(SlotData slotData) {
     return Column(
@@ -96,7 +97,7 @@ class RoutineDayWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            DayHeader(day: _dayData, routineId: _routineId),
+            DayHeader(day: _dayData, routineId: _routineId, viewMode: _viewMode),
             ..._dayData.slots.map((e) => getSlotDataRow(e)),
           ],
         ),
@@ -108,9 +109,11 @@ class RoutineDayWidget extends StatelessWidget {
 class DayHeader extends StatelessWidget {
   final DayData _dayData;
   final int _routineId;
+  final bool _viewMode;
 
-  const DayHeader({required DayData day, required int routineId})
+  const DayHeader({required DayData day, required int routineId, bool viewMode = false})
       : _dayData = day,
+        _viewMode = viewMode,
         _routineId = routineId;
 
   @override
@@ -141,13 +144,15 @@ class DayHeader extends StatelessWidget {
         overflow: TextOverflow.ellipsis,
       ),
       subtitle: Text(_dayData.day!.description),
-      leading: const Icon(Icons.play_arrow),
+      leading: _viewMode ? null : const Icon(Icons.play_arrow),
       minLeadingWidth: 8,
       onTap: () {
-        Navigator.of(context).pushNamed(
-          GymModeScreen.routeName,
-          arguments: GymModeArguments(_routineId, _dayData.day!.id!, _dayData.iteration),
-        );
+        _viewMode
+            ? null
+            : Navigator.of(context).pushNamed(
+                GymModeScreen.routeName,
+                arguments: GymModeArguments(_routineId, _dayData.day!.id!, _dayData.iteration),
+              );
       },
     );
   }

@@ -93,8 +93,14 @@ class SlotEntry {
   @JsonKey(required: false, name: 'set_nr_configs', includeToJson: false, defaultValue: [])
   late List<BaseConfig> nrOfSetsConfigs = [];
 
+  @JsonKey(required: false, name: 'max_set_nr_configs', includeToJson: false, defaultValue: [])
+  late List<BaseConfig> maxNrOfSetsConfigs = [];
+
   @JsonKey(required: false, name: 'rir_configs', includeToJson: false, defaultValue: [])
   late List<BaseConfig> rirConfigs = [];
+
+  @JsonKey(required: false, name: 'max_rir_configs', includeToJson: false, defaultValue: [])
+  late List<BaseConfig> maxRirConfigs = [];
 
   @JsonKey(required: false, name: 'rest_configs', includeToJson: false, defaultValue: [])
   late List<BaseConfig> restTimeConfigs = [];
@@ -146,6 +152,20 @@ class SlotEntry {
 
   get rir {
     return 'DELETE ME! RIR';
+  }
+
+  bool get hasProgressionRules {
+    return weightConfigs.length > 1 ||
+        repsConfigs.length > 1 ||
+        maxRepsConfigs.length > 1 ||
+        nrOfSetsConfigs.length > 1 ||
+        maxNrOfSetsConfigs.length > 1 ||
+        rirConfigs.length > 1 ||
+        maxRirConfigs.length > 1 ||
+        restTimeConfigs.length > 1 ||
+        maxRestTimeConfigs.length > 1 ||
+        maxWeightConfigs.length > 1 ||
+        maxWeightConfigs.length > 1;
   }
 
   List<BaseConfig> getConfigsByType(ConfigType type) {

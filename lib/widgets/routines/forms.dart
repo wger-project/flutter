@@ -55,7 +55,7 @@ class ExerciseSetting extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                AppLocalizations.of(context).setNr(i + 1),
+                AppLocalizations.of(context).exerciseNr(i + 1),
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               Row(
@@ -99,7 +99,7 @@ class ExerciseSetting extends StatelessWidget {
             textBaseline: TextBaseline.alphabetic,
             children: [
               Text(
-                AppLocalizations.of(context).setNr(i + 1),
+                AppLocalizations.of(context).exerciseNr(i + 1),
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               const SizedBox(width: 10),

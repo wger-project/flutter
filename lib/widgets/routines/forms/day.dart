@@ -164,6 +164,7 @@ class _DayFormWidgetState extends State<DayFormWidget> {
   final descriptionController = TextEditingController();
   final nameController = TextEditingController();
   late bool isRestDay;
+  late bool needLogsToAdvance;
 
   final _form = GlobalKey<FormState>();
 
@@ -171,6 +172,7 @@ class _DayFormWidgetState extends State<DayFormWidget> {
   void initState() {
     super.initState();
     isRestDay = widget.day.isRest;
+    needLogsToAdvance = widget.day.needLogsToAdvance;
     descriptionController.text = widget.day.description;
     nameController.text = widget.day.name;
   }
@@ -238,11 +240,7 @@ class _DayFormWidgetState extends State<DayFormWidget> {
           TextFormField(
             key: const Key('field-description'),
             enabled: !widget.day.isRest,
-            decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).description,
-              helperText: AppLocalizations.of(context).dayDescriptionHelp,
-              helperMaxLines: 3,
-            ),
+            decoration: InputDecoration(labelText: AppLocalizations.of(context).description),
             controller: descriptionController,
             onSaved: (value) {
               widget.day.description = value!;
@@ -259,6 +257,18 @@ class _DayFormWidgetState extends State<DayFormWidget> {
               }
 
               return null;
+            },
+          ),
+          SwitchListTile(
+            title: Text(i18n.needsLogsToAdvance),
+            subtitle: Text(i18n.needsLogsToAdvanceHelp),
+            value: needLogsToAdvance,
+            contentPadding: const EdgeInsets.all(4),
+            onChanged: (value) {
+              setState(() {
+                needLogsToAdvance = value;
+              });
+              widget.day.needLogsToAdvance = value;
             },
           ),
           const SizedBox(height: 5),

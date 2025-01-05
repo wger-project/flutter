@@ -179,9 +179,17 @@
   },
   "dayDescriptionHelp": "A description of what is done on this day (e.g. 'pull day') or what body parts are trained (e.g. 'chest and shoulders')",
   "@dayDescriptionHelp": {},
-  "setNr": "Set {nr}",
-  "@setNr": {
-    "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
+  "exerciseNr": "Exercise {nr}",
+  "@exerciseNr": {
+    "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Set Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {}
+    }
+  },
+  "supersetNr": "Superset {nr}",
+  "@supersetNr": {
+    "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Superset Nr. xy'.",
     "type": "text",
     "placeholders": {
       "nr": {}
@@ -207,7 +215,9 @@
   },
   "restDay": "Rest day",
   "isRestDay": "Is rest day",
-  "isRestDayHelp": "Please consider that all sets are removed from rest days when the form is saved",
+  "isRestDayHelp": "Please note that all sets and exercises will be removed when you mark a day as a rest day.",
+  "needsLogsToAdvance": "Needs logs to advance",
+  "needsLogsToAdvanceHelp": "Select if you want the routine to progress to the next scheduled day only if you've logged a workout for the day",
   "routineDays": "Days in routine",
   "resultingRoutine": "Resulting routine",
   "newDay": "New day",
@@ -707,7 +717,7 @@
   "language": "Language",
   "addExercise": "Add exercise",
   "fitInWeek": "Fit in week",
-  "fitInWeekHelp": "Select if you want to fit the workout days into a week, you can add e.g. three days and mark this checkbox.",
+  "fitInWeekHelp": "If enabled, the days will repeat in a weekly cycle, otherwise the days will follow sequentially without regards to the start of a new week.",
   "addSuperset": "Add superset",
   "setHasProgression": "Set has progression",
   "setHasProgressionWarning": "Please note that at the moment it is not possible to edit all settings for a set on the mobile application or configure automatic progression. For now, please use the web application.",
@@ -735,6 +745,7 @@
       }
     }
   },
+  "progressionRules": "This exercise has progression rules and can't be edited on the mobile app. Please use the web application to edit this exercise.",
   "cacheWarning": "Due to caching it might take some time till the changes are visible throughout the application.",
   "textPromptTitle": "Ready to start?",
   "textPromptSubheading": "Press the action button to begin",
