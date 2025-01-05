@@ -28,8 +28,15 @@ part 'slot_entry.g.dart';
 
 enum ConfigType {
   weight,
+  maxWeight,
   reps,
+  maxReps,
   sets,
+  maxSets,
+  rir,
+  maxRir,
+  rest,
+  maxRest,
 }
 
 @JsonSerializable()
@@ -172,10 +179,24 @@ class SlotEntry {
     switch (type) {
       case ConfigType.weight:
         return weightConfigs;
+      case ConfigType.maxWeight:
+        return maxWeightConfigs;
       case ConfigType.sets:
         return nrOfSetsConfigs;
+      case ConfigType.maxSets:
+        return maxNrOfSetsConfigs;
       case ConfigType.reps:
         return repsConfigs;
+      case ConfigType.maxReps:
+        return maxRepsConfigs;
+      case ConfigType.rir:
+        return rirConfigs;
+      case ConfigType.maxRir:
+        return maxRirConfigs;
+      case ConfigType.rest:
+        return restTimeConfigs;
+      case ConfigType.maxRest:
+        return maxRestTimeConfigs;
     }
   }
 

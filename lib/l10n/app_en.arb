@@ -156,6 +156,7 @@
   "@reps": {
     "description": "Shorthand for repetitions, used when space constraints are tighter"
   },
+  "restTime": "Rest time",
   "sets": "Sets",
   "@sets": {
     "description": "The number of sets to be done for one exercise"
@@ -746,6 +747,7 @@
     }
   },
   "simpleMode": "Simple mode",
+  "simpleModeHelp": "Simple mode hides some of the more advanced settings when editing an exercise",
   "progressionRules": "This exercise has progression rules and can't be edited on the mobile app. Please use the web application to edit this exercise.",
   "cacheWarning": "Due to caching it might take some time till the changes are visible throughout the application.",
   "textPromptTitle": "Ready to start?",

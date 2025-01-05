@@ -24,22 +24,19 @@ import 'package:wger/models/workouts/slot_entry.dart';
 ///
 /// Can be used with a Setting or a Log object
 class RiRInputWidget extends StatefulWidget {
-  final dynamic _setting;
+  final num? _initialValue;
+  final ValueChanged<String> onChanged;
   late String dropdownValue;
   late double _currentSetSliderValue;
 
   static const SLIDER_START = -0.5;
 
-  RiRInputWidget(this._setting) {
-    dropdownValue = _setting.rir ?? SlotEntry.DEFAULT_RIR;
+  RiRInputWidget(this._initialValue, {required this.onChanged}) {
+    dropdownValue = _initialValue != null ? _initialValue.toString() : SlotEntry.DEFAULT_RIR;
 
     // Read string RiR into a double
-    if (_setting.rir != null) {
-      if (_setting.rir == '') {
-        _currentSetSliderValue = SLIDER_START;
-      } else {
-        _currentSetSliderValue = double.parse(_setting.rir);
-      }
+    if (_initialValue != null) {
+      _currentSetSliderValue = _initialValue!.toDouble();
     } else {
       _currentSetSliderValue = SLIDER_START;
     }
@@ -85,7 +82,7 @@ class _RiRInputWidgetState extends State<RiRInputWidget> {
             divisions: SlotEntry.POSSIBLE_RIR_VALUES.length - 1,
             label: getSliderLabel(widget._currentSetSliderValue),
             onChanged: (double value) {
-              // widget._setting.setRir(mapDoubleToAllowedRir(value));
+              widget.onChanged(mapDoubleToAllowedRir(value));
               setState(() {
                 widget._currentSetSliderValue = value;
               });

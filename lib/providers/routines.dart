@@ -52,8 +52,15 @@ class RoutinesProvider with ChangeNotifier {
   static const _weightUnitUrlPath = 'setting-weightunit';
   static const _repetitionUnitUrlPath = 'setting-repetitionunit';
   static const _routineConfigSets = 'sets-config';
+  static const _routineConfigMaxSets = 'max-sets-config';
   static const _routineConfigWeights = 'weight-config';
+  static const _routineConfigMaxWeights = 'max-weight-config';
   static const _routineConfigReps = 'reps-config';
+  static const _routineConfigMaxReps = 'max-reps-config';
+  static const _routineConfigRir = 'rir-config';
+  static const _routineConfigMaxRir = 'rest-config';
+  static const _routineConfigRestTime = 'rest-config';
+  static const _routineConfigMaxRestTime = 'max-rest-config';
 
   Routine? _currentPlan;
   final ExercisesProvider _exercises;
@@ -578,10 +585,24 @@ class RoutinesProvider with ChangeNotifier {
     switch (type) {
       case ConfigType.sets:
         return _routineConfigSets;
+      case ConfigType.maxSets:
+        return _routineConfigMaxSets;
       case ConfigType.weight:
         return _routineConfigWeights;
+      case ConfigType.maxWeight:
+        return _routineConfigMaxWeights;
       case ConfigType.reps:
         return _routineConfigReps;
+      case ConfigType.maxReps:
+        return _routineConfigMaxReps;
+      case ConfigType.rir:
+        return _routineConfigRir;
+      case ConfigType.maxRir:
+        return _routineConfigMaxRir;
+      case ConfigType.rest:
+        return _routineConfigRestTime;
+      case ConfigType.maxRest:
+        return _routineConfigMaxRestTime;
     }
   }
 

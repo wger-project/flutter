@@ -440,7 +440,11 @@ class _LogPageState extends State<LogPage> {
                 Flexible(child: WeightUnitInputWidget(widget._log)),
               ],
             ),
-          if (_detailed) RiRInputWidget(widget._log),
+          if (_detailed)
+            RiRInputWidget(
+              widget._log.rir == null ? null : num.parse(widget._log.rir!),
+              onChanged: (v) => {},
+            ),
           SwitchListTile(
             title: Text(AppLocalizations.of(context).setUnitsAndRir),
             value: _detailed,

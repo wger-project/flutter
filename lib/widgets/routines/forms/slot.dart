@@ -26,6 +26,7 @@ import 'package:wger/models/workouts/slot.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/widgets/exercises/autocompleter.dart';
+import 'package:wger/widgets/routines/forms/rir.dart';
 
 class ProgressionRulesInfoBox extends StatelessWidget {
   final Exercise exercise;
@@ -60,8 +61,9 @@ class ProgressionRulesInfoBox extends StatelessWidget {
 
 class SlotEntryForm extends StatefulWidget {
   final SlotEntry entry;
+  final bool simpleMode;
 
-  const SlotEntryForm(this.entry, {super.key});
+  const SlotEntryForm(this.entry, {this.simpleMode = true, super.key});
 
   @override
   State<SlotEntryForm> createState() => _SlotEntryFormState();
@@ -74,6 +76,8 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
 
   final weightController = TextEditingController();
   final repsController = TextEditingController();
+  final restController = TextEditingController();
+  final rirController = TextEditingController();
 
   final _form = GlobalKey<FormState>();
 
@@ -90,6 +94,12 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
     }
     if (widget.entry.repsConfigs.isNotEmpty) {
       repsController.text = widget.entry.repsConfigs.first.value.round().toString();
+    }
+    if (widget.entry.restTimeConfigs.isNotEmpty) {
+      repsController.text = widget.entry.restTimeConfigs.first.value.round().toString();
+    }
+    if (widget.entry.rirConfigs.isNotEmpty) {
+      repsController.text = widget.entry.rirConfigs.first.value.round().toString();
     }
   }
 
@@ -145,7 +155,7 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
                 })
               },
             ),
-          Text('${i18n.sets} — ${setsSliderValue.round()}'),
+          Text('${i18n.sets}: ${setsSliderValue.round()}'),
           Slider.adaptive(
             value: setsSliderValue,
             min: 0,
@@ -180,6 +190,23 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
               return null;
             },
           ),
+          if (!widget.simpleMode)
+            TextFormField(
+              controller: restController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(labelText: i18n.restTime),
+              validator: (value) {
+                if (value != null && int.tryParse(value) == null) {
+                  return i18n.enterValidNumber;
+                }
+                return null;
+              },
+            ),
+          if (!widget.simpleMode)
+            RiRInputWidget(
+              rirController.text == '' ? null : num.parse(rirController.text),
+              onChanged: (value) => rirController.text = value,
+            ),
           const SizedBox(height: 5),
           OutlinedButton(
             key: const Key(SUBMIT_BUTTON_KEY_NAME),
@@ -208,6 +235,16 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
                 repsController.text,
                 ConfigType.reps,
               );
+              provider.handleConfig(
+                widget.entry,
+                restController.text,
+                ConfigType.rest,
+              );
+              provider.handleConfig(
+                widget.entry,
+                rirController.text,
+                ConfigType.rir,
+              );
               provider.editSlotEntry(widget.entry);
             },
           ),
@@ -220,8 +257,9 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
 
 class SlotDetailWidget extends StatefulWidget {
   final Slot slot;
+  final bool simpleMode;
 
-  const SlotDetailWidget(this.slot, {super.key});
+  const SlotDetailWidget(this.slot, {this.simpleMode = true, super.key});
 
   @override
   State<SlotDetailWidget> createState() => _SlotDetailWidgetState();
@@ -239,7 +277,7 @@ class _SlotDetailWidgetState extends State<SlotDetailWidget> {
       children: [
         ...widget.slot.entries.map((entry) => entry.hasProgressionRules
             ? ProgressionRulesInfoBox(entry.exerciseObj)
-            : SlotEntryForm(entry)),
+            : SlotEntryForm(entry, simpleMode: widget.simpleMode)),
         const SizedBox(height: 10),
         if (_addSuperset || widget.slot.entries.isEmpty)
           ExerciseAutocompleter(
@@ -295,6 +333,7 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
           SwitchListTile(
             value: simpleMode,
             title: Text(i18n.simpleMode),
+            subtitle: Text(i18n.simpleModeHelp),
             contentPadding: const EdgeInsets.all(4),
             onChanged: (value) {
               setState(() {
@@ -362,7 +401,7 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
                       ],
                     ),
                   ),
-                  if (isCurrentSlotSelected) SlotDetailWidget(slot),
+                  if (isCurrentSlotSelected) SlotDetailWidget(slot, simpleMode: simpleMode),
                 ],
               ),
             );
