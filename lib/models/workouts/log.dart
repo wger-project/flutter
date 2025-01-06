@@ -39,11 +39,17 @@ class Log {
   @JsonKey(required: true, name: 'routine')
   late int routineId;
 
+  @JsonKey(required: false)
+  String? rir;
+
+  @JsonKey(required: false, name: 'rir_target')
+  String? rirTarget;
+
   @JsonKey(required: true)
   late int reps;
 
-  @JsonKey(required: false)
-  String? rir;
+  @JsonKey(required: true, name: 'reps_target')
+  late int? repsTarget;
 
   @JsonKey(required: true, name: 'repetition_unit')
   late int repetitionUnitId;
@@ -53,6 +59,9 @@ class Log {
 
   @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
   late num weight;
+
+  @JsonKey(required: true, fromJson: stringToNum, toJson: numToString, name: 'weight_target')
+  late num? weightTarget;
 
   @JsonKey(required: true, name: 'weight_unit')
   late int weightUnitId;
@@ -71,9 +80,12 @@ class Log {
     required this.exerciseId,
     required this.routineId,
     required this.reps,
-    required this.rir,
+    this.repsTarget,
     required this.repetitionUnitId,
+    required this.rir,
+    this.rirTarget,
     required this.weight,
+    this.weightTarget,
     required this.weightUnitId,
     required this.date,
   });
