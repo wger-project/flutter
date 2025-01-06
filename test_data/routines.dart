@@ -27,14 +27,14 @@ import 'package:wger/models/workouts/weight_unit.dart';
 
 import './exercises.dart';
 
-const weightUnit1 = WeightUnit(id: 1, name: 'kg');
-const weightUnit2 = WeightUnit(id: 2, name: 'metric tonnes');
+const testWeightUnit1 = WeightUnit(id: 1, name: 'kg');
+const testWeightUnit2 = WeightUnit(id: 2, name: 'metric tonnes');
 
-const RepetitionUnit repetitionUnit1 = RepetitionUnit(id: 1, name: 'Repetitions');
-const RepetitionUnit repetitionUnit2 = RepetitionUnit(id: 2, name: 'Hours');
+const RepetitionUnit testRepetitionUnit1 = RepetitionUnit(id: 1, name: 'Repetitions');
+const RepetitionUnit testRepetitionUnit2 = RepetitionUnit(id: 2, name: 'Hours');
 
-Routine getWorkout({List<Exercise>? exercises}) {
-  final testBases = exercises ?? getTestExercises();
+Routine getRoutine({List<Exercise>? exercises}) {
+  final testExercise = exercises ?? getTestExercises();
 
   final log1 = Log.empty()
     ..id = 1
@@ -43,9 +43,9 @@ Routine getWorkout({List<Exercise>? exercises}) {
     ..date = DateTime(2021, 5, 1)
     ..reps = 10
     ..routineId = 1;
-  log1.exerciseBase = testBases[0];
-  log1.weightUnit = weightUnit1;
-  log1.repetitionUnit = repetitionUnit1;
+  log1.exerciseBase = testExercise[0];
+  log1.weightUnit = testWeightUnit1;
+  log1.repetitionUnit = testRepetitionUnit1;
 
   final log2 = Log.empty()
     ..id = 2
@@ -54,9 +54,9 @@ Routine getWorkout({List<Exercise>? exercises}) {
     ..date = DateTime(2021, 5, 1)
     ..reps = 12
     ..routineId = 1;
-  log2.exerciseBase = testBases[0];
-  log2.weightUnit = weightUnit1;
-  log2.repetitionUnit = repetitionUnit1;
+  log2.exerciseBase = testExercise[0];
+  log2.weightUnit = testWeightUnit1;
+  log2.repetitionUnit = testRepetitionUnit1;
 
   final log3 = Log.empty()
     ..id = 3
@@ -65,11 +65,11 @@ Routine getWorkout({List<Exercise>? exercises}) {
     ..date = DateTime(2021, 5, 2)
     ..reps = 8
     ..routineId = 1;
-  log3.exerciseBase = testBases[1];
-  log3.weightUnit = weightUnit1;
-  log3.repetitionUnit = repetitionUnit1;
+  log3.exerciseBase = testExercise[1];
+  log3.weightUnit = testWeightUnit1;
+  log3.repetitionUnit = testRepetitionUnit1;
 
-  final settingBenchPress = SlotEntry(
+  final slotEntryBenchPress = SlotEntry(
     slotId: 1,
     type: 'normal',
     order: 1,
@@ -80,20 +80,20 @@ Routine getWorkout({List<Exercise>? exercises}) {
     weightRounding: 0.25,
     comment: 'ddd',
   );
-  settingBenchPress.repetitionUnit = repetitionUnit1;
-  settingBenchPress.weightUnit = weightUnit1;
-  settingBenchPress.exercise = testBases[0];
+  slotEntryBenchPress.repetitionUnit = testRepetitionUnit1;
+  slotEntryBenchPress.weightUnit = testWeightUnit1;
+  slotEntryBenchPress.exercise = testExercise[0];
 
-  final setBenchPress = Slot.withData(
+  final slotBenchPress = Slot.withData(
     id: 1,
     day: 1,
     order: 1,
     comment: 'Make sure to warm up',
   );
-  setBenchPress.addExerciseBase(testBases[0]);
-  setBenchPress.entries.add(settingBenchPress);
+  slotBenchPress.addExerciseBase(testExercise[0]);
+  slotBenchPress.entries.add(slotEntryBenchPress);
 
-  final settingSquat = SlotEntry(
+  final slotEntrySquat = SlotEntry(
     slotId: 2,
     type: 'normal',
     order: 1,
@@ -104,15 +104,15 @@ Routine getWorkout({List<Exercise>? exercises}) {
     weightRounding: 0.25,
     comment: 'ddd',
   );
-  settingSquat.repetitionUnit = repetitionUnit1;
-  settingSquat.weightUnit = weightUnit1;
-  settingSquat.exercise = testBases[4];
+  slotEntrySquat.repetitionUnit = testRepetitionUnit1;
+  slotEntrySquat.weightUnit = testWeightUnit1;
+  slotEntrySquat.exercise = testExercise[4];
 
-  final setSquat = Slot.withData(id: 2, day: 1, order: 1);
-  setSquat.addExerciseBase(testBases[4]);
-  setSquat.entries.add(settingSquat);
+  final slotSquat = Slot.withData(id: 2, day: 1, order: 1);
+  slotSquat.addExerciseBase(testExercise[4]);
+  slotSquat.entries.add(slotEntrySquat);
 
-  final settingSideRaises = SlotEntry(
+  final slotEntrySideRaises = SlotEntry(
     slotId: 2,
     type: 'normal',
     order: 1,
@@ -123,27 +123,27 @@ Routine getWorkout({List<Exercise>? exercises}) {
     weightRounding: 0.25,
     comment: 'ddd',
   );
-  settingSideRaises.repetitionUnit = repetitionUnit1;
-  settingSideRaises.weightUnit = weightUnit1;
-  settingSideRaises.exercise = testBases[5];
+  slotEntrySideRaises.repetitionUnit = testRepetitionUnit1;
+  slotEntrySideRaises.weightUnit = testWeightUnit1;
+  slotEntrySideRaises.exercise = testExercise[5];
   // settingSideRaises.weight = 6;
 
-  final setSideRaises = Slot.withData(id: 3, day: 1, order: 1);
-  setSideRaises.addExerciseBase(testBases[5]);
-  setSideRaises.entries.add(settingSideRaises);
+  final slotSideRaises = Slot.withData(id: 3, day: 1, order: 1);
+  slotSideRaises.addExerciseBase(testExercise[5]);
+  slotSideRaises.entries.add(slotEntrySideRaises);
 
   final dayChestShoulders = Day()
     ..id = 1
     ..routineId = 1
     ..description = 'chest, shoulders';
-  dayChestShoulders.slots.add(setBenchPress);
-  dayChestShoulders.slots.add(setSideRaises);
+  dayChestShoulders.slots.add(slotBenchPress);
+  dayChestShoulders.slots.add(slotSideRaises);
 
   final dayLegs = Day()
     ..id = 2
     ..routineId = 1
     ..description = 'legs';
-  dayLegs.slots.add(setSquat);
+  dayLegs.slots.add(slotSquat);
 
   final routine = Routine(
     id: 1,

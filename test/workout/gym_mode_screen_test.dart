@@ -42,7 +42,7 @@ void main() {
   final key = GlobalKey<NavigatorState>();
 
   final mockExerciseProvider = MockExercisesProvider();
-  final workoutPlan = getWorkout();
+  final workoutPlan = getRoutine();
   final bases = getTestExercises();
 
   Widget createHomeScreen({locale = 'en'}) {

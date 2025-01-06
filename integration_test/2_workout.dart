@@ -14,7 +14,7 @@ Widget createWorkoutDetailScreen({locale = 'en'}) {
   final key = GlobalKey<NavigatorState>();
 
   final mockWorkoutProvider = MockRoutinesProvider();
-  final workout = getWorkout(exercises: getScreenshotExercises());
+  final workout = getRoutine(exercises: getScreenshotExercises());
   when(mockWorkoutProvider.activeRoutine).thenReturn(workout);
   when(mockWorkoutProvider.fetchAndSetRoutineFull(1)).thenAnswer((_) => Future.value(workout));
 

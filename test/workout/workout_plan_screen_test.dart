@@ -51,7 +51,7 @@ void main() {
         home: TextButton(
           onPressed: () => key.currentState!.push(
             MaterialPageRoute<void>(
-              settings: RouteSettings(arguments: getWorkout()),
+              settings: RouteSettings(arguments: getRoutine()),
               builder: (_) => const RoutineScreen(),
             ),
           ),
