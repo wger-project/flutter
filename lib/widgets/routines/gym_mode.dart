@@ -20,8 +20,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
+import 'package:provider/provider.dart'as provider;
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/gym_mode.dart';
@@ -38,6 +39,7 @@ import 'package:wger/models/workouts/set_config_data.dart';
 import 'package:wger/models/workouts/slot_data.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/gym_state.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/core.dart';
@@ -47,7 +49,7 @@ import 'package:wger/widgets/routines/forms/reps_unit.dart';
 import 'package:wger/widgets/routines/forms/rir.dart';
 import 'package:wger/widgets/routines/forms/weight_unit.dart';
 
-class GymMode extends StatefulWidget {
+class GymMode extends ConsumerStatefulWidget {
   final DayData _dayData;
   late final TimeOfDay _start;
 
@@ -56,60 +58,61 @@ class GymMode extends StatefulWidget {
   }
 
   @override
-  _GymModeState createState() => _GymModeState();
+  ConsumerState<GymMode> createState() => _GymModeState();
 }
 
-class _GymModeState extends State<GymMode> {
+
+class _GymModeState extends ConsumerState<GymMode> {
   var _totalElements = 1;
 
   /// Map with the first (navigation) page for each exercise
   final Map<Exercise, int> _exercisePages = {};
-  final PageController _controller = PageController(initialPage: 0);
+  late final PageController _controller;
 
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
+
   }
 
   @override
   void initState() {
     super.initState();
-    // Calculate amount of elements for progress indicator
-
+    final initialPage = ref.read(gymStateProvider).currentPage;
+    _controller = PageController(initialPage: initialPage);
+    Future.microtask(() => _calculatePages());
+  }
+  void _calculatePages() {
     for (final slot in widget._dayData.slots) {
       _totalElements += slot.setConfigs.length;
     }
-    // Calculate the pages for the navigation
-    //
-    // This duplicates the code below in the getContent method, but it seems to
-    // be the easiest way
+
     var currentPage = 1;
+    final Map<Exercise, int> exercisePages = {};
+
     for (final slot in widget._dayData.slots) {
       var firstPage = true;
       for (final config in slot.setConfigs) {
-        final exercise = Provider.of<ExercisesProvider>(context, listen: false)
+        final exercise = provider.Provider.of<ExercisesProvider>(context, listen: false)
             .findExerciseById(config.exerciseId);
 
         if (firstPage) {
-          _exercisePages[exercise] = currentPage;
+          exercisePages[exercise] = currentPage;
           currentPage++;
         }
-
-        // Log Page
-        currentPage++;
-
-        // Timer
-        currentPage++;
+        currentPage += 2;
         firstPage = false;
       }
     }
+
+    ref.read(gymStateProvider.notifier).setExercisePages(exercisePages);
   }
 
-  // Returns the list of exercise overview, sets and pause pages
   List<Widget> getContent() {
-    final exerciseProvider = Provider.of<ExercisesProvider>(context, listen: false);
-    final workoutProvider = Provider.of<RoutinesProvider>(context, listen: false);
+    final state = ref.watch(gymStateProvider);
+    final exerciseProvider = provider.Provider.of<ExercisesProvider>(context, listen: false);
+    final workoutProvider = provider.Provider.of<RoutinesProvider>(context, listen: false);
     var currentElement = 1;
     final List<Widget> out = [];
 
@@ -120,12 +123,12 @@ class _GymModeState extends State<GymMode> {
         final exercise = exerciseProvider.findExerciseById(config.exerciseId);
         currentElement++;
 
-        if (firstPage) {
+        if (firstPage && state.showExercisePages) {
           out.add(ExerciseOverview(
             _controller,
             exercise,
             ratioCompleted,
-            _exercisePages,
+            state.exercisePages,
           ));
         }
 
@@ -136,25 +139,25 @@ class _GymModeState extends State<GymMode> {
           exercise,
           workoutProvider.findById(widget._dayData.day!.routineId),
           ratioCompleted,
-          _exercisePages,
+          state.exercisePages,
         ));
-        out.add(TimerWidget(_controller, ratioCompleted, _exercisePages));
+        out.add(TimerWidget(_controller, ratioCompleted, state.exercisePages));
         firstPage = false;
       }
     }
 
     return out;
   }
-
   @override
   Widget build(BuildContext context) {
     return PageView(
       controller: _controller,
+      onPageChanged: (page) => ref.read(gymStateProvider.notifier).setCurrentPage(page),
       children: [
         StartPage(_controller, widget._dayData.day!, _exercisePages),
         ...getContent(),
         SessionPage(
-          Provider.of<RoutinesProvider>(context, listen: false)
+          provider.Provider.of<RoutinesProvider>(context, listen: false)
               .findById(widget._dayData.day!.routineId),
           _controller,
           widget._start,
@@ -468,7 +471,7 @@ class _LogPageState extends State<LogPage> {
 
                       // Save the entry on the server
                       try {
-                        await Provider.of<RoutinesProvider>(
+                        await provider.Provider.of<RoutinesProvider>(
                           context,
                           listen: false,
                         ).addLog(widget._log);
@@ -890,7 +893,7 @@ class _SessionPageState extends State<SessionPage> {
 
                     // Save the entry on the server
                     try {
-                      await Provider.of<RoutinesProvider>(
+                      await provider.Provider.of<RoutinesProvider>(
                         context,
                         listen: false,
                       ).addSession(_session);

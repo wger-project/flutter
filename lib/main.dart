@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:provider/provider.dart';
 import 'package:wger/core/locator.dart';
 import 'package:wger/providers/add_exercise.dart';
@@ -66,7 +67,7 @@ void main() async {
   // Locator to initialize exerciseDB
   await ServiceLocator().configure();
   // Application
-  runApp(const MyApp());
+  runApp(const riverpod.ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {

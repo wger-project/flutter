@@ -86,7 +86,7 @@ class ExerciseSetting extends StatelessWidget {
                   ),
                 ],
               ),
-              Flexible(flex: 2, child: RiRInputWidget(setting)),
+              Flexible(flex: 2, child: RiRInputWidget( setting.exerciseId, onChanged: (String value) {  }, )),
               const SizedBox(height: 15),
             ],
           ),
