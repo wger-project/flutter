@@ -219,8 +219,4 @@ class SlotEntry {
     repetitionUnitObj = repetitionUnit;
     repetitionUnitId = repetitionUnit.id;
   }
-
-  String get singleSettingRepText {
-    return 'DELETE singleSettingRepText!';
-  }
 }
