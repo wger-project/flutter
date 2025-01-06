@@ -33,12 +33,13 @@ import 'repetition_unit_form_widget_test.mocks.dart';
 @GenerateMocks([RoutinesProvider])
 void main() {
   var mockWorkoutPlans = MockRoutinesProvider();
-
   const unit1 = RepetitionUnit(id: 1, name: 'some rep unit');
   const unit2 = RepetitionUnit(id: 2, name: 'another name');
   const unit3 = RepetitionUnit(id: 3, name: 'this is repetition number 3');
 
-  final setting1 = SlotEntry(
+  var result = -1;
+
+  final slotEntry = SlotEntry(
     slotId: 1,
     type: 'normal',
     order: 1,
@@ -49,14 +50,17 @@ void main() {
     weightRounding: 0.25,
     comment: 'comment',
   );
-  setting1.repetitionUnitObj = unit1;
+  slotEntry.repetitionUnitObj = unit1;
 
   setUp(() {
     mockWorkoutPlans = MockRoutinesProvider();
+    result = -1;
     when(mockWorkoutPlans.repetitionUnits).thenAnswer((_) => [unit1, unit2, unit3]);
+    when(mockWorkoutPlans.findRepetitionUnitById(1)).thenReturn(unit1);
+    when(mockWorkoutPlans.findRepetitionUnitById(2)).thenReturn(unit2);
   });
 
-  Widget createHomeScreen() {
+  Widget renderWidget() {
     final key = GlobalKey<NavigatorState>();
 
     return ChangeNotifierProvider<RoutinesProvider>(
@@ -65,7 +69,7 @@ void main() {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
-        home: Scaffold(body: RepetitionUnitInputWidget(setting1)),
+        home: Scaffold(body: RepetitionUnitInputWidget(1, onChanged: (value) => result = value)),
         routes: {
           RoutineScreen.routeName: (ctx) => const RoutineScreen(),
         },
@@ -75,7 +79,7 @@ void main() {
 
   testWidgets('Test that the entries are shown', (WidgetTester tester) async {
     // arrange
-    await tester.pumpWidget(createHomeScreen());
+    await tester.pumpWidget(renderWidget());
     await tester.tap(find.byKey(const Key('1')));
     await tester.pump();
 
@@ -87,16 +91,15 @@ void main() {
 
   testWidgets('Test that the correct units are set after selection', (WidgetTester tester) async {
     // arrange
-    await tester.pumpWidget(createHomeScreen());
+    await tester.pumpWidget(renderWidget());
     await tester.pump();
 
     // act
-    expect(setting1.repetitionUnitObj, equals(unit1));
     await tester.tap(find.byKey(const Key('1')));
     await tester.pump();
     await tester.tap(find.text('another name').last);
 
     // assert
-    expect(setting1.repetitionUnitObj, equals(unit2));
+    expect(result, equals(2));
   });
 }

@@ -48,7 +48,7 @@ void main() {
     mockBaseProvider = MockWgerBaseProvider();
   });
 
-  Widget createHomeScreen({locale = 'en'}) {
+  Widget renderWidget({locale = 'en'}) {
     final uri = Uri(
       scheme: 'https',
       host: 'localhost',
@@ -68,13 +68,15 @@ void main() {
             start: DateTime(2024, 11, 1),
             end: DateTime(2024, 12, 1),
             name: 'test 1',
+            fitInWeek: false,
           ),
           Routine(
             id: 2,
             created: DateTime(2021, 02, 12),
-            start: DateTime(2024, 11, 1),
-            end: DateTime(2024, 12, 1),
+            start: DateTime(2024, 5, 5),
+            end: DateTime(2024, 6, 6),
             name: 'test 2',
+            fitInWeek: false,
           ),
         ],
       ),
@@ -89,16 +91,18 @@ void main() {
   }
 
   testWidgets('Test the widgets on the workout plans screen', (WidgetTester tester) async {
-    await tester.pumpWidget(createHomeScreen());
+    await tester.pumpWidget(renderWidget());
 
     //debugDumpApp();
     expect(find.text('Workout plans'), findsOneWidget);
+    expect(find.text('test 1'), findsOneWidget);
+    expect(find.text('test 2'), findsOneWidget);
     expect(find.byType(Card), findsNWidgets(2));
     expect(find.byType(ListTile), findsNWidgets(2));
   });
 
   testWidgets('Test deleting an item using the Delete button', (WidgetTester tester) async {
-    await tester.pumpWidget(createHomeScreen());
+    await tester.pumpWidget(renderWidget());
 
     await tester.tap(find.byIcon(Icons.delete).first);
 
@@ -125,7 +129,7 @@ void main() {
    */
 
   testWidgets('Test the form on the workout plan screen', (WidgetTester tester) async {
-    await tester.pumpWidget(createHomeScreen());
+    await tester.pumpWidget(renderWidget());
 
     expect(find.byType(PlanForm), findsNothing);
     await tester.tap(find.byType(FloatingActionButton));
@@ -134,16 +138,16 @@ void main() {
   });
 
   testWidgets('Tests the localization of dates - EN', (WidgetTester tester) async {
-    await tester.pumpWidget(createHomeScreen());
+    await tester.pumpWidget(renderWidget());
 
-    expect(find.text('1/1/2021'), findsOneWidget);
-    expect(find.text('2/12/2021'), findsOneWidget);
+    expect(find.text('11/1/2024 - 12/1/2024'), findsOneWidget);
+    expect(find.text('5/5/2024 - 6/6/2024'), findsOneWidget);
   });
 
   testWidgets('Tests the localization of dates - DE', (WidgetTester tester) async {
-    await tester.pumpWidget(createHomeScreen(locale: 'de'));
+    await tester.pumpWidget(renderWidget(locale: 'de'));
 
-    expect(find.text('1.1.2021'), findsOneWidget);
-    expect(find.text('12.2.2021'), findsOneWidget);
+    expect(find.text('1.11.2024 - 1.12.2024'), findsOneWidget);
+    expect(find.text('5.5.2024 - 6.6.2024'), findsOneWidget);
   });
 }

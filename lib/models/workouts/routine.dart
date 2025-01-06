@@ -97,6 +97,10 @@ class Routine {
   Routine.empty() {
     name = '';
     description = '';
+    created = DateTime.now();
+    start = DateTime.now();
+    end = DateTime.now();
+    fitInWeek = false;
   }
 
   // Boilerplate

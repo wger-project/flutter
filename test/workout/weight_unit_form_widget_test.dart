@@ -24,22 +24,22 @@ import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
-import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/routine_screen.dart';
 import 'package:wger/widgets/routines/forms/weight_unit.dart';
 
-import './workout_form_test.mocks.dart';
+import 'weight_unit_form_widget_test.mocks.dart';
 
-@GenerateMocks([BodyWeightProvider])
+@GenerateMocks([RoutinesProvider])
 void main() {
   var mockWorkoutPlans = MockRoutinesProvider();
+  var result = -1;
 
   const unit1 = WeightUnit(id: 1, name: 'kg');
   const unit2 = WeightUnit(id: 2, name: 'donkeys');
   const unit3 = WeightUnit(id: 3, name: 'plates');
 
-  final setting1 = SlotEntry(
+  final slotEntry = SlotEntry(
     slotId: 1,
     type: 'normal',
     order: 1,
@@ -50,14 +50,17 @@ void main() {
     weightRounding: 0.25,
     comment: 'comment',
   );
-  setting1.weightUnitObj = unit1;
+  slotEntry.weightUnitObj = unit1;
 
   setUp(() {
+    result = -1;
     mockWorkoutPlans = MockRoutinesProvider();
     when(mockWorkoutPlans.weightUnits).thenAnswer((_) => [unit1, unit2, unit3]);
+    when(mockWorkoutPlans.findWeightUnitById(1)).thenReturn(unit1);
+    when(mockWorkoutPlans.findWeightUnitById(2)).thenReturn(unit2);
   });
 
-  Widget createHomeScreen() {
+  Widget renderWidget() {
     final key = GlobalKey<NavigatorState>();
 
     return ChangeNotifierProvider<RoutinesProvider>(
@@ -66,7 +69,7 @@ void main() {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
-        home: Scaffold(body: WeightUnitInputWidget(setting1)),
+        home: Scaffold(body: WeightUnitInputWidget(1, onChanged: (value) => result = value)),
         routes: {RoutineScreen.routeName: (ctx) => const RoutineScreen()},
       ),
     );
@@ -74,7 +77,7 @@ void main() {
 
   testWidgets('Test that the entries are shown', (WidgetTester tester) async {
     // arrange
-    await tester.pumpWidget(createHomeScreen());
+    await tester.pumpWidget(renderWidget());
     await tester.tap(find.byKey(const Key('1')));
     await tester.pump();
 
@@ -86,16 +89,16 @@ void main() {
 
   testWidgets('Test that the correct units are set after selection', (WidgetTester tester) async {
     // arrange
-    await tester.pumpWidget(createHomeScreen());
+    await tester.pumpWidget(renderWidget());
     await tester.pump();
 
     // act
-    expect(setting1.weightUnitObj, equals(unit1));
+    expect(slotEntry.weightUnitObj, equals(unit1));
     await tester.tap(find.byKey(const Key('1')));
     await tester.pump();
     await tester.tap(find.text('donkeys').last);
 
     // assert
-    expect(setting1.weightUnitObj, equals(unit2));
+    expect(result, equals(2));
   });
 }
