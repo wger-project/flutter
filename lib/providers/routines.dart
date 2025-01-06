@@ -97,9 +97,14 @@ class RoutinesProvider with ChangeNotifier {
     return _weightUnits.firstWhere((element) => element.id == WEIGHT_UNIT_KG_ID);
   }
 
+  WeightUnit findWeightUnitById(int id) => _weightUnits.firstWhere((element) => element.id == id);
+
   List<RepetitionUnit> get repetitionUnits {
     return [..._repetitionUnit];
   }
+
+  RepetitionUnit findRepetitionUnitById(int id) =>
+      _repetitionUnit.firstWhere((element) => element.id == id);
 
   /// Return the default weight unit (reps)
   RepetitionUnit get defaultRepetitionUnit {

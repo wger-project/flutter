@@ -20,9 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
 
-/// Input widget for Rests In Reserve
-///
-/// Can be used with a Setting or a Log object
+/// Input widget for Reps In Reserve
 class RiRInputWidget extends StatefulWidget {
   final num? _initialValue;
   final ValueChanged<String> onChanged;

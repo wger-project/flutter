@@ -309,6 +309,8 @@
   "anErrorOccurred": "An Error Occurred!",
   "@anErrorOccurred": {},
   "weight": "Weight",
+  "min": "Min",
+  "max": "Max",
   "@weight": {
     "description": "The weight of a workout log or body weight entry"
   },
@@ -747,7 +749,7 @@
     }
   },
   "simpleMode": "Simple mode",
-  "simpleModeHelp": "Simple mode hides some of the more advanced settings when editing an exercise",
+  "simpleModeHelp": "Hide some of the more advanced settings when editing exercises",
   "progressionRules": "This exercise has progression rules and can't be edited on the mobile app. Please use the web application to edit this exercise.",
   "cacheWarning": "Due to caching it might take some time till the changes are visible throughout the application.",
   "textPromptTitle": "Ready to start?",

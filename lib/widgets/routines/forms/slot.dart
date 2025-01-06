@@ -26,7 +26,9 @@ import 'package:wger/models/workouts/slot.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/widgets/exercises/autocompleter.dart';
+import 'package:wger/widgets/routines/forms/reps_unit.dart';
 import 'package:wger/widgets/routines/forms/rir.dart';
+import 'package:wger/widgets/routines/forms/weight_unit.dart';
 
 class ProgressionRulesInfoBox extends StatelessWidget {
   final Exercise exercise;
@@ -75,8 +77,11 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
   double setsSliderValue = 1.0;
 
   final weightController = TextEditingController();
+  final maxWeightController = TextEditingController();
   final repsController = TextEditingController();
+  final maxRepsController = TextEditingController();
   final restController = TextEditingController();
+  final maxRestController = TextEditingController();
   final rirController = TextEditingController();
 
   final _form = GlobalKey<FormState>();
@@ -89,24 +94,46 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
     if (widget.entry.nrOfSetsConfigs.isNotEmpty) {
       setsSliderValue = widget.entry.nrOfSetsConfigs.first.value.toDouble();
     }
+
     if (widget.entry.weightConfigs.isNotEmpty) {
       weightController.text = widget.entry.weightConfigs.first.value.toString();
     }
+    if (widget.entry.maxWeightConfigs.isNotEmpty) {
+      maxWeightController.text = widget.entry.maxWeightConfigs.first.value.toString();
+    }
+
     if (widget.entry.repsConfigs.isNotEmpty) {
       repsController.text = widget.entry.repsConfigs.first.value.round().toString();
     }
-    if (widget.entry.restTimeConfigs.isNotEmpty) {
-      repsController.text = widget.entry.restTimeConfigs.first.value.round().toString();
+    if (widget.entry.maxRepsConfigs.isNotEmpty) {
+      maxRepsController.text = widget.entry.maxRepsConfigs.first.value.round().toString();
     }
+
+    if (widget.entry.restTimeConfigs.isNotEmpty) {
+      restController.text = widget.entry.restTimeConfigs.first.value.round().toString();
+    }
+    if (widget.entry.maxRestTimeConfigs.isNotEmpty) {
+      maxRestController.text = widget.entry.maxRestTimeConfigs.first.value.round().toString();
+    }
+
     if (widget.entry.rirConfigs.isNotEmpty) {
-      repsController.text = widget.entry.rirConfigs.first.value.round().toString();
+      rirController.text = widget.entry.rirConfigs.first.value.round().toString();
     }
   }
 
   @override
   void dispose() {
     weightController.dispose();
+    maxWeightController.dispose();
+
     repsController.dispose();
+    maxRepsController.dispose();
+
+    restController.dispose();
+    maxRestController.dispose();
+
+    rirController.dispose();
+
     super.dispose();
   }
 
@@ -155,52 +182,134 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
                 })
               },
             ),
-          Text('${i18n.sets}: ${setsSliderValue.round()}'),
-          Slider.adaptive(
-            value: setsSliderValue,
-            min: 0,
-            max: 20,
-            divisions: 20,
-            label: setsSliderValue.round().toString(),
-            onChanged: (double value) {
-              setState(() {
-                setsSliderValue = value;
-              });
-            },
-          ),
-          TextFormField(
-            controller: weightController,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(labelText: i18n.weight),
-            validator: (value) {
-              if (value != null && double.tryParse(value) == null) {
-                return i18n.enterValidNumber;
-              }
-              return null;
-            },
-          ),
-          TextFormField(
-            controller: repsController,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(labelText: i18n.repetitions),
-            validator: (value) {
-              if (value != null && int.tryParse(value) == null) {
-                return i18n.enterValidNumber;
-              }
-              return null;
-            },
+          Row(
+            children: [
+              Text('${i18n.sets}: ${setsSliderValue.round()}'),
+              Expanded(
+                child: Slider(
+                  value: setsSliderValue,
+                  min: 1,
+                  max: 20,
+                  divisions: 20,
+                  label: setsSliderValue.round().toString(),
+                  onChanged: (double value) {
+                    setState(() {
+                      setsSliderValue = value;
+                    });
+                  },
+                ),
+              ),
+            ],
           ),
           if (!widget.simpleMode)
-            TextFormField(
-              controller: restController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(labelText: i18n.restTime),
-              validator: (value) {
-                if (value != null && int.tryParse(value) == null) {
-                  return i18n.enterValidNumber;
-                }
-                return null;
+            WeightUnitInputWidget(
+              widget.entry.weightUnitId,
+              onChanged: (value) {
+                widget.entry.weightUnitId = value;
               },
+            ),
+          Row(
+            spacing: 10,
+            children: [
+              Flexible(
+                child: TextFormField(
+                  controller: weightController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(labelText: i18n.weight),
+                  validator: (value) {
+                    if (value != null && value != '' && double.tryParse(value) == null) {
+                      return i18n.enterValidNumber;
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              if (!widget.simpleMode)
+                Flexible(
+                  child: TextFormField(
+                    controller: maxWeightController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(labelText: i18n.max),
+                    validator: (value) {
+                      if (value != null && value != '' && double.tryParse(value) == null) {
+                        return i18n.enterValidNumber;
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+            ],
+          ),
+          if (!widget.simpleMode)
+            RepetitionUnitInputWidget(
+              widget.entry.repetitionUnitId,
+              onChanged: (value) {
+                widget.entry.repetitionUnitId = value;
+              },
+            ),
+          Row(
+            spacing: 10,
+            children: [
+              Flexible(
+                child: TextFormField(
+                  controller: repsController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(labelText: i18n.repetitions),
+                  validator: (value) {
+                    if (value != null && value != '' && int.tryParse(value) == null) {
+                      return i18n.enterValidNumber;
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              if (!widget.simpleMode)
+                Flexible(
+                  child: TextFormField(
+                    controller: maxRepsController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(labelText: i18n.max),
+                    validator: (value) {
+                      if (value != null && value != '' && int.tryParse(value) == null) {
+                        return i18n.enterValidNumber;
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+            ],
+          ),
+          if (!widget.simpleMode)
+            Row(
+              spacing: 10,
+              children: [
+                Flexible(
+                  child: TextFormField(
+                    controller: restController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(labelText: i18n.restTime),
+                    validator: (value) {
+                      if (value != null && value != '' && int.tryParse(value) == null) {
+                        return i18n.enterValidNumber;
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+                Flexible(
+                  child: TextFormField(
+                    controller: maxRestController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(labelText: i18n.max),
+                    validator: (value) {
+                      if (value != null && value != '' && int.tryParse(value) == null) {
+                        return i18n.enterValidNumber;
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+              ],
             ),
           if (!widget.simpleMode)
             RiRInputWidget(
@@ -222,14 +331,21 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
               // Process new, edited or entries to be deleted
               provider.handleConfig(
                 widget.entry,
+                setsSliderValue == 0 ? '' : setsSliderValue.toString(),
+                ConfigType.sets,
+              );
+
+              provider.handleConfig(
+                widget.entry,
                 weightController.text,
                 ConfigType.weight,
               );
               provider.handleConfig(
                 widget.entry,
-                setsSliderValue == 0 ? '' : setsSliderValue.toString(),
-                ConfigType.sets,
+                maxWeightController.text,
+                ConfigType.maxWeight,
               );
+
               provider.handleConfig(
                 widget.entry,
                 repsController.text,
@@ -237,14 +353,27 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
               );
               provider.handleConfig(
                 widget.entry,
+                maxRepsController.text,
+                ConfigType.maxReps,
+              );
+
+              provider.handleConfig(
+                widget.entry,
                 restController.text,
                 ConfigType.rest,
               );
               provider.handleConfig(
                 widget.entry,
+                maxRestController.text,
+                ConfigType.maxRest,
+              );
+
+              provider.handleConfig(
+                widget.entry,
                 rirController.text,
                 ConfigType.rir,
               );
+
               provider.editSlotEntry(widget.entry);
             },
           ),

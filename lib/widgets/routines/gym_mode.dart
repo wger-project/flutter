@@ -428,7 +428,11 @@ class _LogPageState extends State<LogPage> {
               children: [
                 Flexible(child: getRepsWidget()),
                 const SizedBox(width: 8),
-                Flexible(child: RepetitionUnitInputWidget(widget._log)),
+                Flexible(
+                    child: RepetitionUnitInputWidget(
+                  widget._log.repetitionUnitId,
+                  onChanged: (v) => {},
+                )),
               ],
             ),
           if (_detailed)
@@ -437,7 +441,8 @@ class _LogPageState extends State<LogPage> {
               children: [
                 Flexible(child: getWeightWidget()),
                 const SizedBox(width: 8),
-                Flexible(child: WeightUnitInputWidget(widget._log)),
+                Flexible(
+                    child: WeightUnitInputWidget(widget._log.weightUnitId, onChanged: (v) => {})),
               ],
             ),
           if (_detailed)

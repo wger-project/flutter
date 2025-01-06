@@ -204,6 +204,36 @@ class MockRoutinesProvider extends _i1.Mock implements _i12.RoutinesProvider {
       );
 
   @override
+  _i3.WeightUnit findWeightUnitById(int? id) => (super.noSuchMethod(
+        Invocation.method(
+          #findWeightUnitById,
+          [id],
+        ),
+        returnValue: _FakeWeightUnit_1(
+          this,
+          Invocation.method(
+            #findWeightUnitById,
+            [id],
+          ),
+        ),
+      ) as _i3.WeightUnit);
+
+  @override
+  _i4.RepetitionUnit findRepetitionUnitById(int? id) => (super.noSuchMethod(
+        Invocation.method(
+          #findRepetitionUnitById,
+          [id],
+        ),
+        returnValue: _FakeRepetitionUnit_2(
+          this,
+          Invocation.method(
+            #findRepetitionUnitById,
+            [id],
+          ),
+        ),
+      ) as _i4.RepetitionUnit);
+
+  @override
   List<_i5.Routine> getPlans() => (super.noSuchMethod(
         Invocation.method(
           #getPlans,

@@ -26,9 +26,13 @@ import 'package:wger/providers/routines.dart';
 ///
 /// Can be used with a Setting or a Log object
 class RepetitionUnitInputWidget extends StatefulWidget {
-  final dynamic _setting;
+  final int _initialValue;
+  late int selectedRepetitionUnit;
+  final ValueChanged<int> onChanged;
 
-  const RepetitionUnitInputWidget(this._setting);
+  RepetitionUnitInputWidget(this._initialValue, {required this.onChanged}) {
+    selectedRepetitionUnit = _initialValue;
+  }
 
   @override
   _RepetitionUnitInputWidgetState createState() => _RepetitionUnitInputWidgetState();
@@ -37,7 +41,9 @@ class RepetitionUnitInputWidget extends StatefulWidget {
 class _RepetitionUnitInputWidgetState extends State<RepetitionUnitInputWidget> {
   @override
   Widget build(BuildContext context) {
-    RepetitionUnit selectedWeightUnit = widget._setting.repetitionUnitObj;
+    final unitProvider = context.read<RoutinesProvider>();
+
+    RepetitionUnit selectedWeightUnit = unitProvider.findRepetitionUnitById(widget._initialValue);
 
     return DropdownButtonFormField(
       value: selectedWeightUnit,
@@ -48,7 +54,8 @@ class _RepetitionUnitInputWidgetState extends State<RepetitionUnitInputWidget> {
       onChanged: (RepetitionUnit? newValue) {
         setState(() {
           selectedWeightUnit = newValue!;
-          widget._setting.repetitionUnit = newValue;
+          widget.selectedRepetitionUnit = newValue.id;
+          widget.onChanged(newValue.id);
         });
       },
       items: Provider.of<RoutinesProvider>(context, listen: false)
