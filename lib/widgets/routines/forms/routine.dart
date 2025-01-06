@@ -212,14 +212,12 @@ class _RoutineFormState extends State<RoutineForm> {
                     });
 
                     // Save to DB
+                    final routinesProvider = context.read<RoutinesProvider>();
+
                     if (widget._routine.id != null) {
-                      await Provider.of<RoutinesProvider>(context, listen: false)
-                          .editRoutine(widget._routine);
+                      await routinesProvider.editRoutine(widget._routine);
                     } else {
-                      final Routine newPlan = await Provider.of<RoutinesProvider>(
-                        context,
-                        listen: false,
-                      ).addRoutine(widget._routine);
+                      await routinesProvider.addRoutine(widget._routine);
                     }
 
                     setState(() {

@@ -35,9 +35,8 @@ class Routine {
 
   /// In weeks
   static const MIN_DURATION = 2;
-
-  /// In weeks
   static const MAX_DURATION = 16;
+  static const DEFAULT_DURATION = 12;
 
   @JsonKey(required: true, includeToJson: false)
   int? id;
@@ -99,7 +98,7 @@ class Routine {
     description = '';
     created = DateTime.now();
     start = DateTime.now();
-    end = DateTime.now();
+    end = DateTime.now().add(const Duration(days: DEFAULT_DURATION * 7));
     fitInWeek = false;
   }
 

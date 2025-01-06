@@ -144,14 +144,8 @@
   "@category": {
     "description": "Category for an exercise, ingredient, etc."
   },
-  "newWorkout": "New workout plan",
-  "@newWorkout": {
-    "description": "Header when adding a new workout"
-  },
-  "noWorkoutPlans": "You have no workout plans",
-  "@noWorkoutPlans": {
-    "description": "Message shown when the user has no workout plans"
-  },
+  "newRoutine": "New routine",
+  "noRoutines": "You have no routines",
   "reps": "Reps",
   "@reps": {
     "description": "Shorthand for repetitions, used when space constraints are tighter"
