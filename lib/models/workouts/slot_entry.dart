@@ -129,7 +129,30 @@ class SlotEntry {
     required this.weightUnitId,
     required this.weightRounding,
     required this.comment,
-  });
+    this.weightConfigs = const [],
+    this.maxWeightConfigs = const [],
+    this.nrOfSetsConfigs = const [],
+    this.maxNrOfSetsConfigs = const [],
+    this.rirConfigs = const [],
+    this.maxRirConfigs = const [],
+    this.restTimeConfigs = const [],
+    this.maxRestTimeConfigs = const [],
+    this.repsConfigs = const [],
+    this.maxRepsConfigs = const [],
+    RepetitionUnit? repetitionUnit,
+    WeightUnit? weightUnit,
+    Exercise? exercise,
+  }) {
+    if (repetitionUnit != null) {
+      repetitionUnitObj = repetitionUnit;
+    }
+    if (weightUnit != null) {
+      weightUnitObj = weightUnit;
+    }
+    if (exercise != null) {
+      exerciseObj = exercise;
+    }
+  }
 
   SlotEntry.empty();
 

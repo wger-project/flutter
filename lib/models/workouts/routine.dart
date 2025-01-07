@@ -85,11 +85,13 @@ class Routine {
     required this.end,
     this.fitInWeek = false,
     String? description,
-    List<Day>? days,
-    List<Log>? logs,
+    this.days = const [],
+    this.dayData = const [],
+    this.dayDataGym = const [],
+    this.dayDataCurrentIteration = const [],
+    this.dayDataCurrentIterationGym = const [],
+    this.logs = const [],
   }) {
-    this.days = days ?? [];
-    this.logs = logs ?? [];
     this.description = description ?? '';
   }
 

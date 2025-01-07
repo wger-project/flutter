@@ -17,6 +17,7 @@
  */
 
 import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/workouts/base_config.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
@@ -75,14 +76,34 @@ Routine getRoutine({List<Exercise>? exercises}) {
     order: 1,
     exerciseId: 1,
     repetitionUnitId: 1,
-    repetitionRounding: 0.25,
+    repetitionRounding: 1,
     weightUnitId: 1,
-    weightRounding: 0.25,
+    weightRounding: 1.25,
     comment: 'ddd',
+    repetitionUnit: testRepetitionUnit1,
+    weightUnit: testWeightUnit1,
+    exercise: testExercise[0],
+    weightConfigs: [
+      BaseConfig.firstIteration(100, 1),
+      BaseConfig(
+        id: 1,
+        slotEntryId: 1,
+        iteration: 2,
+        value: 5,
+        operation: '+',
+        step: 'abs',
+        needLogToApply: false,
+        requirements: null,
+        repeat: true,
+      ),
+    ],
+    repsConfigs: [
+      BaseConfig.firstIteration(3, 1),
+    ],
+    nrOfSetsConfigs: [
+      BaseConfig.firstIteration(4, 1),
+    ],
   );
-  slotEntryBenchPress.repetitionUnit = testRepetitionUnit1;
-  slotEntryBenchPress.weightUnit = testWeightUnit1;
-  slotEntryBenchPress.exercise = testExercise[0];
 
   final slotBenchPress = Slot.withData(
     id: 1,
@@ -103,10 +124,19 @@ Routine getRoutine({List<Exercise>? exercises}) {
     weightUnitId: 1,
     weightRounding: 0.25,
     comment: 'ddd',
+    repetitionUnit: testRepetitionUnit1,
+    weightUnit: testWeightUnit1,
+    exercise: testExercise[4],
+    weightConfigs: [
+      BaseConfig.firstIteration(80, 1),
+    ],
+    repsConfigs: [
+      BaseConfig.firstIteration(5, 1),
+    ],
+    nrOfSetsConfigs: [
+      BaseConfig.firstIteration(3, 1),
+    ],
   );
-  slotEntrySquat.repetitionUnit = testRepetitionUnit1;
-  slotEntrySquat.weightUnit = testWeightUnit1;
-  slotEntrySquat.exercise = testExercise[4];
 
   final slotSquat = Slot.withData(id: 2, day: 1, order: 1);
   slotSquat.addExerciseBase(testExercise[4]);
@@ -122,10 +152,19 @@ Routine getRoutine({List<Exercise>? exercises}) {
     weightUnitId: 1,
     weightRounding: 0.25,
     comment: 'ddd',
+    repetitionUnit: testRepetitionUnit1,
+    weightUnit: testWeightUnit1,
+    exercise: testExercise[5],
+    weightConfigs: [
+      BaseConfig.firstIteration(10, 1),
+    ],
+    repsConfigs: [
+      BaseConfig.firstIteration(12, 1),
+    ],
+    nrOfSetsConfigs: [
+      BaseConfig.firstIteration(4, 1),
+    ],
   );
-  slotEntrySideRaises.repetitionUnit = testRepetitionUnit1;
-  slotEntrySideRaises.weightUnit = testWeightUnit1;
-  slotEntrySideRaises.exercise = testExercise[5];
   // settingSideRaises.weight = 6;
 
   final slotSideRaises = Slot.withData(id: 3, day: 1, order: 1);

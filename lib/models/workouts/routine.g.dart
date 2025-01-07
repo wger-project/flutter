@@ -20,8 +20,9 @@ Routine _$RoutineFromJson(Map<String, dynamic> json) {
     fitInWeek: json['fit_in_week'] as bool? ?? false,
     description: json['description'] as String?,
     days: (json['days'] as List<dynamic>?)
-        ?.map((e) => Day.fromJson(e as Map<String, dynamic>))
-        .toList(),
+            ?.map((e) => Day.fromJson(e as Map<String, dynamic>))
+            .toList() ??
+        const [],
   );
 }
 

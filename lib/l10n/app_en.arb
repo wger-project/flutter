@@ -69,10 +69,6 @@
   "@registerInstead": {},
   "loginInstead": "Already have an account? Login",
   "@loginInstead": {},
-  "labelWorkoutPlans": "Workout plans",
-  "@labelWorkoutPlans": {
-    "description": "Title for screen workout plans"
-  },
   "labelBottomNavWorkout": "Workout",
   "@labelBottomNavWorkout": {
     "description": "Label used in bottom navigation, use a short word"
@@ -144,6 +140,7 @@
   "@category": {
     "description": "Category for an exercise, ingredient, etc."
   },
+  "routines": "Routines",
   "newRoutine": "New routine",
   "noRoutines": "You have no routines",
   "reps": "Reps",

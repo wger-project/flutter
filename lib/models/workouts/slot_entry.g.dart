@@ -34,48 +34,47 @@ SlotEntry _$SlotEntryFromJson(Map<String, dynamic> json) {
     weightUnitId: (json['weight_unit'] as num).toInt(),
     weightRounding: stringToNum(json['weight_rounding'] as String?),
     comment: json['comment'] as String,
-  )
-    ..repsConfigs = (json['reps_configs'] as List<dynamic>?)
+    weightConfigs: (json['weight_configs'] as List<dynamic>?)
             ?.map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
             .toList() ??
-        []
-    ..maxRepsConfigs = (json['max_reps_configs'] as List<dynamic>?)
+        [],
+    maxWeightConfigs: (json['max_weight_configs'] as List<dynamic>?)
             ?.map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
             .toList() ??
-        []
-    ..weightConfigs = (json['weight_configs'] as List<dynamic>?)
+        [],
+    nrOfSetsConfigs: (json['set_nr_configs'] as List<dynamic>?)
             ?.map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
             .toList() ??
-        []
-    ..maxWeightConfigs = (json['max_weight_configs'] as List<dynamic>?)
+        [],
+    maxNrOfSetsConfigs: (json['max_set_nr_configs'] as List<dynamic>?)
             ?.map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
             .toList() ??
-        []
-    ..nrOfSetsConfigs = (json['set_nr_configs'] as List<dynamic>?)
+        [],
+    rirConfigs: (json['rir_configs'] as List<dynamic>?)
             ?.map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
             .toList() ??
-        []
-    ..maxNrOfSetsConfigs = (json['max_set_nr_configs'] as List<dynamic>?)
+        [],
+    maxRirConfigs: (json['max_rir_configs'] as List<dynamic>?)
             ?.map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
             .toList() ??
-        []
-    ..rirConfigs = (json['rir_configs'] as List<dynamic>?)
+        [],
+    restTimeConfigs: (json['rest_configs'] as List<dynamic>?)
             ?.map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
             .toList() ??
-        []
-    ..maxRirConfigs = (json['max_rir_configs'] as List<dynamic>?)
+        [],
+    maxRestTimeConfigs: (json['max_rest_configs'] as List<dynamic>?)
             ?.map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
             .toList() ??
-        []
-    ..restTimeConfigs = (json['rest_configs'] as List<dynamic>?)
+        [],
+    repsConfigs: (json['reps_configs'] as List<dynamic>?)
             ?.map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
             .toList() ??
-        []
-    ..maxRestTimeConfigs = (json['max_rest_configs'] as List<dynamic>?)
+        [],
+    maxRepsConfigs: (json['max_reps_configs'] as List<dynamic>?)
             ?.map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
             .toList() ??
-        []
-    ..config = json['config'];
+        [],
+  )..config = json['config'];
 }
 
 Map<String, dynamic> _$SlotEntryToJson(SlotEntry instance) => <String, dynamic>{

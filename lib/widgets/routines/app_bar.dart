@@ -46,7 +46,7 @@ class RoutineListAppBar extends StatelessWidget implements PreferredSizeWidget {
     final i18n = AppLocalizations.of(context);
 
     return AppBar(
-      title: Text(i18n.labelWorkoutPlans),
+      title: Text(i18n.routines),
       actions: [
         PopupMenuButton(
           itemBuilder: (context) {
