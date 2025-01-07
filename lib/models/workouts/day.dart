@@ -57,9 +57,18 @@ class Day {
   @JsonKey(required: false, defaultValue: [], includeFromJson: true, includeToJson: false)
   List<Slot> slots = [];
 
-  Day() {
-    slots = [];
-  }
+  Day({
+    this.id,
+    required this.routineId,
+    required this.name,
+    required this.description,
+    this.isRest = false,
+    this.needLogsToAdvance = false,
+    this.type = 'custom',
+    this.order = 0,
+    this.config = null,
+    this.slots = const [],
+  });
 
   Day.empty() {
     name = 'new day';

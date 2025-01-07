@@ -17,6 +17,7 @@ BaseConfig _$BaseConfigFromJson(Map<String, dynamic> json) {
       'operation',
       'step',
       'need_log_to_apply',
+      'repeat',
       'requirements'
     ],
   );
@@ -24,11 +25,12 @@ BaseConfig _$BaseConfigFromJson(Map<String, dynamic> json) {
     id: (json['id'] as num?)?.toInt(),
     slotEntryId: (json['slot_entry'] as num).toInt(),
     iteration: (json['iteration'] as num).toInt(),
+    repeat: json['repeat'] as bool? ?? false,
     value: stringOrIntToNum(json['value']),
-    operation: json['operation'] as String,
-    step: json['step'] as String,
-    needLogToApply: json['need_log_to_apply'] as bool,
-    requirements: json['requirements'],
+    operation: json['operation'] as String? ?? 'r',
+    step: json['step'] as String? ?? 'abs',
+    needLogToApply: json['need_log_to_apply'] as bool? ?? false,
+    requirements: json['requirements'] ?? null,
   );
 }
 
@@ -39,5 +41,6 @@ Map<String, dynamic> _$BaseConfigToJson(BaseConfig instance) => <String, dynamic
       'operation': instance.operation,
       'step': instance.step,
       'need_log_to_apply': instance.needLogToApply,
+      'repeat': instance.repeat,
       'requirements': instance.requirements,
     };

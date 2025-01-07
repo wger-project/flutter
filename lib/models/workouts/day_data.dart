@@ -42,9 +42,9 @@ class DayData {
   DayData({
     required this.iteration,
     required this.date,
-    required this.label,
+    this.label = '',
     required this.day,
-    required this.slots,
+    this.slots = const [],
   });
 
   // Boilerplate

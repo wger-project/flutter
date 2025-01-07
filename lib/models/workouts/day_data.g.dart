@@ -14,11 +14,12 @@ DayData _$DayDataFromJson(Map<String, dynamic> json) {
   return DayData(
     iteration: (json['iteration'] as num).toInt(),
     date: DateTime.parse(json['date'] as String),
-    label: json['label'] as String?,
+    label: json['label'] as String? ?? '',
     day: json['day'] == null ? null : Day.fromJson(json['day'] as Map<String, dynamic>),
-    slots: (json['slots'] as List<dynamic>)
-        .map((e) => SlotData.fromJson(e as Map<String, dynamic>))
-        .toList(),
+    slots: (json['slots'] as List<dynamic>?)
+            ?.map((e) => SlotData.fromJson(e as Map<String, dynamic>))
+            .toList() ??
+        const [],
   );
 }
 

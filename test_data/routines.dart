@@ -19,10 +19,12 @@
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/base_config.dart';
 import 'package:wger/models/workouts/day.dart';
+import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/slot.dart';
+import 'package:wger/models/workouts/slot_data.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
 
@@ -171,28 +173,79 @@ Routine getRoutine({List<Exercise>? exercises}) {
   slotSideRaises.addExerciseBase(testExercise[5]);
   slotSideRaises.entries.add(slotEntrySideRaises);
 
-  final dayChestShoulders = Day()
-    ..id = 1
-    ..routineId = 1
-    ..description = 'chest, shoulders';
-  dayChestShoulders.slots.add(slotBenchPress);
-  dayChestShoulders.slots.add(slotSideRaises);
+  final dayChestShoulders = Day(
+    id: 1,
+    routineId: 1,
+    name: 'first day',
+    description: 'chest, shoulders',
+    slots: [slotBenchPress, slotSideRaises],
+  );
 
-  final dayLegs = Day()
-    ..id = 2
-    ..routineId = 1
-    ..description = 'legs';
-  dayLegs.slots.add(slotSquat);
+  final dayLegs = Day(
+    id: 2,
+    routineId: 1,
+    name: 'second day',
+    description: 'legs',
+    slots: [slotSquat],
+  );
 
   final routine = Routine(
-    id: 1,
-    created: DateTime(2021, 01, 01),
-    name: '3 day workout',
-    start: DateTime(2024, 11, 01),
-    end: DateTime(2024, 12, 01),
-    days: [dayChestShoulders, dayLegs],
-    logs: [log1, log2, log3],
-  );
+      id: 1,
+      created: DateTime(2021, 01, 01),
+      name: '3 day workout',
+      start: DateTime(2024, 11, 01),
+      end: DateTime(2024, 12, 01),
+      days: [
+        dayChestShoulders,
+        dayLegs
+      ],
+      logs: [
+        log1,
+        log2,
+        log3
+      ],
+      dayDataCurrentIteration: [
+        DayData(
+          iteration: 1,
+          date: DateTime(2024, 11, 01),
+          label: '',
+          day: dayChestShoulders,
+          slots: [
+            SlotData(
+              comment: 'foo',
+              isSuperset: false,
+              exerciseIds: [1],
+              setConfigs: [
+                // SetConfigData(
+                //   reps: 10,
+                //   weight: 10,
+                //   rir: '1.5',
+                // ),
+              ],
+            )
+          ],
+        ),
+        DayData(
+          iteration: 1,
+          date: DateTime(2024, 11, 02),
+          label: '',
+          day: dayLegs,
+          slots: [
+            SlotData(
+              comment: 'foo',
+              isSuperset: false,
+              exerciseIds: [8],
+              setConfigs: [
+                // SetConfigData(
+                //   reps: 8,
+                //   weight: 50,
+                //   rir: '',
+                // ),
+              ],
+            )
+          ],
+        ),
+      ]);
 
   return routine;
 }

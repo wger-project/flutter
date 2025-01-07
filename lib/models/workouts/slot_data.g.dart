@@ -14,10 +14,13 @@ SlotData _$SlotDataFromJson(Map<String, dynamic> json) {
   return SlotData(
     comment: json['comment'] as String,
     isSuperset: json['is_superset'] as bool,
-    exerciseIds: (json['exercises'] as List<dynamic>).map((e) => (e as num).toInt()).toList(),
-  )..setConfigs = (json['sets'] as List<dynamic>)
-      .map((e) => SetConfigData.fromJson(e as Map<String, dynamic>))
-      .toList();
+    exerciseIds:
+        (json['exercises'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
+    setConfigs: (json['sets'] as List<dynamic>?)
+            ?.map((e) => SetConfigData.fromJson(e as Map<String, dynamic>))
+            .toList() ??
+        const [],
+  );
 }
 
 Map<String, dynamic> _$SlotDataToJson(SlotData instance) => <String, dynamic>{

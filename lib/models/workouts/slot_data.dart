@@ -38,7 +38,8 @@ class SlotData {
   SlotData({
     required this.comment,
     required this.isSuperset,
-    required this.exerciseIds,
+    this.exerciseIds = const [],
+    this.setConfigs = const [],
   });
 
   // Boilerplate
