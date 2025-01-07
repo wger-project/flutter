@@ -38,7 +38,8 @@ void main() {
     mockBaseProvider,
     database: ExerciseDatabase.inMemory(NativeDatabase.memory()),
   );
-  Widget createHomeScreen({locale = 'en'}) {
+
+  Widget renderWidget({locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
 
     return ChangeNotifierProvider<RoutinesProvider>(
@@ -65,31 +66,17 @@ void main() {
   }
 
   testWidgets('Test the widgets on the nutritional plan screen', (WidgetTester tester) async {
-    await tester.pumpWidget(createHomeScreen());
+    await tester.pumpWidget(renderWidget());
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();
 
     expect(find.text('3 day workout'), findsOneWidget);
+
+    expect(find.text('first day'), findsOneWidget);
     expect(find.text('chest, shoulders'), findsOneWidget);
+
+    expect(find.text('second day'), findsOneWidget);
     expect(find.text('legs'), findsOneWidget);
     expect(find.byType(Card), findsNWidgets(2));
-  });
-
-  testWidgets('Tests the localization of times - EN', (WidgetTester tester) async {
-    await tester.pumpWidget(createHomeScreen());
-    await tester.tap(find.byType(TextButton));
-    await tester.pumpAndSettle();
-
-    expect(find.text('Monday, Tuesday'), findsOneWidget);
-    expect(find.text('Thursday'), findsOneWidget);
-  });
-
-  testWidgets('Tests the localization of times - DE', (WidgetTester tester) async {
-    await tester.pumpWidget(createHomeScreen(locale: 'de'));
-    await tester.tap(find.byType(TextButton));
-    await tester.pumpAndSettle();
-
-    expect(find.text('Montag, Dienstag'), findsOneWidget);
-    expect(find.text('Donnerstag'), findsOneWidget);
   });
 }

@@ -94,7 +94,7 @@ void main() {
     await tester.pumpWidget(renderWidget());
 
     //debugDumpApp();
-    expect(find.text('Workout plans'), findsOneWidget);
+    expect(find.text('Routines'), findsOneWidget);
     expect(find.text('test 1'), findsOneWidget);
     expect(find.text('test 2'), findsOneWidget);
     expect(find.byType(Card), findsNWidgets(2));
