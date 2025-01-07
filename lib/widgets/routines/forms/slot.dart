@@ -331,7 +331,7 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
               // Process new, edited or entries to be deleted
               provider.handleConfig(
                 widget.entry,
-                setsSliderValue == 0 ? '' : setsSliderValue.toString(),
+                setsSliderValue == 0 ? '' : setsSliderValue.round().toString(),
                 ConfigType.sets,
               );
 
