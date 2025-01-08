@@ -26,11 +26,11 @@ Day _$DayFromJson(Map<String, dynamic> json) {
     routineId: (json['routine'] as num).toInt(),
     name: json['name'] as String,
     description: json['description'] as String,
-    isRest: json['is_rest'] as bool,
-    needLogsToAdvance: json['need_logs_to_advance'] as bool,
-    type: json['type'] as String,
-    order: json['order'] as num,
-    config: json['config'],
+    isRest: json['is_rest'] as bool? ?? false,
+    needLogsToAdvance: json['need_logs_to_advance'] as bool? ?? false,
+    type: json['type'] as String? ?? 'custom',
+    order: json['order'] as num? ?? 0,
+    config: json['config'] ?? null,
     slots: (json['slots'] as List<dynamic>?)
             ?.map((e) => Slot.fromJson(e as Map<String, dynamic>))
             .toList() ??

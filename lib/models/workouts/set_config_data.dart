@@ -17,6 +17,7 @@
  */
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
@@ -43,6 +44,9 @@ class SetConfigData {
 
   @JsonKey(required: true, name: 'sets')
   late num? nrOfSets;
+
+  @JsonKey(required: true, name: 'max_sets')
+  late num? maxNrOfSets;
 
   @JsonKey(required: true, fromJson: stringToNumNull)
   late num? weight;
@@ -77,6 +81,9 @@ class SetConfigData {
   @JsonKey(required: true)
   late String? rir;
 
+  @JsonKey(required: true, name: 'max_rir')
+  late String? maxRir;
+
   @JsonKey(required: true)
   late String? rpe;
 
@@ -92,20 +99,38 @@ class SetConfigData {
   SetConfigData({
     required this.exerciseId,
     required this.slotEntryId,
-    required this.type,
+    this.type = 'normal',
+    required this.nrOfSets,
+    this.maxNrOfSets,
     required this.weight,
-    required this.weightUnitId,
-    required this.weightRounding,
+    this.maxWeight,
+    this.weightUnitId = WEIGHT_UNIT_KG,
+    this.weightRounding = 1.25,
     required this.reps,
-    required this.maxReps,
-    required this.repsUnitId,
-    required this.repsRounding,
+    this.maxReps,
+    this.repsUnitId = REP_UNIT_REPETITIONS_ID,
+    this.repsRounding = 1,
     required this.rir,
+    this.maxRir,
     required this.rpe,
     required this.restTime,
-    required this.maxRestTime,
-    required this.comment,
-  });
+    this.maxRestTime,
+    this.comment = '',
+    this.textRepr = '',
+    Exercise? exercise,
+    WeightUnit? weightUnit,
+    RepetitionUnit? repsUnit,
+  }) {
+    if (exercise != null) {
+      this.exercise = exercise;
+    }
+    if (weightUnit != null) {
+      this.weightUnit = weightUnit;
+    }
+    if (repsUnit != null) {
+      this.repsUnit = repsUnit;
+    }
+  }
 
   // Boilerplate
   factory SetConfigData.fromJson(Map<String, dynamic> json) => _$SetConfigDataFromJson(json);
