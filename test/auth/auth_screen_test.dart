@@ -73,7 +73,7 @@ void main() {
 
   setUp(() {
     mockClient = MockClient();
-    authProvider = AuthProvider(mockClient, false);
+    authProvider = AuthProvider(mockClient);
     authProvider.serverUrl = 'https://wger.de';
 
     SharedPreferences.setMockInitialValues({});
@@ -89,15 +89,18 @@ void main() {
       tLogin,
       headers: anyNamed('headers'),
       body: anyNamed('body'),
-    )).thenAnswer((_) => Future(() => Response(json.encode(responseLoginOk), 200)));
+    )).thenAnswer(
+        (_) => Future(() => Response(json.encode(responseLoginOk), 200)));
 
-    when(mockClient.get(any)).thenAnswer((_) => Future(() => Response('"1.2.3.4"', 200)));
+    when(mockClient.get(any))
+        .thenAnswer((_) => Future(() => Response('"1.2.3.4"', 200)));
 
     when(mockClient.post(
       tRegistration,
       headers: anyNamed('headers'),
       body: anyNamed('body'),
-    )).thenAnswer((_) => Future(() => Response(json.encode(responseRegistrationOk), 201)));
+    )).thenAnswer((_) =>
+        Future(() => Response(json.encode(responseRegistrationOk), 201)));
   });
 
   group('Login mode', () {
@@ -126,8 +129,10 @@ void main() {
       await tester.pumpWidget(getWidget());
 
       // Act
-      await tester.enterText(find.byKey(const Key('inputUsername')), 'testuser');
-      await tester.enterText(find.byKey(const Key('inputPassword')), '123456789');
+      await tester.enterText(
+          find.byKey(const Key('inputUsername')), 'testuser');
+      await tester.enterText(
+          find.byKey(const Key('inputPassword')), '123456789');
       await tester.tap(find.byKey(const Key('actionButton')));
       await tester.pumpAndSettle();
 
@@ -141,7 +146,8 @@ void main() {
       ));
     });
 
-    testWidgets('Login - wront username & password', (WidgetTester tester) async {
+    testWidgets('Login - wront username & password',
+        (WidgetTester tester) async {
       // Arrange
       await tester.binding.setSurfaceSize(const Size(1080, 1920));
       tester.view.devicePixelRatio = 1.0;
@@ -157,8 +163,10 @@ void main() {
       await tester.pumpWidget(getWidget());
 
       // Act
-      await tester.enterText(find.byKey(const Key('inputUsername')), 'testuser');
-      await tester.enterText(find.byKey(const Key('inputPassword')), '123456789');
+      await tester.enterText(
+          find.byKey(const Key('inputUsername')), 'testuser');
+      await tester.enterText(
+          find.byKey(const Key('inputPassword')), '123456789');
       await tester.tap(find.byKey(const Key('actionButton')));
       await tester.pumpAndSettle();
 
@@ -211,9 +219,12 @@ void main() {
 
       // Act
       await tester.tap(find.byKey(const Key('toggleActionButton')));
-      await tester.enterText(find.byKey(const Key('inputUsername')), 'testuser');
-      await tester.enterText(find.byKey(const Key('inputPassword')), '123456789');
-      await tester.enterText(find.byKey(const Key('inputPassword2')), '123456789');
+      await tester.enterText(
+          find.byKey(const Key('inputUsername')), 'testuser');
+      await tester.enterText(
+          find.byKey(const Key('inputPassword')), '123456789');
+      await tester.enterText(
+          find.byKey(const Key('inputPassword2')), '123456789');
       await tester.tap(find.byKey(const Key('actionButton')));
       await tester.pumpAndSettle();
 
@@ -226,7 +237,8 @@ void main() {
       ));
     });
 
-    testWidgets('Registration - password problems', (WidgetTester tester) async {
+    testWidgets('Registration - password problems',
+        (WidgetTester tester) async {
       // Arrange
       await tester.binding.setSurfaceSize(const Size(1080, 1920));
       tester.view.devicePixelRatio = 1.0;
@@ -247,16 +259,20 @@ void main() {
 
       // Act
       await tester.tap(find.byKey(const Key('toggleActionButton')));
-      await tester.enterText(find.byKey(const Key('inputUsername')), 'testuser');
-      await tester.enterText(find.byKey(const Key('inputPassword')), '123456789');
-      await tester.enterText(find.byKey(const Key('inputPassword2')), '123456789');
+      await tester.enterText(
+          find.byKey(const Key('inputUsername')), 'testuser');
+      await tester.enterText(
+          find.byKey(const Key('inputPassword')), '123456789');
+      await tester.enterText(
+          find.byKey(const Key('inputPassword2')), '123456789');
       await tester.tap(find.byKey(const Key('actionButton')));
       await tester.pumpAndSettle();
 
       // Assert
       expect(find.textContaining('An Error Occurred'), findsOne);
       expect(find.textContaining('This password is too common'), findsOne);
-      expect(find.textContaining('This password is entirely numeric'), findsOne);
+      expect(
+          find.textContaining('This password is entirely numeric'), findsOne);
       expect(find.textContaining('This field must be unique'), findsOne);
 
       verify(mockClient.post(

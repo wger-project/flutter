@@ -109,13 +109,16 @@ class _UserProfileFormState extends State<UserProfileForm> {
 
                 // Verify
                 await context.read<UserProvider>().verifyEmail();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      AppLocalizations.of(context).verifiedEmailInfo(widget._profile.email),
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        AppLocalizations.of(context)
+                            .verifiedEmailInfo(widget._profile.email),
+                      ),
                     ),
-                  ),
-                );
+                  );
+                }
               },
               child: Text(AppLocalizations.of(context).verify),
             ),

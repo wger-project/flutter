@@ -102,16 +102,19 @@ void main() {
 
       // Default view shows plan description, info button, and no ingredients
       expect(find.text('Less fat, more protein'), findsOneWidget);
-      expect(find.byIcon(Icons.info_outline), findsNWidgets(3)); // 2 meals, 1 "other logs"
+      expect(find.byIcon(Icons.info_outline),
+          findsNWidgets(3)); // 2 meals, 1 "other logs"
       expect(find.byIcon(Icons.info), findsNothing);
       expect(find.text('100g Water'), findsNothing);
       expect(find.text('75g Burger soup'), findsNothing);
 
       // tap the first info button changes it and reveals ingredients for the first meal
       var infoOutlineButtons = find.byIcon(Icons.info_outline);
-      await tester.tap(infoOutlineButtons.first); // 2nd button shows up also, but is off-screen
+      await tester.tap(infoOutlineButtons
+          .first); // 2nd button shows up also, but is off-screen
       await tester.pumpAndSettle();
-      await screenMatchesGolden(tester, 'nutritional_plan_2_one_meal_with_ingredients');
+      await screenMatchesGolden(
+          tester, 'nutritional_plan_2_one_meal_with_ingredients');
 
       // Ingredients show up now
       expect(find.text('100g Water'), findsOneWidget);
@@ -130,7 +133,8 @@ void main() {
 
       await tester.tap(infoOutlineButtons.first);
       await tester.pumpAndSettle();
-      await screenMatchesGolden(tester, 'nutritional_plan_3_both_meals_with_ingredients');
+      await screenMatchesGolden(
+          tester, 'nutritional_plan_3_both_meals_with_ingredients');
       expect(find.byIcon(Icons.info_outline), findsOneWidget);
       expect(find.byIcon(Icons.info), findsNWidgets(2));
 
@@ -141,7 +145,8 @@ void main() {
     },
   );
 
-  testWidgets('Tests the localization of times - EN', (WidgetTester tester) async {
+  testWidgets('Tests the localization of times - EN',
+      (WidgetTester tester) async {
     await tester.pumpWidget(createNutritionalPlan());
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();
@@ -149,7 +154,8 @@ void main() {
     expect(find.textContaining('5:00 PM'), findsOneWidget);
   });
 
-  testWidgets('Tests the localization of times - DE', (WidgetTester tester) async {
+  testWidgets('Tests the localization of times - DE',
+      (WidgetTester tester) async {
     await tester.pumpWidget(createNutritionalPlan(locale: 'de'));
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();

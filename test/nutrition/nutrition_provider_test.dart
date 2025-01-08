@@ -77,9 +77,12 @@ void main() {
       host: 'localhost',
       path: 'api/v2/$ingredientInfoUrl',
     );
-    when(mockWgerBaseProvider.makeUrl(planInfoUrl, id: anyNamed('id'))).thenReturn(planInfoUri);
-    when(mockWgerBaseProvider.makeUrl(planUrl, id: anyNamed('id'))).thenReturn(planUri);
-    when(mockWgerBaseProvider.makeUrl(diaryUrl, query: anyNamed('query'))).thenReturn(diaryUri);
+    when(mockWgerBaseProvider.makeUrl(planInfoUrl, id: anyNamed('id')))
+        .thenReturn(planInfoUri);
+    when(mockWgerBaseProvider.makeUrl(planUrl, id: anyNamed('id')))
+        .thenReturn(planUri);
+    when(mockWgerBaseProvider.makeUrl(diaryUrl, query: anyNamed('query')))
+        .thenReturn(diaryUri);
     when(mockWgerBaseProvider.makeUrl(ingredientInfoUrl, id: anyNamed('id')))
         .thenReturn(ingredientUri);
     when(mockWgerBaseProvider.fetch(planInfoUri)).thenAnswer(
@@ -111,7 +114,8 @@ void main() {
   });
 
   group('Ingredient cache DB', () {
-    test('that if there is already valid data in the DB, the API is not hit', () async {
+    test('that if there is already valid data in the DB, the API is not hit',
+        () async {
       // Arrange
       nutritionProvider.ingredients = [];
       await database.into(database.ingredients).insert(
@@ -132,7 +136,8 @@ void main() {
       verifyNever(mockWgerBaseProvider.fetchPaginated(any));
     });
 
-    test('fetching an ingredient not present in the DB, the API is hit', () async {
+    test('fetching an ingredient not present in the DB, the API is hit',
+        () async {
       // Arrange
       nutritionProvider.ingredients = [];
       await database.into(database.ingredients).insert(
@@ -149,7 +154,8 @@ void main() {
       // Assert
       expect(nutritionProvider.ingredients.length, 1);
       expect(nutritionProvider.ingredients.first.id, 10065);
-      expect(nutritionProvider.ingredients.first.name, "'Old Times' Orange Fine Cut Marmalade");
+      expect(nutritionProvider.ingredients.first.name,
+          "'Old Times' Orange Fine Cut Marmalade");
       verify(mockWgerBaseProvider.fetch(any));
     });
   });

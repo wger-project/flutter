@@ -72,7 +72,8 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
   @override
   Widget build(BuildContext context) {
     const appBarForeground = Colors.white;
-    final workoutPlan = ModalRoute.of(context)!.settings.arguments as WorkoutPlan;
+    final workoutPlan =
+        ModalRoute.of(context)!.settings.arguments as WorkoutPlan;
 
     return Scaffold(
       body: CustomScrollView(
@@ -85,7 +86,10 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
               titlePadding: const EdgeInsets.fromLTRB(56, 0, 56, 16),
               title: Text(
                 workoutPlan.name,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(color: appBarForeground),
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge
+                    ?.copyWith(color: appBarForeground),
               ),
             ),
             actions: [
@@ -130,7 +134,8 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
           ),
           FutureBuilder(
             future: _loadFullWorkout(context, workoutPlan.id!),
-            builder: (context, AsyncSnapshot<WorkoutPlan> snapshot) => SliverList(
+            builder: (context, AsyncSnapshot<WorkoutPlan> snapshot) =>
+                SliverList(
               delegate: SliverChildListDelegate(
                 [
                   if (snapshot.connectionState == ConnectionState.waiting)

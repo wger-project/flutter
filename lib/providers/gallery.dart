@@ -31,7 +31,8 @@ class GalleryProvider extends WgerBaseProvider with ChangeNotifier {
 
   List<gallery.Image> images = [];
 
-  GalleryProvider(super.auth, List<gallery.Image> entries, [super.client]) : images = entries;
+  GalleryProvider(super.auth, List<gallery.Image> entries, [super.client])
+      : images = entries;
 
   /// Clears all lists
   void clear() {
@@ -60,7 +61,8 @@ class GalleryProvider extends WgerBaseProvider with ChangeNotifier {
       HttpHeaders.authorizationHeader: 'Token ${auth.token}',
       HttpHeaders.userAgentHeader: auth.getAppNameHeader(),
     });
-    request.files.add(await http.MultipartFile.fromPath('image', imageFile.path));
+    request.files
+        .add(await http.MultipartFile.fromPath('image', imageFile.path));
     request.fields['date'] = toDate(image.date)!;
     request.fields['description'] = image.description;
 
@@ -74,7 +76,8 @@ class GalleryProvider extends WgerBaseProvider with ChangeNotifier {
   }
 
   Future<void> editImage(gallery.Image image, XFile? imageFile) async {
-    final request = http.MultipartRequest('PATCH', makeUrl(_galleryUrlPath, id: image.id));
+    final request =
+        http.MultipartRequest('PATCH', makeUrl(_galleryUrlPath, id: image.id));
     request.headers.addAll({
       HttpHeaders.authorizationHeader: 'Token ${auth.token}',
       HttpHeaders.userAgentHeader: auth.getAppNameHeader(),
@@ -82,7 +85,8 @@ class GalleryProvider extends WgerBaseProvider with ChangeNotifier {
 
     // Only send the image if a new one was selected
     if (imageFile != null) {
-      request.files.add(await http.MultipartFile.fromPath('image', imageFile.path));
+      request.files
+          .add(await http.MultipartFile.fromPath('image', imageFile.path));
     }
 
     // Update image info
@@ -100,7 +104,7 @@ class GalleryProvider extends WgerBaseProvider with ChangeNotifier {
   }
 
   Future<void> deleteImage(gallery.Image image) async {
-    final response = await deleteRequest(_galleryUrlPath, image.id!);
+    await deleteRequest(_galleryUrlPath, image.id!);
     images.removeWhere((element) => element.id == image.id);
 
     notifyListeners();

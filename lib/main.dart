@@ -81,14 +81,16 @@ class MyApp extends StatelessWidget {
           update: (context, base, previous) =>
               previous ?? ExercisesProvider(WgerBaseProvider(base)),
         ),
-        ChangeNotifierProxyProvider2<AuthProvider, ExercisesProvider, WorkoutPlansProvider>(
+        ChangeNotifierProxyProvider2<AuthProvider, ExercisesProvider,
+            WorkoutPlansProvider>(
           create: (context) => WorkoutPlansProvider(
             WgerBaseProvider(Provider.of(context, listen: false)),
             Provider.of(context, listen: false),
             [],
           ),
           update: (context, auth, exercises, previous) =>
-              previous ?? WorkoutPlansProvider(WgerBaseProvider(auth), exercises, []),
+              previous ??
+              WorkoutPlansProvider(WgerBaseProvider(auth), exercises, []),
         ),
         ChangeNotifierProxyProvider<AuthProvider, NutritionPlansProvider>(
           create: (context) => NutritionPlansProvider(
@@ -109,7 +111,8 @@ class MyApp extends StatelessWidget {
           create: (context) => UserProvider(
             WgerBaseProvider(Provider.of(context, listen: false)),
           ),
-          update: (context, base, previous) => previous ?? UserProvider(WgerBaseProvider(base)),
+          update: (context, base, previous) =>
+              previous ?? UserProvider(WgerBaseProvider(base)),
         ),
         ChangeNotifierProxyProvider<AuthProvider, BodyWeightProvider>(
           create: (context) => BodyWeightProvider(
@@ -123,7 +126,8 @@ class MyApp extends StatelessWidget {
             Provider.of(context, listen: false),
             [],
           ),
-          update: (context, auth, previous) => previous ?? GalleryProvider(auth, []),
+          update: (context, auth, previous) =>
+              previous ?? GalleryProvider(auth, []),
         ),
         ChangeNotifierProxyProvider<AuthProvider, AddExerciseProvider>(
           create: (context) => AddExerciseProvider(
@@ -146,7 +150,8 @@ class MyApp extends StatelessWidget {
               : FutureBuilder(
                   future: auth.tryAutoLogin(),
                   builder: (ctx, authResultSnapshot) =>
-                      authResultSnapshot.connectionState == ConnectionState.waiting
+                      authResultSnapshot.connectionState ==
+                              ConnectionState.waiting
                           ? const SplashScreen()
                           : const AuthScreen(),
                 ),
@@ -156,18 +161,24 @@ class MyApp extends StatelessWidget {
             GalleryScreen.routeName: (ctx) => const GalleryScreen(),
             GymModeScreen.routeName: (ctx) => const GymModeScreen(),
             HomeTabsScreen.routeName: (ctx) => const HomeTabsScreen(),
-            MeasurementCategoriesScreen.routeName: (ctx) => const MeasurementCategoriesScreen(),
-            MeasurementEntriesScreen.routeName: (ctx) => const MeasurementEntriesScreen(),
-            NutritionalPlansScreen.routeName: (ctx) => const NutritionalPlansScreen(),
-            NutritionalDiaryScreen.routeName: (ctx) => const NutritionalDiaryScreen(),
-            NutritionalPlanScreen.routeName: (ctx) => const NutritionalPlanScreen(),
+            MeasurementCategoriesScreen.routeName: (ctx) =>
+                const MeasurementCategoriesScreen(),
+            MeasurementEntriesScreen.routeName: (ctx) =>
+                const MeasurementEntriesScreen(),
+            NutritionalPlansScreen.routeName: (ctx) =>
+                const NutritionalPlansScreen(),
+            NutritionalDiaryScreen.routeName: (ctx) =>
+                const NutritionalDiaryScreen(),
+            NutritionalPlanScreen.routeName: (ctx) =>
+                const NutritionalPlanScreen(),
             LogMealsScreen.routeName: (ctx) => const LogMealsScreen(),
             LogMealScreen.routeName: (ctx) => const LogMealScreen(),
             WeightScreen.routeName: (ctx) => const WeightScreen(),
             WorkoutPlanScreen.routeName: (ctx) => const WorkoutPlanScreen(),
             WorkoutPlansScreen.routeName: (ctx) => const WorkoutPlansScreen(),
             ExercisesScreen.routeName: (ctx) => const ExercisesScreen(),
-            ExerciseDetailScreen.routeName: (ctx) => const ExerciseDetailScreen(),
+            ExerciseDetailScreen.routeName: (ctx) =>
+                const ExerciseDetailScreen(),
             AddExerciseScreen.routeName: (ctx) => const AddExerciseScreen(),
             AboutPage.routeName: (ctx) => const AboutPage(),
             SettingsPage.routeName: (ctx) => const SettingsPage(),

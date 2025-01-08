@@ -29,7 +29,18 @@ part 'setting.g.dart';
 class Setting {
   /// Allowed RiR values. This list must be kept in sync with RIR_OPTIONS in the
   /// wger server
-  static const POSSIBLE_RIR_VALUES = ['', '0', '0.5', '1', '1.5', '2', '2.5', '3', '3.5', '4'];
+  static const POSSIBLE_RIR_VALUES = [
+    '',
+    '0',
+    '0.5',
+    '1',
+    '1.5',
+    '2',
+    '2.5',
+    '3',
+    '3.5',
+    '4'
+  ];
   static const DEFAULT_RIR = '';
 
   @JsonKey(required: true)
@@ -88,7 +99,8 @@ class Setting {
   Setting.empty();
 
   // Boilerplate
-  factory Setting.fromJson(Map<String, dynamic> json) => _$SettingFromJson(json);
+  factory Setting.fromJson(Map<String, dynamic> json) =>
+      _$SettingFromJson(json);
 
   Map<String, dynamic> toJson() => _$SettingToJson(this);
 

@@ -28,6 +28,7 @@ class Variation {
   const Variation({required this.id});
 
   // Boilerplate
-  factory Variation.fromJson(Map<String, dynamic> json) => _$VariationFromJson(json);
+  factory Variation.fromJson(Map<String, dynamic> json) =>
+      _$VariationFromJson(json);
   Map<String, dynamic> toJson() => _$VariationToJson(this);
 }

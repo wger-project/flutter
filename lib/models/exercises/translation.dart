@@ -20,7 +20,6 @@ import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/models/exercises/alias.dart';
 import 'package:wger/models/exercises/comment.dart';
-import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/language.dart';
 
 part 'translation.g.dart';
@@ -34,16 +33,16 @@ class Translation extends Equatable {
   final String? uuid;
 
   @JsonKey(required: true, name: 'language')
-  late int languageId;
+  final int languageId;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  late Language languageObj;
+  final Language? languageObj;
 
   @JsonKey(required: true, name: 'created')
   final DateTime? created;
 
   @JsonKey(required: true, name: 'exercise_base')
-  late int? exerciseId;
+  final int? exerciseId;
 
   @JsonKey(required: true)
   final String name;
@@ -52,52 +51,82 @@ class Translation extends Equatable {
   final String description;
 
   @JsonKey(includeFromJson: true, includeToJson: false)
-  List<Comment> notes = [];
+  final List<Comment> notes;
 
   @JsonKey(includeFromJson: true, includeToJson: false)
-  List<Alias> aliases = [];
+  final List<Alias> aliases;
 
-  Translation({
+  const Translation({
     this.id,
     this.uuid,
     this.created,
     required this.name,
     required this.description,
-    int? exerciseId,
-    language,
-  }) {
-    if (exerciseId != null) {
-      this.exerciseId = exerciseId;
-    }
-
-    if (language != null) {
-      languageObj = language;
-      languageId = language.id;
-    }
-  }
-
-  set exercise(Exercise exercise) {
-    exerciseId = exercise.id;
-  }
-
-  set language(Language language) {
-    languageObj = language;
-    languageId = language.id;
-  }
+    required this.languageId,
+    this.languageObj,
+    this.exerciseId,
+    this.notes = const [],
+    this.aliases = const [],
+  });
 
   // Boilerplate
-  factory Translation.fromJson(Map<String, dynamic> json) => _$TranslationFromJson(json);
+  factory Translation.fromJson(Map<String, dynamic> json) =>
+      _$TranslationFromJson(json);
 
   Map<String, dynamic> toJson() => _$TranslationToJson(this);
 
   @override
   List<Object?> get props => [
         id,
-        exerciseId,
         uuid,
         languageId,
         created,
+        exerciseId,
         name,
         description,
+        notes,
+        aliases,
       ];
+
+  Translation copyWith({
+    int? id,
+    String? uuid,
+    DateTime? created,
+    String? name,
+    String? description,
+    int? languageId,
+    Language? languageObj,
+    int? exerciseId,
+    List<Comment>? notes,
+    List<Alias>? aliases,
+  }) {
+    return Translation(
+      id: id ?? this.id,
+      uuid: uuid ?? this.uuid,
+      created: created ?? this.created,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      languageId: languageId ?? this.languageId,
+      languageObj: languageObj ?? this.languageObj,
+      exerciseId: exerciseId ?? this.exerciseId,
+      notes: notes ?? this.notes,
+      aliases: aliases ?? this.aliases,
+    );
+  }
+
+  // Helper to associate languageObj after deserialization
+  Translation withLanguageObj(Language language) {
+    return Translation(
+      id: id,
+      uuid: uuid,
+      created: created,
+      name: name,
+      description: description,
+      languageId: languageId,
+      languageObj: language,
+      exerciseId: exerciseId,
+      notes: notes,
+      aliases: aliases,
+    );
+  }
 }

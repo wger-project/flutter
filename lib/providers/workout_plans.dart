@@ -78,7 +78,8 @@ class WorkoutPlansProvider with ChangeNotifier {
 
   /// Return the default weight unit (kg)
   WeightUnit get defaultWeightUnit {
-    return _weightUnits.firstWhere((element) => element.id == DEFAULT_WEIGHT_UNIT);
+    return _weightUnits
+        .firstWhere((element) => element.id == DEFAULT_WEIGHT_UNIT);
   }
 
   List<RepetitionUnit> get repetitionUnits {
@@ -87,7 +88,8 @@ class WorkoutPlansProvider with ChangeNotifier {
 
   /// Return the default weight unit (reps)
   RepetitionUnit get defaultRepetitionUnit {
-    return _repetitionUnit.firstWhere((element) => element.id == REP_UNIT_REPETITIONS);
+    return _repetitionUnit
+        .firstWhere((element) => element.id == REP_UNIT_REPETITIONS);
   }
 
   List<WorkoutPlan> getPlans() {
@@ -195,7 +197,8 @@ class WorkoutPlansProvider with ChangeNotifier {
     // Days
     final List<Day> days = [];
     final daysData = await baseProvider.fetch(
-      baseProvider.makeUrl(_daysUrlPath, query: {'training': plan.id.toString()}),
+      baseProvider
+          .makeUrl(_daysUrlPath, query: {'training': plan.id.toString()}),
     );
     for (final dayEntry in daysData['results']) {
       final day = Day.fromJson(dayEntry);
@@ -203,7 +206,8 @@ class WorkoutPlansProvider with ChangeNotifier {
       // Sets
       final List<Set> sets = [];
       final setData = await baseProvider.fetch(
-        baseProvider.makeUrl(_setsUrlPath, query: {'exerciseday': day.id.toString()}),
+        baseProvider
+            .makeUrl(_setsUrlPath, query: {'exerciseday': day.id.toString()}),
       );
       for (final setEntry in setData['results']) {
         final workoutSet = Set.fromJson(setEntry);
@@ -211,19 +215,22 @@ class WorkoutPlansProvider with ChangeNotifier {
         fetchComputedSettings(workoutSet); // request!
 
         final List<Setting> settings = [];
-        final settingData = allSettingsData['results'].where((s) => s['set'] == workoutSet.id);
+        final settingData =
+            allSettingsData['results'].where((s) => s['set'] == workoutSet.id);
 
         for (final settingEntry in settingData) {
           final workoutSetting = Setting.fromJson(settingEntry);
 
-          workoutSetting.exercise = await _exercises.fetchAndSetExercise(workoutSetting.exerciseId);
+          workoutSetting.exercise =
+              await _exercises.fetchAndSetExercise(workoutSetting.exerciseId);
           workoutSetting.weightUnit = _weightUnits.firstWhere(
             (e) => e.id == workoutSetting.weightUnitId,
           );
           workoutSetting.repetitionUnit = _repetitionUnit.firstWhere(
             (e) => e.id == workoutSetting.repetitionUnitId,
           );
-          if (!workoutSet.exerciseBasesIds.contains(workoutSetting.exerciseId)) {
+          if (!workoutSet.exerciseBasesIds
+              .contains(workoutSetting.exerciseId)) {
             workoutSet.addExerciseBase(workoutSetting.exerciseObj);
           }
 
@@ -247,9 +254,12 @@ class WorkoutPlansProvider with ChangeNotifier {
     for (final logEntry in logData) {
       try {
         final log = Log.fromJson(logEntry);
-        log.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
-        log.repetitionUnit = _repetitionUnit.firstWhere((e) => e.id == log.weightUnitId);
-        log.exerciseBase = await _exercises.fetchAndSetExercise(log.exerciseBaseId);
+        log.weightUnit =
+            _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
+        log.repetitionUnit =
+            _repetitionUnit.firstWhere((e) => e.id == log.weightUnitId);
+        log.exerciseBase =
+            await _exercises.fetchAndSetExercise(log.exerciseBaseId);
         plan.logs.add(log);
       } catch (e) {
         dev.log('fire! fire!');
@@ -282,7 +292,8 @@ class WorkoutPlansProvider with ChangeNotifier {
   }
 
   Future<void> deleteWorkout(int id) async {
-    final existingWorkoutIndex = _workoutPlans.indexWhere((element) => element.id == id);
+    final existingWorkoutIndex =
+        _workoutPlans.indexWhere((element) => element.id == id);
     final existingWorkout = _workoutPlans[existingWorkoutIndex];
     _workoutPlans.removeAt(existingWorkoutIndex);
     notifyListeners();
@@ -313,8 +324,8 @@ class WorkoutPlansProvider with ChangeNotifier {
 
   /// Fetch and set weight units for workout (kg, lb, plate, etc.)
   Future<void> fetchAndSetRepetitionUnits() async {
-    final response =
-        await baseProvider.fetchPaginated(baseProvider.makeUrl(_repetitionUnitUrlPath));
+    final response = await baseProvider
+        .fetchPaginated(baseProvider.makeUrl(_repetitionUnitUrlPath));
     for (final unit in response) {
       _repetitionUnit.add(RepetitionUnit.fromJson(unit));
     }
@@ -322,7 +333,8 @@ class WorkoutPlansProvider with ChangeNotifier {
 
   /// Fetch and set weight units for workout (kg, lb, plate, etc.)
   Future<void> fetchAndSetWeightUnits() async {
-    final response = await baseProvider.fetchPaginated(baseProvider.makeUrl(_weightUnitUrlPath));
+    final response = await baseProvider
+        .fetchPaginated(baseProvider.makeUrl(_weightUnitUrlPath));
     for (final unit in response) {
       _weightUnits.add(WeightUnit.fromJson(unit));
     }
@@ -354,7 +366,9 @@ class WorkoutPlansProvider with ChangeNotifier {
     // Save the result to the cache
     final exerciseData = {
       'date': DateTime.now().toIso8601String(),
-      'expiresIn': DateTime.now().add(const Duration(days: DAYS_TO_CACHE)).toIso8601String(),
+      'expiresIn': DateTime.now()
+          .add(const Duration(days: DAYS_TO_CACHE))
+          .toIso8601String(),
       'repetitionUnits': _repetitionUnit.map((e) => e.toJson()).toList(),
       'weightUnit': _weightUnits.map((e) => e.toJson()).toList(),
     };
@@ -525,7 +539,8 @@ class WorkoutPlansProvider with ChangeNotifier {
 
     log.id = newLog.id;
     log.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
-    log.repetitionUnit = _repetitionUnit.firstWhere((e) => e.id == log.weightUnitId);
+    log.repetitionUnit =
+        _repetitionUnit.firstWhere((e) => e.id == log.weightUnitId);
     log.exerciseBase = await _exercises.fetchAndSetExercise(log.exerciseBaseId);
 
     final plan = findById(log.workoutPlan);

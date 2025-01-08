@@ -36,10 +36,12 @@ class EntriesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final plan = Provider.of<NutritionPlansProvider>(context, listen: false).currentPlan;
+    final plan =
+        Provider.of<NutritionPlansProvider>(context, listen: false).currentPlan;
 
-    final entriesAll =
-        _category.entries.map((e) => MeasurementChartEntry(e.value, e.date)).toList();
+    final entriesAll = _category.entries
+        .map((e) => MeasurementChartEntry(e.value, e.date))
+        .toList();
     final entries7dAvg = moving7dAverage(entriesAll);
 
     return Column(children: [
@@ -58,7 +60,8 @@ class EntriesList extends StatelessWidget {
           itemCount: _category.entries.length,
           itemBuilder: (context, index) {
             final currentEntry = _category.entries[index];
-            final provider = Provider.of<MeasurementProvider>(context, listen: false);
+            final provider =
+                Provider.of<MeasurementProvider>(context, listen: false);
 
             return Card(
               child: ListTile(
@@ -98,7 +101,8 @@ class EntriesList extends StatelessWidget {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(
-                                  AppLocalizations.of(context).successfullyDeleted,
+                                  AppLocalizations.of(context)
+                                      .successfullyDeleted,
                                   textAlign: TextAlign.center,
                                 ),
                               ),

@@ -33,16 +33,23 @@ import 'package:wger/widgets/exercises/images.dart';
 import 'package:wger/widgets/exercises/list_tile.dart';
 import 'package:wger/widgets/exercises/videos.dart';
 
-class ExerciseDetail extends StatelessWidget {
+class ExerciseDetail extends StatefulWidget {
   final Exercise _exerciseBase;
-  late Translation _exercise;
   static const PADDING = 9.0;
 
-  ExerciseDetail(this._exerciseBase);
+  const ExerciseDetail(this._exerciseBase);
+
+  @override
+  State<ExerciseDetail> createState() => _ExerciseDetailState();
+}
+
+class _ExerciseDetailState extends State<ExerciseDetail> {
+  late Translation _exercise;
 
   @override
   Widget build(BuildContext context) {
-    _exercise = _exerciseBase.getExercise(Localizations.localeOf(context).languageCode);
+    _exercise = widget._exerciseBase
+        .getExercise(Localizations.localeOf(context).languageCode);
 
     return SingleChildScrollView(
       child: Column(
@@ -79,7 +86,7 @@ class ExerciseDetail extends StatelessWidget {
 
   List<Widget> getVariations(BuildContext context) {
     final List<Widget> out = [];
-    if (_exerciseBase.variationId == null) {
+    if (widget._exerciseBase.variationId == null) {
       return out;
     }
 
@@ -89,14 +96,14 @@ class ExerciseDetail extends StatelessWidget {
     ));
     Provider.of<ExercisesProvider>(context, listen: false)
         .findExercisesByVariationId(
-      _exerciseBase.variationId!,
-      exerciseBaseIdToExclude: _exerciseBase.id,
+      widget._exerciseBase.variationId!,
+      exerciseBaseIdToExclude: widget._exerciseBase.id,
     )
         .forEach((element) {
       out.add(ExerciseListTile(exerciseBase: element));
     });
 
-    out.add(const SizedBox(height: PADDING));
+    out.add(const SizedBox(height: ExerciseDetail.PADDING));
     return out;
   }
 
@@ -110,7 +117,7 @@ class ExerciseDetail extends StatelessWidget {
       for (final e in _exercise.notes) {
         out.add(Text(e.comment));
       }
-      out.add(const SizedBox(height: PADDING));
+      out.add(const SizedBox(height: ExerciseDetail.PADDING));
     }
 
     return out;
@@ -128,20 +135,22 @@ class ExerciseDetail extends StatelessWidget {
       children: [
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: PADDING),
+            padding:
+                const EdgeInsets.symmetric(horizontal: ExerciseDetail.PADDING),
             child: MuscleWidget(
-              muscles: _exerciseBase.muscles,
-              musclesSecondary: _exerciseBase.musclesSecondary,
+              muscles: widget._exerciseBase.muscles,
+              musclesSecondary: widget._exerciseBase.musclesSecondary,
               isFront: true,
             ),
           ),
         ),
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: PADDING),
+            padding:
+                const EdgeInsets.symmetric(horizontal: ExerciseDetail.PADDING),
             child: MuscleWidget(
-              muscles: _exerciseBase.muscles,
-              musclesSecondary: _exerciseBase.musclesSecondary,
+              muscles: widget._exerciseBase.muscles,
+              musclesSecondary: widget._exerciseBase.musclesSecondary,
               isFront: false,
             ),
           ),
@@ -154,22 +163,23 @@ class ExerciseDetail extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const MuscleColorHelper(main: true),
-          ..._exerciseBase.muscles.map((e) => Text(e.nameTranslated(context))),
+          ...widget._exerciseBase.muscles
+              .map((e) => Text(e.nameTranslated(context))),
         ],
       ),
     );
-    out.add(const SizedBox(height: PADDING));
+    out.add(const SizedBox(height: ExerciseDetail.PADDING));
     out.add(
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const MuscleColorHelper(main: false),
-          ..._exerciseBase.musclesSecondary.map((e) => Text(e.name)),
+          ...widget._exerciseBase.musclesSecondary.map((e) => Text(e.name)),
         ],
       ),
     );
 
-    out.add(const SizedBox(height: PADDING));
+    out.add(const SizedBox(height: ExerciseDetail.PADDING));
 
     return out;
   }
@@ -188,9 +198,9 @@ class ExerciseDetail extends StatelessWidget {
   List<Widget> getImages() {
     // TODO: add carousel for the other images
     final List<Widget> out = [];
-    if (_exerciseBase.getMainImage != null) {
-      out.add(ExerciseImageWidget(image: _exerciseBase.getMainImage));
-      out.add(const SizedBox(height: PADDING));
+    if (widget._exerciseBase.getMainImage != null) {
+      out.add(ExerciseImageWidget(image: widget._exerciseBase.getMainImage));
+      out.add(const SizedBox(height: ExerciseDetail.PADDING));
     }
 
     return out;
@@ -204,14 +214,15 @@ class ExerciseDetail extends StatelessWidget {
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4),
         child: Chip(
-          label: Text(getTranslation(_exerciseBase.category!.name, context)),
+          label: Text(
+              getTranslation(widget._exerciseBase.category!.name, context)),
           padding: EdgeInsets.zero,
           backgroundColor: theme.splashColor,
         ),
       ),
     );
-    if (_exerciseBase.equipment.isNotEmpty) {
-      _exerciseBase.equipment
+    if (widget._exerciseBase.equipment.isNotEmpty) {
+      widget._exerciseBase.equipment
           .map((e) => Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 4),
                 child: Chip(
@@ -222,19 +233,21 @@ class ExerciseDetail extends StatelessWidget {
               ))
           .forEach((element) => out.add(element));
     }
-    out.add(const SizedBox(height: PADDING));
+    out.add(const SizedBox(height: ExerciseDetail.PADDING));
     return Row(children: [...out]);
   }
 
   List<Widget> getVideos() {
     // TODO: add carousel for the other videos
     final List<Widget> out = [];
-    if (_exerciseBase.videos.isNotEmpty && !isDesktop) {
-      _exerciseBase.videos.map((v) => ExerciseVideoWidget(video: v)).forEach((element) {
+    if (widget._exerciseBase.videos.isNotEmpty && !isDesktop) {
+      widget._exerciseBase.videos
+          .map((v) => ExerciseVideoWidget(video: v))
+          .forEach((element) {
         out.add(element);
       });
 
-      out.add(const SizedBox(height: PADDING));
+      out.add(const SizedBox(height: ExerciseDetail.PADDING));
     }
     return out;
   }
@@ -247,7 +260,7 @@ class ExerciseDetail extends StatelessWidget {
           _exercise.aliases.map((e) => e.alias).toList().join(', '),
         ),
       ));
-      out.add(const SizedBox(height: PADDING));
+      out.add(const SizedBox(height: ExerciseDetail.PADDING));
     }
 
     return out;
@@ -331,7 +344,8 @@ class MuscleWidget extends StatelessWidget {
     this.isFront = true,
   }) {
     this.muscles = muscles.where((m) => m.isFront == isFront).toList();
-    this.musclesSecondary = musclesSecondary.where((m) => m.isFront == isFront).toList();
+    this.musclesSecondary =
+        musclesSecondary.where((m) => m.isFront == isFront).toList();
   }
 
   @override
@@ -341,7 +355,8 @@ class MuscleWidget extends StatelessWidget {
     return Stack(
       children: [
         SvgPicture.asset('assets/images/muscles/$background.svg'),
-        ...muscles.map((m) => SvgPicture.asset('assets/images/muscles/main/muscle-${m.id}.svg')),
+        ...muscles.map((m) =>
+            SvgPicture.asset('assets/images/muscles/main/muscle-${m.id}.svg')),
         ...musclesSecondary.map((m) => SvgPicture.asset(
               'assets/images/muscles/secondary/muscle-${m.id}.svg',
             )),

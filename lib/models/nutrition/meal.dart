@@ -47,8 +47,9 @@ class Meal {
   @JsonKey(includeFromJson: false, includeToJson: false, defaultValue: [])
   List<Log> diaryEntries = [];
 
-  List<Log> get diaryEntriesToday =>
-      diaryEntries.where((element) => element.datetime.isSameDayAs(DateTime.now())).toList();
+  List<Log> get diaryEntriesToday => diaryEntries
+      .where((element) => element.datetime.isSameDayAs(DateTime.now()))
+      .toList();
 
   Meal({
     this.id,
@@ -70,7 +71,8 @@ class Meal {
   /// Calculate total nutritional value
   // This is already done on the server. It might be better to read it from there.
   NutritionalValues get plannedNutritionalValues {
-    return mealItems.fold(NutritionalValues(), (a, b) => a + b.nutritionalValues);
+    return mealItems.fold(
+        NutritionalValues(), (a, b) => a + b.nutritionalValues);
   }
 
   /// Returns the logged nutritional values for today

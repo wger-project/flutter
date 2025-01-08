@@ -59,7 +59,8 @@ class MeasurementCategoryForm extends StatelessWidget {
           TextFormField(
             decoration: InputDecoration(
               labelText: AppLocalizations.of(context).name,
-              helperText: AppLocalizations.of(context).measurementCategoriesHelpText,
+              helperText:
+                  AppLocalizations.of(context).measurementCategoriesHelpText,
             ),
             controller: nameController,
             onSaved: (newValue) {
@@ -77,7 +78,8 @@ class MeasurementCategoryForm extends StatelessWidget {
           TextFormField(
             decoration: InputDecoration(
               labelText: AppLocalizations.of(context).unit,
-              helperText: AppLocalizations.of(context).measurementEntriesHelpText,
+              helperText:
+                  AppLocalizations.of(context).measurementEntriesHelpText,
             ),
             controller: unitController,
             onSaved: (newValue) {
@@ -174,7 +176,8 @@ class MeasurementEntryForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final measurementProvider = Provider.of<MeasurementProvider>(context, listen: false);
+    final measurementProvider =
+        Provider.of<MeasurementProvider>(context, listen: false);
     final measurementCategory = measurementProvider.categories.firstWhere(
       (category) => category.id == _categoryId,
     );
@@ -184,7 +187,8 @@ class MeasurementEntryForm extends StatelessWidget {
       child: Column(
         children: [
           TextFormField(
-            decoration: InputDecoration(labelText: AppLocalizations.of(context).date),
+            decoration:
+                InputDecoration(labelText: AppLocalizations.of(context).date),
             readOnly: true, // Hide text cursor
             controller: _dateController,
             onTap: () async {
@@ -225,7 +229,8 @@ class MeasurementEntryForm extends StatelessWidget {
             decoration: InputDecoration(
               labelText: AppLocalizations.of(context).value,
               suffixIcon: Text(measurementCategory.unit),
-              suffixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
+              suffixIconConstraints:
+                  const BoxConstraints(minWidth: 0, minHeight: 0),
             ),
             controller: _valueController,
             keyboardType: TextInputType.number,
@@ -246,7 +251,8 @@ class MeasurementEntryForm extends StatelessWidget {
           ),
           // Value
           TextFormField(
-            decoration: InputDecoration(labelText: AppLocalizations.of(context).notes),
+            decoration:
+                InputDecoration(labelText: AppLocalizations.of(context).notes),
             controller: _notesController,
             onSaved: (newValue) {
               _entryData['notes'] = newValue;
@@ -254,8 +260,10 @@ class MeasurementEntryForm extends StatelessWidget {
             validator: (value) {
               const minLength = 0;
               const maxLength = 100;
-              if (value!.isNotEmpty && (value.length < minLength || value.length > maxLength)) {
-                return AppLocalizations.of(context).enterCharacters(minLength, maxLength);
+              if (value!.isNotEmpty &&
+                  (value.length < minLength || value.length > maxLength)) {
+                return AppLocalizations.of(context)
+                    .enterCharacters(minLength, maxLength);
               }
               return null;
             },

@@ -17,7 +17,9 @@ class CategoriesCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (entriesAll, entries7dAvg) = sensibleRange(
-      currentCategory.entries.map((e) => MeasurementChartEntry(e.value, e.date)).toList(),
+      currentCategory.entries
+          .map((e) => MeasurementChartEntry(e.value, e.date))
+          .toList(),
     );
 
     return Card(

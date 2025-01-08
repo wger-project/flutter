@@ -33,7 +33,8 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
   @override
   Widget build(BuildContext context) {
     //final size = MediaQuery.of(context).size;
-    final exercisesList = Provider.of<ExercisesProvider>(context).filteredExercises;
+    final exercisesList =
+        Provider.of<ExercisesProvider>(context).filteredExercises;
 
     return Scaffold(
       appBar: EmptyAppBar(AppLocalizations.of(context).exercises),

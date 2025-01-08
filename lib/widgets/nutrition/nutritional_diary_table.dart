@@ -31,7 +31,8 @@ class NutritionalDiaryTable extends StatelessWidget {
       children: [
         nutrionalDiaryHeader(context, goals),
         ...plan.logEntriesValues.entries
-            .map((entry) => nutritionDiaryEntry(context, goals, entry.key, entry.value))
+            .map((entry) =>
+                nutritionDiaryEntry(context, goals, entry.key, entry.value))
             .toList()
             .reversed,
       ],
@@ -84,8 +85,12 @@ class NutritionalDiaryTable extends StatelessWidget {
       ),
       children: [
         Text(
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(color: LIST_OF_COLORS3.first),
-          DateFormat.Md(Localizations.localeOf(context).languageCode).format(date),
+          style: Theme.of(context)
+              .textTheme
+              .titleMedium
+              ?.copyWith(color: LIST_OF_COLORS3.first),
+          DateFormat.Md(Localizations.localeOf(context).languageCode)
+              .format(date),
         ),
         Text(
           style: Theme.of(context).textTheme.titleMedium,

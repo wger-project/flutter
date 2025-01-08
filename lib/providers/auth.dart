@@ -51,7 +51,7 @@ class AuthProvider with ChangeNotifier {
 
   late http.Client client;
 
-  AuthProvider([http.Client? client, bool? checkMetadata]) {
+  AuthProvider([http.Client? client]) {
     this.client = client ?? http.Client();
   }
 

@@ -49,20 +49,26 @@ void main() {
   var plan1 = NutritionalPlan.empty();
   var meal1 = Meal();
 
-  final Uri tUriRightCode = Uri.parse('https://localhost/api/v2/ingredientinfo/?code=123');
-  final Uri tUriEmptyCode = Uri.parse('https://localhost/api/v2/ingredientinfo/?code="%20"');
-  final Uri tUriBadCode = Uri.parse('https://localhost/api/v2/ingredientinfo/?code=222');
+  final Uri tUriRightCode =
+      Uri.parse('https://localhost/api/v2/ingredientinfo/?code=123');
+  final Uri tUriEmptyCode =
+      Uri.parse('https://localhost/api/v2/ingredientinfo/?code="%20"');
+  final Uri tUriBadCode =
+      Uri.parse('https://localhost/api/v2/ingredientinfo/?code=222');
 
   when(client.get(tUriRightCode, headers: anyNamed('headers'))).thenAnswer(
-    (_) => Future.value(http.Response(fixture('nutrition/ingredientinfo_right_code.json'), 200)),
+    (_) => Future.value(http.Response(
+        fixture('nutrition/ingredientinfo_right_code.json'), 200)),
   );
 
   when(client.get(tUriEmptyCode, headers: anyNamed('headers'))).thenAnswer(
-    (_) => Future.value(http.Response(fixture('nutrition/ingredientinfo_wrong_code.json'), 200)),
+    (_) => Future.value(http.Response(
+        fixture('nutrition/ingredientinfo_wrong_code.json'), 200)),
   );
 
   when(client.get(tUriBadCode, headers: anyNamed('headers'))).thenAnswer(
-    (_) => Future.value(http.Response(fixture('nutrition/ingredientinfo_wrong_code.json'), 200)),
+    (_) => Future.value(http.Response(
+        fixture('nutrition/ingredientinfo_wrong_code.json'), 200)),
   );
 
   setUp(() {
@@ -71,24 +77,30 @@ void main() {
     final MealItem mealItem = MealItem(ingredientId: ingredient.id, amount: 2);
     mockNutrition = MockNutritionPlansProvider();
 
-    when(mockNutrition.searchIngredientWithCode('123')).thenAnswer((_) => Future.value(ingredient));
-    when(mockNutrition.searchIngredientWithCode('')).thenAnswer((_) => Future.value(null));
-    when(mockNutrition.searchIngredientWithCode('222')).thenAnswer((_) => Future.value(null));
+    when(mockNutrition.searchIngredientWithCode('123'))
+        .thenAnswer((_) => Future.value(ingredient));
+    when(mockNutrition.searchIngredientWithCode(''))
+        .thenAnswer((_) => Future.value(null));
+    when(mockNutrition.searchIngredientWithCode('222'))
+        .thenAnswer((_) => Future.value(null));
     when(mockNutrition.searchIngredient(
       any,
       languageCode: anyNamed('languageCode'),
       searchEnglish: anyNamed('searchEnglish'),
     )).thenAnswer(
       (_) => Future.value(
-        IngredientApiSearch.fromJson(json.decode(fixture('nutrition/ingredient_suggestions')))
+        IngredientApiSearch.fromJson(
+                json.decode(fixture('nutrition/ingredient_suggestions')))
             .suggestions,
       ),
     );
 
-    when(mockNutrition.addMealItem(any, meal1)).thenAnswer((_) => Future.value(mealItem));
+    when(mockNutrition.addMealItem(any, meal1))
+        .thenAnswer((_) => Future.value(mealItem));
   });
 
-  Widget createMealItemFormScreen(Meal meal, String code, bool test, {locale = 'en'}) {
+  Widget createMealItemFormScreen(Meal meal, String code, bool test,
+      {locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
 
     return ChangeNotifierProvider<NutritionPlansProvider>(
@@ -105,17 +117,20 @@ void main() {
           ),
         ),
         routes: {
-          NutritionalPlanScreen.routeName: (ctx) => const NutritionalPlanScreen(),
+          NutritionalPlanScreen.routeName: (ctx) =>
+              const NutritionalPlanScreen(),
         },
       ),
     );
   }
 
-  testWidgets('Test the widgets on the meal item form', (WidgetTester tester) async {
+  testWidgets('Test the widgets on the meal item form',
+      (WidgetTester tester) async {
     await tester.pumpWidget(createMealItemFormScreen(meal1, '', true));
     await tester.pumpAndSettle();
 
-    expect(find.byType(TypeAheadField<IngredientApiSearchEntry>), findsOneWidget);
+    expect(
+        find.byType(TypeAheadField<IngredientApiSearchEntry>), findsOneWidget);
     expect(find.byType(TextFormField), findsWidgets);
     expect(find.byKey(const Key('scan-button')), findsOneWidget);
     expect(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)), findsOneWidget);
@@ -131,8 +146,11 @@ void main() {
       await tester.tap(find.byKey(const Key('scan-button')));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('ingredient-scan-result-dialog')), findsOneWidget);
-      expect(find.byKey(const Key('ingredient-scan-result-dialog-confirm-button')), findsNothing);
+      expect(find.byKey(const Key('ingredient-scan-result-dialog')),
+          findsOneWidget);
+      expect(
+          find.byKey(const Key('ingredient-scan-result-dialog-confirm-button')),
+          findsNothing);
     });
 
     testWidgets('with correct code', (WidgetTester tester) async {
@@ -141,8 +159,11 @@ void main() {
       await tester.tap(find.byKey(const Key('scan-button')));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('ingredient-scan-result-dialog')), findsOneWidget);
-      expect(find.byKey(const Key('ingredient-scan-result-dialog-confirm-button')), findsOneWidget);
+      expect(find.byKey(const Key('ingredient-scan-result-dialog')),
+          findsOneWidget);
+      expect(
+          find.byKey(const Key('ingredient-scan-result-dialog-confirm-button')),
+          findsOneWidget);
     });
 
     testWidgets('with incorrect code', (WidgetTester tester) async {
@@ -151,8 +172,11 @@ void main() {
       await tester.tap(find.byKey(const Key('scan-button')));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('ingredient-scan-result-dialog')), findsOneWidget);
-      expect(find.byKey(const Key('ingredient-scan-result-dialog-confirm-button')), findsNothing);
+      expect(find.byKey(const Key('ingredient-scan-result-dialog')),
+          findsOneWidget);
+      expect(
+          find.byKey(const Key('ingredient-scan-result-dialog-confirm-button')),
+          findsNothing);
     });
   });
 
@@ -217,14 +241,17 @@ void main() {
     testWidgets('confirm found ingredient dialog', (WidgetTester tester) async {
       await tester.pumpWidget(createMealItemFormScreen(meal1, '123', true));
 
-      final IngredientFormState formState = tester.state(find.byType(IngredientForm));
+      final IngredientFormState formState =
+          tester.state(find.byType(IngredientForm));
 
       await tester.tap(find.byKey(const Key('scan-button')));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('ingredient-scan-result-dialog')), findsOneWidget);
+      expect(find.byKey(const Key('ingredient-scan-result-dialog')),
+          findsOneWidget);
 
-      await tester.tap(find.byKey(const Key('ingredient-scan-result-dialog-confirm-button')));
+      await tester.tap(find
+          .byKey(const Key('ingredient-scan-result-dialog-confirm-button')));
       await tester.pumpAndSettle();
 
       expect(formState.ingredientIdController.text, '1');
@@ -236,12 +263,15 @@ void main() {
       await tester.tap(find.byKey(const Key('scan-button')));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('ingredient-scan-result-dialog')), findsOneWidget);
+      expect(find.byKey(const Key('ingredient-scan-result-dialog')),
+          findsOneWidget);
 
-      await tester.tap(find.byKey(const Key('ingredient-scan-result-dialog-close-button')));
+      await tester.tap(
+          find.byKey(const Key('ingredient-scan-result-dialog-close-button')));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('ingredient-scan-result-dialog')), findsNothing);
+      expect(
+          find.byKey(const Key('ingredient-scan-result-dialog')), findsNothing);
     });
   });
 
@@ -265,9 +295,11 @@ void main() {
       await tester.tap(find.byKey(const Key('scan-button')));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('ingredient-scan-result-dialog')), findsOneWidget);
+      expect(find.byKey(const Key('ingredient-scan-result-dialog')),
+          findsOneWidget);
 
-      await tester.tap(find.byKey(const Key('ingredient-scan-result-dialog-confirm-button')));
+      await tester.tap(find
+          .byKey(const Key('ingredient-scan-result-dialog-confirm-button')));
       await tester.pumpAndSettle();
 
       await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
@@ -277,15 +309,18 @@ void main() {
     });
 
     //TODO: isn't this test just a duplicate of the above one? can be removed?
-    testWidgets('save ingredient with incorrect weight input type', (WidgetTester tester) async {
+    testWidgets('save ingredient with incorrect weight input type',
+        (WidgetTester tester) async {
       await tester.pumpWidget(createMealItemFormScreen(meal1, '123', true));
 
       await tester.tap(find.byKey(const Key('scan-button')));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('ingredient-scan-result-dialog')), findsOneWidget);
+      expect(find.byKey(const Key('ingredient-scan-result-dialog')),
+          findsOneWidget);
 
-      await tester.tap(find.byKey(const Key('ingredient-scan-result-dialog-confirm-button')));
+      await tester.tap(find
+          .byKey(const Key('ingredient-scan-result-dialog-confirm-button')));
       await tester.pumpAndSettle();
 
       await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
@@ -299,14 +334,17 @@ void main() {
       (WidgetTester tester) async {
         await tester.pumpWidget(createMealItemFormScreen(meal1, '123', true));
 
-        final IngredientFormState formState = tester.state(find.byType(IngredientForm));
+        final IngredientFormState formState =
+            tester.state(find.byType(IngredientForm));
 
         await tester.tap(find.byKey(const Key('scan-button')));
         await tester.pumpAndSettle();
 
-        expect(find.byKey(const Key('ingredient-scan-result-dialog')), findsOneWidget);
+        expect(find.byKey(const Key('ingredient-scan-result-dialog')),
+            findsOneWidget);
 
-        await tester.tap(find.byKey(const Key('ingredient-scan-result-dialog-confirm-button')));
+        await tester.tap(find
+            .byKey(const Key('ingredient-scan-result-dialog-confirm-button')));
         await tester.pumpAndSettle();
 
         expect(formState.ingredientIdController.text, '1');
@@ -315,11 +353,13 @@ void main() {
 
         // once ID and weight are set, it'll fetchIngredient and show macros preview and ingredient image
         when(mockNutrition.fetchIngredient(1)).thenAnswer((_) => Future.value(
-              Ingredient.fromJson(jsonDecode(fixture('nutrition/ingredientinfo_59887.json'))),
+              Ingredient.fromJson(
+                  jsonDecode(fixture('nutrition/ingredientinfo_59887.json'))),
             ));
         await mockNetworkImagesFor(() => tester.pumpAndSettle());
 
-        expect(find.byKey(const Key('ingredient-scan-result-dialog')), findsNothing);
+        expect(find.byKey(const Key('ingredient-scan-result-dialog')),
+            findsNothing);
 
         await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
         await tester.pumpAndSettle();

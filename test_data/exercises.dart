@@ -32,9 +32,12 @@ const tLanguage4 = Language(id: 12, shortName: 'es', fullName: 'Español');
 const tLanguage5 = Language(id: 13, shortName: 'it', fullName: 'Italiano');
 const testLanguages = [tLanguage1, tLanguage2, tLanguage3];
 
-const tMuscle1 = Muscle(id: 1, name: 'Flutterus maximus', nameEn: 'Glutes', isFront: true);
-const tMuscle2 = Muscle(id: 2, name: 'Biceps brachii', nameEn: 'Biceps', isFront: true);
-const tMuscle3 = Muscle(id: 3, name: 'Gluteus maximus', nameEn: 'Glutes', isFront: false);
+const tMuscle1 =
+    Muscle(id: 1, name: 'Flutterus maximus', nameEn: 'Glutes', isFront: true);
+const tMuscle2 =
+    Muscle(id: 2, name: 'Biceps brachii', nameEn: 'Biceps', isFront: true);
+const tMuscle3 =
+    Muscle(id: 3, name: 'Gluteus maximus', nameEn: 'Glutes', isFront: false);
 const testMuscles = [tMuscle1, tMuscle2, tMuscle3];
 
 const tCategory1 = ExerciseCategory(id: 1, name: 'Arms');
@@ -42,7 +45,13 @@ const tCategory2 = ExerciseCategory(id: 2, name: 'Legs');
 const tCategory3 = ExerciseCategory(id: 3, name: 'Abs');
 const tCategory4 = ExerciseCategory(id: 4, name: 'Shoulders');
 const tCategory5 = ExerciseCategory(id: 5, name: 'Calves');
-const testCategories = [tCategory1, tCategory2, tCategory3, tCategory4, tCategory5];
+const testCategories = [
+  tCategory1,
+  tCategory2,
+  tCategory3,
+  tCategory4,
+  tCategory5
+];
 
 const tEquipment1 = Equipment(id: 1, name: 'Bench');
 const tEquipment2 = Equipment(id: 2, name: 'Dumbbell');
@@ -121,7 +130,8 @@ final benchPressDe = Translation(
   name: 'Bankdrücken',
   description: 'add clever text',
   exerciseId: benchPress.id,
-  language: tLanguage1,
+  languageId: tLanguage1.id,
+  languageObj: tLanguage1,
 );
 final benchPressEn = Translation(
   id: 7,
@@ -130,7 +140,8 @@ final benchPressEn = Translation(
   name: 'Bench press',
   description: 'add clever text',
   exerciseId: benchPress.id,
-  language: tLanguage1,
+  languageId: tLanguage1.id,
+  languageObj: tLanguage1,
 );
 
 final deadLiftEn = Translation(
@@ -140,68 +151,73 @@ final deadLiftEn = Translation(
   name: 'Dead Lift',
   description: 'Lorem ipsum etc',
   exerciseId: crunches.id,
-  language: tLanguage2,
+  languageId: tLanguage2.id,
+  languageObj: tLanguage2,
 );
 
 final crunchesFr = Translation(
-  id: 3,
-  uuid: 'd83f572d-add5-48dc-89cf-75f6770284f1',
-  created: DateTime(2021, 4, 1),
-  name: 'Crunches',
-  description: 'The man in black fled across the desert, and the gunslinger followed',
-  exerciseId: deadLift.id,
-  language: tLanguage3,
-);
+    id: 3,
+    uuid: 'd83f572d-add5-48dc-89cf-75f6770284f1',
+    created: DateTime(2021, 4, 1),
+    name: 'Crunches',
+    description:
+        'The man in black fled across the desert, and the gunslinger followed',
+    exerciseId: deadLift.id,
+    languageId: tLanguage3.id,
+    languageObj: tLanguage3);
 
 final crunchesDe = Translation(
-  id: 4,
-  uuid: 'a3e96c1d-b35f-4b0e-9cf4-ca37666cf521',
-  created: DateTime(2021, 4, 1),
-  name: 'Crunches',
-  description: 'The story so far: in the beginning, the universe was created',
-  exerciseId: deadLift.id,
-  language: tLanguage1,
-);
+    id: 4,
+    uuid: 'a3e96c1d-b35f-4b0e-9cf4-ca37666cf521',
+    created: DateTime(2021, 4, 1),
+    name: 'Crunches',
+    description: 'The story so far: in the beginning, the universe was created',
+    exerciseId: deadLift.id,
+    languageId: tLanguage1.id,
+    languageObj: tLanguage1);
 
 final crunchesEn = Translation(
-  id: 5,
-  uuid: '8c49a816-2247-4116-94bb-b5c0ce09c609',
-  created: DateTime(2021, 4, 1),
-  name: 'test exercise 5',
-  description: 'I am an invisible man',
-  exerciseId: deadLift.id,
-  language: tLanguage2,
-);
+    id: 5,
+    uuid: '8c49a816-2247-4116-94bb-b5c0ce09c609',
+    created: DateTime(2021, 4, 1),
+    name: 'test exercise 5',
+    description: 'I am an invisible man',
+    exerciseId: deadLift.id,
+    languageId: tLanguage2.id,
+    languageObj: tLanguage2);
 
 final curlsEn = Translation(
-  id: 6,
-  uuid: '259a637e-957f-4fe1-b61b-f56e3793ebcd',
-  created: DateTime(2021, 4, 1),
-  name: 'Curls',
-  description: 'It was a bright cold day in April, and the clocks were striking thirteen',
-  exerciseId: curls.id,
-  language: tLanguage2,
-);
+    id: 6,
+    uuid: '259a637e-957f-4fe1-b61b-f56e3793ebcd',
+    created: DateTime(2021, 4, 1),
+    name: 'Curls',
+    description:
+        'It was a bright cold day in April, and the clocks were striking thirteen',
+    exerciseId: curls.id,
+    languageId: tLanguage2.id,
+    languageObj: tLanguage2);
 
 final squatsEn = Translation(
-  id: 8,
-  uuid: '259a637e-957f-4fe1-b61b-f56e3793ebcd',
-  created: DateTime(2021, 4, 1),
-  name: 'Squats',
-  description: 'It was a bright cold day in April, and the clocks were striking thirteen',
-  exerciseId: curls.id,
-  language: tLanguage2,
-);
+    id: 8,
+    uuid: '259a637e-957f-4fe1-b61b-f56e3793ebcd',
+    created: DateTime(2021, 4, 1),
+    name: 'Squats',
+    description:
+        'It was a bright cold day in April, and the clocks were striking thirteen',
+    exerciseId: curls.id,
+    languageId: tLanguage2.id,
+    languageObj: tLanguage2);
 
 final sideRaisesEn = Translation(
-  id: 9,
-  uuid: '6bf89ad0-5a43-4e98-91d3-a8c6886c9712',
-  created: DateTime(2022, 11, 1),
-  name: 'Side raises',
-  description: 'It was a bright cold day in April, and the clocks were striking thirteen',
-  exerciseId: curls.id,
-  language: tLanguage2,
-);
+    id: 9,
+    uuid: '6bf89ad0-5a43-4e98-91d3-a8c6886c9712',
+    created: DateTime(2022, 11, 1),
+    name: 'Side raises',
+    description:
+        'It was a bright cold day in April, and the clocks were striking thirteen',
+    exerciseId: curls.id,
+    languageId: tLanguage2.id,
+    languageObj: tLanguage2);
 
 List<Exercise> getTestExercises() {
   benchPress.translations = [benchPressEn, benchPressDe];

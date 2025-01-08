@@ -54,8 +54,10 @@ void main() {
     provider.languages = [tLanguage1, tLanguage2, tLanguage3];
 
     // Mock base info response
-    when(mockBaseProvider.makeUrl(exerciseBaseInfoUrl, id: 9)).thenReturn(tExerciseBaseInfoUri);
-    when(mockBaseProvider.makeUrl(exerciseBaseInfoUrl, id: 1)).thenReturn(tExerciseBaseInfoUri2);
+    when(mockBaseProvider.makeUrl(exerciseBaseInfoUrl, id: 9))
+        .thenReturn(tExerciseBaseInfoUri);
+    when(mockBaseProvider.makeUrl(exerciseBaseInfoUrl, id: 1))
+        .thenReturn(tExerciseBaseInfoUri2);
 
     when(mockBaseProvider.fetch(tExerciseBaseInfoUri))
         .thenAnswer((_) => Future.value(tExerciseInfoMap));
@@ -112,13 +114,16 @@ void main() {
         'd8aa5990-bb47-4111-9823-e2fbd98fe07f',
         '49a159e1-1e00-409a-81c9-b4d4489fbd67',
       ]);
-      expect(exercise.videos.map((v) => v.uuid), ['63e996e9-a772-4ca5-9d09-8b4be03f6be4']);
+      expect(exercise.videos.map((v) => v.uuid),
+          ['63e996e9-a772-4ca5-9d09-8b4be03f6be4']);
 
       final translation1 = exercise.translations[0];
       expect(translation1.name, '2 Handed Kettlebell Swing');
-      expect(translation1.languageObj.shortName, 'en');
-      expect(translation1.notes[0].comment, "it's important to do the exercise correctly");
-      expect(translation1.notes[1].comment, 'put a lot of effort into this exercise');
+      expect(translation1.languageObj?.shortName, 'en');
+      expect(translation1.notes[0].comment,
+          "it's important to do the exercise correctly");
+      expect(translation1.notes[1].comment,
+          'put a lot of effort into this exercise');
       expect(translation1.notes[2].comment, 'have fun');
       expect(translation1.aliases[0].alias, 'double handed kettlebell');
       expect(translation1.aliases[1].alias, 'Kettlebell russian style');

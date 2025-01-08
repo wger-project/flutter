@@ -197,7 +197,9 @@ class _AuthCardState extends State<AuthCard> {
 
       // Check if update is required else continue normally
       if (res.containsKey('action')) {
-        if (res['action'] == LoginActions.update && mounted) {
+        if (res['action'] == LoginActions.update &&
+            mounted &&
+            context.mounted) {
           Navigator.of(context).push(
             MaterialPageRoute(builder: (context) => const UpdateAppScreen()),
           );
@@ -209,14 +211,14 @@ class _AuthCardState extends State<AuthCard> {
         _isLoading = false;
       });
     } on WgerHttpException catch (error) {
-      if (mounted) {
+      if (mounted && context.mounted) {
         showHttpExceptionErrorDialog(error, context);
       }
       setState(() {
         _isLoading = false;
       });
     } catch (error) {
-      if (mounted) {
+      if (mounted && context.mounted) {
         showErrorDialog(error, context);
       }
       setState(() {
@@ -317,7 +319,9 @@ class _AuthCardState extends State<AuthCard> {
                         labelText: AppLocalizations.of(context).password,
                         prefixIcon: const Icon(Icons.password),
                         suffixIcon: IconButton(
-                          icon: Icon(isObscure ? Icons.visibility_off : Icons.visibility),
+                          icon: Icon(isObscure
+                              ? Icons.visibility_off
+                              : Icons.visibility),
                           onPressed: () {
                             isObscure = !isObscure;
                             updateState(() {});
@@ -344,10 +348,13 @@ class _AuthCardState extends State<AuthCard> {
                       return TextFormField(
                         key: const Key('inputPassword2'),
                         decoration: InputDecoration(
-                          labelText: AppLocalizations.of(context).confirmPassword,
+                          labelText:
+                              AppLocalizations.of(context).confirmPassword,
                           prefixIcon: const Icon(Icons.password),
                           suffixIcon: IconButton(
-                            icon: Icon(confirmIsObscure ? Icons.visibility_off : Icons.visibility),
+                            icon: Icon(confirmIsObscure
+                                ? Icons.visibility_off
+                                : Icons.visibility),
                             onPressed: () {
                               confirmIsObscure = !confirmIsObscure;
                               updateState(() {});
@@ -360,7 +367,8 @@ class _AuthCardState extends State<AuthCard> {
                         validator: _authMode == AuthMode.Signup
                             ? (value) {
                                 if (value != _passwordController.text) {
-                                  return AppLocalizations.of(context).passwordsDontMatch;
+                                  return AppLocalizations.of(context)
+                                      .passwordsDontMatch;
                                 }
                                 return null;
                               }
@@ -378,8 +386,10 @@ class _AuthCardState extends State<AuthCard> {
                           child: TextFormField(
                             key: const Key('inputServer'),
                             decoration: InputDecoration(
-                              labelText: AppLocalizations.of(context).customServerUrl,
-                              helperText: AppLocalizations.of(context).customServerHint,
+                              labelText:
+                                  AppLocalizations.of(context).customServerUrl,
+                              helperText:
+                                  AppLocalizations.of(context).customServerHint,
                               helperMaxLines: 4,
                             ),
                             controller: _serverUrlController,
@@ -395,8 +405,10 @@ class _AuthCardState extends State<AuthCard> {
                             },
                             onSaved: (value) {
                               // Remove any trailing slash
-                              if (value!.lastIndexOf('/') == (value.length - 1)) {
-                                value = value.substring(0, value.lastIndexOf('/'));
+                              if (value!.lastIndexOf('/') ==
+                                  (value.length - 1)) {
+                                value =
+                                    value.substring(0, value.lastIndexOf('/'));
                               }
                               _authData['serverUrl'] = value;
                             },
@@ -409,8 +421,9 @@ class _AuthCardState extends State<AuthCard> {
                             IconButton(
                               icon: const Icon(Icons.undo),
                               onPressed: () {
-                                _serverUrlController.text =
-                                    kDebugMode ? DEFAULT_SERVER_TEST : DEFAULT_SERVER_PROD;
+                                _serverUrlController.text = kDebugMode
+                                    ? DEFAULT_SERVER_TEST
+                                    : DEFAULT_SERVER_PROD;
                               },
                             ),
                             Text(AppLocalizations.of(context).reset),
@@ -437,7 +450,8 @@ class _AuthCardState extends State<AuthCard> {
                       child: Center(
                         child: _isLoading
                             ? const CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation(Colors.white),
+                                valueColor:
+                                    AlwaysStoppedAnimation(Colors.white),
                               )
                             : Text(
                                 _authMode == AuthMode.Login

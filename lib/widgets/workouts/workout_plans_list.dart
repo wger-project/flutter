@@ -69,20 +69,24 @@ class WorkoutPlansList extends StatelessWidget {
                             builder: (BuildContext contextDialog) {
                               return AlertDialog(
                                 content: Text(
-                                  AppLocalizations.of(context).confirmDelete(currentWorkout.name),
+                                  AppLocalizations.of(context)
+                                      .confirmDelete(currentWorkout.name),
                                 ),
                                 actions: [
                                   TextButton(
                                     child: Text(
-                                      MaterialLocalizations.of(context).cancelButtonLabel,
+                                      MaterialLocalizations.of(context)
+                                          .cancelButtonLabel,
                                     ),
-                                    onPressed: () => Navigator.of(contextDialog).pop(),
+                                    onPressed: () =>
+                                        Navigator.of(contextDialog).pop(),
                                   ),
                                   TextButton(
                                     child: Text(
                                       AppLocalizations.of(context).delete,
                                       style: TextStyle(
-                                        color: Theme.of(context).colorScheme.error,
+                                        color:
+                                            Theme.of(context).colorScheme.error,
                                       ),
                                     ),
                                     onPressed: () {
@@ -96,10 +100,12 @@ class WorkoutPlansList extends StatelessWidget {
                                       Navigator.of(contextDialog).pop();
 
                                       // and inform the user
-                                      ScaffoldMessenger.of(context).showSnackBar(
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
                                         SnackBar(
                                           content: Text(
-                                            AppLocalizations.of(context).successfullyDeleted,
+                                            AppLocalizations.of(context)
+                                                .successfullyDeleted,
                                             textAlign: TextAlign.center,
                                           ),
                                         ),

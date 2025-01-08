@@ -35,7 +35,6 @@ const FlexSubThemesData wgerSubThemeData = FlexSubThemesData(
   fabSchemeColor: SchemeColor.secondary,
   inputDecoratorBorderType: FlexInputBorderType.underline,
   inputDecoratorIsFilled: false,
-  useTextTheme: true,
   appBarScrolledUnderElevation: 4,
   navigationBarIndicatorOpacity: 0.24,
   navigationBarHeight: 56,

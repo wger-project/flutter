@@ -35,9 +35,11 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final nutritionalGoals = _nutritionalPlan.nutritionalGoals;
     final lastWeightEntry =
-        Provider.of<BodyWeightProvider>(context, listen: false).getNewestEntry();
-    final nutritionalGoalsGperKg =
-        lastWeightEntry != null ? nutritionalGoals / lastWeightEntry.weight.toDouble() : null;
+        Provider.of<BodyWeightProvider>(context, listen: false)
+            .getNewestEntry();
+    final nutritionalGoalsGperKg = lastWeightEntry != null
+        ? nutritionalGoals / lastWeightEntry.weight.toDouble()
+        : null;
 
     return SliverList(
       delegate: SliverChildListDelegate(
@@ -68,7 +70,8 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(15),
               height: 220,
-              child: FlNutritionalPlanPieChartWidget(nutritionalGoals.toValues()),
+              child:
+                  FlNutritionalPlanPieChartWidget(nutritionalGoals.toValues()),
             ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),

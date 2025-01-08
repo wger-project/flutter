@@ -77,7 +77,8 @@ class BodyWeightProvider with ChangeNotifier {
 
   Future<WeightEntry> addEntry(WeightEntry entry) async {
     // Create entry and return it
-    final data = await baseProvider.post(entry.toJson(), baseProvider.makeUrl(BODY_WEIGHT_URL));
+    final data = await baseProvider.post(
+        entry.toJson(), baseProvider.makeUrl(BODY_WEIGHT_URL));
     final WeightEntry weightEntry = WeightEntry.fromJson(data);
     _entries.add(weightEntry);
     _entries.sort((a, b) => b.date.compareTo(a.date));
@@ -96,7 +97,8 @@ class BodyWeightProvider with ChangeNotifier {
 
   Future<void> deleteEntry(int id) async {
     // Send the request and remove the entry from the list...
-    final existingEntryIndex = _entries.indexWhere((element) => element.id == id);
+    final existingEntryIndex =
+        _entries.indexWhere((element) => element.id == id);
     final existingWeightEntry = _entries[existingEntryIndex];
     _entries.removeAt(existingEntryIndex);
     notifyListeners();

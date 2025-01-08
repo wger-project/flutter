@@ -30,13 +30,13 @@ import 'package:wger/widgets/workouts/charts.dart';
 
 class ExerciseLogChart extends StatelessWidget {
   final Exercise _base;
-  final DateTime _currentDate;
 
-  const ExerciseLogChart(this._base, this._currentDate);
+  const ExerciseLogChart(this._base);
 
   @override
   Widget build(BuildContext context) {
-    final workoutPlansData = Provider.of<WorkoutPlansProvider>(context, listen: false);
+    final workoutPlansData =
+        Provider.of<WorkoutPlansProvider>(context, listen: false);
     final workout = workoutPlansData.currentPlan;
     var colors = generateChartColors(1).iterator;
 
@@ -48,7 +48,8 @@ class ExerciseLogChart extends StatelessWidget {
       future: getChartEntries(context),
       builder: (context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
-          colors = generateChartColors(snapshot.data!['chart_data'].length).iterator;
+          colors =
+              generateChartColors(snapshot.data!['chart_data'].length).iterator;
         }
 
         return SizedBox(
@@ -58,7 +59,7 @@ class ExerciseLogChart extends StatelessWidget {
               : Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    LogChartWidgetFl(snapshot.data!, _currentDate),
+                    LogChartWidgetFl(snapshot.data!),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -108,12 +109,14 @@ class _DayLogWidgetState extends State<DayLogWidget> {
       child: Column(
         children: [
           Text(
-            DateFormat.yMd(Localizations.localeOf(context).languageCode).format(widget._date),
+            DateFormat.yMd(Localizations.localeOf(context).languageCode)
+                .format(widget._date),
             style: Theme.of(context).textTheme.headlineSmall,
           ),
           if (widget._session != null) const Text('Session data here'),
           ...widget._exerciseData.keys.map((base) {
-            final exercise = base.getExercise(Localizations.localeOf(context).languageCode);
+            final exercise =
+                base.getExercise(Localizations.localeOf(context).languageCode);
             return Column(
               children: [
                 if (widget._exerciseData[base]!.isNotEmpty)
@@ -145,7 +148,7 @@ class _DayLogWidgetState extends State<DayLogWidget> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15),
-                  child: ExerciseLogChart(base, widget._date),
+                  child: ExerciseLogChart(base),
                 ),
               ],
             );

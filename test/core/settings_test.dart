@@ -36,8 +36,10 @@ void main() {
   Widget createSettingsScreen({locale = 'en'}) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<NutritionPlansProvider>(create: (context) => mockNutritionProvider),
-        ChangeNotifierProvider<ExercisesProvider>(create: (context) => mockExerciseProvider),
+        ChangeNotifierProvider<NutritionPlansProvider>(
+            create: (context) => mockNutritionProvider),
+        ChangeNotifierProvider<ExercisesProvider>(
+            create: (context) => mockExerciseProvider),
       ],
       child: MaterialApp(
         locale: Locale(locale),
@@ -49,7 +51,8 @@ void main() {
   }
 
   group('Cache', () {
-    testWidgets('Test resetting the exercise cache', (WidgetTester tester) async {
+    testWidgets('Test resetting the exercise cache',
+        (WidgetTester tester) async {
       await tester.pumpWidget(createSettingsScreen());
       await tester.tap(find.byKey(const ValueKey('cacheIconExercises')));
       await tester.pumpAndSettle();
@@ -57,7 +60,8 @@ void main() {
       verify(mockExerciseProvider.clearAllCachesAndPrefs());
     });
 
-    testWidgets('Test resetting the ingredient cache', (WidgetTester tester) async {
+    testWidgets('Test resetting the ingredient cache',
+        (WidgetTester tester) async {
       await tester.pumpWidget(createSettingsScreen());
       await tester.tap(find.byKey(const ValueKey('cacheIconIngredients')));
       await tester.pumpAndSettle();

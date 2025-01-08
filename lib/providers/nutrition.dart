@@ -107,7 +107,8 @@ class NutritionPlansProvider with ChangeNotifier {
 
   /// Fetches and sets all plans fully, i.e. with all corresponding child objects
   Future<void> fetchAndSetAllPlansFull() async {
-    final data = await baseProvider.fetchPaginated(baseProvider.makeUrl(_nutritionalPlansPath));
+    final data = await baseProvider
+        .fetchPaginated(baseProvider.makeUrl(_nutritionalPlansPath));
     await Future.wait(data.map((e) => fetchAndSetPlanFull(e['id'])).toList());
   }
 
@@ -166,7 +167,8 @@ class NutritionPlansProvider with ChangeNotifier {
     // Logs
     await fetchAndSetLogs(plan);
     for (final meal in meals) {
-      meal.diaryEntries = plan.diaryEntries.where((e) => e.mealId == meal.id).toList();
+      meal.diaryEntries =
+          plan.diaryEntries.where((e) => e.mealId == meal.id).toList();
     }
 
     // ... and done
@@ -200,7 +202,8 @@ class NutritionPlansProvider with ChangeNotifier {
     _plans.removeAt(existingPlanIndex);
     notifyListeners();
 
-    final response = await baseProvider.deleteRequest(_nutritionalPlansPath, id);
+    final response =
+        await baseProvider.deleteRequest(_nutritionalPlansPath, id);
 
     if (response.statusCode >= 400) {
       _plans.insert(existingPlanIndex, existingPlan);
@@ -280,7 +283,8 @@ class NutritionPlansProvider with ChangeNotifier {
     notifyListeners();
 
     // Try to delete
-    final response = await baseProvider.deleteRequest(_mealItemPath, mealItem.id!);
+    final response =
+        await baseProvider.deleteRequest(_mealItemPath, mealItem.id!);
     if (response.statusCode >= 400) {
       meal.mealItems.insert(mealItemIndex, existingMealItem);
       notifyListeners();
@@ -295,7 +299,8 @@ class NutritionPlansProvider with ChangeNotifier {
   /// Fetch and return an ingredient
   ///
   /// If the ingredient is not known locally, it is fetched from the server
-  Future<Ingredient> fetchIngredient(int ingredientId, {IngredientDatabase? database}) async {
+  Future<Ingredient> fetchIngredient(int ingredientId,
+      {IngredientDatabase? database}) async {
     database ??= this.database;
     Ingredient ingredient;
 
@@ -313,9 +318,11 @@ class NutritionPlansProvider with ChangeNotifier {
         log("Loaded ingredient '${ingredient.name}' from db cache");
 
         // Prune old entries
-        if (DateTime.now()
-            .isAfter(ingredientDb.lastFetched.add(const Duration(days: DAYS_TO_CACHE)))) {
-          (database.delete(database.ingredients)..where((i) => i.id.equals(ingredientId))).go();
+        if (DateTime.now().isAfter(ingredientDb.lastFetched
+            .add(const Duration(days: DAYS_TO_CACHE)))) {
+          (database.delete(database.ingredients)
+                ..where((i) => i.id.equals(ingredientId)))
+              .go();
         }
       } else {
         final data = await baseProvider.fetch(
@@ -343,7 +350,9 @@ class NutritionPlansProvider with ChangeNotifier {
     final ingredientDb = await database.select(database.ingredients).get();
     log('Read ${ingredientDb.length} ingredients from db cache');
     if (ingredientDb.isNotEmpty) {
-      ingredients = ingredientDb.map((e) => Ingredient.fromJson(jsonDecode(e.data))).toList();
+      ingredients = ingredientDb
+          .map((e) => Ingredient.fromJson(jsonDecode(e.data)))
+          .toList();
     }
   }
 

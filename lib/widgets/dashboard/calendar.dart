@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
  * Copyright (C) 2020, 2021 wger Team
@@ -58,15 +60,16 @@ class DashboardCalendarWidget extends StatefulWidget {
   const DashboardCalendarWidget();
 
   @override
-  _DashboardCalendarWidgetState createState() => _DashboardCalendarWidgetState();
+  _DashboardCalendarWidgetState createState() =>
+      _DashboardCalendarWidgetState();
 }
 
 class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
     with TickerProviderStateMixin {
   late Map<String, List<Event>> _events;
   late final ValueNotifier<List<Event>> _selectedEvents;
-  RangeSelectionMode _rangeSelectionMode =
-      RangeSelectionMode.toggledOff; // Can be toggled on/off by longpressing a date
+  RangeSelectionMode _rangeSelectionMode = RangeSelectionMode
+      .toggledOff; // Can be toggled on/off by longpressing a date
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
   DateTime? _rangeStart;
@@ -116,7 +119,8 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
     }
 
     // Process workout sessions
-    final WorkoutPlansProvider plans = Provider.of<WorkoutPlansProvider>(context, listen: false);
+    final WorkoutPlansProvider plans =
+        Provider.of<WorkoutPlansProvider>(context, listen: false);
     await plans.fetchSessionData().then((entries) {
       for (final entry in entries['results']) {
         final session = WorkoutSession.fromJson(entry);
@@ -125,9 +129,11 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
           _events[date] = [];
         }
         var time = '';
-        time = '(${timeToString(session.timeStart)} - ${timeToString(session.timeEnd)})';
+        time =
+            '(${timeToString(session.timeStart)} - ${timeToString(session.timeEnd)})';
 
         // Add events to lists
+
         _events[date]!.add(Event(
           EventType.session,
           '${AppLocalizations.of(context).impression}: ${session.impressionAsString} $time',
@@ -251,7 +257,8 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
                       title: Text((() {
                         switch (event.type) {
                           case EventType.caloriesDiary:
-                            return AppLocalizations.of(context).nutritionalDiary;
+                            return AppLocalizations.of(context)
+                                .nutritionalDiary;
 
                           case EventType.session:
                             return AppLocalizations.of(context).workoutSession;

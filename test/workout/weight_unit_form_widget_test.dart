@@ -85,7 +85,8 @@ void main() {
     expect(find.text('plates'), findsWidgets);
   });
 
-  testWidgets('Test that the correct units are set after selection', (WidgetTester tester) async {
+  testWidgets('Test that the correct units are set after selection',
+      (WidgetTester tester) async {
     // arrange
     await tester.pumpWidget(createHomeScreen());
     await tester.pump();

@@ -21,35 +21,28 @@ import 'package:flutter/material.dart';
 /// Input widget for exercise category objects
 ///
 /// Can be used with a Setting or a Log object
-class ExerciseCategoryInputWidget<T> extends StatefulWidget {
-  late final String _title;
-  late final Function _callback;
-  late final List<T> _entries;
-  late final Function _getDisplayName;
-  late final Function? _validator;
-  late final Key? _key;
 
-  ExerciseCategoryInputWidget({
-    Key? key,
-    required String title,
-    required List<T> entries,
-    required Function callback,
-    required Function displayName,
-    Function? validator,
-  }) {
-    _key = key;
-    _entries = entries;
-    _title = title;
-    _callback = callback;
-    _getDisplayName = displayName;
-    _validator = validator;
-  }
+class ExerciseCategoryInputWidget<T> extends StatefulWidget {
+  final String title;
+  final Function callback;
+  final List<T> entries;
+  final Function displayName;
+  final Function? validator;
+  const ExerciseCategoryInputWidget(
+      {required this.title,
+      required this.callback,
+      required this.entries,
+      required this.displayName,
+      this.validator,
+      super.key});
 
   @override
-  _ExerciseCategoryInputWidgetState createState() => _ExerciseCategoryInputWidgetState<T>();
+  State<ExerciseCategoryInputWidget> createState() =>
+      _ExerciseCategoryInputWidgetState();
 }
 
-class _ExerciseCategoryInputWidgetState<T> extends State<ExerciseCategoryInputWidget> {
+class _ExerciseCategoryInputWidgetState<T>
+    extends State<ExerciseCategoryInputWidget> {
   @override
   Widget build(BuildContext context) {
     T? selectedEntry;
@@ -60,7 +53,7 @@ class _ExerciseCategoryInputWidgetState<T> extends State<ExerciseCategoryInputWi
         key: widget.key,
         value: selectedEntry,
         decoration: InputDecoration(
-          labelText: widget._title,
+          labelText: widget.title,
           contentPadding: const EdgeInsets.all(8.0),
           border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -69,20 +62,20 @@ class _ExerciseCategoryInputWidgetState<T> extends State<ExerciseCategoryInputWi
         onChanged: (T? newValue) {
           setState(() {
             selectedEntry = newValue as T;
-            widget._callback(newValue);
+            widget.callback(newValue);
           });
         },
         validator: (T? value) {
-          if (widget._validator != null) {
-            return widget._validator!(value);
+          if (widget.validator != null) {
+            return widget.validator!(value);
           }
           return null;
         },
-        items: widget._entries.map<DropdownMenuItem<T>>((value) {
+        items: widget.entries.map<DropdownMenuItem<T>>((value) {
           return DropdownMenuItem<T>(
             key: Key(value.id.toString()),
             value: value,
-            child: Text(widget._getDisplayName(value)),
+            child: Text(widget.displayName(value)),
           );
         }).toList(),
       ),

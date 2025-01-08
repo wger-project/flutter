@@ -77,13 +77,16 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                       ),
                       ListTile(
                         leading: const Icon(Icons.settings),
-                        onTap: () => Navigator.of(context).pushNamed(SettingsPage.routeName),
+                        onTap: () => Navigator.of(context)
+                            .pushNamed(SettingsPage.routeName),
                         title: Text(AppLocalizations.of(context).settingsTitle),
                       ),
                       ListTile(
                         leading: const Icon(Icons.info),
-                        onTap: () => Navigator.of(context).pushNamed(AboutPage.routeName),
-                        title: Text(AppLocalizations.of(context).aboutPageTitle),
+                        onTap: () => Navigator.of(context)
+                            .pushNamed(AboutPage.routeName),
+                        title:
+                            Text(AppLocalizations.of(context).aboutPageTitle),
                       ),
                       const Divider(),
                       ListTile(

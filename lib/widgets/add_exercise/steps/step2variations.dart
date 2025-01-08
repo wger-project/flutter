@@ -37,11 +37,13 @@ class Step2Variations extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             //mainAxisSize: MainAxisSize.max,
                             children: [
-                              ...exerciseProvider.exerciseBasesByVariation[key]!.map(
+                              ...exerciseProvider.exerciseBasesByVariation[key]!
+                                  .map(
                                 (base) => Text(
                                   base
                                       .getExercise(
-                                        Localizations.localeOf(context).languageCode,
+                                        Localizations.localeOf(context)
+                                            .languageCode,
                                       )
                                       .name,
                                   overflow: TextOverflow.ellipsis,
@@ -61,7 +63,9 @@ class Step2Variations extends StatelessWidget {
                     ),
                   ),
                   // Exercise bases without variations
-                  ...exerciseProvider.exercises.where((b) => b.variationId == null).map(
+                  ...exerciseProvider.exercises
+                      .where((b) => b.variationId == null)
+                      .map(
                         (base) => Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -73,7 +77,8 @@ class Step2Variations extends StatelessWidget {
                                   Text(
                                     base
                                         .getExercise(
-                                          Localizations.localeOf(context).languageCode,
+                                          Localizations.localeOf(context)
+                                              .languageCode,
                                         )
                                         .name,
                                     overflow: TextOverflow.ellipsis,
@@ -84,8 +89,10 @@ class Step2Variations extends StatelessWidget {
                             ),
                             Consumer<AddExerciseProvider>(
                               builder: (ctx, provider, __) => Switch(
-                                value: provider.newVariationForExercise == base.id,
-                                onChanged: (state) => provider.newVariationForExercise = base.id,
+                                value:
+                                    provider.newVariationForExercise == base.id,
+                                onChanged: (state) =>
+                                    provider.newVariationForExercise = base.id,
                               ),
                             ),
                           ],

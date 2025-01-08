@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
  * Copyright (C) 2020, 2021 wger Team
@@ -27,7 +29,6 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/gym_mode.dart';
 import 'package:wger/helpers/i18n.dart';
 import 'package:wger/helpers/json.dart';
-import 'package:wger/helpers/misc.dart';
 import 'package:wger/helpers/ui.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day.dart';
@@ -83,8 +84,9 @@ class _GymModeState extends State<GymMode> {
     for (final set in widget._workoutDay.sets) {
       var firstPage = true;
       for (final setting in set.settingsComputed) {
-        final exerciseBase = Provider.of<ExercisesProvider>(context, listen: false)
-            .findExerciseById(setting.exerciseId);
+        final exerciseBase =
+            Provider.of<ExercisesProvider>(context, listen: false)
+                .findExerciseById(setting.exerciseId);
 
         if (firstPage) {
           _exercisePages[exerciseBase] = currentPage;
@@ -103,8 +105,10 @@ class _GymModeState extends State<GymMode> {
 
   // Returns the list of exercise overview, sets and pause pages
   List<Widget> getContent() {
-    final exerciseProvider = Provider.of<ExercisesProvider>(context, listen: false);
-    final workoutProvider = Provider.of<WorkoutPlansProvider>(context, listen: false);
+    final exerciseProvider =
+        Provider.of<ExercisesProvider>(context, listen: false);
+    final workoutProvider =
+        Provider.of<WorkoutPlansProvider>(context, listen: false);
     var currentElement = 1;
     final List<Widget> out = [];
 
@@ -112,7 +116,8 @@ class _GymModeState extends State<GymMode> {
       var firstPage = true;
       for (final setting in set.settingsComputed) {
         final ratioCompleted = currentElement / _totalElements;
-        final exerciseBase = exerciseProvider.findExerciseById(setting.exerciseId);
+        final exerciseBase =
+            exerciseProvider.findExerciseById(setting.exerciseId);
         currentElement++;
 
         if (firstPage) {
@@ -188,11 +193,14 @@ class StartPage extends StatelessWidget {
                         children: [
                           Text(
                             s.exerciseObj
-                                .getExercise(Localizations.localeOf(context).languageCode)
+                                .getExercise(Localizations.localeOf(context)
+                                    .languageCode)
                                 .name,
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
-                          ...set.getSmartRepr(s.exerciseObj).map((e) => Text(e)),
+                          ...set
+                              .getSmartRepr(s.exerciseObj)
+                              .map((e) => Text(e)),
                           const SizedBox(height: 15),
                         ],
                       );
@@ -341,7 +349,8 @@ class _LogPageState extends State<LogPage> {
           icon: const Icon(Icons.remove, color: Colors.black),
           onPressed: () {
             try {
-              final double newValue = double.parse(_weightController.text) - (2 * minPlateWeight);
+              final double newValue =
+                  double.parse(_weightController.text) - (2 * minPlateWeight);
               if (newValue > 0) {
                 setState(() {
                   widget._log.weight = newValue;
@@ -386,7 +395,8 @@ class _LogPageState extends State<LogPage> {
           icon: const Icon(Icons.add, color: Colors.black),
           onPressed: () {
             try {
-              final double newValue = double.parse(_weightController.text) + (2 * minPlateWeight);
+              final double newValue =
+                  double.parse(_weightController.text) + (2 * minPlateWeight);
               setState(() {
                 widget._log.weight = newValue;
                 _weightController.text = newValue.toString();
@@ -435,7 +445,7 @@ class _LogPageState extends State<LogPage> {
                 Flexible(child: WeightUnitInputWidget(widget._log)),
               ],
             ),
-          if (_detailed) RiRInputWidget(widget._log),
+          if (_detailed) RiRInputWidget(setting: widget._log),
           SwitchListTile(
             title: Text(AppLocalizations.of(context).setUnitsAndRir),
             value: _detailed,
@@ -463,15 +473,18 @@ class _LogPageState extends State<LogPage> {
                         context,
                         listen: false,
                       ).addLog(widget._log);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          duration: const Duration(seconds: 2), // default is 4
-                          content: Text(
-                            AppLocalizations.of(context).successfullySaved,
-                            textAlign: TextAlign.center,
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            duration:
+                                const Duration(seconds: 2), // default is 4
+                            content: Text(
+                              AppLocalizations.of(context).successfullySaved,
+                              textAlign: TextAlign.center,
+                            ),
                           ),
-                        ),
-                      );
+                        );
+                      }
                       widget._controller.nextPage(
                         duration: DEFAULT_ANIMATION_DURATION,
                         curve: DEFAULT_ANIMATION_CURVE,
@@ -518,7 +531,8 @@ class _LogPageState extends State<LogPage> {
           return ListTile(
             title: Text(log.singleLogRepTextNoNl),
             subtitle: Text(
-              DateFormat.yMd(Localizations.localeOf(context).languageCode).format(log.date),
+              DateFormat.yMd(Localizations.localeOf(context).languageCode)
+                  .format(log.date),
             ),
             trailing: const Icon(Icons.copy),
             onTap: () {
@@ -572,11 +586,14 @@ class _LogPageState extends State<LogPage> {
                           const Text('×'),
                           Container(
                             decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.primaryContainer,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .primaryContainer,
                               shape: BoxShape.circle,
                             ),
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 3),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 3),
                               child: SizedBox(
                                 height: 35,
                                 width: 35,
@@ -612,7 +629,9 @@ class _LogPageState extends State<LogPage> {
     return Column(
       children: [
         NavigationHeader(
-          widget._exerciseBase.getExercise(Localizations.localeOf(context).languageCode).name,
+          widget._exerciseBase
+              .getExercise(Localizations.localeOf(context).languageCode)
+              .name,
           widget._controller,
           exercisePages: widget._exercisePages,
         ),
@@ -623,15 +642,20 @@ class _LogPageState extends State<LogPage> {
             textAlign: TextAlign.center,
           ),
         ),
-        if (widget._set.comment != '') Text(widget._set.comment, textAlign: TextAlign.center),
+        if (widget._set.comment != '')
+          Text(widget._set.comment, textAlign: TextAlign.center),
         const SizedBox(height: 10),
         Expanded(
-          child: (widget._workoutPlan.filterLogsByExerciseBase(widget._exerciseBase).isNotEmpty)
+          child: (widget._workoutPlan
+                  .filterLogsByExerciseBase(widget._exerciseBase)
+                  .isNotEmpty)
               ? getPastLogs()
               : Container(),
         ),
         // Only show calculator for barbell
-        if (widget._log.exerciseBaseObj.equipment.map((e) => e.id).contains(ID_EQUIPMENT_BARBELL))
+        if (widget._log.exerciseBaseObj.equipment
+            .map((e) => e.id)
+            .contains(ID_EQUIPMENT_BARBELL))
           getPlates(),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -661,7 +685,9 @@ class ExerciseOverview extends StatelessWidget {
     return Column(
       children: [
         NavigationHeader(
-          _exerciseBase.getExercise(Localizations.localeOf(context).languageCode).name,
+          _exerciseBase
+              .getExercise(Localizations.localeOf(context).languageCode)
+              .name,
           _controller,
           exercisePages: _exercisePages,
         ),
@@ -672,7 +698,8 @@ class ExerciseOverview extends StatelessWidget {
             children: [
               Text(
                 getTranslation(_exerciseBase.category!.name, context),
-                semanticsLabel: getTranslation(_exerciseBase.category!.name, context),
+                semanticsLabel:
+                    getTranslation(_exerciseBase.category!.name, context),
                 style: Theme.of(context).textTheme.titleLarge,
                 textAlign: TextAlign.center,
               ),
@@ -688,7 +715,8 @@ class ExerciseOverview extends StatelessWidget {
                   child: ListView(
                     scrollDirection: Axis.horizontal,
                     children: [
-                      ..._exerciseBase.images.map((e) => ExerciseImageWidget(image: e)),
+                      ..._exerciseBase.images
+                          .map((e) => ExerciseImageWidget(image: e)),
                     ],
                   ),
                 ),
@@ -830,7 +858,8 @@ class _SessionPageState extends State<SessionPage> {
                           );
 
                           if (pickedTime != null) {
-                            timeStartController.text = timeToString(pickedTime)!;
+                            timeStartController.text =
+                                timeToString(pickedTime)!;
                             _session.timeStart = pickedTime;
                           }
                         },
@@ -838,8 +867,10 @@ class _SessionPageState extends State<SessionPage> {
                           _session.timeStart = stringToTime(newValue);
                         },
                         validator: (_) {
-                          final TimeOfDay startTime = stringToTime(timeStartController.text);
-                          final TimeOfDay endTime = stringToTime(timeEndController.text);
+                          final TimeOfDay startTime =
+                              stringToTime(timeStartController.text);
+                          final TimeOfDay endTime =
+                              stringToTime(timeEndController.text);
                           if (startTime.isAfter(endTime)) {
                             return AppLocalizations.of(context).timeStartAhead;
                           }
@@ -986,7 +1017,10 @@ class _TimerWidgetState extends State<TimerWidget> {
           child: Center(
             child: Text(
               DateFormat('m:ss').format(today.add(Duration(seconds: _seconds))),
-              style: Theme.of(context).textTheme.displayLarge!.copyWith(color: wgerPrimaryColor),
+              style: Theme.of(context)
+                  .textTheme
+                  .displayLarge!
+                  .copyWith(color: wgerPrimaryColor),
             ),
           ),
         ),
@@ -1072,7 +1106,9 @@ class NavigationHeader extends StatelessWidget {
           children: [
             ...exercisePages.keys.map((e) {
               return ListTile(
-                title: Text(e.getExercise(Localizations.localeOf(context).languageCode).name),
+                title: Text(e
+                    .getExercise(Localizations.localeOf(context).languageCode)
+                    .name),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {
                   _controller.animateToPage(

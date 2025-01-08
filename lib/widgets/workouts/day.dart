@@ -77,7 +77,9 @@ class SettingWidget extends StatelessWidget {
         },
       ),
       title: Text(
-        setting.exerciseObj.getExercise(Localizations.localeOf(context).languageCode).name,
+        setting.exerciseObj
+            .getExercise(Localizations.localeOf(context).languageCode)
+            .name,
       ),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -127,7 +129,8 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
             iconSize: ICON_SIZE_SMALL,
             tooltip: AppLocalizations.of(context).delete,
             onPressed: () {
-              Provider.of<WorkoutPlansProvider>(context, listen: false).deleteSet(set);
+              Provider.of<WorkoutPlansProvider>(context, listen: false)
+                  .deleteSet(set);
             },
           ),
         Expanded(
@@ -250,7 +253,8 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
                 ).reorderSets(_sets, startIndex);
               },
               children: [
-                for (var i = 0; i < widget._day.sets.length; i++) getSetRow(widget._day.sets[i], i),
+                for (var i = 0; i < widget._day.sets.length; i++)
+                  getSetRow(widget._day.sets[i], i),
               ],
             ),
           ],
@@ -282,7 +286,8 @@ class DayHeader extends StatelessWidget {
         style: Theme.of(context).textTheme.headlineSmall,
         overflow: TextOverflow.ellipsis,
       ),
-      subtitle: Text(_day.getDaysTextTranslated(Localizations.localeOf(context).languageCode)),
+      subtitle: Text(_day
+          .getDaysTextTranslated(Localizations.localeOf(context).languageCode)),
       leading: const Icon(Icons.play_arrow),
       minLeadingWidth: 8,
       trailing: Row(mainAxisSize: MainAxisSize.min, children: [
@@ -290,7 +295,9 @@ class DayHeader extends StatelessWidget {
         const SizedBox(width: 10),
         IconButton(
           icon: _editing ? const Icon(Icons.done) : const Icon(Icons.edit),
-          tooltip: _editing ? AppLocalizations.of(context).done : AppLocalizations.of(context).edit,
+          tooltip: _editing
+              ? AppLocalizations.of(context).done
+              : AppLocalizations.of(context).edit,
           onPressed: () {
             _toggle();
           },

@@ -24,7 +24,8 @@ import '../test_data/workouts.dart';
 
 Widget createDashboardScreen({locale = 'en'}) {
   final mockWorkoutProvider = MockWorkoutPlansProvider();
-  when(mockWorkoutProvider.activePlan).thenReturn(getWorkout(exercises: getScreenshotExercises()));
+  when(mockWorkoutProvider.activePlan)
+      .thenReturn(getWorkout(exercises: getScreenshotExercises()));
 
   final Map<String, dynamic> logs = {
     'results': [
@@ -38,19 +39,22 @@ Widget createDashboardScreen({locale = 'en'}) {
       },
     ],
   };
-  when(mockWorkoutProvider.fetchSessionData()).thenAnswer((a) => Future.value(logs));
+  when(mockWorkoutProvider.fetchSessionData())
+      .thenAnswer((a) => Future.value(logs));
 
   final mockNutritionProvider = MockNutritionPlansProvider();
 
   when(mockNutritionProvider.currentPlan)
       .thenAnswer((realInvocation) => getNutritionalPlanScreenshot());
-  when(mockNutritionProvider.items).thenReturn([getNutritionalPlanScreenshot()]);
+  when(mockNutritionProvider.items)
+      .thenReturn([getNutritionalPlanScreenshot()]);
 
   final mockWeightProvider = MockBodyWeightProvider();
   when(mockWeightProvider.items).thenReturn(getScreenshotWeightEntries());
 
   final mockMeasurementProvider = MockMeasurementProvider();
-  when(mockMeasurementProvider.categories).thenReturn(getMeasurementCategories());
+  when(mockMeasurementProvider.categories)
+      .thenReturn(getMeasurementCategories());
 
   final mockUserProvider = MockUserProvider();
   when(mockUserProvider.profile).thenReturn(tProfile1);

@@ -43,7 +43,8 @@ class MealForm extends StatelessWidget {
   final _nameController = TextEditingController();
 
   MealForm(this._planId, [meal]) {
-    _meal = meal ?? Meal(plan: _planId, time: TimeOfDay.fromDateTime(DateTime.now()));
+    _meal = meal ??
+        Meal(plan: _planId, time: TimeOfDay.fromDateTime(DateTime.now()));
     _timeController.text = timeToString(_meal.time)!;
     _nameController.text = _meal.name;
   }
@@ -58,7 +59,8 @@ class MealForm extends StatelessWidget {
           children: [
             TextFormField(
               key: const Key('field-time'),
-              decoration: InputDecoration(labelText: AppLocalizations.of(context).time),
+              decoration:
+                  InputDecoration(labelText: AppLocalizations.of(context).time),
               controller: _timeController,
               onTap: () async {
                 // Stop keyboard from appearing
@@ -80,7 +82,8 @@ class MealForm extends StatelessWidget {
             TextFormField(
               maxLength: 25,
               key: const Key('field-name'),
-              decoration: InputDecoration(labelText: AppLocalizations.of(context).name),
+              decoration:
+                  InputDecoration(labelText: AppLocalizations.of(context).name),
               controller: _nameController,
               onSaved: (newValue) {
                 _meal.name = newValue as String;
@@ -131,7 +134,8 @@ Widget MealItemForm(
     recent: recent.map((e) => Log.fromMealItem(e, 0, e.mealId)).toList(),
     onSave: (BuildContext context, MealItem mealItem, DateTime? dt) {
       mealItem.mealId = meal.id!;
-      Provider.of<NutritionPlansProvider>(context, listen: false).addMealItem(mealItem, meal);
+      Provider.of<NutritionPlansProvider>(context, listen: false)
+          .addMealItem(mealItem, meal);
     },
     barcode: barcode ?? '',
     test: test ?? false,
@@ -241,8 +245,9 @@ class IngredientFormState extends State<IngredientForm> {
   Widget build(BuildContext context) {
     final String unit = AppLocalizations.of(context).g;
     final queryLower = _searchQuery.toLowerCase();
-    final suggestions =
-        widget.recent.where((e) => e.ingredient.name.toLowerCase().contains(queryLower)).toList();
+    final suggestions = widget.recent
+        .where((e) => e.ingredient.name.toLowerCase().contains(queryLower))
+        .toList();
     return Container(
       margin: const EdgeInsets.all(20),
       child: Form(
@@ -347,7 +352,8 @@ class IngredientFormState extends State<IngredientForm> {
                   ),
               ],
             ),
-            if (ingredientIdController.text.isNotEmpty && _amountController.text.isNotEmpty)
+            if (ingredientIdController.text.isNotEmpty &&
+                _amountController.text.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
@@ -398,7 +404,8 @@ class IngredientFormState extends State<IngredientForm> {
                   return;
                 }
                 _form.currentState!.save();
-                _mealItem.ingredientId = int.parse(_ingredientIdController.text);
+                _mealItem.ingredientId =
+                    int.parse(_ingredientIdController.text);
 
                 try {
                   var date = DateTime.parse(_dateController.text);
@@ -498,211 +505,196 @@ enum GoalType {
 }
 
 class PlanForm extends StatefulWidget {
-  late NutritionalPlan _plan;
+  final NutritionalPlan? plan;
 
-  PlanForm([NutritionalPlan? plan]) {
-    _plan = plan ?? NutritionalPlan.empty();
-  }
+  const PlanForm({ this.plan, Key? key}) : super(key: key);
 
   @override
   State<PlanForm> createState() => _PlanFormState();
 }
 
 class _PlanFormState extends State<PlanForm> {
-  final _form = GlobalKey<FormState>();
-
-  bool _onlyLogging = true;
-  GoalType _goalType = GoalType.meals;
-
-  final _descriptionController = TextEditingController();
-  final TextEditingController colorController = TextEditingController();
-
-  GoalType? selectedGoal;
+  final _formKey = GlobalKey<FormState>();
+  late final TextEditingController _descriptionController;
+  late bool? _onlyLogging;
+  late GoalType? _goalType;
 
   @override
   void initState() {
     super.initState();
-
-    _onlyLogging = widget._plan.onlyLogging;
-    _descriptionController.text = widget._plan.description;
-    if (widget._plan.hasAnyAdvancedGoals) {
-      _goalType = GoalType.advanced;
-    } else if (widget._plan.hasAnyGoals) {
-      _goalType = GoalType.basic;
-    } else {
-      _goalType = GoalType.meals;
-    }
+    _onlyLogging = widget.plan?.onlyLogging;
+    _descriptionController =
+        TextEditingController(text: widget.plan?.description);
+    _goalType = widget.plan != null ? _determineGoalType(widget.plan!) : null;
   }
 
   @override
   void dispose() {
     _descriptionController.dispose();
-    colorController.dispose();
     super.dispose();
+  }
+
+  GoalType _determineGoalType(NutritionalPlan plan) {
+    if (plan.hasAnyAdvancedGoals) {
+      return GoalType.advanced;
+    } else if (plan.hasAnyGoals) {
+      return GoalType.basic;
+    } else {
+      return GoalType.meals;
+    }
+  }
+
+  void _saveForm() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    _formKey.currentState!.save();
+
+    try {
+      final provider =
+          Provider.of<NutritionPlansProvider>(context, listen: false);
+
+      if (widget.plan != null && widget.plan?.id != null) {
+        await provider.editPlan(widget.plan!);
+        if (mounted) Navigator.pop(context);
+      } else {
+        final newPlan = await provider.addPlan(widget.plan!);
+        if (mounted) {
+          Navigator.pushReplacementNamed(
+            context,
+            NutritionalPlanScreen.routeName,
+            arguments: newPlan,
+          );
+        }
+      }
+    } catch (error) {
+      if (mounted) showErrorDialog(error, context);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: _form,
+      key: _formKey,
       child: ListView(
         children: [
-          // Description
-          TextFormField(
-            key: const Key('field-description'),
-            decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).description,
-            ),
-            controller: _descriptionController,
-            onSaved: (newValue) {
-              widget._plan.description = newValue!;
-            },
-          ),
-          SwitchListTile(
-            title: Text(AppLocalizations.of(context).onlyLogging),
-            subtitle: Text(AppLocalizations.of(context).onlyLoggingHelpText),
-            value: _onlyLogging,
-            onChanged: (value) {
-              setState(() {
-                _onlyLogging = !_onlyLogging;
-              });
-              widget._plan.onlyLogging = value;
-            },
-          ),
-          Row(
-            children: [
-              Text(
-                AppLocalizations.of(context).goalMacro,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: DropdownButtonFormField<GoalType>(
-                  value: _goalType,
-                  items: GoalType.values
-                      .map(
-                        (e) => DropdownMenuItem<GoalType>(
-                          value: e,
-                          child: Text(e.getI18nLabel(context)),
-                        ),
-                      )
-                      .toList(),
-                  onChanged: (GoalType? g) {
-                    setState(() {
-                      if (g == null) {
-                        return;
-                      }
-                      switch (g) {
-                        case GoalType.meals:
-                          widget._plan.goalEnergy = null;
-                          widget._plan.goalProtein = null;
-                          widget._plan.goalCarbohydrates = null;
-                          widget._plan.goalFat = null;
-                          widget._plan.goalFiber = null;
-                        case GoalType.basic:
-                          widget._plan.goalFiber = null;
-                          break;
-                        default:
-                          break;
-                      }
-                      _goalType = g;
-                    });
-                  },
-                ),
-              ),
-            ],
-          ),
+          _buildDescriptionField(context),
+          _buildOnlyLoggingSwitch(context),
+          _buildGoalTypeDropdown(context),
           if (_goalType == GoalType.basic || _goalType == GoalType.advanced)
-            Column(
-              children: [
-                GoalMacros(
-                  val: widget._plan.goalEnergy?.toString(),
-                  label: AppLocalizations.of(context).goalEnergy,
-                  suffix: AppLocalizations.of(context).kcal,
-                  onSave: (double value) => widget._plan.goalEnergy = value,
-                  key: const Key('field-goal-energy'),
-                ),
-                GoalMacros(
-                  val: widget._plan.goalProtein?.toString(),
-                  label: AppLocalizations.of(context).goalProtein,
-                  suffix: AppLocalizations.of(context).g,
-                  onSave: (double value) => widget._plan.goalProtein = value,
-                  key: const Key('field-goal-protein'),
-                ),
-                GoalMacros(
-                  val: widget._plan.goalCarbohydrates?.toString(),
-                  label: AppLocalizations.of(context).goalCarbohydrates,
-                  suffix: AppLocalizations.of(context).g,
-                  onSave: (double value) => widget._plan.goalCarbohydrates = value,
-                  key: const Key('field-goal-carbohydrates'),
-                ),
-                GoalMacros(
-                  val: widget._plan.goalFat?.toString(),
-                  label: AppLocalizations.of(context).goalFat,
-                  suffix: AppLocalizations.of(context).g,
-                  onSave: (double value) => widget._plan.goalFat = value,
-                  key: const Key('field-goal-fat'),
-                ),
-              ],
-            ),
-
-          if (_goalType == GoalType.advanced)
-            GoalMacros(
-              val: widget._plan.goalFiber?.toString(),
-              label: AppLocalizations.of(context).goalFiber,
-              suffix: AppLocalizations.of(context).g,
-              onSave: (double value) => widget._plan.goalFiber = value,
-              key: const Key('field-goal-fiber'),
-            ),
-          ElevatedButton(
-            key: const Key(SUBMIT_BUTTON_KEY_NAME),
-            child: Text(AppLocalizations.of(context).save),
-            onPressed: () async {
-              // Validate and save the current values to the plan
-              final isValid = _form.currentState!.validate();
-              if (!isValid) {
-                return;
-              }
-              _form.currentState!.save();
-
-              // Save to DB
-              try {
-                if (widget._plan.id != null) {
-                  await Provider.of<NutritionPlansProvider>(
-                    context,
-                    listen: false,
-                  ).editPlan(widget._plan);
-                  if (context.mounted) {
-                    Navigator.of(context).pop();
-                  }
-                } else {
-                  widget._plan = await Provider.of<NutritionPlansProvider>(
-                    context,
-                    listen: false,
-                  ).addPlan(widget._plan);
-                  if (context.mounted) {
-                    Navigator.of(context).pushReplacementNamed(
-                      NutritionalPlanScreen.routeName,
-                      arguments: widget._plan,
-                    );
-                  }
-                }
-
-                // Saving was successful, reset the data
-                _descriptionController.clear();
-              } on WgerHttpException catch (error) {
-                if (context.mounted) {
-                  showHttpExceptionErrorDialog(error, context);
-                }
-              } catch (error) {
-                if (context.mounted) {
-                  showErrorDialog(error, context);
-                }
-              }
-            },
-          ),
+            _buildGoalFields(context),
+          if (_goalType == GoalType.advanced) _buildFiberGoalField(context),
+          _buildSaveButton(context),
         ],
       ),
+    );
+  }
+
+  Widget _buildDescriptionField(BuildContext context) {
+    return TextFormField(
+      key: const Key('field-description'),
+      controller: _descriptionController,
+      decoration:
+          InputDecoration(labelText: AppLocalizations.of(context).description),
+      onSaved: (value) => widget.plan?.description = value ?? '',
+    );
+  }
+
+  Widget _buildOnlyLoggingSwitch(BuildContext context) {
+    return SwitchListTile(
+      title: Text(AppLocalizations.of(context).onlyLogging),
+      subtitle: Text(AppLocalizations.of(context).onlyLoggingHelpText),
+      value: _onlyLogging ?? false,
+      onChanged: (value) => setState(() {
+        _onlyLogging = value;
+        widget.plan?.onlyLogging = value;
+      }),
+    );
+  }
+
+  Widget _buildGoalTypeDropdown(BuildContext context) {
+    return Row(
+      children: [
+        Text(AppLocalizations.of(context).goalMacro,
+            style: Theme.of(context).textTheme.titleMedium),
+        const SizedBox(width: 8),
+        Expanded(
+          child: DropdownButtonFormField<GoalType>(
+            value: _goalType,
+            items: GoalType.values.map((goal) {
+              return DropdownMenuItem(
+                value: goal,
+                child: Text(goal.getI18nLabel(context)),
+              );
+            }).toList(),
+            onChanged: (goal) => setState(() {
+              _goalType = goal!;
+              if (widget.plan != null && goal == GoalType.meals) {
+                widget.plan?.goalCarbohydrates = null;
+                widget.plan?.goalEnergy = null;
+                widget.plan?.goalFat = null;
+                widget.plan?.goalProtein = null;
+                widget.plan?.goalFiber = null;
+              } else if (widget.plan?.goalFiber != null &&
+                  goal == GoalType.basic) {
+                widget.plan!.goalFiber = null;
+              }
+            }),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildGoalFields(BuildContext context) {
+    return Column(
+      children: [
+        GoalMacros(
+          val: widget.plan?.goalEnergy?.toString(),
+          label: AppLocalizations.of(context).goalEnergy,
+          suffix: AppLocalizations.of(context).kcal,
+          onSave: (value) => widget.plan?.goalEnergy = value,
+          key: const Key('field-goal-energy'),
+        ),
+        GoalMacros(
+          val: widget.plan?.goalProtein?.toString(),
+          label: AppLocalizations.of(context).goalProtein,
+          suffix: AppLocalizations.of(context).g,
+          onSave: (value) => widget.plan?.goalProtein = value,
+          key: const Key('field-goal-protein'),
+        ),
+        GoalMacros(
+          val: widget.plan?.goalCarbohydrates?.toString(),
+          label: AppLocalizations.of(context).goalCarbohydrates,
+          suffix: AppLocalizations.of(context).g,
+          onSave: (value) => widget.plan?.goalCarbohydrates = value,
+          key: const Key('field-goal-carbohydrates'),
+        ),
+        GoalMacros(
+          val: widget.plan?.goalFat?.toString(),
+          label: AppLocalizations.of(context).goalFat,
+          suffix: AppLocalizations.of(context).g,
+          onSave: (value) => widget.plan?.goalFat = value,
+          key: const Key('field-goal-fat'),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFiberGoalField(BuildContext context) {
+    return GoalMacros(
+      val: widget.plan?.goalFiber?.toString(),
+      label: AppLocalizations.of(context).goalFiber,
+      suffix: AppLocalizations.of(context).g,
+      onSave: (value) => widget.plan?.goalFiber = value,
+      key: const Key('field-goal-fiber'),
+    );
+  }
+
+  Widget _buildSaveButton(BuildContext context) {
+    return ElevatedButton(
+      key: const Key('submit-button'),
+      onPressed: _saveForm,
+      child: Text(AppLocalizations.of(context).save),
     );
   }
 }

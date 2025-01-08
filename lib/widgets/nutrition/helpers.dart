@@ -33,10 +33,13 @@ List<String> getNutritionColumnNames(BuildContext context) => [
       AppLocalizations.of(context).fat,
     ];
 
-List<String> getNutritionalValues(NutritionalValues values, BuildContext context) => [
+List<String> getNutritionalValues(
+        NutritionalValues values, BuildContext context) =>
+    [
       AppLocalizations.of(context).kcalValue(values.energy.toStringAsFixed(0)),
       AppLocalizations.of(context).gValue(values.protein.toStringAsFixed(0)),
-      AppLocalizations.of(context).gValue(values.carbohydrates.toStringAsFixed(0)),
+      AppLocalizations.of(context)
+          .gValue(values.carbohydrates.toStringAsFixed(0)),
       AppLocalizations.of(context).gValue(values.fat.toStringAsFixed(0)),
     ];
 
@@ -77,33 +80,40 @@ Row getNutritionRow(BuildContext context, List<Widget> children) {
 
 String getShortNutritionValues(NutritionalValues values, BuildContext context) {
   final loc = AppLocalizations.of(context);
-  final e = '${loc.energyShort} ${loc.kcalValue(values.energy.toStringAsFixed(0))}';
-  final p = '${loc.proteinShort} ${loc.gValue(values.protein.toStringAsFixed(0))}';
-  final c = '${loc.carbohydratesShort} ${loc.gValue(values.carbohydrates.toStringAsFixed(0))}';
+  final e =
+      '${loc.energyShort} ${loc.kcalValue(values.energy.toStringAsFixed(0))}';
+  final p =
+      '${loc.proteinShort} ${loc.gValue(values.protein.toStringAsFixed(0))}';
+  final c =
+      '${loc.carbohydratesShort} ${loc.gValue(values.carbohydrates.toStringAsFixed(0))}';
   final f = '${loc.fatShort} ${loc.gValue(values.fat.toStringAsFixed(0))}';
   return '$e / $p / $c / $f';
 }
 
 String getKcalConsumed(Meal meal, BuildContext context) {
-  final consumed =
-      meal.diaryEntriesToday.map((e) => e.nutritionalValues.energy).fold(0.0, (a, b) => a + b);
+  final consumed = meal.diaryEntriesToday
+      .map((e) => e.nutritionalValues.energy)
+      .fold(0.0, (a, b) => a + b);
   return AppLocalizations.of(context).kcalValue(consumed.toStringAsFixed(0));
 }
 
 String getKcalConsumedVsPlanned(Meal meal, BuildContext context) {
   final planned = meal.plannedNutritionalValues.energy;
-  final consumed =
-      meal.diaryEntriesToday.map((e) => e.nutritionalValues.energy).fold(0.0, (a, b) => a + b);
+  final consumed = meal.diaryEntriesToday
+      .map((e) => e.nutritionalValues.energy)
+      .fold(0.0, (a, b) => a + b);
   final loc = AppLocalizations.of(context);
 
   return '${consumed.toStringAsFixed(0)} / ${planned.toStringAsFixed(0)} ${loc.kcal}';
 }
 
-void showIngredientDetails(BuildContext context, int id, {void Function()? select}) {
+void showIngredientDetails(BuildContext context, int id,
+    {void Function()? select}) {
   showDialog(
     context: context,
     builder: (context) => FutureBuilder<Ingredient>(
-      future: Provider.of<NutritionPlansProvider>(context, listen: false).fetchIngredient(id),
+      future: Provider.of<NutritionPlansProvider>(context, listen: false)
+          .fetchIngredient(id),
       builder: (BuildContext context, AsyncSnapshot<Ingredient> snapshot) {
         return IngredientDetails(snapshot, onSelect: select);
       },

@@ -94,12 +94,15 @@ class NutritionalPlan {
   }
 
   // Boilerplate
-  factory NutritionalPlan.fromJson(Map<String, dynamic> json) => _$NutritionalPlanFromJson(json);
+  factory NutritionalPlan.fromJson(Map<String, dynamic> json) =>
+      _$NutritionalPlanFromJson(json);
 
   Map<String, dynamic> toJson() => _$NutritionalPlanToJson(this);
 
   String getLabel(BuildContext context) {
-    return description != '' ? description : AppLocalizations.of(context).nutritionalPlan;
+    return description != ''
+        ? description
+        : AppLocalizations.of(context).nutritionalPlan;
   }
 
   bool get hasAnyGoals {
@@ -154,7 +157,9 @@ class NutritionalPlan {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
 
-    return logEntriesValues.containsKey(today) ? logEntriesValues[today]! : NutritionalValues();
+    return logEntriesValues.containsKey(today)
+        ? logEntriesValues[today]!
+        : NutritionalValues();
   }
 
   NutritionalValues get loggedNutritionalValues7DayAvg {
@@ -170,7 +175,8 @@ class NutritionalPlan {
   Map<DateTime, NutritionalValues> get logEntriesValues {
     final out = <DateTime, NutritionalValues>{};
     for (final log in diaryEntries) {
-      final date = DateTime(log.datetime.year, log.datetime.month, log.datetime.day);
+      final date =
+          DateTime(log.datetime.year, log.datetime.month, log.datetime.day);
 
       if (!out.containsKey(date)) {
         out[date] = NutritionalValues();
@@ -195,7 +201,8 @@ class NutritionalPlan {
     final List<Log> out = [];
     for (final log in diaryEntries) {
       final dateKey = DateTime(date.year, date.month, date.day);
-      final logKey = DateTime(log.datetime.year, log.datetime.month, log.datetime.day);
+      final logKey =
+          DateTime(log.datetime.year, log.datetime.month, log.datetime.day);
 
       if (dateKey == logKey) {
         out.add(log);
@@ -212,7 +219,9 @@ class NutritionalPlan {
     for (final meal in meals) {
       for (final mealItem in meal.mealItems) {
         final found = out.firstWhereOrNull(
-          (e) => e.amount == mealItem.amount && e.ingredientId == mealItem.ingredientId,
+          (e) =>
+              e.amount == mealItem.amount &&
+              e.ingredientId == mealItem.ingredientId,
         );
 
         if (found == null) {
