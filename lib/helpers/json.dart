@@ -58,5 +58,6 @@ String? timeToString(TimeOfDay? time) {
   if (time == null) {
     return null;
   }
-  return const DefaultMaterialLocalizations().formatTimeOfDay(time, alwaysUse24HourFormat: true);
+  return const DefaultMaterialLocalizations()
+      .formatTimeOfDay(time, alwaysUse24HourFormat: true);
 }

@@ -37,9 +37,12 @@ class WeightOverview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.read<UserProvider>().profile;
-    final plan = Provider.of<NutritionPlansProvider>(context, listen: false).currentPlan;
+    final plan =
+        Provider.of<NutritionPlansProvider>(context, listen: false).currentPlan;
 
-    final entriesAll = _provider.items.map((e) => MeasurementChartEntry(e.weight, e.date)).toList();
+    final entriesAll = _provider.items
+        .map((e) => MeasurementChartEntry(e.weight, e.date))
+        .toList();
     final entries7dAvg = moving7dAverage(entriesAll);
 
     final unit = weightUnit(profile!.isMetric, context);
@@ -78,7 +81,8 @@ class WeightOverview extends StatelessWidget {
                 final currentEntry = _provider.items[index];
                 return Card(
                   child: ListTile(
-                    title: Text('${currentEntry.weight} ${weightUnit(profile.isMetric, context)}'),
+                    title: Text(
+                        '${currentEntry.weight} ${weightUnit(profile.isMetric, context)}'),
                     subtitle: Text(
                       DateFormat.yMd(
                         Localizations.localeOf(context).languageCode,
@@ -109,7 +113,8 @@ class WeightOverview extends StatelessWidget {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(
-                                      AppLocalizations.of(context).successfullyDeleted,
+                                      AppLocalizations.of(context)
+                                          .successfullyDeleted,
                                       textAlign: TextAlign.center,
                                     ),
                                   ),

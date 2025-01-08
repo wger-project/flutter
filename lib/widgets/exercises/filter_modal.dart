@@ -25,7 +25,8 @@ class ExerciseFilterModalBody extends StatefulWidget {
   const ExerciseFilterModalBody({super.key});
 
   @override
-  _ExerciseFilterModalBodyState createState() => _ExerciseFilterModalBodyState();
+  _ExerciseFilterModalBodyState createState() =>
+      _ExerciseFilterModalBodyState();
 }
 
 class _ExerciseFilterModalBodyState extends State<ExerciseFilterModalBody> {
@@ -57,11 +58,9 @@ class _ExerciseFilterModalBodyState extends State<ExerciseFilterModalBody> {
               backgroundColor: Colors.transparent,
               isExpanded: filterCategory.isExpanded,
               headerBuilder: (context, isExpanded) {
-                return Container(
-                  child: Text(
-                    filterCategory.title,
-                    style: theme.textTheme.headlineSmall,
-                  ),
+                return Text(
+                  filterCategory.title,
+                  style: theme.textTheme.headlineSmall,
                 );
               },
               body: Column(
@@ -71,8 +70,10 @@ class _ExerciseFilterModalBodyState extends State<ExerciseFilterModalBody> {
                     value: currentEntry.value,
                     onChanged: (_) {
                       setState(() {
-                        filterCategory.items.update(currentEntry.key, (value) => !value);
-                        Provider.of<ExercisesProvider>(context, listen: false).setFilters(filters);
+                        filterCategory.items
+                            .update(currentEntry.key, (value) => !value);
+                        Provider.of<ExercisesProvider>(context, listen: false)
+                            .setFilters(filters);
                       });
                     },
                   );

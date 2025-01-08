@@ -52,7 +52,8 @@ class DashboardNutritionWidget extends StatefulWidget {
   const DashboardNutritionWidget();
 
   @override
-  _DashboardNutritionWidgetState createState() => _DashboardNutritionWidgetState();
+  _DashboardNutritionWidgetState createState() =>
+      _DashboardNutritionWidgetState();
 }
 
 class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
@@ -62,7 +63,8 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
   @override
   void initState() {
     super.initState();
-    _plan = Provider.of<NutritionPlansProvider>(context, listen: false).currentPlan;
+    _plan =
+        Provider.of<NutritionPlansProvider>(context, listen: false).currentPlan;
     _hasContent = _plan != null;
   }
 
@@ -73,7 +75,9 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
         children: [
           ListTile(
             title: Text(
-              _hasContent ? _plan!.description : AppLocalizations.of(context).nutritionalPlan,
+              _hasContent
+                  ? _plan!.description
+                  : AppLocalizations.of(context).nutritionalPlan,
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             subtitle: Text(
@@ -91,7 +95,8 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 15),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 5, vertical: 15),
                 child: FlNutritionalPlanGoalWidget(nutritionalPlan: _plan!),
               ),
             )
@@ -138,7 +143,8 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                   ),
                   tooltip: AppLocalizations.of(context).logMeal,
                   onPressed: () {
-                    Navigator.of(context).pushNamed(LogMealsScreen.routeName, arguments: _plan);
+                    Navigator.of(context)
+                        .pushNamed(LogMealsScreen.routeName, arguments: _plan);
                   },
                 ),
               ],
@@ -163,7 +169,9 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
     final weightProvider = context.read<BodyWeightProvider>();
 
     final (entriesAll, entries7dAvg) = sensibleRange(
-      weightProvider.items.map((e) => MeasurementChartEntry(e.weight, e.date)).toList(),
+      weightProvider.items
+          .map((e) => MeasurementChartEntry(e.weight, e.date))
+          .toList(),
     );
 
     return Consumer<BodyWeightProvider>(
@@ -208,7 +216,8 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                               AppLocalizations.of(context).goToDetailPage,
                             ),
                             onPressed: () {
-                              Navigator.of(context).pushNamed(WeightScreen.routeName);
+                              Navigator.of(context)
+                                  .pushNamed(WeightScreen.routeName);
                             },
                           ),
                           IconButton(
@@ -221,7 +230,8 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                                   AppLocalizations.of(context).newEntry,
                                   WeightForm(weightProvider
                                       .getNewestEntry()
-                                      ?.copyWith(id: null, date: DateTime.now())),
+                                      ?.copyWith(
+                                          id: null, date: DateTime.now())),
                                 ),
                               );
                             },
@@ -249,10 +259,12 @@ class DashboardMeasurementWidget extends StatefulWidget {
   const DashboardMeasurementWidget();
 
   @override
-  _DashboardMeasurementWidgetState createState() => _DashboardMeasurementWidgetState();
+  _DashboardMeasurementWidgetState createState() =>
+      _DashboardMeasurementWidgetState();
 }
 
-class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget> {
+class _DashboardMeasurementWidgetState
+    extends State<DashboardMeasurementWidget> {
   int _current = 0;
   final _controller = CarouselSliderController();
 
@@ -260,8 +272,9 @@ class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget>
   Widget build(BuildContext context) {
     final provider = Provider.of<MeasurementProvider>(context, listen: false);
 
-    final items =
-        provider.categories.map<Widget>((item) => CategoriesCard(item, elevation: 0)).toList();
+    final items = provider.categories
+        .map<Widget>((item) => CategoriesCard(item, elevation: 0))
+        .toList();
     if (items.isNotEmpty) {
       items.add(
         NothingFound(
@@ -333,10 +346,14 @@ class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget>
                                 ),
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color:
-                                      Theme.of(context).textTheme.headlineSmall!.color!.withOpacity(
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .headlineSmall!
+                                      .color!
+                                      .withValues(
+                                        alpha:
                                             _current == entry.key ? 0.9 : 0.4,
-                                          ),
+                                      ),
                                 ),
                               ),
                             );
@@ -406,7 +423,8 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
               icon: const Icon(Icons.play_arrow),
               color: wgerPrimaryButtonColor,
               onPressed: () {
-                Navigator.of(context).pushNamed(GymModeScreen.routeName, arguments: day);
+                Navigator.of(context)
+                    .pushNamed(GymModeScreen.routeName, arguments: day);
               },
             ),
           ],
@@ -427,7 +445,8 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(s.exerciseObj
-                                  .getExercise(Localizations.localeOf(context).languageCode)
+                                  .getExercise(Localizations.localeOf(context)
+                                      .languageCode)
                                   .name),
                               const SizedBox(width: 10),
                               MutedText(
@@ -457,7 +476,9 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
         children: [
           ListTile(
             title: Text(
-              _hasContent ? _workoutPlan!.name : AppLocalizations.of(context).labelWorkoutPlan,
+              _hasContent
+                  ? _workoutPlan!.name
+                  : AppLocalizations.of(context).labelWorkoutPlan,
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             subtitle: Text(
@@ -473,7 +494,9 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
             trailing: _hasContent
                 ? Tooltip(
                     message: AppLocalizations.of(context).toggleDetails,
-                    child: _showDetail ? const Icon(Icons.info) : const Icon(Icons.info_outline),
+                    child: _showDetail
+                        ? const Icon(Icons.info)
+                        : const Icon(Icons.info_outline),
                   )
                 : const SizedBox(),
             onTap: () {

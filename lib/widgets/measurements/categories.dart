@@ -33,7 +33,8 @@ class CategoriesList extends StatelessWidget {
       child: ListView.builder(
         padding: const EdgeInsets.all(10.0),
         itemCount: provider.categories.length,
-        itemBuilder: (context, index) => CategoriesCard(provider.categories[index]),
+        itemBuilder: (context, index) =>
+            CategoriesCard(provider.categories[index]),
       ),
     );
   }

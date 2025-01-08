@@ -30,8 +30,10 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final exerciseProvider = Provider.of<ExercisesProvider>(context, listen: false);
-    final nutritionProvider = Provider.of<NutritionPlansProvider>(context, listen: false);
+    final exerciseProvider =
+        Provider.of<ExercisesProvider>(context, listen: false);
+    final nutritionProvider =
+        Provider.of<NutritionPlansProvider>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
@@ -40,7 +42,8 @@ class SettingsPage extends StatelessWidget {
       body: ListView(
         children: [
           ListTile(
-            title: Text(AppLocalizations.of(context).settingsExerciseCacheDescription),
+            title: Text(
+                AppLocalizations.of(context).settingsExerciseCacheDescription),
             trailing: IconButton(
               key: const ValueKey('cacheIconExercises'),
               icon: const Icon(Icons.delete),
@@ -49,7 +52,8 @@ class SettingsPage extends StatelessWidget {
 
                 if (context.mounted) {
                   final snackBar = SnackBar(
-                    content: Text(AppLocalizations.of(context).settingsCacheDeletedSnackbar),
+                    content: Text(AppLocalizations.of(context)
+                        .settingsCacheDeletedSnackbar),
                   );
 
                   ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -58,7 +62,8 @@ class SettingsPage extends StatelessWidget {
             ),
           ),
           ListTile(
-            title: Text(AppLocalizations.of(context).settingsIngredientCacheDescription),
+            title: Text(AppLocalizations.of(context)
+                .settingsIngredientCacheDescription),
             trailing: IconButton(
               key: const ValueKey('cacheIconIngredients'),
               icon: const Icon(Icons.delete),
@@ -67,7 +72,8 @@ class SettingsPage extends StatelessWidget {
 
                 if (context.mounted) {
                   final snackBar = SnackBar(
-                    content: Text(AppLocalizations.of(context).settingsCacheDeletedSnackbar),
+                    content: Text(AppLocalizations.of(context)
+                        .settingsCacheDeletedSnackbar),
                   );
 
                   ScaffoldMessenger.of(context).showSnackBar(snackBar);

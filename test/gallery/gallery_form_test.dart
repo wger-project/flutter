@@ -51,8 +51,10 @@ void main() {
     );
   }
 
-  testWidgets('Test opening the form for an existing image', (WidgetTester tester) async {
-    await mockNetworkImagesFor(() => tester.pumpWidget(createScreen(useImage: true)));
+  testWidgets('Test opening the form for an existing image',
+      (WidgetTester tester) async {
+    await mockNetworkImagesFor(
+        () => tester.pumpWidget(createScreen(useImage: true)));
     await tester.pump();
 
     expect(find.byType(TextFormField), findsNWidgets(2));
@@ -72,8 +74,10 @@ void main() {
     verify(mockGalleryProvider.editImage(any, any));
   });
 
-  testWidgets('Test opening the form for a new image', (WidgetTester tester) async {
-    await mockNetworkImagesFor(() => tester.pumpWidget(createScreen(useImage: false)));
+  testWidgets('Test opening the form for a new image',
+      (WidgetTester tester) async {
+    await mockNetworkImagesFor(
+        () => tester.pumpWidget(createScreen(useImage: false)));
     await tester.pumpAndSettle();
 
     expect(find.text('Please select an image'), findsOneWidget);

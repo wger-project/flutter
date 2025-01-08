@@ -51,7 +51,8 @@ class IngredientDetails extends StatelessWidget {
                 ),
               if (ingredient?.image?.image != null)
                 ingredientImage(ingredient!.image!.image, context),
-              if (!snapshot.hasData && !snapshot.hasError) const CircularProgressIndicator(),
+              if (!snapshot.hasData && !snapshot.hasError)
+                const CircularProgressIndicator(),
               if (snapshot.hasData)
                 ConstrainedBox(
                   constraints: const BoxConstraints(minWidth: 400),
@@ -68,7 +69,8 @@ class IngredientDetails extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 12),
                   child: InkWell(
                     child: Text('Source: ${source!}'),
-                    onTap: () => launchURL(ingredient!.licenseObjectURl!, context),
+                    onTap: () =>
+                        launchURL(ingredient!.licenseObjectURl!, context),
                   ),
                 ),
             ],
@@ -140,22 +142,25 @@ class IngredientScanResultDialog extends StatelessWidget {
                   'Ingredient lookup error: ${snapshot.error ?? 'unknown error'}',
                   style: const TextStyle(color: Colors.red),
                 ),
-              if (snapshot.connectionState == ConnectionState.done && ingredient == null)
+              if (snapshot.connectionState == ConnectionState.done &&
+                  ingredient == null)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
                   child: Text(
-                    AppLocalizations.of(context).productNotFoundDescription(barcode),
+                    AppLocalizations.of(context)
+                        .productNotFoundDescription(barcode),
                   ),
                 ),
               if (ingredient != null)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
-                  child:
-                      Text(AppLocalizations.of(context).productFoundDescription(ingredient.name)),
+                  child: Text(AppLocalizations.of(context)
+                      .productFoundDescription(ingredient.name)),
                 ),
               if (ingredient?.image?.image != null)
                 ingredientImage(ingredient!.image!.image, context),
-              if (snapshot.connectionState != ConnectionState.done && !snapshot.hasError)
+              if (snapshot.connectionState != ConnectionState.done &&
+                  !snapshot.hasError)
                 const CircularProgressIndicator(),
               if (goals != null)
                 ConstrainedBox(
@@ -173,7 +178,8 @@ class IngredientScanResultDialog extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 12),
                   child: InkWell(
                     child: Text('Source: ${source!}'),
-                    onTap: () => launchURL(ingredient!.licenseObjectURl!, context),
+                    onTap: () =>
+                        launchURL(ingredient!.licenseObjectURl!, context),
                   ),
                 ),
             ],

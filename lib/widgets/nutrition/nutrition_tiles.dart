@@ -47,7 +47,9 @@ class DiaryheaderTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return NutritionTile(title: getNutritionRow(context, muted(getNutritionColumnNames(context))));
+    return NutritionTile(
+        title:
+            getNutritionRow(context, muted(getNutritionColumnNames(context))));
   }
 }
 
@@ -66,7 +68,8 @@ class DiaryEntryTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return NutritionTile(
       leading: Text(
-        DateFormat.Hm(Localizations.localeOf(context).languageCode).format(diaryEntry.datetime),
+        DateFormat.Hm(Localizations.localeOf(context).languageCode)
+            .format(diaryEntry.datetime),
         style: const TextStyle(fontWeight: FontWeight.bold),
       ),
       title: Text(

@@ -31,7 +31,9 @@ class ExerciseDetailScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(exerciseBase.getExercise(Localizations.localeOf(context).languageCode).name),
+        title: Text(exerciseBase
+            .getExercise(Localizations.localeOf(context).languageCode)
+            .name),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),

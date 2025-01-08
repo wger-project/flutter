@@ -19,15 +19,17 @@ void main() {
 
   setUp(() {
     mockClient = MockClient();
-    authProvider = AuthProvider(mockClient, false);
+    authProvider = AuthProvider(mockClient);
     authProvider.serverUrl = 'http://localhost';
   });
 
   group('min application version check', () {
     test('app version higher than min version', () async {
       // arrange
-      when(mockClient.get(tVersionUri)).thenAnswer((_) => Future(() => Response('"1.2.0"', 200)));
-      final updateNeeded = await authProvider.applicationUpdateRequired('1.3.0', testMetadata);
+      when(mockClient.get(tVersionUri))
+          .thenAnswer((_) => Future(() => Response('"1.2.0"', 200)));
+      final updateNeeded =
+          await authProvider.applicationUpdateRequired('1.3.0', testMetadata);
 
       // assert
       expect(updateNeeded, false);
@@ -35,8 +37,10 @@ void main() {
 
     test('app version higher than min version - 1', () async {
       // arrange
-      when(mockClient.get(tVersionUri)).thenAnswer((_) => Future(() => Response('"1.3"', 200)));
-      final updateNeeded = await authProvider.applicationUpdateRequired('1.1', testMetadata);
+      when(mockClient.get(tVersionUri))
+          .thenAnswer((_) => Future(() => Response('"1.3"', 200)));
+      final updateNeeded =
+          await authProvider.applicationUpdateRequired('1.1', testMetadata);
 
       // assert
       expect(updateNeeded, true);
@@ -44,8 +48,10 @@ void main() {
 
     test('app version higher than min version - 2', () async {
       // arrange
-      when(mockClient.get(tVersionUri)).thenAnswer((_) => Future(() => Response('"1.3.0"', 200)));
-      final updateNeeded = await authProvider.applicationUpdateRequired('1.1', testMetadata);
+      when(mockClient.get(tVersionUri))
+          .thenAnswer((_) => Future(() => Response('"1.3.0"', 200)));
+      final updateNeeded =
+          await authProvider.applicationUpdateRequired('1.1', testMetadata);
 
       // assert
       expect(updateNeeded, true);
@@ -53,8 +59,10 @@ void main() {
 
     test('app version equal as min version', () async {
       // arrange
-      when(mockClient.get(tVersionUri)).thenAnswer((_) => Future(() => Response('"1.3.0"', 200)));
-      final updateNeeded = await authProvider.applicationUpdateRequired('1.3.0', testMetadata);
+      when(mockClient.get(tVersionUri))
+          .thenAnswer((_) => Future(() => Response('"1.3.0"', 200)));
+      final updateNeeded =
+          await authProvider.applicationUpdateRequired('1.3.0', testMetadata);
 
       // assert
       expect(updateNeeded, false);

@@ -25,7 +25,9 @@ class AddExerciseScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final profile = context.read<UserProvider>().profile;
 
-    return profile!.isTrustworthy ? const AddExerciseStepper() : const EmailNotVerified();
+    return profile!.isTrustworthy
+        ? const AddExerciseStepper()
+        : const EmailNotVerified();
   }
 }
 
@@ -70,22 +72,29 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
                         setState(() {
                           _isLoading = true;
                         });
-                        final addExerciseProvider = context.read<AddExerciseProvider>();
-                        final exerciseProvider = context.read<ExercisesProvider>();
+                        final addExerciseProvider =
+                            context.read<AddExerciseProvider>();
+                        final exerciseProvider =
+                            context.read<ExercisesProvider>();
 
                         final baseId = await addExerciseProvider.addExercise();
-                        final base = await exerciseProvider.fetchAndSetExercise(baseId);
-                        final name = base
-                            .getExercise(
-                              Localizations.localeOf(context).languageCode,
-                            )
-                            .name;
+                        final base =
+                            await exerciseProvider.fetchAndSetExercise(baseId);
+                        final name = context.mounted
+                            ? base
+                                .getExercise(
+                                  Localizations.localeOf(context).languageCode,
+                                )
+                                .name
+                            : null;
 
                         setState(() {
                           _isLoading = false;
                         });
 
-                        if (!context.mounted) return;
+                        if (!context.mounted) {
+                          return;
+                        }
                         return showDialog(
                           context: context,
                           builder: (BuildContext context) {
@@ -96,7 +105,7 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
                               ),
                               actions: [
                                 TextButton(
-                                  child: Text(name),
+                                  child: Text(name ?? 'undefined'),
                                   onPressed: () {
                                     Navigator.of(context).pop();
                                     Navigator.pushReplacementNamed(

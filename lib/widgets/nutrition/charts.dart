@@ -98,8 +98,10 @@ class FlNutritionalPlanGoalWidget extends StatelessWidget {
       // if none goes over, 100% means fill all available space
       final maxVal = [
         1.0,
-        if (goals.energy != null && goals.energy! > 0) today.energy / goals.energy!,
-        if (goals.protein != null && goals.protein! > 0) today.protein / goals.protein!,
+        if (goals.energy != null && goals.energy! > 0)
+          today.energy / goals.energy!,
+        if (goals.protein != null && goals.protein! > 0)
+          today.protein / goals.protein!,
         if (goals.carbohydrates != null && goals.carbohydrates! > 0)
           today.carbohydrates / goals.carbohydrates!,
         if (goals.fat != null && goals.fat! > 0) today.fat / goals.fat!,
@@ -190,7 +192,8 @@ class FlNutritionalPlanPieChartWidget extends StatefulWidget {
   State<StatefulWidget> createState() => FlNutritionalPlanPieChartState();
 }
 
-class FlNutritionalPlanPieChartState extends State<FlNutritionalPlanPieChartWidget> {
+class FlNutritionalPlanPieChartState
+    extends State<FlNutritionalPlanPieChartWidget> {
   int touchedIndex = -1;
 
   @override
@@ -212,7 +215,8 @@ class FlNutritionalPlanPieChartState extends State<FlNutritionalPlanPieChartWidg
                         touchedIndex = -1;
                         return;
                       }
-                      touchedIndex = pieTouchResponse.touchedSection!.touchedSectionIndex;
+                      touchedIndex =
+                          pieTouchResponse.touchedSection!.touchedSectionIndex;
                     });
                   },
                 ),
@@ -276,7 +280,8 @@ class NutritionalDiaryChartWidgetFl extends StatefulWidget {
   State<StatefulWidget> createState() => NutritionalDiaryChartWidgetFlState();
 }
 
-class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidgetFl> {
+class NutritionalDiaryChartWidgetFlState
+    extends State<NutritionalDiaryChartWidgetFl> {
   Widget bottomTitles(double value, TitleMeta meta) {
     const style = TextStyle(fontSize: 10);
     final String text = switch (value.toInt()) {
@@ -289,7 +294,7 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
       _ => '',
     };
     return SideTitleWidget(
-      axisSide: meta.axisSide,
+      meta: meta,
       child: Text(text, style: style),
     );
   }
@@ -299,7 +304,7 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
       return Container();
     }
     return SideTitleWidget(
-      axisSide: meta.axisSide,
+      meta: meta,
       child: Text(
         AppLocalizations.of(context).gValue(meta.formattedValue),
         style: const TextStyle(fontSize: 10),
@@ -311,7 +316,8 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
   Widget build(BuildContext context) {
     final planned = widget._nutritionalPlan.nutritionalGoals;
     final loggedToday = widget._nutritionalPlan.loggedNutritionalValuesToday;
-    final logged7DayAvg = widget._nutritionalPlan.loggedNutritionalValues7DayAvg;
+    final logged7DayAvg =
+        widget._nutritionalPlan.loggedNutritionalValues7DayAvg;
 
     final [colorPlanned, colorLoggedToday, colorLogged7Day] = LIST_OF_COLORS3;
 
@@ -480,13 +486,13 @@ class MealDiaryBarChartWidgetState extends State<MealDiaryBarChartWidget> {
       _ => '',
     };
     return SideTitleWidget(
-      axisSide: meta.axisSide,
+      meta: meta,
       child: Text(text, style: const TextStyle(fontSize: 10)),
     );
   }
 
   Widget leftTitles(double value, TitleMeta meta) => SideTitleWidget(
-        axisSide: meta.axisSide,
+        meta: meta,
         child: Text(
           AppLocalizations.of(context).percentValue(value.toStringAsFixed(0)),
           style: const TextStyle(fontSize: 10),
@@ -547,7 +553,9 @@ class MealDiaryBarChartWidgetState extends State<MealDiaryBarChartWidget> {
                     barsSpace: barsSpace,
                     barRods: [
                       BarChartRodData(
-                        toY: widget._logged.energy / widget._planned.energy * 100,
+                        toY: widget._logged.energy /
+                            widget._planned.energy *
+                            100,
                         color: LIST_OF_COLORS3.first,
                         width: barsWidth,
                       ),
@@ -558,7 +566,9 @@ class MealDiaryBarChartWidgetState extends State<MealDiaryBarChartWidget> {
                     barsSpace: barsSpace,
                     barRods: [
                       BarChartRodData(
-                        toY: widget._logged.protein / widget._planned.protein * 100,
+                        toY: widget._logged.protein /
+                            widget._planned.protein *
+                            100,
                         color: LIST_OF_COLORS3.first,
                         width: barsWidth,
                       ),
@@ -569,7 +579,9 @@ class MealDiaryBarChartWidgetState extends State<MealDiaryBarChartWidget> {
                     barsSpace: barsSpace,
                     barRods: [
                       BarChartRodData(
-                        toY: widget._logged.carbohydrates / widget._planned.carbohydrates * 100,
+                        toY: widget._logged.carbohydrates /
+                            widget._planned.carbohydrates *
+                            100,
                         color: LIST_OF_COLORS3.first,
                         width: barsWidth,
                       ),

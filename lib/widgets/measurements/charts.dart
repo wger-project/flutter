@@ -46,7 +46,9 @@ class MeasurementOverallChangeWidget extends StatelessWidget {
 }
 
 String weightUnit(bool isMetric, BuildContext context) {
-  return isMetric ? AppLocalizations.of(context).kg : AppLocalizations.of(context).lb;
+  return isMetric
+      ? AppLocalizations.of(context).kg
+      : AppLocalizations.of(context).lb;
 }
 
 class MeasurementChartWidgetFl extends StatefulWidget {
@@ -57,7 +59,8 @@ class MeasurementChartWidgetFl extends StatefulWidget {
   const MeasurementChartWidgetFl(this._entries, this._unit, {this.avgs});
 
   @override
-  State<MeasurementChartWidgetFl> createState() => _MeasurementChartWidgetFlState();
+  State<MeasurementChartWidgetFl> createState() =>
+      _MeasurementChartWidgetFlState();
 }
 
 class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
@@ -75,12 +78,15 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
   LineTouchData tooltipData() {
     return LineTouchData(
       touchTooltipData: LineTouchTooltipData(
-        getTooltipColor: (touchedSpot) => Theme.of(context).colorScheme.primaryContainer,
+        getTooltipColor: (touchedSpot) =>
+            Theme.of(context).colorScheme.primaryContainer,
         getTooltipItems: (touchedSpots) {
           return touchedSpots.map((touchedSpot) {
-            final DateTime date = DateTime.fromMillisecondsSinceEpoch(touchedSpot.x.toInt());
+            final DateTime date =
+                DateTime.fromMillisecondsSinceEpoch(touchedSpot.x.toInt());
             final dateStr =
-                DateFormat.Md(Localizations.localeOf(context).languageCode).format(date);
+                DateFormat.Md(Localizations.localeOf(context).languageCode)
+                    .format(date);
 
             return LineTooltipItem(
               '$dateStr: ${touchedSpot.y.toStringAsFixed(1)} ${widget._unit}',
@@ -101,10 +107,14 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
         // horizontalInterval: 1,
         // verticalInterval: 1,
         getDrawingHorizontalLine: (value) {
-          return FlLine(color: Theme.of(context).colorScheme.primaryContainer, strokeWidth: 1);
+          return FlLine(
+              color: Theme.of(context).colorScheme.primaryContainer,
+              strokeWidth: 1);
         },
         getDrawingVerticalLine: (value) {
-          return FlLine(color: Theme.of(context).colorScheme.primaryContainer, strokeWidth: 1);
+          return FlLine(
+              color: Theme.of(context).colorScheme.primaryContainer,
+              strokeWidth: 1);
         },
       ),
       titlesData: FlTitlesData(
@@ -125,16 +135,19 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
               if (value == meta.min || value == meta.max) {
                 return const Text('');
               }
-              final DateTime date = DateTime.fromMillisecondsSinceEpoch(value.toInt());
+              final DateTime date =
+                  DateTime.fromMillisecondsSinceEpoch(value.toInt());
               // if we go across years, show years in the ticks. otherwise leave them out
               if (DateTime.fromMillisecondsSinceEpoch(meta.min.toInt()).year !=
                   DateTime.fromMillisecondsSinceEpoch(meta.max.toInt()).year) {
                 return Text(
-                  DateFormat.yMd(Localizations.localeOf(context).languageCode).format(date),
+                  DateFormat.yMd(Localizations.localeOf(context).languageCode)
+                      .format(date),
                 );
               }
               return Text(
-                DateFormat.Md(Localizations.localeOf(context).languageCode).format(date),
+                DateFormat.Md(Localizations.localeOf(context).languageCode)
+                    .format(date),
               );
             },
             interval: widget._entries.isNotEmpty
@@ -164,7 +177,8 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
       ),
       borderData: FlBorderData(
         show: true,
-        border: Border.all(color: Theme.of(context).colorScheme.primaryContainer),
+        border:
+            Border.all(color: Theme.of(context).colorScheme.primaryContainer),
       ),
       lineBarsData: [
         LineChartBarData(

@@ -160,11 +160,14 @@ class _MealWidgetState extends State<MealWidget> {
                   ],
                 ),
               ),
-            if (_viewMode == viewMode.withIngredients || _viewMode == viewMode.withAllDetails)
+            if (_viewMode == viewMode.withIngredients ||
+                _viewMode == viewMode.withAllDetails)
               const Divider(),
-            if (_viewMode == viewMode.withIngredients || _viewMode == viewMode.withAllDetails)
+            if (_viewMode == viewMode.withIngredients ||
+                _viewMode == viewMode.withAllDetails)
               const DiaryheaderTile(),
-            if (_viewMode == viewMode.withIngredients || _viewMode == viewMode.withAllDetails)
+            if (_viewMode == viewMode.withIngredients ||
+                _viewMode == viewMode.withAllDetails)
               if (widget._meal.mealItems.isEmpty && widget._meal.isRealMeal)
                 NutritionTile(
                   title: Text(
@@ -173,17 +176,20 @@ class _MealWidgetState extends State<MealWidget> {
                   ),
                 )
               else
-                ...widget._meal.mealItems
-                    .map((item) => MealItemEditableFullTile(item, _viewMode, _editing)),
-            if (_viewMode == viewMode.withIngredients || _viewMode == viewMode.withAllDetails)
+                ...widget._meal.mealItems.map((item) =>
+                    MealItemEditableFullTile(item, _viewMode, _editing)),
+            if (_viewMode == viewMode.withIngredients ||
+                _viewMode == viewMode.withAllDetails)
               const Divider(),
-            if (_viewMode == viewMode.withIngredients || _viewMode == viewMode.withAllDetails)
+            if (_viewMode == viewMode.withIngredients ||
+                _viewMode == viewMode.withAllDetails)
               NutritionTile(
                 vPadding: 0,
                 leading: const Text('total'),
                 title: getNutritionRow(
                   context,
-                  muted(getNutritionalValues(widget._meal.plannedNutritionalValues, context)),
+                  muted(getNutritionalValues(
+                      widget._meal.plannedNutritionalValues, context)),
                 ),
               ),
             if (_viewMode == viewMode.withAllDetails)
@@ -250,7 +256,8 @@ class MealItemEditableFullTile extends StatelessWidget {
       ),
       subtitle: (_viewMode != viewMode.withAllDetails && !_editing)
           ? null
-          : getNutritionRow(context, muted(getNutritionalValues(values, context))),
+          : getNutritionRow(
+              context, muted(getNutritionalValues(values, context))),
       trailing: _editing
           ? IconButton(
               icon: const Icon(Icons.delete, size: ICON_SIZE_SMALL),
@@ -258,7 +265,8 @@ class MealItemEditableFullTile extends StatelessWidget {
               iconSize: ICON_SIZE_SMALL,
               onPressed: () {
                 // Delete the meal item
-                Provider.of<NutritionPlansProvider>(context, listen: false).deleteMealItem(_item);
+                Provider.of<NutritionPlansProvider>(context, listen: false)
+                    .deleteMealItem(_item);
 
                 // and inform the user
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -305,7 +313,8 @@ class MealHeader extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ListTile(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           title: Row(children: [
             Expanded(
               child: Column(
@@ -352,7 +361,9 @@ class MealHeader extends StatelessWidget {
               if (_meal.isRealMeal && !readOnly) const SizedBox(width: 5),
               if (_meal.isRealMeal && !readOnly)
                 IconButton(
-                  icon: _editing ? const Icon(Icons.done) : const Icon(Icons.edit),
+                  icon: _editing
+                      ? const Icon(Icons.done)
+                      : const Icon(Icons.edit),
                   tooltip: _editing
                       ? AppLocalizations.of(context).done
                       : AppLocalizations.of(context).edit,
@@ -361,7 +372,8 @@ class MealHeader extends StatelessWidget {
                   },
                 ),
               if (_meal.isRealMeal) const SizedBox(width: 5),
-              if (_meal.isRealMeal) const SvgIcon(icon: SvgIconData('assets/icons/meal-diary.svg')),
+              if (_meal.isRealMeal)
+                const SvgIcon(icon: SvgIconData('assets/icons/meal-diary.svg')),
             ],
           ),
           onTap: _meal.isRealMeal

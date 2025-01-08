@@ -38,7 +38,8 @@ class UserProvider with ChangeNotifier {
 
   /// Fetch the current user's profile
   Future<void> fetchAndSetProfile() async {
-    final userData = await baseProvider.fetch(baseProvider.makeUrl(PROFILE_URL));
+    final userData =
+        await baseProvider.fetch(baseProvider.makeUrl(PROFILE_URL));
     try {
       profile = Profile.fromJson(userData);
     } catch (error) {
@@ -48,7 +49,7 @@ class UserProvider with ChangeNotifier {
 
   /// Save the user's profile to the server
   Future<void> saveProfile() async {
-    final data = await baseProvider.post(
+    await baseProvider.post(
       profile!.toJson(),
       baseProvider.makeUrl(PROFILE_URL),
     );
@@ -56,7 +57,7 @@ class UserProvider with ChangeNotifier {
 
   /// Verify the user's email
   Future<void> verifyEmail() async {
-    final verificationData = await baseProvider.fetch(baseProvider.makeUrl(
+    await baseProvider.fetch(baseProvider.makeUrl(
       PROFILE_URL,
       objectMethod: VERIFY_EMAIL,
     ));

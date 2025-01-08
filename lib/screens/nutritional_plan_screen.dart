@@ -37,13 +37,15 @@ class NutritionalPlanScreen extends StatelessWidget {
   static const routeName = '/nutritional-plan-detail';
 
   Future<NutritionalPlan> _loadFullPlan(BuildContext context, int planId) {
-    return Provider.of<NutritionPlansProvider>(context, listen: false).fetchAndSetPlanFull(planId);
+    return Provider.of<NutritionPlansProvider>(context, listen: false)
+        .fetchAndSetPlanFull(planId);
   }
 
   @override
   Widget build(BuildContext context) {
     const appBarForeground = Colors.white;
-    final nutritionalPlan = ModalRoute.of(context)!.settings.arguments as NutritionalPlan;
+    final nutritionalPlan =
+        ModalRoute.of(context)!.settings.arguments as NutritionalPlan;
 
     return Scaffold(
       //appBar: getAppBar(nutritionalPlan),
@@ -119,13 +121,14 @@ class NutritionalPlanScreen extends StatelessWidget {
                         FormScreen.routeName,
                         arguments: FormScreenArguments(
                           AppLocalizations.of(context).edit,
-                          PlanForm(nutritionalPlan),
+                          PlanForm(plan: nutritionalPlan),
                           hasListView: true,
                         ),
                       );
                       break;
                     case NutritionalPlanOptions.delete:
-                      Provider.of<NutritionPlansProvider>(context, listen: false)
+                      Provider.of<NutritionPlansProvider>(context,
+                              listen: false)
                           .deletePlan(nutritionalPlan.id!);
                       Navigator.of(context).pop();
                       break;
@@ -156,7 +159,10 @@ class NutritionalPlanScreen extends StatelessWidget {
               titlePadding: const EdgeInsets.fromLTRB(56, 0, 56, 16),
               title: Text(
                 nutritionalPlan.getLabel(context),
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(color: appBarForeground),
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge
+                    ?.copyWith(color: appBarForeground),
               ),
             ),
           ),

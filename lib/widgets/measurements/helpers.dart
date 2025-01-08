@@ -21,7 +21,8 @@ List<Widget> getOverviewWidgets(
       height: 220,
       child: MeasurementChartWidgetFl(raw, unit, avgs: avg),
     ),
-    if (avg.isNotEmpty) MeasurementOverallChangeWidget(avg.first, avg.last, unit),
+    if (avg.isNotEmpty)
+      MeasurementOverallChangeWidget(avg.first, avg.last, unit),
     const SizedBox(height: 8),
   ];
 }
@@ -35,7 +36,8 @@ List<Widget> getOverviewWidgetsSeries(
   BuildContext context,
 ) {
   final monthAgo = DateTime.now().subtract(const Duration(days: 30));
-  final showPlan = plan != null && entriesAll.any((e) => e.date.isAfter(plan.creationDate));
+  final showPlan =
+      plan != null && entriesAll.any((e) => e.date.isAfter(plan.creationDate));
 
   return [
     ...getOverviewWidgets(
@@ -47,7 +49,8 @@ List<Widget> getOverviewWidgetsSeries(
     ),
     if (showPlan)
       ...getOverviewWidgets(
-        AppLocalizations.of(context).chartDuringPlanTitle(name, plan.description),
+        AppLocalizations.of(context)
+            .chartDuringPlanTitle(name, plan.description),
         entriesAll.where((e) => e.date.isAfter(plan.creationDate)).toList(),
         entries7dAvg.where((e) => e.date.isAfter(plan.creationDate)).toList(),
         unit,
@@ -58,13 +61,15 @@ List<Widget> getOverviewWidgetsSeries(
     // then let's show a separate chart just focusing on the last 30 days,
     // if there is data for it.
     if (entriesAll.isNotEmpty &&
-        entriesAll.first.date.isBefore(entriesAll.last.date.subtract(const Duration(days: 75))) &&
+        entriesAll.first.date.isBefore(
+            entriesAll.last.date.subtract(const Duration(days: 75))) &&
         (plan == null ||
             (showPlan &&
                 entriesAll
                     .firstWhere((e) => e.date.isAfter(plan.creationDate))
                     .date
-                    .isBefore(entriesAll.last.date.subtract(const Duration(days: 30))))) &&
+                    .isBefore(entriesAll.last.date
+                        .subtract(const Duration(days: 30))))) &&
         entriesAll.any((e) => e.date.isAfter(monthAgo)))
       ...getOverviewWidgets(
         AppLocalizations.of(context).chart30DaysTitle(name),
@@ -77,8 +82,14 @@ List<Widget> getOverviewWidgetsSeries(
     Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Indicator(color: Theme.of(context).colorScheme.primary, text: AppLocalizations.of(context).indicatorRaw, isSquare: true),
-        Indicator(color: Theme.of(context).colorScheme.tertiary, text: AppLocalizations.of(context).indicatorAvg, isSquare: true),
+        Indicator(
+            color: Theme.of(context).colorScheme.primary,
+            text: AppLocalizations.of(context).indicatorRaw,
+            isSquare: true),
+        Indicator(
+            color: Theme.of(context).colorScheme.tertiary,
+            text: AppLocalizations.of(context).indicatorAvg,
+            isSquare: true),
       ],
     ),
   ];

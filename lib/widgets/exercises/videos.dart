@@ -35,7 +35,8 @@ class _ExerciseVideoWidgetState extends State<ExerciseVideoWidget> {
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.network(widget.video.url);
+    final url = Uri.parse(widget.video.url);
+    _controller = VideoPlayerController.networkUrl(url);
     _controller.addListener(() {
       setState(() {});
     });

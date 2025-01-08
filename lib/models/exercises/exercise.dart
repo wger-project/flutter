@@ -31,6 +31,7 @@ import 'package:wger/models/exercises/video.dart';
 part 'exercise.g.dart';
 
 @JsonSerializable(explicitToJson: true)
+// ignore: must_be_immutable
 class Exercise extends Equatable {
   @JsonKey(required: true)
   late final int? id;
@@ -142,7 +143,8 @@ class Exercise extends Equatable {
   Exercise.fromApiDataString(String baseData, List<Language> languages)
       : this.fromApiData(ExerciseApiData.fromString(baseData), languages);
 
-  Exercise.fromApiDataJson(Map<String, dynamic> baseData, List<Language> languages)
+  Exercise.fromApiDataJson(
+      Map<String, dynamic> baseData, List<Language> languages)
       : this.fromApiData(ExerciseApiData.fromJson(baseData), languages);
 
   Exercise.fromApiData(ExerciseApiData baseData, List<Language> languages) {
@@ -160,8 +162,10 @@ class Exercise extends Equatable {
     equipment = baseData.equipment;
     category = baseData.category;
     translations = baseData.translations.map((e) {
-      e.language = languages.firstWhere((l) => l.id == e.languageId);
-      return e;
+      return e.copyWith(
+        languageObj: languages.firstWhere((l) => l.id == e.languageId),
+        languageId: e.languageId,
+      );
     }).toList();
     videos = baseData.videos;
     images = baseData.images;
@@ -185,9 +189,9 @@ class Exercise extends Equatable {
     final languageCode = language.split('-')[0];
 
     return translations.firstWhere(
-      (e) => e.languageObj.shortName == languageCode,
+      (e) => e.languageObj?.shortName == languageCode,
       orElse: () => translations.firstWhere(
-        (e) => e.languageObj.shortName == LANGUAGE_SHORT_ENGLISH,
+        (e) => e.languageObj?.shortName == LANGUAGE_SHORT_ENGLISH,
         orElse: () => translations.first,
       ),
     );
@@ -207,7 +211,8 @@ class Exercise extends Equatable {
   }
 
   // Boilerplate
-  factory Exercise.fromJson(Map<String, dynamic> json) => _$ExerciseFromJson(json);
+  factory Exercise.fromJson(Map<String, dynamic> json) =>
+      _$ExerciseFromJson(json);
 
   Map<String, dynamic> toJson() => _$ExerciseToJson(this);
 

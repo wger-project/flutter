@@ -71,7 +71,8 @@ void main() {
       final image = gallery.Image(
         id: 58,
         date: DateTime(2022, 01, 09),
-        url: 'https://wger.de/media/gallery/170335/d2b9c9e0-d541-41ae-8786-a2ab459e3538.jpg',
+        url:
+            'https://wger.de/media/gallery/170335/d2b9c9e0-d541-41ae-8786-a2ab459e3538.jpg',
         description: "eggsaddjujuit'ddayhadIforcanview",
       );
 

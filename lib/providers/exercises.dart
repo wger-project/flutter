@@ -21,7 +21,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:drift/drift.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/core/locator.dart';
 import 'package:wger/database/exercises/exercise_database.dart';
@@ -126,7 +126,8 @@ class ExercisesProvider with ChangeNotifier {
           title: 'Equipment',
           items: Map.fromEntries(
             _equipment.map(
-              (singleEquipment) => MapEntry<Equipment, bool>(singleEquipment, false),
+              (singleEquipment) =>
+                  MapEntry<Equipment, bool>(singleEquipment, false),
             ),
           ),
         ),
@@ -156,13 +157,15 @@ class ExercisesProvider with ChangeNotifier {
 
     // Filter by exercise category and equipment (REPLACE WITH HTTP REQUEST)
     filteredExercises = filteredItems.where((exercise) {
-      final bool isInAnyCategory = filters!.exerciseCategories.selected.contains(exercise.category);
+      final bool isInAnyCategory =
+          filters!.exerciseCategories.selected.contains(exercise.category);
 
       final bool doesContainAnyEquipment = filters!.equipment.selected.any(
         (selectedEquipment) => exercise.equipment.contains(selectedEquipment),
       );
 
-      return (isInAnyCategory || filters!.exerciseCategories.selected.isEmpty) &&
+      return (isInAnyCategory ||
+              filters!.exerciseCategories.selected.isEmpty) &&
           (doesContainAnyEquipment || filters!.equipment.selected.isEmpty);
     }).toList();
   }
@@ -237,14 +240,16 @@ class ExercisesProvider with ChangeNotifier {
   }
 
   Future<void> fetchAndSetCategoriesFromApi() async {
-    final categories = await baseProvider.fetchPaginated(baseProvider.makeUrl(categoriesUrlPath));
+    final categories = await baseProvider
+        .fetchPaginated(baseProvider.makeUrl(categoriesUrlPath));
     for (final category in categories) {
       _categories.add(ExerciseCategory.fromJson(category));
     }
   }
 
   Future<void> fetchAndSetMusclesFromApi() async {
-    final muscles = await baseProvider.fetchPaginated(baseProvider.makeUrl(musclesUrlPath));
+    final muscles =
+        await baseProvider.fetchPaginated(baseProvider.makeUrl(musclesUrlPath));
 
     for (final muscle in muscles) {
       _muscles.add(Muscle.fromJson(muscle));
@@ -252,7 +257,8 @@ class ExercisesProvider with ChangeNotifier {
   }
 
   Future<void> fetchAndSetEquipmentsFromApi() async {
-    final equipments = await baseProvider.fetchPaginated(baseProvider.makeUrl(equipmentUrlPath));
+    final equipments = await baseProvider
+        .fetchPaginated(baseProvider.makeUrl(equipmentUrlPath));
 
     for (final equipment in equipments) {
       _equipment.add(Equipment.fromJson(equipment));
@@ -260,7 +266,8 @@ class ExercisesProvider with ChangeNotifier {
   }
 
   Future<void> fetchAndSetLanguagesFromApi() async {
-    final languageData = await baseProvider.fetchPaginated(baseProvider.makeUrl(languageUrlPath));
+    final languageData = await baseProvider
+        .fetchPaginated(baseProvider.makeUrl(languageUrlPath));
 
     for (final language in languageData) {
       _languages.add(Language.fromJson(language));
@@ -304,7 +311,8 @@ class ExercisesProvider with ChangeNotifier {
 
     // Exercise is already known locally
     if (exerciseDb != null) {
-      final nextFetch = exerciseDb.lastFetched.add(const Duration(hours: EXERCISE_FETCH_HOURS));
+      final nextFetch = exerciseDb.lastFetched
+          .add(const Duration(hours: EXERCISE_FETCH_HOURS));
       exercise = Exercise.fromApiDataString(exerciseDb.data, _languages);
 
       // Fetch and update
@@ -318,7 +326,9 @@ class ExercisesProvider with ChangeNotifier {
         if (exerciseApiData.lastUpdateGlobal.isAfter(exerciseDb.lastUpdate)) {
           exercise = Exercise.fromApiData(exerciseApiData, _languages);
 
-          await (database.update(database.exercises)..where((e) => e.id.equals(exerciseId))).write(
+          await (database.update(database.exercises)
+                ..where((e) => e.id.equals(exerciseId)))
+              .write(
             ExercisesCompanion(
               data: Value(jsonEncode(apiData)),
               lastUpdate: Value(exercise.lastUpdateGlobal!),
@@ -327,7 +337,9 @@ class ExercisesProvider with ChangeNotifier {
           );
           // Update last fetched date, otherwise we'll keep hitting the API
         } else {
-          await (database.update(database.exercises)..where((e) => e.id.equals(exerciseId))).write(
+          await (database.update(database.exercises)
+                ..where((e) => e.id.equals(exerciseId)))
+              .write(
             ExercisesCompanion(lastFetched: Value(DateTime.now())),
           );
         }
@@ -423,7 +435,9 @@ class ExercisesProvider with ChangeNotifier {
     final exercisesDb = await database.select(database.exercises).get();
     log('Loaded ${exercisesDb.length} exercises from cache');
 
-    exercises = exercisesDb.map((e) => Exercise.fromApiDataString(e.data, _languages)).toList();
+    exercises = exercisesDb
+        .map((e) => Exercise.fromApiDataString(e.data, _languages))
+        .toList();
   }
 
   /// Updates the exercise database with *all* the exercises from the server
@@ -433,7 +447,9 @@ class ExercisesProvider with ChangeNotifier {
     );
 
     final List<dynamic> exercisesData = data['results'];
-    exercises = exercisesData.map((e) => Exercise.fromApiDataJson(e, _languages)).toList();
+    exercises = exercisesData
+        .map((e) => Exercise.fromApiDataJson(e, _languages))
+        .toList();
 
     // Insert new entries and update ones that have been edited
     Future.forEach(exercisesData, (exerciseData) async {
@@ -457,14 +473,19 @@ class ExercisesProvider with ChangeNotifier {
       final lastUpdateApi = DateTime.parse(exerciseData['last_update_global']);
       if (exercise != null && lastUpdateApi.isAfter(exercise.lastUpdate)) {
         // TODO: timezones 🥳
-        print(
-          'Exercise ${exercise.id}: update API $lastUpdateApi | Update DB: ${exercise.lastUpdate}',
-        );
-        (database.update(database.exercises)..where((e) => e.id.equals(exerciseData['id']))).write(
+        if (kDebugMode) {
+          print(
+            'Exercise ${exercise.id}: update API $lastUpdateApi | Update DB: ${exercise.lastUpdate}',
+          );
+        }
+        (database.update(database.exercises)
+              ..where((e) => e.id.equals(exerciseData['id'])))
+            .write(
           ExercisesCompanion(
             id: Value(exerciseData['id']),
             data: Value(jsonEncode(exerciseData)),
-            lastUpdate: Value(DateTime.parse(exerciseData['last_update_global'])),
+            lastUpdate:
+                Value(DateTime.parse(exerciseData['last_update_global'])),
             lastFetched: Value(DateTime.now()),
           ),
         );
@@ -477,7 +498,8 @@ class ExercisesProvider with ChangeNotifier {
   /// We first try to read from the local DB, and from the API if the data is too old
   Future<void> fetchAndSetMuscles(ExerciseDatabase database) async {
     final prefs = await SharedPreferences.getInstance();
-    var validTill = DateTime.parse(prefs.getString(PREFS_LAST_UPDATED_MUSCLES)!);
+    var validTill =
+        DateTime.parse(prefs.getString(PREFS_LAST_UPDATED_MUSCLES)!);
 
     // Cache still valid, return it
     if (validTill.isAfter(DateTime.now())) {
@@ -511,7 +533,8 @@ class ExercisesProvider with ChangeNotifier {
   /// We first try to read from the local DB, and from the API if the data is too old
   Future<void> fetchAndSetCategories(ExerciseDatabase database) async {
     final prefs = await SharedPreferences.getInstance();
-    var validTill = DateTime.parse(prefs.getString(PREFS_LAST_UPDATED_CATEGORIES)!);
+    var validTill =
+        DateTime.parse(prefs.getString(PREFS_LAST_UPDATED_CATEGORIES)!);
 
     // Cache still valid, return it
     if (validTill.isAfter(DateTime.now())) {
@@ -544,7 +567,8 @@ class ExercisesProvider with ChangeNotifier {
   /// We first try to read from the local DB, and from the API if the data is too old
   Future<void> fetchAndSetLanguages(ExerciseDatabase database) async {
     final prefs = await SharedPreferences.getInstance();
-    var validTill = DateTime.parse(prefs.getString(PREFS_LAST_UPDATED_LANGUAGES)!);
+    var validTill =
+        DateTime.parse(prefs.getString(PREFS_LAST_UPDATED_LANGUAGES)!);
 
     // Cache still valid, return it
     if (validTill.isAfter(DateTime.now())) {
@@ -576,7 +600,8 @@ class ExercisesProvider with ChangeNotifier {
   /// We first try to read from the local DB, and from the API if the data is too old
   Future<void> fetchAndSetEquipments(ExerciseDatabase database) async {
     final prefs = await SharedPreferences.getInstance();
-    var validTill = DateTime.parse(prefs.getString(PREFS_LAST_UPDATED_EQUIPMENT)!);
+    var validTill =
+        DateTime.parse(prefs.getString(PREFS_LAST_UPDATED_EQUIPMENT)!);
 
     // Cache still valid, return it
     if (validTill.isAfter(DateTime.now())) {
@@ -679,8 +704,10 @@ class Filters {
   List<FilterCategory> get filterCategories => [exerciseCategories, equipment];
 
   bool get isNothingMarked {
-    final isExerciseCategoryMarked = exerciseCategories.items.values.any((isMarked) => isMarked);
-    final isEquipmentMarked = equipment.items.values.any((isMarked) => isMarked);
+    final isExerciseCategoryMarked =
+        exerciseCategories.items.values.any((isMarked) => isMarked);
+    final isEquipmentMarked =
+        equipment.items.values.any((isMarked) => isMarked);
     return !isExerciseCategoryMarked && !isEquipmentMarked;
   }
 

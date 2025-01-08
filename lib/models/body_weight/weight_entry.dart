@@ -47,7 +47,8 @@ class WeightEntry {
       );
 
   // Boilerplate
-  factory WeightEntry.fromJson(Map<String, dynamic> json) => _$WeightEntryFromJson(json);
+  factory WeightEntry.fromJson(Map<String, dynamic> json) =>
+      _$WeightEntryFromJson(json);
 
   Map<String, dynamic> toJson() => _$WeightEntryToJson(this);
 }

@@ -92,8 +92,8 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
 
   Future<String> readerscan(BuildContext context) async {
     try {
-      final code = await Navigator.of(context)
-          .push<String?>(MaterialPageRoute(builder: (context) => const ScanReader()));
+      final code = await Navigator.of(context).push<String?>(
+          MaterialPageRoute(builder: (context) => const ScanReader()));
       if (code == null) {
         return '';
       }
@@ -132,28 +132,36 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
               decoration: InputDecoration(
                 prefixIcon: const Icon(Icons.search),
                 labelText: AppLocalizations.of(context).searchIngredient,
-                suffixIcon: (widget.showScanner && !isDesktop) ? scanButton() : null,
+                suffixIcon:
+                    (widget.showScanner && !isDesktop) ? scanButton() : null,
               ),
             );
           },
           suggestionsCallback: (pattern) {
             // don't do search if user has already loaded a specific item
-            if (pattern == '' || widget._ingredientIdController.text.isNotEmpty) {
+            if (pattern == '' ||
+                widget._ingredientIdController.text.isNotEmpty) {
               return null;
             }
 
-            return Provider.of<NutritionPlansProvider>(context, listen: false).searchIngredient(
+            return Provider.of<NutritionPlansProvider>(context, listen: false)
+                .searchIngredient(
               pattern,
               languageCode: Localizations.localeOf(context).languageCode,
               searchEnglish: _searchEnglish,
             );
           },
           itemBuilder: (context, suggestion) {
-            final url = context.read<NutritionPlansProvider>().baseProvider.auth.serverUrl;
+            final url = context
+                .read<NutritionPlansProvider>()
+                .baseProvider
+                .auth
+                .serverUrl;
             return ListTile(
               leading: suggestion.data.image != null
                   ? CircleAvatar(
-                      backgroundImage: NetworkImage(url! + suggestion.data.image!),
+                      backgroundImage:
+                          NetworkImage(url! + suggestion.data.image!),
                     )
                   : const CircleIconAvatar(
                       Icon(Icons.image, color: Colors.grey),
@@ -167,7 +175,8 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
                     context,
                     suggestion.data.id,
                     select: () {
-                      widget.selectIngredient(suggestion.data.id, suggestion.value, null);
+                      widget.selectIngredient(
+                          suggestion.data.id, suggestion.value, null);
                     },
                   );
                 },
@@ -175,14 +184,16 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
             );
           },
           transitionBuilder: (context, animation, child) => FadeTransition(
-            opacity: CurvedAnimation(parent: animation, curve: Curves.fastOutSlowIn),
+            opacity:
+                CurvedAnimation(parent: animation, curve: Curves.fastOutSlowIn),
             child: child,
           ),
           onSelected: (suggestion) {
             widget.selectIngredient(suggestion.data.id, suggestion.value, null);
           },
         ),
-        if (Localizations.localeOf(context).languageCode != LANGUAGE_SHORT_ENGLISH)
+        if (Localizations.localeOf(context).languageCode !=
+            LANGUAGE_SHORT_ENGLISH)
           SwitchListTile(
             title: Text(AppLocalizations.of(context).searchNamesInEnglish),
             value: _searchEnglish,
@@ -219,8 +230,10 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
           builder: (context) => FutureBuilder<Ingredient?>(
             future: Provider.of<NutritionPlansProvider>(context, listen: false)
                 .searchIngredientWithCode(barcode),
-            builder: (BuildContext context, AsyncSnapshot<Ingredient?> snapshot) {
-              return IngredientScanResultDialog(snapshot, barcode, widget.selectIngredient);
+            builder:
+                (BuildContext context, AsyncSnapshot<Ingredient?> snapshot) {
+              return IngredientScanResultDialog(
+                  snapshot, barcode, widget.selectIngredient);
             },
           ),
         );

@@ -26,11 +26,15 @@ class WgerHttpException implements Exception {
   /// JSON. Will use the response as-is if it fails.
   WgerHttpException(dynamic responseBody) {
     if (responseBody == null) {
-      errors = {'unknown_error': 'An unknown error occurred, no further information available'};
+      errors = {
+        'unknown_error':
+            'An unknown error occurred, no further information available'
+      };
     } else {
       try {
         final response = json.decode(responseBody);
-        errors = (response is Map ? response : {'unknown_error': response}).cast<String, dynamic>();
+        errors = (response is Map ? response : {'unknown_error': response})
+            .cast<String, dynamic>();
       } catch (e) {
         errors = {'unknown_error': responseBody};
       }

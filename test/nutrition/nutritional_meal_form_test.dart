@@ -62,7 +62,8 @@ void main() {
         navigatorKey: key,
         home: Scaffold(body: MealForm(1, meal)),
         routes: {
-          NutritionalPlanScreen.routeName: (ctx) => const NutritionalPlanScreen(),
+          NutritionalPlanScreen.routeName: (ctx) =>
+              const NutritionalPlanScreen(),
         },
       ),
     );
@@ -102,7 +103,8 @@ void main() {
     verifyNever(mockNutrition.addMeal(any, any));
   });
 
-  testWidgets('Test creating a new nutritional plan', (WidgetTester tester) async {
+  testWidgets('Test creating a new nutritional plan',
+      (WidgetTester tester) async {
     // DateTime.now() is difficult to mock as it pull directly from the platform
     // currently being run. The clock pacakge (https://pub.dev/packages/clock)
     // addresses this issue, using clock.now() allows us to set a fixed value as the

@@ -53,3 +53,9 @@ app.*.map.json
 # Others
 /vendor/bundle/ruby/
 /coverage/
+
+# Generated files
+*.g.dart
+*.freezed.dart
+*.gr.dart
+*.gen.dart

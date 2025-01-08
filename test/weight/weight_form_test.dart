@@ -34,7 +34,8 @@ void main() {
     );
   }
 
-  testWidgets('The form is prefilled with the data from an entry', (WidgetTester tester) async {
+  testWidgets('The form is prefilled with the data from an entry',
+      (WidgetTester tester) async {
     await tester.pumpWidget(createWeightForm(weightEntry: testWeightEntry1));
     await tester.pumpAndSettle();
 
@@ -42,7 +43,8 @@ void main() {
     expect(find.text('80'), findsOneWidget);
   });
 
-  testWidgets('It is possible to quick-change the weight', (WidgetTester tester) async {
+  testWidgets('It is possible to quick-change the weight',
+      (WidgetTester tester) async {
     await tester.pumpWidget(createWeightForm(weightEntry: testWeightEntry1));
     await tester.pumpAndSettle();
 
@@ -59,7 +61,8 @@ void main() {
     expect(find.text('80.0'), findsOneWidget);
   });
 
-  testWidgets("Entering garbage doesn't break the quick-change", (WidgetTester tester) async {
+  testWidgets("Entering garbage doesn't break the quick-change",
+      (WidgetTester tester) async {
     await tester.pumpWidget(createWeightForm(weightEntry: testWeightEntry1));
     await tester.pumpAndSettle();
     await tester.enterText(find.byKey(const Key('weightInput')), 'shiba inu');
@@ -77,7 +80,8 @@ void main() {
     expect(find.text('shiba inu'), findsOneWidget);
   });
 
-  testWidgets('Widget works if there is no last entry', (WidgetTester tester) async {
+  testWidgets('Widget works if there is no last entry',
+      (WidgetTester tester) async {
     await tester.pumpWidget(createWeightForm(weightEntry: null));
     await tester.pumpAndSettle();
   });

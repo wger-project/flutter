@@ -44,9 +44,11 @@ class ExerciseApiData with _$ExerciseApiData {
     @JsonKey(name: 'total_authors_history') required List<String> authorsGlobal,
   }) = _ExerciseBaseData;
 
-  factory ExerciseApiData.fromString(String input) => _$ExerciseApiDataFromJson(json.decode(input));
+  factory ExerciseApiData.fromString(String input) =>
+      _$ExerciseApiDataFromJson(json.decode(input));
 
-  factory ExerciseApiData.fromJson(Map<String, dynamic> json) => _$ExerciseApiDataFromJson(json);
+  factory ExerciseApiData.fromJson(Map<String, dynamic> json) =>
+      _$ExerciseApiDataFromJson(json);
 }
 
 /// Model for the search results returned from the /api/v2/exercise/search endpoint

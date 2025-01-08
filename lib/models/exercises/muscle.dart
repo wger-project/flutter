@@ -53,7 +53,8 @@ class Muscle extends Equatable {
   List<Object?> get props => [id, name, isFront];
 
   String nameTranslated(BuildContext context) {
-    return name + (nameEn.isNotEmpty ? ' (${getTranslation(nameEn, context)})' : '');
+    return name +
+        (nameEn.isNotEmpty ? ' (${getTranslation(nameEn, context)})' : '');
   }
 
   @override

@@ -62,7 +62,8 @@ class NutritionalDiaryDetailWidget extends StatelessWidget {
         const SizedBox(height: 15),
         const DiaryheaderTile(),
         ...logs.map(
-          (e) => DiaryEntryTile(diaryEntry: e, nutritionalPlan: _nutritionalPlan),
+          (e) =>
+              DiaryEntryTile(diaryEntry: e, nutritionalPlan: _nutritionalPlan),
         ),
       ],
     );
@@ -93,17 +94,22 @@ class NutritionDiaryTable extends StatelessWidget {
           ),
         );
 
-    TableRow macroRow(int indent, bool g, String title, double Function(NutritionalValues nv) get) {
+    TableRow macroRow(int indent, bool g, String title,
+        double Function(NutritionalValues nv) get) {
       final valFn = g ? loc.gValue : loc.kcalValue;
       return TableRow(
         children: [
           Padding(
-            padding: EdgeInsets.symmetric(vertical: tablePadding, horizontal: indent * 12),
+            padding: EdgeInsets.symmetric(
+                vertical: tablePadding, horizontal: indent * 12),
             child: Text(title),
           ),
-          Text(valFn(get(planned).toStringAsFixed(0)), textAlign: TextAlign.right),
-          Text(valFn(get(logged).toStringAsFixed(0)), textAlign: TextAlign.right),
-          Text((get(logged) - get(planned)).toStringAsFixed(0), textAlign: TextAlign.right),
+          Text(valFn(get(planned).toStringAsFixed(0)),
+              textAlign: TextAlign.right),
+          Text(valFn(get(logged).toStringAsFixed(0)),
+              textAlign: TextAlign.right),
+          Text((get(logged) - get(planned)).toStringAsFixed(0),
+              textAlign: TextAlign.right),
         ],
       );
     }
@@ -111,7 +117,8 @@ class NutritionDiaryTable extends StatelessWidget {
     return Table(
       defaultVerticalAlignment: TableCellVerticalAlignment.middle,
       border: TableBorder(
-        horizontalInside: BorderSide(width: 1, color: Theme.of(context).colorScheme.outline),
+        horizontalInside:
+            BorderSide(width: 1, color: Theme.of(context).colorScheme.outline),
       ),
       columnWidths: const {0: FractionColumnWidth(0.4)},
       children: [
@@ -123,10 +130,13 @@ class NutritionDiaryTable extends StatelessWidget {
         ]),
         macroRow(0, false, loc.energy, (NutritionalValues nv) => nv.energy),
         macroRow(0, true, loc.protein, (NutritionalValues nv) => nv.protein),
-        macroRow(0, true, loc.carbohydrates, (NutritionalValues nv) => nv.carbohydrates),
-        macroRow(1, true, loc.sugars, (NutritionalValues nv) => nv.carbohydratesSugar),
+        macroRow(0, true, loc.carbohydrates,
+            (NutritionalValues nv) => nv.carbohydrates),
+        macroRow(1, true, loc.sugars,
+            (NutritionalValues nv) => nv.carbohydratesSugar),
         macroRow(0, true, loc.fat, (NutritionalValues nv) => nv.fat),
-        macroRow(1, true, loc.saturatedFat, (NutritionalValues nv) => nv.fatSaturated),
+        macroRow(1, true, loc.saturatedFat,
+            (NutritionalValues nv) => nv.fatSaturated),
         macroRow(0, true, loc.fiber, (NutritionalValues nv) => nv.fiber),
         macroRow(0, true, loc.sodium, (NutritionalValues nv) => nv.sodium),
       ],

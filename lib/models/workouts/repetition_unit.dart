@@ -31,6 +31,7 @@ class RepetitionUnit {
   const RepetitionUnit({required this.id, required this.name});
 
   // Boilerplate
-  factory RepetitionUnit.fromJson(Map<String, dynamic> json) => _$RepetitionUnitFromJson(json);
+  factory RepetitionUnit.fromJson(Map<String, dynamic> json) =>
+      _$RepetitionUnitFromJson(json);
   Map<String, dynamic> toJson() => _$RepetitionUnitToJson(this);
 }

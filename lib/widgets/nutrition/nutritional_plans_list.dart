@@ -71,29 +71,35 @@ class NutritionalPlansList extends StatelessWidget {
                                 actions: [
                                   TextButton(
                                     child: Text(
-                                      MaterialLocalizations.of(context).cancelButtonLabel,
+                                      MaterialLocalizations.of(context)
+                                          .cancelButtonLabel,
                                     ),
-                                    onPressed: () => Navigator.of(contextDialog).pop(),
+                                    onPressed: () =>
+                                        Navigator.of(contextDialog).pop(),
                                   ),
                                   TextButton(
                                     child: Text(
                                       AppLocalizations.of(context).delete,
                                       style: TextStyle(
-                                        color: Theme.of(context).colorScheme.error,
+                                        color:
+                                            Theme.of(context).colorScheme.error,
                                       ),
                                     ),
                                     onPressed: () {
                                       // Confirmed, delete the plan
-                                      _nutritionProvider.deletePlan(currentPlan.id!);
+                                      _nutritionProvider
+                                          .deletePlan(currentPlan.id!);
 
                                       // Close the popup
                                       Navigator.of(contextDialog).pop();
 
                                       // and inform the user
-                                      ScaffoldMessenger.of(context).showSnackBar(
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
                                         SnackBar(
                                           content: Text(
-                                            AppLocalizations.of(context).successfullyDeleted,
+                                            AppLocalizations.of(context)
+                                                .successfullyDeleted,
                                             textAlign: TextAlign.center,
                                           ),
                                         ),

@@ -44,8 +44,9 @@ class Icon {
     _fileExtension = path.split('.').last;
   }
 
-  String getFilename(String appId) =>
-      (type == _symbolicType) ? '$appId-symbolic.$_fileExtension' : '$appId.$_fileExtension';
+  String getFilename(String appId) => (type == _symbolicType)
+      ? '$appId-symbolic.$_fileExtension'
+      : '$appId.$_fileExtension';
 }
 
 class GithubReleases {
@@ -74,7 +75,8 @@ class GithubReleases {
     final releaseJsonContent = (await http.get(Uri(
             scheme: 'https',
             host: 'api.github.com',
-            path: '/repos/$githubReleaseOrganization/$githubReleaseProject/releases')))
+            path:
+                '/repos/$githubReleaseOrganization/$githubReleaseProject/releases')))
         .body;
     final decodedJson = jsonDecode(releaseJsonContent) as List;
 
@@ -85,19 +87,23 @@ class GithubReleases {
     await Future.forEach<dynamic>(decodedJson, (dynamic releaseDynamic) async {
       final releaseMap = releaseDynamic as Map;
 
-      final releaseDateAndTime = DateTime.parse(releaseMap['published_at'] as String);
-      final releaseDateString = releaseDateAndTime.toIso8601String().split('T').first;
+      final releaseDateAndTime =
+          DateTime.parse(releaseMap['published_at'] as String);
+      final releaseDateString =
+          releaseDateAndTime.toIso8601String().split('T').first;
 
       if (latestReleaseAssetDate == null ||
           (latestReleaseAssetDate?.compareTo(releaseDateAndTime) == -1)) {
-        final assets = await _parseGithubReleaseAssets(releaseMap['assets'] as List);
+        final assets =
+            await _parseGithubReleaseAssets(releaseMap['assets'] as List);
         if (assets != null) {
           _latestReleaseAssets = assets;
           latestReleaseAssetDate = releaseDateAndTime;
         }
       }
 
-      releases.add(Release(version: releaseMap['name'] as String, date: releaseDateString));
+      releases.add(Release(
+          version: releaseMap['name'] as String, date: releaseDateString));
     });
 
     if (releases.isNotEmpty || canBeEmpty) {
@@ -118,7 +124,8 @@ class GithubReleases {
       final downloadUrl = amMap['browser_download_url'] as String;
       final filename = amMap['name'] as String;
       final fileExtension = filename.substring(filename.indexOf('.') + 1);
-      final filenameWithoutExtension = filename.substring(0, filename.indexOf('.'));
+      final filenameWithoutExtension =
+          filename.substring(0, filename.indexOf('.'));
 
       final arch = filenameWithoutExtension.endsWith('aarch64')
           ? CPUArchitecture.aarch64
@@ -214,7 +221,8 @@ class FlatpakMeta {
       : _localReleases = localReleases,
         _localReleaseAssets = localReleaseAssets {
     if (githubReleaseOrganization != null && githubReleaseProject != null) {
-      _githubReleases = GithubReleases(githubReleaseOrganization!, githubReleaseProject!);
+      _githubReleases =
+          GithubReleases(githubReleaseOrganization!, githubReleaseProject!);
     }
   }
 
@@ -223,17 +231,20 @@ class FlatpakMeta {
     final releases = List<Release>.empty(growable: true);
     if (addedTodaysVersion != null) {
       releases.add(Release(
-          version: addedTodaysVersion, date: DateTime.now().toIso8601String().split('T').first));
+          version: addedTodaysVersion,
+          date: DateTime.now().toIso8601String().split('T').first));
     }
     if (fetchReleasesFromGithub) {
       if (_githubReleases == null) {
         throw Exception(
             'Metadata must include Github repository info if fetching releases from Github.');
       }
-      releases.addAll(await _githubReleases!.getReleases(addedTodaysVersion != null));
+      releases.addAll(
+          await _githubReleases!.getReleases(addedTodaysVersion != null));
     } else {
       if (_localReleases == null && addedTodaysVersion == null) {
-        throw Exception('Metadata must include releases if not fetching releases from Github.');
+        throw Exception(
+            'Metadata must include releases if not fetching releases from Github.');
       }
       if (_localReleases?.isNotEmpty ?? false) {
         releases.addAll(_localReleases!);
@@ -242,7 +253,8 @@ class FlatpakMeta {
     return releases;
   }
 
-  Future<List<ReleaseAsset>?> getLatestReleaseAssets(bool fetchReleasesFromGithub) async {
+  Future<List<ReleaseAsset>?> getLatestReleaseAssets(
+      bool fetchReleasesFromGithub) async {
     if (fetchReleasesFromGithub) {
       if (_githubReleases == null) {
         throw Exception(
@@ -251,7 +263,8 @@ class FlatpakMeta {
       return _githubReleases!.getLatestReleaseAssets();
     } else {
       if (_localReleases == null) {
-        throw Exception('Metadata must include releases if not fetching releases from Github.');
+        throw Exception(
+            'Metadata must include releases if not fetching releases from Github.');
       }
       return _localReleaseAssets;
     }
@@ -263,20 +276,24 @@ class FlatpakMeta {
       return FlatpakMeta(
           appId: json['appId'] as String,
           lowercaseAppName: json['lowercaseAppName'] as String,
-          githubReleaseOrganization: json['githubReleaseOrganization'] as String?,
+          githubReleaseOrganization:
+              json['githubReleaseOrganization'] as String?,
           githubReleaseProject: json['githubReleaseProject'] as String?,
           localReleases: skipLocalReleases
               ? null
               : (json['localReleases'] as List?)?.map((dynamic r) {
                   final rMap = r as Map;
-                  return Release(version: rMap['version'] as String, date: rMap['date'] as String);
+                  return Release(
+                      version: rMap['version'] as String,
+                      date: rMap['date'] as String);
                 }).toList(),
           localReleaseAssets: skipLocalReleases
               ? null
               : (json['localReleaseAssets'] as List?)?.map((dynamic ra) {
                   final raMap = ra as Map;
                   final archString = raMap['arch'] as String;
-                  final arch = (archString == CPUArchitecture.x86_64.flatpakArchCode)
+                  final arch = (archString ==
+                          CPUArchitecture.x86_64.flatpakArchCode)
                       ? CPUArchitecture.x86_64
                       : (archString == CPUArchitecture.aarch64.flatpakArchCode)
                           ? CPUArchitecture.aarch64
@@ -285,10 +302,11 @@ class FlatpakMeta {
                     throw Exception(
                         'Architecture must be either "${CPUArchitecture.x86_64.flatpakArchCode}" or "${CPUArchitecture.aarch64.flatpakArchCode}"');
                   }
-                  final tarballFile =
-                      File('${jsonFile.parent.path}/${raMap['tarballPath'] as String}');
+                  final tarballFile = File(
+                      '${jsonFile.parent.path}/${raMap['tarballPath'] as String}');
                   final tarballPath = tarballFile.absolute.path;
-                  final preShasum = Process.runSync('shasum', ['-a', '256', tarballPath]);
+                  final preShasum =
+                      Process.runSync('shasum', ['-a', '256', tarballPath]);
                   final shasum = preShasum.stdout.toString().split(' ').first;
                   if (preShasum.exitCode != 0) {
                     throw Exception(preShasum.stderr);
@@ -303,14 +321,17 @@ class FlatpakMeta {
           appStreamPath: json['appStreamPath'] as String,
           desktopPath: json['desktopPath'] as String,
           icons: (json['icons'] as Map).entries.map((mapEntry) {
-            return Icon(type: mapEntry.key as String, path: mapEntry.value as String);
+            return Icon(
+                type: mapEntry.key as String, path: mapEntry.value as String);
           }).toList(),
           freedesktopRuntime: json['freedesktopRuntime'] as String,
           buildCommandsAfterUnpack: (json['buildCommandsAfterUnpack'] as List?)
               ?.map((dynamic bc) => bc as String)
               .toList(),
           extraModules: json['extraModules'] as List?,
-          finishArgs: (json['finishArgs'] as List).map((dynamic fa) => fa as String).toList());
+          finishArgs: (json['finishArgs'] as List)
+              .map((dynamic fa) => fa as String)
+              .toList());
     } catch (e) {
       throw Exception('Could not parse JSON file, due to this error:\n$e');
     }

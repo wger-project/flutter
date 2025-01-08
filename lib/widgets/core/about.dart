@@ -111,7 +111,10 @@ class AboutPage extends StatelessWidget {
             SizedBox(height: 0.025 * deviceSize.height),
             Text(
               AppLocalizations.of(context).aboutDescription,
-              style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 16),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium!
+                  .copyWith(fontSize: 16),
             ),
             const SizedBox(height: 10),
             AboutEntry(
@@ -163,7 +166,8 @@ class AboutPage extends StatelessWidget {
                 showLicensePage(
                   context: context,
                   applicationName: 'wger',
-                  applicationVersion: 'App: ${authProvider.applicationVersion!.version}\n'
+                  applicationVersion:
+                      'App: ${authProvider.applicationVersion!.version}\n'
                       'Server: ${authProvider.serverVersion}',
                   applicationLegalese: '\u{a9} 2020 - 2021 contributors',
                   applicationIcon: Padding(

@@ -35,7 +35,8 @@ class WeightForm extends StatelessWidget {
 
   WeightForm([WeightEntry? weightEntry]) {
     _weightEntry = weightEntry ?? WeightEntry(date: DateTime.now());
-    weightController.text = _weightEntry.weight == 0 ? '' : _weightEntry.weight.toString();
+    weightController.text =
+        _weightEntry.weight == 0 ? '' : _weightEntry.weight.toString();
     dateController.text = toDate(_weightEntry.date)!;
   }
 
@@ -73,7 +74,8 @@ class WeightForm extends StatelessWidget {
                   }
 
                   // if the date is known, don't allow it
-                  return Provider.of<BodyWeightProvider>(context, listen: false).findByDate(day) ==
+                  return Provider.of<BodyWeightProvider>(context, listen: false)
+                          .findByDate(day) ==
                       null;
                 },
               );
@@ -100,7 +102,8 @@ class WeightForm extends StatelessWidget {
                     icon: const FaIcon(FontAwesomeIcons.circleMinus),
                     onPressed: () {
                       try {
-                        final num newValue = num.parse(weightController.text) - 1;
+                        final num newValue =
+                            num.parse(weightController.text) - 1;
                         weightController.text = newValue.toString();
                       } on FormatException {}
                     },
@@ -110,7 +113,8 @@ class WeightForm extends StatelessWidget {
                     icon: const FaIcon(FontAwesomeIcons.minus),
                     onPressed: () {
                       try {
-                        final num newValue = num.parse(weightController.text) - 0.1;
+                        final num newValue =
+                            num.parse(weightController.text) - 0.1;
                         weightController.text = newValue.toStringAsFixed(1);
                       } on FormatException {}
                     },
@@ -125,7 +129,8 @@ class WeightForm extends StatelessWidget {
                     icon: const FaIcon(FontAwesomeIcons.plus),
                     onPressed: () {
                       try {
-                        final num newValue = num.parse(weightController.text) + 0.1;
+                        final num newValue =
+                            num.parse(weightController.text) + 0.1;
                         weightController.text = newValue.toStringAsFixed(1);
                       } on FormatException {}
                     },
@@ -135,7 +140,8 @@ class WeightForm extends StatelessWidget {
                     icon: const FaIcon(FontAwesomeIcons.circlePlus),
                     onPressed: () {
                       try {
-                        final num newValue = num.parse(weightController.text) + 1;
+                        final num newValue =
+                            num.parse(weightController.text) + 1;
                         weightController.text = newValue.toString();
                       } on FormatException {}
                     },
@@ -172,7 +178,8 @@ class WeightForm extends StatelessWidget {
 
               // Save the entry on the server
               try {
-                final provider = Provider.of<BodyWeightProvider>(context, listen: false);
+                final provider =
+                    Provider.of<BodyWeightProvider>(context, listen: false);
                 _weightEntry.id == null
                     ? await provider.addEntry(_weightEntry)
                     : await provider.editEntry(_weightEntry);

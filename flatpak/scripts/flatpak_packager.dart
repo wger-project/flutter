@@ -28,7 +28,8 @@ void main(List<String> arguments) async {
         'You must run this script with a metadata file argument, using the --meta flag.');
   }
   if (arguments.length == metaIndex + 1) {
-    throw Exception('The --meta flag must be followed by the path to the metadata file.');
+    throw Exception(
+        'The --meta flag must be followed by the path to the metadata file.');
   }
 
   final metaFile = File(arguments[metaIndex + 1]);
@@ -39,8 +40,10 @@ void main(List<String> arguments) async {
   final fetchFromGithub = arguments.contains('--github');
 
   final addTodaysVersionIndex = arguments.indexOf('--addTodaysVersion');
-  if (addTodaysVersionIndex != -1 && arguments.length == addTodaysVersionIndex + 1) {
-    throw Exception('The --addTodaysVersion flag must be followed by the version name.');
+  if (addTodaysVersionIndex != -1 &&
+      arguments.length == addTodaysVersionIndex + 1) {
+    throw Exception(
+        'The --addTodaysVersion flag must be followed by the version name.');
   }
 
   final addedTodaysVersion =
@@ -48,17 +51,23 @@ void main(List<String> arguments) async {
 
   // GENERATE PACKAGE
 
-  final meta = FlatpakMeta.fromJson(metaFile, skipLocalReleases: fetchFromGithub);
+  final meta =
+      FlatpakMeta.fromJson(metaFile, skipLocalReleases: fetchFromGithub);
 
-  final outputDir = Directory('${Directory.current.path}/flatpak_generator_exports');
+  final outputDir =
+      Directory('${Directory.current.path}/flatpak_generator_exports');
   await outputDir.create();
 
   final packageGenerator = PackageGenerator(
-      inputDir: metaFile.parent, meta: meta, addedTodaysVersion: addedTodaysVersion);
+      inputDir: metaFile.parent,
+      meta: meta,
+      addedTodaysVersion: addedTodaysVersion);
 
   await packageGenerator.generatePackage(
       outputDir,
-      await PackageGenerator.runningOnARM() ? CPUArchitecture.aarch64 : CPUArchitecture.x86_64,
+      await PackageGenerator.runningOnARM()
+          ? CPUArchitecture.aarch64
+          : CPUArchitecture.x86_64,
       fetchFromGithub);
 }
 
@@ -67,10 +76,13 @@ class PackageGenerator {
   final FlatpakMeta meta;
   final String? addedTodaysVersion;
 
-  PackageGenerator({required this.inputDir, required this.meta, required this.addedTodaysVersion});
+  PackageGenerator(
+      {required this.inputDir,
+      required this.meta,
+      required this.addedTodaysVersion});
 
-  Future<void> generatePackage(
-      Directory outputDir, CPUArchitecture arch, bool fetchReleasesFromGithub) async {
+  Future<void> generatePackage(Directory outputDir, CPUArchitecture arch,
+      bool fetchReleasesFromGithub) async {
     final tempDir = await outputDir.createTemp('flutter_generator_temp');
     final appId = meta.appId;
 
@@ -122,12 +134,15 @@ class PackageGenerator {
     final destDir = Directory('${tempDir.path}/bin');
     await destDir.create();
 
-    final baseFilename = '${meta.lowercaseAppName}-linux-${arch.flatpakArchCode}';
+    final baseFilename =
+        '${meta.lowercaseAppName}-linux-${arch.flatpakArchCode}';
     final packagePath = '${outputDir.absolute.path}/$baseFilename.tar.gz';
     final shaPath = '${outputDir.absolute.path}/$baseFilename.sha256';
 
-    await Process.run('cp', ['-r', '${buildDir.absolute.path}/.', destDir.absolute.path]);
-    await Process.run('tar', ['-czvf', packagePath, '.'], workingDirectory: tempDir.absolute.path);
+    await Process.run(
+        'cp', ['-r', '${buildDir.absolute.path}/.', destDir.absolute.path]);
+    await Process.run('tar', ['-czvf', packagePath, '.'],
+        workingDirectory: tempDir.absolute.path);
 
     print('Generated $packagePath');
 
@@ -150,10 +165,13 @@ class PackageGenerator {
 
 // updates releases in ${appName}.metainfo.xml
 class AppStreamModifier {
-  static String replaceVersions(String origAppStreamContent, List<Release> versions) {
-    final joinedReleases =
-        versions.map((v) => '\t\t<release version="${v.version}" date="${v.date}" />').join('\n');
-    final releasesSection = '<releases>\n$joinedReleases\n\t</releases>'; //TODO check this
+  static String replaceVersions(
+      String origAppStreamContent, List<Release> versions) {
+    final joinedReleases = versions
+        .map((v) => '\t\t<release version="${v.version}" date="${v.date}" />')
+        .join('\n');
+    final releasesSection =
+        '<releases>\n$joinedReleases\n\t</releases>'; //TODO check this
     if (origAppStreamContent.contains('<releases')) {
       return origAppStreamContent
           .replaceAll('\n', '<~>')

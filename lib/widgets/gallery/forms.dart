@@ -118,7 +118,8 @@ class _ImageFormState extends State<ImageForm> {
                               _showPicker(ImageSource.camera);
                             },
                             leading: const Icon(Icons.photo_camera),
-                            title: Text(AppLocalizations.of(context).takePicture),
+                            title:
+                                Text(AppLocalizations.of(context).takePicture),
                           ),
                           ListTile(
                             onTap: () {

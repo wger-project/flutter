@@ -58,15 +58,17 @@ void main() {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
-        home: Scaffold(body: PlanForm(plan)),
+        home: Scaffold(body: PlanForm(plan: plan)),
         routes: {
-          NutritionalPlanScreen.routeName: (ctx) => const NutritionalPlanScreen(),
+          NutritionalPlanScreen.routeName: (ctx) =>
+              const NutritionalPlanScreen(),
         },
       ),
     );
   }
 
-  testWidgets('Test the widgets on the nutritional plan form', (WidgetTester tester) async {
+  testWidgets('Test the widgets on the nutritional plan form',
+      (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen(plan1));
     await tester.pumpAndSettle();
 
@@ -75,7 +77,8 @@ void main() {
     expect(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)), findsOneWidget);
   });
 
-  testWidgets('Test editing an existing nutritional plan', (WidgetTester tester) async {
+  testWidgets('Test editing an existing nutritional plan',
+      (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen(plan1));
     await tester.pumpAndSettle();
 
@@ -84,7 +87,8 @@ void main() {
       findsOneWidget,
       reason: 'Description of existing nutritional plan is filled in',
     );
-    await tester.enterText(find.byKey(const Key('field-description')), 'New description');
+    await tester.enterText(
+        find.byKey(const Key('field-description')), 'New description');
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
     // Correct method was called
@@ -105,12 +109,15 @@ void main() {
     //);
   });
 
-  testWidgets('Test creating a new nutritional plan', (WidgetTester tester) async {
+  testWidgets('Test creating a new nutritional plan',
+      (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen(plan2));
     await tester.pumpAndSettle();
 
-    expect(find.text(''), findsOneWidget, reason: 'New nutritional plan has no description');
-    await tester.enterText(find.byKey(const Key('field-description')), 'New cool plan');
+    expect(find.text(''), findsOneWidget,
+        reason: 'New nutritional plan has no description');
+    await tester.enterText(
+        find.byKey(const Key('field-description')), 'New cool plan');
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
     // Correct method was called
@@ -119,6 +126,7 @@ void main() {
 
     // Detail page
     await tester.pumpAndSettle();
-    expect(find.text('New cool plan'), findsOneWidget, reason: 'Nutritional plan detail page');
+    expect(find.text('New cool plan'), findsOneWidget,
+        reason: 'Nutritional plan detail page');
   });
 }

@@ -30,22 +30,28 @@ class MacronutrientsTable extends StatelessWidget {
           ),
         );
 
-    TableRow macroRow(int indent, bool g, String title, double? Function(NutritionalGoals ng) get) {
+    TableRow macroRow(int indent, bool g, String title,
+        double? Function(NutritionalGoals ng) get) {
       final goal = get(nutritionalGoals);
       final pct = get(plannedValuesPercentage);
-      final perkg = nutritionalGoalsGperKg == null ? null : get(nutritionalGoalsGperKg!);
+      final perkg =
+          nutritionalGoalsGperKg == null ? null : get(nutritionalGoalsGperKg!);
       final valFn = g ? loc.gValue : loc.kcalValue;
 
       return TableRow(
         children: [
           Padding(
-            padding: EdgeInsets.symmetric(vertical: tablePadding, horizontal: indent * 12),
+            padding: EdgeInsets.symmetric(
+                vertical: tablePadding, horizontal: indent * 12),
             child: Text(title),
           ),
-          Text(goal != null ? valFn(goal.toStringAsFixed(0)) : '', textAlign: TextAlign.right),
-          Text(pct != null ? pct.toStringAsFixed(1) : '', textAlign: TextAlign.right),
+          Text(goal != null ? valFn(goal.toStringAsFixed(0)) : '',
+              textAlign: TextAlign.right),
+          Text(pct != null ? pct.toStringAsFixed(1) : '',
+              textAlign: TextAlign.right),
           if (showGperKg)
-            Text(perkg != null ? perkg.toStringAsFixed(1) : '', textAlign: TextAlign.right),
+            Text(perkg != null ? perkg.toStringAsFixed(1) : '',
+                textAlign: TextAlign.right),
         ],
       );
     }
@@ -70,10 +76,13 @@ class MacronutrientsTable extends StatelessWidget {
         ),
         macroRow(0, false, loc.energy, (NutritionalGoals ng) => ng.energy),
         macroRow(0, true, loc.protein, (NutritionalGoals ng) => ng.protein),
-        macroRow(0, true, loc.carbohydrates, (NutritionalGoals ng) => ng.carbohydrates),
-        macroRow(1, true, loc.sugars, (NutritionalGoals ng) => ng.carbohydratesSugar),
+        macroRow(0, true, loc.carbohydrates,
+            (NutritionalGoals ng) => ng.carbohydrates),
+        macroRow(1, true, loc.sugars,
+            (NutritionalGoals ng) => ng.carbohydratesSugar),
         macroRow(0, true, loc.fat, (NutritionalGoals ng) => ng.fat),
-        macroRow(1, true, loc.saturatedFat, (NutritionalGoals ng) => ng.fatSaturated),
+        macroRow(1, true, loc.saturatedFat,
+            (NutritionalGoals ng) => ng.fatSaturated),
         macroRow(0, true, loc.fiber, (NutritionalGoals ng) => ng.fiber),
         macroRow(0, true, loc.sodium, (NutritionalGoals ng) => ng.sodium),
       ],
