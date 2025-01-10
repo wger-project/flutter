@@ -40,14 +40,16 @@ class GymModeScreen extends StatelessWidget {
 
     final routinesProvider = context.read<RoutinesProvider>();
     final routine = routinesProvider.findById(args.routineId);
-    final dayData = routine.dayDataGym
+    final dayDataDisplay =
+        routine.dayData.firstWhere((e) => e.iteration == args.iteration && e.day?.id == args.dayId);
+    final dayDataGym = routine.dayDataGym
         .where((e) => e.iteration == args.iteration && e.day?.id == args.dayId)
         .first;
 
     return Scaffold(
       body: SafeArea(
         child: Consumer<RoutinesProvider>(
-          builder: (context, value, child) => GymMode(dayData),
+          builder: (context, value, child) => GymMode(dayDataGym, dayDataDisplay),
         ),
       ),
     );

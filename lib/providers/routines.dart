@@ -63,18 +63,24 @@ class RoutinesProvider with ChangeNotifier {
   static const _routineConfigMaxRestTime = 'max-rest-config';
 
   Routine? _currentPlan;
-  final ExercisesProvider _exercises;
+  late ExercisesProvider _exercises;
   final WgerBaseProvider baseProvider;
   List<Routine> _routines = [];
   List<WeightUnit> _weightUnits = [];
-  List<RepetitionUnit> _repetitionUnit = [];
+  List<RepetitionUnit> _repetitionUnits = [];
 
   RoutinesProvider(
     this.baseProvider,
     ExercisesProvider exercises,
-    List<Routine> entries,
-  )   : _exercises = exercises,
-        _routines = entries;
+    List<Routine> entries, {
+    List<WeightUnit>? weightUnits,
+    List<RepetitionUnit>? repetitionUnits,
+  }) {
+    _exercises = exercises;
+    _routines = entries;
+    _weightUnits = weightUnits ?? [];
+    _repetitionUnits = repetitionUnits ?? [];
+  }
 
   List<Routine> get items {
     return [..._routines];
@@ -89,7 +95,7 @@ class RoutinesProvider with ChangeNotifier {
     _currentPlan = null;
     _routines = [];
     _weightUnits = [];
-    _repetitionUnit = [];
+    _repetitionUnits = [];
   }
 
   /// Return the default weight unit (kg)
@@ -100,15 +106,15 @@ class RoutinesProvider with ChangeNotifier {
   WeightUnit findWeightUnitById(int id) => _weightUnits.firstWhere((element) => element.id == id);
 
   List<RepetitionUnit> get repetitionUnits {
-    return [..._repetitionUnit];
+    return [..._repetitionUnits];
   }
 
   RepetitionUnit findRepetitionUnitById(int id) =>
-      _repetitionUnit.firstWhere((element) => element.id == id);
+      _repetitionUnits.firstWhere((element) => element.id == id);
 
   /// Return the default weight unit (reps)
   RepetitionUnit get defaultRepetitionUnit {
-    return _repetitionUnit.firstWhere((element) => element.id == REP_UNIT_REPETITIONS_ID);
+    return _repetitionUnits.firstWhere((element) => element.id == REP_UNIT_REPETITIONS_ID);
   }
 
   List<Routine> getPlans() {
@@ -189,7 +195,7 @@ class RoutinesProvider with ChangeNotifier {
         for (final setConfig in slot.setConfigs) {
           setConfig.exercise = (await _exercises.fetchAndSetExercise(setConfig.exerciseId))!;
 
-          setConfig.repsUnit = _repetitionUnit.firstWhere(
+          setConfig.repsUnit = _repetitionUnits.firstWhere(
             (e) => e.id == setConfig.repsUnitId,
           );
 
@@ -293,7 +299,7 @@ class RoutinesProvider with ChangeNotifier {
       for (final slot in day.slots) {
         for (final slotEntry in slot.entries) {
           slotEntry.exerciseObj = (await _exercises.fetchAndSetExercise(slotEntry.exerciseId))!;
-          slotEntry.repetitionUnitObj = _repetitionUnit.firstWhere(
+          slotEntry.repetitionUnitObj = _repetitionUnits.firstWhere(
             (e) => e.id == slotEntry.repetitionUnitId,
           );
           slotEntry.weightUnitObj = _weightUnits.firstWhere(
@@ -315,7 +321,7 @@ class RoutinesProvider with ChangeNotifier {
       try {
         final log = Log.fromJson(logEntry);
         log.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
-        log.repetitionUnit = _repetitionUnit.firstWhere((e) => e.id == log.weightUnitId);
+        log.repetitionUnit = _repetitionUnits.firstWhere((e) => e.id == log.weightUnitId);
         log.exerciseBase = (await _exercises.fetchAndSetExercise(log.exerciseId))!;
         routine.logs.add(log);
       } catch (e) {
@@ -392,7 +398,7 @@ class RoutinesProvider with ChangeNotifier {
     final response =
         await baseProvider.fetchPaginated(baseProvider.makeUrl(_repetitionUnitUrlPath));
     for (final unit in response) {
-      _repetitionUnit.add(RepetitionUnit.fromJson(unit));
+      _repetitionUnits.add(RepetitionUnit.fromJson(unit));
     }
   }
 
@@ -411,7 +417,7 @@ class RoutinesProvider with ChangeNotifier {
       final unitData = json.decode(prefs.getString(PREFS_WORKOUT_UNITS)!);
       if (DateTime.parse(unitData['expiresIn']).isAfter(DateTime.now())) {
         unitData['repetitionUnits'].forEach(
-          (e) => _repetitionUnit.add(RepetitionUnit.fromJson(e)),
+          (e) => _repetitionUnits.add(RepetitionUnit.fromJson(e)),
         );
         unitData['weightUnit'].forEach(
           (e) => _weightUnits.add(WeightUnit.fromJson(e)),
@@ -431,7 +437,7 @@ class RoutinesProvider with ChangeNotifier {
     final cacheData = {
       'date': DateTime.now().toIso8601String(),
       'expiresIn': DateTime.now().add(const Duration(days: DAYS_TO_CACHE)).toIso8601String(),
-      'repetitionUnits': _repetitionUnit.map((e) => e.toJson()).toList(),
+      'repetitionUnits': _repetitionUnits.map((e) => e.toJson()).toList(),
       'weightUnit': _weightUnits.map((e) => e.toJson()).toList(),
     };
     prefs.setString(PREFS_WORKOUT_UNITS, json.encode(cacheData));
@@ -691,7 +697,7 @@ class RoutinesProvider with ChangeNotifier {
 
     log.id = newLog.id;
     log.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
-    log.repetitionUnit = _repetitionUnit.firstWhere((e) => e.id == log.weightUnitId);
+    log.repetitionUnit = _repetitionUnits.firstWhere((e) => e.id == log.weightUnitId);
     log.exerciseBase = (await _exercises.fetchAndSetExercise(log.exerciseId))!;
 
     final plan = findById(log.routineId);

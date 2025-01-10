@@ -29,7 +29,6 @@ import 'package:wger/helpers/i18n.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/ui.dart';
 import 'package:wger/models/exercises/exercise.dart';
-import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/routine.dart';
@@ -48,10 +47,11 @@ import 'package:wger/widgets/routines/forms/rir.dart';
 import 'package:wger/widgets/routines/forms/weight_unit.dart';
 
 class GymMode extends StatefulWidget {
-  final DayData _dayData;
+  final DayData _dayDataGym;
+  final DayData _dayDataDisplay;
   late final TimeOfDay _start;
 
-  GymMode(this._dayData) {
+  GymMode(this._dayDataGym, this._dayDataDisplay) {
     _start = TimeOfDay.now();
   }
 
@@ -77,7 +77,7 @@ class _GymModeState extends State<GymMode> {
     super.initState();
     // Calculate amount of elements for progress indicator
 
-    for (final slot in widget._dayData.slots) {
+    for (final slot in widget._dayDataGym.slots) {
       _totalElements += slot.setConfigs.length;
     }
     // Calculate the pages for the navigation
@@ -85,7 +85,7 @@ class _GymModeState extends State<GymMode> {
     // This duplicates the code below in the getContent method, but it seems to
     // be the easiest way
     var currentPage = 1;
-    for (final slot in widget._dayData.slots) {
+    for (final slot in widget._dayDataGym.slots) {
       var firstPage = true;
       for (final config in slot.setConfigs) {
         final exercise = Provider.of<ExercisesProvider>(context, listen: false)
@@ -113,7 +113,7 @@ class _GymModeState extends State<GymMode> {
     var currentElement = 1;
     final List<Widget> out = [];
 
-    for (final slotData in widget._dayData.slots) {
+    for (final slotData in widget._dayDataGym.slots) {
       var firstPage = true;
       for (final config in slotData.setConfigs) {
         final ratioCompleted = currentElement / _totalElements;
@@ -134,10 +134,11 @@ class _GymModeState extends State<GymMode> {
           config,
           slotData,
           exercise,
-          workoutProvider.findById(widget._dayData.day!.routineId),
+          workoutProvider.findById(widget._dayDataGym.day!.routineId),
           ratioCompleted,
           _exercisePages,
         ));
+
         out.add(TimerWidget(_controller, ratioCompleted, _exercisePages));
         firstPage = false;
       }
@@ -151,11 +152,11 @@ class _GymModeState extends State<GymMode> {
     return PageView(
       controller: _controller,
       children: [
-        StartPage(_controller, widget._dayData.day!, _exercisePages),
+        StartPage(_controller, widget._dayDataDisplay, _exercisePages),
         ...getContent(),
         SessionPage(
           Provider.of<RoutinesProvider>(context, listen: false)
-              .findById(widget._dayData.day!.routineId),
+              .findById(widget._dayDataGym.day!.routineId),
           _controller,
           widget._start,
           _exercisePages,
@@ -167,10 +168,10 @@ class _GymModeState extends State<GymMode> {
 
 class StartPage extends StatelessWidget {
   final PageController _controller;
-  final Day _day;
+  final DayData _dayData;
   final Map<Exercise, int> _exercisePages;
 
-  const StartPage(this._controller, this._day, this._exercisePages);
+  const StartPage(this._controller, this._dayData, this._exercisePages);
 
   @override
   Widget build(BuildContext context) {
@@ -185,19 +186,19 @@ class StartPage extends StatelessWidget {
         Expanded(
           child: ListView(
             children: [
-              ..._day.slots.map((slot) {
+              ..._dayData.slots.map((slotData) {
                 return Column(
                   children: [
-                    ...slot.entries.map((entry) {
+                    ...slotData.setConfigs.map((entry) {
                       return Column(
                         children: [
                           Text(
-                            entry.exerciseObj
-                                .getExercise(Localizations.localeOf(context).languageCode)
+                            entry.exercise
+                                .getTranslation(Localizations.localeOf(context).languageCode)
                                 .name,
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
-                          const Text('TODO'),
+                          Text(entry.textRepr),
                           const SizedBox(height: 15),
                         ],
                       );
@@ -617,7 +618,7 @@ class _LogPageState extends State<LogPage> {
     return Column(
       children: [
         NavigationHeader(
-          widget._exercise.getExercise(Localizations.localeOf(context).languageCode).name,
+          widget._exercise.getTranslation(Localizations.localeOf(context).languageCode).name,
           widget._controller,
           exercisePages: widget._exercisePages,
         ),
@@ -667,7 +668,7 @@ class ExerciseOverview extends StatelessWidget {
     return Column(
       children: [
         NavigationHeader(
-          _exerciseBase.getExercise(Localizations.localeOf(context).languageCode).name,
+          _exerciseBase.getTranslation(Localizations.localeOf(context).languageCode).name,
           _controller,
           exercisePages: _exercisePages,
         ),
@@ -700,7 +701,7 @@ class ExerciseOverview extends StatelessWidget {
                 ),
               Html(
                 data: _exerciseBase
-                    .getExercise(Localizations.localeOf(context).languageCode)
+                    .getTranslation(Localizations.localeOf(context).languageCode)
                     .description,
               ),
             ],
@@ -1078,7 +1079,7 @@ class NavigationHeader extends StatelessWidget {
           children: [
             ...exercisePages.keys.map((e) {
               return ListTile(
-                title: Text(e.getExercise(Localizations.localeOf(context).languageCode).name),
+                title: Text(e.getTranslation(Localizations.localeOf(context).languageCode).name),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {
                   _controller.animateToPage(

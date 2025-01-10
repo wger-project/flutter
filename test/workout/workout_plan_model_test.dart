@@ -24,7 +24,7 @@ import '../../test_data/routines.dart';
 void main() {
   group('model tests', () {
     test('Test the filterLogsByExercise method', () {
-      final workout = getRoutine();
+      final workout = getTestRoutine();
 
       expect(workout.logs.length, 3);
       final logExercise1 = workout.filterLogsByExercise(getTestExercises()[0]);

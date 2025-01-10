@@ -44,7 +44,7 @@ class ProgressionRulesInfoBox extends StatelessWidget {
       children: [
         ListTile(
           title: Text(
-            exercise.getExercise(languageCode).name,
+            exercise.getTranslation(languageCode).name,
             style: Theme.of(context).textTheme.titleMedium,
           ),
         ),
@@ -148,7 +148,7 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
         children: [
           ListTile(
             title: Text(
-              widget.entry.exerciseObj.getExercise(languageCode).name,
+              widget.entry.exerciseObj.getTranslation(languageCode).name,
               style: Theme.of(context).textTheme.titleMedium,
               // textAlign: TextAlign.center,
             ),
@@ -500,8 +500,8 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
                         : Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              ...slot.entries
-                                  .map((e) => Text(e.exerciseObj.getExercise(languageCode).name)),
+                              ...slot.entries.map(
+                                  (e) => Text(e.exerciseObj.getTranslation(languageCode).name)),
                             ],
                           ),
                     trailing: Row(

@@ -52,7 +52,7 @@ void main() {
         home: TextButton(
           onPressed: () => key.currentState!.push(
             MaterialPageRoute<void>(
-              settings: RouteSettings(arguments: getRoutine()),
+              settings: RouteSettings(arguments: getTestRoutine()),
               builder: (_) => const RoutineScreen(),
             ),
           ),

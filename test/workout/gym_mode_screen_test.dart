@@ -42,15 +42,17 @@ void main() {
   final key = GlobalKey<NavigatorState>();
 
   final mockExerciseProvider = MockExercisesProvider();
-  final workoutPlan = getRoutine();
-  final bases = getTestExercises();
+  final testRoutine = getTestRoutine();
+  final testExercises = getTestExercises();
 
-  Widget createHomeScreen({locale = 'en'}) {
+  Widget renderGymMode({locale = 'en'}) {
     return ChangeNotifierProvider<RoutinesProvider>(
       create: (context) => RoutinesProvider(
         mockBaseProvider,
         mockExerciseProvider,
-        [workoutPlan],
+        [testRoutine],
+        repetitionUnits: testRepetitionUnits,
+        weightUnits: testWeightUnits,
       ),
       child: ChangeNotifierProvider<ExercisesProvider>(
         create: (context) => mockExerciseProvider,
@@ -62,7 +64,7 @@ void main() {
           home: TextButton(
             onPressed: () => key.currentState!.push(
               MaterialPageRoute<void>(
-                settings: RouteSettings(arguments: workoutPlan.days.first),
+                settings: const RouteSettings(arguments: GymModeArguments(1, 1, 1)),
                 builder: (_) => const GymModeScreen(),
               ),
             ),
@@ -75,10 +77,10 @@ void main() {
   }
 
   testWidgets('Test the widgets on the gym mode screen', (WidgetTester tester) async {
-    when(mockExerciseProvider.findExerciseById(1)).thenReturn(bases[0]);
-    when(mockExerciseProvider.findExerciseById(6)).thenReturn(bases[5]);
+    when(mockExerciseProvider.findExerciseById(1)).thenReturn(testExercises[0]);
+    when(mockExerciseProvider.findExerciseById(6)).thenReturn(testExercises[5]);
 
-    await tester.pumpWidget(createHomeScreen());
+    await tester.pumpWidget(renderGymMode());
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();
 
@@ -174,6 +176,7 @@ void main() {
     //
     // Side raises - exercise overview page
     //
+    debugDumpApp();
     expect(find.text('Side raises'), findsOneWidget);
     expect(find.byType(ExerciseOverview), findsOneWidget);
     await tester.tap(find.byIcon(Icons.chevron_right));

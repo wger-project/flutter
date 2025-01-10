@@ -46,7 +46,7 @@ class SetConfigDataWidget extends StatelessWidget {
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: Text(setConfigData.exercise.getExercise(languageCode).name),
+                title: Text(setConfigData.exercise.getTranslation(languageCode).name),
                 content: ExerciseDetail(setConfigData.exercise),
                 actions: [
                   TextButton(
@@ -63,7 +63,7 @@ class SetConfigDataWidget extends StatelessWidget {
           );
         },
       ),
-      title: Text(setConfigData.exercise.getExercise(languageCode).name),
+      title: Text(setConfigData.exercise.getTranslation(languageCode).name),
       subtitle: Text(setConfigData.textRepr),
     );
   }

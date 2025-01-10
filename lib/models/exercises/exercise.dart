@@ -173,7 +173,7 @@ class Exercise extends Equatable {
     variationId = baseData.variationId;
   }
 
-  /// Returns exercises for the given language
+  /// Returns translation for the given language
   ///
   /// If no translation is found, English will be returned
   ///
@@ -181,7 +181,7 @@ class Exercise extends Equatable {
   ///       translation in English. This is something that should never happen,
   ///       but we can't make sure that no local installation hasn't deleted
   ///       the entry in English.
-  Translation getExercise(String language) {
+  Translation getTranslation(String language) {
     // If the language is in the form en-US, take the language code only
     final languageCode = language.split('-')[0];
 

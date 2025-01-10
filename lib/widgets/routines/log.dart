@@ -113,7 +113,7 @@ class _DayLogWidgetState extends State<DayLogWidget> {
           ),
           if (widget._session != null) const Text('Session data here'),
           ...widget._exerciseData.keys.map((base) {
-            final exercise = base.getExercise(Localizations.localeOf(context).languageCode);
+            final exercise = base.getTranslation(Localizations.localeOf(context).languageCode);
             return Column(
               children: [
                 if (widget._exerciseData[base]!.isNotEmpty)

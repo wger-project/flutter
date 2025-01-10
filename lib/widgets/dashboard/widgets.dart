@@ -439,7 +439,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(s.exercise
-                                  .getExercise(Localizations.localeOf(context).languageCode)
+                                  .getTranslation(Localizations.localeOf(context).languageCode)
                                   .name),
                               const SizedBox(width: 10),
                               MutedText(s.textRepr),

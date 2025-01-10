@@ -40,7 +40,7 @@ class Step2Variations extends StatelessWidget {
                               ...exerciseProvider.exerciseBasesByVariation[key]!.map(
                                 (base) => Text(
                                   base
-                                      .getExercise(
+                                      .getTranslation(
                                         Localizations.localeOf(context).languageCode,
                                       )
                                       .name,
@@ -72,7 +72,7 @@ class Step2Variations extends StatelessWidget {
                                 children: [
                                   Text(
                                     base
-                                        .getExercise(
+                                        .getTranslation(
                                           Localizations.localeOf(context).languageCode,
                                         )
                                         .name,

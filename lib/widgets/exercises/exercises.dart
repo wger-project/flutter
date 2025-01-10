@@ -42,7 +42,7 @@ class ExerciseDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _exercise = _exerciseBase.getExercise(Localizations.localeOf(context).languageCode);
+    _exercise = _exerciseBase.getTranslation(Localizations.localeOf(context).languageCode);
 
     return SingleChildScrollView(
       child: Column(

@@ -102,7 +102,7 @@ class _ExerciseAutocompleterState extends State<ExerciseAutocompleter> {
               ),
             ),
             title: Text(
-              exerciseSuggestion.getExercise(Localizations.localeOf(context).languageCode).name,
+              exerciseSuggestion.getTranslation(Localizations.localeOf(context).languageCode).name,
             ),
             subtitle: Text(
               '${exerciseSuggestion.category!.name} / ${exerciseSuggestion.equipment.map((e) => e.name).join(', ')}',
