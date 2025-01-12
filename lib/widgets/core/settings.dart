@@ -20,8 +20,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/user.dart';
+import 'package:wger/theme/theme.dart';
+
 
 class SettingsPage extends StatelessWidget {
   static String routeName = '/SettingsPage';
@@ -32,6 +36,7 @@ class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final exerciseProvider = Provider.of<ExercisesProvider>(context, listen: false);
     final nutritionProvider = Provider.of<NutritionPlansProvider>(context, listen: false);
+    final switchProvider = Provider.of<AuthProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -73,6 +78,18 @@ class SettingsPage extends StatelessWidget {
                   ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 }
               },
+            ),
+          ),
+          ListTile(
+            title: Text('Dark Mode'),
+            trailing: Switch(
+              value: switchProvider.isSwitched, // Use the state from the provider
+              onChanged: (value) {
+                switchProvider.toggleSwitch(value); // Update the state when the switch is toggled
+              },
+              activeColor:  wgerPrimaryButtonColor, // Custom color when switch is on
+              inactiveThumbColor: wgerSecondaryColorLight, // Custom color when switch is off
+              inactiveTrackColor: wgerSecondaryColor, // Color of the track when the switch is off
             ),
           ),
         ],

@@ -71,6 +71,7 @@ class MyApp extends StatelessWidget {
   const MyApp(); // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (ctx) => AuthProvider()),
@@ -140,7 +141,7 @@ class MyApp extends StatelessWidget {
           darkTheme: wgerDarkTheme,
           highContrastTheme: wgerLightThemeHc,
           highContrastDarkTheme: wgerDarkThemeHc,
-          themeMode: ThemeMode.system,
+          themeMode: auth.themeMode, // Change theme based on provider's themeMode
           home: auth.isAuth
               ? const HomeTabsScreen()
               : FutureBuilder(

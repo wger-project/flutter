@@ -22,6 +22,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:package_info_plus/package_info_plus.dart';
@@ -53,13 +54,41 @@ class AuthProvider with ChangeNotifier {
 
   AuthProvider([http.Client? client, bool? checkMetadata]) {
     this.client = client ?? http.Client();
+    _loadThemeMode();
   }
+
+  bool _isSwitched = false;
+  ThemeMode _themeMode = ThemeMode.light;
+
+  bool get isSwitched => _isSwitched;
+  ThemeMode get themeMode => _themeMode;
 
   /// flag to indicate that the application has successfully loaded all initial data
   bool dataInit = false;
 
   bool get isAuth {
     return token != null;
+  }
+
+  // Load theme mode from SharedPreferences
+  Future<void> _loadThemeMode() async {
+    final prefs = await SharedPreferences.getInstance();
+    final isDarkMode = prefs.getBool('isDarkMode') ?? false; // Default to false (light mode)
+    _themeMode = isDarkMode ? ThemeMode.dark : ThemeMode.light;
+    _isSwitched = isDarkMode;
+    notifyListeners(); // Notify listeners when theme is loaded
+  }
+
+  //  Change mode on switch button click
+  void toggleSwitch(bool value) async {
+    _isSwitched = value;
+    _themeMode = value ? ThemeMode.dark : ThemeMode.light;
+
+    // Save to SharedPreferences
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isDarkMode', _isSwitched);
+
+    notifyListeners(); // Notify listeners when the theme is updated
   }
 
   /// Server application version

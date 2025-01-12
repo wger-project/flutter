@@ -29,6 +29,7 @@ class UserProvider with ChangeNotifier {
   static const PROFILE_URL = 'userprofile';
   static const VERIFY_EMAIL = 'verify-email';
 
+
   Profile? profile;
 
   /// Clear the current profile
