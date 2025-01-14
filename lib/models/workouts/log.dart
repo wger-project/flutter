@@ -45,17 +45,17 @@ class Log {
   @JsonKey(required: false, name: 'rir_target')
   String? rirTarget;
 
-  @JsonKey(required: true)
-  late int reps;
+  @JsonKey(required: true, name: 'repetitions')
+  late int repetitions;
 
-  @JsonKey(required: true, name: 'reps_target')
-  late int? repsTarget;
+  @JsonKey(required: true, name: 'repetitions_target')
+  late int? repetitionsTarget;
 
-  @JsonKey(required: true, name: 'repetition_unit')
-  late int repetitionUnitId;
+  @JsonKey(required: true, name: 'repetitions_unit')
+  late int repetitionsUnitId;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  late RepetitionUnit repetitionUnitObj;
+  late RepetitionUnit repetitionsUnitObj;
 
   @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
   late num weight;
@@ -79,9 +79,9 @@ class Log {
     this.id,
     required this.exerciseId,
     required this.routineId,
-    required this.reps,
-    this.repsTarget,
-    required this.repetitionUnitId,
+    required this.repetitions,
+    this.repetitionsTarget,
+    required this.repetitionsUnitId,
     required this.rir,
     this.rirTarget,
     required this.weight,
@@ -108,8 +108,8 @@ class Log {
   }
 
   set repetitionUnit(RepetitionUnit repetitionUnit) {
-    repetitionUnitObj = repetitionUnit;
-    repetitionUnitId = repetitionUnit.id;
+    repetitionsUnitObj = repetitionUnit;
+    repetitionsUnitId = repetitionUnit.id;
   }
 
   void setRir(String rir) {
@@ -118,7 +118,8 @@ class Log {
 
   /// Returns the text representation for a single setting, used in the gym mode
   String get singleLogRepTextNoNl {
-    return repText(reps, repetitionUnitObj, weight, weightUnitObj, rir).replaceAll('\n', '');
+    return repText(repetitions, repetitionsUnitObj, weight, weightUnitObj, rir)
+        .replaceAll('\n', '');
   }
 
   /// Override the equals operator
@@ -132,20 +133,21 @@ class Log {
         exerciseId == o.exerciseId &&
         weight == o.weight &&
         weightUnitId == o.weightUnitId &&
-        reps == o.reps &&
-        repetitionUnitId == o.repetitionUnitId &&
+        repetitions == o.repetitions &&
+        repetitionsUnitId == o.repetitionsUnitId &&
         rir == o.rir;
   }
 
   @override
   //ignore: avoid_equals_and_hash_code_on_mutable_classes
-  int get hashCode => Object.hash(exerciseId, weight, weightUnitId, reps, repetitionUnitId, rir);
+  int get hashCode =>
+      Object.hash(exerciseId, weight, weightUnitId, repetitions, repetitionsUnitId, rir);
 
   //@override
   //int get hashCode => super.hashCode;
 
   @override
   String toString() {
-    return 'Log(id: $id, ex: $exerciseId, weightU: $weightUnitId, w: $weight, repU: $repetitionUnitId, rep: $reps, rir: $rir)';
+    return 'Log(id: $id, ex: $exerciseId, weightU: $weightUnitId, w: $weight, repU: $repetitionsUnitId, rep: $repetitions, rir: $rir)';
   }
 }

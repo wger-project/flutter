@@ -47,7 +47,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
     ..weight = 10
     ..rir = '1.5'
     ..date = DateTime(2021, 5, 1)
-    ..reps = 10
+    ..repetitions = 10
     ..routineId = 1;
   log1.exerciseBase = testExercises[0];
   log1.weightUnit = testWeightUnit1;
@@ -58,7 +58,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
     ..weight = 10
     ..rir = '2'
     ..date = DateTime(2021, 5, 1)
-    ..reps = 12
+    ..repetitions = 12
     ..routineId = 1;
   log2.exerciseBase = testExercises[0];
   log2.weightUnit = testWeightUnit1;
@@ -69,7 +69,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
     ..weight = 50
     ..rir = ''
     ..date = DateTime(2021, 5, 2)
-    ..reps = 8
+    ..repetitions = 8
     ..routineId = 1;
   log3.exerciseBase = testExercises[1];
   log3.weightUnit = testWeightUnit1;

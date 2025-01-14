@@ -313,7 +313,7 @@ class _LogPageState extends State<LogPage> {
             focusNode: focusNode,
             onFieldSubmitted: (_) {},
             onSaved: (newValue) {
-              widget._log.reps = int.parse(newValue!);
+              widget._log.repetitions = int.parse(newValue!);
               focusNode.unfocus();
             },
             validator: (value) {
@@ -431,7 +431,7 @@ class _LogPageState extends State<LogPage> {
                 const SizedBox(width: 8),
                 Flexible(
                     child: RepetitionUnitInputWidget(
-                  widget._log.repetitionUnitId,
+                  widget._log.repetitionsUnitId,
                   onChanged: (v) => {},
                 )),
               ],
@@ -530,12 +530,12 @@ class _LogPageState extends State<LogPage> {
             onTap: () {
               setState(() {
                 // Text field
-                _repsController.text = log.reps.toString();
+                _repsController.text = log.repetitions.toString();
                 _weightController.text = log.weight.toString();
 
                 // Drop downs
                 widget._log.rir = log.rir;
-                widget._log.repetitionUnit = log.repetitionUnitObj;
+                widget._log.repetitionUnit = log.repetitionsUnitObj;
                 widget._log.weightUnit = log.weightUnitObj;
 
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();

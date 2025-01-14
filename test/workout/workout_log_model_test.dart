@@ -29,9 +29,9 @@ void main() {
         id: 123,
         routineId: 100,
         exerciseId: 1,
-        reps: 10,
+        repetitions: 10,
         rir: '1.5',
-        repetitionUnitId: 1,
+        repetitionsUnitId: 1,
         weight: 20,
         weightUnitId: 1,
         date: DateTime(2010, 10, 1),
@@ -40,9 +40,9 @@ void main() {
         id: 9,
         routineId: 42,
         exerciseId: 1,
-        reps: 10,
+        repetitions: 10,
         rir: '1.5',
-        repetitionUnitId: 1,
+        repetitionsUnitId: 1,
         weight: 20,
         weightUnitId: 1,
         date: DateTime(2063, 4, 5),
@@ -69,12 +69,12 @@ void main() {
     });
 
     test('Test different reps', () {
-      log1.reps = 99;
+      log1.repetitions = 99;
       expect(log1, isNot(log2));
     });
 
     test('Test different rep units', () {
-      log1.repetitionUnitId = 44;
+      log1.repetitionsUnitId = 44;
       expect(log1, isNot(log2));
     });
   });
