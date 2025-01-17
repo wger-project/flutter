@@ -81,7 +81,7 @@ class SettingsPage extends StatelessWidget {
             ),
           ),
           ListTile(
-            title: Text('Dark Mode'),
+            title: Text(AppLocalizations.of(context).darkMode),
             trailing: Switch(
               value: switchProvider.isSwitched, // Use the state from the provider
               onChanged: (value) {

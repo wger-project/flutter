@@ -141,7 +141,7 @@ class MyApp extends StatelessWidget {
           darkTheme: wgerDarkTheme,
           highContrastTheme: wgerLightThemeHc,
           highContrastDarkTheme: wgerDarkThemeHc,
-          themeMode: auth.themeMode, // Change theme based on provider's themeMode
+          themeMode: ThemeMode.system,
           home: auth.isAuth
               ? const HomeTabsScreen()
               : FutureBuilder(

@@ -57,10 +57,10 @@ class AuthProvider with ChangeNotifier {
     _loadThemeMode();
   }
 
-  bool _isSwitched = false;
+  bool _isLightTheme = false;
   ThemeMode _themeMode = ThemeMode.light;
 
-  bool get isSwitched => _isSwitched;
+  bool get isSwitched => _isLightTheme;
   ThemeMode get themeMode => _themeMode;
 
   /// flag to indicate that the application has successfully loaded all initial data
@@ -75,18 +75,18 @@ class AuthProvider with ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     final isDarkMode = prefs.getBool('isDarkMode') ?? false; // Default to false (light mode)
     _themeMode = isDarkMode ? ThemeMode.dark : ThemeMode.light;
-    _isSwitched = isDarkMode;
+    _isLightTheme = isDarkMode;
     notifyListeners(); // Notify listeners when theme is loaded
   }
 
   //  Change mode on switch button click
   void toggleSwitch(bool value) async {
-    _isSwitched = value;
+    _isLightTheme = value;
     _themeMode = value ? ThemeMode.dark : ThemeMode.light;
 
     // Save to SharedPreferences
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('isDarkMode', _isSwitched);
+    await prefs.setBool('isDarkMode', _isLightTheme);
 
     notifyListeners(); // Notify listeners when the theme is updated
   }
