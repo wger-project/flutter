@@ -912,6 +912,9 @@
   "indicatorAvg": "avg",
   "@indicatorAvg": {
     "description": "added for localization of Class Indicator's field text"
+  },
+  "darkMode": "Dark Mode",
+  "@darkMode": {
+    "description": "added for localization for field text"
   }
-  "dark_mode":"Dark Mode",
 }
