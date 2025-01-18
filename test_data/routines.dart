@@ -298,6 +298,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
     id: 1,
     created: DateTime(2021, 01, 01),
     name: '3 day workout',
+    description: 'This is a 3 day workout and this text is important',
     start: DateTime(2024, 11, 01),
     end: DateTime(2024, 12, 01),
     days: [dayChestShoulders, dayLegs],
