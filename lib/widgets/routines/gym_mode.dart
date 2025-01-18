@@ -22,7 +22,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart'as provider;
+import 'package:provider/provider.dart' as provider;
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/gym_mode.dart';
@@ -61,7 +61,6 @@ class GymMode extends ConsumerStatefulWidget {
   ConsumerState<GymMode> createState() => _GymModeState();
 }
 
-
 class _GymModeState extends ConsumerState<GymMode> {
   var _totalElements = 1;
 
@@ -73,7 +72,6 @@ class _GymModeState extends ConsumerState<GymMode> {
   void dispose() {
     _controller.dispose();
     super.dispose();
-
   }
 
   @override
@@ -83,6 +81,7 @@ class _GymModeState extends ConsumerState<GymMode> {
     _controller = PageController(initialPage: initialPage);
     Future.microtask(() => _calculatePages());
   }
+
   void _calculatePages() {
     for (final slot in widget._dayDataGym.slots) {
       _totalElements += slot.setConfigs.length;
@@ -148,6 +147,7 @@ class _GymModeState extends ConsumerState<GymMode> {
 
     return out;
   }
+
   @override
   Widget build(BuildContext context) {
     return PageView(

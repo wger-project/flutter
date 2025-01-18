@@ -24,7 +24,7 @@ import 'package:wger/models/workouts/weight_unit.dart';
 
 /// Returns the text representation for a single setting, used in the gym mode
 String repText(
-  int? reps,
+  num? reps,
   RepetitionUnit repetitionUnitObj,
   num? weight,
   WeightUnit weightUnitObj,

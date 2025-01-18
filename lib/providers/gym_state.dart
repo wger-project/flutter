@@ -4,7 +4,8 @@ import 'package:wger/models/exercises/exercise.dart';
 
 const GYM_PAGE_KEY = 'gym_current_page';
 
-final StateNotifierProvider<GymStateNotifier, GymState> gymStateProvider = StateNotifierProvider<GymStateNotifier, GymState>((ref) {
+final StateNotifierProvider<GymStateNotifier, GymState> gymStateProvider =
+    StateNotifierProvider<GymStateNotifier, GymState>((ref) {
   return GymStateNotifier();
 });
 
@@ -41,7 +42,7 @@ class GymStateNotifier extends StateNotifier<GymState> {
 
   Future<void> _loadSavedState() async {
     final SharedPreferences prefs = await _prefs;
-    final  int savedPage = prefs.getInt(GYM_PAGE_KEY) ?? 0;
+    final int savedPage = prefs.getInt(GYM_PAGE_KEY) ?? 0;
     state = state.copyWith(currentPage: savedPage);
   }
 
@@ -54,6 +55,7 @@ class GymStateNotifier extends StateNotifier<GymState> {
   void toggleExercisePages() {
     state = state.copyWith(showExercisePages: !state.showExercisePages);
   }
+
   void setExercisePages(Map<Exercise, int> exercisePages) {
     state = state.copyWith(exercisePages: exercisePages);
   }

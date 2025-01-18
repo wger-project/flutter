@@ -45,11 +45,11 @@ class Log {
   @JsonKey(required: false, name: 'rir_target')
   String? rirTarget;
 
-  @JsonKey(required: true, name: 'repetitions')
-  late int repetitions;
+  @JsonKey(required: true, fromJson: stringToNum, name: 'repetitions')
+  late num? repetitions;
 
-  @JsonKey(required: true, name: 'repetitions_target')
-  late int? repetitionsTarget;
+  @JsonKey(required: true, fromJson: stringToNum, name: 'repetitions_target')
+  late num? repetitionsTarget;
 
   @JsonKey(required: true, name: 'repetitions_unit')
   late int repetitionsUnitId;
