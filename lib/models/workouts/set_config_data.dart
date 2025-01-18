@@ -63,20 +63,20 @@ class SetConfigData {
   @JsonKey(required: true, name: 'weight_rounding', fromJson: stringToNumNull)
   late num? weightRounding;
 
-  @JsonKey(required: true, fromJson: stringToNumNull)
-  late num? reps;
+  @JsonKey(required: true, fromJson: stringToNumNull, name: 'reps')
+  late num? repetitions;
 
   @JsonKey(required: true, name: 'max_reps', fromJson: stringToNumNull)
-  late num? maxReps;
+  late num? maxRepetitions;
 
   @JsonKey(required: true, name: 'reps_unit')
-  late int? repsUnitId;
+  late int? repetitionsUnitId;
 
   @JsonKey(includeToJson: false, includeFromJson: false)
-  late RepetitionUnit repsUnit;
+  late RepetitionUnit repetitionsUnit;
 
   @JsonKey(required: true, name: 'reps_rounding', fromJson: stringToNumNull)
-  late num? repsRounding;
+  late num? repetitionsRounding;
 
   @JsonKey(required: true)
   late String? rir;
@@ -106,10 +106,10 @@ class SetConfigData {
     this.maxWeight,
     this.weightUnitId = WEIGHT_UNIT_KG,
     this.weightRounding = 1.25,
-    required this.reps,
-    this.maxReps,
-    this.repsUnitId = REP_UNIT_REPETITIONS_ID,
-    this.repsRounding = 1,
+    required this.repetitions,
+    this.maxRepetitions,
+    this.repetitionsUnitId = REP_UNIT_REPETITIONS_ID,
+    this.repetitionsRounding = 1,
     required this.rir,
     this.maxRir,
     required this.rpe,
@@ -128,7 +128,7 @@ class SetConfigData {
       this.weightUnit = weightUnit;
     }
     if (repsUnit != null) {
-      this.repsUnit = repsUnit;
+      this.repetitionsUnit = repsUnit;
     }
   }
 

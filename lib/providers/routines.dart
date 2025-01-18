@@ -195,8 +195,8 @@ class RoutinesProvider with ChangeNotifier {
         for (final setConfig in slot.setConfigs) {
           setConfig.exercise = (await _exercises.fetchAndSetExercise(setConfig.exerciseId))!;
 
-          setConfig.repsUnit = _repetitionUnits.firstWhere(
-            (e) => e.id == setConfig.repsUnitId,
+          setConfig.repetitionsUnit = _repetitionUnits.firstWhere(
+            (e) => e.id == setConfig.repetitionsUnitId,
           );
 
           setConfig.weightUnit = _weightUnits.firstWhere(

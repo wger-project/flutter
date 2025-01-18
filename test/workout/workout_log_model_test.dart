@@ -27,6 +27,8 @@ void main() {
     setUp(() {
       log1 = Log(
         id: 123,
+        iteration: 1,
+        slotEntryId: 100,
         routineId: 100,
         exerciseId: 1,
         repetitions: 10,
@@ -38,6 +40,8 @@ void main() {
       );
       log2 = Log(
         id: 9,
+        iteration: 2,
+        slotEntryId: 42,
         routineId: 42,
         exerciseId: 1,
         repetitions: 10,

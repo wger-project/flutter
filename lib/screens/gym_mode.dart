@@ -49,7 +49,7 @@ class GymModeScreen extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: Consumer<RoutinesProvider>(
-          builder: (context, value, child) => GymMode(dayDataGym, dayDataDisplay),
+          builder: (context, value, child) => GymMode(dayDataGym, dayDataDisplay, args.iteration),
         ),
       ),
     );

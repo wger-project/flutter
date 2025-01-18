@@ -44,6 +44,8 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
 
   final log1 = Log.empty()
     ..id = 1
+    ..iteration = 2
+    ..slotEntryId = 3
     ..weight = 10
     ..rir = '1.5'
     ..date = DateTime(2021, 5, 1)
@@ -55,6 +57,8 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
 
   final log2 = Log.empty()
     ..id = 2
+    ..iteration = 4
+    ..slotEntryId = 1
     ..weight = 10
     ..rir = '2'
     ..date = DateTime(2021, 5, 1)
@@ -66,6 +70,8 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
 
   final log3 = Log.empty()
     ..id = 3
+    ..iteration = 5
+    ..slotEntryId = 1
     ..weight = 50
     ..rir = ''
     ..date = DateTime(2021, 5, 2)
@@ -209,7 +215,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
               exercise: testExercises[0],
               slotEntryId: 1,
               nrOfSets: 4,
-              reps: 3,
+              repetitions: 3,
               repsUnit: testRepetitionUnit1,
               weight: 100,
               weightUnit: testWeightUnit1,
@@ -230,7 +236,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
               exercise: testExercises[5],
               slotEntryId: 1,
               nrOfSets: 4,
-              reps: 12,
+              repetitions: 12,
               repsUnit: testRepetitionUnit1,
               weight: 10,
               weightUnit: testWeightUnit1,
@@ -259,7 +265,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
               exercise: testExercises[4],
               slotEntryId: 1,
               nrOfSets: 4,
-              reps: 3,
+              repetitions: 3,
               repsUnit: testRepetitionUnit1,
               weight: 100,
               weightUnit: testWeightUnit1,
@@ -315,7 +321,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
                 exercise: testExercises[4],
                 slotEntryId: 1,
                 nrOfSets: 5,
-                reps: 8,
+                repetitions: 8,
                 repsUnit: testRepetitionUnit1,
                 weight: 105,
                 weightUnit: testWeightUnit1,
@@ -346,7 +352,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
                 exercise: testExercises[0],
                 slotEntryId: 1,
                 nrOfSets: 1,
-                reps: 3,
+                repetitions: 3,
                 repsUnit: testRepetitionUnit1,
                 weight: 100,
                 weightUnit: testWeightUnit1,
@@ -360,7 +366,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
                 exercise: testExercises[0],
                 slotEntryId: 1,
                 nrOfSets: 1,
-                reps: 3,
+                repetitions: 3,
                 repsUnit: testRepetitionUnit1,
                 weight: 100,
                 weightUnit: testWeightUnit1,
@@ -374,7 +380,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
                 exercise: testExercises[0],
                 slotEntryId: 1,
                 nrOfSets: 1,
-                reps: 3,
+                repetitions: 3,
                 repsUnit: testRepetitionUnit1,
                 weight: 100,
                 weightUnit: testWeightUnit1,
@@ -395,7 +401,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
                 exercise: testExercises[5],
                 slotEntryId: 1,
                 nrOfSets: 1,
-                reps: 12,
+                repetitions: 12,
                 repsUnit: testRepetitionUnit1,
                 weight: 10,
                 weightUnit: testWeightUnit1,
@@ -409,7 +415,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
                 exercise: testExercises[5],
                 slotEntryId: 1,
                 nrOfSets: 1,
-                reps: 12,
+                repetitions: 12,
                 repsUnit: testRepetitionUnit1,
                 weight: 10,
                 weightUnit: testWeightUnit1,
@@ -423,7 +429,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
                 exercise: testExercises[5],
                 slotEntryId: 1,
                 nrOfSets: 1,
-                reps: 12,
+                repetitions: 12,
                 repsUnit: testRepetitionUnit1,
                 weight: 10,
                 weightUnit: testWeightUnit1,
@@ -452,7 +458,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
                 exercise: testExercises[4],
                 slotEntryId: 1,
                 nrOfSets: 1,
-                reps: 3,
+                repetitions: 3,
                 repsUnit: testRepetitionUnit1,
                 weight: 100,
                 weightUnit: testWeightUnit1,
@@ -466,7 +472,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
                 exercise: testExercises[4],
                 slotEntryId: 1,
                 nrOfSets: 1,
-                reps: 3,
+                repetitions: 3,
                 repsUnit: testRepetitionUnit1,
                 weight: 100,
                 weightUnit: testWeightUnit1,
@@ -480,7 +486,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
                 exercise: testExercises[4],
                 slotEntryId: 1,
                 nrOfSets: 1,
-                reps: 3,
+                repetitions: 3,
                 repsUnit: testRepetitionUnit1,
                 weight: 100,
                 weightUnit: testWeightUnit1,

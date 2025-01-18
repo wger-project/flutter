@@ -51,9 +51,10 @@ import 'package:wger/widgets/routines/forms/weight_unit.dart';
 class GymMode extends ConsumerStatefulWidget {
   final DayData _dayDataGym;
   final DayData _dayDataDisplay;
+  final int _iteration;
   late final TimeOfDay _start;
 
-  GymMode(this._dayDataGym, this._dayDataDisplay) {
+  GymMode(this._dayDataGym, this._dayDataDisplay, this._iteration) {
     _start = TimeOfDay.now();
   }
 
@@ -139,6 +140,7 @@ class _GymModeState extends ConsumerState<GymMode> {
           workoutProvider.findById(widget._dayDataGym.day!.routineId),
           ratioCompleted,
           state.exercisePages,
+          widget._iteration,
         ));
         out.add(TimerWidget(_controller, ratioCompleted, state.exercisePages));
         firstPage = false;
@@ -235,6 +237,7 @@ class LogPage extends StatefulWidget {
   final double _ratioCompleted;
   final Map<Exercise, int> _exercisePages;
   final Log _log = Log.empty();
+  final int _iteration;
 
   LogPage(
     this._controller,
@@ -244,13 +247,19 @@ class LogPage extends StatefulWidget {
     this._workoutPlan,
     this._ratioCompleted,
     this._exercisePages,
+    this._iteration,
   ) {
     _log.date = DateTime.now();
     _log.routineId = _workoutPlan.id!;
     _log.exerciseBase = _exercise;
     _log.weightUnit = _configData.weightUnit;
-    _log.repetitionUnit = _configData.repsUnit;
+    _log.weightTarget = _configData.weight;
+    _log.repetitionUnit = _configData.repetitionsUnit;
+    _log.repetitionsTarget = _configData.repetitions;
     _log.rir = _configData.rir;
+    _log.rirTarget = _configData.rir;
+    _log.iteration = _iteration;
+    _log.slotEntryId = _configData.slotEntryId;
   }
 
   @override
@@ -273,8 +282,8 @@ class _LogPageState extends State<LogPage> {
 
     focusNode = FocusNode();
 
-    if (widget._configData.reps != null) {
-      _repsController.text = widget._configData.reps!.toString();
+    if (widget._configData.repetitions != null) {
+      _repsController.text = widget._configData.repetitions!.toString();
     }
 
     if (widget._configData.weight != null) {
@@ -432,10 +441,11 @@ class _LogPageState extends State<LogPage> {
                 Flexible(child: getRepsWidget()),
                 const SizedBox(width: 8),
                 Flexible(
-                    child: RepetitionUnitInputWidget(
-                  widget._log.repetitionsUnitId,
-                  onChanged: (v) => {},
-                )),
+                  child: RepetitionUnitInputWidget(
+                    widget._log.repetitionsUnitId,
+                    onChanged: (v) => {},
+                  ),
+                ),
               ],
             ),
           if (_detailed)
@@ -445,7 +455,8 @@ class _LogPageState extends State<LogPage> {
                 Flexible(child: getWeightWidget()),
                 const SizedBox(width: 8),
                 Flexible(
-                    child: WeightUnitInputWidget(widget._log.weightUnitId, onChanged: (v) => {})),
+                  child: WeightUnitInputWidget(widget._log.weightUnitId, onChanged: (v) => {}),
+                ),
               ],
             ),
           if (_detailed)
@@ -463,52 +474,52 @@ class _LogPageState extends State<LogPage> {
             },
           ),
           ElevatedButton(
-              onPressed: _isSaving
-                  ? null
-                  : () async {
-                      // Validate and save the current values to the weightEntry
-                      final isValid = _form.currentState!.validate();
-                      if (!isValid) {
-                        return;
-                      }
-                      _isSaving = true;
-                      _form.currentState!.save();
+            onPressed: _isSaving
+                ? null
+                : () async {
+                    // Validate and save the current values to the weightEntry
+                    final isValid = _form.currentState!.validate();
+                    if (!isValid) {
+                      return;
+                    }
+                    _isSaving = true;
+                    _form.currentState!.save();
 
-                      // Save the entry on the server
-                      try {
-                        await provider.Provider.of<RoutinesProvider>(
-                          context,
-                          listen: false,
-                        ).addLog(widget._log);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            duration: const Duration(seconds: 2), // default is 4
-                            content: Text(
-                              AppLocalizations.of(context).successfullySaved,
-                              textAlign: TextAlign.center,
-                            ),
+                    // Save the entry on the server
+                    try {
+                      await provider.Provider.of<RoutinesProvider>(
+                        context,
+                        listen: false,
+                      ).addLog(widget._log);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          duration: const Duration(seconds: 2), // default is 4
+                          content: Text(
+                            AppLocalizations.of(context).successfullySaved,
+                            textAlign: TextAlign.center,
                           ),
-                        );
-                        widget._controller.nextPage(
-                          duration: DEFAULT_ANIMATION_DURATION,
-                          curve: DEFAULT_ANIMATION_CURVE,
-                        );
-                        _isSaving = false;
-                      } on WgerHttpException catch (error) {
-                        if (mounted) {
-                          showHttpExceptionErrorDialog(error, context);
-                        }
-                        _isSaving = false;
-                      } catch (error) {
-                        if (mounted) {
-                          showErrorDialog(error, context);
-                        }
-                        _isSaving = false;
+                        ),
+                      );
+                      widget._controller.nextPage(
+                        duration: DEFAULT_ANIMATION_DURATION,
+                        curve: DEFAULT_ANIMATION_CURVE,
+                      );
+                      _isSaving = false;
+                    } on WgerHttpException catch (error) {
+                      if (mounted) {
+                        showHttpExceptionErrorDialog(error, context);
                       }
-                    },
-              child: _isSaving
-                  ? const FormProgressIndicator()
-                  : Text(AppLocalizations.of(context).save)),
+                      _isSaving = false;
+                    } catch (error) {
+                      if (mounted) {
+                        showErrorDialog(error, context);
+                      }
+                      _isSaving = false;
+                    }
+                  },
+            child:
+                _isSaving ? const FormProgressIndicator() : Text(AppLocalizations.of(context).save),
+          ),
         ],
       ),
     );

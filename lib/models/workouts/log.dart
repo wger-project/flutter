@@ -39,6 +39,12 @@ class Log {
   @JsonKey(required: true, name: 'routine')
   late int routineId;
 
+  @JsonKey(required: true)
+  late int iteration;
+
+  @JsonKey(required: true, name: 'slot_entry')
+  late int slotEntryId;
+
   @JsonKey(required: false)
   String? rir;
 
@@ -72,12 +78,11 @@ class Log {
   @JsonKey(required: true, toJson: dateToYYYYMMDD)
   late DateTime date;
 
-  //@JsonKey(required: true)
-  //String comment;
-
   Log({
     this.id,
     required this.exerciseId,
+    required this.iteration,
+    required this.slotEntryId,
     required this.routineId,
     required this.repetitions,
     this.repetitionsTarget,
