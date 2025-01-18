@@ -13,22 +13,26 @@ class GymState {
   final Map<Exercise, int> exercisePages;
   final bool showExercisePages;
   final int currentPage;
+  final int? dayId;
 
-  GymState({
+  const GymState({
     this.exercisePages = const {},
     this.showExercisePages = true,
     this.currentPage = 0,
+    this.dayId = null,
   });
 
   GymState copyWith({
     Map<Exercise, int>? exercisePages,
     bool? showExercisePages,
     int? currentPage,
+    int? dayId,
   }) {
     return GymState(
       exercisePages: exercisePages ?? this.exercisePages,
       showExercisePages: showExercisePages ?? this.showExercisePages,
       currentPage: currentPage ?? this.currentPage,
+      dayId: dayId ?? this.dayId,
     );
   }
 }
@@ -36,7 +40,7 @@ class GymState {
 class GymStateNotifier extends StateNotifier<GymState> {
   final _prefs = SharedPreferences.getInstance();
 
-  GymStateNotifier() : super(GymState()) {
+  GymStateNotifier() : super(const GymState()) {
     _loadSavedState();
   }
 
@@ -58,5 +62,13 @@ class GymStateNotifier extends StateNotifier<GymState> {
 
   void setExercisePages(Map<Exercise, int> exercisePages) {
     state = state.copyWith(exercisePages: exercisePages);
+  }
+
+  void clear() {
+    state = state.copyWith(
+      exercisePages: {},
+      currentPage: 0,
+      dayId: null,
+    );
   }
 }

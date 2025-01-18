@@ -748,6 +748,8 @@ class _SessionPageState extends State<SessionPage> {
   void initState() {
     super.initState();
 
+    // ref.read(gymStateProvider.notifier).clear();
+
     timeStartController.text = timeToString(widget._start)!;
     timeEndController.text = timeToString(TimeOfDay.now())!;
     _session.routineId = widget._workoutPlan.id!;
@@ -902,6 +904,7 @@ class _SessionPageState extends State<SessionPage> {
                         context,
                         listen: false,
                       ).addSession(_session);
+
                       if (mounted) {
                         Navigator.of(context).pop();
                       }
