@@ -40,7 +40,7 @@ dependencies:
   equatable: ^2.0.7
   fl_chart: ^0.69.2
   flex_color_scheme: ^8.0.2
-  flex_seed_scheme: ^3.4.1
+  flex_seed_scheme: ^3.5.0
   flutter_barcode_scanner: ^2.0.0
   flutter_calendar_carousel: ^2.4.4
   flutter_html: ^3.0.0-beta.2
@@ -79,7 +79,7 @@ dev_dependencies:
     sdk: flutter
   build_runner: ^2.4.14
   cider: ^0.2.7
-  drift_dev: ^2.22.0
+  drift_dev: ^2.23.1
   flutter_lints: ^5.0.0
   freezed: ^2.5.7
   golden_toolkit: ^0.15.0
