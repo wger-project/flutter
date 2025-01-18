@@ -27,8 +27,8 @@ Log _$LogFromJson(Map<String, dynamic> json) {
   return Log(
     id: (json['id'] as num?)?.toInt(),
     exerciseId: (json['exercise'] as num).toInt(),
-    iteration: (json['iteration'] as num).toInt(),
-    slotEntryId: (json['slot_entry'] as num).toInt(),
+    iteration: (json['iteration'] as num?)?.toInt(),
+    slotEntryId: (json['slot_entry'] as num?)?.toInt(),
     routineId: (json['routine'] as num).toInt(),
     repetitions: stringToNum(json['repetitions'] as String?),
     repetitionsTarget: stringToNum(json['repetitions_target'] as String?),

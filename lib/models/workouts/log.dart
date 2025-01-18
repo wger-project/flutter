@@ -40,10 +40,10 @@ class Log {
   late int routineId;
 
   @JsonKey(required: true)
-  late int iteration;
+  int? iteration;
 
   @JsonKey(required: true, name: 'slot_entry')
-  late int slotEntryId;
+  int? slotEntryId;
 
   @JsonKey(required: false)
   String? rir;
@@ -52,10 +52,10 @@ class Log {
   String? rirTarget;
 
   @JsonKey(required: true, fromJson: stringToNum, name: 'repetitions')
-  late num? repetitions;
+  num? repetitions;
 
   @JsonKey(required: true, fromJson: stringToNum, name: 'repetitions_target')
-  late num? repetitionsTarget;
+  num? repetitionsTarget;
 
   @JsonKey(required: true, name: 'repetitions_unit')
   late int repetitionsUnitId;
@@ -64,10 +64,10 @@ class Log {
   late RepetitionUnit repetitionsUnitObj;
 
   @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
-  late num weight;
+  late num? weight;
 
   @JsonKey(required: true, fromJson: stringToNum, toJson: numToString, name: 'weight_target')
-  late num? weightTarget;
+  num? weightTarget;
 
   @JsonKey(required: true, name: 'weight_unit')
   late int weightUnitId;
@@ -81,15 +81,15 @@ class Log {
   Log({
     this.id,
     required this.exerciseId,
-    required this.iteration,
-    required this.slotEntryId,
+    this.iteration,
+    this.slotEntryId,
     required this.routineId,
-    required this.repetitions,
+    this.repetitions,
     this.repetitionsTarget,
     required this.repetitionsUnitId,
     required this.rir,
     this.rirTarget,
-    required this.weight,
+    this.weight,
     this.weightTarget,
     required this.weightUnitId,
     required this.date,
