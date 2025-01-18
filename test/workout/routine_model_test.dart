@@ -24,19 +24,19 @@ import '../../test_data/routines.dart';
 void main() {
   group('model tests', () {
     test('Test the filterLogsByExercise method', () {
-      final workout = getTestRoutine();
+      final routine = getTestRoutine();
 
-      expect(workout.logs.length, 3);
-      final logExercise1 = workout.filterLogsByExercise(getTestExercises()[0]);
+      expect(routine.logs.length, 3);
+      final logExercise1 = routine.filterLogsByExercise(getTestExercises()[0]);
       expect(logExercise1.length, 2);
       expect(logExercise1[0].id, 1);
       expect(logExercise1[1].id, 2);
 
-      final logExercise2 = workout.filterLogsByExercise(getTestExercises()[1]);
+      final logExercise2 = routine.filterLogsByExercise(getTestExercises()[1]);
       expect(logExercise2.length, 1);
       expect(logExercise2[0].id, 3);
 
-      expect(workout.filterLogsByExercise(getTestExercises()[2]).length, 0);
+      expect(routine.filterLogsByExercise(getTestExercises()[2]).length, 0);
     });
   });
 }

@@ -6,7 +6,7 @@ import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/routine_screen.dart';
 import 'package:wger/theme/theme.dart';
 
-import '../test/workout/workout_form_test.mocks.dart';
+import '../test/workout/routine_form_test.mocks.dart';
 import '../test_data/exercises.dart';
 import '../test_data/routines.dart';
 

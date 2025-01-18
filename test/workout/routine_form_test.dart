@@ -28,7 +28,7 @@ import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/routine_screen.dart';
 import 'package:wger/widgets/routines/forms/routine.dart';
 
-import './workout_form_test.mocks.dart';
+import './routine_form_test.mocks.dart';
 
 @GenerateMocks([RoutinesProvider])
 void main() {
@@ -53,7 +53,7 @@ void main() {
         .thenAnswer((_) => Future.value(existingPlan));
   });
 
-  Widget renderWidget(Routine workoutPlan, {locale = 'en'}) {
+  Widget renderWidget(Routine routine, {locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
 
     return ChangeNotifierProvider<RoutinesProvider>(
@@ -63,7 +63,7 @@ void main() {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
-        home: Scaffold(body: RoutineForm(workoutPlan)),
+        home: Scaffold(body: RoutineForm(routine)),
         routes: {
           RoutineScreen.routeName: (ctx) => const RoutineScreen(),
         },

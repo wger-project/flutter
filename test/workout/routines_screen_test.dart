@@ -34,7 +34,7 @@ import 'package:wger/screens/routine_list_screen.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/routines/forms/routine.dart';
 
-import 'workout_plans_screen_test.mocks.dart';
+import 'routines_screen_test.mocks.dart';
 
 @GenerateMocks([WgerBaseProvider])
 void main() {
