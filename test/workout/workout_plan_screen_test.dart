@@ -65,7 +65,7 @@ void main() {
     );
   }
 
-  testWidgets('Test the widgets on the nutritional plan screen', (WidgetTester tester) async {
+  testWidgets('Test the widgets on the routine screen', (WidgetTester tester) async {
     await tester.pumpWidget(renderWidget());
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();
@@ -75,8 +75,10 @@ void main() {
     expect(find.text('first day'), findsOneWidget);
     expect(find.text('chest, shoulders'), findsOneWidget);
 
-    expect(find.text('second day'), findsOneWidget);
-    expect(find.text('legs'), findsOneWidget);
-    expect(find.byType(Card), findsNWidgets(2));
+    // The second day is repeated
+    expect(find.text('second day'), findsNWidgets(2));
+    expect(find.text('legs'), findsNWidgets(2));
+
+    expect(find.byType(Card), findsNWidgets(3));
   });
 }

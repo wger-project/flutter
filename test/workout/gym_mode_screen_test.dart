@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -56,21 +57,23 @@ void main() {
       ),
       child: ChangeNotifierProvider<ExercisesProvider>(
         create: (context) => mockExerciseProvider,
-        child: MaterialApp(
-          locale: Locale(locale),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          navigatorKey: key,
-          home: TextButton(
-            onPressed: () => key.currentState!.push(
-              MaterialPageRoute<void>(
-                settings: const RouteSettings(arguments: GymModeArguments(1, 1, 1)),
-                builder: (_) => const GymModeScreen(),
+        child: riverpod.ProviderScope(
+          child: MaterialApp(
+            locale: Locale(locale),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            navigatorKey: key,
+            home: TextButton(
+              onPressed: () => key.currentState!.push(
+                MaterialPageRoute<void>(
+                  settings: const RouteSettings(arguments: GymModeArguments(1, 1, 1)),
+                  builder: (_) => const GymModeScreen(),
+                ),
               ),
+              child: const SizedBox(),
             ),
-            child: const SizedBox(),
+            routes: {RoutineScreen.routeName: (ctx) => const RoutineScreen()},
           ),
-          routes: {RoutineScreen.routeName: (ctx) => const RoutineScreen()},
         ),
       ),
     );
@@ -174,9 +177,25 @@ void main() {
     await tester.pumpAndSettle();
 
     //
-    // Side raises - exercise overview page
+    // Bench press - log
     //
-    debugDumpApp();
+    expect(find.text('Bench press'), findsOneWidget);
+    expect(find.byType(LogPage), findsOneWidget);
+    expect(find.byType(Form), findsOneWidget);
+    await tester.tap(find.byIcon(Icons.chevron_right));
+    await tester.pumpAndSettle();
+
+    //
+    // Pause
+    //
+    expect(find.text('Pause'), findsOneWidget);
+    expect(find.byType(TimerWidget), findsOneWidget);
+    await tester.tap(find.byIcon(Icons.chevron_right));
+    await tester.pumpAndSettle();
+
+    //
+    // Side raises - overview
+    //
     expect(find.text('Side raises'), findsOneWidget);
     expect(find.byType(ExerciseOverview), findsOneWidget);
     await tester.tap(find.byIcon(Icons.chevron_right));
@@ -185,6 +204,7 @@ void main() {
     //
     // Side raises - log
     //
+    expect(find.text('Side raises'), findsOneWidget);
     expect(find.byType(LogPage), findsOneWidget);
     await tester.tap(find.byIcon(Icons.chevron_right));
     await tester.pumpAndSettle();
@@ -199,6 +219,22 @@ void main() {
     //
     // Side raises - log
     //
+    expect(find.text('Side raises'), findsOneWidget);
+    expect(find.byType(LogPage), findsOneWidget);
+    await tester.tap(find.byIcon(Icons.chevron_right));
+    await tester.pumpAndSettle();
+
+    //
+    // Side raises - timer
+    //
+    expect(find.byType(TimerWidget), findsOneWidget);
+    await tester.tap(find.byIcon(Icons.chevron_right));
+    await tester.pumpAndSettle();
+
+    //
+    // Side raises - log
+    //
+    expect(find.text('Side raises'), findsOneWidget);
     expect(find.byType(LogPage), findsOneWidget);
     await tester.tap(find.byIcon(Icons.chevron_right));
     await tester.pumpAndSettle();

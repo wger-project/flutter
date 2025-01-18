@@ -240,7 +240,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
               textRepr: '4 sets 12x10kg',
             ),
           ],
-        )
+        ),
       ],
     ),
     DayData(
@@ -269,7 +269,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
               textRepr: '4 sets 3x100kg',
             ),
           ],
-        )
+        ),
       ],
     ),
     DayData(
@@ -325,7 +325,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
                 textRepr: '5 sets 8x105kg',
               ),
             ],
-          )
+          ),
         ],
       ),
     ],
@@ -433,7 +433,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
                 textRepr: '12x10kg',
               ),
             ],
-          )
+          ),
         ],
       ),
       DayData(
@@ -490,7 +490,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
                 textRepr: '3x100kg',
               ),
             ],
-          )
+          ),
         ],
       ),
     ],
