@@ -79,10 +79,10 @@ class Routine {
 
   Routine({
     this.id,
-    required this.created,
+    DateTime? created,
     required this.name,
-    required this.start,
-    required this.end,
+    DateTime? start,
+    DateTime? end,
     this.fitInWeek = false,
     String? description,
     this.days = const [],
@@ -92,6 +92,9 @@ class Routine {
     this.dayDataCurrentIterationGym = const [],
     this.logs = const [],
   }) {
+    this.created = created ?? DateTime.now();
+    this.start = start ?? DateTime.now();
+    this.end = end ?? DateTime.now().add(const Duration(days: DEFAULT_DURATION * 7));
     this.description = description ?? '';
   }
 
