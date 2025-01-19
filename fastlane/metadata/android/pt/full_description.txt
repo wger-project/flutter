@@ -1,0 +1,39 @@
+Feito de amantes do fitness para amantes do fitness – Pata ter a sua saúde organizada com WGER, o Gerente de Treino!
+
+Você já encontrou o seu #1 aplicação de fitness e ama criar suas próprias rotinas de treinos? Não importa que tipo de esportivo você é – todos nós temos algo em comum: gostamos de manter o controle de nossos dados de saúde <3
+
+Portanto, não o julgamos por ainda gerenciar sua jornada de condicionamento físico com seu prático livro de registro de exercícios, mas bem-vindo a 2025!
+
+Desenvolvemos um aplicativo rastreador de saúde e fitness digital 100% gratuito para você, dimensionado para os recursos mais relevantes para facilitar sua vida. Comece, continue treinando e comemore seu progresso!
+
+wger é um projeto Open Source. é tudo sobre:
+* Seu Corpo
+* Seus Treinos
+* Seu Progresso
+* Seus Dados
+
+Seu Corpo:
+Não há necessidade de pesquisar no google os ingredientes de suas guloseimas favoritas – Escolha suas refeições diárias entre mais de 78.000 produtos e veja os valores nutricionais. Adicione refeições ao plano nutricional e mantenha uma visão geral de sua dieta no calendário.
+
+* Seus Treinos
+Você sabe o que é melhor para o seu corpo. Crie seus próprios treinos a partir de uma variedade crescente de 200 exercícios diferentes. Em seguida, use o modo ginásio para guiá-lo através do treinamento enquanto você registra seus pesos com um toque.
+
+* Seu Progresso
+Nunca perca de vista seus objetivos. Acompanhe seu peso e mantenha suas estatísticas.
+
+* Seus Dados
+wger é o seu diário de fitness personalizado, mas você possui seus dados. Use a API REST para acessar e fazer coisas incríveis com ela.
+Atenção: Este aplicativo é gratuito, não é baseado em financiamentos adicionais e não pedimos que você doe dinheiro. Mais do que isso, é um projeto comunitário que cresce constantemente. Portanto, esteja preparado para novos recursos a qualquer momento!
+
+#OpenSource-o que isso significa?
+
+Open Source significa que todo o código fonte deste aplicativo e do servidor com o qual ele fala é gratuito e está disponível para qualquer pessoa:
+
+ * Você quer executar em seu próprio servidor para você ou seu ginásio local? Vá em frente!
+* Sente falta de um recurso e quer implementá-lo? Comece agora!
+* Deseja verificar se nada está sendo enviado para qualquer lugar? Você pode!
+
+Junte-se à nossa comunidade e faça parte de entusiastas do Esporte e geeks de TI de todo o mundo. Continuamos trabalhando para ajustar e otimizar o aplicativo personalizado às nossas necessidades. Adoramos sua contribuição, então sinta-se à vontade para participar a qualquer momento e contribuir com seus desejos e ideias!
+
+- > Encontre o código fonte em https://github.com/wger-project
+-> Tire suas dúvidas ou apenas diga olá em nosso servidor discord https://discord.gg/rPWFv6W
