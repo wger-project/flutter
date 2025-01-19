@@ -62,52 +62,81 @@ class GymMode extends ConsumerStatefulWidget {
   ConsumerState<GymMode> createState() => _GymModeState();
 }
 
-class _GymModeState extends ConsumerState<GymMode> {
-  var _totalElements = 1;
+  class _GymModeState extends ConsumerState<GymMode> {
+    var _totalElements = 1;
 
-  /// Map with the first (navigation) page for each exercise
-  final Map<Exercise, int> _exercisePages = {};
-  late final PageController _controller;
+    /// Map with the first (navigation) page for each exercise
+    final Map<Exercise, int> _exercisePages = {};
+    late final PageController _controller;
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    final initialPage = ref.read(gymStateProvider).currentPage;
-    _controller = PageController(initialPage: initialPage);
-    Future.microtask(() => _calculatePages());
-  }
-
-  void _calculatePages() {
-    for (final slot in widget._dayDataGym.slots) {
-      _totalElements += slot.setConfigs.length;
+    @override
+    void dispose() {
+      _controller.dispose();
+      super.dispose();
     }
 
-    var currentPage = 1;
-    final Map<Exercise, int> exercisePages = {};
+    @override
+    void initState() {
+      super.initState();
 
-    for (final slot in widget._dayDataGym.slots) {
-      var firstPage = true;
-      for (final config in slot.setConfigs) {
-        final exercise = provider.Provider.of<ExercisesProvider>(context, listen: false)
-            .findExerciseById(config.exerciseId);
+      // Initialize the controller with the current page
+      final initialPage = ref.read(gymStateProvider).currentPage;
+      _controller = PageController(initialPage: initialPage);
 
-        if (firstPage) {
-          exercisePages[exercise] = currentPage;
-          currentPage++;
+      // Delay state modifications until after the widget tree is built
+      Future.microtask(() {
+        // Get the saved page and day from the provider
+        final savedPage = ref.read(gymStateProvider).currentPage;
+        final savedDayId = ref.read(gymStateProvider).dayId;
+        debugPrint('Saved Page: $savedPage');
+        debugPrint('Saved Day ID: $savedDayId');
+
+        // Set the dayId in the state
+        ref.read(gymStateProvider.notifier).setDayId(widget._dayDataGym.day!.id!);
+        debugPrint('Current Day ID: ${widget._dayDataGym.day!.id}');
+
+        // Check if the current day is different from the saved day
+        if (widget._dayDataGym.day!.id != savedDayId) {
+          // Reset the saved page to 0
+          ref.read(gymStateProvider.notifier).setCurrentPage(0);
+          debugPrint('Different day detected. Resetting to page 0.');
+        } else {
+          // Use the saved page
+          ref.read(gymStateProvider.notifier).setCurrentPage(savedPage);
+          debugPrint('Same day detected. Using saved page: $savedPage');
         }
-        currentPage += 2;
-        firstPage = false;
-      }
+
+        // Calculate the pages
+        _calculatePages();
+      });
     }
 
-    ref.read(gymStateProvider.notifier).setExercisePages(exercisePages);
-  }
+    void _calculatePages() {
+      // for (final slot in widget._dayDataGym.slots) {
+      //   _totalElements += slot.setConfigs.length;
+      // }
+      _totalElements = 1;
+      _exercisePages.clear();
+      var currentPage = 1;
+
+
+      for (final slot in widget._dayDataGym.slots) {
+        var firstPage = true;
+        for (final config in slot.setConfigs) {
+          final exercise = provider.Provider.of<ExercisesProvider>(context, listen: false)
+              .findExerciseById(config.exerciseId);
+
+          if (firstPage) {
+            _exercisePages[exercise] = currentPage;
+            currentPage++;
+          }
+          currentPage += 2;
+          firstPage = false;
+        }
+      }
+
+      ref.read(gymStateProvider.notifier).setExercisePages(_exercisePages);
+    }
 
   List<Widget> getContent() {
     final state = ref.watch(gymStateProvider);
@@ -152,20 +181,33 @@ class _GymModeState extends ConsumerState<GymMode> {
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> children = [
+      StartPage(_controller, widget._dayDataDisplay, _exercisePages),
+      ...getContent(),
+      SessionPage(
+        provider.Provider.of<RoutinesProvider>(context, listen: false)
+            .findById(widget._dayDataGym.day!.routineId),
+        _controller,
+        widget._start,
+        _exercisePages,
+      ),
+    ];
     return PageView(
       controller: _controller,
-      onPageChanged: (page) => ref.read(gymStateProvider.notifier).setCurrentPage(page),
-      children: [
-        StartPage(_controller, widget._dayDataDisplay, _exercisePages),
-        ...getContent(),
-        SessionPage(
-          provider.Provider.of<RoutinesProvider>(context, listen: false)
-              .findById(widget._dayDataGym.day!.routineId),
-          _controller,
-          widget._start,
-          _exercisePages,
-        ),
-      ],
+      onPageChanged: (page) {
+        // Update the current page
+        ref.read(gymStateProvider.notifier).setCurrentPage(page);
+        debugPrint('Current Page: $page');
+        debugPrint('Total Pages: ${children.length}');
+        // Check if the last page is reached
+        if (page == children.length - 1) {
+          ref.read(gymStateProvider.notifier).clear();
+          debugPrint('Last page reached. Resetting state and navigation.');
+          // Reset the navigation stack
+          _controller.jumpToPage(0);
+        }
+      },
+      children:children,
     );
   }
 }
