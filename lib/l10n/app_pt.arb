@@ -165,7 +165,7 @@
   "@planned": {
     "description": "Header for the column of 'planned' nutritional values, i.e. what should be eaten"
   },
-  "weekAverage": "média dos 7 dias",
+  "weekAverage": "Média dos 7 dias",
   "@weekAverage": {
     "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
   },
@@ -783,5 +783,90 @@
   "aboutDonateTitle": "Doar",
   "@aboutDonateTitle": {},
   "aboutDonateText": "Nos compre um café para ajudar o projeto, pagar os custos do servidor e nos manter energizados",
-  "@aboutDonateText": {}
+  "@aboutDonateText": {},
+  "onlyLogging": "Só controlar calorias",
+  "@onlyLogging": {},
+  "goalEnergy": "Meta energética",
+  "@goalEnergy": {},
+  "goalProtein": "Meta proteica",
+  "@goalProtein": {},
+  "goalCarbohydrates": "Meta de carboidratos",
+  "@goalCarbohydrates": {},
+  "goalFat": "Meta de gordura",
+  "@goalFat": {},
+  "today": "Hoje",
+  "@today": {},
+  "kcalValue": "{value} kcal",
+  "@kcalValue": {
+    "description": "A value in kcal, e.g. 500 kcal",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "gValue": "{value} g",
+  "@gValue": {
+    "description": "A value in grams, e.g. 5 g",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "percentValue": "{value} %",
+  "@percentValue": {
+    "description": "A value in percent, e.g. 10 %",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "noIngredientsDefined": "Sem ingredientes definido ainda",
+  "@noIngredientsDefined": {},
+  "ingredientLogged": "Ingrediente ativo registrado diariamente",
+  "@ingredientLogged": {},
+  "onlyLoggingHelpText": "Marque a caixa se você desejar apenas o seu registo de calorias e não quer a configuração de um detalhado plano nutricional com refeições",
+  "@onlyLoggingHelpText": {},
+  "goalMacro": "Macro objetivos",
+  "@goalMacro": {
+    "description": "The goal for macronutrients"
+  },
+  "selectMealToLog": "Selecione uma refeição para entrar no diário",
+  "@selectMealToLog": {},
+  "goalFiber": "Meta de fibra",
+  "@goalFiber": {},
+  "deficit": "Défice",
+  "@deficit": {
+    "description": "Caloric deficit (either planned or unplanned)"
+  },
+  "surplus": "Excedente",
+  "@surplus": {
+    "description": "Caloric surplus (either planned or unplanned)"
+  },
+  "chart30DaysTitle": "{name} Ultimos 30 dias",
+  "@chart30DaysTitle": {
+    "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "chartDuringPlanTitle": "{chartName} Durante o plano nutricional {planName}",
+  "@chartDuringPlanTitle": {
+    "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
+    "type": "text",
+    "placeholders": {
+      "chartName": {},
+      "planName": {}
+    }
+  },
+  "loggedToday": "Registrado hoje",
+  "@loggedToday": {},
+  "chartAllTimeTitle": "{name} de todo o tempo",
+  "@chartAllTimeTitle": {
+    "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {}
+    }
+  }
 }
