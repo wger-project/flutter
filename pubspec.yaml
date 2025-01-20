@@ -81,7 +81,7 @@ dev_dependencies:
   cider: ^0.2.7
   drift_dev: ^2.23.1
   flutter_lints: ^5.0.0
-  freezed: ^2.5.7
+  freezed: ^3.0.0-0.0.dev
   golden_toolkit: ^0.15.0
   json_serializable: ^6.9.0
   mockito: ^5.4.4
