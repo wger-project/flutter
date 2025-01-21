@@ -96,6 +96,7 @@ class _RoutineEditState extends State<RoutineEdit> {
               style: Theme.of(context).textTheme.titleLarge,
             ),
             IconButton(
+              key: const ValueKey('refresh-routine'),
               onPressed: () {
                 setState(() {
                   _dataFuture = provider.fetchAndSetRoutineFull(widget._routine.id!);

@@ -90,6 +90,7 @@ class _ReorderableDaysListState extends State<ReorderableDaysList> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     IconButton(
+                      key: ValueKey('edit-day-${day.id}'),
                       onPressed: () => widget.onDaySelected(day.id!),
                       icon: isDaySelected ? const Icon(Icons.edit_off) : const Icon(Icons.edit),
                     ),
@@ -195,6 +196,7 @@ class _DayFormWidgetState extends State<DayFormWidget> {
           Text(
             widget.day.isRest ? i18n.restDay : widget.day.name,
             style: Theme.of(context).textTheme.titleLarge,
+            key: ValueKey('day-title-${widget.day.id}'),
           ),
           SwitchListTile(
             title: Text(i18n.isRestDay),
