@@ -298,9 +298,17 @@ class ExercisesProvider with ChangeNotifier {
     int exerciseId,
   ) async {
     Exercise exercise;
-    final exerciseDb = await (database.select(database.exercises)
-          ..where((e) => e.id.equals(exerciseId)))
-        .getSingleOrNull();
+
+    // TODO: this should be a .getSingleOrNull()!!! However, for some reason there
+    //       can be duplicates in the db. Perhaps a race condition so that two
+    //       entries are written at the same time or something?
+    final exerciseResult =
+        await (database.select(database.exercises)..where((e) => e.id.equals(exerciseId))).get();
+
+    ExerciseTable? exerciseDb;
+    if (exerciseResult.isNotEmpty) {
+      exerciseDb = exerciseResult.first;
+    }
 
     // Exercise is already known locally
     if (exerciseDb != null) {

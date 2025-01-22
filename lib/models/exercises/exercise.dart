@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:developer';
+
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/consts.dart';
@@ -160,7 +162,15 @@ class Exercise extends Equatable {
     equipment = baseData.equipment;
     category = baseData.category;
     translations = baseData.translations.map((e) {
-      e.language = languages.firstWhere((l) => l.id == e.languageId);
+      e.language = languages.firstWhere(
+        (l) => l.id == e.languageId,
+
+        // workaround for https://github.com/wger-project/flutter/issues/722
+        orElse: () {
+          log('Could not find language for translation ${e.languageId}');
+          return Language(id: e.languageId, shortName: 'unknown', fullName: 'unknown');
+        },
+      );
       return e;
     }).toList();
     videos = baseData.videos;
