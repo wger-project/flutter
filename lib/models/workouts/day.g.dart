@@ -15,8 +15,7 @@ Day _$DayFromJson(Map<String, dynamic> json) {
     ..id = (json['id'] as num?)?.toInt()
     ..workoutId = (json['training'] as num).toInt()
     ..description = json['description'] as String
-    ..daysOfWeek =
-        (json['day'] as List<dynamic>).map((e) => (e as num).toInt()).toList();
+    ..daysOfWeek = (json['day'] as List<dynamic>).map((e) => (e as num).toInt()).toList();
 }
 
 Map<String, dynamic> _$DayToJson(Day instance) => <String, dynamic>{

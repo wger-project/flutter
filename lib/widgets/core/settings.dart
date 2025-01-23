@@ -20,12 +20,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/user.dart';
-import 'package:wger/theme/theme.dart';
-
 
 class SettingsPage extends StatelessWidget {
   static String routeName = '/SettingsPage';
@@ -36,16 +33,15 @@ class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final exerciseProvider = Provider.of<ExercisesProvider>(context, listen: false);
     final nutritionProvider = Provider.of<NutritionPlansProvider>(context, listen: false);
-    final switchProvider = Provider.of<AuthProvider>(context);
+    final userProvider = Provider.of<UserProvider>(context);
+    final i18n = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context).settingsTitle),
-      ),
+      appBar: AppBar(title: Text(i18n.settingsTitle)),
       body: ListView(
         children: [
           ListTile(
-            title: Text(AppLocalizations.of(context).settingsExerciseCacheDescription),
+            title: Text(i18n.settingsExerciseCacheDescription),
             trailing: IconButton(
               key: const ValueKey('cacheIconExercises'),
               icon: const Icon(Icons.delete),
@@ -54,7 +50,7 @@ class SettingsPage extends StatelessWidget {
 
                 if (context.mounted) {
                   final snackBar = SnackBar(
-                    content: Text(AppLocalizations.of(context).settingsCacheDeletedSnackbar),
+                    content: Text(i18n.settingsCacheDeletedSnackbar),
                   );
 
                   ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -63,7 +59,7 @@ class SettingsPage extends StatelessWidget {
             ),
           ),
           ListTile(
-            title: Text(AppLocalizations.of(context).settingsIngredientCacheDescription),
+            title: Text(i18n.settingsIngredientCacheDescription),
             trailing: IconButton(
               key: const ValueKey('cacheIconIngredients'),
               icon: const Icon(Icons.delete),
@@ -72,7 +68,7 @@ class SettingsPage extends StatelessWidget {
 
                 if (context.mounted) {
                   final snackBar = SnackBar(
-                    content: Text(AppLocalizations.of(context).settingsCacheDeletedSnackbar),
+                    content: Text(i18n.settingsCacheDeletedSnackbar),
                   );
 
                   ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -81,15 +77,32 @@ class SettingsPage extends StatelessWidget {
             ),
           ),
           ListTile(
-            title: Text(AppLocalizations.of(context).darkMode),
-            trailing: Switch(
-              value: switchProvider.isSwitched, // Use the state from the provider
-              onChanged: (value) {
-                switchProvider.toggleSwitch(value); // Update the state when the switch is toggled
+            title: Text(i18n.themeMode),
+            trailing: DropdownButton<ThemeMode>(
+              key: const ValueKey('themeModeDropdown'),
+              value: userProvider.themeMode,
+              onChanged: (ThemeMode? newValue) {
+                if (newValue != null) {
+                  userProvider.setThemeMode(newValue);
+                }
               },
-              activeColor:  wgerPrimaryButtonColor, // Custom color when switch is on
-              inactiveThumbColor: wgerSecondaryColorLight, // Custom color when switch is off
-              inactiveTrackColor: wgerSecondaryColor, // Color of the track when the switch is off
+              items: ThemeMode.values.map<DropdownMenuItem<ThemeMode>>((ThemeMode value) {
+                final label = (() {
+                  switch (value) {
+                    case ThemeMode.system:
+                      return i18n.systemMode;
+                    case ThemeMode.light:
+                      return i18n.lightMode;
+                    case ThemeMode.dark:
+                      return i18n.darkMode;
+                  }
+                })();
+
+                return DropdownMenuItem<ThemeMode>(
+                  value: value,
+                  child: Text(label),
+                );
+              }).toList(),
             ),
           ),
         ],

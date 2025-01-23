@@ -7,6 +7,7 @@ import 'dart:async' as _i13;
 import 'dart:io' as _i10;
 import 'dart:ui' as _i14;
 
+import 'package:flutter/material.dart' as _i16;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:wger/models/exercises/alias.dart' as _i6;
 import 'package:wger/models/exercises/category.dart' as _i9;
@@ -16,7 +17,7 @@ import 'package:wger/models/exercises/language.dart' as _i8;
 import 'package:wger/models/exercises/muscle.dart' as _i12;
 import 'package:wger/models/exercises/translation.dart' as _i4;
 import 'package:wger/models/exercises/variation.dart' as _i5;
-import 'package:wger/models/user/profile.dart' as _i16;
+import 'package:wger/models/user/profile.dart' as _i17;
 import 'package:wger/providers/add_exercise.dart' as _i7;
 import 'package:wger/providers/base_provider.dart' as _i2;
 import 'package:wger/providers/user.dart' as _i15;
@@ -34,8 +35,7 @@ import 'package:wger/providers/user.dart' as _i15;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeWgerBaseProvider_0 extends _i1.SmartFake
-    implements _i2.WgerBaseProvider {
+class _FakeWgerBaseProvider_0 extends _i1.SmartFake implements _i2.WgerBaseProvider {
   _FakeWgerBaseProvider_0(
     Object parent,
     Invocation parentInvocation,
@@ -88,8 +88,7 @@ class _FakeAlias_4 extends _i1.SmartFake implements _i6.Alias {
 /// A class which mocks [AddExerciseProvider].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockAddExerciseProvider extends _i1.Mock
-    implements _i7.AddExerciseProvider {
+class MockAddExerciseProvider extends _i1.Mock implements _i7.AddExerciseProvider {
   MockAddExerciseProvider() {
     _i1.throwOnMissingStub(this);
   }
@@ -378,8 +377,7 @@ class MockAddExerciseProvider extends _i1.Mock
       ) as _i13.Future<void>);
 
   @override
-  _i13.Future<_i4.Translation> addExerciseTranslation(
-          _i4.Translation? exercise) =>
+  _i13.Future<_i4.Translation> addExerciseTranslation(_i4.Translation? exercise) =>
       (super.noSuchMethod(
         Invocation.method(
           #addExerciseTranslation,
@@ -465,6 +463,21 @@ class MockUserProvider extends _i1.Mock implements _i15.UserProvider {
   }
 
   @override
+  _i16.ThemeMode get themeMode => (super.noSuchMethod(
+        Invocation.getter(#themeMode),
+        returnValue: _i16.ThemeMode.system,
+      ) as _i16.ThemeMode);
+
+  @override
+  set themeMode(_i16.ThemeMode? _themeMode) => super.noSuchMethod(
+        Invocation.setter(
+          #themeMode,
+          _themeMode,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
   _i2.WgerBaseProvider get baseProvider => (super.noSuchMethod(
         Invocation.getter(#baseProvider),
         returnValue: _FakeWgerBaseProvider_0(
@@ -474,7 +487,7 @@ class MockUserProvider extends _i1.Mock implements _i15.UserProvider {
       ) as _i2.WgerBaseProvider);
 
   @override
-  set profile(_i16.Profile? _profile) => super.noSuchMethod(
+  set profile(_i17.Profile? _profile) => super.noSuchMethod(
         Invocation.setter(
           #profile,
           _profile,
@@ -493,6 +506,15 @@ class MockUserProvider extends _i1.Mock implements _i15.UserProvider {
         Invocation.method(
           #clear,
           [],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void setThemeMode(_i16.ThemeMode? mode) => super.noSuchMethod(
+        Invocation.method(
+          #setThemeMode,
+          [mode],
         ),
         returnValueForMissingStub: null,
       );
