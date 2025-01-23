@@ -19,12 +19,18 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/user/profile.dart';
 import 'package:wger/providers/base_provider.dart';
 
 class UserProvider with ChangeNotifier {
+  ThemeMode themeMode = ThemeMode.system;
   final WgerBaseProvider baseProvider;
-  UserProvider(this.baseProvider);
+
+  UserProvider(this.baseProvider) {
+    _loadThemeMode();
+  }
 
   static const PROFILE_URL = 'userprofile';
   static const VERIFY_EMAIL = 'verify-email';
@@ -34,6 +40,35 @@ class UserProvider with ChangeNotifier {
   /// Clear the current profile
   void clear() {
     profile = null;
+  }
+
+  // Load theme mode from SharedPreferences
+  Future<void> _loadThemeMode() async {
+    final prefs = SharedPreferencesAsync();
+    final prefsDarkMode = await prefs.getBool(PREFS_USER_DARK_THEME);
+
+    if (prefsDarkMode == null) {
+      themeMode = ThemeMode.system;
+    } else {
+      themeMode = prefsDarkMode ? ThemeMode.dark : ThemeMode.light;
+    }
+
+    notifyListeners();
+  }
+
+  //  Change mode on switch button click
+  void setThemeMode(ThemeMode mode) async {
+    themeMode = mode;
+
+    // Save to SharedPreferences
+    final prefs = SharedPreferencesAsync();
+    if (themeMode == ThemeMode.system) {
+      await prefs.remove(PREFS_USER_DARK_THEME);
+    } else {
+      await prefs.setBool(PREFS_USER_DARK_THEME, themeMode == ThemeMode.dark);
+    }
+
+    notifyListeners();
   }
 
   /// Fetch the current user's profile

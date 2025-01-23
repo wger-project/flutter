@@ -86,6 +86,7 @@ dev_dependencies:
   json_serializable: ^6.9.0
   mockito: ^5.4.4
   network_image_mock: ^2.1.1
+  shared_preferences_platform_interface: ^2.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

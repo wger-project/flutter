@@ -24,20 +24,27 @@ import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/user.dart';
 import 'package:wger/widgets/core/settings.dart';
 
 import 'settings_test.mocks.dart';
 
-@GenerateMocks([ExercisesProvider, NutritionPlansProvider])
+@GenerateMocks([ExercisesProvider, NutritionPlansProvider, UserProvider])
 void main() {
   final mockExerciseProvider = MockExercisesProvider();
   final mockNutritionProvider = MockNutritionPlansProvider();
+  final mockUserProvider = MockUserProvider();
+
+  setUp(() {
+    when(mockUserProvider.themeMode).thenReturn(ThemeMode.system);
+  });
 
   Widget createSettingsScreen({locale = 'en'}) {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<NutritionPlansProvider>(create: (context) => mockNutritionProvider),
         ChangeNotifierProvider<ExercisesProvider>(create: (context) => mockExerciseProvider),
+        ChangeNotifierProvider<UserProvider>(create: (context) => mockUserProvider),
       ],
       child: MaterialApp(
         locale: Locale(locale),
@@ -64,5 +71,14 @@ void main() {
 
       verify(mockNutritionProvider.clearIngredientCache());
     });
+  });
+
+  testWidgets('Test changing the theme mode', (WidgetTester tester) async {
+    await tester.pumpWidget(createSettingsScreen());
+    await tester.tap(find.byKey(const ValueKey('themeModeDropdown')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Always light mode'));
+
+    verify(mockUserProvider.setThemeMode(ThemeMode.light));
   });
 }

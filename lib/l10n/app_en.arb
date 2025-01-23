@@ -912,5 +912,9 @@
   "indicatorAvg": "avg",
   "@indicatorAvg": {
     "description": "added for localization of Class Indicator's field text"
-  }
+  },
+  "themeMode": "Theme mode",
+  "darkMode": "Always dark mode",
+  "lightMode": "Always light mode",
+  "systemMode": "System settings"
 }
