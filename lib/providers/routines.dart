@@ -521,7 +521,6 @@ class RoutinesProvider with ChangeNotifier {
     for (final routine in _routines) {
       for (final day in routine.days) {
         day.slots.removeWhere((s) => s.id == slotId);
-        break;
       }
     }
 
