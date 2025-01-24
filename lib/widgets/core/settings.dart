@@ -35,17 +35,17 @@ class SettingsPage extends StatelessWidget {
     final exerciseProvider = Provider.of<ExercisesProvider>(context, listen: false);
     final nutritionProvider = Provider.of<NutritionPlansProvider>(context, listen: false);
     final userProvider = Provider.of<UserProvider>(context);
-    final i18n = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(title: Text(i18n.settingsTitle)),
       body: ListView(
         children: [
           ListTile(
-              title: Text(
-            i18n.settingsCacheTitle,
-            style: Theme.of(context).textTheme.headlineSmall,
-          )),
+            title: Text(
+              i18n.settingsCacheTitle,
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+          ),
           ListTile(
             title: Text(i18n.settingsExerciseCacheDescription),
             trailing: IconButton(
