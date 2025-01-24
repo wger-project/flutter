@@ -298,19 +298,15 @@ class ExercisesProvider with ChangeNotifier {
     Exercise exercise;
 
     // TODO: this should be a .getSingleOrNull()!!! However, for some reason there
-    //       are duplicates in the db. Perhaps a race condition so that two
+    //       can be duplicates in the db. Perhaps a race condition so that two
     //       entries are written at the same time or something?
     final exerciseResult =
         await (database.select(database.exercises)..where((e) => e.id.equals(exerciseId))).get();
 
     ExerciseTable? exerciseDb;
-    if (exerciseResult.length > 0) {
+    if (exerciseResult.isNotEmpty) {
       exerciseDb = exerciseResult.first;
-    } else {
-      exerciseDb = null;
     }
-
-    log(exerciseResult.toString());
 
     // Exercise is already known locally
     if (exerciseDb != null) {

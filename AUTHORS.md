@@ -32,6 +32,7 @@
 - sizzlesloth - <https://github.com/sizzlesloth>
 - Arya Singh - <https://github.com/ARYPROGRAMMER>
 - Xianglin Zeng - <https://github.com/FutureYL3>
+- Sangharsh Sulke - <https://github.com/Sangharshdeveloper>
 
 ## Translators
 
