@@ -27,8 +27,10 @@ import 'package:wger/providers/base_provider.dart';
 class UserProvider with ChangeNotifier {
   ThemeMode themeMode = ThemeMode.system;
   final WgerBaseProvider baseProvider;
+  late SharedPreferencesAsync prefs;
 
-  UserProvider(this.baseProvider) {
+  UserProvider(this.baseProvider, {SharedPreferencesAsync? prefs}) {
+    this.prefs = prefs ?? SharedPreferencesAsync();
     _loadThemeMode();
   }
 
@@ -44,14 +46,17 @@ class UserProvider with ChangeNotifier {
 
   // Load theme mode from SharedPreferences
   Future<void> _loadThemeMode() async {
-    final prefs = SharedPreferencesAsync();
     final prefsDarkMode = await prefs.getBool(PREFS_USER_DARK_THEME);
+
+    print(prefsDarkMode);
 
     if (prefsDarkMode == null) {
       themeMode = ThemeMode.system;
     } else {
       themeMode = prefsDarkMode ? ThemeMode.dark : ThemeMode.light;
     }
+
+    print(themeMode);
 
     notifyListeners();
   }
@@ -61,7 +66,6 @@ class UserProvider with ChangeNotifier {
     themeMode = mode;
 
     // Save to SharedPreferences
-    final prefs = SharedPreferencesAsync();
     if (themeMode == ThemeMode.system) {
       await prefs.remove(PREFS_USER_DARK_THEME);
     } else {
