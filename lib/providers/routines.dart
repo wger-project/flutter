@@ -386,7 +386,7 @@ class RoutinesProvider with ChangeNotifier {
       baseProvider.makeUrl(
         _routinesUrlPath,
         id: workout.id,
-        objectMethod: 'log_data',
+        objectMethod: 'logs',
         query: {'id': base.id!.toString()},
       ),
     );

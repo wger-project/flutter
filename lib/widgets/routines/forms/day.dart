@@ -199,6 +199,7 @@ class _DayFormWidgetState extends State<DayFormWidget> {
             key: ValueKey('day-title-${widget.day.id!}'),
           ),
           SwitchListTile(
+            key: const Key('field-is-rest-day'),
             title: Text(i18n.isRestDay),
             subtitle: Text(i18n.isRestDayHelp),
             value: isRestDay,
@@ -262,16 +263,19 @@ class _DayFormWidgetState extends State<DayFormWidget> {
             },
           ),
           SwitchListTile(
+            key: const Key('field-need-logs-to-advance'),
             title: Text(i18n.needsLogsToAdvance),
             subtitle: Text(i18n.needsLogsToAdvanceHelp),
             value: needLogsToAdvance,
             contentPadding: const EdgeInsets.all(4),
-            onChanged: (value) {
-              setState(() {
-                needLogsToAdvance = value;
-              });
-              widget.day.needLogsToAdvance = value;
-            },
+            onChanged: widget.day.isRest
+                ? null
+                : (value) {
+                    setState(() {
+                      needLogsToAdvance = value;
+                    });
+                    widget.day.needLogsToAdvance = value;
+                  },
           ),
           const SizedBox(height: 5),
           ElevatedButton(
@@ -284,9 +288,7 @@ class _DayFormWidgetState extends State<DayFormWidget> {
               _form.currentState!.save();
 
               try {
-                Provider.of<RoutinesProvider>(context, listen: false).editDay(
-                  widget.day,
-                );
+                Provider.of<RoutinesProvider>(context, listen: false).editDay(widget.day);
               } catch (error) {
                 await showDialog(
                   context: context,
