@@ -894,5 +894,13 @@
   "settingsCacheTitle": "Кеш",
   "@settingsCacheTitle": {},
   "settingsCacheDeletedSnackbar": "Кеш успішно очищено",
-  "@settingsCacheDeletedSnackbar": {}
+  "@settingsCacheDeletedSnackbar": {},
+  "themeMode": "Тематичний режим",
+  "@themeMode": {},
+  "darkMode": "Завжди темний режим",
+  "@darkMode": {},
+  "lightMode": "Завжди легкий режим",
+  "@lightMode": {},
+  "systemMode": "Налаштування системи",
+  "@systemMode": {}
 }
