@@ -19,6 +19,7 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:wger/models/workouts/base_config.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
 
 import '../fixtures/fixture_reader.dart';
@@ -47,5 +48,27 @@ void main() {
     expect(slotEntry.maxRirConfigs.length, 0);
     expect(slotEntry.restTimeConfigs.length, 1);
     expect(slotEntry.maxRestTimeConfigs.length, 1);
+  });
+
+  test('Checks that an empty model correctly calculates hasProgressionRules', () {
+    final slotEntry = SlotEntry.empty();
+    expect(slotEntry.hasProgressionRules, false);
+  });
+
+  test('Checks that an model with data correctly calculates hasProgressionRules', () {
+    final slotEntry = SlotEntry.empty();
+    slotEntry.weightConfigs.add(BaseConfig(
+      id: 1,
+      slotEntryId: 1,
+      iteration: 1,
+      value: 1,
+    ));
+    slotEntry.weightConfigs.add(BaseConfig(
+      id: 2,
+      slotEntryId: 1,
+      iteration: 1,
+      value: 1,
+    ));
+    expect(slotEntry.hasProgressionRules, true);
   });
 }
