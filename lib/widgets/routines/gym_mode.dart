@@ -533,7 +533,7 @@ class _LogPageState extends State<LogPage> {
           style: Theme.of(context).textTheme.titleLarge,
           textAlign: TextAlign.center,
         ),
-        ...widget._workoutPlan.filterLogsByExercise(widget._exercise, unique: true).map((log) {
+        ...widget._workoutPlan.filterLogsByExercise(widget._exercise.id!, unique: true).map((log) {
           return ListTile(
             title: Text(log.singleLogRepTextNoNl),
             subtitle: Text(
@@ -646,7 +646,7 @@ class _LogPageState extends State<LogPage> {
           Text(widget._slotData.comment, textAlign: TextAlign.center),
         const SizedBox(height: 10),
         Expanded(
-          child: (widget._workoutPlan.filterLogsByExercise(widget._exercise).isNotEmpty)
+          child: (widget._workoutPlan.filterLogsByExercise(widget._exercise.id!).isNotEmpty)
               ? getPastLogs()
               : Container(),
         ),

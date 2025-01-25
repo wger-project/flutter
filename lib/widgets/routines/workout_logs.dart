@@ -28,9 +28,9 @@ import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/routines/log.dart';
 
 class WorkoutLogs extends StatefulWidget {
-  final Routine _workoutPlan;
+  final Routine _routine;
 
-  const WorkoutLogs(this._workoutPlan);
+  const WorkoutLogs(this._routine);
 
   @override
   _WorkoutLogsState createState() => _WorkoutLogsState();
@@ -72,7 +72,7 @@ class _WorkoutLogsState extends State<WorkoutLogs> {
         ),
         SizedBox(
           width: double.infinity,
-          child: WorkoutLogCalendar(widget._workoutPlan),
+          child: WorkoutLogCalendar(widget._routine),
         ),
       ],
     );
@@ -89,9 +89,9 @@ class WorkoutLogEvent {
 }
 
 class WorkoutLogCalendar extends StatefulWidget {
-  final Routine _workoutPlan;
+  final Routine _routine;
 
-  const WorkoutLogCalendar(this._workoutPlan);
+  const WorkoutLogCalendar(this._routine);
 
   @override
   _WorkoutLogCalendarState createState() => _WorkoutLogCalendarState();
@@ -120,8 +120,8 @@ class _WorkoutLogCalendarState extends State<WorkoutLogCalendar> {
   }
 
   void loadEvents() {
-    for (final date in widget._workoutPlan.logData.keys) {
-      final entry = widget._workoutPlan.logData[date]!;
+    for (final date in widget._routine.logData.keys) {
+      final entry = widget._routine.logData[date]!;
       _events[DateFormatLists.format(date)] = [
         WorkoutLogEvent(date, entry['session'], entry['exercises']),
       ];
@@ -179,6 +179,7 @@ class _WorkoutLogCalendarState extends State<WorkoutLogCalendar> {
                       logEvents.first.dateTime,
                       logEvents.first.exercises,
                       logEvents.first.session,
+                      widget._routine,
                     )
                   : Container();
             },

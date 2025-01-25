@@ -17,6 +17,7 @@
  */
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/misc.dart';
 import 'package:wger/models/exercises/exercise.dart';
@@ -86,12 +87,12 @@ class Log {
     required this.routineId,
     this.repetitions,
     this.repetitionsTarget,
-    required this.repetitionsUnitId,
+    this.repetitionsUnitId = REP_UNIT_REPETITIONS_ID,
     required this.rir,
     this.rirTarget,
     this.weight,
     this.weightTarget,
-    required this.weightUnitId,
+    this.weightUnitId = WEIGHT_UNIT_KG,
     required this.date,
   });
 

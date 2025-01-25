@@ -118,8 +118,8 @@ class Routine {
   /// means here that the values are the same, i.e. logs with the same weight,
   /// reps, etc. are considered equal. Workout ID, Log ID and date are not
   /// considered.
-  List<Log> filterLogsByExercise(Exercise exercise, {bool unique = false}) {
-    var out = logs.where((element) => element.exerciseId == exercise.id).toList();
+  List<Log> filterLogsByExercise(int exerciseId, {bool unique = false}) {
+    var out = logs.where((log) => log.exerciseId == exerciseId).toList();
 
     if (unique) {
       out = out.toSet().toList();
@@ -127,6 +127,26 @@ class Routine {
 
     out.sort((a, b) => b.date.compareTo(a.date));
     return out;
+  }
+
+  /// Groups logs by repetition
+  Map<num, List<Log>> groupLogsByRepetition({List<Log>? logs}) {
+    final workoutLogs = logs ?? this.logs;
+    final Map<num, List<Log>> groupedLogs = {};
+
+    for (final log in workoutLogs) {
+      if (log.repetitions == null) {
+        continue;
+      }
+
+      if (!groupedLogs.containsKey(log.repetitions)) {
+        groupedLogs[log.repetitions!] = [];
+      }
+
+      groupedLogs[log.repetitions]!.add(log);
+    }
+
+    return groupedLogs;
   }
 
   /// Massages the log data to more easily present on the log overview

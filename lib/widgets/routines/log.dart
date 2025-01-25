@@ -18,89 +18,60 @@
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/helpers/colors.dart';
 import 'package:wger/helpers/ui.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/log.dart';
+import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/session.dart';
-import 'package:wger/providers/routines.dart';
 import 'package:wger/widgets/measurements/charts.dart';
 import 'package:wger/widgets/routines/charts.dart';
 
 class ExerciseLogChart extends StatelessWidget {
-  final Exercise _base;
-  final DateTime _currentDate;
+  final Map<num, List<Log>> _logs;
+  final DateTime _selectedDate;
 
-  const ExerciseLogChart(this._base, this._currentDate);
+  const ExerciseLogChart(this._logs, this._selectedDate);
 
   @override
   Widget build(BuildContext context) {
-    final workoutPlansData = Provider.of<RoutinesProvider>(context, listen: false);
-    final workout = workoutPlansData.currentPlan;
-    var colors = generateChartColors(1).iterator;
+    final colors = generateChartColors(_logs.keys.length).iterator;
 
-    Future<Map<String, dynamic>> getChartEntries(BuildContext context) async {
-      return workoutPlansData.fetchLogData(workout!, _base);
-    }
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        LogChartWidgetFl(_logs, _selectedDate),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ..._logs.keys.map((reps) {
+              // e is the list of logs with the same reps, so we can just take the
+              // first entry and read the reps from it. Yes, this is an amazingly ugly hack
+              // final reps = log.repetitions;
 
-    return FutureBuilder(
-      future: getChartEntries(context),
-      builder: (context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          colors = generateChartColors(snapshot.data!['chart_data'].length).iterator;
-        }
-
-        return SizedBox(
-          height: 260,
-          child: snapshot.connectionState == ConnectionState.waiting
-              ? const Center(child: CircularProgressIndicator())
-              : Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    LogChartWidgetFl(snapshot.data!, _currentDate),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ...snapshot.data!['chart_data'].map((e) {
-                          // e is the list of logs with the same reps, so we can just take the
-                          // first entry and read the reps from it. Yes, this is an amazingly ugly hack
-                          final reps = e.first['reps'];
-
-                          colors.moveNext();
-                          return Indicator(
-                            color: colors.current,
-                            text: reps.toString(),
-                            isSquare: false,
-                          );
-                        }).toList(),
-                      ],
-                    ),
-                    const SizedBox(height: 15),
-                  ],
-                ),
-        );
-      },
+              colors.moveNext();
+              return Indicator(
+                color: colors.current,
+                text: reps.toString(),
+                isSquare: false,
+              );
+            }).toList(),
+          ],
+        ),
+        const SizedBox(height: 15),
+      ],
     );
   }
 }
 
-class DayLogWidget extends StatefulWidget {
+class DayLogWidget extends StatelessWidget {
   final DateTime _date;
+  final Routine _routine;
+
   final WorkoutSession? _session;
   final Map<Exercise, List<Log>> _exerciseData;
 
-  const DayLogWidget(this._date, this._exerciseData, this._session);
-
-  @override
-  _DayLogWidgetState createState() => _DayLogWidgetState();
-}
-
-class _DayLogWidgetState extends State<DayLogWidget> {
-  @override
-  void initState() {
-    super.initState();
-  }
+  const DayLogWidget(this._date, this._exerciseData, this._session, this._routine);
 
   @override
   Widget build(BuildContext context) {
@@ -108,35 +79,36 @@ class _DayLogWidgetState extends State<DayLogWidget> {
       child: Column(
         children: [
           Text(
-            DateFormat.yMd(Localizations.localeOf(context).languageCode).format(widget._date),
+            DateFormat.yMd(Localizations.localeOf(context).languageCode).format(_date),
             style: Theme.of(context).textTheme.headlineSmall,
           ),
-          if (widget._session != null) const Text('Session data here'),
-          ...widget._exerciseData.keys.map((base) {
-            final exercise = base.getTranslation(Localizations.localeOf(context).languageCode);
+          if (_session != null) const Text('Session data here'),
+          ..._exerciseData.keys.map((exercise) {
+            final translation =
+                exercise.getTranslation(Localizations.localeOf(context).languageCode);
             return Column(
               children: [
-                if (widget._exerciseData[base]!.isNotEmpty)
+                if (_exerciseData[exercise]!.isNotEmpty)
                   Text(
-                    exercise.name,
+                    translation.name,
                     style: Theme.of(context).textTheme.headlineSmall,
                   )
                 else
                   Container(),
-                ...widget._exerciseData[base]!.map(
+                ..._exerciseData[exercise]!.map(
                   (log) => Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(log.singleLogRepTextNoNl),
                       IconButton(
                         icon: const Icon(Icons.delete),
-                        onPressed: () async {
+                        onPressed: () {
                           showDeleteDialog(
                             context,
-                            exercise.name,
+                            translation.name,
                             log,
-                            exercise,
-                            widget._exerciseData,
+                            translation,
+                            _exerciseData,
                           );
                         },
                       ),
@@ -145,7 +117,12 @@ class _DayLogWidgetState extends State<DayLogWidget> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15),
-                  child: ExerciseLogChart(base, widget._date),
+                  child: ExerciseLogChart(
+                    _routine.groupLogsByRepetition(
+                      logs: _routine.filterLogsByExercise(exercise.id!),
+                    ),
+                    _date,
+                  ),
                 ),
               ],
             );

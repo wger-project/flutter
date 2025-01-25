@@ -23,7 +23,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/base_config.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/day_data.dart';
@@ -62,7 +61,7 @@ class RoutinesProvider with ChangeNotifier {
   static const _routineConfigRestTime = 'rest-config';
   static const _routineConfigMaxRestTime = 'max-rest-config';
 
-  Routine? _currentPlan;
+  Routine? _currentRoutine;
   late ExercisesProvider _exercises;
   final WgerBaseProvider baseProvider;
   List<Routine> _routines = [];
@@ -92,7 +91,7 @@ class RoutinesProvider with ChangeNotifier {
 
   /// Clears all lists
   void clear() {
-    _currentPlan = null;
+    _currentRoutine = null;
     _routines = [];
     _weightUnits = [];
     _repetitionUnits = [];
@@ -131,17 +130,17 @@ class RoutinesProvider with ChangeNotifier {
 
   /// Set the currently "active" workout plan
   void setCurrentPlan(int id) {
-    _currentPlan = findById(id);
+    _currentRoutine = findById(id);
   }
 
   /// Returns the currently "active" workout plan
-  Routine? get currentPlan {
-    return _currentPlan;
+  Routine? get currentRoutine {
+    return _currentRoutine;
   }
 
   /// Reset the currently "active" workout plan to null
   void resetCurrentRoutine() {
-    _currentPlan = null;
+    _currentRoutine = null;
   }
 
   /// Returns the current active workout plan. At the moment this is just
@@ -376,21 +375,6 @@ class RoutinesProvider with ChangeNotifier {
       notifyListeners();
       throw WgerHttpException(response.body);
     }
-  }
-
-  Future<Map<String, dynamic>> fetchLogData(
-    Routine workout,
-    Exercise base,
-  ) async {
-    final data = await baseProvider.fetch(
-      baseProvider.makeUrl(
-        _routinesUrlPath,
-        id: workout.id,
-        objectMethod: 'logs',
-        query: {'id': base.id!.toString()},
-      ),
-    );
-    return data;
   }
 
   /// Fetch and set weight units for workout (kg, lb, plate, etc.)

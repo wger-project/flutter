@@ -393,6 +393,13 @@ class MockExercisesProvider extends _i1.Mock implements _i17.ExercisesProvider {
       ) as _i18.Future<void>);
 
   @override
+  _i18.Future<void> updateExerciseCache(_i3.ExerciseDatabase? database) => (super.noSuchMethod(
+        Invocation.method(#updateExerciseCache, [database]),
+        returnValue: _i18.Future<void>.value(),
+        returnValueForMissingStub: _i18.Future<void>.value(),
+      ) as _i18.Future<void>);
+
+  @override
   _i18.Future<void> fetchAndSetMuscles(_i3.ExerciseDatabase? database) => (super.noSuchMethod(
         Invocation.method(#fetchAndSetMuscles, [database]),
         returnValue: _i18.Future<void>.value(),

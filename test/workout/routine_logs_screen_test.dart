@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -71,7 +73,7 @@ void main() {
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();
 
-    await screenMatchesGolden(tester, 'routine_logs_screen_detail');
+    await screenMatchesGolden(tester, 'routine_logs_screen_detail', skip: !Platform.isLinux);
 
     // expect(find.text('3 day workout'), findsOneWidget);
 

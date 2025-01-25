@@ -147,21 +147,21 @@ class Exercise extends Equatable {
   Exercise.fromApiDataJson(Map<String, dynamic> baseData, List<Language> languages)
       : this.fromApiData(ExerciseApiData.fromJson(baseData), languages);
 
-  Exercise.fromApiData(ExerciseApiData baseData, List<Language> languages) {
-    id = baseData.id;
-    uuid = baseData.uuid;
-    categoryId = baseData.category.id;
-    category = baseData.category;
+  Exercise.fromApiData(ExerciseApiData exerciseData, List<Language> languages) {
+    id = exerciseData.id;
+    uuid = exerciseData.uuid;
+    categoryId = exerciseData.category.id;
+    category = exerciseData.category;
 
-    created = baseData.created;
-    lastUpdate = baseData.lastUpdate;
-    lastUpdateGlobal = baseData.lastUpdateGlobal;
+    created = exerciseData.created;
+    lastUpdate = exerciseData.lastUpdate;
+    lastUpdateGlobal = exerciseData.lastUpdateGlobal;
 
-    musclesSecondary = baseData.muscles;
-    muscles = baseData.muscles;
-    equipment = baseData.equipment;
-    category = baseData.category;
-    translations = baseData.translations.map((e) {
+    musclesSecondary = exerciseData.muscles;
+    muscles = exerciseData.muscles;
+    equipment = exerciseData.equipment;
+    category = exerciseData.category;
+    translations = exerciseData.translations.map((e) {
       e.language = languages.firstWhere(
         (l) => l.id == e.languageId,
 
@@ -173,13 +173,13 @@ class Exercise extends Equatable {
       );
       return e;
     }).toList();
-    videos = baseData.videos;
-    images = baseData.images;
+    videos = exerciseData.videos;
+    images = exerciseData.images;
 
-    authors = baseData.authors;
-    authorsGlobal = baseData.authorsGlobal;
+    authors = exerciseData.authors;
+    authorsGlobal = exerciseData.authorsGlobal;
 
-    variationId = baseData.variationId;
+    variationId = exerciseData.variationId;
   }
 
   /// Returns translation for the given language

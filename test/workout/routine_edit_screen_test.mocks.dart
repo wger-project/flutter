@@ -4,11 +4,10 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i13;
-import 'dart:ui' as _i17;
+import 'dart:ui' as _i16;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i16;
-import 'package:wger/models/exercises/exercise.dart' as _i15;
+import 'package:mockito/src/dummies.dart' as _i15;
 import 'package:wger/models/workouts/base_config.dart' as _i9;
 import 'package:wger/models/workouts/day.dart' as _i6;
 import 'package:wger/models/workouts/day_data.dart' as _i14;
@@ -258,18 +257,6 @@ class MockRoutinesProvider extends _i1.Mock implements _i12.RoutinesProvider {
       ) as _i13.Future<void>);
 
   @override
-  _i13.Future<Map<String, dynamic>> fetchLogData(
-    _i5.Routine? workout,
-    _i15.Exercise? base,
-  ) =>
-      (super.noSuchMethod(
-        Invocation.method(#fetchLogData, [workout, base]),
-        returnValue: _i13.Future<Map<String, dynamic>>.value(
-          <String, dynamic>{},
-        ),
-      ) as _i13.Future<Map<String, dynamic>>);
-
-  @override
   _i13.Future<void> fetchAndSetRepetitionUnits() => (super.noSuchMethod(
         Invocation.method(#fetchAndSetRepetitionUnits, []),
         returnValue: _i13.Future<void>.value(),
@@ -376,7 +363,7 @@ class MockRoutinesProvider extends _i1.Mock implements _i12.RoutinesProvider {
   @override
   String getConfigUrl(_i8.ConfigType? type) => (super.noSuchMethod(
         Invocation.method(#getConfigUrl, [type]),
-        returnValue: _i16.dummyValue<String>(
+        returnValue: _i15.dummyValue<String>(
           this,
           Invocation.method(#getConfigUrl, [type]),
         ),
@@ -464,13 +451,13 @@ class MockRoutinesProvider extends _i1.Mock implements _i12.RoutinesProvider {
       ) as _i13.Future<void>);
 
   @override
-  void addListener(_i17.VoidCallback? listener) => super.noSuchMethod(
+  void addListener(_i16.VoidCallback? listener) => super.noSuchMethod(
         Invocation.method(#addListener, [listener]),
         returnValueForMissingStub: null,
       );
 
   @override
-  void removeListener(_i17.VoidCallback? listener) => super.noSuchMethod(
+  void removeListener(_i16.VoidCallback? listener) => super.noSuchMethod(
         Invocation.method(#removeListener, [listener]),
         returnValueForMissingStub: null,
       );
