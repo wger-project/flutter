@@ -442,7 +442,9 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                                   .getTranslation(Localizations.localeOf(context).languageCode)
                                   .name),
                               const SizedBox(width: 10),
-                              MutedText(s.textRepr),
+                              Expanded(
+                                child: MutedText(s.textRepr, overflow: TextOverflow.ellipsis),
+                              ),
                             ],
                           ),
                           const SizedBox(height: 10),
