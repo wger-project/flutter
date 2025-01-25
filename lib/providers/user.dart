@@ -48,15 +48,11 @@ class UserProvider with ChangeNotifier {
   Future<void> _loadThemeMode() async {
     final prefsDarkMode = await prefs.getBool(PREFS_USER_DARK_THEME);
 
-    print(prefsDarkMode);
-
     if (prefsDarkMode == null) {
       themeMode = ThemeMode.system;
     } else {
       themeMode = prefsDarkMode ? ThemeMode.dark : ThemeMode.light;
     }
-
-    print(themeMode);
 
     notifyListeners();
   }
@@ -87,7 +83,7 @@ class UserProvider with ChangeNotifier {
 
   /// Save the user's profile to the server
   Future<void> saveProfile() async {
-    final data = await baseProvider.post(
+    await baseProvider.post(
       profile!.toJson(),
       baseProvider.makeUrl(PROFILE_URL),
     );
@@ -95,7 +91,7 @@ class UserProvider with ChangeNotifier {
 
   /// Verify the user's email
   Future<void> verifyEmail() async {
-    final verificationData = await baseProvider.fetch(baseProvider.makeUrl(
+    await baseProvider.fetch(baseProvider.makeUrl(
       PROFILE_URL,
       objectMethod: VERIFY_EMAIL,
     ));

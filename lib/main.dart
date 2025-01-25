@@ -16,9 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
+import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/core/locator.dart';
 import 'package:wger/providers/add_exercise.dart';
@@ -58,7 +60,15 @@ import 'package:wger/widgets/core/settings.dart';
 
 import 'providers/auth.dart';
 
+void _setupLogging() {
+  Logger.root.level = kDebugMode ? Level.ALL : Level.INFO;
+  Logger.root.onRecord.listen((record) {
+    print('${record.level.name}: ${record.time} [${record.loggerName}] ${record.message}');
+  });
+}
+
 void main() async {
+  _setupLogging();
   //zx.setLogEnabled(kDebugMode);
 
   // Needs to be called before runApp
@@ -66,12 +76,14 @@ void main() async {
 
   // Locator to initialize exerciseDB
   await ServiceLocator().configure();
+
   // Application
   runApp(const riverpod.ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp(); // This widget is the root of your application.
+  const MyApp();
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -146,7 +158,7 @@ class MyApp extends StatelessWidget {
             highContrastDarkTheme: wgerDarkThemeHc,
             themeMode: user.themeMode,
             home: auth.isAuth
-                ? const HomeTabsScreen()
+                ? HomeTabsScreen()
                 : FutureBuilder(
                     future: auth.tryAutoLogin(),
                     builder: (ctx, authResultSnapshot) =>
@@ -159,7 +171,7 @@ class MyApp extends StatelessWidget {
               FormScreen.routeName: (ctx) => const FormScreen(),
               GalleryScreen.routeName: (ctx) => const GalleryScreen(),
               GymModeScreen.routeName: (ctx) => const GymModeScreen(),
-              HomeTabsScreen.routeName: (ctx) => const HomeTabsScreen(),
+              HomeTabsScreen.routeName: (ctx) => HomeTabsScreen(),
               MeasurementCategoriesScreen.routeName: (ctx) => const MeasurementCategoriesScreen(),
               MeasurementEntriesScreen.routeName: (ctx) => const MeasurementEntriesScreen(),
               NutritionalPlansScreen.routeName: (ctx) => const NutritionalPlansScreen(),
