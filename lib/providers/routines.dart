@@ -30,6 +30,7 @@ import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/session.dart';
+import 'package:wger/models/workouts/session_api.dart';
 import 'package:wger/models/workouts/slot.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
@@ -39,6 +40,7 @@ import 'package:wger/providers/exercises.dart';
 class RoutinesProvider with ChangeNotifier {
   static const _routinesUrlPath = 'routine';
   static const _routinesStructureSubpath = 'structure';
+  static const _routinesLogsSubpath = 'logs';
   static const _routinesDateSequenceDisplaySubpath = 'date-sequence-display';
   static const _routinesDateSequenceGymSubpath = 'date-sequence-gym';
   static const _routinesCurrentIterationDisplaySubpath = 'current-iteration-display';
@@ -259,6 +261,13 @@ class RoutinesProvider with ChangeNotifier {
           objectMethod: _routinesCurrentIterationGymSubpath,
         ),
       ),
+      baseProvider.fetch(
+        baseProvider.makeUrl(
+          _routinesUrlPath,
+          id: routineId,
+          objectMethod: _routinesLogsSubpath,
+        ),
+      ),
       baseProvider.fetchPaginated(
         baseProvider.makeUrl(
           _logsUrlPath,
@@ -273,7 +282,8 @@ class RoutinesProvider with ChangeNotifier {
     final dayDataGym = results[2] as List<dynamic>;
     final currentIterationDayData = results[3] as List<dynamic>;
     final currentIterationDayDataGym = results[4] as List<dynamic>;
-    final logData = results[5] as List<dynamic>;
+    final sessionData = results[5] as List<dynamic>;
+    final logData = results[6] as List<dynamic>;
 
     /*
      * Set exercise, repetition and weight unit objects
@@ -293,6 +303,9 @@ class RoutinesProvider with ChangeNotifier {
     final currentIterationGym =
         currentIterationDayDataGym.map((entry) => DayData.fromJson(entry)).toList();
     setExercisesAndUnits(currentIterationGym);
+
+    final sessionDataEntries =
+        sessionData.map((entry) => WorkoutSessionApi.fromJson(entry)).toList();
 
     for (final day in routine.days) {
       for (final slot in day.slots) {
@@ -314,6 +327,7 @@ class RoutinesProvider with ChangeNotifier {
     routine.dayDataCurrentIterationGym = currentIterationGym;
 
     // Logs
+    routine.sessions = sessionDataEntries;
     routine.logs = [];
 
     for (final logEntry in logData) {
@@ -651,17 +665,31 @@ class RoutinesProvider with ChangeNotifier {
   /*
    * Sessions
    */
-  Future<dynamic> fetchSessionData() async {
-    final data = await baseProvider.fetch(
+  Future<List<WorkoutSession>> fetchSessionData() async {
+    final data = await baseProvider.fetchPaginated(
       baseProvider.makeUrl(_sessionUrlPath),
     );
-    return data;
+    final sessions = data.map((entry) => WorkoutSession.fromJson(entry)).toList();
+
+    notifyListeners();
+
+    return sessions;
   }
 
   Future<WorkoutSession> addSession(WorkoutSession session) async {
     final data = await baseProvider.post(
       session.toJson(),
       baseProvider.makeUrl(_sessionUrlPath),
+    );
+    final newSession = WorkoutSession.fromJson(data);
+    notifyListeners();
+    return newSession;
+  }
+
+  Future<WorkoutSession> editSession(WorkoutSession session) async {
+    final data = await baseProvider.patch(
+      session.toJson(),
+      baseProvider.makeUrl(_sessionUrlPath, id: session.id),
     );
     final newSession = WorkoutSession.fromJson(data);
     notifyListeners();

@@ -23,7 +23,6 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/misc.dart';
-import 'package:wger/models/workouts/session.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
@@ -117,9 +116,8 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
 
     // Process workout sessions
     final RoutinesProvider plans = Provider.of<RoutinesProvider>(context, listen: false);
-    await plans.fetchSessionData().then((entries) {
-      for (final entry in entries['results']) {
-        final session = WorkoutSession.fromJson(entry);
+    await plans.fetchSessionData().then((sessions) {
+      for (final session in sessions) {
         final date = DateFormatLists.format(session.date);
         if (!_events.containsKey(date)) {
           _events[date] = [];

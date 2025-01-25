@@ -28,6 +28,7 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/gym_mode.dart';
 import 'package:wger/helpers/i18n.dart';
 import 'package:wger/helpers/json.dart';
+import 'package:wger/helpers/misc.dart';
 import 'package:wger/helpers/ui.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day_data.dart';
@@ -727,17 +728,28 @@ class ExerciseOverview extends StatelessWidget {
 }
 
 class SessionPage extends StatefulWidget {
-  final Routine _workoutPlan;
+  final Routine _routine;
+  late WorkoutSession _session;
   final PageController _controller;
   final TimeOfDay _start;
   final Map<Exercise, int> _exercisePages;
 
-  const SessionPage(
-    this._workoutPlan,
+  SessionPage(
+    this._routine,
     this._controller,
     this._start,
     this._exercisePages,
-  );
+  ) {
+    _session = _routine.sessions.map((sessionApi) => sessionApi.session).firstWhere(
+          (session) => session.date.isSameDayAs(DateTime.now()),
+          orElse: () => WorkoutSession()
+            ..routineId = _routine.id!
+            ..impression = DEFAULT_IMPRESSION
+            ..date = DateTime.now()
+            ..timeStart = _start
+            ..timeEnd = TimeOfDay.now(),
+        );
+  }
 
   @override
   _SessionPageState createState() => _SessionPageState();
@@ -750,7 +762,7 @@ class _SessionPageState extends State<SessionPage> {
   final timeStartController = TextEditingController();
   final timeEndController = TextEditingController();
 
-  final _session = WorkoutSession.now();
+  // final _session = WorkoutSession.now();
 
   /// Selected impression: bad, neutral, good
   var selectedImpression = [false, true, false];
@@ -759,13 +771,8 @@ class _SessionPageState extends State<SessionPage> {
   void initState() {
     super.initState();
 
-    // ref.read(gymStateProvider.notifier).clear();
-
-    timeStartController.text = timeToString(widget._start)!;
-    timeEndController.text = timeToString(TimeOfDay.now())!;
-    _session.routineId = widget._workoutPlan.id!;
-    _session.impression = DEFAULT_IMPRESSION;
-    _session.date = DateTime.now();
+    timeStartController.text = timeToString(widget._session.timeStart)!;
+    timeEndController.text = timeToString(widget._session.timeEnd)!;
   }
 
   @override
@@ -779,6 +786,8 @@ class _SessionPageState extends State<SessionPage> {
 
   @override
   Widget build(BuildContext context) {
+    final routinesProvider = context.read<RoutinesProvider>();
+
     return Column(
       children: [
         NavigationHeader(
@@ -802,7 +811,7 @@ class _SessionPageState extends State<SessionPage> {
                       for (int buttonIndex = 0;
                           buttonIndex < selectedImpression.length;
                           buttonIndex++) {
-                        _session.impression = index + 1;
+                        widget._session.impression = index + 1;
 
                         if (buttonIndex == index) {
                           selectedImpression[buttonIndex] = true;
@@ -828,7 +837,7 @@ class _SessionPageState extends State<SessionPage> {
                   keyboardType: TextInputType.multiline,
                   onFieldSubmitted: (_) {},
                   onSaved: (newValue) {
-                    _session.notes = newValue!;
+                    widget._session.notes = newValue!;
                   },
                 ),
                 Row(
@@ -848,16 +857,16 @@ class _SessionPageState extends State<SessionPage> {
                           // Open time picker
                           final pickedTime = await showTimePicker(
                             context: context,
-                            initialTime: _session.timeStart,
+                            initialTime: widget._session.timeStart,
                           );
 
                           if (pickedTime != null) {
                             timeStartController.text = timeToString(pickedTime)!;
-                            _session.timeStart = pickedTime;
+                            widget._session.timeStart = pickedTime;
                           }
                         },
                         onSaved: (newValue) {
-                          _session.timeStart = stringToTime(newValue);
+                          widget._session.timeStart = stringToTime(newValue);
                         },
                         validator: (_) {
                           final TimeOfDay startTime = stringToTime(timeStartController.text);
@@ -884,16 +893,16 @@ class _SessionPageState extends State<SessionPage> {
                           // Open time picker
                           final pickedTime = await showTimePicker(
                             context: context,
-                            initialTime: _session.timeEnd,
+                            initialTime: widget._session.timeEnd,
                           );
 
                           if (pickedTime != null) {
                             timeEndController.text = timeToString(pickedTime)!;
-                            _session.timeEnd = pickedTime;
+                            widget._session.timeEnd = pickedTime;
                           }
                         },
                         onSaved: (newValue) {
-                          _session.timeEnd = stringToTime(newValue);
+                          widget._session.timeEnd = stringToTime(newValue);
                         },
                       ),
                     ),
@@ -911,10 +920,11 @@ class _SessionPageState extends State<SessionPage> {
 
                     // Save the entry on the server
                     try {
-                      await provider.Provider.of<RoutinesProvider>(
-                        context,
-                        listen: false,
-                      ).addSession(_session);
+                      if (widget._session.id == null) {
+                        await routinesProvider.addSession(widget._session);
+                      } else {
+                        await routinesProvider.editSession(widget._session);
+                      }
 
                       if (mounted) {
                         Navigator.of(context).pop();

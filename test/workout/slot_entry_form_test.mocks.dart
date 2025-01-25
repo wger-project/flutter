@@ -419,10 +419,12 @@ class MockRoutinesProvider extends _i1.Mock implements _i12.RoutinesProvider {
       ) as _i13.Future<void>);
 
   @override
-  _i13.Future<dynamic> fetchSessionData() => (super.noSuchMethod(
+  _i13.Future<List<_i10.WorkoutSession>> fetchSessionData() => (super.noSuchMethod(
         Invocation.method(#fetchSessionData, []),
-        returnValue: _i13.Future<dynamic>.value(),
-      ) as _i13.Future<dynamic>);
+        returnValue: _i13.Future<List<_i10.WorkoutSession>>.value(
+          <_i10.WorkoutSession>[],
+        ),
+      ) as _i13.Future<List<_i10.WorkoutSession>>);
 
   @override
   _i13.Future<_i10.WorkoutSession> addSession(_i10.WorkoutSession? session) => (super.noSuchMethod(
@@ -431,6 +433,17 @@ class MockRoutinesProvider extends _i1.Mock implements _i12.RoutinesProvider {
           _FakeWorkoutSession_8(
             this,
             Invocation.method(#addSession, [session]),
+          ),
+        ),
+      ) as _i13.Future<_i10.WorkoutSession>);
+
+  @override
+  _i13.Future<_i10.WorkoutSession> editSession(_i10.WorkoutSession? session) => (super.noSuchMethod(
+        Invocation.method(#editSession, [session]),
+        returnValue: _i13.Future<_i10.WorkoutSession>.value(
+          _FakeWorkoutSession_8(
+            this,
+            Invocation.method(#editSession, [session]),
           ),
         ),
       ) as _i13.Future<_i10.WorkoutSession>);

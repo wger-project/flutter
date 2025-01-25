@@ -22,6 +22,7 @@ import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/models/workouts/log.dart';
+import 'package:wger/models/workouts/session_api.dart';
 
 part 'routine.g.dart';
 
@@ -77,6 +78,9 @@ class Routine {
   @JsonKey(includeFromJson: false, includeToJson: false)
   List<Log> logs = [];
 
+  @JsonKey(required: false, includeToJson: false, defaultValue: [])
+  List<WorkoutSessionApi> sessions = [];
+
   Routine({
     this.id,
     DateTime? created,
@@ -91,6 +95,7 @@ class Routine {
     this.dayDataCurrentIteration = const [],
     this.dayDataCurrentIterationGym = const [],
     this.logs = const [],
+    this.sessions = const [],
   }) {
     this.created = created ?? DateTime.now();
     this.start = start ?? DateTime.now();

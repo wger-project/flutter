@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/json.dart';
+import 'package:wger/models/workouts/log.dart';
 
 part 'session.g.dart';
 
@@ -47,6 +48,9 @@ class WorkoutSession {
   @JsonKey(required: true, name: 'time_end', toJson: timeToString, fromJson: stringToTime)
   late TimeOfDay timeEnd;
 
+  @JsonKey(required: false, includeToJson: false, defaultValue: [])
+  List<Log> logs = [];
+
   WorkoutSession();
 
   WorkoutSession.withData({
@@ -57,6 +61,7 @@ class WorkoutSession {
     required this.notes,
     required this.timeStart,
     required this.timeEnd,
+    this.logs = const [],
   });
 
   WorkoutSession.now() {
