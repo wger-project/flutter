@@ -47,7 +47,7 @@ class _WorkoutLogsState extends State<WorkoutLogs> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return ListView(
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 10),

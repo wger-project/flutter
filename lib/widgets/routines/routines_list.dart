@@ -39,24 +39,24 @@ class RoutinesList extends StatelessWidget {
               padding: const EdgeInsets.all(10.0),
               itemCount: _routineProvider.items.length,
               itemBuilder: (context, index) {
-                final currentWorkout = _routineProvider.items[index];
+                final currentRoutine = _routineProvider.items[index];
 
                 return Card(
                   child: ListTile(
                     onTap: () async {
-                      _routineProvider.setCurrentPlan(currentWorkout.id!);
+                      _routineProvider.setCurrentPlan(currentRoutine.id!);
                       final routine =
-                          await _routineProvider.fetchAndSetRoutineFull(currentWorkout.id!);
+                          await _routineProvider.fetchAndSetRoutineFull(currentRoutine.id!);
 
                       Navigator.of(context).pushNamed(
                         RoutineScreen.routeName,
                         arguments: routine,
                       );
                     },
-                    title: Text(currentWorkout.name),
+                    title: Text(currentRoutine.name),
                     subtitle: Text(
-                      '${DateFormat.yMd(Localizations.localeOf(context).languageCode).format(currentWorkout.start)}'
-                      ' - ${DateFormat.yMd(Localizations.localeOf(context).languageCode).format(currentWorkout.end)}',
+                      '${DateFormat.yMd(Localizations.localeOf(context).languageCode).format(currentRoutine.start)}'
+                      ' - ${DateFormat.yMd(Localizations.localeOf(context).languageCode).format(currentRoutine.end)}',
                     ),
                     trailing: Row(mainAxisSize: MainAxisSize.min, children: [
                       const VerticalDivider(),
@@ -70,7 +70,7 @@ class RoutinesList extends StatelessWidget {
                             builder: (BuildContext contextDialog) {
                               return AlertDialog(
                                 content: Text(
-                                  AppLocalizations.of(context).confirmDelete(currentWorkout.name),
+                                  AppLocalizations.of(context).confirmDelete(currentRoutine.name),
                                 ),
                                 actions: [
                                   TextButton(
@@ -91,7 +91,7 @@ class RoutinesList extends StatelessWidget {
                                       Provider.of<RoutinesProvider>(
                                         context,
                                         listen: false,
-                                      ).deleteRoutine(currentWorkout.id!);
+                                      ).deleteRoutine(currentRoutine.id!);
 
                                       // Close the popup
                                       Navigator.of(contextDialog).pop();

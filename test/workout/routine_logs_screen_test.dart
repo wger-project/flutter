@@ -23,8 +23,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
 import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/routine_logs_screen.dart';
 import 'package:wger/screens/routine_screen.dart';
@@ -34,11 +34,12 @@ import 'routine_logs_screen_test.mocks.dart';
 
 @GenerateMocks([RoutinesProvider])
 void main() {
+  late Routine routine;
   final mockRoutinesProvider = MockRoutinesProvider();
 
   setUp(() {
-    when(mockRoutinesProvider.fetchAndSetRoutineFull(any))
-        .thenAnswer((_) => Future.value(getTestRoutine()));
+    routine = getTestRoutine();
+    routine.logs[0].date = DateTime.now();
   });
 
   Widget renderWidget({locale = 'en'}) {
@@ -54,7 +55,7 @@ void main() {
         home: TextButton(
           onPressed: () => key.currentState!.push(
             MaterialPageRoute<void>(
-              settings: RouteSettings(arguments: getTestRoutine()),
+              settings: RouteSettings(arguments: routine),
               builder: (_) => const WorkoutLogsScreen(),
             ),
           ),

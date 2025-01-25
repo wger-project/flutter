@@ -28,31 +28,14 @@ class WorkoutLogsScreen extends StatelessWidget {
 
   static const routeName = '/workout-logs';
 
-  Future<Routine> _loadFullWorkout(BuildContext context, int routineId) {
-    return Provider.of<RoutinesProvider>(context, listen: false).fetchAndSetRoutineFull(routineId);
-  }
-
   @override
   Widget build(BuildContext context) {
     final routine = ModalRoute.of(context)!.settings.arguments as Routine;
 
     return Scaffold(
       appBar: RoutineDetailAppBar(routine),
-      body: FutureBuilder(
-        future: _loadFullWorkout(context, routine.id!),
-        builder: (context, AsyncSnapshot<Routine> snapshot) => ListView(
-          children: [
-            if (snapshot.connectionState == ConnectionState.waiting)
-              const SizedBox(
-                height: 200,
-                child: Center(child: CircularProgressIndicator()),
-              )
-            else
-              Consumer<RoutinesProvider>(
-                builder: (context, value, child) => WorkoutLogs(routine),
-              ),
-          ],
-        ),
+      body: Consumer<RoutinesProvider>(
+        builder: (context, value, child) => WorkoutLogs(routine),
       ),
     );
   }

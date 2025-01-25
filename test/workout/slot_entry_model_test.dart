@@ -57,18 +57,8 @@ void main() {
 
   test('Checks that an model with data correctly calculates hasProgressionRules', () {
     final slotEntry = SlotEntry.empty();
-    slotEntry.weightConfigs.add(BaseConfig(
-      id: 1,
-      slotEntryId: 1,
-      iteration: 1,
-      value: 1,
-    ));
-    slotEntry.weightConfigs.add(BaseConfig(
-      id: 2,
-      slotEntryId: 1,
-      iteration: 1,
-      value: 1,
-    ));
+    slotEntry.weightConfigs.add(BaseConfig.firstIteration(3, 1));
+    slotEntry.weightConfigs.add(BaseConfig.firstIteration(4, 1));
     expect(slotEntry.hasProgressionRules, true);
   });
 }
