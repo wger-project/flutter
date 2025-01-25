@@ -16,11 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
 import 'package:wger/providers/auth.dart';
@@ -38,7 +37,10 @@ import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/screens/workout_plans_screen.dart';
 
 class HomeTabsScreen extends StatefulWidget {
-  const HomeTabsScreen();
+  final _logger = Logger('HomeTabsScreen');
+
+  HomeTabsScreen();
+
   static const routeName = '/dashboard2';
 
   @override
@@ -84,7 +86,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
       final userProvider = context.read<UserProvider>();
 
       // Base data
-      log('Loading base data');
+      widget._logger.info('Loading base data');
       try {
         await Future.wait([
           authProvider.setServerVersion(),
@@ -94,12 +96,12 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
           exercisesProvider.fetchAndSetInitialData(),
         ]);
       } catch (e) {
-        log('Exception loading base data');
-        log(e.toString());
+        widget._logger.warning('Exception loading base data');
+        widget._logger.warning(e.toString());
       }
 
       // Plans, weight and gallery
-      log('Loading plans, weight, measurements and gallery');
+      widget._logger.info('Loading plans, weight, measurements and gallery');
       try {
         await Future.wait([
           galleryProvider.fetchAndSetGallery(),
@@ -109,24 +111,24 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
           measurementProvider.fetchAndSetAllCategoriesAndEntries(),
         ]);
       } catch (e) {
-        log('Exception loading plans, weight, measurements and gallery');
-        log(e.toString());
+        widget._logger.warning('Exception loading plans, weight, measurements and gallery');
+        widget._logger.info(e.toString());
       }
 
       // Current nutritional plan
-      log('Loading current nutritional plan');
+      widget._logger.info('Loading current nutritional plan');
       try {
         if (nutritionPlansProvider.currentPlan != null) {
           final plan = nutritionPlansProvider.currentPlan!;
           await nutritionPlansProvider.fetchAndSetPlanFull(plan.id!);
         }
       } catch (e) {
-        log('Exception loading current nutritional plan');
-        log(e.toString());
+        widget._logger.warning('Exception loading current nutritional plan');
+        widget._logger.warning(e.toString());
       }
 
       // Current workout plan
-      log('Loading current workout plan');
+      widget._logger.info('Loading current workout plan');
       if (workoutPlansProvider.activePlan != null) {
         final planId = workoutPlansProvider.activePlan!.id!;
         await workoutPlansProvider.fetchAndSetWorkoutPlanFull(planId);

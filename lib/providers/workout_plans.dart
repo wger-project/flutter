@@ -17,9 +17,9 @@
  */
 
 import 'dart:convert';
-import 'dart:developer' as dev;
 
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
@@ -37,6 +37,8 @@ import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
 
 class WorkoutPlansProvider with ChangeNotifier {
+  final _logger = Logger('WorkoutPlansProvider');
+
   static const _workoutPlansUrlPath = 'workout';
   static const _daysUrlPath = 'day';
   static const _setsUrlPath = 'set';
@@ -178,6 +180,8 @@ class WorkoutPlansProvider with ChangeNotifier {
 
   /// Fetches a workout plan fully, i.e. with all corresponding child attributes
   Future<WorkoutPlan> fetchAndSetWorkoutPlanFull(int workoutId) async {
+    _logger.fine('Fetching full workout plan $workoutId');
+
     // Load a list of all settings so that we can search through it
     //
     // This is a bit ugly, but saves us sending lots of requests later on
@@ -252,8 +256,8 @@ class WorkoutPlansProvider with ChangeNotifier {
         log.exerciseBase = await _exercises.fetchAndSetExercise(log.exerciseBaseId);
         plan.logs.add(log);
       } catch (e) {
-        dev.log('fire! fire!');
-        dev.log(e.toString());
+        _logger.warning('fire! fire!');
+        _logger.warning(e.toString());
       }
     }
 
@@ -340,7 +344,7 @@ class WorkoutPlansProvider with ChangeNotifier {
         unitData['weightUnit'].forEach(
           (e) => _weightUnits.add(WeightUnit.fromJson(e)),
         );
-        dev.log(
+        _logger.info(
           "Read workout units data from cache. Valid till ${unitData['expiresIn']}",
         );
         return;

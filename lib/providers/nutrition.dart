@@ -17,9 +17,9 @@
  */
 
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 import 'package:wger/core/locator.dart';
 import 'package:wger/database/ingredients/ingredients_database.dart';
 import 'package:wger/exceptions/http_exception.dart';
@@ -35,6 +35,8 @@ import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/base_provider.dart';
 
 class NutritionPlansProvider with ChangeNotifier {
+  final _logger = Logger('NutritionPlansProvider');
+
   static const _nutritionalPlansPath = 'nutritionplan';
   static const _nutritionalPlansInfoPath = 'nutritionplaninfo';
   static const _mealPath = 'meal';
@@ -128,6 +130,8 @@ class NutritionPlansProvider with ChangeNotifier {
 
   /// Fetches a plan fully, i.e. with all corresponding child objects
   Future<NutritionalPlan> fetchAndSetPlanFull(int planId) async {
+    _logger.fine('Fetching full nutritional plan $planId');
+
     NutritionalPlan plan;
     try {
       plan = findById(planId);
@@ -310,7 +314,7 @@ class NutritionPlansProvider with ChangeNotifier {
       if (ingredientDb != null) {
         ingredient = Ingredient.fromJson(jsonDecode(ingredientDb.data));
         ingredients.add(ingredient);
-        log("Loaded ingredient '${ingredient.name}' from db cache");
+        _logger.info("Loaded ingredient '${ingredient.name}' from db cache");
 
         // Prune old entries
         if (DateTime.now()
@@ -331,7 +335,7 @@ class NutritionPlansProvider with ChangeNotifier {
                 lastFetched: DateTime.now(),
               ),
             );
-        log("Saved ingredient '${ingredient.name}' to db cache");
+        _logger.finer("Saved ingredient '${ingredient.name}' to db cache");
       }
     }
 
@@ -341,7 +345,7 @@ class NutritionPlansProvider with ChangeNotifier {
   /// Loads the available ingredients from the local cache
   Future<void> fetchIngredientsFromCache() async {
     final ingredientDb = await database.select(database.ingredients).get();
-    log('Read ${ingredientDb.length} ingredients from db cache');
+    _logger.info('Read ${ingredientDb.length} ingredients from db cache');
     if (ingredientDb.isNotEmpty) {
       ingredients = ingredientDb.map((e) => Ingredient.fromJson(jsonDecode(e.data))).toList();
     }
