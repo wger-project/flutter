@@ -17,9 +17,9 @@
  */
 
 import 'dart:convert';
-import 'dart:developer' as dev;
 
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
@@ -38,6 +38,8 @@ import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
 
 class RoutinesProvider with ChangeNotifier {
+  final _logger = Logger('RoutinesProvider');
+
   static const _routinesUrlPath = 'routine';
   static const _routinesStructureSubpath = 'structure';
   static const _routinesLogsSubpath = 'logs';
@@ -328,7 +330,6 @@ class RoutinesProvider with ChangeNotifier {
 
     // Logs
     routine.sessions = sessionDataEntries;
-    routine.logs = [];
 
     for (final logEntry in logData) {
       try {
@@ -338,8 +339,8 @@ class RoutinesProvider with ChangeNotifier {
         log.exerciseBase = (await _exercises.fetchAndSetExercise(log.exerciseId))!;
         routine.logs.add(log);
       } catch (e) {
-        dev.log('Error while processing the logs for a routine!');
-        dev.log(e.toString());
+        _logger.warning('Error while processing the logs for a routine!');
+        _logger.warning(e.toString());
       }
     }
 
@@ -377,15 +378,15 @@ class RoutinesProvider with ChangeNotifier {
   }
 
   Future<void> deleteRoutine(int id) async {
-    final existingWorkoutIndex = _routines.indexWhere((element) => element.id == id);
-    final existingWorkout = _routines[existingWorkoutIndex];
-    _routines.removeAt(existingWorkoutIndex);
+    final routineIndex = _routines.indexWhere((element) => element.id == id);
+    final routine = _routines[routineIndex];
+    _routines.removeAt(routineIndex);
     notifyListeners();
 
     final response = await baseProvider.deleteRequest(_routinesUrlPath, id);
 
     if (response.statusCode >= 400) {
-      _routines.insert(existingWorkoutIndex, existingWorkout);
+      _routines.insert(routineIndex, routine);
       notifyListeners();
       throw WgerHttpException(response.body);
     }
@@ -420,9 +421,7 @@ class RoutinesProvider with ChangeNotifier {
         unitData['weightUnit'].forEach(
           (e) => _weightUnits.add(WeightUnit.fromJson(e)),
         );
-        dev.log(
-          "Read workout units data from cache. Valid till ${unitData['expiresIn']}",
-        );
+        _logger.info("Read workout units data from cache. Valid till ${unitData['expiresIn']}");
         return;
       }
     }
