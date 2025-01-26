@@ -43,10 +43,10 @@ class WorkoutSession {
   late String notes;
 
   @JsonKey(required: true, name: 'time_start', toJson: timeToString, fromJson: stringToTime)
-  late TimeOfDay timeStart;
+  late TimeOfDay? timeStart;
 
   @JsonKey(required: true, name: 'time_end', toJson: timeToString, fromJson: stringToTime)
-  late TimeOfDay timeEnd;
+  late TimeOfDay? timeEnd;
 
   @JsonKey(required: false, includeToJson: false, defaultValue: [])
   List<Log> logs = [];
@@ -74,7 +74,7 @@ class WorkoutSession {
 
   Map<String, dynamic> toJson() => _$WorkoutSessionToJson(this);
 
-  String? get impressionAsString {
-    return IMPRESSION_MAP[impression];
+  String get impressionAsString {
+    return IMPRESSION_MAP[impression]!;
   }
 }

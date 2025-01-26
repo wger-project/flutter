@@ -158,24 +158,23 @@ class Routine {
   ///
   Map<DateTime, Map<String, dynamic>> get logData {
     final out = <DateTime, Map<String, dynamic>>{};
-    for (final log in logs) {
-      final exercise = log.exercise;
-      final date = log.date;
-
+    for (final sessionData in sessions) {
+      final date = sessionData.session.date;
       if (!out.containsKey(date)) {
         out[date] = {
-          'session': null,
+          'session': sessionData.session,
           'exercises': <Exercise, List<Log>>{},
         };
       }
 
-      if (!out[date]!['exercises']!.containsKey(exercise)) {
-        out[date]!['exercises']![exercise] = <Log>[];
+      for (final log in sessionData.logs) {
+        final exercise = log.exercise;
+        if (!out[date]!['exercises']!.containsKey(exercise)) {
+          out[date]!['exercises']![exercise] = <Log>[];
+        }
+        out[date]!['exercises']![exercise].add(log);
       }
-
-      out[date]!['exercises']![exercise].add(log);
     }
-
     return out;
   }
 }

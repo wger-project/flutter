@@ -270,12 +270,6 @@ class RoutinesProvider with ChangeNotifier {
           objectMethod: _routinesLogsSubpath,
         ),
       ),
-      baseProvider.fetchPaginated(
-        baseProvider.makeUrl(
-          _logsUrlPath,
-          query: {'routine': routineId.toString(), 'limit': '900'},
-        ),
-      ),
     ]);
 
     final routine = Routine.fromJson(results[0] as Map<String, dynamic>);
@@ -285,7 +279,6 @@ class RoutinesProvider with ChangeNotifier {
     final currentIterationDayData = results[3] as List<dynamic>;
     final currentIterationDayDataGym = results[4] as List<dynamic>;
     final sessionData = results[5] as List<dynamic>;
-    final logData = results[6] as List<dynamic>;
 
     /*
      * Set exercise, repetition and weight unit objects
@@ -329,18 +322,24 @@ class RoutinesProvider with ChangeNotifier {
     routine.dayDataCurrentIterationGym = currentIterationGym;
 
     // Logs
-    routine.sessions = sessionDataEntries;
+    // routine.sessions = sessionDataEntries;
+    routine.sessions = List<WorkoutSessionApi>.from(sessionDataEntries);
 
-    for (final logEntry in logData) {
+    // TODO: workaround, routine.logs is marked as an unmodifiable list
+    routine.logs = [];
+    for (final sessionData in routine.sessions) {
       try {
-        final log = Log.fromJson(logEntry);
-        log.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
-        log.repetitionUnit = _repetitionUnits.firstWhere((e) => e.id == log.weightUnitId);
-        log.exerciseBase = (await _exercises.fetchAndSetExercise(log.exerciseId))!;
-        routine.logs.add(log);
-      } catch (e) {
-        _logger.warning('Error while processing the logs for a routine!');
+        for (final log in sessionData.logs) {
+          log.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
+          log.repetitionUnit = _repetitionUnits.firstWhere((e) => e.id == log.weightUnitId);
+          log.exerciseBase = (await _exercises.fetchAndSetExercise(log.exerciseId))!;
+
+          routine.logs.add(log);
+        }
+      } catch (e, stackTrace) {
+        _logger.warning('Error while processing the session data for a routine!');
         _logger.warning(e.toString());
+        _logger.warning(stackTrace.toString());
       }
     }
 

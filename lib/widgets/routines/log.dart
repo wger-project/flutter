@@ -17,15 +17,89 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:wger/helpers/colors.dart';
+import 'package:wger/helpers/misc.dart';
 import 'package:wger/helpers/ui.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/session.dart';
 import 'package:wger/widgets/measurements/charts.dart';
-import 'package:wger/widgets/routines/charts.dart';
+
+class SessionInfo extends StatelessWidget {
+  final WorkoutSession _session;
+
+  const SessionInfo(this._session);
+
+  @override
+  Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
+
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        children: [
+          Text(
+            i18n.workoutSession,
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
+          Text(
+            DateFormat.yMd(Localizations.localeOf(context).languageCode).format(_session.date),
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
+          const SizedBox(height: 8.0),
+          _buildInfoRow(
+            context,
+            i18n.timeStart,
+            _session.timeStart != null
+                ? MaterialLocalizations.of(context).formatTimeOfDay(_session.timeStart!)
+                : '-/-',
+          ),
+          _buildInfoRow(
+            context,
+            i18n.timeEnd,
+            _session.timeEnd != null
+                ? MaterialLocalizations.of(context).formatTimeOfDay(_session.timeEnd!)
+                : '-/-',
+          ),
+          _buildInfoRow(
+            context,
+            i18n.impression,
+            _session.impressionAsString,
+          ),
+          _buildInfoRow(
+            context,
+            i18n.notes,
+            _session.notes.isNotEmpty ? _session.notes : '-/-',
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(BuildContext context, String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '$label: ',
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 class ExerciseLogChart extends StatelessWidget {
   final Map<num, List<Log>> _logs;
@@ -40,7 +114,8 @@ class ExerciseLogChart extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: [
-        LogChartWidgetFl(_logs, _selectedDate),
+        // TODO: why does this not work??? 😫
+        // LogChartWidgetFl(_logs, _selectedDate),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -64,34 +139,30 @@ class DayLogWidget extends StatelessWidget {
   final DateTime _date;
   final Routine _routine;
 
-  final WorkoutSession? _session;
-  final Map<Exercise, List<Log>> _exerciseData;
+  final WorkoutSession _session;
+  final Map<Exercise, List<Log>> _exerciseMap;
 
-  const DayLogWidget(this._date, this._exerciseData, this._session, this._routine);
+  const DayLogWidget(this._date, this._exerciseMap, this._session, this._routine);
 
   @override
   Widget build(BuildContext context) {
     return Card(
       child: Column(
         children: [
-          Text(
-            DateFormat.yMd(Localizations.localeOf(context).languageCode).format(_date),
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
-          if (_session != null) const Text('Session data here'),
-          ..._exerciseData.keys.map((exercise) {
+          SessionInfo(_session),
+          ..._exerciseMap.keys.map((exercise) {
             final translation =
                 exercise.getTranslation(Localizations.localeOf(context).languageCode);
             return Column(
               children: [
-                if (_exerciseData[exercise]!.isNotEmpty)
+                if (_exerciseMap[exercise]!.isNotEmpty)
                   Text(
                     translation.name,
                     style: Theme.of(context).textTheme.headlineSmall,
                   )
                 else
                   Container(),
-                ..._exerciseData[exercise]!.map(
+                ..._exerciseMap[exercise]!.map(
                   (log) => Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -104,7 +175,7 @@ class DayLogWidget extends StatelessWidget {
                             translation.name,
                             log,
                             translation,
-                            _exerciseData,
+                            _exerciseMap,
                           );
                         },
                       ),

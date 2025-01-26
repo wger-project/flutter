@@ -82,7 +82,7 @@ class _WorkoutLogsState extends State<WorkoutLogs> {
 /// An event in the workout log calendar
 class WorkoutLogEvent {
   final DateTime dateTime;
-  final WorkoutSession? session;
+  final WorkoutSession session;
   final Map<Exercise, List<Log>> exercises;
 
   const WorkoutLogEvent(this.dateTime, this.session, this.exercises);

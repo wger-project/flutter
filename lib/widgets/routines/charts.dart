@@ -102,9 +102,16 @@ class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
               );
             },
             interval: chartGetInterval(
-              // TODO: make sure this works when the data is empty etc
-              widget._data[widget._data.keys.first]!.first.date,
-              widget._data[widget._data.keys.last]!.first.date,
+              widget._data.containsKey(widget._data.keys.first) &&
+                      widget._data[widget._data.keys.first]!.isNotEmpty
+                  ? widget._data[widget._data.keys.first]!.first.date
+                  : DateTime.now(),
+              widget._data.containsKey(widget._data.keys.last) &&
+                      widget._data[widget._data.keys.last]!.isNotEmpty
+                  ? widget._data[widget._data.keys.last]!.first.date
+                  : DateTime.now(),
+              // widget._data[widget._data.keys.first]!.first.date,
+              // widget._data[widget._data.keys.last]!.first.date,
             ),
           ),
         ),

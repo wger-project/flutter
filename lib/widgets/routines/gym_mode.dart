@@ -857,7 +857,7 @@ class _SessionPageState extends State<SessionPage> {
                           // Open time picker
                           final pickedTime = await showTimePicker(
                             context: context,
-                            initialTime: widget._session.timeStart,
+                            initialTime: widget._session.timeStart ?? TimeOfDay.now(),
                           );
 
                           if (pickedTime != null) {
@@ -893,7 +893,7 @@ class _SessionPageState extends State<SessionPage> {
                           // Open time picker
                           final pickedTime = await showTimePicker(
                             context: context,
-                            initialTime: widget._session.timeEnd,
+                            initialTime: widget._session.timeEnd ?? TimeOfDay.now(),
                           );
 
                           if (pickedTime != null) {
