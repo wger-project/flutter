@@ -45,17 +45,13 @@ class ExerciseLogChart extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ..._logs.keys.map((reps) {
-              // e is the list of logs with the same reps, so we can just take the
-              // first entry and read the reps from it. Yes, this is an amazingly ugly hack
-              // final reps = log.repetitions;
-
               colors.moveNext();
               return Indicator(
                 color: colors.current,
-                text: reps.toString(),
+                text: formatNum(reps).toString(),
                 isSquare: false,
               );
-            }).toList(),
+            }),
           ],
         ),
         const SizedBox(height: 15),
