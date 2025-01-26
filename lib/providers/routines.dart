@@ -454,7 +454,6 @@ class RoutinesProvider with ChangeNotifier {
       baseProvider.makeUrl(_daysUrlPath),
     );
     day = Day.fromJson(data);
-    day.slots = [];
     final routine = findById(day.routineId);
     routine.days.add(day);
     if (refresh) {
@@ -676,12 +675,15 @@ class RoutinesProvider with ChangeNotifier {
     return sessions;
   }
 
-  Future<WorkoutSession> addSession(WorkoutSession session) async {
+  Future<WorkoutSession> addSession(WorkoutSession session, int routineId) async {
     final data = await baseProvider.post(
       session.toJson(),
       baseProvider.makeUrl(_sessionUrlPath),
     );
     final newSession = WorkoutSession.fromJson(data);
+    final routine = findById(routineId);
+    routine.sessions.add(WorkoutSessionApi(session: newSession));
+
     notifyListeners();
     return newSession;
   }

@@ -427,12 +427,16 @@ class MockRoutinesProvider extends _i1.Mock implements _i12.RoutinesProvider {
       ) as _i13.Future<List<_i10.WorkoutSession>>);
 
   @override
-  _i13.Future<_i10.WorkoutSession> addSession(_i10.WorkoutSession? session) => (super.noSuchMethod(
-        Invocation.method(#addSession, [session]),
+  _i13.Future<_i10.WorkoutSession> addSession(
+    _i10.WorkoutSession? session,
+    int? routineId,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(#addSession, [session, routineId]),
         returnValue: _i13.Future<_i10.WorkoutSession>.value(
           _FakeWorkoutSession_8(
             this,
-            Invocation.method(#addSession, [session]),
+            Invocation.method(#addSession, [session, routineId]),
           ),
         ),
       ) as _i13.Future<_i10.WorkoutSession>);

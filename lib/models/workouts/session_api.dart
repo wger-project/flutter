@@ -30,7 +30,7 @@ class WorkoutSessionApi {
   @JsonKey(required: false, includeToJson: false, defaultValue: [])
   List<Log> logs = [];
 
-  WorkoutSessionApi();
+  WorkoutSessionApi({required this.session, this.logs = const []});
 
   // Boilerplate
   factory WorkoutSessionApi.fromJson(Map<String, dynamic> json) =>

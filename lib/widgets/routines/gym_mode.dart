@@ -921,7 +921,7 @@ class _SessionPageState extends State<SessionPage> {
                     // Save the entry on the server
                     try {
                       if (widget._session.id == null) {
-                        await routinesProvider.addSession(widget._session);
+                        await routinesProvider.addSession(widget._session, widget._routine.id!);
                       } else {
                         await routinesProvider.editSession(widget._session);
                       }
