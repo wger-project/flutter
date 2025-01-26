@@ -1,10 +1,5 @@
 {
-  "aboutText": "wger arbeidsøkthåndterer er gemenhetslig fri programvare, lisensiert AGPLv3+ og tilgjengelig på GitHub:",
-  "@aboutText": {
-    "description": "Text in the about dialog"
-  },
   "fiber": "Fiber",
-  "@fibres": {},
   "mealLogged": "Måltid lagt til i dagbok",
   "@mealLogged": {},
   "successfullyDeleted": "Slettet",
@@ -91,8 +86,6 @@
   "@weight": {
     "description": "The weight of a workout log or body weight entry"
   },
-  "dismiss": "Forkast",
-  "@dismiss": {},
   "anErrorOccurred": "En feil inntraff.",
   "@anErrorOccurred": {},
   "nutritionalPlans": "Ernæringsplaner",

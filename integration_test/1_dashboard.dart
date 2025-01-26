@@ -5,26 +5,26 @@ import 'package:provider/provider.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/routines.dart';
 import 'package:wger/providers/user.dart';
-import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/dashboard.dart';
 import 'package:wger/theme/theme.dart';
 
 import '../test/exercises/contribute_exercise_test.mocks.dart';
 import '../test/measurements/measurement_categories_screen_test.mocks.dart';
-import '../test/nutrition/nutritional_plan_form_test.mocks.dart';
+import '../test/weight/weight_screen_test.mocks.dart' as weight;
 import '../test/workout/weight_unit_form_widget_test.mocks.dart';
-import '../test/workout/workout_form_test.mocks.dart';
 import '../test_data/body_weight.dart';
 import '../test_data/exercises.dart';
 import '../test_data/measurements.dart';
 import '../test_data/nutritional_plans.dart';
 import '../test_data/profile.dart';
-import '../test_data/workouts.dart';
+import '../test_data/routines.dart';
 
 Widget createDashboardScreen({locale = 'en'}) {
-  final mockWorkoutProvider = MockWorkoutPlansProvider();
-  when(mockWorkoutProvider.activePlan).thenReturn(getWorkout(exercises: getScreenshotExercises()));
+  final mockWorkoutProvider = MockRoutinesProvider();
+  when(mockWorkoutProvider.activeRoutine)
+      .thenReturn(getTestRoutine(exercises: getScreenshotExercises()));
 
   final Map<String, dynamic> logs = {
     'results': [
@@ -40,13 +40,13 @@ Widget createDashboardScreen({locale = 'en'}) {
   };
   when(mockWorkoutProvider.fetchSessionData()).thenAnswer((a) => Future.value(logs));
 
-  final mockNutritionProvider = MockNutritionPlansProvider();
+  final mockNutritionProvider = weight.MockNutritionPlansProvider();
 
   when(mockNutritionProvider.currentPlan)
       .thenAnswer((realInvocation) => getNutritionalPlanScreenshot());
   when(mockNutritionProvider.items).thenReturn([getNutritionalPlanScreenshot()]);
 
-  final mockWeightProvider = MockBodyWeightProvider();
+  final mockWeightProvider = weight.MockBodyWeightProvider();
   when(mockWeightProvider.items).thenReturn(getScreenshotWeightEntries());
 
   final mockMeasurementProvider = MockMeasurementProvider();
@@ -60,7 +60,7 @@ Widget createDashboardScreen({locale = 'en'}) {
       ChangeNotifierProvider<UserProvider>(
         create: (context) => mockUserProvider,
       ),
-      ChangeNotifierProvider<WorkoutPlansProvider>(
+      ChangeNotifierProvider<RoutinesProvider>(
         create: (context) => mockWorkoutProvider,
       ),
       ChangeNotifierProvider<NutritionPlansProvider>(
