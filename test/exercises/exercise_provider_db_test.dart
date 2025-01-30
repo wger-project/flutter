@@ -79,7 +79,7 @@ void main() {
   final Map<String, dynamic> tLanguageMap = jsonDecode(
     fixture('exercises/language_entries.json'),
   );
-  final Map<String, dynamic> tExerciseBaseInfoMap = jsonDecode(
+  final Map<String, dynamic> tExerciseInfoMap = jsonDecode(
     fixture('exercises/exercisebaseinfo_response.json'),
   );
 
@@ -120,12 +120,12 @@ void main() {
     // Mock base info response
     when(mockBaseProvider.makeUrl(exerciseBaseInfoUrl)).thenReturn(tExerciseInfoUri);
     when(mockBaseProvider.fetch(tExerciseInfoUri)).thenAnswer(
-      (_) => Future.value(tExerciseBaseInfoMap),
+      (_) => Future.value(tExerciseInfoMap),
     );
 
     when(mockBaseProvider.makeUrl(exerciseBaseInfoUrl, id: 9)).thenReturn(tExerciseInfoDetailUri);
     when(mockBaseProvider.fetch(tExerciseInfoDetailUri)).thenAnswer(
-      (_) => Future.value(tExerciseBaseInfoMap),
+      (_) => Future.value(tExerciseInfoMap),
     );
   });
 
@@ -392,9 +392,9 @@ void main() {
 
       await database.into(database.exercises).insert(
             ExercisesCompanion.insert(
-              id: tExerciseBaseInfoMap['id'],
-              data: json.encode(tExerciseBaseInfoMap),
-              lastUpdate: DateTime.parse(tExerciseBaseInfoMap['last_update_global']),
+              id: tExerciseInfoMap['id'],
+              data: json.encode(tExerciseInfoMap),
+              lastUpdate: DateTime.parse(tExerciseInfoMap['last_update_global']),
               lastFetched: DateTime.now(),
             ),
           );
@@ -424,9 +424,9 @@ void main() {
       provider.languages = testLanguages;
       await database.into(database.exercises).insert(
             ExercisesCompanion.insert(
-              id: tExerciseBaseInfoMap['id'],
-              data: json.encode(tExerciseBaseInfoMap),
-              lastUpdate: DateTime.parse(tExerciseBaseInfoMap['last_update_global']),
+              id: tExerciseInfoMap['id'],
+              data: json.encode(tExerciseInfoMap),
+              lastUpdate: DateTime.parse(tExerciseInfoMap['last_update_global']),
               lastFetched: DateTime.now().subtract(const Duration(hours: 1)),
             ),
           );
@@ -449,9 +449,9 @@ void main() {
       provider.languages = testLanguages;
       await database.into(database.exercises).insert(
             ExercisesCompanion.insert(
-              id: tExerciseBaseInfoMap['id'],
-              data: json.encode(tExerciseBaseInfoMap),
-              lastUpdate: DateTime.parse(tExerciseBaseInfoMap['last_update_global']),
+              id: tExerciseInfoMap['id'],
+              data: json.encode(tExerciseInfoMap),
+              lastUpdate: DateTime.parse(tExerciseInfoMap['last_update_global']),
               lastFetched: DateTime.now().subtract(const Duration(days: 10)),
             ),
           );
@@ -475,7 +475,7 @@ void main() {
     test('fetching a known exercise - needed API refresh - new data from API', () async {
       // Arrange
       provider.languages = testLanguages;
-      final newData = Map.from(tExerciseBaseInfoMap);
+      final newData = Map.from(tExerciseInfoMap);
       newData['uuid'] = 'bf6d5557-1c49-48fd-922e-75d11f81d4eb';
 
       await database.into(database.exercises).insert(
