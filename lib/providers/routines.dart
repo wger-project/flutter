@@ -325,24 +325,6 @@ class RoutinesProvider with ChangeNotifier {
     // routine.sessions = sessionDataEntries;
     routine.sessions = List<WorkoutSessionApi>.from(sessionDataEntries);
 
-    // TODO: workaround, routine.logs is marked as an unmodifiable list
-    routine.logs = [];
-    for (final sessionData in routine.sessions) {
-      try {
-        for (final log in sessionData.logs) {
-          log.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
-          log.repetitionUnit = _repetitionUnits.firstWhere((e) => e.id == log.weightUnitId);
-          log.exerciseBase = (await _exercises.fetchAndSetExercise(log.exerciseId))!;
-
-          routine.logs.add(log);
-        }
-      } catch (e, stackTrace) {
-        _logger.warning('Error while processing the session data for a routine!');
-        _logger.warning(e.toString());
-        _logger.warning(stackTrace.toString());
-      }
-    }
-
     // ... and done
     final routineIndex = _routines.indexWhere((r) => r.id == routineId);
     if (routineIndex != -1) {
@@ -706,13 +688,13 @@ class RoutinesProvider with ChangeNotifier {
     );
     final newLog = Log.fromJson(data);
 
-    log.id = newLog.id;
-    log.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
-    log.repetitionUnit = _repetitionUnits.firstWhere((e) => e.id == log.weightUnitId);
-    log.exerciseBase = (await _exercises.fetchAndSetExercise(log.exerciseId))!;
+    newLog.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
+    newLog.repetitionUnit = _repetitionUnits.firstWhere((e) => e.id == log.weightUnitId);
+    newLog.exerciseBase = (await _exercises.fetchAndSetExercise(log.exerciseId))!;
 
-    final plan = findById(log.routineId);
-    plan.logs.add(log);
+    final plan = findById(newLog.routineId);
+    final session = plan.sessions.firstWhere((element) => element.session.id == newLog.sessionId);
+    session.logs.add(newLog);
     notifyListeners();
     return newLog;
   }
@@ -725,7 +707,9 @@ class RoutinesProvider with ChangeNotifier {
   Future<void> deleteLog(Log log) async {
     await baseProvider.deleteRequest(_logsUrlPath, log.id!);
     for (final workout in _routines) {
-      workout.logs.removeWhere((element) => element.id == log.id);
+      for (final sessionData in workout.sessions) {
+        sessionData.session.logs.removeWhere((element) => element.id == log.id);
+      }
     }
     notifyListeners();
   }

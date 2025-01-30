@@ -40,6 +40,9 @@ class Log {
   @JsonKey(required: true, name: 'routine')
   late int routineId;
 
+  @JsonKey(required: true, name: 'session')
+  late int sessionId;
+
   @JsonKey(required: true)
   int? iteration;
 

@@ -75,9 +75,6 @@ class Routine {
   @JsonKey(includeFromJson: false, includeToJson: false)
   List<DayData> dayDataCurrentIterationGym = [];
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  List<Log> logs = [];
-
   @JsonKey(required: false, includeToJson: false, defaultValue: [])
   List<WorkoutSessionApi> sessions = [];
 
@@ -94,7 +91,6 @@ class Routine {
     this.dayDataGym = const [],
     this.dayDataCurrentIteration = const [],
     this.dayDataCurrentIterationGym = const [],
-    this.logs = const [],
     this.sessions = const [],
   }) {
     this.created = created ?? DateTime.now();
@@ -116,6 +112,14 @@ class Routine {
   factory Routine.fromJson(Map<String, dynamic> json) => _$RoutineFromJson(json);
 
   Map<String, dynamic> toJson() => _$RoutineToJson(this);
+
+  List<Log> get logs {
+    final out = <Log>[];
+    for (final session in sessions) {
+      out.addAll(session.logs);
+    }
+    return out;
+  }
 
   /// Filters the workout logs by exercise and sorts them by date
   ///
