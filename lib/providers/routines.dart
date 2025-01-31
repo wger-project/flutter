@@ -322,8 +322,14 @@ class RoutinesProvider with ChangeNotifier {
     routine.dayDataCurrentIterationGym = currentIterationGym;
 
     // Logs
-    // routine.sessions = sessionDataEntries;
     routine.sessions = List<WorkoutSessionApi>.from(sessionDataEntries);
+    for (final session in routine.sessions) {
+      for (final log in session.logs) {
+        log.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
+        log.repetitionUnit = _repetitionUnits.firstWhere((e) => e.id == log.repetitionsUnitId);
+        log.exerciseBase = (await _exercises.fetchAndSetExercise(log.exerciseId))!;
+      }
+    }
 
     // ... and done
     final routineIndex = _routines.indexWhere((r) => r.id == routineId);
