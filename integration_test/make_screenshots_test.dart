@@ -58,6 +58,7 @@ const languages = [
   'tr-TR',
   'uk',
   'zh-CN',
+  'zh-TW',
 ];
 
 void main() {
