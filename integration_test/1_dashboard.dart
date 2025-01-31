@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/models/workouts/session.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
@@ -26,19 +27,15 @@ Widget createDashboardScreen({locale = 'en'}) {
   when(mockWorkoutProvider.activeRoutine)
       .thenReturn(getTestRoutine(exercises: getScreenshotExercises()));
 
-  final Map<String, dynamic> logs = {
-    'results': [
-      {
-        'id': 1,
-        'workout': 1,
-        'date': '2022-12-01',
-        'impression': '3',
-        'time_start': '17:00',
-        'time_end': '19:00',
-      },
-    ],
-  };
-  when(mockWorkoutProvider.fetchSessionData()).thenAnswer((a) => Future.value(logs));
+  when(mockWorkoutProvider.fetchSessionData()).thenAnswer((a) => Future.value([
+        WorkoutSession(
+          routineId: 1,
+          date: DateTime.now().add(const Duration(days: -1)),
+          timeStart: const TimeOfDay(hour: 17, minute: 34),
+          timeEnd: const TimeOfDay(hour: 19, minute: 3),
+          impression: 3,
+        ),
+      ]));
 
   final mockNutritionProvider = weight.MockNutritionPlansProvider();
 
