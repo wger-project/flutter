@@ -85,7 +85,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
   log3.repetitionUnit = testRepetitionUnit1;
 
   final session1 = WorkoutSessionApi(
-    session: WorkoutSession.withData(
+    session: WorkoutSession(
       id: 1,
       routineId: 1,
       date: DateTime(2021, 5, 1),
@@ -98,7 +98,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
   );
 
   final session2 = WorkoutSessionApi(
-    session: WorkoutSession.withData(
+    session: WorkoutSession(
       id: 2,
       routineId: 1,
       date: DateTime(2021, 5, 2),

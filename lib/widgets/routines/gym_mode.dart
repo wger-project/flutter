@@ -742,12 +742,13 @@ class SessionPage extends StatefulWidget {
   ) {
     _session = _routine.sessions.map((sessionApi) => sessionApi.session).firstWhere(
           (session) => session.date.isSameDayAs(DateTime.now()),
-          orElse: () => WorkoutSession()
-            ..routineId = _routine.id!
-            ..impression = DEFAULT_IMPRESSION
-            ..date = DateTime.now()
-            ..timeStart = _start
-            ..timeEnd = TimeOfDay.now(),
+          orElse: () => WorkoutSession(
+            routineId: _routine.id!,
+            impression: DEFAULT_IMPRESSION,
+            date: DateTime.now(),
+            timeEnd: TimeOfDay.now(),
+            timeStart: _start,
+          ),
         );
   }
 

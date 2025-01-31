@@ -51,22 +51,17 @@ class WorkoutSession {
   @JsonKey(required: false, includeToJson: false, defaultValue: [])
   List<Log> logs = [];
 
-  WorkoutSession();
-
-  WorkoutSession.withData({
-    required this.id,
+  WorkoutSession({
+    this.id,
     required this.routineId,
-    required this.date,
-    required this.impression,
-    required this.notes,
-    required this.timeStart,
-    required this.timeEnd,
-    this.logs = const [],
-  });
-
-  WorkoutSession.now() {
-    timeStart = TimeOfDay.now();
-    timeEnd = TimeOfDay.now();
+    this.impression = 2,
+    this.notes = '',
+    this.timeStart,
+    this.timeEnd,
+    this.logs = const <Log>[],
+    DateTime? date,
+  }) {
+    this.date = date ?? DateTime.now();
   }
 
   // Boilerplate
