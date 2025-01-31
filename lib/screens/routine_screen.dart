@@ -18,9 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/routines.dart';
-import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/routines/app_bar.dart';
 import 'package:wger/widgets/routines/routine_detail.dart';
 
@@ -31,31 +29,16 @@ class RoutineScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final routineArgs = ModalRoute.of(context)!.settings.arguments as Routine;
+    final routineId = ModalRoute.of(context)!.settings.arguments as int;
     final provider = context.read<RoutinesProvider>();
 
-    return Scaffold(
-      appBar: RoutineDetailAppBar(routineArgs),
-      body: SingleChildScrollView(
-        child: Consumer<RoutinesProvider>(
-          builder: (context, value, child) => RoutineDetail(routineArgs),
-        ),
-      ),
-    );
+    final routine = provider.findById(routineId);
 
     return Scaffold(
-      appBar: RoutineDetailAppBar(routineArgs),
-      body: FutureBuilder(
-        future: provider.fetchAndSetRoutineFull(routineArgs.id!),
-        builder: (context, snapshot) => ListView(
-          children: [
-            if (snapshot.connectionState == ConnectionState.waiting)
-              const BoxedProgressIndicator()
-            else
-              Consumer<RoutinesProvider>(
-                builder: (context, value, child) => RoutineDetail(snapshot.data!),
-              ),
-          ],
+      appBar: RoutineDetailAppBar(routine),
+      body: SingleChildScrollView(
+        child: Consumer<RoutinesProvider>(
+          builder: (context, value, child) => RoutineDetail(routine),
         ),
       ),
     );

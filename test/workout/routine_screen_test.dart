@@ -46,7 +46,11 @@ void main() {
     final key = GlobalKey<NavigatorState>();
 
     return ChangeNotifierProvider<RoutinesProvider>(
-      create: (context) => RoutinesProvider(mockBaseProvider, exercisesProvider, []),
+      create: (context) => RoutinesProvider(
+        mockBaseProvider,
+        exercisesProvider,
+        [getTestRoutine()],
+      ),
       child: MaterialApp(
         locale: Locale(locale),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -55,7 +59,7 @@ void main() {
         home: TextButton(
           onPressed: () => key.currentState!.push(
             MaterialPageRoute<void>(
-              settings: RouteSettings(arguments: getTestRoutine()),
+              settings: const RouteSettings(arguments: 1),
               builder: (_) => const RoutineScreen(),
             ),
           ),

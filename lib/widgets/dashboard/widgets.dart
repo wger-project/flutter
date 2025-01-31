@@ -149,14 +149,9 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
   }
 }
 
-class DashboardWeightWidget extends StatefulWidget {
+class DashboardWeightWidget extends StatelessWidget {
   const DashboardWeightWidget();
 
-  @override
-  _DashboardWeightWidgetState createState() => _DashboardWeightWidgetState();
-}
-
-class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
   @override
   Widget build(BuildContext context) {
     final profile = context.read<UserProvider>().profile;
@@ -514,7 +509,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                   onPressed: () {
                     Navigator.of(context).pushNamed(
                       RoutineScreen.routeName,
-                      arguments: _routine,
+                      arguments: _routine!.id,
                     );
                   },
                 ),
