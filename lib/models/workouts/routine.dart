@@ -139,12 +139,18 @@ class Routine {
   }
 
   /// Groups logs by repetition
-  Map<num, List<Log>> groupLogsByRepetition({List<Log>? logs}) {
+  Map<num, List<Log>> groupLogsByRepetition({
+    List<Log>? logs,
+    filterNullWeights = false,
+    filterNullReps = false,
+  }) {
     final workoutLogs = logs ?? this.logs;
     final Map<num, List<Log>> groupedLogs = {};
 
     for (final log in workoutLogs) {
-      if (log.repetitions == null) {
+      if (log.repetitions == null ||
+          (filterNullWeights && log.weight == null) ||
+          (filterNullReps && log.repetitions == null)) {
         continue;
       }
 

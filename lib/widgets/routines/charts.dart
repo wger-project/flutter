@@ -22,6 +22,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:wger/helpers/charts.dart';
 import 'package:wger/helpers/colors.dart';
+import 'package:wger/helpers/misc.dart';
 import 'package:wger/models/workouts/log.dart';
 
 class LogChartWidgetFl extends StatefulWidget {
@@ -51,10 +52,13 @@ class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
       touchTooltipData: LineTouchTooltipData(
         getTooltipItems: (touchedSpots) {
           return touchedSpots.map((touchedSpot) {
-            final reps = widget._data[touchedSpot.barIndex]?.first.repetitions;
+            // Retrieve the repetitions (bit ugly, but it works)
+            final List<num> keys = widget._data.keys.toList();
+            final mapKey = keys[touchedSpot.barIndex];
+            final reps = widget._data[mapKey]?.first.repetitions;
 
             return LineTooltipItem(
-              '$reps × ${touchedSpot.y} kg',
+              '${formatNum(reps!)} × ${touchedSpot.y} kg',
               const TextStyle(color: Colors.white),
             );
           }).toList();

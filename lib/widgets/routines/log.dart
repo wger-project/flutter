@@ -27,6 +27,7 @@ import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/session.dart';
 import 'package:wger/widgets/measurements/charts.dart';
+import 'package:wger/widgets/routines/charts.dart';
 
 class SessionInfo extends StatelessWidget {
   final WorkoutSession _session;
@@ -114,8 +115,7 @@ class ExerciseLogChart extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: [
-        // TODO: why does this not work??? 😫
-        // LogChartWidgetFl(_logs, _selectedDate),
+        LogChartWidgetFl(_logs, _selectedDate),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -187,6 +187,8 @@ class DayLogWidget extends StatelessWidget {
                   child: ExerciseLogChart(
                     _routine.groupLogsByRepetition(
                       logs: _routine.filterLogsByExercise(exercise.id!),
+                      filterNullReps: true,
+                      filterNullWeights: true,
                     ),
                     _date,
                   ),

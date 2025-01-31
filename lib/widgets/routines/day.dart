@@ -81,7 +81,7 @@ class RoutineDayWidget extends StatelessWidget {
       children: [
         if (slotData.comment.isNotEmpty) MutedText(slotData.comment),
         ...slotData.setConfigs.map(
-          (setting) => SetConfigDataWidget(setConfigData: setting),
+          (setConfigData) => SetConfigDataWidget(setConfigData: setConfigData),
         ),
         // const Divider(),
       ],
