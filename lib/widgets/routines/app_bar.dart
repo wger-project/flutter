@@ -35,7 +35,6 @@ enum _RoutineDetailBarOptions {
   edit,
   delete,
   logs,
-  reload,
 }
 
 class RoutineListAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -96,10 +95,6 @@ class RoutineDetailAppBar extends StatelessWidget implements PreferredSizeWidget
         PopupMenuButton(
           itemBuilder: (context) {
             return [
-              const PopupMenuItem<_RoutineDetailBarOptions>(
-                value: _RoutineDetailBarOptions.reload,
-                child: Text('debug / reload'),
-              ),
               PopupMenuItem<_RoutineDetailBarOptions>(
                 value: _RoutineDetailBarOptions.logs,
                 child: Text(i18n.labelWorkoutLogs),
@@ -114,7 +109,7 @@ class RoutineDetailAppBar extends StatelessWidget implements PreferredSizeWidget
               ),
             ];
           },
-          onSelected: (value) async {
+          onSelected: (value) {
             switch (value) {
               case _RoutineDetailBarOptions.edit:
                 Navigator.pushNamed(
@@ -133,9 +128,6 @@ class RoutineDetailAppBar extends StatelessWidget implements PreferredSizeWidget
               case _RoutineDetailBarOptions.delete:
                 provider.deleteRoutine(routine.id!);
                 Navigator.of(context).pop();
-
-              case _RoutineDetailBarOptions.reload:
-                await provider.fetchAndSetRoutineFull(routine.id!);
             }
           },
         ),

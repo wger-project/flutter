@@ -35,7 +35,7 @@ String repText(
   final List<String> out = [];
 
   if (reps != null) {
-    out.add(reps.toString());
+    out.add(formatNum(reps).toString());
 
     // The default repetition unit is 'reps', which we don't show unless there
     // is no weight defined so that we don't just output something like "8" but
@@ -49,7 +49,7 @@ String repText(
 
   if (weight != null && weight != 0) {
     out.add('×');
-    out.add(weight.toString());
+    out.add(formatNum(weight).toString());
     out.add(weightUnitObj.name);
   }
 
@@ -109,4 +109,12 @@ void launchURL(String url, BuildContext context) async {
       SnackBar(content: Text('Could not open $url.')),
     );
   }
+}
+
+/// Formats a number to an integer if it's a whole number
+num formatNum(num value) {
+  if (value is double && value == value.toInt()) {
+    return value.toInt();
+  }
+  return value;
 }

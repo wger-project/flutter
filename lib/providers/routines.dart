@@ -17,13 +17,12 @@
  */
 
 import 'dart:convert';
-import 'dart:developer' as dev;
 
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/base_config.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/day_data.dart';
@@ -31,6 +30,7 @@ import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/session.dart';
+import 'package:wger/models/workouts/session_api.dart';
 import 'package:wger/models/workouts/slot.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
@@ -38,8 +38,11 @@ import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
 
 class RoutinesProvider with ChangeNotifier {
+  final _logger = Logger('RoutinesProvider');
+
   static const _routinesUrlPath = 'routine';
   static const _routinesStructureSubpath = 'structure';
+  static const _routinesLogsSubpath = 'logs';
   static const _routinesDateSequenceDisplaySubpath = 'date-sequence-display';
   static const _routinesDateSequenceGymSubpath = 'date-sequence-gym';
   static const _routinesCurrentIterationDisplaySubpath = 'current-iteration-display';
@@ -62,7 +65,7 @@ class RoutinesProvider with ChangeNotifier {
   static const _routineConfigRestTime = 'rest-config';
   static const _routineConfigMaxRestTime = 'max-rest-config';
 
-  Routine? _currentPlan;
+  Routine? _currentRoutine;
   late ExercisesProvider _exercises;
   final WgerBaseProvider baseProvider;
   List<Routine> _routines = [];
@@ -92,7 +95,7 @@ class RoutinesProvider with ChangeNotifier {
 
   /// Clears all lists
   void clear() {
-    _currentPlan = null;
+    _currentRoutine = null;
     _routines = [];
     _weightUnits = [];
     _repetitionUnits = [];
@@ -131,17 +134,17 @@ class RoutinesProvider with ChangeNotifier {
 
   /// Set the currently "active" workout plan
   void setCurrentPlan(int id) {
-    _currentPlan = findById(id);
+    _currentRoutine = findById(id);
   }
 
   /// Returns the currently "active" workout plan
-  Routine? get currentPlan {
-    return _currentPlan;
+  Routine? get currentRoutine {
+    return _currentRoutine;
   }
 
   /// Reset the currently "active" workout plan to null
   void resetCurrentRoutine() {
-    _currentPlan = null;
+    _currentRoutine = null;
   }
 
   /// Returns the current active workout plan. At the moment this is just
@@ -260,10 +263,11 @@ class RoutinesProvider with ChangeNotifier {
           objectMethod: _routinesCurrentIterationGymSubpath,
         ),
       ),
-      baseProvider.fetchPaginated(
+      baseProvider.fetch(
         baseProvider.makeUrl(
-          _logsUrlPath,
-          query: {'routine': routineId.toString(), 'limit': '900'},
+          _routinesUrlPath,
+          id: routineId,
+          objectMethod: _routinesLogsSubpath,
         ),
       ),
     ]);
@@ -274,7 +278,7 @@ class RoutinesProvider with ChangeNotifier {
     final dayDataGym = results[2] as List<dynamic>;
     final currentIterationDayData = results[3] as List<dynamic>;
     final currentIterationDayDataGym = results[4] as List<dynamic>;
-    final logData = results[5] as List<dynamic>;
+    final sessionData = results[5] as List<dynamic>;
 
     /*
      * Set exercise, repetition and weight unit objects
@@ -294,6 +298,9 @@ class RoutinesProvider with ChangeNotifier {
     final currentIterationGym =
         currentIterationDayDataGym.map((entry) => DayData.fromJson(entry)).toList();
     setExercisesAndUnits(currentIterationGym);
+
+    final sessionDataEntries =
+        sessionData.map((entry) => WorkoutSessionApi.fromJson(entry)).toList();
 
     for (final day in routine.days) {
       for (final slot in day.slots) {
@@ -315,18 +322,12 @@ class RoutinesProvider with ChangeNotifier {
     routine.dayDataCurrentIterationGym = currentIterationGym;
 
     // Logs
-    routine.logs = [];
-
-    for (final logEntry in logData) {
-      try {
-        final log = Log.fromJson(logEntry);
+    routine.sessions = List<WorkoutSessionApi>.from(sessionDataEntries);
+    for (final session in routine.sessions) {
+      for (final log in session.logs) {
         log.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
-        log.repetitionUnit = _repetitionUnits.firstWhere((e) => e.id == log.weightUnitId);
+        log.repetitionUnit = _repetitionUnits.firstWhere((e) => e.id == log.repetitionsUnitId);
         log.exerciseBase = (await _exercises.fetchAndSetExercise(log.exerciseId))!;
-        routine.logs.add(log);
-      } catch (e) {
-        dev.log('Error while processing the logs for a routine!');
-        dev.log(e.toString());
       }
     }
 
@@ -364,33 +365,18 @@ class RoutinesProvider with ChangeNotifier {
   }
 
   Future<void> deleteRoutine(int id) async {
-    final existingWorkoutIndex = _routines.indexWhere((element) => element.id == id);
-    final existingWorkout = _routines[existingWorkoutIndex];
-    _routines.removeAt(existingWorkoutIndex);
+    final routineIndex = _routines.indexWhere((element) => element.id == id);
+    final routine = _routines[routineIndex];
+    _routines.removeAt(routineIndex);
     notifyListeners();
 
     final response = await baseProvider.deleteRequest(_routinesUrlPath, id);
 
     if (response.statusCode >= 400) {
-      _routines.insert(existingWorkoutIndex, existingWorkout);
+      _routines.insert(routineIndex, routine);
       notifyListeners();
       throw WgerHttpException(response.body);
     }
-  }
-
-  Future<Map<String, dynamic>> fetchLogData(
-    Routine workout,
-    Exercise base,
-  ) async {
-    final data = await baseProvider.fetch(
-      baseProvider.makeUrl(
-        _routinesUrlPath,
-        id: workout.id,
-        objectMethod: 'log_data',
-        query: {'id': base.id!.toString()},
-      ),
-    );
-    return data;
   }
 
   /// Fetch and set weight units for workout (kg, lb, plate, etc.)
@@ -422,9 +408,7 @@ class RoutinesProvider with ChangeNotifier {
         unitData['weightUnit'].forEach(
           (e) => _weightUnits.add(WeightUnit.fromJson(e)),
         );
-        dev.log(
-          "Read workout units data from cache. Valid till ${unitData['expiresIn']}",
-        );
+        _logger.info("Read workout units data from cache. Valid till ${unitData['expiresIn']}");
         return;
       }
     }
@@ -456,7 +440,6 @@ class RoutinesProvider with ChangeNotifier {
       baseProvider.makeUrl(_daysUrlPath),
     );
     day = Day.fromJson(data);
-    day.slots = [];
     final routine = findById(day.routineId);
     routine.days.add(day);
     if (refresh) {
@@ -487,7 +470,7 @@ class RoutinesProvider with ChangeNotifier {
   Future<void> deleteDay(int dayId) async {
     await baseProvider.deleteRequest(_daysUrlPath, dayId);
     for (final workout in _routines) {
-      workout.days.removeWhere((element) => element.id == dayId);
+      workout.days = List.of(workout.days)..removeWhere((element) => element.id == dayId);
     }
     notifyListeners();
   }
@@ -521,7 +504,6 @@ class RoutinesProvider with ChangeNotifier {
     for (final routine in _routines) {
       for (final day in routine.days) {
         day.slots.removeWhere((s) => s.id == slotId);
-        break;
       }
     }
 
@@ -668,17 +650,34 @@ class RoutinesProvider with ChangeNotifier {
   /*
    * Sessions
    */
-  Future<dynamic> fetchSessionData() async {
-    final data = await baseProvider.fetch(
+  Future<List<WorkoutSession>> fetchSessionData() async {
+    final data = await baseProvider.fetchPaginated(
       baseProvider.makeUrl(_sessionUrlPath),
     );
-    return data;
+    final sessions = data.map((entry) => WorkoutSession.fromJson(entry)).toList();
+
+    notifyListeners();
+
+    return sessions;
   }
 
-  Future<WorkoutSession> addSession(WorkoutSession session) async {
+  Future<WorkoutSession> addSession(WorkoutSession session, int routineId) async {
     final data = await baseProvider.post(
       session.toJson(),
       baseProvider.makeUrl(_sessionUrlPath),
+    );
+    final newSession = WorkoutSession.fromJson(data);
+    final routine = findById(routineId);
+    routine.sessions.add(WorkoutSessionApi(session: newSession));
+
+    notifyListeners();
+    return newSession;
+  }
+
+  Future<WorkoutSession> editSession(WorkoutSession session) async {
+    final data = await baseProvider.patch(
+      session.toJson(),
+      baseProvider.makeUrl(_sessionUrlPath, id: session.id),
     );
     final newSession = WorkoutSession.fromJson(data);
     notifyListeners();
@@ -695,13 +694,13 @@ class RoutinesProvider with ChangeNotifier {
     );
     final newLog = Log.fromJson(data);
 
-    log.id = newLog.id;
-    log.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
-    log.repetitionUnit = _repetitionUnits.firstWhere((e) => e.id == log.weightUnitId);
-    log.exerciseBase = (await _exercises.fetchAndSetExercise(log.exerciseId))!;
+    newLog.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
+    newLog.repetitionUnit = _repetitionUnits.firstWhere((e) => e.id == log.weightUnitId);
+    newLog.exerciseBase = (await _exercises.fetchAndSetExercise(log.exerciseId))!;
 
-    final plan = findById(log.routineId);
-    plan.logs.add(log);
+    final plan = findById(newLog.routineId);
+    final session = plan.sessions.firstWhere((element) => element.session.id == newLog.sessionId);
+    session.logs.add(newLog);
     notifyListeners();
     return newLog;
   }
@@ -714,7 +713,9 @@ class RoutinesProvider with ChangeNotifier {
   Future<void> deleteLog(Log log) async {
     await baseProvider.deleteRequest(_logsUrlPath, log.id!);
     for (final workout in _routines) {
-      workout.logs.removeWhere((element) => element.id == log.id);
+      for (final sessionData in workout.sessions) {
+        sessionData.session.logs.removeWhere((element) => element.id == log.id);
+      }
     }
     notifyListeners();
   }

@@ -13,15 +13,16 @@ import '../test_data/routines.dart';
 Widget createWorkoutDetailScreen({locale = 'en'}) {
   final key = GlobalKey<NavigatorState>();
 
-  final mockWorkoutProvider = MockRoutinesProvider();
-  final workout = getTestRoutine(exercises: getScreenshotExercises());
-  when(mockWorkoutProvider.activeRoutine).thenReturn(workout);
-  when(mockWorkoutProvider.fetchAndSetRoutineFull(1)).thenAnswer((_) => Future.value(workout));
+  final mockRoutinesProvider = MockRoutinesProvider();
+  final routine = getTestRoutine(exercises: getScreenshotExercises());
+  // when(mockRoutinesProvider.activeRoutine).thenReturn(routine);
+  when(mockRoutinesProvider.findById(1)).thenReturn(routine);
+  // when(mockRoutinesProvider.fetchAndSetRoutineFull(1)).thenAnswer((_) => Future.value(routine));
 
   return MultiProvider(
     providers: [
       ChangeNotifierProvider<RoutinesProvider>(
-        create: (context) => mockWorkoutProvider,
+        create: (context) => mockRoutinesProvider,
       ),
     ],
     child: MaterialApp(
@@ -34,7 +35,7 @@ Widget createWorkoutDetailScreen({locale = 'en'}) {
       home: TextButton(
         onPressed: () => key.currentState!.push(
           MaterialPageRoute<void>(
-            settings: RouteSettings(arguments: workout),
+            settings: RouteSettings(arguments: routine.id),
             builder: (_) => const RoutineScreen(),
           ),
         ),

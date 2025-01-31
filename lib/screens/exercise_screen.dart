@@ -27,15 +27,15 @@ class ExerciseDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final exerciseBase = ModalRoute.of(context)!.settings.arguments as Exercise;
+    final exercise = ModalRoute.of(context)!.settings.arguments as Exercise;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(exerciseBase.getTranslation(Localizations.localeOf(context).languageCode).name),
+        title: Text(exercise.getTranslation(Localizations.localeOf(context).languageCode).name),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: ExerciseDetail(exerciseBase),
+        child: ExerciseDetail(exercise),
       ),
     );
   }

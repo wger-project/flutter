@@ -17,126 +17,165 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/helpers/colors.dart';
+import 'package:wger/helpers/misc.dart';
 import 'package:wger/helpers/ui.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/log.dart';
+import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/session.dart';
-import 'package:wger/providers/routines.dart';
 import 'package:wger/widgets/measurements/charts.dart';
 import 'package:wger/widgets/routines/charts.dart';
 
-class ExerciseLogChart extends StatelessWidget {
-  final Exercise _base;
-  final DateTime _currentDate;
+class SessionInfo extends StatelessWidget {
+  final WorkoutSession _session;
 
-  const ExerciseLogChart(this._base, this._currentDate);
+  const SessionInfo(this._session);
 
   @override
   Widget build(BuildContext context) {
-    final workoutPlansData = Provider.of<RoutinesProvider>(context, listen: false);
-    final workout = workoutPlansData.currentPlan;
-    var colors = generateChartColors(1).iterator;
+    final i18n = AppLocalizations.of(context);
 
-    Future<Map<String, dynamic>> getChartEntries(BuildContext context) async {
-      return workoutPlansData.fetchLogData(workout!, _base);
-    }
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        children: [
+          Text(
+            i18n.workoutSession,
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
+          Text(
+            DateFormat.yMd(Localizations.localeOf(context).languageCode).format(_session.date),
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
+          const SizedBox(height: 8.0),
+          _buildInfoRow(
+            context,
+            i18n.timeStart,
+            _session.timeStart != null
+                ? MaterialLocalizations.of(context).formatTimeOfDay(_session.timeStart!)
+                : '-/-',
+          ),
+          _buildInfoRow(
+            context,
+            i18n.timeEnd,
+            _session.timeEnd != null
+                ? MaterialLocalizations.of(context).formatTimeOfDay(_session.timeEnd!)
+                : '-/-',
+          ),
+          _buildInfoRow(
+            context,
+            i18n.impression,
+            _session.impressionAsString,
+          ),
+          _buildInfoRow(
+            context,
+            i18n.notes,
+            _session.notes.isNotEmpty ? _session.notes : '-/-',
+          ),
+        ],
+      ),
+    );
+  }
 
-    return FutureBuilder(
-      future: getChartEntries(context),
-      builder: (context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          colors = generateChartColors(snapshot.data!['chart_data'].length).iterator;
-        }
-
-        return SizedBox(
-          height: 260,
-          child: snapshot.connectionState == ConnectionState.waiting
-              ? const Center(child: CircularProgressIndicator())
-              : Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    LogChartWidgetFl(snapshot.data!, _currentDate),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ...snapshot.data!['chart_data'].map((e) {
-                          // e is the list of logs with the same reps, so we can just take the
-                          // first entry and read the reps from it. Yes, this is an amazingly ugly hack
-                          final reps = e.first['reps'];
-
-                          colors.moveNext();
-                          return Indicator(
-                            color: colors.current,
-                            text: reps.toString(),
-                            isSquare: false,
-                          );
-                        }).toList(),
-                      ],
-                    ),
-                    const SizedBox(height: 15),
-                  ],
-                ),
-        );
-      },
+  Widget _buildInfoRow(BuildContext context, String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '$label: ',
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
-class DayLogWidget extends StatefulWidget {
-  final DateTime _date;
-  final WorkoutSession? _session;
-  final Map<Exercise, List<Log>> _exerciseData;
+class ExerciseLogChart extends StatelessWidget {
+  final Map<num, List<Log>> _logs;
+  final DateTime _selectedDate;
 
-  const DayLogWidget(this._date, this._exerciseData, this._session);
+  const ExerciseLogChart(this._logs, this._selectedDate);
 
   @override
-  _DayLogWidgetState createState() => _DayLogWidgetState();
+  Widget build(BuildContext context) {
+    final colors = generateChartColors(_logs.keys.length).iterator;
+
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        LogChartWidgetFl(_logs, _selectedDate),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ..._logs.keys.map((reps) {
+              colors.moveNext();
+              return Indicator(
+                color: colors.current,
+                text: formatNum(reps).toString(),
+                isSquare: false,
+              );
+            }),
+          ],
+        ),
+        const SizedBox(height: 15),
+      ],
+    );
+  }
 }
 
-class _DayLogWidgetState extends State<DayLogWidget> {
-  @override
-  void initState() {
-    super.initState();
-  }
+class DayLogWidget extends StatelessWidget {
+  final DateTime _date;
+  final Routine _routine;
+
+  final WorkoutSession _session;
+  final Map<Exercise, List<Log>> _exerciseMap;
+
+  const DayLogWidget(this._date, this._exerciseMap, this._session, this._routine);
 
   @override
   Widget build(BuildContext context) {
     return Card(
       child: Column(
         children: [
-          Text(
-            DateFormat.yMd(Localizations.localeOf(context).languageCode).format(widget._date),
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
-          if (widget._session != null) const Text('Session data here'),
-          ...widget._exerciseData.keys.map((base) {
-            final exercise = base.getTranslation(Localizations.localeOf(context).languageCode);
+          SessionInfo(_session),
+          ..._exerciseMap.keys.map((exercise) {
+            final translation =
+                exercise.getTranslation(Localizations.localeOf(context).languageCode);
             return Column(
               children: [
-                if (widget._exerciseData[base]!.isNotEmpty)
+                if (_exerciseMap[exercise]!.isNotEmpty)
                   Text(
-                    exercise.name,
+                    translation.name,
                     style: Theme.of(context).textTheme.headlineSmall,
                   )
                 else
                   Container(),
-                ...widget._exerciseData[base]!.map(
+                ..._exerciseMap[exercise]!.map(
                   (log) => Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(log.singleLogRepTextNoNl),
                       IconButton(
                         icon: const Icon(Icons.delete),
-                        onPressed: () async {
+                        onPressed: () {
                           showDeleteDialog(
                             context,
-                            exercise.name,
+                            translation.name,
                             log,
-                            exercise,
-                            widget._exerciseData,
+                            translation,
+                            _exerciseMap,
                           );
                         },
                       ),
@@ -145,7 +184,14 @@ class _DayLogWidgetState extends State<DayLogWidget> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15),
-                  child: ExerciseLogChart(base, widget._date),
+                  child: ExerciseLogChart(
+                    _routine.groupLogsByRepetition(
+                      logs: _routine.filterLogsByExercise(exercise.id!),
+                      filterNullReps: true,
+                      filterNullWeights: true,
+                    ),
+                    _date,
+                  ),
                 ),
               ],
             );

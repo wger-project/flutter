@@ -501,7 +501,8 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               ...slot.entries.map(
-                                  (e) => Text(e.exerciseObj.getTranslation(languageCode).name)),
+                                (e) => Text(e.exerciseObj.getTranslation(languageCode).name),
+                              ),
                             ],
                           ),
                     trailing: Row(
@@ -522,11 +523,12 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
                               : const Icon(Icons.edit),
                         ),
                         IconButton(
-                            icon: const Icon(Icons.delete),
-                            onPressed: () async {
-                              selectedSlotId = null;
-                              await provider.deleteSlot(slot.id!);
-                            }),
+                          icon: const Icon(Icons.delete),
+                          onPressed: () async {
+                            selectedSlotId = null;
+                            await provider.deleteSlot(slot.id!);
+                          },
+                        ),
                       ],
                     ),
                   ),

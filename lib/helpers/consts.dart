@@ -62,6 +62,7 @@ const PREFS_LAST_UPDATED_LANGUAGES = 'lastUpdatedLanguages';
 const PREFS_INGREDIENTS = 'ingredientData';
 const PREFS_WORKOUT_UNITS = 'workoutUnits';
 const PREFS_USER = 'userData';
+const PREFS_USER_DARK_THEME = 'userDarkMode';
 const PREFS_LAST_SERVER = 'lastServer';
 
 const DEFAULT_ANIMATION_DURATION = Duration(milliseconds: 200);

@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/exceptions/no_such_entry_exception.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
@@ -24,6 +25,8 @@ import 'package:wger/models/measurements/measurement_entry.dart';
 import 'package:wger/providers/base_provider.dart';
 
 class MeasurementProvider with ChangeNotifier {
+  final _logger = Logger('MeasurementProvider');
+
   static const _categoryUrl = 'measurement-category';
   static const _entryUrl = 'measurement';
 
@@ -82,6 +85,8 @@ class MeasurementProvider with ChangeNotifier {
 
   /// Fetches and sets the measurement categories and their entries
   Future<void> fetchAndSetAllCategoriesAndEntries() async {
+    _logger.info('Fetching all measurement categories and entries');
+
     await fetchAndSetCategories();
     await Future.wait(_categories.map((e) => fetchAndSetCategoryEntries(e.id!)).toList());
   }

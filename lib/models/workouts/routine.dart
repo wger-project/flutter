@@ -22,6 +22,7 @@ import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/models/workouts/log.dart';
+import 'package:wger/models/workouts/session_api.dart';
 
 part 'routine.g.dart';
 
@@ -74,8 +75,8 @@ class Routine {
   @JsonKey(includeFromJson: false, includeToJson: false)
   List<DayData> dayDataCurrentIterationGym = [];
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  List<Log> logs = [];
+  @JsonKey(required: false, includeToJson: false, defaultValue: [])
+  List<WorkoutSessionApi> sessions = [];
 
   Routine({
     this.id,
@@ -90,7 +91,7 @@ class Routine {
     this.dayDataGym = const [],
     this.dayDataCurrentIteration = const [],
     this.dayDataCurrentIterationGym = const [],
-    this.logs = const [],
+    this.sessions = const [],
   }) {
     this.created = created ?? DateTime.now();
     this.start = start ?? DateTime.now();
@@ -112,14 +113,22 @@ class Routine {
 
   Map<String, dynamic> toJson() => _$RoutineToJson(this);
 
+  List<Log> get logs {
+    final out = <Log>[];
+    for (final session in sessions) {
+      out.addAll(session.logs);
+    }
+    return out;
+  }
+
   /// Filters the workout logs by exercise and sorts them by date
   ///
   /// Optionally, filters list so that only unique logs are returned. "Unique"
   /// means here that the values are the same, i.e. logs with the same weight,
   /// reps, etc. are considered equal. Workout ID, Log ID and date are not
   /// considered.
-  List<Log> filterLogsByExercise(Exercise exercise, {bool unique = false}) {
-    var out = logs.where((element) => element.exerciseId == exercise.id).toList();
+  List<Log> filterLogsByExercise(int exerciseId, {bool unique = false}) {
+    var out = logs.where((log) => log.exerciseId == exerciseId).toList();
 
     if (unique) {
       out = out.toSet().toList();
@@ -129,28 +138,53 @@ class Routine {
     return out;
   }
 
+  /// Groups logs by repetition
+  Map<num, List<Log>> groupLogsByRepetition({
+    List<Log>? logs,
+    filterNullWeights = false,
+    filterNullReps = false,
+  }) {
+    final workoutLogs = logs ?? this.logs;
+    final Map<num, List<Log>> groupedLogs = {};
+
+    for (final log in workoutLogs) {
+      if (log.repetitions == null ||
+          (filterNullWeights && log.weight == null) ||
+          (filterNullReps && log.repetitions == null)) {
+        continue;
+      }
+
+      if (!groupedLogs.containsKey(log.repetitions)) {
+        groupedLogs[log.repetitions!] = [];
+      }
+
+      groupedLogs[log.repetitions]!.add(log);
+    }
+
+    return groupedLogs;
+  }
+
   /// Massages the log data to more easily present on the log overview
   ///
   Map<DateTime, Map<String, dynamic>> get logData {
     final out = <DateTime, Map<String, dynamic>>{};
-    for (final log in logs) {
-      final exercise = log.exercise;
-      final date = log.date;
-
+    for (final sessionData in sessions) {
+      final date = sessionData.session.date;
       if (!out.containsKey(date)) {
         out[date] = {
-          'session': null,
+          'session': sessionData.session,
           'exercises': <Exercise, List<Log>>{},
         };
       }
 
-      if (!out[date]!['exercises']!.containsKey(exercise)) {
-        out[date]!['exercises']![exercise] = <Log>[];
+      for (final log in sessionData.logs) {
+        final exercise = log.exercise;
+        if (!out[date]!['exercises']!.containsKey(exercise)) {
+          out[date]!['exercises']![exercise] = <Log>[];
+        }
+        out[date]!['exercises']![exercise].add(log);
       }
-
-      out[date]!['exercises']![exercise].add(log);
     }
-
     return out;
   }
 }

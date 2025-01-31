@@ -43,9 +43,7 @@ class _RoutineEditState extends State<RoutineEdit> {
   @override
   void initState() {
     super.initState();
-    _dataFuture = context
-        .read<RoutinesProvider>()
-        .fetchAndSetRoutineFull(widget._routine.id!); // Initialize the Future here
+    _dataFuture = context.read<RoutinesProvider>().fetchAndSetRoutineFull(widget._routine.id!);
   }
 
   @override

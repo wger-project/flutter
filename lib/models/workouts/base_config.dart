@@ -58,7 +58,6 @@ class BaseConfig {
     required this.slotEntryId,
     required this.iteration,
     this.repeat = false,
-    // required this.trigger,
     required this.value,
     this.operation = 'r',
     this.step = 'abs',

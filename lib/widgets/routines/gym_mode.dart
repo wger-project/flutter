@@ -28,6 +28,7 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/gym_mode.dart';
 import 'package:wger/helpers/i18n.dart';
 import 'package:wger/helpers/json.dart';
+import 'package:wger/helpers/misc.dart';
 import 'package:wger/helpers/ui.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day_data.dart';
@@ -62,81 +63,80 @@ class GymMode extends ConsumerStatefulWidget {
   ConsumerState<GymMode> createState() => _GymModeState();
 }
 
-  class _GymModeState extends ConsumerState<GymMode> {
-    var _totalElements = 1;
+class _GymModeState extends ConsumerState<GymMode> {
+  var _totalElements = 1;
 
-    /// Map with the first (navigation) page for each exercise
-    final Map<Exercise, int> _exercisePages = {};
-    late final PageController _controller;
+  /// Map with the first (navigation) page for each exercise
+  final Map<Exercise, int> _exercisePages = {};
+  late final PageController _controller;
 
-    @override
-    void dispose() {
-      _controller.dispose();
-      super.dispose();
-    }
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
-    @override
-    void initState() {
-      super.initState();
+  @override
+  void initState() {
+    super.initState();
 
-      // Initialize the controller with the current page
-      final initialPage = ref.read(gymStateProvider).currentPage;
-      _controller = PageController(initialPage: initialPage);
+    // Initialize the controller with the current page
+    final initialPage = ref.read(gymStateProvider).currentPage;
+    _controller = PageController(initialPage: initialPage);
 
-      // Delay state modifications until after the widget tree is built
-      Future.microtask(() {
-        // Get the saved page and day from the provider
-        final savedPage = ref.read(gymStateProvider).currentPage;
-        final savedDayId = ref.read(gymStateProvider).dayId;
-        debugPrint('Saved Page: $savedPage');
-        debugPrint('Saved Day ID: $savedDayId');
+    // Delay state modifications until after the widget tree is built
+    Future.microtask(() {
+      // Get the saved page and day from the provider
+      final savedPage = ref.read(gymStateProvider).currentPage;
+      final savedDayId = ref.read(gymStateProvider).dayId;
+      debugPrint('Saved Page: $savedPage');
+      debugPrint('Saved Day ID: $savedDayId');
 
-        // Set the dayId in the state
-        ref.read(gymStateProvider.notifier).setDayId(widget._dayDataGym.day!.id!);
-        debugPrint('Current Day ID: ${widget._dayDataGym.day!.id}');
+      // Set the dayId in the state
+      ref.read(gymStateProvider.notifier).setDayId(widget._dayDataGym.day!.id!);
+      debugPrint('Current Day ID: ${widget._dayDataGym.day!.id}');
 
-        // Check if the current day is different from the saved day
-        if (widget._dayDataGym.day!.id != savedDayId) {
-          // Reset the saved page to 0
-          ref.read(gymStateProvider.notifier).setCurrentPage(0);
-          debugPrint('Different day detected. Resetting to page 0.');
-        } else {
-          // Use the saved page
-          ref.read(gymStateProvider.notifier).setCurrentPage(savedPage);
-          debugPrint('Same day detected. Using saved page: $savedPage');
-        }
-
-        // Calculate the pages
-        _calculatePages();
-      });
-    }
-
-    void _calculatePages() {
-      // for (final slot in widget._dayDataGym.slots) {
-      //   _totalElements += slot.setConfigs.length;
-      // }
-      _totalElements = 1;
-      _exercisePages.clear();
-      var currentPage = 1;
-
-
-      for (final slot in widget._dayDataGym.slots) {
-        var firstPage = true;
-        for (final config in slot.setConfigs) {
-          final exercise = provider.Provider.of<ExercisesProvider>(context, listen: false)
-              .findExerciseById(config.exerciseId);
-
-          if (firstPage) {
-            _exercisePages[exercise] = currentPage;
-            currentPage++;
-          }
-          currentPage += 2;
-          firstPage = false;
-        }
+      // Check if the current day is different from the saved day
+      if (widget._dayDataGym.day!.id != savedDayId) {
+        // Reset the saved page to 0
+        ref.read(gymStateProvider.notifier).setCurrentPage(0);
+        debugPrint('Different day detected. Resetting to page 0.');
+      } else {
+        // Use the saved page
+        ref.read(gymStateProvider.notifier).setCurrentPage(savedPage);
+        debugPrint('Same day detected. Using saved page: $savedPage');
       }
 
-      ref.read(gymStateProvider.notifier).setExercisePages(_exercisePages);
+      // Calculate the pages
+      _calculatePages();
+    });
+  }
+
+  void _calculatePages() {
+    // for (final slot in widget._dayDataGym.slots) {
+    //   _totalElements += slot.setConfigs.length;
+    // }
+    _totalElements = 1;
+    _exercisePages.clear();
+    var currentPage = 1;
+
+    for (final slot in widget._dayDataGym.slots) {
+      var firstPage = true;
+      for (final config in slot.setConfigs) {
+        final exercise = provider.Provider.of<ExercisesProvider>(context, listen: false)
+            .findExerciseById(config.exerciseId);
+
+        if (firstPage) {
+          _exercisePages[exercise] = currentPage;
+          currentPage++;
+        }
+        currentPage += 2;
+        firstPage = false;
+      }
     }
+
+    ref.read(gymStateProvider.notifier).setExercisePages(_exercisePages);
+  }
 
   List<Widget> getContent() {
     final state = ref.watch(gymStateProvider);
@@ -207,7 +207,7 @@ class GymMode extends ConsumerStatefulWidget {
           _controller.jumpToPage(0);
         }
       },
-      children:children,
+      children: children,
     );
   }
 }
@@ -575,7 +575,7 @@ class _LogPageState extends State<LogPage> {
           style: Theme.of(context).textTheme.titleLarge,
           textAlign: TextAlign.center,
         ),
-        ...widget._workoutPlan.filterLogsByExercise(widget._exercise, unique: true).map((log) {
+        ...widget._workoutPlan.filterLogsByExercise(widget._exercise.id!, unique: true).map((log) {
           return ListTile(
             title: Text(log.singleLogRepTextNoNl),
             subtitle: Text(
@@ -688,7 +688,7 @@ class _LogPageState extends State<LogPage> {
           Text(widget._slotData.comment, textAlign: TextAlign.center),
         const SizedBox(height: 10),
         Expanded(
-          child: (widget._workoutPlan.filterLogsByExercise(widget._exercise).isNotEmpty)
+          child: (widget._workoutPlan.filterLogsByExercise(widget._exercise.id!).isNotEmpty)
               ? getPastLogs()
               : Container(),
         ),
@@ -769,17 +769,29 @@ class ExerciseOverview extends StatelessWidget {
 }
 
 class SessionPage extends StatefulWidget {
-  final Routine _workoutPlan;
+  final Routine _routine;
+  late WorkoutSession _session;
   final PageController _controller;
   final TimeOfDay _start;
   final Map<Exercise, int> _exercisePages;
 
-  const SessionPage(
-    this._workoutPlan,
+  SessionPage(
+    this._routine,
     this._controller,
     this._start,
     this._exercisePages,
-  );
+  ) {
+    _session = _routine.sessions.map((sessionApi) => sessionApi.session).firstWhere(
+          (session) => session.date.isSameDayAs(DateTime.now()),
+          orElse: () => WorkoutSession(
+            routineId: _routine.id!,
+            impression: DEFAULT_IMPRESSION,
+            date: DateTime.now(),
+            timeEnd: TimeOfDay.now(),
+            timeStart: _start,
+          ),
+        );
+  }
 
   @override
   _SessionPageState createState() => _SessionPageState();
@@ -792,7 +804,7 @@ class _SessionPageState extends State<SessionPage> {
   final timeStartController = TextEditingController();
   final timeEndController = TextEditingController();
 
-  final _session = WorkoutSession.now();
+  // final _session = WorkoutSession.now();
 
   /// Selected impression: bad, neutral, good
   var selectedImpression = [false, true, false];
@@ -801,13 +813,8 @@ class _SessionPageState extends State<SessionPage> {
   void initState() {
     super.initState();
 
-    // ref.read(gymStateProvider.notifier).clear();
-
-    timeStartController.text = timeToString(widget._start)!;
-    timeEndController.text = timeToString(TimeOfDay.now())!;
-    _session.routineId = widget._workoutPlan.id!;
-    _session.impression = DEFAULT_IMPRESSION;
-    _session.date = DateTime.now();
+    timeStartController.text = timeToString(widget._session.timeStart)!;
+    timeEndController.text = timeToString(widget._session.timeEnd)!;
   }
 
   @override
@@ -821,6 +828,8 @@ class _SessionPageState extends State<SessionPage> {
 
   @override
   Widget build(BuildContext context) {
+    final routinesProvider = context.read<RoutinesProvider>();
+
     return Column(
       children: [
         NavigationHeader(
@@ -844,7 +853,7 @@ class _SessionPageState extends State<SessionPage> {
                       for (int buttonIndex = 0;
                           buttonIndex < selectedImpression.length;
                           buttonIndex++) {
-                        _session.impression = index + 1;
+                        widget._session.impression = index + 1;
 
                         if (buttonIndex == index) {
                           selectedImpression[buttonIndex] = true;
@@ -870,7 +879,7 @@ class _SessionPageState extends State<SessionPage> {
                   keyboardType: TextInputType.multiline,
                   onFieldSubmitted: (_) {},
                   onSaved: (newValue) {
-                    _session.notes = newValue!;
+                    widget._session.notes = newValue!;
                   },
                 ),
                 Row(
@@ -890,16 +899,16 @@ class _SessionPageState extends State<SessionPage> {
                           // Open time picker
                           final pickedTime = await showTimePicker(
                             context: context,
-                            initialTime: _session.timeStart,
+                            initialTime: widget._session.timeStart ?? TimeOfDay.now(),
                           );
 
                           if (pickedTime != null) {
                             timeStartController.text = timeToString(pickedTime)!;
-                            _session.timeStart = pickedTime;
+                            widget._session.timeStart = pickedTime;
                           }
                         },
                         onSaved: (newValue) {
-                          _session.timeStart = stringToTime(newValue);
+                          widget._session.timeStart = stringToTime(newValue);
                         },
                         validator: (_) {
                           final TimeOfDay startTime = stringToTime(timeStartController.text);
@@ -926,16 +935,16 @@ class _SessionPageState extends State<SessionPage> {
                           // Open time picker
                           final pickedTime = await showTimePicker(
                             context: context,
-                            initialTime: _session.timeEnd,
+                            initialTime: widget._session.timeEnd ?? TimeOfDay.now(),
                           );
 
                           if (pickedTime != null) {
                             timeEndController.text = timeToString(pickedTime)!;
-                            _session.timeEnd = pickedTime;
+                            widget._session.timeEnd = pickedTime;
                           }
                         },
                         onSaved: (newValue) {
-                          _session.timeEnd = stringToTime(newValue);
+                          widget._session.timeEnd = stringToTime(newValue);
                         },
                       ),
                     ),
@@ -953,10 +962,11 @@ class _SessionPageState extends State<SessionPage> {
 
                     // Save the entry on the server
                     try {
-                      await provider.Provider.of<RoutinesProvider>(
-                        context,
-                        listen: false,
-                      ).addSession(_session);
+                      if (widget._session.id == null) {
+                        await routinesProvider.addSession(widget._session, widget._routine.id!);
+                      } else {
+                        await routinesProvider.editSession(widget._session);
+                      }
 
                       if (mounted) {
                         Navigator.of(context).pop();

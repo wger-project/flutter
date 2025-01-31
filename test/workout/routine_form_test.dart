@@ -64,9 +64,7 @@ void main() {
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
         home: Scaffold(body: RoutineForm(routine)),
-        routes: {
-          RoutineScreen.routeName: (ctx) => const RoutineScreen(),
-        },
+        routes: {RoutineScreen.routeName: (ctx) => const RoutineScreen()},
       ),
     );
   }

@@ -9,15 +9,7 @@ part of 'translation.dart';
 Translation _$TranslationFromJson(Map<String, dynamic> json) {
   $checkKeys(
     json,
-    requiredKeys: const [
-      'id',
-      'uuid',
-      'language',
-      'created',
-      'exercise_base',
-      'name',
-      'description'
-    ],
+    requiredKeys: const ['id', 'uuid', 'language', 'created', 'exercise', 'name', 'description'],
   );
   return Translation(
     id: (json['id'] as num?)?.toInt(),
@@ -25,7 +17,7 @@ Translation _$TranslationFromJson(Map<String, dynamic> json) {
     created: json['created'] == null ? null : DateTime.parse(json['created'] as String),
     name: json['name'] as String,
     description: json['description'] as String,
-    exerciseId: (json['exercise_base'] as num?)?.toInt(),
+    exerciseId: (json['exercise'] as num?)?.toInt(),
   )
     ..languageId = (json['language'] as num).toInt()
     ..notes = (json['notes'] as List<dynamic>)
@@ -41,7 +33,7 @@ Map<String, dynamic> _$TranslationToJson(Translation instance) => <String, dynam
       'uuid': instance.uuid,
       'language': instance.languageId,
       'created': instance.created?.toIso8601String(),
-      'exercise_base': instance.exerciseId,
+      'exercise': instance.exerciseId,
       'name': instance.name,
       'description': instance.description,
     };

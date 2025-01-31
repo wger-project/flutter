@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
+import 'package:logging/logging.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
@@ -21,6 +22,8 @@ class Ingredients extends Table {
 
 @DriftDatabase(tables: [Ingredients])
 class IngredientDatabase extends _$IngredientDatabase {
+  final _logger = Logger('IngredientDatabase');
+
   IngredientDatabase() : super(_openConnection());
 
   // Named constructor for creating in-memory database
@@ -53,6 +56,7 @@ class IngredientDatabase extends _$IngredientDatabase {
   Future<void> deleteEverything() {
     return transaction(() async {
       for (final table in allTables) {
+        _logger.info('Deleting db cache table ${table.actualTableName}');
         await delete(table).go();
       }
     });

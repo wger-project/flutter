@@ -196,9 +196,10 @@ class _DayFormWidgetState extends State<DayFormWidget> {
           Text(
             widget.day.isRest ? i18n.restDay : widget.day.name,
             style: Theme.of(context).textTheme.titleLarge,
-            key: ValueKey('day-title-${widget.day.id}'),
+            key: ValueKey('day-title-${widget.day.id!}'),
           ),
           SwitchListTile(
+            key: const Key('field-is-rest-day'),
             title: Text(i18n.isRestDay),
             subtitle: Text(i18n.isRestDayHelp),
             value: isRestDay,
@@ -216,7 +217,7 @@ class _DayFormWidgetState extends State<DayFormWidget> {
             enabled: !widget.day.isRest,
             key: const Key('field-name'),
             decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).name,
+              labelText: i18n.name,
             ),
             controller: nameController,
             onSaved: (value) {
@@ -230,7 +231,7 @@ class _DayFormWidgetState extends State<DayFormWidget> {
               if (value!.isEmpty ||
                   value.length < Day.MIN_LENGTH_NAME ||
                   value.length > Day.MAX_LENGTH_NAME) {
-                return AppLocalizations.of(context).enterCharacters(
+                return i18n.enterCharacters(
                   Day.MIN_LENGTH_NAME,
                   Day.MAX_LENGTH_NAME,
                 );
@@ -242,7 +243,7 @@ class _DayFormWidgetState extends State<DayFormWidget> {
           TextFormField(
             key: const Key('field-description'),
             enabled: !widget.day.isRest,
-            decoration: InputDecoration(labelText: AppLocalizations.of(context).description),
+            decoration: InputDecoration(labelText: i18n.description),
             controller: descriptionController,
             onSaved: (value) {
               widget.day.description = value!;
@@ -255,28 +256,31 @@ class _DayFormWidgetState extends State<DayFormWidget> {
               }
 
               if (value != null && value.length > Day.MAX_LENGTH_DESCRIPTION) {
-                return AppLocalizations.of(context).enterCharacters(0, Day.MAX_LENGTH_DESCRIPTION);
+                return i18n.enterCharacters(0, Day.MAX_LENGTH_DESCRIPTION);
               }
 
               return null;
             },
           ),
           SwitchListTile(
+            key: const Key('field-need-logs-to-advance'),
             title: Text(i18n.needsLogsToAdvance),
             subtitle: Text(i18n.needsLogsToAdvanceHelp),
             value: needLogsToAdvance,
             contentPadding: const EdgeInsets.all(4),
-            onChanged: (value) {
-              setState(() {
-                needLogsToAdvance = value;
-              });
-              widget.day.needLogsToAdvance = value;
-            },
+            onChanged: widget.day.isRest
+                ? null
+                : (value) {
+                    setState(() {
+                      needLogsToAdvance = value;
+                    });
+                    widget.day.needLogsToAdvance = value;
+                  },
           ),
           const SizedBox(height: 5),
           ElevatedButton(
             key: const Key(SUBMIT_BUTTON_KEY_NAME),
-            child: Text(AppLocalizations.of(context).save),
+            child: Text(i18n.save),
             onPressed: () async {
               if (!_form.currentState!.validate()) {
                 return;
@@ -284,9 +288,7 @@ class _DayFormWidgetState extends State<DayFormWidget> {
               _form.currentState!.save();
 
               try {
-                Provider.of<RoutinesProvider>(context, listen: false).editDay(
-                  widget.day,
-                );
+                Provider.of<RoutinesProvider>(context, listen: false).editDay(widget.day);
               } catch (error) {
                 await showDialog(
                   context: context,

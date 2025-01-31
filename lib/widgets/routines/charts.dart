@@ -22,9 +22,11 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:wger/helpers/charts.dart';
 import 'package:wger/helpers/colors.dart';
+import 'package:wger/helpers/misc.dart';
+import 'package:wger/models/workouts/log.dart';
 
 class LogChartWidgetFl extends StatefulWidget {
-  final Map _data;
+  final Map<num, List<Log>> _data;
   final DateTime _currentDate;
 
   const LogChartWidgetFl(this._data, this._currentDate);
@@ -50,10 +52,13 @@ class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
       touchTooltipData: LineTouchTooltipData(
         getTooltipItems: (touchedSpots) {
           return touchedSpots.map((touchedSpot) {
-            final reps = widget._data['chart_data'][touchedSpot.barIndex].first['reps'];
+            // Retrieve the repetitions (bit ugly, but it works)
+            final List<num> keys = widget._data.keys.toList();
+            final mapKey = keys[touchedSpot.barIndex];
+            final reps = widget._data[mapKey]?.first.repetitions;
 
             return LineTooltipItem(
-              '$reps × ${touchedSpot.y} kg',
+              '${formatNum(reps!)} × ${touchedSpot.y} kg',
               const TextStyle(color: Colors.white),
             );
           }).toList();
@@ -63,7 +68,7 @@ class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
   }
 
   LineChartData mainData() {
-    final colors = generateChartColors(widget._data['chart_data'].length).iterator;
+    final colors = generateChartColors(widget._data.keys.length).iterator;
 
     return LineChartData(
       lineTouchData: tooltipData(),
@@ -101,8 +106,16 @@ class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
               );
             },
             interval: chartGetInterval(
-              DateTime.parse(widget._data['logs'].keys.first),
-              DateTime.parse(widget._data['logs'].keys.last),
+              widget._data.containsKey(widget._data.keys.first) &&
+                      widget._data[widget._data.keys.first]!.isNotEmpty
+                  ? widget._data[widget._data.keys.first]!.first.date
+                  : DateTime.now(),
+              widget._data.containsKey(widget._data.keys.last) &&
+                      widget._data[widget._data.keys.last]!.isNotEmpty
+                  ? widget._data[widget._data.keys.last]!.first.date
+                  : DateTime.now(),
+              // widget._data[widget._data.keys.first]!.first.date,
+              // widget._data[widget._data.keys.last]!.first.date,
             ),
           ),
         ),
@@ -121,14 +134,14 @@ class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
         border: Border.all(color: const Color(0xff37434d)),
       ),
       lineBarsData: [
-        ...widget._data['chart_data'].map((e) {
+        ...widget._data.keys.map((reps) {
           colors.moveNext();
           return LineChartBarData(
             spots: [
-              ...e.map(
+              ...widget._data[reps]!.map(
                 (entry) => FlSpot(
-                  DateTime.parse(entry['date']).millisecondsSinceEpoch.toDouble(),
-                  double.parse(entry['weight']),
+                  entry.date.millisecondsSinceEpoch.toDouble(),
+                  entry.weight!.toDouble(),
                 ),
               ),
             ],

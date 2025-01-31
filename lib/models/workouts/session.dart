@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/json.dart';
+import 'package:wger/models/workouts/log.dart';
 
 part 'session.g.dart';
 
@@ -42,26 +43,25 @@ class WorkoutSession {
   late String notes;
 
   @JsonKey(required: true, name: 'time_start', toJson: timeToString, fromJson: stringToTime)
-  late TimeOfDay timeStart;
+  late TimeOfDay? timeStart;
 
   @JsonKey(required: true, name: 'time_end', toJson: timeToString, fromJson: stringToTime)
-  late TimeOfDay timeEnd;
+  late TimeOfDay? timeEnd;
 
-  WorkoutSession();
+  @JsonKey(required: false, includeToJson: false, defaultValue: [])
+  List<Log> logs = [];
 
-  WorkoutSession.withData({
-    required this.id,
+  WorkoutSession({
+    this.id,
     required this.routineId,
-    required this.date,
-    required this.impression,
-    required this.notes,
-    required this.timeStart,
-    required this.timeEnd,
-  });
-
-  WorkoutSession.now() {
-    timeStart = TimeOfDay.now();
-    timeEnd = TimeOfDay.now();
+    this.impression = 2,
+    this.notes = '',
+    this.timeStart,
+    this.timeEnd,
+    this.logs = const <Log>[],
+    DateTime? date,
+  }) {
+    this.date = date ?? DateTime.now();
   }
 
   // Boilerplate
@@ -69,7 +69,7 @@ class WorkoutSession {
 
   Map<String, dynamic> toJson() => _$WorkoutSessionToJson(this);
 
-  String? get impressionAsString {
-    return IMPRESSION_MAP[impression];
+  String get impressionAsString {
+    return IMPRESSION_MAP[impression]!;
   }
 }

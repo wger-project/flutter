@@ -36,6 +36,7 @@ class GymState {
       dayId: dayId ?? this.dayId,
     );
   }
+
   @override
   String toString() {
     return 'GymState(currentPage: $currentPage, showExercisePages: $showExercisePages, exercisePages: ${exercisePages.length} exercises, dayId: $dayId)';
@@ -69,13 +70,16 @@ class GymStateNotifier extends StateNotifier<GymState> {
   void toggleExercisePages() {
     state = state.copyWith(showExercisePages: !state.showExercisePages);
   }
+
   void setDayId(int dayId) {
     state = state.copyWith(dayId: dayId);
   }
+
   void setExercisePages(Map<Exercise, int> exercisePages) {
     debugPrint('GymStateNotifier: Setting exercise pages - ${exercisePages.length} exercises');
     state = state.copyWith(exercisePages: exercisePages);
-    debugPrint('GymStateNotifier: Exercise pages set - ${exercisePages.entries.map((e) => '${e.key.id}: ${e.value}').join(', ')}');
+    debugPrint(
+        'GymStateNotifier: Exercise pages set - ${exercisePages.entries.map((e) => '${e.key.id}: ${e.value}').join(', ')}');
     debugPrint('GymStateNotifier: New state - $state');
   }
 

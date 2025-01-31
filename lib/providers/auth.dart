@@ -18,12 +18,13 @@
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
+import 'package:logging/logging.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:version/version.dart';
@@ -38,6 +39,8 @@ enum LoginActions {
 }
 
 class AuthProvider with ChangeNotifier {
+  final _logger = Logger('AuthProvider');
+
   String? token;
   String? serverUrl;
   String? serverVersion;
@@ -192,7 +195,7 @@ class AuthProvider with ChangeNotifier {
   Future<bool> tryAutoLogin() async {
     final prefs = await SharedPreferences.getInstance();
     if (!prefs.containsKey(PREFS_USER)) {
-      log('autologin failed');
+      _logger.info('autologin failed');
       return false;
     }
     final extractedUserData = json.decode(prefs.getString(PREFS_USER)!);
@@ -200,7 +203,7 @@ class AuthProvider with ChangeNotifier {
     token = extractedUserData['token'];
     serverUrl = extractedUserData['serverUrl'];
 
-    log('autologin successful');
+    _logger.info('autologin successful');
     setApplicationVersion();
     setServerVersion();
     notifyListeners();
@@ -209,7 +212,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<void> logout({bool shouldNotify = true}) async {
-    log('logging out');
+    _logger.fine('logging out');
     token = null;
     serverUrl = null;
     dataInit = false;

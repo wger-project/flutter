@@ -18,7 +18,6 @@
 
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../test_data/exercises.dart';
 import '../../test_data/routines.dart';
 
 void main() {
@@ -27,16 +26,27 @@ void main() {
       final routine = getTestRoutine();
 
       expect(routine.logs.length, 3);
-      final logExercise1 = routine.filterLogsByExercise(getTestExercises()[0]);
+      final logExercise1 = routine.filterLogsByExercise(1);
       expect(logExercise1.length, 2);
       expect(logExercise1[0].id, 1);
       expect(logExercise1[1].id, 2);
 
-      final logExercise2 = routine.filterLogsByExercise(getTestExercises()[1]);
+      final logExercise2 = routine.filterLogsByExercise(2);
       expect(logExercise2.length, 1);
       expect(logExercise2[0].id, 3);
 
-      expect(routine.filterLogsByExercise(getTestExercises()[2]).length, 0);
+      expect(routine.filterLogsByExercise(3).length, 0);
+    });
+
+    test('Test the groupLogsByRepetition method', () {
+      final routine = getTestRoutine();
+
+      expect(routine.logs.length, 3);
+      final result = routine.groupLogsByRepetition();
+      expect(result.keys, [10, 12, 8]);
+      expect(result[8], [routine.logs[2]]);
+      expect(result[10], [routine.logs[0]]);
+      expect(result[12], [routine.logs[1]]);
     });
   });
 }
