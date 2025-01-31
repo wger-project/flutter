@@ -115,8 +115,8 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
     }
 
     // Process workout sessions
-    final RoutinesProvider plans = Provider.of<RoutinesProvider>(context, listen: false);
-    await plans.fetchSessionData().then((sessions) {
+    final routinesProvider = context.read<RoutinesProvider>();
+    await routinesProvider.fetchSessionData().then((sessions) {
       for (final session in sessions) {
         final date = DateFormatLists.format(session.date);
         if (!_events.containsKey(date)) {
