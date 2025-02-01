@@ -126,7 +126,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
     nrOfSetsConfigs: [
       BaseConfig.firstIteration(4, 1),
     ],
-    repsConfigs: [
+    repetitionsConfigs: [
       BaseConfig.firstIteration(3, 1),
     ],
     weightConfigs: [
@@ -170,7 +170,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
     weightConfigs: [
       BaseConfig.firstIteration(80, 1),
     ],
-    repsConfigs: [
+    repetitionsConfigs: [
       BaseConfig.firstIteration(5, 1),
     ],
     nrOfSetsConfigs: [
@@ -198,7 +198,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
     nrOfSetsConfigs: [
       BaseConfig.firstIteration(4, 1),
     ],
-    repsConfigs: [
+    repetitionsConfigs: [
       BaseConfig.firstIteration(12, 1),
     ],
     weightConfigs: [

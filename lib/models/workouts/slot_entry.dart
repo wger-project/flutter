@@ -77,10 +77,10 @@ class SlotEntry {
   late num repetitionRounding;
 
   @JsonKey(required: false, name: 'reps_configs', includeToJson: false, defaultValue: [])
-  late List<BaseConfig> repsConfigs = [];
+  late List<BaseConfig> repetitionsConfigs = [];
 
   @JsonKey(required: false, name: 'max_reps_configs', includeToJson: false, defaultValue: [])
-  late List<BaseConfig> maxRepsConfigs = [];
+  late List<BaseConfig> maxRepetitionsConfigs = [];
 
   @JsonKey(required: true, name: 'weight_unit')
   late int weightUnitId;
@@ -137,8 +137,8 @@ class SlotEntry {
     this.maxRirConfigs = const [],
     this.restTimeConfigs = const [],
     this.maxRestTimeConfigs = const [],
-    this.repsConfigs = const [],
-    this.maxRepsConfigs = const [],
+    this.repetitionsConfigs = const [],
+    this.maxRepetitionsConfigs = const [],
     RepetitionUnit? repetitionUnit,
     WeightUnit? weightUnit,
     Exercise? exercise,
@@ -186,8 +186,8 @@ class SlotEntry {
 
   bool get hasProgressionRules {
     return weightConfigs.length > 1 ||
-        repsConfigs.length > 1 ||
-        maxRepsConfigs.length > 1 ||
+        repetitionsConfigs.length > 1 ||
+        maxRepetitionsConfigs.length > 1 ||
         nrOfSetsConfigs.length > 1 ||
         maxNrOfSetsConfigs.length > 1 ||
         rirConfigs.length > 1 ||
@@ -209,9 +209,9 @@ class SlotEntry {
       case ConfigType.maxSets:
         return maxNrOfSetsConfigs;
       case ConfigType.reps:
-        return repsConfigs;
+        return repetitionsConfigs;
       case ConfigType.maxReps:
-        return maxRepsConfigs;
+        return maxRepetitionsConfigs;
       case ConfigType.rir:
         return rirConfigs;
       case ConfigType.maxRir:

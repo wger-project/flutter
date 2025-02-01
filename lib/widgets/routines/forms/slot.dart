@@ -102,11 +102,11 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
       maxWeightController.text = widget.entry.maxWeightConfigs.first.value.toString();
     }
 
-    if (widget.entry.repsConfigs.isNotEmpty) {
-      repsController.text = widget.entry.repsConfigs.first.value.round().toString();
+    if (widget.entry.repetitionsConfigs.isNotEmpty) {
+      repsController.text = widget.entry.repetitionsConfigs.first.value.round().toString();
     }
-    if (widget.entry.maxRepsConfigs.isNotEmpty) {
-      maxRepsController.text = widget.entry.maxRepsConfigs.first.value.round().toString();
+    if (widget.entry.maxRepetitionsConfigs.isNotEmpty) {
+      maxRepsController.text = widget.entry.maxRepetitionsConfigs.first.value.round().toString();
     }
 
     if (widget.entry.restTimeConfigs.isNotEmpty) {

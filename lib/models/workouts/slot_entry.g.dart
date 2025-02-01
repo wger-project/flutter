@@ -66,11 +66,11 @@ SlotEntry _$SlotEntryFromJson(Map<String, dynamic> json) {
             ?.map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
             .toList() ??
         [],
-    repsConfigs: (json['reps_configs'] as List<dynamic>?)
+    repetitionsConfigs: (json['reps_configs'] as List<dynamic>?)
             ?.map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
             .toList() ??
         [],
-    maxRepsConfigs: (json['max_reps_configs'] as List<dynamic>?)
+    maxRepetitionsConfigs: (json['max_reps_configs'] as List<dynamic>?)
             ?.map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
             .toList() ??
         [],
