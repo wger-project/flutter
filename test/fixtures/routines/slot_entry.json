@@ -9,7 +9,7 @@
   "config": null,
   "repetition_unit": 1,
   "repetition_rounding": "1.25",
-  "reps_configs": [
+  "repetitions_configs": [
     {
       "id": 139,
       "slot_entry": 143,
@@ -22,7 +22,7 @@
       "requirements": null
     }
   ],
-  "max_reps_configs": [
+  "max_repetitions_configs": [
     {
       "id": 1,
       "slot_entry": 143,

@@ -24,7 +24,7 @@ import 'package:wger/models/workouts/weight_unit.dart';
 
 /// Returns the text representation for a single setting, used in the gym mode
 String repText(
-  num? reps,
+  num? repetitions,
   RepetitionUnit repetitionUnitObj,
   num? weight,
   WeightUnit weightUnitObj,
@@ -34,8 +34,8 @@ String repText(
 
   final List<String> out = [];
 
-  if (reps != null) {
-    out.add(formatNum(reps).toString());
+  if (repetitions != null) {
+    out.add(formatNum(repetitions).toString());
 
     // The default repetition unit is 'reps', which we don't show unless there
     // is no weight defined so that we don't just output something like "8" but

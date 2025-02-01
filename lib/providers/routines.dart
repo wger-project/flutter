@@ -58,8 +58,8 @@ class RoutinesProvider with ChangeNotifier {
   static const _routineConfigMaxSets = 'max-sets-config';
   static const _routineConfigWeights = 'weight-config';
   static const _routineConfigMaxWeights = 'max-weight-config';
-  static const _routineConfigReps = 'reps-config';
-  static const _routineConfigMaxReps = 'max-reps-config';
+  static const _routineConfigRepetitions = 'repetitions-config';
+  static const _routineConfigMaxRepetitions = 'max-repetitions-config';
   static const _routineConfigRir = 'rir-config';
   static const _routineConfigMaxRir = 'rest-config';
   static const _routineConfigRestTime = 'rest-config';
@@ -584,10 +584,10 @@ class RoutinesProvider with ChangeNotifier {
         return _routineConfigWeights;
       case ConfigType.maxWeight:
         return _routineConfigMaxWeights;
-      case ConfigType.reps:
-        return _routineConfigReps;
-      case ConfigType.maxReps:
-        return _routineConfigMaxReps;
+      case ConfigType.repetitions:
+        return _routineConfigRepetitions;
+      case ConfigType.maxRepetitions:
+        return _routineConfigMaxRepetitions;
       case ConfigType.rir:
         return _routineConfigRir;
       case ConfigType.maxRir:

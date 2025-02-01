@@ -29,8 +29,8 @@ part 'slot_entry.g.dart';
 enum ConfigType {
   weight,
   maxWeight,
-  reps,
-  maxReps,
+  repetitions,
+  maxRepetitions,
   sets,
   maxSets,
   rir,
@@ -76,10 +76,10 @@ class SlotEntry {
   @JsonKey(required: true, name: 'repetition_rounding', fromJson: stringToNum)
   late num repetitionRounding;
 
-  @JsonKey(required: false, name: 'reps_configs', includeToJson: false, defaultValue: [])
+  @JsonKey(required: false, name: 'repetitions_configs', includeToJson: false, defaultValue: [])
   late List<BaseConfig> repetitionsConfigs = [];
 
-  @JsonKey(required: false, name: 'max_reps_configs', includeToJson: false, defaultValue: [])
+  @JsonKey(required: false, name: 'max_repetitions_configs', includeToJson: false, defaultValue: [])
   late List<BaseConfig> maxRepetitionsConfigs = [];
 
   @JsonKey(required: true, name: 'weight_unit')
@@ -208,9 +208,9 @@ class SlotEntry {
         return nrOfSetsConfigs;
       case ConfigType.maxSets:
         return maxNrOfSetsConfigs;
-      case ConfigType.reps:
+      case ConfigType.repetitions:
         return repetitionsConfigs;
-      case ConfigType.maxReps:
+      case ConfigType.maxRepetitions:
         return maxRepetitionsConfigs;
       case ConfigType.rir:
         return rirConfigs;
