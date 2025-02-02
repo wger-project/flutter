@@ -138,7 +138,6 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
         value: 5,
         operation: '+',
         step: 'abs',
-        needLogToApply: false,
         requirements: null,
         repeat: true,
       ),
