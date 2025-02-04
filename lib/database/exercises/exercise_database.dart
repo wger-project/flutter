@@ -78,7 +78,7 @@ class ExerciseDatabase extends _$ExerciseDatabase {
 
   /// Note that this needs to be bumped if the JSON response from the server changes
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   /// There is not really a migration strategy. If we bump the version
   /// number, delete everything and recreate the new tables. The provider

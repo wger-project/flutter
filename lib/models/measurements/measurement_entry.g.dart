@@ -23,7 +23,7 @@ MeasurementEntry _$MeasurementEntryFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$MeasurementEntryToJson(MeasurementEntry instance) => <String, dynamic>{
       'id': instance.id,
       'category': instance.category,
-      'date': toDate(instance.date),
+      'date': dateToYYYYMMDD(instance.date),
       'value': instance.value,
       'notes': instance.notes,
     };

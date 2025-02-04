@@ -1,0 +1,696 @@
+[
+  {
+    "iteration": 1,
+    "date": "2025-01-05",
+    "label": null,
+    "day": {
+      "id": 8,
+      "routine": 2,
+      "order": 1,
+      "name": "Leg day",
+      "description": "Leg day",
+      "is_rest": false,
+      "need_logs_to_advance": false,
+      "type": "custom",
+      "config": null
+    },
+    "slots": [
+      {
+        "comment": "",
+        "is_superset": false,
+        "exercises": [
+          76
+        ],
+        "sets": [
+          {
+            "slot_entry_id": 2,
+            "exercise": 76,
+            "sets": 4,
+            "max_sets": null,
+            "weight": "80.00",
+            "max_weight": null,
+            "weight_unit": 1,
+            "weight_rounding": null,
+            "repetitions": "10.00",
+            "max_repetitions": null,
+            "repetitions_unit": 1,
+            "repetitions_rounding": null,
+            "rir": null,
+            "max_rir": null,
+            "rpe": null,
+            "rest": "120.00",
+            "max_rest": null,
+            "type": "normal",
+            "text_repr": "4 Sätze, 10 × 80 kg 120s rest",
+            "comment": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "iteration": 1,
+    "date": "2025-01-06",
+    "label": null,
+    "day": {
+      "id": 9,
+      "routine": 2,
+      "order": 2,
+      "name": "",
+      "description": "",
+      "is_rest": true,
+      "need_logs_to_advance": false,
+      "type": "custom",
+      "config": null
+    },
+    "slots": []
+  },
+  {
+    "iteration": 1,
+    "date": "2025-01-07",
+    "label": null,
+    "day": {
+      "id": 10,
+      "routine": 2,
+      "order": 3,
+      "name": "Arms day",
+      "description": "Leg day",
+      "is_rest": false,
+      "need_logs_to_advance": false,
+      "type": "custom",
+      "config": null
+    },
+    "slots": [
+      {
+        "comment": "",
+        "is_superset": false,
+        "exercises": [
+          92
+        ],
+        "sets": [
+          {
+            "slot_entry_id": 3,
+            "exercise": 92,
+            "sets": 4,
+            "max_sets": null,
+            "weight": "20.00",
+            "max_weight": "22.00",
+            "weight_unit": 1,
+            "weight_rounding": null,
+            "repetitions": "10.00",
+            "max_repetitions": null,
+            "repetitions_unit": 1,
+            "repetitions_rounding": null,
+            "rir": null,
+            "max_rir": null,
+            "rpe": null,
+            "rest": "120.00",
+            "max_rest": null,
+            "type": "normal",
+            "text_repr": "4 Sätze, 10 × 20-22 kg 120s rest",
+            "comment": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "iteration": 1,
+    "date": "2025-01-08",
+    "label": null,
+    "day": null,
+    "slots": []
+  },
+  {
+    "iteration": 1,
+    "date": "2025-01-09",
+    "label": null,
+    "day": null,
+    "slots": []
+  },
+  {
+    "iteration": 1,
+    "date": "2025-01-10",
+    "label": null,
+    "day": null,
+    "slots": []
+  },
+  {
+    "iteration": 1,
+    "date": "2025-01-11",
+    "label": null,
+    "day": null,
+    "slots": []
+  },
+  {
+    "iteration": 1,
+    "date": "2025-01-12",
+    "label": null,
+    "day": null,
+    "slots": []
+  },
+  {
+    "iteration": 2,
+    "date": "2025-01-13",
+    "label": null,
+    "day": {
+      "id": 8,
+      "routine": 2,
+      "order": 1,
+      "name": "Leg day",
+      "description": "Leg day",
+      "is_rest": false,
+      "need_logs_to_advance": false,
+      "type": "custom",
+      "config": null
+    },
+    "slots": [
+      {
+        "comment": "",
+        "is_superset": false,
+        "exercises": [
+          76
+        ],
+        "sets": [
+          {
+            "slot_entry_id": 2,
+            "exercise": 76,
+            "sets": 4,
+            "max_sets": null,
+            "weight": "80.00",
+            "max_weight": null,
+            "weight_unit": 1,
+            "weight_rounding": null,
+            "repetitions": "10.00",
+            "max_repetitions": null,
+            "repetitions_unit": 1,
+            "repetitions_rounding": null,
+            "rir": null,
+            "max_rir": null,
+            "rpe": null,
+            "rest": "120.00",
+            "max_rest": null,
+            "type": "normal",
+            "text_repr": "4 Sätze, 10 × 80 kg 120s rest",
+            "comment": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "iteration": 2,
+    "date": "2025-01-14",
+    "label": null,
+    "day": {
+      "id": 9,
+      "routine": 2,
+      "order": 2,
+      "name": "",
+      "description": "",
+      "is_rest": true,
+      "need_logs_to_advance": false,
+      "type": "custom",
+      "config": null
+    },
+    "slots": []
+  },
+  {
+    "iteration": 2,
+    "date": "2025-01-15",
+    "label": null,
+    "day": {
+      "id": 10,
+      "routine": 2,
+      "order": 3,
+      "name": "Arms day",
+      "description": "Leg day",
+      "is_rest": false,
+      "need_logs_to_advance": false,
+      "type": "custom",
+      "config": null
+    },
+    "slots": [
+      {
+        "comment": "",
+        "is_superset": false,
+        "exercises": [
+          92
+        ],
+        "sets": [
+          {
+            "slot_entry_id": 3,
+            "exercise": 92,
+            "sets": 4,
+            "max_sets": null,
+            "weight": "21.00",
+            "max_weight": "22.00",
+            "weight_unit": 1,
+            "weight_rounding": null,
+            "repetitions": "10.00",
+            "max_repetitions": null,
+            "repetitions_unit": 1,
+            "repetitions_rounding": null,
+            "rir": null,
+            "max_rir": null,
+            "rpe": null,
+            "rest": "120.00",
+            "max_rest": null,
+            "type": "normal",
+            "text_repr": "4 Sätze, 10 × 21-22 kg 120s rest",
+            "comment": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "iteration": 2,
+    "date": "2025-01-16",
+    "label": null,
+    "day": null,
+    "slots": []
+  },
+  {
+    "iteration": 2,
+    "date": "2025-01-17",
+    "label": null,
+    "day": null,
+    "slots": []
+  },
+  {
+    "iteration": 2,
+    "date": "2025-01-18",
+    "label": null,
+    "day": null,
+    "slots": []
+  },
+  {
+    "iteration": 2,
+    "date": "2025-01-19",
+    "label": null,
+    "day": null,
+    "slots": []
+  },
+  {
+    "iteration": 3,
+    "date": "2025-01-20",
+    "label": null,
+    "day": {
+      "id": 8,
+      "routine": 2,
+      "order": 1,
+      "name": "Leg day",
+      "description": "Leg day",
+      "is_rest": false,
+      "need_logs_to_advance": false,
+      "type": "custom",
+      "config": null
+    },
+    "slots": [
+      {
+        "comment": "",
+        "is_superset": false,
+        "exercises": [
+          76
+        ],
+        "sets": [
+          {
+            "slot_entry_id": 2,
+            "exercise": 76,
+            "sets": 4,
+            "max_sets": null,
+            "weight": "80.00",
+            "max_weight": null,
+            "weight_unit": 1,
+            "weight_rounding": null,
+            "repetitions": "10.00",
+            "max_repetitions": null,
+            "repetitions_unit": 1,
+            "repetitions_rounding": null,
+            "rir": null,
+            "max_rir": null,
+            "rpe": null,
+            "rest": "120.00",
+            "max_rest": null,
+            "type": "normal",
+            "text_repr": "4 Sätze, 10 × 80 kg 120s rest",
+            "comment": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "iteration": 3,
+    "date": "2025-01-21",
+    "label": null,
+    "day": {
+      "id": 9,
+      "routine": 2,
+      "order": 2,
+      "name": "",
+      "description": "",
+      "is_rest": true,
+      "need_logs_to_advance": false,
+      "type": "custom",
+      "config": null
+    },
+    "slots": []
+  },
+  {
+    "iteration": 3,
+    "date": "2025-01-22",
+    "label": null,
+    "day": {
+      "id": 10,
+      "routine": 2,
+      "order": 3,
+      "name": "Arms day",
+      "description": "Leg day",
+      "is_rest": false,
+      "need_logs_to_advance": false,
+      "type": "custom",
+      "config": null
+    },
+    "slots": [
+      {
+        "comment": "",
+        "is_superset": false,
+        "exercises": [
+          92
+        ],
+        "sets": [
+          {
+            "slot_entry_id": 3,
+            "exercise": 92,
+            "sets": 4,
+            "max_sets": null,
+            "weight": "22.00",
+            "max_weight": null,
+            "weight_unit": 1,
+            "weight_rounding": null,
+            "repetitions": "10.00",
+            "max_repetitions": null,
+            "repetitions_unit": 1,
+            "repetitions_rounding": null,
+            "rir": null,
+            "max_rir": null,
+            "rpe": null,
+            "rest": "120.00",
+            "max_rest": null,
+            "type": "normal",
+            "text_repr": "4 Sätze, 10 × 22 kg 120s rest",
+            "comment": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "iteration": 3,
+    "date": "2025-01-23",
+    "label": null,
+    "day": null,
+    "slots": []
+  },
+  {
+    "iteration": 3,
+    "date": "2025-01-24",
+    "label": null,
+    "day": null,
+    "slots": []
+  },
+  {
+    "iteration": 3,
+    "date": "2025-01-25",
+    "label": null,
+    "day": null,
+    "slots": []
+  },
+  {
+    "iteration": 3,
+    "date": "2025-01-26",
+    "label": null,
+    "day": null,
+    "slots": []
+  },
+  {
+    "iteration": 4,
+    "date": "2025-01-27",
+    "label": null,
+    "day": {
+      "id": 8,
+      "routine": 2,
+      "order": 1,
+      "name": "Leg day",
+      "description": "Leg day",
+      "is_rest": false,
+      "need_logs_to_advance": false,
+      "type": "custom",
+      "config": null
+    },
+    "slots": [
+      {
+        "comment": "",
+        "is_superset": false,
+        "exercises": [
+          76
+        ],
+        "sets": [
+          {
+            "slot_entry_id": 2,
+            "exercise": 76,
+            "sets": 4,
+            "max_sets": null,
+            "weight": "80.00",
+            "max_weight": null,
+            "weight_unit": 1,
+            "weight_rounding": null,
+            "repetitions": "10.00",
+            "max_repetitions": null,
+            "repetitions_unit": 1,
+            "repetitions_rounding": null,
+            "rir": null,
+            "max_rir": null,
+            "rpe": null,
+            "rest": "120.00",
+            "max_rest": null,
+            "type": "normal",
+            "text_repr": "4 Sätze, 10 × 80 kg 120s rest",
+            "comment": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "iteration": 4,
+    "date": "2025-01-28",
+    "label": null,
+    "day": {
+      "id": 9,
+      "routine": 2,
+      "order": 2,
+      "name": "",
+      "description": "",
+      "is_rest": true,
+      "need_logs_to_advance": false,
+      "type": "custom",
+      "config": null
+    },
+    "slots": []
+  },
+  {
+    "iteration": 4,
+    "date": "2025-01-29",
+    "label": null,
+    "day": {
+      "id": 10,
+      "routine": 2,
+      "order": 3,
+      "name": "Arms day",
+      "description": "Leg day",
+      "is_rest": false,
+      "need_logs_to_advance": false,
+      "type": "custom",
+      "config": null
+    },
+    "slots": [
+      {
+        "comment": "",
+        "is_superset": false,
+        "exercises": [
+          92
+        ],
+        "sets": [
+          {
+            "slot_entry_id": 3,
+            "exercise": 92,
+            "sets": 4,
+            "max_sets": null,
+            "weight": "23.00",
+            "max_weight": null,
+            "weight_unit": 1,
+            "weight_rounding": null,
+            "repetitions": "10.00",
+            "max_repetitions": null,
+            "repetitions_unit": 1,
+            "repetitions_rounding": null,
+            "rir": null,
+            "max_rir": null,
+            "rpe": null,
+            "rest": "120.00",
+            "max_rest": null,
+            "type": "normal",
+            "text_repr": "4 Sätze, 10 × 23 kg 120s rest",
+            "comment": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "iteration": 4,
+    "date": "2025-01-30",
+    "label": null,
+    "day": null,
+    "slots": []
+  },
+  {
+    "iteration": 4,
+    "date": "2025-01-31",
+    "label": null,
+    "day": null,
+    "slots": []
+  },
+  {
+    "iteration": 4,
+    "date": "2025-02-01",
+    "label": null,
+    "day": null,
+    "slots": []
+  },
+  {
+    "iteration": 4,
+    "date": "2025-02-02",
+    "label": null,
+    "day": null,
+    "slots": []
+  },
+  {
+    "iteration": 5,
+    "date": "2025-02-03",
+    "label": null,
+    "day": {
+      "id": 8,
+      "routine": 2,
+      "order": 1,
+      "name": "Leg day",
+      "description": "Leg day",
+      "is_rest": false,
+      "need_logs_to_advance": false,
+      "type": "custom",
+      "config": null
+    },
+    "slots": [
+      {
+        "comment": "",
+        "is_superset": false,
+        "exercises": [
+          76
+        ],
+        "sets": [
+          {
+            "slot_entry_id": 2,
+            "exercise": 76,
+            "sets": 4,
+            "max_sets": null,
+            "weight": "80.00",
+            "max_weight": null,
+            "weight_unit": 1,
+            "weight_rounding": null,
+            "repetitions": "10.00",
+            "max_repetitions": null,
+            "repetitions_unit": 1,
+            "repetitions_rounding": null,
+            "rir": null,
+            "max_rir": null,
+            "rpe": null,
+            "rest": "120.00",
+            "max_rest": null,
+            "type": "normal",
+            "text_repr": "4 Sätze, 10 × 80 kg 120s rest",
+            "comment": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "iteration": 5,
+    "date": "2025-02-04",
+    "label": null,
+    "day": {
+      "id": 9,
+      "routine": 2,
+      "order": 2,
+      "name": "",
+      "description": "",
+      "is_rest": true,
+      "need_logs_to_advance": false,
+      "type": "custom",
+      "config": null
+    },
+    "slots": []
+  },
+  {
+    "iteration": 5,
+    "date": "2025-02-05",
+    "label": null,
+    "day": {
+      "id": 10,
+      "routine": 2,
+      "order": 3,
+      "name": "Arms day",
+      "description": "Leg day",
+      "is_rest": false,
+      "need_logs_to_advance": false,
+      "type": "custom",
+      "config": null
+    },
+    "slots": [
+      {
+        "comment": "",
+        "is_superset": false,
+        "exercises": [
+          92
+        ],
+        "sets": [
+          {
+            "slot_entry_id": 3,
+            "exercise": 92,
+            "sets": 4,
+            "max_sets": null,
+            "weight": "24.00",
+            "max_weight": null,
+            "weight_unit": 1,
+            "weight_rounding": null,
+            "repetitions": "10.00",
+            "max_repetitions": null,
+            "repetitions_unit": 1,
+            "repetitions_rounding": null,
+            "rir": null,
+            "max_rir": null,
+            "rpe": null,
+            "rest": "120.00",
+            "max_rest": null,
+            "type": "normal",
+            "text_repr": "4 Sätze, 10 × 24 kg 120s rest",
+            "comment": ""
+          }
+        ]
+      }
+    ]
+  }
+]

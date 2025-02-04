@@ -73,10 +73,6 @@
   "@searchExercise": {
     "description": "Label on set form. Selected exercises are added to the set"
   },
-  "supersetWith": "en conjunt amb",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
-  },
   "equipment": "Equipament",
   "@equipment": {
     "description": "Equipment needed to perform an exercise"
@@ -457,10 +453,6 @@
   "proteinShort": "P",
   "@proteinShort": {
     "description": "The first letter or short name of the word 'Protein', used in overviews"
-  },
-  "enterRepetitionsOrWeight": "Ompliu les repeticions o bé el pes per a una de les sèries com a mínim",
-  "@enterRepetitionsOrWeight": {
-    "description": "Error message when the user hasn't filled in the forms for exercise sets"
   },
   "fatShort": "G",
   "@fatShort": {

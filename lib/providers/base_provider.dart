@@ -56,7 +56,8 @@ class WgerBaseProvider {
   }
 
   /// Fetch and retrieve the overview list of objects, returns the JSON parsed response
-  Future<Map<String, dynamic>> fetch(Uri uri) async {
+  Future<dynamic> fetch(Uri uri) async {
+    // Future<Map<String, dynamic> | List<dynamic>> fetch(Uri uri) async {
     // Send the request
     final response = await client.get(
       uri,

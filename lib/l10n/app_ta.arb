@@ -221,10 +221,6 @@
   },
   "searchNamesInEnglish": "ஆங்கிலத்தில் பெயர்களையும் தேடுங்கள்",
   "@searchNamesInEnglish": {},
-  "supersetWith": "உடன் சூப்பர்செட்",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
-  },
   "equipment": "உபகரணங்கள்",
   "@equipment": {
     "description": "Equipment needed to perform an exercise"
