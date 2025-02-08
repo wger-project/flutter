@@ -907,5 +907,64 @@
   "ingredientLogged": "Sastojak je upisan u dnevnik",
   "@ingredientLogged": {},
   "noIngredientsDefined": "Još nije određen nijedan sastojak",
-  "@noIngredientsDefined": {}
+  "@noIngredientsDefined": {},
+  "overallChangeWeight": "Sveukupna promjena",
+  "@overallChangeWeight": {
+    "description": "Overall change in weight, added for localization"
+  },
+  "goalTypeMeals": "Od obroka",
+  "@goalTypeMeals": {
+    "description": "added for localization of Class GoalType's filed meals"
+  },
+  "goalTypeBasic": "Osnovni",
+  "@goalTypeBasic": {
+    "description": "added for localization of Class GoalType's filed basic"
+  },
+  "goalTypeAdvanced": "Napredni",
+  "@goalTypeAdvanced": {
+    "description": "added for localization of Class GoalType's filed advanced"
+  },
+  "indicatorRaw": "sirovo",
+  "@indicatorRaw": {
+    "description": "added for localization of Class Indicator's field text"
+  },
+  "indicatorAvg": "prosjek",
+  "@indicatorAvg": {
+    "description": "added for localization of Class Indicator's field text"
+  },
+  "themeMode": "Modus teme",
+  "@themeMode": {},
+  "darkMode": "Uvijek tamni modus",
+  "@darkMode": {},
+  "lightMode": "Uvijek svijetli modus",
+  "@lightMode": {},
+  "systemMode": "Postavke sustava",
+  "@systemMode": {},
+  "chartAllTimeTitle": "{name} – svo vrijeme",
+  "@chartAllTimeTitle": {
+    "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "chartDuringPlanTitle": "{chartName} tijekom prehrambenog plana {planName}",
+  "@chartDuringPlanTitle": {
+    "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
+    "type": "text",
+    "placeholders": {
+      "chartName": {},
+      "planName": {}
+    }
+  },
+  "settingsIngredientCacheDescription": "Predmemorija sastojaka",
+  "@settingsIngredientCacheDescription": {},
+  "chart30DaysTitle": "{name} – zadnjih 30 dana",
+  "@chart30DaysTitle": {
+    "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {}
+    }
+  }
 }
