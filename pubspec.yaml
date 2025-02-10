@@ -80,7 +80,7 @@ dev_dependencies:
     sdk: flutter
   build_runner: ^2.4.14
   cider: ^0.2.7
-  drift_dev: ^2.23.1
+  drift_dev: ^2.25.0
   flutter_lints: ^5.0.0
   freezed: ^2.5.7
   golden_toolkit: ^0.15.0
