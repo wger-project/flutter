@@ -51,7 +51,7 @@
   },
   "save": "Сохранить",
   "@save": {},
-  "logMeal": "Записать это блюдо",
+  "logMeal": "Запишите прием пищи в дневник питания",
   "@logMeal": {},
   "nutritionalPlan": "План питания",
   "@nutritionalPlan": {},
@@ -897,5 +897,66 @@
     "description": "Log a specific meal (imperative form)"
   },
   "done": "Завершить",
-  "@done": {}
+  "@done": {},
+  "overallChangeWeight": "Общее изменение",
+  "@overallChangeWeight": {
+    "description": "Overall change in weight, added for localization"
+  },
+  "goalTypeMeals": "Из еды",
+  "@goalTypeMeals": {
+    "description": "added for localization of Class GoalType's filed meals"
+  },
+  "goalTypeBasic": "Базовый",
+  "@goalTypeBasic": {
+    "description": "added for localization of Class GoalType's filed basic"
+  },
+  "goalTypeAdvanced": "Расширенный",
+  "@goalTypeAdvanced": {
+    "description": "added for localization of Class GoalType's filed advanced"
+  },
+  "indicatorAvg": "в среднем",
+  "@indicatorAvg": {
+    "description": "added for localization of Class Indicator's field text"
+  },
+  "themeMode": "Режим темы",
+  "@themeMode": {},
+  "darkMode": "Всегда темный режим",
+  "@darkMode": {},
+  "lightMode": "Всегда светлый режим",
+  "@lightMode": {},
+  "systemMode": "Системные настройки",
+  "@systemMode": {},
+  "noIngredientsDefined": "Ингредиенты пока не определены",
+  "@noIngredientsDefined": {},
+  "ingredientLogged": "Ингредиент занесен в дневник",
+  "@ingredientLogged": {},
+  "selectMealToLog": "Выберите прием пищи для записи в дневник",
+  "@selectMealToLog": {},
+  "chartAllTimeTitle": "{name} за все время",
+  "@chartAllTimeTitle": {
+    "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "chart30DaysTitle": "{name} последние 30 дней",
+  "@chart30DaysTitle": {
+    "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "chartDuringPlanTitle": "{chartName} во время плана питания {planName}",
+  "@chartDuringPlanTitle": {
+    "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
+    "type": "text",
+    "placeholders": {
+      "chartName": {},
+      "planName": {}
+    }
+  },
+  "settingsIngredientCacheDescription": "Кэш ингредиентов",
+  "@settingsIngredientCacheDescription": {}
 }
