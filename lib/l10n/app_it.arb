@@ -376,7 +376,7 @@
   "@aboutDescription": {
     "description": "Text in the about dialog"
   },
-  "logMeal": "Registra questo pasto",
+  "logMeal": "Registra questo pasto nel diario",
   "@logMeal": {},
   "category": "Categoria",
   "@category": {
@@ -563,7 +563,7 @@
   "@close": {
     "description": "Translation for close"
   },
-  "logIngredient": "Salva nel diario nutrizionale",
+  "logIngredient": "Salva l'ingrediente nel diario nutrizionale",
   "@logIngredient": {},
   "searchIngredient": "Cerca ingrediente",
   "@searchIngredient": {
@@ -853,5 +853,124 @@
   "settingsCacheDeletedSnackbar": "Cache svuotata con successo",
   "@settingsCacheDeletedSnackbar": {},
   "done": "Fatto",
-  "@done": {}
+  "@done": {},
+  "ingredientLogged": "Ingrediente registrato nel diario",
+  "@ingredientLogged": {},
+  "chartDuringPlanTitle": "{chartName} durante il piano nutrizionale {planName}",
+  "@chartDuringPlanTitle": {
+    "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
+    "type": "text",
+    "placeholders": {
+      "chartName": {},
+      "planName": {}
+    }
+  },
+  "chart30DaysTitle": "{name} ultimi 30 giorni",
+  "@chart30DaysTitle": {
+    "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "goalMacro": "Obiettivi dei macronutrienti",
+  "@goalMacro": {
+    "description": "The goal for macronutrients"
+  },
+  "goalFiber": "Obbiettivo fibre",
+  "@goalFiber": {},
+  "overallChangeWeight": "Variazione complessiva",
+  "@overallChangeWeight": {
+    "description": "Overall change in weight, added for localization"
+  },
+  "goalTypeMeals": "Dai pasti",
+  "@goalTypeMeals": {
+    "description": "added for localization of Class GoalType's filed meals"
+  },
+  "goalTypeBasic": "Base",
+  "@goalTypeBasic": {
+    "description": "added for localization of Class GoalType's filed basic"
+  },
+  "goalTypeAdvanced": "Avanzato",
+  "@goalTypeAdvanced": {
+    "description": "added for localization of Class GoalType's filed advanced"
+  },
+  "indicatorRaw": "grezzo",
+  "@indicatorRaw": {
+    "description": "added for localization of Class Indicator's field text"
+  },
+  "indicatorAvg": "med",
+  "@indicatorAvg": {
+    "description": "added for localization of Class Indicator's field text"
+  },
+  "themeMode": "Modalità del tema",
+  "@themeMode": {},
+  "lightMode": "Sempre in modalità chiara",
+  "@lightMode": {},
+  "systemMode": "Parametri di sistema",
+  "@systemMode": {},
+  "settingsIngredientCacheDescription": "Cache ingredienti",
+  "@settingsIngredientCacheDescription": {},
+  "onlyLogging": "Traccia solo le calorie",
+  "@onlyLogging": {},
+  "goalEnergy": "Obiettivo energetico",
+  "@goalEnergy": {},
+  "goalProtein": "Obbiettivo proteine",
+  "@goalProtein": {},
+  "goalCarbohydrates": "Obbiettivo carboidrati",
+  "@goalCarbohydrates": {},
+  "goalFat": "Obbiettivo grassi",
+  "@goalFat": {},
+  "today": "Oggi",
+  "@today": {},
+  "loggedToday": "Registrato oggi",
+  "@loggedToday": {},
+  "kcalValue": "{value} kcal",
+  "@kcalValue": {
+    "description": "A value in kcal, e.g. 500 kcal",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "gValue": "{value} g",
+  "@gValue": {
+    "description": "A value in grams, e.g. 5 g",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "percentValue": "{value} %",
+  "@percentValue": {
+    "description": "A value in percent, e.g. 10 %",
+    "type": "text",
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "onlyLoggingHelpText": "Selezionate la casella se volete registrare solo le calorie e non volete impostare un piano nutrizionale dettagliato con pasti specifici",
+  "@onlyLoggingHelpText": {},
+  "noIngredientsDefined": "Nessun ingrediente ancora definito",
+  "@noIngredientsDefined": {},
+  "selectMealToLog": "Selezionare un pasto da registrare nel diario",
+  "@selectMealToLog": {},
+  "surplus": "eccedenza",
+  "@surplus": {
+    "description": "Caloric surplus (either planned or unplanned)"
+  },
+  "deficit": "deficit",
+  "@deficit": {
+    "description": "Caloric deficit (either planned or unplanned)"
+  },
+  "chartAllTimeTitle": "{name} per tutto il periodo",
+  "@chartAllTimeTitle": {
+    "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "darkMode": "Sempre in modalità scura",
+  "@darkMode": {}
 }
