@@ -46,7 +46,6 @@ class RoutinesProvider with ChangeNotifier {
   static const _routinesDateSequenceDisplaySubpath = 'date-sequence-display';
   static const _routinesDateSequenceGymSubpath = 'date-sequence-gym';
   static const _routinesCurrentIterationDisplaySubpath = 'current-iteration-display';
-  static const _routinesCurrentIterationGymSubpath = 'current-iteration-gym';
   static const _daysUrlPath = 'day';
   static const _slotsUrlPath = 'slot';
   static const _slotEntriesUrlPath = 'slot-entry';
@@ -261,20 +260,6 @@ class RoutinesProvider with ChangeNotifier {
         baseProvider.makeUrl(
           _routinesUrlPath,
           id: routineId,
-          objectMethod: _routinesCurrentIterationDisplaySubpath,
-        ),
-      ),
-      baseProvider.fetch(
-        baseProvider.makeUrl(
-          _routinesUrlPath,
-          id: routineId,
-          objectMethod: _routinesCurrentIterationGymSubpath,
-        ),
-      ),
-      baseProvider.fetch(
-        baseProvider.makeUrl(
-          _routinesUrlPath,
-          id: routineId,
           objectMethod: _routinesLogsSubpath,
         ),
       ),
@@ -284,9 +269,7 @@ class RoutinesProvider with ChangeNotifier {
 
     final dayData = results[1] as List<dynamic>;
     final dayDataGym = results[2] as List<dynamic>;
-    final currentIterationDayData = results[3] as List<dynamic>;
-    final currentIterationDayDataGym = results[4] as List<dynamic>;
-    final sessionData = results[5] as List<dynamic>;
+    final sessionData = results[3] as List<dynamic>;
 
     /*
      * Set exercise, repetition and weight unit objects
@@ -298,14 +281,6 @@ class RoutinesProvider with ChangeNotifier {
 
     final dayDataEntriesGym = dayDataGym.map((entry) => DayData.fromJson(entry)).toList();
     setExercisesAndUnits(dayDataEntriesGym);
-
-    final currentIteration =
-        currentIterationDayData.map((entry) => DayData.fromJson(entry)).toList();
-    setExercisesAndUnits(currentIteration);
-
-    final currentIterationGym =
-        currentIterationDayDataGym.map((entry) => DayData.fromJson(entry)).toList();
-    setExercisesAndUnits(currentIterationGym);
 
     final sessionDataEntries =
         sessionData.map((entry) => WorkoutSessionApi.fromJson(entry)).toList();
@@ -327,8 +302,6 @@ class RoutinesProvider with ChangeNotifier {
 
     routine.dayData = dayDataEntriesDisplay;
     routine.dayDataGym = dayDataEntriesGym;
-    routine.dayDataCurrentIteration = currentIteration;
-    routine.dayDataCurrentIterationGym = currentIterationGym;
 
     // Logs
     routine.sessions = List<WorkoutSessionApi>.from(sessionDataEntries);

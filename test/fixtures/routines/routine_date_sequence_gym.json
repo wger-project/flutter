@@ -8,7 +8,7 @@
       "routine": 2,
       "order": 1,
       "name": "Leg day",
-      "description": "Leg day",
+      "description": "yes, we really do legs today",
       "is_rest": false,
       "need_logs_to_advance": false,
       "type": "custom",

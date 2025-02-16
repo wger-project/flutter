@@ -190,22 +190,6 @@ void main() {
             jsonDecode(fixture('routines/routine_date_sequence_gym.json')),
           ));
 
-      final currentIterationDisplayUri =
-          Uri.https('localhost', 'api/v2/routine/101/current-iteration-display/');
-      when(mockBaseProvider.makeUrl('routine', objectMethod: 'current-iteration-display', id: 101))
-          .thenReturn(currentIterationDisplayUri);
-      when(mockBaseProvider.fetch(currentIterationDisplayUri)).thenAnswer((_) async => Future.value(
-            jsonDecode(fixture('routines/routine_date_sequence_gym.json')),
-          ));
-
-      final currentIterationGymUri =
-          Uri.https('localhost', 'api/v2/routine/101/current-iteration-gym/');
-      when(mockBaseProvider.makeUrl('routine', objectMethod: 'current-iteration-gym', id: 101))
-          .thenReturn(currentIterationGymUri);
-      when(mockBaseProvider.fetch(currentIterationGymUri)).thenAnswer((_) async => Future.value(
-            jsonDecode(fixture('routines/routine_current_iteration_gym.json')),
-          ));
-
       final logsUri = Uri.https('localhost', 'api/v2/routine/101/logs/');
       when(mockBaseProvider.makeUrl('routine', objectMethod: 'logs', id: 101)).thenReturn(logsUri);
       when(mockBaseProvider.fetch(logsUri)).thenAnswer((_) async => Future.value(
@@ -233,8 +217,8 @@ void main() {
       expect(result.sessions.length, 3);
       expect(result.days.length, 3);
       expect(result.logs.length, 12);
-      expect(result.dayDataCurrentIteration.length, 32);
-      expect(result.dayDataCurrentIterationGym.length, 7);
+      expect(result.dayDataCurrentIteration.length, 8);
+      expect(result.dayDataCurrentIterationGym.length, 8);
       expect(result.dayData.length, 32);
       expect(result.dayDataGym.length, 32);
     });
