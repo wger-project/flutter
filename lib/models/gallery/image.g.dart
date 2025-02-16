@@ -21,7 +21,7 @@ Image _$ImageFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$ImageToJson(Image instance) => <String, dynamic>{
       'id': instance.id,
-      'date': toDate(instance.date),
+      'date': dateToYYYYMMDD(instance.date),
       'image': instance.url,
       'description': instance.description,
     };

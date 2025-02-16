@@ -159,10 +159,6 @@
   "@logout": {
     "description": "Text for logout button"
   },
-  "supersetWith": "superset cu",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
-  },
   "customServerUrl": "URL-ul instanței wger",
   "@customServerUrl": {
     "description": "Label in the form where the users can enter their own wger instance"

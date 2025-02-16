@@ -36,10 +36,6 @@
   "@toggleDetails": {
     "description": "Switch to toggle detail / overview"
   },
-  "aboutText": "wger ist copylefted-Software, lizenziert unter der AGPLv3+ und verfügbar auf GitHub:",
-  "@aboutText": {
-    "description": "Text in the about dialog"
-  },
   "newNutritionalPlan": "Neuer Ernährungsplan",
   "@newNutritionalPlan": {},
   "delete": "Löschen",
@@ -112,8 +108,6 @@
   "@weight": {
     "description": "The weight of a workout log or body weight entry"
   },
-  "dismiss": "Verwerfen",
-  "@dismiss": {},
   "anErrorOccurred": "Es ist ein Fehler aufgetreten!",
   "@anErrorOccurred": {},
   "nutritionalPlans": "Ernährungspläne",
@@ -321,10 +315,6 @@
   "@reps": {
     "description": "Shorthand for repetitions, used when space constraints are tighter"
   },
-  "enterRepetitionsOrWeight": "Bitte gebe entweder die Wiederholungen oder das Gewicht für mindestens einen der Sätze an",
-  "@enterRepetitionsOrWeight": {
-    "description": "Error message when the user hasn't filled in the forms for exercise sets"
-  },
   "start": "Starten",
   "@start": {
     "description": "Label on button to start the gym mode (i.e., an imperative)"
@@ -464,10 +454,6 @@
   },
   "timeStartAhead": "Die Startzeit kann nicht vor der Endzeit liegen",
   "@timeStartAhead": {},
-  "supersetWith": "Supersatz mit",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
-  },
   "total": "Summe",
   "@total": {
     "description": "Label used for total sums of e.g. calories or similar"

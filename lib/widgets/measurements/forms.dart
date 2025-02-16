@@ -167,7 +167,7 @@ class MeasurementEntryForm extends StatelessWidget {
       _entryData['notes'] = entry.notes;
     }
 
-    _dateController.text = toDate(_entryData['date'])!;
+    _dateController.text = dateToYYYYMMDD(_entryData['date'])!;
     _valueController.text = _entryData['value']!.toString();
     _notesController.text = _entryData['notes']!;
   }
@@ -185,7 +185,8 @@ class MeasurementEntryForm extends StatelessWidget {
         children: [
           TextFormField(
             decoration: InputDecoration(labelText: AppLocalizations.of(context).date),
-            readOnly: true, // Hide text cursor
+            readOnly: true,
+            // Hide text cursor
             controller: _dateController,
             onTap: () async {
               // Stop keyboard from appearing
@@ -208,7 +209,7 @@ class MeasurementEntryForm extends StatelessWidget {
                 },
               );
 
-              _dateController.text = toDate(pickedDate)!;
+              _dateController.text = dateToYYYYMMDD(pickedDate)!;
             },
             onSaved: (newValue) {
               _entryData['date'] = DateTime.parse(newValue!);

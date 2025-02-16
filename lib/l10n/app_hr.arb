@@ -209,10 +209,6 @@
   "@aboutContactUsTitle": {
     "description": "Title for contact us section in the about dialog"
   },
-  "enterRepetitionsOrWeight": "Upiši broj ponavljanja ili težinu za barem jednu seriju",
-  "@enterRepetitionsOrWeight": {
-    "description": "Error message when the user hasn't filled in the forms for exercise sets"
-  },
   "enterValue": "Upiši vrijednost",
   "@enterValue": {
     "description": "Error message when the user hasn't entered a value on a required field"
@@ -426,10 +422,6 @@
   "equipment": "Oprema",
   "@equipment": {
     "description": "Equipment needed to perform an exercise"
-  },
-  "supersetWith": "u nasdkup sa",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
   },
   "category": "Kategorija",
   "@category": {

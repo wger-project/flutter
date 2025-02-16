@@ -16,66 +16,69 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:wger/models/workouts/set.dart';
+import 'package:wger/models/workouts/slot.dart';
 
 part 'day.g.dart';
 
 @JsonSerializable()
 class Day {
-  static const Map<int, String> weekdays = {
-    1: 'Monday',
-    2: 'Tuesday',
-    3: 'Wednesday',
-    4: 'Thursday',
-    5: 'Friday',
-    6: 'Saturday',
-    7: 'Sunday',
-  };
+  static const MIN_LENGTH_NAME = 3;
+  static const MAX_LENGTH_NAME = 20;
+  static const MAX_LENGTH_DESCRIPTION = 1000;
 
-  @JsonKey(required: true)
+  @JsonKey(required: true, includeToJson: false)
   int? id;
 
-  @JsonKey(required: true, name: 'training')
-  late int workoutId;
+  @JsonKey(required: true, name: 'routine')
+  late int routineId;
+
+  @JsonKey(required: true)
+  late String name;
 
   @JsonKey(required: true)
   late String description;
 
-  @JsonKey(required: true, name: 'day')
-  List<int> daysOfWeek = [];
+  @JsonKey(required: true, name: 'is_rest')
+  late bool isRest;
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  List<Set> sets = [];
+  @JsonKey(required: true, name: 'need_logs_to_advance')
+  late bool needLogsToAdvance;
 
-  //@JsonKey(includeFromJson: false, includeToJson: false)
-  //late WorkoutPlan workout;
+  @JsonKey(required: true)
+  late String type;
 
-  Day() {
-    daysOfWeek = [];
-    sets = [];
-  }
+  @JsonKey(required: true)
+  late num order;
 
-  String getDayName(int weekDay) {
-    return weekdays[weekDay]!;
-  }
+  @JsonKey(required: true)
+  late Object? config;
 
-  String get getDaysText {
-    return daysOfWeek.map((e) => getDayName(e)).join(', ');
-  }
+  @JsonKey(required: false, defaultValue: [], includeFromJson: true, includeToJson: false)
+  List<Slot> slots = [];
 
-  String getDaysTextTranslated(locale) {
-    return daysOfWeek.map((e) => getDayTranslated(e, locale)).join(', ');
-  }
+  Day({
+    this.id,
+    required this.routineId,
+    required this.name,
+    required this.description,
+    this.isRest = false,
+    this.needLogsToAdvance = false,
+    this.type = 'custom',
+    this.order = 0,
+    this.config = null,
+    this.slots = const [],
+  });
 
-  /// Returns the translated name of the given day
-  String getDayTranslated(int day, locale) {
-    // Isn't there another way?... 🙄
-    final now = DateTime.now();
-    final firstDayOfWeek = now.subtract(Duration(days: now.weekday));
-
-    return DateFormat(DateFormat.WEEKDAY, locale).format(firstDayOfWeek.add(Duration(days: day)));
+  Day.empty() {
+    name = 'new day';
+    description = '';
+    type = 'custom';
+    isRest = false;
+    needLogsToAdvance = false;
+    order = 0;
+    config = {};
+    slots = [];
   }
 
   // Boilerplate
