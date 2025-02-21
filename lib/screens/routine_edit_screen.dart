@@ -19,7 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/providers/routines.dart';
-import 'package:wger/widgets/routines/app_bar.dart';
+import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/routines/routine_edit.dart';
 
 class RoutineEditScreen extends StatelessWidget {
@@ -34,7 +34,7 @@ class RoutineEditScreen extends StatelessWidget {
     final routine = Provider.of<RoutinesProvider>(context).findById(routineId);
 
     return Scaffold(
-      appBar: RoutineDetailAppBar(routine),
+      appBar: EmptyAppBar(routine.name),
       body: RoutineEdit(routine),
     );
   }

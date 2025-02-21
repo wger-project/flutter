@@ -45,7 +45,6 @@ class RoutinesProvider with ChangeNotifier {
   static const _routinesLogsSubpath = 'logs';
   static const _routinesDateSequenceDisplaySubpath = 'date-sequence-display';
   static const _routinesDateSequenceGymSubpath = 'date-sequence-gym';
-  static const _routinesCurrentIterationDisplaySubpath = 'current-iteration-display';
   static const _daysUrlPath = 'day';
   static const _slotsUrlPath = 'slot';
   static const _slotEntriesUrlPath = 'slot-entry';
