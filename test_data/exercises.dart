@@ -50,7 +50,7 @@ const tEquipment3 = Equipment(id: 3, name: 'Bench');
 const tEquipment4 = Equipment(id: 10, name: 'Gym mat');
 const testEquipment = [tEquipment1, tEquipment2, tEquipment3];
 
-final benchPress = Exercise(
+final testBenchPress = Exercise(
   id: 1,
   uuid: '364f196c-881b-4839-8bfc-9e8f651521b6',
   created: DateTime(2021, 09, 01),
@@ -62,7 +62,7 @@ final benchPress = Exercise(
   translations: [benchPressEn, benchPressDe],
 );
 
-final crunches = Exercise(
+final testCrunches = Exercise(
   id: 2,
   uuid: '82415754-fc4c-49ea-8ca7-1516dd36d5a0',
   created: DateTime(2021, 08, 01),
@@ -74,7 +74,7 @@ final crunches = Exercise(
   translations: [crunchesEn, crunchesDe, crunchesFr],
 );
 
-final deadLift = Exercise(
+final testDeadLift = Exercise(
   id: 3,
   uuid: 'ca84e2c5-5608-4d6d-ba57-6d4b6b5e7acd',
   created: DateTime(2021, 08, 01),
@@ -86,7 +86,7 @@ final deadLift = Exercise(
   translations: [deadLiftEn],
 );
 
-final curls = Exercise(
+final testCurls = Exercise(
   id: 4,
   uuid: '361f024c-fdf8-4146-b7d7-0c1b67c58141',
   created: DateTime(2021, 08, 01),
@@ -98,7 +98,7 @@ final curls = Exercise(
   translations: [curlsEn],
 );
 
-final squats = Exercise(
+final testSquats = Exercise(
   id: 5,
   uuid: '361f024c-fdf8-4146-b7d7-0c1b67c58141',
   created: DateTime(2021, 08, 01),
@@ -110,7 +110,7 @@ final squats = Exercise(
   translations: [squatsEn],
 );
 
-final sideRaises = Exercise(
+final testSideRaises = Exercise(
   id: 6,
   uuid: '721ff972-c568-41e3-8cf5-cf1e5c5c801c',
   created: DateTime(2022, 11, 01),
@@ -213,16 +213,16 @@ final sideRaisesEn = Translation(
 );
 
 List<Exercise> getTestExercises() {
-  return [benchPress, crunches, deadLift, curls, squats, sideRaises];
+  return [testBenchPress, testCrunches, testDeadLift, testCurls, testSquats, testSideRaises];
 }
 
 List<Exercise> getScreenshotExercises() {
-  benchPress.translations = benchPressTranslations;
-  crunches.translations = crunchesTranslations;
-  deadLift.translations = deadLiftTranslations;
-  curls.translations = curlsTranslations;
-  squats.translations = squatsTranslations;
-  sideRaises.translations = raisesTranslations;
+  testBenchPress.translations = benchPressTranslations;
+  testCrunches.translations = crunchesTranslations;
+  testDeadLift.translations = deadLiftTranslations;
+  testCurls.translations = curlsTranslations;
+  testSquats.translations = squatsTranslations;
+  testSideRaises.translations = raisesTranslations;
 
-  return [benchPress, crunches, deadLift, curls, squats, sideRaises];
+  return [testBenchPress, testCrunches, testDeadLift, testCurls, testSquats, testSideRaises];
 }

@@ -66,8 +66,8 @@ void main() {
     expect(find.text('first day'), findsNWidgets(2));
     expect(find.text('chest, shoulders'), findsNWidgets(2), reason: 'description');
 
-    expect(find.text('second day'), findsNWidgets(3));
-    expect(find.text('legs'), findsNWidgets(3), reason: 'description');
+    expect(find.text('second day'), findsNWidgets(2));
+    expect(find.text('legs'), findsNWidgets(2), reason: 'description');
 
     // Edit the first day
     expect(find.byElementType(DayFormWidget), findsNothing);

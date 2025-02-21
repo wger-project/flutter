@@ -18,6 +18,7 @@
 
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/json.dart';
+import 'package:wger/helpers/misc.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/day_data.dart';
@@ -69,12 +70,6 @@ class Routine {
   @JsonKey(includeFromJson: false, includeToJson: false)
   List<DayData> dayDataGym = [];
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  List<DayData> dayDataCurrentIteration = [];
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  List<DayData> dayDataCurrentIterationGym = [];
-
   @JsonKey(required: false, includeToJson: false, defaultValue: [])
   List<WorkoutSessionApi> sessions = [];
 
@@ -89,8 +84,6 @@ class Routine {
     this.days = const [],
     this.dayData = const [],
     this.dayDataGym = const [],
-    this.dayDataCurrentIteration = const [],
-    this.dayDataCurrentIterationGym = const [],
     this.sessions = const [],
   }) {
     this.created = created ?? DateTime.now();
@@ -119,6 +112,29 @@ class Routine {
       out.addAll(session.logs);
     }
     return out;
+  }
+
+  int? getIteration({DateTime? date}) {
+    if (date == null) {
+      return null;
+    }
+
+    for (final data in dayData) {
+      if (data.date.isSameDayAs(date)) {
+        return data.iteration;
+      }
+    }
+    return null;
+  }
+
+  List<DayData> get dayDataCurrentIteration {
+    final iteration = getIteration() ?? 1;
+    return dayData.where((data) => data.iteration == iteration).toList();
+  }
+
+  List<DayData> get dayDataCurrentIterationGym {
+    final iteration = getIteration() ?? 1;
+    return dayDataGym.where((data) => data.iteration == iteration).toList();
   }
 
   /// Filters the workout logs by exercise and sorts them by date

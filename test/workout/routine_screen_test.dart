@@ -85,10 +85,9 @@ void main() {
     expect(find.text('first day'), findsOneWidget);
     expect(find.text('chest, shoulders'), findsOneWidget);
 
-    // The second day is repeated
-    expect(find.text('second day'), findsNWidgets(2));
-    expect(find.text('legs'), findsNWidgets(2));
+    expect(find.text('second day'), findsOneWidget);
+    expect(find.text('legs'), findsOneWidget);
 
-    expect(find.byType(Card), findsNWidgets(3));
+    expect(find.byType(Card), findsNWidgets(2));
   });
 }

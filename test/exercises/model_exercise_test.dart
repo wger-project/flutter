@@ -8,7 +8,7 @@ import '../fixtures/fixture_reader.dart';
 
 void main() {
   final Map<String, dynamic> tExerciseInfoMap = jsonDecode(
-    fixture('exercises/exercisebaseinfo_response.json'),
+    fixture('exercises/exerciseinfo_response.json'),
   );
 
   group('Model tests', () {

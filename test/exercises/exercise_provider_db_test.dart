@@ -22,7 +22,7 @@ void main() {
   late ExerciseDatabase database;
 
   const String categoryUrl = 'exercisecategory';
-  const String exerciseBaseInfoUrl = 'exercisebaseinfo';
+  const String exerciseInfoUrl = 'exerciseinfo';
   const String muscleUrl = 'muscle';
   const String equipmentUrl = 'equipment';
   const String languageUrl = 'language';
@@ -36,13 +36,13 @@ void main() {
   final Uri tExerciseInfoUri = Uri(
     scheme: 'http',
     host: 'localhost',
-    path: 'api/v2/$exerciseBaseInfoUrl/',
+    path: 'api/v2/$exerciseInfoUrl/',
   );
 
   final Uri tExerciseInfoDetailUri = Uri(
     scheme: 'http',
     host: 'localhost',
-    path: 'api/v2/$exerciseBaseInfoUrl/9/',
+    path: 'api/v2/$exerciseInfoUrl/9/',
   );
 
   final Uri tMuscleEntriesUri = Uri(
@@ -80,7 +80,7 @@ void main() {
     fixture('exercises/language_entries.json'),
   );
   final Map<String, dynamic> tExerciseInfoMap = jsonDecode(
-    fixture('exercises/exercisebaseinfo_response.json'),
+    fixture('exercises/exerciseinfo_response.json'),
   );
 
   setUp(() {
@@ -118,12 +118,12 @@ void main() {
     );
 
     // Mock base info response
-    when(mockBaseProvider.makeUrl(exerciseBaseInfoUrl)).thenReturn(tExerciseInfoUri);
+    when(mockBaseProvider.makeUrl(exerciseInfoUrl)).thenReturn(tExerciseInfoUri);
     when(mockBaseProvider.fetch(tExerciseInfoUri)).thenAnswer(
       (_) => Future.value(tExerciseInfoMap),
     );
 
-    when(mockBaseProvider.makeUrl(exerciseBaseInfoUrl, id: 9)).thenReturn(tExerciseInfoDetailUri);
+    when(mockBaseProvider.makeUrl(exerciseInfoUrl, id: 9)).thenReturn(tExerciseInfoDetailUri);
     when(mockBaseProvider.fetch(tExerciseInfoDetailUri)).thenAnswer(
       (_) => Future.value(tExerciseInfoMap),
     );

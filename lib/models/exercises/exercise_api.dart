@@ -11,7 +11,7 @@ import 'package:wger/models/exercises/video.dart';
 part 'exercise_api.freezed.dart';
 part 'exercise_api.g.dart';
 
-/// Model for an exercise as returned from the exercisebaseinfo endpoint
+/// Model for an exercise as returned from the exerciseinfo endpoint
 ///
 /// Basically this is just used as a convenience to create "real" exercise
 /// objects and nothing more

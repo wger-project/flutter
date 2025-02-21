@@ -37,9 +37,9 @@ void main() {
     expect(slotEntry.repetitionRounding, 1.25);
     expect(slotEntry.weightUnitId, 1);
     expect(slotEntry.weightRounding, 2.5);
-    expect(slotEntry.repsConfigs.length, 1);
-    expect(slotEntry.repsConfigs[0].id, 139);
-    expect(slotEntry.maxRepsConfigs.length, 1);
+    expect(slotEntry.repetitionsConfigs.length, 1);
+    expect(slotEntry.repetitionsConfigs[0].id, 139);
+    expect(slotEntry.maxRepetitionsConfigs.length, 1);
     expect(slotEntry.weightConfigs.length, 1);
     expect(slotEntry.maxWeightConfigs.length, 1);
     expect(slotEntry.nrOfSetsConfigs.length, 1);

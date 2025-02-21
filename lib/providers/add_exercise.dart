@@ -37,7 +37,7 @@ class AddExerciseProvider with ChangeNotifier {
   List<Muscle> _primaryMuscles = [];
   List<Muscle> _secondaryMuscles = [];
 
-  static const _exerciseUrlPath = 'exercise-base';
+  static const _exerciseUrlPath = 'exercise';
   static const _imagesUrlPath = 'exerciseimage';
   static const _exerciseTranslationUrlPath = 'exercise-translation';
   static const _exerciseAliasPath = 'exercisealias';

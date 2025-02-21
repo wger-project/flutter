@@ -37,7 +37,7 @@ void main() {
   const unit2 = RepetitionUnit(id: 2, name: 'another name');
   const unit3 = RepetitionUnit(id: 3, name: 'this is repetition number 3');
 
-  var result = -1;
+  int? result;
 
   final slotEntry = SlotEntry(
     slotId: 1,
@@ -54,7 +54,7 @@ void main() {
 
   setUp(() {
     mockWorkoutPlans = MockRoutinesProvider();
-    result = -1;
+    result = null;
     when(mockWorkoutPlans.repetitionUnits).thenAnswer((_) => [unit1, unit2, unit3]);
     when(mockWorkoutPlans.findRepetitionUnitById(1)).thenReturn(unit1);
     when(mockWorkoutPlans.findRepetitionUnitById(2)).thenReturn(unit2);

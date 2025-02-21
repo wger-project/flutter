@@ -29,8 +29,8 @@ part 'slot_entry.g.dart';
 enum ConfigType {
   weight,
   maxWeight,
-  reps,
-  maxReps,
+  repetitions,
+  maxRepetitions,
   sets,
   maxSets,
   rir,
@@ -68,25 +68,25 @@ class SlotEntry {
   late int exerciseId;
 
   @JsonKey(required: true, name: 'repetition_unit')
-  late int repetitionUnitId;
+  late int? repetitionUnitId;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  late RepetitionUnit repetitionUnitObj;
+  late RepetitionUnit? repetitionUnitObj;
 
   @JsonKey(required: true, name: 'repetition_rounding', fromJson: stringToNum)
   late num repetitionRounding;
 
-  @JsonKey(required: false, name: 'reps_configs', includeToJson: false, defaultValue: [])
-  late List<BaseConfig> repsConfigs = [];
+  @JsonKey(required: false, name: 'repetitions_configs', includeToJson: false, defaultValue: [])
+  late List<BaseConfig> repetitionsConfigs = [];
 
-  @JsonKey(required: false, name: 'max_reps_configs', includeToJson: false, defaultValue: [])
-  late List<BaseConfig> maxRepsConfigs = [];
+  @JsonKey(required: false, name: 'max_repetitions_configs', includeToJson: false, defaultValue: [])
+  late List<BaseConfig> maxRepetitionsConfigs = [];
 
   @JsonKey(required: true, name: 'weight_unit')
-  late int weightUnitId;
+  late int? weightUnitId;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  late WeightUnit weightUnitObj;
+  late WeightUnit? weightUnitObj;
 
   @JsonKey(required: true, name: 'weight_rounding', fromJson: stringToNum)
   late num weightRounding;
@@ -137,8 +137,8 @@ class SlotEntry {
     this.maxRirConfigs = const [],
     this.restTimeConfigs = const [],
     this.maxRestTimeConfigs = const [],
-    this.repsConfigs = const [],
-    this.maxRepsConfigs = const [],
+    this.repetitionsConfigs = const [],
+    this.maxRepetitionsConfigs = const [],
     RepetitionUnit? repetitionUnit,
     WeightUnit? weightUnit,
     Exercise? exercise,
@@ -186,8 +186,8 @@ class SlotEntry {
 
   bool get hasProgressionRules {
     return weightConfigs.length > 1 ||
-        repsConfigs.length > 1 ||
-        maxRepsConfigs.length > 1 ||
+        repetitionsConfigs.length > 1 ||
+        maxRepetitionsConfigs.length > 1 ||
         nrOfSetsConfigs.length > 1 ||
         maxNrOfSetsConfigs.length > 1 ||
         rirConfigs.length > 1 ||
@@ -208,10 +208,10 @@ class SlotEntry {
         return nrOfSetsConfigs;
       case ConfigType.maxSets:
         return maxNrOfSetsConfigs;
-      case ConfigType.reps:
-        return repsConfigs;
-      case ConfigType.maxReps:
-        return maxRepsConfigs;
+      case ConfigType.repetitions:
+        return repetitionsConfigs;
+      case ConfigType.maxRepetitions:
+        return maxRepetitionsConfigs;
       case ConfigType.rir:
         return rirConfigs;
       case ConfigType.maxRir:

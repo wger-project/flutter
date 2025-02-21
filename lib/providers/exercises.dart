@@ -48,7 +48,7 @@ class ExercisesProvider with ChangeNotifier {
   static const EXERCISE_CACHE_DAYS = 7;
   static const CACHE_VERSION = 4;
 
-  static const exerciseInfoUrlPath = 'exercisebaseinfo';
+  static const exerciseInfoUrlPath = 'exerciseinfo';
   static const exerciseSearchPath = 'exercise/search';
 
   static const categoriesUrlPath = 'exercisecategory';

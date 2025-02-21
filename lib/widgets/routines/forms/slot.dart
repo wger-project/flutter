@@ -78,8 +78,8 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
 
   final weightController = TextEditingController();
   final maxWeightController = TextEditingController();
-  final repsController = TextEditingController();
-  final maxRepsController = TextEditingController();
+  final repetitionsController = TextEditingController();
+  final maxRepetitionsController = TextEditingController();
   final restController = TextEditingController();
   final maxRestController = TextEditingController();
   final rirController = TextEditingController();
@@ -102,11 +102,12 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
       maxWeightController.text = widget.entry.maxWeightConfigs.first.value.toString();
     }
 
-    if (widget.entry.repsConfigs.isNotEmpty) {
-      repsController.text = widget.entry.repsConfigs.first.value.round().toString();
+    if (widget.entry.repetitionsConfigs.isNotEmpty) {
+      repetitionsController.text = widget.entry.repetitionsConfigs.first.value.round().toString();
     }
-    if (widget.entry.maxRepsConfigs.isNotEmpty) {
-      maxRepsController.text = widget.entry.maxRepsConfigs.first.value.round().toString();
+    if (widget.entry.maxRepetitionsConfigs.isNotEmpty) {
+      maxRepetitionsController.text =
+          widget.entry.maxRepetitionsConfigs.first.value.round().toString();
     }
 
     if (widget.entry.restTimeConfigs.isNotEmpty) {
@@ -126,8 +127,8 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
     weightController.dispose();
     maxWeightController.dispose();
 
-    repsController.dispose();
-    maxRepsController.dispose();
+    repetitionsController.dispose();
+    maxRepetitionsController.dispose();
 
     restController.dispose();
     maxRestController.dispose();
@@ -252,7 +253,7 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
             children: [
               Flexible(
                 child: TextFormField(
-                  controller: repsController,
+                  controller: repetitionsController,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(labelText: i18n.repetitions),
                   validator: (value) {
@@ -266,7 +267,7 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
               if (!widget.simpleMode)
                 Flexible(
                   child: TextFormField(
-                    controller: maxRepsController,
+                    controller: maxRepetitionsController,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(labelText: i18n.max),
                     validator: (value) {
@@ -348,13 +349,13 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
 
               provider.handleConfig(
                 widget.entry,
-                repsController.text,
-                ConfigType.reps,
+                repetitionsController.text,
+                ConfigType.repetitions,
               );
               provider.handleConfig(
                 widget.entry,
-                maxRepsController.text,
-                ConfigType.maxReps,
+                maxRepetitionsController.text,
+                ConfigType.maxRepetitions,
               );
 
               provider.handleConfig(

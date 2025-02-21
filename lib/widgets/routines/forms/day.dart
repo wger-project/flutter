@@ -132,7 +132,7 @@ class _ReorderableDaysListState extends State<ReorderableDaysList> {
           ),
           onTap: () async {
             final day = Day.empty();
-            day.name = i18n.newDay;
+            day.name = '${i18n.newDay} ${widget.days.length + 1}';
             day.routineId = widget.routineId;
             final newDay = await provider.addDay(day);
 

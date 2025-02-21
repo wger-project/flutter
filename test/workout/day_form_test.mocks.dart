@@ -108,6 +108,12 @@ class MockRoutinesProvider extends _i1.Mock implements _i12.RoutinesProvider {
       ) as List<_i3.WeightUnit>);
 
   @override
+  set weightUnits(List<_i3.WeightUnit>? weightUnits) => super.noSuchMethod(
+        Invocation.setter(#weightUnits, weightUnits),
+        returnValueForMissingStub: null,
+      );
+
+  @override
   _i3.WeightUnit get defaultWeightUnit => (super.noSuchMethod(
         Invocation.getter(#defaultWeightUnit),
         returnValue: _FakeWeightUnit_1(
@@ -121,6 +127,12 @@ class MockRoutinesProvider extends _i1.Mock implements _i12.RoutinesProvider {
         Invocation.getter(#repetitionUnits),
         returnValue: <_i4.RepetitionUnit>[],
       ) as List<_i4.RepetitionUnit>);
+
+  @override
+  set repetitionUnits(List<_i4.RepetitionUnit>? repetitionUnits) => super.noSuchMethod(
+        Invocation.setter(#repetitionUnits, repetitionUnits),
+        returnValueForMissingStub: null,
+      );
 
   @override
   _i4.RepetitionUnit get defaultRepetitionUnit => (super.noSuchMethod(

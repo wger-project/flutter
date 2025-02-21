@@ -311,7 +311,7 @@ class LogPage extends StatefulWidget {
 class _LogPageState extends State<LogPage> {
   final _form = GlobalKey<FormState>();
   String rirValue = SlotEntry.DEFAULT_RIR;
-  final _repsController = TextEditingController();
+  final _repetitionsController = TextEditingController();
   final _weightController = TextEditingController();
   var _detailed = false;
   bool _isSaving = false;
@@ -325,7 +325,7 @@ class _LogPageState extends State<LogPage> {
     focusNode = FocusNode();
 
     if (widget._configData.repetitions != null) {
-      _repsController.text = widget._configData.repetitions!.toString();
+      _repetitionsController.text = widget._configData.repetitions!.toString();
     }
 
     if (widget._configData.weight != null) {
@@ -336,7 +336,7 @@ class _LogPageState extends State<LogPage> {
   @override
   void dispose() {
     focusNode.dispose();
-    _repsController.dispose();
+    _repetitionsController.dispose();
     _weightController.dispose();
     super.dispose();
   }
@@ -348,9 +348,9 @@ class _LogPageState extends State<LogPage> {
           icon: const Icon(Icons.remove, color: Colors.black),
           onPressed: () {
             try {
-              final int newValue = int.parse(_repsController.text) - 1;
+              final int newValue = int.parse(_repetitionsController.text) - 1;
               if (newValue > 0) {
-                _repsController.text = newValue.toString();
+                _repetitionsController.text = newValue.toString();
               }
             } on FormatException {}
           },
@@ -361,7 +361,7 @@ class _LogPageState extends State<LogPage> {
               labelText: AppLocalizations.of(context).repetitions,
             ),
             enabled: true,
-            controller: _repsController,
+            controller: _repetitionsController,
             keyboardType: TextInputType.number,
             focusNode: focusNode,
             onFieldSubmitted: (_) {},
@@ -383,8 +383,8 @@ class _LogPageState extends State<LogPage> {
           icon: const Icon(Icons.add, color: Colors.black),
           onPressed: () {
             try {
-              final int newValue = int.parse(_repsController.text) + 1;
-              _repsController.text = newValue.toString();
+              final int newValue = int.parse(_repetitionsController.text) + 1;
+              _repetitionsController.text = newValue.toString();
             } on FormatException {}
           },
         ),
@@ -585,7 +585,7 @@ class _LogPageState extends State<LogPage> {
             onTap: () {
               setState(() {
                 // Text field
-                _repsController.text = log.repetitions.toString();
+                _repetitionsController.text = log.repetitions.toString();
                 _weightController.text = log.weight.toString();
 
                 // Drop downs

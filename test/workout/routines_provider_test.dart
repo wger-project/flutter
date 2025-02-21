@@ -33,10 +33,12 @@ import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/routines.dart';
 
+import '../../test_data/exercises.dart';
+import '../../test_data/routines.dart';
 import '../fixtures/fixture_reader.dart';
 import 'routines_provider_test.mocks.dart';
 
-@GenerateMocks([WgerBaseProvider])
+@GenerateMocks([WgerBaseProvider, ExercisesProvider])
 void main() {
   final mockBaseProvider = MockWgerBaseProvider();
 
@@ -59,7 +61,7 @@ void main() {
           'description': 'Test workout abcd',
           'start': '2021-12-20',
           'end': '2022-06-06',
-          'fit_in_week': false
+          'fit_in_week': false,
         }),
       );
 
@@ -162,6 +164,63 @@ void main() {
       expect(prefsJson['weightUnit'].length, 6);
       expect(true, DateTime.parse(prefsJson['date']).isBefore(DateTime.now()));
       expect(true, DateTime.parse(prefsJson['expiresIn']).isAfter(DateTime.now()));
+    });
+
+    test('Smoke test fetchAndSetRoutineFull', () async {
+      //Arrange
+      final structureUri = Uri.https('localhost', 'api/v2/routine/101/structure/');
+      when(mockBaseProvider.makeUrl('routine', objectMethod: 'structure', id: 101))
+          .thenReturn(structureUri);
+      when(mockBaseProvider.fetch(structureUri)).thenAnswer((_) async => Future.value(
+            jsonDecode(fixture('routines/routine_structure.json')),
+          ));
+
+      final dateSequenceDisplayUri =
+          Uri.https('localhost', 'api/v2/routine/101/date-sequence-display/');
+      when(mockBaseProvider.makeUrl('routine', objectMethod: 'date-sequence-display', id: 101))
+          .thenReturn(dateSequenceDisplayUri);
+      when(mockBaseProvider.fetch(dateSequenceDisplayUri)).thenAnswer((_) async => Future.value(
+            jsonDecode(fixture('routines/routine_date_sequence_display.json')),
+          ));
+
+      final dateSequenceGymUri = Uri.https('localhost', 'api/v2/routine/101/date-sequence-gym/');
+      when(mockBaseProvider.makeUrl('routine', objectMethod: 'date-sequence-gym', id: 101))
+          .thenReturn(dateSequenceGymUri);
+      when(mockBaseProvider.fetch(dateSequenceGymUri)).thenAnswer((_) async => Future.value(
+            jsonDecode(fixture('routines/routine_date_sequence_gym.json')),
+          ));
+
+      final logsUri = Uri.https('localhost', 'api/v2/routine/101/logs/');
+      when(mockBaseProvider.makeUrl('routine', objectMethod: 'logs', id: 101)).thenReturn(logsUri);
+      when(mockBaseProvider.fetch(logsUri)).thenAnswer((_) async => Future.value(
+            jsonDecode(fixture('routines/routine_logs.json')),
+          ));
+
+      final mockExercisesProvider = MockExercisesProvider();
+      when(mockExercisesProvider.fetchAndSetExercise(76)).thenAnswer(
+        (_) async => Future.value(testBenchPress),
+      );
+      when(mockExercisesProvider.fetchAndSetExercise(92)).thenAnswer(
+        (_) async => Future.value(testCrunches),
+      );
+
+      final provider = RoutinesProvider(mockBaseProvider, mockExercisesProvider, []);
+      provider.repetitionUnits = testRepetitionUnits;
+      provider.weightUnits = testWeightUnits;
+
+      // Act
+      final result = await provider.fetchAndSetRoutineFull(101);
+
+      // Assert
+      expect(result, isA<Routine>());
+      expect(result.id, 101);
+      expect(result.sessions.length, 3);
+      expect(result.days.length, 3);
+      expect(result.logs.length, 12);
+      expect(result.dayDataCurrentIteration.length, 8);
+      expect(result.dayDataCurrentIterationGym.length, 8);
+      expect(result.dayData.length, 32);
+      expect(result.dayDataGym.length, 32);
     });
   });
 }

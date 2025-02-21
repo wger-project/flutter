@@ -26,12 +26,11 @@ import 'package:wger/providers/routines.dart';
 ///
 /// Can be used with a Setting or a Log object
 class WeightUnitInputWidget extends StatefulWidget {
-  final int _initialValue;
-  late int selectedWeightUnit;
-  final ValueChanged<int> onChanged;
+  late int? selectedWeightUnit;
+  final ValueChanged<int?> onChanged;
 
-  WeightUnitInputWidget(this._initialValue, {required this.onChanged}) {
-    selectedWeightUnit = _initialValue;
+  WeightUnitInputWidget(initialValue, {required this.onChanged}) {
+    selectedWeightUnit = initialValue;
   }
 
   @override
@@ -43,7 +42,9 @@ class _WeightUnitInputWidgetState extends State<WeightUnitInputWidget> {
   Widget build(BuildContext context) {
     final unitProvider = context.read<RoutinesProvider>();
 
-    WeightUnit selectedWeightUnit = unitProvider.findWeightUnitById(widget._initialValue);
+    WeightUnit? selectedWeightUnit = widget.selectedWeightUnit != null
+        ? unitProvider.findWeightUnitById(widget.selectedWeightUnit!)
+        : null;
 
     return DropdownButtonFormField(
       value: selectedWeightUnit,

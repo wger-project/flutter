@@ -29,9 +29,9 @@ SlotEntry _$SlotEntryFromJson(Map<String, dynamic> json) {
     order: (json['order'] as num).toInt(),
     type: json['type'] as String,
     exerciseId: (json['exercise'] as num).toInt(),
-    repetitionUnitId: (json['repetition_unit'] as num).toInt(),
+    repetitionUnitId: (json['repetition_unit'] as num?)?.toInt(),
     repetitionRounding: stringToNum(json['repetition_rounding'] as String?),
-    weightUnitId: (json['weight_unit'] as num).toInt(),
+    weightUnitId: (json['weight_unit'] as num?)?.toInt(),
     weightRounding: stringToNum(json['weight_rounding'] as String?),
     comment: json['comment'] as String,
     weightConfigs: (json['weight_configs'] as List<dynamic>?)
@@ -66,11 +66,11 @@ SlotEntry _$SlotEntryFromJson(Map<String, dynamic> json) {
             ?.map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
             .toList() ??
         [],
-    repsConfigs: (json['reps_configs'] as List<dynamic>?)
+    repetitionsConfigs: (json['repetitions_configs'] as List<dynamic>?)
             ?.map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
             .toList() ??
         [],
-    maxRepsConfigs: (json['max_reps_configs'] as List<dynamic>?)
+    maxRepetitionsConfigs: (json['max_repetitions_configs'] as List<dynamic>?)
             ?.map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
             .toList() ??
         [],

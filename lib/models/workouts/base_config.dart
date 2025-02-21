@@ -44,9 +44,6 @@ class BaseConfig {
   @JsonKey(required: true)
   late String step;
 
-  @JsonKey(required: true, name: 'need_log_to_apply')
-  late bool needLogToApply;
-
   @JsonKey(required: true, name: 'repeat')
   late bool repeat;
 
@@ -61,7 +58,6 @@ class BaseConfig {
     required this.value,
     this.operation = 'r',
     this.step = 'abs',
-    this.needLogToApply = false,
     this.requirements = null,
   });
 
@@ -69,7 +65,6 @@ class BaseConfig {
     iteration = 1;
     operation = 'r';
     step = 'abs';
-    needLogToApply = false;
     requirements = null;
     repeat = false;
   }

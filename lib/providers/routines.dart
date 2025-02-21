@@ -45,8 +45,6 @@ class RoutinesProvider with ChangeNotifier {
   static const _routinesLogsSubpath = 'logs';
   static const _routinesDateSequenceDisplaySubpath = 'date-sequence-display';
   static const _routinesDateSequenceGymSubpath = 'date-sequence-gym';
-  static const _routinesCurrentIterationDisplaySubpath = 'current-iteration-display';
-  static const _routinesCurrentIterationGymSubpath = 'current-iteration-gym';
   static const _daysUrlPath = 'day';
   static const _slotsUrlPath = 'slot';
   static const _slotEntriesUrlPath = 'slot-entry';
@@ -58,15 +56,15 @@ class RoutinesProvider with ChangeNotifier {
   static const _routineConfigMaxSets = 'max-sets-config';
   static const _routineConfigWeights = 'weight-config';
   static const _routineConfigMaxWeights = 'max-weight-config';
-  static const _routineConfigReps = 'reps-config';
-  static const _routineConfigMaxReps = 'max-reps-config';
+  static const _routineConfigRepetitions = 'repetitions-config';
+  static const _routineConfigMaxRepetitions = 'max-repetitions-config';
   static const _routineConfigRir = 'rir-config';
   static const _routineConfigMaxRir = 'rest-config';
   static const _routineConfigRestTime = 'rest-config';
   static const _routineConfigMaxRestTime = 'max-rest-config';
 
   Routine? _currentRoutine;
-  late ExercisesProvider _exercises;
+  late ExercisesProvider _exerciseProvider;
   final WgerBaseProvider baseProvider;
   List<Routine> _routines = [];
   List<WeightUnit> _weightUnits = [];
@@ -79,7 +77,7 @@ class RoutinesProvider with ChangeNotifier {
     List<WeightUnit>? weightUnits,
     List<RepetitionUnit>? repetitionUnits,
   }) {
-    _exercises = exercises;
+    _exerciseProvider = exercises;
     _routines = entries;
     _weightUnits = weightUnits ?? [];
     _repetitionUnits = repetitionUnits ?? [];
@@ -91,6 +89,10 @@ class RoutinesProvider with ChangeNotifier {
 
   List<WeightUnit> get weightUnits {
     return [..._weightUnits];
+  }
+
+  set weightUnits(List<WeightUnit> weightUnits) {
+    _weightUnits = weightUnits;
   }
 
   /// Clears all lists
@@ -110,6 +112,10 @@ class RoutinesProvider with ChangeNotifier {
 
   List<RepetitionUnit> get repetitionUnits {
     return [..._repetitionUnits];
+  }
+
+  set repetitionUnits(List<RepetitionUnit> repetitionUnits) {
+    _repetitionUnits = repetitionUnits;
   }
 
   RepetitionUnit findRepetitionUnitById(int id) =>
@@ -196,7 +202,7 @@ class RoutinesProvider with ChangeNotifier {
     for (final entry in entries) {
       for (final slot in entry.slots) {
         for (final setConfig in slot.setConfigs) {
-          setConfig.exercise = (await _exercises.fetchAndSetExercise(setConfig.exerciseId))!;
+          setConfig.exercise = (await _exerciseProvider.fetchAndSetExercise(setConfig.exerciseId))!;
 
           setConfig.repetitionsUnit = _repetitionUnits.firstWhere(
             (e) => e.id == setConfig.repetitionsUnitId,
@@ -253,20 +259,6 @@ class RoutinesProvider with ChangeNotifier {
         baseProvider.makeUrl(
           _routinesUrlPath,
           id: routineId,
-          objectMethod: _routinesCurrentIterationDisplaySubpath,
-        ),
-      ),
-      baseProvider.fetch(
-        baseProvider.makeUrl(
-          _routinesUrlPath,
-          id: routineId,
-          objectMethod: _routinesCurrentIterationGymSubpath,
-        ),
-      ),
-      baseProvider.fetch(
-        baseProvider.makeUrl(
-          _routinesUrlPath,
-          id: routineId,
           objectMethod: _routinesLogsSubpath,
         ),
       ),
@@ -276,9 +268,7 @@ class RoutinesProvider with ChangeNotifier {
 
     final dayData = results[1] as List<dynamic>;
     final dayDataGym = results[2] as List<dynamic>;
-    final currentIterationDayData = results[3] as List<dynamic>;
-    final currentIterationDayDataGym = results[4] as List<dynamic>;
-    final sessionData = results[5] as List<dynamic>;
+    final sessionData = results[3] as List<dynamic>;
 
     /*
      * Set exercise, repetition and weight unit objects
@@ -291,21 +281,14 @@ class RoutinesProvider with ChangeNotifier {
     final dayDataEntriesGym = dayDataGym.map((entry) => DayData.fromJson(entry)).toList();
     setExercisesAndUnits(dayDataEntriesGym);
 
-    final currentIteration =
-        currentIterationDayData.map((entry) => DayData.fromJson(entry)).toList();
-    setExercisesAndUnits(currentIteration);
-
-    final currentIterationGym =
-        currentIterationDayDataGym.map((entry) => DayData.fromJson(entry)).toList();
-    setExercisesAndUnits(currentIterationGym);
-
     final sessionDataEntries =
         sessionData.map((entry) => WorkoutSessionApi.fromJson(entry)).toList();
 
     for (final day in routine.days) {
       for (final slot in day.slots) {
         for (final slotEntry in slot.entries) {
-          slotEntry.exerciseObj = (await _exercises.fetchAndSetExercise(slotEntry.exerciseId))!;
+          slotEntry.exerciseObj =
+              (await _exerciseProvider.fetchAndSetExercise(slotEntry.exerciseId))!;
           slotEntry.repetitionUnitObj = _repetitionUnits.firstWhere(
             (e) => e.id == slotEntry.repetitionUnitId,
           );
@@ -318,8 +301,6 @@ class RoutinesProvider with ChangeNotifier {
 
     routine.dayData = dayDataEntriesDisplay;
     routine.dayDataGym = dayDataEntriesGym;
-    routine.dayDataCurrentIteration = currentIteration;
-    routine.dayDataCurrentIterationGym = currentIterationGym;
 
     // Logs
     routine.sessions = List<WorkoutSessionApi>.from(sessionDataEntries);
@@ -327,7 +308,7 @@ class RoutinesProvider with ChangeNotifier {
       for (final log in session.logs) {
         log.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
         log.repetitionUnit = _repetitionUnits.firstWhere((e) => e.id == log.repetitionsUnitId);
-        log.exerciseBase = (await _exercises.fetchAndSetExercise(log.exerciseId))!;
+        log.exerciseBase = (await _exerciseProvider.fetchAndSetExercise(log.exerciseId))!;
       }
     }
 
@@ -535,7 +516,7 @@ class RoutinesProvider with ChangeNotifier {
       baseProvider.makeUrl(_slotEntriesUrlPath),
     );
     final newEntry = SlotEntry.fromJson(data);
-    newEntry.exerciseObj = (await _exercises.fetchAndSetExercise(newEntry.exerciseId))!;
+    newEntry.exerciseObj = (await _exerciseProvider.fetchAndSetExercise(newEntry.exerciseId))!;
 
     for (final routine in _routines) {
       for (final day in routine.days) {
@@ -584,10 +565,10 @@ class RoutinesProvider with ChangeNotifier {
         return _routineConfigWeights;
       case ConfigType.maxWeight:
         return _routineConfigMaxWeights;
-      case ConfigType.reps:
-        return _routineConfigReps;
-      case ConfigType.maxReps:
-        return _routineConfigMaxReps;
+      case ConfigType.repetitions:
+        return _routineConfigRepetitions;
+      case ConfigType.maxRepetitions:
+        return _routineConfigMaxRepetitions;
       case ConfigType.rir:
         return _routineConfigRir;
       case ConfigType.maxRir:
@@ -696,7 +677,7 @@ class RoutinesProvider with ChangeNotifier {
 
     newLog.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
     newLog.repetitionUnit = _repetitionUnits.firstWhere((e) => e.id == log.weightUnitId);
-    newLog.exerciseBase = (await _exercises.fetchAndSetExercise(log.exerciseId))!;
+    newLog.exerciseBase = (await _exerciseProvider.fetchAndSetExercise(log.exerciseId))!;
 
     final plan = findById(newLog.routineId);
     final session = plan.sessions.firstWhere((element) => element.session.id == newLog.sessionId);

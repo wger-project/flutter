@@ -20,12 +20,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
 
-class RepsInputWidget extends StatelessWidget {
-  final _repsController = TextEditingController();
+class RepetitionsInputWidget extends StatelessWidget {
+  final _repetitionsController = TextEditingController();
   final SlotEntry _setting;
   final bool _detailed;
 
-  RepsInputWidget(this._setting, this._detailed);
+  RepetitionsInputWidget(this._setting, this._detailed);
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +34,7 @@ class RepsInputWidget extends StatelessWidget {
         labelText: _detailed ? AppLocalizations.of(context).repetitions : '',
         errorMaxLines: 2,
       ),
-      controller: _repsController,
+      controller: _repetitionsController,
       keyboardType: TextInputType.number,
       validator: (value) {
         try {

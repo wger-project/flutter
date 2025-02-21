@@ -24,33 +24,35 @@ import 'package:wger/models/workouts/weight_unit.dart';
 
 /// Returns the text representation for a single setting, used in the gym mode
 String repText(
-  num? reps,
-  RepetitionUnit repetitionUnitObj,
+  num? repetitions,
+  RepetitionUnit? repetitionUnitObj,
   num? weight,
-  WeightUnit weightUnitObj,
+  WeightUnit? weightUnitObj,
   String? rir,
 ) {
   // TODO(x): how to (easily?) translate strings like the units or 'RiR'
 
   final List<String> out = [];
 
-  if (reps != null) {
-    out.add(formatNum(reps).toString());
+  if (repetitions != null) {
+    out.add(formatNum(repetitions).toString());
 
     // The default repetition unit is 'reps', which we don't show unless there
     // is no weight defined so that we don't just output something like "8" but
     // rather "8 repetitions". If there is weight we want to output "8 x 50kg",
     // since the repetitions are implied. If other units are used, we always
     // print them
-    if (repetitionUnitObj.id != REP_UNIT_REPETITIONS_ID || weight == 0 || weight == null) {
-      out.add(repetitionUnitObj.name);
+    if (repetitionUnitObj != null && repetitionUnitObj.id != REP_UNIT_REPETITIONS_ID ||
+        weight == 0 ||
+        weight == null) {
+      out.add(repetitionUnitObj!.name);
     }
   }
 
   if (weight != null && weight != 0) {
     out.add('×');
     out.add(formatNum(weight).toString());
-    out.add(weightUnitObj.name);
+    out.add(weightUnitObj!.name);
   }
 
   if (rir != null && rir != '') {
