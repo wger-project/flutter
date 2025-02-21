@@ -62,10 +62,10 @@ class Log {
   num? repetitionsTarget;
 
   @JsonKey(required: true, name: 'repetitions_unit')
-  late int repetitionsUnitId;
+  late int? repetitionsUnitId;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  late RepetitionUnit repetitionsUnitObj;
+  late RepetitionUnit? repetitionsUnitObj;
 
   @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
   late num? weight;
@@ -74,10 +74,10 @@ class Log {
   num? weightTarget;
 
   @JsonKey(required: true, name: 'weight_unit')
-  late int weightUnitId;
+  late int? weightUnitId;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  late WeightUnit weightUnitObj;
+  late WeightUnit? weightUnitObj;
 
   @JsonKey(required: true, toJson: dateToYYYYMMDD)
   late DateTime date;
@@ -111,14 +111,14 @@ class Log {
     exerciseId = base.id!;
   }
 
-  set weightUnit(WeightUnit weightUnit) {
+  set weightUnit(WeightUnit? weightUnit) {
     weightUnitObj = weightUnit;
-    weightUnitId = weightUnit.id;
+    weightUnitId = weightUnit?.id;
   }
 
-  set repetitionUnit(RepetitionUnit repetitionUnit) {
+  set repetitionUnit(RepetitionUnit? repetitionUnit) {
     repetitionsUnitObj = repetitionUnit;
-    repetitionsUnitId = repetitionUnit.id;
+    repetitionsUnitId = repetitionUnit?.id;
   }
 
   void setRir(String rir) {

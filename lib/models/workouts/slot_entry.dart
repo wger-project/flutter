@@ -68,10 +68,10 @@ class SlotEntry {
   late int exerciseId;
 
   @JsonKey(required: true, name: 'repetition_unit')
-  late int repetitionUnitId;
+  late int? repetitionUnitId;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  late RepetitionUnit repetitionUnitObj;
+  late RepetitionUnit? repetitionUnitObj;
 
   @JsonKey(required: true, name: 'repetition_rounding', fromJson: stringToNum)
   late num repetitionRounding;
@@ -83,10 +83,10 @@ class SlotEntry {
   late List<BaseConfig> maxRepetitionsConfigs = [];
 
   @JsonKey(required: true, name: 'weight_unit')
-  late int weightUnitId;
+  late int? weightUnitId;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  late WeightUnit weightUnitObj;
+  late WeightUnit? weightUnitObj;
 
   @JsonKey(required: true, name: 'weight_rounding', fromJson: stringToNum)
   late num weightRounding;

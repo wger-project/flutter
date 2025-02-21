@@ -33,7 +33,7 @@ import 'weight_unit_form_widget_test.mocks.dart';
 @GenerateMocks([RoutinesProvider])
 void main() {
   var mockWorkoutPlans = MockRoutinesProvider();
-  var result = -1;
+  int? result;
 
   const unit1 = WeightUnit(id: 1, name: 'kg');
   const unit2 = WeightUnit(id: 2, name: 'donkeys');
@@ -53,7 +53,7 @@ void main() {
   slotEntry.weightUnitObj = unit1;
 
   setUp(() {
-    result = -1;
+    result = null;
     mockWorkoutPlans = MockRoutinesProvider();
     when(mockWorkoutPlans.weightUnits).thenAnswer((_) => [unit1, unit2, unit3]);
     when(mockWorkoutPlans.findWeightUnitById(1)).thenReturn(unit1);

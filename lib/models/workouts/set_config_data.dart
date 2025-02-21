@@ -58,7 +58,7 @@ class SetConfigData {
   late int? weightUnitId;
 
   @JsonKey(includeToJson: false, includeFromJson: false)
-  late WeightUnit weightUnit;
+  late WeightUnit? weightUnit;
 
   @JsonKey(required: true, name: 'weight_rounding', fromJson: stringToNumNull)
   late num? weightRounding;
@@ -73,7 +73,7 @@ class SetConfigData {
   late int? repetitionsUnitId;
 
   @JsonKey(includeToJson: false, includeFromJson: false)
-  late RepetitionUnit repetitionsUnit;
+  late RepetitionUnit? repetitionsUnit;
 
   @JsonKey(required: true, name: 'repetitions_rounding', fromJson: stringToNumNull)
   late num? repetitionsRounding;
