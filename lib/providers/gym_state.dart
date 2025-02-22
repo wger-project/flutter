@@ -1,9 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:logging/logging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/models/exercises/exercise.dart';
 
-const GYM_PAGE_KEY = 'gym_current_page';
+const DEFAULT_DURATION = Duration(hours: 5);
 
 final StateNotifierProvider<GymStateNotifier, GymState> gymStateProvider =
     StateNotifierProvider<GymStateNotifier, GymState>((ref) {
@@ -15,56 +15,54 @@ class GymState {
   final bool showExercisePages;
   final int currentPage;
   final int? dayId;
+  late DateTime validUntil;
 
-  const GymState({
-    this.exercisePages = const {},
-    this.showExercisePages = true,
-    this.currentPage = 0,
-    this.dayId = null,
-  });
+  GymState(
+      {this.exercisePages = const {},
+      this.showExercisePages = true,
+      this.currentPage = 0,
+      this.dayId = null,
+      DateTime? validUntil}) {
+    this.validUntil = validUntil ?? DateTime.now().add(DEFAULT_DURATION);
+  }
 
   GymState copyWith({
     Map<Exercise, int>? exercisePages,
     bool? showExercisePages,
     int? currentPage,
     int? dayId,
+    DateTime? validUntil,
   }) {
     return GymState(
       exercisePages: exercisePages ?? this.exercisePages,
       showExercisePages: showExercisePages ?? this.showExercisePages,
       currentPage: currentPage ?? this.currentPage,
       dayId: dayId ?? this.dayId,
+      validUntil: validUntil ?? this.validUntil.add(DEFAULT_DURATION),
     );
   }
 
   @override
   String toString() {
-    return 'GymState(currentPage: $currentPage, showExercisePages: $showExercisePages, exercisePages: ${exercisePages.length} exercises, dayId: $dayId)';
+    return 'GymState('
+        'currentPage: $currentPage, '
+        'showExercisePages: $showExercisePages, '
+        'exercisePages: ${exercisePages.length} exercises, '
+        'dayId: $dayId, '
+        'validUntil: $validUntil '
+        ')';
   }
 }
 
 class GymStateNotifier extends StateNotifier<GymState> {
   final _prefs = SharedPreferences.getInstance();
+  final _logger = Logger('GymStateNotifier');
 
-  GymStateNotifier() : super(const GymState()) {
-    debugPrint('GymStateNotifier: Initializing');
-    _loadSavedState();
-  }
+  GymStateNotifier() : super(GymState());
 
-  Future<void> _loadSavedState() async {
-    debugPrint('GymStateNotifier: Loading saved state');
-    final SharedPreferences prefs = await _prefs;
-    final int savedPage = prefs.getInt(GYM_PAGE_KEY) ?? 0;
-    debugPrint('GymStateNotifier: Loaded saved page: $savedPage');
-    state = state.copyWith(currentPage: savedPage);
-  }
-
-  Future<void> setCurrentPage(int page) async {
-    debugPrint('GymStateNotifier: Setting page from ${state.currentPage} to $page');
-    final SharedPreferences prefs = await _prefs;
-    await prefs.setInt(GYM_PAGE_KEY, page);
+  void setCurrentPage(int page) {
+    // _logger.fine('Setting page from ${state.currentPage} to $page');
     state = state.copyWith(currentPage: page);
-    debugPrint('GymStateNotifier: New state - $state');
   }
 
   void toggleExercisePages() {
@@ -72,26 +70,24 @@ class GymStateNotifier extends StateNotifier<GymState> {
   }
 
   void setDayId(int dayId) {
+    // _logger.fine('Setting day id from ${state.dayId} to $dayId');
     state = state.copyWith(dayId: dayId);
   }
 
   void setExercisePages(Map<Exercise, int> exercisePages) {
-    debugPrint('GymStateNotifier: Setting exercise pages - ${exercisePages.length} exercises');
+    // _logger.fine('Setting exercise pages - ${exercisePages.length} exercises');
     state = state.copyWith(exercisePages: exercisePages);
-    debugPrint(
-        'GymStateNotifier: Exercise pages set - ${exercisePages.entries.map((e) => '${e.key.id}: ${e.value}').join(', ')}');
-    debugPrint('GymStateNotifier: New state - $state');
+    // _logger.fine(
+    //     'Exercise pages set - ${exercisePages.entries.map((e) => '${e.key.id}: ${e.value}').join(', ')}');
   }
 
-  Future<void> clear() async {
-    debugPrint('GymStateNotifier: Clearing state');
-    final SharedPreferences prefs = await _prefs;
-    await prefs.remove(GYM_PAGE_KEY);
+  void clear() {
+    _logger.fine('Clearing state');
     state = state.copyWith(
       exercisePages: {},
       currentPage: 0,
       dayId: null,
+      validUntil: DateTime.now().add(DEFAULT_DURATION),
     );
-    debugPrint('GymStateNotifier: State cleared - $state');
   }
 }

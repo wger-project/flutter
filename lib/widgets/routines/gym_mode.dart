@@ -22,6 +22,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:logging/logging.dart';
 import 'package:provider/provider.dart' as provider;
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
@@ -54,6 +55,7 @@ class GymMode extends ConsumerStatefulWidget {
   final DayData _dayDataDisplay;
   final int _iteration;
   late final TimeOfDay _start;
+  final _logger = Logger('GymMode');
 
   GymMode(this._dayDataGym, this._dayDataDisplay, this._iteration) {
     _start = TimeOfDay.now();
@@ -65,6 +67,8 @@ class GymMode extends ConsumerStatefulWidget {
 
 class _GymModeState extends ConsumerState<GymMode> {
   var _totalElements = 1;
+  late Future<int> _initData;
+  bool _initialPageJumped = false;
 
   /// Map with the first (navigation) page for each exercise
   final Map<Exercise, int> _exercisePages = {};
@@ -79,52 +83,46 @@ class _GymModeState extends ConsumerState<GymMode> {
   @override
   void initState() {
     super.initState();
+    _initData = _loadGymState();
+    _controller = PageController(initialPage: 0);
+    _calculatePages();
 
-    // Initialize the controller with the current page
-    final initialPage = ref.read(gymStateProvider).currentPage;
-    _controller = PageController(initialPage: initialPage);
-
-    // Delay state modifications until after the widget tree is built
-    Future.microtask(() {
-      // Get the saved page and day from the provider
-      final savedPage = ref.read(gymStateProvider).currentPage;
-      final savedDayId = ref.read(gymStateProvider).dayId;
-      debugPrint('Saved Page: $savedPage');
-      debugPrint('Saved Day ID: $savedDayId');
-
-      // Set the dayId in the state
-      ref.read(gymStateProvider.notifier).setDayId(widget._dayDataGym.day!.id!);
-      debugPrint('Current Day ID: ${widget._dayDataGym.day!.id}');
-
-      // Check if the current day is different from the saved day
-      if (widget._dayDataGym.day!.id != savedDayId) {
-        // Reset the saved page to 0
-        ref.read(gymStateProvider.notifier).setCurrentPage(0);
-        debugPrint('Different day detected. Resetting to page 0.');
-      } else {
-        // Use the saved page
-        ref.read(gymStateProvider.notifier).setCurrentPage(savedPage);
-        debugPrint('Same day detected. Using saved page: $savedPage');
-      }
-
-      // Calculate the pages
-      _calculatePages();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(gymStateProvider.notifier).setExercisePages(_exercisePages);
     });
   }
 
+  Future<int> _loadGymState() async {
+    final validUntil = ref.read(gymStateProvider).validUntil;
+    final currentPage = ref.read(gymStateProvider).currentPage;
+    final savedDayId = ref.read(gymStateProvider).dayId;
+
+    final newDayId = widget._dayDataGym.day!.id!;
+    final shouldReset =
+        widget._dayDataGym.day!.id != savedDayId || validUntil.isBefore(DateTime.now());
+    widget._logger.fine('Day ID mismatch or expired validUntil date. Resetting to page 0.');
+    final initialPage = shouldReset ? 0 : currentPage;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(gymStateProvider.notifier)
+        ..setDayId(newDayId)
+        ..setCurrentPage(initialPage);
+    });
+
+    return initialPage;
+  }
+
   void _calculatePages() {
-    // for (final slot in widget._dayDataGym.slots) {
-    //   _totalElements += slot.setConfigs.length;
-    // }
-    _totalElements = 1;
+    for (final slot in widget._dayDataGym.slots) {
+      _totalElements += slot.setConfigs.length;
+    }
     _exercisePages.clear();
     var currentPage = 1;
 
     for (final slot in widget._dayDataGym.slots) {
       var firstPage = true;
       for (final config in slot.setConfigs) {
-        final exercise = provider.Provider.of<ExercisesProvider>(context, listen: false)
-            .findExerciseById(config.exerciseId);
+        final exercise = context.read<ExercisesProvider>().findExerciseById(config.exerciseId);
 
         if (firstPage) {
           _exercisePages[exercise] = currentPage;
@@ -134,8 +132,6 @@ class _GymModeState extends ConsumerState<GymMode> {
         firstPage = false;
       }
     }
-
-    ref.read(gymStateProvider.notifier).setExercisePages(_exercisePages);
   }
 
   List<Widget> getContent() {
@@ -181,34 +177,48 @@ class _GymModeState extends ConsumerState<GymMode> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> children = [
-      StartPage(_controller, widget._dayDataDisplay, _exercisePages),
-      ...getContent(),
-      SessionPage(
-        provider.Provider.of<RoutinesProvider>(context, listen: false)
-            .findById(widget._dayDataGym.day!.routineId),
-        _controller,
-        widget._start,
-        _exercisePages,
-      ),
-    ];
-    return PageView(
-      controller: _controller,
-      onPageChanged: (page) {
-        // Update the current page
-        ref.read(gymStateProvider.notifier).setCurrentPage(page);
-        debugPrint('Current Page: $page');
-        debugPrint('Total Pages: ${children.length}');
-        // Check if the last page is reached
-        if (page == children.length - 1) {
-          ref.read(gymStateProvider.notifier).clear();
-          debugPrint('Last page reached. Resetting state and navigation.');
-          // Reset the navigation stack
-          _controller.jumpToPage(0);
-        }
-      },
-      children: children,
-    );
+    return FutureBuilder<int>(
+        future: _initData,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else {
+            final initialPage = snapshot.data!;
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (!_initialPageJumped && _controller.hasClients) {
+                _controller.jumpToPage(initialPage);
+                setState(() => _initialPageJumped = true);
+              }
+            });
+
+            final List<Widget> children = [
+              StartPage(_controller, widget._dayDataDisplay, _exercisePages),
+              ...getContent(),
+              SessionPage(
+                provider.Provider.of<RoutinesProvider>(context, listen: false)
+                    .findById(widget._dayDataGym.day!.routineId),
+                _controller,
+                widget._start,
+                _exercisePages,
+              ),
+            ];
+
+            return PageView(
+              controller: _controller,
+              onPageChanged: (page) {
+                ref.read(gymStateProvider.notifier).setCurrentPage(page);
+
+                // Check if the last page is reached
+                if (page == children.length - 1) {
+                  ref.read(gymStateProvider.notifier).clear();
+                }
+              },
+              children: children,
+            );
+          }
+        });
   }
 }
 
