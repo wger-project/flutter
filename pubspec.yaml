@@ -39,7 +39,7 @@ dependencies:
   drift: ^2.25.1
   equatable: ^2.0.7
   fl_chart: ^0.69.2
-  flex_color_scheme: ^8.1.0
+  flex_color_scheme: ^8.1.1
   flex_seed_scheme: ^3.5.0
   flutter_barcode_scanner: ^2.0.0
   flutter_calendar_carousel: ^2.4.4
