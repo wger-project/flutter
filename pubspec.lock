@@ -290,18 +290,18 @@ packages:
     dependency: "direct main"
     description:
       name: drift
-      sha256: "97d5832657d49f26e7a8e07de397ddc63790b039372878d5117af816d0fdb5cb"
+      sha256: "14a61af39d4584faf1d73b5b35e4b758a43008cf4c0fdb0576ec8e7032c0d9a5"
       url: "https://pub.dev"
     source: hosted
-    version: "2.25.1"
+    version: "2.26.0"
   drift_dev:
     dependency: "direct dev"
     description:
       name: drift_dev
-      sha256: f1db88482dbb016b9bbddddf746d5d0a6938b156ff20e07320052981f97388cc
+      sha256: "0d3f8b33b76cf1c6a82ee34d9511c40957549c4674b8f1688609e6d6c7306588"
       url: "https://pub.dev"
     source: hosted
-    version: "2.25.2"
+    version: "2.26.0"
   equatable:
     dependency: "direct main"
     description:
