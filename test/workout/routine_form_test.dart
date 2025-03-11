@@ -25,6 +25,7 @@ import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/routines.dart';
+import 'package:wger/screens/routine_edit_screen.dart';
 import 'package:wger/screens/routine_screen.dart';
 import 'package:wger/widgets/routines/forms/routine.dart';
 
@@ -34,7 +35,7 @@ import './routine_form_test.mocks.dart';
 void main() {
   var mockRoutinesProvider = MockRoutinesProvider();
 
-  final existingPlan = Routine(
+  final existingRoutine = Routine(
     id: 1,
     created: DateTime(2021, 1, 1),
     start: DateTime(2024, 11, 1),
@@ -48,9 +49,10 @@ void main() {
   setUp(() {
     newRoutine = Routine.empty();
     mockRoutinesProvider = MockRoutinesProvider();
-    when(mockRoutinesProvider.editRoutine(any)).thenAnswer((_) => Future.value(existingPlan));
+    when(mockRoutinesProvider.findById(any)).thenAnswer((_) => existingRoutine);
+    when(mockRoutinesProvider.editRoutine(any)).thenAnswer((_) => Future.value(existingRoutine));
     when(mockRoutinesProvider.fetchAndSetRoutineFull(any))
-        .thenAnswer((_) => Future.value(existingPlan));
+        .thenAnswer((_) => Future.value(existingRoutine));
   });
 
   Widget renderWidget(Routine routine, {locale = 'en'}) {
@@ -64,13 +66,16 @@ void main() {
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
         home: Scaffold(body: RoutineForm(routine)),
-        routes: {RoutineScreen.routeName: (ctx) => const RoutineScreen()},
+        routes: {
+          RoutineScreen.routeName: (ctx) => const RoutineScreen(),
+          RoutineEditScreen.routeName: (ctx) => const RoutineEditScreen(),
+        },
       ),
     );
   }
 
   testWidgets('Test the widgets on the workout form', (WidgetTester tester) async {
-    await tester.pumpWidget(renderWidget(existingPlan));
+    await tester.pumpWidget(renderWidget(existingRoutine));
     await tester.pumpAndSettle();
 
     expect(find.byType(TextFormField), findsNWidgets(4));
@@ -78,7 +83,7 @@ void main() {
   });
 
   testWidgets('Test editing an existing workout', (WidgetTester tester) async {
-    await tester.pumpWidget(renderWidget(existingPlan));
+    await tester.pumpWidget(renderWidget(existingRoutine));
     await tester.pumpAndSettle();
 
     expect(
@@ -108,7 +113,7 @@ void main() {
   });
 
   testWidgets('Test creating a new workout - only name', (WidgetTester tester) async {
-    final editWorkout = Routine(
+    final editRoutine = Routine(
       id: 2,
       created: newRoutine.created,
       start: DateTime(2024, 11, 1),
@@ -116,13 +121,14 @@ void main() {
       name: 'New cool workout',
     );
 
-    when(mockRoutinesProvider.addRoutine(any)).thenAnswer((_) => Future.value(editWorkout));
+    when(mockRoutinesProvider.addRoutine(any)).thenAnswer((_) => Future.value(editRoutine));
+    when(mockRoutinesProvider.findById(any)).thenAnswer((_) => editRoutine);
 
     await tester.pumpWidget(renderWidget(newRoutine));
     await tester.pumpAndSettle();
 
     expect(find.text(''), findsNWidgets(2), reason: 'New workout has no name or description');
-    await tester.enterText(find.byKey(const Key('field-name')), editWorkout.name);
+    await tester.enterText(find.byKey(const Key('field-name')), editRoutine.name);
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
     verifyNever(mockRoutinesProvider.editRoutine(any));
@@ -130,11 +136,11 @@ void main() {
 
     // Detail page
     await tester.pumpAndSettle();
-    expect(find.text('New cool workout'), findsOneWidget, reason: 'Workout plan detail page');
+    expect(find.text('New cool workout'), findsWidgets, reason: 'Workout plan detail page');
   });
 
   testWidgets('Test creating a new workout - name and description', (WidgetTester tester) async {
-    final editWorkout = Routine(
+    final editRoutine = Routine(
       id: 2,
       created: newRoutine.created,
       start: DateTime(2024, 11, 1),
@@ -142,14 +148,15 @@ void main() {
       name: 'My workout',
       description: 'Get yuuuge',
     );
-    when(mockRoutinesProvider.addRoutine(any)).thenAnswer((_) => Future.value(editWorkout));
+    when(mockRoutinesProvider.addRoutine(any)).thenAnswer((_) => Future.value(editRoutine));
+    when(mockRoutinesProvider.findById(any)).thenAnswer((_) => editRoutine);
 
     await tester.pumpWidget(renderWidget(newRoutine));
     await tester.pumpAndSettle();
 
     expect(find.text(''), findsNWidgets(2), reason: 'New workout has no name or description');
-    await tester.enterText(find.byKey(const Key('field-name')), editWorkout.name);
-    await tester.enterText(find.byKey(const Key('field-description')), editWorkout.description);
+    await tester.enterText(find.byKey(const Key('field-name')), editRoutine.name);
+    await tester.enterText(find.byKey(const Key('field-description')), editRoutine.description);
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
     verifyNever(mockRoutinesProvider.editRoutine(any));
@@ -157,6 +164,6 @@ void main() {
 
     // Detail page
     await tester.pumpAndSettle();
-    expect(find.text('My workout'), findsOneWidget, reason: 'Workout plan detail page');
+    expect(find.text('My workout'), findsWidgets, reason: 'Workout plan detail page');
   });
 }

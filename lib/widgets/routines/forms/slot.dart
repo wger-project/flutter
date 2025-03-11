@@ -25,6 +25,7 @@ import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/slot.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/providers/routines.dart';
+import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/exercises/autocompleter.dart';
 import 'package:wger/widgets/routines/forms/reps_unit.dart';
 import 'package:wger/widgets/routines/forms/rir.dart';
@@ -64,14 +65,18 @@ class ProgressionRulesInfoBox extends StatelessWidget {
 class SlotEntryForm extends StatefulWidget {
   final SlotEntry entry;
   final bool simpleMode;
+  final int routineId;
 
-  const SlotEntryForm(this.entry, {this.simpleMode = true, super.key});
+  const SlotEntryForm(this.entry, this.routineId, {this.simpleMode = true, super.key});
 
   @override
   State<SlotEntryForm> createState() => _SlotEntryFormState();
 }
 
 class _SlotEntryFormState extends State<SlotEntryForm> {
+  bool isSaving = false;
+  bool isDeleting = false;
+
   final iconSize = 18.0;
 
   double setsSliderValue = 1.0;
@@ -143,6 +148,8 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
     final i18n = AppLocalizations.of(context);
     final languageCode = Localizations.localeOf(context).languageCode;
 
+    final provider = context.read<RoutinesProvider>();
+
     return Form(
       key: _form,
       child: Column(
@@ -158,9 +165,7 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
               children: [
                 IconButton(
                   onPressed: () {
-                    setState(() {
-                      _edit = !_edit;
-                    });
+                    setState(() => _edit = !_edit);
                   },
                   icon: _edit
                       ? Icon(Icons.edit_off, size: iconSize)
@@ -168,20 +173,25 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
                 ),
                 IconButton(
                   icon: Icon(Icons.delete, size: iconSize),
-                  onPressed: () {
-                    context.read<RoutinesProvider>().deleteSlotEntry(widget.entry.id!);
-                  },
+                  onPressed: isDeleting
+                      ? null
+                      : () async {
+                          setState(() => isDeleting = true);
+                          await provider.deleteSlotEntry(widget.entry.id!, widget.routineId);
+                          if (mounted) {
+                            setState(() => isDeleting = false);
+                          }
+                        },
                 ),
               ],
             ),
           ),
           if (_edit)
             ExerciseAutocompleter(
-              onExerciseSelected: (exercise) => {
-                setState(() {
-                  widget.entry.exercise = exercise;
-                })
-              },
+              onExerciseSelected: (exercise) => setState(() {
+                widget.entry.exercise = exercise;
+                _edit = false;
+              }),
             ),
           Row(
             children: [
@@ -194,9 +204,7 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
                   divisions: 20,
                   label: setsSliderValue.round().toString(),
                   onChanged: (double value) {
-                    setState(() {
-                      setsSliderValue = value;
-                    });
+                    setState(() => setsSliderValue = value);
                   },
                 ),
               ),
@@ -320,63 +328,66 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
           const SizedBox(height: 5),
           OutlinedButton(
             key: const Key(SUBMIT_BUTTON_KEY_NAME),
-            child: Text(i18n.save),
-            onPressed: () async {
-              if (!_form.currentState!.validate()) {
-                return;
-              }
-              _form.currentState!.save();
+            onPressed: isSaving
+                ? null
+                : () async {
+                    if (!_form.currentState!.validate()) {
+                      return;
+                    }
+                    _form.currentState!.save();
+                    setState(() => isSaving = true);
 
-              final provider = Provider.of<RoutinesProvider>(context, listen: false);
+                    // Process new, edited or entries to be deleted
+                    await Future.wait([
+                      provider.handleConfig(
+                        widget.entry,
+                        setsSliderValue == 0 ? '' : setsSliderValue.round().toString(),
+                        ConfigType.sets,
+                      ),
+                      provider.handleConfig(
+                        widget.entry,
+                        weightController.text,
+                        ConfigType.weight,
+                      ),
+                      provider.handleConfig(
+                        widget.entry,
+                        maxWeightController.text,
+                        ConfigType.maxWeight,
+                      ),
+                      provider.handleConfig(
+                        widget.entry,
+                        repetitionsController.text,
+                        ConfigType.repetitions,
+                      ),
+                      provider.handleConfig(
+                        widget.entry,
+                        maxRepetitionsController.text,
+                        ConfigType.maxRepetitions,
+                      ),
+                      provider.handleConfig(
+                        widget.entry,
+                        restController.text,
+                        ConfigType.rest,
+                      ),
+                      provider.handleConfig(
+                        widget.entry,
+                        maxRestController.text,
+                        ConfigType.maxRest,
+                      ),
+                      provider.handleConfig(
+                        widget.entry,
+                        rirController.text,
+                        ConfigType.rir,
+                      ),
+                    ]);
 
-              // Process new, edited or entries to be deleted
-              provider.handleConfig(
-                widget.entry,
-                setsSliderValue == 0 ? '' : setsSliderValue.round().toString(),
-                ConfigType.sets,
-              );
-
-              provider.handleConfig(
-                widget.entry,
-                weightController.text,
-                ConfigType.weight,
-              );
-              provider.handleConfig(
-                widget.entry,
-                maxWeightController.text,
-                ConfigType.maxWeight,
-              );
-
-              provider.handleConfig(
-                widget.entry,
-                repetitionsController.text,
-                ConfigType.repetitions,
-              );
-              provider.handleConfig(
-                widget.entry,
-                maxRepetitionsController.text,
-                ConfigType.maxRepetitions,
-              );
-
-              provider.handleConfig(
-                widget.entry,
-                restController.text,
-                ConfigType.rest,
-              );
-              provider.handleConfig(
-                widget.entry,
-                maxRestController.text,
-                ConfigType.maxRest,
-              );
-
-              provider.handleConfig(
-                widget.entry,
-                rirController.text,
-                ConfigType.rir,
-              );
-
-              provider.editSlotEntry(widget.entry);
-            },
+                    await provider.editSlotEntry(widget.entry, widget.routineId);
+                    if (mounted) {
+                      setState(() => isSaving = false);
+                    }
+                  },
+            child:
+                isSaving ? const FormProgressIndicator() : Text(AppLocalizations.of(context).save),
           ),
           const SizedBox(height: 10),
         ],
@@ -388,8 +399,9 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
 class SlotDetailWidget extends StatefulWidget {
   final Slot slot;
   final bool simpleMode;
+  final int routineId;
 
-  const SlotDetailWidget(this.slot, {this.simpleMode = true, super.key});
+  const SlotDetailWidget(this.slot, this.routineId, {this.simpleMode = true, super.key});
 
   @override
   State<SlotDetailWidget> createState() => _SlotDetailWidgetState();
@@ -407,29 +419,26 @@ class _SlotDetailWidgetState extends State<SlotDetailWidget> {
       children: [
         ...widget.slot.entries.map((entry) => entry.hasProgressionRules
             ? ProgressionRulesInfoBox(entry.exerciseObj)
-            : SlotEntryForm(entry, simpleMode: widget.simpleMode)),
+            : SlotEntryForm(entry, widget.routineId, simpleMode: widget.simpleMode)),
         const SizedBox(height: 10),
         if (_showExerciseSearchBox || widget.slot.entries.isEmpty)
           ExerciseAutocompleter(
             onExerciseSelected: (exercise) async {
+              setState(() => _showExerciseSearchBox = false);
+
               final SlotEntry entry = SlotEntry.withData(
                 slotId: widget.slot.id!,
                 order: widget.slot.entries.length + 1,
                 exercise: exercise,
               );
 
-              setState(() {
-                _showExerciseSearchBox = false;
-              });
-              await provider.addSlotEntry(entry);
+              await provider.addSlotEntry(entry, widget.routineId);
             },
           ),
         if (widget.slot.entries.isNotEmpty)
           FilledButton(
             onPressed: () {
-              setState(() {
-                _showExerciseSearchBox = !_showExerciseSearchBox;
-              });
+              setState(() => _showExerciseSearchBox = !_showExerciseSearchBox);
             },
             child: Text(i18n.addSuperset),
           ),
@@ -452,6 +461,8 @@ class ReorderableSlotList extends StatefulWidget {
 class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
   int? selectedSlotId;
   bool simpleMode = true;
+  bool isAddingSlot = false;
+  int? isDeletingSlot;
 
   @override
   Widget build(BuildContext context) {
@@ -468,9 +479,7 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
             subtitle: Text(i18n.simpleModeHelp),
             contentPadding: const EdgeInsets.all(4),
             onChanged: (value) {
-              setState(() {
-                simpleMode = value;
-              });
+              setState(() => simpleMode = value);
             },
           ),
         ReorderableListView.builder(
@@ -527,15 +536,22 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
                         ),
                         IconButton(
                           icon: const Icon(Icons.delete),
-                          onPressed: () async {
-                            selectedSlotId = null;
-                            await provider.deleteSlot(slot.id!);
-                          },
+                          onPressed: isDeletingSlot == index
+                              ? null
+                              : () async {
+                                  selectedSlotId = null;
+                                  setState(() => isDeletingSlot = index);
+                                  await provider.deleteSlot(slot.id!, widget.day.routineId);
+                                  if (mounted) {
+                                    setState(() => isDeletingSlot = null);
+                                  }
+                                },
                         ),
                       ],
                     ),
                   ),
-                  if (isCurrentSlotSelected) SlotDetailWidget(slot, simpleMode: simpleMode),
+                  if (isCurrentSlotSelected)
+                    SlotDetailWidget(slot, widget.day.routineId, simpleMode: simpleMode),
                 ],
               ),
             );
@@ -553,26 +569,34 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
                 widget.slots[i].order = i + 1;
               }
 
-              provider.editSlots(widget.slots);
+              provider.editSlots(widget.slots, widget.day.routineId);
             });
           },
         ),
         if (!widget.day.isRest)
           ListTile(
-            leading: const Icon(Icons.add),
+            leading: isAddingSlot ? const FormProgressIndicator() : const Icon(Icons.add),
             title: Text(
               i18n.addExercise,
               style: Theme.of(context).textTheme.titleMedium,
             ),
-            onTap: () async {
-              final newSlot = await provider.addSlot(Slot.withData(
-                day: widget.day.id,
-                order: widget.slots.length + 1,
-              ));
-              setState(() {
-                selectedSlotId = newSlot.id;
-              });
-            },
+            onTap: isAddingSlot
+                ? null
+                : () async {
+                    setState(() => isAddingSlot = true);
+
+                    final newSlot = await provider.addSlot(
+                      Slot.withData(
+                        day: widget.day.id,
+                        order: widget.slots.length + 1,
+                      ),
+                      widget.day.routineId,
+                    );
+                    if (mounted) {
+                      setState(() => isAddingSlot = false);
+                      setState(() => selectedSlotId = newSlot.id);
+                    }
+                  },
           ),
       ],
     );

@@ -322,52 +322,59 @@ class MockRoutinesProvider extends _i1.Mock implements _i12.RoutinesProvider {
       ) as _i13.Future<void>);
 
   @override
-  _i13.Future<_i7.Slot> addSlot(_i7.Slot? slot) => (super.noSuchMethod(
-        Invocation.method(#addSlot, [slot]),
+  _i13.Future<_i7.Slot> addSlot(_i7.Slot? slot, int? routineId) => (super.noSuchMethod(
+        Invocation.method(#addSlot, [slot, routineId]),
         returnValue: _i13.Future<_i7.Slot>.value(
-          _FakeSlot_5(this, Invocation.method(#addSlot, [slot])),
+          _FakeSlot_5(this, Invocation.method(#addSlot, [slot, routineId])),
         ),
       ) as _i13.Future<_i7.Slot>);
 
   @override
-  _i13.Future<void> deleteSlot(int? slotId) => (super.noSuchMethod(
-        Invocation.method(#deleteSlot, [slotId]),
+  _i13.Future<void> deleteSlot(int? slotId, int? routineId) => (super.noSuchMethod(
+        Invocation.method(#deleteSlot, [slotId, routineId]),
         returnValue: _i13.Future<void>.value(),
         returnValueForMissingStub: _i13.Future<void>.value(),
       ) as _i13.Future<void>);
 
   @override
-  _i13.Future<void> editSlot(_i7.Slot? slot) => (super.noSuchMethod(
-        Invocation.method(#editSlot, [slot]),
+  _i13.Future<void> editSlot(_i7.Slot? slot, int? routineId) => (super.noSuchMethod(
+        Invocation.method(#editSlot, [slot, routineId]),
         returnValue: _i13.Future<void>.value(),
         returnValueForMissingStub: _i13.Future<void>.value(),
       ) as _i13.Future<void>);
 
   @override
-  _i13.Future<void> editSlots(List<_i7.Slot>? slots) => (super.noSuchMethod(
-        Invocation.method(#editSlots, [slots]),
+  _i13.Future<void> editSlots(List<_i7.Slot>? slots, int? routineId) => (super.noSuchMethod(
+        Invocation.method(#editSlots, [slots, routineId]),
         returnValue: _i13.Future<void>.value(),
         returnValueForMissingStub: _i13.Future<void>.value(),
       ) as _i13.Future<void>);
 
   @override
-  _i13.Future<_i8.SlotEntry> addSlotEntry(_i8.SlotEntry? entry) => (super.noSuchMethod(
-        Invocation.method(#addSlotEntry, [entry]),
+  _i13.Future<_i8.SlotEntry> addSlotEntry(
+    _i8.SlotEntry? entry,
+    int? routineId,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(#addSlotEntry, [entry, routineId]),
         returnValue: _i13.Future<_i8.SlotEntry>.value(
-          _FakeSlotEntry_6(this, Invocation.method(#addSlotEntry, [entry])),
+          _FakeSlotEntry_6(
+            this,
+            Invocation.method(#addSlotEntry, [entry, routineId]),
+          ),
         ),
       ) as _i13.Future<_i8.SlotEntry>);
 
   @override
-  _i13.Future<void> deleteSlotEntry(int? id) => (super.noSuchMethod(
-        Invocation.method(#deleteSlotEntry, [id]),
+  _i13.Future<void> deleteSlotEntry(int? id, int? routineId) => (super.noSuchMethod(
+        Invocation.method(#deleteSlotEntry, [id, routineId]),
         returnValue: _i13.Future<void>.value(),
         returnValueForMissingStub: _i13.Future<void>.value(),
       ) as _i13.Future<void>);
 
   @override
-  _i13.Future<void> editSlotEntry(_i8.SlotEntry? entry) => (super.noSuchMethod(
-        Invocation.method(#editSlotEntry, [entry]),
+  _i13.Future<void> editSlotEntry(_i8.SlotEntry? entry, int? routineId) => (super.noSuchMethod(
+        Invocation.method(#editSlotEntry, [entry, routineId]),
         returnValue: _i13.Future<void>.value(),
         returnValueForMissingStub: _i13.Future<void>.value(),
       ) as _i13.Future<void>);

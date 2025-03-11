@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/providers/routines.dart';
+import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/routines/forms/slot.dart';
 
 class ReorderableDaysList extends StatefulWidget {
@@ -134,6 +135,7 @@ class _ReorderableDaysListState extends State<ReorderableDaysList> {
             final day = Day.empty();
             day.name = '${i18n.newDay} ${widget.days.length + 1}';
             day.routineId = widget.routineId;
+            day.order = widget.days.length + 1;
             final newDay = await provider.addDay(day, refresh: true);
 
             // final newSlot = await provider.addSlot(Slot.withData(
@@ -166,6 +168,7 @@ class _DayFormWidgetState extends State<DayFormWidget> {
   final nameController = TextEditingController();
   late bool isRestDay;
   late bool needLogsToAdvance;
+  bool isSaving = false;
 
   final _form = GlobalKey<FormState>();
 
@@ -280,34 +283,40 @@ class _DayFormWidgetState extends State<DayFormWidget> {
           const SizedBox(height: 5),
           ElevatedButton(
             key: const Key(SUBMIT_BUTTON_KEY_NAME),
-            child: Text(i18n.save),
-            onPressed: () async {
-              if (!_form.currentState!.validate()) {
-                return;
-              }
-              _form.currentState!.save();
+            onPressed: isSaving
+                ? null
+                : () async {
+                    if (!_form.currentState!.validate()) {
+                      return;
+                    }
+                    _form.currentState!.save();
+                    setState(() => isSaving = true);
 
-              try {
-                Provider.of<RoutinesProvider>(context, listen: false)
-                    .editDay(widget.day, refresh: true);
-              } catch (error) {
-                await showDialog(
-                  context: context,
-                  builder: (ctx) => AlertDialog(
-                    title: const Text('An error occurred!'),
-                    content: const Text('Something went wrong.'),
-                    actions: [
-                      TextButton(
-                        child: const Text('Okay'),
-                        onPressed: () {
-                          Navigator.of(ctx).pop();
-                        },
-                      ),
-                    ],
-                  ),
-                );
-              }
-            },
+                    try {
+                      await Provider.of<RoutinesProvider>(context, listen: false)
+                          .editDay(widget.day, refresh: true);
+                    } catch (error) {
+                      await showDialog(
+                        context: context,
+                        builder: (ctx) => AlertDialog(
+                          title: const Text('An error occurred!'),
+                          content: const Text('Something went wrong.'),
+                          actions: [
+                            TextButton(
+                              child: const Text('Okay'),
+                              onPressed: () {
+                                Navigator.of(ctx).pop();
+                              },
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+
+                    setState(() => isSaving = false);
+                  },
+            child:
+                isSaving ? const FormProgressIndicator() : Text(AppLocalizations.of(context).save),
           ),
           const SizedBox(height: 5),
           ReorderableSlotList(widget.day.slots, widget.day),

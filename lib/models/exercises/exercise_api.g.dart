@@ -24,9 +24,10 @@ _$ExerciseBaseDataImpl _$$ExerciseBaseDataImplFromJson(Map<String, dynamic> json
       equipment: (json['equipment'] as List<dynamic>)
           .map((e) => Equipment.fromJson(e as Map<String, dynamic>))
           .toList(),
-      translations: (json['translations'] as List<dynamic>)
-          .map((e) => Translation.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      translations: (json['translations'] as List<dynamic>?)
+              ?.map((e) => Translation.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
       images: (json['images'] as List<dynamic>)
           .map((e) => ExerciseImage.fromJson(e as Map<String, dynamic>))
           .toList(),

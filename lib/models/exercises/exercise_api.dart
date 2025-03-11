@@ -35,7 +35,7 @@ class ExerciseApiData with _$ExerciseApiData {
     // ignore: invalid_annotation_target
     required List<Equipment> equipment,
     // ignore: invalid_annotation_target
-    @JsonKey(name: 'translations') required List<Translation> translations,
+    @JsonKey(name: 'translations', defaultValue: []) required List<Translation> translations,
     required List<ExerciseImage> images,
     required List<Video> videos,
     // ignore: invalid_annotation_target
