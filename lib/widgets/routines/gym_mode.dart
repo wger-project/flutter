@@ -167,7 +167,19 @@ class _GymModeState extends ConsumerState<GymMode> {
           state.exercisePages,
           widget._iteration,
         ));
-        out.add(TimerWidget(_controller, ratioCompleted, state.exercisePages));
+
+        // If there is a rest time, add a countdown timer
+        if (config.restTime != null) {
+          out.add(TimerCountdownWidget(
+            _controller,
+            config.restTime!.toInt(),
+            ratioCompleted,
+            state.exercisePages,
+          ));
+        } else {
+          out.add(TimerWidget(_controller, ratioCompleted, state.exercisePages));
+        }
+
         firstPage = false;
       }
     }
@@ -1026,22 +1038,16 @@ class _TimerWidgetState extends State<TimerWidget> {
   DateTime today = DateTime(2000, 1, 1, 0, 0, 0);
 
   void startTimer() {
-    setState(() {
-      _seconds = 0;
-    });
+    setState(() => _seconds = 0);
 
     _timer?.cancel();
 
     const oneSecond = Duration(seconds: 1);
     _timer = Timer.periodic(oneSecond, (Timer timer) {
       if (_seconds == _maxSeconds) {
-        setState(() {
-          timer.cancel();
-        });
+        setState(() => timer.cancel());
       } else {
-        setState(() {
-          _seconds++;
-        });
+        setState(() => _seconds++);
       }
     });
   }
@@ -1055,6 +1061,79 @@ class _TimerWidgetState extends State<TimerWidget> {
   @override
   void initState() {
     super.initState();
+    startTimer();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        NavigationHeader(
+          AppLocalizations.of(context).pause,
+          widget._controller,
+          exercisePages: widget._exercisePages,
+        ),
+        Expanded(
+          child: Center(
+            child: Text(
+              DateFormat('m:ss').format(today.add(Duration(seconds: _seconds))),
+              style: Theme.of(context).textTheme.displayLarge!.copyWith(color: wgerPrimaryColor),
+            ),
+          ),
+        ),
+        NavigationFooter(widget._controller, widget._ratioCompleted),
+      ],
+    );
+  }
+}
+
+class TimerCountdownWidget extends StatefulWidget {
+  final PageController _controller;
+  final double _ratioCompleted;
+  final int _seconds;
+  final Map<Exercise, int> _exercisePages;
+
+  const TimerCountdownWidget(
+    this._controller,
+    this._seconds,
+    this._ratioCompleted,
+    this._exercisePages,
+  );
+
+  @override
+  _TimerCountdownWidgetState createState() => _TimerCountdownWidgetState();
+}
+
+class _TimerCountdownWidgetState extends State<TimerCountdownWidget> {
+  // See https://stackoverflow.com/questions/54610121/flutter-countdown-timer
+
+  Timer? _timer;
+  late int _seconds;
+  DateTime today = DateTime(2000, 1, 1, 0, 0, 0);
+
+  void startTimer() {
+    _timer?.cancel();
+
+    const oneSecond = Duration(seconds: 1);
+    _timer = Timer.periodic(oneSecond, (Timer timer) {
+      if (_seconds == 0) {
+        setState(() => timer.cancel());
+      } else {
+        setState(() => _seconds--);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _seconds = widget._seconds;
     startTimer();
   }
 

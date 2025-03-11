@@ -56,7 +56,7 @@ void main() {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
-        home: Scaffold(body: SlotEntryForm(slotEntry, simpleMode: simpleMode)),
+        home: Scaffold(body: SlotEntryForm(slotEntry, 1, simpleMode: simpleMode)),
       ),
     );
   }
@@ -89,7 +89,7 @@ void main() {
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
     await tester.pumpAndSettle();
 
-    verify(mockRoutinesProvider.editSlotEntry(any)).called(1);
+    verify(mockRoutinesProvider.editSlotEntry(any, any)).called(1);
     verify(mockRoutinesProvider.handleConfig(any, any, any)).called(8);
   });
 }

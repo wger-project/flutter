@@ -65,9 +65,7 @@ void main() {
           ),
           child: const SizedBox(),
         ),
-        routes: {
-          RoutineScreen.routeName: (ctx) => const RoutineScreen(),
-        },
+        routes: {RoutineScreen.routeName: (ctx) => const RoutineScreen()},
       ),
     );
   }
@@ -83,6 +81,7 @@ void main() {
     expect(find.text('3 day workout'), findsOneWidget);
 
     expect(find.text('first day'), findsOneWidget);
+    debugDumpApp();
     expect(find.text('chest, shoulders'), findsOneWidget);
 
     expect(find.text('second day'), findsOneWidget);

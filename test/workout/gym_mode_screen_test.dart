@@ -148,7 +148,7 @@ void main() {
     // Bench press - pause
     //
     expect(find.text('Pause'), findsOneWidget);
-    expect(find.byType(TimerWidget), findsOneWidget);
+    expect(find.byType(TimerCountdownWidget), findsOneWidget);
     expect(find.byIcon(Icons.close), findsOneWidget);
     expect(find.byIcon(Icons.toc), findsOneWidget);
     expect(find.byIcon(Icons.chevron_left), findsOneWidget);
@@ -169,7 +169,7 @@ void main() {
     // Pause
     //
     expect(find.text('Pause'), findsOneWidget);
-    expect(find.byType(TimerWidget), findsOneWidget);
+    expect(find.byType(TimerCountdownWidget), findsOneWidget);
     expect(find.byIcon(Icons.chevron_left), findsOneWidget);
     expect(find.byIcon(Icons.close), findsOneWidget);
     expect(find.byIcon(Icons.chevron_right), findsOneWidget);
@@ -189,7 +189,7 @@ void main() {
     // Pause
     //
     expect(find.text('Pause'), findsOneWidget);
-    expect(find.byType(TimerWidget), findsOneWidget);
+    expect(find.byType(TimerCountdownWidget), findsOneWidget);
     await tester.tap(find.byIcon(Icons.chevron_right));
     await tester.pumpAndSettle();
 
