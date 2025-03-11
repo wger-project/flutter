@@ -23,6 +23,7 @@ import 'package:flutter_svg_icons/flutter_svg_icons.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/helpers/misc.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/body_weight.dart';
@@ -387,6 +388,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
         width: double.infinity,
         child: Row(
           children: [
+            if (dayData.date.isSameDayAs(DateTime.now())) const Icon(Icons.today),
             Expanded(
               child: Text(
                 dayData.day == null || dayData.day!.isRest

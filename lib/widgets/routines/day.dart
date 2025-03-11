@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:wger/helpers/misc.dart';
 import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/models/workouts/set_config_data.dart';
 import 'package:wger/models/workouts/slot_data.dart';
@@ -130,6 +131,7 @@ class DayHeader extends StatelessWidget {
           style: Theme.of(context).textTheme.headlineSmall,
           overflow: TextOverflow.ellipsis,
         ),
+        // subtitle: _dayData.date.isSameDayAs(DateTime.now()) ? Text(i18n.today) : null,
         leading: const Icon(Icons.hotel),
         minLeadingWidth: 8,
       );
@@ -143,8 +145,8 @@ class DayHeader extends StatelessWidget {
         style: Theme.of(context).textTheme.headlineSmall,
         overflow: TextOverflow.ellipsis,
       ),
-      subtitle: Text(_dayData.day!.description),
       leading: _viewMode ? null : const Icon(Icons.play_arrow),
+      trailing: _dayData.date.isSameDayAs(DateTime.now()) ? const Icon(Icons.today) : null,
       minLeadingWidth: 8,
       onTap: () {
         _viewMode
