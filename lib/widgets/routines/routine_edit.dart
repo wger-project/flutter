@@ -62,7 +62,7 @@ class _RoutineEditState extends State<RoutineEdit> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            RoutineForm(widget._routine),
+            RoutineForm(widget._routine, useListView: false),
             Container(height: 10),
             Text(
               i18n.routineDays,

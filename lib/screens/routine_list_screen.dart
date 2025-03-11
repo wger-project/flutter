@@ -42,7 +42,8 @@ class RoutineListScreen extends StatelessWidget {
             FormScreen.routeName,
             arguments: FormScreenArguments(
               AppLocalizations.of(context).newRoutine,
-              RoutineForm(Routine.empty()),
+              RoutineForm(Routine.empty(), useListView: true),
+              hasListView: true,
             ),
           );
         },
