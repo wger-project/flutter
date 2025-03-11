@@ -17,7 +17,9 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wger/models/workouts/routine.dart';
+import 'package:wger/screens/routine_edit_screen.dart';
 import 'package:wger/widgets/routines/day.dart';
 
 class RoutineDetail extends StatelessWidget {
@@ -28,6 +30,8 @@ class RoutineDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
+
     return Column(
       children: [
         const SizedBox(height: 10),
@@ -35,6 +39,15 @@ class RoutineDetail extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(15),
             child: Text(_routine.description),
+          ),
+        if (_routine.days.isEmpty)
+          Center(
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, RoutineEditScreen.routeName, arguments: _routine.id);
+              },
+              child: Text(i18n.edit),
+            ),
           ),
         ..._routine.dayDataCurrentIteration
             .where((dayData) => dayData.day != null)
