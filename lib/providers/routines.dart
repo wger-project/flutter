@@ -430,21 +430,34 @@ class RoutinesProvider with ChangeNotifier {
     return day;
   }
 
-  Future<void> editDay(Day day) async {
+  Future<void> editDay(Day day, {refresh = false}) async {
     await baseProvider.patch(
       day.toJson(),
       baseProvider.makeUrl(_daysUrlPath, id: day.id),
     );
+
+    if (refresh) {
+      fetchAndSetRoutineFull(day.routineId);
+    }
     notifyListeners();
   }
 
-  Future<void> editDays(List<Day> days) async {
+  Future<void> editDays(List<Day> days, {refresh = false}) async {
+    if (days.isEmpty) {
+      return;
+    }
+
     for (final day in days) {
       await baseProvider.patch(
         day.toJson(),
         baseProvider.makeUrl(_daysUrlPath, id: day.id),
       );
     }
+
+    if (refresh) {
+      fetchAndSetRoutineFull(days.first.routineId);
+    }
+
     notifyListeners();
   }
 

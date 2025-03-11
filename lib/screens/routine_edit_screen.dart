@@ -30,7 +30,6 @@ class RoutineEditScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final routineId = ModalRoute.of(context)!.settings.arguments as int;
-
     final routine = Provider.of<RoutinesProvider>(context).findById(routineId);
 
     return Scaffold(

@@ -119,7 +119,7 @@ class _ReorderableDaysListState extends State<ReorderableDaysList> {
               }
             });
 
-            provider.editDays(widget.days);
+            provider.editDays(widget.days, refresh: true);
           },
         ),
         ListTile(
@@ -134,7 +134,7 @@ class _ReorderableDaysListState extends State<ReorderableDaysList> {
             final day = Day.empty();
             day.name = '${i18n.newDay} ${widget.days.length + 1}';
             day.routineId = widget.routineId;
-            final newDay = await provider.addDay(day);
+            final newDay = await provider.addDay(day, refresh: true);
 
             // final newSlot = await provider.addSlot(Slot.withData(
             //   day: newDay.id,
@@ -288,7 +288,8 @@ class _DayFormWidgetState extends State<DayFormWidget> {
               _form.currentState!.save();
 
               try {
-                Provider.of<RoutinesProvider>(context, listen: false).editDay(widget.day);
+                Provider.of<RoutinesProvider>(context, listen: false)
+                    .editDay(widget.day, refresh: true);
               } catch (error) {
                 await showDialog(
                   context: context,

@@ -301,15 +301,15 @@ class MockRoutinesProvider extends _i1.Mock implements _i12.RoutinesProvider {
       ) as _i13.Future<_i6.Day>);
 
   @override
-  _i13.Future<void> editDay(_i6.Day? day) => (super.noSuchMethod(
-        Invocation.method(#editDay, [day]),
+  _i13.Future<void> editDay(_i6.Day? day, {dynamic refresh = false}) => (super.noSuchMethod(
+        Invocation.method(#editDay, [day], {#refresh: refresh}),
         returnValue: _i13.Future<void>.value(),
         returnValueForMissingStub: _i13.Future<void>.value(),
       ) as _i13.Future<void>);
 
   @override
-  _i13.Future<void> editDays(List<_i6.Day>? days) => (super.noSuchMethod(
-        Invocation.method(#editDays, [days]),
+  _i13.Future<void> editDays(List<_i6.Day>? days, {dynamic refresh = false}) => (super.noSuchMethod(
+        Invocation.method(#editDays, [days], {#refresh: refresh}),
         returnValue: _i13.Future<void>.value(),
         returnValueForMissingStub: _i13.Future<void>.value(),
       ) as _i13.Future<void>);
