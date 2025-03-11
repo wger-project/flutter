@@ -396,7 +396,7 @@ class SlotDetailWidget extends StatefulWidget {
 }
 
 class _SlotDetailWidgetState extends State<SlotDetailWidget> {
-  bool _addSuperset = false;
+  bool _showExerciseSearchBox = false;
 
   @override
   Widget build(BuildContext context) {
@@ -409,7 +409,7 @@ class _SlotDetailWidgetState extends State<SlotDetailWidget> {
             ? ProgressionRulesInfoBox(entry.exerciseObj)
             : SlotEntryForm(entry, simpleMode: widget.simpleMode)),
         const SizedBox(height: 10),
-        if (_addSuperset || widget.slot.entries.isEmpty)
+        if (_showExerciseSearchBox || widget.slot.entries.isEmpty)
           ExerciseAutocompleter(
             onExerciseSelected: (exercise) async {
               final SlotEntry entry = SlotEntry.withData(
@@ -418,7 +418,9 @@ class _SlotDetailWidgetState extends State<SlotDetailWidget> {
                 exercise: exercise,
               );
 
-              _addSuperset = false;
+              setState(() {
+                _showExerciseSearchBox = false;
+              });
               await provider.addSlotEntry(entry);
             },
           ),
@@ -426,7 +428,7 @@ class _SlotDetailWidgetState extends State<SlotDetailWidget> {
           FilledButton(
             onPressed: () {
               setState(() {
-                _addSuperset = !_addSuperset;
+                _showExerciseSearchBox = !_showExerciseSearchBox;
               });
             },
             child: Text(i18n.addSuperset),
