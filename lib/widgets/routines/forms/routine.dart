@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/routines.dart';
+import 'package:wger/screens/routine_edit_screen.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 
 class RoutineForm extends StatefulWidget {
@@ -215,7 +216,13 @@ class _RoutineFormState extends State<RoutineForm> {
                 if (widget._routine.id != null) {
                   await routinesProvider.editRoutine(widget._routine);
                 } else {
-                  await routinesProvider.addRoutine(widget._routine);
+                  final routine = await routinesProvider.addRoutine(widget._routine);
+                  if (context.mounted) {
+                    Navigator.of(context).pushReplacementNamed(
+                      RoutineEditScreen.routeName,
+                      arguments: routine.id,
+                    );
+                  }
                 }
 
                 setState(() {
