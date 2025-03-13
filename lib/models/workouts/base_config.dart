@@ -32,9 +32,6 @@ class BaseConfig {
   @JsonKey(required: true)
   late int iteration;
 
-  // @JsonKey(required: true)
-  // late String trigger;
-
   @JsonKey(required: true, fromJson: stringOrIntToNum)
   late num value;
 
@@ -48,7 +45,7 @@ class BaseConfig {
   late bool repeat;
 
   @JsonKey(required: true, name: 'requirements')
-  late dynamic requirements;
+  late Map<String, dynamic>? requirements;
 
   BaseConfig({
     required this.id,
