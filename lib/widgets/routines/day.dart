@@ -131,8 +131,8 @@ class DayHeader extends StatelessWidget {
           style: Theme.of(context).textTheme.headlineSmall,
           overflow: TextOverflow.ellipsis,
         ),
-        // subtitle: _dayData.date.isSameDayAs(DateTime.now()) ? Text(i18n.today) : null,
         leading: const Icon(Icons.hotel),
+        trailing: _dayData.date.isSameDayAs(DateTime.now()) ? const Icon(Icons.today) : null,
         minLeadingWidth: 8,
       );
     }
