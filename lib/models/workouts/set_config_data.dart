@@ -63,7 +63,7 @@ class SetConfigData {
   @JsonKey(required: true, name: 'weight_rounding', fromJson: stringToNumNull)
   late num? weightRounding;
 
-  @JsonKey(required: true, fromJson: stringToNumNull, name: 'repetitions')
+  @JsonKey(required: true, name: 'repetitions', fromJson: stringToNumNull)
   late num? repetitions;
 
   @JsonKey(required: true, name: 'max_repetitions', fromJson: stringToNumNull)
@@ -87,10 +87,10 @@ class SetConfigData {
   @JsonKey(required: true)
   late String? rpe;
 
-  @JsonKey(required: true, name: 'rest', fromJson: stringToNum)
+  @JsonKey(required: true, name: 'rest', fromJson: stringToNumNull)
   late num? restTime;
 
-  @JsonKey(required: true, name: 'max_rest', fromJson: stringToNum)
+  @JsonKey(required: true, name: 'max_rest', fromJson: stringToNumNull)
   late num? maxRestTime;
 
   @JsonKey(required: true)
