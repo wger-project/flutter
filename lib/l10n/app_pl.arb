@@ -847,5 +847,21 @@
   "deficit": "deficyt",
   "@deficit": {
     "description": "Caloric deficit (either planned or unplanned)"
+  },
+  "chartAllTimeTitle": "{name} Z całego okresu",
+  "@chartAllTimeTitle": {
+    "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "chart30DaysTitle": "{name} ostatnie 30 dni",
+  "@chart30DaysTitle": {
+    "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {}
+    }
   }
 }

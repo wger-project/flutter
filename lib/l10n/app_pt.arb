@@ -868,5 +868,39 @@
     "placeholders": {
       "name": {}
     }
-  }
+  },
+  "overallChangeWeight": "Mudança geral",
+  "@overallChangeWeight": {
+    "description": "Overall change in weight, added for localization"
+  },
+  "goalTypeMeals": "A partir de refeições",
+  "@goalTypeMeals": {
+    "description": "added for localization of Class GoalType's filed meals"
+  },
+  "goalTypeBasic": "Básico",
+  "@goalTypeBasic": {
+    "description": "added for localization of Class GoalType's filed basic"
+  },
+  "goalTypeAdvanced": "Avançado",
+  "@goalTypeAdvanced": {
+    "description": "added for localization of Class GoalType's filed advanced"
+  },
+  "indicatorRaw": "Crua",
+  "@indicatorRaw": {
+    "description": "added for localization of Class Indicator's field text"
+  },
+  "indicatorAvg": "Média",
+  "@indicatorAvg": {
+    "description": "added for localization of Class Indicator's field text"
+  },
+  "lightMode": "Modo sempre a luz de",
+  "@lightMode": {},
+  "systemMode": "Configurações do sistema",
+  "@systemMode": {},
+  "themeMode": "Modo temático",
+  "@themeMode": {},
+  "darkMode": "Modo sempre escuro",
+  "@darkMode": {},
+  "settingsIngredientCacheDescription": "Princípio de cache",
+  "@settingsIngredientCacheDescription": {}
 }
