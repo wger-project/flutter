@@ -7,7 +7,7 @@
   "@weight": {
     "description": "The weight of a workout log or body weight entry"
   },
-  "confirmDelete": "Êtes-vous sûre de vouloir supprimer « {toDelete} » ?",
+  "confirmDelete": "Êtes-vous sûre de vouloir supprimer « {toDelete} » ?",
   "@confirmDelete": {
     "description": "Confirmation text before the user deletes an object",
     "type": "text",
@@ -839,5 +839,27 @@
     "description": "Log a specific meal (imperative form)"
   },
   "done": "Fait",
-  "@done": {}
+  "@done": {},
+  "lightMode": "Mode clair permanent",
+  "@lightMode": {},
+  "darkMode": "Mode sombre permanent",
+  "@darkMode": {},
+  "systemMode": "Paramètres du système",
+  "@systemMode": {},
+  "chart30DaysTitle": "{name} 30 derniers jours",
+  "@chart30DaysTitle": {
+    "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "chartAllTimeTitle": "{name} de tous temps",
+  "@chartAllTimeTitle": {
+    "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {}
+    }
+  }
 }
