@@ -7,7 +7,7 @@ app written with Flutter, it talks via REST with the main server.
 If you want to contribute, hop on the Discord server and say hi!
 
 
-<p>
+<p align="center">
 <img src="https://raw.githubusercontent.com/wger-project/flutter/master/fastlane/metadata/android/en-US/images/phoneScreenshots/01%20-%20dashboard.png" width="200" alt="" />
 
 <img src="https://raw.githubusercontent.com/wger-project/flutter/master/fastlane/metadata/android/en-US/images/phoneScreenshots/04%20-%20measurements.png" width="200" alt="" />
@@ -26,32 +26,17 @@ height="80">](https://f-droid.org/packages/de.wger.flutter/)
 
 ## Development
 
-### 1
-
-Install the [wger server](https://github.com/wger-project/wger), the easiest way
-is to start the development docker-compose: <https://github.com/wger-project/docker>
-
-Alternatively, you can use the test server (the db is reset every day):
+This is a regular flutter application, so you basically just run `flutter run` in
+the root directory of the project, and optionally use the test server to login
+(the db is reset daily):
 
 * URL: `https://wger-master.rge.uber.space`
 * username: `user`
 * password: `flutteruser`
-* API key: `31e2ea0322c07b9df583a9b6d1e794f7139e78d4`
 
-### 2
+For more information consult the development documentation:
 
-Install Flutter and all its dependencies, and create a new virtual device:
-<https://flutter.dev/docs/get-started/install>.
-
-The app currently uses flutter 3.27
-
-### 3
-
-Start the application with ``flutter run`` or use your IDE
-(please note that depending on how you run your emulator you will need to change the IP address of
-the server)
-
-You can run the tests with the ``flutter test``
+<https://wger.readthedocs.io/en/latest/development/mobile_app.html>
 
 ## Translation
 
