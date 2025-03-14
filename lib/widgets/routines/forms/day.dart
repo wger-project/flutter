@@ -123,28 +123,25 @@ class _ReorderableDaysListState extends State<ReorderableDaysList> {
             provider.editDays(widget.days, refresh: true);
           },
         ),
-        ListTile(
-          key: const ValueKey('add-day'),
-          // tileColor: Theme.of(context).highlightColor,
-          leading: const Icon(Icons.add),
-          title: Text(
-            AppLocalizations.of(context).newDay,
-            style: Theme.of(context).textTheme.titleMedium,
+        Card(
+          child: ListTile(
+            key: const ValueKey('add-day'),
+            // tileColor: Theme.of(context).focusColor,
+            leading: const Icon(Icons.add),
+            title: Text(
+              AppLocalizations.of(context).newDay,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            onTap: () async {
+              final day = Day.empty();
+              day.name = '${i18n.newDay} ${widget.days.length + 1}';
+              day.routineId = widget.routineId;
+              day.order = widget.days.length + 1;
+              final newDay = await provider.addDay(day, refresh: true);
+
+              widget.onDaySelected(newDay.id!);
+            },
           ),
-          onTap: () async {
-            final day = Day.empty();
-            day.name = '${i18n.newDay} ${widget.days.length + 1}';
-            day.routineId = widget.routineId;
-            day.order = widget.days.length + 1;
-            final newDay = await provider.addDay(day, refresh: true);
-
-            // final newSlot = await provider.addSlot(Slot.withData(
-            //   day: newDay.id,
-            //   order: 1,
-            // ));
-
-            widget.onDaySelected(newDay.id!);
-          },
         ),
       ],
     );
