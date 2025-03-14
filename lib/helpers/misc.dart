@@ -74,19 +74,11 @@ List<DateTime> daysInRange(DateTime first, DateTime last) {
 
 extension TimeOfDayExtension on TimeOfDay {
   bool isAfter(TimeOfDay other) {
-    if (toMinutes() > other.toMinutes()) {
-      return true;
-    } else {
-      return false;
-    }
+    return toMinutes() > other.toMinutes();
   }
 
   bool isBefore(TimeOfDay other) {
-    if (toMinutes() < other.toMinutes()) {
-      return true;
-    } else {
-      return false;
-    }
+    return toMinutes() < other.toMinutes();
   }
 
   int toMinutes() {
