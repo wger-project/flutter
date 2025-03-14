@@ -115,9 +115,7 @@ class Routine {
   }
 
   int? getIteration({DateTime? date}) {
-    if (date == null) {
-      return null;
-    }
+    date ??= DateTime.now();
 
     for (final data in dayData) {
       if (data.date.isSameDayAs(date)) {
@@ -128,12 +126,12 @@ class Routine {
   }
 
   List<DayData> get dayDataCurrentIteration {
-    final iteration = getIteration() ?? 1;
+    final iteration = getIteration(date: DateTime.now()) ?? 1;
     return dayData.where((data) => data.iteration == iteration).toList();
   }
 
   List<DayData> get dayDataCurrentIterationGym {
-    final iteration = getIteration() ?? 1;
+    final iteration = getIteration(date: DateTime.now()) ?? 1;
     return dayDataGym.where((data) => data.iteration == iteration).toList();
   }
 
