@@ -86,6 +86,6 @@ void main() {
     expect(find.text('second day'), findsOneWidget);
     expect(find.text('legs'), findsOneWidget);
 
-    expect(find.byType(Card), findsNWidgets(2));
+    expect(find.byType(Card), findsNWidgets(4));
   });
 }
