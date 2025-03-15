@@ -172,7 +172,7 @@ class RoutinesProvider with ChangeNotifier {
     final data = await baseProvider.fetch(
       baseProvider.makeUrl(
         _routinesUrlPath,
-        query: {'ordering': '-creation_date', 'limit': '1000'},
+        query: {'ordering': '-creation_date', 'limit': '1000', 'is_template': 'false'},
       ),
     );
     for (final entry in data['results']) {
@@ -186,7 +186,7 @@ class RoutinesProvider with ChangeNotifier {
   /// object itself and no child attributes
   Future<void> fetchAndSetAllPlansSparse() async {
     final data = await baseProvider.fetch(
-      baseProvider.makeUrl(_routinesUrlPath, query: {'limit': '1000'}),
+      baseProvider.makeUrl(_routinesUrlPath, query: {'limit': '1000', 'is_template': 'false'}),
     );
     _routines = [];
     for (final workoutPlanData in data['results']) {
