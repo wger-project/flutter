@@ -1,4 +1,4 @@
-# Mobile app for wger Workout Manager
+# Mobile app for wger
 
 wger is a free, open-source flutter application that manages and tracks/logs
 your exercises and personal workouts, weight, and diet plans. This is the mobile
