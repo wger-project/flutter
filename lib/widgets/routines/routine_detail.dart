@@ -50,7 +50,9 @@ class RoutineDetail extends StatelessWidget {
             ),
           ),
         ..._routine.dayDataCurrentIteration
-            .where((dayData) => dayData.day != null)
+            // TODO: we should probably add a block at the end of the days telling
+            //       the user that there are no more days in the routine till next week
+            // .where((dayData) => dayData.day != null)
             .map((dayData) => RoutineDayWidget(dayData, _routine.id!, viewMode)),
       ],
     );
