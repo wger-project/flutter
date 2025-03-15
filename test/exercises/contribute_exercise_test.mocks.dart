@@ -267,8 +267,8 @@ class MockAddExerciseProvider extends _i1.Mock implements _i8.AddExerciseProvide
       ) as _i14.Future<_i5.Variation>);
 
   @override
-  _i14.Future<void> addImages(_i3.Exercise? base) => (super.noSuchMethod(
-        Invocation.method(#addImages, [base]),
+  _i14.Future<void> addImages(_i3.Exercise? exercise) => (super.noSuchMethod(
+        Invocation.method(#addImages, [exercise]),
         returnValue: _i14.Future<void>.value(),
         returnValueForMissingStub: _i14.Future<void>.value(),
       ) as _i14.Future<void>);

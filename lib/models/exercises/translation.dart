@@ -42,7 +42,7 @@ class Translation extends Equatable {
   @JsonKey(required: true, name: 'created')
   final DateTime? created;
 
-  @JsonKey(required: true, name: 'exercise_base')
+  @JsonKey(required: true, name: 'exercise')
   late int? exerciseId;
 
   @JsonKey(required: true)

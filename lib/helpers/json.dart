@@ -23,6 +23,17 @@ num stringToNum(String? e) {
   return e == null ? 0 : num.parse(e);
 }
 
+num stringOrIntToNum(dynamic e) {
+  if (e is int) {
+    return e.toDouble(); // Convert int to double (a type of num)
+  }
+  return num.tryParse(e) ?? 0;
+}
+
+num? stringToNumNull(String? e) {
+  return e == null ? null : num.parse(e);
+}
+
 String? numToString(num? e) {
   if (e == null) {
     return null;
@@ -35,7 +46,7 @@ String? numToString(num? e) {
  * Converts a datetime to ISO8601 date format, but only the date.
  * Needed e.g. when the wger api only expects a date and no time information.
  */
-String? toDate(DateTime? dateTime) {
+String? dateToYYYYMMDD(DateTime? dateTime) {
   if (dateTime == null) {
     return null;
   }

@@ -24,33 +24,35 @@ import 'package:wger/models/workouts/weight_unit.dart';
 
 /// Returns the text representation for a single setting, used in the gym mode
 String repText(
-  int? reps,
-  RepetitionUnit repetitionUnitObj,
+  num? repetitions,
+  RepetitionUnit? repetitionUnitObj,
   num? weight,
-  WeightUnit weightUnitObj,
+  WeightUnit? weightUnitObj,
   String? rir,
 ) {
   // TODO(x): how to (easily?) translate strings like the units or 'RiR'
 
   final List<String> out = [];
 
-  if (reps != null) {
-    out.add(reps.toString());
+  if (repetitions != null) {
+    out.add(formatNum(repetitions).toString());
 
     // The default repetition unit is 'reps', which we don't show unless there
     // is no weight defined so that we don't just output something like "8" but
     // rather "8 repetitions". If there is weight we want to output "8 x 50kg",
     // since the repetitions are implied. If other units are used, we always
     // print them
-    if (repetitionUnitObj.id != REP_UNIT_REPETITIONS || weight == 0 || weight == null) {
-      out.add(repetitionUnitObj.name);
+    if (repetitionUnitObj != null && repetitionUnitObj.id != REP_UNIT_REPETITIONS_ID ||
+        weight == 0 ||
+        weight == null) {
+      out.add(repetitionUnitObj!.name);
     }
   }
 
   if (weight != null && weight != 0) {
     out.add('×');
-    out.add(weight.toString());
-    out.add(weightUnitObj.name);
+    out.add(formatNum(weight).toString());
+    out.add(weightUnitObj!.name);
   }
 
   if (rir != null && rir != '') {
@@ -72,19 +74,11 @@ List<DateTime> daysInRange(DateTime first, DateTime last) {
 
 extension TimeOfDayExtension on TimeOfDay {
   bool isAfter(TimeOfDay other) {
-    if (toMinutes() > other.toMinutes()) {
-      return true;
-    } else {
-      return false;
-    }
+    return toMinutes() > other.toMinutes();
   }
 
   bool isBefore(TimeOfDay other) {
-    if (toMinutes() < other.toMinutes()) {
-      return true;
-    } else {
-      return false;
-    }
+    return toMinutes() < other.toMinutes();
   }
 
   int toMinutes() {
@@ -109,4 +103,12 @@ void launchURL(String url, BuildContext context) async {
       SnackBar(content: Text('Could not open $url.')),
     );
   }
+}
+
+/// Formats a number to an integer if it's a whole number
+num formatNum(num value) {
+  if (value is double && value == value.toInt()) {
+    return value.toInt();
+  }
+  return value;
 }

@@ -11,7 +11,7 @@ import 'package:wger/models/exercises/video.dart';
 part 'exercise_api.freezed.dart';
 part 'exercise_api.g.dart';
 
-/// Model for an exercise as returned from the exercisebaseinfo endpoint
+/// Model for an exercise as returned from the exerciseinfo endpoint
 ///
 /// Basically this is just used as a convenience to create "real" exercise
 /// objects and nothing more
@@ -35,7 +35,7 @@ class ExerciseApiData with _$ExerciseApiData {
     // ignore: invalid_annotation_target
     required List<Equipment> equipment,
     // ignore: invalid_annotation_target
-    @JsonKey(name: 'exercises') required List<Translation> translations,
+    @JsonKey(name: 'translations', defaultValue: []) required List<Translation> translations,
     required List<ExerciseImage> images,
     required List<Video> videos,
     // ignore: invalid_annotation_target

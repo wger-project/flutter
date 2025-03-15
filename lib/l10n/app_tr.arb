@@ -141,10 +141,6 @@
   "@set": {
     "description": "A set in a workout plan"
   },
-  "supersetWith": "süper set ile",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
-  },
   "newWorkout": "Yeni antrenman planı",
   "@newWorkout": {
     "description": "Header when adding a new workout"
@@ -470,10 +466,6 @@
   "aboutTranslationText": "Bu uygulama Weblate üzerinde çevrilmektedir. Yardım etmek istiyorsanız bağlantıya tıklayın ve çevirmeye başlayın",
   "@aboutTranslationText": {
     "description": "Text for translation section in the about dialog"
-  },
-  "enterRepetitionsOrWeight": "Lütfen setlerden en az birinin tekrarlarını veya ağırlığını doldurun",
-  "@enterRepetitionsOrWeight": {
-    "description": "Error message when the user hasn't filled in the forms for exercise sets"
   },
   "selectExercise": "Lütfen bir egzersiz seçin",
   "@selectExercise": {

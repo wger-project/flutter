@@ -270,7 +270,6 @@ class $MusclesTable extends Muscles with TableInfo<$MusclesTable, MuscleTable> {
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>('id', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _dataMeta = const VerificationMeta('data');
   @override
   late final GeneratedColumnWithTypeConverter<Muscle, String> data = GeneratedColumn<String>(
           'data', aliasedName, false,
@@ -293,7 +292,6 @@ class $MusclesTable extends Muscles with TableInfo<$MusclesTable, MuscleTable> {
     } else if (isInserting) {
       context.missing(_idMeta);
     }
-    context.handle(_dataMeta, const VerificationResult.success());
     return context;
   }
 
@@ -452,7 +450,6 @@ class $EquipmentsTable extends Equipments with TableInfo<$EquipmentsTable, Equip
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>('id', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _dataMeta = const VerificationMeta('data');
   @override
   late final GeneratedColumnWithTypeConverter<Equipment, String> data = GeneratedColumn<String>(
           'data', aliasedName, false,
@@ -475,7 +472,6 @@ class $EquipmentsTable extends Equipments with TableInfo<$EquipmentsTable, Equip
     } else if (isInserting) {
       context.missing(_idMeta);
     }
-    context.handle(_dataMeta, const VerificationResult.success());
     return context;
   }
 
@@ -634,7 +630,6 @@ class $CategoriesTable extends Categories with TableInfo<$CategoriesTable, Categ
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>('id', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _dataMeta = const VerificationMeta('data');
   @override
   late final GeneratedColumnWithTypeConverter<ExerciseCategory, String> data =
       GeneratedColumn<String>('data', aliasedName, false,
@@ -657,7 +652,6 @@ class $CategoriesTable extends Categories with TableInfo<$CategoriesTable, Categ
     } else if (isInserting) {
       context.missing(_idMeta);
     }
-    context.handle(_dataMeta, const VerificationResult.success());
     return context;
   }
 
@@ -816,7 +810,6 @@ class $LanguagesTable extends Languages with TableInfo<$LanguagesTable, Language
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>('id', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _dataMeta = const VerificationMeta('data');
   @override
   late final GeneratedColumnWithTypeConverter<Language, String> data = GeneratedColumn<String>(
           'data', aliasedName, false,
@@ -839,7 +832,6 @@ class $LanguagesTable extends Languages with TableInfo<$LanguagesTable, Language
     } else if (isInserting) {
       context.missing(_idMeta);
     }
-    context.handle(_dataMeta, const VerificationResult.success());
     return context;
   }
 
