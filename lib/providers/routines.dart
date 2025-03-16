@@ -289,12 +289,16 @@ class RoutinesProvider with ChangeNotifier {
         for (final slotEntry in slot.entries) {
           slotEntry.exerciseObj =
               (await _exerciseProvider.fetchAndSetExercise(slotEntry.exerciseId))!;
-          slotEntry.repetitionUnitObj = _repetitionUnits.firstWhere(
-            (e) => e.id == slotEntry.repetitionUnitId,
-          );
-          slotEntry.weightUnitObj = _weightUnits.firstWhere(
-            (e) => e.id == slotEntry.weightUnitId,
-          );
+          if (slotEntry.repetitionUnitId != null) {
+            slotEntry.repetitionUnitObj = _repetitionUnits.firstWhere(
+              (e) => e.id == slotEntry.repetitionUnitId,
+            );
+          }
+          if (slotEntry.weightUnitId != null) {
+            slotEntry.weightUnitObj = _weightUnits.firstWhere(
+              (e) => e.id == slotEntry.weightUnitId,
+            );
+          }
         }
       }
     }
@@ -306,8 +310,12 @@ class RoutinesProvider with ChangeNotifier {
     routine.sessions = List<WorkoutSessionApi>.from(sessionDataEntries);
     for (final session in routine.sessions) {
       for (final log in session.logs) {
-        log.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
-        log.repetitionUnit = _repetitionUnits.firstWhere((e) => e.id == log.repetitionsUnitId);
+        if (log.weightUnitId != null) {
+          log.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
+        }
+        if (log.repetitionsUnitId != null) {
+          log.repetitionUnit = _repetitionUnits.firstWhere((e) => e.id == log.repetitionsUnitId);
+        }
         log.exerciseBase = (await _exerciseProvider.fetchAndSetExercise(log.exerciseId))!;
       }
     }
