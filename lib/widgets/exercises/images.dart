@@ -31,11 +31,13 @@ class ExerciseImageWidget extends StatelessWidget {
             placeholder: const AssetImage('assets/images/placeholder.png'),
             image: NetworkImage(image!.url),
             fit: BoxFit.cover,
+            imageSemanticLabel: 'Exercise image',
           )
         : const Image(
             image: AssetImage('assets/images/placeholder.png'),
             color: Color.fromRGBO(255, 255, 255, 0.3),
             colorBlendMode: BlendMode.modulate,
+            semanticLabel: 'Placeholder',
           );
   }
 }
