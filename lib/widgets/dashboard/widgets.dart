@@ -461,6 +461,8 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
+
     return Card(
       child: Column(
         children: [
@@ -471,8 +473,7 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
             ),
             subtitle: Text(
               _hasContent
-                  ? DateFormat.yMd(Localizations.localeOf(context).languageCode)
-                      .format(_routine!.created)
+                  ? '${dateFormat.format(_routine!.start)} - ${dateFormat.format(_routine!.end)}'
                   : '',
             ),
             leading: Icon(

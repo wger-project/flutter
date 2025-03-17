@@ -38,6 +38,8 @@ class _RoutinesListState extends State<RoutinesList> {
 
   @override
   Widget build(BuildContext context) {
+    final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
+
     return RefreshIndicator(
       onRefresh: () => widget._routineProvider.fetchAndSetAllPlansSparse(),
       child: widget._routineProvider.items.isEmpty
@@ -71,8 +73,8 @@ class _RoutinesListState extends State<RoutinesList> {
                     },
                     title: Text(currentRoutine.name),
                     subtitle: Text(
-                      '${DateFormat.yMd(Localizations.localeOf(context).languageCode).format(currentRoutine.start)}'
-                      ' - ${DateFormat.yMd(Localizations.localeOf(context).languageCode).format(currentRoutine.end)}',
+                      '${dateFormat.format(currentRoutine.start)}'
+                      ' - ${dateFormat.format(currentRoutine.end)}',
                     ),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
