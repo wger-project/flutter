@@ -98,7 +98,7 @@ class Routine {
     created = DateTime.now();
     start = DateTime.now();
     end = DateTime.now().add(const Duration(days: DEFAULT_DURATION * 7));
-    fitInWeek = false;
+    fitInWeek = true;
   }
 
   // Boilerplate

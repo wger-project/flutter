@@ -28,7 +28,7 @@ BaseConfig _$BaseConfigFromJson(Map<String, dynamic> json) {
     value: stringOrIntToNum(json['value']),
     operation: json['operation'] as String? ?? 'r',
     step: json['step'] as String? ?? 'abs',
-    requirements: json['requirements'] ?? null,
+    requirements: json['requirements'] as Map<String, dynamic>? ?? null,
   );
 }
 
