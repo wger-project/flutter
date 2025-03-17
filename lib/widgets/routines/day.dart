@@ -19,8 +19,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wger/helpers/misc.dart';
+import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day_data.dart';
-import 'package:wger/models/workouts/set_config_data.dart';
 import 'package:wger/models/workouts/slot_data.dart';
 import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/widgets/core/core.dart';
@@ -28,9 +28,10 @@ import 'package:wger/widgets/exercises/exercises.dart';
 import 'package:wger/widgets/exercises/images.dart';
 
 class SetConfigDataWidget extends StatelessWidget {
-  final SetConfigData setConfigData;
+  final Exercise exercise;
+  final Widget textRepetitionsWidget;
 
-  const SetConfigDataWidget({required this.setConfigData});
+  const SetConfigDataWidget({required this.exercise, required this.textRepetitionsWidget});
 
   @override
   Widget build(BuildContext context) {
@@ -40,15 +41,15 @@ class SetConfigDataWidget extends StatelessWidget {
       leading: InkWell(
         child: SizedBox(
           width: 45,
-          child: ExerciseImageWidget(image: setConfigData.exercise.getMainImage),
+          child: ExerciseImageWidget(image: exercise.getMainImage),
         ),
         onTap: () {
           showDialog(
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: Text(setConfigData.exercise.getTranslation(languageCode).name),
-                content: ExerciseDetail(setConfigData.exercise),
+                title: Text(exercise.getTranslation(languageCode).name),
+                content: ExerciseDetail(exercise),
                 actions: [
                   TextButton(
                     child: Text(
@@ -64,8 +65,8 @@ class SetConfigDataWidget extends StatelessWidget {
           );
         },
       ),
-      title: Text(setConfigData.exercise.getTranslation(languageCode).name),
-      subtitle: Text(setConfigData.textRepr),
+      title: Text(exercise.getTranslation(languageCode).name),
+      subtitle: textRepetitionsWidget,
     );
   }
 }
@@ -77,14 +78,28 @@ class RoutineDayWidget extends StatelessWidget {
 
   const RoutineDayWidget(this._dayData, this._routineId, this._viewMode);
 
-  Widget getSlotDataRow(SlotData slotData) {
+  Widget getSlotDataRow(SlotData slotData, BuildContext context) {
     return Column(
       children: [
         if (slotData.comment.isNotEmpty) MutedText(slotData.comment),
-        ...slotData.setConfigs.map(
-          (setConfigData) => SetConfigDataWidget(setConfigData: setConfigData),
-        ),
-        // const Divider(),
+
+        // If there's a single exercise with different sets, group them all into
+        // the one exercise and don't show separate rows for each one.
+        ...slotData.setConfigs
+            .fold<Map<Exercise, List<String>>>({}, (acc, entry) {
+              acc.putIfAbsent(entry.exercise, () => []).add(entry.textRepr);
+              return acc;
+            })
+            .entries
+            .map((entry) {
+              return SetConfigDataWidget(
+                exercise: entry.key,
+                textRepetitionsWidget: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: entry.value.map((text) => Text(text)).toList(),
+                ),
+              );
+            }),
       ],
     );
   }
@@ -99,7 +114,7 @@ class RoutineDayWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             DayHeader(day: _dayData, routineId: _routineId, viewMode: _viewMode),
-            ..._dayData.slots.map((e) => getSlotDataRow(e)),
+            ..._dayData.slots.map((e) => getSlotDataRow(e, context)),
           ],
         ),
       ),

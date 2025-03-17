@@ -190,47 +190,48 @@ class _GymModeState extends ConsumerState<GymMode> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<int>(
-        future: _initData,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else {
-            final initialPage = snapshot.data!;
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (!_initialPageJumped && _controller.hasClients) {
-                _controller.jumpToPage(initialPage);
-                setState(() => _initialPageJumped = true);
-              }
-            });
+      future: _initData,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        }
 
-            final List<Widget> children = [
-              StartPage(_controller, widget._dayDataDisplay, _exercisePages),
-              ...getContent(),
-              SessionPage(
-                provider.Provider.of<RoutinesProvider>(context, listen: false)
-                    .findById(widget._dayDataGym.day!.routineId),
-                _controller,
-                widget._start,
-                _exercisePages,
-              ),
-            ];
-
-            return PageView(
-              controller: _controller,
-              onPageChanged: (page) {
-                ref.read(gymStateProvider.notifier).setCurrentPage(page);
-
-                // Check if the last page is reached
-                if (page == children.length - 1) {
-                  ref.read(gymStateProvider.notifier).clear();
-                }
-              },
-              children: children,
-            );
+        final initialPage = snapshot.data!;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!_initialPageJumped && _controller.hasClients) {
+            _controller.jumpToPage(initialPage);
+            setState(() => _initialPageJumped = true);
           }
         });
+
+        final List<Widget> children = [
+          StartPage(_controller, widget._dayDataDisplay, _exercisePages),
+          ...getContent(),
+          SessionPage(
+            provider.Provider.of<RoutinesProvider>(context, listen: false)
+                .findById(widget._dayDataGym.day!.routineId),
+            _controller,
+            widget._start,
+            _exercisePages,
+          ),
+        ];
+
+        return PageView(
+          controller: _controller,
+          onPageChanged: (page) {
+            ref.read(gymStateProvider.notifier).setCurrentPage(page);
+
+            // Check if the last page is reached
+            if (page == children.length - 1) {
+              ref.read(gymStateProvider.notifier).clear();
+            }
+          },
+          children: children,
+        );
+      },
+    );
   }
 }
 
@@ -257,20 +258,29 @@ class StartPage extends StatelessWidget {
               ..._dayData.slots.map((slotData) {
                 return Column(
                   children: [
-                    ...slotData.setConfigs.map((entry) {
-                      return Column(
-                        children: [
-                          Text(
-                            entry.exercise
-                                .getTranslation(Localizations.localeOf(context).languageCode)
-                                .name,
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
-                          Text(entry.textRepr),
-                          const SizedBox(height: 15),
-                        ],
-                      );
-                    }),
+                    ...slotData.setConfigs
+                        .fold<Map<Exercise, List<String>>>({}, (acc, entry) {
+                          acc.putIfAbsent(entry.exercise, () => []).add(entry.textRepr);
+                          return acc;
+                        })
+                        .entries
+                        .map((entry) {
+                          final exercise = entry.key;
+                          return Column(
+                            children: [
+                              ListTile(
+                                leading: ExerciseImageWidget(image: exercise.getMainImage),
+                                title: Text(exercise
+                                    .getTranslation(Localizations.localeOf(context).languageCode)
+                                    .name),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: entry.value.map((text) => Text(text)).toList(),
+                                ),
+                              ),
+                            ],
+                          );
+                        }),
                   ],
                 );
               }),
