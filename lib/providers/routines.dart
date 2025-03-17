@@ -265,7 +265,6 @@ class RoutinesProvider with ChangeNotifier {
     ]);
 
     final routine = Routine.fromJson(results[0] as Map<String, dynamic>);
-
     final dayData = results[1] as List<dynamic>;
     final dayDataGym = results[2] as List<dynamic>;
     final sessionData = results[3] as List<dynamic>;
@@ -349,8 +348,6 @@ class RoutinesProvider with ChangeNotifier {
       baseProvider.makeUrl(_routinesUrlPath, id: routine.id),
     );
     await fetchAndSetRoutineFull(routine.id!);
-
-    notifyListeners();
   }
 
   Future<void> deleteRoutine(int id) async {
@@ -489,18 +486,8 @@ class RoutinesProvider with ChangeNotifier {
     );
     final newSlot = Slot.fromJson(data);
 
-    // for (final routine in _routines) {
-    //   for (final day in routine.days) {
-    //     if (day.id == slot.day) {
-    //       day.slots.add(newSlot);
-    //       break;
-    //     }
-    //   }
-    // }
-
     await fetchAndSetRoutineFull(routineId);
 
-    notifyListeners();
     return newSlot;
   }
 
@@ -514,8 +501,6 @@ class RoutinesProvider with ChangeNotifier {
     }
 
     await fetchAndSetRoutineFull(routineId);
-
-    // notifyListeners();
   }
 
   Future<void> editSlot(Slot slot, int routineId) async {
@@ -525,8 +510,6 @@ class RoutinesProvider with ChangeNotifier {
     );
 
     await fetchAndSetRoutineFull(routineId);
-
-    // notifyListeners();
   }
 
   Future<void> editSlots(List<Slot> slots, int routineId) async {
@@ -538,8 +521,6 @@ class RoutinesProvider with ChangeNotifier {
     }
 
     await fetchAndSetRoutineFull(routineId);
-
-    // notifyListeners();
   }
 
   Future<SlotEntry> addSlotEntry(SlotEntry entry, int routineId) async {
@@ -548,38 +529,15 @@ class RoutinesProvider with ChangeNotifier {
       baseProvider.makeUrl(_slotEntriesUrlPath),
     );
     final newEntry = SlotEntry.fromJson(data);
-    // newEntry.exerciseObj = (await _exerciseProvider.fetchAndSetExercise(newEntry.exerciseId))!;
-    //
-    // for (final routine in _routines) {
-    //   for (final day in routine.days) {
-    //     for (final slot in day.slots) {
-    //       if (slot.id == entry.slotId) {
-    //         slot.entries.add(newEntry);
-    //         break;
-    //       }
-    //     }
-    //   }
-    // }
-
     await fetchAndSetRoutineFull(routineId);
 
-    // notifyListeners();
     return newEntry;
   }
 
   Future<void> deleteSlotEntry(int id, int routineId) async {
     await baseProvider.deleteRequest(_slotEntriesUrlPath, id);
-    // for (final routine in _routines) {
-    //   for (final day in routine.days) {
-    //     for (final slot in day.slots) {
-    //       slot.entries.removeWhere((e) => e.id == id);
-    //     }
-    //   }
-    // }
 
     await fetchAndSetRoutineFull(routineId);
-
-    // notifyListeners();
   }
 
   Future<void> editSlotEntry(SlotEntry entry, int routineId) async {
@@ -589,8 +547,6 @@ class RoutinesProvider with ChangeNotifier {
     );
 
     await fetchAndSetRoutineFull(routineId);
-
-    // notifyListeners();
   }
 
   String getConfigUrl(ConfigType type) {
