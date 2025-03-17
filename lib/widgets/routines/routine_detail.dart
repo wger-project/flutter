@@ -40,7 +40,7 @@ class RoutineDetail extends StatelessWidget {
             padding: const EdgeInsets.all(15),
             child: Text(_routine.description),
           ),
-        if (_routine.days.isEmpty)
+        if (!viewMode && _routine.days.isEmpty)
           Center(
             child: ElevatedButton(
               onPressed: () {
