@@ -99,7 +99,6 @@ void main() {
                 .having((d) => d.name, 'name', 'Day 1')
                 .having((d) => d.description, 'description', 'Day 1 description'),
           ),
-          refresh: true,
         ),
       );
     });

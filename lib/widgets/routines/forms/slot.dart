@@ -574,29 +574,31 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
           },
         ),
         if (!widget.day.isRest)
-          ListTile(
-            leading: isAddingSlot ? const FormProgressIndicator() : const Icon(Icons.add),
-            title: Text(
-              i18n.addExercise,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            onTap: isAddingSlot
-                ? null
-                : () async {
-                    setState(() => isAddingSlot = true);
+          Card(
+            child: ListTile(
+              leading: isAddingSlot ? const FormProgressIndicator() : const Icon(Icons.add),
+              title: Text(
+                i18n.addExercise,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              onTap: isAddingSlot
+                  ? null
+                  : () async {
+                      setState(() => isAddingSlot = true);
 
-                    final newSlot = await provider.addSlot(
-                      Slot.withData(
-                        day: widget.day.id,
-                        order: widget.slots.length + 1,
-                      ),
-                      widget.day.routineId,
-                    );
-                    if (mounted) {
-                      setState(() => isAddingSlot = false);
-                      setState(() => selectedSlotId = newSlot.id);
-                    }
-                  },
+                      final newSlot = await provider.addSlot(
+                        Slot.withData(
+                          day: widget.day.id,
+                          order: widget.slots.length + 1,
+                        ),
+                        widget.day.routineId,
+                      );
+                      if (mounted) {
+                        setState(() => isAddingSlot = false);
+                        setState(() => selectedSlotId = newSlot.id);
+                      }
+                    },
+            ),
           ),
       ],
     );
