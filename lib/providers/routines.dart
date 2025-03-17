@@ -417,7 +417,7 @@ class RoutinesProvider with ChangeNotifier {
   /*
    * Days
    */
-  Future<Day> addDay(Day day, {refresh = false}) async {
+  Future<Day> addDay(Day day) async {
     /*
      * Saves a new day instance to the DB and adds it to the given workout
      */
@@ -426,28 +426,22 @@ class RoutinesProvider with ChangeNotifier {
       baseProvider.makeUrl(_daysUrlPath),
     );
     day = Day.fromJson(data);
-    final routine = findById(day.routineId);
-    routine.days.add(day);
-    if (refresh) {
-      fetchAndSetRoutineFull(day.routineId);
-    }
-    notifyListeners();
+
+    fetchAndSetRoutineFull(day.routineId);
+
     return day;
   }
 
-  Future<void> editDay(Day day, {refresh = false}) async {
+  Future<void> editDay(Day day) async {
     await baseProvider.patch(
       day.toJson(),
       baseProvider.makeUrl(_daysUrlPath, id: day.id),
     );
 
-    if (refresh) {
-      fetchAndSetRoutineFull(day.routineId);
-    }
-    notifyListeners();
+    fetchAndSetRoutineFull(day.routineId);
   }
 
-  Future<void> editDays(List<Day> days, {refresh = false}) async {
+  Future<void> editDays(List<Day> days) async {
     if (days.isEmpty) {
       return;
     }
@@ -459,21 +453,14 @@ class RoutinesProvider with ChangeNotifier {
       );
     }
 
-    if (refresh) {
-      await fetchAndSetRoutineFull(days.first.routineId);
-    }
-
-    notifyListeners();
+    await fetchAndSetRoutineFull(days.first.routineId);
   }
 
   Future<void> deleteDay(int dayId) async {
     await baseProvider.deleteRequest(_daysUrlPath, dayId);
-
     final routine = _routines.firstWhere((routine) => routine.days.any((day) => day.id == dayId));
-    routine.days.removeWhere((day) => day.id == dayId);
-    fetchAndSetRoutineFull(routine.id!);
 
-    notifyListeners();
+    fetchAndSetRoutineFull(routine.id!);
   }
 
   /*
@@ -493,12 +480,6 @@ class RoutinesProvider with ChangeNotifier {
 
   Future<void> deleteSlot(int slotId, int routineId) async {
     await baseProvider.deleteRequest(_slotsUrlPath, slotId);
-
-    for (final routine in _routines) {
-      for (final day in routine.days) {
-        day.slots.removeWhere((s) => s.id == slotId);
-      }
-    }
 
     await fetchAndSetRoutineFull(routineId);
   }
