@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
@@ -232,8 +232,8 @@ class _DayFormWidgetState extends State<DayFormWidget> {
                   value.length < Day.MIN_LENGTH_NAME ||
                   value.length > Day.MAX_LENGTH_NAME) {
                 return i18n.enterCharacters(
-                  Day.MIN_LENGTH_NAME,
-                  Day.MAX_LENGTH_NAME,
+                  Day.MIN_LENGTH_NAME.toString(),
+                  Day.MAX_LENGTH_NAME.toString(),
                 );
               }
 
@@ -256,7 +256,7 @@ class _DayFormWidgetState extends State<DayFormWidget> {
               }
 
               if (value != null && value.length > Day.MAX_LENGTH_DESCRIPTION) {
-                return i18n.enterCharacters(0, Day.MAX_LENGTH_DESCRIPTION);
+                return i18n.enterCharacters('0', Day.MAX_LENGTH_DESCRIPTION.toString());
               }
 
               return null;

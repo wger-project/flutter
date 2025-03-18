@@ -19,11 +19,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/gallery/image.dart' as gallery;
 import 'package:wger/providers/gallery.dart';
 

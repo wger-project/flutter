@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wger/helpers/misc.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/nutritional_goals.dart';
 import 'package:wger/widgets/nutrition/macro_nutrients_table.dart';
@@ -22,6 +22,7 @@ Widget ingredientImage(String url, BuildContext context) {
 class IngredientDetails extends StatelessWidget {
   final AsyncSnapshot<Ingredient> snapshot;
   final void Function()? onSelect;
+
   const IngredientDetails(this.snapshot, {super.key, this.onSelect});
 
   @override

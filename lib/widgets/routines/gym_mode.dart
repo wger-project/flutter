@@ -18,7 +18,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -31,6 +30,7 @@ import 'package:wger/helpers/i18n.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/misc.dart';
 import 'package:wger/helpers/ui.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/models/workouts/log.dart';

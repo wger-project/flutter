@@ -20,7 +20,7 @@ jobs:
         with:
           cache: true
           channel: 'stable'
-          flutter-version: '3.27.x'
+          flutter-version: '3.29.x'
 
       - run: dart --version
       - run: flutter --version

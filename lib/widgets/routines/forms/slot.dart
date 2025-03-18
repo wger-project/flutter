@@ -17,9 +17,9 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/slot.dart';
@@ -498,8 +498,8 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
                 children: [
                   ListTile(
                     title: slot.isSuperset
-                        ? Text(i18n.supersetNr(index + 1))
-                        : Text(i18n.exerciseNr(index + 1)),
+                        ? Text(i18n.supersetNr((index + 1).toString()))
+                        : Text(i18n.exerciseNr((index + 1).toString())),
                     tileColor: isCurrentSlotSelected ? Theme.of(context).highlightColor : null,
                     leading: selectedSlotId == null
                         ? ReorderableDragStartListener(

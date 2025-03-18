@@ -262,7 +262,9 @@
     "description": "Confirmation text before the user deletes an object",
     "type": "text",
     "placeholders": {
-      "toDelete": {}
+      "toDelete": {
+        "type": "String"
+      }
     }
   },
   "aboutBugsTitle": "有問題或想法嗎？",
@@ -408,7 +410,9 @@
     "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
     "type": "text",
     "placeholders": {
-      "nr": {}
+      "nr": {
+        "type": "String"
+      }
     }
   },
   "notes": "筆記",
@@ -566,7 +570,9 @@
     "description": "Dialog info when product is not found with barcode",
     "type": "text",
     "placeholders": {
-      "barcode": {}
+      "barcode": {
+        "type": "String"
+      }
     }
   },
   "images": "圖片",
@@ -660,7 +666,9 @@
   "verifiedEmailInfo": "驗證郵件已寄送至 {email}",
   "@verifiedEmailInfo": {
     "placeholders": {
-      "email": {}
+      "email": {
+        "type": "String"
+      }
     }
   },
   "gym_mat": "健身墊",
@@ -680,7 +688,9 @@
     "description": "A value in grams, e.g. 5 g",
     "type": "text",
     "placeholders": {
-      "value": {}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "percentValue": "{value} %",
@@ -688,7 +698,9 @@
     "description": "A value in percent, e.g. 10 %",
     "type": "text",
     "placeholders": {
-      "value": {}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "noWorkoutPlans": "您沒有健身計劃",
@@ -710,13 +722,17 @@
     "description": "Label shown on the slider where the user selects the nr of sets",
     "type": "text",
     "placeholders": {
-      "nrOfSets": {}
+      "nrOfSets": {
+        "type": "String"
+      }
     }
   },
   "alsoKnownAs": "也稱為：{aliases}",
   "@alsoKnownAs": {
     "placeholders": {
-      "aliases": {}
+      "aliases": {
+        "type": "String"
+      }
     },
     "description": "List of alternative names for an exercise"
   },
@@ -755,7 +771,9 @@
     "description": "Dialog info when product is found with barcode",
     "type": "text",
     "placeholders": {
-      "productName": {}
+      "productName": {
+        "type": "String"
+      }
     }
   },
   "appUpdateContent": "此版本的應用程式與伺服器不相容，請更新您的應用程式。",
@@ -769,8 +787,12 @@
     "description": "Error message when the user hasn't entered the correct number of characters in a form",
     "type": "text",
     "placeholders": {
-      "min": {},
-      "max": {}
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
     }
   },
   "g": "克",
@@ -794,7 +816,9 @@
     "description": "A value in kcal, e.g. 500 kcal",
     "type": "text",
     "placeholders": {
-      "value": {}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "noWeightEntries": "您沒有體重紀錄",
@@ -808,7 +832,9 @@
     "description": "Error message when the user hasn't entered the minimum amount characters in a form",
     "type": "text",
     "placeholders": {
-      "min": {}
+      "min": {
+        "type": "String"
+      }
     }
   },
   "baseNameEnglish": "所有動作都需要一個英文基本名稱",
@@ -941,7 +967,9 @@
     "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
     "type": "text",
     "placeholders": {
-      "name": {}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "chart30DaysTitle": "{name} 最近 30 天",
@@ -949,7 +977,9 @@
     "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
     "type": "text",
     "placeholders": {
-      "name": {}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "chartDuringPlanTitle": "營養計劃 {planName} 期間的 {chartName}",
@@ -957,8 +987,12 @@
     "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
     "type": "text",
     "placeholders": {
-      "chartName": {},
-      "planName": {}
+      "chartName": {
+        "type": "String"
+      },
+      "planName": {
+        "type": "String"
+      }
     }
   },
   "noIngredientsDefined": "尚未定義食材",

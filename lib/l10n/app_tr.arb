@@ -158,7 +158,9 @@
     "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
     "type": "text",
     "placeholders": {
-      "nr": {}
+      "nr": {
+        "type": "String"
+      }
     }
   },
   "sameRepetitions": "Eğer tüm setler için aynı ağırlıklarla aynı setleri yapıyorsanız, sadece bir satır doldurabilirsiniz. Örneğin, 4 set için sadece 10 girin, bu otomatik olarak \"4 x 10\"a dönüşüyor.",
@@ -388,7 +390,9 @@
     "description": "Label shown on the slider where the user selects the nr of sets",
     "type": "text",
     "placeholders": {
-      "nrOfSets": {}
+      "nrOfSets": {
+        "type": "String"
+      }
     }
   },
   "aboutContactUsTitle": "Merhaba deyin!",
@@ -414,7 +418,9 @@
     "description": "Dialog info when product is found with barcode",
     "type": "text",
     "placeholders": {
-      "productName": {}
+      "productName": {
+        "type": "String"
+      }
     }
   },
   "rir": "RiR",
@@ -444,7 +450,9 @@
     "description": "Confirmation text before the user deletes an object",
     "type": "text",
     "placeholders": {
-      "toDelete": {}
+      "toDelete": {
+        "type": "String"
+      }
     }
   },
   "toggleDetails": "Ayrıntıları aç/kapat",
@@ -476,8 +484,12 @@
     "description": "Error message when the user hasn't entered the correct number of characters in a form",
     "type": "text",
     "placeholders": {
-      "min": {},
-      "max": {}
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
     }
   },
   "setUnitsAndRir": "RiR ve birimleri ayarla",
@@ -514,7 +526,9 @@
     "description": "Dialog info when product is not found with barcode",
     "type": "text",
     "placeholders": {
-      "barcode": {}
+      "barcode": {
+        "type": "String"
+      }
     }
   },
   "close": "Kapat",
@@ -552,7 +566,9 @@
   "alsoKnownAs": "{aliases} olarak da bilinir",
   "@alsoKnownAs": {
     "placeholders": {
-      "aliases": {}
+      "aliases": {
+        "type": "String"
+      }
     },
     "description": "List of alternative names for an exercise"
   },
@@ -569,7 +585,9 @@
     "description": "Error message when the user hasn't entered the minimum amount characters in a form",
     "type": "text",
     "placeholders": {
-      "min": {}
+      "min": {
+        "type": "String"
+      }
     }
   },
   "add_exercise_image_license": "Görseller CC BY SA lisansı ile uyumlu olmalıdır. Emin değilseniz, yalnızca kendi çektiğiniz fotoğrafları yükleyin.",
@@ -585,7 +603,9 @@
   "verifiedEmailInfo": "{email} adresine bir doğrulama e-postası gönderildi",
   "@verifiedEmailInfo": {
     "placeholders": {
-      "email": {}
+      "email": {
+        "type": "String"
+      }
     }
   },
   "previous": "Önceki",
@@ -781,7 +801,9 @@
     "description": "A value in grams, e.g. 5 g",
     "type": "text",
     "placeholders": {
-      "value": {}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "addGoalsToPlan": "Bu plana hedefler ekle",
@@ -803,7 +825,9 @@
     "description": "A value in kcal, e.g. 500 kcal",
     "type": "text",
     "placeholders": {
-      "value": {}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "goalCarbohydrates": "Karbonhidrat hedefi",
@@ -817,7 +841,9 @@
     "description": "A value in percent, e.g. 10 %",
     "type": "text",
     "placeholders": {
-      "value": {}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "goalMacro": "Makro hedefleri",
@@ -847,7 +873,9 @@
     "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
     "type": "text",
     "placeholders": {
-      "name": {}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "chart30DaysTitle": "son 30 gün {name}",
@@ -855,7 +883,9 @@
     "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
     "type": "text",
     "placeholders": {
-      "name": {}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "chartDuringPlanTitle": "{planName} beslenme planı boyunca {chartName}",
@@ -863,8 +893,12 @@
     "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
     "type": "text",
     "placeholders": {
-      "chartName": {},
-      "planName": {}
+      "chartName": {
+        "type": "String"
+      },
+      "planName": {
+        "type": "String"
+      }
     }
   }
 }

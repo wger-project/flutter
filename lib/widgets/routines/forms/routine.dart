@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/routine_edit_screen.dart';
@@ -59,8 +59,8 @@ class _RoutineFormState extends State<RoutineForm> {
               value.length < Routine.MIN_LENGTH_NAME ||
               value.length > Routine.MAX_LENGTH_NAME) {
             return i18n.enterCharacters(
-              Routine.MIN_LENGTH_NAME,
-              Routine.MAX_LENGTH_NAME,
+              Routine.MIN_LENGTH_NAME.toString(),
+              Routine.MAX_LENGTH_NAME.toString(),
             );
           }
           return null;
@@ -78,8 +78,8 @@ class _RoutineFormState extends State<RoutineForm> {
         validator: (value) {
           if (value!.length > Routine.MAX_LENGTH_DESCRIPTION) {
             return i18n.enterCharacters(
-              Routine.MIN_LENGTH_DESCRIPTION,
-              Routine.MAX_LENGTH_DESCRIPTION,
+              Routine.MIN_LENGTH_DESCRIPTION.toString(),
+              Routine.MAX_LENGTH_DESCRIPTION.toString(),
             );
           }
           return null;

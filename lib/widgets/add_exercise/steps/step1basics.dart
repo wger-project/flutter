@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/exercises/forms.dart';
 import 'package:wger/helpers/i18n.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/muscle.dart';
@@ -15,6 +15,7 @@ import 'package:wger/widgets/exercises/forms.dart';
 
 class Step1Basics extends StatelessWidget {
   final GlobalKey<FormState> formkey;
+
   const Step1Basics({required this.formkey});
 
   @override

@@ -12,7 +12,9 @@
     "description": "Confirmation text before the user deletes an object",
     "type": "text",
     "placeholders": {
-      "toDelete": {}
+      "toDelete": {
+        "type": "String"
+      }
     }
   },
   "selectIngredient": "Veuillez sélectionner un ingrédient",
@@ -278,7 +280,9 @@
     "description": "Label shown on the slider where the user selects the nr of sets",
     "type": "text",
     "placeholders": {
-      "nrOfSets": {}
+      "nrOfSets": {
+        "type": "String"
+      }
     }
   },
   "enterCharacters": "Veuillez saisir un nombre de caractères compris entre {min} et {max}",
@@ -286,8 +290,12 @@
     "description": "Error message when the user hasn't entered the correct number of characters in a form",
     "type": "text",
     "placeholders": {
-      "min": {},
-      "max": {}
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
     }
   },
   "selectExercise": "Veuillez sélectionner un exercice",
@@ -351,7 +359,9 @@
     "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
     "type": "text",
     "placeholders": {
-      "nr": {}
+      "nr": {
+        "type": "String"
+      }
     }
   },
   "dayDescriptionHelp": "Une description de ce qui est fait ce jour-ci (par exemple : « journée de tractions ») ou des parties du corps qui sont entraînées (par exemple : « poitrine et épaules »)",
@@ -550,7 +560,9 @@
     "description": "Dialog info when product is found with barcode",
     "type": "text",
     "placeholders": {
-      "productName": {}
+      "productName": {
+        "type": "String"
+      }
     }
   },
   "productNotFoundDescription": "Le produit dont le code-barres a été scanné {barcode} n'a pas été trouvé dans la base de données wger",
@@ -558,7 +570,9 @@
     "description": "Dialog info when product is not found with barcode",
     "type": "text",
     "placeholders": {
-      "barcode": {}
+      "barcode": {
+        "type": "String"
+      }
     }
   },
   "contributeExerciseWarning": "Vous ne pouvez contribuer aux exercices que si votre compte a plus de {days} jours et si vous avez vérifié votre adresse email",
@@ -578,7 +592,9 @@
     "description": "Error message when the user hasn't entered the minimum amount characters in a form",
     "type": "text",
     "placeholders": {
-      "min": {}
+      "min": {
+        "type": "String"
+      }
     }
   },
   "baseNameEnglish": "Tous les exercices doivent avoir un nom de base en anglais",
@@ -596,7 +612,9 @@
   "alsoKnownAs": "Aussi connu sous le nom de : {aliases}",
   "@alsoKnownAs": {
     "placeholders": {
-      "aliases": {}
+      "aliases": {
+        "type": "String"
+      }
     },
     "description": "List of alternative names for an exercise"
   },
@@ -605,7 +623,9 @@
   "verifiedEmailInfo": "Un email de vérification a été envoyé à {email}",
   "@verifiedEmailInfo": {
     "placeholders": {
-      "email": {}
+      "email": {
+        "type": "String"
+      }
     }
   },
   "whatVariationsExist": "Quelles sont les variantes de cet exercice, s'il en existe ?",
@@ -779,7 +799,9 @@
     "description": "A value in kcal, e.g. 500 kcal",
     "type": "text",
     "placeholders": {
-      "value": {}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "gValue": "{value} g",
@@ -787,7 +809,9 @@
     "description": "A value in grams, e.g. 5 g",
     "type": "text",
     "placeholders": {
-      "value": {}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "percentValue": "{value} %",
@@ -795,7 +819,9 @@
     "description": "A value in percent, e.g. 10 %",
     "type": "text",
     "placeholders": {
-      "value": {}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "noIngredientsDefined": "Aucun ingrédient défini pour le moment",
@@ -851,7 +877,9 @@
     "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
     "type": "text",
     "placeholders": {
-      "name": {}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "chartAllTimeTitle": "{name} de tous temps",
@@ -859,7 +887,9 @@
     "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
     "type": "text",
     "placeholders": {
-      "name": {}
+      "name": {
+        "type": "String"
+      }
     }
   }
 }

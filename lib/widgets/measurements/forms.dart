@@ -17,11 +17,11 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/ui.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
 import 'package:wger/providers/measurement.dart';
@@ -256,7 +256,10 @@ class MeasurementEntryForm extends StatelessWidget {
               const minLength = 0;
               const maxLength = 100;
               if (value!.isNotEmpty && (value.length < minLength || value.length > maxLength)) {
-                return AppLocalizations.of(context).enterCharacters(minLength, maxLength);
+                return AppLocalizations.of(context).enterCharacters(
+                  minLength.toString(),
+                  maxLength.toString(),
+                );
               }
               return null;
             },

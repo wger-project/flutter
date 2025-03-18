@@ -30,7 +30,9 @@
     "description": "Confirmation text before the user deletes an object",
     "type": "text",
     "placeholders": {
-      "toDelete": {}
+      "toDelete": {
+        "type": "String"
+      }
     }
   },
   "delete": "Elimina",
@@ -266,7 +268,9 @@
     "description": "Label shown on the slider where the user selects the nr of sets",
     "type": "text",
     "placeholders": {
-      "nrOfSets": {}
+      "nrOfSets": {
+        "type": "String"
+      }
     }
   },
   "enterCharacters": "Inserisci una stringa tra {min} e {max} caratteri",
@@ -274,8 +278,12 @@
     "description": "Error message when the user hasn't entered the correct number of characters in a form",
     "type": "text",
     "placeholders": {
-      "min": {},
-      "max": {}
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
     }
   },
   "selectExercise": "Prego, seleziona un esercizio",
@@ -293,7 +301,9 @@
     "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
     "type": "text",
     "placeholders": {
-      "nr": {}
+      "nr": {
+        "type": "String"
+      }
     }
   },
   "dayDescriptionHelp": "Una descrizione di ciò che è stato fatto. (p.e. «allenamento gambe») o quale parte del corpo sono state allenate (p.e. «petto e spalle»)",
@@ -518,7 +528,9 @@
     "description": "Dialog info when product is not found with barcode",
     "type": "text",
     "placeholders": {
-      "barcode": {}
+      "barcode": {
+        "type": "String"
+      }
     }
   },
   "productNotFound": "Prodotto non trovato",
@@ -542,7 +554,9 @@
     "description": "Dialog info when product is found with barcode",
     "type": "text",
     "placeholders": {
-      "productName": {}
+      "productName": {
+        "type": "String"
+      }
     }
   },
   "close": "Chiudi",
@@ -578,7 +592,9 @@
   "verifiedEmailInfo": "Un'email di verifica è stata inviata a {email}",
   "@verifiedEmailInfo": {
     "placeholders": {
-      "email": {}
+      "email": {
+        "type": "String"
+      }
     }
   },
   "oneNamePerLine": "Un nome per linea",
@@ -680,7 +696,9 @@
     "description": "Error message when the user hasn't entered the minimum amount characters in a form",
     "type": "text",
     "placeholders": {
-      "min": {}
+      "min": {
+        "type": "String"
+      }
     }
   },
   "sz_bar": "SZ-Bar",
@@ -696,7 +714,9 @@
   "alsoKnownAs": "Conosciuto anche come: {aliases}",
   "@alsoKnownAs": {
     "placeholders": {
-      "aliases": {}
+      "aliases": {
+        "type": "String"
+      }
     },
     "description": "List of alternative names for an exercise"
   },
@@ -847,8 +867,12 @@
     "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
     "type": "text",
     "placeholders": {
-      "chartName": {},
-      "planName": {}
+      "chartName": {
+        "type": "String"
+      },
+      "planName": {
+        "type": "String"
+      }
     }
   },
   "chart30DaysTitle": "{name} ultimi 30 giorni",
@@ -856,7 +880,9 @@
     "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
     "type": "text",
     "placeholders": {
-      "name": {}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "goalMacro": "Obiettivi dei macronutrienti",
@@ -916,7 +942,9 @@
     "description": "A value in kcal, e.g. 500 kcal",
     "type": "text",
     "placeholders": {
-      "value": {}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "gValue": "{value} g",
@@ -924,7 +952,9 @@
     "description": "A value in grams, e.g. 5 g",
     "type": "text",
     "placeholders": {
-      "value": {}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "percentValue": "{value} %",
@@ -932,7 +962,9 @@
     "description": "A value in percent, e.g. 10 %",
     "type": "text",
     "placeholders": {
-      "value": {}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "onlyLoggingHelpText": "Selezionate la casella se volete registrare solo le calorie e non volete impostare un piano nutrizionale dettagliato con pasti specifici",
@@ -954,7 +986,9 @@
     "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
     "type": "text",
     "placeholders": {
-      "name": {}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "darkMode": "Sempre in modalità scura",

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/widgets/core/app_bar.dart';
@@ -9,6 +9,7 @@ import 'package:wger/widgets/exercises/list_tile.dart';
 
 class ExercisesScreen extends StatefulWidget {
   const ExercisesScreen({super.key});
+
   static const routeName = '/exercises';
 
   @override

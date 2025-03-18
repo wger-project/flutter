@@ -222,8 +222,12 @@
     "description": "Error message when the user hasn't entered the correct number of characters in a form",
     "type": "text",
     "placeholders": {
-      "min": {},
-      "max": {}
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
     }
   },
   "nrOfSets": "Broj serija po vježbi: {nrOfSets}",
@@ -231,7 +235,9 @@
     "description": "Label shown on the slider where the user selects the nr of sets",
     "type": "text",
     "placeholders": {
-      "nrOfSets": {}
+      "nrOfSets": {
+        "type": "String"
+      }
     }
   },
   "setUnitsAndRir": "Postavi jedinice i PUR",
@@ -356,7 +362,9 @@
     "description": "Confirmation text before the user deletes an object",
     "type": "text",
     "placeholders": {
-      "toDelete": {}
+      "toDelete": {
+        "type": "String"
+      }
     }
   },
   "newNutritionalPlan": "Novi plan prehrane",
@@ -446,7 +454,9 @@
     "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
     "type": "text",
     "placeholders": {
-      "nr": {}
+      "nr": {
+        "type": "String"
+      }
     }
   },
   "sameRepetitions": "Ako radiš ista ponavljanja i težinu za sve serije, ispuni jedan redak. Na primjer, za 4 serije jednostavno upiši 10 za ponavljanja, to automatski postaje „4 × 10”.",
@@ -526,7 +536,9 @@
     "description": "Dialog info when product is found with barcode",
     "type": "text",
     "placeholders": {
-      "productName": {}
+      "productName": {
+        "type": "String"
+      }
     }
   },
   "productNotFound": "Proizvod nije pronađen",
@@ -538,7 +550,9 @@
     "description": "Dialog info when product is not found with barcode",
     "type": "text",
     "placeholders": {
-      "barcode": {}
+      "barcode": {
+        "type": "String"
+      }
     }
   },
   "scanBarcode": "Skeniraj barkod",
@@ -554,7 +568,9 @@
     "description": "Error message when the user hasn't entered the minimum amount characters in a form",
     "type": "text",
     "placeholders": {
-      "min": {}
+      "min": {
+        "type": "String"
+      }
     }
   },
   "add_exercise_image_license": "Slike moraju biti kompatibilne s licencom CC BY SA. Ako si u nedoumici, prenesi samo svoje vlastite fotografije.",
@@ -626,7 +642,9 @@
   "alsoKnownAs": "Poznato i kao: {aliases}",
   "@alsoKnownAs": {
     "placeholders": {
-      "aliases": {}
+      "aliases": {
+        "type": "String"
+      }
     },
     "description": "List of alternative names for an exercise"
   },
@@ -637,7 +655,9 @@
   "verifiedEmailInfo": "E-mail poruka za potvrdu je poslana na {email}",
   "@verifiedEmailInfo": {
     "placeholders": {
-      "email": {}
+      "email": {
+        "type": "String"
+      }
     }
   },
   "contributeExerciseWarning": "Vježbe možeš dodati samo ako je tvoj račun stariji od {days} dana i ako si potvrdio/la tvoju e-mail adresu",
@@ -847,7 +867,9 @@
     "description": "A value in percent, e.g. 10 %",
     "type": "text",
     "placeholders": {
-      "value": {}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "addGoalsToPlan": "Dodaj ciljeve ovom planu",
@@ -869,7 +891,9 @@
     "description": "A value in kcal, e.g. 500 kcal",
     "type": "text",
     "placeholders": {
-      "value": {}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "gValue": "{value} g",
@@ -877,7 +901,9 @@
     "description": "A value in grams, e.g. 5 g",
     "type": "text",
     "placeholders": {
-      "value": {}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "surplus": "višak",
@@ -937,7 +963,9 @@
     "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
     "type": "text",
     "placeholders": {
-      "name": {}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "chartDuringPlanTitle": "{chartName} tijekom prehrambenog plana {planName}",
@@ -945,8 +973,12 @@
     "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
     "type": "text",
     "placeholders": {
-      "chartName": {},
-      "planName": {}
+      "chartName": {
+        "type": "String"
+      },
+      "planName": {
+        "type": "String"
+      }
     }
   },
   "settingsIngredientCacheDescription": "Predmemorija sastojaka",
@@ -956,7 +988,9 @@
     "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
     "type": "text",
     "placeholders": {
-      "name": {}
+      "name": {
+        "type": "String"
+      }
     }
   }
 }

@@ -18,11 +18,11 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/core/locator.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/add_exercise.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/body_weight.dart';

@@ -18,9 +18,9 @@
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:wger/helpers/charts.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 
 class MeasurementOverallChangeWidget extends StatelessWidget {
   final MeasurementChartEntry _first;

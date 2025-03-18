@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/gym_mode.dart';
