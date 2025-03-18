@@ -25,7 +25,6 @@ import 'package:network_image_mock/network_image_mock.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/gallery.dart';
-import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/gallery/overview.dart';
 
 import '../../test_data/gallery.dart';
@@ -40,7 +39,7 @@ void main() {
     when(mockGalleryProvider.images).thenAnswer((_) => getTestImages());
   });
 
-  Widget createScreen({locale = 'en'}) {
+  Widget renderScreen({locale = 'en'}) {
     return ChangeNotifierProvider<GalleryProvider>(
       create: (context) => mockGalleryProvider,
       child: MaterialApp(
@@ -48,29 +47,38 @@ void main() {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: const Gallery(),
-        routes: {FormScreen.routeName: (ctx) => const FormScreen()},
+      ),
+    );
+  }
+
+  Widget renderDetail({locale = 'en'}) {
+    return ChangeNotifierProvider<GalleryProvider>(
+      create: (context) => mockGalleryProvider,
+      child: MaterialApp(
+        locale: Locale(locale),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: ImageDetail(image: getTestImages()[0]),
       ),
     );
   }
 
   testWidgets('Test the widgets on the gallery screen', (WidgetTester tester) async {
-    await mockNetworkImagesFor(() => tester.pumpWidget(createScreen()));
+    await mockNetworkImagesFor(() => tester.pumpWidget(renderScreen()));
 
     expect(find.byType(SliverMasonryGrid), findsOneWidget);
     expect(find.byType(GestureDetector, skipOffstage: false), findsNWidgets(4));
   });
 
   testWidgets('Tests the localization of dates - EN', (WidgetTester tester) async {
-    await mockNetworkImagesFor(() => tester.pumpWidget(createScreen()));
-    await tester.tap(find.byKey(const Key('image-1')));
+    await mockNetworkImagesFor(() => tester.pumpWidget(renderDetail()));
     await tester.pumpAndSettle();
 
     expect(find.text('5/30/2021'), findsOneWidget);
   });
 
   testWidgets('Tests the localization of dates - DE', (WidgetTester tester) async {
-    await mockNetworkImagesFor(() => tester.pumpWidget(createScreen(locale: 'de')));
-    await tester.tap(find.byKey(const Key('image-1')));
+    await mockNetworkImagesFor(() => tester.pumpWidget(renderDetail(locale: 'de')));
     await tester.pumpAndSettle();
 
     expect(find.text('30.5.2021'), findsOneWidget);
