@@ -78,6 +78,12 @@ class ExerciseDetail extends StatelessWidget {
   }
 
   List<Widget> getVariations(BuildContext context) {
+    final variations =
+        Provider.of<ExercisesProvider>(context, listen: false).findExercisesByVariationId(
+      _exercise.variationId,
+      exerciseIdToExclude: _exercise.id,
+    );
+
     final List<Widget> out = [];
     if (_exercise.variationId == null) {
       return out;
@@ -87,14 +93,12 @@ class ExerciseDetail extends StatelessWidget {
       AppLocalizations.of(context).variations,
       style: Theme.of(context).textTheme.headlineSmall,
     ));
-    Provider.of<ExercisesProvider>(context, listen: false)
-        .findExercisesByVariationId(
-      _exercise.variationId!,
-      exerciseBaseIdToExclude: _exercise.id,
-    )
-        .forEach((element) {
+    for (final element in variations) {
       out.add(ExerciseListTile(exerciseBase: element));
-    });
+    }
+    if (variations.isEmpty) {
+      out.add(const Text('-/-'));
+    }
 
     out.add(const SizedBox(height: PADDING));
     return out;

@@ -251,14 +251,14 @@ class MockExercisesProvider extends _i1.Mock implements _i17.ExercisesProvider {
 
   @override
   List<_i4.Exercise> findExercisesByVariationId(
-    int? id, {
-    int? exerciseBaseIdToExclude,
+    int? variationId, {
+    int? exerciseIdToExclude,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
           #findExercisesByVariationId,
-          [id],
-          {#exerciseBaseIdToExclude: exerciseBaseIdToExclude},
+          [variationId],
+          {#exerciseIdToExclude: exerciseIdToExclude},
         ),
         returnValue: <_i4.Exercise>[],
       ) as List<_i4.Exercise>);

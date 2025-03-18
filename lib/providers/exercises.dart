@@ -192,13 +192,17 @@ class ExercisesProvider with ChangeNotifier {
   /// not interested in seeing that same exercise returned in the list of variations.
   /// If this parameter is not passed, all exercises are returned.
   List<Exercise> findExercisesByVariationId(
-    int id, {
-    int? exerciseBaseIdToExclude,
+    int? variationId, {
+    int? exerciseIdToExclude,
   }) {
-    var out = exercises.where((base) => base.variationId == id).toList();
+    if (variationId == null) {
+      return [];
+    }
 
-    if (exerciseBaseIdToExclude != null) {
-      out = out.where((e) => e.id != exerciseBaseIdToExclude).toList();
+    var out = exercises.where((base) => base.variationId == variationId).toList();
+
+    if (exerciseIdToExclude != null) {
+      out = out.where((e) => e.id != exerciseIdToExclude).toList();
     }
     return out;
   }
