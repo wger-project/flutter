@@ -138,7 +138,6 @@ class DayHeader extends StatelessWidget {
 
     if (_dayData.day == null || _dayData.day!.isRest) {
       return ListTile(
-        // tileColor: Colors.amber,
         tileColor: Theme.of(context).focusColor,
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         title: Text(
@@ -165,12 +164,12 @@ class DayHeader extends StatelessWidget {
       trailing: _dayData.date.isSameDayAs(DateTime.now()) ? const Icon(Icons.today) : null,
       minLeadingWidth: 8,
       onTap: () {
-        _viewMode
-            ? null
-            : Navigator.of(context).pushNamed(
-                GymModeScreen.routeName,
-                arguments: GymModeArguments(_routineId, _dayData.day!.id!, _dayData.iteration),
-              );
+        if (!_viewMode) {
+          Navigator.of(context).pushNamed(
+            GymModeScreen.routeName,
+            arguments: GymModeArguments(_routineId, _dayData.day!.id!, _dayData.iteration),
+          );
+        }
       },
     );
   }

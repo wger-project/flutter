@@ -50,10 +50,26 @@ class RoutineDetail extends StatelessWidget {
             ),
           ),
         ..._routine.dayDataCurrentIteration
-            // TODO: we should probably add a block at the end of the days telling
-            //       the user that there are no more days in the routine till next week
-            // .where((dayData) => dayData.day != null)
+            .where((dayData) => dayData.day != null)
             .map((dayData) => RoutineDayWidget(dayData, _routine.id!, viewMode)),
+        if (_routine.fitInWeek)
+          Padding(
+            padding: const EdgeInsets.only(left: 8, right: 8, bottom: 12),
+            child: Card(
+              margin: EdgeInsets.zero,
+              child: ListTile(
+                tileColor: Theme.of(context).focusColor,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                title: Text(
+                  i18n.tillEndOfWeek,
+                  style: Theme.of(context).textTheme.headlineSmall,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                leading: const Icon(Icons.hotel),
+                minLeadingWidth: 8,
+              ),
+            ),
+          ),
       ],
     );
   }

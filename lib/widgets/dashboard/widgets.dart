@@ -384,6 +384,10 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
     }
 
     for (final dayData in _routine!.dayDataCurrentIteration) {
+      if (dayData.day == null) {
+        continue;
+      }
+
       out.add(SizedBox(
         width: double.infinity,
         child: Row(
@@ -453,6 +457,22 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
           ),
         ));
       }
+      out.add(const Divider());
+    }
+
+    if (_routine!.fitInWeek) {
+      out.add(Row(
+        children: [
+          Expanded(
+            child: Text(
+              AppLocalizations.of(context).tillEndOfWeek,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          const Icon(Icons.hotel),
+        ],
+      ));
       out.add(const Divider());
     }
 

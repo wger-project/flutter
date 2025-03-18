@@ -208,6 +208,7 @@
   "restDay": "Rest day",
   "isRestDay": "Is rest day",
   "isRestDayHelp": "Please note that all sets and exercises will be removed when you mark a day as a rest day.",
+  "tillEndOfWeek": "Till end of the week",
   "needsLogsToAdvance": "Needs logs to advance",
   "needsLogsToAdvanceHelp": "Select if you want the routine to progress to the next scheduled day only if you've logged a workout for the day",
   "routineDays": "Days in routine",
