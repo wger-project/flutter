@@ -269,7 +269,10 @@ class StartPage extends StatelessWidget {
                           return Column(
                             children: [
                               ListTile(
-                                leading: ExerciseImageWidget(image: exercise.getMainImage),
+                                leading: SizedBox(
+                                  width: 45,
+                                  child: ExerciseImageWidget(image: exercise.getMainImage),
+                                ),
                                 title: Text(exercise
                                     .getTranslation(Localizations.localeOf(context).languageCode)
                                     .name),
