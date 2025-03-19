@@ -327,6 +327,7 @@ class LogPage extends StatefulWidget {
     this._iteration,
   ) {
     _log.date = DateTime.now();
+    _log.sessionId = null;
     _log.routineId = _workoutPlan.id!;
     _log.exerciseBase = _exercise;
     _log.weightUnit = _configData.weightUnit;

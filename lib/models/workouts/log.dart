@@ -41,7 +41,7 @@ class Log {
   late int routineId;
 
   @JsonKey(required: true, name: 'session')
-  late int sessionId;
+  late int? sessionId;
 
   @JsonKey(required: true)
   int? iteration;
