@@ -460,21 +460,21 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
       out.add(const Divider());
     }
 
-    if (_routine!.fitInWeek) {
-      out.add(Row(
-        children: [
-          Expanded(
-            child: Text(
-              AppLocalizations.of(context).tillEndOfWeek,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          const Icon(Icons.hotel),
-        ],
-      ));
-      out.add(const Divider());
-    }
+    // if (_routine!.fitInWeek) {
+    //   out.add(Row(
+    //     children: [
+    //       Expanded(
+    //         child: Text(
+    //           AppLocalizations.of(context).tillEndOfWeek,
+    //           style: const TextStyle(fontWeight: FontWeight.bold),
+    //           overflow: TextOverflow.ellipsis,
+    //         ),
+    //       ),
+    //       const Icon(Icons.hotel),
+    //     ],
+    //   ));
+    //   out.add(const Divider());
+    // }
 
     return out;
   }
