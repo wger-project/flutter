@@ -655,9 +655,16 @@ class RoutinesProvider with ChangeNotifier {
     newLog.exerciseBase = (await _exerciseProvider.fetchAndSetExercise(log.exerciseId))!;
 
     final plan = findById(newLog.routineId);
-    final session = plan.sessions.firstWhere((element) => element.session.id == newLog.sessionId);
-    session.logs.add(newLog);
-    notifyListeners();
+
+    // If there is no session known locally, just re-fetch everything
+    try {
+      final session = plan.sessions.firstWhere((element) => element.session.id == newLog.sessionId);
+      session.logs.add(newLog);
+      notifyListeners();
+    } on StateError {
+      await fetchAndSetRoutineFull(newLog.routineId);
+    }
+
     return newLog;
   }
 
