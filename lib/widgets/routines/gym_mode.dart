@@ -377,13 +377,15 @@ class _LogPageState extends State<LogPage> {
   }
 
   Widget getRepsWidget() {
+    final repsValueChange = widget._configData.repetitionsRounding ?? 1;
+
     return Row(
       children: [
         IconButton(
           icon: const Icon(Icons.remove, color: Colors.black),
           onPressed: () {
             try {
-              final int newValue = int.parse(_repetitionsController.text) - 1;
+              final num newValue = num.parse(_repetitionsController.text) - repsValueChange;
               if (newValue > 0) {
                 _repetitionsController.text = newValue.toString();
               }
@@ -401,12 +403,12 @@ class _LogPageState extends State<LogPage> {
             focusNode: focusNode,
             onFieldSubmitted: (_) {},
             onSaved: (newValue) {
-              widget._log.repetitions = int.parse(newValue!);
+              widget._log.repetitions = num.parse(newValue!);
               focusNode.unfocus();
             },
             validator: (value) {
               try {
-                int.parse(value!);
+                num.parse(value!);
               } catch (error) {
                 return AppLocalizations.of(context).enterValidNumber;
               }
@@ -418,7 +420,7 @@ class _LogPageState extends State<LogPage> {
           icon: const Icon(Icons.add, color: Colors.black),
           onPressed: () {
             try {
-              final int newValue = int.parse(_repetitionsController.text) + 1;
+              final num newValue = num.parse(_repetitionsController.text) + repsValueChange;
               _repetitionsController.text = newValue.toString();
             } on FormatException {}
           },
@@ -428,14 +430,15 @@ class _LogPageState extends State<LogPage> {
   }
 
   Widget getWeightWidget() {
-    const minPlateWeight = 1.25;
+    final weightValueChange = widget._configData.weightRounding ?? 1.25;
+
     return Row(
       children: [
         IconButton(
           icon: const Icon(Icons.remove, color: Colors.black),
           onPressed: () {
             try {
-              final double newValue = double.parse(_weightController.text) - (2 * minPlateWeight);
+              final num newValue = num.parse(_weightController.text) - (2 * weightValueChange);
               if (newValue > 0) {
                 setState(() {
                   widget._log.weight = newValue;
@@ -455,20 +458,20 @@ class _LogPageState extends State<LogPage> {
             onFieldSubmitted: (_) {},
             onChanged: (value) {
               try {
-                double.parse(value);
+                num.parse(value);
                 setState(() {
-                  widget._log.weight = double.parse(value);
+                  widget._log.weight = num.parse(value);
                 });
               } on FormatException {}
             },
             onSaved: (newValue) {
               setState(() {
-                widget._log.weight = double.parse(newValue!);
+                widget._log.weight = num.parse(newValue!);
               });
             },
             validator: (value) {
               try {
-                double.parse(value!);
+                num.parse(value!);
               } catch (error) {
                 return AppLocalizations.of(context).enterValidNumber;
               }
@@ -480,7 +483,7 @@ class _LogPageState extends State<LogPage> {
           icon: const Icon(Icons.add, color: Colors.black),
           onPressed: () {
             try {
-              final double newValue = double.parse(_weightController.text) + (2 * minPlateWeight);
+              final num newValue = num.parse(_weightController.text) + (2 * weightValueChange);
               setState(() {
                 widget._log.weight = newValue;
                 _weightController.text = newValue.toString();
@@ -620,8 +623,8 @@ class _LogPageState extends State<LogPage> {
             onTap: () {
               setState(() {
                 // Text field
-                _repetitionsController.text = log.repetitions.toString();
-                _weightController.text = log.weight.toString();
+                _repetitionsController.text = log.repetitions?.toString() ?? '';
+                _weightController.text = log.weight?.toString() ?? '';
 
                 // Drop downs
                 widget._log.rir = log.rir;
