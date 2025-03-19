@@ -16,9 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -54,9 +53,10 @@ void showHttpExceptionErrorDialog(
   WgerHttpException exception,
   BuildContext context,
 ) {
-  log('showHttpExceptionErrorDialog: ');
-  log(exception.toString());
-  log('-------------------');
+  final logger = Logger('showHttpExceptionErrorDialog');
+
+  logger.fine(exception.toString());
+  logger.fine('-------------------');
 
   final List<Widget> errorList = [];
 
