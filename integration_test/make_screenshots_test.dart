@@ -20,7 +20,7 @@ enum DeviceType {
   wearScreenshots
 }
 
-final destination = DeviceType.phoneScreenshots.name;
+final destination = DeviceType.tenInchScreenshots.name;
 
 Future<void> takeScreenshot(tester, binding, String language, String name) async {
   if (Platform.isAndroid) {
