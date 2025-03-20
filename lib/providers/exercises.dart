@@ -48,7 +48,7 @@ class ExercisesProvider with ChangeNotifier {
   static const EXERCISE_CACHE_DAYS = 7;
   static const CACHE_VERSION = 4;
 
-  static const exerciseInfoUrlPath = 'exercisebaseinfo';
+  static const exerciseInfoUrlPath = 'exerciseinfo';
   static const exerciseSearchPath = 'exercise/search';
 
   static const categoriesUrlPath = 'exercisecategory';
@@ -154,8 +154,6 @@ class ExercisesProvider with ChangeNotifier {
     if (filters!.searchTerm.length > 1) {
       filteredItems = await searchExercise(filters!.searchTerm);
     }
-
-    // Filter by exercise category and equipment (REPLACE WITH HTTP REQUEST)
     filteredExercises = filteredItems.where((exercise) {
       final bool isInAnyCategory = filters!.exerciseCategories.selected.contains(exercise.category);
 
@@ -182,7 +180,7 @@ class ExercisesProvider with ChangeNotifier {
   /// Note: prefer using the async `fetchAndSetExercise` method
   Exercise findExerciseById(int id) {
     return exercises.firstWhere(
-      (base) => base.id == id,
+      (exercise) => exercise.id == id,
       orElse: () => throw const NoSuchEntryException(),
     );
   }
@@ -194,13 +192,17 @@ class ExercisesProvider with ChangeNotifier {
   /// not interested in seeing that same exercise returned in the list of variations.
   /// If this parameter is not passed, all exercises are returned.
   List<Exercise> findExercisesByVariationId(
-    int id, {
-    int? exerciseBaseIdToExclude,
+    int? variationId, {
+    int? exerciseIdToExclude,
   }) {
-    var out = exercises.where((base) => base.variationId == id).toList();
+    if (variationId == null) {
+      return [];
+    }
 
-    if (exerciseBaseIdToExclude != null) {
-      out = out.where((e) => e.id != exerciseBaseIdToExclude).toList();
+    var out = exercises.where((base) => base.variationId == variationId).toList();
+
+    if (exerciseIdToExclude != null) {
+      out = out.where((e) => e.id != exerciseIdToExclude).toList();
     }
     return out;
   }
@@ -276,7 +278,7 @@ class ExercisesProvider with ChangeNotifier {
   /// Returns the exercise with the given ID
   ///
   /// If the exercise is not known locally, it is fetched from the server.
-  Future<Exercise> fetchAndSetExercise(int exerciseId) async {
+  Future<Exercise?> fetchAndSetExercise(int exerciseId) async {
     // _logger.finer('Fetching exercise $exerciseId');
     try {
       final exercise = findExerciseById(exerciseId);
@@ -357,16 +359,16 @@ class ExercisesProvider with ChangeNotifier {
       // New exercise, fetch and insert to DB
     } else {
       _logger.fine('New exercise $exerciseId, fetching from API');
-      final baseData = await baseProvider.fetch(
+      final exerciseData = await baseProvider.fetch(
         baseProvider.makeUrl(exerciseInfoUrlPath, id: exerciseId),
       );
-      exercise = Exercise.fromApiDataJson(baseData, _languages);
+      exercise = Exercise.fromApiDataJson(exerciseData, _languages);
 
       if (exerciseDb == null) {
         await database.into(database.exercises).insert(
               ExercisesCompanion.insert(
                 id: exercise.id!,
-                data: jsonEncode(baseData),
+                data: jsonEncode(exerciseData),
                 lastUpdate: exercise.lastUpdateGlobal!,
                 lastFetched: DateTime.now(),
               ),
@@ -376,7 +378,7 @@ class ExercisesProvider with ChangeNotifier {
     }
 
     // Either update or add the exercise to local list
-    final index = exercises.indexWhere((element) => element.id == exerciseId);
+    final index = exercises.indexWhere((exercise) => exercise.id == exerciseId);
     if (index != -1) {
       exercises[index] = exercise;
     } else {
@@ -660,11 +662,21 @@ class ExercisesProvider with ChangeNotifier {
       ),
     );
 
-    // Load the ingredients
+    // Load the exercises
     final results = ExerciseApiSearch.fromJson(result);
-    return Future.wait(
-      results.suggestions.map((e) => fetchAndSetExercise(e.data.exerciseId)),
-    );
+
+    final List<Exercise> out = [];
+    for (final result in results.suggestions) {
+      final exercise = await fetchAndSetExercise(result.data.exerciseId);
+      if (exercise != null) {
+        out.add(exercise);
+      }
+    }
+    // return Future.wait(
+    //   results.suggestions.map((e) => fetchAndSetExercise(e.data.exerciseId)),
+    // );
+
+    return out;
   }
 }
 

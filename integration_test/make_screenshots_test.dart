@@ -20,7 +20,7 @@ enum DeviceType {
   wearScreenshots
 }
 
-final destination = DeviceType.tenInchScreenshots.name;
+final destination = DeviceType.phoneScreenshots.name;
 
 Future<void> takeScreenshot(tester, binding, String language, String name) async {
   if (Platform.isAndroid) {
@@ -55,9 +55,11 @@ const languages = [
   'pt-BR',
   'pt-PT',
   'ru-RU',
+  'sr',
   'tr-TR',
   'uk',
   'zh-CN',
+  'zh-TW',
 ];
 
 void main() {

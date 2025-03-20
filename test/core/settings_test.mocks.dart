@@ -251,14 +251,14 @@ class MockExercisesProvider extends _i1.Mock implements _i17.ExercisesProvider {
 
   @override
   List<_i4.Exercise> findExercisesByVariationId(
-    int? id, {
-    int? exerciseBaseIdToExclude,
+    int? variationId, {
+    int? exerciseIdToExclude,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
           #findExercisesByVariationId,
-          [id],
-          {#exerciseBaseIdToExclude: exerciseBaseIdToExclude},
+          [variationId],
+          {#exerciseIdToExclude: exerciseIdToExclude},
         ),
         returnValue: <_i4.Exercise>[],
       ) as List<_i4.Exercise>);
@@ -328,15 +328,10 @@ class MockExercisesProvider extends _i1.Mock implements _i17.ExercisesProvider {
       ) as _i18.Future<void>);
 
   @override
-  _i18.Future<_i4.Exercise> fetchAndSetExercise(int? exerciseId) => (super.noSuchMethod(
+  _i18.Future<_i4.Exercise?> fetchAndSetExercise(int? exerciseId) => (super.noSuchMethod(
         Invocation.method(#fetchAndSetExercise, [exerciseId]),
-        returnValue: _i18.Future<_i4.Exercise>.value(
-          _FakeExercise_2(
-            this,
-            Invocation.method(#fetchAndSetExercise, [exerciseId]),
-          ),
-        ),
-      ) as _i18.Future<_i4.Exercise>);
+        returnValue: _i18.Future<_i4.Exercise?>.value(),
+      ) as _i18.Future<_i4.Exercise?>);
 
   @override
   _i18.Future<_i4.Exercise> handleUpdateExerciseFromApi(
@@ -951,12 +946,10 @@ class MockWgerBaseProvider extends _i1.Mock implements _i2.WgerBaseProvider {
       ) as Uri);
 
   @override
-  _i18.Future<Map<String, dynamic>> fetch(Uri? uri) => (super.noSuchMethod(
+  _i18.Future<dynamic> fetch(Uri? uri) => (super.noSuchMethod(
         Invocation.method(#fetch, [uri]),
-        returnValue: _i18.Future<Map<String, dynamic>>.value(
-          <String, dynamic>{},
-        ),
-      ) as _i18.Future<Map<String, dynamic>>);
+        returnValue: _i18.Future<dynamic>.value(),
+      ) as _i18.Future<dynamic>);
 
   @override
   _i18.Future<List<dynamic>> fetchPaginated(Uri? uri) => (super.noSuchMethod(

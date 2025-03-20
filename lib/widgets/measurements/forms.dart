@@ -17,11 +17,11 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/ui.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
 import 'package:wger/providers/measurement.dart';
@@ -167,7 +167,7 @@ class MeasurementEntryForm extends StatelessWidget {
       _entryData['notes'] = entry.notes;
     }
 
-    _dateController.text = toDate(_entryData['date'])!;
+    _dateController.text = dateToYYYYMMDD(_entryData['date'])!;
     _valueController.text = _entryData['value']!.toString();
     _notesController.text = _entryData['notes']!;
   }
@@ -185,7 +185,8 @@ class MeasurementEntryForm extends StatelessWidget {
         children: [
           TextFormField(
             decoration: InputDecoration(labelText: AppLocalizations.of(context).date),
-            readOnly: true, // Hide text cursor
+            readOnly: true,
+            // Hide text cursor
             controller: _dateController,
             onTap: () async {
               // Stop keyboard from appearing
@@ -208,7 +209,7 @@ class MeasurementEntryForm extends StatelessWidget {
                 },
               );
 
-              _dateController.text = toDate(pickedDate)!;
+              _dateController.text = dateToYYYYMMDD(pickedDate)!;
             },
             onSaved: (newValue) {
               _entryData['date'] = DateTime.parse(newValue!);
@@ -255,7 +256,10 @@ class MeasurementEntryForm extends StatelessWidget {
               const minLength = 0;
               const maxLength = 100;
               if (value!.isNotEmpty && (value.length < minLength || value.length > maxLength)) {
-                return AppLocalizations.of(context).enterCharacters(minLength, maxLength);
+                return AppLocalizations.of(context).enterCharacters(
+                  minLength.toString(),
+                  maxLength.toString(),
+                );
               }
               return null;
             },

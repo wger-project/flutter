@@ -16,15 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:io';
+
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/database/ingredients/ingredients_database.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/body_weight.dart';
@@ -98,7 +100,7 @@ void main() {
       await tester.tap(find.byType(TextButton));
       await tester.pumpAndSettle();
 
-      await screenMatchesGolden(tester, 'nutritional_plan_1_default_view');
+      await screenMatchesGolden(tester, 'nutritional_plan_1_default_view', skip: !Platform.isLinux);
 
       // Default view shows plan description, info button, and no ingredients
       expect(find.text('Less fat, more protein'), findsOneWidget);
@@ -111,7 +113,11 @@ void main() {
       var infoOutlineButtons = find.byIcon(Icons.info_outline);
       await tester.tap(infoOutlineButtons.first); // 2nd button shows up also, but is off-screen
       await tester.pumpAndSettle();
-      await screenMatchesGolden(tester, 'nutritional_plan_2_one_meal_with_ingredients');
+      await screenMatchesGolden(
+        tester,
+        'nutritional_plan_2_one_meal_with_ingredients',
+        skip: !Platform.isLinux,
+      );
 
       // Ingredients show up now
       expect(find.text('100g Water'), findsOneWidget);
@@ -130,7 +136,11 @@ void main() {
 
       await tester.tap(infoOutlineButtons.first);
       await tester.pumpAndSettle();
-      await screenMatchesGolden(tester, 'nutritional_plan_3_both_meals_with_ingredients');
+      await screenMatchesGolden(
+        tester,
+        'nutritional_plan_3_both_meals_with_ingredients',
+        skip: !Platform.isLinux,
+      );
       expect(find.byIcon(Icons.info_outline), findsOneWidget);
       expect(find.byIcon(Icons.info), findsNWidgets(2));
 

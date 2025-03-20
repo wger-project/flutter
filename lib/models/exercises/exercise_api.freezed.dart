@@ -39,7 +39,7 @@ mixin _$ExerciseApiData {
       throw _privateConstructorUsedError; // ignore: invalid_annotation_target
   List<Equipment> get equipment =>
       throw _privateConstructorUsedError; // ignore: invalid_annotation_target
-  @JsonKey(name: 'exercises')
+  @JsonKey(name: 'translations', defaultValue: [])
   List<Translation> get translations => throw _privateConstructorUsedError;
   List<ExerciseImage> get images => throw _privateConstructorUsedError;
   List<Video> get videos => throw _privateConstructorUsedError; // ignore: invalid_annotation_target
@@ -74,7 +74,7 @@ abstract class $ExerciseApiDataCopyWith<$Res> {
       List<Muscle> muscles,
       @JsonKey(name: 'muscles_secondary') List<Muscle> musclesSecondary,
       List<Equipment> equipment,
-      @JsonKey(name: 'exercises') List<Translation> translations,
+      @JsonKey(name: 'translations', defaultValue: []) List<Translation> translations,
       List<ExerciseImage> images,
       List<Video> videos,
       @JsonKey(name: 'author_history') List<String> authors,
@@ -195,7 +195,7 @@ abstract class _$$ExerciseBaseDataImplCopyWith<$Res> implements $ExerciseApiData
       List<Muscle> muscles,
       @JsonKey(name: 'muscles_secondary') List<Muscle> musclesSecondary,
       List<Equipment> equipment,
-      @JsonKey(name: 'exercises') List<Translation> translations,
+      @JsonKey(name: 'translations', defaultValue: []) List<Translation> translations,
       List<ExerciseImage> images,
       List<Video> videos,
       @JsonKey(name: 'author_history') List<String> authors,
@@ -310,7 +310,8 @@ class _$ExerciseBaseDataImpl implements _ExerciseBaseData {
       required final List<Muscle> muscles,
       @JsonKey(name: 'muscles_secondary') required final List<Muscle> musclesSecondary,
       required final List<Equipment> equipment,
-      @JsonKey(name: 'exercises') required final List<Translation> translations,
+      @JsonKey(name: 'translations', defaultValue: [])
+      required final List<Translation> translations,
       required final List<ExerciseImage> images,
       required final List<Video> videos,
       @JsonKey(name: 'author_history') required final List<String> authors,
@@ -382,7 +383,7 @@ class _$ExerciseBaseDataImpl implements _ExerciseBaseData {
   final List<Translation> _translations;
 // ignore: invalid_annotation_target
   @override
-  @JsonKey(name: 'exercises')
+  @JsonKey(name: 'translations', defaultValue: [])
   List<Translation> get translations {
     if (_translations is EqualUnmodifiableListView) return _translations;
     // ignore: implicit_dynamic_type
@@ -503,7 +504,8 @@ abstract class _ExerciseBaseData implements ExerciseApiData {
           required final List<Muscle> muscles,
           @JsonKey(name: 'muscles_secondary') required final List<Muscle> musclesSecondary,
           required final List<Equipment> equipment,
-          @JsonKey(name: 'exercises') required final List<Translation> translations,
+          @JsonKey(name: 'translations', defaultValue: [])
+          required final List<Translation> translations,
           required final List<ExerciseImage> images,
           required final List<Video> videos,
           @JsonKey(name: 'author_history') required final List<String> authors,
@@ -538,7 +540,7 @@ abstract class _ExerciseBaseData implements ExerciseApiData {
   @override
   List<Equipment> get equipment; // ignore: invalid_annotation_target
   @override
-  @JsonKey(name: 'exercises')
+  @JsonKey(name: 'translations', defaultValue: [])
   List<Translation> get translations;
   @override
   List<ExerciseImage> get images;

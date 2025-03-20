@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/json.dart';
+import 'package:wger/models/workouts/log.dart';
 
 part 'session.g.dart';
 
@@ -29,10 +30,10 @@ class WorkoutSession {
   @JsonKey(required: true)
   int? id;
 
-  @JsonKey(required: true, name: 'workout')
-  late int workoutId;
+  @JsonKey(required: true, name: 'routine')
+  late int routineId;
 
-  @JsonKey(required: true, toJson: toDate)
+  @JsonKey(required: true, toJson: dateToYYYYMMDD)
   late DateTime date;
 
   @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
@@ -42,33 +43,33 @@ class WorkoutSession {
   late String notes;
 
   @JsonKey(required: true, name: 'time_start', toJson: timeToString, fromJson: stringToTime)
-  late TimeOfDay timeStart;
+  late TimeOfDay? timeStart;
 
   @JsonKey(required: true, name: 'time_end', toJson: timeToString, fromJson: stringToTime)
-  late TimeOfDay timeEnd;
+  late TimeOfDay? timeEnd;
 
-  WorkoutSession();
+  @JsonKey(required: false, includeToJson: false, defaultValue: [])
+  List<Log> logs = [];
 
-  WorkoutSession.withData({
-    required this.id,
-    required this.workoutId,
-    required this.date,
-    required this.impression,
-    required this.notes,
-    required this.timeStart,
-    required this.timeEnd,
-  });
-
-  WorkoutSession.now() {
-    timeStart = TimeOfDay.now();
-    timeEnd = TimeOfDay.now();
+  WorkoutSession({
+    this.id,
+    required this.routineId,
+    this.impression = 2,
+    this.notes = '',
+    this.timeStart,
+    this.timeEnd,
+    this.logs = const <Log>[],
+    DateTime? date,
+  }) {
+    this.date = date ?? DateTime.now();
   }
 
   // Boilerplate
   factory WorkoutSession.fromJson(Map<String, dynamic> json) => _$WorkoutSessionFromJson(json);
+
   Map<String, dynamic> toJson() => _$WorkoutSessionToJson(this);
 
-  String? get impressionAsString {
-    return IMPRESSION_MAP[impression];
+  String get impressionAsString {
+    return IMPRESSION_MAP[impression]!;
   }
 }

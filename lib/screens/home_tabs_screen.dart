@@ -17,24 +17,24 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/gallery.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/routines.dart';
 import 'package:wger/providers/user.dart';
-import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/dashboard.dart';
 import 'package:wger/screens/gallery_screen.dart';
 import 'package:wger/screens/nutritional_plans_screen.dart';
+import 'package:wger/screens/routine_list_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
-import 'package:wger/screens/workout_plans_screen.dart';
 
 class HomeTabsScreen extends StatefulWidget {
   final _logger = Logger('HomeTabsScreen');
@@ -66,7 +66,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
 
   final _screenList = [
     const DashboardScreen(),
-    const WorkoutPlansScreen(),
+    const RoutineListScreen(),
     const NutritionalPlansScreen(),
     const WeightScreen(),
     const GalleryScreen(),
@@ -77,7 +77,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
     final authProvider = context.read<AuthProvider>();
 
     if (!authProvider.dataInit) {
-      final workoutPlansProvider = context.read<WorkoutPlansProvider>();
+      final routinesProvider = context.read<RoutinesProvider>();
       final nutritionPlansProvider = context.read<NutritionPlansProvider>();
       final exercisesProvider = context.read<ExercisesProvider>();
       final galleryProvider = context.read<GalleryProvider>();
@@ -91,7 +91,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
         await Future.wait([
           authProvider.setServerVersion(),
           userProvider.fetchAndSetProfile(),
-          workoutPlansProvider.fetchAndSetUnits(),
+          routinesProvider.fetchAndSetUnits(),
           nutritionPlansProvider.fetchIngredientsFromCache(),
           exercisesProvider.fetchAndSetInitialData(),
         ]);
@@ -106,7 +106,8 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
         await Future.wait([
           galleryProvider.fetchAndSetGallery(),
           nutritionPlansProvider.fetchAndSetAllPlansSparse(),
-          workoutPlansProvider.fetchAndSetAllPlansSparse(),
+          routinesProvider.fetchAndSetAllPlansSparse(),
+          // routinesProvider.fetchAndSetAllRoutinesFull(),
           weightProvider.fetchAndSetEntries(),
           measurementProvider.fetchAndSetAllCategoriesAndEntries(),
         ]);
@@ -128,11 +129,11 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
       }
 
       // Current workout plan
-      widget._logger.info('Loading current workout plan');
-      if (workoutPlansProvider.activePlan != null) {
-        final planId = workoutPlansProvider.activePlan!.id!;
-        await workoutPlansProvider.fetchAndSetWorkoutPlanFull(planId);
-        workoutPlansProvider.setCurrentPlan(planId);
+      widget._logger.info('Loading current routine');
+      if (routinesProvider.activeRoutine != null) {
+        final planId = routinesProvider.activeRoutine!.id!;
+        await routinesProvider.fetchAndSetRoutineFull(planId);
+        routinesProvider.setCurrentPlan(planId);
       }
     }
 

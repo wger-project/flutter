@@ -143,12 +143,10 @@ class MockWgerBaseProvider extends _i1.Mock implements _i4.WgerBaseProvider {
       ) as Uri);
 
   @override
-  _i11.Future<Map<String, dynamic>> fetch(Uri? uri) => (super.noSuchMethod(
+  _i11.Future<dynamic> fetch(Uri? uri) => (super.noSuchMethod(
         Invocation.method(#fetch, [uri]),
-        returnValue: _i11.Future<Map<String, dynamic>>.value(
-          <String, dynamic>{},
-        ),
-      ) as _i11.Future<Map<String, dynamic>>);
+        returnValue: _i11.Future<dynamic>.value(),
+      ) as _i11.Future<dynamic>);
 
   @override
   _i11.Future<List<dynamic>> fetchPaginated(Uri? uri) => (super.noSuchMethod(
@@ -325,14 +323,14 @@ class MockExercisesProvider extends _i1.Mock implements _i12.ExercisesProvider {
 
   @override
   List<_i6.Exercise> findExercisesByVariationId(
-    int? id, {
-    int? exerciseBaseIdToExclude,
+    int? variationId, {
+    int? exerciseIdToExclude,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
           #findExercisesByVariationId,
-          [id],
-          {#exerciseBaseIdToExclude: exerciseBaseIdToExclude},
+          [variationId],
+          {#exerciseIdToExclude: exerciseIdToExclude},
         ),
         returnValue: <_i6.Exercise>[],
       ) as List<_i6.Exercise>);
@@ -402,15 +400,10 @@ class MockExercisesProvider extends _i1.Mock implements _i12.ExercisesProvider {
       ) as _i11.Future<void>);
 
   @override
-  _i11.Future<_i6.Exercise> fetchAndSetExercise(int? exerciseId) => (super.noSuchMethod(
+  _i11.Future<_i6.Exercise?> fetchAndSetExercise(int? exerciseId) => (super.noSuchMethod(
         Invocation.method(#fetchAndSetExercise, [exerciseId]),
-        returnValue: _i11.Future<_i6.Exercise>.value(
-          _FakeExercise_6(
-            this,
-            Invocation.method(#fetchAndSetExercise, [exerciseId]),
-          ),
-        ),
-      ) as _i11.Future<_i6.Exercise>);
+        returnValue: _i11.Future<_i6.Exercise?>.value(),
+      ) as _i11.Future<_i6.Exercise?>);
 
   @override
   _i11.Future<_i6.Exercise> handleUpdateExerciseFromApi(

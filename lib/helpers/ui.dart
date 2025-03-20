@@ -16,16 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/exceptions/http_exception.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/translation.dart';
 import 'package:wger/models/workouts/log.dart';
-import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/providers/routines.dart';
 
 void showErrorDialog(dynamic exception, BuildContext context) {
   // log('showErrorDialog: ');
@@ -54,9 +53,10 @@ void showHttpExceptionErrorDialog(
   WgerHttpException exception,
   BuildContext context,
 ) {
-  log('showHttpExceptionErrorDialog: ');
-  log(exception.toString());
-  log('-------------------');
+  final logger = Logger('showHttpExceptionErrorDialog');
+
+  logger.fine(exception.toString());
+  logger.fine('-------------------');
 
   final List<Widget> errorList = [];
 
@@ -134,7 +134,7 @@ dynamic showDeleteDialog(
             ),
             onPressed: () {
               exerciseData[exercise]!.removeWhere((el) => el.id == log.id);
-              Provider.of<WorkoutPlansProvider>(context, listen: false).deleteLog(
+              Provider.of<RoutinesProvider>(context, listen: false).deleteLog(
                 log,
               );
 
