@@ -15,21 +15,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          cache: true
-          channel: 'stable'
-          flutter-version: '3.29.x'
-
-      - run: dart --version
-      - run: flutter --version
-
       - name: Install sqlite3-dev
         run: sudo apt install libsqlite3-dev
 
-      - name: Install app dependencies
-        run: flutter pub get
+      - name: Common flutter setup
+        uses: ./.github/actions/flutter-common
+
+      - run: |
+          dart --version
+          flutter --version
 
       - name: Test app
         run: flutter test --coverage

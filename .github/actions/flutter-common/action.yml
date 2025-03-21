@@ -1,12 +1,6 @@
 name: 'Flutter common setup'
 description: 'Common steps needed to setup the application'
 inputs:
-  flutter-version:
-    description: 'flutter version'
-    required: true
-  java-version:
-    description: 'java version'
-    required: true
   decrypt-playstore:
     required: false
     default: 'false'
@@ -21,25 +15,47 @@ inputs:
     description: ""
     required: false
 
+  setup-java:
+    description: ""
+    required: false
+    default: 'false'
+  setup-ruby:
+    description: ""
+    required: false
+    default: 'false'
+  setup-flutter:
+    description: ""
+    required: false
+    default: 'true'
+
 
 runs:
   using: "composite"
   steps:
     - name: Setup Java
+      if: ${{ inputs.setup-java == 'true' }}
       uses: actions/setup-java@v4
       with:
-        java-version: ${{ inputs.java-version }}
+        java-version: 17
         distribution: 'oracle'
         cache: 'gradle'
 
+    - name: Setup Ruby
+      if: ${{ inputs.setup-ruby == 'true' }}
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 3.4
+
     - name: Setup Flutter
+      if: ${{ inputs.setup-flutter == 'true' }}
       uses: subosito/flutter-action@v2
       with:
         channel: stable
-        flutter-version: ${{ inputs.flutter-version }}
+        flutter-version: 3.29.2
         cache: true
 
     - name: Install Flutter dependencies
+      if: ${{ inputs.setup-flutter == 'true' }}
       run: flutter pub get
       shell: bash
 
