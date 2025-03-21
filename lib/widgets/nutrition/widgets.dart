@@ -17,7 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; //import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter_zxing/flutter_zxing.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
