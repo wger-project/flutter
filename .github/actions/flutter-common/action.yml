@@ -7,12 +7,6 @@ inputs:
   java-version:
     description: 'java version'
     required: true
-  ruby-version:
-    description: 'ruby version'
-    required: true
-  version:
-    description: ""
-    required: true
   decrypt-playstore:
     required: false
     default: 'false'
@@ -60,17 +54,3 @@ runs:
         DECRYPTKEY_PLAYSTORE: ${{ inputs.key-playstore }}
         DECRYPTKEY_PLAYSTORE_SIGNING_KEY: ${{ inputs.key-playstore-sign }}
         DECRYPTKEY_PROPERTIES: ${{ inputs.key-properties }}
-
-    - name: Extract build number
-      run: |
-        echo "BUILD=$(flutter pub run cider version | cut -d '+' -f 2)" >> $GITHUB_ENV
-      shell: bash
-
-    - name: Bump pubspec version
-      run: |
-        flutter pub run cider version ${{ inputs.version }}+${{ env.BUILD }}
-        flutter pub run cider bump build
-      shell: bash
-
-# TODO:
-#  flutter pub run cider version ${{ inputs.version }}+${{ env.BUILD }}

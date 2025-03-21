@@ -18,27 +18,78 @@ env:
   RUBY_VERSION: 3.2
   JAVA_VERSION: 17
 
-  # TODO: delete me
-  APP_VERSION_TMP: 1.2.3
-
 jobs:
 
-  build_linux:
-    name: Build flathub
-    runs-on: ubuntu-24.04
+  determine_version:
+    name: Determine Version
+    runs-on: ubuntu-latest
+    outputs:
+      release_version: ${{ steps.version_step.outputs.RELEASE_VERSION }}
     steps:
       - name: Checkout application
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # needed to push changes
 
       - name: Common flutter setup
         uses: ./.github/actions/flutter-common
         with:
           flutter-version: ${{env.FLUTTER_VERSION}}
           java-version: ${{env.JAVA_VERSION}}
-          ruby-version: ${{env.RUBY_VERSION}}
           decrypt-playstore: 'false'
-          version: ${{ env.APP_VERSION_TMP }}
-      #          version: ${{ inputs.version }}
+
+      - name: Extract version from tag or input
+        id: version_step
+        run: |
+          #          if [[ "${{ github.ref }}" == refs/tags/* ]]; then
+          #            RELEASE_VERSION="${{ github.ref_name }}"
+          #          else
+          #            RELEASE_VERSION="${{ github.event.inputs.version }}"
+          #            if [[ ! "${{ github.event.inputs.version }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+          #              echo "Error: Input version '${{ github.event.inputs.version }}' is not in X.Y.Z format."
+          #              exit 1
+          #            fi
+          #          fi
+          
+          # DELETE ME WHEN RELEASED!!!
+               RELEASE_VERSION=""
+          
+               echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Bump pubspec version
+        run: |
+          BUILD=$(flutter pub run cider version | cut -d '+' -f 2)
+          flutter pub run cider version 1.8.0+${BUILD} # flutter pub run cider version ${{ steps.version_step.outputs.RELEASE_VERSION }}+${BUILD}
+          flutter pub run cider bump build
+          echo 
+          echo "VERSION_BUMPED to $(flutter pub run cider version)"
+
+  #      - name: Commit pubspec
+  #        run: |
+  #          git config user.name Github-Actions
+  #          git config user.email github-actions@github.com
+  #          git add pubspec.yaml
+  #          git tag ${{ steps.version_step.outputs.RELEASE_VERSION }}
+  #          git commit -m "Bump version to $( flutter pub run cider version )"
+  #          git push origin HEAD:${{ github.ref_name == 'refs/heads/main' && 'main' || github.ref_name == 'refs/heads/master' && 'master' || github.ref_name }}
+  
+
+  build_linux:
+    name: Build flathub
+    needs: determine_version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout application
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.determine_version.outputs.RELEASE_VERSION }}
+
+      - name: Common flutter setup
+        uses: ./.github/actions/flutter-common
+        with:
+          flutter-version: ${{env.FLUTTER_VERSION}}
+          java-version: ${{env.JAVA_VERSION}}
+          decrypt-playstore: 'false'
 
       - name: Build application for linux
         run: |
@@ -47,7 +98,7 @@ jobs:
           flutter build linux --release
           cd flatpak/scripts
           dart pub get
-          dart flatpak_packager.dart --meta ../flatpak_meta.json --addTodaysVersion ${{ env.APP_VERSION_TMP }}
+          dart flatpak_packager.dart --meta ../flatpak_meta.json --addTodaysVersion ${{ steps.version_step.outputs.RELEASE_VERSION }}
       #          dart flatpak_packager.dart --meta ../flatpak_meta.json --addTodaysVersion ${{ inputs.version }}
 
       - uses: actions/upload-artifact@v4
@@ -59,19 +110,19 @@ jobs:
 
   build_android_apk:
     name: Build android APK file
+    needs: determine_version
     runs-on: ubuntu-latest
     steps:
       - name: Checkout application
         uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.determine_version.outputs.RELEASE_VERSION }}
 
       - name: Common flutter setup
         uses: ./.github/actions/flutter-common
         with:
           flutter-version: ${{env.FLUTTER_VERSION}}
           java-version: ${{env.JAVA_VERSION}}
-          ruby-version: ${{env.RUBY_VERSION}}
-          version: ${{ env.APP_VERSION_TMP }}
-          #          version: ${{ inputs.version }}
           decrypt-playstore: 'true'
           key-playstore: ${{ secrets.DECRYPTKEY_PLAYSTORE }}
           key-playstore-sign: ${{ secrets.DECRYPTKEY_PLAYSTORE_SIGNING_KEY }}
@@ -94,19 +145,19 @@ jobs:
 
   build_android_aab:
     name: Build android AAB file
+    needs: determine_version
     runs-on: ubuntu-latest
     steps:
       - name: Checkout application
         uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.determine_version.outputs.RELEASE_VERSION }}
 
       - name: Common flutter setup
         uses: ./.github/actions/flutter-common
         with:
           flutter-version: ${{env.FLUTTER_VERSION}}
           java-version: ${{env.JAVA_VERSION}}
-          ruby-version: ${{env.RUBY_VERSION}}
-          version: ${{ env.APP_VERSION_TMP }}
-          #          version: ${{ inputs.version }}
           decrypt-playstore: 'true'
           key-playstore: ${{ secrets.DECRYPTKEY_PLAYSTORE }}
           key-playstore-sign: ${{ secrets.DECRYPTKEY_PLAYSTORE_SIGNING_KEY }}
@@ -122,19 +173,19 @@ jobs:
 
   build_ios:
     name: Build iOS
+    needs: determine_version
     runs-on: macos-latest
     steps:
       - name: Checkout application
         uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.determine_version.outputs.RELEASE_VERSION }}
 
       - name: Common flutter setup
         uses: ./.github/actions/flutter-common
         with:
           flutter-version: ${{env.FLUTTER_VERSION}}
           java-version: ${{env.JAVA_VERSION}}
-          ruby-version: ${{env.RUBY_VERSION}}
-          version: ${{ env.APP_VERSION_TMP }}
-          #          version: ${{ inputs.version }}
           decrypt-playstore: 'false'
 
       - name: Build .app
@@ -147,19 +198,19 @@ jobs:
 
   build_macos:
     name: Build macOS
+    needs: determine_version
     runs-on: macos-latest
     steps:
       - name: Checkout application
         uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.determine_version.outputs.RELEASE_VERSION }}
 
       - name: Common flutter setup
         uses: ./.github/actions/flutter-common
         with:
           flutter-version: ${{env.FLUTTER_VERSION}}
           java-version: ${{env.JAVA_VERSION}}
-          ruby-version: ${{env.RUBY_VERSION}}
-          version: ${{ env.APP_VERSION_TMP }}
-          #          version: ${{ inputs.version }}
           decrypt-playstore: 'false'
 
       - name: Build .app
@@ -172,19 +223,19 @@ jobs:
 
   build_windows:
     name: Build Windows
+    needs: determine_version
     runs-on: windows-latest
     steps:
       - name: Checkout application
         uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.determine_version.outputs.RELEASE_VERSION }}
 
       - name: Common flutter setup
         uses: ./.github/actions/flutter-common
         with:
           flutter-version: ${{env.FLUTTER_VERSION}}
           java-version: ${{env.JAVA_VERSION}}
-          ruby-version: ${{env.RUBY_VERSION}}
-          version: ${{ env.APP_VERSION_TMP }}
-          #          version: ${{ inputs.version }}
           decrypt-playstore: 'false'
 
       - name: Build .exe
@@ -252,6 +303,10 @@ jobs:
         with:
           path: /tmp/
 
+      #
+      # Replace with the iOS upload steps
+      #
+
       - name: Decrypt config files
         run: |
           cd ./fastlane/metadata/envfiles
@@ -268,11 +323,10 @@ jobs:
           cp /tmp/builds-aab/app-release.aab ./build/app/outputs/bundle/release/app-release.aab
           bundle install
           bundle exec fastlane android test_configuration
-  # TODO: bundle exec fastlane android production
 
-  cleanup:
+  make_gh_release:
     if: false
-    name: Tag release and update pubspec.yaml
+    name: Make Github Release
     runs-on: ubuntu-latest
     needs:
       - upload_play_store
@@ -281,35 +335,6 @@ jobs:
       - build_linux
       - build_macos
       - build_windows
-    steps:
-      - name: Checkout application
-        uses: actions/checkout@v4
-
-      - name: Extract version information
-        run: |
-          echo "BUILD=$(flutter pub run cider version | cut -d '+' -f 2)" >> $GITHUB_ENV
-
-      - name: Bump pubspec version
-        run: |
-          flutter pub run cider version ${{ inputs.version }}+${{ env.BUILD }}
-          flutter pub run cider bump build
-
-      - name: Commit pubspec
-        run: |
-          git config user.name Github-Actions
-          git config user.email github-actions@github.com
-          git checkout -b release-${{ inputs.version }}
-          git add pubspec.yaml
-          git tag ${{ inputs.version }}
-          git commit -m "Bump version to $( flutter pub run cider version )"
-          git push --set-upstream origin release-${{ inputs.version }}
-
-
-  make_gh_release:
-    name: Make Github Release
-    runs-on: ubuntu-latest
-    needs:
-      - cleanup
 
     steps:
       - name: Download builds
@@ -328,13 +353,16 @@ jobs:
             builds-macos/wger.app
 
   generate_fathub_manifest:
+    if: false
     runs-on: ubuntu-latest
     name: Upload flathub manifest
     needs:
-      - cleanup
+      - make_gh_release
     steps:
       - name: Checkout application
         uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.determine_version.outputs.RELEASE_VERSION }}
 
       - name: Generate manifest
         run: |
