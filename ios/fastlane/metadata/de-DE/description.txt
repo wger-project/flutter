@@ -1,0 +1,39 @@
+Von Fitnessliebhabern für Fitnessliebhaber, organisiere deine Gesundheit mit wger, deinem Trainingsverwaltungsprogramm!
+
+Hast du schon deine Nr. 1 Fitness-Anwendung gefunden und liebst es, deine eigene Trainingspläne zu erstellen? Egal was für ein sportliches Biest du bist sind – wir haben alle etwas gemeinsam: wir lieben es, den Überblick über unsere Gesundheitsdaten zu behalten.
+
+Wir verurteilen dich also nicht dafür, dass du deine Fitness-Reise immer noch mit deinem kleinen Tagebuch verwaltest, aber willkommen im 21. Jahrhundert!
+
+Wir haben eine 100 % kostenlose digitale Gesundheits- und Fitnesstracker-Anwendung für dich entwickelt, die auf die wichtigsten Funktionen reduziert ist, um dein Leben einfacher zu machen. Lege jetzt lost, trainiere weiter und feiere deine Fortschritte!
+
+wger ist ein quelloffenes Projekt und dreht sich um:
+* Deinen Körper
+* Deine Workouts
+* Deine Fortschritte
+* Deine Daten
+
+Dein Körper:
+Du musst nicht mehr nach den Zutaten deiner Lieblingsspeise suchen – stelle deine täglichen Mahlzeiten aus mehr als 78.000 Produkten und deren Nährwerte zusammen. Füge diese deinem Ernährungsplan hinzu und behalte den Überblick über deine Ernährung im Kalender.
+
+Deine Workouts:
+Du weißt, was das Beste für deinen Körper ist. Erstelle deine eigenen Workouts aus einer wachsenden Vielfalt von 200 verschiedenen Übungen. Verwende den Gym-Modus, um dich durch das Training führen zu lassen, während du deine Gewichte und Wiederholungen mit einem Tippen protokollieren kannst.
+
+Dein Fortschritt:
+Verlieren nie deine Ziele aus den Augen, tracke dein Gewicht und behalte deine Statistiken.
+
+Deine Daten:
+wger ist dein persönliches Fitness-Tagebuch - aber deine Daten gehören dir. Nutze die REST-API, um darauf zuzugreifen und erstaunliche Dinge damit zu tun.
+
+Bitte beachte: Diese kostenlose Anwendung basiert nicht auf zusätzlichen Finanzierungen und wir bitten dich nicht um Geldspenden. Vielmehr handelt es sich um ein Community-Projekt, das ständig wächst. Sei also jederzeit auf neue Funktionen vorbereitet!
+
+Quelloffen – was bedeutet das?
+
+Quelloffen bedeutet, dass der gesamte Quellcode für diese Anwendung und den damit verbundenen Server, frei und für jeden verfügbar ist:
+* Willst du wger auf deinem eigenen Server für dich oder dein lokales Fitnessstudio laufen lassen? Nur zu!
+* Vermisst du ein Feature und willst es implementieren? Fang jetzt an!
+* Willst du überprüfen, dass etwas an Dritte gesendet wird? Das kannst du!
+
+Trete unserer Gemeinschaft bei und werde ein Teil von Sportbegeisterten und IT-Freaks aus aller Welt. Wir arbeiten ständig daran, die Anwendung an unsere Bedürfnisse anzupassen und zu optimieren. Wir freuen uns über deinen Input, du kannst jederzeit einsteigen und deine Wünsche und Ideen einbringen!
+
+-> finde den Quellcode auf https://github.com/wger-project
+-> stelle deine Fragen oder sag einfach Hallo auf unserem Discord-Server https://discord.gg/rPWFv6W

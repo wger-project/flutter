@@ -54,3 +54,14 @@ app.*.map.json
 /vendor/bundle/ruby/
 /coverage/
 /lib/l10n/generated/
+
+# ios build and fastlane
+ios/fastlane/.env
+ios/fastlane/*.p8
+ios/fastlane/test_output
+ios/fastlane/screenshots
+ios/fastlane/report.xml
+ios/fastlane/Preview.html
+ios/fastlane/output
+ios/Runner.ipa
+ios/Runner.app.dSYM.zip

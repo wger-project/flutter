@@ -1,0 +1,61 @@
+default_platform(:ios)
+
+platform :ios do
+
+  desc "Set AppStore Connect API KEY using the provided environment variables."
+  lane :apikey do
+    app_store_connect_api_key(
+      key_id: ENV["APP_STORE_API_KEY_ID"],
+      issuer_id: ENV["APP_STORE_API_ISSUER_ID"],
+      key_filepath: ENV["APP_STORE_API_KEY_PATH"],
+      duration: 1200, # optional (maximum 1200)
+      in_house: false # optional but may be required if using match/sigh
+    )
+  end
+
+  ###############################################################################
+
+  desc "Push a new release build to AppStore Connect for manual submission to TestFlight beta testing or App Store Release."
+  lane :release do
+    apikey
+    build_app(workspace: "Runner.xcworkspace", scheme: "Runner")
+    upload_to_app_store(
+      precheck_include_in_app_purchases: false
+    )
+  end
+
+  ###############################################################################
+
+  desc "Test if all environment variables are present and check if API key is working properly."
+  lane :test_env do
+    UI.message "🔍 Testing environment variables..."
+
+    UI.message "APP_STORE_API_KEY_ID: #{ENV['APP_STORE_API_KEY_ID']}"
+    UI.message "APP_STORE_API_ISSUER_ID: #{ENV['APP_STORE_API_ISSUER_ID']}"
+    UI.message "APP_STORE_API_KEY_PATH: #{ENV['APP_STORE_API_KEY_PATH']}"
+    UI.message "APPLE_ID: #{ENV['APPLE_ID']}"
+    UI.message "ITC_TEAM_ID: #{ENV['ITC_TEAM_ID']}"
+    UI.message "TEAM_ID: #{ENV['TEAM_ID']}"
+
+    UI.success "✅ Environment variables loaded."
+
+    UI.message "🔐 Testing App Store Connect API key authentication..."
+
+    app_store_connect_api_key(
+      key_id: ENV["APP_STORE_API_KEY_ID"],
+      issuer_id: ENV["APP_STORE_API_ISSUER_ID"],
+      key_filepath: ENV["APP_STORE_API_KEY_PATH"],
+      duration: 1200,
+      in_house: false
+    )
+
+    # Test: Fetch list of apps to verify authentication
+    apps = Spaceship::ConnectAPI::App.all
+    UI.success "✅ API Key is valid! Found #{apps.count} apps in your App Store Connect account."
+
+  rescue => ex
+    UI.error "❌ API Key authentication failed: #{ex.message}"
+    UI.user_error!("Please check your API key environment variables and credentials.")
+  end
+
+end
