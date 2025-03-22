@@ -335,7 +335,7 @@
   },
   "measurementEntriesHelpText": "Одиниця вимірювання, яка використовується для вимірювання категорії, як от \"см\" або \"%\"",
   "@measurementEntriesHelpText": {},
-  "start": "Почати",
+  "start": "Старт",
   "@start": {
     "description": "Label on button to start the gym mode (i.e., an imperative)"
   },
@@ -928,5 +928,73 @@
   "lightMode": "Завжди легкий режим",
   "@lightMode": {},
   "systemMode": "Налаштування системи",
-  "@systemMode": {}
+  "@systemMode": {},
+  "restDay": "День відпочинку",
+  "@restDay": {},
+  "noRoutines": "У вас немає рутин",
+  "@noRoutines": {},
+  "restTime": "Час відпочинку",
+  "@restTime": {},
+  "sets": "Набори",
+  "@sets": {
+    "description": "The number of sets to be done for one exercise"
+  },
+  "supersetNr": "Суперсет {nr}",
+  "@supersetNr": {
+    "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Superset Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {
+        "type": "String"
+      }
+    }
+  },
+  "isRestDay": "Є День відпочинку",
+  "@isRestDay": {},
+  "isRestDayHelp": "Будь ласка, зверніть увагу, що всі комплекси та вправи будуть видалені, коли ви позначите день як вихідний.",
+  "@isRestDayHelp": {},
+  "routineDays": "Дні в рутині",
+  "@routineDays": {},
+  "fitInWeek": "Вписується в тиждень",
+  "@fitInWeek": {},
+  "fitInWeekHelp": "Якщо ввімкнено, дні повторюватимуться в тижневому циклі, інакше дні будуть йти послідовно незалежно від початку нового тижня.",
+  "@fitInWeekHelp": {},
+  "addSuperset": "Додайте надмножину",
+  "@addSuperset": {},
+  "setHasProgression": "Набір має прогресію",
+  "@setHasProgression": {},
+  "simpleMode": "Простий режим",
+  "@simpleMode": {},
+  "resultingRoutine": "Результативна рутина",
+  "@resultingRoutine": {},
+  "simpleModeHelp": "Приховайте деякі розширені налаштування під час редагування вправ",
+  "@simpleModeHelp": {},
+  "progressionRules": "Ця вправа має правила прогресу, і її не можна редагувати в мобільному додатку. Щоб відредагувати цю вправу, використовуйте веб-додаток.",
+  "@progressionRules": {},
+  "min": "Мін",
+  "@min": {},
+  "max": "Макс",
+  "@max": {},
+  "newRoutine": "Нова рутина",
+  "@newRoutine": {},
+  "needsLogsToAdvance": "Для просування потрібні журнали",
+  "@needsLogsToAdvance": {},
+  "routines": "Рутини",
+  "@routines": {},
+  "exerciseNr": "Вправа {nr}",
+  "@exerciseNr": {
+    "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Set Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {
+        "type": "String"
+      }
+    }
+  },
+  "needsLogsToAdvanceHelp": "Виберіть, якщо ви бажаєте, щоб програма перейшла до наступного запланованого дня, лише якщо ви зареєстрували тренування на цей день",
+  "@needsLogsToAdvanceHelp": {},
+  "setHasProgressionWarning": "Зверніть увагу, що на даний момент неможливо змінити всі параметри набору в мобільному додатку або налаштувати автоматичний прогрес. Наразі використовуйте веб-додаток.",
+  "@setHasProgressionWarning": {},
+  "setHasNoExercises": "У цьому комплексі ще немає вправ!",
+  "@setHasNoExercises": {}
 }
