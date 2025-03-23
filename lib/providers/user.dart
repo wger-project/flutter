@@ -21,6 +21,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/models/user/profile.dart';
 import 'package:wger/providers/base_provider.dart';
 
@@ -30,7 +31,7 @@ class UserProvider with ChangeNotifier {
   late SharedPreferencesAsync prefs;
 
   UserProvider(this.baseProvider, {SharedPreferencesAsync? prefs}) {
-    this.prefs = prefs ?? SharedPreferencesAsync();
+    this.prefs = prefs ?? PreferenceHelper.asyncPref;
     _loadThemeMode();
   }
 
@@ -73,7 +74,8 @@ class UserProvider with ChangeNotifier {
 
   /// Fetch the current user's profile
   Future<void> fetchAndSetProfile() async {
-    final userData = await baseProvider.fetch(baseProvider.makeUrl(PROFILE_URL));
+    final userData =
+        await baseProvider.fetch(baseProvider.makeUrl(PROFILE_URL));
     try {
       profile = Profile.fromJson(userData);
     } catch (error) {

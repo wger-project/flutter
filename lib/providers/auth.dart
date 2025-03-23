@@ -26,10 +26,10 @@ import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:version/version.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/shared_preferences.dart';
 
 import 'helpers.dart';
 
@@ -169,7 +169,7 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
 
     // store login data in shared preferences
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = PreferenceHelper.asyncPref;
     final userData = json.encode({
       'token': token,
       'serverUrl': this.serverUrl,
@@ -183,22 +183,22 @@ class AuthProvider with ChangeNotifier {
 
   /// Loads the last server URL from which the user successfully logged in
   Future<String> getServerUrlFromPrefs() async {
-    final prefs = await SharedPreferences.getInstance();
-    if (!prefs.containsKey(PREFS_LAST_SERVER)) {
+    final prefs = PreferenceHelper.asyncPref;
+    if (!(await prefs.containsKey(PREFS_LAST_SERVER))) {
       return DEFAULT_SERVER_PROD;
     }
 
-    final userData = json.decode(prefs.getString(PREFS_LAST_SERVER)!);
+    final userData = json.decode((await prefs.getString(PREFS_LAST_SERVER))!);
     return userData['serverUrl'] as String;
   }
 
   Future<bool> tryAutoLogin() async {
-    final prefs = await SharedPreferences.getInstance();
-    if (!prefs.containsKey(PREFS_USER)) {
+    final prefs = PreferenceHelper.asyncPref;
+    if (!(await prefs.containsKey(PREFS_USER))) {
       _logger.info('autologin failed');
       return false;
     }
-    final extractedUserData = json.decode(prefs.getString(PREFS_USER)!);
+    final extractedUserData = json.decode((await prefs.getString(PREFS_USER))!);
 
     token = extractedUserData['token'];
     serverUrl = extractedUserData['serverUrl'];
@@ -221,7 +221,7 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
     }
 
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = PreferenceHelper.asyncPref;
     prefs.remove(PREFS_USER);
   }
 
