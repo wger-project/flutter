@@ -5,9 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
+import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/database/exercises/exercise_database.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/misc.dart';
+import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/models/exercises/exercise_api.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/providers/exercises.dart';
@@ -93,7 +96,7 @@ void main() {
     );
 
     WidgetsFlutterBinding.ensureInitialized();
-    SharedPreferences.setMockInitialValues({});
+    SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
 
     // Mock categories
     when(mockBaseProvider.makeUrl(categoryUrl)).thenReturn(tCategoryEntriesUri);
@@ -136,14 +139,14 @@ void main() {
   group('Muscles', () {
     test('that fetched data from the API is written to the DB', () async {
       // Arrange
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = PreferenceHelper.asyncPref;
       await provider.initCacheTimesLocalPrefs();
 
       // Act
       await provider.fetchAndSetMuscles(database);
 
       // Assert
-      final updateTime = DateTime.parse(prefs.getString(PREFS_LAST_UPDATED_MUSCLES)!);
+      final updateTime = DateTime.parse((await prefs.getString(PREFS_LAST_UPDATED_MUSCLES))!);
       final valid = DateTime.now().add(const Duration(days: ExercisesProvider.EXERCISE_CACHE_DAYS));
       expect(updateTime.isSameDayAs(valid), true);
 
@@ -168,7 +171,7 @@ void main() {
 
     test('that if there is already valid data in the DB, the API is not hit', () async {
       // Arrange
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = PreferenceHelper.asyncPref;
       await provider.initCacheTimesLocalPrefs();
 
       final valid = DateTime.now().add(const Duration(days: 1));
@@ -185,7 +188,7 @@ void main() {
       await provider.fetchAndSetMuscles(database);
 
       // Assert
-      final updateTime = DateTime.parse(prefs.getString(PREFS_LAST_UPDATED_MUSCLES)!);
+      final updateTime = DateTime.parse((await prefs.getString(PREFS_LAST_UPDATED_MUSCLES))!);
       expect(updateTime.isSameDayAs(valid), true);
 
       expect(provider.muscles.length, 2);
@@ -199,14 +202,14 @@ void main() {
   group('Languages', () {
     test('that fetched data from the API is written to the DB', () async {
       // Arrange
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = PreferenceHelper.asyncPref;
       await provider.initCacheTimesLocalPrefs();
 
       // Act
       await provider.fetchAndSetLanguages(database);
 
       // Assert
-      final updateTime = DateTime.parse(prefs.getString(PREFS_LAST_UPDATED_LANGUAGES)!);
+      final updateTime = DateTime.parse((await prefs.getString(PREFS_LAST_UPDATED_LANGUAGES))!);
       final valid = DateTime.now().add(const Duration(days: ExercisesProvider.EXERCISE_CACHE_DAYS));
       expect(updateTime.isSameDayAs(valid), true);
 
@@ -235,7 +238,7 @@ void main() {
 
     test('that if there is already valid data in the DB, the API is not hit', () async {
       // Arrange
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = PreferenceHelper.asyncPref;
       await provider.initCacheTimesLocalPrefs();
 
       final valid = DateTime.now().add(const Duration(days: 1));
@@ -252,7 +255,7 @@ void main() {
       await provider.fetchAndSetLanguages(database);
 
       // Assert
-      final updateTime = DateTime.parse(prefs.getString(PREFS_LAST_UPDATED_LANGUAGES)!);
+      final updateTime = DateTime.parse((await prefs.getString(PREFS_LAST_UPDATED_LANGUAGES))!);
       expect(updateTime.isSameDayAs(valid), true);
 
       expect(provider.languages.length, 2);
@@ -265,14 +268,14 @@ void main() {
   group('Categories', () {
     test('that fetched data from the API is written to the DB', () async {
       // Arrange
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = PreferenceHelper.asyncPref;
       await provider.initCacheTimesLocalPrefs();
 
       // Act
       await provider.fetchAndSetCategories(database);
 
       // Assert
-      final updateTime = DateTime.parse(prefs.getString(PREFS_LAST_UPDATED_CATEGORIES)!);
+      final updateTime = DateTime.parse((await prefs.getString(PREFS_LAST_UPDATED_CATEGORIES))!);
       final valid = DateTime.now().add(const Duration(days: ExercisesProvider.EXERCISE_CACHE_DAYS));
       expect(updateTime.isSameDayAs(valid), true);
 
@@ -293,7 +296,7 @@ void main() {
 
     test('that if there is already valid data in the DB, the API is not hit', () async {
       // Arrange
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = PreferenceHelper.asyncPref;
       await provider.initCacheTimesLocalPrefs();
 
       final valid = DateTime.now().add(const Duration(days: 1));
@@ -310,7 +313,7 @@ void main() {
       await provider.fetchAndSetCategories(database);
 
       // Assert
-      final updateTime = DateTime.parse(prefs.getString(PREFS_LAST_UPDATED_CATEGORIES)!);
+      final updateTime = DateTime.parse((await prefs.getString(PREFS_LAST_UPDATED_CATEGORIES))!);
       expect(updateTime.isSameDayAs(valid), true);
 
       expect(provider.categories.length, 2);
@@ -324,14 +327,14 @@ void main() {
   group('Equipment', () {
     test('that fetched data from the API is written to the DB', () async {
       // Arrange
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = PreferenceHelper.asyncPref;
       await provider.initCacheTimesLocalPrefs();
 
       // Act
       await provider.fetchAndSetEquipments(database);
 
       // Assert
-      final updateTime = DateTime.parse(prefs.getString(PREFS_LAST_UPDATED_EQUIPMENT)!);
+      final updateTime = DateTime.parse((await prefs.getString(PREFS_LAST_UPDATED_EQUIPMENT))!);
       final valid = DateTime.now().add(const Duration(days: ExercisesProvider.EXERCISE_CACHE_DAYS));
       expect(updateTime.isSameDayAs(valid), true);
 
@@ -354,7 +357,7 @@ void main() {
 
     test('that if there is already valid data in the DB, the API is not hit', () async {
       // Arrange
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = PreferenceHelper.asyncPref;
       await provider.initCacheTimesLocalPrefs();
 
       final valid = DateTime.now().add(const Duration(days: 1));
@@ -371,7 +374,7 @@ void main() {
       await provider.fetchAndSetEquipments(database);
 
       // Assert
-      final updateTime = DateTime.parse(prefs.getString(PREFS_LAST_UPDATED_EQUIPMENT)!);
+      final updateTime = DateTime.parse((await prefs.getString(PREFS_LAST_UPDATED_EQUIPMENT))!);
       expect(updateTime.isSameDayAs(valid), true);
 
       expect(provider.equipment.length, 2);
@@ -385,7 +388,7 @@ void main() {
   group('Exercise cache DB', () {
     test('that if there is already valid data in the DB, the API is not hit', () async {
       // Arrange
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = PreferenceHelper.asyncPref;
       await provider.initCacheTimesLocalPrefs();
       final valid = DateTime.now().add(const Duration(days: 1));
       prefs.setString(PREFS_LAST_UPDATED_LANGUAGES, valid.toIso8601String());
