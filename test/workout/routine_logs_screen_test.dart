@@ -16,11 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:golden_toolkit/golden_toolkit.dart';
 import 'package:mockito/annotations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -30,6 +27,7 @@ import 'package:wger/screens/routine_logs_screen.dart';
 import 'package:wger/screens/routine_screen.dart';
 
 import '../../test_data/routines.dart';
+import '../utils.dart';
 import 'routine_logs_screen_test.mocks.dart';
 
 @GenerateMocks([RoutinesProvider])
@@ -68,13 +66,15 @@ void main() {
     );
   }
 
-  testGoldens('Test the widgets on the routine logs screen', (WidgetTester tester) async {
+  testWidgets('Test the widgets on the routine logs screen',
+      (WidgetTester tester) async {
     await loadAppFonts();
     await tester.pumpWidget(renderWidget());
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();
 
-    await screenMatchesGolden(tester, 'routine_logs_screen_detail', skip: !Platform.isLinux);
+    await expectLater(find.byType(WorkoutLogsScreen),
+        matchesGoldenFile('goldens/routine_logs_screen_detail.png'));
 
     // expect(find.text('3 day workout'), findsOneWidget);
 
