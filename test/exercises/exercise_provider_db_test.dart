@@ -96,6 +96,7 @@ void main() {
     );
 
     WidgetsFlutterBinding.ensureInitialized();
+    /// Replacement for SharedPreferences.setMockInitialValues()
     SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
 
     // Mock categories

@@ -100,6 +100,7 @@ void main() {
     );
     provider.languages = [...testLanguages];
 
+    /// Replacement for SharedPreferences.setMockInitialValues()
     SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
     driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
 
