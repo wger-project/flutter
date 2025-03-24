@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:io';
+
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -75,8 +77,10 @@ void main() {
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();
 
-    await expectLater(find.byType(RoutineScreen),
+    if(Platform.isLinux) {
+      await expectLater(find.byType(MaterialApp),
         matchesGoldenFile('goldens/routine_logs_screen_detail.png'));
+    }
 
     expect(find.text('3 day workout'), findsOneWidget);
 

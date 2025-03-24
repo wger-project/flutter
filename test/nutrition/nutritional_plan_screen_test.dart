@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:io';
+
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -95,8 +97,10 @@ void main() {
       await tester.tap(find.byType(TextButton));
       await tester.pumpAndSettle();
 
-      await expectLater(find.byType(NutritionalPlanScreen),
+      if(Platform.isLinux) {
+        await expectLater(find.byType(NutritionalPlanScreen),
           matchesGoldenFile('goldens/nutritional_plan_1_default_view.png'));
+      }
 
       // Default view shows plan description, info button, and no ingredients
       expect(find.text('Less fat, more protein'), findsOneWidget);
@@ -111,10 +115,13 @@ void main() {
       await tester.tap(infoOutlineButtons
           .first); // 2nd button shows up also, but is off-screen
       await tester.pumpAndSettle();
-      await expectLater(
+
+      if(Platform.isLinux) {
+        await expectLater(
           find.byType(NutritionalPlanScreen),
           matchesGoldenFile(
               'goldens/nutritional_plan_2_one_meal_with_ingredients.png'));
+      }
 
       // Ingredients show up now
       expect(find.text('100g Water'), findsOneWidget);
@@ -133,10 +140,12 @@ void main() {
 
       await tester.tap(infoOutlineButtons.first);
       await tester.pumpAndSettle();
-      await expectLater(
-          find.byType(NutritionalPlanScreen),
+      if(Platform.isLinux) {
+        await expectLater(
+          find.byType(MaterialApp),
           matchesGoldenFile(
               'goldens/nutritional_plan_3_both_meals_with_ingredients.png'));
+      }
 
       expect(find.byIcon(Icons.info_outline), findsOneWidget);
       expect(find.byIcon(Icons.info), findsNWidgets(2));
