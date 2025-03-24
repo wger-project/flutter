@@ -402,10 +402,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_calendar_carousel
-      sha256: "675a2331da6ecd7ba180ba7cd6551a18d41861187bb7537c11859a2df72d1646"
+      sha256: "2fd1b58cefbefe0504ca7d0080a9e63be96041acc93b0c7f340ef0a55b9808fe"
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.4"
+    version: "2.5.3"
   flutter_driver:
     dependency: transitive
     description: flutter
