@@ -193,7 +193,10 @@ class ExerciseDetail extends StatelessWidget {
     // TODO: add carousel for the other images
     final List<Widget> out = [];
     if (_exercise.getMainImage != null) {
-      out.add(ExerciseImageWidget(image: _exercise.getMainImage));
+      out.add(ExerciseImageWidget(
+        image: _exercise.getMainImage,
+        height: 250,
+      ));
       out.add(const SizedBox(height: PADDING));
     }
 

@@ -20,9 +20,10 @@ import 'package:flutter/widgets.dart';
 import 'package:wger/models/exercises/image.dart';
 
 class ExerciseImageWidget extends StatelessWidget {
-  const ExerciseImageWidget({this.image});
+  const ExerciseImageWidget({this.image, this.height});
 
   final ExerciseImage? image;
+  final double? height;
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +33,7 @@ class ExerciseImageWidget extends StatelessWidget {
             image: NetworkImage(image!.url),
             fit: BoxFit.cover,
             imageSemanticLabel: 'Exercise image',
+            height: height,
           )
         : const Image(
             image: AssetImage('assets/images/placeholder.png'),
