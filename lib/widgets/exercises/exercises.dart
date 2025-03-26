@@ -338,8 +338,7 @@ class MuscleWidget extends StatelessWidget {
     this.isFront = true,
   }) {
     this.muscles = muscles.where((m) => m.isFront == isFront).toList();
-    this.musclesSecondary =
-        musclesSecondary.where((m) => m.isFront == isFront).toList();
+    this.musclesSecondary = musclesSecondary.where((m) => m.isFront == isFront).toList();
   }
 
   @override
