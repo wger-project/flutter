@@ -49,11 +49,11 @@ class Log {
   @JsonKey(required: true, name: 'slot_entry')
   int? slotEntryId;
 
-  @JsonKey(required: false)
-  String? rir;
+  @JsonKey(required: false, fromJson: stringToNum)
+  num? rir;
 
-  @JsonKey(required: false, name: 'rir_target')
-  String? rirTarget;
+  @JsonKey(required: false, fromJson: stringToNum, name: 'rir_target')
+  num? rirTarget;
 
   @JsonKey(required: true, fromJson: stringToNum, name: 'repetitions')
   num? repetitions;
@@ -119,10 +119,6 @@ class Log {
   set repetitionUnit(RepetitionUnit? repetitionUnit) {
     repetitionsUnitObj = repetitionUnit;
     repetitionsUnitId = repetitionUnit?.id;
-  }
-
-  void setRir(String rir) {
-    this.rir = rir;
   }
 
   /// Returns the text representation for a single setting, used in the gym mode

@@ -274,7 +274,7 @@ class _LogPageState extends State<LogPage> {
             ),
           if (_detailed)
             RiRInputWidget(
-              widget._log.rir == null ? null : num.parse(widget._log.rir!),
+              widget._log.rir,
               onChanged: (v) => {},
             ),
           SwitchListTile(

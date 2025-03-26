@@ -161,7 +161,7 @@
         "weight": "90.00",
         "weight_target": "80.00",
         "rir": "0.5",
-        "rir_target": null,
+        "rir_target": "0.5",
         "rest": 121,
         "rest_target": 120
       },

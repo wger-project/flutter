@@ -193,7 +193,10 @@ class ExerciseDetail extends StatelessWidget {
     // TODO: add carousel for the other images
     final List<Widget> out = [];
     if (_exercise.getMainImage != null) {
-      out.add(ExerciseImageWidget(image: _exercise.getMainImage));
+      out.add(ExerciseImageWidget(
+        image: _exercise.getMainImage,
+        height: 250,
+      ));
       out.add(const SizedBox(height: PADDING));
     }
 
@@ -346,7 +349,7 @@ class MuscleWidget extends StatelessWidget {
       children: [
         SvgPicture.asset('assets/images/muscles/$background.svg'),
         ...muscles.map((m) => SvgPicture.asset('assets/images/muscles/main/muscle-${m.id}.svg')),
-        ...musclesSecondary.map((m) => SvgPicture.asset(
+        ...musclesSecondary.where((m) => !muscles.contains(m)).map((m) => SvgPicture.asset(
               'assets/images/muscles/secondary/muscle-${m.id}.svg',
             )),
       ],

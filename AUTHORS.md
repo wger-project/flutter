@@ -22,6 +22,7 @@
 - Miroslav Mazel - <https://gitlab.com/12people>
 - artchiee - <https://github.com/artchiee>
 - Tejas Bir Singh - <https://github.com/tejasbirsingh>
+- Youssef Ahmed - <https://github.com/thisisyoussef>
 - Abhishek Saini - <https://github.com/Abhisheksainii>
 - Hanaa Allohibi - <https://github.com/hn-n>
 - Shey Alnasrawi - <https://github.com/Milksheyke>
@@ -34,6 +35,7 @@
 - Xianglin Zeng - <https://github.com/FutureYL3>
 - Sangharsh Sulke - <https://github.com/Sangharshdeveloper>
 - Yashas H Majmudar - <https://github.com/yashas-hm>
+
 ## Translators
 
 - Saudi Arabian
