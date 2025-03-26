@@ -33,7 +33,7 @@
 - Arya Singh - <https://github.com/ARYPROGRAMMER>
 - Xianglin Zeng - <https://github.com/FutureYL3>
 - Sangharsh Sulke - <https://github.com/Sangharshdeveloper>
-
+- Yashas H Majmudar - <https://github.com/yashas-hm>
 ## Translators
 
 - Saudi Arabian
