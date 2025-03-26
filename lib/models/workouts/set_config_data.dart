@@ -78,14 +78,14 @@ class SetConfigData {
   @JsonKey(required: true, name: 'repetitions_rounding', fromJson: stringToNumNull)
   late num? repetitionsRounding;
 
-  @JsonKey(required: true)
-  late String? rir;
+  @JsonKey(required: true, fromJson: stringToNumNull)
+  late num? rir;
 
-  @JsonKey(required: true, name: 'max_rir')
-  late String? maxRir;
+  @JsonKey(required: true, name: 'max_rir', fromJson: stringToNumNull)
+  late num? maxRir;
 
   @JsonKey(required: true)
-  late String? rpe;
+  late num? rpe;
 
   @JsonKey(required: true, name: 'rest', fromJson: stringToNumNull)
   late num? restTime;
