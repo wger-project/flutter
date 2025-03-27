@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:wger/helpers/misc.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -10,13 +12,62 @@ Widget ingredientImage(String url, BuildContext context) {
   final height = MediaQuery.sizeOf(context).height;
   final width = MediaQuery.sizeOf(context).width;
   final smallest = height < width ? height : width;
-  if (smallest < 400) {
-    radius = smallest / 4;
+  if (smallest > 400) {
+    radius = smallest / 2.5;
   }
+
+  final imageProvider = NetworkImage(url);
+
   return Padding(
     padding: const EdgeInsets.only(bottom: 12),
-    child: CircleAvatar(backgroundImage: NetworkImage(url), radius: radius),
+    child: ClipRRect(
+      borderRadius: BorderRadius.circular(15),
+      child: Container(
+        height: radius,
+        width: width,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Stack(
+          children: [
+            Image(
+              image: imageProvider,
+              height: radius,
+              width: width,
+              fit: BoxFit.cover,
+            ),
+            BackdropFilter(
+              filter: ImageFilter.blur(
+                sigmaY: 5,
+                sigmaX: 5,
+              ),
+              child: Container(
+                height: radius,
+                width: width,
+                color: Colors.transparent,
+              ),
+            ),
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Container(
+                  clipBehavior: Clip.hardEdge,
+                  decoration: const BoxDecoration(shape: BoxShape.circle),
+                  child: Image(
+                    image: imageProvider,
+                    height: radius,
+                    width: width,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    ),
   );
+  // CircleAvatar(backgroundImage: NetworkImage(url), radius: radius)
 }
 
 class IngredientDetails extends StatelessWidget {
