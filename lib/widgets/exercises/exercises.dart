@@ -379,12 +379,12 @@ class CarouselIndicator implements SlideIndicator {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
+      spacing: 5,
       children: List.generate(
         itemCount,
         (index) => Container(
           height: 8,
           width: 8,
-          margin: EdgeInsets.only(right: index != itemCount - 1 ? 5 : 0),
           decoration: BoxDecoration(
             color: currentPage == index ? Colors.black : Colors.black26,
             shape: BoxShape.circle,
