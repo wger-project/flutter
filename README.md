@@ -24,19 +24,32 @@ height="80">](https://play.google.com/store/apps/details?id=de.wger.flutter)
 alt="Get it on F-Droid"
 height="80">](https://f-droid.org/packages/de.wger.flutter/)
 
-## Development
+## Developing and contributing
 
-This is a regular flutter application, so you basically just run `flutter run` in
-the root directory of the project, and optionally use the test server to login
-(the db is reset daily):
+Our goal is to build an awesome and flexible fitness and nutrition manager,
+along with a comprehensive list of exercises and ingredients, all released
+under a free license.
+
+For this, we’d love your help! Whether it’s code, translations, exercises or
+reporting issues and ideas, check out our
+[contribution guide](https://wger.readthedocs.io/en/latest/contributing.html)
+to get started.
+
+A huge thank you to everyone who has contributed so far! ❤️ See the full list
+in [AUTHORS.md](AUTHORS.md).
+
+**TLDR**
+
+```bash
+flutter run
+```
+
+This is a regular flutter application, so there's no magic. You will need a backend
+for this, so feel free to use the test server for this (the db is reset daily):
 
 * URL: `https://wger-master.rge.uber.space`
 * username: `user`
 * password: `flutteruser`
-
-For more information consult the development documentation:
-
-<https://wger.readthedocs.io/en/latest/development/mobile_app.html>
 
 ## Translation
 
