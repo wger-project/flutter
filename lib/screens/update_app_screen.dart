@@ -17,9 +17,11 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 
 class UpdateAppScreen extends StatelessWidget {
+  const UpdateAppScreen();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +30,10 @@ class UpdateAppScreen extends StatelessWidget {
           AppLocalizations.of(context).appUpdateTitle,
           style: Theme.of(context).textTheme.headlineSmall,
         ),
-        content: Text(AppLocalizations.of(context).appUpdateContent),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [Text(AppLocalizations.of(context).appUpdateContent)],
+        ),
         actions: null,
       ),
     );

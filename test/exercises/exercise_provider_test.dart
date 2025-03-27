@@ -23,7 +23,7 @@ void main() {
   late ExercisesProvider provider;
 
   const String categoryUrl = 'exercisecategory';
-  const String exerciseBaseInfoUrl = 'exercisebaseinfo';
+  const String exerciseInfoUrl = 'exerciseinfo';
   const String muscleUrl = 'muscle';
   const String equipmentUrl = 'equipment';
   const String languageUrl = 'language';
@@ -38,7 +38,7 @@ void main() {
   final Uri tExerciseInfoUri = Uri(
     scheme: 'http',
     host: 'localhost',
-    path: 'api/v2/$exerciseBaseInfoUrl/1/',
+    path: 'api/v2/$exerciseInfoUrl/1/',
   );
 
   final Uri tMuscleEntriesUri = Uri(
@@ -80,11 +80,11 @@ void main() {
   final Map<String, dynamic> tLanguageMap = jsonDecode(
     fixture('exercises/language_entries.json'),
   );
-  final Map<String, dynamic> tExerciseBaseInfoMap = jsonDecode(
-    fixture('exercises/exercisebaseinfo_response.json'),
+  final Map<String, dynamic> tExerciseInfoMap = jsonDecode(
+    fixture('exercises/exerciseinfo_response.json'),
   );
 
-  setUpAll(() async {
+  setUpAll(() {
     // Needs to be configured here, setUp runs on every test, setUpAll only once
     //await ServiceLocator().configure();
   });
@@ -122,10 +122,10 @@ void main() {
         .thenAnswer((_) => Future.value(tLanguageMap['results']));
 
     // Mock base info response
-    when(mockBaseProvider.makeUrl(exerciseBaseInfoUrl, id: 1)).thenReturn(tExerciseInfoUri);
-    when(mockBaseProvider.makeUrl(exerciseBaseInfoUrl, id: 2)).thenReturn(tExerciseInfoUri);
+    when(mockBaseProvider.makeUrl(exerciseInfoUrl, id: 1)).thenReturn(tExerciseInfoUri);
+    when(mockBaseProvider.makeUrl(exerciseInfoUrl, id: 2)).thenReturn(tExerciseInfoUri);
     when(mockBaseProvider.fetch(tExerciseInfoUri))
-        .thenAnswer((_) => Future.value(tExerciseBaseInfoMap));
+        .thenAnswer((_) => Future.value(tExerciseInfoMap));
   });
 
   group('findCategoryById()', () {
@@ -223,7 +223,7 @@ void main() {
           equipment: FilterCategory<Equipment>(title: 'Equipment', items: {}),
         );
 
-        provider.exercises = data.getTestExerciseBases();
+        provider.exercises = data.getTestExercises();
       });
 
       test('Nothing is selected with no search term', () async {
@@ -236,10 +236,7 @@ void main() {
         // assert
         verifyNever(provider.baseProvider.fetch(tSearchByNameUri));
 
-        expect(
-          provider.filteredExercises,
-          data.getTestExerciseBases(),
-        );
+        expect(provider.filteredExercises, data.getTestExercises());
       });
 
       test('A muscle is selected with no search term. Should find results', () async {
@@ -253,7 +250,7 @@ void main() {
 
         // assert
         verifyNever(provider.baseProvider.fetch(tSearchByNameUri));
-        expect(provider.filteredExercises, [data.getTestExerciseBases()[0]]);
+        expect(provider.filteredExercises, [data.getTestExercises()[0]]);
       });
 
       test('A muscle is selected with no search term. Should not find results', () async {
@@ -281,7 +278,7 @@ void main() {
 
         // assert
         verifyNever(provider.baseProvider.fetch(tSearchByNameUri));
-        expect(provider.filteredExercises, [data.getTestExerciseBases()[0]]);
+        expect(provider.filteredExercises, [data.getTestExercises()[0]]);
       });
 
       test('An equipment is selected with no search term. Should not find results', () async {
@@ -310,7 +307,7 @@ void main() {
 
         // assert
         verifyNever(provider.baseProvider.fetch(tSearchByNameUri));
-        expect(provider.filteredExercises, [data.getTestExerciseBases()[1]]);
+        expect(provider.filteredExercises, [data.getTestExercises()[1]]);
       });
 
       test('A muscle and equipment is selected but no match', () async {
@@ -365,7 +362,7 @@ void main() {
           verify(provider.baseProvider.fetch(tSearchByNameUri)).called(1);
           expect(
             provider.filteredExercises,
-            [data.getTestExerciseBases()[0], data.getTestExerciseBases()[1]],
+            [data.getTestExercises()[0], data.getTestExercises()[1]],
           );
         });
         test('Should find items from selection but should filter them by search term', () async {

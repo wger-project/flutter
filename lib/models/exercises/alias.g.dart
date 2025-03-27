@@ -12,14 +12,14 @@ Alias _$AliasFromJson(Map<String, dynamic> json) {
     requiredKeys: const ['id', 'alias'],
   );
   return Alias(
-    id: json['id'] as int?,
-    exerciseId: json['exercise'] as int?,
+    id: (json['id'] as num?)?.toInt(),
+    translationId: (json['translation'] as num?)?.toInt(),
     alias: json['alias'] as String,
   );
 }
 
 Map<String, dynamic> _$AliasToJson(Alias instance) => <String, dynamic>{
       'id': instance.id,
-      'exercise': instance.exerciseId,
+      'translation': instance.translationId,
       'alias': instance.alias,
     };

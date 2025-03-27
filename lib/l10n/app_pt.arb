@@ -67,10 +67,6 @@
   "@exercise": {
     "description": "An exercise for a workout"
   },
-  "supersetWith": "conjunto com",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
-  },
   "equipment": "Equipamento",
   "@equipment": {
     "description": "Equipment needed to perform an exercise"
@@ -165,7 +161,7 @@
   "@planned": {
     "description": "Header for the column of 'planned' nutritional values, i.e. what should be eaten"
   },
-  "weekAverage": "média dos 7 dias",
+  "weekAverage": "Média dos 7 dias",
   "@weekAverage": {
     "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
   },
@@ -179,8 +175,8 @@
   "@carbohydratesShort": {
     "description": "The first letter or short name of the word 'Carbohydrates', used in overviews"
   },
-  "fibres": "Fibra",
-  "@fibres": {},
+  "fiber": "Fibra",
+  "@fiber": {},
   "sodium": "Sódio",
   "@sodium": {},
   "amount": "Quantidade",
@@ -242,7 +238,9 @@
     "description": "Label shown on the slider where the user selects the nr of sets",
     "type": "text",
     "placeholders": {
-      "nrOfSets": {}
+      "nrOfSets": {
+        "type": "String"
+      }
     }
   },
   "recentlyUsedIngredients": "Ingredientes adicionados recentemente",
@@ -346,7 +344,9 @@
     "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
     "type": "text",
     "placeholders": {
-      "nr": {}
+      "nr": {
+        "type": "String"
+      }
     }
   },
   "sameRepetitions": "Se você fizer as mesmas repetições e peso para todos os conjuntos, você pode preencher apenas uma linha. Por exemplo, para 4 séries, basta digitar 10 para as repetições, isso se torna automaticamente \"4 x 10\".",
@@ -494,16 +494,14 @@
     "description": "Confirmation text before the user deletes an object",
     "type": "text",
     "placeholders": {
-      "toDelete": {}
+      "toDelete": {
+        "type": "String"
+      }
     }
   },
   "aboutSourceText": "Obtenha o código fonte deste aplicativo e seu servidor no github",
   "@aboutSourceText": {
     "description": "Text for source code section in the about dialog"
-  },
-  "enterRepetitionsOrWeight": "Por favor, preencha as repetições ou o peso para pelo menos um dos conjuntos",
-  "@enterRepetitionsOrWeight": {
-    "description": "Error message when the user hasn't filled in the forms for exercise sets"
   },
   "setUnitsAndRir": "Definir unidades e ReR",
   "@setUnitsAndRir": {
@@ -519,7 +517,9 @@
     "description": "Dialog info when product is not found with barcode",
     "type": "text",
     "placeholders": {
-      "barcode": {}
+      "barcode": {
+        "type": "String"
+      }
     }
   },
   "selectExercise": "Selecione um exercício",
@@ -531,8 +531,12 @@
     "description": "Error message when the user hasn't entered the correct number of characters in a form",
     "type": "text",
     "placeholders": {
-      "min": {},
-      "max": {}
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
     }
   },
   "optionsLabel": "Opções",
@@ -544,13 +548,17 @@
     "description": "Dialog info when product is found with barcode",
     "type": "text",
     "placeholders": {
-      "productName": {}
+      "productName": {
+        "type": "String"
+      }
     }
   },
   "alsoKnownAs": "Também chamado de: {aliases}",
   "@alsoKnownAs": {
     "placeholders": {
-      "aliases": {}
+      "aliases": {
+        "type": "String"
+      }
     },
     "description": "List of alternative names for an exercise"
   },
@@ -563,7 +571,9 @@
   "verifiedEmailInfo": "Um email de verificação foi enviado para {email}",
   "@verifiedEmailInfo": {
     "placeholders": {
-      "email": {}
+      "email": {
+        "type": "String"
+      }
     }
   },
   "close": "Fechar",
@@ -659,7 +669,9 @@
     "description": "Error message when the user hasn't entered the minimum amount characters in a form",
     "type": "text",
     "placeholders": {
-      "min": {}
+      "min": {
+        "type": "String"
+      }
     }
   },
   "baseNameEnglish": "Todos os exercícios precisam de um nome base em inglês",
@@ -751,5 +763,170 @@
   "max_reps": "Repetição Máxima",
   "@max_reps": {
     "description": "Generated entry for translation for server strings"
-  }
+  },
+  "settingsCacheTitle": "Cache",
+  "@settingsCacheTitle": {},
+  "settingsExerciseCacheDescription": "Cache do exercício",
+  "@settingsExerciseCacheDescription": {},
+  "useMetric": "Use unidades métricas para o peso corpora",
+  "@useMetric": {},
+  "settingsTitle": "Configurações",
+  "@settingsTitle": {},
+  "settingsCacheDeletedSnackbar": "Cache limpo com sucesso",
+  "@settingsCacheDeletedSnackbar": {},
+  "log": "Log",
+  "@log": {
+    "description": "Log a specific meal (imperative form)"
+  },
+  "done": "Feito",
+  "@done": {},
+  "noMatchingExerciseFound": "Nenhum exercício correspondente encontrado",
+  "@noMatchingExerciseFound": {
+    "description": "Message returned if no exercises match the searched string"
+  },
+  "aboutMastodonTitle": "Mastodon",
+  "@aboutMastodonTitle": {
+    "description": "Title for mastodon section in the about dialog"
+  },
+  "aboutMastodonText": "Siga-nos no Mastodon para atualizações e notícias sobre o projeto",
+  "@aboutMastodonText": {
+    "description": "Text for the mastodon section in the about dialog"
+  },
+  "aboutDonateTitle": "Doar",
+  "@aboutDonateTitle": {},
+  "aboutDonateText": "Nos compre um café para ajudar o projeto, pagar os custos do servidor e nos manter energizados",
+  "@aboutDonateText": {},
+  "onlyLogging": "Só controlar calorias",
+  "@onlyLogging": {},
+  "goalEnergy": "Meta energética",
+  "@goalEnergy": {},
+  "goalProtein": "Meta proteica",
+  "@goalProtein": {},
+  "goalCarbohydrates": "Meta de carboidratos",
+  "@goalCarbohydrates": {},
+  "goalFat": "Meta de gordura",
+  "@goalFat": {},
+  "today": "Hoje",
+  "@today": {},
+  "kcalValue": "{value} kcal",
+  "@kcalValue": {
+    "description": "A value in kcal, e.g. 500 kcal",
+    "type": "text",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "gValue": "{value} g",
+  "@gValue": {
+    "description": "A value in grams, e.g. 5 g",
+    "type": "text",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "percentValue": "{value} %",
+  "@percentValue": {
+    "description": "A value in percent, e.g. 10 %",
+    "type": "text",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "noIngredientsDefined": "Sem ingredientes definido ainda",
+  "@noIngredientsDefined": {},
+  "ingredientLogged": "Ingrediente ativo registrado diariamente",
+  "@ingredientLogged": {},
+  "onlyLoggingHelpText": "Marque a caixa se você desejar apenas o seu registo de calorias e não quer a configuração de um detalhado plano nutricional com refeições",
+  "@onlyLoggingHelpText": {},
+  "goalMacro": "Macro objetivos",
+  "@goalMacro": {
+    "description": "The goal for macronutrients"
+  },
+  "selectMealToLog": "Selecione uma refeição para entrar no diário",
+  "@selectMealToLog": {},
+  "goalFiber": "Meta de fibra",
+  "@goalFiber": {},
+  "deficit": "Défice",
+  "@deficit": {
+    "description": "Caloric deficit (either planned or unplanned)"
+  },
+  "surplus": "Excedente",
+  "@surplus": {
+    "description": "Caloric surplus (either planned or unplanned)"
+  },
+  "chart30DaysTitle": "{name} Ultimos 30 dias",
+  "@chart30DaysTitle": {
+    "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chartDuringPlanTitle": "{chartName} Durante o plano nutricional {planName}",
+  "@chartDuringPlanTitle": {
+    "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
+    "type": "text",
+    "placeholders": {
+      "chartName": {
+        "type": "String"
+      },
+      "planName": {
+        "type": "String"
+      }
+    }
+  },
+  "loggedToday": "Registrado hoje",
+  "@loggedToday": {},
+  "chartAllTimeTitle": "{name} de todo o tempo",
+  "@chartAllTimeTitle": {
+    "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "overallChangeWeight": "Mudança geral",
+  "@overallChangeWeight": {
+    "description": "Overall change in weight, added for localization"
+  },
+  "goalTypeMeals": "A partir de refeições",
+  "@goalTypeMeals": {
+    "description": "added for localization of Class GoalType's filed meals"
+  },
+  "goalTypeBasic": "Básico",
+  "@goalTypeBasic": {
+    "description": "added for localization of Class GoalType's filed basic"
+  },
+  "goalTypeAdvanced": "Avançado",
+  "@goalTypeAdvanced": {
+    "description": "added for localization of Class GoalType's filed advanced"
+  },
+  "indicatorRaw": "Crua",
+  "@indicatorRaw": {
+    "description": "added for localization of Class Indicator's field text"
+  },
+  "indicatorAvg": "Média",
+  "@indicatorAvg": {
+    "description": "added for localization of Class Indicator's field text"
+  },
+  "lightMode": "Modo sempre a luz de",
+  "@lightMode": {},
+  "systemMode": "Configurações do sistema",
+  "@systemMode": {},
+  "themeMode": "Modo temático",
+  "@themeMode": {},
+  "darkMode": "Modo sempre escuro",
+  "@darkMode": {},
+  "settingsIngredientCacheDescription": "Princípio de cache",
+  "@settingsIngredientCacheDescription": {}
 }

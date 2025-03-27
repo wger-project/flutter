@@ -17,8 +17,8 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
 
@@ -39,15 +39,12 @@ class _FilterRowState extends State<FilterRow> {
     super.initState();
 
     _exerciseNameController = TextEditingController()
-      ..addListener(
-        () {
-          final provider = Provider.of<ExercisesProvider>(context, listen: false);
-          if (provider.filters!.searchTerm != _exerciseNameController.text) {
-            provider
-                .setFilters(provider.filters!.copyWith(searchTerm: _exerciseNameController.text));
-          }
-        },
-      );
+      ..addListener(() {
+        final provider = Provider.of<ExercisesProvider>(context, listen: false);
+        if (provider.filters!.searchTerm != _exerciseNameController.text) {
+          provider.setFilters(provider.filters!.copyWith(searchTerm: _exerciseNameController.text));
+        }
+      });
   }
 
   @override
@@ -91,7 +88,7 @@ class _FilterRowState extends State<FilterRow> {
                     PopupMenuItem<ExerciseMoreOption>(
                       value: ExerciseMoreOption.ADD_EXERCISE,
                       child: Text(AppLocalizations.of(context).contributeExercise),
-                    )
+                    ),
                   ];
                 },
                 shape: const RoundedRectangleBorder(
@@ -105,9 +102,9 @@ class _FilterRowState extends State<FilterRow> {
                   }
                 },
                 icon: const Icon(Icons.more_vert),
-              )
+              ),
             ],
-          )
+          ),
         ],
       ),
     );

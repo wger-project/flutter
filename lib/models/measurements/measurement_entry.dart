@@ -12,7 +12,7 @@ class MeasurementEntry extends Equatable {
   @JsonKey(required: true)
   final int category;
 
-  @JsonKey(required: true, toJson: toDate)
+  @JsonKey(required: true, toJson: dateToYYYYMMDD)
   final DateTime date;
 
   @JsonKey(required: true)

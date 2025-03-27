@@ -18,22 +18,22 @@ void main() {
   late MockWgerBaseProvider mockBaseProvider;
   late ExercisesProvider provider;
 
-  const String exerciseBaseInfoUrl = 'exercisebaseinfo';
+  const String exerciseInfoUrl = 'exerciseinfo';
 
-  final Uri tExerciseBaseInfoUri = Uri(
+  final Uri tExerciseInfoUri = Uri(
     scheme: 'http',
     host: 'localhost',
-    path: 'api/v2/$exerciseBaseInfoUrl/9/',
+    path: 'api/v2/$exerciseInfoUrl/9/',
   );
 
-  final Uri tExerciseBaseInfoUri2 = Uri(
+  final Uri tExerciseInfoUri2 = Uri(
     scheme: 'http',
     host: 'localhost',
-    path: 'api/v2/$exerciseBaseInfoUrl/1/',
+    path: 'api/v2/$exerciseInfoUrl/1/',
   );
 
   final Map<String, dynamic> tExerciseInfoMap = jsonDecode(
-    fixture('exercises/exercisebaseinfo_response.json'),
+    fixture('exercises/exerciseinfo_response.json'),
   );
 
   setUpAll(() async {
@@ -41,7 +41,7 @@ void main() {
     await ServiceLocator().configure();
   });
 
-  setUp(() async {
+  setUp(() {
     WidgetsFlutterBinding.ensureInitialized();
     driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
 
@@ -50,20 +50,16 @@ void main() {
       mockBaseProvider,
       database: ExerciseDatabase.inMemory(NativeDatabase.memory()),
     );
-    provider.exercises = getTestExerciseBases();
+    provider.exercises = getTestExercises();
     provider.languages = [tLanguage1, tLanguage2, tLanguage3];
 
     // Mock base info response
-    when(
-      mockBaseProvider.makeUrl(exerciseBaseInfoUrl, id: 9),
-    ).thenReturn(tExerciseBaseInfoUri);
-    when(
-      mockBaseProvider.makeUrl(exerciseBaseInfoUrl, id: 1),
-    ).thenReturn(tExerciseBaseInfoUri2);
+    when(mockBaseProvider.makeUrl(exerciseInfoUrl, id: 9)).thenReturn(tExerciseInfoUri);
+    when(mockBaseProvider.makeUrl(exerciseInfoUrl, id: 1)).thenReturn(tExerciseInfoUri2);
 
-    when(mockBaseProvider.fetch(tExerciseBaseInfoUri))
+    when(mockBaseProvider.fetch(tExerciseInfoUri))
         .thenAnswer((_) => Future.value(tExerciseInfoMap));
-    when(mockBaseProvider.fetch(tExerciseBaseInfoUri2))
+    when(mockBaseProvider.fetch(tExerciseInfoUri2))
         .thenAnswer((_) => Future.value(tExerciseInfoMap));
   });
 
@@ -73,8 +69,8 @@ void main() {
       final base = await provider.fetchAndSetExercise(1);
 
       // assert
-      verifyNever(provider.baseProvider.fetch(tExerciseBaseInfoUri2));
-      expect(base.id, 1);
+      verifyNever(provider.baseProvider.fetch(tExerciseInfoUri2));
+      expect(base?.id, 1);
     });
 
     test('test that fetchAndSetExerciseBase fetches a new base', () async {
@@ -82,8 +78,8 @@ void main() {
       final base = await provider.fetchAndSetExercise(9);
 
       // assert
-      verify(provider.baseProvider.fetch(tExerciseBaseInfoUri));
-      expect(base.id, 9);
+      verify(provider.baseProvider.fetch(tExerciseInfoUri));
+      expect(base?.id, 9);
     });
 
     test('Load the readExerciseBaseFromBaseInfo parse method', () {
@@ -114,7 +110,7 @@ void main() {
         '1f5d2b2f-d4ea-4eeb-9377-56176465e08d',
         'ab645585-26ef-4992-a9ec-15425687ece9',
         'd8aa5990-bb47-4111-9823-e2fbd98fe07f',
-        '49a159e1-1e00-409a-81c9-b4d4489fbd67'
+        '49a159e1-1e00-409a-81c9-b4d4489fbd67',
       ]);
       expect(exercise.videos.map((v) => v.uuid), ['63e996e9-a772-4ca5-9d09-8b4be03f6be4']);
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/add_exercise.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/user.dart';
@@ -48,7 +48,7 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
     GlobalKey<FormState>(),
     GlobalKey<FormState>(),
     GlobalKey<FormState>(),
-    GlobalKey<FormState>()
+    GlobalKey<FormState>(),
   ];
 
   Widget _controlsBuilder(BuildContext context, ControlsDetails details) {
@@ -73,10 +73,11 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
                         final addExerciseProvider = context.read<AddExerciseProvider>();
                         final exerciseProvider = context.read<ExercisesProvider>();
 
-                        final baseId = await addExerciseProvider.addExercise();
-                        final base = await exerciseProvider.fetchAndSetExercise(baseId);
-                        final name =
-                            base.getExercise(Localizations.localeOf(context).languageCode).name;
+                        final exerciseId = await addExerciseProvider.addExercise();
+                        final exercise = await exerciseProvider.fetchAndSetExercise(exerciseId);
+                        final name = exercise!
+                            .getTranslation(Localizations.localeOf(context).languageCode)
+                            .name;
 
                         setState(() {
                           _isLoading = false;
@@ -88,15 +89,19 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
                           builder: (BuildContext context) {
                             return AlertDialog(
                               title: Text(AppLocalizations.of(context).success),
-                              content: Text(AppLocalizations.of(context).cacheWarning),
+                              content: Text(
+                                AppLocalizations.of(context).cacheWarning,
+                              ),
                               actions: [
                                 TextButton(
                                   child: Text(name),
                                   onPressed: () {
                                     Navigator.of(context).pop();
                                     Navigator.pushReplacementNamed(
-                                        context, ExerciseDetailScreen.routeName,
-                                        arguments: base);
+                                      context,
+                                      ExerciseDetailScreen.routeName,
+                                      arguments: exercise,
+                                    );
                                   },
                                 ),
                               ],
@@ -181,9 +186,7 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
 }
 
 class EmailNotVerified extends StatelessWidget {
-  const EmailNotVerified({
-    super.key,
-  });
+  const EmailNotVerified({super.key});
 
   @override
   Widget build(BuildContext context) {

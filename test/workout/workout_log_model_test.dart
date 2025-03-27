@@ -27,54 +27,58 @@ void main() {
     setUp(() {
       log1 = Log(
         id: 123,
-        workoutPlan: 100,
-        exerciseBaseId: 1,
-        reps: 10,
-        rir: '1.5',
-        repetitionUnitId: 1,
+        iteration: 1,
+        slotEntryId: 100,
+        routineId: 100,
+        exerciseId: 1,
+        repetitions: 10,
+        rir: 1.5,
+        repetitionsUnitId: 1,
         weight: 20,
         weightUnitId: 1,
         date: DateTime(2010, 10, 1),
       );
       log2 = Log(
         id: 9,
-        workoutPlan: 42,
-        exerciseBaseId: 1,
-        reps: 10,
-        rir: '1.5',
-        repetitionUnitId: 1,
+        iteration: 2,
+        slotEntryId: 42,
+        routineId: 42,
+        exerciseId: 1,
+        repetitions: 10,
+        rir: 1.5,
+        repetitionsUnitId: 1,
         weight: 20,
         weightUnitId: 1,
         date: DateTime(2063, 4, 5),
       );
     });
 
-    test('Test equal values (besides Id, workoutPlan and date)', () async {
+    test('Test equal values (besides Id, workoutPlan and date)', () {
       expect(log1, log2);
     });
 
-    test('Test different rir values', () async {
+    test('Test different rir values', () {
       log1.rir = null;
       expect(log1, isNot(log2));
     });
 
-    test('Test different weight values', () async {
+    test('Test different weight values', () {
       log1.weight = 100;
       expect(log1, isNot(log2));
     });
 
-    test('Test different weight units', () async {
+    test('Test different weight units', () {
       log1.weightUnitId = 2;
       expect(log1, isNot(log2));
     });
 
-    test('Test different reps', () async {
-      log1.reps = 99;
+    test('Test different reps', () {
+      log1.repetitions = 99;
       expect(log1, isNot(log2));
     });
 
-    test('Test different rep units', () async {
-      log1.repetitionUnitId = 44;
+    test('Test different rep units', () {
+      log1.repetitionsUnitId = 44;
       expect(log1, isNot(log2));
     });
   });

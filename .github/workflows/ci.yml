@@ -18,11 +18,15 @@ jobs:
       - name: Install Flutter
         uses: subosito/flutter-action@v2
         with:
+          cache: true
           channel: 'stable'
-          flutter-version: '3.16.x'
+          flutter-version: '3.29.x'
 
       - run: dart --version
       - run: flutter --version
+
+      - name: Install sqlite3-dev
+        run: sudo apt install libsqlite3-dev
 
       - name: Install app dependencies
         run: flutter pub get
@@ -31,6 +35,6 @@ jobs:
         run: flutter test --coverage
 
       - name: Coveralls
-        uses: coverallsapp/github-action@master
+        uses: coverallsapp/github-action@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}

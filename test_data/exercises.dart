@@ -50,7 +50,7 @@ const tEquipment3 = Equipment(id: 3, name: 'Bench');
 const tEquipment4 = Equipment(id: 10, name: 'Gym mat');
 const testEquipment = [tEquipment1, tEquipment2, tEquipment3];
 
-final benchPress = Exercise(
+final testBenchPress = Exercise(
   id: 1,
   uuid: '364f196c-881b-4839-8bfc-9e8f651521b6',
   created: DateTime(2021, 09, 01),
@@ -59,9 +59,10 @@ final benchPress = Exercise(
   equipment: const [tEquipment1, tEquipment2],
   muscles: const [tMuscle1, tMuscle2],
   musclesSecondary: const [tMuscle3],
+  translations: [benchPressEn, benchPressDe],
 );
 
-final crunches = Exercise(
+final testCrunches = Exercise(
   id: 2,
   uuid: '82415754-fc4c-49ea-8ca7-1516dd36d5a0',
   created: DateTime(2021, 08, 01),
@@ -70,9 +71,10 @@ final crunches = Exercise(
   equipment: const [tEquipment2],
   muscles: const [tMuscle1],
   musclesSecondary: const [tMuscle2],
+  translations: [crunchesEn, crunchesDe, crunchesFr],
 );
 
-final deadLift = Exercise(
+final testDeadLift = Exercise(
   id: 3,
   uuid: 'ca84e2c5-5608-4d6d-ba57-6d4b6b5e7acd',
   created: DateTime(2021, 08, 01),
@@ -81,9 +83,10 @@ final deadLift = Exercise(
   equipment: const [tEquipment2],
   muscles: const [tMuscle1],
   musclesSecondary: const [tMuscle2],
+  translations: [deadLiftEn],
 );
 
-final curls = Exercise(
+final testCurls = Exercise(
   id: 4,
   uuid: '361f024c-fdf8-4146-b7d7-0c1b67c58141',
   created: DateTime(2021, 08, 01),
@@ -92,8 +95,10 @@ final curls = Exercise(
   equipment: const [tEquipment2],
   muscles: const [tMuscle1],
   musclesSecondary: const [tMuscle2],
+  translations: [curlsEn],
 );
-final squats = Exercise(
+
+final testSquats = Exercise(
   id: 5,
   uuid: '361f024c-fdf8-4146-b7d7-0c1b67c58141',
   created: DateTime(2021, 08, 01),
@@ -102,8 +107,10 @@ final squats = Exercise(
   equipment: const [tEquipment2],
   muscles: const [tMuscle1],
   musclesSecondary: const [tMuscle2],
+  translations: [squatsEn],
 );
-final sideRaises = Exercise(
+
+final testSideRaises = Exercise(
   id: 6,
   uuid: '721ff972-c568-41e3-8cf5-cf1e5c5c801c',
   created: DateTime(2022, 11, 01),
@@ -112,6 +119,7 @@ final sideRaises = Exercise(
   equipment: const [tEquipment2],
   muscles: const [tMuscle1],
   musclesSecondary: const [tMuscle2],
+  translations: [sideRaisesEn],
 );
 
 final benchPressDe = Translation(
@@ -120,16 +128,17 @@ final benchPressDe = Translation(
   created: DateTime(2021, 1, 15),
   name: 'Bankdrücken',
   description: 'add clever text',
-  exerciseId: benchPress.id,
+  exerciseId: 1,
   language: tLanguage1,
 );
+
 final benchPressEn = Translation(
   id: 7,
   uuid: 'f4cc326b-e497-4bd7-a71d-0eb1db522743',
   created: DateTime(2021, 1, 15),
   name: 'Bench press',
   description: 'add clever text',
-  exerciseId: benchPress.id,
+  exerciseId: 1,
   language: tLanguage1,
 );
 
@@ -139,7 +148,7 @@ final deadLiftEn = Translation(
   created: DateTime(2021, 1, 15),
   name: 'Dead Lift',
   description: 'Lorem ipsum etc',
-  exerciseId: crunches.id,
+  exerciseId: 3,
   language: tLanguage2,
 );
 
@@ -149,7 +158,7 @@ final crunchesFr = Translation(
   created: DateTime(2021, 4, 1),
   name: 'Crunches',
   description: 'The man in black fled across the desert, and the gunslinger followed',
-  exerciseId: deadLift.id,
+  exerciseId: 2,
   language: tLanguage3,
 );
 
@@ -159,7 +168,7 @@ final crunchesDe = Translation(
   created: DateTime(2021, 4, 1),
   name: 'Crunches',
   description: 'The story so far: in the beginning, the universe was created',
-  exerciseId: deadLift.id,
+  exerciseId: 2,
   language: tLanguage1,
 );
 
@@ -169,7 +178,7 @@ final crunchesEn = Translation(
   created: DateTime(2021, 4, 1),
   name: 'test exercise 5',
   description: 'I am an invisible man',
-  exerciseId: deadLift.id,
+  exerciseId: 2,
   language: tLanguage2,
 );
 
@@ -179,7 +188,7 @@ final curlsEn = Translation(
   created: DateTime(2021, 4, 1),
   name: 'Curls',
   description: 'It was a bright cold day in April, and the clocks were striking thirteen',
-  exerciseId: curls.id,
+  exerciseId: 4,
   language: tLanguage2,
 );
 
@@ -189,7 +198,7 @@ final squatsEn = Translation(
   created: DateTime(2021, 4, 1),
   name: 'Squats',
   description: 'It was a bright cold day in April, and the clocks were striking thirteen',
-  exerciseId: curls.id,
+  exerciseId: 5,
   language: tLanguage2,
 );
 
@@ -199,28 +208,21 @@ final sideRaisesEn = Translation(
   created: DateTime(2022, 11, 1),
   name: 'Side raises',
   description: 'It was a bright cold day in April, and the clocks were striking thirteen',
-  exerciseId: curls.id,
+  exerciseId: 6,
   language: tLanguage2,
 );
 
-List<Exercise> getTestExerciseBases() {
-  benchPress.translations = [benchPressEn, benchPressDe];
-  crunches.translations = [crunchesEn, crunchesDe, crunchesFr];
-  deadLift.translations = [deadLiftEn];
-  curls.translations = [curlsEn];
-  squats.translations = [squatsEn];
-  sideRaises.translations = [sideRaisesEn];
-
-  return [benchPress, crunches, deadLift, curls, squats, sideRaises];
+List<Exercise> getTestExercises() {
+  return [testBenchPress, testCrunches, testDeadLift, testCurls, testSquats, testSideRaises];
 }
 
 List<Exercise> getScreenshotExercises() {
-  benchPress.translations = benchPressTranslations;
-  crunches.translations = crunchesTranslations;
-  deadLift.translations = deadLiftTranslations;
-  curls.translations = curlsTranslations;
-  squats.translations = squatsTranslations;
-  sideRaises.translations = raisesTranslations;
+  testBenchPress.translations = benchPressTranslations;
+  testCrunches.translations = crunchesTranslations;
+  testDeadLift.translations = deadLiftTranslations;
+  testCurls.translations = curlsTranslations;
+  testSquats.translations = squatsTranslations;
+  testSideRaises.translations = raisesTranslations;
 
-  return [benchPress, crunches, deadLift, curls, squats, sideRaises];
+  return [testBenchPress, testCrunches, testDeadLift, testCurls, testSquats, testSideRaises];
 }

@@ -17,28 +17,25 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/measurements/categories.dart';
 import 'package:wger/widgets/measurements/forms.dart';
 
 class MeasurementCategoriesScreen extends StatelessWidget {
+  const MeasurementCategoriesScreen();
+
   static const routeName = '/measurement-categories';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context).measurements),
-      ),
+      appBar: AppBar(title: Text(AppLocalizations.of(context).measurements)),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
-        onPressed: () async {
+        child: const Icon(Icons.add, color: Colors.white),
+        onPressed: () {
           Navigator.pushNamed(
             context,
             FormScreen.routeName,
@@ -50,7 +47,7 @@ class MeasurementCategoriesScreen extends StatelessWidget {
         },
       ),
       body: Consumer<MeasurementProvider>(
-        builder: (context, provider, child) => CategoriesList(),
+        builder: (context, provider, child) => const CategoriesList(),
       ),
     );
   }

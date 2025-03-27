@@ -21,10 +21,12 @@ import 'package:flutter/material.dart';
 class MutedText extends StatelessWidget {
   final String _text;
   final TextAlign textAlign;
+  final TextOverflow? overflow;
 
   const MutedText(
     this._text, {
     this.textAlign = TextAlign.left,
+    this.overflow,
   });
 
   @override
@@ -33,6 +35,7 @@ class MutedText extends StatelessWidget {
       _text,
       style: TextStyle(color: Theme.of(context).colorScheme.outline),
       textAlign: textAlign,
+      overflow: overflow,
     );
   }
 }
@@ -51,9 +54,7 @@ class Pill extends StatelessWidget {
         border: Border.all(color: Colors.grey[300]!),
         borderRadius: BorderRadius.circular(5),
       ),
-      child: Text(
-        title,
-      ),
+      child: Text(title),
     );
   }
 }

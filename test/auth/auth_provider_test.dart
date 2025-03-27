@@ -33,7 +33,7 @@ void main() {
       expect(updateNeeded, false);
     });
 
-    test('app version higher than min version', () async {
+    test('app version higher than min version - 1', () async {
       // arrange
       when(mockClient.get(tVersionUri)).thenAnswer((_) => Future(() => Response('"1.3"', 200)));
       final updateNeeded = await authProvider.applicationUpdateRequired('1.1', testMetadata);
@@ -42,7 +42,7 @@ void main() {
       expect(updateNeeded, true);
     });
 
-    test('app version higher than min version', () async {
+    test('app version higher than min version - 2', () async {
       // arrange
       when(mockClient.get(tVersionUri)).thenAnswer((_) => Future(() => Response('"1.3.0"', 200)));
       final updateNeeded = await authProvider.applicationUpdateRequired('1.1', testMetadata);

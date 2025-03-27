@@ -69,10 +69,6 @@
   "@registerInstead": {},
   "loginInstead": "Already have an account? Login",
   "@loginInstead": {},
-  "labelWorkoutPlans": "Workout plans",
-  "@labelWorkoutPlans": {
-    "description": "Title for screen workout plans"
-  },
   "labelBottomNavWorkout": "Workout",
   "@labelBottomNavWorkout": {
     "description": "Label used in bottom navigation, use a short word"
@@ -122,15 +118,12 @@
   "@searchExercise": {
     "description": "Label on set form. Selected exercises are added to the set"
   },
+  "noIngredientsDefined": "No ingredients defined yet",
   "noMatchingExerciseFound": "No matching exercises found",
   "@noMatchingExerciseFound": {
     "description": "Message returned if no exercises match the searched string"
   },
   "searchNamesInEnglish": "Also search for names in English",
-  "supersetWith": "superset with",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
-  },
   "equipment": "Equipment",
   "@equipment": {
     "description": "Equipment needed to perform an exercise"
@@ -147,17 +140,17 @@
   "@category": {
     "description": "Category for an exercise, ingredient, etc."
   },
-  "newWorkout": "New workout plan",
-  "@newWorkout": {
-    "description": "Header when adding a new workout"
-  },
-  "noWorkoutPlans": "You have no workout plans",
-  "@noWorkoutPlans": {
-    "description": "Message shown when the user has no workout plans"
-  },
+  "routines": "Routines",
+  "newRoutine": "New routine",
+  "noRoutines": "You have no routines",
   "reps": "Reps",
   "@reps": {
     "description": "Shorthand for repetitions, used when space constraints are tighter"
+  },
+  "restTime": "Rest time",
+  "sets": "Sets",
+  "@sets": {
+    "description": "The number of sets to be done for one exercise"
   },
   "rir": "RiR",
   "@rir": {
@@ -178,12 +171,24 @@
   },
   "dayDescriptionHelp": "A description of what is done on this day (e.g. 'pull day') or what body parts are trained (e.g. 'chest and shoulders')",
   "@dayDescriptionHelp": {},
-  "setNr": "Set {nr}",
-  "@setNr": {
-    "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
+  "exerciseNr": "Exercise {nr}",
+  "@exerciseNr": {
+    "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Set Nr. xy'.",
     "type": "text",
     "placeholders": {
-      "nr": {}
+      "nr": {
+        "type": "String"
+      }
+    }
+  },
+  "supersetNr": "Superset {nr}",
+  "@supersetNr": {
+    "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Superset Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {
+        "type": "String"
+      }
     }
   },
   "sameRepetitions": "If you do the same repetitions and weight for all sets you can just fill in one row. For example for 4 sets just enter 10 for the repetitions, this automatically becomes \"4 x 10\".",
@@ -204,6 +209,13 @@
   "@workoutSession": {
     "description": "A (logged) workout session"
   },
+  "restDay": "Rest day",
+  "isRestDay": "Is rest day",
+  "isRestDayHelp": "Please note that all sets and exercises will be removed when you mark a day as a rest day.",
+  "needsLogsToAdvance": "Needs logs to advance",
+  "needsLogsToAdvanceHelp": "Select if you want the routine to progress to the next scheduled day only if you've logged a workout for the day",
+  "routineDays": "Days in routine",
+  "resultingRoutine": "Resulting routine",
   "newDay": "New day",
   "@newDay": {},
   "newSet": "New set",
@@ -256,11 +268,12 @@
   "@addMeal": {},
   "mealLogged": "Meal logged to diary",
   "@mealLogged": {},
-  "logMeal": "Log this meal",
+  "ingredientLogged": "Ingredient logged to diary",
+  "logMeal": "Log meal to nutrition diary",
   "@logMeal": {},
   "addIngredient": "Add ingredient",
   "@addIngredient": {},
-  "logIngredient": "Save to nutrition diary",
+  "logIngredient": "Log ingredient to nutrition diary",
   "@logIngredient": {},
   "searchIngredient": "Search ingredient",
   "@searchIngredient": {
@@ -276,11 +289,58 @@
   "@noNutritionalPlans": {
     "description": "Message shown when the user has no nutritional plans"
   },
+  "onlyLogging": "Only track calories",
+  "onlyLoggingHelpText": "Check the box if you only want to log your calories and don't want to setup a detailed nutritional plan with specific meals",
+  "goalMacro": "Macro goals",
+  "@goalMacro": {
+    "description": "The goal for macronutrients"
+  },
+  "selectMealToLog": "Select a meal to log to diary",
+  "goalEnergy": "Energy goal",
+  "goalProtein": "Protein goal",
+  "goalCarbohydrates": "Carbohydrates goal",
+  "goalFat": "Fat goal",
+  "goalFiber": "Fiber goal",
   "anErrorOccurred": "An Error Occurred!",
   "@anErrorOccurred": {},
   "weight": "Weight",
+  "min": "Min",
+  "max": "Max",
   "@weight": {
     "description": "The weight of a workout log or body weight entry"
+  },
+  "chartAllTimeTitle": "{name} all-time",
+  "@chartAllTimeTitle": {
+    "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chart30DaysTitle": "{name} last 30 days",
+  "@chart30DaysTitle": {
+    "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chartDuringPlanTitle": "{chartName} during nutritional plan {planName}",
+  "@chartDuringPlanTitle": {
+    "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
+    "type": "text",
+    "placeholders": {
+      "chartName": {
+        "type": "String"
+      },
+      "planName": {
+        "type": "String"
+      }
+    }
   },
   "measurement": "Measurement",
   "@measurement": {},
@@ -328,10 +388,6 @@
   "@energyShort": {
     "description": "The first letter or short name of the word 'Energy', used in overviews"
   },
-  "kcal": "kcal",
-  "@kcal": {
-    "description": "Energy in a meal in kilocalories, kcal"
-  },
   "macronutrients": "Macronutrients",
   "@macronutrients": {},
   "planned": "Planned",
@@ -342,9 +398,19 @@
   "@logged": {
     "description": "Header for the column of 'logged' nutritional values, i.e. what was eaten"
   },
+  "today": "Today",
+  "loggedToday": "Logged today",
   "weekAverage": "7 day average",
   "@weekAverage": {
     "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
+  },
+  "surplus": "surplus",
+  "@surplus": {
+    "description": "Caloric surplus (either planned or unplanned)"
+  },
+  "deficit": "deficit",
+  "@deficit": {
+    "description": "Caloric deficit (either planned or unplanned)"
   },
   "difference": "Difference",
   "@difference": {},
@@ -358,6 +424,20 @@
   "@total": {
     "description": "Label used for total sums of e.g. calories or similar"
   },
+  "kcal": "kcal",
+  "@kcal": {
+    "description": "Energy in a meal in kilocalories, kcal"
+  },
+  "kcalValue": "{value} kcal",
+  "@kcalValue": {
+    "description": "A value in kcal, e.g. 500 kcal",
+    "type": "text",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "kJ": "kJ",
   "@kJ": {
     "description": "Energy in a meal in kilo joules, kJ"
@@ -365,6 +445,26 @@
   "g": "g",
   "@g": {
     "description": "Abbreviation for gram"
+  },
+  "gValue": "{value} g",
+  "@gValue": {
+    "description": "A value in grams, e.g. 5 g",
+    "type": "text",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "percentValue": "{value} %",
+  "@percentValue": {
+    "description": "A value in percent, e.g. 10 %",
+    "type": "text",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
   },
   "protein": "Protein",
   "@protein": {},
@@ -388,8 +488,7 @@
   },
   "saturatedFat": "Saturated fat",
   "@saturatedFat": {},
-  "fibres": "Fibre",
-  "@fibres": {},
+  "fiber": "Fibers",
   "sodium": "Sodium",
   "@sodium": {},
   "amount": "Amount",
@@ -429,7 +528,9 @@
     "description": "Confirmation text before the user deletes an object",
     "type": "text",
     "placeholders": {
-      "toDelete": {}
+      "toDelete": {
+        "type": "String"
+      }
     }
   },
   "newNutritionalPlan": "New nutritional plan",
@@ -492,10 +593,6 @@
   "@goToToday": {
     "description": "Label on button to jump back to 'today' in the calendar widget"
   },
-  "enterRepetitionsOrWeight": "Please fill in either the repetitions or the weight for at least one of the sets",
-  "@enterRepetitionsOrWeight": {
-    "description": "Error message when the user hasn't filled in the forms for exercise sets"
-  },
   "enterValue": "Please enter a value",
   "@enterValue": {
     "description": "Error message when the user hasn't entered a value on a required field"
@@ -510,8 +607,12 @@
     "description": "Error message when the user hasn't entered the correct number of characters in a form",
     "type": "text",
     "placeholders": {
-      "min": {},
-      "max": {}
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
     }
   },
   "enterMinCharacters": "Please enter at least {min} characters",
@@ -519,7 +620,9 @@
     "description": "Error message when the user hasn't entered the minimum amount characters in a form",
     "type": "text",
     "placeholders": {
-      "min": {}
+      "min": {
+        "type": "String"
+      }
     }
   },
   "baseNameEnglish": "All exercises need a base name in English",
@@ -528,7 +631,9 @@
     "description": "Label shown on the slider where the user selects the nr of sets",
     "type": "text",
     "placeholders": {
-      "nrOfSets": {}
+      "nrOfSets": {
+        "type": "String"
+      }
     }
   },
   "setUnitsAndRir": "Set units and RiR",
@@ -581,7 +686,9 @@
     "description": "Dialog info when product is found with barcode",
     "type": "text",
     "placeholders": {
-      "productName": {}
+      "productName": {
+        "type": "String"
+      }
     }
   },
   "productNotFound": "Product not found",
@@ -593,7 +700,9 @@
     "description": "Dialog info when product is not found with barcode",
     "type": "text",
     "placeholders": {
-      "barcode": {}
+      "barcode": {
+        "type": "String"
+      }
     }
   },
   "scanBarcode": "Scan barcode",
@@ -612,7 +721,9 @@
   "alsoKnownAs": "Also known as: {aliases}",
   "@alsoKnownAs": {
     "placeholders": {
-      "aliases": {}
+      "aliases": {
+        "type": "String"
+      }
     },
     "description": "List of alternative names for an exercise"
   },
@@ -622,7 +733,9 @@
   "verifiedEmailInfo": "A verification email was sent to {email}",
   "@verifiedEmailInfo": {
     "placeholders": {
-      "email": {}
+      "email": {
+        "type": "String"
+      }
     }
   },
   "alternativeNames": "Alternative names",
@@ -633,6 +746,12 @@
   "images": "Images",
   "language": "Language",
   "addExercise": "Add exercise",
+  "fitInWeek": "Fit in week",
+  "fitInWeekHelp": "If enabled, the days will repeat in a weekly cycle, otherwise the days will follow sequentially without regards to the start of a new week.",
+  "addSuperset": "Add superset",
+  "setHasProgression": "Set has progression",
+  "setHasProgressionWarning": "Please note that at the moment it is not possible to edit all settings for a set on the mobile application or configure automatic progression. For now, please use the web application.",
+  "setHasNoExercises": "This set has no exercises yet!",
   "contributeExercise": "Contribute an exercise",
   "translation": "Translation",
   "translateExercise": "Translate this exercise now",
@@ -642,7 +761,8 @@
   },
   "settingsTitle": "Settings",
   "settingsCacheTitle": "Cache",
-  "settingsCacheDescription": "Exercise cache",
+  "settingsExerciseCacheDescription": "Exercise cache",
+  "settingsIngredientCacheDescription": "Ingredient cache",
   "settingsCacheDeletedSnackbar": "Cache successfully cleared",
   "aboutPageTitle": "About Wger",
   "contributeExerciseWarning": "You can only contribute exercises if your account is older than {days} days and have verified your email",
@@ -655,6 +775,9 @@
       }
     }
   },
+  "simpleMode": "Simple mode",
+  "simpleModeHelp": "Hide some of the more advanced settings when editing exercises",
+  "progressionRules": "This exercise has progression rules and can't be edited on the mobile app. Please use the web application to edit this exercise.",
   "cacheWarning": "Due to caching it might take some time till the changes are visible throughout the application.",
   "textPromptTitle": "Ready to start?",
   "textPromptSubheading": "Press the action button to begin",
@@ -814,5 +937,33 @@
   "@log": {
     "description": "Log a specific meal (imperative form)"
   },
-  "done": "Done"
+  "done": "Done",
+  "overallChangeWeight": "Overall change",
+  "@overallChangeWeight": {
+    "description": "Overall change in weight, added for localization"
+  },
+  "goalTypeMeals": "From meals",
+  "@goalTypeMeals": {
+    "description": "added for localization of Class GoalType's filed meals"
+  },
+  "goalTypeBasic": "Basic",
+  "@goalTypeBasic": {
+    "description": "added for localization of Class GoalType's filed basic"
+  },
+  "goalTypeAdvanced": "Advanced",
+  "@goalTypeAdvanced": {
+    "description": "added for localization of Class GoalType's filed advanced"
+  },
+  "indicatorRaw": "raw",
+  "@indicatorRaw": {
+    "description": "added for localization of Class Indicator's field text"
+  },
+  "indicatorAvg": "avg",
+  "@indicatorAvg": {
+    "description": "added for localization of Class Indicator's field text"
+  },
+  "themeMode": "Theme mode",
+  "darkMode": "Always dark mode",
+  "lightMode": "Always light mode",
+  "systemMode": "System settings"
 }

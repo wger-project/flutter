@@ -18,14 +18,13 @@
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
-import 'package:android_metadata/android_metadata.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
+import 'package:logging/logging.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:version/version.dart';
@@ -40,6 +39,8 @@ enum LoginActions {
 }
 
 class AuthProvider with ChangeNotifier {
+  final _logger = Logger('AuthProvider');
+
   String? token;
   String? serverUrl;
   String? serverVersion;
@@ -55,22 +56,6 @@ class AuthProvider with ChangeNotifier {
 
   AuthProvider([http.Client? client, bool? checkMetadata]) {
     this.client = client ?? http.Client();
-
-    // TODO: this is a workaround since AndroidMetadata doesn't work while running tests
-    if (checkMetadata ?? true) {
-      try {
-        if (Platform.isAndroid) {
-          AndroidMetadata.metaDataAsMap.then((value) => metadata = value!);
-        } else if (Platform.isLinux || Platform.isMacOS) {
-          metadata = {
-            MANIFEST_KEY_CHECK_UPDATE: Platform.environment[MANIFEST_KEY_CHECK_UPDATE] ?? '',
-            MANIFEST_KEY_API: Platform.environment[MANIFEST_KEY_API] ?? ''
-          };
-        }
-      } on PlatformException {
-        throw Exception('An error occurred reading the metadata from AndroidManifest');
-      } catch (error) {}
-    }
   }
 
   /// flag to indicate that the application has successfully loaded all initial data
@@ -86,20 +71,24 @@ class AuthProvider with ChangeNotifier {
     serverVersion = json.decode(response.body);
   }
 
-  Future<void> initData(String serverUrl) async {
-    this.serverUrl = serverUrl;
-    await setApplicationVersion();
-    await setServerVersion();
-  }
-
   /// (flutter) Application version
   Future<void> setApplicationVersion() async {
     applicationVersion = await PackageInfo.fromPlatform();
   }
 
+  Future<void> initVersions(String serverUrl) async {
+    this.serverUrl = serverUrl;
+    await setApplicationVersion();
+    await setServerVersion();
+  }
+
   /// Checking if there is a new version of the application.
-  Future<bool> applicationUpdateRequired([String? version, Map<String, String>? metadata]) async {
+  Future<bool> applicationUpdateRequired([
+    String? version,
+    Map<String, String>? metadata,
+  ]) async {
     metadata ??= this.metadata;
+
     if (!metadata.containsKey(MANIFEST_KEY_CHECK_UPDATE) ||
         metadata[MANIFEST_KEY_CHECK_UPDATE] == 'false') {
       return false;
@@ -122,7 +111,10 @@ class AuthProvider with ChangeNotifier {
     String locale = 'en',
   }) async {
     // Register
-    final Map<String, String> data = {'username': username, 'password': password};
+    final Map<String, String> data = {
+      'username': username,
+      'password': password,
+    };
     if (email != '') {
       data['email'] = email;
     }
@@ -130,19 +122,14 @@ class AuthProvider with ChangeNotifier {
       makeUri(serverUrl, REGISTRATION_URL),
       headers: {
         HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
-        HttpHeaders.authorizationHeader: 'Token ${metadata[MANIFEST_KEY_API]}',
         HttpHeaders.userAgentHeader: getAppNameHeader(),
-        HttpHeaders.acceptLanguageHeader: locale
+        HttpHeaders.acceptLanguageHeader: locale,
       },
       body: json.encode(data),
     );
 
     if (response.statusCode >= 400) {
       throw WgerHttpException(response.body);
-    }
-    // If update is required don't log in user
-    if (await applicationUpdateRequired()) {
-      return {'action': LoginActions.update};
     }
 
     return login(username, password, serverUrl);
@@ -158,7 +145,7 @@ class AuthProvider with ChangeNotifier {
 
     final response = await client.post(
       makeUri(serverUrl, LOGIN_URL),
-      headers: <String, String>{
+      headers: {
         HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
         HttpHeaders.userAgentHeader: getAppNameHeader(),
       },
@@ -170,7 +157,7 @@ class AuthProvider with ChangeNotifier {
       throw WgerHttpException(response.body);
     }
 
-    await initData(serverUrl);
+    await initVersions(serverUrl);
 
     // If update is required don't log in user
     if (await applicationUpdateRequired(
@@ -190,38 +177,36 @@ class AuthProvider with ChangeNotifier {
       'token': token,
       'serverUrl': this.serverUrl,
     });
-    final serverData = json.encode({
-      'serverUrl': this.serverUrl,
-    });
+    final serverData = json.encode({'serverUrl': this.serverUrl});
 
-    prefs.setString('userData', userData);
-    prefs.setString('lastServer', serverData);
+    prefs.setString(PREFS_USER, userData);
+    prefs.setString(PREFS_LAST_SERVER, serverData);
     return {'action': LoginActions.proceed};
   }
 
   /// Loads the last server URL from which the user successfully logged in
   Future<String> getServerUrlFromPrefs() async {
     final prefs = await SharedPreferences.getInstance();
-    if (!prefs.containsKey('lastServer')) {
+    if (!prefs.containsKey(PREFS_LAST_SERVER)) {
       return DEFAULT_SERVER_PROD;
     }
 
-    final userData = json.decode(prefs.getString('lastServer')!);
+    final userData = json.decode(prefs.getString(PREFS_LAST_SERVER)!);
     return userData['serverUrl'] as String;
   }
 
   Future<bool> tryAutoLogin() async {
     final prefs = await SharedPreferences.getInstance();
-    if (!prefs.containsKey('userData')) {
-      log('autologin failed');
+    if (!prefs.containsKey(PREFS_USER)) {
+      _logger.info('autologin failed');
       return false;
     }
-    final extractedUserData = json.decode(prefs.getString('userData')!);
+    final extractedUserData = json.decode(prefs.getString(PREFS_USER)!);
 
     token = extractedUserData['token'];
     serverUrl = extractedUserData['serverUrl'];
 
-    log('autologin successful');
+    _logger.info('autologin successful');
     setApplicationVersion();
     setServerVersion();
     notifyListeners();
@@ -230,7 +215,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<void> logout({bool shouldNotify = true}) async {
-    log('logging out');
+    _logger.fine('logging out');
     token = null;
     serverUrl = null;
     dataInit = false;
@@ -240,7 +225,7 @@ class AuthProvider with ChangeNotifier {
     }
 
     final prefs = await SharedPreferences.getInstance();
-    prefs.remove('userData');
+    prefs.remove(PREFS_USER);
   }
 
   /// Returns the application name and version

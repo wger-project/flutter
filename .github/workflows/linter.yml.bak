@@ -1,0 +1,38 @@
+name: automatic linting
+
+on:
+  push:
+    branches:
+      - "master"
+    paths:
+      - '**.dart'
+
+
+jobs:
+  linting:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          flutter-version: '3.24.x'
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Check for formatting issues (run "dart format . ")
+        run: dart format --line-length=100 .
+
+      - name: Push a commit with the changed files
+        continue-on-error: true
+        run: |
+          git config user.name Github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m "Automatic linting"
+          git push

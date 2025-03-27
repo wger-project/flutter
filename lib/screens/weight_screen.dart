@@ -17,39 +17,42 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/core/app_bar.dart';
-import 'package:wger/widgets/weight/entries_list.dart';
 import 'package:wger/widgets/weight/forms.dart';
+import 'package:wger/widgets/weight/weight_overview.dart';
 
 class WeightScreen extends StatelessWidget {
+  const WeightScreen();
+
   static const routeName = '/weight';
 
   @override
   Widget build(BuildContext context) {
+    final lastWeightEntry = context.read<BodyWeightProvider>().getNewestEntry();
+
     return Scaffold(
       appBar: EmptyAppBar(AppLocalizations.of(context).weight),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
-        onPressed: () async {
+        child: const Icon(Icons.add, color: Colors.white),
+        onPressed: () {
           Navigator.pushNamed(
             context,
             FormScreen.routeName,
             arguments: FormScreenArguments(
               AppLocalizations.of(context).newEntry,
-              WeightForm(),
+              WeightForm(lastWeightEntry?.copyWith(id: null, date: DateTime.now())),
             ),
           );
         },
       ),
-      body: Consumer<BodyWeightProvider>(
-        builder: (context, workoutProvider, child) => WeightEntriesList(),
+      body: SingleChildScrollView(
+        child: Consumer<BodyWeightProvider>(
+          builder: (context, provider, child) => WeightOverview(provider),
+        ),
       ),
     );
   }

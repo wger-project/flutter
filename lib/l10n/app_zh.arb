@@ -61,9 +61,9 @@
   "@workoutSession": {
     "description": "A (logged) workout session"
   },
-  "sameRepetitions": "填写次数和量级,则自动计算出相乘的结果作为数量",
+  "sameRepetitions": "如果您对所有组别进行相同的重复次数和重量，则只需填写一行即可。例如，对于 4 组，只需输入 10 次重复，这会自动变成「4 x 10」。",
   "@sameRepetitions": {},
-  "exercise": "锻炼项目",
+  "exercise": "锻炼",
   "@exercise": {
     "description": "An exercise for a workout"
   },
@@ -87,7 +87,7 @@
   "@impression": {
     "description": "General impression (e.g. for a workout session) such as good, bad, etc."
   },
-  "notes": "备注",
+  "notes": "笔记",
   "@notes": {
     "description": "Personal notes, e.g. for a workout session"
   },
@@ -113,7 +113,7 @@
   "@newWorkout": {
     "description": "Header when adding a new workout"
   },
-  "category": "目录",
+  "category": "类别",
   "@category": {
     "description": "Category for an exercise, ingredient, etc."
   },
@@ -157,7 +157,7 @@
   "@labelWorkoutPlans": {
     "description": "Title for screen workout plans"
   },
-  "loginInstead": "登录",
+  "loginInstead": "已经有帐号了吗？立即登入",
   "@loginInstead": {},
   "registerInstead": "没有帐户？点击注册",
   "@registerInstead": {},
@@ -194,8 +194,12 @@
     "description": "Error message when the user hasn't entered the correct number of characters in a form",
     "type": "text",
     "placeholders": {
-      "min": {},
-      "max": {}
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
     }
   },
   "selectExercise": "请选择一个锻炼项目",
@@ -228,7 +232,7 @@
   "@aboutSourceTitle": {
     "description": "Title for source code section in the about dialog"
   },
-  "aboutDescription": "谢谢使用!",
+  "aboutDescription": "感谢您使用wger！ wger 是一个协作开源项目，由来自世界各地的健身爱好者创建。",
   "@aboutDescription": {
     "description": "Text in the about dialog"
   },
@@ -245,14 +249,16 @@
     "description": "Confirmation text before the user deletes an object",
     "type": "text",
     "placeholders": {
-      "toDelete": {}
+      "toDelete": {
+        "type": "String"
+      }
     }
   },
   "delete": "删除",
   "@delete": {},
-  "loadingText": "加载...",
+  "loadingText": "加载中...",
   "@loadingText": {
-    "description": "Text to show when entries are being loaded in the background: Loading..."
+    "description": "Text to show when entries are being loaded in the background: Loading..., changed from \"加载\" to \"加载中\""
   },
   "edit": "编辑",
   "@edit": {},
@@ -274,8 +280,8 @@
   },
   "sodium": "钠",
   "@sodium": {},
-  "fibres": "纤维",
-  "@fibres": {},
+  "fiber": "纤维",
+  "@fiber": {},
   "saturatedFat": "饱和脂肪",
   "@saturatedFat": {},
   "fat": "脂肪",
@@ -326,7 +332,7 @@
   },
   "weight": "重量",
   "@weight": {
-    "description": "The weight of a workout log or body weight entry"
+    "description": "The weight of a workout log or body weight entry, changed from \"重量\" to \"体重\""
   },
   "anErrorOccurred": "出错了!",
   "@anErrorOccurred": {},
@@ -348,13 +354,13 @@
   "@addMeal": {},
   "save": "保存",
   "@save": {},
-  "name": "给你的计划起个名字",
+  "name": "名称",
   "@name": {
-    "description": "Name for a workout or nutritional plan"
+    "description": "Name for a workout or nutritional plan, changed from \"名\" to \"名称\""
   },
-  "description": "详细信息",
+  "description": "描述",
   "@description": {},
-  "logHelpEntriesUnits": "有计量单位和数量的会以图形化的方式展现，类似时间、未完成的项目将不会出现在这里",
+  "logHelpEntriesUnits": "请注意，系统只会绘制带重量单位（公斤或磅）和重复次数的纪录，其他组合（例如时间或直到力竭）将被忽略。",
   "@logHelpEntriesUnits": {},
   "selectIngredient": "请选择一个营养成分",
   "@selectIngredient": {
@@ -370,12 +376,10 @@
     "description": "Label shown on the slider where the user selects the nr of sets",
     "type": "text",
     "placeholders": {
-      "nrOfSets": {}
+      "nrOfSets": {
+        "type": "String"
+      }
     }
-  },
-  "enterRepetitionsOrWeight": "请至少填写其中一项的重复次数或重量",
-  "@enterRepetitionsOrWeight": {
-    "description": "Error message when the user hasn't filled in the forms for exercise sets"
   },
   "timeStartAhead": "开始时间不能早于结束时间",
   "@timeStartAhead": {},
@@ -385,17 +389,17 @@
   "@addSet": {
     "description": "Label for the button that adds a set (to a workout day)"
   },
-  "logHelpEntries": "同一项目在当天有多次记录的情况下, 图中只显示训练量较大的项目",
+  "logHelpEntries": "如果一天内有多个相同重复次数但重量不同的条目，图表只会显示重量较高的条目。",
   "@logHelpEntries": {},
   "plateCalculator": "圈",
   "@plateCalculator": {
     "description": "Label used for the plate calculator in the gym mode"
   },
-  "rirNotUsed": "未设置组内重复次数",
+  "rirNotUsed": "保留次数未储存",
   "@rirNotUsed": {
     "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
   },
-  "rir": "组内重复次数",
+  "rir": "保留次数",
   "@rir": {
     "description": "Shorthand for Repetitions In Reserve"
   },
@@ -412,7 +416,9 @@
     "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
     "type": "text",
     "placeholders": {
-      "nr": {}
+      "nr": {
+        "type": "String"
+      }
     }
   },
   "muscles": "主要部位",
@@ -435,15 +441,11 @@
   "@newSet": {
     "description": "Header when adding a new set to a workout day"
   },
-  "supersetWith": "组合",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
-  },
   "aboutContactUsText": "聊一聊",
   "@aboutContactUsText": {
     "description": "Text for contact us section in the about dialog"
   },
-  "aboutBugsText": "反馈一下你的使用体验吧",
+  "aboutBugsText": "如果某些情况未如预期运作或您认为缺少某个功能，请与我们联络。",
   "@aboutBugsText": {
     "description": "Text for bugs section in the about dialog"
   },
@@ -460,19 +462,23 @@
     "description": "Dialog info when product is not found with barcode",
     "type": "text",
     "placeholders": {
-      "barcode": {}
+      "barcode": {
+        "type": "String"
+      }
     }
   },
   "weekAverage": "7天平均",
   "@weekAverage": {
     "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
   },
-  "productFoundDescription": "对应此产品的条形码为{productName}。是否继续？{productName}",
+  "productFoundDescription": "此条码对应这产品：{productName}。您想继续吗？",
   "@productFoundDescription": {
     "description": "Dialog info when product is found with barcode",
     "type": "text",
     "placeholders": {
-      "productName": {}
+      "productName": {
+        "type": "String"
+      }
     }
   },
   "measurement": "测量",
@@ -487,7 +493,7 @@
   "@gPerBodyKg": {
     "description": "Label used for total sums of e.g. calories or similar in grams per Kg of body weight"
   },
-  "total": "总量",
+  "total": "总共",
   "@total": {
     "description": "Label used for total sums of e.g. calories or similar"
   },
@@ -527,9 +533,9 @@
   "@close": {
     "description": "Translation for close"
   },
-  "logIngredient": "保存至营养日志",
+  "logIngredient": "记录食材至营养日志",
   "@logIngredient": {},
-  "searchIngredient": "搜索营养成分表",
+  "searchIngredient": "搜索营养成分",
   "@searchIngredient": {
     "description": "Label on ingredient search form"
   },
@@ -537,9 +543,9 @@
   "@measurements": {
     "description": "Categories for the measurements such as biceps size, body fat, etc."
   },
-  "measurementCategoriesHelpText": "测量类别，如“上臂围”或“体脂”",
+  "measurementCategoriesHelpText": "测量类别，例如“二头肌”或“体脂”",
   "@measurementCategoriesHelpText": {},
-  "measurementEntriesHelpText": "用于度量的单位，如\"cm\"或\"%\"。",
+  "measurementEntriesHelpText": "用于测量类别的单位，例如「cm」或「%」",
   "@measurementEntriesHelpText": {},
   "value": "数值",
   "@value": {
@@ -562,5 +568,411 @@
   "exerciseName": "锻炼名",
   "@exerciseName": {
     "description": "Label for the name of a workout exercise"
+  },
+  "previous": "前",
+  "@previous": {},
+  "kg": "千克",
+  "@kg": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "verify": "确认",
+  "@verify": {},
+  "next": "后",
+  "@next": {},
+  "success": "成功",
+  "@success": {
+    "description": "Message when an action completed successfully, usually used as a heading"
+  },
+  "lb": "磅",
+  "@lb": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "alternativeNames": "別称",
+  "@alternativeNames": {},
+  "useMetric": "使用公制单位表示体重",
+  "@useMetric": {},
+  "kilometers": "公里",
+  "@kilometers": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "minutes": "分钟",
+  "@minutes": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "pull_up_bar": "引体向上杆",
+  "@pull_up_bar": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "exerciseList": "锻炼清单",
+  "@exerciseList": {},
+  "exercises": "锻炼项目",
+  "@exercises": {
+    "description": "Multiple exercises for a workout"
+  },
+  "noMatchingExerciseFound": "未找到匹配的锻炼",
+  "@noMatchingExerciseFound": {
+    "description": "Message returned if no exercises match the searched string"
+  },
+  "searchNamesInEnglish": "同时搜索英文名称",
+  "@searchNamesInEnglish": {},
+  "goalFiber": "纤维素目标",
+  "@goalFiber": {},
+  "onlyLoggingHelpText": "如果你只想记录你的卡路里，而不想为特定的膳食制定详细的营养计划，请勾选此复选框",
+  "@onlyLoggingHelpText": {},
+  "onlyLogging": "只记录卡路里",
+  "@onlyLogging": {},
+  "goalEnergy": "能量目标",
+  "@goalEnergy": {},
+  "goalProtein": "蛋白质目标",
+  "@goalProtein": {},
+  "goalCarbohydrates": "碳水化合物目标",
+  "@goalCarbohydrates": {},
+  "goalFat": "脂肪目标",
+  "@goalFat": {},
+  "today": "今天",
+  "@today": {},
+  "loggedToday": "今天的记录",
+  "@loggedToday": {},
+  "surplus": "剩余",
+  "@surplus": {
+    "description": "Caloric surplus (either planned or unplanned)"
+  },
+  "noIngredientsDefined": "还没有定义配料",
+  "@noIngredientsDefined": {},
+  "ingredientLogged": "记录在日记中的成分",
+  "@ingredientLogged": {},
+  "goalMacro": "宏观目标",
+  "@goalMacro": {
+    "description": "The goal for macronutrients"
+  },
+  "selectMealToLog": "选择一顿饭记在日记里",
+  "@selectMealToLog": {},
+  "deficit": "不足额",
+  "@deficit": {
+    "description": "Caloric deficit (either planned or unplanned)"
+  },
+  "kcalValue": "{value} 千卡",
+  "@kcalValue": {
+    "description": "A value in kcal, e.g. 500 kcal",
+    "type": "text",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "gValue": "{value} g",
+  "@gValue": {
+    "description": "A value in grams, e.g. 5 g",
+    "type": "text",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "percentValue": "{value} %",
+  "@percentValue": {
+    "description": "A value in percent, e.g. 10 %",
+    "type": "text",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "noMeasurementEntries": "您没有测量条目",
+  "@noMeasurementEntries": {},
+  "overallChangeWeight": "总体变化",
+  "@overallChangeWeight": {
+    "description": "Overall change in weight"
+  },
+  "goalTypeMeals": "从饮食出发",
+  "@goalTypeMeals": {},
+  "goalTypeBasic": "基础",
+  "@goalTypeBasic": {},
+  "goalTypeAdvanced": "进阶",
+  "@goalTypeAdvanced": {},
+  "chartAllTimeTitle": "{name} 历史记录曲线",
+  "@chartAllTimeTitle": {
+    "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chartDuringPlanTitle": "{chartName} 在计划 \"{planName}\" 期间的改变曲线",
+  "@chartDuringPlanTitle": {
+    "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
+    "type": "text",
+    "placeholders": {
+      "chartName": {
+        "type": "String"
+      },
+      "planName": {
+        "type": "String"
+      }
+    }
+  },
+  "indicatorRaw": "原始值",
+  "@indicatorRaw": {},
+  "indicatorAvg": "平均值",
+  "@indicatorAvg": {},
+  "textPromptTitle": "准备就绪？",
+  "@textPromptTitle": {
+    "description": "Title for the text prompt"
+  },
+  "textPromptSubheading": "点击右下角按钮开始",
+  "@textPromptSubheading": {
+    "description": "Subheading for the text prompt"
+  },
+  "enterMinCharacters": "请输入最少{min}个字符",
+  "@enterMinCharacters": {
+    "description": "Error message when the user hasn't entered the minimum amount characters in a form",
+    "type": "text",
+    "placeholders": {
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "baseNameEnglish": "所有运动需要一个英文代号",
+  "@baseNameEnglish": {},
+  "lower_back": "下背",
+  "@lower_back": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "images": "图像",
+  "@images": {},
+  "biceps": "肱二头肌",
+  "@biceps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "aboutPageTitle": "关于 Wger",
+  "@aboutPageTitle": {},
+  "selectEntry": "请选择一项",
+  "@selectEntry": {},
+  "aboutMastodonText": "在长毛象上关注我们以获得此项目的新闻",
+  "@aboutMastodonText": {
+    "description": "Text for the mastodon section in the about dialog"
+  },
+  "cardio": "有氧",
+  "@cardio": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "abs": "腹肌",
+  "@abs": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "plates": "盘",
+  "@plates": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "quads": "大腿前侧",
+  "@quads": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "bench": "凳",
+  "@bench": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "sz_bar": "W型曲杆",
+  "@sz_bar": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "aboutDonateTitle": "捐赠",
+  "@aboutDonateTitle": {},
+  "aboutDonateText": "向我们打赏来支持此项目，给服务器买单，及激励我们",
+  "@aboutDonateText": {},
+  "none__bodyweight_exercise_": "无（自重动作）",
+  "@none__bodyweight_exercise_": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "chart30DaysTitle": "{name} 过去三十天",
+  "@chart30DaysTitle": {
+    "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "oneNamePerLine": "每行一个名字",
+  "@oneNamePerLine": {},
+  "settingsExerciseCacheDescription": "动作缓存",
+  "@settingsExerciseCacheDescription": {},
+  "settingsIngredientCacheDescription": "营养成分缓存",
+  "@settingsIngredientCacheDescription": {},
+  "contributeExerciseWarning": "账号注册{days}天且邮箱验证通过后，你方可贡献动作",
+  "@contributeExerciseWarning": {
+    "description": "Number of days before which a person can add exercise",
+    "placeholders": {
+      "days": {
+        "type": "String",
+        "example": "14"
+      }
+    }
+  },
+  "body_weight": "体重",
+  "@body_weight": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "chest": "胸",
+  "@chest": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "dumbbell": "哑铃",
+  "@dumbbell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "hamstrings": "大腿后侧",
+  "@hamstrings": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "legs": "腿",
+  "@legs": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "max_reps": "最大次数",
+  "@max_reps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "miles": "英里",
+  "@miles": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "miles_per_hour": "迈",
+  "@miles_per_hour": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "seconds": "秒",
+  "@seconds": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "shoulders": "肩",
+  "@shoulders": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "swiss_ball": "瑜伽球",
+  "@swiss_ball": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "triceps": "肱三头肌",
+  "@triceps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "until_failure": "直至力竭",
+  "@until_failure": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "variations": "变式",
+  "@variations": {
+    "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"
+  },
+  "verifiedEmail": "已验证的邮箱",
+  "@verifiedEmail": {},
+  "unVerifiedEmail": "未验证的邮箱",
+  "@unVerifiedEmail": {},
+  "verifiedEmailInfo": "验证邮件已经发往{email}",
+  "@verifiedEmailInfo": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "whatVariationsExist": "这个动作有什么变体吗？",
+  "@whatVariationsExist": {},
+  "language": "语言",
+  "@language": {},
+  "addExercise": "添加动作",
+  "@addExercise": {},
+  "contributeExercise": "贡献一个动作",
+  "@contributeExercise": {},
+  "translateExercise": "翻译该动作",
+  "@translateExercise": {},
+  "baseData": "英文基础动作",
+  "@baseData": {
+    "description": "The base data for an exercise such as category, trained muscles, etc."
+  },
+  "settingsTitle": "设置",
+  "@settingsTitle": {},
+  "settingsCacheTitle": "缓存",
+  "@settingsCacheTitle": {},
+  "settingsCacheDeletedSnackbar": "成功清除缓存",
+  "@settingsCacheDeletedSnackbar": {},
+  "barbell": "杠铃",
+  "@barbell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "gym_mat": "健身垫",
+  "@gym_mat": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "incline_bench": "上斜凳",
+  "@incline_bench": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kettlebell": "壶铃",
+  "@kettlebell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kilometers_per_hour": "千米每小时",
+  "@kilometers_per_hour": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "lats": "背阔肌",
+  "@lats": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "log": "记录",
+  "@log": {
+    "description": "Log a specific meal (imperative form)"
+  },
+  "done": "完成",
+  "@done": {},
+  "moreMeasurementEntries": "添加新围度",
+  "@moreMeasurementEntries": {
+    "description": "Message shown when the user wants to add new measurement"
+  },
+  "add_exercise_image_license": "图像必须符合 CC BY-SA 知识共享许可。如果你不太确定，那请仅上传你自己拍摄的照片。",
+  "@add_exercise_image_license": {},
+  "cacheWarning": "由于缓存，申请中的变动或需一段时间方可呈现。",
+  "@cacheWarning": {},
+  "alsoKnownAs": "又名：{aliases}",
+  "@alsoKnownAs": {
+    "placeholders": {
+      "aliases": {
+        "type": "String"
+      }
+    },
+    "description": "List of alternative names for an exercise"
+  },
+  "verifiedEmailReason": "你需要验证邮箱来参与贡献",
+  "@verifiedEmailReason": {},
+  "arms": "手臂",
+  "@arms": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "translation": "翻译",
+  "@translation": {},
+  "back": "背",
+  "@back": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "calves": "小腿",
+  "@calves": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "glutes": "臀",
+  "@glutes": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "aboutMastodonTitle": "长毛象",
+  "@aboutMastodonTitle": {
+    "description": "Title for mastodon section in the about dialog"
   }
 }

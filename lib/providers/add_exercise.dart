@@ -37,7 +37,7 @@ class AddExerciseProvider with ChangeNotifier {
   List<Muscle> _primaryMuscles = [];
   List<Muscle> _secondaryMuscles = [];
 
-  static const _exerciseBaseUrlPath = 'exercise-base';
+  static const _exerciseUrlPath = 'exercise';
   static const _imagesUrlPath = 'exerciseimage';
   static const _exerciseTranslationUrlPath = 'exercise-translation';
   static const _exerciseAliasPath = 'exercisealias';
@@ -215,13 +215,13 @@ class AddExerciseProvider with ChangeNotifier {
   }
 
   Future<Exercise> addExerciseBase() async {
-    final Uri postUri = baseProvider.makeUrl(_exerciseBaseUrlPath);
+    final Uri postUri = baseProvider.makeUrl(_exerciseUrlPath);
 
     final Map<String, dynamic> newBaseMap = await baseProvider.post(exercise.toJson(), postUri);
-    final Exercise newExerciseBase = Exercise.fromJson(newBaseMap);
+    final Exercise newExercise = Exercise.fromJson(newBaseMap);
     notifyListeners();
 
-    return newExerciseBase;
+    return newExercise;
   }
 
   Future<Variation> addVariation() async {
@@ -235,13 +235,13 @@ class AddExerciseProvider with ChangeNotifier {
     return newVariation;
   }
 
-  Future<void> addImages(Exercise base) async {
+  Future<void> addImages(Exercise exercise) async {
     for (final image in _exerciseImages) {
       final request = http.MultipartRequest('POST', baseProvider.makeUrl(_imagesUrlPath));
       request.headers.addAll(baseProvider.getDefaultHeaders(includeAuth: true));
 
       request.files.add(await http.MultipartFile.fromPath('image', image.path));
-      request.fields['exercise_base'] = base.id!.toString();
+      request.fields['exercise'] = exercise.id!.toString();
       request.fields['style'] = EXERCISE_IMAGE_ART_STYLE.PHOTO.index.toString();
 
       await request.send();
@@ -261,7 +261,7 @@ class AddExerciseProvider with ChangeNotifier {
   }
 
   Future<Alias> addExerciseAlias(String name, int exerciseId) async {
-    final alias = Alias(exerciseId: exerciseId, alias: name);
+    final alias = Alias(translationId: exerciseId, alias: name);
     final Uri postUri = baseProvider.makeUrl(_exerciseAliasPath);
 
     final Alias newAlias = Alias.fromJson(await baseProvider.post(alias.toJson(), postUri));

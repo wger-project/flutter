@@ -17,15 +17,18 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/widgets/exercises/exercises.dart';
 
 import '../../test_data/exercises.dart';
-import '../workout/gym_mode_screen_test.mocks.dart';
+import 'exercises_detail_widget_test.mocks.dart';
 
+@GenerateMocks([ExercisesProvider])
 void main() {
   final mockProvider = MockExercisesProvider();
 
@@ -37,14 +40,14 @@ void main() {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: GlobalKey<NavigatorState>(),
-        home: Scaffold(
-          body: ExerciseDetail(getTestExerciseBases()[0]),
-        ),
+        home: Scaffold(body: ExerciseDetail(getTestExercises()[0])),
       ),
     );
   }
 
   testWidgets('Test the widgets on the exercise detail widget', (WidgetTester tester) async {
+    when(mockProvider.findExercisesByVariationId(any, exerciseIdToExclude: 1)).thenReturn([]);
+
     await tester.pumpWidget(createHomeScreen());
     await tester.pumpAndSettle();
 

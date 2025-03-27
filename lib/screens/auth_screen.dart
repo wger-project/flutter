@@ -19,12 +19,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/misc.dart';
 import 'package:wger/helpers/ui.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/screens/update_app_screen.dart';
 import 'package:wger/theme/theme.dart';
 
@@ -36,6 +35,8 @@ enum AuthMode {
 }
 
 class AuthScreen extends StatelessWidget {
+  const AuthScreen();
+
   static const routeName = '/auth';
 
   @override
@@ -44,7 +45,7 @@ class AuthScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: Stack(
-        children: <Widget>[
+        children: [
           Positioned(
             top: 0,
             right: 0,
@@ -61,7 +62,7 @@ class AuthScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
+                children: [
                   SizedBox(height: 0.15 * deviceSize.height),
                   const Image(
                     image: AssetImage('assets/images/logo-white.png'),
@@ -69,7 +70,10 @@ class AuthScreen extends StatelessWidget {
                   ),
                   Container(
                     margin: const EdgeInsets.only(bottom: 20.0),
-                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 94.0),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 8.0,
+                      horizontal: 94.0,
+                    ),
                     child: const Text(
                       'wger',
                       style: TextStyle(
@@ -80,9 +84,7 @@ class AuthScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 0.025 * deviceSize.height),
-                  const Flexible(
-                    child: AuthCard(),
-                  ),
+                  const Flexible(child: AuthCard()),
                 ],
               ),
             ),
@@ -111,7 +113,6 @@ class _AuthCardState extends State<AuthCard> {
   bool confirmIsObscure = true;
 
   final GlobalKey<FormState> _formKey = GlobalKey();
-  bool _canRegister = true;
   AuthMode _authMode = AuthMode.Login;
   bool _hideCustomServer = true;
   final Map<String, String> _authData = {
@@ -125,8 +126,19 @@ class _AuthCardState extends State<AuthCard> {
   final _passwordController = TextEditingController();
   final _password2Controller = TextEditingController();
   final _emailController = TextEditingController();
-  final _serverUrlController =
-      TextEditingController(text: kDebugMode ? DEFAULT_SERVER_TEST : DEFAULT_SERVER_PROD);
+  final _serverUrlController = TextEditingController(
+    text: kDebugMode ? DEFAULT_SERVER_TEST : DEFAULT_SERVER_PROD,
+  );
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    _password2Controller.dispose();
+    _emailController.dispose();
+    _serverUrlController.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -135,17 +147,6 @@ class _AuthCardState extends State<AuthCard> {
       _serverUrlController.text = value;
     });
 
-    // Check if the API key is set
-    //
-    // If not, the user will not be able to register via the app
-    try {
-      final metadata = Provider.of<AuthProvider>(context, listen: false).metadata;
-      if (metadata.containsKey(MANIFEST_KEY_API) && metadata[MANIFEST_KEY_API] == '') {
-        _canRegister = false;
-      }
-    } on PlatformException {
-      _canRegister = false;
-    }
     _preFillTextfields();
   }
 
@@ -198,7 +199,7 @@ class _AuthCardState extends State<AuthCard> {
       if (res.containsKey('action')) {
         if (res['action'] == LoginActions.update && mounted) {
           Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => UpdateAppScreen()),
+            MaterialPageRoute(builder: (context) => const UpdateAppScreen()),
           );
           return;
         }
@@ -225,11 +226,6 @@ class _AuthCardState extends State<AuthCard> {
   }
 
   void _switchAuthMode() {
-    if (!_canRegister) {
-      launchURL(DEFAULT_SERVER_PROD, context);
-      return;
-    }
-
     if (_authMode == AuthMode.Login) {
       setState(() {
         _authMode = AuthMode.Signup;
@@ -253,19 +249,23 @@ class _AuthCardState extends State<AuthCard> {
       elevation: 8.0,
       child: Container(
         width: deviceSize.width * 0.9,
-        padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 0.025 * deviceSize.height),
+        padding: EdgeInsets.symmetric(
+          horizontal: 15.0,
+          vertical: 0.025 * deviceSize.height,
+        ),
         child: Form(
           key: _formKey,
           child: SingleChildScrollView(
             child: AutofillGroup(
               child: Column(
-                children: <Widget>[
+                children: [
                   TextFormField(
                     key: const Key('inputUsername'),
                     decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context).username,
-                        errorMaxLines: 2,
-                        prefixIcon: const Icon(Icons.account_circle)),
+                      labelText: AppLocalizations.of(context).username,
+                      errorMaxLines: 2,
+                      prefixIcon: const Icon(Icons.account_circle),
+                    ),
                     autofillHints: const [AutofillHints.username],
                     controller: _usernameController,
                     textInputAction: TextInputAction.next,
@@ -280,7 +280,9 @@ class _AuthCardState extends State<AuthCard> {
 
                       return null;
                     },
-                    inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'\s\b|\b\s'))],
+                    inputFormatters: [
+                      FilteringTextInputFormatter.deny(RegExp(r'\s\b|\b\s')),
+                    ],
                     onSaved: (value) {
                       _authData['username'] = value!;
                     },
@@ -376,9 +378,10 @@ class _AuthCardState extends State<AuthCard> {
                           child: TextFormField(
                             key: const Key('inputServer'),
                             decoration: InputDecoration(
-                                labelText: AppLocalizations.of(context).customServerUrl,
-                                helperText: AppLocalizations.of(context).customServerHint,
-                                helperMaxLines: 4),
+                              labelText: AppLocalizations.of(context).customServerUrl,
+                              helperText: AppLocalizations.of(context).customServerHint,
+                              helperMaxLines: 4,
+                            ),
                             controller: _serverUrlController,
                             validator: (value) {
                               if (Uri.tryParse(value!) == null) {
@@ -399,12 +402,10 @@ class _AuthCardState extends State<AuthCard> {
                             },
                           ),
                         ),
-                        const SizedBox(
-                          width: 20,
-                        ),
+                        const SizedBox(width: 20),
                         Column(
                           mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
+                          children: [
                             IconButton(
                               icon: const Icon(Icons.undo),
                               onPressed: () {
@@ -412,15 +413,13 @@ class _AuthCardState extends State<AuthCard> {
                                     kDebugMode ? DEFAULT_SERVER_TEST : DEFAULT_SERVER_PROD;
                               },
                             ),
-                            Text(AppLocalizations.of(context).reset)
+                            Text(AppLocalizations.of(context).reset),
                           ],
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
+                  const SizedBox(height: 20),
                   GestureDetector(
                     onTap: () {
                       if (!_isLoading) {
@@ -466,19 +465,22 @@ class _AuthCardState extends State<AuthCard> {
                         },
                         child: Container(
                           color: Colors.transparent,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                          child: Column(
                             children: [
+                              // TODO: i18n!
                               Text(
                                 text.substring(0, text.lastIndexOf('?') + 1),
                               ),
                               Text(
-                                text.substring(text.lastIndexOf('?') + 1, text.length),
+                                text.substring(
+                                  text.lastIndexOf('?') + 1,
+                                  text.length,
+                                ),
                                 style: const TextStyle(
                                   //color: wgerPrimaryColor,
                                   fontWeight: FontWeight.w700,
                                 ),
-                              )
+                              ),
                             ],
                           ),
                         ),

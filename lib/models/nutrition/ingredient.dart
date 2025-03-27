@@ -17,14 +17,33 @@
  */
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/json.dart';
-import 'package:wger/models/nutrition/image.dart';
+import 'package:wger/models/nutrition/ingredient_image.dart';
+import 'package:wger/models/nutrition/nutritional_values.dart';
 
 part 'ingredient.g.dart';
 
 @JsonSerializable()
 class Ingredient {
+  // fields returned by django api that we ignore here:
+  // uuid, last_updated, last_imported, weight_units, language
+  // most license fields
+
   @JsonKey(required: true)
   final int id;
+
+  // some ingredients don't have these 3 fields set.  E.g. USDA entries that
+  // have been removed upstream, or manually added ingredients.
+  @JsonKey(required: true, name: 'remote_id')
+  final String? remoteId;
+
+  @JsonKey(required: true, name: 'source_name')
+  final String? sourceName;
+
+  @JsonKey(required: true, name: 'source_url')
+  final String? sourceUrl;
+
+  @JsonKey(required: true, name: 'license_object_url')
+  final String? licenseObjectURl;
 
   /// Barcode of the product
   @JsonKey(required: true)
@@ -63,7 +82,7 @@ class Ingredient {
 
   /// g per 100g of product
   @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
-  final num fibres;
+  final num fiber;
 
   /// g per 100g of product
   @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
@@ -72,6 +91,10 @@ class Ingredient {
   IngredientImage? image;
 
   Ingredient({
+    required this.remoteId,
+    required this.sourceName,
+    required this.sourceUrl,
+    this.licenseObjectURl,
     required this.id,
     required this.code,
     required this.name,
@@ -82,7 +105,7 @@ class Ingredient {
     required this.protein,
     required this.fat,
     required this.fatSaturated,
-    required this.fibres,
+    required this.fiber,
     required this.sodium,
     this.image,
   });
@@ -91,4 +114,17 @@ class Ingredient {
   factory Ingredient.fromJson(Map<String, dynamic> json) => _$IngredientFromJson(json);
 
   Map<String, dynamic> toJson() => _$IngredientToJson(this);
+
+  NutritionalValues get nutritionalValues {
+    return NutritionalValues.values(
+      energy * 1,
+      protein * 1,
+      carbohydrates * 1,
+      carbohydratesSugar * 1,
+      fat * 1,
+      fatSaturated * 1,
+      fiber * 1,
+      sodium * 1,
+    );
+  }
 }

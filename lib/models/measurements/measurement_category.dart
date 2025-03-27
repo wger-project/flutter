@@ -41,8 +41,10 @@ class MeasurementCategory extends Equatable {
   }
 
   MeasurementEntry findEntryById(entryId) {
-    return entries.firstWhere((entry) => entry.id == entryId,
-        orElse: () => throw NoSuchEntryException());
+    return entries.firstWhere(
+      (entry) => entry.id == entryId,
+      orElse: () => throw const NoSuchEntryException(),
+    );
   }
 
   // Boilerplate

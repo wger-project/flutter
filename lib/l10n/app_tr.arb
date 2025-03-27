@@ -31,7 +31,7 @@
   "@successfullyDeleted": {
     "description": "Message when an item was successfully deleted"
   },
-  "labelDashboard": "Kontrol paneli",
+  "labelDashboard": "Gösterge Paneli",
   "@labelDashboard": {
     "description": "Title for screen dashboard"
   },
@@ -141,10 +141,6 @@
   "@set": {
     "description": "A set in a workout plan"
   },
-  "supersetWith": "süper set ile",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
-  },
   "newWorkout": "Yeni antrenman planı",
   "@newWorkout": {
     "description": "Header when adding a new workout"
@@ -162,7 +158,9 @@
     "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
     "type": "text",
     "placeholders": {
-      "nr": {}
+      "nr": {
+        "type": "String"
+      }
     }
   },
   "sameRepetitions": "Eğer tüm setler için aynı ağırlıklarla aynı setleri yapıyorsanız, sadece bir satır doldurabilirsiniz. Örneğin, 4 set için sadece 10 girin, bu otomatik olarak \"4 x 10\"a dönüşüyor.",
@@ -205,7 +203,7 @@
   "@plateCalculator": {
     "description": "Label used for the plate calculator in the gym mode"
   },
-  "logIngredient": "Beslenme günlüğüne kaydet",
+  "logIngredient": "Malzemeyi beslenme günlüğüne kaydet",
   "@logIngredient": {},
   "comment": "Yorum",
   "@comment": {
@@ -255,9 +253,9 @@
   "@save": {},
   "addMeal": "Yemek ekle",
   "@addMeal": {},
-  "mealLogged": "Günlüğe kaydedilen yemek",
+  "mealLogged": "Yemek günlüğe kaydedildi",
   "@mealLogged": {},
-  "logMeal": "Bu yemeği kaydet",
+  "logMeal": "Yemeği beslenme günlüğüne kaydet",
   "@logMeal": {},
   "addIngredient": "Malzeme ekle",
   "@addIngredient": {},
@@ -309,7 +307,7 @@
   "@energy": {
     "description": "Energy in a meal, ingredient etc. e.g. in kJ"
   },
-  "kcal": "kilo kalori",
+  "kcal": "kilokalori",
   "@kcal": {
     "description": "Energy in a meal in kilocalories, kcal"
   },
@@ -357,8 +355,8 @@
   },
   "saturatedFat": "Doymuş yağ",
   "@saturatedFat": {},
-  "fibres": "Lif",
-  "@fibres": {},
+  "fiber": "Lif",
+  "@fiber": {},
   "delete": "Sil",
   "@delete": {},
   "edit": "Düzenle",
@@ -392,7 +390,9 @@
     "description": "Label shown on the slider where the user selects the nr of sets",
     "type": "text",
     "placeholders": {
-      "nrOfSets": {}
+      "nrOfSets": {
+        "type": "String"
+      }
     }
   },
   "aboutContactUsTitle": "Merhaba deyin!",
@@ -418,7 +418,9 @@
     "description": "Dialog info when product is found with barcode",
     "type": "text",
     "placeholders": {
-      "productName": {}
+      "productName": {
+        "type": "String"
+      }
     }
   },
   "rir": "RiR",
@@ -448,7 +450,9 @@
     "description": "Confirmation text before the user deletes an object",
     "type": "text",
     "placeholders": {
-      "toDelete": {}
+      "toDelete": {
+        "type": "String"
+      }
     }
   },
   "toggleDetails": "Ayrıntıları aç/kapat",
@@ -471,10 +475,6 @@
   "@aboutTranslationText": {
     "description": "Text for translation section in the about dialog"
   },
-  "enterRepetitionsOrWeight": "Lütfen setlerden en az birinin tekrarlarını veya ağırlığını doldurun",
-  "@enterRepetitionsOrWeight": {
-    "description": "Error message when the user hasn't filled in the forms for exercise sets"
-  },
   "selectExercise": "Lütfen bir egzersiz seçin",
   "@selectExercise": {
     "description": "Error message when the user hasn't selected an exercise in the form"
@@ -484,8 +484,12 @@
     "description": "Error message when the user hasn't entered the correct number of characters in a form",
     "type": "text",
     "placeholders": {
-      "min": {},
-      "max": {}
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
     }
   },
   "setUnitsAndRir": "RiR ve birimleri ayarla",
@@ -522,7 +526,9 @@
     "description": "Dialog info when product is not found with barcode",
     "type": "text",
     "placeholders": {
-      "barcode": {}
+      "barcode": {
+        "type": "String"
+      }
     }
   },
   "close": "Kapat",
@@ -560,7 +566,9 @@
   "alsoKnownAs": "{aliases} olarak da bilinir",
   "@alsoKnownAs": {
     "placeholders": {
-      "aliases": {}
+      "aliases": {
+        "type": "String"
+      }
     },
     "description": "List of alternative names for an exercise"
   },
@@ -577,7 +585,9 @@
     "description": "Error message when the user hasn't entered the minimum amount characters in a form",
     "type": "text",
     "placeholders": {
-      "min": {}
+      "min": {
+        "type": "String"
+      }
     }
   },
   "add_exercise_image_license": "Görseller CC BY SA lisansı ile uyumlu olmalıdır. Emin değilseniz, yalnızca kendi çektiğiniz fotoğrafları yükleyin.",
@@ -593,7 +603,9 @@
   "verifiedEmailInfo": "{email} adresine bir doğrulama e-postası gönderildi",
   "@verifiedEmailInfo": {
     "placeholders": {
-      "email": {}
+      "email": {
+        "type": "String"
+      }
     }
   },
   "previous": "Önceki",
@@ -728,7 +740,7 @@
   "@max_reps": {
     "description": "Generated entry for translation for server strings"
   },
-  "plates": "Plates",
+  "plates": "Tabaklar",
   "@plates": {
     "description": "Generated entry for translation for server strings"
   },
@@ -772,8 +784,8 @@
   "@aboutDonateTitle": {},
   "aboutDonateText": "Projeye yardımcı olmak, sunucu masraflarını karşılamak ve geliştirmeyi desteklemek için bağış yapın",
   "@aboutDonateText": {},
-  "settingsCacheDescription": "Egzersiz önbelleği",
-  "@settingsCacheDescription": {},
+  "settingsExerciseCacheDescription": "Egzersiz önbelleği",
+  "@settingsExerciseCacheDescription": {},
   "settingsCacheDeletedSnackbar": "Önbellek başarıyla temizlendi",
   "@settingsCacheDeletedSnackbar": {},
   "log": "Kaydet",
@@ -783,5 +795,110 @@
   "useMetric": "Vücut ağırlığı için metrik birimler kullan",
   "@useMetric": {},
   "done": "Bitti",
-  "@done": {}
+  "@done": {},
+  "gValue": "{value} g",
+  "@gValue": {
+    "description": "A value in grams, e.g. 5 g",
+    "type": "text",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "addGoalsToPlan": "Bu plana hedefler ekle",
+  "@addGoalsToPlan": {},
+  "goalEnergy": "Enerji hedefi",
+  "@goalEnergy": {},
+  "goalProtein": "Protein hedefi",
+  "@goalProtein": {},
+  "onlyLogging": "Yalnızca kalorileri takip et",
+  "@onlyLogging": {},
+  "onlyLoggingHelpText": "Yalnızca kalorilerinizi kaydetmek istiyorsanız ve belirli öğünler için ayrıntılı bir beslenme planı oluşturmak istemiyorsanız kutuyu işaretleyin",
+  "@onlyLoggingHelpText": {},
+  "addGoalsToPlanHelpText": "Bu, plan için enerji, protein, karbonhidrat veya yağ için genel hedefler belirlemenize olanak tanır. Ayrıntılı bir yemek planı ayarlarsanız, bu değerlerin öncelikli olacağını unutmayın.",
+  "@addGoalsToPlanHelpText": {},
+  "loggedToday": "Bugün kaydedildi",
+  "@loggedToday": {},
+  "kcalValue": "{value} kcal",
+  "@kcalValue": {
+    "description": "A value in kcal, e.g. 500 kcal",
+    "type": "text",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "goalCarbohydrates": "Karbonhidrat hedefi",
+  "@goalCarbohydrates": {},
+  "goalFat": "Yağ hedefi",
+  "@goalFat": {},
+  "today": "Bugün",
+  "@today": {},
+  "percentValue": "%{value}",
+  "@percentValue": {
+    "description": "A value in percent, e.g. 10 %",
+    "type": "text",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "goalMacro": "Makro hedefleri",
+  "@goalMacro": {
+    "description": "The goal for macronutrients"
+  },
+  "goalFiber": "Lif hedefi",
+  "@goalFiber": {},
+  "surplus": "fazlalık",
+  "@surplus": {
+    "description": "Caloric surplus (either planned or unplanned)"
+  },
+  "deficit": "eksiklik",
+  "@deficit": {
+    "description": "Caloric deficit (either planned or unplanned)"
+  },
+  "ingredientLogged": "Malzeme günlüğe kaydedildi",
+  "@ingredientLogged": {},
+  "selectMealToLog": "Günlüğe kaydetmek için bir yemek seçin",
+  "@selectMealToLog": {},
+  "noIngredientsDefined": "Henüz malzeme tanımlanmadı",
+  "@noIngredientsDefined": {},
+  "settingsIngredientCacheDescription": "Malzeme önbelleği",
+  "@settingsIngredientCacheDescription": {},
+  "chartAllTimeTitle": "tüm zamanlar {name}",
+  "@chartAllTimeTitle": {
+    "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chart30DaysTitle": "son 30 gün {name}",
+  "@chart30DaysTitle": {
+    "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chartDuringPlanTitle": "{planName} beslenme planı boyunca {chartName}",
+  "@chartDuringPlanTitle": {
+    "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
+    "type": "text",
+    "placeholders": {
+      "chartName": {
+        "type": "String"
+      },
+      "planName": {
+        "type": "String"
+      }
+    }
+  }
 }

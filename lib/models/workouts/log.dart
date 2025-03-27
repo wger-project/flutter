@@ -17,6 +17,7 @@
  */
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/misc.dart';
 import 'package:wger/models/exercises/exercise.dart';
@@ -30,51 +31,71 @@ class Log {
   @JsonKey(required: true)
   int? id;
 
-  @JsonKey(required: true, name: 'exercise_base')
-  late int exerciseBaseId;
+  @JsonKey(required: true, name: 'exercise')
+  late int exerciseId;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  late Exercise exerciseBaseObj;
+  late Exercise exercise;
 
-  @JsonKey(required: true, name: 'workout')
-  late int workoutPlan;
+  @JsonKey(required: true, name: 'routine')
+  late int routineId;
+
+  @JsonKey(required: true, name: 'session')
+  late int? sessionId;
 
   @JsonKey(required: true)
-  late int reps;
+  int? iteration;
 
-  @JsonKey(required: false)
-  String? rir;
+  @JsonKey(required: true, name: 'slot_entry')
+  int? slotEntryId;
 
-  @JsonKey(required: true, name: 'repetition_unit')
-  late int repetitionUnitId;
+  @JsonKey(required: false, fromJson: stringToNum)
+  num? rir;
+
+  @JsonKey(required: false, fromJson: stringToNum, name: 'rir_target')
+  num? rirTarget;
+
+  @JsonKey(required: true, fromJson: stringToNum, name: 'repetitions')
+  num? repetitions;
+
+  @JsonKey(required: true, fromJson: stringToNum, name: 'repetitions_target')
+  num? repetitionsTarget;
+
+  @JsonKey(required: true, name: 'repetitions_unit')
+  late int? repetitionsUnitId;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  late RepetitionUnit repetitionUnitObj;
+  late RepetitionUnit? repetitionsUnitObj;
 
   @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
-  late num weight;
+  late num? weight;
+
+  @JsonKey(required: true, fromJson: stringToNum, toJson: numToString, name: 'weight_target')
+  num? weightTarget;
 
   @JsonKey(required: true, name: 'weight_unit')
-  late int weightUnitId;
+  late int? weightUnitId;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  late WeightUnit weightUnitObj;
+  late WeightUnit? weightUnitObj;
 
-  @JsonKey(required: true, toJson: toDate)
+  @JsonKey(required: true, toJson: dateToYYYYMMDD)
   late DateTime date;
-
-  //@JsonKey(required: true)
-  //String comment;
 
   Log({
     this.id,
-    required this.exerciseBaseId,
-    required this.workoutPlan,
-    required this.reps,
+    required this.exerciseId,
+    this.iteration,
+    this.slotEntryId,
+    required this.routineId,
+    this.repetitions,
+    this.repetitionsTarget,
+    this.repetitionsUnitId = REP_UNIT_REPETITIONS_ID,
     required this.rir,
-    required this.repetitionUnitId,
-    required this.weight,
-    required this.weightUnitId,
+    this.rirTarget,
+    this.weight,
+    this.weightTarget,
+    this.weightUnitId = WEIGHT_UNIT_KG,
     required this.date,
   });
 
@@ -86,32 +107,24 @@ class Log {
   Map<String, dynamic> toJson() => _$LogToJson(this);
 
   set exerciseBase(Exercise base) {
-    exerciseBaseObj = base;
-    exerciseBaseId = base.id!;
+    exercise = base;
+    exerciseId = base.id!;
   }
 
-  set weightUnit(WeightUnit weightUnit) {
+  set weightUnit(WeightUnit? weightUnit) {
     weightUnitObj = weightUnit;
-    weightUnitId = weightUnit.id;
+    weightUnitId = weightUnit?.id;
   }
 
-  set repetitionUnit(RepetitionUnit repetitionUnit) {
-    repetitionUnitObj = repetitionUnit;
-    repetitionUnitId = repetitionUnit.id;
-  }
-
-  void setRir(String rir) {
-    this.rir = rir;
-  }
-
-  /// Returns the text representation for a single setting, used in the gym mode
-  String get singleLogRepText {
-    return repText(reps, repetitionUnitObj, weight, weightUnitObj, rir);
+  set repetitionUnit(RepetitionUnit? repetitionUnit) {
+    repetitionsUnitObj = repetitionUnit;
+    repetitionsUnitId = repetitionUnit?.id;
   }
 
   /// Returns the text representation for a single setting, used in the gym mode
   String get singleLogRepTextNoNl {
-    return repText(reps, repetitionUnitObj, weight, weightUnitObj, rir).replaceAll('\n', '');
+    return repText(repetitions, repetitionsUnitObj, weight, weightUnitObj, rir)
+        .replaceAll('\n', '');
   }
 
   /// Override the equals operator
@@ -122,24 +135,24 @@ class Log {
   //ignore: avoid_equals_and_hash_code_on_mutable_classes
   bool operator ==(o) {
     return o is Log &&
-        exerciseBaseId == o.exerciseBaseId &&
+        exerciseId == o.exerciseId &&
         weight == o.weight &&
         weightUnitId == o.weightUnitId &&
-        reps == o.reps &&
-        repetitionUnitId == o.repetitionUnitId &&
+        repetitions == o.repetitions &&
+        repetitionsUnitId == o.repetitionsUnitId &&
         rir == o.rir;
   }
 
   @override
   //ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode =>
-      Object.hash(exerciseBaseId, weight, weightUnitId, reps, repetitionUnitId, rir);
+      Object.hash(exerciseId, weight, weightUnitId, repetitions, repetitionsUnitId, rir);
 
   //@override
   //int get hashCode => super.hashCode;
 
   @override
   String toString() {
-    return 'Log(id: $id, ex: $exerciseBaseId, weightU: $weightUnitId, w: $weight, repU: $repetitionUnitId, rep: $reps, rir: $rir)';
+    return 'Log(id: $id, ex: $exerciseId, weightU: $weightUnitId, w: $weight, repU: $repetitionsUnitId, rep: $repetitions, rir: $rir)';
   }
 }

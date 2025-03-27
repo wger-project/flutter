@@ -20,11 +20,10 @@ import 'package:flutter/widgets.dart';
 import 'package:wger/models/exercises/image.dart';
 
 class ExerciseImageWidget extends StatelessWidget {
-  const ExerciseImageWidget({
-    this.image,
-  });
+  const ExerciseImageWidget({this.image, this.height});
 
   final ExerciseImage? image;
+  final double? height;
 
   @override
   Widget build(BuildContext context) {
@@ -33,10 +32,14 @@ class ExerciseImageWidget extends StatelessWidget {
             placeholder: const AssetImage('assets/images/placeholder.png'),
             image: NetworkImage(image!.url),
             fit: BoxFit.cover,
+            imageSemanticLabel: 'Exercise image',
+            height: height,
           )
         : const Image(
             image: AssetImage('assets/images/placeholder.png'),
             color: Color.fromRGBO(255, 255, 255, 0.3),
-            colorBlendMode: BlendMode.modulate);
+            colorBlendMode: BlendMode.modulate,
+            semanticLabel: 'Placeholder',
+          );
   }
 }

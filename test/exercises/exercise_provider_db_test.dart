@@ -22,7 +22,7 @@ void main() {
   late ExerciseDatabase database;
 
   const String categoryUrl = 'exercisecategory';
-  const String exerciseBaseInfoUrl = 'exercisebaseinfo';
+  const String exerciseInfoUrl = 'exerciseinfo';
   const String muscleUrl = 'muscle';
   const String equipmentUrl = 'equipment';
   const String languageUrl = 'language';
@@ -36,13 +36,13 @@ void main() {
   final Uri tExerciseInfoUri = Uri(
     scheme: 'http',
     host: 'localhost',
-    path: 'api/v2/$exerciseBaseInfoUrl/',
+    path: 'api/v2/$exerciseInfoUrl/',
   );
 
   final Uri tExerciseInfoDetailUri = Uri(
     scheme: 'http',
     host: 'localhost',
-    path: 'api/v2/$exerciseBaseInfoUrl/9/',
+    path: 'api/v2/$exerciseInfoUrl/9/',
   );
 
   final Uri tMuscleEntriesUri = Uri(
@@ -79,17 +79,18 @@ void main() {
   final Map<String, dynamic> tLanguageMap = jsonDecode(
     fixture('exercises/language_entries.json'),
   );
-  final Map<String, dynamic> tExerciseBaseInfoMap = jsonDecode(
-    fixture('exercises/exercisebaseinfo_response.json'),
+  final Map<String, dynamic> tExerciseInfoMap = jsonDecode(
+    fixture('exercises/exerciseinfo_response.json'),
   );
 
   setUp(() {
+    database = ExerciseDatabase.inMemory(NativeDatabase.memory());
+
     mockBaseProvider = MockWgerBaseProvider();
     provider = ExercisesProvider(
       mockBaseProvider,
-      database: ExerciseDatabase.inMemory(NativeDatabase.memory()),
+      database: database,
     );
-    database = ExerciseDatabase.inMemory(NativeDatabase.memory());
 
     WidgetsFlutterBinding.ensureInitialized();
     SharedPreferences.setMockInitialValues({});
@@ -117,14 +118,14 @@ void main() {
     );
 
     // Mock base info response
-    when(mockBaseProvider.makeUrl(exerciseBaseInfoUrl)).thenReturn(tExerciseInfoUri);
+    when(mockBaseProvider.makeUrl(exerciseInfoUrl)).thenReturn(tExerciseInfoUri);
     when(mockBaseProvider.fetch(tExerciseInfoUri)).thenAnswer(
-      (_) => Future.value(tExerciseBaseInfoMap),
+      (_) => Future.value(tExerciseInfoMap),
     );
 
-    when(mockBaseProvider.makeUrl(exerciseBaseInfoUrl, id: 9)).thenReturn(tExerciseInfoDetailUri);
+    when(mockBaseProvider.makeUrl(exerciseInfoUrl, id: 9)).thenReturn(tExerciseInfoDetailUri);
     when(mockBaseProvider.fetch(tExerciseInfoDetailUri)).thenAnswer(
-      (_) => Future.value(tExerciseBaseInfoMap),
+      (_) => Future.value(tExerciseInfoMap),
     );
   });
 
@@ -381,7 +382,7 @@ void main() {
     });
   });
 
-  group('Exercises', () {
+  group('Exercise cache DB', () {
     test('that if there is already valid data in the DB, the API is not hit', () async {
       // Arrange
       final prefs = await SharedPreferences.getInstance();
@@ -391,9 +392,9 @@ void main() {
 
       await database.into(database.exercises).insert(
             ExercisesCompanion.insert(
-              id: tExerciseBaseInfoMap['id'],
-              data: json.encode(tExerciseBaseInfoMap),
-              lastUpdate: DateTime.parse(tExerciseBaseInfoMap['last_update_global']),
+              id: tExerciseInfoMap['id'],
+              data: json.encode(tExerciseInfoMap),
+              lastUpdate: DateTime.parse(tExerciseInfoMap['last_update_global']),
               lastFetched: DateTime.now(),
             ),
           );
@@ -423,9 +424,9 @@ void main() {
       provider.languages = testLanguages;
       await database.into(database.exercises).insert(
             ExercisesCompanion.insert(
-              id: tExerciseBaseInfoMap['id'],
-              data: json.encode(tExerciseBaseInfoMap),
-              lastUpdate: DateTime.parse(tExerciseBaseInfoMap['last_update_global']),
+              id: tExerciseInfoMap['id'],
+              data: json.encode(tExerciseInfoMap),
+              lastUpdate: DateTime.parse(tExerciseInfoMap['last_update_global']),
               lastFetched: DateTime.now().subtract(const Duration(hours: 1)),
             ),
           );
@@ -448,9 +449,9 @@ void main() {
       provider.languages = testLanguages;
       await database.into(database.exercises).insert(
             ExercisesCompanion.insert(
-              id: tExerciseBaseInfoMap['id'],
-              data: json.encode(tExerciseBaseInfoMap),
-              lastUpdate: DateTime.parse(tExerciseBaseInfoMap['last_update_global']),
+              id: tExerciseInfoMap['id'],
+              data: json.encode(tExerciseInfoMap),
+              lastUpdate: DateTime.parse(tExerciseInfoMap['last_update_global']),
               lastFetched: DateTime.now().subtract(const Duration(days: 10)),
             ),
           );
@@ -474,7 +475,7 @@ void main() {
     test('fetching a known exercise - needed API refresh - new data from API', () async {
       // Arrange
       provider.languages = testLanguages;
-      final newData = Map.from(tExerciseBaseInfoMap);
+      final newData = Map.from(tExerciseInfoMap);
       newData['uuid'] = 'bf6d5557-1c49-48fd-922e-75d11f81d4eb';
 
       await database.into(database.exercises).insert(

@@ -17,15 +17,17 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/nutritional_plans_list.dart';
 
-class NutritionScreen extends StatelessWidget {
+class NutritionalPlansScreen extends StatelessWidget {
+  const NutritionalPlansScreen();
+
   static const routeName = '/nutrition';
 
   @override
@@ -33,16 +35,14 @@ class NutritionScreen extends StatelessWidget {
     return Scaffold(
       appBar: EmptyAppBar(AppLocalizations.of(context).nutritionalPlans),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
-        onPressed: () async {
+        child: const Icon(Icons.add, color: Colors.white),
+        onPressed: () {
           Navigator.pushNamed(
             context,
             FormScreen.routeName,
             arguments: FormScreenArguments(
               AppLocalizations.of(context).newNutritionalPlan,
+              hasListView: true,
               PlanForm(),
             ),
           );

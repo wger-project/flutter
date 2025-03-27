@@ -41,7 +41,7 @@
   "@password": {},
   "confirmPassword": "確認密碼",
   "@confirmPassword": {},
-  "invalidEmail": "請輸入有效的電子郵件信箱",
+  "invalidEmail": "請輸入有效的電子郵件地址",
   "@invalidEmail": {
     "description": "Error message when the user enters an invalid email"
   },
@@ -77,7 +77,7 @@
   "@successfullySaved": {
     "description": "Message when an item was successfully saved"
   },
-  "exerciseList": "運動列表",
+  "exerciseList": "動作清單",
   "@exerciseList": {},
   "exercise": "動作",
   "@exercise": {
@@ -103,11 +103,11 @@
   "@useDefaultServer": {
     "description": "Toggle button allowing users to switch between the default and a custom wger server"
   },
-  "usernameValidChars": "使用者名稱只能包含字母、數字，以及字元 (@, +, ., -, 和_)",
+  "usernameValidChars": "使用者名稱只能包含字母、數字，以及 @、+、.、-、_ 等符號",
   "@usernameValidChars": {
     "description": "Error message when the user tries to register a username with forbidden characters"
   },
-  "customServerHint": "輸入你自架伺服器的地址，否則將使用預設地址",
+  "customServerHint": "輸入您自架的伺服器位址，否則將使用預設伺服器",
   "@customServerHint": {
     "description": "Hint text for the form where the users can enter their own wger instance"
   },
@@ -122,5 +122,883 @@
   "successfullyDeleted": "已刪除",
   "@successfullyDeleted": {
     "description": "Message when an item was successfully deleted"
-  }
+  },
+  "noMatchingExerciseFound": "沒有找到符合的動作項目",
+  "@noMatchingExerciseFound": {
+    "description": "Message returned if no exercises match the searched string"
+  },
+  "muscles": "主要肌群",
+  "@muscles": {
+    "description": "(main) muscles trained by an exercise"
+  },
+  "equipment": "器材",
+  "@equipment": {
+    "description": "Equipment needed to perform an exercise"
+  },
+  "searchNamesInEnglish": "也搜尋英文名稱",
+  "@searchNamesInEnglish": {},
+  "logged": "實際",
+  "@logged": {
+    "description": "Header for the column of 'logged' nutritional values, i.e. what was eaten"
+  },
+  "scanBarcode": "掃描條碼",
+  "@scanBarcode": {
+    "description": "Label for scan barcode button"
+  },
+  "seconds": "秒",
+  "@seconds": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "useMetric": "用公制單位表示體重",
+  "@useMetric": {},
+  "set": "組",
+  "@set": {
+    "description": "A set in a workout plan"
+  },
+  "repetitionUnit": "重複次數單位",
+  "@repetitionUnit": {},
+  "dayDescriptionHelp": "描述這一天做了什麼（例如：拉力日）或訓練了哪些部位（例如：胸部和肩膀）",
+  "@dayDescriptionHelp": {},
+  "comment": "註釋",
+  "@comment": {
+    "description": "Comment, additional information"
+  },
+  "impression": "感受",
+  "@impression": {
+    "description": "General impression (e.g. for a workout session) such as good, bad, etc."
+  },
+  "sameRepetitions": "如果您對所有組別進行相同的重複次數和重量，則只需填寫一行即可。例如，4 組每組 10 下，只要輸入 10 次重複，系統會自動變成「4 x 10」。",
+  "@sameRepetitions": {},
+  "plateCalculator": "槓片",
+  "@plateCalculator": {
+    "description": "Label used for the plate calculator in the gym mode"
+  },
+  "gymMode": "健身房模式",
+  "@gymMode": {
+    "description": "Label when starting the gym mode"
+  },
+  "selectExercises": "如果您想進行超級組訓練，您可以搜尋多個動作項目，它們會被組合在一起",
+  "@selectExercises": {},
+  "workoutSession": "健身（節）",
+  "@workoutSession": {
+    "description": "A (logged) workout session"
+  },
+  "pause": "休息",
+  "@pause": {
+    "description": "Noun, not an imperative! Label used for the pause when using the gym mode"
+  },
+  "jumpTo": "跳到",
+  "@jumpTo": {
+    "description": "Imperative. Label used in popup allowing the user to jump to a specific exercise while in the gym mode"
+  },
+  "todaysWorkout": "今天的訓練",
+  "@todaysWorkout": {},
+  "logHelpEntries": "如果同一天有多筆相同重複次數但不同重量的紀錄，圖表只會顯示重量較重的那筆紀錄。",
+  "@logHelpEntries": {},
+  "description": "描述",
+  "@description": {},
+  "addIngredient": "新增食材",
+  "@addIngredient": {},
+  "verify": "驗證",
+  "@verify": {},
+  "logMeal": "紀錄餐點到營養日記",
+  "@logMeal": {},
+  "logHelpEntriesUnits": "請注意，圖表只會顯示包含重量單位（公斤或磅）和重複次數的紀錄，其他組合（例如時間或直到力竭）不會被顯示。",
+  "@logHelpEntriesUnits": {},
+  "name": "名稱",
+  "@name": {
+    "description": "Name for a workout or nutritional plan"
+  },
+  "nutritionalDiary": "營養日記",
+  "@nutritionalDiary": {},
+  "nutritionalPlans": "營養計劃",
+  "@nutritionalPlans": {},
+  "weight": "重量",
+  "@weight": {
+    "description": "The weight of a workout log or body weight entry"
+  },
+  "time": "時間",
+  "@time": {
+    "description": "The time of a meal or workout"
+  },
+  "searchIngredient": "搜尋食材",
+  "@searchIngredient": {
+    "description": "Label on ingredient search form"
+  },
+  "logIngredient": "紀錄食材到營養日記",
+  "@logIngredient": {},
+  "anErrorOccurred": "發生錯誤！",
+  "@anErrorOccurred": {},
+  "noNutritionalPlans": "您沒有營養計劃",
+  "@noNutritionalPlans": {
+    "description": "Message shown when the user has no nutritional plans"
+  },
+  "timeStart": "開始時間",
+  "@timeStart": {
+    "description": "The starting time of a workout"
+  },
+  "timeEnd": "結束時間",
+  "@timeEnd": {
+    "description": "The end time of a workout"
+  },
+  "timeStartAhead": "開始時間不能早於結束時間",
+  "@timeStartAhead": {},
+  "saturatedFat": "飽和脂肪",
+  "@saturatedFat": {},
+  "fatShort": "脂肪",
+  "@fatShort": {
+    "description": "The first letter or short name of the word 'Fat', used in overviews"
+  },
+  "sodium": "鈉",
+  "@sodium": {},
+  "edit": "編輯",
+  "@edit": {},
+  "moreMeasurementEntries": "新增測量紀錄",
+  "@moreMeasurementEntries": {
+    "description": "Message shown when the user wants to add new measurement"
+  },
+  "confirmDelete": "您確定要刪除「{toDelete}」嗎？",
+  "@confirmDelete": {
+    "description": "Confirmation text before the user deletes an object",
+    "type": "text",
+    "placeholders": {
+      "toDelete": {
+        "type": "String"
+      }
+    }
+  },
+  "aboutBugsTitle": "有問題或想法嗎？",
+  "@aboutBugsTitle": {
+    "description": "Title for bugs section in the about dialog"
+  },
+  "newNutritionalPlan": "新的營養計劃",
+  "@newNutritionalPlan": {},
+  "aboutSourceText": "在 GitHub 上取得此應用程式及其伺服器的原始碼",
+  "@aboutSourceText": {
+    "description": "Text for source code section in the about dialog"
+  },
+  "aboutDescription": "感謝您使用 wger！wger 是一個協作式開源專案，由來自世界各地的健身愛好者共同打造。",
+  "@aboutDescription": {
+    "description": "Text in the about dialog"
+  },
+  "enterValue": "請輸入數值",
+  "@enterValue": {
+    "description": "Error message when the user hasn't entered a value on a required field"
+  },
+  "enterRepetitionsOrWeight": "請至少為其中一組填寫重複次數或重量",
+  "@enterRepetitionsOrWeight": {
+    "description": "Error message when the user hasn't filled in the forms for exercise sets"
+  },
+  "aboutBugsText": "如果有任何功能未如預期運作，或您覺得缺少某些功能，請與我們聯絡。",
+  "@aboutBugsText": {
+    "description": "Text for bugs section in the about dialog"
+  },
+  "previous": "上一個",
+  "@previous": {},
+  "add_exercise_image_license": "影像必須與 CC BY SA 授權相容。如有疑慮，請僅上傳您自己拍攝的照片。",
+  "@add_exercise_image_license": {},
+  "verifiedEmail": "已驗證的電子郵件",
+  "@verifiedEmail": {},
+  "selectIngredient": "請選擇一個食材",
+  "@selectIngredient": {
+    "description": "Error message when the user hasn't selected an ingredient from the autocompleter"
+  },
+  "barbell": "槓鈴",
+  "@barbell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "arms": "手臂",
+  "@arms": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "contributeExerciseWarning": "只有當您的帳號已超過 {days} 天且已驗證您的電子郵件時，您才能貢獻動作項目",
+  "@contributeExerciseWarning": {
+    "description": "Number of days before which a person can add exercise",
+    "placeholders": {
+      "days": {
+        "type": "String",
+        "example": "14"
+      }
+    }
+  },
+  "dumbbell": "啞鈴",
+  "@dumbbell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "chest": "胸",
+  "@chest": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "calves": "小腿肌群",
+  "@calves": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "bench": "重訓椅",
+  "@bench": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "lb": "磅",
+  "@lb": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "until_failure": "直到力竭",
+  "@until_failure": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "none__bodyweight_exercise_": "無（徒手運動）",
+  "@none__bodyweight_exercise_": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "done": "完成",
+  "@done": {},
+  "log": "紀錄",
+  "@log": {
+    "description": "Log a specific meal (imperative form)"
+  },
+  "addMeal": "新增餐點",
+  "@addMeal": {},
+  "sugars": "糖分",
+  "@sugars": {},
+  "fat": "脂肪",
+  "@fat": {},
+  "calendar": "日曆",
+  "@calendar": {},
+  "optionsLabel": "選項",
+  "@optionsLabel": {
+    "description": "Label for the popup with general app options"
+  },
+  "weightUnit": "重量單位",
+  "@weightUnit": {},
+  "newDay": "新的一天",
+  "@newDay": {},
+  "newSet": "新增一組",
+  "@newSet": {
+    "description": "Header when adding a new set to a workout day"
+  },
+  "start": "開始",
+  "@start": {
+    "description": "Label on button to start the gym mode (i.e., an imperative)"
+  },
+  "selectExercise": "請選擇一個動作",
+  "@selectExercise": {
+    "description": "Error message when the user hasn't selected an exercise in the form"
+  },
+  "whatVariationsExist": "這個動作有哪些變化（如果有的話）？",
+  "@whatVariationsExist": {},
+  "back": "背部",
+  "@back": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "category": "類別",
+  "@category": {
+    "description": "Category for an exercise, ingredient, etc."
+  },
+  "newWorkout": "新健身計劃",
+  "@newWorkout": {
+    "description": "Header when adding a new workout"
+  },
+  "musclesSecondary": "輔助肌群",
+  "@musclesSecondary": {
+    "description": "secondary muscles trained by an exercise"
+  },
+  "rirNotUsed": "未使用保留次數",
+  "@rirNotUsed": {
+    "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
+  },
+  "setNr": "第 {nr} 組",
+  "@setNr": {
+    "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {
+        "type": "String"
+      }
+    }
+  },
+  "notes": "筆記",
+  "@notes": {
+    "description": "Personal notes, e.g. for a workout session"
+  },
+  "plateCalculatorNotDivisible": "沒有足夠的槓片達到目標重量",
+  "@plateCalculatorNotDivisible": {
+    "description": "Error message when the current weight is not reachable with plates (e.g. 33.1 kg)"
+  },
+  "save": "儲存",
+  "@save": {},
+  "addSet": "新增一組",
+  "@addSet": {
+    "description": "Label for the button that adds a set (to a workout day)"
+  },
+  "mealLogged": "餐點已紀錄到日記",
+  "@mealLogged": {},
+  "measurement": "測量",
+  "@measurement": {},
+  "nutritionalPlan": "營養計劃",
+  "@nutritionalPlan": {},
+  "date": "日期",
+  "@date": {
+    "description": "The date of a workout log or body weight entry"
+  },
+  "value": "數值",
+  "@value": {
+    "description": "The value of a measurement entry"
+  },
+  "measurementEntriesHelpText": "用於測量該類別的單位，例如「公分」或「%」",
+  "@measurementEntriesHelpText": {},
+  "measurements": "測量項目",
+  "@measurements": {
+    "description": "Categories for the measurements such as biceps size, body fat, etc."
+  },
+  "planned": "計劃",
+  "@planned": {
+    "description": "Header for the column of 'planned' nutritional values, i.e. what should be eaten"
+  },
+  "gPerBodyKg": "克/體重公斤",
+  "@gPerBodyKg": {
+    "description": "Label used for total sums of e.g. calories or similar in grams per Kg of body weight"
+  },
+  "kJ": "千焦",
+  "@kJ": {
+    "description": "Energy in a meal in kilo joules, kJ"
+  },
+  "carbohydratesShort": "碳水",
+  "@carbohydratesShort": {
+    "description": "The first letter or short name of the word 'Carbohydrates', used in overviews"
+  },
+  "unit": "單位",
+  "@unit": {
+    "description": "The unit used for a repetition (kg, time, etc.)"
+  },
+  "newEntry": "新增紀錄",
+  "@newEntry": {
+    "description": "Title when adding a new entry such as a weight or log entry"
+  },
+  "amount": "份量",
+  "@amount": {
+    "description": "The amount (e.g. in grams) of an ingredient in a meal"
+  },
+  "loadingText": "載入中...",
+  "@loadingText": {
+    "description": "Text to show when entries are being loaded in the background: Loading..."
+  },
+  "delete": "刪除",
+  "@delete": {},
+  "aboutSourceTitle": "原始碼",
+  "@aboutSourceTitle": {
+    "description": "Title for source code section in the about dialog"
+  },
+  "goToDetailPage": "前往詳細資訊頁面",
+  "@goToDetailPage": {},
+  "aboutContactUsText": "如果您想與我們聊聊，歡迎加入 Discord 伺服器與我們聯繫",
+  "@aboutContactUsText": {
+    "description": "Text for contact us section in the about dialog"
+  },
+  "aboutMastodonText": "在 Mastodon 上追蹤我們，取得專案的最新資訊與更新",
+  "@aboutMastodonText": {
+    "description": "Text for the mastodon section in the about dialog"
+  },
+  "appUpdateTitle": "需要更新",
+  "@appUpdateTitle": {},
+  "variations": "變化",
+  "@variations": {
+    "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"
+  },
+  "legs": "腿部",
+  "@legs": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "lower_back": "下背",
+  "@lower_back": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "max_reps": "最大次數",
+  "@max_reps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "quads": "股四頭肌",
+  "@quads": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "textPromptTitle": "準備開始了嗎？",
+  "@textPromptTitle": {},
+  "body_weight": "體重",
+  "@body_weight": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "textPromptSubheading": "按下動作按鈕開始",
+  "@textPromptSubheading": {},
+  "ingredient": "食材",
+  "@ingredient": {},
+  "energy": "熱量",
+  "@energy": {
+    "description": "Energy in a meal, ingredient etc. e.g. in kJ"
+  },
+  "goalEnergy": "熱量目標",
+  "@goalEnergy": {},
+  "goalProtein": "蛋白質目標",
+  "@goalProtein": {},
+  "goalFat": "脂肪目標",
+  "@goalFat": {},
+  "onlyLogging": "僅追蹤卡路里",
+  "@onlyLogging": {},
+  "addGoalsToPlan": "新增目標至此計劃",
+  "@addGoalsToPlan": {},
+  "measurementCategoriesHelpText": "測量類別，例如「二頭肌」或「體脂率」",
+  "@measurementCategoriesHelpText": {},
+  "today": "今天",
+  "@today": {},
+  "percentEnergy": "熱量百分比",
+  "@percentEnergy": {},
+  "onlyLoggingHelpText": "如果您只想紀錄卡路里但不想設定詳細的營養計劃和特定餐點，請勾選此項",
+  "@onlyLoggingHelpText": {},
+  "addGoalsToPlanHelpText": "這使你可以為計劃設定能量、蛋白質、碳水化合物或脂肪的總體目標。請注意，如果你設定了詳細的膳食計劃，這些數值將取得優先權。",
+  "@addGoalsToPlanHelpText": {},
+  "goalCarbohydrates": "碳水化合物目標",
+  "@goalCarbohydrates": {},
+  "loggedToday": "今天的紀錄",
+  "@loggedToday": {},
+  "verifiedEmailReason": "您需要驗證您的電子郵件才能貢獻動作項目",
+  "@verifiedEmailReason": {},
+  "alternativeNames": "替代名稱",
+  "@alternativeNames": {},
+  "productNotFound": "找不到產品",
+  "@productNotFound": {
+    "description": "Header label for dialog when product is not found with barcode"
+  },
+  "productNotFoundDescription": "在 wger 資料庫中找不到條碼為 {barcode} 的產品",
+  "@productNotFoundDescription": {
+    "description": "Dialog info when product is not found with barcode",
+    "type": "text",
+    "placeholders": {
+      "barcode": {
+        "type": "String"
+      }
+    }
+  },
+  "images": "圖片",
+  "@images": {},
+  "language": "語言",
+  "@language": {},
+  "translateExercise": "立即翻譯此動作",
+  "@translateExercise": {},
+  "translation": "翻譯",
+  "@translation": {},
+  "contributeExercise": "貢獻一個動作",
+  "@contributeExercise": {},
+  "baseData": "英文基本資料",
+  "@baseData": {
+    "description": "The base data for an exercise such as category, trained muscles, etc."
+  },
+  "cacheWarning": "由於快取機制，變更可能需要一些時間才會在整個應用程式中顯示。",
+  "@cacheWarning": {},
+  "miles": "英里",
+  "@miles": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kilometers_per_hour": "公里／小時",
+  "@kilometers_per_hour": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kilometers": "公里",
+  "@kilometers": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kettlebell": "壺鈴",
+  "@kettlebell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "lats": "背闊肌",
+  "@lats": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kg": "公斤",
+  "@kg": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "triceps": "三頭肌",
+  "@triceps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "shoulders": "肩膀",
+  "@shoulders": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "unVerifiedEmail": "未驗證的電子郵件",
+  "@unVerifiedEmail": {},
+  "glutes": "臀大肌群",
+  "@glutes": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "cardio": "有氧運動",
+  "@cardio": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "miles_per_hour": "英里／小時",
+  "@miles_per_hour": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "supersetWith": "與之組成超級組",
+  "@supersetWith": {
+    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
+  },
+  "weekAverage": "七天平均值",
+  "@weekAverage": {
+    "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
+  },
+  "difference": "差異",
+  "@difference": {},
+  "productFound": "找到產品",
+  "@productFound": {
+    "description": "Header label for dialog when product is found with barcode"
+  },
+  "close": "關閉",
+  "@close": {
+    "description": "Translation for close"
+  },
+  "biceps": "二頭肌",
+  "@biceps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "oneNamePerLine": "每行一個名稱",
+  "@oneNamePerLine": {},
+  "aboutPageTitle": "關於 Wger",
+  "@aboutPageTitle": {},
+  "verifiedEmailInfo": "驗證郵件已寄送至 {email}",
+  "@verifiedEmailInfo": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "gym_mat": "健身墊",
+  "@gym_mat": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "settingsCacheDeletedSnackbar": "成功清除快取",
+  "@settingsCacheDeletedSnackbar": {},
+  "settingsTitle": "設定",
+  "@settingsTitle": {},
+  "settingsCacheTitle": "快取",
+  "@settingsCacheTitle": {},
+  "settingsExerciseCacheDescription": "動作快取",
+  "@settingsExerciseCacheDescription": {},
+  "gValue": "{value} 克",
+  "@gValue": {
+    "description": "A value in grams, e.g. 5 g",
+    "type": "text",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "percentValue": "{value} %",
+  "@percentValue": {
+    "description": "A value in percent, e.g. 10 %",
+    "type": "text",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "noWorkoutPlans": "您沒有健身計劃",
+  "@noWorkoutPlans": {
+    "description": "Message shown when the user has no workout plans"
+  },
+  "reps": "次",
+  "@reps": {
+    "description": "Shorthand for repetitions, used when space constraints are tighter"
+  },
+  "rir": "保留次數",
+  "@rir": {
+    "description": "Shorthand for Repetitions In Reserve"
+  },
+  "selectEntry": "請選擇一個項目",
+  "@selectEntry": {},
+  "nrOfSets": "每個動作的組數：{nrOfSets}",
+  "@nrOfSets": {
+    "description": "Label shown on the slider where the user selects the nr of sets",
+    "type": "text",
+    "placeholders": {
+      "nrOfSets": {
+        "type": "String"
+      }
+    }
+  },
+  "alsoKnownAs": "也稱為：{aliases}",
+  "@alsoKnownAs": {
+    "placeholders": {
+      "aliases": {
+        "type": "String"
+      }
+    },
+    "description": "List of alternative names for an exercise"
+  },
+  "abs": "腹肌",
+  "@abs": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "energyShort": "熱量",
+  "@energyShort": {
+    "description": "The first letter or short name of the word 'Energy', used in overviews"
+  },
+  "kcal": "大卡",
+  "@kcal": {
+    "description": "Energy in a meal in kilocalories, kcal"
+  },
+  "macronutrients": "巨量營養素",
+  "@macronutrients": {},
+  "proteinShort": "蛋白質",
+  "@proteinShort": {
+    "description": "The first letter or short name of the word 'Protein', used in overviews"
+  },
+  "toggleDetails": "切換詳細資訊",
+  "@toggleDetails": {
+    "description": "Switch to toggle detail / overview"
+  },
+  "aboutContactUsTitle": "您好！",
+  "@aboutContactUsTitle": {
+    "description": "Title for contact us section in the about dialog"
+  },
+  "addImage": "新增圖片",
+  "@addImage": {},
+  "addExercise": "新增動作",
+  "@addExercise": {},
+  "productFoundDescription": "此條碼對應到這個產品：{productName}。您要繼續嗎？",
+  "@productFoundDescription": {
+    "description": "Dialog info when product is found with barcode",
+    "type": "text",
+    "placeholders": {
+      "productName": {
+        "type": "String"
+      }
+    }
+  },
+  "appUpdateContent": "此版本的應用程式與伺服器不相容，請更新您的應用程式。",
+  "@appUpdateContent": {},
+  "aboutTranslationText": "這個應用程式是在 Weblate 上進行翻譯的。如果您也想提供協助，請點選連結開始翻譯",
+  "@aboutTranslationText": {
+    "description": "Text for translation section in the about dialog"
+  },
+  "enterCharacters": "請輸入 {min} 到 {max} 個字元",
+  "@enterCharacters": {
+    "description": "Error message when the user hasn't entered the correct number of characters in a form",
+    "type": "text",
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "g": "克",
+  "@g": {
+    "description": "Abbreviation for gram"
+  },
+  "protein": "蛋白質",
+  "@protein": {},
+  "carbohydrates": "碳水化合物",
+  "@carbohydrates": {},
+  "surplus": "過剩",
+  "@surplus": {
+    "description": "Caloric surplus (either planned or unplanned)"
+  },
+  "deficit": "不足",
+  "@deficit": {
+    "description": "Caloric deficit (either planned or unplanned)"
+  },
+  "kcalValue": "{value} 大卡",
+  "@kcalValue": {
+    "description": "A value in kcal, e.g. 500 kcal",
+    "type": "text",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "noWeightEntries": "您沒有體重紀錄",
+  "@noWeightEntries": {
+    "description": "Message shown when the user has no logged weight entries"
+  },
+  "noMeasurementEntries": "您沒有測量紀錄",
+  "@noMeasurementEntries": {},
+  "enterMinCharacters": "請輸入至少 {min} 個字元",
+  "@enterMinCharacters": {
+    "description": "Error message when the user hasn't entered the minimum amount characters in a form",
+    "type": "text",
+    "placeholders": {
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "baseNameEnglish": "所有動作都需要一個英文基本名稱",
+  "@baseNameEnglish": {},
+  "aboutDonateText": "請我們喝杯咖啡來支持專案、支付伺服器費用，讓我們持續前進",
+  "@aboutDonateText": {},
+  "aboutMastodonTitle": "Mastodon",
+  "@aboutMastodonTitle": {
+    "description": "Title for mastodon section in the about dialog"
+  },
+  "aboutTranslationTitle": "翻譯",
+  "@aboutTranslationTitle": {
+    "description": "Title for translation section in the about dialog"
+  },
+  "aboutDonateTitle": "贊助",
+  "@aboutDonateTitle": {},
+  "goToToday": "回到今天",
+  "@goToToday": {
+    "description": "Label on button to jump back to 'today' in the calendar widget"
+  },
+  "total": "總計",
+  "@total": {
+    "description": "Label used for total sums of e.g. calories or similar"
+  },
+  "swiss_ball": "瑜伽球",
+  "@swiss_ball": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "sz_bar": "彎曲槓",
+  "@sz_bar": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "pull_up_bar": "引體向上桿",
+  "@pull_up_bar": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "plates": "槓片",
+  "@plates": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "minutes": "分鐘",
+  "@minutes": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "incline_bench": "上斜椅",
+  "@incline_bench": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "hamstrings": "腿後肌群",
+  "@hamstrings": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "selectImage": "請選擇圖片",
+  "@selectImage": {
+    "description": "Label and error message when the user hasn't selected an image to save"
+  },
+  "chooseFromLibrary": "從相簿中選擇",
+  "@chooseFromLibrary": {},
+  "enterValidNumber": "請輸入有效數字",
+  "@enterValidNumber": {
+    "description": "Error message when the user has submitted an invalid number (e.g. '3,.,.,.')"
+  },
+  "dataCopied": "資料已複製到新紀錄",
+  "@dataCopied": {
+    "description": "Snackbar message to show on copying data to a new log entry"
+  },
+  "setUnitsAndRir": "設定單位和保留次數",
+  "@setUnitsAndRir": {
+    "description": "Label shown on the slider where the user can toggle showing units and RiR",
+    "type": "text"
+  },
+  "recentlyUsedIngredients": "最近新增的食材",
+  "@recentlyUsedIngredients": {
+    "description": "A message when a user adds a new ingredient to a meal."
+  },
+  "takePicture": "拍照",
+  "@takePicture": {},
+  "gallery": "相簿",
+  "@gallery": {},
+  "next": "下一個",
+  "@next": {},
+  "repetitions": "次數",
+  "@repetitions": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "goalMacro": "巨量營養素目標",
+  "@goalMacro": {
+    "description": "The goal for macronutrients"
+  },
+  "fiber": "纖維",
+  "@fiber": {},
+  "goalFiber": "纖維目標",
+  "@goalFiber": {},
+  "settingsIngredientCacheDescription": "食材快取",
+  "@settingsIngredientCacheDescription": {},
+  "overallChangeWeight": "整體變化",
+  "@overallChangeWeight": {
+    "description": "Overall change in weight, added for localization"
+  },
+  "goalTypeMeals": "來自餐點",
+  "@goalTypeMeals": {
+    "description": "added for localization of Class GoalType's filed meals"
+  },
+  "goalTypeBasic": "基本",
+  "@goalTypeBasic": {
+    "description": "added for localization of Class GoalType's filed basic"
+  },
+  "goalTypeAdvanced": "進階",
+  "@goalTypeAdvanced": {
+    "description": "added for localization of Class GoalType's filed advanced"
+  },
+  "indicatorRaw": "原始",
+  "@indicatorRaw": {
+    "description": "added for localization of Class Indicator's field text"
+  },
+  "indicatorAvg": "平均",
+  "@indicatorAvg": {
+    "description": "added for localization of Class Indicator's field text"
+  },
+  "themeMode": "主題模式",
+  "@themeMode": {},
+  "darkMode": "保持深色模式",
+  "@darkMode": {},
+  "lightMode": "保持淺色模式",
+  "@lightMode": {},
+  "systemMode": "系統設定",
+  "@systemMode": {},
+  "chartAllTimeTitle": "{name} 歷史紀錄",
+  "@chartAllTimeTitle": {
+    "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chart30DaysTitle": "{name} 最近 30 天",
+  "@chart30DaysTitle": {
+    "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chartDuringPlanTitle": "營養計劃 {planName} 期間的 {chartName}",
+  "@chartDuringPlanTitle": {
+    "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
+    "type": "text",
+    "placeholders": {
+      "chartName": {
+        "type": "String"
+      },
+      "planName": {
+        "type": "String"
+      }
+    }
+  },
+  "noIngredientsDefined": "尚未定義食材",
+  "@noIngredientsDefined": {},
+  "ingredientLogged": "食材已紀錄到日記",
+  "@ingredientLogged": {},
+  "selectMealToLog": "選擇要紀錄到日記的餐點",
+  "@selectMealToLog": {}
 }

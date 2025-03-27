@@ -29,10 +29,7 @@ class ExerciseCategory extends Equatable {
   @JsonKey(required: true)
   final String name;
 
-  const ExerciseCategory({
-    required this.id,
-    required this.name,
-  });
+  const ExerciseCategory({required this.id, required this.name});
 
   @override
   String toString() {

@@ -43,15 +43,13 @@ class ExerciseListTile extends StatelessWidget {
             child: SizedBox(
               height: IMG_SIZE,
               width: IMG_SIZE,
-              child: ExerciseImageWidget(
-                image: exerciseBase.getMainImage,
-              ),
+              child: ExerciseImageWidget(image: exerciseBase.getMainImage),
             ),
           ),
         ),
       ),
       title: Text(
-        exerciseBase.getExercise(Localizations.localeOf(context).languageCode).name,
+        exerciseBase.getTranslation(Localizations.localeOf(context).languageCode).name,
         //style: theme.textTheme.titleLarge,
         overflow: TextOverflow.ellipsis,
         maxLines: 2,

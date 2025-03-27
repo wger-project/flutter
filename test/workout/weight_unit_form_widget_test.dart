@@ -17,67 +17,67 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/models/workouts/setting.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
-import 'package:wger/providers/body_weight.dart';
-import 'package:wger/providers/workout_plans.dart';
-import 'package:wger/screens/workout_plan_screen.dart';
-import 'package:wger/widgets/workouts/forms.dart';
+import 'package:wger/providers/routines.dart';
+import 'package:wger/screens/routine_screen.dart';
+import 'package:wger/widgets/routines/forms/weight_unit.dart';
 
-import './workout_form_test.mocks.dart';
+import 'weight_unit_form_widget_test.mocks.dart';
 
-@GenerateMocks([BodyWeightProvider])
+@GenerateMocks([RoutinesProvider])
 void main() {
-  var mockWorkoutPlans = MockWorkoutPlansProvider();
+  var mockWorkoutPlans = MockRoutinesProvider();
+  int? result;
 
   const unit1 = WeightUnit(id: 1, name: 'kg');
   const unit2 = WeightUnit(id: 2, name: 'donkeys');
   const unit3 = WeightUnit(id: 3, name: 'plates');
 
-  final setting1 = Setting(
-    setId: 1,
+  final slotEntry = SlotEntry(
+    slotId: 1,
+    type: 'normal',
     order: 1,
     exerciseId: 1,
     repetitionUnitId: 1,
-    reps: 2,
+    repetitionRounding: 0.25,
     weightUnitId: 1,
+    weightRounding: 0.25,
     comment: 'comment',
-    rir: '1',
   );
-  setting1.weightUnitObj = unit1;
+  slotEntry.weightUnitObj = unit1;
 
   setUp(() {
-    mockWorkoutPlans = MockWorkoutPlansProvider();
+    result = null;
+    mockWorkoutPlans = MockRoutinesProvider();
     when(mockWorkoutPlans.weightUnits).thenAnswer((_) => [unit1, unit2, unit3]);
+    when(mockWorkoutPlans.findWeightUnitById(1)).thenReturn(unit1);
+    when(mockWorkoutPlans.findWeightUnitById(2)).thenReturn(unit2);
   });
 
-  Widget createHomeScreen() {
+  Widget renderWidget() {
     final key = GlobalKey<NavigatorState>();
 
-    return ChangeNotifierProvider<WorkoutPlansProvider>(
+    return ChangeNotifierProvider<RoutinesProvider>(
       create: (context) => mockWorkoutPlans,
       child: MaterialApp(
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
-        home: Scaffold(
-          body: WeightUnitInputWidget(setting1),
-        ),
-        routes: {
-          WorkoutPlanScreen.routeName: (ctx) => WorkoutPlanScreen(),
-        },
+        home: Scaffold(body: WeightUnitInputWidget(1, onChanged: (value) => result = value)),
+        routes: {RoutineScreen.routeName: (ctx) => const RoutineScreen()},
       ),
     );
   }
 
   testWidgets('Test that the entries are shown', (WidgetTester tester) async {
     // arrange
-    await tester.pumpWidget(createHomeScreen());
+    await tester.pumpWidget(renderWidget());
     await tester.tap(find.byKey(const Key('1')));
     await tester.pump();
 
@@ -89,16 +89,16 @@ void main() {
 
   testWidgets('Test that the correct units are set after selection', (WidgetTester tester) async {
     // arrange
-    await tester.pumpWidget(createHomeScreen());
+    await tester.pumpWidget(renderWidget());
     await tester.pump();
 
     // act
-    expect(setting1.weightUnitObj, equals(unit1));
+    expect(slotEntry.weightUnitObj, equals(unit1));
     await tester.tap(find.byKey(const Key('1')));
     await tester.pump();
     await tester.tap(find.text('donkeys').last);
 
     // assert
-    expect(setting1.weightUnitObj, equals(unit2));
+    expect(result, equals(2));
   });
 }

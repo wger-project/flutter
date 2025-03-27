@@ -30,6 +30,8 @@
 .pub-cache/
 .pub/
 /build/
+**/failures/*.png
+
 
 # Web related
 lib/generated_plugin_registrant.dart
@@ -51,3 +53,4 @@ app.*.map.json
 # Others
 /vendor/bundle/ruby/
 /coverage/
+/lib/l10n/generated/

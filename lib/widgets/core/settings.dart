@@ -18,53 +18,101 @@
 
 //import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/user.dart';
 
-class SettingsPage extends StatefulWidget {
+class SettingsPage extends StatelessWidget {
   static String routeName = '/SettingsPage';
 
   const SettingsPage({super.key});
 
   @override
-  State<SettingsPage> createState() => _SettingsPageState();
-}
-
-class _SettingsPageState extends State<SettingsPage> {
-  @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
     final exerciseProvider = Provider.of<ExercisesProvider>(context, listen: false);
+    final nutritionProvider = Provider.of<NutritionPlansProvider>(context, listen: false);
+    final userProvider = Provider.of<UserProvider>(context);
 
     return Scaffold(
-        appBar: AppBar(
-          title: Text(AppLocalizations.of(context).settingsTitle),
-        ),
-        body: ListView(
-          children: [
-            ListTile(
-              // leading: const Icon(Icons.cached),
-              title: Text(AppLocalizations.of(context).settingsCacheTitle),
-              subtitle: Text(AppLocalizations.of(context).settingsCacheDescription),
-              trailing: IconButton(
-                key: const ValueKey('cacheIcon'),
-                icon: const Icon(Icons.delete),
-                onPressed: () async {
-                  await exerciseProvider.clearAllCachesAndPrefs();
+      appBar: AppBar(title: Text(i18n.settingsTitle)),
+      body: ListView(
+        children: [
+          ListTile(
+            title: Text(
+              i18n.settingsCacheTitle,
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+          ),
+          ListTile(
+            title: Text(i18n.settingsExerciseCacheDescription),
+            trailing: IconButton(
+              key: const ValueKey('cacheIconExercises'),
+              icon: const Icon(Icons.delete),
+              onPressed: () async {
+                await exerciseProvider.clearAllCachesAndPrefs();
 
-                  if (context.mounted) {
-                    final snackBar = SnackBar(
-                      content: Text(AppLocalizations.of(context).settingsCacheDeletedSnackbar),
-                    );
+                if (context.mounted) {
+                  final snackBar = SnackBar(
+                    content: Text(i18n.settingsCacheDeletedSnackbar),
+                  );
 
-                    // Find the ScaffoldMessenger in the widget tree
-                    // and use it to show a SnackBar.
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                }
+              },
+            ),
+          ),
+          ListTile(
+            title: Text(i18n.settingsIngredientCacheDescription),
+            trailing: IconButton(
+              key: const ValueKey('cacheIconIngredients'),
+              icon: const Icon(Icons.delete),
+              onPressed: () async {
+                await nutritionProvider.clearIngredientCache();
+
+                if (context.mounted) {
+                  final snackBar = SnackBar(
+                    content: Text(i18n.settingsCacheDeletedSnackbar),
+                  );
+
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                }
+              },
+            ),
+          ),
+          ListTile(
+            title: Text(i18n.themeMode),
+            trailing: DropdownButton<ThemeMode>(
+              key: const ValueKey('themeModeDropdown'),
+              value: userProvider.themeMode,
+              onChanged: (ThemeMode? newValue) {
+                if (newValue != null) {
+                  userProvider.setThemeMode(newValue);
+                }
+              },
+              items: ThemeMode.values.map<DropdownMenuItem<ThemeMode>>((ThemeMode value) {
+                final label = (() {
+                  switch (value) {
+                    case ThemeMode.system:
+                      return i18n.systemMode;
+                    case ThemeMode.light:
+                      return i18n.lightMode;
+                    case ThemeMode.dark:
+                      return i18n.darkMode;
                   }
-                },
-              ),
-            )
-          ],
-        ));
+                })();
+
+                return DropdownMenuItem<ThemeMode>(
+                  value: value,
+                  child: Text(label),
+                );
+              }).toList(),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

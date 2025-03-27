@@ -1,0 +1,63 @@
+{
+    "count": 1,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 19733,
+            "uuid": "354c6050-5654-41bc-8823-4fd27b54fb59",
+            "remote_id": "3068320105222",
+            "source_name": "Open Food Facts",
+            "source_url": "https://world.openfoodfacts.org/api/v2/product/3068320105222.json",
+            "code": "3068320105222",
+            "name": "Badoit zest citron vert sans sucres",
+            "created": "2020-12-20T01:00:00+01:00",
+            "last_update": "2024-06-07T06:39:29.032545+02:00",
+            "last_imported": "2020-12-20T14:45:31.370000+01:00",
+            "energy": 1,
+            "protein": "0.000",
+            "carbohydrates": "0.000",
+            "carbohydrates_sugar": "0.000",
+            "fat": "0.000",
+            "fat_saturated": "0.000",
+            "fiber": null,
+            "sodium": "0.020",
+            "weight_units": [],
+            "language": {
+                "id": 12,
+                "short_name": "fr",
+                "full_name": "Fran\u00e7ais",
+                "full_name_en": "French"
+            },
+            "image": {
+                "id": 26949,
+                "uuid": "5177e2d1-b03a-42d9-bdf1-2dd3edad8210",
+                "ingredient_id": 19733,
+                "ingredient_uuid": "354c6050-5654-41bc-8823-4fd27b54fb59",
+                "image": "https://wger.de/media/ingredients/19733/5177e2d1-b03a-42d9-bdf1-2dd3edad8210.jpg",
+                "created": "2023-12-04T10:48:19.019477+01:00",
+                "last_update": "2023-12-04T10:48:19.062343+01:00",
+                "size": 13302,
+                "width": 112,
+                "height": 400,
+                "license": 1,
+                "license_title": "Photo",
+                "license_object_url": "https://world.openfoodfacts.org/cgi/product_image.pl?code=3068320105222&id=11",
+                "license_author": "hungergames",
+                "license_author_url": "https://world.openfoodfacts.org/photographer/hungergames",
+                "license_derivative_source_url": ""
+            },
+            "license": {
+                "id": 5,
+                "full_name": "Open Data Commons Open Database License",
+                "short_name": "ODbL",
+                "url": "https://opendatacommons.org/licenses/odbl/"
+            },
+            "license_title": "Badoit zest citron vert sans sucres",
+            "license_object_url": "",
+            "license_author": "",
+            "license_author_url": "",
+            "license_derivative_source_url": ""
+        }
+    ]
+}

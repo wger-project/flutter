@@ -16,14 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
+import 'package:wger/models/nutrition/nutritional_goals.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
 
 part 'nutritional_plan.g.dart';
@@ -36,29 +38,59 @@ class NutritionalPlan {
   @JsonKey(required: true)
   late String description;
 
-  @JsonKey(required: true, name: 'creation_date', toJson: toDate)
+  @JsonKey(required: true, name: 'creation_date', toJson: dateToYYYYMMDD)
   late DateTime creationDate;
+
+  @JsonKey(required: true, name: 'only_logging')
+  late bool onlyLogging;
+
+  @JsonKey(required: true, name: 'goal_energy')
+  late num? goalEnergy;
+
+  @JsonKey(required: true, name: 'goal_protein')
+  late num? goalProtein;
+
+  @JsonKey(required: true, name: 'goal_carbohydrates')
+  late num? goalCarbohydrates;
+
+  @JsonKey(required: true, name: 'goal_fat')
+  late num? goalFat;
+
+  @JsonKey(required: true, name: 'goal_fiber')
+  late num? goalFiber;
 
   @JsonKey(includeFromJson: false, includeToJson: false, defaultValue: [])
   List<Meal> meals = [];
 
   @JsonKey(includeFromJson: false, includeToJson: false, defaultValue: [])
-  List<Log> logs = [];
+  List<Log> diaryEntries = [];
 
   NutritionalPlan({
     this.id,
     required this.description,
     required this.creationDate,
+    this.onlyLogging = false,
+    this.goalEnergy,
+    this.goalProtein,
+    this.goalCarbohydrates,
+    this.goalFat,
+    this.goalFiber,
     List<Meal>? meals,
-    List<Log>? logs,
+    List<Log>? diaryEntries,
   }) {
     this.meals = meals ?? [];
-    this.logs = logs ?? [];
+    this.diaryEntries = diaryEntries ?? [];
   }
 
   NutritionalPlan.empty() {
     creationDate = DateTime.now();
     description = '';
+    onlyLogging = false;
+    goalEnergy = null;
+    goalProtein = null;
+    goalCarbohydrates = null;
+    goalFiber = null;
+    goalFat = null;
   }
 
   // Boilerplate
@@ -70,67 +102,74 @@ class NutritionalPlan {
     return description != '' ? description : AppLocalizations.of(context).nutritionalPlan;
   }
 
-  /// Calculations
-  NutritionalValues get nutritionalValues {
-    // This is already done on the server. It might be better to read it from there.
-    var out = NutritionalValues();
-
-    for (final meal in meals) {
-      out += meal.nutritionalValues;
-    }
-
-    return out;
+  bool get hasAnyGoals {
+    return goalEnergy != null ||
+        goalFat != null ||
+        goalProtein != null ||
+        goalCarbohydrates != null;
   }
 
-  NutritionalValues get nutritionalValuesToday {
+  bool get hasAnyAdvancedGoals {
+    return goalFiber != null;
+  }
+
+  /// Calculations
+  ///
+  /// note that (some of) this is already done on the server. It might be better
+  /// to read it from there, but on the other hand we might want to do more locally
+  /// so that a mostly offline mode is possible.
+  NutritionalGoals get nutritionalGoals {
+    // If there are set goals, they take preference over any meals
+    if (hasAnyGoals || hasAnyAdvancedGoals) {
+      return NutritionalGoals(
+        energy: goalEnergy?.toDouble(),
+        fat: goalFat?.toDouble(),
+        protein: goalProtein?.toDouble(),
+        carbohydrates: goalCarbohydrates?.toDouble(),
+        fiber: goalFiber?.toDouble(),
+      );
+    }
+    // if there are no set goals and no defined meals, the goals are still undefined
+    if (meals.isEmpty) {
+      return NutritionalGoals();
+    }
+    // otherwise, add up all the nutritional values of the meals and use that as goals
+    final sumValues = meals.fold(
+      NutritionalValues(),
+      (a, b) => a + b.plannedNutritionalValues,
+    );
+    return NutritionalGoals(
+      energy: sumValues.energy,
+      fat: sumValues.fat,
+      protein: sumValues.protein,
+      carbohydrates: sumValues.carbohydrates,
+      carbohydratesSugar: sumValues.carbohydratesSugar,
+      fatSaturated: sumValues.fatSaturated,
+      fiber: sumValues.fiber,
+      sodium: sumValues.sodium,
+    );
+  }
+
+  NutritionalValues get loggedNutritionalValuesToday {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
 
     return logEntriesValues.containsKey(today) ? logEntriesValues[today]! : NutritionalValues();
   }
 
-  NutritionalValues get nutritionalValues7DayAvg {
+  NutritionalValues get loggedNutritionalValues7DayAvg {
     final currentDate = DateTime.now();
     final sevenDaysAgo = currentDate.subtract(const Duration(days: 7));
 
-    final entries = logs.where((obj) {
-      final DateTime objDate = obj.datetime;
-      return objDate.isAfter(sevenDaysAgo) && objDate.isBefore(currentDate);
-    }).toList();
-
-    var out = NutritionalValues();
-    for (final log in entries) {
-      out = out + log.nutritionalValues;
-    }
-
-    return out;
-  }
-
-  /// Calculates the percentage each macro nutrient adds to the total energy
-  BaseNutritionalValues energyPercentage(NutritionalValues values) {
-    return BaseNutritionalValues(
-      values.protein > 0 ? ((values.protein * ENERGY_PROTEIN * 100) / values.energy) : 0,
-      values.carbohydrates > 0
-          ? ((values.carbohydrates * ENERGY_CARBOHYDRATES * 100) / values.energy)
-          : 0,
-      values.fat > 0 ? ((values.fat * ENERGY_FAT * 100) / values.energy) : 0,
-    );
-  }
-
-  /// Calculates the grams per body-kg for each macro nutrient
-  BaseNutritionalValues gPerBodyKg(num weight, NutritionalValues values) {
-    assert(weight > 0);
-
-    return BaseNutritionalValues(
-      values.protein / weight,
-      values.carbohydrates / weight,
-      values.fat / weight,
-    );
+    return diaryEntries
+            .where((obj) => obj.datetime.isAfter(sevenDaysAgo))
+            .fold(NutritionalValues(), (a, b) => a + b.nutritionalValues) /
+        7;
   }
 
   Map<DateTime, NutritionalValues> get logEntriesValues {
     final out = <DateTime, NutritionalValues>{};
-    for (final log in logs) {
+    for (final log in diaryEntries) {
       final date = DateTime(log.datetime.year, log.datetime.month, log.datetime.day);
 
       if (!out.containsKey(date)) {
@@ -154,7 +193,7 @@ class NutritionalPlan {
   /// Returns the nutritional logs for the given date
   List<Log> getLogsForDate(DateTime date) {
     final List<Log> out = [];
-    for (final log in logs) {
+    for (final log in diaryEntries) {
       final dateKey = DateTime(date.year, date.month, date.day);
       final logKey = DateTime(log.datetime.year, log.datetime.month, log.datetime.day);
 
@@ -166,20 +205,45 @@ class NutritionalPlan {
     return out;
   }
 
-  /// Helper that returns all meal items for the current plan
-  ///
-  /// Duplicated ingredients are removed
-  List<MealItem> get allMealItems {
+  /// returns meal items across all meals
+  /// deduped by the combination of amount and ingredient ID
+  List<MealItem> get dedupMealItems {
     final List<MealItem> out = [];
     for (final meal in meals) {
       for (final mealItem in meal.mealItems) {
-        final ingredientInList = out.where((e) => e.ingredientId == mealItem.ingredientId);
+        final found = out.firstWhereOrNull(
+          (e) => e.amount == mealItem.amount && e.ingredientId == mealItem.ingredientId,
+        );
 
-        if (ingredientInList.isEmpty) {
+        if (found == null) {
           out.add(mealItem);
         }
       }
     }
     return out;
+  }
+
+  /// returns diary entries
+  /// deduped by the combination of amount and ingredient ID
+  List<Log> get dedupDiaryEntries {
+    final out = <Log>[];
+    for (final log in diaryEntries) {
+      final found = out.firstWhereOrNull(
+        (e) => e.amount == log.amount && e.ingredientId == log.ingredientId,
+      );
+      if (found == null) {
+        out.add(log);
+      }
+    }
+    return out;
+  }
+
+  Meal pseudoMealOthers(String name) {
+    return Meal(
+      id: PSEUDO_MEAL_ID,
+      plan: id,
+      name: name,
+      diaryEntries: diaryEntries.where((e) => e.mealId == null).toList(),
+    );
   }
 }

@@ -11,6 +11,10 @@ Ingredient _$IngredientFromJson(Map<String, dynamic> json) {
     json,
     requiredKeys: const [
       'id',
+      'remote_id',
+      'source_name',
+      'source_url',
+      'license_object_url',
       'code',
       'name',
       'created',
@@ -20,22 +24,26 @@ Ingredient _$IngredientFromJson(Map<String, dynamic> json) {
       'protein',
       'fat',
       'fat_saturated',
-      'fibres',
+      'fiber',
       'sodium'
     ],
   );
   return Ingredient(
-    id: json['id'] as int,
+    remoteId: json['remote_id'] as String?,
+    sourceName: json['source_name'] as String?,
+    sourceUrl: json['source_url'] as String?,
+    licenseObjectURl: json['license_object_url'] as String?,
+    id: (json['id'] as num).toInt(),
     code: json['code'] as String?,
     name: json['name'] as String,
     created: DateTime.parse(json['created'] as String),
-    energy: json['energy'] as int,
+    energy: (json['energy'] as num).toInt(),
     carbohydrates: stringToNum(json['carbohydrates'] as String?),
     carbohydratesSugar: stringToNum(json['carbohydrates_sugar'] as String?),
     protein: stringToNum(json['protein'] as String?),
     fat: stringToNum(json['fat'] as String?),
     fatSaturated: stringToNum(json['fat_saturated'] as String?),
-    fibres: stringToNum(json['fibres'] as String?),
+    fiber: stringToNum(json['fiber'] as String?),
     sodium: stringToNum(json['sodium'] as String?),
     image: json['image'] == null
         ? null
@@ -45,6 +53,10 @@ Ingredient _$IngredientFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$IngredientToJson(Ingredient instance) => <String, dynamic>{
       'id': instance.id,
+      'remote_id': instance.remoteId,
+      'source_name': instance.sourceName,
+      'source_url': instance.sourceUrl,
+      'license_object_url': instance.licenseObjectURl,
       'code': instance.code,
       'name': instance.name,
       'created': instance.created.toIso8601String(),
@@ -54,7 +66,7 @@ Map<String, dynamic> _$IngredientToJson(Ingredient instance) => <String, dynamic
       'protein': numToString(instance.protein),
       'fat': numToString(instance.fat),
       'fat_saturated': numToString(instance.fatSaturated),
-      'fibres': numToString(instance.fibres),
+      'fiber': numToString(instance.fiber),
       'sodium': numToString(instance.sodium),
       'image': instance.image,
     };

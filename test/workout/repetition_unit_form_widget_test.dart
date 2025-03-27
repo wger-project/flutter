@@ -17,58 +17,61 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
-import 'package:wger/models/workouts/setting.dart';
-import 'package:wger/providers/workout_plans.dart';
-import 'package:wger/screens/workout_plan_screen.dart';
-import 'package:wger/widgets/workouts/forms.dart';
+import 'package:wger/models/workouts/slot_entry.dart';
+import 'package:wger/providers/routines.dart';
+import 'package:wger/screens/routine_screen.dart';
+import 'package:wger/widgets/routines/forms/reps_unit.dart';
 
 import 'repetition_unit_form_widget_test.mocks.dart';
 
-@GenerateMocks([WorkoutPlansProvider])
+@GenerateMocks([RoutinesProvider])
 void main() {
-  var mockWorkoutPlans = MockWorkoutPlansProvider();
-
+  var mockWorkoutPlans = MockRoutinesProvider();
   const unit1 = RepetitionUnit(id: 1, name: 'some rep unit');
   const unit2 = RepetitionUnit(id: 2, name: 'another name');
   const unit3 = RepetitionUnit(id: 3, name: 'this is repetition number 3');
 
-  final setting1 = Setting(
-    setId: 1,
+  int? result;
+
+  final slotEntry = SlotEntry(
+    slotId: 1,
+    type: 'normal',
     order: 1,
     exerciseId: 1,
     repetitionUnitId: 1,
-    reps: 2,
+    repetitionRounding: 0.25,
     weightUnitId: 1,
+    weightRounding: 0.25,
     comment: 'comment',
-    rir: '1',
   );
-  setting1.repetitionUnitObj = unit1;
+  slotEntry.repetitionUnitObj = unit1;
 
   setUp(() {
-    mockWorkoutPlans = MockWorkoutPlansProvider();
+    mockWorkoutPlans = MockRoutinesProvider();
+    result = null;
     when(mockWorkoutPlans.repetitionUnits).thenAnswer((_) => [unit1, unit2, unit3]);
+    when(mockWorkoutPlans.findRepetitionUnitById(1)).thenReturn(unit1);
+    when(mockWorkoutPlans.findRepetitionUnitById(2)).thenReturn(unit2);
   });
 
-  Widget createHomeScreen() {
+  Widget renderWidget() {
     final key = GlobalKey<NavigatorState>();
 
-    return ChangeNotifierProvider<WorkoutPlansProvider>(
+    return ChangeNotifierProvider<RoutinesProvider>(
       create: (context) => mockWorkoutPlans,
       child: MaterialApp(
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
-        home: Scaffold(
-          body: RepetitionUnitInputWidget(setting1),
-        ),
+        home: Scaffold(body: RepetitionUnitInputWidget(1, onChanged: (value) => result = value)),
         routes: {
-          WorkoutPlanScreen.routeName: (ctx) => WorkoutPlanScreen(),
+          RoutineScreen.routeName: (ctx) => const RoutineScreen(),
         },
       ),
     );
@@ -76,7 +79,7 @@ void main() {
 
   testWidgets('Test that the entries are shown', (WidgetTester tester) async {
     // arrange
-    await tester.pumpWidget(createHomeScreen());
+    await tester.pumpWidget(renderWidget());
     await tester.tap(find.byKey(const Key('1')));
     await tester.pump();
 
@@ -88,16 +91,15 @@ void main() {
 
   testWidgets('Test that the correct units are set after selection', (WidgetTester tester) async {
     // arrange
-    await tester.pumpWidget(createHomeScreen());
+    await tester.pumpWidget(renderWidget());
     await tester.pump();
 
     // act
-    expect(setting1.repetitionUnitObj, equals(unit1));
     await tester.tap(find.byKey(const Key('1')));
     await tester.pump();
     await tester.tap(find.text('another name').last);
 
     // assert
-    expect(setting1.repetitionUnitObj, equals(unit2));
+    expect(result, equals(2));
   });
 }

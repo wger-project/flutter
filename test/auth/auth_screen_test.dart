@@ -19,7 +19,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
@@ -28,6 +27,7 @@ import 'package:mockito/mockito.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/screens/auth_screen.dart';
 
@@ -54,19 +54,17 @@ void main() {
 
   final responseRegistrationOk = {
     'message': 'api user successfully registered',
-    'token': 'b01c44d3e3e016a615d2f82b16d31f8b924fb936'
+    'token': 'b01c44d3e3e016a615d2f82b16d31f8b924fb936',
   };
 
   MultiProvider getWidget() {
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (ctx) => authProvider),
-      ],
+      providers: [ChangeNotifierProvider(create: (ctx) => authProvider)],
       child: Consumer<AuthProvider>(
-        builder: (ctx, auth, _) => MaterialApp(
+        builder: (ctx, auth, _) => const MaterialApp(
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          locale: const Locale('en'),
+          locale: Locale('en'),
           home: AuthScreen(),
         ),
       ),
@@ -93,9 +91,7 @@ void main() {
       body: anyNamed('body'),
     )).thenAnswer((_) => Future(() => Response(json.encode(responseLoginOk), 200)));
 
-    when(mockClient.get(
-      any,
-    )).thenAnswer((_) => Future(() => Response('"1.2.3.4"', 200)));
+    when(mockClient.get(any)).thenAnswer((_) => Future(() => Response('"1.2.3.4"', 200)));
 
     when(mockClient.post(
       tRegistration,
@@ -125,7 +121,7 @@ void main() {
       expect(find.byKey(const Key('toggleCustomServerButton')), findsOneWidget);
     });
 
-    testWidgets('Tests the login - happy path', (WidgetTester tester) async {
+    testWidgets('Login - happy path', (WidgetTester tester) async {
       // Arrange
       await tester.pumpWidget(getWidget());
 
@@ -138,6 +134,38 @@ void main() {
       // Assert
       expect(find.textContaining('An Error Occurred'), findsNothing);
       verify(mockClient.get(any));
+      verify(mockClient.post(
+        tLogin,
+        headers: anyNamed('headers'),
+        body: json.encode({'username': 'testuser', 'password': '123456789'}),
+      ));
+    });
+
+    testWidgets('Login - wront username & password', (WidgetTester tester) async {
+      // Arrange
+      await tester.binding.setSurfaceSize(const Size(1080, 1920));
+      tester.view.devicePixelRatio = 1.0;
+      final response = {
+        'non_field_errors': ['Username or password unknown'],
+      };
+
+      when(mockClient.post(
+        tLogin,
+        headers: anyNamed('headers'),
+        body: anyNamed('body'),
+      )).thenAnswer((_) => Future(() => Response(json.encode(response), 400)));
+      await tester.pumpWidget(getWidget());
+
+      // Act
+      await tester.enterText(find.byKey(const Key('inputUsername')), 'testuser');
+      await tester.enterText(find.byKey(const Key('inputPassword')), '123456789');
+      await tester.tap(find.byKey(const Key('actionButton')));
+      await tester.pumpAndSettle();
+
+      // Assert
+      expect(find.textContaining('An Error Occurred'), findsOne);
+      expect(find.textContaining('Non field errors'), findsOne);
+      expect(find.textContaining('Username or password unknown'), findsOne);
       verify(mockClient.post(
         tLogin,
         headers: anyNamed('headers'),
@@ -175,7 +203,7 @@ void main() {
       expect(find.byKey(const Key('inputServer')), findsOneWidget);
     });
 
-    testWidgets('Tests the registration - happy path', (WidgetTester tester) async {
+    testWidgets('Registration - happy path', (WidgetTester tester) async {
       // Arrange
       await tester.binding.setSurfaceSize(const Size(1080, 1920));
       tester.view.devicePixelRatio = 1.0;
@@ -198,18 +226,16 @@ void main() {
       ));
     });
 
-    testWidgets('Tests the registration - password problems', (WidgetTester tester) async {
+    testWidgets('Registration - password problems', (WidgetTester tester) async {
       // Arrange
       await tester.binding.setSurfaceSize(const Size(1080, 1920));
       tester.view.devicePixelRatio = 1.0;
       final response = {
-        'username': [
-          'This field must be unique.',
-        ],
+        'username': ['This field must be unique.'],
         'password': [
           'This password is too common.',
           'This password is entirely numeric.',
-        ]
+        ],
       };
 
       when(mockClient.post(

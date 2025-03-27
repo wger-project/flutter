@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/log.dart';
@@ -24,6 +26,9 @@ import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 
 final ingredient1 = Ingredient(
+  remoteId: '1',
+  sourceName: 'Built-in testdata',
+  sourceUrl: 'https://example.com/ingredient/1',
   id: 1,
   code: '123456787',
   name: 'Water',
@@ -34,10 +39,13 @@ final ingredient1 = Ingredient(
   protein: 5,
   fat: 20,
   fatSaturated: 7,
-  fibres: 12,
+  fiber: 12,
   sodium: 0.5,
 );
 final ingredient2 = Ingredient(
+  remoteId: '2',
+  sourceName: 'Built-in testdata',
+  sourceUrl: 'https://example.com/ingredient/2',
   id: 2,
   code: '123456788',
   name: 'Burger soup',
@@ -48,10 +56,13 @@ final ingredient2 = Ingredient(
   protein: 1,
   fat: 12,
   fatSaturated: 9,
-  fibres: 50,
+  fiber: 50,
   sodium: 0,
 );
 final ingredient3 = Ingredient(
+  remoteId: '3',
+  sourceName: 'Built-in testdata',
+  sourceUrl: 'https://example.com/ingredient/3',
   id: 3,
   code: '123456789',
   name: 'Broccoli cake',
@@ -62,28 +73,87 @@ final ingredient3 = Ingredient(
   protein: 9,
   fat: 10,
   fatSaturated: 8,
-  fibres: 1,
+  fiber: 1,
   sodium: 10,
+);
+final muesli = Ingredient(
+  remoteId: '1',
+  sourceName: 'Built-in testdata',
+  sourceUrl: 'https://example.com/ingredient/1',
+  id: 1,
+  code: '123456787',
+  name: 'Müsli',
+  created: DateTime(2021, 5, 1),
+  energy: 500,
+  carbohydrates: 10,
+  carbohydratesSugar: 2,
+  protein: 5,
+  fat: 20,
+  fatSaturated: 7,
+  fiber: 12,
+  sodium: 0.5,
+);
+final milk = Ingredient(
+  remoteId: '1',
+  sourceName: 'Built-in testdata',
+  sourceUrl: 'https://example.com/ingredient/1',
+  id: 1,
+  code: '123456787',
+  name: 'Milk',
+  created: DateTime(2021, 5, 1),
+  energy: 500,
+  carbohydrates: 10,
+  carbohydratesSugar: 2,
+  protein: 5,
+  fat: 20,
+  fatSaturated: 7,
+  fiber: 12,
+  sodium: 0.5,
+);
+final apple = Ingredient(
+  remoteId: '1',
+  sourceName: 'Built-in testdata',
+  sourceUrl: 'https://example.com/ingredient/1',
+  id: 1,
+  code: '123456787',
+  name: 'Apple',
+  created: DateTime(2021, 5, 1),
+  energy: 500,
+  carbohydrates: 10,
+  carbohydratesSugar: 2,
+  protein: 5,
+  fat: 20,
+  fatSaturated: 7,
+  fiber: 12,
+  sodium: 0.5,
+);
+final cake = Ingredient(
+  remoteId: '1',
+  sourceName: 'Built-in testdata',
+  sourceUrl: 'https://example.com/ingredient/1',
+  id: 1,
+  code: '111111111',
+  name: 'Lemon CAke',
+  created: DateTime(2021, 5, 1),
+  energy: 400,
+  carbohydrates: 53,
+  carbohydratesSugar: 37,
+  protein: 4,
+  fat: 12,
+  fatSaturated: 0,
+  fiber: 0,
+  sodium: 0,
 );
 
 NutritionalPlan getNutritionalPlan() {
-  final mealItem1 = MealItem(
-    ingredientId: 1,
-    amount: 100,
-  );
-  mealItem1.ingredientObj = ingredient1;
+  final mealItem1 = MealItem(ingredientId: 1, amount: 100);
+  mealItem1.ingredient = ingredient1;
 
-  final mealItem2 = MealItem(
-    ingredientId: 2,
-    amount: 75,
-  );
-  mealItem2.ingredientObj = ingredient2;
+  final mealItem2 = MealItem(ingredientId: 2, amount: 75);
+  mealItem2.ingredient = ingredient2;
 
-  final mealItem3 = MealItem(
-    ingredientId: 3,
-    amount: 300,
-  );
-  mealItem3.ingredientObj = ingredient3;
+  final mealItem3 = MealItem(ingredientId: 3, amount: 300);
+  mealItem3.ingredient = ingredient3;
 
   final meal1 = Meal(
     id: 1,
@@ -109,9 +179,63 @@ NutritionalPlan getNutritionalPlan() {
   plan.meals = [meal1, meal2];
 
   // Add logs
-  plan.logs.add(Log.fromMealItem(mealItem1, 1, 1, DateTime(2021, 6, 1)));
-  plan.logs.add(Log.fromMealItem(mealItem2, 1, 1, DateTime(2021, 6, 1)));
-  plan.logs.add(Log.fromMealItem(mealItem3, 1, 1, DateTime(2021, 6, 10)));
+  plan.diaryEntries.add(Log.fromMealItem(mealItem1, 1, 1, DateTime(2021, 6, 1)));
+  plan.diaryEntries.add(Log.fromMealItem(mealItem2, 1, 1, DateTime(2021, 6, 1)));
+  plan.diaryEntries.add(Log.fromMealItem(mealItem3, 1, 1, DateTime(2021, 6, 10)));
+
+  return plan;
+}
+
+NutritionalPlan getNutritionalPlanScreenshot() {
+  final random = Random();
+
+  final mealItem1 = MealItem(ingredientId: 1, amount: 100, ingredient: muesli);
+  final mealItem2 = MealItem(ingredientId: 2, amount: 75, ingredient: milk);
+  final mealItem3 = MealItem(ingredientId: 3, amount: 100, ingredient: apple);
+
+  final meal1 = Meal(
+    id: 1,
+    plan: 1,
+    time: const TimeOfDay(hour: 8, minute: 30),
+    name: 'Breakfast',
+    mealItems: [mealItem1, mealItem2],
+  );
+
+  final meal2 = Meal(
+    id: 2,
+    plan: 1,
+    time: const TimeOfDay(hour: 11, minute: 0),
+    name: 'Snack 1',
+    mealItems: [mealItem3],
+  );
+
+  final NutritionalPlan plan = NutritionalPlan(
+    id: 1,
+    description: 'Diet',
+    creationDate: DateTime(2021, 5, 23),
+    meals: [meal1, meal2],
+  );
+
+  // Add logs
+  plan.diaryEntries.add(Log.fromMealItem(mealItem1, 1, 1, DateTime.now()));
+  plan.diaryEntries.add(Log.fromMealItem(mealItem2, 1, 1, DateTime.now()));
+  plan.diaryEntries.add(Log.fromMealItem(mealItem3, 1, 1, DateTime.now()));
+
+  for (final i in plan.diaryEntries) {
+    i.datetime = DateTime.now();
+    i.amount = i.amount / (1.0 + random.nextDouble() * (4.0 - 1.0));
+  }
+
+  final log = Log(
+    mealId: meal1.id,
+    ingredientId: 1,
+    weightUnitId: 1,
+    amount: 40,
+    planId: plan.id!,
+    datetime: DateTime.now(),
+  );
+  log.ingredient = cake;
+  plan.diaryEntries.add(log);
 
   return plan;
 }

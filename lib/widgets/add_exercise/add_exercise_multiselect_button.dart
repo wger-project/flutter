@@ -9,14 +9,15 @@ class AddExerciseMultiselectButton<T> extends StatefulWidget {
   final FormFieldSetter<List<T?>?>? onSaved;
   final Function displayName;
 
-  const AddExerciseMultiselectButton(
-      {super.key,
-      required this.items,
-      required this.title,
-      required this.onChange,
-      this.initialItems = const [],
-      this.onSaved,
-      required this.displayName});
+  const AddExerciseMultiselectButton({
+    super.key,
+    required this.items,
+    required this.title,
+    required this.onChange,
+    this.initialItems = const [],
+    this.onSaved,
+    required this.displayName,
+  });
 
   @override
   _AddExerciseMultiselectButtonState createState() => _AddExerciseMultiselectButtonState<T>();
@@ -65,9 +66,7 @@ class _AddExerciseMultiselectButtonState<T> extends State<AddExerciseMultiselect
           border: Border.all(
             color: _selectedItems.isEmpty ? Colors.grey : Colors.transparent,
           ),
-          borderRadius: const BorderRadius.all(
-            Radius.circular(10),
-          ),
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
         ),
       ),
     );

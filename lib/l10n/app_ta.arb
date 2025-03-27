@@ -1,0 +1,988 @@
+{
+  "userProfile": "உங்கள் சுயவிவரம்",
+  "@userProfile": {},
+  "weightUnit": "எடை அலகு",
+  "@weightUnit": {},
+  "setNr": "{nr} அமை",
+  "@setNr": {
+    "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {
+        "type": "String"
+      }
+    }
+  },
+  "newSet": "புதிய தொகுப்பு",
+  "@newSet": {
+    "description": "Header when adding a new set to a workout day"
+  },
+  "gymMode": "சிம் பயன்முறை",
+  "@gymMode": {
+    "description": "Label when starting the gym mode"
+  },
+  "goalFat": "கொழுப்பு இலக்கு",
+  "@goalFat": {},
+  "measurement": "அளவீட்டு",
+  "@measurement": {},
+  "measurements": "அளவீடுகள்",
+  "@measurements": {
+    "description": "Categories for the measurements such as biceps size, body fat, etc."
+  },
+  "start": "தொடங்கு",
+  "@start": {
+    "description": "Label on button to start the gym mode (i.e., an imperative)"
+  },
+  "percentEnergy": "ஆற்றலின் விழுக்காடு",
+  "@percentEnergy": {},
+  "gPerBodyKg": "g க்கு kg",
+  "@gPerBodyKg": {
+    "description": "Label used for total sums of e.g. calories or similar in grams per Kg of body weight"
+  },
+  "fatShort": "F",
+  "@fatShort": {
+    "description": "The first letter or short name of the word 'Fat', used in overviews"
+  },
+  "noMeasurementEntries": "உங்களிடம் அளவீட்டு உள்ளீடுகள் இல்லை",
+  "@noMeasurementEntries": {},
+  "delete": "அழி",
+  "@delete": {},
+  "gallery": "கேலரி",
+  "@gallery": {},
+  "whatVariationsExist": "இந்த பயிற்சியின் என்ன மாறுபாடுகள் உள்ளன, ஏதேனும் இருந்தால்?",
+  "@whatVariationsExist": {},
+  "edit": "தொகு",
+  "@edit": {},
+  "close": "மூடு",
+  "@close": {
+    "description": "Translation for close"
+  },
+  "difference": "வேறுபாடு",
+  "@difference": {},
+  "notes": "குறிப்புகள்",
+  "@notes": {
+    "description": "Personal notes, e.g. for a workout session"
+  },
+  "value": "மதிப்பு",
+  "@value": {
+    "description": "The value of a measurement entry"
+  },
+  "unit": "அலகு",
+  "@unit": {
+    "description": "The unit used for a repetition (kg, time, etc.)"
+  },
+  "total": "மொத்தம்",
+  "@total": {
+    "description": "Label used for total sums of e.g. calories or similar"
+  },
+  "description": "விவரம்",
+  "@description": {},
+  "translation": "மொழிபெயர்ப்பு",
+  "@translation": {},
+  "images": "படங்கள்",
+  "@images": {},
+  "language": "மொழி",
+  "@language": {},
+  "name": "பெயர்",
+  "@name": {
+    "description": "Name for a workout or nutritional plan"
+  },
+  "category": "வகை",
+  "@category": {
+    "description": "Category for an exercise, ingredient, etc."
+  },
+  "save": "சேமி",
+  "@save": {},
+  "login": "புகுபதிகை",
+  "@login": {
+    "description": "Text for login button"
+  },
+  "logout": "விடுபதிகை",
+  "@logout": {
+    "description": "Text for logout button"
+  },
+  "register": "பதிவு செய்யுங்கள்",
+  "@register": {
+    "description": "Text for registration button"
+  },
+  "useDefaultServer": "இயல்புநிலை சேவையகத்தைப் பயன்படுத்தவும்",
+  "@useDefaultServer": {
+    "description": "Toggle button allowing users to switch between the default and a custom wger server"
+  },
+  "useCustomServer": "தனிப்பயன் சேவையகத்தைப் பயன்படுத்தவும்",
+  "@useCustomServer": {
+    "description": "Toggle button allowing users to switch between the default and a custom wger server"
+  },
+  "invalidUrl": "செல்லுபடியாகும் முகவரி ஐ உள்ளிடவும்",
+  "@invalidUrl": {
+    "description": "Error message when the user enters an invalid URL, e.g. in the login form"
+  },
+  "usernameValidChars": "ஒரு பயனர்பெயரில் கடிதங்கள், இலக்கங்கள் மற்றும் எழுத்துக்கள் @, +,., -, மற்றும் _ எழுத்துக்கள் மட்டுமே இருக்கலாம்",
+  "@usernameValidChars": {
+    "description": "Error message when the user tries to register a username with forbidden characters"
+  },
+  "passwordsDontMatch": "கடவுச்சொற்கள் பொருந்தவில்லை",
+  "@passwordsDontMatch": {
+    "description": "Error message when the user enters two different passwords during registration"
+  },
+  "passwordTooShort": "கடவுச்சொல் மிகக் குறைவு",
+  "@passwordTooShort": {
+    "description": "Error message when the user a password that is too short"
+  },
+  "password": "கடவுச்சொல்",
+  "@password": {},
+  "confirmPassword": "கடவுச்சொல்லை உறுதிப்படுத்தவும்",
+  "@confirmPassword": {},
+  "invalidEmail": "செல்லுபடியாகும் மின்னஞ்சல் முகவரியை உள்ளிடவும்",
+  "@invalidEmail": {
+    "description": "Error message when the user enters an invalid email"
+  },
+  "email": "மின்னஞ்சல் முகவரி",
+  "@email": {},
+  "username": "பயனர்பெயர்",
+  "@username": {},
+  "invalidUsername": "செல்லுபடியாகும் பயனர்பெயரை உள்ளிடவும்",
+  "@invalidUsername": {
+    "description": "Error message when the user enters an invalid username"
+  },
+  "customServerUrl": "Wger உதாரணத்தின் முகவரி",
+  "@customServerUrl": {
+    "description": "Label in the form where the users can enter their own wger instance"
+  },
+  "customServerHint": "உங்கள் சொந்த சேவையகத்தின் முகவரியை உள்ளிடவும், இல்லையெனில் இயல்புநிலை பயன்படுத்தப்படும்",
+  "@customServerHint": {
+    "description": "Hint text for the form where the users can enter their own wger instance"
+  },
+  "reset": "மீட்டமை",
+  "@reset": {
+    "description": "Button text allowing the user to reset the entered values to the default"
+  },
+  "registerInstead": "கணக்கு இல்லையா? இப்போது பதிவு செய்யுங்கள்",
+  "@registerInstead": {},
+  "loginInstead": "ஏற்கனவே ஒரு கணக்கு இருக்கிறதா? உள்நுழைவு",
+  "@loginInstead": {},
+  "labelWorkoutPlans": "ஒர்க்அவுட் திட்டங்கள்",
+  "@labelWorkoutPlans": {
+    "description": "Title for screen workout plans"
+  },
+  "labelBottomNavWorkout": "பயிற்சி",
+  "@labelBottomNavWorkout": {
+    "description": "Label used in bottom navigation, use a short word"
+  },
+  "labelBottomNavNutrition": "ஊட்டம்",
+  "@labelBottomNavNutrition": {
+    "description": "Label used in bottom navigation, use a short word"
+  },
+  "labelWorkoutLogs": "பயிற்சி பதிவுகள்",
+  "@labelWorkoutLogs": {
+    "description": "(Workout) logs"
+  },
+  "labelWorkoutPlan": "வொர்க்அவுட் திட்டம்",
+  "@labelWorkoutPlan": {
+    "description": "Title for screen workout plan"
+  },
+  "labelDashboard": "முகப்புப்பெட்டி",
+  "@labelDashboard": {
+    "description": "Title for screen dashboard"
+  },
+  "success": "வெற்றி",
+  "@success": {
+    "description": "Message when an action completed successfully, usually used as a heading"
+  },
+  "successfullyDeleted": "நீக்கப்பட்டது",
+  "@successfullyDeleted": {
+    "description": "Message when an item was successfully deleted"
+  },
+  "successfullySaved": "சேமிக்கப்பட்டது",
+  "@successfullySaved": {
+    "description": "Message when an item was successfully saved"
+  },
+  "exerciseList": "உடற்பயிற்சி பட்டியல்",
+  "@exerciseList": {},
+  "exercise": "உடற்பயிற்சி",
+  "@exercise": {
+    "description": "An exercise for a workout"
+  },
+  "exercises": "பயிற்சிகள்",
+  "@exercises": {
+    "description": "Multiple exercises for a workout"
+  },
+  "exerciseName": "உடற்பயிற்சி பெயர்",
+  "@exerciseName": {
+    "description": "Label for the name of a workout exercise"
+  },
+  "searchExercise": "சேர்க்க பயிற்சியைத் தேடுங்கள்",
+  "@searchExercise": {
+    "description": "Label on set form. Selected exercises are added to the set"
+  },
+  "noIngredientsDefined": "இதுவரை எந்த பொருட்களும் வரையறுக்கப்படவில்லை",
+  "@noIngredientsDefined": {},
+  "noMatchingExerciseFound": "பொருந்தக்கூடிய பயிற்சிகள் எதுவும் கிடைக்கவில்லை",
+  "@noMatchingExerciseFound": {
+    "description": "Message returned if no exercises match the searched string"
+  },
+  "searchNamesInEnglish": "ஆங்கிலத்தில் பெயர்களையும் தேடுங்கள்",
+  "@searchNamesInEnglish": {},
+  "equipment": "உபகரணங்கள்",
+  "@equipment": {
+    "description": "Equipment needed to perform an exercise"
+  },
+  "muscles": "தசைகள்",
+  "@muscles": {
+    "description": "(main) muscles trained by an exercise"
+  },
+  "musclesSecondary": "இரண்டாம் நிலை தசைகள்",
+  "@musclesSecondary": {
+    "description": "secondary muscles trained by an exercise"
+  },
+  "newWorkout": "புதிய பயிற்சி திட்டம்",
+  "@newWorkout": {
+    "description": "Header when adding a new workout"
+  },
+  "noWorkoutPlans": "உங்களிடம் பயிற்சி திட்டங்கள் எதுவும் இல்லை",
+  "@noWorkoutPlans": {
+    "description": "Message shown when the user has no workout plans"
+  },
+  "reps": "பிரதிநிதிகள்",
+  "@reps": {
+    "description": "Shorthand for repetitions, used when space constraints are tighter"
+  },
+  "rir": "ஆர்.ஐ.ஆர்",
+  "@rir": {
+    "description": "Shorthand for Repetitions In Reserve"
+  },
+  "rirNotUsed": "ஆர்.ஐ.ஆர் பயன்படுத்தப்படவில்லை",
+  "@rirNotUsed": {
+    "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
+  },
+  "useMetric": "உடல் எடைக்கு மெட்ரிக் அலகுகளைப் பயன்படுத்துங்கள்",
+  "@useMetric": {},
+  "repetitionUnit": "மீண்டும் அலகு",
+  "@repetitionUnit": {},
+  "set": "கணம்",
+  "@set": {
+    "description": "A set in a workout plan"
+  },
+  "dayDescriptionHelp": "இந்த நாளில் என்ன செய்யப்படுகிறது என்பதற்கான விளக்கம் (எ.கா. 'இழுக்க நாள்') அல்லது என்ன உடல் பாகங்கள் பயிற்சி அளிக்கப்படுகின்றன (எ.கா. 'மார்பு மற்றும் தோள்கள்')",
+  "@dayDescriptionHelp": {},
+  "sameRepetitions": "எல்லா தொகுப்புகளுக்கும் நீங்கள் அதே மறுபடியும் எடையும் செய்தால், நீங்கள் ஒரு வரிசையை நிரப்பலாம். எடுத்துக்காட்டாக, 4 செட்களுக்கு மறுபடியும் 10 ஐ உள்ளிடவும், இது தானாகவே \"4 ஃச் 10\" ஆகிறது.",
+  "@sameRepetitions": {},
+  "comment": "கருத்து",
+  "@comment": {
+    "description": "Comment, additional information"
+  },
+  "impression": "எண்ணம்",
+  "@impression": {
+    "description": "General impression (e.g. for a workout session) such as good, bad, etc."
+  },
+  "workoutSession": "வொர்க்அவுட் அமர்வு",
+  "@workoutSession": {
+    "description": "A (logged) workout session"
+  },
+  "newDay": "புதிய நாள்",
+  "@newDay": {},
+  "selectExercises": "நீங்கள் ஒரு சூப்பர்செட் செய்ய விரும்பினால், நீங்கள் பல பயிற்சிகளைத் தேடலாம், அவை ஒன்றாக தொகுக்கப்படும்",
+  "@selectExercises": {},
+  "plateCalculator": "தட்டுகள்",
+  "@plateCalculator": {
+    "description": "Label used for the plate calculator in the gym mode"
+  },
+  "plateCalculatorNotDivisible": "கிடைக்கக்கூடிய தட்டுகளுடன் எடையை அடைய முடியாது",
+  "@plateCalculatorNotDivisible": {
+    "description": "Error message when the current weight is not reachable with plates (e.g. 33.1 kg)"
+  },
+  "pause": "இடைநிறுத்தம்",
+  "@pause": {
+    "description": "Noun, not an imperative! Label used for the pause when using the gym mode"
+  },
+  "jumpTo": "குதிக்கவும்",
+  "@jumpTo": {
+    "description": "Imperative. Label used in popup allowing the user to jump to a specific exercise while in the gym mode"
+  },
+  "todaysWorkout": "இன்று உங்கள் பயிற்சி",
+  "@todaysWorkout": {},
+  "logHelpEntries": "ஒரு நாளில் ஒரே எண்ணிக்கையிலான மறுபடியும் ஒன்றுக்கு மேற்பட்ட நுழைவு இருந்தால், ஆனால் வெவ்வேறு எடைகள் இருந்தால், அதிக எடையுடன் நுழைவு மட்டுமே வரைபடத்தில் காட்டப்பட்டுள்ளது.",
+  "@logHelpEntries": {},
+  "logHelpEntriesUnits": "ஒரு எடை அலகு (கிலோ அல்லது எல்பி) மற்றும் மறுபடியும் உள்ளீடுகள் மட்டுமே பட்டியலிடப்பட்டுள்ளன என்பதை நினைவில் கொள்க, நேரம் போன்ற பிற சேர்க்கைகள் அல்லது தோல்வி வரை இங்கே புறக்கணிக்கப்படும்.",
+  "@logHelpEntriesUnits": {},
+  "verify": "சரிபார்க்கவும்",
+  "@verify": {},
+  "addSet": "செட் சேர்",
+  "@addSet": {
+    "description": "Label for the button that adds a set (to a workout day)"
+  },
+  "addMeal": "உணவு சேர்க்கவும்",
+  "@addMeal": {},
+  "mealLogged": "உணவு நாட்குறிப்புக்கு உள்நுழைந்துள்ளது",
+  "@mealLogged": {},
+  "ingredientLogged": "மூலப்பொருள் நாட்குறிப்புக்கு உள்நுழைந்துள்ளது",
+  "@ingredientLogged": {},
+  "logMeal": "ஊட்டச்சத்து நாட்குறிப்புக்கு உணவை பதிவு செய்யுங்கள்",
+  "@logMeal": {},
+  "addIngredient": "மூலப்பொருள் சேர்க்கவும்",
+  "@addIngredient": {},
+  "logIngredient": "ஊட்டச்சத்து நாட்குறிப்புக்கு பதிவு மூலப்பொருள்",
+  "@logIngredient": {},
+  "searchIngredient": "மூலப்பொருளைத் தேடுங்கள்",
+  "@searchIngredient": {
+    "description": "Label on ingredient search form"
+  },
+  "nutritionalPlan": "ஊட்டச்சத்து திட்டம்",
+  "@nutritionalPlan": {},
+  "nutritionalDiary": "ஊட்டச்சத்து நாட்குறிப்பு",
+  "@nutritionalDiary": {},
+  "nutritionalPlans": "ஊட்டச்சத்து திட்டங்கள்",
+  "@nutritionalPlans": {},
+  "noNutritionalPlans": "உங்களிடம் ஊட்டச்சத்து திட்டங்கள் இல்லை",
+  "@noNutritionalPlans": {
+    "description": "Message shown when the user has no nutritional plans"
+  },
+  "onlyLogging": "கலோரிகளை மட்டுமே கண்காணிக்கவும்",
+  "@onlyLogging": {},
+  "onlyLoggingHelpText": "உங்கள் கலோரிகளை மட்டுமே உள்நுழைய விரும்பினால், குறிப்பிட்ட உணவுடன் விரிவான ஊட்டச்சத்து திட்டத்தை அமைக்க விரும்பவில்லை என்றால் பெட்டியை சரிபார்க்கவும்",
+  "@onlyLoggingHelpText": {},
+  "goalMacro": "ரோ இலக்குகள்",
+  "@goalMacro": {
+    "description": "The goal for macronutrients"
+  },
+  "selectMealToLog": "நாட்குறிப்புக்கு உள்நுழைய ஒரு உணவைத் தேர்ந்தெடுக்கவும்",
+  "@selectMealToLog": {},
+  "goalEnergy": "ஆற்றல் இலக்கு",
+  "@goalEnergy": {},
+  "goalProtein": "புரத இலக்கு",
+  "@goalProtein": {},
+  "goalCarbohydrates": "கார்போஐட்ரேட் இலக்கு",
+  "@goalCarbohydrates": {},
+  "goalFiber": "ஃபைபர் இலக்கு",
+  "@goalFiber": {},
+  "anErrorOccurred": "பிழை ஏற்பட்டது!",
+  "@anErrorOccurred": {},
+  "weight": "எடை",
+  "@weight": {
+    "description": "The weight of a workout log or body weight entry"
+  },
+  "chartAllTimeTitle": "{name} எல்லா நேரத்திலும்",
+  "@chartAllTimeTitle": {
+    "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chart30DaysTitle": "{name} கடைசி 30 நாட்கள்",
+  "@chart30DaysTitle": {
+    "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chartDuringPlanTitle": "{chartName}ஊட்டச்சத்து திட்டத்தின்போது {planName}",
+  "@chartDuringPlanTitle": {
+    "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
+    "type": "text",
+    "placeholders": {
+      "chartName": {
+        "type": "String"
+      },
+      "planName": {
+        "type": "String"
+      }
+    }
+  },
+  "measurementCategoriesHelpText": "'பைசெப்ச்' அல்லது 'உடல் கொழுப்பு' போன்ற அளவீட்டு வகை",
+  "@measurementCategoriesHelpText": {},
+  "measurementEntriesHelpText": "'செ.மீ' அல்லது '%' போன்ற வகையை அளவிட பயன்படுத்தப்படும் அலகு",
+  "@measurementEntriesHelpText": {},
+  "date": "திகதி",
+  "@date": {
+    "description": "The date of a workout log or body weight entry"
+  },
+  "time": "நேரம்",
+  "@time": {
+    "description": "The time of a meal or workout"
+  },
+  "timeStart": "தொடக்க நேரம்",
+  "@timeStart": {
+    "description": "The starting time of a workout"
+  },
+  "timeEnd": "இறுதி நேரம்",
+  "@timeEnd": {
+    "description": "The end time of a workout"
+  },
+  "timeStartAhead": "தொடக்க நேரம் இறுதி நேரத்திற்கு முன்னால் இருக்க முடியாது",
+  "@timeStartAhead": {},
+  "ingredient": "மூலப்பொருள்",
+  "@ingredient": {},
+  "energy": "ஆற்றல்",
+  "@energy": {
+    "description": "Energy in a meal, ingredient etc. e.g. in kJ"
+  },
+  "energyShort": "இ",
+  "@energyShort": {
+    "description": "The first letter or short name of the word 'Energy', used in overviews"
+  },
+  "macronutrients": "மக்ரோனூட்ரியண்ட்ச்",
+  "@macronutrients": {},
+  "planned": "திட்டமிடப்பட்டது",
+  "@planned": {
+    "description": "Header for the column of 'planned' nutritional values, i.e. what should be eaten"
+  },
+  "logged": "உள்நுழைந்த",
+  "@logged": {
+    "description": "Header for the column of 'logged' nutritional values, i.e. what was eaten"
+  },
+  "today": "இன்று",
+  "@today": {},
+  "loggedToday": "இன்று உள்நுழைந்துள்ளது",
+  "@loggedToday": {},
+  "weekAverage": "7 நாள் சராசரி",
+  "@weekAverage": {
+    "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
+  },
+  "surplus": "உபரி",
+  "@surplus": {
+    "description": "Caloric surplus (either planned or unplanned)"
+  },
+  "deficit": "பற்றாக்குறை",
+  "@deficit": {
+    "description": "Caloric deficit (either planned or unplanned)"
+  },
+  "kcal": "கிலோகலோரி",
+  "@kcal": {
+    "description": "Energy in a meal in kilocalories, kcal"
+  },
+  "kcalValue": "{value} கிலோகலோரி",
+  "@kcalValue": {
+    "description": "A value in kcal, e.g. 500 kcal",
+    "type": "text",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "kJ": "கேசே",
+  "@kJ": {
+    "description": "Energy in a meal in kilo joules, kJ"
+  },
+  "g": "g",
+  "@g": {
+    "description": "Abbreviation for gram"
+  },
+  "gValue": "{value} g",
+  "@gValue": {
+    "description": "A value in grams, e.g. 5 g",
+    "type": "text",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "percentValue": "{value} %",
+  "@percentValue": {
+    "description": "A value in percent, e.g. 10 %",
+    "type": "text",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "protein": "புரதம்",
+  "@protein": {},
+  "proteinShort": "ப",
+  "@proteinShort": {
+    "description": "The first letter or short name of the word 'Protein', used in overviews"
+  },
+  "carbohydrates": "கார்போஐட்ரேட்டுகள்",
+  "@carbohydrates": {},
+  "carbohydratesShort": "C",
+  "@carbohydratesShort": {
+    "description": "The first letter or short name of the word 'Carbohydrates', used in overviews"
+  },
+  "sugars": "சர்க்கரைகள்",
+  "@sugars": {},
+  "fat": "கொழுப்பு",
+  "@fat": {},
+  "saturatedFat": "பூரிதக் கொழுப்பு",
+  "@saturatedFat": {},
+  "fiber": "இழைகள்",
+  "@fiber": {},
+  "sodium": "உவர்மம்",
+  "@sodium": {},
+  "amount": "தொகை",
+  "@amount": {
+    "description": "The amount (e.g. in grams) of an ingredient in a meal"
+  },
+  "newEntry": "புதிய நுழைவு",
+  "@newEntry": {
+    "description": "Title when adding a new entry such as a weight or log entry"
+  },
+  "noWeightEntries": "உங்களிடம் எடை உள்ளீடுகள் இல்லை",
+  "@noWeightEntries": {
+    "description": "Message shown when the user has no logged weight entries"
+  },
+  "moreMeasurementEntries": "புதிய அளவீட்டைச் சேர்க்கவும்",
+  "@moreMeasurementEntries": {
+    "description": "Message shown when the user wants to add new measurement"
+  },
+  "loadingText": "ஏற்றுகிறது ...",
+  "@loadingText": {
+    "description": "Text to show when entries are being loaded in the background: Loading..."
+  },
+  "confirmDelete": "நீங்கள் நிச்சயமாக '{toDelete}' நீக்க விரும்புகிறீர்களா?",
+  "@confirmDelete": {
+    "description": "Confirmation text before the user deletes an object",
+    "type": "text",
+    "placeholders": {
+      "toDelete": {
+        "type": "String"
+      }
+    }
+  },
+  "newNutritionalPlan": "புதிய ஊட்டச்சத்து திட்டம்",
+  "@newNutritionalPlan": {},
+  "toggleDetails": "விவரங்களை மாற்றவும்",
+  "@toggleDetails": {
+    "description": "Switch to toggle detail / overview"
+  },
+  "goToDetailPage": "விவரம் பக்கத்திற்குச் செல்லவும்",
+  "@goToDetailPage": {},
+  "aboutDescription": "Wger ஐப் பயன்படுத்தியதற்கு நன்றி! WGER என்பது ஒரு கூட்டு திறந்த மூல திட்டமாகும், இது உலகெங்கிலும் உள்ள உடற்பயிற்சி ஆர்வலர்களால் உருவாக்கப்பட்டது.",
+  "@aboutDescription": {
+    "description": "Text in the about dialog"
+  },
+  "aboutSourceTitle": "மூலக் குறியீடு",
+  "@aboutSourceTitle": {
+    "description": "Title for source code section in the about dialog"
+  },
+  "aboutSourceText": "இந்த பயன்பாட்டின் மூலக் குறியீட்டையும் அதன் சேவையகத்தையும் கிட்அப்பில் பெறுங்கள்",
+  "@aboutSourceText": {
+    "description": "Text for source code section in the about dialog"
+  },
+  "aboutBugsTitle": "சிக்கல் அல்லது சிந்தனை இருக்கிறதா?",
+  "@aboutBugsTitle": {
+    "description": "Title for bugs section in the about dialog"
+  },
+  "aboutBugsText": "ஏதேனும் எதிர்பார்த்தபடி நடந்து கொள்ளவில்லை என்றால் அல்லது காணவில்லை என்று நீங்கள் நினைக்கும் ஒரு நற்பொருத்தம் இருந்தால் தொடர்பு கொள்ளுங்கள்.",
+  "@aboutBugsText": {
+    "description": "Text for bugs section in the about dialog"
+  },
+  "aboutContactUsTitle": "ஆய் சொல்லுங்கள்!",
+  "@aboutContactUsTitle": {
+    "description": "Title for contact us section in the about dialog"
+  },
+  "aboutContactUsText": "நீங்கள் எங்களுடன் அரட்டையடிக்க விரும்பினால், டிச்கார்ட் சேவையகத்தில் ஆப் செய்து தொடர்பு கொள்ளுங்கள்",
+  "@aboutContactUsText": {
+    "description": "Text for contact us section in the about dialog"
+  },
+  "aboutMastodonTitle": "மாச்டோடன்",
+  "@aboutMastodonTitle": {
+    "description": "Title for mastodon section in the about dialog"
+  },
+  "aboutMastodonText": "திட்டத்தைப் பற்றிய புதுப்பிப்புகள் மற்றும் செய்திகளுக்கு மாச்டோடனில் எங்களைப் பின்தொடரவும்",
+  "@aboutMastodonText": {
+    "description": "Text for the mastodon section in the about dialog"
+  },
+  "aboutTranslationTitle": "மொழிபெயர்ப்பு",
+  "@aboutTranslationTitle": {
+    "description": "Title for translation section in the about dialog"
+  },
+  "aboutTranslationText": "இந்த பயன்பாடு வெப்லேட்டில் மொழிபெயர்க்கப்பட்டுள்ளது. நீங்கள் உதவ விரும்பினால், இணைப்பைக் சொடுக்கு செய்து மொழிபெயர்க்கத் தொடங்குங்கள்",
+  "@aboutTranslationText": {
+    "description": "Text for translation section in the about dialog"
+  },
+  "aboutDonateTitle": "நன்கொடை",
+  "@aboutDonateTitle": {},
+  "aboutDonateText": "திட்டத்திற்கு உதவ எங்களுக்கு ஒரு காபி வாங்கவும், சேவையக செலவினங்களுக்கு பணம் செலுத்தவும், எங்களை எரிபொருளாக வைத்திருக்கவும்",
+  "@aboutDonateText": {},
+  "calendar": "நாட்காட்டி",
+  "@calendar": {},
+  "goToToday": "இன்று செல்லுங்கள்",
+  "@goToToday": {
+    "description": "Label on button to jump back to 'today' in the calendar widget"
+  },
+  "enterRepetitionsOrWeight": "தயவுசெய்து மறுபடியும் அல்லது எடையை நிரப்பவும்",
+  "@enterRepetitionsOrWeight": {
+    "description": "Error message when the user hasn't filled in the forms for exercise sets"
+  },
+  "enterValue": "தயவுசெய்து ஒரு மதிப்பை உள்ளிடவும்",
+  "@enterValue": {
+    "description": "Error message when the user hasn't entered a value on a required field"
+  },
+  "selectEntry": "உள்ளீட்டைத் தேர்ந்தெடுக்கவும்",
+  "@selectEntry": {},
+  "selectExercise": "ஒரு பயிற்சியைத் தேர்ந்தெடுக்கவும்",
+  "@selectExercise": {
+    "description": "Error message when the user hasn't selected an exercise in the form"
+  },
+  "enterCharacters": "தயவுசெய்து {min} மற்றும் {max} எழுத்துக்களுக்கு இடையில் உள்ளிடவும்",
+  "@enterCharacters": {
+    "description": "Error message when the user hasn't entered the correct number of characters in a form",
+    "type": "text",
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "enterMinCharacters": "தயவுசெய்து குறைந்தது {min} எழுத்துக்களை உள்ளிடவும்",
+  "@enterMinCharacters": {
+    "description": "Error message when the user hasn't entered the minimum amount characters in a form",
+    "type": "text",
+    "placeholders": {
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "baseNameEnglish": "அனைத்து பயிற்சிகளுக்கும் ஆங்கிலத்தில் அடிப்படை பெயர் தேவை",
+  "@baseNameEnglish": {},
+  "nrOfSets": "ஒரு பயிற்சிக்கு அமைக்கிறது: {nrOfSets}",
+  "@nrOfSets": {
+    "description": "Label shown on the slider where the user selects the nr of sets",
+    "type": "text",
+    "placeholders": {
+      "nrOfSets": {
+        "type": "String"
+      }
+    }
+  },
+  "setUnitsAndRir": "அலகுகள் மற்றும் ஆர்.ஐ.ஆர்",
+  "@setUnitsAndRir": {
+    "description": "Label shown on the slider where the user can toggle showing units and RiR",
+    "type": "text"
+  },
+  "enterValidNumber": "செல்லுபடியாகும் எண்ணை உள்ளிடவும்",
+  "@enterValidNumber": {
+    "description": "Error message when the user has submitted an invalid number (e.g. '3,.,.,.')"
+  },
+  "selectIngredient": "தயவுசெய்து ஒரு மூலப்பொருளைத் தேர்ந்தெடுக்கவும்",
+  "@selectIngredient": {
+    "description": "Error message when the user hasn't selected an ingredient from the autocompleter"
+  },
+  "recentlyUsedIngredients": "அண்மைக் காலத்தில் சேர்க்கப்பட்ட பொருட்கள்",
+  "@recentlyUsedIngredients": {
+    "description": "A message when a user adds a new ingredient to a meal."
+  },
+  "selectImage": "ஒரு படத்தைத் தேர்ந்தெடுக்கவும்",
+  "@selectImage": {
+    "description": "Label and error message when the user hasn't selected an image to save"
+  },
+  "optionsLabel": "விருப்பங்கள்",
+  "@optionsLabel": {
+    "description": "Label for the popup with general app options"
+  },
+  "takePicture": "படம் எடுக்கவும்",
+  "@takePicture": {},
+  "chooseFromLibrary": "புகைப்பட நூலகத்திலிருந்து தேர்வு செய்யவும்",
+  "@chooseFromLibrary": {},
+  "addImage": "படத்தைச் சேர்க்கவும்",
+  "@addImage": {},
+  "dataCopied": "தரவு புதிய நுழைவுக்கு நகலெடுக்கப்பட்டது",
+  "@dataCopied": {
+    "description": "Snackbar message to show on copying data to a new log entry"
+  },
+  "appUpdateTitle": "புதுப்பிப்பு தேவை",
+  "@appUpdateTitle": {},
+  "appUpdateContent": "பயன்பாட்டின் இந்த பதிப்பு சேவையகத்துடன் பொருந்தாது, தயவுசெய்து உங்கள் பயன்பாட்டைப் புதுப்பிக்கவும்.",
+  "@appUpdateContent": {},
+  "productFound": "தயாரிப்பு காணப்பட்டது",
+  "@productFound": {
+    "description": "Header label for dialog when product is found with barcode"
+  },
+  "productFoundDescription": "பார்கோடு இந்தத் தயாரிப்புக்கு ஒத்திருக்கிறது: {productName}. நீங்கள் தொடர விரும்புகிறீர்களா?",
+  "@productFoundDescription": {
+    "description": "Dialog info when product is found with barcode",
+    "type": "text",
+    "placeholders": {
+      "productName": {
+        "type": "String"
+      }
+    }
+  },
+  "productNotFound": "தயாரிப்பு கிடைக்கவில்லை",
+  "@productNotFound": {
+    "description": "Header label for dialog when product is not found with barcode"
+  },
+  "productNotFoundDescription": "ச்கேன் செய்யப்பட்ட பார்கோடு {barcode} with உடன் தயாரிப்பு WGER தரவுத்தளத்தில் காணப்படவில்லை",
+  "@productNotFoundDescription": {
+    "description": "Dialog info when product is not found with barcode",
+    "type": "text",
+    "placeholders": {
+      "barcode": {
+        "type": "String"
+      }
+    }
+  },
+  "scanBarcode": "ச்கேன் பார்கோடு",
+  "@scanBarcode": {
+    "description": "Label for scan barcode button"
+  },
+  "add_exercise_image_license": "எச்.ஏ. உரிமம் மூலம் சி.சி உடன் படங்கள் இணக்கமாக இருக்க வேண்டும். ஐயம் இருந்தால், நீங்கள் எடுத்த புகைப்படங்களை மட்டுமே பதிவேற்றவும்.",
+  "@add_exercise_image_license": {},
+  "variations": "மாறுபாடுகள்",
+  "@variations": {
+    "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"
+  },
+  "alsoKnownAs": "என்றும் அழைக்கப்படுகிறது: {aliases}",
+  "@alsoKnownAs": {
+    "placeholders": {
+      "aliases": {
+        "type": "String"
+      }
+    },
+    "description": "List of alternative names for an exercise"
+  },
+  "verifiedEmail": "சரிபார்க்கப்பட்ட மின்னஞ்சல்",
+  "@verifiedEmail": {},
+  "unVerifiedEmail": "சரிபார்க்கப்படாத மின்னஞ்சல்",
+  "@unVerifiedEmail": {},
+  "verifiedEmailReason": "பயிற்சிகள் பங்களிக்க உங்கள் மின்னஞ்சலை சரிபார்க்க வேண்டும்",
+  "@verifiedEmailReason": {},
+  "verifiedEmailInfo": "சரிபார்ப்பு மின்னஞ்சல் {email} க்கு அனுப்பப்பட்டது",
+  "@verifiedEmailInfo": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "alternativeNames": "மாற்று பெயர்கள்",
+  "@alternativeNames": {},
+  "oneNamePerLine": "ஒரு வரிக்கு ஒரு பெயர்",
+  "@oneNamePerLine": {},
+  "previous": "முந்தைய",
+  "@previous": {},
+  "next": "அடுத்தது",
+  "@next": {},
+  "addExercise": "உடற்பயிற்சியைச் சேர்க்கவும்",
+  "@addExercise": {},
+  "contributeExercise": "ஒரு உடற்பயிற்சியை பங்களிக்கவும்",
+  "@contributeExercise": {},
+  "translateExercise": "இந்த பயிற்சியை இப்போது மொழிபெயர்க்கவும்",
+  "@translateExercise": {},
+  "baseData": "ஆங்கிலத்தில் அடிப்படைகள்",
+  "@baseData": {
+    "description": "The base data for an exercise such as category, trained muscles, etc."
+  },
+  "settingsTitle": "அமைப்புகள்",
+  "@settingsTitle": {},
+  "settingsCacheTitle": "கேச்",
+  "@settingsCacheTitle": {},
+  "settingsExerciseCacheDescription": "கேச் உடற்பயிற்சி",
+  "@settingsExerciseCacheDescription": {},
+  "settingsIngredientCacheDescription": "மூலப்பொருள் தற்காலிக சேமிப்பு",
+  "@settingsIngredientCacheDescription": {},
+  "settingsCacheDeletedSnackbar": "கேச் வெற்றிகரமாக அழிக்கப்பட்டது",
+  "@settingsCacheDeletedSnackbar": {},
+  "aboutPageTitle": "Wger பற்றி",
+  "@aboutPageTitle": {},
+  "contributeExerciseWarning": "உங்கள் கணக்கு {days} நாட்களைவிடப் பழையதாக இருந்தால் மட்டுமே நீங்கள் பயிற்சிகளைப் பங்களிக்க முடியும், மேலும் உங்கள் மின்னஞ்சலைச் சரிபார்த்துள்ளீர்கள்",
+  "@contributeExerciseWarning": {
+    "description": "Number of days before which a person can add exercise",
+    "placeholders": {
+      "days": {
+        "type": "String",
+        "example": "14"
+      }
+    }
+  },
+  "cacheWarning": "கேச்சிங் காரணமாக விண்ணப்பம் முழுவதும் மாற்றங்கள் தெரியும் வரை சிறிது நேரம் ஆகலாம்.",
+  "@cacheWarning": {},
+  "textPromptTitle": "தொடங்க தயாரா?",
+  "@textPromptTitle": {},
+  "textPromptSubheading": "தொடங்க செயல் பொத்தானை அழுத்தவும்",
+  "@textPromptSubheading": {},
+  "abs": "ஏபிஎச்",
+  "@abs": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "arms": "ஆயுதங்கள்",
+  "@arms": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "back": "பின்",
+  "@back": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "barbell": "பார்பெல்",
+  "@barbell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "bench": "பென்ச்",
+  "@bench": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "biceps": "கயிறுகள்",
+  "@biceps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "body_weight": "உடல் எடை",
+  "@body_weight": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "calves": "கன்றுகள்",
+  "@calves": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "cardio": "கார்டியோ",
+  "@cardio": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "chest": "மார்பு",
+  "@chest": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "dumbbell": "டம்பல்",
+  "@dumbbell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "glutes": "க்ளூட்டுகள்",
+  "@glutes": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "gym_mat": "சிம் பாய்",
+  "@gym_mat": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "hamstrings": "தொடை எலும்புகள்",
+  "@hamstrings": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "incline_bench": "சாய்வு பெஞ்ச்",
+  "@incline_bench": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kettlebell": "கெட்டில் பெல்",
+  "@kettlebell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kilometers": "கிலோமீட்டர்",
+  "@kilometers": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kilometers_per_hour": "ஒரு மணி நேரத்திற்கு கிலோமீட்டர்",
+  "@kilometers_per_hour": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "lats": "லாட்ச்",
+  "@lats": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "legs": "கால்கள்",
+  "@legs": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "lower_back": "கீழ் முதுகு",
+  "@lower_back": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "max_reps": "அதிகபட்ச பிரதிநிதிகள்",
+  "@max_reps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "miles": "மைல்கள்",
+  "@miles": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "miles_per_hour": "ஒரு மணி நேரத்திற்கு மைல்கள்",
+  "@miles_per_hour": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "minutes": "நிமிடங்கள்",
+  "@minutes": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "plates": "தட்டுகள்",
+  "@plates": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "pull_up_bar": "புல்-அப் பார்",
+  "@pull_up_bar": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "quads": "குவாட்ச்",
+  "@quads": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "repetitions": "மறுபடியும்",
+  "@repetitions": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "sz_bar": "பட்டி",
+  "@sz_bar": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "seconds": "நொடிகள்",
+  "@seconds": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "shoulders": "தோள்கள்",
+  "@shoulders": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "swiss_ball": "சுவிச் பந்து",
+  "@swiss_ball": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "triceps": "ட்ரைசெப்ச்",
+  "@triceps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "until_failure": "தோல்வி வரை",
+  "@until_failure": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kg": "கிலோ",
+  "@kg": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "lb": "எல்.பி.",
+  "@lb": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "none__bodyweight_exercise_": "எதுவுமில்லை (உடல் எடை உடற்பயிற்சி)",
+  "@none__bodyweight_exercise_": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "log": "பதிவு",
+  "@log": {
+    "description": "Log a specific meal (imperative form)"
+  },
+  "done": "முடிந்தது",
+  "@done": {},
+  "overallChangeWeight": "ஒட்டுமொத்த மாற்றம்",
+  "@overallChangeWeight": {
+    "description": "Overall change in weight, added for localization"
+  },
+  "goalTypeMeals": "உணவில் இருந்து",
+  "@goalTypeMeals": {
+    "description": "added for localization of Class GoalType's filed meals"
+  },
+  "goalTypeBasic": "அடிப்படை",
+  "@goalTypeBasic": {
+    "description": "added for localization of Class GoalType's filed basic"
+  },
+  "goalTypeAdvanced": "மேம்பட்ட",
+  "@goalTypeAdvanced": {
+    "description": "added for localization of Class GoalType's filed advanced"
+  },
+  "indicatorRaw": "மூல",
+  "@indicatorRaw": {
+    "description": "added for localization of Class Indicator's field text"
+  },
+  "indicatorAvg": "ஏ.வி.சி",
+  "@indicatorAvg": {
+    "description": "added for localization of Class Indicator's field text"
+  }
+}

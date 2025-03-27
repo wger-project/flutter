@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/screens/measurement_categories_screen.dart';
 import 'package:wger/theme/theme.dart';
@@ -25,7 +25,7 @@ Widget createMeasurementScreen({locale = 'en'}) {
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       theme: wgerLightTheme,
-      home: MeasurementCategoriesScreen(),
+      home: const MeasurementCategoriesScreen(),
     ),
   );
 }

@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:wger/models/nutrition/nutritional_goals.dart';
+
 class NutritionalValues {
   double energy = 0;
   double protein = 0;
@@ -23,7 +25,7 @@ class NutritionalValues {
   double carbohydratesSugar = 0;
   double fat = 0;
   double fatSaturated = 0;
-  double fibres = 0;
+  double fiber = 0;
   double sodium = 0;
 
   NutritionalValues();
@@ -35,7 +37,7 @@ class NutritionalValues {
     this.carbohydratesSugar,
     this.fat,
     this.fatSaturated,
-    this.fibres,
+    this.fiber,
     this.sodium,
   );
 
@@ -51,7 +53,7 @@ class NutritionalValues {
     carbohydratesSugar += data.carbohydratesSugar;
     fat += data.fat;
     fatSaturated += data.fatSaturated;
-    fibres += data.fibres;
+    fiber += data.fiber;
     sodium += data.sodium;
   }
 
@@ -63,8 +65,21 @@ class NutritionalValues {
       carbohydratesSugar + o.carbohydratesSugar,
       fat + o.fat,
       fatSaturated + o.fatSaturated,
-      fibres + o.fibres,
+      fiber + o.fiber,
       sodium + o.sodium,
+    );
+  }
+
+  NutritionalValues operator /(double o) {
+    return NutritionalValues.values(
+      energy / o,
+      protein / o,
+      carbohydrates / o,
+      carbohydratesSugar / o,
+      fat / o,
+      fatSaturated / o,
+      fiber / o,
+      sodium / o,
     );
   }
 
@@ -78,25 +93,52 @@ class NutritionalValues {
         carbohydratesSugar == other.carbohydratesSugar &&
         fat == other.fat &&
         fatSaturated == other.fatSaturated &&
-        fibres == other.fibres &&
+        fiber == other.fiber &&
         sodium == other.sodium;
+  }
+
+  double prop(String name) {
+    return switch (name) {
+      'energy' => energy,
+      'protein' => protein,
+      'carbohydrates' => carbohydrates,
+      'carbohydratesSugar' => carbohydratesSugar,
+      'fat' => fat,
+      'fatSaturated' => fatSaturated,
+      'fiber' => fiber,
+      'sodium' => sodium,
+      _ => 0,
+    };
   }
 
   @override
   String toString() {
-    return 'e: $energy, p: $protein, c: $carbohydrates, cS: $carbohydratesSugar, f: $fat, fS: $fatSaturated, fi: $fibres, s: $sodium';
+    return 'e: $energy, p: $protein, c: $carbohydrates, cS: $carbohydratesSugar, f: $fat, fS: $fatSaturated, fi: $fiber, s: $sodium';
+  }
+
+  NutritionalGoals toGoals() {
+    return NutritionalGoals(
+      energy: energy,
+      protein: protein,
+      carbohydrates: carbohydrates,
+      carbohydratesSugar: carbohydratesSugar,
+      fat: fat,
+      fatSaturated: fatSaturated,
+      fiber: fiber,
+      sodium: sodium,
+    );
   }
 
   @override
   //ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => Object.hash(
-      energy, protein, carbohydrates, carbohydratesSugar, fat, fatSaturated, fibres, sodium);
-}
-
-class BaseNutritionalValues {
-  double protein = 0;
-  double carbohydrates = 0;
-  double fat = 0;
-
-  BaseNutritionalValues(this.protein, this.carbohydrates, this.fat);
+        energy,
+        protein,
+        carbohydrates,
+        carbohydratesSugar,
+        fat,
+        fatSaturated,
+        fiber,
+        sodium,
+      );
 }

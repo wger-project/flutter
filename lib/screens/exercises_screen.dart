@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/widgets/core/app_bar.dart';
@@ -9,6 +9,7 @@ import 'package:wger/widgets/exercises/list_tile.dart';
 
 class ExercisesScreen extends StatefulWidget {
   const ExercisesScreen({super.key});
+
   static const routeName = '/exercises';
 
   @override
@@ -58,9 +59,7 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
 }
 
 class _ExercisesList extends StatelessWidget {
-  const _ExercisesList({
-    required this.exerciseBaseList,
-  });
+  const _ExercisesList({required this.exerciseBaseList});
 
   final List<Exercise> exerciseBaseList;
 
@@ -69,15 +68,11 @@ class _ExercisesList extends StatelessWidget {
     //final size = MediaQuery.of(context).size;
     return ListView.separated(
       separatorBuilder: (context, index) {
-        return const Divider(
-          thickness: 1,
-        );
+        return const Divider(thickness: 1);
       },
       itemCount: exerciseBaseList.length,
       itemBuilder: (context, index) {
-        return ExerciseListTile(
-          exerciseBase: exerciseBaseList[index],
-        );
+        return ExerciseListTile(exerciseBase: exerciseBaseList[index]);
 
         /*
         return Container(

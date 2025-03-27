@@ -12,12 +12,12 @@ Log _$LogFromJson(Map<String, dynamic> json) {
     requiredKeys: const ['id', 'plan', 'datetime', 'ingredient', 'weight_unit', 'amount'],
   );
   return Log(
-    id: json['id'] as int?,
-    mealId: json['meal'] as int?,
-    ingredientId: json['ingredient'] as int,
-    weightUnitId: json['weight_unit'] as int?,
+    id: (json['id'] as num?)?.toInt(),
+    mealId: (json['meal'] as num?)?.toInt(),
+    ingredientId: (json['ingredient'] as num).toInt(),
+    weightUnitId: (json['weight_unit'] as num?)?.toInt(),
     amount: stringToNum(json['amount'] as String?),
-    planId: json['plan'] as int,
+    planId: (json['plan'] as num).toInt(),
     datetime: DateTime.parse(json['datetime'] as String),
     comment: json['comment'] as String?,
   );

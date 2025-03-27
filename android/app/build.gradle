@@ -1,3 +1,9 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    id "dev.flutter.flutter-gradle-plugin"
+}
+
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
 if (localPropertiesFile.exists()) {
@@ -6,24 +12,6 @@ if (localPropertiesFile.exists()) {
     }
 }
 
-def flutterRoot = localProperties.getProperty('flutter.sdk')
-if (flutterRoot == null) {
-    throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
-}
-
-def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
-if (flutterVersionCode == null) {
-    flutterVersionCode = '1'
-}
-
-def flutterVersionName = localProperties.getProperty('flutter.versionName')
-if (flutterVersionName == null) {
-    flutterVersionName = '1.0'
-}
-
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 // Keys for the android play store
 def keystoreProperties = new Properties()
@@ -32,57 +20,29 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 
-// Key for wger.de REST API
-def wgerProperties = new Properties()
-def localMapsPropertiesFile = rootProject.file('../fastlane/metadata/envfiles/wger.properties')
-if (localMapsPropertiesFile.exists()) {
-    project.logger.info('Load maps properties from local file')
-    localMapsPropertiesFile.withReader('UTF-8') { reader ->
-        wgerProperties.load(reader)
-    }
-} else {
-    project.logger.info('Load maps properties from environment')
-    try {
-        wgerProperties['WGER_API_KEY'] = System.getenv('WGER_API_KEY')
-    } catch (NullPointerException e) {
-        project.logger.warn('Failed to load WGER_API_KEY from environment.', e)
-    }
-}
-def wgerApiKey = wgerProperties.getProperty('WGER_API_KEY')
-if (wgerApiKey == null) {
-    wgerApiKey = ""
-    project.logger.error('Wger Api Key not configured. Set it in `/fastlane/metadata/android/envfiles/wger.properties` or in the environment variable `WGER_API_KEY`')
-}
 
 android {
-    compileSdkVersion 33
-    ndkVersion "25.1.8937393"
+    namespace = "de.wger.flutter"
+    compileSdkVersion 35
+    ndkVersion "26.3.11579264"
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = JavaVersion.VERSION_11
     }
 
-    sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
-    }
-
-    lintOptions {
-        disable 'InvalidPackage'
-    }
 
     defaultConfig {
         // Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "de.wger.flutter"
-        minSdkVersion 21
-        targetSdkVersion 33
-        versionCode flutterVersionCode.toInteger()
-        versionName flutterVersionName
-        manifestPlaceholders += [WGER_API_KEY: wgerApiKey]
+        minSdk = flutter.minSdkVersion
+        targetSdk = flutter.targetSdkVersion
+        versionCode = flutter.versionCode
+        versionName = flutter.versionName
     }
 
     signingConfigs {
@@ -95,8 +55,6 @@ android {
     }
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.release
         }
         debug {
@@ -107,8 +65,4 @@ android {
 
 flutter {
     source '../..'
-}
-
-dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

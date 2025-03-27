@@ -36,7 +36,7 @@ class MealItem {
   late int ingredientId;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  late Ingredient ingredientObj;
+  late Ingredient ingredient;
 
   @JsonKey(required: false, name: 'weight_unit')
   int? weightUnitId;
@@ -59,7 +59,7 @@ class MealItem {
       this.mealId = mealId;
     }
     if (ingredient != null) {
-      ingredientObj = ingredient;
+      this.ingredient = ingredient;
       ingredientId = ingredient.id;
     }
   }
@@ -72,6 +72,7 @@ class MealItem {
   Map<String, dynamic> toJson() => _$MealItemToJson(this);
 
   /// Calculations
+  /// TODO why does this not consider weightUnitObj ? should we do the same as Log.nutritionalValues here?
   NutritionalValues get nutritionalValues {
     // This is already done on the server. It might be better to read it from there.
     final out = NutritionalValues();
@@ -79,15 +80,36 @@ class MealItem {
     //final weight = this.weightUnit == null ? amount : amount * weightUnit.amount * weightUnit.grams;
     final weight = amount;
 
-    out.energy = ingredientObj.energy * weight / 100;
-    out.protein = ingredientObj.protein * weight / 100;
-    out.carbohydrates = ingredientObj.carbohydrates * weight / 100;
-    out.carbohydratesSugar = ingredientObj.carbohydratesSugar * weight / 100;
-    out.fat = ingredientObj.fat * weight / 100;
-    out.fatSaturated = ingredientObj.fatSaturated * weight / 100;
-    out.fibres = ingredientObj.fibres * weight / 100;
-    out.sodium = ingredientObj.sodium * weight / 100;
+    out.energy = ingredient.energy * weight / 100;
+    out.protein = ingredient.protein * weight / 100;
+    out.carbohydrates = ingredient.carbohydrates * weight / 100;
+    out.carbohydratesSugar = ingredient.carbohydratesSugar * weight / 100;
+    out.fat = ingredient.fat * weight / 100;
+    out.fatSaturated = ingredient.fatSaturated * weight / 100;
+    out.fiber = ingredient.fiber * weight / 100;
+    out.sodium = ingredient.sodium * weight / 100;
 
     return out;
+  }
+
+  MealItem copyWith({
+    int? id,
+    int? mealId,
+    int? ingredientId,
+    int? weightUnitId,
+    num? amount,
+    Ingredient? ingredient,
+    IngredientWeightUnit? weightUnitObj,
+  }) {
+    final m = MealItem(
+      id: id ?? this.id,
+      mealId: mealId ?? this.mealId,
+      ingredientId: ingredientId ?? this.ingredientId,
+      weightUnitId: weightUnitId ?? this.weightUnitId,
+      amount: amount ?? this.amount,
+      ingredient: ingredient ?? this.ingredient,
+    );
+    m.weightUnitObj = weightUnitObj ?? this.weightUnitObj;
+    return m;
   }
 }

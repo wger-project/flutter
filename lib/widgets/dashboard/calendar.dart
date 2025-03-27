@@ -17,17 +17,16 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/misc.dart';
-import 'package:wger/models/workouts/session.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
-import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/providers/routines.dart';
 import 'package:wger/theme/theme.dart';
 
 /// Types of events
@@ -43,7 +42,7 @@ class Event {
   final EventType _type;
   final String _description;
 
-  Event(this._type, this._description);
+  const Event(this._type, this._description);
 
   String get description {
     return _description;
@@ -108,16 +107,17 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
           _events[date] = [];
         }
 
-        _events[date]!
-            .add(Event(EventType.measurement, '${category.name}: ${entry.value} ${category.unit}'));
+        _events[date]!.add(Event(
+          EventType.measurement,
+          '${category.name}: ${entry.value} ${category.unit}',
+        ));
       }
     }
 
     // Process workout sessions
-    final WorkoutPlansProvider plans = Provider.of<WorkoutPlansProvider>(context, listen: false);
-    await plans.fetchSessionData().then((entries) {
-      for (final entry in entries['results']) {
-        final session = WorkoutSession.fromJson(entry);
+    final routinesProvider = context.read<RoutinesProvider>();
+    await routinesProvider.fetchSessionData().then((sessions) {
+      for (final session in sessions) {
         final date = DateFormatLists.format(session.date);
         if (!_events.containsKey(date)) {
           _events[date] = [];
@@ -168,9 +168,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
   List<Event> _getEventsForRange(DateTime start, DateTime end) {
     final days = daysInRange(start, end);
 
-    return [
-      for (final d in days) ..._getEventsForDay(d),
-    ];
+    return [for (final d in days) ..._getEventsForDay(d)];
   }
 
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
@@ -231,16 +229,13 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
             rangeEndDay: _rangeEnd,
             calendarFormat: CalendarFormat.month,
             availableGestures: AvailableGestures.horizontalSwipe,
-            availableCalendarFormats: const {
-              CalendarFormat.month: '',
-            },
+            availableCalendarFormats: const {CalendarFormat.month: ''},
             rangeSelectionMode: _rangeSelectionMode,
             eventLoader: _getEventsForDay,
             startingDayOfWeek: StartingDayOfWeek.monday,
             calendarStyle: getWgerCalendarStyle(Theme.of(context)),
             onDaySelected: _onDaySelected,
             onRangeSelected: _onRangeSelected,
-            onFormatChanged: (format) {},
             onPageChanged: (focusedDay) {
               _focusedDay = focusedDay;
             },
@@ -268,7 +263,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
                       })()),
                       subtitle: Text(event.description),
                       //onTap: () => print('$event tapped!'),
-                    ))
+                    )),
               ],
             ),
           ),

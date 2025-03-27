@@ -17,202 +17,25 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
-import 'package:wger/models/nutrition/log.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
-import 'package:wger/providers/nutrition.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
-import 'package:wger/widgets/nutrition/helpers.dart';
+import 'package:wger/widgets/nutrition/nutrition_tiles.dart';
 
 class NutritionalDiaryDetailWidget extends StatelessWidget {
   final NutritionalPlan _nutritionalPlan;
   final DateTime _date;
-  static const double tablePadding = 7;
 
   const NutritionalDiaryDetailWidget(this._nutritionalPlan, this._date);
 
-  Widget getTable(
-    NutritionalValues valuesTotal,
-    NutritionalValues valuesDate,
-    BuildContext context,
-  ) {
-    return Table(
-      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-      border: TableBorder(
-        horizontalInside: BorderSide(width: 1, color: Theme.of(context).colorScheme.outline),
-      ),
-      columnWidths: const {0: FractionColumnWidth(0.4)},
-      children: [
-        TableRow(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: tablePadding),
-              child: Text(
-                AppLocalizations.of(context).macronutrients,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-            Text(
-              AppLocalizations.of(context).planned,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            Text(
-              AppLocalizations.of(context).logged,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            Text(
-              AppLocalizations.of(context).difference,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-        TableRow(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: tablePadding),
-              child: Text(AppLocalizations.of(context).energy),
-            ),
-            Text(
-              valuesTotal.energy.toStringAsFixed(0) + AppLocalizations.of(context).kcal,
-            ),
-            Text(
-              valuesDate.energy.toStringAsFixed(0) + AppLocalizations.of(context).kcal,
-            ),
-            Text((valuesDate.energy - valuesTotal.energy).toStringAsFixed(0)),
-          ],
-        ),
-        TableRow(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: tablePadding),
-              child: Text(AppLocalizations.of(context).protein),
-            ),
-            Text(valuesTotal.protein.toStringAsFixed(0) + AppLocalizations.of(context).g),
-            Text(valuesDate.protein.toStringAsFixed(0) + AppLocalizations.of(context).g),
-            Text((valuesDate.protein - valuesTotal.protein).toStringAsFixed(0)),
-          ],
-        ),
-        TableRow(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: tablePadding),
-              child: Text(AppLocalizations.of(context).carbohydrates),
-            ),
-            Text(valuesTotal.carbohydrates.toStringAsFixed(0) + AppLocalizations.of(context).g),
-            Text(valuesDate.carbohydrates.toStringAsFixed(0) + AppLocalizations.of(context).g),
-            Text((valuesDate.carbohydrates - valuesTotal.carbohydrates).toStringAsFixed(0)),
-          ],
-        ),
-        TableRow(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: tablePadding, horizontal: 12),
-              child: Text(AppLocalizations.of(context).sugars),
-            ),
-            Text(
-                valuesTotal.carbohydratesSugar.toStringAsFixed(0) + AppLocalizations.of(context).g),
-            Text(valuesDate.carbohydratesSugar.toStringAsFixed(0) + AppLocalizations.of(context).g),
-            Text((valuesDate.carbohydratesSugar - valuesTotal.carbohydratesSugar)
-                .toStringAsFixed(0)),
-          ],
-        ),
-        TableRow(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: tablePadding),
-              child: Text(AppLocalizations.of(context).fat),
-            ),
-            Text(valuesTotal.fat.toStringAsFixed(0) + AppLocalizations.of(context).g),
-            Text(valuesDate.fat.toStringAsFixed(0) + AppLocalizations.of(context).g),
-            Text((valuesDate.fat - valuesTotal.fat).toStringAsFixed(0)),
-          ],
-        ),
-        TableRow(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: tablePadding, horizontal: 12),
-              child: Text(AppLocalizations.of(context).saturatedFat),
-            ),
-            Text(valuesTotal.fatSaturated.toStringAsFixed(0) + AppLocalizations.of(context).g),
-            Text(valuesDate.fatSaturated.toStringAsFixed(0) + AppLocalizations.of(context).g),
-            Text((valuesDate.fatSaturated - valuesTotal.fatSaturated).toStringAsFixed(0)),
-          ],
-        ),
-        TableRow(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: tablePadding),
-              child: Text(AppLocalizations.of(context).fibres),
-            ),
-            Text(valuesTotal.fibres.toStringAsFixed(0) + AppLocalizations.of(context).g),
-            Text(valuesDate.fibres.toStringAsFixed(0) + AppLocalizations.of(context).g),
-            Text((valuesDate.fibres - valuesTotal.fibres).toStringAsFixed(0)),
-          ],
-        ),
-        TableRow(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: tablePadding),
-              child: Text(AppLocalizations.of(context).sodium),
-            ),
-            Text(valuesTotal.sodium.toStringAsFixed(0) + AppLocalizations.of(context).g),
-            Text(valuesDate.sodium.toStringAsFixed(0) + AppLocalizations.of(context).g),
-            Text((valuesDate.sodium - valuesTotal.sodium).toStringAsFixed(0)),
-          ],
-        ),
-      ],
-    );
-  }
-
-  List<Widget> getEntriesTable(List<Log> logs, BuildContext context) {
-    return logs.map((log) {
-      final values = log.nutritionalValues;
-
-      return Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Text(
-            DateFormat.Hm(Localizations.localeOf(context).languageCode).format(log.datetime),
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '${log.amount.toStringAsFixed(0)}${AppLocalizations.of(context).g} ${log.ingredientObj.name}',
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 4),
-                ...getMutedNutritionalValues(values, context),
-                const SizedBox(height: 12),
-              ],
-            ),
-          ),
-          IconButton(
-              tooltip: AppLocalizations.of(context).delete,
-              onPressed: () {
-                Provider.of<NutritionPlansProvider>(context, listen: false)
-                    .deleteLog(log.id!, _nutritionalPlan.id!);
-              },
-              icon: const Icon(Icons.delete_outline)),
-        ],
-      );
-    }).toList();
-  }
-
   @override
   Widget build(BuildContext context) {
-    final valuesTotal = _nutritionalPlan.nutritionalValues;
-    final valuesDate = _nutritionalPlan.getValuesForDate(_date);
+    final nutritionalGoals = _nutritionalPlan.nutritionalGoals;
+    final valuesLogged = _nutritionalPlan.getValuesForDate(_date);
     final logs = _nutritionalPlan.getLogsForDate(_date);
 
-    if (valuesDate == null) {
+    if (valuesLogged == null) {
       return const Text('');
     }
 
@@ -224,17 +47,88 @@ class NutritionalDiaryDetailWidget extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(15),
                 height: 220,
-                child: FlNutritionalPlanPieChartWidget(valuesDate),
+                child: FlNutritionalPlanPieChartWidget(valuesLogged),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: getTable(valuesTotal, valuesDate, context),
+                child: NutritionDiaryTable(
+                  planned: nutritionalGoals.toValues(),
+                  logged: valuesLogged,
+                ),
               ),
             ],
           ),
         ),
         const SizedBox(height: 15),
-        ...getEntriesTable(logs, context),
+        const DiaryheaderTile(),
+        ...logs.map(
+          (e) => DiaryEntryTile(diaryEntry: e, nutritionalPlan: _nutritionalPlan),
+        ),
+      ],
+    );
+  }
+}
+
+class NutritionDiaryTable extends StatelessWidget {
+  const NutritionDiaryTable({
+    super.key,
+    required this.planned,
+    required this.logged,
+  });
+
+  static const double tablePadding = 7;
+  final NutritionalValues planned;
+  final NutritionalValues logged;
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+
+    Widget columnHeader(bool left, String title) => Padding(
+          padding: const EdgeInsets.symmetric(vertical: tablePadding),
+          child: Text(
+            title,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+            textAlign: left ? TextAlign.left : TextAlign.right,
+          ),
+        );
+
+    TableRow macroRow(int indent, bool g, String title, double Function(NutritionalValues nv) get) {
+      final valFn = g ? loc.gValue : loc.kcalValue;
+      return TableRow(
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: tablePadding, horizontal: indent * 12),
+            child: Text(title),
+          ),
+          Text(valFn(get(planned).toStringAsFixed(0)), textAlign: TextAlign.right),
+          Text(valFn(get(logged).toStringAsFixed(0)), textAlign: TextAlign.right),
+          Text((get(logged) - get(planned)).toStringAsFixed(0), textAlign: TextAlign.right),
+        ],
+      );
+    }
+
+    return Table(
+      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+      border: TableBorder(
+        horizontalInside: BorderSide(width: 1, color: Theme.of(context).colorScheme.outline),
+      ),
+      columnWidths: const {0: FractionColumnWidth(0.4)},
+      children: [
+        TableRow(children: [
+          columnHeader(true, loc.macronutrients),
+          columnHeader(false, loc.planned),
+          columnHeader(false, loc.logged),
+          columnHeader(false, loc.difference),
+        ]),
+        macroRow(0, false, loc.energy, (NutritionalValues nv) => nv.energy),
+        macroRow(0, true, loc.protein, (NutritionalValues nv) => nv.protein),
+        macroRow(0, true, loc.carbohydrates, (NutritionalValues nv) => nv.carbohydrates),
+        macroRow(1, true, loc.sugars, (NutritionalValues nv) => nv.carbohydratesSugar),
+        macroRow(0, true, loc.fat, (NutritionalValues nv) => nv.fat),
+        macroRow(1, true, loc.saturatedFat, (NutritionalValues nv) => nv.fatSaturated),
+        macroRow(0, true, loc.fiber, (NutritionalValues nv) => nv.fiber),
+        macroRow(0, true, loc.sodium, (NutritionalValues nv) => nv.sodium),
       ],
     );
   }

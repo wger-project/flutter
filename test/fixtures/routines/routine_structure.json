@@ -1,0 +1,266 @@
+{
+  "id": 101,
+  "name": "Test 123",
+  "description": "",
+  "created": "2025-02-02T17:52:36.245680+01:00",
+  "start": "2025-01-06",
+  "end": "2025-03-28",
+  "fit_in_week": true,
+  "days": [
+    {
+      "id": 8,
+      "routine": 2,
+      "order": 1,
+      "name": "Leg day",
+      "description": "Leg day",
+      "is_rest": false,
+      "need_logs_to_advance": false,
+      "type": "custom",
+      "config": null,
+      "slots": [
+        {
+          "id": 2,
+          "day": 8,
+          "order": 1,
+          "comment": "",
+          "entries": [
+            {
+              "id": 2,
+              "slot": 2,
+              "exercise": 76,
+              "order": 1,
+              "comment": "",
+              "type": "normal",
+              "class_name": null,
+              "config": null,
+              "repetition_unit": 1,
+              "repetition_rounding": null,
+              "repetitions_configs": [
+                {
+                  "id": 2,
+                  "slot_entry": 2,
+                  "iteration": 1,
+                  "value": "10.00",
+                  "operation": "r",
+                  "step": "abs",
+                  "repeat": false,
+                  "requirements": null
+                }
+              ],
+              "max_repetitions_configs": [],
+              "weight_unit": 1,
+              "weight_rounding": null,
+              "weight_configs": [
+                {
+                  "id": 1,
+                  "slot_entry": 2,
+                  "iteration": 1,
+                  "value": "80.00",
+                  "operation": "r",
+                  "step": "abs",
+                  "repeat": false,
+                  "requirements": null
+                }
+              ],
+              "max_weight_configs": [],
+              "set_nr_configs": [
+                {
+                  "id": 2,
+                  "slot_entry": 2,
+                  "iteration": 1,
+                  "value": 4,
+                  "operation": "r",
+                  "step": "abs",
+                  "repeat": false,
+                  "requirements": null
+                }
+              ],
+              "max_set_nr_configs": [],
+              "rir_configs": [],
+              "max_rir_configs": [],
+              "rest_configs": [
+                {
+                  "id": 2,
+                  "slot_entry": 2,
+                  "iteration": 1,
+                  "value": 120,
+                  "operation": "r",
+                  "step": "abs",
+                  "repeat": false,
+                  "requirements": null
+                }
+              ],
+              "max_rest_configs": []
+            }
+          ],
+          "config": null
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "routine": 2,
+      "order": 2,
+      "name": "",
+      "description": "",
+      "is_rest": true,
+      "need_logs_to_advance": false,
+      "type": "custom",
+      "config": null,
+      "slots": []
+    },
+    {
+      "id": 10,
+      "routine": 2,
+      "order": 3,
+      "name": "Arms day",
+      "description": "Leg day",
+      "is_rest": false,
+      "need_logs_to_advance": false,
+      "type": "custom",
+      "config": null,
+      "slots": [
+        {
+          "id": 3,
+          "day": 10,
+          "order": 1,
+          "comment": "",
+          "entries": [
+            {
+              "id": 3,
+              "slot": 3,
+              "exercise": 92,
+              "order": 1,
+              "comment": "",
+              "type": "normal",
+              "class_name": null,
+              "config": null,
+              "repetition_unit": 1,
+              "repetition_rounding": null,
+              "repetitions_configs": [
+                {
+                  "id": 3,
+                  "slot_entry": 3,
+                  "iteration": 1,
+                  "value": "10.00",
+                  "operation": "r",
+                  "step": "abs",
+                  "repeat": false,
+                  "requirements": null
+                }
+              ],
+              "max_repetitions_configs": [],
+              "weight_unit": 1,
+              "weight_rounding": null,
+              "weight_configs": [
+                {
+                  "id": 2,
+                  "slot_entry": 3,
+                  "iteration": 1,
+                  "value": "20.00",
+                  "operation": "r",
+                  "step": "na",
+                  "repeat": false,
+                  "requirements": {
+                    "rules": []
+                  }
+                },
+                {
+                  "id": 7,
+                  "slot_entry": 3,
+                  "iteration": 2,
+                  "value": "1.00",
+                  "operation": "+",
+                  "step": "abs",
+                  "repeat": true,
+                  "requirements": {
+                    "rules": []
+                  }
+                },
+                {
+                  "id": 8,
+                  "slot_entry": 3,
+                  "iteration": 8,
+                  "value": "20.00",
+                  "operation": "r",
+                  "step": "na",
+                  "repeat": false,
+                  "requirements": {
+                    "rules": []
+                  }
+                }
+              ],
+              "max_weight_configs": [
+                {
+                  "id": 1,
+                  "slot_entry": 3,
+                  "iteration": 1,
+                  "value": "22.00",
+                  "operation": "r",
+                  "step": "na",
+                  "repeat": false,
+                  "requirements": {
+                    "rules": []
+                  }
+                },
+                {
+                  "id": 2,
+                  "slot_entry": 3,
+                  "iteration": 2,
+                  "value": "1.00",
+                  "operation": "+",
+                  "step": "abs",
+                  "repeat": true,
+                  "requirements": {
+                    "rules": []
+                  }
+                },
+                {
+                  "id": 3,
+                  "slot_entry": 3,
+                  "iteration": 8,
+                  "value": "22.00",
+                  "operation": "r",
+                  "step": "na",
+                  "repeat": false,
+                  "requirements": {
+                    "rules": []
+                  }
+                }
+              ],
+              "set_nr_configs": [
+                {
+                  "id": 3,
+                  "slot_entry": 3,
+                  "iteration": 1,
+                  "value": 4,
+                  "operation": "r",
+                  "step": "abs",
+                  "repeat": false,
+                  "requirements": null
+                }
+              ],
+              "max_set_nr_configs": [],
+              "rir_configs": [],
+              "max_rir_configs": [],
+              "rest_configs": [
+                {
+                  "id": 3,
+                  "slot_entry": 3,
+                  "iteration": 1,
+                  "value": 120,
+                  "operation": "r",
+                  "step": "abs",
+                  "repeat": false,
+                  "requirements": null
+                }
+              ],
+              "max_rest_configs": []
+            }
+          ],
+          "config": null
+        }
+      ]
+    }
+  ]
+}

@@ -18,27 +18,37 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-//import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter_zxing/flutter_zxing.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/misc.dart';
 import 'package:wger/helpers/platform.dart';
 import 'package:wger/helpers/ui.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/exercises/ingredient_api.dart';
+import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/widgets/core/core.dart';
+import 'package:wger/widgets/nutrition/helpers.dart';
+import 'package:wger/widgets/nutrition/ingredient_dialogs.dart';
 
 class ScanReader extends StatelessWidget {
-  String? scannedr;
+  const ScanReader();
 
   @override
   Widget build(BuildContext context) => Scaffold(
         body: ReaderWidget(
           onScan: (result) {
-            scannedr = result.text;
-            Navigator.pop(context, scannedr);
+            // notes:
+            // 1. even if result.isValid, result.error is always non-null (and set to "")
+            // 2. i've never encountered scan errors to see when they occur, and
+            //    i wouldn't know what to do about them anyway, so we simply return
+            //    result.text in such case (which presumably will be null, or "")
+            // 3. when user cancels (swipe left / back button) this code is no longer
+            //    run and the caller receives null
+            Navigator.pop(context, result.text);
           },
         ),
       );
@@ -48,19 +58,23 @@ class IngredientTypeahead extends StatefulWidget {
   final TextEditingController _ingredientController;
   final TextEditingController _ingredientIdController;
 
-  String? barcode = '';
-
-  //Code? result;
-
-  late final bool? test;
+  final String barcode;
+  final bool? test;
   final bool showScanner;
 
-  IngredientTypeahead(
+  final Function(int id, String name, num? amount) selectIngredient;
+  final Function() unSelectIngredient;
+  final Function(String query) updateSearchQuery;
+
+  const IngredientTypeahead(
     this._ingredientIdController,
     this._ingredientController, {
     this.showScanner = true,
     this.test = false,
     this.barcode = '',
+    required this.selectIngredient,
+    required this.unSelectIngredient,
+    required this.updateSearchQuery,
   });
 
   @override
@@ -69,65 +83,104 @@ class IngredientTypeahead extends StatefulWidget {
 
 class _IngredientTypeaheadState extends State<IngredientTypeahead> {
   var _searchEnglish = true;
+  late String barcode;
+
+  @override
+  void initState() {
+    super.initState();
+    barcode = widget.barcode; // for unit tests
+  }
 
   Future<String> readerscan(BuildContext context) async {
-    String scannedcode;
     try {
-      scannedcode =
-          await Navigator.of(context).push(MaterialPageRoute(builder: (context) => ScanReader()));
-
-      if (scannedcode.compareTo('-1') == 0) {
+      final code = await Navigator.of(context)
+          .push<String?>(MaterialPageRoute(builder: (context) => const ScanReader()));
+      if (code == null) {
         return '';
       }
+
+      if (code.compareTo('-1') == 0) {
+        return '';
+      }
+      return code;
     } on PlatformException {
       return '';
     }
-
-    return scannedcode;
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        TypeAheadFormField(
-          textFieldConfiguration: TextFieldConfiguration(
-            controller: widget._ingredientController,
-            decoration: InputDecoration(
-              prefixIcon: const Icon(Icons.search),
-              labelText: AppLocalizations.of(context).searchIngredient,
-              suffixIcon: (widget.showScanner && !isDesktop) ? scanButton() : null,
-            ),
-          ),
-          suggestionsCallback: (pattern) async {
+        TypeAheadField<IngredientApiSearchEntry>(
+          controller: widget._ingredientController,
+          builder: (context, controller, focusNode) {
+            return TextFormField(
+              controller: controller,
+              focusNode: focusNode,
+              autofocus: true,
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return AppLocalizations.of(context).selectIngredient;
+                }
+                return null;
+              },
+              onChanged: (value) {
+                widget.updateSearchQuery(value);
+                // unselect to start a new search
+                widget.unSelectIngredient();
+              },
+              decoration: InputDecoration(
+                prefixIcon: const Icon(Icons.search),
+                labelText: AppLocalizations.of(context).searchIngredient,
+                suffixIcon: (widget.showScanner && !isDesktop) ? scanButton() : null,
+              ),
+            );
+          },
+          suggestionsCallback: (pattern) {
+            // don't do search if user has already loaded a specific item
+            if (pattern == '' || widget._ingredientIdController.text.isNotEmpty) {
+              return null;
+            }
+
             return Provider.of<NutritionPlansProvider>(context, listen: false).searchIngredient(
               pattern,
               languageCode: Localizations.localeOf(context).languageCode,
               searchEnglish: _searchEnglish,
             );
           },
-          itemBuilder: (context, dynamic suggestion) {
+          itemBuilder: (context, suggestion) {
             final url = context.read<NutritionPlansProvider>().baseProvider.auth.serverUrl;
             return ListTile(
-              leading: suggestion['data']['image'] != null
-                  ? CircleAvatar(backgroundImage: NetworkImage(url! + suggestion['data']['image']))
-                  : const CircleIconAvatar(Icon(Icons.image, color: Colors.grey)),
-              title: Text(suggestion['value']),
-              subtitle: Text(suggestion['data']['id'].toString()),
+              leading: suggestion.data.image != null
+                  ? CircleAvatar(
+                      backgroundImage: NetworkImage(url! + suggestion.data.image!),
+                    )
+                  : const CircleIconAvatar(
+                      Icon(Icons.image, color: Colors.grey),
+                    ),
+              title: Text(suggestion.value),
+              // subtitle: Text(suggestion.data.id.toString()),
+              trailing: IconButton(
+                icon: const Icon(Icons.info_outline),
+                onPressed: () {
+                  showIngredientDetails(
+                    context,
+                    suggestion.data.id,
+                    select: () {
+                      widget.selectIngredient(suggestion.data.id, suggestion.value, null);
+                    },
+                  );
+                },
+              ),
             );
           },
-          transitionBuilder: (context, suggestionsBox, controller) {
-            return suggestionsBox;
-          },
-          onSuggestionSelected: (dynamic suggestion) {
-            widget._ingredientIdController.text = suggestion['data']['id'].toString();
-            widget._ingredientController.text = suggestion['value'];
-          },
-          validator: (value) {
-            if (value!.isEmpty) {
-              return AppLocalizations.of(context).selectIngredient;
-            }
-            return null;
+          transitionBuilder: (context, animation, child) => FadeTransition(
+            opacity: CurvedAnimation(parent: animation, curve: Curves.fastOutSlowIn),
+            child: child,
+          ),
+          onSelected: (suggestion) {
+            widget.selectIngredient(suggestion.data.id, suggestion.value, null);
           },
         ),
         if (Localizations.localeOf(context).languageCode != LANGUAGE_SHORT_ENGLISH)
@@ -148,76 +201,53 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
   Widget scanButton() {
     return IconButton(
       key: const Key('scan-button'),
+      icon: const FaIcon(FontAwesomeIcons.barcode),
       onPressed: () async {
         try {
           if (!widget.test!) {
-            widget.barcode = await readerscan(context);
-          }
-
-          if (widget.barcode!.isNotEmpty) {
-            final result = await Provider.of<NutritionPlansProvider>(context, listen: false)
-                .searchIngredientWithCode(widget.barcode!);
-
-            if (result != null) {
-              showDialog(
-                context: context,
-                builder: (ctx) => AlertDialog(
-                  key: const Key('found-dialog'),
-                  title: Text(AppLocalizations.of(context).productFound),
-                  content: Text(AppLocalizations.of(context).productFoundDescription(result.name)),
-                  actions: [
-                    TextButton(
-                      key: const Key('found-dialog-confirm-button'),
-                      child: Text(MaterialLocalizations.of(context).continueButtonLabel),
-                      onPressed: () {
-                        widget._ingredientController.text = result.name;
-                        widget._ingredientIdController.text = result.id.toString();
-                        Navigator.of(ctx).pop();
-                      },
-                    ),
-                    TextButton(
-                      key: const Key('found-dialog-close-button'),
-                      child: Text(MaterialLocalizations.of(context).closeButtonLabel),
-                      onPressed: () {
-                        Navigator.of(ctx).pop();
-                      },
-                    )
-                  ],
-                ),
-              );
-            } else {
-              //nothing is matching barcode
-              showDialog(
-                context: context,
-                builder: (ctx) => AlertDialog(
-                  key: const Key('notFound-dialog'),
-                  title: Text(AppLocalizations.of(context).productNotFound),
-                  content: Text(
-                    AppLocalizations.of(context).productNotFoundDescription(widget.barcode!),
-                  ),
-                  actions: [
-                    TextButton(
-                      key: const Key('notFound-dialog-close-button'),
-                      child: Text(MaterialLocalizations.of(context).closeButtonLabel),
-                      onPressed: () {
-                        Navigator.of(ctx).pop();
-                      },
-                    )
-                  ],
-                ),
-              );
-            }
+            barcode = await readerscan(context);
           }
         } catch (e) {
-          if (context.mounted) {
+          if (mounted) {
             showErrorDialog(e, context);
-            // Need to pop back since reader scan is a widget
-            // otherwise returns null when back button is pressed
-            return Navigator.pop(context);
           }
         }
+        if (!mounted) {
+          return;
+        }
+        showDialog(
+          context: context,
+          builder: (context) => FutureBuilder<Ingredient?>(
+            future: Provider.of<NutritionPlansProvider>(context, listen: false)
+                .searchIngredientWithCode(barcode),
+            builder: (BuildContext context, AsyncSnapshot<Ingredient?> snapshot) {
+              return IngredientScanResultDialog(snapshot, barcode, widget.selectIngredient);
+            },
+          ),
+        );
       },
-      icon: const FaIcon(FontAwesomeIcons.barcode),
     );
+  }
+}
+
+class IngredientAvatar extends StatelessWidget {
+  final Ingredient ingredient;
+
+  const IngredientAvatar({super.key, required this.ingredient});
+
+  @override
+  Widget build(BuildContext context) {
+    return ingredient.image != null
+        ? GestureDetector(
+            child: CircleAvatar(
+              backgroundImage: NetworkImage(ingredient.image!.image),
+            ),
+            onTap: () async {
+              if (ingredient.image!.objectUrl != '') {
+                return launchURL(ingredient.image!.objectUrl, context);
+              }
+            },
+          )
+        : const CircleIconAvatar(Icon(Icons.image, color: Colors.grey));
   }
 }

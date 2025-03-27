@@ -16,28 +16,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/gallery.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/routines.dart';
 import 'package:wger/providers/user.dart';
-import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/dashboard.dart';
 import 'package:wger/screens/gallery_screen.dart';
 import 'package:wger/screens/nutritional_plans_screen.dart';
+import 'package:wger/screens/routine_list_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
-import 'package:wger/screens/workout_plans_screen.dart';
 
 class HomeTabsScreen extends StatefulWidget {
+  final _logger = Logger('HomeTabsScreen');
+
+  HomeTabsScreen();
+
   static const routeName = '/dashboard2';
 
   @override
@@ -62,10 +65,10 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
   }
 
   final _screenList = [
-    DashboardScreen(),
-    WorkoutPlansScreen(),
-    NutritionScreen(),
-    WeightScreen(),
+    const DashboardScreen(),
+    const RoutineListScreen(),
+    const NutritionalPlansScreen(),
+    const WeightScreen(),
     const GalleryScreen(),
   ];
 
@@ -74,7 +77,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
     final authProvider = context.read<AuthProvider>();
 
     if (!authProvider.dataInit) {
-      final workoutPlansProvider = context.read<WorkoutPlansProvider>();
+      final routinesProvider = context.read<RoutinesProvider>();
       final nutritionPlansProvider = context.read<NutritionPlansProvider>();
       final exercisesProvider = context.read<ExercisesProvider>();
       final galleryProvider = context.read<GalleryProvider>();
@@ -83,43 +86,54 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
       final userProvider = context.read<UserProvider>();
 
       // Base data
-      log('Loading base data');
+      widget._logger.info('Loading base data');
       try {
         await Future.wait([
           authProvider.setServerVersion(),
           userProvider.fetchAndSetProfile(),
-          workoutPlansProvider.fetchAndSetUnits(),
+          routinesProvider.fetchAndSetUnits(),
           nutritionPlansProvider.fetchIngredientsFromCache(),
           exercisesProvider.fetchAndSetInitialData(),
         ]);
       } catch (e) {
-        log('fire! fire!');
-        log(e.toString());
+        widget._logger.warning('Exception loading base data');
+        widget._logger.warning(e.toString());
       }
 
       // Plans, weight and gallery
-      log('Loading plans, weight, measurements and gallery');
-      await Future.wait([
-        galleryProvider.fetchAndSetGallery(),
-        nutritionPlansProvider.fetchAndSetAllPlansSparse(),
-        workoutPlansProvider.fetchAndSetAllPlansSparse(),
-        weightProvider.fetchAndSetEntries(),
-        measurementProvider.fetchAndSetAllCategoriesAndEntries(),
-      ]);
+      widget._logger.info('Loading plans, weight, measurements and gallery');
+      try {
+        await Future.wait([
+          galleryProvider.fetchAndSetGallery(),
+          nutritionPlansProvider.fetchAndSetAllPlansSparse(),
+          routinesProvider.fetchAndSetAllPlansSparse(),
+          // routinesProvider.fetchAndSetAllRoutinesFull(),
+          weightProvider.fetchAndSetEntries(),
+          measurementProvider.fetchAndSetAllCategoriesAndEntries(),
+        ]);
+      } catch (e) {
+        widget._logger.warning('Exception loading plans, weight, measurements and gallery');
+        widget._logger.info(e.toString());
+      }
 
       // Current nutritional plan
-      log('Loading current nutritional plan');
-      if (nutritionPlansProvider.currentPlan != null) {
-        final plan = nutritionPlansProvider.currentPlan!;
-        await nutritionPlansProvider.fetchAndSetPlanFull(plan.id!);
+      widget._logger.info('Loading current nutritional plan');
+      try {
+        if (nutritionPlansProvider.currentPlan != null) {
+          final plan = nutritionPlansProvider.currentPlan!;
+          await nutritionPlansProvider.fetchAndSetPlanFull(plan.id!);
+        }
+      } catch (e) {
+        widget._logger.warning('Exception loading current nutritional plan');
+        widget._logger.warning(e.toString());
       }
 
       // Current workout plan
-      log('Loading current workout plan');
-      if (workoutPlansProvider.activePlan != null) {
-        final planId = workoutPlansProvider.activePlan!.id!;
-        await workoutPlansProvider.fetchAndSetWorkoutPlanFull(planId);
-        workoutPlansProvider.setCurrentPlan(planId);
+      widget._logger.info('Loading current routine');
+      if (routinesProvider.activeRoutine != null) {
+        final planId = routinesProvider.activeRoutine!.id!;
+        await routinesProvider.fetchAndSetRoutineFull(planId);
+        routinesProvider.setCurrentPlan(planId);
       }
     }
 
@@ -172,10 +186,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
                   label: AppLocalizations.of(context).labelBottomNavNutrition,
                 ),
                 NavigationDestination(
-                  icon: const FaIcon(
-                    FontAwesomeIcons.weightScale,
-                    size: 20,
-                  ),
+                  icon: const FaIcon(FontAwesomeIcons.weightScale, size: 20),
                   label: AppLocalizations.of(context).weight,
                 ),
                 NavigationDestination(

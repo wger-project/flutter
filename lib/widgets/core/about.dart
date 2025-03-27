@@ -17,10 +17,10 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/misc.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth.dart';
 
 class AboutEntry extends StatelessWidget {
@@ -45,10 +45,7 @@ class AboutEntry extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(content),
-          Text(
-            url,
-            style: const TextStyle(color: Colors.blue),
-          ),
+          Text(url, style: const TextStyle(color: Colors.blue)),
         ],
       ),
       contentPadding: EdgeInsets.zero,
@@ -84,10 +81,7 @@ class AboutPage extends StatelessWidget {
               child: Row(
                 // mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(
-                    'assets/images/logo.png',
-                    width: 75,
-                  ),
+                  Image.asset('assets/images/logo.png', width: 75),
                   const SizedBox(width: 20),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -174,10 +168,7 @@ class AboutPage extends StatelessWidget {
                   applicationLegalese: '\u{a9} 2020 - 2021 contributors',
                   applicationIcon: Padding(
                     padding: const EdgeInsets.only(top: 10),
-                    child: Image.asset(
-                      'assets/images/logo.png',
-                      width: 60,
-                    ),
+                    child: Image.asset('assets/images/logo.png', width: 60),
                   ),
                 );
               },

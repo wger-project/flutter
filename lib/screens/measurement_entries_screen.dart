@@ -17,8 +17,8 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/measurements/entries.dart';
@@ -30,6 +30,8 @@ enum MeasurementOptions {
 }
 
 class MeasurementEntriesScreen extends StatelessWidget {
+  const MeasurementEntriesScreen();
+
   static const routeName = '/measurement-entries';
 
   @override
@@ -58,44 +60,49 @@ class MeasurementEntriesScreen extends StatelessWidget {
 
                 case MeasurementOptions.delete:
                   showDialog(
-                      context: context,
-                      builder: (BuildContext contextDialog) {
-                        return AlertDialog(
-                          content: Text(
-                            AppLocalizations.of(context).confirmDelete(category.name),
+                    context: context,
+                    builder: (BuildContext contextDialog) {
+                      return AlertDialog(
+                        content: Text(
+                          AppLocalizations.of(context).confirmDelete(category.name),
+                        ),
+                        actions: [
+                          TextButton(
+                            child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+                            onPressed: () => Navigator.of(contextDialog).pop(),
                           ),
-                          actions: [
-                            TextButton(
-                              child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-                              onPressed: () => Navigator.of(contextDialog).pop(),
-                            ),
-                            TextButton(
-                              child: Text(
-                                AppLocalizations.of(context).delete,
-                                style: TextStyle(color: Theme.of(context).colorScheme.error),
+                          TextButton(
+                            child: Text(
+                              AppLocalizations.of(context).delete,
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.error,
                               ),
-                              onPressed: () {
-                                // Confirmed, delete the workout
-                                Provider.of<MeasurementProvider>(context, listen: false)
-                                    .deleteCategory(category.id!);
-
-                                // Close the popup
-                                Navigator.of(contextDialog).pop();
-
-                                // and inform the user
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      AppLocalizations.of(context).successfullyDeleted,
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                );
-                              },
                             ),
-                          ],
-                        );
-                      });
+                            onPressed: () {
+                              // Confirmed, delete the workout
+                              Provider.of<MeasurementProvider>(
+                                context,
+                                listen: false,
+                              ).deleteCategory(category.id!);
+
+                              // Close the popup
+                              Navigator.of(contextDialog).pop();
+
+                              // and inform the user
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    AppLocalizations.of(context).successfullyDeleted,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
                   break;
               }
             },
@@ -115,11 +122,8 @@ class MeasurementEntriesScreen extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
-        onPressed: () async {
+        child: const Icon(Icons.add, color: Colors.white),
+        onPressed: () {
           Navigator.pushNamed(
             context,
             FormScreen.routeName,
@@ -130,8 +134,10 @@ class MeasurementEntriesScreen extends StatelessWidget {
           );
         },
       ),
-      body: Consumer<MeasurementProvider>(
-        builder: (context, provider, child) => EntriesList(category),
+      body: SingleChildScrollView(
+        child: Consumer<MeasurementProvider>(
+          builder: (context, provider, child) => EntriesList(category),
+        ),
       ),
     );
   }

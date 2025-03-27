@@ -12,7 +12,7 @@ Language _$LanguageFromJson(Map<String, dynamic> json) {
     requiredKeys: const ['id', 'short_name', 'full_name'],
   );
   return Language(
-    id: json['id'] as int,
+    id: (json['id'] as num).toInt(),
     shortName: json['short_name'] as String,
     fullName: json['full_name'] as String,
   );

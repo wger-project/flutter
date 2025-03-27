@@ -8,22 +8,22 @@ import '../fixtures/fixture_reader.dart';
 
 void main() {
   final Map<String, dynamic> tExerciseInfoMap = jsonDecode(
-    fixture('exercises/exercisebaseinfo_response.json'),
+    fixture('exercises/exerciseinfo_response.json'),
   );
 
   group('Model tests', () {
-    test('test getExercise', () async {
+    test('test getExercise', () {
       // arrange and act
-      final base = getTestExerciseBases()[1];
+      final base = getTestExercises()[1];
 
       // assert
-      expect(base.getExercise('en').id, 5);
-      expect(base.getExercise('en-UK').id, 5);
-      expect(base.getExercise('de').id, 4);
-      expect(base.getExercise('de-AT').id, 4);
-      expect(base.getExercise('fr').id, 3);
-      expect(base.getExercise('fr-FR').id, 3);
-      expect(base.getExercise('pt').id, 5); // English again
+      expect(base.getTranslation('en').id, 5);
+      expect(base.getTranslation('en-UK').id, 5);
+      expect(base.getTranslation('de').id, 4);
+      expect(base.getTranslation('de-AT').id, 4);
+      expect(base.getTranslation('fr').id, 3);
+      expect(base.getTranslation('fr-FR').id, 3);
+      expect(base.getTranslation('pt').id, 5); // English again
     });
 
     test('Load the readExerciseBaseFromBaseInfo parse method', () {
@@ -57,7 +57,7 @@ void main() {
         '1f5d2b2f-d4ea-4eeb-9377-56176465e08d',
         'ab645585-26ef-4992-a9ec-15425687ece9',
         'd8aa5990-bb47-4111-9823-e2fbd98fe07f',
-        '49a159e1-1e00-409a-81c9-b4d4489fbd67'
+        '49a159e1-1e00-409a-81c9-b4d4489fbd67',
       ]);
       expect(exercise.videos.map((v) => v.uuid), ['63e996e9-a772-4ca5-9d09-8b4be03f6be4']);
 

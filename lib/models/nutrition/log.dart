@@ -45,7 +45,7 @@ class Log {
   late int ingredientId;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  late Ingredient ingredientObj;
+  late Ingredient ingredient;
 
   @JsonKey(required: true, name: 'weight_unit')
   int? weightUnitId;
@@ -69,7 +69,7 @@ class Log {
 
   Log.fromMealItem(MealItem mealItem, this.planId, this.mealId, [DateTime? dateTime]) {
     ingredientId = mealItem.ingredientId;
-    ingredientObj = mealItem.ingredientObj;
+    ingredient = mealItem.ingredient;
     weightUnitId = mealItem.weightUnitId;
     datetime = dateTime ?? DateTime.now();
     amount = mealItem.amount;
@@ -83,21 +83,10 @@ class Log {
   /// Calculations
   NutritionalValues get nutritionalValues {
     // This is already done on the server. It might be better to read it from there.
-    final out = NutritionalValues();
 
-    //final weight = amount;
     final weight =
         weightUnitObj == null ? amount : amount * weightUnitObj!.amount * weightUnitObj!.grams;
 
-    out.energy = ingredientObj.energy * weight / 100;
-    out.protein = ingredientObj.protein * weight / 100;
-    out.carbohydrates = ingredientObj.carbohydrates * weight / 100;
-    out.carbohydratesSugar = ingredientObj.carbohydratesSugar * weight / 100;
-    out.fat = ingredientObj.fat * weight / 100;
-    out.fatSaturated = ingredientObj.fatSaturated * weight / 100;
-    out.fibres = ingredientObj.fibres * weight / 100;
-    out.sodium = ingredientObj.sodium * weight / 100;
-
-    return out;
+    return ingredient.nutritionalValues / (100 / weight);
   }
 }

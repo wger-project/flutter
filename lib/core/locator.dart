@@ -11,15 +11,13 @@ final locator = GetIt.asNewInstance();
 class ServiceLocator {
   factory ServiceLocator() => _singleton;
 
-  ServiceLocator._internal();
+  const ServiceLocator._internal();
 
-  static final ServiceLocator _singleton = ServiceLocator._internal();
+  static const ServiceLocator _singleton = ServiceLocator._internal();
 
   Future<void> _initDB() async {
     ExerciseDatabase exerciseDB;
     IngredientDatabase ingredientDB;
-    // final exerciseDB = ExerciseDatabase();
-    // final ingredientDB = IngredientDatabase();
 
     if (Platform.environment.containsKey('FLUTTER_TEST')) {
       exerciseDB = ExerciseDatabase.inMemory(NativeDatabase.memory());

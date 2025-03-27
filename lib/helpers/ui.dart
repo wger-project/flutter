@@ -16,16 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/exceptions/http_exception.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/translation.dart';
 import 'package:wger/models/workouts/log.dart';
-import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/providers/routines.dart';
 
 void showErrorDialog(dynamic exception, BuildContext context) {
   // log('showErrorDialog: ');
@@ -35,24 +34,29 @@ void showErrorDialog(dynamic exception, BuildContext context) {
   showDialog(
     context: context,
     builder: (ctx) => AlertDialog(
+      scrollable: true,
       title: Text(AppLocalizations.of(context).anErrorOccurred),
-      content: Text(exception.toString()),
+      content: SelectableText(exception.toString()),
       actions: [
         TextButton(
           child: Text(MaterialLocalizations.of(context).closeButtonLabel),
           onPressed: () {
             Navigator.of(ctx).pop();
           },
-        )
+        ),
       ],
     ),
   );
 }
 
-void showHttpExceptionErrorDialog(WgerHttpException exception, BuildContext context) async {
-  log('showHttpExceptionErrorDialog: ');
-  log(exception.toString());
-  log('-------------------');
+void showHttpExceptionErrorDialog(
+  WgerHttpException exception,
+  BuildContext context,
+) {
+  final logger = Logger('showHttpExceptionErrorDialog');
+
+  logger.fine(exception.toString());
+  logger.fine('-------------------');
 
   final List<Widget> errorList = [];
 
@@ -63,7 +67,7 @@ void showHttpExceptionErrorDialog(WgerHttpException exception, BuildContext cont
 
     errorList.add(
       Text(
-        errorHeaderMsg,
+        errorHeaderMsg.replaceAll('_', ' '),
         style: const TextStyle(fontWeight: FontWeight.bold),
       ),
     );
@@ -94,14 +98,14 @@ void showHttpExceptionErrorDialog(WgerHttpException exception, BuildContext cont
           onPressed: () {
             Navigator.of(ctx).pop();
           },
-        )
+        ),
       ],
     ),
   );
 
   // This call serves no purpose The dialog above doesn't seem to show
   // unless this dummy call is present
-  // showDialog(context: context, builder: (context) => Container());
+  showDialog(context: context, builder: (context) => Container());
 }
 
 dynamic showDeleteDialog(
@@ -112,42 +116,43 @@ dynamic showDeleteDialog(
   Map<Exercise, List<Log>> exerciseData,
 ) async {
   final res = await showDialog(
-      context: context,
-      builder: (BuildContext contextDialog) {
-        return AlertDialog(
-          content: Text(
-            AppLocalizations.of(context).confirmDelete(confirmDeleteName),
+    context: context,
+    builder: (BuildContext contextDialog) {
+      return AlertDialog(
+        content: Text(
+          AppLocalizations.of(context).confirmDelete(confirmDeleteName),
+        ),
+        actions: [
+          TextButton(
+            child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+            onPressed: () => Navigator.of(contextDialog).pop(),
           ),
-          actions: [
-            TextButton(
-              child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-              onPressed: () => Navigator.of(contextDialog).pop(),
+          TextButton(
+            child: Text(
+              AppLocalizations.of(context).delete,
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
             ),
-            TextButton(
-              child: Text(
-                AppLocalizations.of(context).delete,
-                style: TextStyle(color: Theme.of(context).colorScheme.error),
-              ),
-              onPressed: () {
-                exerciseData[exercise]!.removeWhere((el) => el.id == log.id);
-                Provider.of<WorkoutPlansProvider>(context, listen: false).deleteLog(
-                  log,
-                );
+            onPressed: () {
+              exerciseData[exercise]!.removeWhere((el) => el.id == log.id);
+              Provider.of<RoutinesProvider>(context, listen: false).deleteLog(
+                log,
+              );
 
-                Navigator.of(contextDialog).pop();
+              Navigator.of(contextDialog).pop();
 
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      AppLocalizations.of(context).successfullyDeleted,
-                      textAlign: TextAlign.center,
-                    ),
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    AppLocalizations.of(context).successfullyDeleted,
+                    textAlign: TextAlign.center,
                   ),
-                );
-              },
-            ),
-          ],
-        );
-      });
+                ),
+              );
+            },
+          ),
+        ],
+      );
+    },
+  );
   return res;
 }

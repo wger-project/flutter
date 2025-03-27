@@ -19,11 +19,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/gallery/image.dart' as gallery;
 import 'package:wger/providers/gallery.dart';
 
@@ -47,10 +47,17 @@ class _ImageFormState extends State<ImageForm> {
   final TextEditingController descriptionController = TextEditingController();
 
   @override
+  void dispose() {
+    dateController.dispose();
+    descriptionController.dispose();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     super.initState();
 
-    dateController.text = toDate(widget._image.date)!;
+    dateController.text = dateToYYYYMMDD(widget._image.date)!;
     descriptionController.text = widget._image.description;
   }
 
@@ -69,9 +76,7 @@ class _ImageFormState extends State<ImageForm> {
   Widget getPicture() {
     // An image file was selected, use it
     if (_file != null) {
-      return Image(
-        image: FileImage(File(_file!.path)),
-      );
+      return Image(image: FileImage(File(_file!.path)));
     }
 
     // We are editing an existing entry
@@ -106,7 +111,7 @@ class _ImageFormState extends State<ImageForm> {
                     return SizedBox(
                       height: 150,
                       child: Column(
-                        children: <Widget>[
+                        children: [
                           ListTile(
                             onTap: () {
                               Navigator.of(context).pop();
@@ -116,12 +121,15 @@ class _ImageFormState extends State<ImageForm> {
                             title: Text(AppLocalizations.of(context).takePicture),
                           ),
                           ListTile(
-                              onTap: () {
-                                Navigator.of(context).pop();
-                                _showPicker(ImageSource.gallery);
-                              },
-                              leading: const Icon(Icons.photo_library),
-                              title: Text(AppLocalizations.of(context).chooseFromLibrary))
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              _showPicker(ImageSource.gallery);
+                            },
+                            leading: const Icon(Icons.photo_library),
+                            title: Text(
+                              AppLocalizations.of(context).chooseFromLibrary,
+                            ),
+                          ),
                         ],
                       ),
                     );
@@ -137,7 +145,8 @@ class _ImageFormState extends State<ImageForm> {
               labelText: AppLocalizations.of(context).date,
               suffixIcon: const Icon(Icons.calendar_today),
             ),
-            readOnly: true, // Stop keyboard from appearing
+            readOnly: true,
+            // Stop keyboard from appearing
             controller: dateController,
             onTap: () async {
               // Stop keyboard from appearing
@@ -151,7 +160,7 @@ class _ImageFormState extends State<ImageForm> {
                 lastDate: DateTime.now(),
               );
 
-              dateController.text = toDate(pickedDate)!;
+              dateController.text = dateToYYYYMMDD(pickedDate)!;
             },
             onSaved: (newValue) {
               widget._image.date = DateTime.parse(newValue!);
@@ -166,7 +175,9 @@ class _ImageFormState extends State<ImageForm> {
           ),
           TextFormField(
             key: const Key('field-description'),
-            decoration: InputDecoration(labelText: AppLocalizations.of(context).description),
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context).description,
+            ),
             minLines: 3,
             maxLines: 10,
             controller: descriptionController,

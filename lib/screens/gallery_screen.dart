@@ -17,9 +17,9 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/platform.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/gallery.dart';
 import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/gallery/forms.dart';
@@ -39,10 +39,7 @@ class GalleryScreen extends StatelessWidget {
       floatingActionButton: isDesktop
           ? null
           : FloatingActionButton(
-              child: const Icon(
-                Icons.add,
-                color: Colors.white,
-              ),
+              child: const Icon(Icons.add, color: Colors.white),
               onPressed: () {
                 Navigator.pushNamed(
                   context,

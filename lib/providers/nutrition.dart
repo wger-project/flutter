@@ -17,15 +17,17 @@
  */
 
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:logging/logging.dart';
+import 'package:wger/core/locator.dart';
+import 'package:wger/database/ingredients/ingredients_database.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/exceptions/no_such_entry_exception.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/models/nutrition/image.dart';
+import 'package:wger/models/exercises/ingredient_api.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
+import 'package:wger/models/nutrition/ingredient_image.dart';
 import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
@@ -33,33 +35,35 @@ import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/base_provider.dart';
 
 class NutritionPlansProvider with ChangeNotifier {
+  final _logger = Logger('NutritionPlansProvider');
+
   static const _nutritionalPlansPath = 'nutritionplan';
   static const _nutritionalPlansInfoPath = 'nutritionplaninfo';
   static const _mealPath = 'meal';
   static const _mealItemPath = 'mealitem';
-  static const _ingredientPath = 'ingredient';
+  static const _ingredientInfoPath = 'ingredientinfo';
   static const _ingredientSearchPath = 'ingredient/search';
   static const _nutritionDiaryPath = 'nutritiondiary';
-  static const _ingredientImagePath = 'ingredient-image';
 
   final WgerBaseProvider baseProvider;
+  late IngredientDatabase database;
   List<NutritionalPlan> _plans = [];
-  List<Ingredient> _ingredients = [];
+  List<Ingredient> ingredients = [];
 
-  NutritionPlansProvider(this.baseProvider, List<NutritionalPlan> entries) : _plans = entries;
+  NutritionPlansProvider(this.baseProvider, List<NutritionalPlan> entries,
+      {IngredientDatabase? database})
+      : _plans = entries {
+    this.database = database ?? locator<IngredientDatabase>();
+  }
 
   List<NutritionalPlan> get items {
     return [..._plans];
   }
 
-  set ingredients(items) {
-    _ingredients = items;
-  }
-
   /// Clears all lists
   void clear() {
     _plans = [];
-    _ingredients = [];
+    ingredients = [];
   }
 
   /// Returns the current active nutritional plan. At the moment this is just
@@ -74,7 +78,7 @@ class NutritionPlansProvider with ChangeNotifier {
   NutritionalPlan findById(int id) {
     return _plans.firstWhere(
       (plan) => plan.id == id,
-      orElse: () => throw NoSuchEntryException(),
+      orElse: () => throw const NoSuchEntryException(),
     );
   }
 
@@ -91,8 +95,9 @@ class NutritionPlansProvider with ChangeNotifier {
   /// Fetches and sets all plans sparsely, i.e. only with the data on the plan
   /// object itself and no child attributes
   Future<void> fetchAndSetAllPlansSparse() async {
-    final data = await baseProvider
-        .fetchPaginated(baseProvider.makeUrl(_nutritionalPlansPath, query: {'limit': '1000'}));
+    final data = await baseProvider.fetchPaginated(
+      baseProvider.makeUrl(_nutritionalPlansPath, query: {'limit': '1000'}),
+    );
     _plans = [];
     for (final planData in data) {
       final plan = NutritionalPlan.fromJson(planData);
@@ -105,9 +110,7 @@ class NutritionPlansProvider with ChangeNotifier {
   /// Fetches and sets all plans fully, i.e. with all corresponding child objects
   Future<void> fetchAndSetAllPlansFull() async {
     final data = await baseProvider.fetchPaginated(baseProvider.makeUrl(_nutritionalPlansPath));
-    for (final entry in data) {
-      await fetchAndSetPlanFull(entry['id']);
-    }
+    await Future.wait(data.map((e) => fetchAndSetPlanFull(e['id'])).toList());
   }
 
   /// Fetches and sets the given nutritional plan
@@ -127,10 +130,13 @@ class NutritionPlansProvider with ChangeNotifier {
 
   /// Fetches a plan fully, i.e. with all corresponding child objects
   Future<NutritionalPlan> fetchAndSetPlanFull(int planId) async {
+    _logger.fine('Fetching full nutritional plan $planId');
+
     NutritionalPlan plan;
     try {
       plan = findById(planId);
     } on NoSuchEntryException {
+      // TODO: remove this useless call, because we will fetch all details below
       plan = await fetchAndSetPlanSparse(planId);
     }
 
@@ -144,6 +150,7 @@ class NutritionPlansProvider with ChangeNotifier {
       final List<MealItem> mealItems = [];
       final meal = Meal.fromJson(mealData);
 
+      // TODO: we should add these ingredients to the ingredient cache
       for (final mealItemData in mealData['meal_items']) {
         final mealItem = MealItem.fromJson(mealItemData);
 
@@ -152,7 +159,7 @@ class NutritionPlansProvider with ChangeNotifier {
           final image = IngredientImage.fromJson(mealItemData['image']);
           ingredient.image = image;
         }
-        mealItem.ingredientObj = ingredient;
+        mealItem.ingredient = ingredient;
         mealItems.add(mealItem);
       }
       meal.mealItems = mealItems;
@@ -162,6 +169,9 @@ class NutritionPlansProvider with ChangeNotifier {
 
     // Logs
     await fetchAndSetLogs(plan);
+    for (final meal in meals) {
+      meal.diaryEntries = plan.diaryEntries.where((e) => e.mealId == meal.id).toList();
+    }
 
     // ... and done
     notifyListeners();
@@ -251,10 +261,13 @@ class NutritionPlansProvider with ChangeNotifier {
 
   /// Adds a meal item to a meal
   Future<MealItem> addMealItem(MealItem mealItem, Meal meal) async {
-    final data = await baseProvider.post(mealItem.toJson(), baseProvider.makeUrl(_mealItemPath));
+    final data = await baseProvider.post(
+      mealItem.toJson(),
+      baseProvider.makeUrl(_mealItemPath),
+    );
 
     mealItem = MealItem.fromJson(data);
-    mealItem.ingredientObj = await fetchIngredient(mealItem.ingredientId);
+    mealItem.ingredient = await fetchIngredient(mealItem.ingredientId);
     meal.mealItems.add(mealItem);
     notifyListeners();
 
@@ -279,59 +292,67 @@ class NutritionPlansProvider with ChangeNotifier {
     }
   }
 
+  Future<void> clearIngredientCache() async {
+    await database.deleteEverything();
+  }
+
   /// Fetch and return an ingredient
   ///
   /// If the ingredient is not known locally, it is fetched from the server
-  Future<Ingredient> fetchIngredient(int ingredientId) async {
+  Future<Ingredient> fetchIngredient(int ingredientId, {IngredientDatabase? database}) async {
+    database ??= this.database;
     Ingredient ingredient;
 
     try {
-      ingredient = _ingredients.firstWhere((e) => e.id == ingredientId);
-      return ingredient;
-
-      // Get ingredient from the server and save to cache
+      ingredient = ingredients.firstWhere((e) => e.id == ingredientId);
     } on StateError {
-      final data = await baseProvider.fetch(
-        baseProvider.makeUrl(_ingredientPath, id: ingredientId),
-      );
-      ingredient = Ingredient.fromJson(data);
-      _ingredients.add(ingredient);
+      final ingredientDb = await (database.select(database.ingredients)
+            ..where((e) => e.id.equals(ingredientId)))
+          .getSingleOrNull();
 
-      final prefs = await SharedPreferences.getInstance();
-      final ingredientData = json.decode(prefs.getString('ingredientData')!);
-      ingredientData['ingredients'].add(ingredient.toJson());
-      prefs.setString('ingredientData', json.encode(ingredientData));
-      log("Saved ingredient '${ingredient.name}' to cache.");
+      // Try to fetch from local db
+      if (ingredientDb != null) {
+        ingredient = Ingredient.fromJson(jsonDecode(ingredientDb.data));
+        ingredients.add(ingredient);
+        _logger.info("Loaded ingredient '${ingredient.name}' from db cache");
 
-      return ingredient;
-    }
-  }
+        // Prune old entries
+        if (DateTime.now()
+            .isAfter(ingredientDb.lastFetched.add(const Duration(days: DAYS_TO_CACHE)))) {
+          (database.delete(database.ingredients)..where((i) => i.id.equals(ingredientId))).go();
+        }
+      } else {
+        final data = await baseProvider.fetch(
+          baseProvider.makeUrl(_ingredientInfoPath, id: ingredientId),
+        );
+        ingredient = Ingredient.fromJson(data);
+        ingredients.add(ingredient);
 
-  /// Loads the available ingredients from the local storage
-  Future<void> fetchIngredientsFromCache() async {
-    // Load exercises from cache, if available
-    final prefs = await SharedPreferences.getInstance();
-    if (prefs.containsKey(PREFS_INGREDIENTS)) {
-      final ingredientData = json.decode(prefs.getString(PREFS_INGREDIENTS)!);
-      if (DateTime.parse(ingredientData['expiresIn']).isAfter(DateTime.now())) {
-        ingredientData['ingredients'].forEach((e) => _ingredients.add(Ingredient.fromJson(e)));
-        log("Read ${ingredientData['ingredients'].length} ingredients from cache. Valid till ${ingredientData['expiresIn']}");
-        return;
+        database.into(database.ingredients).insert(
+              IngredientsCompanion.insert(
+                id: ingredientId,
+                data: jsonEncode(data),
+                lastFetched: DateTime.now(),
+              ),
+            );
+        _logger.finer("Saved ingredient '${ingredient.name}' to db cache");
       }
     }
 
-    // Initialise an empty cache
-    final ingredientData = {
-      'date': DateTime.now().toIso8601String(),
-      'expiresIn': DateTime.now().add(const Duration(days: DAYS_TO_CACHE)).toIso8601String(),
-      'ingredients': []
-    };
-    prefs.setString(PREFS_INGREDIENTS, json.encode(ingredientData));
-    return;
+    return ingredient;
+  }
+
+  /// Loads the available ingredients from the local cache
+  Future<void> fetchIngredientsFromCache() async {
+    final ingredientDb = await database.select(database.ingredients).get();
+    _logger.info('Read ${ingredientDb.length} ingredients from db cache');
+    if (ingredientDb.isNotEmpty) {
+      ingredients = ingredientDb.map((e) => Ingredient.fromJson(jsonDecode(e.data))).toList();
+    }
   }
 
   /// Searches for an ingredient
-  Future<List> searchIngredient(
+  Future<List<IngredientApiSearchEntry>> searchIngredient(
     String name, {
     String languageCode = 'en',
     bool searchEnglish = false,
@@ -347,12 +368,14 @@ class NutritionPlansProvider with ChangeNotifier {
 
     // Send the request
     final response = await baseProvider.fetch(
-      baseProvider
-          .makeUrl(_ingredientSearchPath, query: {'term': name, 'language': languages.join(',')}),
+      baseProvider.makeUrl(
+        _ingredientSearchPath,
+        query: {'term': name, 'language': languages.join(',')},
+      ),
     );
 
     // Process the response
-    return response['suggestions'];
+    return IngredientApiSearch.fromJson(response).suggestions;
   }
 
   /// Searches for an ingredient with code
@@ -363,14 +386,15 @@ class NutritionPlansProvider with ChangeNotifier {
 
     // Send the request
     final data = await baseProvider.fetch(
-      baseProvider.makeUrl(_ingredientPath, query: {'code': code}),
+      baseProvider.makeUrl(_ingredientInfoPath, query: {'code': code}),
     );
 
     if (data['count'] == 0) {
       return null;
-    } else {
-      return Ingredient.fromJson(data['results'][0]);
     }
+    // TODO we should probably add it to ingredient cache.
+    // TODO: we could also use the ingredient cache for code searches
+    return Ingredient.fromJson(data['results'][0]);
   }
 
   /// Log meal to nutrition diary
@@ -384,20 +408,27 @@ class NutritionPlansProvider with ChangeNotifier {
         baseProvider.makeUrl(_nutritionDiaryPath),
       );
       log.id = data['id'];
-      plan.logs.add(log);
+      plan.diaryEntries.add(log);
     }
     notifyListeners();
   }
 
   /// Log custom ingredient to nutrition diary
-  Future<void> logIngredientToDiary(MealItem mealItem, int planId, [DateTime? dateTime]) async {
+  Future<void> logIngredientToDiary(
+    MealItem mealItem,
+    int planId, [
+    DateTime? dateTime,
+  ]) async {
     final plan = findById(planId);
-    mealItem.ingredientObj = await fetchIngredient(mealItem.ingredientId);
+    mealItem.ingredient = await fetchIngredient(mealItem.ingredientId);
     final Log log = Log.fromMealItem(mealItem, plan.id!, null, dateTime);
 
-    final data = await baseProvider.post(log.toJson(), baseProvider.makeUrl(_nutritionDiaryPath));
+    final data = await baseProvider.post(
+      log.toJson(),
+      baseProvider.makeUrl(_nutritionDiaryPath),
+    );
     log.id = data['id'];
-    plan.logs.add(log);
+    plan.diaryEntries.add(log);
     notifyListeners();
   }
 
@@ -406,7 +437,7 @@ class NutritionPlansProvider with ChangeNotifier {
     await baseProvider.deleteRequest(_nutritionDiaryPath, logId);
 
     final plan = findById(planId);
-    plan.logs.removeWhere((element) => element.id == logId);
+    plan.diaryEntries.removeWhere((element) => element.id == logId);
     notifyListeners();
   }
 
@@ -415,16 +446,20 @@ class NutritionPlansProvider with ChangeNotifier {
     final data = await baseProvider.fetchPaginated(
       baseProvider.makeUrl(
         _nutritionDiaryPath,
-        query: {'plan': plan.id.toString(), 'limit': '999', 'ordering': 'datetime'},
+        query: {
+          'plan': plan.id?.toString(),
+          'limit': '999',
+          'ordering': 'datetime',
+        },
       ),
     );
 
-    plan.logs = [];
+    plan.diaryEntries = [];
     for (final logData in data) {
       final log = Log.fromJson(logData);
       final ingredient = await fetchIngredient(log.ingredientId);
-      log.ingredientObj = ingredient;
-      plan.logs.add(log);
+      log.ingredient = ingredient;
+      plan.diaryEntries.add(log);
     }
     notifyListeners();
   }
