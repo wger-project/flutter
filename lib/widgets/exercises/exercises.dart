@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -193,10 +194,23 @@ class ExerciseDetail extends StatelessWidget {
     // TODO: add carousel for the other images
     final List<Widget> out = [];
     if (_exercise.getMainImage != null) {
-      out.add(ExerciseImageWidget(
-        image: _exercise.getMainImage,
-        height: 250,
-      ));
+      out.add(
+        FlutterCarousel.builder(
+          itemCount: _exercise.images.length,
+          options: FlutterCarouselOptions(
+            showIndicator: true,
+            slideIndicator: CarouselIndicator(),
+          ),
+          itemBuilder: (_, index, __) => ExerciseImageWidget(
+            image: _exercise.images[index],
+            height: 250,
+          ),
+        ),
+      );
+      // out.add(ExerciseImageWidget(
+      //   image: _exercise.getMainImage,
+      //   height: 250,
+      // ));
       out.add(const SizedBox(height: PADDING));
     }
 
@@ -353,6 +367,30 @@ class MuscleWidget extends StatelessWidget {
               'assets/images/muscles/secondary/muscle-${m.id}.svg',
             )),
       ],
+    );
+  }
+}
+
+class CarouselIndicator implements SlideIndicator {
+  CarouselIndicator();
+
+  @override
+  Widget build(int currentPage, double pageDelta, int itemCount) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(
+        itemCount,
+        (index) => Container(
+          height: 8,
+          width: 8,
+          margin: EdgeInsets.only(right: index != itemCount - 1 ? 5 : 0),
+          decoration: BoxDecoration(
+            color: currentPage == index ? Colors.black : Colors.black26,
+            shape: BoxShape.circle,
+          ),
+        ),
+      ),
     );
   }
 }
