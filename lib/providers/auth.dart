@@ -38,6 +38,12 @@ enum LoginActions {
   proceed,
 }
 
+enum AuthState {
+  updateRequired,
+  loggedIn,
+  loggedOut,
+}
+
 class AuthProvider with ChangeNotifier {
   final _logger = Logger('AuthProvider');
 
@@ -46,6 +52,7 @@ class AuthProvider with ChangeNotifier {
   String? serverVersion;
   PackageInfo? applicationVersion;
   Map<String, String> metadata = {};
+  AuthState state = AuthState.loggedOut;
 
   static const MIN_APP_VERSION_URL = 'min-app-version';
   static const SERVER_VERSION_URL = 'version';
@@ -54,7 +61,7 @@ class AuthProvider with ChangeNotifier {
 
   late http.Client client;
 
-  AuthProvider([http.Client? client, bool? checkMetadata]) {
+  AuthProvider([http.Client? client]) {
     this.client = client ?? http.Client();
   }
 
@@ -83,23 +90,16 @@ class AuthProvider with ChangeNotifier {
   }
 
   /// Checking if there is a new version of the application.
-  Future<bool> applicationUpdateRequired([
-    String? version,
-    Map<String, String>? metadata,
-  ]) async {
-    metadata ??= this.metadata;
-
-    if (!metadata.containsKey(MANIFEST_KEY_CHECK_UPDATE) ||
-        metadata[MANIFEST_KEY_CHECK_UPDATE] == 'false') {
-      return false;
-    }
-
+  Future<bool> applicationUpdateRequired([String? version]) async {
     final applicationCurrentVersion = version ?? applicationVersion!.version;
     final response = await client.get(makeUri(serverUrl!, MIN_APP_VERSION_URL));
     final currentVersion = Version.parse(applicationCurrentVersion);
     final requiredAppVersion = Version.parse(jsonDecode(response.body));
 
-    return requiredAppVersion > currentVersion;
+    final result = requiredAppVersion > currentVersion;
+    _logger.fine('Application update required: $result');
+
+    return result;
   }
 
   /// Registers a new user
@@ -160,15 +160,13 @@ class AuthProvider with ChangeNotifier {
     await initVersions(serverUrl);
 
     // If update is required don't log in user
-    if (await applicationUpdateRequired(
-      applicationVersion!.version,
-      {MANIFEST_KEY_CHECK_UPDATE: 'true'},
-    )) {
+    if (await applicationUpdateRequired()) {
       return {'action': LoginActions.update};
     }
 
     // Log user in
     token = responseData['token'];
+    state = AuthState.loggedIn;
     notifyListeners();
 
     // store login data in shared preferences
@@ -195,23 +193,58 @@ class AuthProvider with ChangeNotifier {
     return userData['serverUrl'] as String;
   }
 
-  Future<bool> tryAutoLogin() async {
+  /// Tries to auto-login the user with the stored token
+  Future<void> tryAutoLogin() async {
     final prefs = await SharedPreferences.getInstance();
     if (!prefs.containsKey(PREFS_USER)) {
-      _logger.info('autologin failed');
-      return false;
+      _logger.info('autologin failed, no saved user data');
+      state = AuthState.loggedOut;
+      return;
     }
-    final extractedUserData = json.decode(prefs.getString(PREFS_USER)!);
 
-    token = extractedUserData['token'];
-    serverUrl = extractedUserData['serverUrl'];
+    final userData = json.decode(prefs.getString(PREFS_USER)!);
 
-    _logger.info('autologin successful');
-    setApplicationVersion();
-    setServerVersion();
+    if (!userData.containsKey('token') || !userData.containsKey('serverUrl')) {
+      _logger.info('autologin failed, no token or serverUrl');
+      state = AuthState.loggedOut;
+      return;
+    }
+
+    token = userData['token'];
+    serverUrl = userData['serverUrl'];
+
+    if (token == null || serverUrl == null) {
+      _logger.info('autologin failed, token or serverUrl is null');
+      state = AuthState.loggedOut;
+      return;
+    }
+
+    // // Try to talk to a URL using the token, if this doesn't work, log out
+    final response = await client.head(
+      makeUri(serverUrl!, 'routine'),
+      headers: {
+        HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
+        HttpHeaders.userAgentHeader: getAppNameHeader(),
+        HttpHeaders.authorizationHeader: 'Token $token'
+      },
+    );
+    if (response.statusCode != 200) {
+      _logger.info('autologin failed, statusCode: ${response.statusCode}');
+      await logout();
+      return;
+    }
+
+    await initVersions(serverUrl!);
+
+    // If update is required don't log in user
+    if (await applicationUpdateRequired()) {
+      state = AuthState.updateRequired;
+    } else {
+      state = AuthState.loggedIn;
+      _logger.info('autologin successful');
+    }
+
     notifyListeners();
-    //_autoLogout();
-    return true;
   }
 
   Future<void> logout({bool shouldNotify = true}) async {
@@ -219,6 +252,7 @@ class AuthProvider with ChangeNotifier {
     token = null;
     serverUrl = null;
     dataInit = false;
+    state = AuthState.loggedOut;
 
     if (shouldNotify) {
       notifyListeners();
@@ -236,7 +270,8 @@ class AuthProvider with ChangeNotifier {
     if (applicationVersion != null) {
       out = '/${applicationVersion!.version} '
           '(${applicationVersion!.packageName}; '
-          'build: ${applicationVersion!.buildNumber})';
+          'build: ${applicationVersion!.buildNumber})'
+          ' - https://github.com/wger-project';
     }
     return 'wger App$out';
   }

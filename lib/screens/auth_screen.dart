@@ -89,12 +89,6 @@ class AuthScreen extends StatelessWidget {
               ),
             ),
           ),
-          // Positioned(
-          //   top: 0.4 * deviceSize.height,
-          //   left: 15,
-          //   right: 15,
-          //   child: const ,
-          // ),
         ],
       ),
     );
@@ -166,7 +160,6 @@ class _AuthCardState extends State<AuthCard> {
 
   void _submit(BuildContext context) async {
     if (!_formKey.currentState!.validate()) {
-      // Invalid!
       return;
     }
     _formKey.currentState!.save();

@@ -203,6 +203,18 @@ class MockAuthProvider extends _i1.Mock implements _i2.AuthProvider {
       );
 
   @override
+  _i2.AuthState get state => (super.noSuchMethod(
+        Invocation.getter(#state),
+        returnValue: _i2.AuthState.updateRequired,
+      ) as _i2.AuthState);
+
+  @override
+  set state(_i2.AuthState? _state) => super.noSuchMethod(
+        Invocation.setter(#state, _state),
+        returnValueForMissingStub: null,
+      );
+
+  @override
   _i3.Client get client => (super.noSuchMethod(
         Invocation.getter(#client),
         returnValue: _FakeClient_1(this, Invocation.getter(#client)),
@@ -253,12 +265,8 @@ class MockAuthProvider extends _i1.Mock implements _i2.AuthProvider {
       ) as _i5.Future<void>);
 
   @override
-  _i5.Future<bool> applicationUpdateRequired([
-    String? version,
-    Map<String, String>? metadata,
-  ]) =>
-      (super.noSuchMethod(
-        Invocation.method(#applicationUpdateRequired, [version, metadata]),
+  _i5.Future<bool> applicationUpdateRequired([String? version]) => (super.noSuchMethod(
+        Invocation.method(#applicationUpdateRequired, [version]),
         returnValue: _i5.Future<bool>.value(false),
       ) as _i5.Future<bool>);
 
@@ -308,10 +316,11 @@ class MockAuthProvider extends _i1.Mock implements _i2.AuthProvider {
       ) as _i5.Future<String>);
 
   @override
-  _i5.Future<bool> tryAutoLogin() => (super.noSuchMethod(
+  _i5.Future<void> tryAutoLogin() => (super.noSuchMethod(
         Invocation.method(#tryAutoLogin, []),
-        returnValue: _i5.Future<bool>.value(false),
-      ) as _i5.Future<bool>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
   _i5.Future<void> logout({bool? shouldNotify = true}) => (super.noSuchMethod(
