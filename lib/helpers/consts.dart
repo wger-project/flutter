@@ -31,9 +31,6 @@ const DEFAULT_SERVER_TEST = 'https://wger-master.rge.uber.space/';
 const TESTSERVER_USER_NAME = 'user';
 const TESTSERVER_PASSWORD = 'flutteruser';
 
-/// Keys used in the android manifest
-const MANIFEST_KEY_CHECK_UPDATE = 'wger.check_min_app_version';
-
 /// Default impression for a workout session (neutral)
 const DEFAULT_IMPRESSION = 2;
 
