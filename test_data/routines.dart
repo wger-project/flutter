@@ -50,7 +50,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
     ..iteration = 2
     ..slotEntryId = 3
     ..weight = 10
-    ..rir = '1.5'
+    ..rir = 1.5
     ..date = DateTime(2021, 5, 1)
     ..repetitions = 10
     ..routineId = 1;
@@ -63,7 +63,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
     ..iteration = 4
     ..slotEntryId = 1
     ..weight = 10
-    ..rir = '2'
+    ..rir = 2
     ..date = DateTime(2021, 5, 1)
     ..repetitions = 12
     ..routineId = 1;
@@ -76,7 +76,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
     ..iteration = 5
     ..slotEntryId = 1
     ..weight = 50
-    ..rir = ''
+    ..rir = null
     ..date = DateTime(2021, 5, 2)
     ..repetitions = 8
     ..routineId = 1;
@@ -248,8 +248,8 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
               weight: 100,
               weightUnit: testWeightUnit1,
               restTime: 120,
-              rir: '1.5',
-              rpe: '8',
+              rir: 1.5,
+              rpe: 8,
               textRepr: '3x100kg',
             ),
             SetConfigData(
@@ -262,8 +262,8 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
               weight: 100,
               weightUnit: testWeightUnit1,
               restTime: 120,
-              rir: '1.5',
-              rpe: '8',
+              rir: 1.5,
+              rpe: 8,
               textRepr: '3x100kg',
             ),
             SetConfigData(
@@ -276,8 +276,8 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
               weight: 100,
               weightUnit: testWeightUnit1,
               restTime: 120,
-              rir: '1.5',
-              rpe: '8',
+              rir: 1.5,
+              rpe: 8,
               textRepr: '3x100kg',
             ),
           ],
@@ -297,8 +297,8 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
               weight: 10,
               weightUnit: testWeightUnit1,
               restTime: null,
-              rir: '',
-              rpe: '',
+              rir: null,
+              rpe: null,
               textRepr: '12x10kg',
             ),
             SetConfigData(
@@ -311,8 +311,8 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
               weight: 10,
               weightUnit: testWeightUnit1,
               restTime: null,
-              rir: '',
-              rpe: '',
+              rir: null,
+              rpe: null,
               textRepr: '12x10kg',
             ),
             SetConfigData(
@@ -325,8 +325,8 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
               weight: 10,
               weightUnit: testWeightUnit1,
               restTime: null,
-              rir: '',
-              rpe: '',
+              rir: null,
+              rpe: null,
               textRepr: '12x10kg',
             ),
           ],
@@ -354,8 +354,8 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
               weight: 100,
               weightUnit: testWeightUnit1,
               restTime: 120,
-              rir: '1.5',
-              rpe: '8',
+              rir: 1.5,
+              rpe: 8,
               textRepr: '3x100kg',
             ),
             SetConfigData(
@@ -368,8 +368,8 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
               weight: 100,
               weightUnit: testWeightUnit1,
               restTime: 120,
-              rir: '1.5',
-              rpe: '8',
+              rir: 1.5,
+              rpe: 8,
               textRepr: '3x100kg',
             ),
             SetConfigData(
@@ -382,8 +382,8 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
               weight: 100,
               weightUnit: testWeightUnit1,
               restTime: 120,
-              rir: '1.5',
-              rpe: '8',
+              rir: 1.5,
+              rpe: 8,
               textRepr: '3x100kg',
             ),
           ],
@@ -414,8 +414,8 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
               weight: 100,
               weightUnit: testWeightUnit1,
               restTime: 120,
-              rir: '1.5',
-              rpe: '8',
+              rir: 1.5,
+              rpe: 8,
               textRepr: '4 sets 3x100kg',
             ),
           ],
@@ -435,8 +435,8 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
               weight: 10,
               weightUnit: testWeightUnit1,
               restTime: 60,
-              rir: '',
-              rpe: '',
+              rir: null,
+              rpe: null,
               textRepr: '4 sets 12x10kg',
             ),
           ],
@@ -464,8 +464,8 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
               weight: 100,
               weightUnit: testWeightUnit1,
               restTime: 120,
-              rir: '1.5',
-              rpe: '8',
+              rir: 1.5,
+              rpe: 8,
               textRepr: '4 sets 3x100kg',
             ),
           ],

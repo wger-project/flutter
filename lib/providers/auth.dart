@@ -160,7 +160,10 @@ class AuthProvider with ChangeNotifier {
     await initVersions(serverUrl);
 
     // If update is required don't log in user
-    if (await applicationUpdateRequired()) {
+    if (await applicationUpdateRequired(
+      applicationVersion!.version,
+      {MANIFEST_KEY_CHECK_UPDATE: 'true'},
+    )) {
       return {'action': LoginActions.update};
     }
 

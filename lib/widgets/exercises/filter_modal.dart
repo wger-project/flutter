@@ -48,7 +48,7 @@ class _ExerciseFilterModalBodyState extends State<ExerciseFilterModalBody> {
           dividerColor: Colors.transparent,
           expansionCallback: (panelIndex, isExpanded) {
             setState(() {
-              filters.filterCategories[panelIndex].isExpanded = !isExpanded;
+              filters.filterCategories[panelIndex].isExpanded = isExpanded;
             });
           },
           elevation: 0,

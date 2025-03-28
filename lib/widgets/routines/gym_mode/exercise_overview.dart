@@ -16,21 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
-import 'package:wger/helpers/i18n.dart';
 import 'package:wger/models/exercises/exercise.dart';
-import 'package:wger/widgets/exercises/images.dart';
+import 'package:wger/widgets/exercises/exercises.dart';
 import 'package:wger/widgets/routines/gym_mode/navigation.dart';
 
 class ExerciseOverview extends StatelessWidget {
   final PageController _controller;
-  final Exercise _exerciseBase;
+  final Exercise _exercise;
   final double _ratioCompleted;
   final Map<Exercise, int> _exercisePages;
 
   const ExerciseOverview(
     this._controller,
-    this._exerciseBase,
+    this._exercise,
     this._ratioCompleted,
     this._exercisePages,
   );
@@ -40,43 +38,17 @@ class ExerciseOverview extends StatelessWidget {
     return Column(
       children: [
         NavigationHeader(
-          _exerciseBase.getTranslation(Localizations.localeOf(context).languageCode).name,
+          _exercise.getTranslation(Localizations.localeOf(context).languageCode).name,
           _controller,
           exercisePages: _exercisePages,
         ),
         const Divider(),
         Expanded(
-          child: ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            children: [
-              Text(
-                getTranslation(_exerciseBase.category!.name, context),
-                semanticsLabel: getTranslation(_exerciseBase.category!.name, context),
-                style: Theme.of(context).textTheme.titleLarge,
-                textAlign: TextAlign.center,
-              ),
-              ..._exerciseBase.equipment.map((e) => Text(
-                    getTranslation(e.name, context),
-                    style: Theme.of(context).textTheme.titleLarge,
-                    textAlign: TextAlign.center,
-                  )),
-              if (_exerciseBase.images.isNotEmpty)
-                SizedBox(
-                  width: double.infinity,
-                  height: 200,
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: [
-                      ..._exerciseBase.images.map((e) => ExerciseImageWidget(image: e)),
-                    ],
-                  ),
-                ),
-              Html(
-                data: _exerciseBase
-                    .getTranslation(Localizations.localeOf(context).languageCode)
-                    .description,
-              ),
-            ],
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: ExerciseDetail(_exercise),
+            ),
           ),
         ),
         NavigationFooter(_controller, _ratioCompleted),
