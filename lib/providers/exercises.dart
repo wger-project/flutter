@@ -22,11 +22,11 @@ import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/core/locator.dart';
 import 'package:wger/database/exercises/exercise_database.dart';
 import 'package:wger/exceptions/no_such_entry_exception.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
@@ -389,20 +389,20 @@ class ExercisesProvider with ChangeNotifier {
   }
 
   Future<void> initCacheTimesLocalPrefs({forceInit = false}) async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = PreferenceHelper.asyncPref;
 
     final initDate = DateTime(2023, 1, 1).toIso8601String();
 
-    if (forceInit || !prefs.containsKey(PREFS_LAST_UPDATED_MUSCLES)) {
+    if (forceInit || !(await prefs.containsKey(PREFS_LAST_UPDATED_MUSCLES))) {
       await prefs.setString(PREFS_LAST_UPDATED_MUSCLES, initDate);
     }
-    if (forceInit || !prefs.containsKey(PREFS_LAST_UPDATED_EQUIPMENT)) {
+    if (forceInit || !(await prefs.containsKey(PREFS_LAST_UPDATED_EQUIPMENT))) {
       await prefs.setString(PREFS_LAST_UPDATED_EQUIPMENT, initDate);
     }
-    if (forceInit || !prefs.containsKey(PREFS_LAST_UPDATED_LANGUAGES)) {
+    if (forceInit || !(await prefs.containsKey(PREFS_LAST_UPDATED_LANGUAGES))) {
       await prefs.setString(PREFS_LAST_UPDATED_LANGUAGES, initDate);
     }
-    if (forceInit || !prefs.containsKey(PREFS_LAST_UPDATED_CATEGORIES)) {
+    if (forceInit || !(await prefs.containsKey(PREFS_LAST_UPDATED_CATEGORIES))) {
       await prefs.setString(PREFS_LAST_UPDATED_CATEGORIES, initDate);
     }
   }
@@ -503,8 +503,8 @@ class ExercisesProvider with ChangeNotifier {
   ///
   /// We first try to read from the local DB, and from the API if the data is too old
   Future<void> fetchAndSetMuscles(ExerciseDatabase database) async {
-    final prefs = await SharedPreferences.getInstance();
-    var validTill = DateTime.parse(prefs.getString(PREFS_LAST_UPDATED_MUSCLES)!);
+    final prefs = PreferenceHelper.asyncPref;
+    var validTill = DateTime.parse((await prefs.getString(PREFS_LAST_UPDATED_MUSCLES))!);
 
     // Cache still valid, return it
     if (validTill.isAfter(DateTime.now())) {
@@ -537,8 +537,8 @@ class ExercisesProvider with ChangeNotifier {
   ///
   /// We first try to read from the local DB, and from the API if the data is too old
   Future<void> fetchAndSetCategories(ExerciseDatabase database) async {
-    final prefs = await SharedPreferences.getInstance();
-    var validTill = DateTime.parse(prefs.getString(PREFS_LAST_UPDATED_CATEGORIES)!);
+    final prefs = PreferenceHelper.asyncPref;
+    var validTill = DateTime.parse((await prefs.getString(PREFS_LAST_UPDATED_CATEGORIES))!);
 
     // Cache still valid, return it
     if (validTill.isAfter(DateTime.now())) {
@@ -571,8 +571,8 @@ class ExercisesProvider with ChangeNotifier {
   ///
   /// We first try to read from the local DB, and from the API if the data is too old
   Future<void> fetchAndSetLanguages(ExerciseDatabase database) async {
-    final prefs = await SharedPreferences.getInstance();
-    var validTill = DateTime.parse(prefs.getString(PREFS_LAST_UPDATED_LANGUAGES)!);
+    final prefs = PreferenceHelper.asyncPref;
+    var validTill = DateTime.parse((await prefs.getString(PREFS_LAST_UPDATED_LANGUAGES))!);
 
     // Cache still valid, return it
     if (validTill.isAfter(DateTime.now())) {
@@ -606,8 +606,8 @@ class ExercisesProvider with ChangeNotifier {
   ///
   /// We first try to read from the local DB, and from the API if the data is too old
   Future<void> fetchAndSetEquipments(ExerciseDatabase database) async {
-    final prefs = await SharedPreferences.getInstance();
-    var validTill = DateTime.parse(prefs.getString(PREFS_LAST_UPDATED_EQUIPMENT)!);
+    final prefs = PreferenceHelper.asyncPref;
+    var validTill = DateTime.parse((await prefs.getString(PREFS_LAST_UPDATED_EQUIPMENT))!);
 
     // Cache still valid, return it
     if (validTill.isAfter(DateTime.now())) {

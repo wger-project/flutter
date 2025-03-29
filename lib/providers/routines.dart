@@ -23,6 +23,7 @@ import 'package:logging/logging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/models/workouts/base_config.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/day_data.dart';
@@ -384,9 +385,9 @@ class RoutinesProvider with ChangeNotifier {
 
   Future<void> fetchAndSetUnits() async {
     // Load units from cache, if available
-    final prefs = await SharedPreferences.getInstance();
-    if (prefs.containsKey(PREFS_WORKOUT_UNITS)) {
-      final unitData = json.decode(prefs.getString(PREFS_WORKOUT_UNITS)!);
+    final prefs = PreferenceHelper.asyncPref;
+    if (await prefs.containsKey(PREFS_WORKOUT_UNITS)) {
+      final unitData = json.decode((await prefs.getString(PREFS_WORKOUT_UNITS))!);
       if (DateTime.parse(unitData['expiresIn']).isAfter(DateTime.now())) {
         unitData['repetitionUnits'].forEach(
           (e) => _repetitionUnits.add(RepetitionUnit.fromJson(e)),

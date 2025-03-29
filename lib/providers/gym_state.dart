@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/models/exercises/exercise.dart';
 
 const DEFAULT_DURATION = Duration(hours: 5);
@@ -21,7 +20,7 @@ class GymState {
       {this.exercisePages = const {},
       this.showExercisePages = true,
       this.currentPage = 0,
-      this.dayId = null,
+      this.dayId,
       DateTime? validUntil}) {
     this.validUntil = validUntil ?? DateTime.now().add(DEFAULT_DURATION);
   }
@@ -55,7 +54,6 @@ class GymState {
 }
 
 class GymStateNotifier extends StateNotifier<GymState> {
-  final _prefs = SharedPreferences.getInstance();
   final _logger = Logger('GymStateNotifier');
 
   GymStateNotifier() : super(GymState());
