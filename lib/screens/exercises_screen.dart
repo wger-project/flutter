@@ -17,23 +17,8 @@ class ExercisesScreen extends StatefulWidget {
 }
 
 class _ExercisesScreenState extends State<ExercisesScreen> {
-  late final TextEditingController _exerciseNameController;
-
-  @override
-  void initState() {
-    _exerciseNameController = TextEditingController();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _exerciseNameController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
-    //final size = MediaQuery.of(context).size;
     final exercisesList = Provider.of<ExercisesProvider>(context).filteredExercises;
 
     return Scaffold(
@@ -45,8 +30,8 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
             child: exercisesList.isEmpty
                 ? const Center(
                     child: SizedBox(
-                      height: 100,
-                      width: 100,
+                      height: 30,
+                      width: 30,
                       child: CircularProgressIndicator(),
                     ),
                   )
@@ -59,28 +44,18 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
 }
 
 class _ExercisesList extends StatelessWidget {
-  const _ExercisesList({required this.exerciseBaseList});
+  const _ExercisesList({required this.exerciseList});
 
-  final List<Exercise> exerciseBaseList;
+  final List<Exercise> exerciseList;
 
   @override
   Widget build(BuildContext context) {
-    //final size = MediaQuery.of(context).size;
     return ListView.separated(
       separatorBuilder: (context, index) {
         return const Divider(thickness: 1);
       },
-      itemCount: exerciseBaseList.length,
-      itemBuilder: (context, index) {
-        return ExerciseListTile(exerciseBase: exerciseBaseList[index]);
-
-        /*
-        return Container(
-          height: size.height * 0.175,
-          child: ExerciseListTile(exercise: exercise),
-        );
-        */
-      },
+      itemCount: exerciseList.length,
+      itemBuilder: (context, index) => ExerciseListTile(exercise: exerciseList[index]),
     );
   }
 }
