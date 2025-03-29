@@ -77,7 +77,7 @@ void main() async {
 
   // Locator to initialize exerciseDB
   await ServiceLocator().configure();
-  
+
   // SharedPreferences to SharedPreferencesAsync migration function
   await PreferenceHelper.instance.migrationSupportFunctionForSharedPreferences();
 

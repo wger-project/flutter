@@ -38,9 +38,8 @@ import 'auth_screen_test.mocks.dart';
 @GenerateMocks([http.Client])
 void main() {
   /// Replacement for SharedPreferences.setMockInitialValues()
-  SharedPreferencesAsyncPlatform.instance =
-      InMemorySharedPreferencesAsync.empty();
-  
+  SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+
   late AuthProvider authProvider;
   late MockClient mockClient;
 
