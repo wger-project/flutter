@@ -81,7 +81,7 @@ class ExercisesProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Map<int, List<Exercise>> get exerciseBasesByVariation {
+  Map<int, List<Exercise>> get exerciseByVariation {
     final Map<int, List<Exercise>> variations = {};
 
     for (final exercise in exercises.where((e) => e.variationId != null)) {

@@ -50,7 +50,7 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
                       child: CircularProgressIndicator(),
                     ),
                   )
-                : _ExercisesList(exerciseBaseList: exercisesList),
+                : _ExercisesList(exerciseList: exercisesList),
           ),
         ],
       ),

@@ -97,7 +97,7 @@ class ExerciseDetail extends StatelessWidget {
       style: Theme.of(context).textTheme.headlineSmall,
     ));
     for (final element in variations) {
-      out.add(ExerciseListTile(exerciseBase: element));
+      out.add(ExerciseListTile(exercise: element));
     }
     if (variations.isEmpty) {
       out.add(const Text('-/-'));

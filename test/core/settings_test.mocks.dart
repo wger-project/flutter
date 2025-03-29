@@ -175,7 +175,7 @@ class MockExercisesProvider extends _i1.Mock implements _i17.ExercisesProvider {
       );
 
   @override
-  Map<int, List<_i4.Exercise>> get exerciseBasesByVariation => (super.noSuchMethod(
+  Map<int, List<_i4.Exercise>> get exerciseByVariation => (super.noSuchMethod(
         Invocation.getter(#exerciseBasesByVariation),
         returnValue: <int, List<_i4.Exercise>>{},
       ) as Map<int, List<_i4.Exercise>>);
