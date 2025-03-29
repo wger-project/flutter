@@ -310,9 +310,10 @@ class ExercisesProvider with ChangeNotifier {
   ) async {
     Exercise exercise;
 
-    // TODO: this should be a .getSingleOrNull()!!! However, for some reason there
-    //       can be duplicates in the db. Perhaps a race condition so that two
-    //       entries are written at the same time or something?
+    // NOTE: this should not be necessary anymore. We had a bug that would
+    //       create duplicate entries in the database and should be fixed now.
+    //       However, we keep it here for now to be on the safe side.
+    //       In the future this can be replaced by a .getSingleOrNull()
     final exerciseResult =
         await (database.select(database.exercises)..where((e) => e.id.equals(exerciseId))).get();
 
@@ -321,9 +322,13 @@ class ExercisesProvider with ChangeNotifier {
       exerciseDb = exerciseResult.first;
     }
 
+    // Note that this shouldn't happen anymore...
+    if (exerciseResult.length > 1) {
+      _logger.warning('Found ${exerciseResult.length} entries for exercise $exerciseId in the db');
+    }
+
     // Exercise is already known locally
     if (exerciseDb != null) {
-      // _logger.fine('Exercise $exerciseId found in local cache');
       final nextFetch = exerciseDb.lastFetched.add(const Duration(days: EXERCISE_CACHE_DAYS));
       exercise = Exercise.fromApiDataString(exerciseDb.data, _languages);
 
@@ -455,15 +460,13 @@ class ExercisesProvider with ChangeNotifier {
 
   /// Updates the exercise database with *all* the exercises from the server
   Future<void> updateExerciseCache(ExerciseDatabase database) async {
-    final data = await baseProvider.fetch(
-      baseProvider.makeUrl(exerciseInfoUrlPath, query: {'limit': '1000'}),
+    final data = await baseProvider.fetchPaginated(
+      baseProvider.makeUrl(exerciseInfoUrlPath, query: {'limit': '999'}),
     );
-
-    final List<dynamic> exercisesData = data['results'];
-    exercises = exercisesData.map((e) => Exercise.fromApiDataJson(e, _languages)).toList();
+    exercises = data.map((e) => Exercise.fromApiDataJson(e, _languages)).toList();
 
     // Insert new entries and update ones that have been edited
-    Future.forEach(exercisesData, (exerciseData) async {
+    Future.forEach(data, (exerciseData) async {
       final exercise = await (database.select(database.exercises)
             ..where((e) => e.id.equals(exerciseData['id'])))
           .getSingleOrNull();

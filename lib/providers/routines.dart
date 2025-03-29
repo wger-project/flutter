@@ -20,7 +20,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/shared_preferences.dart';
@@ -199,7 +198,7 @@ class RoutinesProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setExercisesAndUnits(List<DayData> entries) async {
+  Future<void> setExercisesAndUnits(List<DayData> entries) async {
     for (final entry in entries) {
       for (final slot in entry.slots) {
         for (final setConfig in slot.setConfigs) {
@@ -276,10 +275,10 @@ class RoutinesProvider with ChangeNotifier {
      * note that setExercisesAndUnits modifies the list in-place
      */
     final dayDataEntriesDisplay = dayData.map((entry) => DayData.fromJson(entry)).toList();
-    setExercisesAndUnits(dayDataEntriesDisplay);
+    await setExercisesAndUnits(dayDataEntriesDisplay);
 
     final dayDataEntriesGym = dayDataGym.map((entry) => DayData.fromJson(entry)).toList();
-    setExercisesAndUnits(dayDataEntriesGym);
+    await setExercisesAndUnits(dayDataEntriesGym);
 
     final sessionDataEntries =
         sessionData.map((entry) => WorkoutSessionApi.fromJson(entry)).toList();
