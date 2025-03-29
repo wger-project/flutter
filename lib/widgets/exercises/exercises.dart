@@ -18,7 +18,6 @@
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -361,30 +360,6 @@ class MuscleWidget extends StatelessWidget {
               'assets/images/muscles/secondary/muscle-${m.id}.svg',
             )),
       ],
-    );
-  }
-}
-
-class CarouselIndicator implements SlideIndicator {
-  CarouselIndicator();
-
-  @override
-  Widget build(int currentPage, double pageDelta, int itemCount) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      spacing: 5,
-      children: List.generate(
-        itemCount,
-        (index) => Container(
-          height: 8,
-          width: 8,
-          decoration: BoxDecoration(
-            color: currentPage == index ? Colors.black : Colors.black26,
-            shape: BoxShape.circle,
-          ),
-        ),
-      ),
     );
   }
 }
