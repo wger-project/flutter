@@ -34,9 +34,6 @@ const TESTSERVER_PASSWORD = 'flutteruser';
 /// Keys used in the android manifest
 const MANIFEST_KEY_CHECK_UPDATE = 'wger.check_min_app_version';
 
-/// Default weight unit is "kg"
-const WEIGHT_UNIT_KG_ID = 1;
-
 /// Default impression for a workout session (neutral)
 const DEFAULT_IMPRESSION = 2;
 
