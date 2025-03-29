@@ -84,7 +84,7 @@ class SetConfigData {
   @JsonKey(required: true, name: 'max_rir', fromJson: stringToNumNull)
   late num? maxRir;
 
-  @JsonKey(required: true)
+  @JsonKey(required: true, fromJson: stringToNumNull)
   late num? rpe;
 
   @JsonKey(required: true, name: 'rest', fromJson: stringToNumNull)
