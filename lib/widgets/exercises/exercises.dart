@@ -193,7 +193,6 @@ class ExerciseDetail extends StatelessWidget {
   }
 
   List<Widget> getImages() {
-    // TODO: add carousel for the other images
     final List<Widget> out = [];
     if (_exercise.images.isNotEmpty) {
       out.add(CarouselImages(
