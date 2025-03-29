@@ -388,9 +388,12 @@ class _CarouselImagesState extends State<CarouselImages> {
             ),
             items: List.generate(
               widget.images.length,
-              (index) => ExerciseImageWidget(
-                image: widget.images[index],
-                height: 250,
+              (index) => Padding(
+                padding: const EdgeInsets.only(top: 15),
+                child: ExerciseImageWidget(
+                  image: widget.images[index],
+                  height: 260,
+                ),
               ),
             ),
           ),
