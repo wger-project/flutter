@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
@@ -25,6 +26,7 @@ import 'package:wger/helpers/i18n.dart';
 import 'package:wger/helpers/platform.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/exercises/image.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/models/exercises/translation.dart';
 import 'package:wger/providers/exercises.dart';
@@ -37,6 +39,7 @@ class ExerciseDetail extends StatelessWidget {
   final Exercise _exercise;
   late Translation _translation;
   static const PADDING = 9.0;
+  final CarouselController carouselController = CarouselController();
 
   ExerciseDetail(this._exercise);
 
@@ -192,11 +195,15 @@ class ExerciseDetail extends StatelessWidget {
   List<Widget> getImages() {
     // TODO: add carousel for the other images
     final List<Widget> out = [];
-    if (_exercise.getMainImage != null) {
-      out.add(ExerciseImageWidget(
-        image: _exercise.getMainImage,
-        height: 250,
+    if (_exercise.images.isNotEmpty) {
+      out.add(CarouselImages(
+        images: _exercise.images,
       ));
+
+      // out.add(ExerciseImageWidget(
+      //   image: _exercise.getMainImage,
+      //   height: 250,
+      // ));
       out.add(const SizedBox(height: PADDING));
     }
 
@@ -353,6 +360,62 @@ class MuscleWidget extends StatelessWidget {
               'assets/images/muscles/secondary/muscle-${m.id}.svg',
             )),
       ],
+    );
+  }
+}
+
+class CarouselImages extends StatefulWidget {
+  final List<ExerciseImage> images;
+
+  const CarouselImages({super.key, required this.images});
+
+  @override
+  State<CarouselImages> createState() => _CarouselImagesState();
+}
+
+class _CarouselImagesState extends State<CarouselImages> {
+  int pageIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 250,
+      child: Stack(
+        children: [
+          CarouselSlider(
+            options: CarouselOptions(
+              onPageChanged: (index, _) => setState(() => pageIndex = index),
+            ),
+            items: List.generate(
+              widget.images.length,
+              (index) => Padding(
+                padding: const EdgeInsets.only(top: 15),
+                child: ExerciseImageWidget(
+                  image: widget.images[index],
+                  height: 260,
+                ),
+              ),
+            ),
+          ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            spacing: 5,
+            children: List.generate(
+              widget.images.length,
+              (index) => AnimatedContainer(
+                duration: const Duration(milliseconds: 500),
+                height: 8,
+                width: 8,
+                decoration: BoxDecoration(
+                  color: pageIndex == index ? Colors.black : Colors.black26,
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
