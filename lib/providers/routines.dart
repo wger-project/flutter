@@ -106,7 +106,7 @@ class RoutinesProvider with ChangeNotifier {
 
   /// Return the default weight unit (kg)
   WeightUnit get defaultWeightUnit {
-    return _weightUnits.firstWhere((element) => element.id == WEIGHT_UNIT_KG_ID);
+    return _weightUnits.firstWhere((element) => element.id == WEIGHT_UNIT_KG);
   }
 
   WeightUnit findWeightUnitById(int id) => _weightUnits.firstWhere((element) => element.id == id);
