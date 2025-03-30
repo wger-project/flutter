@@ -72,6 +72,7 @@ void main() {
 
   testGoldens('Smoke test the widgets on the routine logs screen', (WidgetTester tester) async {
     await withClock(Clock.fixed(DateTime(2025, 3, 29)), () async {
+      await loadAppFonts();
       await tester.pumpWidget(renderWidget());
       await tester.tap(find.byType(TextButton));
       await tester.pumpAndSettle();
