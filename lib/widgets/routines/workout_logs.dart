@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:wger/helpers/consts.dart';
@@ -98,7 +99,7 @@ class WorkoutLogCalendar extends StatefulWidget {
 }
 
 class _WorkoutLogCalendarState extends State<WorkoutLogCalendar> {
-  DateTime _focusedDay = DateTime.now();
+  DateTime _focusedDay = clock.now();
   DateTime? _selectedDay;
   late final ValueNotifier<List<WorkoutLogEvent>> _selectedEvents;
   late Map<String, List<WorkoutLogEvent>> _events;
@@ -152,8 +153,8 @@ class _WorkoutLogCalendarState extends State<WorkoutLogCalendar> {
       children: [
         TableCalendar(
           locale: Localizations.localeOf(context).languageCode,
-          firstDay: DateTime.now().subtract(const Duration(days: 1000)),
-          lastDay: DateTime.now(),
+          firstDay: clock.now().subtract(const Duration(days: 1000)),
+          lastDay: clock.now(),
           focusedDay: _focusedDay,
           selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
           calendarFormat: CalendarFormat.month,
