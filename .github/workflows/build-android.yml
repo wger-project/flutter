@@ -1,0 +1,73 @@
+name: Build Android
+on:
+  workflow_call:
+    inputs:
+      ref:
+        required: true
+        type: string
+    secrets:
+      DECRYPTKEY_PLAYSTORE_SIGNING_KEY:
+        required: true
+      DECRYPTKEY_PROPERTIES:
+        required: true
+jobs:
+  build_android_apk:
+    name: APK file
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout application
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+
+      - name: Common flutter setup
+        uses: ./.github/actions/flutter-common
+
+      - name: Decrypt config files
+        run: |
+          cd ./fastlane/metadata/envfiles
+          chmod +x ./decrypt_secrets.sh
+          ./decrypt_secrets.sh
+        shell: bash
+        env:
+          DECRYPTKEY_PLAYSTORE_SIGNING_KEY: ${{ secrets.DECRYPTKEY_PLAYSTORE_SIGNING_KEY }}
+          DECRYPTKEY_PROPERTIES: ${{ secrets.DECRYPTKEY_PROPERTIES }}
+
+      - name: Build APK
+        run: flutter build apk --release
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: builds-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+  build_android_aab:
+    name: AAB file
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout application
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+
+      - name: Common setup
+        uses: ./.github/actions/flutter-common
+
+      - name: Decrypt config files
+        run: |
+          cd ./fastlane/metadata/envfiles
+          chmod +x ./decrypt_secrets.sh
+          ./decrypt_secrets.sh
+        shell: bash
+        env:
+          DECRYPTKEY_PLAYSTORE: ${{ secrets.DECRYPTKEY_PLAYSTORE }}
+          DECRYPTKEY_PLAYSTORE_SIGNING_KEY: ${{ secrets.DECRYPTKEY_PLAYSTORE_SIGNING_KEY }}
+          DECRYPTKEY_PROPERTIES: ${{ secrets.DECRYPTKEY_PROPERTIES }}
+
+      - name: Build AAB
+        run: flutter build appbundle --release
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: builds-aab
+          path: build/app/outputs/bundle/release/app-release.aab

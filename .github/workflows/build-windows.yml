@@ -1,0 +1,26 @@
+on:
+  workflow_call:
+    inputs:
+      ref:
+        required: true
+        type: string
+jobs:
+  build_windows:
+    name: Windows
+    runs-on: windows-latest
+    steps:
+      - name: Checkout application
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+
+      - name: Common flutter setup
+        uses: ./.github/actions/flutter-common
+
+      - name: Build .exe
+        run: flutter build windows --release
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: builds-windows
+          path: build\windows\x64\runner\Release\wger.exe
