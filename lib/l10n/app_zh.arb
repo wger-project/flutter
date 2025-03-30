@@ -974,5 +974,77 @@
   "aboutMastodonTitle": "长毛象",
   "@aboutMastodonTitle": {
     "description": "Title for mastodon section in the about dialog"
-  }
+  },
+  "routines": "训练计划",
+  "@routines": {},
+  "newRoutine": "新计划",
+  "@newRoutine": {},
+  "noRoutines": "你没有训练计划",
+  "@noRoutines": {},
+  "restTime": "休息时间",
+  "@restTime": {},
+  "sets": "组",
+  "@sets": {
+    "description": "The number of sets to be done for one exercise"
+  },
+  "exerciseNr": "练习{nr}",
+  "@exerciseNr": {
+    "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Set Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {
+        "type": "String"
+      }
+    }
+  },
+  "supersetNr": "特别组{nr}",
+  "@supersetNr": {
+    "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Superset Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {
+        "type": "String"
+      }
+    }
+  },
+  "restDay": "休息日",
+  "@restDay": {},
+  "isRestDay": "是休息日",
+  "@isRestDay": {},
+  "isRestDayHelp": "请注意，当您将某天标记为休息日时，所有的组数和练习都将被删除。",
+  "@isRestDayHelp": {},
+  "needsLogsToAdvance": "需要日志以前进",
+  "@needsLogsToAdvance": {},
+  "needsLogsToAdvanceHelp": "选择您是否希望只有在当天记录了锻炼后，训练计划才会进入下一个计划日",
+  "@needsLogsToAdvanceHelp": {},
+  "routineDays": "计划中的天数",
+  "@routineDays": {},
+  "min": "分钟",
+  "@min": {},
+  "max": "最大",
+  "@max": {},
+  "fitInWeekHelp": "如果启用，天数将以周为周期重复，否则天数将依次重复，而不考虑新一周的开始。",
+  "@fitInWeekHelp": {},
+  "addSuperset": "增加超级组",
+  "@addSuperset": {},
+  "setHasProgression": "此组已经有训练进度",
+  "@setHasProgression": {},
+  "setHasProgressionWarning": "请注意，目前还无法在移动应用程序上编辑一个设置的所有设置，也无法配置自动升级。目前，请使用Web应用程序。",
+  "@setHasProgressionWarning": {},
+  "setHasNoExercises": "此训练组还没有任何练习！",
+  "@setHasNoExercises": {},
+  "simpleMode": "简易模式",
+  "@simpleMode": {},
+  "simpleModeHelp": "在编辑练习时隐藏更多高级设置",
+  "@simpleModeHelp": {},
+  "progressionRules": "此练习有进度规则，无法在移动应用程序上编辑。请使用Web应用程序编辑此练习。",
+  "@progressionRules": {},
+  "themeMode": "主题模式",
+  "@themeMode": {},
+  "darkMode": "总是暗色模式",
+  "@darkMode": {},
+  "lightMode": "总是亮色模式",
+  "@lightMode": {},
+  "systemMode": "系统设置",
+  "@systemMode": {}
 }
