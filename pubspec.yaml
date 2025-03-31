@@ -59,7 +59,7 @@ dependencies:
   package_info_plus: ^8.3.0
   path: ^1.9.0
   path_provider: ^2.1.5
-  provider: ^6.1.2
+  provider: ^6.1.4
   rive: ^0.13.20
   shared_preferences: ^2.5.3
   sqlite3_flutter_libs: ^0.5.31
