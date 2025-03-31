@@ -146,7 +146,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
         // Add events to lists
         _events[date]!.add(Event(
           EventType.caloriesDiary,
-          '${entry.value.energy.toStringAsFixed(0)} kcal',
+          AppLocalizations.of(context).kcalValue(entry.value.energy.toStringAsFixed(0)),
         ));
       }
     }

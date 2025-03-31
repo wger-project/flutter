@@ -24,8 +24,11 @@ import 'package:http/http.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
+import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/core/locator.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
@@ -41,6 +44,9 @@ import 'routines_provider_test.mocks.dart';
 @GenerateMocks([WgerBaseProvider, ExercisesProvider])
 void main() {
   final mockBaseProvider = MockWgerBaseProvider();
+
+  /// Replacement for SharedPreferences.setMockInitialValues()
+  SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
 
   setUpAll(() async {
     // Needs to be configured here, setUp runs on every test, setUpAll only once
@@ -153,12 +159,12 @@ void main() {
       final exercisesProvider = ExercisesProvider(mockBaseProvider);
       WidgetsFlutterBinding.ensureInitialized();
       SharedPreferences.setMockInitialValues({});
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = PreferenceHelper.asyncPref;
 
       // Load the entries
       final provider = RoutinesProvider(mockBaseProvider, exercisesProvider, []);
       await provider.fetchAndSetUnits();
-      final prefsJson = jsonDecode(prefs.getString(PREFS_WORKOUT_UNITS)!);
+      final prefsJson = jsonDecode((await prefs.getString(PREFS_WORKOUT_UNITS))!);
 
       expect(prefsJson['repetitionUnits'].length, 7);
       expect(prefsJson['weightUnit'].length, 6);

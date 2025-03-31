@@ -28,7 +28,7 @@ class Step2Variations extends StatelessWidget {
               child: Column(
                 children: [
                   // Exercise bases with variations
-                  ...exerciseProvider.exerciseBasesByVariation.keys.map(
+                  ...exerciseProvider.exerciseByVariation.keys.map(
                     (key) => Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -37,7 +37,7 @@ class Step2Variations extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             //mainAxisSize: MainAxisSize.max,
                             children: [
-                              ...exerciseProvider.exerciseBasesByVariation[key]!.map(
+                              ...exerciseProvider.exerciseByVariation[key]!.map(
                                 (base) => Text(
                                   base
                                       .getTranslation(

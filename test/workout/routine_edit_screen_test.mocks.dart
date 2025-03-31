@@ -219,10 +219,11 @@ class MockRoutinesProvider extends _i1.Mock implements _i12.RoutinesProvider {
       ) as _i13.Future<void>);
 
   @override
-  void setExercisesAndUnits(List<_i14.DayData>? entries) => super.noSuchMethod(
+  _i13.Future<void> setExercisesAndUnits(List<_i14.DayData>? entries) => (super.noSuchMethod(
         Invocation.method(#setExercisesAndUnits, [entries]),
-        returnValueForMissingStub: null,
-      );
+        returnValue: _i13.Future<void>.value(),
+        returnValueForMissingStub: _i13.Future<void>.value(),
+      ) as _i13.Future<void>);
 
   @override
   _i13.Future<_i5.Routine> fetchAndSetRoutineSparse(int? planId) => (super.noSuchMethod(

@@ -27,6 +27,8 @@ import 'package:mockito/mockito.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
+import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/screens/auth_screen.dart';
@@ -35,6 +37,9 @@ import 'auth_screen_test.mocks.dart';
 
 @GenerateMocks([http.Client])
 void main() {
+  /// Replacement for SharedPreferences.setMockInitialValues()
+  SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+
   late AuthProvider authProvider;
   late MockClient mockClient;
 

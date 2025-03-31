@@ -52,7 +52,7 @@ SetConfigData _$SetConfigDataFromJson(Map<String, dynamic> json) {
         : stringToNumNull(json['repetitions_rounding'] as String?),
     rir: stringToNumNull(json['rir'] as String?),
     maxRir: stringToNumNull(json['max_rir'] as String?),
-    rpe: json['rpe'] as num?,
+    rpe: stringToNumNull(json['rpe'] as String?),
     restTime: stringToNumNull(json['rest'] as String?),
     maxRestTime: stringToNumNull(json['max_rest'] as String?),
     comment: json['comment'] as String? ?? '',

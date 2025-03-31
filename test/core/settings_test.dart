@@ -39,7 +39,7 @@ import 'settings_test.mocks.dart';
   WgerBaseProvider,
   SharedPreferencesAsync,
 ])
-void main() {
+void main() async {
   final mockExerciseProvider = MockExercisesProvider();
   final mockNutritionProvider = MockNutritionPlansProvider();
   final mockSharedPreferences = MockSharedPreferencesAsync();

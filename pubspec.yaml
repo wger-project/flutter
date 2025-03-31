@@ -21,7 +21,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 #   - the version number is taken from the git tag vX.Y.Z
 #   - the build number is computed by reading the last one from the play store
 #     and increasing by one
-version: 1.8.0+51
+version: 1.8.0+53
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -33,7 +33,7 @@ dependencies:
     sdk: flutter
 
   carousel_slider: ^5.0.0
-  clock: ^1.1.1
+  clock: ^1.1.2
   collection: ^1.18.0
   cupertino_icons: ^1.0.8
   drift: ^2.26.0
