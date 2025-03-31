@@ -61,7 +61,7 @@ dependencies:
   path_provider: ^2.1.5
   provider: ^6.1.2
   rive: ^0.13.20
-  shared_preferences: ^2.5.2
+  shared_preferences: ^2.5.3
   sqlite3_flutter_libs: ^0.5.31
   table_calendar: ^3.0.8
   url_launcher: ^6.3.1
