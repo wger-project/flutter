@@ -163,6 +163,7 @@ class AuthProvider with ChangeNotifier {
 
     // If update is required don't log in user
     if (await applicationUpdateRequired()) {
+      state = AuthState.updateRequired;
       return LoginActions.update;
     }
 
