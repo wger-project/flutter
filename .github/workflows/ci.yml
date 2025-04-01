@@ -25,14 +25,17 @@ jobs:
       - run: dart --version
       - run: flutter --version
 
-      - name: Install sqlite3-dev
-        run: sudo apt install libsqlite3-dev
+      - name: Install dependencies
+        run: |
+          sudo apt install libsqlite3-dev lcov
+          flutter pub get
 
-      - name: Install app dependencies
-        run: flutter pub get
-
+      # Removing some folders from the coverage since these files are not really
+      # part of the app code and just get in the way of the report
       - name: Test app
-        run: flutter test --coverage
+        run: |
+          flutter test --coverage
+          lcov --remove coverage/lcov.info 'lib/l10n/generated/*' 'lib/theme/*' -o coverage/lcov.info
 
       - name: Coveralls
         uses: coverallsapp/github-action@v2
