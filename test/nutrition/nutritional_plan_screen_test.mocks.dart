@@ -271,7 +271,7 @@ class MockAuthProvider extends _i1.Mock implements _i2.AuthProvider {
       ) as _i5.Future<bool>);
 
   @override
-  _i5.Future<Map<String, _i2.LoginActions>> register({
+  _i5.Future<_i2.LoginActions> register({
     required String? username,
     required String? password,
     required String? email,
@@ -286,23 +286,23 @@ class MockAuthProvider extends _i1.Mock implements _i2.AuthProvider {
           #serverUrl: serverUrl,
           #locale: locale,
         }),
-        returnValue: _i5.Future<Map<String, _i2.LoginActions>>.value(
-          <String, _i2.LoginActions>{},
+        returnValue: _i5.Future<_i2.LoginActions>.value(
+          _i2.LoginActions.update,
         ),
-      ) as _i5.Future<Map<String, _i2.LoginActions>>);
+      ) as _i5.Future<_i2.LoginActions>);
 
   @override
-  _i5.Future<Map<String, _i2.LoginActions>> login(
+  _i5.Future<_i2.LoginActions> login(
     String? username,
     String? password,
     String? serverUrl,
   ) =>
       (super.noSuchMethod(
         Invocation.method(#login, [username, password, serverUrl]),
-        returnValue: _i5.Future<Map<String, _i2.LoginActions>>.value(
-          <String, _i2.LoginActions>{},
+        returnValue: _i5.Future<_i2.LoginActions>.value(
+          _i2.LoginActions.update,
         ),
-      ) as _i5.Future<Map<String, _i2.LoginActions>>);
+      ) as _i5.Future<_i2.LoginActions>);
 
   @override
   _i5.Future<String> getServerUrlFromPrefs() => (super.noSuchMethod(

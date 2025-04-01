@@ -96,14 +96,16 @@ class AuthProvider with ChangeNotifier {
     final currentVersion = Version.parse(applicationCurrentVersion);
     final requiredAppVersion = Version.parse(jsonDecode(response.body));
 
-    final result = requiredAppVersion > currentVersion;
-    _logger.fine('Application update required: $result');
+    final needUpdate = requiredAppVersion > currentVersion;
+    if (needUpdate) {
+      _logger.fine('Application update required: $requiredAppVersion > $currentVersion');
+    }
 
-    return result;
+    return needUpdate;
   }
 
   /// Registers a new user
-  Future<Map<String, LoginActions>> register({
+  Future<LoginActions> register({
     required String username,
     required String password,
     required String email,
@@ -136,7 +138,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   /// Authenticates a user
-  Future<Map<String, LoginActions>> login(
+  Future<LoginActions> login(
     String username,
     String password,
     String serverUrl,
@@ -161,7 +163,7 @@ class AuthProvider with ChangeNotifier {
 
     // If update is required don't log in user
     if (await applicationUpdateRequired()) {
-      return {'action': LoginActions.update};
+      return LoginActions.update;
     }
 
     // Log user in
@@ -179,7 +181,7 @@ class AuthProvider with ChangeNotifier {
 
     prefs.setString(PREFS_USER, userData);
     prefs.setString(PREFS_LAST_SERVER, serverData);
-    return {'action': LoginActions.proceed};
+    return LoginActions.proceed;
   }
 
   /// Loads the last server URL from which the user successfully logged in
