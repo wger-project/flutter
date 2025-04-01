@@ -16,7 +16,7 @@ part 'exercise_api.g.dart';
 /// Basically this is just used as a convenience to create "real" exercise
 /// objects and nothing more
 @freezed
-class ExerciseApiData with _$ExerciseApiData {
+sealed class ExerciseApiData with _$ExerciseApiData {
   factory ExerciseApiData({
     required int id,
     required String uuid,
@@ -52,7 +52,7 @@ class ExerciseApiData with _$ExerciseApiData {
 /// Model for the search results returned from the /api/v2/exercise/search endpoint
 ///
 @freezed
-class ExerciseSearchDetails with _$ExerciseSearchDetails {
+sealed class ExerciseSearchDetails with _$ExerciseSearchDetails {
   factory ExerciseSearchDetails({
     // ignore: invalid_annotation_target
     @JsonKey(name: 'id') required int translationId,
@@ -70,7 +70,7 @@ class ExerciseSearchDetails with _$ExerciseSearchDetails {
 }
 
 @freezed
-class ExerciseSearchEntry with _$ExerciseSearchEntry {
+sealed class ExerciseSearchEntry with _$ExerciseSearchEntry {
   factory ExerciseSearchEntry({
     required String value,
     required ExerciseSearchDetails data,
@@ -81,7 +81,7 @@ class ExerciseSearchEntry with _$ExerciseSearchEntry {
 }
 
 @freezed
-class ExerciseApiSearch with _$ExerciseApiSearch {
+sealed class ExerciseApiSearch with _$ExerciseApiSearch {
   factory ExerciseApiSearch({
     required List<ExerciseSearchEntry> suggestions,
   }) = _ExerciseApiSearch;
