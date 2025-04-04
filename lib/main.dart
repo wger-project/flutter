@@ -64,6 +64,7 @@ import 'providers/auth.dart';
 
 void _setupLogging() {
   Logger.root.level = kDebugMode ? Level.ALL : Level.INFO;
+  
   Logger.root.onRecord.listen((record) {
     print('${record.level.name}: ${record.time} [${record.loggerName}] ${record.message}');
   });

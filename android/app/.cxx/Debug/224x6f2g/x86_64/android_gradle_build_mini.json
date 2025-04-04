@@ -1,0 +1,20 @@
+{
+  "buildFiles": [
+    "/Users/hamedesam/Desktop/ForMac/flutter3.16.9/packages/flutter_tools/gradle/src/main/groovy/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/Users/hamedesam/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/Users/hamedesam/Desktop/ForMac/contributes/flutter/android/app/.cxx/Debug/224x6f2g/x86_64",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/Users/hamedesam/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/Users/hamedesam/Desktop/ForMac/contributes/flutter/android/app/.cxx/Debug/224x6f2g/x86_64",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {}
+}

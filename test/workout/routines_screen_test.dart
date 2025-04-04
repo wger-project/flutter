@@ -104,7 +104,7 @@ void main() {
   testWidgets('Test deleting an item using the Delete button', (WidgetTester tester) async {
     await tester.pumpWidget(renderWidget());
 
-    await tester.tap(find.byIcon(Icons.delete).first);
+    await tester.tap(find.byIcon(Icons.delete_outline).first);
 
     await tester.pumpAndSettle();
 
