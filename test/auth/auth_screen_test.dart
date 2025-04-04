@@ -78,7 +78,7 @@ void main() {
 
   setUp(() {
     mockClient = MockClient();
-    authProvider = AuthProvider(mockClient, false);
+    authProvider = AuthProvider(mockClient);
     authProvider.serverUrl = 'https://wger.de';
 
     SharedPreferences.setMockInitialValues({});

@@ -95,6 +95,18 @@ class MockAuthProvider extends _i1.Mock implements _i3.AuthProvider {
       );
 
   @override
+  _i3.AuthState get state => (super.noSuchMethod(
+        Invocation.getter(#state),
+        returnValue: _i3.AuthState.updateRequired,
+      ) as _i3.AuthState);
+
+  @override
+  set state(_i3.AuthState? _state) => super.noSuchMethod(
+        Invocation.setter(#state, _state),
+        returnValueForMissingStub: null,
+      );
+
+  @override
   _i2.Client get client => (super.noSuchMethod(
         Invocation.getter(#client),
         returnValue: _FakeClient_0(this, Invocation.getter(#client)),
@@ -145,17 +157,13 @@ class MockAuthProvider extends _i1.Mock implements _i3.AuthProvider {
       ) as _i5.Future<void>);
 
   @override
-  _i5.Future<bool> applicationUpdateRequired([
-    String? version,
-    Map<String, String>? metadata,
-  ]) =>
-      (super.noSuchMethod(
-        Invocation.method(#applicationUpdateRequired, [version, metadata]),
+  _i5.Future<bool> applicationUpdateRequired([String? version]) => (super.noSuchMethod(
+        Invocation.method(#applicationUpdateRequired, [version]),
         returnValue: _i5.Future<bool>.value(false),
       ) as _i5.Future<bool>);
 
   @override
-  _i5.Future<Map<String, _i3.LoginActions>> register({
+  _i5.Future<_i3.LoginActions> register({
     required String? username,
     required String? password,
     required String? email,
@@ -170,23 +178,23 @@ class MockAuthProvider extends _i1.Mock implements _i3.AuthProvider {
           #serverUrl: serverUrl,
           #locale: locale,
         }),
-        returnValue: _i5.Future<Map<String, _i3.LoginActions>>.value(
-          <String, _i3.LoginActions>{},
+        returnValue: _i5.Future<_i3.LoginActions>.value(
+          _i3.LoginActions.update,
         ),
-      ) as _i5.Future<Map<String, _i3.LoginActions>>);
+      ) as _i5.Future<_i3.LoginActions>);
 
   @override
-  _i5.Future<Map<String, _i3.LoginActions>> login(
+  _i5.Future<_i3.LoginActions> login(
     String? username,
     String? password,
     String? serverUrl,
   ) =>
       (super.noSuchMethod(
         Invocation.method(#login, [username, password, serverUrl]),
-        returnValue: _i5.Future<Map<String, _i3.LoginActions>>.value(
-          <String, _i3.LoginActions>{},
+        returnValue: _i5.Future<_i3.LoginActions>.value(
+          _i3.LoginActions.update,
         ),
-      ) as _i5.Future<Map<String, _i3.LoginActions>>);
+      ) as _i5.Future<_i3.LoginActions>);
 
   @override
   _i5.Future<String> getServerUrlFromPrefs() => (super.noSuchMethod(
@@ -200,10 +208,11 @@ class MockAuthProvider extends _i1.Mock implements _i3.AuthProvider {
       ) as _i5.Future<String>);
 
   @override
-  _i5.Future<bool> tryAutoLogin() => (super.noSuchMethod(
+  _i5.Future<void> tryAutoLogin() => (super.noSuchMethod(
         Invocation.method(#tryAutoLogin, []),
-        returnValue: _i5.Future<bool>.value(false),
-      ) as _i5.Future<bool>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
   _i5.Future<void> logout({bool? shouldNotify = true}) => (super.noSuchMethod(

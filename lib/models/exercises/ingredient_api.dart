@@ -5,7 +5,7 @@ part 'ingredient_api.g.dart';
 
 /// Model for the search results returned from the /api/v2/ingredient/search endpoint
 @freezed
-class IngredientApiSearchDetails with _$IngredientApiSearchDetails {
+sealed class IngredientApiSearchDetails with _$IngredientApiSearchDetails {
   factory IngredientApiSearchDetails({
     required int id,
     required String name,
@@ -19,7 +19,7 @@ class IngredientApiSearchDetails with _$IngredientApiSearchDetails {
 }
 
 @freezed
-class IngredientApiSearchEntry with _$IngredientApiSearchEntry {
+sealed class IngredientApiSearchEntry with _$IngredientApiSearchEntry {
   factory IngredientApiSearchEntry({
     required String value,
     required IngredientApiSearchDetails data,
@@ -30,7 +30,7 @@ class IngredientApiSearchEntry with _$IngredientApiSearchEntry {
 }
 
 @freezed
-class IngredientApiSearch with _$IngredientApiSearch {
+sealed class IngredientApiSearch with _$IngredientApiSearch {
   factory IngredientApiSearch({
     required List<IngredientApiSearchEntry> suggestions,
   }) = _IngredientApiSearch;

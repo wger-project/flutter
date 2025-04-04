@@ -54,6 +54,7 @@ import 'package:wger/screens/routine_list_screen.dart';
 import 'package:wger/screens/routine_logs_screen.dart';
 import 'package:wger/screens/routine_screen.dart';
 import 'package:wger/screens/splash_screen.dart';
+import 'package:wger/screens/update_app_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/about.dart';
@@ -82,11 +83,27 @@ void main() async {
   await PreferenceHelper.instance.migrationSupportFunctionForSharedPreferences();
 
   // Application
-  runApp(const riverpod.ProviderScope(child: MyApp()));
+  runApp(const riverpod.ProviderScope(child: MainApp()));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp();
+class MainApp extends StatelessWidget {
+  const MainApp();
+
+  Widget _getHomeScreen(AuthProvider auth) {
+    if (auth.state == AuthState.loggedIn) {
+      return HomeTabsScreen();
+    } else if (auth.state == AuthState.updateRequired) {
+      return const UpdateAppScreen();
+    } else {
+      return FutureBuilder(
+        future: auth.tryAutoLogin(),
+        builder: (ctx, authResultSnapshot) =>
+            authResultSnapshot.connectionState == ConnectionState.waiting
+                ? const SplashScreen()
+                : const AuthScreen(),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -161,15 +178,7 @@ class MyApp extends StatelessWidget {
             highContrastTheme: wgerLightThemeHc,
             highContrastDarkTheme: wgerDarkThemeHc,
             themeMode: user.themeMode,
-            home: auth.isAuth
-                ? HomeTabsScreen()
-                : FutureBuilder(
-                    future: auth.tryAutoLogin(),
-                    builder: (ctx, authResultSnapshot) =>
-                        authResultSnapshot.connectionState == ConnectionState.waiting
-                            ? const SplashScreen()
-                            : const AuthScreen(),
-                  ),
+            home: _getHomeScreen(auth),
             routes: {
               DashboardScreen.routeName: (ctx) => const DashboardScreen(),
               FormScreen.routeName: (ctx) => const FormScreen(),
