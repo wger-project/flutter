@@ -27,7 +27,6 @@ jobs:
     with:
       ref: ${{ github.event.inputs.version }}
 
-
   build_android:
     name: Android
     needs: determine_version
