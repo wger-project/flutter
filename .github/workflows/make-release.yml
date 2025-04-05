@@ -144,6 +144,7 @@ jobs:
             builds-linux/wger-linux-x86_64.sha256
             builds-ios/Runner.app
             builds-macos/wger.app
+            builds-windows/wger.exe
 
   generate_flathub_manifest:
     runs-on: ubuntu-latest
