@@ -9,7 +9,8 @@ on:
     paths:
       - '**.dart'
       - 'pubspec.yaml'
-  workflow_call: { }
+  workflow_call:
+  workflow_dispatch:
 
 jobs:
   test:
