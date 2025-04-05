@@ -1,0 +1,2 @@
+/Users/hamedesam/Desktop/ForMac/contributes/flutter/android/app/.cxx/Debug/224x6f2g/x86_64/CMakeFiles/edit_cache.dir
+/Users/hamedesam/Desktop/ForMac/contributes/flutter/android/app/.cxx/Debug/224x6f2g/x86_64/CMakeFiles/rebuild_cache.dir
