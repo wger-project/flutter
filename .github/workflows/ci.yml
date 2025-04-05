@@ -33,6 +33,11 @@ jobs:
           flutter test --coverage
           lcov --remove coverage/lcov.info 'lib/l10n/generated/*' 'lib/theme/*' -o coverage/lcov.info
 
+      # Removing some folders from the coverage since these files are not really
+      # part of the app code and just get in the way of the report
+      - name: Filter coverage report
+        run: lcov --remove coverage/lcov.info 'lib/l10n/generated/*' 'lib/theme/*'
+
       - name: Coveralls
         uses: coverallsapp/github-action@v2
         with:
