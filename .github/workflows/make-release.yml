@@ -121,7 +121,6 @@ jobs:
   #          # bundle exec fastlane todo
 
   make_gh_release:
-    if: false
     name: Make Github Release
     runs-on: ubuntu-latest
     needs:
@@ -146,8 +145,7 @@ jobs:
             builds-ios/Runner.app
             builds-macos/wger.app
 
-  generate_fathub_manifest:
-    if: false
+  generate_flathub_manifest:
     runs-on: ubuntu-latest
     name: Upload flathub manifest
     needs:
