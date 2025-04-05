@@ -23,6 +23,7 @@ jobs:
       - name: Build application for linux
         run: |
           # ninja-build 
+          sudo apt update
           sudo apt install -y pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev --no-install-recommends
           flutter build linux --release
           cd flatpak/scripts
