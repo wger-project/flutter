@@ -1,0 +1,47 @@
+name: Build Apple
+on:
+  workflow_call:
+    inputs:
+      ref:
+        required: true
+        type: string
+jobs:
+  build_ios:
+    name: iOS
+    runs-on: macos-latest
+    steps:
+      - name: Checkout application
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+
+      - name: Common flutter setup
+        uses: ./.github/actions/flutter-common
+
+      - name: Build .app
+        run: flutter build ios --release --no-codesign
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: builds-ios
+          path: build/ios/iphoneos/Runner.app
+
+  build_macos:
+    name: macOS
+    runs-on: macos-latest
+    steps:
+      - name: Checkout application
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+
+      - name: Common flutter setup
+        uses: ./.github/actions/flutter-common
+
+      - name: Build .app
+        run: flutter build macos --release
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: builds-macos
+          path: build/macos/Build/Products/Release/wger.app
