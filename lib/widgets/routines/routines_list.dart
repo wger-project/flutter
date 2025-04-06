@@ -35,76 +35,135 @@ class RoutinesList extends StatefulWidget {
 
 class _RoutinesListState extends State<RoutinesList> {
   int? _loadingRoutine;
+  Map<String, dynamic>? _lastDeletedRoutine;
 
   @override
   Widget build(BuildContext context) {
     final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
+    final routines = widget._routineProvider.items;
 
     return RefreshIndicator(
       onRefresh: () => widget._routineProvider.fetchAndSetAllPlansSparse(),
-      child: widget._routineProvider.items.isEmpty
+      child: routines.isEmpty
           ? const TextPrompt()
           : ListView.builder(
-              padding: const EdgeInsets.all(10.0),
-              itemCount: widget._routineProvider.items.length,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              itemCount: routines.length,
               itemBuilder: (context, index) {
-                final currentRoutine = widget._routineProvider.items[index];
+                final currentRoutine = routines[index];
 
-                return Card(
-                  child: ListTile(
-                    onTap: () async {
-                      widget._routineProvider.setCurrentPlan(currentRoutine.id!);
-
-                      setState(() {
-                        _loadingRoutine = currentRoutine.id;
-                      });
-                      await widget._routineProvider.fetchAndSetRoutineFull(currentRoutine.id!);
-
-                      if (mounted) {
-                        setState(() {
-                          _loadingRoutine = null;
-                        });
-
-                        Navigator.of(context).pushNamed(
-                          RoutineScreen.routeName,
-                          arguments: currentRoutine.id,
-                        );
-                      }
-                    },
-                    title: Text(currentRoutine.name),
-                    subtitle: Text(
-                      '${dateFormat.format(currentRoutine.start)}'
-                      ' - ${dateFormat.format(currentRoutine.end)}',
+                return Dismissible(
+                  key: ValueKey(currentRoutine.id),
+                  direction: DismissDirection.endToStart,
+                  background: Container(
+                    alignment: Alignment.centerRight,
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    margin: const EdgeInsets.symmetric(vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.red.shade400,
+                      borderRadius: BorderRadius.circular(16),
                     ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const VerticalDivider(),
-                        if (_loadingRoutine == currentRoutine.id)
-                          const IconButton(
-                            icon: CircularProgressIndicator(),
-                            onPressed: null,
-                          )
-                        else
-                          IconButton(
-                            icon: const Icon(Icons.delete),
-                            tooltip: AppLocalizations.of(context).delete,
-                            onPressed: () async {
-                              // Delete workout from DB
-                              await showDialog(
-                                context: context,
-                                builder: (BuildContext contextDialog) {
-                                  return AlertDialog(
-                                    content: Text(
-                                      AppLocalizations.of(context)
-                                          .confirmDelete(currentRoutine.name),
-                                    ),
+                    child: const Icon(Icons.delete, color: Colors.white),
+                  ),
+                  confirmDismiss: (direction) async {
+                    final confirm = await showDialog<bool>(
+                      context: context,
+                      builder: (ctx) => AlertDialog(
+                        title: Text(AppLocalizations.of(context).delete),
+                        content: Text(
+                          AppLocalizations.of(context).confirmDelete(currentRoutine.name),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(ctx).pop(false),
+                            child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.of(ctx).pop(true),
+                            child: Text(
+                              AppLocalizations.of(context).delete,
+                              style: TextStyle(color: Theme.of(context).colorScheme.error),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                    return confirm ?? false;
+                  },
+                  onDismissed: (direction) {
+                    _lastDeletedRoutine = {
+                      'id': currentRoutine.id,
+                      'name': currentRoutine.name,
+                      'routine': currentRoutine,
+                    };
+
+                    Provider.of<RoutinesProvider>(context, listen: false)
+                        .deleteRoutine(currentRoutine.id!);
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(AppLocalizations.of(context).successfullyDeleted),
+                      ),
+                    );
+                  },
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    margin: const EdgeInsets.symmetric(vertical: 6),
+                    elevation: 3,
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      onTap: () async {
+                        widget._routineProvider.setCurrentPlan(currentRoutine.id!);
+                        setState(() => _loadingRoutine = currentRoutine.id);
+
+                        await widget._routineProvider.fetchAndSetRoutineFull(currentRoutine.id!);
+
+                        if (mounted) {
+                          setState(() => _loadingRoutine = null);
+                          Navigator.of(context).pushNamed(
+                            RoutineScreen.routeName,
+                            arguments: currentRoutine.id,
+                          );
+                        }
+                      },
+                      title: Text(
+                        currentRoutine.name,
+                        style: const TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                      subtitle: Text(
+                        '${dateFormat.format(currentRoutine.start)} - ${dateFormat.format(currentRoutine.end)}',
+                        style: TextStyle(color: Colors.grey.shade600),
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (_loadingRoutine == currentRoutine.id)
+                            const SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          else
+                            IconButton(
+                              icon: const Icon(
+                                Icons.delete_outline,
+                                color: Colors.red,
+                              ),
+                              tooltip: AppLocalizations.of(context).delete,
+                              color: Colors.grey.shade700,
+                              onPressed: () async {
+                                final confirm = await showDialog<bool>(
+                                  context: context,
+                                  builder: (ctx) => AlertDialog(
+                                    content: Text(AppLocalizations.of(context)
+                                        .confirmDelete(currentRoutine.name)),
                                     actions: [
                                       TextButton(
                                         child: Text(
-                                          MaterialLocalizations.of(context).cancelButtonLabel,
-                                        ),
-                                        onPressed: () => Navigator.of(contextDialog).pop(),
+                                            MaterialLocalizations.of(context).cancelButtonLabel),
+                                        onPressed: () => Navigator.of(ctx).pop(false),
                                       ),
                                       TextButton(
                                         child: Text(
@@ -113,34 +172,41 @@ class _RoutinesListState extends State<RoutinesList> {
                                             color: Theme.of(context).colorScheme.error,
                                           ),
                                         ),
-                                        onPressed: () {
-                                          // Confirmed, delete the workout
-                                          Provider.of<RoutinesProvider>(
-                                            context,
-                                            listen: false,
-                                          ).deleteRoutine(currentRoutine.id!);
-
-                                          // Close the popup
-                                          Navigator.of(contextDialog).pop();
-
-                                          // and inform the user
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            SnackBar(
-                                              content: Text(
-                                                AppLocalizations.of(context).successfullyDeleted,
-                                                textAlign: TextAlign.center,
-                                              ),
-                                            ),
-                                          );
-                                        },
+                                        onPressed: () => Navigator.of(ctx).pop(true),
                                       ),
                                     ],
+                                  ),
+                                );
+
+                                if (confirm == true) {
+                                  _lastDeletedRoutine = {
+                                    'id': currentRoutine.id,
+                                    'name': currentRoutine.name,
+                                    'routine': currentRoutine,
+                                  };
+
+                                  Provider.of<RoutinesProvider>(context, listen: false)
+                                      .deleteRoutine(currentRoutine.id!);
+
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        AppLocalizations.of(context).successfullyDeleted,
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      behavior: SnackBarBehavior.floating,
+                                      margin:
+                                          const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                    ),
                                   );
-                                },
-                              );
-                            },
-                          ),
-                      ],
+                                }
+                              },
+                            ),
+                        ],
+                      ),
                     ),
                   ),
                 );
