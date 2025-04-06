@@ -992,5 +992,29 @@
     }
   },
   "darkMode": "Sempre in modalità scura",
-  "@darkMode": {}
+  "@darkMode": {},
+  "routines": "Routine",
+  "@routines": {},
+  "newRoutine": "Nuova routine",
+  "@newRoutine": {},
+  "noRoutines": "Non hai nessuna routine",
+  "@noRoutines": {},
+  "restTime": "Tempo di riposo",
+  "@restTime": {},
+  "exerciseNr": "Esercizio {nr}",
+  "@exerciseNr": {
+    "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Set Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {
+        "type": "String"
+      }
+    }
+  },
+  "restDay": "Giorno di riposo",
+  "@restDay": {},
+  "needsLogsToAdvance": "Ha bisogno di registri per avanzare",
+  "@needsLogsToAdvance": {},
+  "isRestDayHelp": "Tieni presente che tutte le serie e gli esercizi verranno rimossi quando contrassegni un giorno come giorno di riposo.",
+  "@isRestDayHelp": {}
 }
