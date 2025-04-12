@@ -28,7 +28,7 @@ String repText(
   RepetitionUnit? repetitionUnitObj,
   num? weight,
   WeightUnit? weightUnitObj,
-  String? rir,
+  num? rir,
 ) {
   // TODO(x): how to (easily?) translate strings like the units or 'RiR'
 

@@ -16,6 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:io';
+
+import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
@@ -25,6 +28,7 @@ import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/routine_logs_screen.dart';
 import 'package:wger/screens/routine_screen.dart';
+import 'package:wger/widgets/routines/workout_logs.dart';
 
 import '../../test_data/routines.dart';
 import '../utils.dart';
@@ -66,25 +70,18 @@ void main() {
     );
   }
 
-  testWidgets('Test the widgets on the routine logs screen',
-      (WidgetTester tester) async {
-    await loadAppFonts();
-    await tester.pumpWidget(renderWidget());
-    await tester.tap(find.byType(TextButton));
-    await tester.pumpAndSettle();
+  testWidgets('Smoke test the widgets on the routine logs screen', (WidgetTester tester) async {
+    await withClock(Clock.fixed(DateTime(2025, 3, 29)), () async {
+      await loadAppFonts();
+      await tester.pumpWidget(renderWidget());
+      await tester.tap(find.byType(TextButton));
+      await tester.pumpAndSettle();
 
-    await expectLater(find.byType(WorkoutLogsScreen),
-        matchesGoldenFile('goldens/routine_logs_screen_detail.png'));
+      await expectLater(find.byType(WorkoutLogsScreen),
+          matchesGoldenFile('goldens/routine_logs_screen_detail.png'));
 
-    // expect(find.text('3 day workout'), findsOneWidget);
-
-    // expect(find.text('first day'), findsOneWidget);
-    // expect(find.text('chest, shoulders'), findsOneWidget);
-
-    // The second day is repeated
-    // expect(find.text('second day'), findsNWidgets(2));
-    // expect(find.text('legs'), findsNWidgets(2));
-
-    // expect(find.byType(Card), findsNWidgets(3));
+      expect(find.text('Training logs'), findsOneWidget);
+      expect(find.byType(WorkoutLogCalendar), findsOneWidget);
+    });
   });
 }

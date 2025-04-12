@@ -23,9 +23,9 @@ import 'package:wger/screens/exercise_screen.dart';
 import 'package:wger/widgets/exercises/images.dart';
 
 class ExerciseListTile extends StatelessWidget {
-  const ExerciseListTile({super.key, required this.exerciseBase});
+  const ExerciseListTile({super.key, required this.exercise});
 
-  final Exercise exerciseBase;
+  final Exercise exercise;
 
   @override
   Widget build(BuildContext context) {
@@ -43,22 +43,21 @@ class ExerciseListTile extends StatelessWidget {
             child: SizedBox(
               height: IMG_SIZE,
               width: IMG_SIZE,
-              child: ExerciseImageWidget(image: exerciseBase.getMainImage),
+              child: ExerciseImageWidget(image: exercise.getMainImage),
             ),
           ),
         ),
       ),
       title: Text(
-        exerciseBase.getTranslation(Localizations.localeOf(context).languageCode).name,
-        //style: theme.textTheme.titleLarge,
+        exercise.getTranslation(Localizations.localeOf(context).languageCode).name,
         overflow: TextOverflow.ellipsis,
         maxLines: 2,
       ),
       subtitle: Text(
-        '${getTranslation(exerciseBase.category!.name, context)} / ${exerciseBase.equipment.map((e) => getTranslation(e.name, context)).toList().join(', ')}',
+        '${exercise.id} -- ${getTranslation(exercise.category!.name, context)} / ${exercise.equipment.map((e) => getTranslation(e.name, context)).toList().join(', ')}',
       ),
       onTap: () {
-        Navigator.pushNamed(context, ExerciseDetailScreen.routeName, arguments: exerciseBase);
+        Navigator.pushNamed(context, ExerciseDetailScreen.routeName, arguments: exercise);
       },
     );
   }

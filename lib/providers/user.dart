@@ -21,6 +21,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/models/user/profile.dart';
 import 'package:wger/providers/base_provider.dart';
 
@@ -30,7 +31,7 @@ class UserProvider with ChangeNotifier {
   late SharedPreferencesAsync prefs;
 
   UserProvider(this.baseProvider, {SharedPreferencesAsync? prefs}) {
-    this.prefs = prefs ?? SharedPreferencesAsync();
+    this.prefs = prefs ?? PreferenceHelper.asyncPref;
     _loadThemeMode();
   }
 

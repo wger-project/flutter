@@ -50,6 +50,7 @@ void main() {
   );
 
   setUp(() {
+    /// Replacement for SharedPreferences.setMockInitialValues()
     SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
     mockWgerBaseProvider = MockWgerBaseProvider();
     userProvider = UserProvider(mockWgerBaseProvider);

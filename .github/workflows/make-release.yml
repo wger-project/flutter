@@ -1,0 +1,184 @@
+name: Build release artefacts
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version to tag and release (X.Y.Z)
+        required: true
+        type: string
+
+jobs:
+
+  ci:
+    name: CI
+    uses: ./.github/workflows/ci.yml
+
+  determine_version:
+    needs: ci
+    name: Prepare
+    uses: ./.github/workflows/bump-version.yml
+    with:
+      app_version: ${{ github.event.inputs.version }}
+
+  build_linux:
+    name: Linux
+    needs: determine_version
+    uses: ./.github/workflows/build-linux.yml
+    with:
+      ref: ${{ github.event.inputs.version }}
+
+  build_android:
+    name: Android
+    needs: determine_version
+    uses: ./.github/workflows/build-android.yml
+    with:
+      ref: ${{ github.event.inputs.version }}
+    secrets:
+      DECRYPTKEY_PLAYSTORE_SIGNING_KEY: ${{ secrets.DECRYPTKEY_PLAYSTORE_SIGNING_KEY }}
+      DECRYPTKEY_PROPERTIES: ${{ secrets.DECRYPTKEY_PROPERTIES }}
+
+  build_apple:
+    name: Apple
+    needs: determine_version
+    uses: ./.github/workflows/build-apple.yml
+    with:
+      ref: ${{ github.event.inputs.version }}
+
+  build_windows:
+    name: Microsoft
+    needs: determine_version
+    uses: ./.github/workflows/build-windows.yml
+    with:
+      ref: ${{ github.event.inputs.version }}
+
+  upload_play_store:
+    name: Upload to Play Store
+    runs-on: ubuntu-latest
+    needs:
+      - build_android
+      - build_linux
+    steps:
+      - name: Checkout application
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.version }}
+
+      - name: Download builds
+        uses: actions/download-artifact@v4
+        with:
+          path: /tmp/
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.4
+
+      - name: Decrypt config files
+        run: |
+          cd ./fastlane/metadata/envfiles
+          chmod +x ./decrypt_secrets.sh
+          ./decrypt_secrets.sh
+        shell: bash
+        env:
+          DECRYPTKEY_PLAYSTORE: ${{ secrets.DECRYPTKEY_PLAYSTORE }}
+
+      - name: Upload build to Play Store
+        run: |
+          mkdir -p ./build/app/outputs/bundle/release/
+          cp /tmp/builds-aab/app-release.aab ./build/app/outputs/bundle/release/app-release.aab
+          bundle install
+          bundle exec fastlane android production
+
+  #
+  # This is currently commented out since the iOS upload are currently being handled
+  # by the fastlane script in the ios folder. We use the account of pthaler for this
+  # and he runs the script manually.
+  #
+
+  #  upload_app_store:
+  #    name: Upload to App Store (placeholder)
+  #    runs-on: ubuntu-latest
+  #    needs:
+  #      - build_android
+  #      - build_apple
+  #    steps:
+  #      - name: Checkout application
+  #        uses: actions/checkout@v4
+  #        with:
+  #          ref: feature/build-process
+  #        #          ref: ${{ github.event.inputs.version }}
+  #
+  #      - name: Common flutter setup
+  #        uses: ./.github/actions/flutter-common
+  #
+  #      - name: Download builds
+  #        uses: actions/download-artifact@v4
+  #        with:
+  #          path: /tmp/
+  #
+  #      - name: Upload build to App Store
+  #        run: |
+  #          # bundle exec fastlane todo
+
+  make_gh_release:
+    name: Make Github Release
+    runs-on: ubuntu-latest
+    needs:
+      - upload_play_store
+      - build_linux
+      - build_windows
+      - build_apple
+
+    steps:
+      - name: Download builds
+        uses: actions/download-artifact@v4
+
+      - name: Make Github release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.version }}
+          files: |
+            builds-aab/app-release.aab
+            builds-apk/app-release.apk
+            builds-linux/wger-linux-x86_64.tar.gz
+            builds-linux/wger-linux-x86_64.sha256
+            builds-ios/Runner.app
+            builds-macos/wger.app
+            builds-windows/wger.exe
+
+  generate_flathub_manifest:
+    runs-on: ubuntu-latest
+    name: Upload flathub manifest
+    needs:
+      - make_gh_release
+    steps:
+      - name: Checkout application
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.version }}
+
+      - name: Common flutter setup
+        uses: ./.github/actions/flutter-common
+
+      - name: Generate manifest
+        run: |
+          cd flatpak/scripts
+          dart pub get
+          dart manifest_generator.dart --meta ../flatpak_meta.json --github
+          mkdir ../../flathub
+          cp flatpak_generator_exports/de.wger.flutter.json ../../flathub
+          cp flatpak_generator_exports/flathub.json ../../flathub
+
+      - name: Push updated config to flathub repository
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        with:
+          source-directory: flathub
+          destination-github-username: wger-project
+          destination-repository-name: de.wger.flutter
+          user-email: github-actions@github.com
+          target-branch: release-${{ github.event.inputs.version }}
+          create-target-branch-if-needed: true
+          commit-message: Update to ${{ github.event.inputs.version }}
+

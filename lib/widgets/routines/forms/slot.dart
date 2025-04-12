@@ -338,52 +338,62 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
                     setState(() => isSaving = true);
 
                     // Process new, edited or entries to be deleted
-                    await Future.wait([
-                      provider.handleConfig(
-                        widget.entry,
-                        setsSliderValue == 0 ? '' : setsSliderValue.round().toString(),
-                        ConfigType.sets,
-                      ),
-                      provider.handleConfig(
-                        widget.entry,
-                        weightController.text,
-                        ConfigType.weight,
-                      ),
-                      provider.handleConfig(
-                        widget.entry,
-                        maxWeightController.text,
-                        ConfigType.maxWeight,
-                      ),
-                      provider.handleConfig(
-                        widget.entry,
-                        repetitionsController.text,
-                        ConfigType.repetitions,
-                      ),
-                      provider.handleConfig(
-                        widget.entry,
-                        maxRepetitionsController.text,
-                        ConfigType.maxRepetitions,
-                      ),
-                      provider.handleConfig(
-                        widget.entry,
-                        restController.text,
-                        ConfigType.rest,
-                      ),
-                      provider.handleConfig(
-                        widget.entry,
-                        maxRestController.text,
-                        ConfigType.maxRest,
-                      ),
-                      provider.handleConfig(
-                        widget.entry,
-                        rirController.text,
-                        ConfigType.rir,
-                      ),
-                    ]);
+                    try {
+                      await Future.wait([
+                        provider.handleConfig(
+                          widget.entry,
+                          setsSliderValue == 0 ? '' : setsSliderValue.round().toString(),
+                          ConfigType.sets,
+                        ),
+                        provider.handleConfig(
+                          widget.entry,
+                          weightController.text,
+                          ConfigType.weight,
+                        ),
+                        provider.handleConfig(
+                          widget.entry,
+                          maxWeightController.text,
+                          ConfigType.maxWeight,
+                        ),
+                        provider.handleConfig(
+                          widget.entry,
+                          repetitionsController.text,
+                          ConfigType.repetitions,
+                        ),
+                        provider.handleConfig(
+                          widget.entry,
+                          maxRepetitionsController.text,
+                          ConfigType.maxRepetitions,
+                        ),
+                        provider.handleConfig(
+                          widget.entry,
+                          restController.text,
+                          ConfigType.rest,
+                        ),
+                        provider.handleConfig(
+                          widget.entry,
+                          maxRestController.text,
+                          ConfigType.maxRest,
+                        ),
+                        provider.handleConfig(
+                          widget.entry,
+                          rirController.text,
+                          ConfigType.rir,
+                        ),
+                      ]);
 
-                    await provider.editSlotEntry(widget.entry, widget.routineId);
-                    if (mounted) {
-                      setState(() => isSaving = false);
+                      await provider.editSlotEntry(widget.entry, widget.routineId);
+                      if (mounted) {
+                        setState(() => isSaving = false);
+                      }
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('${i18n.anErrorOccurred} $e')),
+                      );
+                    } finally {
+                      if (mounted) {
+                        setState(() => isSaving = false);
+                      }
                     }
                   },
             child:

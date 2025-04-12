@@ -146,27 +146,8 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
       future: _initialData,
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
-          return Scaffold(
-            body: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Center(
-                    child: SizedBox(
-                      height: 70,
-                      child: RiveAnimation.asset(
-                        'assets/animations/wger_logo.riv',
-                        animations: ['idle_loop2'],
-                      ),
-                    ),
-                  ),
-                  Text(
-                    AppLocalizations.of(context).loadingText,
-                    style: Theme.of(context).textTheme.headlineSmall,
-                  ),
-                ],
-              ),
-            ),
+          return const Scaffold(
+            body: LoadingWidget(),
           );
         } else {
           return Scaffold(
@@ -201,6 +182,36 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
           );
         }
       },
+    );
+  }
+}
+
+class LoadingWidget extends StatelessWidget {
+  const LoadingWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Center(
+            child: SizedBox(
+              height: 70,
+              child: RiveAnimation.asset(
+                'assets/animations/wger_logo.riv',
+                animations: ['idle_loop2'],
+              ),
+            ),
+          ),
+          Text(
+            AppLocalizations.of(context).loadingText,
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
+        ],
+      ),
     );
   }
 }

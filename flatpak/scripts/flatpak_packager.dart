@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'dart:io';
+
 import 'flatpak_shared.dart';
 
 /// Creates an archive containing all the sources for the Flatpak package for a
@@ -25,7 +26,8 @@ void main(List<String> arguments) async {
   final metaIndex = arguments.indexOf('--meta');
   if (metaIndex == -1) {
     throw Exception(
-        'You must run this script with a metadata file argument, using the --meta flag.');
+      'You must run this script with a metadata file argument, using the --meta flag.',
+    );
   }
   if (arguments.length == metaIndex + 1) {
     throw Exception('The --meta flag must be followed by the path to the metadata file.');
@@ -54,12 +56,16 @@ void main(List<String> arguments) async {
   await outputDir.create();
 
   final packageGenerator = PackageGenerator(
-      inputDir: metaFile.parent, meta: meta, addedTodaysVersion: addedTodaysVersion);
+    inputDir: metaFile.parent,
+    meta: meta,
+    addedTodaysVersion: addedTodaysVersion,
+  );
 
   await packageGenerator.generatePackage(
-      outputDir,
-      await PackageGenerator.runningOnARM() ? CPUArchitecture.aarch64 : CPUArchitecture.x86_64,
-      fetchFromGithub);
+    outputDir,
+    await PackageGenerator.runningOnARM() ? CPUArchitecture.aarch64 : CPUArchitecture.x86_64,
+    fetchFromGithub,
+  );
 }
 
 class PackageGenerator {
@@ -67,10 +73,17 @@ class PackageGenerator {
   final FlatpakMeta meta;
   final String? addedTodaysVersion;
 
-  PackageGenerator({required this.inputDir, required this.meta, required this.addedTodaysVersion});
+  const PackageGenerator({
+    required this.inputDir,
+    required this.meta,
+    required this.addedTodaysVersion,
+  });
 
   Future<void> generatePackage(
-      Directory outputDir, CPUArchitecture arch, bool fetchReleasesFromGithub) async {
+    Directory outputDir,
+    CPUArchitecture arch,
+    bool fetchReleasesFromGithub,
+  ) async {
     final tempDir = await outputDir.createTemp('flutter_generator_temp');
     final appId = meta.appId;
 
@@ -79,7 +92,8 @@ class PackageGenerator {
 
     if (!(await desktopFile.exists())) {
       throw Exception(
-          'The desktop file does not exist under the specified path: ${desktopFile.path}');
+        'The desktop file does not exist under the specified path: ${desktopFile.path}',
+      );
     }
 
     await desktopFile.copy('${tempDir.path}/$appId.desktop');
@@ -101,12 +115,14 @@ class PackageGenerator {
     final origAppStreamFile = File('${inputDir.path}/${meta.appStreamPath}');
     if (!(await origAppStreamFile.exists())) {
       throw Exception(
-          'The app data file does not exist under the specified path: ${origAppStreamFile.path}');
+        'The app data file does not exist under the specified path: ${origAppStreamFile.path}',
+      );
     }
 
     final editedAppStreamContent = AppStreamModifier.replaceVersions(
-        await origAppStreamFile.readAsString(),
-        await meta.getReleases(fetchReleasesFromGithub, addedTodaysVersion));
+      await origAppStreamFile.readAsString(),
+      await meta.getReleases(fetchReleasesFromGithub, addedTodaysVersion),
+    );
 
     final editedAppStreamFile = File('${tempDir.path}/$appId.metainfo.xml');
     await editedAppStreamFile.writeAsString(editedAppStreamContent);
@@ -117,7 +133,8 @@ class PackageGenerator {
     final buildDir = Directory(bundlePath);
     if (!(await buildDir.exists())) {
       throw Exception(
-          'The linux build directory does not exist under the specified path: ${buildDir.path}');
+        'The linux build directory does not exist under the specified path: ${buildDir.path}',
+      );
     }
     final destDir = Directory('${tempDir.path}/bin');
     await destDir.create();
@@ -159,9 +176,10 @@ class AppStreamModifier {
           .replaceAll('\n', '<~>')
           .replaceFirst(RegExp('<releases.*</releases>'), releasesSection)
           .replaceAll('<~>', '\n');
-    } else {
-      return origAppStreamContent.replaceFirst(
-          '</component>', '\n\t$releasesSection\n</component>');
     }
+    return origAppStreamContent.replaceFirst(
+      '</component>',
+      '\n\t$releasesSection\n</component>',
+    );
   }
 }

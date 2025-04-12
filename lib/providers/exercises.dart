@@ -22,11 +22,11 @@ import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/core/locator.dart';
 import 'package:wger/database/exercises/exercise_database.dart';
 import 'package:wger/exceptions/no_such_entry_exception.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
@@ -81,7 +81,7 @@ class ExercisesProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Map<int, List<Exercise>> get exerciseBasesByVariation {
+  Map<int, List<Exercise>> get exerciseByVariation {
     final Map<int, List<Exercise>> variations = {};
 
     for (final exercise in exercises.where((e) => e.variationId != null)) {
@@ -310,9 +310,10 @@ class ExercisesProvider with ChangeNotifier {
   ) async {
     Exercise exercise;
 
-    // TODO: this should be a .getSingleOrNull()!!! However, for some reason there
-    //       can be duplicates in the db. Perhaps a race condition so that two
-    //       entries are written at the same time or something?
+    // NOTE: this should not be necessary anymore. We had a bug that would
+    //       create duplicate entries in the database and should be fixed now.
+    //       However, we keep it here for now to be on the safe side.
+    //       In the future this can be replaced by a .getSingleOrNull()
     final exerciseResult =
         await (database.select(database.exercises)..where((e) => e.id.equals(exerciseId))).get();
 
@@ -321,9 +322,13 @@ class ExercisesProvider with ChangeNotifier {
       exerciseDb = exerciseResult.first;
     }
 
+    // Note that this shouldn't happen anymore...
+    if (exerciseResult.length > 1) {
+      _logger.warning('Found ${exerciseResult.length} entries for exercise $exerciseId in the db');
+    }
+
     // Exercise is already known locally
     if (exerciseDb != null) {
-      // _logger.fine('Exercise $exerciseId found in local cache');
       final nextFetch = exerciseDb.lastFetched.add(const Duration(days: EXERCISE_CACHE_DAYS));
       exercise = Exercise.fromApiDataString(exerciseDb.data, _languages);
 
@@ -389,20 +394,20 @@ class ExercisesProvider with ChangeNotifier {
   }
 
   Future<void> initCacheTimesLocalPrefs({forceInit = false}) async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = PreferenceHelper.asyncPref;
 
     final initDate = DateTime(2023, 1, 1).toIso8601String();
 
-    if (forceInit || !prefs.containsKey(PREFS_LAST_UPDATED_MUSCLES)) {
+    if (forceInit || !(await prefs.containsKey(PREFS_LAST_UPDATED_MUSCLES))) {
       await prefs.setString(PREFS_LAST_UPDATED_MUSCLES, initDate);
     }
-    if (forceInit || !prefs.containsKey(PREFS_LAST_UPDATED_EQUIPMENT)) {
+    if (forceInit || !(await prefs.containsKey(PREFS_LAST_UPDATED_EQUIPMENT))) {
       await prefs.setString(PREFS_LAST_UPDATED_EQUIPMENT, initDate);
     }
-    if (forceInit || !prefs.containsKey(PREFS_LAST_UPDATED_LANGUAGES)) {
+    if (forceInit || !(await prefs.containsKey(PREFS_LAST_UPDATED_LANGUAGES))) {
       await prefs.setString(PREFS_LAST_UPDATED_LANGUAGES, initDate);
     }
-    if (forceInit || !prefs.containsKey(PREFS_LAST_UPDATED_CATEGORIES)) {
+    if (forceInit || !(await prefs.containsKey(PREFS_LAST_UPDATED_CATEGORIES))) {
       await prefs.setString(PREFS_LAST_UPDATED_CATEGORIES, initDate);
     }
   }
@@ -455,15 +460,13 @@ class ExercisesProvider with ChangeNotifier {
 
   /// Updates the exercise database with *all* the exercises from the server
   Future<void> updateExerciseCache(ExerciseDatabase database) async {
-    final data = await baseProvider.fetch(
-      baseProvider.makeUrl(exerciseInfoUrlPath, query: {'limit': '1000'}),
+    final data = await baseProvider.fetchPaginated(
+      baseProvider.makeUrl(exerciseInfoUrlPath, query: {'limit': '999'}),
     );
-
-    final List<dynamic> exercisesData = data['results'];
-    exercises = exercisesData.map((e) => Exercise.fromApiDataJson(e, _languages)).toList();
+    exercises = data.map((e) => Exercise.fromApiDataJson(e, _languages)).toList();
 
     // Insert new entries and update ones that have been edited
-    Future.forEach(exercisesData, (exerciseData) async {
+    Future.forEach(data, (exerciseData) async {
       final exercise = await (database.select(database.exercises)
             ..where((e) => e.id.equals(exerciseData['id'])))
           .getSingleOrNull();
@@ -503,8 +506,8 @@ class ExercisesProvider with ChangeNotifier {
   ///
   /// We first try to read from the local DB, and from the API if the data is too old
   Future<void> fetchAndSetMuscles(ExerciseDatabase database) async {
-    final prefs = await SharedPreferences.getInstance();
-    var validTill = DateTime.parse(prefs.getString(PREFS_LAST_UPDATED_MUSCLES)!);
+    final prefs = PreferenceHelper.asyncPref;
+    var validTill = DateTime.parse((await prefs.getString(PREFS_LAST_UPDATED_MUSCLES))!);
 
     // Cache still valid, return it
     if (validTill.isAfter(DateTime.now())) {
@@ -537,8 +540,8 @@ class ExercisesProvider with ChangeNotifier {
   ///
   /// We first try to read from the local DB, and from the API if the data is too old
   Future<void> fetchAndSetCategories(ExerciseDatabase database) async {
-    final prefs = await SharedPreferences.getInstance();
-    var validTill = DateTime.parse(prefs.getString(PREFS_LAST_UPDATED_CATEGORIES)!);
+    final prefs = PreferenceHelper.asyncPref;
+    var validTill = DateTime.parse((await prefs.getString(PREFS_LAST_UPDATED_CATEGORIES))!);
 
     // Cache still valid, return it
     if (validTill.isAfter(DateTime.now())) {
@@ -571,8 +574,8 @@ class ExercisesProvider with ChangeNotifier {
   ///
   /// We first try to read from the local DB, and from the API if the data is too old
   Future<void> fetchAndSetLanguages(ExerciseDatabase database) async {
-    final prefs = await SharedPreferences.getInstance();
-    var validTill = DateTime.parse(prefs.getString(PREFS_LAST_UPDATED_LANGUAGES)!);
+    final prefs = PreferenceHelper.asyncPref;
+    var validTill = DateTime.parse((await prefs.getString(PREFS_LAST_UPDATED_LANGUAGES))!);
 
     // Cache still valid, return it
     if (validTill.isAfter(DateTime.now())) {
@@ -606,8 +609,8 @@ class ExercisesProvider with ChangeNotifier {
   ///
   /// We first try to read from the local DB, and from the API if the data is too old
   Future<void> fetchAndSetEquipments(ExerciseDatabase database) async {
-    final prefs = await SharedPreferences.getInstance();
-    var validTill = DateTime.parse(prefs.getString(PREFS_LAST_UPDATED_EQUIPMENT)!);
+    final prefs = PreferenceHelper.asyncPref;
+    var validTill = DateTime.parse((await prefs.getString(PREFS_LAST_UPDATED_EQUIPMENT))!);
 
     // Cache still valid, return it
     if (validTill.isAfter(DateTime.now())) {

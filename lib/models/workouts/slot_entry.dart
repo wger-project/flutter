@@ -173,7 +173,7 @@ class SlotEntry {
     this.type = type ?? 'normal';
     exerciseObj = exercise;
     exerciseId = exercise.id!;
-    this.weightUnitId = weightUnitId ?? WEIGHT_UNIT_KG_ID;
+    this.weightUnitId = weightUnitId ?? WEIGHT_UNIT_KG;
     this.weightRounding = weightRounding ?? 2.5;
 
     this.repetitionUnitId = repetitionUnitId ?? REP_UNIT_REPETITIONS_ID;

@@ -6,17 +6,15 @@ part of 'ingredient_api.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$IngredientApiSearchDetailsImpl _$$IngredientApiSearchDetailsImplFromJson(
-        Map<String, dynamic> json) =>
-    _$IngredientApiSearchDetailsImpl(
+_IngredientApiSearchDetails _$IngredientApiSearchDetailsFromJson(Map<String, dynamic> json) =>
+    _IngredientApiSearchDetails(
       id: (json['id'] as num).toInt(),
       name: json['name'] as String,
       image: json['image'] as String?,
       imageThumbnail: json['image_thumbnail'] as String?,
     );
 
-Map<String, dynamic> _$$IngredientApiSearchDetailsImplToJson(
-        _$IngredientApiSearchDetailsImpl instance) =>
+Map<String, dynamic> _$IngredientApiSearchDetailsToJson(_IngredientApiSearchDetails instance) =>
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
@@ -24,27 +22,26 @@ Map<String, dynamic> _$$IngredientApiSearchDetailsImplToJson(
       'image_thumbnail': instance.imageThumbnail,
     };
 
-_$IngredientApiSearchEntryImpl _$$IngredientApiSearchEntryImplFromJson(Map<String, dynamic> json) =>
-    _$IngredientApiSearchEntryImpl(
+_IngredientApiSearchEntry _$IngredientApiSearchEntryFromJson(Map<String, dynamic> json) =>
+    _IngredientApiSearchEntry(
       value: json['value'] as String,
       data: IngredientApiSearchDetails.fromJson(json['data'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$$IngredientApiSearchEntryImplToJson(
-        _$IngredientApiSearchEntryImpl instance) =>
+Map<String, dynamic> _$IngredientApiSearchEntryToJson(_IngredientApiSearchEntry instance) =>
     <String, dynamic>{
       'value': instance.value,
       'data': instance.data,
     };
 
-_$IngredientApiSearchImpl _$$IngredientApiSearchImplFromJson(Map<String, dynamic> json) =>
-    _$IngredientApiSearchImpl(
+_IngredientApiSearch _$IngredientApiSearchFromJson(Map<String, dynamic> json) =>
+    _IngredientApiSearch(
       suggestions: (json['suggestions'] as List<dynamic>)
           .map((e) => IngredientApiSearchEntry.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
-Map<String, dynamic> _$$IngredientApiSearchImplToJson(_$IngredientApiSearchImpl instance) =>
+Map<String, dynamic> _$IngredientApiSearchToJson(_IngredientApiSearch instance) =>
     <String, dynamic>{
       'suggestions': instance.suggestions,
     };

@@ -211,17 +211,27 @@ class _RoutineFormState extends State<RoutineForm> {
                 });
 
                 // Save to DB
-                final routinesProvider = context.read<RoutinesProvider>();
+                try {
+                  final routinesProvider = context.read<RoutinesProvider>();
 
-                if (widget._routine.id != null) {
-                  await routinesProvider.editRoutine(widget._routine);
-                } else {
-                  final routine = await routinesProvider.addRoutine(widget._routine);
-                  if (context.mounted) {
-                    Navigator.of(context).pushReplacementNamed(
-                      RoutineEditScreen.routeName,
-                      arguments: routine.id,
-                    );
+                  if (widget._routine.id != null) {
+                    await routinesProvider.editRoutine(widget._routine);
+                  } else {
+                    final routine = await routinesProvider.addRoutine(widget._routine);
+                    if (context.mounted) {
+                      Navigator.of(context).pushReplacementNamed(
+                        RoutineEditScreen.routeName,
+                        arguments: routine.id,
+                      );
+                    }
+                  }
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('${i18n.anErrorOccurred} $e')),
+                  );
+                } finally {
+                  if (mounted) {
+                    setState(() => isSaving = false);
                   }
                 }
 

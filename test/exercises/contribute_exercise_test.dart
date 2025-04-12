@@ -75,7 +75,7 @@ void main() {
     when(mockExerciseProvider.categories).thenReturn(testCategories);
     when(mockExerciseProvider.muscles).thenReturn(testMuscles);
     when(mockExerciseProvider.equipment).thenReturn(testEquipment);
-    when(mockExerciseProvider.exerciseBasesByVariation).thenReturn({});
+    when(mockExerciseProvider.exerciseByVariation).thenReturn({});
     when(mockExerciseProvider.exercises).thenReturn(getTestExercises());
     when(mockExerciseProvider.languages).thenReturn(testLanguages);
 

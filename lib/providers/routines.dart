@@ -20,9 +20,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/models/workouts/base_config.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/day_data.dart';
@@ -105,7 +105,7 @@ class RoutinesProvider with ChangeNotifier {
 
   /// Return the default weight unit (kg)
   WeightUnit get defaultWeightUnit {
-    return _weightUnits.firstWhere((element) => element.id == WEIGHT_UNIT_KG_ID);
+    return _weightUnits.firstWhere((element) => element.id == WEIGHT_UNIT_KG);
   }
 
   WeightUnit findWeightUnitById(int id) => _weightUnits.firstWhere((element) => element.id == id);
@@ -198,7 +198,7 @@ class RoutinesProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setExercisesAndUnits(List<DayData> entries) async {
+  Future<void> setExercisesAndUnits(List<DayData> entries) async {
     for (final entry in entries) {
       for (final slot in entry.slots) {
         for (final setConfig in slot.setConfigs) {
@@ -275,10 +275,10 @@ class RoutinesProvider with ChangeNotifier {
      * note that setExercisesAndUnits modifies the list in-place
      */
     final dayDataEntriesDisplay = dayData.map((entry) => DayData.fromJson(entry)).toList();
-    setExercisesAndUnits(dayDataEntriesDisplay);
+    await setExercisesAndUnits(dayDataEntriesDisplay);
 
     final dayDataEntriesGym = dayDataGym.map((entry) => DayData.fromJson(entry)).toList();
-    setExercisesAndUnits(dayDataEntriesGym);
+    await setExercisesAndUnits(dayDataEntriesGym);
 
     final sessionDataEntries =
         sessionData.map((entry) => WorkoutSessionApi.fromJson(entry)).toList();
@@ -384,9 +384,9 @@ class RoutinesProvider with ChangeNotifier {
 
   Future<void> fetchAndSetUnits() async {
     // Load units from cache, if available
-    final prefs = await SharedPreferences.getInstance();
-    if (prefs.containsKey(PREFS_WORKOUT_UNITS)) {
-      final unitData = json.decode(prefs.getString(PREFS_WORKOUT_UNITS)!);
+    final prefs = PreferenceHelper.asyncPref;
+    if (await prefs.containsKey(PREFS_WORKOUT_UNITS)) {
+      final unitData = json.decode((await prefs.getString(PREFS_WORKOUT_UNITS))!);
       if (DateTime.parse(unitData['expiresIn']).isAfter(DateTime.now())) {
         unitData['repetitionUnits'].forEach(
           (e) => _repetitionUnits.add(RepetitionUnit.fromJson(e)),

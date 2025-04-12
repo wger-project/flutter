@@ -89,12 +89,6 @@ class AuthScreen extends StatelessWidget {
               ),
             ),
           ),
-          // Positioned(
-          //   top: 0.4 * deviceSize.height,
-          //   left: 15,
-          //   right: 15,
-          //   child: const ,
-          // ),
         ],
       ),
     );
@@ -166,7 +160,6 @@ class _AuthCardState extends State<AuthCard> {
 
   void _submit(BuildContext context) async {
     if (!_formKey.currentState!.validate()) {
-      // Invalid!
       return;
     }
     _formKey.currentState!.save();
@@ -176,7 +169,7 @@ class _AuthCardState extends State<AuthCard> {
 
     try {
       // Login existing user
-      late Map<String, LoginActions> res;
+      late LoginActions res;
       if (_authMode == AuthMode.Login) {
         res = await Provider.of<AuthProvider>(context, listen: false).login(
           _authData['username']!,
@@ -196,13 +189,11 @@ class _AuthCardState extends State<AuthCard> {
       }
 
       // Check if update is required else continue normally
-      if (res.containsKey('action')) {
-        if (res['action'] == LoginActions.update && mounted) {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => const UpdateAppScreen()),
-          );
-          return;
-        }
+      if (res == LoginActions.update && mounted) {
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => const UpdateAppScreen()),
+        );
+        return;
       }
 
       setState(() {
