@@ -21,7 +21,6 @@ import 'dart:io';
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:golden_toolkit/golden_toolkit.dart';
 import 'package:mockito/annotations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -70,17 +69,28 @@ void main() {
     );
   }
 
-  testGoldens('Smoke test the widgets on the routine logs screen', (WidgetTester tester) async {
-    await withClock(Clock.fixed(DateTime(2025, 3, 29)), () async {
-      await loadAppFonts();
-      await tester.pumpWidget(renderWidget());
-      await tester.tap(find.byType(TextButton));
-      await tester.pumpAndSettle();
+  testWidgets(
+    'Smoke test the widgets on the routine logs screen',
+    (WidgetTester tester) async {
+      tester.view.physicalSize = const Size(500, 1000);
+      tester.view.devicePixelRatio = 1.0; // Ensure correct pixel ratio
 
-      await screenMatchesGolden(tester, 'routine_logs_screen_detail', skip: !Platform.isLinux);
+      await withClock(Clock.fixed(DateTime(2025, 3, 29)), () async {
+        await tester.pumpWidget(renderWidget());
+        await tester.tap(find.byType(TextButton));
+        await tester.pumpAndSettle();
 
-      expect(find.text('Training logs'), findsOneWidget);
-      expect(find.byType(WorkoutLogCalendar), findsOneWidget);
-    });
-  });
+        if (Platform.isLinux) {
+          await expectLater(
+            find.byType(WorkoutLogsScreen),
+            matchesGoldenFile('goldens/routine_logs_screen_detail.png'),
+          );
+        }
+
+        expect(find.text('Training logs'), findsOneWidget);
+        expect(find.byType(WorkoutLogCalendar), findsOneWidget);
+      });
+    },
+    tags: ['golden'],
+  );
 }

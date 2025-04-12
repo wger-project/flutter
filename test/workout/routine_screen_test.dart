@@ -21,7 +21,6 @@ import 'dart:io';
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:golden_toolkit/golden_toolkit.dart';
 import 'package:mockito/annotations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/database/exercises/exercise_database.dart';
@@ -70,23 +69,34 @@ void main() {
     );
   }
 
-  testGoldens('Test the widgets on the routine screen', (WidgetTester tester) async {
-    await loadAppFonts();
-    await tester.pumpWidget(renderWidget());
-    await tester.tap(find.byType(TextButton));
-    await tester.pumpAndSettle();
+  testWidgets(
+    'Test the widgets on the routine screen',
+    (WidgetTester tester) async {
+      tester.view.physicalSize = const Size(500, 1000);
+      tester.view.devicePixelRatio = 1.0; // Ensure correct pixel ratio
 
-    await screenMatchesGolden(tester, 'routine_screen_detail', skip: !Platform.isLinux);
+      await tester.pumpWidget(renderWidget());
+      await tester.tap(find.byType(TextButton));
+      await tester.pumpAndSettle();
 
-    expect(find.text('3 day workout'), findsOneWidget);
+      if (Platform.isLinux) {
+        await expectLater(
+          find.byType(MaterialApp),
+          matchesGoldenFile('goldens/routine_screen_detail.png'),
+        );
+      }
 
-    expect(find.text('first day'), findsOneWidget);
-    expect(find.text('chest, shoulders'), findsOneWidget);
+      expect(find.text('3 day workout'), findsOneWidget);
 
-    expect(find.text('second day'), findsOneWidget);
-    expect(find.text('legs'), findsOneWidget);
+      expect(find.text('first day'), findsOneWidget);
+      expect(find.text('chest, shoulders'), findsOneWidget);
 
-    expect(find.byType(Card), findsWidgets);
-    // expect(find.byType(Card), findsNWidgets(4));
-  });
+      expect(find.text('second day'), findsOneWidget);
+      expect(find.text('legs'), findsOneWidget);
+
+      expect(find.byType(Card), findsWidgets);
+      // expect(find.byType(Card), findsNWidgets(4));
+    },
+    tags: ['golden'],
+  );
 }

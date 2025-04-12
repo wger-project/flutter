@@ -83,7 +83,6 @@ dev_dependencies:
   drift_dev: ^2.26.0
   flutter_lints: ^5.0.0
   freezed: ^3.0.4
-  golden_toolkit: ^0.15.0
   json_serializable: ^6.9.4
   mockito: ^5.4.4
   network_image_mock: ^2.1.1
