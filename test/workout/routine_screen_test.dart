@@ -72,13 +72,18 @@ void main() {
   testWidgets(
     'Test the widgets on the routine screen',
     (WidgetTester tester) async {
+      tester.view.physicalSize = const Size(500, 1000);
+      tester.view.devicePixelRatio = 1.0; // Ensure correct pixel ratio
+
       await tester.pumpWidget(renderWidget());
       await tester.tap(find.byType(TextButton));
       await tester.pumpAndSettle();
 
       if (Platform.isLinux) {
         await expectLater(
-            find.byType(MaterialApp), matchesGoldenFile('goldens/routine_logs_screen_detail.png'));
+          find.byType(MaterialApp),
+          matchesGoldenFile('goldens/routine_logs_screen_detail.png'),
+        );
       }
 
       expect(find.text('3 day workout'), findsOneWidget);

@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:io';
+
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -70,13 +72,20 @@ void main() {
   testWidgets(
     'Smoke test the widgets on the routine logs screen',
     (WidgetTester tester) async {
+      tester.view.physicalSize = const Size(500, 1000);
+      tester.view.devicePixelRatio = 1.0; // Ensure correct pixel ratio
+
       await withClock(Clock.fixed(DateTime(2025, 3, 29)), () async {
         await tester.pumpWidget(renderWidget());
         await tester.tap(find.byType(TextButton));
         await tester.pumpAndSettle();
 
-        await expectLater(find.byType(WorkoutLogsScreen),
-            matchesGoldenFile('goldens/routine_logs_screen_detail.png'));
+        if (Platform.isLinux) {
+          await expectLater(
+            find.byType(WorkoutLogsScreen),
+            matchesGoldenFile('goldens/routine_logs_screen_detail.png'),
+          );
+        }
 
         expect(find.text('Training logs'), findsOneWidget);
         expect(find.byType(WorkoutLogCalendar), findsOneWidget);
