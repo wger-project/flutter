@@ -82,7 +82,7 @@ void main() {
       if (Platform.isLinux) {
         await expectLater(
           find.byType(MaterialApp),
-          matchesGoldenFile('goldens/routine_logs_screen_detail.png'),
+          matchesGoldenFile('goldens/routine_screen_detail.png'),
         );
       }
 
