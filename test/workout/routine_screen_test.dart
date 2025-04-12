@@ -31,7 +31,6 @@ import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/routine_screen.dart';
 
 import '../../test_data/routines.dart';
-import '../utils.dart';
 import 'routine_screen_test.mocks.dart';
 
 @GenerateMocks([WgerBaseProvider])
@@ -70,27 +69,29 @@ void main() {
     );
   }
 
-  testWidgets('Test the widgets on the routine screen',
-      (WidgetTester tester) async {
-    await loadAppFonts();
-    await tester.pumpWidget(renderWidget());
-    await tester.tap(find.byType(TextButton));
-    await tester.pumpAndSettle();
+  testWidgets(
+    'Test the widgets on the routine screen',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(renderWidget());
+      await tester.tap(find.byType(TextButton));
+      await tester.pumpAndSettle();
 
-    if(Platform.isLinux) {
-      await expectLater(find.byType(MaterialApp),
-        matchesGoldenFile('goldens/routine_logs_screen_detail.png'));
-    }
+      if (Platform.isLinux) {
+        await expectLater(
+            find.byType(MaterialApp), matchesGoldenFile('goldens/routine_logs_screen_detail.png'));
+      }
 
-    expect(find.text('3 day workout'), findsOneWidget);
+      expect(find.text('3 day workout'), findsOneWidget);
 
-    expect(find.text('first day'), findsOneWidget);
-    expect(find.text('chest, shoulders'), findsOneWidget);
+      expect(find.text('first day'), findsOneWidget);
+      expect(find.text('chest, shoulders'), findsOneWidget);
 
-    expect(find.text('second day'), findsOneWidget);
-    expect(find.text('legs'), findsOneWidget);
+      expect(find.text('second day'), findsOneWidget);
+      expect(find.text('legs'), findsOneWidget);
 
-    expect(find.byType(Card), findsWidgets);
-    // expect(find.byType(Card), findsNWidgets(4));
-  });
+      expect(find.byType(Card), findsWidgets);
+      // expect(find.byType(Card), findsNWidgets(4));
+    },
+    tags: ['golden'],
+  );
 }

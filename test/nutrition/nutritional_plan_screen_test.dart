@@ -16,8 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'dart:io';
-
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -33,7 +31,6 @@ import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 
 import '../../test_data/nutritional_plans.dart';
-import '../utils.dart';
 import 'nutritional_plan_screen_test.mocks.dart';
 
 @GenerateMocks([WgerBaseProvider, AuthProvider, http.Client])
@@ -88,8 +85,6 @@ void main() {
   testWidgets(
     'Test the widgets on the nutritional plan screen',
     (tester) async {
-      await loadAppFonts();
-
       tester.view.physicalSize = const Size(500, 1000);
       tester.view.devicePixelRatio = 1.0; // Ensure correct pixel ratio
 
@@ -97,31 +92,27 @@ void main() {
       await tester.tap(find.byType(TextButton));
       await tester.pumpAndSettle();
 
-      if(Platform.isLinux) {
-        await expectLater(find.byType(NutritionalPlanScreen),
-          matchesGoldenFile('goldens/nutritional_plan_1_default_view.png'));
-      }
+      await expectLater(
+        find.byType(NutritionalPlanScreen),
+        matchesGoldenFile('goldens/nutritional_plan_1_default_view.png'),
+      );
 
       // Default view shows plan description, info button, and no ingredients
       expect(find.text('Less fat, more protein'), findsOneWidget);
-      expect(find.byIcon(Icons.info_outline),
-          findsNWidgets(3)); // 2 meals, 1 "other logs"
+      expect(find.byIcon(Icons.info_outline), findsNWidgets(3)); // 2 meals, 1 "other logs"
       expect(find.byIcon(Icons.info), findsNothing);
       expect(find.text('100g Water'), findsNothing);
       expect(find.text('75g Burger soup'), findsNothing);
 
       // tap the first info button changes it and reveals ingredients for the first meal
       var infoOutlineButtons = find.byIcon(Icons.info_outline);
-      await tester.tap(infoOutlineButtons
-          .first); // 2nd button shows up also, but is off-screen
+      await tester.tap(infoOutlineButtons.first); // 2nd button shows up also, but is off-screen
       await tester.pumpAndSettle();
 
-      if(Platform.isLinux) {
-        await expectLater(
-          find.byType(NutritionalPlanScreen),
-          matchesGoldenFile(
-              'goldens/nutritional_plan_2_one_meal_with_ingredients.png'));
-      }
+      await expectLater(
+        find.byType(NutritionalPlanScreen),
+        matchesGoldenFile('goldens/nutritional_plan_2_one_meal_with_ingredients.png'),
+      );
 
       // Ingredients show up now
       expect(find.text('100g Water'), findsOneWidget);
@@ -140,12 +131,10 @@ void main() {
 
       await tester.tap(infoOutlineButtons.first);
       await tester.pumpAndSettle();
-      if(Platform.isLinux) {
-        await expectLater(
-          find.byType(MaterialApp),
-          matchesGoldenFile(
-              'goldens/nutritional_plan_3_both_meals_with_ingredients.png'));
-      }
+      await expectLater(
+        find.byType(MaterialApp),
+        matchesGoldenFile('goldens/nutritional_plan_3_both_meals_with_ingredients.png'),
+      );
 
       expect(find.byIcon(Icons.info_outline), findsOneWidget);
       expect(find.byIcon(Icons.info), findsNWidgets(2));
@@ -159,10 +148,10 @@ void main() {
       tester.view.resetPhysicalSize();
       tester.view.resetDevicePixelRatio();
     },
+    tags: ['golden'],
   );
 
-  testWidgets('Tests the localization of times - EN',
-      (WidgetTester tester) async {
+  testWidgets('Tests the localization of times - EN', (WidgetTester tester) async {
     await tester.pumpWidget(createNutritionalPlan());
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();
@@ -170,8 +159,7 @@ void main() {
     expect(find.textContaining('5:00 PM'), findsOneWidget);
   });
 
-  testWidgets('Tests the localization of times - DE',
-      (WidgetTester tester) async {
+  testWidgets('Tests the localization of times - DE', (WidgetTester tester) async {
     await tester.pumpWidget(createNutritionalPlan(locale: 'de'));
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();
