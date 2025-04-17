@@ -170,6 +170,7 @@ class DayLogWidget extends StatelessWidget {
                           Text(log.singleLogRepTextNoNl),
                           IconButton(
                             icon: const Icon(Icons.delete),
+                            key: ValueKey('delete-log-${log.id}'),
                             onPressed: () {
                               showDeleteDialog(context, translation.name, log);
                             },

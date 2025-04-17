@@ -41,7 +41,7 @@ void main() {
 
   setUp(() {
     routine = getTestRoutine();
-    routine.sessions[0].session.date = DateTime.now();
+    routine.sessions[0].session.date = DateTime(2025, 3, 29);
 
     when(mockRoutinesProvider.findById(any)).thenAnswer((_) => routine);
   });
@@ -92,8 +92,29 @@ void main() {
 
         expect(find.text('Training logs'), findsOneWidget);
         expect(find.byType(WorkoutLogCalendar), findsOneWidget);
+        expect(find.text('Bench press'), findsOneWidget);
+        expect(find.byKey(const ValueKey('delete-log-1')), findsOneWidget);
+        expect(find.byKey(const ValueKey('delete-log-2')), findsOneWidget);
+        expect(find.byKey(const ValueKey('delete-log-3')), findsNothing);
       });
     },
     tags: ['golden'],
   );
+
+  testWidgets('Test deleting log entries', (WidgetTester tester) async {
+    await withClock(Clock.fixed(DateTime(2025, 3, 29)), () async {
+      await tester.pumpWidget(renderWidget());
+      await tester.tap(find.byType(TextButton));
+      await tester.pumpAndSettle();
+      await tester.drag(find.byType(ListView), const Offset(0, -500));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('delete-log-1')));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const ValueKey('delete-button')), findsOneWidget);
+      expect(find.byKey(const ValueKey('cancel-button')), findsOneWidget);
+      await tester.tap(find.byKey(const ValueKey('delete-button')));
+      verify(mockRoutinesProvider.deleteLog(1, 1)).called(1);
+    });
+  });
 }

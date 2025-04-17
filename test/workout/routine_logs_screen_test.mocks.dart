@@ -478,8 +478,8 @@ class MockRoutinesProvider extends _i1.Mock implements _i12.RoutinesProvider {
       ) as _i13.Future<_i11.Log>);
 
   @override
-  _i13.Future<void> deleteLog(_i11.Log? log) => (super.noSuchMethod(
-        Invocation.method(#deleteLog, [log]),
+  _i13.Future<void> deleteLog(int? logId, int? routineId) => (super.noSuchMethod(
+        Invocation.method(#deleteLog, [logId, routineId]),
         returnValue: _i13.Future<void>.value(),
         returnValueForMissingStub: _i13.Future<void>.value(),
       ) as _i13.Future<void>);

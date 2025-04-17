@@ -116,18 +116,18 @@ void showDeleteDialog(BuildContext context, String confirmDeleteName, Log log) a
         ),
         actions: [
           TextButton(
+            key: const ValueKey('cancel-button'),
             child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
             onPressed: () => Navigator.of(contextDialog).pop(),
           ),
           TextButton(
+            key: const ValueKey('delete-button'),
             child: Text(
               AppLocalizations.of(context).delete,
               style: TextStyle(color: Theme.of(context).colorScheme.error),
             ),
             onPressed: () {
-              Provider.of<RoutinesProvider>(context, listen: false).deleteLog(
-                log,
-              );
+              context.read<RoutinesProvider>().deleteLog(log.id!, log.routineId);
 
               Navigator.of(contextDialog).pop();
 
