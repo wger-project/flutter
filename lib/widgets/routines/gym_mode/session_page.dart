@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart' as provider;
 import 'package:wger/exceptions/http_exception.dart';
@@ -33,8 +34,8 @@ class SessionPage extends StatefulWidget {
   final Routine _routine;
   late WorkoutSession _session;
   final PageController _controller;
-  final TimeOfDay _start;
   final Map<Exercise, int> _exercisePages;
+  final TimeOfDay _start;
 
   SessionPage(
     this._routine,
@@ -43,11 +44,11 @@ class SessionPage extends StatefulWidget {
     this._exercisePages,
   ) {
     _session = _routine.sessions.map((sessionApi) => sessionApi.session).firstWhere(
-          (session) => session.date.isSameDayAs(DateTime.now()),
+          (session) => session.date.isSameDayAs(clock.now()),
           orElse: () => WorkoutSession(
             routineId: _routine.id!,
             impression: DEFAULT_IMPRESSION,
-            date: DateTime.now(),
+            date: clock.now(),
             timeEnd: TimeOfDay.now(),
             timeStart: _start,
           ),
@@ -65,17 +66,18 @@ class _SessionPageState extends State<SessionPage> {
   final timeStartController = TextEditingController();
   final timeEndController = TextEditingController();
 
-  // final _session = WorkoutSession.now();
-
   /// Selected impression: bad, neutral, good
-  var selectedImpression = [false, true, false];
+  var selectedImpression = [false, false, false];
 
   @override
   void initState() {
     super.initState();
 
-    timeStartController.text = timeToString(widget._session.timeStart)!;
-    timeEndController.text = timeToString(widget._session.timeEnd)!;
+    timeStartController.text = timeToString(widget._session.timeStart ?? widget._start)!;
+    timeEndController.text = timeToString(widget._session.timeEnd ?? TimeOfDay.now())!;
+    notesController.text = widget._session.notes;
+
+    selectedImpression[widget._session.impression - 1] = true;
   }
 
   @override
@@ -212,6 +214,7 @@ class _SessionPageState extends State<SessionPage> {
                   ],
                 ),
                 ElevatedButton(
+                  key: const ValueKey('save-button'),
                   child: Text(AppLocalizations.of(context).save),
                   onPressed: () async {
                     // Validate and save the current values to the weightEntry

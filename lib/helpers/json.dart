@@ -62,6 +62,14 @@ TimeOfDay stringToTime(String? time) {
   return TimeOfDay.fromDateTime(DateTime.parse('2020-01-01 $out'));
 }
 
+TimeOfDay? stringToTimeNull(String? time) {
+  if (time == null) {
+    return null;
+  }
+
+  return TimeOfDay.fromDateTime(DateTime.parse('2020-01-01 $time'));
+}
+
 /*
  * Converts a datetime to time.
  */

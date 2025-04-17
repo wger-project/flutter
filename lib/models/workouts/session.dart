@@ -36,16 +36,16 @@ class WorkoutSession {
   @JsonKey(required: true, toJson: dateToYYYYMMDD)
   late DateTime date;
 
-  @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
-  late num impression;
+  @JsonKey(required: true, fromJson: int.parse, toJson: numToString)
+  late int impression;
 
   @JsonKey(required: false, defaultValue: '')
   late String notes;
 
-  @JsonKey(required: true, name: 'time_start', toJson: timeToString, fromJson: stringToTime)
+  @JsonKey(required: true, name: 'time_start', toJson: timeToString, fromJson: stringToTimeNull)
   late TimeOfDay? timeStart;
 
-  @JsonKey(required: true, name: 'time_end', toJson: timeToString, fromJson: stringToTime)
+  @JsonKey(required: true, name: 'time_end', toJson: timeToString, fromJson: stringToTimeNull)
   late TimeOfDay? timeEnd;
 
   @JsonKey(required: false, includeToJson: false, defaultValue: [])

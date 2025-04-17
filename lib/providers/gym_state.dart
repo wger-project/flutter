@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/models/exercises/exercise.dart';
@@ -14,6 +15,7 @@ class GymState {
   final bool showExercisePages;
   final int currentPage;
   final int? dayId;
+  late TimeOfDay startTime;
   late DateTime validUntil;
 
   GymState(
@@ -21,8 +23,10 @@ class GymState {
       this.showExercisePages = true,
       this.currentPage = 0,
       this.dayId,
-      DateTime? validUntil}) {
+      DateTime? validUntil,
+      TimeOfDay? startTime}) {
     this.validUntil = validUntil ?? DateTime.now().add(DEFAULT_DURATION);
+    this.startTime = startTime ?? TimeOfDay.now();
   }
 
   GymState copyWith({
@@ -31,6 +35,7 @@ class GymState {
     int? currentPage,
     int? dayId,
     DateTime? validUntil,
+    TimeOfDay? startTime,
   }) {
     return GymState(
       exercisePages: exercisePages ?? this.exercisePages,
@@ -38,6 +43,7 @@ class GymState {
       currentPage: currentPage ?? this.currentPage,
       dayId: dayId ?? this.dayId,
       validUntil: validUntil ?? this.validUntil.add(DEFAULT_DURATION),
+      startTime: startTime ?? this.startTime,
     );
   }
 
@@ -49,6 +55,7 @@ class GymState {
         'exercisePages: ${exercisePages.length} exercises, '
         'dayId: $dayId, '
         'validUntil: $validUntil '
+        'startTime: $startTime, '
         ')';
   }
 }
@@ -86,6 +93,7 @@ class GymStateNotifier extends StateNotifier<GymState> {
       currentPage: 0,
       dayId: null,
       validUntil: DateTime.now().add(DEFAULT_DURATION),
+      startTime: TimeOfDay.now(),
     );
   }
 }

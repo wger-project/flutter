@@ -36,12 +36,9 @@ class GymMode extends ConsumerStatefulWidget {
   final DayData _dayDataGym;
   final DayData _dayDataDisplay;
   final int _iteration;
-  late final TimeOfDay _start;
   final _logger = Logger('GymMode');
 
-  GymMode(this._dayDataGym, this._dayDataDisplay, this._iteration) {
-    _start = TimeOfDay.now();
-  }
+  GymMode(this._dayDataGym, this._dayDataDisplay, this._iteration);
 
   @override
   ConsumerState<GymMode> createState() => _GymModeState();
@@ -78,11 +75,12 @@ class _GymModeState extends ConsumerState<GymMode> {
     final validUntil = ref.read(gymStateProvider).validUntil;
     final currentPage = ref.read(gymStateProvider).currentPage;
     final savedDayId = ref.read(gymStateProvider).dayId;
-
     final newDayId = widget._dayDataGym.day!.id!;
-    final shouldReset =
-        widget._dayDataGym.day!.id != savedDayId || validUntil.isBefore(DateTime.now());
-    widget._logger.fine('Day ID mismatch or expired validUntil date. Resetting to page 0.');
+
+    final shouldReset = newDayId != savedDayId || validUntil.isBefore(DateTime.now());
+    if (shouldReset) {
+      widget._logger.fine('Day ID mismatch or expired validUntil date. Resetting to page 0.');
+    }
     final initialPage = shouldReset ? 0 : currentPage;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -118,8 +116,8 @@ class _GymModeState extends ConsumerState<GymMode> {
 
   List<Widget> getContent() {
     final state = ref.watch(gymStateProvider);
-    final exerciseProvider = provider.Provider.of<ExercisesProvider>(context, listen: false);
-    final workoutProvider = provider.Provider.of<RoutinesProvider>(context, listen: false);
+    final exerciseProvider = context.read<ExercisesProvider>();
+    final routinesProvider = context.read<RoutinesProvider>();
     var currentElement = 1;
     final List<Widget> out = [];
 
@@ -144,7 +142,7 @@ class _GymModeState extends ConsumerState<GymMode> {
           config,
           slotData,
           exercise,
-          workoutProvider.findById(widget._dayDataGym.day!.routineId),
+          routinesProvider.findById(widget._dayDataGym.day!.routineId),
           ratioCompleted,
           state.exercisePages,
           widget._iteration,
@@ -192,10 +190,9 @@ class _GymModeState extends ConsumerState<GymMode> {
           StartPage(_controller, widget._dayDataDisplay, _exercisePages),
           ...getContent(),
           SessionPage(
-            provider.Provider.of<RoutinesProvider>(context, listen: false)
-                .findById(widget._dayDataGym.day!.routineId),
+            context.read<RoutinesProvider>().findById(widget._dayDataGym.day!.routineId),
             _controller,
-            widget._start,
+            ref.read(gymStateProvider).startTime,
             _exercisePages,
           ),
         ];

@@ -14,10 +14,10 @@ WorkoutSession _$WorkoutSessionFromJson(Map<String, dynamic> json) {
   return WorkoutSession(
     id: (json['id'] as num?)?.toInt(),
     routineId: (json['routine'] as num).toInt(),
-    impression: json['impression'] == null ? 2 : stringToNum(json['impression'] as String?),
+    impression: json['impression'] == null ? 2 : int.parse(json['impression'] as String),
     notes: json['notes'] as String? ?? '',
-    timeStart: stringToTime(json['time_start'] as String?),
-    timeEnd: stringToTime(json['time_end'] as String?),
+    timeStart: stringToTimeNull(json['time_start'] as String?),
+    timeEnd: stringToTimeNull(json['time_end'] as String?),
     logs: (json['logs'] as List<dynamic>?)
             ?.map((e) => Log.fromJson(e as Map<String, dynamic>))
             .toList() ??
