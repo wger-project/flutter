@@ -22,6 +22,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
@@ -263,6 +264,11 @@ void main() {
     expect(find.byIcon(Icons.sentiment_very_dissatisfied), findsOneWidget);
     expect(find.byIcon(Icons.sentiment_neutral), findsOneWidget);
     expect(find.byIcon(Icons.sentiment_very_satisfied), findsOneWidget);
+    expect(
+      find.text(timeToString(TimeOfDay.now())!),
+      findsNWidgets(2),
+      reason: 'start and end time are the same',
+    );
     expect(find.byIcon(Icons.chevron_left), findsOneWidget);
     expect(find.byIcon(Icons.close), findsOneWidget);
     expect(find.byIcon(Icons.chevron_right), findsNothing);
