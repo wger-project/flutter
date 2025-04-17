@@ -269,6 +269,8 @@ void main() {
       findsNWidgets(2),
       reason: 'start and end time are the same',
     );
+    final toggleButtons = tester.widget<ToggleButtons>(find.byType(ToggleButtons));
+    expect(toggleButtons.isSelected[1], isTrue);
     expect(find.byIcon(Icons.chevron_left), findsOneWidget);
     expect(find.byIcon(Icons.close), findsOneWidget);
     expect(find.byIcon(Icons.chevron_right), findsNothing);

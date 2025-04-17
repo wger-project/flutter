@@ -36,8 +36,8 @@ class WorkoutSession {
   @JsonKey(required: true, toJson: dateToYYYYMMDD)
   late DateTime date;
 
-  @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
-  late num impression;
+  @JsonKey(required: true, fromJson: int.parse, toJson: numToString)
+  late int impression;
 
   @JsonKey(required: false, defaultValue: '')
   late String notes;
