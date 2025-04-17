@@ -75,11 +75,12 @@ class _GymModeState extends ConsumerState<GymMode> {
     final validUntil = ref.read(gymStateProvider).validUntil;
     final currentPage = ref.read(gymStateProvider).currentPage;
     final savedDayId = ref.read(gymStateProvider).dayId;
-
     final newDayId = widget._dayDataGym.day!.id!;
-    final shouldReset =
-        widget._dayDataGym.day!.id != savedDayId || validUntil.isBefore(DateTime.now());
-    widget._logger.fine('Day ID mismatch or expired validUntil date. Resetting to page 0.');
+
+    final shouldReset = newDayId != savedDayId || validUntil.isBefore(DateTime.now());
+    if (shouldReset) {
+      widget._logger.fine('Day ID mismatch or expired validUntil date. Resetting to page 0.');
+    }
     final initialPage = shouldReset ? 0 : currentPage;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {

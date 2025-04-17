@@ -35,11 +35,12 @@ class SessionPage extends StatefulWidget {
   late WorkoutSession _session;
   final PageController _controller;
   final Map<Exercise, int> _exercisePages;
+  final TimeOfDay _start;
 
   SessionPage(
     this._routine,
     this._controller,
-    start,
+    this._start,
     this._exercisePages,
   ) {
     _session = _routine.sessions.map((sessionApi) => sessionApi.session).firstWhere(
@@ -49,7 +50,7 @@ class SessionPage extends StatefulWidget {
             impression: DEFAULT_IMPRESSION,
             date: clock.now(),
             timeEnd: TimeOfDay.now(),
-            timeStart: start,
+            timeStart: _start,
           ),
         );
   }
@@ -72,8 +73,8 @@ class _SessionPageState extends State<SessionPage> {
   void initState() {
     super.initState();
 
-    timeStartController.text = timeToString(widget._session.timeStart)!;
-    timeEndController.text = timeToString(widget._session.timeEnd)!;
+    timeStartController.text = timeToString(widget._session.timeStart ?? widget._start)!;
+    timeEndController.text = timeToString(widget._session.timeEnd ?? TimeOfDay.now())!;
     notesController.text = widget._session.notes;
 
     selectedImpression[widget._session.impression - 1] = true;

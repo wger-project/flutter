@@ -42,10 +42,10 @@ class WorkoutSession {
   @JsonKey(required: false, defaultValue: '')
   late String notes;
 
-  @JsonKey(required: true, name: 'time_start', toJson: timeToString, fromJson: stringToTime)
+  @JsonKey(required: true, name: 'time_start', toJson: timeToString, fromJson: stringToTimeNull)
   late TimeOfDay? timeStart;
 
-  @JsonKey(required: true, name: 'time_end', toJson: timeToString, fromJson: stringToTime)
+  @JsonKey(required: true, name: 'time_end', toJson: timeToString, fromJson: stringToTimeNull)
   late TimeOfDay? timeEnd;
 
   @JsonKey(required: false, includeToJson: false, defaultValue: [])

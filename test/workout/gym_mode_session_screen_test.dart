@@ -22,7 +22,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/widgets/routines/gym_mode/session_page.dart';
 
@@ -32,8 +34,11 @@ import 'gym_mode_session_screen_test.mocks.dart';
 @GenerateMocks([RoutinesProvider])
 void main() {
   final mockRoutinesProvider = MockRoutinesProvider();
+  late Routine testRoutine;
 
-  final testRoutine = getTestRoutine();
+  setUp(() {
+    testRoutine = getTestRoutine();
+  });
 
   Widget renderSessionPage({locale = 'en'}) {
     return ChangeNotifierProvider<RoutinesProvider>(
@@ -46,7 +51,7 @@ void main() {
           body: SessionPage(
             testRoutine,
             PageController(),
-            const TimeOfDay(hour: 12, minute: 34),
+            const TimeOfDay(hour: 13, minute: 35),
             const {},
           ),
         ),
@@ -63,6 +68,29 @@ void main() {
       final toggleButtons = tester.widget<ToggleButtons>(find.byType(ToggleButtons));
       expect(toggleButtons.isSelected[2], isTrue);
     });
+  });
+
+  testWidgets('Test that data from  session is loaded - null times', (WidgetTester tester) async {
+    testRoutine.sessions[0].session.timeStart = null;
+    testRoutine.sessions[0].session.timeEnd = null;
+    final timeNow = timeToString(TimeOfDay.now())!;
+
+    withClock(Clock.fixed(DateTime(2021, 5, 1)), () async {
+      await tester.pumpWidget(renderSessionPage());
+      expect(find.text('13:35'), findsOneWidget);
+      expect(find.text(timeNow), findsOneWidget);
+    });
+  });
+
+  testWidgets('Test correct default data (no existing session)', (WidgetTester tester) async {
+    testRoutine.sessions = [];
+    final timeNow = timeToString(TimeOfDay.now())!;
+
+    await tester.pumpWidget(renderSessionPage());
+    expect(find.text('13:35'), findsOneWidget);
+    expect(find.text(timeNow), findsOneWidget);
+    final toggleButtons = tester.widget<ToggleButtons>(find.byType(ToggleButtons));
+    expect(toggleButtons.isSelected[1], isTrue);
   });
 
   testWidgets('Test that correct data is send to server', (WidgetTester tester) async {

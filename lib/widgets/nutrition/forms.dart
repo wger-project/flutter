@@ -74,7 +74,7 @@ class MealForm extends StatelessWidget {
                 }
               },
               onSaved: (newValue) {
-                _meal.time = stringToTime(newValue);
+                _meal.time = stringToTimeNull(newValue);
               },
             ),
             TextFormField(
