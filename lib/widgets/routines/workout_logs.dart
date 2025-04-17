@@ -21,10 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/exercises/exercise.dart';
-import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/routine.dart';
-import 'package:wger/models/workouts/session.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/routines/log.dart';
 
@@ -49,27 +46,19 @@ class _WorkoutLogsState extends State<WorkoutLogs> {
   @override
   Widget build(BuildContext context) {
     return ListView(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          child: Text(
-            AppLocalizations.of(context).labelWorkoutLogs,
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
+        Text(
+          AppLocalizations.of(context).labelWorkoutLogs,
+          style: Theme.of(context).textTheme.headlineSmall,
         ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            AppLocalizations.of(context).logHelpEntries,
-            textAlign: TextAlign.justify,
-          ),
+        Text(
+          AppLocalizations.of(context).logHelpEntries,
+          textAlign: TextAlign.justify,
         ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            AppLocalizations.of(context).logHelpEntriesUnits,
-            textAlign: TextAlign.justify,
-          ),
+        Text(
+          AppLocalizations.of(context).logHelpEntriesUnits,
+          textAlign: TextAlign.justify,
         ),
         SizedBox(
           width: double.infinity,
@@ -83,10 +72,8 @@ class _WorkoutLogsState extends State<WorkoutLogs> {
 /// An event in the workout log calendar
 class WorkoutLogEvent {
   final DateTime dateTime;
-  final WorkoutSession session;
-  final Map<Exercise, List<Log>> exercises;
 
-  const WorkoutLogEvent(this.dateTime, this.session, this.exercises);
+  const WorkoutLogEvent(this.dateTime);
 }
 
 class WorkoutLogCalendar extends StatefulWidget {
@@ -101,8 +88,8 @@ class WorkoutLogCalendar extends StatefulWidget {
 class _WorkoutLogCalendarState extends State<WorkoutLogCalendar> {
   DateTime _focusedDay = clock.now();
   DateTime? _selectedDay;
-  late final ValueNotifier<List<WorkoutLogEvent>> _selectedEvents;
-  late Map<String, List<WorkoutLogEvent>> _events;
+  late final ValueNotifier<List<DateTime>> _selectedEvents;
+  late Map<String, List<DateTime>> _events;
 
   @override
   void initState() {
@@ -121,18 +108,16 @@ class _WorkoutLogCalendarState extends State<WorkoutLogCalendar> {
   }
 
   void loadEvents() {
-    for (final date in widget._routine.logData.keys) {
-      final entry = widget._routine.logData[date]!;
-      _events[DateFormatLists.format(date)] = [
-        WorkoutLogEvent(date, entry['session'], entry['exercises']),
+    for (final sessionApi in widget._routine.sessions) {
+      _events[DateFormatLists.format(sessionApi.session.date)] = [
+        sessionApi.session.date,
       ];
     }
 
-    // Add initial selected day to events list
     _selectedEvents.value = _getEventsForDay(_selectedDay!);
   }
 
-  List<WorkoutLogEvent> _getEventsForDay(DateTime day) {
+  List<DateTime> _getEventsForDay(DateTime day) {
     return _events[DateFormatLists.format(day)] ?? [];
   }
 
@@ -165,23 +150,17 @@ class _WorkoutLogCalendarState extends State<WorkoutLogCalendar> {
           availableCalendarFormats: const {CalendarFormat.month: ''},
           onDaySelected: _onDaySelected,
           onPageChanged: (focusedDay) {
-            // No need to call `setState()` here
             _focusedDay = focusedDay;
           },
         ),
         const SizedBox(height: 8.0),
         SizedBox(
-          child: ValueListenableBuilder<List<WorkoutLogEvent>>(
+          child: ValueListenableBuilder<List<DateTime>>(
             valueListenable: _selectedEvents,
             builder: (context, logEvents, _) {
               // At the moment there is only one "event" per day
               return logEvents.isNotEmpty
-                  ? DayLogWidget(
-                      logEvents.first.dateTime,
-                      logEvents.first.exercises,
-                      logEvents.first.session,
-                      widget._routine,
-                    )
+                  ? DayLogWidget(logEvents.first, widget._routine)
                   : Container();
             },
           ),

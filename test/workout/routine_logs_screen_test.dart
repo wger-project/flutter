@@ -22,6 +22,7 @@ import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/routine.dart';
@@ -40,7 +41,9 @@ void main() {
 
   setUp(() {
     routine = getTestRoutine();
-    routine.logs[0].date = DateTime.now();
+    routine.sessions[0].session.date = DateTime.now();
+
+    when(mockRoutinesProvider.findById(any)).thenAnswer((_) => routine);
   });
 
   Widget renderWidget({locale = 'en'}) {
@@ -56,7 +59,7 @@ void main() {
         home: TextButton(
           onPressed: () => key.currentState!.push(
             MaterialPageRoute<void>(
-              settings: RouteSettings(arguments: routine),
+              settings: RouteSettings(arguments: routine.id),
               builder: (_) => const WorkoutLogsScreen(),
             ),
           ),

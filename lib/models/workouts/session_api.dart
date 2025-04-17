@@ -17,6 +17,7 @@
  */
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/session.dart';
 
@@ -31,6 +32,17 @@ class WorkoutSessionApi {
   List<Log> logs = [];
 
   WorkoutSessionApi({required this.session, this.logs = const []});
+
+  /// Returns all different exercises in the session
+  ///
+  /// This is used to display the exercises in the session
+  List<Exercise> get exercises {
+    final Set<Exercise> exerciseSet = {};
+    for (final log in logs) {
+      exerciseSet.add(log.exercise);
+    }
+    return exerciseSet.toList();
+  }
 
   // Boilerplate
   factory WorkoutSessionApi.fromJson(Map<String, dynamic> json) =>

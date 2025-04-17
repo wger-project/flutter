@@ -21,8 +21,6 @@ import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/exercises/exercise.dart';
-import 'package:wger/models/exercises/translation.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/providers/routines.dart';
 
@@ -108,13 +106,7 @@ void showHttpExceptionErrorDialog(
   showDialog(context: context, builder: (context) => Container());
 }
 
-dynamic showDeleteDialog(
-  BuildContext context,
-  String confirmDeleteName,
-  Log log,
-  Translation exercise,
-  Map<Exercise, List<Log>> exerciseData,
-) async {
+void showDeleteDialog(BuildContext context, String confirmDeleteName, Log log) async {
   final res = await showDialog(
     context: context,
     builder: (BuildContext contextDialog) {
@@ -133,7 +125,6 @@ dynamic showDeleteDialog(
               style: TextStyle(color: Theme.of(context).colorScheme.error),
             ),
             onPressed: () {
-              exerciseData[exercise]!.removeWhere((el) => el.id == log.id);
               Provider.of<RoutinesProvider>(context, listen: false).deleteLog(
                 log,
               );
