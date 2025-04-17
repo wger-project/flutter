@@ -122,7 +122,7 @@ class RoutineDetailAppBar extends StatelessWidget implements PreferredSizeWidget
                 Navigator.pushNamed(
                   context,
                   WorkoutLogsScreen.routeName,
-                  arguments: routine,
+                  arguments: routine.id,
                 );
 
               case _RoutineDetailBarOptions.delete:

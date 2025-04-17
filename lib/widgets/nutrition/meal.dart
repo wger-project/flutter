@@ -238,15 +238,10 @@ class MealItemEditableFullTile extends StatelessWidget {
 
     return NutritionTile(
       leading: IngredientAvatar(ingredient: _item.ingredient),
-      title: Row(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Text(
-            '${_item.amount.toStringAsFixed(0)}$unit ${_item.ingredient.name}',
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.left,
-          ),
-        ],
+      title: Text(
+        '${_item.amount.toStringAsFixed(0)}$unit ${_item.ingredient.name}',
+        overflow: TextOverflow.ellipsis,
+        textAlign: TextAlign.left,
       ),
       subtitle: (_viewMode != viewMode.withAllDetails && !_editing)
           ? null

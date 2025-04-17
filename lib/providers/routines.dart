@@ -673,13 +673,9 @@ class RoutinesProvider with ChangeNotifier {
     notifyListeners();
   }*/
 
-  Future<void> deleteLog(Log log) async {
-    await baseProvider.deleteRequest(_logsUrlPath, log.id!);
-    for (final workout in _routines) {
-      for (final sessionData in workout.sessions) {
-        sessionData.session.logs.removeWhere((element) => element.id == log.id);
-      }
-    }
-    notifyListeners();
+  Future<void> deleteLog(int logId, int routineId) async {
+    _logger.fine('Deleting log ${logId}');
+    await baseProvider.deleteRequest(_logsUrlPath, logId);
+    await fetchAndSetRoutineFull(routineId);
   }
 }

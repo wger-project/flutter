@@ -19,7 +19,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/misc.dart';
-import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/models/workouts/log.dart';
@@ -176,29 +175,5 @@ class Routine {
     }
 
     return groupedLogs;
-  }
-
-  /// Massages the log data to more easily present on the log overview
-  ///
-  Map<DateTime, Map<String, dynamic>> get logData {
-    final out = <DateTime, Map<String, dynamic>>{};
-    for (final sessionData in sessions) {
-      final date = sessionData.session.date;
-      if (!out.containsKey(date)) {
-        out[date] = {
-          'session': sessionData.session,
-          'exercises': <Exercise, List<Log>>{},
-        };
-      }
-
-      for (final log in sessionData.logs) {
-        final exercise = log.exercise;
-        if (!out[date]!['exercises']!.containsKey(exercise)) {
-          out[date]!['exercises']![exercise] = <Log>[];
-        }
-        out[date]!['exercises']![exercise].add(log);
-      }
-    }
-    return out;
   }
 }
