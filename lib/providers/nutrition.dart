@@ -398,10 +398,10 @@ class NutritionPlansProvider with ChangeNotifier {
   }
 
   /// Log meal to nutrition diary
-  Future<void> logMealToDiary(Meal meal) async {
+  Future<void> logMealToDiary(Meal meal, DateTime mealDateTime) async {
     for (final item in meal.mealItems) {
       final plan = findById(meal.planId);
-      final Log log = Log.fromMealItem(item, plan.id!, meal.id, item.dateTimeOfMeal);
+      final Log log = Log.fromMealItem(item, plan.id!, meal.id, mealDateTime);
 
       final data = await baseProvider.post(
         log.toJson(),
