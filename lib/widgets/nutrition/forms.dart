@@ -128,7 +128,7 @@ Widget MealItemForm(
 ]) {
   return IngredientForm(
     // TODO we use planId 0 here cause we don't have one and we don't need it I think?
-    recent: recent.map((e) => Log.fromMealItem(e, 0, e.mealId)).toList(),
+    recent: recent.map((e) => Log.fromMealItem(e, 0, e.mealId, e.dateTimeOfMeal)).toList(),
     onSave: (BuildContext context, MealItem mealItem, DateTime? dt) {
       mealItem.mealId = meal.id!;
       Provider.of<NutritionPlansProvider>(context, listen: false).addMealItem(mealItem, meal);
@@ -331,7 +331,6 @@ class IngredientFormState extends State<IngredientForm> {
                       onTap: () async {
                         // Stop keyboard from appearing
                         FocusScope.of(context).requestFocus(FocusNode());
-
                         // Open time picker
                         final pickedTime = await showTimePicker(
                           context: context,
