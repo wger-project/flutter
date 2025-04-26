@@ -1,6 +1,6 @@
 # Contributors and translators to this repository
 
-Thank you all for contributing to the project, you are true heroes! 🫶 
+Thank you all for contributing to the project, you are true heroes! 🫶
 
 ## Contributors
 
@@ -103,7 +103,6 @@ Thank you all for contributing to the project, you are true heroes! 🫶
 - Dylan Aird - [https://github.com/Dolaned](https://github.com/Dolaned)
 
 ## Translators
-
 
 ### Chinese (Traditional Han script)
 
