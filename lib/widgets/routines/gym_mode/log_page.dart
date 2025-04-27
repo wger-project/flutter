@@ -28,7 +28,6 @@ import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/set_config_data.dart';
 import 'package:wger/models/workouts/slot_data.dart';
-import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
@@ -45,7 +44,7 @@ class LogPage extends StatefulWidget {
   final Routine _workoutPlan;
   final double _ratioCompleted;
   final Map<Exercise, int> _exercisePages;
-  final Log _log = Log.empty();
+  late Log _log;
   final int _iteration;
 
   LogPage(
@@ -58,18 +57,9 @@ class LogPage extends StatefulWidget {
     this._exercisePages,
     this._iteration,
   ) {
-    _log.date = DateTime.now();
-    _log.sessionId = null;
+    _log = Log.fromSetConfigData(_configData);
     _log.routineId = _workoutPlan.id!;
-    _log.exerciseBase = _exercise;
-    _log.weightUnit = _configData.weightUnit;
-    _log.weightTarget = _configData.weight;
-    _log.repetitionUnit = _configData.repetitionsUnit;
-    _log.repetitionsTarget = _configData.repetitions;
-    _log.rir = _configData.rir;
-    _log.rirTarget = _configData.rir;
     _log.iteration = _iteration;
-    _log.slotEntryId = _configData.slotEntryId;
   }
 
   @override
@@ -78,7 +68,6 @@ class LogPage extends StatefulWidget {
 
 class _LogPageState extends State<LogPage> {
   final _form = GlobalKey<FormState>();
-  String rirValue = SlotEntry.DEFAULT_RIR;
   final _repetitionsController = TextEditingController();
   final _weightController = TextEditingController();
   var _detailed = false;
@@ -275,7 +264,13 @@ class _LogPageState extends State<LogPage> {
           if (_detailed)
             RiRInputWidget(
               widget._log.rir,
-              onChanged: (v) => {},
+              onChanged: (value) {
+                if (value == '') {
+                  widget._log.rir = null;
+                } else {
+                  widget._log.rir = num.parse(value);
+                }
+              },
             ),
           SwitchListTile(
             title: Text(AppLocalizations.of(context).setUnitsAndRir),

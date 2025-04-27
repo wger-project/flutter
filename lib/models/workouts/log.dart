@@ -22,6 +22,7 @@ import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/misc.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
+import 'package:wger/models/workouts/set_config_data.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
 
 part 'log.g.dart';
@@ -100,6 +101,24 @@ class Log {
   });
 
   Log.empty();
+
+  Log.fromSetConfigData(SetConfigData data) {
+    date = DateTime.now();
+    sessionId = null;
+    slotEntryId = data.slotEntryId;
+    exerciseBase = data.exercise;
+
+    weight = data.weight;
+    weightTarget = data.weight;
+    weightUnit = data.weightUnit;
+
+    repetitions = data.repetitions;
+    repetitionsTarget = data.repetitions;
+    repetitionUnit = data.repetitionsUnit;
+
+    rir = data.rir;
+    rirTarget = data.rir;
+  }
 
   // Boilerplate
   factory Log.fromJson(Map<String, dynamic> json) => _$LogFromJson(json);

@@ -30,7 +30,7 @@ class RiRInputWidget extends StatefulWidget {
   static const SLIDER_START = -0.5;
 
   RiRInputWidget(this._initialValue, {required this.onChanged}) {
-    dropdownValue = _initialValue != null ? _initialValue.toString() : SlotEntry.DEFAULT_RIR;
+    dropdownValue = _initialValue != null ? _initialValue!.toString() : SlotEntry.DEFAULT_RIR;
 
     // Read string RiR into a double
     if (_initialValue != null) {
@@ -50,20 +50,23 @@ class _RiRInputWidgetState extends State<RiRInputWidget> {
     if (value < 0) {
       return AppLocalizations.of(context).rirNotUsed;
     }
+    if (value > 4) {
+      return '4+ ${AppLocalizations.of(context).rir}';
+    }
     return '$value ${AppLocalizations.of(context).rir}';
   }
 
   String mapDoubleToAllowedRir(double value) {
     if (value < 0) {
       return '';
-    } else {
-      // The representation is different (3.0 -> 3) we are on an int, round
-      if (value.toInt() < value) {
-        return value.toString();
-      } else {
-        return value.toInt().toString();
-      }
     }
+
+    // The representation is different (3.0 -> 3) we are on an int, round
+    if (value.toInt() < value) {
+      return value.toString();
+    }
+
+    return value.toInt().toString();
   }
 
   @override
