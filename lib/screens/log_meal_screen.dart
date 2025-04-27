@@ -97,8 +97,7 @@ class _LogMealScreenState extends State<LogMealScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 12)),
+                    const Padding(padding: EdgeInsets.symmetric(horizontal: 12)),
                     Expanded(
                       child: TextFormField(
                         textAlign: TextAlign.center,
@@ -130,8 +129,7 @@ class _LogMealScreenState extends State<LogMealScreen> {
                           );
 
                           if (pickedDate != null) {
-                            _whatDateController.text =
-                                dateToYYYYMMDD(pickedDate)!;
+                            _whatDateController.text = dateToYYYYMMDD(pickedDate)!;
                           }
                         },
 
@@ -140,8 +138,7 @@ class _LogMealScreenState extends State<LogMealScreen> {
                         },
                       ),
                     ),
-                    const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 12)),
+                    const Padding(padding: EdgeInsets.symmetric(horizontal: 12)),
                     Expanded(
                         child: TextFormField(
                       key: const Key('field-time'),
@@ -174,12 +171,10 @@ class _LogMealScreenState extends State<LogMealScreen> {
                         _whatTimeController.text = newValue!;
                       },
                     )),
-                    const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 12)),
+                    const Padding(padding: EdgeInsets.symmetric(horizontal: 12)),
                   ],
                 ),
-                const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8)),
+                const Padding(padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [

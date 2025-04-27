@@ -50,7 +50,6 @@ class MealItem {
   @JsonKey(required: false)
   late DateTime dateTimeOfMeal;
 
-
   MealItem({
     this.id,
     int? mealId,

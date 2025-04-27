@@ -17,6 +17,8 @@ MealItem _$MealItemFromJson(Map<String, dynamic> json) {
     ingredientId: (json['ingredient'] as num).toInt(),
     weightUnitId: (json['weight_unit'] as num?)?.toInt(),
     amount: stringToNum(json['amount'] as String?),
+    dateTimeOfMeal:
+        json['dateTimeOfMeal'] == null ? null : DateTime.parse(json['dateTimeOfMeal'] as String),
   );
 }
 
@@ -26,4 +28,5 @@ Map<String, dynamic> _$MealItemToJson(MealItem instance) => <String, dynamic>{
       'ingredient': instance.ingredientId,
       'weight_unit': instance.weightUnitId,
       'amount': numToString(instance.amount),
+      'dateTimeOfMeal': instance.dateTimeOfMeal.toIso8601String(),
     };

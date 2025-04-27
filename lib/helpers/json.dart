@@ -63,7 +63,6 @@ String? dateToYYYYMMDDHHMM(DateTime? dateTime) {
   return DateFormat('yyyy-MM-dd HH:mm').format(dateTime);
 }
 
-
 /*
  * Converts a time to a date object.
  * Needed e.g. when the wger api only sends a time but no date information.
