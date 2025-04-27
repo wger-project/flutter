@@ -47,7 +47,7 @@ class MealItem {
   @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
   late num amount;
 
-  @JsonKey(required: false, fromJson: stringToNum, toJson: numToString)
+  @JsonKey(required: false)
   late DateTime dateTimeOfMeal;
 
 
