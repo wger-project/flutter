@@ -47,16 +47,12 @@ class MealItem {
   @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
   late num amount;
 
-  @JsonKey(required: false)
-  late DateTime dateTimeOfMeal;
-
   MealItem({
     this.id,
     int? mealId,
     required this.ingredientId,
     this.weightUnitId,
     required this.amount,
-    DateTime? dateTimeOfMeal,
     Ingredient? ingredient,
   }) {
     if (mealId != null) {
@@ -65,9 +61,6 @@ class MealItem {
     if (ingredient != null) {
       this.ingredient = ingredient;
       ingredientId = ingredient.id;
-    }
-    if (dateTimeOfMeal != null) {
-      this.dateTimeOfMeal = dateTimeOfMeal;
     }
   }
 
@@ -116,7 +109,6 @@ class MealItem {
       weightUnitId: weightUnitId ?? this.weightUnitId,
       amount: amount ?? this.amount,
       ingredient: ingredient ?? this.ingredient,
-      dateTimeOfMeal: dateTimeOfMeal ?? DateTime.now(),
     );
     m.weightUnitObj = weightUnitObj ?? this.weightUnitObj;
     return m;
