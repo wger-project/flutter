@@ -346,13 +346,12 @@ class _LogPageState extends State<LogPage> {
           style: Theme.of(context).textTheme.titleLarge,
           textAlign: TextAlign.center,
         ),
-        ...widget._workoutPlan.filterLogsByExercise(widget._exercise.id!, unique: true).map((log) {
+        ...widget._workoutPlan.filterLogsByExercise(widget._exercise.id!, unique: false).map((log) {
           return ListTile(
-            title: Text(log.singleLogRepTextNoNl),
-            subtitle: Text(
-              DateFormat.yMd(Localizations.localeOf(context).languageCode).format(log.date),
-            ),
+            title: Text('${DateFormat.yMd(Localizations.localeOf(context).languageCode).format(log.date)}: ${log.singleLogRepTextNoNl}'),
             trailing: const Icon(Icons.copy),
+            dense: true,
+            visualDensity: VisualDensity(vertical: -3),
             onTap: () {
               setState(() {
                 // Text field
