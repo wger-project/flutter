@@ -678,4 +678,6 @@ class RoutinesProvider with ChangeNotifier {
     await baseProvider.deleteRequest(_logsUrlPath, logId);
     await fetchAndSetRoutineFull(routineId);
   }
+
+
 }

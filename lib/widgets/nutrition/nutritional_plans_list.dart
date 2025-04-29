@@ -31,86 +31,153 @@ class NutritionalPlansList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      onRefresh: () => _nutritionProvider.fetchAndSetAllPlansSparse(),
-      child: _nutritionProvider.items.isEmpty
-          ? const TextPrompt()
-          : ListView.builder(
-              padding: const EdgeInsets.all(10.0),
-              itemCount: _nutritionProvider.items.length,
-              itemBuilder: (context, index) {
-                final currentPlan = _nutritionProvider.items[index];
-                return Card(
-                  child: ListTile(
-                    onTap: () {
-                      Navigator.of(context).pushNamed(
-                        NutritionalPlanScreen.routeName,
-                        arguments: currentPlan,
-                      );
-                    },
-                    title: Text(currentPlan.getLabel(context)),
-                    subtitle: Text(
-                      DateFormat.yMd(
-                        Localizations.localeOf(context).languageCode,
-                      ).format(currentPlan.creationDate),
+        onRefresh: () => _nutritionProvider.fetchAndSetAllPlansSparse(),
+        child: _nutritionProvider.items.isEmpty
+            ? const TextPrompt()
+            : ListView.builder(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                itemCount: _nutritionProvider.items.length,
+                itemBuilder: (context, index) {
+                  final currentPlan = _nutritionProvider.items[index];
+
+                  return Dismissible(
+                    key: ValueKey(currentPlan.id),
+                    direction: DismissDirection.endToStart,
+                    background: Container(
+                      alignment: Alignment.centerRight,
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      margin: const EdgeInsets.symmetric(vertical: 8),
+                      decoration: BoxDecoration(
+                        color: Colors.redAccent,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: const Icon(Icons.delete, color: Colors.white, size: 28),
                     ),
-                    trailing: Row(mainAxisSize: MainAxisSize.min, children: [
-                      const VerticalDivider(),
-                      IconButton(
-                        icon: const Icon(Icons.delete),
-                        tooltip: AppLocalizations.of(context).delete,
-                        onPressed: () async {
-                          // Delete the plan from DB
-                          await showDialog(
-                            context: context,
-                            builder: (BuildContext contextDialog) {
-                              return AlertDialog(
-                                content: Text(
-                                  AppLocalizations.of(context)
-                                      .confirmDelete(currentPlan.description),
+                    confirmDismiss: (direction) async {
+                      final confirm = await showDialog<bool>(
+                        context: context,
+                        builder: (BuildContext contextDialog) {
+                          return AlertDialog(
+                            title: const Text("Confirm Delete"),
+                            content: Text(
+                              AppLocalizations.of(context).confirmDelete(currentPlan.description),
+                            ),
+                            actions: [
+                              TextButton(
+                                child: Text(
+                                  MaterialLocalizations.of(context).cancelButtonLabel,
                                 ),
-                                actions: [
-                                  TextButton(
-                                    child: Text(
-                                      MaterialLocalizations.of(context).cancelButtonLabel,
-                                    ),
-                                    onPressed: () => Navigator.of(contextDialog).pop(),
-                                  ),
-                                  TextButton(
-                                    child: Text(
-                                      AppLocalizations.of(context).delete,
-                                      style: TextStyle(
-                                        color: Theme.of(context).colorScheme.error,
-                                      ),
-                                    ),
-                                    onPressed: () {
-                                      // Confirmed, delete the plan
-                                      _nutritionProvider.deletePlan(currentPlan.id!);
-
-                                      // Close the popup
-                                      Navigator.of(contextDialog).pop();
-
-                                      // and inform the user
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                            AppLocalizations.of(context).successfullyDeleted,
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ],
-                              );
-                            },
+                                onPressed: () => Navigator.of(contextDialog).pop(false),
+                              ),
+                              TextButton(
+                                child: Text(
+                                  AppLocalizations.of(context).delete,
+                                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                                ),
+                                onPressed: () => Navigator.of(contextDialog).pop(true),
+                              ),
+                            ],
                           );
                         },
+                      );
+                      return confirm ?? false;
+                    },
+                    onDismissed: (_) {
+                      _nutritionProvider.deletePlan(currentPlan.id!);
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            AppLocalizations.of(context).successfullyDeleted,
+                            textAlign: TextAlign.center,
+                          ),
+                          behavior: SnackBarBehavior.floating,
+                          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        ),
+                      );
+                    },
+                    child: Card(
+                      elevation: 3,
+                      margin: const EdgeInsets.symmetric(vertical: 8),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        onTap: () {
+                          Navigator.of(context).pushNamed(
+                            NutritionalPlanScreen.routeName,
+                            arguments: currentPlan,
+                          );
+                        },
+                        title: Text(
+                          currentPlan.getLabel(context),
+                          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                        ),
+                        subtitle: Padding(
+                          padding: const EdgeInsets.only(top: 4.0),
+                          child: Text(
+                            DateFormat.yMd(Localizations.localeOf(context).languageCode)
+                                .format(currentPlan.creationDate),
+                            style: TextStyle(color: Colors.grey.shade600),
+                          ),
+                        ),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.delete, color: Colors.red),
+                          tooltip: AppLocalizations.of(context).delete,
+                          onPressed: () async {
+                            final confirm = await showDialog<bool>(
+                              context: context,
+                              builder: (BuildContext contextDialog) {
+                                return AlertDialog(
+                                  title: const Text("Confirm Delete"),
+                                  content: Text(
+                                    AppLocalizations.of(context)
+                                        .confirmDelete(currentPlan.description),
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      child: Text(
+                                        MaterialLocalizations.of(context).cancelButtonLabel,
+                                      ),
+                                      onPressed: () => Navigator.of(contextDialog).pop(false),
+                                    ),
+                                    TextButton(
+                                      child: Text(
+                                        AppLocalizations.of(context).delete,
+                                        style: TextStyle(
+                                          color: Theme.of(context).colorScheme.error,
+                                        ),
+                                      ),
+                                      onPressed: () {
+                                        _nutritionProvider.deletePlan(currentPlan.id!);
+                                        Navigator.of(contextDialog).pop();
+
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                              AppLocalizations.of(context).successfullyDeleted,
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            behavior: SnackBarBehavior.floating,
+                                            margin: const EdgeInsets.symmetric(
+                                                horizontal: 20, vertical: 12),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(12),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                        ),
                       ),
-                    ]),
-                  ),
-                );
-              },
-            ),
-    );
+                    ),
+                  );
+                },
+              ));
   }
 }
