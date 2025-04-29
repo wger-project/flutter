@@ -340,15 +340,17 @@ class _LogPageState extends State<LogPage> {
 
   Widget getPastLogs() {
     return ListView(
+      padding: EdgeInsets.only(left: 10),
       children: [
         Text(
           AppLocalizations.of(context).labelWorkoutLogs,
           style: Theme.of(context).textTheme.titleLarge,
-          textAlign: TextAlign.center,
+          textAlign: TextAlign.left,
         ),
         ...widget._workoutPlan.filterLogsByExercise(widget._exercise.id!, unique: false).map((log) {
           return ListTile(
-            title: Text('${DateFormat.yMd(Localizations.localeOf(context).languageCode).format(log.date)}: ${log.singleLogRepTextNoNl}'),
+            title: Text(
+                '${DateFormat.yMd(Localizations.localeOf(context).languageCode).format(log.date)}: ${log.singleLogRepTextNoNl}'),
             trailing: const Icon(Icons.copy),
             dense: true,
             visualDensity: VisualDensity(vertical: -3),
@@ -369,7 +371,6 @@ class _LogPageState extends State<LogPage> {
                 ));
               });
             },
-            contentPadding: const EdgeInsets.symmetric(horizontal: 40),
           );
         }),
       ],
@@ -440,6 +441,16 @@ class _LogPageState extends State<LogPage> {
 
   @override
   Widget build(BuildContext context) {
+    const Duration currentSetWindow = Duration(hours: -4);
+    final int currentSet = 1 +
+        widget._workoutPlan.logs
+            .where((logs) =>
+                logs.exerciseId == widget._exercise.id &&
+                logs.slotEntryId == widget._log.slotEntryId &&
+                logs.date.isAfter(DateTime.now().add(currentSetWindow)))
+            .length;
+    final int totalExerciseSets =
+        widget._slotData.setConfigs.where((logs) => logs.exerciseId == widget._exercise.id).length;
     return Column(
       children: [
         NavigationHeader(
@@ -451,6 +462,13 @@ class _LogPageState extends State<LogPage> {
           child: Text(
             widget._configData.textRepr,
             style: Theme.of(context).textTheme.headlineMedium,
+            textAlign: TextAlign.center,
+          ),
+        ),
+        Center(
+          child: Text(
+            'Set ${currentSet} / ${totalExerciseSets}',
+            style: Theme.of(context).textTheme.bodyMedium,
             textAlign: TextAlign.center,
           ),
         ),

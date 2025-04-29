@@ -146,16 +146,16 @@ class Routine {
     if (unique) {
       //out = out.toSet().toList(); - OLD METHOD
 
-    // Create a map to store unique logs by date
-    var uniqueLogsByDate = <DateTime, Log>{};
+      // Create a map to store unique logs by date
+      var uniqueLogsByDate = <DateTime, Log>{};
 
-    for (var log in out) {
-      var logDate = DateTime(log.date.year, log.date.month, log.date.day);
-      uniqueLogsByDate[logDate] = log;
-    }
+      for (var log in out) {
+        var logDate = DateTime(log.date.year, log.date.month, log.date.day);
+        uniqueLogsByDate[logDate] = log;
+      }
 
-    // Extract the unique logs
-    out = uniqueLogsByDate.values.toList();
+      // Extract the unique logs
+      out = uniqueLogsByDate.values.toList();
     }
 
     out.sort((a, b) => b.date.compareTo(a.date));
@@ -188,8 +188,4 @@ class Routine {
 
     return groupedLogs;
   }
-
 }
-
-
-
