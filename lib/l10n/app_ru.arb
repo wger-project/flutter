@@ -51,7 +51,7 @@
   },
   "save": "Сохранить",
   "@save": {},
-  "logMeal": "Записать это блюдо",
+  "logMeal": "Запишите прием пищи в дневник питания",
   "@logMeal": {},
   "nutritionalPlan": "План питания",
   "@nutritionalPlan": {},
@@ -128,8 +128,12 @@
     "description": "Error message when the user hasn't entered the correct number of characters in a form",
     "type": "text",
     "placeholders": {
-      "min": {},
-      "max": {}
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
     }
   },
   "nrOfSets": "Количество сетов на упражнение: {nrOfSets}",
@@ -137,7 +141,9 @@
     "description": "Label shown on the slider where the user selects the nr of sets",
     "type": "text",
     "placeholders": {
-      "nrOfSets": {}
+      "nrOfSets": {
+        "type": "String"
+      }
     }
   },
   "selectIngredient": "Пожалуйста, выберите ингредиент",
@@ -375,7 +381,9 @@
     "description": "Confirmation text before the user deletes an object",
     "type": "text",
     "placeholders": {
-      "toDelete": {}
+      "toDelete": {
+        "type": "String"
+      }
     }
   },
   "setUnitsAndRir": "Установите единицы измерения и ПвЗ",
@@ -429,10 +437,6 @@
   "@noWeightEntries": {
     "description": "Message shown when the user has no logged weight entries"
   },
-  "supersetWith": "суперсет с",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
-  },
   "newEntry": "Новая запись",
   "@newEntry": {
     "description": "Title when adding a new entry such as a weight or log entry"
@@ -479,10 +483,6 @@
   "@goToToday": {
     "description": "Label on button to jump back to 'today' in the calendar widget"
   },
-  "enterRepetitionsOrWeight": "Пожалуйста, укажите количество повторений или вес хотя бы для одного из сетов",
-  "@enterRepetitionsOrWeight": {
-    "description": "Error message when the user hasn't filled in the forms for exercise sets"
-  },
   "optionsLabel": "Опции",
   "@optionsLabel": {
     "description": "Label for the popup with general app options"
@@ -504,7 +504,9 @@
     "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
     "type": "text",
     "placeholders": {
-      "nr": {}
+      "nr": {
+        "type": "String"
+      }
     }
   },
   "addSet": "Добавить сет",
@@ -530,7 +532,9 @@
     "description": "Dialog info when product is not found with barcode",
     "type": "text",
     "placeholders": {
-      "barcode": {}
+      "barcode": {
+        "type": "String"
+      }
     }
   },
   "scanBarcode": "Сканировать штрихкод",
@@ -554,7 +558,9 @@
     "description": "Dialog info when product is found with barcode",
     "type": "text",
     "placeholders": {
-      "productName": {}
+      "productName": {
+        "type": "String"
+      }
     }
   },
   "enterMinCharacters": "Пожалуйста, введите как минимум {min} символов",
@@ -562,7 +568,9 @@
     "description": "Error message when the user hasn't entered the minimum amount characters in a form",
     "type": "text",
     "placeholders": {
-      "min": {}
+      "min": {
+        "type": "String"
+      }
     }
   },
   "noMeasurementEntries": "У вас нет записей измерений",
@@ -770,7 +778,9 @@
   "alsoKnownAs": "Также известно как: {aliases}",
   "@alsoKnownAs": {
     "placeholders": {
-      "aliases": {}
+      "aliases": {
+        "type": "String"
+      }
     },
     "description": "List of alternative names for an exercise"
   },
@@ -779,7 +789,9 @@
   "verifiedEmailInfo": "Письмо с подтверждением отправлено на {email}",
   "@verifiedEmailInfo": {
     "placeholders": {
-      "email": {}
+      "email": {
+        "type": "String"
+      }
     }
   },
   "alternativeNames": "Альтернативные названия",
@@ -809,7 +821,9 @@
     "description": "A value in kcal, e.g. 500 kcal",
     "type": "text",
     "placeholders": {
-      "value": {}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "aboutMastodonText": "Подписывайтесь на нас в Mastodon, чтобы получать обновления и новости о проекте",
@@ -857,7 +871,9 @@
     "description": "A value in grams, e.g. 5 g",
     "type": "text",
     "placeholders": {
-      "value": {}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "percentValue": "{value} %",
@@ -865,7 +881,9 @@
     "description": "A value in percent, e.g. 10 %",
     "type": "text",
     "placeholders": {
-      "value": {}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "aboutDonateTitle": "Пожертвовать",
@@ -897,5 +915,74 @@
     "description": "Log a specific meal (imperative form)"
   },
   "done": "Завершить",
-  "@done": {}
+  "@done": {},
+  "overallChangeWeight": "Общее изменение",
+  "@overallChangeWeight": {
+    "description": "Overall change in weight, added for localization"
+  },
+  "goalTypeMeals": "Из еды",
+  "@goalTypeMeals": {
+    "description": "added for localization of Class GoalType's filed meals"
+  },
+  "goalTypeBasic": "Базовый",
+  "@goalTypeBasic": {
+    "description": "added for localization of Class GoalType's filed basic"
+  },
+  "goalTypeAdvanced": "Расширенный",
+  "@goalTypeAdvanced": {
+    "description": "added for localization of Class GoalType's filed advanced"
+  },
+  "indicatorAvg": "в среднем",
+  "@indicatorAvg": {
+    "description": "added for localization of Class Indicator's field text"
+  },
+  "themeMode": "Режим темы",
+  "@themeMode": {},
+  "darkMode": "Всегда темный режим",
+  "@darkMode": {},
+  "lightMode": "Всегда светлый режим",
+  "@lightMode": {},
+  "systemMode": "Системные настройки",
+  "@systemMode": {},
+  "noIngredientsDefined": "Ингредиенты пока не определены",
+  "@noIngredientsDefined": {},
+  "ingredientLogged": "Ингредиент занесен в дневник",
+  "@ingredientLogged": {},
+  "selectMealToLog": "Выберите прием пищи для записи в дневник",
+  "@selectMealToLog": {},
+  "chartAllTimeTitle": "{name} за все время",
+  "@chartAllTimeTitle": {
+    "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chart30DaysTitle": "{name} последние 30 дней",
+  "@chart30DaysTitle": {
+    "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chartDuringPlanTitle": "{chartName} во время плана питания {planName}",
+  "@chartDuringPlanTitle": {
+    "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
+    "type": "text",
+    "placeholders": {
+      "chartName": {
+        "type": "String"
+      },
+      "planName": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsIngredientCacheDescription": "Кэш ингредиентов",
+  "@settingsIngredientCacheDescription": {}
 }

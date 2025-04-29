@@ -1,0 +1,49 @@
+name: Bump version
+on:
+  workflow_call:
+    inputs:
+      app_version:
+        required: true
+        type: string
+
+jobs:
+  determine_version:
+    name: Create tag
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout application
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # needed to push changes
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Common flutter setup
+        uses: ./.github/actions/flutter-common
+
+      - name: Validate version
+        run: |
+          RELEASE_VERSION="${{ inputs.app_version }}"
+          if [[ ! "${{ inputs.app_version }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Error: Input version '${{ inputs.app_version }}' is not in X.Y.Z format."
+            exit 1
+          fi
+
+        # In order to make sure the build number is the same across all platforms,
+        # increase to the next multiple of 10. This is needed because the iOS process
+        # is a bit more brittle and might need to be repeated if the App needs
+        # to be re-submitted.
+      - name: Bump pubspec version
+        run: |
+          CURRENT_BUILD=$(flutter pub run cider version | cut -d '+' -f 2)
+          NEXT_BUILD=$(( (CURRENT_BUILD / 10 + 1) * 10 ))
+          flutter pub run cider version ${{ inputs.app_version }}+${NEXT_BUILD}
+
+      - name: Tag release and commit pubspec
+        run: |
+          git config user.name Github-Actions
+          git config user.email github-actions@github.com
+          git add pubspec.yaml
+          git commit -m "Bump version to $( flutter pub run cider version )"
+          git tag ${{ inputs.app_version }}
+          git push origin HEAD:master --tags

@@ -17,11 +17,11 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/add_exercise.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/user.dart';
@@ -75,7 +75,7 @@ void main() {
     when(mockExerciseProvider.categories).thenReturn(testCategories);
     when(mockExerciseProvider.muscles).thenReturn(testMuscles);
     when(mockExerciseProvider.equipment).thenReturn(testEquipment);
-    when(mockExerciseProvider.exerciseBasesByVariation).thenReturn({});
+    when(mockExerciseProvider.exerciseByVariation).thenReturn({});
     when(mockExerciseProvider.exercises).thenReturn(getTestExercises());
     when(mockExerciseProvider.languages).thenReturn(testLanguages);
 

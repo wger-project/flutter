@@ -35,7 +35,7 @@ class Meal {
   @JsonKey(name: 'plan')
   late int planId;
 
-  @JsonKey(toJson: timeToString, fromJson: stringToTime)
+  @JsonKey(toJson: timeToString, fromJson: stringToTimeNull)
   TimeOfDay? time;
 
   @JsonKey(name: 'name')

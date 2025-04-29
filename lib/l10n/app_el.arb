@@ -208,7 +208,9 @@
     "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
     "type": "text",
     "placeholders": {
-      "nr": {}
+      "nr": {
+        "type": "String"
+      }
     }
   },
   "newDay": "Νέα ημέρα",
@@ -268,10 +270,6 @@
   "noMatchingExerciseFound": "Δεν βρέθηκαν αντίστοιχες ασκήσεις",
   "@noMatchingExerciseFound": {
     "description": "Message returned if no exercises match the searched string"
-  },
-  "supersetWith": "υπερσύνολο με",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
   },
   "equipment": "Εξοπλισμός",
   "@equipment": {

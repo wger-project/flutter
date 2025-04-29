@@ -194,8 +194,12 @@
     "description": "Error message when the user hasn't entered the correct number of characters in a form",
     "type": "text",
     "placeholders": {
-      "min": {},
-      "max": {}
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
     }
   },
   "selectExercise": "请选择一个锻炼项目",
@@ -245,7 +249,9 @@
     "description": "Confirmation text before the user deletes an object",
     "type": "text",
     "placeholders": {
-      "toDelete": {}
+      "toDelete": {
+        "type": "String"
+      }
     }
   },
   "delete": "删除",
@@ -370,12 +376,10 @@
     "description": "Label shown on the slider where the user selects the nr of sets",
     "type": "text",
     "placeholders": {
-      "nrOfSets": {}
+      "nrOfSets": {
+        "type": "String"
+      }
     }
-  },
-  "enterRepetitionsOrWeight": "请至少填写其中一项的重复次数或重量",
-  "@enterRepetitionsOrWeight": {
-    "description": "Error message when the user hasn't filled in the forms for exercise sets"
   },
   "timeStartAhead": "开始时间不能早于结束时间",
   "@timeStartAhead": {},
@@ -412,7 +416,9 @@
     "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
     "type": "text",
     "placeholders": {
-      "nr": {}
+      "nr": {
+        "type": "String"
+      }
     }
   },
   "muscles": "主要部位",
@@ -435,10 +441,6 @@
   "@newSet": {
     "description": "Header when adding a new set to a workout day"
   },
-  "supersetWith": "组合",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
-  },
   "aboutContactUsText": "聊一聊",
   "@aboutContactUsText": {
     "description": "Text for contact us section in the about dialog"
@@ -460,7 +462,9 @@
     "description": "Dialog info when product is not found with barcode",
     "type": "text",
     "placeholders": {
-      "barcode": {}
+      "barcode": {
+        "type": "String"
+      }
     }
   },
   "weekAverage": "7天平均",
@@ -472,7 +476,9 @@
     "description": "Dialog info when product is found with barcode",
     "type": "text",
     "placeholders": {
-      "productName": {}
+      "productName": {
+        "type": "String"
+      }
     }
   },
   "measurement": "测量",
@@ -650,7 +656,9 @@
     "description": "A value in kcal, e.g. 500 kcal",
     "type": "text",
     "placeholders": {
-      "value": {}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "gValue": "{value} g",
@@ -658,7 +666,9 @@
     "description": "A value in grams, e.g. 5 g",
     "type": "text",
     "placeholders": {
-      "value": {}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "percentValue": "{value} %",
@@ -666,7 +676,9 @@
     "description": "A value in percent, e.g. 10 %",
     "type": "text",
     "placeholders": {
-      "value": {}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "noMeasurementEntries": "您没有测量条目",
@@ -686,7 +698,9 @@
     "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
     "type": "text",
     "placeholders": {
-      "name": {}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "chartDuringPlanTitle": "{chartName} 在计划 \"{planName}\" 期间的改变曲线",
@@ -694,8 +708,12 @@
     "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
     "type": "text",
     "placeholders": {
-      "chartName": {},
-      "planName": {}
+      "chartName": {
+        "type": "String"
+      },
+      "planName": {
+        "type": "String"
+      }
     }
   },
   "indicatorRaw": "原始值",
@@ -715,7 +733,9 @@
     "description": "Error message when the user hasn't entered the minimum amount characters in a form",
     "type": "text",
     "placeholders": {
-      "min": {}
+      "min": {
+        "type": "String"
+      }
     }
   },
   "baseNameEnglish": "所有运动需要一个英文代号",
@@ -775,7 +795,9 @@
     "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
     "type": "text",
     "placeholders": {
-      "name": {}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "oneNamePerLine": "每行一个名字",
@@ -857,7 +879,9 @@
   "verifiedEmailInfo": "验证邮件已经发往{email}",
   "@verifiedEmailInfo": {
     "placeholders": {
-      "email": {}
+      "email": {
+        "type": "String"
+      }
     }
   },
   "whatVariationsExist": "这个动作有什么变体吗？",
@@ -921,7 +945,9 @@
   "alsoKnownAs": "又名：{aliases}",
   "@alsoKnownAs": {
     "placeholders": {
-      "aliases": {}
+      "aliases": {
+        "type": "String"
+      }
     },
     "description": "List of alternative names for an exercise"
   },
@@ -948,5 +974,77 @@
   "aboutMastodonTitle": "长毛象",
   "@aboutMastodonTitle": {
     "description": "Title for mastodon section in the about dialog"
-  }
+  },
+  "routines": "训练计划",
+  "@routines": {},
+  "newRoutine": "新计划",
+  "@newRoutine": {},
+  "noRoutines": "你没有训练计划",
+  "@noRoutines": {},
+  "restTime": "休息时间",
+  "@restTime": {},
+  "sets": "组",
+  "@sets": {
+    "description": "The number of sets to be done for one exercise"
+  },
+  "exerciseNr": "练习{nr}",
+  "@exerciseNr": {
+    "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Set Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {
+        "type": "String"
+      }
+    }
+  },
+  "supersetNr": "特别组{nr}",
+  "@supersetNr": {
+    "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Superset Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {
+        "type": "String"
+      }
+    }
+  },
+  "restDay": "休息日",
+  "@restDay": {},
+  "isRestDay": "是休息日",
+  "@isRestDay": {},
+  "isRestDayHelp": "请注意，当您将某天标记为休息日时，所有的组数和练习都将被删除。",
+  "@isRestDayHelp": {},
+  "needsLogsToAdvance": "需要日志以前进",
+  "@needsLogsToAdvance": {},
+  "needsLogsToAdvanceHelp": "选择您是否希望只有在当天记录了锻炼后，训练计划才会进入下一个计划日",
+  "@needsLogsToAdvanceHelp": {},
+  "routineDays": "计划中的天数",
+  "@routineDays": {},
+  "min": "分钟",
+  "@min": {},
+  "max": "最大",
+  "@max": {},
+  "fitInWeekHelp": "如果启用，天数将以周为周期重复，否则天数将依次重复，而不考虑新一周的开始。",
+  "@fitInWeekHelp": {},
+  "addSuperset": "增加超级组",
+  "@addSuperset": {},
+  "setHasProgression": "此组已经有训练进度",
+  "@setHasProgression": {},
+  "setHasProgressionWarning": "请注意，目前还无法在移动应用程序上编辑一个设置的所有设置，也无法配置自动升级。目前，请使用Web应用程序。",
+  "@setHasProgressionWarning": {},
+  "setHasNoExercises": "此训练组还没有任何练习！",
+  "@setHasNoExercises": {},
+  "simpleMode": "简易模式",
+  "@simpleMode": {},
+  "simpleModeHelp": "在编辑练习时隐藏更多高级设置",
+  "@simpleModeHelp": {},
+  "progressionRules": "此练习有进度规则，无法在移动应用程序上编辑。请使用Web应用程序编辑此练习。",
+  "@progressionRules": {},
+  "themeMode": "主题模式",
+  "@themeMode": {},
+  "darkMode": "总是暗色模式",
+  "@darkMode": {},
+  "lightMode": "总是亮色模式",
+  "@lightMode": {},
+  "systemMode": "系统设置",
+  "@systemMode": {}
 }

@@ -19,11 +19,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/ui.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/screens/update_app_screen.dart';
 import 'package:wger/theme/theme.dart';
 
@@ -89,12 +89,6 @@ class AuthScreen extends StatelessWidget {
               ),
             ),
           ),
-          // Positioned(
-          //   top: 0.4 * deviceSize.height,
-          //   left: 15,
-          //   right: 15,
-          //   child: const ,
-          // ),
         ],
       ),
     );
@@ -170,7 +164,6 @@ class _AuthCardState extends State<AuthCard> {
 
   void _submit(BuildContext context) async {
     if (!_formKey.currentState!.validate()) {
-      // Invalid!
       return;
     }
     _formKey.currentState!.save();
@@ -180,7 +173,7 @@ class _AuthCardState extends State<AuthCard> {
 
     try {
       // Login existing user
-      late Map<String, LoginActions> res;
+      late LoginActions res;
       if (_authMode == AuthMode.Login) {
         res = await Provider.of<AuthProvider>(context, listen: false).login(
           _authData['username']!,
@@ -201,13 +194,11 @@ class _AuthCardState extends State<AuthCard> {
       }
 
       // Check if update is required else continue normally
-      if (res.containsKey('action')) {
-        if (res['action'] == LoginActions.update && mounted) {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => const UpdateAppScreen()),
-          );
-          return;
-        }
+      if (res == LoginActions.update && mounted) {
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => const UpdateAppScreen()),
+        );
+        return;
       }
 
       setState(() {

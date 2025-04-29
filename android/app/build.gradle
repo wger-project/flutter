@@ -23,8 +23,8 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace = "de.wger.flutter"
-    compileSdkVersion 34
-    ndkVersion "25.1.8937393"
+    compileSdkVersion 35
+    ndkVersion "26.3.11579264"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11

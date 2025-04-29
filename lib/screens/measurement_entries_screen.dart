@@ -17,8 +17,8 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/measurements/entries.dart';
@@ -31,6 +31,7 @@ enum MeasurementOptions {
 
 class MeasurementEntriesScreen extends StatelessWidget {
   const MeasurementEntriesScreen();
+
   static const routeName = '/measurement-entries';
 
   @override

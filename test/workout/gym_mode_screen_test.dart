@@ -17,21 +17,29 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/helpers/json.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
-import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/gym_mode.dart';
-import 'package:wger/screens/workout_plan_screen.dart';
-import 'package:wger/widgets/workouts/forms.dart';
-import 'package:wger/widgets/workouts/gym_mode.dart';
+import 'package:wger/screens/routine_screen.dart';
+import 'package:wger/widgets/routines/forms/reps_unit.dart';
+import 'package:wger/widgets/routines/forms/rir.dart';
+import 'package:wger/widgets/routines/forms/weight_unit.dart';
+import 'package:wger/widgets/routines/gym_mode/exercise_overview.dart';
+import 'package:wger/widgets/routines/gym_mode/log_page.dart';
+import 'package:wger/widgets/routines/gym_mode/session_page.dart';
+import 'package:wger/widgets/routines/gym_mode/start_page.dart';
+import 'package:wger/widgets/routines/gym_mode/timer.dart';
 
 import '../../test_data/exercises.dart';
-import '../../test_data/workouts.dart';
+import '../../test_data/routines.dart';
 import 'gym_mode_screen_test.mocks.dart';
 
 @GenerateMocks([WgerBaseProvider, ExercisesProvider])
@@ -40,45 +48,51 @@ void main() {
   final key = GlobalKey<NavigatorState>();
 
   final mockExerciseProvider = MockExercisesProvider();
-  final workoutPlan = getWorkout();
-  final bases = getTestExercises();
+  final testRoutine = getTestRoutine();
+  final testExercises = getTestExercises();
 
-  Widget createHomeScreen({locale = 'en'}) {
-    return ChangeNotifierProvider<WorkoutPlansProvider>(
-      create: (context) => WorkoutPlansProvider(
+  Widget renderGymMode({locale = 'en'}) {
+    return ChangeNotifierProvider<RoutinesProvider>(
+      create: (context) => RoutinesProvider(
         mockBaseProvider,
         mockExerciseProvider,
-        [workoutPlan],
+        [testRoutine],
+        repetitionUnits: testRepetitionUnits,
+        weightUnits: testWeightUnits,
       ),
       child: ChangeNotifierProvider<ExercisesProvider>(
         create: (context) => mockExerciseProvider,
-        child: MaterialApp(
-          locale: Locale(locale),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          navigatorKey: key,
-          home: TextButton(
-            onPressed: () => key.currentState!.push(
-              MaterialPageRoute<void>(
-                settings: RouteSettings(arguments: workoutPlan.days.first),
-                builder: (_) => const GymModeScreen(),
+        child: riverpod.ProviderScope(
+          child: MaterialApp(
+            locale: Locale(locale),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            navigatorKey: key,
+            home: TextButton(
+              onPressed: () => key.currentState!.push(
+                MaterialPageRoute<void>(
+                  settings: const RouteSettings(arguments: GymModeArguments(1, 1, 1)),
+                  builder: (_) => const GymModeScreen(),
+                ),
               ),
+              child: const SizedBox(),
             ),
-            child: const SizedBox(),
+            routes: {RoutineScreen.routeName: (ctx) => const RoutineScreen()},
           ),
-          routes: {
-            WorkoutPlanScreen.routeName: (ctx) => const WorkoutPlanScreen(),
-          },
         ),
       ),
     );
   }
 
   testWidgets('Test the widgets on the gym mode screen', (WidgetTester tester) async {
-    when(mockExerciseProvider.findExerciseById(1)).thenReturn(bases[0]);
-    when(mockExerciseProvider.findExerciseById(6)).thenReturn(bases[5]);
+    when(mockExerciseProvider.findExerciseById(1)).thenReturn(testExercises[0]);
+    when(mockExerciseProvider.findExerciseById(6)).thenReturn(testExercises[5]);
+    when(mockExerciseProvider.findExercisesByVariationId(
+      null,
+      exerciseIdToExclude: anyNamed('exerciseIdToExclude'),
+    )).thenReturn([]);
 
-    await tester.pumpWidget(createHomeScreen());
+    await tester.pumpWidget(renderGymMode());
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();
 
@@ -143,7 +157,7 @@ void main() {
     // Bench press - pause
     //
     expect(find.text('Pause'), findsOneWidget);
-    expect(find.byType(TimerWidget), findsOneWidget);
+    expect(find.byType(TimerCountdownWidget), findsOneWidget);
     expect(find.byIcon(Icons.close), findsOneWidget);
     expect(find.byIcon(Icons.toc), findsOneWidget);
     expect(find.byIcon(Icons.chevron_left), findsOneWidget);
@@ -164,7 +178,7 @@ void main() {
     // Pause
     //
     expect(find.text('Pause'), findsOneWidget);
-    expect(find.byType(TimerWidget), findsOneWidget);
+    expect(find.byType(TimerCountdownWidget), findsOneWidget);
     expect(find.byIcon(Icons.chevron_left), findsOneWidget);
     expect(find.byIcon(Icons.close), findsOneWidget);
     expect(find.byIcon(Icons.chevron_right), findsOneWidget);
@@ -172,7 +186,24 @@ void main() {
     await tester.pumpAndSettle();
 
     //
-    // Side raises - exercise overview page
+    // Bench press - log
+    //
+    expect(find.text('Bench press'), findsOneWidget);
+    expect(find.byType(LogPage), findsOneWidget);
+    expect(find.byType(Form), findsOneWidget);
+    await tester.tap(find.byIcon(Icons.chevron_right));
+    await tester.pumpAndSettle();
+
+    //
+    // Pause
+    //
+    expect(find.text('Pause'), findsOneWidget);
+    expect(find.byType(TimerCountdownWidget), findsOneWidget);
+    await tester.tap(find.byIcon(Icons.chevron_right));
+    await tester.pumpAndSettle();
+
+    //
+    // Side raises - overview
     //
     expect(find.text('Side raises'), findsOneWidget);
     expect(find.byType(ExerciseOverview), findsOneWidget);
@@ -182,6 +213,7 @@ void main() {
     //
     // Side raises - log
     //
+    expect(find.text('Side raises'), findsOneWidget);
     expect(find.byType(LogPage), findsOneWidget);
     await tester.tap(find.byIcon(Icons.chevron_right));
     await tester.pumpAndSettle();
@@ -196,6 +228,22 @@ void main() {
     //
     // Side raises - log
     //
+    expect(find.text('Side raises'), findsOneWidget);
+    expect(find.byType(LogPage), findsOneWidget);
+    await tester.tap(find.byIcon(Icons.chevron_right));
+    await tester.pumpAndSettle();
+
+    //
+    // Side raises - timer
+    //
+    expect(find.byType(TimerWidget), findsOneWidget);
+    await tester.tap(find.byIcon(Icons.chevron_right));
+    await tester.pumpAndSettle();
+
+    //
+    // Side raises - log
+    //
+    expect(find.text('Side raises'), findsOneWidget);
     expect(find.byType(LogPage), findsOneWidget);
     await tester.tap(find.byIcon(Icons.chevron_right));
     await tester.pumpAndSettle();
@@ -216,6 +264,13 @@ void main() {
     expect(find.byIcon(Icons.sentiment_very_dissatisfied), findsOneWidget);
     expect(find.byIcon(Icons.sentiment_neutral), findsOneWidget);
     expect(find.byIcon(Icons.sentiment_very_satisfied), findsOneWidget);
+    expect(
+      find.text(timeToString(TimeOfDay.now())!),
+      findsNWidgets(2),
+      reason: 'start and end time are the same',
+    );
+    final toggleButtons = tester.widget<ToggleButtons>(find.byType(ToggleButtons));
+    expect(toggleButtons.isSelected[1], isTrue);
     expect(find.byIcon(Icons.chevron_left), findsOneWidget);
     expect(find.byIcon(Icons.close), findsOneWidget);
     expect(find.byIcon(Icons.chevron_right), findsNothing);

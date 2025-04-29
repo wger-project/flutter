@@ -1,0 +1,38 @@
+name: Build Linux
+on:
+  workflow_call:
+    inputs:
+      ref:
+        required: true
+        type: string
+jobs:
+  build_linux:
+    name: Flathub
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout application
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+
+      - name: Common setup
+        uses: ./.github/actions/flutter-common
+
+      # Compare with list of available packages on the runner:
+      # https://github.com/actions/runner-images/blob/main/images/ubuntu/Ubuntu2404-Readme.md
+      - name: Build application for linux
+        run: |
+          # ninja-build 
+          sudo apt update
+          sudo apt install -y pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev --no-install-recommends
+          flutter build linux --release
+          cd flatpak/scripts
+          dart pub get
+          dart flatpak_packager.dart --meta ../flatpak_meta.json --addTodaysVersion ${{inputs.ref}}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: builds-linux
+          path: |
+            flatpak/scripts/flatpak_generator_exports/wger-linux-x86_64.tar.gz
+            flatpak/scripts/flatpak_generator_exports/wger-linux-x86_64.sha256

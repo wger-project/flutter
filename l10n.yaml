@@ -1,4 +1,7 @@
+synthetic-package: false # see https://docs.flutter.dev/release/breaking-changes/flutter-generate-i10n-source
+
 arb-dir: lib/l10n
+output-dir: lib/l10n/generated
 template-arb-file: app_en.arb
 output-localization-file: app_localizations.dart
 nullable-getter: false

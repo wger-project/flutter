@@ -25,19 +25,20 @@ class Comment {
   @JsonKey(required: true)
   final int id;
 
-  @JsonKey(name: 'exercise')
-  final int exerciseId;
+  @JsonKey(name: 'translation')
+  final int translationId;
 
   @JsonKey(required: true)
   final String comment;
 
   const Comment({
     required this.id,
-    required this.exerciseId,
+    required this.translationId,
     required this.comment,
   });
 
   // Boilerplate
   factory Comment.fromJson(Map<String, dynamic> json) => _$CommentFromJson(json);
+
   Map<String, dynamic> toJson() => _$CommentToJson(this);
 }

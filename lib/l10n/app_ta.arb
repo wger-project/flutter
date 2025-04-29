@@ -8,7 +8,9 @@
     "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
     "type": "text",
     "placeholders": {
-      "nr": {}
+      "nr": {
+        "type": "String"
+      }
     }
   },
   "newSet": "புதிய தொகுப்பு",
@@ -221,10 +223,6 @@
   },
   "searchNamesInEnglish": "ஆங்கிலத்தில் பெயர்களையும் தேடுங்கள்",
   "@searchNamesInEnglish": {},
-  "supersetWith": "உடன் சூப்பர்செட்",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
-  },
   "equipment": "உபகரணங்கள்",
   "@equipment": {
     "description": "Equipment needed to perform an exercise"
@@ -368,7 +366,9 @@
     "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
     "type": "text",
     "placeholders": {
-      "name": {}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "chart30DaysTitle": "{name} கடைசி 30 நாட்கள்",
@@ -376,7 +376,9 @@
     "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
     "type": "text",
     "placeholders": {
-      "name": {}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "chartDuringPlanTitle": "{chartName}ஊட்டச்சத்து திட்டத்தின்போது {planName}",
@@ -384,8 +386,12 @@
     "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
     "type": "text",
     "placeholders": {
-      "chartName": {},
-      "planName": {}
+      "chartName": {
+        "type": "String"
+      },
+      "planName": {
+        "type": "String"
+      }
     }
   },
   "measurementCategoriesHelpText": "'பைசெப்ச்' அல்லது 'உடல் கொழுப்பு' போன்ற அளவீட்டு வகை",
@@ -455,7 +461,9 @@
     "description": "A value in kcal, e.g. 500 kcal",
     "type": "text",
     "placeholders": {
-      "value": {}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "kJ": "கேசே",
@@ -471,7 +479,9 @@
     "description": "A value in grams, e.g. 5 g",
     "type": "text",
     "placeholders": {
-      "value": {}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "percentValue": "{value} %",
@@ -479,7 +489,9 @@
     "description": "A value in percent, e.g. 10 %",
     "type": "text",
     "placeholders": {
-      "value": {}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "protein": "புரதம்",
@@ -529,7 +541,9 @@
     "description": "Confirmation text before the user deletes an object",
     "type": "text",
     "placeholders": {
-      "toDelete": {}
+      "toDelete": {
+        "type": "String"
+      }
     }
   },
   "newNutritionalPlan": "புதிய ஊட்டச்சத்து திட்டம்",
@@ -613,8 +627,12 @@
     "description": "Error message when the user hasn't entered the correct number of characters in a form",
     "type": "text",
     "placeholders": {
-      "min": {},
-      "max": {}
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
     }
   },
   "enterMinCharacters": "தயவுசெய்து குறைந்தது {min} எழுத்துக்களை உள்ளிடவும்",
@@ -622,7 +640,9 @@
     "description": "Error message when the user hasn't entered the minimum amount characters in a form",
     "type": "text",
     "placeholders": {
-      "min": {}
+      "min": {
+        "type": "String"
+      }
     }
   },
   "baseNameEnglish": "அனைத்து பயிற்சிகளுக்கும் ஆங்கிலத்தில் அடிப்படை பெயர் தேவை",
@@ -632,7 +652,9 @@
     "description": "Label shown on the slider where the user selects the nr of sets",
     "type": "text",
     "placeholders": {
-      "nrOfSets": {}
+      "nrOfSets": {
+        "type": "String"
+      }
     }
   },
   "setUnitsAndRir": "அலகுகள் மற்றும் ஆர்.ஐ.ஆர்",
@@ -683,7 +705,9 @@
     "description": "Dialog info when product is found with barcode",
     "type": "text",
     "placeholders": {
-      "productName": {}
+      "productName": {
+        "type": "String"
+      }
     }
   },
   "productNotFound": "தயாரிப்பு கிடைக்கவில்லை",
@@ -695,7 +719,9 @@
     "description": "Dialog info when product is not found with barcode",
     "type": "text",
     "placeholders": {
-      "barcode": {}
+      "barcode": {
+        "type": "String"
+      }
     }
   },
   "scanBarcode": "ச்கேன் பார்கோடு",
@@ -711,7 +737,9 @@
   "alsoKnownAs": "என்றும் அழைக்கப்படுகிறது: {aliases}",
   "@alsoKnownAs": {
     "placeholders": {
-      "aliases": {}
+      "aliases": {
+        "type": "String"
+      }
     },
     "description": "List of alternative names for an exercise"
   },
@@ -724,7 +752,9 @@
   "verifiedEmailInfo": "சரிபார்ப்பு மின்னஞ்சல் {email} க்கு அனுப்பப்பட்டது",
   "@verifiedEmailInfo": {
     "placeholders": {
-      "email": {}
+      "email": {
+        "type": "String"
+      }
     }
   },
   "alternativeNames": "மாற்று பெயர்கள்",
@@ -954,5 +984,81 @@
   "indicatorAvg": "ஏ.வி.சி",
   "@indicatorAvg": {
     "description": "added for localization of Class Indicator's field text"
-  }
+  },
+  "noRoutines": "உங்களுக்கு எந்த நடைமுறைகளும் இல்லை",
+  "@noRoutines": {},
+  "restTime": "ஓய்வு நேரம்",
+  "@restTime": {},
+  "sets": "செட்",
+  "@sets": {
+    "description": "The number of sets to be done for one exercise"
+  },
+  "isRestDay": "ஓய்வு நாள்",
+  "@isRestDay": {},
+  "min": "மணித்துளி",
+  "@min": {},
+  "max": "அதிகபட்சம்",
+  "@max": {},
+  "fitInWeek": "வாரத்தில் பொருத்தம்",
+  "@fitInWeek": {},
+  "fitInWeekHelp": "இயக்கப்பட்டிருந்தால், வாரங்கள் வாராந்திர சுழற்சியில் மீண்டும் மீண்டும் வரும், இல்லையெனில் நாட்கள் ஒரு புதிய வாரத்தின் தொடக்கத்தில் இல்லாமல் தொடர்ச்சியாக பின்பற்றப்படும்.",
+  "@fitInWeekHelp": {},
+  "simpleMode": "எளிய முறை",
+  "@simpleMode": {},
+  "simpleModeHelp": "பயிற்சிகளைத் திருத்தும்போது சில மேம்பட்ட அமைப்புகளை மறைக்கவும்",
+  "@simpleModeHelp": {},
+  "themeMode": "கருப்பொருள் பயன்முறை",
+  "@themeMode": {},
+  "darkMode": "எப்போதும் இருண்ட பயன்முறை",
+  "@darkMode": {},
+  "systemMode": "கணினி அமைப்புகள்",
+  "@systemMode": {},
+  "routines": "நடைமுறைகள்",
+  "@routines": {},
+  "newRoutine": "புதிய வழக்கமான",
+  "@newRoutine": {},
+  "exerciseNr": "உடற்பயிற்சி {nr}",
+  "@exerciseNr": {
+    "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Set Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {
+        "type": "String"
+      }
+    }
+  },
+  "supersetNr": "சூப்பர்செட் {nr}",
+  "@supersetNr": {
+    "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Superset Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {
+        "type": "String"
+      }
+    }
+  },
+  "restDay": "ஓய்வு நாள்",
+  "@restDay": {},
+  "isRestDayHelp": "ஒரு நாள் ஓய்வு நாளாக நீங்கள் குறிக்கும்போது அனைத்து தொகுப்புகளும் பயிற்சிகளும் அகற்றப்படும் என்பதை நினைவில் கொள்க.",
+  "@isRestDayHelp": {},
+  "needsLogsToAdvance": "முன்னேற பதிவுகள் தேவை",
+  "@needsLogsToAdvance": {},
+  "needsLogsToAdvanceHelp": "நீங்கள் ஒரு வொர்க்அவுட்டை பதிவு செய்திருந்தால் மட்டுமே அடுத்த திட்டமிடப்பட்ட நாளுக்கு வழக்கம் முன்னேற வேண்டுமா என்பதைத் தேர்ந்தெடுக்கவும்",
+  "@needsLogsToAdvanceHelp": {},
+  "routineDays": "வழக்கமான நாட்கள்",
+  "@routineDays": {},
+  "resultingRoutine": "இதன் விளைவாக வழக்கமான",
+  "@resultingRoutine": {},
+  "addSuperset": "சூப்பர்செட் சேர்க்கவும்",
+  "@addSuperset": {},
+  "setHasProgression": "செட் முன்னேற்றத்தைக் கொண்டுள்ளது",
+  "@setHasProgression": {},
+  "setHasProgressionWarning": "மொபைல் பயன்பாட்டில் ஒரு தொகுப்பிற்கான அனைத்து அமைப்புகளையும் திருத்தவோ அல்லது தானியங்கி முன்னேற்றத்தை உள்ளமைக்கவோ இந்த நேரத்தில் சாத்தியமில்லை என்பதை நினைவில் கொள்க. இப்போதைக்கு, வலை பயன்பாட்டைப் பயன்படுத்தவும்.",
+  "@setHasProgressionWarning": {},
+  "setHasNoExercises": "இந்த தொகுப்பில் இதுவரை எந்த பயிற்சிகளும் இல்லை!",
+  "@setHasNoExercises": {},
+  "progressionRules": "இந்த பயிற்சி முன்னேற்ற விதிகளைக் கொண்டுள்ளது மற்றும் மொபைல் பயன்பாட்டில் திருத்த முடியாது. இந்த பயிற்சியைத் திருத்த வலை பயன்பாட்டைப் பயன்படுத்தவும்.",
+  "@progressionRules": {},
+  "lightMode": "எப்போதும் ஒளி பயன்முறை",
+  "@lightMode": {}
 }

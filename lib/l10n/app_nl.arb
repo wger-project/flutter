@@ -1,0 +1,98 @@
+{
+  "passwordTooShort": "Het wachtwoord is te kort",
+  "@passwordTooShort": {
+    "description": "Error message when the user a password that is too short"
+  },
+  "register": "Registreren",
+  "@register": {
+    "description": "Text for registration button"
+  },
+  "logout": "Uitloggen",
+  "@logout": {
+    "description": "Text for logout button"
+  },
+  "usernameValidChars": "Een gebruikersnaam mag alleen letters, nummers en de tekens @, +, ., -, en _ bevatten",
+  "@usernameValidChars": {
+    "description": "Error message when the user tries to register a username with forbidden characters"
+  },
+  "passwordsDontMatch": "De wachtwoorden komen niet overeen",
+  "@passwordsDontMatch": {
+    "description": "Error message when the user enters two different passwords during registration"
+  },
+  "login": "Inloggen",
+  "@login": {
+    "description": "Text for login button"
+  },
+  "invalidEmail": "Vul een geldig e-mailadres in",
+  "@invalidEmail": {
+    "description": "Error message when the user enters an invalid email"
+  },
+  "confirmPassword": "Bevestig wachtwoord",
+  "@confirmPassword": {},
+  "userProfile": "Jouw profiel",
+  "@userProfile": {},
+  "useDefaultServer": "Gebruik standaard server",
+  "@useDefaultServer": {
+    "description": "Toggle button allowing users to switch between the default and a custom wger server"
+  },
+  "useCustomServer": "Gebruik aangepaste server",
+  "@useCustomServer": {
+    "description": "Toggle button allowing users to switch between the default and a custom wger server"
+  },
+  "password": "Wachtwoord",
+  "@password": {},
+  "invalidUrl": "Vul een geldige URL in",
+  "@invalidUrl": {
+    "description": "Error message when the user enters an invalid URL, e.g. in the login form"
+  },
+  "email": "E-mailadres",
+  "@email": {},
+  "username": "Gebruikersnaam",
+  "@username": {},
+  "invalidUsername": "Vul een geldige gebruikersnaam in",
+  "@invalidUsername": {
+    "description": "Error message when the user enters an invalid username"
+  },
+  "customServerUrl": "URL van de wger instantie",
+  "@customServerUrl": {
+    "description": "Label in the form where the users can enter their own wger instance"
+  },
+  "successfullySaved": "Opgeslagen",
+  "@successfullySaved": {
+    "description": "Message when an item was successfully saved"
+  },
+  "exerciseList": "Oefeningen lijst",
+  "@exerciseList": {},
+  "exercise": "Oefening",
+  "@exercise": {
+    "description": "An exercise for a workout"
+  },
+  "exercises": "Oefeningen",
+  "@exercises": {
+    "description": "Multiple exercises for a workout"
+  },
+  "exerciseName": "Oefening naam",
+  "@exerciseName": {
+    "description": "Label for the name of a workout exercise"
+  },
+  "success": "Succes",
+  "@success": {
+    "description": "Message when an action completed successfully, usually used as a heading"
+  },
+  "category": "Categorie",
+  "@category": {
+    "description": "Category for an exercise, ingredient, etc."
+  },
+  "newWorkout": "Nieuwe workout planing",
+  "@newWorkout": {
+    "description": "Header when adding a new workout"
+  },
+  "reps": "Herhalingen",
+  "@reps": {
+    "description": "Shorthand for repetitions, used when space constraints are tighter"
+  },
+  "muscles": "Spieren",
+  "@muscles": {
+    "description": "(main) muscles trained by an exercise"
+  }
+}

@@ -8,32 +8,26 @@
             fitness goals.
         </p>
 
+        <p>Workout Management</p>
         <ul>
-            <li>
-                Workout Management
-                <ul>
-                    <li>Create and customize workout routines tailored to your fitness level and
-                        goals
-                    </li>
-                    <li>Track your progress with detailed exercise logs</li>
-                    <li>Access a vast library of exercises</li>
-                </ul>
+            <li>Create and customize workout routines tailored to your fitness level and
+                goals
             </li>
-            <li>
-                Nutrition Tracking
-                <ul>
-                    <li>Log your food intake using the Open Food Facts database</li>
-                    <li>Calculate your calorie intake and macronutrient breakdown</li>
-                    <li>Set personalized dietary goals and track your progress</li>
-                </ul>
-            </li>
-            <li>
-                Body Measurement Tracking
-                <ul>
-                    <li>Monitor your body weight, body fat percentage, and other measurements</li>
-                    <li>Visualize your progress with charts and graphs</li>
-                </ul>
-            </li>
+            <li>Track your progress with detailed exercise logs</li>
+            <li>Access a vast library of exercises</li>
+        </ul>
+
+        <p>Nutrition Tracking</p>
+        <ul>
+            <li>Log your food intake using the Open Food Facts database</li>
+            <li>Calculate your calorie intake and macronutrient breakdown</li>
+            <li>Set personalized dietary goals and track your progress</li>
+        </ul>
+
+        <p>Body Measurement Tracking</p>
+        <ul>
+            <li>Monitor your body weight, body fat percentage, and other measurements</li>
+            <li>Visualize your progress with charts and graphs</li>
         </ul>
     </description>
 

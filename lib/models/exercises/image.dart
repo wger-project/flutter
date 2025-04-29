@@ -28,8 +28,8 @@ class ExerciseImage {
   @JsonKey(required: true)
   final String uuid;
 
-  @JsonKey(required: true, name: 'exercise_base')
-  final int exerciseBaseId;
+  @JsonKey(required: true, name: 'exercise')
+  final int exerciseId;
 
   @JsonKey(required: true, name: 'image')
   final String url;
@@ -40,13 +40,14 @@ class ExerciseImage {
   const ExerciseImage({
     required this.id,
     required this.uuid,
-    required this.exerciseBaseId,
+    required this.exerciseId,
     required this.url,
     required this.isMain,
   });
 
   // Boilerplate
   factory ExerciseImage.fromJson(Map<String, dynamic> json) => _$ExerciseImageFromJson(json);
+
   Map<String, dynamic> toJson() => _$ExerciseImageToJson(this);
 
   @override

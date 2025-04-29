@@ -31,18 +31,12 @@ const DEFAULT_SERVER_TEST = 'https://wger-master.rge.uber.space/';
 const TESTSERVER_USER_NAME = 'user';
 const TESTSERVER_PASSWORD = 'flutteruser';
 
-/// Keys used in the android manifest
-const MANIFEST_KEY_CHECK_UPDATE = 'wger.check_min_app_version';
-
-/// Default weight unit is "kg"
-const DEFAULT_WEIGHT_UNIT = 1;
-
 /// Default impression for a workout session (neutral)
 const DEFAULT_IMPRESSION = 2;
 
 // Weight and repetition units for the workout logs
-const REP_UNIT_REPETITIONS = 1;
-const REP_UNIT_TILL_FAILURE = 2;
+const REP_UNIT_REPETITIONS_ID = 1;
+const REP_UNIT_TILL_FAILURE_ID = 2;
 
 const WEIGHT_UNIT_KG = 1;
 const WEIGHT_UNIT_LB = 2;
@@ -62,6 +56,7 @@ const PREFS_LAST_UPDATED_LANGUAGES = 'lastUpdatedLanguages';
 const PREFS_INGREDIENTS = 'ingredientData';
 const PREFS_WORKOUT_UNITS = 'workoutUnits';
 const PREFS_USER = 'userData';
+const PREFS_USER_DARK_THEME = 'userDarkMode';
 const PREFS_LAST_SERVER = 'lastServer';
 
 const DEFAULT_ANIMATION_DURATION = Duration(milliseconds: 200);

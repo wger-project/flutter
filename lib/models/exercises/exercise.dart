@@ -15,7 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import 'dart:developer';
 
+import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/consts.dart';
@@ -145,34 +147,42 @@ class Exercise extends Equatable {
   Exercise.fromApiDataJson(Map<String, dynamic> baseData, List<Language> languages)
       : this.fromApiData(ExerciseApiData.fromJson(baseData), languages);
 
-  Exercise.fromApiData(ExerciseApiData baseData, List<Language> languages) {
-    id = baseData.id;
-    uuid = baseData.uuid;
-    categoryId = baseData.category.id;
-    category = baseData.category;
+  Exercise.fromApiData(ExerciseApiData exerciseData, List<Language> languages) {
+    id = exerciseData.id;
+    uuid = exerciseData.uuid;
+    categoryId = exerciseData.category.id;
+    category = exerciseData.category;
 
-    created = baseData.created;
-    lastUpdate = baseData.lastUpdate;
-    lastUpdateGlobal = baseData.lastUpdateGlobal;
+    created = exerciseData.created;
+    lastUpdate = exerciseData.lastUpdate;
+    lastUpdateGlobal = exerciseData.lastUpdateGlobal;
 
-    musclesSecondary = baseData.muscles;
-    muscles = baseData.muscles;
-    equipment = baseData.equipment;
-    category = baseData.category;
-    translations = baseData.translations.map((e) {
-      e.language = languages.firstWhere((l) => l.id == e.languageId);
+    musclesSecondary = exerciseData.muscles;
+    muscles = exerciseData.muscles;
+    equipment = exerciseData.equipment;
+    category = exerciseData.category;
+    translations = exerciseData.translations.map((e) {
+      e.language = languages.firstWhere(
+        (l) => l.id == e.languageId,
+
+        // workaround for https://github.com/wger-project/flutter/issues/722
+        orElse: () {
+          log('Could not find language for translation ${e.languageId}');
+          return Language(id: e.languageId, shortName: 'unknown', fullName: 'unknown');
+        },
+      );
       return e;
     }).toList();
-    videos = baseData.videos;
-    images = baseData.images;
+    videos = exerciseData.videos;
+    images = exerciseData.images;
 
-    authors = baseData.authors;
-    authorsGlobal = baseData.authorsGlobal;
+    authors = exerciseData.authors;
+    authorsGlobal = exerciseData.authorsGlobal;
 
-    variationId = baseData.variationId;
+    variationId = exerciseData.variationId;
   }
 
-  /// Returns exercises for the given language
+  /// Returns translation for the given language
   ///
   /// If no translation is found, English will be returned
   ///
@@ -180,7 +190,7 @@ class Exercise extends Equatable {
   ///       translation in English. This is something that should never happen,
   ///       but we can't make sure that no local installation hasn't deleted
   ///       the entry in English.
-  Translation getExercise(String language) {
+  Translation getTranslation(String language) {
     // If the language is in the form en-US, take the language code only
     final languageCode = language.split('-')[0];
 
@@ -194,11 +204,7 @@ class Exercise extends Equatable {
   }
 
   ExerciseImage? get getMainImage {
-    try {
-      return images.firstWhere((image) => image.isMain);
-    } on StateError {
-      return null;
-    }
+    return images.firstWhereOrNull((image) => image.isMain);
   }
 
   set setCategory(ExerciseCategory category) {

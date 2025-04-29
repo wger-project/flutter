@@ -48,7 +48,9 @@
   "alsoKnownAs": "يُعرف أيضًا باسم: {aliases}",
   "@alsoKnownAs": {
     "placeholders": {
-      "aliases": {}
+      "aliases": {
+        "type": "String"
+      }
     },
     "description": "List of alternative names for an exercise"
   },
@@ -77,10 +79,6 @@
   "goToToday": "الذهاب لليوم",
   "@goToToday": {
     "description": "Label on button to jump back to 'today' in the calendar widget"
-  },
-  "enterRepetitionsOrWeight": "يرجى ملء التكرارات أو الوزن لواحدة على الأقل من المجموعات",
-  "@enterRepetitionsOrWeight": {
-    "description": "Error message when the user hasn't filled in the forms for exercise sets"
   },
   "baseData": "الأساسيات بالإنجليزية",
   "@baseData": {
@@ -145,7 +143,9 @@
     "description": "Dialog info when product is not found with barcode",
     "type": "text",
     "placeholders": {
-      "barcode": {}
+      "barcode": {
+        "type": "String"
+      }
     }
   },
   "setNr": "مجموعة {nr}",
@@ -153,7 +153,9 @@
     "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
     "type": "text",
     "placeholders": {
-      "nr": {}
+      "nr": {
+        "type": "String"
+      }
     }
   },
   "next": "التالي",
@@ -284,8 +286,12 @@
     "description": "Error message when the user hasn't entered the correct number of characters in a form",
     "type": "text",
     "placeholders": {
-      "min": {},
-      "max": {}
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
     }
   },
   "recentlyUsedIngredients": "المكونات المضافة مؤخرًا",
@@ -351,7 +357,9 @@
   "verifiedEmailInfo": "أُرسلت رسالة للتحقق إلى {email}",
   "@verifiedEmailInfo": {
     "placeholders": {
-      "email": {}
+      "email": {
+        "type": "String"
+      }
     }
   },
   "fatShort": "د",
@@ -644,10 +652,6 @@
   },
   "measurementEntriesHelpText": "الوحدة المستخدمة لقياس الفئة مثل \"سم\" أو \"%\"",
   "@measurementEntriesHelpText": {},
-  "supersetWith": "مجموعة شاملة مع",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
-  },
   "sugars": "سكريات",
   "@sugars": {},
   "customServerUrl": "رابط عنصر wger",
@@ -699,7 +703,9 @@
     "description": "Confirmation text before the user deletes an object",
     "type": "text",
     "placeholders": {
-      "toDelete": {}
+      "toDelete": {
+        "type": "String"
+      }
     }
   },
   "passwordsDontMatch": "كلمات المرور غير متطابقة",
@@ -731,7 +737,9 @@
     "description": "Error message when the user hasn't entered the minimum amount characters in a form",
     "type": "text",
     "placeholders": {
-      "min": {}
+      "min": {
+        "type": "String"
+      }
     }
   },
   "weekAverage": "متوسط سبع أيام",
@@ -759,7 +767,9 @@
     "description": "Label shown on the slider where the user selects the nr of sets",
     "type": "text",
     "placeholders": {
-      "nrOfSets": {}
+      "nrOfSets": {
+        "type": "String"
+      }
     }
   },
   "none__bodyweight_exercise_": "لا شيء (تمرين وزن الجسم)",
@@ -779,7 +789,9 @@
     "description": "Dialog info when product is found with barcode",
     "type": "text",
     "placeholders": {
-      "productName": {}
+      "productName": {
+        "type": "String"
+      }
     }
   },
   "exercises": "التمارين",

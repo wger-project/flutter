@@ -1,1 +1,80 @@
-{}
+{
+  "login": "Bejelentkezés",
+  "@login": {
+    "description": "Text for login button"
+  },
+  "invalidEmail": "Nem megfelelő e-mail cím",
+  "@invalidEmail": {
+    "description": "Error message when the user enters an invalid email"
+  },
+  "customServerHint": "Add meg a saját szervered címét, máskülönben az alapértelmezettet használjuk",
+  "@customServerHint": {
+    "description": "Hint text for the form where the users can enter their own wger instance"
+  },
+  "userProfile": "Profil",
+  "@userProfile": {},
+  "logout": "Kijelentkezés",
+  "@logout": {
+    "description": "Text for logout button"
+  },
+  "register": "Regisztráció",
+  "@register": {
+    "description": "Text for registration button"
+  },
+  "useDefaultServer": "Alapértelmezett szerver",
+  "@useDefaultServer": {
+    "description": "Toggle button allowing users to switch between the default and a custom wger server"
+  },
+  "useCustomServer": "Egyedi szerver",
+  "@useCustomServer": {
+    "description": "Toggle button allowing users to switch between the default and a custom wger server"
+  },
+  "invalidUrl": "Nem megfelelő URL",
+  "@invalidUrl": {
+    "description": "Error message when the user enters an invalid URL, e.g. in the login form"
+  },
+  "password": "Jelszó",
+  "@password": {},
+  "passwordTooShort": "A jelszó túl rövid",
+  "@passwordTooShort": {
+    "description": "Error message when the user a password that is too short"
+  },
+  "usernameValidChars": "A felhasználónév csak betűket, számokat és @, +, ., -, és _ karaktereket tartalmazhat",
+  "@usernameValidChars": {
+    "description": "Error message when the user tries to register a username with forbidden characters"
+  },
+  "passwordsDontMatch": "A jelszavak nem egyeznek",
+  "@passwordsDontMatch": {
+    "description": "Error message when the user enters two different passwords during registration"
+  },
+  "labelBottomNavNutrition": "Táplálkozás",
+  "@labelBottomNavNutrition": {
+    "description": "Label used in bottom navigation, use a short word"
+  },
+  "username": "Felhasználónév",
+  "@username": {},
+  "email": "E-mail cím",
+  "@email": {},
+  "confirmPassword": "Jelszó újra",
+  "@confirmPassword": {},
+  "invalidUsername": "Nem megfelelő felhasználónév",
+  "@invalidUsername": {
+    "description": "Error message when the user enters an invalid username"
+  },
+  "customServerUrl": "A wger szerver URL-je",
+  "@customServerUrl": {
+    "description": "Label in the form where the users can enter their own wger instance"
+  },
+  "reset": "Visszaállítás",
+  "@reset": {
+    "description": "Button text allowing the user to reset the entered values to the default"
+  },
+  "registerInstead": "Nincs fiókod? Regisztrálj most",
+  "@registerInstead": {},
+  "loginInstead": "Már van fiókod? Bejelentkezés",
+  "@loginInstead": {},
+  "labelBottomNavWorkout": "Edzés",
+  "@labelBottomNavWorkout": {
+    "description": "Label used in bottom navigation, use a short word"
+  }
+}
