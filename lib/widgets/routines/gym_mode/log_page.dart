@@ -236,7 +236,7 @@ class _LogPageState extends State<LogPage> {
         children: [
           Text(
             AppLocalizations.of(context).newEntry,
-            style: Theme.of(context).textTheme.titleLarge,
+            style: Theme.of(context).textTheme.titleMedium,
             textAlign: TextAlign.center,
           ),
           if (!_detailed)
@@ -278,7 +278,10 @@ class _LogPageState extends State<LogPage> {
               onChanged: (v) => {},
             ),
           SwitchListTile(
-            title: Text(AppLocalizations.of(context).setUnitsAndRir),
+            title: Text(
+              AppLocalizations.of(context).setUnitsAndRir,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
             value: _detailed,
             onChanged: (value) {
               setState(() {
@@ -344,16 +347,18 @@ class _LogPageState extends State<LogPage> {
       children: [
         Text(
           AppLocalizations.of(context).labelWorkoutLogs,
-          style: Theme.of(context).textTheme.titleLarge,
+          style: Theme.of(context).textTheme.titleMedium,
           textAlign: TextAlign.left,
         ),
-        ...widget._workoutPlan.filterLogsByExercise(widget._exercise.id!, unique: false).map((log) {
+        ...widget._workoutPlan.filterLogsByExercise(widget._exercise.id!, unique: true).map((log) {
           return ListTile(
-            title: Text(
-                '${DateFormat.yMd(Localizations.localeOf(context).languageCode).format(log.date)}: ${log.singleLogRepTextNoNl}'),
+            title: Text(log.singleLogRepTextNoNl),
+            subtitle: Text(
+                '${DateFormat.yMd(Localizations.localeOf(context).languageCode).format(log.date)}: '
+                '${widget._workoutPlan.logs.where((logs) => logs.exerciseId == log.exerciseId && log.date.day == logs.date.day && log.date.month == logs.date.month && log.date.year == logs.date.year && log.repetitions == logs.repetitions && log.weight == logs.weight).length} ${AppLocalizations.of(context).sets}'),
             trailing: const Icon(Icons.copy),
             dense: true,
-            visualDensity: const VisualDensity(vertical: -3),
+            visualDensity: VisualDensity(vertical: -3),
             onTap: () {
               setState(() {
                 // Text field
@@ -389,7 +394,7 @@ class _LogPageState extends State<LogPage> {
       children: [
         Text(
           AppLocalizations.of(context).plateCalculator,
-          style: Theme.of(context).textTheme.titleLarge,
+          style: Theme.of(context).textTheme.titleMedium,
         ),
         SizedBox(
           height: 35,
@@ -424,7 +429,7 @@ class _LogPageState extends State<LogPage> {
                               ),
                             ),
                           ),
-                          const SizedBox(width: 10),
+                          const SizedBox(width: 5),
                         ],
                       ),
                     ),
@@ -461,13 +466,13 @@ class _LogPageState extends State<LogPage> {
         Center(
           child: Text(
             widget._configData.textRepr,
-            style: Theme.of(context).textTheme.headlineMedium,
+            style: Theme.of(context).textTheme.titleLarge,
             textAlign: TextAlign.center,
           ),
         ),
         Center(
           child: Text(
-            'Set $currentSet / $totalExerciseSets',
+            '${AppLocalizations.of(context).set} $currentSet / $totalExerciseSets',
             style: Theme.of(context).textTheme.bodyMedium,
             textAlign: TextAlign.center,
           ),

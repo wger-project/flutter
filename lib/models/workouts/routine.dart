@@ -147,11 +147,12 @@ class Routine {
       //out = out.toSet().toList(); - OLD METHOD
 
       // Create a map to store unique logs by date
-      var uniqueLogsByDate = <DateTime, Log>{};
+      var uniqueLogsByDate = <String, Log>{};
 
       for (var log in out) {
-        var logDate = DateTime(log.date.year, log.date.month, log.date.day);
-        uniqueLogsByDate[logDate] = log;
+        var uniqueString =
+            '${log.date.year}/${log.date.month}/${log.date.day}/${log.weight}/${log.repetitions}';
+        uniqueLogsByDate[uniqueString] = log;
       }
 
       // Extract the unique logs
