@@ -340,7 +340,7 @@ class _LogPageState extends State<LogPage> {
 
   Widget getPastLogs() {
     return ListView(
-      padding: EdgeInsets.only(left: 10),
+      padding: const EdgeInsets.only(left: 10),
       children: [
         Text(
           AppLocalizations.of(context).labelWorkoutLogs,
@@ -353,7 +353,7 @@ class _LogPageState extends State<LogPage> {
                 '${DateFormat.yMd(Localizations.localeOf(context).languageCode).format(log.date)}: ${log.singleLogRepTextNoNl}'),
             trailing: const Icon(Icons.copy),
             dense: true,
-            visualDensity: VisualDensity(vertical: -3),
+            visualDensity: const VisualDensity(vertical: -3),
             onTap: () {
               setState(() {
                 // Text field
@@ -467,7 +467,7 @@ class _LogPageState extends State<LogPage> {
         ),
         Center(
           child: Text(
-            'Set ${currentSet} / ${totalExerciseSets}',
+            'Set $currentSet / $totalExerciseSets',
             style: Theme.of(context).textTheme.bodyMedium,
             textAlign: TextAlign.center,
           ),
