@@ -53,14 +53,16 @@
   "@invalidUsername": {
     "description": "Error message when the user enters an invalid username"
   },
-  "apitoken": "API Key",
-  "@apitoken": {},
-  "invalidApitoken": "Please enter a valid API key",
-  "@invalidApitoken": {
+  "useApiToken": "Use API Token",
+  "useUsernameAndPassword": "Use username and password",
+  "apiToken": "API Token",
+  "@apiToken": {},
+  "invalidApiToken": "Please enter a valid API key",
+  "@invalidApiToken": {
     "description": "Error message when the user enters an invalid API key"
   },
-  "apitokenValidChars": "A API key may only contain valid hex, a-f and 0-9 and should be 40 characters long",
-  "@apitokenValidChars": {
+  "apiTokenValidChars": "An API key may only contain the letters a-f, numbers 0-9 and be exactly 40 characters long",
+  "@apiTokenValidChars": {
     "description": "Error message when the user tries to input a API key with forbidden characters"
   },
   "customServerUrl": "URL of the wger instance",
