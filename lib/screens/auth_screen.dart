@@ -129,7 +129,7 @@ class _AuthCardState extends State<AuthCard> {
   final _serverUrlController = TextEditingController(
     text: kDebugMode ? DEFAULT_SERVER_TEST : DEFAULT_SERVER_PROD,
   );
-  final _apitokenController = TextEditingController();
+  final _apiTokenController = TextEditingController();
 
   @override
   void dispose() {
@@ -138,7 +138,7 @@ class _AuthCardState extends State<AuthCard> {
     _password2Controller.dispose();
     _emailController.dispose();
     _serverUrlController.dispose();
-    _apitokenController.dispose();
+    _apiTokenController.dispose();
     super.dispose();
   }
 
@@ -164,7 +164,7 @@ class _AuthCardState extends State<AuthCard> {
   void _resetTextfields() {
     _usernameController.clear();
     _passwordController.clear();
-    _apitokenController.clear();
+    _apiTokenController.clear();
   }
 
   void _submit(BuildContext context) async {
@@ -265,7 +265,7 @@ class _AuthCardState extends State<AuthCard> {
                 children: [
                   if (_useUsernameAndPassword)
                     UsernameField(
-                      controller: _apitokenController,
+                      controller: _apiTokenController,
                       onSaved: (value) => _authData['username'] = value!,
                     ),
                   if (_authMode == AuthMode.Register)
@@ -316,7 +316,7 @@ class _AuthCardState extends State<AuthCard> {
                   // would not be saved to _authData
                   if (_authMode == AuthMode.Login && !_useUsernameAndPassword)
                     ApiTokenField(
-                      controller: _apitokenController,
+                      controller: _apiTokenController,
                       onSaved: (value) => _authData['apiToken'] = value!,
                     ),
                   Offstage(
