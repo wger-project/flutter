@@ -147,8 +147,6 @@ class AuthProvider with ChangeNotifier {
   ) async {
     await logout(shouldNotify: false);
 
-    String token;
-
     // Login using the API token
     if (apiToken != null && apiToken.isNotEmpty) {
       final response = await client.get(
@@ -165,7 +163,6 @@ class AuthProvider with ChangeNotifier {
       }
 
       token = apiToken;
-      state = AuthState.loggedIn;
 
       // Login using password
     } else {
@@ -184,7 +181,6 @@ class AuthProvider with ChangeNotifier {
       }
 
       token = responseData['token'];
-      state = AuthState.loggedIn;
     }
 
     await initVersions(serverUrl);
@@ -196,6 +192,7 @@ class AuthProvider with ChangeNotifier {
     }
 
     // Log user in
+    state = AuthState.loggedIn;
     notifyListeners();
 
     // store login data in shared preferences
