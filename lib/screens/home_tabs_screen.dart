@@ -106,7 +106,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
         await Future.wait([
           galleryProvider.fetchAndSetGallery(),
           nutritionPlansProvider.fetchAndSetAllPlansSparse(),
-          routinesProvider.fetchAndSetAllPlansSparse(),
+          routinesProvider.fetchAndSetAllRoutinesSparse(),
           // routinesProvider.fetchAndSetAllRoutinesFull(),
           weightProvider.fetchAndSetEntries(),
           measurementProvider.fetchAndSetAllCategoriesAndEntries(),
@@ -128,12 +128,11 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
         widget._logger.warning(e.toString());
       }
 
-      // Current workout plan
+      // Current routine
       widget._logger.info('Loading current routine');
       if (routinesProvider.activeRoutine != null) {
         final planId = routinesProvider.activeRoutine!.id!;
         await routinesProvider.fetchAndSetRoutineFull(planId);
-        routinesProvider.setCurrentPlan(planId);
       }
     }
 
@@ -149,38 +148,38 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
           return const Scaffold(
             body: LoadingWidget(),
           );
-        } else {
-          return Scaffold(
-            body: _screenList.elementAt(_selectedIndex),
-            bottomNavigationBar: NavigationBar(
-              destinations: [
-                NavigationDestination(
-                  icon: const Icon(Icons.home),
-                  label: AppLocalizations.of(context).labelDashboard,
-                ),
-                NavigationDestination(
-                  icon: const Icon(Icons.fitness_center),
-                  label: AppLocalizations.of(context).labelBottomNavWorkout,
-                ),
-                NavigationDestination(
-                  icon: const Icon(Icons.restaurant),
-                  label: AppLocalizations.of(context).labelBottomNavNutrition,
-                ),
-                NavigationDestination(
-                  icon: const FaIcon(FontAwesomeIcons.weightScale, size: 20),
-                  label: AppLocalizations.of(context).weight,
-                ),
-                NavigationDestination(
-                  icon: const Icon(Icons.photo_library),
-                  label: AppLocalizations.of(context).gallery,
-                ),
-              ],
-              onDestinationSelected: _onItemTapped,
-              selectedIndex: _selectedIndex,
-              labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
-            ),
-          );
         }
+
+        return Scaffold(
+          body: _screenList.elementAt(_selectedIndex),
+          bottomNavigationBar: NavigationBar(
+            destinations: [
+              NavigationDestination(
+                icon: const Icon(Icons.home),
+                label: AppLocalizations.of(context).labelDashboard,
+              ),
+              NavigationDestination(
+                icon: const Icon(Icons.fitness_center),
+                label: AppLocalizations.of(context).labelBottomNavWorkout,
+              ),
+              NavigationDestination(
+                icon: const Icon(Icons.restaurant),
+                label: AppLocalizations.of(context).labelBottomNavNutrition,
+              ),
+              NavigationDestination(
+                icon: const FaIcon(FontAwesomeIcons.weightScale, size: 20),
+                label: AppLocalizations.of(context).weight,
+              ),
+              NavigationDestination(
+                icon: const Icon(Icons.photo_library),
+                label: AppLocalizations.of(context).gallery,
+              ),
+            ],
+            onDestinationSelected: _onItemTapped,
+            selectedIndex: _selectedIndex,
+            labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+          ),
+        );
       },
     );
   }
