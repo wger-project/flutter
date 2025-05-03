@@ -107,8 +107,6 @@ class MealForm extends StatelessWidget {
                         ).editMeal(_meal);
                 } on WgerHttpException catch (error) {
                   showHttpExceptionErrorDialog(error, context);
-                } catch (error) {
-                  showErrorDialog(error, context);
                 }
                 Navigator.of(context).pop();
               },
@@ -414,8 +412,6 @@ class IngredientFormState extends State<IngredientForm> {
                   widget.onSave(context, _mealItem, date);
                 } on WgerHttpException catch (error) {
                   showHttpExceptionErrorDialog(error, context);
-                } catch (error) {
-                  showErrorDialog(error, context);
                 }
                 Navigator.of(context).pop();
               },
@@ -695,10 +691,6 @@ class _PlanFormState extends State<PlanForm> {
               } on WgerHttpException catch (error) {
                 if (context.mounted) {
                   showHttpExceptionErrorDialog(error, context);
-                }
-              } catch (error) {
-                if (context.mounted) {
-                  showErrorDialog(error, context);
                 }
               }
             },

@@ -318,11 +318,6 @@ class _LogPageState extends State<LogPage> {
                         showHttpExceptionErrorDialog(error, context);
                       }
                       _isSaving = false;
-                    } catch (error) {
-                      if (mounted) {
-                        showErrorDialog(error, context);
-                      }
-                      _isSaving = false;
                     }
                   },
             child:

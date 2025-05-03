@@ -206,9 +206,9 @@ class _AuthCardState extends State<AuthCard> {
       setState(() {
         _isLoading = false;
       });
-    } catch (error) {
+    } catch (error, stackTrace) {
       if (mounted) {
-        showErrorDialog(error, context);
+        showGeneralErrorDialog(error, stackTrace, context: context);
       }
       setState(() {
         _isLoading = false;

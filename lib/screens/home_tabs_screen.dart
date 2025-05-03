@@ -21,6 +21,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
+import 'package:wger/exceptions/http_exception.dart';
+import 'package:wger/helpers/ui.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/body_weight.dart';
@@ -49,6 +51,7 @@ class HomeTabsScreen extends StatefulWidget {
 
 class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProviderStateMixin {
   late Future<void> _initialData;
+  bool _errorHandled = false;
   int _selectedIndex = 0;
 
   @override
@@ -95,37 +98,29 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
           nutritionPlansProvider.fetchIngredientsFromCache(),
           exercisesProvider.fetchAndSetInitialData(),
         ]);
-      } catch (e) {
-        widget._logger.warning('Exception loading base data');
-        widget._logger.warning(e.toString());
+      } on WgerHttpException catch (error) {
+        widget._logger.warning('Wger exception loading base data');
+        if (mounted) {
+          showHttpExceptionErrorDialog(error, context);
+        }
       }
 
       // Plans, weight and gallery
-      widget._logger.info('Loading plans, weight, measurements and gallery');
-      try {
-        await Future.wait([
-          galleryProvider.fetchAndSetGallery(),
-          nutritionPlansProvider.fetchAndSetAllPlansSparse(),
-          routinesProvider.fetchAndSetAllPlansSparse(),
-          // routinesProvider.fetchAndSetAllRoutinesFull(),
-          weightProvider.fetchAndSetEntries(),
-          measurementProvider.fetchAndSetAllCategoriesAndEntries(),
-        ]);
-      } catch (e) {
-        widget._logger.warning('Exception loading plans, weight, measurements and gallery');
-        widget._logger.info(e.toString());
-      }
+      widget._logger.info('Loading routines, weight, measurements and gallery');
+      await Future.wait([
+        galleryProvider.fetchAndSetGallery(),
+        nutritionPlansProvider.fetchAndSetAllPlansSparse(),
+        routinesProvider.fetchAndSetAllPlansSparse(),
+        // routinesProvider.fetchAndSetAllRoutinesFull(),
+        weightProvider.fetchAndSetEntries(),
+        measurementProvider.fetchAndSetAllCategoriesAndEntries(),
+      ]);
 
       // Current nutritional plan
       widget._logger.info('Loading current nutritional plan');
-      try {
-        if (nutritionPlansProvider.currentPlan != null) {
-          final plan = nutritionPlansProvider.currentPlan!;
-          await nutritionPlansProvider.fetchAndSetPlanFull(plan.id!);
-        }
-      } catch (e) {
-        widget._logger.warning('Exception loading current nutritional plan');
-        widget._logger.warning(e.toString());
+      if (nutritionPlansProvider.currentPlan != null) {
+        final plan = nutritionPlansProvider.currentPlan!;
+        await nutritionPlansProvider.fetchAndSetPlanFull(plan.id!);
       }
 
       // Current workout plan
@@ -145,42 +140,64 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
     return FutureBuilder<void>(
       future: _initialData,
       builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          // Throw the original error with the original stack trace, otherwise
+          // the error will only point to these lines here
+          if (!_errorHandled) {
+            _errorHandled = true;
+            final error = snapshot.error;
+            final stackTrace = snapshot.stackTrace;
+
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) {
+                if (error != null && stackTrace != null) {
+                  throw Error.throwWithStackTrace(error, stackTrace);
+                }
+                throw error!;
+              }
+            });
+          }
+
+          // Note that we continue to show the app, even if there was an error.
+          // return const Scaffold(body: LoadingWidget());
+        }
+
         if (snapshot.connectionState != ConnectionState.done) {
           return const Scaffold(
             body: LoadingWidget(),
           );
-        } else {
-          return Scaffold(
-            body: _screenList.elementAt(_selectedIndex),
-            bottomNavigationBar: NavigationBar(
-              destinations: [
-                NavigationDestination(
-                  icon: const Icon(Icons.home),
-                  label: AppLocalizations.of(context).labelDashboard,
-                ),
-                NavigationDestination(
-                  icon: const Icon(Icons.fitness_center),
-                  label: AppLocalizations.of(context).labelBottomNavWorkout,
-                ),
-                NavigationDestination(
-                  icon: const Icon(Icons.restaurant),
-                  label: AppLocalizations.of(context).labelBottomNavNutrition,
-                ),
-                NavigationDestination(
-                  icon: const FaIcon(FontAwesomeIcons.weightScale, size: 20),
-                  label: AppLocalizations.of(context).weight,
-                ),
-                NavigationDestination(
-                  icon: const Icon(Icons.photo_library),
-                  label: AppLocalizations.of(context).gallery,
-                ),
-              ],
-              onDestinationSelected: _onItemTapped,
-              selectedIndex: _selectedIndex,
-              labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
-            ),
-          );
         }
+
+        return Scaffold(
+          body: _screenList.elementAt(_selectedIndex),
+          bottomNavigationBar: NavigationBar(
+            destinations: [
+              NavigationDestination(
+                icon: const Icon(Icons.home),
+                label: AppLocalizations.of(context).labelDashboard,
+              ),
+              NavigationDestination(
+                icon: const Icon(Icons.fitness_center),
+                label: AppLocalizations.of(context).labelBottomNavWorkout,
+              ),
+              NavigationDestination(
+                icon: const Icon(Icons.restaurant),
+                label: AppLocalizations.of(context).labelBottomNavNutrition,
+              ),
+              NavigationDestination(
+                icon: const FaIcon(FontAwesomeIcons.weightScale, size: 20),
+                label: AppLocalizations.of(context).weight,
+              ),
+              NavigationDestination(
+                icon: const Icon(Icons.photo_library),
+                label: AppLocalizations.of(context).gallery,
+              ),
+            ],
+            onDestinationSelected: _onItemTapped,
+            selectedIndex: _selectedIndex,
+            labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+          ),
+        );
       },
     );
   }

@@ -181,11 +181,8 @@ class WeightForm extends StatelessWidget {
                 if (context.mounted) {
                   showHttpExceptionErrorDialog(error, context);
                 }
-              } catch (error) {
-                if (context.mounted) {
-                  showErrorDialog(error, context);
-                }
               }
+
               if (context.mounted) {
                 Navigator.of(context).pop();
               }

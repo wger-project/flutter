@@ -38,6 +38,10 @@ void main() {
 
   setUp(() {
     testRoutine = getTestRoutine();
+
+    when(mockRoutinesProvider.editSession(any)).thenAnswer(
+      (_) => Future.value(testRoutine.sessions[0].session),
+    );
   });
 
   Widget renderSessionPage({locale = 'en'}) {

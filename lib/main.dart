@@ -60,6 +60,7 @@ import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/about.dart';
 import 'package:wger/widgets/core/settings.dart';
 
+import 'helpers/ui.dart';
 import 'providers/auth.dart';
 
 void _setupLogging() {
@@ -69,8 +70,12 @@ void _setupLogging() {
   });
 }
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 void main() async {
   _setupLogging();
+
+  final logger = Logger('main');
   //zx.setLogEnabled(kDebugMode);
 
   // Needs to be called before runApp
@@ -82,6 +87,27 @@ void main() async {
   // SharedPreferences to SharedPreferencesAsync migration function
   await PreferenceHelper.instance.migrationSupportFunctionForSharedPreferences();
 
+  // Catch errors from Flutter itself (widget build, layout, paint, etc.)
+  FlutterError.onError = (FlutterErrorDetails details) {
+    if (kDebugMode) {
+      FlutterError.dumpErrorToConsole(details);
+    }
+    showGeneralErrorDialog(details.exception, details.stack ?? StackTrace.empty);
+    // Zone.current.handleUncaughtError(details.exception, details.stack ?? StackTrace.empty);
+  };
+
+  // Catch errors that happen outside of the Flutter framework (e.g., in async operations)
+  PlatformDispatcher.instance.onError = (error, stack) {
+    if (kDebugMode) {
+      logger.warning('Caught error by PlatformDispatcher: $error');
+      logger.warning('Stack trace: $stack');
+    }
+    showGeneralErrorDialog(error, stack);
+
+    // Return true to indicate that the error has been handled.
+    return true;
+  };
+
   // Application
   runApp(const riverpod.ProviderScope(child: MainApp()));
 }
@@ -90,18 +116,19 @@ class MainApp extends StatelessWidget {
   const MainApp();
 
   Widget _getHomeScreen(AuthProvider auth) {
-    if (auth.state == AuthState.loggedIn) {
-      return HomeTabsScreen();
-    } else if (auth.state == AuthState.updateRequired) {
-      return const UpdateAppScreen();
-    } else {
-      return FutureBuilder(
-        future: auth.tryAutoLogin(),
-        builder: (ctx, authResultSnapshot) =>
-            authResultSnapshot.connectionState == ConnectionState.waiting
-                ? const SplashScreen()
-                : const AuthScreen(),
-      );
+    switch (auth.state) {
+      case AuthState.loggedIn:
+        return HomeTabsScreen();
+      case AuthState.updateRequired:
+        return const UpdateAppScreen();
+      default:
+        return FutureBuilder(
+          future: auth.tryAutoLogin(),
+          builder: (ctx, authResultSnapshot) =>
+              authResultSnapshot.connectionState == ConnectionState.waiting
+                  ? const SplashScreen()
+                  : const AuthScreen(),
+        );
     }
   }
 
@@ -173,6 +200,7 @@ class MainApp extends StatelessWidget {
         builder: (ctx, auth, _) => Consumer<UserProvider>(
           builder: (ctx, user, _) => MaterialApp(
             title: 'wger',
+            navigatorKey: navigatorKey,
             theme: wgerLightTheme,
             darkTheme: wgerDarkTheme,
             highContrastTheme: wgerLightThemeHc,

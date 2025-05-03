@@ -239,10 +239,6 @@ class _SessionPageState extends State<SessionPage> {
                       if (mounted) {
                         showHttpExceptionErrorDialog(error, context);
                       }
-                    } catch (error) {
-                      if (mounted) {
-                        showErrorDialog(error, context);
-                      }
                     }
                   },
                 ),
