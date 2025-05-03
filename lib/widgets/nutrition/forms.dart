@@ -125,6 +125,7 @@ Widget MealItemForm(
   List<MealItem> recent, [
   String? barcode,
   bool? test,
+  NutritionalPlan? currentPlan,
 ]) {
   return IngredientForm(
     // TODO we use planId 0 here cause we don't have one and we don't need it I think?
@@ -141,6 +142,7 @@ Widget MealItemForm(
 
 Widget IngredientLogForm(NutritionalPlan plan) {
   return IngredientForm(
+    currentPlan: plan,
     recent: plan.dedupDiaryEntries,
     onSave: (BuildContext context, MealItem mealItem, DateTime? dt) {
       Provider.of<NutritionPlansProvider>(context, listen: false)
@@ -166,6 +168,7 @@ class IngredientForm extends StatefulWidget {
   final bool withDate;
   final String barcode;
   final bool test;
+  final NutritionalPlan? currentPlan;
 
   const IngredientForm({
     required this.recent,
@@ -173,6 +176,7 @@ class IngredientForm extends StatefulWidget {
     required this.withDate,
     this.barcode = '',
     this.test = false,
+    this.currentPlan,
   });
 
   @override
@@ -438,11 +442,13 @@ class IngredientFormState extends State<IngredientForm> {
                     );
                   }
 
+                  const Duration recentWindow = Duration(days: -90);
                   return Card(
                     child: ListTile(
                       onTap: select,
                       title: Text(
-                        '${suggestions[index].ingredient.name} (${suggestions[index].amount.toStringAsFixed(0)}$unit)',
+                        '${widget.currentPlan?.diaryEntries.where((diaryEntries) => diaryEntries.ingredientId == suggestions[index].ingredientId && diaryEntries.amount == suggestions[index].amount && diaryEntries.datetime.isAfter(DateTime.now().add(recentWindow))).length} x '
+                        '${suggestions[index].ingredient.name} (${suggestions[index].amount.toStringAsFixed(0)}$unit) ',
                       ),
                       subtitle: Text(getShortNutritionValues(
                         suggestions[index].ingredient.nutritionalValues,
