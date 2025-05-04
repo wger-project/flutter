@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:collection';
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -226,15 +227,32 @@ class NutritionalPlan {
   /// returns diary entries
   /// deduped by the combination of amount and ingredient ID
   List<Log> get dedupDiaryEntries {
-    final out = <Log>[];
+    List<Log> out;
+    var uniqueLogs = <String, Log>{};
     for (final log in diaryEntries) {
-      final found = out.firstWhereOrNull(
-        (e) => e.amount == log.amount && e.ingredientId == log.ingredientId,
-      );
-      if (found == null) {
-        out.add(log);
-      }
+      final uniqueAndCountString = '${log.ingredientId}/${log.amount}';
+      uniqueLogs[uniqueAndCountString] = log;
     }
+
+    //Get unique
+    out = uniqueLogs.values.toList();
+    var countLogs = <int, Log>{};
+    const Duration recentWindow = Duration(days: -90);
+
+    //Sort by frequency
+    for (final log in out) {
+      final int howMany = diaryEntries
+          .where((diaryEntries) =>
+              diaryEntries.ingredientId == log.ingredientId &&
+              diaryEntries.amount == log.amount &&
+              diaryEntries.datetime.isAfter(DateTime.now().add(recentWindow)))
+          .length;
+      countLogs[howMany] = log;
+    }
+
+    final sortedByFrequency = SplayTreeMap<int, Log>.from(countLogs, (b, a) => a.compareTo(b));
+    out = sortedByFrequency.values.toList();
+
     return out;
   }
 
