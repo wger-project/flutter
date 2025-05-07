@@ -47,10 +47,6 @@
       }
     }
   },
-  "noWorkoutPlans": "Nu ai niciun de antrenament",
-  "@noWorkoutPlans": {
-    "description": "Message shown when the user has no workout plans"
-  },
   "muscles": "Mușchi",
   "@muscles": {
     "description": "(main) muscles trained by an exercise"
@@ -73,10 +69,6 @@
   "@weightUnit": {},
   "email": "Adresă de e-mail",
   "@email": {},
-  "newWorkout": "Plan de antrenament nou",
-  "@newWorkout": {
-    "description": "Header when adding a new workout"
-  },
   "searchNamesInEnglish": "Caută nume și în engleză",
   "@searchNamesInEnglish": {},
   "username": "Nume de utilizator",
@@ -110,10 +102,6 @@
   "usernameValidChars": "Un nume de utilizator poate conține numai litere, cifre și caracterele @, +, ., - și _",
   "@usernameValidChars": {
     "description": "Error message when the user tries to register a username with forbidden characters"
-  },
-  "labelWorkoutPlans": "Planuri de antrenament",
-  "@labelWorkoutPlans": {
-    "description": "Title for screen workout plans"
   },
   "proteinShort": "P",
   "@proteinShort": {

@@ -47,10 +47,6 @@
   "@labelBottomNavNutrition": {
     "description": "Label used in bottom navigation, use a short word"
   },
-  "labelWorkoutPlans": "Antrenman planları",
-  "@labelWorkoutPlans": {
-    "description": "Title for screen workout plans"
-  },
   "labelBottomNavWorkout": "Antrenman",
   "@labelBottomNavWorkout": {
     "description": "Label used in bottom navigation, use a short word"
@@ -123,10 +119,6 @@
   "@login": {
     "description": "Text for login button"
   },
-  "noWorkoutPlans": "Antrenman planınız yok",
-  "@noWorkoutPlans": {
-    "description": "Message shown when the user has no workout plans"
-  },
   "repetitions": "Tekrarlar",
   "@repetitions": {
     "description": "Repetitions for an exercise set"
@@ -140,10 +132,6 @@
   "set": "Ayarla",
   "@set": {
     "description": "A set in a workout plan"
-  },
-  "newWorkout": "Yeni antrenman planı",
-  "@newWorkout": {
-    "description": "Header when adding a new workout"
   },
   "rirNotUsed": "RiR kullanılmadı",
   "@rirNotUsed": {
@@ -365,14 +353,6 @@
   "@aboutDescription": {
     "description": "Text in the about dialog"
   },
-  "aboutSourceText": "Bu uygulamanın ve sunucusunun kaynak kodlarını github'dan edinin",
-  "@aboutSourceText": {
-    "description": "Text for source code section in the about dialog"
-  },
-  "aboutBugsTitle": "Bir sorununuz veya fikriniz mi var?",
-  "@aboutBugsTitle": {
-    "description": "Title for bugs section in the about dialog"
-  },
   "enterValidNumber": "Lütfen geçerli bir sayı girin",
   "@enterValidNumber": {
     "description": "Error message when the user has submitted an invalid number (e.g. '3,.,.,.')"
@@ -394,14 +374,6 @@
         "type": "String"
       }
     }
-  },
-  "aboutContactUsTitle": "Merhaba deyin!",
-  "@aboutContactUsTitle": {
-    "description": "Title for contact us section in the about dialog"
-  },
-  "aboutContactUsText": "Bizimle sohbet etmek istiyorsanız, Discord sunucusuna gelin ve iletişime geçin",
-  "@aboutContactUsText": {
-    "description": "Text for contact us section in the about dialog"
   },
   "goToToday": "Bugüne git",
   "@goToToday": {
@@ -458,22 +430,6 @@
   "toggleDetails": "Ayrıntıları aç/kapat",
   "@toggleDetails": {
     "description": "Switch to toggle detail / overview"
-  },
-  "aboutSourceTitle": "Kaynak kodları",
-  "@aboutSourceTitle": {
-    "description": "Title for source code section in the about dialog"
-  },
-  "aboutBugsText": "Bir şey beklendiği gibi davranmazsa veya eksik olduğunu düşündüğünüz bir özellik varsa iletişime geçin.",
-  "@aboutBugsText": {
-    "description": "Text for bugs section in the about dialog"
-  },
-  "aboutTranslationTitle": "Çeviri",
-  "@aboutTranslationTitle": {
-    "description": "Title for translation section in the about dialog"
-  },
-  "aboutTranslationText": "Bu uygulama Weblate üzerinde çevrilmektedir. Yardım etmek istiyorsanız bağlantıya tıklayın ve çevirmeye başlayın",
-  "@aboutTranslationText": {
-    "description": "Text for translation section in the about dialog"
   },
   "selectExercise": "Lütfen bir egzersiz seçin",
   "@selectExercise": {
@@ -764,14 +720,6 @@
   "@lb": {
     "description": "Generated entry for translation for server strings"
   },
-  "aboutMastodonTitle": "Mastodon",
-  "@aboutMastodonTitle": {
-    "description": "Title for mastodon section in the about dialog"
-  },
-  "aboutMastodonText": "Projeyle ilgili güncellemeler ve haberler için bizi Mastodon'da takip edin",
-  "@aboutMastodonText": {
-    "description": "Text for the mastodon section in the about dialog"
-  },
   "settingsTitle": "Ayarlar",
   "@settingsTitle": {},
   "settingsCacheTitle": "Önbellek",
@@ -806,8 +754,6 @@
       }
     }
   },
-  "addGoalsToPlan": "Bu plana hedefler ekle",
-  "@addGoalsToPlan": {},
   "goalEnergy": "Enerji hedefi",
   "@goalEnergy": {},
   "goalProtein": "Protein hedefi",
@@ -816,8 +762,6 @@
   "@onlyLogging": {},
   "onlyLoggingHelpText": "Yalnızca kalorilerinizi kaydetmek istiyorsanız ve belirli öğünler için ayrıntılı bir beslenme planı oluşturmak istemiyorsanız kutuyu işaretleyin",
   "@onlyLoggingHelpText": {},
-  "addGoalsToPlanHelpText": "Bu, plan için enerji, protein, karbonhidrat veya yağ için genel hedefler belirlemenize olanak tanır. Ayrıntılı bir yemek planı ayarlarsanız, bu değerlerin öncelikli olacağını unutmayın.",
-  "@addGoalsToPlanHelpText": {},
   "loggedToday": "Bugün kaydedildi",
   "@loggedToday": {},
   "kcalValue": "{value} kcal",

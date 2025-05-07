@@ -161,10 +161,6 @@
   "@registerInstead": {},
   "loginInstead": "ஏற்கனவே ஒரு கணக்கு இருக்கிறதா? உள்நுழைவு",
   "@loginInstead": {},
-  "labelWorkoutPlans": "ஒர்க்அவுட் திட்டங்கள்",
-  "@labelWorkoutPlans": {
-    "description": "Title for screen workout plans"
-  },
   "labelBottomNavWorkout": "பயிற்சி",
   "@labelBottomNavWorkout": {
     "description": "Label used in bottom navigation, use a short word"
@@ -234,14 +230,6 @@
   "musclesSecondary": "இரண்டாம் நிலை தசைகள்",
   "@musclesSecondary": {
     "description": "secondary muscles trained by an exercise"
-  },
-  "newWorkout": "புதிய பயிற்சி திட்டம்",
-  "@newWorkout": {
-    "description": "Header when adding a new workout"
-  },
-  "noWorkoutPlans": "உங்களிடம் பயிற்சி திட்டங்கள் எதுவும் இல்லை",
-  "@noWorkoutPlans": {
-    "description": "Message shown when the user has no workout plans"
   },
   "reps": "பிரதிநிதிகள்",
   "@reps": {
@@ -558,46 +546,6 @@
   "@aboutDescription": {
     "description": "Text in the about dialog"
   },
-  "aboutSourceTitle": "மூலக் குறியீடு",
-  "@aboutSourceTitle": {
-    "description": "Title for source code section in the about dialog"
-  },
-  "aboutSourceText": "இந்த பயன்பாட்டின் மூலக் குறியீட்டையும் அதன் சேவையகத்தையும் கிட்அப்பில் பெறுங்கள்",
-  "@aboutSourceText": {
-    "description": "Text for source code section in the about dialog"
-  },
-  "aboutBugsTitle": "சிக்கல் அல்லது சிந்தனை இருக்கிறதா?",
-  "@aboutBugsTitle": {
-    "description": "Title for bugs section in the about dialog"
-  },
-  "aboutBugsText": "ஏதேனும் எதிர்பார்த்தபடி நடந்து கொள்ளவில்லை என்றால் அல்லது காணவில்லை என்று நீங்கள் நினைக்கும் ஒரு நற்பொருத்தம் இருந்தால் தொடர்பு கொள்ளுங்கள்.",
-  "@aboutBugsText": {
-    "description": "Text for bugs section in the about dialog"
-  },
-  "aboutContactUsTitle": "ஆய் சொல்லுங்கள்!",
-  "@aboutContactUsTitle": {
-    "description": "Title for contact us section in the about dialog"
-  },
-  "aboutContactUsText": "நீங்கள் எங்களுடன் அரட்டையடிக்க விரும்பினால், டிச்கார்ட் சேவையகத்தில் ஆப் செய்து தொடர்பு கொள்ளுங்கள்",
-  "@aboutContactUsText": {
-    "description": "Text for contact us section in the about dialog"
-  },
-  "aboutMastodonTitle": "மாச்டோடன்",
-  "@aboutMastodonTitle": {
-    "description": "Title for mastodon section in the about dialog"
-  },
-  "aboutMastodonText": "திட்டத்தைப் பற்றிய புதுப்பிப்புகள் மற்றும் செய்திகளுக்கு மாச்டோடனில் எங்களைப் பின்தொடரவும்",
-  "@aboutMastodonText": {
-    "description": "Text for the mastodon section in the about dialog"
-  },
-  "aboutTranslationTitle": "மொழிபெயர்ப்பு",
-  "@aboutTranslationTitle": {
-    "description": "Title for translation section in the about dialog"
-  },
-  "aboutTranslationText": "இந்த பயன்பாடு வெப்லேட்டில் மொழிபெயர்க்கப்பட்டுள்ளது. நீங்கள் உதவ விரும்பினால், இணைப்பைக் சொடுக்கு செய்து மொழிபெயர்க்கத் தொடங்குங்கள்",
-  "@aboutTranslationText": {
-    "description": "Text for translation section in the about dialog"
-  },
   "aboutDonateTitle": "நன்கொடை",
   "@aboutDonateTitle": {},
   "aboutDonateText": "திட்டத்திற்கு உதவ எங்களுக்கு ஒரு காபி வாங்கவும், சேவையக செலவினங்களுக்கு பணம் செலுத்தவும், எங்களை எரிபொருளாக வைத்திருக்கவும்",
@@ -607,10 +555,6 @@
   "goToToday": "இன்று செல்லுங்கள்",
   "@goToToday": {
     "description": "Label on button to jump back to 'today' in the calendar widget"
-  },
-  "enterRepetitionsOrWeight": "தயவுசெய்து மறுபடியும் அல்லது எடையை நிரப்பவும்",
-  "@enterRepetitionsOrWeight": {
-    "description": "Error message when the user hasn't filled in the forms for exercise sets"
   },
   "enterValue": "தயவுசெய்து ஒரு மதிப்பை உள்ளிடவும்",
   "@enterValue": {

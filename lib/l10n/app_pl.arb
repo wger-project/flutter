@@ -93,10 +93,6 @@
   "@aboutDescription": {
     "description": "Text in the about dialog"
   },
-  "aboutSourceTitle": "Kod źródłowy",
-  "@aboutSourceTitle": {
-    "description": "Title for source code section in the about dialog"
-  },
   "productFoundDescription": "Kod kreskowy odpowiada temu produktowi: {productName}. Czy chcesz kontynuować?",
   "@productFoundDescription": {
     "description": "Dialog info when product is found with barcode",
@@ -212,14 +208,6 @@
   "@category": {
     "description": "Category for an exercise, ingredient, etc."
   },
-  "newWorkout": "Nowy plan treningowy",
-  "@newWorkout": {
-    "description": "Header when adding a new workout"
-  },
-  "noWorkoutPlans": "Nie masz planów treningowych",
-  "@noWorkoutPlans": {
-    "description": "Message shown when the user has no workout plans"
-  },
   "repetitions": "Powtórzenia",
   "@repetitions": {
     "description": "Repetitions for an exercise set"
@@ -272,10 +260,6 @@
   "@registerInstead": {},
   "loginInstead": "Posiadasz konto? Zaloguj się",
   "@loginInstead": {},
-  "labelWorkoutPlans": "Plany treningowe",
-  "@labelWorkoutPlans": {
-    "description": "Title for screen workout plans"
-  },
   "labelBottomNavWorkout": "Trening",
   "@labelBottomNavWorkout": {
     "description": "Label used in bottom navigation, use a short word"
@@ -446,10 +430,6 @@
   },
   "goToDetailPage": "Przejdź do strony szczegółów",
   "@goToDetailPage": {},
-  "aboutSourceText": "Zobacz kod źródłowy tej aplikacji i jej serwera na Githubie",
-  "@aboutSourceText": {
-    "description": "Text for source code section in the about dialog"
-  },
   "takePicture": "Zrób zdjęcie",
   "@takePicture": {},
   "chooseFromLibrary": "Wybierz z galerii zdjęć",
@@ -506,26 +486,6 @@
   "@kcal": {
     "description": "Energy in a meal in kilocalories, kcal"
   },
-  "aboutBugsTitle": "Masz problem lub pomysł?",
-  "@aboutBugsTitle": {
-    "description": "Title for bugs section in the about dialog"
-  },
-  "aboutBugsText": "Skontaktuj się z nami, jeżeli coś zachowało się w niespodziewany sposób lub czujesz, że brakuje jakiejś funkcji.",
-  "@aboutBugsText": {
-    "description": "Text for bugs section in the about dialog"
-  },
-  "aboutContactUsTitle": "Przywitaj się!",
-  "@aboutContactUsTitle": {
-    "description": "Title for contact us section in the about dialog"
-  },
-  "aboutContactUsText": "Jeśli chcesz z nami porozmawiać, wskocz na serwer Discorda i przywitaj się",
-  "@aboutContactUsText": {
-    "description": "Text for contact us section in the about dialog"
-  },
-  "aboutTranslationTitle": "Tłumaczenie",
-  "@aboutTranslationTitle": {
-    "description": "Title for translation section in the about dialog"
-  },
   "selectIngredient": "Wybierz składnik",
   "@selectIngredient": {
     "description": "Error message when the user hasn't selected an ingredient from the autocompleter"
@@ -541,10 +501,6 @@
   "optionsLabel": "Opcje",
   "@optionsLabel": {
     "description": "Label for the popup with general app options"
-  },
-  "aboutTranslationText": "Ta aplikacja jest tłumaczona poprzez Weblate. Jeśli też chcesz pomóc, kliknij link i zacznij tłumaczyć",
-  "@aboutTranslationText": {
-    "description": "Text for translation section in the about dialog"
   },
   "goToToday": "Przejdź do dziś",
   "@goToToday": {
@@ -754,10 +710,6 @@
   },
   "searchNamesInEnglish": "Szukaj również w języku angielskim",
   "@searchNamesInEnglish": {},
-  "aboutMastodonTitle": "Mastodon",
-  "@aboutMastodonTitle": {
-    "description": "Title for mastodon section in the about dialog"
-  },
   "plates": "Talerze",
   "@plates": {
     "description": "Generated entry for translation for server strings"
@@ -814,10 +766,6 @@
       }
     }
   },
-  "aboutMastodonText": "Obserwuj nas na Mastodonie, aby otrzymywać aktualizacje i aktualności na temat projektu",
-  "@aboutMastodonText": {
-    "description": "Text for the mastodon section in the about dialog"
-  },
   "settingsCacheTitle": "Pamięć podręczna",
   "@settingsCacheTitle": {},
   "body_weight": "Masa ciała",
@@ -842,10 +790,6 @@
   "@kg": {
     "description": "Generated entry for translation for server strings"
   },
-  "addGoalsToPlan": "Dodaj cele do tego planu",
-  "@addGoalsToPlan": {},
-  "addGoalsToPlanHelpText": "To pozwoli Ci ustawić ogólne cele dla energii, białka, węglowodanów i tłuszczy dla planu. Pamiętaj, że jeśli skonfigurujesz szczegółowy plan posiłków, te wartości będą miały pierwszeństwo.",
-  "@addGoalsToPlanHelpText": {},
   "goalMacro": "Cele makro",
   "@goalMacro": {
     "description": "The goal for macronutrients"

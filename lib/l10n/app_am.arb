@@ -15,10 +15,6 @@
   "@labelBottomNavWorkout": {
     "description": "Label used in bottom navigation, use a short word"
   },
-  "labelWorkoutPlans": "የአካል ብቃት እንቅስቃሴ እቅዶች",
-  "@labelWorkoutPlans": {
-    "description": "Title for screen workout plans"
-  },
   "loginInstead": "በምትኩ ይግቡ",
   "@loginInstead": {},
   "registerInstead": "በምትኩ ይመዝገቡ",

@@ -175,14 +175,6 @@
   },
   "addExercise": "Ajouter un exercice",
   "@addExercise": {},
-  "noWorkoutPlans": "Aucun plan d’entraînement",
-  "@noWorkoutPlans": {
-    "description": "Message shown when the user has no workout plans"
-  },
-  "newWorkout": "Nouveau plan d’entraînement",
-  "@newWorkout": {
-    "description": "Header when adding a new workout"
-  },
   "exercise": "Exercice",
   "@exercise": {
     "description": "An exercise for a workout"
@@ -198,10 +190,6 @@
   "labelWorkoutPlan": "Plan d’entraînement",
   "@labelWorkoutPlan": {
     "description": "Title for screen workout plan"
-  },
-  "labelWorkoutPlans": "Plans d’entraînement",
-  "@labelWorkoutPlans": {
-    "description": "Title for screen workout plans"
   },
   "registerInstead": "Vous n'avez pas de compte ? Inscrivez-vous maintenant",
   "@registerInstead": {},
@@ -301,38 +289,6 @@
   "selectExercise": "Veuillez sélectionner un exercice",
   "@selectExercise": {
     "description": "Error message when the user hasn't selected an exercise in the form"
-  },
-  "aboutTranslationText": "Cette application est traduite sur Weblate. Si vous voulez aussi aider, cliquez sur le lien et commencez à traduire",
-  "@aboutTranslationText": {
-    "description": "Text for translation section in the about dialog"
-  },
-  "aboutTranslationTitle": "Traduction",
-  "@aboutTranslationTitle": {
-    "description": "Title for translation section in the about dialog"
-  },
-  "aboutContactUsText": "Si vous souhaitez discuter avec nous, rendez-vous sur le serveur Discord et contactez-nous",
-  "@aboutContactUsText": {
-    "description": "Text for contact us section in the about dialog"
-  },
-  "aboutContactUsTitle": "Dites-nous bonjour !",
-  "@aboutContactUsTitle": {
-    "description": "Title for contact us section in the about dialog"
-  },
-  "aboutBugsText": "Contactez-nous si un élément ne s’est pas comporté comme prévu ou si une fonctionnalité vous semble manquer.",
-  "@aboutBugsText": {
-    "description": "Text for bugs section in the about dialog"
-  },
-  "aboutBugsTitle": "Vous avez un problème ou une idée ?",
-  "@aboutBugsTitle": {
-    "description": "Title for bugs section in the about dialog"
-  },
-  "aboutSourceText": "Récupérez le code source de cette application et de son serveur sur Github",
-  "@aboutSourceText": {
-    "description": "Text for source code section in the about dialog"
-  },
-  "aboutSourceTitle": "Code source",
-  "@aboutSourceTitle": {
-    "description": "Title for source code section in the about dialog"
   },
   "aboutDescription": "Merci d’utiliser wger ! wger est un projet collaboratif à code source ouvert, réalisé par des passionnés de fitness du monde entier.",
   "@aboutDescription": {
@@ -768,10 +724,6 @@
   },
   "verify": "Vérifier",
   "@verify": {},
-  "aboutMastodonText": "Suivez-nous sur mastodon pour des mises à jour et des informations sur le projet",
-  "@aboutMastodonText": {
-    "description": "Text for the mastodon section in the about dialog"
-  },
   "noMatchingExerciseFound": "Aucun exercice correspondant n'a été trouvé",
   "@noMatchingExerciseFound": {
     "description": "Message returned if no exercises match the searched string"
@@ -784,10 +736,6 @@
   "@onlyLogging": {},
   "onlyLoggingHelpText": "Cochez la case si vous souhaitez uniquement enregistrer vos calories et ne souhaitez pas établir un plan nutritionnel détaillé avec des repas spécifiques",
   "@onlyLoggingHelpText": {},
-  "aboutMastodonTitle": "Mastodon",
-  "@aboutMastodonTitle": {
-    "description": "Title for mastodon section in the about dialog"
-  },
   "aboutDonateTitle": "Faire un don",
   "@aboutDonateTitle": {},
   "goalEnergy": "Objectif énergétique",

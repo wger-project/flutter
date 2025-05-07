@@ -21,10 +21,6 @@
   "@customServerUrl": {
     "description": "Label in the form where the users can enter their own wger instance"
   },
-  "labelWorkoutPlans": "Plány cvičení",
-  "@labelWorkoutPlans": {
-    "description": "Title for screen workout plans"
-  },
   "labelBottomNavWorkout": "Trénink",
   "@labelBottomNavWorkout": {
     "description": "Label used in bottom navigation, use a short word"
@@ -58,10 +54,6 @@
   "category": "Kategorie",
   "@category": {
     "description": "Category for an exercise, ingredient, etc."
-  },
-  "noWorkoutPlans": "Nemáte žádné cvičební plány",
-  "@noWorkoutPlans": {
-    "description": "Message shown when the user has no workout plans"
   },
   "rir": "OvR",
   "@rir": {
@@ -233,10 +225,6 @@
   },
   "goToDetailPage": "Přejít na stránku s podrobnostmi",
   "@goToDetailPage": {},
-  "aboutSourceTitle": "Zdrojový kód",
-  "@aboutSourceTitle": {
-    "description": "Title for source code section in the about dialog"
-  },
   "calendar": "Kalendář",
   "@calendar": {},
   "enterValue": "Prosím zadejte hodnotu",
@@ -384,10 +372,6 @@
   "@musclesSecondary": {
     "description": "secondary muscles trained by an exercise"
   },
-  "newWorkout": "Nový plán cvičení",
-  "@newWorkout": {
-    "description": "Header when adding a new workout"
-  },
   "reps": "Opakování",
   "@reps": {
     "description": "Shorthand for repetitions, used when space constraints are tighter"
@@ -502,34 +486,6 @@
   "@aboutDescription": {
     "description": "Text in the about dialog"
   },
-  "aboutSourceText": "Získejte zdrojový kód této aplikace a jejího serveru na GitHubu",
-  "@aboutSourceText": {
-    "description": "Text for source code section in the about dialog"
-  },
-  "aboutBugsTitle": "Máte problém nebo nápad?",
-  "@aboutBugsTitle": {
-    "description": "Title for bugs section in the about dialog"
-  },
-  "aboutBugsText": "Kontaktujte nás, pokud se něco nechovalo podle očekávání nebo pokud existuje funkce, o které se domníváte, že chybí.",
-  "@aboutBugsText": {
-    "description": "Text for bugs section in the about dialog"
-  },
-  "aboutContactUsTitle": "Řekněte ahoj!",
-  "@aboutContactUsTitle": {
-    "description": "Title for contact us section in the about dialog"
-  },
-  "aboutContactUsText": "Pokud si s námi chcete popovídat, přejděte na Discord server a kontaktujte nás",
-  "@aboutContactUsText": {
-    "description": "Text for contact us section in the about dialog"
-  },
-  "aboutTranslationTitle": "Překlad",
-  "@aboutTranslationTitle": {
-    "description": "Title for translation section in the about dialog"
-  },
-  "aboutTranslationText": "Tato aplikace je přeložena na weblate. Chcete-li také pomoci, klikněte na odkaz a začněte překládat",
-  "@aboutTranslationText": {
-    "description": "Text for translation section in the about dialog"
-  },
   "goToToday": "Přejít na dnešek",
   "@goToToday": {
     "description": "Label on button to jump back to 'today' in the calendar widget"
@@ -640,14 +596,6 @@
   "noMatchingExerciseFound": "Nenalezeny žádné odpovídající tréninky",
   "@noMatchingExerciseFound": {
     "description": "Message returned if no exercises match the searched string"
-  },
-  "aboutMastodonTitle": "Mastodon",
-  "@aboutMastodonTitle": {
-    "description": "Title for mastodon section in the about dialog"
-  },
-  "aboutMastodonText": "Sledujte nás na Mastodonu pro aktualizace a novinky o projektu",
-  "@aboutMastodonText": {
-    "description": "Text for the mastodon section in the about dialog"
   },
   "unVerifiedEmail": "Neověřený e-mail",
   "@unVerifiedEmail": {},
@@ -860,10 +808,6 @@
   "@onlyLogging": {},
   "onlyLoggingHelpText": "Zaškrtněte, pokud chcete pouze zaznamenávat své kalorie a nechcete nastavovat podrobný výživový plán s přesnými jídly",
   "@onlyLoggingHelpText": {},
-  "addGoalsToPlanHelpText": "Tato možnost vám umožňuje nastavit cíle pro energii, bílkoviny, karbohydráty a tuk ve vašem plánu. Upozornění: pokud si nastavíte podrobný jídelní plán, tyto hodnoty budou mít přednost.",
-  "@addGoalsToPlanHelpText": {},
-  "addGoalsToPlan": "Přidat cíle do tohoto plánu",
-  "@addGoalsToPlan": {},
   "goalEnergy": "Cíl energie",
   "@goalEnergy": {},
   "goalProtein": "Cíl bílkovin",

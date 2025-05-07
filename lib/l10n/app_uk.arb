@@ -67,10 +67,6 @@
   },
   "loginInstead": "Вже маєте обліковий запис? Увійти",
   "@loginInstead": {},
-  "labelWorkoutPlans": "Плани тренувань",
-  "@labelWorkoutPlans": {
-    "description": "Title for screen workout plans"
-  },
   "labelBottomNavWorkout": "Тренування",
   "@labelBottomNavWorkout": {
     "description": "Label used in bottom navigation, use a short word"
@@ -114,10 +110,6 @@
   "category": "Категорія",
   "@category": {
     "description": "Category for an exercise, ingredient, etc."
-  },
-  "newWorkout": "Новий план тренувань",
-  "@newWorkout": {
-    "description": "Header when adding a new workout"
   },
   "repetitions": "Повторень",
   "@repetitions": {
@@ -209,10 +201,6 @@
   },
   "weightUnit": "Одиниця ваги",
   "@weightUnit": {},
-  "noWorkoutPlans": "У вас немає планів тренувань",
-  "@noWorkoutPlans": {
-    "description": "Message shown when the user has no workout plans"
-  },
   "dayDescriptionHelp": "Опис того, що робиться в цей день (наприклад, «день підтягування») або які частини тіла тренуються (наприклад, «груди та плечі»)",
   "@dayDescriptionHelp": {},
   "workoutSession": "Сеанс тренування",
@@ -258,10 +246,6 @@
   "aboutDescription": "Дякуємо за використання wger! wger - це спільний проєкт з відкритим кодом, створений ентузіастами фітнесу з усього світу.",
   "@aboutDescription": {
     "description": "Text in the about dialog"
-  },
-  "aboutBugsText": "Зв'яжіться з нами, якщо щось відбувається не так, як очікувалося, або якщо є функція, яка, на вашу думку, відсутня.",
-  "@aboutBugsText": {
-    "description": "Text for bugs section in the about dialog"
   },
   "selectExercise": "Будь ласка, виберіть вправу",
   "@selectExercise": {
@@ -441,34 +425,6 @@
   },
   "goToDetailPage": "Перейти до сторінки відомостей",
   "@goToDetailPage": {},
-  "aboutSourceTitle": "Джерельний код",
-  "@aboutSourceTitle": {
-    "description": "Title for source code section in the about dialog"
-  },
-  "aboutSourceText": "Отримайте джерельний код цього застосунку та його сервера на github",
-  "@aboutSourceText": {
-    "description": "Text for source code section in the about dialog"
-  },
-  "aboutBugsTitle": "У вас є проблема чи ідея?",
-  "@aboutBugsTitle": {
-    "description": "Title for bugs section in the about dialog"
-  },
-  "aboutContactUsTitle": "Привітайтеся!",
-  "@aboutContactUsTitle": {
-    "description": "Title for contact us section in the about dialog"
-  },
-  "aboutContactUsText": "Якщо ви хочете поспілкуватися з нами, зайдіть на сервер Discord і зв'яжіться з нами",
-  "@aboutContactUsText": {
-    "description": "Text for contact us section in the about dialog"
-  },
-  "aboutTranslationTitle": "Перекладання",
-  "@aboutTranslationTitle": {
-    "description": "Title for translation section in the about dialog"
-  },
-  "aboutTranslationText": "Цей заатосунок перекладено на Weblate. Якщо ви також хочете допомогти, клацніть на посилання та почніть переклад",
-  "@aboutTranslationText": {
-    "description": "Text for translation section in the about dialog"
-  },
   "goToToday": "Перейти до сьогодні",
   "@goToToday": {
     "description": "Label on button to jump back to 'today' in the calendar widget"
@@ -897,10 +853,6 @@
   "@surplus": {
     "description": "Caloric surplus (either planned or unplanned)"
   },
-  "aboutMastodonText": "Слідкуйте за оновленнями та новинами про проект на Mastodon",
-  "@aboutMastodonText": {
-    "description": "Text for the mastodon section in the about dialog"
-  },
   "done": "Готово",
   "@done": {},
   "noIngredientsDefined": "Інгредієнти ще не визначені",
@@ -913,10 +865,6 @@
   "@ingredientLogged": {},
   "selectMealToLog": "Виберіть страву, щоб записати в щоденник",
   "@selectMealToLog": {},
-  "aboutMastodonTitle": "Мастодонт",
-  "@aboutMastodonTitle": {
-    "description": "Title for mastodon section in the about dialog"
-  },
   "settingsCacheTitle": "Кеш",
   "@settingsCacheTitle": {},
   "settingsCacheDeletedSnackbar": "Кеш успішно очищено",

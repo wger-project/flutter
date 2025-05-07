@@ -35,10 +35,6 @@
   },
   "loginInstead": "Já tem uma conta? Faça login",
   "@loginInstead": {},
-  "labelWorkoutPlans": "Planos de treino",
-  "@labelWorkoutPlans": {
-    "description": "Title for screen workout plans"
-  },
   "labelBottomNavWorkout": "Treino",
   "@labelBottomNavWorkout": {
     "description": "Label used in bottom navigation, use a short word"
@@ -78,10 +74,6 @@
   "category": "Categoria",
   "@category": {
     "description": "Category for an exercise, ingredient, etc."
-  },
-  "noWorkoutPlans": "Você não tem planos de treino",
-  "@noWorkoutPlans": {
-    "description": "Message shown when the user has no workout plans"
   },
   "repetitions": "Repetições",
   "@repetitions": {
@@ -207,22 +199,6 @@
   "@aboutDescription": {
     "description": "Text in the about dialog"
   },
-  "aboutSourceTitle": "Código fonte",
-  "@aboutSourceTitle": {
-    "description": "Title for source code section in the about dialog"
-  },
-  "aboutBugsTitle": "Tem um problema ou ideia?",
-  "@aboutBugsTitle": {
-    "description": "Title for bugs section in the about dialog"
-  },
-  "aboutContactUsTitle": "Diga oi!",
-  "@aboutContactUsTitle": {
-    "description": "Title for contact us section in the about dialog"
-  },
-  "aboutTranslationText": "Este aplicativo é traduzido em weblate. Se você também quiser ajudar, clique no link e comece a traduzir",
-  "@aboutTranslationText": {
-    "description": "Text for translation section in the about dialog"
-  },
   "calendar": "Calendário",
   "@calendar": {},
   "goToToday": "Voltar para hoje",
@@ -315,10 +291,6 @@
   "@searchExercise": {
     "description": "Label on set form. Selected exercises are added to the set"
   },
-  "newWorkout": "Novo plano de treino",
-  "@newWorkout": {
-    "description": "Header when adding a new workout"
-  },
   "plateCalculator": "Pratos",
   "@plateCalculator": {
     "description": "Label used for the plate calculator in the gym mode"
@@ -381,10 +353,6 @@
   },
   "saturatedFat": "Gordura saturada",
   "@saturatedFat": {},
-  "aboutContactUsText": "Se você quiser conversar conosco, entre no servidor Discord e entre em contato",
-  "@aboutContactUsText": {
-    "description": "Text for contact us section in the about dialog"
-  },
   "jumpTo": "Pular",
   "@jumpTo": {
     "description": "Imperative. Label used in popup allowing the user to jump to a specific exercise while in the gym mode"
@@ -415,10 +383,6 @@
   },
   "goToDetailPage": "Ir para a página de detalhes",
   "@goToDetailPage": {},
-  "aboutTranslationTitle": "Tradução",
-  "@aboutTranslationTitle": {
-    "description": "Title for translation section in the about dialog"
-  },
   "anErrorOccurred": "Um erro ocorreu!",
   "@anErrorOccurred": {},
   "start": "Iniciar",
@@ -475,10 +439,6 @@
   "@noWeightEntries": {
     "description": "Message shown when the user has no logged weight entries"
   },
-  "aboutBugsText": "Entre em contato se algo não se comportar conforme o esperado ou se houver um recurso que você sente que está faltando.",
-  "@aboutBugsText": {
-    "description": "Text for bugs section in the about dialog"
-  },
   "enterValidNumber": "Por favor insira um número válido",
   "@enterValidNumber": {
     "description": "Error message when the user has submitted an invalid number (e.g. '3,.,.,.')"
@@ -498,10 +458,6 @@
         "type": "String"
       }
     }
-  },
-  "aboutSourceText": "Obtenha o código fonte deste aplicativo e seu servidor no github",
-  "@aboutSourceText": {
-    "description": "Text for source code section in the about dialog"
   },
   "setUnitsAndRir": "Definir unidades e ReR",
   "@setUnitsAndRir": {
@@ -783,14 +739,6 @@
   "noMatchingExerciseFound": "Nenhum exercício correspondente encontrado",
   "@noMatchingExerciseFound": {
     "description": "Message returned if no exercises match the searched string"
-  },
-  "aboutMastodonTitle": "Mastodon",
-  "@aboutMastodonTitle": {
-    "description": "Title for mastodon section in the about dialog"
-  },
-  "aboutMastodonText": "Siga-nos no Mastodon para atualizações e notícias sobre o projeto",
-  "@aboutMastodonText": {
-    "description": "Text for the mastodon section in the about dialog"
   },
   "aboutDonateTitle": "Doar",
   "@aboutDonateTitle": {},

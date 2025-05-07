@@ -174,14 +174,6 @@
   "@timeStartAhead": {},
   "carbohydrates": "كربوهيدرات",
   "@carbohydrates": {},
-  "noWorkoutPlans": "لا يوجد خطة تمارين",
-  "@noWorkoutPlans": {
-    "description": "Message shown when the user has no workout plans"
-  },
-  "aboutTranslationTitle": "ترجمة",
-  "@aboutTranslationTitle": {
-    "description": "Title for translation section in the about dialog"
-  },
   "date": "التاريخ",
   "@date": {
     "description": "The date of a workout log or body weight entry"
@@ -240,10 +232,6 @@
   },
   "edit": "تعديل",
   "@edit": {},
-  "aboutBugsText": "في حال مواجهتك لأي خلل أو الحاجة لإضافة ميزة جديدة للتطبيق، تواصل معنا",
-  "@aboutBugsText": {
-    "description": "Text for bugs section in the about dialog"
-  },
   "setUnitsAndRir": "تعيين الوحدات و RiR",
   "@setUnitsAndRir": {
     "description": "Label shown on the slider where the user can toggle showing units and RiR",
@@ -255,10 +243,6 @@
   },
   "anErrorOccurred": "حصل خطأ!",
   "@anErrorOccurred": {},
-  "aboutContactUsTitle": "قل اهلاً!",
-  "@aboutContactUsTitle": {
-    "description": "Title for contact us section in the about dialog"
-  },
   "selectExercise": "اختر تمرين",
   "@selectExercise": {
     "description": "Error message when the user hasn't selected an exercise in the form"
@@ -303,10 +287,6 @@
   "addSet": "أضف مجموعة",
   "@addSet": {
     "description": "Label for the button that adds a set (to a workout day)"
-  },
-  "newWorkout": "خطة تمارين جديدة",
-  "@newWorkout": {
-    "description": "Header when adding a new workout"
   },
   "energyShort": "ط",
   "@energyShort": {
@@ -434,10 +414,6 @@
   },
   "registerInstead": "ليس لديك حساب ؟ سجّل الان",
   "@registerInstead": {},
-  "aboutMastodonTitle": "Mastodon",
-  "@aboutMastodonTitle": {
-    "description": "Title for mastodon section in the about dialog"
-  },
   "repetitions": "التكرار",
   "@repetitions": {
     "description": "Generated entry for translation for server strings"
@@ -464,10 +440,6 @@
   "@nutritionalDiary": {},
   "protein": "بروتين",
   "@protein": {},
-  "labelWorkoutPlans": "خطط التمارين",
-  "@labelWorkoutPlans": {
-    "description": "Title for screen workout plans"
-  },
   "proteinShort": "ب",
   "@proteinShort": {
     "description": "The first letter or short name of the word 'Protein', used in overviews"
@@ -504,10 +476,6 @@
   "@labelWorkoutLogs": {
     "description": "(Workout) logs"
   },
-  "aboutTranslationText": "يُترجم التطبيق على weblate إذا كنت تريد المساعدة اضغط على الرابط وابدأ الترجمة",
-  "@aboutTranslationText": {
-    "description": "Text for translation section in the about dialog"
-  },
   "ingredient": "المكونات",
   "@ingredient": {},
   "measurementCategoriesHelpText": "فئة القياس، مثل \"العضلة ذات الرأسين\" أو \"دهون الجسم\"",
@@ -522,10 +490,6 @@
   },
   "todaysWorkout": "تمرينك اليوم",
   "@todaysWorkout": {},
-  "aboutSourceText": "اطلع على الكود المصدري للتطبيق والسيرفر في القت هب",
-  "@aboutSourceText": {
-    "description": "Text for source code section in the about dialog"
-  },
   "translateExercise": "ترجم التدريب الآن",
   "@translateExercise": {},
   "kJ": "كيلو جول",
@@ -540,10 +504,6 @@
   },
   "gallery": "الألبوم",
   "@gallery": {},
-  "aboutMastodonText": "تابعنا على Mastodon لأحدث الأخبار حول المشروع",
-  "@aboutMastodonText": {
-    "description": "Text for the mastodon section in the about dialog"
-  },
   "translation": "الترجمة",
   "@translation": {},
   "successfullySaved": "تم الحفظ",
@@ -577,10 +537,6 @@
   "musclesSecondary": "العضلات الثانوية",
   "@musclesSecondary": {
     "description": "secondary muscles trained by an exercise"
-  },
-  "aboutContactUsText": "إذا كنت تريد مراسلتنا فنحن موجودين في Discord، اهلاً بك",
-  "@aboutContactUsText": {
-    "description": "Text for contact us section in the about dialog"
   },
   "minutes": "دقائق",
   "@minutes": {
@@ -657,10 +613,6 @@
   "customServerUrl": "رابط عنصر wger",
   "@customServerUrl": {
     "description": "Label in the form where the users can enter their own wger instance"
-  },
-  "aboutBugsTitle": "لديك مشكلة أو فكرة ؟",
-  "@aboutBugsTitle": {
-    "description": "Title for bugs section in the about dialog"
   },
   "carbohydratesShort": "ك",
   "@carbohydratesShort": {
@@ -827,10 +779,6 @@
   "hamstrings": "أوتار الركبة",
   "@hamstrings": {
     "description": "Generated entry for translation for server strings"
-  },
-  "aboutSourceTitle": "كود المصدر",
-  "@aboutSourceTitle": {
-    "description": "Title for source code section in the about dialog"
   },
   "textPromptSubheading": "اضغط على الزر للبدء",
   "@textPromptSubheading": {},
