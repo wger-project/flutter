@@ -227,19 +227,18 @@ class NutritionalPlan {
   /// returns diary entries
   /// deduped by the combination of amount and ingredient ID
   List<Log> get dedupDiaryEntries {
-
     //Get unique and sort by frequency
     const Duration recentWindow = Duration(days: -90);
     var uniqueLogs = <String, Log>{};
-    for (final log in diaryEntries){
+    for (final log in diaryEntries) {
       final int howMany = diaryEntries
           .where((diaryEntries) =>
-      diaryEntries.ingredientId == log.ingredientId &&
-          diaryEntries.amount == log.amount &&
-          diaryEntries.datetime.isAfter(DateTime.now().add(recentWindow)))
+              diaryEntries.ingredientId == log.ingredientId &&
+              diaryEntries.amount == log.amount &&
+              diaryEntries.datetime.isAfter(DateTime.now().add(recentWindow)))
           .length;
       //Padding allows for sorting string as if number
-      final String howManyPadded = howMany.toString().padLeft(10,'0');
+      final String howManyPadded = howMany.toString().padLeft(10, '0');
       final uniqueAndCountString = '${howManyPadded}_${log.ingredientId}_${log.amount}';
       uniqueLogs[uniqueAndCountString] = log;
     }
