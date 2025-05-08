@@ -47,9 +47,7 @@ void showHttpExceptionErrorDialog(WgerHttpException exception, {BuildContext? co
     return;
   }
 
-  logger.fine(exception.toString());
-
-  final errorList = extractErrors(exception.errors);
+  final errorList = formatErrors(extractErrors(exception.errors));
 
   showDialog(
     context: dialogContext,
@@ -272,35 +270,78 @@ void showDeleteDialog(BuildContext context, String confirmDeleteName, Log log) a
   return res;
 }
 
-List<Widget> extractErrors(Map<String, dynamic>? errors) {
-  final List<Widget> errorList = [];
+class ApiError {
+  final String key;
+  late List<String> errorMessages = [];
 
-  if (errors == null) {
-    return errorList;
+  ApiError({required this.key, this.errorMessages = const []});
+
+  @override
+  String toString() {
+    return 'ApiError(key: $key, errorMessage: $errorMessages)';
   }
+}
+
+/// Extracts error messages from the server response
+List<ApiError> extractErrors(Map<String, dynamic> errors) {
+  final List<ApiError> errorList = [];
 
   for (final key in errors.keys) {
-    // Error headers
-    // Ensure that the error heading first letter is capitalized.
-    final String errorHeaderMsg = key[0].toUpperCase() + key.substring(1, key.length);
+    // Header
+    var header = key[0].toUpperCase() + key.substring(1, key.length);
+    header = header.replaceAll('_', ' ');
+    final error = ApiError(key: header);
 
+    final messages = errors[key];
+
+    // Messages
+    if (messages is String) {
+      error.errorMessages = List.of(error.errorMessages)..add(messages);
+    } else {
+      error.errorMessages = [...error.errorMessages, ...messages];
+    }
+
+    errorList.add(error);
+  }
+
+  return errorList;
+}
+
+/// Processes the error messages from the server and returns a list of widgets
+List<Widget> formatErrors(List<ApiError> errors, {Color? color}) {
+  final textColor = color ?? Colors.black;
+
+  final List<Widget> errorList = [];
+
+  for (final error in errors) {
     errorList.add(
-      Text(
-        errorHeaderMsg.replaceAll('_', ' '),
-        style: const TextStyle(fontWeight: FontWeight.bold),
-      ),
+      Text(error.key, style: TextStyle(fontWeight: FontWeight.bold, color: textColor)),
     );
 
-    // Error messages
-    if (errors[key] is String) {
-      errorList.add(Text(errors[key]));
-    } else {
-      for (final value in errors[key]) {
-        errorList.add(Text(value));
-      }
+    for (final message in error.errorMessages) {
+      errorList.add(Text(message, style: TextStyle(color: textColor)));
     }
     errorList.add(const SizedBox(height: 8));
   }
 
   return errorList;
+}
+
+class FormErrorsWidget extends StatelessWidget {
+  final WgerHttpException exception;
+
+  const FormErrorsWidget(this.exception, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Icon(Icons.error_outline, color: Theme.of(context).colorScheme.error),
+        ...formatErrors(
+          extractErrors(exception.errors),
+          color: Theme.of(context).colorScheme.error,
+        ),
+      ],
+    );
+  }
 }

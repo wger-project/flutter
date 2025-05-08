@@ -105,6 +105,7 @@ class AuthCard extends StatefulWidget {
 class _AuthCardState extends State<AuthCard> {
   bool isObscure = true;
   bool confirmIsObscure = true;
+  Widget errorMessage = const SizedBox.shrink();
 
   final GlobalKey<FormState> _formKey = GlobalKey();
   AuthMode _authMode = AuthMode.Login;
@@ -195,21 +196,25 @@ class _AuthCardState extends State<AuthCard> {
         );
         return;
       }
-      setState(() {
-        _isLoading = false;
-      });
-    } on WgerHttpException catch (error) {
-      if (mounted) {
-        showHttpExceptionErrorDialog(error, context: context);
+      if (context.mounted) {
+        setState(() {
+          _isLoading = false;
+        });
       }
-      setState(() {
-        _isLoading = false;
-      });
-      rethrow;
+    } on WgerHttpException catch (error) {
+      if (context.mounted) {
+        setState(() {
+          _isLoading = false;
+          errorMessage = FormErrorsWidget(error);
+        });
+      }
     } catch (error) {
-      setState(() {
-        _isLoading = false;
-      });
+      if (context.mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+
       rethrow;
     }
   }
@@ -248,6 +253,7 @@ class _AuthCardState extends State<AuthCard> {
             child: AutofillGroup(
               child: Column(
                 children: [
+                  errorMessage,
                   TextFormField(
                     key: const Key('inputUsername'),
                     decoration: InputDecoration(

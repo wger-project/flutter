@@ -21,8 +21,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
-import 'package:wger/exceptions/http_exception.dart';
-import 'package:wger/helpers/errors.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/body_weight.dart';
@@ -90,20 +88,13 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
 
       // Base data
       widget._logger.info('Loading base data');
-      try {
-        await Future.wait([
-          authProvider.setServerVersion(),
-          userProvider.fetchAndSetProfile(),
-          routinesProvider.fetchAndSetUnits(),
-          nutritionPlansProvider.fetchIngredientsFromCache(),
-          exercisesProvider.fetchAndSetInitialData(),
-        ]);
-      } on WgerHttpException catch (error) {
-        widget._logger.warning('Wger exception loading base data');
-        if (mounted) {
-          showHttpExceptionErrorDialog(error, context: context);
-        }
-      }
+      await Future.wait([
+        authProvider.setServerVersion(),
+        userProvider.fetchAndSetProfile(),
+        routinesProvider.fetchAndSetUnits(),
+        nutritionPlansProvider.fetchIngredientsFromCache(),
+        exercisesProvider.fetchAndSetInitialData(),
+      ]);
 
       // Plans, weight and gallery
       widget._logger.info('Loading routines, weight, measurements and gallery');

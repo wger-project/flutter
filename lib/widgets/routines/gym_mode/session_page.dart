@@ -18,9 +18,7 @@
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart' as provider;
-import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/errors.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/misc.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -225,20 +223,14 @@ class _SessionPageState extends State<SessionPage> {
                     _form.currentState!.save();
 
                     // Save the entry on the server
-                    try {
-                      if (widget._session.id == null) {
-                        await routinesProvider.addSession(widget._session, widget._routine.id!);
-                      } else {
-                        await routinesProvider.editSession(widget._session);
-                      }
+                    if (widget._session.id == null) {
+                      await routinesProvider.addSession(widget._session, widget._routine.id!);
+                    } else {
+                      await routinesProvider.editSession(widget._session);
+                    }
 
-                      if (mounted) {
-                        Navigator.of(context).pop();
-                      }
-                    } on WgerHttpException catch (error) {
-                      if (mounted) {
-                        showHttpExceptionErrorDialog(error, context: context);
-                      }
+                    if (mounted) {
+                      Navigator.of(context).pop();
                     }
                   },
                 ),

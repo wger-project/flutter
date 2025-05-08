@@ -1,14 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/helpers/errors.dart';
 
 void main() {
   group('extractErrors', () {
-    testWidgets('Returns empty list when errors is null', (WidgetTester tester) async {
-      final result = extractErrors(null);
-      expect(result, isEmpty);
-    });
-
     testWidgets('Returns empty list when errors is empty', (WidgetTester tester) async {
       final result = extractErrors({});
       expect(result, isEmpty);
@@ -19,17 +13,14 @@ void main() {
       final errors = {'error': 'Something went wrong'};
 
       // Act
-      final widgets = extractErrors(errors);
+      final result = extractErrors(errors);
 
       // Assert
-      expect(widgets.length, 3, reason: 'Expected 3 widgets: header, message, and spacing');
+      expect(result.length, 1, reason: 'Expected 1 error');
+      expect(result[0].errorMessages.length, 1, reason: '1 error message');
 
-      final headerWidget = widgets[0] as Text;
-      expect(headerWidget.data, 'Error');
-
-      final messageWidget = widgets[1] as Text;
-      expect(messageWidget.data, 'Something went wrong');
-      expect(widgets[2] is SizedBox, true);
+      expect(result[0].key, 'Error');
+      expect(result[0].errorMessages[0], 'Something went wrong');
     });
 
     testWidgets('Processes list values correctly', (WidgetTester tester) async {
@@ -39,19 +30,12 @@ void main() {
       };
 
       // Act
-      final widgets = extractErrors(errors);
+      final result = extractErrors(errors);
 
       // Assert
-      expect(widgets.length, 4);
-
-      final headerWidget = widgets[0] as Text;
-      expect(headerWidget.data, 'Validation error');
-
-      final messageWidget1 = widgets[1] as Text;
-      expect(messageWidget1.data, 'Error 1');
-
-      final messageWidget2 = widgets[2] as Text;
-      expect(messageWidget2.data, 'Error 2');
+      expect(result[0].key, 'Validation error');
+      expect(result[0].errorMessages[0], 'Error 1');
+      expect(result[0].errorMessages[1], 'Error 2');
     });
 
     testWidgets('Processes multiple error types correctly', (WidgetTester tester) async {
@@ -62,20 +46,21 @@ void main() {
       };
 
       // Act
-      final widgets = extractErrors(errors);
+      final result = extractErrors(errors);
 
       // Assert
-      expect(widgets.length, 7);
+      expect(result.length, 2);
+      final error1 = result[0];
+      final error2 = result[1];
 
-      final textWidgets = widgets.whereType<Text>().toList();
-      expect(textWidgets.map((w) => w.data).contains('Username'), true);
-      expect(textWidgets.map((w) => w.data).contains('Password'), true);
-      expect(textWidgets.map((w) => w.data).contains('Username is too boring'), true);
-      expect(textWidgets.map((w) => w.data).contains('Username is too short'), true);
-      expect(textWidgets.map((w) => w.data).contains('Password does not match'), true);
+      expect(error1.key, 'Username');
+      expect(error1.errorMessages.length, 2);
+      expect(error1.errorMessages[0], 'Username is too boring');
+      expect(error1.errorMessages[1], 'Username is too short');
 
-      final spacers = widgets.whereType<SizedBox>().toList();
-      expect(spacers.length, 2);
+      expect(error2.key, 'Password');
+      expect(error2.errorMessages.length, 1);
+      expect(error2.errorMessages[0], 'Password does not match');
     });
   });
 }

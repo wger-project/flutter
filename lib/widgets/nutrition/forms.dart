@@ -18,9 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/errors.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
@@ -89,25 +87,22 @@ class MealForm extends StatelessWidget {
             ElevatedButton(
               key: const Key(SUBMIT_BUTTON_KEY_NAME),
               child: Text(AppLocalizations.of(context).save),
-              onPressed: () async {
+              onPressed: () {
                 if (!_form.currentState!.validate()) {
                   return;
                 }
                 _form.currentState!.save();
 
-                try {
-                  _meal.id == null
-                      ? Provider.of<NutritionPlansProvider>(
-                          context,
-                          listen: false,
-                        ).addMeal(_meal, _planId)
-                      : Provider.of<NutritionPlansProvider>(
-                          context,
-                          listen: false,
-                        ).editMeal(_meal);
-                } on WgerHttpException catch (error) {
-                  showHttpExceptionErrorDialog(error, context: context);
-                }
+                _meal.id == null
+                    ? Provider.of<NutritionPlansProvider>(
+                        context,
+                        listen: false,
+                      ).addMeal(_meal, _planId)
+                    : Provider.of<NutritionPlansProvider>(
+                        context,
+                        listen: false,
+                      ).editMeal(_meal);
+
                 Navigator.of(context).pop();
               },
             ),
@@ -399,20 +394,17 @@ class IngredientFormState extends State<IngredientForm> {
                 _form.currentState!.save();
                 _mealItem.ingredientId = int.parse(_ingredientIdController.text);
 
-                try {
-                  var date = DateTime.parse(_dateController.text);
-                  final tod = stringToTime(_timeController.text);
-                  date = DateTime(
-                    date.year,
-                    date.month,
-                    date.day,
-                    tod.hour,
-                    tod.minute,
-                  );
-                  widget.onSave(context, _mealItem, date);
-                } on WgerHttpException catch (error) {
-                  showHttpExceptionErrorDialog(error, context: context);
-                }
+                var date = DateTime.parse(_dateController.text);
+                final tod = stringToTime(_timeController.text);
+                date = DateTime(
+                  date.year,
+                  date.month,
+                  date.day,
+                  tod.hour,
+                  tod.minute,
+                );
+                widget.onSave(context, _mealItem, date);
+
                 Navigator.of(context).pop();
               },
             ),
@@ -664,35 +656,29 @@ class _PlanFormState extends State<PlanForm> {
               _form.currentState!.save();
 
               // Save to DB
-              try {
-                if (widget._plan.id != null) {
-                  await Provider.of<NutritionPlansProvider>(
-                    context,
-                    listen: false,
-                  ).editPlan(widget._plan);
-                  if (context.mounted) {
-                    Navigator.of(context).pop();
-                  }
-                } else {
-                  widget._plan = await Provider.of<NutritionPlansProvider>(
-                    context,
-                    listen: false,
-                  ).addPlan(widget._plan);
-                  if (context.mounted) {
-                    Navigator.of(context).pushReplacementNamed(
-                      NutritionalPlanScreen.routeName,
-                      arguments: widget._plan,
-                    );
-                  }
-                }
-
-                // Saving was successful, reset the data
-                _descriptionController.clear();
-              } on WgerHttpException catch (error) {
+              if (widget._plan.id != null) {
+                await Provider.of<NutritionPlansProvider>(
+                  context,
+                  listen: false,
+                ).editPlan(widget._plan);
                 if (context.mounted) {
-                  showHttpExceptionErrorDialog(error, context: context);
+                  Navigator.of(context).pop();
+                }
+              } else {
+                widget._plan = await Provider.of<NutritionPlansProvider>(
+                  context,
+                  listen: false,
+                ).addPlan(widget._plan);
+                if (context.mounted) {
+                  Navigator.of(context).pushReplacementNamed(
+                    NutritionalPlanScreen.routeName,
+                    arguments: widget._plan,
+                  );
                 }
               }
+
+              // Saving was successful, reset the data
+              _descriptionController.clear();
             },
           ),
         ],

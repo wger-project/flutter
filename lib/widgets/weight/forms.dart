@@ -19,9 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/errors.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/body_weight/weight_entry.dart';
@@ -172,16 +170,10 @@ class WeightForm extends StatelessWidget {
               _form.currentState!.save();
 
               // Save the entry on the server
-              try {
-                final provider = Provider.of<BodyWeightProvider>(context, listen: false);
-                _weightEntry.id == null
-                    ? await provider.addEntry(_weightEntry)
-                    : await provider.editEntry(_weightEntry);
-              } on WgerHttpException catch (error) {
-                if (context.mounted) {
-                  showHttpExceptionErrorDialog(error, context: context);
-                }
-              }
+              final provider = Provider.of<BodyWeightProvider>(context, listen: false);
+              _weightEntry.id == null
+                  ? await provider.addEntry(_weightEntry)
+                  : await provider.editEntry(_weightEntry);
 
               if (context.mounted) {
                 Navigator.of(context).pop();

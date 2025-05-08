@@ -20,7 +20,6 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart' as provider;
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/errors.dart';
 import 'package:wger/helpers/gym_mode.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
@@ -313,11 +312,10 @@ class _LogPageState extends State<LogPage> {
                         curve: DEFAULT_ANIMATION_CURVE,
                       );
                       _isSaving = false;
-                    } on WgerHttpException catch (error) {
-                      if (mounted) {
-                        showHttpExceptionErrorDialog(error, context: context);
-                      }
+                    } on WgerHttpException {
                       _isSaving = false;
+
+                      rethrow;
                     }
                   },
             child:
