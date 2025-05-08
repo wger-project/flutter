@@ -22,7 +22,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/ui.dart';
+import 'package:wger/helpers/errors.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/screens/update_app_screen.dart';
 import 'package:wger/theme/theme.dart';
@@ -195,24 +195,22 @@ class _AuthCardState extends State<AuthCard> {
         );
         return;
       }
-
       setState(() {
         _isLoading = false;
       });
     } on WgerHttpException catch (error) {
       if (mounted) {
-        showHttpExceptionErrorDialog(error, context);
+        showHttpExceptionErrorDialog(error, context: context);
       }
       setState(() {
         _isLoading = false;
       });
-    } catch (error, stackTrace) {
-      if (mounted) {
-        showGeneralErrorDialog(error, stackTrace, context: context);
-      }
+      rethrow;
+    } catch (error) {
       setState(() {
         _isLoading = false;
       });
+      rethrow;
     }
   }
 

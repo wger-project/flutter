@@ -22,6 +22,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/core/locator.dart';
+import 'package:wger/exceptions/http_exception.dart';
+import 'package:wger/helpers/errors.dart';
 import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/add_exercise.dart';
@@ -60,7 +62,6 @@ import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/about.dart';
 import 'package:wger/widgets/core/settings.dart';
 
-import 'helpers/ui.dart';
 import 'providers/auth.dart';
 
 void _setupLogging() {
@@ -73,13 +74,14 @@ void _setupLogging() {
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
+  // Needs to be called before runApp
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Logger
   _setupLogging();
 
   final logger = Logger('main');
   //zx.setLogEnabled(kDebugMode);
-
-  // Needs to be called before runApp
-  WidgetsFlutterBinding.ensureInitialized();
 
   // Locator to initialize exerciseDB
   await ServiceLocator().configure();
@@ -89,11 +91,12 @@ void main() async {
 
   // Catch errors from Flutter itself (widget build, layout, paint, etc.)
   FlutterError.onError = (FlutterErrorDetails details) {
+    final stack = details.stack ?? StackTrace.empty;
     if (kDebugMode) {
       FlutterError.dumpErrorToConsole(details);
     }
-    showGeneralErrorDialog(details.exception, details.stack ?? StackTrace.empty);
-    // Zone.current.handleUncaughtError(details.exception, details.stack ?? StackTrace.empty);
+
+    showGeneralErrorDialog(details.exception, stack);
   };
 
   // Catch errors that happen outside of the Flutter framework (e.g., in async operations)
@@ -102,7 +105,11 @@ void main() async {
       logger.warning('Caught error by PlatformDispatcher: $error');
       logger.warning('Stack trace: $stack');
     }
-    showGeneralErrorDialog(error, stack);
+    if (error is WgerHttpException) {
+      showHttpExceptionErrorDialog(error);
+    } else {
+      showGeneralErrorDialog(error, stack);
+    }
 
     // Return true to indicate that the error has been handled.
     return true;

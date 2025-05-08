@@ -20,9 +20,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart' as provider;
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/errors.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/misc.dart';
-import 'package:wger/helpers/ui.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/routine.dart';
@@ -237,7 +237,7 @@ class _SessionPageState extends State<SessionPage> {
                       }
                     } on WgerHttpException catch (error) {
                       if (mounted) {
-                        showHttpExceptionErrorDialog(error, context);
+                        showHttpExceptionErrorDialog(error, context: context);
                       }
                     }
                   },

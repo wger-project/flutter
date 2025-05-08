@@ -19,8 +19,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/exceptions/http_exception.dart';
+import 'package:wger/helpers/errors.dart';
 import 'package:wger/helpers/json.dart';
-import 'package:wger/helpers/ui.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
@@ -123,7 +123,7 @@ class MeasurementCategoryForm extends StatelessWidget {
                       );
               } on WgerHttpException catch (error) {
                 if (context.mounted) {
-                  showHttpExceptionErrorDialog(error, context);
+                  showHttpExceptionErrorDialog(error, context: context);
                 }
               }
               if (context.mounted) {
@@ -296,7 +296,7 @@ class MeasurementEntryForm extends StatelessWidget {
                       );
               } on WgerHttpException catch (error) {
                 if (context.mounted) {
-                  showHttpExceptionErrorDialog(error, context);
+                  showHttpExceptionErrorDialog(error, context: context);
                 }
               }
               if (context.mounted) {

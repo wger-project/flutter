@@ -19,8 +19,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:wger/helpers/colors.dart';
+import 'package:wger/helpers/errors.dart';
 import 'package:wger/helpers/misc.dart';
-import 'package:wger/helpers/ui.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/routine.dart';

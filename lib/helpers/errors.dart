@@ -17,6 +17,7 @@
  */
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -31,41 +32,27 @@ import 'package:wger/main.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/providers/routines.dart';
 
-void showHttpExceptionErrorDialog(
-  WgerHttpException exception,
-  BuildContext context,
-) {
+void showHttpExceptionErrorDialog(WgerHttpException exception, {BuildContext? context}) {
   final logger = Logger('showHttpExceptionErrorDialog');
+
+  // Attempt to get the BuildContext from our global navigatorKey.
+  // This allows us to show a dialog even if the error occurs outside
+  // of a widget's build method.
+  final BuildContext? dialogContext = context ?? navigatorKey.currentContext;
+
+  if (dialogContext == null) {
+    if (kDebugMode) {
+      logger.warning('Error: Could not error show http error dialog because the context is null.');
+    }
+    return;
+  }
 
   logger.fine(exception.toString());
 
-  final List<Widget> errorList = [];
-
-  for (final key in exception.errors!.keys) {
-    // Error headers
-    // Ensure that the error heading first letter is capitalized.
-    final String errorHeaderMsg = key[0].toUpperCase() + key.substring(1, key.length);
-
-    errorList.add(
-      Text(
-        errorHeaderMsg.replaceAll('_', ' '),
-        style: const TextStyle(fontWeight: FontWeight.bold),
-      ),
-    );
-
-    // Error messages
-    if (exception.errors![key] is String) {
-      errorList.add(Text(exception.errors![key]));
-    } else {
-      for (final value in exception.errors![key]) {
-        errorList.add(Text(value));
-      }
-    }
-    errorList.add(const SizedBox(height: 8));
-  }
+  final errorList = extractErrors(exception.errors);
 
   showDialog(
-    context: context,
+    context: dialogContext,
     builder: (ctx) => AlertDialog(
       title: Text(AppLocalizations.of(ctx).anErrorOccurred),
       content: Column(
@@ -83,10 +70,6 @@ void showHttpExceptionErrorDialog(
       ],
     ),
   );
-
-  // This call serves no purpose The dialog above doesn't seem to show
-  // unless this dummy call is present
-  //showDialog(context: context, builder: (context) => Container());
 }
 
 void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext? context}) {
@@ -100,13 +83,12 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
   if (dialogContext == null) {
     if (kDebugMode) {
       logger.warning('Error: Could not error show dialog because the context is null.');
-      logger.warning('Original error: $error');
-      logger.warning('Original stackTrace: $stackTrace');
     }
     return;
   }
 
-  // Determine the error title and message based on the error type.
+  // If possible, determine the error title and message based on the error type.
+  bool isNetworkError = false;
   String errorTitle = 'An error occurred';
   String errorMessage = error.toString();
 
@@ -118,7 +100,9 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
     errorTitle = 'Application Error';
     errorMessage = error.exceptionAsString();
   } else if (error is MissingRequiredKeysException) {
-    errorTitle = 'Missing Required Key ';
+    errorTitle = 'Missing Required Key';
+  } else if (error is SocketException) {
+    isNetworkError = true;
   }
 
   final String fullStackTrace = stackTrace?.toString() ?? 'No stack trace available.';
@@ -133,11 +117,14 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.error, color: Theme.of(context).colorScheme.error),
+            Icon(
+              isNetworkError ? Icons.signal_wifi_connected_no_internet_4_outlined : Icons.error,
+              color: Theme.of(context).colorScheme.error,
+            ),
             const SizedBox(width: 8),
             Expanded(
               child: Text(
-                i18n.anErrorOccurred,
+                isNetworkError ? i18n.errorCouldNotConnectToServer : i18n.anErrorOccurred,
                 style: TextStyle(color: Theme.of(context).colorScheme.error),
               ),
             ),
@@ -146,7 +133,11 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
         content: SingleChildScrollView(
           child: ListBody(
             children: [
-              Text(i18n.errorInfoDescription),
+              Text(
+                isNetworkError
+                    ? i18n.errorCouldNotConnectToServerDetails
+                    : i18n.errorInfoDescription,
+              ),
               const SizedBox(height: 8),
               Text(i18n.errorInfoDescription2),
               const SizedBox(height: 10),
@@ -198,36 +189,37 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
           ),
         ),
         actions: [
-          TextButton(
-            child: const Text('Report issue'),
-            onPressed: () async {
-              const githubRepoUrl = 'https://github.com/wger-project/flutter';
-              final description = Uri.encodeComponent(
-                '## Description\n\n'
-                '[Please describe what you were doing when the error occurred.]\n\n'
-                '## Error details\n\n'
-                'Error title: $errorTitle\n'
-                'Error message: $errorMessage\n'
-                'Stack trace:\n'
-                '```\n$stackTrace\n```',
-              );
-              final githubIssueUrl = '$githubRepoUrl/issues/new?template=1_bug.yml'
-                  '&title=$errorTitle'
-                  '&description=$description';
-              final Uri reportUri = Uri.parse(githubIssueUrl);
-
-              try {
-                await launchUrl(reportUri, mode: LaunchMode.externalApplication);
-              } catch (e) {
-                if (kDebugMode) logger.warning('Error launching URL: $e');
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Error opening issue tracker: $e')),
+          if (!isNetworkError)
+            TextButton(
+              child: const Text('Report issue'),
+              onPressed: () async {
+                const githubRepoUrl = 'https://github.com/wger-project/flutter';
+                final description = Uri.encodeComponent(
+                  '## Description\n\n'
+                  '[Please describe what you were doing when the error occurred.]\n\n'
+                  '## Error details\n\n'
+                  'Error title: $errorTitle\n'
+                  'Error message: $errorMessage\n'
+                  'Stack trace:\n'
+                  '```\n$stackTrace\n```',
                 );
-              }
-            },
-          ),
+                final githubIssueUrl = '$githubRepoUrl/issues/new?template=1_bug.yml'
+                    '&title=$errorTitle'
+                    '&description=$description';
+                final Uri reportUri = Uri.parse(githubIssueUrl);
+
+                try {
+                  await launchUrl(reportUri, mode: LaunchMode.externalApplication);
+                } catch (e) {
+                  if (kDebugMode) logger.warning('Error launching URL: $e');
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Error opening issue tracker: $e')),
+                  );
+                }
+              },
+            ),
           FilledButton(
-            child: const Text('OK'),
+            child: Text(MaterialLocalizations.of(context).okButtonLabel),
             onPressed: () {
               Navigator.of(context).pop();
             },
@@ -278,4 +270,37 @@ void showDeleteDialog(BuildContext context, String confirmDeleteName, Log log) a
     },
   );
   return res;
+}
+
+List<Widget> extractErrors(Map<String, dynamic>? errors) {
+  final List<Widget> errorList = [];
+
+  if (errors == null) {
+    return errorList;
+  }
+
+  for (final key in errors.keys) {
+    // Error headers
+    // Ensure that the error heading first letter is capitalized.
+    final String errorHeaderMsg = key[0].toUpperCase() + key.substring(1, key.length);
+
+    errorList.add(
+      Text(
+        errorHeaderMsg.replaceAll('_', ' '),
+        style: const TextStyle(fontWeight: FontWeight.bold),
+      ),
+    );
+
+    // Error messages
+    if (errors[key] is String) {
+      errorList.add(Text(errors[key]));
+    } else {
+      for (final value in errors[key]) {
+        errorList.add(Text(value));
+      }
+    }
+    errorList.add(const SizedBox(height: 8));
+  }
+
+  return errorList;
 }

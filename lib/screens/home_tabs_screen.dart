@@ -22,7 +22,7 @@ import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
 import 'package:wger/exceptions/http_exception.dart';
-import 'package:wger/helpers/ui.dart';
+import 'package:wger/helpers/errors.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/body_weight.dart';
@@ -101,7 +101,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
       } on WgerHttpException catch (error) {
         widget._logger.warning('Wger exception loading base data');
         if (mounted) {
-          showHttpExceptionErrorDialog(error, context);
+          showHttpExceptionErrorDialog(error, context: context);
         }
       }
 

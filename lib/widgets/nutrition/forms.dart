@@ -20,8 +20,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/errors.dart';
 import 'package:wger/helpers/json.dart';
-import 'package:wger/helpers/ui.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/log.dart';
@@ -106,7 +106,7 @@ class MealForm extends StatelessWidget {
                           listen: false,
                         ).editMeal(_meal);
                 } on WgerHttpException catch (error) {
-                  showHttpExceptionErrorDialog(error, context);
+                  showHttpExceptionErrorDialog(error, context: context);
                 }
                 Navigator.of(context).pop();
               },
@@ -411,7 +411,7 @@ class IngredientFormState extends State<IngredientForm> {
                   );
                   widget.onSave(context, _mealItem, date);
                 } on WgerHttpException catch (error) {
-                  showHttpExceptionErrorDialog(error, context);
+                  showHttpExceptionErrorDialog(error, context: context);
                 }
                 Navigator.of(context).pop();
               },
@@ -690,7 +690,7 @@ class _PlanFormState extends State<PlanForm> {
                 _descriptionController.clear();
               } on WgerHttpException catch (error) {
                 if (context.mounted) {
-                  showHttpExceptionErrorDialog(error, context);
+                  showHttpExceptionErrorDialog(error, context: context);
                 }
               }
             },
