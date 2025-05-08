@@ -227,31 +227,25 @@ class NutritionalPlan {
   /// returns diary entries
   /// deduped by the combination of amount and ingredient ID
   List<Log> get dedupDiaryEntries {
-    List<Log> out;
+
+    //Get unique and sort by frequency
+    const Duration recentWindow = Duration(days: -90);
     var uniqueLogs = <String, Log>{};
-    for (final log in diaryEntries) {
-      final uniqueAndCountString = '${log.ingredientId}/${log.amount}';
+    for (final log in diaryEntries){
+      final int howMany = diaryEntries
+          .where((diaryEntries) =>
+      diaryEntries.ingredientId == log.ingredientId &&
+          diaryEntries.amount == log.amount &&
+          diaryEntries.datetime.isAfter(DateTime.now().add(recentWindow)))
+          .length;
+      //Padding allows for sorting string as if number
+      final String howManyPadded = howMany.toString().padLeft(10,'0');
+      final uniqueAndCountString = '${howManyPadded}_${log.ingredientId}_${log.amount}';
       uniqueLogs[uniqueAndCountString] = log;
     }
 
-    //Get unique
-    out = uniqueLogs.values.toList();
-    var countLogs = <int, Log>{};
-    const Duration recentWindow = Duration(days: -90);
-
-    //Sort by frequency
-    for (final log in out) {
-      final int howMany = diaryEntries
-          .where((diaryEntries) =>
-              diaryEntries.ingredientId == log.ingredientId &&
-              diaryEntries.amount == log.amount &&
-              diaryEntries.datetime.isAfter(DateTime.now().add(recentWindow)))
-          .length;
-      countLogs[howMany] = log;
-    }
-
-    final sortedByFrequency = SplayTreeMap<int, Log>.from(countLogs, (b, a) => a.compareTo(b));
-    out = sortedByFrequency.values.toList();
+    final sortedByFrequency = SplayTreeMap<String, Log>.from(uniqueLogs, (b, a) => a.compareTo(b));
+    final out = sortedByFrequency.values.toList();
 
     return out;
   }
