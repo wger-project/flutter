@@ -785,6 +785,7 @@
   "@baseNameEnglish": {},
   "aboutDonateText": "請我們喝杯咖啡來支持專案、支付伺服器費用，讓我們持續前進",
   "@aboutDonateText": {},
+  "aboutMastodonTitle": "Mastodon",
   "aboutDonateTitle": "贊助",
   "@aboutDonateTitle": {},
   "goToToday": "回到今天",

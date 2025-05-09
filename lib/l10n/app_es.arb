@@ -740,6 +740,7 @@
   "@noMatchingExerciseFound": {
     "description": "Message returned if no exercises match the searched string"
   },
+  "aboutMastodonTitle": "Mastodon",
   "settingsExerciseCacheDescription": "Cache de ejercicios",
   "@settingsExerciseCacheDescription": {},
   "aboutDonateTitle": "Donar",

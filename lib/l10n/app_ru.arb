@@ -848,6 +848,7 @@
   "@lower_back": {
     "description": "Generated entry for translation for server strings"
   },
+  "aboutMastodonTitle": "Мастодонт",
   "surplus": "превышение",
   "@surplus": {
     "description": "Caloric surplus (either planned or unplanned)"

@@ -720,6 +720,7 @@
   "@lb": {
     "description": "Generated entry for translation for server strings"
   },
+  "aboutMastodonTitle": "Mastodon",
   "settingsTitle": "Ayarlar",
   "@settingsTitle": {},
   "settingsCacheTitle": "Önbellek",

@@ -23,6 +23,7 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/misc.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth.dart';
+import 'package:wger/screens/add_exercise_screen.dart';
 
 class AboutPage extends StatelessWidget {
   static String routeName = '/AboutPage';
@@ -117,6 +118,12 @@ class AboutPage extends StatelessWidget {
               contentPadding: EdgeInsets.zero,
               onTap: () => launchURL(GITHUB_PROJECT_URL, context),
             ),
+            ListTile(
+              leading: const FaIcon(FontAwesomeIcons.dumbbell, size: 18),
+              title: Text(i18n.contributeExercise),
+              contentPadding: EdgeInsets.zero,
+              onTap: () => Navigator.of(context).pushNamed(AddExerciseScreen.routeName),
+            ),
 
             _buildSectionSpacer(),
             _buildSectionHeader(context, i18n.aboutDonateTitle),
@@ -131,8 +138,8 @@ class AboutPage extends StatelessWidget {
                 children: [
                   ElevatedButton.icon(
                     icon: const FaIcon(FontAwesomeIcons.mugHot, size: 18),
-                    label: const Text('Buy Me A Coffee'),
-                    onPressed: () => launchURL(BUY_ME_A_COFFE_URL, context),
+                    label: const Text('Buy me a coffee'),
+                    onPressed: () => launchURL(BUY_ME_A_COFFEE_URL, context),
                   ),
                   ElevatedButton.icon(
                     icon: const FaIcon(FontAwesomeIcons.solidHeart, size: 18),
@@ -152,13 +159,13 @@ class AboutPage extends StatelessWidget {
             _buildSectionHeader(context, i18n.aboutJoinCommunityTitle),
             ListTile(
               leading: const FaIcon(FontAwesomeIcons.discord),
-              title: Text(i18n.aboutContactUsListTitle),
+              title: Text(i18n.aboutDiscordTitle),
               contentPadding: EdgeInsets.zero,
               onTap: () => launchURL(DISCORD_URL, context),
             ),
             ListTile(
               leading: const FaIcon(FontAwesomeIcons.mastodon),
-              title: Text(i18n.aboutMastodonListTitle),
+              title: Text(i18n.aboutMastodonTitle),
               contentPadding: EdgeInsets.zero,
               onTap: () => launchURL(MASTODON_URL, context),
             ),

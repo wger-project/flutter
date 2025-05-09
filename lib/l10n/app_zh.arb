@@ -923,6 +923,7 @@
   "@glutes": {
     "description": "Generated entry for translation for server strings"
   },
+  "aboutMastodonTitle": "长毛象",
   "routines": "训练计划",
   "@routines": {},
   "newRoutine": "新计划",

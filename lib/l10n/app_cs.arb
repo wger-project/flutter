@@ -597,6 +597,7 @@
   "@noMatchingExerciseFound": {
     "description": "Message returned if no exercises match the searched string"
   },
+  "aboutMastodonTitle": "Mastodon",
   "unVerifiedEmail": "Neověřený e-mail",
   "@unVerifiedEmail": {},
   "alsoKnownAs": "Také známé jako: {aliases}",
