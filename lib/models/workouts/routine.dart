@@ -144,10 +144,23 @@ class Routine {
     var out = logs.where((log) => log.exerciseId == exerciseId).toList();
 
     if (unique) {
-      out = out.toSet().toList();
+      //out = out.toSet().toList(); - OLD METHOD
+
+      // Create a map to store unique logs by date
+      var uniqueLogsByDate = <String, Log>{};
+
+      for (var log in out) {
+        var uniqueString =
+            '${log.date.year}/${log.date.month}/${log.date.day}/${log.weight}/${log.repetitions}';
+        uniqueLogsByDate[uniqueString] = log;
+      }
+
+      // Extract the unique logs
+      out = uniqueLogsByDate.values.toList();
     }
 
     out.sort((a, b) => b.date.compareTo(a.date));
+
     return out;
   }
 
