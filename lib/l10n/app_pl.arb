@@ -710,6 +710,7 @@
   },
   "searchNamesInEnglish": "Szukaj również w języku angielskim",
   "@searchNamesInEnglish": {},
+  "aboutMastodonTitle": "Mastodon",
   "plates": "Talerze",
   "@plates": {
     "description": "Generated entry for translation for server strings"

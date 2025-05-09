@@ -740,6 +740,7 @@
   "@noMatchingExerciseFound": {
     "description": "Message returned if no exercises match the searched string"
   },
+  "aboutMastodonTitle": "Mastodon",
   "aboutDonateTitle": "Doar",
   "@aboutDonateTitle": {},
   "aboutDonateText": "Nos compre um café para ajudar o projeto, pagar os custos do servidor e nos manter energizados",

@@ -736,6 +736,7 @@
   "@onlyLogging": {},
   "onlyLoggingHelpText": "Cochez la case si vous souhaitez uniquement enregistrer vos calories et ne souhaitez pas établir un plan nutritionnel détaillé avec des repas spécifiques",
   "@onlyLoggingHelpText": {},
+  "aboutMastodonTitle": "Mastodon",
   "aboutDonateTitle": "Faire un don",
   "@aboutDonateTitle": {},
   "goalEnergy": "Objectif énergétique",

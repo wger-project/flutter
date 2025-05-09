@@ -546,6 +546,7 @@
   "@aboutDescription": {
     "description": "Text in the about dialog"
   },
+  "aboutMastodonTitle": "மாச்டோடன்",
   "aboutDonateTitle": "நன்கொடை",
   "@aboutDonateTitle": {},
   "aboutDonateText": "திட்டத்திற்கு உதவ எங்களுக்கு ஒரு காபி வாங்கவும், சேவையக செலவினங்களுக்கு பணம் செலுத்தவும், எங்களை எரிபொருளாக வைத்திருக்கவும்",
