@@ -25,6 +25,7 @@ import 'package:provider/provider.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/routine.dart';
+import 'package:wger/models/workouts/session.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/widgets/routines/gym_mode/session_page.dart';
 
@@ -77,12 +78,17 @@ void main() {
   testWidgets('Test that data from  session is loaded - null times', (WidgetTester tester) async {
     testRoutine.sessions[0].session.timeStart = null;
     testRoutine.sessions[0].session.timeEnd = null;
-    final timeNow = timeToString(TimeOfDay.now())!;
 
     withClock(Clock.fixed(DateTime(2021, 5, 1)), () async {
       await tester.pumpWidget(renderSessionPage());
-      expect(find.text('13:35'), findsOneWidget);
-      expect(find.text(timeNow), findsOneWidget);
+
+      final startTimeField = find.byKey(const ValueKey('time-start'));
+      expect(startTimeField, findsOneWidget);
+      expect(tester.widget<TextFormField>(startTimeField).controller!.text, '');
+
+      final endTimeField = find.byKey(const ValueKey('time-end'));
+      expect(endTimeField, findsOneWidget);
+      expect(tester.widget<TextFormField>(endTimeField).controller!.text, '');
     });
   });
 
@@ -101,7 +107,8 @@ void main() {
     withClock(Clock.fixed(DateTime(2021, 5, 1)), () async {
       await tester.pumpWidget(renderSessionPage());
       await tester.tap(find.byKey(const ValueKey('save-button')));
-      final captured = verify(mockRoutinesProvider.editSession(captureAny)).captured.single;
+      final captured =
+          verify(mockRoutinesProvider.editSession(captureAny)).captured.single as WorkoutSession;
 
       expect(captured.id, 1);
       expect(captured.impression, 3);

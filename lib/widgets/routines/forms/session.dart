@@ -130,6 +130,7 @@ class _SessionFormState extends State<SessionForm> {
             children: [
               Flexible(
                 child: TextFormField(
+                  key: const ValueKey('time-start'),
                   decoration: InputDecoration(
                     labelText: AppLocalizations.of(context).timeStart,
                     errorMaxLines: 2,
@@ -172,6 +173,7 @@ class _SessionFormState extends State<SessionForm> {
               const SizedBox(width: 10),
               Flexible(
                 child: TextFormField(
+                  key: const ValueKey('time-end'),
                   decoration: InputDecoration(
                     labelText: AppLocalizations.of(context).timeEnd,
                   ),
