@@ -20,7 +20,10 @@ import 'package:flutter/material.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/dashboard/calendar.dart';
-import 'package:wger/widgets/dashboard/widgets.dart';
+import 'package:wger/widgets/dashboard/widgets/measurements.dart';
+import 'package:wger/widgets/dashboard/widgets/nutrition.dart';
+import 'package:wger/widgets/dashboard/widgets/routines.dart';
+import 'package:wger/widgets/dashboard/widgets/weight.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen();
@@ -35,7 +38,7 @@ class DashboardScreen extends StatelessWidget {
         padding: EdgeInsets.all(10),
         child: Column(
           children: [
-            DashboardWorkoutWidget(),
+            DashboardRoutineWidget(),
             DashboardNutritionWidget(),
             DashboardWeightWidget(),
             DashboardMeasurementWidget(),
