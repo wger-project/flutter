@@ -33,6 +33,9 @@ class WorkoutSession {
   @JsonKey(required: true, name: 'routine')
   late int routineId;
 
+  @JsonKey(required: true, name: 'day')
+  int? dayId;
+
   @JsonKey(required: true, toJson: dateToYYYYMMDD)
   late DateTime date;
 
@@ -53,6 +56,7 @@ class WorkoutSession {
 
   WorkoutSession({
     this.id,
+    this.dayId,
     required this.routineId,
     this.impression = 2,
     this.notes = '',
