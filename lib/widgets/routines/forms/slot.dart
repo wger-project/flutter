@@ -18,7 +18,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/errors.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day.dart';
@@ -89,6 +91,8 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
   final maxRestController = TextEditingController();
   final rirController = TextEditingController();
 
+  Widget errorMessage = const SizedBox.shrink();
+
   final _form = GlobalKey<FormState>();
 
   var _edit = false;
@@ -154,6 +158,7 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
       key: _form,
       child: Column(
         children: [
+          errorMessage,
           ListTile(
             title: Text(
               widget.entry.exerciseObj.getTranslation(languageCode).name,
@@ -177,9 +182,18 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
                       ? null
                       : () async {
                           setState(() => isDeleting = true);
-                          await provider.deleteSlotEntry(widget.entry.id!, widget.routineId);
-                          if (mounted) {
-                            setState(() => isDeleting = false);
+                          try {
+                            await provider.deleteSlotEntry(widget.entry.id!, widget.routineId);
+                          } on WgerHttpException catch (error) {
+                            if (context.mounted) {
+                              setState(() {
+                                errorMessage = FormHttpErrorsWidget(error);
+                              });
+                            }
+                          } finally {
+                            if (mounted) {
+                              setState(() => isDeleting = false);
+                            }
                           }
                         },
                 ),
@@ -385,11 +399,14 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
                       await provider.editSlotEntry(widget.entry, widget.routineId);
                       if (mounted) {
                         setState(() => isSaving = false);
+                        errorMessage = const SizedBox.shrink();
                       }
-                    } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('${i18n.anErrorOccurred} $e')),
-                      );
+                    } on WgerHttpException catch (error) {
+                      if (context.mounted) {
+                        setState(() {
+                          errorMessage = FormHttpErrorsWidget(error);
+                        });
+                      }
                     } finally {
                       if (mounted) {
                         setState(() => isSaving = false);
@@ -419,6 +436,7 @@ class SlotDetailWidget extends StatefulWidget {
 
 class _SlotDetailWidgetState extends State<SlotDetailWidget> {
   bool _showExerciseSearchBox = false;
+  Widget errorMessage = const SizedBox.shrink();
 
   @override
   Widget build(BuildContext context) {
@@ -427,6 +445,7 @@ class _SlotDetailWidgetState extends State<SlotDetailWidget> {
 
     return Column(
       children: [
+        errorMessage,
         ...widget.slot.entries.map((entry) => entry.hasProgressionRules
             ? ProgressionRulesInfoBox(entry.exerciseObj)
             : SlotEntryForm(entry, widget.routineId, simpleMode: widget.simpleMode)),
@@ -442,7 +461,18 @@ class _SlotDetailWidgetState extends State<SlotDetailWidget> {
                 exercise: exercise,
               );
 
-              await provider.addSlotEntry(entry, widget.routineId);
+              try {
+                await provider.addSlotEntry(entry, widget.routineId);
+                if (context.mounted) {
+                  setState(() => errorMessage = const SizedBox.shrink());
+                }
+              } on WgerHttpException catch (error) {
+                if (context.mounted) {
+                  setState(() {
+                    errorMessage = FormHttpErrorsWidget(error);
+                  });
+                }
+              }
             },
           ),
         if (widget.slot.entries.isNotEmpty)
@@ -473,6 +503,7 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
   bool simpleMode = true;
   bool isAddingSlot = false;
   int? isDeletingSlot;
+  Widget errorMessage = const SizedBox.shrink();
 
   @override
   Widget build(BuildContext context) {
@@ -482,6 +513,7 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
 
     return Column(
       children: [
+        errorMessage,
         if (!widget.day.isRest)
           SwitchListTile(
             value: simpleMode,
@@ -579,7 +611,18 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
                 widget.slots[i].order = i + 1;
               }
 
-              provider.editSlots(widget.slots, widget.day.routineId);
+              try {
+                provider.editSlots(widget.slots, widget.day.routineId);
+                setState(() {
+                  errorMessage = const SizedBox.shrink();
+                });
+              } on WgerHttpException catch (error) {
+                if (context.mounted) {
+                  setState(() {
+                    errorMessage = FormHttpErrorsWidget(error);
+                  });
+                }
+              }
             });
           },
         ),

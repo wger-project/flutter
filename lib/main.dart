@@ -96,6 +96,11 @@ void main() async {
       FlutterError.dumpErrorToConsole(details);
     }
 
+    // Don't show the full error dialog for network image loading errors.
+    if (details.exception is NetworkImageLoadException) {
+      return;
+    }
+
     showGeneralErrorDialog(details.exception, stack);
   };
 

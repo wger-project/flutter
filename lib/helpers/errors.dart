@@ -327,10 +327,10 @@ List<Widget> formatErrors(List<ApiError> errors, {Color? color}) {
   return errorList;
 }
 
-class FormErrorsWidget extends StatelessWidget {
+class FormHttpErrorsWidget extends StatelessWidget {
   final WgerHttpException exception;
 
-  const FormErrorsWidget(this.exception, {super.key});
+  const FormHttpErrorsWidget(this.exception, {super.key});
 
   @override
   Widget build(BuildContext context) {

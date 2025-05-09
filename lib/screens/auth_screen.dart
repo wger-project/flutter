@@ -41,7 +41,7 @@ class AuthScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final deviceSize = MediaQuery.of(context).size;
+    final deviceSize = MediaQuery.sizeOf(context);
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: Stack(
@@ -204,18 +204,13 @@ class _AuthCardState extends State<AuthCard> {
     } on WgerHttpException catch (error) {
       if (context.mounted) {
         setState(() {
-          _isLoading = false;
-          errorMessage = FormErrorsWidget(error);
+          errorMessage = FormHttpErrorsWidget(error);
         });
       }
-    } catch (error) {
-      if (context.mounted) {
-        setState(() {
-          _isLoading = false;
-        });
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
       }
-
-      rethrow;
     }
   }
 
